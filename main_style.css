@@ -1,0 +1,357 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:700|Raleway:300|Source+Sans+Pro|Slabo+27px|Bitter|Libre+Baskerville');
+
+body {
+	width: 70%; 
+	margin-left:  auto; 
+	margin-right: auto;
+	font-family: Segoe UI, sans-serif;
+}
+
+a:link {
+	color: #45a9e9;
+	text-decoration: none
+}
+
+a:visited {
+	color: #45a9e9;
+	text-decoration: none
+}
+
+a:hover {
+	color: #45a9e9;
+}
+
+a:active {
+	color: #45a9e9;
+	text-decoration: none
+}
+
+ul {
+	list-style-type: none;
+}
+
+button {
+	font-size: 80%;
+    font-weight: bold;
+    padding: 10px;
+    border: 1px grey solid;
+    border-radius: 6px;
+    color: #3d3d3d;
+    background-color: white;
+}
+
+.listEl {
+	padding: 5%;
+	padding-top: 15%;
+	padding-bottom: 15%;
+	border-style: solid;
+	border-color: grey;
+	border-width: 3px;
+	margin: 2.5%;
+}
+
+#cont {
+	/*width: 100%;
+	text-align: center;
+	font-size: 1.2em;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	grid-auto-flow: row;
+	grid-auto-rows: auto;
+	max-width: 70vw;*/
+	width: 100%;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	/*grid-template-areas: "a a";
+	grid-gap: 10px;*/
+	grid-auto-rows: auto;
+	grid-auto-flow: row;
+	font-size: 1.2em;
+}
+
+#cont > body {
+	max-width: 70%;
+}
+
+/* Extra Small Devices, Phones */ 
+@media only screen and (max-width : 480px) {
+	body {
+		width: 100%;
+	}
+}
+
+/* Custom, iPhone Retina */ 
+@media only screen and (max-width : 320px) {
+	body {
+		width: 100%;
+	}
+}
+   
+#nav nav {
+	margin-left: auto;
+	margin-right: auto;
+	font-size: 120%;
+	font-weight: bold;
+	transition: width 0.4s linear;
+	z-index: 100;
+	background-color: #3d3d3d;
+	overflow: auto;
+}
+
+#nav nav ul {
+	display: inline;
+	list-style-type: none;
+	margin: 0%;
+	padding: 1%;
+	overflow: auto;
+}
+
+#nav nav > ul > li > ul {
+	display: none;
+}
+
+#nav nav > ul a {
+	display: block;
+}
+
+#nav nav > ul > li:hover > ul {
+	display: block;
+	position: absolute;
+}
+
+#nav nav > ul > li > ul > li {
+	position: relative;
+}
+
+#nav li {
+	float: left;
+	width: 17.5%;
+	text-align: center;
+}
+
+#nav li a {
+	text-decoration: none;
+	padding: 4%;
+}
+
+a:link {
+	color: #45a9e9 !important;
+	text-decoration: none
+}
+
+a:visited {
+	color: #45a9e9 !important;
+	text-decoration: none
+}
+
+a:hover {
+	color: #45a9e9 !important;
+}
+
+a:active {
+	color: #45a9e9 !important;
+	text-decoration: none
+}
+
+.login {
+	position: absolute;
+	right: 15%;
+}
+
+.loginregister span {
+	float: left;
+	margin-left: 15%;
+	z-index: 50;
+}
+
+#login {
+	width: 20%;
+	height: 20vh;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+	text-align: center;	
+	background-color: #1b58ba;
+	font-family: Source Sans Pro;
+	font-size: 1.1em;
+	color: white;
+	border-radius: 10px;
+	box-shadow: 2px 3px 6px 2px grey;
+	z-index: 50;	
+}
+
+#register {
+	width: 20%;
+	height: 30vh;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+	text-align: center;	
+	background-color: #1b58ba;
+	font-family: Source Sans Pro;
+	font-size: 1.1em;
+	color: white;
+	border-radius: 10px;
+	box-shadow: 2px 3px 6px 2px grey;
+	z-index: 50;
+}
+
+#register div input, #login div input {
+	font-family: Source Sans Pro, sans-serif;
+	font-size: 1.1em;
+	border: none;
+	margin: 0.5vh;
+	height: 3.5vh;
+	border-radius: 4px;
+}
+
+#register div input[type=submit], #login div input[type=submit] {
+	font-family: Source Sans Pro, sans-serif;
+	font-size: 1.1em;
+	border: none;
+	margin: 0.5vh;
+	height: 3.5vh;
+	border-radius: 4px;
+	width: 222px;
+	color: white;
+	background-color: #03193d;
+}
+
+#register div p, #login div p  {
+	font-size: 1.2em;
+	background-color: #03193d;
+	padding: 1vh;
+	margin-top: 0;
+	margin-bottom: 0;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+}
+
+#cont span {
+	float: right;
+}
+
+#anim_pig {
+	position: relative;
+	background:url(svg/pig.svg) no-repeat;
+	background-size:contain;
+}
+
+#anim_dog {
+	position: relative;
+	background:url(svg/dog.svg) no-repeat;
+	background-size:contain;
+}
+
+#anim_owl {
+	position: relative;
+	background:url(svg/owl.svg) no-repeat;
+	background-size:contain;
+}
+
+#anim_lion {
+	position: relative;
+	background:url(svg/lion.svg) no-repeat;
+	background-size:contain;
+}
+
+#anim_frog {
+	position: relative;
+	background:url(svg/frog.svg) no-repeat;
+	background-size:contain;
+}
+
+#anim_hare {
+	position: relative;
+	background:url(svg/hare.svg) no-repeat;
+	background-size:contain;
+}
+
+#nav nav {
+	border-radius: 5px;
+}
+
+.hoverAnim {
+    height: 0;
+	width: 100%;
+    -webkit-transition: height 2s;
+    transition: height 2s;
+	/*z-index: 5;*/
+	position: absolute;
+	left: 0;
+	bottom: 100%;
+	/*margin-bottom: -50px;*/
+	bottom: 0;
+}
+
+.listEl:hover > .hoverAnim { 
+	height: 42%;/*50px;*/
+	background-color:  rgba(54, 25, 25, .5);
+}
+
+.listEl {
+	border-radius: 5px;
+}
+
+::-webkit-input-placeholder {
+	padding-left: 5%;
+}
+
+::-moz-placeholder {
+	padding-left: 5%;
+}
+
+:-ms-input-placeholder {
+	padding-left: 5%;
+}
+
+:-moz-placeholder {
+	padding-left: 5%;
+}
+
+@media only screen and (max-width : 480px) {
+	body {
+		width: 100%;
+	}
+	
+	#nav {
+		display: none;
+	}
+	
+	.navEl {
+		width: 35px;
+		height: 5px;
+		background-color: black;
+		margin: 6px 0;
+		margin-left: 6px;
+	}
+	
+	#hamlist {
+		padding-right: 4%;
+		font-size: 1.2em;
+	}
+	
+	#hamlist ul {
+		padding-left: 4%;
+	}
+	
+	#hammen {
+		position: absolute;
+		height: 100vh;
+		top: 0;
+	}
+	
+	.login {
+		right: 1%;
+	}
+	
+	#register, #login {
+		width: 95%;
+	}
+}
