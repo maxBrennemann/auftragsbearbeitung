@@ -1,6 +1,4 @@
-	<footer>
-		
-	</footer>
+	<footer></footer>
 
 	<?php 
 		$files;
