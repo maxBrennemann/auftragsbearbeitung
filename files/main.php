@@ -11,7 +11,7 @@
 <div>
 	<a href="<?=$neuerKunde?>">Neuen Kunden erstelen</a>
 	<a href="<?=$neuerAuftrag?>">Neuen Auftrag erstellen</a>
-	<a href="<?=$neueRechnung?>">Neue rechnung erstellen</a>
+	<a href="<?=$neueRechnung?>">Neue Rechnung erstellen</a>
 	<a href="<?=$neuesAngebot?>">Neues Angebot erstellen</a>
 	<a href="<?=$neuesProdukt?>">Neues Produkt erstellen</a>
 </div>
