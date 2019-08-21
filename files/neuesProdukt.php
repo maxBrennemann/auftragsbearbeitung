@@ -2,7 +2,7 @@
 require_once('classes/project/FormGenerator.php');
 
 $getTableData = array();
-if (ISSET($_POST['getTable'])) {
+if (isset($_POST['getTable'])) {
 	$type = $_POST['getTable'];
 	$column_names = DBAccess::selectQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'${type}'");
 
