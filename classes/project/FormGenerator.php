@@ -45,7 +45,8 @@ class FormGenerator {
 		
 		$html_table = $html_table . "</tr>";
 		if ($showData == true) {
-			$data = DBAccess::selectQuery("SELECT * FROM Kunde ORDER BY `Kundennummer` DESC LIMIT ${amountOfData}");
+			//$data = DBAccess::selectQuery("SELECT * FROM ${type} ORDER BY `Kundennummer` DESC LIMIT ${amountOfData}");
+			$data = DBAccess::selectQuery("SELECT * FROM ${type} LIMIT ${amountOfData}");
 			for ($i = 0; $i < sizeof($data); $i++) {
 				$html_table = $html_table . "<tr>";
 				for ($n = 0; $n < sizeof($column_names); $n++) {
