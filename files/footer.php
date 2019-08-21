@@ -1,4 +1,7 @@
-	<footer></footer>
+	</main>
+	<footer>
+		<a href="<?=Link::getPageLink('')?>">Zur Main Page</a>
+	</footer>
 
 	<?php 
 		$files;
@@ -9,7 +12,7 @@
 		}
 		
 		foreach($files as $file) {
-			$link = Link::getResourcesLink($file['fileSrc'], $file['fileType']);
+			$link = Link::getResourcesShortLink($file['fileSrc'], $file['fileType']);
 			
 			if($file['fileType'] == 'css') {
 				echo '<link rel="stylesheet" href="' . $link . '">';

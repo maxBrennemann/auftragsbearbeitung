@@ -37,7 +37,7 @@
 			$files = DBAccess::selectQuery("SELECT * FROM attachments WHERE articleId = '${result['id']}' AND anchor = 'head'");
 		}
 		foreach($files as $file) {
-			$link = Link::getResourcesLink($file['fileSrc'], $file['fileType']);
+			$link = Link::getResourcesShortLink($file['fileSrc'], $file['fileType']);
 			
 			if($file['fileType'] == 'css') {
 				echo '<link rel="stylesheet" href="' . $link . '">';
@@ -52,3 +52,5 @@
 <body>
 	<header>
 		<h1><?=$pageName?></h1>
+	</header>
+	<main>
