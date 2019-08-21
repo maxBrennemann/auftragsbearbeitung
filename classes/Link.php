@@ -27,16 +27,37 @@ class Link {
 		return $link;
 	}
 	
-	public static function getResourcesLink($resource, $type) {
+	public static function getResourcesLink($resource, $type, $rewriteBase = true) {
+		if($rewriteBase) {
+			$rewriteBase = REWRITE_BASE;
+		} else {
+			$rewriteBase = "";
+		}
 		switch($type) {
 			case "css":
-				$link = REWRITE_BASE . "files/css/" . $resource;
+				$link = $rewriteBase . "files/css/" . $resource;
 				break;
 			case "js":
-				$link = REWRITE_BASE . "files/js/" . $resource;
+				$link = $rewriteBase . "files/js/" . $resource;
 				break;
 			case "font":
-				$link = REWRITE_BASE . "files/font/" . $resource;
+				$link = $rewriteBase . "files/font/" . $resource;
+				break;
+		}
+		
+		return $link;
+	}
+
+	public static function getResourcesShortLink($resource, $type) {
+		switch($type) {
+			case "css":
+				$link = REWRITE_BASE . "css/" . $resource;
+				break;
+			case "js":
+				$link = REWRITE_BASE . "js/" . $resource;
+				break;
+			case "font":
+				$link = REWRITE_BASE . "font/" . $resource;
 				break;
 		}
 		
@@ -44,13 +65,11 @@ class Link {
 	}
 	
 	public static function getGlobalCSS() {
-		$link = REWRITE_BASE . "files/css/global.css";
-		return $link;
+		return self::getResourcesShortLink("global.css", "css");
 	}
 	
 	public static function getGlobalJS() {
-		$link = REWRITE_BASE . "files/js/global.js";
-		return $link;
+		return self::getResourcesShortLink("global.js", "js");
 	}
 	
 	public static function getAdminLink() {
