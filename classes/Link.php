@@ -23,7 +23,7 @@ class Link {
 	}
 	
 	public static function getImageLink($resourceName) {
-		$link = REWRITE_BASE . "files/img/" . $resourceName;
+		$link = REWRITE_BASE . "files/res/img/" . $resourceName;
 		return $link;
 	}
 	
@@ -35,13 +35,13 @@ class Link {
 		}
 		switch($type) {
 			case "css":
-				$link = $rewriteBase . "files/css/" . $resource;
+				$link = $rewriteBase . "files/res/css/" . $resource;
 				break;
 			case "js":
-				$link = $rewriteBase . "files/js/" . $resource;
+				$link = $rewriteBase . "files/res/js/" . $resource;
 				break;
 			case "font":
-				$link = $rewriteBase . "files/font/" . $resource;
+				$link = $rewriteBase . "files/res/font/" . $resource;
 				break;
 		}
 		
