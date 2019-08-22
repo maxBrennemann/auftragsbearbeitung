@@ -45,7 +45,7 @@ function addContent() {
 			i != content.length - 1 ? data += "&" : 1;
         }
         if (isChecked) {
-            let sendToDB = new AjaxCall(data, "POST", "http://localhost/auftragsbearbeitung/content/neuer-kunde");
+            let sendToDB = new AjaxCall(data, "POST", window.location.href);
             sendToDB.makeAjaxCall(function (responseTable) {
                 var tableContainer = document.getElementById("tableContainer");
                 tableContainer.innerHTML = responseTable;
