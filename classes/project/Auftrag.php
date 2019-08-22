@@ -2,132 +2,54 @@
 
 error_reporting(E_ALL);
 
-/**
- * unbenanntesModell - class.Auftrag.php
- *
- * $Id$
- *
- * This file is part of unbenanntesModell.
- *
- * Automatically generated on 20.08.2019, 12:32:17 with ArgoUML PHP module 
- * (last revised $Date: 2010-01-12 20:14:42 +0100 (Tue, 12 Jan 2010) $)
- *
- * @author firstname and lastname of author, <author@example.org>
- */
-
 if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
 }
 
-/**
- * include Kunde
- *
- * @author firstname and lastname of author, <author@example.org>
- */
-require_once('class.Kunde.php');
+require_once('Kunde.php');
+require_once('Schritt.php');
+require_once('Posten.php');
+require_once('classes/DBAccess.php');
+require_once('classes/Link.php');
 
 /**
- * include Schritte
- *
- * @author firstname and lastname of author, <author@example.org>
+ * Klasse generiert im Zusammenhang mit der Template Datei auftrag.php die Übersicht für einen bestimmten Auftrag.
+ * Dabei werden alle Auftragsposten und alle Bearbeitungsschritte aus der Datenbank geladen und als Objekte erstellt.
+ * Diese können bearbeitet, ergänzt und abgearbeitet werden.
  */
-require_once('class.Schritte.php');
+class Auftrag {
 
-/* user defined includes */
-// section -64--88--78-22--1785616:16c6bb0e419:-8000:0000000000000A88-includes begin
-// section -64--88--78-22--1785616:16c6bb0e419:-8000:0000000000000A88-includes end
-
-/* user defined constants */
-// section -64--88--78-22--1785616:16c6bb0e419:-8000:0000000000000A88-constants begin
-// section -64--88--78-22--1785616:16c6bb0e419:-8000:0000000000000A88-constants end
-
-/**
- * Short description of class Auftrag
- *
- * @access public
- * @author firstname and lastname of author, <author@example.org>
- */
-class Auftrag
-{
-    // --- ASSOCIATIONS ---
-    // generateAssociationEnd : Kunde    // generateAssociationEnd : 
-
-    // --- ATTRIBUTES ---
-
-    /**
-     * Short description of attribute Auftragsnummer
-     *
-     * @access public
-     * @var Integer
-     */
     public $Auftragsnummer = null;
+	public $Auftragsbezeichnung = null;
+	public $Auftragsbeschreibung = null;
+	public $Auftragsposten = null;
+	public $Bearbeitungsschritte = array();
+	public $Auftragstyp = null;
 
-    /**
-     * Short description of attribute Auftragsbezeichnung
-     *
-     * @access public
-     * @var String
-     */
-    public $Auftragsbezeichnung = null;
+	function __construct($auftragsnummer) {
+		if ($auftragsnummer > 0) {
+			$this->Auftragsnummer = $auftragsnummer;
+			$data = DBAccess::selectQuery("SELECT * FROM `auftrag` WHERE Auftragsnummer = {$auftragsnummer}");
 
-    /**
-     * Short description of attribute Auftragsbeschreibung
-     *
-     * @access public
-     * @var String
-     */
-    public $Auftragsbeschreibung = null;
+			$this->Auftragsbeschreibung = $data[0]['Auftragsbeschreibung'];
+			$this->Auftragsbezeichnung = $data[0]['Auftragsbezeichnung'];
 
-    /**
-     * Short description of attribute Auftragsposten
-     *
-     * @access public
-     * @var Posten
-     */
-    public $Auftragsposten = null;
+			$data = DBAccess::selectQuery("SELECT Schrittnummer, Bezeichnung, Datum, Priority, istErledigt FROM schritte WHERE Auftragsnummer = {$auftragsnummer}");
+			foreach ($data as $step) {
+				$element = new Schritt($step['Auftragsnummer'], $step['Schrittnummer'], $step['Bezeichnung'], $step['Datum'], $step['Priority'], $step['istErledigt']);
+				array_push($this->Bearbeitungsschritte, $element);
+			}
 
-    /**
-     * Short description of attribute Bearbeitungsschritte
-     *
-     * @access public
-     * @var Schritte
-     */
-    public $Bearbeitungsschritte = null;
+			$this->Auftragsposten = Posten::bekommeAllePosten($auftragsnummer);
+		}
+	}
 
-    /**
-     * Short description of attribute Auftragstyp
-     *
-     * @access public
-     * @var Typ
-     */
-    public $Auftragstyp = null;
-
-    // --- OPERATIONS ---
-
-    /**
-     * Short description of method bearbeitungsschrittHinzufuegen
-     *
-     * @access public
-     * @author firstname and lastname of author, <author@example.org>
-     * @return mixed
-     */
-    public function bearbeitungsschrittHinzufuegen()
-    {
-        // section -64--88--78-22--dbaf7cb:16c8686fa2d:-8000:00000000000009DC begin
-        // section -64--88--78-22--dbaf7cb:16c8686fa2d:-8000:00000000000009DC end
+    public function bearbeitungsschrittHinzufuegen() {
+        
     }
 
-    /**
-     * Short description of method bearbeitungsschrittEntfernen
-     *
-     * @access public
-     * @author firstname and lastname of author, <author@example.org>
-     * @return mixed
-     */
-    public function bearbeitungsschrittEntfernen()
-    {
-        // section -64--88--78-22--dbaf7cb:16c8686fa2d:-8000:00000000000009DE begin
-        // section -64--88--78-22--dbaf7cb:16c8686fa2d:-8000:00000000000009DE end
+    public function bearbeitungsschrittEntfernen() {
+        
     }
 
     /**
@@ -182,6 +104,6 @@ class Auftrag
         // section -64--88--78-22-6f584299:16ca497f3f8:-8000:0000000000000A0A end
     }
 
-} /* end of class Auftrag */
+}
 
 ?>
