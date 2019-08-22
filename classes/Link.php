@@ -43,6 +43,9 @@ class Link {
 			case "font":
 				$link = $rewriteBase . "files/res/font/" . $resource;
 				break;
+			case "html":
+				$link = $rewriteBase . "files/res/form/" . $resource;
+				break;
 		}
 		
 		return $link;
