@@ -21,5 +21,6 @@ if (isset($_POST['getTable'])) {
 }
 
 if(!isset($_POST['getTable'])) : ?>
+	<input type="number" min="1" id="auftragsnummer">
 	<button onclick="print();">Auftragsblatt generieren</button>
 <?php endif ?>
