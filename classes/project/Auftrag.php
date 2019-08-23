@@ -19,12 +19,12 @@ require_once('classes/Link.php');
  */
 class Auftrag {
 
-    private $Auftragsnummer = null;
-	private $Auftragsbezeichnung = null;
-	private $Auftragsbeschreibung = null;
-	private $Auftragsposten = null;
-	private $Bearbeitungsschritte = array();
-	private $Auftragstyp = null;
+    protected $Auftragsnummer = null;
+	protected $Auftragsbezeichnung = null;
+	protected $Auftragsbeschreibung = null;
+	protected $Auftragsposten = null;
+	protected $Bearbeitungsschritte = array();
+	protected $Auftragstyp = null;
 
 	function __construct($auftragsnummer) {
 		if ($auftragsnummer > 0) {
@@ -66,6 +66,14 @@ class Auftrag {
 			$htmlData .= $posten->getHTMLData();
 		}
 		return $htmlData;
+	}
+
+	public function preisBerechnen() {
+		$price = 0;
+		foreach ($this->Auftragsposten as $posten) {
+			$price += $posten->bekommePreis();
+		}
+		return $price;
 	}
 
     public function bearbeitungsschrittHinzufuegen() {
