@@ -11,57 +11,117 @@ if (0 > version_compare(PHP_VERSION, '5')) {
  * Klasse generiert Tabellen für Formulare
  *
  * @access public
- * @author firstname and lastname of author, <author@example.org>
+ * @author Max Brennemann, maxgoogelt@gmail.com
  */
 class FormGenerator {
 	
-	function __construct($type) {
+	private $type;
+	private $isOrderedBy;
+	private $whereCondition;
 
+	function __construct($type, $isOrderedBy, $whereCondition) {
+		$this->type = $type;
+		$this->isOrderedBy = $orderBy;
+		$this->whereCondition = $whereCondition;
 	}
 
 	private static function getColumnNames($type) {
-		self::$column_names = DBAccess::selectQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'${type}'");
+		return DBAccess::selectQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'${type}'");
 	}
 
-	public static function createTable($type, $editable, $showData, $sendTo, $amountOfData = 5) {
+	/*
+	* static function is used to cover the private static function generateTable(), because some parameters are not needed for this function
+	*/
+	public static function createTable($type, $editable, $showData, $sendTo, $amountOfData = 5, $isRowLink = false) {
+		return self::generateTable($type, $editable, $showData, $sendTo, $amountOfData, $isRowLink);
+	}
+
+	/*
+	* $type is the table from which the data is extracted
+	* $editable is responsible for editing the table
+	* $sendTo is the page the edited information will be send to
+	* $amountOfData is the number of rows of the table which will be shown, default is 5
+	* $isRowLink creates a link for every first element of a row, the link is composed of the current page link and the getParameters showDetails and id, $isRowLink only works, if the page
+	* can show details for a specific value and if the first column represents a unique number
+	*/
+	private static function generateTable($type, $editable, $showData, $sendTo, $amountOfData, $isRowLink, $data = null) {
+		$column_names = self::getColumnNames($type);
+
 		if($editable) {
-			$html_table = "<table border='1' class='allowAddingContent' data-type=${type} data-send-to=${sendTo}><tr>";
+			$html_table = "<table border='1' class='allowAddingContent' data-type=${type} data-send-to=${sendTo}>";
 		} else {
-			$html_table = "<table border='1'><tr>";
+			$html_table = "<table border='1'>";
 		}
-		$empty_row = "<tr>";
 
-		$column_names = DBAccess::selectQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'${type}'");
-
-		for ($i = 0; $i < sizeof($column_names); $i++) {
-			$showColumnName = $column_names[$i]["COLUMN_NAME"];
-			$html_table = $html_table . "<th class='tableHead'>${showColumnName}</th>";
-			if ($editable == true) {
-				$empty_row = $empty_row . "<td class='addingContentColumn' contenteditable='true'></td>";
-			} else {
-				$empty_row = $empty_row . "<td></td>";
-			}
-		}
+		$html_table .= self::createTableHeader($column_names);
 		
-		$html_table = $html_table . "</tr>";
-		if ($showData == true) {
-			//$data = DBAccess::selectQuery("SELECT * FROM ${type} ORDER BY `Kundennummer` DESC LIMIT ${amountOfData}");
-			$data = DBAccess::selectQuery("SELECT * FROM ${type} LIMIT ${amountOfData}");
+		if ($showData) {
+			if ($data == null) {
+				$data = self::executeSQLQuery($type, $amountOfData);
+			}
+
 			for ($i = 0; $i < sizeof($data); $i++) {
 				$html_table = $html_table . "<tr>";
 				for ($n = 0; $n < sizeof($column_names); $n++) {
-					$showColumnName = $data[$i][$column_names[$n]["COLUMN_NAME"]];
-					$html_table = $html_table . "<td>${showColumnName}</td>";
+					$showColumnData = $data[$i][$column_names[$n]["COLUMN_NAME"]];
+					if ($n == 0 && $isRowLink) {
+						$html_table = $html_table . "<td><a href='{$_SERVER['REQUEST_URI']}?showDetails={$type}&id={$showColumnData}'>{$showColumnData}</a></td>";
+					} else {
+						$html_table = $html_table . "<td>{$showColumnData}</td>";
+					}
+					
 				}
 				$html_table = $html_table . "</tr>";
 			}
 		}
-		$empty_row = $empty_row . "</tr>";
-		if ($editable == true) {
-			$html_table = $html_table . $empty_row;
+		
+		if ($editable) {
+			$html_table = $html_table . self::createEmptyRow(sizeof($column_names));
 		}
-		$html_table = $html_table . "</table>";
-		return $html_table;
+		return $html_table . "</table>";
+	}
+
+	/*
+	* executes the SQL Query composed of the type of the table, the amount of data to be extracted and the where condition as well as the order condition
+	*/
+	private static function executeSQLQuery($type, $amountOfData, $orderBy = "", $whereCondition = "") {
+		$isOrderedByStatement = "";
+		$whereConditionStatement = "";
+		if (strcmp($orderBy, "") != 0) {
+			$isOrderedByStatement = "ORDER BY {$orderBy}";
+		}
+		if (strcmp($whereCondition, "") != 0) {
+			$whereConditionStatement = "WHERE {$whereCondition}";
+		}
+		
+		return DBAccess::selectQuery("SELECT * FROM ${type} {$whereConditionStatement} {$isOrderedByStatement} LIMIT ${amountOfData}");
+	}
+
+	/*
+	* creates an empty table row the size of the input $number
+	*/
+	private static function createEmptyRow($number) {
+		$empty_row = "<tr>";
+
+		for ($i = 0; $i < $number; $i++) {
+			$empty_row = $empty_row . "<td class='addingContentColumn' contenteditable='true'></td>";
+		}
+
+		return $empty_row . "</tr>";
+	}
+
+	/*
+	* creates the <th> row of the table containing the column names
+	*/
+	private static function createTableHeader($column_names) {
+		$table_header = "<tr>";
+
+		for ($i = 0; $i < sizeof($column_names); $i++) {
+			$showColumnName = $column_names[$i]["COLUMN_NAME"];
+			$table_header .= "<th class='tableHead'>${showColumnName}</th>";
+		}
+
+		return $table_header . "</tr>";
 	}
 
 	public static function insertData($type, $data) {
@@ -80,6 +140,28 @@ class FormGenerator {
 		}
 		$input_string = $input_string . $columns . ") " . $values . ")";
 		DBAccess::insertQuery($input_string);
+	}
+
+	public function setIsOrderedBy($isOrderedBy) {
+		$this->isOrderedBy = $orderBy;
+	}
+
+	public function setWhereCondition($whereCondition) {
+		$this->whereCondition = $whereCondition;
+	}
+
+	/*
+	* creates table orderd by the specified settings:
+	*		- isOrderedBy
+	*		- whereCondition
+	*/
+	public function createSpecializedTable($editable, $showData, $sendTo, $amountOfData, $isRowLink) {
+		if(strcmp($this->isOrderedBy, "") == 0 || $this->isOrderedBy == null) {
+			return "";
+		} else {
+			$data = self::executeSQLQuery($this->type, $amountOfData, $this->isOrderedBy, $this->whereCondition);
+			return generateTable($this->type, $editable, $showData, $sendTo, $amountOfData, $isRowLink, $data);
+		}
 	}
 
 }
