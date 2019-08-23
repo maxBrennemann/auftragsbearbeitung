@@ -1,7 +1,7 @@
-function print() {
-    let auftragsnummer = document.getElementById("auftragsnummer").value;
-    if (auftragsnummer != "") {
-        let getData = new AjaxCall(`getReason=fillForm&file=Auftrag&nr=${auftragsnummer}`, "POST", window.location.href);
+function print(id, file) {
+    let nummer = document.getElementById(id).value || document.getElementById(id).innerHTML;
+    if (nummer != "") {
+        let getData = new AjaxCall(`getReason=fillForm&file=${file}&nr=${nummer}`, "POST", window.location.href);
         getData.makeAjaxCall(function (htmlCode) {
             var win = window.open("", "", ""); //width=900,height=700
             win.document.write(htmlCode);
