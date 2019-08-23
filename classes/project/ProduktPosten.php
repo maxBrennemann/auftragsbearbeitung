@@ -28,7 +28,7 @@ class ProduktPosten extends Posten {
 	}
 
     public function bekommePreis() {
-        return $this->Preis();
+        return (int) $this->Preis();
     }
 
 }

@@ -16,8 +16,8 @@ class Zeit extends Posten {
 	protected $postenTyp = "zeit";
 
 	function __construct($Stundenlohn, $ZeitInMinuten) {
-		$this->Stundenlohn = $Stundenlohn;
-		$this->ZeitInMinuten = $ZeitInMinuten;
+		$this->Stundenlohn = (int) $Stundenlohn;
+		$this->ZeitInMinuten = (int) $ZeitInMinuten;
 	}
 
 	public function getHTMLData() {
@@ -32,7 +32,7 @@ class Zeit extends Posten {
 
     private function kalkulierePreis() {
 		$this->Kosten = $this->Stundenlohn * ($this->ZeitInMinuten / 60);
-        return $this->Kosten;
+        return (float) $this->Kosten;
     }
 
 }

@@ -15,9 +15,10 @@ class Leistung extends Posten {
 	private $beschreibung = null;
 	protected $postenTyp = "leistung";
 
-	function __construct($Bezeichnung, $Beschreibung) {
-		$this->bezeichnung = $Bezeichnung;
-		$this->beschreibung = $Beschreibung;
+	function __construct($bezeichnung, $beschreibung, $preis) {
+		$this->bezeichnung = $bezeichnung;
+		$this->beschreibung = $beschreibung;
+		$this->preis = (int) $preis;
 	}
 
 	public function getHTMLData() {
@@ -25,7 +26,7 @@ class Leistung extends Posten {
 	}
 
     public function bekommePreis() {
-        return $this->Preis();
+        return (int) $this->preis;
     }
 
 }

@@ -36,8 +36,8 @@ abstract class Posten {
 					$element = new ProduktPosten($speziefischerPosten['Preis'], $speziefischerPosten['Bezeichnung'], $speziefischerPosten['Beschreibung']);
 					break;
 				case 'leistung':
-					$speziefischerPosten = DBAccess::selectQuery("SELECT Bezeichnung, Beschreibung FROM leistung WHERE leistung.Postennummer = {$step['Postennummer']}")[0];
-					$element = new Leistung($speziefischerPosten['Bezeichnung'], $speziefischerPosten['Beschreibung']);
+					$speziefischerPosten = DBAccess::selectQuery("SELECT Bezeichnung, Beschreibung, Preis FROM leistung WHERE leistung.Postennummer = {$step['Postennummer']}")[0];
+					$element = new Leistung($speziefischerPosten['Bezeichnung'], $speziefischerPosten['Beschreibung'], $speziefischerPosten['Preis']);
 					break;
 			}
 			array_push($posten, $element);
