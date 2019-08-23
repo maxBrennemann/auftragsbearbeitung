@@ -24,7 +24,7 @@ if (0 > version_compare(PHP_VERSION, '5')) {
  *
  * @author firstname and lastname of author, <author@example.org>
  */
-require_once('class.Posten.php');
+require_once('Posten.php');
 
 /* user defined includes */
 // section -64--88--78-22--1785616:16c6bb0e419:-8000:0000000000000AB5-includes begin
@@ -94,6 +94,10 @@ class Produkt
         // section -64--88--78-22--dbaf7cb:16c8686fa2d:-8000:00000000000009A8 begin
         // section -64--88--78-22--dbaf7cb:16c8686fa2d:-8000:00000000000009A8 end
     }
+
+	public function getHTMLData() {
+		return "";
+	}
 
 } /* end of class Produkt */
 

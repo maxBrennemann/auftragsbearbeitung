@@ -14,6 +14,9 @@ require_once('classes/DBAccess.php');
 abstract class Posten {
 	
 	abstract protected function bekommePreis();
+	abstract protected function getHTMLData();
+
+	protected $postenTyp;
 
 	public static function bekommeAllePosten($auftragsnummer) {
 		$posten = array();
@@ -22,15 +25,19 @@ abstract class Posten {
 		foreach ($data as $step) {
 			$element;
 			switch($step['Posten']) {
-				case: 'zeit':
-					$speziefischerPosten = DBAccess::selectQuery("SELECT ZeitInMinuten, Stundenlohn FROM zeit WHERE zeit.Postennummer = posten.Postennummer")[0];
+				case 'zeit':
+					$speziefischerPosten = DBAccess::selectQuery("SELECT ZeitInMinuten, Stundenlohn FROM zeit WHERE zeit.Postennummer = {$step['Postennummer']}")[0];
 					$element = new Zeit($speziefischerPosten['Stundenlohn'], $speziefischerPosten['ZeitInMinuten']);
 					break;
-				case: 'produkt_posten':
-					$element = new ProduktPosten();
+				case 'produkt_posten':
+					$query = "SELECT Preis, Bezeichnung, Beschreibung, produkt_posten.Produktnummer FROM produkt_posten LEFT JOIN produkt ON ";
+					$query .= "produkt_posten.Produktnummer = produkt.Produktnummer WHERE produkt_posten.Postennummer = posten.Postennummer";
+					$speziefischerPosten = DBAccess::selectQuery($query)[0];
+					$element = new ProduktPosten($speziefischerPosten['Preis'], $speziefischerPosten['Bezeichnung'], $speziefischerPosten['Beschreibung']);
 					break;
-				case: 'leistung':
-					$elemen = new Leistung();
+				case 'leistung':
+					$speziefischerPosten = DBAccess::selectQuery("SELECT Bezeichnung, Beschreibung FROM leistung WHERE leistung.Postennummer = {$step['Postennummer']}")[0];
+					$element = new Leistung($speziefischerPosten['Bezeichnung'], $speziefischerPosten['Beschreibung']);
 					break;
 			}
 			array_push($posten, $element);

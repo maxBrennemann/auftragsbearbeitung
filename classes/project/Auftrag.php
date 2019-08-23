@@ -13,18 +13,18 @@ require_once('classes/DBAccess.php');
 require_once('classes/Link.php');
 
 /**
- * Klasse generiert im Zusammenhang mit der Template Datei auftrag.php die Übersicht für einen bestimmten Auftrag.
+ * Klasse generiert im Zusammenhang mit der Template Datei auftrag.php die Ãœbersicht fÃ¼r einen bestimmten Auftrag.
  * Dabei werden alle Auftragsposten und alle Bearbeitungsschritte aus der Datenbank geladen und als Objekte erstellt.
- * Diese können bearbeitet, ergänzt und abgearbeitet werden.
+ * Diese kÃ¶nnen bearbeitet, ergÃ¤nzt und abgearbeitet werden.
  */
 class Auftrag {
 
-    public $Auftragsnummer = null;
-	public $Auftragsbezeichnung = null;
-	public $Auftragsbeschreibung = null;
-	public $Auftragsposten = null;
-	public $Bearbeitungsschritte = array();
-	public $Auftragstyp = null;
+    private $Auftragsnummer = null;
+	private $Auftragsbezeichnung = null;
+	private $Auftragsbeschreibung = null;
+	private $Auftragsposten = null;
+	private $Bearbeitungsschritte = array();
+	private $Auftragstyp = null;
 
 	function __construct($auftragsnummer) {
 		if ($auftragsnummer > 0) {
@@ -44,6 +44,30 @@ class Auftrag {
 		}
 	}
 
+	public function getBearbeitungsschritte() {
+		$htmlData = "";
+		foreach ($this->Bearbeitungsschritte as $schritt) {
+			$htmlData .= $schritt->getHTMLData();
+		}
+		return $htmlData;
+	}
+
+	public function getAuftragsbeschreibung() {
+		return $this->Auftragsbeschreibung;
+	}
+
+	public function getAuftragsnummer() {
+		return $this->Auftragsnummer;
+	}
+
+	public function getAuftragsposten() {
+		$htmlData = "";
+		foreach ($this->Auftragsposten as $posten) {
+			$htmlData .= $posten->getHTMLData();
+		}
+		return $htmlData;
+	}
+
     public function bearbeitungsschrittHinzufuegen() {
         
     }
@@ -52,56 +76,20 @@ class Auftrag {
         
     }
 
-    /**
-     * Short description of method bearbeitunsschrittBearbeiten
-     *
-     * @access public
-     * @author firstname and lastname of author, <author@example.org>
-     * @return mixed
-     */
-    public function bearbeitunsschrittBearbeiten()
-    {
-        // section -64--88--78-22--dbaf7cb:16c8686fa2d:-8000:00000000000009E0 begin
-        // section -64--88--78-22--dbaf7cb:16c8686fa2d:-8000:00000000000009E0 end
+    public function bearbeitunsschrittBearbeiten() {
+		
     }
 
-    /**
-     * Short description of method postenHinzufuegen
-     *
-     * @access public
-     * @author firstname and lastname of author, <author@example.org>
-     * @return mixed
-     */
-    public function postenHinzufuegen()
-    {
-        // section -64--88--78-22--dbaf7cb:16c8686fa2d:-8000:00000000000009E2 begin
-        // section -64--88--78-22--dbaf7cb:16c8686fa2d:-8000:00000000000009E2 end
+    public function postenHinzufuegen() {
+        
     }
 
-    /**
-     * Short description of method postenEntfernen
-     *
-     * @access public
-     * @author firstname and lastname of author, <author@example.org>
-     * @return mixed
-     */
-    public function postenEntfernen()
-    {
-        // section -64--88--78-22--dbaf7cb:16c8686fa2d:-8000:00000000000009E4 begin
-        // section -64--88--78-22--dbaf7cb:16c8686fa2d:-8000:00000000000009E4 end
+    public function postenEntfernen() {
+        
     }
 
-    /**
-     * Short description of method schritteNachTypGenerieren
-     *
-     * @access public
-     * @author firstname and lastname of author, <author@example.org>
-     * @return mixed
-     */
-    public function schritteNachTypGenerieren()
-    {
-        // section -64--88--78-22-6f584299:16ca497f3f8:-8000:0000000000000A0A begin
-        // section -64--88--78-22-6f584299:16ca497f3f8:-8000:0000000000000A0A end
+    public function schritteNachTypGenerieren() {
+        
     }
 
 }

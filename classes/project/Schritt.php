@@ -35,6 +35,11 @@ class Schritt {
         
     }
 
+	public function getHTMLCode() {
+		$htmlCode = "<div><span>{$this->bezeichnung}</span><br><span>Datum: {$this->datum}</span><br><span>{$this->priority}</span><br><span>{$this->istErledigt}</span></div>";
+		return $htmlCode;
+	}
+
 }
 
 ?>
