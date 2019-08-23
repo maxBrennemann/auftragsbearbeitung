@@ -13,10 +13,10 @@ if (isset($_POST['getTable'])) {
 	}
 
 	FormGenerator::insertData($type, $getTableData);
-	$table = FormGenerator::createTable("produkt", true, true, "neuesProdukt");
+	$table = FormGenerator::createTable("produkt", true, true, "neuesProdukt", 10, true);
 	echo $table;
 } else {
-	$table = FormGenerator::createTable("produkt", true, true, "neuesProdukt");
+	$table = FormGenerator::createTable("produkt", true, true, "neuesProdukt", 10, true);
 	echo "<div id='tableContainer'>" . $table . "</div>";
 }
 ?>
