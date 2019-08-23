@@ -2,6 +2,7 @@
 
 require_once('classes/DBAccess.php');
 require_once('classes/Link.php');
+require_once('classes/project/Rechnung.php');
 
 class FillForm {
 
@@ -25,21 +26,40 @@ class FillForm {
 	}
 
 	public function fill($nummer) {
-		if ($this->form_type == "Auftrag") {
-			$auftrags_daten = DBAccess::selectQuery("SELECT * FROM auftrag LEFT JOIN kunde ON auftrag.Kundennummer = kunde.Kundennummer WHERE Auftragsnummer = {$nummer}");
-			if (!empty($auftrags_daten)) {
-				$auftrags_daten = $auftrags_daten[0];
+		switch ($this->form_type) {
+			case "Auftrag":
+				$auftrags_daten = DBAccess::selectQuery("SELECT * FROM auftrag LEFT JOIN kunde ON auftrag.Kundennummer = kunde.Kundennummer WHERE Auftragsnummer = {$nummer}");
+				$this->fillWithData($auftrags_daten);
+				break;
+			case "Rechnung":
+				$rechnungs_daten = DBAccess::selectQuery("SELECT * FROM auftrag LEFT JOIN kunde ON auftrag.Kundennummer = kunde.Kundennummer WHERE Auftragsnummer = {$nummer}");
 
-				for ($i = 0; $i < sizeof($this->keywords); $i++) {
-					$keyword = $this->keywords[$i]['keyword'];
-					$fieldname = $this->keywords[$i]['fieldname'];
-					if ($fieldname == null || $fieldname == "") {
-						$replacement = "";
-					} else {
-						$replacement = $auftrags_daten[$fieldname];
-					}
-					$this->file_content = str_replace($keyword, $replacement, $this->file_content);
+				$rechnung = new Rechnung($nummer);
+				$gesamtNetto = $rechnung->preisBerechnen();
+				$gesamtBrutto = $gesamtNetto * 1.19;
+				$gesamtMwSt = $gesamtBrutto - $gesamtNetto;
+
+				$additionalInfo = array("gesamtNetto" => $gesamtNetto, "gesamtBrutto" => $gesamtBrutto, "gesamtMwSt" => $gesamtMwSt);
+				$rechnungs_daten[0] = array_merge($rechnungs_daten[0], $additionalInfo);
+
+				$this->fillWithData($rechnungs_daten);
+				break;
+		}
+	}
+
+	private function fillWithData($daten) {
+		if (!empty($daten)) {
+			$daten = $daten[0];
+
+			for ($i = 0; $i < sizeof($this->keywords); $i++) {
+				$keyword = $this->keywords[$i]['keyword'];
+				$fieldname = $this->keywords[$i]['fieldname'];
+				if ($fieldname == null || $fieldname == "") {
+					$replacement = "";
+				} else {
+					$replacement = $daten[$fieldname];
 				}
+				$this->file_content = str_replace($keyword, $replacement, $this->file_content);
 			}
 		}
 	}
