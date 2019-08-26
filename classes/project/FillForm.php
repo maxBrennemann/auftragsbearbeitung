@@ -34,15 +34,18 @@ class FillForm {
 			case "Rechnung":
 				$rechnungs_daten = DBAccess::selectQuery("SELECT * FROM auftrag LEFT JOIN kunde ON auftrag.Kundennummer = kunde.Kundennummer WHERE Auftragsnummer = {$nummer}");
 
-				$rechnung = new Rechnung($nummer);
-				$gesamtNetto = $rechnung->preisBerechnen();
-				$gesamtBrutto = $gesamtNetto * 1.19;
-				$gesamtMwSt = $gesamtBrutto - $gesamtNetto;
+				if (!empty($rechnungs_daten)) {
+					$rechnung = new Rechnung($nummer);
+					$gesamtNetto = $rechnung->preisBerechnen();
+					$gesamtBrutto = $gesamtNetto * 1.19;
+					$gesamtMwSt = $gesamtBrutto - $gesamtNetto;
 
-				$additionalInfo = array("gesamtNetto" => $gesamtNetto, "gesamtBrutto" => $gesamtBrutto, "gesamtMwSt" => $gesamtMwSt);
-				$rechnungs_daten[0] = array_merge($rechnungs_daten[0], $additionalInfo);
+					$additionalInfo = array("gesamtNetto" => $gesamtNetto, "gesamtBrutto" => $gesamtBrutto, "gesamtMwSt" => $gesamtMwSt);
+					$rechnungs_daten[0] = array_merge($rechnungs_daten[0], $additionalInfo);
 
-				$this->fillWithData($rechnungs_daten);
+					$this->fillWithData($rechnungs_daten);
+				}
+				
 				break;
 		}
 	}
