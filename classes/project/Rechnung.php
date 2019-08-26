@@ -7,6 +7,7 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 }
 
 require_once('Auftrag.php');
+require_once('classes/DBAccess.php');
 
 class Rechnung extends Auftrag {
 
@@ -14,7 +15,13 @@ class Rechnung extends Auftrag {
 	private $summeMwSt = 0;
 	private $summe = 0;
 
-	function __construct($auftragsnummer) {
+	function __construct($rechnungsnummer) {
+		$auftragsnummer = DBAccess::selectQuery("SELECT Auftragsnummer FROM auftrag WHERE rechnungsnummer = {$rechnungsnummer}");
+		if (!empty($auftragsnummer)) {
+			$auftragsnummer = $auftragsnummer[0]['Auftragsnummer'];
+		} else {
+			trigger_error("Rechnungsnummer does not match to Auftragsnummer");
+		}
 		parent::__construct($auftragsnummer);
 	}
 

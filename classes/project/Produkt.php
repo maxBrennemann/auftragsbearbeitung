@@ -99,6 +99,10 @@ class Produkt
 		return "";
 	}
 
+	public function fillToArray($arr) {
+		return "";
+	}
+
 } /* end of class Produkt */
 
 ?>
