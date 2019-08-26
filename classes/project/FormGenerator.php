@@ -18,11 +18,16 @@ class FormGenerator {
 	private $type;
 	private $isOrderedBy;
 	private $whereCondition;
+	private $tableData;
 
 	function __construct($type, $isOrderedBy, $whereCondition) {
 		$this->type = $type;
-		$this->isOrderedBy = $orderBy;
+		$this->isOrderedBy = $isOrderedBy;
 		$this->whereCondition = $whereCondition;
+	}
+
+	public function setData($data) {
+		$this->tableData = $data;
 	}
 
 	private static function getColumnNames($type) {
@@ -44,8 +49,10 @@ class FormGenerator {
 	* $isRowLink creates a link for every first element of a row, the link is composed of the current page link and the getParameters showDetails and id, $isRowLink only works, if the page
 	* can show details for a specific value and if the first column represents a unique number
 	*/
-	private static function generateTable($type, $editable, $showData, $sendTo, $amountOfData, $isRowLink, $data = null) {
-		$column_names = self::getColumnNames($type);
+	private static function generateTable($type, $editable, $showData, $sendTo, $amountOfData, $isRowLink, $data = null, $column_names = null, $forceData = false) {
+		if ($column_names == null) {
+			$column_names = self::getColumnNames($type);
+		}
 
 		if($editable) {
 			$html_table = "<table border='1' class='allowAddingContent' data-type=${type} data-send-to=${sendTo}>";
@@ -56,7 +63,7 @@ class FormGenerator {
 		$html_table .= self::createTableHeader($column_names);
 		
 		if ($showData) {
-			if ($data == null) {
+			if ($data == null && $forceData == false) {
 				$data = self::executeSQLQuery($type, $amountOfData);
 			}
 
@@ -160,8 +167,17 @@ class FormGenerator {
 			return "";
 		} else {
 			$data = self::executeSQLQuery($this->type, $amountOfData, $this->isOrderedBy, $this->whereCondition);
-			return generateTable($this->type, $editable, $showData, $sendTo, $amountOfData, $isRowLink, $data);
+			return self::generateTable($this->type, $editable, $showData, $sendTo, $amountOfData, $isRowLink, $data);
 		}
+	}
+
+	/*
+	* creates a table by the passed data and the $column_names
+	* type is not needed, because the column names are passed in an array, the table is not editable;
+	* Last parameter of generateTable is true, so the use of the passed data is forced (no null pointer or something else);
+	*/
+	public function createTableByData($data, $column_names) {
+		return self::generateTable("", false, true, "", -1, false, $data, $column_names, true);
 	}
 
 }
