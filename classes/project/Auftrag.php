@@ -9,6 +9,7 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 require_once('Kunde.php');
 require_once('Schritt.php');
 require_once('Posten.php');
+require_once('FormGenerator.php');
 require_once('classes/DBAccess.php');
 require_once('classes/Link.php');
 
@@ -22,7 +23,7 @@ class Auftrag {
     protected $Auftragsnummer = null;
 	protected $Auftragsbezeichnung = null;
 	protected $Auftragsbeschreibung = null;
-	protected $Auftragsposten = null;
+	protected $Auftragsposten = array();
 	protected $Bearbeitungsschritte = array();
 	protected $Auftragstyp = null;
 
@@ -74,6 +75,22 @@ class Auftrag {
 			$price += $posten->bekommePreis();
 		}
 		return $price;
+	}
+
+	public function getHTMLTable() {
+		$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Beschreibung"), 
+				2 => array("COLUMN_NAME" => "Stundenlohn"), 3 => array("COLUMN_NAME" => "ZeitInMinuten"), 4 => array("COLUMN_NAME" => "Preis"), 
+				5 => array("COLUMN_NAME" => "Anzahl"), 6 => array("COLUMN_NAME" => "Einkaufspreis"));
+
+		$subArr = array("Bezeichnung" => "", "Beschreibung" => "", "Stundenlohn" => "", "ZeitInMinuten" => "", "Preis" => "", "Anzahl" => "", "Einkaufspreis" => "");
+		$data = array(sizeof($this->Auftragsposten));
+
+		for ($i = 0; $i < sizeof($this->Auftragsposten); $i++) {
+			$data[$i] = $this->Auftragsposten[$i]->fillToArray($subArr);
+		}
+
+		$form = new FormGenerator("", "", "");
+		return $form->createTableByData($data, $column_names);
 	}
 
     public function bearbeitungsschrittHinzufuegen() {

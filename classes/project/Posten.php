@@ -15,6 +15,7 @@ abstract class Posten {
 	
 	abstract protected function bekommePreis();
 	abstract protected function getHTMLData();
+	abstract protected function fillToArray($arr);
 
 	protected $postenTyp;
 
@@ -30,14 +31,14 @@ abstract class Posten {
 					$element = new Zeit($speziefischerPosten['Stundenlohn'], $speziefischerPosten['ZeitInMinuten']);
 					break;
 				case 'produkt_posten':
-					$query = "SELECT Preis, Bezeichnung, Beschreibung, produkt_posten.Produktnummer FROM produkt_posten LEFT JOIN produkt ON ";
+					$query = "SELECT Preis, Bezeichnung, Beschreibung, produkt_posten.Produktnummer, Anzahl, produkt.Einkaufspreis FROM produkt_posten LEFT JOIN produkt ON ";
 					$query .= "produkt_posten.Produktnummer = produkt.Produktnummer WHERE produkt_posten.Postennummer = posten.Postennummer";
 					$speziefischerPosten = DBAccess::selectQuery($query)[0];
-					$element = new ProduktPosten($speziefischerPosten['Preis'], $speziefischerPosten['Bezeichnung'], $speziefischerPosten['Beschreibung']);
+					$element = new ProduktPosten($speziefischerPosten['Preis'], $speziefischerPosten['Bezeichnung'], $speziefischerPosten['Beschreibung'], $speziefischerPosten['Anzahl'], $speziefischerPosten['Einkaufspreis']);
 					break;
 				case 'leistung':
-					$speziefischerPosten = DBAccess::selectQuery("SELECT Bezeichnung, Beschreibung, Preis FROM leistung WHERE leistung.Postennummer = {$step['Postennummer']}")[0];
-					$element = new Leistung($speziefischerPosten['Bezeichnung'], $speziefischerPosten['Beschreibung'], $speziefischerPosten['Preis']);
+					$speziefischerPosten = DBAccess::selectQuery("SELECT Bezeichnung, Beschreibung, Preis, Einkaufspreis FROM leistung WHERE leistung.Postennummer = {$step['Postennummer']}")[0];
+					$element = new Leistung($speziefischerPosten['Bezeichnung'], $speziefischerPosten['Beschreibung'], $speziefischerPosten['Preis'], $speziefischerPosten['Einkaufspreis']);
 					break;
 			}
 			array_push($posten, $element);
