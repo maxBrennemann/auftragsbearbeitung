@@ -15,16 +15,18 @@ function init() {
 function addableTables() {
     var allowAddingContent = document.getElementsByClassName("allowAddingContent");
 
-    tableName = allowAddingContent[0].dataset.type;
-    sendTo = allowAddingContent[0].dataset.sendTo;
-	
-	if(allowAddingContent.length != 0) {
-		var btn = document.createElement("button");
-        btn.addEventListener("click", addContent, false);
-		btn.innerHTML = "Add";
-		allowAddingContent[0].parentNode.appendChild(btn);
-		currTable = new Table(0);
-	}
+    if (allowAddingContent.length != 0) {
+        tableName = allowAddingContent[0].dataset.type;
+        sendTo = allowAddingContent[0].dataset.sendTo;
+
+        if (allowAddingContent.length != 0) {
+            var btn = document.createElement("button");
+            btn.addEventListener("click", addContent, false);
+            btn.innerHTML = "Add";
+            allowAddingContent[0].parentNode.appendChild(btn);
+            currTable = new Table(0);
+        }
+    }
 }
 
 function addContent() {
