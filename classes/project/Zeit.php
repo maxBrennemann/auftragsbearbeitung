@@ -26,6 +26,14 @@ class Zeit extends Posten {
 		return $html;
 	}
 
+	public function fillToArray($arr) {
+		$arr['Preis'] = $this->bekommePreis();
+		$arr['Stundenlohn'] = $this->Stundenlohn;
+		$arr['ZeitInMinuten'] = $this->ZeitInMinuten;
+
+		return $arr;
+	}
+
     public function bekommePreis() {
         return $this->kalkulierePreis();
     }
