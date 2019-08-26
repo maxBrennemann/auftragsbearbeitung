@@ -16,10 +16,10 @@
 ?>
 
 <?php if ($rechnungsnummer == 0) : ?>
-	<input type="number" min="1" oninput="document.getElementById('rechnungsLink').href = '<?=$rechnung?>?create=' + this.value;">
+	<p>Auftragsnummer: <input type="number" min="1" oninput="document.getElementById('rechnungsLink').href = '<?=$rechnung?>?create=' + this.value;"></p>
 	<a href="#" id="rechnungsLink">Rechnung generieren</a>
 <?php else: ?>
 	<div>Rechnung:</div>
-	<span id="rechnungsnummer"><?=$rechnung->getRechnungsnummer();?></span>
+	<span id="rechnungsnummer"><?=$rechnungsnummer;?></span>
 	<button onclick="print('rechnungsnummer', 'Rechnung');">Auftragsblatt generieren</button>
 <?php endif; ?>
