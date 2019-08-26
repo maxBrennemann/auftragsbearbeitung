@@ -13,18 +13,22 @@
 	<a href="#" id="auftragsLink">Auftrag anzeigen</a>
 <?php else: ?>
 	<div>
-		<span>Auftragsnummer: <?=$Auftrag->getAuftragsnummer()?></span>
-		<span>Beschreibung: <?=$Auftrag->getAuftragsbeschreibung()?></span>
-		<span>Schritte: <?=$Auftrag->getBearbeitungsschritte()?></span>
-		<span>Posten: <?=$Auftrag->getAuftragsposten()?></span>
+		<span>Auftragsnummer: <?=$Auftrag->getAuftragsnummer()?></span><br>
+		<span>Beschreibung: <?=$Auftrag->getAuftragsbeschreibung()?></span><br>
+		<span>Schritte: <?=$Auftrag->getBearbeitungsschritte()?></span><br>
+		<span>Posten: <?=$Auftrag->getHTMLTable()?></span>
 	</div>
-	<div>
+	<br>
+	<div id="newPosten" style="display: none;">
 		<select id="selectPosten">
 			<option value="zeit">Zeit</option>
 			<option value="leistung">Leistung</option>
 			<option value="produkt">Produkt</option>
 		</select>
+		<button onclick="getSelection()">Posten hinzufügen</button>
+		<div id="addPosten"></div>
 		<div id="selectProdukt"></div>
-		<button>Posten hinzufügen</button>
+		<div id="generalPosten"></div>
 	</div>
+	<button>Neuen Posten hinzufügen</button>
 <?php endif; ?>
