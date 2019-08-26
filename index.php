@@ -4,8 +4,16 @@
 	require_once('settings.php');
 	require_once('classes/DBAccess.php');
 	require_once('classes/Link.php');
+	require_once('classes/project/FormGenerator.php');
 	$isArticle = false;
 	
+	/*
+	* SQL Statements
+	*/
+	$sqlStatements = array(
+		0 => "SELECT posten.Postennummer, leistung.Bezeichnung, leistung.Beschreibung, leistung.Preis, zeit.ZeitInMinuten, zeit.Stundenlohn FROM posten INNER JOIN leistung ON posten.Postennummer = leistung.Postennummer INNER JOIN zeit ON posten.Postennummer = zeit.Postennummer WHERE istStandard = 1;"
+	);
+
 	/*
 	* Before: page was submitted via $_GET paramter, but now the REQUEST_URI is read;
 	* $url is splitted into the REQUEST_URI and the parameter part
@@ -34,6 +42,27 @@
 				$filled = new FillForm(($_POST['file']));
 				$filled->fill($_POST['nr']);
 				$filled->show();
+			}
+		} else if ($_POST['getReason'] == "createTable") {
+			$type = $_POST['type'];
+			
+			if (strcmp($type, "custom") == 0) {
+				$data = DBAccess::selectQuery($sqlStatements[0]);
+				$column_names = array(0 => array("COLUMN_NAME" => "Postennummer"), 1 => array("COLUMN_NAME" => "Bezeichnung"), 
+						2 => array("COLUMN_NAME" => "Beschreibung"), 3 => array("COLUMN_NAME" => "Preis"), 
+						4 => array("COLUMN_NAME" => "ZeitInMinuten"), 5 => array("COLUMN_NAME" => "Stundenlohn"));
+				$table = new FormGenerator($type, "", "");
+				echo $table->createTableByData($data, $column_names);
+			} else {
+				$column_names = DBAccess::selectQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'${type}'");
+
+				$showData = true;
+				if (isset($_POST['showData'])) {
+					$showData = false;
+				}
+
+				$table = FormGenerator::createTable($type, true, $showData, "");
+				echo $table;
 			}
 		} else {
 			$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
