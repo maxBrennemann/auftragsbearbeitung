@@ -7,61 +7,101 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 }
 
 require_once('Auftrag.php');
+require_once('classes/DBAccess.php');
 
-/**
- * Short description of class Kunde
- *
- * @access public
- * @author firstname and lastname of author, <author@example.org>
- */
 class Kunde {
 
-    public $Kundennummer = null;
-	public $Vorname = null;
-	public $Nachname = null;
-	public $Firmenname = null;
-	public $Straße = null;
-	public $Hausnummer = null;
+    private $kundennummer = null;
+	private $vorname = null;
+	private $nachname = null;
+	private $firmenname = null;
+	private $strasse = null;
+	private $hausnummer = null;
+    private $postleitzahl = null;
+    private $ort = null;
+    private $email = null;
+    private $telefonFestnetz = null;
+    private $telefonMobil = null;
 
-    /**
-     * Short description of attribute Postleitzahl
-     *
-     * @access public
-     * @var Integer
-     */
-    public $Postleitzahl = null;
+	function __construct($kundennummer) {
+		$data = DBAccess::selectQuery("SELECT * FROM kunde WHERE kundennummer = {$kundennummer}");
+		if (!empty($data)) {
+			$data = $data[0];
+			$this->kundennummer = $data['Kundennummer'];
+			$this->vorname = $data['Vorname'];
+			$this->nachname = $data['Nachname'];
+			$this->firmenname = $data['Firmenname'];
+			$this->strasse = $data['StraÃŸe'];
+			$this->hausnummer = $data['Hausnummer'];
+			$this->postleitzahl = $data['Postleitzahl'];
+			$this->ort = $data['Ort'];
+			$this->email = $data['Email'];
+			$this->telefonFestnetz = $data['TelefonFestnetz'];
+			$this->telefonMobil = $data['TelefonMobil'];
+		}
+	}
 
-    /**
-     * Short description of attribute Ort
-     *
-     * @access public
-     * @var String
-     */
-    public $Ort = null;
+	public function getKundennummer() {
+		return $this->kundennummer;
+	}
 
-    /**
-     * Short description of attribute Email
-     *
-     * @access public
-     * @var String
-     */
-    public $Email = null;
+	public function getVorname() {
+		return $this->vorname;
+	}
 
-    // --- OPERATIONS ---
+	public function getNachname() {
+		return $this->nachname;
+	}
 
-    /**
-     * Short description of method neuerAuftrag
-     *
-     * @access public
-     * @author firstname and lastname of author, <author@example.org>
-     * @return mixed
-     */
-    public function neuerAuftrag()
-    {
-        // section -64--88--78-22--1785616:16c6bb0e419:-8000:0000000000000A83 begin
-        // section -64--88--78-22--1785616:16c6bb0e419:-8000:0000000000000A83 end
-    }
+	public function getFirmenname() {
+		return $this->firmenname;
+	}
 
-} /* end of class Kunde */
+	public function getStrasse() {
+		return $this->strasse;
+	}
+
+	public function getHausnummer() {
+		return $this->hausnummer;
+	}
+
+	public function getPostleitzahl() {
+		return $this->postleitzahl;
+	}
+
+	public function getOrt() {
+		return $this->ort;
+	}
+
+	public function getEmail() {
+		return $this->email;
+	}
+
+	public function getTelefonFestnetz() {
+		return $this->telefonFestnetz;
+	}
+
+	public function getTelefonMobil() {
+		return $this->telefonMobil;
+	}
+
+	public function getFarben() {
+		$farben = DBAccess::selectQuery("SELECT Farbe, Notiz, Auftragsnummer FROM farben WHERE Kundennummer = {$this->kundennummer} ");
+		$column_names = array(0 => array("COLUMN_NAME" => "Farbe"), 1 => array("COLUMN_NAME" => "Notiz"), 
+				2 => array("COLUMN_NAME" => "Auftragsnummer"));
+
+		$form = new FormGenerator("", "", "");
+		return $form->createTableByData($farben, $column_names);
+	}
+
+	public function getAuftraege() {
+		$auftraege = DBAccess::selectQuery("SELECT * FROM Auftrag WHERE Kundennummer = {$this->kundennummer} ");
+		$column_names = DBAccess::selectQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'Auftrag'");
+
+		$form = new FormGenerator("", "", "");
+		return $form->createTableByData($auftraege, $column_names);
+	}
+
+}
 
 ?>
