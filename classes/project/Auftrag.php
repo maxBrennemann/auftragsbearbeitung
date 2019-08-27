@@ -53,6 +53,13 @@ class Auftrag {
 		return $htmlData;
 	}
 
+	public function getBearbeitungsschritteAsTable() {
+		$data = DBAccess::selectQuery("SELECT * FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer}");
+		$column_names = DBAccess::selectQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'schritte'");
+		$form = new FormGenerator("", "", "");
+		return $form->createTableByData($data, $column_names);
+	}
+
 	public function getAuftragsbeschreibung() {
 		return $this->Auftragsbeschreibung;
 	}
