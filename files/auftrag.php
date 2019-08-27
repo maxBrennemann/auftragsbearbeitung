@@ -15,7 +15,7 @@
 	<div>
 		<span>Auftragsnummer: <?=$Auftrag->getAuftragsnummer()?></span><br>
 		<span>Beschreibung: <?=$Auftrag->getAuftragsbeschreibung()?></span><br>
-		<span>Schritte: <?=$Auftrag->getBearbeitungsschritte()?></span><br>
+		<span>Schritte: <?=$Auftrag->getBearbeitungsschritteAsTable()?></span><br>
 		<span>Posten: <?=$Auftrag->getHTMLTable()?></span>
 	</div>
 	<br>
@@ -31,4 +31,6 @@
 		<div id="generalPosten"></div>
 	</div>
 	<button>Neuen Posten hinzufügen</button>
+	<button>Neuen Bearbeitungsschritt hinzufügen</button>
+	<div id="bearbeitungsschritte"></div>
 <?php endif; ?>
