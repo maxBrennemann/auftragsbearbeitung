@@ -1,6 +1,7 @@
 let buttons = document.getElementsByTagName("button");
 buttons[0].addEventListener("click", getSelection, false);
 buttons[1].addEventListener("click", function () { showSelection(event.target); }, false);
+buttons[2].addEventListener("click", addBearbeitungsschritte, false);
 
 function getSelection() {
     var e = document.getElementById("selectPosten");
@@ -23,5 +24,13 @@ function showSelection(element) {
     getGeneralPosten = new AjaxCall("getReason=createTable&type=custom", "POST", window.location.href);
     getGeneralPosten.makeAjaxCall(function (responseTable) {
         document.getElementById("generalPosten").innerHTML = responseTable;
+    });
+}
+
+function addBearbeitungsschritte() {
+    bearbeitungsschritte = new AjaxCall("getReason=createTable&type=schritte", "POST", window.location.href);
+    bearbeitungsschritte.makeAjaxCall(function (responseTable) {
+        document.getElementById("bearbeitungsschritte").innerHTML = responseTable;
+        addableTables();
     });
 }
