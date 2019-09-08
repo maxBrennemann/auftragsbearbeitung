@@ -27,10 +27,7 @@
 		</select>
 		<button onclick="getSelection()">Posten hinzufügen</button>
 		<div id="addPosten"></div>
-		<div id="selectProdukt">
-			<span>Produkt suchen: <input type="text"><button>&#x1F50E;</button></span>
-			<div id="searchResults"></div>
-		</div>
+		<div id="selectProdukt"></div>
 		<div id="generalPosten"></div>
 	</div>
 	<button>Neuen Posten hinzufügen</button>

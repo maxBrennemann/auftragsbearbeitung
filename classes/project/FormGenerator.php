@@ -19,7 +19,6 @@ class FormGenerator {
 	private $isOrderedBy;
 	private $whereCondition;
 	private $tableData;
-	private $dataTypes = null;
 
 	function __construct($type, $isOrderedBy, $whereCondition) {
 		$this->type = $type;
@@ -32,7 +31,7 @@ class FormGenerator {
 	}
 
 	private static function getColumnNames($type) {
-		return DBAccess::selectColumnNames($type);
+		return DBAccess::selectQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'${type}'");
 	}
 
 	/*
@@ -133,14 +132,14 @@ class FormGenerator {
 	}
 
 	public static function insertData($type, $data) {
-		$column_names = DBAccess::selectColumnNames($type);
+		$column_names = DBAccess::selectQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'${type}'");
 
 		$input_string = "INSERT INTO ${type} (";
 		$columns = "";
 		$values = "VALUES (";
 		for ($i = 0; $i < sizeof($column_names); $i++) {
 			$columns = $columns . $column_names[$i]["COLUMN_NAME"];
-			$values = $values . "'" . $data[$i] . "'";
+			$values = $values . $data[$i];
 			if ($i < sizeof($column_names) - 1) {
 				$columns = $columns . ", ";
 				$values = $values . ", ";

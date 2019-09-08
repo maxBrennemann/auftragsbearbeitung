@@ -64,28 +64,6 @@
 				$table = FormGenerator::createTable($type, true, $showData, "");
 				echo $table;
 			}
-		} else if ($_POST['getReason'] == "search") {
-			require_once('classes/project/Search.php');
-			$stype = $_POST['stype'];
-			echo Search::getSearchTable($_POST['query'], $stype);
-		} else if ($_POST['getReason'] == "createAuftrag") {
-				$bez = $_POST['bez'];
-				$bes = $_POST['bes'];
-				$typ = $_POST['typ'];
-				$ter = $_POST['ter'];
-				$ang = $_POST['ang'];
-				$kdn = $_POST['kdn'];
-
-				$maxAuftragsnr = (int) DBAccess::selectQuery("SELECT MAX(Auftragsnummer) FROM auftrag")[0]['MAX(Auftragsnummer)'];
-				$maxAuftragsnr++;
-				$dat = date("Y-m-d");
-
-				$insertQuery = "INSERT INTO auftrag (Auftragsnummer, Kundennummer, Auftragsbezeichnung, Auftragsbeschreibung, Auftragstyp, Datum, Termin, AngenommenDurch) ";
-				$insertQuery .= "VALUES ($maxAuftragsnr, $kdn, '$bez', '$bes', '$typ', '$dat', '$ter', '$ang')";
-
-				DBAccess::insertQuery($insertQuery);
-
-				echo Link::getPageLink("auftrag") . "?id=$maxAuftragsnr";
 		} else {
 			$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 			$result = DBAccess::selectQuery($selectQuery);
