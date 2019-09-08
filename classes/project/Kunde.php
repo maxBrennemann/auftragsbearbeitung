@@ -96,7 +96,7 @@ class Kunde {
 
 	public function getAuftraege() {
 		$auftraege = DBAccess::selectQuery("SELECT * FROM Auftrag WHERE Kundennummer = {$this->kundennummer} ");
-		$column_names = DBAccess::selectQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'Auftrag'");
+		$column_names = DBAccess::selectColumnNames("auftrag");
 
 		$form = new FormGenerator("", "", "");
 		return $form->createTableByData($auftraege, $column_names);
