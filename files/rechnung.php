@@ -21,5 +21,5 @@
 <?php else: ?>
 	<div>Rechnung:</div>
 	<span id="rechnungsnummer"><?=$rechnungsnummer;?></span>
-	<button onclick="print('rechnungsnummer', 'Rechnung');">Auftragsblatt generieren</button>
+	<button onclick="print('rechnungsnummer', 'Rechnung');">Rechnungsblatt generieren</button>
 <?php endif; ?>
