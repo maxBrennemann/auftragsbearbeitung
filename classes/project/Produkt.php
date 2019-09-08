@@ -2,32 +2,97 @@
 
 error_reporting(E_ALL);
 
+/**
+ * unbenanntesModell - class.Produkt.php
+ *
+ * $Id$
+ *
+ * This file is part of unbenanntesModell.
+ *
+ * Automatically generated on 20.08.2019, 12:32:17 with ArgoUML PHP module 
+ * (last revised $Date: 2010-01-12 20:14:42 +0100 (Tue, 12 Jan 2010) $)
+ *
+ * @author firstname and lastname of author, <author@example.org>
+ */
+
 if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
 }
 
-require_once('classes/DBAccess.php');
+/**
+ * include Posten
+ *
+ * @author firstname and lastname of author, <author@example.org>
+ */
+require_once('Posten.php');
 
-class Produkt { 
-    
-    private $preis = null;
-    private $produktnummer = null;
-    private $bezeichnung = null;
-    private $beschreibung = null;
+/* user defined includes */
+// section -64--88--78-22--1785616:16c6bb0e419:-8000:0000000000000AB5-includes begin
+// section -64--88--78-22--1785616:16c6bb0e419:-8000:0000000000000AB5-includes end
 
-	function __construct($produktnummer) {
-		$data = DBAccess::selectQuery("SELECT * FROM produkt WHERE Produktnummer = {$produktnummer}");
-		if (!empty($data)) {
-			$data = $data[0];
-			$this->preis = $data['Preis'];
-			$this->produktnummer = $data['Produktnummer'];
-			$this->bezeichnung = $data['Bezeichnung'];
-			$this->beschreibung = $data['Beschreibung'];
-		}
-	}
+/* user defined constants */
+// section -64--88--78-22--1785616:16c6bb0e419:-8000:0000000000000AB5-constants begin
+// section -64--88--78-22--1785616:16c6bb0e419:-8000:0000000000000AB5-constants end
 
-    public function bekommePreis() {
-        
+/**
+ * Short description of class Produkt
+ *
+ * @access public
+ * @author firstname and lastname of author, <author@example.org>
+ */
+class Produkt
+    extends Posten
+{
+    // --- ASSOCIATIONS ---
+
+
+    // --- ATTRIBUTES ---
+
+    /**
+     * Short description of attribute Preis
+     *
+     * @access public
+     * @var Integer
+     */
+    public $Preis = null;
+
+    /**
+     * Short description of attribute Produktnummer
+     *
+     * @access public
+     * @var Integer
+     */
+    public $Produktnummer = null;
+
+    /**
+     * Short description of attribute Bezeichnung
+     *
+     * @access public
+     * @var String
+     */
+    public $Bezeichnung = null;
+
+    /**
+     * Short description of attribute Beschreibung
+     *
+     * @access public
+     * @var String
+     */
+    public $Beschreibung = null;
+
+    // --- OPERATIONS ---
+
+    /**
+     * Short description of method bekommePreis
+     *
+     * @access public
+     * @author firstname and lastname of author, <author@example.org>
+     * @return mixed
+     */
+    public function bekommePreis()
+    {
+        // section -64--88--78-22--dbaf7cb:16c8686fa2d:-8000:00000000000009A8 begin
+        // section -64--88--78-22--dbaf7cb:16c8686fa2d:-8000:00000000000009A8 end
     }
 
 	public function getHTMLData() {
@@ -38,54 +103,6 @@ class Produkt {
 		return "";
 	}
 
-	public static function getSearchTable($searchQuery) {
-		$productIds = self::searchInProducts($searchQuery);
-		$query = "";
-	}
-
-	public static function searchInProducts($searchQuery) {
-		$products = DBAccess::selectQuery("SELECT Nummer, Bezeichnung, Beschreibung FROM produkt");
-		$mostSimilarProducts = array();
-
-		foreach ($products as $product) {
-			self::calculateSimilarity($mostSimilarProducts, $searchQuery, $product['Bezeichnung'], $product['Nummer']);
-			self::calculateSimilarity($mostSimilarProducts, $searchQuery, $product['Beschreibung'], $product['Nummer']);
-		}
-
-		self::sortByPercentage($mostSimilarProducts);
-		$mostSimilarProducts = self::filterByPercentage($mostSimilarProducts);
-
-		return array_slice($mostSimilarProducts, 0, 10);
-	}
-
-	private static function sortByPercentage(&$mostSimilarProducts) {
-		function cmp($a, $b) {
-			return ($a[1] < $b[1]) ? -1 : (($a[1] > $b[1]) ? 1 : 0);
-		}
-
-		usort($mostSimilarProducts, "cmp");
-	}
-
-	private static function filterByPercentage($mostSimilarProducts) {
-		$filteredArray = array();
-		foreach ($mostSimilarProducts as $product) {
-			if (end($filteredArray)[0] == $product[0]) {
-				if ($product[1] > end($filteredArray)[1]) {
-					$filteredArray[sizeof($filteredArray) - 1] = $product;
-				}
-			} else {
-				array_push($filteredArray, $product);
-			}
-		}
-
-		return $filteredArray;
-	}
-
-	private static function calculateSimilarity(&$mostSimilarProducts, $searchQuery, $text, $nummer) {
-		similar_text($searchQuery, $text, $percentage);
-		array_push($mostSimilarProducts, array($nummer, $percentage));
-	}
-
-}
+} /* end of class Produkt */
 
 ?>

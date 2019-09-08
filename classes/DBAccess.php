@@ -28,11 +28,6 @@ class DBAccess {
 		
 		return $result;
 	}
-
-	public static function selectColumnNames($table) {
-		$query = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{$table}' AND TABLE_SCHEMA = '" . DATABASE . "'";
-		return self::selectQuery($query);
-	}
 	
 	public static function updateQuery($query) {
 		self::createConnection();
