@@ -5,6 +5,7 @@
 	require_once('classes/DBAccess.php');
 	require_once('classes/Link.php');
 	require_once('classes/project/FormGenerator.php');
+	require_once('classes/project/Posten.php');
 	$isArticle = false;
 	
 	/*
@@ -86,6 +87,13 @@
 				DBAccess::insertQuery($insertQuery);
 
 				echo Link::getPageLink("auftrag") . "?id=$maxAuftragsnr";
+		} else if ($_POST['getReason'] == "insTime") {
+			$data = array();
+			$data['ZeitInMinuten'] = $_POST['time'];
+			$data['Stundenlohn'] = $_POST['wage'];
+			$data['Beschreibung'] = $_POST['descr'];
+			$data['Auftragsnummer'] = $_POST['auftrag'];
+			Posten::insertPosten("zeit", $data);
 		} else {
 			$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 			$result = DBAccess::selectQuery($selectQuery);
