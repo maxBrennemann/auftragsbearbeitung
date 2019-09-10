@@ -27,8 +27,8 @@ abstract class Posten {
 			$element;
 			switch($step['Posten']) {
 				case 'zeit':
-					$speziefischerPosten = DBAccess::selectQuery("SELECT ZeitInMinuten, Stundenlohn FROM zeit WHERE zeit.Postennummer = {$step['Postennummer']}")[0];
-					$element = new Zeit($speziefischerPosten['Stundenlohn'], $speziefischerPosten['ZeitInMinuten']);
+					$speziefischerPosten = DBAccess::selectQuery("SELECT ZeitInMinuten, Stundenlohn, Beschreibung FROM zeit WHERE zeit.Postennummer = {$step['Postennummer']}")[0];
+					$element = new Zeit($speziefischerPosten['Stundenlohn'], $speziefischerPosten['ZeitInMinuten'], $speziefischerPosten['Beschreibung']);
 					break;
 				case 'produkt_posten':
 					$query = "SELECT Preis, Bezeichnung, Beschreibung, produkt_posten.Produktnummer, Anzahl, produkt.Einkaufspreis FROM produkt_posten LEFT JOIN produkt ON ";
@@ -45,6 +45,24 @@ abstract class Posten {
 		}
 
 		return $posten;
+	}
+
+	public static function insertPosten($type, $data) {
+		$auftragsnummer = $data['Auftragsnummer'];
+		$postennummer = (int) DBAccess::selectQuery("SELECT MAX(Postennummer) FROM posten")[0]['MAX(Postennummer)'];
+		$postennummer++;
+
+		switch ($type) {
+			case "zeit":
+				$zeit = $data['ZeitInMinuten'];
+				$lohn = $data['Stundenlohn'];
+				$desc = $data['Beschreibung'];
+				DBAccess::insertQuery("INSERT INTO posten (Postennummer, Auftragsnummer, Posten) VALUES ($postennummer, $auftragsnummer, '$type')");
+				DBAccess::insertQuery("INSERT INTO zeit (Postennummer, ZeitInMinuten, Stundenlohn, Beschreibung) VALUES ($postennummer, $zeit, $lohn, '$desc')");
+				break;
+			case "leistung":
+				break;
+		}
 	}
 
 }
