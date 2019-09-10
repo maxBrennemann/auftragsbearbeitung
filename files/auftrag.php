@@ -4,7 +4,12 @@
 	$auftragsId = -1;
 	if (isset($_GET['id'])) {
 		$auftragsId = $_GET['id'];
-		$Auftrag = new Auftrag($auftragsId);
+		try {
+			$Auftrag = new Auftrag($auftragsId);
+		} catch (Exception $e){
+			echo $e->getMessage();
+			$auftragsId = -1;
+		}
 	}
 ?>
 

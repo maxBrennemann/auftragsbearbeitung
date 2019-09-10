@@ -38,6 +38,8 @@ class Kunde {
 			$this->email = $data['Email'];
 			$this->telefonFestnetz = $data['TelefonFestnetz'];
 			$this->telefonMobil = $data['TelefonMobil'];
+		} else {
+			throw new Exception("Kundennummer " . $kundennummer . " existiert nicht oder kann nicht gefunden werden");
 		}
 	}
 

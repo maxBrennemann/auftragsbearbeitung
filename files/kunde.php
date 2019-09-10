@@ -4,7 +4,12 @@
 	$kundenid = -1;
 	if (isset($_GET['id'])) {
 		$kundenid = $_GET['id'];
-		$kunde = new Kunde($kundenid);
+		try {
+			$kunde = new Kunde($kundenid);
+		} catch (Exception $e){
+			echo $e->getMessage();
+			$kundenid = -1;
+		}
 	}
 ?>
 
