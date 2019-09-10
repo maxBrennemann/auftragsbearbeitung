@@ -1,0 +1,34 @@
+﻿main:
+	* input Felder -> onenter event ✔
+	* anstehende Aufgaben und Bearbeitungsschritte anzeigen
+
+neuer-kunde:
+	* Kundennummer automatisch eintragen
+	* verschiedene Ansprechpartner unterstützen
+	* Ansprache (Herr / Frau) implementieren
+	* nur manche Felder notwendig machen
+	* Suchfeld
+
+kunde:
+	* Fehlermeldung, wenn Kundennummer nicht vorhanden ✔
+	* Button zum Auftrag erstellen
+	* Links zu den Aufträgen
+	* Aufträge durchsuchen
+
+neuer-auftrag:
+	* Suchergebnisse anklickbar, damit Kundennummer übernommen werden kann
+	* doppelte Ergebnisse richtig herausfiltern
+	* Auftragsblatt generieren vervollständigen
+
+auftrag:
+	* Fehlermeldung, wenn Auftragsnummer nicht vorhanden ✔
+	* beim Hinzufügen mancher Posten sollen automatisch Bearbeitungsschritte generiert werden
+	* Suche fixen
+	* Produkte überarbeiten
+
+Bearbeitungsschritte:
+	* automatisch generieren für manche Arten von Posten
+	* abarbeitbar machen
+
+Leistung:
+	* Verschiedene Leistungen implementieren und Formeln für den Preis hinterlegen
