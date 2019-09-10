@@ -32,16 +32,20 @@ class Auftrag {
 			$this->Auftragsnummer = $auftragsnummer;
 			$data = DBAccess::selectQuery("SELECT * FROM `auftrag` WHERE Auftragsnummer = {$auftragsnummer}");
 
-			$this->Auftragsbeschreibung = $data[0]['Auftragsbeschreibung'];
-			$this->Auftragsbezeichnung = $data[0]['Auftragsbezeichnung'];
+			if (!empty($data)) {
+				$this->Auftragsbeschreibung = $data[0]['Auftragsbeschreibung'];
+				$this->Auftragsbezeichnung = $data[0]['Auftragsbezeichnung'];
 
-			$data = DBAccess::selectQuery("SELECT Schrittnummer, Bezeichnung, Datum, Priority, istErledigt FROM schritte WHERE Auftragsnummer = {$auftragsnummer}");
-			foreach ($data as $step) {
-				$element = new Schritt($step['Auftragsnummer'], $step['Schrittnummer'], $step['Bezeichnung'], $step['Datum'], $step['Priority'], $step['istErledigt']);
-				array_push($this->Bearbeitungsschritte, $element);
+				$data = DBAccess::selectQuery("SELECT Schrittnummer, Bezeichnung, Datum, Priority, istErledigt FROM schritte WHERE Auftragsnummer = {$auftragsnummer}");
+				foreach ($data as $step) {
+					$element = new Schritt($step['Auftragsnummer'], $step['Schrittnummer'], $step['Bezeichnung'], $step['Datum'], $step['Priority'], $step['istErledigt']);
+					array_push($this->Bearbeitungsschritte, $element);
+				}
+
+				$this->Auftragsposten = Posten::bekommeAllePosten($auftragsnummer);
+			} else {
+				throw new Exception("Auftragsnummer " . $auftragsnummer . " existiert nicht oder kann nicht gefunden werden<br>");
 			}
-
-			$this->Auftragsposten = Posten::bekommeAllePosten($auftragsnummer);
 		}
 	}
 
