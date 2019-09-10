@@ -1,20 +1,13 @@
-let buttons = document.getElementsByTagName("button");
-buttons[0].addEventListener("click", getSelection, false);
-buttons[1].addEventListener("click", performSearch, false);
-buttons[2].addEventListener("click", function () { showSelection(event.target); }, false);
-buttons[3].addEventListener("click", addBearbeitungsschritte, false);
-
-function getSelection() {
+function getSelections() {
     var e = document.getElementById("selectPosten");
     var strUser = e.options[e.selectedIndex].value;
 
-    if (strUser != "produkt") {
-        var insertPosten = new AjaxCall(`getReason=createTable&type=${strUser}&showData=false`, "POST", window.location.href);
-        insertPosten.makeAjaxCall(function (responseTable) {
-            document.getElementById("addPosten").innerHTML = responseTable;
-
-            addableTables();
-        });
+    if (strUser == "zeit") {
+        document.getElementById("addPostenZeit").style.display = "inline";
+        document.getElementById("addPostenLeistung").style.display = "none";
+    } else if (strUser == "leistung") {
+        document.getElementById("addPostenLeistung").style.display = "inline";
+        document.getElementById("addPostenZeit").style.display = "none";
     } else if (strUser == "produkt") {
         var showProducts = new AjaxCall(`getReason=createTable&type=produkt`, "POST", window.location.href);
         showProducts.makeAjaxCall(function (responseTable) {
@@ -50,5 +43,17 @@ function performSearch(e) {
     search.makeAjaxCall(function (responseTable) {
         document.getElementById("searchResults").innerHTML = responseTable;
         addableTables();
+    });
+}
+
+function addTime() {
+    var time = document.getElementById("time").value;
+    var wage = document.getElementById("wage").value;
+    var descr = document.getElementById("descr").value;
+    var auftrag = new URL(window.location.href).searchParams.get("id");
+    var add = new AjaxCall(`getReason=insTime&time=${time}&wage=${wage}&descr=${descr}&auftrag=${auftrag}`, "POST", window.location.href);
+    add.makeAjaxCall(function (response) {
+        console.log(response);
+        location.reload();
     });
 }
