@@ -1,7 +1,7 @@
 <?php if (isset($_GET['kdnr'])) : ?>
 	<span>Kundennummer: <?=$_GET['kdnr']?></span><br>
 	<span>Auftragsbezeichnung: <input id="bezeichnung"></span><br>
-	<span>Auftragsbeschreibung: <input id="beschreibung"></span><br>
+	<span>Auftragsbeschreibung: <textarea id="beschreibung"></textarea></span><br>
 	<span>Auftragstyp: <input id="typ"></span><br>
 	<span>Termin: <input id="termin" type="date"></span><br>
 	<span>Angenommen durch: <input id="angenommen"></span><br>
