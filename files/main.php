@@ -16,7 +16,7 @@
 
 <div>
 	<ul>
-		<li><a href="<?=$neuerKunde?>">Neuen Kunden erstelen</a></li>
+		<li><a href="<?=$neuerKunde?>">Neuen Kunden erstellen</a></li>
 		<li><input type="number" min="1" oninput="document.getElementById('kundenLink').href = '<?=$kunde?>?id=' + this.value;"><a href="#" id="kundenLink">Kunde anzeigen</a></li>
 		<li><a href="<?=$neuerAuftrag?>">Neuen Auftrag erstellen</a></li>
 		<li><a href="<?=$rechnung?>">Neue Rechnung erstellen</a></li>
