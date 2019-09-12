@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 require_once('classes/project/FormGenerator.php');
 
 $getTableData = array();
@@ -20,3 +20,24 @@ if (isset($_POST['getTable'])) {
 	echo "<div id='tableContainer'>" . $table . "</div>";
 }
 ?>
+
+<? if (!isset($_POST['getTable'])): ?>
+	<h3>Ansprechpartner</h3>
+	<div id="ansprechpartnerTable" style="display: none">
+		<table>
+			<tr>
+				<th>Vorname</th>
+				<th>Nachname</th>
+				<th>Email</th>
+				<th>Durchwahl</th>
+			</tr>
+			<tr>
+				<td class="ansprTableCont" contenteditable="true" data-col="vorname"></td>
+				<td class="ansprTableCont" contenteditable="true" data-col="nachname"></td>
+				<td class="ansprTableCont" contenteditable="true" data-col="email"></td>
+				<td class="ansprTableCont" contenteditable="true" data-col="durchwahl"></td>
+			</tr>
+		</table>
+	</div>
+	<button onclick="addDataToDB()">Hinzufügen</button>
+<? endif; ?>
