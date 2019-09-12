@@ -68,7 +68,11 @@
 		} else if ($_POST['getReason'] == "search") {
 			require_once('classes/project/Search.php');
 			$stype = $_POST['stype'];
-			echo Search::getSearchTable($_POST['query'], $stype);
+			if (isset($_POST['urlid']) && $_POST['urlid'] == "1") {
+				echo Search::getSearchTable($_POST['query'], $stype, Link::getPageLink("neuer-auftrag"));
+			} else {
+				echo Search::getSearchTable($_POST['query'], $stype);
+			}
 		} else if ($_POST['getReason'] == "createAuftrag") {
 				$bez = $_POST['bez'];
 				$bes = $_POST['bes'];
@@ -94,6 +98,13 @@
 			$data['Beschreibung'] = $_POST['descr'];
 			$data['Auftragsnummer'] = $_POST['auftrag'];
 			Posten::insertPosten("zeit", $data);
+		} else if ($_POST['getReason'] == "insertAnspr") {
+			$vorname = $_POST['vorname'];
+			$nachname = $_POST['nachname'];
+			$email = $_POST['email'];
+			$durchwahl = $_POST['durchwahl'];
+			$nextId = $_POST['nextId'];
+			DBAccess::insetQuery("INSERT INTO ansprechpartner (Kundennummer, Vorname, Nachname, Email, Durchwahl) VALUES($nextId, '$vorname', '$nachname', '$email', '$durchwahl')");
 		} else {
 			$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 			$result = DBAccess::selectQuery($selectQuery);
