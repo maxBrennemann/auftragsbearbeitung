@@ -1,5 +1,19 @@
-<?php if (isset($_GET['kdnr'])) : ?>
-	<span>Kundennummer: <?=$_GET['kdnr']?></span><br>
+<?php 
+	$kdnr = -1;
+	if (isset($_GET['kdnr'])) {
+		$kdnr = $_GET['kdnr'];
+	}
+
+	if (isset($_GET['showDetails'])) {
+		if (isset($_GET['id'])) {
+			$kdnr = $_GET['id'];
+		}
+	}
+?>
+
+
+<?php if ($kdnr != -1) : ?>
+	<span>Kundennummer: <?=$kdnr?></span><br>
 	<span>Auftragsbezeichnung: <input id="bezeichnung"></span><br>
 	<span>Auftragsbeschreibung: <textarea id="beschreibung"></textarea></span><br>
 	<span>Auftragstyp: <input id="typ"></span><br>
