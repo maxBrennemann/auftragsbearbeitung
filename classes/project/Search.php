@@ -4,7 +4,7 @@ require_once('classes/DBAccess.php');
 
 class Search {
 	
-	public static function getSearchTable($searchQuery, $searchType) {
+	public static function getSearchTable($searchQuery, $searchType, $retUrl = null) {
 		$ids = array();
 		$query = "";
 		$columnNames = array();
@@ -28,6 +28,9 @@ class Search {
 		}
 		$data = array_reverse($data);
 		$f = new FormGenerator("", "", "");
+		if ($retUrl != null) {
+			return $f->createTableByDataRowLink($data, $columnNames, $searchType, $retUrl);
+		}
 		return $f->createTableByData($data, $columnNames);
 	}
 
