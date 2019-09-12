@@ -50,7 +50,7 @@ class FormGenerator {
 	* $isRowLink creates a link for every first element of a row, the link is composed of the current page link and the getParameters showDetails and id, $isRowLink only works, if the page
 	* can show details for a specific value and if the first column represents a unique number
 	*/
-	private static function generateTable($type, $editable, $showData, $sendTo, $amountOfData, $isRowLink, $data = null, $column_names = null, $forceData = false) {
+	private static function generateTable($type, $editable, $showData, $sendTo, $amountOfData, $isRowLink, $data = null, $column_names = null, $forceData = false, $retUrl = null) {
 		if ($column_names == null) {
 			$column_names = self::getColumnNames($type);
 		}
@@ -72,8 +72,26 @@ class FormGenerator {
 				$html_table = $html_table . "<tr>";
 				for ($n = 0; $n < sizeof($column_names); $n++) {
 					$showColumnData = $data[$i][$column_names[$n]["COLUMN_NAME"]];
+
+					/*
+					* Exception for Kunde table, Anrede will be replaced for value 0 by "Herr" and for value 1 by "Frau";
+					*/
+					if ($column_names[$n]["COLUMN_NAME"] == "Anrede") {
+						if ($showColumnData == "0") {
+							$showColumnData = "Herr";
+						} else {
+							$showColumnData = "Frau";
+						}
+					}
+
 					if ($n == 0 && $isRowLink) {
-						$html_table = $html_table . "<td><a href='{$_SERVER['REQUEST_URI']}?showDetails={$type}&id={$showColumnData}'>{$showColumnData}</a></td>";
+						$url = $_SERVER['REQUEST_URI'];
+						$url = strtok($url, '?');
+						if ($retUrl != null) {
+							$html_table = $html_table . "<td><a href='{$retUrl}?showDetails={$type}&id={$showColumnData}'>{$showColumnData}</a></td>";
+						} else {
+							$html_table = $html_table . "<td><a href='{$url}?showDetails={$type}&id={$showColumnData}'>{$showColumnData}</a></td>";
+						}
 					} else {
 						$html_table = $html_table . "<td>{$showColumnData}</td>";
 					}
@@ -179,6 +197,10 @@ class FormGenerator {
 	*/
 	public function createTableByData($data, $column_names) {
 		return self::generateTable("", false, true, "", -1, false, $data, $column_names, true);
+	}
+
+	public function createTableByDataRowLink($data, $column_names, $type, $retUrl) {
+		return self::generateTable($type, false, true, "", -1, true, $data, $column_names, true, $retUrl);
 	}
 
 }
