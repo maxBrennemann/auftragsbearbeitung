@@ -3,20 +3,20 @@
 	* anstehende Aufgaben und Bearbeitungsschritte anzeigen
 
 neuer-kunde:
-	* Kundennummer automatisch eintragen
+	* Kundennummer automatisch eintragen ✔
 	* verschiedene Ansprechpartner unterstützen
-	* Ansprache (Herr / Frau) implementieren
+	* Ansprache (Herr / Frau) implementieren ✔
 	* nur manche Felder notwendig machen
 	* Suchfeld
 
 kunde:
 	* Fehlermeldung, wenn Kundennummer nicht vorhanden ✔
-	* Button zum Auftrag erstellen
-	* Links zu den Aufträgen
+	* Button zum Auftrag erstellen ✔
+	* Links zu den Aufträgen ✔
 	* Aufträge durchsuchen
 
 neuer-auftrag:
-	* Suchergebnisse anklickbar, damit Kundennummer übernommen werden kann
+	* Suchergebnisse anklickbar, damit Kundennummer übernommen werden kann ✔
 	* doppelte Ergebnisse richtig herausfiltern
 	* Auftragsblatt generieren vervollständigen
 
