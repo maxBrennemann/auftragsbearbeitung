@@ -43,8 +43,17 @@ function addContent() {
                 content[i].style.opacity = "70%";
                 isChecked = false;
             }
-			data += tableHead[i].innerHTML + "=" + content[i].innerHTML;
-			i != content.length - 1 ? data += "&" : 1;
+            /*
+             * Ausnahme für Anrede
+             */
+            if (tableHead[i].innerHTML == "Anrede") {
+                var e = document.getElementById("selectAnrede");
+                var anrede = e.options[e.selectedIndex].value;
+                data += tableHead[i].innerHTML + "=" + anrede;
+            } else {
+                data += tableHead[i].innerHTML + "=" + content[i].innerHTML;
+            }
+            i != content.length - 1 ? data += "&" : 1;
         }
         if (isChecked) {
             let sendToDB = new AjaxCall(data, "POST", window.location.href);
