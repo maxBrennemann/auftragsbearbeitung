@@ -101,7 +101,11 @@ class Kunde {
 		$column_names = DBAccess::selectColumnNames("auftrag");
 
 		$form = new FormGenerator("", "", "");
-		return $form->createTableByData($auftraege, $column_names);
+		return $form->createTableByDataRowLink($auftraege, $column_names, "auftrag", Link::getPageLink("auftrag"));
+	}
+
+	public function getAnsprechpartner() {
+		return "";
 	}
 
 }
