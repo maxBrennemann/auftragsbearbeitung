@@ -1,1 +1,52 @@
-﻿
+﻿/* general style */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.9em;
+}
+
+/* button */
+button {
+    border: 1px solid black;
+    border-radius: 6px;
+    background-color: white;
+    padding: 5px;
+    margin: 5px;
+}
+
+/* table style */
+table {
+    border: 1px solid black;
+    border-radius: 6px;
+    margin: 5px;
+    background-color: black;
+}
+
+tr {
+    background-color: white;
+}
+
+th {
+    padding: 4px;
+    margin: 1px;
+}
+
+td {
+    padding: 4px;
+    margin: 1px;
+}
+
+tr:first-child th:first-child {
+    border-radius: 6px 0 0 0;
+}
+
+tr:first-child th:last-child {
+    border-radius: 0 6px 0 0;
+}
+
+tr:last-child td:first-child {
+    border-radius: 0 0 0 6px;
+}
+
+tr:last-child td:last-child {
+    border-radius: 0 0 6px 0;
+}
