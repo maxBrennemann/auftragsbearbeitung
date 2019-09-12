@@ -2,6 +2,17 @@
 	require_once('classes/project/Kunde.php');
 
 	$kundenid = -1;
+
+	if (isset($_GET['showDetails'])) {
+		$showDetails = $_GET['showDetails'];
+		if ($showDetails == "auftrag") {
+			if (isset($_GET['id'])) {
+				$id = $_GET['id'];
+				header("Location: " . Link::getPageLink('auftrag') . "?id={$id}");
+			}
+		}
+	}
+
 	if (isset($_GET['id'])) {
 		$kundenid = $_GET['id'];
 		try {
@@ -34,4 +45,6 @@
 	</div>
 	<div id="showFarben"><?=$kunde->getFarben()?></div>
 	<div id="showAuftraege"><?=$kunde->getAuftraege()?></div>
+	<div id="showAnsprechpartner"><?=$kunde->getAnsprechpartner()?></div>
+	<a href="<?=Link::getPageLink("neuer-auftrag")?>?kdnr=<?=$kundenid?>">Neuen Auftrag erstellen</a>
 <?php endif; ?>
