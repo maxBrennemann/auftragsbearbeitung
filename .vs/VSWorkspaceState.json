@@ -5,8 +5,9 @@
     "\\classes\\project",
     "\\files",
     "\\files\\res",
+    "\\files\\res\\css",
     "\\files\\res\\js"
   ],
-  "SelectedNode": "\\files\\main.php",
+  "SelectedNode": "\\files\\neuerAuftrag.php",
   "PreviewInSolutionExplorer": false
 }
