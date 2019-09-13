@@ -4,7 +4,7 @@
 
 neuer-kunde:
 	* Kundennummer automatisch eintragen ✔
-	* verschiedene Ansprechpartner unterstützen
+	* verschiedene Ansprechpartner unterstützen ✔
 	* Ansprache (Herr / Frau) implementieren ✔
 	* nur manche Felder notwendig machen
 	* Suchfeld
@@ -17,7 +17,7 @@ kunde:
 
 neuer-auftrag:
 	* Suchergebnisse anklickbar, damit Kundennummer übernommen werden kann ✔
-	* doppelte Ergebnisse richtig herausfiltern
+	* doppelte Ergebnisse richtig herausfiltern ✔
 	* Auftragsblatt generieren vervollständigen
 
 auftrag:

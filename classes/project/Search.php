@@ -73,14 +73,25 @@ class Search {
 	}
 
 	private static function filterByPercentage($mostSimilar) {
+		function inArray($search, $arr) {
+			foreach ($arr as $el) {
+				if ($el[0] == $search) {
+					return true;
+				}
+			}
+			return false;
+		}
+
 		$filteredArray = array();
 		foreach ($mostSimilar as $product) {
-			if (end($filteredArray)[0] == $product[0]) {
-				if ($product[1] > end($filteredArray)[1]) {
-					$filteredArray[sizeof($filteredArray) - 1] = $product;
+			if ((float) $product[1] > 20) {
+				if (inArray($product[0], $filteredArray)) {
+					if ($product[1] >= end($filteredArray)[1]) {
+						$filteredArray[sizeof($filteredArray) - 1] = $product;
+					}
+				} else {
+					array_push($filteredArray, $product);
 				}
-			} else {
-				array_push($filteredArray, $product);
 			}
 		}
 
