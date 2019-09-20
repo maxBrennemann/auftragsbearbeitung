@@ -1,5 +1,6 @@
 <?php 
 	require_once('classes/project/Auftrag.php');
+	require_once('classes/DBAccess.php');
 
 	$auftragsId = -1;
 	if (isset($_GET['id'])) {
@@ -11,6 +12,8 @@
 			$auftragsId = -1;
 		}
 	}
+
+	$leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer FROM leistung");
 ?>
 
 <?php if ($auftragsId == -1) : ?>
@@ -19,12 +22,14 @@
 <?php else: ?>
 	<a href="<?=Link::getPageLink("kunde")?>?id=<?=$Auftrag->getKundennummer()?>">Kunde <span><?=$Auftrag->getKundennummer()?></span> zeigen</a>
 	<div>
-		<span>Auftragsnummer: <?=$Auftrag->getAuftragsnummer()?></span><br>
-		<span>Beschreibung: <?=$Auftrag->getAuftragsbeschreibung()?></span><br>
-		<span>Schritte: <?=$Auftrag->getBearbeitungsschritteAsTable()?></span><br>
-		<span>Posten: <?=$Auftrag->getHTMLTable()?></span>
+		<span><u>Auftragsnummer:</u> <?=$Auftrag->getAuftragsnummer()?></span><br>
+		<span><u>Beschreibung:</u><br><?=$Auftrag->getAuftragsbeschreibung()?></span><br>
+		<span><u>Schritte:</u> <?=$Auftrag->getBearbeitungsschritteAsTable()?></span><br>
+		<span><u>Posten:</u> <?=$Auftrag->getHTMLTable()?></span>
+		<span><u>Gesamtpreis:</u> <?=$Auftrag->preisBerechnen()?>€</span>
 	</div>
 	<br>
+	<hr>
 	<div id="newPosten" style="display: none;">
 		<select id="selectPosten">
 			<option value="zeit">Zeit</option>
@@ -41,15 +46,14 @@
 			</div>
 			<div id="addPostenLeistung" style="display: none">
 				<select id="selectLeistung">
-					<option value="aufkleber">Aufkleber</option>
-					<option value="plane">Plane</option>
-					<option value="digitaldruck">Digitaldruck</option>
+					<?php foreach ($leistungen as $leistung): ?>
+						<option value="<?=$leistung['Nummer']?>"><?=$leistung['Bezeichnung']?></option>
+					<?php endforeach; ?>
 				</select>
 				<br>
-				<span><input id="bez">Bezeichnung</span><br>
-				<span><input id="bes">Beschreibung</span><br>
-				<span><input id="pre" value="0">Preis</span><br>
-				<span><input id="ekp" value="0">Einkaufspreis</span><br>
+				<span><input id="bes"> Beschreibung</span><br>
+				<span><input id="ekp" value="0"> Einkaufspreis</span><br>
+				<span><input id="pre" value="0"> Speziefischer Preis</span><br>
 				<button onclick="addLeistung()">Hinzufügen</button>
 			</div>
 		</div>
