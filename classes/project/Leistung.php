@@ -7,6 +7,7 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 }
 
 require_once('Posten.php');
+require_once('classes/DBAccess.php');
 
 class Leistung extends Posten {
     
@@ -16,11 +17,12 @@ class Leistung extends Posten {
 	private $beschreibung = null;
 	protected $postenTyp = "leistung";
 
-	function __construct($bezeichnung, $beschreibung, $preis, $einkaufspreis) {
+	function __construct($leistungsnummer, $beschreibung, $speziefischerPreis, $einkaufspreis) {
 		$this->bezeichnung = $bezeichnung;
-		$this->beschreibung = $beschreibung;
-		$this->preis = (int) $preis;
+		$this->preis = (int) $speziefischerPreis;
 		$this->einkaufspreis = (int) $einkaufspreis;
+
+		$this->bezeichnung = DBAccess::selectQuery("SELECT Bezeichnung FROM leistung WHERE Nummer = $leistungsnummer")["Bezeichnung"];
 	}
 
 	public function getHTMLData() {
