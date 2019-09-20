@@ -4,6 +4,11 @@ body {
     font-size: 0.9em;
 }
 
+/* a */
+a:visited {
+    color: blue;
+}
+
 /* button */
 button {
     border: 1px solid black;
