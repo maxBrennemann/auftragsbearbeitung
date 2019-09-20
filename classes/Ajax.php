@@ -3,7 +3,7 @@
 class Ajax {
 	
 	private static $insertIntoAuftrag = "INSERT INTO auftrag (Auftragsnummer, Kundennummer, Auftragsbezeichnung, Auftragsbeschreibung, Auftragstyp, Datum, Termin, AngenommenDurch)";
-	private static $sqlStatements = "SELECT posten.Postennummer, leistung.Bezeichnung, leistung.Beschreibung, leistung.Preis, zeit.ZeitInMinuten, zeit.Stundenlohn FROM posten INNER JOIN leistung ON posten.Postennummer = leistung.Postennummer INNER JOIN zeit ON posten.Postennummer = zeit.Postennummer WHERE istStandard = 1;";
+	private static $sqlStatements = "SELECT posten.Postennummer, leistung.Bezeichnung, leistung_posten.Beschreibung, leistung_posten.SpeziefischerPreis, zeit.ZeitInMinuten, zeit.Stundenlohn FROM posten INNER JOIN leistung_posten ON posten.Postennummer = leistung_posten.Postennummer INNER JOIN zeit ON posten.Postennummer = zeit.Postennummer INNER JOIN leistung ON leistung_posten.Leistungsnummer = leistung.Nummer WHERE istStandard = 1;";
 
 	public static function manageRequests($reason) {
 		switch ($reason) {
