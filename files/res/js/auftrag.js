@@ -57,3 +57,7 @@ function addTime() {
         location.reload();
     });
 }
+
+function addLeistung() {
+    
+}
