@@ -10,6 +10,7 @@
 	$diagramme =		Link::getPageLink("diagramme");
 	$auftragAnzeigen =	Link::getPageLink("auftrag");
 	$kunde =			Link::getPageLink("kunde");
+	$leistungen =		Link::getPageLink("leistungen");
 
 	$showAktuelleSchritte = Aufgabenliste::aktuelleSchritteAlsTabelleAusgeben();
 ?>
@@ -34,6 +35,7 @@
 			<a href="#" id="auftragsLink">Auftrag anzeigen</a>
 		</li>
 		<li><a href="<?=$diagramme?>">Diagramme und Auswertungen</a></li>
+		<li><a href="<?=$leistungen?>">Leistungen</a></li>
 	</ul>
 
 	<div>
