@@ -18,11 +18,16 @@ class Leistung extends Posten {
 	protected $postenTyp = "leistung";
 
 	function __construct($leistungsnummer, $beschreibung, $speziefischerPreis, $einkaufspreis) {
-		$this->bezeichnung = $bezeichnung;
+		$this->beschreibung = $beschreibung;
 		$this->preis = (int) $speziefischerPreis;
 		$this->einkaufspreis = (int) $einkaufspreis;
 
-		$this->bezeichnung = DBAccess::selectQuery("SELECT Bezeichnung FROM leistung WHERE Nummer = $leistungsnummer")["Bezeichnung"];
+		$data =  DBAccess::selectQuery("SELECT Bezeichnung FROM leistung WHERE Nummer = $leistungsnummer");
+		if ($data == null) {
+			$this->bezeichnung = "";
+		} else {
+			$this->bezeichnung =  $data[0]["Bezeichnung"];
+		}
 	}
 
 	public function getHTMLData() {
