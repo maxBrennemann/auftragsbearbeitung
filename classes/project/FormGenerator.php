@@ -15,11 +15,11 @@ if (0 > version_compare(PHP_VERSION, '5')) {
  */
 class FormGenerator {
 	
-	private $type;
-	private $isOrderedBy;
-	private $whereCondition;
-	private $tableData;
-	private $dataTypes = null;
+	protected $type;
+	protected $isOrderedBy;
+	protected $whereCondition;
+	protected $tableData;
+	protected $dataTypes = null;
 
 	function __construct($type, $isOrderedBy, $whereCondition) {
 		$this->type = $type;
@@ -73,29 +73,8 @@ class FormGenerator {
 				for ($n = 0; $n < sizeof($column_names); $n++) {
 					$showColumnData = $data[$i][$column_names[$n]["COLUMN_NAME"]];
 
-					/*
-					* Exception for Kunde table, Anrede will be replaced for value 0 by "Herr" and for value 1 by "Frau";
-					*/
-					if ($column_names[$n]["COLUMN_NAME"] == "Anrede") {
-						if ($showColumnData == "0") {
-							$showColumnData = "Herr";
-						} else {
-							$showColumnData = "Frau";
-						}
-					}
-
-					if ($n == 0 && $isRowLink) {
-						$url = $_SERVER['REQUEST_URI'];
-						$url = strtok($url, '?');
-						if ($retUrl != null) {
-							$html_table = $html_table . "<td><a href='{$retUrl}?showDetails={$type}&id={$showColumnData}'>{$showColumnData}</a></td>";
-						} else {
-							$html_table = $html_table . "<td><a href='{$url}?showDetails={$type}&id={$showColumnData}'>{$showColumnData}</a></td>";
-						}
-					} else {
-						$html_table = $html_table . "<td>{$showColumnData}</td>";
-					}
-					
+					$addToTable = self::createRow($showColumnData, $retUrl, $column_names[$n]["COLUMN_NAME"], $n, $isRowLink, $type);
+					$html_table .= $addToTable;
 				}
 				$html_table = $html_table . "</tr>";
 			}
@@ -134,6 +113,35 @@ class FormGenerator {
 		}
 
 		return $empty_row . "</tr>";
+	}
+
+	private static function createRow($showColumnData, $retUrl, $columnName, $n, $isRowLink, $type) {
+		$html = "";
+
+		/*
+		 * Exception for Kunde table, Anrede will be replaced for value 0 by "Herr" and for value 1 by "Frau";
+		*/
+		if ($columnName == "Anrede") {
+			if ($showColumnData == "0") {
+				$showColumnData = "Herr";
+			} else {
+				$showColumnData = "Frau";
+			}
+		}
+
+		if ($n == 0 && $isRowLink) {
+			$url = $_SERVER['REQUEST_URI'];
+			$url = strtok($url, '?');
+			if ($retUrl != null) {
+				$html = $html . "<td><a href='{$retUrl}?showDetails={$type}&id={$showColumnData}'>{$showColumnData}</a></td>";
+			} else {
+				$html = $html . "<td><a href='{$url}?showDetails={$type}&id={$showColumnData}'>{$showColumnData}</a></td>";
+			}
+		} else {
+			$html = $html . "<td>{$showColumnData}</td>";
+		}
+
+		return $html;
 	}
 
 	/*
