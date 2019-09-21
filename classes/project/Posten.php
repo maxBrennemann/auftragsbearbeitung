@@ -37,7 +37,7 @@ abstract class Posten {
 					$element = new ProduktPosten($speziefischerPosten['Preis'], $speziefischerPosten['Bezeichnung'], $speziefischerPosten['Beschreibung'], $speziefischerPosten['Anzahl'], $speziefischerPosten['Einkaufspreis']);
 					break;
 				case 'leistung':
-					$speziefischerPosten = DBAccess::selectQuery("SELECT Leistungsnummer, Beschreibung, SpeziefischerPreis, Einkaufspreis FROM leistung_posten WHERE leistung.Postennummer = {$step['Postennummer']}")[0];
+					$speziefischerPosten = DBAccess::selectQuery("SELECT Leistungsnummer, Beschreibung, SpeziefischerPreis, Einkaufspreis FROM leistung_posten WHERE leistung_posten.Postennummer = {$step['Postennummer']}")[0];
 					$element = new Leistung($speziefischerPosten['Leistungsnummer'], $speziefischerPosten['Beschreibung'], $speziefischerPosten['SpeziefischerPreis'], $speziefischerPosten['Einkaufspreis']);
 					break;
 			}
@@ -61,6 +61,12 @@ abstract class Posten {
 				DBAccess::insertQuery("INSERT INTO zeit (Postennummer, ZeitInMinuten, Stundenlohn, Beschreibung) VALUES ($postennummer, $zeit, $lohn, '$desc')");
 				break;
 			case "leistung":
+				$lei = $data['Leistungsnummer'];
+				$bes = $data['Beschreibung'];
+				$ekp = $data['Einkaufspreis'];
+				$pre = $data['SpeziefischerPreis'];
+				DBAccess::insertQuery("INSERT INTO posten (Postennummer, Auftragsnummer, Posten) VALUES ($postennummer, $auftragsnummer, '$type')");
+				DBAccess::insertQuery("INSERT INTO leistung_posten (Leistungsnummer, Postennummer, Beschreibung, Einkaufspreis, SpeziefischerPreis) VALUES($lei, $postennummer, '$bes', '$ekp', '$pre')");
 				break;
 		}
 	}
