@@ -87,6 +87,18 @@ class Ajax {
 				$nextId = $_POST['nextId'];
 				DBAccess::insetQuery("INSERT INTO ansprechpartner (Kundennummer, Vorname, Nachname, Email, Durchwahl) VALUES($nextId, '$vorname', '$nachname', '$email', '$durchwahl')");
 				break;
+			case "test":
+				var_dump(unserialize($_SESSION['data']));
+				break;
+			case "insertLeistung":
+				$data = array();
+				$data['Leistungsnummer'] = $_POST['lei'];
+				$data['Beschreibung'] = $_POST['bes'];
+				$data['Einkaufspreis'] = $_POST['ekp'];
+				$data['SpeziefischerPreis'] = $_POST['pre'];
+				$data['Auftragsnummer'] = $_POST['auftrag'];
+				Posten::insertPosten("leistung", $data);
+				break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
