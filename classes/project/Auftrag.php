@@ -10,6 +10,7 @@ require_once('Kunde.php');
 require_once('Schritt.php');
 require_once('Posten.php');
 require_once('FormGenerator.php');
+require_once('InteractiveFormGenerator.php');
 require_once('classes/DBAccess.php');
 require_once('classes/Link.php');
 
@@ -92,7 +93,7 @@ class Auftrag {
 		return DBAccess::selectQuery("SELECT Kundennummer FROM auftrag WHERE auftragsnummer = {$this->Auftragsnummer}")[0]['Kundennummer'];
 	}
 
-	public function getHTMLTable() {
+	public function getAuftragspostenAsTable() {
 		$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Beschreibung"), 
 				2 => array("COLUMN_NAME" => "Stundenlohn"), 3 => array("COLUMN_NAME" => "ZeitInMinuten"), 4 => array("COLUMN_NAME" => "Preis"), 
 				5 => array("COLUMN_NAME" => "Anzahl"), 6 => array("COLUMN_NAME" => "Einkaufspreis"));
@@ -104,8 +105,8 @@ class Auftrag {
 			$data[$i] = $this->Auftragsposten[$i]->fillToArray($subArr);
 		}
 
-		$form = new FormGenerator("", "", "");
-		return $form->createTableByData($data, $column_names);
+		$form = new InteractiveFormGenerator("");
+		return $form->create($data, $column_names);
 	}
 
     public function bearbeitungsschrittHinzufuegen() {
