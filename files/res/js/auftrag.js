@@ -59,5 +59,22 @@ function addTime() {
 }
 
 function addLeistung() {
-    
+    var e = document.getElementById("selectLeistung");
+    var lei = e.options[e.selectedIndex].value;
+    var bes = document.getElementById("bes").value;
+    var ekp = document.getElementById("ekp").value;
+    var pre = document.getElementById("pre").value;
+    var auftrag = new URL(window.location.href).searchParams.get("id");
+    var add = new AjaxCall(`getReason=insertLeistung&lei=${lei}&bes=${bes}&ekp=${ekp}&pre=${pre}&auftrag=${auftrag}`, "POST", window.location.href);
+    add.makeAjaxCall(function (response) {
+        console.log(response);
+    });
 }
+
+function deleteRow() {
+    var add = new AjaxCall(`getReason=test`, "POST", window.location.href);
+    add.makeAjaxCall(function (response) {
+        console.log(response);
+    });
+}
+
