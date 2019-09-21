@@ -25,7 +25,7 @@
 		<span><u>Auftragsnummer:</u> <?=$Auftrag->getAuftragsnummer()?></span><br>
 		<span><u>Beschreibung:</u><br><?=$Auftrag->getAuftragsbeschreibung()?></span><br>
 		<span><u>Schritte:</u> <?=$Auftrag->getBearbeitungsschritteAsTable()?></span><br>
-		<span><u>Posten:</u> <?=$Auftrag->getHTMLTable()?></span>
+		<span><u>Posten:</u> <?=$Auftrag->getAuftragspostenAsTable()?></span>
 		<span><u>Gesamtpreis:</u> <?=$Auftrag->preisBerechnen()?>€</span>
 	</div>
 	<br>
