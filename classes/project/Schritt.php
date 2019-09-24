@@ -40,6 +40,15 @@ class Schritt {
 		return $htmlCode;
 	}
 
+	public static function insertStep($data) {
+		$bez = $data['Bezeichnung'];
+		$dat = $data['Datum'];
+		$pri = $data['Priority'];
+		$auf = $data['Auftragsnummer'];
+
+		DBAccess::insertQuery("INSERT INTO schritte (Auftragsnummer, istAllgemein, Bezeichnung, Datum, Priority, istErledigt) VALUES ($auf, 1, '$bez', '$dat', $pri, 1)");
+	}
+
 }
 
 ?>
