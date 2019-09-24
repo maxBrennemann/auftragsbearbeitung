@@ -1,6 +1,7 @@
-<?php
+﻿<?php
 	require_once('classes/Link.php');
 	require_once('classes/project/Aufgabenliste.php');
+	require_once('classes/project/Auftrag.php');
 	
 	$neuerKunde   =		Link::getPageLink("neuer-kunde");
 	$neuerAuftrag =		Link::getPageLink("neuer-auftrag");
@@ -13,6 +14,17 @@
 	$leistungen =		Link::getPageLink("leistungen");
 
 	$showAktuelleSchritte = Aufgabenliste::aktuelleSchritteAlsTabelleAusgeben();
+	$showOffeneAuftraege = Auftrag::getOffeneAuftraege();
+
+	if (isset($_GET['showDetails'])) {
+		$showDetails = $_GET['showDetails'];
+		if ($showDetails == "auftrag") {
+			if (isset($_GET['id'])) {
+				$id = $_GET['id'];
+				header("Location: " . Link::getPageLink('auftrag') . "?id={$id}");
+			}
+		}
+	}
 ?>
 
 <div>
@@ -40,5 +52,6 @@
 
 	<div>
 		<?=$showAktuelleSchritte?>
+		<p>Offene Aufträge:</p><?=$showOffeneAuftraege?>
 	</div>
 </div>
