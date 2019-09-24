@@ -1,4 +1,4 @@
-function getSelections() {
+﻿function getSelections() {
     var e = document.getElementById("selectPosten");
     var strUser = e.options[e.selectedIndex].value;
 
@@ -29,10 +29,27 @@ function showSelection(element) {
 }
 
 function addBearbeitungsschritte() {
-    var bearbeitungsschritte = new AjaxCall("getReason=createTable&type=schritte", "POST", window.location.href);
+    var bearbeitungsschritte = new AjaxCall("getReason=addStep&addClass=steps", "POST", window.location.href);
     bearbeitungsschritte.makeAjaxCall(function (responseTable) {
         document.getElementById("bearbeitungsschritte").innerHTML = responseTable;
-        addableTables();
+
+        var btn = document.createElement("button");
+        btn.innerHTML = "Hinzufügen";
+        btn.addEventListener("click", function () {
+            var tableData = document.getElementsByClassName("steps");
+            var steps = [];
+            for (var i = 0; i < tableData.length; i++) {
+                steps.push(tableData[i].innerHTML);
+            }
+            var auftrag = new URL(window.location.href).searchParams.get("id");
+            var add = new AjaxCall(`getReason=insertStep&bez=${steps[0]}&prio=${steps[1]}&auftrag=${auftrag}`, "POST", window.location.href);
+            add.makeAjaxCall(function (response) {
+                console.log(response);
+                location.reload();
+            });
+        }, false);
+
+        document.getElementById("bearbeitungsschritte").appendChild(btn);
     });
 }
 
@@ -78,3 +95,28 @@ function deleteRow() {
     });
 }
 
+function radio(val) {
+    console.log(val);
+    var stepTable = document.getElementById("stepTable");
+    var auftrag = new URL(window.location.href).searchParams.get("id");
+    var params = "";
+    if (val == "show") {
+        params = `getReason=getAllSteps&auftrag=${auftrag}`;
+    } else if (val == "hide") {
+        params = `getReason=getOpenSteps&auftrag=${auftrag}`;
+    }
+    
+    var add = new AjaxCall(params, "POST", window.location.href);
+    add.makeAjaxCall(function (response) {
+        stepTable.innerHTML = response;
+    });
+}
+
+function updateIsDone(input) {
+    console.log(input);
+    var auftrag = new URL(window.location.href).searchParams.get("id");
+    var update = new AjaxCall(`getReason=setTo&auftrag=${auftrag}&row=${input}`, "POST", window.location.href);
+    update.makeAjaxCall(function (response) {
+        console.log(response);
+    });
+}
