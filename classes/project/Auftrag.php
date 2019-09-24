@@ -37,7 +37,7 @@ class Auftrag {
 				$this->Auftragsbeschreibung = $data[0]['Auftragsbeschreibung'];
 				$this->Auftragsbezeichnung = $data[0]['Auftragsbezeichnung'];
 
-				$data = DBAccess::selectQuery("SELECT Schrittnummer, Bezeichnung, Datum, Priority, istErledigt FROM schritte WHERE Auftragsnummer = {$auftragsnummer}");
+				$data = DBAccess::selectQuery("SELECT * FROM schritte WHERE Auftragsnummer = {$auftragsnummer}");
 				foreach ($data as $step) {
 					$element = new Schritt($step['Auftragsnummer'], $step['Schrittnummer'], $step['Bezeichnung'], $step['Datum'], $step['Priority'], $step['istErledigt']);
 					array_push($this->Bearbeitungsschritte, $element);
@@ -59,10 +59,27 @@ class Auftrag {
 	}
 
 	public function getBearbeitungsschritteAsTable() {
-		$data = DBAccess::selectQuery("SELECT * FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer}");
-		$column_names = DBAccess::selectQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'schritte'");
-		$form = new FormGenerator("", "", "");
-		return $form->createTableByData($data, $column_names);
+		$data = DBAccess::selectQuery("SELECT Bezeichnung, Datum, Priority FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer}");
+		$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Datum"), 
+				2 => array("COLUMN_NAME" => "Priority"));
+
+		$form = new InteractiveFormGenerator("");
+		return $form->create($data, $column_names);
+	}
+
+	public function getOpenBearbeitungsschritteAsTable() {
+		/* 
+		 * istErledigt = 1 -> ist noch zu erledigen
+		 * istErledigt = 0 -> ist schon erledigt
+		*/
+		$data = DBAccess::selectQuery("SELECT Schrittnummer, Bezeichnung, Datum, Priority FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer} AND istErledigt = 1");
+		$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Datum"), 
+				2 => array("COLUMN_NAME" => "Priority"));
+
+		$form = new InteractiveFormGenerator("schritte");
+		$form->setRowDone(true);
+		$_SESSION['storedTable'] = serialize($form);
+		return $form->create($data, $column_names);
 	}
 
 	public function getAuftragsbeschreibung() {
@@ -101,11 +118,16 @@ class Auftrag {
 		$subArr = array("Bezeichnung" => "", "Beschreibung" => "", "Stundenlohn" => "", "ZeitInMinuten" => "", "Preis" => "", "Anzahl" => "", "Einkaufspreis" => "");
 		$data = array(sizeof($this->Auftragsposten));
 
+		if (sizeof($this->Auftragsposten) == 0) {
+			return "";
+		}
+
 		for ($i = 0; $i < sizeof($this->Auftragsposten); $i++) {
 			$data[$i] = $this->Auftragsposten[$i]->fillToArray($subArr);
 		}
 
 		$form = new InteractiveFormGenerator("");
+		$form->setRowDeletable(true);
 		return $form->create($data, $column_names);
 	}
 
@@ -132,6 +154,23 @@ class Auftrag {
     public function schritteNachTypGenerieren() {
         
     }
+
+	public static function getOffeneAuftraege() {
+		$column_names = array(0 => array("COLUMN_NAME" => "Auftragsnummer"), 1 => array("COLUMN_NAME" => "Kundennummer"), 2 => array("COLUMN_NAME" => "Firmenname"),
+				3 => array("COLUMN_NAME" => "Auftragsbezeichnung"), 4 => array("COLUMN_NAME" => "Auftragsbeschreibung"), 5 => array("COLUMN_NAME" => "Datum"), 
+				6 => array("COLUMN_NAME" => "Termin"), 7 => array("COLUMN_NAME" => "AngenommenDurch"));
+		$data = DBAccess::selectQuery("SELECT auftrag.*, kunde.Firmenname FROM auftrag LEFT JOIN kunde ON auftrag.Kundennummer = kunde.Kundennummer WHERE Rechnungsnummer = 0");
+
+		for ($i = 0; $i < sizeof($data); $i++) {
+			$id = $data[$i]["AngenommenDurch"];
+			$angenommenDurch = DBAccess::selectQuery("SELECT Vorname, Nachname FROM mitarbeiter WHERE id = $id");
+			$data[$i]["AngenommenDurch"] = $angenommenDurch[0]["Vorname"] . " " . $angenommenDurch[0]["Nachname"];
+		}
+
+		$form = new FormGenerator("auftrag", "Datum", "Rechnungsnummer = 0");
+		$table = $form->createTableByDataRowLink($data, $column_names, "auftrag", null);
+		return $table;
+	}
 
 }
 
