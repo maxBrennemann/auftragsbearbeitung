@@ -11,7 +11,10 @@
 		$rechnung = new Rechnung($rechnungsnummer);
 	}
 	if(isset($_GET['create'])) {
-		echo "Rechnung wird erstellt";
+		$nextId = Rechnung::getNextNumber();
+		$auftragsid = $_GET['create'];
+		echo "Rechnung $nextId wird erstellt";
+		DBAccess::updateQuery("UPDATE auftrag SET Rechnungsnummer = $nextId WHERE Auftragsnummer = $auftragsid");
 	}
 ?>
 
