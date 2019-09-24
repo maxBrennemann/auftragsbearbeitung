@@ -24,7 +24,13 @@
 	<div>
 		<span><u>Auftragsnummer:</u> <?=$Auftrag->getAuftragsnummer()?></span><br>
 		<span><u>Beschreibung:</u><br><?=$Auftrag->getAuftragsbeschreibung()?></span><br>
-		<span><u>Schritte:</u> <?=$Auftrag->getBearbeitungsschritteAsTable()?></span><br>
+		<span><u>Schritte:</u><br>
+			<form name="showSteps">
+				<input onchange="radio('hide')" type="radio" name="showDone" value="hide" checked> Zu erledigende Schritte anzeigen<br>
+				<input onchange="radio('show')" type="radio" name="showDone" value="show"> Alle Schritte anzeigen<br>
+			</form>
+			<span id="stepTable"><?=$Auftrag->getOpenBearbeitungsschritteAsTable()?></span>
+		</span><br>
 		<span><u>Posten:</u> <?=$Auftrag->getAuftragspostenAsTable()?></span>
 		<span><u>Gesamtpreis:</u> <?=$Auftrag->preisBerechnen()?>€</span>
 	</div>
