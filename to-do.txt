@@ -32,3 +32,12 @@ Bearbeitungsschritte:
 
 Leistung:
 	* Verschiedene Leistungen implementieren und Formeln für den Preis hinterlegen
+
+Allgemein:
+	* Login
+	* eventuell Kundenpanel
+
+Tabellen:
+	* delete() einführen
+	* edit() einführen
+	* isDone() und Status einführen
