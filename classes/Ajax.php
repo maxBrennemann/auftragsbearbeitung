@@ -65,7 +65,7 @@ class Ajax {
 				$dat = date("Y-m-d");
 
 				$insertQuery = self::$insertIntoAuftrag;
-				$insertQuery .= "VALUES ($maxAuftragsnr, $kdn, '$bez', '$bes', '$typ', '$dat', '$ter', '$ang')";
+				$insertQuery .= "VALUES ($maxAuftragsnr, $kdn, '$bez', '$bes', '$typ', '$dat', '$ter', $ang)";
 
 				DBAccess::insertQuery($insertQuery);
 
@@ -98,6 +98,42 @@ class Ajax {
 				$data['SpeziefischerPreis'] = $_POST['pre'];
 				$data['Auftragsnummer'] = $_POST['auftrag'];
 				Posten::insertPosten("leistung", $data);
+				break;
+			case "insertStep":
+				$data = array();
+				$data['Bezeichnung'] = $_POST['bez'];
+				$data['Datum'] = date("Y-m-d");
+				$data['Priority'] = $_POST['prio'];
+				$data['Auftragsnummer'] = $_POST['auftrag'];
+				require_once("classes/project/Schritt.php");
+				Schritt::insertStep($data);
+				break;
+			case "addStep":
+				$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Priority"));
+
+				$addClass = $_POST['addClass'];
+
+				echo FormGenerator::createEmptyTable($column_names, $addClass);
+				break;
+			case "getAllSteps":
+				require_once("classes/project/Auftrag.php");
+				$auftragsId = $_POST['auftrag'];
+				$Auftrag = new Auftrag($auftragsId);
+				echo $Auftrag->getBearbeitungsschritteAsTable();
+				break;
+			case "getOpenSteps":
+				require_once("classes/project/Auftrag.php");
+				$auftragsId = $_POST['auftrag'];
+				$Auftrag = new Auftrag($auftragsId);
+				echo $Auftrag->getOpenBearbeitungsschritteAsTable();
+				break;
+			case "setTo":
+				require_once("classes/project/InteractiveFormGenerator.php");
+				$table = unserialize($_SESSION['storedTable']);
+				$auftragsId = $_POST['auftrag'];
+				$row =  $_POST['row'];
+				$table->setIdentifier("Schrittnummer");
+				$table->editRow($row, "istErledigt", "0");
 				break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
