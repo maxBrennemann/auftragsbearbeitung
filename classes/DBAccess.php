@@ -42,6 +42,15 @@ class DBAccess {
 		
 		return self::$statement->execute();
 	}
+
+	public static function deleteQuery($query) {
+		self::createConnection();
+		
+		self::$statement = self::$connection->prepare($query);
+		self::$statement->execute();
+		
+		return self::$statement->execute();
+	}
 	
 	public static function insertQuery($query, $params = NULL) {
 		self::createConnection();
