@@ -15,8 +15,9 @@ if (0 > version_compare(PHP_VERSION, '5')) {
  */
 class InteractiveFormGenerator extends FormGenerator {
 
-	private $isRowDeleatable = false;
+	private $isRowDeletable = false;
 	private $isRowEditable = false;
+	private $isRowDone = false;
 
 	private $identifier = "";
 
@@ -48,6 +49,14 @@ class InteractiveFormGenerator extends FormGenerator {
 		}
 	}
 
+	public function setRowDone($val) {
+		if (is_bool($val)) {
+			$this->isRowDone = $val;
+		} else {
+			throw new Exception("wrong data type, boolean required");
+		}
+	}
+
 	public function setRowDeletable($val) {
 		if (is_bool($val)) {
 			$this->isRowDeletable = $val;
@@ -56,8 +65,20 @@ class InteractiveFormGenerator extends FormGenerator {
 		}
 	}
 
+	public function setIdentifier($val) {
+		if (is_string($val)) {
+			$this->identifier = $val;
+		} else {
+			throw new Exception("wrong data type, String required");
+		}
+	}
+
+	public function deleteRow($row) {
+		DBAccess::deleteQuery("DELETE FROM $this->type WHERE $this->identifier = $row");
+	}
+
 	public function editRow($row, $column, $data) {
-		DBAccess::updateQuery("UPDATE $type SET $column = $data WHERE $this->identifier = $row");
+		DBAccess::updateQuery("UPDATE $this->type SET $column = $data WHERE $this->identifier = $row");
 	}
 
 	private function addDeleteButton($row) {
@@ -69,16 +90,31 @@ class InteractiveFormGenerator extends FormGenerator {
 	
 	}
 
-	public function create($data, $columnNames) {
-		$editcolumn = array("COLUMN_NAME" => "Bearbeitung");
-		array_push($columnNames, $editcolumn);
+	private function updateIsDone($row) {
+		$button = "<button onclick=\"updateIsDone($row)\">✔</button>";
+		return $button;
+	}
 
-		for ($i = 0; $i < sizeof($data); $i++) {
-			$btn =  $this->addDeleteButton($i);
-			$data[$i]["Bearbeitung"] = $btn;
+	public function create($data, $columnNames) {
+		if ($this->isRowDeletable) {
+			$editcolumn = array("COLUMN_NAME" => "Bearbeitung");
+			array_push($columnNames, $editcolumn);
+
+			for ($i = 0; $i < sizeof($data); $i++) {
+				$btn =  $this->addDeleteButton($i);
+				$data[$i]["Bearbeitung"] = $btn;
+			}
 		}
 
-		$_SESSION['data'] = serialize($data);
+		if ($this->isRowDone) {
+			$editcolumn = array("COLUMN_NAME" => "Erledigt");
+			array_push($columnNames, $editcolumn);
+
+			for ($i = 0; $i < sizeof($data); $i++) {
+				$btn =  $this->updateIsDone($data[$i]["Schrittnummer"]);
+				$data[$i]["Erledigt"] = $btn;
+			}
+		}
 
 		return $this->createTableByData($data, $columnNames);
 	}

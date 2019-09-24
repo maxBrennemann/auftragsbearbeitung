@@ -50,7 +50,7 @@ class FormGenerator {
 	* $isRowLink creates a link for every first element of a row, the link is composed of the current page link and the getParameters showDetails and id, $isRowLink only works, if the page
 	* can show details for a specific value and if the first column represents a unique number
 	*/
-	private static function generateTable($type, $editable, $showData, $sendTo, $amountOfData, $isRowLink, $data = null, $column_names = null, $forceData = false, $retUrl = null) {
+	private static function generateTable($type, $editable, $showData, $sendTo, $amountOfData, $isRowLink, $data = null, $column_names = null, $forceData = false, $retUrl = null, $addClass = "") {
 		if ($column_names == null) {
 			$column_names = self::getColumnNames($type);
 		}
@@ -81,7 +81,7 @@ class FormGenerator {
 		}
 		
 		if ($editable) {
-			$html_table = $html_table . self::createEmptyRow(sizeof($column_names));
+			$html_table = $html_table . self::createEmptyRow(sizeof($column_names), $addClass);
 		}
 		return $html_table . "</table>";
 	}
@@ -99,17 +99,25 @@ class FormGenerator {
 			$whereConditionStatement = "WHERE {$whereCondition}";
 		}
 		
-		return DBAccess::selectQuery("SELECT * FROM ${type} {$whereConditionStatement} {$isOrderedByStatement} LIMIT ${amountOfData}");
+		if ($amountOfData == -1) {
+			return DBAccess::selectQuery("SELECT * FROM ${type} {$whereConditionStatement} {$isOrderedByStatement}");
+		} else {
+			return DBAccess::selectQuery("SELECT * FROM ${type} {$whereConditionStatement} {$isOrderedByStatement} LIMIT ${amountOfData}");
+		}
 	}
 
 	/*
 	* creates an empty table row the size of the input $number
 	*/
-	private static function createEmptyRow($number) {
+	private static function createEmptyRow($number, $addClass) {
 		$empty_row = "<tr>";
 
 		for ($i = 0; $i < $number; $i++) {
-			$empty_row = $empty_row . "<td class='addingContentColumn' contenteditable='true'></td>";
+			if ($addClass == "") {
+				$empty_row = $empty_row . "<td class='addingContentColumn' contenteditable='true'></td>";
+			} else {
+				$empty_row = $empty_row . "<td class='addingContentColumn $addClass' contenteditable='true'></td>";
+			}
 		}
 
 		return $empty_row . "</tr>";
@@ -189,12 +197,12 @@ class FormGenerator {
 	*		- isOrderedBy
 	*		- whereCondition
 	*/
-	public function createSpecializedTable($editable, $showData, $sendTo, $amountOfData, $isRowLink) {
+	public function createSpecializedTable($editable, $showData, $sendTo, $amountOfData, $isRowLink, $column_names = null) {
 		if(strcmp($this->isOrderedBy, "") == 0 || $this->isOrderedBy == null) {
 			return "";
 		} else {
 			$data = self::executeSQLQuery($this->type, $amountOfData, $this->isOrderedBy, $this->whereCondition);
-			return self::generateTable($this->type, $editable, $showData, $sendTo, $amountOfData, $isRowLink, $data);
+			return self::generateTable($this->type, $editable, $showData, $sendTo, $amountOfData, $isRowLink, $data, $column_names);
 		}
 	}
 
@@ -209,6 +217,10 @@ class FormGenerator {
 
 	public function createTableByDataRowLink($data, $column_names, $type, $retUrl) {
 		return self::generateTable($type, false, true, "", -1, true, $data, $column_names, true, $retUrl);
+	}
+
+	public static function createEmptyTable($column_names, $addClass) {
+		return self::generateTable("", true, false, "", 0, false, null, $column_names, false, null, $addClass);
 	}
 
 }
