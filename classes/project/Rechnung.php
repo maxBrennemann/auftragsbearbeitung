@@ -16,7 +16,7 @@ class Rechnung extends Auftrag {
 	private $summe = 0;
 
 	function __construct($rechnungsnummer) {
-		$auftragsnummer = DBAccess::selectQuery("SELECT Auftragsnummer FROM auftrag WHERE rechnungsnummer = {$rechnungsnummer}");
+		$auftragsnummer = DBAccess::selectQuery("SELECT Auftragsnummer FROM auftrag WHERE Rechnungsnummer = {$rechnungsnummer}");
 		if (!empty($auftragsnummer)) {
 			$auftragsnummer = $auftragsnummer[0]['Auftragsnummer'];
 		} else {
@@ -31,6 +31,13 @@ class Rechnung extends Auftrag {
 
 	public function getRechnungsnummer() {
 		return $this->rechnungsnummer;
+	}
+
+	public static function getNextNumber() {
+		$number = DBAccess::selectQuery("SELECT MAX(Rechnungsnummer) FROM auftrag")[0]['MAX(Rechnungsnummer)'];
+		$number = (int) $number;
+		$number++;
+		return $number;
 	}
 
 }
