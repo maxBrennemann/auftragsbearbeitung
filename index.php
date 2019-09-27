@@ -26,7 +26,7 @@
 	* filters AJAX requests and delegates them to the right files
 	*/
 	if (isset($_POST['getReason'])) {
-		Ajax::manageRequests($_POST['getReason']);
+		Ajax::manageRequests($_POST['getReason'], $page);
 	} else {
 		showPage($page, $isArticle);
 	}
