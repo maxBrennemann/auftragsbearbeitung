@@ -156,9 +156,9 @@ class Auftrag {
     }
 
 	public static function getOffeneAuftraege() {
-		$column_names = array(0 => array("COLUMN_NAME" => "Auftragsnummer"), 1 => array("COLUMN_NAME" => "Kundennummer"), 2 => array("COLUMN_NAME" => "Firmenname"),
-				3 => array("COLUMN_NAME" => "Auftragsbezeichnung"), 4 => array("COLUMN_NAME" => "Auftragsbeschreibung"), 5 => array("COLUMN_NAME" => "Datum"), 
-				6 => array("COLUMN_NAME" => "Termin"), 7 => array("COLUMN_NAME" => "AngenommenDurch"));
+		$column_names = array(0 => array("COLUMN_NAME" => "Auftragsnummer"), 1 => array("COLUMN_NAME" => "Firmenname"),
+				2 => array("COLUMN_NAME" => "Auftragsbezeichnung"), 3 => array("COLUMN_NAME" => "Auftragsbeschreibung"), 4 => array("COLUMN_NAME" => "Datum"), 
+				5 => array("COLUMN_NAME" => "Termin"), 6 => array("COLUMN_NAME" => "AngenommenDurch"));
 		$data = DBAccess::selectQuery("SELECT auftrag.*, kunde.Firmenname FROM auftrag LEFT JOIN kunde ON auftrag.Kundennummer = kunde.Kundennummer WHERE Rechnungsnummer = 0");
 
 		for ($i = 0; $i < sizeof($data); $i++) {

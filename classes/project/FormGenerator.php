@@ -56,9 +56,9 @@ class FormGenerator {
 		}
 
 		if($editable) {
-			$html_table = "<table border='1' class='allowAddingContent' data-type=${type} data-send-to=${sendTo}>";
+			$html_table = "<table class='allowAddingContent' data-type=${type} data-send-to=${sendTo}>";
 		} else {
-			$html_table = "<table border='1'>";
+			$html_table = "<table>";
 		}
 
 		$html_table .= self::createTableHeader($column_names);
