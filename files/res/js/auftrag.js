@@ -88,6 +88,16 @@ function addLeistung() {
     });
 }
 
+function addFahrzeug() {
+    var kfz = document.getElementById("kfz").value;
+    var fahrzeug = document.getElementById("fahrzeug").value;
+    var kundennummer = document.getElementById("kundennummer");
+    var add = new AjaxCall(`getReason=insertCar&kfz=${kfz}&fahrzeug=${fahrzeug}&kdnr=${kundennummer}`, "POST", window.location.href);
+    add.makeAjaxCall(function (response) {
+        console.log(response);
+    });
+}
+
 function deleteRow() {
     var add = new AjaxCall(`getReason=test`, "POST", window.location.href);
     add.makeAjaxCall(function (response) {
@@ -119,4 +129,10 @@ function updateIsDone(input) {
     update.makeAjaxCall(function (response) {
         console.log(response);
     });
+}
+
+function selectLeistung(e) {
+    if (e.target.value == 5) {
+        document.getElementById("addKfz").style.display = "inline";
+    }
 }
