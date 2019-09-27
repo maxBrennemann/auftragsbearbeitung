@@ -1,5 +1,6 @@
 <?php 
 	require_once('classes/project/Auftrag.php');
+	require_once('classes/project/FormGenerator.php');
 	require_once('classes/DBAccess.php');
 
 	$auftragsId = -1;
@@ -7,6 +8,10 @@
 		$auftragsId = $_GET['id'];
 		try {
 			$Auftrag = new Auftrag($auftragsId);
+			$fahrzeuge = DBAccess::selectQuery("SELECT Kennzeichen, Fahrzeug FROM fahrzeuge WHERE Kundennummer = {$Auftrag->getKundennummer()}");
+			$column_names = array(0 => array("COLUMN_NAME" => "Kennzeichen"), 1 => array("COLUMN_NAME" => "Fahrzeug"));
+			$table = new FormGenerator("Fahrzeuge", "", "");
+			$table = $table->createTableByData($fahrzeuge, $column_names);
 		} catch (Exception $e){
 			echo $e->getMessage();
 			$auftragsId = -1;
@@ -20,7 +25,7 @@
 	<input type="number" min="1" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value;">
 	<a href="#" id="auftragsLink">Auftrag anzeigen</a>
 <?php else: ?>
-	<a href="<?=Link::getPageLink("kunde")?>?id=<?=$Auftrag->getKundennummer()?>">Kunde <span><?=$Auftrag->getKundennummer()?></span> zeigen</a>
+	<a href="<?=Link::getPageLink("kunde")?>?id=<?=$Auftrag->getKundennummer()?>">Kunde <span id="kundennummer"><?=$Auftrag->getKundennummer()?></span> zeigen</a>
 	<div>
 		<span><u>Auftragsnummer:</u> <?=$Auftrag->getAuftragsnummer()?></span><br>
 		<span><u>Beschreibung:</u><br><?=$Auftrag->getAuftragsbeschreibung()?></span><br>
@@ -32,7 +37,8 @@
 			<span id="stepTable"><?=$Auftrag->getOpenBearbeitungsschritteAsTable()?></span>
 		</span><br>
 		<span><u>Posten:</u> <?=$Auftrag->getAuftragspostenAsTable()?></span>
-		<span><u>Gesamtpreis:</u> <?=$Auftrag->preisBerechnen()?>€</span>
+		<span><u>Gesamtpreis:</u> <?=$Auftrag->preisBerechnen()?>€</span><br>
+		<span><u>Fahrzeuge:</u> <?=$table?></span>
 	</div>
 	<br>
 	<hr>
@@ -51,7 +57,7 @@
 				<button onclick="addTime()">Hinzufügen</button>
 			</div>
 			<div id="addPostenLeistung" style="display: none">
-				<select id="selectLeistung">
+				<select id="selectLeistung" onchange="selectLeistung(event);">
 					<?php foreach ($leistungen as $leistung): ?>
 						<option value="<?=$leistung['Nummer']?>"><?=$leistung['Bezeichnung']?></option>
 					<?php endforeach; ?>
@@ -61,6 +67,12 @@
 				<span><input id="ekp" value="0"> Einkaufspreis</span><br>
 				<span><input id="pre" value="0"> Speziefischer Preis</span><br>
 				<button onclick="addLeistung()">Hinzufügen</button>
+				<br>
+				<div id="addKfz" style="display: none;">
+					<span><input id="kfz"> Kfz-Kennzeichen</span><br>
+					<span><input id="fahrzeug"> Fahrzeug</span><br>
+					<button onclick="addFahrzeug()">Fahrzeug hinzufügen</button>
+				</div>
 			</div>
 		</div>
 		<div id="selectProdukt">
