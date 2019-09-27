@@ -2,10 +2,10 @@
 
 class Ajax {
 	
-	private static $insertIntoAuftrag = "INSERT INTO auftrag (Auftragsnummer, Kundennummer, Auftragsbezeichnung, Auftragsbeschreibung, Auftragstyp, Datum, Termin, AngenommenDurch)";
+	private static $insertIntoAuftrag = "INSERT INTO auftrag (Auftragsnummer, Kundennummer, Auftragsbezeichnung, Auftragsbeschreibung, Auftragstyp, Datum, Termin, AngenommenDurch, AngenommenPer)";
 	private static $sqlStatements = "SELECT posten.Postennummer, leistung.Bezeichnung, leistung_posten.Beschreibung, leistung_posten.SpeziefischerPreis, zeit.ZeitInMinuten, zeit.Stundenlohn FROM posten INNER JOIN leistung_posten ON posten.Postennummer = leistung_posten.Postennummer INNER JOIN zeit ON posten.Postennummer = zeit.Postennummer INNER JOIN leistung ON leistung_posten.Leistungsnummer = leistung.Nummer WHERE istStandard = 1;";
 
-	public static function manageRequests($reason) {
+	public static function manageRequests($reason, $page) {
 		switch ($reason) {
 			case "fileRequest":
 				if (isset($_POST['file'])) {
@@ -59,13 +59,14 @@ class Ajax {
 				$ter = $_POST['ter'];
 				$ang = $_POST['ang'];
 				$kdn = $_POST['kdn'];
+				$per = $_POST['per'];
 
 				$maxAuftragsnr = (int) DBAccess::selectQuery("SELECT MAX(Auftragsnummer) FROM auftrag")[0]['MAX(Auftragsnummer)'];
 				$maxAuftragsnr++;
 				$dat = date("Y-m-d");
 
 				$insertQuery = self::$insertIntoAuftrag;
-				$insertQuery .= "VALUES ($maxAuftragsnr, $kdn, '$bez', '$bes', '$typ', '$dat', '$ter', $ang)";
+				$insertQuery .= "VALUES ($maxAuftragsnr, $kdn, '$bez', '$bes', '$typ', '$dat', '$ter', $ang, $per)";
 
 				DBAccess::insertQuery($insertQuery);
 
@@ -85,7 +86,13 @@ class Ajax {
 				$email = $_POST['email'];
 				$durchwahl = $_POST['durchwahl'];
 				$nextId = $_POST['nextId'];
-				DBAccess::insetQuery("INSERT INTO ansprechpartner (Kundennummer, Vorname, Nachname, Email, Durchwahl) VALUES($nextId, '$vorname', '$nachname', '$email', '$durchwahl')");
+				DBAccess::insertQuery("INSERT INTO ansprechpartner (Kundennummer, Vorname, Nachname, Email, Durchwahl) VALUES($nextId, '$vorname', '$nachname', '$email', '$durchwahl')");
+				break;
+			case "insertCar":
+				$kfzKenn = $_POST['kfz'];
+				$fahrzeug = $_POST['fahrzeug'];
+				$nummer =  $_POST['kdnr'];
+				DBAccess::insertQuery("INSERT INTO fahrzeuge (Kundennummer, Kennzeichen, Fahrzeug) VALUES($nummer, '$kfzKenn', '$fahrzeug')");
 				break;
 			case "test":
 				var_dump(unserialize($_SESSION['data']));
