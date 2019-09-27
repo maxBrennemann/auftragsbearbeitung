@@ -27,4 +27,20 @@ function kundendatenAbsenden() {
     insertKundendaten.makeAjaxCall();
 }
 
+function addDataToDB() {
+    var tableCont = document.getElementsByClassName("ansprTableCont");
+    var nextId = document.getElementById("kundennummer").innerHTML;
+    var data = `getReason=insertAnspr&nextId=${nextId}&`;
+
+    for (let i = 0; i < tableCont.length; i++) {
+        data += tableCont[i].dataset.col + "=" + tableCont[i].innerHTML;
+        i != tableCont.length - 1 ? data += "&" : 1;
+    }
+
+    let sendToDB = new AjaxCall(data, "POST", window.location.href);
+    sendToDB.makeAjaxCall(function (res) {
+        console.log(res);
+    });
+}
+
 initialize();
