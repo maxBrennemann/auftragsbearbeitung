@@ -31,6 +31,8 @@ function auftragHinzufuegen() {
 
     var e = document.getElementById("selectMitarbeiter");
     var ang = e.options[e.selectedIndex].value;
+    e = document.getElementById("selectAngenommen");
+    per = e.options[e.selectedIndex].value;
 
     var paramString = new URLSearchParams();
     paramString.append("bez", bez);
@@ -39,6 +41,7 @@ function auftragHinzufuegen() {
     paramString.append("ter", ter);
     paramString.append("ang", ang);
     paramString.append("kdn", kdn);
+    paramString.append("per", per);
 
     paramString = paramString.toString() + "&type=auftrag&getReason=createAuftrag";
 
@@ -47,7 +50,6 @@ function auftragHinzufuegen() {
     var createAuftrag = new AjaxCall(paramString, "POST", window.location.href);
     createAuftrag.makeAjaxCall(function (responseLink) {
         console.log(responseLink);
-        var kdn = new URL(window.location.href).searchParams.get("kdnr");
         window.location.href = responseLink;
     });
 }
