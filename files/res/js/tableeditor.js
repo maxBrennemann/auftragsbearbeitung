@@ -1,4 +1,4 @@
-var Table = function(columns) {
+﻿var Table = function(columns) {
 	this.columns = columns;
 }
 
@@ -22,7 +22,7 @@ function addableTables() {
         if (allowAddingContent.length != 0) {
             var btn = document.createElement("button");
             btn.addEventListener("click", addContent, false);
-            btn.innerHTML = "Add";
+            btn.innerHTML = "Hinzufügen";
             allowAddingContent[0].parentNode.appendChild(btn);
             currTable = new Table(0);
         }
@@ -44,7 +44,7 @@ function addContent() {
                 isChecked = false;
             }
             /*
-             * Ausnahme f�r Anrede
+             * Ausnahme für Anrede
              */
             if (tableHead[i].innerHTML == "Anrede") {
                 var e = document.getElementById("selectAnrede");
