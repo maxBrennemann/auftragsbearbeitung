@@ -4,19 +4,10 @@ require_once('classes/DBAccess.php');
 $data = DBAccess::selectQuery("SELECT * FROM leistung");
 ?>
 
-<style>
-	.leistungsblock {
-		border: 1px solid black;
-		border-radius: 6px;
-		margin: 10px;
-		padding: 10px;
-	}
-</style>
-
 <a href="#" class="abutton">Folie konfigurieren</a>
 <a href="#" class="abutton">T-Shirt konfigurieren</a>
 
-<div>
+<div class="container">
 	<?php foreach ($data as $leistung): ?>
 		<div class="leistungsblock">
 			<h4><?=$leistung['Bezeichnung']?></h4>
