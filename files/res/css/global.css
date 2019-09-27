@@ -1,7 +1,50 @@
 ﻿/* general style */
+@import url('https://fonts.googleapis.com/css?family=Be+Vietnam|Open+Sans&display=swap');
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Open Sans', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 0.9em;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-areas: "head" "main" "foot";
+}
+
+header {
+    grid-area: head;
+}
+
+header h1 {
+    text-align: center;
+}
+
+main, .footer {
+    width: 80%;
+    margin: auto;
+}
+
+main {
+    margin-top: 0;
+    grid-area: main
+}
+
+footer {
+    background-color: #303333;
+    padding: 25px 10px 25px 10px;
+    margin-top: 25px;
+    grid-area: foot;
+}
+
+/* footer layout */
+.footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+/* h1 style*/
+h1 {
+    font-family: 'Be Vietnam', sans-serif;
 }
 
 /* a */
@@ -15,6 +58,16 @@ button {
     border-radius: 6px;
     background-color: white;
     padding: 5px;
+    margin: 5px;
+}
+
+/* ul li style */
+ul {
+    list-style-type: none;
+    padding-left: 0
+}
+
+li {
     margin: 5px;
 }
 
@@ -54,4 +107,10 @@ tr:last-child td:first-child {
 
 tr:last-child td:last-child {
     border-radius: 0 0 6px 0;
+}
+
+/* footer links */
+.linkBundleLink {
+    color: white !important;
+    text-decoration: none;
 }
