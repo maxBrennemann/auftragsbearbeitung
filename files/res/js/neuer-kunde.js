@@ -11,6 +11,7 @@ function addSelection() {
     secondEl.innerHTML = `<select id="selectAnrede">
         <option value="0">Herr</option>
         <option value="1">Frau</option>
+        <option value="2">Firma</option>
 		</select>`;
 }
 
@@ -26,12 +27,12 @@ function addDataToDB() {
 
     for (let i = 0; i < tableCont.length; i++) {
         data += tableCont[i].dataset.col + "=" + tableCont[i].innerHTML;
-        i != content.length - 1 ? data += "&" : 1;
+        i != tableCont.length - 1 ? data += "&" : 1;
     }
 
     let sendToDB = new AjaxCall(data, "POST", window.location.href);
     sendToDB.makeAjaxCall(function (res) {
-        
+        console.log(res);
     });
 }
 
