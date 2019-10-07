@@ -14,9 +14,9 @@ function init() {
 
 function addableTables() {
     var allowAddingContent = document.getElementsByClassName("allowAddingContent");
+    var addingContentColumn = document.getElementsByClassName("addingContentColumn");
 
     if (allowAddingContent.length != 0) {
-        tableName = allowAddingContent[0].dataset.type;
         sendTo = allowAddingContent[0].dataset.sendTo;
 
         if (allowAddingContent.length != 0) {
@@ -25,6 +25,28 @@ function addableTables() {
             btn.innerHTML = "Hinzufügen";
             allowAddingContent[0].parentNode.appendChild(btn);
             currTable = new Table(0);
+        }
+    }
+
+    if (addingContentColumn.length != 0) {
+        for (var i = 0; i < addingContentColumn.length; i++) {
+            var type = addingContentColumn[i].dataset.datatype;
+            if (type == "number") {
+                addingContentColumn[i].addEventListener("keyup", function (event) {
+                    if (isNaN(event.key) && event.key.length == 1) {
+                        var text = event.target.innerText;
+                        text = text.replace(/\D/g, '');
+                        event.target.innerText = text;
+                    }
+                }, false);
+            } else if (!isNaN(type)) {
+                addingContentColumn[i].addEventListener("keydown", function (event) {
+                    type = event.target.dataset.datatype;
+                    if (event.target.innerText.length > parseInt(type) && event.key.length == 1) {
+                        event.target.innerText = event.target.innerText.slice(0, parseInt(type));
+                    };
+                }, false);
+            }
         }
     }
 }
