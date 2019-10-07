@@ -6,7 +6,11 @@
 	if(isset($_GET['script'])) {
 		header('Content-Type: text/javascript');
 		$script = $_GET['script'];
-		$file = file_get_contents(Link::getResourcesLink($script, "js", false));
+		if ($script == "colorpicker.js") {
+			$file = file_get_contents(".res/colorpicker.js");
+		} else {
+			$file = file_get_contents(Link::getResourcesLink($script, "js", false));
+		}
 		echo $file;
 	}
 
