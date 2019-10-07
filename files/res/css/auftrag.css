@@ -1,0 +1,61 @@
+main {
+    display: grid;
+    grid-template-areas: "auftrag auftrag kunde" "schritte schritte schritte" "posten posten posten" "fahrzeuge farben preis" "postenadd postenadd produkt" "step step step";
+}
+
+.border {
+    border-radius: 6px;
+    border: 1px solid black;
+    margin: 5px;
+    padding: 10px;
+}
+
+aside {
+    grid-area: kunde;
+}
+
+.auftragsinfo {
+    grid-area: auftrag;
+}
+
+.schritte {
+    grid-area: schritte;
+}
+
+.posten {
+    grid-area: posten;
+}
+
+.fahrzeuge {
+    grid-area: fahrzeuge;
+}
+
+.farben {
+    grid-area: farben;
+}
+
+.preis {
+    grid-area: preis;
+}
+
+.postenadd {
+    grid-area: postenadd;
+}
+
+.produkt {
+    grid-area: produkt;
+}
+
+.step {
+    grid-area: step;
+}
+
+.description {
+
+}
+
+.farbe {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+}
