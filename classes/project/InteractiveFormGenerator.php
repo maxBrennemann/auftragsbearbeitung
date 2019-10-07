@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 require_once('classes/DBAccess.php');
 error_reporting(E_ALL);
