@@ -11,7 +11,6 @@ require_once('classes/DBAccess.php');
 
 class Rechnung extends Auftrag {
 
-    private $rechnungsnummer = 0;
 	private $summeMwSt = 0;
 	private $summe = 0;
 
@@ -28,10 +27,6 @@ class Rechnung extends Auftrag {
     public function PDFgenerieren() {
         
     }
-
-	public function getRechnungsnummer() {
-		return $this->rechnungsnummer;
-	}
 
 	public static function getNextNumber() {
 		$number = DBAccess::selectQuery("SELECT MAX(Rechnungsnummer) FROM auftrag")[0]['MAX(Rechnungsnummer)'];
