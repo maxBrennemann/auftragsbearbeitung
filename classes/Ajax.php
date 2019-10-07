@@ -2,7 +2,7 @@
 
 class Ajax {
 	
-	private static $insertIntoAuftrag = "INSERT INTO auftrag (Auftragsnummer, Kundennummer, Auftragsbezeichnung, Auftragsbeschreibung, Auftragstyp, Datum, Termin, AngenommenDurch, AngenommenPer)";
+	private static $insertIntoAuftrag = "INSERT INTO auftrag (Auftragsnummer, Kundennummer, Auftragsbezeichnung, Auftragsbeschreibung, Auftragstyp, Datum, Termin, AngenommenDurch, AngenommenPer, Ansprechpartner)";
 	private static $sqlStatements = "SELECT posten.Postennummer, leistung.Bezeichnung, leistung_posten.Beschreibung, leistung_posten.SpeziefischerPreis, zeit.ZeitInMinuten, zeit.Stundenlohn FROM posten INNER JOIN leistung_posten ON posten.Postennummer = leistung_posten.Postennummer INNER JOIN zeit ON posten.Postennummer = zeit.Postennummer INNER JOIN leistung ON leistung_posten.Leistungsnummer = leistung.Nummer WHERE istStandard = 1;";
 
 	public static function manageRequests($reason, $page) {
@@ -60,13 +60,14 @@ class Ajax {
 				$ang = $_POST['ang'];
 				$kdn = $_POST['kdn'];
 				$per = $_POST['per'];
+				$ans = $_POST['ans'];
 
 				$maxAuftragsnr = (int) DBAccess::selectQuery("SELECT MAX(Auftragsnummer) FROM auftrag")[0]['MAX(Auftragsnummer)'];
 				$maxAuftragsnr++;
 				$dat = date("Y-m-d");
 
 				$insertQuery = self::$insertIntoAuftrag;
-				$insertQuery .= "VALUES ($maxAuftragsnr, $kdn, '$bez', '$bes', '$typ', '$dat', '$ter', $ang, $per)";
+				$insertQuery .= "VALUES ($maxAuftragsnr, $kdn, '$bez', '$bes', '$typ', '$dat', '$ter', $ang, $per, $ans)";
 
 				DBAccess::insertQuery($insertQuery);
 
