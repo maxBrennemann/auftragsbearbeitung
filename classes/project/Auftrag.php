@@ -27,6 +27,7 @@ class Auftrag {
 	protected $Auftragsposten = array();
 	protected $Bearbeitungsschritte = array();
 	protected $Auftragstyp = null;
+	protected $rechnungsnummer = 0;
 
 	function __construct($auftragsnummer) {
 		if ($auftragsnummer > 0) {
@@ -36,6 +37,7 @@ class Auftrag {
 			if (!empty($data)) {
 				$this->Auftragsbeschreibung = $data[0]['Auftragsbeschreibung'];
 				$this->Auftragsbezeichnung = $data[0]['Auftragsbezeichnung'];
+				$this->rechnungsnummer = $data[0]['Rechnungsnummer'];
 
 				$data = DBAccess::selectQuery("SELECT * FROM schritte WHERE Auftragsnummer = {$auftragsnummer}");
 				foreach ($data as $step) {
@@ -170,6 +172,31 @@ class Auftrag {
 		$form = new FormGenerator("auftrag", "Datum", "Rechnungsnummer = 0");
 		$table = $form->createTableByDataRowLink($data, $column_names, "auftrag", null);
 		return $table;
+	}
+
+	public function istRechnungGestellt() {
+		return $this->rechnungsnummer == 0 ? false : true;
+	}
+
+	public function getRechnungsnummer() {
+		return $this->rechnungsnummer;
+	}
+
+	public function getFahrzeuge() {
+		$fahrzeuge = DBAccess::selectQuery("SELECT Kennzeichen, Fahrzeug FROM fahrzeuge WHERE Kundennummer = {$this->getKundennummer()}");
+		$column_names = array(0 => array("COLUMN_NAME" => "Kennzeichen"), 1 => array("COLUMN_NAME" => "Fahrzeug"));
+		$fahrzeugTable = new FormGenerator("Fahrzeuge", "", "");
+		return $fahrzeugTable->createTableByData($fahrzeuge, $column_names);
+	}
+
+	public function getFarben() {
+		$farben = DBAccess::selectQuery("SELECT Farbe, Farbwert FROM farben WHERE Kundennummer = {$this->getKundennummer()} AND Auftragsnummer = {$this->getAuftragsnummer()}");
+		$farbTable = "";
+		foreach ($farben as $farbe) {
+			$farbTable .= "<span>{$farbe['Farbe']} <div class='farbe' style='display: inline-block; background-color: #{$farbe['Farbwert']}'></div></span>";
+		}
+
+		return $farbTable;
 	}
 
 }
