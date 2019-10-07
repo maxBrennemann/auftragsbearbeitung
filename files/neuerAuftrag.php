@@ -14,6 +14,7 @@
 	$annahme = DBAccess::selectQuery("SELECT Bezeichnung, id FROM angenommen");
 	if ($kdnr != -1) {
 		$kundendaten = DBAccess::selectQuery("SELECT Vorname, Nachname, Firmenname FROM kunde WHERE Kundennummer = $kdnr")[0];
+		$ansprechpartner = DBAccess::selectQuery("SELECT Vorname, Nachname, Nummer FROM ansprechpartner WHERE Kundennummer = $kdnr");
 	}
 ?>
 
@@ -40,6 +41,15 @@
 			<?php endforeach; ?>
 		</select>
 	</span><br>
+	<?php if (sizeOf($ansprechpartner) > 0) : ?>
+	<span>Ansprechpartner: 
+		<select id="selectAnsprechpartner">
+			<?php foreach ($ansprechpartner as $m): ?>
+				<option value="<?=$m['Nummer']?>"><?=$m['Vorname']?> <?=$m['Nachname']?></option>
+			<?php endforeach; ?>
+		</select>
+	</span><br>
+	<?php endif; ?>
 	<button onclick="auftragHinzufuegen()">Absenden</button>
 <?php else: ?>
 	<span>Kundennummer oder Suchen: <input id="kundensuche" onkeyup="performSearchEnter(event, this.value);"><button onclick="performSearchButton(event)">&#x1F50E;</button></span>
