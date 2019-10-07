@@ -136,3 +136,13 @@ function selectLeistung(e) {
         document.getElementById("addKfz").style.display = "inline";
     }
 }
+
+function addColor() {
+    document.getElementById("farbe").style.display = "inline";
+}
+
+function rechnungErstellen() {
+    var url = window.location.href.split('?')[0];
+    url += "?create=" + document.getElementById("auftragsnummer").innerHTML;
+    window.location.href = url;
+}
