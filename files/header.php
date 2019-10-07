@@ -53,10 +53,11 @@
 			size: auto;   /* auto is the initial value */
 			margin: 0;  /* this affects the margin in the printer settings */
 		}
-</style>
+	</style>
 </head>
 <body>
 	<header>
 		<h1><?=$pageName?></h1>
+		<hr style="margin: auto; width: 80%">
 	</header>
 	<main>
