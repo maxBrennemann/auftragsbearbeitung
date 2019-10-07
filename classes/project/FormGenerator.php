@@ -8,7 +8,7 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 }
 
 /**
- * Klasse generiert Tabellen für Formulare
+ * Klasse generiert Tabellen fÃ¼r Formulare
  *
  * @access public
  * @author Max Brennemann, maxgoogelt@gmail.com
@@ -81,7 +81,7 @@ class FormGenerator {
 		}
 		
 		if ($editable) {
-			$html_table = $html_table . self::createEmptyRow(sizeof($column_names), $addClass);
+			$html_table = $html_table . self::createEmptyRow(sizeof($column_names), $addClass, $type);
 		}
 		return $html_table . "</table>";
 	}
@@ -109,14 +109,21 @@ class FormGenerator {
 	/*
 	* creates an empty table row the size of the input $number
 	*/
-	private static function createEmptyRow($number, $addClass) {
+	private static function createEmptyRow($number, $addClass, $type) {
+		$tableInfo = DBAccess::selectQuery("DESCRIBE $type");
 		$empty_row = "<tr>";
 
 		for ($i = 0; $i < $number; $i++) {
+			$dataType = $tableInfo[$i]['Type'];
+			if(strpos($dataType, "int") === 0) {
+				$dataType = "number";
+			} else if(strpos($dataType, "varchar") === 0) {
+				$dataType = (int) str_replace("varchar(", "", $dataType);
+			}
 			if ($addClass == "") {
-				$empty_row = $empty_row . "<td class='addingContentColumn' contenteditable='true'></td>";
+				$empty_row = $empty_row . "<td class='addingContentColumn' contenteditable='true' data-datatype='$dataType'></td>";
 			} else {
-				$empty_row = $empty_row . "<td class='addingContentColumn $addClass' contenteditable='true'></td>";
+				$empty_row = $empty_row . "<td class='addingContentColumn $addClass' contenteditable='true' data-datatype='$dataType'></td>";
 			}
 		}
 
