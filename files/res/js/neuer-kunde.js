@@ -7,7 +7,7 @@ function addNextCustomerNumber() {
 }
 
 function addSelection() {
-    var secondEl = document.getElementsByClassName("addingContentColumn")[1];
+    var secondEl = document.getElementsByClassName("addingContentColumn")[2];
     secondEl.innerHTML = `<select id="selectAnrede">
         <option value="0">Herr</option>
         <option value="1">Frau</option>

@@ -6,13 +6,14 @@
 	require_once('classes/DBAccess.php');
 
 	$auftragsId = -1;
+	$auftragAnzeigen = Link::getPageLink("auftrag");
+	$show = false;
 	if (isset($_GET['id'])) {
 		$auftragsId = $_GET['id'];
 		try {
 			$auftrag = new Auftrag($auftragsId);
 			$fahrzeugTable = $auftrag->getFahrzeuge();
 			$farbTable = $auftrag->getFarben();
-			
 			$kunde = new Kunde($auftrag->getKundennummer());
 		} catch (Exception $e) {
 			echo $e->getMessage();
@@ -20,21 +21,27 @@
 		}
 	}
 
-	if(isset($_GET['create'])) {
+	if (isset($_GET['create'])) {
 		$nextId = Rechnung::getNextNumber();
 		$auftragsid = $_GET['create'];
 		echo "Rechnung $nextId wird erstellt";
 		DBAccess::updateQuery("UPDATE auftrag SET Rechnungsnummer = $nextId WHERE Auftragsnummer = $auftragsid");
 	}
 
-	$leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer FROM leistung");
+	/* Paremter wird gebraucht, falls Rechnung gestellt wurde, aber der Auftrag trotzdem gezeigt werden soll */
+	if (isset($_GET['show'])) {
+		$show = true;
+	}
+
+	$leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
 
 if ($auftragsId == -1) : ?>
 	<input type="number" min="1" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value;">
 	<a href="#" id="auftragsLink">Auftrag anzeigen</a>
-<?php elseif ($auftrag->istRechnungGestellt()) : ?>
+<?php elseif ($auftrag->istRechnungGestellt() && $show == false) : ?>
 	<p>Auftrag <?=$auftrag->getAuftragsnummer()?> wurde abgeschlossen. Rechnungsnummer: <span id="rechnungsnummer"><?=$auftrag->getRechnungsnummer()?></span></p>
 	<button onclick="print('rechnungsnummer', 'Rechnung');">Rechnungsblatt anzeigen</button>
+	<button onclick="showAuftrag()">Auftrag anzeigen</button>
 <?php else: ?>
 	<aside class="border">
 		<?=$kunde->getVorname()?> <?=$kunde->getNachname()?><br><?=$kunde->getFirmenname()?><br>Adresse: <br><?=$kunde->getStrasse()?> <?=$kunde->getHausnummer()?><br>
@@ -85,7 +92,7 @@ if ($auftragsId == -1) : ?>
 			<div id="addPostenLeistung" style="display: none">
 				<select id="selectLeistung" onchange="selectLeistung(event);">
 					<?php foreach ($leistungen as $leistung): ?>
-						<option value="<?=$leistung['Nummer']?>"><?=$leistung['Bezeichnung']?></option>
+						<option value="<?=$leistung['Nummer']?>" data-aufschlag="<?=$leistung['Aufschlag']?>"><?=$leistung['Bezeichnung']?></option>
 					<?php endforeach; ?>
 				</select>
 				<br>
@@ -109,6 +116,7 @@ if ($auftragsId == -1) : ?>
 			<div id="searchResults"></div>
 		</div>
 	</div>
+	<?php if ($show == false): ?>
 	<div class="border step">
 		<button onclick="addBearbeitungsschritte()">Neuen Bearbeitungsschritt hinzufügen</button>
 		<div id="bearbeitungsschritte"></div>
@@ -121,4 +129,5 @@ if ($auftragsId == -1) : ?>
 			<span>Hersteller: <input class="colorInput" tyep="text" max="32"></span><br>
 		</div>
 	</div>
+	<?php endif; ?>
 <?php endif; ?>
