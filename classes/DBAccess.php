@@ -29,6 +29,14 @@ class DBAccess {
 		return $result;
 	}
 
+	public static function selectAll($table) {
+		return self::selectQuery("SELECT * FROM $table");
+	}
+
+	public static function selectAllByCondition($table, $condName, $condParam) {
+		return self::selectQuery("SELECT * FROM $table WHERE $condName = $condParam");
+	}
+
 	public static function selectColumnNames($table) {
 		$query = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{$table}' AND TABLE_SCHEMA = '" . DATABASE . "'";
 		return self::selectQuery($query);

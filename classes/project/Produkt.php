@@ -16,7 +16,7 @@ class Produkt {
     private $beschreibung = null;
 
 	function __construct($produktnummer) {
-		$data = DBAccess::selectQuery("SELECT * FROM produkt WHERE Produktnummer = {$produktnummer}");
+		$data = DBAccess::selectAllByCondition("produkt", "Produktnummer", $produktnummer);
 		if (!empty($data)) {
 			$data = $data[0];
 			$this->preis = $data['Preis'];
