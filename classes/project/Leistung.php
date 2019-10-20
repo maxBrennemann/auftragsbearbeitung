@@ -47,6 +47,20 @@ class Leistung extends Posten {
         return (int) $this->preis;
     }
 
+	public static function bearbeitungsschritteHinzufuegen($leistungsnummer, $auftragsnummer) {
+		$schritte = DBAccess::selectQuery("SELECT * FROM schritte_vordefiniert WHERE Leistungsnummer = $leistungsnummer");
+
+		foreach ($schritte as $schritt) {
+			$data = array();
+			$data['Bezeichnung'] = $schritt['bez'];
+			$data['Datum'] = date("Y-m-d");
+			$data['Priority'] = 1;
+			$data['Auftragsnummer'] = $auftragsnummer;
+			require_once("classes/project/Schritt.php");
+			Schritt::insertStep($data);
+		}
+	}
+
 }
 
 ?>
