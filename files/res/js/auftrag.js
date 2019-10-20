@@ -1,4 +1,8 @@
-﻿function getSelections() {
+﻿var globalData = {
+    aufschlag: 0
+}
+
+function getSelections() {
     var e = document.getElementById("selectPosten");
     var strUser = e.options[e.selectedIndex].value;
 
@@ -8,6 +12,12 @@
     } else if (strUser == "leistung") {
         document.getElementById("addPostenLeistung").style.display = "inline";
         document.getElementById("addPostenZeit").style.display = "none";
+
+        document.getElementById("ekp").addEventListener("input", function () {
+            var startCalc = parseInt(document.getElementById("ekp").value);
+            var price = startCalc * (1 + (globalData.aufschlag / 100));
+            document.getElementById("pre").value = price;
+        }, false);
     } else if (strUser == "produkt") {
         var showProducts = new AjaxCall(`getReason=createTable&type=produkt`, "POST", window.location.href);
         showProducts.makeAjaxCall(function (responseTable) {
@@ -135,6 +145,8 @@ function selectLeistung(e) {
     if (e.target.value == 5) {
         document.getElementById("addKfz").style.display = "inline";
     }
+
+    globalData.aufschlag = parseInt(e.target.options[e.target.selectedIndex].dataset.aufschlag);
 }
 
 function addColor() {
@@ -144,5 +156,11 @@ function addColor() {
 function rechnungErstellen() {
     var url = window.location.href.split('?')[0];
     url += "?create=" + document.getElementById("auftragsnummer").innerHTML;
+    window.location.href = url;
+}
+
+function showAuftrag() {
+    var url = window.location.href;
+    url += "&show=t";
     window.location.href = url;
 }
