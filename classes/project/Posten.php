@@ -21,7 +21,7 @@ abstract class Posten {
 
 	public static function bekommeAllePosten($auftragsnummer) {
 		$posten = array();
-
+		
 		$data = DBAccess::selectQuery("SELECT Postennummer, Posten FROM posten WHERE Auftragsnummer = {$auftragsnummer}");
 		foreach ($data as $step) {
 			$element;
@@ -67,6 +67,9 @@ abstract class Posten {
 				$pre = $data['SpeziefischerPreis'];
 				DBAccess::insertQuery("INSERT INTO posten (Postennummer, Auftragsnummer, Posten) VALUES ($postennummer, $auftragsnummer, '$type')");
 				DBAccess::insertQuery("INSERT INTO leistung_posten (Leistungsnummer, Postennummer, Beschreibung, Einkaufspreis, SpeziefischerPreis) VALUES($lei, $postennummer, '$bes', '$ekp', '$pre')");
+				Leistung::bearbeitungsschritteHinzufuegen($lei, $auftragsnummer);
+				break;
+			case "produkt":
 				break;
 		}
 	}
