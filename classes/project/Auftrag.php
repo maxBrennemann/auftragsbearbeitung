@@ -11,6 +11,7 @@ require_once('Schritt.php');
 require_once('Posten.php');
 require_once('FormGenerator.php');
 require_once('InteractiveFormGenerator.php');
+require_once('StatisticsInterface.php');
 require_once('classes/DBAccess.php');
 require_once('classes/Link.php');
 
@@ -19,7 +20,7 @@ require_once('classes/Link.php');
  * Dabei werden alle Auftragsposten und alle Bearbeitungsschritte aus der Datenbank geladen und als Objekte erstellt.
  * Diese können bearbeitet, ergänzt und abgearbeitet werden.
  */
-class Auftrag {
+class Auftrag implements StatisticsInterface {
 
     protected $Auftragsnummer = null;
 	protected $Auftragsbezeichnung = null;
@@ -32,7 +33,7 @@ class Auftrag {
 	function __construct($auftragsnummer) {
 		if ($auftragsnummer > 0) {
 			$this->Auftragsnummer = $auftragsnummer;
-			$data = DBAccess::selectQuery("SELECT * FROM `auftrag` WHERE Auftragsnummer = {$auftragsnummer}");
+			$data = DBAccess::selectAllByCondition("auftrag", "Auftragsnummer", $auftragsnummer);
 
 			if (!empty($data)) {
 				$this->Auftragsbeschreibung = $data[0]['Auftragsbeschreibung'];
@@ -197,6 +198,10 @@ class Auftrag {
 		}
 
 		return $farbTable;
+	}
+
+	public function recalculate() {
+	
 	}
 
 }
