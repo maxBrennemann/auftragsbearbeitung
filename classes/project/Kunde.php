@@ -7,9 +7,10 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 }
 
 require_once('Auftrag.php');
+require_once('StatisticsInterface.php');
 require_once('classes/DBAccess.php');
 
-class Kunde {
+class Kunde implements StatisticsInterface {
 
     private $kundennummer = null;
 	private $vorname = null;
@@ -24,7 +25,7 @@ class Kunde {
     private $telefonMobil = null;
 
 	function __construct($kundennummer) {
-		$data = DBAccess::selectQuery("SELECT * FROM kunde WHERE kundennummer = {$kundennummer}");
+		$data = DBAccess::selectAllByCondition("kunde", "Kundennummer", $kundennummer);
 		if (!empty($data)) {
 			$data = $data[0];
 			$this->kundennummer = $data['Kundennummer'];
@@ -97,7 +98,7 @@ class Kunde {
 	}
 
 	public function getAuftraege() {
-		$auftraege = DBAccess::selectQuery("SELECT * FROM Auftrag WHERE Kundennummer = {$this->kundennummer} ");
+		$auftraege = DBAccess::selectAllByCondition("auftrag", "Kundennummer", $this->kundennummer);
 		$column_names = DBAccess::selectColumnNames("auftrag");
 
 		$form = new FormGenerator("", "", "");
@@ -106,6 +107,10 @@ class Kunde {
 
 	public function getAnsprechpartner() {
 		return "";
+	}
+
+	public function recalculate() {
+	
 	}
 
 }
