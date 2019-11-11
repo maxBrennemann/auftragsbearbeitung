@@ -1,90 +1,85 @@
-﻿<?php 
-require_once('classes/project/FormGenerator.php');
-
-$getTableData = array();
-if (isset($_POST['getTable'])) {
-	$type = $_POST['getTable'];
-	$column_names = DBAccess::selectColumnNames($type);
-
-	for ($i = 0; $i < sizeof($column_names); $i++) {
-		$showColumnName = $column_names[$i]["COLUMN_NAME"];
-		$data = $_POST[$showColumnName];
-		array_push($getTableData, $data);
-	}
-
-	FormGenerator::insertData($type, $getTableData);
-	$table = FormGenerator::createTable("kunde", true, true, "neuerKunde");
-	echo $table;
-} else {
-	$table = FormGenerator::createTable("kunde", true, true, "neuerKunde");
-	echo "<div id='tableContainer'>" . $table . "</div>";
-}
-?>
-
-<? if (!isset($_POST['getTable'])): ?>
-	<h3>Ansprechpartner</h3>
-	<div id="ansprechpartnerTable" style="display: none">
-		<table>
-			<tr>
-				<th>Vorname</th>
-				<th>Nachname</th>
-				<th>Email</th>
-				<th>Durchwahl</th>
-			</tr>
-			<tr>
-				<td class="ansprTableCont" contenteditable="true" data-col="vorname"></td>
-				<td class="ansprTableCont" contenteditable="true" data-col="nachname"></td>
-				<td class="ansprTableCont" contenteditable="true" data-col="email"></td>
-				<td class="ansprTableCont" contenteditable="true" data-col="durchwahl"></td>
-			</tr>
-		</table>
-	</div>
-	<button onclick="addDataToDB()">Hinzufügen</button>
-<? endif; ?>
-<div>
+﻿<div>
 	<form>
-		<p>
-			<label>Firmenname
-				<input class="dataInput" type="text" name="firmenname">
-			</label>
-		</p>
-		<p>
-			<label>Anrede
-				<select id="selectAnrede">
-					<option value="0">Herr</option>
-					<option value="1">Frau</option>
-					<option value="2">Firma</option>
-				</select>
-			</label>
-		</p>
-		<p>
-			<label>Vorname
-				<input class="dataInput" type="text" name="vorname">
-			</label>
-		</p>
-		<p>
-			<label>Nachname
-				<input class="dataInput" type="text" name="nachname">
-			</label>
-		</p>
+		<input type="radio" name="oeffOderPriv" value="firma" checked onchange="switchOeffPriv(this)">Firma oder Vereinsname
+		<input type="radio" name="oeffOderPriv" value="privat" onchange="switchOeffPriv(this)">Privat
+		<div class="basicInfo">
+			<p>
+				<label>Firmenname
+					<input class="dataInput" type="text" name="firmenname">
+				</label>
+			</p>
+			<div class="specificData">
+				<h4>Ansprechpartner:</h4>
+				<p>
+					<label>Anrede
+						<select class="dataInput" id="selectAnrede" name="anredeAnspr">
+							<option value="0">Herr</option>
+							<option value="1">Frau</option>
+							<option value="2">Firma</option>
+						</select>
+					</label>
+				</p>
+				<p>
+					<label>Vorname
+						<input class="dataInput" type="text" name="vornameAnspr">
+					</label>
+				</p>
+				<p>
+					<label>Nachname
+						<input class="dataInput" type="text" name="nachnameAnspr">
+					</label>
+				</p>
+				<p>
+					<label>Email
+						<input class="dataInput" type="email" name="emailAnspr">
+					</label>
+				</p>
+				<p>
+					<label>Durchwahl
+						<input class="dataInput" type="text" name="telAnspr">
+					</label>
+				</p>
+			</div>
+		</div>
+		<div class="basicInfo" style="display: none;">
+			<p>
+				<label>Anrede
+					<select class="dataInput" id="selectAnrede" name="anrede">
+						<option value="0">Herr</option>
+						<option value="1">Frau</option>
+						<option value="2">Firma</option>
+					</select>
+				</label>
+			</p>
+			<p>
+				<label>Vorname
+					<input class="dataInput" type="text" name="vorname">
+				</label>
+			</p>
+			<p>
+				<label>Nachname
+					<input class="dataInput" type="text" name="nachname">
+				</label>
+			</p>
+		</div>
 		<p>
 			<label>Straße
-				<input class="dataInput" type="text" name="strasse">
+				<input class="dataInput" type="text" name="strasse" required>
 			</label>
 		</p>
 		<p>
 			<label>Hausnummer
-				<input class="dataInput" type="text" name="hausnummer">
+				<input class="dataInput" type="text" name="hausnummer" required>
 			</label>
 		</p>
 		<p>
 			<label>Postleitzahl
-				<input class="dataInput" type="number" name="plz">
+				<input class="dataInput" type="number" name="plz" required>
 			</label>
 		</p>
 		<p>
 			<label>Ort
-				<input class="dataInput" type="text" name="ort">
+				<input class="dataInput" type="text" name="ort" required>
 			</label>
 		</p>
 		<p>
@@ -94,12 +89,12 @@ if (isset($_POST['getTable'])) {
 		</p>
 		<p>
 			<label>Telefon Festnetz
-				<input class="dataInput" type="tel" name="telfestnetz" pattern="[0-9]{5}\/[0-9]{+}">
+				<input class="dataInput" type="tel" name="telfestnetz" pattern="[0-9]{5}\/[0-9]+">
 			</label>
 		</p>
 		<p>
 			<label>Telefon Mobil
-				<input class="dataInput" type="text" name="telmobil">
+				<input class="dataInput" type="tel" name="telmobil" pattern="[0][1-9]{3} [0-9]+">
 			</label>
 		</p>
 
@@ -113,5 +108,12 @@ if (isset($_POST['getTable'])) {
 
 	.dataInput {
 		float: right;
+	}
+
+	.specificData {
+		-webkit-appearance: textfield;
+		border-style: inset;
+		margin: 5px;
+		padding: 10px;
 	}
 </style>
