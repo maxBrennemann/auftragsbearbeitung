@@ -27,7 +27,8 @@ function auftragHinzufuegen() {
     var bes = document.getElementById("beschreibung").value;
     var typ = document.getElementById("typ").value;
     var ter = document.getElementById("termin").value;
-    var kdn = new URL(window.location.href).searchParams.get("kdnr");
+    var kdn = new URL(window.location.href).searchParams.get("kdnr") ||
+                new URL(window.location.href).searchParams.get("id");
 
     var e = document.getElementById("selectMitarbeiter");
     var ang = e.options[e.selectedIndex].value;
