@@ -49,7 +49,7 @@
 		if(!$error) {    
 			$password_hash = password_hash($password, PASSWORD_DEFAULT);
 			
-			$params = array('username' => $username, 'email' => $email, 'password' => $password_hash)
+			$params = array('username' => $username, 'email' => $email, 'password' => $password_hash);
 			$insert = "INSERT INTO members (username, email, password) VALUES (:username, :email, :password)";
 			$result = DBAccess::insertQuery($insert, $params);
 			
