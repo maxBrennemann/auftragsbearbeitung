@@ -148,7 +148,7 @@
 </div>
 <?php else: ?>
 	<p>Kunde wurde hinzugefügt.</p>
-	<a href="<?=Link::getPageLink("neuerKunde");?>">Weiteren Kunden hinzufügen.</a>
+	<a href="<?=Link::getPageLink("neuer-kunde");?>">Weiteren Kunden hinzufügen.</a>
 <?php endif; ?>
 <style>
 	form p {
