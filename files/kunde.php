@@ -29,8 +29,20 @@
 		}
 	}
 	
-?>
+	$nextNumber = Kunde::getNextAssignedKdnr($kundenid, 1);
+	$linkForward = Link::getPageLink("kunde") . "?id=" . ($nextNumber);
+	if ($nextNumber == -1) $linkForward = "#";
+	$nextNumber = Kunde::getNextAssignedKdnr($kundenid, -1);
+	$linkBackward = Link::getPageLink("kunde") . "?id=" . ($nextNumber);
+	if ($nextNumber == -1) $linkBackward = "#";
 
+?>
+<p><a href="<?=$linkBackward?>">🡄</a><a href="<?=$linkForward?>" id="forwards">🡆</a></p>
+<style>
+	#forwards {
+		float: right;
+	}
+</style>
 <?php if ($kundenid == -1) : ?>
 	<p>Kunde kann nicht angezeigt werden.</p>
 <?php else: ?>
