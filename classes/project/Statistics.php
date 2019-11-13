@@ -8,7 +8,7 @@ class Statistics {
 		$id = $datum["id"];
 
 		if ($id == null) {
-			DBAccess::insertQuery("INSERT INTO statistik_auftraege_pro_monat (datum, anzahl, gesamtsumme, einkaufssumme, istOffen) VALUES ('$d', 1, {$auftrag->preisBerechnen()}, 0, 0)")
+			DBAccess::insertQuery("INSERT INTO statistik_auftraege_pro_monat (datum, anzahl, gesamtsumme, einkaufssumme, istOffen) VALUES ('$d', 1, {$auftrag->preisBerechnen()}, 0, 0)");
 		} else {
 			$neueAnzahl = ((int) $datum["anzahl"]) + 1;
 			$neueGesamtsumme = ((int) $datum["gesamtsumme"]) + $auftrag->preisBerechnen();
