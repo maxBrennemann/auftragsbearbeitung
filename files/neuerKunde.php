@@ -1,4 +1,47 @@
-﻿<div>
+﻿<?php
+	require_once('classes/DBAccess.php');
+
+	$isSent = isset($_GET['oeffOderPriv']);
+
+	if($isSent) {
+		$oeffOderPriv = $_GET['oeffOderPriv'];
+		$firmenname = $_GET['firmenname'];
+		$anredeAnspr = $_GET['anredeAnspr'];
+		$vornameAnspr = $_GET['vornameAnspr'];
+		$nachnameAnspr = $_GET['nachnameAnspr'];
+		$emailAnspr = $_GET['emailAnspr'];
+		$telAnspr = $_GET['telAnspr'];
+		$anrede = $_GET['anrede'];
+		$vorname = $_GET['vorname'];
+		$nachname = $_GET['nachname'];
+		$strasse = $_GET['strasse'];
+		$hausnummer = $_GET['hausnummer'];
+		$plz = $_GET['plz'];
+		$ort = $_GET['ort'];
+		$email = $_GET['emailadress'];
+		$telfestnetz = $_GET['telfestnetz'];
+		$telmobil = $_GET['telmobil'];
+
+		$insertString = "INSERT INTO kunde (Firmenname, Anrede, Vorname, Nachname,";
+		$insertString .= " Straße, Hausnummer, Postleitzahl, Ort, Email,";
+		$insertString .= " TelefonFestnetz, TelefonMobil) VALUES";
+		$insertString .= "('$firmenname', '$anrede', '$vorname', '$nachname', ";
+		$insertString .= "'$strasse', '$hausnummer', $plz, '$ort', '$email', ";
+		$insertString .= "'$telfestnetz', '$telmobil')";
+		DBAccess::insertQuery($insertString);
+
+		if ($nachnameAnspr != "") {
+			$kdnr = DBAccess::selectQuery("SELECT MAX(Kundennummer) FROM kunde")[0]["MAX(Kundennummer)"];
+			$insertString = "INSERT INTO ansprechpartner (Kundennummer, Vorname, Nachname,";
+			$insertString .= " Email, Durchwahl) VALUES ($kdnr, '$vornameAnspr', ";
+			$insertString .= "'$nachnameAnspr', '$emailAnspr', '$telAnspr')";
+			DBAccess::insertQuery($insertString);
+		}
+	}
+
+	if (!$isSent) :
+?>
+<div>
 	<form>
 		<input type="radio" name="oeffOderPriv" value="firma" checked onchange="switchOeffPriv(this)">Firma oder Vereinsname
 		<input type="radio" name="oeffOderPriv" value="privat" onchange="switchOeffPriv(this)">Privat
@@ -101,6 +144,10 @@
 		<input type="submit">
 	</form>
 </div>
+<?php else: ?>
+	<p>Kunde wurde hinzugefügt.</p>
+	<a href="<?=Link::getPageLink("neuerKunde");?>">Weiteren Kunden hinzufügen.</a>
+<?php endif; ?>
 <style>
 	form p {
 		display: block;
