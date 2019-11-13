@@ -1,6 +1,8 @@
 ﻿<?php
 	require_once('classes/DBAccess.php');
 
+	// TODO: test
+
 	$isSent = isset($_GET['oeffOderPriv']);
 
 	if($isSent) {
