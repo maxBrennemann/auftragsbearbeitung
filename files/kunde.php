@@ -42,6 +42,10 @@
 	#forwards {
 		float: right;
 	}
+
+	a[href="#"] {
+		color: grey;
+	}
 </style>
 <?php if ($kundenid == -1) : ?>
 	<p>Kunde kann nicht angezeigt werden.</p>
