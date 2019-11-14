@@ -1,0 +1,44 @@
+ul {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: minmax(100px, auto);
+}
+
+li {
+    padding: 15px;
+    background-color: #eff0f1;
+    border-radius: 6px;
+}
+
+li input {
+    border-radius: 6px;
+    border: none;
+    padding: 4px;
+}
+
+@media (max-width: 500px) {
+    ul {
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: minmax(50px, auto);
+        grid-gap: 1px;
+        overflow: hidden;
+        max-width: 95vw;
+    }
+
+    li {
+        padding: 10px;
+    }
+
+    li input {
+        width: 120px;
+    }
+
+    .tableContainer {
+        max-width: 95vw;
+    }
+
+    footer {
+        max-width: 100vw;
+    }
+}

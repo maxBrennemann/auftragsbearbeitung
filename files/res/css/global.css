@@ -5,6 +5,7 @@ body {
     font-family: 'Open Sans', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 0.9em;
     min-height: 100vh;
+    width: 100vw;
     margin: 0;
     padding: 0;
     display: grid;
@@ -20,7 +21,7 @@ header h1 {
 }
 
 main, .footer {
-    width: 80%;
+    width: 80vw;
     margin: auto;
 }
 
@@ -48,8 +49,8 @@ h1 {
 }
 
 /* a */
-a:visited {
-    color: blue;
+a, a:visited {
+    color: #005999;
 }
 
 /* button */
@@ -119,4 +120,14 @@ tr:last-child td:last-child {
 .linkBundleLink {
     color: white !important;
     text-decoration: none;
+}
+
+@media (max-width: 500px) {
+    main {
+        width: 95vw;
+    }
+
+    tbody {
+        max-width: 90vw;
+    }
 }

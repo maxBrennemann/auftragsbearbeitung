@@ -31,12 +31,12 @@
 ?>
 <div>
 	<ul>
-		<li><a href="<?=$neuerKunde?>">+ Neuen Kunden erstellen</a></li>
+		<li><a href="<?=$neuerKunde?>">+👤 Neuen Kunden erstellen</a></li>
 		<li>
 			<input id="kundeninput" type="number" min="1" oninput="document.getElementById('kundenLink').href = '<?=$kunde?>?id=' + this.value;">
 			<a href="#" id="kundenLink">Kunde anzeigen</a>
 		</li>
-		<li><a href="<?=$neuerAuftrag?>">+ Neuen Auftrag erstellen</a></li>
+		<li><a href="<?=$neuerAuftrag?>">+💼 Neuen Auftrag erstellen</a></li>
 		<li><a href="<?=$rechnung?>">Neue Rechnung erstellen</a></li>
 		<li>
 			<input id="rechnungsinput" type="number" min="1" oninput="document.getElementById('rechnungsLink').href = '<?=$rechnung?>?id=' + this.value;">
@@ -48,11 +48,11 @@
 			<input id="auftragsinput" type="number" min="1" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value;">
 			<a href="#" id="auftragsLink">Auftrag anzeigen</a>
 		</li>
-		<li><a href="<?=$diagramme?>">Diagramme und Auswertungen</a></li>
+		<li><a href="<?=$diagramme?>">📈Diagramme und Auswertungen</a></li>
 		<li><a href="<?=$leistungen?>">Leistungen</a></li>
 	</ul>
 
-	<div>
+	<div class="tableContainer">
 		<p><u>Offene Bearbeitungsschritte:</u></p><?=$showAktuelleSchritte?>
 		<p><u>Offene Aufträge:</u></p><?=$showOffeneAuftraege?>
 		<p><u>Offene Rechnungen:</u> <?=$offeneSumme?>€</p><?=$showOffeneRechnungen?>
