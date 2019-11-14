@@ -15,10 +15,10 @@ class Link {
 			$upper = DBAccess::selectQuery("SELECT * FROM articles WHERE id = $page");
 			$upper = $upper[0];
 			
-			return REWRITE_BASE . SUB_URL . $upper['src'] . "/" . $resourceName;
+			return WEB_URL . SUB_URL . $upper['src'] . "/" . $resourceName;
 		}
 		
-		$link = REWRITE_BASE . SUB_URL . $resourceName;
+		$link = WEB_URL . SUB_URL . $resourceName;
 		return $link;
 	}
 	
