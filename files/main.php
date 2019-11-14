@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 	require_once('classes/Link.php');
 	require_once('classes/project/Aufgabenliste.php');
 	require_once('classes/project/Auftrag.php');
@@ -53,8 +53,8 @@
 	</ul>
 
 	<div class="tableContainer">
-		<p><u>Offene Bearbeitungsschritte:</u></p><?=$showAktuelleSchritte?>
-		<p><u>Offene Aufträge:</u></p><?=$showOffeneAuftraege?>
-		<p><u>Offene Rechnungen:</u> <?=$offeneSumme?>€</p><?=$showOffeneRechnungen?>
+		<h3>Offene Bearbeitungsschritte:</h3><?=$showAktuelleSchritte?>
+		<h3>Offene Aufträge:</h3><?=$showOffeneAuftraege?>
+		<h3>Offene Rechnungen: <?=$offeneSumme?>€</h3><?=$showOffeneRechnungen?>
 	</div>
 </div>
