@@ -8,22 +8,20 @@
 		$leistungen =		Link::getPageLink("leistungen");
 	?>
 	<footer>
-		<div class="footer">
-			<div class="linkBundle">
-				<a class="linkBundleLink" href="<?=Link::getPageLink('')?>">← Zur Main Page</a><br>
-				<a class="linkBundleLink" href="https://klebefux.de">Zu klebefux</a><br>
-				<a class="linkBundleLink" href="https://b-schriftung.de">Zu b-schriftung</a>
-			</div>
-			<div class="linkBundle">
-				<a class="linkBundleLink" href="<?=$neuerKunde?>">Neuer Kunde</a><br>
-				<a class="linkBundleLink" href="<?=$neuerAuftrag?>">Neuer Auftrag</a><br>
-				<a class="linkBundleLink" href="<?=$neuesAngebot?>">Neues Angebot</a><br>
-			</div>
-			<div class="linkBundle">
-				<a class="linkBundleLink" href="<?=$neuesProdukt?>">Neues Produkt</a><br>
-				<a class="linkBundleLink" href="<?=$diagramme?>">Diagramme</a><br>
-				<a class="linkBundleLink" href="<?=$leistungen?>">Leistungen</a><br>
-			</div>
+		<div class="linkBundle">
+			<a class="linkBundleLink" href="<?=Link::getPageLink('')?>">← Zur Main Page</a><br>
+			<a class="linkBundleLink" href="https://klebefux.de">Zu klebefux</a><br>
+			<a class="linkBundleLink" href="https://b-schriftung.de">Zu b-schriftung</a>
+		</div>
+		<div class="linkBundle">
+			<a class="linkBundleLink" href="<?=$neuerKunde?>">Neuer Kunde</a><br>
+			<a class="linkBundleLink" href="<?=$neuerAuftrag?>">Neuer Auftrag</a><br>
+			<a class="linkBundleLink" href="<?=$neuesAngebot?>">Neues Angebot</a><br>
+		</div>
+		<div class="linkBundle">
+			<a class="linkBundleLink" href="<?=$neuesProdukt?>">Neues Produkt</a><br>
+			<a class="linkBundleLink" href="<?=$diagramme?>">Diagramme</a><br>
+			<a class="linkBundleLink" href="<?=$leistungen?>">Leistungen</a><br>
 		</div>
 	</footer>
 
