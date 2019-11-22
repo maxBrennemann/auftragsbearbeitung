@@ -59,3 +59,11 @@ aside {
     height: 20px;
     border-radius: 6px;
 }
+
+@media (max-width: 500px) {
+    main {
+        display: grid;
+        max-width: 95vw;
+        grid-template-areas: "auftrag auftrag" "kunde kunde" "schritte schritte" "posten posten" "fahrzeuge farben" "preis preis" "postenadd postenadd" "produkt produkt" "step step";
+    }
+}
