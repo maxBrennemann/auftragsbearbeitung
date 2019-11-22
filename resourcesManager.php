@@ -20,4 +20,10 @@
 		$file = file_get_contents(Link::getResourcesLink($script, "css", false));
 		echo $file;
 	}
+
+	if (isset($_GET['upload'])) {
+		header("Content-type:application/pdf");
+		$file = file_get_contents(Link::getResourcesLink($_GET['upload'], "upload", false));
+		echo $file;
+	}
 ?>
