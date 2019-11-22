@@ -46,6 +46,9 @@ class Link {
 			case "html":
 				$link = $rewriteBase . "files/res/form/" . $resource;
 				break;
+			case "upload":
+				$link = $rewriteBase . "upload/" . $resource;
+				break;
 		}
 		
 		return $link;
@@ -61,6 +64,9 @@ class Link {
 				break;
 			case "font":
 				$link = REWRITE_BASE . "font/" . $resource;
+				break;
+			case "upload":
+				$link = REWRITE_BASE . "upload/" . $resource;
 				break;
 		}
 		
