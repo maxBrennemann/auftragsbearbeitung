@@ -4,6 +4,7 @@
 	require_once('classes/project/FormGenerator.php');
 	require_once('classes/project/Kunde.php');
 	require_once('classes/DBAccess.php');
+	require_once('classes/Upload.php');
 
 	$auftragsId = -1;
 	$auftragAnzeigen = Link::getPageLink("auftrag");
@@ -21,6 +22,11 @@
 		}
 	}
 
+	if (isset($_POST['filesubmitbtn'])) {
+		$upload = new Upload();
+		$upload->uploadFiles($auftragsId);
+	}
+
 	if (isset($_GET['create'])) {
 		$nextId = Rechnung::getNextNumber();
 		$auftragsid = $_GET['create'];
@@ -32,8 +38,9 @@
 	if (isset($_GET['show'])) {
 		$show = true;
 	}
-
+	
 	$leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
+	$showFiles = Upload::getFiles($auftragsId);
 
 if ($auftragsId == -1) : ?>
 	<input type="number" min="1" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value;">
@@ -109,6 +116,16 @@ if ($auftragsId == -1) : ?>
 			</div>
 		</div>
 		<div id="generalPosten"></div>
+	</div>
+	<div class="border upload">
+		<form method="post" enctype="multipart/form-data">
+			Dateien hinzufügen:
+			<input type="file" name="uploadedFile">
+			<input type="submit" value="Datei hochladen" name="filesubmitbtn">
+		</form>
+		<div>
+			<?=$showFiles?>
+		</div>
 	</div>
 	<div class="border produkt">
 		<div id="selectProdukt">
