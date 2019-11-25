@@ -1,4 +1,4 @@
-<?php 
+<?php
 	$kdnr = -1;
 	if (isset($_GET['kdnr'])) {
 		$kdnr = $_GET['kdnr'];
