@@ -1,6 +1,4 @@
 <?php
-	//session_start();
-
 	require_once('classes/DBAccess.php');
 	require_once('classes/Link.php');
 	require_once('classes/Login.php');
@@ -9,14 +7,6 @@
 	$globalJS =  Link::getGlobalJS();
 	$curr_Link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 	$adminLink = Link::getAdminLink();
-	
-	if(isset($_POST['info'])) {
-		Login::manageRequest();
-	}
-	
-	if(isset($_GET['mailId'])) {
-		Login::registerEmail();
-	}
 ?>
 <!DOCTYPE html>
 <html>

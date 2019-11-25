@@ -16,7 +16,7 @@ class Login {
 			
 			if($info == 'register') {
 				self::register();
-			} else if($info == 'login') {
+			} else if($info == 'Einloggen') {
 				self::login();
 			} else if($info == 'logout') {
 				$_SESSION = array();
@@ -41,9 +41,10 @@ class Login {
 		
 		$loginData = $_POST['loginData'];
 		$password = $_POST['password'];
-		
+
 		$user = DBAccess::selectQuery("SELECT * FROM `members` WHERE `email` = '$loginData' OR `username` = '$loginData'");
-		$user = $user[0]; // warum auch immer das nötig ist
+		if (empty($user)) return false;
+		$user = $user[0];
 		
 		/* Überprüfung des Passworts */
 		if($user !== false && password_verify($password, $user['password'])) {
@@ -59,9 +60,13 @@ class Login {
 				echo "Sie müssen Ihre E-Mail Adresse noch bestätigen! Bestätigunsmail nochmal senden.";
 			}*/
 			
+			$_SESSION['loggedIn'] = true;
 		} else {
 			echo "E-Mail / Benutzername oder Passwort war ungültig<br>";
+			return false;
 		}
+
+		return true;
 	}
 	
 	private static function register() {
