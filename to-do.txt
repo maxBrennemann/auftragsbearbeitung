@@ -6,7 +6,7 @@ neuer-kunde:
 	* Kundennummer automatisch eintragen ✔
 	* verschiedene Ansprechpartner unterstützen ✔
 	* Ansprache (Herr / Frau) implementieren ✔
-	* nur manche Felder notwendig machen
+	* nur manche Felder notwendig machen ✔
 	* Suchfeld
 
 kunde:
@@ -23,18 +23,18 @@ neuer-auftrag:
 auftrag:
 	* Fehlermeldung, wenn Auftragsnummer nicht vorhanden ✔
 	* beim Hinzufügen mancher Posten sollen automatisch Bearbeitungsschritte generiert werden
-	* Suche fixen
+	* Suche fixen ✔
 	* Produkte überarbeiten
 
 Bearbeitungsschritte:
 	* automatisch generieren für manche Arten von Posten
-	* abarbeitbar machen
+	* abarbeitbar machen ✔
 
 Leistung:
 	* Verschiedene Leistungen implementieren und Formeln für den Preis hinterlegen
 
 Allgemein:
-	* Login
+	* Login ✔
 	* eventuell Kundenpanel
 
 Tabellen:
