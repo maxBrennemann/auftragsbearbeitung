@@ -32,6 +32,8 @@
 		$auftragsid = $_GET['create'];
 		echo "Rechnung $nextId wird erstellt";
 		DBAccess::updateQuery("UPDATE auftrag SET Rechnungsnummer = $nextId WHERE Auftragsnummer = $auftragsid");
+		$tempAuftrag = new Auftrag($auftragsid);
+		$tempAuftrag->recalculate();
 	}
 
 	/* Paremter wird gebraucht, falls Rechnung gestellt wurde, aber der Auftrag trotzdem gezeigt werden soll */
