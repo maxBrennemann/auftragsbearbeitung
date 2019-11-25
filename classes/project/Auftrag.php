@@ -14,6 +14,7 @@ require_once('InteractiveFormGenerator.php');
 require_once('StatisticsInterface.php');
 require_once('classes/DBAccess.php');
 require_once('classes/Link.php');
+require_once('Statistics.php');
 
 /**
  * Klasse generiert im Zusammenhang mit der Template Datei auftrag.php die Übersicht für einen bestimmten Auftrag.
@@ -201,7 +202,11 @@ class Auftrag implements StatisticsInterface {
 	}
 
 	public function recalculate() {
-	
+		Statistics::auftragEroeffnen();
+		/*
+		* Theoretisch sollte auftragAbschliessen() aufgerufen werden, jedoch müssen
+		* die Methoden in Statistics noch angepasst werden
+		*/
 	}
 
 }

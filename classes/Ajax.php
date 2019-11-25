@@ -72,6 +72,8 @@ class Ajax {
 				DBAccess::insertQuery($insertQuery);
 
 				echo Link::getPageLink("auftrag") . "?id=$maxAuftragsnr";
+
+				//Statistics::auftragEroeffnen(new Auftrag($maxAuftragsnr));
 				break;
 			case "insTime":
 				$data = array();
