@@ -1,22 +1,64 @@
 <?php 
 require_once('classes/project/FormGenerator.php');
 
-$getTableData = array();
-if (isset($_POST['getTable'])) {
-	$type = $_POST['getTable'];
-	$column_names = DBAccess::selectQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'${type}'");
+$productId = -1;
 
-	for ($i = 0; $i < sizeof($column_names); $i++) {
-		$showColumnName = $column_names[$i]["COLUMN_NAME"];
-		$data = $_POST[$showColumnName];
-		array_push($getTableData, $data);
-	}
-
-	FormGenerator::insertData($type, $getTableData);
-	$table = FormGenerator::createTable("produkt", true, true, "neuesProdukt", 10, true);
-	echo $table;
-} else {
-	$table = FormGenerator::createTable("produkt", true, true, "neuesProdukt", 10, true);
-	echo "<div id='tableContainer'>" . $table . "</div>";
+if (isset($_GET['id'])) {
+	$productId = $_GET['id'];
 }
+
+if (isset($_POST['filesubmitbtn'])) {
+	$upload = new Upload();
+	$upload->uploadFilesProduct($productId);
+}
+
+$quelle = DBAccess::selectQuery("SELECT name, id FROM einkauf");
+
+echo "<a href=\"" . Link::getPageLink("attributes") . "\">Zu den Produktattributetn</a>";
 ?>
+<div>
+	<form>
+		<p>
+			<label>Marke
+				<input class="dataInput" type="text" name="marke" required>
+			</label>
+		</p>
+		<p>
+			<label>Quelle
+				<select id="selectSource" required>
+					<option value="-1" selected disabled>Bitte auswählen</option>
+					<?php foreach ($quelle as $q): ?>
+						<option value="<?=$q['id']?>"><?=$q['name']?></option>
+					<?php endforeach; ?>
+					<option value="addNew">Neue Option hinzufügen</option>
+				</select>
+			</label>
+		</p>
+		<p>
+			<label>Verkaufspreis Netto
+				<input class="dataInput" type="text" name="vk_netto" required>
+			</label>
+		</p>
+		<p>
+			<label>Einkaufspreis Netto
+				<input class="dataInput" type="text" name="plz" required>
+			</label>
+		</p>
+		<p>
+			<label>Kurzbezeichnung / Titel
+				<input class="dataInput" type="text" name="short_description" max="64" required>
+			</label>
+		</p>
+		<p>
+			<label>Beschreibung
+				<input class="dataInput" type="text" name="description">
+			</label>
+		</p>
+		<form method="post" enctype="multipart/form-data">
+			Dateien hinzufügen:
+			<input type="file" name="uploadedFile">
+			<input type="submit" value="Datei hochladen" name="filesubmitbtn">
+		</form>
+		<input type="submit">
+	</form>
+</div>
