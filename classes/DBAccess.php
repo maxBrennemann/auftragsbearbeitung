@@ -79,7 +79,8 @@ class DBAccess {
 			}
 		}
 		
-		return self::$statement->execute();
+		self::$statement->execute();
+		return self::$connection->lastInsertId();
 	}
 }
 
