@@ -25,6 +25,7 @@ auftrag:
 	* beim Hinzufügen mancher Posten sollen automatisch Bearbeitungsschritte generiert werden
 	* Suche fixen ✔
 	* Produkte überarbeiten
+	* Produktpreise speicher, falls sich diese nachträglich ändern
 
 Bearbeitungsschritte:
 	* automatisch generieren für manche Arten von Posten
