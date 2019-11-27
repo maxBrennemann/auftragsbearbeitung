@@ -24,7 +24,7 @@
 
 	if (isset($_POST['filesubmitbtn'])) {
 		$upload = new Upload();
-		$upload->uploadFiles($auftragsId);
+		$upload->uploadFilesAuftrag($auftragsId);
 	}
 
 	if (isset($_GET['create'])) {
@@ -42,7 +42,7 @@
 	}
 	
 	$leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
-	$showFiles = Upload::getFiles($auftragsId);
+	$showFiles = Upload::getFilesAuftrag($auftragsId);
 
 if ($auftragsId == -1) : ?>
 	<input type="number" min="1" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value;">

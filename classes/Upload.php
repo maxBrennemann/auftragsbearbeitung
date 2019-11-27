@@ -5,23 +5,43 @@ require_once('classes/DBAccess.php');
 class Upload {
     private $uploadDir = "upload/";
     
-    public function uploadFiles($auftragsnummer) {
+    public function uploadFilesAuftrag($auftragsnummer) {
+        $id = $this->uploadFiles();
+        echo "id: " . $id . " /id";
+        DBAccess::insertQuery("INSERT INTO dateien_auftraege (id_datei, id_auftrag) VALUES ($id, $auftragsnummer)");
+    
+        $link = Link::getPageLink("auftrag") . "?id=" . $auftragsnummer;
+        header("Location:$link");
+    }
+
+    public function uploadFilesProduct($produktnummer) {
+        $id = $this->uploadFiles();
+        echo "id: " . $id . " /id";
+        DBAccess::insertQuery("INSERT INTO dateien_produkte (id_datei, id_produkt) VALUES ($id, $produktnummer)");
+    
+        $link = Link::getPageLink("neuesProdukt") . "?id=" . $auftragsnummer;
+        header("Location:$link");
+    }
+
+    private function uploadFiles() {
         $datetime = new DateTime();
         $filename = $datetime->getTimestamp() . basename($_FILES["uploadedFile"]["name"]);
         $originalname = basename($_FILES["uploadedFile"]["name"]);
-        $insertQuery = "INSERT INTO dateien (dateiname, auftragsnummer, originalname) VALUES ('$filename', $auftragsnummer, '$originalname')";
+        $insertQuery = "INSERT INTO dateien (dateiname, originalname) VALUES ('$filename', '$originalname')";
         
         if (move_uploaded_file($_FILES["uploadedFile"]["tmp_name"], $this->uploadDir . $filename)) {
-            DBAccess::insertQuery($insertQuery);
-            $link = Link::getPageLink("auftrag") . "?id=" . $auftragsnummer;
-            header("Location:$link");
+            return DBAccess::insertQuery($insertQuery);
         } else {
             return -1;
         }
     }
 
-    public static function getFiles($auftragsnummer) {
-        $files = DBAccess::selectQuery("SELECT dateiname, originalname FROM dateien WHERE auftragsnummer = $auftragsnummer");
+    public static function getFiles() {
+        
+    }
+
+    public static function getFilesAuftrag($auftragsnummer) {
+        $files = DBAccess::selectQuery("SELECT DISTINCT dateiname, originalname FROM dateien LEFT JOIN dateien_auftraege ON dateien_auftraege.id_datei WHERE dateien_auftraege.id_auftrag = $auftragsnummer");
         $html = "";
         foreach ($files as $file) {
             $link = Link::getResourcesShortLink($file['dateiname'], "upload");
