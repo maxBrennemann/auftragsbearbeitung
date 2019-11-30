@@ -86,6 +86,10 @@ class Produkt {
 		array_push($mostSimilarProducts, array($nummer, $percentage));
 	}
 
+	public static function addSource() {
+		
+	}
+
 }
 
 ?>
