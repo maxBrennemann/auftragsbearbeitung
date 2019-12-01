@@ -1,5 +1,7 @@
 <?php
 
+require_once("classes/project/Produkt.php");
+
 class Ajax {
 	
 	private static $insertIntoAuftrag = "INSERT INTO auftrag (Auftragsnummer, Kundennummer, Auftragsbezeichnung, Auftragsbeschreibung, Auftragstyp, Datum, Termin, AngenommenDurch, AngenommenPer, Ansprechpartner)";
@@ -144,6 +146,18 @@ class Ajax {
 				$row =  $_POST['row'];
 				$table->setIdentifier("Schrittnummer");
 				$table->editRow($row, "istErledigt", "0");
+				break;
+			case "sendSource":
+				Produkt::addSource();
+				break;
+			case "getSelect":
+				Produkt::getSelectSource();	
+				break;
+			case "insertVerbesserung":
+				if (isset($_POST['verbesserung'])) {
+					$verbesserung = $_POST['verbesserung'];
+					DBAccess::insertQuery("INSERT INTO verbesserungen (verbesserungen) VALUES ('$verbesserung')");
+				}
 				break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";

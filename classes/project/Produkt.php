@@ -87,7 +87,24 @@ class Produkt {
 	}
 
 	public static function addSource() {
-		
+		if (isset($_POST['name']) && isset($_POST['desc'])) {
+			$name = $_POST['name'];
+			$desc = $_POST['desc'];
+
+			DBAccess::insertQuery("INSERT INTO einkauf (name, description) VALUES ('$name', '$desc')");
+		}
+	}
+
+	public static function getSelectSource() {
+		$quelle = DBAccess::selectQuery("SELECT name, id FROM einkauf");
+
+		$string = "<select id=\"selectSource\" required><option value=\"-1\" selected disabled>Bitte auswählen</option>";
+		foreach ($quelle as $q) {
+			$string .= "<option value=\"" . $q['id'] . "\">" . $q['name'] . "</option>";
+		}
+				
+		$string .= "<option value=\"addNew\">Neue Option hinzufügen</option></select>";
+		echo $string;
 	}
 
 }
