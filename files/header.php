@@ -48,7 +48,7 @@
 </head>
 <body>
 	<header>
-		<h1><?=$pageName?></h1>
+		<h1><img id="imageHeader" scr="<?=WEB_URL?>/img/b-schriftung.svg" /><?=$pageName?></h1>
 		<hr style="margin: auto; width: 80%">
 	</header>
 	<main>

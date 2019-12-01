@@ -76,7 +76,7 @@ table {
 tbody {
     display: inline-block;
     overflow-x: auto;
-    max-width: 70vw;
+    max-width: 78vw;
 }
 
 tr {
@@ -120,6 +120,19 @@ tr:last-child td:last-child {
     text-decoration: none;
 }
 
+#imageHeader {
+    width: 100px;
+    height: auto;
+    max-width:100%;
+    max-height:100%;
+}
+
+@media (max-width: 1000px) {
+    tbody {
+        max-width: 78vw;
+    }
+}
+
 @media (max-width: 500px) {
     footer {
         width: 100vw;
@@ -130,6 +143,7 @@ tr:last-child td:last-child {
 
     main {
         width: 95vw;
+        max-width: unset;
     }
 
     tbody {
