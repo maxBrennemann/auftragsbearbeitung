@@ -6,14 +6,14 @@
     $table = new FormGenerator("", "", "");
     echo $table->createTableByData($verbesserungen, $column_names);
 ?>
-<input type="text" id="verbesserung">
+<textarea id="verbesserung"></textarea>
 <input type="button" id="submit" value="Abschicken">
 <script>
     document.getElementById("submit").addEventListener("click", function(event) {
         var data = document.getElementById("verbesserung").value;
         var getHTML = new AjaxCall(`getReason=insertVerbesserung&verbesserung=${data}`, "POST", window.location.href);
         getHTML.makeAjaxCall(function (response) {
-            location.realod();
+            location.reload();
         });
     });
 </script>
