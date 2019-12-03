@@ -45,7 +45,17 @@ a[href="#"] {
 
 .shortSummary {
     border-radius: 6px;
-    border: 1px solid black;
-    margin: 5px;
-    padding: 5px;
+    margin: 15px;
+    background-color: #eff0f1;
+}
+
+.shortSummaryHeader {
+    background: #B2B2BE;
+    padding: 10px;
+    border-radius: 6px 6px 0 0;
+    font-weight: bold;
+}
+
+.shortSummary > p {
+    padding: 0 10px 10px 15px;
 }
