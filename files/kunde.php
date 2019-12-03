@@ -1,8 +1,10 @@
 <?php 
 	require_once('classes/project/Kunde.php');
 	require_once('classes/project/FormGenerator.php');
+	require_once('classes/project/Search.php');
 
 	$kundenid = -1;
+	$isSearch = false;
 
 	if (isset($_GET['showDetails'])) {
 		$showDetails = $_GET['showDetails'];
@@ -12,6 +14,12 @@
 				header("Location: " . Link::getPageLink('auftrag') . "?id={$id}");
 			}
 		}
+	}
+
+	if (isset($_GET['mode']) && $_GET['mode'] == "search" && $_GET['query']) {
+		$query = $_GET['query'];
+		$searchTable = Search::getSearchTable($query, "kunde", Link::getPageLink("kunde"), true);
+		$isSearch = true;
 	}
 
 	if (isset($_GET['id'])) {
@@ -38,21 +46,16 @@
 
 ?>
 <p><a href="<?=$linkBackward?>">🡄</a><a href="<?=$linkForward?>" id="forwards">🡆</a></p>
-<style>
-	#forwards {
-		float: right;
-	}
-
-	a[href="#"] {
-		color: grey;
-	}
-</style>
-<?php if ($kundenid == -1) : ?>
+<?php if ($kundenid == -1 && !$isSearch) : ?>
 	<p>Kunde kann nicht angezeigt werden.</p>
+<?php elseif ($kundenid == -1 && $isSearch) : ?>
+	<p>Suche: <input value="<?=$_GET['query']?>" id="performSearch" data-url="<?=Link::getPageLink('kunde')?>"></p>
+	<?=$searchTable?>
 <?php else: ?>
 	<h3>Kundendaten</h3>
+	<div class="gridCont">
 	<div id="showKundendaten">
-		<ul>
+		<ul id="kundenDatenList">
 			<li>Kundennummer: <span id="kundennummer"><?=$kunde->getKundennummer()?></span></li>
 			<li>Vorname: <span class="editable" contenteditable data-col="Vorname"><?=$kunde->getVorname()?></span></li>
 			<li>Nachname: <span class="editable" contenteditable data-col="Nachname"><?=$kunde->getNachname()?></span></li>
@@ -67,29 +70,35 @@
 		</ul>
 		<button id="sendKundendaten" disabled onclick="kundendatenAbsenden()">Absenden</button>
 	</div>
-	<h3>Ansprechpartner</h3>
-	<div id="ansprechpartnerTable">
-		<?=$ansprechpartner?>
-		<table>
-			<tr>
-				<th>Vorname</th>
-				<th>Nachname</th>
-				<th>Email</th>
-				<th>Durchwahl</th>
-			</tr>
-			<tr>
-				<td class="ansprTableCont" contenteditable="true" data-col="vorname"></td>
-				<td class="ansprTableCont" contenteditable="true" data-col="nachname"></td>
-				<td class="ansprTableCont" contenteditable="true" data-col="email"></td>
-				<td class="ansprTableCont" contenteditable="true" data-col="durchwahl"></td>
-			</tr>
-		</table>
+	<div id="ansprechpartner">
+		<h3>Ansprechpartner</h3>
+		<div id="ansprechpartnerTable">
+			<?=$ansprechpartner?>
+			<table>
+				<tr>
+					<th>Vorname</th>
+					<th>Nachname</th>
+					<th>Email</th>
+					<th>Durchwahl</th>
+				</tr>
+				<tr>
+					<td class="ansprTableCont" contenteditable="true" data-col="vorname"></td>
+					<td class="ansprTableCont" contenteditable="true" data-col="nachname"></td>
+					<td class="ansprTableCont" contenteditable="true" data-col="email"></td>
+					<td class="ansprTableCont" contenteditable="true" data-col="durchwahl"></td>
+				</tr>
+			</table>
+		</div>
+		<button onclick="addDataToDB()">Hinzufügen</button>
 	</div>
-	<button onclick="addDataToDB()">Hinzufügen</button>
-	<h3>Farben</h3>
-	<div id="showFarben"><?=$kunde->getFarben()?></div>
-	<h3>Aufträge</h3>
-	<div id="showAuftraege"><?=$kunde->getAuftraege()?></div>
-	<div id="showAnsprechpartner"><?=$kunde->getAnsprechpartner()?></div>
-	<a href="<?=Link::getPageLink("neuer-auftrag")?>?kdnr=<?=$kundenid?>">Neuen Auftrag erstellen</a>
+	<div id="farben">
+		<h3>Farben</h3>
+		<div id="showFarben"><?=$kunde->getFarben()?></div>
+	</div>
+	<div id="auftraege">
+		<h3>Aufträge</h3>
+		<?=$kunde->getAuftraege()?>
+		<a href="<?=Link::getPageLink("neuer-auftrag")?>?kdnr=<?=$kundenid?>">Neuen Auftrag erstellen</a>
+	</div>
+	</div>
 <?php endif; ?>

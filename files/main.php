@@ -34,8 +34,8 @@
 	<ul>
 		<li><a href="<?=$neuerKunde?>">+👤 Neuen Kunden erstellen</a></li>
 		<li>
-			<input id="kundeninput" type="text" oninput="document.getElementById('kundenLink').href = '<?=$kunde?>?id=' + this.value;" onkeyup="performSearchEnter(event, this.value);">
-			<a href="#" id="kundenLink">Kunde anzeigen</a>
+			<input id="kundeninput" type="text">
+			<a href="#" data-url="<?=$kunde?>" id="kundenLink">Kunde anzeigen</a>
 		</li>
 		<li><a href="<?=$neuerAuftrag?>">+💼 Neuen Auftrag erstellen</a></li>
 		<li><a href="<?=$rechnung?>">Neue Rechnung erstellen</a></li>
@@ -49,7 +49,7 @@
 			<input id="auftragsinput" type="number" min="1" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value;">
 			<a href="#" id="auftragsLink">Auftrag anzeigen</a>
 		</li>
-		<li><a href="<?=$diagramme?>">📈Diagramme und Auswertungen</a></li>
+		<li><a href="<?=$diagramme?>">📈 Diagramme und Auswertungen</a></li>
 		<li><a href="<?=$leistungen?>">Leistungen</a></li>
 		<li><a href="<?=$toDo?>">Verbesserungen für die Auftragsbearbeitung</a></li>
 		<li>Offene Rechnungen: <b><?=$offeneSumme?>€</b></li>
@@ -61,22 +61,3 @@
 		<h3>Offene Rechnungen: <?=$offeneSumme?>€</h3><?=$showOffeneRechnungen?>
 	</div>
 </div>
-<script>
-	function performSearchEnter(e, query) {
-		if (e.key === "Enter") {
-			ajaxSearch(query);
-		}
-	}
-
-	function ajaxSearch(query) {
-		if (isNaN(query)) {
-			var search = new AjaxCall(`getReason=search&query=${query}&stype=kunde&urlid=1`, "POST", window.location.href);
-			search.makeAjaxCall(function (responseTable) {
-				document.getElementById("searchResults").innerHTML = responseTable;
-				addableTables();
-			});
-		} else {
-			'<?=$kunde?>?id=' + this.value;;
-		}
-	}
-</script>

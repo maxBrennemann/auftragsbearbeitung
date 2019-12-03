@@ -126,6 +126,19 @@ class Kunde implements StatisticsInterface {
 		}
 	}
 
+	public function getHTMLShortSummary() {
+		$link = Link::getPageLink("kunde") . "?id=" . $this->kundennummer;
+		if ($this->firmenname == "") {
+			$text = "<div class=\"shortSummary\"><h4><a href=\"$link\">{$this->vorname} {$this->nachname}</a></h4>";
+		} else {
+			$text = "<div class=\"shortSummary\"><h4><a href=\"$link\">{$this->firmenname}</a></h4>";
+		}
+		$text .= "<hr><p>{$this->strasse} {$this->hausnummer}<br>{$this->postleitzahl} {$this->ort}<br>";
+		$text .= "{$this->telefonFestnetz}<br>{$this->telefonMobil}<br>{$this->email}</p></div>";
+
+		return $text;
+	}
+
 }
 
 ?>

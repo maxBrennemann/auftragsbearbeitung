@@ -4,7 +4,7 @@ require_once('classes/DBAccess.php');
 
 class Search {
 	
-	public static function getSearchTable($searchQuery, $searchType, $retUrl = null) {
+	public static function getSearchTable($searchQuery, $searchType, $retUrl = null, $getShortSummary = false) {
 		$ids = array();
 		$query = "";
 		$columnNames = array();
@@ -21,6 +21,16 @@ class Search {
 				break;
 		}
 		$data = array();
+
+		if ($getShortSummary) {
+			$data = "";
+			$ids = array_reverse($ids);
+			foreach ($ids as $id) {
+				$data .= (new Kunde($id[0]))->getHTMLShortSummary();
+			}
+			return $data;
+		}
+
 		foreach ($ids as $id) {
 			$column = DBAccess::selectQuery($query . $id[0]);
 			$column = $column[0];

@@ -1,4 +1,11 @@
 var changedData = {};
+var search = document.getElementById("performSearch");
+
+search.addEventListener("keyup", function (event) {
+    if (event.key === "Enter") {
+        location.href = event.target.dataset.url + "?mode=search&query=" + event.target.value;
+    }
+});
 
 function initialize() {
     var editableElements = document.getElementsByClassName("editable");

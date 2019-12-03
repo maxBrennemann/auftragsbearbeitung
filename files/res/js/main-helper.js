@@ -4,7 +4,7 @@ var auftragsinput = document.getElementById("auftragsinput");
 
 kundeninput.addEventListener("keyup", function (event) {
     if (event.key === "Enter") {
-        document.getElementById("kundenLink").click();
+        ajaxSearch(event.target.value);
     }
 });
 
@@ -19,3 +19,13 @@ auftragsinput.addEventListener("keyup", function (event) {
         document.getElementById("auftragsLink").click();
     }
 });
+
+function ajaxSearch(query) {
+    var link = document.getElementById('kundenLink');
+    if (isNaN(query)) {
+        link.href = link.dataset.url + '?mode=search&query=' + query;
+    } else {
+        link.href = link.dataset.url + '?id=' + query;
+    }
+    document.getElementById("kundenLink").click();
+}
