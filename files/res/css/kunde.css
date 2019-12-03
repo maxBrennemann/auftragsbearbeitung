@@ -1,0 +1,51 @@
+#forwards {
+    float: right;
+}
+
+a[href="#"] {
+    color: grey;
+}
+
+.gridCont {
+    display: grid;
+    grid-template-areas: "kundendaten ansprechpartner farben" "auftraege auftraege auftraege";
+    grid-gap: 10px;
+}
+
+.gridCont > div {
+    border: 1px solid black;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+#showKundendaten {
+    grid-area: kundendaten;
+}
+
+#ansprechpartner {
+    grid-area: ansprechpartner;
+}
+
+#farben {
+    grid-area: farben;
+}
+
+#auftraege {
+    grid-area: auftraege;
+}
+
+#kundenDatenList li span {
+    float: right;
+    font-weight: bold;
+}
+
+#kundenDatenList {
+    max-width: 550px;
+}
+
+.shortSummary {
+    border-radius: 6px;
+    border: 1px solid black;
+    margin: 5px;
+    padding: 5px;
+}
