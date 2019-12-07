@@ -49,7 +49,10 @@
 <?php if ($kundenid == -1 && !$isSearch) : ?>
 	<p>Kunde kann nicht angezeigt werden.</p>
 <?php elseif ($kundenid == -1 && $isSearch) : ?>
-	<p>Suche: <input value="<?=$_GET['query']?>" id="performSearch" data-url="<?=Link::getPageLink('kunde')?>"></p>
+	<div class="search">
+		<p>Suche: <input value="<?=$_GET['query']?>" id="performSearch" data-url="<?=Link::getPageLink('kunde')?>">
+		<span id="lupeSpan"><span id="lupe">⚲</span></span></p>
+	</div>
 	<?=$searchTable?>
 <?php else: ?>
 	<h3>Kundendaten</h3>

@@ -22,7 +22,8 @@ class Kunde implements StatisticsInterface {
     private $ort = null;
     private $email = null;
     private $telefonFestnetz = null;
-    private $telefonMobil = null;
+	private $telefonMobil = null;
+	private $website = null;
 
 	function __construct($kundennummer) {
 		$data = DBAccess::selectAllByCondition("kunde", "Kundennummer", $kundennummer);
@@ -135,7 +136,17 @@ class Kunde implements StatisticsInterface {
 			$text .= "<a href=\"$link\">{$this->firmenname}</a></div>";
 		}
 		$text .= "<p>{$this->strasse} {$this->hausnummer}<br>{$this->postleitzahl} {$this->ort}<br>";
-		$text .= "{$this->telefonFestnetz}<br>{$this->telefonMobil}<br>{$this->email}</p></div>";
+		$text .= "{$this->telefonFestnetz}<br>{$this->telefonMobil}<br>";
+
+		if ($this->email != null) {
+			$text .= "@ <a href=\"mailto:{$this->email}\">{$this->email}</a><br>";
+		}
+
+		if ($this->website != null) {
+			$text .= "🔗 <a href=\"{$this->webpage}\">Zur Website</a></div>";
+		} else {
+			$text .= "</p></div>";
+		}
 
 		return $text;
 	}

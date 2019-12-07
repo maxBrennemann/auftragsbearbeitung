@@ -1,6 +1,11 @@
 ﻿/* general style */
 @import url('https://fonts.googleapis.com/css?family=Be+Vietnam|Open+Sans&display=swap');
 
+@font-face {
+    font-family: "Segoe UI Emoji";
+    src: "auftragsbearbeitung/files/res/font/seguiemj.ttf";
+}
+
 body {
     font-family: 'Open Sans', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 0.9em;
