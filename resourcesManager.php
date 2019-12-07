@@ -21,6 +21,13 @@
 		echo $file;
 	}
 
+	if (isset($_GET['font'])) {
+		header("Content-type: font/ttf");
+		$script = $_GET['font'];
+		$file = file_get_contents(Link::getResourcesLink($script, "font", false));
+		echo $file;
+	}
+
 	if (isset($_GET['upload'])) {
 		header("Content-type:application/pdf");
 		$file = file_get_contents(Link::getResourcesLink($_GET['upload'], "upload", false));

@@ -59,3 +59,32 @@ a[href="#"] {
 .shortSummary > p {
     padding: 0 10px 10px 15px;
 }
+
+.search {
+    margin: 15px;
+}
+
+#performSearch {
+    background-color: #eff0f1;
+    border-radius: 6px;
+    border: none;
+    padding: 10px;
+    font-style: italic;
+}
+
+#lupeSpan {
+    background-color: #eff0f1;
+    position: relative;
+    display: inline-block;
+    left: -22px;
+    font-size: 1.5em;
+    top: 4px;
+}
+
+#lupe {
+    display: inline-block;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
