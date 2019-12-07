@@ -34,8 +34,8 @@
 	<ul>
 		<li><a href="<?=$neuerKunde?>">+👤 Neuen Kunden erstellen</a></li>
 		<li>
-			<input id="kundeninput" type="text">
-			<a href="#" data-url="<?=$kunde?>" id="kundenLink">Kunde anzeigen</a>
+			<input id="kundeninput" type="text"><a hef="#" data-url="<?=$kunde?>" id="kundenLink"> →</a><br>
+			<a href="<?=$kunde?>?showDetails=list">Zu den Kunden</a>
 		</li>
 		<li><a href="<?=$neuerAuftrag?>">+💼 Neuen Auftrag erstellen</a></li>
 		<li><a href="<?=$rechnung?>">Neue Rechnung erstellen</a></li>

@@ -88,3 +88,9 @@ a[href="#"] {
     -o-transform: rotate(45deg);
     transform: rotate(45deg);
 }
+
+#gridShowCustomerList {
+    display: grid;
+    grid-auto-columns: auto;
+    grid-template-columns: repeat(3, 1fr);
+}

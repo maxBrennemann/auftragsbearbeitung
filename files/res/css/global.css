@@ -76,6 +76,7 @@ table {
     border-radius: 6px;
     margin: 5px;
     background-color: black;
+    display: inline-block;
 }
 
 tbody {
