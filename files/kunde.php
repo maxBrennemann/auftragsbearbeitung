@@ -5,6 +5,7 @@
 
 	$kundenid = -1;
 	$isSearch = false;
+	$showList = false;
 
 	if (isset($_GET['showDetails'])) {
 		$showDetails = $_GET['showDetails'];
@@ -12,6 +13,13 @@
 			if (isset($_GET['id'])) {
 				$id = $_GET['id'];
 				header("Location: " . Link::getPageLink('auftrag') . "?id={$id}");
+			}
+		} else if ($showDetails == "list") {
+			$showList = true;
+			$showListHTML = "";
+			$ids = DBAccess::selectQuery("SELECT Kundennummer FROM kunde ORDER BY CASE WHEN kunde.Firmenname IS NULL THEN kunde.Nachname ELSE kunde.Firmenname END");
+			foreach ($ids as $id) {
+				$showListHTML .= (new Kunde($id['Kundennummer']))->getHTMLShortSummary();
 			}
 		}
 	}
@@ -29,8 +37,11 @@
 			$table = new FormGenerator("ansprechpartner", "", "");
 			$data = DBAccess::selectQuery("SELECT * FROM ansprechpartner WHERE Kundennummer = $kundenid");
 			$column_names = array(0 => array("COLUMN_NAME" => "Vorname"), 1 => array("COLUMN_NAME" => "Nachname"), 
-							2 => array("COLUMN_NAME" => "Email"), 3 => array("COLUMN_NAME" => "Durchwahl"));
-			$ansprechpartner = $table->createTableByData($data, $column_names); 
+							2 => array("COLUMN_NAME" => "Email"), 3 => array("COLUMN_NAME" => "Durchwahl"), 4 => array("COLUMN_NAME" => "Mobiltelefonnummer"));
+			$ansprechpartner = $table->createTableByData($data, $column_names);
+			if (empty($data)) {
+				$ansprechpartner = "";
+			}
 		} catch (Exception $e){
 			echo $e->getMessage();
 			$kundenid = -1;
@@ -46,7 +57,7 @@
 
 ?>
 <p><a href="<?=$linkBackward?>">🡄</a><a href="<?=$linkForward?>" id="forwards">🡆</a></p>
-<?php if ($kundenid == -1 && !$isSearch) : ?>
+<?php if ($kundenid == -1 && !$isSearch && !$showList) : ?>
 	<p>Kunde kann nicht angezeigt werden.</p>
 <?php elseif ($kundenid == -1 && $isSearch) : ?>
 	<div class="search">
@@ -54,6 +65,8 @@
 		<span id="lupeSpan"><span id="lupe">⚲</span></span></p>
 	</div>
 	<?=$searchTable?>
+<?php elseif ($kundenid == -1 && $showList) : ?>
+	<div id="gridShowCustomerList"><?=$showListHTML?></div>
 <?php else: ?>
 	<h3>Kundendaten</h3>
 	<div class="gridCont">
@@ -77,22 +90,25 @@
 		<h3>Ansprechpartner</h3>
 		<div id="ansprechpartnerTable">
 			<?=$ansprechpartner?>
-			<table>
+			<table id="addAnsprechpartner" style="display: none;">
 				<tr>
 					<th>Vorname</th>
 					<th>Nachname</th>
 					<th>Email</th>
 					<th>Durchwahl</th>
+					<th>Mobilnummer</th>
 				</tr>
 				<tr>
 					<td class="ansprTableCont" contenteditable="true" data-col="vorname"></td>
 					<td class="ansprTableCont" contenteditable="true" data-col="nachname"></td>
 					<td class="ansprTableCont" contenteditable="true" data-col="email"></td>
 					<td class="ansprTableCont" contenteditable="true" data-col="durchwahl"></td>
+					<td class="ansprTableCont" contenteditable="true" data-col="handynummer"></td>
 				</tr>
 			</table>
 		</div>
-		<button onclick="addDataToDB()">Hinzufügen</button>
+		<button id="showAddAnsprechpartner" onclick="showAddAnsprechpartner()">Ausklappen </button>
+		<button id="addAnsprechpartnerBtn" onclick="addDataToDB()" style="display: none;">Hinzufügen</button>
 	</div>
 	<div id="farben">
 		<h3>Farben</h3>

@@ -1,11 +1,13 @@
 var changedData = {};
 var search = document.getElementById("performSearch");
 
-search.addEventListener("keyup", function (event) {
-    if (event.key === "Enter") {
-        location.href = event.target.dataset.url + "?mode=search&query=" + event.target.value;
-    }
-});
+if (search != null) {
+    search.addEventListener("keyup", function (event) {
+        if (event.key === "Enter") {
+            location.href = event.target.dataset.url + "?mode=search&query=" + event.target.value;
+        }
+    });
+}
 
 function initialize() {
     var editableElements = document.getElementsByClassName("editable");
@@ -48,6 +50,12 @@ function addDataToDB() {
     sendToDB.makeAjaxCall(function (res) {
         console.log(res);
     });
+}
+
+function showAddAnsprechpartner() {
+    document.getElementById("addAnsprechpartner").style.display = "inline-block";
+    document.getElementById("addAnsprechpartnerBtn").style.display = "inline";
+    document.getElementById("showAddAnsprechpartner").style.display = "none";
 }
 
 initialize();

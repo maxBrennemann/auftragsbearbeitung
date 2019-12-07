@@ -109,6 +109,8 @@ class Search {
 	}
 
 	private static function calculateSimilarity(&$mostSimilar, $searchQuery, $text, $nummer) {
+		$searchQuery = strtolower($searchQuery);
+		$text = strtolower($text);
 		similar_text($searchQuery, $text, $percentage);
 		array_push($mostSimilar, array($nummer, $percentage));
 	}
