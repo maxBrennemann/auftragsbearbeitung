@@ -3,6 +3,7 @@ settings.php
 files/generated/
 favicon.ico
 .vs/
+.vscode/
 .VSCodeCounter
 upload/
 img/
