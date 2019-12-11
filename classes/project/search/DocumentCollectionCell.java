@@ -1,23 +1,8 @@
-/**
- * Helper class for the cells of the {@link DocumentCollection}.
- * 
- * @see DocumentCollection
- * 
- */
+
 public class DocumentCollectionCell {
-  /**
-   * the document in this cell
-   */
+  
   private Document document;
-
-  /**
-   * pointer to the next cell
-   */
   private DocumentCollectionCell next;
-
-  /**
-   * the similarity of the document in this cell
-   */
   private double querySimilarity;
 
   /**
@@ -89,4 +74,5 @@ public class DocumentCollectionCell {
     this.document = document;
     return oldDocument;
   }
+  
 }
