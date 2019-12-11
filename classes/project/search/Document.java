@@ -1,9 +1,6 @@
 
 public class Document {
-    
-  private String title;
-  private String language;
-  private String description;
+  
   private DocumentType type;
   
   /**
@@ -20,61 +17,14 @@ public class Document {
    */
   private WordCountsArray wordCounts;
 
-  public Document(String title, String language, String description, String content, DocumentType type) {
+  public Document(String content, DocumentType type) {
     /* use this methods, just in case the value of the parameters is null */
-    this.setTitle(title);
-    this.setLanguage(language);
-    this.setDescription(description);
-    this.setType(type);
+    this.type = type;
     this.addContent(content);
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public String getLanguage() {
-    return language;
-  }
-
-  public String getDescription() {
-    return description;
   }
 
   public WordCountsArray getWordCounts() {
     return this.wordCounts;
-  }
-
-  public String toString() {
-    return this.title;
-  }
-
-  public void setTitle(String title) {
-    if (title == null) {
-      this.title = "";
-    } else {
-      this.title = title;
-    }
-  }
-
-  public void setLanguage(String language) {
-    if (language == null) {
-      this.language = "";
-    } else {
-      this.language = language;
-    }
-  }
-
-  public void setDescription(String description) {
-    if (description == null) {
-      this.description = "";
-    } else {
-      this.description = description;
-    }
-  }
-  
-  public void setType(DocumentType type) {
-      this.type = type;
   }
 
   /**
@@ -247,24 +197,4 @@ public class Document {
     return wordWithoutSuffix;
   }
 
-  /**
-   * Returns true, if this instance and the specified {@link Document} equal.
-   * 
-   * @param document the other document
-   * @return true, if this instance and the specified {@link Document} equal
-   */
-  public boolean equals(Document document) {
-    if (this == document) {
-      return true;
-    }
-
-    if (document == null) {
-      return false;
-    }
-
-    return this.title.equals(document.title) && this.language.equals(document.language)
-        && this.description.equals(document.description)
-        && ((this.wordCounts != null && this.wordCounts.equals(document.getWordCounts()))
-            || (this.wordCounts == null && document.getWordCounts() == null));
-  }
 }

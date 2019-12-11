@@ -329,7 +329,7 @@ public class DocumentCollection {
     }
 
     /* add query to collection as document */
-    Document queryDocument = new Document("", "", "", searchQuery, type);
+    Document queryDocument = new Document(searchQuery, type);
     this.prependDocument(queryDocument);
 
     /* add every word to every document with count 0 */
@@ -470,30 +470,7 @@ public class DocumentCollection {
 
     return tmp;
   }
-
-  /**
-   * Returns a string representation of this {@link DocumentCollection} using the
-   * titles of the documents.
-   * 
-   * @return a string representation of this {@link DocumentCollection}.
-   */
-  public String toString() {
-    if (this.numDocuments() == 0) {
-      return "[]";
-    }
-
-    if (this.numDocuments() == 1) {
-      return "[" + this.get(0).getTitle() + "]";
-    }
-
-    String res = "[";
-    for (int i = 0; i < this.numDocuments() - 1; i++) {
-      res += this.get(i).getTitle() + ", ";
-    }
-    res += this.get(this.numDocuments() - 1).getTitle() + "]";
-    return res;
-  }
-
+  
   /**
    * Returns the number of documents that contain the specified word.
    * 
