@@ -17,7 +17,7 @@
 		} else if ($showDetails == "list") {
 			$showList = true;
 			$showListHTML = "";
-			$ids = DBAccess::selectQuery("SELECT Kundennummer FROM kunde ORDER BY CASE WHEN kunde.Firmenname IS NULL THEN kunde.Nachname ELSE kunde.Firmenname END");
+			$ids = DBAccess::selectQuery("SELECT Kundennummer FROM kunde ORDER BY CONCAT(Firmenname, Nachname)");
 			foreach ($ids as $id) {
 				$showListHTML .= (new Kunde($id['Kundennummer']))->getHTMLShortSummary();
 			}
