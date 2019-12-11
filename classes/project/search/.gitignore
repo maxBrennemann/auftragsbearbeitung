@@ -1,9 +1,9 @@
-/Document.class
-/DocumentCollection.class
-/DocumentCollectionCell.class
-/DocumentType.class
-/Search.class
-/WordCount.class
-/WordCountsArray.class
-.classpat
+Document.class
+DocumentCollection.class
+DocumentCollectionCell.class
+DocumentType.class
+Search.class
+WordCount.class
+WordCountsArray.class
+.classpath
 .project
