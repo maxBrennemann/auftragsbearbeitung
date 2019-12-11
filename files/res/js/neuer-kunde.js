@@ -20,10 +20,12 @@ function switchOeffPriv(event) {
         case "firma":
             elements[0].style.display = "inline";
             elements[1].style.display = "none";
+            elements[2].style.display = "none";
             break;
         case "privat":
             elements[0].style.display = "none";
             elements[1].style.display = "inline";
+            elements[2].style.display = "inline";
             break;
         default:
             console.log("error");

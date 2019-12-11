@@ -137,11 +137,13 @@
 				<input class="dataInput" type="tel" name="telfestnetz" pattern="[0-9]{5}\/[0-9]+">
 			</label>
 		</p>
-		<p>
-			<label>Telefon Mobil
-				<input class="dataInput" type="tel" name="telmobil" pattern="[0][1-9]{3} [0-9]+">
-			</label>
-		</p>
+		<div class="basicInfo" style="display: none;">
+			<p>
+				<label>Telefon Mobil
+					<input class="dataInput" type="tel" name="telmobil" pattern="[0][1-9]{3} [0-9]+">
+				</label>
+			</p>
+		</div>
 
 		<input type="submit">
 	</form>
