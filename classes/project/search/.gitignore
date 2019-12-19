@@ -7,3 +7,5 @@ WordCount.class
 WordCountsArray.class
 .classpath
 .project
+/SearchThread.class
+/SearchTest.class

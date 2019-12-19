@@ -2,6 +2,7 @@
 public class Document {
   
   private DocumentType type;
+  private String content;
   
   /**
    * Most common german suffices
@@ -20,7 +21,12 @@ public class Document {
   public Document(String content, DocumentType type) {
     /* use this methods, just in case the value of the parameters is null */
     this.type = type;
+    this.content = content;
     this.addContent(content);
+  }
+  
+  public String getContent() {
+      return this.content;
   }
 
   public WordCountsArray getWordCounts() {

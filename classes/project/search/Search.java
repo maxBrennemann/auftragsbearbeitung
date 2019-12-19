@@ -1,6 +1,6 @@
-import java.io.BufferedReader; 
-import java.io.IOException; 
-import java.io.InputStreamReader; 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class Search {
 
@@ -15,31 +15,15 @@ public class Search {
     */
 
     public static void main(String[] args) throws IOException {
-        String command = "";
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
-        mainloop: while (true) {
-            command = reader.readLine();
-            System.out.println(command);
-            if (command.equals("stopProgram")) {
-                break mainloop;
-            }
-        }
-
-        if (args[0].equals("add")) {
-            DocumentType type = DocumentType.valueOf(args[1]);
-            String data = args[2];
-
-            switch (type) {
-                case Customer:
-                    break;
-                case Order:
-                    break;
-                case Product:
-                    break;
-                default:
-                    break;
-            }
+        documentCollectionCustomers = new DocumentCollection();
+        documentCollectionOrders = new DocumentCollection();
+        documentCollectionProducts = new DocumentCollection();
+        
+        ServerSocket serverSocket = new ServerSocket(29180);
+        while(true) {
+            Socket client = serverSocket.accept();
+            SearchThread searchThread = new SearchThread(client);
+            searchThread.start();
         }
     }
     
