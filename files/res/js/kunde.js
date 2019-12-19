@@ -58,4 +58,11 @@ function showAddAnsprechpartner() {
     document.getElementById("showAddAnsprechpartner").style.display = "none";
 }
 
+function getServerMessage() {
+    let getServerMsg = new AjaxCall(`getReason=getServerMsg`, "POST", window.location.href);
+    getServerMsg.makeAjaxCall(function (res) {
+        console.log(res);
+    });
+}
+
 initialize();

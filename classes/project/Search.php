@@ -1,8 +1,18 @@
 <?php
 
 require_once('classes/DBAccess.php');
+require_once('classes/project/ClientSocket.php');
 
 class Search {
+
+	public static function searchForData($query, $type) {
+		$query = "search $type $query";
+		return ClientSocket::writeMessage($query, false);
+	}
+
+	public static function insertData($insertQuery) {
+		ClientSocket::writeMessage($insertQuery, true);
+	}
 	
 	public static function getSearchTable($searchQuery, $searchType, $retUrl = null, $getShortSummary = false) {
 		$ids = array();
@@ -94,7 +104,8 @@ class Search {
 
 		$filteredArray = array();
 		foreach ($mostSimilar as $product) {
-			if ((float) $product[1] > 20) {
+			/* 35 is the current similarity value, which is necessary to be displayed in search results*/
+			if ((float) $product[1] > 35) {
 				if (inArray($product[0], $filteredArray)) {
 					if ($product[1] >= end($filteredArray)[1]) {
 						$filteredArray[sizeof($filteredArray) - 1] = $product;
@@ -111,8 +122,21 @@ class Search {
 	private static function calculateSimilarity(&$mostSimilar, $searchQuery, $text, $nummer) {
 		$searchQuery = strtolower($searchQuery);
 		$text = strtolower($text);
-		similar_text($searchQuery, $text, $percentage);
-		array_push($mostSimilar, array($nummer, $percentage));
+		$pieces = explode(" ", $text);
+
+		$cumulatedpercentage = 0;
+		foreach ($pieces as $piece) {
+			similar_text($searchQuery, $piece, $percentage);
+			$percentage = round($percentage, 2);
+			if ($percentage >= 15) {
+				$cumulatedpercentage += $percentage;
+			}
+			//echo "% for search $text form $piece is $percentage <br>";
+		}
+
+		//echo "percentage for search $text is $cumulatedpercentage <br><br>";
+
+		array_push($mostSimilar, array($nummer, $cumulatedpercentage));
 	}
 
 } 
