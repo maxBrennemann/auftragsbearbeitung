@@ -40,6 +40,7 @@ class Kunde implements StatisticsInterface {
 			$this->email = $data['Email'];
 			$this->telefonFestnetz = $data['TelefonFestnetz'];
 			$this->telefonMobil = $data['TelefonMobil'];
+			$this->website = $data['Website'];
 		} else {
 			throw new Exception("Kundennummer " . $kundennummer . " existiert nicht oder kann nicht gefunden werden");
 		}
@@ -136,14 +137,23 @@ class Kunde implements StatisticsInterface {
 			$text .= "<a href=\"$link\">{$this->firmenname}</a></div>";
 		}
 		$text .= "<p>{$this->strasse} {$this->hausnummer}<br>{$this->postleitzahl} {$this->ort}<br>";
-		$text .= "{$this->telefonFestnetz}<br>{$this->telefonMobil}<br>";
+		
+		if ($this->telefonFestnetz != null) {
+			$text .= "☎ {$this->telefonFestnetz}<br>";
+		} 
+		
+		if ($this->telefonMobil != null) {
+			$text .= "✆ {$this->telefonMobil}<br>";
+		}
+
+		$text .= "<br>";
 
 		if ($this->email != null) {
 			$text .= "@ <a href=\"mailto:{$this->email}\">{$this->email}</a><br>";
 		}
 
 		if ($this->website != null) {
-			$text .= "🔗 <a href=\"{$this->webpage}\">Zur Website</a></div>";
+			$text .= "🔗 <a href=\"https://{$this->website}\">Zur Website</a></div>";
 		} else {
 			$text .= "</p></div>";
 		}
