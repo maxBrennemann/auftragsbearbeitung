@@ -162,6 +162,11 @@ class Ajax {
 			case "getServerMsg":
 				echo $_SESSION['searchResult'];
 				break;
+			case "setNotes":
+				$kdnr = $_POST['kdnr'];
+				$note = $_POST['notes'];
+				DBAccess::insertQuery("UPDATE kunde_extended SET notizen = '$note' WHERE kundennummer = $kdnr");
+				break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
