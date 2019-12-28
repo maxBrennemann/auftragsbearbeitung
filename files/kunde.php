@@ -114,6 +114,11 @@
 		<h3>Farben</h3>
 		<div id="showFarben"><?=$kunde->getFarben()?></div>
 	</div>
+	<div id="notizen">
+		<h3>Notizen</h3>
+		<div id="editNotes"><?=$kunde->getNotizen()?></div>
+		<button onclick="editText(event);">Bearbeiten</button>
+	</div>
 	<div id="auftraege">
 		<h3>Aufträge</h3>
 		<?=$kunde->getAuftraege()?>

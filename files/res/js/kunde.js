@@ -1,4 +1,5 @@
 var changedData = {};
+var isOnEdit = true;
 var search = document.getElementById("performSearch");
 
 if (search != null) {
@@ -63,6 +64,22 @@ function getServerMessage() {
     getServerMsg.makeAjaxCall(function (res) {
         console.log(res);
     });
+}
+
+function editText(event) {
+    if (isOnEdit) {
+        var editText = document.getElementById("editNotes");
+        editText.contentEditable = true;
+        event.target.innerHTML = "Absenden";
+        isOnEdit = false;
+    } else {
+        var kundennummer = document.getElementById("kundennummer").innerHTML;
+        var notes = document.getElementById("editNotes").innerHTML;
+        let sendNotes = new AjaxCall(`getReason=setNotes&kdnr=${kundennummer}&notes=${notes}`, "POST", window.location.href);
+        sendNotes.makeAjaxCall(function (res) {
+            console.log(res);
+        });
+    }
 }
 
 initialize();

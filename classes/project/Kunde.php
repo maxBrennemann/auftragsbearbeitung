@@ -111,6 +111,14 @@ class Kunde implements StatisticsInterface {
 		return "";
 	}
 
+	public function getNotizen() {
+		$data = DBAccess::selectQuery("SELECT notizen FROM kunde_extended WHERE kundennummer = {$this->kundennummer}");
+		if ($data != null) {
+			return $data[0]['notizen'];
+		}
+		return "";
+	}
+
 	public function recalculate() {
 	
 	}
