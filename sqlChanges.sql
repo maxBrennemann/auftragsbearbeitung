@@ -32,4 +32,5 @@ ALTER TABLE kunde_extended CHANGE id id INT(10) AUTO_INCREMENT;
 ALTER TABLE kunde_extended ADD kundennummer INT(10) NOT NULL;
 ALTER TABLE `kunde_extended` ADD FOREIGN KEY (`kundennummer`) REFERENCES `kunde`(`Kundennummer`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
+/* Änderungen 28.12.2019 */
 CREATE TRIGGER createRowForNewCustomer AFTER INSERT ON kunde FOR EACH ROW INSERT INTO kunde_extended SET kunde_extended.kundennummer = NEW.Kundennummer;
