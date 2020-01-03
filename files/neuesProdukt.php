@@ -16,7 +16,7 @@ $quelle = DBAccess::selectQuery("SELECT name, id FROM einkauf");
 
 echo "<a href=\"" . Link::getPageLink("attributes") . "\">Zu den Produktattributetn</a>";
 ?>
-<div>
+<div class="defCont">
 	<form method="post">
 		<p>
 			<label>Marke
