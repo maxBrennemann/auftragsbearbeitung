@@ -39,28 +39,25 @@ function showSelection(element) {
 }
 
 function addBearbeitungsschritte() {
-    var bearbeitungsschritte = new AjaxCall("getReason=addStep&addClass=steps", "POST", window.location.href);
-    bearbeitungsschritte.makeAjaxCall(function (responseTable) {
-        document.getElementById("bearbeitungsschritte").innerHTML = responseTable;
+    document.getElementById("bearbeitungsschritte").style.display = "inline";
 
-        var btn = document.createElement("button");
-        btn.innerHTML = "Hinzufügen";
-        btn.addEventListener("click", function () {
-            var tableData = document.getElementsByClassName("steps");
-            var steps = [];
-            for (var i = 0; i < tableData.length; i++) {
-                steps.push(tableData[i].innerHTML);
-            }
-            var auftrag = new URL(window.location.href).searchParams.get("id");
-            var add = new AjaxCall(`getReason=insertStep&bez=${steps[0]}&prio=${steps[1]}&auftrag=${auftrag}`, "POST", window.location.href);
-            add.makeAjaxCall(function (response) {
-                console.log(response);
-                location.reload();
-            });
-        }, false);
+    var btn = document.createElement("button");
+    btn.innerHTML = "Hinzufügen";
+    btn.addEventListener("click", function () {
+        var tableData = document.getElementsByClassName("steps");
+        var steps = [];
+        for (var i = 0; i < tableData.length; i++) {
+            steps.push(tableData[i].innerHTML);
+        }
+        var auftrag = new URL(window.location.href).searchParams.get("id");
+        var add = new AjaxCall(`getReason=insertStep&bez=${steps[0]}&prio=${steps[1]}&auftrag=${auftrag}`, "POST", window.location.href);
+        add.makeAjaxCall(function (response) {
+            console.log(response);
+            location.reload();
+        });
+    }, false);
 
-        document.getElementById("bearbeitungsschritte").appendChild(btn);
-    });
+    document.getElementById("bearbeitungsschritte").appendChild(btn);
 }
 
 function performSearch(e) {

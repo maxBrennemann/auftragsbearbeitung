@@ -56,8 +56,9 @@
 		<button id="absenden" onclick="auftragHinzufuegen()">Absenden</button>
 	</div>
 <?php else: ?>
-	<span>Kundennummer oder Suchen: <input id="kundensuche" onkeyup="performSearchEnter(event, this.value);"><button onclick="performSearchButton(event)">&#x1F50E;</button></span>
-	<input type="number" min="1" id="auftragsnummer"><button onclick="print('auftragsnummer', 'Auftrag');">Auftragsblatt generieren</button>
+	<div class="defCont">
+		<span>Kundennummer oder Suchen: <input id="kundensuche" onkeyup="performSearchEnter(event, this.value);"><button onclick="performSearchButton(event)">&#x1F50E;</button></span>
+	</div>
 	<span id="searchResults"></span>
 <?php endif; ?>
 <style>

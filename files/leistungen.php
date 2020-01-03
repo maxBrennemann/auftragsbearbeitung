@@ -10,7 +10,9 @@ $data = DBAccess::selectQuery("SELECT * FROM leistung");
 <div class="container">
 	<?php foreach ($data as $leistung): ?>
 		<div class="leistungsblock">
-			<h4><?=$leistung['Bezeichnung']?></h4>
+			<div class="leistungsHeader">
+				<p><?=$leistung['Bezeichnung']?></p>
+			</div>
 			<p>Beschreibung: <?=$leistung['Beschreibung']?></p>
 			<p>Quelle: <?=$leistung['Quelle']?></p>
 			<p>Aufschlag: <?=$leistung['Aufschlag']?>%</p>
@@ -18,10 +20,13 @@ $data = DBAccess::selectQuery("SELECT * FROM leistung");
 		</div>
 	<?php endforeach; ?>
 	<div class="leistungsblock">
-		<span>Bezeichnung: <input type="text"  maxlength="32"></input></span><br>
-		<span>Beschreibung: <input type="text"></input></span><br>
-		<span>Quelle: <input type="text" maxlength="64"></input></span><br>
-		<span>Aufschlag: <input type="number"></input></span><br>
+		<div class="leistungsHeader">
+				<p>Neue Leistung hinzufügen</p>
+		</div>
+		<span>Bezeichnung: <input type="text"  maxlength="32" id="bezeichnung"></input></span><br>
+		<span>Beschreibung: <input type="text" id="description"></input></span><br>
+		<span>Quelle: <input type="text" maxlength="64" id="source"></input></span><br>
+		<span>Aufschlag: <input type="number" id="aufschlag"></input></span><br>
 		<button onclick="add()">Hinzufügen</button>
 	<div>
 </div>

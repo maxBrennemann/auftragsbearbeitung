@@ -12,7 +12,7 @@ function performSearchEnter(e, query) {
 
 function ajaxSearch(query) {
     if (isNaN(query)) {
-        var search = new AjaxCall(`getReason=search&query=${query}&stype=kunde&urlid=1`, "POST", window.location.href);
+        var search = new AjaxCall(`getReason=search&query=${query}&stype=kunde&urlid=1&shortSummary=false`, "POST", window.location.href);
         search.makeAjaxCall(function (responseTable) {
             document.getElementById("searchResults").innerHTML = responseTable;
             addableTables();
