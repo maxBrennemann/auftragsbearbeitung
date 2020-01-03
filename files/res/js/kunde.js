@@ -70,6 +70,9 @@ function editText(event) {
     if (isOnEdit) {
         var editText = document.getElementById("editNotes");
         editText.contentEditable = true;
+        editText.style.backgroundColor = "#FFFFFF";
+        editText.style.borderRadius = "6px";
+        editText.style.padding = "5px";
         event.target.innerHTML = "Absenden";
         isOnEdit = false;
     } else {

@@ -49,7 +49,13 @@ class Ajax {
 				require_once('classes/project/Search.php');
 				$stype = $_POST['stype'];
 				if (isset($_POST['urlid']) && $_POST['urlid'] == "1") {
-					echo Search::getSearchTable($_POST['query'], $stype, Link::getPageLink("neuer-auftrag"));
+					$shortSummary = false;
+					if (isset($_POST['shortSummary'])) {
+						if ($_POST['shortSummary'] == "true") {
+							$shortSummary = true;
+						}
+					}
+					echo Search::getSearchTable($_POST['query'], $stype, Link::getPageLink("neuer-auftrag"), $shortSummary);
 				} else {
 					echo Search::getSearchTable($_POST['query'], $stype);
 				}
@@ -166,6 +172,13 @@ class Ajax {
 				$kdnr = $_POST['kdnr'];
 				$note = $_POST['notes'];
 				DBAccess::insertQuery("UPDATE kunde_extended SET notizen = '$note' WHERE kundennummer = $kdnr");
+				break;
+			case "addLeistung":
+				$bezeichung = $_POST['bezeichung'];
+				$description = $_POST['description'];
+				$source = $_POST['source'];
+				$aufschlag = $_POST['aufschlag'];
+				DBAccess:insertQuery("INSERT INTO leistung (Bezeichnungm, Beschreibung, Quelle, Aufschlag) VALUES ('$bezeichung', '$description', '$source', $aufschlag)");
 				break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";

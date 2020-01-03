@@ -52,18 +52,18 @@ if ($auftragsId == -1) : ?>
 	<button onclick="print('rechnungsnummer', 'Rechnung');">Rechnungsblatt anzeigen</button>
 	<button onclick="showAuftrag()">Auftrag anzeigen</button>
 <?php else: ?>
-	<aside class="border">
+	<aside class="defCont">
 		<?=$kunde->getVorname()?> <?=$kunde->getNachname()?><br><?=$kunde->getFirmenname()?><br>Adresse: <br><?=$kunde->getStrasse()?> <?=$kunde->getHausnummer()?><br>
 		<?=$kunde->getPostleitzahl()?> <?=$kunde->getOrt()?><br><a href="mailto:<?=$kunde->getEmail()?>"><?=$kunde->getEmail()?></a><br>
 		<a href="<?=Link::getPageLink("kunde")?>?id=<?=$auftrag->getKundennummer()?>">Kunde <span id="kundennummer"><?=$auftrag->getKundennummer()?></span> zeigen</a>
 	</aside>
-	<div class="border auftragsinfo">
+	<div class="defCont auftragsinfo">
 		<span><u>Auftragsnummer:</u> <span id="auftragsnummer"><?=$auftrag->getAuftragsnummer()?></span></span><br>
 		<span><button onclick="print('auftragsnummer', 'Auftrag');">Auftragsblatt anzeigen</button></span>
 		<span><button onclick="rechnungErstellen();">Rechnung generieren</button></span><br>
 		<span><u>Beschreibung:</u><br><?=$auftrag->getAuftragsbeschreibung()?></span><br>
 	</div>
-	<div class="border schritte">
+	<div class="defCont schritte">
 		<span><u>Schritte:</u><br>
 			<form name="showSteps">
 				<input onchange="radio('hide')" type="radio" name="showDone" value="hide" checked> Zu erledigende Schritte anzeigen<br>
@@ -72,19 +72,19 @@ if ($auftragsId == -1) : ?>
 			<span id="stepTable"><?=$auftrag->getOpenBearbeitungsschritteAsTable()?></span>
 		</span>
 	</div>
-	<div class="border posten">
+	<div class="defCont posten">
 		<span><u>Posten:</u> <?=$auftrag->getAuftragspostenAsTable()?></span>
 	</div>
-	<div class="border preis">
-		<span><u>Gesamtpreis:</u> <?=$auftrag->preisBerechnen()?>€</span>
+	<div class="defCont preis">
+		<span><u>Gesamtpreis:</u><br><span id="gesamtpreis"><?=$auftrag->preisBerechnen()?>€</span></span>
 	</div>
-	<div class="border fahrzeuge">
+	<div class="defCont fahrzeuge">
 		<span><u>Fahrzeuge:</u> <?=$fahrzeugTable?></span>
 	</div>
-	<div class="border farben">
+	<div class="defCont farben">
 		<span><u>Farben:</u> <?=$farbTable?></span>
 	</div>
-	<div class="border postenadd" id="newPosten">
+	<div class="defCont postenadd" id="newPosten">
 		<select id="selectPosten">
 			<option value="zeit">Zeit</option>
 			<option value="leistung">Leistung</option>
@@ -119,7 +119,30 @@ if ($auftragsId == -1) : ?>
 		</div>
 		<div id="generalPosten"></div>
 	</div>
-	<div class="border upload">
+	<div class="defCont produkt">
+		<div id="selectProdukt">
+			<span>Produkt suchen: <input type="text"><button onclick="performSearch()">&#x1F50E;</button></span>
+			<div id="searchResults"></div>
+		</div>
+	</div>
+	<?php if ($show == false): ?>
+	<div class="defCont step">
+		<button onclick="addBearbeitungsschritte()">Neuen Bearbeitungsschritt hinzufügen</button>
+		<div id="bearbeitungsschritte" style="display: none">
+			<span>Bezeichnung: <input class="bearbeitungsschrittInput" type="text" max="32"></span><br>
+			<span>Datum: <input class="bearbeitungsschrittInput" type="date" max="32"></span><br>
+			<span>Priorität: <input class="bearbeitungsschrittInput" type="text" max="32"></span><br>
+		</div>
+		<button onclick="addColor()">Neuen Farbe hinzufügen</button>
+		<div id="farbe" style="display: none">
+			<br>
+			<span>Farbname: <input class="colorInput" type="text" max="32"></span><br>
+			<span>Farbe (Hex): <input class="colorInput jscolor" type="text" max="32"></span><br>
+			<span>Bezeichnung: <input class="colorInput" type="text" max="32"></span><br>
+			<span>Hersteller: <input class="colorInput" tyep="text" max="32"></span><br>
+		</div>
+	</div>
+	<div class="defCont upload">
 		<form method="post" enctype="multipart/form-data">
 			Dateien hinzufügen:
 			<input type="file" name="uploadedFile">
@@ -129,24 +152,8 @@ if ($auftragsId == -1) : ?>
 			<?=$showFiles?>
 		</div>
 	</div>
-	<div class="border produkt">
-		<div id="selectProdukt">
-			<span>Produkt suchen: <input type="text"><button onclick="performSearch()">&#x1F50E;</button></span>
-			<div id="searchResults"></div>
-		</div>
-	</div>
-	<?php if ($show == false): ?>
-	<div class="border step">
-		<button onclick="addBearbeitungsschritte()">Neuen Bearbeitungsschritt hinzufügen</button>
-		<div id="bearbeitungsschritte"></div>
-		<button onclick="addColor()">Neuen Farbe hinzufügen</button>
-		<div id="farbe" style="display: none">
-			<br>
-			<span>Farbname: <input class="colorInput" type="text" max="32"></span><br>
-			<span>Farbe (Hex): <input class="colorInput jscolor" type="text" max="32"></span><br>
-			<span>Bezeichnung: <input class="colorInput" type="text" max="32"></span><br>
-			<span>Hersteller: <input class="colorInput" tyep="text" max="32"></span><br>
-		</div>
+	<div class="defCont verlauf">
+		<p>Auftragsverlauf anzeigen</p>
 	</div>
 	<?php endif; ?>
 <?php endif; ?>
