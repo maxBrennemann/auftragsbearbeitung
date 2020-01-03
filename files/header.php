@@ -50,6 +50,6 @@
 	<header>
 		<h1><img id="imageHeader" scr="<?=WEB_URL?>/img/b-schriftung.svg" /><?=$pageName?></h1>
 		<hr style="margin: auto; width: 80%">
+		<div style="margin: auto; width: 80%"><a href="<?=Link::getPageLink("")?>">Home</a>/<a href="<?=Link::getPageLink($page)?>"><?=$pageName?></a></div>
 	</header>
 	<main>
-		<div><a href="<?=Link::getPageLink("")?>">Home</a>/<a href="<?=Link::getPageLink($page)?>"><?=$pageName?></a></div>

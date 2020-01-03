@@ -1,11 +1,37 @@
 .container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 10px;
+    margin: 5px;
 }
 
 .leistungsblock {
-    border: 1px solid black;
     border-radius: 6px;
-    margin: 10px;
+    margin: 15px;
+    background-color: #eff0f1;
+}
+
+.leistungsHeader {
+    background: #B2B2BE;
     padding: 10px;
+    border-radius: 6px 6px 0 0;
+    font-weight: bold;
+}
+
+.leistungsHeader p {
+    margin: 0;
+}
+
+.leistungsblock :not(:first-child) {
+    padding-left: 10px;
+}
+
+.leistungsblock span {
+    padding-top: 10px;
+}
+
+@media (max-width: 500px) {
+    .container {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
