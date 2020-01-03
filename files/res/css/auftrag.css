@@ -1,13 +1,6 @@
 main {
     display: grid;
-    grid-template-areas: "auftrag auftrag kunde" "schritte schritte schritte" "posten posten posten" "fahrzeuge farben preis" "postenadd postenadd produkt" "step step step";
-}
-
-.border {
-    border-radius: 6px;
-    border: 1px solid black;
-    margin: 5px;
-    padding: 10px;
+    grid-template-areas: "auftrag auftrag kunde" "schritte schritte schritte" "posten posten posten" "fahrzeuge farben preis" "postenadd postenadd produkt" "step upload verlauf";
 }
 
 aside {
@@ -51,7 +44,19 @@ aside {
 }
 
 .description {
+    grid-area: description;
+}
 
+.verlauf {
+    grid-area: verlauf;
+}
+
+.description {
+    grid-area: description;
+}
+
+#gesamtpreis {
+    font-size: 3rem;
 }
 
 .farbe {
@@ -60,10 +65,41 @@ aside {
     border-radius: 6px;
 }
 
+@media (max-width: 850px) {
+    main {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas: 
+            "auftrag auftrag"
+            "kunde kunde"
+            "schritte schritte"
+            "posten posten"
+            "fahrzeuge farben"
+            "preis preis"
+            "postenadd postenadd"
+            "produkt produkt"
+            "step step"
+            "upload verlauf";
+    }
+}
+
 @media (max-width: 500px) {
     main {
         display: grid;
         max-width: 95vw;
-        grid-template-areas: "auftrag auftrag" "kunde kunde" "schritte schritte" "posten posten" "fahrzeuge farben" "preis preis" "postenadd postenadd" "produkt produkt" "step step";
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+            "auftrag"
+            "kunde"
+            "schritte"
+            "posten"
+            "fahrzeuge"
+            "farben"
+            "preis"
+            "postenadd"
+            "produkt"
+            "step"
+            "upload"
+            "verlauf";
     }
 }

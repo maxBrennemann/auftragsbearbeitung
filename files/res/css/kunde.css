@@ -9,13 +9,13 @@ a[href="#"] {
 .gridCont {
     display: grid;
     grid-template-areas: "kundendaten ansprechpartner farben" "auftraege auftraege auftraege";
-    grid-gap: 10px;
 }
 
 .gridCont > div {
-    border: 1px solid black;
     border-radius: 6px;
+    margin: 10px;
     padding: 15px;
+    background-color: #eff0f1;
 }
 
 #showKundendaten {
