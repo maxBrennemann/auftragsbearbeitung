@@ -14,10 +14,10 @@
 	$kunde =			Link::getPageLink("kunde");
 	$leistungen =		Link::getPageLink("leistungen");
 	$toDo =				Link::getPageLink("verbesserungen");
+	$offeneRechnungen = Link::getPageLink("offene-rechnungen");
 
 	$showAktuelleSchritte = Aufgabenliste::aktuelleSchritteAlsTabelleAusgeben();
 	$showOffeneAuftraege = Auftrag::getOffeneAuftraege();
-	$showOffeneRechnungen = Rechnung::getOffeneRechnungen();
 	$offeneSumme = Rechnung::getOffeneRechnungssumme();
 
 	if (isset($_GET['showDetails'])) {
@@ -58,6 +58,6 @@
 	<div class="tableContainer">
 		<h3>Offene Bearbeitungsschritte:</h3><?=$showAktuelleSchritte?>
 		<h3>Offene Aufträge:</h3><?=$showOffeneAuftraege?>
-		<h3>Offene Rechnungen: <?=$offeneSumme?>€</h3><?=$showOffeneRechnungen?>
+		<h3><a href="<?=$offeneRechnungen?>">Offene Rechnungen:</a> <?=$offeneSumme?>€</h3>
 	</div>
 </div>
