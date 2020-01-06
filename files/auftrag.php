@@ -82,7 +82,7 @@ if ($auftragsId == -1) : ?>
 		<span><u>Fahrzeuge:</u> <?=$fahrzeugTable?></span>
 	</div>
 	<div class="defCont farben">
-		<span><u>Farben:</u> <?=$farbTable?></span>
+		<span><u>Farben:</u><br> <span id="showColors"><?=$farbTable?></span></span>
 	</div>
 	<div class="defCont postenadd" id="newPosten">
 		<select id="selectPosten">
@@ -140,6 +140,7 @@ if ($auftragsId == -1) : ?>
 			<span>Farbe (Hex): <input class="colorInput jscolor" type="text" max="32"></span><br>
 			<span>Bezeichnung: <input class="colorInput" type="text" max="32"></span><br>
 			<span>Hersteller: <input class="colorInput" tyep="text" max="32"></span><br>
+			<button onclick="sendColor();">Hinuzufügen</button>
 		</div>
 	</div>
 	<div class="defCont upload">

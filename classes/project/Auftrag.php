@@ -32,6 +32,7 @@ class Auftrag implements StatisticsInterface {
 	protected $rechnungsnummer = 0;
 
 	function __construct($auftragsnummer) {
+		$auftragsnummer = (int) $auftragsnummer;
 		if ($auftragsnummer > 0) {
 			$this->Auftragsnummer = $auftragsnummer;
 			$data = DBAccess::selectAllByCondition("auftrag", "Auftragsnummer", $auftragsnummer);
@@ -195,10 +196,18 @@ class Auftrag implements StatisticsInterface {
 		$farben = DBAccess::selectQuery("SELECT Farbe, Farbwert FROM farben WHERE Kundennummer = {$this->getKundennummer()} AND Auftragsnummer = {$this->getAuftragsnummer()}");
 		$farbTable = "";
 		foreach ($farben as $farbe) {
-			$farbTable .= "<span>{$farbe['Farbe']} <div class='farbe' style='display: inline-block; background-color: #{$farbe['Farbwert']}'></div></span>";
+			$farbTable .= "<span>{$farbe['Farbe']} <div class='farbe' style='display: inline-block; background-color: #{$farbe['Farbwert']}'></div></span><br>";
 		}
 
 		return $farbTable;
+	}
+
+	public function getAddColors() {
+		$text = "<br><span>Farbname: <input class='colorInput' type='text' max='32'></span><br><span>Farbe (Hex): <input class='colorInput jscolor' type='text' max='32'></span><br>";
+		$text.= "<span>Bezeichnung: <input class='colorInput' type='text' max='32'></span><br><span>Hersteller: <input class='colorInput' tyep='text' max='32'></span><br>";
+		$text.= "<button onclick='sendColor();'>Hinuzufügen</button>";
+
+		return $text;
 	}
 
 	public function recalculate() {

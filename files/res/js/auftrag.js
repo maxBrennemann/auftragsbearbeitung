@@ -161,3 +161,22 @@ function showAuftrag() {
     url += "&show=t";
     window.location.href = url;
 }
+
+function sendColor() {
+    var elements = document.getElementsByClassName("colorInput");
+    var data = [];
+    var auftrag = new URL(window.location.href).searchParams.get("id");
+
+    for (let i = 0; i < elements.length; i++) {
+        data.push(elements[i].value);
+    }
+    
+    var sendC = new AjaxCall(`getReason=newColor&auftrag=${auftrag}&farbname=${data[0]}&farbe=${data[1]}&bezeichnung=${data[2]}&hersteller=${data[3]}`);
+    sendC.makeAjaxCall(function (colorHTML) {
+        var showColors = document.getElementById("showColors");
+        var farben = document.getElementById("farbe");
+        var data = JSON.parse(colorHTML);
+        showColors.innerHTML = data.farben;
+        farben.innerHTML = data.addFarben;
+    });
+}

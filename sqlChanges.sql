@@ -34,3 +34,8 @@ ALTER TABLE `kunde_extended` ADD FOREIGN KEY (`kundennummer`) REFERENCES `kunde`
 
 /* Änderungen 28.12.2019 */
 CREATE TRIGGER createRowForNewCustomer AFTER INSERT ON kunde FOR EACH ROW INSERT INTO kunde_extended SET kunde_extended.kundennummer = NEW.Kundennummer;
+
+/* Änderungen 06.01.2019 */
+ALTER TABLE farben CHANGE Nummer Nummer INT(10) AUTO_INCREMENT;
+ALTER TABLE farben ADD Hersteller varchar(64) NOT NULL;
+INSERT INTO articles (id, articleUrl, pageName, src) VALUES (16, 'offeneRechnungen.php', 'Offene Rechnungen', "offene-rechnungen");

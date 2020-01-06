@@ -178,7 +178,25 @@ class Ajax {
 				$description = $_POST['description'];
 				$source = $_POST['source'];
 				$aufschlag = $_POST['aufschlag'];
-				DBAccess:insertQuery("INSERT INTO leistung (Bezeichnungm, Beschreibung, Quelle, Aufschlag) VALUES ('$bezeichung', '$description', '$source', $aufschlag)");
+				DBAccess::insertQuery("INSERT INTO leistung (Bezeichnungm, Beschreibung, Quelle, Aufschlag) VALUES ('$bezeichung', '$description', '$source', $aufschlag)");
+				break;
+			case "newColor":
+				require_once('classes/project/Auftrag.php');
+				$auftrag = $_POST['auftrag'];
+				$farbname = $_POST['farbname'];
+				$farbe = $_POST['farbe'];
+				$bezeichnung = $_POST['bezeichnung'];
+				$hersteller = $_POST['hersteller'];
+
+				$query = "INSERT INTO farben (Kundennummer, Auftragsnummer, Farbe, Farbwert, Notiz, Hersteller) VALUES ";
+				$query .= "((SELECT auftrag.Kundennummer AS Kundennummer FROM auftrag WHERE auftrag.Auftragsnummer = $auftrag), $auftrag, ";
+				$query .= "'$farbname', '$farbe', '$bezeichnung', '$hersteller')";
+
+				DBAccess::insertQuery($query);
+
+				$auftrag = new Auftrag($auftrag);
+				$data = array("farben" => $auftrag->getFarben(), "addFarben" => $auftrag->getAddColors());
+				echo json_encode($data, JSON_FORCE_OBJECT);
 				break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
