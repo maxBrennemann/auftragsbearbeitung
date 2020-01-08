@@ -18,13 +18,15 @@ abstract class Posten {
 	abstract protected function fillToArray($arr);
 
 	protected $postenTyp;
+	protected $ohneBerechnung = false;
 
 	public static function bekommeAllePosten($auftragsnummer) {
 		$posten = array();
 		
-		$data = DBAccess::selectQuery("SELECT Postennummer, Posten FROM posten WHERE Auftragsnummer = {$auftragsnummer}");
+		$data = DBAccess::selectQuery("SELECT Postennummer, Posten, ohneBerechnung FROM posten WHERE Auftragsnummer = {$auftragsnummer}");
 		foreach ($data as $step) {
 			$element;
+
 			switch($step['Posten']) {
 				case 'zeit':
 					$speziefischerPosten = DBAccess::selectQuery("SELECT ZeitInMinuten, Stundenlohn, Beschreibung FROM zeit WHERE zeit.Postennummer = {$step['Postennummer']}")[0];
@@ -40,6 +42,11 @@ abstract class Posten {
 					$speziefischerPosten = DBAccess::selectQuery("SELECT Leistungsnummer, Beschreibung, SpeziefischerPreis, Einkaufspreis FROM leistung_posten WHERE leistung_posten.Postennummer = {$step['Postennummer']}")[0];
 					$element = new Leistung($speziefischerPosten['Leistungsnummer'], $speziefischerPosten['Beschreibung'], $speziefischerPosten['SpeziefischerPreis'], $speziefischerPosten['Einkaufspreis']);
 					break;
+			}
+
+			$free = (int) $step['ohneBerechnung'];
+			if ($free == 1) {
+				$element->ohneBerechnung = true;
 			}
 			array_push($posten, $element);
 		}
@@ -57,7 +64,8 @@ abstract class Posten {
 				$zeit = $data['ZeitInMinuten'];
 				$lohn = $data['Stundenlohn'];
 				$desc = $data['Beschreibung'];
-				DBAccess::insertQuery("INSERT INTO posten (Postennummer, Auftragsnummer, Posten) VALUES ($postennummer, $auftragsnummer, '$type')");
+				$fre = $data['ohneBerechnung'];
+				DBAccess::insertQuery("INSERT INTO posten (Postennummer, Auftragsnummer, Posten, ohneBerechnung) VALUES ($postennummer, $auftragsnummer, '$type', $fre)");
 				DBAccess::insertQuery("INSERT INTO zeit (Postennummer, ZeitInMinuten, Stundenlohn, Beschreibung) VALUES ($postennummer, $zeit, $lohn, '$desc')");
 				break;
 			case "leistung":
@@ -65,8 +73,9 @@ abstract class Posten {
 				$bes = $data['Beschreibung'];
 				$ekp = $data['Einkaufspreis'];
 				$pre = $data['SpeziefischerPreis'];
-				DBAccess::insertQuery("INSERT INTO posten (Postennummer, Auftragsnummer, Posten) VALUES ($postennummer, $auftragsnummer, '$type')");
-				DBAccess::insertQuery("INSERT INTO leistung_posten (Leistungsnummer, Postennummer, Beschreibung, Einkaufspreis, SpeziefischerPreis) VALUES($lei, $postennummer, '$bes', '$ekp', '$pre')");
+				$fre = $data['ohneBerechnung'];
+				DBAccess::insertQuery("INSERT INTO posten (Postennummer, Auftragsnummer, Posten, ohneBerechnung) VALUES ($postennummer, $auftragsnummer, '$type')");
+				DBAccess::insertQuery("INSERT INTO leistung_posten (Leistungsnummer, Postennummer, Beschreibung, Einkaufspreis, SpeziefischerPreis) VALUES($lei, $postennummer, '$bes', '$ekp', '$pre', $fre)");
 				Leistung::bearbeitungsschritteHinzufuegen($lei, $auftragsnummer);
 				break;
 			case "produkt":
