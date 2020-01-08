@@ -59,6 +59,10 @@ function validateEmail(email) {
 	return re.test(String(email).toLowerCase());
 }
 
+function getElement(id) {
+	return document.getElementById(id);
+}
+
 var AjaxCall = function(paramString, ajaxType) {
 	this.type = (ajaxType != null) ? ajaxType : "POST";
 	this.paramString = (paramString != null) ? paramString : "";
