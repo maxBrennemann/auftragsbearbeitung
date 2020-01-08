@@ -1,7 +1,19 @@
 <?php
+    require_once('classes/Link.php');
+    $link = Link::getPageLink("verbesserungen");
+?>
+<p><a href="<?=$link?>?t=details">Details</a> oder <a href="<?=$link?>?t=unsolved">nicht erledigte</a> Verbesserungen.</p>
+<?php
     require_once('classes/project/FormGenerator.php');
 
-    $verbesserungen = DBAccess::selectQuery("SELECT verbesserungen AS Verbesserungen, erledigt FROM verbesserungen");
+    $verbesserungen;
+
+    if (isset($_GET['t']) && $_GET['t'] == 'details') {
+        $verbesserungen = DBAccess::selectQuery("SELECT verbesserungen AS Verbesserungen, erledigt FROM verbesserungen");
+    } else {
+        $verbesserungen = DBAccess::selectQuery("SELECT verbesserungen AS Verbesserungen, erledigt FROM verbesserungen WHERE erledigt = ''");
+    }
+
     $column_names = array(0 => array("COLUMN_NAME" => "Verbesserungen"), 1 => array("COLUMN_NAME" => "erledigt"));
     $table = new FormGenerator("", "", "");
     echo $table->createTableByData($verbesserungen, $column_names);
