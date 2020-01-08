@@ -89,6 +89,7 @@ class Ajax {
 				$data['Stundenlohn'] = $_POST['wage'];
 				$data['Beschreibung'] = $_POST['descr'];
 				$data['Auftragsnummer'] = $_POST['auftrag'];
+				$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
 				Posten::insertPosten("zeit", $data);
 				break;
 			case "insertAnspr":
@@ -115,6 +116,7 @@ class Ajax {
 				$data['Einkaufspreis'] = $_POST['ekp'];
 				$data['SpeziefischerPreis'] = $_POST['pre'];
 				$data['Auftragsnummer'] = $_POST['auftrag'];
+				$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
 				Posten::insertPosten("leistung", $data);
 				break;
 			case "insertStep":

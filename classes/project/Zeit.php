@@ -15,6 +15,7 @@ class Zeit extends Posten {
 	private $Kosten = null;
 	private $beschreibung = null;
 	protected $postenTyp = "zeit";
+	protected $ohneBerechnung = false;
 
 	function __construct($Stundenlohn, $ZeitInMinuten, $beschreibung) {
 		$this->Stundenlohn = (int) $Stundenlohn;
@@ -38,6 +39,9 @@ class Zeit extends Posten {
 	}
 
     public function bekommePreis() {
+		if ($this->ohneBerechnung == true) {
+			return 0;
+		}
         return $this->kalkulierePreis();
     }
 

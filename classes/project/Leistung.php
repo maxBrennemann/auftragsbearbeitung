@@ -16,6 +16,7 @@ class Leistung extends Posten {
     private $bezeichnung = null;
 	private $beschreibung = null;
 	protected $postenTyp = "leistung";
+	protected $ohneBerechnung = false;
 
 	function __construct($leistungsnummer, $beschreibung, $speziefischerPreis, $einkaufspreis) {
 		$this->beschreibung = $beschreibung;
@@ -44,7 +45,10 @@ class Leistung extends Posten {
 	}
 
     public function bekommePreis() {
-        return (int) $this->preis;
+		if ($this->ohneBerechnung == true) {
+			return 0;
+		}
+        return (float) $this->preis;
     }
 
 	public static function bearbeitungsschritteHinzufuegen($leistungsnummer, $auftragsnummer) {

@@ -16,6 +16,7 @@ class ProduktPosten extends Posten {
 	private $Beschreibung = null;
 	private $Anzahl = 0;
 	protected $postenTyp = "produkt";
+	protected $ohneBerechnung = false;
 
 	function __construct($Preis, $Bezeichnung, $Beschreibung, $Anzahl, $Einkaufspreis) {
 		$this->Preis = $Preis;
@@ -26,7 +27,7 @@ class ProduktPosten extends Posten {
 	}
 
 	public function getHTMLData() {
-		$html = "<div><span>Typ: {$this->postenTyp} </span><span>Preis: {$this->bekommePreis()}€ </span>";
+		$html = "<div><span>Typ: {$this->postenTyp} </span><span>Preis: {$this->bekommePreis()}ï¿½ </span>";
 		$html .= "<span>Bezeichnung: {$this->Bezeichnung} </span><span>Beschreibung: {$this->Beschreibung} </span></div>";
 		return $html;
 	}
@@ -42,6 +43,9 @@ class ProduktPosten extends Posten {
 	}
 
     public function bekommePreis() {
+		if ($this->ohneBerechnung == true) {
+			return 0;
+		}
         return (int) $this->Preis;
     }
 

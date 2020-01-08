@@ -26,6 +26,12 @@ function getSelections() {
             addableTables();
         });
     }
+
+    document.getElementById("showOhneBerechnung").style.display = "inline";
+}
+
+function getOhneBerechnung() {
+    return document.getElementById("ohneBerechnung").checked;
 }
 
 function showSelection(element) {
@@ -49,8 +55,9 @@ function addBearbeitungsschritte() {
         for (var i = 0; i < tableData.length; i++) {
             steps.push(tableData[i].innerHTML);
         }
+        var isFree = getOhneBerechnung() ? 1 : 0;
         var auftrag = new URL(window.location.href).searchParams.get("id");
-        var add = new AjaxCall(`getReason=insertStep&bez=${steps[0]}&prio=${steps[1]}&auftrag=${auftrag}`, "POST", window.location.href);
+        var add = new AjaxCall(`getReason=insertStep&bez=${steps[0]}&prio=${steps[1]}&auftrag=${auftrag}&ohneBerechnung=${isFree}`, "POST", window.location.href);
         add.makeAjaxCall(function (response) {
             console.log(response);
             location.reload();
@@ -74,8 +81,9 @@ function addTime() {
     var time = document.getElementById("time").value;
     var wage = document.getElementById("wage").value;
     var descr = document.getElementById("descr").value;
+    var isFree = getOhneBerechnung() ? 1 : 0;
     var auftrag = new URL(window.location.href).searchParams.get("id");
-    var add = new AjaxCall(`getReason=insTime&time=${time}&wage=${wage}&descr=${descr}&auftrag=${auftrag}`, "POST", window.location.href);
+    var add = new AjaxCall(`getReason=insTime&time=${time}&wage=${wage}&descr=${descr}&auftrag=${auftrag}&ohneBerechnung=${isFree}`, "POST", window.location.href);
     add.makeAjaxCall(function (response) {
         console.log(response);
         location.reload();
@@ -88,8 +96,9 @@ function addLeistung() {
     var bes = document.getElementById("bes").value;
     var ekp = document.getElementById("ekp").value;
     var pre = document.getElementById("pre").value;
+    var isFree = getOhneBerechnung() ? 1 : 0;
     var auftrag = new URL(window.location.href).searchParams.get("id");
-    var add = new AjaxCall(`getReason=insertLeistung&lei=${lei}&bes=${bes}&ekp=${ekp}&pre=${pre}&auftrag=${auftrag}`, "POST", window.location.href);
+    var add = new AjaxCall(`getReason=insertLeistung&lei=${lei}&bes=${bes}&ekp=${ekp}&pre=${pre}&auftrag=${auftrag}&ohneBerechnung=${isFree}`, "POST", window.location.href);
     add.makeAjaxCall(function (response) {
         console.log(response);
     });

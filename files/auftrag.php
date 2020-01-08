@@ -116,6 +116,7 @@ if ($auftragsId == -1) : ?>
 					<button onclick="addFahrzeug()">Fahrzeug hinzufügen</button>
 				</div>
 			</div>
+			<span id="showOhneBerechnung" style="display: none;"><input id="ohneBerechnung" type="checkbox">Ohne Berechnung</span>
 		</div>
 		<div id="generalPosten"></div>
 	</div>
