@@ -5,7 +5,15 @@ error_reporting(E_ALL);
 class Aufgabenliste {
     
 	public static function aktuelleSchritteAlsTabelleAusgeben() {
-		echo "";
+		$query = "SELECT IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) as Name, auftrag.Auftragsbezeichnung, schritte.Bezeichnung, schritte.Datum FROM schritte LEFT JOIN auftrag ON schritte.Auftragsnummer = auftrag.Auftragsnummer LEFT JOIN kunde ON kunde.Kundennummer = auftrag.Kundennummer WHERE auftrag.Rechnungsnummer = 0 ORDER BY schritte.Priority DESC";
+		$data = DBAccess::selectQuery($query);
+
+		$column_names = array(0 => array("COLUMN_NAME" => "Name"), 1 => array("COLUMN_NAME" => "Auftragsbezeichnung"),
+		2 => array("COLUMN_NAME" => "Bezeichnung"), 3 => array("COLUMN_NAME" => "Datum"));
+
+		$form = new FormGenerator("schritte", "", "");
+		$table = $form->createTableByData($data, $column_names, "auftrag", null);
+		return $table;
 	}
 
 }

@@ -31,6 +31,8 @@ class Auftrag implements StatisticsInterface {
 	protected $Auftragstyp = null;
 	protected $rechnungsnummer = 0;
 
+	static $offeneAuftraege = array();
+
 	function __construct($auftragsnummer) {
 		$auftragsnummer = (int) $auftragsnummer;
 		if ($auftragsnummer > 0) {
@@ -174,6 +176,7 @@ class Auftrag implements StatisticsInterface {
 		$query .= "auftrag.AngenommenDurch WHERE Rechnungsnummer = 0";
 
 		$data = DBAccess::selectQuery($query);
+		self::$offeneAuftraege = $data;
 
 		$form = new FormGenerator("auftrag", "Datum", "Rechnungsnummer = 0");
 		$table = $form->createTableByDataRowLink($data, $column_names, "auftrag", null);

@@ -50,17 +50,16 @@ function addBearbeitungsschritte() {
     var btn = document.createElement("button");
     btn.innerHTML = "Hinzufügen";
     btn.addEventListener("click", function () {
-        var tableData = document.getElementsByClassName("steps");
+        var tableData = document.getElementsByClassName("bearbeitungsschrittInput");
         var steps = [];
         for (var i = 0; i < tableData.length; i++) {
-            steps.push(tableData[i].innerHTML);
+            steps.push(tableData[i].value);
         }
-        var isFree = getOhneBerechnung() ? 1 : 0;
         var auftrag = new URL(window.location.href).searchParams.get("id");
-        var add = new AjaxCall(`getReason=insertStep&bez=${steps[0]}&prio=${steps[1]}&auftrag=${auftrag}&ohneBerechnung=${isFree}`, "POST", window.location.href);
+        var add = new AjaxCall(`getReason=insertStep&bez=${steps[0]}&prio=${steps[1]}&auftrag=${auftrag}`, "POST", window.location.href);
         add.makeAjaxCall(function (response) {
             console.log(response);
-            location.reload();
+            //location.reload();
         });
     }, false);
 
