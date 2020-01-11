@@ -72,10 +72,8 @@ li {
 
 /* table style */
 table {
-    border: 1px solid black;
     border-radius: 6px;
-    margin: 5px;
-    background-color: black;
+    border-spacing: 0;
     display: inline-block;
 }
 
@@ -87,19 +85,35 @@ tbody {
 
 tr {
     background-color: white;
+    padding: 7px;
+}
+
+tr:nth-child(odd) {
+    background-color: #eff0f1;
 }
 
 th {
-    padding: 4px;
+    padding: 7px;
     margin: 1px;
+    background-color: #005999;
+    text-align: left;
 }
 
 td {
-    padding: 4px;
+    padding: 7px;
     margin: 1px;
 }
 
+tr th:first-child {
+    padding-left: 15px;
+}
+
+tr td:first-child {
+    padding-left: 15px;
+}
+
 tr:first-child th:first-child {
+    padding-left: 15px;
     border-radius: 6px 0 0 0;
 }
 
