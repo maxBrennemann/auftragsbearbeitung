@@ -29,7 +29,11 @@
 	}
 
 	if (isset($_GET['upload'])) {
-		header("Content-type:application/pdf");
+		$file_info = new finfo(FILEINFO_MIME_TYPE);
+		$mime_type = $file_info->buffer(file_get_contents(Link::getResourcesLink($_GET['upload'], "upload", false)));
+		
+		header("Content-type:$mime_type");
+
 		$file = file_get_contents(Link::getResourcesLink($_GET['upload'], "upload", false));
 		echo $file;
 	}

@@ -152,6 +152,7 @@ if ($auftragsId == -1) : ?>
 			<input type="file" name="uploadedFile">
 			<input type="submit" value="Datei hochladen" name="filesubmitbtn">
 		</form>
+		<br>
 		<div>
 			<?=$showFiles?>
 		</div>
