@@ -1,6 +1,6 @@
 main {
     display: grid;
-    grid-template-areas: "auftrag auftrag kunde" "schritte schritte schritte" "posten posten posten" "fahrzeuge farben preis" "postenadd postenadd produkt" "step upload verlauf";
+    grid-template-areas: "auftrag auftrag kunde" "schritte schritte schritteAdd" "posten posten posten" "fahrzeuge farben preis" "postenadd postenadd produkt" "step upload verlauf";
 }
 
 aside {
@@ -43,6 +43,10 @@ aside {
     grid-area: step;
 }
 
+.schritteAdd {
+    grid-area: schritteAdd;
+}
+
 .description {
     grid-area: description;
 }
@@ -72,7 +76,7 @@ aside {
         grid-template-areas: 
             "auftrag auftrag"
             "kunde kunde"
-            "schritte schritte"
+            "schritte schritteAdd"
             "posten posten"
             "fahrzeuge farben"
             "preis preis"
@@ -92,6 +96,7 @@ aside {
             "auftrag"
             "kunde"
             "schritte"
+            "schritteAdd"
             "posten"
             "fahrzeuge"
             "farben"

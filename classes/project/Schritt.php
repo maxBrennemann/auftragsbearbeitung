@@ -46,7 +46,7 @@ class Schritt {
 		$pri = $data['Priority'];
 		$auf = $data['Auftragsnummer'];
 
-		DBAccess::insertQuery("INSERT INTO schritte (Auftragsnummer, istAllgemein, Bezeichnung, Datum, Priority, istErledigt) VALUES ($auf, 1, '$bez', '$dat', $pri, 1)");
+		DBAccess::insertQuery("INSERT INTO `schritte` (`Auftragsnummer`, `istAllgemein`, `Bezeichnung`, `Datum`, `Priority`, `istErledigt`) VALUES ($auf, 1, '$bez', '$dat', $pri, 1)");
 	}
 
 }

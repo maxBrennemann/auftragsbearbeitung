@@ -72,6 +72,14 @@ if ($auftragsId == -1) : ?>
 			<span id="stepTable"><?=$auftrag->getOpenBearbeitungsschritteAsTable()?></span>
 		</span>
 	</div>
+	<div class="defCont schritteAdd">
+		<button onclick="addBearbeitungsschritte()">Neuen Bearbeitungsschritt hinzufügen</button>
+		<div id="bearbeitungsschritte" style="display: none">
+			<span>Bezeichnung: <input class="bearbeitungsschrittInput" type="text" max="32"></span><br>
+			<span>Datum: <input class="bearbeitungsschrittInput" type="date" max="32"></span><br>
+			<span>Priorität: <input class="bearbeitungsschrittInput" type="number" max="32"></span><br>
+		</div>
+	</div>
 	<div class="defCont posten">
 		<span><u>Posten:</u> <?=$auftrag->getAuftragspostenAsTable()?></span>
 	</div>
@@ -128,12 +136,6 @@ if ($auftragsId == -1) : ?>
 	</div>
 	<?php if ($show == false): ?>
 	<div class="defCont step">
-		<button onclick="addBearbeitungsschritte()">Neuen Bearbeitungsschritt hinzufügen</button>
-		<div id="bearbeitungsschritte" style="display: none">
-			<span>Bezeichnung: <input class="bearbeitungsschrittInput" type="text" max="32"></span><br>
-			<span>Datum: <input class="bearbeitungsschrittInput" type="date" max="32"></span><br>
-			<span>Priorität: <input class="bearbeitungsschrittInput" type="text" max="32"></span><br>
-		</div>
 		<button onclick="addColor()">Neuen Farbe hinzufügen</button>
 		<div id="farbe" style="display: none">
 			<br>
