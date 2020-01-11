@@ -29,9 +29,13 @@ class Upload {
         error_reporting(-1);
 
         $datetime = new DateTime();
+       
         $filename = $datetime->getTimestamp() . basename($_FILES["uploadedFile"]["name"]);
         $originalname = basename($_FILES["uploadedFile"]["name"]);
-        $insertQuery = "INSERT INTO dateien (dateiname, originalname) VALUES ('$filename', '$originalname')";
+        $filetype = pathinfo($_FILES["uploadedFile"]["name"], PATHINFO_EXTENSION);
+        $date = date("Y-m-d");
+
+        $insertQuery = "INSERT INTO dateien (dateiname, originalname, typ, `date`) VALUES ('$filename', '$originalname','$filetype', '$date')";
         
         if (move_uploaded_file($_FILES["uploadedFile"]["tmp_name"], $this->uploadDir . $filename)) {
             return DBAccess::insertQuery($insertQuery);
@@ -45,13 +49,19 @@ class Upload {
     }
 
     public static function getFilesAuftrag($auftragsnummer) {
-        $files = DBAccess::selectQuery("SELECT DISTINCT dateiname, originalname FROM dateien LEFT JOIN dateien_auftraege ON dateien_auftraege.id_datei WHERE dateien_auftraege.id_auftrag = $auftragsnummer");
-        $html = "";
-        foreach ($files as $file) {
-            $link = Link::getResourcesShortLink($file['dateiname'], "upload");
-            $html .= "<span><a href=\"$link\" download=\"${file['originalname']}\">${file['originalname']}</a></span><br>";
+        $files = DBAccess::selectQuery("SELECT DISTINCT dateiname AS Datei, originalname, `date` AS Datum, typ as Typ FROM dateien LEFT JOIN dateien_auftraege ON dateien_auftraege.id_datei WHERE dateien_auftraege.id_auftrag = $auftragsnummer");
+        for ($i = 0; $i < sizeof($files); $i++) {
+            $link = Link::getResourcesShortLink($files[$i]['Datei'], "upload");
+            $html = "<span><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\">{$files[$i]['originalname']}</a></span>"; //download=\"{$files[$i]['originalname']}\"
+
+            $files[$i]['Datei'] = $html;
         }
-        return $html;
+
+        $column_names = array(0 => array("COLUMN_NAME" => "Datei"), 1 => array("COLUMN_NAME" => "Typ"), 2 => array("COLUMN_NAME" => "Datum"));
+
+        $form = new FormGenerator("dateien", "", "");
+		$table = $form->createTableByData($files, $column_names, "dateien", null);
+		return $table;
     }
 }
 

@@ -43,6 +43,11 @@ INSERT INTO articles (id, articleUrl, pageName, src) VALUES (16, 'offeneRechnung
 /* Änderungen 08.01.2020 */
 ALTER TABLE posten ADD ohneBerechnung INT(10) NOT NULL;
 
-/* Änderungen 10.01.2020*/
+/* Änderungen 10.01.2020 */
 ALTER TABLE dateien DROP FOREIGN KEY dateien_ibfk_1;
 ALTER TABLE `dateien` DROP `auftragsnummer`;
+
+/* Änderungen 11.01.2020 */
+ALTER TABLE kunde_extended ADD Faxnummer VARCHAR(32) NOT NULL;
+ALTER TABLE dateien ADD `date` DATE NOT NULL;
+ALTER TABLE dateien ADD typ VARCHAR(16) NOT NULL;

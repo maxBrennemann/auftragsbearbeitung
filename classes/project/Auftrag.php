@@ -169,7 +169,7 @@ class Auftrag implements StatisticsInterface {
 		
 		$query = "SELECT Auftragsnummer, IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ',";
 		$query .= " kunde.Nachname), kunde.Firmenname) as Name, Auftragsbezeichnung,";
-		$query .= " Auftragsbeschreibung, Datum, IF(auftrag.Termin = '', 'kein Termin', ";
+		$query .= " Auftragsbeschreibung, Datum, IF(auftrag.Termin = '0000-00-00', 'kein Termin', ";
 		$query .= "auftrag.Termin) AS Termin, CONCAT(mitarbeiter.Vorname, ' ', mitarbeiter.Nachname)";
 		$query .= " AS 'Angenommen durch' FROM auftrag LEFT JOIN kunde ON auftrag.Kundennummer =";
 		$query .= " kunde.Kundennummer LEFT JOIN mitarbeiter ON mitarbeiter.id = ";

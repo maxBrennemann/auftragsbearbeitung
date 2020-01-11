@@ -91,7 +91,7 @@ class InteractiveFormGenerator extends FormGenerator {
 	}
 
 	private function updateIsDone($row) {
-		$button = "<button onclick=\"updateIsDone($row)\">✔</button>";
+		$button = "<button onclick=\"updateIsDone($row)\" title='Als erledigt markieren.'>✔</button>";
 		return $button;
 	}
 
