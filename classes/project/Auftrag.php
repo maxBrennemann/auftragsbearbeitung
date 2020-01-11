@@ -161,16 +161,19 @@ class Auftrag implements StatisticsInterface {
     }
 
 	public static function getOffeneAuftraege() {
-		$column_names = array(0 => array("COLUMN_NAME" => "Auftragsnummer"), 1 => array("COLUMN_NAME" => "Firmenname"),
+		$column_names = array(0 => array("COLUMN_NAME" => "Auftragsnummer"), 1 => array("COLUMN_NAME" => "Name"),
 				2 => array("COLUMN_NAME" => "Auftragsbezeichnung"), 3 => array("COLUMN_NAME" => "Auftragsbeschreibung"), 4 => array("COLUMN_NAME" => "Datum"), 
-				5 => array("COLUMN_NAME" => "Termin"), 6 => array("COLUMN_NAME" => "AngenommenDurch"));
-		$data = DBAccess::selectQuery("SELECT auftrag.*, kunde.Firmenname FROM auftrag LEFT JOIN kunde ON auftrag.Kundennummer = kunde.Kundennummer WHERE Rechnungsnummer = 0");
+				5 => array("COLUMN_NAME" => "Termin"), 6 => array("COLUMN_NAME" => "Angenommen durch"));
+		
+		$query = "SELECT Auftragsnummer, IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ',";
+		$query .= " kunde.Nachname), kunde.Firmenname) as Name, Auftragsbezeichnung,";
+		$query .= " Auftragsbeschreibung, Datum, IF(auftrag.Termin = '', 'kein Termin', ";
+		$query .= "auftrag.Termin) AS Termin, CONCAT(mitarbeiter.Vorname, ' ', mitarbeiter.Nachname)";
+		$query .= " AS 'Angenommen durch' FROM auftrag LEFT JOIN kunde ON auftrag.Kundennummer =";
+		$query .= " kunde.Kundennummer LEFT JOIN mitarbeiter ON mitarbeiter.id = ";
+		$query .= "auftrag.AngenommenDurch WHERE Rechnungsnummer = 0";
 
-		for ($i = 0; $i < sizeof($data); $i++) {
-			$id = $data[$i]["AngenommenDurch"];
-			$angenommenDurch = DBAccess::selectQuery("SELECT Vorname, Nachname FROM mitarbeiter WHERE id = $id");
-			$data[$i]["AngenommenDurch"] = $angenommenDurch[0]["Vorname"] . " " . $angenommenDurch[0]["Nachname"];
-		}
+		$data = DBAccess::selectQuery($query);
 
 		$form = new FormGenerator("auftrag", "Datum", "Rechnungsnummer = 0");
 		$table = $form->createTableByDataRowLink($data, $column_names, "auftrag", null);

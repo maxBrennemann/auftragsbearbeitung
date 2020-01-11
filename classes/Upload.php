@@ -7,11 +7,13 @@ class Upload {
     
     public function uploadFilesAuftrag($auftragsnummer) {
         $id = $this->uploadFiles();
-        echo "id: " . $id . " /id";
-        DBAccess::insertQuery("INSERT INTO dateien_auftraege (id_datei, id_auftrag) VALUES ($id, $auftragsnummer)");
+        if ((int) $id != -1) {
+            echo "id: " . $id . " /id";
+            DBAccess::insertQuery("INSERT INTO dateien_auftraege (id_datei, id_auftrag) VALUES ($id, $auftragsnummer)");
     
-        $link = Link::getPageLink("auftrag") . "?id=" . $auftragsnummer;
-        header("Location:$link");
+            $link = Link::getPageLink("auftrag") . "?id=" . $auftragsnummer;
+            header("Location:$link");
+        }
     }
 
     public function uploadFilesProduct($produktnummer) {
@@ -24,6 +26,8 @@ class Upload {
     }
 
     private function uploadFiles() {
+        error_reporting(-1);
+
         $datetime = new DateTime();
         $filename = $datetime->getTimestamp() . basename($_FILES["uploadedFile"]["name"]);
         $originalname = basename($_FILES["uploadedFile"]["name"]);
