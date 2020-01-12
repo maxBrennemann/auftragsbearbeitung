@@ -51,3 +51,10 @@ ALTER TABLE `dateien` DROP `auftragsnummer`;
 ALTER TABLE kunde_extended ADD Faxnummer VARCHAR(32) NOT NULL;
 ALTER TABLE dateien ADD `date` DATE NOT NULL;
 ALTER TABLE dateien ADD typ VARCHAR(16) NOT NULL;
+
+/* Änderungen 12.01.2020 */
+CREATE TABLE `auftragsmanager`.`fahrzeuge_auftraege` ( `id_fahrzeug` INT NOT NULL , `id_auftrag` INT NOT NULL );
+ALTER TABLE `auftragsmanager`.`fahrzeuge_auftraege` ADD UNIQUE (`id_fahrzeug`, `id_auftrag`);
+CREATE TABLE `auftragsmanager`.`dateien_fahrzeuge` ( `id_datei` INT NOT NULL , `id_fahrzeug` INT NOT NULL );
+ALTER TABLE `auftragsmanager`.`dateien_fahrzeuge` ADD UNIQUE (`id_datei`, `id_fahrzeug`);
+INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES ('17', 'fahrzeug.php', 'Fahrzeuge', 'fahrzeug');

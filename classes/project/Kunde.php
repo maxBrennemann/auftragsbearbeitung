@@ -119,6 +119,13 @@ class Kunde implements StatisticsInterface {
 		return "";
 	}
 
+	public function getFahrzeuge() {
+		$fahrzeuge = DBAccess::selectQuery("SELECT Kennzeichen, Fahrzeug, Nummer FROM fahrzeuge WHERE Kundennummer = {$this->getKundennummer()}");
+		$column_names = array(0 => array("COLUMN_NAME" => "Nummer"), 1 => array("COLUMN_NAME" => "Kennzeichen"), 2 => array("COLUMN_NAME" => "Fahrzeug"));
+		$fahrzeugTable = new FormGenerator("Fahrzeuge", "", "");
+		return $fahrzeugTable->createTableByData($fahrzeuge, $column_names);
+	}
+
 	public function recalculate() {
 	
 	}
