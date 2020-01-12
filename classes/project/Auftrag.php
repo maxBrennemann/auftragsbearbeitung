@@ -171,7 +171,7 @@ class Auftrag implements StatisticsInterface {
 		$query .= " kunde.Nachname), kunde.Firmenname) as Name, Auftragsbezeichnung,";
 		$query .= " Auftragsbeschreibung, Datum, IF(auftrag.Termin = '0000-00-00', 'kein Termin', ";
 		$query .= "auftrag.Termin) AS Termin, CONCAT(mitarbeiter.Vorname, ' ', mitarbeiter.Nachname)";
-		$query .= " AS 'Angenommen durch' FROM auftrag LEFT JOIN kunde ON auftrag.Kundennummer =";
+		$query .= " AS 'Angenommen durch', kunde.Kundennummer FROM auftrag LEFT JOIN kunde ON auftrag.Kundennummer =";
 		$query .= " kunde.Kundennummer LEFT JOIN mitarbeiter ON mitarbeiter.id = ";
 		$query .= "auftrag.AngenommenDurch WHERE Rechnungsnummer = 0";
 
@@ -192,8 +192,8 @@ class Auftrag implements StatisticsInterface {
 	}
 
 	public function getFahrzeuge() {
-		$fahrzeuge = DBAccess::selectQuery("SELECT Kennzeichen, Fahrzeug FROM fahrzeuge WHERE Kundennummer = {$this->getKundennummer()}");
-		$column_names = array(0 => array("COLUMN_NAME" => "Kennzeichen"), 1 => array("COLUMN_NAME" => "Fahrzeug"));
+		$fahrzeuge = DBAccess::selectQuery("SELECT Kennzeichen, Fahrzeug, Nummer FROM fahrzeuge LEFT JOIN fahrzeuge_auftraege ON fahrzeuge_auftraege.id_fahrzeug = Nummer WHERE fahrzeuge_auftraege.id_auftrag = {$this->getAuftragsnummer()}");
+		$column_names = array(0 => array("COLUMN_NAME" => "Nummer"), 1 => array("COLUMN_NAME" => "Kennzeichen"), 2 => array("COLUMN_NAME" => "Fahrzeug"));
 		$fahrzeugTable = new FormGenerator("Fahrzeuge", "", "");
 		return $fahrzeugTable->createTableByData($fahrzeuge, $column_names);
 	}

@@ -70,59 +70,63 @@
 <?php else: ?>
 	<h3>Kundendaten</h3>
 	<div class="gridCont">
-	<div id="showKundendaten">
-		<ul id="kundenDatenList">
-			<li>Kundennummer: <span id="kundennummer"><?=$kunde->getKundennummer()?></span></li>
-			<li>Vorname: <span class="editable" contenteditable data-col="Vorname"><?=$kunde->getVorname()?></span></li>
-			<li>Nachname: <span class="editable" contenteditable data-col="Nachname"><?=$kunde->getNachname()?></span></li>
-			<li>Firmenname: <span class="editable" contenteditable data-col="Firmenname"><?=$kunde->getFirmenname()?></span></li>
-			<li>Straße: <span class="editable" contenteditable data-col="Strasse"><?=$kunde->getStrasse()?></span></li>
-			<li>Hausnummer: <span class="editable" contenteditable data-col="Hausnummer"><?=$kunde->getHausnummer()?></span></li>
-			<li>Postleitzahl: <span class="editable" contenteditable data-col="Postleitzahl"><?=$kunde->getPostleitzahl()?></span></li>
-			<li>Ort: <span class="editable" contenteditable data-col="Ort"><?=$kunde->getOrt()?></span></li>
-			<li>Email: <span class="editable" contenteditable data-col="Email"><?=$kunde->getEmail()?></span></li>
-			<li>Telefon Festnetz: <span class="editable" contenteditable data-col="TelefonFestnetz"><?=$kunde->getTelefonFestnetz()?></span></li>
-			<li>Telefon Mobil: <span class="editable" contenteditable data-col="TelefonMobil"><?=$kunde->getTelefonMobil()?></span></li>
-		</ul>
-		<button id="sendKundendaten" disabled onclick="kundendatenAbsenden()">Absenden</button>
-	</div>
-	<div id="ansprechpartner">
-		<h3>Ansprechpartner</h3>
-		<div id="ansprechpartnerTable">
-			<?=$ansprechpartner?>
-			<table id="addAnsprechpartner" style="display: none;">
-				<tr>
-					<th>Vorname</th>
-					<th>Nachname</th>
-					<th>Email</th>
-					<th>Durchwahl</th>
-					<th>Mobilnummer</th>
-				</tr>
-				<tr>
-					<td class="ansprTableCont" contenteditable="true" data-col="vorname"></td>
-					<td class="ansprTableCont" contenteditable="true" data-col="nachname"></td>
-					<td class="ansprTableCont" contenteditable="true" data-col="email"></td>
-					<td class="ansprTableCont" contenteditable="true" data-col="durchwahl"></td>
-					<td class="ansprTableCont" contenteditable="true" data-col="handynummer"></td>
-				</tr>
-			</table>
+		<div id="showKundendaten">
+			<ul id="kundenDatenList">
+				<li>Kundennummer: <span id="kundennummer"><?=$kunde->getKundennummer()?></span></li>
+				<li>Vorname: <span class="editable" contenteditable data-col="Vorname"><?=$kunde->getVorname()?></span></li>
+				<li>Nachname: <span class="editable" contenteditable data-col="Nachname"><?=$kunde->getNachname()?></span></li>
+				<li>Firmenname: <span class="editable" contenteditable data-col="Firmenname"><?=$kunde->getFirmenname()?></span></li>
+				<li>Straße: <span class="editable" contenteditable data-col="Strasse"><?=$kunde->getStrasse()?></span></li>
+				<li>Hausnummer: <span class="editable" contenteditable data-col="Hausnummer"><?=$kunde->getHausnummer()?></span></li>
+				<li>Postleitzahl: <span class="editable" contenteditable data-col="Postleitzahl"><?=$kunde->getPostleitzahl()?></span></li>
+				<li>Ort: <span class="editable" contenteditable data-col="Ort"><?=$kunde->getOrt()?></span></li>
+				<li>Email: <span class="editable" contenteditable data-col="Email"><?=$kunde->getEmail()?></span></li>
+				<li>Telefon Festnetz: <span class="editable" contenteditable data-col="TelefonFestnetz"><?=$kunde->getTelefonFestnetz()?></span></li>
+				<li>Telefon Mobil: <span class="editable" contenteditable data-col="TelefonMobil"><?=$kunde->getTelefonMobil()?></span></li>
+			</ul>
+			<button id="sendKundendaten" disabled onclick="kundendatenAbsenden()">Absenden</button>
 		</div>
-		<button id="showAddAnsprechpartner" onclick="showAddAnsprechpartner()">Ausklappen </button>
-		<button id="addAnsprechpartnerBtn" onclick="addDataToDB()" style="display: none;">Hinzufügen</button>
-	</div>
-	<div id="farben">
-		<h3>Farben</h3>
-		<div id="showFarben"><?=$kunde->getFarben()?></div>
-	</div>
-	<div id="notizen">
-		<h3>Notizen</h3>
-		<div id="editNotes"><?=$kunde->getNotizen()?></div>
-		<button onclick="editText(event);">Bearbeiten</button>
-	</div>
-	<div id="auftraege">
-		<h3>Aufträge</h3>
-		<?=$kunde->getAuftraege()?>
-		<a href="<?=Link::getPageLink("neuer-auftrag")?>?kdnr=<?=$kundenid?>">Neuen Auftrag erstellen</a>
-	</div>
+		<div id="ansprechpartner">
+			<h3>Ansprechpartner</h3>
+			<div id="ansprechpartnerTable">
+				<?=$ansprechpartner?>
+				<table id="addAnsprechpartner" style="display: none;">
+					<tr>
+						<th>Vorname</th>
+						<th>Nachname</th>
+						<th>Email</th>
+						<th>Durchwahl</th>
+						<th>Mobilnummer</th>
+					</tr>
+					<tr>
+						<td class="ansprTableCont" contenteditable="true" data-col="vorname"></td>
+						<td class="ansprTableCont" contenteditable="true" data-col="nachname"></td>
+						<td class="ansprTableCont" contenteditable="true" data-col="email"></td>
+						<td class="ansprTableCont" contenteditable="true" data-col="durchwahl"></td>
+						<td class="ansprTableCont" contenteditable="true" data-col="handynummer"></td>
+					</tr>
+				</table>
+			</div>
+			<button id="showAddAnsprechpartner" onclick="showAddAnsprechpartner()">Ausklappen </button>
+			<button id="addAnsprechpartnerBtn" onclick="addDataToDB()" style="display: none;">Hinzufügen</button>
+		</div>
+		<div id="farben">
+			<h3>Farben</h3>
+			<div id="showFarben"><?=$kunde->getFarben()?></div>
+		</div>
+		<div id="auftraege">
+			<h3>Aufträge</h3>
+			<?=$kunde->getAuftraege()?>
+			<a href="<?=Link::getPageLink("neuer-auftrag")?>?kdnr=<?=$kundenid?>">Neuen Auftrag erstellen</a>
+		</div>
+		<div id="notizen">
+			<h3>Notizen</h3>
+			<div id="editNotes"><?=$kunde->getNotizen()?></div>
+			<button onclick="editText(event);">Bearbeiten</button>
+		</div>
+		<div id="fahrzeuge">
+			<h3>Fahrzeuge</h3>
+			<?=$kunde->getFahrzeuge()?>
+		</div>
 	</div>
 <?php endif; ?>
