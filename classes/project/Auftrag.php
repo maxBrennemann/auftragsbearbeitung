@@ -194,8 +194,8 @@ class Auftrag implements StatisticsInterface {
 	public function getFahrzeuge() {
 		$fahrzeuge = DBAccess::selectQuery("SELECT Kennzeichen, Fahrzeug, Nummer FROM fahrzeuge LEFT JOIN fahrzeuge_auftraege ON fahrzeuge_auftraege.id_fahrzeug = Nummer WHERE fahrzeuge_auftraege.id_auftrag = {$this->getAuftragsnummer()}");
 		$column_names = array(0 => array("COLUMN_NAME" => "Nummer"), 1 => array("COLUMN_NAME" => "Kennzeichen"), 2 => array("COLUMN_NAME" => "Fahrzeug"));
-		$fahrzeugTable = new FormGenerator("Fahrzeuge", "", "");
-		return $fahrzeugTable->createTableByData($fahrzeuge, $column_names);
+		$fahrzeugTable = new FormGenerator("fahrzeug", "", "");
+		return $fahrzeugTable->createTableByDataRowLink($fahrzeuge, $column_names, "fahrzeug", "fahrzeug");
 	}
 
 	public function getFarben() {
