@@ -23,18 +23,23 @@ function initialize() {
 }
 
 function kundendatenAbsenden() {
-    var data = "getReason=setData&type=kunde&";
+    var kdnr = document.getElementById("kundennummer").innerHTML;
+    var data = `getReason=setData&type=kunde&kdnr=${kdnr}&`;
+    var count = 0;
 
     for (var key in changedData) {
         if (changedData.hasOwnProperty(key)) {
-            data += key + "=" + changedData.key + "&";
+            data += key + "=" + changedData[key] + "&" + "dataKey" + count + "=" + key + "&";
+            count++;
         }
     }
 
-    data = data.slice(0, -1);
+    data += "number=" + count;
 
     insertKundendaten = new AjaxCall(data, "POST", window.location.href);
-    insertKundendaten.makeAjaxCall();
+    insertKundendaten.makeAjaxCall(function (response) {
+        console.log(response);
+    });
 }
 
 function addDataToDB() {
