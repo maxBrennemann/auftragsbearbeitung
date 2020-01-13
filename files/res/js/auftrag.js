@@ -1,5 +1,6 @@
 ﻿var globalData = {
-    aufschlag: 0
+    aufschlag: 0,
+    vehicleId: 0
 }
 
 function getSelections() {
@@ -10,7 +11,7 @@ function getSelections() {
         document.getElementById("addPostenZeit").style.display = "inline";
         document.getElementById("addPostenLeistung").style.display = "none";
     } else if (strUser == "leistung") {
-        document.getElementById("addPostenLeistung").style.display = "inline";
+        document.getElementById("addPostenLeistung").style.display = "flex";
         document.getElementById("addPostenZeit").style.display = "none";
 
         document.getElementById("ekp").addEventListener("input", function () {
@@ -103,14 +104,30 @@ function addLeistung() {
     });
 }
 
-function addFahrzeug() {
-    var kfz = document.getElementById("kfz").value;
-    var fahrzeug = document.getElementById("fahrzeug").value;
-    var kundennummer = document.getElementById("kundennummer");
-    var add = new AjaxCall(`getReason=insertCar&kfz=${kfz}&fahrzeug=${fahrzeug}&kdnr=${kundennummer}`, "POST", window.location.href);
-    add.makeAjaxCall(function (response) {
-        console.log(response);
-    });
+function addFahrzeug(param) {
+    var kfz, fahrzeug;
+    if (param != null && param) {
+        if (globalData.vehicleId != 0) {
+            var auftragsnummer = new URL(window.location.href).searchParams.get("id");
+            var ajax = new AjaxCall(`getReason=attachCar&auftrag=${auftragsnummer}&fahrzeug=${globalData.vehicleId}`);
+            ajax.makeAjaxCall(function (response) {
+                document.getElementById("fahrzeugTable").innerHTML = response;
+            });
+        }
+    } else {
+        kfz = document.getElementById("kfz").value;
+        fahrzeug = document.getElementById("fahrzeug").value;
+
+        var kundennummer = document.getElementById("kundennummer");
+        var add = new AjaxCall(`getReason=insertCar&kfz=${kfz}&fahrzeug=${fahrzeug}&kdnr=${kundennummer}`, "POST", window.location.href);
+        add.makeAjaxCall(function (response) {
+            console.log(response);
+        });
+    }
+}
+
+function selectVehicle(event) {
+    globalData.vehicleId = event.target.value;
 }
 
 function deleteRow() {
