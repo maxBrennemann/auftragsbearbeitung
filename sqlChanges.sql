@@ -58,3 +58,13 @@ ALTER TABLE `auftragsmanager`.`fahrzeuge_auftraege` ADD UNIQUE (`id_fahrzeug`, `
 CREATE TABLE `auftragsmanager`.`dateien_fahrzeuge` ( `id_datei` INT NOT NULL , `id_fahrzeug` INT NOT NULL );
 ALTER TABLE `auftragsmanager`.`dateien_fahrzeuge` ADD UNIQUE (`id_datei`, `id_fahrzeug`);
 INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES ('17', 'fahrzeug.php', 'Fahrzeuge', 'fahrzeug');
+
+/* Änderungen 14.01.2020 */
+CREATE TABLE `auftragsmanager`.`history` ( `id` INT NOT NULL , `number` INT NOT NULL , `type` INT NOT NULL , `insertstamp` TIMESTAMP NOT NULL ) ENGINE = InnoDB;
+ALTER TABLE `history` ADD PRIMARY KEY(`id`);
+ALTER TABLE history CHANGE id id INT(10) AUTO_INCREMENT;
+ALTER TABLE `history` ADD `orderid` INT NOT NULL AFTER `id`;
+CREATE TABLE `auftragsmanager`.`history_type` ( `type_id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(32) NOT NULL , PRIMARY KEY (`type_id`)) ENGINE = InnoDB;
+INSERT INTO `history_type` (`type_id`, `name`) VALUES (NULL, 'posten'), (NULL, 'schritte'), (NULL, 'fahrzeuge'), (NULL, 'dateien'), (NULL, 'auftrag'), (NULL, 'angebot')
+ALTER TABLE `history` ADD `state` VARCHAR(16) NOT NULL AFTER `type`;
+alter table history change insertstamp insertstamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
