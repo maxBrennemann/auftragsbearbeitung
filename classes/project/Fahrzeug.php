@@ -41,6 +41,9 @@ class Fahrzeug {
 
     public static function attachVehicle($fahrzeugId, $auftragsId) {
         DBAccess::insertQuery("INSERT INTO fahrzeuge_auftraege (id_fahrzeug, id_auftrag) VALUES ($fahrzeugId, $auftragsId)");
+        
+        $auftragsverlauf = new Auftragsverlauf($auftragsId);
+		$auftragsverlauf->addToHistory($fahrzeugId, 3, "added");
     }
 
 }
