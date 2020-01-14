@@ -28,6 +28,13 @@
 		$upload->uploadFilesAuftrag($auftragsId);
 	}
 
+	if (isset($_POST['filesubmitbtnV'])) {
+		$vehicleId = $_POST['vehicleImageId'];
+		echo $vehicleId;
+		$upload = new Upload();
+		$upload->uploadFilesVehicle($vehicleId, $auftragsId);
+	}
+
 	if (isset($_GET['create'])) {
 		$nextId = Rechnung::getNextNumber();
 		$auftragsid = $_GET['create'];
@@ -44,6 +51,7 @@
 	
 	$leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
 	$fahrzeuge = Fahrzeug::getSelection($auftrag->getKundennummer());
+	$fahrzeugeAuftrag = $auftrag != null ? $auftrag->getLinkedVehicles() : null;
 	$showFiles = Upload::getFilesAuftrag($auftragsId);
 
 if ($auftragsId == -1) : ?>
@@ -89,7 +97,25 @@ if ($auftragsId == -1) : ?>
 		<span><u>Gesamtpreis:</u><br><span id="gesamtpreis"><?=$auftrag->preisBerechnen()?>€</span></span>
 	</div>
 	<div class="defCont fahrzeuge">
-		<span><u>Fahrzeuge:</u> <span id="fahrzeugTable"><?=$fahrzeugTable?></span></span>
+		<span><u>Fahrzeuge:</u> <span id="fahrzeugTable"><?=$fahrzeugTable?></span></span><br>
+		<div>
+			<p>
+				<form method="post" enctype="multipart/form-data">
+					<label>Fahrzeug:
+						<select name="vehicleImageId">
+							<?php foreach ($fahrzeugeAuftrag as $f): ?>
+								<option value="<?=$f['Nummer']?>"><?=$f['Kennzeichen']?> <?=$f['Fahrzeug']?></option>
+							<?php endforeach; ?>
+						</select>
+					</label>
+					<br>
+					<label>
+						<input type="file" name="uploadedFile">
+						<input type="submit" value="Datei hochladen" name="filesubmitbtnV">
+					</label>
+				</form>
+			</p>
+		</div>
 	</div>
 	<div class="defCont farben">
 		<span><u>Farben:</u><br> <span id="showColors"><?=$farbTable?></span></span>
