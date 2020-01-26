@@ -43,7 +43,7 @@
 
 	if (!$isSent) :
 ?>
-<div>
+<div class="addcustomer">
 	<form>
 		<input type="radio" name="oeffOderPriv" value="firma" checked onchange="switchOeffPriv(this)">Firma oder Vereinsname
 		<input type="radio" name="oeffOderPriv" value="privat" onchange="switchOeffPriv(this)">Privat
@@ -57,7 +57,7 @@
 				<h4>Ansprechpartner:</h4>
 				<p>
 					<label>Anrede
-						<select class="dataInput" id="selectAnrede" name="anredeAnspr">
+						<select class="dataInput" name="anredeAnspr">
 							<option value="0">Herr</option>
 							<option value="1">Frau</option>
 							<option value="2">Firma</option>
@@ -89,7 +89,7 @@
 		<div class="basicInfo" style="display: none;">
 			<p>
 				<label>Anrede
-					<select class="dataInput" id="selectAnrede" name="anrede">
+					<select class="dataInput" name="anrede">
 						<option value="0">Herr</option>
 						<option value="1">Frau</option>
 						<option value="2">Firma</option>
@@ -145,7 +145,7 @@
 			</p>
 		</div>
 
-		<input type="submit">
+		<input type="submit" id="submitCustomer">
 	</form>
 </div>
 <?php else: ?>
@@ -162,9 +162,22 @@
 	}
 
 	.specificData {
-		-webkit-appearance: textfield;
-		border-style: inset;
 		margin: 5px;
 		padding: 10px;
+		border: 1px solid grey;
+		border-radius: 6px;
+	}
+
+	.addcustomer {
+		background: #eff0f1;
+		border-radius: 6px;
+		padding: 10px;
+	}
+
+	#submitCustomer {
+		border-radius: 6px;
+		background: #B2B2BE;
+		border: none;
+		padding: 15px;
 	}
 </style>

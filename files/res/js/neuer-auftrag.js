@@ -58,6 +58,11 @@ function auftragHinzufuegen() {
     var createAuftrag = new AjaxCall(paramString, "POST", window.location.href);
     createAuftrag.makeAjaxCall(function (responseLink) {
         console.log(responseLink);
+
+        document.getElementsById("absenden").disabled = true;
+        document.getElementsById("showLinkToOrder").style.display = "inline";
+        document.getElementsById("showLinkToOrder").innerHTML = `<p>Falls Sie nicht automatisch weitergeleitet werden, bitte <a href=\"${responseLink}\">hier klicken</a></p>`;
+
         window.location.href = responseLink;
     });
 }
