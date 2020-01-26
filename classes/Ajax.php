@@ -173,6 +173,13 @@ class Ajax {
 			case "getServerMsg":
 				echo $_SESSION['searchResult'];
 				break;
+			case "attachCar":
+				$auftragsId = $_POST['auftrag'];
+				$fahrzeugId = $_POST['fahrzeug'];
+				require_once("classes/project/Fahrzeug.php");
+				Fahrzeug::attachVehicle($fahrzeugId, $auftragsId);
+				echo (new Auftrag($auftragsId))->getFahrzeuge();
+				break;
 			case "setNotes":
 				$kdnr = $_POST['kdnr'];
 				$note = $_POST['notes'];
@@ -202,6 +209,18 @@ class Ajax {
 				$auftrag = new Auftrag($auftrag);
 				$data = array("farben" => $auftrag->getFarben(), "addFarben" => $auftrag->getAddColors());
 				echo json_encode($data, JSON_FORCE_OBJECT);
+				break;
+			case "setData":
+				if ($_POST['type'] == "kunde") {
+					$number = (int) $_POST['number'];
+					$kdnr = $_POST['kdnr'];
+					for ($i = 0; $i < $number; $i++) {
+						$dataKey = $_POST["dataKey$i"];
+						$data = $_POST[$dataKey];
+						echo "UPDATE kunde SET $dataKey = '$data' WHERE Kundennummer = $kdnr";
+						DBAccess::updateQuery("UPDATE kunde SET $dataKey = '$data' WHERE Kundennummer = $kdnr");
+					}
+				}
 				break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";

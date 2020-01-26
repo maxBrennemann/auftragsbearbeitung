@@ -7,6 +7,7 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 }
 
 require_once('Auftrag.php');
+require_once('Auftragsverlauf.php');
 
 class Schritt {
     
@@ -46,7 +47,9 @@ class Schritt {
 		$pri = $data['Priority'];
 		$auf = $data['Auftragsnummer'];
 
-		DBAccess::insertQuery("INSERT INTO `schritte` (`Auftragsnummer`, `istAllgemein`, `Bezeichnung`, `Datum`, `Priority`, `istErledigt`) VALUES ($auf, 1, '$bez', '$dat', $pri, 1)");
+		$auftragsverlauf = new Auftragsverlauf($auf);
+		$postennummer = DBAccess::insertQuery("INSERT INTO `schritte` (`Auftragsnummer`, `istAllgemein`, `Bezeichnung`, `Datum`, `Priority`, `istErledigt`) VALUES ($auf, 1, '$bez', '$dat', $pri, 1)");
+		$auftragsverlauf->addToHistory($postennummer, 2, "added");
 	}
 
 }

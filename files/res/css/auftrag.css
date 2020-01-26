@@ -59,6 +59,10 @@ aside {
     grid-area: description;
 }
 
+.columnLeistung {
+    flex: 50%;
+}
+
 #gesamtpreis {
     font-size: 3rem;
 }
