@@ -35,6 +35,17 @@ class Fahrzeug {
         return new Kunde($kundenId);
     }
 
+    public static function getSelection($kundennummer) {
+        return DBAccess::selectQuery("SELECT Nummer, Kennzeichen, Fahrzeug FROM fahrzeuge WHERE Kundennummer = $kundennummer");
+    }
+
+    public static function attachVehicle($fahrzeugId, $auftragsId) {
+        DBAccess::insertQuery("INSERT INTO fahrzeuge_auftraege (id_fahrzeug, id_auftrag) VALUES ($fahrzeugId, $auftragsId)");
+        
+        $auftragsverlauf = new Auftragsverlauf($auftragsId);
+		$auftragsverlauf->addToHistory($fahrzeugId, 3, "added");
+    }
+
 }
 
 ?>

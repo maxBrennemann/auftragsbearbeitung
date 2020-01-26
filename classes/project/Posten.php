@@ -9,6 +9,7 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 require_once('Zeit.php');
 require_once('Produkt.php');
 require_once('Leistung.php');
+require_once('Auftragsverlauf.php');
 require_once('classes/DBAccess.php');
 
 abstract class Posten {
@@ -59,6 +60,8 @@ abstract class Posten {
 		$postennummer = (int) DBAccess::selectQuery("SELECT MAX(Postennummer) FROM posten")[0]['MAX(Postennummer)'];
 		$postennummer++;
 
+		$auftragsverlauf = new Auftragsverlauf($_POST['auftrag']);
+		
 		switch ($type) {
 			case "zeit":
 				$zeit = $data['ZeitInMinuten'];
@@ -74,13 +77,19 @@ abstract class Posten {
 				$ekp = $data['Einkaufspreis'];
 				$pre = $data['SpeziefischerPreis'];
 				$fre = $data['ohneBerechnung'];
-				DBAccess::insertQuery("INSERT INTO posten (Postennummer, Auftragsnummer, Posten, ohneBerechnung) VALUES ($postennummer, $auftragsnummer, '$type')");
-				DBAccess::insertQuery("INSERT INTO leistung_posten (Leistungsnummer, Postennummer, Beschreibung, Einkaufspreis, SpeziefischerPreis) VALUES($lei, $postennummer, '$bes', '$ekp', '$pre', $fre)");
+				DBAccess::insertQuery("INSERT INTO posten (Postennummer, Auftragsnummer, Posten, ohneBerechnung) VALUES ($postennummer, $auftragsnummer, '$type', $fre)");
+				DBAccess::insertQuery("INSERT INTO leistung_posten (Leistungsnummer, Postennummer, Beschreibung, Einkaufspreis, SpeziefischerPreis) VALUES($lei, $postennummer, '$bes', '$ekp', '$pre')");
 				Leistung::bearbeitungsschritteHinzufuegen($lei, $auftragsnummer);
 				break;
 			case "produkt":
 				break;
 		}
+
+		$auftragsverlauf->addToHistory($postennummer, 1, "added");
+	}
+
+	public static function deletePosten($postenId) {
+
 	}
 
 }

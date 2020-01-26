@@ -1,6 +1,7 @@
 <?php 
 
 require_once('classes/DBAccess.php');
+require_once('classes/project/Auftragsverlauf.php');
 
 class Upload {
     private $uploadDir = "upload/";
@@ -11,8 +12,21 @@ class Upload {
             echo "id: " . $id . " /id";
             DBAccess::insertQuery("INSERT INTO dateien_auftraege (id_datei, id_auftrag) VALUES ($id, $auftragsnummer)");
     
+            $auftragsverlauf = new Auftragsverlauf($auftragsnummer);
+            $auftragsverlauf->addToHistory($id, 4, "added");
+
             $link = Link::getPageLink("auftrag") . "?id=" . $auftragsnummer;
             header("Location:$link");
+            return $id;
+        }
+
+        return -1;
+    }
+
+    public function uploadFilesVehicle($fahrzeugnummer, $auftragsnummer) {
+        $id = $this->uploadFilesAuftrag($auftragsnummer);
+        if ($id != -1) {
+            DBAccess::insertQuery("INSERT INTO dateien_fahrzeuge (id_datei, id_fahrzeug) VALUES ($id, $fahrzeugnummer)");
         }
     }
 
