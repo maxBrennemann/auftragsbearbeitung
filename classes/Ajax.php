@@ -126,7 +126,10 @@ class Ajax {
 				$data['Priority'] = $_POST['prio'];
 				$data['Auftragsnummer'] = $_POST['auftrag'];
 				require_once("classes/project/Schritt.php");
+				require_once("classes/project/Auftrag.php");
 				Schritt::insertStep($data);
+				$auftrag = new Auftrag($data['Auftragsnummer']);
+				echo $auftrag->getOpenBearbeitungsschritteAsTable();
 				break;
 			case "addStep":
 				$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Priority"));
