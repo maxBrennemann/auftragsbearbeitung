@@ -45,9 +45,11 @@ function showSelection(element) {
 }
 
 function addBearbeitungsschritte() {
-    document.getElementById("bearbeitungsschritte").style.display = "inline";
+    var bearbeitungsschritte = document.getElementById("bearbeitungsschritte");
+    bearbeitungsschritte.style.display = "inline";
 
     var btn = document.createElement("button");
+    btn.id = "sendStepToServer";
     btn.innerHTML = "Hinzufügen";
     btn.addEventListener("click", function () {
         var tableData = document.getElementsByClassName("bearbeitungsschrittInput");
@@ -59,11 +61,19 @@ function addBearbeitungsschritte() {
         var add = new AjaxCall(`getReason=insertStep&bez=${steps[0]}&prio=${steps[1]}&auftrag=${auftrag}`, "POST", window.location.href);
         add.makeAjaxCall(function (response) {
             console.log(response);
-            //location.reload();
-        });
+            document.getElementById("stepTable").innerHTML = response;
+
+            var tableData = document.getElementsByClassName("bearbeitungsschrittInput");
+            for (var i = 0; i < tableData.length; i++) {
+                tableData[i].value = "";
+            }
+
+            document.getElementById("bearbeitungsschritte").removeChild(document.getElementById("sendStepToServer"));
+            document.getElementById("bearbeitungsschritte").style.display = "none";
+        }.bind(this), false);
     }, false);
 
-    document.getElementById("bearbeitungsschritte").appendChild(btn);
+    bearbeitungsschritte.appendChild(btn);
 }
 
 function performSearch(e) {
