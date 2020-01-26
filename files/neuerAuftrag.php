@@ -55,6 +55,7 @@
 		</div>
 		<button id="absenden" onclick="auftragHinzufuegen()">Absenden</button>
 	</div>
+	<div id="showLinkToOrder" style="display: none;"></div>
 <?php else: ?>
 	<div class="defCont">
 		<span>Kundennummer oder Suchen: <input id="kundensuche" onkeyup="performSearchEnter(event, this.value);"><button onclick="performSearchButton(event)">&#x1F50E;</button></span>

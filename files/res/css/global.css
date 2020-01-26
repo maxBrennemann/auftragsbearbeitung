@@ -1,5 +1,5 @@
 ﻿/* general style */
-@import url('https://fonts.googleapis.com/css?family=Be+Vietnam|Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Be+Vietnam|Raleway|Open+Sans&display=swap');
 
 @font-face {
     font-family: "Segoe UI Emoji";
@@ -21,7 +21,11 @@ header {
 }
 
 header h1 {
-    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+    font-family: Raleway;
+    letter-spacing: 1px;
 }
 
 main {
@@ -95,7 +99,8 @@ tr:nth-child(odd) {
 th {
     padding: 7px;
     margin: 1px;
-    background-color: #005999;
+    background-color: #0a3350;
+    color: white;
     text-align: left;
 }
 
@@ -129,6 +134,15 @@ tr:last-child td:last-child {
     border-radius: 0 0 6px 0;
 }
 
+.headerline {
+    width: 80%;
+    margin: auto;
+    background-color: black;
+    height: 3px;
+    border: none;
+    border-radius: 6px;
+}
+
 /* footer links */
 .linkBundle {
     text-align: center;
@@ -138,6 +152,7 @@ tr:last-child td:last-child {
 .linkBundleLink {
     color: white !important;
     text-decoration: none;
+    font-size: 1.1em;
 }
 
 .defCont {
