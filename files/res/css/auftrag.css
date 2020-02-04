@@ -73,6 +73,17 @@ aside {
     border-radius: 6px;
 }
 
+.showInMiddle {
+    text-align: center;
+}
+
+.line {
+    border-left: 2px solid black;
+    width: 2px;
+    height: 25px;
+    margin: auto;
+}
+
 @media (max-width: 850px) {
     main {
         display: grid;

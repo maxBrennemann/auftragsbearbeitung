@@ -2,6 +2,7 @@
 	require_once('classes/project/Auftrag.php');
 	require_once('classes/project/Rechnung.php');
 	require_once('classes/project/FormGenerator.php');
+	require_once('classes/project/Auftragsverlauf.php');
 	require_once('classes/project/Fahrzeug.php');
 	require_once('classes/project/Kunde.php');
 	require_once('classes/DBAccess.php');
@@ -53,6 +54,7 @@
 	$fahrzeuge = Fahrzeug::getSelection($auftrag->getKundennummer());
 	$fahrzeugeAuftrag = $auftrag != null ? $auftrag->getLinkedVehicles() : null;
 	$showFiles = Upload::getFilesAuftrag($auftragsId);
+	$auftragsverlauf = (new Auftragsverlauf($auftragsId))->representHistoryAsHTML();
 
 if ($auftragsId == -1) : ?>
 	<input type="number" min="1" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value;">
@@ -196,6 +198,7 @@ if ($auftragsId == -1) : ?>
 	</div>
 	<div class="defCont verlauf">
 		<p>Auftragsverlauf anzeigen</p>
+		<?=$auftragsverlauf?>
 	</div>
 	<?php endif; ?>
 <?php endif; ?>
