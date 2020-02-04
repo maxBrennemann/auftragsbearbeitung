@@ -55,7 +55,8 @@ class Search {
 	}
 
 	private static function searchInCustomers($searchQuery) {
-		$kunden = DBAccess::selectQuery("SELECT Kundennummer, Vorname, Nachname, Firmenname FROM kunde");
+		$query = "SELECT Kundennummer, Vorname, Nachname, Firmenname FROM kunde WHERE Vorname LIKE '%$searchQuery%' OR Nachname LIKE '%$searchQuery%' OR Firmenname LIKE '%$searchQuery%'";
+		$kunden = DBAccess::selectQuery($query);
 		$mostSimilar = array();
 
 		foreach ($kunden as $kunde) {
