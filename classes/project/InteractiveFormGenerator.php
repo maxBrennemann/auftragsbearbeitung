@@ -87,7 +87,8 @@ class InteractiveFormGenerator extends FormGenerator {
 	}
 
 	private function addEditButton() {
-	
+		$button = "<button onclick=\"editRow()\">✎</button>";
+		return $button;
 	}
 
 	private function updateIsDone($row) {

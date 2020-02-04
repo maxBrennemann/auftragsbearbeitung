@@ -41,8 +41,17 @@ class Auftragsverlauf {
     }
 
     public function getHistory() {
-        $query = "SELECT * FROM history WHERE orderid = {$this->auftragsnummer}";
+        $query = "SELECT history.*, history_type.name FROM history LEFT JOIN history_type ON history_type.type_id = history.type WHERE orderid = {$this->auftragsnummer}";
         return DBAccess::selectQuery($query);
+    }
+
+    public function representHistoryAsHTML() {
+        $history = $this->getHistory();
+        $html = "";
+        foreach ($history as $h) {
+            $html .= "<div class=\"showInMiddle\">{$h['name']}</div><div class=\"line\"></div>";
+        }
+        return $html;
     }
 
 }
