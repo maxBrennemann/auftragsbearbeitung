@@ -12,6 +12,7 @@
 
 	$mitarbeiter = DBAccess::selectQuery("SELECT Vorname, Nachname, id FROM mitarbeiter");
 	$annahme = DBAccess::selectQuery("SELECT Bezeichnung, id FROM angenommen");
+	$auftragstyp = DBAccess::selectQuery("SELECT * FROM auftragstyp");
 	if ($kdnr != -1) {
 		$kundendaten = DBAccess::selectQuery("SELECT Vorname, Nachname, Firmenname FROM kunde WHERE Kundennummer = $kdnr")[0];
 		$ansprechpartner = DBAccess::selectQuery("SELECT Vorname, Nachname, Nummer FROM ansprechpartner WHERE Kundennummer = $kdnr");
@@ -26,8 +27,14 @@
 			<span>Name: <?=$kundendaten['Vorname']?> <?=$kundendaten['Nachname']?></span><br>
 			<span>Firma: <?=$kundendaten['Firmenname']?></span><br>
 			<span>Kurzbeschreibung: <input id="bezeichnung" maxlength="255"></span><br>
-			<span>Auftragsbeschreibung: <br><textarea id="beschreibung" maxlength="65535"></textarea></span><br>
-			<span>Auftragstyp: <input id="typ" placeholder="Textil | Fahrzeugbeschriftung | ..."></span><br>
+			<span>Beschreibung: <br><textarea id="beschreibung" maxlength="65535"></textarea></span><br>
+			<span>Auftragstyp:
+				<select id="selectTyp">
+					<?php foreach ($auftragstyp as $t): ?>
+						<option value="<?=$t['id']?>"><?=$t['Auftragstyp']?></option>
+					<?php endforeach; ?>
+				</select>
+			</span><br>
 			<span>Termin: <input id="termin" type="date"></span><br>
 			<span>Angenommen durch: 
 				<select id="selectMitarbeiter">
