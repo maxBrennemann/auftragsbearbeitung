@@ -49,12 +49,17 @@
 	if (isset($_GET['show'])) {
 		$show = true;
 	}
+
+	$auftragstyp = $auftrag->getAuftragstyp();
+	if ($auftragstyp == 0) {
+		$fahrzeuge = Fahrzeug::getSelection($auftrag->getKundennummer());
+		$fahrzeugeAuftrag = $auftrag != null ? $auftrag->getLinkedVehicles() : null;
+	}
 	
 	$leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
-	$fahrzeuge = Fahrzeug::getSelection($auftrag->getKundennummer());
-	$fahrzeugeAuftrag = $auftrag != null ? $auftrag->getLinkedVehicles() : null;
 	$showFiles = Upload::getFilesAuftrag($auftragsId);
 	$auftragsverlauf = (new Auftragsverlauf($auftragsId))->representHistoryAsHTML();
+	
 
 if ($auftragsId == -1) : ?>
 	<input type="number" min="1" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value;">
@@ -72,7 +77,8 @@ if ($auftragsId == -1) : ?>
 	<div class="defCont auftragsinfo">
 		<span><u>Auftragsnummer:</u> <span id="auftragsnummer"><?=$auftrag->getAuftragsnummer()?></span></span><br>
 		<span><button onclick="print('auftragsnummer', 'Auftrag');">Auftragsblatt anzeigen</button></span>
-		<span><button onclick="rechnungErstellen();">Rechnung generieren</button></span><br>
+		<span><button onclick="rechnungErstellen();">Rechnung generieren</button></span>
+		<span><button onclick="archvieren();">Auftrag archivieren</button></span><br>
 		<span><u>Beschreibung:</u><br><?=$auftrag->getAuftragsbeschreibung()?></span><br>
 	</div>
 	<div class="defCont schritte">
@@ -87,9 +93,13 @@ if ($auftragsId == -1) : ?>
 	<div class="defCont schritteAdd">
 		<button onclick="addBearbeitungsschritte()">Neuen Bearbeitungsschritt hinzufügen</button>
 		<div id="bearbeitungsschritte" style="display: none">
-			<span>Bezeichnung: <input class="bearbeitungsschrittInput" type="text" max="32"></span><br>
-			<span>Datum: <input class="bearbeitungsschrittInput" type="date" max="32"></span><br>
-			<span>Priorität: <input class="bearbeitungsschrittInput" type="number" max="32"></span><br>
+			<br>
+			<span>Bezeichnung: <br><input class="bearbeitungsschrittInput" type="text" max="128"></span><br>
+			<span>Datum: <br><input class="bearbeitungsschrittInput" type="date" max="32"></span><br>
+			<form name="isAlreadyDone">
+				<input onchange="radio('hide')" type="radio" name="showDone" value="hide" checked>Noch zu erledigen<br>
+				<input onchange="radio('show')" type="radio" name="showDone" value="show">Schon erledigt<br>
+			</form>
 		</div>
 	</div>
 	<div class="defCont posten">
@@ -99,6 +109,7 @@ if ($auftragsId == -1) : ?>
 		<span><u>Gesamtpreis:</u><br><span id="gesamtpreis"><?=$auftrag->preisBerechnen()?>€</span></span>
 	</div>
 	<div class="defCont fahrzeuge">
+		<?php if ($auftragstyp == 0): ?>
 		<span><u>Fahrzeuge:</u> <span id="fahrzeugTable"><?=$fahrzeugTable?></span></span><br>
 		<div>
 			<p>
@@ -118,6 +129,7 @@ if ($auftragsId == -1) : ?>
 				</form>
 			</p>
 		</div>
+		<?php endif; ?>
 	</div>
 	<div class="defCont farben">
 		<span><u>Farben:</u><br> <span id="showColors"><?=$farbTable?></span></span>
@@ -197,7 +209,7 @@ if ($auftragsId == -1) : ?>
 		</div>
 	</div>
 	<div class="defCont verlauf">
-		<p>Auftragsverlauf anzeigen</p>
+		<p onclick="showAuftragsverlauf();">Auftragsverlauf anzeigen</p>
 		<?=$auftragsverlauf?>
 	</div>
 	<?php endif; ?>
