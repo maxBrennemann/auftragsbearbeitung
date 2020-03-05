@@ -65,6 +65,26 @@ ALTER TABLE `history` ADD PRIMARY KEY(`id`);
 ALTER TABLE history CHANGE id id INT(10) AUTO_INCREMENT;
 ALTER TABLE `history` ADD `orderid` INT NOT NULL AFTER `id`;
 CREATE TABLE `auftragsmanager`.`history_type` ( `type_id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(32) NOT NULL , PRIMARY KEY (`type_id`)) ENGINE = InnoDB;
-INSERT INTO `history_type` (`type_id`, `name`) VALUES (NULL, 'posten'), (NULL, 'schritte'), (NULL, 'fahrzeuge'), (NULL, 'dateien'), (NULL, 'auftrag'), (NULL, 'angebot')
+INSERT INTO `history_type` (`type_id`, `name`) VALUES (NULL, 'posten'), (NULL, 'schritte'), (NULL, 'fahrzeuge'), (NULL, 'dateien'), (NULL, 'auftrag'), (NULL, 'angebot');
 ALTER TABLE `history` ADD `state` VARCHAR(16) NOT NULL AFTER `type`;
 alter table history change insertstamp insertstamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+/* Änderungen 20.2.2020 */
+INSERT INTO `auftragstyp` (`id`, `Auftragstyp`) VALUES (0, 'Fahrzeugbeschriftung');
+CREATE VIEW postendata AS
+  SELECT posten.*, zeit.ZeitInMinuten, CONCAT(COALESCE(zeit.Beschreibung, ''), COALESCE(leistung_posten.Beschreibung, ''), COALESCE(produkt_posten.Produktnummer, '')) AS Beschreibung
+  FROM posten
+  LEFT JOIN zeit ON posten.Postennummer = zeit.Postennummer
+  LEFT JOIN leistung_posten ON posten.Postennummer = leistung_posten.Postennummer
+  LEFT JOIN produkt_posten ON posten.Postennummer = produkt_posten.Postennummer;
+update history_type set name = 'Posten' where type_id = 1;
+update history_type set name = 'Schritt' where type_id = 2;
+ALTER TABLE `auftrag` ADD `archiviert` INT NOT NULL AFTER `Bezahlt`;
+ALTER TABLE `auftrag` CHANGE `archiviert` `archiviert` INT(11) NOT NULL DEFAULT '1';
+
+/* Änderungen 2.03.2020 */
+ALTER TABLE `auftrag` CHANGE `Auftragstyp` `Auftragstyp` INT(11) NOT NULL;
+INSERT INTO `auftragstyp` (`id`, `Auftragstyp`) VALUES (3, 'Digitaldruck');
+
+/* Änderungen 4.03.2020 */
+INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '14', 'head', 'attribute.js', '0', 'js')
