@@ -104,7 +104,11 @@ class Ajax {
 				$kfzKenn = $_POST['kfz'];
 				$fahrzeug = $_POST['fahrzeug'];
 				$nummer =  $_POST['kdnr'];
-				DBAccess::insertQuery("INSERT INTO fahrzeuge (Kundennummer, Kennzeichen, Fahrzeug) VALUES($nummer, '$kfzKenn', '$fahrzeug')");
+				$auftragsId =  $_POST['auftrag'];
+				$fahrzeugId = DBAccess::insertQuery("INSERT INTO fahrzeuge (Kundennummer, Kennzeichen, Fahrzeug) VALUES($nummer, '$kfzKenn', '$fahrzeug')");
+				require_once("classes/project/Fahrzeug.php");
+				Fahrzeug::attachVehicle($fahrzeugId, $auftragsId);
+				echo (new Auftrag($auftragsId))->getFahrzeuge();
 				break;
 			case "test":
 				var_dump(unserialize($_SESSION['data']));
@@ -210,6 +214,18 @@ class Ajax {
 				$data = array("farben" => $auftrag->getFarben(), "addFarben" => $auftrag->getAddColors());
 				echo json_encode($data, JSON_FORCE_OBJECT);
 				break;
+			case "archivieren":
+				require_once('classes/project/Auftrag.php');
+				$auftrag = $_POST['auftrag'];
+				$auftrag = new Auftrag($auftrag);
+				$auftrag->archiveOrder();
+				break;
+			case 'loadTemplateOrder':
+				require_once('classes/project/Angebot.php');
+				$customerId = $_POST['customerId'];
+				$angebot = new Angebot($customerId);
+				echo $angebot->getHTMLTemplate();
+				break;
 			case "setData":
 				if ($_POST['type'] == "kunde") {
 					$number = (int) $_POST['number'];
@@ -221,6 +237,18 @@ class Ajax {
 						DBAccess::updateQuery("UPDATE kunde SET $dataKey = '$data' WHERE Kundennummer = $kdnr");
 					}
 				}
+				break;
+			case "addAttVal":
+				$attributeId = $_POST['att'];
+				$value = $_POST['value'];
+				DBAccess::insertQuery("INSERT INTO attribute (attribute_group_id, value) VALUES ($attributeId, '$value')");
+				echo $attributeId;
+				break;
+			case "addAtt":
+				$attribute = $_POST['name'];
+				$descr = $_POST['descr'];
+				DBAccess::insertQuery("INSERT INTO attribute_group (attribute_group, descr) VALUES ('$attribute', '$descr')");
+				echo $attributeId;
 				break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
