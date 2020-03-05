@@ -25,7 +25,6 @@ function ajaxSearch(query) {
 function auftragHinzufuegen() {
     var bez = document.getElementById("bezeichnung").value;
     var bes = document.getElementById("beschreibung").value;
-    var typ = document.getElementById("typ").value;
     var ter = document.getElementById("termin").value;
     var kdn = new URL(window.location.href).searchParams.get("kdnr") ||
                 new URL(window.location.href).searchParams.get("id");
@@ -39,7 +38,8 @@ function auftragHinzufuegen() {
     if (e != null) {
         ans = e.options[e.selectedIndex].value;
     }
-    
+    var typ = document.getElementById("selectTyp");
+    typ = typ.options[typ.selectedIndex].value;
 
     var paramString = new URLSearchParams();
     paramString.append("bez", bez);
@@ -59,9 +59,9 @@ function auftragHinzufuegen() {
     createAuftrag.makeAjaxCall(function (responseLink) {
         console.log(responseLink);
 
-        document.getElementsById("absenden").disabled = true;
-        document.getElementsById("showLinkToOrder").style.display = "inline";
-        document.getElementsById("showLinkToOrder").innerHTML = `<p>Falls Sie nicht automatisch weitergeleitet werden, bitte <a href=\"${responseLink}\">hier klicken</a></p>`;
+        document.getElementById("absenden").disabled = true;
+        document.getElementById("showLinkToOrder").style.display = "inline";
+        document.getElementById("showLinkToOrder").innerHTML = `<p>Falls Sie nicht automatisch weitergeleitet werden, bitte <a href=\"${responseLink}\">hier klicken</a></p>`;
 
         window.location.href = responseLink;
     });
