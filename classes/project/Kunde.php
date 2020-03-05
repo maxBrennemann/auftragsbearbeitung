@@ -82,6 +82,14 @@ class Kunde implements StatisticsInterface {
 		return $this->email;
 	}
 
+	public function isPrivate() {
+		
+	}
+
+	public function getName() {
+		return $this->getVorname() . ' ' . $this->getNachname();
+	}
+
 	public function getTelefonFestnetz() {
 		return $this->telefonFestnetz;
 	}
