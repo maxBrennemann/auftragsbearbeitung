@@ -3,22 +3,37 @@
 	require_once('classes/project/FormGenerator.php');
 	require_once('classes/project/Angebot.php');
 	
-	$rechnung =  Link::getPageLink("rechnung");
-	$auftragsnummer = 0;
-	
-	if(isset($_GET['id'])) {
-		$rechnungsnummer = $_GET['id'];
-		$rechnung = new Angebot($auftragsnummer);
-	}
+	//$a = new Angebot();
+	//$a->pdfGenerieren();
+
+	if (isset($_GET['open'])) :
 ?>
 
-<?php if ($auftragsnummer == 0) : ?>
-	<p>Auftragsnummer: <input type="number" min="1" oninput="document.getElementById('auftragsLink').href = '<?=$rechnung?>?show=' + this.value;">
-	<a href="#" id="auftragsLink">Angebote anzeigen</a></p>
-	<p>Angebotsnummer: <input type="number" min="1" oninput="document.getElementById('angebotsLink').href = '<?=$rechnung?>?show=' + this.value;">
-	<a href="#" id="angebotsLink">Angebot anzeigen</a></p>
-<?php else: ?>
-	<div>Rechnung:</div>
-	<span id="auftragsnummer"><?=$auftragsnummer;?></span>
-	<button onclick="print('auftragsnummer', 'Angebot');">Angebot generieren</button>
+<h2>Offene Angebote</h2>
+
+<?php else : ?>
+<div class="defCont">
+	<a href="<?=Link::getPageLink("angebot")?>?open">Offene Angebote durchsehen</a>
+	<p>Kundennummer: <input type="number" id="kdnr"><button onclick="neuesAngebot()">Bestätigen</button><br>Oder <a href="<?=Link::getPageLink("neuer-kunde")?>">hier</a> einen neuen Kunden anlegen.</p>
+</div>
+<div id="insTemp"></div>
 <?php endif; ?>
+<style>
+
+	.adress {
+		padding-right: 15px;
+	}
+
+	.fleft {
+		float: left;
+	}
+
+	.fright {
+		float: right;
+	}
+
+	.inlineC {
+		display: inline-block;
+	}
+
+</style>
