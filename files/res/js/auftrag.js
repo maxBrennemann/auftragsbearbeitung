@@ -116,9 +116,9 @@ function addLeistung() {
 
 function addFahrzeug(param) {
     var kfz, fahrzeug;
+    var auftragsnummer = new URL(window.location.href).searchParams.get("id");
     if (param != null && param) {
         if (globalData.vehicleId != 0) {
-            var auftragsnummer = new URL(window.location.href).searchParams.get("id");
             var ajax = new AjaxCall(`getReason=attachCar&auftrag=${auftragsnummer}&fahrzeug=${globalData.vehicleId}`);
             ajax.makeAjaxCall(function (response) {
                 document.getElementById("fahrzeugTable").innerHTML = response;
@@ -128,10 +128,10 @@ function addFahrzeug(param) {
         kfz = document.getElementById("kfz").value;
         fahrzeug = document.getElementById("fahrzeug").value;
 
-        var kundennummer = document.getElementById("kundennummer");
-        var add = new AjaxCall(`getReason=insertCar&kfz=${kfz}&fahrzeug=${fahrzeug}&kdnr=${kundennummer}`, "POST", window.location.href);
+        var kundennummer = document.getElementById("kundennummer").innerText;
+        var add = new AjaxCall(`getReason=insertCar&kfz=${kfz}&fahrzeug=${fahrzeug}&kdnr=${kundennummer}&auftrag=${auftragsnummer}`, "POST", window.location.href);
         add.makeAjaxCall(function (response) {
-            console.log(response);
+            document.getElementById("fahrzeugTable").innerHTML = response;
         });
     }
 }
@@ -214,4 +214,14 @@ function sendColor() {
         showColors.innerHTML = data.farben;
         farben.innerHTML = data.addFarben;
     });
+}
+
+function showAuftragsverlauf() {
+    var container = document.createElement("div");
+}
+
+function archvieren() {
+    var auftrag = new URL(window.location.href).searchParams.get("id");
+    var arch = new AjaxCall(`getReason=archivieren&auftrag=${auftrag}`);
+    arch.makeAjaxCall(function () {});
 }
