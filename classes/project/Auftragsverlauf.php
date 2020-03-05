@@ -41,7 +41,7 @@ class Auftragsverlauf {
     }
 
     public function getHistory() {
-        $query = "SELECT history.*, history_type.name FROM history LEFT JOIN history_type ON history_type.type_id = history.type WHERE orderid = {$this->auftragsnummer}";
+        $query = "SELECT history.id, history.insertstamp, history_type.name, CONCAT(COALESCE(postendata.Beschreibung, ''), COALESCE(schritte.Bezeichnung, '')) AS Beschreibung FROM history LEFT JOIN history_type ON history_type.type_id = history.type LEFT JOIN postendata ON postendata.Auftragsnummer = history.orderid AND postendata.Postennummer = history.number LEFT JOIN schritte ON schritte.Auftragsnummer = history.orderid AND schritte.Schrittnummer = history.number WHERE history.orderid = {$this->auftragsnummer}";
         return DBAccess::selectQuery($query);
     }
 
@@ -49,7 +49,7 @@ class Auftragsverlauf {
         $history = $this->getHistory();
         $html = "";
         foreach ($history as $h) {
-            $html .= "<div class=\"showInMiddle\">{$h['name']}</div><div class=\"line\"></div>";
+            $html .= "<div class=\"showInMiddle\">{$h['name']}: {$h['Beschreibung']}</div><div class=\"line\"></div>";
         }
         return $html;
     }
