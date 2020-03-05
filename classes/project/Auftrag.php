@@ -42,6 +42,7 @@ class Auftrag implements StatisticsInterface {
 			if (!empty($data)) {
 				$this->Auftragsbeschreibung = $data[0]['Auftragsbeschreibung'];
 				$this->Auftragsbezeichnung = $data[0]['Auftragsbezeichnung'];
+				$this->Auftragstyp = (int) $data[0]['Auftragstyp'];
 				$this->rechnungsnummer = $data[0]['Rechnungsnummer'];
 
 				$data = DBAccess::selectQuery("SELECT * FROM schritte WHERE Auftragsnummer = {$auftragsnummer}");
@@ -103,6 +104,10 @@ class Auftrag implements StatisticsInterface {
 			$htmlData .= $posten->getHTMLData();
 		}
 		return $htmlData;
+	}
+
+	public function getAuftragstyp() {
+		return $this->Auftragstyp;
 	}
 
 	public function preisBerechnen() {
@@ -175,6 +180,11 @@ class Auftrag implements StatisticsInterface {
 		$query .= " kunde.Kundennummer LEFT JOIN mitarbeiter ON mitarbeiter.id = ";
 		$query .= "auftrag.AngenommenDurch WHERE Rechnungsnummer = 0";
 
+		$column_names = array(0 => array("COLUMN_NAME" => "Nr."), 1 => array("COLUMN_NAME" => "Datum"),
+		2 => array("COLUMN_NAME" => "Termin"), 3 => array("COLUMN_NAME" => "Kunde"), 4 => array("COLUMN_NAME" => "Auftragsbezeichnung"));
+
+		$query = "SELECT Auftragsnummer AS 'Nr.', Datum, IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) as Kunde, Auftragsbezeichnung, IF(auftrag.Termin = '0000-00-00', 'kein Termin', auftrag.Termin) AS Termin FROM auftrag LEFT JOIN kunde ON auftrag.Kundennummer = kunde.Kundennummer WHERE Rechnungsnummer = 0 AND archiviert = 1";
+
 		$data = DBAccess::selectQuery($query);
 		self::$offeneAuftraege = $data;
 
@@ -226,6 +236,11 @@ class Auftrag implements StatisticsInterface {
 		* Theoretisch sollte auftragAbschliessen() aufgerufen werden, jedoch müssen
 		* die Methoden in Statistics noch angepasst werden
 		*/
+	}
+
+	public function archiveOrder() {
+		$query = "UPDATE auftrag SET archiviert = 0 WHERE Auftragsnummer = {$this->Auftragsnummer}";
+		DBAccess::updateQuery($query);
 	}
 
 }
