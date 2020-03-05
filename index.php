@@ -7,6 +7,7 @@
 	require_once('classes/Link.php');
 	require_once('classes/project/FormGenerator.php');
 	require_once('classes/project/Posten.php');
+	require_once('classes/project/Angebot.php');
 	$isArticle = false;
 
 	/*
@@ -28,7 +29,10 @@
 	if (isset($_POST['getReason'])) {
 		Ajax::manageRequests($_POST['getReason'], $page);
 	} else {
-		if (isLoggedIn()) {
+		if ($page == "pdf") {
+			$angebot = new Angebot(3);
+			$angebot->PDFgenerieren();
+		} else if (isLoggedIn()) {
 			showPage($page, $isArticle);
 		} else {
 			showPage("login", false);
