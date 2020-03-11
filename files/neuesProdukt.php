@@ -13,6 +13,7 @@ if (isset($_POST['filesubmitbtn'])) {
 }
 
 $quelle = DBAccess::selectQuery("SELECT name, id FROM einkauf");
+$attributeGroups = DBAccess::selectQuery("SELECT * FROM attribute_group");
 
 echo "<a href=\"" . Link::getPageLink("attributes") . "\">Zu den Produktattributetn</a>";
 ?>
@@ -52,6 +53,16 @@ echo "<a href=\"" . Link::getPageLink("attributes") . "\">Zu den Produktattribut
 		<p>
 			<label>Beschreibung
 				<input class="dataInput" type="text" name="description">
+			</label>
+		</p>
+		<p>
+			<label>Attribute
+				<select id="selectAttributes" required>
+					<option value="-1" selected disabled>Bitte auswählen</option>
+					<?php foreach ($attributeGroups as $group): ?>
+						<option value="<?=$group['id']?>"><?=$group['attribute_group']?></option>
+					<?php endforeach; ?>
+				</select>
 			</label>
 		</p>
 		<form method="post" enctype="multipart/form-data">
