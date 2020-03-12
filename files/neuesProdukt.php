@@ -18,58 +18,51 @@ $attributeGroups = DBAccess::selectQuery("SELECT * FROM attribute_group");
 echo "<a href=\"" . Link::getPageLink("attributes") . "\">Zu den Produktattributetn</a>";
 ?>
 <div class="defCont">
-	<form method="post">
-		<p>
-			<label>Marke
-				<input class="dataInput" type="text" name="marke" required>
-			</label>
-		</p>
-		<p>
-			<label>Quelle
-				<select id="selectSource" required>
-					<option value="-1" selected disabled>Bitte auswählen</option>
-					<?php foreach ($quelle as $q): ?>
-						<option value="<?=$q['id']?>"><?=$q['name']?></option>
-					<?php endforeach; ?>
-					<option value="addNew">Neue Option hinzufügen</option>
-				</select>
-			</label>
-		</p>
-		<p>
-			<label>Verkaufspreis Netto
-				<input class="dataInput" type="text" name="vk_netto" required>
-			</label>
-		</p>
-		<p>
-			<label>Einkaufspreis Netto
-				<input class="dataInput" type="text" name="plz" required>
-			</label>
-		</p>
-		<p>
-			<label>Kurzbezeichnung / Titel
-				<input class="dataInput" type="text" name="short_description" max="64" required>
-			</label>
-		</p>
-		<p>
-			<label>Beschreibung
-				<input class="dataInput" type="text" name="description">
-			</label>
-		</p>
-		<p>
-			<label>Attribute
-				<select id="selectAttributes" required>
-					<option value="-1" selected disabled>Bitte auswählen</option>
-					<?php foreach ($attributeGroups as $group): ?>
-						<option value="<?=$group['id']?>"><?=$group['attribute_group']?></option>
-					<?php endforeach; ?>
-				</select>
-			</label>
-		</p>
-		<form method="post" enctype="multipart/form-data">
-			Dateien hinzufügen:
-			<input type="file" name="uploadedFile">
-			<input type="submit" value="Datei hochladen" name="filesubmitbtn">
-		</form>
-		<input type="submit">
+	<p>
+		<span>Marke
+			<input class="dataInput" type="text" name="marke" required>
+		</span>
+	</p>
+	<p>
+		<span>Quelle
+			<select id="selectSource" required>
+				<option value="-1" selected disabled>Bitte auswählen</option>
+				<?php foreach ($quelle as $q): ?>
+					<option value="<?=$q['id']?>"><?=$q['name']?></option>
+				<?php endforeach; ?>
+				<option value="addNew">Neue Option hinzufügen</option>
+			</select>
+		</span>
+	</p>
+	<p>
+		<span>Verkaufspreis Netto
+			<input class="dataInput" type="text" name="vk_netto" required>
+		</span>
+	</p>
+	<p>
+		<span>Einkaufspreis Netto
+			<input class="dataInput" type="text" name="plz" required>
+		</span>
+	</p>
+	<p>
+		<span>Kurzbezeichnung / Titel
+			<input class="dataInput" type="text" name="short_description" max="64" required>
+		</span>
+	</p>
+	<p>
+		<span>Beschreibung<br>
+			<textarea class="dataInput" type="text" name="description"></textarea>
+		</span>
+	</p>
+	<p>
+		<span>Attribute hinzufügen
+			<button onclick="getHTMLForAttributes();">Hinzufügen</button>
+		</span>
+	</p>
+	<form method="post" enctype="multipart/form-data">
+		Dateien hinzufügen:
+		<input type="file" name="uploadedFile">
+		<input type="submit" value="Datei hochladen" name="filesubmitbtn">
 	</form>
+	<input type="submit">
 </div>

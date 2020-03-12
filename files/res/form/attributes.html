@@ -1,0 +1,41 @@
+<h2 id="title">Attribute</h2>
+<button class="close" onclick="removeHTMLForAttributes();">Schließen</button>
+<div class="attColumn">
+    <h3>Auswahl</h3>
+    <select size="5">
+        <option>Farbe</option>
+        <option>Größe</option>
+        <option>Farbe</option>
+        <option>Größe</option>
+        <option>Form</option>
+    </select>
+</div>
+<div class="attColumn">
+    <h3>Attribute</h3>
+    <select size="4" multiple>
+        <option>gelb</option>
+        <option>rot</option>
+        <option>grün</option>
+        <option>weiß</option>
+    </select>
+    <br>
+    <button>Hinzufügen</button>
+</div>
+<div class="attColumn">
+    <div>
+        <h3>Hinzugefügt</h3>
+        <span>rot <span class="circle">⊖</span></span><br>
+        <span>grün <span class="circle">⊖</span></span>
+    </div>
+</div>
+<style>
+    #title {
+        grid-column: 1 / 3;
+        grid-row: 1;
+    }
+
+    .close {
+        grid-column: 3;
+        grid-row: 1;
+    }
+</style>
