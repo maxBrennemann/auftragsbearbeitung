@@ -63,6 +63,17 @@ function getElement(id) {
 	return document.getElementById(id);
 }
 
+function centerAbsoluteElement(div) {
+	var divWidth = div.offsetWidth;
+	var divHeight = div.offsetHeight;
+
+	var pageWidth = window.innerWidth;
+	var pageHeight = window.innerHeight;
+
+	div.style.left = ((pageWidth - divWidth) / 2) + "px";
+	div.style.top = ((pageHeight - divHeight) / 2) + "px";
+}
+
 var AjaxCall = function(paramString, ajaxType) {
 	this.type = (ajaxType != null) ? ajaxType : "POST";
 	this.paramString = (paramString != null) ? paramString : "";
