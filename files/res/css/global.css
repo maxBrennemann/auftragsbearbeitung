@@ -134,6 +134,11 @@ tr:last-child td:last-child {
     border-radius: 0 0 6px 0;
 }
 
+iframe {
+    width: 80vw;
+    height: 40vw;
+}
+
 .headerline {
     width: 80%;
     margin: auto;
