@@ -42,6 +42,13 @@ class ProduktPosten extends Posten {
 		return $arr;
 	}
 
+	public function storeToDB($auftragsNr) {
+		$data = $this->fillToArray(array());
+		$data['ohneBerechnung'] = 1;
+		$data['Auftragsnummer'] = $auftragsNr;
+		Posten::insertPosten("produkt", $data);
+	}
+
     public function bekommePreis() {
 		if ($this->ohneBerechnung == true) {
 			return 0;
