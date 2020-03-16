@@ -15,8 +15,12 @@ require_once('classes/DBAccess.php');
 abstract class Posten {
 	
 	abstract protected function bekommePreis();
+	abstract protected function bekommeEinzelPreis();
 	abstract protected function getHTMLData();
 	abstract protected function fillToArray($arr);
+	abstract protected function getDescription();
+	abstract protected function getEinheit();
+	abstract protected function getQuantity();
 
 	protected $postenTyp;
 	protected $ohneBerechnung = false;

@@ -37,6 +37,10 @@ class Zeit extends Posten {
 
 		return $arr;
 	}
+	
+	public function bekommeEinzelPreis() {
+		return $this->bekommePreis();
+	}
 
     public function bekommePreis() {
 		if ($this->ohneBerechnung == true) {
@@ -48,7 +52,19 @@ class Zeit extends Posten {
     private function kalkulierePreis() {
 		$this->Kosten = $this->Stundenlohn * ($this->ZeitInMinuten / 60);
         return round((float) $this->Kosten, 2);
-    }
+	}
+	
+	public function getDescription() {
+		return $this->beschreibung;
+	}
+
+	public function getEinheit() {
+		return "min";
+	}
+
+	public function getQuantity() {
+		return $this->ZeitInMinuten;
+	}
 
 }
 

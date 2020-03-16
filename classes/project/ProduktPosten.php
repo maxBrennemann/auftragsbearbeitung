@@ -46,8 +46,24 @@ class ProduktPosten extends Posten {
 		if ($this->ohneBerechnung == true) {
 			return 0;
 		}
-        return (int) $this->Preis;
-    }
+        return (int) $this->Preis * $this->Anzahl;
+	}
+
+	public function bekommeEinzelPreis() {
+		return $this->Preis;
+	}
+	
+	public function getDescription() {
+		return $this->Beschreibung;
+	}
+
+	public function getEinheit() {
+		return "Stk";
+	}
+
+	public function getQuantity() {
+		return $this->Anzahl;
+	}
 
 }
 
