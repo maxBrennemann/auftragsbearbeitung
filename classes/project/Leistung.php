@@ -49,7 +49,19 @@ class Leistung extends Posten {
 			return 0;
 		}
         return (float) $this->preis;
-    }
+	}
+
+	public function bekommeEinzelPreis() {
+		return $this->preis;
+	}
+	
+	public function getDescription() {
+		return $this->beschreibung;
+	}
+
+	public function getEinheit() {
+		return "/";
+	}
 
 	public static function bearbeitungsschritteHinzufuegen($leistungsnummer, $auftragsnummer) {
 		$schritte = DBAccess::selectQuery("SELECT * FROM schritte_vordefiniert WHERE Leistungsnummer = $leistungsnummer");
@@ -63,6 +75,10 @@ class Leistung extends Posten {
 			require_once("classes/project/Schritt.php");
 			Schritt::insertStep($data);
 		}
+	}
+
+	public function getQuantity() {
+		return 1;
 	}
 
 }
