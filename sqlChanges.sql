@@ -88,3 +88,6 @@ INSERT INTO `auftragstyp` (`id`, `Auftragstyp`) VALUES (3, 'Digitaldruck');
 
 /* Änderungen 4.03.2020 */
 INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '14', 'head', 'attribute.js', '0', 'js')
+
+/* Änderungen 16.03.2020 */
+CREATE TABLE `auftragsbearbeitung`.`angebot` ( `id` INT NOT NULL AUTO_INCREMENT , `kdnr` INT NOT NULL , `status` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
