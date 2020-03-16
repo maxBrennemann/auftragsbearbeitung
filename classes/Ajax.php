@@ -196,6 +196,29 @@ class Ajax {
 				$aufschlag = $_POST['aufschlag'];
 				DBAccess::insertQuery("INSERT INTO leistung (Bezeichnungm, Beschreibung, Quelle, Aufschlag) VALUES ('$bezeichung', '$description', '$source', $aufschlag)");
 				break;
+			case "addTimeOffer":
+				$customerId = $_POST['customerId'];
+				$time = $_POST['time'];
+				$wage = $_POST['wage'];
+				$descr = $_POST['descr'];
+				$isFree = (int) $_POST['isFree'];
+				$angebot = new Angebot($customerId);
+				require_once("classes/project/Zeit.php");
+				$zeitPosten = new Zeit($wage, $time, $descr);
+				$angebot->addPosten($zeitPosten);
+				break;
+			case "addLeistungOffer":
+				$customerId = $_POST['customerId'];
+				$lei = $_POST['lei'];
+				$bes = $_POST['bes'];
+				$ekp = $_POST['ekp'];
+				$pre = $_POST['pre'];
+				$isFree = (int) $_POST['isFree'];
+				$angebot = new Angebot($customerId);
+				require_once("classes/project/Leistung.php");
+				$leistungsPosten = new Leistung($lei, $bes, $pre, $ekp);
+				$angebot->addPosten($leistungsPosten);
+				break;
 			case "newColor":
 				require_once('classes/project/Auftrag.php');
 				$auftrag = $_POST['auftrag'];
