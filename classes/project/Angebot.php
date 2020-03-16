@@ -18,7 +18,9 @@ class Angebot {
     private $angebotsnr = 0;
 
     private $leistungen = null;
-	private $fahrzeuge = null;
+    private $fahrzeuge = null;
+    
+    private $posten = array();
 
     function __construct($cid) {
         $this->kdnr = $cid;
@@ -53,10 +55,53 @@ class Angebot {
         $pdf->Cell(20, 10, 'E-Preis', 'B');
         $pdf->Cell(20, 10, 'G-Preis', 'B');
 
+        /* iterates over all posten and adds lines */
+        $this->loadPostenFromSession();
+        $offset = 10;
+        if ($this->posten != null) {
+            foreach ($this->posten as $p) {
+                $pdf->setXY(20, 90 + $offset);
+                $pdf->Cell(20, 10, $p->getQuantity());
+                $pdf->Cell(20, 10, $p->getEinheit());
+                $pdf->Cell(80, 10, $p->getDescription());
+                $pdf->Cell(20, 10, number_format($p->bekommeEinzelPreis(), 2, ',', '') . ' €');
+                $pdf->Cell(20, 10, number_format($p->bekommePreis(), 2, ',', '') . ' €');
+                $offset += 10;
+            }
+        }
+
         $pdf->Output();
     }
 
+    private function loadPostenFromSession() {
+        $num = $_SESSION['postenId'];
+        for ($i = 1; $i <= $num; $i++) {
+            $posten = unserialize($_SESSION['posten' . $i]);
+            array_push($this->posten, $posten);
+        }
+    }
+
+    private function postenSum() {
+        $sum = 0;
+        foreach ($this->posten as $p) {
+            $sum += $p->bekommePreis();
+        }
+        return $sum;
+    }
+
+    public function addPosten($posten) {
+        if ($_SESSION['postenId'] == null) {
+            $_SESSION['postenId'] = 0;
+        }
+        $postenId = (int) $_SESSION['postenId'];
+        $_SESSION['posten' . ++$postenId] = serialize($posten);
+        $_SESSION['postenId'] = $postenId;
+        array_push($this->posten, $posten);
+    }
+
     public function getHTMLTemplate() {
+        $_SESSION['newOffer'] = serialize($this->kdnr);
+
         if (true) : ?>
             <div class="defCont">
                 <div class="inlineC">
@@ -118,6 +163,10 @@ class Angebot {
             <div class="defCont" id="allePosten">
                 <p>Alle Posten:</p>
             </div>
+            <button onclick="showOffer();">Angebot anzeigen</button>
+            <button onclick="storeOffer();">Angebot abschließen</button>
+            <br>
+            <iframe src="http://localhost/auftragsbearbeitung/content/pdf" id="showOffer"></iframe>
         <?php endif;
         
     }
