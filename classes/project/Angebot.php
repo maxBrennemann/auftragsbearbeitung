@@ -9,6 +9,13 @@ if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
 }
 
+/*
+* Status bei Angeboten:
+* 0 -- offen
+* 1 -- übernommen
+* 2 -- gelöscht
+*/
+
 require_once('Auftrag.php');
 
 class Angebot {
@@ -23,6 +30,13 @@ class Angebot {
     private $posten = array();
 
     function __construct($cid) {
+        $sKdnr = $_SESSION['postenId'];
+        if ($sKdnr == null) {
+            $_SESSION['postenId'] = $cid;
+        } else if ($_SESSION['postenId'] != $cid) {
+            $this->deleteOldSessionData();
+        }
+
         $this->kdnr = $cid;
         $this->kunde = new Kunde($cid);
         $this->leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
@@ -81,6 +95,14 @@ class Angebot {
         }
     }
 
+    private function deleteOldSessionData() {
+        $num = $_SESSION['postenId'];
+        for ($i = 1; $i <= $num; $i++) {
+            $_SESSION['posten' . $i] = null;
+        }
+        $_SESSION['postenId'] = null;
+    }
+
     private function postenSum() {
         $sum = 0;
         foreach ($this->posten as $p) {
@@ -97,6 +119,38 @@ class Angebot {
         $_SESSION['posten' . ++$postenId] = serialize($posten);
         $_SESSION['postenId'] = $postenId;
         array_push($this->posten, $posten);
+    }
+
+    public function storeOffer() {
+        DBAccess::insertQuery("INSERT INTO angebot (kdnr, `status`) VALUES ({$this->kdnr}, 0)");
+        $this->loadPostenFromSession();
+        if ($this->posten != null) {
+            foreach ($this->posten as $p) {
+                $p->storeToDB(-1);
+            }
+        }
+
+        $this->deleteOldSessionData();
+    }
+
+    public function loadCachedPosten() {
+        $this->loadPostenFromSession();
+        if ($this->posten != null) {
+            foreach ($this->posten as $p) {
+                if ($p instanceof Zeit) {
+                    echo "Zeit: {$p->getQuantity()} min, Stundenlohn: {$p->getWage()}€ für {$p->getDescription()}";
+                    if ($p->getOhneBerechnung()) {
+                    echo ", wird nicht berechnet";
+                    }
+                } else if ($p instanceof Leistung) {
+                    echo "Leistung: {$p->getQuantity()}, Preis {$p->bekommeEinzelPreis()}€ EK Preis {$p->bekommeEKPreis()} für {$p->getDescription()}";
+                    if ($p->getOhneBerechnung()) {
+                    echo ", wird nicht berechnet";
+                    }
+                }
+                echo "<br>";
+            }
+        }
     }
 
     public function getHTMLTemplate() {
