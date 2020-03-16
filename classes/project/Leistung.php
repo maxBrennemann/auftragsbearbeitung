@@ -44,6 +44,13 @@ class Leistung extends Posten {
 		return $arr;
 	}
 
+	public function storeToDB($auftragsNr) {
+		$data = $this->fillToArray(array());
+		$data['ohneBerechnung'] = 1;
+		$data['Auftragsnummer'] = $auftragsNr;
+		Posten::insertPosten("leistung", $data);
+	}
+
     public function bekommePreis() {
 		if ($this->ohneBerechnung == true) {
 			return 0;
@@ -53,6 +60,14 @@ class Leistung extends Posten {
 
 	public function bekommeEinzelPreis() {
 		return $this->preis;
+	}
+
+	public function getOhneBerechnung() {
+		return $this->ohneBerechnung;
+	}
+
+	public function bekommeEKPreis() {
+		return $this->einkaufspreis;
 	}
 	
 	public function getDescription() {

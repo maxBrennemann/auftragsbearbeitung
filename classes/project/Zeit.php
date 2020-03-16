@@ -62,8 +62,23 @@ class Zeit extends Posten {
 		return "min";
 	}
 
+	public function getWage() {
+		return $this->Stundenlohn;
+	}
+
 	public function getQuantity() {
 		return $this->ZeitInMinuten;
+	}
+
+	public function getOhneBerechnung() {
+		return $this->ohneBerechnung;
+	}
+
+	public function storeToDB($auftragsNr) {
+		$data = $this->fillToArray(array());
+		$data['ohneBerechnung'] = 1;
+		$data['Auftragsnummer'] = $auftragsNr;
+		Posten::insertPosten("zeit", $data);
 	}
 
 }

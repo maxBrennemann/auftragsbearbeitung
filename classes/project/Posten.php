@@ -21,6 +21,7 @@ abstract class Posten {
 	abstract protected function getDescription();
 	abstract protected function getEinheit();
 	abstract protected function getQuantity();
+	abstract protected function storeToDB($auftragsnummer);
 
 	protected $postenTyp;
 	protected $ohneBerechnung = false;
@@ -64,7 +65,9 @@ abstract class Posten {
 		$postennummer = (int) DBAccess::selectQuery("SELECT MAX(Postennummer) FROM posten")[0]['MAX(Postennummer)'];
 		$postennummer++;
 
-		$auftragsverlauf = new Auftragsverlauf($_POST['auftrag']);
+		if ((int) $auftragsnummer != -1) {
+			$auftragsverlauf = new Auftragsverlauf($_POST['auftrag']);
+		}
 		
 		switch ($type) {
 			case "zeit":
@@ -89,7 +92,9 @@ abstract class Posten {
 				break;
 		}
 
-		$auftragsverlauf->addToHistory($postennummer, 1, "added");
+		if ((int) $auftragsnummer != -1) {
+			$auftragsverlauf->addToHistory($postennummer, 1, "added");
+		}
 	}
 
 	public static function deletePosten($postenId) {
