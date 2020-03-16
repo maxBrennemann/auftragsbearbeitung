@@ -59,6 +59,7 @@ function addTime() {
     var wage = document.getElementById("wage").value;
     var descr = document.getElementById("descr").value;
     var isFree = getOhneBerechnung() ? 1 : 0;
+    var customerId = document.getElementById("kdnr").value;
     
     var div = document.createElement("div");
     var text = `Zeit: ${time} min, Stundenlohn: ${wage}€ für ${descr}`;
@@ -68,22 +69,47 @@ function addTime() {
 
     div.innerText = text;
     document.getElementById("allePosten").appendChild(div);
+
+    var addTimeOffer = new AjaxCall(`getReason=addTimeOffer&customerId=${customerId}&time=${time}&wage=${wage}&descr=${descr}&isFree=${isFree}`);
+    addTimeOffer.makeAjaxCall(function (response) {
+        reloadIFrame();
+    });
 }
 
 function addLeistung() {
     var e = document.getElementById("selectLeistung");
     var lei = e.options[e.selectedIndex].innerHTML;
+    var leiNr = e.options[e.selectedIndex].value;
     var bes = document.getElementById("bes").value;
     var ekp = document.getElementById("ekp").value;
     var pre = document.getElementById("pre").value;
     var isFree = getOhneBerechnung() ? 1 : 0;
-    
+    var customerId = document.getElementById("kdnr").value;
+
     var div = document.createElement("div");
-    var text = `Zeit: ${time} min, Stundenlohn: ${wage}€ für ${descr}`;
+    var text = `Leistung: ${lei}, Preis ${pre}€, EK Preis ${ekp} für: ${bes}`;
     if (isFree) {
         text += ", wird nicht berechnet";
     }
 
     div.innerText = text;
     document.getElementById("allePosten").appendChild(div);
+
+    var addLeistungOffer = new AjaxCall(`getReason=addLeistungOffer&customerId=${customerId}&lei=${leiNr}&bes=${bes}&ekp=${ekp}&pre=${pre}&isFree=${isFree}`);
+    addLeistungOffer.makeAjaxCall(function (response) {
+        reloadIFrame();
+    });
+}
+
+function showOffer() {
+    //showOffer
+}
+
+function reloadIFrame() {
+    var iframe = document.getElementById("showOffer");
+    iframe.src = iframe.src;
+}
+
+function storeOffer() {
+    
 }
