@@ -4,6 +4,16 @@ function neuesAngebot() {
     var loadHTMLTemplate = new AjaxCall(`getReason=loadTemplateOrder&customerId=${customerId}`);
     loadHTMLTemplate.makeAjaxCall(function (customerData) {
         document.getElementById("insTemp").innerHTML = customerData;
+        loadCachedPosten();
+    });
+}
+
+function loadCachedPosten() {
+    var customerId = document.getElementById("kdnr").value;
+    var loadCache = new AjaxCall(`getReason=loadCachedPosten&customerId=${customerId}`);
+    loadCache.makeAjaxCall(function (data) {
+        console.log(data);
+        document.getElementById("allePosten").innerHTML += data;
     });
 }
 
@@ -111,5 +121,9 @@ function reloadIFrame() {
 }
 
 function storeOffer() {
-    
+    var customerId = document.getElementById("kdnr").value;
+    var storeOffer = new AjaxCall(`getReason=storeOffer&customerId=${customerId}`);
+    storeOffer.makeAjaxCall(function (response) {
+       location.reload();
+    });
 }
