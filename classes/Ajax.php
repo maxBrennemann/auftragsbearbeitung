@@ -14,7 +14,7 @@ class Ajax {
 					$file = Link::getResourcesLink($_POST['file'], "html", false);
 					echo file_get_contents_utf8($file);
 				}
-				break;
+			break;
 			case "fillForm":
 				if (isset($_POST['file'])) {
 					require_once("classes/project/FillForm.php");
@@ -22,7 +22,7 @@ class Ajax {
 					$filled->fill($_POST['nr']);
 					$filled->show();
 				}
-				break;
+			break;
 			case "createTable":
 				$type = $_POST['type'];
 			
@@ -44,7 +44,7 @@ class Ajax {
 					$table = FormGenerator::createTable($type, true, $showData, "");
 					echo $table;
 				}
-				break;
+			break;
 			case "search":
 				require_once('classes/project/Search.php');
 				$stype = $_POST['stype'];
@@ -59,7 +59,7 @@ class Ajax {
 				} else {
 					echo Search::getSearchTable($_POST['query'], $stype);
 				}
-				break;
+			break;
 			case "createAuftrag":
 				$bez = $_POST['bez'];
 				$bes = $_POST['bes'];
@@ -82,7 +82,7 @@ class Ajax {
 				echo Link::getPageLink("auftrag") . "?id=$maxAuftragsnr";
 
 				//Statistics::auftragEroeffnen(new Auftrag($maxAuftragsnr));
-				break;
+			break;
 			case "insTime":
 				$data = array();
 				$data['ZeitInMinuten'] = $_POST['time'];
@@ -91,7 +91,7 @@ class Ajax {
 				$data['Auftragsnummer'] = $_POST['auftrag'];
 				$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
 				Posten::insertPosten("zeit", $data);
-				break;
+			break;
 			case "insertAnspr":
 				$vorname = $_POST['vorname'];
 				$nachname = $_POST['nachname'];
@@ -99,7 +99,7 @@ class Ajax {
 				$durchwahl = $_POST['durchwahl'];
 				$nextId = $_POST['nextId'];
 				DBAccess::insertQuery("INSERT INTO ansprechpartner (Kundennummer, Vorname, Nachname, Email, Durchwahl) VALUES($nextId, '$vorname', '$nachname', '$email', '$durchwahl')");
-				break;
+			break;
 			case "insertCar":
 				$kfzKenn = $_POST['kfz'];
 				$fahrzeug = $_POST['fahrzeug'];
@@ -109,10 +109,10 @@ class Ajax {
 				require_once("classes/project/Fahrzeug.php");
 				Fahrzeug::attachVehicle($fahrzeugId, $auftragsId);
 				echo (new Auftrag($auftragsId))->getFahrzeuge();
-				break;
+			break;
 			case "test":
 				var_dump(unserialize($_SESSION['data']));
-				break;
+			break;
 			case "insertLeistung":
 				$data = array();
 				$data['Leistungsnummer'] = $_POST['lei'];
@@ -122,7 +122,7 @@ class Ajax {
 				$data['Auftragsnummer'] = $_POST['auftrag'];
 				$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
 				Posten::insertPosten("leistung", $data);
-				break;
+			break;
 			case "insertStep":
 				$data = array();
 				$data['Bezeichnung'] = $_POST['bez'];
@@ -134,26 +134,26 @@ class Ajax {
 				Schritt::insertStep($data);
 				$auftrag = new Auftrag($data['Auftragsnummer']);
 				echo $auftrag->getOpenBearbeitungsschritteAsTable();
-				break;
+			break;
 			case "addStep":
 				$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Priority"));
 
 				$addClass = $_POST['addClass'];
 
 				echo FormGenerator::createEmptyTable($column_names, $addClass);
-				break;
+			break;
 			case "getAllSteps":
 				require_once("classes/project/Auftrag.php");
 				$auftragsId = $_POST['auftrag'];
 				$Auftrag = new Auftrag($auftragsId);
 				echo $Auftrag->getBearbeitungsschritteAsTable();
-				break;
+			break;
 			case "getOpenSteps":
 				require_once("classes/project/Auftrag.php");
 				$auftragsId = $_POST['auftrag'];
 				$Auftrag = new Auftrag($auftragsId);
 				echo $Auftrag->getOpenBearbeitungsschritteAsTable();
-				break;
+			break;
 			case "setTo":
 				require_once("classes/project/InteractiveFormGenerator.php");
 				$table = unserialize($_SESSION['storedTable']);
@@ -161,41 +161,41 @@ class Ajax {
 				$row =  $_POST['row'];
 				$table->setIdentifier("Schrittnummer");
 				$table->editRow($row, "istErledigt", "0");
-				break;
+			break;
 			case "sendSource":
 				Produkt::addSource();
-				break;
+			break;
 			case "getSelect":
 				Produkt::getSelectSource();	
-				break;
+			break;
 			case "insertVerbesserung":
 				if (isset($_POST['verbesserung'])) {
 					$verbesserung = $_POST['verbesserung'];
 					DBAccess::insertQuery("INSERT INTO verbesserungen (verbesserungen) VALUES ('$verbesserung')");
 				}
-				break;
+			break;
 			case "getServerMsg":
 				echo $_SESSION['searchResult'];
-				break;
+			break;
 			case "attachCar":
 				$auftragsId = $_POST['auftrag'];
 				$fahrzeugId = $_POST['fahrzeug'];
 				require_once("classes/project/Fahrzeug.php");
 				Fahrzeug::attachVehicle($fahrzeugId, $auftragsId);
 				echo (new Auftrag($auftragsId))->getFahrzeuge();
-				break;
+			break;
 			case "setNotes":
 				$kdnr = $_POST['kdnr'];
 				$note = $_POST['notes'];
 				DBAccess::insertQuery("UPDATE kunde_extended SET notizen = '$note' WHERE kundennummer = $kdnr");
-				break;
+			break;
 			case "addLeistung":
 				$bezeichung = $_POST['bezeichung'];
 				$description = $_POST['description'];
 				$source = $_POST['source'];
 				$aufschlag = $_POST['aufschlag'];
 				DBAccess::insertQuery("INSERT INTO leistung (Bezeichnungm, Beschreibung, Quelle, Aufschlag) VALUES ('$bezeichung', '$description', '$source', $aufschlag)");
-				break;
+			break;
 			case "addTimeOffer":
 				$customerId = $_POST['customerId'];
 				$time = $_POST['time'];
@@ -206,7 +206,7 @@ class Ajax {
 				require_once("classes/project/Zeit.php");
 				$zeitPosten = new Zeit($wage, $time, $descr);
 				$angebot->addPosten($zeitPosten);
-				break;
+			break;
 			case "addLeistungOffer":
 				$customerId = $_POST['customerId'];
 				$lei = $_POST['lei'];
@@ -218,7 +218,12 @@ class Ajax {
 				require_once("classes/project/Leistung.php");
 				$leistungsPosten = new Leistung($lei, $bes, $pre, $ekp);
 				$angebot->addPosten($leistungsPosten);
-				break;
+			break;
+			case "storeOffer":
+				$customerId = $_POST['customerId'];
+				$angebot = new Angebot($customerId);
+				$angebot->storeOffer();
+			break;
 			case "newColor":
 				require_once('classes/project/Auftrag.php');
 				$auftrag = $_POST['auftrag'];
@@ -236,19 +241,25 @@ class Ajax {
 				$auftrag = new Auftrag($auftrag);
 				$data = array("farben" => $auftrag->getFarben(), "addFarben" => $auftrag->getAddColors());
 				echo json_encode($data, JSON_FORCE_OBJECT);
-				break;
+			break;
 			case "archivieren":
 				require_once('classes/project/Auftrag.php');
 				$auftrag = $_POST['auftrag'];
 				$auftrag = new Auftrag($auftrag);
 				$auftrag->archiveOrder();
-				break;
+			break;
 			case 'loadTemplateOrder':
 				require_once('classes/project/Angebot.php');
 				$customerId = $_POST['customerId'];
 				$angebot = new Angebot($customerId);
 				echo $angebot->getHTMLTemplate();
-				break;
+			break;
+			case 'loadCachedPosten':
+				require_once('classes/project/Angebot.php');
+				$customerId = $_POST['customerId'];
+				$angebot = new Angebot($customerId);
+				echo $angebot->loadCachedPosten(); 
+			break;
 			case "setData":
 				if ($_POST['type'] == "kunde") {
 					$number = (int) $_POST['number'];
@@ -260,19 +271,19 @@ class Ajax {
 						DBAccess::updateQuery("UPDATE kunde SET $dataKey = '$data' WHERE Kundennummer = $kdnr");
 					}
 				}
-				break;
+			break;
 			case "addAttVal":
 				$attributeId = $_POST['att'];
 				$value = $_POST['value'];
 				DBAccess::insertQuery("INSERT INTO attribute (attribute_group_id, value) VALUES ($attributeId, '$value')");
 				echo $attributeId;
-				break;
+			break;
 			case "addAtt":
 				$attribute = $_POST['name'];
 				$descr = $_POST['descr'];
 				DBAccess::insertQuery("INSERT INTO attribute_group (attribute_group, descr) VALUES ('$attribute', '$descr')");
 				echo $attributeId;
-				break;
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
@@ -287,7 +298,7 @@ class Ajax {
 				$result = $result[0];
 				$articleUrl = $result["articleUrl"];
 				include($baseUrl . $articleUrl);
-				break;
+			break;
 		}
 	}
 
