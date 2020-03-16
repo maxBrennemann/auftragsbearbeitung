@@ -91,3 +91,4 @@ INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `
 
 /* Änderungen 16.03.2020 */
 CREATE TABLE `auftragsbearbeitung`.`angebot` ( `id` INT NOT NULL AUTO_INCREMENT , `kdnr` INT NOT NULL , `status` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+ALTER TABLE `posten` ADD `angebotsNr` INT NOT NULL AFTER `Auftragsnummer`;
