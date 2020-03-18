@@ -167,6 +167,13 @@ iframe {
     background-color: #eff0f1;
 }
 
+.innerDefCont {
+    border-radius: 6px;
+    margin: 10px;
+    padding: 10px;
+    background-color: #b1b1b1;
+}
+
 #imageHeader {
     width: 100px;
     height: auto;
