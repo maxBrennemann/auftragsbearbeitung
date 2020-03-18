@@ -153,6 +153,10 @@ class Angebot {
         }
     }
 
+    public function loadAngebot() {
+        
+    }
+
     public function getHTMLTemplate() {
         $_SESSION['newOffer'] = serialize($this->kdnr);
 
