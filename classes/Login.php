@@ -66,6 +66,8 @@ class Login {
 			return false;
 		}
 
+		DBAccess::insertQuery("INSERT INTO last_login (id_member) VALUES ({$user['id']})");
+
 		return true;
 	}
 	
