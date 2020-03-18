@@ -92,3 +92,9 @@ INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `
 /* Änderungen 16.03.2020 */
 CREATE TABLE `auftragsbearbeitung`.`angebot` ( `id` INT NOT NULL AUTO_INCREMENT , `kdnr` INT NOT NULL , `status` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 ALTER TABLE `posten` ADD `angebotsNr` INT NOT NULL AFTER `Auftragsnummer`;
+
+/* Änderungen 17.03.2020 */
+CREATE TABLE `auftragsbearbeitung`.`last_login` ( `id` INT NOT NULL AUTO_INCREMENT , `id_member` INT NOT NULL , `loginstamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'addSticker.php', 'Motive', 'sticker');
+INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'listmaker.php', 'Listen', 'listmaker');
+INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '19', 'head', 'listmaker.js', '0', 'js');
