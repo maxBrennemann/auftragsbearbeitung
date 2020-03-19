@@ -60,6 +60,11 @@ class Ajax {
 					echo Search::getSearchTable($_POST['query'], $stype);
 				}
 			break;
+			case "saveList":
+				$data = $_POST['data'];
+				require_once('classes/project/Liste.php');
+				Liste::saveData($data);
+			break;
 			case "createAuftrag":
 				$bez = $_POST['bez'];
 				$bes = $_POST['bes'];
