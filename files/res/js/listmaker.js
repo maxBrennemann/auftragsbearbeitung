@@ -47,6 +47,44 @@ function getCheckedValue() {
         return 3;
 }
 
+function saveList() {
+    var list = {
+        name : l.name,
+        listenpunkte : {}
+    }
+
+    for (var i = 0; i < l.listenpunkte.length; i++) {
+        var currLp = l.listenpunkte[i];
+
+        var listenpunktObj = {};
+
+        listenpunktObj.id = i;
+        listenpunktObj.text = currLp.bezeichnung;
+        listenpunktObj.type = currLp.type;
+        listenpunktObj.auswahl = {}
+
+        for (var n = 0; n < currLp.auswahl.length; n++) {
+            var currAuswahl = currLp.auswahl[i];
+
+            var auswahlObj = {};
+
+            auswahlObj.text = currAuswahl.bezeichnung;
+            auswahlObj.ordnung = n;
+
+            listenpunktObj.auswahl["auswahl" + n] = auswahlObj;
+        }
+
+        list.listenpunkte[i] = listenpunktObj;
+    }
+
+    var json = JSON.stringify(list);
+
+    var sendListData = new AjaxCall(`getReason=saveList&data=${json}`, "POST", window.location.href);
+    sendListData.makeAjaxCall(function (response) {
+        console.log(response);
+    })
+}
+
 /* Liste */
 
 var Liste = function(name) {
@@ -84,6 +122,7 @@ var Listenpunkt = function(bezeichnung, type) {
     this.bezeichnung = bezeichnung;
     this.type = type;
     this.id;
+    this.auswahl = [];
 }
 
 Listenpunkt.prototype.showListenpunkt = function() {
@@ -93,8 +132,8 @@ Listenpunkt.prototype.showListenpunkt = function() {
     this.anchor.appendChild(this.container);
 }
 
-Listenpunkt.prototype.addAuswahl = function() {
-
+Listenpunkt.prototype.addAuswahl = function(auswahl) {
+    this.auswahl.push(auswahl);
 }
 
 Listenpunkt.prototype.setId = function(id) {
