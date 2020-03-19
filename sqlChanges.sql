@@ -98,3 +98,9 @@ CREATE TABLE `auftragsbearbeitung`.`last_login` ( `id` INT NOT NULL AUTO_INCREME
 INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'addSticker.php', 'Motive', 'sticker');
 INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'listmaker.php', 'Listen', 'listmaker');
 INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '19', 'head', 'listmaker.js', '0', 'js');
+
+/* Änderugen 19.03.2020 */
+CREATE TABLE `auftragsbearbeitung`.`liste` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(32) NOT NULL , `zugehoerigkeit` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+CREATE TABLE `auftragsbearbeitung`.`listenpunkt` ( `id` INT NOT NULL AUTO_INCREMENT , `listenid` INT NOT NULL , `text` VARCHAR(64) NOT NULL , `art` INT NOT NULL , `ordnung` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+CREATE TABLE `auftragsbearbeitung`.`listenauswahl` ( `id` INT NOT NULL AUTO_INCREMENT , `listenpunktid` INT NOT NULL , `text` VARCHAR(64) NOT NULL , `ordnung` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+ALTER TABLE `listenauswahl` CHANGE `text` `bezeichnung` VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
