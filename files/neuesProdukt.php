@@ -19,12 +19,12 @@ echo "<a href=\"" . Link::getPageLink("attributes") . "\">Zu den Produktattribut
 ?>
 <div class="defCont">
 	<p>
-		<span>Marke
+		<span>Marke<br>
 			<input class="dataInput" type="text" name="marke" required>
 		</span>
 	</p>
 	<p>
-		<span>Quelle
+		<span>Quelle<br>
 			<select id="selectSource" required>
 				<option value="-1" selected disabled>Bitte auswählen</option>
 				<?php foreach ($quelle as $q): ?>
@@ -35,17 +35,17 @@ echo "<a href=\"" . Link::getPageLink("attributes") . "\">Zu den Produktattribut
 		</span>
 	</p>
 	<p>
-		<span>Verkaufspreis Netto
+		<span>Verkaufspreis Netto<br>
 			<input class="dataInput" type="text" name="vk_netto" required>
 		</span>
 	</p>
 	<p>
-		<span>Einkaufspreis Netto
+		<span>Einkaufspreis Netto<br>
 			<input class="dataInput" type="text" name="plz" required>
 		</span>
 	</p>
 	<p>
-		<span>Kurzbezeichnung / Titel
+		<span>Kurzbezeichnung / Titel<br>
 			<input class="dataInput" type="text" name="short_description" max="64" required>
 		</span>
 	</p>
@@ -55,12 +55,12 @@ echo "<a href=\"" . Link::getPageLink("attributes") . "\">Zu den Produktattribut
 		</span>
 	</p>
 	<p>
-		<span>Attribute hinzufügen
+		<span>Attribute hinzufügen<br>
 			<button onclick="getHTMLForAttributes();">Hinzufügen</button>
 		</span>
 	</p>
 	<form method="post" enctype="multipart/form-data">
-		Dateien hinzufügen:
+		Dateien hinzufügen:<br>
 		<input type="file" name="uploadedFile">
 		<input type="submit" value="Datei hochladen" name="filesubmitbtn">
 	</form>
