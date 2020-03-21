@@ -10,3 +10,10 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
 }
+
+.selectedAttList {
+    border: 1px solid grey;
+    border-radius: 6px;
+    margin-top: 2px;
+    padding: 2px;
+}

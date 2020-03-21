@@ -2,30 +2,19 @@
 <button class="close" onclick="removeHTMLForAttributes();">Schließen</button>
 <div class="attColumn">
     <h3>Auswahl</h3>
-    <select size="5">
-        <option>Farbe</option>
-        <option>Größe</option>
-        <option>Farbe</option>
-        <option>Größe</option>
-        <option>Form</option>
+    <select id="attributeSelector" size="ANZAHLATT">
+        ATTR
     </select>
+    <br>
+    <button onclick="addToSelector();">⟶</button>
 </div>
 <div class="attColumn">
     <h3>Attribute</h3>
-    <select size="4" multiple>
-        <option>gelb</option>
-        <option>rot</option>
-        <option>grün</option>
-        <option>weiß</option>
-    </select>
-    <br>
-    <button>Hinzufügen</button>
+    <div id="showAttributeValues"></div>
 </div>
 <div class="attColumn">
-    <div>
+    <div id="addedValues">
         <h3>Hinzugefügt</h3>
-        <span>rot <span class="circle">⊖</span></span><br>
-        <span>grün <span class="circle">⊖</span></span>
     </div>
 </div>
 <style>
