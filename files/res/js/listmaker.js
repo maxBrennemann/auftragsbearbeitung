@@ -1,7 +1,3 @@
-window.onbeforeunload = function(){
-    return 'Are you sure you want to leave?';
-};
-
 var l;
 
 /* creation function */
@@ -83,6 +79,12 @@ function saveList() {
     sendListData.makeAjaxCall(function (response) {
         console.log(response);
     })
+}
+
+/* load lists */
+
+function loadList() {
+
 }
 
 /* Liste */
