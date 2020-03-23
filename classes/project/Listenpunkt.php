@@ -24,6 +24,10 @@ class Listenpunkt {
         
     }
 
+    public function getOrdnung() {
+        return $this->ordnung;
+    }
+
     public function saveList($listenid) {
         $id = DBAccess::insertQuery("INSERT INTO listenpunkt (`listenid`, `text`, `art`, `ordnung`) VALUES ($listenid, '{$this->text}', {$this->art}, {$this->ordnung})");
     

@@ -26,6 +26,72 @@ class Liste {
 
   }
 
+  public function getName() {
+    return $this->name;
+  }
+
+  public function toHTML() {
+
+  }
+
+  public static function getAllListPrevs() {
+    $lists = array();
+    $listIds = DBAccess::selectQuery("SELECT id, name FROM liste");
+
+    $data = "";
+    $pageLink = Link::getPageLink("listmaker");
+    foreach ($listIds as $lid) {
+      $data .= "<div><a href=\"{$pageLink}?lid={$lid['id']}\">{$lid['name']}</a></div>";
+    }
+
+    return $data;
+  }
+
+  /*
+  * readList reads all listenauswahl and listenpoint elements from database which are connected to the list id;
+  * then every line of the result is read; when its id occures already in an array, only the listenauswahl will be created;
+  * otherwise a listenpunkt element will also be created
+  */
+  public static function readList($listid) {
+    $data = array();
+    $query = "SELECT liste.id as listenid, liste.name, listenpunkt.id as listenpunktid, listenpunkt.text, listenauswahl.id as listenauswahlid, listenauswahl.bezeichnung, listenpunkt.art FROM `liste`, listenpunkt, listenauswahl where liste.id = listenpunkt.listenid and listenpunkt.id = listenauswahl.listenpunktid and liste.id = $listid";
+    $query = DBAccess::selectQuery($query);
+
+    $list = new Liste($query[0]['name'], "");
+    $listenpunkte = array();
+    foreach ($query as $entry) {
+      if (!in_array((int) $entry['listenpunktid'], $listenpunkte)) {
+        $text = $entry['text'];
+        $art = $entry['art'];
+        $ordnung = $entry['listenpunktid'];
+        $lp = new Listenpunkt($text, $art, $ordnung);
+
+        $bezeichnung = $entry['bezeichnung'];
+        $ordnung = $entry['listenauswahlid'];
+        $la = new Listenauswahl($bezeichnung, $ordnung);
+
+        $lp->addListenAuswahl($la);
+        $list->addListenPunkt($lp);
+
+        array_push($listenpunkte, (int) $entry['listenpunktid']);
+      } else {
+        $id = (int) $entry['listenpunktid'];
+
+        $bezeichnung = $entry['bezeichnung'];
+        $ordnung = $entry['listenauswahlid'];
+        $la = new Listenauswahl($bezeichnung, $ordnung);
+
+        foreach ($list->listenpunkte as $lp) {
+          if ((int) $lp->getOrdnung() == $id) {
+            $lp->addListenAuswahl($la);
+          }
+        }
+      }
+    }
+
+    return $list;
+  }
+
   public static function saveData($data) {
     $arr = json_decode($data, true);
 
