@@ -1,3 +1,14 @@
+<?php
+    require_once('classes/project/Liste.php');
+
+    $showLists = "";
+
+    if (!isset($_GET['new']) && !isset($_GET['lid'])) {
+        $showLists = Liste::getAllListPrevs();
+    }
+
+    if (isset($_GET['new'])) :
+?>
 <div class="defCont left">
     <h3>Neue Liste:</h3>
     <input id="newListName">
@@ -45,19 +56,19 @@
 <div class="defCont" id="listpreview">
     <h3>Vorschau:</h3>
 </div>
-<!--
-<style>
-    main {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .left {
-        grid-column-start: 1;
-    }
-
-    #listpreview {
-        grid-column: 2;
-        grid-row: 1;
-    }
-</style>-->
+<script>
+    window.onbeforeunload = function(){
+        return 'Are you sure you want to leave?';
+    };
+</script>
+<?php elseif (isset($_GET['lid'])) :
+    $lid = $_GET['lid'];
+    $list = Liste::readList($lid);
+?>
+    <h3><?=$list->getName();?></h3>
+    <?=$list->toHTML()?>
+<?php else : ?>
+    <h3>Alle Listen</h3>
+    <a href="<?=Link::getPageLink("listmaker");?>?new">Neue Liste erstellen</a>
+    <?=$showLists?>
+<?php endif; ?>
