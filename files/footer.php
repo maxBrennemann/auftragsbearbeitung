@@ -1,6 +1,6 @@
 	</main>
 	<?php
-		$neuerKunde   =		Link::getPageLink("neuer-kunde");
+		$listmaker   =		Link::getPageLink("listmaker");
 		$neuerAuftrag =		Link::getPageLink("neuer-auftrag");
 		$neuesAngebot =		Link::getPageLink("angebot");
 		$neuesProdukt =		Link::getPageLink("neues-produkt");
@@ -14,7 +14,7 @@
 			<a class="linkBundleLink" href="https://b-schriftung.de">Zu b-schriftung</a>
 		</div>
 		<div class="linkBundle">
-			<a class="linkBundleLink" href="<?=$neuerKunde?>">Neuer Kunde</a><br>
+			<a class="linkBundleLink" href="<?=$listmaker?>">Listen</a><br>
 			<a class="linkBundleLink" href="<?=$neuerAuftrag?>">Neuer Auftrag</a><br>
 			<a class="linkBundleLink" href="<?=$neuesAngebot?>">Neues Angebot</a><br>
 		</div>
