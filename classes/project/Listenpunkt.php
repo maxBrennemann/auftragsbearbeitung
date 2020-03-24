@@ -15,13 +15,25 @@ class Listenpunkt {
         $this->art = $art;
         $this->ordnung = $ordnung;
     }
+
+    public function getType() {
+        return (int) $this->art;
+    }
     
     public function addListenAuswahl($aw) {
         array_push($this->listenauswahl, $aw);
     }
 
+    public function getListenauswahl() {
+        return $this->listenauswahl;
+    }
+
     public function removeListenAuswahl() {
         
+    }
+
+    public function getTitle() {
+        return $this->text;
     }
 
     public function getOrdnung() {

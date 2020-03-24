@@ -31,7 +31,36 @@ class Liste {
   }
 
   public function toHTML() {
-
+    ?>
+      <div>
+        <?php foreach ($this->listenpunkte as $lp): ?>
+          <h4><?=$lp->getTitle()?></h4>
+          <?php foreach ($lp->getListenauswahl() as $la):
+            $insType = "";
+            $label = "<label for=\"{$la->getBezeichnung()}\">{$la->getBezeichnung()}</label>";
+            $type3 = "";
+            $typenot3 = "";
+            switch ($lp->getType()) {
+              case 1:
+                $insType = "radio";
+                $typenot3 = $label;
+              break;
+              case 2:
+                $insType = "checkbox";
+                $typenot3 = $label;
+              break;
+              case 3:
+                $insType = "text";
+                $type3 = $label;
+              break;
+            }
+          ?><?=$type3?>
+            <input name="<?=$lp->getOrdnung()?>" value="<?=$la->getBezeichnung()?>" type=<?=$insType?>
+            <?=$typenot3?>
+          <?php endforeach; ?>
+        <?php endforeach; ?>
+      </div>
+    <?php
   }
 
   public static function getAllListPrevs() {
