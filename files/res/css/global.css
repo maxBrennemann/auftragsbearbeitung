@@ -148,6 +148,20 @@ iframe {
     border-radius: 6px;
 }
 
+.closeButton {
+    background: #c14949;
+    font-size: 1.4em;
+    margin: 0;
+    top: 0;
+    right: 0;
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border: none;
+    padding: 0;
+    border-radius: 0 6px;
+}
+
 /* footer links */
 .linkBundle {
     text-align: center;
@@ -172,6 +186,11 @@ iframe {
     margin: 10px;
     padding: 10px;
     background-color: #b1b1b1;
+}
+
+.centeredContainer {
+    padding: 25px;
+    margin: 0;
 }
 
 #imageHeader {
