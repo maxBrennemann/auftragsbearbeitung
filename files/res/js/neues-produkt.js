@@ -1,4 +1,3 @@
-
 document.getElementById("selectSource").addEventListener("change", function(event) {
     if (event.target.value == "addNew") {
         getHTMLForAddingSource();
@@ -14,6 +13,7 @@ function getHTMLForAddingSource() {
         div.classList.add("ajaxBox");
         document.body.appendChild(div);
         centerAbsoluteElement(div);
+        addActionButtonForDiv(div, 'remove');
     });
 }
 
