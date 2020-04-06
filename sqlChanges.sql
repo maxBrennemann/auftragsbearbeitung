@@ -109,3 +109,6 @@ ALTER TABLE `listenauswahl` CHANGE `text` `bezeichnung` VARCHAR(64) CHARACTER SE
 CREATE TABLE `dateien_motive` ( `id_datei` INT NOT NULL , `id_motive` INT NOT NULL );
 ALTER TABLE `dateien_motive` ADD UNIQUE (`id_datei`, `id_motive`);
 CREATE TABLE `motive` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(64) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+/* Änderugen 06.04.2020 */
+INSERT INTO attachments (`articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (8, 'head', 'list.js', 0, 'js');
