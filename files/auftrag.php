@@ -7,6 +7,7 @@
 	require_once('classes/project/Kunde.php');
 	require_once('classes/DBAccess.php');
 	require_once('classes/Upload.php');
+	require_once('classes/project/Liste.php');
 
 	$auftragsId = -1;
 	$auftragAnzeigen = Link::getPageLink("auftrag");
@@ -59,7 +60,7 @@
 	$leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
 	$showFiles = Upload::getFilesAuftrag($auftragsId);
 	$auftragsverlauf = (new Auftragsverlauf($auftragsId))->representHistoryAsHTML();
-	
+	$showLists = Liste::chooseList();
 
 if ($auftragsId == -1) : ?>
 	<input type="number" min="1" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value;">
@@ -213,6 +214,9 @@ if ($auftragsId == -1) : ?>
 		<?=$auftragsverlauf?>
 		<br>
 		<button onclick="addList();">Liste hinzufügen</button>
+		<div class="defCont" id="listauswahl" style="display: none;">
+			<?=$showLists?>
+		</div>
 	</div>
 	<?php endif; ?>
 <?php endif; ?>
