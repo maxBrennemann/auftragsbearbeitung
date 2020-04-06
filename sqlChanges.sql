@@ -104,3 +104,8 @@ CREATE TABLE `liste` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(32) NOT
 CREATE TABLE `listenpunkt` ( `id` INT NOT NULL AUTO_INCREMENT , `listenid` INT NOT NULL , `text` VARCHAR(64) NOT NULL , `art` INT NOT NULL , `ordnung` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 CREATE TABLE `listenauswahl` ( `id` INT NOT NULL AUTO_INCREMENT , `listenpunktid` INT NOT NULL , `text` VARCHAR(64) NOT NULL , `ordnung` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 ALTER TABLE `listenauswahl` CHANGE `text` `bezeichnung` VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+
+/* Änderugen 28.03.2020 */
+CREATE TABLE `dateien_motive` ( `id_datei` INT NOT NULL , `id_motive` INT NOT NULL );
+ALTER TABLE `dateien_motive` ADD UNIQUE (`id_datei`, `id_motive`);
+CREATE TABLE `motive` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(64) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
