@@ -39,6 +39,18 @@ class Upload {
         header("Location:$link");
     }
 
+    public function uploadFilesMotive($name) {
+        $id = $this->uploadFiles();
+
+        if ((int) $id != -1) {
+            $motivnummer = DBAccess::insertQuery("INSERT INTO motive (`name`) VALUES ('$name')");
+            DBAccess::insertQuery("INSERT INTO dateien_motive (id_datei, id_motive) VALUES ($id, $motivnummer)");
+
+            $link = Link::getPageLink("sticker") . "?id=" . $motivnummer;
+            header("Location:$link");
+        }
+    }
+
     private function uploadFiles() {
         error_reporting(-1);
 
