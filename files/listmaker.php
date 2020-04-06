@@ -65,7 +65,6 @@
     $lid = $_GET['lid'];
     $list = Liste::readList($lid);
 ?>
-    <h3><?=$list->getName();?></h3>
     <?=$list->toHTML()?>
 <?php else : ?>
     <h3>Alle Listen</h3>
