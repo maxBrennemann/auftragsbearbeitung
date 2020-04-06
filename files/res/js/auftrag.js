@@ -230,7 +230,3 @@ function archvieren() {
     var arch = new AjaxCall(`getReason=archivieren&auftrag=${auftrag}`);
     arch.makeAjaxCall(function () {});
 }
-
-function addList() {
-    
-}
