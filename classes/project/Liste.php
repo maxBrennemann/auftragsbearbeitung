@@ -32,9 +32,11 @@ class Liste {
 
   public function toHTML() {
     ?>
-      <div>
+      <div class="defCont">
+        <h3><u><?=$this->getName();?></u></h3>
         <?php foreach ($this->listenpunkte as $lp): ?>
           <h4><?=$lp->getTitle()?></h4>
+          <div class="innerDefCont">
           <?php foreach ($lp->getListenauswahl() as $la):
             $insType = "";
             $label = "<label for=\"{$la->getBezeichnung()}\">{$la->getBezeichnung()}</label>";
@@ -58,6 +60,7 @@ class Liste {
             <input name="<?=$lp->getOrdnung()?>" value="<?=$la->getBezeichnung()?>" type=<?=$insType?>
             <?=$typenot3?>
           <?php endforeach; ?>
+          </div>
         <?php endforeach; ?>
       </div>
     <?php
@@ -71,6 +74,19 @@ class Liste {
     $pageLink = Link::getPageLink("listmaker");
     foreach ($listIds as $lid) {
       $data .= "<div><a href=\"{$pageLink}?lid={$lid['id']}\">{$lid['name']}</a></div>";
+    }
+
+    return $data;
+  }
+
+  public static function chooseList() {
+    $lists = array();
+    $listIds = DBAccess::selectQuery("SELECT id, name FROM liste");
+
+    $data = "";
+    $pageLink = Link::getPageLink("listmaker");
+    foreach ($listIds as $lid) {
+      $data .= "<div class=\"innerDefCont\">{$lid['name']} <button onclick=\"chooseList({$lid['id']});\">Auswählen</button></div>";
     }
 
     return $data;
@@ -146,6 +162,16 @@ class Liste {
     foreach($this->listenpunkte as $lp) {
       $lp->saveList($id);
     }
+  }
+
+  /* function for saving a list with filled in data */
+  public function storeListData() {
+
+  }
+
+  /* function for loading data from db */
+  public function loadListData() {
+
   }
 
 }
