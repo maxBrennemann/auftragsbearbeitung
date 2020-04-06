@@ -74,6 +74,34 @@ function centerAbsoluteElement(div) {
 	div.style.top = ((pageHeight - divHeight) / 2) + "px";
 }
 
+function addActionButtonForDiv(div, action) {
+	div.classList.add("centeredContainer");
+
+	var firstNode = div.firstChild;
+	var btn = document.createElement("button");
+	btn.innerHTML = "×";
+	btn.classList.add("closeButton");
+	btn.dataset.close = "1";
+	btn.addEventListener("click", function(event) {
+		var child = event.target.parentNode;
+		var parent = event.target.parentNode.parentNode;
+		switch (action) {
+			case 'hide':
+				child.style.display = "none";
+				break;
+			case 'remove':
+				parent.removeChild(child);
+				break;
+			default:
+				break;
+		}
+	}.bind(action), false);
+
+	if (firstNode.dataset == null || firstNode.dataset.close == null) {
+		div.insertBefore(btn, firstNode);
+	}
+}
+
 var AjaxCall = function(paramString, ajaxType) {
 	this.type = (ajaxType != null) ? ajaxType : "POST";
 	this.paramString = (paramString != null) ? paramString : "";
