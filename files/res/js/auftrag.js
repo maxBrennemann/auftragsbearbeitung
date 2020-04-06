@@ -59,7 +59,7 @@ function addBearbeitungsschritte() {
             steps.push(tableData[i].value);
         }
 
-        if (steps[1] = "") {
+        if (steps[1] == "") {
             steps[1] = 0;
         }
 
