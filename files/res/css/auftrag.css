@@ -123,3 +123,8 @@ aside {
             "verlauf";
     }
 }
+
+#listauswahl {
+    position: absolute;
+    box-shadow: 3px 4px 8px 3px rgba(0,0,0,0.31);
+}
