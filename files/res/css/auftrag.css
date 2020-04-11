@@ -1,6 +1,6 @@
 main {
     display: grid;
-    grid-template-areas: "auftrag auftrag kunde" "schritte schritte schritteAdd" "posten posten posten" "fahrzeuge farben preis" "postenadd postenadd produkt" "step upload verlauf";
+    grid-template-areas: "auftrag auftrag kunde" "schritte schritte schritteAdd" "posten posten posten" "fahrzeuge farben preis" "postenadd postenadd produkt" "step upload verlauf" "liste liste liste";
 }
 
 aside {
@@ -57,6 +57,10 @@ aside {
 
 .description {
     grid-area: description;
+}
+
+.liste {
+    grid-area: liste;
 }
 
 .columnLeistung {
