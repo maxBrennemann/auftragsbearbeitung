@@ -9,13 +9,18 @@ class Link {
 	}
 	
 	public static function getPageLink($resourceName) {
-		if(DBAccess::selectQuery("SELECT * FROM articles WHERE src = '$resourceName'") == null) {
+		if (DBAccess::selectQuery("SELECT * FROM articles WHERE src = '$resourceName'") == null) {
+			/* generated articles not defined
 			$page = DBAccess::selectQuery("SELECT parentId FROM generated_articles WHERE src = '$resourceName'");
 			$page = intval($page[0]['parentId']);
 			$upper = DBAccess::selectQuery("SELECT * FROM articles WHERE id = $page");
 			$upper = $upper[0];
 			
 			return WEB_URL . SUB_URL . $upper['src'] . "/" . $resourceName;
+			*/
+
+			$link = WEB_URL . SUB_URL . "";
+			return $link; 
 		}
 		
 		$link = WEB_URL . SUB_URL . $resourceName;
