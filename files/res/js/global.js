@@ -102,6 +102,54 @@ function addActionButtonForDiv(div, action) {
 	}
 }
 
+function removeElement(element) {
+	if (typeof element === 'string' || element instanceof String) {
+		var child = document.getElementById(element);
+		var parent = child.parentNode;
+		parent.removeChild(child);
+	} else if (element instanceof HTMLElement) {
+		var parent = element.parentNode;
+		parent.removeChild(element);
+	}
+}
+
+/*
+* data should be an array containing arrays the size of a row, the data[0] array should contain the heading
+* of the table, so the size of data is rows + 1;
+*/
+function createTable(rows, columns, data, emptyFields) {
+	var table = document.createElement("table");
+	var tbody = document.createElement("tobdy");
+
+	if (emptyFields == null || emptyFields == undefined) {
+		emptyFields = false;
+	}
+
+	var tr, td, th;
+	for (var i = 0; i <= rows; i++) {
+		tr = document.createElement("tr");
+		for (var n = 0; n < columns; n++) {
+			if (i == 0) {
+				th = document.createElement("th");
+				th.innerText = data[i][n] == undefined ? "" : data[i][n];
+				tr.appendChild(th);
+			} else {
+				td = document.createElement("td");
+				if (emptyFields == true && data[i][n] == undefined) {
+					td.contentEditable = "true";
+				}
+				td.innerText = data[i][n] == undefined ? "" : data[i][n];
+				tr.appendChild(td);
+			}
+		}
+		tbody.appendChild(tr);
+	}
+
+	table.appendChild(tbody);
+
+	return table;
+}
+
 var AjaxCall = function(paramString, ajaxType) {
 	this.type = (ajaxType != null) ? ajaxType : "POST";
 	this.paramString = (paramString != null) ? paramString : "";
