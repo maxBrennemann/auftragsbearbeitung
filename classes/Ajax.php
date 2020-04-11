@@ -298,6 +298,22 @@ class Ajax {
 				DBAccess::insertQuery("INSERT INTO attribute_group (attribute_group, descr) VALUES ('$attribute', '$descr')");
 				echo $attributeId;
 			break;
+			case "getList":
+				require_once('classes/project/Liste.php');
+				$lid = $_POST['listId'];
+				$list = Liste::readList($lid);
+				echo $list->toHTML();
+			break;
+			case "saveProduct":
+				$attData = $_POST['data'];
+				$marke = $_POST['marke'];
+				$quelle = $_POST['quelle'];
+				$vkNetto = $_POST['vkNetto'];
+				$ekNetto = $_POST['ekNetto'];
+				$title = $_POST['title'];
+				$desc = $_POST['desc'];
+				Product::createProduct($title, $marke, $desc, $ekNetto, $vkNetto, $quelle, $attData);
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
