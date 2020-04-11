@@ -40,24 +40,25 @@
 	}
 	
 	function showPage($page, $isArticle) {
-		$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
-		
-		$result = DBAccess::selectQuery($selectQuery);
-		
-		if($result == null) {
-			$baseUrl = 'files/generated/';
-			$result = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM generated_articles WHERE src = '$page'");
+		$result = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'");
+		$articleUrl = "";
+
+		if ($result == null) {
+			/* generated articles does not exist in this project */
+			//$baseUrl = 'files/generated/';
+			//$result = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM generated_articles WHERE src = '$page'");
+
+			http_response_code(404);
+
+			$baseUrl = 'files/';
+			$result['id'] = 0;
+			$result["articleUrl"] = $articleUrl = "404.php";
+			$result["pageName"] = $pageName = "Page not found";
 		} else {
 			$baseUrl = 'files/';
-		}
-		
-		$result = $result[0];
-		$articleUrl = $result["articleUrl"];
-		$pageName = $result["pageName"];
-		
-		if($articleUrl == NULL) {
-			http_response_code(404);
-			$articleUrl = "404.html";
+			$result = $result[0];
+			$articleUrl = $result["articleUrl"];
+			$pageName = $result["pageName"];
 		}
 		
 		include('files/header.php');
