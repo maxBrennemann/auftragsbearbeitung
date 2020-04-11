@@ -112,3 +112,11 @@ CREATE TABLE `motive` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(64) NO
 
 /* Änderugen 06.04.2020 */
 INSERT INTO attachments (`articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (8, 'head', 'list.js', 0, 'js');
+
+/* Änderungen 08.04.2020 */
+ALTER TABLE `produkt_varianten` CHANGE `Produktnummer` `varianten_nummer` INT(11) NOT NULL;
+ALTER TABLE `produkt_varianten` CHANGE `Groesse` `groesse` INT(16) NOT NULL;
+ALTER TABLE `produkt_varianten` CHANGE `Farbe` `farb_id` INT(16) NOT NULL;
+ALTER TABLE `produkt_varianten` CHANGE `Bild` `bild` INT(16) NOT NULL;
+ALTER TABLE `produkt_varianten` ADD `menge` INT NOT NULL AFTER `bild`, ADD `preis` FLOAT NOT NULL AFTER `menge`;
+ALTER TABLE `produkt_varianten` ADD `preis_ek` FLOAT NOT NULL AFTER `menge`;
