@@ -19,6 +19,18 @@
 			$fahrzeugTable = $auftrag->getFahrzeuge();
 			$farbTable = $auftrag->getFarben();
 			$kunde = new Kunde($auftrag->getKundennummer());
+
+			/* Parameter werden nur gebraucht, falls der Auftrag existiert */
+			$auftragstyp = $auftrag->getAuftragstyp();
+			if ($auftragstyp == 0) {
+				$fahrzeuge = Fahrzeug::getSelection($auftrag->getKundennummer());
+				$fahrzeugeAuftrag = $auftrag != null ? $auftrag->getLinkedVehicles() : null;
+			}
+			
+			$leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
+			$showFiles = Upload::getFilesAuftrag($auftragsId);
+			$auftragsverlauf = (new Auftragsverlauf($auftragsId))->representHistoryAsHTML();
+			$showLists = Liste::chooseList();
 		} catch (Exception $e) {
 			echo $e->getMessage();
 			$auftragsId = -1;
@@ -50,17 +62,6 @@
 	if (isset($_GET['show'])) {
 		$show = true;
 	}
-
-	$auftragstyp = $auftrag->getAuftragstyp();
-	if ($auftragstyp == 0) {
-		$fahrzeuge = Fahrzeug::getSelection($auftrag->getKundennummer());
-		$fahrzeugeAuftrag = $auftrag != null ? $auftrag->getLinkedVehicles() : null;
-	}
-	
-	$leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
-	$showFiles = Upload::getFilesAuftrag($auftragsId);
-	$auftragsverlauf = (new Auftragsverlauf($auftragsId))->representHistoryAsHTML();
-	$showLists = Liste::chooseList();
 
 if ($auftragsId == -1) : ?>
 	<input type="number" min="1" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value;">
@@ -218,5 +219,6 @@ if ($auftragsId == -1) : ?>
 			<?=$showLists?>
 		</div>
 	</div>
+	<div class="liste"></div>
 	<?php endif; ?>
 <?php endif; ?>
