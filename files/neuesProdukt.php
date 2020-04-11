@@ -18,6 +18,7 @@ $attributeGroups = DBAccess::selectQuery("SELECT * FROM attribute_group");
 echo "<a href=\"" . Link::getPageLink("attributes") . "\">Zu den Produktattributetn</a>";
 ?>
 <div class="defCont">
+	<p><i class="caution">Aktuell können nur Textilien hinzugefügt werden!</i></p>
 	<p>
 		<span>Marke<br>
 			<input class="dataInput" type="text" name="marke" required>
@@ -41,7 +42,7 @@ echo "<a href=\"" . Link::getPageLink("attributes") . "\">Zu den Produktattribut
 	</p>
 	<p>
 		<span>Einkaufspreis Netto<br>
-			<input class="dataInput" type="text" name="plz" required>
+			<input class="dataInput" type="text" name="ek_netto" required>
 		</span>
 	</p>
 	<p>
@@ -59,6 +60,7 @@ echo "<a href=\"" . Link::getPageLink("attributes") . "\">Zu den Produktattribut
 			<button onclick="getHTMLForAttributes();">Hinzufügen</button>
 		</span>
 	</p>
+	<span id="addAttributeTable"></span>
 	<form method="post" enctype="multipart/form-data">
 		Dateien hinzufügen:<br>
 		<input type="file" name="uploadedFile">
