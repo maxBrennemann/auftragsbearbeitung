@@ -193,6 +193,10 @@ iframe {
     margin: 0;
 }
 
+.caution {
+    color: #c14949;
+}
+
 #imageHeader {
     width: 100px;
     height: auto;
