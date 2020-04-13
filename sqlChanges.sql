@@ -120,3 +120,6 @@ ALTER TABLE `produkt_varianten` CHANGE `Farbe` `farb_id` INT(16) NOT NULL;
 ALTER TABLE `produkt_varianten` CHANGE `Bild` `bild` INT(16) NOT NULL;
 ALTER TABLE `produkt_varianten` ADD `menge` INT NOT NULL AFTER `bild`, ADD `preis` FLOAT NOT NULL AFTER `menge`;
 ALTER TABLE `produkt_varianten` ADD `preis_ek` FLOAT NOT NULL AFTER `menge`;
+
+/* Änderungen 13.04.2020 */
+ALTER TABLE `produkt_varianten` CHANGE `varianten_nummer` `product_id` INT(11) NOT NULL;
