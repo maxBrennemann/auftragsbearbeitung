@@ -305,14 +305,14 @@ class Ajax {
 				echo $list->toHTML();
 			break;
 			case "saveProduct":
-				$attData = $_POST['data'];
+				$attData = $_POST['attData'];
 				$marke = $_POST['marke'];
 				$quelle = $_POST['quelle'];
 				$vkNetto = $_POST['vkNetto'];
 				$ekNetto = $_POST['ekNetto'];
 				$title = $_POST['title'];
 				$desc = $_POST['desc'];
-				Product::createProduct($title, $marke, $desc, $ekNetto, $vkNetto, $quelle, $attData);
+				Produkt::createProduct($title, $marke, $desc, $ekNetto, $vkNetto, $quelle, $attData);
 			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
