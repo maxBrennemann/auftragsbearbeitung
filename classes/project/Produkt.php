@@ -38,6 +38,26 @@ class Produkt {
 		return "";
 	}
 
+	public static function createProduct($title, $marke, $desc, $ekNetto, $vkNetto, $quelle, $attData) {
+		$productId = DBAccess::insertQuery("INSERT INTO produkt (Bezeichnung, Marke, Beschreibung, Einkaufspreis, Preis, einkaufs_id) VALUES ('$title', '$marke', '$desc', '$ekNetto', '$vkNetto', $quelle)");
+		// attData muss noch implementiert werden
+
+		$attributeData = json_decode($attData);
+		$query = "INSERT INTO produkt_varianten (product_id, groesse, farb_id, menge, preis_ek, preis) VALUES ";
+
+		foreach ($attributeData as $rowData => $rowValue) {
+			$groesse = $rowValue->{'groesseId'};
+			$farbe = $rowValue->{'farbeId'};
+			$menge = $rowValue->{'menge'};
+			$ek = str_replace(',', '.', $rowValue->{'ek'});
+			$price =  str_replace(',', '.', $rowValue->{'price'});
+			$query .= "($productId, {$groesse}, {$farbe}, {$menge}, '{$ek}', '{$price}'),";
+		}
+
+		$query = rtrim($query, ',');
+		DBAccess::insertQuery($query);
+	}
+
 	public static function getSearchTable($searchQuery) {
 		$productIds = self::searchInProducts($searchQuery);
 		$query = "";
