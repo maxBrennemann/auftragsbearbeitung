@@ -157,28 +157,40 @@ function takeConfiguration() {
 }
 
 function getAttributeCombinationData() {
-    var data = [
-        ["Größe", "Farbe", "Menge", "EK", "Preis"]
-    ];
+    var data = {},
+        getSubObj = function() {
+            return {
+                groesse : 0,
+                farbe : 0,
+                menge : 0,
+                ek : 0,
+                price : 0,
+                groesseId : 0,
+                farbeId : 0
+            };
+        };
 
     if (Object.keys(attributes).length === 0 && attributes.constructor === Object) {
         return "--";
     }
 
-    var arrayEl, tr, count = 1;
+    var tr, count = 1, counter = 0, subObj = getSubObj();
     for (var keyColor in attributes[1]) {
         if (attributes[1].hasOwnProperty(keyColor)) {
             tr = tableAnchor.firstChild.childNodes[count]
             for (var keySize in attributes[2]) {
                 if (attributes[2].hasOwnProperty(keySize)) {
-                    arrayEl = new Array(5);
-                    arrayEl[0] = attributes[2][keySize];
-                    arrayEl[1] = attributes[1][keyColor];
-                    arrayEl[2] = tr.childNodes[2].innerText;
-                    arrayEl[3] = tr.childNodes[3].innerText;
-                    arrayEl[4] = tr.childNodes[4].innerText;
-        
-                    data.push(arrayEl);
+                    subObj.groesse = attributes[2][keySize];
+                    subObj.farbe = attributes[1][keyColor];
+                    subObj.menge = tr.childNodes[2].innerText;
+                    subObj.ek = tr.childNodes[3].innerText;
+                    subObj.price = tr.childNodes[4].innerText;
+                    subObj.groesseId = keySize;
+                    subObj.farbeId = keyColor;
+
+                    data[counter] = subObj;
+                    counter++;
+                    subObj = getSubObj();
                 }
             }
             count++;
@@ -200,6 +212,7 @@ function saveProduct() {
 
     var send = new AjaxCall(`getReason=saveProduct&attData=${data}&marke=${marke}&quelle=${quelle}&vkNetto=${vkNetto}&ekNetto=${ekNetto}&title=${title}&desc=${desc}`, "POST", window.location.href);
     send.makeAjaxCall(function (responseLink) {
-        window.location.href = responseLink;
+        console.log(responseLink);
+        //window.location.href = responseLink;
     });
 }
