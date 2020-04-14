@@ -165,6 +165,8 @@ class Ajax {
 				$auftragsId = $_POST['auftrag'];
 				$row =  $_POST['row'];
 				$table->setIdentifier("Schrittnummer");
+				$date =  date("Y-m-d");
+				$table->addParam("finishingDate", $date);
 				$table->editRow($row, "istErledigt", "0");
 			break;
 			case "sendSource":
