@@ -197,6 +197,15 @@ iframe {
     color: #c14949;
 }
 
+.actionButton {
+    background-color: #b1b1b1;
+    border: none;
+    color: white;
+    font-weight: bold;
+    min-width: 28px;
+    min-height: 28px;
+}
+
 #imageHeader {
     width: 100px;
     height: auto;
