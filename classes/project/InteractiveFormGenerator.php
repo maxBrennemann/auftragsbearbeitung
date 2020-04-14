@@ -19,6 +19,8 @@ class InteractiveFormGenerator extends FormGenerator {
 	private $isRowEditable = false;
 	private $isRowDone = false;
 
+	private $additionalParams = array();
+
 	private $identifier = "";
 
 	function __construct($type) {
@@ -73,26 +75,35 @@ class InteractiveFormGenerator extends FormGenerator {
 		}
 	}
 
+	public function addParam($key, $value) {
+		$this->additionalParams[$key] = $value;
+	}
+
 	public function deleteRow($row) {
 		DBAccess::deleteQuery("DELETE FROM $this->type WHERE $this->identifier = $row");
 	}
 
 	public function editRow($row, $column, $data) {
-		DBAccess::updateQuery("UPDATE $this->type SET $column = $data WHERE $this->identifier = $row");
+		$additionalData = ",";
+		foreach ($this->additionalParams as $key => $value) {
+			$additionalData .= $key . " = '" . $value . "',";
+		}
+		$additionalData = rtrim($additionalData, ',');
+		DBAccess::updateQuery("UPDATE $this->type SET $column = $data $additionalData WHERE $this->identifier = $row");
 	}
 
 	private function addDeleteButton($row) {
-		$button = "<button onclick=\"deleteRow('$this->type', $row)\">🗑</button>";
+		$button = "<button class='actionButton' onclick=\"deleteRow('$this->type', $row)\" title='Löschen'>🗑</button>";
 		return $button;
 	}
 
 	private function addEditButton() {
-		$button = "<button onclick=\"editRow()\">✎</button>";
+		$button = "<button class='actionButton' onclick=\"editRow()\" = 'Bearbeiten'>✎</button>";
 		return $button;
 	}
 
 	private function updateIsDone($row) {
-		$button = "<button onclick=\"updateIsDone($row)\" title='Als erledigt markieren.'>✔</button>";
+		$button = "<button class='actionButton' onclick=\"updateIsDone($row)\" title='Als erledigt markieren.'>✔</button>";
 		return $button;
 	}
 
@@ -107,13 +118,19 @@ class InteractiveFormGenerator extends FormGenerator {
 			}
 		}
 
+		/* adds three buttons, needs a rework */
 		if ($this->isRowDone) {
-			$editcolumn = array("COLUMN_NAME" => "Erledigt");
+			$editcolumn = array("COLUMN_NAME" => "Aktionen");
 			array_push($columnNames, $editcolumn);
 
 			for ($i = 0; $i < sizeof($data); $i++) {
-				$btn =  $this->updateIsDone($data[$i]["Schrittnummer"]);
-				$data[$i]["Erledigt"] = $btn;
+				$row = $data[$i]["Schrittnummer"];
+
+				$update =  $this->updateIsDone($row);
+				$edit = $this->addEditButton($row);
+				$delete = $this->addDeleteButton($row);
+
+				$data[$i]["Aktionen"] = $update . $edit . $delete;
 			}
 		}
 
