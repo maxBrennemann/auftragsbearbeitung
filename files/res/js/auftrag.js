@@ -1,6 +1,9 @@
 ﻿var globalData = {
     aufschlag: 0,
-    vehicleId: 0
+    vehicleId: 0,
+    erledigendeSchritte : null,
+    alleSchritte : null,
+    auftragsId : parseInt(new URL(window.location.href).searchParams.get("id"))
 }
 
 function getSelections() {
@@ -47,39 +50,40 @@ function showSelection(element) {
 
 function addBearbeitungsschritte() {
     var bearbeitungsschritte = document.getElementById("bearbeitungsschritte");
-    bearbeitungsschritte.style.display = "inline";
+    bearbeitungsschritte.style.display = "block";
 
-    var btn = document.createElement("button");
-    btn.id = "sendStepToServer";
-    btn.innerHTML = "Hinzufügen";
-    btn.addEventListener("click", function () {
-        var tableData = document.getElementsByClassName("bearbeitungsschrittInput");
-        var steps = [];
-        for (var i = 0; i < tableData.length; i++) {
-            steps.push(tableData[i].value);
-        }
-
-        if (steps[1] == "") {
-            steps[1] = 0;
-        }
-
-        var auftrag = new URL(window.location.href).searchParams.get("id");
-        var add = new AjaxCall(`getReason=insertStep&bez=${steps[0]}&prio=${steps[1]}&auftrag=${auftrag}`, "POST", window.location.href);
-        add.makeAjaxCall(function (response) {
-            console.log(response);
-            document.getElementById("stepTable").innerHTML = response;
-
+    if (document.getElementById("sendStepToServer") == null) {
+        var btn = document.createElement("button");
+        btn.id = "sendStepToServer";
+        btn.innerHTML = "Hinzufügen";
+        btn.addEventListener("click", function () {
             var tableData = document.getElementsByClassName("bearbeitungsschrittInput");
+            var steps = [];
             for (var i = 0; i < tableData.length; i++) {
-                tableData[i].value = "";
+                steps.push(tableData[i].value);
             }
 
-            document.getElementById("bearbeitungsschritte").removeChild(document.getElementById("sendStepToServer"));
-            document.getElementById("bearbeitungsschritte").style.display = "none";
-        }.bind(this), false);
-    }, false);
+            if (steps[1] == "") {
+                steps[1] = 0;
+            }
 
-    bearbeitungsschritte.appendChild(btn);
+            var add = new AjaxCall(`getReason=insertStep&bez=${steps[0]}&prio=${steps[1]}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
+            add.makeAjaxCall(function (response) {
+                console.log(response);
+                document.getElementById("stepTable").innerHTML = response;
+
+                var tableData = document.getElementsByClassName("bearbeitungsschrittInput");
+                for (var i = 0; i < tableData.length; i++) {
+                    tableData[i].value = "";
+                }
+
+                document.getElementById("bearbeitungsschritte").removeChild(document.getElementById("sendStepToServer"));
+                document.getElementById("bearbeitungsschritte").style.display = "none";
+            }.bind(this), false);
+        }, false);
+
+        bearbeitungsschritte.appendChild(btn);
+    }
 }
 
 function performSearch(e) {
@@ -97,8 +101,7 @@ function addTime() {
     var wage = document.getElementById("wage").value;
     var descr = document.getElementById("descr").value;
     var isFree = getOhneBerechnung() ? 1 : 0;
-    var auftrag = new URL(window.location.href).searchParams.get("id");
-    var add = new AjaxCall(`getReason=insTime&time=${time}&wage=${wage}&descr=${descr}&auftrag=${auftrag}&ohneBerechnung=${isFree}`, "POST", window.location.href);
+    var add = new AjaxCall(`getReason=insTime&time=${time}&wage=${wage}&descr=${descr}&auftrag=${globalData.auftragsId}&ohneBerechnung=${isFree}`, "POST", window.location.href);
     add.makeAjaxCall(function (response) {
         console.log(response);
         location.reload();
@@ -112,8 +115,7 @@ function addLeistung() {
     var ekp = document.getElementById("ekp").value;
     var pre = document.getElementById("pre").value;
     var isFree = getOhneBerechnung() ? 1 : 0;
-    var auftrag = new URL(window.location.href).searchParams.get("id");
-    var add = new AjaxCall(`getReason=insertLeistung&lei=${lei}&bes=${bes}&ekp=${ekp}&pre=${pre}&auftrag=${auftrag}&ohneBerechnung=${isFree}`, "POST", window.location.href);
+    var add = new AjaxCall(`getReason=insertLeistung&lei=${lei}&bes=${bes}&ekp=${ekp}&pre=${pre}&auftrag=${globalData.auftragsId}&ohneBerechnung=${isFree}`, "POST", window.location.href);
     add.makeAjaxCall(function (response) {
         console.log(response);
     });
@@ -121,10 +123,9 @@ function addLeistung() {
 
 function addFahrzeug(param) {
     var kfz, fahrzeug;
-    var auftragsnummer = new URL(window.location.href).searchParams.get("id");
     if (param != null && param) {
         if (globalData.vehicleId != 0) {
-            var ajax = new AjaxCall(`getReason=attachCar&auftrag=${auftragsnummer}&fahrzeug=${globalData.vehicleId}`);
+            var ajax = new AjaxCall(`getReason=attachCar&auftrag=${globalData.auftragsId}&fahrzeug=${globalData.vehicleId}`);
             ajax.makeAjaxCall(function (response) {
                 document.getElementById("fahrzeugTable").innerHTML = response;
             });
@@ -134,7 +135,7 @@ function addFahrzeug(param) {
         fahrzeug = document.getElementById("fahrzeug").value;
 
         var kundennummer = document.getElementById("kundennummer").innerText;
-        var add = new AjaxCall(`getReason=insertCar&kfz=${kfz}&fahrzeug=${fahrzeug}&kdnr=${kundennummer}&auftrag=${auftragsnummer}`, "POST", window.location.href);
+        var add = new AjaxCall(`getReason=insertCar&kfz=${kfz}&fahrzeug=${fahrzeug}&kdnr=${kundennummer}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
         add.makeAjaxCall(function (response) {
             document.getElementById("fahrzeugTable").innerHTML = response;
         });
@@ -155,24 +156,37 @@ function deleteRow() {
 function radio(val) {
     console.log(val);
     var stepTable = document.getElementById("stepTable");
-    var auftrag = new URL(window.location.href).searchParams.get("id");
-    var params = "";
+    var params = "", data;
     if (val == "show") {
-        params = `getReason=getAllSteps&auftrag=${auftrag}`;
+        params = `getReason=getAllSteps&auftrag=${globalData.auftragsId}`;
+        data = globalData.alleSchritte;
     } else if (val == "hide") {
-        params = `getReason=getOpenSteps&auftrag=${auftrag}`;
+        params = `getReason=getOpenSteps&auftrag=${globalData.auftragsId}`;
+        data = globalData.erledigendeSchritte;
     }
     
-    var add = new AjaxCall(params, "POST", window.location.href);
-    add.makeAjaxCall(function (response) {
-        stepTable.innerHTML = response;
-    });
+    if (data == null) {
+        var add = new AjaxCall(params, "POST", window.location.href);
+        add.makeAjaxCall(function (response, data) {
+            stepTable.innerHTML = response;
+            switch (data[0]) {
+                case "show":
+                    globalData.alleSchritte = response;
+                break;
+                case "hide":
+                    globalData.erledigendeSchritte = response;
+                break;
+            }
+        }, val);
+    } else {
+        stepTable.innerHTML = data;
+        console.log("using cached data");
+    }
 }
 
 function updateIsDone(input) {
     console.log(input);
-    var auftrag = new URL(window.location.href).searchParams.get("id");
-    var update = new AjaxCall(`getReason=setTo&auftrag=${auftrag}&row=${input}`, "POST", window.location.href);
+    var update = new AjaxCall(`getReason=setTo&auftrag=${globalData.auftragsId}&row=${input}`, "POST", window.location.href);
     update.makeAjaxCall(function (response) {
         console.log(response);
     });
@@ -205,13 +219,12 @@ function showAuftrag() {
 function sendColor() {
     var elements = document.getElementsByClassName("colorInput");
     var data = [];
-    var auftrag = new URL(window.location.href).searchParams.get("id");
 
     for (let i = 0; i < elements.length; i++) {
         data.push(elements[i].value);
     }
     
-    var sendC = new AjaxCall(`getReason=newColor&auftrag=${auftrag}&farbname=${data[0]}&farbe=${data[1]}&bezeichnung=${data[2]}&hersteller=${data[3]}`);
+    var sendC = new AjaxCall(`getReason=newColor&auftrag=${globalData.auftragsId}&farbname=${data[0]}&farbe=${data[1]}&bezeichnung=${data[2]}&hersteller=${data[3]}`);
     sendC.makeAjaxCall(function (colorHTML) {
         var showColors = document.getElementById("showColors");
         var farben = document.getElementById("farbe");
@@ -226,7 +239,6 @@ function showAuftragsverlauf() {
 }
 
 function archvieren() {
-    var auftrag = new URL(window.location.href).searchParams.get("id");
-    var arch = new AjaxCall(`getReason=archivieren&auftrag=${auftrag}`);
+    var arch = new AjaxCall(`getReason=archivieren&auftrag=${globalData.auftragsId}`);
     arch.makeAjaxCall(function () {});
 }
