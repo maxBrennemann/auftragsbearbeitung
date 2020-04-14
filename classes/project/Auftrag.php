@@ -67,9 +67,9 @@ class Auftrag implements StatisticsInterface {
 	}
 
 	public function getBearbeitungsschritteAsTable() {
-		$data = DBAccess::selectQuery("SELECT Bezeichnung, Datum, Priority FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer}");
+		$data = DBAccess::selectQuery("SELECT Bezeichnung, Datum, `Priority`, finishingDate as 'erledigt am' FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer}");
 		$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Datum"), 
-				2 => array("COLUMN_NAME" => "Priority"));
+				2 => array("COLUMN_NAME" => "Priority"), 3 => array("COLUMN_NAME" => "erledigt am"));
 
 		$form = new InteractiveFormGenerator("");
 		return $form->create($data, $column_names);
@@ -80,7 +80,7 @@ class Auftrag implements StatisticsInterface {
 		 * istErledigt = 1 -> ist noch zu erledigen
 		 * istErledigt = 0 -> ist schon erledigt
 		*/
-		$data = DBAccess::selectQuery("SELECT Schrittnummer, Bezeichnung, Datum, Priority FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer} AND istErledigt = 1");
+		$data = DBAccess::selectQuery("SELECT Schrittnummer, Bezeichnung, Datum, `Priority` FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer} AND istErledigt = 1");
 		$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Datum"), 
 				2 => array("COLUMN_NAME" => "Priority"));
 
