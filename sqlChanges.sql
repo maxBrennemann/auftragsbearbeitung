@@ -123,3 +123,6 @@ ALTER TABLE `produkt_varianten` ADD `preis_ek` FLOAT NOT NULL AFTER `menge`;
 
 /* Änderungen 13.04.2020 */
 ALTER TABLE `produkt_varianten` CHANGE `varianten_nummer` `product_id` INT(11) NOT NULL;
+
+/* Änderungen 14.04.2020 */
+ALTER TABLE `schritte` ADD `finishingDate` DATE NOT NULL AFTER `Priority`;
