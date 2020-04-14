@@ -94,8 +94,7 @@ if ($auftragsId == -1) : ?>
 	</div>
 	<div class="defCont schritteAdd">
 		<button onclick="addBearbeitungsschritte()">Neuen Bearbeitungsschritt hinzufügen</button>
-		<div id="bearbeitungsschritte" style="display: none">
-			<br>
+		<div class="innerDefCont" id="bearbeitungsschritte" style="display: none">
 			<span>Bezeichnung: <br><input class="bearbeitungsschrittInput" type="text" max="128"></span><br>
 			<span>Datum: <br><input class="bearbeitungsschrittInput" type="date" max="32"></span><br>
 			<form name="isAlreadyDone">
