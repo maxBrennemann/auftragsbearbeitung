@@ -1,6 +1,6 @@
 function addList() {
     var el = document.getElementById("listauswahl");
-    el.style.display = "inline";
+    el.style.display = "block";
 
     centerAbsoluteElement(el);
     addActionButtonForDiv(el, 'hide');
