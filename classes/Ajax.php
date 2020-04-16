@@ -169,6 +169,12 @@ class Ajax {
 				$table->addParam("finishingDate", $date);
 				$table->editRow($row, "istErledigt", "0");
 			break;
+			case "delete":
+				$table = unserialize($_SESSION['storedTable']);
+				$auftragsId = $_POST['auftrag'];
+				$row =  $_POST['row'];
+				$table->setIdentifier("Schrittnummer");
+				$table->deleteRow($row);
 			case "sendSource":
 				Produkt::addSource();
 			break;
