@@ -213,21 +213,24 @@ class Auftrag implements StatisticsInterface {
 	}
 
 	public function getFarben() {
-		$farben = DBAccess::selectQuery("SELECT Farbe, Farbwert FROM farben WHERE Kundennummer = {$this->getKundennummer()} AND Auftragsnummer = {$this->getAuftragsnummer()}");
+		$farben = DBAccess::selectQuery("SELECT Farbe, Farbwert, Nummer FROM farben WHERE Kundennummer = {$this->getKundennummer()} AND Auftragsnummer = {$this->getAuftragsnummer()}");
 		$farbTable = "";
 		foreach ($farben as $farbe) {
-			$farbTable .= "<span>{$farbe['Farbe']} <div class='farbe' style='display: inline-block; background-color: #{$farbe['Farbwert']}'></div></span><br>";
-		}
+			//$farbTable .= "<span>{$farbe['Farbe']} <div class='farbe' style='display: inline-block; background-color: #{$farbe['Farbwert']}'></div></span><br>";
+			$farbTable .= "<div class=\"singleColorContainer\"><p class=\"singleColorName\">{$farbe['Farbe']}</p><div class=\"farbe\" style=\"background-color: #{$farbe['Farbwert']}\"></div><button onclick=\"removeColor({$farbe['Nummer']});\">×</button></div><br>";
+		} //<button onclick=\"console.log('remove button')\">×</button>
 
 		return $farbTable;
 	}
 
 	public function getAddColors() {
-		$text = "<br><span>Farbname: <input class='colorInput' type='text' max='32'></span><br><span>Farbe (Hex): <input class='colorInput jscolor' type='text' max='32'></span><br>";
-		$text.= "<span>Bezeichnung: <input class='colorInput' type='text' max='32'></span><br><span>Hersteller: <input class='colorInput' tyep='text' max='32'></span><br>";
-		$text.= "<button onclick='sendColor();'>Hinuzufügen</button>";
-
-		return $text;
+		return <<<XML
+			<span>Farbname: <input class="colorInput" type="text" max="32"></span>
+			<span>Farbe (Hex): <input class="colorInput jscolor" type="text" max="32"></span>
+			<span>Bezeichnung: <input class="colorInput" type="text" max="32"></span>
+			<span>Hersteller: <input class="colorInput" tyep="text" max="32"></span>
+			<button onclick="sendColor();">Hinuzufügen</button>
+		XML;
 	}
 
 	public function recalculate() {
