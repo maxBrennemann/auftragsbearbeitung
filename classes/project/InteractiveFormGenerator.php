@@ -93,12 +93,12 @@ class InteractiveFormGenerator extends FormGenerator {
 	}
 
 	private function addDeleteButton($row) {
-		$button = "<button class='actionButton' onclick=\"deleteRow('$this->type', $row)\" title='Löschen'>🗑</button>";
+		$button = "<button class='actionButton' onclick=\"deleteRow($row)\" title='Löschen'>🗑</button>";
 		return $button;
 	}
 
 	private function addEditButton() {
-		$button = "<button class='actionButton' onclick=\"editRow()\" = 'Bearbeiten'>✎</button>";
+		$button = "<button class='actionButton' onclick=\"editRow()\" = 'Bearbeiten' disabled>✎</button>";
 		return $button;
 	}
 
