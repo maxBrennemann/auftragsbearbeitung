@@ -146,15 +146,14 @@ function selectVehicle(event) {
     globalData.vehicleId = event.target.value;
 }
 
-function deleteRow() {
-    var add = new AjaxCall(`getReason=test`, "POST", window.location.href);
+function deleteRow(row) {
+    var add = new AjaxCall(`getReason=delete&auftrag=${globalData.auftragsId}&row=${row}`, "POST", window.location.href);
     add.makeAjaxCall(function (response) {
         console.log(response);
     });
 }
 
 function radio(val) {
-    console.log(val);
     var stepTable = document.getElementById("stepTable");
     var params = "", data;
     if (val == "show") {
@@ -180,16 +179,12 @@ function radio(val) {
         }, val);
     } else {
         stepTable.innerHTML = data;
-        console.log("using cached data");
     }
 }
 
 function updateIsDone(input) {
-    console.log(input);
     var update = new AjaxCall(`getReason=setTo&auftrag=${globalData.auftragsId}&row=${input}`, "POST", window.location.href);
-    update.makeAjaxCall(function (response) {
-        console.log(response);
-    });
+    update.makeAjaxCall(function (response) {});
 }
 
 function selectLeistung(e) {
@@ -201,7 +196,10 @@ function selectLeistung(e) {
 }
 
 function addColor() {
-    document.getElementById("farbe").style.display = "inline";
+    var div = document.getElementById("farbe");
+    div.style.display = "block";
+    addActionButtonForDiv(div, "hide");
+    centerAbsoluteElement(div);
 }
 
 function rechnungErstellen() {
@@ -218,10 +216,15 @@ function showAuftrag() {
 
 function sendColor() {
     var elements = document.getElementsByClassName("colorInput");
-    var data = [];
+    var data = [], currVal;
 
     for (let i = 0; i < elements.length; i++) {
-        data.push(elements[i].value);
+        currVal = elements[i].value;
+        if (currVal == null || currVal == "") {
+            alert("Felder dürfen nicht leer sein!");
+            return null;
+        }
+        data.push(currVal);
     }
     
     var sendC = new AjaxCall(`getReason=newColor&auftrag=${globalData.auftragsId}&farbname=${data[0]}&farbe=${data[1]}&bezeichnung=${data[2]}&hersteller=${data[3]}`);
@@ -241,4 +244,8 @@ function showAuftragsverlauf() {
 function archvieren() {
     var arch = new AjaxCall(`getReason=archivieren&auftrag=${globalData.auftragsId}`);
     arch.makeAjaxCall(function () {});
+}
+
+function removeColor(colorId) {
+    console.log("removing color : " + colorId);
 }
