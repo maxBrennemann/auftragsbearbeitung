@@ -134,6 +134,16 @@ if ($auftragsId == -1) : ?>
 	</div>
 	<div class="defCont farben">
 		<span><u>Farben:</u><br> <span id="showColors"><?=$farbTable?></span></span>
+		<button onclick="addColor()">Neuen Farbe hinzufügen</button>
+		<div class="defCont" id="farbe" style="display: none">
+			<div class="innerDefCont">
+				<span>Farbname: <input class="colorInput" type="text" max="32"></span>
+				<span>Farbe (Hex): <input class="colorInput jscolor" type="text" max="32"></span>
+				<span>Bezeichnung: <input class="colorInput" type="text" max="32"></span>
+				<span>Hersteller: <input class="colorInput" tyep="text" max="32"></span>
+				<button onclick="sendColor();">Hinuzufügen</button>
+			</div>
+		</div>
 	</div>
 	<div class="defCont postenadd" id="newPosten">
 		<select id="selectPosten">
@@ -187,17 +197,7 @@ if ($auftragsId == -1) : ?>
 		</div>
 	</div>
 	<?php if ($show == false): ?>
-	<div class="defCont step">
-		<button onclick="addColor()">Neuen Farbe hinzufügen</button>
-		<div id="farbe" style="display: none">
-			<br>
-			<span>Farbname: <input class="colorInput" type="text" max="32"></span><br>
-			<span>Farbe (Hex): <input class="colorInput jscolor" type="text" max="32"></span><br>
-			<span>Bezeichnung: <input class="colorInput" type="text" max="32"></span><br>
-			<span>Hersteller: <input class="colorInput" tyep="text" max="32"></span><br>
-			<button onclick="sendColor();">Hinuzufügen</button>
-		</div>
-	</div>
+	<div class="defCont step"></div>
 	<div class="defCont upload">
 		<form method="post" enctype="multipart/form-data">
 			Dateien zum Auftrag hinzufügen:
