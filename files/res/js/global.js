@@ -63,6 +63,9 @@ function getElement(id) {
 	return document.getElementById(id);
 }
 
+/* 
+* can be used to center an absolute or fixed div
+*/
 function centerAbsoluteElement(div) {
 	var divWidth = div.offsetWidth;
 	var divHeight = div.offsetHeight;
