@@ -246,6 +246,17 @@ class Ajax {
 				$angebot = new Angebot($customerId);
 				$angebot->storeOffer();
 			break;
+			case "addAdress":
+				$strasse = $_POST['strasse'];
+				$hausnummer = $_POST['hausnummer'];
+				$postleitzahl = $_POST['postleitzahl'];
+				$ort = $_POST['ort'];
+				$zusatz = $_POST['zusatz'];
+				$art = $_POST['art'];
+				$id_customer = $_POST['kdnr'];
+
+				Kunde::addAdress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz, $art);
+			break;
 			case "newColor":
 				require_once('classes/project/Auftrag.php');
 				$auftrag = $_POST['auftrag'];
@@ -259,6 +270,16 @@ class Ajax {
 				$query .= "'$farbname', '$farbe', '$bezeichnung', '$hersteller')";
 
 				DBAccess::insertQuery($query);
+
+				$auftrag = new Auftrag($auftrag);
+				$data = array("farben" => $auftrag->getFarben(), "addFarben" => $auftrag->getAddColors());
+				echo json_encode($data, JSON_FORCE_OBJECT);
+			break;
+			case "removeColor":
+				$colorId = $_POST['colorid'];
+				$auftragsId = $_POST['auftrag'];
+
+				DBAccess::deleteQuery("DELETE FROM farben_auftrag WHERE id_farbe = $colorId AND id_auftrag = $auftragsId");
 
 				$auftrag = new Auftrag($auftrag);
 				$data = array("farben" => $auftrag->getFarben(), "addFarben" => $auftrag->getAddColors());
