@@ -126,3 +126,9 @@ ALTER TABLE `produkt_varianten` CHANGE `varianten_nummer` `product_id` INT(11) N
 
 /* Änderungen 14.04.2020 */
 ALTER TABLE `schritte` ADD `finishingDate` DATE NOT NULL AFTER `Priority`;
+
+/* Änderungen 16.04.2020 */
+CREATE TABLE `auftragsbearbeitung`.`farben_auftrag` ( `id_farbe` INT NOT NULL , `id_auftrag` INT NOT NULL ) ENGINE = InnoDB;
+CREATE TABLE `auftragsbearbeitung`.`adress` ( `id` INT NOT NULL AUTO_INCREMENT , `id_customer` INT NOT NULL , `ort` VARCHAR(64) NOT NULL , `plz` INT(6) NOT NULL , `strasse` VARCHAR(64) NOT NULL , `hausnr` VARCHAR(16) NOT NULL , `zusatz` VARCHAR(64) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+ALTER TABLE `adress` ADD FOREIGN KEY (`id_customer`) REFERENCES `kunde`(`Kundennummer`) ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE `adress` ADD `art` INT NOT NULL AFTER `zusatz`;
