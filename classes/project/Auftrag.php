@@ -216,21 +216,22 @@ class Auftrag implements StatisticsInterface {
 		$farben = DBAccess::selectQuery("SELECT Farbe, Farbwert, Nummer FROM farben WHERE Kundennummer = {$this->getKundennummer()} AND Auftragsnummer = {$this->getAuftragsnummer()}");
 		$farbTable = "";
 		foreach ($farben as $farbe) {
-			//$farbTable .= "<span>{$farbe['Farbe']} <div class='farbe' style='display: inline-block; background-color: #{$farbe['Farbwert']}'></div></span><br>";
 			$farbTable .= "<div class=\"singleColorContainer\"><p class=\"singleColorName\">{$farbe['Farbe']}</p><div class=\"farbe\" style=\"background-color: #{$farbe['Farbwert']}\"></div><button onclick=\"removeColor({$farbe['Nummer']});\">×</button></div><br>";
-		} //<button onclick=\"console.log('remove button')\">×</button>
+		}
 
 		return $farbTable;
 	}
 
 	public function getAddColors() {
-		return <<<XML
+		/*return <<<XML
 			<span>Farbname: <input class="colorInput" type="text" max="32"></span>
 			<span>Farbe (Hex): <input class="colorInput jscolor" type="text" max="32"></span>
 			<span>Bezeichnung: <input class="colorInput" type="text" max="32"></span>
 			<span>Hersteller: <input class="colorInput" tyep="text" max="32"></span>
 			<button onclick="sendColor();">Hinuzufügen</button>
-		XML;
+		XML;*/
+		$string = '<span>Farbname: <input class="colorInput" type="text" max="32"></span><span>Farbe (Hex): <input class="colorInput jscolor" type="text" max="32"></span><span>Bezeichnung: <input class="colorInput" type="text" max="32"></span><span>Hersteller: <input class="colorInput" tyep="text" max="32"></span><button onclick="sendColor();">Hinuzufügen</button>';
+		return $string;
 	}
 
 	public function recalculate() {
