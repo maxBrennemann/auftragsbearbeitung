@@ -90,4 +90,19 @@ function editText(event) {
     }
 }
 
+function addAdress() {
+    var strasse = document.getElementById("kundennummer").innerHTML,
+        hausnummer = document.getElementById("kundennummer").innerHTML,
+        postleitzahl = document.getElementById("kundennummer").innerHTML,
+        ort = document.getElementById("kundennummer").innerHTML,
+        art = document.getElementById("kundennummer").innerHTML,
+        zusatz = document.getElementById("kundennummer").innerHTML,
+        kundennummer = document.getElementById("kundennummer").innerHTML;
+
+    var sendNewAdress = new AjaxCall(`getReason=addAdress&kdnr=${kundennummer}&strasse=${strasse}&hausnummer=${hausnummer}&postleitzahl=${postleitzahl}&ort=${ort}&art=${art}&zusatz=${zusatz}`, "POST", window.location.href);
+    sendNewAdress.makeAjaxCall(function (res) {
+        location.reload();
+    });
+}
+
 initialize();
