@@ -25,6 +25,9 @@ class Kunde implements StatisticsInterface {
 	private $telefonMobil = null;
 	private $website = null;
 
+	/* new */
+	private $adresses = array();
+
 	function __construct($kundennummer) {
 		$data = DBAccess::selectAllByCondition("kunde", "Kundennummer", $kundennummer);
 		if (!empty($data)) {
@@ -136,6 +139,10 @@ class Kunde implements StatisticsInterface {
 
 	public function recalculate() {
 	
+	}
+
+	public static function addAdress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz, $art) {
+		return Adress::createNewAdress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz, $art);
 	}
 
 	public static function getNextAssignedKdnr($kdnr, $direction) {
