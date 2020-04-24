@@ -13,7 +13,7 @@ function unzip() {
     $zip = new ZipArchive();
     $x = $zip->open("auftragsbearbeitung.zip");
     if ($x === true) {
-        $zip->extractTo('files/');
+        $zip->extractTo('././');
         $zip->close();
 
         mkdir("upload/");
@@ -21,7 +21,7 @@ function unzip() {
 }
 
 function createConfigFiles($db_user, $db_pass, $db_name) {
-    $settings = fopen("settings.php", "w");
+    $settings = fopen("././settings.php", "w");
     $txt = "<?php\r\ndefine('REWRITE_BASE', '/auftragsbearbeitung/');\r\ndefine('WEB_URL', '/auftragsbearbeitung');\r\ndefine('SUB_URL', '/content/');\r\n\r\n/* database connection */\r\ndefine('HOST', 'localhost');\r\ndefine('USERNAME', '$db_user');\r\ndefine('PASSWORD', '$db_pass');\r\ndefine('DATABASE', '$db_name');\r\n?>";
     fwrite($settings, $txt);
     fclose($settings);
@@ -29,6 +29,7 @@ function createConfigFiles($db_user, $db_pass, $db_name) {
 
 if (isset($_POST['send'])) : ?>
 <p>Bitte das Verzeichnis /install löschen</p>
+<a href="/">Zur Auftragsbearbeitung</a>
 <?php else: ?>
 <div>
     <form id="sendConf" action method="post" id="articleUpload"></form>
