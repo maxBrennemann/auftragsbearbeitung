@@ -144,6 +144,7 @@ if ($auftragsId == -1) : ?>
 				<button onclick="sendColor();">Hinuzufügen</button>
 			</div>
 		</div>
+		<script>var cp = new Colorpicker(document.getElementById("farbe"));</script>
 	</div>
 	<div class="defCont postenadd" id="newPosten">
 		<select id="selectPosten">
