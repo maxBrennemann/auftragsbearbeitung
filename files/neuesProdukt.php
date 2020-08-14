@@ -66,5 +66,5 @@ echo "<a href=\"" . Link::getPageLink("attributes") . "\">Zu den Produktattribut
 		<input type="file" name="uploadedFile">
 		<input type="submit" value="Datei hochladen" name="filesubmitbtn">
 	</form>
-	<input type="submit">
+	<button onclick="saveProduct()">Produkt speichern</button>
 </div>
