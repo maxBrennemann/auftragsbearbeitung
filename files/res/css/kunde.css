@@ -8,7 +8,6 @@ a[href="#"] {
 
 .gridCont {
     display: grid;
-    grid-template-areas: "kundendaten ansprechpartner farben" "auftraege auftraege auftraege" "notizen fahrzeuge fahrzeuge";
 }
 
 .gridCont > div {
@@ -39,10 +38,6 @@ a[href="#"] {
     font-weight: bold;
 }
 
-#kundenDatenList {
-    max-width: 550px;
-}
-
 #notizen {
     grid-area: notizen;
 }
@@ -52,7 +47,7 @@ a[href="#"] {
 }
 
 .editable {
-    min-width: 50px;
+    width: 150px;
     background: white;
     border-radius: 6px;
     padding-left: 5px;
@@ -111,9 +106,15 @@ a[href="#"] {
     grid-template-columns: repeat(3, 1fr);
 }
 
-@media (max-width: 700px) {
+@media (min-width: 1301px) {
     .gridCont {
-        grid-template-areas: "kundendaten" "ansprechpartner" "farben" "auftraege" "notizen fahrzeuge";
+        grid-template-areas: "kundendaten farben" "ansprechpartner ansprechpartner" "auftraege auftraege" "notizen fahrzeuge";
+    }
+}
+
+@media (max-width: 1300px) {
+    .gridCont {
+        grid-template-areas: "kundendaten kundendaten" "ansprechpartner ansprechpartner" "farben farben" "auftraege auftraege" "notizen fahrzeuge";
         grid-gap: 7px;
     }
 }
