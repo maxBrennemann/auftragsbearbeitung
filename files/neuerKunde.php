@@ -11,6 +11,7 @@
 		$anredeAnspr = $_GET['anredeAnspr'];
 		$vornameAnspr = $_GET['vornameAnspr'];
 		$nachnameAnspr = $_GET['nachnameAnspr'];
+		$telmobilAnspr = $_GET['telMobilAnspr'];
 		$emailAnspr = $_GET['emailAnspr'];
 		$telAnspr = $_GET['telAnspr'];
 		$anrede = $_GET['anrede'];
@@ -35,8 +36,8 @@
 		if ($nachnameAnspr != "") {
 			$kdnr = DBAccess::selectQuery("SELECT MAX(Kundennummer) FROM kunde")[0]["MAX(Kundennummer)"];
 			$insertString = "INSERT INTO ansprechpartner (Kundennummer, Vorname, Nachname,";
-			$insertString .= " Email, Durchwahl) VALUES ($kdnr, '$vornameAnspr', ";
-			$insertString .= "'$nachnameAnspr', '$emailAnspr', '$telAnspr')";
+			$insertString .= " Email, Durchwahl, Mobiltelefonnummer) VALUES ($kdnr, '$vornameAnspr', ";
+			$insertString .= "'$nachnameAnspr', '$emailAnspr', '$telAnspr', '$telmobilAnspr')";
 			DBAccess::insertQuery($insertString);
 		}
 	}
@@ -82,6 +83,11 @@
 				<p>
 					<label>Durchwahl
 						<input class="dataInput" type="text" name="telAnspr">
+					</label>
+				</p>
+				<p>
+					<label>Mobilnummer
+						<input class="dataInput" type="text" name="telMobilAnspr">
 					</label>
 				</p>
 			</div>
