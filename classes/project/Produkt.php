@@ -16,11 +16,11 @@ class Produkt {
     private $beschreibung = null;
 
 	function __construct($produktnummer) {
-		$data = DBAccess::selectAllByCondition("produkt", "Produktnummer", $produktnummer);
+		$data = DBAccess::selectAllByCondition("produkt", "Nummer", $produktnummer);
 		if (!empty($data)) {
 			$data = $data[0];
 			$this->preis = $data['Preis'];
-			$this->produktnummer = $data['Produktnummer'];
+			$this->produktnummer = $data['Nummer'];
 			$this->bezeichnung = $data['Bezeichnung'];
 			$this->beschreibung = $data['Beschreibung'];
 		}
@@ -42,20 +42,22 @@ class Produkt {
 		$productId = DBAccess::insertQuery("INSERT INTO produkt (Bezeichnung, Marke, Beschreibung, Einkaufspreis, Preis, einkaufs_id) VALUES ('$title', '$marke', '$desc', '$ekNetto', '$vkNetto', $quelle)");
 		// attData muss noch implementiert werden
 
-		$attributeData = json_decode($attData);
-		$query = "INSERT INTO produkt_varianten (product_id, groesse, farb_id, menge, preis_ek, preis) VALUES ";
+		if ($attributeData != null) {
+			$attributeData = json_decode($attData);
+			$query = "INSERT INTO produkt_varianten (product_id, groesse, farb_id, menge, preis_ek, preis) VALUES ";
 
-		foreach ($attributeData as $rowData => $rowValue) {
-			$groesse = $rowValue->{'groesseId'};
-			$farbe = $rowValue->{'farbeId'};
-			$menge = $rowValue->{'menge'};
-			$ek = str_replace(',', '.', $rowValue->{'ek'});
-			$price =  str_replace(',', '.', $rowValue->{'price'});
-			$query .= "($productId, {$groesse}, {$farbe}, {$menge}, '{$ek}', '{$price}'),";
+			foreach ($attributeData as $rowData => $rowValue) {
+				$groesse = $rowValue->{'groesseId'};
+				$farbe = $rowValue->{'farbeId'};
+				$menge = $rowValue->{'menge'};
+				$ek = str_replace(',', '.', $rowValue->{'ek'});
+				$price =  str_replace(',', '.', $rowValue->{'price'});
+				$query .= "($productId, {$groesse}, {$farbe}, {$menge}, '{$ek}', '{$price}'),";
+			}
+
+			$query = rtrim($query, ',');
+			DBAccess::insertQuery($query);
 		}
-
-		$query = rtrim($query, ',');
-		DBAccess::insertQuery($query);
 	}
 
 	public static function getSearchTable($searchQuery) {
@@ -125,6 +127,12 @@ class Produkt {
 				
 		$string .= "<option value=\"addNew\">Neue Option hinzufügen</option></select>";
 		echo $string;
+	}
+
+	public static function getHTMLShortSummary($productnumber) {
+		$product = new Produkt($productnumber);
+		$html = "<div><h3>{$product->bezeichnung}</h3><button onclick=\"chooseProduct($productnumber)\">Auswählen</button></div>";
+		echo $html;
 	}
 
 }
