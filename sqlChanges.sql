@@ -132,3 +132,7 @@ CREATE TABLE `auftragsbearbeitung`.`farben_auftrag` ( `id_farbe` INT NOT NULL , 
 CREATE TABLE `auftragsbearbeitung`.`adress` ( `id` INT NOT NULL AUTO_INCREMENT , `id_customer` INT NOT NULL , `ort` VARCHAR(64) NOT NULL , `plz` INT(6) NOT NULL , `strasse` VARCHAR(64) NOT NULL , `hausnr` VARCHAR(16) NOT NULL , `zusatz` VARCHAR(64) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 ALTER TABLE `adress` ADD FOREIGN KEY (`id_customer`) REFERENCES `kunde`(`Kundennummer`) ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE `adress` ADD `art` INT NOT NULL AFTER `zusatz`;
+
+/* Änderungen 14.08.2020*/
+ALTER TABLE `kunde` CHANGE `Hausnummer` `Hausnummer` VARCHAR(10) NOT NULL;
+ALTER TABLE `ansprechpartner` CHANGE `Email` `Email` VARCHAR(64) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;

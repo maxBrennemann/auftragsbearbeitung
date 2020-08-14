@@ -89,7 +89,9 @@
 		<div id="ansprechpartner">
 			<h3>Ansprechpartner</h3>
 			<div id="ansprechpartnerTable">
-				<?=$ansprechpartner?>
+				<span id="resetAnsprechpartnerTable">
+					<?=$ansprechpartner?>
+				</span>
 				<table id="addAnsprechpartner" style="display: none;">
 					<tr>
 						<th>Vorname</th>
