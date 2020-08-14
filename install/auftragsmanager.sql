@@ -46,6 +46,15 @@ CREATE TABLE `angenommen` (
   `istAllgemein` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Daten für Tabelle `angenommen`
+--
+
+INSERT INTO `angenommen` (`id`, `Bezeichnung`, `istAllgemein`) VALUES
+(1, 'Telefon', 0),
+(2, 'Email', 0),
+(3, 'persönlich', 0);
+
 -- --------------------------------------------------------
 
 --
@@ -857,9 +866,9 @@ CREATE TABLE `zeit` (
 --
 -- Struktur des Views `postendata`
 --
-DROP TABLE IF EXISTS `postendata`;
+DROP VIEW IF EXISTS `postendata`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`auftragsmanager`@`%` SQL SECURITY DEFINER VIEW `postendata`  AS  select `posten`.`Nummer` AS `Nummer`,`posten`.`Postennummer` AS `Postennummer`,`posten`.`Auftragsnummer` AS `Auftragsnummer`,`posten`.`Posten` AS `Posten`,`posten`.`istStandard` AS `istStandard`,`posten`.`ohneBerechnung` AS `ohneBerechnung`,`zeit`.`ZeitInMinuten` AS `ZeitInMinuten`,concat(coalesce(`zeit`.`Beschreibung`,''),coalesce(`leistung_posten`.`Beschreibung`,''),convert(coalesce(`produkt_posten`.`Produktnummer`,'') using latin1)) AS `Beschreibung` from (((`posten` left join `zeit` on((`posten`.`Postennummer` = `zeit`.`Postennummer`))) left join `leistung_posten` on((`posten`.`Postennummer` = `leistung_posten`.`Postennummer`))) left join `produkt_posten` on((`posten`.`Postennummer` = `produkt_posten`.`Postennummer`))) ;
+CREATE VIEW `postendata`  AS  select `posten`.`Nummer` AS `Nummer`,`posten`.`Postennummer` AS `Postennummer`,`posten`.`Auftragsnummer` AS `Auftragsnummer`,`posten`.`Posten` AS `Posten`,`posten`.`istStandard` AS `istStandard`,`posten`.`ohneBerechnung` AS `ohneBerechnung`,`zeit`.`ZeitInMinuten` AS `ZeitInMinuten`,concat(coalesce(`zeit`.`Beschreibung`,''),coalesce(`leistung_posten`.`Beschreibung`,''),convert(coalesce(`produkt_posten`.`Produktnummer`,'') using latin1)) AS `Beschreibung` from (((`posten` left join `zeit` on((`posten`.`Postennummer` = `zeit`.`Postennummer`))) left join `leistung_posten` on((`posten`.`Postennummer` = `leistung_posten`.`Postennummer`))) left join `produkt_posten` on((`posten`.`Postennummer` = `produkt_posten`.`Postennummer`))) ;
 
 --
 -- Indizes der exportierten Tabellen
