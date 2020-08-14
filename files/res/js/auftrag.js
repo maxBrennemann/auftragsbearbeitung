@@ -23,7 +23,7 @@ function getSelections() {
             document.getElementById("pre").value = price;
         }, false);
     } else if (strUser == "produkt") {
-        var showProducts = new AjaxCall(`getReason=createTable&type=produkt`, "POST", window.location.href);
+        var showProducts = new AjaxCall(`getReason=createTable&type=product_compact`, "POST", window.location.href);
         showProducts.makeAjaxCall(function (responseTable) {
             document.getElementById("addPosten").innerHTML = responseTable;
 
@@ -89,9 +89,16 @@ function addBearbeitungsschritte() {
 function performSearch(e) {
     var query = e.target.previousSibling.value;
     console.log(query);
-    var search = new AjaxCall(`getReason=search&query=${query}&stype=produkt`, "POST", window.location.href);
+
+    var search = new AjaxCall(`getReason=search&query=${query}&stype=produkt&shortSummary=true`, "POST", window.location.href);
     search.makeAjaxCall(function (responseTable) {
-        document.getElementById("searchResults").innerHTML = responseTable;
+        var div = document.createElement("div");
+        div.innerHTML = responseTable;
+        div.id = "prodcutSearchContainer";
+        document.body.appendChild(div);
+        centerAbsoluteElement(div);
+        addActionButtonForDiv(div, 'remove');
+
         addableTables();
     });
 }
