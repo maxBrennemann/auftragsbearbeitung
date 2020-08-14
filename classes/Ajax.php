@@ -104,6 +104,14 @@ class Ajax {
 				$durchwahl = $_POST['durchwahl'];
 				$nextId = $_POST['nextId'];
 				DBAccess::insertQuery("INSERT INTO ansprechpartner (Kundennummer, Vorname, Nachname, Email, Durchwahl) VALUES($nextId, '$vorname', '$nachname', '$email', '$durchwahl')");
+
+				$kunde = new Kunde($nextId);
+				$table = new FormGenerator("ansprechpartner", "", "");
+				$data = DBAccess::selectQuery("SELECT * FROM ansprechpartner WHERE Kundennummer = $nextId");
+				$column_names = array(0 => array("COLUMN_NAME" => "Vorname"), 1 => array("COLUMN_NAME" => "Nachname"), 
+								2 => array("COLUMN_NAME" => "Email"), 3 => array("COLUMN_NAME" => "Durchwahl"), 4 => array("COLUMN_NAME" => "Mobiltelefonnummer"));
+				$ansprechpartner = $table->createTableByData($data, $column_names);
+				echo $ansprechpartner;
 			break;
 			case "insertCar":
 				$kfzKenn = $_POST['kfz'];

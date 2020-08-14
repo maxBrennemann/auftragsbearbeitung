@@ -54,7 +54,7 @@ function addDataToDB() {
 
     let sendToDB = new AjaxCall(data, "POST", window.location.href);
     sendToDB.makeAjaxCall(function (res) {
-        console.log(res);
+        document.getElementById("resetAnsprechpartnerTable").innerHTML = res;
     });
 }
 
