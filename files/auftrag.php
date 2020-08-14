@@ -193,8 +193,7 @@ if ($auftragsId == -1) : ?>
 	</div>
 	<div class="defCont produkt">
 		<div id="selectProdukt">
-			<span>Produkt suchen: <input type="text"><button onclick="performSearch()">&#x1F50E;</button></span>
-			<div id="searchResults"></div>
+			<span>Produkt suchen: <input type="text"><button onclick="performSearch(event)">&#x1F50E;</button></span>
 		</div>
 	</div>
 	<?php if ($show == false): ?>
