@@ -30,6 +30,7 @@
 			<span>Beschreibung: <br><textarea id="beschreibung" maxlength="65535"></textarea></span><br>
 			<span>Auftragstyp:
 				<select id="selectTyp">
+					<option value="-1" selected disabled>Bitte auswählen</option>
 					<?php foreach ($auftragstyp as $t): ?>
 						<option value="<?=$t['id']?>"><?=$t['Auftragstyp']?></option>
 					<?php endforeach; ?>
@@ -38,6 +39,7 @@
 			<span>Termin: <input id="termin" type="date"></span><br>
 			<span>Angenommen durch: 
 				<select id="selectMitarbeiter">
+					<option value="-1" selected disabled>Bitte auswählen</option>
 					<?php foreach ($mitarbeiter as $m): ?>
 						<option value="<?=$m['id']?>"><?=$m['Vorname']?> <?=$m['Nachname']?></option>
 					<?php endforeach; ?>
@@ -45,6 +47,7 @@
 			</span><br>
 			<span>Angenommen per: 
 				<select id="selectAngenommen">
+					<option value="-1" selected disabled>Bitte auswählen</option>
 					<?php foreach ($annahme as $m): ?>
 						<option value="<?=$m['id']?>"><?=$m['Bezeichnung']?></option>
 					<?php endforeach; ?>
@@ -53,6 +56,7 @@
 			<?php if (sizeOf($ansprechpartner) > 0) : ?>
 			<span>Ansprechpartner: 
 				<select id="selectAnsprechpartner">
+					<option value="-1" selected disabled>Bitte auswählen</option>
 					<?php foreach ($ansprechpartner as $m): ?>
 						<option value="<?=$m['Nummer']?>"><?=$m['Vorname']?> <?=$m['Nachname']?></option>
 					<?php endforeach; ?>
