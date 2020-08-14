@@ -57,7 +57,13 @@ class Ajax {
 					}
 					echo Search::getSearchTable($_POST['query'], $stype, Link::getPageLink("neuer-auftrag"), $shortSummary);
 				} else {
-					echo Search::getSearchTable($_POST['query'], $stype);
+					$shortSummary = false;
+					if (isset($_POST['shortSummary'])) {
+						if ($_POST['shortSummary'] == "true") {
+							$shortSummary = true;
+						}
+					}
+					echo Search::getSearchTable($_POST['query'], $stype, null, $shortSummary);
 				}
 			break;
 			case "saveList":
