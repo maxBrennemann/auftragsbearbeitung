@@ -8,7 +8,7 @@ if (isset($_POST['send'])) {
     unzip();
     createConfigFiles($db_user, $db_pass, $db_name);
 
-    $command = "mysql --user={$vals['db_user']} --password='{$vals['db_pass']}' " . "-h {$vals['db_host']} -D {$vals['db_name']} < {$script_path}";
+    $command = "mysql -h \"localhost\" -u \"{$db_user}\" \"-p{$db_pass}\" \"$db_name\" < "; // --user={$db_user} --password='{$db_pass}' " . "-h {localhost} -D {$db_name} < ";
     $output = shell_exec($command . 'auftragsmanager.sql');
 }
 
