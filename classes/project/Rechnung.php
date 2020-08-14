@@ -8,6 +8,7 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 
 require_once('Auftrag.php');
 require_once('classes/DBAccess.php');
+require_once('classes/project/InteractiveFormGenerator.php');
 
 class Rechnung extends Auftrag {
 
@@ -47,8 +48,13 @@ class Rechnung extends Auftrag {
 			$data[$i]["AngenommenDurch"] = $angenommenDurch[0]["Vorname"] . " " . $angenommenDurch[0]["Nachname"];
 		}
 
-		$form = new FormGenerator("auftrag", "Datum", "Rechnungsnummer = 0");
-		$table = $form->createTableByDataRowLink($data, $column_names, "auftrag", null);
+		/*$form = new FormGenerator("auftrag", "Datum", "Rechnungsnummer = 0");
+		$table = $form->createTableByDataRowLink($data, $column_names, "auftrag", null);*/
+
+		$form = new InteractiveFormGenerator("auftrag", "Datum", "Rechnungsnummer 0 ");
+		$form->setRowDone(true);
+
+		$table = $form->create($data, $column_names);
 		return $table;
 	}
 
