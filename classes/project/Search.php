@@ -2,6 +2,7 @@
 
 require_once('classes/DBAccess.php');
 require_once('classes/project/ClientSocket.php');
+require_once('classes/project/Produkt.php');
 
 class Search {
 
@@ -33,12 +34,29 @@ class Search {
 		$data = array();
 
 		if ($getShortSummary) {
-			$data = "";
-			$ids = array_reverse($ids);
-			foreach ($ids as $id) {
-				$data .= (new Kunde($id[0]))->getHTMLShortSummary();
+			switch ($searchType) {
+				case "kunde":
+					$data = "";
+					$ids = array_reverse($ids);
+					foreach ($ids as $id) {
+						$data .= (new Kunde($id[0]))->getHTMLShortSummary();
+					}
+					return $data;
+					break;
+				case "produkt":
+					$data = "";
+					$ids = array_reverse($ids);
+					foreach ($ids as $id) {
+						$data .= Produkt::getHTMLShortSummary($id[0]);
+					}
+
+					if (empty($data)) {
+						$data = "<span>Keine Ergebnisse!</span>";
+					}
+
+					return $data;
+					break;
 			}
-			return $data;
 		}
 
 		foreach ($ids as $id) {
