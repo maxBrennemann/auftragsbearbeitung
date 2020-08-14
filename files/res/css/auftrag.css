@@ -71,6 +71,13 @@ aside {
     font-size: 3rem;
 }
 
+#prodcutSearchContainer {
+    position: absolute;
+    background: white;
+    padding: 35px;
+    border-radius: 6px;
+}
+
 .farbe {
     display: inline-block;
     padding: 0;
