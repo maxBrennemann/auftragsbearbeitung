@@ -103,6 +103,19 @@ class Ajax {
 				$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
 				Posten::insertPosten("zeit", $data);
 			break;
+			case "insertProduct":
+				$amount = $_POST['time'];
+				$prodId = $_POST['time'];
+				$isFree = $_POST['ohneBerechnung'];
+				$auftId = $_POST['auftrag'];
+
+				$data = array();
+				$data['amount'] = $_POST['amount'];
+				$data['prodId'] = $_POST['product'];
+				$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
+				$data['Auftragsnummer'] = $_POST['auftrag'];
+				Posten::insertPosten("produkt", $data);
+			break;
 			case "insertAnspr":
 				$vorname = $_POST['vorname'];
 				$nachname = $_POST['nachname'];
@@ -230,7 +243,7 @@ class Ajax {
 				$description = $_POST['description'];
 				$source = $_POST['source'];
 				$aufschlag = $_POST['aufschlag'];
-				DBAccess::insertQuery("INSERT INTO leistung (Bezeichnungm, Beschreibung, Quelle, Aufschlag) VALUES ('$bezeichung', '$description', '$source', $aufschlag)");
+				DBAccess::insertQuery("INSERT INTO leistung (Bezeichnung, Beschreibung, Quelle, Aufschlag) VALUES ('$bezeichung', '$description', '$source', $aufschlag)");
 			break;
 			case "addTimeOffer":
 				$customerId = $_POST['customerId'];
@@ -356,6 +369,11 @@ class Ajax {
 				$title = $_POST['title'];
 				$desc = $_POST['desc'];
 				Produkt::createProduct($title, $marke, $desc, $ekNetto, $vkNetto, $quelle, $attData);
+			break;
+			case "reloadPostenListe":
+				$auftragsId = $_POST['id'];
+				$auftrag = new Auftrag($auftragsId);
+				echo $auftrag->getAuftragspostenAsTable();
 			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
