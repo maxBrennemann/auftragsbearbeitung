@@ -104,7 +104,7 @@ if ($auftragsId == -1) : ?>
 		</div>
 	</div>
 	<div class="defCont posten">
-		<span><u>Posten:</u><br><?=$auftrag->getAuftragspostenAsTable()?></span>
+		<span><u>Posten:</u><br><span id="auftragsPostenTable"><?=$auftrag->getAuftragspostenAsTable()?></span></span>
 	</div>
 	<div class="defCont preis">
 		<span><u>Gesamtpreis:</u><br><span id="gesamtpreis"><?=$auftrag->preisBerechnen()?>€</span></span>
