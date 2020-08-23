@@ -13,8 +13,8 @@ function add() {
     var source = document.getElementById("source").value;
     var aufschlag = document.getElementById("aufschlag").value;
 
-    var remove = new AjaxCall(`getReason=addLeistung&bezeichung=${bezeichnung}&description=${description}&source=${source}&aufschlag=${aufschlag}`, "POST", window.location.href);
-    remove.makeAjaxCall(function (responseLink) {
-        
+    var addLeistung = new AjaxCall(`getReason=addLeistung&bezeichung=${bezeichnung}&description=${description}&source=${source}&aufschlag=${aufschlag}`, "POST", window.location.href);
+    addLeistung.makeAjaxCall(function (responseLink) {
+        location.reload();
     });
 }
