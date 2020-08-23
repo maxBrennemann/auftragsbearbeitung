@@ -1,4 +1,6 @@
-﻿var globalData = {
+﻿
+/* global variables */
+var globalData = {
     aufschlag: 0,
     vehicleId: 0,
     erledigendeSchritte : null,
@@ -6,6 +8,7 @@
     auftragsId : parseInt(new URL(window.location.href).searchParams.get("id"))
 }
 
+/* get selection for adding a posten */
 function getSelections() {
     var e = document.getElementById("selectPosten");
     var strUser = e.options[e.selectedIndex].value;
@@ -34,6 +37,45 @@ function getSelections() {
     document.getElementById("showOhneBerechnung").style.display = "inline";
 }
 
+function addTime() {
+    var time = document.getElementById("time").value;
+    var wage = document.getElementById("wage").value;
+    var descr = document.getElementById("descr").value;
+    var isFree = getOhneBerechnung() ? 1 : 0;
+    var add = new AjaxCall(`getReason=insTime&time=${time}&wage=${wage}&descr=${descr}&auftrag=${globalData.auftragsId}&ohneBerechnung=${isFree}`, "POST", window.location.href);
+    add.makeAjaxCall(function (response) {
+        console.log(response);
+        reloadPostenListe();
+    });
+}
+
+function addLeistung() {
+    var e = document.getElementById("selectLeistung");
+    var lei = e.options[e.selectedIndex].value;
+    var bes = document.getElementById("bes").value;
+    var ekp = document.getElementById("ekp").value;
+    var pre = document.getElementById("pre").value;
+    var isFree = getOhneBerechnung() ? 1 : 0;
+    var add = new AjaxCall(`getReason=insertLeistung&lei=${lei}&bes=${bes}&ekp=${ekp}&pre=${pre}&auftrag=${globalData.auftragsId}&ohneBerechnung=${isFree}`, "POST", window.location.href);
+    add.makeAjaxCall(function (response) {
+        console.log(response);
+        reloadPostenListe();
+    });
+}
+
+function reloadPostenListe() {
+    var reload = new AjaxCall(`getReason=reloadPostenListe&id=${globalData.auftragsId}`, "POST", window.location.href);
+    reload.makeAjaxCall(function (response) {
+        document.getElementById("auftragsPostenTable").innerHTML = response;
+    });
+}
+
+class PostenListe {
+    constructor() {
+
+    }
+}
+
 function getOhneBerechnung() {
     return document.getElementById("ohneBerechnung").checked;
 }
@@ -48,6 +90,7 @@ function showSelection(element) {
     });
 }
 
+/* addes bearbeitungsschritte */
 function addBearbeitungsschritte() {
     var bearbeitungsschritte = document.getElementById("bearbeitungsschritte");
     bearbeitungsschritte.style.display = "block";
@@ -100,31 +143,6 @@ function performSearch(e) {
         addActionButtonForDiv(div, 'remove');
 
         addableTables();
-    });
-}
-
-function addTime() {
-    var time = document.getElementById("time").value;
-    var wage = document.getElementById("wage").value;
-    var descr = document.getElementById("descr").value;
-    var isFree = getOhneBerechnung() ? 1 : 0;
-    var add = new AjaxCall(`getReason=insTime&time=${time}&wage=${wage}&descr=${descr}&auftrag=${globalData.auftragsId}&ohneBerechnung=${isFree}`, "POST", window.location.href);
-    add.makeAjaxCall(function (response) {
-        console.log(response);
-        location.reload();
-    });
-}
-
-function addLeistung() {
-    var e = document.getElementById("selectLeistung");
-    var lei = e.options[e.selectedIndex].value;
-    var bes = document.getElementById("bes").value;
-    var ekp = document.getElementById("ekp").value;
-    var pre = document.getElementById("pre").value;
-    var isFree = getOhneBerechnung() ? 1 : 0;
-    var add = new AjaxCall(`getReason=insertLeistung&lei=${lei}&bes=${bes}&ekp=${ekp}&pre=${pre}&auftrag=${globalData.auftragsId}&ohneBerechnung=${isFree}`, "POST", window.location.href);
-    add.makeAjaxCall(function (response) {
-        console.log(response);
     });
 }
 
@@ -261,5 +279,17 @@ function removeColor(colorId) {
         var showColors = document.getElementById("showColors");
         var data = JSON.parse(colorHTML);
         showColors.innerHTML = data.farben;
+    });
+}
+
+/* product section */
+
+function chooseProduct(productId) {
+    var amount = 1;
+    var isFree = getOhneBerechnung() ? 1 : 0;
+    var add = new AjaxCall(`getReason=insertProduct&product=${productId}&amount=${amount}&auftrag=${globalData.auftragsId}&ohneBerechnung=${isFree}`, "POST", window.location.href);
+    add.makeAjaxCall(function (response) {
+        console.log(response);
+        reloadPostenListe();
     });
 }
