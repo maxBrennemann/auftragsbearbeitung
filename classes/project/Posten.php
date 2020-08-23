@@ -77,7 +77,7 @@ abstract class Posten {
 				$fre = $data['ohneBerechnung'];
 				DBAccess::insertQuery("INSERT INTO posten (Postennummer, Auftragsnummer, Posten, ohneBerechnung) VALUES ($postennummer, $auftragsnummer, '$type', $fre)");
 				DBAccess::insertQuery("INSERT INTO zeit (Postennummer, ZeitInMinuten, Stundenlohn, Beschreibung) VALUES ($postennummer, $zeit, $lohn, '$desc')");
-				break;
+			break;
 			case "leistung":
 				$lei = $data['Leistungsnummer'];
 				$bes = $data['Beschreibung'];
@@ -87,9 +87,16 @@ abstract class Posten {
 				DBAccess::insertQuery("INSERT INTO posten (Postennummer, Auftragsnummer, Posten, ohneBerechnung) VALUES ($postennummer, $auftragsnummer, '$type', $fre)");
 				DBAccess::insertQuery("INSERT INTO leistung_posten (Leistungsnummer, Postennummer, Beschreibung, Einkaufspreis, SpeziefischerPreis) VALUES($lei, $postennummer, '$bes', '$ekp', '$pre')");
 				Leistung::bearbeitungsschritteHinzufuegen($lei, $auftragsnummer);
-				break;
+			break;
 			case "produkt":
-				break;
+				$amount = $data['amount'];
+				$prodId = $data['prodId'];
+				$fre = $data['ohneBerechnung'];
+				DBAccess::insertQuery("INSERT INTO posten (Postennummer, Auftragsnummer, Posten, ohneBerechnung) VALUES ($postennummer, $auftragsnummer, '$type', $fre)");
+				DBAccess::insertQuery("INSERT INTO produkt_posten (Produktnummer, Postennummer, Anzahl) VALUES ($prodId, $postennummer, $amount)");
+			break;
+			case "compact_prod":
+			break;
 		}
 
 		if ((int) $auftragsnummer != -1) {
