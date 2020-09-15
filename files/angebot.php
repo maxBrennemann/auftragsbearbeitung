@@ -31,7 +31,7 @@
 <?php else : ?>
 <div class="defCont">
 	<a href="<?=Link::getPageLink("angebot")?>?open">Offene Angebote durchsehen</a>
-	<p>Kundennummer: <input type="number" id="kdnr"><button onclick="neuesAngebot()">Bestätigen</button><br>Oder <a href="<?=Link::getPageLink("neuer-kunde")?>">hier</a> einen neuen Kunden anlegen.</p>
+	<p>Kundennummer: <input type="number" id="kdnr" class="autosubmit" autofocus data-btnid="1"><button id="autosubmit_1" onclick="neuesAngebot()">Bestätigen</button><br>Oder <a href="<?=Link::getPageLink("neuer-kunde")?>">hier</a> einen neuen Kunden anlegen.</p>
 </div>
 <div id="insTemp"></div>
 <?php endif; ?>
