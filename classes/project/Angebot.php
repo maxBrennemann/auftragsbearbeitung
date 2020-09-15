@@ -30,11 +30,13 @@ class Angebot {
     private $posten = array();
 
     function __construct($cid) {
-        $sKdnr = $_SESSION['postenId'];
-        if ($sKdnr == null) {
+        if (isset($_SESSION['postenId'])) {
+            $sKdnr = $_SESSION['postenId'];
+            if ($_SESSION['postenId'] != $cid) {
+                $this->deleteOldSessionData();
+            }
+        } else {
             $_SESSION['postenId'] = $cid;
-        } else if ($_SESSION['postenId'] != $cid) {
-            $this->deleteOldSessionData();
         }
 
         $this->kdnr = $cid;
@@ -160,10 +162,11 @@ class Angebot {
     public function getHTMLTemplate() {
         $_SESSION['newOffer'] = serialize($this->kdnr);
 
+        $kundenlink = Link::getPageLink("kunde") . "?id=" . $this->kunde->getKundennummer();
         if (true) : ?>
             <div class="defCont">
                 <div class="inlineC">
-                    <span><b><?=$this->kunde->getFirmenname()?></b></span><br>
+                    <span><a href="<?=$kundenlink?>"><b><?=$this->kunde->getFirmenname()?></b></a></span><br>
                     <span><?=$this->kunde->getVorname()?> <?=$this->kunde->getNachname()?></span><br>
                     <span><?=$this->kunde->getStrasse()?> <?=$this->kunde->getHausnummer()?></span><br>
                     <span><?=$this->kunde->getPostleitzahl()?> <?=$this->kunde->getOrt()?></span><br>
@@ -214,6 +217,8 @@ class Angebot {
                             </select>
                             <button onclick="addFahrzeug(true)">Für diesen Auftrag übernehmen</button>
                         </div>
+                    </div>
+                    <div id="addPostenProdukt" style="display: none">
                     </div>
                     <span id="showOhneBerechnung" style="display: none;"><input id="ohneBerechnung" type="checkbox">Ohne Berechnung</span>
                 </div>
