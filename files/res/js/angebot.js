@@ -29,9 +29,11 @@ function getSelections() {
     if (strUser == "zeit") {
         document.getElementById("addPostenZeit").style.display = "inline";
         document.getElementById("addPostenLeistung").style.display = "none";
+        document.getElementById("addPostenProdukt").style.display = "none";
     } else if (strUser == "leistung") {
         document.getElementById("addPostenLeistung").style.display = "flex";
         document.getElementById("addPostenZeit").style.display = "none";
+        document.getElementById("addPostenProdukt").style.display = "none";
 
         document.getElementById("ekp").addEventListener("input", function () {
             var startCalc = parseInt(document.getElementById("ekp").value);
@@ -39,10 +41,13 @@ function getSelections() {
             document.getElementById("pre").value = price;
         }, false);
     } else if (strUser == "produkt") {
+        document.getElementById("addPostenLeistung").style.display = "none";
+        document.getElementById("addPostenZeit").style.display = "none";
+
         var showProducts = new AjaxCall(`getReason=createTable&type=produkt`, "POST", window.location.href);
         showProducts.makeAjaxCall(function (responseTable) {
-            document.getElementById("addPosten").innerHTML = responseTable;
-
+            document.getElementById("addPostenProdukt").innerHTML = responseTable;
+            document.getElementById("addPostenProdukt").style.display = "inline";
             addableTables();
         });
     }
