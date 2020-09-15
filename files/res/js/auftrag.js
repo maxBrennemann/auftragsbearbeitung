@@ -285,7 +285,7 @@ function removeColor(colorId) {
 /* product section */
 
 function chooseProduct(productId) {
-    var amount = 1;
+    var amount = document.getElementById(productId + "_getAmount").value;
     var isFree = getOhneBerechnung() ? 1 : 0;
     var add = new AjaxCall(`getReason=insertProduct&product=${productId}&amount=${amount}&auftrag=${globalData.auftragsId}&ohneBerechnung=${isFree}`, "POST", window.location.href);
     add.makeAjaxCall(function (response) {
