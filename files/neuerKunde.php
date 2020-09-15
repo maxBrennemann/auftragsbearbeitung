@@ -25,6 +25,10 @@
 		$telfestnetz = $_GET['telfestnetz'];
 		$telmobil = $_GET['telmobil'];
 
+		if ($plz == null) {
+			$plz = 0;
+		}
+
 		$insertString = "INSERT INTO kunde (Firmenname, Anrede, Vorname, Nachname,";
 		$insertString .= " Straße, Hausnummer, Postleitzahl, Ort, Email,";
 		$insertString .= " TelefonFestnetz, TelefonMobil) VALUES";
@@ -115,22 +119,22 @@
 		</div>
 		<p>
 			<label>Straße
-				<input class="dataInput" type="text" name="strasse" required>
+				<input class="dataInput" type="text" name="strasse">
 			</label>
 		</p>
 		<p>
 			<label>Hausnummer
-				<input class="dataInput" type="text" name="hausnummer" required>
+				<input class="dataInput" type="text" name="hausnummer">
 			</label>
 		</p>
 		<p>
 			<label>Postleitzahl
-				<input class="dataInput" type="number" name="plz" required>
+				<input class="dataInput" type="number" name="plz">
 			</label>
 		</p>
 		<p>
 			<label>Ort
-				<input class="dataInput" type="text" name="ort" required>
+				<input class="dataInput" type="text" name="ort">
 			</label>
 		</p>
 		<p>
