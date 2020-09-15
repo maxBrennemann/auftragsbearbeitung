@@ -8,6 +8,7 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 
 require_once('Zeit.php');
 require_once('Produkt.php');
+require_once('ProduktPosten.php');
 require_once('Leistung.php');
 require_once('Auftragsverlauf.php');
 require_once('classes/DBAccess.php');
@@ -38,9 +39,9 @@ abstract class Posten {
 					$speziefischerPosten = DBAccess::selectQuery("SELECT ZeitInMinuten, Stundenlohn, Beschreibung FROM zeit WHERE zeit.Postennummer = {$step['Postennummer']}")[0];
 					$element = new Zeit($speziefischerPosten['Stundenlohn'], $speziefischerPosten['ZeitInMinuten'], $speziefischerPosten['Beschreibung']);
 					break;
-				case 'produkt_posten':
-					$query = "SELECT Preis, Bezeichnung, Beschreibung, produkt_posten.Produktnummer, Anzahl, produkt.Einkaufspreis FROM produkt_posten LEFT JOIN produkt ON ";
-					$query .= "produkt_posten.Produktnummer = produkt.Produktnummer WHERE produkt_posten.Postennummer = posten.Postennummer";
+				case 'produkt':
+					$query = "SELECT Preis, Bezeichnung, Beschreibung, pp.Produktnummer, Anzahl, p.Einkaufspreis FROM produkt_posten AS pp, produkt AS p, posten AS po ";
+					$query .= "WHERE pp.Produktnummer = p.Nummer AND pp.Postennummer = po.Nummer AND pp.Postennummer = {$step['Postennummer']}";
 					$speziefischerPosten = DBAccess::selectQuery($query)[0];
 					$element = new ProduktPosten($speziefischerPosten['Preis'], $speziefischerPosten['Bezeichnung'], $speziefischerPosten['Beschreibung'], $speziefischerPosten['Anzahl'], $speziefischerPosten['Einkaufspreis']);
 					break;
