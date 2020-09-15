@@ -43,15 +43,17 @@ function goToProfile() {
 
 window.onload = function() {
 	var el = document.querySelector("input[type=email");
-	if(el != null) {
+	if (el != null) {
 		el.addEventListener("input", function() {
-			if(validateEmail(el.value)) {
+			if  (validateEmail(el.value)) {
 				el.style.color = "green";
 			} else {
 				el.style.color = "red";
 			}
 		}, false);
 	}
+
+	autosubmit();
 }
 
 function validateEmail(email) {
@@ -205,5 +207,22 @@ AjaxCall.prototype.makeAjaxCall = function(dataCallback, ...args) {
 		ajaxCall.send();
 	} else {
 		console.error("AjaxCall: Ajax Type not defined");
+	}
+}
+
+/* submit button onenter */
+function autosubmit() {
+	var elements = document.getElementsByClassName("autosubmit");
+	var id = "";
+	var btn;
+	for (let element of elements) {
+		id = element.dataset.btnid;
+		btn = document.getElementById("autosubmit_" + id);
+
+		element.addEventListener("keyup", function (event) {
+			if (event.key === "Enter") {
+				btn.click();
+			}
+		}.bind(btn));
 	}
 }
