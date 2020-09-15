@@ -131,7 +131,7 @@ class Produkt {
 
 	public static function getHTMLShortSummary($productnumber) {
 		$product = new Produkt($productnumber);
-		$html = "<div><h3>{$product->bezeichnung}</h3><button onclick=\"chooseProduct($productnumber)\">Auswählen</button></div>";
+		$html = "<div><h3>{$product->bezeichnung}</h3><span>Anzahl <input value=\"1\" id=\"{$productnumber}_getAmount\"></span><button onclick=\"chooseProduct($productnumber)\">Auswählen</button></div>";
 		echo $html;
 	}
 
