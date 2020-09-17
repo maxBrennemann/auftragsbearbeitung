@@ -88,6 +88,7 @@ function addTime() {
     var addTimeOffer = new AjaxCall(`getReason=addTimeOffer&customerId=${customerId}&time=${time}&wage=${wage}&descr=${descr}&isFree=${isFree}`);
     addTimeOffer.makeAjaxCall(function (response) {
         reloadIFrame();
+        console.log(response);
     });
 }
 
@@ -113,6 +114,7 @@ function addLeistung() {
     var addLeistungOffer = new AjaxCall(`getReason=addLeistungOffer&customerId=${customerId}&lei=${leiNr}&bes=${bes}&ekp=${ekp}&pre=${pre}&isFree=${isFree}`);
     addLeistungOffer.makeAjaxCall(function (response) {
         reloadIFrame();
+        console.log(response);
     });
 }
 
