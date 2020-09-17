@@ -30,7 +30,7 @@
 		Ajax::manageRequests($_POST['getReason'], $page);
 	} else {
 		if ($page == "pdf") {
-			$angebot = new Angebot(3);
+			$angebot = new Angebot();
 			$angebot->PDFgenerieren();
 		} else if (isLoggedIn()) {
 			showPage($page, $isArticle);
