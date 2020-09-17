@@ -16,6 +16,13 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 * 2 -- gelöscht
 */
 
+/*
+ * session variable structure:
+ * offer_id is the number of the current offer
+ * offer_x_pc is the pattern for the posten counter for offer x
+ * offer_x_y is the pattern for a specific posten for offer x 
+*/
+
 require_once('Auftrag.php');
 
 class Angebot {
@@ -29,14 +36,20 @@ class Angebot {
     
     private $posten = array();
 
-    function __construct($cid) {
-        if (isset($_SESSION['postenId'])) {
-            $sKdnr = $_SESSION['postenId'];
-            if ($_SESSION['postenId'] != $cid) {
-                $this->deleteOldSessionData();
-            }
+    function __construct($cid = null) {
+        if (isset($_SESSION['offer_id'])) {
+            $offerId = $_SESSION['offer_id'];
         } else {
-            $_SESSION['postenId'] = $cid;
+            $offerId = -1;
+        }
+
+        if ($cid == null && $offerId == -1) {
+            throw new Exception("cannot fetch any data");
+        } else if ($cid == null) {
+            $cid = $offerId;
+        } else if($cid != $offerId) {
+            $this->deleteOldSessionData();
+            $_SESSION['offer_id'] = $cid;
         }
 
         $this->kdnr = $cid;
@@ -89,20 +102,49 @@ class Angebot {
         $pdf->Output();
     }
 
+    private function getPc() {
+        if (isset($_SESSION['offer_' . $this->kdnr . '_pc'])) {
+            return (int) $_SESSION['offer_' . $this->kdnr . '_pc'];
+        } else {
+            $_SESSION['offer_' . $this->kdnr . '_pc'] = 0;
+            return 0;
+        }
+    }
+
+    private function incPc() {
+        $newPc = $this->getPc() + 1;
+        $_SESSION['offer_' . $this->kdnr . '_pc'] = $newPc;
+        return $newPc;
+    }
+
+    private function decPc() {
+        $newPc = $this->getPc() - 1;
+        if ($newPc >= 0) {
+            $_SESSION['offer_' . $this->kdnr . '_pc'] = $newPc;
+        }
+        return $newPc;
+    }
+
     private function loadPostenFromSession() {
-        $num = $_SESSION['postenId'];
-        for ($i = 1; $i <= $num; $i++) {
-            $posten = unserialize($_SESSION['posten' . $i]);
-            array_push($this->posten, $posten);
+        $num = $this->getPc();
+        if (is_numeric($num)) {
+            for ($i = 1; $i <= $num; $i++) {
+                if (isset($_SESSION['offer_' . $this->kdnr . '_' . $i])) {
+                    $posten = unserialize($_SESSION['offer_' . $this->kdnr . '_' . $i]);
+                    array_push($this->posten, $posten);
+                }
+            }
         }
     }
 
     private function deleteOldSessionData() {
-        $num = $_SESSION['postenId'];
+        $num = $this->getPc();
         for ($i = 1; $i <= $num; $i++) {
-            $_SESSION['posten' . $i] = null;
+            if (isset($_SESSION['offer_' . $this->kdnr . '_' . $i])) {
+                $_SESSION['offer_' . $this->kdnr . '_' . $i] = null;
+            }
         }
-        $_SESSION['postenId'] = null;
+        $_SESSION['offer_' . $this->kdnr . '_pc'] = null;
     }
 
     private function postenSum() {
@@ -114,12 +156,10 @@ class Angebot {
     }
 
     public function addPosten($posten) {
-        if ($_SESSION['postenId'] == null) {
-            $_SESSION['postenId'] = 0;
-        }
-        $postenId = (int) $_SESSION['postenId'];
-        $_SESSION['posten' . ++$postenId] = serialize($posten);
-        $_SESSION['postenId'] = $postenId;
+        $postenId = $this->incPc();
+        $_SESSION['offer_' . $this->kdnr . '_' . $postenId] = serialize($posten);
+
+        echo $postenId;
         array_push($this->posten, $posten);
     }
 
@@ -160,8 +200,6 @@ class Angebot {
     }
 
     public function getHTMLTemplate() {
-        $_SESSION['newOffer'] = serialize($this->kdnr);
-
         $kundenlink = Link::getPageLink("kunde") . "?id=" . $this->kunde->getKundennummer();
         if (true) : ?>
             <div class="defCont">
