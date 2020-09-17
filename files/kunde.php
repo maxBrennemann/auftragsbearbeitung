@@ -27,6 +27,10 @@
 	if (isset($_GET['mode']) && $_GET['mode'] == "search" && $_GET['query']) {
 		$query = $_GET['query'];
 		$searchTable = Search::getSearchTable($query, "kunde", Link::getPageLink("kunde"), true);
+		if ($searchTable == "") {
+			$link =  Link::getPageLink('neuer-kunde');
+			$searchTable = "Es wurden keine Ergebnisse gefunden. <a href=\"$link\">Diesen Kunden erstellen</a>";
+		}
 		$isSearch = true;
 	}
 
