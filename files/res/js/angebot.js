@@ -1,4 +1,10 @@
 
+
+var globalData = {
+    aufschlag: 0,
+    vehicleId: 0
+}
+
 function neuesAngebot() {
     var customerId = document.getElementById("kdnr").value;
     var loadHTMLTemplate = new AjaxCall(`getReason=loadTemplateOrder&customerId=${customerId}`);
@@ -15,11 +21,6 @@ function loadCachedPosten() {
         console.log(data);
         document.getElementById("allePosten").innerHTML += data;
     });
-}
-
-var globalData = {
-    aufschlag: 0,
-    vehicleId: 0
 }
 
 function getSelections() {
@@ -55,10 +56,6 @@ function getSelections() {
     document.getElementById("showOhneBerechnung").style.display = "inline";
 }
 
-function getOhneBerechnung() {
-    return document.getElementById("ohneBerechnung").checked;
-}
-
 function showSelection(element) {
     document.getElementById('newPosten').style.display = 'inline';
     element.style.display = 'none';
@@ -68,6 +65,12 @@ function showSelection(element) {
         document.getElementById("generalPosten").innerHTML = responseTable;
     });
 }
+
+function getOhneBerechnung() {
+    return document.getElementById("ohneBerechnung").checked;
+}
+
+/* Zeit */
 
 function addTime() {
     var time = document.getElementById("time").value;
@@ -90,6 +93,13 @@ function addTime() {
         reloadIFrame();
         console.log(response);
     });
+}
+
+/* Leistung */
+
+function selectLeistung() {
+    var e = document.getElementById("selectLeistung");
+    globalData.aufschlag = parseInt(e.options[e.selectedIndex].dataset.aufschlag);
 }
 
 function addLeistung() {
@@ -117,6 +127,8 @@ function addLeistung() {
         console.log(response);
     });
 }
+
+/* Verschiedenes */
 
 function showOffer() {
     //showOffer
