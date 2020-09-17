@@ -80,4 +80,8 @@ function isLoggedIn() {
 	}
 	return false;
 }
+
+function getCurrentVersion() {
+	return "0.1.0";
+}
 ?>
