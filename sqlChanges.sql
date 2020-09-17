@@ -133,10 +133,14 @@ CREATE TABLE `auftragsbearbeitung`.`adress` ( `id` INT NOT NULL AUTO_INCREMENT ,
 ALTER TABLE `adress` ADD FOREIGN KEY (`id_customer`) REFERENCES `kunde`(`Kundennummer`) ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE `adress` ADD `art` INT NOT NULL AFTER `zusatz`;
 
-/* Änderungen 14.08.2020*/
+/* Änderungen 14.08.2020 */
 ALTER TABLE `kunde` CHANGE `Hausnummer` `Hausnummer` VARCHAR(10) NOT NULL;
 ALTER TABLE `ansprechpartner` CHANGE `Email` `Email` VARCHAR(64) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
 CREATE TABLE `auftragsmanager`.`product_compact` ( `id` INT NOT NULL AUTO_INCREMENT , `marke` VARCHAR(32) NOT NULL , `price` FLOAT NOT NULL , `purchasing_price` FLOAT NOT NULL , `description` TEXT NOT NULL , `name` VARCHAR(64) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 ALTER TABLE `produkt` CHANGE `Preis` `Preis` FLOAT(11) NOT NULL;
 ALTER TABLE `produkt` CHANGE `Einkaufspreis` `Einkaufspreis` FLOAT(11) NOT NULL;
 ALTER TABLE `produkt` ADD `einkaufs_id` INT NOT NULL AFTER `Bild`;
+
+/* Änderungen 17.09.2020 */
+INSERT INTO attachments (`articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (5, 'head', 'angebot.js', 0, 'js');
+INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'pdf', 'pdf', 'pdf')
