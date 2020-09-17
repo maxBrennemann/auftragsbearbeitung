@@ -267,7 +267,7 @@ class Angebot {
             <button onclick="showOffer();">Angebot anzeigen</button>
             <button onclick="storeOffer();">Angebot abschließen</button>
             <br>
-            <iframe src="http://localhost/auftragsbearbeitung/content/pdf" id="showOffer"></iframe>
+            <iframe src="<?=Link::getPageLink('pdf')?>" id="showOffer"></iframe>
         <?php endif;
         
     }
