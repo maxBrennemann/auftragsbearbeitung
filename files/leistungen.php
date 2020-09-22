@@ -21,12 +21,14 @@ $data = DBAccess::selectQuery("SELECT * FROM leistung");
 	<?php endforeach; ?>
 	<div class="leistungsblock">
 		<div class="leistungsHeader">
-				<p>Neue Leistung hinzufügen</p>
+			<p>Neue Leistung hinzufügen</p>
 		</div>
-		<span>Bezeichnung: <input type="text"  maxlength="32" id="bezeichnung"></input></span><br>
-		<span>Beschreibung: <input type="text" id="description"></input></span><br>
-		<span>Quelle: <input type="text" maxlength="64" id="source"></input></span><br>
-		<span>Aufschlag: <input type="number" id="aufschlag"></input></span><br>
+		<div>
+			<span>Bezeichnung: <input type="text"  maxlength="32" id="bezeichnung"></input></span><br>
+			<span>Beschreibung: <input type="text" id="description"></input></span><br>
+			<span>Quelle: <input type="text" maxlength="64" id="source"></input></span><br>
+			<span>Aufschlag (%): <input type="number" id="aufschlag"></input></span><br>
+		</div>
 		<button onclick="add()">Hinzufügen</button>
 	<div>
 </div>
