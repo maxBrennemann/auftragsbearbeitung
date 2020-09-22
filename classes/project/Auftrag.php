@@ -31,6 +31,9 @@ class Auftrag implements StatisticsInterface {
 	protected $Auftragstyp = null;
 	protected $rechnungsnummer = 0;
 
+	private $isArchiviert = false;
+	private $isRechnung = false;
+
 	static $offeneAuftraege = array();
 
 	function __construct($auftragsnummer) {
@@ -44,6 +47,15 @@ class Auftrag implements StatisticsInterface {
 				$this->Auftragsbezeichnung = $data[0]['Auftragsbezeichnung'];
 				$this->Auftragstyp = (int) $data[0]['Auftragstyp'];
 				$this->rechnungsnummer = $data[0]['Rechnungsnummer'];
+
+				if ($data[0]['archiviert'] == 0 || $data[0]['archiviert'] == "0") {
+					$this->isArchiviert = true;
+				}
+
+				if ($data[0]['Rechnungsnummer'] != 0) {
+					$this->isArchiviert = true;
+				}
+				
 
 				$data = DBAccess::selectQuery("SELECT * FROM schritte WHERE Auftragsnummer = {$auftragsnummer}");
 				foreach ($data as $step) {
@@ -141,6 +153,10 @@ class Auftrag implements StatisticsInterface {
 		$form = new InteractiveFormGenerator("");
 		$form->setRowDeletable(true);
 		return $form->create($data, $column_names);
+	}
+
+	public function getIsArchiviert() {
+		return $this->isArchiviert;
 	}
 
     public function bearbeitungsschrittHinzufuegen() {
