@@ -268,7 +268,16 @@ function showAuftragsverlauf() {
 
 function archvieren() {
     var arch = new AjaxCall(`getReason=archivieren&auftrag=${globalData.auftragsId}`);
-    arch.makeAjaxCall(function () {});
+    arch.makeAjaxCall(function () {
+       var div = document.createElement("div");
+       var a = document.createElement("a");
+       a.href = document.getElementById("home_link").href;
+       a.innerText = "Zurück zur Startseite";
+       div.appendChild(a);
+       centerAbsoluteElement(div);
+       addActionButtonForDiv(div, 'remove');
+       document.body.appendChild(div);
+    });
 }
 
 function removeColor(colorId) {
