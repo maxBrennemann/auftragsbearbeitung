@@ -12,6 +12,7 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, height=device-height">
 	<title>b-schriftung - <?=$pageName?></title>
 	<meta name="Description" content="Auftragsübersicht">
@@ -50,6 +51,6 @@
 	<header>
 		<h1><?=$pageName?></h1>
 		<hr class="headerline">
-		<div style="margin: auto; width: 80%; margin-top: 12px;"><a href="<?=Link::getPageLink("")?>">Home</a>/<a href="<?=Link::getPageLink($page)?>"><?=$pageName?></a></div>
+		<div style="margin: auto; width: 80%; margin-top: 12px;"><a href="<?=Link::getPageLink("")?>" id="home_link">Home</a>/<a href="<?=Link::getPageLink($page)?>"><?=$pageName?></a></div>
 	</header>
 	<main>
