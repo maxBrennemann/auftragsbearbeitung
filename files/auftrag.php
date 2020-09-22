@@ -77,11 +77,14 @@ if ($auftragsId == -1) : ?>
 		<a href="<?=Link::getPageLink("kunde")?>?id=<?=$auftrag->getKundennummer()?>">Kunde <span id="kundennummer"><?=$auftrag->getKundennummer()?></span> zeigen</a>
 	</aside>
 	<div class="defCont auftragsinfo">
-		<span><u>Auftragsnummer:</u> <span id="auftragsnummer"><?=$auftrag->getAuftragsnummer()?></span></span><br>
+		<span><u>Auftragsnummer:</u> <span id="auftragsnummer"><?=$auftrag->getAuftragsnummer()?></span></span>
+		<br>
 		<span><button onclick="print('auftragsnummer', 'Auftrag');">Auftragsblatt anzeigen</button></span>
 		<span><button onclick="rechnungErstellen();">Rechnung generieren</button></span>
-		<span><button onclick="archvieren();">Auftrag archivieren</button></span><br>
-		<span><u>Beschreibung:</u><br><?=$auftrag->getAuftragsbeschreibung()?></span><br>
+		<?php if ($auftrag->getIsArchiviert() == false) :?><span><button onclick="archvieren();">Auftrag archivieren</button></span><br><?php endif; ?>
+		<br>
+		<span><u>Beschreibung:</u><br><?=$auftrag->getAuftragsbeschreibung()?></span>
+		<br>
 	</div>
 	<div class="defCont schritte">
 		<span><u>Schritte:</u><br>
