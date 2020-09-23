@@ -107,7 +107,7 @@ class InteractiveFormGenerator extends FormGenerator {
 		return $button;
 	}
 
-	public function create($data, $columnNames) {
+	public function create($data, $columnNames, $default = "Schrittnummer") {
 		if ($this->isRowDeletable) {
 			$editcolumn = array("COLUMN_NAME" => "Bearbeitung");
 			array_push($columnNames, $editcolumn);
@@ -124,7 +124,7 @@ class InteractiveFormGenerator extends FormGenerator {
 			array_push($columnNames, $editcolumn);
 
 			for ($i = 0; $i < sizeof($data); $i++) {
-				$row = $data[$i]["Schrittnummer"];
+				$row = $data[$i][$default];
 
 				$update =  $this->updateIsDone($row);
 				$edit = $this->addEditButton($row);
