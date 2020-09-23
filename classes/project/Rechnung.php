@@ -54,7 +54,7 @@ class Rechnung extends Auftrag {
 		$form = new InteractiveFormGenerator("auftrag", "Datum", "Rechnungsnummer 0 ");
 		$form->setRowDone(true);
 
-		$table = $form->create($data, $column_names);
+		$table = $form->create($data, $column_names, "Auftragsnummer");
 		return $table;
 	}
 
