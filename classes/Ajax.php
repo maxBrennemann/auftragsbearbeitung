@@ -187,14 +187,21 @@ class Ajax {
 				echo $Auftrag->getOpenBearbeitungsschritteAsTable();
 			break;
 			case "setTo":
-				require_once("classes/project/InteractiveFormGenerator.php");
-				$table = unserialize($_SESSION['storedTable']);
-				$auftragsId = $_POST['auftrag'];
-				$row =  $_POST['row'];
-				$table->setIdentifier("Schrittnummer");
-				$date =  date("Y-m-d");
-				$table->addParam("finishingDate", $date);
-				$table->editRow($row, "istErledigt", "0");
+				if (isset($_POST['auftrag'])) {
+					require_once("classes/project/InteractiveFormGenerator.php");
+					$table = unserialize($_SESSION['storedTable']);
+					$auftragsId = $_POST['auftrag'];
+					$row =  $_POST['row'];
+					$table->setIdentifier("Schrittnummer");
+					$date =  date("Y-m-d");
+					$table->addParam("finishingDate", $date);
+					$table->editRow($row, "istErledigt", "0");
+				} else {
+					require_once("classes/project/Rechnung.php");
+					$rechnung = $_POST['rechnung'];
+					DBAccess::updateQuery("UPDATE auftrag SET Bezahlt = 1 WHERE Auftragsnummer = $rechnung");
+					echo Rechnung::getOffeneRechnungen();
+				}
 			break;
 			case "delete":
 				$table = unserialize($_SESSION['storedTable']);
