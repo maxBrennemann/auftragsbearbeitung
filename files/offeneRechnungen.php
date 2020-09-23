@@ -3,4 +3,4 @@
 
     $showOffeneRechnungen = Rechnung::getOffeneRechnungen();
 ?>
-<?=$showOffeneRechnungen?>
+<span id="table"><?=$showOffeneRechnungen?></span>
