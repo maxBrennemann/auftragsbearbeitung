@@ -110,7 +110,18 @@ function addBearbeitungsschritte() {
                 steps[1] = 0;
             }
 
-            var add = new AjaxCall(`getReason=insertStep&bez=${steps[0]}&prio=${steps[1]}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
+            var el = document.getElementsByName("isAlreadyDone")[0];
+            var radio = el.elements["isDone"];
+            var hide;
+            for (var i = 0; i < radio.length; i++) {
+                if (radio[i].checked) {
+                    hide = radio[i].value;
+                    break;
+                }
+            }
+            hide = hide == "hide" ? 0 : 1; // 0 = hide, 1 = show
+
+            var add = new AjaxCall(`getReason=insertStep&bez=${steps[0]}&datum=${steps[1]}&auftrag=${globalData.auftragsId}&hide=${hide}&prio=${steps[2]}`, "POST", window.location.href);
             add.makeAjaxCall(function (response) {
                 console.log(response);
                 document.getElementById("stepTable").innerHTML = response;

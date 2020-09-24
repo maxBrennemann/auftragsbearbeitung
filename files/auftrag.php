@@ -100,9 +100,10 @@ if ($auftragsId == -1) : ?>
 		<div class="innerDefCont" id="bearbeitungsschritte" style="display: none">
 			<span>Bezeichnung: <br><input class="bearbeitungsschrittInput" type="text" max="128"></span><br>
 			<span>Datum: <br><input class="bearbeitungsschrittInput" type="date" max="32"></span><br>
+			<span>Priorität: <br><input class="bearbeitungsschrittInput" type="range" min="0" max="100" step="1.0"></span><br>
 			<form name="isAlreadyDone">
-				<input onchange="radio('hide')" type="radio" name="showDone" value="hide" checked>Noch zu erledigen<br>
-				<input onchange="radio('show')" type="radio" name="showDone" value="show">Schon erledigt<br>
+				<input type="radio" name="isDone" value="show" checked>Noch zu erledigen<br>
+				<input type="radio" name="isDone" value="hide">Schon erledigt<br>
 			</form>
 		</div>
 	</div>
