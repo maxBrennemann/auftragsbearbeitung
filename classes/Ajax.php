@@ -70,6 +70,7 @@ class Ajax {
 				$data = $_POST['data'];
 				require_once('classes/project/Liste.php');
 				Liste::saveData($data);
+				echo Link::getPageLink("listmaker");
 			break;
 			case "createAuftrag":
 				$bez = $_POST['bez'];

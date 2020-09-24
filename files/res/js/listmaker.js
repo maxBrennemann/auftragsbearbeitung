@@ -60,7 +60,7 @@ function saveList() {
         listenpunktObj.auswahl = {}
 
         for (var n = 0; n < currLp.auswahl.length; n++) {
-            var currAuswahl = currLp.auswahl[i];
+            var currAuswahl = currLp.auswahl[n];
 
             var auswahlObj = {};
 
@@ -78,6 +78,7 @@ function saveList() {
     var sendListData = new AjaxCall(`getReason=saveList&data=${json}`, "POST", window.location.href);
     sendListData.makeAjaxCall(function (response) {
         console.log(response);
+        location.href = response;
     })
 }
 

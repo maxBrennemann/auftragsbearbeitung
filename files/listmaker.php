@@ -14,7 +14,7 @@
     <input id="newListName">
     <button id="createNewList" onclick="createNewList();">Neue Liste erstellen</button>
     <br>
-    <button>Liste speichern</button>
+    <button onclick="saveList();">Liste speichern</button>
 </div>
 <div class="defCont left">
     <h3>Neuen Unterpunkt:</h3>
@@ -68,6 +68,6 @@
     <?=$list->toHTML()?>
 <?php else : ?>
     <h3>Alle Listen</h3>
-    <a href="<?=Link::getPageLink("listmaker");?>?new">Neue Liste erstellen</a>
+    <div class="defCont"><a href="<?=Link::getPageLink("listmaker");?>?new">Neue Liste erstellen</a></div>
     <?=$showLists?>
 <?php endif; ?>
