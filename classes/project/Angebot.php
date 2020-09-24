@@ -21,6 +21,8 @@ if (0 > version_compare(PHP_VERSION, '5')) {
  * offer_id is the number of the current offer
  * offer_x_pc is the pattern for the posten counter for offer x
  * offer_x_y is the pattern for a specific posten for offer x 
+ * offer_is_order is the boolean for whether an offer is created or not
+ * offer_order is the order id
 */
 
 require_once('Auftrag.php');
@@ -163,12 +165,16 @@ class Angebot {
         array_push($this->posten, $posten);
     }
 
-    public function storeOffer() {
+    static function setIsOrder() {
+        $_SESSION['offer_is_order'] = true;
+    }
+
+    public function storeOffer($orderId) {
         DBAccess::insertQuery("INSERT INTO angebot (kdnr, `status`) VALUES ({$this->kdnr}, 0)");
         $this->loadPostenFromSession();
         if ($this->posten != null) {
             foreach ($this->posten as $p) {
-                $p->storeToDB(-1);
+                $p->storeToDB($orderId);
             }
         }
 

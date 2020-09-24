@@ -67,7 +67,7 @@ abstract class Posten {
 		$postennummer++;
 
 		if ((int) $auftragsnummer != -1) {
-			$auftragsverlauf = new Auftragsverlauf($_POST['auftrag']);
+			$auftragsverlauf = new Auftragsverlauf((int) $auftragsnummer); //new Auftragsverlauf($_POST['auftrag']);
 		}
 		
 		switch ($type) {

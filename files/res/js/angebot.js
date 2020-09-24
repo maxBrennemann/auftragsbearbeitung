@@ -142,7 +142,7 @@ function reloadIFrame() {
 function storeOffer() {
     var customerId = document.getElementById("kdnr").value;
     var storeOffer = new AjaxCall(`getReason=storeOffer&customerId=${customerId}`);
-    storeOffer.makeAjaxCall(function (response) {
-       location.reload();
-    });
+    storeOffer.makeAjaxCall(function (response, args) {
+        window.location.href = (document.getElementById("home_link").href) + "neuer-auftrag?kdnr=" + args[0];
+    }, customerId);
 }
