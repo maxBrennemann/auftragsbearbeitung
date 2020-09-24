@@ -15,6 +15,7 @@ class Leistung extends Posten {
     private $einkaufspreis = 0;
     private $bezeichnung = null;
 	private $beschreibung = null;
+	private $leistungsnummer = 0;
 	protected $postenTyp = "leistung";
 	protected $ohneBerechnung = false;
 
@@ -22,6 +23,7 @@ class Leistung extends Posten {
 		$this->beschreibung = $beschreibung;
 		$this->preis = (int) $speziefischerPreis;
 		$this->einkaufspreis = (int) $einkaufspreis;
+		$this->leistungsnummer = $leistungsnummer;
 
 		$data =  DBAccess::selectQuery("SELECT Bezeichnung FROM leistung WHERE Nummer = $leistungsnummer");
 		if ($data == null) {
@@ -40,6 +42,7 @@ class Leistung extends Posten {
 		$arr['Bezeichnung'] = $this->bezeichnung;
 		$arr['Beschreibung'] = $this->beschreibung;
 		$arr['Einkaufspreis'] = $this->einkaufspreis;
+		$arr['Leistungsnummer'] = $this->leistungsnummer;
 
 		return $arr;
 	}

@@ -90,7 +90,14 @@ class Ajax {
 
 				DBAccess::insertQuery($insertQuery);
 
-				echo Link::getPageLink("auftrag") . "?id=$maxAuftragsnr";
+				if (isset($_SESSION['offer_is_order']) && $_SESSION['offer_is_order'] == true) {
+					$isLoadPosten = true;
+				} else {
+					$isLoadPosten = false;
+				}
+
+				$data = array("responseLink" => Link::getPageLink("auftrag") . "?id=$maxAuftragsnr", "loadFromOffer" => $isLoadPosten, "orderId" => $maxAuftragsnr);
+				echo json_encode($data, JSON_FORCE_OBJECT);
 
 				//Statistics::auftragEroeffnen(new Auftrag($maxAuftragsnr));
 			break;
@@ -276,9 +283,10 @@ class Ajax {
 				$angebot->addPosten($leistungsPosten);
 			break;
 			case "storeOffer":
-				$customerId = $_POST['customerId'];
+				/*$customerId = $_POST['customerId'];
 				$angebot = new Angebot($customerId);
-				$angebot->storeOffer();
+				$angebot->storeOffer();*/
+				Angebot::setIsOrder();
 			break;
 			case "addAdress":
 				$strasse = $_POST['strasse'];
@@ -381,6 +389,14 @@ class Ajax {
 				$auftragsId = $_POST['id'];
 				$auftrag = new Auftrag($auftragsId);
 				echo $auftrag->getAuftragspostenAsTable();
+			break;
+			case "loadPosten":
+				if (isset($_SESSION['offer_is_order']) && $_SESSION['offer_is_order'] == true) {
+					$offerId = $_SESSION['offer_id'];
+					$orderId = $_POST['auftragsId'];
+					$angebot = new Angebot();
+					$angebot->storeOffer($orderId);
+				}
 			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";

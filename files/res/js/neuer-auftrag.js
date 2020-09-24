@@ -56,12 +56,21 @@ function auftragHinzufuegen() {
     console.log(paramString);
 
     var createAuftrag = new AjaxCall(paramString, "POST", window.location.href);
-    createAuftrag.makeAjaxCall(function (responseLink) {
+    createAuftrag.makeAjaxCall(function (response) {
+        response = JSON.parse(response);
+        responseLink = response.responseLink;
+        loadFromOffer = response.loadFromOffer;
+
         console.log(responseLink);
 
         document.getElementById("absenden").disabled = true;
         document.getElementById("showLinkToOrder").style.display = "inline";
         document.getElementById("showLinkToOrder").innerHTML = `<p>Falls Sie nicht automatisch weitergeleitet werden, bitte <a href=\"${responseLink}\">hier klicken</a></p>`;
+
+        if (loadFromOffer) {
+            var loadPosten = new AjaxCall(`getReason=loadPosten&auftragsId=${response.orderId}`);
+            loadPosten.makeAjaxCall(function (response) {});
+        }
 
         window.location.href = responseLink;
     });
