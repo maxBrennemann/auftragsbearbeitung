@@ -73,7 +73,7 @@ class Liste {
     $data = "";
     $pageLink = Link::getPageLink("listmaker");
     foreach ($listIds as $lid) {
-      $data .= "<div><a href=\"{$pageLink}?lid={$lid['id']}\">{$lid['name']}</a></div>";
+      $data .= "<div class=\"defCont\"><a href=\"{$pageLink}?lid={$lid['id']}\">{$lid['name']}</a></div>";
     }
 
     return $data;
