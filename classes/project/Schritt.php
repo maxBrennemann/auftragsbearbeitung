@@ -46,9 +46,10 @@ class Schritt {
 		$dat = $data['Datum'];
 		$pri = $data['Priority'];
 		$auf = $data['Auftragsnummer'];
+		$erl = $data['hide'];
 
 		$auftragsverlauf = new Auftragsverlauf($auf);
-		$postennummer = DBAccess::insertQuery("INSERT INTO `schritte` (`Auftragsnummer`, `istAllgemein`, `Bezeichnung`, `Datum`, `Priority`, `istErledigt`) VALUES ($auf, 1, '$bez', '$dat', $pri, 1)");
+		$postennummer = DBAccess::insertQuery("INSERT INTO `schritte` (`Auftragsnummer`, `istAllgemein`, `Bezeichnung`, `Datum`, `Priority`, `istErledigt`) VALUES ($auf, 1, '$bez', '$dat', $pri, $erl)");
 		$auftragsverlauf->addToHistory($postennummer, 2, "added");
 	}
 

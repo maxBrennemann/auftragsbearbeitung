@@ -165,9 +165,10 @@ class Ajax {
 			case "insertStep":
 				$data = array();
 				$data['Bezeichnung'] = $_POST['bez'];
-				$data['Datum'] = date("Y-m-d");
+				$data['Datum'] = $_POST['datum'];
 				$data['Priority'] = $_POST['prio'];
 				$data['Auftragsnummer'] = $_POST['auftrag'];
+				$data['hide'] = $_POST['hide'];
 				require_once("classes/project/Schritt.php");
 				require_once("classes/project/Auftrag.php");
 				Schritt::insertStep($data);
