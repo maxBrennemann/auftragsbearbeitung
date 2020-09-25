@@ -313,21 +313,21 @@ class Ajax {
 				$query .= "((SELECT auftrag.Kundennummer AS Kundennummer FROM auftrag WHERE auftrag.Auftragsnummer = $auftrag), $auftrag, ";
 				$query .= "'$farbname', '$farbe', '$bezeichnung', '$hersteller')";
 
-				DBAccess::insertQuery($query);
+				$id = DBAccess::insertQuery($query);
+				DBAccess::insertQuery("INSERT INTO farben_auftrag (id_farbe, id_auftrag) VALUES ($id, $auftrag)");
 
 				$auftrag = new Auftrag($auftrag);
 				$data = array("farben" => $auftrag->getFarben(), "addFarben" => $auftrag->getAddColors());
 				echo json_encode($data, JSON_FORCE_OBJECT);
 			break;
 			case "removeColor":
-				$colorId = $_POST['colorid'];
+				$colorId = $_POST['colorId'];
 				$auftragsId = $_POST['auftrag'];
-
+				
 				DBAccess::deleteQuery("DELETE FROM farben_auftrag WHERE id_farbe = $colorId AND id_auftrag = $auftragsId");
 
-				$auftrag = new Auftrag($auftrag);
-				$data = array("farben" => $auftrag->getFarben(), "addFarben" => $auftrag->getAddColors());
-				echo json_encode($data, JSON_FORCE_OBJECT);
+				$auftrag = new Auftrag($auftragsId);
+				echo $auftrag->getFarben();
 			break;
 			case "archivieren":
 				require_once('classes/project/Auftrag.php');

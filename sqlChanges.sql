@@ -147,3 +147,6 @@ INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'pd
 
 /* Änderungen 23.09.2020 */
 INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '16', 'head', 'offene-rechnungen.js', '0', 'js')
+
+/* Änderungen 24.09.2020 */
+ALTER TABLE `farben_auftrag` ADD PRIMARY KEY( `id_farbe`, `id_auftrag`);

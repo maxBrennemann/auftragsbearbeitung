@@ -297,8 +297,8 @@ function removeColor(colorId) {
     var arch = new AjaxCall(`getReason=removeColor&auftrag=${globalData.auftragsId}&colorId=${colorId}`);
     arch.makeAjaxCall(function (colorHTML) {
         var showColors = document.getElementById("showColors");
-        var data = JSON.parse(colorHTML);
-        showColors.innerHTML = data.farben;
+        //var data = JSON.parse(colorHTML);
+        showColors.innerHTML = colorHTML; //data.farben;
     });
 }
 
