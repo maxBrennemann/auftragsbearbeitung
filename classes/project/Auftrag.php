@@ -229,7 +229,7 @@ class Auftrag implements StatisticsInterface {
 	}
 
 	public function getFarben() {
-		$farben = DBAccess::selectQuery("SELECT Farbe, Farbwert, Nummer FROM farben WHERE Kundennummer = {$this->getKundennummer()} AND Auftragsnummer = {$this->getAuftragsnummer()}");
+		$farben = DBAccess::selectQuery("SELECT Farbe, Farbwert, Nummer FROM farben, farben_auftrag WHERE Auftragsnummer = id_auftrag AND id_auftrag = {$this->getAuftragsnummer()}");
 		$farbTable = "";
 		foreach ($farben as $farbe) {
 			$farbTable .= "<div class=\"singleColorContainer\"><p class=\"singleColorName\">{$farbe['Farbe']}</p><div class=\"farbe\" style=\"background-color: #{$farbe['Farbwert']}\"></div><button onclick=\"removeColor({$farbe['Nummer']});\">×</button></div><br>";

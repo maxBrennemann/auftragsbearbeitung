@@ -98,7 +98,7 @@ class InteractiveFormGenerator extends FormGenerator {
 	}
 
 	private function addEditButton() {
-		$button = "<button class='actionButton' onclick=\"editRow()\" = 'Bearbeiten' disabled>&#x270E;</button>";
+		$button = "<button class='actionButton' onclick=\"editRow()\" title='Bearbeiten' disabled>&#x270E;</button>";
 		return $button;
 	}
 
