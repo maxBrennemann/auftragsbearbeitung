@@ -118,6 +118,16 @@ function removeElement(element) {
 	}
 }
 
+function getDate(offset = 0) {
+	var today = new Date(Date.now() + offset);
+	var dd = String(today.getDate()).padStart(2, '0');
+	var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+	var yyyy = today.getFullYear();
+
+	today = yyyy + "-" + mm + "-" + dd;
+	return today;
+}
+
 /*
 * data should be an array containing arrays the size of a row, the data[0] array should contain the heading
 * of the table, so the size of data is rows + 1;
