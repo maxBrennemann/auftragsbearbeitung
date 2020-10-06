@@ -35,14 +35,15 @@
 		$insertString .= "('$firmenname', '$anrede', '$vorname', '$nachname', ";
 		$insertString .= "'$strasse', '$hausnummer', $plz, '$ort', '$email', ";
 		$insertString .= "'$telfestnetz', '$telmobil')";
-		DBAccess::insertQuery($insertString);
+		
+		$newCustomerId = DBAccess::insertQuery($insertString);
 
 		if ($nachnameAnspr != "") {
 			$kdnr = DBAccess::selectQuery("SELECT MAX(Kundennummer) FROM kunde")[0]["MAX(Kundennummer)"];
 			$insertString = "INSERT INTO ansprechpartner (Kundennummer, Vorname, Nachname,";
 			$insertString .= " Email, Durchwahl, Mobiltelefonnummer) VALUES ($kdnr, '$vornameAnspr', ";
 			$insertString .= "'$nachnameAnspr', '$emailAnspr', '$telAnspr', '$telmobilAnspr')";
-			DBAccess::insertQuery($insertString);
+			$newCustomerId = DBAccess::insertQuery($insertString);
 		}
 	}
 
@@ -55,7 +56,7 @@
 		<div class="basicInfo">
 			<p>
 				<label>Firmenname
-					<input class="dataInput" type="text" name="firmenname">
+					<input class="dataInput" type="text" name="firmenname" autocomplete="some-unrecognised-value">
 				</label>
 			</p>
 			<div class="specificData">
@@ -71,27 +72,27 @@
 				</p>
 				<p>
 					<label>Vorname
-						<input class="dataInput" type="text" name="vornameAnspr">
+						<input class="dataInput" type="text" name="vornameAnspr" autocomplete="some-unrecognised-value">
 					</label>
 				</p>
 				<p>
 					<label>Nachname
-						<input class="dataInput" type="text" name="nachnameAnspr">
+						<input class="dataInput" type="text" name="nachnameAnspr" autocomplete="some-unrecognised-value">
 					</label>
 				</p>
 				<p>
 					<label>Email
-						<input class="dataInput" type="email" name="emailAnspr">
+						<input class="dataInput" type="email" name="emailAnspr" autocomplete="some-unrecognised-value">
 					</label>
 				</p>
 				<p>
 					<label>Durchwahl
-						<input class="dataInput" type="text" name="telAnspr">
+						<input class="dataInput" type="text" name="telAnspr" autocomplete="some-unrecognised-value">
 					</label>
 				</p>
 				<p>
 					<label>Mobilnummer
-						<input class="dataInput" type="text" name="telMobilAnspr">
+						<input class="dataInput" type="text" name="telMobilAnspr" autocomplete="some-unrecognised-value">
 					</label>
 				</p>
 			</div>
@@ -108,49 +109,53 @@
 			</p>
 			<p>
 				<label>Vorname
-					<input class="dataInput" type="text" name="vorname">
+					<input class="dataInput" type="text" name="vorname" autocomplete="some-unrecognised-value">
 				</label>
 			</p>
 			<p>
 				<label>Nachname
-					<input class="dataInput" type="text" name="nachname">
+					<input class="dataInput" type="text" name="nachname" autocomplete="some-unrecognised-value">
 				</label>
 			</p>
 		</div>
 		<p>
 			<label>Straße
-				<input class="dataInput" type="text" name="strasse">
+				<input class="dataInput" type="text" name="strasse" autocomplete="some-unrecognised-value">
 			</label>
 		</p>
 		<p>
 			<label>Hausnummer
-				<input class="dataInput" type="text" name="hausnummer">
+				<input class="dataInput" type="text" name="hausnummer" autocomplete="some-unrecognised-value">
 			</label>
 		</p>
 		<p>
 			<label>Postleitzahl
-				<input class="dataInput" type="number" name="plz">
+				<input class="dataInput" type="number" name="plz" autocomplete="some-unrecognised-value">
 			</label>
 		</p>
 		<p>
 			<label>Ort
-				<input class="dataInput" type="text" name="ort">
+				<input class="dataInput" type="text" name="ort" autocomplete="some-unrecognised-value">
 			</label>
 		</p>
 		<p>
 			<label>Email
-				<input class="dataInput" type="email" name="emailadress">
+				<input class="dataInput" type="email" name="emailadress" autocomplete="some-unrecognised-value">
 			</label>
 		</p>
 		<p>
 			<label>Telefon Festnetz
-				<input class="dataInput" type="tel" name="telfestnetz" pattern="[0-9]{5}\/[0-9]+">
+				<input class="dataInput" type="tel" name="telfestnetz" pattern="[0-9]{5}\/[0-9]+" autocomplete="some-unrecognised-value">
+				<br>
+				<span class="hinweis">Muster: 09933/1234</span>
 			</label>
 		</p>
 		<div class="basicInfo" style="display: none;">
 			<p>
 				<label>Telefon Mobil
-					<input class="dataInput" type="tel" name="telmobil" pattern="[0][1-9]{3} [0-9]+">
+					<input class="dataInput" type="tel" name="telmobil" pattern="[0][1-9]{3} [0-9]+" autocomplete="some-unrecognised-value">
+					<br>
+					<span class="hinweis">Muster: 0172 1234567</span>
 				</label>
 			</p>
 		</div>
@@ -161,6 +166,8 @@
 <?php else: ?>
 	<p>Kunde wurde hinzugefügt.</p>
 	<a href="<?=Link::getPageLink("neuer-kunde");?>">Weiteren Kunden hinzufügen.</a>
+	<br>
+	<a href="<?=Link::getPageLink("kunde");?>?id=<?=$newCustomerId?>">Zum neuen Kunden.</a>
 <?php endif; ?>
 <style>
 	form p {
@@ -189,5 +196,10 @@
 		background: #B2B2BE;
 		border: none;
 		padding: 15px;
+	}
+
+	.hinweis {
+		font-size: 0.9em;
+    	font-family: monospace;
 	}
 </style>
