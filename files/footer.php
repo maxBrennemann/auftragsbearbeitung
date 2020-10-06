@@ -23,6 +23,7 @@
 			<a class="linkBundleLink" href="<?=$diagramme?>">Diagramme</a><br>
 			<a class="linkBundleLink" href="<?=$leistungen?>">Leistungen</a><br>
 		</div>
+		<p style="font-size: 0.5em; color: grey"><?=getCurrentVersion()?></p>
 	</footer>
 
 	<?php 
