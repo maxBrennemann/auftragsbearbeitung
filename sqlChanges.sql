@@ -143,10 +143,10 @@ ALTER TABLE `produkt` ADD `einkaufs_id` INT NOT NULL AFTER `Bild`;
 
 /* Änderungen 17.09.2020 */
 INSERT INTO attachments (`articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (5, 'head', 'angebot.js', 0, 'js');
-INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'pdf', 'pdf', 'pdf')
+INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'pdf', 'pdf', 'pdf');
 
 /* Änderungen 23.09.2020 */
-INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '16', 'head', 'offene-rechnungen.js', '0', 'js')
+INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '16', 'head', 'offene-rechnungen.js', '0', 'js');
 
 /* Änderungen 24.09.2020 */
 ALTER TABLE `farben_auftrag` ADD PRIMARY KEY( `id_farbe`, `id_auftrag`);
