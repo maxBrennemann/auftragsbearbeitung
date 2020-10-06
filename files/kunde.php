@@ -60,34 +60,71 @@
 	if ($nextNumber == -1) $linkBackward = "#";
 
 ?>
-<p><a href="<?=$linkBackward?>">🡄</a><a href="<?=$linkForward?>" id="forwards">🡆</a></p>
+<p><a href="<?=$linkBackward?>">&#129092;</a><a href="<?=$linkForward?>" id="forwards">&#129094;</a></p>
 <?php if ($kundenid == -1 && !$isSearch && !$showList) : ?>
 	<p>Kunde kann nicht angezeigt werden.</p>
 <?php elseif ($kundenid == -1 && $isSearch) : ?>
 	<div class="search">
 		<p>Suche: <input value="<?=$_GET['query']?>" id="performSearch" data-url="<?=Link::getPageLink('kunde')?>">
-		<span id="lupeSpan"><span id="lupe">⚲</span></span></p>
+		<span id="lupeSpan"><span id="lupe">&#9906;</span></span></p>
 	</div>
 	<?=$searchTable?>
 <?php elseif ($kundenid == -1 && $showList) : ?>
+	<div class="search">
+		<p>Suche: <input value="" placeholder="Daten suchen" id="performSearch" data-url="<?=Link::getPageLink('kunde')?>">
+		<span id="lupeSpan"><span id="lupe">&#9906;</span></span></p>
+	</div>
 	<div id="gridShowCustomerList"><?=$showListHTML?></div>
 <?php else: ?>
 	<h3>Kundendaten</h3>
 	<div class="gridCont">
 		<div id="showKundendaten">
-			<ul id="kundenDatenList">
-				<li>Kundennummer: <span id="kundennummer"><?=$kunde->getKundennummer()?></span></li>
-				<li>Vorname: <span class="editable" contenteditable data-col="Vorname"><?=$kunde->getVorname()?></span></li>
-				<li>Nachname: <span class="editable" contenteditable data-col="Nachname"><?=$kunde->getNachname()?></span></li>
-				<li>Firmenname: <span class="editable" contenteditable data-col="Firmenname"><?=$kunde->getFirmenname()?></span></li>
-				<li>Straße: <span class="editable" contenteditable data-col="Strasse"><?=$kunde->getStrasse()?></span></li>
-				<li>Hausnummer: <span class="editable" contenteditable data-col="Hausnummer"><?=$kunde->getHausnummer()?></span></li>
-				<li>Postleitzahl: <span class="editable" contenteditable data-col="Postleitzahl"><?=$kunde->getPostleitzahl()?></span></li>
-				<li>Ort: <span class="editable" contenteditable data-col="Ort"><?=$kunde->getOrt()?></span></li>
-				<li>Email: <span class="editable" contenteditable data-col="Email"><?=$kunde->getEmail()?></span></li>
-				<li>Telefon Festnetz: <span class="editable" contenteditable data-col="TelefonFestnetz"><?=$kunde->getTelefonFestnetz()?></span></li>
-				<li>Telefon Mobil: <span class="editable" contenteditable data-col="TelefonMobil"><?=$kunde->getTelefonMobil()?></span></li>
-			</ul>
+			<table>
+				<tr>
+					<th>Kundennummer:</th>
+					<td id="kundennummer"><?=$kunde->getKundennummer()?></td>
+				</tr>
+				<tr>
+					<th>Vorname:</th>
+					<td class="editable" contenteditable data-col="Vorname"><?=$kunde->getVorname()?></td>
+				</tr>
+				<tr>
+					<th>Nachname:</th>
+					<td class="editable" contenteditable data-col="Nachname"><?=$kunde->getNachname()?></td>
+				</tr>
+				<tr>
+					<th>Firmenname:</th>
+					<td class="editable" contenteditable data-col="Firmenname"><?=$kunde->getFirmenname()?></td>
+				</tr>
+				<tr>
+					<th>Straße:</th>
+					<td class="editable" contenteditable data-col="Straße"><?=$kunde->getStrasse()?></td>
+				</tr>
+				<tr>
+					<th>Hausnummer:</th>
+					<td class="editable" contenteditable data-col="Hausnummer"><?=$kunde->getHausnummer()?></td>
+				</tr>
+				<tr>
+					<th>Postleitzahl:</th>
+					<td class="editable" contenteditable data-col="Postleitzahl"><?=$kunde->getPostleitzahl()?></td>
+				</tr>
+				<tr>
+					<th>Ort:</th>
+					<td class="editable" contenteditable data-col="Ort"><?=$kunde->getOrt()?></td>
+				</tr>
+				<tr>
+					<th>Email:</th>
+					<td class="editable" contenteditable data-col="Email"><?=$kunde->getEmail()?></td>
+				</tr>
+				<tr>
+					<th>Telefon Festnetz:</th>
+					<td class="editable" contenteditable data-col="TelefonFestnetz"><?=$kunde->getTelefonFestnetz()?></td>
+				</tr>
+				<tr>
+					<th>Telefon Mobil:</th>
+					<td class="editable" contenteditable data-col="TelefonMobil"><?=$kunde->getTelefonMobil()?></td>
+				</tr>	
+			</table>
 			<button id="sendKundendaten" disabled onclick="kundendatenAbsenden()">Absenden</button>
 		</div>
 		<div id="ansprechpartner">
