@@ -118,6 +118,26 @@ class InteractiveFormGenerator extends FormGenerator {
 			}
 		}
 
+		if ($this->isRowEditable) {
+			$editcolumn = array("COLUMN_NAME" => "Bearbeitung");
+			
+			$hasBearbeitung = false;
+			for ($i = 0; $i < sizeof($columnNames); $i++) {
+				if ($columnNames[$i]["COLUMN_NAME"] == "Bearbeitung") {
+					$hasBearbeitung = true;
+				}
+			}
+
+			if (!$hasBearbeitung) {
+				array_push($columnNames, $editcolumn);
+			}
+
+			for ($i = 0; $i < sizeof($data); $i++) {
+				$btn =  $this->addEditButton($i);
+				$data[$i]["Bearbeitung"] .= $btn;
+			}
+		}
+
 		/* adds three buttons, needs a rework */
 		if ($this->isRowDone) {
 			$editcolumn = array("COLUMN_NAME" => "Aktionen");

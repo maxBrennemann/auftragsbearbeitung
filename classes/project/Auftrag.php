@@ -152,6 +152,7 @@ class Auftrag implements StatisticsInterface {
 
 		$form = new InteractiveFormGenerator("");
 		$form->setRowDeletable(true);
+		$form->setRowEditable(true);
 		return $form->create($data, $column_names);
 	}
 
