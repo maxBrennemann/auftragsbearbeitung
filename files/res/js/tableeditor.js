@@ -95,7 +95,7 @@ window.onload = function() {
 	init();
 }
 
-class Table {
+/*class Table {
     constructor(html_table) {
         this.html_table = html_table;
         this.rows = html_table.rows;
@@ -111,4 +111,4 @@ class Table {
         this.rows.sort((a, b) => a[rowId] - b[rowId]);
         //this.html_table.rows = 
     }
-}
+}*/

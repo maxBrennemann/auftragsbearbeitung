@@ -239,11 +239,11 @@ function autosubmit() {
 
 function sortTable(element, id, direction) {
 	var table = element.parentNode.parentNode.parentNode;
-	var t = new Table(table);
+	var t = new TableClass(table);
 	t.sortByRow(id, direction);
 }
 
-class Table {
+class TableClass {
     constructor(html_table) {
         this.html_table = html_table;
         this.rows = html_table.rows;
