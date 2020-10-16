@@ -12,7 +12,8 @@ function init() {
 	addableTables();
 }
 
-function addableTables() {
+function addableTables(tname) {
+    tableName = tname;
     var allowAddingContent = document.getElementsByClassName("allowAddingContent");
     var addingContentColumn = document.getElementsByClassName("addingContentColumn");
 
@@ -92,4 +93,22 @@ function addContent() {
 
 window.onload = function() {
 	init();
+}
+
+class Table {
+    constructor(html_table) {
+        this.html_table = html_table;
+        this.rows = html_table.rows;
+
+        var temp = [];
+        for (var i = 0; i < this.rows; i++) {
+            temp.push(this.rows[i]);
+        }
+        this.rows = temp;
+    }
+
+    sortByRow(rowId) {
+        this.rows.sort((a, b) => a[rowId] - b[rowId]);
+        //this.html_table.rows = 
+    }
 }

@@ -236,3 +236,46 @@ function autosubmit() {
 		}.bind(btn));
 	}
 }
+
+function sortTable(element, id, direction) {
+	var table = element.parentNode.parentNode.parentNode;
+	var t = new Table(table);
+	t.sortByRow(id, direction);
+}
+
+class Table {
+    constructor(html_table) {
+        this.html_table = html_table;
+        this.rows = html_table.rows;
+    }
+
+    sortByRow(rowId, direction) {
+        var switching = true, x, y, shouldSwitch;
+		while (switching) {
+			switching = false;
+			
+			for (var i = 1; i < (this.rows.length - 1); i++) {
+				shouldSwitch = false;
+				x = this.rows[i].getElementsByTagName("TD")[rowId];
+				y = this.rows[i + 1].getElementsByTagName("TD")[rowId];
+				
+				if (direction) {
+					if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+						shouldSwitch = true;
+						break;
+					}
+				} else {
+					if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+						shouldSwitch = true;
+						break;
+					}
+				}
+			}
+			if (shouldSwitch) {
+			
+			this.rows[i].parentNode.insertBefore(this.rows[i + 1], this.rows[i]);
+			switching = true;
+			}
+		}
+    }
+}
