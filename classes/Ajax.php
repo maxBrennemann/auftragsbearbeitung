@@ -41,7 +41,13 @@ class Ajax {
 						$showData = false;
 					}
 
-					$table = FormGenerator::createTable($type, true, $showData, "");
+					if (isset($_POST['sendTo'])) {
+						$sendTo = $_POST['sendTo'];
+					} else {
+						$sendTo = "";
+					}
+
+					$table = FormGenerator::createTable($type, true, $showData,$sendTo);
 					echo $table;
 				}
 			break;
@@ -124,6 +130,18 @@ class Ajax {
 				$data['Auftragsnummer'] = $_POST['auftrag'];
 				Posten::insertPosten("produkt", $data);
 			break;
+			case "insertProductCompact":
+				$data = array();
+				$data['amount'] = (int) $_POST['menge'];
+				$data['marke'] = $_POST['marke'];
+				$data['ekpreis'] = str_replace(",", ".", $_POST['ekpreis']);
+				$data['vkpreis'] = str_replace(",", ".", $_POST['vkpreis']);
+				$data['name'] = $_POST['name'];
+				$data['beschreibung'] = $_POST['beschreibung'];
+				$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
+				$data['Auftragsnummer'] = (int) $_POST['auftrag'];
+				Posten::insertPosten("compact", $data);
+			break;
 			case "insertAnspr":
 				$vorname = $_POST['vorname'];
 				$nachname = $_POST['nachname'];
@@ -157,8 +175,8 @@ class Ajax {
 				$data = array();
 				$data['Leistungsnummer'] = $_POST['lei'];
 				$data['Beschreibung'] = $_POST['bes'];
-				$data['Einkaufspreis'] = $_POST['ekp'];
-				$data['SpeziefischerPreis'] = $_POST['pre'];
+				$data['Einkaufspreis'] = str_replace(",", ".", $_POST['ekp']);
+				$data['SpeziefischerPreis'] = str_replace(",", ".", $_POST['pre']);
 				$data['Auftragsnummer'] = $_POST['auftrag'];
 				$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
 				Posten::insertPosten("leistung", $data);

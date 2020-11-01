@@ -16,9 +16,11 @@ function getSelections() {
     if (strUser == "zeit") {
         document.getElementById("addPostenZeit").style.display = "inline";
         document.getElementById("addPostenLeistung").style.display = "none";
+        document.getElementById("addPostenProdukt").style.display = "none";
     } else if (strUser == "leistung") {
         document.getElementById("addPostenLeistung").style.display = "flex";
         document.getElementById("addPostenZeit").style.display = "none";
+        document.getElementById("addPostenProdukt").style.display = "none";
 
         document.getElementById("ekp").addEventListener("input", function () {
             var startCalc = parseInt(document.getElementById("ekp").value);
@@ -26,12 +28,15 @@ function getSelections() {
             document.getElementById("pre").value = price;
         }, false);
     } else if (strUser == "produkt") {
-        var showProducts = new AjaxCall(`getReason=createTable&type=product_compact`, "POST", window.location.href);
+        /*var showProducts = new AjaxCall(`getReason=createTable&type=product_compact&sendTo=`, "POST", window.location.href);
         showProducts.makeAjaxCall(function (responseTable) {
             document.getElementById("addPosten").innerHTML = responseTable;
 
-            addableTables();
-        });
+            addableTables("product_compact");
+        });*/
+        document.getElementById("addPostenLeistung").style.display = "none";
+        document.getElementById("addPostenZeit").style.display = "none";
+        document.getElementById("addPostenProdukt").style.display = "inline";
     }
 
     document.getElementById("showOhneBerechnung").style.display = "inline";
@@ -42,6 +47,7 @@ function addTime() {
     var wage = document.getElementById("wage").value;
     var descr = document.getElementById("descr").value;
     var isFree = getOhneBerechnung() ? 1 : 0;
+
     var add = new AjaxCall(`getReason=insTime&time=${time}&wage=${wage}&descr=${descr}&auftrag=${globalData.auftragsId}&ohneBerechnung=${isFree}`, "POST", window.location.href);
     add.makeAjaxCall(function (response) {
         console.log(response);
@@ -56,7 +62,24 @@ function addLeistung() {
     var ekp = document.getElementById("ekp").value;
     var pre = document.getElementById("pre").value;
     var isFree = getOhneBerechnung() ? 1 : 0;
+
     var add = new AjaxCall(`getReason=insertLeistung&lei=${lei}&bes=${bes}&ekp=${ekp}&pre=${pre}&auftrag=${globalData.auftragsId}&ohneBerechnung=${isFree}`, "POST", window.location.href);
+    add.makeAjaxCall(function (response) {
+        console.log(response);
+        reloadPostenListe();
+    });
+}
+
+function addProductCompact() {
+    var menge = document.getElementById("posten_produkt_menge").value;
+    var marke = document.getElementById("posten_produkt_marke").value;
+    var ekpreis = document.getElementById("posten_produkt_ek").value;
+    var vkpreis = document.getElementById("posten_produkt_vk").value;
+    var name = document.getElementById("posten_produkt_name").value;
+    var beschreibung = document.getElementById("posten_produkt_besch").value;
+    var isFree = getOhneBerechnung() ? 1 : 0;
+
+    var add = new AjaxCall(`getReason=insertProductCompact&auftrag=${globalData.auftragsId}&menge=${menge}&marke=${marke}&ekpreis=${ekpreis}&vkpreis=${vkpreis}&name=${name}&beschreibung=${beschreibung}&ohneBerechnung=${isFree}`, "POST", window.location.href);
     add.makeAjaxCall(function (response) {
         console.log(response);
         reloadPostenListe();
