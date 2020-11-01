@@ -10,20 +10,22 @@ require_once('Posten.php');
 
 class ProduktPosten extends Posten {
     
-    private $Preis = 0;
-	private $Einkaufspreis = 0;
+    private $Preis = 0.0;
+	private $Einkaufspreis = 0.0;
     private $Bezeichnung = null;
 	private $Beschreibung = null;
 	private $Anzahl = 0;
+	private $Marke = "";
 	protected $postenTyp = "produkt";
 	protected $ohneBerechnung = false;
 
-	function __construct($Preis, $Bezeichnung, $Beschreibung, $Anzahl, $Einkaufspreis) {
+	function __construct($Preis, $Bezeichnung, $Beschreibung, $Anzahl, $Einkaufspreis, $Marke) {
 		$this->Preis = $Preis;
 		$this->Einkaufspreis = $Einkaufspreis;
 		$this->Bezeichnung = $Bezeichnung;
 		$this->Beschreibung = $Beschreibung;
 		$this->Anzahl = $Anzahl;
+		$this->Marke = $Marke;
 	}
 
 	public function getHTMLData() {
@@ -53,7 +55,7 @@ class ProduktPosten extends Posten {
 		if ($this->ohneBerechnung == true) {
 			return 0;
 		}
-        return (int) $this->Preis * $this->Anzahl;
+        return (float) $this->Preis * $this->Anzahl;
 	}
 
 	public function bekommeEinzelPreis() {
