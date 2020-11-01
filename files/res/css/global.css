@@ -18,6 +18,10 @@ body {
 
 header {
     grid-area: head;
+    position: fixed;
+    width: 100%;
+    background: white;
+    box-shadow: 0px 4px 5px 3px #7373736b;
 }
 
 header h1 {
@@ -28,10 +32,17 @@ header h1 {
     letter-spacing: 1px;
 }
 
+header div {
+    margin: auto;
+    width: 80%;
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
 main {
     max-width: 80vw;
     margin: auto;
-    margin-top: 0;
+    margin-top: 125px;
     grid-area: main
 }
 
