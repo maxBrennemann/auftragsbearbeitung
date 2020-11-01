@@ -150,3 +150,20 @@ INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `
 
 /* Änderungen 24.09.2020 */
 ALTER TABLE `farben_auftrag` ADD PRIMARY KEY( `id_farbe`, `id_auftrag`);
+
+/* Änderungen 06.10.2020 */
+ALTER TABLE `leistung_posten` CHANGE `Einkaufspreis` `Einkaufspreis` FLOAT(11) NOT NULL;
+ALTER TABLE `leistung_posten` CHANGE `SpeziefischerPreis` `SpeziefischerPreis` FLOAT(11) NOT NULL;
+
+/* Änderungen 13.10.2020 */
+ALTER TABLE `product_compact` ADD `postennummer` INT NOT NULL AFTER `id`;
+ALTER TABLE `product_compact` ADD `amount` INT NOT NULL AFTER `postennummer`;
+ALTER TABLE `posten` DROP `Postennummer`;
+ALTER TABLE `posten` CHANGE `Nummer` `Postennummer` INT(11) NOT NULL AUTO_INCREMENT;
+DROP VIEW postendata;
+CREATE VIEW postendata AS
+  SELECT posten.*, zeit.ZeitInMinuten, CONCAT(COALESCE(zeit.Beschreibung, ''), COALESCE(leistung_posten.Beschreibung, ''), COALESCE(produkt_posten.Produktnummer, '')) AS Beschreibung
+  FROM posten
+  LEFT JOIN zeit ON posten.Postennummer = zeit.Postennummer
+  LEFT JOIN leistung_posten ON posten.Postennummer = leistung_posten.Postennummer
+  LEFT JOIN produkt_posten ON posten.Postennummer = produkt_posten.Postennummer;
