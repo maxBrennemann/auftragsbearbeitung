@@ -111,7 +111,7 @@ if ($auftragsId == -1) : ?>
 		<span><u>Posten:</u><br><span id="auftragsPostenTable"><?=$auftrag->getAuftragspostenAsTable()?></span></span>
 	</div>
 	<div class="defCont preis">
-		<span><u>Gesamtpreis:</u><br><span id="gesamtpreis"><?=$auftrag->preisBerechnen()?>€</span></span>
+		<span><u>Gesamtpreis:</u><br><span id="gesamtpreis"><?=number_format($auftrag->preisBerechnen(), 2, ',', '') . "€"?></span></span>
 	</div>
 	<div class="defCont fahrzeuge">
 		<?php if ($auftragstyp == 0): ?>
@@ -191,6 +191,15 @@ if ($auftragsId == -1) : ?>
 					<button onclick="addFahrzeug(true)">Für diesen Auftrag übernehmen</button>
 				</div>
 			</div>
+			<div id="addPostenProdukt" style="display: none">
+				<span>Menge: <input id="posten_produkt_menge" type="number"></span>
+				<span>Marke: <input id="posten_produkt_marke" type="text"></span>
+				<span>EK-Preis: <input id="posten_produkt_ek" type="text"></span>
+				<span>VK-Preis: <input id="posten_produkt_vk" type="text"></span>
+				<span>Name: <input id="posten_produkt_name" type="text"></span>
+				<span>Beschreibung: <input id="posten_produkt_besch" type="text"></span>
+				<button onclick="addProductCompact()">Hinzufügen</button>
+			</div>
 			<span id="showOhneBerechnung" style="display: none;"><input id="ohneBerechnung" type="checkbox">Ohne Berechnung</span>
 		</div>
 		<div id="generalPosten"></div>
@@ -201,7 +210,6 @@ if ($auftragsId == -1) : ?>
 		</div>
 	</div>
 	<?php if ($show == false): ?>
-	<div class="defCont step"></div>
 	<div class="defCont upload">
 		<form method="post" enctype="multipart/form-data">
 			Dateien zum Auftrag hinzufügen:
