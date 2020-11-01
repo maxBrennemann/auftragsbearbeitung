@@ -21,8 +21,8 @@ class Leistung extends Posten {
 
 	function __construct($leistungsnummer, $beschreibung, $speziefischerPreis, $einkaufspreis) {
 		$this->beschreibung = $beschreibung;
-		$this->preis = (int) $speziefischerPreis;
-		$this->einkaufspreis = (int) $einkaufspreis;
+		$this->preis =$speziefischerPreis;
+		$this->einkaufspreis = $einkaufspreis;
 		$this->leistungsnummer = $leistungsnummer;
 
 		$data =  DBAccess::selectQuery("SELECT Bezeichnung FROM leistung WHERE Nummer = $leistungsnummer");
@@ -38,10 +38,10 @@ class Leistung extends Posten {
 	}
 
 	public function fillToArray($arr) {
-		$arr['Preis'] = $this->preis;
+		$arr['Preis'] = number_format($this->preis, 2, ',', '') . "€";
 		$arr['Bezeichnung'] = $this->bezeichnung;
 		$arr['Beschreibung'] = $this->beschreibung;
-		$arr['Einkaufspreis'] = $this->einkaufspreis;
+		$arr['Einkaufspreis'] = number_format($this->einkaufspreis, 2, ',', '') . "€";
 		$arr['Leistungsnummer'] = $this->leistungsnummer;
 
 		return $arr;
