@@ -14,7 +14,7 @@ function getSelections() {
     var strUser = e.options[e.selectedIndex].value;
 
     if (strUser == "zeit") {
-        document.getElementById("addPostenZeit").style.display = "inline";
+        document.getElementById("addPostenZeit").style.display = "block";
         document.getElementById("addPostenLeistung").style.display = "none";
         document.getElementById("addPostenProdukt").style.display = "none";
     } else if (strUser == "leistung") {
@@ -36,7 +36,7 @@ function getSelections() {
         });*/
         document.getElementById("addPostenLeistung").style.display = "none";
         document.getElementById("addPostenZeit").style.display = "none";
-        document.getElementById("addPostenProdukt").style.display = "inline";
+        document.getElementById("addPostenProdukt").style.display = "block";
     }
 
     document.getElementById("showOhneBerechnung").style.display = "inline";
@@ -335,4 +335,14 @@ function chooseProduct(productId) {
         console.log(response);
         reloadPostenListe();
     });
+}
+
+/* edit description */
+function editDescription(event) {
+    var text = document.getElementById("orderDescription");
+    text.contentEditable = true;
+    event.target.innerText = "Speichern";
+
+    var saveDescription = new AjaxCall(`getReason=saveDescription&text=${text.innerText}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
+    saveDescription.makeAjaxCall(function () {});
 }

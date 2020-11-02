@@ -83,7 +83,7 @@ if ($auftragsId == -1) : ?>
 		<span><button onclick="rechnungErstellen();">Rechnung generieren</button></span>
 		<?php if ($auftrag->getIsArchiviert() == false) :?><span><button onclick="archvieren();">Auftrag archivieren</button></span><br><?php endif; ?>
 		<br>
-		<span><u>Beschreibung:</u><br><?=$auftrag->getAuftragsbeschreibung()?></span>
+		<span><u>Beschreibung:</u><br><span id="orderDescription"><?=$auftrag->getAuftragsbeschreibung()?></span><button onclick="editDescription(event);">Bearbeiten</button></span>
 		<br>
 	</div>
 	<div class="defCont schritte">
@@ -158,13 +158,13 @@ if ($auftragsId == -1) : ?>
 		</select>
 		<button onclick="getSelections()">Posten hinzufügen</button>
 		<div id="addPosten">
-			<div id="addPostenZeit" style="display: none">
-				<span><input id="time" type="number" min="0">Zeit in Minuten</span><br>
-				<span><input id="wage" type="number" value="44">Stundenlohn in €</span>
-				<span><input id="descr" type="text">Beschreibung</span>
+			<div class="innerDefCont" id="addPostenZeit" style="display: none">
+				<span>Zeit in Minuten<br><input id="time" type="number" min="0"></span><br>
+				<span>Stundenlohn in €<br><input id="wage" type="number" value="44"></span><br>
+				<span>Beschreibung<br><input id="descr" type="text"></span><br>
 				<button onclick="addTime()">Hinzufügen</button>
 			</div>
-			<div id="addPostenLeistung" style="display: none">
+			<div class="innerDefCont" id="addPostenLeistung" style="display: none">
 				<div class="columnLeistung">
 					<select id="selectLeistung" onchange="selectLeistung(event);">
 						<?php foreach ($leistungen as $leistung): ?>
@@ -191,7 +191,7 @@ if ($auftragsId == -1) : ?>
 					<button onclick="addFahrzeug(true)">Für diesen Auftrag übernehmen</button>
 				</div>
 			</div>
-			<div id="addPostenProdukt" style="display: none">
+			<div class="innerDefCont" id="addPostenProdukt" style="display: none">
 				<span>Menge: <input id="posten_produkt_menge" type="number"></span>
 				<span>Marke: <input id="posten_produkt_marke" type="text"></span>
 				<span>EK-Preis: <input id="posten_produkt_ek" type="text"></span>
