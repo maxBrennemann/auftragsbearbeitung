@@ -418,6 +418,11 @@ class Ajax {
 					$angebot->storeOffer($orderId);
 				}
 			break;
+			case "saveDescription":
+				$text = $_POST['text'];
+				$auftrag = $_POST['auftrag'];
+				DBAccess::updateQuery("UPDATE auftrag SET Auftragsbeschreibung = '$text' WHERE Auftragsnummer = $auftrag");
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
