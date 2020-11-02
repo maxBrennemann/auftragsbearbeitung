@@ -167,7 +167,7 @@ class FormGenerator {
 
 		for ($i = 0; $i < sizeof($column_names); $i++) {
 			$showColumnName = $column_names[$i]["COLUMN_NAME"];
-			$table_header .= "<th class='tableHead'>${showColumnName} <span onclick=\"sortTable(this, $i, true)\">&#x25B2;</span><span onclick=\"sortTable(this, $i, false)\">&#x25BC;</span></th>";
+			$table_header .= "<th class='tableHead'>${showColumnName} <span class=\"cursortable\" onclick=\"sortTable(this, $i, true)\">&#x25B2;</span><span class=\"cursortable\" onclick=\"sortTable(this, $i, false)\">&#x25BC;</span></th>";
 		}
 
 		return $table_header . "</tr>";

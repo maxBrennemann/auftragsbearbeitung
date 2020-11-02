@@ -208,6 +208,10 @@ iframe {
     border-radius: 6px;
 }
 
+.cursortable {
+    cursor: pointer;
+}
+
 .caution {
     color: #c14949;
 }
