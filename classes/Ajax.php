@@ -234,7 +234,12 @@ class Ajax {
 				$table = unserialize($_SESSION['storedTable']);
 				$auftragsId = $_POST['auftrag'];
 				$row =  $_POST['row'];
-				$table->setIdentifier("Schrittnummer");
+				if (isset($_POST['identifier'])) {
+					$table = unserialize($_SESSION['postenTable']);
+					$table->setIdentifier($_POST['identifier']);
+				} else {
+					$table->setIdentifier("Schrittnummer");
+				}
 				$table->deleteRow($row);
 			case "sendSource":
 				Produkt::addSource();
