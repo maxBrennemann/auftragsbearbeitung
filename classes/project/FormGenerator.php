@@ -58,7 +58,7 @@ class FormGenerator {
 		if($editable) {
 			$html_table = "<table class='allowAddingContent' data-type=${type} data-send-to=${sendTo}>";
 		} else {
-			$html_table = "<table>";
+			$html_table = "<table data-type=${type}>";
 		}
 
 		$html_table .= self::createTableHeader($column_names);
@@ -219,7 +219,7 @@ class FormGenerator {
 	* Last parameter of generateTable is true, so the use of the passed data is forced (no null pointer or something else);
 	*/
 	public function createTableByData($data, $column_names) {
-		return self::generateTable("", false, true, "", -1, false, $data, $column_names, true);
+		return self::generateTable($this->type, false, true, "", -1, false, $data, $column_names, true);
 	}
 
 	public function createTableByDataRowLink($data, $column_names, $type, $retUrl) {

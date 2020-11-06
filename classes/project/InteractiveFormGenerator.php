@@ -23,6 +23,9 @@ class InteractiveFormGenerator extends FormGenerator {
 
 	private $identifier = "";
 
+	private $data;
+	private $columnNames;
+
 	function __construct($type) {
 		parent::__construct($type, "", "");
 	}
@@ -81,6 +84,7 @@ class InteractiveFormGenerator extends FormGenerator {
 
 	public function deleteRow($row) {
 		DBAccess::deleteQuery("DELETE FROM $this->type WHERE $this->identifier = $row");
+		echo "DELETE FROM $this->type WHERE $this->identifier = $row";
 	}
 
 	public function editRow($row, $column, $data) {
@@ -153,6 +157,9 @@ class InteractiveFormGenerator extends FormGenerator {
 				$data[$i]["Aktionen"] = $update . $edit . $delete;
 			}
 		}
+
+		$this->data = $data;
+		$this->columnNames = $columnNames;
 
 		return $this->createTableByData($data, $columnNames);
 	}
