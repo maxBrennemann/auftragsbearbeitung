@@ -30,7 +30,7 @@ abstract class Posten {
 	public static function bekommeAllePosten($auftragsnummer) {
 		$posten = array();
 		
-		$data = DBAccess::selectQuery("SELECT Postennummer, Posten, ohneBerechnung FROM posten WHERE Auftragsnummer = {$auftragsnummer}");
+		$data = DBAccess::selectQuery("SELECT Postennummer, Posten, ohneBerechnung FROM posten WHERE Auftragsnummer = $auftragsnummer");
 		foreach ($data as $step) {
 			$element;
 

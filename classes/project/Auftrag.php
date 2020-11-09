@@ -150,9 +150,12 @@ class Auftrag implements StatisticsInterface {
 			$data[$i] = $this->Auftragsposten[$i]->fillToArray($subArr);
 		}
 
-		$form = new InteractiveFormGenerator("");
+		$form = new InteractiveFormGenerator("posten");
 		$form->setRowDeletable(true);
 		$form->setRowEditable(true);
+
+		$_SESSION['postenTable'] = serialize($form);
+
 		return $form->create($data, $column_names);
 	}
 
