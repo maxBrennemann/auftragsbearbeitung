@@ -40,6 +40,34 @@
 	}
 	
 	function showPage($page, $isArticle) {
+		if ($page == "test") {
+			$result = ["id" => -1, "articleUrl" => "test", "pageName" => "test"];
+			$articleUrl = $result["articleUrl"];
+			$pageName = $result["pageName"];
+
+			require_once('classes/project/Table.php');
+
+			include('files/header.php');
+
+			$t = new Table("articles", 1);
+			$t->addColumn("test", ["test"]);
+			$t->addRow(["id" => 37, "articleUrl" => "none", "pageName" => "tolle seite", "src" => "keine Qeulle", "test" => "test"]);
+			$t->addLink("https://klebefux.de");
+			/*$t->createByDB("articles");
+			foreach ($t->columnNames as $cname) {
+				var_dump($cname);
+			}*/
+
+
+			echo "\n		";
+			echo $t->getTable() . "\n
+			";
+			
+
+			include('files/footer.php');
+			return null;
+		}
+
 		$result = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'");
 		$articleUrl = "";
 
