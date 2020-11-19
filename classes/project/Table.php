@@ -1,45 +1,132 @@
 <?php
 
+/*
+  * Anforderungen der Table Klasse:
+  * static Funktionen, um schnell eine Tabelle aus der Datenbank zu generieren, angelehnt an die alte FormGenerator Class
+  * initialisierbare Klasse, um Tabellen bearbeitbar zu machen, damit sind verknüpfte Aktionen, wie löschen, hinzufügen und bearbeiten gemeint
+*/
+
 class Table {
 
     private $type = "";
-    private $data;
-    private $columnNames;
+	private $data;
+	private $editable = false;
+	private $limit;
+	private $link = null;
+    public $columnNames;
 
-    function __construct() {
+    function __construct($type = 0, $limit = 10, $editable = false) {
+		if (is_numeric($limit) && $limit > 0)
+			$this->limit = $limit;
 
+		if (!is_numeric($type)) {
+			$cnames = self::getColumnNames($type);
+			if ($cnames != null) {
+				$this->columnNames = $cnames;
+			}
+			$this->data = DBAccess::selectQuery("SELECT * FROM `$type` LIMIT " . $this->limit);
+		}
+
+		$this->type = $type;
+		$this->editable = $editable;
     }
 
     public function createByDB($type) {
-        $this->columnNames = self::getColumnNames($type);
+		$this->columnNames = self::getColumnNames($type);
+		$this->data = DBAccess::selectQuery("SELECT * FROM `$type` LIMIT " . $this->limit);
     }
 
     public function createByData($data, $columnNames) {
         $this->type = 0;
         $this->data = $data;
         $this->columnNames = $columnNames;
-    }
+	}
+	
+	public function addLink($link) {
+		if (is_string($link))
+			$this->link = $link;
+	}
 
-    public function addColumn() {
+    public function addColumn($rowName, $data) {
+		if (sizeof($data) == sizeof($this->data)) {
+			for ($i = 0; $i < sizeof($data); $i++) {
+				$this->data[$i][$rowName] = $data[$i];
+			}
 
-    }
+			$rowName = [
+				"COLUMN_NAME" => $rowName
+			];
+			array_push($this->columnNames, $rowName);
+		} else {
+			throw new Exception("Array sizes do not match");
+		}
+	}
+	
+	public function addRow($row) {
+		if (sizeof($row) == sizeof($this->data[0])) {
+			array_push($this->data, $row);
+		} else {
+			throw new Exception("Array sizes do not match");
+		}
+	}
 
+	/*
+	 * erstellt die Tabelle
+	 * wenn $this->data null ist, wird eine Nachricht zurückgegeben
+	*/
     public function getTable() {
+		if ($this->data == null)
+			return "<p>Keine Einträge vorhanden</p>";
+
         $html = "";
 
         if ($this->editable) {
 			$html = "<table class='allowAddingContent' data-type={$this->type} data-send-to={$this->sendTo}>";
 		} else {
 			$html = "<table data-type={$this->type}>";
-        }
+		}
         
-        $html .= self::html_createTableHeader($this->column_names);
+		$html .= self::html_createTableHeader($this->columnNames);
+
+		/* for each row of the result */
+		for ($i = 0; $i < sizeof($this->data); $i++) {
+			$row = $this->data[$i];
+			$html .= self::html_createRow2($row, $this->columnNames, $this->link);
+		}
+		
+		return $html;
     }
 
     /* static functions */
     public static function createTable() {
 
-    }
+	}
+	
+	/*
+	 * erstellt eine Zeile
+	 * 
+	 * @param Array		$row		Zeilendaten
+	 * @param Array		$rowNames	Zeilennamen
+	 * @param string	$link		Link, kann auch null sein, dann wird kein Link gesetzt
+	 * 
+	 * @return	Gibt eine Tabellenzeile in HTML zurück
+	 */
+	private static function html_createRow2($row, $rowNames, $link) {
+		$html = "<tr>";
+		
+		for ($i = 0; $i < sizeof($row); $i++) {
+			$column = $rowNames[$i]["COLUMN_NAME"];
+			$data = $row[$column];
+			
+			if ($link == null)
+				$html .= "<td>" . $data . "</td>";
+			else
+				$html .= "<td class=\"linkTable\"><a href=\"$link\">" . $data . "</a></td>";
+		}
+
+		$html .= "</tr>";
+		return $html;
+	}
 
     /* returns the column names of a specific sql table */
     private static function getColumnNames($type) {
