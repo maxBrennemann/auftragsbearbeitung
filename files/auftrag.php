@@ -87,7 +87,7 @@ if ($auftragsId == -1) : ?>
 		<br>
 	</div>
 	<div class="defCont schritte">
-		<span><u>Schritte:</u><br>
+		<span><u>Schritte und Notizen:</u><br>
 			<form name="showSteps">
 				<input onchange="radio('hide')" type="radio" name="showDone" value="hide" checked> Zu erledigende Schritte anzeigen<br>
 				<input onchange="radio('show')" type="radio" name="showDone" value="show"> Alle Schritte anzeigen<br>
