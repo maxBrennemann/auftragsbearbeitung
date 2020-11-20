@@ -428,6 +428,19 @@ class Ajax {
 				$auftrag = $_POST['auftrag'];
 				DBAccess::updateQuery("UPDATE auftrag SET Auftragsbeschreibung = '$text' WHERE Auftragsnummer = $auftrag");
 			break;
+			case "table":
+				/*
+				 * gets table data with action and key
+				 * @return gives a messsage or specific values
+				*/
+				$table = $_POST['name'];
+				$action = $_POST['action'];
+				$key = $_POST['key'];
+
+				require_once("classes/project/Table.php");
+				$response = Table::updateValue($table, $action, $key);
+				echo $response;
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
