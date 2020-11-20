@@ -13,7 +13,15 @@ class Table {
 	private $editable = false;
 	private $limit;
 	private $link = null;
-    public $columnNames;
+	public $columnNames;
+	
+	/* action button variables */
+	private $buttonEdit = false;
+	private $buttonDelete = false;
+	private $buttonUpdate = false;
+
+	private $callback = null;
+	private $keys = null;
 
     function __construct($type = 0, $limit = 10, $editable = false) {
 		if (is_numeric($limit) && $limit > 0)
@@ -47,6 +55,62 @@ class Table {
 			$this->link = $link;
 	}
 
+	/* every index of the keys array is interpreted as a key for the data array */
+	public function createKeys() {
+		$this->keys = [];
+		for ($i = 0; $i < sizeof($this->data); $i++) {
+			$key = bin2hex(random_bytes(6));
+			while (in_array($key, $this->keys)) {
+				$key = bin2hex(random_bytes(6));
+			}
+			array_push($this->keys, $key);
+		}
+	}
+
+	public function addUpdateFunction($callback) {
+		$this->callback = $callback;
+	}
+
+	public function addActionButton($button) {
+		switch($button) {
+			case "update":
+				$this->buttonUpdate = !$this->buttonUpdate;
+				$array = [];
+				if ($this->keys == null)
+					$this->createKeys();
+				
+				for ($i = 0; $i < sizeof($this->data); $i++) {
+					$btn = $this->addUpdateButton($this->keys[$i]);
+					$array[$i] = $btn;
+				}
+				$this->addColumn("Aktionen", $array);
+			break;
+			case "edit":
+				$this->buttonUpdate = !$this->buttonEdit;
+			break;
+			case "delete":
+				$this->buttonUpdate = !$this->buttonDelete;
+			break;
+		}
+	}
+
+	/* action buttons */
+	private function addUpdateButton($key) {
+        $button = "<button class='actionButton' onclick=\"updateIsDone('$key')\" title='Als erledigt markieren.'>&#x2714;</button>";
+		return $button;
+    }
+
+    private function addEditButton($key) {
+        $button = "<button class='actionButton' onclick=\"editRow($key)\" = 'Bearbeiten' disabled>&#x270E;</button>";
+		return $button;
+    }
+
+    private function addDeleteButton($key) {
+		$button = "<button class='actionButton' onclick=\"deleteRow($key)\" title='Löschen'>&#x1F5D1;</button>";
+		return $button;
+
+    }
+
     public function addColumn($rowName, $data) {
 		if (sizeof($data) == sizeof($this->data)) {
 			for ($i = 0; $i < sizeof($data); $i++) {
@@ -67,6 +131,28 @@ class Table {
 			array_push($this->data, $row);
 		} else {
 			throw new Exception("Array sizes do not match");
+		}
+	}
+
+	public static function updateValue($table, $action, $key) {
+		if (!is_string($table) || !is_string($action) || !is_string($key))
+			return "data cannot be processed";
+
+		if (isset($_SESSION[$table])) {
+			$actionObject = unserialize($_SESSION[$table]);
+			//$actionObject->update($action, $key);
+
+			if ($actionObject->callback != null)
+				$actionObject->callback();
+
+			$number = array_search($key, $actionObject->keys);
+			
+			$setTo = $_POST['setTo'];
+			$actionObject->data[$number]["Hausnummer"] = $setTo;
+
+			echo $number;
+		} else {
+			return "no data found";
 		}
 	}
 
