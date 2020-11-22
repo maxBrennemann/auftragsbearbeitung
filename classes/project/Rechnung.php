@@ -6,27 +6,54 @@ if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
 }
 
-require_once('Auftrag.php');
 require_once('classes/DBAccess.php');
+require_once('classes/project/Auftrag.php');
 require_once('classes/project/InteractiveFormGenerator.php');
 
-class Rechnung extends Auftrag {
+class Rechnung {
 
 	private $summeMwSt = 0;
 	private $summe = 0;
 
-	function __construct($rechnungsnummer) {
-		$auftragsnummer = DBAccess::selectQuery("SELECT Auftragsnummer FROM auftrag WHERE Rechnungsnummer = {$rechnungsnummer}");
-		if (!empty($auftragsnummer)) {
-			$auftragsnummer = $auftragsnummer[0]['Auftragsnummer'];
-		} else {
-			trigger_error("Rechnungsnummer does not match to Auftragsnummer");
+	private $kunde;
+	private $auftrag;
+
+	function __construct() {
+		if (isset($_SESSION['currentInvoice_orderId'])) {
+			$currentOrder = $_SESSION['currentInvoice_orderId'];
+			$this->auftrag = new Auftrag($currentOrder);
+			$kdnr = $this->auftrag->getKundennummer();
+			$this->kunde = new Kunde($kdnr);
 		}
-		parent::__construct($auftragsnummer);
 	}
 
     public function PDFgenerieren() {
-        
+        $pdf = new TCPDF('p', 'mm', 'A4');
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+        $pdf->SetTitle('Angebot ' . $this->kunde->getKundennummer());
+        $pdf->SetSubject('Angebot');
+        $pdf->SetKeywords('pdf, angebot');
+
+        $pdf->AddPage();
+
+        $pdf->setCellPaddings(1, 1, 1, 1);
+        $pdf->setCellMargins(0, 0, 0, 0);
+
+        $cAdress = "<p>{$this->kunde->getFirmenname()}<br>{$this->kunde->getName()}<br>{$this->kunde->getStrasse()} {$this->kunde->getHausnummer()}<br>{$this->kunde->getPostleitzahl()} {$this->kunde->getOrt()}</p>";
+        $adress = "<p>b-schriftung Brennemann ***REMOVED***<br>***REMOVED***<br>***REMOVED***</p>";
+
+        $pdf->writeHTMLCell(85, 40, 20, 45, $cAdress);
+        $pdf->writeHTMLCell(85, 40, 120, 35, $adress);
+
+        $pdf->setXY(20, 90);
+        $pdf->Cell(20, 10, 'Menge', 'B');
+        $pdf->Cell(20, 10, 'MEH', 'B');
+        $pdf->Cell(80, 10, 'Bezeichnung', 'B');
+        $pdf->Cell(20, 10, 'E-Preis', 'B');
+		$pdf->Cell(20, 10, 'G-Preis', 'B');
+		
+		$pdf->Output();
     }
 
 	public static function getNextNumber() {
