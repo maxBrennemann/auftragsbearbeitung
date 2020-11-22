@@ -167,3 +167,6 @@ CREATE VIEW postendata AS
   LEFT JOIN zeit ON posten.Postennummer = zeit.Postennummer
   LEFT JOIN leistung_posten ON posten.Postennummer = leistung_posten.Postennummer
   LEFT JOIN produkt_posten ON posten.Postennummer = produkt_posten.Postennummer;
+
+/* Änderungen 22.11.2020 */
+ALTER TABLE `kunde_extended` DROP FOREIGN KEY `kunde_extended_ibfk_1`; ALTER TABLE `kunde_extended` ADD CONSTRAINT `kunde_extended_ibfk_1` FOREIGN KEY (`kundennummer`) REFERENCES `kunde`(`Kundennummer`) ON DELETE CASCADE ON UPDATE NO ACTION;
