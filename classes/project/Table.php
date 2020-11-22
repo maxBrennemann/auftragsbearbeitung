@@ -8,7 +8,8 @@
 
 class Table {
 
-    private $type = "";
+	private $type = "";
+	private $identifier = "";
 	private $data;
 	private $editable = false;
 	private $limit;
@@ -71,7 +72,7 @@ class Table {
 		$this->callback = $callback;
 	}
 
-	public function addActionButton($button) {
+	public function addActionButton($button, $identifier = null) {
 		switch($button) {
 			case "update":
 				$this->buttonUpdate = !$this->buttonUpdate;
@@ -90,6 +91,18 @@ class Table {
 			break;
 			case "delete":
 				$this->buttonUpdate = !$this->buttonDelete;
+				if ($this->keys == null)
+					$this->createKeys();
+				
+				for ($i = 0; $i < sizeof($this->data); $i++) {
+					$btn = $this->addDeleteButton($this->keys[$i]);
+					$array[$i] = $btn;
+				}
+				$this->addColumn("Aktionen", $array);
+
+				if ($identifier != null) {
+					$this->setIdentifier($identifier);
+				}
 			break;
 		}
 	}
@@ -106,7 +119,7 @@ class Table {
     }
 
     private function addDeleteButton($key) {
-		$button = "<button class='actionButton' onclick=\"deleteRow($key)\" title='Löschen'>&#x1F5D1;</button>";
+		$button = "<button class='actionButton' onclick=\"deleteRow('$key')\" title='Löschen'>&#x1F5D1;</button>";
 		return $button;
 
     }
@@ -134,6 +147,14 @@ class Table {
 		}
 	}
 
+	public function setIdentifier($val) {
+		if (is_string($val)) {
+			$this->identifier = $val;
+		} else {
+			throw new Exception("wrong data type, String required");
+		}
+	}
+
 	public static function updateValue($table, $action, $key) {
 		if (!is_string($table) || !is_string($action) || !is_string($key))
 			return "data cannot be processed";
@@ -149,6 +170,13 @@ class Table {
 			
 			$setTo = $_POST['setTo'];
 			$actionObject->data[$number]["Hausnummer"] = $setTo;
+
+			if ($action == "delete") {
+				$number = array_search($key, $actionObject->keys);
+				$row = $actionObject->data[$number]["Kundennummer"];
+				DBAccess::deleteQuery("DELETE FROM $actionObject->type WHERE $actionObject->identifier = $row");
+				echo "DELETE FROM $actionObject->type WHERE $actionObject->identifier = $row";
+			}
 
 			echo $number;
 		} else {
