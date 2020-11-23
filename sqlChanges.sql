@@ -170,3 +170,6 @@ CREATE VIEW postendata AS
 
 /* Änderungen 22.11.2020 */
 ALTER TABLE `kunde_extended` DROP FOREIGN KEY `kunde_extended_ibfk_1`; ALTER TABLE `kunde_extended` ADD CONSTRAINT `kunde_extended_ibfk_1` FOREIGN KEY (`kundennummer`) REFERENCES `kunde`(`Kundennummer`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+/* Änderungen 23.11.2020 */
+ALTER TABLE `posten` ADD `rechnungsNr` INT NOT NULL AFTER `angebotsNr`;
