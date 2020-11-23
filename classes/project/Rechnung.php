@@ -18,6 +18,8 @@ class Rechnung {
 	private $kunde;
 	private $auftrag;
 
+	private $posten;
+
 	function __construct() {
 		if (isset($_SESSION['currentInvoice_orderId'])) {
 			$currentOrder = $_SESSION['currentInvoice_orderId'];
@@ -53,8 +55,28 @@ class Rechnung {
         $pdf->Cell(20, 10, 'E-Preis', 'B');
 		$pdf->Cell(20, 10, 'G-Preis', 'B');
 		
+		/* iterates over all posten and adds lines */
+		$this->loadPostenFromAuftrag();
+		$offset = 10;
+		if ($this->posten != null) {
+			foreach ($this->posten as $p) {
+				$pdf->setXY(20, 90 + $offset);
+				$pdf->Cell(20, 10, $p->getQuantity());
+				$pdf->Cell(20, 10, $p->getEinheit());
+				$pdf->Cell(80, 10, $p->getDescription());
+				$pdf->Cell(20, 10, number_format($p->bekommeEinzelPreis(), 2, ',', '') . ' €');
+				$pdf->Cell(20, 10, number_format($p->bekommePreis(), 2, ',', '') . ' €');
+				$offset += 10;
+			}
+		}
+
+
 		$pdf->Output();
-    }
+	}
+	
+	private function loadPostenFromAuftrag() {
+		$this->posten = $this->auftrag->getAuftragspostenData();
+	}
 
 	public static function getNextNumber() {
 		$number = DBAccess::selectQuery("SELECT MAX(Rechnungsnummer) FROM auftrag")[0]['MAX(Rechnungsnummer)'];

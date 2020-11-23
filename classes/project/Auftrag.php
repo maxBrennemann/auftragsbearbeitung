@@ -118,6 +118,10 @@ class Auftrag implements StatisticsInterface {
 		return $htmlData;
 	}
 
+	public function getAuftragspostenData() {
+		return $this->Auftragsposten;
+	}
+
 	public function getAuftragstyp() {
 		return $this->Auftragstyp;
 	}
