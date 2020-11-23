@@ -30,8 +30,19 @@
 		Ajax::manageRequests($_POST['getReason'], $page);
 	} else {
 		if ($page == "pdf") {
-			$angebot = new Angebot();
-			$angebot->PDFgenerieren();
+			$type = $_GET['type'];
+			switch ($type) {
+				case "angebot":
+					$angebot = new Angebot();
+					$angebot->PDFgenerieren();
+				break;
+				case "rechnung":
+					require_once('classes/project/Rechnung.php');
+					$rechnung = new Rechnung();
+					$rechnung->PDFgenerieren();
+				break;
+			}
+			
 		} else if (isLoggedIn()) {
 			showPage($page, $isArticle);
 		} else {
@@ -49,20 +60,40 @@
 
 			include('files/header.php');
 
-			$t = new Table("articles", 1);
-			$t->addColumn("test", ["test"]);
-			$t->addRow(["id" => 37, "articleUrl" => "none", "pageName" => "tolle seite", "src" => "keine Qeulle", "test" => "test"]);
-			$t->addLink("https://klebefux.de");
-			/*$t->createByDB("articles");
-			foreach ($t->columnNames as $cname) {
-				var_dump($cname);
-			}*/
+			$t = new Table("kunde", 6);
+			//$t->addColumn("test", ["test"]);
+			//$t->addRow(["id" => 37, "articleUrl" => "none", "pageName" => "tolle seite", "src" => "keine Qeulle", "test" => "test"]);
+			//$t->addLink("https://klebefux.de");
+			$t->addActionButton("delete", $identifier = "Kundennummer");
 
+			echo $t->getTable();
 
-			echo "\n		";
-			echo $t->getTable() . "\n
-			";
+			$_SESSION["undefined"] = serialize($t);
 			
+			?>Test
+			
+			<script>
+				function updateIsDone(key) {
+					var tableId = document.querySelector("table").dataset.name;
+					//var key = event.target.dataset.key;
+					var setTo = "37";
+					var editTable = new AjaxCall(`getReason=table&name=${tableId}&action=update&key=${key}&setTo=${setTo}`);
+					editTable.makeAjaxCall(function (response) {
+						console.log(response);
+					});
+				}
+				function deleteRow(key) {
+					var tableId = document.querySelector("table").dataset.name;
+					//var key = event.target.dataset.key;
+					var setTo = "37";
+					var editTable = new AjaxCall(`getReason=table&name=${tableId}&action=delete&key=${key}&setTo=${setTo}`);
+					editTable.makeAjaxCall(function (response) {
+						console.log(response);
+					});
+				}
+			</script>
+			
+			<?php
 
 			include('files/footer.php');
 			return null;
@@ -110,6 +141,6 @@ function isLoggedIn() {
 }
 
 function getCurrentVersion() {
-	return "0.1.3";
+	return "0.1.4";
 }
 ?>
