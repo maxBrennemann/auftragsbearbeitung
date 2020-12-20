@@ -55,7 +55,7 @@ function startFunc() {
 	var el = document.querySelector("input[type=email");
 	if (el != null) {
 		el.addEventListener("input", function() {
-			if  (validateEmail(el.value)) {
+			if (validateEmail(el.value)) {
 				el.style.color = "green";
 			} else {
 				el.style.color = "red";
