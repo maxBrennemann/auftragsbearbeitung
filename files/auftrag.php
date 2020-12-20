@@ -63,6 +63,8 @@
 		$show = true;
 	}
 
+	$mitarbeiter = DBAccess::selectQuery("SELECT Vorname, Nachname, id FROM mitarbeiter");
+
 if ($auftragsId == -1) : ?>
 	<input type="number" min="1" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value;">
 	<a href="#" id="auftragsLink">Auftrag anzeigen</a>
@@ -105,6 +107,15 @@ if ($auftragsId == -1) : ?>
 				<input type="radio" name="isDone" value="show" checked>Noch zu erledigen<br>
 				<input type="radio" name="isDone" value="hide">Schon erledigt<br>
 			</form>
+			<hr>
+			<input type="checkbox" name="assignTo" onclick="document.getElementById('selectMitarbeiter').disabled = false;">Zuweisen an:</input>
+			<br>
+			<select id="selectMitarbeiter" disabled>
+				<?php foreach ($mitarbeiter as $m): ?>
+					<option value="<?=$m['id']?>"><?=$m['Vorname']?> <?=$m['Nachname']?></option>
+				<?php endforeach; ?>
+			</select>
+			<br>
 		</div>
 	</div>
 	<div class="defCont posten">
