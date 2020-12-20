@@ -8,6 +8,7 @@
 	require_once('classes/project/FormGenerator.php');
 	require_once('classes/project/Posten.php');
 	require_once('classes/project/Angebot.php');
+	require_once('classes/project/NotificationManager.php');
 	$isArticle = false;
 
 	/*
