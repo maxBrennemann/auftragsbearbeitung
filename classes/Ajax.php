@@ -78,6 +78,10 @@ class Ajax {
 				Liste::saveData($data);
 				echo Link::getPageLink("listmaker");
 			break;
+			case "notification":
+				require_once('classes/project/NotificationManager.php');;
+				echo NotificationManager::htmlNotification();
+			break;
 			case "createAuftrag":
 				$bez = $_POST['bez'];
 				$bes = $_POST['bes'];

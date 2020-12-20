@@ -41,7 +41,17 @@ function goToProfile() {
 	document.getElementById("goToProfile").click();
 }
 
-window.onload = function() {
+if (document.readyState !== 'loading' ) {
+    console.log( 'document is already ready, just execute code here' );
+    startFunc();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log( 'document was not ready, place code here' );
+        startFunc();
+    });
+}
+
+function startFunc() {
 	var el = document.querySelector("input[type=email");
 	if (el != null) {
 		el.addEventListener("input", function() {
@@ -54,6 +64,29 @@ window.onload = function() {
 	}
 
 	autosubmit();
+
+	var bell = document.querySelector("section aside span");
+	bell.addEventListener("click", function() {
+		if (document.getElementById("showNotifications") == null) {
+			let div = document.createElement("div");
+			div.id = "showNotifications";
+			let h3 = document.createElement("h3");
+			h3.innerText = "Benachrichtigungen";
+			div.appendChild(h3);
+			document.body.appendChild(div);
+			addActionButtonForDiv(div, "hide");
+
+			var getHTMLContent = new AjaxCall(`getReason=notification`, "POST", window.location.href);
+			getHTMLContent.makeAjaxCall(function (response, args) {
+				let span = document.createElement("span");
+				span.innerHTML = response;
+				div.appendChild(span);
+				centerAbsoluteElement(args[0]);
+			}, div);
+		} else {
+			document.getElementById("showNotifications").style.display = "inline";
+		}
+	}, false);
 }
 
 function validateEmail(email) {

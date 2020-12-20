@@ -49,7 +49,15 @@
 </head>
 <body>
 	<header>
-		<h1><?=$pageName?></h1>
+		<section>
+			<h1><?=$pageName?></h1>
+			<aside>
+				<span>
+					<span><?=NotificationManager::getNotificationCount();?></span>
+					<span>&#128276;</span>
+				</span>
+			</aside>
+		</section>
 		<hr class="headerline">
 		<div style="margin: auto; width: 80%; margin-top: 12px; margin-bottom: 12px;"><a href="<?=Link::getPageLink("")?>" id="home_link">Home</a>/<a href="<?=Link::getPageLink($page)?>"><?=$pageName?></a></div>
 	</header>
