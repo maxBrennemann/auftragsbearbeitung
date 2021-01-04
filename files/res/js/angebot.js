@@ -1,5 +1,4 @@
 
-
 var globalData = {
     aufschlag: 0,
     vehicleId: 0

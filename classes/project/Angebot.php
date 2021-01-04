@@ -60,7 +60,7 @@ class Angebot {
         $this->fahrzeuge = Fahrzeug::getSelection($cid);
     }
 
-    public function PDFgenerieren() {
+    public function PDFgenerieren($store = false) {
         $pdf = new TCPDF('p', 'mm', 'A4');
         $pdf->setPrintHeader(false);
         $pdf->setPrintFooter(false);
@@ -101,7 +101,15 @@ class Angebot {
             }
         }
 
-        $pdf->Output();
+        /* generates a pdf when offer is converted to an order */
+        if ($store == true) {
+            $filename= "{$this->kunde->getKundennummer()}_{$this->angebotsnr}.pdf"; 
+            $filelocation = "C:\\xampp\htdocs\\auftragsbearbeitung\\files\\generated\\offer";
+            $fileNL = $filelocation . "\\" . $filename;
+            $pdf->Output($fileNL, 'F');
+        } else {
+            $pdf->Output();
+        }
     }
 
     private function getPc() {
@@ -169,8 +177,9 @@ class Angebot {
         $_SESSION['offer_is_order'] = true;
     }
 
+    /* function is called from createOrder page only if offer session data is available */
     public function storeOffer($orderId) {
-        DBAccess::insertQuery("INSERT INTO angebot (kdnr, `status`) VALUES ({$this->kdnr}, 0)");
+        $this->angebotsnr = DBAccess::insertQuery("INSERT INTO angebot (kdnr, `status`) VALUES ({$this->kdnr}, 0)");
         $this->loadPostenFromSession();
         if ($this->posten != null) {
             foreach ($this->posten as $p) {
@@ -179,6 +188,7 @@ class Angebot {
         }
 
         $this->deleteOldSessionData();
+        $this->PDFgenerieren(true);
     }
 
     public function loadCachedPosten() {
