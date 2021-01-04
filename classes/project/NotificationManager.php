@@ -33,6 +33,10 @@ class NotificationManager {
         return $htmlContent;
     }
 
+    public static function addNotification($user_id, $type, $content) {
+        DBAccess::insertQuery("INSERT INTO user_notifications (user_id, `type`, content) VALUES ($user_id, '$type', '$content')");
+    }
+
 }
 
 ?>
