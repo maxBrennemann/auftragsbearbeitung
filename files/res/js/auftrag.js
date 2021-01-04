@@ -142,9 +142,29 @@ function addBearbeitungsschritte() {
                     break;
                 }
             }
-            hide = hide == "hide" ? 0 : 1; // 0 = hide, 1 = show
+            // 0 = hide, 1 = show
+            hide = hide == "hide" ? 0 : 1;
 
-            var add = new AjaxCall(`getReason=insertStep&bez=${steps[0]}&datum=${steps[1]}&auftrag=${globalData.auftragsId}&hide=${hide}&prio=${steps[2]}`, "POST", window.location.href);
+            /* check for assigned task */
+            let assigned = document.querySelector('input[name="assignTo"]');
+            let assignedTo = "none";
+            if (assigned.checked == true) {
+                let e = document.getElementById("selectMitarbeiter");
+                assignedTo = e.options[e.selectedIndex].value;
+            }
+
+            /* ajax parameter */
+            let params = {
+                getReason: "insertStep",
+                bez: steps[0],
+                datum: steps[1],
+                auftrag: globalData.auftragsId,
+                hide: hide,
+                prio: steps[2],
+                assignedTo: assignedTo
+            };
+
+            var add = new AjaxCall(params, "POST", window.location.href);
             add.makeAjaxCall(function (response) {
                 console.log(response);
                 document.getElementById("stepTable").innerHTML = response;
