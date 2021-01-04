@@ -169,10 +169,14 @@ CREATE VIEW postendata AS
   LEFT JOIN produkt_posten ON posten.Postennummer = produkt_posten.Postennummer;
 
 /* Änderungen 22.11.2020 */
-ALTER TABLE `kunde_extended` DROP FOREIGN KEY `kunde_extended_ibfk_1`; ALTER TABLE `kunde_extended` ADD CONSTRAINT `kunde_extended_ibfk_1` FOREIGN KEY (`kundennummer`) REFERENCES `kunde`(`Kundennummer`) ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE `kunde_extended` DROP FOREIGN KEY `kunde_extended_ibfk_1`;
+ALTER TABLE `kunde_extended` ADD CONSTRAINT `kunde_extended_ibfk_1` FOREIGN KEY (`kundennummer`) REFERENCES `kunde`(`Kundennummer`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 /* Änderungen 23.11.2020 */
 ALTER TABLE `posten` ADD `rechnungsNr` INT NOT NULL AFTER `angebotsNr`;
 
 /* Änderungen 19.12.2020 */
 CREATE TABLE `auftragsmanager`.`user_notifications` ( `id` INT NOT NULL AUTO_INCREMENT , `user_id` INT NOT NULL , `notification_id` INT NOT NULL , `type` INT NOT NULL , `content` VARCHAR(128) NOT NULL , `ischecked` BOOLEAN NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+/* Änderungen 04.01.2021 */
+ALTER TABLE `user_notifications` CHANGE `type` `type` VARCHAR(32) NOT NULL;

@@ -197,6 +197,12 @@ class Ajax {
 				Schritt::insertStep($data);
 				$auftrag = new Auftrag($data['Auftragsnummer']);
 				echo $auftrag->getOpenBearbeitungsschritteAsTable();
+
+				$assignedTo = strval($_POST['assignedTo']);
+				if (strcmp($assignedTo, "none") != 0) {
+					require_once("classes/project/NotificationManager.php");
+					NotificationManager::addNotification($assignedTo, "Bearbeitungsschritt", $_POST['bez']);
+				}
 			break;
 			case "addStep":
 				$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Priority"));
