@@ -198,9 +198,30 @@ function createTable(rows, columns, data, emptyFields) {
 	return table;
 }
 
-var AjaxCall = function(paramString, ajaxType) {
+/*
+	paramString can be a string or an object with key value pairs
+
+	string: "r=test&value=1";
+	object: {
+		r : "test",
+		value : "1"
+	};
+
+	added encodeURIComponent to make ajax requests safer
+*/
+var AjaxCall = function(param, ajaxType) {
 	this.type = (ajaxType != null) ? ajaxType : "POST";
-	this.paramString = (paramString != null) ? paramString : "";
+
+	if (typeof param === 'string') {
+		this.paramString = (param != null) ? param : ""; //encodeURIComponent((param != null) ? param : "");
+	} else if (typeof param === 'object') {
+		let temp = "";
+		for (let key in param) {
+			temp += key + "=" + param[key] + "&";
+		}
+
+		this.paramString = temp.slice(0, -1);// encodeURIComponent(temp.slice(0, -1));
+	}
 	this.url;
 }
 
