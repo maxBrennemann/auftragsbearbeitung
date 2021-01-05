@@ -92,7 +92,7 @@ class Auftrag implements StatisticsInterface {
 		 * istErledigt = 1 -> ist noch zu erledigen
 		 * istErledigt = 0 -> ist schon erledigt
 		*/
-		$data = DBAccess::selectQuery("SELECT Schrittnummer, Bezeichnung, Datum, `Priority` FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer} AND istErledigt = 1");
+		$data = DBAccess::selectQuery("SELECT Schrittnummer, Bezeichnung, Datum, `Priority` FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer} AND istErledigt = 1 ORDER BY `Priority` DESC");
 		$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Datum"), 
 				2 => array("COLUMN_NAME" => "Priority"));
 
@@ -269,6 +269,35 @@ class Auftrag implements StatisticsInterface {
 	public function archiveOrder() {
 		$query = "UPDATE auftrag SET archiviert = 0 WHERE Auftragsnummer = {$this->Auftragsnummer}";
 		DBAccess::updateQuery($query);
+	}
+
+	/*
+	 * adds a list to the order
+	 * lists can be edited
+	*/
+	public function addList($listId) {
+		DBAccess::insertQuery("INSERT INTO auftrag_liste (auftrags_id, listen_id) VALUES ({$this->Auftragsnummer}, $listId)");
+	}
+
+	/*
+	 * removes a list, later the saved list data has to be removed as well
+	 * TODO implement data deletion
+	*/
+	public function removeList($listId) {
+		DBAccess::deleteQuery("DELETE FROM auftrag_liste WHERE auftrags_id = {$this->Auftragsnummer} AND listen_id = $listId");
+	}
+
+	public function getListIds() {
+		return DBAccess::selectQuery("SELECT listen_id FROM auftrag_liste WHERE auftrags_id = {$this->Auftragsnummer}");
+	}
+
+	public function showAttachedLists() {
+		$listenIds = self::getListIds();
+		$html = "";
+		foreach ($listenIds as $id) {
+			$html .= (Liste::readList($id['listen_id']))->toHTML();
+		}
+		return $html;
 	}
 
 }

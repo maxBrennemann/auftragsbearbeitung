@@ -451,6 +451,12 @@ class Ajax {
 				$response = Table::updateValue($table, $action, $key);
 				echo $response;
 			break;
+			case "addListToOrder":
+				$listId = (int) $_POST['listId'];
+				$orderId = (int) $_POST['auftrag'];
+				$order = new Auftrag($orderId);
+				$order->addList($listId);
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
