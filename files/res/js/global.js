@@ -333,3 +333,45 @@ class TableClass {
 		}
     }
 }
+
+var FileUploader = function(target) {
+	if (target.nodeName == "FORM") {
+		this.target = target;
+
+		let uploadNode = document.createElement("input");
+		uploadNode.type = "range";
+		uploadNode.min = 0;
+		uploadNode.max = 100;
+		uploadNode.value = 0;
+		uploadNode.disabled = true;
+
+		let uploadButton = document.createElement("input");
+		uploadButton.type = "button";
+		uploadButton.value = "Hochladen";
+		uploadButton.addEventListener("click", (this.upload).bind(this), false);
+
+		this.target.appendChild(uploadButton);
+		this.target.appendChild(uploadNode);
+
+		this.uploadNode = uploadNode;
+	} else
+		return null;
+}
+
+FileUploader.prototype.upload = function() {
+	var formData = new FormData(this.target);
+	var ajax = new XMLHttpRequest();
+	ajax.open('POST', '');
+	ajax.upload.addEventListener("progress", (this.uploadProgress).bind(this), false);
+	ajax.send(formData);
+}
+
+FileUploader.prototype.uploadProgress = function(e) {
+	if (e.lengthComputable) {
+		bytesUploaded = e.loaded;
+		bytesTotal = e.total;
+
+		percentage = Math.round(bytesUploaded * 100 / bytesTotal);
+		this.uploadNode.value = percentage;
+	}
+}
