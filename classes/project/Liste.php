@@ -57,7 +57,7 @@ class Liste {
               break;
             }
           ?><?=$type3?>
-            <input name="<?=$lp->getOrdnung()?>" value="<?=$la->getBezeichnung()?>" type=<?=$insType?>
+            <input name="<?=$lp->getOrdnung()?>" value="<?=$la->getBezeichnung()?>" type="<?=$insType?>">
             <?=$typenot3?>
           <?php endforeach; ?>
           </div>
