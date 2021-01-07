@@ -383,6 +383,7 @@ var FileUploader = function(target) {
 		let hidden = document.createElement("input");
 		hidden.name = "upload";
 		hidden.hidden = true;
+		hidden.type = "text";
 		hidden.value = this.target.dataset.target;
 		this.target.appendChild(hidden);
 	} else
@@ -390,16 +391,17 @@ var FileUploader = function(target) {
 }
 
 FileUploader.prototype.upload = function() {
-	let target = this.target;
+	let target = document.forms.namedItem(this.target.name);
 	let uploadNode = this.uploadNode;
 	return new Promise(function(resolve, reject) {
 		var formData = new FormData(target);
+		formData.append("upload", target.dataset.target);
 		var ajax = new XMLHttpRequest();
 
 		/* resolves the promise and then function with the form reset is called */
 		ajax.onreadystatechange = function() {
 			if(this.readyState == 4 && this.status == 200) {
-				console.log(this.responseText);
+				//console.log(this.responseText);
 				resolve();
 			}
 		}
@@ -408,7 +410,7 @@ FileUploader.prototype.upload = function() {
 			reject();
 		}
 
-		ajax.open('POST', '?ajaxUpload=true');
+		ajax.open('POST', '');
 		ajax.upload.addEventListener("progress", function(e) {
 			if (e.lengthComputable) {
 				bytesUploaded = e.loaded;

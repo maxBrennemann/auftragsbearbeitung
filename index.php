@@ -32,6 +32,7 @@
 	}
 	else if (isset($_POST['upload'])) {
 		$uploadDestination = $_POST['upload'];
+		require_once('classes/Upload.php');
 
 		/* checks which upload mechanism should be called */
 		if (strcmp($uploadDestination, "order") == 0) {
