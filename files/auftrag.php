@@ -31,15 +31,11 @@
 			$showFiles = Upload::getFilesAuftrag($auftragsId);
 			$auftragsverlauf = (new Auftragsverlauf($auftragsId))->representHistoryAsHTML();
 			$showLists = Liste::chooseList();
+			$showAttachedLists = $auftrag->showAttachedLists();
 		} catch (Exception $e) {
 			echo $e->getMessage();
 			$auftragsId = -1;
 		}
-	}
-
-	if (isset($_POST['filesubmitbtn'])) {
-		$upload = new Upload();
-		$upload->uploadFilesAuftrag($auftragsId);
 	}
 
 	if (isset($_POST['filesubmitbtnV'])) {
@@ -222,11 +218,14 @@ if ($auftragsId == -1) : ?>
 	</div>
 	<?php if ($show == false): ?>
 	<div class="defCont upload">
-		<form method="post" enctype="multipart/form-data">
-			Dateien zum Auftrag hinzufügen:
-			<input type="file" name="uploadedFile">
-			<input type="submit" value="Datei hochladen" name="filesubmitbtn">
-		</form>
+		<div>
+			<form class="fileUploader" method="post" enctype="multipart/form-data" data-target="order" name="auftragUpload">
+				Dateien zum Auftrag hinzufügen:
+				<input type="file" name="uploadedFile" multiple>
+				<input name="auftrag" value="<?=$auftragsId?>" hidden>
+			</form>
+			<div class="filesList defCont"></div>
+		</div>
 		<br>
 		<div>
 			<?=$showFiles?>
@@ -241,6 +240,8 @@ if ($auftragsId == -1) : ?>
 			<?=$showLists?>
 		</div>
 	</div>
-	<div class="liste"></div>
+	<div class="liste">
+		<?=$showAttachedLists?>
+	</div>
 	<?php endif; ?>
 <?php endif; ?>
