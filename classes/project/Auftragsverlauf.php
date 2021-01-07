@@ -40,8 +40,23 @@ class Auftragsverlauf {
         DBAccess::insertQuery("INSERT INTO history (`orderid`, `number`, `type`, `state`) VALUES ({$this->auftragsnummer}, $number, $type, '$state')");
     }
 
+    /*
+     * added member join to get the user id
+    */
     public function getHistory() {
-        $query = "SELECT history.id, history.insertstamp, history_type.name, CONCAT(COALESCE(postendata.Beschreibung, ''), COALESCE(schritte.Bezeichnung, '')) AS Beschreibung FROM history LEFT JOIN history_type ON history_type.type_id = history.type LEFT JOIN postendata ON postendata.Auftragsnummer = history.orderid AND postendata.Postennummer = history.number LEFT JOIN schritte ON schritte.Auftragsnummer = history.orderid AND schritte.Schrittnummer = history.number WHERE history.orderid = {$this->auftragsnummer}";
+        $query = <<<EOD
+            SELECT history.id, history.insertstamp, history_type.name, 
+                CONCAT(COALESCE(postendata.Beschreibung, ''), 
+                COALESCE(schritte.Bezeichnung, '')) AS Beschreibung, members.username 
+            FROM history 
+            LEFT JOIN history_type ON history_type.type_id = history.type 
+            LEFT JOIN postendata ON postendata.Auftragsnummer = history.orderid 
+                AND postendata.Postennummer = history.number 
+            LEFT JOIN schritte ON schritte.Auftragsnummer = history.orderid 
+                AND schritte.Schrittnummer = history.number 
+            LEFT JOIN members ON members.id = history.member_id 
+            WHERE history.orderid = {$this->auftragsnummer}
+        EOD;
         return DBAccess::selectQuery($query);
     }
 
@@ -49,7 +64,12 @@ class Auftragsverlauf {
         $history = $this->getHistory();
         $html = "";
         foreach ($history as $h) {
-            $html .= "<div class=\"showInMiddle\">{$h['name']}: {$h['Beschreibung']}</div><div class=\"line\"></div>";
+            $datetime = $h['insertstamp'];
+            $datetime = date('d.m.Y H:i', strtotime($datetime));
+            $beschreibung = $h['Beschreibung'];
+            $person = $h['username'];
+
+            $html .= "<div class=\"showInMiddle\">{$h['name']}: {$beschreibung}<br>hinzugefügt am {$datetime}<br>von {$person}</div><div class=\"line\"></div>";
         }
         return $html;
     }

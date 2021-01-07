@@ -90,6 +90,9 @@ aside {
 
 .showInMiddle {
     text-align: center;
+    padding: 2px;
+    background: white;
+    border-radius: 10px;
 }
 
 .line {
