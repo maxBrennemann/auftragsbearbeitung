@@ -87,6 +87,8 @@ function startFunc() {
 			document.getElementById("showNotifications").style.display = "inline";
 		}
 	}, false);
+
+	initializeFileUpload();
 }
 
 function validateEmail(email) {
@@ -334,9 +336,22 @@ class TableClass {
     }
 }
 
+/* adds file upload class to every form with that class */
+function initializeFileUpload() {
+	let forms = document.querySelectorAll("form.fileUploader");
+	var fileUploaders = [];
+	for (let i = 0, f; f = forms[i]; i++) {
+		let u = new FileUploader(f);
+		fileUploaders.push(u);
+	}
+}
+
+/* https://stackoverflow.com/questions/30008114/how-do-i-promisify-native-xhr */
 var FileUploader = function(target) {
 	if (target.nodeName == "FORM") {
 		this.target = target;
+		this.files = target.querySelector('input[type="file"]');
+		this.files.addEventListener("change", this.preview.bind(this), false);
 
 		let uploadNode = document.createElement("input");
 		uploadNode.type = "range";
@@ -348,30 +363,79 @@ var FileUploader = function(target) {
 		let uploadButton = document.createElement("input");
 		uploadButton.type = "button";
 		uploadButton.value = "Hochladen";
-		uploadButton.addEventListener("click", (this.upload).bind(this), false);
+		uploadButton.addEventListener("click", function() {
+			this.upload()
+				.then(
+					this.target.reset()
+				)
+				.catch(function (e) {
+					console.log(e.statusText);
+				}
+				);
+		}.bind(this), false);
 
 		this.target.appendChild(uploadButton);
 		this.target.appendChild(uploadNode);
 
 		this.uploadNode = uploadNode;
+
+		/* adds form element to set a post parameter to determine on the server that it is an file upload */
+		let hidden = document.createElement("input");
+		hidden.name = "upload";
+		hidden.hidden = true;
+		hidden.value = this.target.dataset.target;
+		this.target.appendChild(hidden);
 	} else
 		return null;
 }
 
 FileUploader.prototype.upload = function() {
-	var formData = new FormData(this.target);
-	var ajax = new XMLHttpRequest();
-	ajax.open('POST', '');
-	ajax.upload.addEventListener("progress", (this.uploadProgress).bind(this), false);
-	ajax.send(formData);
+	let target = this.target;
+	let uploadNode = this.uploadNode;
+	return new Promise(function(resolve, reject) {
+		var formData = new FormData(target);
+		var ajax = new XMLHttpRequest();
+
+		/* resolves the promise and then function with the form reset is called */
+		ajax.onreadystatechange = function() {
+			if(this.readyState == 4 && this.status == 200) {
+				console.log(this.responseText);
+				resolve();
+			}
+		}
+
+		ajax.onerror = function() {
+			reject();
+		}
+
+		ajax.open('POST', '?ajaxUpload=true');
+		ajax.upload.addEventListener("progress", function(e) {
+			if (e.lengthComputable) {
+				bytesUploaded = e.loaded;
+				bytesTotal = e.total;
+		
+				percentage = Math.round(bytesUploaded * 100 / bytesTotal);
+				uploadNode.value = percentage;
+			}
+		}, false);
+		ajax.send(formData);
+	}); 
 }
 
-FileUploader.prototype.uploadProgress = function(e) {
-	if (e.lengthComputable) {
-		bytesUploaded = e.loaded;
-		bytesTotal = e.total;
-
-		percentage = Math.round(bytesUploaded * 100 / bytesTotal);
-		this.uploadNode.value = percentage;
+/* https://www.mediaevent.de/javascript/ajax-2-xmlhttprequest.html */
+FileUploader.prototype.preview = function() {
+	let files = this.files.files;
+	for (let i = 0, f; f = files[i]; i++) {
+		if (!f.type.match('image.*'))
+			continue;
+		let reader = new FileReader();
+		reader.onload = (function(_file) {
+			return function(e) {
+				let span = document.createElement("span");
+				span.innerHTML = ['<img class="upload_prev" src="', e.target.result, '" title="', escape(_file.name), '"/>'].join('');
+				document.querySelector(".filesList").insertBefore(span, null);
+			}
+		})(f);
+		reader.readAsDataURL(f);
 	}
 }

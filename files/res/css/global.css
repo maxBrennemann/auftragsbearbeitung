@@ -260,6 +260,17 @@ iframe {
     min-height: 28px;
 }
 
+/* style for images in upload preview */
+.upload_prev {
+    width: 120px;
+    height: auto;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 15px;
+    border: 1px solid grey;
+    background: white;
+}
+
 #imageHeader {
     width: 100px;
     height: auto;
