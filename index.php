@@ -29,6 +29,16 @@
 	*/
 	if (isset($_POST['getReason'])) {
 		Ajax::manageRequests($_POST['getReason'], $page);
+	}
+	else if (isset($_POST['upload'])) {
+		$uploadDestination = $_POST['upload'];
+
+		/* checks which upload mechanism should be called */
+		if (strcmp($uploadDestination, "order") == 0) {
+			$auftragsId = (int) $_POST['auftrag'];
+			$upload = new Upload();
+			$upload->uploadFilesAuftrag($auftragsId);
+		}
 	} else {
 		if ($page == "pdf") {
 			$type = $_GET['type'];
@@ -61,7 +71,7 @@
 
 			include('files/header.php');
 
-			$t = new Table("kunde", 6);
+			$t = new Table("kunde", 0);
 			//$t->addColumn("test", ["test"]);
 			//$t->addRow(["id" => 37, "articleUrl" => "none", "pageName" => "tolle seite", "src" => "keine Qeulle", "test" => "test"]);
 			//$t->addLink("https://klebefux.de");
@@ -94,7 +104,19 @@
 				}
 			</script>
 			
+			<div>
+				<form class="fileUploader" method="post" enctype="multipart/form-data" data-target="order">
+					Dateien zum Auftrag hinzufügen:
+					<input type="file" name="uploadedFile" multiple>
+				</form>
+				<div class="filesList defCont"></div>
+			</div>
+
 			<?php
+
+			if (isset($_GET['ajaxUpload'])) {
+				echo "ajaxUpload";
+			}
 
 			include('files/footer.php');
 			return null;
