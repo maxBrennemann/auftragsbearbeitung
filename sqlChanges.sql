@@ -184,3 +184,6 @@ ALTER TABLE `user_notifications` CHANGE `type` `type` VARCHAR(32) NOT NULL;
 /* Änderungen 05.01.2021 */
 CREATE TABLE `auftrag_liste` ( `auftrags_id` INT NOT NULL , `listen_id` INT NOT NULL ) ENGINE = InnoDB;
 ALTER TABLE `auftrag_liste` ADD PRIMARY KEY( `auftrags_id`, `listen_id`);
+
+/* Änderungen 07.01.2021 */
+ALTER TABLE `history` ADD `member_id` INT NOT NULL AFTER `insertstamp`;
