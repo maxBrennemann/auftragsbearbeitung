@@ -156,6 +156,15 @@ class Login {
 			DBAccess::updateQuery("UPDATE members SET isEmailValidated = 0 WHERE id = $memberId");
 		}
 	}
+
+	public static function getUserId() {
+		if (isset($_SESSION['userid'])) {
+			$user = $_SESSION['userid'];
+			return $user;
+		}
+		return -1;
+	}
+
 }
 
 ?>
