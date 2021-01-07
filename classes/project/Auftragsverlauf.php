@@ -37,7 +37,8 @@ class Auftragsverlauf {
      * Eventuell kann später noch ein Notizfeld hinzugefügt werden.
      */
     public function addToHistory($number, $type, $state) {
-        DBAccess::insertQuery("INSERT INTO history (`orderid`, `number`, `type`, `state`) VALUES ({$this->auftragsnummer}, $number, $type, '$state')");
+        $userId = Login::getUserId();
+        DBAccess::insertQuery("INSERT INTO history (`orderid`, `number`, `type`, `state`, `member_id`) VALUES ({$this->auftragsnummer}, $number, $type, '$state', $userId)");
     }
 
     /*
