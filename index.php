@@ -52,6 +52,13 @@
 					require_once('classes/project/Rechnung.php');
 					$rechnung = new Rechnung();
 					$rechnung->PDFgenerieren();
+				case "auftrag":
+					require_once('classes/project/PDF_Auftrag.php');
+
+					if (isset($_GET['id'])) {
+						$id = (int) $_GET['id'];
+						PDF_Auftrag::getPDF($id);
+					}
 				break;
 			}
 			
@@ -64,6 +71,9 @@
 	
 	function showPage($page, $isArticle) {
 		if ($page == "test") {
+			require_once('classes/project/PDF_Auftrag.php');
+			PDF_Auftrag::getPDF();
+
 			$result = ["id" => -1, "articleUrl" => "test", "pageName" => "test"];
 			$articleUrl = $result["articleUrl"];
 			$pageName = $result["pageName"];

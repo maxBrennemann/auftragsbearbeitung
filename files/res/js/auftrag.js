@@ -50,7 +50,7 @@ function addTime() {
 
     var add = new AjaxCall(`getReason=insTime&time=${time}&wage=${wage}&descr=${descr}&auftrag=${globalData.auftragsId}&ohneBerechnung=${isFree}`, "POST", window.location.href);
     add.makeAjaxCall(function (response) {
-        console.log(response);
+        updatePrice(response);
         reloadPostenListe();
     });
 }
@@ -65,7 +65,7 @@ function addLeistung() {
 
     var add = new AjaxCall(`getReason=insertLeistung&lei=${lei}&bes=${bes}&ekp=${ekp}&pre=${pre}&auftrag=${globalData.auftragsId}&ohneBerechnung=${isFree}`, "POST", window.location.href);
     add.makeAjaxCall(function (response) {
-        console.log(response);
+        updatePrice(response);
         reloadPostenListe();
     });
 }
@@ -91,6 +91,10 @@ function reloadPostenListe() {
     reload.makeAjaxCall(function (response) {
         document.getElementById("auftragsPostenTable").innerHTML = response;
     });
+}
+
+function updatePrice(newPrice) {
+    document.getElementById("gesamtpreis").innerText = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(newPrice);
 }
 
 class PostenListe {
@@ -142,7 +146,8 @@ function addBearbeitungsschritte() {
                     break;
                 }
             }
-            // 0 = hide, 1 = show
+            
+            /* 0 = hide, 1 = show */
             hide = hide == "hide" ? 0 : 1;
 
             /* check for assigned task */
@@ -365,4 +370,13 @@ function editDescription(event) {
 
     var saveDescription = new AjaxCall(`getReason=saveDescription&text=${text.innerText}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
     saveDescription.makeAjaxCall(function () {});
+}
+
+/* shows auftragsblatt, from: https://stackoverflow.com/questions/19851782/how-to-open-a-url-in-a-new-tab-using-javascript-or-jquery */
+function showPreview() {
+    let link = document.getElementById("home_link").href + "pdf?type=auftrag&id=" + globalData.auftragsId;
+    var win = window.open(link, '_blank');
+    if (win) {
+       win.focus();
+    }
 }
