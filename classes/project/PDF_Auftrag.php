@@ -4,7 +4,12 @@ require_once('.res/tcpdf/tcpdf.php');
 
 class PDF_Auftrag {
 
-    public static function getPDF() {
+    /*
+     * creates empty pdf, then adds customer data to heading,
+     * then vehicle info is loaded if available
+     * after that basic information about the order is shown
+     */
+    public static function getPDF($id_auftrag) {
         $pdf = new TCPDF('p', 'mm', 'A4');
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor("Auftragsbearbeitung");
@@ -18,10 +23,10 @@ class PDF_Auftrag {
         $fileName = Link::getResourcesLink("auftrag_pdf.htm", "html", false);
         $html = file_get_contents_utf8($fileName);
 
-        $id_auftrag = 60;
         $variables = self::getData($id_auftrag);
         //var_dump($variables);
 
+        /* header with customer information */
         $table = <<<EOD
         <table>
             <tr>
@@ -42,17 +47,18 @@ class PDF_Auftrag {
             </tr>
             <tr>
                 <td>Email</td>
-                <td>{$variables['Ansprechpartner']}</td>
+                <td>{$variables['Email']}</td>
             </tr>
             <tr>
                 <td>Mobil-Nr. (Handy)</td>
-                <td>{$variables['Ansprechpartner']}</td>
+                <td>{$variables['TelefonMobil']}</td>
             </tr>
         </table>
         EOD;
 
         $pdf->writeHTML($table);
 
+        /* vehicle */
         $fahrzeug_query = "SELECT Fahrzeug, Kennzeichen FROM fahrzeuge, fahrzeuge_auftraege WHERE fahrzeuge.Nummer = fahrzeuge_auftraege.id_fahrzeug AND fahrzeuge_auftraege.id_auftrag = $id_auftrag";
         $fahrzeuge = DBAccess::selectQuery($fahrzeug_query);
 
@@ -70,6 +76,27 @@ class PDF_Auftrag {
 
             $pdf->writeHTML($table);
         }
+
+        /* order information */
+        $table = <<<EOD
+            <table>
+                <tr>
+                    <td colspan="3">Beschreibung:</td>
+                    <td colspan="2">Angenommen Durch</td>
+                    <td colspan="1">{$variables['AngenommenDurch']}</td>
+                </tr>
+                <tr>
+                    <td rowspan="4" colspan="3">{$variables['Auftragsbeschreibung']}</td>
+                    <td colspan="2">Kundennummer</td>
+                    <td colspan="1">{$variables['Kundennummer']}</td>
+                </tr>
+                <tr>
+                    <td colspan="2">Auftragsnummer</td>
+                    <td colspan="1">{$variables['Auftragsnummer']}</td>
+                </tr>
+            </table>
+        EOD;
+        $pdf->writeHTML($table);
 
         $pdf->Output();
     }
