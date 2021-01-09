@@ -9,12 +9,26 @@ function addList() {
 function chooseList(listid) {
     var get = new AjaxCall(`getReason=getList&listId=${listid}`, "POST", window.location.href);
     get.makeAjaxCall(function (response) {
+        /* appending list response as div to liste div */
         var anchor = document.getElementsByClassName("liste")[0];
-        anchor.innerHTML = response;
+        var div = document.createElement("div");
+        div.innerHTML = response;
+        anchor.appendChild(div);
     });
+
+    /* checking if globalData from order page exists, if so, list is added to order */
+    if (globalData != null && globalData.auftragsId != null)
+        addListToOrder(listid);
 }
 
 function saveListData() {
     var add = new AjaxCall(`getReason=saveListData&listId=${listid}&data=${data}`, "POST", window.location.href);
     add.makeAjaxCall(function (response) {});
+}
+
+function addListToOrder(listid) {
+    var listToOrder = new AjaxCall(`getReason=addListToOrder&listId=${listid}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
+    listToOrder.makeAjaxCall(function (response) {
+        console.log(response);
+    });
 }
