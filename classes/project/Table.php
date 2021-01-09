@@ -12,7 +12,7 @@ class Table {
 	private $identifier = "";
 	private $data;
 	private $editable = false;
-	private $limit;
+	private $limit = 0;
 	private $link = null;
 	public $columnNames;
 	
@@ -73,6 +73,9 @@ class Table {
 	}
 
 	public function addActionButton($button, $identifier = null) {
+		if ($this->data == null)
+			return 0;
+
 		switch($button) {
 			case "update":
 				$this->buttonUpdate = !$this->buttonUpdate;
@@ -195,9 +198,9 @@ class Table {
         $html = "";
 
         if ($this->editable) {
-			$html = "<table class='allowAddingContent' data-type={$this->type} data-send-to={$this->sendTo}>";
+			$html = "<table class='allowAddingContent' data-type='{$this->type}' data-send-to='{$this->sendTo}'>";
 		} else {
-			$html = "<table data-type={$this->type}>";
+			$html = "<table data-type='{$this->type}'>";
 		}
         
 		$html .= self::html_createTableHeader($this->columnNames);
@@ -207,12 +210,14 @@ class Table {
 			$row = $this->data[$i];
 			$html .= self::html_createRow2($row, $this->columnNames, $this->link);
 		}
+
+		$html .= "</table>";
 		
 		return $html;
     }
 
     /* static functions */
-    public static function createTable() {
+    public static function createTable($dbName, $rowCount) {
 
 	}
 	
@@ -253,9 +258,9 @@ class Table {
 		}
 
 		if ($editable) {
-			$html_table = "<table class='allowAddingContent' data-type=${type} data-send-to=${sendTo}>";
+			$html_table = "<table class='allowAddingContent' data-type='${type}' data-send-to='${sendTo}'>";
 		} else {
-			$html_table = "<table data-type=${type}>";
+			$html_table = "<table data-type='${type}'>";
 		}
 
 		$html_table .= self::html_createTableHeader($column_names);

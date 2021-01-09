@@ -176,4 +176,12 @@ class Liste {
 
 }
 
+/* Listendaten speichern:
+
+listenauswahl.id speichern für listenpunkt typ radio
+listenauswahl.id mit notitz speichern in tabelle für text
+listenauswahl.id true false für checked
+
+*/
+
 ?>
