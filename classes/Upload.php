@@ -89,6 +89,11 @@ class Upload {
 		$table = $form->createTableByData($files, $column_names, "dateien", null);
 		return $table;
     }
+
+    public function ajaxUpload() {
+
+    }
+
 }
 
 ?>
