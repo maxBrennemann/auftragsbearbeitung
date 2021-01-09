@@ -77,7 +77,7 @@ if ($auftragsId == -1) : ?>
 	<div class="defCont auftragsinfo">
 		<span><u>Auftragsnummer:</u> <span id="auftragsnummer"><?=$auftrag->getAuftragsnummer()?></span></span>
 		<br>
-		<span><button onclick="print('auftragsnummer', 'Auftrag');">Auftragsblatt anzeigen</button></span>
+		<span><button onclick="showPreview();">Auftragsblatt anzeigen</button></span>
 		<span><button onclick="rechnungErstellen();">Rechnung generieren</button></span>
 		<?php if ($auftrag->getIsArchiviert() == false) :?><span><button onclick="archvieren();">Auftrag archivieren</button></span><br><?php endif; ?>
 		<br>
