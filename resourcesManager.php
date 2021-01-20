@@ -37,4 +37,12 @@
 		$file = file_get_contents(Link::getResourcesLink($_GET['upload'], "upload", false));
 		echo $file;
 	}
+
+	if (isset($_GET['pdf_invoice'])) {
+		header("Content-type: application/pdf");
+		$pdf = $_GET['pdf_invoice'];
+		$file = file_get_contents(Link::getResourcesLink($pdf, "pdf", false));
+		echo $file;
+	}
+
 ?>

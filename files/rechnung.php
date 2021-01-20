@@ -6,6 +6,7 @@
 	$rechnung =  Link::getPageLink("rechnung");
 	$rechnungsnummer = 0;
 	
+	/* shows old invoice */
 	if(isset($_GET['id'])) {
 		$rechnungsnummer = $_GET['id'];
 		$rechnung = new Rechnung($rechnungsnummer);
@@ -31,7 +32,8 @@ if ($setInvoiceGenerator): ?>
 		<p>Posten zum Auftrag:</p>
 		<?=$posten?>
 	</div>
-	<button>Alle Posten übernehmen</button><button>Rechnung abschließen</button>
+	<button onclick="closeOrder();">Alle Posten übernehmen</button>
+	<button onclick="generatePDF();">Rechnung abschließen</button>
 	<span><?=$rechnungsPDF?></span>
 <?php else: ?>
 	<div>Rechnung:</div>
