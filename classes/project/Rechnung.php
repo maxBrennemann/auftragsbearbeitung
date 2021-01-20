@@ -29,7 +29,10 @@ class Rechnung {
 		}
 	}
 
-    public function PDFgenerieren() {
+	/*
+	 * creates and stores a pdf if parameter is set to true
+	*/
+    public function PDFgenerieren($store = false) {
         $pdf = new TCPDF('p', 'mm', 'A4');
         $pdf->setPrintHeader(false);
         $pdf->setPrintFooter(false);
@@ -70,12 +73,27 @@ class Rechnung {
 			}
 		}
 
+		if ($store == true) {
+            $filename= "{$this->kunde->getKundennummer()}_{$this->getInvoiceId()}.pdf"; 
+            $filelocation = "C:\\xampp\htdocs\\auftragsbearbeitung\\files\\generated\\invoice";
+            $fileNL = $filelocation . "\\" . $filename;
+			$pdf->Output($fileNL, 'F');
+		} else {
+			$pdf->Output();
+		}
+	}
 
-		$pdf->Output();
+	/*
+	 * returns the invoice id by filtering for the order id
+	*/
+	private function getInvoiceId() {
+		$orderId = $this->auftrag->getAuftragsnummer();
+		return DBAccess::selectQuery("SELECT Rechnungsnummer FROM auftrag WHERE Auftragsnummer = $orderId")[0]['Rechnungsnummer'];
 	}
 	
 	private function loadPostenFromAuftrag() {
-		$this->posten = $this->auftrag->getAuftragspostenData();
+		$orderId = $this->auftrag->getAuftragsnummer();
+		$this->posten = Posten::bekommeAllePosten($orderId, true);
 	}
 
 	public static function getNextNumber() {
@@ -116,6 +134,34 @@ class Rechnung {
 		}
 
 		return $summe;
+	}
+
+	/*
+	 * adds an invoice id to all posten for a specific order
+	 * sql query only works if no invoice id has ever been added to that
+	*/
+	public static function addAllPosten($orderId) {
+		$auftrag = new Auftrag($orderId);
+		$posten = $auftrag->getAuftragspostenData();
+
+		
+		$nextNumber = Rechnung::getNextNumber();
+		echo $nextNumber;
+		DBAccess::updateQuery("UPDATE auftrag SET Rechnungsnummer = $nextNumber WHERE Auftragsnummer = $orderId AND Rechnungsnummer = 0");
+		DBAccess::updateQuery("UPDATE posten SET rechnungsNr = $nextNumber WHERE Auftragsnummer = $orderId AND rechnungsNr = 0");
+	}
+
+	/*
+	 * adds an invoice id to specific posten for a specific order
+	 * sql query only works if no invoice id has ever been added to that
+	*/
+	public static function addPosten($orderId, $postenIds) {
+		$nextNumber = Rechnung::getNextNumber();
+		$query = "UPDATE posten SET rechnungsNr = $nextNumber WHERE ";
+		foreach($postenIds as $id) {
+			$query .= "Postennummer = $id AND ";
+		}
+		$query = substr($query, 0, -4);
 	}
 
 }
