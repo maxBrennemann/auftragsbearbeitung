@@ -27,10 +27,18 @@ abstract class Posten {
 	protected $postenTyp;
 	protected $ohneBerechnung = false;
 
-	public static function bekommeAllePosten($auftragsnummer) {
+	/*
+	 * function gets all posten data for an order
+	 * second parameter is not necessary, it switches to the invoice mode
+	 */
+	public static function bekommeAllePosten($auftragsnummer, $invoice = false) {
 		$posten = array();
 		
-		$data = DBAccess::selectQuery("SELECT Postennummer, Posten, ohneBerechnung FROM posten WHERE Auftragsnummer = $auftragsnummer");
+		if ($invoice) {
+			$data = DBAccess::selectQuery("SELECT Postennummer, Posten, ohneBerechnung FROM posten WHERE Auftragsnummer = $auftragsnummer AND rechnungsNr != 0");
+		} else {
+			$data = DBAccess::selectQuery("SELECT Postennummer, Posten, ohneBerechnung FROM posten WHERE Auftragsnummer = $auftragsnummer");
+		}
 		foreach ($data as $step) {
 			$element;
 
