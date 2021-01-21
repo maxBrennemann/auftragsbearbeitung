@@ -413,6 +413,23 @@ class Ajax {
 				$list = Liste::readList($lid);
 				echo $list->toHTML();
 			break;
+			case "completeInvoice":
+				require_once("classes/project/Rechnung.php");
+				$orderId = (int) $_POST['auftrag'];
+				$ids = $_POST['rows'];
+				if ($ids == "0") {
+					Rechnung::addAllPosten($orderId);
+				} else {
+					$ids = json_decode($ids);
+					Rechnung::addPosten($orderId, $ids);
+				}
+				return Link::getPageLink();
+			break;
+			case "generateInvoicePDF":
+				require_once("classes/project/Rechnung.php");
+				$invoice = new Rechnung();
+				$invoice->PDFgenerieren(true);
+			break;
 			case "saveProduct":
 				$attData = $_POST['attData'];
 				$marke = $_POST['marke'];
@@ -440,6 +457,7 @@ class Ajax {
 				$text = $_POST['text'];
 				$auftrag = $_POST['auftrag'];
 				DBAccess::updateQuery("UPDATE auftrag SET Auftragsbeschreibung = '$text' WHERE Auftragsnummer = $auftrag");
+				echo "saved";
 			break;
 			case "table":
 				/*
