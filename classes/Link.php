@@ -54,6 +54,9 @@ class Link {
 			case "upload":
 				$link = $rewriteBase . "upload/" . $resource;
 				break;
+			case "pdf":
+				$link = $rewriteBase . "files/generated/invoice/" . $resource;
+				break;
 		}
 		
 		return $link;
@@ -72,6 +75,9 @@ class Link {
 				break;
 			case "upload":
 				$link = REWRITE_BASE . "upload/" . $resource;
+				break;
+			case "pdf":
+				$link = REWRITE_BASE . "pdf_invoice/" . $resource;
 				break;
 		}
 		
