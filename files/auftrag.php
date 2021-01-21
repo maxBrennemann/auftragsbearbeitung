@@ -44,16 +44,7 @@
 		$upload = new Upload();
 		$upload->uploadFilesVehicle($vehicleId, $auftragsId);
 	}
-
-	if (isset($_GET['create'])) {
-		$nextId = Rechnung::getNextNumber();
-		$auftragsid = $_GET['create'];
-		echo "Rechnung $nextId wird erstellt";
-		DBAccess::updateQuery("UPDATE auftrag SET Rechnungsnummer = $nextId WHERE Auftragsnummer = $auftragsid");
-		$tempAuftrag = new Auftrag($auftragsid);
-		$tempAuftrag->recalculate();
-	}
-
+	
 	/* Paremter wird gebraucht, falls Rechnung gestellt wurde, aber der Auftrag trotzdem gezeigt werden soll */
 	if (isset($_GET['show'])) {
 		$show = true;
@@ -68,6 +59,11 @@ if ($auftragsId == -1) : ?>
 	<p>Auftrag <?=$auftrag->getAuftragsnummer()?> wurde abgeschlossen. Rechnungsnummer: <span id="rechnungsnummer"><?=$auftrag->getRechnungsnummer()?></span></p>
 	<button onclick="print('rechnungsnummer', 'Rechnung');">Rechnungsblatt anzeigen</button>
 	<button onclick="showAuftrag()">Auftrag anzeigen</button>
+	<?php
+		$invoiceLink = $auftrag->getKundennummer() . "_" . $auftrag->getRechnungsnummer() . ".pdf";
+		$invoiceLink = Link::getResourcesShortLink($invoiceLink, "pdf");
+	?>
+	<a href="<?=$invoiceLink?>">Zur Rechnung</a>
 <?php else: ?>
 	<aside class="defCont">
 		<?=$kunde->getVorname()?> <?=$kunde->getNachname()?><br><?=$kunde->getFirmenname()?><br>Adresse: <br><?=$kunde->getStrasse()?> <?=$kunde->getHausnummer()?><br>
@@ -78,7 +74,7 @@ if ($auftragsId == -1) : ?>
 		<span><u>Auftragsnummer:</u> <span id="auftragsnummer"><?=$auftrag->getAuftragsnummer()?></span></span>
 		<br>
 		<span><button onclick="showPreview();">Auftragsblatt anzeigen</button></span>
-		<span><button onclick="rechnungErstellen();">Rechnung generieren</button></span>
+		<span><button onclick="location.href= '<?=Link::getPageLink('rechnung')?>?create=<?=$auftragsId?>'">Rechnung generieren</button></span>
 		<?php if ($auftrag->getIsArchiviert() == false) :?><span><button onclick="archvieren();">Auftrag archivieren</button></span><br><?php endif; ?>
 		<br>
 		<span><u>Beschreibung:</u><br><span id="orderDescription"><?=$auftrag->getAuftragsbeschreibung()?></span><button onclick="editDescription(event);">Bearbeiten</button></span>
