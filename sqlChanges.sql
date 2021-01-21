@@ -187,3 +187,7 @@ ALTER TABLE `auftrag_liste` ADD PRIMARY KEY( `auftrags_id`, `listen_id`);
 
 /* Änderungen 07.01.2021 */
 ALTER TABLE `history` ADD `member_id` INT NOT NULL AFTER `insertstamp`;
+INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'einstellungen.php', 'Einstellungen', 'einstellungen');
+
+/* Änderungen 16.01.2021 */
+INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '4', 'head', 'rechnung.js', '0', 'js');
