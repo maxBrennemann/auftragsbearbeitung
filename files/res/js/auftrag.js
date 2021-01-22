@@ -230,8 +230,8 @@ function selectVehicle(event) {
     globalData.vehicleId = event.target.value;
 }
 
-function deleteRow(row) {
-    var del = new AjaxCall(`getReason=delete&auftrag=${globalData.auftragsId}&row=${row}&identifier=Postennummer`, "POST", window.location.href);
+function deleteRow(key) {
+    var del = new AjaxCall(`getReason=delete&key=${key}`, "POST", window.location.href);
     del.makeAjaxCall(function (response) {
         console.log(response);
     });
@@ -284,12 +284,6 @@ function addColor() {
     div.style.display = "block";
     addActionButtonForDiv(div, "hide");
     centerAbsoluteElement(div);
-}
-
-function rechnungErstellen() {
-    var url = window.location.href.split('?')[0];
-    url += "?create=" + document.getElementById("auftragsnummer").innerHTML;
-    window.location.href = url;
 }
 
 function showAuftrag() {
@@ -366,10 +360,18 @@ function chooseProduct(productId) {
 function editDescription(event) {
     var text = document.getElementById("orderDescription");
     text.contentEditable = true;
-    event.target.innerText = "Speichern";
-
-    var saveDescription = new AjaxCall(`getReason=saveDescription&text=${text.innerText}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
-    saveDescription.makeAjaxCall(function () {});
+    
+    if (event.target.innerText == "Speichern") {
+        var saveDescription = new AjaxCall(`getReason=saveDescription&text=${text.innerText}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
+        saveDescription.makeAjaxCall(function (response) {
+            if (response == "saved") {
+                var btn = document.getElementById("orderDescription").nextSibling;
+                btn.innerText = "Bearbeiten";
+            }
+        });
+    } else {
+        event.target.innerText = "Speichern";
+    }
 }
 
 /* shows auftragsblatt, from: https://stackoverflow.com/questions/19851782/how-to-open-a-url-in-a-new-tab-using-javascript-or-jquery */
@@ -380,3 +382,5 @@ function showPreview() {
        win.focus();
     }
 }
+
+
