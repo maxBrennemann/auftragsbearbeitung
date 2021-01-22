@@ -225,7 +225,7 @@ class Table {
 
 			if ($action == "delete") {
 				$number = array_search($key, $actionObject->keys);
-				DBAccess::deleteQuery("DELETE FROM $actionObject->type WHERE $actionObject->identifier = $number");
+				DBAccess::deleteQuery("DELETE FROM $actionObject->type WHERE $actionObject->identifier = $rowId");
 				echo "DELETE FROM $actionObject->type WHERE $actionObject->identifier = $rowId";
 			} else if ($action == "check") {
 				/* data string for checked rows is $_POST["checked"] as JSON */
