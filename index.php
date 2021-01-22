@@ -72,7 +72,7 @@
 	function showPage($page, $isArticle) {
 		if ($page == "test") {
 			require_once('classes/project/PDF_Auftrag.php');
-			PDF_Auftrag::getPDF();
+			//PDF_Auftrag::getPDF();
 
 			$result = ["id" => -1, "articleUrl" => "test", "pageName" => "test"];
 			$articleUrl = $result["articleUrl"];
@@ -82,11 +82,11 @@
 
 			include('files/header.php');
 
-			$t = new Table("kunde", 0);
+			$t = new Table("kunde", 10);
 			//$t->addColumn("test", ["test"]);
 			//$t->addRow(["id" => 37, "articleUrl" => "none", "pageName" => "tolle seite", "src" => "keine Qeulle", "test" => "test"]);
 			//$t->addLink("https://klebefux.de");
-			$t->addActionButton("delete", $identifier = "Kundennummer");
+			$t->addActionButton("check", $identifier = "Kundennummer");
 
 			echo $t->getTable();
 
@@ -175,6 +175,6 @@ function isLoggedIn() {
 }
 
 function getCurrentVersion() {
-	return "0.1.5";
+	return "0.1.6";
 }
 ?>
