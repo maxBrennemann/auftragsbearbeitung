@@ -247,6 +247,12 @@ class Ajax {
 				/* using new table functionality */
 				require_once("classes/project/Table.php");
 				Table::updateValue("schritte_table", "delete", $_POST['key']);
+			break;
+			case "update":
+				/* using new table functionality */
+				require_once("classes/project/Table.php");
+				Table::updateValue("schritte_table", "update", $_POST['key']);
+			break;
 			case "sendSource":
 				Produkt::addSource();
 			break;
