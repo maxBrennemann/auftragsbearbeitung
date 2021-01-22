@@ -111,7 +111,7 @@ class Auftrag implements StatisticsInterface {
 		/* addes three buttons to table */
 		$t = new Table();
 		$t->createByData($data, $column_names);
-		$t->addActionButton("update", $identifier = "Schrittnummer");
+		$t->addActionButton("update", $identifier = "Schrittnummer", $update = "istErledigt = 0");
 		$t->addActionButton("edit");
 		$t->addActionButton("delete", $identifier = "Schrittnummer");
 

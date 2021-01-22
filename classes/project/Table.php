@@ -77,7 +77,7 @@ class Table {
 		$this->callback = $callback;
 	}
 
-	public function addActionButton($button, $identifier = null) {
+	public function addActionButton($button, $identifier = null, $update = null) {
 		if ($this->data == null)
 			return 0;
 
@@ -93,6 +93,13 @@ class Table {
 					$array[$i] = $btn;
 				}
 				$this->addColumn("Aktionen", $array);
+				
+				if ($identifier != null) {
+					$this->setIdentifier($identifier);
+				}
+
+				/* maybe later callback to Auftrag.php and logic for updates there */
+				$this->update = $update;
 			break;
 			case "edit":
 				$this->buttonUpdate = !$this->buttonEdit;
@@ -231,6 +238,10 @@ class Table {
 				/* data string for checked rows is $_POST["checked"] as JSON */
 				$data = $_POST["checked"];
         		$data = json_decode($data, true);
+			} else if ($action == "update") {
+				$number = array_search($key, $actionObject->keys);
+				DBAccess::updateQuery("UPDATE $actionObject->type SET $actionObject->update WHERE $actionObject->identifier = $rowId");
+				echo "UPDATE $actionObject->type SET $actionObject->update WHERE $actionObject->identifier = $rowId";
 			}
 		} else {
 			return "no data found";
