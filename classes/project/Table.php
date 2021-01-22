@@ -20,6 +20,7 @@ class Table {
 	private $buttonEdit = false;
 	private $buttonDelete = false;
 	private $buttonUpdate = false;
+	private $buttonCheck = false;
 
 	private $callback = null;
 	private $keys = null;
@@ -49,6 +50,10 @@ class Table {
         $this->type = 0;
         $this->data = $data;
         $this->columnNames = $columnNames;
+	}
+
+	public function setType($type) {
+		$this->type = $type;
 	}
 	
 	public function addLink($link) {
@@ -91,6 +96,15 @@ class Table {
 			break;
 			case "edit":
 				$this->buttonUpdate = !$this->buttonEdit;
+				$array = [];
+				if ($this->keys == null)
+					$this->createKeys();
+				
+				for ($i = 0; $i < sizeof($this->data); $i++) {
+					$btn = $this->addEditButton($this->keys[$i]);
+					$array[$i] = $btn;
+				}
+				$this->addColumn("Aktionen", $array);
 			break;
 			case "delete":
 				$this->buttonUpdate = !$this->buttonDelete;
@@ -106,6 +120,17 @@ class Table {
 				if ($identifier != null) {
 					$this->setIdentifier($identifier);
 				}
+			break;
+			case "check":
+				if ($this->keys == null)
+					$this->createKeys();
+				
+				for ($i = 0; $i < sizeof($this->data); $i++) {
+					$btn = $this->addCheck($this->keys[$i]);
+					$array[$i] = $btn;
+				}
+				$this->addColumn("Aktionen", $array);
+				$this->buttonCheck = true;
 			break;
 		}
 	}
@@ -125,18 +150,41 @@ class Table {
 		$button = "<button class='actionButton' onclick=\"deleteRow('$key')\" title='Löschen'>&#x1F5D1;</button>";
 		return $button;
 
-    }
+	}
+	
+	private function addCheck($key) {
+		$check = "<input type=\"checkbox\" name=\"checkRow$key\">";
+		return $check;
+	}
+
+	/*
+	 * checks if a rowname already exists and returns boolean accordingly
+	*/
+	private function rowNameExists($rowName) {
+		foreach ($this->columnNames as $c) {
+			if ($c['COLUMN_NAME'] == $rowName) {
+				return true;
+			}
+		}
+		return false;
+	}
 
     public function addColumn($rowName, $data) {
 		if (sizeof($data) == sizeof($this->data)) {
-			for ($i = 0; $i < sizeof($data); $i++) {
-				$this->data[$i][$rowName] = $data[$i];
-			}
+			if ($this->rowNameExists($rowName)) {
+				for ($i = 0; $i < sizeof($this->data); $i++) {
+					$this->data[$i][$rowName] .= $data[$i];
+				}
+			} else {
+				for ($i = 0; $i < sizeof($data); $i++) {
+					$this->data[$i][$rowName] = $data[$i];
+				}
 
-			$rowName = [
-				"COLUMN_NAME" => $rowName
-			];
-			array_push($this->columnNames, $rowName);
+				$columnName = [
+					"COLUMN_NAME" => $rowName
+				];
+				array_push($this->columnNames, $columnName);
+			}
 		} else {
 			throw new Exception("Array sizes do not match");
 		}
@@ -169,19 +217,21 @@ class Table {
 			if ($actionObject->callback != null)
 				$actionObject->callback();
 
+			/* gets the row by key, then the row identifier for the db action is selected */
 			$number = array_search($key, $actionObject->keys);
-			
-			$setTo = $_POST['setTo'];
-			$actionObject->data[$number]["Hausnummer"] = $setTo;
+			$rowId = $actionObject->data[$number][$actionObject->identifier];
+
+			var_dump($actionObject->keys);
 
 			if ($action == "delete") {
 				$number = array_search($key, $actionObject->keys);
-				$row = $actionObject->data[$number]["Kundennummer"];
-				DBAccess::deleteQuery("DELETE FROM $actionObject->type WHERE $actionObject->identifier = $row");
-				echo "DELETE FROM $actionObject->type WHERE $actionObject->identifier = $row";
+				DBAccess::deleteQuery("DELETE FROM $actionObject->type WHERE $actionObject->identifier = $number");
+				echo "DELETE FROM $actionObject->type WHERE $actionObject->identifier = $rowId";
+			} else if ($action == "check") {
+				/* data string for checked rows is $_POST["checked"] as JSON */
+				$data = $_POST["checked"];
+        		$data = json_decode($data, true);
 			}
-
-			echo $number;
 		} else {
 			return "no data found";
 		}
@@ -212,6 +262,11 @@ class Table {
 		}
 
 		$html .= "</table>";
+
+		/* adds a button after table to verify the action */
+		if ($this->buttonCheck) {
+			$html .= "<button>Übernehmen</button><br>";
+		}
 		
 		return $html;
     }
@@ -225,7 +280,7 @@ class Table {
 	 * erstellt eine Zeile
 	 * 
 	 * @param Array		$row		Zeilendaten
-	 * @param Array		$rowNames	Zeilennamen
+	 * @param Array		$rowNames	Zeilennamen, es werden nur die Zeilendaten ausgewertet, für die ein Name existiert
 	 * @param string	$link		Link, kann auch null sein, dann wird kein Link gesetzt
 	 * 
 	 * @return	Gibt eine Tabellenzeile in HTML zurück
@@ -233,7 +288,7 @@ class Table {
 	private static function html_createRow2($row, $rowNames, $link) {
 		$html = "<tr>";
 		
-		for ($i = 0; $i < sizeof($row); $i++) {
+		for ($i = 0; $i < sizeof($rowNames); $i++) {
 			$column = $rowNames[$i]["COLUMN_NAME"];
 			$data = $row[$column];
 			

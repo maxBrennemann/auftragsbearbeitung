@@ -8,6 +8,7 @@
 	require_once('classes/DBAccess.php');
 	require_once('classes/Upload.php');
 	require_once('classes/project/Liste.php');
+	require_once('classes/project/Table.php');
 
 	$auftragsId = -1;
 	$auftragAnzeigen = Link::getPageLink("auftrag");
@@ -86,7 +87,9 @@ if ($auftragsId == -1) : ?>
 				<input onchange="radio('hide')" type="radio" name="showDone" value="hide" checked> Zu erledigende Schritte anzeigen<br>
 				<input onchange="radio('show')" type="radio" name="showDone" value="show"> Alle Schritte anzeigen<br>
 			</form>
-			<span id="stepTable"><?=$auftrag->getOpenBearbeitungsschritteAsTable()?></span>
+			<span id="stepTable">
+				<?=$auftrag->getOpenBearbeitungsschritteTable()?>
+			</span>
 		</span>
 	</div>
 	<div class="defCont schritteAdd">

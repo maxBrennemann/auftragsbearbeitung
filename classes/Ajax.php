@@ -199,7 +199,7 @@ class Ajax {
 				require_once("classes/project/Auftrag.php");
 				Schritt::insertStep($data);
 				$auftrag = new Auftrag($data['Auftragsnummer']);
-				echo $auftrag->getOpenBearbeitungsschritteAsTable();
+				echo $auftrag->getOpenBearbeitungsschritteTable();
 
 				$assignedTo = strval($_POST['assignedTo']);
 				if (strcmp($assignedTo, "none") != 0) {
@@ -224,7 +224,7 @@ class Ajax {
 				require_once("classes/project/Auftrag.php");
 				$auftragsId = $_POST['auftrag'];
 				$Auftrag = new Auftrag($auftragsId);
-				echo $Auftrag->getOpenBearbeitungsschritteAsTable();
+				echo $Auftrag->getOpenBearbeitungsschritteTable();
 			break;
 			case "setTo":
 				if (isset($_POST['auftrag'])) {
@@ -244,16 +244,9 @@ class Ajax {
 				}
 			break;
 			case "delete":
-				$table = unserialize($_SESSION['storedTable']);
-				$auftragsId = $_POST['auftrag'];
-				$row =  $_POST['row'];
-				if (isset($_POST['identifier'])) {
-					$table = unserialize($_SESSION['postenTable']);
-					$table->setIdentifier($_POST['identifier']);
-				} else {
-					$table->setIdentifier("Schrittnummer");
-				}
-				$table->deleteRow($row);
+				/* using new table functionality */
+				require_once("classes/project/Table.php");
+				Table::updateValue("schritte_table", "delete", $_POST['key']);
 			case "sendSource":
 				Produkt::addSource();
 			break;

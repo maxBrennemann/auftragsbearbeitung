@@ -15,6 +15,7 @@ require_once('StatisticsInterface.php');
 require_once('classes/DBAccess.php');
 require_once('classes/Link.php');
 require_once('Statistics.php');
+require_once("classes/project/Table.php");
 
 /**
  * Klasse generiert im Zusammenhang mit der Template Datei auftrag.php die Übersicht für einen bestimmten Auftrag.
@@ -100,6 +101,24 @@ class Auftrag implements StatisticsInterface {
 		$form->setRowDone(true);
 		$_SESSION['storedTable'] = serialize($form);
 		return $form->create($data, $column_names);
+	}
+
+	/* getBearbeitungsschritte with new Table class */
+	public function getOpenBearbeitungsschritteTable() {
+		$data = DBAccess::selectQuery("SELECT Schrittnummer, Bezeichnung, Datum, `Priority` FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer} AND istErledigt = 1 ORDER BY `Priority` DESC");
+		$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Datum"), 2 => array("COLUMN_NAME" => "Priority"));
+
+		/* addes three buttons to table */
+		$t = new Table();
+		$t->createByData($data, $column_names);
+		$t->addActionButton("update", $identifier = "Schrittnummer");
+		$t->addActionButton("edit");
+		$t->addActionButton("delete", $identifier = "Schrittnummer");
+
+		$t->setType("schritte");
+		$_SESSION["schritte_table"] = serialize($t);
+
+		return $t->getTable();
 	}
 
 	public function getAuftragsbeschreibung() {
