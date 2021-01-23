@@ -238,7 +238,7 @@ function deleteRow(key) {
 }
 
 function updateIsDone(key) {
-    var update = new AjaxCall(`getReason=update&key=${key}`, "POST", window.location.href);
+    var update = new AjaxCall(`getReason=update&key=${key}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
     update.makeAjaxCall(function (response) {
         console.log(response);
     });
