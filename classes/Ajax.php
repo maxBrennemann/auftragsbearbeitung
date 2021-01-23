@@ -197,14 +197,14 @@ class Ajax {
 				$data['hide'] = $_POST['hide'];
 				require_once("classes/project/Schritt.php");
 				require_once("classes/project/Auftrag.php");
-				Schritt::insertStep($data);
+				$postenNummer = Schritt::insertStep($data);
 				$auftrag = new Auftrag($data['Auftragsnummer']);
 				echo $auftrag->getOpenBearbeitungsschritteTable();
 
 				$assignedTo = strval($_POST['assignedTo']);
 				if (strcmp($assignedTo, "none") != 0) {
 					require_once("classes/project/NotificationManager.php");
-					NotificationManager::addNotification($assignedTo, "Bearbeitungsschritt", $_POST['bez']);
+					NotificationManager::addNotification($userId = $assignedTo, $type = 1, $content = $_POST['bez'], $specificId = $postenNummer);
 				}
 			break;
 			case "addStep":
@@ -252,6 +252,11 @@ class Ajax {
 				/* using new table functionality */
 				require_once("classes/project/Table.php");
 				Table::updateValue("schritte_table", "update", $_POST['key']);
+				/* adds an update step to the history by using orderId and identifier */
+				Schritt::updateStep([
+					"orderId" => $_POST['auftrag'],
+					"postennummer" => Table::getIdentifierValue("schritte_table", $_POST['key'])
+				]);
 			break;
 			case "sendSource":
 				Produkt::addSource();
