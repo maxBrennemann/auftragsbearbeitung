@@ -191,3 +191,10 @@ INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'ei
 
 /* Änderungen 16.01.2021 */
 INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '4', 'head', 'rechnung.js', '0', 'js');
+
+/* Änderungen 23.01.2021 */
+ALTER TABLE `user_notifications` CHANGE `type` `type` INT(32) NOT NULL;
+ALTER TABLE `user_notifications` CHANGE `notification_id` `specific_id` INT(11) NOT NULL;
+CREATE VIEW auftragssumme AS
+  SELECT ROUND(SUM(all_posten.price), 2) AS orderPrice, all_posten.id AS id, auftrag.Datum, auftrag.Fertigstellung FROM ( SELECT (zeit.ZeitInMinuten / 60) * zeit.Stundenlohn AS price, posten.Auftragsnummer as id FROM zeit, posten WHERE zeit.Postennummer = posten.Postennummer UNION ALL SELECT leistung_posten.SpeziefischerPreis AS price, posten.Auftragsnummer as id FROM leistung_posten, posten WHERE leistung_posten.Postennummer = posten.Postennummer) all_posten, auftrag WHERE auftrag.Auftragsnummer = id GROUP BY id;
+ALTER TABLE `leistung_posten` CHANGE `Beschreibung` `Beschreibung` TEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
