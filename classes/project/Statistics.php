@@ -22,7 +22,7 @@ class Statistics {
 	}
 
 	static function getOrderSum($orderId) {
-		$query = <<<EOD
+		$query = "
 			SELECT ROUND(SUM(all_posten.price), 2) AS orderPrice 
 				FROM (
 					SELECT (zeit.ZeitInMinuten / 60) * zeit.Stundenlohn AS price 
@@ -34,11 +34,11 @@ class Statistics {
 					FROM leistung_posten, posten 
 					WHERE leistung_posten.Postennummer = posten.Postennummer 
 						AND posten.Auftragsnummer = $orderId) all_posten
-		EOD;
+		";
 	}
 
 	static function getAllOrdersSum() {
-		$query = <<<EOD
+		$query = "
 			SELECT ROUND(SUM(all_posten.price), 2) AS orderPrice, all_posten.id AS id 
 				FROM (
 					SELECT (zeit.ZeitInMinuten / 60) * zeit.Stundenlohn AS price, posten.Auftragsnummer as id 
@@ -49,7 +49,15 @@ class Statistics {
 					FROM leistung_posten, posten 
 					WHERE leistung_posten.Postennummer = posten.Postennummer) 
 					all_posten GROUP BY id
-		EOD;
+		";
+	}
+
+	static function getVolumeByMonth() {
+		$query = "
+			SELECT CONCAT(MONTHNAME(Datum), ' ', YEAR(Datum)) AS Monat, SUM(orderPrice) 
+			FROM auftragssumme
+			GROUP BY YEAR(Datum), MONTH(Datum)
+		";
 	}
 
 }
