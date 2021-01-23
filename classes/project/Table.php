@@ -224,14 +224,11 @@ class Table {
 			if ($actionObject->callback != null)
 				$actionObject->callback();
 
-			/* gets the row by key, then the row identifier for the db action is selected */
-			$number = array_search($key, $actionObject->keys);
-			$rowId = $actionObject->data[$number][$actionObject->identifier];
+			$rowId = self::getIdentifierValue($table, $key);
 
 			var_dump($actionObject->keys);
 
 			if ($action == "delete") {
-				$number = array_search($key, $actionObject->keys);
 				DBAccess::deleteQuery("DELETE FROM $actionObject->type WHERE $actionObject->identifier = $rowId");
 				echo "DELETE FROM $actionObject->type WHERE $actionObject->identifier = $rowId";
 			} else if ($action == "check") {
@@ -239,13 +236,22 @@ class Table {
 				$data = $_POST["checked"];
         		$data = json_decode($data, true);
 			} else if ($action == "update") {
-				$number = array_search($key, $actionObject->keys);
 				DBAccess::updateQuery("UPDATE $actionObject->type SET $actionObject->update WHERE $actionObject->identifier = $rowId");
 				echo "UPDATE $actionObject->type SET $actionObject->update WHERE $actionObject->identifier = $rowId";
 			}
 		} else {
 			return "no data found";
 		}
+	}
+
+	public static function getIdentifierValue($table, $key) {
+		$actionObject = unserialize($_SESSION[$table]);
+
+		/* gets the row by key, then the row identifier for the db action is selected */
+		$number = array_search($key, $actionObject->keys);
+		$rowId = $actionObject->data[$number][$actionObject->identifier];
+
+		return $rowId;
 	}
 
 	/*
