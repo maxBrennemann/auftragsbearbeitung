@@ -18,6 +18,7 @@ require_once('classes/Login.php');
  * added
  * deleted
  * edited
+ * finished
 */
 
 class Auftragsverlauf {
@@ -49,7 +50,7 @@ class Auftragsverlauf {
         $query = <<<EOD
             SELECT history.id, history.insertstamp, history_type.name, 
                 CONCAT(COALESCE(postendata.Beschreibung, ''), 
-                COALESCE(schritte.Bezeichnung, '')) AS Beschreibung, members.username 
+                COALESCE(schritte.Bezeichnung, '')) AS Beschreibung, members.username, history.state
             FROM history 
             LEFT JOIN history_type ON history_type.type_id = history.type 
             LEFT JOIN postendata ON postendata.Auftragsnummer = history.orderid 
@@ -71,7 +72,20 @@ class Auftragsverlauf {
             $beschreibung = $h['Beschreibung'];
             $person = $h['username'];
 
-            $html .= "<div class=\"showInMiddle\">{$h['name']}: {$beschreibung}<br>hinzugefügt am {$datetime}<br>von {$person}</div><div class=\"line\"></div>";
+            switch ($h['state']) {
+                case "added":
+                    $html .= "<div class=\"showInMiddle\">{$h['name']}: {$beschreibung}<br>hinzugefügt am {$datetime}<br>von {$person}</div><div class=\"line\"></div>";
+                    break;
+                case "edited":
+                    // muss noch ergänzt werden, irgenwas mit bearbeitet
+                    $html .= "";
+                    break;
+                case "finished":
+                    $html .= "<div class=\"showInMiddle\">{$h['name']}: {$beschreibung}<br>abgeschlossen am {$datetime}<br>von {$person}</div><div class=\"line\"></div>";
+                    break;
+            }
+
+            
         }
         return $html;
     }
