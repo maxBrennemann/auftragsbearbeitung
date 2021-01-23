@@ -126,13 +126,12 @@ class Rechnung {
 	}
 
 	public static function getOffeneRechnungssumme() {
-		$numbers = DBAccess::selectQuery("SELECT Auftragsnummer FROM auftrag WHERE Rechnungsnummer != 0");
-		$summe = 0;
-		foreach ($numbers as $auftrag) {
-			$auftrag = new Auftrag($auftrag['Auftragsnummer']);
-			$summe += $auftrag->preisBerechnen();
-		}
-
+		$query = "SELECT ROUND(SUM(all_posten.price), 2) AS summe
+		FROM (SELECT (zeit.ZeitInMinuten / 60) * zeit.Stundenlohn AS price, posten.Auftragsnummer as id FROM zeit, posten WHERE zeit.Postennummer = posten.Postennummer
+			  UNION ALL
+			  SELECT leistung_posten.SpeziefischerPreis AS price, posten.Auftragsnummer as id FROM leistung_posten, posten WHERE leistung_posten.Postennummer = posten.Postennummer) all_posten, auftrag
+			  WHERE auftrag.Auftragsnummer = all_posten.id AND auftrag.Rechnungsnummer != 0";
+		$summe = DBAccess::selectQuery($query)[0]['summe'];
 		return $summe;
 	}
 
@@ -149,6 +148,9 @@ class Rechnung {
 		echo $nextNumber;
 		DBAccess::updateQuery("UPDATE auftrag SET Rechnungsnummer = $nextNumber WHERE Auftragsnummer = $orderId AND Rechnungsnummer = 0");
 		DBAccess::updateQuery("UPDATE posten SET rechnungsNr = $nextNumber WHERE Auftragsnummer = $orderId AND rechnungsNr = 0");
+
+		/* Fertigstellung wird eingetragen */
+		DBAccess::updateQuery("UPDATE auftrag SET Fertigstellung = current_date() $nextNumber WHERE Auftragsnummer = $orderId");
 	}
 
 	/*
