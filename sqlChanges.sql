@@ -198,3 +198,10 @@ ALTER TABLE `user_notifications` CHANGE `notification_id` `specific_id` INT(11) 
 CREATE VIEW auftragssumme AS
   SELECT ROUND(SUM(all_posten.price), 2) AS orderPrice, all_posten.id AS id, auftrag.Datum, auftrag.Fertigstellung FROM ( SELECT (zeit.ZeitInMinuten / 60) * zeit.Stundenlohn AS price, posten.Auftragsnummer as id FROM zeit, posten WHERE zeit.Postennummer = posten.Postennummer UNION ALL SELECT leistung_posten.SpeziefischerPreis AS price, posten.Auftragsnummer as id FROM leistung_posten, posten WHERE leistung_posten.Postennummer = posten.Postennummer) all_posten, auftrag WHERE auftrag.Auftragsnummer = id GROUP BY id;
 ALTER TABLE `leistung_posten` CHANGE `Beschreibung` `Beschreibung` TEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
+
+/* Änderungen 24.01.2021 */
+DROP VIEW auftragssumme;
+CREATE VIEW auftragssumme_view AS 
+  SELECT (zeit.ZeitInMinuten / 60) * zeit.Stundenlohn AS price, posten.Auftragsnummer as id FROM zeit, posten WHERE zeit.Postennummer = posten.Postennummer UNION ALL SELECT leistung_posten.SpeziefischerPreis AS price, posten.Auftragsnummer as id FROM leistung_posten, posten WHERE leistung_posten.Postennummer = posten.Postennummer;
+CREATE VIEW auftragssumme AS
+ SELECT ROUND(SUM(auftragssumme_view.price), 2) AS auftragssumme_view, all_auftragssumme_viewposten.id AS id, auftrag.Datum, auftrag.Fertigstellung FROM auftragssumme_view, auftrag WHERE auftrag.Auftragsnummer = id GROUP BY id;
