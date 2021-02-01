@@ -261,6 +261,15 @@ iframe {
     min-height: 28px;
 }
 
+.adressForm {
+    padding: 10px;
+}
+
+.adressForm input {
+    margin: 7px;
+    padding: 5px;
+}
+
 /* style for images in upload preview */
 .upload_prev {
     width: 120px;

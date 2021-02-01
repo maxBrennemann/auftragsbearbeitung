@@ -265,6 +265,51 @@ class Auftrag implements StatisticsInterface {
 		return $farbTable;
 	}
 
+	/*
+	 * creates a div card with the order details
+	*/
+	public function getOrderCard() {
+		$archievedBtn = $this->isArchiviert ? "<button>archiviert</button>" : "<!-- Auftrag archiviert -->";
+		$orderTitle = $this->Auftragsbezeichnung;
+		$orderDescription = $this->Auftragsbeschreibung;
+
+		$data = DBAccess::selectQuery("SELECT Datum, Termin, Fertigstellung FROM auftrag WHERE Auftragsnummer = $this->Auftragsnummer")[0];
+		$date = $data['Datum'];
+		$deadline = $data['Termin'];
+		$finished = $data['Fertigstellung'];
+
+		$invoice =  $this->rechnungsnummer == 0 ? "" : "Rechnung Nr. $this->rechnungsnummer";
+		$summe = $this->rechnungsnummer != 0 ? "<button>" . $this->preisBerechnen() . "€</button>" : 0;
+
+		$html = "
+		<div class=\"innerDefCont orderCard\">
+			<h3>$orderTitle</h3>
+			<a href=\"" . Link::getPageLink("auftrag") . "?id=$this->Auftragsnummer" . "\">Zum Auftrag $this->Auftragsnummer</a>
+			<p>$orderDescription</p>
+			<table>
+				<tr>
+					<th>Datum</th>
+					<td>$date</td>
+				</tr>
+				<tr>
+					<th>Termin</th>
+					<td>$deadline</td>
+				</tr>
+				<tr>
+					<th>Fertigstellung</th>
+					<td>$finished</td>
+				</tr>
+			</table>
+			<br>
+			$archievedBtn
+			$invoice
+			<br>
+			$summe
+		</div>";
+
+		return $html;
+	}
+
 	public function getAddColors() {
 		/*return <<<XML
 			<span>Farbname: <input class="colorInput" type="text" max="32"></span>

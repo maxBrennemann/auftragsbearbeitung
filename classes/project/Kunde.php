@@ -119,6 +119,17 @@ class Kunde implements StatisticsInterface {
 		return $form->createTableByDataRowLink($auftraege, $column_names, "auftrag", Link::getPageLink("auftrag"));
 	}
 
+	public function getOrderCards() {
+		$auftraege = DBAccess::selectQuery("SELECT Auftragsnummer FROM auftrag WHERE Kundennummer = {$this->kundennummer}");
+		$html = "<div style=\"display: flex\">";
+		foreach ($auftraege as $id) {
+			$order = new Auftrag($id['Auftragsnummer']);
+			$html .= $order->getOrderCard();
+		}
+		$html .= "</div";
+		return $html;
+	}
+
 	public function getAnsprechpartner() {
 		return "";
 	}

@@ -106,3 +106,30 @@ function addAdress() {
 }
 
 initialize();
+
+/* functions for adresses */
+function showAdressForm() {
+    let div = document.getElementById("adressForm");
+    div.style.display = "inline";
+    addActionButtonForDiv(div, "hide");
+    centerAbsoluteElement(div);
+}
+
+function sendAdressForm() {
+    /* ajax parameter */
+    let params = {
+        getReason: "sendNewAdress",
+        customer: document.getElementById("kundennummer").innerHTML,
+        plz: document.getElementById("adress_plz").value,
+        ort: document.getElementById("adress_ort").value,
+        strasse: document.getElementById("adress_strasse").value,
+        hnr: document.getElementById("adress_nr").value,
+        zusatz: document.getElementById("adress_zusatz").value,
+        land: document.getElementById("adress_land").value
+    };
+
+    var add = new AjaxCall(params, "POST", window.location.href);
+    add.makeAjaxCall(function (response) {
+
+    });
+}

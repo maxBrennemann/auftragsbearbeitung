@@ -205,3 +205,6 @@ CREATE VIEW auftragssumme_view AS
   SELECT (zeit.ZeitInMinuten / 60) * zeit.Stundenlohn AS price, posten.Auftragsnummer as id FROM zeit, posten WHERE zeit.Postennummer = posten.Postennummer UNION ALL SELECT leistung_posten.SpeziefischerPreis AS price, posten.Auftragsnummer as id FROM leistung_posten, posten WHERE leistung_posten.Postennummer = posten.Postennummer;
 CREATE VIEW auftragssumme AS
  SELECT ROUND(SUM(auftragssumme_view.price), 2) AS auftragssumme_view, all_auftragssumme_viewposten.id AS id, auftrag.Datum, auftrag.Fertigstellung FROM auftragssumme_view, auftrag WHERE auftrag.Auftragsnummer = id GROUP BY id;
+
+/* Änderungen 01.02.2021 */
+ALTER TABLE `adress` ADD `country` VARCHAR(32) NOT NULL AFTER `zusatz`;
