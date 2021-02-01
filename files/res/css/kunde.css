@@ -137,3 +137,8 @@ a[href="#"] {
         inline-size: -webkit-fill-available;
     }
 }
+
+.orderCard {
+    width: 25%;
+    height: auto;   
+}

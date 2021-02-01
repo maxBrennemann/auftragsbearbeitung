@@ -2,6 +2,7 @@
 	require_once('classes/project/Kunde.php');
 	require_once('classes/project/FormGenerator.php');
 	require_once('classes/project/Search.php');
+	require_once('classes/project/Adress.php');
 
 	$kundenid = -1;
 	$isSearch = false;
@@ -126,6 +127,10 @@
 				</tr>	
 			</table>
 			<button id="sendKundendaten" disabled onclick="kundendatenAbsenden()">Absenden</button>
+			<button onclick="showAdressForm();">Neue Adresse hinzufügen</button>
+			<div id="adressForm" style="display: none">
+				<?=Adress::getAdressForm();?>
+			</div>
 		</div>
 		<div id="ansprechpartner">
 			<h3>Ansprechpartner</h3>
@@ -159,7 +164,9 @@
 		</div>
 		<div id="auftraege">
 			<h3>Aufträge</h3>
-			<?=$kunde->getAuftraege()?>
+			<!--<?=$kunde->getAuftraege()?>-->
+			<?=$kunde->getOrderCards()?>
+			<br>
 			<a href="<?=Link::getPageLink("neuer-auftrag")?>?kdnr=<?=$kundenid?>">Neuen Auftrag erstellen</a>
 		</div>
 		<div id="notizen">
