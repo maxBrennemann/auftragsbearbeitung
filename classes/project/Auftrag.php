@@ -311,13 +311,6 @@ class Auftrag implements StatisticsInterface {
 	}
 
 	public function getAddColors() {
-		/*return <<<XML
-			<span>Farbname: <input class="colorInput" type="text" max="32"></span>
-			<span>Farbe (Hex): <input class="colorInput jscolor" type="text" max="32"></span>
-			<span>Bezeichnung: <input class="colorInput" type="text" max="32"></span>
-			<span>Hersteller: <input class="colorInput" tyep="text" max="32"></span>
-			<button onclick="sendColor();">Hinuzufügen</button>
-		XML;*/
 		$string = '<span>Farbname: <input class="colorInput" type="text" max="32"></span><span>Farbe (Hex): <input class="colorInput jscolor" type="text" max="32"></span><span>Bezeichnung: <input class="colorInput" type="text" max="32"></span><span>Hersteller: <input class="colorInput" tyep="text" max="32"></span><button onclick="sendColor();">Hinuzufügen</button>';
 		return $string;
 	}
