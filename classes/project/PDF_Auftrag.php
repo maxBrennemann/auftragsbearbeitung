@@ -27,17 +27,17 @@ class PDF_Auftrag {
         //var_dump($variables);
 
         /* header with customer information */
-        $table = <<<EOD
+        $table = "
         <table>
             <tr>
-                <td colspan="1">von Fa.</td>
-                <td colspan="5">{$variables['Firmenname']}</td>
+                <td colspan=\"1\">von Fa.</td>
+                <td colspan=\"5\">{$variables['Firmenname']}</td>
             </tr>
             <tr>
-                <td colspan="1">PLZ / Ort</td>
-                <td colspan="2">{$variables['Postleitzahl']} {$variables['Ort']}</td>
-                <td colspan="1">Straße</td>
-                <td colspan="2">{$variables['Straße']} {$variables['Hausnummer']}</td>
+                <td colspan=\"1\">PLZ / Ort</td>
+                <td colspan=\"2\">{$variables['Postleitzahl']} {$variables['Ort']}</td>
+                <td colspan=\"1\">Straße</td>
+                <td colspan=\"2\">{$variables['Straße']} {$variables['Hausnummer']}</td>
             </tr>
             <tr>
                 <td>Ansprechpartner</td>
@@ -54,7 +54,7 @@ class PDF_Auftrag {
                 <td>{$variables['TelefonMobil']}</td>
             </tr>
         </table>
-        EOD;
+        ";
 
         $pdf->writeHTML($table);
 
@@ -63,39 +63,39 @@ class PDF_Auftrag {
         $fahrzeuge = DBAccess::selectQuery($fahrzeug_query);
 
         foreach ($fahrzeuge as $f) {
-            $table = <<<EOD
+            $table = "
                 <table>
                     <tr>
-                        <td colspan="1">Fahrzeug</td>
-                        <td colspan="2">{$f['Fahrzeug']}</td>
+                        <td colspan=\"1\">Fahrzeug</td>
+                        <td colspan=\"2\">{$f['Fahrzeug']}</td>
                         <td>Kennzeichen</td>
-                        <td colspan="2">{$f['Kennzeichen']}</td>
+                        <td colspan=\"2\">{$f['Kennzeichen']}</td>
                     </tr>
                 </table>
-            EOD;
+            ";
 
             $pdf->writeHTML($table);
         }
 
         /* order information */
-        $table = <<<EOD
+        $table = "
             <table>
                 <tr>
-                    <td colspan="3">Beschreibung:</td>
-                    <td colspan="2">Angenommen Durch</td>
-                    <td colspan="1">{$variables['AngenommenDurch']}</td>
+                    <td colspan=\"3\">Beschreibung:</td>
+                    <td colspan=\"2\">Angenommen Durch</td>
+                    <td colspan=\"1\">{$variables['AngenommenDurch']}</td>
                 </tr>
                 <tr>
-                    <td rowspan="4" colspan="3">{$variables['Auftragsbeschreibung']}</td>
-                    <td colspan="2">Kundennummer</td>
-                    <td colspan="1">{$variables['Kundennummer']}</td>
+                    <td rowspan=\"4\" colspan=\"3\">{$variables['Auftragsbeschreibung']}</td>
+                    <td colspan=\"2\">Kundennummer</td>
+                    <td colspan=\"1\">{$variables['Kundennummer']}</td>
                 </tr>
                 <tr>
-                    <td colspan="2">Auftragsnummer</td>
-                    <td colspan="1">{$variables['Auftragsnummer']}</td>
+                    <td colspan=\"2\">Auftragsnummer</td>
+                    <td colspan=\"1\">{$variables['Auftragsnummer']}</td>
                 </tr>
             </table>
-        EOD;
+        ";
         $pdf->writeHTML($table);
 
         $pdf->Output();
