@@ -57,8 +57,7 @@ class Table {
 	}
 	
 	public function addLink($link) {
-		if (is_string($link))
-			$this->link = $link;
+		$this->link = $link;
 	}
 
 	/* every index of the keys array is interpreted as a key for the data array */
@@ -275,7 +274,7 @@ class Table {
 		/* for each row of the result */
 		for ($i = 0; $i < sizeof($this->data); $i++) {
 			$row = $this->data[$i];
-			$html .= self::html_createRow2($row, $this->columnNames, $this->link);
+			$html .= self::html_createRow2($row, $this->columnNames, $this->getLink($i));
 		}
 
 		$html .= "</table>";
@@ -286,7 +285,15 @@ class Table {
 		}
 		
 		return $html;
-    }
+	}
+
+	public function getLink($id) {
+		if (is_string($this->link)) {
+			return $this->link;
+		} else if (!is_null($this->link)) {
+			return $this->link->getLink($id);
+		}
+	}
 
     /* static functions */
     public static function createTable($dbName, $rowCount) {

@@ -151,6 +151,25 @@ class Link {
 		
 		return $upperPage;
 	}
+
+	/* new link functionalities */
+	public function addBaseLink($target) {
+		$this->baseLink = self::getPageLink($target);
+	}
+
+	public function addParameter($key, $value) {
+		return $this->baseLink . "?$key=$value";
+	}
+
+	public function setIterator($key, $data, $datakey) {
+		$this->key = $key;
+		$this->data = $data;
+		$this->datakey = $datakey;
+	}
+
+	public function getLink($id) {
+		return self::addParameter($this->key, $this->data[$id][$this->datakey]);
+	}
 	
 }
 
