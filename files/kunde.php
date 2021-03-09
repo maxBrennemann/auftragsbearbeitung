@@ -1,6 +1,7 @@
 <?php 
 	require_once('classes/project/Kunde.php');
 	require_once('classes/project/FormGenerator.php');
+	require_once('classes/project/Table.php');
 	require_once('classes/project/Search.php');
 	require_once('classes/project/Adress.php');
 
@@ -39,11 +40,17 @@
 		$kundenid = $_GET['id'];
 		try {
 			$kunde = new Kunde($kundenid);
-			$table = new FormGenerator("ansprechpartner", "", "");
+
 			$data = DBAccess::selectQuery("SELECT * FROM ansprechpartner WHERE Kundennummer = $kundenid");
-			$column_names = array(0 => array("COLUMN_NAME" => "Vorname"), 1 => array("COLUMN_NAME" => "Nachname"), 
-							2 => array("COLUMN_NAME" => "Email"), 3 => array("COLUMN_NAME" => "Durchwahl"), 4 => array("COLUMN_NAME" => "Mobiltelefonnummer"));
-			$ansprechpartner = $table->createTableByData($data, $column_names);
+			$column_names = array(0 => array("COLUMN_NAME" => "Vorname"), 1 => array("COLUMN_NAME" => "Nachname"), 2 => array("COLUMN_NAME" => "Email"), 3 => array("COLUMN_NAME" => "Durchwahl"), 4 => array("COLUMN_NAME" => "Mobiltelefonnummer"));
+
+			/* create ansprechpartner table */
+			$t = new Table();
+			$t->createByData($data, $column_names);
+			$t->addActionButton("edit");
+			$t->addNewLineButton();
+			$ansprechpartner = $t->getTable();
+
 			if (empty($data)) {
 				$ansprechpartner = "";
 			}
@@ -135,28 +142,8 @@
 		<div id="ansprechpartner">
 			<h3>Ansprechpartner</h3>
 			<div id="ansprechpartnerTable">
-				<span id="resetAnsprechpartnerTable">
-					<?=$ansprechpartner?>
-				</span>
-				<table id="addAnsprechpartner" style="display: none;">
-					<tr>
-						<th>Vorname</th>
-						<th>Nachname</th>
-						<th>Email</th>
-						<th>Durchwahl</th>
-						<th>Mobilnummer</th>
-					</tr>
-					<tr>
-						<td class="ansprTableCont" contenteditable="true" data-col="vorname"></td>
-						<td class="ansprTableCont" contenteditable="true" data-col="nachname"></td>
-						<td class="ansprTableCont" contenteditable="true" data-col="email"></td>
-						<td class="ansprTableCont" contenteditable="true" data-col="durchwahl"></td>
-						<td class="ansprTableCont" contenteditable="true" data-col="handynummer"></td>
-					</tr>
-				</table>
+				<?=$ansprechpartner?>
 			</div>
-			<button id="showAddAnsprechpartner" onclick="showAddAnsprechpartner()">Ausklappen </button>
-			<button id="addAnsprechpartnerBtn" onclick="addDataToDB()" style="display: none;">Hinzufügen</button>
 		</div>
 		<div id="farben">
 			<h3>Farben</h3>

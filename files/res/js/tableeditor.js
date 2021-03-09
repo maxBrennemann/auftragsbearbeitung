@@ -112,3 +112,40 @@ window.onload = function() {
         //this.html_table.rows = 
     }
 }*/
+
+/* adds a new line to a table to be sent to the server */
+function tableAddnewLine() {
+    let btn = event.target;
+
+    /* addes new empty line which is set to be contenteditable */
+    var identifier = btn.dataset.table;
+    var table = document.querySelector(`[data-key="${identifier}"]`);
+    var newRow = table.insertRow();
+    for (let i = 0; i < table.children[0].children[0].cells.length; i++) {
+        let cell = newRow.insertCell();
+        //cell.innerText = "...";
+        cell.contentEditable = "true";
+    }
+
+    /* redraw table */
+    let tableDisplay = table.style.display;
+    table.style.display = "none";
+    setTimeout(function() {
+        table.style.display = tableDisplay;
+    }, 20);
+    
+    /* sets button value to be checkable to send the data */
+    btn.innerText = "✔";
+    btn.onclick = function() {
+        tableSendnewLine()
+    };
+}
+
+function tableSendnewLine() {
+    /* resets button */
+    let btn = event.target;
+    btn.innerText = "+";
+    btn.onclick = function() {
+        tableAddnewLine()
+    };
+}
