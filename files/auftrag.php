@@ -78,7 +78,15 @@ if ($auftragsId == -1) : ?>
 		<span><button onclick="location.href= '<?=Link::getPageLink('rechnung')?>?create=<?=$auftragsId?>'">Rechnung generieren</button></span>
 		<?php if ($auftrag->getIsArchiviert() == false) :?><span><button onclick="archvieren();">Auftrag archivieren</button></span><br><?php endif; ?>
 		<br>
-		<span><u>Beschreibung:</u><br><span id="orderDescription"><?=$auftrag->getAuftragsbeschreibung()?></span><button onclick="editDescription(event);">Bearbeiten</button></span>
+		<span>
+			<u>Beschreibung:</u>
+			<br>
+			<span id="orderDescription">
+				<?=$auftrag->getAuftragsbeschreibung()?>
+			</span>
+			<br>
+			<button onclick="editDescription(event);">Bearbeiten</button>
+		</span>
 		<br>
 	</div>
 	<div class="defCont schritte">
