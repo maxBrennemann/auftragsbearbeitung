@@ -22,8 +22,13 @@ class Table {
 	private $buttonUpdate = false;
 	private $buttonCheck = false;
 
+	/* speicifies whether a new line button is included or not */
+	private $addNewLineButtonTrue = false;
+
 	private $callback = null;
 	private $keys = null;
+
+	private $dataKey;
 
     function __construct($type = 0, $limit = 10, $editable = false) {
 		if (is_numeric($limit) && $limit > 0)
@@ -39,6 +44,8 @@ class Table {
 
 		$this->type = $type;
 		$this->editable = $editable;
+
+		$this->dataKey = bin2hex(random_bytes(6));
     }
 
     public function createByDB($type) {
@@ -256,7 +263,7 @@ class Table {
 	/*
 	 * erstellt die Tabelle
 	 * wenn $this->data null ist, wird eine Nachricht zurückgegeben
-	*/
+	 */
     public function getTable() {
 		if ($this->data == null)
 			return "<p>Keine Einträge vorhanden</p>";
@@ -264,9 +271,9 @@ class Table {
         $html = "";
 
         if ($this->editable) {
-			$html = "<table class='allowAddingContent' data-type='{$this->type}' data-send-to='{$this->sendTo}'>";
+			$html = "<table class='allowAddingContent' data-type='{$this->type}' data-key='{$this->dataKey}' data-send-to='{$this->sendTo}'>";
 		} else {
-			$html = "<table data-type='{$this->type}'>";
+			$html = "<table data-type='{$this->type}' data-key='{$this->dataKey}'>";
 		}
         
 		$html .= self::html_createTableHeader($this->columnNames);
@@ -283,6 +290,11 @@ class Table {
 		if ($this->buttonCheck) {
 			$html .= "<button>Übernehmen</button><br>";
 		}
+
+		if ($this->addNewLineButtonTrue) {
+			$html .= "<br><button class=\"addToTable\" data-table=\"$this->dataKey\" onclick=\"tableAddnewLine();\">+</button>";
+		}
+		 $this->addNewLineButton();
 		
 		return $html;
 	}
@@ -293,6 +305,13 @@ class Table {
 		} else if (!is_null($this->link)) {
 			return $this->link->getLink($id);
 		}
+	}
+
+	/*
+	 * function to generate a html button to add a new line to the table
+	 */
+	public function addNewLineButton() {
+		$this->addNewLineButtonTrue = true;
 	}
 
     /* static functions */

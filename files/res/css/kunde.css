@@ -142,3 +142,27 @@ a[href="#"] {
     width: 25%;
     height: auto;   
 }
+
+/* class for round + button */
+.addToTable {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    line-height: 20px;
+    text-align: center;
+    font-size: 20px;
+    border: none;
+    box-shadow: 1px 0px 5px 0px grey;
+    font-weight: bold;
+    color: grey;
+}
+
+/* positionating button in middle of table */
+#ansprechpartnerTable {
+    display: inline-block;
+    text-align: center;
+}
+
+#ansprechpartnerTable table {
+    text-align: left;
+}
