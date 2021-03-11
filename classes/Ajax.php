@@ -493,6 +493,13 @@ class Ajax {
 				$land = (int) $_POST['land'];
 				Adress::createNewAdress($kdnr, $strasse, $hnr, $plz, $ort, $zusatz, $land);
 			break;
+			case "addNewLine":
+				require_once("classes/project/Table.php");
+
+				$key = $_POST['key'];
+				$data = $_POST['data'];
+				echo Table::updateTable_AddNewLine($key, $data);
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
