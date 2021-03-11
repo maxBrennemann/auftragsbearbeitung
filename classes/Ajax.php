@@ -486,11 +486,11 @@ class Ajax {
 				require_once('classes/project/Adress.php');
 				$kdnr = (int) $_POST['customer'];
 				$plz = (int) $_POST['plz'];
-				$ort = (int) $_POST['ort'];
-				$strasse = (int) $_POST['strasse'];
-				$hnr = (int) $_POST['hnr'];
-				$zusatz = (int) $_POST['zusatz'];
-				$land = (int) $_POST['land'];
+				$ort = $_POST['ort'];
+				$strasse = $_POST['strasse'];
+				$hnr = $_POST['hnr'];
+				$zusatz = $_POST['zusatz'];
+				$land = $_POST['land'];
 				Adress::createNewAdress($kdnr, $strasse, $hnr, $plz, $ort, $zusatz, $land);
 			break;
 			case "addNewLine":
