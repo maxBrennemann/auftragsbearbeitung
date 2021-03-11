@@ -130,6 +130,9 @@ function sendAdressForm() {
 
     var add = new AjaxCall(params, "POST", window.location.href);
     add.makeAjaxCall(function (response) {
-
+        if (response == "ok") {
+            let div = document.getElementById("adressForm");
+            div.style.display = "none";
+        }
     });
 }

@@ -47,9 +47,11 @@ class Adress {
         $adressInstance->ort = $ort;
         $adressInstance->zusatz = $zusatz;
         $adressInstance->art = $art;
+        $adressInstance->land = $land;
 
-        $query = "INSERT INTO adress (id_customer, ort, plz, strasse, hausnr, zusatz, art) VALUES ($id_customer, '$ort', $postleitzahl, '$strasse', '$hausnummer', '$zusatz', $art)";
+        $query = "INSERT INTO adress (id_customer, ort, plz, strasse, hausnr, zusatz, country, art) VALUES ($id_customer, '$ort', $postleitzahl, '$strasse', '$hausnummer', '$zusatz', '$land', $art)";
         DBAccess::insertQuery($query);
+        echo "ok";
         return $adressInstance;
     }
 

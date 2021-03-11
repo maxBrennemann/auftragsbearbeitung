@@ -211,3 +211,6 @@ ALTER TABLE `adress` ADD `country` VARCHAR(32) NOT NULL AFTER `zusatz`;
 
 /* Änderungen 09.03.2021 */
 INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '11', 'head', 'tableeditor.js', '0', 'js');
+
+/* Änderungen 11.03.2021 */
+ALTER TABLE `adress` DROP INDEX `id_customer`;
