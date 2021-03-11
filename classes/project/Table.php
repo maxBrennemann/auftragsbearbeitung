@@ -1,5 +1,7 @@
 <?php
 
+require_once('classes/project/UpdateSchedule.php');
+
 /*
   * Anforderungen der Table Klasse:
   * static Funktionen, um schnell eine Tabelle aus der Datenbank zu generieren, angelehnt an die alte FormGenerator Class
@@ -30,6 +32,9 @@ class Table {
 
 	private $dataKey;
 
+	/* defines an update table schedule */
+	private $updateSchedule;
+
     function __construct($type = 0, $limit = 10, $editable = false) {
 		if (is_numeric($limit) && $limit > 0)
 			$this->limit = $limit;
@@ -47,6 +52,10 @@ class Table {
 
 		$this->dataKey = bin2hex(random_bytes(6));
     }
+
+	public function getTableKey() {
+		return $this->dataKey;
+	}
 
     public function createByDB($type) {
 		$this->columnNames = self::getColumnNames($type);
@@ -258,6 +267,25 @@ class Table {
 		$rowId = $actionObject->data[$number][$actionObject->identifier];
 
 		return $rowId;
+	}
+
+	public function defineUpdateSchedule($updateSchedule) {
+		$this->updateSchedule = $updateSchedule;
+	}
+
+	public static function updateTable_AddNewLine($key, $data) {
+		if (!is_string($key) || !is_string($data))
+			return "data cannot be processed";
+
+		if (isset($_SESSION[$key])) {
+			$actionObject = unserialize($_SESSION[$key]);
+			$data = json_decode($data, true);
+
+			/* updateSchedule must be set in order to make updates for the table */
+			$actionObject->updateSchedule->executeTableUpdate($data);
+		} else {
+			return "no data found";
+		}
 	}
 
 	/*
