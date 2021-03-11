@@ -148,4 +148,29 @@ function tableSendnewLine() {
     btn.onclick = function() {
         tableAddnewLine()
     };
+
+    var identifier = btn.dataset.table;
+    var table = document.querySelector(`[data-key="${identifier}"]`).children[0];
+    var lastRow = table.children[table.children.length - 1];
+
+    var data = {};
+    for (let i = 0; i < lastRow.children.length; i++) {
+        data[i] = lastRow.children[i].innerText;
+    }
+
+    data = JSON.stringify(data);
+
+    /* ajax parameter */
+    let params = {
+        getReason: "addNewLine",
+        data: data,
+        key : identifier
+    };
+
+    var add = new AjaxCall(params, "POST", window.location.href);
+    add.makeAjaxCall(function (response) {
+        if (response == "ok") {
+            console.log("data sent to server");
+        }
+    });
 }
