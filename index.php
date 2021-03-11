@@ -71,65 +71,7 @@
 	
 	function showPage($page, $isArticle) {
 		if ($page == "test") {
-			require_once('classes/project/PDF_Auftrag.php');
-			//PDF_Auftrag::getPDF();
-
-			$result = ["id" => -1, "articleUrl" => "test", "pageName" => "test"];
-			$articleUrl = $result["articleUrl"];
-			$pageName = $result["pageName"];
-
-			require_once('classes/project/Table.php');
-
-			include('files/header.php');
-
-			$t = new Table("kunde", 10);
-			//$t->addColumn("test", ["test"]);
-			//$t->addRow(["id" => 37, "articleUrl" => "none", "pageName" => "tolle seite", "src" => "keine Qeulle", "test" => "test"]);
-			//$t->addLink("https://klebefux.de");
-			$t->addActionButton("check", $identifier = "Kundennummer");
-
-			echo $t->getTable();
-
-			$_SESSION["undefined"] = serialize($t);
-			
-			?>Test
-			
-			<script>
-				function updateIsDone(key) {
-					var tableId = document.querySelector("table").dataset.name;
-					//var key = event.target.dataset.key;
-					var setTo = "37";
-					var editTable = new AjaxCall(`getReason=table&name=${tableId}&action=update&key=${key}&setTo=${setTo}`);
-					editTable.makeAjaxCall(function (response) {
-						console.log(response);
-					});
-				}
-				function deleteRow(key) {
-					var tableId = document.querySelector("table").dataset.name;
-					//var key = event.target.dataset.key;
-					var setTo = "37";
-					var editTable = new AjaxCall(`getReason=table&name=${tableId}&action=delete&key=${key}&setTo=${setTo}`);
-					editTable.makeAjaxCall(function (response) {
-						console.log(response);
-					});
-				}
-			</script>
-			
-			<div>
-				<form class="fileUploader" method="post" enctype="multipart/form-data" data-target="order">
-					Dateien zum Auftrag hinzufügen:
-					<input type="file" name="uploadedFile" multiple>
-				</form>
-				<div class="filesList defCont"></div>
-			</div>
-
-			<?php
-
-			if (isset($_GET['ajaxUpload'])) {
-				echo "ajaxUpload";
-			}
-
-			include('files/footer.php');
+			include('test.php');
 			return null;
 		}
 
