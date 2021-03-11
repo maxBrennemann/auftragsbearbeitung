@@ -51,9 +51,36 @@
 			$t->addNewLineButton();
 			$ansprechpartner = $t->getTable();
 
-			if (empty($data)) {
-				$ansprechpartner = "";
-			}
+			$pattern = [
+				"Kundennummer" => [
+					"status" => "preset",
+					"value" => 66
+				],
+				"Vorname" => [
+					"status" => "unset",
+					"value" => 0
+				],
+				"Nachname" => [
+					"status" => "unset",
+					"value" => 1
+				],
+				"Email" => [
+					"status" => "unset",
+					"value" => 2
+				],
+				"Durchwahl" => [
+					"status" => "unset",
+					"value" => 3
+				],
+				"Mobiltelefonnummer" => [
+					"status" => "unset",
+					"value" => 4
+				]
+			];
+
+			$t->defineUpdateSchedule(new UpdateSchedule("Ansprechpartner", $pattern));
+
+			$_SESSION[$t->getTableKey()] = serialize($t);
 		} catch (Exception $e){
 			echo $e->getMessage();
 			$kundenid = -1;
