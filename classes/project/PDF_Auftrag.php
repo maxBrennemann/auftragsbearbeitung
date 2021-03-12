@@ -24,36 +24,50 @@ class PDF_Auftrag {
         $html = file_get_contents_utf8($fileName);
 
         $variables = self::getData($id_auftrag);
-        //var_dump($variables);
+        $today = date('d.m.y');
 
         /* header with customer information */
         $table = "
-        <table>
+        <table cellpadding=\"6\">
             <tr>
-                <td colspan=\"1\">von Fa.</td>
-                <td colspan=\"5\">{$variables['Firmenname']}</td>
+                <td class=\"noBottom\" colspan=\"6\"></td>
+                <td colspan=\"1\"><b>Datum</b></td>
+                <td colspan=\"1\">{$today}</td>
             </tr>
             <tr>
-                <td colspan=\"1\">PLZ / Ort</td>
+                <td colspan=\"2\"><b>von Fa.</b></td>
+                <td colspan=\"6\">{$variables['Firmenname']}</td>
+            </tr>
+            <tr>
+                <td colspan=\"2\"><b>PLZ / Ort</b></td>
                 <td colspan=\"2\">{$variables['Postleitzahl']} {$variables['Ort']}</td>
-                <td colspan=\"1\">Straße</td>
+                <td colspan=\"2\"><b>Straße</b></td>
                 <td colspan=\"2\">{$variables['Straße']} {$variables['Hausnummer']}</td>
             </tr>
             <tr>
-                <td>Ansprechpartner</td>
-                <td>{$variables['Ansprechpartner']}</td>
-                <td>Tel. (Durchwahl)</td>
-                <td>{$variables['TelefonFestnetz']}</td>
+                <td colspan=\"2\"><b>Ansprechpartner</b></td>
+                <td colspan=\"2\">{$variables['Ansprechpartner']}</td>
+                <td colspan=\"2\"><b>Tel. (Durchwahl)</b></td>
+                <td colspan=\"2\">{$variables['TelefonFestnetz']}</td>
             </tr>
             <tr>
-                <td>Email</td>
-                <td>{$variables['Email']}</td>
+                <td colspan=\"2\"><b>Email</b></td>
+                <td colspan=\"6\">{$variables['Email']}</td>
             </tr>
             <tr>
-                <td>Mobil-Nr. (Handy)</td>
-                <td>{$variables['TelefonMobil']}</td>
+                <td colspan=\"2\"><b>Mobil-Nr. (Handy)</b></td>
+                <td colspan=\"6\">{$variables['TelefonMobil']}</td>
             </tr>
         </table>
+        <style>
+            td {
+                border-bottom: 1px solid black;
+            }
+
+            .noBottom {
+                border-bottom: none;
+            }
+        </style>
         ";
 
         $pdf->writeHTML($table);
@@ -79,20 +93,20 @@ class PDF_Auftrag {
 
         /* order information */
         $table = "
-            <table>
+            <table cellpadding=\"3\">
                 <tr>
-                    <td colspan=\"3\">Beschreibung:</td>
-                    <td colspan=\"2\">Angenommen Durch</td>
-                    <td colspan=\"1\">{$variables['AngenommenDurch']}</td>
+                    <td colspan=\"4\"><b>Beschreibung:</b></td>
+                    <td colspan=\"2\"><b>Angenommen von</b></td>
+                    <td colspan=\"2\">{$variables['AngenommenDurch']}</td>
                 </tr>
                 <tr>
-                    <td rowspan=\"4\" colspan=\"3\">{$variables['Auftragsbeschreibung']}</td>
-                    <td colspan=\"2\">Kundennummer</td>
-                    <td colspan=\"1\">{$variables['Kundennummer']}</td>
+                    <td colspan=\"4\" rowspan=\"4\">{$variables['Auftragsbeschreibung']}</td>
+                    <td colspan=\"2\"><b>Kundennummer</b></td>
+                    <td colspan=\"2\">{$variables['Kundennummer']}</td>
                 </tr>
                 <tr>
-                    <td colspan=\"2\">Auftragsnummer</td>
-                    <td colspan=\"1\">{$variables['Auftragsnummer']}</td>
+                    <td colspan=\"2\"><b>Auftragsnummer</b></td>
+                    <td colspan=\"2\">{$variables['Auftragsnummer']}</td>
                 </tr>
             </table>
         ";
@@ -120,8 +134,29 @@ class PDF_Auftrag {
             $auftrags_daten[0]["Fertigstellung"] = "";
         }
 
+        if ((int) $auftrags_daten[0]["Ansprechpartner"] == 0) {
+            $auftrags_daten[0]["Ansprechpartner"] = $auftrags_daten[0]["Vorname"] . " " . $auftrags_daten[0]["Nachname"];
+        } else {
+            $nummer = (int) $auftrags_daten[0]["Ansprechpartner"];
+            $name = DBAccess::selectQuery("SELECT Vorname, Nachname FROM ansprechpartner WHERE Nummer = $nummer")[0];
+            $name = $name["Vorname"] . " " . $name["Nachname"];
+            $auftrags_daten[0]["Ansprechpartner"] = $name;
+        }
+
         $auftrags_daten = $auftrags_daten[0];
         return $auftrags_daten;
+
+        /* SELECT 
+                Auftragsnummer, kunde.Kundennummer, Auftragsbezeichnung, Auftragsbeschreibung, Datum, Termin, Firmenname, Straße, Hausnummer, Postleitzahl, Ort, kunde.Email, TelefonFestnetz, TelefonMobil, 
+                case auftrag.Ansprechpartner
+                    when 0 then CONCAT(kunde.Vorname, " ", kunde.Nachname)
+                    else CONCAT(ansprechpartner.Vorname, " ", ansprechpartner.Nachname)
+                end as test
+            FROM auftrag, kunde, ansprechpartner
+            WHERE 
+                auftrag.Kundennummer = kunde.Kundennummer
+                AND Auftragsnummer = 6
+        */
     }
 
 }
