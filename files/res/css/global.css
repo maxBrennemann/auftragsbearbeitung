@@ -190,6 +190,23 @@ iframe {
     height: 40vw;
 }
 
+/* info button css */
+.infoButton {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    line-height: 10px;
+    text-align: center;
+    font-size: 15px;
+    border: none;
+    box-shadow: 1px 0px 5px 0px grey;
+    font-weight: bold;
+    font-style: italic;
+    font-family: serf;
+    color: grey;
+    display: inline-block;
+}
+
 .headerline {
     width: 80%;
     margin: auto;
