@@ -6,6 +6,7 @@
 		$neuesProdukt =		Link::getPageLink("neues-produkt");
 		$diagramme =		Link::getPageLink("diagramme");
 		$leistungen =		Link::getPageLink("leistungen");
+		$changelog = 		Link::getPageLink("changelog");
 	?>
 	<footer>
 		<div class="linkBundle">
@@ -23,7 +24,7 @@
 			<a class="linkBundleLink" href="<?=$diagramme?>">Diagramme</a><br>
 			<a class="linkBundleLink" href="<?=$leistungen?>">Leistungen</a><br>
 		</div>
-		<p style="font-size: 0.5em; color: grey"><?=getCurrentVersion()?></p>
+		<a href="<?=$changelog?>" style="font-size: 0.5em; color: grey"><?=getCurrentVersion()?></a>
 	</footer>
 
 	<?php 
