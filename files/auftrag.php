@@ -51,6 +51,10 @@
 		$show = true;
 	}
 
+	if ($auftragstyp == 0) {
+		//$data =
+	}
+
 	$mitarbeiter = DBAccess::selectQuery("SELECT Vorname, Nachname, id FROM mitarbeiter");
 
 if ($auftragsId == -1) : ?>
@@ -129,25 +133,29 @@ if ($auftragsId == -1) : ?>
 	</div>
 	<div class="defCont fahrzeuge">
 		<?php if ($auftragstyp == 0): ?>
-		<span><u>Fahrzeuge:</u> <span id="fahrzeugTable"><?=$fahrzeugTable?></span></span><br>
+		<span><u>Fahrzeuge:</u><button class="infoButton">i</button><br>
 		<div>
-			<p>
-				<form method="post" enctype="multipart/form-data">
-					<label>Fahrzeug:
-						<select name="vehicleImageId">
-							<?php foreach ($fahrzeugeAuftrag as $f): ?>
-								<option value="<?=$f['Nummer']?>"><?=$f['Kennzeichen']?> <?=$f['Fahrzeug']?></option>
-							<?php endforeach; ?>
-						</select>
-					</label>
-					<br>
-					<label>
-						<input type="file" name="uploadedFile">
-						<input type="submit" value="Datei hochladen" name="filesubmitbtnV">
-					</label>
-				</form>
-			</p>
+			<span>Fahrzeug hinzufügen</span>
+			<br>
+			<select id="selectVehicle" onchange="selectVehicle(event);">
+				<option value="0" selected disabled>Bitte auswählen</option>
+				<?php foreach ($fahrzeuge as $f): ?>
+					<option value="<?=$f['Nummer']?>"><?=$f['Kennzeichen']?> <?=$f['Fahrzeug']?></option>
+				<?php endforeach; ?>
+				<option value="addNew">Neues Fahrzeug hinzufügen</option>
+			</select>
+			<button onclick="addFahrzeug(true)">Für diesen Auftrag übernehmen</button>
 		</div>
+		<div class="innerDefCont" id="addVehicle" style="display: none;">
+			<span>Kfz-Kennzeichen:<br><input id="kfz"></span><br>
+			<span>Fahrzeug:<br><input id="fahrzeug"></span><br>
+			<button onclick="addFahrzeug()">Neues Fahrzeug hinzufügen</button>
+		</div>
+		<div><?=$auftrag->getFahrzeuge();?></div>
+		<br>
+		<form class="fileUploader" data-target="vehicle" name="vehicle">
+			<input type="file">
+		</form>
 		<?php endif; ?>
 	</div>
 	<div class="defCont farben">
@@ -190,19 +198,6 @@ if ($auftragsId == -1) : ?>
 					<span>Einkaufspreis:<br><input id="ekp" value="0"></span><br>
 					<span>Speziefischer Preis:<br><input id="pre" value="0"></span><br>
 					<button onclick="addLeistung()">Hinzufügen</button>
-				</div>
-				<div class="columnLeistung" id="addKfz" style="display: none;">
-					<span>Kfz-Kennzeichen:<br><input id="kfz"></span><br>
-					<span>Fahrzeug:<br><input id="fahrzeug"></span><br>
-					<button onclick="addFahrzeug()">Neues Fahrzeug hinzufügen</button>
-					<hr>
-					<select id="selectVehicle" onchange="selectVehicle(event);">
-						<option value="0" selected disabled>Bitte auswählen</option>
-						<?php foreach ($fahrzeuge as $f): ?>
-							<option value="<?=$f['Nummer']?>"><?=$f['Kennzeichen']?> <?=$f['Fahrzeug']?></option>
-						<?php endforeach; ?>
-					</select>
-					<button onclick="addFahrzeug(true)">Für diesen Auftrag übernehmen</button>
 				</div>
 			</div>
 			<div class="innerDefCont" id="addPostenProdukt" style="display: none">

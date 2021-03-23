@@ -214,3 +214,7 @@ INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `
 
 /* Änderungen 11.03.2021 */
 ALTER TABLE `adress` DROP INDEX `id_customer`;
+
+/* Änderungen 17.03.2021 */
+UPDATE `history_type` SET `name` = 'Fahrzeug' WHERE `history_type`.`type_id` = 3;
+INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'changelog', 'Changelog', 'changelog.php'), (NULL, 'help', 'Hilfe', 'help.php');
