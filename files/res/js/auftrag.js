@@ -8,6 +8,24 @@ var globalData = {
     auftragsId : parseInt(new URL(window.location.href).searchParams.get("id"))
 }
 
+if (document.readyState !== 'loading' ) {
+    console.log( 'document is already ready, just execute code here' );
+    initCode();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log( 'document was not ready, place code here' );
+        initCode();
+    });
+}
+
+function initCode() {
+    document.getElementById("selectVehicle").addEventListener("change", function(event) {
+        if (event.target.value == "addNew") {
+            document.getElementById("addVehicle").style.display = "inline-block";
+        }
+    });
+}
+
 /* get selection for adding a posten */
 function getSelections() {
     var e = document.getElementById("selectPosten");
@@ -221,7 +239,9 @@ function addFahrzeug(param) {
         var kundennummer = document.getElementById("kundennummer").innerText;
         var add = new AjaxCall(`getReason=insertCar&kfz=${kfz}&fahrzeug=${fahrzeug}&kdnr=${kundennummer}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
         add.makeAjaxCall(function (response) {
-            document.getElementById("fahrzeugTable").innerHTML = response;
+            /* table is in the div after the addVehicle form */
+            let el = document.getElementById("addVehicle").nextSibling;
+            el.innerHTML = response;
         });
     }
 }
@@ -274,10 +294,6 @@ function radio(val) {
 }
 
 function selectLeistung(e) {
-    if (e.target.value == 5) {
-        document.getElementById("addKfz").style.display = "inline";
-    }
-
     globalData.aufschlag = parseInt(e.target.options[e.target.selectedIndex].dataset.aufschlag);
 }
 

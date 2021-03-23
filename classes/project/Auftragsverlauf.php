@@ -47,19 +47,22 @@ class Auftragsverlauf {
      * added member join to get the user id
     */
     public function getHistory() {
-        $query = <<<EOD
-            SELECT history.id, history.insertstamp, history_type.name, 
+        $query = "
+                SELECT history.id, history.insertstamp, history_type.name, 
                 CONCAT(COALESCE(postendata.Beschreibung, ''), 
-                COALESCE(schritte.Bezeichnung, '')) AS Beschreibung, members.username, history.state
+                COALESCE(schritte.Bezeichnung, ''), COALESCE(CONCAT(fahrzeuge.Kennzeichen, ' ', fahrzeuge.Fahrzeug), '')) AS Beschreibung, members.username, history.state
             FROM history 
             LEFT JOIN history_type ON history_type.type_id = history.type 
             LEFT JOIN postendata ON postendata.Auftragsnummer = history.orderid 
                 AND postendata.Postennummer = history.number 
             LEFT JOIN schritte ON schritte.Auftragsnummer = history.orderid 
                 AND schritte.Schrittnummer = history.number 
-            LEFT JOIN members ON members.id = history.member_id 
+            LEFT JOIN members ON members.id = history.member_id
+            LEFT JOIN fahrzeuge_auftraege ON fahrzeuge_auftraege.id_auftrag = history.orderid
+                AND fahrzeuge_auftraege.id_fahrzeug = history.number
+            LEFT JOIN fahrzeuge ON fahrzeuge.Nummer = fahrzeuge_auftraege.id_fahrzeug
             WHERE history.orderid = {$this->auftragsnummer}
-        EOD;
+                ";
         return DBAccess::selectQuery($query);
     }
 
