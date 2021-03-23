@@ -54,7 +54,7 @@
 			$pattern = [
 				"Kundennummer" => [
 					"status" => "preset",
-					"value" => 66
+					"value" => $kundenid
 				],
 				"Vorname" => [
 					"status" => "unset",
