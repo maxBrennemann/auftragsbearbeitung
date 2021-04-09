@@ -2,6 +2,7 @@
 	require_once('classes/DBAccess.php');
 	require_once('classes/Link.php');
 	require_once('classes/Login.php');
+	require_once('classes/project/ClientSettings.php');
 	
 	$globalCSS =  Link::getGlobalCSS();
 	$globalJS =  Link::getGlobalJS();
@@ -19,6 +20,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="shortcut icon" type="image/x-icon" href="<?=WEB_URL?>/favicon.ico">
 	<link rel="shortcut icon" type="image/png" href="<?=WEB_URL?>/img/favicon.png">
+	<style>
+		<?=Settings::getColorConfiguration()?>
+	</style>
 	<link rel="stylesheet" href="<?=$globalCSS?>">
 	<script src="<?=$globalJS?>"></script>
 	<?php
@@ -55,6 +59,7 @@
 				<span>
 					<span><?=NotificationManager::getNotificationCount();?></span>
 					<span>&#128276;</span>
+					<span>⚙</span>
 				</span>
 			</aside>
 		</section>

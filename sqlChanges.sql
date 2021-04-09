@@ -204,7 +204,7 @@ DROP VIEW auftragssumme;
 CREATE VIEW auftragssumme_view AS 
   SELECT (zeit.ZeitInMinuten / 60) * zeit.Stundenlohn AS price, posten.Auftragsnummer as id FROM zeit, posten WHERE zeit.Postennummer = posten.Postennummer UNION ALL SELECT leistung_posten.SpeziefischerPreis AS price, posten.Auftragsnummer as id FROM leistung_posten, posten WHERE leistung_posten.Postennummer = posten.Postennummer;
 CREATE VIEW auftragssumme AS
- SELECT ROUND(SUM(auftragssumme_view.price), 2) AS auftragssumme_view, all_auftragssumme_viewposten.id AS id, auftrag.Datum, auftrag.Fertigstellung FROM auftragssumme_view, auftrag WHERE auftrag.Auftragsnummer = id GROUP BY id;
+ SELECT ROUND(SUM(auftragssumme_view.price), 2) AS auftragssumme_view, auftragssumme_view.id AS id, auftrag.Datum, auftrag.Fertigstellung FROM auftragssumme_view, auftrag WHERE auftrag.Auftragsnummer = id GROUP BY id;
 
 /* Änderungen 01.02.2021 */
 ALTER TABLE `adress` ADD `country` VARCHAR(32) NOT NULL AFTER `zusatz`;
@@ -218,3 +218,6 @@ ALTER TABLE `adress` DROP INDEX `id_customer`;
 /* Änderungen 17.03.2021 */
 UPDATE `history_type` SET `name` = 'Fahrzeug' WHERE `history_type`.`type_id` = 3;
 INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'changelog.php', 'Changelog', 'changelog'), (NULL, 'help', 'Hilfe', 'help.php');
+
+/* Änderungen 09.04.2021 */
+CREATE TABLE `auftragsmanager`.`color_settings` ( `id` INT NOT NULL AUTO_INCREMENT , `userid` INT NOT NULL , `type` INT NOT NULL , `color` VARCHAR(32) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;

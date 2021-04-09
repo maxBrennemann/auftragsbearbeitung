@@ -1,0 +1,46 @@
+<?php
+
+class Settings {
+
+    public static function setGrayScale($color, $type) {
+        $userId = $_SESSION['userid'];
+        DBAccess::updateQuery("UPDATE color_settings SET color = '$color' WHERE userid = $userId AND type = $type");
+    }
+
+    public static function getColorConfiguration() {
+        $userId = $_SESSION['userid'];
+        $data = DBAccess::selectQuery("SELECT color, `type` FROM color_settings WHERE userid = $userId");
+
+        $color_table = "d8d8d8";
+        $color_def = "eff0f1";
+        $color_innerDef = "b1b1b1";
+
+        foreach ($data as $d) {
+            switch($d['type']) {
+                case "1":
+                    if ($d['color'] != "")
+                        $color_table = $d['color'];
+                break;
+                case "2":
+                    if ($d['color'] != "")
+                        $color_def = $d['color'];
+                break;
+                case "3":
+                    if ($d['color'] != "")
+                        $color_innerDef = $d['color'];
+                break;
+            }
+        }
+
+        $colorCSS = ":root {
+            --main-table-color: #$color_table;
+            --main-def-color: #$color_def;
+            --main-inner-def-color: #$color_innerDef;
+        }";
+
+        echo $colorCSS;
+    }
+
+}
+
+?>
