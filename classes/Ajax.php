@@ -500,6 +500,13 @@ class Ajax {
 				$data = $_POST['data'];
 				echo Table::updateTable_AddNewLine($key, $data);
 			break;
+			case "setCustomColor":
+				require_once("classes/project/ClientSettings.php");
+				$color = $_POST['color'];
+				$type = $_POST['type'];
+				Settings::setGrayScale($color, $type);
+				echo "ok";
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
