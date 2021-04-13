@@ -395,16 +395,27 @@ FileUploader.prototype.upload = function() {
 	let uploadNode = this.uploadNode;
 	return new Promise(function(resolve, reject) {
 		var formData = new FormData(target);
-		formData.append("upload", target.dataset.target);
+		//formData.append("upload", target.dataset.target);
 		var ajax = new XMLHttpRequest();
 
 		/* resolves the promise and then function with the form reset is called */
 		ajax.onreadystatechange = function() {
 			if(this.readyState == 4 && this.status == 200) {
-				//console.log(this.responseText);
+				document.getElementById("showFilePrev").innerHTML = this.responseText;
+
+				/* remove upload preview images */
+				document.querySelector(".filesList").parentNode.removeChild(document.querySelector(".filesList").previousSibling);
 				resolve();
 			}
 		}
+
+		let files = document.querySelector('input[name="uploadedFile"]');
+		
+		for (let i = 0; i < files.files.length; i++) {
+			formData.append("files[]", files.files[i]);
+		}
+
+		console.log(formData.getAll("files[]"));
 
 		ajax.onerror = function() {
 			reject();
