@@ -292,8 +292,8 @@ class Table {
 	 * erstellt die Tabelle
 	 * wenn $this->data null ist, wird eine Nachricht zurückgegeben
 	 */
-    public function getTable() {
-		if ($this->data == null)
+    public function getTable($zeroTable = false) {
+		if ($this->data == null && !$zeroTable)
 			return "<p>Keine Einträge vorhanden</p>";
 
         $html = "";
