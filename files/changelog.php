@@ -4,6 +4,7 @@
         <li>Designfehler für Auftragskarten behoben</li>
         <li>Upload für mehrere Dateien funktioniert jetzt fehlerfrei - mit bebilderter Vorschau</li>
         <li>Farbeinstellungen wurden hinzugefügt</li>
+        <li>Tabellenkopf wird bei Ansprechpartnern angezeigt - also Einfügen nun immer möglich</li>
     </ul>
     <h3>1.1.7</h3>
     <ul>
