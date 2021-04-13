@@ -121,7 +121,7 @@ class Kunde implements StatisticsInterface {
 
 	public function getOrderCards() {
 		$auftraege = DBAccess::selectQuery("SELECT Auftragsnummer FROM auftrag WHERE Kundennummer = {$this->kundennummer}");
-		$html = "<div style=\"display: flex\">";
+		$html = "<div style=\"display: flex; flex-wrap: wrap;\">";
 		foreach ($auftraege as $id) {
 			$order = new Auftrag($id['Auftragsnummer']);
 			$html .= $order->getOrderCard();
