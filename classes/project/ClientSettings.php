@@ -8,6 +8,9 @@ class Settings {
     }
 
     public static function getColorConfiguration() {
+        if (!isset($_SESSION['userid']))
+            return null;
+
         $userId = $_SESSION['userid'];
         $data = DBAccess::selectQuery("SELECT color, `type` FROM color_settings WHERE userid = $userId");
 

@@ -140,7 +140,8 @@ a[href="#"] {
 
 .orderCard {
     width: 25%;
-    height: auto;   
+    height: auto;
+    flex-grow: 1;
 }
 
 /* class for round + button */

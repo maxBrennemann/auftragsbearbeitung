@@ -178,7 +178,6 @@
 		</div>
 		<div id="auftraege">
 			<h3>Aufträge</h3>
-			<!--<?=$kunde->getAuftraege()?>-->
 			<?=$kunde->getOrderCards()?>
 			<br>
 			<a href="<?=Link::getPageLink("neuer-auftrag")?>?kdnr=<?=$kundenid?>">Neuen Auftrag erstellen</a>
