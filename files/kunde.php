@@ -49,8 +49,7 @@
 			$t->createByData($data, $column_names);
 			$t->addActionButton("edit");
 			$t->addNewLineButton();
-			$ansprechpartner = $t->getTable();
-
+			
 			$pattern = [
 				"Kundennummer" => [
 					"status" => "preset",
@@ -79,7 +78,8 @@
 			];
 
 			$t->defineUpdateSchedule(new UpdateSchedule("Ansprechpartner", $pattern));
-
+			$ansprechpartner = $t->getTable(true);
+			
 			$_SESSION[$t->getTableKey()] = serialize($t);
 		} catch (Exception $e){
 			echo $e->getMessage();
