@@ -229,7 +229,7 @@ if ($auftragsId == -1) : ?>
 			<div class="filesList defCont"></div>
 		</div>
 		<br>
-		<div>
+		<div id="showFilePrev">
 			<?=$showFiles?>
 		</div>
 	</div>

@@ -7,20 +7,20 @@ class Upload {
     private $uploadDir = "upload/";
     
     public function uploadFilesAuftrag($auftragsnummer) {
-        $id = $this->uploadFiles();
-        if ((int) $id != -1) {
-            echo "id: " . $id . " /id";
-            DBAccess::insertQuery("INSERT INTO dateien_auftraege (id_datei, id_auftrag) VALUES ($id, $auftragsnummer)");
-    
-            $auftragsverlauf = new Auftragsverlauf($auftragsnummer);
-            $auftragsverlauf->addToHistory($id, 4, "added");
+        $ids = $this->uploadFiles();
+        if (is_array($ids)) {
+            foreach ($ids as $id) {
+                /*echo "id: " . $id . " /id";*/
+                DBAccess::insertQuery("INSERT INTO dateien_auftraege (id_datei, id_auftrag) VALUES ($id, $auftragsnummer)");
+        
+                $auftragsverlauf = new Auftragsverlauf($auftragsnummer);
+                $auftragsverlauf->addToHistory($id, 4, "added");
 
-            $link = Link::getPageLink("auftrag") . "?id=" . $auftragsnummer;
-            header("Location:$link");
-            return $id;
+                $link = Link::getPageLink("auftrag") . "?id=" . $auftragsnummer;
+            }
         }
 
-        return -1;
+        echo Upload::getFilesAuftrag($auftragsnummer);
     }
 
     public function uploadFilesVehicle($fahrzeugnummer, $auftragsnummer) {
@@ -54,20 +54,30 @@ class Upload {
     private function uploadFiles() {
         error_reporting(-1);
 
+        /* https://stackoverflow.com/questions/2704314/multiple-file-upload-in-php */
         $datetime = new DateTime();
-       
-        $filename = $datetime->getTimestamp() . basename($_FILES["uploadedFile"]["name"]);
-        $originalname = basename($_FILES["uploadedFile"]["name"]);
-        $filetype = pathinfo($_FILES["uploadedFile"]["name"], PATHINFO_EXTENSION);
-        $date = date("Y-m-d");
+        $total = count($_FILES["files"]["name"]);
+        /*echo "filename: " . $_FILES["files"]["name"][0];*/
+        $ids = array();
 
-        $insertQuery = "INSERT INTO dateien (dateiname, originalname, typ, `date`) VALUES ('$filename', '$originalname','$filetype', '$date')";
-        
-        if (move_uploaded_file($_FILES["uploadedFile"]["tmp_name"], $this->uploadDir . $filename)) {
-            return DBAccess::insertQuery($insertQuery);
-        } else {
-            return -1;
+        /* files is the name of the file input element in frontend */
+
+        for ($i = 0; $i < $total; $i++) {
+            $filename = $datetime->getTimestamp() . basename($_FILES["files"]["name"][$i]);
+            $originalname = basename($_FILES["files"]["name"][$i]);
+            $filetype = pathinfo($_FILES["files"]["name"][$i], PATHINFO_EXTENSION);
+            $date = date("Y-m-d");
+
+            $insertQuery = "INSERT INTO dateien (dateiname, originalname, typ, `date`) VALUES ('$filename', '$originalname','$filetype', '$date')";
+            
+            if (move_uploaded_file($_FILES["files"]["tmp_name"][$i], $this->uploadDir . $filename)) {
+                array_push($ids, DBAccess::insertQuery($insertQuery));
+            } else {
+                return -1;
+            }
         }
+
+        return $ids;
     }
 
     public static function getFiles() {
@@ -78,7 +88,9 @@ class Upload {
         $files = DBAccess::selectQuery("SELECT DISTINCT dateiname AS Datei, originalname, `date` AS Datum, typ as Typ FROM dateien LEFT JOIN dateien_auftraege ON dateien_auftraege.id_datei = dateien.id WHERE dateien_auftraege.id_auftrag = $auftragsnummer");
         for ($i = 0; $i < sizeof($files); $i++) {
             $link = Link::getResourcesShortLink($files[$i]['Datei'], "upload");
-            $html = "<span><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\">{$files[$i]['originalname']}</a></span>"; //download=\"{$files[$i]['originalname']}\"
+
+            $preview = getimagesize("upload/" . $files[$i]['Datei']) ? "<img src=\"$link\" width=\"40px\">" : "";
+            $html = $preview . "<span><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\">{$files[$i]['originalname']}</a></span>"; //download=\"{$files[$i]['originalname']}\"
 
             $files[$i]['Datei'] = $html;
         }
