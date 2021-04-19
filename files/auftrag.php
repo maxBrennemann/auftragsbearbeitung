@@ -85,10 +85,9 @@ if ($auftragsId == -1) : ?>
 		<span>
 			<u>Beschreibung:</u>
 			<br>
-			<span id="orderDescription">
+			<p id="orderDescription">
 				<?=$auftrag->getAuftragsbeschreibung()?>
-			</span>
-			<br>
+			</p>
 			<button onclick="editDescription(event);">Bearbeiten</button>
 		</span>
 		<br>
