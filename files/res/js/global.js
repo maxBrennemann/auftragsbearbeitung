@@ -409,7 +409,7 @@ FileUploader.prototype.upload = function() {
 			}
 		}
 
-		let files = document.querySelector('input[name="uploadedFile"]');
+		let files = target.querySelector('input[name="uploadedFile"]');
 		
 		for (let i = 0; i < files.files.length; i++) {
 			formData.append("files[]", files.files[i]);

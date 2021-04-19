@@ -1,4 +1,9 @@
 <div class="changelog">
+    <h3>1.1.9</h3>
+    <ul>
+        <li>Erste Überarbeitung des NotificationManagers - Benachrichtigungen werden nun auch wieder entfernt</li>
+        <li>Auftragsbeschreibung kann nun ordentlich geändert werden</li>
+    </ul>
     <h3>1.1.8</h3>
     <ul>
         <li>Designfehler für Auftragskarten behoben</li>
