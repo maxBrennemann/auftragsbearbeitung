@@ -253,10 +253,19 @@ class Ajax {
 				require_once("classes/project/Table.php");
 				Table::updateValue("schritte_table", "update", $_POST['key']);
 				/* adds an update step to the history by using orderId and identifier */
+				$postennummer = Table::getIdentifierValue("schritte_table", $_POST['key']);
 				Schritt::updateStep([
 					"orderId" => $_POST['auftrag'],
-					"postennummer" => Table::getIdentifierValue("schritte_table", $_POST['key'])
+					"postennummer" => $postennummer
 				]);
+
+				$query = "UPDATE user_notifications SET ischecked = 1 WHERE specific_id = $postennummer";
+				DBAccess::updateQuery($query);
+
+				require_once("classes/project/NotificationManager.php");
+				if (isset($_SESSION['userid'])) 
+					$user = $_SESSION['userid'];
+				NotificationManager::addNotification($user, 0, "Bearbeitungsschritt erledigt", 0);
 			break;
 			case "sendSource":
 				Produkt::addSource();

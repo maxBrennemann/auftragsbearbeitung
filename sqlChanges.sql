@@ -221,3 +221,12 @@ INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'ch
 
 /* Änderungen 09.04.2021 */
 CREATE TABLE `auftragsmanager`.`color_settings` ( `id` INT NOT NULL AUTO_INCREMENT , `userid` INT NOT NULL , `type` INT NOT NULL , `color` VARCHAR(32) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+/* Änderungen 13.04.2021 */
+INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '21', 'head', 'colorpicker.js', '0', 'js');
+DROP VIEW auftragssumme;
+CREATE VIEW auftragssumme AS
+ SELECT ROUND(SUM(auftragssumme_view.price), 2) AS orderPrice, auftragssumme_view.id AS id, auftrag.Datum, auftrag.Fertigstellung FROM auftragssumme_view, auftrag WHERE auftrag.Auftragsnummer = id GROUP BY id;
+
+/* Änderungen 19.04.2021 */
+ALTER TABLE `user_notifications` ADD `initiator` INT NOT NULL AFTER `user_id`;

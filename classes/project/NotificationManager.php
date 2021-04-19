@@ -38,7 +38,7 @@ class NotificationManager {
         foreach ($data as $n) {
             $type = self::getTypeName((int) $n['type']);
             $link = self::getSpecificLink((int) $n['specific_id']);
-            $htmlContent .= "<span><strong>" . $type . ": </strong><a href=\"$link\">" . $n['content'] . "</a></span>";
+            $htmlContent .= "<span><strong>" . $type . ": </strong><a href=\"$link\">" . $n['content'] . "</a></span><br>";
         }
 
         return $htmlContent;
@@ -62,7 +62,10 @@ class NotificationManager {
     }
 
     public static function addNotification($user_id, $type, $content, $specificId) {
-        DBAccess::insertQuery("INSERT INTO user_notifications (user_id, `type`, content, specific_id) VALUES ($user_id, $type, '$content', $specificId)");
+        $user = 0;
+        if (isset($_SESSION['userid'])) 
+            $user = $_SESSION['userid'];
+        DBAccess::insertQuery("INSERT INTO user_notifications (user_id, `initiator`, `type`, content, specific_id) VALUES ($user_id, $user, $type, '$content', $specificId)");
     }
 
 }
