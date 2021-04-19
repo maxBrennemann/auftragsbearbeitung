@@ -251,7 +251,7 @@ function selectVehicle(event) {
 }
 
 function deleteRow(key) {
-    var del = new AjaxCall(`getReason=delete&key=${key}`, "POST", window.location.href);
+    var del = new AjaxCall(`getReason=delete&key=${key}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
     del.makeAjaxCall(function (response) {
         console.log(response);
     });

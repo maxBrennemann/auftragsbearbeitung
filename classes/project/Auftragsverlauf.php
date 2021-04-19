@@ -86,6 +86,9 @@ class Auftragsverlauf {
                 case "finished":
                     $html .= "<div class=\"showInMiddle\">{$h['name']}: {$beschreibung}<br>abgeschlossen am {$datetime}<br>von {$person}</div><div class=\"line\"></div>";
                     break;
+                case "deleted":
+                    $html .= "<div class=\"showInMiddle\">{$h['name']}: {$beschreibung}<br>gelöscht am {$datetime}<br>von {$person}</div><div class=\"line\"></div>";
+                    break;
             }
 
             

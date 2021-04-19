@@ -247,6 +247,15 @@ class Ajax {
 				/* using new table functionality */
 				require_once("classes/project/Table.php");
 				Table::updateValue("schritte_table", "delete", $_POST['key']);
+				$postennummer = Table::getIdentifierValue("schritte_table", $_POST['key']);
+
+				/* when a step is deleted, its connection to the notification manager must be deleted and it must be shown in the order histor */
+				require_once("classes/project/Auftragsverlauf.php");
+				$auftragsverlauf = new Auftragsverlauf($_POST['auftrag']);
+				$auftragsverlauf->addToHistory($postennummer, 2, "deleted");
+
+				$query = "UPDATE user_notifications SET ischecked = 1 WHERE specific_id = $postennummer";
+				DBAccess::updateQuery($query);
 			break;
 			case "update":
 				/* using new table functionality */
