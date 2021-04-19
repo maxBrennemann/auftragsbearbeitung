@@ -206,3 +206,8 @@ aside {
 form[name="showSteps"] {
     padding-bottom: 10px;
 }
+
+.descriptionEditable {
+    background: white;
+    padding: 10px;
+}

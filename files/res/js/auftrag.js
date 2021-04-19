@@ -378,14 +378,20 @@ function chooseProduct(productId) {
 function editDescription(event) {
     var text = document.getElementById("orderDescription");
     text.contentEditable = true;
+    text.classList.add("descriptionEditable");
     
     if (event.target.innerText == "Speichern") {
         var saveDescription = new AjaxCall(`getReason=saveDescription&text=${text.innerText}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
         saveDescription.makeAjaxCall(function (response) {
             if (response == "saved") {
-                var btn = document.getElementById("orderDescription").nextSibling;
+                var text = document.getElementById("orderDescription");
+                text.classList.remove("descriptionEditable");
+                text.contentEditable = false;
+
+                var btn = text.nextElementSibling;
                 btn.innerText = "Bearbeiten";
-            }
+            } else
+                console.log("not saved");
         });
     } else {
         event.target.innerText = "Speichern";

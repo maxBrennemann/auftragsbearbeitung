@@ -122,7 +122,7 @@ class Auftrag implements StatisticsInterface {
 	}
 
 	public function getAuftragsbeschreibung() {
-		return $this->Auftragsbeschreibung;
+		return nl2br($this->Auftragsbeschreibung);
 	}
 
 	public function getAuftragsnummer() {
@@ -286,7 +286,7 @@ class Auftrag implements StatisticsInterface {
 		$finished = $data['Fertigstellung'];
 
 		$invoice =  $this->rechnungsnummer == 0 ? "" : "Rechnung Nr. $this->rechnungsnummer";
-		$summe = $this->rechnungsnummer != 0 ? "<button>" . $this->preisBerechnen() . "€</button>" : 0;
+		$summe = $this->rechnungsnummer != 0 ? "<button>" . $this->preisBerechnen() . "€</button>" : "-€";
 
 		$html = "
 		<div class=\"innerDefCont orderCard\">
@@ -311,7 +311,7 @@ class Auftrag implements StatisticsInterface {
 			$archievedBtn
 			$invoice
 			<br>
-			$summe
+			<p>Auftragssumme: $summe </p>
 		</div>";
 
 		return $html;
