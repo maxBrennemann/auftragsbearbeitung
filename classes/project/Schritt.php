@@ -60,6 +60,10 @@ class Schritt {
 		$auftragsverlauf->addToHistory($data['postennummer'], 2, "finished");
 	}
 
+	public  static function deleteStep() {
+		
+	}
+
 }
 
 ?>
