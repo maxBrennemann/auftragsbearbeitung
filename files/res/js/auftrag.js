@@ -19,6 +19,9 @@ if (document.readyState !== 'loading' ) {
 }
 
 function initCode() {
+    if (document.getElementById("selectVehicle") == null)
+        return null;
+    
     document.getElementById("selectVehicle").addEventListener("change", function(event) {
         if (event.target.value == "addNew") {
             document.getElementById("addVehicle").style.display = "inline-block";
