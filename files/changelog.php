@@ -3,6 +3,9 @@
     <ul>
         <li>Erste Überarbeitung des NotificationManagers - Benachrichtigungen werden nun auch wieder entfernt</li>
         <li>Auftragsbeschreibung kann nun ordentlich geändert werden</li>
+        <li>Einführung von Info-Buttons</li>
+        <li>Notizen können einem Auftrag hinzugefügt werden</li>
+        <li>Weiterleitung zu neuem Kunden nun richtig</li>
     </ul>
     <h3>1.1.8</h3>
     <ul>
