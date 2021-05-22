@@ -209,6 +209,27 @@ function addBearbeitungsschritte() {
     }
 }
 
+/* adds a note to the order */
+function addNote() {
+    var note = document.querySelector(".noteInput");
+    if (note == undefined)
+        return null;
+
+    note = note.value;   
+
+    /* ajax parameter */
+    let params = {
+        getReason: "addNoteOrder",
+        auftrag: globalData.auftragsId,
+        note: note
+    };
+
+    var add = new AjaxCall(params, "POST", window.location.href);
+    add.makeAjaxCall(function (response) {
+        document.getElementById("noteContainer").innerHTML = response;
+    }.bind(this), false);
+}
+
 function performSearch(e) {
     var query = e.target.previousSibling.value;
     console.log(query);

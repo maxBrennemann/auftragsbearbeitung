@@ -207,6 +207,21 @@ iframe {
     display: inline-block;
 }
 
+.infoBox {
+    position: absolute;
+    background-color: white;
+    border: none;
+    border-radius: 6px;
+    margin-left: 5px;
+    padding: 5px;
+    box-shadow: 3px 4px 8px 3px rgb(0 0 0 / 31%);
+    display: none;
+}
+
+.infoBoxShow {
+    display: block;
+}
+
 .headerline {
     width: 80%;
     margin: auto;
