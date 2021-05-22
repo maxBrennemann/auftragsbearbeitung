@@ -230,3 +230,6 @@ CREATE VIEW auftragssumme AS
 
 /* Änderungen 19.04.2021 */
 ALTER TABLE `user_notifications` ADD `initiator` INT NOT NULL AFTER `user_id`;
+
+/* Änderungen 22.05.2021 */
+ALTER TABLE `notizen` CHANGE `Nummer` `Nummer` INT(11) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`Nummer`);

@@ -518,12 +518,22 @@ class Ajax {
 				$data = $_POST['data'];
 				echo Table::updateTable_AddNewLine($key, $data);
 			break;
+			case "addNoteOrder":
+				$note = $_POST['note'];
+				$orderId = (int) $_POST['auftrag'];
+				DBAccess::insertQuery("INSERT INTO notizen (Auftragsnummer, Notiz) VALUES ($orderId, '$note')");
+				$auftrag = new Auftrag($orderId);
+				echo $auftrag->getNotes();
+			break;
 			case "setCustomColor":
 				require_once("classes/project/ClientSettings.php");
 				$color = $_POST['color'];
 				$type = $_POST['type'];
 				Settings::setGrayScale($color, $type);
 				echo "ok";
+			break;
+			case "getInfoText":
+				echo "dies ist ein testtext";
 			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
