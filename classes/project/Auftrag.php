@@ -317,6 +317,24 @@ class Auftrag implements StatisticsInterface {
 		return $html;
 	}
 
+	/* this function fetches the associated notes from the db */
+	public function getNotes() {
+		$html = "";
+
+		$notes = DBAccess::selectQuery("SELECT Notiz FROM notizen WHERE Auftragsnummer = $this->Auftragsnummer");
+		foreach($notes as $note) {
+			$content = $note['Notiz'];
+			$html .= "
+				<div class=\"notes\">
+					<div class=\"noteheader\">Notiz 📓</div>
+					<div class=\"notecontent\">$content</div>
+				</div>
+			";
+		}
+
+		return $html;
+	}
+
 	public function getAddColors() {
 		$string = '<span>Farbname: <input class="colorInput" type="text" max="32"></span><span>Farbe (Hex): <input class="colorInput jscolor" type="text" max="32"></span><span>Bezeichnung: <input class="colorInput" type="text" max="32"></span><span>Hersteller: <input class="colorInput" tyep="text" max="32"></span><button onclick="sendColor();">Hinuzufügen</button>';
 		return $string;

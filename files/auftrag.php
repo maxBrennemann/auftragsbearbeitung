@@ -93,15 +93,18 @@ if ($auftragsId == -1) : ?>
 		<br>
 	</div>
 	<div class="defCont schritte">
-		<span><u>Schritte und Notizen:</u><br>
+		<div><u>Schritte und Notizen:</u><br>
 			<form name="showSteps">
 				<input onchange="radio('hide')" type="radio" name="showDone" value="hide" checked> Zu erledigende Schritte anzeigen<br>
 				<input onchange="radio('show')" type="radio" name="showDone" value="show"> Alle Schritte anzeigen<br>
 			</form>
-			<span id="stepTable">
+			<div id="stepTable">
 				<?=$auftrag->getOpenBearbeitungsschritteTable()?>
-			</span>
-		</span>
+			</div>
+		</div>
+		<div id="noteContainer">
+			<?=$auftrag->getNotes()?>
+		</div>
 	</div>
 	<div class="defCont schritteAdd">
 		<button onclick="addBearbeitungsschritte()">Neuen Bearbeitungsschritt hinzufügen</button>
@@ -123,6 +126,11 @@ if ($auftragsId == -1) : ?>
 			</select>
 			<br>
 		</div>
+		<button onclick="document.getElementById('addNotes').style.display='block';">Neue Notiz hinzufügen</button>
+		<div class="innerDefCont" id="addNotes" style="display: none">
+			<span>Notiz: <br><input class="noteInput" type="text" max="128"></span><br>
+			<button onclick="addNote();">Hinzufügen</button>
+		</div>
 	</div>
 	<div class="defCont posten">
 		<span><u>Posten:</u><br><span id="auftragsPostenTable"><?=$auftrag->getAuftragspostenAsTable()?></span></span>
@@ -132,7 +140,7 @@ if ($auftragsId == -1) : ?>
 	</div>
 	<div class="defCont fahrzeuge">
 		<?php if ($auftragstyp == 0): ?>
-		<span><u>Fahrzeuge:</u><button class="infoButton">i</button><br>
+		<span><u>Fahrzeuge:</u><button class="infoButton" data-info="1">i</button><br>
 		<div>
 			<span>Fahrzeug hinzufügen</span>
 			<br>
