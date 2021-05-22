@@ -89,6 +89,7 @@ function startFunc() {
 	}, false);
 
 	initializeFileUpload();
+	initializeInfoBtn();
 }
 
 function validateEmail(email) {
@@ -450,5 +451,58 @@ FileUploader.prototype.preview = function() {
 			}
 		})(f);
 		reader.readAsDataURL(f);
+	}
+}
+
+/* info button code 
+ * adds an event listener to each btn of that class
+ * which loads the info text from the server and displays its content
+ * in an extra div next to the "i"
+ */
+function initializeInfoBtn() {
+	let btns = document.getElementsByClassName("infoButton");
+	Array.from(btns).forEach(function(btn) {
+		btn.addEventListener("click", function() {
+			let id = btn.dataset.info;
+			var getInfo = new AjaxCall(`getReason=getInfoText&info${id}`, "POST", window.location.href);
+			getInfo.makeAjaxCall(function (response, args) {
+				let btn = args[0];
+				let rect = btn.getBoundingClientRect();
+
+				let infoBox = document.getElementById("infoBox" + args[1]);
+				if (infoBox == undefined) {
+					infoBox = document.createElement("div");
+					infoBox.classList.add("infoBox");
+					infoBox.classList.add("infoBoxShow");
+					infoBox.id = "infoBox" + args[1];
+
+					let text = document.createTextNode(response);
+					infoBox.appendChild(text);
+					document.body.appendChild(infoBox);
+				} else {
+					if (!infoBox.classList.contains('infoBoxShow')) {
+						infoBox.classList.add('infoBoxShow');
+					}
+				}
+				
+				let left = parseInt(rect.left + btn.offsetWidth);
+				let top = parseInt(rect.top - (0.25 * btn.offsetHeight));
+
+				infoBox.style.top = top + "px";
+				infoBox.style.left = left + "px";
+			}, btn, id);
+		}, false);
+	});
+}
+
+window.onclick = function(event) {
+	if (!event.target.matches('.infoButton')) {
+		var dropdowns = document.getElementsByClassName("infoBox");
+		for (let i = 0; i < dropdowns.length; i++) {
+			var openDropdown = dropdowns[i];
+			if (openDropdown.classList.contains('infoBoxShow')) {
+				openDropdown.classList.remove('infoBoxShow');
+			}
+		}
 	}
 }
