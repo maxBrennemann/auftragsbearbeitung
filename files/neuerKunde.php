@@ -39,11 +39,11 @@
 		$newCustomerId = DBAccess::insertQuery($insertString);
 
 		if ($nachnameAnspr != "") {
-			$kdnr = DBAccess::selectQuery("SELECT MAX(Kundennummer) FROM kunde")[0]["MAX(Kundennummer)"];
+			$kdnr = $newCustomerId;
 			$insertString = "INSERT INTO ansprechpartner (Kundennummer, Vorname, Nachname,";
 			$insertString .= " Email, Durchwahl, Mobiltelefonnummer) VALUES ($kdnr, '$vornameAnspr', ";
 			$insertString .= "'$nachnameAnspr', '$emailAnspr', '$telAnspr', '$telmobilAnspr')";
-			$newCustomerId = DBAccess::insertQuery($insertString);
+			//$newCustomerId = DBAccess::insertQuery($insertString);
 		}
 	}
 
