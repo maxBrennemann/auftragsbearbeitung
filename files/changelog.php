@@ -6,6 +6,7 @@
         <li>Einführung von Info-Buttons</li>
         <li>Notizen können einem Auftrag hinzugefügt werden</li>
         <li>Weiterleitung zu neuem Kunden nun richtig</li>
+        <li>Fehlerbehebungen</li>
     </ul>
     <h3>1.1.8</h3>
     <ul>
