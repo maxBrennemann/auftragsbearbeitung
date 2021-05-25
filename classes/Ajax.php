@@ -268,13 +268,10 @@ class Ajax {
 					"postennummer" => $postennummer
 				]);
 
-				$query = "UPDATE user_notifications SET ischecked = 1 WHERE specific_id = $postennummer";
-				DBAccess::updateQuery($query);
-
 				require_once("classes/project/NotificationManager.php");
 				if (isset($_SESSION['userid'])) 
 					$user = $_SESSION['userid'];
-				NotificationManager::addNotification($user, 0, "Bearbeitungsschritt erledigt", 0);
+				NotificationManager::addNotificationCheck($user, 0, "Bearbeitungsschritt erledigt", $postennummer);
 			break;
 			case "sendSource":
 				Produkt::addSource();
