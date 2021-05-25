@@ -114,7 +114,7 @@
 	<h3>Kundendaten</h3>
 	<div class="gridCont">
 		<div id="showKundendaten">
-			<table>
+			<table class="showVertical">
 				<tr>
 					<th>Kundennummer:</th>
 					<td id="kundennummer"><?=$kunde->getKundennummer()?></td>

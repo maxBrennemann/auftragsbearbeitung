@@ -167,10 +167,10 @@ class Auftrag implements StatisticsInterface {
 
 	public function getAuftragspostenAsTable() {
 		$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Beschreibung"), 
-				2 => array("COLUMN_NAME" => "Stundenlohn"), 3 => array("COLUMN_NAME" => "ZeitInMinuten"), 4 => array("COLUMN_NAME" => "Preis"), 
+				2 => array("COLUMN_NAME" => "Stundenlohn"), 3 => array("COLUMN_NAME" => "Zeit in Minuten"), 4 => array("COLUMN_NAME" => "Preis"), 
 				5 => array("COLUMN_NAME" => "Anzahl"), 6 => array("COLUMN_NAME" => "Einkaufspreis"));
 
-		$subArr = array("Bezeichnung" => "", "Beschreibung" => "", "Stundenlohn" => "", "ZeitInMinuten" => "", "Preis" => "", "Anzahl" => "", "Einkaufspreis" => "");
+		$subArr = array("Bezeichnung" => "", "Beschreibung" => "", "Stundenlohn" => "", "Zeit in Minuten" => "", "Preis" => "", "Anzahl" => "", "Einkaufspreis" => "");
 		$data = array(sizeof($this->Auftragsposten));
 
 		if (sizeof($this->Auftragsposten) == 0) {

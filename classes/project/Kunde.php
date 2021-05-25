@@ -29,17 +29,17 @@ class Kunde implements StatisticsInterface {
 	private $adresses = array();
 
 	function __construct($kundennummer) {
-		$data = DBAccess::selectAllByCondition("kunde", "Kundennummer", $kundennummer);
+		$data = DBAccess::selectQuery("SELECT * FROM kunde, adress WHERE Kundennummer = $kundennummer AND kunde.id_adress_primary = adress.id");
 		if (!empty($data)) {
 			$data = $data[0];
 			$this->kundennummer = $data['Kundennummer'];
 			$this->vorname = $data['Vorname'];
 			$this->nachname = $data['Nachname'];
 			$this->firmenname = $data['Firmenname'];
-			$this->strasse = $data['Straße'];
-			$this->hausnummer = $data['Hausnummer'];
-			$this->postleitzahl = $data['Postleitzahl'];
-			$this->ort = $data['Ort'];
+			$this->strasse = $data['strasse'];
+			$this->hausnummer = $data['hausnr'];
+			$this->postleitzahl = $data['plz'];
+			$this->ort = $data['ort'];
 			$this->email = $data['Email'];
 			$this->telefonFestnetz = $data['TelefonFestnetz'];
 			$this->telefonMobil = $data['TelefonMobil'];

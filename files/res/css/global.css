@@ -185,6 +185,29 @@ tr:last-child td:last-child {
     cursor: pointer;
 }
 
+/* vertical tables */
+
+.showVertical td {
+    border-radius: 0;
+    background-color: white;
+}
+
+.showVertical tr:first-child th {
+    border-radius: 6px 0 0 0;
+}
+
+.showVertical tr:last-child th {
+    border-radius: 0 0 0 6px;
+}
+
+.showVertical tr:first-child td {
+    border-radius: 0 6px 0 0;
+}
+
+.showVertical tr:last-child td {
+    border-radius: 0 0 6px 0;
+}
+
 iframe {
     width: 80vw;
     height: 40vw;

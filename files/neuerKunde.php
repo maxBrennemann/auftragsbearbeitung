@@ -21,6 +21,8 @@
 		$hausnummer = $_GET['hausnummer'];
 		$plz = $_GET['plz'];
 		$ort = $_GET['ort'];
+		$zusatz = $_GET['zusatz'];
+		$country = $_GET['country'];
 		$email = $_GET['emailadress'];
 		$telfestnetz = $_GET['telfestnetz'];
 		$telmobil = $_GET['telmobil'];
@@ -35,9 +37,15 @@
 		$insertString .= "('$firmenname', '$anrede', '$vorname', '$nachname', ";
 		$insertString .= "'$strasse', '$hausnummer', $plz, '$ort', '$email', ";
 		$insertString .= "'$telfestnetz', '$telmobil')";
-		
+
+		/* insert customer data */
+		$insertString = "INSERT INTO kunde (Firmenname, Anrede, Vorname, Nachname, Email, TelefonFestnetz, TelefonMobil) VALUES ('$firmenname', '$anrede', '$vorname', '$nachname', $email', '$telfestnetz', '$telmobil')";
 		$newCustomerId = DBAccess::insertQuery($insertString);
 
+		/* insert adress data */
+		$insertString = "INSERT INTO adress (id_customer, strasse, hausnr, plz, ort, zusatz, country) VALUES ($newCustomerId, '$strasse', '$hausnummer', $plz, '$ort', '$zusatz', '$country')";
+
+		/* insert ansprechpartner data */
 		if ($nachnameAnspr != "") {
 			$kdnr = $newCustomerId;
 			$insertString = "INSERT INTO ansprechpartner (Kundennummer, Vorname, Nachname,";
@@ -129,6 +137,11 @@
 			</label>
 		</p>
 		<p>
+			<label>Adresszusatz
+				<input class="dataInput" type="text" name="zusatz" autocomplete="some-unrecognised-value">
+			</label>
+		</p>
+		<p>
 			<label>Postleitzahl
 				<input class="dataInput" type="number" name="plz" autocomplete="some-unrecognised-value">
 			</label>
@@ -136,6 +149,11 @@
 		<p>
 			<label>Ort
 				<input class="dataInput" type="text" name="ort" autocomplete="some-unrecognised-value">
+			</label>
+		</p>
+		<p>
+			<label>Land
+				<input class="dataInput" type="text" name="country" autocomplete="some-unrecognised-value">
 			</label>
 		</p>
 		<p>
