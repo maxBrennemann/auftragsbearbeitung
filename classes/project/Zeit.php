@@ -49,6 +49,10 @@ class Zeit extends Posten {
         return $this->kalkulierePreis();
     }
 
+	public function bekommeDifferenz() {
+		return $this->bekommePreis();
+	}
+
     private function kalkulierePreis() {
 		$this->Kosten = $this->Stundenlohn * ($this->ZeitInMinuten / 60);
         return round((float) $this->Kosten, 2);

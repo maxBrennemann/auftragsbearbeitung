@@ -65,6 +65,13 @@ class Leistung extends Posten {
 		return $this->preis;
 	}
 
+	public function bekommeDifferenz() {
+		if ($this->ohneBerechnung == true) {
+			return 0;
+		}
+        return (float) ($this->preis - $this->einkaufspreis);
+	}
+
 	public function getOhneBerechnung() {
 		return $this->ohneBerechnung;
 	}

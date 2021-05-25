@@ -17,6 +17,7 @@ abstract class Posten {
 	
 	abstract protected function bekommePreis();
 	abstract protected function bekommeEinzelPreis();
+	abstract protected function bekommeDifferenz();
 	abstract protected function getHTMLData();
 	abstract protected function fillToArray($arr);
 	abstract protected function getDescription();

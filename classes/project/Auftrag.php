@@ -153,6 +153,14 @@ class Auftrag implements StatisticsInterface {
 		return $price;
 	}
 
+	public function gewinnBerechnen() {
+		$price = 0;
+		foreach ($this->Auftragsposten as $posten) {
+			$price += $posten->bekommeDifferenz();
+		}
+		return $price;
+	}
+
 	public function getKundennummer() {
 		return DBAccess::selectQuery("SELECT Kundennummer FROM auftrag WHERE auftragsnummer = {$this->Auftragsnummer}")[0]['Kundennummer'];
 	}
