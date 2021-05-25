@@ -68,6 +68,20 @@ class NotificationManager {
         DBAccess::insertQuery("INSERT INTO user_notifications (user_id, `initiator`, `type`, content, specific_id) VALUES ($user_id, $user, $type, '$content', $specificId)");
     }
 
+    /*
+     * calls the addNotification function in order to set a notification if the specific trigger was bound to that notification
+     */
+    public static function addNotificationCheck($user_id, $type, $content, $specificId) {
+        $query = "UPDATE user_notifications SET ischecked = 1 WHERE specific_id = $specificId";
+		DBAccess::updateQuery($query);
+
+        $query = "SELECT id FROM user_notifications WHERE specific_id = $specificId";
+        $result = DBAccess::selectQuery($query);
+
+        if (!empty($result))
+            self::addNotification($user_id, $type, $content, $specificId);
+    }
+
 }
 
 ?>

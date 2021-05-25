@@ -71,10 +71,11 @@ function startFunc() {
 			let div = document.createElement("div");
 			div.id = "showNotifications";
 			let h3 = document.createElement("h3");
-			h3.innerText = "Benachrichtigungen";
+			h3.innerText = "Benachrichtigungen und Aufgaben";
 			div.appendChild(h3);
 			document.body.appendChild(div);
 			addActionButtonForDiv(div, "hide");
+			centerAbsoluteElement(div);
 
 			var getHTMLContent = new AjaxCall(`getReason=notification`, "POST", window.location.href);
 			getHTMLContent.makeAjaxCall(function (response, args) {
