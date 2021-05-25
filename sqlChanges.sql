@@ -233,3 +233,18 @@ ALTER TABLE `user_notifications` ADD `initiator` INT NOT NULL AFTER `user_id`;
 
 /* Änderungen 22.05.2021 */
 ALTER TABLE `notizen` CHANGE `Nummer` `Nummer` INT(11) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`Nummer`);
+
+/* Änderungen 25.05.2021 */
+ALTER TABLE `leistung_posten` CHANGE `Beschreibung` `Beschreibung` TEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
+ALTER TABLE auftragsmanager.adress DROP FOREIGN KEY `adress_ibfk_1`;
+INSERT INTO adress (strasse, hausnr, plz, ort, id_customer, country, art) SELECT Straße, Hausnummer, Postleitzahl, Ort, Kundennummer, "DE", 1 FROM kunde;
+ALTER TABLE `kunde` ADD `id_adress_primary` INT NOT NULL AFTER `Website`;
+ALTER TABLE auftragsmanager.kunde_extended DROP FOREIGN KEY `kunde_extended_ibfk_1`;
+ALTER TABLE kunde 
+  DROP COLUMN Straße, 
+  DROP COLUMN Hausnummer, 
+  DROP COLUMN Postleitzahl, 
+  DROP COLUMN Ort;
+UPDATE kunde, adress
+  SET id_adress_primary = adress.id
+  WHERE kunde.Kundennummer = adress.id_customer;
