@@ -136,7 +136,14 @@ if ($auftragsId == -1) : ?>
 		<span><u>Posten:</u><br><span id="auftragsPostenTable"><?=$auftrag->getAuftragspostenAsTable()?></span></span>
 	</div>
 	<div class="defCont preis">
-		<span><u>Gesamtpreis:</u><br><span id="gesamtpreis"><?=number_format($auftrag->preisBerechnen(), 2, ',', '') . "€"?></span></span>
+		<u>Gesamtpreis:</u>
+		<br>
+		<span id="gesamtpreis">
+			<?=number_format($auftrag->preisBerechnen(), 2, ',', '') . "€"?>
+		</span>
+		<span>
+			<?=number_format($auftrag->gewinnBerechnen(), 2, ',', '') . "€"?> (Gewinn)
+		</span>
 	</div>
 	<div class="defCont fahrzeuge">
 		<?php if ($auftragstyp == 0): ?>

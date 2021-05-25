@@ -1,4 +1,8 @@
 <div class="changelog">
+    <h3>1.1.10</h3>
+    <ul>
+        <li>Neben dem Gesamtpreis wird nun der geschätzte Gewinn angezeigt</li>>
+    </ul>
     <h3>1.1.9</h3>
     <ul>
         <li>Erste Überarbeitung des NotificationManagers - Benachrichtigungen werden nun auch wieder entfernt</li>

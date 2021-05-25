@@ -62,6 +62,13 @@ class ProduktPosten extends Posten {
 		return $this->Preis;
 	}
 	
+	public function bekommeDifferenz() {
+		if ($this->ohneBerechnung == true) {
+			return 0;
+		}
+        return (float) $this->Preis * $this->Anzahl - $this->Einkaufspreis * $this->Anzahl;
+	}
+
 	public function getDescription() {
 		return $this->Beschreibung;
 	}
