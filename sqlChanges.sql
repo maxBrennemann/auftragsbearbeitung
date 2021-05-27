@@ -248,3 +248,6 @@ ALTER TABLE kunde
 UPDATE kunde, adress
   SET id_adress_primary = adress.id
   WHERE kunde.Kundennummer = adress.id_customer;
+
+/* Änderungen 27.05.2021 */
+ALTER TABLE `posten` ADD `discount` INT NOT NULL AFTER `ohneBerechnung`;

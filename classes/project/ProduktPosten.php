@@ -12,6 +12,7 @@ class ProduktPosten extends Posten {
     
     private $Preis = 0.0;
 	private $Einkaufspreis = 0.0;
+	private $discount = -1;
     private $Bezeichnung = null;
 	private $Beschreibung = null;
 	private $Anzahl = 0;
@@ -19,13 +20,17 @@ class ProduktPosten extends Posten {
 	protected $postenTyp = "produkt";
 	protected $ohneBerechnung = false;
 
-	function __construct($Preis, $Bezeichnung, $Beschreibung, $Anzahl, $Einkaufspreis, $Marke) {
+	function __construct($Preis, $Bezeichnung, $Beschreibung, $Anzahl, $Einkaufspreis, $Marke, $discount) {
 		$this->Preis = $Preis;
 		$this->Einkaufspreis = $Einkaufspreis;
 		$this->Bezeichnung = $Bezeichnung;
 		$this->Beschreibung = $Beschreibung;
 		$this->Anzahl = $Anzahl;
 		$this->Marke = $Marke;
+
+		if ($discount != 0 && $discount > 0 && $discount <= 100) {
+			$this->discount = $discount;
+		}
 	}
 
 	public function getHTMLData() {
@@ -35,13 +40,37 @@ class ProduktPosten extends Posten {
 	}
 
 	public function fillToArray($arr) {
-		$arr['Preis'] = $this->bekommePreis();
+		$arr['Preis'] = $this->bekommePreisTabelle();
 		$arr['Bezeichnung'] = $this->Bezeichnung;
 		$arr['Beschreibung'] = $this->Beschreibung;
 		$arr['Anzahl'] = $this->Anzahl;
 		$arr['Einkaufspreis'] = $this->Einkaufspreis;
 
 		return $arr;
+	}
+
+	/* returns the price if no discount is applied, else calculates the discount and returns the according table */
+	private function bekommePreisTabelle() {
+		if ($this->discount != -1) {
+			$discountedPrice = number_format($this->bekommePreis(), 2, ',', '') . "€";
+			$regularPrice = number_format($this->bekommePreis() + $this->calculateDiscount(), 2, ',', '') . "€";
+			$discount_table = "
+				<table class=\"innerTable\">
+					<tr>
+						<td>Preis</td>
+						<td>{$regularPrice}</td>
+						<td>{$discountedPrice}</td>
+					</tr>
+					<tr>
+						<td>Rabatt</td>
+						<td colspan=\"2\">{$this->discount}%</td>
+					</tr>
+				</table>";
+			
+			return $discount_table;
+		} else {
+			return number_format($this->bekommePreis(), 2, ',', '') . "€";
+		}
 	}
 
 	public function storeToDB($auftragsNr) {
@@ -51,11 +80,12 @@ class ProduktPosten extends Posten {
 		Posten::insertPosten("produkt", $data);
 	}
 
+	/* includes discount */
     public function bekommePreis() {
 		if ($this->ohneBerechnung == true) {
 			return 0;
 		}
-        return (float) $this->Preis * $this->Anzahl;
+        return (float) $this->Preis * $this->Anzahl - $this->calculateDiscount();
 	}
 
 	public function bekommeEinzelPreis() {
@@ -67,6 +97,10 @@ class ProduktPosten extends Posten {
 			return 0;
 		}
         return (float) $this->Preis * $this->Anzahl - $this->Einkaufspreis * $this->Anzahl;
+	}
+
+	public function calculateDiscount() {
+		return (float) ($this->Preis * $this->Anzahl - $this->Preis * $this->Anzahl * $this->discount);
 	}
 
 	public function getDescription() {
