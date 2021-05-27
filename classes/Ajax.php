@@ -119,6 +119,7 @@ class Ajax {
 				$data['Beschreibung'] = $_POST['descr'];
 				$data['Auftragsnummer'] = $_POST['auftrag'];
 				$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
+				$data['discount'] = (int) $_POST['discount'];
 				Posten::insertPosten("zeit", $data);
 				echo (new Auftrag($_POST['auftrag']))->preisBerechnen();
 			break;
@@ -145,6 +146,7 @@ class Ajax {
 				$data['beschreibung'] = $_POST['beschreibung'];
 				$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
 				$data['Auftragsnummer'] = (int) $_POST['auftrag'];
+				$data['discount'] = (int) $_POST['discount'];
 				Posten::insertPosten("compact", $data);
 				echo (new Auftrag($_POST['auftrag']))->preisBerechnen();
 			break;
@@ -185,6 +187,7 @@ class Ajax {
 				$data['SpeziefischerPreis'] = str_replace(",", ".", $_POST['pre']);
 				$data['Auftragsnummer'] = $_POST['auftrag'];
 				$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
+				$data['discount'] = (int) $_POST['discount'];
 				Posten::insertPosten("leistung", $data);
 				echo (new Auftrag($_POST['auftrag']))->preisBerechnen();
 			break;

@@ -61,15 +61,21 @@ function getSelections() {
     }
 
     document.getElementById("showOhneBerechnung").style.display = "inline";
+    document.getElementById("showDiscount").style.display = "inline";
 }
 
 function addTime() {
-    var time = document.getElementById("time").value;
-    var wage = document.getElementById("wage").value;
-    var descr = document.getElementById("descr").value;
-    var isFree = getOhneBerechnung() ? 1 : 0;
+    let params = {
+        getReason: "insTime",
+        time: document.getElementById("time").value,
+        wage: document.getElementById("wage").value,
+        auftrag: globalData.auftragsId,
+        descr: document.getElementById("descr").value,
+        ohneBerechnung: getOhneBerechnung() ? 1 : 0,
+        discount: document.getElementById("showDiscount").children[0].value
+    };
 
-    var add = new AjaxCall(`getReason=insTime&time=${time}&wage=${wage}&descr=${descr}&auftrag=${globalData.auftragsId}&ohneBerechnung=${isFree}`, "POST", window.location.href);
+    var add = new AjaxCall(params, "POST", window.location.href);
     add.makeAjaxCall(function (response) {
         updatePrice(response);
         reloadPostenListe();
@@ -78,13 +84,19 @@ function addTime() {
 
 function addLeistung() {
     var e = document.getElementById("selectLeistung");
-    var lei = e.options[e.selectedIndex].value;
-    var bes = document.getElementById("bes").value;
-    var ekp = document.getElementById("ekp").value;
-    var pre = document.getElementById("pre").value;
-    var isFree = getOhneBerechnung() ? 1 : 0;
 
-    var add = new AjaxCall(`getReason=insertLeistung&lei=${lei}&bes=${bes}&ekp=${ekp}&pre=${pre}&auftrag=${globalData.auftragsId}&ohneBerechnung=${isFree}`, "POST", window.location.href);
+    let params = {
+        getReason: "insertLeistung",
+        lei: e.options[e.selectedIndex].value,
+        bes: document.getElementById("bes").value,
+        ekp: document.getElementById("ekp").value,
+        pre: document.getElementById("pre").value,
+        auftrag: globalData.auftragsId,
+        ohneBerechnung: getOhneBerechnung() ? 1 : 0,
+        discount: document.getElementById("showDiscount").children[0].value
+    };
+
+    var add = new AjaxCall(params, "POST", window.location.href);
     add.makeAjaxCall(function (response) {
         updatePrice(response);
         reloadPostenListe();
@@ -92,15 +104,20 @@ function addLeistung() {
 }
 
 function addProductCompact() {
-    var menge = document.getElementById("posten_produkt_menge").value;
-    var marke = document.getElementById("posten_produkt_marke").value;
-    var ekpreis = document.getElementById("posten_produkt_ek").value;
-    var vkpreis = document.getElementById("posten_produkt_vk").value;
-    var name = document.getElementById("posten_produkt_name").value;
-    var beschreibung = document.getElementById("posten_produkt_besch").value;
-    var isFree = getOhneBerechnung() ? 1 : 0;
+    let params = {
+        getReason: "insertProductCompact",
+        menge: document.getElementById("posten_produkt_menge").value,
+        marke: document.getElementById("posten_produkt_marke").value,
+        ekpreis: document.getElementById("posten_produkt_ek").value,
+        vkpreis: document.getElementById("posten_produkt_vk").value,
+        name: document.getElementById("posten_produkt_name").value,
+        beschreibung: document.getElementById("posten_produkt_besch").value,
+        auftrag: globalData.auftragsId,
+        ohneBerechnung: getOhneBerechnung() ? 1 : 0,
+        discount: document.getElementById("showDiscount").children[0].value
+    };
 
-    var add = new AjaxCall(`getReason=insertProductCompact&auftrag=${globalData.auftragsId}&menge=${menge}&marke=${marke}&ekpreis=${ekpreis}&vkpreis=${vkpreis}&name=${name}&beschreibung=${beschreibung}&ohneBerechnung=${isFree}`, "POST", window.location.href);
+    var add = new AjaxCall(params, "POST", window.location.href);
     add.makeAjaxCall(function (response) {
         console.log(response);
         reloadPostenListe();

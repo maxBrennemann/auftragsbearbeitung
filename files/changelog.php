@@ -2,6 +2,7 @@
     <h3>1.1.10</h3>
     <ul>
         <li>Neben dem Gesamtpreis wird nun der geschätzte Gewinn angezeigt</li>>
+        <li>Rabatte für Posten implementiert</li>>
     </ul>
     <h3>1.1.9</h3>
     <ul>

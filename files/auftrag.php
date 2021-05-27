@@ -224,6 +224,8 @@ if ($auftragsId == -1) : ?>
 				<button onclick="addProductCompact()">Hinzufügen</button>
 			</div>
 			<span id="showOhneBerechnung" style="display: none;"><input id="ohneBerechnung" type="checkbox">Ohne Berechnung</span>
+			<br>
+			<span id="showDiscount" style="display: none;"><input type="range" min="0" max="100" value="10" oninput="event.target.nextSibling.innerText = this.value + '%';"><span id="showDiscoundValue">10%</span> Rabatt</span>
 		</div>
 		<div id="generalPosten"></div>
 	</div>
