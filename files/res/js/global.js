@@ -250,11 +250,11 @@ AjaxCall.prototype.setUrl = function(url) {
 }
 
 AjaxCall.prototype.makeAjaxCall = function(dataCallback, ...args) {
-	if(this.paramString == null) {
+	if (this.paramString == null) {
 		console.warn("AjaxCall: no parameters given");
 	}
 	
-	if(this.type == "POST") {
+	if (this.type == "POST") {
 		var ajaxCall = new XMLHttpRequest();
 		ajaxCall.onreadystatechange = function() {
 			if(this.readyState == 4 && this.status == 200) {
@@ -264,10 +264,10 @@ AjaxCall.prototype.makeAjaxCall = function(dataCallback, ...args) {
 		ajaxCall.open(this.type, this.url, true);
 		ajaxCall.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		ajaxCall.send(this.paramString);
-	} else if(this.type == "GET") {
+	} else if (this.type == "GET") {
 		var ajaxCall = new XMLHttpRequest();
 		ajaxCall.onreadystatechange = function() {
-			if(this.readyState == 4 && this.status == 200) {
+			if (this.readyState == 4 && this.status == 200) {
 				dataCallback(this.responseText, args);
 			}
 		}
@@ -276,6 +276,41 @@ AjaxCall.prototype.makeAjaxCall = function(dataCallback, ...args) {
 	} else {
 		console.error("AjaxCall: Ajax Type not defined");
 	}
+}
+
+async function makeAsyncCall(type, params, location) {
+	return new Promise((resolve, reject) => {
+		if (params == null) {
+			console.warn("AjaxCall: no parameters given");
+		}
+		
+		if (type == "POST") {
+			var ajaxCall = new XMLHttpRequest();
+			ajaxCall.onload  = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					resolve(this.responseText);
+				} else {
+					reject();
+				}
+			}
+			ajaxCall.open("POST",  location, true);
+			ajaxCall.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			ajaxCall.send(params);
+		} else if (type == "GET") {
+			var ajaxCall = new XMLHttpRequest();
+			ajaxCall.onload = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					resolve(this.responseText);
+				} else {
+					reject();
+				}
+			}
+			ajaxCall.open("GET", location + params, true);
+			ajaxCall.send();
+		} else {
+			console.error("AjaxCall: Ajax Type not defined");
+		}
+	});
 }
 
 /* submit button onenter */

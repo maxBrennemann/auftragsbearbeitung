@@ -39,7 +39,8 @@ class Zeit extends Posten {
 	public function fillToArray($arr) {
 		$arr['Preis'] = $this->bekommePreisTabelle();
 		$arr['Stundenlohn'] = number_format($this->Stundenlohn, 2, ',', '') . "€";
-		$arr['Zeit in Minuten'] = $this->ZeitInMinuten . "min";
+		$arr['Anzahl'] = $this->ZeitInMinuten;
+		$arr['MEH'] =  "min";
 		$arr['Beschreibung'] = $this->beschreibung;
 		$arr['Einkaufspreis'] = "-";
 

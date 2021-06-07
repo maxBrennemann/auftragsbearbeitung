@@ -20,7 +20,10 @@ class Leistung extends Posten {
 	protected $postenTyp = "leistung";
 	protected $ohneBerechnung = false;
 
-	function __construct($leistungsnummer, $beschreibung, $speziefischerPreis, $einkaufspreis, $discount) {
+	private $quantity;
+	private $meh;
+
+	function __construct($leistungsnummer, $beschreibung, $speziefischerPreis, $einkaufspreis, $quantity, $meh, $discount) {
 		$this->beschreibung = $beschreibung;
 		$this->preis =$speziefischerPreis;
 		$this->einkaufspreis = $einkaufspreis;
@@ -36,6 +39,9 @@ class Leistung extends Posten {
 		if ($discount != 0 && $discount > 0 && $discount <= 100) {
 			$this->discount = $discount;
 		}
+
+		$this->quantity = $quantity;
+		$this->meh = $meh;
 	}
 
 	public function getHTMLData() {
@@ -48,6 +54,8 @@ class Leistung extends Posten {
 		$arr['Beschreibung'] = $this->beschreibung;
 		$arr['Einkaufspreis'] = number_format($this->einkaufspreis, 2, ',', '') . "€";
 		$arr['Leistungsnummer'] = $this->leistungsnummer;
+		$arr['Anzahl'] = $this->quantity;
+		$arr['MEH'] = $this->meh;
 
 		return $arr;
 	}
@@ -119,7 +127,7 @@ class Leistung extends Posten {
 	}
 
 	public function getEinheit() {
-		return "/";
+		return $this->meh;
 	}
 
 	public static function bearbeitungsschritteHinzufuegen($leistungsnummer, $auftragsnummer) {

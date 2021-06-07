@@ -91,6 +91,8 @@ function addLeistung() {
         bes: document.getElementById("bes").value,
         ekp: document.getElementById("ekp").value,
         pre: document.getElementById("pre").value,
+        meh: document.getElementById("meh").value,
+        anz: document.getElementById("anz").value,
         auftrag: globalData.auftragsId,
         ohneBerechnung: getOhneBerechnung() ? 1 : 0,
         discount: document.getElementById("showDiscount").children[0].value
@@ -245,6 +247,26 @@ function addNote() {
     add.makeAjaxCall(function (response) {
         document.getElementById("noteContainer").innerHTML = response;
     }.bind(this), false);
+}
+
+/* changes the contact */
+async function changeContact() {
+    var div = document.createElement("div");
+
+    var kdnr = document.getElementById("kundennummer").innerHTML;
+    var response = await makeAsyncCall("POST", `getReason=getAnspr&id=${kdnr}`, window.location.href)
+        .then(function (response) {
+            return response;
+        })
+        .catch(function (err) {
+            console.error('Augh, there was an error!', err);
+    });
+
+    div.innerHTML = response;
+    document.body.appendChild(div);
+
+    addActionButtonForDiv(div, "hide");
+    centerAbsoluteElement(div);
 }
 
 function performSearch(e) {
