@@ -251,3 +251,5 @@ UPDATE kunde, adress
 
 /* Änderungen 27.05.2021 */
 ALTER TABLE `posten` ADD `discount` INT NOT NULL AFTER `ohneBerechnung`;
+ALTER TABLE `leistung_posten` ADD `meh` VARCHAR(64) NOT NULL AFTER `SpeziefischerPreis`, ADD `qty` INT NOT NULL AFTER `meh`;
+ALTER TABLE `leistung_posten` CHANGE `qty` `qty` VARCHAR(64) NOT NULL;

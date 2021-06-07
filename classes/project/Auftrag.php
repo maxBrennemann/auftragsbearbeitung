@@ -71,6 +71,14 @@ class Auftrag implements StatisticsInterface {
 		}
 	}
 
+	public function bekommeAnsprechpartner() {
+		$data = DBAccess::selectQuery("SELECT Vorname, Nachname, Email, Durchwahl, Mobiltelefonnummer FROM ansprechpartner, auftrag WHERE auftrag.Ansprechpartner = ansprechpartner.Nummer AND auftrag.Auftragsnummer = {$this->Auftragsnummer}");
+		if (empty($data)) {
+			return -1;
+		}
+		return $data[0];
+	}
+
 	public function getBearbeitungsschritte() {
 		$htmlData = "";
 		foreach ($this->Bearbeitungsschritte as $schritt) {
@@ -166,11 +174,9 @@ class Auftrag implements StatisticsInterface {
 	}
 
 	public function getAuftragspostenAsTable() {
-		$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Beschreibung"), 
-				2 => array("COLUMN_NAME" => "Stundenlohn"), 3 => array("COLUMN_NAME" => "Zeit in Minuten"), 4 => array("COLUMN_NAME" => "Preis"), 
-				5 => array("COLUMN_NAME" => "Anzahl"), 6 => array("COLUMN_NAME" => "Einkaufspreis"));
+		$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Beschreibung"), 2 => array("COLUMN_NAME" => "Stundenlohn"), 3 => array("COLUMN_NAME" => "Anzahl"), 4 => array("COLUMN_NAME" => "MEH"), 5 => array("COLUMN_NAME" => "Preis"), 6 => array("COLUMN_NAME" => "Einkaufspreis"));
 
-		$subArr = array("Bezeichnung" => "", "Beschreibung" => "", "Stundenlohn" => "", "Zeit in Minuten" => "", "Preis" => "", "Anzahl" => "", "Einkaufspreis" => "");
+		$subArr = array("Bezeichnung" => "", "Beschreibung" => "", "Stundenlohn" => "", "MEH" => "", "Preis" => "", "Anzahl" => "", "Einkaufspreis" => "");
 		$data = array(sizeof($this->Auftragsposten));
 
 		if (sizeof($this->Auftragsposten) == 0) {

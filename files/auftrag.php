@@ -33,6 +33,7 @@
 			$auftragsverlauf = (new Auftragsverlauf($auftragsId))->representHistoryAsHTML();
 			$showLists = Liste::chooseList();
 			$showAttachedLists = $auftrag->showAttachedLists();
+			$ansprechpartner = $auftrag->bekommeAnsprechpartner();
 		} catch (Exception $e) {
 			echo $e->getMessage();
 			$auftragsId = -1;
@@ -57,10 +58,10 @@
 
 	$mitarbeiter = DBAccess::selectQuery("SELECT Vorname, Nachname, id FROM mitarbeiter");
 
-if ($auftragsId == -1) : ?>
+if ($auftragsId == -1): ?>
 	<input type="number" min="1" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value;">
 	<a href="#" id="auftragsLink">Auftrag anzeigen</a>
-<?php elseif ($auftrag->istRechnungGestellt() && $show == false) : ?>
+<?php elseif ($auftrag->istRechnungGestellt() && $show == false): ?>
 	<p>Auftrag <?=$auftrag->getAuftragsnummer()?> wurde abgeschlossen. Rechnungsnummer: <span id="rechnungsnummer"><?=$auftrag->getRechnungsnummer()?></span></p>
 	<button onclick="print('rechnungsnummer', 'Rechnung');">Rechnungsblatt anzeigen</button>
 	<button onclick="showAuftrag()">Auftrag anzeigen</button>
@@ -71,8 +72,13 @@ if ($auftragsId == -1) : ?>
 	<a href="<?=$invoiceLink?>">Zur Rechnung</a>
 <?php else: ?>
 	<aside class="defCont">
-		<?=$kunde->getVorname()?> <?=$kunde->getNachname()?><br><?=$kunde->getFirmenname()?><br>Adresse: <br><?=$kunde->getStrasse()?> <?=$kunde->getHausnummer()?><br>
-		<?=$kunde->getPostleitzahl()?> <?=$kunde->getOrt()?><br><a href="mailto:<?=$kunde->getEmail()?>"><?=$kunde->getEmail()?></a><br>
+		<?=$kunde->getVorname()?> <?=$kunde->getNachname()?><br>
+		<?=$kunde->getFirmenname()?><br>
+		Adresse: <br>
+		<?=$kunde->getStrasse()?> <?=$kunde->getHausnummer()?><br>
+		<?=$kunde->getPostleitzahl()?> <?=$kunde->getOrt()?><br>
+		<a href="mailto:<?=$kunde->getEmail()?>"><?=$kunde->getEmail()?></a><br>
+		<?php if ($ansprechpartner != -1): ?>Ansprechpartner: <?=$ansprechpartner['Vorname']?> <?=$ansprechpartner['Nachname']?><button class="actionButton" onclick="changeContact()">✎</button><?php endif;?><br>
 		<a href="<?=Link::getPageLink("kunde")?>?id=<?=$auftrag->getKundennummer()?>">Kunde <span id="kundennummer"><?=$auftrag->getKundennummer()?></span> zeigen</a>
 	</aside>
 	<div class="defCont auftragsinfo">
@@ -211,6 +217,8 @@ if ($auftragsId == -1) : ?>
 					<span>Beschreibung:<br><input id="bes"></span><br>
 					<span>Einkaufspreis:<br><input id="ekp" value="0"></span><br>
 					<span>Speziefischer Preis:<br><input id="pre" value="0"></span><br>
+					<span>Anzahl:<br><input id="anz" value="1"></span><br>
+					<span>Mengeneinheit:<br><input id="meh"></span><br>
 					<button onclick="addLeistung()">Hinzufügen</button>
 				</div>
 			</div>
@@ -225,7 +233,7 @@ if ($auftragsId == -1) : ?>
 			</div>
 			<span id="showOhneBerechnung" style="display: none;"><input id="ohneBerechnung" type="checkbox">Ohne Berechnung</span>
 			<br>
-			<span id="showDiscount" style="display: none;"><input type="range" min="0" max="100" value="10" oninput="event.target.nextSibling.innerText = this.value + '%';"><span id="showDiscoundValue">10%</span> Rabatt</span>
+			<span id="showDiscount" style="display: none;"><input type="range" min="0" max="100" value="0" oninput="event.target.nextSibling.innerText = this.value + '%';"><span id="showDiscoundValue">0%</span> Rabatt</span>
 		</div>
 		<div id="generalPosten"></div>
 	</div>
