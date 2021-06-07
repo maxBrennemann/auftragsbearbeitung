@@ -166,6 +166,21 @@ class Ajax {
 				$ansprechpartner = $table->createTableByData($data, $column_names);
 				echo $ansprechpartner;
 			break;
+			case "getAnspr":
+				$kdnr = (int) $_POST['id'];
+				$data = DBAccess::selectQuery("SELECT Vorname, Nachname, Email FROM ansprechpartner WHERE Kundennummer = $kdnr");
+
+				$data_html = "";
+				foreach ($data as $line) {
+					$v = $line['Vorname'];
+					$n = $line['Nachname'];
+					$e = $line['Email'];
+					$data_html .= "<input type=\"radio\" name=\"anspr\">$v $n - $e</input><br>";
+				}
+
+				$data_html .= "<button>Änderungen speichern</button>";
+				echo $data_html;
+			break;
 			case "insertCar":
 				$kfzKenn = $_POST['kfz'];
 				$fahrzeug = $_POST['fahrzeug'];
@@ -188,6 +203,8 @@ class Ajax {
 				$data['Auftragsnummer'] = $_POST['auftrag'];
 				$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
 				$data['discount'] = (int) $_POST['discount'];
+				$data['MEH'] = $_POST['meh'];
+				$data['anzahl'] = $_POST['anz'];
 				Posten::insertPosten("leistung", $data);
 				echo (new Auftrag($_POST['auftrag']))->preisBerechnen();
 			break;
