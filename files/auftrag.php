@@ -1,5 +1,6 @@
 <?php
 	require_once('classes/project/Auftrag.php');
+	require_once('classes/project/Search.php');
 	require_once('classes/project/Rechnung.php');
 	require_once('classes/project/FormGenerator.php');
 	require_once('classes/project/Auftragsverlauf.php');

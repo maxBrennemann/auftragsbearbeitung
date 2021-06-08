@@ -15,6 +15,9 @@ class Search {
 		ClientSocket::writeMessage($insertQuery, true);
 	}
 	
+	/*
+	 * returns a table with the search results
+	 */
 	public static function getSearchTable($searchQuery, $searchType, $retUrl = null, $getShortSummary = false) {
 		$ids = array();
 		$query = "";
@@ -24,12 +27,17 @@ class Search {
 				$ids = self::searchInCustomers($searchQuery);
 				$query = "SELECT * FROM kunde WHERE Kundennummer = ";
 				$columnNames = DBAccess::selectColumnNames($searchType);
-				break;
+			break;
 			case "produkt":
 				$ids = self::searchInProducts($searchQuery);
 				$query = "SELECT * FROM produkt WHERE Nummer = ";
 				$columnNames = DBAccess::selectColumnNames($searchType);
-				break;
+			break;
+			case "order":
+				$ids = self::searchInOrders($searchQuery);
+				$query = "SELECT * FROM auftrag WHERE Auftragsnummer = ";
+				$columnNames = DBAccess::selectColumnNames($searchType);
+			break;
 		}
 		$data = array();
 
@@ -42,7 +50,7 @@ class Search {
 						$data .= (new Kunde($id[0]))->getHTMLShortSummary();
 					}
 					return $data;
-					break;
+				break;
 				case "produkt":
 					$data = "";
 					$ids = array_reverse($ids);
@@ -55,7 +63,19 @@ class Search {
 					}
 
 					return $data;
-					break;
+				break;
+				case "order":
+					$data = "";
+					$ids = array_reverse($ids);
+					$data = Auftrag::getAuftragsListe($ids);
+
+					//var_dump($ids);
+					if (empty($data)) {
+						$data = "<span>Keine Ergebnisse!</span>";
+					}
+
+					return $data;
+				break;
 			}
 		}
 
@@ -72,6 +92,9 @@ class Search {
 		return $f->createTableByData($data, $columnNames);
 	}
 
+	/*
+	 * searches in customer data
+	 */
 	private static function searchInCustomers($searchQuery) {
 		$query = "SELECT Kundennummer, Vorname, Nachname, Firmenname FROM kunde WHERE Vorname LIKE '%$searchQuery%' OR Nachname LIKE '%$searchQuery%' OR Firmenname LIKE '%$searchQuery%'";
 		$kunden = DBAccess::selectQuery($query);
@@ -88,6 +111,9 @@ class Search {
 		return array_slice($mostSimilar, 0, 10);
 	}
 
+	/*
+	 * searches in product data
+	 */
 	private static function searchInProducts($searchQuery) {
 		$products = DBAccess::selectQuery("SELECT Nummer, Bezeichnung, Beschreibung FROM produkt");
 		$mostSimilar = array();
@@ -103,6 +129,28 @@ class Search {
 		return array_slice($mostSimilar, 0, 10);
 	}
 
+	/*
+	 * searches in order data
+	 */
+	private static function searchInOrders($searchQuery) {
+		$orders = DBAccess::selectQuery("SELECT auftrag.Auftragsnummer AS Nummer, Auftragsbezeichnung, Auftragsbeschreibung, GROUP_CONCAT(Bezeichnung SEPARATOR ', ') AS Schritte FROM auftrag, schritte WHERE auftrag.Auftragsnummer = schritte.Auftragsnummer GROUP BY auftrag.Auftragsnummer");
+		$mostSimilar = array();
+
+		foreach ($orders as $order) {
+			self::calculateSimilarity($mostSimilar, $searchQuery, $order['Auftragsbezeichnung'], $order['Nummer']);
+			self::calculateSimilarity($mostSimilar, $searchQuery, $order['Auftragsbeschreibung'], $order['Nummer']);
+			self::calculateSimilarity($mostSimilar, $searchQuery, $order['Schritte'], $order['Nummer']);
+		}
+
+		self::sortByPercentage($mostSimilar);
+		$mostSimilar = self::filterByPercentage($mostSimilar);
+
+		return array_slice($mostSimilar, 0, 10);
+	}
+
+	/*
+	 * sorts results by similiarity
+	 */
 	private static function sortByPercentage(&$mostSimilar) {
 		function cmp($a, $b) {
 			return ($a[1] < $b[1]) ? -1 : (($a[1] > $b[1]) ? 1 : 0);
