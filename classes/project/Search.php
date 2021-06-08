@@ -67,7 +67,7 @@ class Search {
 				case "order":
 					$data = "";
 					$ids = array_reverse($ids);
-					$data = Auftrag::getAuftragsListe($ids);
+					$data = Auftrag::getAuftragsListe($ids, 0);
 
 					//var_dump($ids);
 					if (empty($data)) {
