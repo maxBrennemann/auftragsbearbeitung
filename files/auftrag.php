@@ -1,44 +1,52 @@
 <?php
-	require_once('classes/project/Auftrag.php');
-	require_once('classes/project/Search.php');
-	require_once('classes/project/Rechnung.php');
-	require_once('classes/project/FormGenerator.php');
-	require_once('classes/project/Auftragsverlauf.php');
-	require_once('classes/project/Fahrzeug.php');
-	require_once('classes/project/Kunde.php');
-	require_once('classes/DBAccess.php');
-	require_once('classes/Upload.php');
-	require_once('classes/project/Liste.php');
-	require_once('classes/project/Table.php');
+require_once('classes/project/Auftrag.php');
+require_once('classes/project/Search.php');
+require_once('classes/project/Rechnung.php');
+require_once('classes/project/FormGenerator.php');
+require_once('classes/project/Auftragsverlauf.php');
+require_once('classes/project/Fahrzeug.php');
+require_once('classes/project/Kunde.php');
+require_once('classes/DBAccess.php');
+require_once('classes/Upload.php');
+require_once('classes/project/Liste.php');
+require_once('classes/project/Table.php');
 
 	$auftragsId = -1;
 	$auftragAnzeigen = Link::getPageLink("auftrag");
 	$show = false;
+	$searchTable = "";
+
 	if (isset($_GET['id'])) {
-		$auftragsId = $_GET['id'];
-		try {
+		$auftragsId = (int) $_GET['id'];
+		if ($auftragsId > 0) {
 			$auftrag = new Auftrag($auftragsId);
 			$fahrzeugTable = $auftrag->getFahrzeuge();
 			$farbTable = $auftrag->getFarben();
 			$kunde = new Kunde($auftrag->getKundennummer());
 
 			/* Parameter werden nur gebraucht, falls der Auftrag existiert */
-			$auftragstyp = $auftrag->getAuftragstyp();
-			if ($auftragstyp == 0) {
-				$fahrzeuge = Fahrzeug::getSelection($auftrag->getKundennummer());
-				$fahrzeugeAuftrag = $auftrag != null ? $auftrag->getLinkedVehicles() : null;
+			if ($auftrag != null) {
+				$auftragstyp = $auftrag->getAuftragstyp();
+				if ($auftragstyp == 0) {
+					$fahrzeuge = Fahrzeug::getSelection($auftrag->getKundennummer());
+					$fahrzeugeAuftrag = $auftrag != null ? $auftrag->getLinkedVehicles() : null;
+				}
+				
+				$leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
+				$showFiles = Upload::getFilesAuftrag($auftragsId);
+				$auftragsverlauf = (new Auftragsverlauf($auftragsId))->representHistoryAsHTML();
+				$showLists = Liste::chooseList();
+				$showAttachedLists = $auftrag->showAttachedLists();
+				$ansprechpartner = $auftrag->bekommeAnsprechpartner();
 			}
-			
-			$leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
-			$showFiles = Upload::getFilesAuftrag($auftragsId);
-			$auftragsverlauf = (new Auftragsverlauf($auftragsId))->representHistoryAsHTML();
-			$showLists = Liste::chooseList();
-			$showAttachedLists = $auftrag->showAttachedLists();
-			$ansprechpartner = $auftrag->bekommeAnsprechpartner();
-		} catch (Exception $e) {
-			echo $e->getMessage();
+		} else {
 			$auftragsId = -1;
 		}
+	}
+
+	if (isset($_GET['query'])) {
+		$query = $_GET['query'];
+		$searchTable = Search::getSearchTable($query, "order", null, true);
 	}
 
 	if (isset($_POST['filesubmitbtnV'])) {
@@ -53,15 +61,21 @@
 		$show = true;
 	}
 
-	if ($auftragstyp == 0) {
-		//$data =
-	}
-
 	$mitarbeiter = DBAccess::selectQuery("SELECT Vorname, Nachname, id FROM mitarbeiter");
 
 if ($auftragsId == -1): ?>
+	<style>
+		main {
+			display: inline; /* quick fix */
+		}
+	</style>
 	<input type="number" min="1" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value;">
 	<a href="#" id="auftragsLink">Auftrag anzeigen</a>
+	<br>
+	<input type="text" oninput="document.getElementById('auftragSuche').href = '<?=$auftragAnzeigen?>?query=' + this.value;">
+	<a href="#" id="auftragSuche">Auftrag suchen</a>
+	<br><br>
+	<?=$searchTable?>
 <?php elseif ($auftrag->istRechnungGestellt() && $show == false): ?>
 	<p>Auftrag <?=$auftrag->getAuftragsnummer()?> wurde abgeschlossen. Rechnungsnummer: <span id="rechnungsnummer"><?=$auftrag->getRechnungsnummer()?></span></p>
 	<button onclick="print('rechnungsnummer', 'Rechnung');">Rechnungsblatt anzeigen</button>

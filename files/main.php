@@ -46,7 +46,7 @@
 		<li><a href="<?=$neuesAngebot?>">+ Neues Angebot erstellen</a></li>
 		<li><a href="<?=$neuesProdukt?>">+ Neues Produkt erstellen</a></li>
 		<li>
-			<input id="auftragsinput" type="number" min="1" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value;">
+			<input id="auftragsinput" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value + '&query=' + this.value;">
 			<a href="#" id="auftragsLink">Auftrag anzeigen</a>
 		</li>
 		<li><a href="<?=$diagramme?>">📈 Diagramme und Auswertungen</a></li>
