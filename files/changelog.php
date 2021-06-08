@@ -1,6 +1,8 @@
 <div class="changelog">
     <h3>1.1.10</h3>
     <ul>
+        <li>Aufträge können durchsucht werden</li>
+        <li>Ansprechpartner wird nun beim Auftrag angezeigt und kann zukünftig geändert werden</li>
         <li>Neben dem Gesamtpreis wird nun der geschätzte Gewinn angezeigt</li>
         <li>Rabatte für Posten implementiert</li>
         <li>Mengeneinheiten hinzugefügt</li>
