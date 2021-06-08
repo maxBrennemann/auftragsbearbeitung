@@ -250,6 +250,38 @@ class Auftrag implements StatisticsInterface {
 		return $table;
 	}
 
+	public static function getAuftragsListe($ids) {
+		$column_names = array(0 => array("COLUMN_NAME" => "Auftragsnummer"), 1 => array("COLUMN_NAME" => "Name"),
+				2 => array("COLUMN_NAME" => "Auftragsbezeichnung"), 3 => array("COLUMN_NAME" => "Auftragsbeschreibung"), 4 => array("COLUMN_NAME" => "Datum"), 
+				5 => array("COLUMN_NAME" => "Termin"), 6 => array("COLUMN_NAME" => "Angenommen durch"));
+		
+		$query = "SELECT Auftragsnummer, IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ',";
+		$query .= " kunde.Nachname), kunde.Firmenname) as Name, Auftragsbezeichnung,";
+		$query .= " Auftragsbeschreibung, Datum, IF(auftrag.Termin = '0000-00-00', 'kein Termin', ";
+		$query .= "auftrag.Termin) AS Termin, CONCAT(mitarbeiter.Vorname, ' ', mitarbeiter.Nachname)";
+		$query .= " AS 'Angenommen durch', kunde.Kundennummer FROM auftrag LEFT JOIN kunde ON auftrag.Kundennummer =";
+		$query .= " kunde.Kundennummer LEFT JOIN mitarbeiter ON mitarbeiter.id = ";
+		$query .= "auftrag.AngenommenDurch WHERE Rechnungsnummer = 0";
+
+		$column_names = array(0 => array("COLUMN_NAME" => "Nr."), 1 => array("COLUMN_NAME" => "Datum"),
+		2 => array("COLUMN_NAME" => "Termin"), 3 => array("COLUMN_NAME" => "Kunde"), 4 => array("COLUMN_NAME" => "Auftragsbezeichnung"));
+
+		$query = "SELECT Auftragsnummer AS 'Nr.', Datum, IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) as Kunde, Auftragsbezeichnung, IF(auftrag.Termin = '0000-00-00', 'kein Termin', auftrag.Termin) AS Termin FROM auftrag LEFT JOIN kunde ON auftrag.Kundennummer = kunde.Kundennummer WHERE ";
+
+		foreach($ids as $id) {
+			$nr = $id[0]; /* must be fixed later */
+			$query .= "Auftragsnummer = $nr OR ";
+		}
+		$query = substr($query, 0, -4);
+
+		$data = DBAccess::selectQuery($query);
+		self::$offeneAuftraege = $data;
+
+		$form = new FormGenerator("auftrag", "Datum", "Rechnungsnummer = 0");
+		$table = $form->createTableByDataRowLink($data, $column_names, "auftrag", null);
+		return $table;
+	}
+
 	public function istRechnungGestellt() {
 		return $this->rechnungsnummer == 0 ? false : true;
 	}
