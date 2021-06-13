@@ -9,6 +9,7 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 require_once('Kunde.php');
 require_once('Schritt.php');
 require_once('Posten.php');
+require_once('Priority.php');
 require_once('FormGenerator.php');
 require_once('InteractiveFormGenerator.php');
 require_once('StatisticsInterface.php');
@@ -113,8 +114,12 @@ class Auftrag implements StatisticsInterface {
 
 	/* getBearbeitungsschritte with new Table class */
 	public function getOpenBearbeitungsschritteTable() {
-		$data = DBAccess::selectQuery("SELECT Schrittnummer, Bezeichnung, Datum, `Priority` FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer} AND istErledigt = 1 ORDER BY `Priority` DESC");
-		$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Datum"), 2 => array("COLUMN_NAME" => "Priority"));
+		$data = DBAccess::selectQuery("SELECT Schrittnummer, Bezeichnung, Datum, `Priority` AS Priorotät FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer} AND istErledigt = 1 ORDER BY `Priority` DESC");
+		$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Datum"), 2 => array("COLUMN_NAME" => "Priorotät"));
+
+		for($i = 0; $i < sizeof($data); $i++) {
+			$data[$i]["Priorotät"] = Priority::getPriorityLevel($data[$i]["Priorotät"]);
+		}
 
 		/* addes three buttons to table */
 		$t = new Table();
