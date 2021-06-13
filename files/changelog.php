@@ -6,6 +6,7 @@
         <li>Neben dem Gesamtpreis wird nun der geschätzte Gewinn angezeigt</li>
         <li>Rabatte für Posten implementiert</li>
         <li>Mengeneinheiten hinzugefügt</li>
+        <li>Bei der Priorität wird nun ein Text statt einer Zahl angezeigt</li>
     </ul>
     <h3>1.1.9</h3>
     <ul>
