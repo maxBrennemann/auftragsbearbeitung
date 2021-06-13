@@ -47,6 +47,11 @@ function auftragHinzufuegen() {
     var typ = document.getElementById("selectTyp");
     typ = typ.options[typ.selectedIndex].value;
 
+    if (typ == -1) {
+        alert("Auftragstyp muss gewählt werden");
+        return 0;
+    }
+
     var paramString = new URLSearchParams();
     paramString.append("bez", bez);
     paramString.append("bes", bes);
