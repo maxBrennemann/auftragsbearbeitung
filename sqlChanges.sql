@@ -253,3 +253,6 @@ UPDATE kunde, adress
 ALTER TABLE `posten` ADD `discount` INT NOT NULL AFTER `ohneBerechnung`;
 ALTER TABLE `leistung_posten` ADD `meh` VARCHAR(64) NOT NULL AFTER `SpeziefischerPreis`, ADD `qty` INT NOT NULL AFTER `meh`;
 ALTER TABLE `leistung_posten` CHANGE `qty` `qty` VARCHAR(64) NOT NULL;
+
+/* Änderungen 14.06.2021 */
+CREATE TABLE `auftragsmanager`.`info_texte` ( `id` INT NOT NULL AUTO_INCREMENT , `info` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
