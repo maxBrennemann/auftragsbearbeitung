@@ -7,6 +7,8 @@
         <li>Rabatte für Posten implementiert</li>
         <li>Mengeneinheiten hinzugefügt</li>
         <li>Bei der Priorität wird nun ein Text statt einer Zahl angezeigt</li>
+        <li>Auftragstyp muss nun festgelegt werden. Auftragstypen können in den Einstellungen angezeigt werden</li>
+        <li>Infobuttons laden nun Text aus der Datenbank</li>
     </ul>
     <h3>1.1.9</h3>
     <ul>
