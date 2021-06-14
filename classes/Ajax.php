@@ -550,7 +550,9 @@ class Ajax {
 				echo "ok";
 			break;
 			case "getInfoText":
-				echo "dies ist ein testtext";
+				$infoId = (int) $_POST['info'];
+				$infoText = DBAccess::selectQuery("SELECT info FROM info_texte WHERE id = $infoId");
+				echo $infoText[0]['info'];
 			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";

@@ -500,7 +500,7 @@ function initializeInfoBtn() {
 	Array.from(btns).forEach(function(btn) {
 		btn.addEventListener("click", function() {
 			let id = btn.dataset.info;
-			var getInfo = new AjaxCall(`getReason=getInfoText&info${id}`, "POST", window.location.href);
+			var getInfo = new AjaxCall(`getReason=getInfoText&info=${id}`, "POST", window.location.href);
 			getInfo.makeAjaxCall(function (response, args) {
 				let btn = args[0];
 				let rect = btn.getBoundingClientRect();
