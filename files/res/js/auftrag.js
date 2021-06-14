@@ -396,6 +396,16 @@ function sendColor() {
     });
 }
 
+function checkHexCode(el) {
+    if (/^[0-9a-fA-F]{6}$/.test(el.value)) {
+        el.parentNode.classList.add("validInput");
+        el.parentNode.classList.remove("invalidInput");
+        return null;
+    }
+    el.parentNode.classList.add("invalidInput");
+    el.parentNode.classList.remove("validInput");
+}
+
 function showAuftragsverlauf() {
     var container = document.createElement("div");
 }

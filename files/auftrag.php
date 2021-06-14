@@ -199,7 +199,7 @@ if ($auftragsId == -1): ?>
 		<div class="defCont" id="farbe" style="display: none">
 			<div class="innerDefCont">
 				<span>Farbname: <input class="colorInput" type="text" max="32"></span>
-				<span>Farbe (Hex): <input class="colorInput jscolor" type="text" max="32"></span>
+				<span id="hexinputspan">Farbe (Hex): <input class="colorInput jscolor" type="text" max="32" onchange="checkHexCode(this);"></span>
 				<span>Bezeichnung: <input class="colorInput" type="text" max="32"></span>
 				<span>Hersteller: <input class="colorInput" tyep="text" max="32"></span>
 				<button onclick="sendColor();">Hinuzufügen</button>

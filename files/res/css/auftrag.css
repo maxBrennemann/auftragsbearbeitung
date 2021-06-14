@@ -234,3 +234,33 @@ form[name="showSteps"] {
     border-radius: 0 6px 6px 0;
     font-size: 14.4px;
 }
+
+/* css for color input */
+#hexinputspan {
+    position: relative;
+}
+
+#hexinputspan input {
+    position: absolute;
+    right: 0;
+}
+
+.validInput::after {
+    content: "✔";
+    float: right;
+    position: relative;
+    padding-right: 10px;
+    color: green;
+}
+
+.invalidInput::after {
+    content: "☓";
+    float: right;
+    position: relative;
+    padding-right: 10px;
+    color: red;
+}
+
+#farbe span {
+    margin: 10px;
+}
