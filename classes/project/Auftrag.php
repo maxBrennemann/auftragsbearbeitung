@@ -33,6 +33,11 @@ class Auftrag implements StatisticsInterface {
 	protected $Auftragstyp = null;
 	protected $rechnungsnummer = 0;
 
+	/* dates */
+	public $datum;
+	public $termin;
+	public $fertigstellung;
+
 	private $isArchiviert = false;
 	private $isRechnung = false;
 
@@ -49,6 +54,10 @@ class Auftrag implements StatisticsInterface {
 				$this->Auftragsbezeichnung = $data[0]['Auftragsbezeichnung'];
 				$this->Auftragstyp = (int) $data[0]['Auftragstyp'];
 				$this->rechnungsnummer = $data[0]['Rechnungsnummer'];
+
+				$this->datum = $data[0]['Datum'];
+				$this->termin = $data[0]['Termin'];
+				$this->fertigstellung = $data[0]['Fertigstellung'];
 
 				if ($data[0]['archiviert'] == 0 || $data[0]['archiviert'] == "0") {
 					$this->isArchiviert = true;
