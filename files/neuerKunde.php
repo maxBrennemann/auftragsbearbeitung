@@ -39,11 +39,15 @@
 		$insertString .= "'$telfestnetz', '$telmobil')";
 
 		/* insert customer data */
-		$insertString = "INSERT INTO kunde (Firmenname, Anrede, Vorname, Nachname, Email, TelefonFestnetz, TelefonMobil) VALUES ('$firmenname', '$anrede', '$vorname', '$nachname', $email', '$telfestnetz', '$telmobil')";
+		$insertString = "INSERT INTO kunde (Firmenname, Anrede, Vorname, Nachname, Email, TelefonFestnetz, TelefonMobil) VALUES ('$firmenname', '$anrede', '$vorname', '$nachname', '$email', '$telfestnetz', '$telmobil')";
 		$newCustomerId = DBAccess::insertQuery($insertString);
 
 		/* insert adress data */
 		$insertString = "INSERT INTO adress (id_customer, strasse, hausnr, plz, ort, zusatz, country) VALUES ($newCustomerId, '$strasse', '$hausnummer', $plz, '$ort', '$zusatz', '$country')";
+		$insertID = DBAccess::insertQuery($insertString);
+
+		/* update customer data */
+		DBAccess::updateQuery("UPDATE kunde SET id_adress_primary = $insertID WHERE Kundennummer = $newCustomerId");
 
 		/* insert ansprechpartner data */
 		if ($nachnameAnspr != "") {
