@@ -318,6 +318,14 @@ function deleteRow(key, type = "schritte") {
     del.makeAjaxCall(function (response) {
         console.log(response);
     });
+
+    /* should be avoided */
+    let node = event.target;
+    while (node.nodeName != "TR") {
+        node = node.parentNode;
+    }
+
+    node.parentNode.removeChild(node);
 }
 
 function updateIsDone(key) {
