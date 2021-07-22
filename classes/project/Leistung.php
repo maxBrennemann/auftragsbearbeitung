@@ -19,6 +19,7 @@ class Leistung extends Posten {
 	private $leistungsnummer = 0;
 	protected $postenTyp = "leistung";
 	protected $ohneBerechnung = false;
+	protected $postennummer;
 
 	private $quantity;
 	private $meh;
@@ -49,6 +50,7 @@ class Leistung extends Posten {
 	}
 
 	public function fillToArray($arr) {
+		$arr['Postennummer'] = $this->postennummer;
 		$arr['Preis'] = $this->bekommePreisTabelle();
 		$arr['Bezeichnung'] = $this->bezeichnung;
 		$arr['Beschreibung'] = $this->beschreibung;

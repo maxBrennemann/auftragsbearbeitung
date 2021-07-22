@@ -15,8 +15,10 @@ class Zeit extends Posten {
 	private $Kosten = null;
 	private $discount = -1;
 	private $beschreibung = null;
+
 	protected $postenTyp = "zeit";
 	protected $ohneBerechnung = false;
+	protected $postennummer;
 
 	function __construct($Stundenlohn, $ZeitInMinuten, $beschreibung, $discount) {
 		$this->Stundenlohn = (int) $Stundenlohn;
@@ -37,6 +39,7 @@ class Zeit extends Posten {
 	}
 
 	public function fillToArray($arr) {
+		$arr['Postennummer'] = $this->postennummer;
 		$arr['Preis'] = $this->bekommePreisTabelle();
 		$arr['Stundenlohn'] = number_format($this->Stundenlohn, 2, ',', '') . "€";
 		$arr['Anzahl'] = $this->ZeitInMinuten;
