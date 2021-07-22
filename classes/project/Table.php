@@ -164,7 +164,7 @@ class Table {
     }
 
     private function addEditButton($key) {
-        $button = "<button class='actionButton' onclick=\"editRow($key)\" = 'Bearbeiten' disabled>&#x270E;</button>";
+        $button = "<button class='actionButton' onclick=\"editRow($key)\" title='Bearbeiten' disabled>&#x270E;</button>";
 		return $button;
     }
 

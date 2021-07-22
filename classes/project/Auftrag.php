@@ -126,7 +126,7 @@ class Auftrag implements StatisticsInterface {
 		$data = DBAccess::selectQuery("SELECT Schrittnummer, Bezeichnung, Datum, `Priority` AS Priorotät FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer} AND istErledigt = 1 ORDER BY `Priority` DESC");
 		$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Datum"), 2 => array("COLUMN_NAME" => "Priorotät"));
 
-		for($i = 0; $i < sizeof($data); $i++) {
+		for ($i = 0; $i < sizeof($data); $i++) {
 			$data[$i]["Priorotät"] = Priority::getPriorityLevel($data[$i]["Priorotät"]);
 		}
 
@@ -201,13 +201,24 @@ class Auftrag implements StatisticsInterface {
 			$data[$i] = $this->Auftragsposten[$i]->fillToArray($subArr);
 		}
 
-		$form = new InteractiveFormGenerator("posten");
+		/*$form = new InteractiveFormGenerator("posten");
 		$form->setRowDeletable(true);
 		$form->setRowEditable(true);
 
 		$_SESSION['postenTable'] = serialize($form);
 
-		return $form->create($data, $column_names);
+		return $form->create($data, $column_names);*/
+
+		/* addes edit and delete to table */
+		$t = new Table();
+		$t->createByData($data, $column_names);
+		$t->addActionButton("edit");
+		$t->addActionButton("delete", $identifier = "Schrittnummer");
+
+		$t->setType("posten");
+		$_SESSION["posten_table"] = serialize($t);
+
+		return $t->getTable();
 	}
 
 	public function getIsArchiviert() {

@@ -60,6 +60,10 @@ class UpdateSchedule {
         $this->values =  substr($values, 0, -2);
     }
 
+    static function handlePostenDeletion() {
+        
+    }
+
 }
 
 ?>
