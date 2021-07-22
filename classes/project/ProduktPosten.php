@@ -17,8 +17,10 @@ class ProduktPosten extends Posten {
 	private $Beschreibung = null;
 	private $Anzahl = 0;
 	private $Marke = "";
+	
 	protected $postenTyp = "produkt";
 	protected $ohneBerechnung = false;
+	protected $postennummer;
 
 	function __construct($Preis, $Bezeichnung, $Beschreibung, $Anzahl, $Einkaufspreis, $Marke, $discount) {
 		$this->Preis = $Preis;
@@ -40,6 +42,7 @@ class ProduktPosten extends Posten {
 	}
 
 	public function fillToArray($arr) {
+		$arr['Postennummer'] = $this->postennummer;
 		$arr['Preis'] = $this->bekommePreisTabelle();
 		$arr['Bezeichnung'] = $this->Bezeichnung;
 		$arr['Beschreibung'] = $this->Beschreibung;

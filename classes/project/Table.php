@@ -169,7 +169,7 @@ class Table {
     }
 
     private function addDeleteButton($key) {
-		$button = "<button class='actionButton' onclick=\"deleteRow('$key')\" title='Löschen'>&#x1F5D1;</button>";
+		$button = "<button class='actionButton' onclick=\"deleteRow('$key', '$this->type')\" title='Löschen'>&#x1F5D1;</button>";
 		return $button;
 
 	}
@@ -241,11 +241,15 @@ class Table {
 
 			$rowId = self::getIdentifierValue($table, $key);
 
-			var_dump($actionObject->keys);
-
 			if ($action == "delete") {
-				DBAccess::deleteQuery("DELETE FROM $actionObject->type WHERE $actionObject->identifier = $rowId");
-				echo "DELETE FROM $actionObject->type WHERE $actionObject->identifier = $rowId";
+				/* if there is a session object for deletion, then this one is used */
+				if (isset($_SESSION[$table . "_del"])) {
+					$actionObject = unserialize($_SESSION[$table. "_del"]);
+					$actionObject->delete();
+				} else {
+					echo "DELETE FROM $actionObject->type WHERE $actionObject->identifier = $rowId";
+					DBAccess::deleteQuery("DELETE FROM $actionObject->type WHERE $actionObject->identifier = $rowId");
+				}
 			} else if ($action == "check") {
 				/* data string for checked rows is $_POST["checked"] as JSON */
 				$data = $_POST["checked"];
@@ -263,10 +267,14 @@ class Table {
 		$actionObject = unserialize($_SESSION[$table]);
 
 		/* gets the row by key, then the row identifier for the db action is selected */
-		$number = array_search($key, $actionObject->keys);
-		$rowId = $actionObject->data[$number][$actionObject->identifier];
+		if (is_array($actionObject->keys)) {
+			$number = array_search($key, $actionObject->keys);
+			$rowId = $actionObject->data[$number][$actionObject->identifier];
 
-		return $rowId;
+			return $rowId;
+		} else {
+			return null;
+		}
 	}
 
 	public function defineUpdateSchedule($updateSchedule) {

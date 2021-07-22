@@ -28,6 +28,7 @@ abstract class Posten {
 
 	protected $postenTyp;
 	protected $ohneBerechnung = false;
+	protected $postennummer;
 
 	/*
 	 * function gets all posten data for an order
@@ -69,6 +70,9 @@ abstract class Posten {
 			if ($free == 1) {
 				$element->ohneBerechnung = true;
 			}
+
+			$element->postennummer = $step['Postennummer'];
+
 			array_push($posten, $element);
 		}
 
