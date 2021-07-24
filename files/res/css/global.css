@@ -350,6 +350,16 @@ iframe {
     background: white;
 }
 
+/* style for image preview */
+.img_prev {
+    display: inline;
+    padding-left: 10px;
+}
+
+.img_prev_i {
+    vertical-align: middle;
+}
+
 #imageHeader {
     width: 100px;
     height: auto;
