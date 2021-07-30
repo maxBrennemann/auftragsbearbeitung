@@ -13,9 +13,9 @@ $data = DBAccess::selectQuery("SELECT * FROM leistung");
 			<div class="leistungsHeader">
 				<p><?=$leistung['Bezeichnung']?></p>
 			</div>
-			<p>Beschreibung: <?=$leistung['Beschreibung']?></p>
-			<p>Quelle: <?=$leistung['Quelle']?></p>
-			<p>Aufschlag: <?=$leistung['Aufschlag']?>%</p>
+			<p><span>Beschreibung:</span> <?=$leistung['Beschreibung']?></p>
+			<p><span>Quelle:</span> <?=$leistung['Quelle']?></p>
+			<p><span>Aufschlag:</span> <?=$leistung['Aufschlag']?>%</p>
 			<button onclick="remove('<?=$leistung['Nummer']?>')">🗑</button>
 		</div>
 	<?php endforeach; ?>
@@ -24,10 +24,26 @@ $data = DBAccess::selectQuery("SELECT * FROM leistung");
 			<p>Neue Leistung hinzufügen</p>
 		</div>
 		<div>
-			<span>Bezeichnung: <input type="text"  maxlength="32" id="bezeichnung"></input></span><br>
-			<span>Beschreibung: <input type="text" id="description"></input></span><br>
-			<span>Quelle: <input type="text" maxlength="64" id="source"></input></span><br>
-			<span>Aufschlag (%): <input type="number" id="aufschlag"></input></span><br>
+			<p>
+				<span>Bezeichnung:</span>
+				<br>
+				<input type="text"  maxlength="32" id="bezeichnung"></input>
+			</p>
+			<p>
+				<span>Beschreibung:</span>
+				<br>
+				<textarea id="description"></textarea>
+			</p>
+			<p>
+				<span>Quelle:</span>
+				<br>
+				<input type="text" maxlength="64" id="source"></input>
+			</p>
+			<p>
+				<span>Aufschlag (%):</span>
+				<br>
+				<input type="number" id="aufschlag"></input>
+			</p>
 		</div>
 		<button onclick="add()">Hinzufügen</button>
 	<div>
