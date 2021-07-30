@@ -86,15 +86,16 @@ abstract class Posten {
 			$auftragsverlauf = new Auftragsverlauf((int) $auftragsnummer);
 		}
 
-		$postennummer = DBAccess::insertQuery("INSERT INTO posten (Postennummer, Auftragsnummer, Posten, ohneBerechnung, discount) VALUES ($postennummer, $auftragsnummer, '$type', $fre, $dis)");
-		
+		$fre = $data['ohneBerechnung'];
+		$dis = $data['discount'];
+
+		$postennummer = DBAccess::insertQuery("INSERT INTO posten (Auftragsnummer, Posten, ohneBerechnung, discount) VALUES ($auftragsnummer, '$type', $fre, $dis)");
+
 		switch ($type) {
 			case "zeit":
 				$zeit = $data['ZeitInMinuten'];
 				$lohn = $data['Stundenlohn'];
 				$desc = $data['Beschreibung'];
-				$fre = $data['ohneBerechnung'];
-				$dis = $data['discount'];
 				
 				DBAccess::insertQuery("INSERT INTO zeit (Postennummer, ZeitInMinuten, Stundenlohn, Beschreibung) VALUES ($postennummer, $zeit, $lohn, '$desc')");
 			break;
@@ -103,8 +104,6 @@ abstract class Posten {
 				$bes = $data['Beschreibung'];
 				$ekp = $data['Einkaufspreis'];
 				$pre = $data['SpeziefischerPreis'];
-				$fre = $data['ohneBerechnung'];
-				$dis = $data['discount'];
 				$anz = $data['anzahl'];
 				$meh = $data['MEH'];
 				
@@ -114,12 +113,11 @@ abstract class Posten {
 			case "produkt":
 				$amount = $data['amount'];
 				$prodId = $data['prodId'];
-				$fre = $data['ohneBerechnung'];
 				DBAccess::insertQuery("INSERT INTO posten (Postennummer, Auftragsnummer, Posten, ohneBerechnung) VALUES ($postennummer, $auftragsnummer, '$type', $fre)");
 				DBAccess::insertQuery("INSERT INTO produkt_posten (Produktnummer, Postennummer, Anzahl) VALUES ($prodId, $postennummer, $amount)");
 			break;
 			case "compact":
-				$fre = $data['ohneBerechnung'];
+				
 
 				$amount = $data['amount'];
 				$marke = $data['marke'];
@@ -127,7 +125,6 @@ abstract class Posten {
 				$vkpreis = (float) $data['vkpreis'];
 				$beschreibung = $data['beschreibung'];
 				$name = $data['name'];
-				$dis = $data['discount'];
 
 				DBAccess::insertQuery("INSERT INTO product_compact (postennummer, amount, marke, price, purchasing_price, description, name) VALUES ($postennummer, $amount, '$marke', '$ekpreis', '$vkpreis', '$beschreibung', '$name')");
 			break;

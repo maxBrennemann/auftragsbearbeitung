@@ -112,7 +112,7 @@ class Upload {
         $t = new Table();
 		$t->createByData($files, $column_names);
 		$t->setType("dateien");
-        $t->addActionButton("delete", $identifier = "Postennummer");
+        $t->addActionButton("delete", $identifier = "id");
 
 		return $t->getTable();
     }
