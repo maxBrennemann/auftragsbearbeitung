@@ -205,6 +205,7 @@ class Ajax {
 				$data['discount'] = (int) $_POST['discount'];
 				$data['MEH'] = $_POST['meh'];
 				$data['anzahl'] = $_POST['anz'];
+				
 				Posten::insertPosten("leistung", $data);
 				echo (new Auftrag($_POST['auftrag']))->preisBerechnen();
 			break;
@@ -215,8 +216,10 @@ class Ajax {
 				$data['Priority'] = $_POST['prio'];
 				$data['Auftragsnummer'] = $_POST['auftrag'];
 				$data['hide'] = $_POST['hide'];
+
 				require_once("classes/project/Schritt.php");
 				require_once("classes/project/Auftrag.php");
+
 				$postenNummer = Schritt::insertStep($data);
 				$auftrag = new Auftrag($data['Auftragsnummer']);
 				echo $auftrag->getOpenBearbeitungsschritteTable();
