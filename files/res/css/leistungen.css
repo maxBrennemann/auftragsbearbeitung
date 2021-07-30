@@ -1,3 +1,7 @@
+header {
+    z-index: 1;
+}
+
 .container {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -5,11 +9,44 @@
     margin: 5px;
 }
 
+.leistungsblock:last-of-type p {
+    padding-left: 5px;
+}
+
+.leistungsblock:last-of-type button {
+    border-color: #60bf60;
+    background: #60bf60;
+    font-weight: normal;
+    height: 29px;
+    font-style: 1em;
+}
+
 .leistungsblock {
     border-radius: 6px;
     margin: 15px;
     background-color: #eff0f1;
+
+    padding-bottom: 29px;
     position: relative;
+    z-index: 0;
+}
+
+.leistungsblock button {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    border: 1px solid;
+    border-radius: 0 0 6px 6px;
+    border-color: #c14949;
+    background: #c14949;
+    color: white;
+    font-weight: bold;
+    font-size: 1.4em;
+
+    position: absolute;
+    bottom: 0;
+
+    cursor: pointer;
 }
 
 .leistungsHeader {
@@ -21,6 +58,10 @@
 
 .leistungsHeader p {
     margin: 0;
+}
+
+.leistungsblock p span {
+    text-decoration: underline;
 }
 
 .leistungsblock :not(:first-child) {
