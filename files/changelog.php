@@ -1,4 +1,9 @@
 <div class="changelog">
+    <h3>1.1.11</h3>
+    <ul>
+        <li>Verschiedene Fehlerbehebungen</li>
+        <li>Leistungen wurde verbessert</li>
+    </ul>
     <h3>1.1.10</h3>
     <ul>
         <li>Aufträge können durchsucht werden</li>
