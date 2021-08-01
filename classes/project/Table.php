@@ -169,7 +169,7 @@ class Table {
     }
 
     private function addDeleteButton($key) {
-		$button = "<button class='actionButton' onclick=\"deleteRow('$key', '$this->type')\" title='Löschen'>&#x1F5D1;</button>";
+		$button = "<button class='actionButton' onclick=\"deleteRow('$key', '$this->type', this)\" title='Löschen'>&#x1F5D1;</button>";
 		return $button;
 
 	}

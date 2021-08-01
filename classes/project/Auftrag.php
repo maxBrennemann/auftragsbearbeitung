@@ -378,6 +378,7 @@ class Auftrag implements StatisticsInterface {
 				<div class=\"notes\">
 					<div class=\"noteheader\">Notiz 📓</div>
 					<div class=\"notecontent\">$content</div>
+					<div class=\"notebutton\" onclick=\"removeNote(event)\">×</div>
 				</div>
 			";
 		}

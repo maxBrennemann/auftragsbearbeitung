@@ -299,6 +299,17 @@ class Ajax {
 					$user = $_SESSION['userid'];
 				NotificationManager::addNotificationCheck($user, 0, "Bearbeitungsschritt erledigt", $postennummer);
 			break;
+			case "deleteNote":
+				$index = $_POST['number'];
+				$order = $_POST['auftrag'];
+
+				/* finds the possible note for deletion and sends back the left over ones */
+				$possibleMatches = DBAccess::selectQuery("SELECT Nummer FROM notizen WHERE Auftragsnummer = $order");
+				$match = $possibleMatches[$index]["Nummer"];
+				DBAccess::deleteQuery("DELETE FROM notizen WHERE Nummer = $match");
+				$order = new Auftrag($order);
+				echo $order->getNotes();
+			break;
 			case "sendSource":
 				Produkt::addSource();
 			break;

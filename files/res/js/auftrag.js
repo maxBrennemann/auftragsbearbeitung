@@ -230,11 +230,12 @@ function addBearbeitungsschritte() {
 
 /* adds a note to the order */
 function addNote() {
-    var note = document.querySelector(".noteInput");
-    if (note == undefined)
+    var noteNode = document.querySelector(".noteInput");
+    if (noteNode == undefined)
         return null;
 
-    note = note.value;   
+    note = noteNode.value;
+    noteNode.value = "";
 
     /* ajax parameter */
     let params = {
@@ -247,6 +248,57 @@ function addNote() {
     add.makeAjaxCall(function (response) {
         document.getElementById("noteContainer").innerHTML = response;
     }.bind(this), false);
+}
+
+/* function creates a popup window that asks the user whether he wants the note to be deleted or not */
+function removeNote(event) {
+    let note = event.target.parentNode.children[1].innerHTML;
+
+    let number = indexInClass(event.target.parentNode);
+
+    var div = document.createElement("div");
+    let textnode = document.createTextNode(`Willst Du die Notiz "${note}" wirklich löschen?`);
+
+    let btn_yes = document.createElement("button");
+    btn_yes.innerHTML = "Ja";
+    let btn_no = document.createElement("button");
+    btn_no.innerHTML = "Nein";
+
+    /* inner function to delete the node */
+    function delNode(number, div) {
+        div.parentNode.removeChild(div);
+
+        console.log(number);
+
+        /* ajax call to delete note from db, note is then removed from webpage */
+        var del = new AjaxCall(`getReason=deleteNote&number=${number}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
+        del.makeAjaxCall(function (response) {
+            document.getElementById("noteContainer").innerHTML = response;
+        });
+    }
+
+    /* inner function for node button to remove the div */
+    function close(div) {
+        div.parentNode.removeChild(div);
+    }
+
+    /* event listeners */
+    btn_yes.addEventListener("click", function() {
+        delNode(number, div);
+    }, false);
+
+    btn_no.addEventListener("click", function() {
+        close(div);
+    }, false);
+
+    div.appendChild(textnode);
+    div.appendChild(document.createElement("br"));
+    div.appendChild(btn_yes);
+    div.appendChild(btn_no);
+    document.body.appendChild(div);
+
+    addActionButtonForDiv(div, "remove");
+    centerAbsoluteElement(div);
 }
 
 /* changes the contact */
@@ -313,19 +365,77 @@ function selectVehicle(event) {
     globalData.vehicleId = event.target.value;
 }
 
-function deleteRow(key, type = "schritte") {
-    var del = new AjaxCall(`getReason=delete&type=${type}&key=${key}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
-    del.makeAjaxCall(function (response) {
-        console.log(response);
-    });
+function showDeleteMessage(row, header, key, type) {
+    var div = document.createElement("div");
 
-    /* should be avoided */
-    let node = event.target;
-    while (node.nodeName != "TR") {
-        node = node.parentNode;
+    /* creates table */
+    let table = document.createElement("table");
+    tbody = document.createElement("tbody");
+    table.appendChild(tbody);
+    tbody.appendChild(header.cloneNode(true));
+    tbody.appendChild(row.cloneNode(true));
+
+    /* creates inner text of deletion verification */
+    let content = `Willst Du diese Zeile wirklich löschen?:`;
+    let contentNode = document.createElement("p");
+    contentNode.innerHTML = content;
+    contentNode.appendChild(table);
+
+    /* creates the yes and no buttons */
+    let btn_yes = document.createElement("button");
+    btn_yes.innerHTML = "Ja";
+    let btn_no = document.createElement("button");
+    btn_no.innerHTML = "Nein";
+
+    /* inner function to delete the node
+     * type => type of data to be deleted
+     * key => the key for the server so that the correct data is deleted
+     * row => row for the frontend to be deleted 
+     */
+    function delNode(type, key, row) {
+        var del = new AjaxCall(`getReason=delete&type=${type}&key=${key}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
+        del.makeAjaxCall(function (response) {
+            console.log(response);
+        });
+
+        while (row.nodeName != "TR") {
+            row = row.parentNode;
+        }
+
+        row.parentNode.removeChild(row);
     }
 
-    node.parentNode.removeChild(node);
+    /* inner function for node button to remove the div */
+    function close(div) {
+        div.parentNode.removeChild(div);
+    }
+
+    /* event listeners */
+    btn_yes.addEventListener("click", function() {
+        delNode(type, key, row);
+    }, false);
+
+    btn_no.addEventListener("click", function() {
+        close(div);
+    }, false);
+
+    /* adds all relevant nodes to the div */
+    div.appendChild(contentNode);
+    div.appendChild(document.createElement("br"));
+    div.appendChild(btn_yes);
+    div.appendChild(btn_no);
+    document.body.appendChild(div);
+
+    addActionButtonForDiv(div, "remove");
+    centerAbsoluteElement(div);
+}
+
+/* function starts deletion of the row */
+function deleteRow(key, type = "schritte", node) {
+    let row = node.parentNode.parentNode;
+    let header = row.parentNode.children[0];
+
+    showDeleteMessage(row, header, key, type);
 }
 
 function updateIsDone(key) {

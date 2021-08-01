@@ -235,6 +235,30 @@ form[name="showSteps"] {
     font-size: 14.4px;
 }
 
+/* css for button hover */
+.notes .notebutton {
+    visibility: hidden;
+    display: inline-block;
+}
+
+.notes .notebutton {
+    margin: 0;
+    border-radius: 0 6px 6px 0;
+    border: none;
+    padding: 7px;
+    background: #c14949;
+    font-size: 14.4px;
+    cursor: pointer;
+}
+
+.notes:hover .notebutton {
+    visibility: visible;
+}
+
+.notes:hover .notecontent {
+    border-radius: 0 0 0 0;
+}
+
 /* css for color input */
 #hexinputspan {
     position: relative;
