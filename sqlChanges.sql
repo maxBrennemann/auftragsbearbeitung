@@ -256,3 +256,8 @@ ALTER TABLE `leistung_posten` CHANGE `qty` `qty` VARCHAR(64) NOT NULL;
 
 /* Änderungen 14.06.2021 */
 CREATE TABLE `auftragsmanager`.`info_texte` ( `id` INT NOT NULL AUTO_INCREMENT , `info` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+/* Änderungen 30.07.2021 */
+CREATE TABLE `auftragsmanager`.`members_mitarbeiter` ( `id_member` INT NOT NULL , `id_mitarbeiter` INT NOT NULL ) ENGINE = InnoDB;
+INSERT INTO `members_mitarbeiter` (`id_member`, `id_mitarbeiter`) VALUES ('2', '1'), ('1', '2'), ('3', '4');
+INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'mitarbeiter.php', 'Mitarbeiter', 'mitarbeiter');
