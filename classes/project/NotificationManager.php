@@ -37,27 +37,28 @@ class NotificationManager {
 
         foreach ($data as $n) {
             $type = self::getTypeName((int) $n['type']);
-            $link = self::getSpecificLink((int) $n['specific_id']);
+            $link = self::getSpecificLink((int) $n['type'], (int) $n['specific_id']);
             $htmlContent .= "<span><strong>" . $type . ": </strong><a href=\"$link\">" . $n['content'] . "</a></span><br>";
         }
 
         return $htmlContent;
     }
 
-    private static function getSpecificLink($type) {
+    private static function getSpecificLink($type, $id) {
         switch ($type) {
             case 1:
-                $orderId = DBAccess::selectQuery("SELECT Auftragsnummer FROM schritte WHERE SChrittnummer = $type")[0]['Auftragsnummer'];
+                $orderId = DBAccess::selectQuery("SELECT Auftragsnummer FROM schritte WHERE Schrittnummer = $id")[0]['Auftragsnummer'];
                 return Link::getPageLink("auftrag") . "?id=$orderId";
                 break;
             case 0:
+                break;
             default:
                 break;
         }
     }
 
     private static function getTypeName($type) {
-        $types = ["", "Schritt"];
+        $types = ["erledigt", "Schritt"];
         return $types[$type];
     }
 
