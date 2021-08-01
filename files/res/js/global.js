@@ -165,6 +165,16 @@ function getDate(offset = 0) {
 	return today;
 }
 
+/* https://stackoverflow.com/questions/34910042/get-index-of-class/34910134 */
+function indexInClass(node) {
+	var collection = document.getElementsByClassName(node.className);
+	for (var i = 0; i < collection.length; i++) {
+		if (collection[i] === node)
+			return i;
+	}
+	return -1;
+}
+
 /*
 * data should be an array containing arrays the size of a row, the data[0] array should contain the heading
 * of the table, so the size of data is rows + 1;
