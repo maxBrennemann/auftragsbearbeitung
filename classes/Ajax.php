@@ -78,6 +78,25 @@ class Ajax {
 				Liste::saveData($data);
 				echo Link::getPageLink("listmaker");
 			break;
+			case "saveListData":
+				$listid = (int) $_POST['listId'];
+				$listname = (int) $_POST['id'];
+				$listvalue = $_POST['value'];
+				$listtype = $_POST['type'];
+
+				$types = [
+					"radio" => 1,
+					"checkbox" => 2,
+					"text" => 3
+				];
+
+				$listtype = $types[$listtype];
+
+				require_once('classes/project/Liste.php');
+				Liste::storeListData($listid, $listname, $listtype, $listvalue);
+
+				echo "success";
+			break;
 			case "notification":
 				require_once('classes/project/NotificationManager.php');;
 				echo NotificationManager::htmlNotification();

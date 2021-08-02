@@ -21,9 +21,11 @@ function chooseList(listid) {
         addListToOrder(listid);
 }
 
-function saveListData() {
-    var add = new AjaxCall(`getReason=saveListData&listId=${listid}&data=${data}`, "POST", window.location.href);
-    add.makeAjaxCall(function (response) {});
+function saveListData(listid, listname, listvalue, listtype) {
+    var add = new AjaxCall(`getReason=saveListData&listId=${listid}&id=${listname}&value=${listvalue}&type=${listtype}`, "POST", window.location.href);
+    add.makeAjaxCall(function (response) {
+        infoSaveSuccessfull(response);
+    });
 }
 
 function addListToOrder(listid) {
@@ -31,4 +33,31 @@ function addListToOrder(listid) {
     listToOrder.makeAjaxCall(function (response) {
         console.log(response);
     });
+}
+
+if (document.readyState !== 'loading' ) {
+    addListenListener();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        addListenListener();
+    });
+}
+
+function addListenListener() {
+    var lists = document.getElementsByClassName("listen");
+    for (let list of lists) {
+       var inputs = list.getElementsByTagName("input");
+       for (let input of inputs) {
+           input.addEventListener("change", function(e) {
+               console.log(e.target.value + " " + e.target.name);
+
+               var listid = list.id.slice(6),
+                listname = e.target.name,
+                listvalue = e.target.value;
+                listtype = e.target.type;
+
+               saveListData(listid, listname, listvalue, listtype);
+           }, false);
+       }
+    }
 }
