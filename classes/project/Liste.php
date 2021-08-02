@@ -32,7 +32,12 @@ class Liste {
     return $this->name;
   }
 
-  public function toHTML() {
+  public function toHTML($loaddata = null) {
+    /* checks if it has to use the data or if the form can be empty */
+    if ($loaddata != null) {
+      $data = $this->loadData($loaddata);
+    }
+
     ?>
       <div class="defCont">
         <form class="listen" id="liste-<?=$this->listid?>">
@@ -45,22 +50,57 @@ class Liste {
             $label = "<label for=\"{$la->getBezeichnung()}\">{$la->getBezeichnung()}</label>";
             $type3 = "";
             $typenot3 = "";
+            $checked = "";
             switch ($lp->getType()) {
               case 1:
                 $insType = "radio";
                 $typenot3 = $label;
+                /*
+                 * rework that later,
+                 * gets the correct data row and then sets the radio button to checked,
+                 * must be done later by an extra function or by using the la and lp data types
+                 */
+                if ($loaddata != null) {
+                  if ($this->getDataByKey($data, $lp->getOrdnung())) {
+                    $checked = "checked";
+                  } else {
+                    $checked = "";
+                  }
+                }
               break;
               case 2:
                 $insType = "checkbox";
                 $typenot3 = $label;
+                /*
+                 * rework that later,
+                 * gets the correct data row and then sets the checkbox to checked,
+                 * must be done later by an extra function or by using the la and lp data types
+                 */
+                if ($loaddata != null) {
+                  if ($this->getDataByKey($data, $lp->getOrdnung())) {
+                    $checked = "checked";
+                  } else {
+                    $checked = "";
+                  }
+                }
               break;
               case 3:
                 $insType = "text";
                 $type3 = $label;
+                /*
+                 * rework that later,
+                 * gets the correct data row and then sets the la bezeichnung to the value from the db,
+                 * must be done later by an extra function or by using the la and lp data types
+                 */
+                if ($loaddata != null) {
+                  if ($d = $this->getDataByKey($data, $lp->getOrdnung())) {
+                    $la->setBezeichnung($d["info"]);
+                  }
+                }
               break;
             }
           ?><?=$type3?>
-            <input name="<?=$lp->getOrdnung()?>" value="<?=$la->getBezeichnung()?>" type="<?=$insType?>">
+            <input name="<?=$lp->getOrdnung()?>" value="<?=$la->getBezeichnung()?>" type="<?=$insType?>" <?=$checked?>>
             <?=$typenot3?>
           <?php endforeach; ?>
           </div>
@@ -68,6 +108,27 @@ class Liste {
         </form>
       </div>
     <?php
+  }
+
+  /*
+   * the function loads all the stored data from the table by using the order id as the key
+   */
+  public function loadData($id) {
+    $query = "SELECT lid, art, info FROM listendata WHERE orderid = $id";
+    return DBAccess::selectQuery($query);
+  }
+
+  /*
+   * the function iterates over all selected rows and returns the one with the right key,
+   * if no row matches the search, the function returns null
+   */
+  public function getDataByKey($data, $key) {
+    foreach ($data as $d) {
+      if ((int) $d['lid'] == $key) {
+        return $d;
+      }
+    }
+    return null;
   }
 
   public static function getAllListPrevs() {
@@ -168,9 +229,21 @@ class Liste {
     }
   }
 
-  /* function for saving a list with filled in data */
-  public static function storeListData($lnr, $lid, $art, $info) {
-    DBAccess::insertQuery("INSERT INTO listendata (lnr, lid, art, info) VALUES ($lnr, $lid, $art, '$info')");
+  /* 
+   * function for saving a list with filled in data,
+   * checks if data already existed and creates the new rows or updates it accordingly
+   */
+  public static function storeListData($lnr, $lid, $art, $info, $orderId) {
+    $checkExists = DBAccess::selectQuery("SELECT lnr, art FROM listendata WHERE lid = $lid");
+    if (empty($checkExists)) {
+      DBAccess::insertQuery("INSERT INTO listendata (lnr, lid, art, info, orderid) VALUES ($lnr, $lid, $art, '$info', $orderId)");
+    } else {
+      if ((int) $checkExists[0]["art"] == 3) {
+        DBAccess::updateQuery("UPDATE listendata SET info = '$info' WHERE lid = $lid");
+      } else {
+        DBAccess::updateQuery("DELETE FROM listendata WHERE lid = $lid");
+      }
+    }
   }
 
   /* function for loading data from db */
