@@ -7,7 +7,7 @@
 
 	if($isSent) {
 		$oeffOderPriv = $_GET['oeffOderPriv'];
-		$firmenname = $_GET['firmenname'];
+		$firmenname = isset($_GET['firmenname']) ? isset($_GET['firmenname']) : "";
 		$anredeAnspr = $_GET['anredeAnspr'];
 		$vornameAnspr = $_GET['vornameAnspr'];
 		$nachnameAnspr = $_GET['nachnameAnspr'];
