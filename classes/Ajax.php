@@ -83,6 +83,7 @@ class Ajax {
 				$listname = (int) $_POST['id'];
 				$listvalue = $_POST['value'];
 				$listtype = $_POST['type'];
+				$orderId = $_POST['auftrag'];
 
 				$types = [
 					"radio" => 1,
@@ -93,7 +94,7 @@ class Ajax {
 				$listtype = $types[$listtype];
 
 				require_once('classes/project/Liste.php');
-				Liste::storeListData($listid, $listname, $listtype, $listvalue);
+				Liste::storeListData($listid, $listname, $listtype, $listvalue, $orderId);
 
 				echo "success";
 			break;

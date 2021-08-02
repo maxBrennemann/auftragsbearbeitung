@@ -18,6 +18,14 @@ class Listenauswahl {
         return $this->bezeichnung;
     }
 
+    /*
+     * temporar function to be used for setting the data when lists are read,
+     * must be implemented better later
+     */
+    public function setBezeichnung($bez) {
+        $this->bezeichnung = $bez;
+    }
+
     public function saveList($listenpunktid) {
         DBAccess::insertQuery("INSERT INTO listenauswahl (listenpunktid, `bezeichnung`, ordnung) VALUES ($listenpunktid, '{$this->bezeichnung}', {$this->ordnung})");
     }

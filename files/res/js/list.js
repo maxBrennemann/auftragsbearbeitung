@@ -22,9 +22,10 @@ function chooseList(listid) {
 }
 
 function saveListData(listid, listname, listvalue, listtype) {
-    var add = new AjaxCall(`getReason=saveListData&listId=${listid}&id=${listname}&value=${listvalue}&type=${listtype}`, "POST", window.location.href);
+    var add = new AjaxCall(`getReason=saveListData&listId=${listid}&id=${listname}&value=${listvalue}&type=${listtype}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
     add.makeAjaxCall(function (response) {
         infoSaveSuccessfull(response);
+        console.log(response);
     });
 }
 

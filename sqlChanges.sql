@@ -265,3 +265,9 @@ INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'mi
 /* Änderungen 01.08.2021 */
 CREATE TABLE `listendata` ( `id` INT NOT NULL , `lnr` INT NOT NULL , `lid` INT NOT NULL , `art` INT NOT NULL , `info` VARCHAR(128) NOT NULL ) ENGINE = InnoDB;
 ALTER TABLE `listendata` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);
+
+/* Änderungen 02.08.2021 */
+ALTER TABLE `listendata` ADD `orderid` INT NOT NULL AFTER `id`;
+ALTER TABLE `listendata` DROP `id`;
+ALTER TABLE `listendata` CHANGE `lid` `lid` INT(11) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`lid`);
+ALTER TABLE `listendata` CHANGE `lid` `lid` INT(11) NOT NULL auto_increment FIRST

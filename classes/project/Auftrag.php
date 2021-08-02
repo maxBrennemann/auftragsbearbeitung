@@ -428,7 +428,7 @@ class Auftrag implements StatisticsInterface {
 		$listenIds = self::getListIds();
 		$html = "";
 		foreach ($listenIds as $id) {
-			$html .= (Liste::readList($id['listen_id']))->toHTML();
+			$html .= (Liste::readList($id['listen_id']))->toHTML($this->Auftragsnummer);
 		}
 		return $html;
 	}
