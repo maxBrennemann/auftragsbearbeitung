@@ -258,6 +258,10 @@ ALTER TABLE `leistung_posten` CHANGE `qty` `qty` VARCHAR(64) NOT NULL;
 CREATE TABLE `auftragsmanager`.`info_texte` ( `id` INT NOT NULL AUTO_INCREMENT , `info` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
 /* Änderungen 30.07.2021 */
-CREATE TABLE `auftragsmanager`.`members_mitarbeiter` ( `id_member` INT NOT NULL , `id_mitarbeiter` INT NOT NULL ) ENGINE = InnoDB;
+CREATE TABLE `members_mitarbeiter` ( `id_member` INT NOT NULL , `id_mitarbeiter` INT NOT NULL ) ENGINE = InnoDB;
 INSERT INTO `members_mitarbeiter` (`id_member`, `id_mitarbeiter`) VALUES ('2', '1'), ('1', '2'), ('3', '4');
 INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'mitarbeiter.php', 'Mitarbeiter', 'mitarbeiter');
+
+/* Änderungen 01.08.2021 */
+CREATE TABLE `listendata` ( `id` INT NOT NULL , `lnr` INT NOT NULL , `lid` INT NOT NULL , `art` INT NOT NULL , `info` VARCHAR(128) NOT NULL ) ENGINE = InnoDB;
+ALTER TABLE `listendata` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);

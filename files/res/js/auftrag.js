@@ -79,6 +79,7 @@ function addTime() {
     add.makeAjaxCall(function (response) {
         updatePrice(response);
         reloadPostenListe();
+        infoSaveSuccessfull("success");
     });
 }
 
@@ -102,6 +103,7 @@ function addLeistung() {
     add.makeAjaxCall(function (response) {
         updatePrice(response);
         reloadPostenListe();
+        infoSaveSuccessfull("success");
     });
 }
 
@@ -247,6 +249,7 @@ function addNote() {
     var add = new AjaxCall(params, "POST", window.location.href);
     add.makeAjaxCall(function (response) {
         document.getElementById("noteContainer").innerHTML = response;
+        infoSaveSuccessfull("success");
     }.bind(this), false);
 }
 

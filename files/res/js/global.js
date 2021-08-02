@@ -552,3 +552,34 @@ window.onclick = function(event) {
 		}
 	}
 }
+
+/* function shows an info text about the update status of an ajax query */
+function infoSaveSuccessfull(status = "failiure") {
+	var statusClass = "";
+	var text = "";
+	
+	switch (status) {
+		case "success":
+			statusClass = "showSuccess";
+			text = "Speichern erfolgreich!";
+			break;
+		case "failiure":
+		default:
+			statusClass = "showFailiure";
+			text = "Speichern hat nicht geklappt!";
+			break;
+	}
+
+	let div = document.createElement("div");
+    div.innerHTML = text;
+    div.classList.add(statusClass);
+    document.body.appendChild(div);
+
+    setTimeout(function () {
+        div.classList.add("hidden");
+    }, 1000);
+
+    setTimeout(function () {
+        div.parentNode.removeChild(div);
+    }, 2000);
+}

@@ -26,7 +26,7 @@ class Leistung extends Posten {
 
 	function __construct($leistungsnummer, $beschreibung, $speziefischerPreis, $einkaufspreis, $quantity, $meh, $discount) {
 		$this->beschreibung = $beschreibung;
-		$this->preis =$speziefischerPreis;
+		$this->preis = $speziefischerPreis;
 		$this->einkaufspreis = $einkaufspreis;
 		$this->leistungsnummer = $leistungsnummer;
 

@@ -3,6 +3,7 @@
     <ul>
         <li>Verschiedene Fehlerbehebungen</li>
         <li>Leistungen wurde verbessert</li>
+        <li>Vor dem Löschen wird nach einer Bestätigung gefragt</li>
     </ul>
     <h3>1.1.10</h3>
     <ul>

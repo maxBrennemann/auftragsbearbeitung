@@ -9,9 +9,11 @@ class Liste {
   private $listenpunkte = array();
   private $name = "";
   private $zugehoerigkeit = "";
+  private $listid = 0;
 
-  function __construct($name, $zugehoerigkeit) {
+  function __construct($name, $zugehoerigkeit, $listid) {
     $this->name = $name;
+    $this->listid = $listid;
   }
   
   public function createList() {
@@ -33,6 +35,7 @@ class Liste {
   public function toHTML() {
     ?>
       <div class="defCont">
+        <form class="listen" id="liste-<?=$this->listid?>">
         <h3><u><?=$this->getName();?></u></h3>
         <?php foreach ($this->listenpunkte as $lp): ?>
           <h4><?=$lp->getTitle()?></h4>
@@ -62,6 +65,7 @@ class Liste {
           <?php endforeach; ?>
           </div>
         <?php endforeach; ?>
+        </form>
       </div>
     <?php
   }
@@ -102,7 +106,7 @@ class Liste {
     $query = "SELECT liste.id as listenid, liste.name, listenpunkt.id as listenpunktid, listenpunkt.text, listenauswahl.id as listenauswahlid, listenauswahl.bezeichnung, listenpunkt.art FROM `liste`, listenpunkt, listenauswahl where liste.id = listenpunkt.listenid and listenpunkt.id = listenauswahl.listenpunktid and liste.id = $listid";
     $query = DBAccess::selectQuery($query);
 
-    $list = new Liste($query[0]['name'], "");
+    $list = new Liste($query[0]['name'], "", $query[0]['listenid']);
     $listenpunkte = array();
     foreach ($query as $entry) {
       if (!in_array((int) $entry['listenpunktid'], $listenpunkte)) {
@@ -165,8 +169,8 @@ class Liste {
   }
 
   /* function for saving a list with filled in data */
-  public function storeListData() {
-
+  public static function storeListData($lnr, $lid, $art, $info) {
+    DBAccess::insertQuery("INSERT INTO listendata (lnr, lid, art, info) VALUES ($lnr, $lid, $art, '$info')");
   }
 
   /* function for loading data from db */
