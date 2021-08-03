@@ -601,4 +601,28 @@ function showPreview() {
     }
 }
 
+function changeDate(type, e) {
+    let dateNode = document.getElementById("changeDate-" + type);
 
+    let newInput = document.createElement("input");
+    newInput.type = "date";
+
+    dateNode.innerHTML = "";
+    dateNode.appendChild(newInput);
+
+    let sendToServer = function(newInput, type, target) {
+        let date = newInput.value;
+        var send = new AjaxCall(`getReason=updateDate&auftrag=${globalData.auftragsId}&date=${date}&type=${type}`);
+        send.makeAjaxCall(function (response, args) {
+            infoSaveSuccessfull(response);
+            args[0].parentNode.innerHTML = args[0].value;
+            args[1].onclick = function() {changeDate(args[2], event)};
+            args[1].innerText = "✎";
+        }, newInput, target, type);
+    }
+
+    e.target.innerHTML = "✔";
+    e.target.onclick = function() {
+        sendToServer(newInput, type, e.target)
+    };
+}
