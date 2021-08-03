@@ -575,9 +575,13 @@ class Ajax {
 			case "addNoteOrder":
 				$note = $_POST['note'];
 				$orderId = (int) $_POST['auftrag'];
-				DBAccess::insertQuery("INSERT INTO notizen (Auftragsnummer, Notiz) VALUES ($orderId, '$note')");
+				$history_number = DBAccess::insertQuery("INSERT INTO notizen (Auftragsnummer, Notiz) VALUES ($orderId, '$note')");
 				$auftrag = new Auftrag($orderId);
 				echo $auftrag->getNotes();
+
+				require_once("classes/project/Auftragsverlauf.php");
+				$auftragsverlauf = new Auftragsverlauf($orderId);
+				$auftragsverlauf->addToHistory($history_number, 7, "added");
 			break;
 			case "setCustomColor":
 				require_once("classes/project/ClientSettings.php");
