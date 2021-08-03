@@ -9,6 +9,7 @@ require_once('classes/Login.php');
  * step:     Beim Hinzufügen / Löschen / Bearbeiten / Abarbeiten speichern          ✔
  * vehicle:  Beim Hinzufügen / Löschen / Bearbeiten / Bild hochladen abspeichern    ✔
  * file:     Beim Hinzufügen / Löschen abspeichern                                  ✔
+ * notiz:    Beim Hinzufügen / Löschen abspeichern                                  ✔
  * rechnung: Beim Erstellen der Rechnung abspeichern
  * angebot:  Beim Erstellen / Übernehmen abspeichern
 */
@@ -50,7 +51,7 @@ class Auftragsverlauf {
         $query = "
                 SELECT history.id, history.insertstamp, history_type.name, 
                 CONCAT(COALESCE(postendata.Beschreibung, ''), 
-                COALESCE(schritte.Bezeichnung, ''), COALESCE(CONCAT(fahrzeuge.Kennzeichen, ' ', fahrzeuge.Fahrzeug), '')) AS Beschreibung, members.username, history.state
+                COALESCE(schritte.Bezeichnung, ''), COALESCE(CONCAT(fahrzeuge.Kennzeichen, ' ', fahrzeuge.Fahrzeug), ''), COALESCE(notizen.Notiz, '')) AS Beschreibung, members.username, history.state
             FROM history 
             LEFT JOIN history_type ON history_type.type_id = history.type 
             LEFT JOIN postendata ON postendata.Auftragsnummer = history.orderid 
@@ -61,6 +62,7 @@ class Auftragsverlauf {
             LEFT JOIN fahrzeuge_auftraege ON fahrzeuge_auftraege.id_auftrag = history.orderid
                 AND fahrzeuge_auftraege.id_fahrzeug = history.number
             LEFT JOIN fahrzeuge ON fahrzeuge.Nummer = fahrzeuge_auftraege.id_fahrzeug
+            LEFT JOIN notizen ON notizen.Nummer = history.number
             WHERE history.orderid = {$this->auftragsnummer}
                 ";
         return DBAccess::selectQuery($query);

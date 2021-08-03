@@ -271,3 +271,6 @@ ALTER TABLE `listendata` ADD `orderid` INT NOT NULL AFTER `id`;
 ALTER TABLE `listendata` DROP `id`;
 ALTER TABLE `listendata` CHANGE `lid` `lid` INT(11) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`lid`);
 ALTER TABLE `listendata` CHANGE `lid` `lid` INT(11) NOT NULL auto_increment FIRST
+
+/* Änderungen 03.08.2021 */
+INSERT INTO `history_type` (`type_id`, `name`) VALUES ('7', 'Notiz');
