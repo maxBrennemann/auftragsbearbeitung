@@ -1,13 +1,10 @@
 ﻿<?php
 	require_once('classes/DBAccess.php');
 
-	// TODO: test
-
 	$isSent = isset($_GET['oeffOderPriv']);
-
-	if($isSent) {
+	if ($isSent) {
 		$oeffOderPriv = $_GET['oeffOderPriv'];
-		$firmenname = isset($_GET['firmenname']) ? isset($_GET['firmenname']) : "";
+		$firmenname = isset($_GET['firmenname']) ? $_GET['firmenname'] : "";
 		$anredeAnspr = $_GET['anredeAnspr'];
 		$vornameAnspr = $_GET['vornameAnspr'];
 		$nachnameAnspr = $_GET['nachnameAnspr'];
@@ -55,7 +52,7 @@
 			$insertString = "INSERT INTO ansprechpartner (Kundennummer, Vorname, Nachname,";
 			$insertString .= " Email, Durchwahl, Mobiltelefonnummer) VALUES ($kdnr, '$vornameAnspr', ";
 			$insertString .= "'$nachnameAnspr', '$emailAnspr', '$telAnspr', '$telmobilAnspr')";
-			//$newCustomerId = DBAccess::insertQuery($insertString);
+			DBAccess::insertQuery($insertString);
 		}
 	}
 

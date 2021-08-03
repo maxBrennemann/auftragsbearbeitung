@@ -39,6 +39,7 @@ function kundendatenAbsenden() {
     insertKundendaten = new AjaxCall(data, "POST", window.location.href);
     insertKundendaten.makeAjaxCall(function (response) {
         console.log(response);
+        infoSaveSuccessfull("success");
     });
 }
 
