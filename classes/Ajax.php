@@ -595,6 +595,19 @@ class Ajax {
 				$infoText = DBAccess::selectQuery("SELECT info FROM info_texte WHERE id = $infoId");
 				echo $infoText[0]['info'];
 			break;
+			case "updateDate":
+				$order = (int) $_POST['auftrag'];
+				$date = $_POST['date'];
+				$type = (int) $_POST['type'];
+				$type = [
+					1 => "Datum", 
+					2 => "Termin", 
+					3 => "Fertigstellung"
+				][$type];
+
+				DBAccess::updateQuery("UPDATE auftrag SET $type = '$date' WHERE Auftragsnummer = $order");
+				echo "success";
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);

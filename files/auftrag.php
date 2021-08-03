@@ -112,8 +112,8 @@ if ($auftragsId == -1): ?>
 			<button onclick="editDescription(event);">Bearbeiten</button>
 		</span>
 		<br>
-		Auftragsstellung: <?=$auftrag->datum?><br>
-		Termin: <?=$auftrag->termin?>
+		Auftragsstellung: <span id="changeDate-1"><?=$auftrag->datum?></span><button class="actionButton" onclick="changeDate(1, event)">✎</button><br>
+		Termin: <span id="changeDate-2"><?=$auftrag->termin?></span><button class="actionButton" onclick="changeDate(2, event)">✎</button>
 		<br>
 	</div>
 	<div class="defCont schritte">
