@@ -466,8 +466,15 @@ class Ajax {
 					for ($i = 0; $i < $number; $i++) {
 						$dataKey = $_POST["dataKey$i"];
 						$data = $_POST[$dataKey];
-						echo "UPDATE kunde SET $dataKey = '$data' WHERE Kundennummer = $kdnr";
-						DBAccess::updateQuery("UPDATE kunde SET $dataKey = '$data' WHERE Kundennummer = $kdnr");
+
+						/* maybe improve it later to be more flexible, currently it is just hardcoded for the exceptions */
+						if ($dataKey == "ort" || $dataKey == "plz" || $dataKey == "strasse" || $dataKey == "hausnr") {
+							echo "UPDATE adress SET $dataKey = '$data' WHERE id_customer = $kdnr";
+							DBAccess::updateQuery("UPDATE adress SET $dataKey = '$data' WHERE id_customer = $kdnr");
+						} else {
+							echo "UPDATE kunde SET $dataKey = '$data' WHERE Kundennummer = $kdnr";
+							DBAccess::updateQuery("UPDATE kunde SET $dataKey = '$data' WHERE Kundennummer = $kdnr");
+						}
 					}
 				}
 			break;
