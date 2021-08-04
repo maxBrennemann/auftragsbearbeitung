@@ -601,6 +601,10 @@ function showPreview() {
     }
 }
 
+/*
+ * changes the text node that shows the date into an input field and adds an event listener to send
+ * the new date to the server
+ */
 function changeDate(type, e) {
     let dateNode = document.getElementById("changeDate-" + type);
 
