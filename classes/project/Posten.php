@@ -126,7 +126,7 @@ abstract class Posten {
 				$beschreibung = $data['beschreibung'];
 				$name = $data['name'];
 
-				DBAccess::insertQuery("INSERT INTO product_compact (postennummer, amount, marke, price, purchasing_price, description, name) VALUES ($postennummer, $amount, '$marke', '$ekpreis', '$vkpreis', '$beschreibung', '$name')");
+				DBAccess::insertQuery("INSERT INTO product_compact (postennummer, amount, marke, price, purchasing_price, description, name) VALUES ($postennummer, $amount, '$marke', '$vkpreis', '$ekpreis', '$beschreibung', '$name')");
 			break;
 		}
 
