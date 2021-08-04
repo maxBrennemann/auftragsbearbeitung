@@ -133,19 +133,19 @@
 				</tr>
 				<tr>
 					<th>Straße:</th>
-					<td class="editable" contenteditable data-col="Straße"><?=$kunde->getStrasse()?></td>
+					<td class="editable" contenteditable data-col="strasse"><?=$kunde->getStrasse()?></td>
 				</tr>
 				<tr>
 					<th>Hausnummer:</th>
-					<td class="editable" contenteditable data-col="Hausnummer"><?=$kunde->getHausnummer()?></td>
+					<td class="editable" contenteditable data-col="hausnr"><?=$kunde->getHausnummer()?></td>
 				</tr>
 				<tr>
 					<th>Postleitzahl:</th>
-					<td class="editable" contenteditable data-col="Postleitzahl"><?=$kunde->getPostleitzahl()?></td>
+					<td class="editable" contenteditable data-col="plz"><?=$kunde->getPostleitzahl()?></td>
 				</tr>
 				<tr>
 					<th>Ort:</th>
-					<td class="editable" contenteditable data-col="Ort"><?=$kunde->getOrt()?></td>
+					<td class="editable" contenteditable data-col="ort"><?=$kunde->getOrt()?></td>
 				</tr>
 				<tr>
 					<th>Email:</th>
