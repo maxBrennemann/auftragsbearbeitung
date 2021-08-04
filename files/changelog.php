@@ -5,6 +5,7 @@
         <li>Leistungen wurde verbessert</li>
         <li>Vor dem Löschen wird nach einer Bestätigung gefragt</li>
         <li>Listen können nun mit Daten gefüllt werden</li>
+        <li>Datum für Auftragsstellung und Termin kann nun bearbeitet werden</li>
     </ul>
     <h3>1.1.10</h3>
     <ul>
