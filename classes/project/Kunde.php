@@ -195,7 +195,7 @@ class Kunde implements StatisticsInterface {
 		}
 
 		if ($this->website != null) {
-			$text .= "🔗 <a href=\"https://{$this->website}\">Zur Website</a></div>";
+			$text .= "🔗 <a href=\"{$this->website}\">Zur Website</a></div>";
 		} else {
 			$text .= "</p></div>";
 		}
