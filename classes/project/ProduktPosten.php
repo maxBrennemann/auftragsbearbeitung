@@ -24,7 +24,7 @@ class ProduktPosten extends Posten {
 
 	function __construct($Preis, $Bezeichnung, $Beschreibung, $Anzahl, $Einkaufspreis, $Marke, $discount) {
 		$this->Preis = (float) $Preis;
-		$this->Einkaufspreis = $Einkaufspreis;
+		$this->Einkaufspreis = (float) $Einkaufspreis;
 		$this->Bezeichnung = $Bezeichnung;
 		$this->Beschreibung = $Beschreibung;
 		$this->Anzahl = (int) $Anzahl;
@@ -99,11 +99,14 @@ class ProduktPosten extends Posten {
 		if ($this->ohneBerechnung == true) {
 			return 0;
 		}
-        return (float) $this->Preis * $this->Anzahl - $this->Einkaufspreis * $this->Anzahl;
+        return (float) $this->bekommePreis() - $this->Einkaufspreis * $this->Anzahl;
 	}
 
 	public function calculateDiscount() {
-		return (float) $this->Preis * $this->Anzahl * $this->discount;
+		if ($this->discount != -1) {
+			return (float) $this->Preis * $this->Anzahl * $this->discount;
+		}
+		return 0;
 	}
 
 	public function getDescription() {

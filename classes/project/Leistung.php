@@ -26,8 +26,8 @@ class Leistung extends Posten {
 
 	function __construct($leistungsnummer, $beschreibung, $speziefischerPreis, $einkaufspreis, $quantity, $meh, $discount) {
 		$this->beschreibung = $beschreibung;
-		$this->preis = $speziefischerPreis;
-		$this->einkaufspreis = $einkaufspreis;
+		$this->preis = (float) $speziefischerPreis;
+		$this->einkaufspreis = (float) $einkaufspreis;
 		$this->leistungsnummer = $leistungsnummer;
 
 		$data =  DBAccess::selectQuery("SELECT Bezeichnung FROM leistung WHERE Nummer = $leistungsnummer");
@@ -37,11 +37,12 @@ class Leistung extends Posten {
 			$this->bezeichnung =  $data[0]["Bezeichnung"];
 		}
 
-		if ($discount != 0 && $discount > 0 && $discount <= 100) {
+		if ($discount > 0 && $discount <= 100) {
 			$this->discount = $discount;
 		}
 
-		$this->quantity = $quantity;
+		/* currently quantitiy is an integer */
+		$this->quantity = (int) $quantity;
 		$this->meh = $meh;
 	}
 
@@ -98,7 +99,15 @@ class Leistung extends Posten {
 		if ($this->ohneBerechnung == true) {
 			return 0;
 		}
-        return (float) $this->preis * (1 - ($this->discount / 100));
+
+		/*
+		 * if discount needs to be applied
+		 */
+		if ($this->discount != -1) {
+			return (float) $this->preis * $this->quantity * (1 - ($this->discount / 100));
+		}
+
+        return (float) $this->preis * $this->quantity;
 	}
 
 	public function bekommeEinzelPreis() {
@@ -109,7 +118,7 @@ class Leistung extends Posten {
 		if ($this->ohneBerechnung == true) {
 			return 0;
 		}
-        return (float) ($this->preis - $this->einkaufspreis);
+        return (float) ($this->bekommePreis() - $this->bekommeEKPreis());
 	}
 
 	public function getOhneBerechnung() {
@@ -117,7 +126,7 @@ class Leistung extends Posten {
 	}
 
 	public function bekommeEKPreis() {
-		return $this->einkaufspreis;
+		return $this->einkaufspreis * $this->quantity;
 	}
 
 	public function calculateDiscount() {

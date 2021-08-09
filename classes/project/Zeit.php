@@ -86,7 +86,10 @@ class Zeit extends Posten {
 		}
 
 		$this->Kosten = $this->Stundenlohn * ($this->ZeitInMinuten / 60);
-        return round((float) $this->Kosten * (1 - ($this->discount / 100)), 2);
+		if ($this->discount != -1) {
+			return round((float) $this->Kosten * (1 - ($this->discount / 100)), 2);
+		}
+		return round((float) $this->Kosten, 2);
     }
 
 	public function bekommeDifferenz() {
