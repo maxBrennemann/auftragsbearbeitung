@@ -85,6 +85,11 @@ a, a:visited {
     color: #005999;
 }
 
+::placeholder {
+    font-style: italic;
+    font-family: monospace;
+}
+
 /* button */
 button {
     border: 1px solid black;

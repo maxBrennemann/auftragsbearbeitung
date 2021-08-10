@@ -488,6 +488,23 @@ function selectLeistung(e) {
 function addColor() {
     var div = document.getElementById("farbe");
     div.style.display = "block";
+
+    let uebernehmen = document.createElement("button");
+    uebernehmen.addEventListener("click", function() {
+        let farbe = document.getElementById("farbe").getElementsByTagName("SPAN");
+        let color = farbe[farbe.length - 1].childNodes[0].nodeValue;
+        color = color.substring(1);
+
+        let container = document.getElementById("hexinputspan");
+        container.children[0].value = color;
+
+        const e = new Event("change");
+        container.children[0].dispatchEvent(e);
+    }, false);
+    uebernehmen.innerText = "Farbe übernehmen";
+
+    div.appendChild(uebernehmen);
+
     addActionButtonForDiv(div, "hide");
     centerAbsoluteElement(div);
 }
