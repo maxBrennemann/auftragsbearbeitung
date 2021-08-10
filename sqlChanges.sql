@@ -274,3 +274,7 @@ ALTER TABLE `listendata` CHANGE `lid` `lid` INT(11) NOT NULL auto_increment FIRS
 
 /* Änderungen 03.08.2021 */
 INSERT INTO `history_type` (`type_id`, `name`) VALUES ('7', 'Notiz');
+
+
+/* Änderungen 10.08.2021 */
+ALTER TABLE `farben` CHANGE `Farbe` `Farbe` VARCHAR(64) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;

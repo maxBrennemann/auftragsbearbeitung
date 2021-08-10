@@ -201,10 +201,10 @@ if ($auftragsId == -1): ?>
 		<button onclick="addColor()">Neuen Farbe hinzufügen</button>
 		<div class="defCont" id="farbe" style="display: none">
 			<div class="innerDefCont">
-				<span>Farbname: <input class="colorInput" type="text" max="32"></span>
+				<span>Farbbezeichnung: <input class="colorInput" type="text" max="32" placeholder="619 verkehrsgrün"></span>
+				<span>Farbtyp: <input class="colorInput" type="text" max="32" placeholder="751C"></span>
+				<span>Hersteller: <input class="colorInput" tyep="text" max="32" placeholder="Oracal"></span>
 				<span id="hexinputspan">Farbe (Hex): <input class="colorInput jscolor" type="text" max="32" onchange="checkHexCode(this);"></span>
-				<span>Bezeichnung: <input class="colorInput" type="text" max="32"></span>
-				<span>Hersteller: <input class="colorInput" tyep="text" max="32"></span>
 				<button onclick="sendColor();">Hinuzufügen</button>
 			</div>
 		</div>
