@@ -187,10 +187,22 @@ class Auftrag implements StatisticsInterface {
 		return DBAccess::selectQuery("SELECT Kundennummer FROM auftrag WHERE auftragsnummer = {$this->Auftragsnummer}")[0]['Kundennummer'];
 	}
 
-	public function getAuftragspostenAsTable() {
-		$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Beschreibung"), 2 => array("COLUMN_NAME" => "Stundenlohn"), 3 => array("COLUMN_NAME" => "Anzahl"), 4 => array("COLUMN_NAME" => "MEH"), 5 => array("COLUMN_NAME" => "Preis"), 6 => array("COLUMN_NAME" => "Einkaufspreis"));
+	/*
+	 * helper function for creating the AuftragsPosten table
+	 * function returns the data for the table
+	 */
+	private function getAuftragsPostenHelper() {
+		$subArr = array(
+			"Postennummer" => "", 
+			"Bezeichnung" => "", 
+			"Beschreibung" => "", 
+			"Stundenlohn" => "", 
+			"MEH" => "", 
+			"Preis" => "", 
+			"Anzahl" => "", 
+			"Einkaufspreis" => ""
+		);
 
-		$subArr = array("Postennummer" => "", "Bezeichnung" => "", "Beschreibung" => "", "Stundenlohn" => "", "MEH" => "", "Preis" => "", "Anzahl" => "", "Einkaufspreis" => "");
 		$data = array(sizeof($this->Auftragsposten));
 
 		if (sizeof($this->Auftragsposten) == 0) {
@@ -201,13 +213,21 @@ class Auftrag implements StatisticsInterface {
 			$data[$i] = $this->Auftragsposten[$i]->fillToArray($subArr);
 		}
 
-		/*$form = new InteractiveFormGenerator("posten");
-		$form->setRowDeletable(true);
-		$form->setRowEditable(true);
+		return $data;
+	}
 
-		$_SESSION['postenTable'] = serialize($form);
+	public function getAuftragspostenAsTable() {
+		$column_names = array(
+			0 => array("COLUMN_NAME" => "Bezeichnung"), 
+			1 => array("COLUMN_NAME" => "Beschreibung"), 
+			2 => array("COLUMN_NAME" => "Stundenlohn"), 
+			3 => array("COLUMN_NAME" => "Anzahl"), 
+			4 => array("COLUMN_NAME" => "MEH"), 
+			5 => array("COLUMN_NAME" => "Preis"), 
+			6 => array("COLUMN_NAME" => "Einkaufspreis")
+		);
 
-		return $form->create($data, $column_names);*/
+		$data = $this->getAuftragsPostenHelper();
 
 		/* addes edit and delete to table */
 		$t = new Table();
@@ -215,6 +235,29 @@ class Auftrag implements StatisticsInterface {
 		$t->addActionButton("edit");
 		$t->setType("posten");
 		$t->addActionButton("delete", $identifier = "Postennummer");
+		$_SESSION["posten_table"] = serialize($t);
+
+		return $t->getTable();
+	}
+
+	public function getAuftragsPostenCheckTable() {
+		$column_names = array(
+			0 => array("COLUMN_NAME" => "Bezeichnung"), 
+			1 => array("COLUMN_NAME" => "Beschreibung"), 
+			2 => array("COLUMN_NAME" => "Stundenlohn"), 
+			3 => array("COLUMN_NAME" => "Anzahl"), 
+			4 => array("COLUMN_NAME" => "MEH"), 
+			5 => array("COLUMN_NAME" => "Preis"), 
+			6 => array("COLUMN_NAME" => "Einkaufspreis")
+		);
+
+		$data = $this->getAuftragsPostenHelper();
+
+		/* addes edit and delete to table */
+		$t = new Table();
+		$t->createByData($data, $column_names);
+		$t->addSelector("check");
+		$t->setType("posten");
 		$_SESSION["posten_table"] = serialize($t);
 
 		return $t->getTable();
@@ -255,9 +298,15 @@ class Auftrag implements StatisticsInterface {
 	}
 
 	public static function getAuftragsListe($ids, $arrKey) {
-		$column_names = array(0 => array("COLUMN_NAME" => "Auftragsnummer"), 1 => array("COLUMN_NAME" => "Name"),
-				2 => array("COLUMN_NAME" => "Auftragsbezeichnung"), 3 => array("COLUMN_NAME" => "Auftragsbeschreibung"), 4 => array("COLUMN_NAME" => "Datum"), 
-				5 => array("COLUMN_NAME" => "Termin"), 6 => array("COLUMN_NAME" => "Angenommen durch"));
+		$column_names = array(
+			0 => array("COLUMN_NAME" => "Auftragsnummer"), 
+			1 => array("COLUMN_NAME" => "Name"),	
+			2 => array("COLUMN_NAME" => "Auftragsbezeichnung"), 
+			3 => array("COLUMN_NAME" => "Auftragsbeschreibung"), 
+			4 => array("COLUMN_NAME" => "Datum"), 
+			5 => array("COLUMN_NAME" => "Termin"), 
+			6 => array("COLUMN_NAME" => "Angenommen durch")
+		);
 		
 		$query = "SELECT Auftragsnummer, IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ',";
 		$query .= " kunde.Nachname), kunde.Firmenname) as Name, Auftragsbezeichnung,";
@@ -267,8 +316,13 @@ class Auftrag implements StatisticsInterface {
 		$query .= " kunde.Kundennummer LEFT JOIN mitarbeiter ON mitarbeiter.id = ";
 		$query .= "auftrag.AngenommenDurch WHERE Rechnungsnummer = 0";
 
-		$column_names = array(0 => array("COLUMN_NAME" => "Nr."), 1 => array("COLUMN_NAME" => "Datum"),
-		2 => array("COLUMN_NAME" => "Termin"), 3 => array("COLUMN_NAME" => "Kunde"), 4 => array("COLUMN_NAME" => "Auftragsbezeichnung"));
+		$column_names = array(
+			0 => array("COLUMN_NAME" => "Nr."), 
+			1 => array("COLUMN_NAME" => "Datum"),
+			2 => array("COLUMN_NAME" => "Termin"), 
+			3 => array("COLUMN_NAME" => "Kunde"), 
+			4 => array("COLUMN_NAME" => "Auftragsbezeichnung")
+		);
 
 		$query = "SELECT Auftragsnummer AS 'Nr.', Datum, IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) as Kunde, Auftragsbezeichnung, IF(auftrag.Termin = '0000-00-00', 'kein Termin', auftrag.Termin) AS Termin FROM auftrag LEFT JOIN kunde ON auftrag.Kundennummer = kunde.Kundennummer WHERE ";
 
