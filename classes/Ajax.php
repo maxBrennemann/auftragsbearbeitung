@@ -555,6 +555,11 @@ class Ajax {
 				$response = Table::updateValue($table, $action, $key);
 				echo $response;
 			break;
+			case "tableInput":
+				$key = $_POST['key'];
+				$status = $_POST['status'];
+				echo "success: " . $status;
+			break;
 			case "addListToOrder":
 				$listId = (int) $_POST['listId'];
 				$orderId = (int) $_POST['auftrag'];
