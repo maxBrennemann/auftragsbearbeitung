@@ -441,11 +441,15 @@ function deleteRow(key, type = "schritte", node) {
     showDeleteMessage(row, header, key, type);
 }
 
-function updateIsDone(key) {
+function updateIsDone(key, event) {
     var update = new AjaxCall(`getReason=update&key=${key}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
-    update.makeAjaxCall(function (response) {
+    update.makeAjaxCall(function (response, args) {
         console.log(response);
-    });
+        /* removes the row */
+        let button = args[0];
+        let row = button.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+    }, event.target);
 }
 
 function radio(val) {
