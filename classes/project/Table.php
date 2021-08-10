@@ -92,11 +92,37 @@ class Table {
 		$this->callback = $callback;
 	}
 
+	/*
+	 * function adds a new column for selections
+	 * can currently only be used to add an input checkbox
+	 */
+	public function addSelector($type) {
+		switch ($type) {
+			case "check":
+				$array = [];
+				if ($this->keys == null)
+					$this->createKeys();
+				
+				for ($i = 0; $i < sizeof($this->data); $i++) {
+					$btn = $this->addCheckSelector($this->keys[$i]);
+					$array[$i] = $btn;
+				}
+				$this->addColumn("Auswählen", $array);
+			break;
+		}
+	}
+
+	/* helper function for addSelector */
+	private function addCheckSelector($key) {
+        $button = "<input type=\"checkbox\" onchange=\"changeInput(event, '$key')\"></input>";
+		return $button;
+    }
+
 	public function addActionButton($button, $identifier = null, $update = null) {
 		if ($this->data == null)
 			return 0;
 
-		switch($button) {
+		switch ($button) {
 			case "update":
 				$this->buttonUpdate = !$this->buttonUpdate;
 				$array = [];
@@ -159,7 +185,7 @@ class Table {
 
 	/* action buttons */
 	private function addUpdateButton($key) {
-        $button = "<button class='actionButton' onclick=\"updateIsDone('$key')\" title='Als erledigt markieren.'>&#x2714;</button>";
+        $button = "<button class='actionButton' onclick=\"updateIsDone('$key', event)\" title='Als erledigt markieren.'>&#x2714;</button>";
 		return $button;
     }
 
@@ -345,8 +371,8 @@ class Table {
 	/*
 	 * function to generate a html button to add a new line to the table
 	 */
-	public function addNewLineButton() {
-		$this->addNewLineButtonTrue = true;
+	public function addNewLineButton($add = true) {
+		$this->addNewLineButtonTrue = $add;
 	}
 
     /* static functions */
