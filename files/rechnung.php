@@ -18,7 +18,7 @@
 		$setInvoiceGenerator = true;
 
 		$auftrag = new Auftrag($auftragsid);
-		$posten = $auftrag->getAuftragspostenAsTable();
+		$posten = $auftrag->getAuftragsPostenCheckTable();
 
 		$_SESSION['currentInvoice_orderId'] = $auftragsid;
 	}
@@ -33,6 +33,7 @@ if ($setInvoiceGenerator): ?>
 		<?=$posten?>
 	</div>
 	<button onclick="closeOrder();">Alle Posten übernehmen</button>
+	<button onclick="closeOrder();">Ausgewählte Posten übernehmen</button>
 	<button onclick="generatePDF();">Rechnung abschließen</button>
 	<span><?=$rechnungsPDF?></span>
 <?php else: ?>

@@ -25,3 +25,11 @@ function generatePDF() {
         win.focus();
     });
 }
+
+function changeInput(event, key) {
+    var status = event.target.checked;
+    var sendInputKey = new AjaxCall(`getReason=tableInput&key=${key}&status=${status}`, "POST", window.location.href);
+    sendInputKey.makeAjaxCall(function (response) {
+        console.log(response);
+    });
+}
