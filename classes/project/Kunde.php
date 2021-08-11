@@ -102,9 +102,16 @@ class Kunde implements StatisticsInterface {
 	}
 
 	public function getFarben() {
-		$farben = DBAccess::selectQuery("SELECT Farbe, Notiz, Auftragsnummer FROM farben WHERE Kundennummer = {$this->kundennummer} ");
-		$column_names = array(0 => array("COLUMN_NAME" => "Farbe"), 1 => array("COLUMN_NAME" => "Notiz"), 
-				2 => array("COLUMN_NAME" => "Auftragsnummer"));
+		$farben = DBAccess::selectQuery("SELECT CONCAT(Farbe, ' ', Notiz, ' ', Hersteller) AS Farbe, Auftragsnummer, Farbwert FROM farben WHERE Kundennummer = {$this->kundennummer} ");
+		for ($i = 0; $i < sizeof($farben); $i++) {
+			$farbe = $farben[$i]["Farbwert"];
+			$farben[$i]["Farbwert"] = "<div class=\"farbe\" style=\"background-color: #$farbe\"></div>";
+		}
+
+		$column_names = array(
+			0 => array("COLUMN_NAME" => "Farbe"), 
+			1 => array("COLUMN_NAME" => "Farbwert"), 
+			2 => array("COLUMN_NAME" => "Auftragsnummer"));
 
 		$form = new FormGenerator("", "", "");
 		return $form->createTableByData($farben, $column_names);

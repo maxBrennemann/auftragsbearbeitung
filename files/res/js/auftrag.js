@@ -528,7 +528,7 @@ function sendColor() {
         data.push(currVal);
     }
     
-    var sendC = new AjaxCall(`getReason=newColor&auftrag=${globalData.auftragsId}&farbname=${data[0]}&farbe=${data[1]}&bezeichnung=${data[2]}&hersteller=${data[3]}`);
+    var sendC = new AjaxCall(`getReason=newColor&auftrag=${globalData.auftragsId}&farbname=${data[0]}&farbe=${data[3]}&bezeichnung=${data[1]}&hersteller=${data[2]}`);
     sendC.makeAjaxCall(function (colorHTML) {
         var showColors = document.getElementById("showColors");
         var farben = document.getElementById("farbe");
