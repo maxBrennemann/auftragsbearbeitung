@@ -221,7 +221,7 @@ if ($auftragsId == -1): ?>
 			<div class="innerDefCont" id="addPostenZeit" style="display: none">
 				<span>Zeit in Minuten<br><input id="time" type="number" min="0"></span><br>
 				<span>Stundenlohn in €<br><input id="wage" type="number" value="44"></span><br>
-				<span>Beschreibung<br><input id="descr" type="text"></span><br>
+				<span>Beschreibung<br><textarea id="descr"></textarea></span><br>
 				<button onclick="addTime()">Hinzufügen</button>
 			</div>
 			<div class="innerDefCont" id="addPostenLeistung" style="display: none">
@@ -232,11 +232,11 @@ if ($auftragsId == -1): ?>
 						<?php endforeach; ?>
 					</select>
 					<br>
-					<span>Beschreibung:<br><input id="bes"></span><br>
-					<span>Einkaufspreis:<br><input id="ekp" value="0"></span><br>
-					<span>Speziefischer Preis:<br><input id="pre" value="0"></span><br>
-					<span>Anzahl:<br><input id="anz" value="1"></span><br>
+					<span>Menge:<br><input id="anz" value="1"></span><br>
 					<span>Mengeneinheit:<br><input id="meh"></span><br>
+					<span>Beschreibung:<br><textarea id="bes"></textarea></span><br>
+					<span>Einkaufspreis:<br><input id="ekp" value="0"></span><br>
+					<span>Verkaufspreis:<br><input id="pre" value="0"></span><br>
 					<button onclick="addLeistung()">Hinzufügen</button>
 				</div>
 			</div>
@@ -246,7 +246,7 @@ if ($auftragsId == -1): ?>
 				<span>EK-Preis: <input id="posten_produkt_ek" type="text"></span>
 				<span>VK-Preis: <input id="posten_produkt_vk" type="text"></span>
 				<span>Name: <input id="posten_produkt_name" type="text"></span>
-				<span>Beschreibung: <input id="posten_produkt_besch" type="text"></span>
+				<span>Beschreibung: <textarea id="posten_produkt_besch"></textarea></span>
 				<button onclick="addProductCompact()">Hinzufügen</button>
 			</div>
 			<span id="showOhneBerechnung" style="display: none;"><input id="ohneBerechnung" type="checkbox">Ohne Berechnung</span>
