@@ -605,6 +605,8 @@ function editDescription(event) {
 
                 var btn = text.nextElementSibling;
                 btn.innerText = "Bearbeiten";
+
+                infoSaveSuccessfull("success");
             } else
                 console.log("not saved");
         });
