@@ -9,3 +9,5 @@ WordCountsArray.class
 .project
 /SearchThread.class
 /SearchTest.class
+/SQLConnector.class
+/Query.class

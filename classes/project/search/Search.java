@@ -1,30 +1,125 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Search {
 
-    public static DocumentCollection documentCollectionCustomers;
-    public static DocumentCollection documentCollectionOrders;
-    public static DocumentCollection documentCollectionProducts;
+	public static DocumentCollection documentCollectionCustomers;
+	public static DocumentCollection documentCollectionOrders;
+	public static DocumentCollection documentCollectionProducts;
 
-    /*
-    * syntax:
-    * add [type] [id] [data] -> returns currently nothing
-    * search [type] [query] -> returns id list of potential matches
-    */
+	public SQLConnector db;
 
-    public static void main(String[] args) throws IOException {
-        documentCollectionCustomers = new DocumentCollection();
-        documentCollectionOrders = new DocumentCollection();
-        documentCollectionProducts = new DocumentCollection();
-        
-        ServerSocket serverSocket = new ServerSocket(29180);
-        while(true) {
-            Socket client = serverSocket.accept();
-            SearchThread searchThread = new SearchThread(client);
-            searchThread.start();
-        }
-    }
-    
+	/*
+	 * syntax: add [type] [id] [data] -> returns currently nothing search [type]
+	 * [query] -> returns id list of potential matches
+	 */
+
+	public static void main(String[] args) throws IOException {
+		documentCollectionCustomers = new DocumentCollection();
+		documentCollectionOrders = new DocumentCollection();
+		documentCollectionProducts = new DocumentCollection();
+
+		/*
+		 * ServerSocket serverSocket = new ServerSocket(29180); while(true) { Socket
+		 * client = serverSocket.accept(); SearchThread searchThread = new
+		 * SearchThread(client); searchThread.start(); }
+		 */
+
+		Search s = new Search();
+		s.initializeSearch();
+	}
+
+	public Search() {
+		db = new SQLConnector();
+	}
+
+	/*
+	 * TODO Quellen einlesen und neue Daten hinzufügen
+	 */
+	public void initializeSearch() {
+		ArrayList<String> data = db.getCustomerData();
+		ArrayList<Query> queries = new ArrayList<Query>();
+		
+		for (int i = 0; i < data.size(); i++) {
+			Query q = new Query(data.get(i));
+			queries.add(q);
+		}
+		
+		String search = "ansbach";
+		String mostSimilar = "";
+		double mostSimilarity = 0;
+		String secondSimilar = "";
+
+		for (int i = 0; i < data.size(); i++) {
+			double temp = queries.get(i).getSimilarity(search);
+			if (temp >= 0.3)
+				System.out.println(temp + ": " + data.get(i));
+			
+			if (temp >= mostSimilarity) {
+				mostSimilar = data.get(i);
+				mostSimilarity = temp;
+			}
+		}
+
+		System.out.println(mostSimilar + " " + mostSimilarity);
+		System.out.println(secondSimilar);
+	}
+
+	/**
+	 * Calculates the similarity (a number within 0 and 1) between two strings.
+	 */
+	public static double similarity(String s1, String s2) {
+		String longer = s1, shorter = s2;
+		if (s1.length() < s2.length()) { // longer should always have greater length
+			longer = s2;
+			shorter = s1;
+		}
+		int longerLength = longer.length();
+		if (longerLength == 0) {
+			return 1.0;
+			/* both strings are zero length */ }
+		/*
+		 * // If you have Apache Commons Text, you can use it to calculate the edit
+		 * distance: LevenshteinDistance levenshteinDistance = new
+		 * LevenshteinDistance(); return (longerLength -
+		 * levenshteinDistance.apply(longer, shorter)) / (double) longerLength;
+		 */
+		return (longerLength - editDistance(longer, shorter)) / (double) longerLength;
+
+	}
+
+	// Example implementation of the Levenshtein Edit Distance
+	// See http://rosettacode.org/wiki/Levenshtein_distance#Java
+	public static int editDistance(String s1, String s2) {
+		s1 = s1.toLowerCase();
+		s2 = s2.toLowerCase();
+
+		int[] costs = new int[s2.length() + 1];
+		for (int i = 0; i <= s1.length(); i++) {
+			int lastValue = i;
+			for (int j = 0; j <= s2.length(); j++) {
+				if (i == 0)
+					costs[j] = j;
+				else {
+					if (j > 0) {
+						int newValue = costs[j - 1];
+						if (s1.charAt(i - 1) != s2.charAt(j - 1))
+							newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+						costs[j - 1] = lastValue;
+						lastValue = newValue;
+					}
+				}
+			}
+			if (i > 0)
+				costs[s2.length()] = lastValue;
+		}
+		return costs[s2.length()];
+	}
+
+	public static void printSimilarity(String s, String t) {
+		System.out.println(String.format("%.3f is the similarity between \"%s\" and \"%s\"", similarity(s, t), s, t));
+	}
+
 }
