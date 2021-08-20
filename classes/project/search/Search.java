@@ -5,10 +5,6 @@ import java.util.ArrayList;
 
 public class Search {
 
-	public static DocumentCollection documentCollectionCustomers;
-	public static DocumentCollection documentCollectionOrders;
-	public static DocumentCollection documentCollectionProducts;
-
 	public SQLConnector db;
 
 	/*
@@ -17,9 +13,7 @@ public class Search {
 	 */
 
 	public static void main(String[] args) throws IOException {
-		documentCollectionCustomers = new DocumentCollection();
-		documentCollectionOrders = new DocumentCollection();
-		documentCollectionProducts = new DocumentCollection();
+		
 
 		/*
 		 * ServerSocket serverSocket = new ServerSocket(29180); while(true) { Socket
@@ -36,7 +30,7 @@ public class Search {
 	}
 
 	/*
-	 * TODO Quellen einlesen und neue Daten hinzufügen
+	 * TODO Quellen einlesen und neue Daten hinzufï¿½gen
 	 */
 	public void initializeSearch() {
 		ArrayList<String> data = db.getCustomerData();
