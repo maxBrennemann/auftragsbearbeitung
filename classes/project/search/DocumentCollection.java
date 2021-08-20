@@ -507,4 +507,9 @@ public class DocumentCollection {
 
     return count;
   }
+  
+  public double getDocumentSimilarity(int i) {
+	  return getDocumentCollectionCell(i).getQuerySimilarity();
+  }
+  
 }

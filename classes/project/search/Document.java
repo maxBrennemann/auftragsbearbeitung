@@ -8,7 +8,7 @@ public class Document {
    * Most common german suffices
    */
   public static final String[] SUFFICES = { "ab", "al", "ant", "artig", "bar", "chen", "ei", "eln", "en", "end", "ent",
-  "er", "fach", "fikation", "fizieren", "f√§hig", "gem√§√ü", "gerecht", "haft", "haltig", "heit", "ieren", "ig", "in",
+  "er", "fach", "fikation", "fizieren", "f‰hig", "gem‰ﬂ", "gerecht", "haft", "haltig", "heit", "ieren", "ig", "in",
   "ion", "iren", "isch", "isieren", "isierung", "ismus", "ist", "it√§t", "iv", "keit", "kunde", "legen", "lein",
   "lich", "ling", "logie", "los", "mal", "meter", "mut", "nis", "or", "sam", "schaft", "tum", "ung", "voll", "wert",
   "w√ºrdig", "ie" };
