@@ -11,3 +11,5 @@ WordCountsArray.class
 /SearchTest.class
 /SQLConnector.class
 /Query.class
+/JSONServer.class
+/JSONServer$MyHandler.class
