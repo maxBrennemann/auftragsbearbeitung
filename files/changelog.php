@@ -6,6 +6,16 @@
         <li>Vor dem Löschen wird nach einer Bestätigung gefragt</li>
         <li>Listen können nun mit Daten gefüllt werden</li>
         <li>Datum für Auftragsstellung und Termin kann nun bearbeitet werden</li>
+        <li>Inputs für Postendaten werden nach dem Hinzufügen geleert</li>
+        <li>Aufkleber Posten funktioniert jetzt richtig - Seite muss nicht mehr neu geladen werden</li>
+        <li>Reihenfolge für Postendaten angepasst</li>
+        <li>Posten können bearbeitet werden
+            <ul>
+                <li>alte Postendaten werde noch nicht gespeichert</li>
+                <li>kein Postenverlauf</li>
+                <li>alle Daten einer Zeile müssen neu eingegeben werden</li>
+            </ul>
+        </li>
     </ul>
     <h3>1.1.10</h3>
     <ul>
@@ -49,5 +59,9 @@
 
     .changelog ul {
         list-style-type: disc;
+    }
+
+    li ul {
+        padding-left: 15px;
     }
 </style>
