@@ -80,6 +80,7 @@ function addTime() {
         updatePrice(response);
         reloadPostenListe();
         infoSaveSuccessfull("success");
+        clearInputs(["time", "wage", "descr"]);
     });
 }
 
@@ -104,6 +105,7 @@ function addLeistung() {
         updatePrice(response);
         reloadPostenListe();
         infoSaveSuccessfull("success");
+        clearInputs(["bes", "ekp", "pre", "meh", "anz"]);
     });
 }
 
@@ -125,6 +127,7 @@ function addProductCompact() {
     add.makeAjaxCall(function (response) {
         console.log(response);
         reloadPostenListe();
+        clearInputs(["posten_produkt_menge", "posten_produkt_marke", "posten_produkt_ek", "posten_produkt_vk", "posten_produkt_name", "posten_produkt_besch"]);
     });
 }
 
@@ -431,6 +434,61 @@ function showDeleteMessage(row, header, key, type) {
 
     addActionButtonForDiv(div, "remove");
     centerAbsoluteElement(div);
+}
+
+function editRow(key, element) {
+    /* create div with addPosten content */
+    var div = document.createElement("div");
+
+    /* copy posten input data into new div */
+    var postenType = "addPostenLeistung";
+    var movePostenInput = document.getElementById(postenType);
+    var moveOhneBerechnung = document.getElementById("showOhneBerechnung");
+    var moveDiscount = document.getElementById("showDiscount");
+
+    movePostenInput.style.display = "block";
+    moveOhneBerechnung.style.display = "block";
+    moveDiscount.style.display = "block";
+
+    div.appendChild(movePostenInput);
+    div.appendChild(moveOhneBerechnung);
+    div.appendChild(moveDiscount);
+
+    document.body.appendChild(div);
+
+    addActionButtonForDiv(div, "hide");
+    centerAbsoluteElement(div);
+
+    /* sends token to server to overwrite a posten */
+    var table = document.getElementById("auftragsPostenTable").children[0].dataset.key;
+    var postenId = key;
+    var update = new AjaxCall(`getReason=overwritePosten&postenId=${postenId}&table=${table}`, "POST", window.location.href);
+    update.makeAjaxCall(function (response) {
+        console.log(response);
+    });
+
+    /* moves back the addPosten content */
+    let closeButton = div.querySelector(".closeButton");
+    closeButton.addEventListener("click", function(event) {
+        let div = event.target.parentNode;
+
+        let addPosten = document.getElementById("addPosten");
+        /* moves postenData to first place */
+        div.children[1].style.display = "none";
+        addPosten.insertBefore(div.children[1], addPosten.children[0]);
+        /* remove last child, its a br tag */
+        addPosten.removeChild(addPosten.children[addPosten.children.length - 1]);
+        /* add OhneBerechnung */
+        div.children[1].style.display = "none";
+        addPosten.appendChild(div.children[1]);
+        /* add br tag */
+        addPosten.appendChild(document.createElement("br"));
+        /* add Discount */
+        div.children[1].style.display = "none";
+        addPosten.appendChild(div.children[1]);
+
+        /* its always position 1 because the elements are moved away and the list gets shorter */
+    }, false);
 }
 
 /* function starts deletion of the row */

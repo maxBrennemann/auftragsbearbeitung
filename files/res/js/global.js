@@ -583,3 +583,9 @@ function infoSaveSuccessfull(status = "failiure") {
         div.parentNode.removeChild(div);
     }, 2000);
 }
+
+function clearInputs(inputs) {
+	for (let i = 0; i < inputs.length; i++) {
+		document.getElementById(inputs[i]).value = "";
+	}
+}

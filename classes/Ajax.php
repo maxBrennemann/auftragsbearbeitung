@@ -620,6 +620,12 @@ class Ajax {
 				DBAccess::updateQuery("UPDATE auftrag SET $type = '$date' WHERE Auftragsnummer = $order");
 				echo "success";
 			break;
+			case "overwritePosten":
+				$_SESSION['overwritePosten'] = true;
+				$_SESSION['overwritePosten_postennummer'] = Table::getIdentifierValue($_POST['table'], $_POST['postenId']);
+
+				echo $_SESSION['overwritePosten_postennummer'];
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);

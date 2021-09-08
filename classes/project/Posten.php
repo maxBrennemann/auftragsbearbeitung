@@ -89,7 +89,17 @@ abstract class Posten {
 		$fre = $data['ohneBerechnung'];
 		$dis = $data['discount'];
 
-		$postennummer = DBAccess::insertQuery("INSERT INTO posten (Auftragsnummer, Posten, ohneBerechnung, discount) VALUES ($auftragsnummer, '$type', $fre, $dis)");
+		if (isset($_SESSION['overwritePosten']) && $_SESSION['overwritePosten'] == true) {
+			$postennummer = (int) $_SESSION['overwritePosten_postennummer'];
+			DBAccess::updateQuery("UPDATE posten SET ohneBerechnung = $fre, discount = $dis WHERE Postennummer = $postennummer");
+
+			/* quick fixed for overwrite */
+			DBAccess::deleteQuery("DELETE FROM zeit WHERE Postennummer = $postennummer");
+			DBAccess::deleteQuery("DELETE FROM leistung_posten WHERE Postennummer = $postennummer");
+			DBAccess::deleteQuery("DELETE FROM product_compact WHERE Postennummer = $postennummer");
+		} else {
+			$postennummer = DBAccess::insertQuery("INSERT INTO posten (Auftragsnummer, Posten, ohneBerechnung, discount) VALUES ($auftragsnummer, '$type', $fre, $dis)");
+		}
 
 		switch ($type) {
 			case "zeit":
