@@ -441,7 +441,7 @@ function editRow(key, element) {
     var div = document.createElement("div");
 
     /* copy posten input data into new div */
-    var postenType = "addPostenLeistung";
+    var postenType = element.parentNode.parentNode.dataset.type; //"addPostenLeistung";
     var movePostenInput = document.getElementById(postenType);
     var moveOhneBerechnung = document.getElementById("showOhneBerechnung");
     var moveDiscount = document.getElementById("showDiscount");

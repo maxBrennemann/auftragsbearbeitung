@@ -200,7 +200,8 @@ class Auftrag implements StatisticsInterface {
 			"MEH" => "", 
 			"Preis" => "", 
 			"Anzahl" => "", 
-			"Einkaufspreis" => ""
+			"Einkaufspreis" => "",
+			"type" => ""
 		);
 
 		$data = array(sizeof($this->Auftragsposten));
@@ -235,6 +236,7 @@ class Auftrag implements StatisticsInterface {
 		$t->addActionButton("edit");
 		$t->setType("posten");
 		$t->addActionButton("delete", $identifier = "Postennummer");
+		$t->addDataset("type", "type");
 		$_SESSION["posten_table"] = serialize($t);
 		$_SESSION[$t->getTableKey()] = serialize($t);
 

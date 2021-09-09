@@ -17,6 +17,8 @@ class Table {
 	private $limit = 0;
 	private $link = null;
 	public $columnNames;
+
+	private $dataset = [0=>false];
 	
 	/* action button variables */
 	private $buttonEdit = false;
@@ -74,6 +76,14 @@ class Table {
 	
 	public function addLink($link) {
 		$this->link = $link;
+	}
+
+	public function addDataset($key, $value) {
+		$this->dataset = [
+			0 => true,
+			1 => $key,
+			2 => $value
+		];
 	}
 
 	/* every index of the keys array is interpreted as a key for the data array */
@@ -343,7 +353,7 @@ class Table {
 		/* for each row of the result */
 		for ($i = 0; $i < sizeof($this->data); $i++) {
 			$row = $this->data[$i];
-			$html .= self::html_createRow2($row, $this->columnNames, $this->getLink($i));
+			$html .= self::html_createRow2($row, $this->columnNames, $this->getLink($i), $this->dataset);
 		}
 
 		$html .= "</table>";
@@ -386,11 +396,16 @@ class Table {
 	 * @param Array		$row		Zeilendaten
 	 * @param Array		$rowNames	Zeilennamen, es werden nur die Zeilendaten ausgewertet, für die ein Name existiert
 	 * @param string	$link		Link, kann auch null sein, dann wird kein Link gesetzt
+	 * @param Array		$dataset	Array mit Infos für HTML Dataset
 	 * 
 	 * @return	Gibt eine Tabellenzeile in HTML zurück
 	 */
-	private static function html_createRow2($row, $rowNames, $link) {
+	private static function html_createRow2($row, $rowNames, $link, $dataset) {
 		$html = "<tr>";
+		if ($dataset[0] == true) {
+			$data = $row[$dataset[2]];
+			$html = "<tr data-{$dataset[1]}=\"{$data}\">";
+		}
 		
 		for ($i = 0; $i < sizeof($rowNames); $i++) {
 			$column = $rowNames[$i]["COLUMN_NAME"];
