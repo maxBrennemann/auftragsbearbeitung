@@ -46,6 +46,7 @@ class Zeit extends Posten {
 		$arr['MEH'] =  "min";
 		$arr['Beschreibung'] = $this->beschreibung;
 		$arr['Einkaufspreis'] = "-";
+		$arr['type'] = "addPostenZeit";
 
 		return $arr;
 	}

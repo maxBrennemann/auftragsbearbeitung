@@ -59,6 +59,7 @@ class Leistung extends Posten {
 		$arr['Leistungsnummer'] = $this->leistungsnummer;
 		$arr['Anzahl'] = $this->quantity;
 		$arr['MEH'] = $this->meh;
+		$arr['type'] = "addPostenLeistung";
 
 		return $arr;
 	}
