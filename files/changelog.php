@@ -1,4 +1,8 @@
 <div class="changelog">
+    <h3>1.1.12</h3>
+    <ul>
+        
+    </ul>
     <h3>1.1.11</h3>
     <ul>
         <li>Verschiedene Fehlerbehebungen</li>
