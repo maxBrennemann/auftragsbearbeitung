@@ -22,7 +22,7 @@ public class Search {
 		 */
 
 		Search s = new Search();
-		s.initializeSearch();
+		s.initializeSearch("");
 	}
 
 	public Search() {
@@ -32,7 +32,7 @@ public class Search {
 	/*
 	 * TODO Quellen einlesen und neue Daten hinzuf�gen
 	 */
-	public void initializeSearch() {
+	public String[] initializeSearch(String search) {
 		ArrayList<String> data = db.getCustomerData();
 		ArrayList<Query> queries = new ArrayList<Query>();
 		
@@ -41,7 +41,6 @@ public class Search {
 			queries.add(q);
 		}
 		
-		String search = "ansbach";
 		String mostSimilar = "";
 		double mostSimilarity = 0;
 		String secondSimilar = "";
@@ -49,7 +48,7 @@ public class Search {
 		for (int i = 0; i < data.size(); i++) {
 			double temp = queries.get(i).getSimilarity(search);
 			if (temp >= 0.3)
-				System.out.println(temp + ": " + data.get(i));
+				//System.out.println(temp + ": " + data.get(i));
 			
 			if (temp >= mostSimilarity) {
 				mostSimilar = data.get(i);
@@ -57,8 +56,14 @@ public class Search {
 			}
 		}
 
-		System.out.println(mostSimilar + " " + mostSimilarity);
-		System.out.println(secondSimilar);
+		//System.out.println(mostSimilar + " " + mostSimilarity);
+		//System.out.println(secondSimilar);
+		
+		String[] result = new String[2];
+		result[0] = mostSimilar;
+		result[1] = secondSimilar;
+		
+		return result;
 	}
 
 	/**
