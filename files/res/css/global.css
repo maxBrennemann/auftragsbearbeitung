@@ -131,6 +131,10 @@ tr:nth-child(odd) {
     background-color: var(--main-table-color);
 }
 
+tr:only-child {
+    background-color: var(--main-table-color);
+}
+
 th {
     padding: 7px;
     margin: 1px;

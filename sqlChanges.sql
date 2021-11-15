@@ -278,3 +278,8 @@ INSERT INTO `history_type` (`type_id`, `name`) VALUES ('7', 'Notiz');
 
 /* Änderungen 10.08.2021 */
 ALTER TABLE `farben` CHANGE `Farbe` `Farbe` VARCHAR(64) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
+
+/* Änderungen 12.10.2021 */
+UPDATE `auftragstyp` SET `id` = '4' WHERE `auftragstyp`.`id` = 0;
+ALTER TABLE `auftragstyp` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT;
+INSERT INTO `auftragstyp` (`id`, `Auftragstyp`) VALUES (NULL, 'Folienplott'), (NULL, 'Drucksachen'), (NULL, 'Satzarbeiten');
