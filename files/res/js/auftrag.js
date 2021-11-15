@@ -382,7 +382,7 @@ function showDeleteMessage(row, header, key, type) {
     tbody.appendChild(row.cloneNode(true));
 
     /* creates inner text of deletion verification */
-    let content = `Willst Du diese Zeile wirklich löschen?:`;
+    let content = `Willst Du diese Zeile wirklich löschen?:<br>`;
     let contentNode = document.createElement("p");
     contentNode.innerHTML = content;
     contentNode.appendChild(table);
