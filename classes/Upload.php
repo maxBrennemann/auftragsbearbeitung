@@ -35,12 +35,16 @@ class Upload {
     }
 
     public function uploadFilesProduct($produktnummer) {
-        $id = $this->uploadFiles();
-        echo "id: " . $id . " /id";
-        DBAccess::insertQuery("INSERT INTO dateien_produkte (id_datei, id_produkt) VALUES ($id, $produktnummer)");
-    
-        $link = Link::getPageLink("neuesProdukt") . "?id=" . $auftragsnummer;
-        header("Location:$link");
+        $ids = $this->uploadFiles();
+        if (is_array($ids)) {
+            foreach ($ids as $id) {
+                /*echo "id: " . $id . " /id";*/
+                DBAccess::insertQuery("INSERT INTO dateien_produkte (id_datei, id_produkt) VALUES ($id, $produktnummer)");
+            }
+        }
+
+
+        echo Upload::getFilesProduct($produktnummer);
     }
 
     public function uploadFilesMotive($name) {
@@ -90,6 +94,35 @@ class Upload {
 
     public static function getFilesAuftrag($auftragsnummer) {
         $files = DBAccess::selectQuery("SELECT DISTINCT dateiname AS Datei, originalname, `date` AS Datum, typ as Typ FROM dateien LEFT JOIN dateien_auftraege ON dateien_auftraege.id_datei = dateien.id WHERE dateien_auftraege.id_auftrag = $auftragsnummer");
+        
+        for ($i = 0; $i < sizeof($files); $i++) {
+            $link = Link::getResourcesShortLink($files[$i]['Datei'], "upload");
+
+            if (getimagesize("upload/" . $files[$i]['Datei'])) {
+                $html = "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\"><img class=\"img_prev_i\" src=\"$link\" width=\"40px\"><p class=\"img_prev\">{$files[$i]['originalname']}</p></a>";
+            } else {
+                $html = "<span><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\">{$files[$i]['originalname']}</a></span>";
+            }
+
+            $files[$i]['Datei'] = $html;
+        }
+
+        $column_names = array(
+            0 => array("COLUMN_NAME" => "Datei"), 
+            1 => array("COLUMN_NAME" => "Typ"), 
+            2 => array("COLUMN_NAME" => "Datum")
+        );
+
+        $t = new Table();
+		$t->createByData($files, $column_names);
+		$t->setType("dateien");
+        $t->addActionButton("delete", $identifier = "id");
+
+		return $t->getTable();
+    }
+
+    public static function getFilesProduct($idProduct) {
+        $files = DBAccess::selectQuery("SELECT DISTINCT dateiname AS Datei, originalname, `date` AS Datum, typ as Typ FROM dateien LEFT JOIN dateien_produkte ON dateien_produkte.id_datei = dateien.id WHERE dateien_produkte.id_produkt = $idProduct");
         
         for ($i = 0; $i < sizeof($files); $i++) {
             $link = Link::getResourcesShortLink($files[$i]['Datei'], "upload");

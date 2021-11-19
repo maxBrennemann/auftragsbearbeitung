@@ -7,6 +7,7 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 }
 
 require_once('classes/DBAccess.php');
+require_once('classes/project/Image.php');
 
 class Produkt { 
     
@@ -30,8 +31,41 @@ class Produkt {
         
     }
 
+	public function getBezeichnung() {
+		return $this->bezeichnung;
+	}
+
+	public function getBeschreibung() {
+		return $this->beschreibung;
+	}
+
+	public function getPreis() {
+		return $this->preis;
+	}
+
+	public function getPreisBrutto() {
+		return number_format((float) $this->preis, 2, ",", ".");
+	}
+
+	public function getProductId() {
+		return $this->produktnummer;
+	}
+
 	public function getHTMLData() {
 		return "";
+	}
+
+	public function getImages() {
+		$query = "SELECT DISTINCT id FROM dateien LEFT JOIN dateien_produkte ON dateien_produkte.id_datei = dateien.id WHERE dateien_produkte.id_produkt = $this->produktnummer";
+		$data = DBAccess::selectQuery($query);
+
+		$images = array();
+
+		foreach ($data as $d) {
+			array_push($images, new Image($d['id']));
+		}
+
+		return $images;
 	}
 
 	public function fillToArray($arr) {
@@ -133,6 +167,26 @@ class Produkt {
 		$product = new Produkt($productnumber);
 		$html = "<div><h3>{$product->bezeichnung}</h3><span>Anzahl <input value=\"1\" id=\"{$productnumber}_getAmount\"></span><button onclick=\"chooseProduct($productnumber)\">Auswählen</button></div>";
 		echo $html;
+	}
+
+	/*
+	 * returns all products
+	 */
+	public static function getAllProducts($categoryId = null) {
+		$products = array();
+		if ($categoryId == null) {
+			$sql = "SELECT Nummer FROM produkt";
+			$ids = DBAccess::selectQuery($sql);
+
+			foreach ($ids as $id) {
+				$id = $id["Nummer"];
+				array_push($products, new Produkt($id));
+			}
+		} else {
+			$sql = "SELECT Nummer FROM produkt WHERE categoryId = $categoryId";
+		}
+
+		return $products;
 	}
 
 }

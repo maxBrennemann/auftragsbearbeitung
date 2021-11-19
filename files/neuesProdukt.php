@@ -7,10 +7,10 @@ if (isset($_GET['id'])) {
 	$productId = $_GET['id'];
 }
 
-if (isset($_POST['filesubmitbtn'])) {
+/*if (isset($_POST['filesubmitbtn'])) {
 	$upload = new Upload();
 	$upload->uploadFilesProduct($productId);
-}
+}*/
 
 $quelle = DBAccess::selectQuery("SELECT name, id FROM einkauf");
 $attributeGroups = DBAccess::selectQuery("SELECT * FROM attribute_group");
@@ -61,10 +61,5 @@ echo "<a href=\"" . Link::getPageLink("attributes") . "\">Zu den Produktattribut
 		</span>
 	</p>
 	<span id="addAttributeTable"></span>
-	<form method="post" enctype="multipart/form-data">
-		Dateien hinzufügen:<br>
-		<input type="file" name="uploadedFile">
-		<input type="submit" value="Datei hochladen" name="filesubmitbtn">
-	</form>
 	<button onclick="saveProduct()">Produkt speichern</button>
 </div>
