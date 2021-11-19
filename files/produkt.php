@@ -12,22 +12,37 @@
 	$showFiles = Upload::getFilesProduct($id);
 ?>
 <?php if ($id != -1): ?>
-	<h2><?=$p->getBezeichnung()?></h2>
-    <p><?=$p->getBeschreibung()?></p>
-    <p><?=$p->getPreisBrutto()?> €</p>
+	<span>
+		<h2><?=$p->getBezeichnung()?></h2>
+		<button>✎</button>
+	</span>
 
 	<br>
-
+    <span>
+		<p><?=$p->getBeschreibung()?></p>
+		<button>✎</button>
+	</span>
+	<br>
+	<span>
+		<p><?=$p->getPreisBrutto()?> €</p>
+		<button>✎</button>
+	</span>
+	<br>
 	<form class="fileUploader" method="post" enctype="multipart/form-data" data-target="product" name="auftragUpload">
 		Dateien hinzufügen:
 		<input type="file" name="uploadedFile" multiple>
 		<input name="produkt" value="<?=$id?>" hidden>
 	</form>
 	<div class="filesList defCont"></div>
-
 	<div id="showFilePrev">
 		<?=$showFiles?>
 	</div>
+	<style>
+		main span > * {
+			display: inline;
+		}
+	</style>
+	<span style="display: none" id="product-id"><?=$id?></span>
 <?php else: ?>
 	<div id='tableContainer'><?=$table?></div>
 <?php endif; ?>

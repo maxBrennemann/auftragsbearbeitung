@@ -626,6 +626,28 @@ class Ajax {
 
 				echo $_SESSION['overwritePosten_postennummer'];
 			break;
+			case "updateProductValues":
+				$productId = (int) $_POST['productId'];
+				$content = $_POST['content'];
+				$type = (int) $_POST['type'];
+
+				switch($type) {
+					case 1:
+						DBAccess::updateQuery("UPDATE produkt SET Bezeichnung = '$content' WHERE Nummer = $productId");
+						break;
+					case 2:
+						DBAccess::updateQuery("UPDATE produkt SET Beschreibung = '$content' WHERE Nummer = $productId");
+						break;
+					case 3:
+						DBAccess::updateQuery("UPDATE produkt SET Preis = '$content' WHERE Nummer = $productId");
+						break;
+					default:
+						echo "failiure";
+						return;
+				}
+				
+				echo "success";
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
