@@ -1,0 +1,16 @@
+body {
+    width: 80%;
+    margin: auto;
+}
+
+header {
+    width: 80%;
+}
+
+main {
+    width: 80%;
+}
+
+.cart {
+    width: 50px;
+}

@@ -283,3 +283,8 @@ ALTER TABLE `farben` CHANGE `Farbe` `Farbe` VARCHAR(64) CHARACTER SET latin1 COL
 UPDATE `auftragstyp` SET `id` = '4' WHERE `auftragstyp`.`id` = 0;
 ALTER TABLE `auftragstyp` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT;
 INSERT INTO `auftragstyp` (`id`, `Auftragstyp`) VALUES (NULL, 'Folienplott'), (NULL, 'Drucksachen'), (NULL, 'Satzarbeiten');
+
+/* Änderungen 19.11.2021 */
+CREATE TABLE `auftragsmanager`.`navigation` ( `id` INT NOT NULL , `link` INT NOT NULL , `type` INT NOT NULL , `parent` INT NOT NULL , `name` VARCHAR(64) NOT NULL ) ENGINE = InnoDB;
+ALTER TABLE `navigation` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);
+CREATE TABLE `auftragsmanager`.`category` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(64) NOT NULL , `parent` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
