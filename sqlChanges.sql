@@ -288,3 +288,4 @@ INSERT INTO `auftragstyp` (`id`, `Auftragstyp`) VALUES (NULL, 'Folienplott'), (N
 CREATE TABLE `auftragsmanager`.`navigation` ( `id` INT NOT NULL , `link` INT NOT NULL , `type` INT NOT NULL , `parent` INT NOT NULL , `name` VARCHAR(64) NOT NULL ) ENGINE = InnoDB;
 ALTER TABLE `navigation` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);
 CREATE TABLE `auftragsmanager`.`category` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(64) NOT NULL , `parent` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '9', 'head', 'produkt.js', '0', 'js');
