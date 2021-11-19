@@ -91,6 +91,10 @@ class Link {
 	public static function getGlobalJS() {
 		return self::getResourcesShortLink("global.js", "js");
 	}
+
+	public static function getGlobalFrontCSS() {
+		return self::getResourcesShortLink("front/global.css", "css");
+	}
 	
 	public static function getAdminLink() {
 		$link = REWRITE_BASE . "admin/";
