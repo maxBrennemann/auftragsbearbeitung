@@ -5,10 +5,15 @@ body {
 
 header {
     width: 80%;
+    border-radius: 0 0 6px 6px;
 }
 
 main {
     width: 80%;
+}
+
+footer {
+    border-radius: 6px 6px 0 0;
 }
 
 .cart {
