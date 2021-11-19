@@ -39,6 +39,10 @@
 			$auftragsId = (int) $_POST['auftrag'];
 			$upload = new Upload();
 			$upload->uploadFilesAuftrag($auftragsId);
+		} else if (strcmp($uploadDestination, "product") == 0) {
+			$auftragsId = (int) $_POST['produkt'];
+			$upload = new Upload();
+			$upload->uploadFilesProduct($auftragsId);
 		}
 	} else {
 		if ($page == "pdf") {
