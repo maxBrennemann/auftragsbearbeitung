@@ -30,19 +30,19 @@ $menutopitems = Navigation::getNavigationLinks("top");
     </nav>
     </header>
     <main>
-    <div>
+    <div class="product-container">
         <?php foreach ($products as $p): ?>
-            <div data-product-id="<?=$p->getProductId()?>">
-                <h2><?=$p->getBezeichnung()?></h2>
+            <div class="product-preview" data-product-id="<?=$p->getProductId()?>">
+                <a href=""><h2><?=$p->getBezeichnung()?></h2></a>
                 <p><?=$p->getBeschreibung()?></p>
                 <p><?=$p->getPreisBrutto()?> €</p>
                 <button>In den Warenkorb</button>
+                <?php foreach ($p->getImages() as $i): ?>
+                    <div data-image-id="<?=$i->getImageId()?>">
+                        <img src="<?=$i->getImageURL()?>" alt="" width="50px" height="auto">
+                    </div>
+                <?php endforeach; ?>
             </div>
-            <?php foreach ($p->getImages() as $i): ?>
-                <div data-image-id="<?=$i->getImageId()?>">
-                    <img src="<?=$i->getImageURL()?>" alt="" width="50px" height="auto">
-                </div>
-            <?php endforeach; ?>
         <?php endforeach; ?>
     </div>
     </main>
