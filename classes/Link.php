@@ -100,6 +100,11 @@ class Link {
 		$link = REWRITE_BASE . "admin/";
 		return $link;
 	}
+
+	public static function getCategoryLink($page) {
+        $link = WEB_URL . "/shop/category/" . $page;
+		return $link;
+    }
 	
 	public static function generateBreadcrumbList($pageName) {
 		$page = DBAccess::selectQuery("SELECT src FROM articles WHERE pageName = '$pageName'");

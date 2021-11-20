@@ -289,3 +289,6 @@ CREATE TABLE `auftragsmanager`.`navigation` ( `id` INT NOT NULL , `link` INT NOT
 ALTER TABLE `navigation` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);
 CREATE TABLE `auftragsmanager`.`category` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(64) NOT NULL , `parent` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '9', 'head', 'produkt.js', '0', 'js');
+
+/* Änderungen 20.11.2021 */
+INSERT INTO `category` (`id`, `name`, `parent`) VALUES ('0', 'Startkategorie', '0');
