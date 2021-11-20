@@ -19,3 +19,17 @@ footer {
 .cart {
     width: 50px;
 }
+
+.product-preview:hover {
+    border-radius:  6px;
+    box-shadow: 3px 4px 8px 3px rgb(0 0 0 / 31%);
+}
+
+.product-preview {
+    padding: 10px;
+}
+
+.product-container {
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
