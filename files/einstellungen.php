@@ -1,4 +1,11 @@
-<?php require_once('classes/project/Table.php'); ?>
+<?php 
+
+require_once('classes/project/Table.php');
+require_once('classes/front/CategoryTree.php');
+
+$categoryitems = CategoryTree::getOneLayerArray();
+
+?>
 <section>
     <h2>Auftragstypen festlegen</h2>
     <?php echo (new Table("auftragstyp"))->getTable(); ?>
@@ -11,18 +18,29 @@
     <h2>Mitarbeiter festlegen</h2>
     <?php echo (new Table("mitarbeiter"))->getTable(); ?>
 </section>
-<h2>Persönliche Einstellungen</h2>
-<div class="defCont" id="farbe">
-    <h4>Farbtöne festlegen</h4>
-    <select>
-        <option value="1">Tabellenfarbe</option>
-        <option value="2">Äußere Rahmen</option>
-        <option value="3">Innere Rahmen</option>
+<section>
+    <h2>Persönliche Einstellungen</h2>
+    <div class="defCont" id="farbe">
+        <h4>Farbtöne festlegen</h4>
+        <select>
+            <option value="1">Tabellenfarbe</option>
+            <option value="2">Äußere Rahmen</option>
+            <option value="3">Innere Rahmen</option>
+        </select>
+        <script>var cp = new Colorpicker(document.getElementById("farbe"));</script>
+        <button onclick="setCustomColor();">Diese Farbe übernehmen</button>
+        <button onclick="setCustomColor(0)">Auf Standard zurücksetzen</button>
+    </div>
+</section>
+<section>
+    <h2>Kategorien festlegen</h2>
+    <?=CategoryTree::getHTMLRepresentation()?>
+    <select name="categories" id="select-category">
+        <?php foreach ($categoryitems as $c): ?>
+        <option value="<?=$c->id?>"><?=$c->title?></option>
+        <?php endforeach; ?>
     </select>
-    <script>var cp = new Colorpicker(document.getElementById("farbe"));</script>
-    <button onclick="setCustomColor();">Diese Farbe übernehmen</button>
-    <button onclick="setCustomColor(0)">Auf Standard zurücksetzen</button>
-</div>
+</section>
 <script>
     function setCustomColor(value) {
         let color = value == 0 ? "" : cp.color;
