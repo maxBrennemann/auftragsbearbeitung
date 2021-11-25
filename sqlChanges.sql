@@ -292,3 +292,8 @@ INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `
 
 /* Änderungen 20.11.2021 */
 INSERT INTO `category` (`id`, `name`, `parent`) VALUES ('0', 'Startkategorie', '0');
+
+/* Änderungen 23.11.2021 */
+CREATE TABLE `auftragsmanager`.`frontPage` ( `id` INT NOT NULL AUTO_INCREMENT , `articleUrl` VARCHAR(32) NOT NULL , `pageName` VARCHAR(32) NOT NULL , `src` VARCHAR(32) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+INSERT INTO `frontpage` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'mainPage.php', 'Startseite', '');
+INSERT INTO `frontpage` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'productPage.php', 'Produkt', 'produkt');
