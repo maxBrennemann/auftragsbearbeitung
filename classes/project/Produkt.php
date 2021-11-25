@@ -51,6 +51,10 @@ class Produkt {
 		return $this->produktnummer;
 	}
 
+	public function getProduktLink() {
+		return Link::getFrontOfficeLink("produkt") . "?id=" . $this->produktnummer;
+	}
+
 	public function getHTMLData() {
 		return "";
 	}

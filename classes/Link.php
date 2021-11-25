@@ -26,6 +26,16 @@ class Link {
 		$link = WEB_URL . SUB_URL . $resourceName;
 		return $link;
 	}
+
+	public static function getFrontOfficeLink($page) {
+		if (DBAccess::selectQuery("SELECT * FROM frontpage WHERE src = '$page'") == null) {
+			$link = WEB_URL . FRONT . "";
+			return $link; 
+		}
+		
+		$link = WEB_URL . FRONT . $page;
+		return $link;
+	}
 	
 	public static function getImageLink($resourceName) {
 		$link = REWRITE_BASE . "files/res/img/" . $resourceName;
