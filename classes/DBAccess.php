@@ -84,6 +84,15 @@ class DBAccess {
 		self::$statement->execute();
 		return self::$connection->lastInsertId();
 	}
+
+	public static function executeQuery($query) {
+		self::createConnection();
+		
+		self::$statement = self::$connection->prepare($query);
+		self::$statement->execute();
+		
+		self::$statement->execute();
+	}
 }
 
 ?>
