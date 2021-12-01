@@ -1,8 +1,12 @@
 <?php
 
+/* starts session for registered users and shopping carts */
+session_start();
+
 require_once('classes/Link.php');
 require_once('classes/project/Produkt.php');
 require_once('classes/front/Navigation.php');
+require_once('classes/Ajax.php');
 
 $isArticle = false;
 
@@ -15,7 +19,11 @@ if ($parts[0] == 'artikel') {
     $isArticle = true;
 }
 
-showPage($page, $isArticle);
+if (isset($_POST['getReason'])) {
+    Ajax::manageRequests($_POST['getReason'], $page);
+} else {
+    showPage($page, $isArticle);
+}
 
 function showPage($page, $isArticle) {
     if ($page == "test") {
@@ -42,6 +50,13 @@ function showPage($page, $isArticle) {
         $result = $result[0];
         $articleUrl = $result["articleUrl"];
         $pageName = $result["pageName"];
+
+        $title = $pageName;
+
+        if ($articleUrl == "productPage.php") {
+            $nummer = isset($_GET["id"]) ? $_GET["id"] : 0;
+            $title = DBAccess::selectQuery("SELECT Bezeichnung FROM produkt WHERE Nummer = $nummer")[0]["Bezeichnung"];
+        }
     }
     
     include('files/frontOffice/header.php');
