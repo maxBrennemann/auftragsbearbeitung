@@ -46,7 +46,12 @@ class Table {
 			if ($cnames != null) {
 				$this->columnNames = $cnames;
 			}
-			$this->data = DBAccess::selectQuery("SELECT * FROM `$type` LIMIT " . $this->limit);
+
+			if ($this->limit == -1) {
+				$this->data = DBAccess::selectQuery("SELECT * FROM `$type`");
+			} else {
+				$this->data = DBAccess::selectQuery("SELECT * FROM `$type` LIMIT " . $this->limit);
+			}
 		}
 
 		$this->type = $type;
@@ -84,6 +89,10 @@ class Table {
 			1 => $key,
 			2 => $value
 		];
+	}
+
+	public function getData() {
+		return $this->data;
 	}
 
 	/* every index of the keys array is interpreted as a key for the data array */

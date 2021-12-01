@@ -5,7 +5,15 @@
 	$id = isset($_GET["id"]) ? $_GET["id"] : -1;
 
 	if ($id == -1) {
-		$table = FormGenerator::createTable("produkt_varianten", false, true, "produkt", 1, false);
+		$linker = new Link();
+		$linker->addBaseLink("produkt");
+
+		$productTable = new Table("produkt");
+		$productTable->addLink($linker);
+
+		$linker->setIterator("id", $productTable->getData(), "Nummer");
+
+		$table = $productTable->getTable();
 	}
 
 	$p = new Produkt($id);
