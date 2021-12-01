@@ -648,6 +648,11 @@ class Ajax {
 				
 				echo "success";
 			break;
+			case "frontAddToCart":
+				$productId = (int) $_POST['productId'];
+				require_once('classes/front/Cart.php');
+				Cart::addToCart($productId);
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
