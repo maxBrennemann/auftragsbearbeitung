@@ -8,8 +8,19 @@ class Cart {
         if (isset($_SESSION)) {
             $products = isset($_SESSION["cart_Products"]) ? unserialize($_SESSION["cart_Products"]) : [];
 
-            $product = new ProductController($productId);
-            array_push($products, $product);
+            $exists = false;
+
+            foreach ($products as $p) {
+                if ($p->getProductId() == $productId) {
+                    $p->incrementQuantity();
+                    $exists = true;
+                }
+            }
+
+            if (!$exists) {
+                $product = new ProductController($productId);
+                array_push($products, $product);
+            }
 
             $_SESSION["cart_Products"] = serialize($products);
         }
