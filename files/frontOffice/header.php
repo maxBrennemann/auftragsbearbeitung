@@ -6,17 +6,19 @@ $globalFrontCSS =  Link::getGlobalFrontCSS();
 $products = Produkt::getAllProducts();
 $menutopitems = Navigation::getNavigationLinks("top");
 
+$cart = Link::getFrontOfficeLink("cart");
+
 ?>
 <!DOCTYPE>
 <html>
 <head>
     <link rel="stylesheet" href="<?=$globalCSS?>">
     <link rel="stylesheet" href="<?=$globalFrontCSS?>">
-    <title>Titel</title>
+    <title><?=$title?> - Shop</title>
 </head>
 <body>
     <header>
-    <button class="cart">🛒</button>
+    <a href="<?=$cart?>" class="cart">🛒</a>
     <nav class="menu-top">
         <ul>
             <?php foreach ($menutopitems as $m): ?>
