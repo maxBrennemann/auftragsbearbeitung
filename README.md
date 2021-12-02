@@ -1,3 +1,5 @@
-# auftragsbearbeitung
+# Auftragsbearbeitung
 
-This project focuses on creating a webpage with back and frontoffice to manage orders from offline customers with additional information and in the near future an online shop.
+Das Projekt besteht aus einem Backoffice, in dem man Aufträge von Kunden anlegen und abarbeiten kann. Verschiedenen Mitarbeitern können Aufgaben zugewiesen werden. Es können Angebote und Rechnungen generiert werden.
+
+In Entwicklung befindet sich außerdem ein Frontoffice, das wie ein klassischer Onlineshop funktionieren soll. Mit dabei ist ein CMS.
