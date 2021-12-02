@@ -18,13 +18,16 @@ $cart = Link::getFrontOfficeLink("cart");
 </head>
 <body>
     <header>
-    <a href="<?=$cart?>" class="cart">🛒</a>
-    <nav class="menu-top">
-        <ul>
-            <?php foreach ($menutopitems as $m): ?>
-                <li><a href="<?=$m->getItemLink()?>"><?=$m->getItemName()?></a></li>
-            <?php endforeach; ?>
-        </ul>
-    </nav>
+        <div class="header-container">
+        <a href="<?=$cart?>" class="cart">🛒</a>
+        <nav class="menu-top">
+            <ul>
+                <?php foreach ($menutopitems as $m): ?>
+                    <li><a href="<?=$m->getItemLink()?>"><?=$m->getItemName()?></a></li>
+                <?php endforeach; ?>
+            </ul>
+        </nav>
+        <span>Suche: <input type="text"></span>
+        </div>
     </header>
     <main>

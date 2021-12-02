@@ -52,6 +52,10 @@ class Navigation {
         return $items;
     }
 
+    static function getFooterLinks() {
+        return DBAccess::selectQuery("SELECT * FROM footer_links");
+    }
+
 }
 
 ?>
