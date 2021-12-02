@@ -300,3 +300,6 @@ INSERT INTO `frontpage` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'p
 
 /* Änderungen 01.12.2021 */
 INSERT INTO `frontpage` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'cartPage.php', 'Einkaufswagen', 'cart');
+CREATE TABLE `footer_links` ( `id` INT NOT NULL AUTO_INCREMENT , `link` INT NOT NULL , `title` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+ALTER TABLE `footer_links` CHANGE `link` `link` VARCHAR(64) NOT NULL;
+ALTER TABLE `footer_links` CHANGE `title` `title` VARCHAR(64) NOT NULL;
