@@ -12,14 +12,13 @@ $cart = Link::getFrontOfficeLink("cart");
 <!DOCTYPE>
 <html>
 <head>
-    <link rel="stylesheet" href="<?=$globalCSS?>">
+    <!--<link rel="stylesheet" href="<?=$globalCSS?>">-->
     <link rel="stylesheet" href="<?=$globalFrontCSS?>">
     <title><?=$title?> - Shop</title>
 </head>
 <body>
     <header>
         <div class="header-container">
-        <a href="<?=$cart?>" class="cart">🛒</a>
         <nav class="menu-top">
             <ul>
                 <?php foreach ($menutopitems as $m): ?>
@@ -27,6 +26,7 @@ $cart = Link::getFrontOfficeLink("cart");
                 <?php endforeach; ?>
             </ul>
         </nav>
+        <a href="<?=$cart?>" class="cart">🛒</a>
         <span>Suche: <input type="text"></span>
         </div>
     </header>
