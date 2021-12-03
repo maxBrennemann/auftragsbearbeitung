@@ -55,7 +55,9 @@ function showPage($page, $isArticle) {
 
         if ($articleUrl == "productPage.php") {
             $nummer = isset($_GET["id"]) ? $_GET["id"] : 0;
-            $title = DBAccess::selectQuery("SELECT Bezeichnung FROM produkt WHERE Nummer = $nummer")[0]["Bezeichnung"];
+            $query = "SELECT Bezeichnung FROM produkt WHERE Nummer = $nummer";
+            $data =  DBAccess::selectQuery($query);
+            $title = $data[0]["Bezeichnung"];
         }
     }
     
