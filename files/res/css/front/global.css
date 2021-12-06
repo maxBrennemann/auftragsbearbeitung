@@ -35,6 +35,10 @@ header .header-container {
     grid-template-columns: repeat(3, 1fr);
 }
 
+.cart-wrapper a {
+    float: right;
+}
+
 header section {
     position: relative;
 }

@@ -9,7 +9,7 @@ $menutopitems = Navigation::getNavigationLinks("top");
 $cart = Link::getFrontOfficeLink("cart");
 
 ?>
-<!DOCTYPE>
+<!DOCTYPE html>
 <html>
 <head>
     <!--<link rel="stylesheet" href="<?=$globalCSS?>">-->
@@ -26,8 +26,12 @@ $cart = Link::getFrontOfficeLink("cart");
                 <?php endforeach; ?>
             </ul>
         </nav>
-        <a href="<?=$cart?>" class="cart">🛒</a>
-        <span>Suche: <input type="text"></span>
+        <div>
+            <span>Suche: <input type="text"></span>
+        </div>
+        <div class="cart-wrapper">
+            <a href="<?=$cart?>" class="cart">🛒</a>
+                </div>
         </div>
     </header>
     <main>
