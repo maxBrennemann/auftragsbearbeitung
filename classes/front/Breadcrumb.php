@@ -5,8 +5,8 @@ class Breadcrumb {
     private $sublinks = array();
 
     function __construct() {
-        echo $url = $_SERVER["REQUEST_URI"];
-        echo REWRITE_BASE . SUB_URL;
+        $url = $_SERVER["REQUEST_URI"];
+
         $this->sublinks = Link::parseUri();
         /*$this->sublinks = [
             0 => "Start",

@@ -133,18 +133,18 @@ class Link {
 	 */
 	public static function parseUri() {
 		$url = $_SERVER["REQUEST_URI"];
-		$url_parts = explode("/", $url);
 
-		var_dump($url_parts);
+		/* remove GET parameters */
+		$url = explode("?", $url)[0];
+		
+		/* remove WEB_URL and FRONT */
+		$url = str_replace(WEB_URL . substr(FRONT, 0, -1), "", $url);
+
+		$url_parts = explode("/", $url);
 
 		$links = array();
 		foreach ($url_parts as $u) {
-			/* maybe this is laggy, but it removes the "/" if there is one */
-			$webURL = implode("", array_filter(str_split(WEB_URL), function($checkSlash) {
-				return $checkSlash != "/";
-			}));
-
-			if (strcmp($u, $webURL) != 0) {
+			if (strcmp($u, WEB_URL) != 0) {
 				$urlLink = new Link();
 				$link = [
 					"link" => Link::getFrontOfficeLink($u),
