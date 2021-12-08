@@ -6,9 +6,11 @@ class Image {
     private $url = "";
 
     function __construct($id) {
-        $fileName = DBAccess::selectQuery("SELECT dateiname FROM dateien WHERE id = $id")["0"]["dateiname"];
-        $this->url = Link::getResourcesShortLink($fileName, "upload");
-        $this->imageId = $id;
+        if ((int) $id >= 0) {
+            $fileName = DBAccess::selectQuery("SELECT dateiname FROM dateien WHERE id = $id")["0"]["dateiname"];
+            $this->url = Link::getResourcesShortLink($fileName, "upload");
+            $this->imageId = $id;
+        }
     }
 
     function getImageId() {
@@ -19,6 +21,11 @@ class Image {
         return $this->url;
     }
 
+    static function setDefault() {
+        $img = new self(-1);
+        $img->url = Link::getImageLink("default_image.png");
+        return $img;
+    }
 }
 
 ?>

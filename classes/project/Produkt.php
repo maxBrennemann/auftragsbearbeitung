@@ -69,6 +69,11 @@ class Produkt {
 			array_push($images, new Image($d['id']));
 		}
 
+		/* checks if array is empty, if so, add default image */
+		if (sizeof($images) == 0) {
+			array_push($images, Image::setDefault());
+		}
+
 		return $images;
 	}
 
