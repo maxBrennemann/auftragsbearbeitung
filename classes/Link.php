@@ -38,7 +38,7 @@ class Link {
 	}
 	
 	public static function getImageLink($resourceName) {
-		$link = REWRITE_BASE . "files/res/img/" . $resourceName;
+		$link = REWRITE_BASE . "files/res/image/" . $resourceName;
 		return $link;
 	}
 	
