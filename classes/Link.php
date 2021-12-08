@@ -36,6 +36,16 @@ class Link {
 		$link = WEB_URL . FRONT . $page;
 		return $link;
 	}
+
+	public static function getFrontOfficeName($page) {
+		$data = DBAccess::selectQuery("SELECT pageName FROM frontpage WHERE src = '$page'");
+
+		if ($data != null) {
+			return $data[0]["pageName"];
+		}
+			
+		return null;
+	}
 	
 	public static function getImageLink($resourceName) {
 		$link = REWRITE_BASE . "files/res/image/" . $resourceName;
@@ -115,6 +125,37 @@ class Link {
         $link = WEB_URL . "/shop/category/" . $page;
 		return $link;
     }
+
+	/*
+	 * function returns an array of link objects by breaking down the server uri
+	 * variable.
+	 * the links are representing the depth of the link
+	 */
+	public static function parseUri() {
+		$url = $_SERVER["REQUEST_URI"];
+		$url_parts = explode("/", $url);
+
+		var_dump($url_parts);
+
+		$links = array();
+		foreach ($url_parts as $u) {
+			/* maybe this is laggy, but it removes the "/" if there is one */
+			$webURL = implode("", array_filter(str_split(WEB_URL), function($checkSlash) {
+				return $checkSlash != "/";
+			}));
+
+			if (strcmp($u, $webURL) != 0) {
+				$urlLink = new Link();
+				$link = [
+					"link" => Link::getFrontOfficeLink($u),
+					"text" => Link::getFrontOfficeName($u)
+				];
+				array_push($links, $link);
+			}
+		}
+
+		return $links;
+	}
 	
 	public static function generateBreadcrumbList($pageName) {
 		$page = DBAccess::selectQuery("SELECT src FROM articles WHERE pageName = '$pageName'");

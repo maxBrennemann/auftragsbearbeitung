@@ -31,7 +31,7 @@ class Navigation {
             $query = "SELECT * FROM navigation WHERE type = 1";
             $data = DBAccess::selectQuery($query);
 
-            foreach($data as $d) {
+            foreach ($data as $d) {
                 /* type 1 is category link */
                 if ($d["type"] == 1) {
                     $id = $d["link"];
