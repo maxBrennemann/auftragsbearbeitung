@@ -1,5 +1,7 @@
 <?php
 
+require_once('classes/front/Breadcrumb.php');
+
 $globalCSS =  Link::getGlobalCSS();
 $globalFrontCSS =  Link::getGlobalFrontCSS();
 
@@ -35,3 +37,6 @@ $cart = Link::getFrontOfficeLink("cart");
         </div>
     </header>
     <main>
+        <nav>
+            <?=Breadcrumb::getNav()?>
+        </nav>
