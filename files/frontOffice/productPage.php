@@ -52,6 +52,7 @@ if ($product_id != 0) {
     </aside>
     <aside>
         <p><?=$product->getBeschreibung()?></p>
+        <span><?=number_format($product_price, 2, ",", ",")?> €</span>
         <button onclick="addToCart();">Zum Warenkorb hinzufügen</button>
     </aside>
 </div>
