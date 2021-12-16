@@ -95,7 +95,7 @@ aside {
     border-radius: 10px;
 }
 
-.line {
+.verticalLine {
     border-left: 2px solid black;
     width: 2px;
     height: 25px;

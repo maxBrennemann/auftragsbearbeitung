@@ -18,6 +18,15 @@ li input {
     max-width: 170px;
 }
 
+table {
+    display: table;
+    width: 100%;
+}
+
+tbody {
+    display: contents;
+}
+
 @media (max-width: 500px) {
     ul {
         grid-template-columns: repeat(2, 1fr);
