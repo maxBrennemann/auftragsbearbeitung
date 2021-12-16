@@ -1,7 +1,10 @@
 <div class="changelog">
     <h3>1.1.12</h3>
     <ul>
-        
+        <li>Frontoffice wurde hinzugefügt</li>
+        <li>Website nun mit Shopfunktion</li>
+        <li>Anzeige eines Default-Images für Produkte</li>
+        <li>Verbesserungen für Produkte</li>
     </ul>
     <h3>1.1.11</h3>
     <ul>

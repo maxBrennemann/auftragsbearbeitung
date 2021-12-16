@@ -98,7 +98,14 @@ class Upload {
         for ($i = 0; $i < sizeof($files); $i++) {
             $link = Link::getResourcesShortLink($files[$i]['Datei'], "upload");
 
-            if (getimagesize("upload/" . $files[$i]['Datei'])) {
+            $filePath = "upload/" . $files[$i]['Datei'];
+            /*
+             * checks at first if the image exists
+             * then checks if it is an image with exif_imagetype function,
+             * suppresses with @ the notice and then checks if getimagesize
+             * returns a value
+             */
+            if (file_exists($filePath) && (@exif_imagetype($filePath) != false) && getimagesize($filePath) != false) {
                 $html = "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\"><img class=\"img_prev_i\" src=\"$link\" width=\"40px\"><p class=\"img_prev\">{$files[$i]['originalname']}</p></a>";
             } else {
                 $html = "<span><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\">{$files[$i]['originalname']}</a></span>";

@@ -79,22 +79,25 @@ class Auftragsverlauf {
 
             switch ($h['state']) {
                 case "added":
-                    $html .= "<div class=\"showInMiddle\">{$h['name']}: {$beschreibung}<br>hinzugefügt am {$datetime}<br>von {$person}</div><div class=\"line\"></div>";
+                    $html .= "<div class=\"showInMiddle\">{$h['name']}: {$beschreibung}<br>hinzugefügt am {$datetime}<br>von {$person}</div><div class=\"verticalLine\"></div>";
                     break;
                 case "edited":
                     // muss noch ergänzt werden, irgenwas mit bearbeitet
                     $html .= "";
                     break;
                 case "finished":
-                    $html .= "<div class=\"showInMiddle\">{$h['name']}: {$beschreibung}<br>abgeschlossen am {$datetime}<br>von {$person}</div><div class=\"line\"></div>";
+                    $html .= "<div class=\"showInMiddle\">{$h['name']}: {$beschreibung}<br>abgeschlossen am {$datetime}<br>von {$person}</div><div class=\"verticalLine\"></div>";
                     break;
                 case "deleted":
-                    $html .= "<div class=\"showInMiddle\">{$h['name']}: {$beschreibung}<br>gelöscht am {$datetime}<br>von {$person}</div><div class=\"line\"></div>";
+                    $html .= "<div class=\"showInMiddle\">{$h['name']}: {$beschreibung}<br>gelöscht am {$datetime}<br>von {$person}</div><div class=\"verticalLine\"></div>";
                     break;
             }
 
             
         }
+
+        $html .= "<div class=\"showInMiddle\">Keine weiteren Einträge</div>";
+
         return $html;
     }
 
