@@ -15,6 +15,7 @@
 	$leistungen =		Link::getPageLink("leistungen");
 	$toDo =				Link::getPageLink("verbesserungen");
 	$offeneRechnungen = Link::getPageLink("offene-rechnungen");
+	$funktionen = 		Link::getPageLink("functionalities");
 
 	$showAktuelleSchritte = Aufgabenliste::aktuelleSchritteAlsTabelleAusgeben();
 	$showOffeneAuftraege = Auftrag::getOffeneAuftraege();
@@ -54,6 +55,8 @@
 		<li><a href="<?=$toDo?>">Verbesserungen für die Auftragsbearbeitung</a></li>
 		<li>Offene Rechnungen: <b><?=$offeneSumme?>€</b></li>
 	</ul>
+	<span style="float: right;"><a href="<?=$funktionen?>">Mehr</a></span>
+	<br>
 
 	<div class="tableContainer">
 		<h3>Offene Bearbeitungsschritte:</h3><?=$showAktuelleSchritte?>

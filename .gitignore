@@ -8,3 +8,5 @@ favicon.ico
 upload/
 img/
 auftragsbearbeitung.code-workspace
+cache/*
+!cache/index.php
