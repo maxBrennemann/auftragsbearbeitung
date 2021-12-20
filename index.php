@@ -31,11 +31,11 @@ if ($parts[0] == 'artikel') {
  * https://www.a-coding-project.de/ratgeber/php/simples-caching 
  * added a time stamp check and added triggers to recreate page
  */
-$cacheFile = "cache/cache_" . md5($_SERVER['REQUEST_URI']) . ".txt";
+/*$cacheFile = "cache/cache_" . md5($_SERVER['REQUEST_URI']) . ".txt";
 if (file_exists($cacheFile)) {
 	echo file_get_contents_utf8($cacheFile);
 } else {
-	ob_start();
+	ob_start();*/
 
 	/*
 	* filters AJAX requests and delegates them to the right files
@@ -86,9 +86,9 @@ if (file_exists($cacheFile)) {
 		}
 	}
 
-	$cachedFileContent = ob_get_flush();
+	/*$cachedFileContent = ob_get_flush();
 	file_put_contents($cacheFile, $cachedFileContent);
-}
+}*/
 
 function showPage($page, $isArticle) {
 	if ($page == "test") {
