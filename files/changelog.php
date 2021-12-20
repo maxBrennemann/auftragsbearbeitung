@@ -5,6 +5,7 @@
         <li>Website nun mit Shopfunktion</li>
         <li>Anzeige eines Default-Images für Produkte</li>
         <li>Verbesserungen für Produkte</li>
+        <li>Cache wurde implementiert, aktuell deaktiviert</li>
     </ul>
     <h3>1.1.11</h3>
     <ul>
