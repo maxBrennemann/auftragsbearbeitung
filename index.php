@@ -1,28 +1,41 @@
 <?php
-	session_start();
 
-	require_once('settings.php');
-	require_once('classes/DBAccess.php');
-	require_once('classes/Ajax.php');
-	require_once('classes/Link.php');
-	require_once('classes/project/FormGenerator.php');
-	require_once('classes/project/Posten.php');
-	require_once('classes/project/Angebot.php');
-	require_once('classes/project/NotificationManager.php');
-	$isArticle = false;
+session_start();
 
-	/*
-	* Before: page was submitted via $_GET paramter, but now the REQUEST_URI is read;
-	* $url is splitted into the REQUEST_URI and the parameter part
-	*/
-	$url = $_SERVER['REQUEST_URI'];
-	$url = explode('?', $url, 2);
-	$page = str_replace(REWRITE_BASE . SUB_URL, "", $url[0]);
-	$parts = explode('/', $page);
-	$page = $parts[count($parts) - 1];
-	if ($parts[0] == 'artikel') {
-		$isArticle = true;
-	}
+require_once('settings.php');
+require_once('classes/DBAccess.php');
+require_once('classes/Ajax.php');
+require_once('classes/Link.php');
+require_once('classes/project/FormGenerator.php');
+require_once('classes/project/Posten.php');
+require_once('classes/project/Angebot.php');
+require_once('classes/project/NotificationManager.php');
+require_once('classes/project/CacheManager.php');
+$isArticle = false;
+
+/*
+* Before: page was submitted via $_GET paramter, but now the REQUEST_URI is read;
+* $url is splitted into the REQUEST_URI and the parameter part
+*/
+$url = $_SERVER['REQUEST_URI'];
+$url = explode('?', $url, 2);
+$page = str_replace(REWRITE_BASE . SUB_URL, "", $url[0]);
+$parts = explode('/', $page);
+$page = $parts[count($parts) - 1];
+if ($parts[0] == 'artikel') {
+	$isArticle = true;
+}
+
+/* 
+ * simple caching from:
+ * https://www.a-coding-project.de/ratgeber/php/simples-caching 
+ * added a time stamp check and added triggers to recreate page
+ */
+$cacheFile = "cache/cache_" . md5($_SERVER['REQUEST_URI']) . ".txt";
+if (file_exists($cacheFile)) {
+	echo file_get_contents_utf8($cacheFile);
+} else {
+	ob_start();
 
 	/*
 	* filters AJAX requests and delegates them to the right files
@@ -72,38 +85,43 @@
 			showPage("login", false);
 		}
 	}
-	
-	function showPage($page, $isArticle) {
-		if ($page == "test") {
-			include('test.php');
-			return null;
-		}
 
-		$result = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'");
-		$articleUrl = "";
+	$cachedFileContent = ob_get_flush();
+	file_put_contents($cacheFile, $cachedFileContent);
+}
 
-		if ($result == null) {
-			/* generated articles does not exist in this project */
-			//$baseUrl = 'files/generated/';
-			//$result = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM generated_articles WHERE src = '$page'");
-
-			http_response_code(404);
-
-			$baseUrl = 'files/';
-			$result['id'] = 0;
-			$result["articleUrl"] = $articleUrl = "404.php";
-			$result["pageName"] = $pageName = "Page not found";
-		} else {
-			$baseUrl = 'files/';
-			$result = $result[0];
-			$articleUrl = $result["articleUrl"];
-			$pageName = $result["pageName"];
-		}
-		
-		include('files/header.php');
-		include($baseUrl . $articleUrl);
-		include('files/footer.php');
+function showPage($page, $isArticle) {
+	if ($page == "test") {
+		include('test.php');
+		return null;
 	}
+
+	$result = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'");
+	$articleUrl = "";
+
+	/* checks if file exists */
+	if ($result == null || !file_exists("files/" . $result[0]["articleUrl"])) {
+		/* generated articles does not exist in this project */
+		//$baseUrl = 'files/generated/';
+		//$result = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM generated_articles WHERE src = '$page'");
+
+		http_response_code(404);
+
+		$baseUrl = 'files/';
+		$result['id'] = 0;
+		$result["articleUrl"] = $articleUrl = "404.php";
+		$result["pageName"] = $pageName = "Page not found";
+	} else {
+		$baseUrl = 'files/';
+		$result = $result[0];
+		$articleUrl = $result["articleUrl"];
+		$pageName = $result["pageName"];
+	}
+	
+	include('files/header.php');
+	include($baseUrl . $articleUrl);
+	include('files/footer.php');
+}
 
 /*
 * https://stackoverflow.com/questions/2236668/file-get-contents-breaks-up-utf-8-characters
@@ -123,4 +141,5 @@ function isLoggedIn() {
 function getCurrentVersion() {
 	return "0.1.12";
 }
+
 ?>
