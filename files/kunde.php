@@ -77,7 +77,7 @@
 				]
 			];
 
-			$t->defineUpdateSchedule(new UpdateSchedule("Ansprechpartner", $pattern));
+			$t->defineUpdateSchedule(new UpdateSchedule("ansprechpartner", $pattern));
 			$ansprechpartner = $t->getTable(true);
 			
 			$_SESSION[$t->getTableKey()] = serialize($t);
