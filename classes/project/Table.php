@@ -137,6 +137,21 @@ class Table {
 		return $button;
     }
 
+	public function addAction($action, $symbol, $text) {
+		if ($this->data == null)
+			return null;
+
+		if ($this->keys == null)
+			$this->createKeys();
+				
+		for ($i = 0; $i < sizeof($this->data); $i++) {
+			$key = $this->keys[$i];
+			$btn = "<button class='actionButton' onclick=\"performAction('$key', event)\" title='$text'>$symbol</button>";
+			$array[$i] = $btn;
+		}
+		$this->addColumn("Aktionen", $array);
+	}
+
 	public function addActionButton($button, $identifier = null, $update = null) {
 		if ($this->data == null)
 			return 0;
@@ -200,6 +215,16 @@ class Table {
 				$this->buttonCheck = true;
 			break;
 		}
+	}
+
+	/* 
+	 * https://stackoverflow.com/questions/2147614/same-named-function-with-multiple-arguments-in-php/2147751
+	 * currently not used, maybe later
+	*/
+	public function __call($method, $arguments) {
+		/*if ($method == "addActionButton") {
+			if (count($arguments) )
+		}*/
 	}
 
 	/* action buttons */

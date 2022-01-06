@@ -171,6 +171,8 @@ function tableSendnewLine() {
     add.makeAjaxCall(function (response) {
         if (response == "ok") {
             console.log("data sent to server");
+        } else {
+            console.log(response);
         }
     });
 }

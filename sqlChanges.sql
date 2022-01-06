@@ -305,4 +305,12 @@ ALTER TABLE `footer_links` CHANGE `link` `link` VARCHAR(64) NOT NULL;
 ALTER TABLE `footer_links` CHANGE `title` `title` VARCHAR(64) NOT NULL;
 
 /* Änderungen 19.12.2021 */
-INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'funktionen.php', 'Funktionsübersicht', 'functionalities')
+INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'funktionen.php', 'Funktionsübersicht', 'functionalities');
+
+/* Änderungen 31.12.2021 */
+CREATE TABLE `payments` ( `id` INT NOT NULL AUTO_INCREMENT , `type` INT NOT NULL , `description` TEXT NOT NULL , `paymentDate` DATE NOT NULL , `creationDate` DATE NOT NULL , `amount` FLOAT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'zahlungen.php', 'Zahlungen und Rechnungen', 'payments');
+
+/* Änderungen 05.01.2022 */
+CREATE TABLE `recurring_payments` ( `id` INT NOT NULL AUTO_INCREMENT , `type` INT NOT NULL , `amount` FLOAT NOT NULL , `short_description` VARCHAR(128) NOT NULL , `description` TEXT NOT NULL , `date` DATE NOT NULL , `recurring` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '27', 'head', 'tableeditor.js', '0', 'js');
