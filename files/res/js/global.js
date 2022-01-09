@@ -65,6 +65,9 @@ function startFunc() {
 
 	autosubmit();
 
+	/*
+	 * es muss noch zwischen Benachrichtigung und Einstellungen unterschieden werden
+	 */
 	var bell = document.querySelector("section aside span");
 	bell.addEventListener("click", function() {
 		if (document.getElementById("showNotifications") == null) {
