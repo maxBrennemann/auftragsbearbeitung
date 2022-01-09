@@ -314,3 +314,7 @@ INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'za
 /* Änderungen 05.01.2022 */
 CREATE TABLE `recurring_payments` ( `id` INT NOT NULL AUTO_INCREMENT , `type` INT NOT NULL , `amount` FLOAT NOT NULL , `short_description` VARCHAR(128) NOT NULL , `description` TEXT NOT NULL , `date` DATE NOT NULL , `recurring` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '27', 'head', 'tableeditor.js', '0', 'js');
+
+/* Änderungen 07.01.2022 */
+INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'wiki.php', 'Firmenwiki', 'wiki');
+CREATE TABLE `wiki_articles` ( `id` INT NOT NULL AUTO_INCREMENT , `content` TEXT NOT NULL , `title` VARCHAR(128) NOT NULL , `keywords` VARCHAR(128) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;

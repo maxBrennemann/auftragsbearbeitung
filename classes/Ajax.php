@@ -653,6 +653,11 @@ class Ajax {
 				require_once('classes/front/Cart.php');
 				Cart::addToCart($productId);
 			break;
+			case "sendToDB":
+				$title = $_POST['title'];
+				$content = $_POST['content'];
+				DBAccess::insertQuery("INSERT INTO wiki_articles (title, content) VALUES ('$title', '$content')");
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
