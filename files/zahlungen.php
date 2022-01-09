@@ -93,6 +93,7 @@ $columns = array(
 $data = DBAccess::selectQuery("SELECT `short_description` as `Bezeichnung`, `description` as `Beschreibung`, `amount` as `Betrag`, `date` as `nächstes Datum`, recurring as `Intervall` FROM recurring_payments WHERE CURDATE() > `date`");
 $aktuell_anstehend = new Table();
 $aktuell_anstehend->createByData($data, $columns);
+$aktuell_anstehend->addActionButton("check");
 $aktuell_anstehend =  $aktuell_anstehend->getTable();
 
 ?>

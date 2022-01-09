@@ -23,6 +23,8 @@
         <li>Leistungen</li>
         <li>Produkte</li>
         <li>Analyse und Statistik</li>
+        <li>Finanzmanager</li>
+        <li><a href="#">Firmenwiki</a></li>
     </ul>
     <h2>Funktionen der Besucherseite</h2>
     <ul>
