@@ -318,3 +318,6 @@ INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `
 /* Änderungen 07.01.2022 */
 INSERT INTO `articles` (`id`, `articleUrl`, `pageName`, `src`) VALUES (NULL, 'wiki.php', 'Firmenwiki', 'wiki');
 CREATE TABLE `wiki_articles` ( `id` INT NOT NULL AUTO_INCREMENT , `content` TEXT NOT NULL , `title` VARCHAR(128) NOT NULL , `keywords` VARCHAR(128) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+/* Änderungen 09.01.2022 */
+INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '28', 'head', 'wiki.js', '0', 'js');
