@@ -27,22 +27,20 @@
 	<script src="<?=$globalJS?>"></script>
 	<?php
 		$files;
-		if($isArticle) {
+		if ($isArticle) {
 			$files = DBAccess::selectQuery("SELECT * FROM attachments_gen WHERE articleId = '{$result['id']}' AND anchor = 'head'");
 		} else {
 			$files = DBAccess::selectQuery("SELECT * FROM attachments WHERE articleId = '{$result['id']}' AND anchor = 'head'");
 		}
 		foreach($files as $file) {
 			$link = Link::getResourcesShortLink($file['fileSrc'], $file['fileType']);
-			
-			if (file_exists($link)) {
-				if ($file['fileType'] == 'css') {
-					echo '<link rel="stylesheet" href="' . $link . '">';
-				} else if ($file['fileType'] == 'js') {
-					echo '<script src="' . $link . '"></script>';
-				} else if ($file['fileType'] == 'font') {
-					echo '<style> @font-face { font-family: ' . $file['fileName'] . '; src: url("' . $link . '"); }</style>';
-				}
+		
+			if ($file['fileType'] == 'css') {
+				echo '<link rel="stylesheet" href="' . $link . '">';
+			} else if ($file['fileType'] == 'js') {
+				echo '<script src="' . $link . '"></script>';
+			} else if ($file['fileType'] == 'font') {
+				echo '<style> @font-face { font-family: ' . $file['fileName'] . '; src: url("' . $link . '"); }</style>';
 			}
 		}
 	?>
