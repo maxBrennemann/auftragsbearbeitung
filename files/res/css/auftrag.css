@@ -259,8 +259,10 @@ aside {
     color: grey;
 }
 
-.addToTable:active {
-    background-color: red;
+.buttonDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .postenInput {
