@@ -167,6 +167,10 @@ class Auftrag implements StatisticsInterface {
 		return $this->Auftragstyp;
 	}
 
+	public function getAuftragsbezeichnung() {
+		return $this->Auftragsbezeichnung;
+	}
+
 	public function preisBerechnen() {
 		$price = 0;
 		foreach ($this->Auftragsposten as $posten) {

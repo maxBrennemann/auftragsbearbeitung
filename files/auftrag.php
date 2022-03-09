@@ -104,6 +104,13 @@ if ($auftragsId == -1): ?>
 		<?php if ($auftrag->getIsArchiviert() == false) :?><span><button onclick="archvieren();">Auftrag archivieren</button></span><br><?php endif; ?>
 		<br>
 		<span>
+			<u>Bezeichnung:</u>
+			<br>
+			<p id="orderTitle">
+				<?=$auftrag->getAuftragsbezeichnung()?>
+			</p>
+			<button class="actionButton" onclick="editTitle(event);">✎</button>
+			<br>
 			<u>Beschreibung:</u>
 			<br>
 			<p id="orderDescription">
