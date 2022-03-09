@@ -21,7 +21,7 @@ class Zeit extends Posten {
 	protected $postennummer;
 
 	function __construct($Stundenlohn, $ZeitInMinuten, $beschreibung, $discount) {
-		$this->Stundenlohn = (int) $Stundenlohn;
+		$this->Stundenlohn = (float) $Stundenlohn;
 		$this->ZeitInMinuten = (int) $ZeitInMinuten;
 		$this->beschreibung = $beschreibung;
 

@@ -321,3 +321,6 @@ CREATE TABLE `wiki_articles` ( `id` INT NOT NULL AUTO_INCREMENT , `content` TEXT
 
 /* Änderungen 09.01.2022 */
 INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '28', 'head', 'wiki.js', '0', 'js');
+
+/* Änderungen 09.03.2022 */
+ALTER TABLE `zeit` CHANGE `Stundenlohn` `Stundenlohn` FLOAT(11) NOT NULL;
