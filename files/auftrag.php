@@ -164,7 +164,69 @@ if ($auftragsId == -1): ?>
 		</div>
 	</div>
 	<div class="defCont posten">
-		<u>Posten:</u><br><span id="auftragsPostenTable"><?=$auftrag->getAuftragspostenAsTable()?></span>
+		<u>Posten:</u>
+		<br>
+		<br>
+		<span id="auftragsPostenTable">
+			<?=$auftrag->getAuftragspostenAsTable()?>
+			<button class="addToTable">+</button>
+		</span>
+
+		<div class="tabcontainer">
+			<button class="tablinks" onclick="openTab(event, 0)">Zeit</button>
+  			<button class="tablinks" onclick="openTab(event, 1)">Leistung</button>
+  			<button class="tablinks" onclick="openTab(event, 2)">Produkt</button>
+		</div>
+
+		<div class="tabcontent" id="tabZeit" style="display: block;">
+			<div id="addPostenZeit">
+				<span>Zeit in Minuten<br><input class="postenInput" id="time" type="number" min="0"></span><br>
+				<span>Stundenlohn in €<br><input class="postenInput" id="wage" type="number" value="44"></span><br>
+				<span>Beschreibung<br><textarea id="descr"></textarea></span><br>
+				<button onclick="addTime()">Hinzufügen</button>
+			</div>
+		</div>
+		<div class="tabcontent" id="tabLeistung">
+			<div id="addPostenLeistung">
+				<select id="selectLeistung" onchange="selectLeistung(event);">
+					<?php foreach ($leistungen as $leistung): ?>
+						<option value="<?=$leistung['Nummer']?>" data-aufschlag="<?=$leistung['Aufschlag']?>"><?=$leistung['Bezeichnung']?></option>
+					<?php endforeach; ?>
+				</select>
+				<br>
+				<span>Menge:<br><input class="postenInput" id="anz" value="1"></span><br>
+				<span>Mengeneinheit:<br><input class="postenInput" id="meh"></span><br>
+				<span>Beschreibung:<br><textarea id="bes"></textarea></span><br>
+				<span>Einkaufspreis:<br><input class="postenInput" id="ekp" value="0"></span><br>
+				<span>Verkaufspreis:<br><input class="postenInput" id="pre" value="0"></span><br>
+				<button onclick="addLeistung()">Hinzufügen</button>
+			</div>		
+		</div>
+		<div class="tabcontent" id="tabProdukt">
+			<div id="addPostenProdukt">
+				<span>Menge: <input class="postenInput" id="posten_produkt_menge" type="number"></span>
+				<span>Marke: <input class="postenInput" id="posten_produkt_marke" type="text"></span>
+				<span>EK-Preis: <input class="postenInput" id="posten_produkt_ek" type="text"></span>
+				<span>VK-Preis: <input class="postenInput" id="posten_produkt_vk" type="text"></span>
+				<span>Name: <input class="postenInput" id="posten_produkt_name" type="text"></span>
+				<span>Beschreibung: <textarea id="posten_produkt_besch"></textarea></span>
+				<button onclick="addProductCompact()">Hinzufügen</button>
+			</div>
+		</div>
+
+		<div class="tabcontentEnd">
+			<div>
+				<span id="showOhneBerechnung">
+					<input id="ohneBerechnung" type="checkbox">Ohne Berechnung
+				</span>
+				<br>
+				<span id="showDiscount">
+					<input type="range" min="0" max="100" value="0" oninput="event.target.nextSibling.innerText = this.value + '%';">
+					<span id="showDiscoundValue">0%</span> Rabatt
+				</span>
+				<div id="generalPosten"></div>
+			</div>
+		</div>
 	</div>
 	<div class="defCont preis">
 		<u>Gesamtpreis:</u>
