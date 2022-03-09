@@ -647,6 +647,32 @@ function chooseProduct(productId) {
     });
 }
 
+/* edit title */
+function editTitle(event) {
+    var text = document.getElementById("orderTitle");
+    text.contentEditable = true;
+    text.classList.add("descriptionEditable");
+    
+    if (event.target.innerText == "✔") {
+        var saveDescription = new AjaxCall(`getReason=saveTitle&text=${text.innerText}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
+        saveDescription.makeAjaxCall(function (response) {
+            if (response == "saved") {
+                var text = document.getElementById("orderTitle");
+                text.classList.remove("descriptionEditable");
+                text.contentEditable = false;
+
+                var btn = text.nextElementSibling;
+                btn.innerText = "✎";
+
+                infoSaveSuccessfull("success");
+            } else
+                console.log("not saved");
+        });
+    } else {
+        event.target.innerText = "✔";
+    }
+}
+
 /* edit description */
 function editDescription(event) {
     var text = document.getElementById("orderDescription");
