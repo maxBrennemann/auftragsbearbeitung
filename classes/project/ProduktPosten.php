@@ -44,7 +44,7 @@ class ProduktPosten extends Posten {
 	public function fillToArray($arr) {
 		$arr['Postennummer'] = $this->postennummer;
 		$arr['Preis'] = $this->bekommePreisTabelle();
-		$arr['Bezeichnung'] = $this->Bezeichnung;
+		$arr['Bezeichnung'] = "<button class=\"postenButton\">Produkt</button>" . $this->Bezeichnung;
 		$arr['Beschreibung'] = $this->Beschreibung;
 		$arr['Anzahl'] = $this->Anzahl;
 		$arr['Einkaufspreis'] = $this->Einkaufspreis;
