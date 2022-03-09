@@ -737,3 +737,18 @@ function changeDate(type, e) {
         sendToServer(newInput, type, e.target)
     };
 }
+
+/* from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_tabs and modified */
+function openTab(evt, id) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" activetab", "");
+    }
+    document.getElementsByClassName("tabcontent")[id].style.display = "block";
+    evt.currentTarget.className += " activetab";
+}
