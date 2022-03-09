@@ -53,7 +53,7 @@ class Leistung extends Posten {
 	public function fillToArray($arr) {
 		$arr['Postennummer'] = $this->postennummer;
 		$arr['Preis'] = $this->bekommePreisTabelle();
-		$arr['Bezeichnung'] = $this->bezeichnung;
+		$arr['Bezeichnung'] = "<button class=\"postenButton\">Leistung</button>" . $this->bezeichnung;
 		$arr['Beschreibung'] = $this->beschreibung;
 		$arr['Einkaufspreis'] = number_format($this->einkaufspreis, 2, ',', '') . "€";
 		$arr['Leistungsnummer'] = $this->leistungsnummer;

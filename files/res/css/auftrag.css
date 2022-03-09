@@ -165,6 +165,15 @@ aside {
     display: block;
 }
 
+.postenButton {
+    font-size: 0.5em;
+    padding: 3px;
+    border-radius: 6px;
+    border: 0px;
+    background-color: #b38484;
+    color: white;
+}
+
 @media (max-width: 850px) {
     main {
         display: grid;
