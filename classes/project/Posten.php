@@ -38,7 +38,7 @@ abstract class Posten {
 		$posten = array();
 		
 		if ($invoice) {
-			$data = DBAccess::selectQuery("SELECT Postennummer, Posten, ohneBerechnung FROM posten WHERE Auftragsnummer = $auftragsnummer AND rechnungsNr != 0");
+			$data = DBAccess::selectQuery("SELECT Postennummer, Posten, ohneBerechnung, discount FROM posten WHERE Auftragsnummer = $auftragsnummer AND rechnungsNr != 0");
 		} else {
 			$data = DBAccess::selectQuery("SELECT Postennummer, Posten, ohneBerechnung, discount FROM posten WHERE Auftragsnummer = $auftragsnummer");
 		}
