@@ -752,3 +752,7 @@ function openTab(evt, id) {
     document.getElementsByClassName("tabcontent")[id].style.display = "block";
     evt.currentTarget.className += " activetab";
 }
+
+function showPostenAdd() {
+    document.getElementById("showPostenAdd").style.display = "";
+}
