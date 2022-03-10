@@ -259,7 +259,11 @@ class Auftrag implements StatisticsInterface {
 			6 => array("COLUMN_NAME" => "Einkaufspreis")
 		);
 
+		/* checks if postenarray is empty */
 		$data = $this->getAuftragsPostenHelper();
+		if (sizeof($this->Auftragsposten) == 0) {
+			$data = [];
+		}
 
 		/* addes edit and delete to table */
 		$t = new Table();

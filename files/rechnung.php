@@ -12,6 +12,8 @@
 		$rechnung = new Rechnung($rechnungsnummer);
 	}
 
+	$auftrag = null;
+
 	$setInvoiceGenerator = false;
 	if(isset($_GET['create'])) {
 		$auftragsid = $_GET['create'];
@@ -34,7 +36,11 @@ if ($setInvoiceGenerator): ?>
 	</div>
 	<button onclick="closeOrder();">Alle Posten übernehmen</button>
 	<button onclick="closeOrder();">Ausgewählte Posten übernehmen</button>
+	<?php if ($auftrag == null || $auftrag->getAuftragspostenData() == 0): ?>
 	<button onclick="generatePDF();">Rechnung abschließen</button>
+	<?php else: ?>
+	<button disabled>Rechnung abschließen</button>
+	<?php endif; ?>
 	<span><?=$rechnungsPDF?></span>
 <?php else: ?>
 	<div>Rechnung:</div>
