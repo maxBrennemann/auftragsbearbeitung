@@ -8,7 +8,7 @@
 		$leistungen =		Link::getPageLink("leistungen");
 		$changelog = 		Link::getPageLink("changelog");
 	?>
-	<footer>
+	<footer class="moveToSide">
 		<div class="linkBundle">
 			<a class="linkBundleLink" href="<?=Link::getPageLink('')?>">← Zur Main Page</a><br>
 			<a class="linkBundleLink" href="https://klebefux.de">Zu klebefux</a><br>
