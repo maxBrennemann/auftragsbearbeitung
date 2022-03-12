@@ -516,8 +516,7 @@ function initializeInfoBtn() {
 			var getInfo = new AjaxCall(`getReason=getInfoText&info=${id}`, "POST", window.location.href);
 			getInfo.makeAjaxCall(function (response, args) {
 				let btn = args[0];
-				let rect = btn.getBoundingClientRect();
-
+				
 				let infoBox = document.getElementById("infoBox" + args[1]);
 				if (infoBox == undefined) {
 					infoBox = document.createElement("div");
@@ -534,8 +533,8 @@ function initializeInfoBtn() {
 					}
 				}
 				
-				let left = parseInt(rect.left + btn.offsetWidth);
-				let top = parseInt(rect.top - (0.25 * btn.offsetHeight));
+				let left = parseInt(btn.offsetWidth + btn.offsetLeft);
+				let top = parseInt(- (0.75 * btn.offsetHeight) + btn.offsetTop);
 
 				infoBox.style.top = top + "px";
 				infoBox.style.left = left + "px";
@@ -545,7 +544,7 @@ function initializeInfoBtn() {
 }
 
 window.onclick = function(event) {
-	if (!event.target.matches('.infoButton')) {
+	if (!event.target.matches('infoButton')) {
 		var dropdowns = document.getElementsByClassName("infoBox");
 		for (let i = 0; i < dropdowns.length; i++) {
 			var openDropdown = dropdowns[i];

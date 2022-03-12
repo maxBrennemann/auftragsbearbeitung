@@ -324,3 +324,7 @@ INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `
 
 /* Änderungen 09.03.2022 */
 ALTER TABLE `zeit` CHANGE `Stundenlohn` `Stundenlohn` FLOAT(11) NOT NULL;
+
+/* Änderungen 12.03.2022 */
+UPDATE `articles` SET `articleUrl` = 'help.php', `src` = 'help' WHERE `articles`.`id` = 24;
+UPDATE `info_texte` SET `info` = 'Hier kannst Du ein Fahrzeug hinzufügen, das mit dem Auftrag verknüpft ist. Dazu einfach unter \"Bitte auswählen\" auf \"Neues Fahrzeug hinzufügen\" und den Anweisungen folgen oder aus einem vorhanden Fahrzeug wählen. Mit dem Fahrzeug lassen sich Bilder verknüpfen.' WHERE `info_texte`.`id` = 1;
