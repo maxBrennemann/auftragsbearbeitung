@@ -428,7 +428,7 @@ iframe {
 
 label.hamburg { 
     display: inline-block;
-    background: #555; width: 35px; height: 35px; 
+    background: #303333; width: 35px; height: 35px; 
     position: relative; 
     margin-left: auto; margin-right: auto;
     border-radius: 4px; 
@@ -471,7 +471,7 @@ input#hamburg {
     position: fixed;
     height: 100%;
     width: 0;
-    background: grey;
+    background: var(--main-def-color);
     top: 0;
     left: 0;
     margin: 0;
