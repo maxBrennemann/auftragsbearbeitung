@@ -61,7 +61,7 @@ header div {
 main {
     max-width: 80vw;
     margin: auto;
-    margin-top: 125px;
+    margin-top: 150px;
     grid-area: main
 }
 
@@ -471,12 +471,17 @@ input#hamburg {
     position: fixed;
     height: 100%;
     width: 0;
-    background: var(--main-def-color);
+    background: rgb(29, 29, 29);
     top: 0;
     left: 0;
     margin: 0;
     z-index: 3;
     transition: 0.5s;
+    overflow-x: hidden;
+}
+
+.sidenav a {
+    color: white;
 }
 
 .moveToSide {
