@@ -41,6 +41,7 @@ if ($setInvoiceGenerator): ?>
 	<?php else: ?>
 	<button disabled>Rechnung abschließen</button>
 	<?php endif; ?>
+	<button action="action" onclick="window.history.go(-1); return false; "type="submit">Abbrechen</button>
 	<span><?=$rechnungsPDF?></span>
 <?php else: ?>
 	<div>Rechnung:</div>

@@ -104,10 +104,17 @@ class Rechnung {
 	}
 
 	public static function getOffeneRechnungen() {
-		$column_names = array(0 => array("COLUMN_NAME" => "Auftragsnummer"), 1 => array("COLUMN_NAME" => "Kundennummer"), 2 => array("COLUMN_NAME" => "Firmenname"),
-				3 => array("COLUMN_NAME" => "Auftragsbezeichnung"), 4 => array("COLUMN_NAME" => "Auftragsbeschreibung"), 5 => array("COLUMN_NAME" => "Datum"), 
-				6 => array("COLUMN_NAME" => "Termin"), 7 => array("COLUMN_NAME" => "AngenommenDurch"));
-		$data = DBAccess::selectQuery("SELECT auftrag.*, kunde.Firmenname FROM auftrag LEFT JOIN kunde ON auftrag.Kundennummer = kunde.Kundennummer WHERE Rechnungsnummer != 0 AND Bezahlt = 0");
+		$column_names = array(
+			0 => array("COLUMN_NAME" => "Nummer"),
+			1 => array("COLUMN_NAME" => "Kundennummer"),
+			2 => array("COLUMN_NAME" => "Firmenname"),
+			3 => array("COLUMN_NAME" => "Bezeichnung"),
+			4 => array("COLUMN_NAME" => "Beschreibung"),
+			5 => array("COLUMN_NAME" => "Datum"),
+			6 => array("COLUMN_NAME" => "Termin"),
+			7 => array("COLUMN_NAME" => "AngenommenDurch"));
+		
+		$data = DBAccess::selectQuery("SELECT auftrag.Auftragsnummer as Nummer, auftrag.Auftragsbezeichnung as Bezeichnung, auftrag.Auftragsbeschreibung as Beschreibung, auftrag.AngenommenDurch, auftrag.Kundennummer, auftrag.Datum, auftrag.Termin, kunde.Firmenname FROM auftrag LEFT JOIN kunde ON auftrag.Kundennummer = kunde.Kundennummer WHERE Rechnungsnummer != 0 AND Bezahlt = 0");
 
 		for ($i = 0; $i < sizeof($data); $i++) {
 			$id = $data[$i]["AngenommenDurch"];
@@ -121,7 +128,7 @@ class Rechnung {
 		$form = new InteractiveFormGenerator("auftrag", "Datum", "Rechnungsnummer 0 ");
 		$form->setRowDone(true);
 
-		$table = $form->create($data, $column_names, "Auftragsnummer");
+		$table = $form->create($data, $column_names, "Nummer");
 		return $table;
 	}
 
