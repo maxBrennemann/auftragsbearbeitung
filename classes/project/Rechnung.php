@@ -122,14 +122,11 @@ class Rechnung {
 			$data[$i]["AngenommenDurch"] = $angenommenDurch[0]["Vorname"] . " " . $angenommenDurch[0]["Nachname"];
 		}
 
-		/*$form = new FormGenerator("auftrag", "Datum", "Rechnungsnummer = 0");
-		$table = $form->createTableByDataRowLink($data, $column_names, "auftrag", null);*/
-
-		$form = new InteractiveFormGenerator("auftrag", "Datum", "Rechnungsnummer 0 ");
-		$form->setRowDone(true);
-
-		$table = $form->create($data, $column_names, "Nummer");
-		return $table;
+		$table = new Table();
+		$table->createByData($data, $column_names);
+		$table->addActionButton("update", $identifier = "Nummer", $update = "istErledigt = 0");
+		
+		return $table->getTable();
 	}
 
 	public static function getOffeneRechnungssumme() {
