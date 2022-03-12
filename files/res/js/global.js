@@ -591,3 +591,21 @@ function clearInputs(inputs) {
 		document.getElementById(inputs[i]).value = "";
 	}
 }
+
+/* side nav */
+function toggleNav() {
+	let sidenav = document.getElementById("sidenav");
+	if (sidenav.style.width == "250px") {
+		sidenav.style.width = "0";
+		let elements = document.getElementsByClassName("moveToSide");
+		for (let i = 0; i < elements.length; i++) {
+			elements[i].style.marginLeft = "0";
+		}
+	} else {
+		sidenav.style.width = "250px";
+		let elements = document.getElementsByClassName("moveToSide");
+		for (let i = 0; i < elements.length; i++) {
+			elements[i].style.marginLeft = "250px";
+		}
+	}
+}

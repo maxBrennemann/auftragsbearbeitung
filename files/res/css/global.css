@@ -417,6 +417,75 @@ iframe {
     max-height:100%;
 }
 
+/* style for the hamburger menu from: https://www.mediaevent.de/tutorial/css-transform.html */
+.hamburgerDiv {
+    display: inline-block;
+    position: absolute;
+    left: 20px;
+    top: 40px;
+    margin: 0;
+}
+
+label.hamburg { 
+    display: inline-block;
+    background: #555; width: 35px; height: 35px; 
+    position: relative; 
+    margin-left: auto; margin-right: auto;
+    border-radius: 4px; 
+}
+ 
+input#hamburg {
+    display:none
+}
+
+.line { 
+    position: absolute; 
+    left:5px;
+    height: 3px; width: 25px; 
+    background: #fff; border-radius: 2px;
+    display: block; 
+    transition: 0.5s; 
+    transform-origin: center; 
+ }
+ 
+ .line:nth-child(1) { top: 8px; }
+ .line:nth-child(2) { top: 16px; }
+ .line:nth-child(3) { top: 24px; }
+ 
+ #hamburg:checked + .hamburg .line:nth-child(1){
+    transform: translateY(8px) rotate(-45deg);
+ }
+ 
+ #hamburg:checked + .hamburg .line:nth-child(2){
+    opacity:0;
+ }
+ 
+ #hamburg:checked + .hamburg .line:nth-child(3){
+    transform: translateY(-8px) rotate(45deg);
+ }
+
+/* end style for the hamburger menu */
+
+/* sidenav */
+.sidenav {
+    position: fixed;
+    height: 100%;
+    width: 0;
+    background: grey;
+    top: 0;
+    left: 0;
+    margin: 0;
+    z-index: 3;
+    transition: 0.5s;
+}
+
+.moveToSide {
+    transition: margin-left .5s;
+    padding: 20px;
+  }
+
+/* end style for sidenav */
+
 @media (max-width: 1000px) {
     tbody {
         max-width: 78vw;

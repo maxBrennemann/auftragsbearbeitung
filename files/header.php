@@ -52,7 +52,9 @@
 	</style>
 </head>
 <body>
-	<header>
+	<div class="sidenav" id="sidenav">
+	</div>
+	<header class="moveToSide">
 		<section>
 			<h1><?=$pageName?></h1>
 			<aside>
@@ -63,7 +65,16 @@
 				</span>
 			</aside>
 		</section>
+		<div class="hamburgerDiv">
+			<!-- https://www.mediaevent.de/tutorial/css-transform.html -->
+			<input type="checkbox" id="hamburg" onclick="toggleNav()">
+			<label for="hamburg" class="hamburg">
+				<span class="line"></span>
+				<span class="line"></span>
+				<span class="line"></span>
+			</label>
+		</div>
 		<hr class="headerline">
 		<div style="margin: auto; width: 80%; margin-top: 12px; margin-bottom: 12px;"><a href="<?=Link::getPageLink("")?>" id="home_link">Home</a>/<a href="<?=Link::getPageLink($page)?>"><?=$pageName?></a></div>
 	</header>
-	<main>
+	<main class="moveToSide">
