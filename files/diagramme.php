@@ -49,6 +49,10 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js"></script>
 <canvas id="showGraph"></canvas>
 <script>
+	var colors;
+	var borders;
+	temp_getColors();
+
 	var ctx = document.getElementById("showGraph").getContext('2d');
 	var myChart = new Chart(ctx, {
 		type: 'bar',
@@ -57,22 +61,8 @@
 			datasets: [{
 				label: 'Umsatz pro Monat',
 				data: <?=$data?>,
-				backgroundColor: [ 
-					'rgba(255, 99, 132, 0.2)',
-					'rgba(54, 162, 235, 0.2)',
-					'rgba(255, 206, 86, 0.2)',
-					'rgba(75, 192, 192, 0.2)',
-					'rgba(153, 102, 255, 0.2)',
-					'rgba(255, 159, 64, 0.2)'
-				],
-				borderColor: [
-					'rgba(255, 99, 132, 1)',
-					'rgba(54, 162, 235, 1)',
-					'rgba(255, 206, 86, 1)',
-					'rgba(75, 192, 192, 1)',
-					'rgba(153, 102, 255, 1)',
-					'rgba(255, 159, 64, 1)'
-				],
+				backgroundColor: colors,
+				borderColor: borders,
 				borderWidth: 1
 			}]
 		},
@@ -86,4 +76,20 @@
 			}
 		}
 	});
+
+	function temp_getColors() {
+		var data = <?=$data?>;
+		colors = [];
+		borders =  [];
+		var minimum = 0;
+		var maximum = 255;
+		for (let i = 0; i < data.length; i++) {
+			let r = Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
+			let b = Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
+			let g = Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
+
+			colors.push(`rgba(${r}, ${g}, ${b}, 0.2)`);
+			borders.push(`rgba(${r}, ${g}, ${b}, 1.0)`);
+		}
+	}
 </script>
