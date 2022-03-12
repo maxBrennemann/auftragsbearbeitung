@@ -53,6 +53,44 @@
 </head>
 <body>
 	<div class="sidenav" id="sidenav">
+		<ul>
+			<li>
+				<a href="#">Neuen Kunden erstellen</a>
+			</li>
+			<li>
+				<a href="#">Kunden</a>
+			</li>
+			<li>
+				<a href="#">Neuen Auftrag erstellen</a>
+			</li>
+			<li>
+				<a href="#">Neues Angebot erstellen</a>
+			</li>
+			<li>
+				<a href="#">Neues Produkt erstellen</a>
+			</li>
+			<li>
+				<a href="#">Aufträge</a>
+			</li>
+			<li>
+				<a href="#">Diagramme und Auswertungen</a>
+			</li>
+			<li>
+				<a href="#">Leistungen</a>
+			</li>
+			<li>
+				<a href="#">Listen</a>
+			</li>
+			<li>
+				<a href="#">Finanzen</a>
+			</li>
+			<li>
+				<a href="#">Einstellungen</a>
+			</li>
+			<li>
+				<a href="#">Funktionen</a>
+			</li>
+		</ul>
 	</div>
 	<header class="moveToSide">
 		<section>
@@ -77,4 +115,4 @@
 		<hr class="headerline">
 		<div style="margin: auto; width: 80%; margin-top: 12px; margin-bottom: 12px;"><a href="<?=Link::getPageLink("")?>" id="home_link">Home</a>/<a href="<?=Link::getPageLink($page)?>"><?=$pageName?></a></div>
 	</header>
-	<main class="moveToSide">
+	<main>
