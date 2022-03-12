@@ -13,20 +13,27 @@
 	switch ($diagram) {
 		case "mitarbeiter":
 			$data = DBAccess::selectQuery($sqlQueries[1]);
-			$column_names = array(0 => array("COLUMN_NAME" => "Mitarbeiter"), 1 => array("COLUMN_NAME" => "Angenommene Aufträge"));
+			$column_names = array(
+				0 => array("COLUMN_NAME" => "Mitarbeiter"), 
+				1 => array("COLUMN_NAME" => "Angenommene Aufträge")
+			);
 			$table = $table->createTableByData($data, $column_names);
 
 			echo "<h4>Anzahl der Angenommenen Aufträge pro Mitarbeiter:</h4>";
-			echo $table;
+			echo "<div id=\"tableContainer\">" . $table . "</div>";
 		break;
 		default:
 			$data = DBAccess::selectQuery($sqlQueries[0]);
-			$column_names = array(0 => array("COLUMN_NAME" => "Anzahl"), 1 => array("COLUMN_NAME" => "Vorname"),
-				2 => array("COLUMN_NAME" => "Nachname"), 3 => array("COLUMN_NAME" => "Firmenname"));
+			$column_names = array(
+				0 => array("COLUMN_NAME" => "Anzahl"), 
+				1 => array("COLUMN_NAME" => "Vorname"),
+				2 => array("COLUMN_NAME" => "Nachname"), 
+				3 => array("COLUMN_NAME" => "Firmenname")
+			);
 			$table = $table->createTableByData($data, $column_names);
 
 			echo "<h4>Anzahl der Bestellungen pro Kunde:</h4>";
-			echo $table;
+			echo "<div id=\"tableContainer\">" . $table . "</div>";
 	}
 
 	/* prepares the data for the diagram */
@@ -93,3 +100,31 @@
 		}
 	}
 </script>
+<style>
+	 header {
+        z-index: 2;
+    }
+
+	#tableContainer {
+		position: relative;
+		max-height: 500px;
+		overflow: auto;
+	}
+
+	table {
+        display: table;
+        position: relative;
+        text-align: left;
+        z-index: 1;
+    }
+
+    tbody {
+        display: table-header-group;
+    }
+
+	table th {
+        position: -webkit-sticky;
+		position: sticky;
+        top: 0;
+	}
+</style>
