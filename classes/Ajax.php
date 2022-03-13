@@ -339,7 +339,8 @@ class Ajax {
 			case "insertVerbesserung":
 				if (isset($_POST['verbesserung'])) {
 					$verbesserung = $_POST['verbesserung'];
-					DBAccess::insertQuery("INSERT INTO verbesserungen (verbesserungen) VALUES ('$verbesserung')");
+					$date = date("Y-m-d", $phptime);
+					DBAccess::insertQuery("INSERT INTO verbesserungen (verbesserungen, erstelldatum) VALUES ('$verbesserung', '$date')");
 				}
 			break;
 			case "getServerMsg":
