@@ -151,6 +151,28 @@ abstract class Posten {
 
 	}
 
+	/* add files to posten for order table */
+	public static function addFile($key, $table) {
+		$postenId = Table::getIdentifierValue($table, $key);
+
+		$upload = new Upload();
+		$upload->uploadFilesPosten($postenId);
+	}
+
+	/* adds links to all attached files to the "Einkaufspreis" column */
+	protected static function getFiles($postennummer) {
+		$query = "SELECT dateiname FROM dateien, dateien_posten WHERE dateien.id = dateien_posten.id_file AND dateien_posten.id_posten = $postennummer";
+		$data = DBAccess::selectQuery($query);
+
+		$html = "";
+		foreach ($data as $d) {
+			$link = Link::getResourcesShortLink($d["dateiname"], "upload");
+			$html .= "<a href=\"$link\" target=\"_blank\">🗎</a>";
+		}
+
+		return $html;
+	}
+
 }
 
 ?>

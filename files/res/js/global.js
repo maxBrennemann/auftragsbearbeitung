@@ -387,9 +387,10 @@ class TableClass {
 }
 
 /* adds file upload class to every form with that class */
+var fileUploader;
 function initializeFileUpload() {
 	let forms = document.querySelectorAll("form.fileUploader");
-	var fileUploaders = [];
+	fileUploaders = [];
 	for (let i = 0, f; f = forms[i]; i++) {
 		let u = new FileUploader(f);
 		fileUploaders.push(u);
