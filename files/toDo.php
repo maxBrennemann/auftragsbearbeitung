@@ -32,12 +32,44 @@
     $verbesserungen;
 
     if (isset($_GET['t']) && $_GET['t'] == 'details') {
-        $verbesserungen = DBAccess::selectQuery("SELECT verbesserungen AS Verbesserungen, erledigt FROM verbesserungen");
+        $verbesserungen = DBAccess::selectQuery("SELECT verbesserungen AS Verbesserungen, erledigt, erstelldatum AS Datum FROM verbesserungen");
     } else {
-        $verbesserungen = DBAccess::selectQuery("SELECT verbesserungen AS Verbesserungen, erledigt FROM verbesserungen WHERE erledigt = ''");
+        $verbesserungen = DBAccess::selectQuery("SELECT verbesserungen AS Verbesserungen, erledigt, erstelldatum AS Datum FROM verbesserungen WHERE erledigt = ''");
     }
 
-    $column_names = array(0 => array("COLUMN_NAME" => "Verbesserungen"), 1 => array("COLUMN_NAME" => "erledigt"));
+    $column_names = array(
+        0 => array("COLUMN_NAME" => "Verbesserungen"), 
+        1 => array("COLUMN_NAME" => "erledigt"),
+        2 => array("COLUMN_NAME" => "Datum")
+    );
     $table = new FormGenerator("", "", "");
-    echo $table->createTableByData($verbesserungen, $column_names);
+    echo "<div id=\"tableContainer\">" . $table->createTableByData($verbesserungen, $column_names) . "</div>";
 ?>
+<style>
+	 header {
+        z-index: 2;
+    }
+
+	#tableContainer {
+		position: relative;
+		max-height: 500px;
+		overflow: auto;
+	}
+
+	table {
+        display: table;
+        position: relative;
+        text-align: left;
+        z-index: 1;
+    }
+
+    tbody {
+        display: table-header-group;
+    }
+
+	table th {
+        position: -webkit-sticky;
+		position: sticky;
+        top: 0;
+	}
+</style>
