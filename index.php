@@ -56,6 +56,10 @@ if (file_exists($cacheFile)) {
 			$auftragsId = (int) $_POST['produkt'];
 			$upload = new Upload();
 			$upload->uploadFilesProduct($auftragsId);
+		} else if (strcmp($uploadDestination, "postenAttachment") == 0) {
+			$key = $_POST['key'];
+			$table = $_POST['tableKey'];
+			Posten::addFile($key, $table);
 		}
 	} else {
 		if ($page == "pdf") {

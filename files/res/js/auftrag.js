@@ -756,3 +756,43 @@ function openTab(evt, id) {
 function showPostenAdd() {
     document.getElementById("showPostenAdd").style.display = "";
 }
+
+/* performAction section of the table */
+function performAction(key, event) {
+    /* centered upload div */
+    var div = document.createElement("div");
+    var form = document.createElement("form");
+    var input = document.createElement("input");
+
+    input.type = "file";
+    input.name = "uploadedFile";
+    form.classList.add("fileUploader");
+    form.name = "postenAttachment";
+    form.dataset.target = "postenAttachment";
+
+    form.appendChild(input);
+    div.appendChild(form);
+
+    /* hidden key input form */
+    let hidden = document.createElement("input");
+    hidden.name = "key";
+    hidden.hidden = true;
+    hidden.type = "text";
+    hidden.value = key;
+    form.appendChild(hidden);
+
+    /* hidden key input form */
+    let tableKey = document.createElement("input");
+    tableKey.name = "tableKey";
+    tableKey.hidden = true;
+    tableKey.type = "text";
+    tableKey.value = event.target.parentNode.parentNode.parentNode.parentNode.dataset.key;
+	form.appendChild(tableKey);
+
+    document.body.appendChild(div);
+    centerAbsoluteElement(div);
+    addActionButtonForDiv(div, "remove");
+
+    /* add new file uploader */
+    fileUploaders.push(new FileUploader(form));
+}

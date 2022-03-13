@@ -59,6 +59,15 @@ class Upload {
         }
     }
 
+    public function uploadFilesPosten($postennummer) {
+        $ids = $this->uploadFiles();
+        if (is_array($ids)) {
+            foreach ($ids as $id) {
+                DBAccess::insertQuery("INSERT INTO dateien_posten (id_file, id_posten) VALUES ($id, $postennummer)");
+            }
+        }
+    }
+
     private function uploadFiles() {
         error_reporting(-1);
 

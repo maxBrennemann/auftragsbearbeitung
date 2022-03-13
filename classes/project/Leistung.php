@@ -55,7 +55,7 @@ class Leistung extends Posten {
 		$arr['Preis'] = $this->bekommePreisTabelle();
 		$arr['Bezeichnung'] = "<button class=\"postenButton\">Leistung</button>" . $this->bezeichnung;
 		$arr['Beschreibung'] = $this->beschreibung;
-		$arr['Einkaufspreis'] = number_format($this->einkaufspreis, 2, ',', '') . "€";
+		$arr['Einkaufspreis'] = number_format($this->einkaufspreis, 2, ',', '') . "€<br>" . $this->getFiles($this->postennummer);
 		$arr['Leistungsnummer'] = $this->leistungsnummer;
 		$arr['Anzahl'] = $this->quantity;
 		$arr['MEH'] = $this->meh;

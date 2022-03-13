@@ -328,3 +328,7 @@ ALTER TABLE `zeit` CHANGE `Stundenlohn` `Stundenlohn` FLOAT(11) NOT NULL;
 /* Änderungen 12.03.2022 */
 UPDATE `articles` SET `articleUrl` = 'help.php', `src` = 'help' WHERE `articles`.`id` = 24;
 UPDATE `info_texte` SET `info` = 'Hier kannst Du ein Fahrzeug hinzufügen, das mit dem Auftrag verknüpft ist. Dazu einfach unter \"Bitte auswählen\" auf \"Neues Fahrzeug hinzufügen\" und den Anweisungen folgen oder aus einem vorhanden Fahrzeug wählen. Mit dem Fahrzeug lassen sich Bilder verknüpfen.' WHERE `info_texte`.`id` = 1;
+
+/* Änderungen 13.03.2022 */
+CREATE TABLE `auftragsbearbeitung`.`dateien_posten` ( `id_file` INT NOT NULL , `id_posten` INT NOT NULL ) ENGINE = InnoDB;
+ALTER TABLE `dateien_posten` ADD PRIMARY KEY(`id_file`, `id_posten`);
