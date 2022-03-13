@@ -45,6 +45,8 @@ class Kunde implements StatisticsInterface {
 			$this->telefonMobil = $data['TelefonMobil'];
 			$this->website = $data['Website'];
 		} else {
+			echo "<div class=\"defcont\"><form><input type=\"number\"><input type=\"submit\">Neue Kundennummer setzen</form></div><br>";
+			
 			throw new Exception("Kundennummer " . $kundennummer . " existiert nicht oder kann nicht gefunden werden");
 		}
 	}
