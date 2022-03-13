@@ -1,3 +1,20 @@
+<?php 
+
+ $links = [
+    Link::getPageLink("wiki"),
+    Link::getPageLink("payments"),
+    Link::getPageLink("diagramme"),
+    Link::getPageLink("produkt"),
+    Link::getPageLink("leistungen"),
+    Link::getPageLink("diagramme"),
+    Link::getPageLink("diagramme"),
+    Link::getPageLink("diagramme"),
+    Link::getPageLink("diagramme"),
+
+ ];
+
+?>
+
 <div class="defCont">
     <h2>Funktionen der Auftragsbearbeitung</h2>
     <ul>
@@ -20,14 +37,15 @@
                 <li>Angebot in Auftrag übernehmen</li>
             </ul>
         <li>Rechnungen</li>
-        <li>Leistungen</li>
-        <li>Produkte</li>
-        <li>Analyse und Statistik</li>
-        <li>Finanzmanager</li>
-        <li><a href="#">Firmenwiki</a></li>
+        <li><a href="<?=$links[4]?>">Leistungen</a></li>
+        <li><a href="<?=$links[3]?>">Produkte</a></li>
+        <li><a href="<?=$links[2]?>">Analyse und Statistik</a></li>
+        <li><a href="<?=$links[1]?>">Finanzmanager</a></li>
+        <li><a href="<?=$links[0]?>">Firmenwiki</a></li>
     </ul>
     <h2>Funktionen der Besucherseite</h2>
     <ul>
+        <li>Startseite</li>
         <li>Produkte</li>
         <li>Warenkorb</li>
         <li>Bestellvorgang</li>
