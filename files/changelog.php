@@ -1,4 +1,13 @@
 <div class="changelog">
+    <h3>1.1.13</h3>
+    <ul>
+        <li>Posten können nun in einem neuen Menü hinzugefügt werden</li>
+        <li>Es können Posten mit Dateien verknüpft werden</li>
+        <li>Hamburger Menü wurde hinzugefügt, aktuell noch ohne Inhalt</li>
+        <li>Auftragsbezeichnung kann geändert werden</li>
+        <li>Diagrammfarben werden nun zufällig generiert</li>
+        <li>Bei langen Tabellen bleibt der Tabellenkopf beim Scrollen stehen</li>
+    </ul>
     <h3>1.1.12</h3>
     <ul>
         <li>Frontoffice wurde hinzugefügt</li>
