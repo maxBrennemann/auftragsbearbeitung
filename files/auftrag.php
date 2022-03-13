@@ -92,6 +92,8 @@ if ($auftragsId == -1): ?>
 		Adresse: <br>
 		<?=$kunde->getStrasse()?> <?=$kunde->getHausnummer()?><br>
 		<?=$kunde->getPostleitzahl()?> <?=$kunde->getOrt()?><br>
+		<?=$kunde->getTelefonFestnetz()?><br>
+		<?=$kunde->getTelefonMobil()?><br>
 		<a href="mailto:<?=$kunde->getEmail()?>"><?=$kunde->getEmail()?></a><br>
 		<?php if ($ansprechpartner != -1): ?>Ansprechpartner: <?=$ansprechpartner['Vorname']?> <?=$ansprechpartner['Nachname']?><button class="actionButton" onclick="changeContact()">✎</button><?php endif;?><br>
 		<a href="<?=Link::getPageLink("kunde")?>?id=<?=$auftrag->getKundennummer()?>">Kunde <span id="kundennummer"><?=$auftrag->getKundennummer()?></span> zeigen</a>
