@@ -332,3 +332,4 @@ UPDATE `info_texte` SET `info` = 'Hier kannst Du ein Fahrzeug hinzufügen, das m
 /* Änderungen 13.03.2022 */
 CREATE TABLE `auftragsbearbeitung`.`dateien_posten` ( `id_file` INT NOT NULL , `id_posten` INT NOT NULL ) ENGINE = InnoDB;
 ALTER TABLE `dateien_posten` ADD PRIMARY KEY(`id_file`, `id_posten`);
+ALTER TABLE `verbesserungen` ADD `erstelldatum` DATE NULL AFTER `erledigt`;
