@@ -330,6 +330,17 @@ UPDATE `articles` SET `articleUrl` = 'help.php', `src` = 'help' WHERE `articles`
 UPDATE `info_texte` SET `info` = 'Hier kannst Du ein Fahrzeug hinzufügen, das mit dem Auftrag verknüpft ist. Dazu einfach unter \"Bitte auswählen\" auf \"Neues Fahrzeug hinzufügen\" und den Anweisungen folgen oder aus einem vorhanden Fahrzeug wählen. Mit dem Fahrzeug lassen sich Bilder verknüpfen.' WHERE `info_texte`.`id` = 1;
 
 /* Änderungen 13.03.2022 */
-CREATE TABLE `auftragsbearbeitung`.`dateien_posten` ( `id_file` INT NOT NULL , `id_posten` INT NOT NULL ) ENGINE = InnoDB;
+CREATE TABLE `dateien_posten` ( `id_file` INT NOT NULL , `id_posten` INT NOT NULL ) ENGINE = InnoDB;
 ALTER TABLE `dateien_posten` ADD PRIMARY KEY(`id_file`, `id_posten`);
 ALTER TABLE `verbesserungen` ADD `erstelldatum` DATE NULL AFTER `erledigt`;
+
+/* Änderungen 15.03.2022 */
+INSERT INTO `angenommen` (`id`, `Bezeichnung`, `istAllgemein`) VALUES (NULL, 'Whatsapp', '1');
+CREATE TABLE `color` ( `id` INT NULL , `Farbe` INT NOT NULL , `Farbwert` INT NOT NULL , `Bezeichnung` INT NOT NULL , `Hersteller` INT NOT NULL ) ENGINE = InnoDB;
+CREATE TABLE `color_auftrag` ( `id_color` INT NOT NULL , `id_auftrag` INT NOT NULL ) ENGINE = InnoDB;
+ALTER TABLE `color_auftrag` ADD PRIMARY KEY(`id_color`, `id_auftrag`);
+ALTER TABLE `color` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);
+ALTER TABLE `color` CHANGE `Farbe` `Farbe` VARCHAR(64) NOT NULL;
+ALTER TABLE `color` CHANGE `Farbwert` `Farbwert` VARCHAR(6) NOT NULL;
+ALTER TABLE `color` CHANGE `Bezeichnung` `Bezeichnung` VARCHAR(64) NOT NULL;
+ALTER TABLE `color` CHANGE `Hersteller` `Hersteller` VARCHAR(64) NOT NULL;

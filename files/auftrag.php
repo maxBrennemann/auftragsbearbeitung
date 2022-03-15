@@ -62,6 +62,7 @@ require_once('classes/project/Table.php');
 	}
 
 	$mitarbeiter = DBAccess::selectQuery("SELECT Vorname, Nachname, id FROM mitarbeiter");
+	$colors = DBAccess::selectQuery("SELECT Farbe, Bezeichnung, Hersteller, Farbwert, id AS Nummer FROM color");
 
 if ($auftragsId == -1): ?>
 	<style>
@@ -281,9 +282,23 @@ if ($auftragsId == -1): ?>
 				<span>Hersteller: <input class="colorInput" tyep="text" max="32" placeholder="Oracal"></span>
 				<span id="hexinputspan">Farbe (Hex): <input class="colorInput jscolor" type="text" max="32" onchange="checkHexCode(this);"></span>
 				<button onclick="sendColor();">Hinuzufügen</button>
+				<button onclick="toggleCS();">Vorhandene Farbe auswählen</button>
+				<button onclick="toggleCP();">Farbe über Colorpicker auswählen</button>
+			</div>
+			<div class="innerDefCont" id="cpContainer" style="display: none"></div>
+			<div class="innerDefCont" id="csContainer" style="display: none">
+				<p>Vorhandene Farben:</p>
+				<?php foreach ($colors as $color): ?>
+					<div class="singleColorContainer" data-colorid=<?=$color['Nummer']?>>
+						<p class="singleColorName"><?=$color['Farbe']?> <?=$color['Bezeichnung']?> <?=$color['Hersteller']?></p>
+						<div class="farbe" style="background-color: #<?=$color['Farbwert']?>"></div>
+					</div>
+					<br>
+				<?php endforeach; ?>
+				<button onclick="addSelectedColors()">Farbe(n) übernehmen</button>
 			</div>
 		</div>
-		<script>var cp = new Colorpicker(document.getElementById("farbe"));</script>
+		<script>var cp = new Colorpicker(document.getElementById("cpContainer"));</script>
 	</div>
 	<div class="defCont postenadd" id="newPosten">
 		<!--<select id="selectPosten">

@@ -378,6 +378,16 @@ form[name="showSteps"] {
     right: 0;
 }
 
+#cpContainer {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.colorElementUnderline {
+    background-color: white;
+    font-style: italic;
+    border-radius: 6px;
+}
+
 .validInput::after {
     content: "✔";
     float: right;
