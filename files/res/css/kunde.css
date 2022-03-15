@@ -167,3 +167,65 @@ a[href="#"] {
 #ansprechpartnerTable table {
     text-align: left;
 }
+
+#showKundendaten input {
+    border: none;
+    border-radius: 2px;
+    outline: none;
+    color: #1a1a1a;
+    max-width: 100%;
+}
+
+#showKundendaten .data-input {
+    border: none;
+    -webkit-box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
+    border-radius: 4px;
+    height: 30px;
+    background: #fff;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.375rem 0.75rem;
+    outline: none;
+    color: #1a1a1a;
+}
+
+#showKundendaten label {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    box-sizing: border-box;
+    color: black;
+}
+
+#showKundendaten .row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#showKundendaten .width6 {
+    position: relative;
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 50%;
+    flex: 0 0 50%;
+    max-width: 50%;
+    padding-right: 15px;
+    padding-left: 15px;
+    box-sizing: border-box;
+}
+
+#showKundendaten .width12 {
+    position: relative;
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 50%;
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    box-sizing: border-box;
+}
+
+#showKundendaten .inputCont {
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+}
