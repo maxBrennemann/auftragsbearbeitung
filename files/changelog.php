@@ -7,6 +7,9 @@
         <li>Auftragsbezeichnung kann geändert werden</li>
         <li>Diagrammfarben werden nun zufällig generiert</li>
         <li>Bei langen Tabellen bleibt der Tabellenkopf beim Scrollen stehen</li>
+        <li>Upload für Bilder bei Fahrzeugen funktioniert wieder</li>
+        <li>Farben sind nun universell und das Menü funktioniert</li>
+        <li>Überarbeitete Kundenadressen</li>
     </ul>
     <h3>1.1.12</h3>
     <ul>
