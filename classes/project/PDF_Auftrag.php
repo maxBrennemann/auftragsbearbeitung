@@ -40,9 +40,9 @@ class PDF_Auftrag {
             </tr>
             <tr>
                 <td colspan=\"2\"><b>PLZ / Ort</b></td>
-                <td colspan=\"2\">{$variables['Postleitzahl']} {$variables['Ort']}</td>
+                <td colspan=\"2\">{$variables['plz']} {$variables['ort']}</td>
                 <td colspan=\"2\"><b>Straße</b></td>
-                <td colspan=\"2\">{$variables['Straße']} {$variables['Hausnummer']}</td>
+                <td colspan=\"2\">{$variables['strasse']} {$variables['hausnr']}</td>
             </tr>
             <tr>
                 <td colspan=\"2\"><b>Ansprechpartner</b></td>
@@ -124,7 +124,7 @@ class PDF_Auftrag {
      * von FillForm.php kopiert, muss später überarbeitet werden
     */
     private static function getData($nummer) {
-        $auftrags_daten = DBAccess::selectQuery("SELECT * FROM auftrag LEFT JOIN kunde ON auftrag.Kundennummer = kunde.Kundennummer WHERE Auftragsnummer = {$nummer}");
+        $auftrags_daten = DBAccess::selectQuery("SELECT * FROM auftrag, adress, kunde  WHERE auftrag.Kundennummer = kunde.Kundennummer AND Auftragsnummer = $nummer AND adress.id_customer = auftrag.Kundennummer AND adress.art = 1");
 
         $id = $auftrags_daten[0]["AngenommenDurch"];
         $angenommenDurch = DBAccess::selectQuery("SELECT Vorname, Nachname FROM mitarbeiter WHERE id = $id");

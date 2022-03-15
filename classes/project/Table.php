@@ -458,7 +458,7 @@ class Table {
 	 * 
 	 * @return	Gibt eine Tabellenzeile in HTML zurück
 	 */
-	private static function html_createRow2($row, $rowNames, $link, $dataset, $lastColumnIsActionButton) {
+	private static function html_createRow2($row, $rowNames, $link, $dataset, $lastColumnIsActionButton = null) {
 		$html = "<tr>";
 		if ($dataset[0] == true) {
 			$data = $row[$dataset[2]];
