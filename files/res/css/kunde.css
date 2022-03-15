@@ -112,7 +112,7 @@ a[href="#"] {
 
 @media (min-width: 1301px) {
     .gridCont {
-        grid-template-areas: "kundendaten farben" "ansprechpartner ansprechpartner" "auftraege auftraege" "notizen fahrzeuge";
+        grid-template-areas: "kundendaten addNewAddress" "farben farben" "ansprechpartner ansprechpartner" "auftraege auftraege" "notizen fahrzeuge";
     }
 }
 
@@ -129,7 +129,7 @@ a[href="#"] {
     }
 
     .gridCont {
-        grid-template-areas: "kundendaten" "ansprechpartner" "farben" "auftraege" "notizen" "fahrzeuge";
+        grid-template-areas: "kundendaten" "addNewAddress" "ansprechpartner" "farben" "auftraege" "notizen" "fahrzeuge";
         grid-gap: 7px;
     }
 
