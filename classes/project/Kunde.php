@@ -104,7 +104,8 @@ class Kunde implements StatisticsInterface {
 	}
 
 	public function getFarben() {
-		$farben = DBAccess::selectQuery("SELECT CONCAT(Farbe, ' ', Notiz, ' ', Hersteller) AS Farbe, Auftragsnummer, Farbwert FROM farben WHERE Kundennummer = {$this->kundennummer} ");
+		$farben = DBAccess::selectQuery("SELECT CONCAT(Farbe, ' ', Bezeichnung, ' ', Hersteller) AS Farbe, Auftragsnummer, Farbwert FROM color, color_auftrag, auftrag WHERE Kundennummer = {$this->kundennummer} AND color.id = color_auftrag.id_color AND color_auftrag.id_auftrag = Auftragsnummer");
+		
 		for ($i = 0; $i < sizeof($farben); $i++) {
 			$farbe = $farben[$i]["Farbwert"];
 			$farben[$i]["Farbwert"] = "<div class=\"farbe\" style=\"background-color: #$farbe\"></div>";

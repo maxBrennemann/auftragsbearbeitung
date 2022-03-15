@@ -547,30 +547,69 @@ function addColor() {
     var div = document.getElementById("farbe");
     div.style.display = "block";
 
-    let uebernehmen = document.createElement("button");
-    uebernehmen.addEventListener("click", function() {
-        let farbe = document.getElementById("farbe").getElementsByTagName("SPAN");
-        let color = farbe[farbe.length - 1].childNodes[0].nodeValue;
-        color = color.substring(1);
-
-        let container = document.getElementById("hexinputspan");
-        container.children[0].value = color;
-
-        const e = new Event("change");
-        container.children[0].dispatchEvent(e);
-    }, false);
-    uebernehmen.innerText = "Farbe übernehmen";
-
-    div.appendChild(uebernehmen);
-
     addActionButtonForDiv(div, "hide");
     centerAbsoluteElement(div);
+
+    var c = div.querySelector("canvas");
+    c.style.margin = "auto";
+
+    c.addEventListener("mouseup", function() {
+        var element = document.querySelector("input.colorInput.jscolor");
+        element.value = cp.color.toUpperCase();
+        checkHexCode(element);
+    }, false);
 }
 
-function showAuftrag() {
-    var url = window.location.href;
-    url += "&show=t";
-    window.location.href = url;
+function removeColor(colorId) {
+    console.log("removing color : " + colorId);
+
+    var arch = new AjaxCall(`getReason=removeColor&auftrag=${globalData.auftragsId}&colorId=${colorId}`);
+    arch.makeAjaxCall(function (colorHTML) {
+        var showColors = document.getElementById("showColors");
+        //var data = JSON.parse(colorHTML);
+        showColors.innerHTML = colorHTML; //data.farben;
+    });
+}
+
+function toggleCP() {
+    document.getElementById("cpContainer").style.display = "block";
+    centerAbsoluteElement(document.getElementById("farbe"));
+}
+
+var addToOrderColors = [];
+function toggleCS() {
+    var container = document.getElementById("csContainer");
+    container.style.display = "block";
+    centerAbsoluteElement(document.getElementById("farbe"));
+
+    var elements = container.getElementsByClassName("singleColorContainer");
+    for (let i = 0; i < elements.length; i++) {
+        var e = elements[i];
+        e.addEventListener("click", function(event) {
+            event.currentTarget.classList.toggle("colorElementUnderline");
+            let id = event.currentTarget.dataset.colorid;
+            if (addToOrderColors.includes(id)) {
+                let index = addToOrderColors.indexOf(id);
+                addToOrderColors.slice(index, -1);
+            } else {
+                addToOrderColors.push(id);
+            }
+        }, false);
+    }
+}
+
+function addSelectedColors() {
+    var addcolors = new AjaxCall(`getReason=existingColors&auftrag=${globalData.auftragsId}&ids=${JSON.stringify(addToOrderColors)}`);
+    addcolors.makeAjaxCall(function (colorHTML) {
+        var showColors = document.getElementById("showColors");
+        var data = JSON.parse(colorHTML);
+        showColors.innerHTML = data.farben;
+        
+        var elements = document.getElementsByClassName("colorInput");
+        for (let i = 0; i < elements.length; i++) {
+            elements[i].value = "";
+        }
+    });
 }
 
 function sendColor() {
@@ -586,14 +625,23 @@ function sendColor() {
         data.push(currVal);
     }
     
-    var sendC = new AjaxCall(`getReason=newColor&auftrag=${globalData.auftragsId}&farbname=${data[0]}&farbe=${data[3]}&bezeichnung=${data[1]}&hersteller=${data[2]}`);
+    var sendC = new AjaxCall(`getReason=newColor&auftrag=${globalData.auftragsId}&farbname=${data[0]}&farbwert=${data[3]}&bezeichnung=${data[1]}&hersteller=${data[2]}`);
     sendC.makeAjaxCall(function (colorHTML) {
         var showColors = document.getElementById("showColors");
-        var farben = document.getElementById("farbe");
         var data = JSON.parse(colorHTML);
         showColors.innerHTML = data.farben;
-        farben.innerHTML = data.addFarben;
+        
+        var elements = document.getElementsByClassName("colorInput");
+        for (let i = 0; i < elements.length; i++) {
+            elements[i].value = "";
+        }
     });
+}
+
+function showAuftrag() {
+    var url = window.location.href;
+    url += "&show=t";
+    window.location.href = url;
 }
 
 function checkHexCode(el) {
@@ -621,17 +669,6 @@ function archvieren() {
        centerAbsoluteElement(div);
        addActionButtonForDiv(div, 'remove');
        document.body.appendChild(div);
-    });
-}
-
-function removeColor(colorId) {
-    console.log("removing color : " + colorId);
-
-    var arch = new AjaxCall(`getReason=removeColor&auftrag=${globalData.auftragsId}&colorId=${colorId}`);
-    arch.makeAjaxCall(function (colorHTML) {
-        var showColors = document.getElementById("showColors");
-        //var data = JSON.parse(colorHTML);
-        showColors.innerHTML = colorHTML; //data.farben;
     });
 }
 

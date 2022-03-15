@@ -379,7 +379,7 @@ class Auftrag implements StatisticsInterface {
 	}
 
 	public function getFarben() {
-		$farben = DBAccess::selectQuery("SELECT Farbe, Farbwert, Nummer FROM farben, farben_auftrag WHERE Auftragsnummer = id_auftrag AND id_auftrag = {$this->getAuftragsnummer()}");
+		$farben = DBAccess::selectQuery("SELECT Farbe, Farbwert, id AS Nummer FROM color, color_auftrag WHERE id_color = id AND id_auftrag = {$this->getAuftragsnummer()}");
 		$farbTable = "";
 		foreach ($farben as $farbe) {
 			$farbTable .= "<div class=\"singleColorContainer\"><p class=\"singleColorName\">{$farbe['Farbe']}</p><div class=\"farbe\" style=\"background-color: #{$farbe['Farbwert']}\"></div><button onclick=\"removeColor({$farbe['Nummer']});\">×</button></div><br>";
@@ -450,11 +450,6 @@ class Auftrag implements StatisticsInterface {
 		}
 
 		return $html;
-	}
-
-	public function getAddColors() {
-		$string = '<span>Farbname: <input class="colorInput" type="text" max="32"></span><span>Farbe (Hex): <input class="colorInput jscolor" type="text" max="32"></span><span>Bezeichnung: <input class="colorInput" type="text" max="32"></span><span>Hersteller: <input class="colorInput" tyep="text" max="32"></span><button onclick="sendColor();">Hinuzufügen</button>';
-		return $string;
 	}
 
 	public function recalculate() {
