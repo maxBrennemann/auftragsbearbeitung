@@ -37,7 +37,7 @@
 <?php endif; ?>
 <style>
 
-	.adress {
+	.address {
 		padding-right: 15px;
 	}
 

@@ -124,7 +124,7 @@ class PDF_Auftrag {
      * von FillForm.php kopiert, muss später überarbeitet werden
     */
     private static function getData($nummer) {
-        $auftrags_daten = DBAccess::selectQuery("SELECT * FROM auftrag, adress, kunde  WHERE auftrag.Kundennummer = kunde.Kundennummer AND Auftragsnummer = $nummer AND adress.id_customer = auftrag.Kundennummer AND adress.art = 1");
+        $auftrags_daten = DBAccess::selectQuery("SELECT * FROM auftrag, `address`, kunde  WHERE auftrag.Kundennummer = kunde.Kundennummer AND Auftragsnummer = $nummer AND `address`.id_customer = auftrag.Kundennummer AND `address`.art = 1");
 
         $id = $auftrags_daten[0]["AngenommenDurch"];
         $angenommenDurch = DBAccess::selectQuery("SELECT Vorname, Nachname FROM mitarbeiter WHERE id = $id");

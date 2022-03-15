@@ -3,7 +3,7 @@
 	require_once('classes/project/FormGenerator.php');
 	require_once('classes/project/Table.php');
 	require_once('classes/project/Search.php');
-	require_once('classes/project/Adress.php');
+	require_once('classes/project/Address.php');
 
 	$kundenid = -1;
 	$isSearch = false;
@@ -126,13 +126,13 @@
 				<div class="width6">
 					<div class="inputCont">
 						<label for="vorname">Vorname:</label>
-						<input class="data-input" id="vorname" value="<?=$kunde->getVorname()?>">
+						<input class="data-input" id="vorname" value="<?=$kunde->getVorname()?>" autocomplete="none">
 					</div>
 				</div>
 				<div class="width6">
 					<div>
 						<label for="nachname">Nachname:</label>
-						<input class="data-input" id="nachname" value="<?=$kunde->getNachname()?>">
+						<input class="data-input" id="nachname" value="<?=$kunde->getNachname()?>" autocomplete="none">
 					</div>
 				</div>
 			</div>
@@ -140,7 +140,7 @@
 				<div class="width12">
 					<div class="inputCont">
 						<label for="firmenname">Firmenname:</label>
-						<input class="data-input" id="firmenname" value="<?=$kunde->getFirmenname()?>">
+						<input class="data-input" id="firmenname" value="<?=$kunde->getFirmenname()?>" autocomplete="none">
 					</div>
 				</div>
 			</div>
@@ -148,27 +148,29 @@
 				<div class="width6">
 					<div class="inputCont">
 						<label for="strasse">Straße:</label>
-						<input class="data-input" id="strasse" value="<?=$kunde->getStrasse()?>">
+						<input class="data-input" id="strasse" value="<?=$kunde->getStrasse()?>" autocomplete="none">
 					</div>
 				</div>
 				<div class="width6">
 					<div>
 						<label for="hausnr">Hausnummer:</label>
-						<input class="data-input" id="hausnr" value="<?=$kunde->getHausnummer()?>">
+						<span id="addrCount" style="display: none">1/1</span>
+						<input class="data-input" id="hausnr" value="<?=$kunde->getHausnummer()?>" autocomplete="none">
 					</div>
 				</div>
 			</div>
+			<div id="pseudo" style="display: none" class="background"></div>
 			<div class="row">
 				<div class="width6">
 					<div class="inputCont">
 						<label for="plz">Postleitzahl:</label>
-						<input class="data-input" id="plz" value="<?=$kunde->getPostleitzahl()?>">
+						<input class="data-input" id="plz" value="<?=$kunde->getPostleitzahl()?>" autocomplete="none">
 					</div>
 				</div>
 				<div class="width6">
-					<div>
+					<div class="inputCont">
 						<label for="ort">Ort:</label>
-						<input class="data-input" id="ort" value="<?=$kunde->getOrt()?>">
+						<input class="data-input" id="ort" value="<?=$kunde->getOrt()?>" autocomplete="none">
 					</div>
 				</div>
 			</div>
@@ -176,7 +178,15 @@
 				<div class="width12">
 					<div class="inputCont">
 						<label for="email">Email:</label>
-						<input class="data-input" id="email" value="<?=$kunde->getEmail()?>">
+						<input class="data-input" id="email" value="<?=$kunde->getEmail()?>" autocomplete="none">
+					</div>
+				</div>
+			</div>
+			<div class="row" style="display: none" id="websiteCont">
+				<div class="width12">
+					<div class="inputCont">
+						<label for="website">Website:</label>
+						<input class="data-input" id="website" value="<?=$kunde->getWebsite()?>" autocomplete="none">
 					</div>
 				</div>
 			</div>
@@ -184,20 +194,75 @@
 				<div class="width6">
 					<div class="inputCont">
 						<label for="festnezt">Telefon Festnetz:</label>
-						<input class="data-input" id="festnezt" value="<?=$kunde->getTelefonFestnetz()?>">
+						<input class="data-input" id="festnezt" value="<?=$kunde->getTelefonFestnetz()?>" autocomplete="none">
 					</div>
 				</div>
 				<div class="width6">
-					<div>
+					<div class="inputCont">
 						<label for="mobil">Telefon Mobil:</label>
-						<input class="data-input" id="mobil" value="<?=$kunde->getTelefonMobil()?>">
+						<input class="data-input" id="mobil" value="<?=$kunde->getTelefonMobil()?>" autocomplete="none">
 					</div>
 				</div>
 			</div>
-			<button id="sendKundendaten" disabled onclick="kundendatenAbsenden()">Absenden</button>
-			<button onclick="showAdressForm();">Neue Adresse hinzufügen</button>
-			<div id="adressForm" style="display: none">
-				<?=Adress::getAdressForm();?>
+			<div class="row">
+				<div class="width6">
+					<div class="buttonCont">
+						<button id="sendKundendaten" disabled onclick="kundendatenAbsenden()">Absenden</button>
+						<button id="sendKundendaten" onclick="showMore(event)" data-show="more">Mehr</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="addNewAddress">
+			<h4>Neue Adresse hinzufügen</h4>
+			<div class="row">
+				<div class="width6">
+					<div class="inputCont">
+						<label for="newStrasse">Straße:</label>
+						<input class="data-input" id="newStrasse" value="" autocomplete="none">
+					</div>
+				</div>
+				<div class="width6">
+					<div class="inputCont">
+						<label for="newHausnr">Hausnummer:</label>
+						<input class="data-input" id="newHausnr" value="" autocomplete="none">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="width6">
+					<div class="inputCont">
+						<label for="newPlz">Postleitzahl:</label>
+						<input class="data-input" id="newPlz" value="" autocomplete="none">
+					</div>
+				</div>
+				<div class="width6">
+					<div class="inputCont">
+						<label for="newOrt">Ort:</label>
+						<input class="data-input" id="newOrt" value="" autocomplete="none">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="width6">
+					<div class="inputCont">
+						<label for="newZusatz">Zusatz:</label>
+						<input class="data-input" id="newZusatz" value="" autocomplete="none">
+					</div>
+				</div>
+				<div class="width6">
+					<div class="inputCont">
+						<label for="newCountry">Land:</label>
+						<input class="data-input" id="newCountry" value="" autocomplete="none">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="width6">
+					<div class="buttonCont">
+						<button onclick="sendAddressForm()">Absenden</button>
+					</div>
+				</div>
 			</div>
 		</div>
 

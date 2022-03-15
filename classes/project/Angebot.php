@@ -73,11 +73,11 @@ class Angebot {
         $pdf->setCellPaddings(1, 1, 1, 1);
         $pdf->setCellMargins(0, 0, 0, 0);
 
-        $cAdress = "<p>{$this->kunde->getFirmenname()}<br>{$this->kunde->getName()}<br>{$this->kunde->getStrasse()} {$this->kunde->getHausnummer()}<br>{$this->kunde->getPostleitzahl()} {$this->kunde->getOrt()}</p>";
-        $adress = "<p>b-schriftung Brennemann Dietmar<br>Huberweg 31<br>94522 Wallersdorf</p>";
+        $cAddress = "<p>{$this->kunde->getFirmenname()}<br>{$this->kunde->getName()}<br>{$this->kunde->getStrasse()} {$this->kunde->getHausnummer()}<br>{$this->kunde->getPostleitzahl()} {$this->kunde->getOrt()}</p>";
+        $address = "<p>b-schriftung Brennemann Dietmar<br>Huberweg 31<br>94522 Wallersdorf</p>";
 
-        $pdf->writeHTMLCell(85, 40, 20, 45, $cAdress);
-        $pdf->writeHTMLCell(85, 40, 120, 35, $adress);
+        $pdf->writeHTMLCell(85, 40, 20, 45, $cAddress);
+        $pdf->writeHTMLCell(85, 40, 120, 35, $address);
 
         $pdf->setXY(20, 90);
         $pdf->Cell(20, 10, 'Menge', 'B');
