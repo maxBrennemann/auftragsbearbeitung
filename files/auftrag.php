@@ -268,8 +268,9 @@ if ($auftragsId == -1): ?>
 		</div>
 		<div><?=$auftrag->getFahrzeuge();?></div>
 		<br>
-		<form class="fileUploader" data-target="vehicle" name="vehicle">
-			<input type="file">
+		<form class="fileUploader" data-target="vehicle" name="vehicle" method="post" enctype="multipart/form-data" id="fileVehicle" style="display: none">
+			<input type="file" name="uploadedFile" multiple>
+			<input name="orderid" value="<?=$auftragsId?>" hidden>
 		</form>
 		<?php endif; ?>
 	</div>

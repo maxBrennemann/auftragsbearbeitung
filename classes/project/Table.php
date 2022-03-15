@@ -95,6 +95,18 @@ class Table {
 		return $this->data;
 	}
 
+	/*
+	 * if no identifier is set, the default identifier is the first column name of the dataset
+	 * to find this, the first row is selected ([0]) and then the array_key_first function is executed
+	 */
+	public function getIdentifier() {
+		if ($this->identifier == null) {
+			return array_key_first($this->data[0]);
+		} else {
+			return $this->identifier;
+		}
+	}
+
 	/* every index of the keys array is interpreted as a key for the data array */
 	public function createKeys() {
 		$this->keys = [];
@@ -143,10 +155,15 @@ class Table {
 
 		if ($this->keys == null)
 			$this->createKeys();
-				
+
 		for ($i = 0; $i < sizeof($this->data); $i++) {
 			$key = $this->keys[$i];
-			$btn = "<button class='actionButton' onclick=\"performAction('$key', event)\" title='$text'>$symbol</button>";
+
+			if ($action != null) {
+				$btn = "<button class='actionButton' onclick=\"$action('$key', event)\" title='$text'>$symbol</button>";
+			} else {
+				$btn = "<button class='actionButton' onclick=\"performAction('$key', event)\" title='$text'>$symbol</button>";
+			}
 			$array[$i] = $btn;
 		}
 		$this->addColumn("Aktionen", $array);
@@ -339,7 +356,8 @@ class Table {
 		/* gets the row by key, then the row identifier for the db action is selected */
 		if (is_array($actionObject->keys)) {
 			$number = array_search($key, $actionObject->keys);
-			$rowId = $actionObject->data[$number][$actionObject->identifier];
+
+			$rowId = $actionObject->data[$number][$actionObject->getIdentifier()];
 
 			return $rowId;
 		} else {
@@ -387,7 +405,12 @@ class Table {
 		/* for each row of the result */
 		for ($i = 0; $i < sizeof($this->data); $i++) {
 			$row = $this->data[$i];
-			$html .= self::html_createRow2($row, $this->columnNames, $this->getLink($i), $this->dataset);
+
+			if ($this->keys == null) {
+				$html .= self::html_createRow2($row, $this->columnNames, $this->getLink($i), $this->dataset);
+			} else {
+				$html .= self::html_createRow2($row, $this->columnNames, $this->getLink($i), $this->dataset, true);
+			}
 		}
 
 		$html .= "</table>";
@@ -431,10 +454,11 @@ class Table {
 	 * @param Array		$rowNames	Zeilennamen, es werden nur die Zeilendaten ausgewertet, für die ein Name existiert
 	 * @param string	$link		Link, kann auch null sein, dann wird kein Link gesetzt
 	 * @param Array		$dataset	Array mit Infos für HTML Dataset
+	 * @param Boolean	$lastColumnIsActionButton	means, that there should be no link
 	 * 
 	 * @return	Gibt eine Tabellenzeile in HTML zurück
 	 */
-	private static function html_createRow2($row, $rowNames, $link, $dataset) {
+	private static function html_createRow2($row, $rowNames, $link, $dataset, $lastColumnIsActionButton) {
 		$html = "<tr>";
 		if ($dataset[0] == true) {
 			$data = $row[$dataset[2]];
@@ -444,6 +468,10 @@ class Table {
 		for ($i = 0; $i < sizeof($rowNames); $i++) {
 			$column = $rowNames[$i]["COLUMN_NAME"];
 			$data = $row[$column];
+
+			/* sets the link to null, if the last column is reached and it is an action button in this column */
+			if ($lastColumnIsActionButton == true && $i == sizeof($rowNames) -1)
+				$link = null;
 			
 			if ($link == null)
 				$html .= "<td>" . $data . "</td>";

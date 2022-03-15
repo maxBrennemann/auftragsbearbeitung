@@ -21,6 +21,7 @@ class Upload {
         }
 
         echo Upload::getFilesAuftrag($auftragsnummer);
+        return $ids;
     }
 
     public function uploadFilesVehicle($fahrzeugnummer, $auftragsnummer) {
