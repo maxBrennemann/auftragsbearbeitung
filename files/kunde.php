@@ -114,58 +114,93 @@
 	<h3>Kundendaten</h3>
 	<div class="gridCont">
 		<div id="showKundendaten">
-			<table class="showVertical">
-				<tr>
-					<th>Kundennummer:</th>
-					<td id="kundennummer"><?=$kunde->getKundennummer()?></td>
-				</tr>
-				<tr>
-					<th>Vorname:</th>
-					<td class="editable" contenteditable data-col="Vorname"><?=$kunde->getVorname()?></td>
-				</tr>
-				<tr>
-					<th>Nachname:</th>
-					<td class="editable" contenteditable data-col="Nachname"><?=$kunde->getNachname()?></td>
-				</tr>
-				<tr>
-					<th>Firmenname:</th>
-					<td class="editable" contenteditable data-col="Firmenname"><?=$kunde->getFirmenname()?></td>
-				</tr>
-				<tr>
-					<th>Straße:</th>
-					<td class="editable" contenteditable data-col="strasse"><?=$kunde->getStrasse()?></td>
-				</tr>
-				<tr>
-					<th>Hausnummer:</th>
-					<td class="editable" contenteditable data-col="hausnr"><?=$kunde->getHausnummer()?></td>
-				</tr>
-				<tr>
-					<th>Postleitzahl:</th>
-					<td class="editable" contenteditable data-col="plz"><?=$kunde->getPostleitzahl()?></td>
-				</tr>
-				<tr>
-					<th>Ort:</th>
-					<td class="editable" contenteditable data-col="ort"><?=$kunde->getOrt()?></td>
-				</tr>
-				<tr>
-					<th>Email:</th>
-					<td class="editable" contenteditable data-col="Email"><?=$kunde->getEmail()?></td>
-				</tr>
-				<tr>
-					<th>Telefon Festnetz:</th>
-					<td class="editable" contenteditable data-col="TelefonFestnetz"><?=$kunde->getTelefonFestnetz()?></td>
-				</tr>
-				<tr>
-					<th>Telefon Mobil:</th>
-					<td class="editable" contenteditable data-col="TelefonMobil"><?=$kunde->getTelefonMobil()?></td>
-				</tr>	
-			</table>
+			<div class="row">
+				<div class="width12">
+					<div class="inputCont">
+						<label for="kdnr">Kundennummer:</label>
+						<input disabled class="data-input" id="kdnr" value="<?=$kunde->getKundennummer()?>">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="width6">
+					<div class="inputCont">
+						<label for="vorname">Vorname:</label>
+						<input class="data-input" id="vorname" value="<?=$kunde->getVorname()?>">
+					</div>
+				</div>
+				<div class="width6">
+					<div>
+						<label for="nachname">Nachname:</label>
+						<input class="data-input" id="nachname" value="<?=$kunde->getNachname()?>">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="width12">
+					<div class="inputCont">
+						<label for="firmenname">Firmenname:</label>
+						<input class="data-input" id="firmenname" value="<?=$kunde->getFirmenname()?>">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="width6">
+					<div class="inputCont">
+						<label for="strasse">Straße:</label>
+						<input class="data-input" id="strasse" value="<?=$kunde->getStrasse()?>">
+					</div>
+				</div>
+				<div class="width6">
+					<div>
+						<label for="hausnr">Hausnummer:</label>
+						<input class="data-input" id="hausnr" value="<?=$kunde->getHausnummer()?>">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="width6">
+					<div class="inputCont">
+						<label for="plz">Postleitzahl:</label>
+						<input class="data-input" id="plz" value="<?=$kunde->getPostleitzahl()?>">
+					</div>
+				</div>
+				<div class="width6">
+					<div>
+						<label for="ort">Ort:</label>
+						<input class="data-input" id="ort" value="<?=$kunde->getOrt()?>">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="width12">
+					<div class="inputCont">
+						<label for="email">Email:</label>
+						<input class="data-input" id="email" value="<?=$kunde->getEmail()?>">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="width6">
+					<div class="inputCont">
+						<label for="festnezt">Telefon Festnetz:</label>
+						<input class="data-input" id="festnezt" value="<?=$kunde->getTelefonFestnetz()?>">
+					</div>
+				</div>
+				<div class="width6">
+					<div>
+						<label for="mobil">Telefon Mobil:</label>
+						<input class="data-input" id="mobil" value="<?=$kunde->getTelefonMobil()?>">
+					</div>
+				</div>
+			</div>
 			<button id="sendKundendaten" disabled onclick="kundendatenAbsenden()">Absenden</button>
 			<button onclick="showAdressForm();">Neue Adresse hinzufügen</button>
 			<div id="adressForm" style="display: none">
 				<?=Adress::getAdressForm();?>
 			</div>
 		</div>
+
 		<div id="ansprechpartner">
 			<h3>Ansprechpartner</h3>
 			<div id="ansprechpartnerTable">
