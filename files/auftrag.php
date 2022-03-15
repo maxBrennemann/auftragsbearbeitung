@@ -165,6 +165,7 @@ if ($auftragsId == -1): ?>
 			<span>Notiz: <br><input class="noteInput" type="text" max="128"></span><br>
 			<button onclick="addNote();">Hinzufügen</button>
 		</div>
+		<button onclick="setOrderFinished()">Auftrag ist fertig</button>
 	</div>
 	<div class="defCont posten">
 		<u>Posten:</u>

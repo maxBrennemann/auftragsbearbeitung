@@ -19,6 +19,7 @@
 
 	$showAktuelleSchritte = Aufgabenliste::aktuelleSchritteAlsTabelleAusgeben();
 	$showOffeneAuftraege = Auftrag::getOffeneAuftraege();
+	$showReady = Auftrag::getReadyOrders();
 	$offeneSumme = Rechnung::getOffeneRechnungssumme();
 
 	if (isset($_GET['showDetails'])) {
@@ -60,6 +61,7 @@
 
 	<div class="tableContainer">
 		<h3>Offene Bearbeitungsschritte:</h3><?=$showAktuelleSchritte?>
+		<h3>Fertig zum Abschließen:</h3><?=$showReady?>
 		<h3>Offene Aufträge:</h3><?=$showOffeneAuftraege?>
 		<h3><a href="<?=$offeneRechnungen?>">Offene Rechnungen:</a> <?=$offeneSumme?>€</h3>
 	</div>

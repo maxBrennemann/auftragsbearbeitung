@@ -303,8 +303,32 @@ class Auftrag implements StatisticsInterface {
         
     }
 
+	/* 
+	 * this function returns all orders which are marked as ready to finish;
+	 * an order is ready when its "archived" column is set to -1
+	 */
+	public static function getReadyOrders() {
+		$query = "SELECT Auftragsnummer, IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) as Kunde, Auftragsbezeichnung FROM auftrag, kunde WHERE archiviert = -1 AND Kunde.Kundennummer = Auftrag.Kundennummer";
+		$data = DBAccess::selectQuery($query);
+
+		$column_names = array(
+			0 => array("COLUMN_NAME" => "Auftragsnummer"), 
+			1 => array("COLUMN_NAME" => "Kunde"),	
+			2 => array("COLUMN_NAME" => "Auftragsbezeichnung")
+		);
+
+		$link = new Link();
+		$link->addBaseLink("auftrag");
+		$link->setIterator("id", $data, "Auftragsnummer");
+
+		$t = new Table();
+		$t->createByData($data, $column_names);
+		$t->addLink($link);
+		return $t->getTable();
+	}
+
 	public static function getOffeneAuftraege() {
-		$query = "SELECT Auftragsnummer AS id FROM auftrag WHERE Rechnungsnummer = 0 AND archiviert = 1";
+		$query = "SELECT Auftragsnummer AS id FROM auftrag WHERE Rechnungsnummer = 0 AND archiviert != 0";
 		$data = DBAccess::selectQuery($query);
 		return self::getAuftragsListe($data, "id");
 	}

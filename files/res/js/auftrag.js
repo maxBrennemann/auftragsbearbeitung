@@ -833,3 +833,14 @@ function performAction(key, event) {
     /* add new file uploader */
     fileUploaders.push(new FileUploader(form));
 }
+
+function setOrderFinished() {
+    if (confirm('Möchtest Du den Auftrag als "Erledigt" markieren?')) {
+        /* Erledigt */
+        var send = new AjaxCall(`getReason=setOrderFinished&auftrag=${globalData.auftragsId}`);
+        send.makeAjaxCall(function () {});
+        document.getElementById("home_link").click();
+    } else {
+        /* Abbruch */
+    }
+}

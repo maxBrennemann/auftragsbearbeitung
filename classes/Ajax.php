@@ -414,6 +414,10 @@ class Ajax {
 
 				Kunde::addAdress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz, $art);
 			break;
+			case "setOrderFinished":
+				$auftrag = $_POST['auftrag'];
+				DBAccess::insertQuery("UPDATE auftrag SET archiviert = -1 WHERE Auftragsnummer = $auftrag");
+			break;
 			case "existingColors":
 				require_once('classes/project/Auftrag.php');
 				$auftrag = $_POST['auftrag'];
