@@ -571,11 +571,19 @@ function removeColor(colorId) {
     });
 }
 
+/*
+ * toggles the colorpicker div
+ */
 function toggleCP() {
     document.getElementById("cpContainer").style.display = "block";
     centerAbsoluteElement(document.getElementById("farbe"));
 }
 
+/*
+ * you can select multiple existing colors, which are added to this variable via the function
+ * beneath;
+ * all colors are highlighted via the colorElementUnderline class
+ */
 var addToOrderColors = [];
 function toggleCS() {
     var container = document.getElementById("csContainer");
@@ -598,6 +606,9 @@ function toggleCS() {
     }
 }
 
+/*
+ * adds all selected colors to the server;
+ */
 function addSelectedColors() {
     var addcolors = new AjaxCall(`getReason=existingColors&auftrag=${globalData.auftragsId}&ids=${JSON.stringify(addToOrderColors)}`);
     addcolors.makeAjaxCall(function (colorHTML) {
@@ -612,6 +623,10 @@ function addSelectedColors() {
     });
 }
 
+/*
+ * sends the newly created color to the server;
+ * then resets the form and shows the newly added color
+ */
 function sendColor() {
     var elements = document.getElementsByClassName("colorInput");
     var data = [], currVal;
@@ -834,6 +849,9 @@ function performAction(key, event) {
     fileUploaders.push(new FileUploader(form));
 }
 
+/*
+ * asks if an order should be set to be finished
+ */
 function setOrderFinished() {
     if (confirm('Möchtest Du den Auftrag als "Erledigt" markieren?')) {
         /* Erledigt */
