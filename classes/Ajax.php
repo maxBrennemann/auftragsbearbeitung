@@ -403,16 +403,17 @@ class Ajax {
 				$angebot->storeOffer();*/
 				Angebot::setIsOrder();
 			break;
-			case "addAdress":
-				$strasse = $_POST['strasse'];
-				$hausnummer = $_POST['hausnummer'];
-				$postleitzahl = $_POST['postleitzahl'];
+			case "sendNewAddress":
+				$kdnr = (int) $_POST['customer'];
+				$plz = (int) $_POST['plz'];
 				$ort = $_POST['ort'];
+				$strasse = $_POST['strasse'];
+				$hnr = $_POST['hnr'];
 				$zusatz = $_POST['zusatz'];
-				$art = $_POST['art'];
-				$id_customer = $_POST['kdnr'];
-
-				Kunde::addAdress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz, $art);
+				$land = $_POST['land'];
+				Kunde::addAddress($kdnr, $strasse, $hnr, $plz, $ort, $zusatz, $land);
+				require_once("classes/project/Address.php");
+				echo json_encode(Address::loadAllAddresses($kdnr));
 			break;
 			case "setOrderFinished":
 				$auftrag = $_POST['auftrag'];
@@ -476,6 +477,11 @@ class Ajax {
 				$angebot = new Angebot($customerId);
 				echo $angebot->loadCachedPosten(); 
 			break;
+			case "getAddresses":
+				require_once('classes/project/Address.php');
+				$kdnr = (int) $_POST['kdnr']; 
+				echo json_encode(Address::loadAllAddresses($kdnr));
+			break;
 			case "setData":
 				if ($_POST['type'] == "kunde") {
 					$number = (int) $_POST['number'];
@@ -486,8 +492,14 @@ class Ajax {
 
 						/* maybe improve it later to be more flexible, currently it is just hardcoded for the exceptions */
 						if ($dataKey == "ort" || $dataKey == "plz" || $dataKey == "strasse" || $dataKey == "hausnr") {
-							echo "UPDATE adress SET $dataKey = '$data' WHERE id_customer = $kdnr";
-							DBAccess::updateQuery("UPDATE adress SET $dataKey = '$data' WHERE id_customer = $kdnr");
+							/* gets from client the number of which address should be changed, must check the number with the array from Address class (same as client gets), then can update the correct row */
+							$addressCount = (int) $_POST['addressCount'];
+							require_once('classes/project/Address.php');
+							$addressData = Address::loadAllAddresses($kdnr);
+							$addressId = $addressData[$addressCount]["id"];
+							DBAccess::updateQuery("UPDATE `address` SET $dataKey = '$data' WHERE id_customer = $kdnr AND id = $addressId");
+
+							echo "ok";
 						} else {
 							echo "UPDATE kunde SET $dataKey = '$data' WHERE Kundennummer = $kdnr";
 							DBAccess::updateQuery("UPDATE kunde SET $dataKey = '$data' WHERE Kundennummer = $kdnr");
@@ -588,17 +600,6 @@ class Ajax {
 				$orderId = (int) $_POST['auftrag'];
 				$order = new Auftrag($orderId);
 				$order->addList($listId);
-			break;
-			case "sendNewAdress":
-				require_once('classes/project/Adress.php');
-				$kdnr = (int) $_POST['customer'];
-				$plz = (int) $_POST['plz'];
-				$ort = $_POST['ort'];
-				$strasse = $_POST['strasse'];
-				$hnr = $_POST['hnr'];
-				$zusatz = $_POST['zusatz'];
-				$land = $_POST['land'];
-				Adress::createNewAdress($kdnr, $strasse, $hnr, $plz, $ort, $zusatz, $land);
 			break;
 			case "addNewLine":
 				require_once("classes/project/Table.php");

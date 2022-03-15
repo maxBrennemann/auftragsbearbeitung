@@ -20,7 +20,7 @@
 		$ort = $_GET['ort'];
 		$zusatz = $_GET['zusatz'];
 		$country = $_GET['country'];
-		$email = $_GET['emailadress'];
+		$email = $_GET['emailaddress'];
 		$telfestnetz = $_GET['telfestnetz'];
 		$telmobil = $_GET['telmobil'];
 
@@ -39,12 +39,12 @@
 		$insertString = "INSERT INTO kunde (Firmenname, Anrede, Vorname, Nachname, Email, TelefonFestnetz, TelefonMobil) VALUES ('$firmenname', '$anrede', '$vorname', '$nachname', '$email', '$telfestnetz', '$telmobil')";
 		$newCustomerId = DBAccess::insertQuery($insertString);
 
-		/* insert adress data */
-		$insertString = "INSERT INTO adress (id_customer, strasse, hausnr, plz, ort, zusatz, country) VALUES ($newCustomerId, '$strasse', '$hausnummer', $plz, '$ort', '$zusatz', '$country')";
+		/* insert address data */
+		$insertString = "INSERT INTO address (id_customer, strasse, hausnr, plz, ort, zusatz, country) VALUES ($newCustomerId, '$strasse', '$hausnummer', $plz, '$ort', '$zusatz', '$country')";
 		$insertID = DBAccess::insertQuery($insertString);
 
 		/* update customer data */
-		DBAccess::updateQuery("UPDATE kunde SET id_adress_primary = $insertID WHERE Kundennummer = $newCustomerId");
+		DBAccess::updateQuery("UPDATE kunde SET id_address_primary = $insertID WHERE Kundennummer = $newCustomerId");
 
 		/* insert ansprechpartner data */
 		if ($nachnameAnspr != "") {
@@ -159,7 +159,7 @@
 		</p>
 		<p>
 			<label>Email
-				<input class="dataInput" type="email" name="emailadress" autocomplete="some-unrecognised-value">
+				<input class="dataInput" type="email" name="emailaddress" autocomplete="some-unrecognised-value">
 			</label>
 		</p>
 		<p>

@@ -344,3 +344,5 @@ ALTER TABLE `color` CHANGE `Farbe` `Farbe` VARCHAR(64) NOT NULL;
 ALTER TABLE `color` CHANGE `Farbwert` `Farbwert` VARCHAR(6) NOT NULL;
 ALTER TABLE `color` CHANGE `Bezeichnung` `Bezeichnung` VARCHAR(64) NOT NULL;
 ALTER TABLE `color` CHANGE `Hersteller` `Hersteller` VARCHAR(64) NOT NULL;
+RENAME TABLE `adress` TO `address`;
+ALTER TABLE `kunde` CHANGE `id_adress_primary` `id_address_primary` INT(11) NOT NULL;

@@ -9,6 +9,7 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 require_once('Auftrag.php');
 require_once('StatisticsInterface.php');
 require_once('classes/DBAccess.php');
+require_once('classes/project/Address.php');
 
 class Kunde implements StatisticsInterface {
 
@@ -26,10 +27,10 @@ class Kunde implements StatisticsInterface {
 	private $website = null;
 
 	/* new */
-	private $adresses = array();
+	private $addresses = array();
 
 	function __construct($kundennummer) {
-		$data = DBAccess::selectQuery("SELECT * FROM kunde, adress WHERE Kundennummer = $kundennummer AND kunde.id_adress_primary = adress.id");
+		$data = DBAccess::selectQuery("SELECT * FROM kunde, `address` WHERE Kundennummer = $kundennummer AND kunde.id_address_primary = address.id");
 		if (!empty($data)) {
 			$data = $data[0];
 			$this->kundennummer = $data['Kundennummer'];
@@ -85,6 +86,10 @@ class Kunde implements StatisticsInterface {
 
 	public function getEmail() {
 		return $this->email;
+	}
+
+	public function getWebsite() {
+		return $this->website;
 	}
 
 	public function isPrivate() {
@@ -163,8 +168,8 @@ class Kunde implements StatisticsInterface {
 	
 	}
 
-	public static function addAdress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz, $art) {
-		return Adress::createNewAdress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz, $art);
+	public static function addAddress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz, $land, $art = 3) {
+		return Address::createNewAddress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz, $land, $art);
 	}
 
 	public static function getNextAssignedKdnr($kdnr, $direction) {
