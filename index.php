@@ -60,6 +60,14 @@ if (file_exists($cacheFile)) {
 			$key = $_POST['key'];
 			$table = $_POST['tableKey'];
 			Posten::addFile($key, $table);
+		}  else if (strcmp($uploadDestination, "vehicle") == 0) {
+			$key = $_POST['key'];
+			$table = $_POST['tableKey'];
+			$fahrzeugnummer = Table::getIdentifierValue($table, $key);
+
+			$auftragsnummer = $_POST['orderid'];
+			$upload = new Upload();
+			$upload->uploadFilesVehicle($fahrzeugnummer, $auftragsnummer);
 		}
 	} else {
 		if ($page == "pdf") {

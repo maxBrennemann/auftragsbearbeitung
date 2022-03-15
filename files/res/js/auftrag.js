@@ -850,6 +850,30 @@ function performAction(key, event) {
 }
 
 /*
+ * adds files to vehicles
+ */
+function addFileVehicle(key, event) {
+    var form = document.getElementById("fileVehicle");
+    form.style.display = "";
+
+    /* hidden key input form */
+    let hidden = document.createElement("input");
+    hidden.name = "key";
+    hidden.hidden = true;
+    hidden.type = "text";
+    hidden.value = key;
+    form.appendChild(hidden);
+
+    /* hidden key input form */
+    let tableKey = document.createElement("input");
+    tableKey.name = "tableKey";
+    tableKey.hidden = true;
+    tableKey.type = "text";
+    tableKey.value = event.target.parentNode.parentNode.parentNode.parentNode.dataset.key;
+    form.appendChild(tableKey);
+}
+
+/*
  * asks if an order should be set to be finished
  */
 function setOrderFinished() {

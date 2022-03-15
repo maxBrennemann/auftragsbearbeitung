@@ -385,7 +385,7 @@ class Auftrag implements StatisticsInterface {
 	}
 
 	public function getLinkedVehicles() {
-		return DBAccess::selectQuery("SELECT Kennzeichen, Fahrzeug, Nummer FROM fahrzeuge LEFT JOIN fahrzeuge_auftraege ON fahrzeuge_auftraege.id_fahrzeug = Nummer WHERE fahrzeuge_auftraege.id_auftrag = {$this->getAuftragsnummer()}");
+		return DBAccess::selectQuery("SELECT Nummer, Kennzeichen, Fahrzeug FROM fahrzeuge LEFT JOIN fahrzeuge_auftraege ON fahrzeuge_auftraege.id_fahrzeug = Nummer WHERE fahrzeuge_auftraege.id_auftrag = {$this->getAuftragsnummer()}");
 	}
 
 	public function getFahrzeuge() {
@@ -399,6 +399,8 @@ class Auftrag implements StatisticsInterface {
 		$t = new Table();
 		$t->createByData($fahrzeuge, $column_names);
 		$t->addLink($link);
+		$t->addAction("addFileVehicle", "+", "Datei hinzufügen");
+		$_SESSION[$t->getTableKey()] = serialize($t);
 		return $t->getTable();
 	}
 
