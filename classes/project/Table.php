@@ -476,7 +476,7 @@ class Table {
 			if ($link == null)
 				$html .= "<td>" . $data . "</td>";
 			else
-				$html .= "<td class=\"linkTable\"><a href=\"$link\">" . $data . "</a></td>";
+				$html .= "<td class=\"linkTable\"><a href=\"$link\">" . $data . "</a>\r\n</td>";
 		}
 
 		$html .= "</tr>";
