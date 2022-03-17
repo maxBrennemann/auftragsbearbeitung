@@ -212,3 +212,53 @@ function sendAddressForm() {
         infoSaveSuccessfull("success");
     });
 }
+
+function editRow(key, pointer) {
+    var row = pointer.parentNode.parentNode;
+
+    if (pointer.dataset.editable == "true") {
+        pointer.innerHTML = "✎";
+        pointer.dataset.editable = "false";
+
+        var data = {};
+        for (var i = 0; i < row.children.length - 1; i++) {
+            row.children[i].contentEditable = "false";
+            data[i] = row.children[i].innerHTML;
+        }
+
+        var tKey = pointer.parentNode.parentNode.parentNode.parentNode.dataset.key;
+        if (tKey == null || tKey == 0)
+            return;
+
+        data = JSON.stringify(data);
+        var edit = new AjaxCall(`getReason=editAnspr&key=${key}&name=${tKey}&data=${data}`, "POST", window.location.href);
+        edit.makeAjaxCall(function (response) {
+            if (response == "ok")
+                infoSaveSuccessfull("success");
+            else {
+                alert(response);
+                infoSaveSuccessfull();
+            }
+        });
+    } else {
+        pointer.innerHTML = "✔";
+        pointer.dataset.editable = "true";
+        for (var i = 0; i < row.children.length - 1; i++) {
+            row.children[i].contentEditable = "true";
+        }
+    }
+}
+
+function deleteRow(key, type, pointer) {
+    var tKey = pointer.parentNode.parentNode.parentNode.parentNode.dataset.key;
+    if (tKey == null || tKey == 0)
+        return;
+    if (confirm('Möchtest Du den Ansprechpartner wirklich löschen?')) {
+        /* Erledigt */
+        var send = new AjaxCall(`getReason=table&key=${key}&name=${tKey}&action=delete`);
+        send.makeAjaxCall(function () {});
+        document.getElementById("home_link").click();
+    } else {
+        /* Abbruch */
+    }
+}

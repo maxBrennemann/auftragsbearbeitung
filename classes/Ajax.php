@@ -188,14 +188,15 @@ class Ajax {
 			break;
 			case "getAnspr":
 				$kdnr = (int) $_POST['id'];
-				$data = DBAccess::selectQuery("SELECT Vorname, Nachname, Email FROM ansprechpartner WHERE Kundennummer = $kdnr");
+				$data = DBAccess::selectQuery("SELECT Nummer, Vorname, Nachname, Email FROM ansprechpartner WHERE Kundennummer = $kdnr");
 
 				$data_html = "";
 				foreach ($data as $line) {
 					$v = $line['Vorname'];
 					$n = $line['Nachname'];
 					$e = $line['Email'];
-					$data_html .= "<input type=\"radio\" name=\"anspr\">$v $n - $e</input><br>";
+					$id = $line['Nummer'];
+					$data_html .= "<input id=\"anspr-$id\" type=\"radio\" name=\"anspr\" data-ansprid=\"$id\"><label for=\"anspr-$id\">$v $n - $e</label><br>";
 				}
 
 				$data_html .= "<button>Änderungen speichern</button>";
@@ -268,6 +269,46 @@ class Ajax {
 				$auftragsId = $_POST['auftrag'];
 				$Auftrag = new Auftrag($auftragsId);
 				echo $Auftrag->getOpenBearbeitungsschritteTable();
+			break;
+			case "editAnspr":
+				$table = $_POST['name'];
+				$key =  $_POST['key'];
+				$data = json_decode($_POST['data']);
+
+				$tableObj = unserialize($_SESSION[$table]);
+				$rowId = Table::getIdentifierValue($table, $key);
+
+				$index = 0;
+				$query = "UPDATE `ansprechpartner` SET ";
+				foreach ($data as $d) {
+					$t = $tableObj->columnNames[$index]["COLUMN_NAME"];
+					$query .= "`" . $t . "` = '" . $d . "', ";
+					$index++;
+				}
+
+				$query = substr($query, 0, -2);
+				$query .= " WHERE Nummer = $rowId";
+
+				if (DBAccess::updateQuery($query) == 1) {
+					echo "ok";
+				} else {
+					echo "error occured";
+				}
+			break;
+			case "setAnspr":
+				$idOrder = (int) $_POST["order"];
+				$idAnspr = (int) $_POST["ansprId"];
+
+				if (DBAccess::updateQuery("UPDATE auftrag SET Ansprechpartner = $idAnspr WHERE Auftragsnummer = $idOrder") == 1) {
+					$ansprechpartner = (new Auftrag($idOrder))->bekommeAnsprechpartner();
+					$data = [
+						0 => "ok",
+						1 => "Ansprechpartner: " . $ansprechpartner['Vorname'] . " " . $ansprechpartner['Nachname']
+					];
+					echo json_encode($data);
+				} else {
+					echo json_encode(["error occured"]);
+				}
 			break;
 			case "setTo":
 				if (isset($_POST['auftrag'])) {

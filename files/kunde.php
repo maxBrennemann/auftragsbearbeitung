@@ -42,12 +42,21 @@
 			$kunde = new Kunde($kundenid);
 
 			$data = DBAccess::selectQuery("SELECT * FROM ansprechpartner WHERE Kundennummer = $kundenid");
-			$column_names = array(0 => array("COLUMN_NAME" => "Vorname"), 1 => array("COLUMN_NAME" => "Nachname"), 2 => array("COLUMN_NAME" => "Email"), 3 => array("COLUMN_NAME" => "Durchwahl"), 4 => array("COLUMN_NAME" => "Mobiltelefonnummer"));
+			$column_names = array(
+				0 => array("COLUMN_NAME" => "Vorname"),
+				1 => array("COLUMN_NAME" => "Nachname"),
+				2 => array("COLUMN_NAME" => "Email"),
+				3 => array("COLUMN_NAME" => "Durchwahl"),
+				4 => array("COLUMN_NAME" => "Mobiltelefonnummer"),
+			);
 
 			/* create ansprechpartner table */
 			$t = new Table();
 			$t->createByData($data, $column_names);
 			$t->addActionButton("edit");
+			$t->addActionButton("delete");
+			$t->setIdentifier("Nummer");
+			$t->setType("ansprechpartner");
 			$t->addNewLineButton();
 			
 			$pattern = [

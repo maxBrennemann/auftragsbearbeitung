@@ -88,15 +88,17 @@ if ($auftragsId == -1): ?>
 	<a href="<?=$invoiceLink?>">Zur Rechnung</a>
 <?php else: ?>
 	<aside class="defCont">
-		<?=$kunde->getVorname()?> <?=$kunde->getNachname()?><br>
-		<?=$kunde->getFirmenname()?><br>
-		Adresse: <br>
-		<?=$kunde->getStrasse()?> <?=$kunde->getHausnummer()?><br>
-		<?=$kunde->getPostleitzahl()?> <?=$kunde->getOrt()?><br>
-		<?=$kunde->getTelefonFestnetz()?><br>
-		<?=$kunde->getTelefonMobil()?><br>
-		<a href="mailto:<?=$kunde->getEmail()?>"><?=$kunde->getEmail()?></a><br>
-		<?php if ($ansprechpartner != -1): ?>Ansprechpartner: <?=$ansprechpartner['Vorname']?> <?=$ansprechpartner['Nachname']?><button class="actionButton" onclick="changeContact()">✎</button><?php endif;?><br>
+		<p><?=$kunde->getVorname()?> <?=$kunde->getNachname()?></p>
+		<p><?=$kunde->getFirmenname()?></p>
+		<u>Adresse:</u>
+		<p><?=$kunde->getStrasse()?> <?=$kunde->getHausnummer()?></p>
+		<p><?=$kunde->getPostleitzahl()?> <?=$kunde->getOrt()?></p>
+		<p><?=$kunde->getTelefonFestnetz()?></p>
+		<p><?=$kunde->getTelefonMobil()?></p>
+		<p><a href="mailto:<?=$kunde->getEmail()?>"><?=$kunde->getEmail()?></a></p>
+		<p id="showAnspr"><?php if ($ansprechpartner != -1): ?>Ansprechpartner: <?=$ansprechpartner['Vorname']?> <?=$ansprechpartner['Nachname']?><?php endif;?></p>
+		<span>Ansprechpartner ändern<button class="actionButton" onclick="changeContact()">✎</button></span>
+		<br>
 		<a href="<?=Link::getPageLink("kunde")?>?id=<?=$auftrag->getKundennummer()?>">Kunde <span id="kundennummer"><?=$auftrag->getKundennummer()?></span> zeigen</a>
 	</aside>
 	<div class="defCont auftragsinfo">

@@ -39,7 +39,7 @@ class Kunde implements StatisticsInterface {
 			$this->firmenname = $data['Firmenname'];
 			$this->strasse = $data['strasse'];
 			$this->hausnummer = $data['hausnr'];
-			$this->postleitzahl = $data['plz'];
+			$this->postleitzahl = (int) $data['plz'];
 			$this->ort = $data['ort'];
 			$this->email = $data['Email'];
 			$this->telefonFestnetz = $data['TelefonFestnetz'];
@@ -77,6 +77,8 @@ class Kunde implements StatisticsInterface {
 	}
 
 	public function getPostleitzahl() {
+		if ($this->postleitzahl == 0)
+			return "";
 		return $this->postleitzahl;
 	}
 
