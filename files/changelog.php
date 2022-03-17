@@ -10,6 +10,7 @@
         <li>Upload für Bilder bei Fahrzeugen funktioniert wieder</li>
         <li>Farben sind nun universell und das Menü funktioniert</li>
         <li>Überarbeitete Kundenadressen</li>
+        <li>Ansprechpartner können nun gelöscht und bearbeitet werden</li>
     </ul>
     <h3>1.1.12</h3>
     <ul>
