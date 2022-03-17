@@ -323,6 +323,29 @@ async function changeContact() {
     div.innerHTML = response;
     document.body.appendChild(div);
 
+    var btn = div.getElementsByTagName("button");
+    btn[0].addEventListener("click", function(event) {
+        var checkedId = document.querySelector('input[name="anspr"]:checked');
+        if (checkedId == null)
+            return;
+        checkedId = checkedId.dataset.ansprid;
+        var sendAnsprId = new AjaxCall(`getReason=setAnspr&order=${globalData.auftragsId}&ansprId=${checkedId}`, "POST", window.location.href);
+        sendAnsprId.makeAjaxCall(function (ansprResponse) {
+            var data = JSON.parse(ansprResponse);
+            var error = data[0];
+            if (error == "ok") {
+                infoSaveSuccessfull("success");
+                document.getElementById("showAnspr").innerHTML = data[1];
+            } else {
+                alert(response);
+                infoSaveSuccessfull();
+            }
+        });
+
+        /* accesses the first childnode of the parent container, this child contains a close button */
+        event.target.parentNode.children[0].click();
+    }, false);
+
     addActionButtonForDiv(div, "hide");
     centerAbsoluteElement(div);
 }
