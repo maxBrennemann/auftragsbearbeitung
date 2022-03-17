@@ -67,7 +67,6 @@ class Auftrag implements StatisticsInterface {
 					$this->isArchiviert = true;
 				}
 				
-
 				$data = DBAccess::selectQuery("SELECT * FROM schritte WHERE Auftragsnummer = {$auftragsnummer}");
 				foreach ($data as $step) {
 					$element = new Schritt($step['Auftragsnummer'], $step['Schrittnummer'], $step['Bezeichnung'], $step['Datum'], $step['Priority'], $step['istErledigt']);
