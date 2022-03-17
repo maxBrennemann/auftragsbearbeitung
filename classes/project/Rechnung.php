@@ -9,36 +9,73 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 require_once('classes/DBAccess.php');
 require_once('classes/project/Auftrag.php');
 require_once('classes/project/InteractiveFormGenerator.php');
+require_once('classes/project/RechnungsPDF.php');
 
 class Rechnung {
 
 	private $summeMwSt = 0;
 	private $summe = 0;
 
+	private $invoiceId;
+
 	private $kunde;
 	private $auftrag;
 
 	private $posten;
 
-	function __construct() {
+	function __construct($invoiceId = null) {
 		if (isset($_SESSION['currentInvoice_orderId'])) {
 			$currentOrder = $_SESSION['currentInvoice_orderId'];
 			$this->auftrag = new Auftrag($currentOrder);
 			$kdnr = $this->auftrag->getKundennummer();
 			$this->kunde = new Kunde($kdnr);
+		} else if ($invoiceId != null) {
+			$invoiceId = (int) $invoiceId;
+			$order = DBAccess::selectQuery("SELECT * FROM auftrag WHERE Rechnungsnummer = $invoiceId");
+			if (!empty($order)) {
+				$this->auftrag = new Auftrag($order[0]["Auftragsnummer"]);
+				$this->kund = new Kunde($this->auftrag->getKundennummer());
+			}
 		}
+
+		$this->invoiceId = (int) $invoiceId;
+	}
+
+	public function preisBerechnen() {
+		$nr = $this->invoiceId;
+		/* die SQL Query nimmt alle Posten, die unter dieser Rechnungsnummer gespeichert sind. 
+		 * Aktuell werden die einzelnen Zahlen dann hier in PHP zusammengerechnet, 
+		 * was aber auch anders möglich ist (siehe views auftragssumme etc.), 
+		 * jedoch hier aus Zeitgründen nicht gemacht wurde 
+		 */
+		$query = "SELECT (zeit.ZeitInMinuten / 60) * zeit.Stundenlohn AS price FROM zeit, posten WHERE posten.rechnungsNr = $nr AND posten.Postennummer = zeit.postennummer UNION ALL SELECT leistung_posten.SpeziefischerPreis * leistung_posten.qty AS price FROM leistung_posten, posten WHERE posten.rechnungsNr = $nr AND posten.Postennummer = leistung_posten.postennummer UNION ALL SELECT (product_compact.price * product_compact.amount) AS price FROM product_compact, posten WHERE posten.rechnungsNr = $nr AND posten.Postennummer = product_compact.postennummer;
+		";
+
+		$posten = DBAccess::selectQuery($query);
+		$amount = 0.0;
+		foreach ($posten as $p) {
+			$amount += (float) $p;
+		}
+
+		return $amount;
 	}
 
 	/*
 	 * creates and stores a pdf if parameter is set to true
 	*/
     public function PDFgenerieren($store = false) {
-        $pdf = new TCPDF('p', 'mm', 'A4');
+        $pdf = new RechnungsPDF('p', 'mm', 'A4');
+
+		/* header and footer */
         $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-        $pdf->SetTitle('Angebot ' . $this->kunde->getKundennummer());
+        //$pdf->setPrintFooter(false);
+
+        $pdf->SetTitle('Rechnung für ' . $this->kunde->getFirmenname() . " " . $this->kunde->getName());
         $pdf->SetSubject('Angebot');
         $pdf->SetKeywords('pdf, angebot');
+
+		$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+		$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
         $pdf->AddPage();
 
@@ -48,7 +85,7 @@ class Rechnung {
         $cAddress = "<p>{$this->kunde->getFirmenname()}<br>{$this->kunde->getName()}<br>{$this->kunde->getStrasse()} {$this->kunde->getHausnummer()}<br>{$this->kunde->getPostleitzahl()} {$this->kunde->getOrt()}</p>";
         $address = "<p>b-schriftung Brennemann Dietmar<br>Huberweg 31<br>94522 Wallersdorf</p>";
 
-        $pdf->writeHTMLCell(85, 40, 20, 45, $cAddress);
+        $pdf->writeHTMLCell(85, 40, 20, 25, $cAddress);
         $pdf->writeHTMLCell(85, 40, 120, 35, $address);
 
         $pdf->setXY(20, 90);
