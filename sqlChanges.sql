@@ -346,3 +346,7 @@ ALTER TABLE `color` CHANGE `Bezeichnung` `Bezeichnung` VARCHAR(64) NOT NULL;
 ALTER TABLE `color` CHANGE `Hersteller` `Hersteller` VARCHAR(64) NOT NULL;
 RENAME TABLE `adress` TO `address`;
 ALTER TABLE `kunde` CHANGE `id_adress_primary` `id_address_primary` INT(11) NOT NULL;
+
+
+/* Änderungen 03.05.2022 */
+ALTER TABLE `verbesserungen` CHANGE `erstelldatum` `erstelldatum` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP;
