@@ -380,7 +380,7 @@ class Ajax {
 			case "insertVerbesserung":
 				if (isset($_POST['verbesserung'])) {
 					$verbesserung = $_POST['verbesserung'];
-					$date = date("Y-m-d", $phptime);
+					$date = date("Y-m-d");
 					DBAccess::insertQuery("INSERT INTO verbesserungen (verbesserungen, erstelldatum) VALUES ('$verbesserung', '$date')");
 				}
 			break;
