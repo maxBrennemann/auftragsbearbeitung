@@ -41,6 +41,8 @@ class NotificationManager {
             $htmlContent .= "<span><strong>" . $type . ": </strong><a href=\"$link\">" . $n['content'] . "</a></span><br>";
         }
 
+        $htmlContent .= "<p><a href=\"#\">Ältere Benachrichtigungen anzeigen</a></p>";
+
         return $htmlContent;
     }
 
