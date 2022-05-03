@@ -406,7 +406,8 @@ class Ajax {
 			case "setNotes":
 				$kdnr = $_POST['kdnr'];
 				$note = $_POST['notes'];
-				DBAccess::insertQuery("UPDATE kunde_extended SET notizen = '$note' WHERE kundennummer = $kdnr");
+				DBAccess::updateQuery("UPDATE kunde_extended SET notizen = '$note' WHERE kundennummer = $kdnr");
+				echo "ok";
 			break;
 			case "addLeistung":
 				$bezeichung = $_POST['bezeichung'];
