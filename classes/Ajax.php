@@ -542,8 +542,9 @@ class Ajax {
 
 							echo "ok";
 						} else {
-							echo "UPDATE kunde SET $dataKey = '$data' WHERE Kundennummer = $kdnr";
+							//echo "UPDATE kunde SET $dataKey = '$data' WHERE Kundennummer = $kdnr";
 							DBAccess::updateQuery("UPDATE kunde SET $dataKey = '$data' WHERE Kundennummer = $kdnr");
+							echo "ok";
 						}
 					}
 				}

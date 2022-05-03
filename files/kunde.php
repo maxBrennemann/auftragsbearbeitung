@@ -202,8 +202,8 @@
 			<div class="row">
 				<div class="width6">
 					<div class="inputCont">
-						<label for="festnezt">Telefon Festnetz:</label>
-						<input class="data-input" id="festnezt" value="<?=$kunde->getTelefonFestnetz()?>" autocomplete="none">
+						<label for="festnetz">Telefon Festnetz:</label>
+						<input class="data-input" id="festnetz" value="<?=$kunde->getTelefonFestnetz()?>" autocomplete="none">
 					</div>
 				</div>
 				<div class="width6">
