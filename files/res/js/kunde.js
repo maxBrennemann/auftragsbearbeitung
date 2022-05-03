@@ -174,11 +174,15 @@ function editText(event) {
         event.target.innerHTML = "Absenden";
         isOnEdit = false;
     } else {
-        var kundennummer = document.getElementById("kundennummer").innerHTML;
+        var kundennummer = document.getElementById("kdnr").value;
         var notes = document.getElementById("editNotes").innerHTML;
         let sendNotes = new AjaxCall(`getReason=setNotes&kdnr=${kundennummer}&notes=${notes}`, "POST", window.location.href);
         sendNotes.makeAjaxCall(function (res) {
             console.log(res);
+            if (res == "ok")
+                infoSaveSuccessfull("success");
+            else
+                infoSaveSuccessfull();
         });
     }
 }
