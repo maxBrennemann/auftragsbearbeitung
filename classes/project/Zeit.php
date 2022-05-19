@@ -15,15 +15,18 @@ class Zeit extends Posten {
 	private $Kosten = null;
 	private $discount = -1;
 	private $beschreibung = null;
+	private $isInvoice = false;
 
 	protected $postenTyp = "zeit";
 	protected $ohneBerechnung = false;
 	protected $postennummer;
 
-	function __construct($Stundenlohn, $ZeitInMinuten, $beschreibung, $discount) {
+	function __construct($Stundenlohn, $ZeitInMinuten, $beschreibung, $discount, $isInvoice) {
 		$this->Stundenlohn = (float) $Stundenlohn;
 		$this->ZeitInMinuten = (int) $ZeitInMinuten;
 		$this->beschreibung = $beschreibung;
+
+		$this->isInvoice = $isInvoice == 0 ? false : true;
 
 		$this->Kosten = $this->kalkulierePreis();
 
@@ -124,6 +127,10 @@ class Zeit extends Posten {
 
 	public function getOhneBerechnung() {
 		return $this->ohneBerechnung;
+	}
+
+	public function isInvoice() {
+		return $this->isInvoice;
 	}
 
 	public function calculateDiscount() {

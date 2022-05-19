@@ -17,6 +17,7 @@ class Leistung extends Posten {
     private $bezeichnung = null;
 	private $beschreibung = null;
 	private $leistungsnummer = 0;
+	private $isInvoice = false;
 	protected $postenTyp = "leistung";
 	protected $ohneBerechnung = false;
 	protected $postennummer;
@@ -24,11 +25,13 @@ class Leistung extends Posten {
 	private $quantity;
 	private $meh;
 
-	function __construct($leistungsnummer, $beschreibung, $speziefischerPreis, $einkaufspreis, $quantity, $meh, $discount) {
+	function __construct($leistungsnummer, $beschreibung, $speziefischerPreis, $einkaufspreis, $quantity, $meh, $discount, $isInvoice) {
 		$this->beschreibung = $beschreibung;
 		$this->preis = (float) $speziefischerPreis;
 		$this->einkaufspreis = (float) $einkaufspreis;
 		$this->leistungsnummer = $leistungsnummer;
+
+		$this->isInvoice = $isInvoice == 0 ? false : true;
 
 		$data =  DBAccess::selectQuery("SELECT Bezeichnung FROM leistung WHERE Nummer = $leistungsnummer");
 		if ($data == null) {
@@ -158,6 +161,10 @@ class Leistung extends Posten {
 
 	public function getQuantity() {
 		return 1;
+	}
+
+	public function isInvoice() {
+		return $this->isInvoice;
 	}
 
 }

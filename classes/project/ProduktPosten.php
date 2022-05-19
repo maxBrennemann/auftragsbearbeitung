@@ -17,18 +17,21 @@ class ProduktPosten extends Posten {
 	private $Beschreibung = null;
 	private $Anzahl = 0;
 	private $Marke = "";
+	private $isInvoice = false;
 	
 	protected $postenTyp = "produkt";
 	protected $ohneBerechnung = false;
 	protected $postennummer;
 
-	function __construct($Preis, $Bezeichnung, $Beschreibung, $Anzahl, $Einkaufspreis, $Marke, $discount) {
+	function __construct($Preis, $Bezeichnung, $Beschreibung, $Anzahl, $Einkaufspreis, $Marke, $discount, $isInvoice) {
 		$this->Preis = (float) $Preis;
 		$this->Einkaufspreis = (float) $Einkaufspreis;
 		$this->Bezeichnung = $Bezeichnung;
 		$this->Beschreibung = $Beschreibung;
 		$this->Anzahl = (int) $Anzahl;
 		$this->Marke = $Marke;
+
+		$this->isInvoice = $isInvoice == 0 ? false : true;
 
 		if ($discount != 0 && $discount > 0 && $discount <= 100) {
 			$this->discount = $discount;
@@ -120,6 +123,10 @@ class ProduktPosten extends Posten {
 
 	public function getQuantity() {
 		return $this->Anzahl;
+	}
+
+	public function isInvoice() {
+		return $this->isInvoice;
 	}
 
 }

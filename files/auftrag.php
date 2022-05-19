@@ -244,7 +244,7 @@ if ($auftragsId == -1): ?>
 	</div>
 	<div class="defCont invoice">
 		<u>Rechnungsposten:</u>
-		
+		<?=$auftrag->getInvoicePostenTable()?>
 	</div>
 	<div class="defCont preis">
 		<u>Gesamtpreis:</u>

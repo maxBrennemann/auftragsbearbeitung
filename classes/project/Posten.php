@@ -38,9 +38,9 @@ abstract class Posten {
 		$posten = array();
 		
 		if ($invoice) {
-			$data = DBAccess::selectQuery("SELECT Postennummer, Posten, ohneBerechnung, discount FROM posten WHERE Auftragsnummer = $auftragsnummer AND rechnungsNr != 0");
+			$data = DBAccess::selectQuery("SELECT Postennummer, Posten, ohneBerechnung, discount, isInvoice FROM posten WHERE Auftragsnummer = $auftragsnummer AND rechnungsNr != 0");
 		} else {
-			$data = DBAccess::selectQuery("SELECT Postennummer, Posten, ohneBerechnung, discount FROM posten WHERE Auftragsnummer = $auftragsnummer");
+			$data = DBAccess::selectQuery("SELECT Postennummer, Posten, ohneBerechnung, discount, isInvoice FROM posten WHERE Auftragsnummer = $auftragsnummer");
 		}
 		foreach ($data as $step) {
 			$element;
@@ -48,21 +48,21 @@ abstract class Posten {
 			switch ($step['Posten']) {
 				case 'zeit':
 					$speziefischerPosten = DBAccess::selectQuery("SELECT ZeitInMinuten, Stundenlohn, Beschreibung FROM zeit WHERE zeit.Postennummer = {$step['Postennummer']}")[0];
-					$element = new Zeit($speziefischerPosten['Stundenlohn'], $speziefischerPosten['ZeitInMinuten'], $speziefischerPosten['Beschreibung'], $step['discount']);
+					$element = new Zeit($speziefischerPosten['Stundenlohn'], $speziefischerPosten['ZeitInMinuten'], $speziefischerPosten['Beschreibung'], $step['discount'], (int) $step['isInvoice']);
 				break;
 				case 'produkt':
 					$query = "SELECT Preis, Bezeichnung, Beschreibung, pp.Produktnummer, Anzahl, p.Einkaufspreis FROM produkt_posten AS pp, produkt AS p, posten AS po ";
 					$query .= "WHERE pp.Produktnummer = p.Nummer AND pp.Postennummer = po.Nummer AND pp.Postennummer = {$step['Postennummer']}";
 					$speziefischerPosten = DBAccess::selectQuery($query)[0];
-					$element = new ProduktPosten($speziefischerPosten['Preis'], $speziefischerPosten['Bezeichnung'], $speziefischerPosten['Beschreibung'], $speziefischerPosten['Anzahl'], $speziefischerPosten['Einkaufspreis'], $step['discount']);
+					$element = new ProduktPosten($speziefischerPosten['Preis'], $speziefischerPosten['Bezeichnung'], $speziefischerPosten['Beschreibung'], $speziefischerPosten['Anzahl'], $speziefischerPosten['Einkaufspreis'], $step['discount'], (int) $step['isInvoice']);
 				break;
 				case 'leistung':
 					$speziefischerPosten = DBAccess::selectQuery("SELECT Leistungsnummer, Beschreibung, SpeziefischerPreis, Einkaufspreis, qty, meh FROM leistung_posten WHERE leistung_posten.Postennummer = {$step['Postennummer']}")[0];
-					$element = new Leistung($speziefischerPosten['Leistungsnummer'], $speziefischerPosten['Beschreibung'], $speziefischerPosten['SpeziefischerPreis'], $speziefischerPosten['Einkaufspreis'], $speziefischerPosten['qty'], $speziefischerPosten['meh'], $step['discount']);
+					$element = new Leistung($speziefischerPosten['Leistungsnummer'], $speziefischerPosten['Beschreibung'], $speziefischerPosten['SpeziefischerPreis'], $speziefischerPosten['Einkaufspreis'], $speziefischerPosten['qty'], $speziefischerPosten['meh'], $step['discount'], (int) $step['isInvoice']);
 				break;
 				case 'compact':
 					$speziefischerPosten = DBAccess::selectQuery("SELECT amount, marke, price, purchasing_price, `description`, `name` FROM product_compact WHERE product_compact.postennummer = {$step['Postennummer']}")[0];
-					$element = new ProduktPosten($speziefischerPosten['price'], $speziefischerPosten['name'], $speziefischerPosten['description'], $speziefischerPosten['amount'], $speziefischerPosten['purchasing_price'], $speziefischerPosten['marke'], $step['discount']);
+					$element = new ProduktPosten($speziefischerPosten['price'], $speziefischerPosten['name'], $speziefischerPosten['description'], $speziefischerPosten['amount'], $speziefischerPosten['purchasing_price'], $speziefischerPosten['marke'], $step['discount'], (int) $step['isInvoice']);
 				break;
 			}
 
@@ -79,8 +79,8 @@ abstract class Posten {
 		return $posten;
 	}
 
-	public static function addToInvoice() {
-		
+	public static function bekommePosten($postennummer) {
+
 	}
 
 	public static function insertPosten($type, $data) {
@@ -92,6 +92,7 @@ abstract class Posten {
 
 		$fre = $data['ohneBerechnung'];
 		$dis = $data['discount'];
+		$inv = $data['addToInvoice'];
 
 		if (isset($_SESSION['overwritePosten']) && $_SESSION['overwritePosten'] == true) {
 			$postennummer = (int) $_SESSION['overwritePosten_postennummer'];
@@ -102,7 +103,7 @@ abstract class Posten {
 			DBAccess::deleteQuery("DELETE FROM leistung_posten WHERE Postennummer = $postennummer");
 			DBAccess::deleteQuery("DELETE FROM product_compact WHERE Postennummer = $postennummer");
 		} else {
-			$postennummer = DBAccess::insertQuery("INSERT INTO posten (Auftragsnummer, Posten, ohneBerechnung, discount) VALUES ($auftragsnummer, '$type', $fre, $dis)");
+			$postennummer = DBAccess::insertQuery("INSERT INTO posten (Auftragsnummer, Posten, ohneBerechnung, discount, isInvoice) VALUES ($auftragsnummer, '$type', $fre, $dis, $inv)");
 		}
 
 		switch ($type) {
@@ -129,7 +130,6 @@ abstract class Posten {
 			case "produkt":
 				$amount = $data['amount'];
 				$prodId = $data['prodId'];
-				DBAccess::insertQuery("INSERT INTO posten (Postennummer, Auftragsnummer, Posten, ohneBerechnung) VALUES ($postennummer, $auftragsnummer, '$type', $fre)");
 				DBAccess::insertQuery("INSERT INTO produkt_posten (Produktnummer, Postennummer, Anzahl) VALUES ($prodId, $postennummer, $amount)");
 			break;
 			case "compact":

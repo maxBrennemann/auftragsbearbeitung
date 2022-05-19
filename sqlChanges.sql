@@ -356,3 +356,4 @@ ALTER TABLE `posten` ADD `isInvoice` BOOLEAN NOT NULL AFTER `discount`;
 /* Änderungen 19.05.2022 */
 ALTER TABLE `posten` DROP `isInvoice`;
 CREATE TABLE `invoice_items` ( `item_id` INT NOT NULL AUTO_INCREMENT , `order_id` INT NOT NULL , `offer_id` INT NOT NULL , `invoice_id` INT NOT NULL , `type` VARCHAR(16) NOT NULL , `default_item` BOOLEAN NOT NULL , `no_charge` BOOLEAN NOT NULL , `discount_percentage` INT NOT NULL , PRIMARY KEY (`item_id`)) ENGINE = InnoDB;
+ALTER TABLE `posten` ADD `isInvoice` BOOLEAN NOT NULL AFTER `discount`;
