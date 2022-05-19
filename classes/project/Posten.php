@@ -79,6 +79,10 @@ abstract class Posten {
 		return $posten;
 	}
 
+	public static function addToInvoice() {
+		
+	}
+
 	public static function insertPosten($type, $data) {
 		$auftragsnummer = $data['Auftragsnummer'];
 
