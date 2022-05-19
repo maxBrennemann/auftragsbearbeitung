@@ -269,7 +269,37 @@ class Auftrag implements StatisticsInterface {
 		$t->createByData($data, $column_names);
 		$t->addSelector("check");
 		$t->setType("posten");
+		$_SESSION[$t->getTableKey()] = serialize($t);
+
+		return $t->getTable();
+	}
+
+	/*
+	 * returns all invoice columns from invoice_posten table
+	 */
+	public function getInvoicePostenTable() {
+		$column_names = array(
+			0 => array("COLUMN_NAME" => "Bezeichnung"), 
+			1 => array("COLUMN_NAME" => "Beschreibung"), 
+			2 => array("COLUMN_NAME" => "Stundenlohn"), 
+			3 => array("COLUMN_NAME" => "Anzahl"), 
+			4 => array("COLUMN_NAME" => "MEH"), 
+			5 => array("COLUMN_NAME" => "Preis"), 
+			6 => array("COLUMN_NAME" => "Einkaufspreis")
+		);
+
+		$data = $this->getAuftragsPostenHelper();
+
+		/* addes edit and delete to table */
+		$t = new Table();
+		$t->createByData($data, $column_names);
+		$t->addActionButton("edit");
+		$t->setType("posten");
+		$t->addActionButton("delete", $identifier = "Postennummer");
+		$t->addAction(null, "+", "Rechnung/ Zahlung hinzufügen");
+		$t->addDataset("type", "type");
 		$_SESSION["posten_table"] = serialize($t);
+		$_SESSION[$t->getTableKey()] = serialize($t);
 
 		return $t->getTable();
 	}
