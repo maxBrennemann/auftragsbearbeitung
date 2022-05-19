@@ -275,6 +275,16 @@
 			</div>
 		</div>
 
+		<div id="notizen">
+			<h3>Notizen</h3>
+			<div id="editNotes"><?=$kunde->getNotizen()?></div>
+			<button onclick="editText(event);">Bearbeiten</button>
+		</div>
+		<div id="fahrzeuge">
+			<h3>Fahrzeuge</h3>
+			<?=$kunde->getFahrzeuge()?>
+		</div>
+
 		<div id="ansprechpartner">
 			<h3>Ansprechpartner</h3>
 			<div id="ansprechpartnerTable">
@@ -287,18 +297,8 @@
 		</div>
 		<div id="auftraege">
 			<h3>Aufträge</h3>
-			<?=$kunde->getOrderCards()?>
-			<br>
 			<a href="<?=Link::getPageLink("neuer-auftrag")?>?kdnr=<?=$kundenid?>">Neuen Auftrag erstellen</a>
-		</div>
-		<div id="notizen">
-			<h3>Notizen</h3>
-			<div id="editNotes"><?=$kunde->getNotizen()?></div>
-			<button onclick="editText(event);">Bearbeiten</button>
-		</div>
-		<div id="fahrzeuge">
-			<h3>Fahrzeuge</h3>
-			<?=$kunde->getFahrzeuge()?>
+			<?=$kunde->getOrderCards()?>
 		</div>
 	</div>
 <?php endif; ?>

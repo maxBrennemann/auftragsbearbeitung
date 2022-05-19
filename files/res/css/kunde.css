@@ -112,13 +112,13 @@ a[href="#"] {
 
 @media (min-width: 1301px) {
     .gridCont {
-        grid-template-areas: "kundendaten addNewAddress" "farben farben" "ansprechpartner ansprechpartner" "auftraege auftraege" "notizen fahrzeuge";
+        grid-template-areas: "kundendaten addNewAddress" "notizen fahrzeuge" "farben farben" "ansprechpartner ansprechpartner" "auftraege auftraege";
     }
 }
 
 @media (max-width: 1300px) {
     .gridCont {
-        grid-template-areas: "kundendaten kundendaten" "addNewAddress addNewAddress" "ansprechpartner ansprechpartner" "farben farben" "auftraege auftraege" "notizen fahrzeuge";
+        grid-template-areas: "kundendaten kundendaten" "addNewAddress addNewAddress" "ansprechpartner ansprechpartner" "notizen fahrzeuge" "farben farben" "auftraege auftraege";
         grid-gap: 7px;
     }
 }
@@ -129,7 +129,7 @@ a[href="#"] {
     }
 
     .gridCont {
-        grid-template-areas: "kundendaten" "addNewAddress" "ansprechpartner" "farben" "auftraege" "notizen" "fahrzeuge";
+        grid-template-areas: "kundendaten" "addNewAddress" "notizen" "fahrzeuge" "ansprechpartner" "farben" "auftraege";
         grid-gap: 7px;
     }
 
