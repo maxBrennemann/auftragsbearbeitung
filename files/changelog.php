@@ -1,4 +1,8 @@
 <div class="changelog">
+    <h3>1.1.14</h3>
+    <ul>
+        <li>Posten können nun direkt der Rechnung hinzugefügt werden</li>
+    </ul>
     <h3>1.1.13</h3>
     <ul>
         <li>Posten können nun in einem neuen Menü hinzugefügt werden</li>
