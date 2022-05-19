@@ -140,52 +140,50 @@ class Ajax {
 				$data['Auftragsnummer'] = $_POST['auftrag'];
 				$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
 				$data['discount'] = (int) $_POST['discount'];
+				$data['addToInvoice'] = (int) $_POST['addToInvoice'];
 
-				$type = (int) $_POST['addToInvoice'];
-				if ($type == 1) {
-					Posten::addToInvoice();
-					echo "addToInvoice";
-				} else {
-					Posten::insertPosten("zeit", $data);
-					echo (new Auftrag($_POST['auftrag']))->preisBerechnen();
-				}
+				Posten::insertPosten("zeit", $data);
+				echo (new Auftrag($_POST['auftrag']))->preisBerechnen();
+			break;
+			case "insertLeistung":
+				$data = array();
+				$data['Leistungsnummer'] = $_POST['lei'];
+				$data['Beschreibung'] = $_POST['bes'];
+				$data['Einkaufspreis'] = str_replace(",", ".", $_POST['ekp']);
+				$data['SpeziefischerPreis'] = str_replace(",", ".", $_POST['pre']);
+				$data['Auftragsnummer'] = $_POST['auftrag'];
+				$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
+				$data['discount'] = (int) $_POST['discount'];
+				$data['MEH'] = $_POST['meh'];
+				$data['anzahl'] = $_POST['anz'];
+				$data['addToInvoice'] = (int) $_POST['addToInvoice'];
+				
+				Posten::insertPosten("leistung", $data);
+				echo (new Auftrag($_POST['auftrag']))->preisBerechnen();
 			break;
 			case "insertProduct":
-				$type = (int) $_POST['addToInvoice'];
-				if ($type == 1) {
-					echo "addToInvoice";
-				} else {
-					$amount = $_POST['time'];
-					$prodId = $_POST['time'];
-					$isFree = $_POST['ohneBerechnung'];
-					$auftId = $_POST['auftrag'];
-
-					$data = array();
-					$data['amount'] = $_POST['amount'];
-					$data['prodId'] = $_POST['product'];
-					$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
-					$data['Auftragsnummer'] = $_POST['auftrag'];
-					Posten::insertPosten("produkt", $data);
-				}
+				$data = array();
+				$data['amount'] = $_POST['amount'];
+				$data['prodId'] = $_POST['product'];
+				$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
+				$data['Auftragsnummer'] = $_POST['auftrag'];
+				$data['addToInvoice'] = (int) $_POST['addToInvoice'];
+				Posten::insertPosten("produkt", $data);
 			break;
 			case "insertProductCompact":
-				$type = (int) $_POST['addToInvoice'];
-				if ($type == 1) {
-					echo "addToInvoice";
-				} else {
-					$data = array();
-					$data['amount'] = (int) $_POST['menge'];
-					$data['marke'] = $_POST['marke'];
-					$data['ekpreis'] = str_replace(",", ".", $_POST['ekpreis']);
-					$data['vkpreis'] = str_replace(",", ".", $_POST['vkpreis']);
-					$data['name'] = $_POST['name'];
-					$data['beschreibung'] = $_POST['beschreibung'];
-					$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
-					$data['Auftragsnummer'] = (int) $_POST['auftrag'];
-					$data['discount'] = (int) $_POST['discount'];
-					Posten::insertPosten("compact", $data);
-					echo (new Auftrag($_POST['auftrag']))->preisBerechnen();
-				}
+				$data = array();
+				$data['amount'] = (int) $_POST['menge'];
+				$data['marke'] = $_POST['marke'];
+				$data['ekpreis'] = str_replace(",", ".", $_POST['ekpreis']);
+				$data['vkpreis'] = str_replace(",", ".", $_POST['vkpreis']);
+				$data['name'] = $_POST['name'];
+				$data['beschreibung'] = $_POST['beschreibung'];
+				$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
+				$data['Auftragsnummer'] = (int) $_POST['auftrag'];
+				$data['discount'] = (int) $_POST['discount'];
+				$data['addToInvoice'] = (int) $_POST['addToInvoice'];
+				Posten::insertPosten("compact", $data);
+				echo (new Auftrag($_POST['auftrag']))->preisBerechnen();
 			break;
 			case "insertAnspr":
 				$vorname = $_POST['vorname'];
@@ -231,26 +229,6 @@ class Ajax {
 			break;
 			case "test":
 				var_dump(unserialize($_SESSION['data']));
-			break;
-			case "insertLeistung":
-				$type = (int) $_POST['addToInvoice'];
-				if ($type == 1) {
-					echo "addToInvoice";
-				} else {
-					$data = array();
-					$data['Leistungsnummer'] = $_POST['lei'];
-					$data['Beschreibung'] = $_POST['bes'];
-					$data['Einkaufspreis'] = str_replace(",", ".", $_POST['ekp']);
-					$data['SpeziefischerPreis'] = str_replace(",", ".", $_POST['pre']);
-					$data['Auftragsnummer'] = $_POST['auftrag'];
-					$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
-					$data['discount'] = (int) $_POST['discount'];
-					$data['MEH'] = $_POST['meh'];
-					$data['anzahl'] = $_POST['anz'];
-					
-					Posten::insertPosten("leistung", $data);
-					echo (new Auftrag($_POST['auftrag']))->preisBerechnen();
-				}
 			break;
 			case "insertStep":
 				$data = array();

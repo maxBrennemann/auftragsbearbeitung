@@ -194,7 +194,7 @@ class Auftrag implements StatisticsInterface {
 	 * helper function for creating the AuftragsPosten table
 	 * function returns the data for the table
 	 */
-	private function getAuftragsPostenHelper() {
+	private function getAuftragsPostenHelper($isInvoice = false) {
 		$subArr = array(
 			"Postennummer" => "", 
 			"Bezeichnung" => "", 
@@ -207,14 +207,24 @@ class Auftrag implements StatisticsInterface {
 			"type" => ""
 		);
 
-		$data = array(sizeof($this->Auftragsposten));
-
+		$data = array();
 		if (sizeof($this->Auftragsposten) == 0) {
 			return "";
 		}
 
+		/* only collect the items where isInvoice is true */
+		if ($isInvoice) {
+			for ($i = 0; $i < sizeof($this->Auftragsposten); $i++) {
+				if ($this->Auftragsposten[$i]->isInvoice() == true) {
+					array_push($data, $this->Auftragsposten[$i]->fillToArray($subArr));
+				}
+			}
+	
+			return $data;
+		}
+
 		for ($i = 0; $i < sizeof($this->Auftragsposten); $i++) {
-			$data[$i] = $this->Auftragsposten[$i]->fillToArray($subArr);
+			array_push($data, $this->Auftragsposten[$i]->fillToArray($subArr));
 		}
 
 		return $data;
@@ -288,7 +298,7 @@ class Auftrag implements StatisticsInterface {
 			6 => array("COLUMN_NAME" => "Einkaufspreis")
 		);
 
-		$data = $this->getAuftragsPostenHelper();
+		$data = $this->getAuftragsPostenHelper(true);
 
 		/* addes edit and delete to table */
 		$t = new Table();
@@ -298,7 +308,7 @@ class Auftrag implements StatisticsInterface {
 		$t->addActionButton("delete", $identifier = "Postennummer");
 		$t->addAction(null, "+", "Rechnung/ Zahlung hinzufügen");
 		$t->addDataset("type", "type");
-		$_SESSION["posten_table"] = serialize($t);
+		$_SESSION["invoice_table"] = serialize($t);
 		$_SESSION[$t->getTableKey()] = serialize($t);
 
 		return $t->getTable();
