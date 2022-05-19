@@ -1,20 +1,32 @@
 
-function closeOrder(ids) {
-    var url_string = window.location.href
-    var url = new URL(url_string);
-    var auftragsId = url.searchParams.get("create");
+var checkboxes =  {};
+var table;
 
-    if (ids == null) {
-        var completeInvoice = new AjaxCall(`getReason=completeInvoice&auftrag=${auftragsId}&rows=0`, "POST", window.location.href);
-        completeInvoice.makeAjaxCall(function (response) {});
+if (document.readyState !== 'loading' ) {
+    startInvoice();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        startInvoice();
+    });
+}
+
+function startInvoice() {
+    table = document.getElementsByTagName("table")[0].dataset.key;
+}
+
+function check(all = false) {
+    if (all == true) {
+        var completeInvoice = new AjaxCall(`getReason=completeInvoice&auftrag=${auftragsId}&rows=0&table=${table}`, "POST", window.location.href);
+        completeInvoice.makeAjaxCall(function (response) {
+            console.log(response);
+        });
     } else {
-        if (Array.isArray(ids)) {
-            var rows = JSON.stringify(ids);
-            var completeInvoice = new AjaxCall(`getReason=completeInvoice&auftrag=${auftragsId}&rows=${rows}`, "POST", window.location.href);
-            completeInvoice.makeAjaxCall(function (response) {});
-        } else {
-            return null;
-        }
+        var rows = JSON.stringify(checkboxes);
+        var auftragsId = document.getElementById("orderId").innerHTML;
+        var completeInvoice = new AjaxCall(`getReason=completeInvoice&auftrag=${auftragsId}&rows=${rows}&table=${table}`, "POST", window.location.href);
+        completeInvoice.makeAjaxCall(function (response) {
+            console.log(response);
+        });
     }
 }
 
@@ -27,9 +39,6 @@ function generatePDF() {
 }
 
 function changeInput(event, key) {
-    var status = event.target.checked;
-    var sendInputKey = new AjaxCall(`getReason=tableInput&key=${key}&status=${status}`, "POST", window.location.href);
-    sendInputKey.makeAjaxCall(function (response) {
-        console.log(response);
-    });
+    checkboxes[key] = event.target.checked;
+    check();
 }

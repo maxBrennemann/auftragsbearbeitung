@@ -24,19 +24,24 @@ class Rechnung {
 	private $posten;
 
 	function __construct($invoiceId = null) {
+		/* 
+		 * session object currentInvoice_orderId stores the currently used invoice id;
+		 * if no invoice id exists, a new invoice id is created
+		 */
+		$orderId = -1;
 		if (isset($_SESSION['currentInvoice_orderId'])) {
-			$currentOrder = $_SESSION['currentInvoice_orderId'];
-			$this->auftrag = new Auftrag($currentOrder);
-			$kdnr = $this->auftrag->getKundennummer();
-			$this->kunde = new Kunde($kdnr);
+			$orderId = $_SESSION['currentInvoice_orderId'];
 		} else if ($invoiceId != null) {
-			$invoiceId = (int) $invoiceId;
-			$order = DBAccess::selectQuery("SELECT * FROM auftrag WHERE Rechnungsnummer = $invoiceId");
+			$order =  DBAccess::selectQuery("SELECT Auftragsnummer FROM auftrag WHERE Rechnungsnummer = " . (int) $invoiceId);
 			if (!empty($order)) {
-				$this->auftrag = new Auftrag($order[0]["Auftragsnummer"]);
-				$this->kund = new Kunde($this->auftrag->getKundennummer());
+				$orderId = (int) $order[0]["Auftragsnummer"];
 			}
-		}
+ 		}
+
+		/*$orderId = isset($_SESSION['currentInvoice_orderId']) ? (int) $_SESSION['currentInvoice_orderId'] : DBAccess::selectQuery("SELECT * FROM auftrag WHERE Rechnungsnummer = " . (int) $invoiceId)[0]["Auftragsnummer"];*/
+
+		$this->auftrag = new Auftrag($orderId);
+		$this->kunde = new Kunde($this->auftrag->getKundennummer());
 
 		$this->invoiceId = (int) $invoiceId;
 	}
