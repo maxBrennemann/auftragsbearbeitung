@@ -105,7 +105,7 @@ if ($auftragsId == -1): ?>
 		<span><u>Auftragsnummer:</u> <span id="auftragsnummer"><?=$auftrag->getAuftragsnummer()?></span></span>
 		<br>
 		<span><button onclick="showPreview();">Auftragsblatt anzeigen</button></span>
-		<span><button onclick="location.href= '<?=Link::getPageLink('rechnung')?>?create=<?=$auftragsId?>'">Rechnung generieren</button></span>
+		<span><button onclick="location.href= '<?=Link::getPageLink('rechnung')?>?target=create&id=<?=$auftragsId?>'">Rechnung generieren</button></span>
 		<?php if ($auftrag->getIsArchiviert() == false) :?><span><button onclick="archvieren();">Auftrag archivieren</button></span><br><?php endif; ?>
 		<br>
 		<span>
@@ -170,7 +170,7 @@ if ($auftragsId == -1): ?>
 		<button onclick="setOrderFinished()">Auftrag ist fertig</button>
 	</div>
 	<div class="defCont posten">
-		<u>Posten:</u>
+		<u>Zeiten, Produkte und Kosten:</u>
 		<br>
 		<br>
 		<span id="auftragsPostenTable">
@@ -229,6 +229,10 @@ if ($auftragsId == -1): ?>
 						<input id="ohneBerechnung" type="checkbox">Ohne Berechnung
 					</span>
 					<br>
+					<span id="showAddToInvoice">
+						<input id="addToInvoice" type="checkbox">Der Rechnung hinzufügen
+					</span>
+					<br>
 					<span id="showDiscount">
 						<input type="range" min="0" max="100" value="0" oninput="event.target.nextSibling.innerText = this.value + '%';">
 						<span id="showDiscoundValue">0%</span> Rabatt
@@ -237,6 +241,10 @@ if ($auftragsId == -1): ?>
 				</div>
 			</div>
 		</div>
+	</div>
+	<div class="defCont invoice">
+		<u>Rechnungsposten:</u>
+		
 	</div>
 	<div class="defCont preis">
 		<u>Gesamtpreis:</u>

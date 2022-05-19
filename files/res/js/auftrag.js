@@ -72,6 +72,7 @@ function addTime() {
         auftrag: globalData.auftragsId,
         descr: document.getElementById("descr").value,
         ohneBerechnung: getOhneBerechnung() ? 1 : 0,
+        addToInvoice: getAddToInvoice() ? 1 : 0,
         discount: document.getElementById("showDiscount").children[0].value
     };
 
@@ -97,6 +98,7 @@ function addLeistung() {
         anz: document.getElementById("anz").value,
         auftrag: globalData.auftragsId,
         ohneBerechnung: getOhneBerechnung() ? 1 : 0,
+        addToInvoice: getAddToInvoice() ? 1 : 0,
         discount: document.getElementById("showDiscount").children[0].value
     };
 
@@ -120,6 +122,7 @@ function addProductCompact() {
         beschreibung: document.getElementById("posten_produkt_besch").value,
         auftrag: globalData.auftragsId,
         ohneBerechnung: getOhneBerechnung() ? 1 : 0,
+        addToInvoice: getAddToInvoice() ? 1 : 0,
         discount: document.getElementById("showDiscount").children[0].value
     };
 
@@ -150,6 +153,10 @@ class PostenListe {
 
 function getOhneBerechnung() {
     return document.getElementById("ohneBerechnung").checked;
+}
+
+function getAddToInvoice() {
+    return document.getElementById("addToInvoice").checked;
 }
 
 function showSelection(element) {
@@ -715,7 +722,8 @@ function archvieren() {
 function chooseProduct(productId) {
     var amount = document.getElementById(productId + "_getAmount").value;
     var isFree = getOhneBerechnung() ? 1 : 0;
-    var add = new AjaxCall(`getReason=insertProduct&product=${productId}&amount=${amount}&auftrag=${globalData.auftragsId}&ohneBerechnung=${isFree}`, "POST", window.location.href);
+    var addToInvoice = getAddToInvoice() ? 1 : 0;
+    var add = new AjaxCall(`getReason=insertProduct&product=${productId}&amount=${amount}&auftrag=${globalData.auftragsId}&ohneBerechnung=${isFree}&addToInvoice=${addToInvoice}`, "POST", window.location.href);
     add.makeAjaxCall(function (response) {
         console.log(response);
         reloadPostenListe();
