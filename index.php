@@ -151,7 +151,7 @@ function isLoggedIn() {
 }
 
 function getCurrentVersion() {
-	return "0.1.13";
+	return "1.1.14";
 }
 
 ?>
