@@ -196,7 +196,7 @@ class Rechnung {
 		DBAccess::updateQuery("UPDATE posten SET rechnungsNr = $nextNumber WHERE Auftragsnummer = $orderId AND rechnungsNr = 0");
 
 		/* Fertigstellung wird eingetragen */
-		DBAccess::updateQuery("UPDATE auftrag SET Fertigstellung = current_date() $nextNumber WHERE Auftragsnummer = $orderId");
+		DBAccess::updateQuery("UPDATE auftrag SET Fertigstellung = current_date() WHERE Auftragsnummer = $orderId");
 	}
 
 	/*
