@@ -170,7 +170,7 @@ if ($auftragsId == -1): ?>
 		<button onclick="setOrderFinished()">Auftrag ist fertig</button>
 	</div>
 	<div class="defCont posten">
-		<u>Zeiten, Produkte und Kosten:</u>
+		<u>Zeiten, Produkte und Kosten (netto):</u>
 		<br>
 		<br>
 		<span id="auftragsPostenTable">
@@ -243,17 +243,17 @@ if ($auftragsId == -1): ?>
 		</div>
 	</div>
 	<div class="defCont invoice">
-		<u>Rechnungsposten:</u>
+		<u>Rechnungsposten (netto):</u>
 		<?=$auftrag->getInvoicePostenTable()?>
 	</div>
 	<div class="defCont preis">
-		<u>Gesamtpreis:</u>
+		<u>Gesamtpreis (netto):</u>
 		<br>
 		<span id="gesamtpreis">
 			<?=number_format($auftrag->preisBerechnen(), 2, ',', '') . "€"?>
 		</span>
 		<span>
-			<?=number_format($auftrag->gewinnBerechnen(), 2, ',', '') . "€"?> (Gewinn)
+			<?=number_format($auftrag->gewinnBerechnen(), 2, ',', '') . "€"?> (Gewinn netto)
 		</span>
 	</div>
 	<div class="defCont fahrzeuge">
