@@ -357,3 +357,7 @@ ALTER TABLE `posten` ADD `isInvoice` BOOLEAN NOT NULL AFTER `discount`;
 ALTER TABLE `posten` DROP `isInvoice`;
 CREATE TABLE `invoice_items` ( `item_id` INT NOT NULL AUTO_INCREMENT , `order_id` INT NOT NULL , `offer_id` INT NOT NULL , `invoice_id` INT NOT NULL , `type` VARCHAR(16) NOT NULL , `default_item` BOOLEAN NOT NULL , `no_charge` BOOLEAN NOT NULL , `discount_percentage` INT NOT NULL , PRIMARY KEY (`item_id`)) ENGINE = InnoDB;
 ALTER TABLE `posten` ADD `isInvoice` BOOLEAN NOT NULL AFTER `discount`;
+
+/* Änderungen 20.05.2022 */
+ALTER TABLE `attachments` CHANGE `fileSrc` `fileSrc` VARCHAR(128) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '10', 'head', 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js', '0', 'extJs');

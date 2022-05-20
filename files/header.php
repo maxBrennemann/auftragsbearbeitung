@@ -35,12 +35,19 @@
 		foreach($files as $file) {
 			$link = Link::getResourcesShortLink($file['fileSrc'], $file['fileType']);
 		
-			if ($file['fileType'] == 'css') {
-				echo '<link rel="stylesheet" href="' . $link . '">';
-			} else if ($file['fileType'] == 'js') {
-				echo '<script src="' . $link . '"></script>';
-			} else if ($file['fileType'] == 'font') {
-				echo '<style> @font-face { font-family: ' . $file['fileName'] . '; src: url("' . $link . '"); }</style>';
+			switch ($file['fileType']) {
+				case 'css':
+					echo '<link rel="stylesheet" href="' . $link . '">';
+					break;
+				case 'js':
+				case 'extJs':
+					echo '<script src="' . $link . '"></script>';
+					break;
+				case 'font':
+					echo '<style> @font-face { font-family: ' . $file['fileName'] . '; src: url("' . $link . '"); }</style>';
+					break;
+				default:
+					break;
 			}
 		}
 	?>
