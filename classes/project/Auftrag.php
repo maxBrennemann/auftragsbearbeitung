@@ -173,7 +173,7 @@ class Auftrag implements StatisticsInterface {
 	public function preisBerechnen() {
 		$price = 0;
 		foreach ($this->Auftragsposten as $posten) {
-			if ($posten->isInvoice() == true) {
+			if ($posten->isInvoice() == 1) {
 				$price += $posten->bekommePreis();
 			}
 		}
@@ -183,7 +183,7 @@ class Auftrag implements StatisticsInterface {
 	public function gewinnBerechnen() {
 		$price = 0;
 		foreach ($this->Auftragsposten as $posten) {
-			if ($posten->isInvoice() == true) {
+			if ($posten->isInvoice() == 1) {
 				$price += $posten->bekommeDifferenz();
 			}
 		}
