@@ -65,7 +65,7 @@
 		data: {
 			labels: <?=$labels?>,
 			datasets: [{
-				label: 'Umsatz pro Monat',
+				label: 'Umsatz pro Monat (netto)',
 				data: <?=$data?>,
 				backgroundColor: colors,
 				borderColor: borders,
