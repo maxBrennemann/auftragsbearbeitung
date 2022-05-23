@@ -64,7 +64,7 @@ main {
     margin: auto;
     margin-top: 150px;
     grid-area: main;
-    z-index: 2;
+    z-index: 1;
 }
 
 footer {

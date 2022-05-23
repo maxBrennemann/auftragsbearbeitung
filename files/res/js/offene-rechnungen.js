@@ -7,4 +7,7 @@ function updateIsDone(data, event) {
     update.makeAjaxCall(function (response) {
         document.getElementById("table").innerHTML = response;
     });
+
+    var setInvoiceData = new AjaxCall(`getReason=setInvoiceData&rechnung=${auftragsnummer}`, "POST", window.location.href);
+    setInvoiceData.makeAjaxCall(function (response) {});
 }
