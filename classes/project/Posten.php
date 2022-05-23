@@ -24,6 +24,7 @@ abstract class Posten {
 	abstract protected function getDescription();
 	abstract protected function getEinheit();
 	abstract protected function getQuantity();
+	abstract protected function isInvoice();
 	abstract protected function storeToDB($auftragsnummer);
 
 	protected $postenTyp;

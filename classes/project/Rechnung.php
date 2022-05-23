@@ -152,9 +152,7 @@ class Rechnung {
 			2 => array("COLUMN_NAME" => "Firmenname"),
 			3 => array("COLUMN_NAME" => "Bezeichnung"),
 			4 => array("COLUMN_NAME" => "Beschreibung"),
-			5 => array("COLUMN_NAME" => "Datum"),
-			6 => array("COLUMN_NAME" => "Termin"),
-			7 => array("COLUMN_NAME" => "AngenommenDurch"));
+			5 => array("COLUMN_NAME" => "Datum"));
 		
 		$data = DBAccess::selectQuery("SELECT auftrag.Auftragsnummer as Nummer, auftrag.Auftragsbezeichnung as Bezeichnung, auftrag.Auftragsbeschreibung as Beschreibung, auftrag.AngenommenDurch, auftrag.Kundennummer, auftrag.Datum, auftrag.Termin, kunde.Firmenname FROM auftrag LEFT JOIN kunde ON auftrag.Kundennummer = kunde.Kundennummer WHERE Rechnungsnummer != 0 AND Bezahlt = 0");
 

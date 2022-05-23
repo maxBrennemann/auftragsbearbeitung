@@ -362,3 +362,4 @@ ALTER TABLE `posten` ADD `isInvoice` BOOLEAN NOT NULL AFTER `discount`;
 ALTER TABLE `attachments` CHANGE `fileSrc` `fileSrc` VARCHAR(128) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '10', 'head', 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js', '0', 'extJs');
 UPDATE posten INNER JOIN auftrag ON posten.Auftragsnummer = auftrag.Auftragsnummer SET isInvoice = 1 WHERE auftrag.Rechnungsnummer > 0;
+CREATE TABLE `invoice` ( `id` INT NOT NULL , `order_id` INT NOT NULL , `creation_date` DATE NOT NULL , `payment_date` DATE NOT NULL , `payment_type` INT NOT NULL , `amount` INT NOT NULL ) ENGINE = InnoDB;

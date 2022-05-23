@@ -731,6 +731,10 @@ class Ajax {
 				$content = $_POST['content'];
 				DBAccess::insertQuery("INSERT INTO wiki_articles (title, content) VALUES ('$title', '$content')");
 			break;
+			case "setInvoiceData":
+				$orderId = (int) $_POST["rechnung"];
+				//$id = DBAccess::selectQuery("SELECT id FROM invoice WHERE ");
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
