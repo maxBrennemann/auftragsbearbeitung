@@ -1,6 +1,6 @@
 <?php
 
-class Settings {
+class ClientSettings {
 
     public static function setGrayScale($color, $type) {
         $userId = $_SESSION['userid'];

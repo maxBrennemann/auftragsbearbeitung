@@ -672,7 +672,7 @@ class Ajax {
 				require_once("classes/project/ClientSettings.php");
 				$color = $_POST['color'];
 				$type = $_POST['type'];
-				Settings::setGrayScale($color, $type);
+				ClientSettings::setGrayScale($color, $type);
 				echo "ok";
 			break;
 			case "getInfoText":

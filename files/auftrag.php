@@ -190,7 +190,7 @@ if ($auftragsId == -1): ?>
 			<div class="tabcontent" id="tabZeit" style="display: block;">
 				<div id="addPostenZeit">
 					<span>Zeit in Minuten<br><input class="postenInput" id="time" type="number" min="0"></span><br>
-					<span>Stundenlohn in €<br><input class="postenInput" id="wage" type="number" value="44"></span><br>
+					<span>Stundenlohn in €<br><input class="postenInput" id="wage" type="number" value="<?=$auftrag->getDefaultWage()?>"></span><br>
 					<span>Beschreibung<br><textarea id="descr"></textarea></span><br>
 					<button onclick="addTime()">Hinzufügen</button>
 				</div>

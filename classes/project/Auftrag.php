@@ -16,6 +16,7 @@ require_once('StatisticsInterface.php');
 require_once('classes/DBAccess.php');
 require_once('classes/Link.php');
 require_once('Statistics.php');
+require_once('GlobalSettings.php');
 require_once("classes/project/Table.php");
 
 /**
@@ -561,6 +562,11 @@ class Auftrag implements StatisticsInterface {
 			$html .= (Liste::readList($id['listen_id']))->toHTML($this->Auftragsnummer);
 		}
 		return $html;
+	}
+
+	public function getDefaultWage() {
+		$defaultWage = GlobalSettings::getSetting("defaultWage");
+		return $defaultWage;
 	}
 
 }

@@ -21,7 +21,7 @@
 	<link rel="shortcut icon" type="image/x-icon" href="<?=WEB_URL?>/favicon.ico">
 	<link rel="shortcut icon" type="image/png" href="<?=WEB_URL?>/img/favicon.png">
 	<style>
-		<?=Settings::getColorConfiguration()?>
+		<?=ClientSettings::getColorConfiguration()?>
 	</style>
 	<link rel="stylesheet" href="<?=$globalCSS?>">
 	<script src="<?=$globalJS?>"></script>
