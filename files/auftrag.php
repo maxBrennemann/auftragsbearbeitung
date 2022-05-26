@@ -314,49 +314,6 @@ if ($auftragsId == -1): ?>
 		<script>var cp = new Colorpicker(document.getElementById("cpContainer"));</script>
 	</div>
 	<div class="defCont postenadd" id="newPosten">
-		<!--<select id="selectPosten">
-			<option value="zeit">Zeit</option>
-			<option value="leistung">Leistung</option>
-			<option value="produkt">Produkt</option>
-		</select>
-		<button onclick="getSelections()">Posten hinzufügen</button>
-		<div id="addPosten">
-			<div class="innerDefCont" id="addPostenZeit" style="display: none">
-				<span>Zeit in Minuten<br><input id="time" type="number" min="0"></span><br>
-				<span>Stundenlohn in €<br><input id="wage" type="number" value="44"></span><br>
-				<span>Beschreibung<br><textarea id="descr"></textarea></span><br>
-				<button onclick="addTime()">Hinzufügen</button>
-			</div>
-			<div class="innerDefCont" id="addPostenLeistung" style="display: none">
-				<div class="columnLeistung">
-					<select id="selectLeistung" onchange="selectLeistung(event);">
-						<?php foreach ($leistungen as $leistung): ?>
-							<option value="<?=$leistung['Nummer']?>" data-aufschlag="<?=$leistung['Aufschlag']?>"><?=$leistung['Bezeichnung']?></option>
-						<?php endforeach; ?>
-					</select>
-					<br>
-					<span>Menge:<br><input id="anz" value="1"></span><br>
-					<span>Mengeneinheit:<br><input id="meh"></span><br>
-					<span>Beschreibung:<br><textarea id="bes"></textarea></span><br>
-					<span>Einkaufspreis:<br><input id="ekp" value="0"></span><br>
-					<span>Verkaufspreis:<br><input id="pre" value="0"></span><br>
-					<button onclick="addLeistung()">Hinzufügen</button>
-				</div>
-			</div>
-			<div class="innerDefCont" id="addPostenProdukt" style="display: none">
-				<span>Menge: <input id="posten_produkt_menge" type="number"></span>
-				<span>Marke: <input id="posten_produkt_marke" type="text"></span>
-				<span>EK-Preis: <input id="posten_produkt_ek" type="text"></span>
-				<span>VK-Preis: <input id="posten_produkt_vk" type="text"></span>
-				<span>Name: <input id="posten_produkt_name" type="text"></span>
-				<span>Beschreibung: <textarea id="posten_produkt_besch"></textarea></span>
-				<button onclick="addProductCompact()">Hinzufügen</button>
-			</div>
-			<span id="showOhneBerechnung" style="display: none;"><input id="ohneBerechnung" type="checkbox">Ohne Berechnung</span>
-			<br>
-			<span id="showDiscount" style="display: none;"><input type="range" min="0" max="100" value="0" oninput="event.target.nextSibling.innerText = this.value + '%';"><span id="showDiscoundValue">0%</span> Rabatt</span>
-		</div>
-		<div id="generalPosten"></div>-->
 	</div>
 	<div class="defCont produkt">
 		<div id="selectProdukt">
