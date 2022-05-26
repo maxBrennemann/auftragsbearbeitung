@@ -16,6 +16,7 @@ require_once('StatisticsInterface.php');
 require_once('classes/DBAccess.php');
 require_once('classes/Link.php');
 require_once('Statistics.php');
+require_once('GlobalSettings.php');
 require_once("classes/project/Table.php");
 
 /**
@@ -173,7 +174,9 @@ class Auftrag implements StatisticsInterface {
 	public function preisBerechnen() {
 		$price = 0;
 		foreach ($this->Auftragsposten as $posten) {
-			$price += $posten->bekommePreis();
+			if ($posten->isInvoice() == 1) {
+				$price += $posten->bekommePreis();
+			}
 		}
 		return $price;
 	}
@@ -181,7 +184,9 @@ class Auftrag implements StatisticsInterface {
 	public function gewinnBerechnen() {
 		$price = 0;
 		foreach ($this->Auftragsposten as $posten) {
-			$price += $posten->bekommeDifferenz();
+			if ($posten->isInvoice() == 1) {
+				$price += $posten->bekommeDifferenz();
+			}
 		}
 		return $price;
 	}
@@ -557,6 +562,11 @@ class Auftrag implements StatisticsInterface {
 			$html .= (Liste::readList($id['listen_id']))->toHTML($this->Auftragsnummer);
 		}
 		return $html;
+	}
+
+	public function getDefaultWage() {
+		$defaultWage = GlobalSettings::getSetting("defaultWage");
+		return $defaultWage;
 	}
 
 }

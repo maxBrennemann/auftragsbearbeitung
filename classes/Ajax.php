@@ -672,7 +672,7 @@ class Ajax {
 				require_once("classes/project/ClientSettings.php");
 				$color = $_POST['color'];
 				$type = $_POST['type'];
-				Settings::setGrayScale($color, $type);
+				ClientSettings::setGrayScale($color, $type);
 				echo "ok";
 			break;
 			case "getInfoText":
@@ -730,6 +730,10 @@ class Ajax {
 				$title = $_POST['title'];
 				$content = $_POST['content'];
 				DBAccess::insertQuery("INSERT INTO wiki_articles (title, content) VALUES ('$title', '$content')");
+			break;
+			case "setInvoiceData":
+				$orderId = (int) $_POST["rechnung"];
+				//$id = DBAccess::selectQuery("SELECT id FROM invoice WHERE ");
 			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";

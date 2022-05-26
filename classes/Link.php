@@ -90,6 +90,10 @@ class Link {
 			case "js":
 				$link = REWRITE_BASE . "js/" . $resource;
 				break;
+			case "extJs":
+				/* extJs is for external js files, therefoe the fileSrc table column is returned ($resource) */
+				$link = $resource;
+				break;
 			case "font":
 				$link = REWRITE_BASE . "font/" . $resource;
 				break;

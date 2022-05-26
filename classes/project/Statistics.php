@@ -54,9 +54,9 @@ class Statistics {
 
 	static function getVolumeByMonth() {
 		$query = "
-			SELECT CONCAT(MONTHNAME(Datum), ' ', YEAR(Datum)) AS Monat, SUM(orderPrice) AS Volume
+			SELECT CONCAT(MONTHNAME(Fertigstellung), ' ', YEAR(Fertigstellung)) AS Monat, SUM(orderPrice) AS Volume
 			FROM auftragssumme
-			GROUP BY YEAR(Datum), MONTH(Datum)
+			GROUP BY YEAR(Fertigstellung), MONTH(Fertigstellung)
 		";
 
 		return DBAccess::selectQuery($query);
