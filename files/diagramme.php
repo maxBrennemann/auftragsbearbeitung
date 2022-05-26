@@ -53,7 +53,6 @@
 <a href="<?=Link::getPageLink('diagramme')?>">Anzahl der Bestellungen pro Kunde</a><br>
 <a href="<?=Link::getPageLink('diagramme')?>?type=mitarbeiter">Anzahl der Angenommenen Aufträge pro Mitarbeiter</a><br>
 
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js"></script>
 <canvas id="showGraph"></canvas>
 <script>
 	var colors;
@@ -66,7 +65,7 @@
 		data: {
 			labels: <?=$labels?>,
 			datasets: [{
-				label: 'Umsatz pro Monat',
+				label: 'Umsatz pro Monat (netto)',
 				data: <?=$data?>,
 				backgroundColor: colors,
 				borderColor: borders,

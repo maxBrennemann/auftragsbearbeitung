@@ -1,6 +1,8 @@
 <div class="changelog">
     <h3>1.1.14</h3>
     <ul>
+        <li>Diagramm "Umsatz pro Monat" wird nun aufgrund des Fertigstellungsdatums generiert</li>
+        <li>Externe Javascript Dateien können nun via PHP eingebunden werden</li>
         <li>Posten können nun direkt der Rechnung hinzugefügt werden</li>
     </ul>
     <h3>1.1.13</h3>

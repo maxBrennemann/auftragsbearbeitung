@@ -54,7 +54,7 @@
 		<li><a href="<?=$diagramme?>">📈 Diagramme und Auswertungen</a></li>
 		<li><a href="<?=$leistungen?>">Leistungen</a></li>
 		<li><a href="<?=$toDo?>">Verbesserungen für die Auftragsbearbeitung</a></li>
-		<li>Offene Rechnungen: <b><?=$offeneSumme?>€</b></li>
+		<li><a href="<?=$offeneRechnungen?>">Offene Rechnungen:</a> <b><?=$offeneSumme?>€</b></li>
 	</ul>
 	<span style="float: right;"><a href="<?=$funktionen?>">Mehr</a></span>
 	<br>
@@ -63,6 +63,5 @@
 		<h3>Offene Bearbeitungsschritte:</h3><?=$showAktuelleSchritte?>
 		<h3>Fertig zum Abschließen:</h3><?=$showReady?>
 		<h3>Offene Aufträge:</h3><?=$showOffeneAuftraege?>
-		<h3><a href="<?=$offeneRechnungen?>">Offene Rechnungen:</a> <?=$offeneSumme?>€</h3>
 	</div>
 </div>
