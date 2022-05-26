@@ -147,14 +147,14 @@ class Rechnung {
 
 	public static function getOffeneRechnungen() {
 		$column_names = array(
-			0 => array("COLUMN_NAME" => "Nummer"),
-			1 => array("COLUMN_NAME" => "Kundennummer"),
+			0 => array("COLUMN_NAME" => "Auftragsnr"),
+			1 => array("COLUMN_NAME" => "Rechnungsnummer"),
 			2 => array("COLUMN_NAME" => "Firmenname"),
 			3 => array("COLUMN_NAME" => "Bezeichnung"),
-			4 => array("COLUMN_NAME" => "Beschreibung"),
+			4 => array("COLUMN_NAME" => "Summe"),
 			5 => array("COLUMN_NAME" => "Datum"));
 		
-		$data = DBAccess::selectQuery("SELECT auftrag.Auftragsnummer as Nummer, auftrag.Auftragsbezeichnung as Bezeichnung, auftrag.Auftragsbeschreibung as Beschreibung, auftrag.AngenommenDurch, auftrag.Kundennummer, auftrag.Datum, auftrag.Termin, kunde.Firmenname FROM auftrag LEFT JOIN kunde ON auftrag.Kundennummer = kunde.Kundennummer WHERE Rechnungsnummer != 0 AND Bezahlt = 0");
+		$data = DBAccess::selectQuery("SELECT auftrag.Auftragsnummer as Auftragsnr, auftrag.Auftragsbezeichnung as Bezeichnung, auftrag.Auftragsbeschreibung as Beschreibung, auftrag.AngenommenDurch, auftrag.Kundennummer, auftrag.Datum, auftrag.Termin, auftrag.Rechnungsnummer, kunde.Firmenname, CONCAT(FORMAT(auftragssumme.orderPrice, 2, 'de_DE'), ' €') AS Summe FROM auftrag, auftragssumme, kunde WHERE auftrag.Kundennummer = kunde.Kundennummer AND Rechnungsnummer != 0 AND Bezahlt = 0 AND auftrag.Auftragsnummer = auftragssumme.id");
 
 		for ($i = 0; $i < sizeof($data); $i++) {
 			$id = $data[$i]["AngenommenDurch"];
@@ -164,7 +164,7 @@ class Rechnung {
 
 		$table = new Table();
 		$table->createByData($data, $column_names);
-		$table->addActionButton("update", $identifier = "Nummer", $update = "istErledigt = 0");
+		$table->addActionButton("update", $identifier = "Auftragsnr", $update = "istErledigt = 0");
 		
 		return $table->getTable();
 	}
