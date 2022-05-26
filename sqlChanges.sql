@@ -363,3 +363,7 @@ ALTER TABLE `attachments` CHANGE `fileSrc` `fileSrc` VARCHAR(128) CHARACTER SET 
 INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '10', 'head', 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js', '0', 'extJs');
 UPDATE posten INNER JOIN auftrag ON posten.Auftragsnummer = auftrag.Auftragsnummer SET isInvoice = 1 WHERE auftrag.Rechnungsnummer > 0;
 CREATE TABLE `invoice` ( `id` INT NOT NULL , `order_id` INT NOT NULL , `creation_date` DATE NOT NULL , `payment_date` DATE NOT NULL , `payment_type` INT NOT NULL , `amount` INT NOT NULL ) ENGINE = InnoDB;
+
+/* Änderungen 26.05.2022 */
+CREATE TABLE `settings` ( `id` INT NOT NULL AUTO_INCREMENT , `title` VARCHAR(32) NOT NULL , `content` VARCHAR(128) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+INSERT INTO `settings` (`id`, `title`, `content`) VALUES (NULL, 'defaultWage', '50');
