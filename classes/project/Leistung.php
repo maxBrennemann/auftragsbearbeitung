@@ -160,7 +160,7 @@ class Leistung extends Posten {
 	}
 
 	public function getQuantity() {
-		return 1;
+		return $this->quantity;
 	}
 
 	public function isInvoice() {

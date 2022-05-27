@@ -73,11 +73,13 @@ class Kunde implements StatisticsInterface {
 	}
 
 	public function getHausnummer() {
+		if ($this->hausnummer == 0 || $this->hausnummer == "0") 
+			return "";
 		return $this->hausnummer;
 	}
 
 	public function getPostleitzahl() {
-		if ($this->postleitzahl == 0)
+		if ($this->postleitzahl == 0 || $this->postleitzahl == "0")
 			return "";
 		return $this->postleitzahl;
 	}
