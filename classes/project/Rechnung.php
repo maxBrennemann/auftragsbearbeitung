@@ -87,18 +87,25 @@ class Rechnung {
         $pdf->setCellPaddings(1, 1, 1, 1);
         $pdf->setCellMargins(0, 0, 0, 0);
 
-        $cAddress = "<p>{$this->kunde->getFirmenname()}<br>{$this->kunde->getName()}<br>{$this->kunde->getStrasse()} {$this->kunde->getHausnummer()}<br>{$this->kunde->getPostleitzahl()} {$this->kunde->getOrt()}</p>";
-        $address = "<p>b-schriftung Brennemann ***REMOVED***<br>***REMOVED***<br>***REMOVED***</p>";
+		$pdf->SetFont("helvetica", "", 8);
+		$address = "<p>b-schriftung Brennemann ***REMOVED***, ***REMOVED***, ***REMOVED***</p>";
+		$pdf->writeHTMLCell(0, 40, 20, 25, $address);
 
+		$pdf->SetFont("helvetica", "", 12);
+        $cAddress = "<p>{$this->kunde->getFirmenname()}<br>{$this->kunde->getName()}<br>{$this->kunde->getStrasse()} {$this->kunde->getHausnummer()}<br>{$this->kunde->getPostleitzahl()} {$this->kunde->getOrt()}</p>";
         $pdf->writeHTMLCell(85, 40, 20, 25, $cAddress);
-        $pdf->writeHTMLCell(85, 40, 120, 35, $address);
+
+		$info = "";
+		$pdf->writeHTMLCell(85, 40, 120, 35, $address);
 
         $pdf->setXY(20, 90);
+		$pdf->SetFont("helvetica", "B", 12);
         $pdf->Cell(20, 10, 'Menge', 'B');
         $pdf->Cell(20, 10, 'MEH', 'B');
         $pdf->Cell(80, 10, 'Bezeichnung', 'B');
         $pdf->Cell(20, 10, 'E-Preis', 'B');
 		$pdf->Cell(20, 10, 'G-Preis', 'B');
+		$pdf->SetFont("helvetica", "", 12);
 		
 		/* iterates over all posten and adds lines */
 		$this->loadPostenFromAuftrag();
@@ -110,10 +117,45 @@ class Rechnung {
 				$pdf->Cell(20, 10, $p->getEinheit());
 				$pdf->Cell(80, 10, $p->getDescription());
 				$pdf->Cell(20, 10, number_format($p->bekommeEinzelPreis(), 2, ',', '') . ' €');
-				$pdf->Cell(20, 10, number_format($p->bekommePreis(), 2, ',', '') . ' €');
+				$pdf->Cell(20, 10, number_format($p->bekommePreis(), 2, ',', '') . ' €', 0, 0, 'R');
 				$offset += 10;
 			}
 		}
+
+		$summe = $this->auftrag->preisBerechnen();
+		$zwischensumme = number_format($summe, 2, ',', '') . ' €';
+		$mwst = number_format($summe * 0.19, 2, ',', '') . ' €';
+		$rechnungssumme = number_format($summe * 1.19, 2, ',', '') . ' €';
+
+        $pdf->setXY(20, 90 + $offset);
+		$pdf->Cell(80, 10, "");
+		$pdf->SetFont("helvetica", "B", 12);
+		$pdf->Cell(60, 10, 'Zwischensumme:', 'T');
+		$pdf->SetFont("helvetica", "", 12);
+		$pdf->Cell(20, 10, $zwischensumme, 'T', 0, 'R');
+
+		$offset += 10;
+		$pdf->setXY(20, 90 + $offset);
+		$pdf->Cell(80, 10, "");
+		$pdf->SetFont("helvetica", "B", 12);
+		$pdf->Cell(60, 10, '19% MwSt.:', 'B');
+		$pdf->SetFont("helvetica", "", 12);
+		$pdf->Cell(20, 10, $mwst, 'B', 0, 'R');
+
+		$offset += 10;
+		$pdf->setXY(20, 90 + $offset);
+		$pdf->Cell(80, 10, "");
+		$pdf->SetFont("helvetica", "B", 12);
+		$pdf->Cell(60, 10, 'Rechnungssumme:', 'B');
+		$pdf->SetFont("helvetica", "", 12);
+		$pdf->Cell(20, 10, $rechnungssumme, 'B', 0, 'R');
+
+		$offset += 10;
+		$pdf->setCellMargins(0, 1, 0, 0);
+		$pdf->setXY(20, 90 + $offset);
+		$pdf->Cell(80, 10, "");
+		$pdf->Cell(60, 10, '', 'T');
+		$pdf->Cell(20, 10, '', 'T');
 
 		if ($store == true) {
             $filename= "{$this->kunde->getKundennummer()}_{$this->getInvoiceId()}.pdf"; 
