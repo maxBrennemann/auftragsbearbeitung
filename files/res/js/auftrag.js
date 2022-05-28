@@ -731,55 +731,29 @@ function chooseProduct(productId) {
 }
 
 /* edit title */
-function editTitle(event) {
+function editTitle() {
     var text = document.getElementById("orderTitle");
-    text.contentEditable = true;
-    text.classList.add("descriptionEditable");
     
-    if (event.target.innerText == "✔") {
-        var saveDescription = new AjaxCall(`getReason=saveTitle&text=${text.innerText}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
-        saveDescription.makeAjaxCall(function (response) {
-            if (response == "saved") {
-                var text = document.getElementById("orderTitle");
-                text.classList.remove("descriptionEditable");
-                text.contentEditable = false;
-
-                var btn = text.nextElementSibling;
-                btn.innerText = "✎";
-
-                infoSaveSuccessfull("success");
-            } else
-                console.log("not saved");
-        });
-    } else {
-        event.target.innerText = "✔";
-    }
+    var saveDescription = new AjaxCall(`getReason=saveTitle&text=${text.value}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
+    saveDescription.makeAjaxCall(function (response) {
+        if (response == "saved") {
+            infoSaveSuccessfull("success");
+        } else
+            infoSaveSuccessfull();
+    });
 }
 
 /* edit description */
-function editDescription(event) {
+function editDescription() {
     var text = document.getElementById("orderDescription");
-    text.contentEditable = true;
-    text.classList.add("descriptionEditable");
     
-    if (event.target.innerText == "Speichern") {
-        var saveDescription = new AjaxCall(`getReason=saveDescription&text=${text.innerText}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
-        saveDescription.makeAjaxCall(function (response) {
-            if (response == "saved") {
-                var text = document.getElementById("orderDescription");
-                text.classList.remove("descriptionEditable");
-                text.contentEditable = false;
-
-                var btn = text.nextElementSibling;
-                btn.innerText = "Bearbeiten";
-
-                infoSaveSuccessfull("success");
-            } else
-                console.log("not saved");
-        });
-    } else {
-        event.target.innerText = "Speichern";
-    }
+    var saveDescription = new AjaxCall(`getReason=saveDescription&text=${text.value}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
+    saveDescription.makeAjaxCall(function (response) {
+        if (response == "saved") {
+            infoSaveSuccessfull("success");
+        } else
+            infoSaveSuccessfull();
+    });
 }
 
 /* shows auftragsblatt, from: https://stackoverflow.com/questions/19851782/how-to-open-a-url-in-a-new-tab-using-javascript-or-jquery */
