@@ -102,28 +102,19 @@ if ($auftragsId == -1): ?>
 		<a href="<?=Link::getPageLink("kunde")?>?id=<?=$auftrag->getKundennummer()?>">Kunde <span id="kundennummer"><?=$auftrag->getKundennummer()?></span> zeigen</a>
 	</aside>
 	<div class="defCont auftragsinfo">
-		<span><u>Auftragsnummer:</u> <span id="auftragsnummer"><?=$auftrag->getAuftragsnummer()?></span></span>
+		<p><u>Auftrag:</u> <span id="auftragsnummer"><?=$auftrag->getAuftragsnummer()?></span></p>
+		<div class="inputCont">
+			<label for="orderTitle">Auftragsbezeichnung:</label>
+			<input class="data-input" id="orderTitle" value="<?=$auftrag->getAuftragsbezeichnung()?>" autocomplete="none" onchange="editTitle()">
+		</div>
+		<div class="inputCont">
+			<label for="orderDescription">Auftragsbeschreibung:</label>
+			<textarea class="data-input" id="orderDescription" autocomplete="none" onchange="editDescription();" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"><?=$auftrag->getAuftragsbeschreibung()?></textarea>
+		</div>
 		<br>
 		<span><button onclick="showPreview();">Auftragsblatt anzeigen</button></span>
 		<span><button onclick="location.href= '<?=Link::getPageLink('rechnung')?>?target=create&id=<?=$auftragsId?>'">Rechnung generieren</button></span>
 		<?php if ($auftrag->getIsArchiviert() == false) :?><span><button onclick="archvieren();">Auftrag archivieren</button></span><br><?php endif; ?>
-		<br>
-		<span>
-			<u>Bezeichnung:</u>
-			<br>
-			<p id="orderTitle">
-				<?=$auftrag->getAuftragsbezeichnung()?>
-			</p>
-			<button class="actionButton" onclick="editTitle(event);">✎</button>
-			<br>
-			<u>Beschreibung:</u>
-			<br>
-			<p id="orderDescription">
-				<?=$auftrag->getAuftragsbeschreibung()?>
-			</p>
-			<button onclick="editDescription(event);">Bearbeiten</button>
-		</span>
-		<br>
 		Auftragsstellung: <span id="changeDate-1"><?=$auftrag->datum?></span><button class="actionButton" onclick="changeDate(1, event)">✎</button><br>
 		Termin: <span id="changeDate-2"><?=$auftrag->termin?></span><button class="actionButton" onclick="changeDate(2, event)">✎</button>
 		<br>
