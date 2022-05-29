@@ -136,7 +136,7 @@ if ($auftragsId == -1): ?>
 	<div class="defCont schritteAdd">
 		<button onclick="addBearbeitungsschritte()">Neuen Bearbeitungsschritt hinzufügen</button>
 		<div class="innerDefCont" id="bearbeitungsschritte" style="display: none">
-			<span>Bezeichnung: <br><input class="bearbeitungsschrittInput" type="text" max="128"></span><br>
+			<span>Bezeichnung: <br><textarea class="bearbeitungsschrittInput" type="text" max="128" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span><br>
 			<span>Datum: <br><input class="bearbeitungsschrittInput" type="date" max="32"></span><br>
 			<span>Priorität: <br><input class="bearbeitungsschrittInput" type="range" min="0" max="100" step="1.0"></span><br>
 			<form name="isAlreadyDone">
@@ -182,7 +182,7 @@ if ($auftragsId == -1): ?>
 				<div id="addPostenZeit">
 					<span>Zeit in Minuten<br><input class="postenInput" id="time" type="number" min="0"></span><br>
 					<span>Stundenlohn in €<br><input class="postenInput" id="wage" type="number" value="<?=$auftrag->getDefaultWage()?>"></span><br>
-					<span>Beschreibung<br><textarea id="descr"></textarea></span><br>
+					<span>Beschreibung<br><textarea id="descr" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span><br>
 					<button onclick="addTime()">Hinzufügen</button>
 				</div>
 			</div>
@@ -196,7 +196,7 @@ if ($auftragsId == -1): ?>
 					<br>
 					<span>Menge:<br><input class="postenInput" id="anz" value="1"></span><br>
 					<span>Mengeneinheit:<br><input class="postenInput" id="meh"></span><br>
-					<span>Beschreibung:<br><textarea id="bes"></textarea></span><br>
+					<span>Beschreibung:<br><textarea id="bes" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span><br>
 					<span>Einkaufspreis:<br><input class="postenInput" id="ekp" value="0"></span><br>
 					<span>Verkaufspreis:<br><input class="postenInput" id="pre" value="0"></span><br>
 					<button onclick="addLeistung()">Hinzufügen</button>
@@ -209,7 +209,7 @@ if ($auftragsId == -1): ?>
 					<span>EK-Preis: <input class="postenInput" id="posten_produkt_ek" type="text"></span>
 					<span>VK-Preis: <input class="postenInput" id="posten_produkt_vk" type="text"></span>
 					<span>Name: <input class="postenInput" id="posten_produkt_name" type="text"></span>
-					<span>Beschreibung: <textarea id="posten_produkt_besch"></textarea></span>
+					<span>Beschreibung: <textarea id="posten_produkt_besch" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span>
 					<button onclick="addProductCompact()">Hinzufügen</button>
 				</div>
 			</div>

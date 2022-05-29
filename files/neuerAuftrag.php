@@ -27,7 +27,7 @@
 			<span>Name: <?=$kundendaten['Vorname']?> <?=$kundendaten['Nachname']?></span><br>
 			<span>Firma: <?=$kundendaten['Firmenname']?></span><br>
 			<span>Kurzbeschreibung: <input id="bezeichnung" maxlength="255"></span><br>
-			<span>Beschreibung: <br><textarea id="beschreibung" maxlength="65535"></textarea></span><br>
+			<span>Beschreibung: <br><textarea id="beschreibung" maxlength="65535" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span><br>
 			<span>Auftragstyp:
 				<select id="selectTyp">
 					<option value="-1" selected disabled>Bitte auswählen</option>
