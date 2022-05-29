@@ -11,3 +11,4 @@ auftragsbearbeitung.code-workspace
 cache/*
 !cache/index.php
 .DS_Store
+vendor
