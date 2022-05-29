@@ -1,6 +1,9 @@
 <?php 
 
- $links = [
+require "vendor/autoload.php";
+use Masterminds\HTML5;
+
+$links = [
     Link::getPageLink("wiki"),
     Link::getPageLink("payments"),
     Link::getPageLink("diagramme"),
@@ -10,8 +13,39 @@
     Link::getPageLink("diagramme"),
     Link::getPageLink("diagramme"),
     Link::getPageLink("diagramme"),
+];
 
- ];
+/*
+ * funktionen.php nutzt DomDocument, um auf die Inhalte der anderen Seiten zuzugreifen.
+ * Besser wäre es wahrscheinlich, wenn diese modular wären und die Funktionen für die Inhalte
+ * den passenden Code liefern.
+ * Problem bei der jetzigen Lösung: wechselnde Ids oder veränderte Strukturen.
+ */
+function loadExternalById($page, $id) {
+    $html5 = new HTML5();
+    $page = Login::curlLogin($page);
+    $dom1 = $html5->loadHTML($page);
+
+    $idContent = $dom1->getElementById($id);
+    if ($idContent != null)
+        echo $html5->saveHTML($idContent);
+}
+
+/* 
+* https://stackoverflow.com/questions/6366351/getting-dom-elements-by-classname 
+*/
+function loadExternalByClassName($page, $classname) {
+    $page = 'http://' . $_SERVER['HTTP_HOST'] . Link::getPageLink($page);
+
+    $external = new DOMDocument();
+    $external->validateOnParse = true;
+    $external->loadHtml(file_get_contents($page));
+
+    $finder = new DomXPath($external);
+    $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
+
+    return var_dump($nodes);
+}
 
 ?>
 
@@ -21,6 +55,7 @@
         <li>Kundenverwaltung</li>
             <ul>
                 <li>Anlegen eines neuen Kunden</li>
+                <li><?=loadExternalById("neuer-kunde", "customer")?></li>
                 <li>Kundendaten ändern</li>
             </ul>
         <li>Auftragsverwaltung</li>

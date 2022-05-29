@@ -140,7 +140,7 @@ class Login {
 		}
 		
 		$userId = intval(DBAccess::selectQuery("SELECT id FROM members WHERE email = '$email'"));
-		DBAccess::insertQuery("INSERT INTO members_validate_email (memberId, email, mailKey) VALUES ($UserId, '$email', '$mailKey')");
+		DBAccess::insertQuery("INSERT INTO members_validate_email (memberId, email, mailKey) VALUES ($userId, '$email', '$mailKey')");
 		
 		$mailLink = REWRITE_BASE . "?mailId=" . $mailKey;
 		$mailText = '<a href="' . $mailLink . '">Hier</a> dem Link folgen!';
@@ -163,6 +163,47 @@ class Login {
 			return $user;
 		}
 		return -1;
+	}
+
+	/* 
+	 * https://stackoverflow.com/questions/1082302/file-get-contents-from-url-that-is-only-accessible-after-log-in-to-website
+	 * https://stackoverflow.com/questions/3008817/login-to-remote-site-with-php-curl
+	 */
+	public static function curlLogin($page) {
+		$loginUrl = 'http://' . $_SERVER['HTTP_HOST'] . Link::getPageLink("login"); //action from the login form
+		$username = 'maxBrennemann';
+		$password = 'auftragsbearbeitungMax';
+		$loginFields = "info=Einloggen&loginData=" . $username. "&password=" . $password;
+		$remotePageUrl = 'http://' . $_SERVER['HTTP_HOST'] . Link::getPageLink($page); //url of the page you want to save  
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_HEADER, false);
+		curl_setopt($ch, CURLOPT_NOBODY, false);
+		curl_setopt($ch, CURLOPT_URL, $loginUrl);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+
+		curl_setopt($ch, CURLOPT_COOKIEJAR, "cookies/cookies.txt");
+		//set the cookie the site has for certain features, this is optional
+		curl_setopt($ch, CURLOPT_COOKIE, "cookiename=0");
+		curl_setopt($ch, CURLOPT_USERAGENT,
+			"Mozilla/5.0 (Windows; U; Windows NT 5.0; en-US; rv:1.7.12) Gecko/20050915 Firefox/1.0.7");
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_REFERER, $_SERVER['REQUEST_URI']);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
+
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $loginFields);
+		curl_exec($ch);
+
+		//page with the content I want to grab
+		curl_setopt($ch, CURLOPT_URL, $remotePageUrl);
+		//do stuff with the info with DomDocument() etc
+		$html = curl_exec($ch);
+		curl_close($ch);
+
+		return $html;
 	}
 
 }
