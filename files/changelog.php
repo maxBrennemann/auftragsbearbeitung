@@ -4,6 +4,8 @@
         <li>Diagramm "Umsatz pro Monat" wird nun aufgrund des Fertigstellungsdatums generiert</li>
         <li>Externe Javascript Dateien können nun via PHP eingebunden werden</li>
         <li>Posten können nun direkt der Rechnung hinzugefügt werden</li>
+        <li>Textfelder werden nun automatisch größer, wenn der Text das Zeilenende erreicht</li>
+        <li>Auftragsbeschreibung und Auftragsbezeichnung haben ein neues Interface bekommen</li>
     </ul>
     <h3>1.1.13</h3>
     <ul>

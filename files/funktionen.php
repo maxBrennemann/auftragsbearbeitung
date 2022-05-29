@@ -31,6 +31,16 @@ function loadExternalById($page, $id) {
         echo $html5->saveHTML($idContent);
 }
 
+function loadById($page, $id) {
+    $html5 = new HTML5();
+    $page = "files/" . $page . ".php";
+    $dom1 = $html5->loadHTML($page);
+
+    $idContent = $dom1->getElementById($id);
+    if ($idContent != null)
+        echo $html5->saveHTML($idContent);
+}
+
 /* 
 * https://stackoverflow.com/questions/6366351/getting-dom-elements-by-classname 
 */
@@ -54,9 +64,8 @@ function loadExternalByClassName($page, $classname) {
     <ul>
         <li>Kundenverwaltung</li>
             <ul>
-                <li>Anlegen eines neuen Kunden</li>
-                <li><?=loadExternalById("neuer-kunde", "customer")?></li>
-                <li>Kundendaten ändern</li>
+                <li class="clickable" data-name="neuerKunde" data-intent="create">Anlegen eines neuen Kunden <a href="#" class="extLinks">➦</a></li>
+                <li class="clickable" data-name="kunde" data-intent="change-data">Kundendaten ändern</li>
             </ul>
         <li>Auftragsverwaltung</li>
             <ul>
@@ -98,5 +107,9 @@ function loadExternalByClassName($page, $classname) {
 
     .defCont {
         width: 80vw;
+    }
+
+    .clickable {
+        cursor: pointer;
     }
 </style>
