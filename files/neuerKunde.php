@@ -58,7 +58,7 @@
 
 	if (!$isSent) :
 ?>
-<div class="addcustomer">
+<div class="addcustomer" id="customer">
 	<form>
 		<input type="radio" name="oeffOderPriv" value="firma" checked onchange="switchOeffPriv(this)">Firma oder Vereinsname
 		<input type="radio" name="oeffOderPriv" value="privat" onchange="switchOeffPriv(this)">Privat
