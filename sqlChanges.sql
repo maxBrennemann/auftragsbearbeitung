@@ -367,3 +367,6 @@ CREATE TABLE `invoice` ( `id` INT NOT NULL , `order_id` INT NOT NULL , `creation
 /* Änderungen 26.05.2022 */
 CREATE TABLE `settings` ( `id` INT NOT NULL AUTO_INCREMENT , `title` VARCHAR(32) NOT NULL , `content` VARCHAR(128) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 INSERT INTO `settings` (`id`, `title`, `content`) VALUES (NULL, 'defaultWage', '50');
+
+/* Änderungen 29.05.2022 */
+INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '26', 'head', 'funktionen.js', '0', 'js');
