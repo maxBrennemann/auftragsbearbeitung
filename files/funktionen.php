@@ -96,6 +96,11 @@ function loadExternalByClassName($page, $classname) {
     </ul>
 </div>
 
+<div class="manualNavigator">
+    <button>◀</button>
+    <button>▶</button>
+</div>
+
 <style>
     ul {
         padding-left: inherit;
@@ -111,5 +116,21 @@ function loadExternalByClassName($page, $classname) {
 
     .clickable {
         cursor: pointer;
+    }
+
+    .manualNavigator {
+        display: none;
+
+        border-radius: 6px;
+        border: 1px solid grey;
+        padding: 7px;
+        margin: 5px;
+    }
+
+    .manualNavigator button {
+        border: none;
+        margin: 5px;
+        background: lightgray;
+        padding: 5px;
     }
 </style>
