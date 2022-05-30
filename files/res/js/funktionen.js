@@ -52,7 +52,7 @@ function startFunktionen() {
 /* called, when event listener is triggered */
 function setupIframe(node) {
     let iframe = document.createElement("iframe");
-    let src = "http://localhost/auftragsbearbeitung/c/neuer-kunde"; event.target.dataset.name;
+    let src = node.children[0].href;
 
     iframe.addEventListener("load", function() {
         var iframeDocument = this.contentDocument || this.contentWindow.document;
