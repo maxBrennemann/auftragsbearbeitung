@@ -9,7 +9,7 @@ $links = [
     Link::getPageLink("diagramme"),
     Link::getPageLink("produkt"),
     Link::getPageLink("leistungen"),
-    Link::getPageLink("diagramme"),
+    Link::getPageLink("neuer-kunde"),
     Link::getPageLink("diagramme"),
     Link::getPageLink("diagramme"),
     Link::getPageLink("diagramme"),
@@ -64,7 +64,7 @@ function loadExternalByClassName($page, $classname) {
     <ul>
         <li>Kundenverwaltung</li>
             <ul>
-                <li class="clickable" data-name="neuerKunde" data-intent="create">Anlegen eines neuen Kunden <a href="#" class="extLinks">➦</a></li>
+                <li class="clickable" data-name="neuerKunde" data-intent="create">Anlegen eines neuen Kunden <a href="<?=$links[5]?>" class="extLinks">➦</a></li>
                 <li class="clickable" data-name="kunde" data-intent="change-data">Kundendaten ändern</li>
             </ul>
         <li>Auftragsverwaltung</li>
