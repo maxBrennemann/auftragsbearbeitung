@@ -63,7 +63,7 @@
 		<input type="radio" name="oeffOderPriv" value="firma" checked onchange="switchOeffPriv(this)">Firma oder Vereinsname
 		<input type="radio" name="oeffOderPriv" value="privat" onchange="switchOeffPriv(this)">Privat
 		<div class="basicInfo">
-			<p>
+			<p  class="manual" data-intent="create" data-id="0" data-action="highlight">
 				<label>Firmenname
 					<input class="dataInput" type="text" name="firmenname" autocomplete="some-unrecognised-value">
 				</label>
