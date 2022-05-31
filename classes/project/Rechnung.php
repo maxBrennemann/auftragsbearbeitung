@@ -6,6 +6,7 @@ if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
 }
 
+require_once('vendor/autoload.php');
 require_once('classes/DBAccess.php');
 require_once('classes/project/Auftrag.php');
 require_once('classes/project/InteractiveFormGenerator.php');
@@ -122,6 +123,7 @@ class Rechnung {
 			}
 		}
 
+		/* Code für Zwischensumme und Rechnungssumme */
 		$summe = $this->auftrag->preisBerechnen();
 		$zwischensumme = number_format($summe, 2, ',', '') . ' €';
 		$mwst = number_format($summe * 0.19, 2, ',', '') . ' €';
@@ -157,9 +159,12 @@ class Rechnung {
 		$pdf->Cell(60, 10, '', 'T');
 		$pdf->Cell(20, 10, '', 'T');
 
+		/* Code für "Zahlungsziel 8 Tage" */
+
+		/* Speicherung */
 		if ($store == true) {
             $filename= "{$this->kunde->getKundennummer()}_{$this->getInvoiceId()}.pdf"; 
-            $filelocation = "C:\\xampp\htdocs\\auftragsbearbeitung\\files\\generated\\invoice";
+            $filelocation = "files\\generated\\invoice";
             $fileNL = $filelocation . "\\" . $filename;
 			$pdf->Output($fileNL, 'F');
 		} else {

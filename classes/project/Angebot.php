@@ -1,6 +1,6 @@
 <?php
 
-require_once('.res/tcpdf/tcpdf.php');
+require_once('vendor/autoload.php');
 require_once('Kunde.php');
 require_once('classes/DBAccess.php');
 require_once('classes/project/Fahrzeug.php');
