@@ -5,7 +5,7 @@
 <p><a href="<?=$link?>?t=details">Details</a> oder <a href="<?=$link?>?t=unsolved">nicht erledigte</a> Verbesserungen.</p>
 <div class="defCont">
     <p>Nachricht eingeben:</p>
-    <input id="verbesserung">
+    <textarea id="verbesserung" type="text" max="128" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
     <br><br>
     <input type="button" id="submit" value="Abschicken">
     <script>
