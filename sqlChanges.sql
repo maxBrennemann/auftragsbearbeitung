@@ -370,3 +370,6 @@ INSERT INTO `settings` (`id`, `title`, `content`) VALUES (NULL, 'defaultWage', '
 
 /* Änderungen 29.05.2022 */
 INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '26', 'head', 'funktionen.js', '0', 'js');
+
+/* Änderungen 30.05.2022 */
+CREATE TABLE `manual` (`id` INT NULL , `page` VARCHAR(64) NOT NULL , `intent` VARCHAR(64) NOT NULL , `info` TEXT NOT NULL ) ENGINE = InnoDB;

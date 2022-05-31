@@ -24,11 +24,12 @@ if (document.readyState !== 'loading' ) {
 
 var params = {
     currentName : "",
-    currentIntent : "create",
+    currentIntent : "",
     iframeDocument: null,
     manual: {
         current: 0,
-        items: []
+        items: [],
+        texts: []
     },
     navigator: null
 };
@@ -54,12 +55,16 @@ function setupIframe(node) {
     let iframe = document.createElement("iframe");
     let src = node.children[0].href;
 
+    params.currentIntent = node.dataset.intent;
+    params.currentName = node.dataset.name;
+
     iframe.addEventListener("load", function() {
         var iframeDocument = this.contentDocument || this.contentWindow.document;
         iframeDocument.querySelector("header").style.display = "none";
         iframeDocument.querySelector("footer").style.display = "none";
         iframeDocument.querySelector("main").style.marginTop = "0";
 
+        getManualData();
         setupNavigator(iframeDocument);
     });
 
@@ -83,6 +88,7 @@ function setupNavigator(iframeDocument) {
     navigator.style.display = "block";
 
     var manualItems = iframeDocument.getElementsByClassName("manual");
+    params.manual.items = [];
     for (let item of manualItems) {
         if (item.dataset.intent == params.currentIntent)
             params.manual.items.push(item);
@@ -92,6 +98,23 @@ function setupNavigator(iframeDocument) {
     navigator.children[1].addEventListener("click", function() {iterateManual(1)}, false);
 }
 
+function getManualData() {
+    let request = {
+        getReason: "getManual",
+        pageName: params.currentName,
+        intent: params.currentIntent
+    };
+
+    var ajax = new AjaxCall(request, "POST", window.location.href);
+    ajax.makeAjaxCall(function (response) {
+        response = JSON.parse(response);
+        params.manual.texts = [];
+		for (let key in response) {
+            params.manual.texts.push(response[key].info);
+		}
+    });
+}
+
 function iterateManual(direction) {
     var currentItem = params.manual.current;
     currentItem += direction;
@@ -99,4 +122,8 @@ function iterateManual(direction) {
         return;
     var item = params.manual.items[currentItem - 1];
     item.classList.add("highlight");
+
+    if (currentItem - 1 < params.manual.texts.length && currentItem - 1 >= 0) {
+        params.navigator.children[2].innerHTML = params.manual.texts[currentItem - 1];
+    }
 }

@@ -735,6 +735,12 @@ class Ajax {
 				$orderId = (int) $_POST["rechnung"];
 				//$id = DBAccess::selectQuery("SELECT id FROM invoice WHERE ");
 			break;
+			case "getManual":
+				$pageName = $_POST['pageName'];
+				$intent = $_POST['intent'];
+				$data = DBAccess::selectQuery("SELECT info FROM `manual` WHERE `page` = '$pageName' AND intent = '$intent'");
+				echo json_encode($data, JSON_FORCE_OBJECT);;
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
