@@ -253,6 +253,8 @@ class Angebot {
                                 <?php endforeach; ?>
                             </select>
                             <br>
+                            <span>Menge:<br><input class="postenInput" id="anz" value="1"></span><br>
+					        <span>Mengeneinheit:<br><input class="postenInput" id="meh"></span><br>
                             <span>Beschreibung:<br><input id="bes"></span><br>
                             <span>Einkaufspreis:<br><input id="ekp" value="0"></span><br>
                             <span>Speziefischer Preis:<br><input id="pre" value="0"></span><br>
