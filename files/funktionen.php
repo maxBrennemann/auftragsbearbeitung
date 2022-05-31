@@ -99,6 +99,7 @@ function loadExternalByClassName($page, $classname) {
 <div class="manualNavigator">
     <button>◀</button>
     <button>▶</button>
+    <p></p>
 </div>
 
 <style>
