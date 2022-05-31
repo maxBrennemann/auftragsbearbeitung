@@ -1,5 +1,7 @@
 <?php
 
+require_once('vendor/autoload.php');
+
 class RechnungsPDF extends TCPDF {
 
     public function Footer() {
