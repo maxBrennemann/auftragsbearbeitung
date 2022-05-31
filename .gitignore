@@ -1,6 +1,7 @@
 settings.php
 .htaccess
-files/generated/
+files/generated/*
+!files/generated/index.php
 favicon.ico
 .vs/
 .vscode/
