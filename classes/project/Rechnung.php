@@ -96,8 +96,24 @@ class Rechnung {
         $cAddress = "<p>{$this->kunde->getFirmenname()}<br>{$this->kunde->getName()}<br>{$this->kunde->getStrasse()} {$this->kunde->getHausnummer()}<br>{$this->kunde->getPostleitzahl()} {$this->kunde->getOrt()}</p>";
         $pdf->writeHTMLCell(85, 40, 20, 25, $cAddress);
 
-		$info = "";
-		$pdf->writeHTMLCell(85, 40, 120, 35, $address);
+		$pdf->setXY(120, 30);
+		$pdf->setFontStretching(200);
+		$pdf->SetFont("helvetica", "B", 17);
+		$pdf->Cell(60, 20, "RECHNUNG", 0, 0, 'L', 0, '', 2);
+		$pdf->setFontStretching();
+		$pdf->SetFont("helvetica", "", 12);
+		$pdf->setXY(120, 45);
+		$pdf->Cell(30, 10, "Rechnungs-Nr:");
+		$pdf->Cell(30, 10, $this->getInvoiceId(), 0, 0, 'R');
+		$pdf->setXY(120, 51);
+		$pdf->Cell(30, 10, "Datum:");
+		$pdf->Cell(30, 10, $this->getDate(), 0, 0, 'R');
+		$pdf->setXY(120, 57);
+		$pdf->Cell(30, 10, "Kunden-Nr.:");
+		$pdf->Cell(30, 10, $this->kunde->getKundennummer(), 0, 0, 'R');
+		$pdf->setXY(120, 63);
+		$pdf->Cell(30, 10, "Seite:");
+		$pdf->Cell(30, 10, $pdf->PageNo() . ' von ' . $pdf->getNumPages(), 0, 0, 'R');
 
         $pdf->setXY(20, 90);
 		$pdf->SetFont("helvetica", "B", 12);
@@ -160,6 +176,12 @@ class Rechnung {
 		$pdf->Cell(20, 10, '', 'T');
 
 		/* Code für "Zahlungsziel 8 Tage" */
+		$offset += 10;
+		$pdf->setCellMargins(0, 0, 0, 0);
+		$pdf->setXY(20, 90 + $offset);
+		$pdf->SetFont("helvetica", "", 10);
+		$pdf->Cell(160, 10, "Zahlungsziel 8 Tage");
+
 
 		/* Speicherung */
 		if ($store == true) {
@@ -178,6 +200,10 @@ class Rechnung {
 	private function getInvoiceId() {
 		$orderId = $this->auftrag->getAuftragsnummer();
 		return DBAccess::selectQuery("SELECT Rechnungsnummer FROM auftrag WHERE Auftragsnummer = $orderId")[0]['Rechnungsnummer'];
+	}
+
+	private function getDate() {
+		return date("d.m.Y");
 	}
 	
 	private function loadPostenFromAuftrag() {
