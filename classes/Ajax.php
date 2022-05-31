@@ -424,7 +424,7 @@ class Ajax {
 				$isFree = (int) $_POST['isFree'];
 				$angebot = new Angebot($customerId);
 				require_once("classes/project/Zeit.php");
-				$zeitPosten = new Zeit($wage, $time, $descr);
+				$zeitPosten = new Zeit($wage, $time, $descr, 0, 0);
 				$angebot->addPosten($zeitPosten);
 			break;
 			case "addLeistungOffer":
@@ -433,10 +433,12 @@ class Ajax {
 				$bes = $_POST['bes'];
 				$ekp = $_POST['ekp'];
 				$pre = $_POST['pre'];
+				$qty = $_POST['qty'];
+				$meh = $_POST['meh'];
 				$isFree = (int) $_POST['isFree'];
 				$angebot = new Angebot($customerId);
 				require_once("classes/project/Leistung.php");
-				$leistungsPosten = new Leistung($lei, $bes, $pre, $ekp);
+				$leistungsPosten = new Leistung($lei, $bes, $pre, $ekp, $qty, $meh, 0, 0);
 				$angebot->addPosten($leistungsPosten);
 			break;
 			case "storeOffer":

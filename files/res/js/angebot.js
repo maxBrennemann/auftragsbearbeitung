@@ -108,6 +108,8 @@ function addLeistung() {
     var bes = document.getElementById("bes").value;
     var ekp = document.getElementById("ekp").value;
     var pre = document.getElementById("pre").value;
+    var anz = document.getElementById("anz").value;
+    var meh = document.getElementById("meh").value;
     var isFree = getOhneBerechnung() ? 1 : 0;
     var customerId = document.getElementById("kdnr").value;
 
@@ -120,7 +122,7 @@ function addLeistung() {
     div.innerText = text;
     document.getElementById("allePosten").appendChild(div);
 
-    var addLeistungOffer = new AjaxCall(`getReason=addLeistungOffer&customerId=${customerId}&lei=${leiNr}&bes=${bes}&ekp=${ekp}&pre=${pre}&isFree=${isFree}`);
+    var addLeistungOffer = new AjaxCall(`getReason=addLeistungOffer&customerId=${customerId}&lei=${leiNr}&bes=${bes}&ekp=${ekp}&pre=${pre}&isFree=${isFree}&qty=${anz}&meh=${meh}`);
     addLeistungOffer.makeAjaxCall(function (response) {
         reloadIFrame();
         console.log(response);
