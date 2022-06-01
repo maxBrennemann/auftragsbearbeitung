@@ -65,6 +65,12 @@ function startFunc() {
 
 	autosubmit();
 
+	/* auto sizes textareas on page load */
+	var textareas = document.querySelectorAll("textarea");
+	for (t of textareas) {
+		t.style.height = '';t.style.height = t.scrollHeight + 'px'
+	}
+
 	/*
 	 * es muss noch zwischen Benachrichtigung und Einstellungen unterschieden werden
 	 */

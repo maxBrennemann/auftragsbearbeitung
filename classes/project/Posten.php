@@ -46,8 +46,6 @@ abstract class Posten {
 			$data = DBAccess::selectQuery("SELECT Postennummer, Posten, ohneBerechnung, discount, isInvoice FROM posten WHERE Auftragsnummer = $auftragsnummer");
 		}
 		foreach ($data as $step) {
-			$element = "";
-
 			switch ($step['Posten']) {
 				case 'zeit':
 					$speziefischerPosten = DBAccess::selectQuery("SELECT ZeitInMinuten, Stundenlohn, Beschreibung FROM zeit WHERE zeit.Postennummer = {$step['Postennummer']}")[0];
