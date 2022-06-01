@@ -17,6 +17,8 @@ abstract class Posten {
 	
 	abstract protected function bekommePreis();
 	abstract protected function bekommeEinzelPreis();
+	abstract protected function bekommePreis_formatted();
+	abstract protected function bekommeEinzelPreis_formatted();
 	abstract protected function bekommeDifferenz();
 	abstract protected function calculateDiscount();
 	abstract protected function getHTMLData();
@@ -44,7 +46,7 @@ abstract class Posten {
 			$data = DBAccess::selectQuery("SELECT Postennummer, Posten, ohneBerechnung, discount, isInvoice FROM posten WHERE Auftragsnummer = $auftragsnummer");
 		}
 		foreach ($data as $step) {
-			$element;
+			$element = "";
 
 			switch ($step['Posten']) {
 				case 'zeit':
@@ -55,7 +57,7 @@ abstract class Posten {
 					$query = "SELECT Preis, Bezeichnung, Beschreibung, pp.Produktnummer, Anzahl, p.Einkaufspreis FROM produkt_posten AS pp, produkt AS p, posten AS po ";
 					$query .= "WHERE pp.Produktnummer = p.Nummer AND pp.Postennummer = po.Nummer AND pp.Postennummer = {$step['Postennummer']}";
 					$speziefischerPosten = DBAccess::selectQuery($query)[0];
-					$element = new ProduktPosten($speziefischerPosten['Preis'], $speziefischerPosten['Bezeichnung'], $speziefischerPosten['Beschreibung'], $speziefischerPosten['Anzahl'], $speziefischerPosten['Einkaufspreis'], $step['discount'], (int) $step['isInvoice']);
+					$element = new ProduktPosten($speziefischerPosten['Preis'], $speziefischerPosten['Bezeichnung'], $speziefischerPosten['Beschreibung'], $speziefischerPosten['Anzahl'], $speziefischerPosten['Einkaufspreis'], "", $step['discount'], (int) $step['isInvoice']);
 				break;
 				case 'leistung':
 					$speziefischerPosten = DBAccess::selectQuery("SELECT Leistungsnummer, Beschreibung, SpeziefischerPreis, Einkaufspreis, qty, meh FROM leistung_posten WHERE leistung_posten.Postennummer = {$step['Postennummer']}")[0];

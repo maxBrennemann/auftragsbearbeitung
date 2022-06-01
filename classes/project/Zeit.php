@@ -97,6 +97,14 @@ class Zeit extends Posten {
 		return round((float) $this->Kosten, 2);
     }
 
+	public function bekommePreis_formatted() {
+		return number_format($this->bekommePreis(), 2, ',', '') . ' €';
+	}
+
+	public function bekommeEinzelPreis_formatted() {
+		return number_format($this->bekommeEinzelPreis(), 2, ',', '') . ' €';
+	}
+
 	public function bekommeDifferenz() {
 		return $this->bekommePreis();
 	}

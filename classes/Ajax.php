@@ -743,6 +743,23 @@ class Ajax {
 				$data = DBAccess::selectQuery("SELECT info FROM `manual` WHERE `page` = '$pageName' AND intent = '$intent'");
 				echo json_encode($data, JSON_FORCE_OBJECT);;
 			break;
+			case "invoiceAddText":
+				require_once('classes/project/Rechnung.php');
+				$id = (int) $_POST['id'];
+				$text = $_POST['text'];
+
+				$rechnung = unserialize($_SESSION['tempInvoice']);
+				$rechnung->addText($id, $text);
+				$_SESSION['tempInvoice'] = serialize($rechnung);
+			break;
+			case "invoiceRemoveText":
+				require_once('classes/project/Rechnung.php');
+				$id = (int) $_POST['id'];
+
+				$rechnung = unserialize($_SESSION['tempInvoice']);
+				$rechnung->removeText($id);
+				$_SESSION['tempInvoice'] = serialize($rechnung);
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);

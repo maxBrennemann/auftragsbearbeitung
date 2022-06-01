@@ -79,8 +79,19 @@ if (file_exists($cacheFile)) {
 				break;
 				case "rechnung":
 					require_once('classes/project/Rechnung.php');
-					$rechnung = new Rechnung();
-					$rechnung->PDFgenerieren();
+					if (isset($_SESSION['tempInvoice'])) {
+						$rechnung = unserialize($_SESSION['tempInvoice']);
+						$rechnung->PDFgenerieren();
+						/*$rechnung->loadPostenFromAuftrag();
+						
+						print "<pre>";
+						var_dump($rechnung->getPosten());
+						print "</pre>";*/
+					} else {
+						$rechnung = new Rechnung();
+						$rechnung->PDFgenerieren();
+					}
+				break;
 				case "auftrag":
 					require_once('classes/project/PDF_Auftrag.php');
 

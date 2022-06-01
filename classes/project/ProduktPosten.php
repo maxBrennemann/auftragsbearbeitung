@@ -98,6 +98,14 @@ class ProduktPosten extends Posten {
 	public function bekommeEinzelPreis() {
 		return $this->Preis;
 	}
+
+	public function bekommePreis_formatted() {
+		return number_format($this->bekommePreis(), 2, ',', '') . ' €';
+	}
+
+	public function bekommeEinzelPreis_formatted() {
+		return number_format($this->bekommeEinzelPreis(), 2, ',', '') . ' €';
+	}
 	
 	public function bekommeDifferenz() {
 		if ($this->ohneBerechnung == true) {

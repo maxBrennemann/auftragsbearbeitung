@@ -11,18 +11,17 @@ require_once('classes/DBAccess.php');
 require_once('classes/project/Auftrag.php');
 require_once('classes/project/InteractiveFormGenerator.php');
 require_once('classes/project/RechnungsPDF.php');
+require_once('classes/project/EmptyPosten.php');
 
 class Rechnung {
-
-	private $summeMwSt = 0;
-	private $summe = 0;
-
-	private $invoiceId;
 
 	private $kunde;
 	private $auftrag;
 
+	private $tempId = 0;
+
 	private $posten;
+	private $texts = array();
 
 	function __construct($invoiceId = null) {
 		/* 
@@ -39,31 +38,10 @@ class Rechnung {
 			}
  		}
 
-		/*$orderId = isset($_SESSION['currentInvoice_orderId']) ? (int) $_SESSION['currentInvoice_orderId'] : DBAccess::selectQuery("SELECT * FROM auftrag WHERE Rechnungsnummer = " . (int) $invoiceId)[0]["Auftragsnummer"];*/
-
 		$this->auftrag = new Auftrag($orderId);
 		$this->kunde = new Kunde($this->auftrag->getKundennummer());
 
 		$this->invoiceId = (int) $invoiceId;
-	}
-
-	public function preisBerechnen() {
-		$nr = $this->invoiceId;
-		/* die SQL Query nimmt alle Posten, die unter dieser Rechnungsnummer gespeichert sind. 
-		 * Aktuell werden die einzelnen Zahlen dann hier in PHP zusammengerechnet, 
-		 * was aber auch anders möglich ist (siehe views auftragssumme etc.), 
-		 * jedoch hier aus Zeitgründen nicht gemacht wurde 
-		 */
-		$query = "SELECT (zeit.ZeitInMinuten / 60) * zeit.Stundenlohn AS price FROM zeit, posten WHERE posten.rechnungsNr = $nr AND posten.Postennummer = zeit.postennummer UNION ALL SELECT leistung_posten.SpeziefischerPreis * leistung_posten.qty AS price FROM leistung_posten, posten WHERE posten.rechnungsNr = $nr AND posten.Postennummer = leistung_posten.postennummer UNION ALL SELECT (product_compact.price * product_compact.amount) AS price FROM product_compact, posten WHERE posten.rechnungsNr = $nr AND posten.Postennummer = product_compact.postennummer;
-		";
-
-		$posten = DBAccess::selectQuery($query);
-		$amount = 0.0;
-		foreach ($posten as $p) {
-			$amount += (float) $p;
-		}
-
-		return $amount;
 	}
 
 	/*
@@ -125,8 +103,8 @@ class Rechnung {
 					$pdf->Cell(80, $lineheight, $p->getDescription());
 				}
 
-				$pdf->Cell(20, $lineheight, number_format($p->bekommeEinzelPreis(), 2, ',', '') . ' €');
-				$pdf->Cell(20, $lineheight, number_format($p->bekommePreis(), 2, ',', '') . ' €', 0, 0, 'R');
+				$pdf->Cell(20, $lineheight, $p->bekommeEinzelPreis_formatted());
+				$pdf->Cell(20, $lineheight,  $p->bekommePreis_formatted(), 0, 0, 'R');
 				
 				$offset += $addToOffset;
 				$pdf->ln($addToOffset);
@@ -192,6 +170,7 @@ class Rechnung {
             $fileNL = $filelocation . "\\" . $filename;
 			$pdf->Output($fileNL, 'F');
 		} else {
+			$_SESSION['tempInvoice'] = serialize($this);
 			$pdf->Output();
 		}
 	}
@@ -233,7 +212,9 @@ class Rechnung {
 		$orderId = $this->auftrag->getAuftragsnummer();
 		$invoiceId = (int) DBAccess::selectQuery("SELECT Rechnungsnummer FROM auftrag WHERE Auftragsnummer = $orderId")[0]['Rechnungsnummer'];
 		if ($invoiceId == 0 || $invoiceId == null) {
-			return self::getNextNumber();
+			$next =  self::getNextNumber();
+			$this->tempId = $next;
+			return $next;
 		}
 		return $invoiceId;
 	}
@@ -242,9 +223,33 @@ class Rechnung {
 		return date("d.m.Y");
 	}
 	
-	private function loadPostenFromAuftrag() {
+	public function loadPostenFromAuftrag() {
 		$orderId = $this->auftrag->getAuftragsnummer();
 		$this->posten = Posten::bekommeAllePosten($orderId, true);
+		$this->posten = array_merge($this->posten, $this->texts);
+	}
+
+	public function addText($id, $text) {
+		$empty = new EmptyPosten($id, $text);
+		array_push($this->posten, $empty);
+		$this->texts[$id] = $empty;
+	}
+
+	public function removeText($id) {
+		$result = 0;
+		foreach ($this->posten as $key => $p) {
+			if (isset($p->id) && $p->id == $id) {
+				$result = $key;
+				break;
+			}
+		}
+
+		unset($this->posten[$result]);
+		unset($this->texts[$id]);
+	}
+
+	public function getTempInvoiceId() {
+		return $this->tempId;
 	}
 
 	public static function getNextNumber() {
