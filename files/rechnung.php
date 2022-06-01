@@ -17,10 +17,8 @@
 				break;
 			case "create":
 				$auftrag = new Auftrag($id);
-				$posten = $auftrag->getAuftragsPostenCheckTable();
-				$invoice_posten = $auftrag->getInvoicePostenTable();
-
 				$_SESSION['currentInvoice_orderId'] = $id;
+				$naechsteRechnungsnummer = Rechnung::getNextNumber();
 				break;
 			default:
 				break;
@@ -33,19 +31,14 @@
 if ($target == "create"): ?>
 	<div class="defCont">
 		<h3>Auftrag <span id="orderId"><?=$id?></span></h3>
-		<p><u>Posten zum Auftrag:</u></p>
-		<?=$posten?>
-		<p><u>Rechnungsposten:</u></p>
-		<?=$invoice_posten?>
+		<p>Nächste Rechnungsnummer: <?=$naechsteRechnungsnummer?></p>
+		<?php if ($auftrag != null || $auftrag->getAuftragspostenData() != 0): ?>
+		<button onclick="generatePDF();">Rechnung abschließen</button>
+		<?php else: ?>
+		<button disabled>Rechnung abschließen</button>
+		<?php endif; ?>
+		<button action="action" onclick="window.history.go(-1); return false; "type="submit">Abbrechen</button>
 	</div>
-	<button onclick="check(true);">Alle Posten (ab)wählen</button>
-	<button onclick="check();">Übernehmen</button>
-	<?php if ($auftrag != null || $auftrag->getAuftragspostenData() != 0): ?>
-	<button onclick="generatePDF();">Rechnung abschließen</button>
-	<?php else: ?>
-	<button disabled>Rechnung abschließen</button>
-	<?php endif; ?>
-	<button action="action" onclick="window.history.go(-1); return false; "type="submit">Abbrechen</button>
 	<br>
 	<span>
 		<?=$rechnungsPDF?>

@@ -187,7 +187,7 @@ class Rechnung {
 
 		/* Speicherung */
 		if ($store == true) {
-            $filename= "{$this->kunde->getKundennummer()}_{$this->getInvoiceId()}.pdf"; 
+			$filename= "{$this->kunde->getKundennummer()}_{$this->getInvoiceId()}.pdf"; 
             $filelocation = "files\\generated\\invoice";
             $fileNL = $filelocation . "\\" . $filename;
 			$pdf->Output($fileNL, 'F');
@@ -231,7 +231,11 @@ class Rechnung {
 	*/
 	private function getInvoiceId() {
 		$orderId = $this->auftrag->getAuftragsnummer();
-		return DBAccess::selectQuery("SELECT Rechnungsnummer FROM auftrag WHERE Auftragsnummer = $orderId")[0]['Rechnungsnummer'];
+		$invoiceId = (int) DBAccess::selectQuery("SELECT Rechnungsnummer FROM auftrag WHERE Auftragsnummer = $orderId")[0]['Rechnungsnummer'];
+		if ($invoiceId == 0 || $invoiceId == null) {
+			return self::getNextNumber();
+		}
+		return $invoiceId;
 	}
 
 	private function getDate() {
