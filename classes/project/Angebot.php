@@ -95,8 +95,8 @@ class Angebot {
                 $pdf->Cell(20, 10, $p->getQuantity());
                 $pdf->Cell(20, 10, $p->getEinheit());
                 $pdf->Cell(80, 10, $p->getDescription());
-                $pdf->Cell(20, 10, number_format($p->bekommeEinzelPreis(), 2, ',', '') . ' €');
-                $pdf->Cell(20, 10, number_format($p->bekommePreis(), 2, ',', '') . ' €');
+                $pdf->Cell(20, 10, $p->bekommeEinzelPreis_formatted());
+                $pdf->Cell(20, 10, $p->bekommePreis_formatted());
                 $offset += 10;
             }
         }

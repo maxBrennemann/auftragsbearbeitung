@@ -1,6 +1,6 @@
 <?php
 
-require_once('.res/tcpdf/tcpdf.php');
+require_once('vendor/autoload.php');
 
 class PDF_Auftrag {
 

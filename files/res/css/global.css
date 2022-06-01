@@ -236,6 +236,10 @@ tr:last-child td:last-child {
 iframe {
     width: 80vw;
     height: 40vw;
+
+    background: white;
+    border: 1px solid grey;
+    border-radius: 6px;
 }
 
 /* info button css */

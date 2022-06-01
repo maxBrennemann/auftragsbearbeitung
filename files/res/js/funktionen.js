@@ -70,12 +70,12 @@ function setupIframe(node) {
 
     iframe.src = src;
 
-    iframe.style.width = "800px";
+    var main = document.getElementsByTagName("main")[0];
+    var width = main.children[0].getBoundingClientRect().width - 20;
+    iframe.style.width = width;
     iframe.style.height = "400px";
 
-    iframe.style.background = "white";
-    iframe.style.border = "1px solid grey";
-    iframe.style.borderRadius = "6px";
+    iframe.style.marginLeft = "-30px";
 
     node.parentNode.insertBefore(iframe, node.nextSibling);
     if (params.navigator == null)

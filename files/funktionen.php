@@ -10,9 +10,9 @@ $links = [
     Link::getPageLink("produkt"),
     Link::getPageLink("leistungen"),
     Link::getPageLink("neuer-kunde"),
-    Link::getPageLink("diagramme"),
-    Link::getPageLink("diagramme"),
-    Link::getPageLink("diagramme"),
+    Link::getPageLink("kunde"),
+    Link::getPageLink("neuer-auftrag"),
+    Link::getPageLink("angebot"),
 ];
 
 /*
@@ -65,18 +65,18 @@ function loadExternalByClassName($page, $classname) {
         <li>Kundenverwaltung</li>
             <ul>
                 <li class="clickable" data-name="neuerKunde" data-intent="create">Anlegen eines neuen Kunden <a href="<?=$links[5]?>" class="extLinks">➦</a></li>
-                <li class="clickable" data-name="kunde" data-intent="change-data">Kundendaten ändern</li>
+                <li class="clickable" data-name="kunde" data-intent="change-data">Kundendaten ändern <a href="<?=$links[6]?>?id=37" class="extLinks">➦</a></li>
             </ul>
         <li>Auftragsverwaltung</li>
             <ul>
-                <li>Anlegen eines neuen Auftrags</li>
+                <li class="clickable" data-name="neuer-auftrag" data-intent="change-data">Anlegen eines neuen Auftrags <a href="<?=$links[7]?>?id=37" class="extLinks">➦</a></li>
                 <li>Posten hinzufügen und bearbeiten</li>
                 <li>Bearbeitungsschritte und Notizen</li>
                 <li>Rechnungsstellung</li>
             </ul>
         <li>Angebote</li>
             <ul>
-                <li>Anlegen eines neuen Angebots</li>
+                <li class="clickable" data-name="angebot" data-intent="change-data">Anlegen eines neuen Angebots <a href="<?=$links[8]?>?id=37" class="extLinks">➦</a></li>
                 <li>Posten hinzufügen</li>
                 <li>Angebot in Auftrag übernehmen</li>
             </ul>
