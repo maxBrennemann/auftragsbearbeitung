@@ -144,7 +144,7 @@ class Auftrag implements StatisticsInterface {
 	}
 
 	public function getAuftragsbeschreibung() {
-		return nl2br($this->Auftragsbeschreibung);
+		return $this->Auftragsbeschreibung;
 	}
 
 	public function getAuftragsnummer() {
