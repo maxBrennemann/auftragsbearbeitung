@@ -2,7 +2,7 @@
 
 class Payments {
 
-    function addPayments() {
+    public static function addPayment() {
 
     }
     
