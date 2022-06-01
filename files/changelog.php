@@ -6,6 +6,8 @@
         <li>Posten können nun direkt der Rechnung hinzugefügt werden</li>
         <li>Textfelder werden nun automatisch größer, wenn der Text das Zeilenende erreicht</li>
         <li>Auftragsbeschreibung und Auftragsbezeichnung haben ein neues Interface bekommen</li>
+        <li>Rechnungsformular wird nun vollständig erstellt</li>
+        <li>Standardtexte können der Rechnung hinzugefügt werden</li>
     </ul>
     <h3>1.1.13</h3>
     <ul>
@@ -82,10 +84,6 @@
     </ul>
 </div>
 <style>
-    .changelog {
-
-    }
-
     .changelog ul {
         list-style-type: disc;
     }
