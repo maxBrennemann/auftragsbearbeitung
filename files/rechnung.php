@@ -4,7 +4,9 @@
 	require_once('classes/project/Rechnung.php');
 	
 	$rechnung =  Link::getPageLink("rechnung");
+	$home =  Link::getPageLink("");
 	$rechnungsnummer = 0;
+	$rechnungslink;
 	
 	$target = isset($_GET["target"]) ? $_GET["target"] : -1;
 	$id = isset($_GET["id"]) ? $_GET["id"] : -1;
@@ -13,7 +15,8 @@
 		switch ($target) {
 			case "view":
 				$rechnungsnummer = $id;
-				$rechnung = new Rechnung($rechnungsnummer);
+				$order = DBAccess::selectQuery("SELECT Kundennummer FROM auftrag WHERE Rechnungsnummer = $id")[0]["Kundennummer"];
+				$rechnungslink = WEB_URL . "/files/generated/invoice/" . $order . "_" . $id . ".pdf";
 				break;
 			case "create":
 				$auftrag = new Auftrag($id);
@@ -37,6 +40,7 @@ if ($target == "create"): ?>
 	<div class="defCont">
 		<h3>Auftrag <span id="orderId"><?=$id?></span></h3>
 		<p>Nächste Rechnungsnummer: <?=$naechsteRechnungsnummer?></p>
+		<a href="<?=$home?>" style="display: none" id="goHome"></a>
 		<div class="standardtexte">
 			<p>Zu den Bilddaten: Bei der Benutzung von Daten aus fremden Quellen richten sich die Nutzungsbedingungen über Verwendung und Weitergabe nach denen der jeweiligen Anbieter.</p>
 			<p>Bitte beachten Sie, dass wir keine Haftung für eventuell entstehende Schäden übernehmen, die auf Witterungseinflüsse zurückzufüren sind (zerrisene Banner, herausgerissen Ösen o. Ä.). Sie als Kunde müssen entscheiden, wie die Banner konfektioniert werden sollen. Für die Art der Konfektionierung übernehmen wir keine Haftung. Wir übernehmen außerdem keine Haftung für unfachgerechte Montage der Banner.</p>
@@ -56,9 +60,8 @@ if ($target == "create"): ?>
 		<?=$rechnungsPDF?>
 	</span>
 <?php elseif ($target == "view"): ?>
-	<div>Rechnung:</div>
-	<span id="rechnungsnummer"><?=$rechnungsnummer;?></span>
-	<button onclick="print('rechnungsnummer', 'Rechnung');">Rechnungsblatt generieren</button>
+	<div>Rechnung <span id="rechnungsnummer"><?=$rechnungsnummer;?></span></div>
+	<iframe src="<?=$rechnungslink?>"></iframe>
 <?php else: ?>
 	<p>Es ist ein unerwarteter Fehler aufgetreten.</p>
 	<button action="action" onclick="window.history.go(-1); return false; "type="submit">Zurück</button>
