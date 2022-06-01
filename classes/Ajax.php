@@ -570,33 +570,12 @@ class Ajax {
 				$list = Liste::readList($lid);
 				echo $list->toHTML();
 			break;
-			case "completeInvoice":
-				require_once("classes/project/Rechnung.php");
-				$orderId = (int) $_POST['auftrag'];
-				$ids = $_POST['rows'];
-				$table = $_POST['table'];
-
-				echo $ids;
-				if ($ids == "0") {
-					Rechnung::addAllPosten($orderId);
-				} else {
-					$ids = json_decode($ids);
-					$id_arr = array();
-					foreach ($ids as $key => $checked) {
-						if ($checked == "true") {
-							$temp = Table::getIdentifierValue($table, $key);
-							array_push($id_arr, $temp);
-						}
-					}
-					//Rechnung::addPosten($orderId, $ids);
-					var_dump($id_arr);
-				}
-				//return Link::getPageLink();
-			break;
 			case "generateInvoicePDF":
 				require_once("classes/project/Rechnung.php");
-				$invoice = new Rechnung();
-				$invoice->PDFgenerieren(true);
+				if (isset($_SESSION['tempInvoice'])) {
+					$rechnung = unserialize($_SESSION['tempInvoice']);
+					$rechnung->PDFgenerieren(true);
+				}
 			break;
 			case "saveProduct":
 				$attData = $_POST['attData'];

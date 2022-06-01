@@ -163,11 +163,13 @@ class Rechnung {
 		$pdf->Cell(160, 10, "Zahlungsziel 8 Tage");
 
 
-		/* Speicherung */
+		/* Speicherung (aktuell nur Windows) */
 		if ($store == true) {
 			$filename= "{$this->kunde->getKundennummer()}_{$this->getInvoiceId()}.pdf"; 
-            $filelocation = "files\\generated\\invoice";
-            $fileNL = $filelocation . "\\" . $filename;
+            $filelocation = 'c:/xampp/htdocs/auftragsbearbeitung/files/generated/invoice/';
+            $fileNL = $filelocation . $filename;
+			echo WEB_URL . "/files/generated/invoice/" . $filename;
+			self::addAllPosten($_SESSION['currentInvoice_orderId']);
 			$pdf->Output($fileNL, 'F');
 		} else {
 			$_SESSION['tempInvoice'] = serialize($this);
@@ -299,29 +301,13 @@ class Rechnung {
 	*/
 	public static function addAllPosten($orderId) {
 		$auftrag = new Auftrag($orderId);
-		$posten = $auftrag->getAuftragspostenData();
-
 		
 		$nextNumber = Rechnung::getNextNumber();
-		echo $nextNumber;
 		DBAccess::updateQuery("UPDATE auftrag SET Rechnungsnummer = $nextNumber WHERE Auftragsnummer = $orderId AND Rechnungsnummer = 0");
-		DBAccess::updateQuery("UPDATE posten SET rechnungsNr = $nextNumber WHERE Auftragsnummer = $orderId AND rechnungsNr = 0");
+		DBAccess::updateQuery("UPDATE posten SET rechnungsNr = $nextNumber WHERE Auftragsnummer = $orderId AND isInvoice = 1");
 
 		/* Fertigstellung wird eingetragen */
 		DBAccess::updateQuery("UPDATE auftrag SET Fertigstellung = current_date() WHERE Auftragsnummer = $orderId");
-	}
-
-	/*
-	 * adds an invoice id to specific posten for a specific order
-	 * sql query only works if no invoice id has ever been added to that
-	*/
-	public static function addPosten($orderId, $postenIds) {
-		$nextNumber = Rechnung::getNextNumber();
-		$query = "UPDATE posten SET rechnungsNr = $nextNumber WHERE ";
-		foreach($postenIds as $id) {
-			$query .= "Postennummer = $id AND ";
-		}
-		$query = substr($query, 0, -4);
 	}
 
 }

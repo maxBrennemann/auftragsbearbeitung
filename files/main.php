@@ -42,7 +42,7 @@
 		<li><a href="<?=$neuerAuftrag?>">+💼 Neuen Auftrag erstellen</a></li>
 		<li><a href="<?=$rechnung?>">Neue Rechnung erstellen</a></li>
 		<li>
-			<input id="rechnungsinput" type="number" min="1" oninput="document.getElementById('rechnungsLink').href = '<?=$rechnung?>?id=' + this.value;">
+			<input id="rechnungsinput" type="number" min="1" oninput="document.getElementById('rechnungsLink').href = '<?=$rechnung?>?target=view&id=' + this.value;">
 			<a href="#" id="rechnungsLink">Rechnung anzeigen</a>
 		</li>
 		<li><a href="<?=$neuesAngebot?>">+ Neues Angebot erstellen</a></li>

@@ -373,3 +373,6 @@ INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `
 
 /* Änderungen 30.05.2022 */
 CREATE TABLE `manual` (`id` INT NULL , `page` VARCHAR(64) NOT NULL , `intent` VARCHAR(64) NOT NULL , `info` TEXT NOT NULL ) ENGINE = InnoDB;
+
+/* Änderungen 01.06.2022 */
+DELETE FROM `attachments` WHERE `attachments`.`id` = 16 AND `articleId` = 4;
