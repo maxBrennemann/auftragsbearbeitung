@@ -10,35 +10,16 @@ if (document.readyState !== 'loading' ) {
     });
 }
 
-function startInvoice() {
-    table = document.getElementsByTagName("table")[0].dataset.key;
-}
-
-function check(all = false) {
-    if (all == true) {
-        var completeInvoice = new AjaxCall(`getReason=completeInvoice&auftrag=${auftragsId}&rows=0&table=${table}`, "POST", window.location.href);
-        completeInvoice.makeAjaxCall(function (response) {
-            console.log(response);
-        });
-    } else {
-        var rows = JSON.stringify(checkboxes);
-        var auftragsId = document.getElementById("orderId").innerHTML;
-        var completeInvoice = new AjaxCall(`getReason=completeInvoice&auftrag=${auftragsId}&rows=${rows}&table=${table}`, "POST", window.location.href);
-        completeInvoice.makeAjaxCall(function (response) {
-            console.log(response);
-        });
-    }
-}
+function startInvoice() {}
 
 function generatePDF() {
-    var openInvoiceTab = new AjaxCall(`getReason=generateInvoicePDF&`, "POST", window.location.href);
-    openInvoiceTab.makeAjaxCall(function (response) {
-        var win = window.open(response, '_blank');
-        win.focus();
-    });
-}
-
-function changeInput(event, key) {
-    checkboxes[key] = event.target.checked;
-    check();
+    if (confirm('Möchtest Du die Rechnung erstellen und den Auftrag abschließen?')) {
+        var openInvoiceTab = new AjaxCall(`getReason=generateInvoicePDF&`, "POST", window.location.href);
+        openInvoiceTab.makeAjaxCall(function (response) {
+            var win = window.open(response, '_blank');
+            win.focus();
+        });
+    } else {
+        /* Abbruch */
+    }
 }
