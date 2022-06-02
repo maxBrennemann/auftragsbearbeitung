@@ -11,6 +11,8 @@
 		} else {
 			$file = file_get_contents(Link::getResourcesLink($script, "js", false));
 		}
+		if ($file == false)
+			return "";
 		echo $file;
 	}
 
@@ -18,6 +20,8 @@
 		header("Content-type: text/css");
 		$script = $_GET['css'];
 		$file = file_get_contents(Link::getResourcesLink($script, "css", false));
+		if ($file == false)
+			return "";
 		echo $file;
 	}
 
