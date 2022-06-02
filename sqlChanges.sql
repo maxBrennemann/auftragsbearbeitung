@@ -379,3 +379,5 @@ DELETE FROM `attachments` WHERE `attachments`.`id` = 16 AND `articleId` = 4;
 
 /* Änderungen 02.06.2022 */
 INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '4', 'head', 'rechnung.css', '', 'css');
+DELETE attachments FROM attachments LEFT JOIN articles ON attachments.articleId = articles.id WHERE CONCAT(articles.src, ".js") = attachments.fileSrc;
+DELETE attachments FROM attachments LEFT JOIN articles ON attachments.articleId = articles.id WHERE CONCAT(articles.src, ".css") = attachments.fileSrc;
