@@ -376,3 +376,6 @@ CREATE TABLE `manual` (`id` INT NULL , `page` VARCHAR(64) NOT NULL , `intent` VA
 
 /* Änderungen 01.06.2022 */
 DELETE FROM `attachments` WHERE `attachments`.`id` = 16 AND `articleId` = 4;
+
+/* Änderungen 02.06.2022 */
+INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '4', 'head', 'rechnung.css', '', 'css');

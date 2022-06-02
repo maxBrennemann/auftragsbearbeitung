@@ -34,7 +34,6 @@
 		}
 		foreach($files as $file) {
 			$link = Link::getResourcesShortLink($file['fileSrc'], $file['fileType']);
-		
 			switch ($file['fileType']) {
 				case 'css':
 					echo '<link rel="stylesheet" href="' . $link . '">';
@@ -50,6 +49,11 @@
 					break;
 			}
 		}
+
+		$link = Link::getResourcesShortLink($page . ".js", "js");
+		echo '<script src="' . $link . '"></script>';
+		$link = Link::getResourcesShortLink($page . ".css", "css");
+		echo '<link rel="stylesheet" href="' . $link . '">';
 	?>
 	<style type="text/css" media="print">
 		@page {
