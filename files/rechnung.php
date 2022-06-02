@@ -36,6 +36,14 @@
 	$link = Link::getPageLink('pdf') . "?type=rechnung";
 	$rechnungsPDF = "<iframe src=\"" . $link . "\" id=\"showOffer\"></iframe>";
 
+	/**
+	 * TODO:
+	 * - Logo hinzufügen
+	 * - Rechnung teilen zwischen Kunden
+	 * - Rechnungsadresse auswählen
+	 * - Rechnungsdatum und Leistungsdatum festlegen
+	 */
+
 if ($target == "create"): ?>
 	<div class="defCont">
 		<h3>Auftrag <span id="orderId"><?=$id?></span></h3>
@@ -66,58 +74,3 @@ if ($target == "create"): ?>
 	<p>Es ist ein unerwarteter Fehler aufgetreten.</p>
 	<button action="action" onclick="window.history.go(-1); return false; "type="submit">Zurück</button>
 <?php endif; ?>
-<style>
-	.standardtexte {
-		display: flex;
-		flex-wrap: wrap;
-		flex-direction: row;
-		box-sizing: border-box;
-	}
-
-	.standardtexte * {
-		flex: 1 1 auto;
-		width: 30%;
-		padding: 7px;
-		margin: 5px;
-		background: white;
-		border-radius: 6px;
-		box-sizing: border-box;
-	}
-
-	.highlightBlue {
-		border: 2px solid blue;
-	}
-
-	.visibility {
-		display: none !important;
-	}
-
-	#addToTexts {
-		width: 40px;
-		height: 40px;
-		border-radius: 50%;
-		line-height: 20px;
-		text-align: center;
-		font-size: 20px;
-		border: none;
-		box-shadow: 1px 0px 5px 0px grey;
-		font-weight: bold;
-		color: grey;
-	}
-
-	#newText {
-		max-width: 100%;
-		border: 1px solid grey;
-		-webkit-box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
-		box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
-		border-radius: 4px;
-		height: 30px;
-		background: #fff;
-		display: block;
-		width: 100%;
-		box-sizing: border-box;
-		padding: 0.375rem 0.75rem;
-		outline: none;
-		color: #1a1a1a;
-	}
-</style>
