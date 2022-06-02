@@ -20,6 +20,7 @@
 				break;
 			case "create":
 				$auftrag = new Auftrag($id);
+				$rechnungsadressen = Address::loadAllAddresses($auftrag->getKundennummer());
 				$_SESSION['currentInvoice_orderId'] = $id;
 				$naechsteRechnungsnummer = Rechnung::getNextNumber();
 
@@ -48,6 +49,15 @@ if ($target == "create"): ?>
 	<div class="defCont">
 		<h3>Auftrag <span id="orderId"><?=$id?></span></h3>
 		<p>Nächste Rechnungsnummer: <?=$naechsteRechnungsnummer?></p>
+		<div>
+			<p>Adresse auswählen</p>
+			<select id="rechnungsnummer"></select>
+			<p>Rechnungsdatum festlegen</p>
+			<input type="date" id="rechnungsdatum" value="">
+			<p>Leistungsdatum festlegen</p>
+			<input type="date" id="leistungsdatum" value="">
+		</div>
+		<hr>
 		<a href="<?=$home?>" style="display: none" id="goHome"></a>
 		<div class="standardtexte">
 			<p>Zu den Bilddaten: Bei der Benutzung von Daten aus fremden Quellen richten sich die Nutzungsbedingungen über Verwendung und Weitergabe nach denen der jeweiligen Anbieter.</p>
@@ -56,7 +66,8 @@ if ($target == "create"): ?>
 			<p>Wir weisen darauf hin, dass Logos eventuell Bildrechte anderer berühren und wir hierfür keine Haftung übernehmen. Der Kunde garantiert uns Straffreiheit gegenüber einer eventuell geschädigten Partei im Fall einer Verletzung des Rechts des geistigen Eigentums und/ oder des Bildrechts und/ oder den durch eine solche Verletzung verursachten Schadens. Für einen eventuellen Fall solch einer Verletzung willigt der Kunde ein, uns in Höhe aller entstandenen Kosten (inkl. Anwaltkosten) zu entschädigen.</p>
 			<span><input id="newText" class="visibility"><button onclick="addText()" id="addToTexts">+</button></span>
 		</div>
-		<?php if ($auftrag != null || $auftrag->getAuftragspostenData() != 0): ?>
+		<hr>
+		<?php if ($auftrag != null && $auftrag->getAuftragspostenData() != null): ?>
 		<button onclick="generatePDF();">Rechnung abschließen</button>
 		<?php else: ?>
 		<button disabled>Rechnung abschließen</button>
