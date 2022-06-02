@@ -50,6 +50,8 @@
 			}
 		}
 
+		/* used this query to try to select all cases for new implementation: SELECT attachments.*, CONCAT(articles.src, ".js") AS concatted FROM `attachments` LEFT JOIN articles ON articles.id = attachments.articleId WHERE CONCAT(articles.src, ".js") = attachments.fileSrc; */
+
 		$link = Link::getResourcesShortLink($page . ".js", "js");
 		echo '<script src="' . $link . '"></script>';
 		$link = Link::getResourcesShortLink($page . ".css", "css");
