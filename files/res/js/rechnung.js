@@ -22,6 +22,9 @@ function startInvoice() {
     }
 }
 
+/**
+ * Adds a text field to the predefinded texts and adds the correct eventlistener
+ */
 function addText() {
     var newText = document.getElementById("newText");
     newText.classList.toggle("visibility");
@@ -45,6 +48,13 @@ function addText() {
     }
 }
 
+/**
+ * This function is called from the eventlisteners added in {@link addText} and {@link startInvoice}
+ * when the user clicks on a text and only
+ * if it is not highlighted
+ * @param {*} id the text id, which is page specific
+ * @param {*} text the text which must be put on the invoice
+ */
 function sendText(id, text) {
     var sendTextToServer = new AjaxCall(`getReason=invoiceAddText&text=${text}&id=${id}`, "POST", window.location.href);
     sendTextToServer.makeAjaxCall(function (response) {
@@ -54,6 +64,10 @@ function sendText(id, text) {
     });
 }
 
+/**
+ * Removes a text by id, function is called from the eventlisteners from {@link addText} and {@link startInvoice}
+ * @param {*} id the text id, which is page specific
+ */
 function removeText(id) {
     var sendTextToServer = new AjaxCall(`getReason=invoiceRemoveText&id=${id}`, "POST", window.location.href);
     sendTextToServer.makeAjaxCall(function (response) {
@@ -62,6 +76,32 @@ function removeText(id) {
         console.log(response);
     });
 } 
+
+/**
+ * Sends the invoice parameters to the server
+ */
+function setInvoiceParameters() {
+    /* ajax parameter */
+    let addressSelect = document.getElementById("addressId");
+    let address = addressSelect.options[addressSelect.selectedIndex].value;
+
+    let params = {
+        getReason: "setInvoiceParameters",
+        auftrag: document.getElementById("orderId").innerHTML,
+        address: address,
+        invoiceDate: document.getElementById("rechnungsdatum").value,
+        leistungDate: document.getElementById("leistungsdatum")
+    };
+
+    var sip = new AjaxCall(params, "POST", window.location.href);
+    sip.makeAjaxCall(function (response) {
+        if (response == "ok") {
+            infoSaveSuccessfull("success");
+            var iframe = document.getElementById("showOffer");
+            iframe.contentWindow.location.reload();
+        }
+    }.bind(this), false);
+}
 
 function generatePDF() {
     if (confirm('Möchtest Du die Rechnung erstellen und den Auftrag abschließen?')) {

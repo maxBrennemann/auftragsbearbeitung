@@ -20,6 +20,22 @@ class Address {
         
     }
 
+    public function getStrasse() {
+		return $this->strasse;
+	}
+
+	public function getHausnummer() {
+		return $this->hausnummer;
+	}
+
+	public function getPostleitzahl() {
+		return $this->postleitzahl;
+	}
+
+	public function getOrt() {
+		return $this->ort;
+    }
+
     public static function loadAddress($addressId) {
         $addressInstance = new Address();
 
@@ -41,8 +57,15 @@ class Address {
 
     public static function loadAllAddresses($kdnr) {
         $data = DBAccess::selectQuery("SELECT * FROM `address` WHERE id_customer = $kdnr ORDER BY art");
-
         return $data;
+    }
+
+    public static function hasAddress($kdnr, $addressId) {
+        $query = "SELECT id FROM address WHERE id = $addressId AND id_customer = $kdnr";
+        $result = DBAccess::selectQuery($query);
+        if (empty($result))
+            return false;
+        return true;
     }
 
     public static function createNewAddress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz = "", $land = "Deutschland", $art = 3) {

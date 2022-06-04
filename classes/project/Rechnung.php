@@ -16,6 +16,7 @@ require_once('classes/project/EmptyPosten.php');
 class Rechnung {
 
 	private $kunde;
+	private $address = 0;
 	private $auftrag;
 
 	private $tempId = 0;
@@ -73,7 +74,7 @@ class Rechnung {
 		$pdf->writeHTMLCell(0, 40, 25, 25, $address);
 
 		$pdf->SetFont("helvetica", "", 12);
-        $cAddress = "<p>{$this->kunde->getFirmenname()}<br>{$this->kunde->getName()}<br>{$this->kunde->getStrasse()} {$this->kunde->getHausnummer()}<br>{$this->kunde->getPostleitzahl()} {$this->kunde->getOrt()}</p>";
+        $cAddress = $this->fillAddress();
         $pdf->writeHTMLCell(85, 40, 25, 25, $cAddress);
 
 		$pdf->setXY(120, 30);
@@ -252,6 +253,29 @@ class Rechnung {
 
 	public function getTempInvoiceId() {
 		return $this->tempId;
+	}
+
+	private function fillAddress() {
+		$firma = $this->kunde->getFirmenname();
+		$name = $this->kunde->getName();
+		$hausnr = $this->kunde->getHausnummer($this->address);
+		$strasse = $this->kunde->getStrasse($this->address);
+		$plz = $this->kunde->getPostleitzahl($this->address);
+		$ort = $this->kunde->getOrt($this->address);
+		return "<p>$firma<br>$name<br>$strasse $hausnr<br>$plz $ort</p>";
+	}
+	
+	public function setAddress($address) {
+		if (Address::hasAddress($this->kunde->getKundennummer(), $address))
+			$this->address = $address;
+	}
+
+	public function setInvoiceDAte($date) {
+
+	}
+
+	public function setLeistungsDAte($date) {
+
 	}
 
 	public static function getNextNumber() {
