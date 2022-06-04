@@ -739,6 +739,29 @@ class Ajax {
 				$rechnung->removeText($id);
 				$_SESSION['tempInvoice'] = serialize($rechnung);
 			break;
+			case "setInvoiceParameters":
+				$orderId = (int) $_POST["auftrag"];
+				$address = (int) $_POST["address"];
+				$invoiceDate = $_POST["invoiceDate"];
+				$leistungsDate = $_POST["leistungsDate"];
+
+				$rechnung = unserialize($_SESSION['tempInvoice']);
+				
+				if ($address != 0) {
+					$rechnung->setAddress($address);
+				}
+
+				if ($invoiceDate != "") {
+					$rechnung->setInvoiceDate($invoiceDate);
+				}
+
+				if ($leistungsDate != "") {
+					$rechnung->setLeistungsDate($leistungsDate);
+				}
+
+				$_SESSION['tempInvoice'] = serialize($rechnung);
+				echo "ok";
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);

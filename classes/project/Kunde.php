@@ -68,23 +68,55 @@ class Kunde implements StatisticsInterface {
 		return $this->firmenname;
 	}
 
-	public function getStrasse() {
+	public function getStrasse($id = 0) {
+		if ($id != 0) {
+			$this->loadAddresses();
+			if (array_key_exists($id, $this->addresses))
+				return $this->addresses[$id]->getStrasse();
+			else
+				return "";
+		}
 		return $this->strasse;
 	}
 
-	public function getHausnummer() {
+	public function getHausnummer($id = 0) {
+		if ($id != 0) {
+			$this->loadAddresses();
+			if ($this->hausnummer == 0 || $this->hausnummer == "0") 
+				return "";
+			if (array_key_exists($id, $this->addresses))
+				return $this->addresses[$id]->getHausnummer();
+			else
+				return "";
+		}
 		if ($this->hausnummer == 0 || $this->hausnummer == "0") 
 			return "";
 		return $this->hausnummer;
 	}
 
-	public function getPostleitzahl() {
+	public function getPostleitzahl($id = 0) {
+		if ($id != 0) {
+			$this->loadAddresses();
+			if ($this->postleitzahl == 0 || $this->postleitzahl == "0") 
+				return "";
+			if (array_key_exists($id, $this->addresses))
+				return $this->addresses[$id]->getPostleitzahl();
+			else
+				return "";
+		}
 		if ($this->postleitzahl == 0 || $this->postleitzahl == "0")
 			return "";
 		return $this->postleitzahl;
 	}
 
-	public function getOrt() {
+	public function getOrt($id = 0) {
+		if ($id != 0) {
+			$this->loadAddresses();
+			if (array_key_exists($id, $this->addresses))
+				return $this->addresses[$id]->getOrt();
+			else
+				return "";
+		}
 		return $this->ort;
 	}
 
@@ -170,6 +202,17 @@ class Kunde implements StatisticsInterface {
 
 	public function recalculate() {
 	
+	}
+
+	private function loadAddresses() {
+		if ($this->addresses != null)
+			return null;
+
+		$addresses = Address::loadAddress($this->kundennummer);
+		foreach ($addresses as $address) {
+			$address = Address::loadAddress($address["id"]);
+			array_push($this->addresses, $address);
+		}
 	}
 
 	public static function addAddress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz, $land, $art = 3) {
