@@ -4,7 +4,6 @@ require_once("classes/project/Produkt.php");
 
 class Ajax {
 	
-	private static $insertIntoAuftrag = "INSERT INTO auftrag (Auftragsnummer, Kundennummer, Auftragsbezeichnung, Auftragsbeschreibung, Auftragstyp, Datum, Termin, AngenommenDurch, AngenommenPer, Ansprechpartner)";
 	private static $sqlStatements = "SELECT posten.Postennummer, leistung.Bezeichnung, leistung_posten.Beschreibung, leistung_posten.SpeziefischerPreis, zeit.ZeitInMinuten, zeit.Stundenlohn FROM posten INNER JOIN leistung_posten ON posten.Postennummer = leistung_posten.Postennummer INNER JOIN zeit ON posten.Postennummer = zeit.Postennummer INNER JOIN leistung ON leistung_posten.Leistungsnummer = leistung.Nummer WHERE istStandard = 1;";
 
 	public static function manageRequests($reason, $page) {
@@ -116,8 +115,8 @@ class Ajax {
 				$maxAuftragsnr++;
 				$dat = date("Y-m-d");
 
-				$insertQuery = self::$insertIntoAuftrag;
-				$insertQuery .= "VALUES ($maxAuftragsnr, $kdn, '$bez', '$bes', '$typ', '$dat', '$ter', $ang, $per, $ans)";
+				$insertQuery = "INSERT INTO auftrag (Kundennummer, Auftragsbezeichnung, Auftragsbeschreibung, Auftragstyp, Datum, Termin, AngenommenDurch, AngenommenPer, Ansprechpartner)";
+				$insertQuery .= "VALUES ($kdn, '$bez', '$bes', '$typ', '$dat', '$ter', $ang, $per, $ans)";
 
 				DBAccess::insertQuery($insertQuery);
 
