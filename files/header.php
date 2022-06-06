@@ -112,7 +112,7 @@
 				<span>
 					<span><?=NotificationManager::getNotificationCount();?></span>
 					<span>&#128276;</span>
-					<span>⚙</span>
+					<span id="settings">⚙</span>
 				</span>
 			</aside>
 		</section>

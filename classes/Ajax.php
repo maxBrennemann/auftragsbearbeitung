@@ -762,6 +762,23 @@ class Ajax {
 				$_SESSION['tempInvoice'] = serialize($rechnung);
 				echo "ok";
 			break;
+			case "toggleCache":
+				require_once('classes/project/CacheManager.php');
+				$status = $_POST['status'];
+				switch ($status) {
+					case "on":
+						if (CacheManager::cacheOn() == true)
+							echo "ok";
+						break;
+					case "off":
+						if (CacheManager::cacheOff() == true)
+							echo "ok";
+						break;
+					default:
+						echo "an unexpected error occured";
+						break;
+				}
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
