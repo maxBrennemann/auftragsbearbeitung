@@ -384,3 +384,8 @@ DELETE attachments FROM attachments LEFT JOIN articles ON attachments.articleId 
 
 /* Änderungen 05.06.2022 */
 INSERT INTO settings (title, content) VALUES ("cacheStatus", "on");
+
+/* Änderungen 06.06.2022 */
+ALTER TABLE `auftrag` CHANGE `Fertigstellung` `Fertigstellung` DATE NULL DEFAULT '0000-00-00';
+ALTER TABLE `auftrag` CHANGE `Rechnungsnummer` `Rechnungsnummer` INT(11) NOT NULL DEFAULT '0';
+ALTER TABLE `auftrag` CHANGE `Bezahlt` `Bezahlt` INT(11) NOT NULL DEFAULT '0';
