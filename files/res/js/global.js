@@ -71,12 +71,12 @@ function startFunc() {
 		t.style.height = '';t.style.height = t.scrollHeight + 'px'
 	}
 
-	/*
-	 * es muss noch zwischen Benachrichtigung und Einstellungen unterschieden werden
-	 */
 	var bell = document.querySelector("section aside span");
-	bell.addEventListener("click", function() {
-		if (document.getElementById("showNotifications") == null) {
+	bell.addEventListener("click", function(event) {
+		if (event.target.id == "settings") {
+			/* link is hardcoded, maybe change later */
+			window.location.href = (document.getElementById("home_link").href) + "einstellungen";
+		} else if (document.getElementById("showNotifications") == null) {
 			let div = document.createElement("div");
 			div.id = "showNotifications";
 			let h3 = document.createElement("h3");
