@@ -184,8 +184,6 @@ aside {
     border-radius: 6px 6px 0 0;
     background-color: white;
     overflow: hidden;
-    width: 60%;
-    margin: auto;
     padding: 0;
     background-color: #e6cdcd;
 }
@@ -215,7 +213,6 @@ aside {
     border: none;
     background-color: white;
     border-top: 0;
-    width: 60%;
     margin: auto;
 }
 
@@ -224,7 +221,6 @@ aside {
     border: none;
     background-color: white;
     border-top: 0;
-    width: 60%;
     margin: auto;
     border-radius: 0 0 6px 6px;
 }
@@ -235,6 +231,33 @@ aside {
 
 .tabcontentEnd div {
     padding: 10px;
+}
+
+#showPostenAdd {
+    width: 80%;
+    margin: auto;
+}
+
+#addPostenZeit {
+    display: flex;
+}
+
+#addPostenZeit .container {
+    flex: 50%;
+}
+
+#addPostenZeit .addToTable {
+    display: block;
+    margin: auto;
+}
+
+.timeInputWrapper {
+    padding: 4px;
+    border-radius: 6px;
+}
+
+.timeInputWrapperRed {
+    background: red;
 }
 
 /* css end for posten tab */
