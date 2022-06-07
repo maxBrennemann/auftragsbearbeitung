@@ -79,7 +79,7 @@ class Zeit extends Posten {
 	}
 	
 	public function bekommeEinzelPreis() {
-		return $this->bekommePreis();
+		return $this->Stundenlohn;
 	}
 
 	/*
@@ -102,7 +102,7 @@ class Zeit extends Posten {
 	}
 
 	public function bekommeEinzelPreis_formatted() {
-		return number_format($this->bekommeEinzelPreis(), 2, ',', '') . ' €';
+		return number_format($this->Stundenlohn, 2, ',', '') . ' €';
 	}
 
 	public function bekommeDifferenz() {
@@ -122,7 +122,7 @@ class Zeit extends Posten {
 	}
 
 	public function getEinheit() {
-		return "min";
+		return "Stunden";
 	}
 
 	public function getWage() {
@@ -130,7 +130,8 @@ class Zeit extends Posten {
 	}
 
 	public function getQuantity() {
-		return $this->ZeitInMinuten;
+		$zeitInStunden = round($this->ZeitInMinuten / 60, 2);
+		return number_format($zeitInStunden, 2, ',', '');
 	}
 
 	public function getOhneBerechnung() {
