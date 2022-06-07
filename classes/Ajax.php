@@ -110,15 +110,12 @@ class Ajax {
 				$kdn = $_POST['kdn'];
 				$per = $_POST['per'];
 				$ans = $_POST['ans'];
-
-				$maxAuftragsnr = (int) DBAccess::selectQuery("SELECT MAX(Auftragsnummer) FROM auftrag")[0]['MAX(Auftragsnummer)'];
-				$maxAuftragsnr++;
 				$dat = date("Y-m-d");
 
 				$insertQuery = "INSERT INTO auftrag (Kundennummer, Auftragsbezeichnung, Auftragsbeschreibung, Auftragstyp, Datum, Termin, AngenommenDurch, AngenommenPer, Ansprechpartner)";
 				$insertQuery .= "VALUES ($kdn, '$bez', '$bes', '$typ', '$dat', '$ter', $ang, $per, $ans)";
 
-				DBAccess::insertQuery($insertQuery);
+				$orderId = DBAccess::insertQuery($insertQuery);
 
 				if (isset($_SESSION['offer_is_order']) && $_SESSION['offer_is_order'] == true) {
 					$isLoadPosten = true;
@@ -126,10 +123,13 @@ class Ajax {
 					$isLoadPosten = false;
 				}
 
-				$data = array("responseLink" => Link::getPageLink("auftrag") . "?id=$maxAuftragsnr", "loadFromOffer" => $isLoadPosten, "orderId" => $maxAuftragsnr);
+				$data = array("responseLink" => Link::getPageLink("auftrag") . "?id=$orderId", "loadFromOffer" => $isLoadPosten, "orderId" => $orderId);
 				echo json_encode($data, JSON_FORCE_OBJECT);
 
-				//Statistics::auftragEroeffnen(new Auftrag($maxAuftragsnr));
+				require_once("classes/project/NotificationManager.php");
+				$link = $data["responseLink"];
+				NotificationManager::addNotificationCheck(-1, 4, "Auftrag <a href=\"$link\">$orderId</a> wurde angelegt", $orderId);
+				//Statistics::auftragEroeffnen(new Auftrag($orderId));
 			break;
 			case "insTime":
 				$data = array();
