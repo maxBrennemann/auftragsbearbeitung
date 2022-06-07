@@ -44,8 +44,8 @@ class Leistung extends Posten {
 			$this->discount = $discount;
 		}
 
-		/* currently quantitiy is an integer */
-		$this->quantity = (int) $quantity;
+		/* quantity is now a float */
+		$this->quantity = (float) $quantity;
 		$this->meh = $meh;
 	}
 
