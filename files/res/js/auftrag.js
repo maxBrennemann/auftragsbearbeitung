@@ -19,6 +19,10 @@ if (document.readyState !== 'loading' ) {
 }
 
 function initCode() {
+    document.getElementById("meh_dropdown").addEventListener("click", meh_eventListener, false);
+    document.getElementById("meh").addEventListener("click", meh_eventListener, false);
+
+
     if (document.getElementById("selectVehicle") == null)
         return null;
     
@@ -27,6 +31,24 @@ function initCode() {
             document.getElementById("addVehicle").style.display = "inline-block";
         }
     });
+}
+
+function meh_eventListener() {
+    document.getElementById("selectReplacerMEH").classList.add("selectReplacerShow");
+}
+
+/* https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_dropdown */
+window.onclick = function(event) {
+    if (!event.target.matches('.selectReplacer') && !event.target.matches('#meh_dropdown') && !event.target.matches('#meh')) {
+        var dropdowns = document.getElementsByClassName("selectReplacer");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('selectReplacerShow')) {
+                openDropdown.classList.remove('selectReplacerShow');
+            }
+        }
+    }
 }
 
 /* get selection for adding a posten */
