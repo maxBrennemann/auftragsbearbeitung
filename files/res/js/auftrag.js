@@ -5,7 +5,11 @@ var globalData = {
     vehicleId: 0,
     erledigendeSchritte : null,
     alleSchritte : null,
-    auftragsId : parseInt(new URL(window.location.href).searchParams.get("id"))
+    auftragsId : parseInt(new URL(window.location.href).searchParams.get("id")),
+    times : {
+        0: "00:00",
+        1: "00:00"
+    }
 }
 
 if (document.readyState !== 'loading' ) {
@@ -22,6 +26,11 @@ function initCode() {
     document.getElementById("meh_dropdown").addEventListener("click", meh_eventListener, false);
     document.getElementById("meh").addEventListener("click", meh_eventListener, false);
 
+    /* auto sizes textareas on page load */
+	var timeInputs = document.getElementsByClassName("timeInput");
+	for (t of timeInputs) {
+		t.addEventListener("change", calcTime, false);
+	}
 
     if (document.getElementById("selectVehicle") == null)
         return null;
@@ -35,6 +44,67 @@ function initCode() {
 
 function meh_eventListener() {
     document.getElementById("selectReplacerMEH").classList.add("selectReplacerShow");
+}
+
+function calcTime(e) {
+    var time = e.target.value;
+    var addPostenZeit = document.getElementById("addPostenZeit");
+    var elements = addPostenZeit.getElementsByClassName("timeInput");
+    var index = -1;
+    for (var i = 0; i < elements.length; i++) {
+        if (elements[i] === e.target) {
+            index = i;
+        }
+    }
+
+    var timeDiff = 0;
+    for (var i = 0; i < elements.length; i += 2) {
+        var start = elements[i].value.split(":");
+        var stop = elements[i + 1].value.split(":");
+
+        var temp = parseInt(stop[0]) * 60 + parseInt(stop[1]) - parseInt(start[0]) * 60 - parseInt(start[1]);
+
+        if (temp > 0) {
+            timeDiff += temp;
+            elements[i].parentNode.classList.remove("timeInputWrapperRed");
+        } else {
+            elements[i].parentNode.classList.add("timeInputWrapperRed");
+        }
+    }
+
+    document.getElementById("showTimeSummary").innerHTML = timeDiff + " Minuten";
+    document.getElementById("time").value = timeDiff;
+
+    globalData.times[index] = time;
+    console.log(globalData.times);
+}
+
+function addTimeInputs(event) {
+    var p = document.createElement("p");
+    var text1 = document.createTextNode("von ");
+    var text2 = document.createTextNode(" bis ");
+    var input1 = document.createElement("input");
+    var input2 = document.createElement("input");
+
+    input1.classList.add("timeInput");
+    input1.type = "time";
+    input1.min = "05:00";
+    input1.max = "23:00";
+
+    input2.classList.add("timeInput");
+    input2.type = "time";
+    input2.min = "05:00";
+    input2.max = "23:00";
+
+    p.classList.add("timeInputWrapper");
+    p.appendChild(text1);
+    p.appendChild(input1);
+    p.appendChild(text2);
+    p.appendChild(input2);
+
+    event.target.parentNode.insertBefore(p, event.target);
+    input1.addEventListener("change", calcTime, false);
+    input2.addEventListener("change", calcTime, false);
 }
 
 /* https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_dropdown */
