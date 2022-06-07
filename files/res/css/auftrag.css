@@ -278,6 +278,35 @@ aside {
     margin: 7px;
 }
 
+#meh_dropdown {
+    margin-left: -25px;
+    cursor: pointer;
+}
+
+.selectReplacer {
+    display: none;
+    border: 1px solid grey;
+    width: 162px;
+    padding: 0 !important;
+
+    position: absolute;
+    background: white;
+    box-shadow: 0 8px 16px 0 rgb(0 0 0 / 20%);
+}
+
+.selectReplacerShow {
+    display: block;
+}
+
+.optionReplacer {
+    padding: 21px 17px 21px 17px;
+    margin: 0;
+}
+
+.optionReplacer:hover {
+    background-color: #ababab;
+}
+
 @media (max-width: 850px) {
     main {
         display: grid;

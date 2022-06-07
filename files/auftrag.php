@@ -195,7 +195,16 @@ if ($auftragsId == -1): ?>
 					</select>
 					<br>
 					<span>Menge:<br><input class="postenInput" id="anz" value="1"></span><br>
-					<span>Mengeneinheit:<br><input class="postenInput" id="meh"></span><br>
+					<span>Mengeneinheit:<br>
+						<input class="postenInput" id="meh">
+						<span id="meh_dropdown">▼</span>
+						<div class="selectReplacer" id="selectReplacerMEH">
+							<p class="optionReplacer" onclick="document.getElementById('meh').value = this.innerHTML;">Stück</p>
+							<p class="optionReplacer" onclick="document.getElementById('meh').value = this.innerHTML;">m²</p>
+							<p class="optionReplacer" onclick="document.getElementById('meh').value = this.innerHTML;">Meter</p>
+							<p class="optionReplacer" onclick="document.getElementById('meh').value = this.innerHTML;">Stunden</p>
+						</div>
+					</span><br>
 					<span>Beschreibung:<br><textarea id="bes" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span><br>
 					<span>Einkaufspreis:<br><input class="postenInput" id="ekp" value="0"></span><br>
 					<span>Verkaufspreis:<br><input class="postenInput" id="pre" value="0"></span><br>
