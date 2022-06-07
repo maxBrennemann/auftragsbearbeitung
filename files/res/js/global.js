@@ -68,7 +68,10 @@ function startFunc() {
 	/* auto sizes textareas on page load */
 	var textareas = document.querySelectorAll("textarea");
 	for (t of textareas) {
-		t.style.height = '';t.style.height = t.scrollHeight + 'px'
+		if (t.scrollHeight != 0) {
+			t.style.height = '';
+			t.style.height = t.scrollHeight + 'px';
+		}
 	}
 
 	var bell = document.querySelector("section aside span");
