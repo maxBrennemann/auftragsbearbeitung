@@ -8,6 +8,11 @@
         <li>Auftragsbeschreibung und Auftragsbezeichnung haben ein neues Interface bekommen</li>
         <li>Rechnungsformular wird nun vollständig erstellt</li>
         <li>Standardtexte können der Rechnung hinzugefügt werden</li>
+        <li>Rechnungsposten werden nun auf der Auftragsseite so dargestellt wie auf der Rechnung</li>
+        <li>Erweiterete Zeiterfassung wurde hinzugefügt</li>
+        <li>Zeit wird in Stunden auf der Rechnung dargestellt</li>
+        <li>Mengeneinheiten können direkt ausgewählt werden</li>
+        <li>Diverse Fehlerbehebungen in Bezug auf Rechnungstellung und Posten</li>
     </ul>
     <h3>1.1.13</h3>
     <ul>

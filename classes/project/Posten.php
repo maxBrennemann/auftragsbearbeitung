@@ -134,8 +134,6 @@ abstract class Posten {
 				DBAccess::insertQuery("INSERT INTO produkt_posten (Produktnummer, Postennummer, Anzahl) VALUES ($prodId, $postennummer, $amount)");
 			break;
 			case "compact":
-				
-
 				$amount = $data['amount'];
 				$marke = $data['marke'];
 				$ekpreis = (float) $data['ekpreis'];

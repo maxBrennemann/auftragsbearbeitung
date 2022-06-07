@@ -50,7 +50,8 @@ class ProduktPosten extends Posten {
 		$arr['Bezeichnung'] = "<button class=\"postenButton\">Produkt</button>" . $this->Bezeichnung;
 		$arr['Beschreibung'] = $this->Beschreibung;
 		$arr['Anzahl'] = $this->Anzahl;
-		$arr['Einkaufspreis'] = $this->Einkaufspreis;
+		$arr['MEH'] = $this->getEinheit();
+		$arr['Einkaufspreis'] = $this->bekommeEinkaufspreis_formatted();
 		$arr['Gesamtpreis'] = $this->bekommePreis_formatted();
 		$arr['type'] = "addPostenProdukt";
 
@@ -77,7 +78,7 @@ class ProduktPosten extends Posten {
 			
 			return $discount_table;
 		} else {
-			return number_format($this->bekommePreis(), 2, ',', '') . "€";
+			return $this->bekommeEinzelPreis_formatted();
 		}
 	}
 
@@ -104,6 +105,10 @@ class ProduktPosten extends Posten {
 		return number_format($this->bekommePreis(), 2, ',', '') . ' €';
 	}
 
+	public function bekommeEinkaufspreis_formatted() {
+		return number_format($this->Einkaufspreis, 2, ',', '') . ' €';
+	}
+
 	public function bekommeEinzelPreis_formatted() {
 		return number_format($this->bekommeEinzelPreis(), 2, ',', '') . ' €';
 	}
@@ -127,7 +132,7 @@ class ProduktPosten extends Posten {
 	}
 
 	public function getEinheit() {
-		return "Stk";
+		return "Stück";
 	}
 
 	public function getQuantity() {
