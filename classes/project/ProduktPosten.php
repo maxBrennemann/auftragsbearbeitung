@@ -51,6 +51,7 @@ class ProduktPosten extends Posten {
 		$arr['Beschreibung'] = $this->Beschreibung;
 		$arr['Anzahl'] = $this->Anzahl;
 		$arr['Einkaufspreis'] = $this->Einkaufspreis;
+		$arr['Gesamtpreis'] = $this->bekommePreis_formatted();
 		$arr['type'] = "addPostenProdukt";
 
 		return $arr;

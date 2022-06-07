@@ -49,6 +49,7 @@ class Zeit extends Posten {
 		$arr['MEH'] =  "min";
 		$arr['Beschreibung'] = $this->beschreibung;
 		$arr['Einkaufspreis'] = "-";
+		$arr['Gesamtpreis'] = $this->bekommePreis_formatted();
 		$arr['type'] = "addPostenZeit";
 		$arr['Bezeichnung'] = "<button class=\"postenButton\">Zeit</button>";
 

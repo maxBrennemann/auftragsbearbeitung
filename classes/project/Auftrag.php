@@ -206,7 +206,8 @@ class Auftrag implements StatisticsInterface {
 			"Beschreibung" => "", 
 			"Stundenlohn" => "", 
 			"MEH" => "", 
-			"Preis" => "", 
+			"Preis" => "",
+			"Gesamtpreis" => "",
 			"Anzahl" => "", 
 			"Einkaufspreis" => "",
 			"type" => ""
@@ -237,13 +238,14 @@ class Auftrag implements StatisticsInterface {
 
 	public function getAuftragspostenAsTable() {
 		$column_names = array(
-			0 => array("COLUMN_NAME" => "Bezeichnung"), 
-			1 => array("COLUMN_NAME" => "Beschreibung"), 
-			2 => array("COLUMN_NAME" => "Stundenlohn"), 
-			3 => array("COLUMN_NAME" => "Anzahl"), 
-			4 => array("COLUMN_NAME" => "MEH"), 
-			5 => array("COLUMN_NAME" => "Preis"), 
-			6 => array("COLUMN_NAME" => "Einkaufspreis")
+			0 => array("COLUMN_NAME" => "Bezeichnung"),
+			1 => array("COLUMN_NAME" => "Beschreibung"),
+			2 => array("COLUMN_NAME" => "Stundenlohn"),
+			3 => array("COLUMN_NAME" => "Anzahl"),
+			4 => array("COLUMN_NAME" => "MEH"),
+			5 => array("COLUMN_NAME" => "Preis"),
+			6 => array("COLUMN_NAME" => "Gesamtpreis"),
+			7 => array("COLUMN_NAME" => "Einkaufspreis")
 		);
 
 		$data = $this->getAuftragsPostenHelper();
