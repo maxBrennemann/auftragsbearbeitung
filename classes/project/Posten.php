@@ -126,7 +126,7 @@ abstract class Posten {
 				DBAccess::insertQuery("INSERT INTO leistung_posten (Leistungsnummer, Postennummer, Beschreibung, Einkaufspreis, SpeziefischerPreis, meh, qty) VALUES($lei, $postennummer, '$bes', '$ekp', '$pre', '$meh', '$anz')");
 				Leistung::bearbeitungsschritteHinzufuegen($lei, $auftragsnummer);
 				/* adds invoice data and prices for payment section */
-				Payments::addPayment();
+				//Payments::addPayment();
 			break;
 			case "produkt":
 				$amount = $data['amount'];
@@ -134,8 +134,6 @@ abstract class Posten {
 				DBAccess::insertQuery("INSERT INTO produkt_posten (Produktnummer, Postennummer, Anzahl) VALUES ($prodId, $postennummer, $amount)");
 			break;
 			case "compact":
-				
-
 				$amount = $data['amount'];
 				$marke = $data['marke'];
 				$ekpreis = (float) $data['ekpreis'];

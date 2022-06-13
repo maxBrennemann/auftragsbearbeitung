@@ -44,8 +44,8 @@ class Leistung extends Posten {
 			$this->discount = $discount;
 		}
 
-		/* currently quantitiy is an integer */
-		$this->quantity = (int) $quantity;
+		/* quantity is now a float */
+		$this->quantity = (float) $quantity;
 		$this->meh = $meh;
 	}
 
@@ -59,6 +59,7 @@ class Leistung extends Posten {
 		$arr['Bezeichnung'] = "<button class=\"postenButton\">Leistung</button>" . $this->bezeichnung;
 		$arr['Beschreibung'] = $this->beschreibung;
 		$arr['Einkaufspreis'] = number_format($this->einkaufspreis, 2, ',', '') . "€<br>" . $this->getFiles($this->postennummer);
+		$arr['Gesamtpreis'] = $this->bekommePreis_formatted();
 		$arr['Leistungsnummer'] = $this->leistungsnummer;
 		$arr['Anzahl'] = $this->quantity;
 		$arr['MEH'] = $this->meh;
