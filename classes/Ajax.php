@@ -541,15 +541,13 @@ class Ajax {
 							$addressData = Address::loadAllAddresses($kdnr);
 							$addressId = $addressData[$addressCount]["id"];
 							DBAccess::updateQuery("UPDATE `address` SET $dataKey = '$data' WHERE id_customer = $kdnr AND id = $addressId");
-
-							echo "ok";
 						} else {
 							//echo "UPDATE kunde SET $dataKey = '$data' WHERE Kundennummer = $kdnr";
 							DBAccess::updateQuery("UPDATE kunde SET $dataKey = '$data' WHERE Kundennummer = $kdnr");
-							echo "ok";
 						}
 					}
 				}
+				echo "ok";
 			break;
 			case "addAttVal":
 				$attributeId = $_POST['att'];
