@@ -100,6 +100,9 @@ function kundendatenAbsenden() {
             infoSaveSuccessfull("success");
         else
             infoSaveSuccessfull();
+        
+        /* reset object, so that values are not sended twice */
+        changedData = {};
     });
 }
 
