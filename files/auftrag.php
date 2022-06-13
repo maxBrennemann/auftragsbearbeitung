@@ -180,10 +180,20 @@ if ($auftragsId == -1): ?>
 
 			<div class="tabcontent" id="tabZeit" style="display: block;">
 				<div id="addPostenZeit">
-					<span>Zeit in Minuten<br><input class="postenInput" id="time" type="number" min="0"></span><br>
-					<span>Stundenlohn in €<br><input class="postenInput" id="wage" type="number" value="<?=$auftrag->getDefaultWage()?>"></span><br>
-					<span>Beschreibung<br><textarea id="descr" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span><br>
-					<button onclick="addTime()">Hinzufügen</button>
+					<div class="container">
+						<span>Zeit in Minuten<br><input class="postenInput" id="time" type="number" min="0"></span><br>
+						<span>Stundenlohn in €<br><input class="postenInput" id="wage" type="number" value="<?=$auftrag->getDefaultWage()?>"></span><br>
+						<span>Beschreibung<br><textarea id="descr" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span><br>
+						<button onclick="addTime()">Hinzufügen</button>
+					</div>
+					<div class="container">
+						<span>Erweiterte Zeiterfassung:</span>
+						<br>
+						<span>Arbeitszeit(en)</span>
+						<p class="timeInputWrapper">von <input class="timeInput" type="time" min="05:00" max="23:00"> bis <input class="timeInput"  type="time" min="05:00" max="23:00"></p>
+						<button class="addToTable" onclick="addTimeInputs(event)">+</button>
+						<p id="showTimeSummary"></p>
+					</div>
 				</div>
 			</div>
 			<div class="tabcontent" id="tabLeistung">
@@ -195,7 +205,16 @@ if ($auftragsId == -1): ?>
 					</select>
 					<br>
 					<span>Menge:<br><input class="postenInput" id="anz" value="1"></span><br>
-					<span>Mengeneinheit:<br><input class="postenInput" id="meh"></span><br>
+					<span>Mengeneinheit:<br>
+						<input class="postenInput" id="meh">
+						<span id="meh_dropdown">▼</span>
+						<div class="selectReplacer" id="selectReplacerMEH">
+							<p class="optionReplacer" onclick="document.getElementById('meh').value = this.innerHTML;">Stück</p>
+							<p class="optionReplacer" onclick="document.getElementById('meh').value = this.innerHTML;">m²</p>
+							<p class="optionReplacer" onclick="document.getElementById('meh').value = this.innerHTML;">Meter</p>
+							<p class="optionReplacer" onclick="document.getElementById('meh').value = this.innerHTML;">Stunden</p>
+						</div>
+					</span><br>
 					<span>Beschreibung:<br><textarea id="bes" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span><br>
 					<span>Einkaufspreis:<br><input class="postenInput" id="ekp" value="0"></span><br>
 					<span>Verkaufspreis:<br><input class="postenInput" id="pre" value="0"></span><br>
