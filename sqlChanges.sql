@@ -389,3 +389,6 @@ INSERT INTO settings (title, content) VALUES ("cacheStatus", "on");
 ALTER TABLE `auftrag` CHANGE `Fertigstellung` `Fertigstellung` DATE NULL DEFAULT '0000-00-00';
 ALTER TABLE `auftrag` CHANGE `Rechnungsnummer` `Rechnungsnummer` INT(11) NOT NULL DEFAULT '0';
 ALTER TABLE `auftrag` CHANGE `Bezahlt` `Bezahlt` INT(11) NOT NULL DEFAULT '0';
+
+/* Änderungen 13.06.2022 */
+ALTER TABLE `verbesserungen` CHANGE `erledigt` `erledigt` TEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '';

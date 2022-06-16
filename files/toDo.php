@@ -32,9 +32,9 @@
     $verbesserungen;
 
     if (isset($_GET['t']) && $_GET['t'] == 'details') {
-        $verbesserungen = DBAccess::selectQuery("SELECT verbesserungen AS Verbesserungen, erledigt, erstelldatum AS Datum FROM verbesserungen");
+        $verbesserungen = DBAccess::selectQuery("SELECT verbesserungen AS Verbesserungen, erledigt, erstelldatum AS Datum FROM verbesserungen ORDER BY Datum DESC");
     } else {
-        $verbesserungen = DBAccess::selectQuery("SELECT verbesserungen AS Verbesserungen, erledigt, erstelldatum AS Datum FROM verbesserungen WHERE erledigt = ''");
+        $verbesserungen = DBAccess::selectQuery("SELECT verbesserungen AS Verbesserungen, erledigt, erstelldatum AS Datum FROM verbesserungen WHERE erledigt = '' ORDER BY Datum DESC");
     }
 
     $column_names = array(
