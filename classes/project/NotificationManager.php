@@ -63,8 +63,19 @@ class NotificationManager {
         return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = $user AND ischecked = 'false'");
     }
 
+    private static function getTasks() {
+        $user = $_SESSION['userid'];
+        return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = $user AND ischecked = 'false' AND (`type` = 1 OR `type`= 0)");
+    }
+
+    private static function getNews() {
+        $user = $_SESSION['userid'];
+        return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = $user AND ischecked = 'false' AND `type` = 4");
+    }
+
     public static function htmlNotification() {
-        $data = self::getNotifications();
+        $tasks = self::getTasks();
+        $news = self::getNews();
 
         $tasksCount = self::getTaskCount();
         $newsCount = self::getNewsCount();
@@ -73,13 +84,16 @@ class NotificationManager {
         <div style="display: block;">
             <!-- content -->
             <h4>Meine Aufgaben (<?=$tasksCount?>)</h4>
-            <?php foreach ($data as $n): ?>
+            <?php foreach ($tasks as $n): ?>
             <span><strong><?=self::getTypeName((int) $n["type"])?>: </strong><a href="<?=self::getSpecificLink((int) $n['type'], (int) $n['specific_id'])?>"><?=$n["content"]?></a><br></span>
             <?php endforeach; ?>
         </div>
         <div style="display: block;">
             <!-- content -->
             <h4>Benachrichtigungen und Neuigkeiten (<?=$newsCount?>)</h4>
+            <?php foreach ($news as $n): ?>
+            <span><strong><?=self::getTypeName((int) $n["type"])?>: </strong><a href="<?=self::getSpecificLink((int) $n['type'], (int) $n['specific_id'])?>"><?=$n["content"]?></a><br></span>
+            <?php endforeach; ?>
         </div>
         <p><a href="#">Ältere Benachrichtigungen anzeigen</a></p>
         <?php
