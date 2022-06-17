@@ -9,10 +9,12 @@
 		if ($script == "colorpicker.js") {
 			$file = file_get_contents(".res/colorpicker.js");
 		} else {
-			$file = file_get_contents(Link::getResourcesLink($script, "js", false));
+			if (file_exists(Link::getResourcesLink($script, "js", false))) {
+				$file = file_get_contents(Link::getResourcesLink($script, "js", false));
+			} else {
+				$file = "";
+			}
 		}
-		if ($file == false)
-			return "";
 		echo $file;
 	}
 
