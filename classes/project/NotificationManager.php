@@ -91,6 +91,7 @@ class NotificationManager {
         <div style="display: block;">
             <!-- content -->
             <h4>Benachrichtigungen und Neuigkeiten (<?=$newsCount?>)</h4>
+            <h6><a href="#" onclick="setRead()">Alles als gelesen markieren</a></h6>
             <?php foreach ($news as $n): ?>
             <span><strong><?=self::getTypeName((int) $n["type"])?>: </strong><a href="<?=self::getSpecificLink((int) $n['type'], (int) $n['specific_id'])?>"><?=$n["content"]?></a><br></span>
             <?php endforeach; ?>
@@ -167,6 +168,23 @@ class NotificationManager {
         $query = "SELECT id_mitarbeiter as id FROM members_mitarbeiter";
         $data = DBAccess::selectQuery($query);
         return $data;
+    }
+
+    public static function setNotificationsRead($notifications) {
+        if (isset($_SESSION['userid'])) 
+            $uid = $_SESSION['userid'];
+        else
+            return null;
+        
+        if ($notifications == -1) {
+            $query = "UPDATE user_notification SET ischecked = 1 WHERE user_id = $uid AND `type` = 4";
+            DBAccess::updateQuery($query);
+        } else {
+            foreach ($notifications as $notification) {
+                $query = "UPDATE user_notification SET ischecked = 1 WHERE id = $notification";
+                DBAccess::updateQuery($query);
+            }
+        }
     }
 }
 
