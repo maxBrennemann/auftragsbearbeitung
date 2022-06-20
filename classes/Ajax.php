@@ -98,7 +98,7 @@ class Ajax {
 				echo "success";
 			break;
 			case "notification":
-				require_once('classes/project/NotificationManager.php');;
+				require_once('classes/project/NotificationManager.php');
 				echo NotificationManager::htmlNotification();
 			break;
 			case "createAuftrag":
@@ -781,6 +781,15 @@ class Ajax {
 					default:
 						echo "an unexpected error occured";
 						break;
+				}
+			break;
+			case "setNotificationsRead":
+				$notificationIds = $_POST["notificationIds"];
+				if ($notificationIds == "all") {
+					require_once('classes/project/NotificationManager.php');
+					NotificationManager::setNotificationsRead(-1);
+				} else {
+
 				}
 			break;
 			default:
