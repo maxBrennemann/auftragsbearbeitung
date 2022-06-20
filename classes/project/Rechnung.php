@@ -294,7 +294,7 @@ class Rechnung {
 			4 => array("COLUMN_NAME" => "Summe"),
 			5 => array("COLUMN_NAME" => "Datum"));
 		
-		$data = DBAccess::selectQuery("SELECT auftrag.Auftragsnummer as Auftragsnr, auftrag.Auftragsbezeichnung as Bezeichnung, auftrag.Auftragsbeschreibung as Beschreibung, auftrag.AngenommenDurch, auftrag.Kundennummer, auftrag.Datum, auftrag.Termin, auftrag.Rechnungsnummer, kunde.Firmenname, CONCAT(FORMAT(auftragssumme.orderPrice, 2, 'de_DE'), ' €') AS Summe FROM auftrag, auftragssumme, kunde WHERE auftrag.Kundennummer = kunde.Kundennummer AND Rechnungsnummer != 0 AND Bezahlt = 0 AND auftrag.Auftragsnummer = auftragssumme.id");
+		$data = DBAccess::selectQuery("SELECT auftrag.Auftragsnummer as Auftragsnr, auftrag.Auftragsbezeichnung as Bezeichnung, auftrag.Auftragsbeschreibung as Beschreibung, auftrag.AngenommenDurch, auftrag.Kundennummer, auftrag.Datum, auftrag.Termin, auftrag.Rechnungsnummer, kunde.Firmenname, CONCAT(FORMAT(auftragssumme.orderPrice, 2, 'de_DE'), ' €') AS Summe FROM auftrag, auftragssumme, kunde WHERE auftrag.Kundennummer = kunde.Kundennummer AND Rechnungsnummer != 0 AND auftrag.Bezahlt = 0 AND auftrag.Auftragsnummer = auftragssumme.id");
 
 		for ($i = 0; $i < sizeof($data); $i++) {
 			$id = $data[$i]["AngenommenDurch"];
@@ -309,12 +309,18 @@ class Rechnung {
 		return $table->getTable();
 	}
 
+	/**
+	 * berechnet die offene Rechnungssumme, Rechnung ist offen, wenn auftrag.Bezahlt = 0 gilt;
+	 * 
+	 * TODO für später:
+	 * eventuell eigene Tabelle für Rechnungssummen, um Unveränderbarkeit zu garantieren
+	 */
 	public static function getOffeneRechnungssumme() {
 		$query = "SELECT ROUND(SUM(all_posten.price), 2) AS summe
 		FROM (SELECT (zeit.ZeitInMinuten / 60) * zeit.Stundenlohn AS price, posten.Auftragsnummer as id FROM zeit, posten WHERE zeit.Postennummer = posten.Postennummer
 			  UNION ALL
 			  SELECT leistung_posten.SpeziefischerPreis AS price, posten.Auftragsnummer as id FROM leistung_posten, posten WHERE leistung_posten.Postennummer = posten.Postennummer) all_posten, auftrag
-			  WHERE auftrag.Auftragsnummer = all_posten.id AND auftrag.Rechnungsnummer != 0";
+			  WHERE auftrag.Auftragsnummer = all_posten.id AND auftrag.Rechnungsnummer != 0 AND auftrag.Bezahlt = 0";
 		$summe = DBAccess::selectQuery($query)[0]['summe'];
 		return $summe;
 	}
