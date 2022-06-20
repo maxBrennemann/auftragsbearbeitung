@@ -85,6 +85,25 @@ class DBAccess {
 		return self::$connection->lastInsertId();
 	}
 
+	public function inertMultiple($query, $data) {
+		foreach ($data as $rows) {
+			$query_row = "(";
+			foreach ($rows as $item) {
+				$query_row .= "'" . $item . "', ";
+			}
+			$query_row = substr($query_row, 0, -2);
+			$query_row .= "),";
+			$query .= $query_row;
+		}
+
+		$query = substr(($query), 0, -1);
+
+		self::createConnection();
+		self::$statement = self::$connection->prepare($query);
+		self::$statement->execute();
+		return self::$connection->lastInsertId();
+	}
+
 	public static function executeQuery($query) {
 		self::createConnection();
 		
