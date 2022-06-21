@@ -147,8 +147,10 @@ class Ajax {
 
 				/* erweiterte Zeiterfassung */
 				$zeiterfassung = $_POST['zeiterfassung'];
-				require_once("classes/project/Zeit.php");
-				Zeit::erweiterteZeiterfassung($zeiterfassung, $ids[1]);
+				if ($zeiterfassung != "empty") {
+					require_once("classes/project/Zeit.php");
+					Zeit::erweiterteZeiterfassung($zeiterfassung, $ids[1]);
+				}
 
 				echo (new Auftrag($_POST['auftrag']))->preisBerechnen();
 			break;
@@ -344,16 +346,25 @@ class Ajax {
 				require_once("classes/project/Table.php");
 				$type = $_POST['type'];
 				Table::updateValue($type . "_table", "delete", $_POST['key']);
-				$postennummer = Table::getIdentifierValue("schritte_table", $_POST['key']);
 
 				/* when a step is deleted, its connection to the notification manager must be deleted and it must be shown in the order histor */
 				if ($type == "schritte") {
+					$postennummer = Table::getIdentifierValue("schritte_table", $_POST['key']);
+					$bezeichnung = Table::getValueByIdentifierColumn("schritte_table", $_POST['key'], "Bezeichnung");
+
 					require_once("classes/project/Auftragsverlauf.php");
 					$auftragsverlauf = new Auftragsverlauf($_POST['auftrag']);
-					$auftragsverlauf->addToHistory($postennummer, 2, "deleted");
+					$auftragsverlauf->addToHistory($postennummer, 2, "deleted", $bezeichnung);
 
 					$query = "UPDATE user_notifications SET ischecked = 1 WHERE specific_id = $postennummer";
 					DBAccess::updateQuery($query);
+				} else if ($type == "posten") {
+					$postennummer = Table::getIdentifierValue("posten_table", $_POST['key']);
+					$beschreibung = Table::getValueByIdentifierColumn("posten_table", $_POST['key'], "Beschreibung");
+
+					require_once("classes/project/Auftragsverlauf.php");
+					$auftragsverlauf = new Auftragsverlauf($_POST['auftrag']);
+					$auftragsverlauf->addToHistory($postennummer, 1, "deleted", $beschreibung);
 				}
 			break;
 			case "update":
@@ -657,7 +668,7 @@ class Ajax {
 
 				require_once("classes/project/Auftragsverlauf.php");
 				$auftragsverlauf = new Auftragsverlauf($orderId);
-				$auftragsverlauf->addToHistory($history_number, 7, "added");
+				$auftragsverlauf->addToHistory($history_number, 7, "added", $note);
 			break;
 			case "setCustomColor":
 				require_once("classes/project/ClientSettings.php");

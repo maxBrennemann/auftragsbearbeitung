@@ -147,7 +147,7 @@ abstract class Posten {
 		}
 
 		if ((int) $auftragsnummer != -1) {
-			$auftragsverlauf->addToHistory($postennummer, 1, "added");
+			$auftragsverlauf->addToHistory($postennummer, 1, "added", $data['Beschreibung']);
 		}
 
 		return [$postennummer, $subPosten];

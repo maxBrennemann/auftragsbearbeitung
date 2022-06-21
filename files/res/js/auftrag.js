@@ -193,6 +193,11 @@ function addTime() {
         zeiterfassung : JSON.stringify(zeiterfassung)
     };
 
+    /* quick fix, if times didn't get a new value, set to empty */
+    if (globalData.times[0] == "00:00") {
+        params.zeiterfassung = "empty";
+    }
+
     var add = new AjaxCall(params, "POST", window.location.href);
     add.makeAjaxCall(function (response) {
         updatePrice(response);
