@@ -97,11 +97,17 @@ class Rechnung {
 
 				$height = $pdf->getStringHeight(80, $p->getDescription());
 				$addToOffset = $lineheight;
-				if ($height >= $lineheight) {
-					$pdf->MultiCell(80, $lineheight, $p->getDescription(), '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
-					$addToOffset = ceil($height);
+				
+
+				if ($p->getOhneBerechnung() == true) {
+					$addToOffset = $this->ohneBerechnungBtn($pdf, $height, $lineheight, $p);
 				} else {
-					$pdf->Cell(80, $lineheight, $p->getDescription());
+					if ($height >= $lineheight) {
+						$pdf->MultiCell(80, $lineheight, $p->getDescription(), '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
+						$addToOffset = ceil($height);
+					} else {
+						$pdf->Cell(80, $lineheight, $p->getDescription());
+					}
 				}
 
 				$pdf->Cell(20, $lineheight, $p->bekommeEinzelPreis_formatted());
@@ -157,11 +163,11 @@ class Rechnung {
 		$pdf->Cell(60, 10, '', 'T');
 		$pdf->Cell(20, 10, '', 'T');
 
-		/* Code für "Zahlungsziel 8 Tage" */
+		/* Code für "Zahlbar sofort ohne weitere Abzüge" */
 		$pdf->ln();
 		$pdf->setCellMargins(0, 0, 0, 0);
 		$pdf->SetFont("helvetica", "", 10);
-		$pdf->Cell(160, 10, "Zahlungsziel 8 Tage");
+		$pdf->Cell(160, 10, "Zahlbar sofort ohne weitere Abzüge");
 
 
 		/* Speicherung (aktuell nur Windows) */
@@ -189,12 +195,15 @@ class Rechnung {
 		$pdf->Cell(30, 10, "Rechnungs-Nr:");
 		$pdf->Cell(30, 10, $this->getInvoiceId(), 0, 0, 'R');
 		$pdf->setXY(120, $y + 6);
+		$pdf->Cell(30, 10, "Auftrags-Nr:");
+		$pdf->Cell(30, 10, $this->auftrag->getAuftragsnummer(), 0, 0, 'R');
+		$pdf->setXY(120, $y + 12);
 		$pdf->Cell(30, 10, "Datum:");
 		$pdf->Cell(30, 10, $this->getDate(), 0, 0, 'R');
-		$pdf->setXY(120, $y + 12);
+		$pdf->setXY(120, $y + 18);
 		$pdf->Cell(30, 10, "Kunden-Nr.:");
 		$pdf->Cell(30, 10, $this->kunde->getKundennummer(), 0, 0, 'R');
-		$pdf->setXY(120, $y + 18);
+		$pdf->setXY(120, $y + 24);
 		$pdf->Cell(30, 10, "Seite:");
 		$pdf->Cell(30, 10, $pdf->getAliasRightShift() . $pdf->PageNo() . ' von ' . $pdf->getAliasNbPages(), 0, 0, 'R');
 
@@ -276,6 +285,17 @@ class Rechnung {
 
 	public function setLeistungsDAte($date) {
 
+	}
+
+	private function ohneBerechnungBtn(&$pdf, &$height, &$lineheight, &$p) {
+		$pdf->MultiCell(60, $lineheight, $p->getDescription(), '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
+		$addToOffset = ceil($height);
+		
+		$pdf->SetFont("helvetica", "", 7);
+		$pdf->MultiCell(20, $lineheight, "Ohne Berechnung", '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
+		$pdf->SetFont("helvetica", "", 12);
+
+		return $addToOffset;
 	}
 
 	public static function getNextNumber() {

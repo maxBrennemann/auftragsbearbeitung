@@ -2,8 +2,15 @@
     <h3>1.1.15</h3>
     <ul>
         <li>Erweiterte Zeiterfassung nun um Datum ergänzt. Felder werden bereinigt, wenn die Zeiten an den Server geschickt werden.</li>
-        <li>Wenn Posten oder Bearbeitungsschritte gelöscht werden, wird das im Auftragsverlauf vermerkt<li>
+        <li>Wenn Posten oder Bearbeitungsschritte gelöscht werden, wird das im Auftragsverlauf vermerkt</li>
         <li>Fehlerbehebungen</li>
+        <li>Rechnungen:
+            <ul>
+                <li>Ohne Berechnung steht nun automatisch auf der Rechnung</li>
+                <li>Zahlbar sofort ohne weitere Abzüge steht nun auf der Rechnung</li>
+                <li>Auftragsnummer steht auf der Rechnung</li>
+            </ul>
+        </li>
     </ul>
     <h3>1.1.14</h3>
     <ul>
