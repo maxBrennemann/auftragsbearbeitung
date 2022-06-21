@@ -592,9 +592,28 @@ function infoSaveSuccessfull(status = "failiure") {
     }, 2000);
 }
 
+/**
+ * clears all inputs, supported types: id, array of ids, classes
+ * @param {Object} inputs JSON object with this pattern: {"id":"clearthisid", "class":"clearthisclass"}
+ */
 function clearInputs(inputs) {
-	for (let i = 0; i < inputs.length; i++) {
-		document.getElementById(inputs[i]).value = "";
+	for (key in inputs) {
+		switch (key) {
+			case "id":
+				document.getElementById(inputs[key]).value = "";
+				break;
+			case "ids":
+				for (let i = 0; i < inputs[key].length; i++) {
+					document.getElementById(inputs[key][i]).value = "";
+				}
+				break;
+			case "class":
+				var classes = document.getElementsByClassName(inputs[key]);
+				for (c of classes) {
+					c.value = "";
+				}
+				break;
+		}
 	}
 }
 
@@ -614,4 +633,11 @@ function toggleNav() {
 			elements[i].style.marginLeft = "250px";
 		}
 	}
+}
+
+/* code for notifications */
+function setRead() {
+	var setNotificationsRead = new AjaxCall(`getReason=setNotificationsRead&notificationIds=all`, "POST", window.location.href);
+    setNotificationsRead.makeAjaxCall(function (response) {
+    });
 }

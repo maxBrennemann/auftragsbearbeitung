@@ -48,8 +48,9 @@ abstract class Posten {
 		foreach ($data as $step) {
 			switch ($step['Posten']) {
 				case 'zeit':
-					$speziefischerPosten = DBAccess::selectQuery("SELECT ZeitInMinuten, Stundenlohn, Beschreibung FROM zeit WHERE zeit.Postennummer = {$step['Postennummer']}")[0];
+					$speziefischerPosten = DBAccess::selectQuery("SELECT Nummer, ZeitInMinuten, Stundenlohn, Beschreibung FROM zeit WHERE zeit.Postennummer = {$step['Postennummer']}")[0];
 					$element = new Zeit($speziefischerPosten['Stundenlohn'], $speziefischerPosten['ZeitInMinuten'], $speziefischerPosten['Beschreibung'], $step['discount'], (int) $step['isInvoice']);
+					$element->setSpecificNumber($speziefischerPosten['Nummer']);
 				break;
 				case 'produkt':
 					$query = "SELECT Preis, Bezeichnung, Beschreibung, pp.Produktnummer, Anzahl, p.Einkaufspreis FROM produkt_posten AS pp, produkt AS p, posten AS po ";
@@ -92,8 +93,8 @@ abstract class Posten {
 		}
 
 		$fre = $data['ohneBerechnung'];
-		$dis = $data['discount'];
-		$inv = $data['addToInvoice'];
+		$dis = $data['discount'] == null ? 0 : $data['discount'];
+		$inv = $data['addToInvoice'] == null ? 0 : $data['addToInvoice'];
 
 		if (isset($_SESSION['overwritePosten']) && $_SESSION['overwritePosten'] == true) {
 			$postennummer = (int) $_SESSION['overwritePosten_postennummer'];
@@ -113,7 +114,7 @@ abstract class Posten {
 				$lohn = $data['Stundenlohn'];
 				$desc = $data['Beschreibung'];
 				
-				DBAccess::insertQuery("INSERT INTO zeit (Postennummer, ZeitInMinuten, Stundenlohn, Beschreibung) VALUES ($postennummer, $zeit, $lohn, '$desc')");
+				$subPosten = DBAccess::insertQuery("INSERT INTO zeit (Postennummer, ZeitInMinuten, Stundenlohn, Beschreibung) VALUES ($postennummer, $zeit, $lohn, '$desc')");
 			break;
 			case "leistung":
 				$lei = $data['Leistungsnummer'];
@@ -123,7 +124,7 @@ abstract class Posten {
 				$anz = $data['anzahl'];
 				$meh = $data['MEH'];
 				
-				DBAccess::insertQuery("INSERT INTO leistung_posten (Leistungsnummer, Postennummer, Beschreibung, Einkaufspreis, SpeziefischerPreis, meh, qty) VALUES($lei, $postennummer, '$bes', '$ekp', '$pre', '$meh', '$anz')");
+				$subPosten = DBAccess::insertQuery("INSERT INTO leistung_posten (Leistungsnummer, Postennummer, Beschreibung, Einkaufspreis, SpeziefischerPreis, meh, qty) VALUES($lei, $postennummer, '$bes', '$ekp', '$pre', '$meh', '$anz')");
 				Leistung::bearbeitungsschritteHinzufuegen($lei, $auftragsnummer);
 				/* adds invoice data and prices for payment section */
 				//Payments::addPayment();
@@ -131,7 +132,7 @@ abstract class Posten {
 			case "produkt":
 				$amount = $data['amount'];
 				$prodId = $data['prodId'];
-				DBAccess::insertQuery("INSERT INTO produkt_posten (Produktnummer, Postennummer, Anzahl) VALUES ($prodId, $postennummer, $amount)");
+				$subPosten = DBAccess::insertQuery("INSERT INTO produkt_posten (Produktnummer, Postennummer, Anzahl) VALUES ($prodId, $postennummer, $amount)");
 			break;
 			case "compact":
 				$amount = $data['amount'];
@@ -141,13 +142,15 @@ abstract class Posten {
 				$beschreibung = $data['beschreibung'];
 				$name = $data['name'];
 
-				DBAccess::insertQuery("INSERT INTO product_compact (postennummer, amount, marke, price, purchasing_price, description, name) VALUES ($postennummer, $amount, '$marke', '$vkpreis', '$ekpreis', '$beschreibung', '$name')");
+				$subPosten = DBAccess::insertQuery("INSERT INTO product_compact (postennummer, amount, marke, price, purchasing_price, description, name) VALUES ($postennummer, $amount, '$marke', '$vkpreis', '$ekpreis', '$beschreibung', '$name')");
 			break;
 		}
 
 		if ((int) $auftragsnummer != -1) {
 			$auftragsverlauf->addToHistory($postennummer, 1, "added");
 		}
+
+		return [$postennummer, $subPosten];
 	}
 
 	public static function deletePosten($postenId) {

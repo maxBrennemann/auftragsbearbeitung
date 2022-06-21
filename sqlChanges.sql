@@ -395,3 +395,11 @@ ALTER TABLE `verbesserungen` CHANGE `erledigt` `erledigt` TEXT CHARACTER SET lat
 
 /* Änderungen 16.06.2022 */
 INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '5', 'footer', 'neuer-auftrag.js', '0', 'js');
+
+/* Änderungen 20.06.2022 */
+CREATE TABLE `zeiterfassung` (`id` INT NOT NULL AUTO_INCREMENT , `id_zeit` INT NOT NULL , `from_time` INT NOT NULL , `to_time` INT NOT NULL , `date` DATE NULL DEFAULT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+/* Änderungen 21.06.2022 */
+ALTER TABLE `posten` CHANGE `angebotsNr` `angebotsNr` INT(11) NOT NULL DEFAULT '0';
+ALTER TABLE `posten` CHANGE `rechnungsNr` `rechnungsNr` INT(11) NOT NULL DEFAULT '0';
+ALTER TABLE `posten` CHANGE `istStandard` `istStandard` INT(11) NOT NULL DEFAULT '0';

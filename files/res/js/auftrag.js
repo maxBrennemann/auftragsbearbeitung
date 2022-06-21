@@ -46,6 +46,10 @@ function meh_eventListener() {
     document.getElementById("selectReplacerMEH").classList.add("selectReplacerShow");
 }
 
+/**
+ * this function gets executed when a time input is filled in
+ * @param {*} e this is the passed event
+ */
 function calcTime(e) {
     var time = e.target.value;
     var addPostenZeit = document.getElementById("addPostenZeit");
@@ -79,12 +83,18 @@ function calcTime(e) {
     console.log(globalData.times);
 }
 
+/**
+ * this function gets executed when the "+" button is pressed to add a new timeframe
+ * @param {*} event this is the passed event
+ */
 function addTimeInputs(event) {
     var p = document.createElement("p");
     var text1 = document.createTextNode("von ");
     var text2 = document.createTextNode(" bis ");
+    var text3 = document.createTextNode(" am ");
     var input1 = document.createElement("input");
     var input2 = document.createElement("input");
+    var input3 = document.createElement("input");
 
     input1.classList.add("timeInput");
     input1.type = "time";
@@ -96,11 +106,16 @@ function addTimeInputs(event) {
     input2.min = "05:00";
     input2.max = "23:00";
 
+    input3.classList.add("dateInput");
+    input3.type = "date";
+
     p.classList.add("timeInputWrapper");
     p.appendChild(text1);
     p.appendChild(input1);
     p.appendChild(text2);
     p.appendChild(input2);
+    p.appendChild(text3);
+    p.appendChild(input3);
 
     event.target.parentNode.insertBefore(p, event.target);
     input1.addEventListener("change", calcTime, false);
@@ -157,6 +172,15 @@ function getSelections() {
 }
 
 function addTime() {
+    var zeiterfassung = {
+        times: globalData.times,
+        dates: {}
+    }
+    var dates = document.getElementsByClassName("dateInput");
+    for (let i = 0; i < dates.length; i++) {
+        zeiterfassung.dates[i] = dates[i].value;
+    }
+
     let params = {
         getReason: "insTime",
         time: document.getElementById("time").value,
@@ -165,7 +189,8 @@ function addTime() {
         descr: document.getElementById("descr").value,
         ohneBerechnung: getOhneBerechnung() ? 1 : 0,
         addToInvoice: getAddToInvoice() ? 1 : 0,
-        discount: document.getElementById("showDiscount").children[0].value
+        discount: document.getElementById("showDiscount").children[0].value,
+        zeiterfassung : JSON.stringify(zeiterfassung)
     };
 
     var add = new AjaxCall(params, "POST", window.location.href);
@@ -173,7 +198,13 @@ function addTime() {
         updatePrice(response);
         reloadPostenListe();
         infoSaveSuccessfull("success");
-        clearInputs(["time", "wage", "descr"]);
+        clearInputs({
+            "id": "time",
+            "id": "wage",
+            "id": "descr",
+            "class": "timeInput",
+            "class": "dateInput"
+        });
     });
 }
 
@@ -199,7 +230,7 @@ function addLeistung() {
         updatePrice(response);
         reloadPostenListe();
         infoSaveSuccessfull("success");
-        clearInputs(["bes", "ekp", "pre", "meh", "anz"]);
+        clearInputs({"ids":["bes", "ekp", "pre", "meh", "anz"]});
     });
 }
 
@@ -222,7 +253,7 @@ function addProductCompact() {
     add.makeAjaxCall(function (response) {
         console.log(response);
         reloadPostenListe();
-        clearInputs(["posten_produkt_menge", "posten_produkt_marke", "posten_produkt_ek", "posten_produkt_vk", "posten_produkt_name", "posten_produkt_besch"]);
+        clearInputs({"ids":["posten_produkt_menge", "posten_produkt_marke", "posten_produkt_ek", "posten_produkt_vk", "posten_produkt_name", "posten_produkt_besch"]});
     });
 }
 
