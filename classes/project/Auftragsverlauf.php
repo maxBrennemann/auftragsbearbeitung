@@ -39,9 +39,9 @@ class Auftragsverlauf {
      * Id zur Identifikation der anderen Tabellenspalten und ein Zeitstempel miteingetragen.
      * Eventuell kann später noch ein Notizfeld hinzugefügt werden.
      */
-    public function addToHistory($number, $type, $state) {
+    public function addToHistory($number, $type, $state, $alternative_text = "") {
         $userId = Login::getUserId();
-        DBAccess::insertQuery("INSERT INTO history (`orderid`, `number`, `type`, `state`, `member_id`) VALUES ({$this->auftragsnummer}, $number, $type, '$state', $userId)");
+        DBAccess::insertQuery("INSERT INTO history (`orderid`, `number`, `type`, `state`, `member_id`, `alternative_text`) VALUES ({$this->auftragsnummer}, $number, $type, '$state', $userId, '$alternative_text')");
     }
 
     /*
@@ -50,8 +50,7 @@ class Auftragsverlauf {
     public function getHistory() {
         $query = "
                 SELECT history.id, history.insertstamp, history_type.name, 
-                CONCAT(COALESCE(postendata.Beschreibung, ''), 
-                COALESCE(schritte.Bezeichnung, ''), COALESCE(CONCAT(fahrzeuge.Kennzeichen, ' ', fahrzeuge.Fahrzeug), ''), COALESCE(notizen.Notiz, '')) AS Beschreibung, members.username, history.state
+                CONCAT(COALESCE(history.alternative_text, 'Fehler: kein Text gefunden'), COALESCE(CONCAT(fahrzeuge.Kennzeichen, ' ', fahrzeuge.Fahrzeug), ''), COALESCE(notizen.Notiz, '')) AS Beschreibung, members.username, mitarbeiter.vorname, history.state
             FROM history 
             LEFT JOIN history_type ON history_type.type_id = history.type 
             LEFT JOIN postendata ON postendata.Auftragsnummer = history.orderid 
@@ -59,6 +58,8 @@ class Auftragsverlauf {
             LEFT JOIN schritte ON schritte.Auftragsnummer = history.orderid 
                 AND schritte.Schrittnummer = history.number 
             LEFT JOIN members ON members.id = history.member_id
+            LEFT JOIN members_mitarbeiter ON members.id = members_mitarbeiter.id_member
+            LEFT JOIN mitarbeiter ON members_mitarbeiter.id_mitarbeiter = mitarbeiter.id
             LEFT JOIN fahrzeuge_auftraege ON fahrzeuge_auftraege.id_auftrag = history.orderid
                 AND fahrzeuge_auftraege.id_fahrzeug = history.number
             LEFT JOIN fahrzeuge ON fahrzeuge.Nummer = fahrzeuge_auftraege.id_fahrzeug
@@ -75,21 +76,21 @@ class Auftragsverlauf {
             $datetime = $h['insertstamp'];
             $datetime = date('d.m.Y H:i', strtotime($datetime));
             $beschreibung = $h['Beschreibung'];
-            $person = $h['username'];
+            $person = $h['vorname'];
 
             switch ($h['state']) {
                 case "added":
-                    $html .= "<div class=\"showInMiddle\">{$h['name']}: {$beschreibung}<br>hinzugefügt am {$datetime}<br>von {$person}</div><div class=\"verticalLine\"></div>";
+                    $html .= "<div class=\"showInMiddle\">{$h['name']}: <i>{$beschreibung}</i><br>hinzugefügt am {$datetime}<br>von {$person}</div><div class=\"verticalLine\"></div>";
                     break;
                 case "edited":
                     // muss noch ergänzt werden, irgenwas mit bearbeitet
                     $html .= "";
                     break;
                 case "finished":
-                    $html .= "<div class=\"showInMiddle\">{$h['name']}: {$beschreibung}<br>abgeschlossen am {$datetime}<br>von {$person}</div><div class=\"verticalLine\"></div>";
+                    $html .= "<div class=\"showInMiddle\">{$h['name']}: <i>{$beschreibung}</i><br>abgeschlossen am {$datetime}<br>von {$person}</div><div class=\"verticalLine\"></div>";
                     break;
                 case "deleted":
-                    $html .= "<div class=\"showInMiddle\">{$h['name']}: {$beschreibung}<br>gelöscht am {$datetime}<br>von {$person}</div><div class=\"verticalLine\"></div>";
+                    $html .= "<div class=\"showInMiddle\">{$h['name']}: <i>{$beschreibung}</i><br>gelöscht am {$datetime}<br>von {$person}</div><div class=\"verticalLine\"></div>";
                     break;
             }
 

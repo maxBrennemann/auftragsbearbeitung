@@ -244,8 +244,8 @@ if ($auftragsId == -1): ?>
 					</span>
 					<br>
 					<span id="showDiscount">
-						<input type="range" min="0" max="100" value="0" oninput="event.target.nextSibling.innerText = this.value + '%';">
-						<span id="showDiscoundValue">0%</span> Rabatt
+						<input type="range" min="0" max="100" value="0" name="discountInput" id="discountInput" oninput="showDiscountValue.value = discountInput.value + '%'">
+						<output id="showDiscountValue" name="showDiscountValue" for="discountInput">0%</output> Rabatt
 					</span>
 					<div id="generalPosten"></div>
 				</div>

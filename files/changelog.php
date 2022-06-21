@@ -1,4 +1,10 @@
 <div class="changelog">
+    <h3>1.1.15</h3>
+    <ul>
+        <li>Erweiterte Zeiterfassung nun um Datum ergänzt. Felder werden bereinigt, wenn die Zeiten an den Server geschickt werden.</li>
+        <li>Wenn Posten oder Bearbeitungsschritte gelöscht werden, wird das im Auftragsverlauf vermerkt<li>
+        <li>Fehlerbehebungen</li>
+    </ul>
     <h3>1.1.14</h3>
     <ul>
         <li>Diagramm "Umsatz pro Monat" wird nun aufgrund des Fertigstellungsdatums generiert</li>

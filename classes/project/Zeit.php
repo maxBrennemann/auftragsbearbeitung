@@ -102,7 +102,7 @@ class Zeit extends Posten {
 					<tr>
 						<td>Preis</td>
 						<td>{$originalPrice}</td>
-						<td>{$this->bekommePreis()}</td>
+						<td>{$this->bekommePreis_formatted()}</td>
 					</tr>
 					<tr>
 						<td>Rabatt</td>
@@ -199,7 +199,10 @@ class Zeit extends Posten {
 			$from = self::timeString_toInt($data["times"][$i]);
 			$to = self::timeString_toInt($data["times"][$i + 1]);
 			$date = $data["dates"][$i + 2 * $i];
-			array_push($db_array, [$id, $from, $to, "null" => $date]);
+			if ($date == "")
+				array_push($db_array, [$id, $from, $to, "null" => $date]);
+			else
+				array_push($db_array, [$id, $from, $to, $date]);
 		}
 
 		DBAccess::insertMultiple("INSERT INTO zeiterfassung (id_zeit, from_time, to_time, `date`) VALUES ", $db_array);

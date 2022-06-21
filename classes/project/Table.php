@@ -365,6 +365,22 @@ class Table {
 		}
 	}
 
+	public static function getValueByIdentifierColumn($table, $key, $column) {
+		$actionObject = unserialize($_SESSION[$table]);
+
+		/* gets the row by key, then the row identifier for the db action is selected */
+		if (is_array($actionObject->keys)) {
+			$number = array_search($key, $actionObject->keys);
+
+			$result = $actionObject->data[$number][$column];
+
+			return $result;
+		} else {
+			return null;
+		}
+	}
+
+
 	public function defineUpdateSchedule($updateSchedule) {
 		$this->updateSchedule = $updateSchedule;
 	}

@@ -403,3 +403,4 @@ CREATE TABLE `zeiterfassung` (`id` INT NOT NULL AUTO_INCREMENT , `id_zeit` INT N
 ALTER TABLE `posten` CHANGE `angebotsNr` `angebotsNr` INT(11) NOT NULL DEFAULT '0';
 ALTER TABLE `posten` CHANGE `rechnungsNr` `rechnungsNr` INT(11) NOT NULL DEFAULT '0';
 ALTER TABLE `posten` CHANGE `istStandard` `istStandard` INT(11) NOT NULL DEFAULT '0';
+ALTER TABLE `history` ADD `alternative_text` TINYTEXT NULL DEFAULT NULL AFTER `member_id`;
