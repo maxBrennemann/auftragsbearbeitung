@@ -190,7 +190,7 @@ if ($auftragsId == -1): ?>
 						<span>Erweiterte Zeiterfassung:</span>
 						<br>
 						<span>Arbeitszeit(en)</span>
-						<p class="timeInputWrapper">von <input class="timeInput" type="time" min="05:00" max="23:00"> bis <input class="timeInput"  type="time" min="05:00" max="23:00"></p>
+						<p class="timeInputWrapper">von <input class="timeInput" type="time" min="05:00" max="23:00"> bis <input class="timeInput"  type="time" min="05:00" max="23:00"> am <input class="dateInput" type="date"></p>
 						<button class="addToTable" onclick="addTimeInputs(event)">+</button>
 						<p id="showTimeSummary"></p>
 					</div>

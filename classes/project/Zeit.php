@@ -17,6 +17,8 @@ class Zeit extends Posten {
 	private $beschreibung = null;
 	private $isInvoice = false;
 
+	private $internalZeitNumber = 0;
+
 	protected $postenTyp = "zeit";
 	protected $ohneBerechnung = false;
 	protected $postennummer;
@@ -45,7 +47,7 @@ class Zeit extends Posten {
 		$arr['Postennummer'] = $this->postennummer;
 		$arr['Preis'] = $this->bekommePreisTabelle();
 		$arr['Stundenlohn'] = number_format($this->Stundenlohn, 2, ',', '') . "€";
-		$arr['Anzahl'] = $this->ZeitInMinuten;
+		$arr['Anzahl'] = $this->bekommeErweiterteZeiterfassungTabelle();
 		$arr['MEH'] =  "min";
 		$arr['Beschreibung'] = $this->beschreibung;
 		$arr['Einkaufspreis'] = "-";
@@ -54,6 +56,41 @@ class Zeit extends Posten {
 		$arr['Bezeichnung'] = "<button class=\"postenButton\">Zeit</button>";
 
 		return $arr;
+	}
+
+	public function setSpecificNumber($number) {
+		$this->internalZeitNumber = (int) $number;
+	}
+
+	private function bekommeErweiterteZeiterfassungTabelle() {
+		$erwZeit = DBAccess::selectQuery("SELECT id FROM zeiterfassung WHERE id_zeit = $this->internalZeitNumber");
+		if ($erwZeit == null) {
+			return $this->ZeitInMinuten;
+		} else {
+			$zeiten = DBAccess::selectQuery("SELECT CONCAT(LPAD(FLOOR(`from_time` / 60), 2, '0'), ':', LPAD(`from_time` MOD 60, 2, '0')) AS von, CONCAT(LPAD(FLOOR(`to_time` / 60), 2, '0'), ':', LPAD(`to_time` MOD 60, 2, '0')) AS bis, IF(`date` IS NULL, 'kein Datum', `date`) AS datum FROM zeiterfassung WHERE id_zeit = $this->internalZeitNumber");
+			$entries = "";
+			foreach ($zeiten as $zeit) {
+				$entries .= 
+					"<tr>
+						<td>{$zeit["von"]}</td>
+						<td>{$zeit["bis"]}</td>
+						<td>{$zeit["datum"]}</td>
+					</tr>";
+			}
+			
+			$html = "
+			<span>{$this->ZeitInMinuten}</span>
+			<br>
+			<table class=\"innerTable\">
+				<tr>
+					<th>Von</th>
+					<th>Bis</th>
+					<th>Datum</th>
+				</tr>
+				{$entries}
+			</table>";
+			return $html;
+		}
 	}
 
 	/* returns the price if no discount is applied, else calculates the discount and returns the according table */
@@ -154,6 +191,29 @@ class Zeit extends Posten {
 		Posten::insertPosten("zeit", $data);
 	}
 
+	public static function erweiterteZeiterfassung($data, $id) {
+		$data = json_decode($data, true);
+
+		$db_array = array();
+		for ($i = 0; $i < sizeof($data["times"]); $i += 2) {
+			$from = self::timeString_toInt($data["times"][$i]);
+			$to = self::timeString_toInt($data["times"][$i + 1]);
+			$date = $data["dates"][$i + 2 * $i];
+			array_push($db_array, [$id, $from, $to, "null" => $date]);
+		}
+
+		DBAccess::insertMultiple("INSERT INTO zeiterfassung (id_zeit, from_time, to_time, `date`) VALUES ", $db_array);
+	}
+
+	private static function timeString_toInt($timeString) {
+		$timeParts = explode(":", $timeString);
+		if (sizeof($timeParts) != 2)
+			return -1;
+
+		$timeInInt = (int) $timeParts[0] * 60 + (int) $timeParts[1];
+
+		return $timeInInt;
+	}
 }
 
 ?>

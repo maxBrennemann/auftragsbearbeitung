@@ -143,7 +143,13 @@ class Ajax {
 
 				$_SESSION['overwritePosten'] = false;
 
-				Posten::insertPosten("zeit", $data);
+				$ids = Posten::insertPosten("zeit", $data);
+
+				/* erweiterte Zeiterfassung */
+				$zeiterfassung = $_POST['zeiterfassung'];
+				require_once("classes/project/Zeit.php");
+				Zeit::erweiterteZeiterfassung($zeiterfassung, $ids[1]);
+
 				echo (new Auftrag($_POST['auftrag']))->preisBerechnen();
 			break;
 			case "insertLeistung":

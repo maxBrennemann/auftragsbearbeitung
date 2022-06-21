@@ -85,11 +85,23 @@ class DBAccess {
 		return self::$connection->lastInsertId();
 	}
 
-	public function inertMultiple($query, $data) {
+	public static function insertMultiple($query, $data) {
 		foreach ($data as $rows) {
 			$query_row = "(";
-			foreach ($rows as $item) {
-				$query_row .= "'" . $item . "', ";
+			foreach ($rows as $identifier => $item) {
+				switch ($identifier) {
+					case "int":
+					case "integer":
+						$query_row .= (int) $item . ", ";
+						break;
+					case "null":
+						$query_row .= "NULL, ";
+						break;
+					case "string":
+					default:
+						$query_row .= "'" . $item . "', ";
+						break;
+				}
 			}
 			$query_row = substr($query_row, 0, -2);
 			$query_row .= "),";
