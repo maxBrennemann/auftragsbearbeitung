@@ -424,6 +424,31 @@ iframe {
     max-height:100%;
 }
 
+input[type="search"] {
+    border: none;
+    padding: 10px;
+    margin-right: 10px;
+    box-shadow: 0 2px 5px 1px rgb(64 60 67 / 16%);
+    border-radius: 12px;
+    width: 220px;
+}
+
+.lupeSpan {
+    position: relative;
+    display: inline-block;
+    left: -36px;
+    font-size: 1.5em;
+    top: 4px;
+}
+
+.lupe {
+    display: inline-block;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
 /* style for the hamburger menu from: https://www.mediaevent.de/tutorial/css-transform.html */
 .hamburgerDiv {
     display: inline-block;
@@ -431,6 +456,9 @@ iframe {
     left: 20px;
     top: 40px;
     margin: 0;
+
+    /* was overlapping search bar */
+    max-width: 200px;
 }
 
 label.hamburg { 
