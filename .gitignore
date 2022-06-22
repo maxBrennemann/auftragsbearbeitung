@@ -1,7 +1,17 @@
 settings.php
 .htaccess
+
 files/generated/*
 !files/generated/index.php
+
+!files/generated/sql_backups/
+files/generated/sql_backups/*
+!files/generated/sql_backups/index.php
+
+!files/generated/invoice/
+files/generated/invoice/*
+!files/generated/invoice/index.php
+
 favicon.ico
 .vs/
 .vscode/

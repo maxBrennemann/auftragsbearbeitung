@@ -809,6 +809,15 @@ class Ajax {
 
 				}
 			break;
+			case "getBackup":
+				$result = DBAccess::EXPORT_DATABASE(HOST, USERNAME, PASSWORD, DATABASE);
+				$filePath = "files/generated/sql_backups/";
+				$fileName = date("d-m-Y_h-i-s") . ".sql";
+				file_put_contents(($filePath . $fileName), $result);
+
+				$data = array("fileName" => $fileName, "url" => Link::getResourcesShortLink($fileName, "backup"), "status" => "ok");
+				echo json_encode($data, JSON_FORCE_OBJECT);
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);

@@ -56,40 +56,8 @@ if ($cacheStatus == "on") {
         <?php endforeach; ?>
     </select>
 </section>
-<script>
-    function setCustomColor(value) {
-        let color = value == 0 ? "" : cp.color;
-        let type = document.querySelector("select")
-        type = type.options[type.selectedIndex].value;
-
-        /* ajax parameter */
-        let params = {
-            getReason: "setCustomColor",
-            type: type,
-            color: color
-        };
-
-        var add = new AjaxCall(params, "POST", window.location.href);
-        add.makeAjaxCall(function (response) {
-            if (response == "ok") {
-                location.reload();
-            }
-        });
-    }
-
-    function toggleCache(status) {
-        /* ajax parameter */
-        let params = {
-            getReason: "toggleCache",
-            status: status
-        };
-
-        var toggle = new AjaxCall(params, "POST", window.location.href);
-        toggle.makeAjaxCall(function (response) {
-            console.log(response);
-            if (response == "ok") {
-                infoSaveSuccessfull("success");
-            }
-        });
-    }
-</script>
+<section>
+    <h2>Backups und Datensicherung</h2>
+    <a href="" download="temp_file_name" id="download_db">Datenbank herunterladen</button>
+    <button>Alle Dateien herunterladen</button>
+</section>
