@@ -44,6 +44,16 @@
 		echo $file;
 	}
 
+	if (isset($_GET['backup'])) {
+		$file_info = new finfo(FILEINFO_MIME_TYPE);
+		$mime_type = $file_info->buffer(file_get_contents(Link::getResourcesLink($_GET['backup'], "backup", false)));
+		
+		header("Content-type:$mime_type");
+
+		$file = file_get_contents(Link::getResourcesLink($_GET['backup'], "backup", false));
+		echo $file;
+	}
+
 	if (isset($_GET['pdf_invoice'])) {
 		header("Content-type: application/pdf");
 		$pdf = $_GET['pdf_invoice'];
