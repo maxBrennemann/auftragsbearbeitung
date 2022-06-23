@@ -11,6 +11,7 @@
                 <li>Auftragsnummer steht auf der Rechnung</li>
             </ul>
         </li>
+        <li>SQL File kann nun heruntergeladen werden, dient als vorläufige Backup Lösung</li>
     </ul>
     <h3>1.1.14</h3>
     <ul>

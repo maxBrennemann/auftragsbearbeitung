@@ -32,12 +32,16 @@ class Liste {
     return $this->name;
   }
 
+  /**
+   * https://stackoverflow.com/questions/528445/is-there-any-way-to-return-html-in-a-php-function-without-building-the-return
+   */
   public function toHTML($loaddata = null) {
     /* checks if it has to use the data or if the form can be empty */
     if ($loaddata != null) {
       $data = $this->loadData($loaddata);
     }
 
+    ob_start();
     ?>
       <div class="defCont">
         <form class="listen" id="liste-<?=$this->listid?>">
@@ -108,6 +112,7 @@ class Liste {
         </form>
       </div>
     <?php
+    return ob_get_clean();
   }
 
   /*
@@ -205,7 +210,7 @@ class Liste {
   public static function saveData($data) {
     $arr = json_decode($data, true);
 
-    $liste = new Liste($arr["name"], '');
+    $liste = new Liste($arr["name"], '', 0);
 
     foreach ($arr["listenpunkte"] as $lp) {
       $listenpunkt = new Listenpunkt($lp["text"], $lp["type"], $lp["id"]);

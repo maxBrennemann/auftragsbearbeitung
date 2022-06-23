@@ -531,7 +531,7 @@ class Auftrag implements StatisticsInterface {
 	}
 
 	public function recalculate() {
-		Statistics::auftragEroeffnen();
+		//Statistics::auftragEroeffnen();
 		/*
 		* Theoretisch sollte auftragAbschliessen() aufgerufen werden, jedoch müssen
 		* die Methoden in Statistics noch angepasst werden

@@ -173,9 +173,10 @@ if ($auftragsId == -1): ?>
 
 		<div id="showPostenAdd" style="display: none;">
 			<div class="tabcontainer">
-				<button class="tablinks activetab" onclick="openTab(event, 0)">Zeit</button>
-				<button class="tablinks" onclick="openTab(event, 1)">Leistung</button>
-				<button class="tablinks" onclick="openTab(event, 2)">Produkt</button>
+				<button class="tablinks activetab" onclick="openTab(event, 0)">Zeiterfassung</button>
+				<button class="tablinks" onclick="openTab(event, 1)">Kostenerfassung</button>
+				<!--<button class="tablinks" onclick="openTab(event, 2)">Produkt</button>-->
+				<button class="tablinks" onclick="openTab(event, 3)">Produkte</button>
 			</div>
 
 			<div class="tabcontent" id="tabZeit" style="display: block;">
@@ -230,6 +231,24 @@ if ($auftragsId == -1): ?>
 					<span>Name: <input class="postenInput" id="posten_produkt_name" type="text"></span>
 					<span>Beschreibung: <textarea id="posten_produkt_besch" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span>
 					<button onclick="addProductCompact()">Hinzufügen</button>
+				</div>
+			</div>
+			<div class="tabcontent" id="tabProdukte">
+				<div id="addPostenProdukt">
+					<span>Produkt suchen:</span>
+					<div>
+						<input type="search">
+						<span class="lupeSpan"><span class="lupe">&#9906;</span></span>
+					</div>
+					<span>Menge: <input class="postenInput" id="posten_produkt_menge" type="number"></span>
+					<span>Marke: <input class="postenInput" id="posten_produkt_marke" type="text"></span>
+					<span>EK-Preis: <input class="postenInput" id="posten_produkt_ek" type="text"></span>
+					<span>VK-Preis: <input class="postenInput" id="posten_produkt_vk" type="text"></span>
+					<span>Name: <input class="postenInput" id="posten_produkt_name" type="text"></span>
+					<span>Beschreibung: <textarea id="posten_produkt_besch" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span>
+					<button onclick="addProductCompact()">Hinzufügen</button>
+					<br>
+					<a href="<?=Link::getPageLink("neues-produkt");?>">Neues Produkt hinzufügen</a>
 				</div>
 			</div>
 
