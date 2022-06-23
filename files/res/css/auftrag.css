@@ -344,7 +344,8 @@ aside {
             "preis preis"
             "postenadd postenadd"
             "produkt produkt"
-            "upload verlauf";
+            "upload verlauf"
+            "liste liste";
     }
 }
 
@@ -366,7 +367,8 @@ aside {
             "postenadd"
             "produkt"
             "upload"
-            "verlauf";
+            "verlauf"
+            "liste";
     }
 }
 
@@ -490,4 +492,8 @@ label {
     box-sizing: border-box;
     color: black;
     font-size: 0.8em;
+}
+
+#addPostenProdukt input[type="search"] {
+    display: inline-block !important;
 }
