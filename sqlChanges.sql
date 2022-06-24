@@ -404,3 +404,14 @@ ALTER TABLE `posten` CHANGE `angebotsNr` `angebotsNr` INT(11) NOT NULL DEFAULT '
 ALTER TABLE `posten` CHANGE `rechnungsNr` `rechnungsNr` INT(11) NOT NULL DEFAULT '0';
 ALTER TABLE `posten` CHANGE `istStandard` `istStandard` INT(11) NOT NULL DEFAULT '0';
 ALTER TABLE `history` ADD `alternative_text` TINYTEXT NULL DEFAULT NULL AFTER `member_id`;
+
+/* Änderungen 24.06.2022 */
+ALTER TABLE `leistung`
+MODIFY `Nummer` INT,
+DROP PRIMARY KEY;
+UPDATE `leistung` SET Nummer = Nummer + 1;
+ALTER TABLE `leistung`
+ADD PRIMARY KEY (Nummer);
+INSERT INTO `leistung` (`Nummer`, `Bezeichnung`, `Beschreibung`, `Quelle`, `Aufschlag`) VALUES (1, "Standardleistung", "Standardwert, falls nicht genauer ausgewählt", "keine", 0);
+ALTER TABLE `leistung` CHANGE `Nummer` `Nummer` INT(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `leistung` AUTO_INCREMENT = 17;
