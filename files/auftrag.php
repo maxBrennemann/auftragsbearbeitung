@@ -230,7 +230,7 @@ if ($auftragsId == -1): ?>
 					<span>VK-Preis: <input class="postenInput" id="posten_produkt_vk" type="text"></span>
 					<span>Name: <input class="postenInput" id="posten_produkt_name" type="text"></span>
 					<span>Beschreibung: <textarea id="posten_produkt_besch" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span>
-					<button onclick="addProductCompact()">Hinzufügen</button>
+					<button onclick="addProductCompactOld()">Hinzufügen</button>
 				</div>
 			</div>
 			<div class="tabcontent" id="tabProdukte">
@@ -241,11 +241,6 @@ if ($auftragsId == -1): ?>
 						<span class="lupeSpan"><span class="lupe">&#9906;</span></span>
 					</div>
 					<span>Menge: <input class="postenInput" id="posten_produkt_menge" type="number"></span>
-					<span>Marke: <input class="postenInput" id="posten_produkt_marke" type="text"></span>
-					<span>EK-Preis: <input class="postenInput" id="posten_produkt_ek" type="text"></span>
-					<span>VK-Preis: <input class="postenInput" id="posten_produkt_vk" type="text"></span>
-					<span>Name: <input class="postenInput" id="posten_produkt_name" type="text"></span>
-					<span>Beschreibung: <textarea id="posten_produkt_besch" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span>
 					<button onclick="addProductCompact()">Hinzufügen</button>
 					<br>
 					<a href="<?=Link::getPageLink("neues-produkt");?>">Neues Produkt hinzufügen</a>

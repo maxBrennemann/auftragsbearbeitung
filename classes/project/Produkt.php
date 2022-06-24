@@ -85,7 +85,7 @@ class Produkt {
 		$productId = DBAccess::insertQuery("INSERT INTO produkt (Bezeichnung, Marke, Beschreibung, Einkaufspreis, Preis, einkaufs_id) VALUES ('$title', '$marke', '$desc', '$ekNetto', '$vkNetto', $quelle)");
 		// attData muss noch implementiert werden
 
-		if ($attributeData != null) {
+		//if ($attributeData != null) {
 			$attributeData = json_decode($attData);
 			$query = "INSERT INTO produkt_varianten (product_id, groesse, farb_id, menge, preis_ek, preis) VALUES ";
 
@@ -100,7 +100,7 @@ class Produkt {
 
 			$query = rtrim($query, ',');
 			DBAccess::insertQuery($query);
-		}
+		//}
 	}
 
 	public static function getSearchTable($searchQuery) {

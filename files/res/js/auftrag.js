@@ -239,7 +239,7 @@ function addLeistung() {
     });
 }
 
-function addProductCompact() {
+function addProductCompactOld() {
     let params = {
         getReason: "insertProductCompact",
         menge: document.getElementById("posten_produkt_menge").value,
@@ -260,6 +260,11 @@ function addProductCompact() {
         reloadPostenListe();
         clearInputs({"ids":["posten_produkt_menge", "posten_produkt_marke", "posten_produkt_ek", "posten_produkt_vk", "posten_produkt_name", "posten_produkt_besch"]});
     });
+}
+
+function addProductCompact() {
+    var btns = document.getElementsByClassName("tablinks");
+    btns[1].click();
 }
 
 function reloadPostenListe() {
