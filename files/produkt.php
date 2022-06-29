@@ -1,5 +1,6 @@
 <?php 
 	require_once('classes/project/FormGenerator.php');
+	require_once('classes/project/Produkt.php');
 	require_once('classes/Upload.php');
 
 	$id = isset($_GET["id"]) ? $_GET["id"] : -1;
@@ -18,6 +19,8 @@
 
 	$p = new Produkt($id);
 	$showFiles = Upload::getFilesProduct($id);
+	$products = Produkt::getAllProducts();
+
 ?>
 <?php if ($id != -1): ?>
 	<span>
@@ -53,4 +56,20 @@
 	<span style="display: none" id="product-id"><?=$id?></span>
 <?php else: ?>
 	<div id='tableContainer'><?=$table?></div>
+
+	<div class="product-container">
+		<?php foreach ($products as $p): ?>
+			<div class="product-preview" data-product-id="<?=$p->getProductId()?>">
+				<a href="<?=$p->getProduktLink()?>"><h2><?=$p->getBezeichnung()?></h2></a>
+				<p><?=$p->getBeschreibung()?></p>
+				<p><?=$p->getPreisBrutto()?> €</p>
+				<button>In den Warenkorb</button>
+				<?php foreach ($p->getImages() as $i): ?>
+					<div data-image-id="<?=$i->getImageId()?>">
+						<img src="<?=$i->getImageURL()?>" alt="" width="50px" height="auto">
+					</div>
+				<?php endforeach; ?>
+			</div>
+		<?php endforeach; ?>
+	</div>
 <?php endif; ?>

@@ -1,3 +1,9 @@
+/* further reading:
+https://stackoverflow.com/questions/24923469/modeling-product-variants
+https://dba.stackexchange.com/questions/123467/schema-design-for-products-with-multiple-variants-attributes?newreg=9504cc9890d1461ea745070f28f70543
+https://stackoverflow.com/questions/19144200/designing-a-sql-schema-for-a-combination-of-many-to-many-relationship-variation
+*/
+
 document.getElementById("selectSource").addEventListener("change", function(event) {
     if (event.target.value == "addNew") {
         getHTMLForAddingSource();
