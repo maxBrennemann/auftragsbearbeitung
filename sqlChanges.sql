@@ -415,3 +415,9 @@ ADD PRIMARY KEY (Nummer);
 INSERT INTO `leistung` (`Nummer`, `Bezeichnung`, `Beschreibung`, `Quelle`, `Aufschlag`) VALUES (1, "Standardleistung", "Standardwert, falls nicht genauer ausgewählt", "keine", 0);
 ALTER TABLE `leistung` CHANGE `Nummer` `Nummer` INT(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `leistung` AUTO_INCREMENT = 17;
+
+/* Änderungen 29.06.2022 */
+ALTER TABLE `attribute_to_product`
+  DROP PRIMARY KEY;
+ALTER TABLE `attribute_to_product` ADD `id` INT NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`id`);
+ALTER TABLE `produkt` CHANGE `Bezeichnung` `Bezeichnung` VARCHAR(64) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;

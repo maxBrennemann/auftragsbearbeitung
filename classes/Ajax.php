@@ -576,13 +576,13 @@ class Ajax {
 			case "addAttVal":
 				$attributeId = $_POST['att'];
 				$value = $_POST['value'];
-				DBAccess::insertQuery("INSERT INTO attribute (attribute_group_id, value) VALUES ($attributeId, '$value')");
+				DBAccess::insertQuery("INSERT INTO attribute (attribute_group_id, `value`) VALUES ($attributeId, '$value')");
 				echo $attributeId;
 			break;
 			case "addAtt":
 				$attribute = $_POST['name'];
 				$descr = $_POST['descr'];
-				DBAccess::insertQuery("INSERT INTO attribute_group (attribute_group, descr) VALUES ('$attribute', '$descr')");
+				DBAccess::insertQuery("INSERT INTO attribute_group (attribute_group, `descr`) VALUES ('$attribute', '$descr')");
 				echo $attributeId;
 			break;
 			case "getList":
@@ -721,7 +721,7 @@ class Ajax {
 						return;
 				}
 				
-				echo "success";
+				echo "ok";
 			break;
 			case "frontAddToCart":
 				$productId = (int) $_POST['productId'];
