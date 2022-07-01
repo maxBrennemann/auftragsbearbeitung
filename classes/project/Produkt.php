@@ -101,6 +101,8 @@ class Produkt {
 			$query = rtrim($query, ',');
 			DBAccess::insertQuery($query);
 		//}
+
+		/* change produkt_varianten */
 	}
 
 	public static function getSearchTable($searchQuery) {

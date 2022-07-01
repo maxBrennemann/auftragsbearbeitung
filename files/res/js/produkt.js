@@ -35,10 +35,13 @@ function getEdibleNode(button) {
 
 function sendToServer(type, content) {
     console.log(type + " " + content);
+    if (type == 1 && content.length > 64)
+        return;
 
     var productId = document.getElementById("product-id").innerText;
     var update = new AjaxCall(`getReason=updateProductValues&productId=${productId}&type=${type}&content=${content}`, "POST", window.location.href);
     update.makeAjaxCall(function (response) {
         infoSaveSuccessfull(response);
+        console.log(response);
     });
 }
