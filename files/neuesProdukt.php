@@ -15,7 +15,8 @@ if (isset($_GET['id'])) {
 $quelle = DBAccess::selectQuery("SELECT name, id FROM einkauf");
 $attributeGroups = DBAccess::selectQuery("SELECT * FROM attribute_group");
 
-echo "<a href=\"" . Link::getPageLink("attributes") . "\">Zu den Produktattributetn</a>";
+echo "<a href=\"" . Link::getPageLink("attributes") . "\">Zu den Produktattributetn</a><br>";
+echo "<a href=\"" . Link::getPageLink("produkt") . "\">Zu den Produkten</a>";
 ?>
 <div class="defCont">
 	<p><i class="caution">Aktuell können nur Textilien hinzugefügt werden!</i></p>
