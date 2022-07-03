@@ -1,12 +1,6 @@
 	</main>
 	<?php
-		$listmaker   =		Link::getPageLink("listmaker");
-		$einstellungen =	Link::getPageLink("einstellungen");
-		$neuesAngebot =		Link::getPageLink("angebot");
-		$neuesProdukt =		Link::getPageLink("neues-produkt");
-		$diagramme =		Link::getPageLink("diagramme");
-		$leistungen =		Link::getPageLink("leistungen");
-		$changelog = 		Link::getPageLink("changelog");
+		/* Die Links werden im Header generiert */
 	?>
 	<footer class="moveToSide">
 		<div class="linkBundle">
