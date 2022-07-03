@@ -515,6 +515,10 @@ input#hamburg {
     overflow-x: hidden;
 }
 
+.sidenav ul li {
+    margin-top: 10px;
+}
+
 .sidenav a {
     color: white;
 }

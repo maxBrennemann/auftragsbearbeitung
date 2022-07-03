@@ -1,21 +1,7 @@
 <?php
-	require_once('classes/Link.php');
 	require_once('classes/project/Aufgabenliste.php');
 	require_once('classes/project/Auftrag.php');
 	require_once('classes/project/Rechnung.php');
-	
-	$neuerKunde   =		Link::getPageLink("neuer-kunde");
-	$neuerAuftrag =		Link::getPageLink("neuer-auftrag");
-	$rechnung =			Link::getPageLink("rechnung");
-	$neuesAngebot =		Link::getPageLink("angebot");
-	$neuesProdukt =		Link::getPageLink("neues-produkt");
-	$diagramme =		Link::getPageLink("diagramme");
-	$auftragAnzeigen =	Link::getPageLink("auftrag");
-	$kunde =			Link::getPageLink("kunde");
-	$leistungen =		Link::getPageLink("leistungen");
-	$toDo =				Link::getPageLink("verbesserungen");
-	$offeneRechnungen = Link::getPageLink("offene-rechnungen");
-	$funktionen = 		Link::getPageLink("functionalities");
 
 	$showAktuelleSchritte = Aufgabenliste::aktuelleSchritteAlsTabelleAusgeben();
 	$showOffeneAuftraege = Auftrag::getOffeneAuftraege();
@@ -33,7 +19,7 @@
 	}
 ?>
 <div>
-	<ul>
+	<ul class="mainUl">
 		<li><a href="<?=$neuerKunde?>">+👤 Neuen Kunden erstellen</a></li>
 		<li>
 			<input id="kundeninput" type="text"><a hef="#" data-url="<?=$kunde?>" id="kundenLink"> →</a><br>

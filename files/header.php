@@ -8,6 +8,24 @@
 	$globalJS =  Link::getGlobalJS();
 	$curr_Link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 	$adminLink = Link::getAdminLink();
+
+	$neuerKunde   =		Link::getPageLink("neuer-kunde");
+	$neuerAuftrag =		Link::getPageLink("neuer-auftrag");
+	$rechnung =			Link::getPageLink("rechnung");
+	$neuesAngebot =		Link::getPageLink("angebot");
+	$neuesProdukt =		Link::getPageLink("neues-produkt");
+	$diagramme =		Link::getPageLink("diagramme");
+	$auftragAnzeigen =	Link::getPageLink("auftrag");
+	$kunde =			Link::getPageLink("kunde");
+	$leistungen =		Link::getPageLink("leistungen");
+	$toDo =				Link::getPageLink("verbesserungen");
+	$offeneRechnungen = Link::getPageLink("offene-rechnungen");
+	$funktionen = 		Link::getPageLink("functionalities");
+	$produkt = 			Link::getPageLink("produkt");
+	$einstellungen =	Link::getPageLink("einstellungen");
+	$payments =			Link::getPageLink("payments");
+	$listmaker =		Link::getPageLink("listmaker");
+	$changelog = 		Link::getPageLink("changelog");
 ?>
 <!DOCTYPE html>
 <html>
@@ -68,40 +86,46 @@
 	<div class="sidenav" id="sidenav">
 		<ul>
 			<li>
-				<a href="#">Neuen Kunden erstellen</a>
+				<a href="<?=$neuerKunde?>">Neuen Kunden erstellen</a>
 			</li>
 			<li>
-				<a href="#">Kunden</a>
+				<a href="<?=$kunde?>">Kunden</a>
 			</li>
 			<li>
-				<a href="#">Neuen Auftrag erstellen</a>
+				<a href="<?=$neuerAuftrag?>">Neuen Auftrag erstellen</a>
 			</li>
 			<li>
-				<a href="#">Neues Angebot erstellen</a>
+				<a href="<?=$neuesAngebot?>">Neues Angebot erstellen</a>
 			</li>
 			<li>
-				<a href="#">Neues Produkt erstellen</a>
+				<a href="<?=$neuesProdukt?>">Neues Produkt erstellen</a>
 			</li>
 			<li>
-				<a href="#">Aufträge</a>
+				<a href="<?=$produkt?>">Produktübersicht</a>
 			</li>
 			<li>
-				<a href="#">Diagramme und Auswertungen</a>
+				<a href="<?=$auftragAnzeigen?>">Aufträge</a>
 			</li>
 			<li>
-				<a href="#">Leistungen</a>
+				<a href="<?=$diagramme?>">Diagramme und Auswertungen</a>
 			</li>
 			<li>
-				<a href="#">Listen</a>
+				<a href="<?=$leistungen?>">Leistungen</a>
 			</li>
 			<li>
-				<a href="#">Finanzen</a>
+				<a href="<?=$listmaker?>">Listen</a>
 			</li>
 			<li>
-				<a href="#">Einstellungen</a>
+				<a href="<?=$payments?>">Finanzen</a>
 			</li>
 			<li>
-				<a href="#">Funktionen</a>
+				<a href="<?=$einstellungen?>">Einstellungen</a>
+			</li>
+			<li>
+				<a href="<?=$funktionen?>">Funktionen</a>
+			</li>
+			<li>
+				<a href="<?=$changelog?>">Versionsverlauf</a>
 			</li>
 		</ul>
 	</div>

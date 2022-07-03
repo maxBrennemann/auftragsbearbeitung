@@ -421,3 +421,6 @@ ALTER TABLE `attribute_to_product`
   DROP PRIMARY KEY;
 ALTER TABLE `attribute_to_product` ADD `id` INT NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`id`);
 ALTER TABLE `produkt` CHANGE `Bezeichnung` `Bezeichnung` VARCHAR(64) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
+
+/* Änderungen 03.07.2022 */
+ALTER TABLE `schritte` CHANGE `finishingDate` `finishingDate` DATE NULL DEFAULT '0000-00-00';
