@@ -71,6 +71,11 @@ class Ajax {
 					echo Search::getSearchTable($_POST['query'], $stype, null, $shortSummary);
 				}
 			break;
+			case "globalSearch":
+				require_once('classes/project/Search.php');
+				$query = $_POST['query'];
+				echo Search::globalSearch($query);
+			break;
 			case "saveList":
 				$data = $_POST['data'];
 				require_once('classes/project/Liste.php');
