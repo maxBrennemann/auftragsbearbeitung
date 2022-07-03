@@ -79,6 +79,8 @@ function startFunc() {
 		if (event.target.id == "settings") {
 			/* link is hardcoded, maybe change later */
 			window.location.href = (document.getElementById("home_link").href) + "einstellungen";
+		} else if (event.target.classList.contains("searchItems")) {
+			console.log("ignored search");
 		} else if (document.getElementById("showNotifications") == null) {
 			let div = document.createElement("div");
 			div.id = "showNotifications";
@@ -639,5 +641,24 @@ function toggleNav() {
 function setRead() {
 	var setNotificationsRead = new AjaxCall(`getReason=setNotificationsRead&notificationIds=all`, "POST", window.location.href);
     setNotificationsRead.makeAjaxCall(function (response) {
+    });
+}
+
+function performGlobalSearch(e) {
+	var query = e.target.value;
+	var search = new AjaxCall(`getReason=globalSearch&query=${query}`, "POST", window.location.href);
+    search.makeAjaxCall(function (response) {
+		var div = document.createElement("div");
+		div.innerHTML = response;
+
+		div.style.height = "500px";
+		if (innerHeight < 550) {
+			div.style.height = "200px";
+		}
+		div.style.overflowY = "scroll";
+
+		document.body.appendChild(div);
+		addActionButtonForDiv(div, "remove");
+		centerAbsoluteElement(div);
     });
 }

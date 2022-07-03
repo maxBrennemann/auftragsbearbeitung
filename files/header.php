@@ -110,8 +110,8 @@
 			<h1><?=$pageName?></h1>
 			<aside>
 				<span>
-					<input type="search">
-					<span class="lupeSpan"><span class="lupe">&#9906;</span></span>
+					<input class="searchItems" type="search" onchange="performGlobalSearch(event)">
+					<span class="searchItems lupeSpan"><span class="searchItems lupe">&#9906;</span></span>
 					<span><?=NotificationManager::getNotificationCount();?></span>
 					<span>&#128276;</span>
 					<span id="settings">⚙</span>
