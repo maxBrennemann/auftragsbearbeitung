@@ -576,14 +576,14 @@ class Ajax {
 			case "addAttVal":
 				$attributeId = $_POST['att'];
 				$value = $_POST['value'];
-				DBAccess::insertQuery("INSERT INTO attribute (attribute_group_id, `value`) VALUES ($attributeId, '$value')");
-				echo $attributeId;
+				$result = DBAccess::insertQuery("INSERT INTO attribute (attribute_group_id, `value`) VALUES ($attributeId, '$value')");
+				echo $result;
 			break;
 			case "addAtt":
 				$attribute = $_POST['name'];
 				$descr = $_POST['descr'];
-				DBAccess::insertQuery("INSERT INTO attribute_group (attribute_group, `descr`) VALUES ('$attribute', '$descr')");
-				echo $attributeId;
+				$result = DBAccess::insertQuery("INSERT INTO attribute_group (attribute_group, `descr`) VALUES ('$attribute', '$descr')");
+				echo $result;
 			break;
 			case "getList":
 				require_once('classes/project/Liste.php');
