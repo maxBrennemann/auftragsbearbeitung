@@ -19,7 +19,6 @@ echo "<a href=\"" . Link::getPageLink("attributes") . "\">Zu den Produktattribut
 echo "<a href=\"" . Link::getPageLink("produkt") . "\">Zu den Produkten</a>";
 ?>
 <div class="defCont">
-	<p><i class="caution">Aktuell können nur Textilien hinzugefügt werden!</i></p>
 	<p>
 		<span>Marke<br>
 			<input class="dataInput" type="text" name="marke" required>
@@ -56,11 +55,11 @@ echo "<a href=\"" . Link::getPageLink("produkt") . "\">Zu den Produkten</a>";
 			<textarea class="dataInput" type="text" name="description"></textarea>
 		</span>
 	</p>
-	<p>
+	<!--<p>
 		<span>Attribute hinzufügen<br>
 			<button onclick="getHTMLForAttributes();">Hinzufügen</button>
 		</span>
-	</p>
+	</p>-->
 	<span id="addAttributeTable"></span>
 	<button onclick="saveProduct()">Produkt speichern</button>
 </div>
