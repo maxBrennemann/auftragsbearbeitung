@@ -9,7 +9,7 @@ class AttributeGroup {
 
     function __construct($id) {
         if (is_numeric($id)) {
-            $data = DBAccess::selecQuery("SELECT attribute_group, descr FROM attribute_group WHERE id = $id");
+            $data = DBAccess::selectQuery("SELECT attribute_group, descr FROM attribute_group WHERE id = $id");
             if (!empty($data)) {
                 $data = $data[0];
                 $this->attributeGroup = $data['attribute_group'];

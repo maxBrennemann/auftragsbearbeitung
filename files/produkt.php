@@ -53,6 +53,9 @@
 			display: inline;
 		}
 	</style>
+	<span>Attribute hinzufügen<br>
+			<button onclick="getHTMLForAttributes();">Hinzufügen</button>
+	</span>
 	<span style="display: none" id="product-id"><?=$id?></span>
 <?php else: ?>
 	<div id='tableContainer'><?=$table?></div>
