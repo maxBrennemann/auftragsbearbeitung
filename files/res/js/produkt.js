@@ -141,44 +141,75 @@ function addAttributeToProduct(attributeGroupId, attributeId, bez) {
 function takeConfiguration() {
     removeElement("htmlForAddingAttributes");
 
-    var x = 1,
-        y = Object.keys(attributes).length,
+    var y = 1,
+        x = Object.keys(attributes).length,
         data = [];
     for (const [key, value] of Object.entries(attributes)) {
-        x *= Object.keys(value).length;
+        y *= Object.keys(value).length;
     }
 
-    data = writeToArray(attributes, x);
+    var d = [];
+    for (let i = 0; i < x; i++) {
+        d[i] = "Test";
+    }
+    data = matchAttributeArray(objectToArrays(attributes));
+    data.unshift(d);
 
-    var table = createTable(x, y, data, true);
+    var table = createTable(y, x, data, true);
     document.getElementById("addAttributeTable").appendChild(table);
     tableAnchor = table;
 }
 
-function writeToArray(attributes, permutations) {
-    data = new Array(permutations);
-    var index = 0;
-    var counter = 0;
-    for (const [key, value] of Object.entries(attributes)) {
-        var entries = Object.keys(value).length;
-        for (var i = 0; i < permutations / entries; i++) {
-            for (const [innerKey, innerValue] of Object.entries(value)) {
-                if (index == 0) {
-                    data[counter] = new Array(Object.keys(attributes).length);
-                }
-                data[counter][index] = innerValue;
-                counter++;
-            }
+function objectToArrays(attributeObject) {
+    var attributeArray = [];
+    for (const [key, value] of Object.entries(attributeObject)) {
+        var tempArray =  [];
+        for (const [innerKey, innerValue] of Object.entries(value)) {
+            tempArray.push(innerValue);
         }
-        counter = 0;
-        index++;
+        attributeArray.push(tempArray);
     }
-
-    return data;
+    return attributeArray;
 }
 
-function fillArray() {
-    
+function matchAttributeArray(attributeArray) {
+    /* inner function permute, not needed outside of function scope */
+    function permute(element, partialArray) {
+        /* edge case szenarios */
+        if (partialArray.length == 0) {
+            return [[]];
+        }
+
+        var result =  [];
+        for (let i = 0; i < partialArray[0].length; i++) {
+            var temp = permute(partialArray[0][i], partialArray.slice(1));
+            for (let n = 0; n < temp.length; n++) {
+                temp[n].push(partialArray[0][i]);
+                result.push(temp[n]);
+            }
+        }
+        return result;
+    }
+
+    /* edge case szenarios */
+    if (attributeArray.length == 0) {
+        return [];
+    }
+
+    if (attributeArray.length == 1) {
+        return attributeArray;
+    }
+
+    var result =  [];
+    for (let i = 0; i < attributeArray[0].length; i++) {
+        var temp = permute(attributeArray[0][i], attributeArray.slice(1));
+        for (let n = 0; n < temp.length; n++) {
+            temp[n].push(attributeArray[0][i]);
+            result.push(temp[n]);
+        }
+    }
+
+    return result;
 }
 
 function getAttributeCombinationData() {
