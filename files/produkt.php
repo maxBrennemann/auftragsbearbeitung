@@ -56,6 +56,7 @@
 	<span>Attribute hinzufügen<br>
 			<button onclick="getHTMLForAttributes();">Hinzufügen</button>
 	</span>
+	<div id="addAttributeTable"></div>
 	<span style="display: none" id="product-id"><?=$id?></span>
 <?php else: ?>
 	<div id='tableContainer'><?=$table?></div>
