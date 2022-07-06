@@ -81,28 +81,24 @@ class Produkt {
 		return "";
 	}
 
-	public static function createProduct($title, $marke, $desc, $ekNetto, $vkNetto, $quelle, $attData) {
+	public function getAttributeTable() {
+
+	}
+
+	public static function createProduct($title, $marke, $desc, $ekNetto, $vkNetto, $quelle, $attributeData) {
 		$productId = DBAccess::insertQuery("INSERT INTO produkt (Bezeichnung, Marke, Beschreibung, Einkaufspreis, Preis, einkaufs_id) VALUES ('$title', '$marke', '$desc', '$ekNetto', '$vkNetto', $quelle)");
-		// attData muss noch implementiert werden
+		return $productId;
+	}
 
-		//if ($attributeData != null) {
-			$attributeData = json_decode($attData);
-			$query = "INSERT INTO produkt_varianten (product_id, groesse, farb_id, menge, preis_ek, preis) VALUES ";
-
-			foreach ($attributeData as $rowData => $rowValue) {
-				$groesse = $rowValue->{'groesseId'};
-				$farbe = $rowValue->{'farbeId'};
-				$menge = $rowValue->{'menge'};
-				$ek = str_replace(',', '.', $rowValue->{'ek'});
-				$price =  str_replace(',', '.', $rowValue->{'price'});
-				$query .= "($productId, {$groesse}, {$farbe}, {$menge}, '{$ek}', '{$price}'),";
+	public static function addAttributeVariations($productId, $variations) {
+		$data = array();
+		foreach ($variations as $v) {
+			foreach ($v as $key => $value) {
+				array_push($data, [$productId, $key]);
 			}
+		}
 
-			$query = rtrim($query, ',');
-			DBAccess::insertQuery($query);
-		//}
-
-		/* change produkt_varianten */
+		DBAccess::insertMultiple("INSERT INTO attribute_to_product (product_id, attribute_id) VALUES ", $data);
 	}
 
 	public static function getSearchTable($searchQuery) {

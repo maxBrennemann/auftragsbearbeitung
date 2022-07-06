@@ -424,3 +424,7 @@ ALTER TABLE `produkt` CHANGE `Bezeichnung` `Bezeichnung` VARCHAR(64) CHARACTER S
 
 /* Änderungen 03.07.2022 */
 ALTER TABLE `schritte` CHANGE `finishingDate` `finishingDate` DATE NULL DEFAULT '0000-00-00';
+
+/* Änderungen 05.07.2022 */
+DROP TABLE `produkt_varianten`;
+CREATE TABLE `auftragsmanager`.`produkt_attribute` (`id` INT NOT NULL AUTO_INCREMENT , `id_produkt` INT NOT NULL , `id_attribute_to_product` INT NOT NULL , `amount` INT NULL DEFAULT NULL , `purchasing_price` INT NULL DEFAULT NULL , `price` INT NULL DEFAULT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
