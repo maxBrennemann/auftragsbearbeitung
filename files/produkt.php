@@ -57,6 +57,7 @@
 			<button onclick="getHTMLForAttributes();">Hinzufügen</button>
 	</span>
 	<div id="addAttributeTable"></div>
+	<button onclick="sendAttributeTable();">Abschicken</button>
 	<span style="display: none" id="product-id"><?=$id?></span>
 <?php else: ?>
 	<div id='tableContainer'><?=$table?></div>
