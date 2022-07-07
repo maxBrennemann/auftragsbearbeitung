@@ -427,4 +427,21 @@ ALTER TABLE `schritte` CHANGE `finishingDate` `finishingDate` DATE NULL DEFAULT 
 
 /* Änderungen 05.07.2022 */
 DROP TABLE `produkt_varianten`;
-CREATE TABLE `auftragsmanager`.`produkt_attribute` (`id` INT NOT NULL AUTO_INCREMENT , `id_produkt` INT NOT NULL , `id_attribute_to_product` INT NOT NULL , `amount` INT NULL DEFAULT NULL , `purchasing_price` INT NULL DEFAULT NULL , `price` INT NULL DEFAULT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+CREATE TABLE `produkt_attribute` (`id` INT NOT NULL AUTO_INCREMENT , `id_produkt` INT NOT NULL , `id_attribute_to_product` INT NOT NULL , `amount` INT NULL DEFAULT NULL , `purchasing_price` INT NULL DEFAULT NULL , `price` INT NULL DEFAULT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+ALTER TABLE `produkt_attribute` DROP `id_attribute_to_product`;
+ALTER TABLE `attribute_to_product` CHANGE `id` `id` INT(11) NOT NULL;
+ALTER TABLE `attribute_to_product`
+  DROP PRIMARY KEY,
+   ADD PRIMARY KEY(
+     `attribute_id`,
+     `product_id`
+   );
+ALTER TABLE `attribute_to_product` CHANGE `id` `id_produkt_attribute` INT(11) NOT NULL;
+ALTER TABLE `attribute_to_product`
+  DROP PRIMARY KEY,
+   ADD PRIMARY KEY(
+     `id_produkt_attribute`,
+     `attribute_id`
+   );
+ALTER TABLE `attribute_to_product` DROP `product_id`;
+RENAME TABLE `attribute_to_product` TO `produkt_attribute_to_attribute`;
