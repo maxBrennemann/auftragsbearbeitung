@@ -217,7 +217,7 @@ function matchAttributeArray(attributeArray) {
 }
 
 function sendAttributeTable() {
-    var attribute_string = JSON.stringify(attributes);
+    var attribute_string = JSON.stringify(matchAttributeArray(objectToArrays(attributes, true)));
     
     let params = {
         getReason: "insertAttributeTable",

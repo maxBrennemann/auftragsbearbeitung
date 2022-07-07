@@ -82,7 +82,7 @@ class Produkt {
 	}
 
 	public function getAttributeTable() {
-
+		$query = "SELECT * FROM produkt_attribute, produkt_attribute_to_attribute WHERE produkt_attribute.id_produkt = $this->produktnummer AND produkt_attribute_to_attribute.id_produkt_attribute = produkt_attribute.id";
 	}
 
 	public static function createProduct($title, $marke, $desc, $ekNetto, $vkNetto, $quelle, $attributeData) {
@@ -93,12 +93,13 @@ class Produkt {
 	public static function addAttributeVariations($productId, $variations) {
 		$data = array();
 		foreach ($variations as $v) {
-			foreach ($v as $key => $value) {
-				array_push($data, [$productId, $key]);
+			$id_product_attribute = DBAccess::insertQuery("INSERT INTO produkt_attribute (id_produkt) VALUES ($productId)");
+			foreach ($v as $value) {
+				array_push($data, [$id_product_attribute, $value]);
 			}
 		}
 
-		DBAccess::insertMultiple("INSERT INTO attribute_to_product (product_id, attribute_id) VALUES ", $data);
+		DBAccess::insertMultiple("INSERT INTO produkt_attribute_to_attribute (id_produkt_attribute, attribute_id) VALUES ", $data);
 	}
 
 	public static function getSearchTable($searchQuery) {
