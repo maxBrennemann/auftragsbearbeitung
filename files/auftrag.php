@@ -237,9 +237,10 @@ if ($auftragsId == -1): ?>
 				<div id="addPostenProdukt">
 					<span>Produkt suchen:</span>
 					<div>
-						<input type="search">
-						<span class="lupeSpan"><span class="lupe">&#9906;</span></span>
+						<input type="search" id="productSearch">
+						<span class="lupeSpan searchProductEvent"><span class="lupe searchProductEvent">&#9906;</span></span>
 					</div>
+					<div id="resultContainer"></div>
 					<span>Menge: <input class="postenInput" id="posten_produkt_menge" type="number"></span>
 					<button onclick="addProductCompact()">Hinzufügen</button>
 					<br>

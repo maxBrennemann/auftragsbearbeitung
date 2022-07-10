@@ -81,8 +81,13 @@ class Produkt {
 		return "";
 	}
 
+	/**
+	 * comment to this solution: https://stackoverflow.com/a/38467483, modified
+	 */
 	public function getAttributeTable() {
-		$query = "SELECT * FROM produkt_attribute, produkt_attribute_to_attribute WHERE produkt_attribute.id_produkt = $this->produktnummer AND produkt_attribute_to_attribute.id_produkt_attribute = produkt_attribute.id";
+		$query = "SELECT produkt_attribute.id, GROUP_CONCAT(attribute.value SEPARATOR ', ') AS `Werte` FROM attribute, produkt_attribute JOIN produkt_attribute_to_attribute ON produkt_attribute_to_attribute.id_produkt_attribute = produkt_attribute.id WHERE attribute.id = produkt_attribute_to_attribute.attribute_id GROUP BY produkt_attribute.id;";
+		$data = DBAccess::selectQuery($query);
+		return $data;
 	}
 
 	public static function createProduct($title, $marke, $desc, $ekNetto, $vkNetto, $quelle, $attributeData) {
