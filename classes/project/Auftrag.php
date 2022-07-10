@@ -360,7 +360,7 @@ class Auftrag implements StatisticsInterface {
 	 * an order is ready when its "archived" column is set to -1
 	 */
 	public static function getReadyOrders() {
-		$query = "SELECT Auftragsnummer, IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) as Kunde, Auftragsbezeichnung FROM auftrag, kunde WHERE archiviert = -1 AND kunde.Kundennummer = auftrag.Kundennummer";
+		$query = "SELECT Auftragsnummer, IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) as Kunde, Auftragsbezeichnung FROM auftrag, kunde WHERE archiviert = -1 AND kunde.Kundennummer = auftrag.Kundennummer AND Rechnungsnummer = 0";
 		$data = DBAccess::selectQuery($query);
 
 		$column_names = array(
