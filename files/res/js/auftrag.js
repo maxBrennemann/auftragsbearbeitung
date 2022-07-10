@@ -602,6 +602,7 @@ function showDeleteMessage(row, header, key, type) {
     /* event listeners */
     btn_yes.addEventListener("click", function() {
         delNode(type, key, row);
+        close(div);
     }, false);
 
     btn_no.addEventListener("click", function() {

@@ -90,8 +90,10 @@ class Rechnung {
 		$this->loadPostenFromAuftrag();
 		$offset = 100;
 		$pdf->setXY(25, $offset);
+		$count = 1;
 		if ($this->posten != null) {
 			foreach ($this->posten as $p) {
+				$pdf->Cell(10, $lineheight, $count);
 				$pdf->Cell(20, $lineheight, $p->getQuantity());
 				$pdf->Cell(20, $lineheight, $p->getEinheit());
 
@@ -103,15 +105,15 @@ class Rechnung {
 					$addToOffset = $this->ohneBerechnungBtn($pdf, $height, $lineheight, $p);
 				} else {
 					if ($height >= $lineheight) {
-						$pdf->MultiCell(80, $lineheight, $p->getDescription(), '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
+						$pdf->MultiCell(70, $lineheight, $p->getDescription(), '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
 						$addToOffset = ceil($height);
 					} else {
-						$pdf->Cell(80, $lineheight, $p->getDescription());
+						$pdf->Cell(70, $lineheight, $p->getDescription());
 					}
 				}
 
 				$pdf->Cell(20, $lineheight, $p->bekommeEinzelPreis_formatted());
-				$pdf->Cell(20, $lineheight,  $p->bekommePreis_formatted(), 0, 0, 'R');
+				$pdf->Cell(20, $lineheight, $p->bekommePreis_formatted(), 0, 0, 'R');
 				
 				$offset += $addToOffset;
 				$pdf->ln($addToOffset);
@@ -122,6 +124,8 @@ class Rechnung {
 					$this->addTableHeader($pdf, 25);
 					$pdf->ln(10);
 				}
+
+				$count++;
 			}
 		}
 
@@ -209,9 +213,10 @@ class Rechnung {
 
         $pdf->setXY(25, $y + 45);
 		$pdf->SetFont("helvetica", "B", 12);
+		$pdf->Cell(10, 10, 'Pos', 'B');
         $pdf->Cell(20, 10, 'Menge', 'B');
         $pdf->Cell(20, 10, 'MEH', 'B');
-        $pdf->Cell(80, 10, 'Bezeichnung', 'B');
+        $pdf->Cell(70, 10, 'Bezeichnung', 'B');
         $pdf->Cell(20, 10, 'E-Preis', 'B');
 		$pdf->Cell(20, 10, 'G-Preis', 'B');
 		$pdf->SetFont("helvetica", "", 12);
@@ -288,7 +293,7 @@ class Rechnung {
 	}
 
 	private function ohneBerechnungBtn(&$pdf, &$height, &$lineheight, &$p) {
-		$pdf->MultiCell(60, $lineheight, $p->getDescription(), '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
+		$pdf->MultiCell(50, $lineheight, $p->getDescription(), '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
 		$addToOffset = ceil($height);
 		
 		$pdf->SetFont("helvetica", "", 7);
