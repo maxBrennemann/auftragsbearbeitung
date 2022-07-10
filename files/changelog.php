@@ -14,6 +14,7 @@
         <li>SQL File kann nun heruntergeladen werden, dient als vorläufige Backup Lösung</li>
         <li>Globale Suchfunktion wurde hinzugefügt</li>
         <li>Attributeerstellung wurde vereinfacht</li>
+        <li>Leistung und Produkte werden zusammengeführt - noch in Arbeit<li>
     </ul>
     <h3>1.1.14</h3>
     <ul>
