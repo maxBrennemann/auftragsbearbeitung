@@ -9,6 +9,20 @@ document.addEventListener("click", function(event) {
 	}
 })
 
+var lastActivity = null;
+document.addEventListener("click", registerLastActivity, false);
+
+function registerLastActivity() {
+	if (lastActivity == null) {
+		lastActivity = new Date();
+	} else {
+		var diff = ((new Date()).getTime() - lastActivity.getTime()) / 1000;
+		if (diff > 1440) {
+			location.reload();
+		}
+	}
+}
+
 function toggleHamList() {
 	var hamlist = document.getElementById("hamlist"),
 		hammen = document.getElementById("hammen");
