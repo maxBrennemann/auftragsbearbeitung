@@ -24,6 +24,8 @@ class Rechnung {
 	private $posten;
 	private $texts = array();
 
+	private $date = null;
+
 	function __construct($invoiceId = null) {
 		/* 
 		 * session object currentInvoice_orderId stores the currently used invoice id;
@@ -235,9 +237,17 @@ class Rechnung {
 		}
 		return $invoiceId;
 	}
+	
+	public function setDate($date) {
+		if (DateTime::createFromFormat('d.m.Y', $date) !== false) {
+			$this->date = $date;
+		}
+	}
 
 	private function getDate() {
-		return date("d.m.Y");
+		if ($this->date == null)
+			return date("d.m.Y");
+		return $this->date;
 	}
 	
 	public function loadPostenFromAuftrag() {
@@ -250,6 +260,34 @@ class Rechnung {
 		$empty = new EmptyPosten($id, $text);
 		array_push($this->posten, $empty);
 		$this->texts[$id] = $empty;
+	}
+
+	/* Code ist hier nicht nachvollziehbar.
+	 * ich weiß nicht, wieso es nicht geht. Deswegen wird
+	 * das Leistungsdatum als "addText" hinzugefügt.
+	 * Es ist überschreibbar, wieso auch immer
+	 */
+	public function setDatePerformance($date) {
+		$this->addText(-20, "Leisstungsdatum: " . $date);
+		return null;
+
+		/* performance Date Key is -20 hardcoded */
+		$dateLine = new EmptyPosten(-20, "Leistungsdatum: " . $date);
+
+		$id = -20;
+		$result = 0;
+		foreach ($this->posten as $key => $p) {
+			if (isset($p->id) && $p->id == $id) {
+				$result = $key;
+				break;
+			}
+		}
+
+		if ($result == 0) {
+			array_push($this->posten, $dateLine);
+		} else {
+			$this->posten[$result] = $dateLine;
+		}
 	}
 
 	public function removeText($id) {
