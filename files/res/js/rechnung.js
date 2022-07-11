@@ -20,6 +20,9 @@ function startInvoice() {
         }, false);
         elements[i].textId = i;
     }
+
+    document.getElementById("rechnungsdatum").addEventListener("change", setInvoiceDate, false);
+    document.getElementById("leistungsdatum").addEventListener("change", setPerformanceDate, false);
 }
 
 /**
@@ -114,4 +117,35 @@ function generatePDF() {
     } else {
         /* Abbruch */
     }
+}
+
+function setInvoiceDate() {
+    var date = document.getElementById("rechnungsdatum").value;
+    params = {
+        getReason: "setDateInvoice",
+        date: date
+    };
+    sendDates(params);
+}
+
+function setPerformanceDate() {
+    var date = document.getElementById("leistungsdatum").value;
+    params =  {
+        getReason: "setDatePerformance",
+        date: date
+    };
+    sendDates(params);
+}
+
+function sendDates(params) {
+    var send = new AjaxCall(params, "POST", window.location.href);
+    send.makeAjaxCall(function (response) {
+        if (response == "ok") {
+            infoSaveSuccessfull("success");
+            var iframe = document.getElementById("showOffer");
+            iframe.contentWindow.location.reload();
+        }
+
+        console.log(response);
+    });
 }
