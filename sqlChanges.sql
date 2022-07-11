@@ -445,3 +445,6 @@ ALTER TABLE `attribute_to_product`
    );
 ALTER TABLE `attribute_to_product` DROP `product_id`;
 RENAME TABLE `attribute_to_product` TO `produkt_attribute_to_attribute`;
+
+/* Änderungen 11.07.2022 */
+INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '25', 'head', 'funktionen.js', '0', 'js');
