@@ -71,6 +71,11 @@ class Ajax {
 					echo Search::getSearchTable($_POST['query'], $stype, null, $shortSummary);
 				}
 			break;
+			case "searchProduct":
+				require_once('classes/project/Search.php');
+				$query = $_POST['query'];
+				echo Search::getSearchTable($query, "produkt");
+			break;
 			case "globalSearch":
 				require_once('classes/project/Search.php');
 				$query = $_POST['query'];
@@ -747,6 +752,26 @@ class Ajax {
 				$intent = $_POST['intent'];
 				$data = DBAccess::selectQuery("SELECT info FROM `manual` WHERE `page` = '$pageName' AND intent = '$intent'");
 				echo json_encode($data, JSON_FORCE_OBJECT);;
+			break;
+			case "setDateInvoice":
+				require_once('classes/project/Rechnung.php');
+				$date = $_POST['date'];
+				$date = date('d.m.Y', strtotime($date));
+
+				$rechnung = unserialize($_SESSION['tempInvoice']);
+				$rechnung->setDate($date);
+				$_SESSION['tempInvoice'] = serialize($rechnung);
+				echo "ok";
+			break;
+			case "setDatePerformance":
+				require_once('classes/project/Rechnung.php');
+				$date = $_POST['date'];
+				$date = date('d.m.Y', strtotime($date));
+
+				$rechnung = unserialize($_SESSION['tempInvoice']);
+				$rechnung->setDatePerformance($date);
+				$_SESSION['tempInvoice'] = serialize($rechnung);
+				echo "ok";
 			break;
 			case "invoiceAddText":
 				require_once('classes/project/Rechnung.php');

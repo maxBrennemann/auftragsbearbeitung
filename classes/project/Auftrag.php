@@ -360,7 +360,7 @@ class Auftrag implements StatisticsInterface {
 	 * an order is ready when its "archived" column is set to -1
 	 */
 	public static function getReadyOrders() {
-		$query = "SELECT Auftragsnummer, IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) as Kunde, Auftragsbezeichnung FROM auftrag, kunde WHERE archiviert = -1 AND kunde.Kundennummer = auftrag.Kundennummer";
+		$query = "SELECT Auftragsnummer, IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) as Kunde, Auftragsbezeichnung FROM auftrag, kunde WHERE archiviert = -1 AND kunde.Kundennummer = auftrag.Kundennummer AND Rechnungsnummer = 0";
 		$data = DBAccess::selectQuery($query);
 
 		$column_names = array(
@@ -457,10 +457,10 @@ class Auftrag implements StatisticsInterface {
 	}
 
 	public function getFarben() {
-		$farben = DBAccess::selectQuery("SELECT Farbe, Farbwert, id AS Nummer FROM color, color_auftrag WHERE id_color = id AND id_auftrag = {$this->getAuftragsnummer()}");
+		$farben = DBAccess::selectQuery("SELECT Farbe, Farbwert, id AS Nummer, Hersteller, Bezeichnung FROM color, color_auftrag WHERE id_color = id AND id_auftrag = {$this->getAuftragsnummer()}");
 		$farbTable = "";
 		foreach ($farben as $farbe) {
-			$farbTable .= "<div class=\"singleColorContainer\"><p class=\"singleColorName\">{$farbe['Farbe']}</p><div class=\"farbe\" style=\"background-color: #{$farbe['Farbwert']}\"></div><button onclick=\"removeColor({$farbe['Nummer']});\">×</button></div><br>";
+			$farbTable .= "<div class=\"singleColorContainer\"><p class=\"singleColorName\">{$farbe['Farbe']}, {$farbe['Hersteller']}: {$farbe['Bezeichnung']}</p><div class=\"farbe\" style=\"background-color: #{$farbe['Farbwert']}\"></div><button onclick=\"removeColor({$farbe['Nummer']});\">×</button></div><br>";
 		}
 
 		return $farbTable;

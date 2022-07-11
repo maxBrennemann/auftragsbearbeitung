@@ -32,6 +32,8 @@ function initCode() {
 		t.addEventListener("change", calcTime, false);
 	}
 
+    addSearchEventListeners();
+
     if (document.getElementById("selectVehicle") == null)
         return null;
     
@@ -40,6 +42,24 @@ function initCode() {
             document.getElementById("addVehicle").style.display = "inline-block";
         }
     });
+}
+
+function addSearchEventListeners() {
+    var data = document.getElementsByClassName("searchProductEvent");
+    for (let i = 0; i < data.length; i++) {
+        data[i].addEventListener("click", function(event) {
+            var query = document.getElementById("productSearch").value;
+            var params = {
+                getReason: "searchProduct",
+                query: query
+            };
+            var search = new AjaxCall(params, "POST", window.location.href);
+            search.makeAjaxCall(function (response) {
+                var element = document.getElementById("resultContainer");
+                element.innerHTML = response;
+            });
+        }, false);
+    }
 }
 
 function meh_eventListener() {
@@ -582,6 +602,7 @@ function showDeleteMessage(row, header, key, type) {
     /* event listeners */
     btn_yes.addEventListener("click", function() {
         delNode(type, key, row);
+        close(div);
     }, false);
 
     btn_no.addEventListener("click", function() {
