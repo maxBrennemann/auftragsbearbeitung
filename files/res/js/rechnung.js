@@ -93,7 +93,7 @@ function setInvoiceParameters() {
         auftrag: document.getElementById("orderId").innerHTML,
         address: address,
         invoiceDate: document.getElementById("rechnungsdatum").value,
-        leistungDate: document.getElementById("leistungsdatum")
+        leistungDate: document.getElementById("leistungsdatum").value
     };
 
     var sip = new AjaxCall(params, "POST", window.location.href);
