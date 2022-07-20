@@ -451,3 +451,6 @@ INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `
 
 /* Änderungen 12.07.2022 */
 ALTER TABLE `kunde` CHANGE `Email` `Email` VARCHAR(64) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
+
+/* Änderungen 17.07.2022 */
+ALTER TABLE `wiki_articles` CHANGE `keywords` `keywords` VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL;
