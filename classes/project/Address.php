@@ -80,7 +80,6 @@ class Address {
 
         $query = "INSERT INTO address (id_customer, ort, plz, strasse, hausnr, zusatz, country, art) VALUES ($id_customer, '$ort', $postleitzahl, '$strasse', '$hausnummer', '$zusatz', '$land', $art)";
         DBAccess::insertQuery($query);
-        echo "ok";
 
         return $addressInstance;
     }

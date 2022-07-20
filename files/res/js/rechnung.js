@@ -23,6 +23,7 @@ function startInvoice() {
 
     document.getElementById("rechnungsdatum").addEventListener("change", setInvoiceDate, false);
     document.getElementById("leistungsdatum").addEventListener("change", setPerformanceDate, false);
+    document.getElementById("addressId").addEventListener("change", setInvoiceParameters, false);
 }
 
 /**
@@ -103,7 +104,7 @@ function setInvoiceParameters() {
             var iframe = document.getElementById("showOffer");
             iframe.contentWindow.location.reload();
         }
-    }.bind(this), false);
+    }, false);
 }
 
 function generatePDF() {

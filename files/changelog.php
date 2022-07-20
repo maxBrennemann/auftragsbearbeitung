@@ -1,5 +1,6 @@
 <div class="changelog">
     <h3>1.1.16</h3>
+        <li>Fehlerbehebungen</li>
     <h3>1.1.15</h3>
     <ul>
         <li>Erweiterte Zeiterfassung nun um Datum ergänzt. Felder werden bereinigt, wenn die Zeiten an den Server geschickt werden.</li>
