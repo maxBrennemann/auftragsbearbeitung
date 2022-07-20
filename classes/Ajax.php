@@ -797,17 +797,20 @@ class Ajax {
 				$_SESSION['tempInvoice'] = serialize($rechnung);
 			break;
 			case "setInvoiceParameters":
+				require_once('classes/project/Rechnung.php');
+
 				$orderId = (int) $_POST["auftrag"];
 				$address = (int) $_POST["address"];
 				$invoiceDate = $_POST["invoiceDate"];
-				$leistungsDate = $_POST["leistungsDate"];
+				$leistungsDate = $_POST["leistungDate"];
 
 				$rechnung = unserialize($_SESSION['tempInvoice']);
 				
 				if ($address != 0) {
-					$rechnung->setAddress($address);
+					echo $rechnung->setAddress($address);
 				}
 
+				/*
 				if ($invoiceDate != "") {
 					$rechnung->setInvoiceDate($invoiceDate);
 				}
@@ -815,6 +818,7 @@ class Ajax {
 				if ($leistungsDate != "") {
 					$rechnung->setLeistungsDate($leistungsDate);
 				}
+				*/
 
 				$_SESSION['tempInvoice'] = serialize($rechnung);
 				echo "ok";

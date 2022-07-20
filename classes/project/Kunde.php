@@ -82,8 +82,6 @@ class Kunde implements StatisticsInterface {
 	public function getHausnummer($id = 0) {
 		if ($id != 0) {
 			$this->loadAddresses();
-			if ($this->hausnummer == 0 || $this->hausnummer == "0") 
-				return "";
 			if (array_key_exists($id, $this->addresses))
 				return $this->addresses[$id]->getHausnummer();
 			else
@@ -97,8 +95,6 @@ class Kunde implements StatisticsInterface {
 	public function getPostleitzahl($id = 0) {
 		if ($id != 0) {
 			$this->loadAddresses();
-			if ($this->postleitzahl == 0 || $this->postleitzahl == "0") 
-				return "";
 			if (array_key_exists($id, $this->addresses))
 				return $this->addresses[$id]->getPostleitzahl();
 			else
@@ -208,10 +204,10 @@ class Kunde implements StatisticsInterface {
 		if ($this->addresses != null)
 			return null;
 
-		$addresses = Address::loadAddress($this->kundennummer);
+		$addresses = Address::loadAllAddresses($this->kundennummer);
 		foreach ($addresses as $address) {
-			$address = Address::loadAddress($address["id"]);
-			array_push($this->addresses, $address);
+			$newAddress = Address::loadAddress($address["id"]);
+			$this->addresses[$address["id"]] = $newAddress;
 		}
 	}
 
