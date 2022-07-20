@@ -1,4 +1,5 @@
 <div class="changelog">
+    <h3>1.1.16</h3>
     <h3>1.1.15</h3>
     <ul>
         <li>Erweiterte Zeiterfassung nun um Datum ergänzt. Felder werden bereinigt, wenn die Zeiten an den Server geschickt werden.</li>
@@ -14,7 +15,7 @@
         <li>SQL File kann nun heruntergeladen werden, dient als vorläufige Backup Lösung</li>
         <li>Globale Suchfunktion wurde hinzugefügt</li>
         <li>Attributeerstellung wurde vereinfacht</li>
-        <li>Leistung und Produkte werden zusammengeführt - noch in Arbeit<li>
+        <li>Leistung und Produkte werden zusammengeführt - noch in Arbeit</li>
     </ul>
     <h3>1.1.14</h3>
     <ul>
