@@ -53,12 +53,13 @@ class Leistung extends Posten {
 		return "<div><span>{$this->bezeichnung}</span><br><span>Beschreibung: {$this->beschreibung}</span><br><span>Preis: {$this->preis}</span></div>";
 	}
 
+	/* fills array for Postentable */
 	public function fillToArray($arr) {
 		$arr['Postennummer'] = $this->postennummer;
 		$arr['Preis'] = $this->bekommePreisTabelle();
 		$arr['Bezeichnung'] = "<button class=\"postenButton\">Leistung</button>" . $this->bezeichnung;
 		$arr['Beschreibung'] = $this->beschreibung;
-		$arr['Einkaufspreis'] = number_format($this->einkaufspreis, 2, ',', '') . "€<br>" . $this->getFiles($this->postennummer);
+		$arr['Einkaufspreis'] = number_format($this->einkaufspreis * $this->quantity, 2, ',', '') . "€<br><span style=\"font-size: 0.7em\">Einzelpreis: " . number_format($this->einkaufspreis, 2, ',', '') . "€</span><br>" . $this->getFiles($this->postennummer);
 		$arr['Gesamtpreis'] = $this->bekommePreis_formatted();
 		$arr['Leistungsnummer'] = $this->leistungsnummer;
 		$arr['Anzahl'] = $this->quantity;
