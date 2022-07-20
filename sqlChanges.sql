@@ -448,3 +448,6 @@ RENAME TABLE `attribute_to_product` TO `produkt_attribute_to_attribute`;
 
 /* Änderungen 11.07.2022 */
 INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '25', 'head', 'funktionen.js', '0', 'js');
+
+/* Änderungen 12.07.2022 */
+ALTER TABLE `kunde` CHANGE `Email` `Email` VARCHAR(64) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;

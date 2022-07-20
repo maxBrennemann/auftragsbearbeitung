@@ -48,8 +48,7 @@ class Auftragsverlauf {
      * added member join to get the user id
     */
     public function getHistory() {
-        $query = "
-                SELECT history.id, history.insertstamp, history_type.name, 
+        $query = "SELECT history.id, history.insertstamp, history_type.name, 
                 CONCAT(COALESCE(history.alternative_text, 'Fehler: kein Text gefunden'), COALESCE(CONCAT(fahrzeuge.Kennzeichen, ' ', fahrzeuge.Fahrzeug), ''), COALESCE(notizen.Notiz, '')) AS Beschreibung, members.username, mitarbeiter.vorname, history.state
             FROM history 
             LEFT JOIN history_type ON history_type.type_id = history.type 
@@ -66,7 +65,22 @@ class Auftragsverlauf {
             LEFT JOIN notizen ON notizen.Nummer = history.number
             WHERE history.orderid = {$this->auftragsnummer}
                 ";
-        return DBAccess::selectQuery($query);
+
+        $new_query = "SELECT history.id, history.insertstamp, history_type.name , CONCAT(COALESCE(history.alternative_text, ''), COALESCE(ids.descr, '')) AS Beschreibung, history.state, members.username, mitarbeiter.vorname
+            FROM history
+            LEFT JOIN (
+                (SELECT CONCAT(fahrzeuge.Kennzeichen, ' ', fahrzeuge.Fahrzeug) AS `descr`, fahrzeuge_auftraege.id_fahrzeug AS id, 3 AS `type` FROM fahrzeuge, fahrzeuge_auftraege WHERE fahrzeuge.Nummer = fahrzeuge_auftraege.id_fahrzeug)
+                UNION
+                (SELECT notizen.Notiz AS `descr`, notizen.Nummer AS id, 7 AS `type` FROM notizen)
+            ) ids ON history.number = ids.id 
+            AND history.type = ids.type
+            LEFT JOIN history_type ON history_type.type_id = history.type
+            LEFT JOIN members ON members.id = history.member_id
+            LEFT JOIN members_mitarbeiter ON members.id = members_mitarbeiter.id_member
+            LEFT JOIN mitarbeiter ON members_mitarbeiter.id_mitarbeiter = mitarbeiter.id
+            WHERE history.orderid = {$this->auftragsnummer}";
+
+        return DBAccess::selectQuery($new_query);
     }
 
     public function representHistoryAsHTML() {

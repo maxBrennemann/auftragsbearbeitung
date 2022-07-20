@@ -544,7 +544,8 @@ function addFahrzeug(param) {
         var add = new AjaxCall(`getReason=insertCar&kfz=${kfz}&fahrzeug=${fahrzeug}&kdnr=${kundennummer}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
         add.makeAjaxCall(function (response) {
             /* table is in the div after the addVehicle form */
-            let el = document.getElementById("addVehicle").nextSibling;
+            let el = document.getElementById("addVehicle");
+            el = el.nextElementSibling;
             el.innerHTML = response;
         });
     }
