@@ -270,7 +270,7 @@ if ($auftragsId == -1): ?>
 	<div class="defCont invoice">
 		<u>Rechnungsposten (netto):</u>
 		<br><br>
-		<?=$auftrag->getInvoicePostenTable()?>
+		<div id="invoicePostenTable"><?=$auftrag->getInvoicePostenTable()?></div>
 	</div>
 	<div class="defCont preis">
 		<u>Gesamtpreis (netto):</u>

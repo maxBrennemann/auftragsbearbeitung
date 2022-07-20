@@ -621,7 +621,13 @@ class Ajax {
 			case "reloadPostenListe":
 				$auftragsId = $_POST['id'];
 				$auftrag = new Auftrag($auftragsId);
-				echo $auftrag->getAuftragspostenAsTable();
+
+				$data = [
+					0 => $auftrag->getAuftragspostenAsTable(),
+					1 =>$auftrag->getInvoicePostenTable()
+				];
+				
+				echo json_encode($data);
 			break;
 			case "loadPosten":
 				if (isset($_SESSION['offer_is_order']) && $_SESSION['offer_is_order'] == true) {
