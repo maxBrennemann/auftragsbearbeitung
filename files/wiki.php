@@ -2,6 +2,11 @@
 
 $eintraege = DBAccess::selectQuery("SELECT title, content FROM wiki_articles");
 
+$content_id = 0;
+if (isset($_GET["id"])) {
+    $content_id = $_GET["id"];
+}
+
 ?>
 <div class="defCont overrideColorscheme">
     <span class="search_wrapper">
@@ -12,11 +17,11 @@ $eintraege = DBAccess::selectQuery("SELECT title, content FROM wiki_articles");
 <div class="defCont">
     <span>Titel</span>
     <br>
-    <input type="text">
+    <input type="text" id="newTitle">
     <br>
     <span>Inhalt</span>
     <br>
-    <textarea>
+    <textarea id="newContent">
     </textarea>
     <br>
     <button onclick="addToDB()">Hinzufügen</button>

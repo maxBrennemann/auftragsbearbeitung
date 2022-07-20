@@ -43,6 +43,11 @@ class Search {
 				$query = "SELECT * FROM postenData WHERE Auftragsnummer = ";
 				$columnNames = DBAccess::selectColumnNames($searchType);
 				break;
+			case "wiki":
+				$ids = self::searchInWiki($searchQuery);
+				$query = "SELECT * FROM wiki WHERE id = ";
+				$columnNames = DBAccess::selectColumnNames($searchType);
+				break;
 		}
 		$data = array();
 
@@ -94,6 +99,12 @@ class Search {
 					return $data;*/
 					return "";
 					break;
+				case "wiki":
+					$data = "";
+					$ids = array_reverse($ids);
+					/* wikisuche muss später fertig implementiert werden */
+					return "";
+					break;
 			}
 		}
 
@@ -129,6 +140,7 @@ class Search {
 		$results[1] = self::searchInProducts($searchQuery);
 		$results[2] = self::searchInOrders($searchQuery);
 		$results[3] = self::searchInPosten($searchQuery);
+		$results[4] = self::searchInWiki($searchQuery);
 
 		$html = "";
 		foreach ($results as $key => $r) {
@@ -146,6 +158,9 @@ class Search {
 					break;
 				case 3:
 					$name = "Posten: ";
+					break;
+				case 4:
+					$name = "Wiki: ";
 					break;
 				default:
 					$name = "Es ist ein Fehler aufgetreten";
@@ -179,6 +194,12 @@ class Search {
 						$data = DBAccess::selectQuery($query)[0];
 
 						$link = Link::getPageLink("auftrag") . "id?=" . $data["id"];
+						break;
+					case 4:
+						$query = "SELECT id, COALESCE(title, ' ') AS `message` FROM wiki_articles WHERE id = {$item[0]}";
+						$data = DBAccess::selectQuery($query)[0];
+
+						$link = Link::getPageLink("wiki") . "id?=" . $data["id"];
 						break;
 				}
 
@@ -255,6 +276,25 @@ class Search {
 
 		foreach ($orders as $order) {
 			self::calculateSimilarity($mostSimilar, $searchQuery, $order['Beschreibung'], $order['Postennummer']);
+		}
+
+		self::sortByPercentage($mostSimilar);
+		$mostSimilar = self::filterByPercentage($mostSimilar);
+
+		return array_slice($mostSimilar, 0, 10);
+	}
+
+	/*
+	 * searches in wiki articles
+	 */
+	private static function searchInWiki($searchQuery) {
+		$articles = DBAccess::selectQuery("SELECT id, content, title FROM wiki_articles WHERE title LIKE '%$searchQuery%' OR content LIKE '%$searchQuery%' OR keywords LIKE '%$searchQuery%'");
+		$mostSimilar = array();
+
+		foreach ($articles as $a) {
+			self::calculateSimilarity($mostSimilar, $searchQuery, $a['content'], $a['id']);
+			self::calculateSimilarity($mostSimilar, $searchQuery, $a['title'], $a['id']);
+			self::calculateSimilarity($mostSimilar, $searchQuery, $a['keywords'], $a['id']);
 		}
 
 		self::sortByPercentage($mostSimilar);
