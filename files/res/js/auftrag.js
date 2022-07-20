@@ -290,7 +290,9 @@ function addProductCompact() {
 function reloadPostenListe() {
     var reload = new AjaxCall(`getReason=reloadPostenListe&id=${globalData.auftragsId}`, "POST", window.location.href);
     reload.makeAjaxCall(function (response) {
-        document.getElementById("auftragsPostenTable").innerHTML = response;
+        response = JSON.parse(response);
+        document.getElementById("auftragsPostenTable").innerHTML = response[0];
+        document.getElementById("invoicePostenTable").innerHTML = response[1];
     });
 }
 
