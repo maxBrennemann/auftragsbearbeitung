@@ -25,6 +25,7 @@ class Rechnung {
 	private $texts = array();
 
 	private $date = null;
+	private $performanceDate = "0000-00-00";
 
 	function __construct($invoiceId = null) {
 		/* 
@@ -183,6 +184,10 @@ class Rechnung {
             $fileNL = $filelocation . $filename;
 			echo WEB_URL . "/files/generated/invoice/" . $filename;
 			self::addAllPosten($_SESSION['currentInvoice_orderId']);
+
+			/* store performance and creation dates */
+			$this->storeDates();
+
 			$pdf->Output($fileNL, 'F');
 		} else {
 			$_SESSION['tempInvoice'] = serialize($this);
@@ -268,6 +273,7 @@ class Rechnung {
 	 * Es ist überschreibbar, wieso auch immer
 	 */
 	public function setDatePerformance($date) {
+		$this->performanceDate = $date;
 		$this->addText(-20, "Leisstungsdatum: " . $date);
 		return null;
 
@@ -370,6 +376,18 @@ class Rechnung {
 		$table->addActionButton("update", $identifier = "Auftragsnr", $update = "istErledigt = 0");
 		
 		return $table->getTable();
+	}
+
+	private function storeDates() {
+		$orderId = $this->auftrag->getAuftragsnummer();
+		$creationDate = $this->getDate();
+		$performanceDate = $this->performanceDate;
+		$payment_date = "0000-00-00";
+		$payment_type = -1;
+		$amount = (int) $this->auftrag->preisBerechnen() * 100;
+
+		$query = "INSERT INTO invoice (order_id, creation_date, performance_date, payment_date, payment_type, amount) VALUES ($orderId, '$creationDate', '$performanceDate', '$payment_date', $payment_type, '$amount')";
+		DBAccess::insertQuery($query);
 	}
 
 	/**

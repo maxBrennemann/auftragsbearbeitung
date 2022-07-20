@@ -454,3 +454,7 @@ ALTER TABLE `kunde` CHANGE `Email` `Email` VARCHAR(64) CHARACTER SET latin1 COLL
 
 /* Änderungen 17.07.2022 */
 ALTER TABLE `wiki_articles` CHANGE `keywords` `keywords` VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL;
+
+/* Änderungen 20.07.2022 */
+ALTER TABLE `invoice` ADD `performance_date` DATE NOT NULL AFTER `creation_date`;
+ALTER TABLE `invoice` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);
