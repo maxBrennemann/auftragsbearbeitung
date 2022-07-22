@@ -470,3 +470,4 @@ ALTER TABLE `listendata`
      `lid`,
      `orderid`
    );
+INSERT INTO `info_texte` (`id`, `info`) VALUES (NULL, 'Wähle aus einer der erstellten Listen.\r\nListen können im Auftrag als Stütze für die Herangehensweise verwendet werden.\r\nUm eine neue Liste zu erstellen, gehe auf "Listen" im Endbereich der Seite.');

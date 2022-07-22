@@ -143,7 +143,7 @@ function addTimeInputs(event) {
 }
 
 /* https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_dropdown */
-window.onclick = function(event) {
+window.addEventListener("click", function(event) {
     if (!event.target.matches('.selectReplacer') && !event.target.matches('#meh_dropdown') && !event.target.matches('#meh')) {
         var dropdowns = document.getElementsByClassName("selectReplacer");
         var i;
@@ -154,7 +154,7 @@ window.onclick = function(event) {
             }
         }
     }
-}
+}, false);
 
 /* get selection for adding a posten */
 function getSelections() {
