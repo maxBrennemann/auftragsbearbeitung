@@ -558,6 +558,10 @@ function initializeInfoBtn() {
 				let left = parseInt(btn.offsetWidth + btn.offsetLeft);
 				let top = parseInt(- (0.75 * btn.offsetHeight) + btn.offsetTop);
 
+				if (left + infoBox.getBoundingClientRect().width > document.body.offsetWidth) {
+					left = left - infoBox.getBoundingClientRect().width - btn.offsetWidth - 15;
+				}
+
 				infoBox.style.top = top + "px";
 				infoBox.style.left = left + "px";
 			}, btn, id);
@@ -565,7 +569,7 @@ function initializeInfoBtn() {
 	});
 }
 
-window.onclick = function(event) {
+window.addEventListener("click", function(event) {
 	if (!event.target.matches('infoButton')) {
 		var dropdowns = document.getElementsByClassName("infoBox");
 		for (let i = 0; i < dropdowns.length; i++) {
@@ -575,7 +579,7 @@ window.onclick = function(event) {
 			}
 		}
 	}
-}
+}, false);
 
 /* function shows an info text about the update status of an ajax query */
 function infoSaveSuccessfull(status = "failiure") {

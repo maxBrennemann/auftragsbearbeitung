@@ -364,7 +364,7 @@ if ($auftragsId == -1): ?>
 		<p onclick="showAuftragsverlauf();">Auftragsverlauf anzeigen</p>
 		<?=$auftragsverlauf?>
 		<br>
-		<button onclick="addList();">Liste hinzufügen</button>
+		<button onclick="addList();">Liste hinzufügen</button><button class="infoButton" data-info="2">i</button>
 		<div class="defCont" id="listauswahl" style="display: none;">
 			<?=$showLists?>
 		</div>

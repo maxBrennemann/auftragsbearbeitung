@@ -272,6 +272,9 @@ iframe {
 
 .infoBoxShow {
     display: block;
+    padding: 19px;
+    width: 313px;
+    z-index: 2;
 }
 
 .headerline {
