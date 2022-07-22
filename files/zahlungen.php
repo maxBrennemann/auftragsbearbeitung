@@ -6,7 +6,7 @@ $data = DBAccess::selectQuery("SELECT * FROM payments");
 $forderung = 0;
 $zahlungen = 0;
 
-foreach($data as $d) {
+foreach ($data as $d) {
     if ((float) $d["amount"] > 0) {
         $forderung += abs($d["amount"]);
     } else if ((float) $d["amount"] < 0) {
@@ -42,7 +42,7 @@ if ($data != null) {
     ];
     for ($i = 0; $i < sizeof($data); $i++) {
         $data[$i]["Intervall"] = $typen[(int) $data[$i]["Intervall"]];
-        $data[$i]["Betrag"] = number_format($data[$i]["Betrag"], 2, ',', '') . ' €';
+        $data[$i]["Betrag"] = number_format($data[$i]["Betrag"] / 100, 2, ',', '') . ' €';
         $data[$i]["nächstes Datum"] = date_format(date_create($data[$i]["nächstes Datum"]), "d.m.Y");
     }
 }
@@ -62,11 +62,15 @@ $pattern = [
     ],
     "amount" => [
         "status" => "unset",
-        "value" => 2
+        "value" => 2,
+        "type" => "float",
+        "cast" => ["separator" => ",", "from" => "euro", "result" => "integer"],
     ],
     "date" => [
         "status" => "unset",
-        "value" => 3
+        "value" => 3,
+        "type" => "date",
+        "cast" => ["from" => "d.m.Y", "to" => "Y-m-d"],
     ],
     "recurring" => [
         "status" => "unset",
@@ -79,7 +83,7 @@ $pattern = [
 ];
 
 $t->defineUpdateSchedule(new UpdateSchedule("recurring_payments", $pattern));
-$table =  $t->getTable();
+$table =  $t->getTable(true);
 $_SESSION[$t->getTableKey()] = serialize($t);
 
 /* table for current payments */

@@ -461,3 +461,12 @@ ALTER TABLE `invoice` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT, add PRIM
 
 /* Änderungen 222.07.2022 */
 INSERT INTO `settings` (`id`, `title`, `content`) VALUES (NULL, 'errorReporting', 'on');
+INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '26', 'head', 'tableeditor.js', '0', 'js');
+ALTER TABLE `recurring_payments` CHANGE `amount` `amount` INT NOT NULL;
+ALTER TABLE `listendata` CHANGE `lid` `lid` INT(11) NOT NULL;
+ALTER TABLE `listendata`
+  DROP PRIMARY KEY,
+   ADD PRIMARY KEY(
+     `lid`,
+     `orderid`
+   );

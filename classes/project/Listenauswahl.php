@@ -26,6 +26,10 @@ class Listenauswahl {
         $this->bezeichnung = $bez;
     }
 
+    public function getOrdnung() {
+        return $this->ordnung;
+    }
+
     public function saveList($listenpunktid) {
         DBAccess::insertQuery("INSERT INTO listenauswahl (listenpunktid, `bezeichnung`, ordnung) VALUES ($listenpunktid, '{$this->bezeichnung}', {$this->ordnung})");
     }
