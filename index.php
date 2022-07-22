@@ -1,6 +1,7 @@
 <?php
 
 session_start();
+errorReporting();
 
 require_once('settings.php');
 require_once('classes/DBAccess.php');
@@ -169,6 +170,13 @@ function isLoggedIn() {
 
 function getCurrentVersion() {
 	return "1.1.16";
+}
+
+function errorReporting() {
+	if (defined('ERRORREPORTING') && ERRORREPORTING) {
+		error_reporting(E_ALL);
+		ini_set('display_errors', '1');
+	}
 }
 
 ?>
