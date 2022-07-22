@@ -65,7 +65,7 @@ class Liste {
                  * must be done later by an extra function or by using the la and lp data types
                  */
                 if ($loaddata != null) {
-                  if ($this->getDataByKey($data, $lp->getOrdnung())) {
+                  if ($this->getDataByKey($data, $la->getOrdnung())) {
                     $checked = "checked";
                   } else {
                     $checked = "";
@@ -81,7 +81,7 @@ class Liste {
                  * must be done later by an extra function or by using the la and lp data types
                  */
                 if ($loaddata != null) {
-                  if ($this->getDataByKey($data, $lp->getOrdnung())) {
+                  if ($this->getDataByKey($data, $la->getOrdnung())) {
                     $checked = "checked";
                   } else {
                     $checked = "";
@@ -97,14 +97,14 @@ class Liste {
                  * must be done later by an extra function or by using the la and lp data types
                  */
                 if ($loaddata != null) {
-                  if ($d = $this->getDataByKey($data, $lp->getOrdnung())) {
+                  if ($d = $this->getDataByKey($data, $la->getOrdnung())) {
                     $la->setBezeichnung($d["info"]);
                   }
                 }
               break;
             }
           ?><?=$type3?>
-            <input name="<?=$lp->getOrdnung()?>" value="<?=$la->getBezeichnung()?>" type="<?=$insType?>" <?=$checked?>>
+            <input name="<?=$la->getOrdnung()?>" value="<?=$la->getBezeichnung()?>" type="<?=$insType?>" <?=$checked?>>
             <?=$typenot3?>
           <?php endforeach; ?>
           </div>

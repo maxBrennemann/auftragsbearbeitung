@@ -504,7 +504,7 @@ class Table {
 		return DBAccess::selectColumnNames($type);
 	}
 
-    private static function generateTable($type, $editable, $showData, $sendTo, $amountOfData, $isRowLink, $data = null, $column_names = null, $forceData = false, $retUrl = null, $addClass = "") {
+    /*private static function generateTable($type, $editable, $showData, $sendTo, $amountOfData, $isRowLink, $data = null, $column_names = null, $forceData = false, $retUrl = null, $addClass = "") {
 		if ($column_names == null && strcmp($type, "")) {
 			$column_names = self::getColumnNames($type);
 		}
@@ -538,7 +538,7 @@ class Table {
 			$html_table = $html_table . self::createEmptyRow(sizeof($column_names), $addClass, $type);
 		}
 		return $html_table . "</table>";
-    }
+    }*/
     
     /*
 	* executes the SQL Query composed of the type of the table, the amount of data to be extracted and the where condition as well as the order condition

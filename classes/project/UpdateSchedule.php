@@ -48,20 +48,47 @@ class UpdateSchedule {
                 $val = $data[$value['value']];
             }
 
-            /* checks if value is string or int to insert it correctly */
-            if (is_string($val)) {
+            /* checks if value is string or int to insert it correctly and checks if a cast is necessary */
+            if (isset($value['type']) && isset($value['cast'])) {
+                $val = $this->castValues($value['type'], $value['cast'], $val);
                 $values .= "'$val', ";
-            } else if (is_int($val)) {
-                $values .= $val . ", ";
+            } else {
+                if (is_string($val)) {
+                    $values .= "'$val', ";
+                } else if (is_int($val)) {
+                    $values .= $val . ", ";
+                }
             }
         }
 
-        $this->columns =  substr($columns, 0, -2);
-        $this->values =  substr($values, 0, -2);
+        $this->columns = substr($columns, 0, -2);
+        $this->values = substr($values, 0, -2);
     }
 
     static function handlePostenDeletion() {
         
+    }
+
+    private function castValues($type, $cast, $value) {
+        $result = null;
+        switch ($type) {
+            case "date":
+                $from = isset($cast["from"]) ? $cast["from"] : null;
+                $to = isset($cast["to"]) ? $cast["to"] : null;
+                $result = DateTime::createFromFormat($from, $value)->format($to);
+                break;
+            case "float":
+                $separator = isset($cast["separator"]) ? $cast["separator"] : null;
+                $value = str_replace($separator, ".", $value);
+                $value = (float) $value;
+                $value = 100 * $value;
+                $value = (int) $value;
+                
+                $result = $value;
+                break;
+        }
+
+        return $result;
     }
 
 }
