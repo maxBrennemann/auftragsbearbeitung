@@ -100,10 +100,9 @@ class Rechnung {
 				$pdf->Cell(20, $lineheight, $p->getQuantity());
 				$pdf->Cell(20, $lineheight, $p->getEinheit());
 
-				$height = $pdf->getStringHeight(80, $p->getDescription());
+				$height = $pdf->getStringHeight(70, $p->getDescription());
 				$addToOffset = $lineheight;
 				
-
 				if ($p->getOhneBerechnung() == true) {
 					$addToOffset = $this->ohneBerechnungBtn($pdf, $height, $lineheight, $p);
 				} else {

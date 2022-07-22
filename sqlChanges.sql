@@ -458,3 +458,6 @@ ALTER TABLE `wiki_articles` CHANGE `keywords` `keywords` VARCHAR(128) CHARACTER 
 /* Änderungen 20.07.2022 */
 ALTER TABLE `invoice` ADD `performance_date` DATE NOT NULL AFTER `creation_date`;
 ALTER TABLE `invoice` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);
+
+/* Änderungen 222.07.2022 */
+INSERT INTO `settings` (`id`, `title`, `content`) VALUES (NULL, 'errorReporting', 'on');
