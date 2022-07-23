@@ -191,8 +191,32 @@ class Zeit extends Posten {
 		Posten::insertPosten("zeit", $data);
 	}
 
+	public static function getPostenData($postennummer) {
+		$query = "SELECT Nummer, ZeitInMinuten, Stundenlohn, Beschreibung, ohneBerechnung, discount, isInvoice FROM zeit, posten WHERE zeit.Postennummer = posten.Postennummer AND posten.Postennummer = $postennummer";
+		$result = DBAccess::selectQuery($query)[0];
+		$zeitid = $result["Nummer"];
+		$queryTimeTable = "SELECT from_time, to_time, `date` FROM zeiterfassung WHERE id_zeit =  $zeitid";
+		$resultTimeTable = DBAccess::selectQuery($queryTimeTable);
+
+		$data =  [
+			"time" => $result["ZeitInMinuten"],
+			"wage" => $result["Stundenlohn"],
+			"description" => $result["Beschreibung"],
+			"notcharged" => $result["ohneBerechnung"],
+			"isinvoice" => $result["isInvoice"],
+			"discount" => $result["discount"],
+			"timetable" => $resultTimeTable
+		];
+
+		return $data;
+	}
+
 	public static function erweiterteZeiterfassung($data, $id) {
 		$data = json_decode($data, true);
+
+		if (isset($_SESSION['overwritePosten']) && $_SESSION['overwritePosten'] == true) {
+			DBAccess::deleteQuery("DELETE FROM zeiterfassung WHERE id_zeit = $id");
+		}
 
 		$db_array = array();
 		for ($i = 0; $i < sizeof($data["times"]); $i += 2) {
