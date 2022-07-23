@@ -57,7 +57,7 @@ class Table {
 		$this->type = $type;
 		$this->editable = $editable;
 
-		$this->dataKey = bin2hex(random_bytes(6));
+		$this->dataKey = "key_" . bin2hex(random_bytes(6));
     }
 
 	public function getTableKey() {
