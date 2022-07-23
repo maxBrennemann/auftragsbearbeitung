@@ -170,7 +170,6 @@ if ($auftragsId == -1): ?>
 		<div class="buttonDiv">
 			<button class="addToTable" onclick="showPostenAdd();">+</button>
 		</div>
-
 		<div id="showPostenAdd" style="display: none;">
 			<div class="tabcontainer">
 				<button class="tablinks activetab" onclick="openTab(event, 0)">Zeiterfassung</button>
@@ -178,14 +177,13 @@ if ($auftragsId == -1): ?>
 				<!--<button class="tablinks" onclick="openTab(event, 2)">Produkt</button>-->
 				<button class="tablinks" onclick="openTab(event, 3)">Produkte</button>
 			</div>
-
 			<div class="tabcontent" id="tabZeit" style="display: block;">
 				<div id="addPostenZeit">
 					<div class="container">
 						<span>Zeit in Minuten<br><input class="postenInput" id="time" type="number" min="0"></span><br>
 						<span>Stundenlohn in €<br><input class="postenInput" id="wage" type="number" value="<?=$auftrag->getDefaultWage()?>"></span><br>
 						<span>Beschreibung<br><textarea id="descr" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span><br>
-						<button onclick="addTime()">Hinzufügen</button>
+						<button id="addTimeButton" onclick="addTime()">Hinzufügen</button>
 					</div>
 					<div class="container">
 						<span>Erweiterte Zeiterfassung:</span>
@@ -247,7 +245,6 @@ if ($auftragsId == -1): ?>
 					<a href="<?=Link::getPageLink("neues-produkt");?>">Neues Produkt hinzufügen</a>
 				</div>
 			</div>
-
 			<div class="tabcontentEnd">
 				<div>
 					<span id="showOhneBerechnung">

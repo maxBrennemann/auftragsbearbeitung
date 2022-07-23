@@ -151,7 +151,9 @@ class Ajax {
 				$data['discount'] = (int) $_POST['discount'];
 				$data['addToInvoice'] = (int) $_POST['addToInvoice'];
 
-				$_SESSION['overwritePosten'] = false;
+				if (!isset($_POST['isOverwrite'])) {
+					$_SESSION['overwritePosten'] = false;
+				}
 
 				$ids = Posten::insertPosten("zeit", $data);
 
@@ -162,6 +164,7 @@ class Ajax {
 					Zeit::erweiterteZeiterfassung($zeiterfassung, $ids[1]);
 				}
 
+				$_SESSION['overwritePosten'] = false;
 				echo (new Auftrag($_POST['auftrag']))->preisBerechnen();
 			break;
 			case "insertLeistung":
@@ -713,9 +716,21 @@ class Ajax {
 			break;
 			case "overwritePosten":
 				$_SESSION['overwritePosten'] = true;
-				$_SESSION['overwritePosten_postennummer'] = Table::getIdentifierValue($_POST['table'], $_POST['postenId']);
+				$postennummer = Table::getIdentifierValue($_POST['table'], $_POST['postenId']);
+				$_SESSION['overwritePosten_postennummer'] = $postennummer;
 
-				echo $_SESSION['overwritePosten_postennummer'];
+				$postenType = DBAccess::selectQuery("SELECT Posten FROM posten WHERE Postennummer = $postennummer")[0]["Posten"];
+				$data = null;
+				switch ($postenType) {
+					case "zeit":
+						$data = Zeit::getPostenData($postennummer);
+						break;
+				}
+
+				echo json_encode([
+					"id" => $_SESSION['overwritePosten_postennummer'],
+					"data" => $data
+				]);
 			break;
 			case "updateProductValues":
 				$productId = (int) $_POST['productId'];

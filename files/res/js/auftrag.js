@@ -9,7 +9,7 @@ var globalData = {
     times : {
         0: "00:00",
         1: "00:00"
-    }
+    },
 }
 
 if (document.readyState !== 'loading' ) {
@@ -213,6 +213,10 @@ function addTime() {
         zeiterfassung : JSON.stringify(zeiterfassung)
     };
 
+    if (globalData.isOverwrite) {
+        params.isOverwrite = true;
+    }
+
     /* quick fix, if times didn't get a new value, set to empty */
     if (globalData.times[0] == "00:00") {
         params.zeiterfassung = "empty";
@@ -224,11 +228,8 @@ function addTime() {
         reloadPostenListe();
         infoSaveSuccessfull("success");
         clearInputs({
-            "id": "time",
-            "id": "wage",
-            "id": "descr",
-            "class": "timeInput",
-            "class": "dateInput"
+            "ids": ["time", "wage", "descr"],
+            "classes": ["timeInput", "dateInput"]
         });
     });
 }
@@ -624,58 +625,83 @@ function showDeleteMessage(row, header, key, type) {
 }
 
 function editRow(key, element) {
-    /* create div with addPosten content */
-    var div = document.createElement("div");
-
-    /* copy posten input data into new div */
-    var postenType = element.parentNode.parentNode.dataset.type; //"addPostenLeistung";
-    var movePostenInput = document.getElementById(postenType);
-    var moveOhneBerechnung = document.getElementById("showOhneBerechnung");
-    var moveDiscount = document.getElementById("showDiscount");
-
-    movePostenInput.style.display = "block";
-    moveOhneBerechnung.style.display = "block";
-    moveDiscount.style.display = "block";
-
-    div.appendChild(movePostenInput);
-    div.appendChild(moveOhneBerechnung);
-    div.appendChild(moveDiscount);
-
-    document.body.appendChild(div);
-
-    addActionButtonForDiv(div, "hide");
-    centerAbsoluteElement(div);
+    var postentype = element.parentNode.parentNode.firstChild.firstChild.innerHTML;
 
     /* sends token to server to overwrite a posten */
     var table = document.getElementById("auftragsPostenTable").children[0].dataset.key;
     var postenId = key;
     var update = new AjaxCall(`getReason=overwritePosten&postenId=${postenId}&table=${table}`, "POST", window.location.href);
     update.makeAjaxCall(function (response) {
-        console.log(response);
+        var data = JSON.parse(response);
+        console.log(data);
+
+        setParameters(postentype, data.data);
     });
+}
 
-    /* moves back the addPosten content */
-    let closeButton = div.querySelector(".closeButton");
-    closeButton.addEventListener("click", function(event) {
-        let div = event.target.parentNode;
+function setParameters(postentype, parameters) {
+    var btns = document.getElementsByClassName("tablinks");
+    showPostenAdd();
+    switch (postentype) {
+        case "Zeit":
+            btns[0].click();
+            document.getElementById("time").value = parameters.time;
+            document.getElementById("wage").value = parameters.wage;
+            document.getElementById("descr").value = parameters.description;
+            document.getElementById("ohneBerechnung").checked = parameters.notcharged = "0" ? false : true;
+            document.getElementById("addToInvoice").checked = parameters.isinvoice = "0" ? false : true;
+            document.getElementById("discountInput").value = parameters.discount;
 
-        let addPosten = document.getElementById("addPosten");
-        /* moves postenData to first place */
-        div.children[1].style.display = "none";
-        addPosten.insertBefore(div.children[1], addPosten.children[0]);
-        /* remove last child, its a br tag */
-        addPosten.removeChild(addPosten.children[addPosten.children.length - 1]);
-        /* add OhneBerechnung */
-        div.children[1].style.display = "none";
-        addPosten.appendChild(div.children[1]);
-        /* add br tag */
-        addPosten.appendChild(document.createElement("br"));
-        /* add Discount */
-        div.children[1].style.display = "none";
-        addPosten.appendChild(div.children[1]);
+            for (let i = 0; i < parameters.timetable.length; i++) {
+                if (i > 0) {
+                    var timeInputWrapper = document.getElementsByClassName("timeInputWrapper");
+                    timeInputWrapper = timeInputWrapper[timeInputWrapper.length - 1];
+                    timeInputWrapper.nextElementSibling.click();
+                }
+                var timeInputs = document.getElementsByClassName("timeInput");
+                var dateInputs = document.getElementsByClassName("dateInput");
 
-        /* its always position 1 because the elements are moved away and the list gets shorter */
-    }, false);
+                var time_from = parseInt(parameters.timetable[i].from_time);
+                time_from = Math.floor(time_from / 60).toString().padStart(2, '0') + ":" + (time_from % 60).toString().padStart(2, '0');
+
+                var time_to = parseInt(parameters.timetable[i].to_time);
+                time_to =  Math.floor(time_to / 60).toString().padStart(2, '0') + ":" + (time_to % 60).toString().padStart(2, '0');
+
+                timeInputs[i * 2].value = time_from;
+                timeInputs[i * 2 + 1].value = time_to;
+                dateInputs[i].value = parameters.timetable[i].date;
+            }
+
+            var timeBtn = document.getElementById("addTimeButton");
+            timeBtn.innerHTML = "Speichern";
+            var btn = document.createElement("button");
+            btn.innerHTML = "Abbrechen";
+            btn.id = "cancleBtn";
+            timeBtn.parentNode.insertBefore(btn, timeBtn);
+
+            timeBtn.addEventListener("click", cancle, false);
+
+            btn.addEventListener("click", cancle, false);
+            globalData.isOverwrite = true;
+
+            break;
+        case "Leistung":
+            btns[1].click();
+            break;
+        case "Produkt":
+            btns[2].click();
+            break;
+        case "productcompact":
+            break;
+    }
+}
+
+function cancle() {
+    var timeBtn = document.getElementById("addTimeButton");
+    timeBtn.innerHTML = "Hinzufügen";
+    document.getElementById("cancleBtn").remove();
+    if (globalData.isOverwrite) delete globalData[isOverwrite];
+    timeBtn.removeEventListener("click", cancle, false);
 }
 
 /* function starts deletion of the row */

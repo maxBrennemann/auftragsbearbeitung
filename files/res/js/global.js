@@ -633,6 +633,14 @@ function clearInputs(inputs) {
 					c.value = "";
 				}
 				break;
+			case "classes":
+				for (let i = 0; i < inputs[key].length; i++) {
+					var classes = document.getElementsByClassName(inputs[key][i]);
+					for (c of classes) {
+						c.value = "";
+					}
+				}
+				break;
 		}
 	}
 }
