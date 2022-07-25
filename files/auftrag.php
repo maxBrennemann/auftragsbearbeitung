@@ -217,7 +217,7 @@ if ($auftragsId == -1): ?>
 					<span>Beschreibung:<br><textarea id="bes" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span><br>
 					<span>Einkaufspreis:<br><input class="postenInput" id="ekp" value="0"></span><br>
 					<span>Verkaufspreis:<br><input class="postenInput" id="pre" value="0"></span><br>
-					<button onclick="addLeistung()">Hinzufügen</button>
+					<button onclick="addLeistung()" id="addLeistungButton">Hinzufügen</button>
 				</div>		
 			</div>
 			<div class="tabcontent" id="tabProdukt">

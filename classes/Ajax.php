@@ -180,9 +180,12 @@ class Ajax {
 				$data['anzahl'] = str_replace(",", ".", $_POST['anz']);
 				$data['addToInvoice'] = (int) $_POST['addToInvoice'];
 
-				$_SESSION['overwritePosten'] = false;
+				if (!isset($_POST['isOverwrite'])) {
+					$_SESSION['overwritePosten'] = false;
+				}
 				
 				Posten::insertPosten("leistung", $data);
+				$_SESSION['overwritePosten'] = false;
 				echo (new Auftrag($_POST['auftrag']))->preisBerechnen();
 			break;
 			case "insertProduct":
@@ -724,6 +727,9 @@ class Ajax {
 				switch ($postenType) {
 					case "zeit":
 						$data = Zeit::getPostenData($postennummer);
+						break;
+					case "leistung":
+						$data = Leistung::getPostenData($postennummer);
 						break;
 				}
 

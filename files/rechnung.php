@@ -67,7 +67,7 @@ $rechnungsPDF = "<iframe src=\"" . $link . "\" id=\"showOffer\"></iframe>";
 if ($target == "create"): ?>
 	<div class="defCont">
 		<h3>Auftrag <span id="orderId"><?=$id?></span></h3>
-		<p>Nächste Rechnungsnummer: <?=$naechsteRechnungsnummer?></p>
+		<p>Nächste Rechnungsnummer: <b><?=$naechsteRechnungsnummer?></b><br><i>Diese Nummer ist vorläufig reserviert und kann sich noch ändern.</i></p>
 		<div class="innerDefCont">
 			<form></form>
 			<p>Adresse auswählen</p>

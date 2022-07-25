@@ -687,6 +687,26 @@ function setParameters(postentype, parameters) {
             break;
         case "Leistung":
             btns[1].click();
+            document.getElementById("selectLeistung").value = parameters.type;
+            document.getElementById("meh").value = parameters.unit;
+            document.getElementById("anz").value = parameters.quantity;
+            document.getElementById("bes").value = parameters.description;
+            document.getElementById("ekp").value = parameters.buyingprice;
+            document.getElementById("pre").value = parameters.price;
+            document.getElementById("ohneBerechnung").checked = parameters.notcharged = "0" ? false : true;
+            document.getElementById("addToInvoice").checked = parameters.isinvoice = "0" ? false : true;
+            document.getElementById("discountInput").value = parameters.discount;
+
+            var leistungBtn = document.getElementById("addLeistungButton");
+            leistungBtn.innerHTML = "Speichern";
+            var btn = document.createElement("button");
+            btn.innerHTML = "Abbrechen";
+            btn.id = "cancleBtn2";
+            leistungBtn.parentNode.insertBefore(btn, leistungBtn);
+
+            leistungBtn.addEventListener("click", cancleLeistung, false);
+            btn.addEventListener("click", cancleLeistung, false);
+            globalData.isOverwrite = true;
             break;
         case "Produkt":
             btns[2].click();
@@ -700,8 +720,16 @@ function cancle() {
     var timeBtn = document.getElementById("addTimeButton");
     timeBtn.innerHTML = "Hinzufügen";
     document.getElementById("cancleBtn").remove();
-    if (globalData.isOverwrite) delete globalData[isOverwrite];
+    if (globalData.isOverwrite) delete globalData.isOverwrite;
     timeBtn.removeEventListener("click", cancle, false);
+}
+
+function cancleLeistung() {
+    var timeBtn = document.getElementById("addLeistungButton");
+    timeBtn.innerHTML = "Hinzufügen";
+    document.getElementById("cancleBtn2").remove();
+    if (globalData.isOverwrite) delete globalData.isOverwrite;
+    timeBtn.removeEventListener("click", cancleLeistung, false);
 }
 
 /* function starts deletion of the row */

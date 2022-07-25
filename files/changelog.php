@@ -1,6 +1,8 @@
 <div class="changelog">
     <h3>1.1.16</h3>
         <li>Fehlerbehebungen</li>
+        <li>Einkaufspreis wird in Gesamtpreis und Einzelpreis angezeigt</li>
+        <li>Postenbearbeitung wurde überarbeitet - funktioniert jetzt fehlerfrei</li>
     <h3>1.1.15</h3>
     <ul>
         <li>Erweiterte Zeiterfassung nun um Datum ergänzt. Felder werden bereinigt, wenn die Zeiten an den Server geschickt werden.</li>

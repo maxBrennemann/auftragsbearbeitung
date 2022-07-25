@@ -86,12 +86,18 @@ if (file_exists($cacheFile) && !(count($_GET) || count($_POST)) && $t && $status
 					require_once('classes/project/Rechnung.php');
 					if (isset($_SESSION['tempInvoice'])) {
 						$rechnung = unserialize($_SESSION['tempInvoice']);
-						$rechnung->PDFgenerieren();
-						/*$rechnung->loadPostenFromAuftrag();
-						
-						print "<pre>";
-						var_dump($rechnung->getPosten());
-						print "</pre>";*/
+
+						if (!isset($_SESSION['currentInvoice_orderId'])) {
+							echo "Fehler beim Generieren der Rechnung!";
+							return null;
+						}
+
+						if ($rechnung->getOrderId() == $_SESSION['currentInvoice_orderId']) {
+							$rechnung->PDFgenerieren();
+						} else {
+							$rechnung = new Rechnung();
+							$rechnung->PDFgenerieren();
+						}
 					} else {
 						$rechnung = new Rechnung();
 						$rechnung->PDFgenerieren();
