@@ -242,6 +242,10 @@ class Rechnung {
 		return $invoiceId;
 	}
 	
+	public function getOrderId() {
+		return $this->auftrag->getAuftragsnummer();
+	}
+
 	public function setDate($date) {
 		if (DateTime::createFromFormat('d.m.Y', $date) !== false) {
 			$this->date = $date;

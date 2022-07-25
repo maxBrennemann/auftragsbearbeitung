@@ -177,6 +177,26 @@ class Leistung extends Posten {
 		return $this->isInvoice;
 	}
 
+	public static function getPostenData($postennummer) {
+		$query = "SELECT Nummer, Beschreibung, `Einkaufspreis`, SpeziefischerPreis, meh, qty, Leistungsnummer, ohneBerechnung, discount, isInvoice FROM leistung_posten, posten WHERE leistung_posten.Postennummer = posten.Postennummer AND posten.Postennummer = $postennummer";
+		$result = DBAccess::selectQuery($query)[0];
+
+		$data =  [
+			"buyingprice" => $result["Einkaufspreis"],
+			"price" => $result["SpeziefischerPreis"],
+			"unit" => $result["meh"],
+			"quantity" => $result["qty"],
+			"type" => $result["Leistungsnummer"],
+			"description" => $result["Beschreibung"],
+			"notcharged" => $result["ohneBerechnung"],
+			"isinvoice" => $result["isInvoice"],
+			"discount" => $result["discount"],
+		];
+
+		return $data;
+	}
+
+
 }
 
 ?>
