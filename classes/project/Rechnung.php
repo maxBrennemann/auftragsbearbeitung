@@ -277,7 +277,7 @@ class Rechnung {
 	 */
 	public function setDatePerformance($date) {
 		$this->performanceDate = $date;
-		$this->addText(-20, "Leisstungsdatum: " . $date);
+		$this->addText(-20, "Leistungsdatum: " . $date);
 		return null;
 
 		/* performance Date Key is -20 hardcoded */
