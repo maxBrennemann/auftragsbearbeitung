@@ -16,13 +16,6 @@
                 location.reload();
             });
         });
-
-        let verbesserungsInput = document.getElementById("verbesserung");
-        verbesserungsInput.addEventListener("keyup", function (event) {
-            if (event.key === "Enter") {
-                document.getElementById("submit").click();
-            }
-        });
     </script>
 </div>
 <br>

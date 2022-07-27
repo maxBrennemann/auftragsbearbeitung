@@ -24,8 +24,8 @@ class Rechnung {
 	private $posten;
 	private $texts = array();
 
-	private $date = null;
-	private $performanceDate = "0000-00-00";
+	private $date = "00.00.0000";
+	private $performanceDate = "00.00.0000";
 
 	function __construct($invoiceId = null) {
 		/* 
@@ -175,6 +175,8 @@ class Rechnung {
 		$pdf->SetFont("helvetica", "", 10);
 		$pdf->Cell(160, 10, "Zahlbar sofort ohne weitere Abzüge");
 
+		/* store performance and creation dates */
+		$this->storeDates();
 
 		/* Speicherung (aktuell nur Windows) */
 		if ($store == true) {
@@ -183,10 +185,6 @@ class Rechnung {
             $fileNL = $filelocation . $filename;
 			echo WEB_URL . "/files/generated/invoice/" . $filename;
 			self::addAllPosten($_SESSION['currentInvoice_orderId']);
-
-			/* store performance and creation dates */
-			$this->storeDates();
-
 			$pdf->Output($fileNL, 'F');
 		} else {
 			$_SESSION['tempInvoice'] = serialize($this);
@@ -253,7 +251,7 @@ class Rechnung {
 	}
 
 	private function getDate() {
-		if ($this->date == null)
+		if ($this->date == null || $this->date == "00.00.0000")
 			return date("d.m.Y");
 		return $this->date;
 	}
@@ -383,11 +381,13 @@ class Rechnung {
 
 	private function storeDates() {
 		$orderId = $this->auftrag->getAuftragsnummer();
-		$creationDate = $this->getDate();
-		$performanceDate = $this->performanceDate;
+		$creationDate = DateTime::createFromFormat("d.m.Y", $this->getDate())->format("Y-m-d");
+		$performanceDate = DateTime::createFromFormat("d.m.Y", $this->performanceDate)->format("Y-m-d");
 		$payment_date = "0000-00-00";
 		$payment_type = -1;
 		$amount = (int) $this->auftrag->preisBerechnen() * 100;
+
+		DBAccess::deleteQuery("DELETE FROM invoice WHERE order_id = $orderId");
 
 		$query = "INSERT INTO invoice (order_id, creation_date, performance_date, payment_date, payment_type, amount) VALUES ($orderId, '$creationDate', '$performanceDate', '$payment_date', $payment_type, '$amount')";
 		DBAccess::insertQuery($query);
