@@ -98,7 +98,7 @@ abstract class Posten {
 
 		if (isset($_SESSION['overwritePosten']) && $_SESSION['overwritePosten'] == true) {
 			$postennummer = (int) $_SESSION['overwritePosten_postennummer'];
-			DBAccess::updateQuery("UPDATE posten SET ohneBerechnung = $fre, discount = $dis WHERE Postennummer = $postennummer");
+			DBAccess::updateQuery("UPDATE posten SET ohneBerechnung = $fre, discount = $dis, isInvoice = $inv WHERE Postennummer = $postennummer");
 
 			/* quick fixed for overwrite */
 			DBAccess::deleteQuery("DELETE FROM zeit WHERE Postennummer = $postennummer");

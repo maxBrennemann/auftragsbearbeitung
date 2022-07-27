@@ -648,8 +648,8 @@ function setParameters(postentype, parameters) {
             document.getElementById("time").value = parameters.time;
             document.getElementById("wage").value = parameters.wage;
             document.getElementById("descr").value = parameters.description;
-            document.getElementById("ohneBerechnung").checked = parameters.notcharged = "0" ? false : true;
-            document.getElementById("addToInvoice").checked = parameters.isinvoice = "0" ? false : true;
+            document.getElementById("ohneBerechnung").checked = parameters.notcharged == "0" ? false : true;
+            document.getElementById("addToInvoice").checked = parameters.isinvoice == "0" ? false : true;
             document.getElementById("discountInput").value = parameters.discount;
 
             for (let i = 0; i < parameters.timetable.length; i++) {
@@ -693,8 +693,8 @@ function setParameters(postentype, parameters) {
             document.getElementById("bes").value = parameters.description;
             document.getElementById("ekp").value = parameters.buyingprice;
             document.getElementById("pre").value = parameters.price;
-            document.getElementById("ohneBerechnung").checked = parameters.notcharged = "0" ? false : true;
-            document.getElementById("addToInvoice").checked = parameters.isinvoice = "0" ? false : true;
+            document.getElementById("ohneBerechnung").checked = parameters.notcharged == "0" ? false : true;
+            document.getElementById("addToInvoice").checked = parameters.isinvoice == "0" ? false : true;
             document.getElementById("discountInput").value = parameters.discount;
 
             var leistungBtn = document.getElementById("addLeistungButton");
