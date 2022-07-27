@@ -9,6 +9,10 @@ $rechnungsnummer = 0;
 $rechnungslink;
 $rechnungsadressen;
 
+/* Daten für die Rechnung, falls vorhanden werden sie vom Server geladen */
+$rechnungsdatum = "0000-00-00";
+$leistungsdatum = "0000-00-00";
+
 $target = isset($_GET["target"]) ? $_GET["target"] : -1;
 $id = isset($_GET["id"]) ? $_GET["id"] : -1;
 
@@ -42,6 +46,14 @@ if ($target != -1) {
 			$rechnungsadressen = formatAddresses($rechnungsadressen);
 			$_SESSION['currentInvoice_orderId'] = $id;
 			$naechsteRechnungsnummer = Rechnung::getNextNumber();
+
+			$query = "SELECT creation_date, performance_date FROM invoice WHERE order_id = $id";
+			$data = DBAccess::selectQuery($query);
+			if (!null == $data) {
+				$data = $data[0];
+				$rechnungsdatum = $data["creation_date"];
+				$leistungsdatum = $data["performance_date"];
+			}
 
 			/*if (isset($_SESSION['tempInvoice'])) {
 				$rechnung = unserialize($_SESSION['tempInvoice']);
@@ -82,12 +94,14 @@ if ($target == "create"): ?>
 			<?php endif; ?>
 
 			<p>Rechnungsdatum festlegen</p>
-			<input type="date" id="rechnungsdatum" value="">
+			<input type="date" id="rechnungsdatum" value="<?=$rechnungsdatum?>">
 			<p>Leistungsdatum festlegen</p>
-			<input type="date" id="leistungsdatum" value="">
+			<input type="date" id="leistungsdatum" value="<?=$leistungsdatum?>">
 		</div>
 		<hr>
 		<a href="<?=$home?>" style="display: none" id="goHome"></a>
+		<h4>Vordefinierte Texte</h4>
+		<p>Den Text zum (ab)wählen einmal anklicken. Die Rechnungsvorschau wird dann neu generiert.</p>
 		<div class="standardtexte">
 			<p>Zu den Bilddaten: Bei der Benutzung von Daten aus fremden Quellen richten sich die Nutzungsbedingungen über Verwendung und Weitergabe nach denen der jeweiligen Anbieter.</p>
 			<p>Bitte beachten Sie, dass wir keine Haftung für eventuell entstehende Schäden übernehmen, die auf Witterungseinflüsse zurückzufüren sind (zerrisene Banner, herausgerissen Ösen o. Ä.). Sie als Kunde müssen entscheiden, wie die Banner konfektioniert werden sollen. Für die Art der Konfektionierung übernehmen wir keine Haftung. Wir übernehmen außerdem keine Haftung für unfachgerechte Montage der Banner.</p>
