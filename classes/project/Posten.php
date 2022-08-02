@@ -41,9 +41,9 @@ abstract class Posten {
 		$posten = array();
 		
 		if ($invoice) {
-			$data = DBAccess::selectQuery("SELECT Postennummer, Posten, ohneBerechnung, discount, isInvoice FROM posten WHERE Auftragsnummer = $auftragsnummer AND (rechnungsNr != 0 OR isInvoice = 1)");
+			$data = DBAccess::selectQuery("SELECT Postennummer, Posten, ohneBerechnung, discount, isInvoice FROM posten WHERE Auftragsnummer = $auftragsnummer AND (rechnungsNr != 0 OR isInvoice = 1) ORDER BY position");
 		} else {
-			$data = DBAccess::selectQuery("SELECT Postennummer, Posten, ohneBerechnung, discount, isInvoice FROM posten WHERE Auftragsnummer = $auftragsnummer");
+			$data = DBAccess::selectQuery("SELECT Postennummer, Posten, ohneBerechnung, discount, isInvoice FROM posten WHERE Auftragsnummer = $auftragsnummer ORDER BY position");
 		}
 		foreach ($data as $step) {
 			switch ($step['Posten']) {
@@ -105,7 +105,7 @@ abstract class Posten {
 			DBAccess::deleteQuery("DELETE FROM leistung_posten WHERE Postennummer = $postennummer");
 			DBAccess::deleteQuery("DELETE FROM product_compact WHERE Postennummer = $postennummer");
 		} else {
-			$postennummer = DBAccess::insertQuery("INSERT INTO posten (Auftragsnummer, Posten, ohneBerechnung, discount, isInvoice) VALUES ($auftragsnummer, '$type', $fre, $dis, $inv)");
+			$postennummer = DBAccess::insertQuery("INSERT INTO posten (Auftragsnummer, Posten, ohneBerechnung, discount, isInvoice, position) SELECT $auftragsnummer, '$type', $fre, $dis, $inv, count(*) + 1 FROM posten WHERE Auftragsnummer = $auftragsnummer");
 		}
 
 		switch ($type) {
@@ -155,6 +155,14 @@ abstract class Posten {
 
 	public static function deletePosten($postenId) {
 
+	}
+
+	/* 
+	 * https://stackoverflow.com/a/5207487/7113688
+	 */
+	public static function addPosition($orderId) {
+		$query = "SET @I = 0; UPDATE posten SET `position` = (@I := @I + 1) WHERE Auftragsnummer = $orderId;";
+		DBAccess::updateQuery($query);
 	}
 
 	/* add files to posten for order table */

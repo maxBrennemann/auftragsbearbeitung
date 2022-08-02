@@ -459,7 +459,7 @@ ALTER TABLE `wiki_articles` CHANGE `keywords` `keywords` VARCHAR(128) CHARACTER 
 ALTER TABLE `invoice` ADD `performance_date` DATE NOT NULL AFTER `creation_date`;
 ALTER TABLE `invoice` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);
 
-/* Änderungen 222.07.2022 */
+/* Änderungen 22.07.2022 */
 INSERT INTO `settings` (`id`, `title`, `content`) VALUES (NULL, 'errorReporting', 'on');
 INSERT INTO `attachments` (`id`, `articleId`, `anchor`, `fileSrc`, `fileName`, `fileType`) VALUES (NULL, '26', 'head', 'tableeditor.js', '0', 'js');
 ALTER TABLE `recurring_payments` CHANGE `amount` `amount` INT NOT NULL;
@@ -471,3 +471,6 @@ ALTER TABLE `listendata`
      `orderid`
    );
 INSERT INTO `info_texte` (`id`, `info`) VALUES (NULL, 'Wähle aus einer der erstellten Listen.\r\nListen können im Auftrag als Stütze für die Herangehensweise verwendet werden.\r\nUm eine neue Liste zu erstellen, gehe auf "Listen" im Endbereich der Seite.');
+
+/* Änderungen 01.08.2022 */
+ALTER TABLE `posten` ADD `position` INT NULL AFTER `Auftragsnummer`;

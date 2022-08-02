@@ -173,12 +173,13 @@ class Table {
 		if ($this->data == null)
 			return 0;
 
+		if ($this->keys == null)
+			$this->createKeys();
+
 		switch ($button) {
 			case "update":
 				$this->buttonUpdate = !$this->buttonUpdate;
 				$array = [];
-				if ($this->keys == null)
-					$this->createKeys();
 				
 				for ($i = 0; $i < sizeof($this->data); $i++) {
 					$btn = $this->addUpdateButton($this->keys[$i]);
@@ -192,23 +193,19 @@ class Table {
 
 				/* maybe later callback to Auftrag.php and logic for updates there */
 				$this->update = $update;
-			break;
+				break;
 			case "edit":
 				$this->buttonUpdate = !$this->buttonEdit;
 				$array = [];
-				if ($this->keys == null)
-					$this->createKeys();
 				
 				for ($i = 0; $i < sizeof($this->data); $i++) {
 					$btn = $this->addEditButton($this->keys[$i]);
 					$array[$i] = $btn;
 				}
 				$this->addColumn("Aktionen", $array);
-			break;
+				break;
 			case "delete":
 				$this->buttonUpdate = !$this->buttonDelete;
-				if ($this->keys == null)
-					$this->createKeys();
 				
 				for ($i = 0; $i < sizeof($this->data); $i++) {
 					$btn = $this->addDeleteButton($this->keys[$i]);
@@ -219,18 +216,23 @@ class Table {
 				if ($identifier != null) {
 					$this->setIdentifier($identifier);
 				}
-			break;
+				break;
 			case "check":
-				if ($this->keys == null)
-					$this->createKeys();
-				
 				for ($i = 0; $i < sizeof($this->data); $i++) {
 					$btn = $this->addCheck($this->keys[$i]);
 					$array[$i] = $btn;
 				}
 				$this->addColumn("Aktionen", $array);
 				$this->buttonCheck = true;
-			break;
+				break;
+			case "move":
+				for ($i = 0; $i < sizeof($this->data); $i++) {
+					$btn = $this->addMove($this->keys[$i]);
+					$array[$i] = $btn;
+				}
+				$this->addColumn("Aktionen", $array);
+				
+				break;
 		}
 	}
 
@@ -258,12 +260,16 @@ class Table {
     private function addDeleteButton($key) {
 		$button = "<button class='actionButton' onclick=\"deleteRow('$key', '$this->type', this)\" title='Löschen'>&#x1F5D1;</button>";
 		return $button;
-
 	}
 	
 	private function addCheck($key) {
 		$check = "<input type=\"checkbox\" name=\"checkRow$key\">";
 		return $check;
+	}
+
+	private function addMove($key) {
+		$button = "<button class='actionButton moveRow' onmousedown=\"moveInit(event)\" onmouseup=\"moveRemove(event)\" title='Reihenfolge verändern' data-key=\"$key\">&#x2725;</button>";
+		return $button;
 	}
 
 	/*

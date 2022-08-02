@@ -359,6 +359,10 @@ iframe {
     min-height: 28px;
 }
 
+.moveRow {
+    cursor: move;
+}
+
 .addressForm {
     padding: 10px;
 }
