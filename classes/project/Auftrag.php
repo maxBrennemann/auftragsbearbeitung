@@ -257,6 +257,7 @@ class Auftrag implements StatisticsInterface {
 		$t->setType("posten");
 		$t->addActionButton("delete", $identifier = "Postennummer");
 		$t->addAction(null, "+", "Rechnung/ Zahlung hinzufügen");
+		$t->addActionButton("move");
 		$t->addDataset("type", "type");
 		$_SESSION["posten_table"] = serialize($t);
 		$_SESSION[$t->getTableKey()] = serialize($t);

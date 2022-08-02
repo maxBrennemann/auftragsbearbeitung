@@ -399,6 +399,25 @@ class Ajax {
 					$user = $_SESSION['userid'];
 				NotificationManager::addNotificationCheck($user, 0, "Bearbeitungsschritt erledigt", $postennummer);
 			break;
+			case "sendPostenPositions":
+				$tableKey = $_POST["tablekey"];
+				$order = $_POST["order"];
+				$auftrag = $_POST["auftrag"];
+
+				require_once('classes/project/Table.php');
+				$order = json_decode($order);
+				$counter = 1;
+				foreach ($order as $row) {
+					$id = Table::getIdentifierValue($tableKey, $row);
+
+					/* must be rewritten later due to inefficiency */
+					$query = "UPDATE posten SET position = $counter WHERE Auftragsnummer = $auftrag AND Postennummer = $id";
+					DBAccess::updateQuery($query);
+					$counter++;
+				}
+
+				echo "ok";
+			break;
 			case "deleteNote":
 				$index = $_POST['number'];
 				$order = $_POST['auftrag'];
