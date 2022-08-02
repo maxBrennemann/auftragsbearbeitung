@@ -18,7 +18,7 @@ class RechnungsPDF extends TCPDF {
 
          $this->Cell(0, 0, 'Bankverbindung: Sparkasse Niederbayern Mitte', 0, 1, 'C', 0, '', 0, false, 'T', 'M');	
          
-         $this->Cell(0, 0, 'IBAN: DE36742500000100424589 BIC: BYLADEM1SRG', 0, 1, 'C', 0, '', 0, false, 'T', 'M');
+         $this->Cell(0, 0, 'IBAN: DE36 7425 0000 0100 4245 89 BIC: BYLADEM1SRG', 0, 1, 'C', 0, '', 0, false, 'T', 'M');
          
          $this->Cell(0, 0, 'Es gelten unsere Allgemeinen Geschäftsbedingungen (siehe www.b-schriftung.de) | Die Ware bleibt bis zur vollständigen Bezahlung unser Eigentum.', 0, 1, 'C', 0, '', 0, false, 'T', 'M');
     }
