@@ -3,6 +3,8 @@
         <li>Fehlerbehebungen</li>
         <li>Einkaufspreis wird in Gesamtpreis und Einzelpreis angezeigt</li>
         <li>Postenbearbeitung wurde überarbeitet - funktioniert jetzt fehlerfrei</li>
+        <li>Die Postenreihenfolge kann nun bearbeitet werden</li>
+        <li>Auftragsseite: Daten bei Auftragsstellung und Termin nun in gängigem Format</li>
     <h3>1.1.15</h3>
     <ul>
         <li>Erweiterte Zeiterfassung nun um Datum ergänzt. Felder werden bereinigt, wenn die Zeiten an den Server geschickt werden.</li>

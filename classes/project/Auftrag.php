@@ -171,6 +171,14 @@ class Auftrag implements StatisticsInterface {
 		return $this->Auftragsbezeichnung;
 	}
 
+	public function getDatum() {
+		return DateTime::createFromFormat("Y-m-d", $this->datum)->format("d.m.Y");
+	}
+
+	public function getTermin() {
+		return DateTime::createFromFormat("Y-m-d", $this->termin)->format("d.m.Y");
+	}
+
 	public function preisBerechnen() {
 		$price = 0;
 		foreach ($this->Auftragsposten as $posten) {

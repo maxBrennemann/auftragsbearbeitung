@@ -1094,7 +1094,11 @@ function changeDate(type, e) {
         var send = new AjaxCall(`getReason=updateDate&auftrag=${globalData.auftragsId}&date=${date}&type=${type}`);
         send.makeAjaxCall(function (response, args) {
             infoSaveSuccessfull(response);
-            args[0].parentNode.innerHTML = args[0].value;
+            
+            var date = new Date(args[0].value);
+            var dateString = date.toLocaleDateString();
+            args[0].parentNode.innerHTML = dateString;
+
             args[1].onclick = function() {changeDate(args[2], event)};
             args[1].innerText = "✎";
         }, newInput, target, type);

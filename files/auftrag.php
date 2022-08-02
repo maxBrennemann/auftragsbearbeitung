@@ -115,8 +115,8 @@ if ($auftragsId == -1): ?>
 		<span><button onclick="showPreview();">Auftragsblatt anzeigen</button></span>
 		<span><button onclick="location.href= '<?=Link::getPageLink('rechnung')?>?target=create&id=<?=$auftragsId?>'">Rechnung generieren</button></span>
 		<?php if ($auftrag->getIsArchiviert() == false) :?><span><button onclick="archvieren();">Auftrag archivieren</button></span><br><?php endif; ?>
-		Auftragsstellung: <span id="changeDate-1"><?=$auftrag->datum?></span><button class="actionButton" onclick="changeDate(1, event)">✎</button><br>
-		Termin: <span id="changeDate-2"><?=$auftrag->termin?></span><button class="actionButton" onclick="changeDate(2, event)">✎</button>
+		Auftragsstellung: <span id="changeDate-1"><?=$auftrag->getDatum()?></span><button class="actionButton" onclick="changeDate(1, event)">✎</button><br>
+		Termin: <span id="changeDate-2"><?=$auftrag->getTermin()?></span><button class="actionButton" onclick="changeDate(2, event)">✎</button>
 		<br>
 	</div>
 	<div class="defCont schritte">
