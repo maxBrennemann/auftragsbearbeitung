@@ -4,6 +4,7 @@
 	require_once('classes/project/Angebot.php');
 
 	$showAngebot = 0;
+	$showOffer = false;
 
 	if (isset($_GET['id'])) {
 		$id = (int) $_GET['id'];
@@ -12,6 +13,10 @@
 		} else {
 			$showAngebot = $id;
 		}
+	}
+
+	if (isset($_SESSION["offer_id"])) {
+		$showOffer = true;
 	}
 
 	if (isset($_GET['open'])) :
