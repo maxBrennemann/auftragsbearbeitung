@@ -279,8 +279,16 @@ class Angebot {
                     <span id="showOhneBerechnung" style="display: none;"><input id="ohneBerechnung" type="checkbox">Ohne Berechnung</span>
                 </div>
             </div>
+
+            
+
+
             <div class="defCont" id="allePosten">
                 <p>Alle Posten:</p>
+            </div>
+            <div class="defCont">
+                <p>Text hinzufügen</p>
+                <textarea>Hier Fließtext eingeben</textarea>
             </div>
             <button onclick="showOffer();">Angebot anzeigen</button>
             <button onclick="storeOffer();">Angebot abschließen</button>
