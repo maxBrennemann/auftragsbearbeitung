@@ -36,7 +36,7 @@ function toggleHamList() {
 }
 
 function toggleVisibility(id) {
-	if(document.getElementById(id).style.display == "none") {
+	if (document.getElementById(id).style.display == "none") {
 		document.getElementById(id).style.display = "inline";
 	} else {
 		document.getElementById(id).style.display = "none";
@@ -56,11 +56,9 @@ function goToProfile() {
 }
 
 if (document.readyState !== 'loading' ) {
-    console.log( 'document is already ready, just execute code here' );
     startFunc();
 } else {
     document.addEventListener('DOMContentLoaded', function () {
-        console.log( 'document was not ready, place code here' );
         startFunc();
     });
 }
@@ -88,13 +86,11 @@ function startFunc() {
 		}
 	}
 
-	var bell = document.querySelector("section aside span");
-	bell.addEventListener("click", function(event) {
+	var bellAndSearch = document.getElementsByClassName("settingsContainer")[0];
+	bellAndSearch.addEventListener("click", function(event) {
 		if (event.target.id == "settings") {
 			/* link is hardcoded, maybe change later */
 			window.location.href = (document.getElementById("home_link").href) + "einstellungen";
-		} else if (event.target.classList.contains("searchItems")) {
-			console.log("ignored search");
 		} else if (document.getElementById("showNotifications") == null) {
 			let div = document.createElement("div");
 			div.id = "showNotifications";

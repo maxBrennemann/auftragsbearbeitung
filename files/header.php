@@ -133,13 +133,15 @@
 		<section>
 			<h1><?=$pageName?></h1>
 			<aside>
-				<span>
+				<div class="searchContainer">
 					<input class="searchItems" type="search" onchange="performGlobalSearch(event)">
 					<span class="searchItems lupeSpan"><span class="searchItems lupe">&#9906;</span></span>
+				</div>
+				<div class="settingsContainer">
 					<span><?=NotificationManager::getNotificationCount();?></span>
 					<span>&#128276;</span>
 					<span id="settings">⚙</span>
-				</span>
+				</div>
 			</aside>
 		</section>
 		<div class="hamburgerDiv">
@@ -152,6 +154,6 @@
 			</label>
 		</div>
 		<hr class="headerline">
-		<div style="margin: auto; width: 80%; margin-top: 12px; margin-bottom: 12px;"><a href="<?=Link::getPageLink("")?>" id="home_link">Home</a>/<a href="<?=Link::getPageLink($page)?>"><?=$pageName?></a></div>
+		<div class="showBreadcrumb"><a href="<?=Link::getPageLink("")?>" id="home_link">Home</a>/<a href="<?=Link::getPageLink($page)?>"><?=$pageName?></a></div>
 	</header>
 	<main>
