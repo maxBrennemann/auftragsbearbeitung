@@ -568,10 +568,6 @@ input#hamburg {
     transition: background-color 1000ms linear;
 }
 
-.floatRight {
-    float: right;
-}
-
 .noButton {
     border: none;
     background-color: white;
@@ -580,4 +576,44 @@ input#hamburg {
     font-size: inherit;
     font-weight: inherit;
     cursor: pointer;
+}
+
+/* notificaton css */
+.floatRight {
+    float: right;
+    margin-right: 5px;
+}
+
+/*#showNotifications {
+    overflow-y:scroll;
+    overflow-x:hidden;
+}*/
+
+.taskList {
+    display: block;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    border-bottom: 1px solid grey;
+}
+
+.taskList span {
+    padding-right: 15px;
+    padding-left: 5px;
+    width: 20px;
+    display: inline-block;
+    text-align: center;
+}
+
+.taskList a, .tasList a:visited {
+    color: black;
+    text-decoration: none;
+}
+
+.redButton {
+    font-size: 0.5em;
+    padding: 3px;
+    border-radius: 6px;
+    border: 0px;
+    background-color: #b38484;
+    color: white;
 }
