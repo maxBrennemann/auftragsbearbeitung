@@ -37,7 +37,7 @@ class NotificationManager {
     public static function getTaskCount() {
         if (isset($_SESSION['userid'])) {
             $user = $_SESSION['userid'];
-            $result = DBAccess::selectQuery("SELECT COUNT(id) AS c FROM user_notifications WHERE user_id = $user AND ischecked = 'false' AND (`type` = 1 OR `type`= 0)");
+            $result = DBAccess::selectQuery("SELECT COUNT(id) AS c FROM user_notifications WHERE user_id = $user AND ischecked = 'false' AND (`type` = 1)");
             if ($result == null) {
                 return 0;
             } else {
@@ -49,7 +49,7 @@ class NotificationManager {
     public static function getNewsCount() {
         if (isset($_SESSION['userid'])) {
             $user = $_SESSION['userid'];
-            $result = DBAccess::selectQuery("SELECT COUNT(id) AS c FROM user_notifications WHERE user_id = $user AND ischecked = 'false' AND `type` = 4");
+            $result = DBAccess::selectQuery("SELECT COUNT(id) AS c FROM user_notifications WHERE user_id = $user AND ischecked = 'false' AND (`type` = 4 OR `type` = 0)");
             if ($result == null) {
                 return 0;
             } else {
@@ -65,12 +65,12 @@ class NotificationManager {
 
     private static function getTasks() {
         $user = $_SESSION['userid'];
-        return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = $user AND ischecked = 'false' AND (`type` = 1 OR `type`= 0)");
+        return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = $user AND ischecked = 'false' AND (`type` = 1)");
     }
 
     private static function getNews() {
         $user = $_SESSION['userid'];
-        return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = $user AND ischecked = 'false' AND `type` = 4");
+        return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = $user AND ischecked = 'false' AND (`type` = 4 OR `type`= 0)");
     }
 
     public static function checkActuality() {
@@ -89,17 +89,28 @@ class NotificationManager {
         <h3>Benachrichtigungen und Aufgaben</h3>
         <div style="display: block;">
             <!-- content -->
-            <h4>Meine Aufgaben (<?=$tasksCount?>)<button onclick="updateNotifications()" class="floatRight noButton">⭮</button></h4>
-            <?php foreach ($tasks as $n): ?>
-            <span><strong><?=self::getTypeName((int) $n["type"])?>: </strong><a href="<?=self::getSpecificLink((int) $n['type'], (int) $n['specific_id'])?>"><?=$n["content"]?></a><br></span>
+            <h4>Meine Aufgaben (<?=$tasksCount?>)<button onclick="updateNotifications()" class="floatRight noButton" title="Benachrichtigungen neu laden">⭮</button><button onclick="setRead()" class="floatRight noButton" title="Alles als gelesen markieren">✓</button></h4>
+            <?php
+                $count = 1;
+                foreach ($tasks as $n): ?>
+            <span class="taskList">
+                <span><?=($count++)?></span>
+                <button class="redButton"><?=self::getTypeName((int) $n["type"])?>: </button>
+                <a href="<?=self::getSpecificLink((int) $n['type'], (int) $n['specific_id'])?>"><?=$n["content"]?></a>
+            </span>
             <?php endforeach; ?>
         </div>
         <div style="display: block;">
             <!-- content -->
-            <h4>Benachrichtigungen und Neuigkeiten (<?=$newsCount?>)</h4>
-            <h6><a href="#" onclick="setRead()">Alles als gelesen markieren</a></h6>
-            <?php foreach ($news as $n): ?>
-            <span><strong><?=self::getTypeName((int) $n["type"])?>: </strong><a href="<?=self::getSpecificLink((int) $n['type'], (int) $n['specific_id'])?>"><?=$n["content"]?></a><br></span>
+            <h4>Benachrichtigungen und Neuigkeiten (<?=$newsCount?>)<button onclick="updateNotifications()" class="floatRight noButton" title="Benachrichtigungen neu laden">⭮</button><button onclick="setRead()" class="floatRight noButton" title="Alles als gelesen markieren">✓</button></h4>
+            <?php
+                $count = 1;
+                foreach ($news as $n): ?>
+            <span class="taskList">
+                <span><?=($count++)?></span>
+                <button class="redButton"><?=self::getTypeName((int) $n["type"])?>: </button>
+                <a href="<?=self::getSpecificLink((int) $n['type'], (int) $n['specific_id'])?>"><?=$n["content"]?></a>
+            </span>
             <?php endforeach; ?>
         </div>
         <p><a href="#">Ältere Benachrichtigungen anzeigen</a></p>
