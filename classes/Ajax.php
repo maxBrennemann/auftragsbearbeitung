@@ -111,6 +111,11 @@ class Ajax {
 				require_once('classes/project/NotificationManager.php');
 				echo NotificationManager::htmlNotification();
 			break;
+			case "updateNotification":
+				require_once('classes/project/NotificationManager.php');
+				NotificationManager::checkActuality();
+				echo NotificationManager::htmlNotification();
+			break;
 			case "createAuftrag":
 				$bez = $_POST['bez'];
 				$bes = $_POST['bes'];
@@ -260,6 +265,9 @@ class Ajax {
 			case "test":
 				var_dump(unserialize($_SESSION['data']));
 			break;
+			case "testDummy":
+				echo "this is a test string";
+			break;
 			case "insertStep":
 				$data = array();
 				$data['Bezeichnung'] = $_POST['bez'];
@@ -277,6 +285,13 @@ class Ajax {
 
 				$assignedTo = strval($_POST['assignedTo']);
 				if (strcmp($assignedTo, "none") != 0) {
+					$query = "SELECT id_member FrOM members_mitarbeiter WHERE id_mitarbeiter = $assignedTo";
+					$data = DBAccess::selectQuery($query);
+					if ($data == null)
+						return;
+					else 
+						$assignedTo = $data[0]["id_member"];
+
 					require_once("classes/project/NotificationManager.php");
 					NotificationManager::addNotification($userId = $assignedTo, $type = 1, $content = $_POST['bez'], $specificId = $postenNummer);
 				}

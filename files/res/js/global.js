@@ -104,7 +104,7 @@ function startFunc() {
 			getHTMLContent.makeAjaxCall(function (response, args) {
 				var responseDiv = document.createElement("div");
 				responseDiv.innerHTML = response;
-				div.appendChild(responseDiv);
+				args[0].appendChild(responseDiv);
 				addActionButtonForDiv(args[0], "hide");
 				centerAbsoluteElement(args[0]);
 			}, div);
@@ -668,6 +668,17 @@ function setRead() {
 	var setNotificationsRead = new AjaxCall(`getReason=setNotificationsRead&notificationIds=all`, "POST", window.location.href);
     setNotificationsRead.makeAjaxCall(function (response) {
     });
+}
+
+async function updateNotifications() {
+	var containerDiv = document.getElementById("showNotifications");
+	var replacementDiv = document.createElement("div");
+	replacementDiv.innerHTML = await makeAsyncCall("POST", `getReason=testDummy`, window.location.href).then(result => {
+		return result;
+	});
+
+	var toReplace = containerDiv.children[1];
+	containerDiv.replaceChild(replacementDiv, toReplace); 
 }
 
 function performGlobalSearch(e) {
