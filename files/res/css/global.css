@@ -30,18 +30,23 @@ header section {
 }
 
 header aside {
-    width: 80%;
     position: absolute;
     margin-right: auto;
     top: 0;
     right: 10%;
 }
 
-header aside > span {
-    top: 0;
-    right: 0;
+header aside div {
+    display: inline-block;
+}
+
+.lupeSpan {
     position: absolute;
-    cursor: pointer;
+    left: 80px;
+}
+
+.moveToSide {
+    padding: inherit;
 }
 
 header h1 {
@@ -50,13 +55,6 @@ header h1 {
     width: 80%;
     font-family: Raleway;
     letter-spacing: 1px;
-}
-
-header div {
-    margin: auto;
-    width: 80%;
-    margin-top: 12px;
-    margin-bottom: 12px;
 }
 
 main {
@@ -185,6 +183,13 @@ tr:last-child td:first-child {
 
 tr:last-child td:last-child {
     border-radius: 0 0 6px 0;
+}
+
+.showBreadcrumb {
+    margin: auto; 
+    width: 80%; 
+    margin-top: 12px; 
+    margin-bottom: 12px;
 }
 
 .linkTable {
@@ -543,21 +548,86 @@ input#hamburg {
     }
 }
 
-@media (max-width: 500px) {
-    footer {
-        width: 100vw;
-        position: relative;
-        margin-left: -50vw;
-        left: 50%;
+@media (max-width: 850px) {
+    tbody {
+        max-width: 78vw;
     }
 
+    aside input[type="search"] {
+        width: 100px;
+    }
+}
+
+@media (max-width: 500px) {
     main {
         width: 95vw;
         max-width: unset;
+        margin-top: 100px;
     }
 
-    tbody {
-        max-width: 90vw;
+    table {
+        max-width: 95vw;
+        overflow-x: scroll;
+    }
+
+    header section {
+        display: grid;
+        padding-left: 35px;
+        grid-template-areas:
+            "headline aside";
+    }
+
+    header section h1 {
+        grid-area: headline;
+    }
+
+    section aside {
+        display: grid;
+        grid-template-areas:
+            "settings"
+            "searchItems";
+        grid-area: aside;
+    }
+
+    .settingsContainer {
+        grid-area: settings;
+        margin-top: 10px;
+        margin-bottom: 2px;
+    }
+
+    .searchContainer {
+        width: auto;
+        position: relative;
+        grid-area: searchItems;
+
+        margin-top: 2px;
+        margin-bottom: 2px;
+    }
+
+    header div {
+        width: auto;
+    }
+
+    .lupeSpan {
+        position: absolute;
+        left: 80px;
+    }
+
+    .moveToSide {
+        padding: inherit;
+    }
+
+    .headerline {
+        width: 90%;
+    }
+
+    .showBreadcrumb {
+        width: 90%;
+    }
+
+    header .hamburgerDiv {
+        left: 10px;
+        top: 25px;
     }
 }
 
