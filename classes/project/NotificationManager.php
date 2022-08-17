@@ -73,6 +73,12 @@ class NotificationManager {
         return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = $user AND ischecked = 'false' AND `type` = 4");
     }
 
+    public static function checkActuality() {
+        $user = $_SESSION['userid'];
+        $query = "UPDATE user_notifications JOIN schritte ON user_notifications.specific_id = schritte.Schrittnummer SET ischecked = 1 WHERE user_notifications.`type` = 1 AND schritte.istErledigt = 0 AND user_id = $user;";
+        DBAccess::updateQuery($query);
+    }
+
     public static function htmlNotification() {
         $tasks = self::getTasks();
         $news = self::getNews();
@@ -83,7 +89,7 @@ class NotificationManager {
         <h3>Benachrichtigungen und Aufgaben</h3>
         <div style="display: block;">
             <!-- content -->
-            <h4>Meine Aufgaben (<?=$tasksCount?>)</h4>
+            <h4>Meine Aufgaben (<?=$tasksCount?>)<button onclick="updateNotifications()" class="floatRight noButton">⭮</button></h4>
             <?php foreach ($tasks as $n): ?>
             <span><strong><?=self::getTypeName((int) $n["type"])?>: </strong><a href="<?=self::getSpecificLink((int) $n['type'], (int) $n['specific_id'])?>"><?=$n["content"]?></a><br></span>
             <?php endforeach; ?>

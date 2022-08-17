@@ -567,3 +567,17 @@ input#hamburg {
     -ms-transition: background-color 1000ms linear;
     transition: background-color 1000ms linear;
 }
+
+.floatRight {
+    float: right;
+}
+
+.noButton {
+    border: none;
+    background-color: white;
+    padding: 0;
+    margin: 0;
+    font-size: inherit;
+    font-weight: inherit;
+    cursor: pointer;
+}
