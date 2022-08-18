@@ -182,7 +182,7 @@ class NotificationManager {
     }
 
     private static function getAllUsers() {
-        $query = "SELECT id_mitarbeiter as id FROM members_mitarbeiter";
+        $query = "SELECT id FROM members";
         $data = DBAccess::selectQuery($query);
         return $data;
     }
