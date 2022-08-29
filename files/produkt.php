@@ -1,5 +1,4 @@
 <?php 
-	require_once('classes/project/FormGenerator.php');
 	require_once('classes/project/Produkt.php');
 	require_once('classes/Upload.php');
 

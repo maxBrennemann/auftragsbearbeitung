@@ -1,6 +1,19 @@
+
 main {
     display: grid;
-    grid-template-areas: "auftrag auftrag kunde" "schritte schritte schritteAdd" "posten posten posten" "invoice invoice invoice" "fahrzeuge farben preis" "postenadd postenadd produkt" "upload upload verlauf" "liste liste liste";
+    grid-template-areas: "auftrag auftrag kunde" "schritte schritte schritteAdd" "posten posten posten" "invoice invoice invoice" "fahrzeuge farben preis" "produkt produkt produkt" "upload upload verlauf" "liste liste liste";
+}
+
+table {
+    overflow-x: scroll;
+    width: 100%;
+    table-layout: fixed;
+    overflow-wrap: break-word;
+    display: block;
+}
+
+th, td {
+    min-width: 80px;
 }
 
 aside {
@@ -33,10 +46,6 @@ aside {
 
 .preis {
     grid-area: preis;
-}
-
-.postenadd {
-    grid-area: postenadd;
 }
 
 .produkt {
@@ -262,16 +271,6 @@ aside {
 
 /* css end for posten tab */
 
-/* for round + button */
-#auftragsPostenTable {
-    display: inline-block;
-    text-align: center;
-}
-
-#auftragsPostenTable table {
-    text-align: left;
-}
-
 /* class for round + button */
 .addToTable {
     width: 40px;
@@ -284,6 +283,7 @@ aside {
     box-shadow: 1px 0px 5px 0px grey;
     font-weight: bold;
     color: grey;
+    cursor: pointer;
 }
 
 .buttonDiv {

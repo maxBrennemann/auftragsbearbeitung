@@ -20,8 +20,6 @@
 </div>
 <br>
 <?php
-    require_once('classes/project/FormGenerator.php');
-
     $verbesserungen;
 
     if (isset($_GET['t']) && $_GET['t'] == 'details') {
@@ -35,8 +33,11 @@
         1 => array("COLUMN_NAME" => "erledigt"),
         2 => array("COLUMN_NAME" => "Datum")
     );
-    $table = new FormGenerator("", "", "");
-    echo "<div id=\"tableContainer\">" . $table->createTableByData($verbesserungen, $column_names) . "</div>";
+
+    $table = new Table();
+	$table->createByData($verbesserungen, $column_names);
+
+    echo "<div id=\"tableContainer\">" . $table->getTable() . "</div>";
 ?>
 <style>
 	 header {

@@ -153,8 +153,10 @@ class Kunde implements StatisticsInterface {
 			1 => array("COLUMN_NAME" => "Farbwert"), 
 			2 => array("COLUMN_NAME" => "Auftragsnummer"));
 
-		$form = new FormGenerator("", "", "");
-		return $form->createTableByData($farben, $column_names);
+		$table = new Table();
+		$table->createByData($farben, $column_names);
+	
+		return $table->getTable();
 	}
 
 	public function getAuftraege() {

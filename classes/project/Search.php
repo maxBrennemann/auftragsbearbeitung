@@ -22,91 +22,85 @@ class Search {
 		$ids = array();
 		$query = "";
 		$columnNames = array();
+
 		switch ($searchType) {
 			case "kunde":
 				$ids = self::searchInCustomers($searchQuery);
 				$query = "SELECT * FROM kunde WHERE Kundennummer = ";
 				$columnNames = DBAccess::selectColumnNames($searchType);
+
+				if (!$getShortSummary)
+					break;
+
+				$data = "";
+				$ids = array_reverse($ids);
+				foreach ($ids as $id) {
+					$data .= (new Kunde($id[0]))->getHTMLShortSummary();
+				}
+				return $data;
 				break;
 			case "produkt":
 				$ids = self::searchInProducts($searchQuery);
 				$query = "SELECT * FROM produkt WHERE Nummer = ";
 				$columnNames = DBAccess::selectColumnNames($searchType);
+
+				if (!$getShortSummary)
+					break;
+				
+				$data = "";
+				$ids = array_reverse($ids);
+				foreach ($ids as $id) {
+					$data .= Produkt::getHTMLShortSummary($id[0]);
+				}
+
+				if (empty($data)) {
+					$data = "<span>Keine Ergebnisse!</span>";
+				}
+
+				return $data;
 				break;
 			case "order":
 				$ids = self::searchInOrders($searchQuery);
 				$query = "SELECT * FROM auftrag WHERE Auftragsnummer = ";
 				$columnNames = DBAccess::selectColumnNames($searchType);
+
+				if (!$getShortSummary)
+					break;
+
+				$data = "";
+				$ids = array_reverse($ids);
+				$data = Auftrag::getAuftragsListe($ids, 0);
+
+				if (empty($data)) {
+					$data = "<span>Keine Ergebnisse!</span>";
+				}
+
+				return $data;
+				
 				break;
 			case "posten":
 				$ids = self::searchInPosten($searchQuery);
 				$query = "SELECT * FROM postenData WHERE Auftragsnummer = ";
 				$columnNames = DBAccess::selectColumnNames($searchType);
+
+				if (!$getShortSummary)
+					break;
+
+				return "";
 				break;
 			case "wiki":
 				$ids = self::searchInWiki($searchQuery);
 				$query = "SELECT * FROM wiki WHERE id = ";
 				$columnNames = DBAccess::selectColumnNames($searchType);
+
+				if (!$getShortSummary)
+					break;
+
+				return "";
 				break;
 		}
+
 		$data = array();
-
-		if ($getShortSummary) {
-			switch ($searchType) {
-				case "kunde":
-					$data = "";
-					$ids = array_reverse($ids);
-					foreach ($ids as $id) {
-						$data .= (new Kunde($id[0]))->getHTMLShortSummary();
-					}
-					return $data;
-					break;
-				case "produkt":
-					$data = "";
-					$ids = array_reverse($ids);
-					foreach ($ids as $id) {
-						$data .= Produkt::getHTMLShortSummary($id[0]);
-					}
-
-					if (empty($data)) {
-						$data = "<span>Keine Ergebnisse!</span>";
-					}
-
-					return $data;
-					break;
-				case "order":
-					$data = "";
-					$ids = array_reverse($ids);
-					$data = Auftrag::getAuftragsListe($ids, 0);
-
-					//var_dump($ids);
-					if (empty($data)) {
-						$data = "<span>Keine Ergebnisse!</span>";
-					}
-
-					return $data;
-					break;
-				case "posten":
-					$data = "";
-					$ids = array_reverse($ids);
-					/* postensuche muss später fertig implementiert werden */
-					/*$data = Posten::prepareSearchResults($ids);
-
-					if (empty($data)) {
-						$data = "<span>Keine Ergebnisse!</span>";
-					}
-
-					return $data;*/
-					return "";
-					break;
-				case "wiki":
-					$data = "";
-					$ids = array_reverse($ids);
-					/* wikisuche muss später fertig implementiert werden */
-					return "";
-					break;
-			}
-		}
 
 		foreach ($ids as $id) {
 			$column = DBAccess::selectQuery($query . $id[0]);
@@ -114,11 +108,10 @@ class Search {
 			array_push($data, $column);
 		}
 		$data = array_reverse($data);
-		$f = new FormGenerator("", "", "");
-		if ($retUrl != null) {
-			return $f->createTableByDataRowLink($data, $columnNames, $searchType, $retUrl);
-		}
-		return $f->createTableByData($data, $columnNames);
+
+		$table = new Table();
+		$table->createByData($data, $columnNames);
+		return $table->getTable();
 	}
 
 	public static function globalSearch($searchQuery) {

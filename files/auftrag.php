@@ -2,7 +2,6 @@
 require_once('classes/project/Auftrag.php');
 require_once('classes/project/Search.php');
 require_once('classes/project/Rechnung.php');
-require_once('classes/project/FormGenerator.php');
 require_once('classes/project/Auftragsverlauf.php');
 require_once('classes/project/Fahrzeug.php');
 require_once('classes/project/Kunde.php');
@@ -164,9 +163,9 @@ if ($auftragsId == -1): ?>
 		<u>Zeiten, Produkte und Kosten (netto):</u>
 		<br>
 		<br>
-		<span id="auftragsPostenTable">
+		<div id="auftragsPostenTable">
 			<?=$auftrag->getAuftragspostenAsTable()?>
-		</span>
+		</div>
 		<div class="buttonDiv">
 			<button class="addToTable" onclick="showPostenAdd();">+</button>
 		</div>
@@ -237,6 +236,7 @@ if ($auftragsId == -1): ?>
 					<div>
 						<input type="search" id="productSearch">
 						<span class="lupeSpan searchProductEvent"><span class="lupe searchProductEvent">&#9906;</span></span>
+						<p><i>Zubehör, Montagematerial, Textilien...</i></p>
 					</div>
 					<div id="resultContainer"></div>
 					<span>Menge: <input class="postenInput" id="posten_produkt_menge" type="number"></span>
@@ -334,8 +334,6 @@ if ($auftragsId == -1): ?>
 			</div>
 		</div>
 		<script>var cp = new Colorpicker(document.getElementById("cpContainer"));</script>
-	</div>
-	<div class="defCont postenadd" id="newPosten">
 	</div>
 	<div class="defCont produkt">
 		<div id="selectProdukt">
