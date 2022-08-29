@@ -100,6 +100,13 @@ abstract class Posten {
 			$postennummer = (int) $_SESSION['overwritePosten_postennummer'];
 			DBAccess::updateQuery("UPDATE posten SET ohneBerechnung = $fre, discount = $dis, isInvoice = $inv WHERE Postennummer = $postennummer");
 
+			/* deletes zeiterfassung if it exists */
+			$nummer = DBAccess::selectQuery("SELECT Nummer FROM zeit WHERE Postennummer = $postennummer");
+			if ($nummer != null) {
+				$deleteId = $nummer[0]["Nummer"];
+				DBAccess::deleteQuery("DELETE FROM zeiterfassung WHERE id_zeit = $deleteId");
+			}
+			
 			/* quick fixed for overwrite */
 			DBAccess::deleteQuery("DELETE FROM zeit WHERE Postennummer = $postennummer");
 			DBAccess::deleteQuery("DELETE FROM leistung_posten WHERE Postennummer = $postennummer");
