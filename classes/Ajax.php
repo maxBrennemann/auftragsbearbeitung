@@ -143,7 +143,7 @@ class Ajax {
 
 				require_once("classes/project/NotificationManager.php");
 				$link = $data["responseLink"];
-				NotificationManager::addNotificationCheck(-1, 4, "Auftrag <a href=\"$link\">$orderId</a> wurde angelegt", $orderId);
+				NotificationManager::addNotification(-1, 4, "Auftrag <a href=\"$link\">$orderId</a> wurde angelegt", $orderId);
 				//Statistics::auftragEroeffnen(new Auftrag($orderId));
 			break;
 			case "insTime":
