@@ -1,6 +1,5 @@
 <?php 
 	require_once('classes/project/Kunde.php');
-	require_once('classes/project/FormGenerator.php');
 	require_once('classes/project/Table.php');
 	require_once('classes/project/Search.php');
 	require_once('classes/project/Address.php');

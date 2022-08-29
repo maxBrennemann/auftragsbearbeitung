@@ -107,11 +107,6 @@ class Produkt {
 		DBAccess::insertMultiple("INSERT INTO produkt_attribute_to_attribute (id_produkt_attribute, attribute_id) VALUES ", $data);
 	}
 
-	public static function getSearchTable($searchQuery) {
-		$productIds = self::searchInProducts($searchQuery);
-		$query = "";
-	}
-
 	public static function searchInProducts($searchQuery) {
 		$products = DBAccess::selectQuery("SELECT Nummer, Bezeichnung, Beschreibung FROM produkt");
 		$mostSimilarProducts = array();

@@ -47,19 +47,23 @@ function initCode() {
 function addSearchEventListeners() {
     var data = document.getElementsByClassName("searchProductEvent");
     for (let i = 0; i < data.length; i++) {
-        data[i].addEventListener("click", function(event) {
-            var query = document.getElementById("productSearch").value;
-            var params = {
-                getReason: "searchProduct",
-                query: query
-            };
-            var search = new AjaxCall(params, "POST", window.location.href);
-            search.makeAjaxCall(function (response) {
-                var element = document.getElementById("resultContainer");
-                element.innerHTML = response;
-            });
-        }, false);
+        data[i].addEventListener("click", performProductSearch, false);
     }
+}
+
+function performProductSearch() {
+    var query = document.getElementById("productSearch").value;
+    
+    var params = {
+        getReason: "searchProduct",
+        query: query
+    };
+    
+    var search = new AjaxCall(params, "POST", window.location.href);
+    search.makeAjaxCall(function (response) {
+        var element = document.getElementById("resultContainer");
+        element.innerHTML = response;
+    });
 }
 
 function meh_eventListener() {
@@ -313,16 +317,6 @@ function getOhneBerechnung() {
 
 function getAddToInvoice() {
     return document.getElementById("addToInvoice").checked;
-}
-
-function showSelection(element) {
-    document.getElementById('newPosten').style.display = 'inline';
-    element.style.display = 'none';
-
-    var getGeneralPosten = new AjaxCall("getReason=createTable&type=custom", "POST", window.location.href);
-    getGeneralPosten.makeAjaxCall(function (responseTable) {
-        document.getElementById("generalPosten").innerHTML = responseTable;
-    });
 }
 
 /* addes bearbeitungsschritte */

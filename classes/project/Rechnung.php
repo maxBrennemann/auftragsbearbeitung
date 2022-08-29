@@ -9,7 +9,6 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 require_once('vendor/autoload.php');
 require_once('classes/DBAccess.php');
 require_once('classes/project/Auftrag.php');
-require_once('classes/project/InteractiveFormGenerator.php');
 require_once('classes/project/RechnungsPDF.php');
 require_once('classes/project/EmptyPosten.php');
 

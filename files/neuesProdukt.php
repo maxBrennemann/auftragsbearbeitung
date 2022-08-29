@@ -1,5 +1,4 @@
 <?php 
-require_once('classes/project/FormGenerator.php');
 
 $productId = -1;
 

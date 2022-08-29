@@ -11,10 +11,6 @@ class Aufgabenliste {
 		$column_names = array(0 => array("COLUMN_NAME" => "Name"), 1 => array("COLUMN_NAME" => "Auftragsbezeichnung"),
 		2 => array("COLUMN_NAME" => "Bezeichnung"), 3 => array("COLUMN_NAME" => "Datum"));
 
-		/*$form = new FormGenerator("schritte", "", "");
-		$table = $form->createTableByData($data, $column_names, "auftrag", null);
-		return $table;*/
-
 		$linker = new Link();
 		$linker->addBaseLink("auftrag");
 		$linker->setIterator("id", $data, "Auftragsnummer");

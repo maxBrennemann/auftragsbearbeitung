@@ -1,6 +1,5 @@
 <?php
 	require_once('classes/Link.php');
-	require_once('classes/project/FormGenerator.php');
 	require_once('classes/project/Angebot.php');
 
 	$showAngebot = 0;

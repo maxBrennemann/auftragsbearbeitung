@@ -49,6 +49,15 @@ header aside div {
     padding: inherit;
 }
 
+#showNotifications {
+    max-height: 80%;
+    max-width: 80%;
+}
+
+.notificatonWrapper {
+    overflow-y: scroll;
+}
+
 .settingsContainer {
     cursor: pointer;
 }
@@ -117,12 +126,12 @@ li {
 table {
     border-radius: 6px;
     border-spacing: 0;
-    display: inline-block;
+    /*display: inline-block;*/
 }
 
 tbody {
-    display: inline-block;
-    overflow-x: auto;
+    /*display: inline-block;
+    overflow-x: auto;*/
     max-width: 78vw;
 }
 
