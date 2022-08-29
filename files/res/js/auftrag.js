@@ -670,6 +670,11 @@ function setParameters(postentype, parameters) {
                 timeInputs[i * 2].value = time_from;
                 timeInputs[i * 2 + 1].value = time_to;
                 dateInputs[i].value = parameters.timetable[i].date;
+
+                var event1 = new Event('change');
+                timeInputs[i * 2].dispatchEvent(event1);
+                var event2 = new Event('change');
+                timeInputs[i * 2 + 1].dispatchEvent(event2);
             }
 
             var timeBtn = document.getElementById("addTimeButton");

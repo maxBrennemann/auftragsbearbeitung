@@ -214,10 +214,6 @@ class Zeit extends Posten {
 	public static function erweiterteZeiterfassung($data, $id) {
 		$data = json_decode($data, true);
 
-		if (isset($_SESSION['overwritePosten']) && $_SESSION['overwritePosten'] == true) {
-			DBAccess::deleteQuery("DELETE FROM zeiterfassung WHERE id_zeit = $id");
-		}
-
 		$db_array = array();
 		for ($i = 0; $i < sizeof($data["times"]); $i += 2) {
 			$from = self::timeString_toInt($data["times"][$i]);
