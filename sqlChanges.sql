@@ -474,3 +474,6 @@ INSERT INTO `info_texte` (`id`, `info`) VALUES (NULL, 'Wähle aus einer der erst
 
 /* Änderungen 01.08.2022 */
 ALTER TABLE `posten` ADD `position` INT NULL AFTER `Auftragsnummer`;
+
+/* Änderungen 18.08.2022 */
+ALTER TABLE `user_notifications` CHANGE `ischecked` `ischecked` TINYINT(1) NOT NULL DEFAULT '1';
