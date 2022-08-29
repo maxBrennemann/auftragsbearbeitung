@@ -94,6 +94,10 @@ function loadExternalByClassName($page, $classname) {
         <li>Warenkorb</li>
         <li>Bestellvorgang</li>
     </ul>
+    <h2>Externe Ressourcen</h2>
+    <ul>
+        <li><a href="https://organisierung.b-schriftung.de/textilkonfigurator/">Vorläufiger Textilkonfigurator</a></li>
+    </ul>
 </div>
 
 <div class="manualNavigator">
