@@ -49,6 +49,7 @@ function addSearchEventListeners() {
     for (let i = 0; i < data.length; i++) {
         data[i].addEventListener("click", performProductSearch, false);
     }
+    document.getElementById("productSearch").addEventListener("change", performProductSearch, false);
 }
 
 function performProductSearch() {

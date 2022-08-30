@@ -36,13 +36,11 @@ function toggleCache(status) {
 
 
 if (document.readyState !== 'loading' ) {
-    console.log( 'document is already ready, just execute code here' );
     document.getElementById("download_db").addEventListener("click", getFileName, false);
 } else {
-    document.addEventListener('DOMContentLoaded', function () {
-        console.log( 'document was not ready, place code here' );
+    document.addEventListener('DOMContentLoaded', function() {
         document.getElementById("download_db").addEventListener("click", getFileName, false);
-    });
+    }, false);
 }
 
 function getFileName() {

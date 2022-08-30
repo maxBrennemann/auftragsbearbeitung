@@ -477,3 +477,7 @@ ALTER TABLE `posten` ADD `position` INT NULL AFTER `Auftragsnummer`;
 
 /* Änderungen 18.08.2022 */
 ALTER TABLE `user_notifications` CHANGE `ischecked` `ischecked` TINYINT(1) NOT NULL DEFAULT '1';
+
+/* Änderungen 30.08.2022 */
+ALTER TABLE `produkt` CHANGE `Preis` `Preis` INT NOT NULL;
+ALTER TABLE `produkt` CHANGE `Einkaufspreis` `Einkaufspreis` INT NOT NULL;
