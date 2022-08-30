@@ -44,7 +44,7 @@ if ($cacheStatus == "on") {
         </select>
         <script>var cp = new Colorpicker(document.getElementById("farbe"));</script>
         <button onclick="setCustomColor();">Diese Farbe übernehmen</button>
-        <button onclick="setCustomColor(0)">Auf Standard zurücksetzen</button>
+        <button onclick="setCustomColor(0);">Auf Standard zurücksetzen</button>
     </div>
 </section>
 <section>
@@ -58,6 +58,6 @@ if ($cacheStatus == "on") {
 </section>
 <section>
     <h2>Backups und Datensicherung</h2>
-    <a href="" download="temp_file_name" id="download_db">Datenbank herunterladen</button>
+    <a href="#" download="temp_file_name" id="download_db">Datenbank herunterladen</a>
     <button>Alle Dateien herunterladen</button>
 </section>

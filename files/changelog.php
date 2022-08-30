@@ -6,6 +6,10 @@
         <li>Postenbearbeitung wurde überarbeitet - funktioniert jetzt fehlerfrei</li>
         <li>Die Postenreihenfolge kann nun bearbeitet werden</li>
         <li>Auftragsseite: Daten bei Auftragsstellung und Termin nun in gängigem Format</li>
+        <li>Produktsuche wurde verbessert</li>
+        <li>Benachrichtigungsmenü ist übersichtlicher</li>
+        <li>Mobile Ansicht wurde optimiert</li>
+        <li>Link zum neuen Textilkonfigurator wurde hinzugefügt</li>
     </ul>
     <h3>1.1.15</h3>
     <ul>

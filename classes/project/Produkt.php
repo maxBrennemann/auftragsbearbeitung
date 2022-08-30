@@ -44,7 +44,7 @@ class Produkt {
 	}
 
 	public function getPreisBrutto() {
-		return number_format((float) $this->preis, 2, ",", ".");
+		return number_format((float) $this->preis / 100, 2, ",", ".");
 	}
 
 	public function getProductId() {
@@ -91,7 +91,13 @@ class Produkt {
 	}
 
 	public static function createProduct($title, $marke, $desc, $ekNetto, $vkNetto, $quelle, $attributeData) {
-		$productId = DBAccess::insertQuery("INSERT INTO produkt (Bezeichnung, Marke, Beschreibung, Einkaufspreis, Preis, einkaufs_id) VALUES ('$title', '$marke', '$desc', '$ekNetto', '$vkNetto', $quelle)");
+		$einkaufspreis = str_replace(",", "", $ekNetto);
+		$verkaufspreis = str_replace(",", "", $vkNetto);
+
+		$einkaufspreis = (int) str_replace("€", "", $einkaufspreis);
+		$verkaufspreis = (int) str_replace("€", "", $verkaufspreis);
+
+		$productId = DBAccess::insertQuery("INSERT INTO produkt (Bezeichnung, Marke, Beschreibung, Einkaufspreis, Preis, einkaufs_id) VALUES ('$title', '$marke', '$desc', '$einkaufspreis', '$verkaufspreis', $quelle)");
 		return $productId;
 	}
 

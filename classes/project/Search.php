@@ -41,8 +41,14 @@ class Search {
 				break;
 			case "produkt":
 				$ids = self::searchInProducts($searchQuery);
-				$query = "SELECT * FROM produkt WHERE Nummer = ";
-				$columnNames = DBAccess::selectColumnNames($searchType);
+				$query = "SELECT Nummer, Bezeichnung, Beschreibung, Marke, CONCAT(FORMAT(Preis / 100,2,'de_DE'), ' €') AS Preis,  CONCAT(FORMAT(Einkaufspreis / 100,2,'de_DE'), ' €') AS Einkaufspreis FROM produkt WHERE Nummer = ";
+				$columnNames = array(
+					0 => array("COLUMN_NAME" => "Bezeichnung"), 
+					1 => array("COLUMN_NAME" => "Beschreibung"),	
+					2 => array("COLUMN_NAME" => "Marke"), 
+					3 => array("COLUMN_NAME" => "Preis"), 
+					4 => array("COLUMN_NAME" => "Einkaufspreis")
+				);
 
 				if (!$getShortSummary)
 					break;
@@ -186,13 +192,13 @@ class Search {
 						$query = "SELECT Auftragsnummer AS id, COALESCE(Beschreibung, ' ') AS `message` FROM postendata WHERE Postennummer = {$item[0]}";
 						$data = DBAccess::selectQuery($query)[0];
 
-						$link = Link::getPageLink("auftrag") . "id?=" . $data["id"];
+						$link = Link::getPageLink("auftrag") . "?id=" . $data["id"];
 						break;
 					case 4:
 						$query = "SELECT id, COALESCE(title, ' ') AS `message` FROM wiki_articles WHERE id = {$item[0]}";
 						$data = DBAccess::selectQuery($query)[0];
 
-						$link = Link::getPageLink("wiki") . "id?=" . $data["id"];
+						$link = Link::getPageLink("wiki") . "?id=" . $data["id"];
 						break;
 				}
 
@@ -306,6 +312,10 @@ class Search {
 			}
 		}
 
+		/*print "<pre>";
+		print_r($mostSimilar);
+		print "</pre>";*/
+
 		usort($mostSimilar, "cmp");
 	}
 
@@ -327,7 +337,7 @@ class Search {
 			if ((float) $product[1] > 35) {
 				if (inArray($product[0], $filteredArray)) {
 					if ($product[1] >= end($filteredArray)[1]) {
-						$filteredArray[sizeof($filteredArray) - 1] = $product;
+						//$filteredArray[sizeof($filteredArray) - 1] = $product;
 					}
 				} else {
 					array_push($filteredArray, $product);
@@ -338,24 +348,27 @@ class Search {
 		return $filteredArray;
 	}
 
-	private static function calculateSimilarity(&$mostSimilar, $searchQuery, $text, $nummer) {
+	private static function calculateSimilarity(&$mostSimilar, $searchQuery, $text, $number) {
 		$searchQuery = strtolower($searchQuery);
 		$text = strtolower($text);
 		$pieces = explode(" ", $text);
 
-		$cumulatedpercentage = 0;
+		$cumulatedpercentage = 0.0;
 		foreach ($pieces as $piece) {
-			similar_text($searchQuery, $piece, $percentage);
+			$sim = similar_text($searchQuery, $piece, $percentage);
 			$percentage = round($percentage, 2);
-			if ($percentage >= 15) {
+			if ($percentage >= 20) {
 				$cumulatedpercentage += $percentage;
 			}
-			//echo "% for search $text form $piece is $percentage <br>";
+
+			if ($searchQuery == $piece) {
+				$cumulatedpercentage += 150;
+			}
+
+			/*echo "query: $searchQuery, piece: $piece, sim: $sim, percentage: $percentage<br>";*/
 		}
 
-		//echo "percentage for search $text is $cumulatedpercentage <br><br>";
-
-		array_push($mostSimilar, array($nummer, $cumulatedpercentage));
+		array_push($mostSimilar, array($number, $cumulatedpercentage));
 	}
 
 } 
