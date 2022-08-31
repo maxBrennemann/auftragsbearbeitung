@@ -812,7 +812,7 @@ class Ajax {
 				$pageName = $_POST['pageName'];
 				$intent = $_POST['intent'];
 				$data = DBAccess::selectQuery("SELECT info FROM `manual` WHERE `page` = '$pageName' AND intent = '$intent'");
-				echo json_encode($data, JSON_FORCE_OBJECT);;
+				echo json_encode($data, JSON_FORCE_OBJECT);
 			break;
 			case "setDateInvoice":
 				require_once('classes/project/Rechnung.php');
@@ -822,7 +822,11 @@ class Ajax {
 				$rechnung = unserialize($_SESSION['tempInvoice']);
 				$rechnung->setDate($date);
 				$_SESSION['tempInvoice'] = serialize($rechnung);
-				echo "ok";
+
+				echo json_encode([
+					0 => "ok",
+					1 => Rechnung::getAllInvoiceItems($_POST["id"], $rechnung)
+				], JSON_FORCE_OBJECT);
 			break;
 			case "setDatePerformance":
 				require_once('classes/project/Rechnung.php');
@@ -832,7 +836,11 @@ class Ajax {
 				$rechnung = unserialize($_SESSION['tempInvoice']);
 				$rechnung->setDatePerformance($date);
 				$_SESSION['tempInvoice'] = serialize($rechnung);
-				echo "ok";
+
+				echo json_encode([
+					0 => "ok",
+					1 => Rechnung::getAllInvoiceItems($_POST["id"], $rechnung)
+				], JSON_FORCE_OBJECT);
 			break;
 			case "invoiceAddText":
 				require_once('classes/project/Rechnung.php');

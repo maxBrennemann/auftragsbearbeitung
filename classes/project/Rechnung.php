@@ -73,11 +73,10 @@ class Rechnung {
 
 		$pdf->SetFont("helvetica", "", 8);
 		$address = "<p>b-schriftung Brennemann Dietmar, Huberweg 31, 94522 Wallersdorf</p>";
-		$pdf->writeHTMLCell(0, 40, 25, 25, $address);
+		$pdf->writeHTMLCell(0, 10, 25, 20, $address);
 
 		$pdf->SetFont("helvetica", "", 12);
-        $cAddress = $this->fillAddress();
-        $pdf->writeHTMLCell(85, 40, 25, 25, $cAddress);
+        $this->fillAddress($pdf);
 
 		$pdf->setXY(120, 30);
 		$pdf->setFontStretching(200);
@@ -313,14 +312,28 @@ class Rechnung {
 		return $this->tempId;
 	}
 
-	private function fillAddress() {
+	private function fillAddress(&$pdf) {
+		$lineheight = 10;
+		$pdf->setXY(25, 25);
+
 		$firma = $this->kunde->getFirmenname();
 		$name = $this->kunde->getName();
 		$hausnr = $this->kunde->getHausnummer($this->address);
 		$strasse = $this->kunde->getStrasse($this->address);
 		$plz = $this->kunde->getPostleitzahl($this->address);
 		$ort = $this->kunde->getOrt($this->address);
-		return "<p>$firma<br>$name<br>$strasse $hausnr<br>$plz $ort</p>";
+		
+		if ($firma != null || $firma != "") {
+			$pdf->Cell(85, $lineheight, $firma);
+			$pdf->ln(5);
+		}
+		if ($this->kunde->getNachname() != "" && $this->kunde->getVorname() != "") {
+			$pdf->Cell(85, $lineheight, $name);
+			$pdf->ln(5);
+		}
+		$pdf->Cell(85, $lineheight, $strasse . " " . $hausnr);
+		$pdf->ln(5);
+		$pdf->Cell(85, $lineheight, $plz . " " . $ort);
 	}
 	
 	public function setAddress($address) {
@@ -421,6 +434,62 @@ class Rechnung {
 
 		/* Fertigstellung wird eingetragen */
 		DBAccess::updateQuery("UPDATE auftrag SET Fertigstellung = current_date() WHERE Auftragsnummer = $orderId");
+	}
+
+	public static function getAllInvoiceItems($orderId, $rechnung = null) {
+		/* posten, leistungsdatum, texte, fahrzeuge */
+		if ($rechnung == null) {
+			$rechnung = unserialize($_SESSION['tempInvoice']);
+		}
+		
+		if ($rechnung instanceof Rechnung && $rechnung->auftrag->getAuftragsnummer() == $orderId) {
+			$fahrzeuge = $rechnung->auftrag->getLinkedVehicles();
+
+			$column_names = array(
+				0 => array("COLUMN_NAME" => "Pos"),
+				1 => array("COLUMN_NAME" => "Menge"),
+				2 => array("COLUMN_NAME" => "MEH"),
+				3 => array("COLUMN_NAME" => "Bezeichnung"),
+				4 => array("COLUMN_NAME" => "E-Preis"),
+				5 => array("COLUMN_NAME" => "G-Preis")
+			);
+
+			$data = array();
+			$count = 1;
+
+			foreach ($rechnung->posten as $p) {
+				$newLine = [
+					"Pos" => $count,
+					"Menge" => $p->getQuantity(),
+					"MEH" => $p->getEinheit(),
+					"Bezeichnung" => $p->getDescription(),
+					"E-Preis" => $p->bekommeEinzelPreis_formatted(),
+					"G-Preis" => $p->bekommePreis_formatted()
+				];
+
+				array_push($data, $newLine);
+				$count++;
+			}
+
+			foreach ($fahrzeuge as $f) {
+				$newLine = [
+					"Pos" => $count,
+					"Menge" => "",
+					"MEH" => "",
+					"Bezeichnung" => "Fahrzeug: " . $f["Fahrzeug"] . " mit Kennzeichen " . $f["Kennzeichen"],
+					"E-Preis" => "",
+					"G-Preis" => ""
+				];
+
+				array_push($data, $newLine);
+				$count++;
+			}
+
+			$t = new Table();
+			$t->createByData($data, $column_names);
+			$t->addActionButton("move");
+			return $t->getTable();
+		}
 	}
 
 }

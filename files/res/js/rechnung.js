@@ -124,7 +124,8 @@ function setInvoiceDate() {
     var date = document.getElementById("rechnungsdatum").value;
     params = {
         getReason: "setDateInvoice",
-        date: date
+        date: date,
+        id: document.getElementById("orderId").innerHTML
     };
     sendDates(params);
 }
@@ -133,7 +134,8 @@ function setPerformanceDate() {
     var date = document.getElementById("leistungsdatum").value;
     params =  {
         getReason: "setDatePerformance",
-        date: date
+        date: date,
+        id: document.getElementById("orderId").innerHTML
     };
     sendDates(params);
 }
@@ -141,10 +143,118 @@ function setPerformanceDate() {
 function sendDates(params) {
     var send = new AjaxCall(params, "POST", window.location.href);
     send.makeAjaxCall(function (response) {
-        if (response == "ok") {
+        response = JSON.parse(response);
+        if (response[0] == "ok") {
             infoSaveSuccessfull("success");
             var iframe = document.getElementById("showOffer");
             iframe.contentWindow.location.reload();
+        }
+
+        document.getElementById("allInvoiceItemsTable").innerHTML = response[1];
+
+        console.log(response);
+    });
+}
+
+/* move in table */
+
+/* https://www.therogerlab.com/sandbox/pages/how-to-reorder-table-rows-in-javascript?s=0ea4985d74a189e8b7b547976e7192ae.4122809346f6a15e41c9a43f6fcb5fd5 */
+var row;
+var rows;
+function move(event) {
+    if (event.target.classList.contains("moveRow")) {
+        event.preventDefault();
+
+        if (rows.indexOf(event.target.parentNode.parentNode) > rows.indexOf(row))
+            event.target.parentNode.parentNode.after(row);
+        else
+            event.target.parentNode.parentNode.before(row);
+    }
+}
+
+function moveStart(event) {
+    row = event.target;
+}
+
+/* called from moveBtn */
+function moveInit(event) {
+    var table = event.target;
+    while (table.nodeName != "TABLE") {
+        table = table.parentNode;
+    }
+
+    rows = Array.from(table.getElementsByTagName("tr"));
+    for (let i = 0; i < rows.length; i++) {
+        if (i == 0)
+            continue;
+
+        rows[i].draggable = "true";
+        rows[i].addEventListener("dragstart", function(event) {
+            moveStart(event)
+        }, false);
+        rows[i].addEventListener("dragover", function(event) {
+            move(event)
+        }, false);
+        rows[i].addEventListener("dragend", function(event) {
+            sendPostenOrder(event)
+        }, false);
+    }
+}
+
+/* called from moveBtn */
+function moveRemove(event) {
+    var table = event.target;
+    while (table.nodeName != "TABLE") {
+        table = table.parentNode;
+    }
+
+    rows = Array.from(table.getElementsByTagName("tr"));
+    for (let i = 0; i < rows.length; i++) {
+        if (i == 0)
+            continue;
+
+        rows[i].draggable = "false";
+        rows[i].removeEventListener("dragstart", function(event) {
+            moveStart(event)
+        }, false);
+        rows[i].removeEventListener("dragover", function(event) {
+            move(event)
+        }, false);
+        rows[i].removeEventListener("dragend", function(event) {
+            sendPostenOrder(event)
+        }, false);
+    }
+} 
+
+function sendPostenOrder(event) {
+    var table = event.target;
+    while (table.nodeName != "TABLE") {
+        table = table.parentNode;
+    }
+
+    var btns = Array.from(table.getElementsByClassName("moveRow"));
+    var positions = [];
+    for (let i = 0; i < btns.length; i++) {
+        positions.push(btns[i].dataset.key);
+        btns[i].parentNode.parentNode.children[0].innerHTML = i + 1;
+    }
+    positions = JSON.stringify(positions);
+
+    let params = {
+        getReason: "sendInvoicePositions",
+        auftrag: document.getElementById("orderId").innerHTML,
+        order: positions,
+        tablekey: table.dataset.key
+    };
+
+    return null;
+
+    var send = new AjaxCall(params, "POST", window.location.href);
+    send.makeAjaxCall(function (response) {
+        if (response == "ok") {
+            infoSaveSuccessfull("success");
+        } else {
+            infoSaveSuccessfull();
         }
 
         console.log(response);
