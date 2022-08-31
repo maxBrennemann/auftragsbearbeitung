@@ -263,7 +263,7 @@ class Table {
 	}
 	
 	private function addCheck($key) {
-		$check = "<input type=\"checkbox\" name=\"checkRow$key\">";
+		$check = "<input type=\"checkbox\" name=\"checkRow_$key\">";
 		return $check;
 	}
 

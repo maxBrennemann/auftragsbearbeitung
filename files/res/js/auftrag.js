@@ -161,41 +161,6 @@ window.addEventListener("click", function(event) {
     }
 }, false);
 
-/* get selection for adding a posten */
-function getSelections() {
-    var e = document.getElementById("selectPosten");
-    var strUser = e.options[e.selectedIndex].value;
-
-    if (strUser == "zeit") {
-        document.getElementById("addPostenZeit").style.display = "block";
-        document.getElementById("addPostenLeistung").style.display = "none";
-        document.getElementById("addPostenProdukt").style.display = "none";
-    } else if (strUser == "leistung") {
-        document.getElementById("addPostenLeistung").style.display = "flex";
-        document.getElementById("addPostenZeit").style.display = "none";
-        document.getElementById("addPostenProdukt").style.display = "none";
-
-        document.getElementById("ekp").addEventListener("input", function () {
-            var startCalc = parseInt(document.getElementById("ekp").value);
-            var price = startCalc * (1 + (globalData.aufschlag / 100));
-            document.getElementById("pre").value = price;
-        }, false);
-    } else if (strUser == "produkt") {
-        /*var showProducts = new AjaxCall(`getReason=createTable&type=product_compact&sendTo=`, "POST", window.location.href);
-        showProducts.makeAjaxCall(function (responseTable) {
-            document.getElementById("addPosten").innerHTML = responseTable;
-
-            addableTables("product_compact");
-        });*/
-        document.getElementById("addPostenLeistung").style.display = "none";
-        document.getElementById("addPostenZeit").style.display = "none";
-        document.getElementById("addPostenProdukt").style.display = "block";
-    }
-
-    document.getElementById("showOhneBerechnung").style.display = "inline";
-    document.getElementById("showDiscount").style.display = "inline";
-}
-
 function addTime() {
     var zeiterfassung = {
         times: globalData.times,
@@ -255,6 +220,10 @@ function addLeistung() {
         addToInvoice: getAddToInvoice() ? 1 : 0,
         discount: document.getElementById("showDiscount").children[0].value
     };
+
+    if (globalData.isOverwrite) {
+        params.isOverwrite = true;
+    }
 
     var add = new AjaxCall(params, "POST", window.location.href);
     add.makeAjaxCall(function (response) {

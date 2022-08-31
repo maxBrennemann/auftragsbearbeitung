@@ -109,6 +109,10 @@ if ($target == "create"): ?>
 			<span><input id="newText" class="visibility"><button onclick="addText()" id="addToTexts">+</button></span>
 		</div>
 		<hr>
+		<h4>Reihenfolge aller Rechnungsposten</h4>
+		<p>Fehler: Falls das Leistungsdatum doppelt angezeigt wird, bitte die Seite neu laden</p>
+		<div id="allInvoiceItemsTable"><?=Rechnung::getAllInvoiceItems($id)?></div>
+		<hr>
 		<?php if ($auftrag != null && $auftrag->getAuftragspostenData() != null): ?>
 		<button onclick="generatePDF();">Rechnung abschließen</button>
 		<?php else: ?>
