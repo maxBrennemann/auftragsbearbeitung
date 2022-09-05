@@ -378,12 +378,6 @@ class Rechnung {
 		
 		$data = DBAccess::selectQuery("SELECT auftrag.Auftragsnummer as Auftragsnr, auftrag.Auftragsbezeichnung as Bezeichnung, auftrag.Auftragsbeschreibung as Beschreibung, auftrag.AngenommenDurch, auftrag.Kundennummer, auftrag.Datum, auftrag.Termin, auftrag.Rechnungsnummer, kunde.Firmenname, CONCAT(FORMAT(auftragssumme.orderPrice, 2, 'de_DE'), ' €') AS Summe FROM auftrag, auftragssumme, kunde WHERE auftrag.Kundennummer = kunde.Kundennummer AND Rechnungsnummer != 0 AND auftrag.Bezahlt = 0 AND auftrag.Auftragsnummer = auftragssumme.id");
 
-		for ($i = 0; $i < sizeof($data); $i++) {
-			$id = $data[$i]["AngenommenDurch"];
-			$angenommenDurch = DBAccess::selectQuery("SELECT Vorname, Nachname FROM mitarbeiter WHERE id = $id");
-			$data[$i]["AngenommenDurch"] = $angenommenDurch[0]["Vorname"] . " " . $angenommenDurch[0]["Nachname"];
-		}
-
 		$table = new Table();
 		$table->createByData($data, $column_names);
 		$table->addActionButton("update", $identifier = "Auftragsnr", $update = "istErledigt = 0");

@@ -145,6 +145,8 @@ function addTimeInputs(event) {
     event.target.parentNode.insertBefore(p, event.target);
     input1.addEventListener("change", calcTime, false);
     input2.addEventListener("change", calcTime, false);
+
+    input1.focus();
 }
 
 /* https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_dropdown */
@@ -160,6 +162,15 @@ window.addEventListener("click", function(event) {
         }
     }
 }, false);
+
+document.addEventListener("keyup", (e) => {
+    if (e.code === "Enter" || e.code === "NumpadEnter") {
+        var element = document.activeElement;
+        if (element.parentNode.classList.contains("timeInputWrapper")) {
+            element.parentNode.parentNode.querySelector("button").click();
+        }
+    }
+});
 
 function addTime() {
     var zeiterfassung = {
@@ -185,6 +196,11 @@ function addTime() {
 
     if (globalData.isOverwrite) {
         params.isOverwrite = true;
+    }
+
+    if (params.wage == "" || params.wage == null) {
+        alert("Stundenlohn kann nicht leer sein.");
+        return;
     }
 
     /* quick fix, if times didn't get a new value, set to empty */
