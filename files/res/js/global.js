@@ -421,6 +421,7 @@ var FileUploader = function(target) {
 		this.target = target;
 		this.files = target.querySelector('input[type="file"]');
 		this.files.addEventListener("change", this.preview.bind(this), false);
+		this.fileArrayDragDrop = [];
 
 		let uploadNode = document.createElement("input");
 		uploadNode.type = "range";
@@ -455,6 +456,8 @@ var FileUploader = function(target) {
 		hidden.type = "text";
 		hidden.value = this.target.dataset.target;
 		this.target.appendChild(hidden);
+
+		this.initializeDragAndDrop();
 	} else
 		return null;
 }
@@ -479,7 +482,14 @@ FileUploader.prototype.upload = function() {
 		}
 
 		let files = target.querySelector('input[name="uploadedFile"]');
-		
+
+		if (this.fileArrayDragDrop.length == 0 && files.files.length == 0) {
+			reject();
+		}
+
+		for (let i = 0; i < this.fileArrayDragDrop.length; i++) {
+			formData.append("files[]", this.fileArrayDragDrop[i]);
+		}
 		for (let i = 0; i < files.files.length; i++) {
 			formData.append("files[]", files.files[i]);
 		}
@@ -501,7 +511,7 @@ FileUploader.prototype.upload = function() {
 			}
 		}, false);
 		ajax.send(formData);
-	}); 
+	}.bind(this)); 
 }
 
 /* https://www.mediaevent.de/javascript/ajax-2-xmlhttprequest.html */
@@ -520,6 +530,47 @@ FileUploader.prototype.preview = function() {
 		})(f);
 		reader.readAsDataURL(f);
 	}
+}
+
+FileUploader.prototype.initializeDragAndDrop = function() {
+	document.getElementsByClassName("filesList")[0].addEventListener("drop", function(e) {
+		this.ondropHandler(e);
+	}.bind(this), false);
+	document.getElementsByClassName("filesList")[0].addEventListener("dragover", function(e) {
+		this.ondragHandler(e);
+	}.bind(this), false);
+}
+
+FileUploader.prototype.ondropHandler = function(e) {
+	e.preventDefault();
+
+	if (e.dataTransfer.files) {
+		[...e.dataTransfer.files].forEach((item, i) => {
+			if (item.type.match('image.*')) {
+				let reader = new FileReader();
+				reader.onload = (function(_file) {
+					return function(e) {
+						let span = document.createElement("span");
+						span.innerHTML = ['<img class="upload_prev" src="', e.target.result, '" title="', escape(_file.name), '"/>'].join('');
+						document.querySelector(".filesList").insertBefore(span, null);
+					}
+				})(item);
+				reader.readAsDataURL(item);
+			} else {
+				let span = document.createElement("span");
+				span.innerHTML = `<i>${item.name}</i>`;
+				document.querySelector(".filesList").insertBefore(span, null);
+			}
+
+			this.fileArrayDragDrop.push(item);
+		})
+	}
+
+	e.target.style.height = "auto";
+}
+
+FileUploader.prototype.ondragHandler = function(e) {
+	e.preventDefault();
 }
 
 /* info button code 

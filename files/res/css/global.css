@@ -700,3 +700,14 @@ input#hamburg {
     background-color: #b38484;
     color: white;
 }
+
+.filesList {
+    background-color: white;
+    border: none;
+    border-radius: 12px;
+    width: 100%;
+    height: 100px;
+    box-sizing: border-box;
+    margin: 0;
+    margin-top: 15px;
+}

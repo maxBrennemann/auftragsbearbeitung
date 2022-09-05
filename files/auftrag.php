@@ -335,11 +335,6 @@ if ($auftragsId == -1): ?>
 		</div>
 		<script>var cp = new Colorpicker(document.getElementById("cpContainer"));</script>
 	</div>
-	<div class="defCont produkt">
-		<div id="selectProdukt">
-			<span>Produkt suchen: <input type="text"><button onclick="performSearch(event)">&#x1F50E;</button></span>
-		</div>
-	</div>
 	<?php if ($show == false): ?>
 	<div class="defCont upload">
 		<div>
@@ -348,6 +343,8 @@ if ($auftragsId == -1): ?>
 				<input type="file" name="uploadedFile" multiple>
 				<input name="auftrag" value="<?=$auftragsId?>" hidden>
 			</form>
+			<br>
+			<span>Hier Dateien per Drag&Drop ablegen:</span>
 			<div class="filesList defCont"></div>
 		</div>
 		<br>
