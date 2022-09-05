@@ -10,6 +10,7 @@
         <li>Benachrichtigungsmenü ist übersichtlicher</li>
         <li>Mobile Ansicht wurde optimiert</li>
         <li>Link zum neuen Textilkonfigurator wurde hinzugefügt</li>
+        <li>Verbesserungen aus den Vorschlägen</li>
     </ul>
     <h3>1.1.15</h3>
     <ul>
