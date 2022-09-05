@@ -1,7 +1,7 @@
 
 main {
     display: grid;
-    grid-template-areas: "auftrag auftrag kunde" "schritte schritte schritteAdd" "posten posten posten" "invoice invoice invoice" "fahrzeuge farben preis" "produkt produkt produkt" "upload upload verlauf" "liste liste liste";
+    grid-template-areas: "auftrag auftrag kunde" "schritte schritte schritteAdd" "posten posten posten" "invoice invoice invoice" "fahrzeuge farben preis" "upload upload verlauf" "liste liste liste";
 }
 
 table {
@@ -343,7 +343,6 @@ aside {
             "fahrzeuge farben"
             "preis preis"
             "postenadd postenadd"
-            "produkt produkt"
             "upload verlauf"
             "liste liste";
     }
@@ -365,7 +364,6 @@ aside {
             "farben"
             "preis"
             "postenadd"
-            "produkt"
             "upload"
             "verlauf"
             "liste";
