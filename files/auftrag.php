@@ -337,17 +337,17 @@ if ($auftragsId == -1): ?>
 	</div>
 	<?php if ($show == false): ?>
 	<div class="defCont upload">
-		<div>
-			<form class="fileUploader" method="post" enctype="multipart/form-data" data-target="order" name="auftragUpload">
-				Dateien zum Auftrag hinzufügen:
-				<input type="file" name="uploadedFile" multiple>
-				<input name="auftrag" value="<?=$auftragsId?>" hidden>
-			</form>
-			<br>
-			<span>Hier Dateien per Drag&Drop ablegen:</span>
-			<div class="filesList defCont"></div>
-		</div>
-		<br>
+		<u>Dateien zum Auftrag hinzufügen:</u>
+		<form class="fileUploader" method="post" enctype="multipart/form-data" data-target="order" name="auftragUpload" id="uploadFilesOrder">
+			<input name="auftrag" value="<?=$auftragsId?>" hidden>
+		</form>
+		<p>Hier Dateien per Drag&Drop ablegen oder 
+			<label class="uploadWrapper">
+				<input type="file" name="uploadedFile" multiple class="fileUploadBtn" form="uploadFilesOrder">
+				hier hochladen
+			</label>
+		</p>
+		<div class="filesList defCont"></div>
 		<div id="showFilePrev">
 			<?=$showFiles?>
 		</div>
