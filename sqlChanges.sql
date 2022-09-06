@@ -481,3 +481,6 @@ ALTER TABLE `user_notifications` CHANGE `ischecked` `ischecked` TINYINT(1) NOT N
 /* Änderungen 30.08.2022 */
 ALTER TABLE `produkt` CHANGE `Preis` `Preis` INT NOT NULL;
 ALTER TABLE `produkt` CHANGE `Einkaufspreis` `Einkaufspreis` INT NOT NULL;
+
+/* Änderungen 06.09.2022 */
+UPDATE `history_type` SET `name` = 'Dateien' WHERE `history_type`.`type_id` = 4;

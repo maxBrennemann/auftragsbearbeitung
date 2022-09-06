@@ -11,6 +11,7 @@
         <li>Mobile Ansicht wurde optimiert</li>
         <li>Link zum neuen Textilkonfigurator wurde hinzugefügt</li>
         <li>Verbesserungen aus den Vorschlägen</li>
+        <li>Drag and Drop für Dateiupload hinzugefügt</li>
     </ul>
     <h3>1.1.15</h3>
     <ul>

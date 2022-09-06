@@ -495,3 +495,11 @@ label {
 #addPostenProdukt input[type="search"] {
     display: inline-block !important;
 }
+
+#showFilePrev {
+    margin-top: 20px;
+}
+
+#uploadFilesOrder {
+    margin-top: 10px;
+}

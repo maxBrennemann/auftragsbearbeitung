@@ -419,55 +419,72 @@ function initializeFileUpload() {
 var FileUploader = function(target) {
 	if (target.nodeName == "FORM") {
 		this.target = target;
-		this.files = target.querySelector('input[type="file"]');
+		this.files = document.querySelector(`input[type="file"][form="${this.target.id}"]`);
 		this.files.addEventListener("change", this.preview.bind(this), false);
 		this.fileArrayDragDrop = [];
 
-		let uploadNode = document.createElement("input");
-		uploadNode.type = "range";
-		uploadNode.min = 0;
-		uploadNode.max = 100;
-		uploadNode.value = 0;
-		uploadNode.disabled = true;
-
-		let uploadButton = document.createElement("input");
-		uploadButton.type = "button";
-		uploadButton.value = "Hochladen";
-		uploadButton.addEventListener("click", function() {
-			this.upload()
-				.then(
-					this.target.reset()
-				)
-				.catch(function (e) {
-					console.log(e.statusText);
-				}
-				);
-		}.bind(this), false);
-
-		this.target.appendChild(uploadButton);
-		this.target.appendChild(uploadNode);
-
-		this.uploadNode = uploadNode;
-
-		/* adds form element to set a post parameter to determine on the server that it is an file upload */
-		let hidden = document.createElement("input");
-		hidden.name = "upload";
-		hidden.hidden = true;
-		hidden.type = "text";
-		hidden.value = this.target.dataset.target;
-		this.target.appendChild(hidden);
-
+		this.initHTML();
 		this.initializeDragAndDrop();
 	} else
 		return null;
 }
 
+FileUploader.prototype.resetUploader = function() {
+	this.target.reset();
+	var filesList = document.querySelector(".filesList");
+	filesList.innerHTML = "";
+	filesList.style.height = "100px";
+	this.uploadNode.value = 0;
+}
+
+FileUploader.prototype.initHTML = function() {
+	let uploadNode = document.createElement("input");
+	uploadNode.type = "range";
+	uploadNode.min = 0;
+	uploadNode.max = 100;
+	uploadNode.value = 0;
+	uploadNode.disabled = true;
+
+	let uploadButton = document.createElement("input");
+	uploadButton.type = "button";
+	uploadButton.value = "Hochladen";
+	uploadButton.classList.add("custom-file-upload");
+	uploadButton.addEventListener("click", function() {
+		const upload = this.upload();
+		upload.then(result => {
+				this.resetUploader();
+				infoSaveSuccessfull("success");
+			}).catch((e) => {
+				console.log(e);
+			});
+	}.bind(this), false);
+
+	this.target.appendChild(uploadButton);
+	this.target.appendChild(uploadNode);
+
+	this.uploadNode = uploadNode;
+
+	/* adds form element to set a post parameter to determine on the server that it is an file upload */
+	let hidden = document.createElement("input");
+	hidden.name = "upload";
+	hidden.hidden = true;
+	hidden.type = "text";
+	hidden.value = this.target.dataset.target;
+	this.target.appendChild(hidden);
+}
+
 FileUploader.prototype.upload = function() {
 	let target = document.forms.namedItem(this.target.name);
 	let uploadNode = this.uploadNode;
+
+	let files = document.querySelector(`input[type="file"][form="${target.id}"]`);
+
+	if (this.fileArrayDragDrop.length == 0 && files.files.length == 0) {
+		return Promise.reject("no files selected");
+	}
+
 	return new Promise(function(resolve, reject) {
 		var formData = new FormData(target);
-		//formData.append("upload", target.dataset.target);
 		var ajax = new XMLHttpRequest();
 
 		/* resolves the promise and then function with the form reset is called */
@@ -479,12 +496,6 @@ FileUploader.prototype.upload = function() {
 				document.querySelector(".filesList").parentNode.removeChild(document.querySelector(".filesList").previousSibling);
 				resolve();
 			}
-		}
-
-		let files = target.querySelector('input[name="uploadedFile"]');
-
-		if (this.fileArrayDragDrop.length == 0 && files.files.length == 0) {
-			reject();
 		}
 
 		for (let i = 0; i < this.fileArrayDragDrop.length; i++) {
@@ -529,6 +540,7 @@ FileUploader.prototype.preview = function() {
 			}
 		})(f);
 		reader.readAsDataURL(f);
+		document.querySelector(".filesList").style.height = "auto";
 	}
 }
 

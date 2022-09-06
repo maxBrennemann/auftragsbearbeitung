@@ -711,3 +711,24 @@ input#hamburg {
     margin: 0;
     margin-top: 15px;
 }
+
+/* fileuploadbutton */
+.fileUploadBtn {
+    display: none;
+}
+
+.custom-file-upload {
+    border: 1px solid black;
+    border-radius: 6px;
+    background-color: white;
+    padding: 5px;
+    margin: 5px;
+    font-size: 0.8em;
+    box-sizing: border-box;
+}
+
+.uploadWrapper {
+    font-size: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+}
