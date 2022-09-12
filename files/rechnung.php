@@ -110,7 +110,7 @@ if ($target == "create"): ?>
 		</div>
 		<hr>
 		<h4>Reihenfolge aller Rechnungsposten</h4>
-		<p>Fehler: Falls das Leistungsdatum doppelt angezeigt wird, bitte die Seite neu laden</p>
+		<p>Fehler: Falls das Leistungsdatum doppelt angezeigt wird oder Inhalte fehlen, bitte die Seite neu laden</p>
 		<div id="allInvoiceItemsTable"><?=Rechnung::getAllInvoiceItems($id)?></div>
 		<hr>
 		<?php if ($auftrag != null && $auftrag->getAuftragspostenData() != null): ?>

@@ -432,7 +432,7 @@ class Rechnung {
 
 	public static function getAllInvoiceItems($orderId, $rechnung = null) {
 		/* posten, leistungsdatum, texte, fahrzeuge */
-		if ($rechnung == null) {
+		if ($rechnung == null && isset($_SESSION['tempInvoice'])) {
 			$rechnung = unserialize($_SESSION['tempInvoice']);
 		}
 		
