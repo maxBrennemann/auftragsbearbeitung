@@ -23,15 +23,29 @@
     $verbesserungen;
 
     if (isset($_GET['t']) && $_GET['t'] == 'details') {
-        $verbesserungen = DBAccess::selectQuery("SELECT verbesserungen AS Verbesserungen, erledigt, erstelldatum AS Datum FROM verbesserungen ORDER BY Datum DESC");
+        $query = "SELECT verbesserungen AS Verbesserungen, erledigt, erstelldatum AS Datum, mitarbeiter.Vorname AS `Erstellt von` 
+        FROM verbesserungen
+        LEFT JOIN members ON verbesserungen.creator = members.id
+        LEFT JOIN members_mitarbeiter ON members_mitarbeiter.id_member = members.id
+        LEFT JOIN mitarbeiter ON mitarbeiter.id = members_mitarbeiter.id_mitarbeiter
+        ORDER BY Datum DESC";
+        $verbesserungen = DBAccess::selectQuery($query);
     } else {
-        $verbesserungen = DBAccess::selectQuery("SELECT verbesserungen AS Verbesserungen, erledigt, erstelldatum AS Datum FROM verbesserungen WHERE erledigt = '' ORDER BY Datum DESC");
+        $query = "SELECT verbesserungen AS Verbesserungen, erledigt, erstelldatum AS Datum, mitarbeiter.Vorname AS `Erstellt von` 
+        FROM verbesserungen
+        LEFT JOIN members ON verbesserungen.creator = members.id
+        LEFT JOIN members_mitarbeiter ON members_mitarbeiter.id_member = members.id
+        LEFT JOIN mitarbeiter ON mitarbeiter.id = members_mitarbeiter.id_mitarbeiter
+        WHERE erledigt = ''
+        ORDER BY Datum DESC";
+        $verbesserungen = DBAccess::selectQuery($query);
     }
 
     $column_names = array(
-        0 => array("COLUMN_NAME" => "Verbesserungen"), 
-        1 => array("COLUMN_NAME" => "erledigt"),
-        2 => array("COLUMN_NAME" => "Datum")
+        0 => array("COLUMN_NAME" => "Verbesserungen"),
+        1 => array("COLUMN_NAME" => "Erstellt von"),
+        2 => array("COLUMN_NAME" => "erledigt"),
+        3 => array("COLUMN_NAME" => "Datum")
     );
 
     $table = new Table();

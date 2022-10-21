@@ -78,6 +78,8 @@ class Rechnung {
 		$pdf->SetFont("helvetica", "", 12);
         $this->fillAddress($pdf);
 
+		$pdf->Image("files/res/image/b-schriftung_logo.jpg", 120, 22, 60);
+
 		$pdf->setXY(120, 30);
 		$pdf->setFontStretching(200);
 		$pdf->SetFont("helvetica", "B", 17);

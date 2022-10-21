@@ -484,3 +484,11 @@ ALTER TABLE `produkt` CHANGE `Einkaufspreis` `Einkaufspreis` INT NOT NULL;
 
 /* Änderungen 06.09.2022 */
 UPDATE `history_type` SET `name` = 'Dateien' WHERE `history_type`.`type_id` = 4;
+
+/* Änderunge 25.09.2022 */
+ALTER TABLE `verbesserungen` ADD `creator` INT NOT NULL AFTER `verbesserungen`;
+ALTER TABLE `verbesserungen` CHANGE `creator` `creator` INT(11) NULL DEFAULT NULL;
+ALTER TABLE `manual` ADD PRIMARY KEY(`id`);
+
+/* Änderungen 19.10.2022 */
+UPDATE `attachments` SET `fileSrc` = 'neuer-kunde_f.js' WHERE `attachments`.`id` = 49;
