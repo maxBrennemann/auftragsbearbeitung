@@ -126,4 +126,10 @@ function iterateManual(direction) {
     if (currentItem - 1 < params.manual.texts.length && currentItem - 1 >= 0) {
         params.navigator.children[2].innerHTML = params.manual.texts[currentItem - 1];
     }
+
+    /* remove highlight from old current */
+    var oldItem = params.manual.items[params.manual.current - 1];
+    if (oldItem != undefined)
+        oldItem.classList.remove("highlight");
+    params.manual.current = currentItem;
 }

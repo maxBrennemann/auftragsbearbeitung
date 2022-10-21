@@ -16,7 +16,7 @@
 		<div class="linkBundle">
 			<a class="linkBundleLink" href="<?=$neuesProdukt?>">Neues Produkt</a><br>
 			<a class="linkBundleLink" href="<?=$diagramme?>">Diagramme</a><br>
-			<a class="linkBundleLink" href="<?=$leistungen?>">Leistungen</a><br>
+			<a class="linkBundleLink" href="<?=$leistungenLinks?>">Leistungen</a><br>
 		</div>
 		<a href="<?=$changelog?>" style="font-size: 0.5em; color: grey"><?=getCurrentVersion()?></a>
 	</footer>

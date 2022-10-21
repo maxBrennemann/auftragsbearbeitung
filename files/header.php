@@ -17,7 +17,7 @@
 	$diagramme =		Link::getPageLink("diagramme");
 	$auftragAnzeigen =	Link::getPageLink("auftrag");
 	$kunde =			Link::getPageLink("kunde");
-	$leistungen =		Link::getPageLink("leistungen");
+	$leistungenLinks =	Link::getPageLink("leistungen");
 	$toDo =				Link::getPageLink("verbesserungen");
 	$offeneRechnungen = Link::getPageLink("offene-rechnungen");
 	$funktionen = 		Link::getPageLink("functionalities");
