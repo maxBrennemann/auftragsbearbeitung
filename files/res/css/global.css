@@ -54,8 +54,9 @@ header aside div {
     max-width: 80%;
 }
 
-.notificatonWrapper {
+.notificationWrapper {
     overflow-y: scroll;
+    height: calc(80vh - 100px);
 }
 
 .settingsContainer {
