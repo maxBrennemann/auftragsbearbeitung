@@ -101,7 +101,7 @@ function startFunc() {
 				var responseDiv = document.createElement("div");
 				responseDiv.innerHTML = response;
 				args[0].appendChild(responseDiv);
-				responseDiv.classList.add("notificatonWrapper");
+				responseDiv.classList.add("notificationWrapper");
 				addActionButtonForDiv(args[0], "hide");
 				centerAbsoluteElement(args[0]);
 			}, div);
@@ -737,7 +737,7 @@ async function updateNotifications() {
 		return result;
 	});
 
-	replacementDiv.classList.add("notificatonWrapper");
+	replacementDiv.classList.add("notificationWrapper");
 
 	var toReplace = containerDiv.children[1];
 	containerDiv.replaceChild(replacementDiv, toReplace); 
