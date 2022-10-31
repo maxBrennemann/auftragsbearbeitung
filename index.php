@@ -42,6 +42,10 @@ if (file_exists($cacheFile) && !(count($_GET) || count($_POST)) && $t && $status
 		ob_start();
 	}
 
+	if (isset($_POST['logout_session'])) {
+		handleLogout();
+	}
+
 	/*
 	* filters AJAX requests and delegates them to the right files
 	*/
@@ -157,6 +161,13 @@ function showPage($page, $isArticle) {
 	include('files/header.php');
 	include($baseUrl . $articleUrl);
 	include('files/footer.php');
+}
+
+function handleLogout() {
+	setcookie(session_name(), '', 100);
+	session_unset();
+	session_destroy();
+	$_SESSION = array();
 }
 
 /*

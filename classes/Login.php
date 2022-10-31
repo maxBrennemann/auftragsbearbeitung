@@ -11,18 +11,18 @@ class Login {
 	}
 	
 	public static function manageRequest() {
-		if(isset($_POST['info'])) {
+		if (isset($_POST['info'])) {
 			$info = $_POST['info'];
 			
-			if($info == 'register') {
+			if ($info == 'register') {
 				self::register();
-			} else if($info == 'Einloggen') {
+			} else if ($info == 'Einloggen') {
 				self::login();
-			} else if($info == 'logout') {
+			} else if ($info == 'logout') {
 				$_SESSION = array();
 				
 				/* https://stackoverflow.com/questions/3512507/proper-way-to-logout-from-a-session-in-php*/
-				if(ini_get("session.use_cookies")) {
+				if (ini_get("session.use_cookies")) {
 					$params = session_get_cookie_params();
 					setcookie(session_name(), '', time() - 42000,
 						$params["path"], $params["domain"],
@@ -35,7 +35,7 @@ class Login {
 	}
 	
 	private static function login() {
-		if(!isset($_POST['loginData']) || !isset($_POST['password'])) {
+		if (!isset($_POST['loginData']) || !isset($_POST['password'])) {
 			return false;
 		}
 		
@@ -47,9 +47,9 @@ class Login {
 		$user = $user[0];
 		
 		/* Überprüfung des Passworts */
-		if($user !== false && password_verify($password, $user['password'])) {
+		if ($user !== false && password_verify($password, $user['password'])) {
 			$_SESSION['userid'] = $user['id'];
-			if($user['specialRole'] == 'admin') {
+			if ($user['specialRole'] == 'admin') {
 				$_SESSION['admin'] = $user['id'];
 				//die('Login erfolgreich. Weiter zum <a href="https://max-website.tk/admin/">Admin-Bereich</a>');
 			} else {
@@ -61,6 +61,7 @@ class Login {
 			}*/
 			
 			$_SESSION['loggedIn'] = true;
+			self::handleAutoLogin();
 		} else {
 			echo "E-Mail / Benutzername oder Passwort war ungültig<br>";
 			return false;
@@ -70,9 +71,36 @@ class Login {
 
 		return true;
 	}
+
+	private static function handleAutoLogin() {
+		if (isset($_POST["setAutoLogin"])) {
+			$status = $_POST["setAutoLogin"];
+			if ($status == "0") {}
+				// store autologin hash and set expire date, set autologin checkbox to true as default value
+				// later:: my devices
+			
+				$jsData = $_POST["browserInfo"];
+
+				$ip = $_SERVER['REMOTE_ADDR'];
+				$browser = $_SERVER['HTTP_USER_AGENT'];
+				$dateInTwoWeeks = new DateTime();
+				$dateInTwoWeeks->modify("+2 week");
+				$dateInTwoWeeks = $dateInTwoWeeks->format("Y-m-d");
+				$user_id = "0";
+				$random_part = bin2hex(random_bytes(6));
+				$hash = md5($jsData . $random_part);
+				/* browser agent stays empty for now */
+
+				$query = "INSERT INTO user_login (`user_id`, md_hash, expiration_date, device_name, ip_adress) VALUES ($user_id, '$hash', '$dateInTwoWeeks', '$browser', '$ip')";
+
+				echo $query;
+				DBAccess::insertQuery($query);
+			//}
+		}
+	}
 	
 	private static function register() {
-		if(!isset($_POST['email']) || !isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['password2'])) {
+		if (!isset($_POST['email']) || !isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['password2'])) {
 			return false;
 		}
 		
@@ -82,47 +110,47 @@ class Login {
 		$password = $_POST['password'];
 		$password2 = $_POST['password2'];
 		
-		if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			echo 'Bitte eine gültige E-Mail-Adresse eingeben<br>';
 			$error = true;
 		}
 		
-		if(strlen($password) == 0) {
+		if (strlen($password) == 0) {
 			echo 'Bitte ein Passwort angeben<br>';
 			$error = true;
 		}
 		
-		if($password != $password2) {
+		if ($password != $password2) {
 			echo 'Die Passwörter müssen übereinstimmen<br>';
 			$error = true;
 		}
 		
 		/* Überprüfe, dass die E-Mail-Adresse noch nicht registriert wurde */
-		if(!$error) { 
+		if (!$error) { 
 			$user = DBAccess::selectQuery("SELECT * FROM members WHERE email = '$email'");
 			
-			if(!empty($user)) { //($user !== false) {
+			if (!empty($user)) { //($user !== false) {
 				echo 'Diese E-Mail-Adresse ist bereits vergeben<br>';
 				$error = true;
 			}
 			
 			$user = DBAccess::selectQuery("SELECT * FROM members WHERE username = '$username'");
 			
-			if(!empty($user)) { //$user !== false) {
+			if (!empty($user)) { //$user !== false) {
 				echo 'Dieser Benutzername ist bereits vergeben<br>';
 				$error = true;
 			}
 		}
 		
 		/* Keine Fehler, wir können den Nutzer registrieren */
-		if(!$error) {    
+		if (!$error) {    
 			$password_hash = password_hash($password, PASSWORD_DEFAULT);
 			
 			$params = array('username' => $username, 'email' => $email, 'password' => $password_hash);
 			$insert = "INSERT INTO members (username, email, password) VALUES (:username, :email, :password)";
 			$result = DBAccess::insertQuery($insert, $params);
 			
-			if($result) {        
+			if ($result) {        
 				echo 'Du wurdest erfolgreich registriert. <a href="login.php">Zum Login</a>';
 			} else {
 				echo 'Beim Abspeichern ist leider ein Fehler aufgetreten<br>';
