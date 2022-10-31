@@ -1,14 +1,24 @@
 <?php
-    if(isset($_POST['info'])) {
+    if (isset($_POST['info'])) {
         Login::manageRequest();
         header("Refresh:0");
     }
 ?>
 <form method="post">
-    <input type="text" name="loginData" autofocus placeholder="Nutzername oder Email"><br>
-    <input type="password" name="password" placeholder="Passwort"><br>
+    <input type="text" name="loginData" autofocus placeholder="Nutzername oder Email">
+    <br>
+    <input type="password" name="password" placeholder="Passwort">
+    <br>
+    <input type="checkbox" name="setAutoLogin">
+    <label for="setAutoLogin">Eingeloggt bleiben</label>
+    <!-- lazy solution for now -->
+    <input type="text" hidden name="browserInfo" id="userAgent">
+    <br>
     <input type="submit" value="Einloggen" name="info">
 </form>
+<script>
+    document.getElementById("userAgent").value = window.navigator.userAgent;
+</script>
 <style>
     form {
         border-radius: 6px;

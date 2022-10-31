@@ -86,6 +86,23 @@ function startFunc() {
 		}
 	}
 
+	listener_logout();
+	listener_bellAndSearch();
+	initializeFileUpload();
+	initializeInfoBtn();
+}
+
+function listener_logout() {
+	var logout = document.getElementById("logoutBtn");
+	logout.addEventListener("click", function() {
+		var logout = new AjaxCall(`logout_session=logout`, "POST", window.location.href);
+		logout.makeAjaxCall(function (response) {
+			location.reload();
+		});
+	}, false);
+}
+
+function listener_bellAndSearch() {
 	var bellAndSearch = document.getElementsByClassName("settingsContainer")[0];
 	bellAndSearch.addEventListener("click", function(event) {
 		if (event.target.id == "settings") {
@@ -109,9 +126,6 @@ function startFunc() {
 			document.getElementById("showNotifications").style.display = "inline";
 		}
 	}, false);
-
-	initializeFileUpload();
-	initializeInfoBtn();
 }
 
 function validateEmail(email) {

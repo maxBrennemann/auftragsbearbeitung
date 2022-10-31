@@ -142,6 +142,9 @@
 					<span>&#128276;</span>
 					<span id="settings">⚙</span>
 				</div>
+				<div class="logoutContainer">
+					<span id="logoutBtn">▯➙</span>
+				</div>
 			</aside>
 		</section>
 		<div class="hamburgerDiv">

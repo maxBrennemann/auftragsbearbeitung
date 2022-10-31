@@ -492,3 +492,10 @@ ALTER TABLE `manual` ADD PRIMARY KEY(`id`);
 
 /* Änderungen 19.10.2022 */
 UPDATE `attachments` SET `fileSrc` = 'neuer-kunde_f.js' WHERE `attachments`.`id` = 49;
+
+/* Änderungen 31.10.2022 */
+CREATE TABLE `user_login` ( `id` INT NOT NULL , `user_id` INT NOT NULL , `md_hash` VARCHAR(64) NOT NULL , `expiration_date` DATE NOT NULL , `device_name` VARCHAR(64) NOT NULL , `ip_adress` VARCHAR(64) NOT NULL , `browser_agent` VARCHAR(64) NOT NULL ) ENGINE = InnoDB;
+ALTER TABLE `user_login` CHANGE `device_name` `device_name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+ALTER TABLE `user_login` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);
+ALTER TABLE `user_login` DROP `device_name`;
+ALTER TABLE `user_login` ADD `device_name` TEXT NOT NULL AFTER `expiration_date`;
