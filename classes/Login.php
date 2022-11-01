@@ -9,6 +9,16 @@ class Login {
 	function __construct() {
 		
 	}
+
+	public static function handleLogout() {
+		$key = $_POST["loginkey"];
+		DBAccess::deleteQuery("DELETE FROM `user_login` WHERE `loginkey` = '$key'");
+
+		setcookie(session_name(), '', 100);
+		session_unset();
+		session_destroy();
+		$_SESSION = array();
+	}
 	
 	public static function manageRequest() {
 		if (isset($_POST['info'])) {
@@ -72,7 +82,7 @@ class Login {
 		return true;
 	}
 
-	private static function handleAutoLogin() {
+	public static function handleAutoLogin() {
 		if (isset($_POST["setAutoLogin"])) {
 			$status = $_POST["setAutoLogin"];
 			if ($status == "0") {}
@@ -86,14 +96,14 @@ class Login {
 				$dateInTwoWeeks = new DateTime();
 				$dateInTwoWeeks->modify("+2 week");
 				$dateInTwoWeeks = $dateInTwoWeeks->format("Y-m-d");
-				$user_id = "0";
+				$user_id = $_SESSION['userid'];
 				$random_part = bin2hex(random_bytes(6));
 				$hash = md5($jsData . $random_part);
 				/* browser agent stays empty for now */
 
-				$query = "INSERT INTO user_login (`user_id`, md_hash, expiration_date, device_name, ip_adress) VALUES ($user_id, '$hash', '$dateInTwoWeeks', '$browser', '$ip')";
+				$query = "INSERT INTO user_login (`user_id`, md_hash, expiration_date, device_name, ip_adress, loginkey) VALUES ($user_id, '$hash', '$dateInTwoWeeks', '$browser', '$ip', '$random_part')";
 
-				echo $query;
+				echo json_encode([$jsData, $random_part]);
 				DBAccess::insertQuery($query);
 			//}
 		}
