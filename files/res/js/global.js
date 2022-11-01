@@ -263,7 +263,7 @@ function createTable(rows, columns, data, emptyFields) {
 
 	added encodeURIComponent to make ajax requests safer
 */
-var AjaxCall = function(param, ajaxType) {
+var AjaxCall = function(param, ajaxType, url) {
 	this.type = (ajaxType != null) ? ajaxType : "POST";
 
 	if (typeof param === 'string') {
@@ -276,7 +276,7 @@ var AjaxCall = function(param, ajaxType) {
 
 		this.paramString = temp.slice(0, -1);// encodeURIComponent(temp.slice(0, -1));
 	}
-	this.url;
+	this.url = url;
 }
 
 AjaxCall.prototype.setType = function(type) {
