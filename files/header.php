@@ -135,15 +135,15 @@
 			<aside>
 				<div class="searchContainer">
 					<input class="searchItems" type="search" onchange="performGlobalSearch(event)">
-					<span class="searchItems lupeSpan"><span class="searchItems lupe">&#9906;</span></span>
+					<span class="searchItems lupeSpan" title="suche"><span class="searchItems lupe" title="Suche">&#9906;</span></span>
 				</div>
 				<div class="settingsContainer">
-					<span><?=NotificationManager::getNotificationCount();?></span>
-					<span>&#128276;</span>
-					<span id="settings">⚙</span>
+					<span title="Benachrichtigungen"><?=NotificationManager::getNotificationCount();?></span>
+					<span title="Benachrichtigungen">&#128276;</span>
+					<span id="settings" title="Einstellungen">⚙</span>
 				</div>
 				<div class="logoutContainer">
-					<span id="logoutBtn">▯➙</span>
+					<span id="logoutBtn" title="Ausloggen">▯➙</span>
 				</div>
 			</aside>
 		</section>

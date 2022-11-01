@@ -499,3 +499,6 @@ ALTER TABLE `user_login` CHANGE `device_name` `device_name` TEXT CHARACTER SET u
 ALTER TABLE `user_login` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);
 ALTER TABLE `user_login` DROP `device_name`;
 ALTER TABLE `user_login` ADD `device_name` TEXT NOT NULL AFTER `expiration_date`;
+
+/* Änderungen 01.10.2022 */
+ALTER TABLE `user_login` ADD `loginkey` CHAR(12) NOT NULL AFTER `md_hash`;

@@ -95,7 +95,12 @@ function startFunc() {
 function listener_logout() {
 	var logout = document.getElementById("logoutBtn");
 	logout.addEventListener("click", function() {
-		var logout = new AjaxCall(`logout_session=logout`, "POST", window.location.href);
+		var cookies = checkCookies();
+		var loginkey = "false";
+		if ("loginkey" in cookies) {
+			loginkey = cookies["loginkey"];
+		}
+		var logout = new AjaxCall(`logout_session=logout&loginkey=${loginkey}`, "POST", window.location.href);
 		logout.makeAjaxCall(function (response) {
 			location.reload();
 		});
@@ -774,4 +779,17 @@ function performGlobalSearch(e) {
 		addActionButtonForDiv(div, "remove");
 		centerAbsoluteElement(div);
     });
+}
+
+/* https://www.geekstrick.com/snippets/how-to-parse-cookies-in-javascript/ */
+function checkCookies() {
+	var cookies = document.cookie.split(";");
+	var cookieObj = {};
+	for (let i = 0; i < cookies.length; i++) {
+		var parts = cookies[i].split("=");
+		parts[0] = parts[0].substring(1);
+		cookieObj[parts[0]] = parts[1];
+	}
+
+	return cookieObj;
 }

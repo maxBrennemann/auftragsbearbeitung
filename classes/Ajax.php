@@ -935,6 +935,26 @@ class Ajax {
 				Produkt::addAttributeVariations($productId, $data);
 				echo "ok";
 			break;
+			case "checkAutoLogin":
+				$userAgent = $_POST["userAgent"];
+				$loginKey = $_POST["loginkey"];
+
+				$hash = md5($userAgent . $loginKey);
+				$query = "SELECT * FROM user_login WHERE md_hash = '$hash' AND expiration_date > CURDATE() LIMIT 1";
+				$data = DBAccess::selectQuery($query);
+
+				if ($data != null) {
+					$user = $data[0]["user_id"];
+					$_SESSION['userid'] = $user;
+			
+					/* special role check must be added later for autologin */
+					$_SESSION['loggedIn'] = true;
+					Login::handleAutoLogin();
+					echo "success";
+				} else {
+					echo "failed";
+				}
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);

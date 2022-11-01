@@ -43,7 +43,12 @@ if (file_exists($cacheFile) && !(count($_GET) || count($_POST)) && $t && $status
 	}
 
 	if (isset($_POST['logout_session'])) {
-		handleLogout();
+		Login::handleLogout();
+	}
+
+	if (isset($_POST['login_session'])) {
+		Login::manageRequest();
+		return null;
 	}
 
 	/*
@@ -161,13 +166,6 @@ function showPage($page, $isArticle) {
 	include('files/header.php');
 	include($baseUrl . $articleUrl);
 	include('files/footer.php');
-}
-
-function handleLogout() {
-	setcookie(session_name(), '', 100);
-	session_unset();
-	session_destroy();
-	$_SESSION = array();
 }
 
 /*
