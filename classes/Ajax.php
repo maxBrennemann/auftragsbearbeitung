@@ -955,6 +955,25 @@ class Ajax {
 					echo "failed";
 				}
 			break;
+			case "upgrade":
+				require_once("upgrade/UpgradeManager.php");
+				$query = $_POST["query"];
+				switch ($query) {
+					case 1:
+						UpgradeManager::executeFirstCommand();
+					break;
+					case 2:
+						$files = UpgradeManager::checkNewSQL();
+						$result = [];
+						foreach ($files as $file) {
+							array_push($result, UpgradeManager::executeSecondCommand($file));
+						}
+						echo json_encode($result);
+					break;
+					default:
+						echo "an error occured";
+				}
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
