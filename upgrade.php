@@ -11,11 +11,15 @@
     <h1>Auftragsbearbeitungsupdater</h1>
     <p>Aktuelle Version:<span id="actualVersion"></span></p>
     <button id="updateProject" data-binding="true">Update</button>
+    <code></code>
     <script>
+        var code;
         if (document.readyState !== 'loading' ) {
+            code = document.querySelector("code");
             init();
         } else {
             document.addEventListener('DOMContentLoaded', function () {
+                code = document.querySelector("code");
                 init();
             });
         }
@@ -34,8 +38,31 @@
         }
 
         async function click_updateProject() {
-            var print = await send({getReason:null}, "testDummy");
-            console.log(print);
+            var print = await send({query:1}, "upgrade");
+            print = JSON.parse(print);
+            codeAppend(print.command, true);
+            codeAppend(print.result);
+            var sqlQuery = await send({query:2}, "upgrade");
+            console.log(sqlQuery);
+            sqlQuery = JSON.parse(sqlQuery);
+            Object.entries(sqlQuery).forEach(
+                ([key, value]) => {
+                    codeAppend(value.command, true);
+                    codeAppend(value.result);
+                }
+            );
+
+            console.log(sqlQuery);
+        }
+
+        function codeAppend(text, style = false) {
+            var p = document.createElement("p");
+            p.innerHTML = text;
+            if (style) {
+                p.innerHTML += ":";
+                p.classList.add("styledCode");
+            }
+            code.appendChild(p);
         }
 
         function send(data, intent) {
@@ -56,4 +83,18 @@
             return response;
         }
     </script>
+    <style>
+        code {
+            background-color: black;
+            color: white;
+            padding: 7px;
+            white-space: pre-wrap;
+            display: block;
+            margin: 10px;
+        }
+
+        .styledCode {
+            color: #bada55
+        }
+    </style>
 </body>
