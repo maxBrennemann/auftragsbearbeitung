@@ -571,7 +571,12 @@ class Table {
 		$table_header = "<tr>";
 
 		for ($i = 0; $i < sizeof($column_names); $i++) {
-			$showColumnName = $column_names[$i]["COLUMN_NAME"];
+			$entry = $column_names[$i];
+			$showColumnName = $entry["COLUMN_NAME"];
+			if (isset($entry["ALT"])) {
+				$showColumnName = $entry["ALT"];
+			}
+			
 			$table_header .= "<th class='tableHead'>${showColumnName} <span class=\"cursortable\" onclick=\"sortTable(this, $i, true)\">&#x25B2;</span><span class=\"cursortable\" onclick=\"sortTable(this, $i, false)\">&#x25BC;</span></th>";
 		}
 

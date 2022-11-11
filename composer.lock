@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "498849de78c07177c1234bd237f30531",
+    "content-hash": "9e8438d72c745b65a324802a52a4aa3a",
     "packages": [
         {
             "name": "masterminds/html5",
@@ -74,6 +74,50 @@
                 "source": "https://github.com/Masterminds/html5-php/tree/2.7.5"
             },
             "time": "2021-07-01T14:25:37+00:00"
+        },
+        {
+            "name": "prestashop/prestashop-webservice-lib",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PrestaShop/PrestaShop-webservice-lib.git",
+                "reference": "b58cc0d3d745e6d9df2d892b81fde64872a10742"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PrestaShop/PrestaShop-webservice-lib/zipball/b58cc0d3d745e6d9df2d892b81fde64872a10742",
+                "reference": "b58cc0d3d745e6d9df2d892b81fde64872a10742",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-libxml": "*",
+                "ext-simplexml": "*",
+                "php": ">= 5.3.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "PSWebServiceLibrary.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "PrestaShop SA",
+                    "email": "contact@prestashop.com"
+                }
+            ],
+            "description": "PrestaShop Webservice access library",
+            "support": {
+                "issues": "https://github.com/PrestaShop/PrestaShop-webservice-lib/issues",
+                "source": "https://github.com/PrestaShop/PrestaShop-webservice-lib/tree/master"
+            },
+            "time": "2022-04-19T09:30:48+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
@@ -150,8 +194,10 @@
     ],
     "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "stable",
-    "stability-flags": [],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "prestashop/prestashop-webservice-lib": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

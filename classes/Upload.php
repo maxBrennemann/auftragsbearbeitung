@@ -49,14 +49,16 @@ class Upload {
     }
 
     public function uploadFilesMotive($name) {
-        $id = $this->uploadFiles();
+        $ids = $this->uploadFiles();
 
-        if ((int) $id != -1) {
-            $motivnummer = DBAccess::insertQuery("INSERT INTO motive (`name`) VALUES ('$name')");
-            DBAccess::insertQuery("INSERT INTO dateien_motive (id_datei, id_motive) VALUES ($id, $motivnummer)");
+        if (is_array($ids)) {
+            foreach ($ids as $id) {
+                $motivnummer = DBAccess::insertQuery("INSERT INTO motive (`name`) VALUES ('$name')");
+                DBAccess::insertQuery("INSERT INTO dateien_motive (id_datei, id_motive) VALUES ($id, $motivnummer)");
 
-            $link = Link::getPageLink("sticker") . "?id=" . $motivnummer;
-            header("Location:$link");
+                //$link = Link::getPageLink("sticker") . "?id=" . $motivnummer;
+                //header("Location:$link");
+            }
         }
     }
 

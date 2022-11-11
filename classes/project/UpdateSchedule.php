@@ -86,6 +86,16 @@ class UpdateSchedule {
                 
                 $result = $value;
                 break;
+            case "cm":
+                $value = explode(',', $value);
+                if (sizeof($value) == 2) {
+                    $value = ((int) $value[0]) + ((int) $value[1]);
+                } else {
+                    $value = ((int) $value[0]) * 10;
+                }
+                
+                $result = $value;
+                break;
         }
 
         return $result;

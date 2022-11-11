@@ -38,7 +38,7 @@
 			<a href="#" id="auftragsLink">Auftrag anzeigen</a>
 		</li>
 		<li><a href="<?=$diagramme?>">📈 Diagramme und Auswertungen</a></li>
-		<li><a href="<?=$leistungen?>">Leistungen</a></li>
+		<li><a href="<?=$leistungenLinks?>">Leistungen</a></li>
 		<li><a href="<?=$toDo?>">Verbesserungen für die Auftragsbearbeitung</a></li>
 		<li><a href="<?=$offeneRechnungen?>">Offene Rechnungen:</a> <b><?=$offeneSumme?>€</b></li>
 	</ul>
