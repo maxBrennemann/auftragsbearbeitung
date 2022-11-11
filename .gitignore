@@ -12,11 +12,13 @@ files/generated/sql_backups/*
 files/generated/invoice/*
 !files/generated/invoice/index.php
 
+upload/*
+!upload/index.php
+
 favicon.ico
 .vs/
 .vscode/
 .VSCodeCounter
-upload/
 img/
 auftragsbearbeitung.code-workspace
 cache/*

@@ -27,23 +27,29 @@
         $imageLink = Link::getResourcesShortLink($motivdata[0]['dateiname'], "upload");
     }
 
-    if (isset($_POST['filesubmitbtn'])) {
+    /*if (isset($_POST['filesubmitbtn'])) {
         $motivname = $_POST['motivname'];
 		$upload = new Upload();
 		$upload->uploadFilesMotive($motivname);
-    }
+    }*/
 
     if ($id == -1) :
 ?>
 <div class="defCont">
     <h3>Motiv</h3>
-    <form method="post" enctype="multipart/form-data">
+    <form class="fileUploader" method="post" enctype="multipart/form-data" data-target="motiv" id="uploadFilesMotive" name="motivUpload">
+        <input name="motiv" hidden>
         <label for="motivname">Motivname: </label>
         <input type="text" max="64" id="motivname" name="motivname" required><br>
-        <label for="uploadedFile">Motiv hochladen:</label><br>
-        <input type="file" name="uploadedFile" required>
-        <input type="submit" value="Datei hochladen" name="filesubmitbtn">
     </form>
+    <p>Hier Dateien per Drag&Drop ablegen oder 
+        <label class="uploadWrapper">
+            <input type="file" name="uploadedFile" multiple class="fileUploadBtn" form="uploadFilesMotive">
+            hier hochladen
+        </label>
+    </p>
+    <div class="filesList defCont"></div>
+    <div id="showFilePrev"></div>
 </div>
 <?php elseif ($id >= 1) : ?>
     <div class="defCont">

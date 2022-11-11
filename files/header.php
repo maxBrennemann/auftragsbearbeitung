@@ -26,6 +26,8 @@
 	$payments =			Link::getPageLink("payments");
 	$listmaker =		Link::getPageLink("listmaker");
 	$changelog = 		Link::getPageLink("changelog");
+	$zeiterfassung =	Link::getPageLink("zeiterfassung");
+	$motive = 			Link::getPageLink("sticker");
 ?>
 <!DOCTYPE html>
 <html>
@@ -110,7 +112,7 @@
 				<a href="<?=$diagramme?>">Diagramme und Auswertungen</a>
 			</li>
 			<li>
-				<a href="<?=$leistungen?>">Leistungen</a>
+				<a href="<?=$leistungenLinks?>">Leistungen</a>
 			</li>
 			<li>
 				<a href="<?=$listmaker?>">Listen</a>
@@ -123,6 +125,12 @@
 			</li>
 			<li>
 				<a href="<?=$funktionen?>">Funktionen</a>
+			</li>
+			<li>
+				<a href="<?=$zeiterfassung?>">Zeiterfassung</a>
+			</li>
+			<li>
+				<a href="<?=$motive?>">Motive</a>
 			</li>
 			<li>
 				<a href="<?=$changelog?>">Versionsverlauf</a>

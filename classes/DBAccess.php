@@ -3,8 +3,14 @@
 require_once('settings.php');
 
 class DBAccess {
-	private static $connection;
-	private static $statement;
+
+	protected static $connection;
+	protected static $statement;
+
+	private static $host = HOST;
+    private static $database = DATABASE;
+    private static $username = USERNAME;
+    private static $password = PASSWORD;
 	
 	function __construct() {
 		
@@ -12,7 +18,12 @@ class DBAccess {
 	
 	private static function createConnection() {
 		try {
-			self::$connection = new PDO("mysql:host=" . HOST . ";dbname=" . DATABASE . ";charset=utf8", USERNAME, PASSWORD);
+			$host = self::$host;
+            $database = self::$database;
+            $username = self::$username;
+            $password = self::$password;
+
+			self::$connection = new PDO("mysql:host=$host;dbname=$database;charset=utf8", $username, $password);
 			self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} catch(PDOException $e) {
 			die("Error connecting to database:<br>" . $e);

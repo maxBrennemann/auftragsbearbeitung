@@ -1,6 +1,8 @@
 {
     "require": {
         "masterminds/html5": "^2.0",
-        "tecnickcom/tcpdf": "^6.2.13"
-    }
+        "tecnickcom/tcpdf": "^6.2.13",
+        "prestashop/prestashop-webservice-lib": "dev-master"
+    },
+    "minimum-stability": "dev"
 }
