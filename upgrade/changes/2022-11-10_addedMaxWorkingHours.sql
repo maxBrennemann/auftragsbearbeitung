@@ -1,0 +1,1 @@
+ALTER TABLE `members` ADD `maxWorkingHours` INT NOT NULL AFTER `specialRole`;
