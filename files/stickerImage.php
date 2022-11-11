@@ -1,5 +1,6 @@
 <?php
     require_once('classes/project/StickerImage.php');
+    require_once('classes/project/StickerShopDBController.php');
 
     $id = 0;
     $stickerImage = null;
@@ -10,10 +11,9 @@
 
     if ($id != 0):
 ?>
-    <?=$stickerImage->isInShop()?>
     <div class="defCont cont1">
         <div>
-            <h2>Motiv: {{ Motivname }}</h2>
+            <h2>Motiv <span id="name"><?=$stickerImage->getName();?></span><button class="actionButton" data-binding="true" id="editName">✎</button></h2>
             <img src="https://klebefux.de/1175-large_default/aufkleber-sport-ist-mord.jpg">
         </div>
         <div>
@@ -60,7 +60,7 @@
                 </span>
             </div>
             <button id="aufkleberUebertragen" disabled>Aufkleber übertragen</button>
-            <p>Aufkleber ist im Shop</p>
+            <p><span><?php if($stickerImage->isInShop()):?>✓ <?php else:?>x <?php endif;?></span>Aufkleber ist im Shop</p>
         </section>
         <section class="innerDefCont">
             <p>Wandtatto <input class="right" type="checkbox"></p>
