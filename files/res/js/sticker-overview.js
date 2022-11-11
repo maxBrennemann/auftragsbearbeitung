@@ -38,6 +38,16 @@ function click_aufkleberPlottClick(e) {
     aufkleberPlottChecked = !aufkleberPlottChecked;
 }
 
+function click_editName(e) {
+    e.target.innerHTML = e.target.innerHTML == "✔" ? "✎" : "✔";
+    if (e.target.innerHTML == "✔") {
+        document.getElementById("name").contentEditable = 'true';
+    } else {
+        document.getElementById("name").contentEditable = 'false';
+    }
+    document.getElementById("name").classList.toggle("contentEditable");
+}
+
 function disableInputSlide(input) {
     input = document.getElementById(input);
     input.checked = false;

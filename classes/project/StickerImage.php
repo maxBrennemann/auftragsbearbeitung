@@ -23,6 +23,12 @@ class StickerImage {
         }*/
 
         $this->id = $id;
+        $this->name = "Sport ist Mord";
+
+        $query = "SELECT * FROM prstshp_product WHERE reference = {$this->id}";
+        $stickerDB = new StickerShopDBController();
+        $stickerDB->select($query);
+        $this->shopProducts = $stickerDB->getResult();
     }
 
     public static function creatStickerImage() {
@@ -31,15 +37,16 @@ class StickerImage {
         return new StickerImage($id);
     }
 
+    public function getName() {
+        return $this->name;
+    }
+
     private function generateLinks() {
 
     }
 
     public function isInShop() {
-        $query = "SELECT * FROM prstshp_product WHERE reference = {$this->id}";
-        $stickerDB = new StickerShopDBController();
-        $stickerDB->select($query);
-        $this->shopProducts = $stickerDB->getResult();
+        return $this->shopProducts == null ? false : true;
     }
 
     public function getSizeTable() {

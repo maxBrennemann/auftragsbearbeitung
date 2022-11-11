@@ -114,3 +114,7 @@ input:checked + .slider:before {
 .align-center table {
     text-align: left;
 }
+
+.contentEditable {
+    border: 1px dashed grey;
+}
