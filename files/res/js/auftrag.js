@@ -1121,9 +1121,11 @@ function performAction(key, event) {
 
     input.type = "file";
     input.name = "uploadedFile";
+    input.setAttribute("form", "uploadFilesPosten");
     form.classList.add("fileUploader");
     form.name = "postenAttachment";
     form.dataset.target = "postenAttachment";
+    form.id = "uploadFilesPosten";
 
     form.appendChild(input);
     div.appendChild(form);
@@ -1145,11 +1147,11 @@ function performAction(key, event) {
 	form.appendChild(tableKey);
 
     document.body.appendChild(div);
-    centerAbsoluteElement(div);
     addActionButtonForDiv(div, "remove");
 
     /* add new file uploader */
     fileUploaders.push(new FileUploader(form));
+    centerAbsoluteElement(div);
 }
 
 /*
