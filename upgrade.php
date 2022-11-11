@@ -76,7 +76,7 @@
 
             paramString = temp.slice(0, -1);
 
-            var response = makeAsyncCall("POST", paramString, "http://localhost/auftragsbearbeitung/c/").then(result => {
+            var response = makeAsyncCall("POST", paramString, window.location.origin).then(result => {
                 return result;
             });
 
