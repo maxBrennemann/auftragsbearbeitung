@@ -44,7 +44,7 @@
 <div class="defCont">
     <div class="zeit">
         <label class="switch">
-            <input type="checkbox">
+            <input type="checkbox" id="startStopChecked">
             <span class="slider round" id="startStopTime" data-binding="true"></span>
         </label>
         <p>Zeiterfassung <span id="updateStartStopName" data-update="startStopTime">starten</span></p>
@@ -84,6 +84,13 @@
                 }
             }.bind(fun_name), false);
         });
+
+        if (localStorage.getItem("startTime")) {
+            started = true;
+            interval = setInterval(countTime, 1000);
+            document.getElementById("updateStartStopName").innerHTML = "stoppen";
+            document.getElementById("startStopChecked").checked = true;
+        }
     }
 
     function click_startStopTime() {
@@ -106,6 +113,7 @@
         var task = document.getElementById("getTask").value;
         var table = await send({task:task}, "sendTimeTracking");
         document.getElementById("showTaskTable").innerHTML = table;
+        localStorage.clear("startTime");
     }
 
     function countTime() {
