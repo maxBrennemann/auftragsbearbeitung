@@ -7,6 +7,10 @@
     if (isset($_GET['id'])) {
         $id = (int) $_GET['id'];
         $stickerImage = new StickerImage($id);
+
+        $images = $stickerImage->getImages();
+        $mainImage = $images[0];
+        $getDownloadResources = $stickerImage->getFiles();
     }
 
     if ($id != 0):
@@ -14,11 +18,33 @@
     <div class="defCont cont1">
         <div>
             <h2>Motiv <span id="name"><?=$stickerImage->getName();?></span><button class="actionButton" data-binding="true" id="editName">✎</button></h2>
-            <img src="https://klebefux.de/1175-large_default/aufkleber-sport-ist-mord.jpg">
+            <p>Artikelnummer: <span id="motivId" data-variable="true"><?=$id?></span></p>
+            <img src="<?=$mainImage["link"]?>" class="imageBig">
+            <div>
+                <?php foreach ($images as $image): ?>
+                <img src="<?=$image["link"]?>" class="imagePrev">
+                <?php endforeach; ?>
+            </div>
         </div>
         <div>
-            <p>Download <a href="#">Bild</a><a href="#">SVG/EPS</a><a href="#">Letterpot</a></p>
-            <p>Erstellt am 29.12.2000<p>
+            <p>Download <?=$getDownloadResources?></p>
+            <p>Erstellt am 29.12.2000<button class="actionButton" data-binding="true" id="editDate">✎</button><p>
+        </div>
+        <hr style="width: 100%;">
+        <div>
+            <form class="fileUploader" method="post" enctype="multipart/form-data" data-target="motiv" id="uploadFilesMotive" name="motivUpload">
+                <input type="number" name="motivNumber" min="1" value="<?=$id?>" required hidden>
+                <input id="motivname" name="motivname" required value="<?=$stickerImage->getName()?>" hidden>
+                <input name="motiv" hidden>
+            </form>
+            <p>Hier Dateien per Drag&Drop ablegen oder 
+                <label class="uploadWrapper">
+                    <input type="file" name="uploadedFile" multiple class="fileUploadBtn" form="uploadFilesMotive">
+                    hier hochladen
+                </label>
+            </p>
+            <div class="filesList defCont"></div>
+            <div id="showFilePrev"></div>
         </div>
     </div>
     <div class="defCont cont2">
@@ -27,7 +53,7 @@
                 <span>Aufkleber Plott</span>
                 <span class="right">
                     <label class="switch">
-                        <input type="checkbox" id="aufkleberPlott">
+                        <input type="checkbox" id="aufkleberPlott" <?=$stickerImage->data["is_plotted"] == 1 ? "checked" : ""?> data-variable="true">
                         <span class="slider round" id="aufkleberPlottClick" data-binding="true"></span>
                     </label>
                 </span>
@@ -36,8 +62,8 @@
                 <span>kurzfristiger Aufkleber</span>
                 <span class="right">
                     <label class="switch">
-                        <input type="checkbox" id="aufkleberKurz">
-                        <span class="slider round"></span>
+                        <input type="checkbox" id="aufkleberKurz" <?=$stickerImage->data["is_short_time"] == 1 ? "checked" : ""?> data-variable="true">
+                        <span class="slider round" data-binding="true" data-fun="toggleCheckbox"></span>
                     </label>
                 </span>
             </div>
@@ -45,8 +71,8 @@
                 <span>langfristiger Aufkleber</span>
                 <span class="right">
                     <label class="switch">
-                        <input type="checkbox" id="aufkleberLang">
-                        <span class="slider round"></span>
+                        <input type="checkbox" id="aufkleberLang" <?=$stickerImage->data["is_long_time"] == 1 ? "checked" : ""?> data-variable="true">
+                        <span class="slider round" data-binding="true" data-fun="toggleCheckbox"></span>
                     </label>
                 </span>
             </div>
@@ -54,12 +80,13 @@
                 <span>mehrteilig</span>
                 <span class="right">
                     <label class="switch">
-                        <input type="checkbox" id="aufkleberMehrteilig">
-                        <span class="slider round"></span>
+                        <input type="checkbox" id="aufkleberMehrteilig" <?=$stickerImage->data["is_multipart"] == 1 ? "checked" : ""?> data-variable="true">
+                        <span class="slider round" data-binding="true" data-fun="toggleCheckbox"></span>
                     </label>
                 </span>
             </div>
-            <button id="aufkleberUebertragen" disabled>Aufkleber übertragen</button>
+            <button id="aufkleberUebertragen" <?=$stickerImage->data["is_plotted"] == 1 ? "" : "disabled"?>>Aufkleber übertragen</button>
+            <button id="saveAufkleber" data-binding="true">Speichern</button>
             <p><span><?php if($stickerImage->isInShop()):?>✓ <?php else:?>x <?php endif;?></span>Aufkleber ist im Shop</p>
         </section>
         <section class="innerDefCont">
@@ -69,7 +96,7 @@
         </section>
         <section class="innerDefCont">
             <p>Textil <input class="right" type="checkbox"></p>
-            <button>Aufkleber übertragen</button>
+            <button id="transferAufkleber" data-binding="true">Aufkleber übertragen</button>
             <p>Aufkleber ist im Shop</p>
         </section>
     </div>

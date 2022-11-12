@@ -48,18 +48,25 @@ class Upload {
         echo Upload::getFilesProduct($produktnummer);
     }
 
-    public function uploadFilesMotive($name) {
+    public function uploadFilesMotive($name, $id = 0) {
         $ids = $this->uploadFiles();
 
         if (is_array($ids)) {
-            foreach ($ids as $id) {
-                $motivnummer = DBAccess::insertQuery("INSERT INTO motive (`name`) VALUES ('$name')");
-                DBAccess::insertQuery("INSERT INTO dateien_motive (id_datei, id_motive) VALUES ($id, $motivnummer)");
-
-                //$link = Link::getPageLink("sticker") . "?id=" . $motivnummer;
-                //header("Location:$link");
+            $motivnummer = 0;
+            if ($id == 0) {
+                $motivnummer = DBAccess::insertQuery("INSERT INTO module_sticker_sticker_data (`name`) VALUES ('$name')");
+            } else{
+                $motivnummer = $id;
             }
+            
+            $imageIds = [];
+            foreach ($ids as $id) {
+                $imageId = DBAccess::insertQuery("INSERT INTO dateien_motive (id_datei, id_motive) VALUES ($id, $motivnummer)");
+                array_push($imageIds, $imageId);
+            }
+            return json_encode(["motiv" => $motivnummer, "imageIds" => $imageIds]);
         }
+        return json_encode(["error" => "an error occured"]);
     }
 
     public function uploadFilesPosten($postennummer) {

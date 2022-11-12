@@ -974,6 +974,13 @@ class Ajax {
 						echo "an error occured";
 				}
 			break;
+			case "setAufkleberParameter":
+				require_once('classes/project/StickerImage.php');
+				$id = (int) $_POST["id"];
+				$data = $_POST["json"];
+				$stickerImage = new StickerImage($id);
+				$stickerImage->saveSentData($data);
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);

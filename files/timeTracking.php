@@ -141,22 +141,22 @@
     }
 
     function send(data, intent) {
-            data.getReason = intent;
+        data.getReason = intent;
 
-            /* temporarily copied here */
-            let temp = "";
-            for (let key in data) {
-                temp += key + "=" + data[key] + "&";
-            }
-
-            paramString = temp.slice(0, -1);
-
-            var response = makeAsyncCall("POST", paramString, "http://localhost/auftragsbearbeitung/c/").then(result => {
-                return result;
-            });
-
-            return response;
+        /* temporarily copied here */
+        let temp = "";
+        for (let key in data) {
+            temp += key + "=" + data[key] + "&";
         }
+
+        paramString = temp.slice(0, -1);
+
+        var response = makeAsyncCall("POST", paramString, "").then(result => {
+            return result;
+        });
+
+        return response;
+    }
 </script>
 <style>
     /* https://www.w3schools.com/howto/howto_css_switch.asp */

@@ -118,3 +118,13 @@ input:checked + .slider:before {
 .contentEditable {
     border: 1px dashed grey;
 }
+
+.imageBig {
+    width: 200px;
+    height: auto;
+}
+
+.imagePrev {
+    width: 75px;
+    height: auto;
+}
