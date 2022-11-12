@@ -2,7 +2,6 @@
     require_once('classes/Upload.php');
 
     $externalUrl = "https://klebefux.de/folienplotter_files/img/clothes_img/test/bc_men_black.jpg";
-    $id = -1;
 
     function prepareSVG($svgData) {
         $replarr = array("fill:none", "fill: none");
@@ -18,22 +17,6 @@
             $svgData = substr_replace($svgData, "", $pos, 13);
         }
     }
-
-    if (isset($_GET['id'])) {
-        $id = (int) $_GET['id'];
-        $motivdata = DBAccess::selectQuery("SELECT `motive`.`id`, `motive`.`name`, dateien.dateiname, dateien.originalname FROM `motive`, dateien_motive, dateien WHERE motive.id = dateien_motive.id_motive AND dateien_motive.id_datei = dateien.id");
-        $motivname = $motivdata[0]['name'];
-
-        $imageLink = Link::getResourcesShortLink($motivdata[0]['dateiname'], "upload");
-    }
-
-    /*if (isset($_POST['filesubmitbtn'])) {
-        $motivname = $_POST['motivname'];
-		$upload = new Upload();
-		$upload->uploadFilesMotive($motivname);
-    }*/
-
-    if ($id == -1) :
 ?>
 <div class="defCont">
     <h3>Motiv</h3>
@@ -51,27 +34,3 @@
     <div class="filesList defCont"></div>
     <div id="showFilePrev"></div>
 </div>
-<?php elseif ($id >= 1) : ?>
-    <div class="defCont">
-    <h3>Motiv: "<b><?=$motivname?></b>"</h3>
-    <img src="<?=$imageLink?>" alt="<?=$motivname?>" width="150px" heigth="auto">
-</div>
-<div class="defCont">
-    <h3>Wo soll das Motiv verwendet werden?</h3>
-    <input type="checkbox" name="textil">
-    <label for="textil">Motiv auf Textil</label>
-    <br>
-    <input type="checkbox" name="aufkleber">
-    <label for="aufkleber">Motiv als Aufkleber</label>
-    <br>
-    <input type="checkbox" name="motiv">
-    <ilabel for="motiv">Motiv in den Konfiguratoren anbieten</label>
-</div>
-<div class="defCont">
-    <h3>Hintergrund auswählen</h3>
-</div>
-<div class="defCont">
-    <h3>Motiv in Textil einpassen</h3>
-</div>
-<button class="defCont">Speichern</button>
-<?php endif; ?>

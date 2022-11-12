@@ -84,8 +84,13 @@ if (file_exists($cacheFile) && !(count($_GET) || count($_POST)) && $t && $status
 			$upload->uploadFilesVehicle($fahrzeugnummer, $auftragsnummer);
 		} else if (strcmp($uploadDestination, "motiv") == 0) {
 			$motivname = $_POST['motivname'];
+
 			$upload = new Upload();
-			$upload->uploadFilesMotive($motivname);
+			if (isset($_POST["motivNumber"])) {
+				$upload->uploadFilesMotive($motivname, $_POST["motivNumber"]);
+			} else {
+				$upload->uploadFilesMotive($motivname);
+			}
 		}
 	} else {
 		if ($page == "pdf") {

@@ -78,6 +78,10 @@ class StickerShopDBController {
         }
     }
 
+    public function updateSticker() {
+        
+    }
+
 }
 
 ?>

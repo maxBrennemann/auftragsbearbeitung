@@ -8,27 +8,26 @@ class StickerImage {
     private $name;
     private $number;
 
+    public readonly array $data;
+
     private $shopProducts;
 
-    public $files;
+    private $allFiles = [];
+    private $images = [];
+    private $files = [];
 
     function __construct($id) {
-        /*$query = "SELECT dateiname, typ, motive.name, motive.id FROM motive JOIN dateien_motive ON dateien_motive.id_motive = motive.id, JOIN dateien dateien.id = dateien_motive.id_datei WHERE motive.id = $id";
-        $data = DBAccess::selectQuery($query);
-        $this->id = $data[0]["id"];
-        $this->files = [];
-
-        foreach ($data as $d) {
-            array_push($this->files, $d["dateiname"]);
-        }*/
-
+        $query = "SELECT * FROM module_sticker_sticker_data WHERE id = $id";
+        $data = DBAccess::selectQuery($query)[0];
         $this->id = $id;
-        $this->name = "Sport ist Mord";
+        $this->name = $data["name"];
+        $this->data = $data;
 
         $query = "SELECT * FROM prstshp_product WHERE reference = {$this->id}";
         $stickerDB = new StickerShopDBController();
         $stickerDB->select($query);
         $this->shopProducts = $stickerDB->getResult();
+        $this->getConnectedFiles();
     }
 
     public static function creatStickerImage() {
@@ -39,6 +38,22 @@ class StickerImage {
 
     public function getName() {
         return $this->name;
+    }
+
+    public function saveSticker() {
+        if ($this->isInShop()) {
+            $this->updateSticker();
+        } else {
+            $this->generateSticker();
+        }
+    }
+
+    private function updateSticker() {
+
+    }
+
+    private function generateSticker() {
+
     }
 
     private function generateLinks() {
@@ -92,6 +107,60 @@ class StickerImage {
 		$t->defineUpdateSchedule(new UpdateSchedule("module_sticker_sizes", $pattern));
         $_SESSION[$t->getTableKey()] = serialize($t);
 		return $t->getTable();
+    }
+
+    private function getConnectedFiles() {
+        $allFiles = DBAccess::selectQuery("SELECT dateien.dateiname, dateien.originalname AS title, dateien.typ FROM dateien, dateien_motive WHERE dateien_motive.id_datei = dateien.id AND dateien_motive.id_motive = {$this->id}");
+
+        $this->allFiles = $allFiles;
+        foreach ($this->allFiles as $f) {
+            /* https://stackoverflow.com/questions/15408125/php-check-if-file-is-an-image */
+            if(@is_array(getimagesize("upload/" . $f["dateiname"]))){
+                array_push($this->images, $f);
+            } else {
+                array_push($this->files, $f);
+            }
+        }
+    }
+
+    public function getImages() {
+        foreach ($this->images as &$image) {
+            $image["link"] = Link::getResourcesShortLink($image["dateiname"], "upload");
+            $image["alt"] = "";
+        }
+
+        if (sizeof($this->images) == 0) {
+            $this->images = [
+                0 => [
+                    "title" => "default image",
+                    "alt" => "default image",
+                    "link" => Link::getResourcesShortLink("default_image.png", "upload")
+                ],
+            ];
+        }
+
+        return $this->images;
+    }
+
+    public function getFiles() {
+        $download = "";
+        foreach ($this->files as $f) {
+            $link = Link::getResourcesShortLink($f["dateiname"], "upload");
+            $download .= "<a href=\"$link\">" . strtoupper($f["typ"]) . "</a>";
+        }
+        return $download;
+    }
+
+    /* save sticker fields */
+    public function saveSentData($jsonData) {
+        $data = json_decode($jsonData);
+        $plott = $data->plott;
+        $short = $data->short;
+        $long = $data->long;
+        $multi = $data->multi;
+        $query = "UPDATE module_sticker_sticker_data SET is_plotted = $plott, is_short_time = $short, is_long_time = $long, is_multipart = $multi WHERE id = {$this->id}";
+        DBAccess::updateQuery($query);
+        echo "success";
     }
 
 }
