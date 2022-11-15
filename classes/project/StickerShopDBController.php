@@ -5,12 +5,17 @@ require_once('vendor\prestashop\prestashop-webservice-lib\PSWebServiceLibrary.ph
 /**
  * musste https://www.prestashop.com/forums/topic/912956-webservice-count-parameter-must-be-an-array-or-an-object-that-implements-countable/#comment-3296957
  * zu classes/webservice/WebserviceRequest.php hinzufügen, da es hier einene countable error gab
+ * 
+ * https://stackoverflow.com/questions/69987125/getting-401-unauthorized-when-accessing-the-prestashop-api-webservice
+ * und
+ * https://wordcodepress.com/prestashop-1-7-webservice-api-401-unauthorized/
+ * .htaccess file wird immer wieder mal neu generiert, dann kann es dazu kommen, dass ein 401 unauthorized Fehler kommt
  */
 class StickerShopDBController {
 
     private $result = "";
     private $url = "https://klebefux.de/auftragsbearbeitung/JSONresponder.php";
-    private $prestaKey = "GUG1XJLZ2F5WHMY3Q3FZLA1WTPI4SVHD";
+    private $prestaKey = "8NREC2HS6FY3ZEFWSJ11WE52F25Q9QSD";
     private $prestaUrl = "https://klebefux.de";
 
     function __construct() {
@@ -42,12 +47,16 @@ class StickerShopDBController {
     }
 
     /* https://www.prestashop.com/forums/topic/640693-how-to-add-a-product-through-the-webservice-with-custom-feature-values/#comment-2663527 */
-    public function addSticker() {
+    public function addSticker($title, $decription) {
         try {
             $webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, true);
             //$blankXML = $webService->get(['resource' => 'products']);
-            $xml = $webService->get(array('resource' => 'products?schema=blank'));
-            
+            //$xml = $webService->get(array('resource' => 'products?schema=blank'));
+            //$xml = $webService->get(array('resource' => 'products/427'));
+            //$xml = $webService->get(array('resource' => 'product_option_values?schema=blank'));
+            $xml = $webService->get(array('resource' => 'combinations?schema=blank'));
+            var_dump($xml);
+            return;
             $resource_product = $xml->children()->children();
 
             unset($resource_product->id);
@@ -65,8 +74,8 @@ class StickerShopDBController {
             $resource_product->price = 12.23;
             $resource_product->active = 1;
             $resource_product->visibility = 'both';
-            $resource_product->name->language[0] = "blablabla";
-            $resource_product->description->language[0] = "blablabla";
+            $resource_product->name->language[0] = $title;
+            $resource_product->description->language[0] = $decription;
             $resource_product->state = 1;
 
             $opt = array('resource' => 'products');
