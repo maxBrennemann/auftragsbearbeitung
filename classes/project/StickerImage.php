@@ -8,7 +8,7 @@ class StickerImage {
     private $name;
     private $number;
 
-    public readonly array $data;
+    public $data;
 
     private $shopProducts;
 
@@ -26,6 +26,7 @@ class StickerImage {
         $query = "SELECT * FROM prstshp_product WHERE reference = {$this->id}";
         $stickerDB = new StickerShopDBController();
         $stickerDB->select($query);
+        $stickerDB->addSticker("", "");
         $this->shopProducts = $stickerDB->getResult();
         $this->getConnectedFiles();
     }
