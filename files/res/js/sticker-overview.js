@@ -115,3 +115,36 @@ function send(data, intent) {
 
     return response;
 }
+
+/* editRow for sizetable */
+function editRow(key, reference) {
+    var table = reference.parentNode.parentNode.parentNode;
+    var heights = table.children;
+    for (let i = 1; i < heights.length; i++) {
+        var input = document.createElement("input");
+        input.classList.add("inputHeight");
+        input.dataset.heightChange = true;
+        input.value = heights[i].children[2].innerHTML;
+        heights[i].children[2].innerHTML = "";
+        heights[i].children[2].appendChild(input);
+
+        input.addEventListener("input", function(e) {
+            var heights = document.querySelectorAll('[data-height-change]');
+            var height = e.target.value;
+            var width = e.target.parentNode.parentNode.children[1].innerHTML;
+            height = parseInt(height);
+            width = parseInt(width);
+            if (height != NaN) {
+                for (let i = 0; i < heights.length; i++) {
+                    if (e.target !=  heights[i]) {
+                        var width2 = heights[i].parentNode.parentNode.children[1].innerHTML;
+                        width2 = parseInt(width2);
+                        console.log(`breite 1: ${width}, höhe 1: ${height}, breite 2: ${width2}`)
+                        var height2 = (height / width) * width2;
+                        heights[i].value = height2 + "cm";
+                    }
+                }
+            }
+        }, false);
+    }
+}
