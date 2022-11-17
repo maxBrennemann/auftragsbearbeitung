@@ -1,6 +1,7 @@
 <?php
 
 require_once('vendor\prestashop\prestashop-webservice-lib\PSWebServiceLibrary.php');
+require_once('.res\PrestashopCreateProduct.php');
 
 /**
  * musste https://www.prestashop.com/forums/topic/912956-webservice-count-parameter-must-be-an-array-or-an-object-that-implements-countable/#comment-3296957
@@ -49,6 +50,7 @@ class StickerShopDBController {
     /* https://www.prestashop.com/forums/topic/640693-how-to-add-a-product-through-the-webservice-with-custom-feature-values/#comment-2663527 */
     public function addSticker($title, $decription) {
         try {
+            return null;
             $webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, true);
             //$blankXML = $webService->get(['resource' => 'products']);
             //$xml = $webService->get(array('resource' => 'products?schema=blank'));

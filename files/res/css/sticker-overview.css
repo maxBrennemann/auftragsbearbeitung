@@ -128,3 +128,16 @@ input:checked + .slider:before {
     width: 75px;
     height: auto;
 }
+
+#initHeight {
+    width: 50px;
+}
+
+.inputHeight {
+    border: none;
+    width: 50px;
+    margin: inherit;
+    background: inherit;
+    font-size: inherit;
+    font-family: inherit;
+}

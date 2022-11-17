@@ -66,13 +66,17 @@ class StickerImage {
     }
 
     public function getSizeTable() {
-        $query = "SELECT id, width, height FROM module_sticker_sizes WHERE id_sticker = {$this->id}";
+        $query = "SELECT id, width, height FROM module_sticker_sizes WHERE id_sticker = {$this->id} ORDER BY width";
         $data = DBAccess::selectQuery($query);
         $column_names = array(
             0 => array("COLUMN_NAME" => "id", "ALT" => "Kombinummer"),
             1 => array("COLUMN_NAME" => "width", "ALT" => "Breite"),
             2 => array("COLUMN_NAME" => "height", "ALT" => "Höhe")
         );
+
+        if ($data == null) {
+            $data = $this->loadDefault($query);
+        }
 
         foreach ($data as &$d) {
             $d["width"] = str_replace(".", ",", ((int) $d["width"]) / 10) . "cm";
@@ -108,6 +112,13 @@ class StickerImage {
 		$t->defineUpdateSchedule(new UpdateSchedule("module_sticker_sizes", $pattern));
         $_SESSION[$t->getTableKey()] = serialize($t);
 		return $t->getTable();
+    }
+
+    /* Änderung: proforma Daten erstellen als default value */
+    private function loadDefault($query2) {
+        $query = "INSERT INTO module_sticker_sizes (id_sticker, width, height) VALUES ($this->id, 300, 0), ($this->id, 600, 0), ($this->id, 900, 0), ($this->id, 1200, 0)";
+        DBAccess::insertQuery($query);
+        return DBAccess::selectQuery($query2);
     }
 
     private function getConnectedFiles() {
