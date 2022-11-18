@@ -71,22 +71,30 @@ class StickerShopDBController {
         return $result;
     }
 
+    private function getXML($resource, $debug = false) {
+        $this->webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, $debug);
+        $this->xml = $this->webService->get(array('resource' => $resource));
+
+        return $this->xml;
+    }
+
+    private function updateXML() {
+
+    }
+
+    private function addXML($options) {
+        $this->xml = $this->webService->add($options);
+    }
+
     /* https://www.prestashop.com/forums/topic/640693-how-to-add-a-product-through-the-webservice-with-custom-feature-values/#comment-2663527 */
     public function addSticker() {
         try {
-            $webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, true);
-            //$blankXML = $webService->get(['resource' => 'products']);
-            $xml = $webService->get(array('resource' => 'products?schema=blank'));
-            //$xml = $webService->get(array('resource' => 'products/699'));
-            //$xml = $webService->get(array('resource' => 'product_option_values?schema=blank'));
-            //$xml = $webService->get(array('resource' => 'combinations?schema=blank'));
-            //$xml = $webService->get(array('resource' => 'product_option_values/283'));
 
-            //$xml = $webService->get(array('resource' => 'product_options/20'));
-            //$xml = $webService->get(array('resource' => 'images?schema=blank'));
-            //$xml = $webService->get(array('resource' => 'images'));
-            //$xml = $webService->get(array('resource' => 'tags?schema=blank'));
-            //return;
+            /* https://docs.prestashop-project.org/1-6-documentation/english-documentation/developer-guide/developer-tutorials/using-the-prestashop-web-service/web-service-reference */
+            $xml = $this->getXML('product_options/5', true);
+            return;
+
+            $xml = $this->getXML('products?schema=blank');
             $resource_product = $xml->children()->children();
 
             unset($resource_product->id);
@@ -130,11 +138,13 @@ class StickerShopDBController {
 
            
             /* varianten */
-
-            $opt = array('resource' => 'products');
-            $opt['postXml'] = $xml->asXML();
-            $xml = $webService->add($opt);
-            $this->id_product = $xml->product->id;
+           
+            $opt = array(
+                'resource' => 'products',
+                'postXml' => $this->xml->asXML()
+            );
+            $this->addXML($opt);
+            $this->id_product = $this->xml->product->id;
 
             /* images */
             $this->uploadImage($this->id_product, $this->images);
@@ -149,7 +159,7 @@ class StickerShopDBController {
 
     private function setCategoryDefault($id) {
         try {
-            $webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, true);
+            $webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, false);
             $xml = $webService->get(array('resource' => 'products/' . $id));
 
             $product = $xml->children()->children();
@@ -182,7 +192,7 @@ class StickerShopDBController {
     /* https://stackoverflow.com/questions/35975677/prestashop-webservice-add-products-tags-and-attachment-document */
     private function getTagId($tag){
         /* check if tag exists */
-        $webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, true);
+        $webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, false);
         $xml = $webService->get(array('resource' => '/api/tags?filter[name]='.$tag.'&limit=1'));
 
         $resources = $xml->children()->children();
@@ -192,7 +202,7 @@ class StickerShopDBController {
         }
     
         /* add a new tag */
-        $webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, true);
+        $webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, false);
         $xml = $webService->get(array('resource' => '/api/tags?schema=synopsis'));
         $resources = $xml->children()->children();
     
@@ -204,8 +214,8 @@ class StickerShopDBController {
             'resource' => 'tags',
             'postXml' => $xml->asXML()
         );
-        $xml = $webService->add($opt);
-        $id = $xml->product->id;
+        $this->addXML($opt);
+        $id = $this->xml->product->id;
         return $id;
     }
 
@@ -261,6 +271,22 @@ class StickerShopDBController {
 
     public function updateSticker() {
         
+    }
+
+    public function addCombination() {
+        $xml = $this->getXML('product_options/5', true);
+        // hier sind die Breiten gespeichert, evtl hardcoding verwenden?, dann noch farben benötigt, diese werden dann in die combinations geschrieben
+
+        /*
+        wir brauchen:
+        id_product,
+        quantity,
+        unit_price_impact
+        product_option_values
+            product_option_value
+                id
+        later: images
+        */
     }
 
 }
