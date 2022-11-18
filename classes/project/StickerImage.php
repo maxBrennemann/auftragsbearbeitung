@@ -24,9 +24,10 @@ class StickerImage {
         $this->data = $data;
 
         $query = "SELECT * FROM prstshp_product WHERE reference = {$this->id}";
-        $stickerDB = new StickerShopDBController();
+        $stickerDB = new StickerShopDBController($this->id, $this->name, "test", "test", 20);
         $stickerDB->select($query);
-        $stickerDB->addSticker("", "");
+        $stickerDB->addImages(["https://media.4-paws.org/0/3/c/4/03c4df8eaa4f33f07c38c0f6b24839981174b2f3/VIER%20PFOTEN_2016-07-08_011-4993x3455-1920x1329.jpg", "https://cdn.mdr.de/wissen/katze-corona-104_v-variantBig16x9_w-1280_zc-b903ef86.jpg?version=38140"]);
+        $stickerDB->addSticker();
         $this->shopProducts = $stickerDB->getResult();
         $this->getConnectedFiles();
     }

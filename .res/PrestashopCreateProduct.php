@@ -10,6 +10,10 @@ class PrestashopCreateProduct {
     private $webService;
     private $config;
 
+    function __construct($config) {
+        $this->config = $config;
+    }
+
     public function add_combination($data){
         try {
             $xml = $this->webService->get(array('url' => $this->config["ps_shop"].'api/combinations?schema=blank'));
@@ -38,7 +42,7 @@ class PrestashopCreateProduct {
     }
     public function make_product_options($data){
         try {
-            $xml                                              = $this->webService->get(array('url' => $this->config["ps_shop"].'api/product_option_values?schema=blank'));
+            $xml = $this->webService->get(array('url' => $this->config["ps_shop"].'api/product_option_values?schema=blank'));
             
             $product_option_value = $xml->children()->children();
             

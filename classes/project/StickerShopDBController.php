@@ -1,6 +1,5 @@
 <?php
 
-require_once('vendor\prestashop\prestashop-webservice-lib\PSWebServiceLibrary.php');
 require_once('.res\PrestashopCreateProduct.php');
 
 /**
@@ -16,11 +15,36 @@ class StickerShopDBController {
 
     private $result = "";
     private $url = "https://klebefux.de/auftragsbearbeitung/JSONresponder.php";
-    private $prestaKey = "8NREC2HS6FY3ZEFWSJ11WE52F25Q9QSD";
+    private $prestaKey = "GUG1XJLZ2F5WHMY3Q3FZLA1WTPI4SVHD";
     private $prestaUrl = "https://klebefux.de";
 
-    function __construct() {
-        
+    private $tags = array();
+    private $images = array();
+
+    private $id_sticker;
+    private $id_product = 0;
+    private $title;
+    private $description;
+    private $description_short;
+    private $price;
+
+    function __construct($id_sticker, $title, $description, $description_short, $basePrice) {
+        $this->id_sticker = $id_sticker;
+        $this->title = $title;
+        $this->description = $description;
+        $this->description_short = $description_short;
+        $this->price = $basePrice;
+    }
+
+    public function addImages($imageURLs) {
+        $this->images = $imageURLs;
+    }
+
+    /**
+     * @param tags is an array with strings
+     */
+    public function addTags($tags) {
+        array_merge($this->tags, $tags);
     }
 
     public function select($query) {
@@ -48,17 +72,21 @@ class StickerShopDBController {
     }
 
     /* https://www.prestashop.com/forums/topic/640693-how-to-add-a-product-through-the-webservice-with-custom-feature-values/#comment-2663527 */
-    public function addSticker($title, $decription) {
+    public function addSticker() {
         try {
-            return null;
             $webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, true);
             //$blankXML = $webService->get(['resource' => 'products']);
-            //$xml = $webService->get(array('resource' => 'products?schema=blank'));
-            //$xml = $webService->get(array('resource' => 'products/427'));
+            $xml = $webService->get(array('resource' => 'products?schema=blank'));
+            //$xml = $webService->get(array('resource' => 'products/699'));
             //$xml = $webService->get(array('resource' => 'product_option_values?schema=blank'));
-            $xml = $webService->get(array('resource' => 'combinations?schema=blank'));
-            var_dump($xml);
-            return;
+            //$xml = $webService->get(array('resource' => 'combinations?schema=blank'));
+            //$xml = $webService->get(array('resource' => 'product_option_values/283'));
+
+            //$xml = $webService->get(array('resource' => 'product_options/20'));
+            //$xml = $webService->get(array('resource' => 'images?schema=blank'));
+            //$xml = $webService->get(array('resource' => 'images'));
+            //$xml = $webService->get(array('resource' => 'tags?schema=blank'));
+            //return;
             $resource_product = $xml->children()->children();
 
             unset($resource_product->id);
@@ -71,22 +99,164 @@ class StickerShopDBController {
             $resource_product->minimal_quantity = 1;
             $resource_product->available_for_order = 1;
             $resource_product->show_price = 1;
-            //$resource_product->quantity = 10;           // la cantidad hay que setearla por medio de un webservice particular
-            $resource_product->id_category_default = 2;   // PRODUCTOS COMO CATEGORÍA RAIZ
-            $resource_product->price = 12.23;
+            $resource_product->id_category_default = 2;
+            $resource_product->id_tax_rules_group = 8; /* Steuergruppennummer für DE 19% */
+            $resource_product->price = $this->price; /* an Steuer anpassen */
             $resource_product->active = 1;
+            $resource_product->reference = $this->id_sticker;
             $resource_product->visibility = 'both';
-            $resource_product->name->language[0] = $title;
-            $resource_product->description->language[0] = $decription;
+            $resource_product->name->language[0] = $this->title;
+            $resource_product->description->language[0] = $this->description;
+            $resource_product->description_short->language[0] = $this->description_short;
             $resource_product->state = 1;
+
+            $resource_product->addChild('associations'); 
+            unset($resource_product->associations->tags);
+
+            /*
+             * Unset fields that may not be updated, without this, a 400 bad request happens
+             * https://stackoverflow.com/questions/36883467/how-can-i-update-product-categories-using-prestashop-web-service
+             */
+            unset($resource_product->manufacturer_name);
+            unset($resource_product->quantity);
+
+            $tags = $resource_product->associations->addChild('tags'); 
+            /* loop over all tags */
+            for ($i = 0; $i < sizeof($this->tags); $i++) {
+                $id = $this->getTagId($this->tags[$i]);
+                $tag = $tags->addChild("tag");
+                $tag->addChild("id", $id);
+            }
+
+           
+            /* varianten */
 
             $opt = array('resource' => 'products');
             $opt['postXml'] = $xml->asXML();
             $xml = $webService->add($opt);
-            $id = $xml->product->id;
+            $this->id_product = $xml->product->id;
+
+            /* images */
+            $this->uploadImage($this->id_product, $this->images);
+
+            /* set category here, Start is 2, maybe list all categories */
+            $this->setCategoryDefault($this->id_product);
+            
         } catch (PrestaShopWebserviceException $e) {
             echo $e->getMessage();
         }
+    }
+
+    private function setCategoryDefault($id) {
+        try {
+            $webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, true);
+            $xml = $webService->get(array('resource' => 'products/' . $id));
+
+            $product = $xml->children()->children();
+            unset($product->associations->categories);
+
+            /*
+             * Unset fields that may not be updated, without this, a 400 bad request happens
+             * https://stackoverflow.com/questions/36883467/how-can-i-update-product-categories-using-prestashop-web-service
+             */
+            unset($product->manufacturer_name);
+            unset($product->quantity);
+
+            $categories = $product->associations->addChild('categories'); 
+            $category = $categories->addChild("category");
+            $category->addChild("id", 2);
+
+            $opt = array('resource' => 'products');
+            $opt['putXml'] = $xml->asXML();
+            $opt['id'] = $id;
+            $xml = $webService->edit($opt);
+        } catch (PrestaShopWebserviceException $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    public function addTagToProduct() {
+
+    }
+
+    /* https://stackoverflow.com/questions/35975677/prestashop-webservice-add-products-tags-and-attachment-document */
+    private function getTagId($tag){
+        /* check if tag exists */
+        $webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, true);
+        $xml = $webService->get(array('resource' => '/api/tags?filter[name]='.$tag.'&limit=1'));
+
+        $resources = $xml->children()->children();
+        if (!empty($resources)) {
+            $attributes = $resources->tag->attributes();
+            return $attributes['id'];
+        }
+    
+        /* add a new tag */
+        $webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, true);
+        $xml = $webService->get(array('resource' => '/api/tags?schema=synopsis'));
+        $resources = $xml->children()->children();
+    
+        unset($resources->id);
+        $resources->name = $tag;
+        $resources->id_lang = "de";
+    
+        $opt = array(
+            'resource' => 'tags',
+            'postXml' => $xml->asXML()
+        );
+        $xml = $webService->add($opt);
+        $id = $xml->product->id;
+        return $id;
+    }
+
+    private function uploadImage($id, $imageURLs) {
+        /* https://www.prestashop.com/forums/topic/407476-how-to-add-image-during-programmatic-product-import/ */
+
+        $images = array();
+        foreach ($imageURLs as $i) {
+            array_push($images, urlencode($i));
+        }
+
+        $ch = curl_init($this->url);
+        # Setup request to send json via POST.
+        $payload = json_encode(array("images"=> $images, "id" => $id));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        # Return response instead of printing.
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        # Send request.
+        $result = curl_exec($ch);
+        curl_close($ch);
+        echo $result;
+        # Print response.
+        return $result;
+    }
+
+    /* https://docs.prestashop-project.org/1-6-documentation/english-documentation/developer-guide/developer-tutorials/using-the-prestashop-web-service/web-service-tutorial/chapter-9-image-management */
+    private function uploadImageToPrestashop($productId) {
+        $url = "https://klebefux.de/api/images/products/$productId";
+        /**
+         * Uncomment the following line in order to update an existing image
+         */
+        //$url = 'http://myprestashop.com/api/images/products/1/2?ps_method=PUT';
+        
+        $image_path = 'C:\\Users\\pc\\Documents\\3.png';
+        $image_path = 'C:/Users/pc/Documents/3.png';
+        $image_path = 'C:\\test.jpg';
+
+        $cImage = new CurlFile($image_path, 'image/jpeg', "image");
+
+        $ch = curl_init();
+        //curl_setopt($ch, CURLOPT_HEADER, 1);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_USERPWD, $this->prestaKey.':');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, array('image' => $cImage)); //'@'.$image_path.";type=image/jpeg"));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        return $result;
     }
 
     public function updateSticker() {
