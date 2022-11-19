@@ -974,6 +974,12 @@ class Ajax {
 						echo "an error occured";
 				}
 			break;
+			case "transferAufkleber":
+				require_once("classes/project/StickerImage.php");
+				$id = (int) $_POST["id"];
+				$stickerImage = new StickerImage($id);
+				$stickerImage->createCombinations();
+			break;
 			case "setAufkleberParameter":
 				require_once('classes/project/StickerImage.php');
 				$id = (int) $_POST["id"];

@@ -22,6 +22,9 @@ class StickerShopDBController {
     private $tags = array();
     private $images = array();
 
+    private $sizes;
+    private $colors;
+
     private $id_sticker;
     private $id_product = 0;
     private $title;
@@ -57,6 +60,14 @@ class StickerShopDBController {
         return $this->result;
     }
 
+    public function setSizes($sizes) {
+        $this->sizes = $sizes["ids"];
+    }
+
+    public function setColors($colors) {
+        $this->colors = $colors["ids"];
+    }
+
     private function getCURLResponse($query) {
         $ch = curl_init($this->url);
         # Setup request to send json via POST.
@@ -87,13 +98,17 @@ class StickerShopDBController {
         $this->xml = $this->webService->add($options);
     }
 
+    private function editXML($options) {
+        $this->xml = $this->webService->edit($options);
+    }
+
     /* https://www.prestashop.com/forums/topic/640693-how-to-add-a-product-through-the-webservice-with-custom-feature-values/#comment-2663527 */
     public function addSticker() {
         try {
-
             /* https://docs.prestashop-project.org/1-6-documentation/english-documentation/developer-guide/developer-tutorials/using-the-prestashop-web-service/web-service-reference */
-            $xml = $this->getXML('product_options/5', true);
-            return;
+
+            //$xml = $this->getXML('stock_availables?schema=blank', true);
+            //return;
 
             $xml = $this->getXML('products?schema=blank');
             $resource_product = $xml->children()->children();
@@ -155,6 +170,69 @@ class StickerShopDBController {
             
         } catch (PrestaShopWebserviceException $e) {
             echo $e->getMessage();
+        }
+    }
+
+    public function createCombinations() {
+        if ($this->id_product == null)
+            return;
+
+        $combinationIds = array();
+        for ($i = 0; $i < sizeof($this->sizes); $i++) {
+            for ($n = 0; $n < sizeof($this->colors); $n++) {
+                $val1 = $this->sizes[$i];
+                $val2 = $this->colors[$n];
+                array_push($combinationIds, $this->addCombination($val1, $val2));
+            }
+        }
+
+        /* when all combinations are set, the default stock availability must be set */
+        foreach ($combinationIds as $id) {
+            $id = (int) $id;
+            try {
+                $xml = $this->getXML('stock_availables/' . $id);
+                $stock = $xml->children()->children();
+
+                $stock->quantity = "20";
+
+                $opt = array(
+                    'resource' => 'stock_availables',
+                    'putXml' => $xml->asXML(),
+                    'id' => $id,
+                );
+                $this->editXML($opt);
+            } catch (PrestaShopWebserviceException $e) {
+                echo $e;
+            }
+        }
+    }
+
+    private function addCombination($val1, $val2) {
+        try {
+            $xml = $this->getXML('combinations?schema=blank');
+            $combination = $xml->children()->children();
+            $combination->id_product = $this->id_product;
+
+            //unset($combination->associations);
+            //unset($combination->associations);
+
+            $combination->minimal_quantity = 0;
+            unset($combination->associations->product_option_values);
+            $product_option_values = $combination->associations->addChild("product_option_values");
+            
+            $prodVal = $product_option_values->addChild("product_option_value");
+            $prodVal->addChild("id", $val1);
+            $prodVal = $product_option_values->addChild("product_option_value");
+            $prodVal->addChild("id", $val2);
+
+            $opt = array(
+                'resource' => 'combinations',
+                'postXml' => $xml->asXML(),
+            );
+            $this->addXML($opt);
+            return $this->xml->combination->id;
+        } catch (PrestaShopWebserviceException $e) {
+            echo $e;
         }
     }
 
@@ -220,18 +298,20 @@ class StickerShopDBController {
         return $id;
     }
 
+    public function addAttribute($attributeGroup, $attribute) {
+        return $this->getAttributeId($attributeGroup, $attribute);
+    }
+
     private function getAttributeId($attributeGroup, $attribute){
-        /* check if tag exists */
         $webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, false);
-        $xml = $webService->get(array('resource' => '/api/product_options?filter[name]='.$attribute.'&limit=1'));
+        $xml = $webService->get(array('resource' => 'product_option_values?filter[id_attribute_group]=' . $attributeGroup . '&filter[name]=' . $attribute . '&limit=1'));
 
         $resources = $xml->children()->children();
         if (!empty($resources)) {
-            $attributes = $resources->tag->attributes();
+            $attributes = $resources->product_option_value->attributes();
             return $attributes['id'];
         }
-    
-        /* add a new tag */
+        
         $webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, false);
         $xml = $webService->get(array('resource' => '/api/product_options?schema=synopsis'));
         $resources = $xml->children()->children();
@@ -301,22 +381,6 @@ class StickerShopDBController {
 
     public function updateSticker() {
         
-    }
-
-    public function addCombination() {
-        $xml = $this->getXML('product_options/5', true);
-        // hier sind die Breiten gespeichert, evtl hardcoding verwenden?, dann noch farben benötigt, diese werden dann in die combinations geschrieben
-
-        /*
-        wir brauchen:
-        id_product,
-        quantity,
-        unit_price_impact
-        product_option_values
-            product_option_value
-                id
-        later: images
-        */
     }
 
 }
