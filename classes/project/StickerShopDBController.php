@@ -1,6 +1,7 @@
 <?php
 
-require_once('.res\PrestashopCreateProduct.php');
+//require_once('.res\PrestashopCreateProduct.php');
+require_once('vendor/autoload.php');
 
 /**
  * musste https://www.prestashop.com/forums/topic/912956-webservice-count-parameter-must-be-an-array-or-an-object-that-implements-countable/#comment-3296957
@@ -212,6 +213,35 @@ class StickerShopDBController {
     
         $opt = array(
             'resource' => 'tags',
+            'postXml' => $xml->asXML()
+        );
+        $this->addXML($opt);
+        $id = $this->xml->product->id;
+        return $id;
+    }
+
+    private function getAttributeId($attributeGroup, $attribute){
+        /* check if tag exists */
+        $webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, false);
+        $xml = $webService->get(array('resource' => '/api/product_options?filter[name]='.$attribute.'&limit=1'));
+
+        $resources = $xml->children()->children();
+        if (!empty($resources)) {
+            $attributes = $resources->tag->attributes();
+            return $attributes['id'];
+        }
+    
+        /* add a new tag */
+        $webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, false);
+        $xml = $webService->get(array('resource' => '/api/product_options?schema=synopsis'));
+        $resources = $xml->children()->children();
+    
+        unset($resources->id);
+        $resources->name = $attribute;
+        $resources->id_lang = "de";
+    
+        $opt = array(
+            'resource' => 'product_options',
             'postXml' => $xml->asXML()
         );
         $this->addXML($opt);

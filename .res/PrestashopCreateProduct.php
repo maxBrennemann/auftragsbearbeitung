@@ -1,5 +1,7 @@
 <?php
 
+require_once('vendor/autoload.php');
+
 /**
  * https://gist.github.com/is-just-me/4dadabf7e5514dcc25cf7de51eac9d21#file-test_functions-php
  * 
