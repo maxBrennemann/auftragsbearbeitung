@@ -95,7 +95,9 @@ async function click_saveAufkleber() {
 }
 
 function click_transferAufkleber() {
-
+    makeAsyncCall("POST", "?reason=transferAufkleber&id=428", "").then(result => {
+        console.log(result);
+    });
 }
 
 function send(data, intent) {
