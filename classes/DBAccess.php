@@ -55,13 +55,12 @@ class DBAccess {
 		return self::selectQuery($query);
 	}
 	
+	/* exec for queries that don't return a result set */
 	public static function updateQuery($query) {
 		self::createConnection();
 		
 		self::$statement = self::$connection->prepare($query);
-		self::$statement->execute();
-		
-		return self::$statement->execute();
+		return self::$statement->exec();
 	}
 
 	public static function deleteQuery($query) {
@@ -134,6 +133,14 @@ class DBAccess {
 		self::$statement->execute();
 		
 		self::$statement->execute();
+	}
+
+	/* exec for queries, that don't return result sets, otherwise the general mySQL error 2014 can occur */
+	public static function execQuery($query) {
+		self::createConnection();
+		
+		self::$statement = self::$connection->prepare($query);
+		self::$statement->exec();
 	}
 
 	/* 
