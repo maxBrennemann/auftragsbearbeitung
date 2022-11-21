@@ -85,19 +85,25 @@
                     </label>
                 </span>
             </div>
-            <button id="aufkleberUebertragen" <?=$stickerImage->data["is_plotted"] == 1 ? "" : "disabled"?>>Aufkleber übertragen</button>
+            <button id="transferAufkleber" data-binding="true" <?=$stickerImage->data["is_plotted"] == 1 ? "" : "disabled"?>>Aufkleber übertragen</button>
             <button id="saveAufkleber" data-binding="true">Speichern</button>
-            <p><span><?php if($stickerImage->isInShop()):?>✓ <?php else:?>x <?php endif;?></span>Aufkleber ist im Shop</p>
+            <div class="loaderOrSymbol">
+                <div>
+                    <div class="lds-ring" id="productLoader"><div></div><div></div><div></div><div></div></div>
+                    <span id="productStatus"><?php if($stickerImage->isInShop()):?>✓ <?php else:?>x <?php endif;?></span>
+                </div>        
+                <p>Aufkleber ist im Shop</p>
+            </div>
         </section>
         <section class="innerDefCont">
             <p>Wandtatto <input class="right" type="checkbox"></p>
             <button>Aufkleber übertragen</button>
-            <p>Aufkleber ist im Shop</p>
+            <p>Wandtatto ist im Shop</p>
         </section>
         <section class="innerDefCont">
             <p>Textil <input class="right" type="checkbox"></p>
-            <button id="transferAufkleber" data-binding="true">Aufkleber übertragen</button>
-            <p>Aufkleber ist im Shop</p>
+            <button>Aufkleber übertragen</button>
+            <p>Textil ist im Shop</p>
         </section>
     </div>
     <div class="defCont align-center">
@@ -109,12 +115,37 @@
         <h4>Beschreibung</h4>
         <textarea></textarea>
     </div>
-<?php endif; ?>
+<?php else:
+
+$query = "SELECT id, name, IF(is_plotted = 1, '✓', 'X') AS is_plotted, IF(is_short_time = 1, '✓', 'X') AS is_short_time, IF(is_long_time = 1, '✓', 'X') AS is_long_time, IF(is_multipart = 1, '✓', 'X') AS is_multipart, IF(is_walldecal = 1, '✓', 'X') AS is_walldecal, IF(is_shirtcollection = 1, '✓', 'X') AS is_shirtcollection FROM `module_sticker_sticker_data`";
+$column_names = array(
+    0 => array("COLUMN_NAME" => "id", "ALT" => "Nummer"),
+    1 => array("COLUMN_NAME" => "name", "ALT" => "Name"),
+    3 => array("COLUMN_NAME" => "is_plotted", "ALT" => "geplottet"),
+    4 => array("COLUMN_NAME" => "is_short_time", "ALT" => "Werbeaufkleber"),
+    5 => array("COLUMN_NAME" => "is_long_time", "ALT" => "Hochleistungsfolie"),
+    6 => array("COLUMN_NAME" => "is_multipart", "ALT" => "mehrteilig"),
+    7 => array("COLUMN_NAME" => "is_walldecal", "ALT" => "Wandtatto"),
+    8 => array("COLUMN_NAME" => "is_shirtcollection", "ALT" => "Textil"),
+);
+
+$data = DBAccess::selectQuery($query);
+
+$linker = new Link();
+$linker->addBaseLink("sticker-overview");
+$linker->setIterator("id", $data, "id");
+
+$t = new Table();
+$t->createByData($data, $column_names);
+$t->addLink($linker);
+echo $t->getTable();
+
+endif; ?>
 <!--
     Kategornienamen
-    Motivname
+        Motivname
     Nummer
-    Aufkleber (plott)
+        Aufkleber (plott)
     Kurzfrist
     Langfrist
     Wandtatto
