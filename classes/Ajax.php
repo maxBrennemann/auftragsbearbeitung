@@ -977,8 +977,10 @@ class Ajax {
 			case "transferAufkleber":
 				require_once("classes/project/StickerImage.php");
 				$id = (int) $_POST["id"];
+
 				$stickerImage = new StickerImage($id);
-				$stickerImage->createCombinations();
+				$stickerImage->saveSticker();
+				echo "ready";
 			break;
 			case "setAufkleberParameter":
 				require_once('classes/project/StickerImage.php');

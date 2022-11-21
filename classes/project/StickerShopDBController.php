@@ -56,6 +56,10 @@ class StickerShopDBController {
         return $this;
     }
 
+    public function update($query) {
+        $this->getCURLResponse($query, true);
+    }
+
     public function getResult(){
         return $this->result;
     }
@@ -68,10 +72,15 @@ class StickerShopDBController {
         $this->colors = $colors["ids"];
     }
 
-    private function getCURLResponse($query) {
+    private function getCURLResponse($query, $update = false) {
         $ch = curl_init($this->url);
         # Setup request to send json via POST.
-        $payload = json_encode(array("query"=> $query));
+        if ($update) {
+            $payload = json_encode(array("query"=> $query, "update" => "yes"));
+        } else {
+            $payload = json_encode(array("query"=> $query));
+        }
+        
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
         # Return response instead of printing.
@@ -151,9 +160,6 @@ class StickerShopDBController {
                 $tag = $tags->addChild("tag");
                 $tag->addChild("id", $id);
             }
-
-           
-            /* varianten */
            
             $opt = array(
                 'resource' => 'products',
@@ -167,6 +173,9 @@ class StickerShopDBController {
 
             /* set category here, Start is 2, maybe list all categories */
             $this->setCategoryDefault($this->id_product);
+
+            /* create product variations */
+            $this->createCombinations();
             
         } catch (PrestaShopWebserviceException $e) {
             echo $e->getMessage();
@@ -178,19 +187,36 @@ class StickerShopDBController {
             return;
 
         $combinationIds = array();
+        $xml = $this->getXML('combinations?schema=blank');
         for ($i = 0; $i < sizeof($this->sizes); $i++) {
             for ($n = 0; $n < sizeof($this->colors); $n++) {
                 $val1 = $this->sizes[$i];
                 $val2 = $this->colors[$n];
-                array_push($combinationIds, $this->addCombination($val1, $val2));
+                array_push($combinationIds, $this->addCombination($xml, $val1, $val2));
             }
         }
+        
+        /* alternatively set combination stock via my own DBAccess file, because the WebService function did not work as intended */
+        $query = "";
+        $count = 0;
+        foreach ($combinationIds as $id) {
+            $query .= "UPDATE prstshp_product_attribute SET quantity = 20 WHERE id_product_attribute = $id; ";
+            $query .= "UPDATE `prstshp_stock_available` SET `quantity` = '20' WHERE `prstshp_stock_available`.`id_product_attribute` = $id;";
+            if ($count % 5 == 0) {
+                sleep(3);
+                $this->update($query);
+                $query = "";
+            }
+            $count++;
+        }
+        echo "success";
 
+        return;
         /* when all combinations are set, the default stock availability must be set */
         foreach ($combinationIds as $id) {
             $id = (int) $id;
             try {
-                $xml = $this->getXML('stock_availables/' . $id);
+                $xml = $this->getXML('stock_availables/' . $id, true);
                 $stock = $xml->children()->children();
 
                 $stock->quantity = "20";
@@ -207,9 +233,8 @@ class StickerShopDBController {
         }
     }
 
-    private function addCombination($val1, $val2) {
+    private function addCombination($xml, $val1, $val2) {
         try {
-            $xml = $this->getXML('combinations?schema=blank');
             $combination = $xml->children()->children();
             $combination->id_product = $this->id_product;
 

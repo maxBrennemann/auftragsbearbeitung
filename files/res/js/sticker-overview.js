@@ -94,10 +94,14 @@ async function click_saveAufkleber() {
     }
 }
 
-function click_transferAufkleber() {
-    makeAsyncCall("POST", "?reason=transferAufkleber&id=428", "").then(result => {
-        console.log(result);
-    });
+async function click_transferAufkleber() {
+    document.getElementById("productLoader").style.display = "inline";
+    var data = {
+        id: 428,
+    };
+    var response = await send(data, "transferAufkleber");
+    console.log(response);
+    document.getElementById("productLoader").style.display = "none";
 }
 
 function send(data, intent) {
