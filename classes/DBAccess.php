@@ -59,8 +59,7 @@ class DBAccess {
 	public static function updateQuery($query) {
 		self::createConnection();
 		
-		self::$statement = self::$connection->prepare($query);
-		return self::$statement->exec();
+		return self::$connection->exec($query);
 	}
 
 	public static function deleteQuery($query) {
