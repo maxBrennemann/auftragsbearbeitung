@@ -92,6 +92,21 @@ class StickerShopDBController {
         return $result;
     }
 
+    private function send($data) {
+        $ch = curl_init($this->url);
+        $payload = json_encode($data);
+        
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        # Return response instead of printing.
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        # Send request.
+        $result = curl_exec($ch);
+        curl_close($ch);
+        # Print response.
+        echo $result;
+    }
+
     private function getXML($resource, $debug = false) {
         $this->webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, $debug);
         $this->xml = $this->webService->get(array('resource' => $resource));
@@ -186,40 +201,49 @@ class StickerShopDBController {
         if ($this->id_product == null)
             return;
 
-        $combinationIds = array();
         $xml = $this->getXML('combinations?schema=blank');
         for ($i = 0; $i < sizeof($this->sizes); $i++) {
             for ($n = 0; $n < sizeof($this->colors); $n++) {
                 $val1 = $this->sizes[$i];
                 $val2 = $this->colors[$n];
-                array_push($combinationIds, $this->addCombination($xml, $val1, $val2));
+                $this->addCombination($xml, $val1, $val2);
             }
         }
         
         /* alternatively set combination stock via my own DBAccess file, because the WebService function did not work as intended */
-        $query = "";
-        $count = 0;
-        foreach ($combinationIds as $id) {
-            $query .= "UPDATE prstshp_product_attribute SET quantity = 20 WHERE id_product_attribute = $id; ";
-            $query .= "UPDATE `prstshp_stock_available` SET `quantity` = '20' WHERE `prstshp_stock_available`.`id_product_attribute` = $id;";
-            if ($count % 5 == 0) {
-                sleep(3);
-                $this->update($query);
-                $query = "";
-            }
-            $count++;
-        }
-        echo "success";
+        /*foreach ($combinationIds as $id) {
+            $id = (int) $id;
+            $data = [
+                "setQuantity" => "true",
+                "id_product" => $this->id_product,
+                "id_product_attribute" => $id,
+                "quantity" => 20,
+            ];
+            $this->send($data);
+        }*/
 
-        return;
+        //return;
         /* when all combinations are set, the default stock availability must be set */
-        foreach ($combinationIds as $id) {
+
+        $stockAvailablesIds = array();
+        try {
+            $xml = $this->getXML('products/' . (int) $this->id_product);
+            $stocks = $xml->children()->children()->associations->stock_availables;
+            foreach ($stocks->stock_available as $stock) {
+                array_push($stockAvailablesIds, $stock->id);
+            }
+        } catch (PrestaShopWebserviceException $e) {
+            echo $e;
+        }
+
+        foreach ($stockAvailablesIds as $id) {
             $id = (int) $id;
             try {
-                $xml = $this->getXML('stock_availables/' . $id, true);
+                $xml = $this->getXML('stock_availables/' . $id);
                 $stock = $xml->children()->children();
 
                 $stock->quantity = "20";
+                $stock->id_shop = "1";
 
                 $opt = array(
                     'resource' => 'stock_availables',
