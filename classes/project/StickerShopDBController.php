@@ -209,21 +209,6 @@ class StickerShopDBController {
                 $this->addCombination($xml, $val1, $val2);
             }
         }
-        
-        /* alternatively set combination stock via my own DBAccess file, because the WebService function did not work as intended */
-        /*foreach ($combinationIds as $id) {
-            $id = (int) $id;
-            $data = [
-                "setQuantity" => "true",
-                "id_product" => $this->id_product,
-                "id_product_attribute" => $id,
-                "quantity" => 20,
-            ];
-            $this->send($data);
-        }*/
-
-        //return;
-        /* when all combinations are set, the default stock availability must be set */
 
         $stockAvailablesIds = array();
         try {
