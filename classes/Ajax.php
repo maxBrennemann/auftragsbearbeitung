@@ -989,6 +989,25 @@ class Ajax {
 				$stickerImage = new StickerImage($id);
 				$stickerImage->saveSentData($data);
 			break;
+			case "setAufkleberTitle":
+				require_once('classes/project/StickerImage.php');
+				$id = (int) $_POST["id"];
+				$title = $_POST["title"];
+				$stickerImage = new StickerImage($id);
+				$stickerImage->setName($title);
+			break;
+			case "setAufkleberGroessen":
+				$data = json_decode($_POST["json"], true);
+
+				require_once('classes/project/StickerImage.php');
+				$id = $data["id"];
+				$stickerImage = new StickerImage($id);
+				for ($i = 0; $i < sizeof($data["ids"]); $i++) {
+					$stickerImage->updateSizeTable($data["number" . $data["ids"][$i]]);
+				}
+				$text = $data["text"];
+				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET size_summary = '$text' WHERE id = $id");
+			break;
 			case "changeImageParameters":
 				require_once('classes/project/StickerImage.php');
 				StickerImage::updateImageStatus();

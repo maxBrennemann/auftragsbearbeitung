@@ -220,3 +220,16 @@ input:checked + .slider:before {
 .imageContainer img {
     padding: 7px;
 }
+
+.breiten {
+    display: block;
+    width: 100px;
+}
+
+.breiten span {
+    float: right;
+}
+
+#previewSizeText{
+    text-align: left;
+}

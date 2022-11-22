@@ -116,6 +116,7 @@
     </div>
     <div class="defCont align-center">
         <?=$stickerImage->getSizeTable()?>
+        <div id="previewSizeText"></div>
     </div>
     <div class="defCont">
         <h4>Kurzbeschreibung</h4>
@@ -152,12 +153,12 @@ endif; ?>
 <!--
     Kategornienamen
         Motivname
-    Nummer
+        Nummer
         Aufkleber (plott)
-    Kurzfrist
-    Langfrist
+        Kurzfrist
+        Langfrist
     Wandtatto
-    mehrteilig
+        mehrteilig
     Shirtkollektion
     Texte im Shop
     T-Shirtmotiv
