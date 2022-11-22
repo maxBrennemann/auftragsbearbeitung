@@ -154,3 +154,34 @@ function editRow(key, reference) {
         }, false);
     }
 }
+
+function changeImage(e) {
+    var main = document.querySelector(".imageBig");
+    main.src = e.target.src;
+    main.dataset.imageId = e.target.dataset.imageId;
+
+    document.getElementById("aufkleberbild").checked = e.target.dataset.isAufkleber == 0 ? false : true;
+    document.getElementById("wandtattoobild").checked = e.target.dataset.isWandtattoo == 0 ? false : true;
+    document.getElementById("textilbild").checked = e.target.dataset.isTextil == 0 ? false : true;
+}
+
+async function changeImageParameters(e) {
+    var main = document.querySelector(".imageBig");
+    var is_aufkleber = document.getElementById("aufkleberbild").checked == true ? 1 : 0;
+    var is_wandtatto = document.getElementById("wandtattoobild").checked == true ? 1 : 0;
+    var is_textil = document.getElementById("textilbild").checked == true ? 1 : 0;
+
+    var data = {
+        is_aufkleber: is_aufkleber,
+        is_wandtatto: is_wandtatto,
+        is_textil: is_textil,
+        id_image: main.dataset.imageId,
+    }
+    var response = await send(data, "changeImageParameters");
+    if (response == "success") {
+        infoSaveSuccessfull("success");
+    } else {
+        console.log(response);
+        infoSaveSuccessfull();
+    }
+}
