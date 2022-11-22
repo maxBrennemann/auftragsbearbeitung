@@ -192,3 +192,31 @@ input:checked + .slider:before {
         transform: rotate(360deg);
     }
 }
+
+.imageBigContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.imageTypes {
+    background-color: white;
+    border-radius: 6px;
+    padding: 7px;
+}
+
+.imageTypes label {
+    display: block;
+    margin: 10px;
+}
+
+.imageTypes input {
+    float: right;
+}
+
+.imageContainer {
+    margin-top: 10px;
+}
+
+.imageContainer img {
+    padding: 7px;
+}

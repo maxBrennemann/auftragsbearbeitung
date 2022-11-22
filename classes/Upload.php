@@ -62,6 +62,7 @@ class Upload {
             $imageIds = [];
             foreach ($ids as $id) {
                 $imageId = DBAccess::insertQuery("INSERT INTO dateien_motive (id_datei, id_motive) VALUES ($id, $motivnummer)");
+                DBAccess::insertQuery("INSERT INTO module_sticker_images (id_image, id_sticker) VALUES ($id, $motivnummer)");
                 array_push($imageIds, $imageId);
             }
             return json_encode(["motiv" => $motivnummer, "imageIds" => $imageIds]);

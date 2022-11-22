@@ -989,6 +989,11 @@ class Ajax {
 				$stickerImage = new StickerImage($id);
 				$stickerImage->saveSentData($data);
 			break;
+			case "changeImageParameters":
+				require_once('classes/project/StickerImage.php');
+				StickerImage::updateImageStatus();
+				echo "success";
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
