@@ -54,7 +54,7 @@ function click_aufkleberPlottClick(e) {
     mainVariables.aufkleberPlott.enabled = !mainVariables.aufkleberPlott.enabled;
 }
 
-function click_editName(e) {
+async function click_editName(e) {
     e.target.innerHTML = e.target.innerHTML == "✔" ? "✎" : "✔";
     if (e.target.innerHTML == "✔") {
         document.getElementById("name").contentEditable = 'true';
@@ -62,6 +62,18 @@ function click_editName(e) {
         document.getElementById("name").contentEditable = 'false';
     }
     document.getElementById("name").classList.toggle("contentEditable");
+
+    var data = {
+        title: document.getElementById("name").innerHTML,
+        id: mainVariables.motivId.innerHTML,
+    }
+    var response = await send(data, "setAufkleberTitle");
+    if (response == "success") {
+        infoSaveSuccessfull("success");
+    } else {
+        console.log(response);
+        infoSaveSuccessfull();
+    }
 }
 
 function disableInputSlide(input) {
@@ -97,23 +109,27 @@ async function click_saveAufkleber() {
 async function click_transferAufkleber() {
     document.getElementById("productLoader").style.display = "inline";
     var data = {
-        id: 428,
+        id: mainVariables.motivId.innerHTML,
     };
     var response = await send(data, "transferAufkleber");
     console.log(response);
     document.getElementById("productLoader").style.display = "none";
 }
 
-function send(data, intent) {
+function send(data, intent, json = false) {
     data.getReason = intent;
 
-    /* temporarily copied here */
-    let temp = "";
-    for (let key in data) {
-        temp += key + "=" + data[key] + "&";
-    }
+    if (json) {
+        paramString = "getReason=" + intent + "&json=" + JSON.stringify(data);
+    } else {
+        /* temporarily copied here */
+        let temp = "";
+        for (let key in data) {
+            temp += key + "=" + data[key] + "&";
+        }
 
-    paramString = temp.slice(0, -1);
+        paramString = temp.slice(0, -1);
+    }
 
     var response = makeAsyncCall("POST", paramString, "").then(result => {
         return result;
@@ -151,8 +167,17 @@ function editRow(key, reference) {
                     }
                 }
             }
+            updateSizeTableText();
         }, false);
     }
+}
+
+async function sendRows(data, text) {
+    data.id = mainVariables.motivId.innerHTML;
+    data.text = text;
+
+    var response = await send(data, "setAufkleberGroessen", true);
+    console.log(response);
 }
 
 function changeImage(e) {
@@ -184,4 +209,31 @@ async function changeImageParameters(e) {
         console.log(response);
         infoSaveSuccessfull();
     }
+}
+
+function updateSizeTableText() {
+    var text = "<p>Folie konturgeschnitten, ohne Hintergrund</p>";
+    var data = {};
+    data.ids = [];
+
+    var table = document.querySelector("[data-type]").children[0].children;
+    for (let i = 1; i < table.length; i++) {
+        var breite = table[i].children[1].innerHTML;
+        var hoehe = table[i].children[2];
+        if (hoehe.children.length != 0) {
+            hoehe = hoehe.children[0].value;
+        } else {
+            hoehe = hoehe.innerHTML;
+        }
+        text += "<p class=\"breiten\">" + breite + " <span>x " + hoehe + "</span></p>";
+
+        number = table[i].children[0].innerHTML;
+        data["number" + number] = {};
+        data.ids.push(number);
+        data["number" + number].width = parseInt(breite);
+        data["number" + number].height = parseInt(hoehe);
+    }
+
+    document.getElementById("previewSizeText").innerHTML = text;
+    sendRows(data, text);
 }

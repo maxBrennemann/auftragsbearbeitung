@@ -17,6 +17,14 @@ class StickerImage {
     private $images = [];
     private $files = [];
 
+    private $texts = [
+        "kurzfristig" => "<p>Werbeaufkleber, der für den kurzfristigen Einsatz gedacht ist und sich daher auch wieder leicht ablösen lässt.</p>",
+        "langfristig" => "<p>Diesen Aufkleber gibt es&nbsp;als Hochleistungsfolie, der für langfristige Beschriftungen oder Dekorationen gedacht&nbsp;ist.</p><p>Bringe Deinen Aufkleber als Deko für Privat oder für Dein Geschäft an.</p>",
+        "kurzundlang" => "<p></p><p>Diesen Aufkleber gibt es in zwei Folienvarianten:</p><ol><li>Aufkleber aus Hochleistungsfolie, der für langfristige Beschriftungen oder Dekorationen gedacht&nbsp;ist.</li><li>Werbeaufkleber, der für den kurzfristigen Einsatz gedacht ist und sich daher auch wieder leicht ablösen lässt.</li></ol><p>Der Aufkleber eignet sich gut fürs Auto oder fürs Fenster, natürlich sind auch andere Anwendungen möglich.</p>",
+        "mehrteilig" => "<p>Mehrfarbige Aufkleber werden als separate Teile geliefert.<br>Die Folien werden per Plotter aus einfarbiger Folie geschnitten und müssen daher beim Kleben Farbe für Farbe angebracht werden.</p>",
+        "info" => "<p><span>Es wird jeweils nur der entsprechende Artikel oder das einzelne Motiv verkauft. Andere auf den Bildern befindliche Dinge sind nicht Bestandteil des Angebotes.</span></p>",
+    ];
+
     function __construct($id) {
         $query = "SELECT * FROM module_sticker_sticker_data WHERE id = $id";
         $data = DBAccess::selectQuery($query)[0];
@@ -27,11 +35,8 @@ class StickerImage {
         $query = "SELECT * FROM prstshp_product WHERE reference = {$this->id}";
         $this->stickerDB = new StickerShopDBController($this->id, $this->name, "test", "test", 20);
         $this->stickerDB->select($query);
-        /*$this->stickerDB->addImages(["https://media.4-paws.org/0/3/c/4/03c4df8eaa4f33f07c38c0f6b24839981174b2f3/VIER%20PFOTEN_2016-07-08_011-4993x3455-1920x1329.jpg", "https://cdn.mdr.de/wissen/katze-corona-104_v-variantBig16x9_w-1280_zc-b903ef86.jpg?version=38140"]);
-        $this->stickerDB->addSticker();*/
         $this->shopProducts = $this->stickerDB->getResult();
         $this->getConnectedFiles();
-        $this->createCombinations();
     }
 
     public static function creatStickerImage() {
@@ -42,6 +47,11 @@ class StickerImage {
 
     public function getName() {
         return $this->name;
+    }
+
+    public function setName($name) {
+        DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET name = '$name' WHERE id = $this->id");
+        echo "success";
     }
 
     public function saveSticker() {
@@ -58,8 +68,22 @@ class StickerImage {
     }
 
     private function generateSticker() {
-        /*$this->stickerDB->addImages(["https://media.4-paws.org/0/3/c/4/03c4df8eaa4f33f07c38c0f6b24839981174b2f3/VIER%20PFOTEN_2016-07-08_011-4993x3455-1920x1329.jpg", "https://cdn.mdr.de/wissen/katze-corona-104_v-variantBig16x9_w-1280_zc-b903ef86.jpg?version=38140"]);
-        $this->stickerDB->addSticker();*/
+        $description = $this->texts["info"];
+
+        if ($this->data["is_short_time"] == "1" && $this->data["is_long_time"] == "1") {
+            $description .= $this->texts["kurzundlang"];
+        } else if ($this->data["is_short_time"] == "1") {
+            $description .= $this->texts["kurzfristig"];
+        } else if ($this->data["is_long_time"] == "1") {
+            $description .= $this->texts["langfristig"];
+        }
+
+        if ($this->data["is_multipart"] == "1") {
+            $description .= $this->texts["mehrteilig"];
+        }
+        
+        $this->stickerDB = new StickerShopDBController($this->id, $this->name, $description, "test", 20);
+        $this->stickerDB->addImages($this->getImagesAufkleber());
         $this->createCombinations();
         $this->stickerDB->addSticker();
     }
@@ -70,6 +94,13 @@ class StickerImage {
 
     public function isInShop() {
         return $this->shopProducts == null ? false : true;
+    }
+
+    public function updateSizeTable($data) {
+        $width = (int) $data["width"] * 10;
+        $height = (int) $data["height"] * 10;
+        $query = "UPDATE module_sticker_sizes SET height = $height WHERE id_sticker = $this->id AND width = $width";
+        DBAccess::updateQuery($query);
     }
 
     public function getSizeTable() {
@@ -93,7 +124,7 @@ class StickerImage {
 		$t = new Table();
 		$t->createByData($data, $column_names);
 		$t->addActionButton("edit");
-		$t->setType("schritte");
+		$t->setType("sizes");
 		$t->addActionButton("delete", "id");
 		$t->addNewLineButton();
 			
@@ -140,6 +171,17 @@ class StickerImage {
                 array_push($this->files, $f);
             }
         }
+    }
+
+    public function getImagesAufkleber() {
+        $links = [];
+        $images = $this->getImages();
+        foreach ($images as $i) {
+            if ($i["is_aufkleber"] == "1") {
+                array_push($links, $i["link"]);
+            }
+        }
+        return $links;
     }
 
     public function getImages() {
