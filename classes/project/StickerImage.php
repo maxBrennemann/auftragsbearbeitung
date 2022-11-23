@@ -49,28 +49,53 @@ class StickerImage {
         return $this->name;
     }
 
+    private function setFolieBoth() {
+        $this->stickerDB->setFolieBoth([163, 162]);
+    }
+
     public function setName($name) {
         DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET name = '$name' WHERE id = $this->id");
         echo "success";
     }
 
-    public function saveSticker() {
-        $this->generateSticker();
+    public function saveAufkleber() {
+        $this->generateAufkleber();
         if ($this->isInShop()) {
-            $this->updateSticker();
+            $this->updateAufkleber();
         } else {
-            $this->generateSticker();
+            $this->generateAufkleber();
         }
     }
 
-    private function updateSticker() {
+    private function updateAufkleber() {
 
     }
 
-    private function generateSticker() {
+    public function saveWandtattoo() {
+        $this->stickerDB = new StickerShopDBController($this->id, "Wandtattoo " . $this->name, "", $this->data["size_summary"], 20);
+        $this->stickerDB->addImages($this->getImagesByType("is_wandtattoo"));
+        $this->stickerDB->setSizes($this->getSizeIds());
+        $this->stickerDB->addSticker();
+
+        /* Wandtattoo und Aufkleber Kategorien */
+        $this->stickerDB->setCategory([62, 13]);
+    }
+
+    public function saveTextil() {
+        $this->stickerDB = new StickerShopDBController($this->id, "Textil " . $this->name, "", $this->data["size_summary"], 20);
+        $this->stickerDB->addImages($this->getImagesByType("is_textil"));
+        $this->stickerDB->setSizes($this->getSizeIds());
+        $this->stickerDB->addSticker(25);
+
+        $this->stickerDB->uploadSVG($this->getSVG());
+        $this->stickerDB->setColors(["id" => 6, "ids" => [164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183]]);
+    }
+
+    private function generateAufkleber() {
         $description = $this->texts["info"];
 
         if ($this->data["is_short_time"] == "1" && $this->data["is_long_time"] == "1") {
+            $this->setFolieBoth();
             $description .= $this->texts["kurzundlang"];
         } else if ($this->data["is_short_time"] == "1") {
             $description .= $this->texts["kurzfristig"];
@@ -82,8 +107,8 @@ class StickerImage {
             $description .= $this->texts["mehrteilig"];
         }
         
-        $this->stickerDB = new StickerShopDBController($this->id, $this->name, $description, "test", 20);
-        $this->stickerDB->addImages($this->getImagesAufkleber());
+        $this->stickerDB = new StickerShopDBController($this->id, "Aufkleber " . $this->name, $description, $this->data["size_summary"], 20);
+        $this->stickerDB->addImages($this->getImagesByType("is_aufkleber"));
         $this->createCombinations();
         $this->stickerDB->addSticker();
     }
@@ -173,11 +198,11 @@ class StickerImage {
         }
     }
 
-    public function getImagesAufkleber() {
+    public function getImagesByType($type) {
         $links = [];
         $images = $this->getImages();
         foreach ($images as $i) {
-            if ($i["is_aufkleber"] == "1") {
+            if ($i[$type] == "1") {
                 array_push($links, $i["link"]);
             }
         }
@@ -209,6 +234,17 @@ class StickerImage {
         foreach ($this->files as $f) {
             $link = Link::getResourcesShortLink($f["dateiname"], "upload");
             $download .= "<a href=\"$link\">" . strtoupper($f["typ"]) . "</a>";
+        }
+        return $download;
+    }
+
+    public function getSVGIfExists() {
+        $download = REWRITE_BASE . "files/res/image/b-schriftung_logo.jpg";
+        foreach ($this->files as $f) {
+            $link = Link::getResourcesShortLink($f["dateiname"], "upload");
+            if ($f["typ"] == "svg") {
+                $download = $link;
+            }
         }
         return $download;
     }
@@ -263,6 +299,25 @@ class StickerImage {
 
         $query = "UPDATE module_sticker_images SET is_aufkleber = $is_aufkleber, is_wandtattoo = $is_wandtatto, is_textil = $is_textil WHERE id_image = $id_image";
         DBAccess::updateQuery($query);
+    }
+
+    public function getSVG() {
+        $filename = "";
+        foreach ($this->files as $f) {
+            if ($f["typ"] == "svg") {
+                $filename = "upload\\" . $f["dateiname"];
+            }
+        }
+        return $filename;
+    }
+
+    public function makeColorable() {
+        $filename = $this->getSVG();
+
+        $file = file_get_contents($filename);
+        $file = preg_replace('/fill:#([0-9a-f]{6}|[0-9a-f]{3})/i', "", $file);
+        $file = str_replace("<svg", "<svg id=\"svg_elem\"", $file);
+        file_put_contents($filename, $file);
     }
 
 }

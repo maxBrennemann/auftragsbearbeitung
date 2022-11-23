@@ -1,9 +1,11 @@
 var mainVariables = {};
 
 if (document.readyState !== 'loading' ) {
+    initSVG();
     initBindings();
 } else {
     document.addEventListener('DOMContentLoaded', function () {
+        initSVG();
         initBindings();
     });
 }
@@ -107,13 +109,33 @@ async function click_saveAufkleber() {
 }
 
 async function click_transferAufkleber() {
-    document.getElementById("productLoader").style.display = "inline";
+    document.getElementById("productLoader-a").style.display = "inline";
     var data = {
         id: mainVariables.motivId.innerHTML,
     };
     var response = await send(data, "transferAufkleber");
     console.log(response);
-    document.getElementById("productLoader").style.display = "none";
+    document.getElementById("productLoader-a").style.display = "none";
+}
+
+async function click_transferWandtattoo() {
+    document.getElementById("productLoader-w").style.display = "inline";
+    var data = {
+        id: mainVariables.motivId.innerHTML,
+    };
+    var response = await send(data, "transferWandtattoo");
+    console.log(response);
+    document.getElementById("productLoader-w").style.display = "none";
+}
+
+async function click_transferTextil() {
+    document.getElementById("productLoader-t").style.display = "inline";
+    var data = {
+        id: mainVariables.motivId.innerHTML,
+    };
+    var response = await send(data, "transferTextil");
+    console.log(response);
+    document.getElementById("productLoader-t").style.display = "none";
 }
 
 function send(data, intent, json = false) {
@@ -212,7 +234,7 @@ async function changeImageParameters(e) {
 }
 
 function updateSizeTableText() {
-    var text = "<p>Folie konturgeschnitten, ohne Hintergrund</p>";
+    var text = "<br><p>Folie konturgeschnitten, ohne Hintergrund</p>";
     var data = {};
     data.ids = [];
 
@@ -236,4 +258,32 @@ function updateSizeTableText() {
 
     document.getElementById("previewSizeText").innerHTML = text;
     sendRows(data, text);
+}
+
+var svg_elem;
+function initSVG() {
+    var a = document.getElementById("svgContainer");
+    a.addEventListener("load",function(){
+        var svgDoc = a.contentDocument;
+        svg_elem = svgDoc.getElementById("svg_elem");
+    }, false);
+}
+
+async function click_makeColorable() {
+    var data = {
+        id: mainVariables.motivId.innerHTML,
+    };
+    await send(data, "makeSVGColorable");
+}
+
+function click_makeBlack() {
+    if (svg_elem != null) {
+        svg_elem.setAttribute("fill", "rgb(0, 0, 0)");
+    }
+}
+
+function click_makeRed() {
+    if (svg_elem != null) {
+        svg_elem.setAttribute("fill", "rgb(256, 0, 0)");
+    }
 }
