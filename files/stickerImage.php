@@ -160,7 +160,7 @@
     </div>
 <?php else:
 
-$query = "SELECT id, name, IF(is_plotted = 1, '✓', 'X') AS is_plotted, IF(is_short_time = 1, '✓', 'X') AS is_short_time, IF(is_long_time = 1, '✓', 'X') AS is_long_time, IF(is_multipart = 1, '✓', 'X') AS is_multipart, IF(is_walldecal = 1, '✓', 'X') AS is_walldecal, IF(is_shirtcollection = 1, '✓', 'X') AS is_shirtcollection FROM `module_sticker_sticker_data`";
+$query = "SELECT id, `name`, IF(is_plotted = 1, '✓', 'X') AS is_plotted, IF(is_short_time = 1, '✓', 'X') AS is_short_time, IF(is_long_time = 1, '✓', 'X') AS is_long_time, IF(is_multipart = 1, '✓', 'X') AS is_multipart, IF(is_walldecal = 1, '✓', 'X') AS is_walldecal, IF(is_shirtcollection = 1, '✓', 'X') AS is_shirtcollection FROM `module_sticker_sticker_data`";
 $column_names = array(
     0 => array("COLUMN_NAME" => "id", "ALT" => "Nummer"),
     1 => array("COLUMN_NAME" => "name", "ALT" => "Name"),
@@ -184,29 +184,3 @@ $t->addLink($linker);
 echo $t->getTable();
 
 endif; ?>
-<!--
-    Kategornienamen
-        Motivname
-        Nummer
-        Aufkleber (plott)
-        Kurzfrist
-        Langfrist
-        Wandtatto
-        mehrteilig
-        Shirtkollektion
-    Texte im Shop
-    T-Shirtmotiv
-    Aufkleber (Druck)
-    Schild
-        Breite 30cm
-        Breite 60cm
-        Breite 90cm
-        Breite 120cm
-        Sondermaße
-    erstellt
-    T-Shirtmotiv Aufpreis
-    Werbung alt
-    Insta 3-Quartal 2021
-
-    Möglichkeite, weitere Daten hinzuzufügen
--->

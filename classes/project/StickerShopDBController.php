@@ -26,6 +26,8 @@ class StickerShopDBController {
     private $colors;
     private $folieBoth;
 
+    private $attributes = array();
+
     private $id_sticker;
     private $id_product = 0;
     private $title;
@@ -75,6 +77,10 @@ class StickerShopDBController {
 
     public function setFolieBoth($folien) {
         $this->folieBoth = $folien;
+    }
+
+    public function addAttributeArray($array) {
+        array_push($this->attributes, $array);
     }
 
     private function getCURLResponse($query, $update = false) {
@@ -202,6 +208,23 @@ class StickerShopDBController {
         }
     }
 
+    private function getCombinationArguments($attributes, $permutations) {
+        $index = 0;
+        $response = [];
+        foreach ($attributes as $attribute) {
+            for ($i = 0; $i < $permutations; $i++) {
+                if (!isset($response[$i])) {
+                    $response[$i] = array();
+                }
+                $element = $i % sizeof($attribute);
+                $response[$i][$index] = $attribute[$element];
+            }
+            $index++;
+        }
+
+        return $response;
+    }
+
     /**
      * 
      */
@@ -209,6 +232,21 @@ class StickerShopDBController {
         if ($this->id_product == null)
             return;
 
+        $permutations = 1;
+        foreach ($this->attributes as $attribute) {
+            $permutations *= sizeof($attribute);
+        }
+
+        $arguments = $this->getCombinationArguments($this->attributes, $permutations);
+
+        $xml = $this->getXML('combinations?schema=blank');
+        $isFirst = true;
+        foreach ($arguments as $arg) {
+            $this->addCombination($xml, $arg, $isFirst);
+            $isFirst = false;
+        }
+
+        /*
         $xml = $this->getXML('combinations?schema=blank');
         for ($i = 0; $i < sizeof($this->sizes); $i++) {
             if ($this->colors == null) {
@@ -234,6 +272,7 @@ class StickerShopDBController {
                 }
             }
         }
+        */
 
         $stockAvailablesIds = array();
         try {
@@ -318,7 +357,38 @@ class StickerShopDBController {
         }
     }
 
-    private function addCombination($xml, $val1, $val2, $defaultOn = false) {
+    private function addCombination($xml, $args, $defaultOn = false) {
+        try {
+            $combination = $xml->children()->children();
+            $combination->id_product = $this->id_product;
+
+            if ($defaultOn == 1) {
+                $combination->default_on = 1;
+            } else {
+                $combination->default_on = 0;
+            }
+
+            $combination->minimal_quantity = 0;
+            unset($combination->associations->product_option_values);
+            $product_option_values = $combination->associations->addChild("product_option_values");
+
+            foreach ($args as $a) {
+                $prodVal = $product_option_values->addChild("product_option_value");
+                $prodVal->addChild("id", $a);
+            }
+
+            $opt = array(
+                'resource' => 'combinations',
+                'postXml' => $xml->asXML(),
+            );
+            $this->addXML($opt);
+            return $this->xml->combination->id;
+        } catch (PrestaShopWebserviceException $e) {
+            echo $e;
+        }
+    }
+
+    private function addCombinationOld($xml, $val1, $val2, $defaultOn = false) {
         try {
             $combination = $xml->children()->children();
             $combination->id_product = $this->id_product;
