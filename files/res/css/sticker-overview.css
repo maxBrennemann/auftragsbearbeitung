@@ -143,7 +143,7 @@ input:checked + .slider:before {
 }
 
 /* css loader */
-#productLoader {
+#productLoader-a, #productLoader-w, #productLoader-t {
     display: none;
     top: -6px;
 }
@@ -232,4 +232,8 @@ input:checked + .slider:before {
 
 #previewSizeText{
     text-align: left;
+}
+
+#svgContainer {
+    width: 458px;
 }

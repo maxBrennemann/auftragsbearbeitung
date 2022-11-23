@@ -979,8 +979,31 @@ class Ajax {
 				$id = (int) $_POST["id"];
 
 				$stickerImage = new StickerImage($id);
-				$stickerImage->saveSticker();
+				$stickerImage->saveAufkleber();
 				echo "ready";
+			break;
+			case "transferWandtattoo":
+				require_once("classes/project/StickerImage.php");
+				$id = (int) $_POST["id"];
+
+				$stickerImage = new StickerImage($id);
+				$stickerImage->saveWandtattoo();
+				echo "ready";
+			break;
+			case "transferTextil":
+				require_once("classes/project/StickerImage.php");
+				$id = (int) $_POST["id"];
+
+				$stickerImage = new StickerImage($id);
+				$stickerImage->saveTextil();
+				echo "ready";
+			break;
+			case "makeSVGColorable":
+				require_once("classes/project/StickerImage.php");
+				$id = (int) $_POST["id"];
+
+				$stickerImage = new StickerImage($id);
+				$stickerImage->makeColorable();
 			break;
 			case "setAufkleberParameter":
 				require_once('classes/project/StickerImage.php');

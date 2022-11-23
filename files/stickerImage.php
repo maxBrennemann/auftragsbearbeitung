@@ -97,21 +97,55 @@
             <button id="saveAufkleber" data-binding="true">Speichern</button>
             <div class="loaderOrSymbol">
                 <div>
-                    <div class="lds-ring" id="productLoader"><div></div><div></div><div></div><div></div></div>
+                    <div class="lds-ring" id="productLoader-a"><div></div><div></div><div></div><div></div></div>
                     <span id="productStatus"><?php if($stickerImage->isInShop()):?>✓ <?php else:?>x <?php endif;?></span>
                 </div>        
                 <p>Aufkleber ist im Shop</p>
             </div>
         </section>
         <section class="innerDefCont">
-            <p>Wandtatto <input class="right" type="checkbox"></p>
-            <button>Aufkleber übertragen</button>
-            <p>Wandtatto ist im Shop</p>
+            <div>
+                <span>Wandtatto</span>
+                <span class="right">
+                    <label class="switch">
+                        <input type="checkbox" id="aufkleberPlott" <?=$stickerImage->data["is_walldecal"] == 1 ? "checked" : ""?> data-variable="true">
+                        <span class="slider round" id="aufkleberPlottClick" data-binding="true"></span>
+                    </label>
+                </span>
+            </div>
+            <button id="transferWandtattoo" data-binding="true">Wandtatto übertragen</button>
+            <div class="loaderOrSymbol">
+                <div>
+                    <div class="lds-ring" id="productLoader-w"><div></div><div></div><div></div><div></div></div>
+                    <span><?php if($stickerImage->isInShop()):?>✓ <?php else:?>x <?php endif;?></span>
+                </div>        
+                <p>Wandtatto ist im Shop</p>
+            </div>
         </section>
         <section class="innerDefCont">
-            <p>Textil <input class="right" type="checkbox"></p>
-            <button>Aufkleber übertragen</button>
-            <p>Textil ist im Shop</p>
+            <div>
+                <span>Textil</span>
+                <span class="right">
+                    <label class="switch">
+                        <input type="checkbox" id="aufkleberPlott" <?=$stickerImage->data["is_shirtcollection"] == 1 ? "checked" : ""?> data-variable="true">
+                        <span class="slider round" id="aufkleberPlottClick" data-binding="true"></span>
+                    </label>
+                </span>
+            </div>
+            <button id="transferTextil" data-binding="true">Textil übertragen</button>
+            <div class="loaderOrSymbol">
+                <div>
+                    <div class="lds-ring" id="productLoader-t"><div></div><div></div><div></div><div></div></div>
+                    <span><?php if($stickerImage->isInShop()):?>✓ <?php else:?>x <?php endif;?></span>
+                </div>        
+                <p>Textil ist im Shop</p>
+            </div>
+            <div>
+                <object id="svgContainer" data="<?=$stickerImage->getSVGIfExists()?>" type="image/svg+xml"></object>
+                <button id="makeColorable" data-binding="true">Einfärbbar machen</button>
+                <button id="makeBlack" data-binding="true">Schwarz</button>
+                <button id="makeRed" data-binding="true">Rot</button>
+            </div>
         </section>
     </div>
     <div class="defCont align-center">
@@ -157,18 +191,18 @@ endif; ?>
         Aufkleber (plott)
         Kurzfrist
         Langfrist
-    Wandtatto
+        Wandtatto
         mehrteilig
-    Shirtkollektion
+        Shirtkollektion
     Texte im Shop
     T-Shirtmotiv
     Aufkleber (Druck)
     Schild
-    Breite 30cm
-    Breite 60cm
-    Breite 90cm
-    Breite 120cm
-    Sondermaße
+        Breite 30cm
+        Breite 60cm
+        Breite 90cm
+        Breite 120cm
+        Sondermaße
     erstellt
     T-Shirtmotiv Aufpreis
     Werbung alt
