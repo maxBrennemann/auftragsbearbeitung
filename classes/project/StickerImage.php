@@ -203,7 +203,7 @@ class StickerImage {
         $images = $this->getImages();
         foreach ($images as $i) {
             if ($i[$type] == "1") {
-                array_push($links, $i["link"]);
+                array_push($links, WEB_URL . $i["link"]);
             }
         }
         return $links;
@@ -305,7 +305,7 @@ class StickerImage {
         $filename = "";
         foreach ($this->files as $f) {
             if ($f["typ"] == "svg") {
-                $filename = "upload\\" . $f["dateiname"];
+                $filename = "upload/" . $f["dateiname"];
             }
         }
         return $filename;
