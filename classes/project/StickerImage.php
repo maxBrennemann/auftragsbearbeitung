@@ -49,10 +49,6 @@ class StickerImage {
         return $this->name;
     }
 
-    private function setFolieBoth() {
-        $this->stickerDB->setFolieBoth([163, 162]);
-    }
-
     public function setName($name) {
         DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET name = '$name' WHERE id = $this->id");
         echo "success";
@@ -74,7 +70,7 @@ class StickerImage {
     public function saveWandtattoo() {
         $this->stickerDB = new StickerShopDBController($this->id, "Wandtattoo " . $this->name, "", $this->data["size_summary"], 20);
         $this->stickerDB->addImages($this->getImagesByType("is_wandtattoo"));
-        $this->stickerDB->setSizes($this->getSizeIds());
+        $this->stickerDB->addAttributeArray($this->getSizeIds()["ids"]);
         $this->stickerDB->addSticker();
 
         /* Wandtattoo und Aufkleber Kategorien */
@@ -82,20 +78,18 @@ class StickerImage {
     }
 
     public function saveTextil() {
-        $this->stickerDB = new StickerShopDBController($this->id, "Textil " . $this->name, "", $this->data["size_summary"], 20);
-        $this->stickerDB->addImages($this->getImagesByType("is_textil"));
-        $this->stickerDB->setSizes($this->getSizeIds());
+        $this->stickerDB = new StickerShopDBController($this->id, "Textil " . $this->name, "", "", 20);
+        //$this->stickerDB->addImages($this->getImagesByType("is_textil"));
+        $this->stickerDB->addAttributeArray([164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183]);
         $this->stickerDB->addSticker(25);
 
         $this->stickerDB->uploadSVG($this->getSVG());
-        $this->stickerDB->setColors(["id" => 6, "ids" => [164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183]]);
     }
 
     private function generateAufkleber() {
         $description = $this->texts["info"];
 
         if ($this->data["is_short_time"] == "1" && $this->data["is_long_time"] == "1") {
-            $this->setFolieBoth();
             $description .= $this->texts["kurzundlang"];
         } else if ($this->data["is_short_time"] == "1") {
             $description .= $this->texts["kurzfristig"];
@@ -108,6 +102,11 @@ class StickerImage {
         }
         
         $this->stickerDB = new StickerShopDBController($this->id, "Aufkleber " . $this->name, $description, $this->data["size_summary"], 20);
+
+        if ($this->data["is_short_time"] == "1" && $this->data["is_long_time"] == "1") {
+            $this->stickerDB->addAttributeArray([163, 162]);
+        }
+
         $this->stickerDB->addImages($this->getImagesByType("is_aufkleber"));
         $this->createCombinations();
         $this->stickerDB->addSticker();
@@ -115,6 +114,30 @@ class StickerImage {
 
     private function generateLinks() {
 
+    }
+
+    public function resizeImage($file) {
+        list($width, $height) = getimagesize("upload/" . $file["dateiname"]);
+        if ($width >= 2000 || $height >= 2000 || filesize("upload/" . $file["dateiname"]) >= 2000000) {
+            switch ($file["typ"]) {
+                case "jpg":
+                    if (function_exists("imagecreatefromjpeg")) {
+                        $image = imagecreatefromjpeg("upload/" . $file["dateiname"]);
+                        $imgResized = imagescale($image , 700, 700 * ($height / $width));
+                        imagejpeg($imgResized, "upload/" . $file["dateiname"]);
+                    }
+                    break;
+                case "png":
+                    if (function_exists("imagecreatefrompng")) {
+                        $image = imagecreatefrompng("upload/" . $file["dateiname"]);
+                        $imgResized = imagescale($image , 700, 700 * ($height / $width));
+                        imagepng($imgResized, "upload/" . $file["dateiname"]);
+                    }
+                    break;
+                default:
+                    return;
+            }
+        }
     }
 
     public function isInShop() {
@@ -190,7 +213,7 @@ class StickerImage {
         $this->allFiles = $allFiles;
         foreach ($this->allFiles as $f) {
             /* https://stackoverflow.com/questions/15408125/php-check-if-file-is-an-image */
-            if(@is_array(getimagesize("upload/" . $f["dateiname"]))){
+            if (@is_array(getimagesize("upload/" . $f["dateiname"]))){
                 array_push($this->images, $f);
             } else {
                 array_push($this->files, $f);
@@ -204,6 +227,7 @@ class StickerImage {
         foreach ($images as $i) {
             if ($i[$type] == "1") {
                 array_push($links, WEB_URL . $i["link"]);
+                $this->resizeImage($i);
             }
         }
         return $links;
@@ -286,8 +310,8 @@ class StickerImage {
     }
 
     public function createCombinations() {
-        $this->stickerDB->setSizes($this->getSizeIds());
-        $this->stickerDB->setColors($this->getColorIds());
+        $this->stickerDB->addAttributeArray($this->getSizeIds()["ids"]);
+        $this->stickerDB->addAttributeArray($this->getColorIds()["ids"]);
     }
 
     public static function updateImageStatus() {
