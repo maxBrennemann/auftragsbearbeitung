@@ -22,10 +22,6 @@ class StickerShopDBController {
     private $tags = array();
     private $images = array();
 
-    private $sizes;
-    private $colors;
-    private $folieBoth;
-
     private $attributes = array();
 
     private $id_sticker;
@@ -65,18 +61,6 @@ class StickerShopDBController {
 
     public function getResult(){
         return $this->result;
-    }
-
-    public function setSizes($sizes) {
-        $this->sizes = $sizes["ids"];
-    }
-
-    public function setColors($colors) {
-        $this->colors = $colors["ids"];
-    }
-
-    public function setFolieBoth($folien) {
-        $this->folieBoth = $folien;
     }
 
     public function addAttributeArray($array) {
@@ -246,34 +230,6 @@ class StickerShopDBController {
             $isFirst = false;
         }
 
-        /*
-        $xml = $this->getXML('combinations?schema=blank');
-        for ($i = 0; $i < sizeof($this->sizes); $i++) {
-            if ($this->colors == null) {
-                $val1 = $this->sizes[$i];
-                $this->addSingleCombination($xml, $val1, $i == 0);
-            } else if($this->sizes == null) {
-                $val1 = $this->colors[$i];
-                $this->addSingleCombination($xml, $val1, $i == 0);
-            } else {
-                for ($n = 0; $n < sizeof($this->colors); $n++) {
-                    if ($this->folieBoth == null) {
-                        $val1 = $this->sizes[$i];
-                        $val2 = $this->colors[$n];
-                        $this->addCombination($xml, $val1, $val2, ($i == 0) && ($n == 0));
-                    } else {
-                        for ($m = 0; $m< sizeof($this->folieBoth); $m++) {
-                            $val1 = $this->sizes[$i];
-                            $val2 = $this->colors[$n];
-                            $val3 = $this->folieBoth[$m];
-                            $this->addCombination3($xml, $val1, $val2, $val3, ($i == 0) && ($n == 0) && ($m == 0));
-                        }
-                    }
-                }
-            }
-        }
-        */
-
         $stockAvailablesIds = array();
         try {
             $xml = $this->getXML('products/' . (int) $this->id_product);
@@ -281,28 +237,6 @@ class StickerShopDBController {
             foreach ($stocks->stock_available as $stock) {
                 array_push($stockAvailablesIds, $stock->id);
             }
-
-            /*
-                $this->send(array("id_product_attribute"=> $stockAvailablesIds[0], "id_product" => $this->id_product, "setDefault" => true));
-
-            /*
-                $product = $xml->children()->children();
-                $product->id_default_combination = (int) $stockAvailablesIds[0];
-                $product->cache_default_attribute = (int) $stockAvailablesIds[0];
-
-                unset($product->id_default_image );
-                unset($product->position_in_category );
-                unset($product->quantity );
-                unset($product->type );
-                unset($product->manufacturer_name);
-
-                $opt = array(
-                    'resource' => 'products',
-                    'putXml' => $xml->asXML(),
-                    'id' => $product->id,
-                );
-                $this->editXML($opt);
-            */
         } catch (PrestaShopWebserviceException $e) {
             echo $e;
         }
@@ -328,35 +262,6 @@ class StickerShopDBController {
         }
     }
 
-    private function addSingleCombination($xml, $val1, $defaultOn = false) {
-        try {
-            $combination = $xml->children()->children();
-            $combination->id_product = $this->id_product;
-
-            if ($defaultOn == 1) {
-                $combination->default_on = 1;
-            } else {
-                $combination->default_on = 0;
-            }
-
-            $combination->minimal_quantity = 0;
-            unset($combination->associations->product_option_values);
-            $product_option_values = $combination->associations->addChild("product_option_values");
-            
-            $prodVal = $product_option_values->addChild("product_option_value");
-            $prodVal->addChild("id", $val1);
-
-            $opt = array(
-                'resource' => 'combinations',
-                'postXml' => $xml->asXML(),
-            );
-            $this->addXML($opt);
-            return $this->xml->combination->id;
-        } catch (PrestaShopWebserviceException $e) {
-            echo $e;
-        }
-    }
-
     private function addCombination($xml, $args, $defaultOn = false) {
         try {
             $combination = $xml->children()->children();
@@ -376,70 +281,6 @@ class StickerShopDBController {
                 $prodVal = $product_option_values->addChild("product_option_value");
                 $prodVal->addChild("id", $a);
             }
-
-            $opt = array(
-                'resource' => 'combinations',
-                'postXml' => $xml->asXML(),
-            );
-            $this->addXML($opt);
-            return $this->xml->combination->id;
-        } catch (PrestaShopWebserviceException $e) {
-            echo $e;
-        }
-    }
-
-    private function addCombinationOld($xml, $val1, $val2, $defaultOn = false) {
-        try {
-            $combination = $xml->children()->children();
-            $combination->id_product = $this->id_product;
-
-            if ($defaultOn == 1) {
-                $combination->default_on = 1;
-            } else {
-                $combination->default_on = 0;
-            }
-
-            $combination->minimal_quantity = 0;
-            unset($combination->associations->product_option_values);
-            $product_option_values = $combination->associations->addChild("product_option_values");
-            
-            $prodVal = $product_option_values->addChild("product_option_value");
-            $prodVal->addChild("id", $val1);
-            $prodVal = $product_option_values->addChild("product_option_value");
-            $prodVal->addChild("id", $val2);
-
-            $opt = array(
-                'resource' => 'combinations',
-                'postXml' => $xml->asXML(),
-            );
-            $this->addXML($opt);
-            return $this->xml->combination->id;
-        } catch (PrestaShopWebserviceException $e) {
-            echo $e;
-        }
-    }
-
-    private function addCombination3($xml, $val1, $val2, $val3, $defaultOn = false) {
-        try {
-            $combination = $xml->children()->children();
-            $combination->id_product = $this->id_product;
-
-            if ($defaultOn == 1) {
-                $combination->default_on = 1;
-            } else {
-                $combination->default_on = 0;
-            }
-
-            $combination->minimal_quantity = 0;
-            unset($combination->associations->product_option_values);
-            $product_option_values = $combination->associations->addChild("product_option_values");
-            
-            $prodVal = $product_option_values->addChild("product_option_value");
-            $prodVal->addChild("id", $val1);
-            $prodVal = $product_option_values->addChild("product_option_value");
-            $prodVal->addChild("id", $val2);
-            $prodVal = $product_option_values->addChild("product_option_value");
-            $prodVal->addChild("id", $val3);
 
             $opt = array(
                 'resource' => 'combinations',
@@ -577,33 +418,6 @@ class StickerShopDBController {
         curl_close($ch);
         echo $result;
         # Print response.
-        return $result;
-    }
-
-    /* https://docs.prestashop-project.org/1-6-documentation/english-documentation/developer-guide/developer-tutorials/using-the-prestashop-web-service/web-service-tutorial/chapter-9-image-management */
-    private function uploadImageToPrestashop($productId) {
-        $url = "https://klebefux.de/api/images/products/$productId";
-        /**
-         * Uncomment the following line in order to update an existing image
-         */
-        //$url = 'http://myprestashop.com/api/images/products/1/2?ps_method=PUT';
-        
-        $image_path = 'C:\\Users\\pc\\Documents\\3.png';
-        $image_path = 'C:/Users/pc/Documents/3.png';
-        $image_path = 'C:\\test.jpg';
-
-        $cImage = new CurlFile($image_path, 'image/jpeg', "image");
-
-        $ch = curl_init();
-        //curl_setopt($ch, CURLOPT_HEADER, 1);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_USERPWD, $this->prestaKey.':');
-        curl_setopt($ch, CURLOPT_POSTFIELDS, array('image' => $cImage)); //'@'.$image_path.";type=image/jpeg"));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $result = curl_exec($ch);
-        curl_close($ch);
-
         return $result;
     }
 
