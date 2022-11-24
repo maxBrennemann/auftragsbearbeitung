@@ -97,10 +97,16 @@
             <button id="saveAufkleber" data-binding="true">Speichern</button>
             <div class="loaderOrSymbol">
                 <div>
-                    <div class="lds-ring" id="productLoader-a"><div></div><div></div><div></div><div></div></div>
+                    <div class="lds-ring productLoader"><div></div><div></div><div></div><div></div></div>
                     <span id="productStatus"><?php if($stickerImage->isInShop()):?>✓ <?php else:?>x <?php endif;?></span>
                 </div>        
                 <p>Aufkleber ist im Shop</p>
+            </div>
+            <div>
+                <h4>Kurzbeschreibung</h4>
+                <textarea data-fun="shortDesc" data-target="1" data-write="true"></textarea>
+                <h4>Beschreibung</h4>
+                <textarea data-fun="longDesc" data-target="1" data-write="true"></textarea>
             </div>
         </section>
         <section class="innerDefCont">
@@ -116,10 +122,16 @@
             <button id="transferWandtattoo" data-binding="true">Wandtatto übertragen</button>
             <div class="loaderOrSymbol">
                 <div>
-                    <div class="lds-ring" id="productLoader-w"><div></div><div></div><div></div><div></div></div>
+                    <div class="lds-ring productLoader"><div></div><div></div><div></div><div></div></div>
                     <span><?php if($stickerImage->isInShop()):?>✓ <?php else:?>x <?php endif;?></span>
                 </div>        
                 <p>Wandtatto ist im Shop</p>
+            </div>
+            <div>
+                <h4>Kurzbeschreibung</h4>
+                <textarea data-fun="shortDesc" data-target="2" data-write="true"></textarea>
+                <h4>Beschreibung</h4>
+                <textarea data-fun="longDesc" data-target="2" data-write="true"></textarea>
             </div>
         </section>
         <section class="innerDefCont">
@@ -135,7 +147,7 @@
             <button id="transferTextil" data-binding="true">Textil übertragen</button>
             <div class="loaderOrSymbol">
                 <div>
-                    <div class="lds-ring" id="productLoader-t"><div></div><div></div><div></div><div></div></div>
+                    <div class="lds-ring productLoader"><div></div><div></div><div></div><div></div></div>
                     <span><?php if($stickerImage->isInShop()):?>✓ <?php else:?>x <?php endif;?></span>
                 </div>        
                 <p>Textil ist im Shop</p>
@@ -146,17 +158,17 @@
                 <button id="makeBlack" data-binding="true">Schwarz</button>
                 <button id="makeRed" data-binding="true">Rot</button>
             </div>
+            <div>
+                <h4>Kurzbeschreibung</h4>
+                <textarea data-fun="shortDesc" data-target="3" data-write="true"></textarea>
+                <h4>Beschreibung</h4>
+                <textarea data-fun="longDesc" data-target="3" data-write="true"></textarea>
+            </div>
         </section>
     </div>
     <div class="defCont align-center">
         <?=$stickerImage->getSizeTable()?>
         <div id="previewSizeText"></div>
-    </div>
-    <div class="defCont">
-        <h4>Kurzbeschreibung</h4>
-        <textarea></textarea>
-        <h4>Beschreibung</h4>
-        <textarea></textarea>
     </div>
 <?php else:
 

@@ -33,6 +33,24 @@ function initBindings() {
     [].forEach.call(variables, function(v) {
         mainVariables[v.id] = v;
     });
+    let autowriter = document.querySelectorAll('[data-write]');
+    [].forEach.call(autowriter, function(el) {
+        var fun_name = "";
+        if (el.dataset.fun) {
+            fun_name = "write_" + el.dataset.fun;
+        } else {
+            fun_name = "write_" + el.id;
+        }
+        
+        el.addEventListener("change", function(e) {
+            var fun = window[fun_name];
+            if (typeof fun === "function") {
+                fun(e);
+            } else {
+                console.warn("event listener may not be defined or wrong");
+            }
+        }.bind(fun_name), false);
+    });
 }
 
 function click_toggleCheckbox(e) {
@@ -44,13 +62,13 @@ function click_aufkleberPlottClick(e) {
         enableInputSlide(mainVariables.aufkleberKurz);
         enableInputSlide(mainVariables.aufkleberLang);
         enableInputSlide(mainVariables.aufkleberMehrteilig);
-        document.getElementById("aufkleberUebertragen").disabled = false;
+        document.getElementById("transferAufkleber").disabled = false;
     } else {
         disableInputSlide(mainVariables.aufkleberKurz);
         disableInputSlide(mainVariables.aufkleberLang);
         disableInputSlide(mainVariables.aufkleberMehrteilig);
 
-        document.getElementById("aufkleberUebertragen").disabled = true;
+        document.getElementById("transferAufkleber").disabled = true;
     }
 
     mainVariables.aufkleberPlott.enabled = !mainVariables.aufkleberPlott.enabled;
@@ -108,34 +126,28 @@ async function click_saveAufkleber() {
     }
 }
 
-async function click_transferAufkleber() {
-    document.getElementById("productLoader-a").style.display = "inline";
-    var data = {
-        id: mainVariables.motivId.innerHTML,
-    };
-    var response = await send(data, "transferAufkleber");
-    console.log(response);
-    document.getElementById("productLoader-a").style.display = "none";
+function click_transferAufkleber() {
+    transfer(1);
 }
 
-async function click_transferWandtattoo() {
-    document.getElementById("productLoader-w").style.display = "inline";
-    var data = {
-        id: mainVariables.motivId.innerHTML,
-    };
-    var response = await send(data, "transferWandtattoo");
-    console.log(response);
-    document.getElementById("productLoader-w").style.display = "none";
+function click_transferWandtattoo() {
+    transfer(2);
 }
 
-async function click_transferTextil() {
-    document.getElementById("productLoader-t").style.display = "inline";
+function click_transferTextil() {
+   transfer(3);
+}
+
+async function transfer(type) {
+    document.getElementsByClassName("productLoader")[type].style.display = "inline";
     var data = {
         id: mainVariables.motivId.innerHTML,
+        type: type
     };
-    var response = await send(data, "transferTextil");
+    var response = await send(data, "transferProduct");
     console.log(response);
-    document.getElementById("productLoader-t").style.display = "none";
+
+    document.getElementsByClassName("productLoader")[type].style.display = "none";
 }
 
 function send(data, intent, json = false) {
@@ -158,6 +170,24 @@ function send(data, intent, json = false) {
     });
 
     return response;
+}
+
+/**
+ * delets from size table
+ * @param {*} key the table key
+ * @param {*} table the table name, used to get the table key
+ * @param {*} reference the target
+ */
+async function deleteRow(key, table, reference) {
+    var tableKey = document.querySelector(`[data-type="${table}"]`).dataset.key;
+    var data = {
+        id: mainVariables.motivId.innerHTML,
+        key: key,
+        table: tableKey,
+    };
+    console.log(await send(data, "deleteSize"));
+    var row = reference.parentNode.parentNode;
+    row.parentNode.removeChild(row);
 }
 
 /* editRow for sizetable */
