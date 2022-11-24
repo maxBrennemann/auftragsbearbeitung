@@ -143,11 +143,6 @@ input:checked + .slider:before {
 }
 
 /* css loader */
-#productLoader-a, #productLoader-w, #productLoader-t {
-    display: none;
-    top: -6px;
-}
-
 .loaderOrSymbol * {
     display: inline-block;
 }
@@ -191,6 +186,11 @@ input:checked + .slider:before {
     100% {
         transform: rotate(360deg);
     }
+}
+
+.productLoader {
+    display: none;
+    top: -6px;
 }
 
 .imageBigContainer {

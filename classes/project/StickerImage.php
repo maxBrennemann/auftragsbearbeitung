@@ -172,7 +172,7 @@ class StickerImage {
 		$t = new Table();
 		$t->createByData($data, $column_names);
 		$t->addActionButton("edit");
-		$t->setType("sizes");
+		$t->setType("module_sticker_sizes");
 		$t->addActionButton("delete", "id");
 		$t->addNewLineButton();
 			
@@ -335,12 +335,19 @@ class StickerImage {
         return $filename;
     }
 
+    /**
+     * seaches for all occurances of colors in these two patterns:
+     * fill:#FFFFFF
+     * fill:#FFF
+     * then it replaces "<svg" with "<svg id="svg_elem" only if it is not already set
+     */
     public function makeColorable() {
         $filename = $this->getSVG();
-
         $file = file_get_contents($filename);
         $file = preg_replace('/fill:#([0-9a-f]{6}|[0-9a-f]{3})/i', "", $file);
-        $file = str_replace("<svg", "<svg id=\"svg_elem\"", $file);
+        if (!str_contains($file, "<svg id=\"svg_elem\"")) {
+            $file = str_replace("<svg", "<svg id=\"svg_elem\"", $file);
+        }
         file_put_contents($filename, $file);
     }
 

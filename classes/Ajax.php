@@ -444,6 +444,11 @@ class Ajax {
 				$order = new Auftrag($order);
 				echo $order->getNotes();
 			break;
+			case "deleteSize":
+				$key = $_POST["key"];
+				$table = $_POST["table"];
+				Table::updateValue($table, "delete", $_POST['key']);
+			break;
 			case "sendSource":
 				Produkt::addSource();
 			break;
@@ -974,28 +979,26 @@ class Ajax {
 						echo "an error occured";
 				}
 			break;
-			case "transferAufkleber":
+			case "transferProduct":
 				require_once("classes/project/StickerImage.php");
 				$id = (int) $_POST["id"];
+				$type = (int) $_POST["type"];
+
+				$stickerImage = new StickerImage($id);
+				switch ($type) {
+					case 1:
+						$stickerImage->saveAufkleber();
+						break;
+					case 2:
+						$stickerImage->saveWandtattoo();
+						break;
+					case 3:
+						$stickerImage->saveTextil();
+						break;
+				}
 
 				$stickerImage = new StickerImage($id);
 				$stickerImage->saveAufkleber();
-				echo "ready";
-			break;
-			case "transferWandtattoo":
-				require_once("classes/project/StickerImage.php");
-				$id = (int) $_POST["id"];
-
-				$stickerImage = new StickerImage($id);
-				$stickerImage->saveWandtattoo();
-				echo "ready";
-			break;
-			case "transferTextil":
-				require_once("classes/project/StickerImage.php");
-				$id = (int) $_POST["id"];
-
-				$stickerImage = new StickerImage($id);
-				$stickerImage->saveTextil();
 				echo "ready";
 			break;
 			case "makeSVGColorable":
