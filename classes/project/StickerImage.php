@@ -6,7 +6,6 @@ class StickerImage {
 
     private $id;
     private $name;
-    private $number;
 
     public $data;
 
@@ -27,15 +26,18 @@ class StickerImage {
 
     function __construct($id) {
         $query = "SELECT * FROM module_sticker_sticker_data WHERE id = $id";
-        $data = DBAccess::selectQuery($query)[0];
+        $data = DBAccess::selectQuery($query);
+        if ($data == null) {
+            $this->id = 0;
+            return null;
+        }
+        $data = $data[0];
+
         $this->id = $id;
         $this->name = $data["name"];
         $this->data = $data;
 
-        $query = "SELECT * FROM prstshp_product WHERE reference = {$this->id}";
-        $this->stickerDB = new StickerShopDBController($this->id, $this->name, "test", "test", 20);
-        $this->stickerDB->select($query);
-        $this->shopProducts = $this->stickerDB->getResult();
+        $this->shopProducts = StickerShopDBController::matchProductByRefernce($this->id);
         $this->getConnectedFiles();
     }
 
@@ -45,8 +47,21 @@ class StickerImage {
         return new StickerImage($id);
     }
 
+    public function getShopProducts($type, $data) {
+        if (isset($this->shopProducts[$type])) {
+            if (isset($this->shopProducts[$type][$data])) {
+                return $this->shopProducts[$type][$data];
+            }
+        }
+        return "#";
+    }
+
     public function getName() {
         return $this->name;
+    }
+
+    public function getId() {
+        return $this->id;
     }
 
     public function setName($name) {
@@ -56,7 +71,7 @@ class StickerImage {
 
     public function saveAufkleber() {
         $this->generateAufkleber();
-        if ($this->isInShop()) {
+        if ($this->isInShop("aufkleber")) {
             $this->updateAufkleber();
         } else {
             $this->generateAufkleber();
@@ -77,9 +92,42 @@ class StickerImage {
         $this->stickerDB->setCategory([62, 13]);
     }
 
+    public function calculatePrices($priceTable, $difficulty, $currency = true) {
+        foreach($priceTable as &$size) {
+            if ($size["width"] >= 1200) {
+                $base = 2100;
+            } else if ($size["width"] >= 900) {
+                $base = 1950;
+            } else if ($size["width"] >= 600) {
+                $base = 1700;
+            } else if ($size["width"] >= 300) {
+                $base = 1500;
+            } else {
+                $base = 1200;
+            }
+
+            /* leeres Tabellenfeld heißt, dass der berechnete Wert verwendet werden soll */
+            if ($size["price"] == null) {
+                $size["price"] = $base + 200 * $difficulty;
+                if ($size["height"] >= 0.5 * $size["width"]) {
+                    $size["price"] += 100;
+                }
+            }
+
+            if ($currency) {
+                $size["price"] = number_format($size["price"] / 100, 2, ',', '') . "€";
+            }
+        }
+
+        return $priceTable;
+    }
+
+    /**
+     * TODO: remove hardcoded ids;
+     */
     public function saveTextil() {
         $this->stickerDB = new StickerShopDBController($this->id, "Textil " . $this->name, "", "", 20);
-        //$this->stickerDB->addImages($this->getImagesByType("is_textil"));
+        $this->stickerDB->addImages($this->getImagesByType("is_textil"));
         $this->stickerDB->addAttributeArray([164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183]);
         $this->stickerDB->addSticker(25);
 
@@ -107,13 +155,22 @@ class StickerImage {
             $this->stickerDB->addAttributeArray([163, 162]);
         }
 
+        $query = "SELECT id, width, height, price FROM module_sticker_sizes WHERE id_sticker = {$this->id} ORDER BY width";
+        $data = DBAccess::selectQuery($query);
+        $difficulty = 0;
+        $data = $this->calculatePrices($data, $difficulty, false);
+
+        $prices = [];
+        $sizes = $this->getSizeIds();
+        for ($i = 0; $i < sizeof($data); $i++) {
+            $price = $data[$i]["price"] / 100;
+            array_push($prices, [$sizes["ids"][$i] => $price]);
+        }
+
+        $this->stickerDB->prices = $prices;
         $this->stickerDB->addImages($this->getImagesByType("is_aufkleber"));
         $this->createCombinations();
         $this->stickerDB->addSticker();
-    }
-
-    private function generateLinks() {
-
     }
 
     public function resizeImage($file) {
@@ -140,8 +197,8 @@ class StickerImage {
         }
     }
 
-    public function isInShop() {
-        return $this->shopProducts == null ? false : true;
+    public function isInShop($type) {
+        return $this->shopProducts[$type] == null ? false : true;
     }
 
     public function updateSizeTable($data) {
@@ -152,17 +209,20 @@ class StickerImage {
     }
 
     public function getSizeTable() {
-        $query = "SELECT id, width, height FROM module_sticker_sizes WHERE id_sticker = {$this->id} ORDER BY width";
+        $query = "SELECT id, width, height, price FROM module_sticker_sizes WHERE id_sticker = {$this->id} ORDER BY width";
         $data = DBAccess::selectQuery($query);
         $column_names = array(
             0 => array("COLUMN_NAME" => "id", "ALT" => "Kombinummer"),
             1 => array("COLUMN_NAME" => "width", "ALT" => "Breite"),
-            2 => array("COLUMN_NAME" => "height", "ALT" => "Höhe")
+            2 => array("COLUMN_NAME" => "height", "ALT" => "Höhe"),
+            3 => array("COLUMN_NAME" => "price", "ALT" => "Preis (brutto)"),
         );
 
         if ($data == null) {
             $data = $this->loadDefault($query);
         }
+
+        $data = $this->calculatePrices($data, 0);
 
         foreach ($data as &$d) {
             $d["width"] = str_replace(".", ",", ((int) $d["width"]) / 10) . "cm";
@@ -192,6 +252,12 @@ class StickerImage {
                 "value" => 2,
                 "type" => "cm",
                 "cast" => [],
+            ],
+            "price" => [
+                "status" => "unset",
+                "value" => 3,
+                "type" => "float",
+                "cast" => ["separator" => ","],
             ],
         ];
 
@@ -245,7 +311,12 @@ class StickerImage {
                     "id" => 0,
                     "title" => "default image",
                     "alt" => "default image",
-                    "link" => Link::getResourcesShortLink("default_image.png", "upload")
+                    "link" => Link::getResourcesShortLink("default_image.png", "upload"),
+                    "dateiname" => "Standardbild",
+                    "typ" => "png",
+                    "is_aufkleber" => 0,
+                    "is_wandtattoo" => 0,
+                    "is_textil" => 0,
                 ],
             ];
         }
@@ -254,12 +325,15 @@ class StickerImage {
     }
 
     public function getFiles() {
-        $download = "";
+        if (sizeof($this->files) == 0) {
+            return;
+        }
+        $download = "<p>Download ";
         foreach ($this->files as $f) {
             $link = Link::getResourcesShortLink($f["dateiname"], "upload");
-            $download .= "<a href=\"$link\">" . strtoupper($f["typ"]) . "</a>";
+            $download .= "<a href=\"$link\">" . strtoupper($f["typ"]) . "</a> ";
         }
-        return $download;
+        return $download . "</p>";
     }
 
     public function getSVGIfExists() {
@@ -276,11 +350,35 @@ class StickerImage {
     /* save sticker fields */
     public function saveSentData($jsonData) {
         $data = json_decode($jsonData);
-        $plott = $data->plott;
-        $short = $data->short;
-        $long = $data->long;
-        $multi = $data->multi;
-        $query = "UPDATE module_sticker_sticker_data SET is_plotted = $plott, is_short_time = $short, is_long_time = $long, is_multipart = $multi WHERE id = {$this->id}";
+        switch ($data->name) {
+            case "plotted":
+                $column = "is_plotted";
+                $newVal = $data->plotted;
+                if ($newVal == "0") {
+                    DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET `is_short_time` = 0 WHERE id = {$this->id}");
+                    DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET `is_long_time` = 0 WHERE id = {$this->id}");
+                    DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET `is_multipart` = 0 WHERE id = {$this->id}");
+                }
+                break;
+            case "short":
+                $column = "is_short_time";
+                $newVal = $data->short;
+                break;
+            case "long":
+                $column = "is_long_time";
+                $newVal = $data->long;
+                break;
+            case "multi":
+                $column = "is_multipart";
+                $newVal = $data->multi;
+                break;
+            default:
+                echo "error";
+                return;
+        }
+
+        $newVal = (int) $newVal;
+        $query = "UPDATE module_sticker_sticker_data SET `$column` = $newVal WHERE id = {$this->id}";
         DBAccess::updateQuery($query);
         echo "success";
     }
@@ -291,14 +389,22 @@ class StickerImage {
      * wird diese erstellt
      */
     public function getSizeIds() {
-        $sizes = ["30cm", "60cm", "90cm", "120cm"];
+        $query = "SELECT width FROM module_sticker_sizes WHERE id_sticker = {$this->id} ORDER BY width";
+        $data = DBAccess::selectQuery($query);
+
+        $sizesInCm = [];
+        foreach ($data as &$d) {
+            $singleSizeInCm = str_replace(".", ",", ((int) $d["width"]) / 10) . "cm";
+            array_push($sizesInCm, $singleSizeInCm);
+        }
+
         $sizeIds = array();
-        foreach ($sizes as $size) {
-            $sizeId = (int) $this->stickerDB->addAttribute("5", $size);
+        foreach ($sizesInCm as $sizeInCm) {
+            $sizeId = (int) $this->stickerDB->addAttribute("5", $sizeInCm);
             array_push($sizeIds, $sizeId);
         }
 
-        return ["id" => 5, "ids" => $sizeIds];
+        return ["id" => 5, "ids" => $sizeIds, "sizes" => $sizesInCm];
     }
 
     /**

@@ -31,6 +31,8 @@ class StickerShopDBController {
     private $description_short;
     private $price;
 
+    public $prices = null;
+
     function __construct($id_sticker, $title, $description, $description_short, $basePrice) {
         $this->id_sticker = $id_sticker;
         $this->title = $title;
@@ -87,21 +89,6 @@ class StickerShopDBController {
         return $result;
     }
 
-    private function send($data) {
-        $ch = curl_init($this->url);
-        $payload = json_encode($data);
-        
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-        # Return response instead of printing.
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        # Send request.
-        $result = curl_exec($ch);
-        curl_close($ch);
-        # Print response.
-        echo $result;
-    }
-
     private function getXML($resource, $debug = false) {
         $this->webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, $debug);
         $this->xml = $this->webService->get(array('resource' => $resource));
@@ -119,6 +106,38 @@ class StickerShopDBController {
 
     private function editXML($options) {
         $this->xml = $this->webService->edit($options);
+    }
+
+    public static function matchProductByRefernce($reference) {
+        $stickerShopDBController = new StickerShopDBController(0, null, null, null, null);
+        $xml = $stickerShopDBController->getXML("products?filter[reference]=$reference");
+        $productMatches = [];
+        foreach ($xml->children()->children() as $product) {
+            $categories = [];
+            $productId = (int) $product["id"];
+            $xmlProduct = $stickerShopDBController->getXML("products/$productId");
+            $title = (String) $xmlProduct->children()->children()->name->language[0];
+            $link = "https://klebefux.de/home/$productId-" .(String) $xmlProduct->children()->children()->link_rewrite->language[0] . ".html";
+            $categoriesXML = $xmlProduct->children()->children()->associations->categories->category;
+            foreach ($categoriesXML as $category) {
+                array_push($categories, (int) $category->id);
+            }
+
+            /**
+             * TODO: hardcoded entfernen
+             * Kategorie 25 ist die Textilkategorie, 
+             * Kategorie ist die Wandtattookategorie,
+             * Kategorie 13 ist die Aufkleberkategorie
+             */
+            if (in_array(25, $categories)) {
+                $productMatches["textil"] = ["id" => $productId, "title" => $title, "link" => $link];
+            } else if (in_array(62, $categories)) {
+                $productMatches["wandtattoo"] = ["id" => $productId, "title" => $title, "link" => $link];
+            } else if (in_array(13, $categories)) {
+                $productMatches["aufkleber"] = ["id" => $productId, "title" => $title, "link" => $link];
+            }
+        }
+        return $productMatches;
     }
 
     /* https://www.prestashop.com/forums/topic/640693-how-to-add-a-product-through-the-webservice-with-custom-feature-values/#comment-2663527 */
@@ -280,6 +299,10 @@ class StickerShopDBController {
             foreach ($args as $a) {
                 $prodVal = $product_option_values->addChild("product_option_value");
                 $prodVal->addChild("id", $a);
+
+                if ($this->prices != null && in_array($a, $this->prices)) {
+                    $combination->price = $this->prices[$a];
+                }
             }
 
             $opt = array(

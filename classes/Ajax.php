@@ -1001,6 +1001,22 @@ class Ajax {
 				$stickerImage->saveAufkleber();
 				echo "ready";
 			break;
+			case "deleteImage":
+				$imageId = (int) $_POST["imageId"];
+				$query = "DELETE FROM dateien WHERE id = $imageId";
+				DBAccess::deleteQuery($query);
+				echo "success";
+			break;
+			case "toggleTextil":
+				$id = (int) $_POST["id"];
+				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_shirtcollection` = NOT `is_shirtcollection` WHERE id = $id");
+				echo "success";
+			break;
+			case "toggleWandtattoo":
+				$id = (int) $_POST["id"];
+				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_walldecal` = NOT `is_walldecal` WHERE id = $id");
+				echo "success";
+			break;
 			case "makeSVGColorable":
 				require_once("classes/project/StickerImage.php");
 				$id = (int) $_POST["id"];

@@ -404,7 +404,7 @@ class Rechnung {
 	/**
 	 * berechnet die offene Rechnungssumme, Rechnung ist offen, wenn auftrag.Bezahlt = 0 gilt;
 	 * 
-	 * TODO für später:
+	 * TODO: für später:
 	 * eventuell eigene Tabelle für Rechnungssummen, um Unveränderbarkeit zu garantieren
 	 */
 	public static function getOffeneRechnungssumme() {

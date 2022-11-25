@@ -1,13 +1,19 @@
 var mainVariables = {};
 
 if (document.readyState !== 'loading' ) {
-    initSVG();
-    initBindings();
+    initStickerOverview();
 } else {
     document.addEventListener('DOMContentLoaded', function () {
-        initSVG();
-        initBindings();
+        initStickerOverview();
     });
+}
+
+function initStickerOverview() {
+    document.getElementById("preiskategorie_dropdown").addEventListener("click", preisListenerTextil, false);
+    document.getElementById("preiskategorie").addEventListener("click", preisListenerTextil, false);
+
+    initSVG();
+    initBindings();
 }
 
 function initBindings() {
@@ -53,25 +59,58 @@ function initBindings() {
     });
 }
 
-function click_toggleCheckbox(e) {
-    e.target.enabled = !e.target.enabled;
+async function click_toggleCheckbox(e) {
+    e.preventDefault();
+    var inputNode = e.target.parentNode.children[0];
+    inputNode.checked = !inputNode.checked;
+
+    var checked = inputNode.checked == true ? 1 : 0;
+    var name = inputNode.id;
+    var data =  {
+        json: JSON.stringify({
+            [name]: checked,
+            name: name,
+        }),
+        id: mainVariables.motivId.innerHTML,
+    };
+
+    if (name == "plotted") {
+        aufkleberPlottClick(e);
+    }
+
+    var response = await send(data, "setAufkleberParameter");
+    if (response == "success") {
+        infoSaveSuccessfull("success");
+    } else {
+        console.log(response);
+        infoSaveSuccessfull();
+    }
 }
 
-function click_aufkleberPlottClick(e) {
-    if (mainVariables.aufkleberPlott.enabled == true) {
-        enableInputSlide(mainVariables.aufkleberKurz);
-        enableInputSlide(mainVariables.aufkleberLang);
-        enableInputSlide(mainVariables.aufkleberMehrteilig);
+function disableInputSlide(input) {
+    input.checked = false;
+    input.disabled = true;
+    input.parentNode.children[1].classList.add("pointer-none");
+}
+
+function enableInputSlide(input) {
+    input.disabled = false;
+    input.parentNode.children[1].classList.remove("pointer-none");
+}
+
+function aufkleberPlottClick(e) {
+    if (mainVariables.plotted.checked == true) {
+        enableInputSlide(mainVariables.short);
+        enableInputSlide(mainVariables.long);
+        enableInputSlide(mainVariables.multi);
         document.getElementById("transferAufkleber").disabled = false;
     } else {
-        disableInputSlide(mainVariables.aufkleberKurz);
-        disableInputSlide(mainVariables.aufkleberLang);
-        disableInputSlide(mainVariables.aufkleberMehrteilig);
+        disableInputSlide(mainVariables.short);
+        disableInputSlide(mainVariables.long);
+        disableInputSlide(mainVariables.multi);
 
         document.getElementById("transferAufkleber").disabled = true;
     }
-
-    mainVariables.aufkleberPlott.enabled = !mainVariables.aufkleberPlott.enabled;
 }
 
 async function click_editName(e) {
@@ -96,28 +135,24 @@ async function click_editName(e) {
     }
 }
 
-function disableInputSlide(input) {
-    input.checked = false;
-    input.disabled = true;
-    input.parentNode.children[1].classList.add("pointer-none");
-}
-
-function enableInputSlide(input) {
-    input.disabled = false;
-    input.parentNode.children[1].classList.remove("pointer-none");
-}
-
-async function click_saveAufkleber() {
-    var data = {
-        json: JSON.stringify({
-                "plott": mainVariables.aufkleberPlott.checked == true ? 1: 0,
-                "short": mainVariables.aufkleberKurz.checked == true ? 1: 0,
-                "long": mainVariables.aufkleberLang.checked == true ? 1: 0,
-                "multi": mainVariables.aufkleberMehrteilig.checked == true ? 1: 0,
-        }),
+async function click_textilClick() {
+    var data =  {
         id: mainVariables.motivId.innerHTML,
+    };
+    var response = await send(data, "toggleTextil");
+    if (response == "success") {
+        infoSaveSuccessfull("success");
+    } else {
+        console.log(response);
+        infoSaveSuccessfull();
     }
-    var response = await send(data, "setAufkleberParameter");
+}
+
+async function click_wandtattooClick() {
+    var data =  {
+        id: mainVariables.motivId.innerHTML,
+    };
+    var response = await send(data, "toggleWandtattoo");
     if (response == "success") {
         infoSaveSuccessfull("success");
     } else {
@@ -232,6 +267,16 @@ async function sendRows(data, text) {
     console.log(response);
 }
 
+async function deleteImage() {
+    var imageId = document.querySelector(".imageBig");
+    imageId = imageId.dataset.imageId;
+    var data = {
+        imageId: imageId,
+    };
+    var response = await send(data, "deleteImage");
+    infoSaveSuccessfull(response); 
+}
+
 function changeImage(e) {
     var main = document.querySelector(".imageBig");
     main.src = e.target.src;
@@ -293,10 +338,12 @@ function updateSizeTableText() {
 var svg_elem;
 function initSVG() {
     var a = document.getElementById("svgContainer");
-    a.addEventListener("load",function(){
-        var svgDoc = a.contentDocument;
-        svg_elem = svgDoc.getElementById("svg_elem");
-    }, false);
+    if (a != null || a!= undefined) {
+        a.addEventListener("load",function(){
+            var svgDoc = a.contentDocument;
+            svg_elem = svgDoc.getElementById("svg_elem");
+        }, false);
+    }
 }
 
 async function click_makeColorable() {
@@ -317,3 +364,21 @@ function click_makeRed() {
         svg_elem.setAttribute("fill", "rgb(256, 0, 0)");
     }
 }
+
+function preisListenerTextil() {
+    document.getElementById("selectReplacerPreiskategorie").classList.add("selectReplacerShow");
+}
+
+/* https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_dropdown */
+window.addEventListener("click", function(event) {
+    if (!event.target.matches('.selectReplacer') && !event.target.matches('#preiskategorie_dropdown') && !event.target.matches('#preiskategorie')) {
+        var dropdowns = document.getElementsByClassName("selectReplacer");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('selectReplacerShow')) {
+                openDropdown.classList.remove('selectReplacerShow');
+            }
+        }
+    }
+}, false);

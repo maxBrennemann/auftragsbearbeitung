@@ -7,10 +7,16 @@
     if (isset($_GET['id'])) {
         $id = (int) $_GET['id'];
         $stickerImage = new StickerImage($id);
+        do {
+            if ($stickerImage->getId() == 0) {
+                $id = 0;
+                break;
+            }
 
-        $images = $stickerImage->getImages();
-        $mainImage = $images[0];
-        $getDownloadResources = $stickerImage->getFiles();
+            $images = $stickerImage->getImages();
+            $mainImage = $images[0];
+            $getDownloadResources = $stickerImage->getFiles();
+        } while (0);
     }
 
     if ($id != 0):
@@ -19,13 +25,15 @@
         <div>
             <h2>Motiv <span id="name"><?=$stickerImage->getName();?></span><button class="actionButton" data-binding="true" id="editName">✎</button></h2>
             <p>Artikelnummer: <span id="motivId" data-variable="true"><?=$id?></span></p>
+            <p>Erstellt am 29.12.2000<button class="actionButton" data-binding="true" id="editDate">✎</button><p>
             <div class="imageBigContainer">
                 <img src="<?=$mainImage["link"]?>" alt="<?=$mainImage["alt"]?>" title="<?=$mainImage["alt"]?>" class="imageBig" data-image-id="<?=$mainImage["id"]?>">
                 <div class="imageTypes">
                     <label>Aufkleberbild: <input type="checkbox" id="aufkleberbild" <?=$mainImage["is_aufkleber"] == 1 ? "checked" : ""?> onchange="changeImageParameters(event)"></label>
                     <label>Wandtattoobild: <input type="checkbox" id="wandtattoobild" <?=$mainImage["is_wandtattoo"] == 1 ? "checked" : ""?> onchange="changeImageParameters(event)"></label>
                     <label>Textilbild: <input type="checkbox" id="textilbild" <?=$mainImage["is_textil"] == 1 ? "checked" : ""?> onchange="changeImageParameters(event)"></label>
-                    <button>Bild löschen</button>
+                    <button onclick="deleteImage()">Löschen</button>
+                    <a href="<?=$mainImage["link"]?>" download="<?=$mainImage["alt"]?>" title="<?=$mainImage["alt"]?>">Herunterladen</a>
                 </div>
             </div>
             <div class="imageContainer">
@@ -35,8 +43,7 @@
             </div>
         </div>
         <div>
-            <p>Download <?=$getDownloadResources?></p>
-            <p>Erstellt am 29.12.2000<button class="actionButton" data-binding="true" id="editDate">✎</button><p>
+            <?=$getDownloadResources?>
         </div>
         <hr style="width: 100%;">
         <div>
@@ -61,8 +68,8 @@
                 <span>Aufkleber Plott</span>
                 <span class="right">
                     <label class="switch">
-                        <input type="checkbox" id="aufkleberPlott" <?=$stickerImage->data["is_plotted"] == 1 ? "checked" : ""?> data-variable="true">
-                        <span class="slider round" id="aufkleberPlottClick" data-binding="true"></span>
+                        <input type="checkbox" id="plotted" <?=$stickerImage->data["is_plotted"] == 1 ? "checked" : ""?> data-variable="true">
+                        <span class="slider round" data-binding="true" data-fun="toggleCheckbox"></span>
                     </label>
                 </span>
             </div>
@@ -70,7 +77,7 @@
                 <span>kurzfristiger Aufkleber</span>
                 <span class="right">
                     <label class="switch">
-                        <input type="checkbox" id="aufkleberKurz" <?=$stickerImage->data["is_short_time"] == 1 ? "checked" : ""?> data-variable="true">
+                        <input type="checkbox" id="short" <?=$stickerImage->data["is_short_time"] == 1 ? "checked" : ""?> data-variable="true">
                         <span class="slider round" data-binding="true" data-fun="toggleCheckbox"></span>
                     </label>
                 </span>
@@ -79,7 +86,7 @@
                 <span>langfristiger Aufkleber</span>
                 <span class="right">
                     <label class="switch">
-                        <input type="checkbox" id="aufkleberLang" <?=$stickerImage->data["is_long_time"] == 1 ? "checked" : ""?> data-variable="true">
+                        <input type="checkbox" id="long" <?=$stickerImage->data["is_long_time"] == 1 ? "checked" : ""?> data-variable="true">
                         <span class="slider round" data-binding="true" data-fun="toggleCheckbox"></span>
                     </label>
                 </span>
@@ -88,19 +95,20 @@
                 <span>mehrteilig</span>
                 <span class="right">
                     <label class="switch">
-                        <input type="checkbox" id="aufkleberMehrteilig" <?=$stickerImage->data["is_multipart"] == 1 ? "checked" : ""?> data-variable="true">
+                        <input type="checkbox" id="multi" <?=$stickerImage->data["is_multipart"] == 1 ? "checked" : ""?> data-variable="true">
                         <span class="slider round" data-binding="true" data-fun="toggleCheckbox"></span>
                     </label>
                 </span>
             </div>
             <button id="transferAufkleber" data-binding="true" <?=$stickerImage->data["is_plotted"] == 1 ? "" : "disabled"?>>Aufkleber übertragen</button>
-            <button id="saveAufkleber" data-binding="true">Speichern</button>
             <div class="loaderOrSymbol">
-                <div>
-                    <div class="lds-ring productLoader"><div></div><div></div><div></div><div></div></div>
-                    <span id="productStatus"><?php if($stickerImage->isInShop()):?>✓ <?php else:?>x <?php endif;?></span>
-                </div>        
-                <p>Aufkleber ist im Shop</p>
+                <a target="_blank" href="<?=$stickerImage->getShopProducts("aufkleber", "link")?>" id="productStatus">
+                    <div>
+                        <div class="lds-ring productLoader"><div></div><div></div><div></div><div></div></div>
+                        <span><?php if($stickerImage->isInShop("aufkleber")):?>✓ <?php else:?>x <?php endif;?></span>
+                    </div>        
+                    <p>Aufkleber ist im Shop</p>
+                </a>
             </div>
             <div>
                 <h4>Kurzbeschreibung</h4>
@@ -111,21 +119,23 @@
         </section>
         <section class="innerDefCont">
             <div>
-                <span>Wandtatto</span>
+                <span>Wandtattoo</span>
                 <span class="right">
                     <label class="switch">
-                        <input type="checkbox" id="aufkleberPlott" <?=$stickerImage->data["is_walldecal"] == 1 ? "checked" : ""?> data-variable="true">
-                        <span class="slider round" id="aufkleberPlottClick" data-binding="true"></span>
+                        <input type="checkbox" id="wandtattoo" <?=$stickerImage->data["is_walldecal"] == 1 ? "checked" : ""?> data-variable="true">
+                        <span class="slider round" id="wandtattooClick" data-binding="true"></span>
                     </label>
                 </span>
             </div>
-            <button id="transferWandtattoo" data-binding="true">Wandtatto übertragen</button>
+            <button id="transferWandtattoo" data-binding="true">Wandtattoo übertragen</button>
             <div class="loaderOrSymbol">
-                <div>
-                    <div class="lds-ring productLoader"><div></div><div></div><div></div><div></div></div>
-                    <span><?php if($stickerImage->isInShop()):?>✓ <?php else:?>x <?php endif;?></span>
-                </div>        
-                <p>Wandtatto ist im Shop</p>
+                <a target="_blank" href="<?=$stickerImage->getShopProducts("wandtattoo", "link")?>" id="productStatus">
+                    <div>
+                        <div class="lds-ring productLoader"><div></div><div></div><div></div><div></div></div>
+                        <span><?php if($stickerImage->isInShop("wandtattoo")):?>✓ <?php else:?>x <?php endif;?></span>
+                    </div>        
+                    <p>Wandtattoo ist im Shop</p>
+                </a>
             </div>
             <div>
                 <h4>Kurzbeschreibung</h4>
@@ -139,24 +149,38 @@
                 <span>Textil</span>
                 <span class="right">
                     <label class="switch">
-                        <input type="checkbox" id="aufkleberPlott" <?=$stickerImage->data["is_shirtcollection"] == 1 ? "checked" : ""?> data-variable="true">
-                        <span class="slider round" id="aufkleberPlottClick" data-binding="true"></span>
+                        <input type="checkbox" id="textil" <?=$stickerImage->data["is_shirtcollection"] == 1 ? "checked" : ""?> data-variable="true">
+                        <span class="slider round" id="textilClick" data-binding="true"></span>
                     </label>
                 </span>
             </div>
             <button id="transferTextil" data-binding="true">Textil übertragen</button>
             <div class="loaderOrSymbol">
-                <div>
-                    <div class="lds-ring productLoader"><div></div><div></div><div></div><div></div></div>
-                    <span><?php if($stickerImage->isInShop()):?>✓ <?php else:?>x <?php endif;?></span>
-                </div>        
-                <p>Textil ist im Shop</p>
+                <a target="_blank" href="<?=$stickerImage->getShopProducts("textil", "link")?>" id="productStatus">
+                    <div>
+                        <div class="lds-ring productLoader"><div></div><div></div><div></div><div></div></div>
+                        <span><?php if($stickerImage->isInShop("textil")):?>✓ <?php else:?>x <?php endif;?></span>
+                    </div>        
+                    <p>Textil ist im Shop</p>
+                </a>
             </div>
             <div>
                 <object id="svgContainer" data="<?=$stickerImage->getSVGIfExists()?>" type="image/svg+xml"></object>
                 <button id="makeColorable" data-binding="true">Einfärbbar machen</button>
                 <button id="makeBlack" data-binding="true">Schwarz</button>
                 <button id="makeRed" data-binding="true">Rot</button>
+            </div>
+            <div>
+                <span>Preiskategorie:<br>
+                    <input class="postenInput" id="preiskategorie">
+                    <span id="preiskategorie_dropdown">▼</span>
+                    <div class="selectReplacer" id="selectReplacerPreiskategorie">
+                        <p class="optionReplacer" onclick="document.getElementById('preiskategorie').value = this.innerHTML;" data-kategorie-id="58" title="Die Klebefux Standardkategorie für Textilmotive">Klebefux Standard</p>
+                        <p class="optionReplacer" onclick="document.getElementById('preiskategorie').value = this.innerHTML;" data-kategorie-id="57" title="Die Klebefux Premiumkategorie für Textilmotive">Klebefux Plus</p>
+                        <p class="optionReplacer" onclick="document.getElementById('preiskategorie').value = this.innerHTML;" data-kategorie-id="59" title="Die Gwandlaus Textilkategorie für einfache Motive">Gwandlaus Minus</p>
+                        <p class="optionReplacer" onclick="document.getElementById('preiskategorie').value = this.innerHTML;" data-kategorie-id="60" title="Die Gwandlaus Standardkategorie für Textilmotive">Gwandlaus Standard</p>
+                    </div>
+                </span><br>
             </div>
             <div>
                 <h4>Kurzbeschreibung</h4>
@@ -173,18 +197,21 @@
 <?php else:
 
 $query = "SELECT id, `name`, IF(is_plotted = 1, '✓', 'X') AS is_plotted, IF(is_short_time = 1, '✓', 'X') AS is_short_time, IF(is_long_time = 1, '✓', 'X') AS is_long_time, IF(is_multipart = 1, '✓', 'X') AS is_multipart, IF(is_walldecal = 1, '✓', 'X') AS is_walldecal, IF(is_shirtcollection = 1, '✓', 'X') AS is_shirtcollection FROM `module_sticker_sticker_data`";
+$data = DBAccess::selectQuery($query);
+
 $column_names = array(
     0 => array("COLUMN_NAME" => "id", "ALT" => "Nummer"),
     1 => array("COLUMN_NAME" => "name", "ALT" => "Name"),
-    3 => array("COLUMN_NAME" => "is_plotted", "ALT" => "geplottet"),
-    4 => array("COLUMN_NAME" => "is_short_time", "ALT" => "Werbeaufkleber"),
-    5 => array("COLUMN_NAME" => "is_long_time", "ALT" => "Hochleistungsfolie"),
-    6 => array("COLUMN_NAME" => "is_multipart", "ALT" => "mehrteilig"),
-    7 => array("COLUMN_NAME" => "is_walldecal", "ALT" => "Wandtatto"),
-    8 => array("COLUMN_NAME" => "is_shirtcollection", "ALT" => "Textil"),
+    2 => array("COLUMN_NAME" => "is_plotted", "ALT" => "geplottet"),
+    3 => array("COLUMN_NAME" => "is_short_time", "ALT" => "Werbeaufkleber"),
+    4 => array("COLUMN_NAME" => "is_long_time", "ALT" => "Hochleistungsfolie"),
+    5 => array("COLUMN_NAME" => "is_multipart", "ALT" => "mehrteilig"),
+    6 => array("COLUMN_NAME" => "is_walldecal", "ALT" => "Wandtattoo"),
+    7 => array("COLUMN_NAME" => "is_shirtcollection", "ALT" => "Textil"),
 );
 
-$data = DBAccess::selectQuery($query);
+//Protocoll::prettyPrint($column_names);
+
 
 $linker = new Link();
 $linker->addBaseLink("sticker-overview");
