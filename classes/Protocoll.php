@@ -11,6 +11,12 @@ class Protocoll {
 		$text = $text . "\n"; // get into the next line
 		fwrite($this->file, $text);
 	}
+
+	public static function prettyPrint($data) {
+		echo "<pre>";
+		var_dump($data);
+		echo "</pre>";
+	}
 }
 
 ?>

@@ -7,6 +7,7 @@ require_once('settings.php');
 require_once('classes/DBAccess.php');
 require_once('classes/Ajax.php');
 require_once('classes/Link.php');
+require_once('classes/Protocoll.php');
 require_once('classes/project/FormGenerator.php');
 require_once('classes/project/Posten.php');
 require_once('classes/project/Angebot.php');

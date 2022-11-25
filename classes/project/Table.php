@@ -510,42 +510,6 @@ class Table {
 		return DBAccess::selectColumnNames($type);
 	}
 
-    /*private static function generateTable($type, $editable, $showData, $sendTo, $amountOfData, $isRowLink, $data = null, $column_names = null, $forceData = false, $retUrl = null, $addClass = "") {
-		if ($column_names == null && strcmp($type, "")) {
-			$column_names = self::getColumnNames($type);
-		}
-
-		if ($editable) {
-			$html_table = "<table class='allowAddingContent' data-type='${type}' data-send-to='${sendTo}'>";
-		} else {
-			$html_table = "<table data-type='${type}'>";
-		}
-
-		$html_table .= self::html_createTableHeader($column_names);
-		
-		if ($showData) {
-			if ($data == null && $forceData == false) {
-				$data = self::executeSQLQuery($type, $amountOfData);
-			}
-
-			for ($i = 0; $i < sizeof($data); $i++) {
-				$html_table = $html_table . "<tr>";
-				for ($n = 0; $n < sizeof($column_names); $n++) {
-					$showColumnData = $data[$i][$column_names[$n]["COLUMN_NAME"]];
-
-					$addToTable = self::createRow($showColumnData, $retUrl, $column_names[$n]["COLUMN_NAME"], $n, $isRowLink, $type);
-					$html_table .= $addToTable;
-				}
-				$html_table = $html_table . "</tr>";
-			}
-		}
-		
-		if ($editable) {
-			$html_table = $html_table . self::createEmptyRow(sizeof($column_names), $addClass, $type);
-		}
-		return $html_table . "</table>";
-    }*/
-    
     /*
 	* executes the SQL Query composed of the type of the table, the amount of data to be extracted and the where condition as well as the order condition
 	*/
@@ -570,14 +534,16 @@ class Table {
     private static function html_createTableHeader($column_names) {
 		$table_header = "<tr>";
 
-		for ($i = 0; $i < sizeof($column_names); $i++) {
-			$entry = $column_names[$i];
+		$count = 0;
+		foreach ($column_names as $entry) {
 			$showColumnName = $entry["COLUMN_NAME"];
+
 			if (isset($entry["ALT"])) {
 				$showColumnName = $entry["ALT"];
 			}
-			
-			$table_header .= "<th class='tableHead'>${showColumnName} <span class=\"cursortable\" onclick=\"sortTable(this, $i, true)\">&#x25B2;</span><span class=\"cursortable\" onclick=\"sortTable(this, $i, false)\">&#x25BC;</span></th>";
+
+			$table_header .= "<th class='tableHead'>${showColumnName} <span class=\"cursortable\" onclick=\"sortTable(this, $count, true)\">&#x25B2;</span><span class=\"cursortable\" onclick=\"sortTable(this, $count, false)\">&#x25BC;</span></th>";
+			$count++;
 		}
 
 		return $table_header . "</tr>";

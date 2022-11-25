@@ -67,12 +67,6 @@ input:checked + .slider:before {
     margin: 10px;
 }
 
-.cont1 {
-    display: grid;
-    gap: 10px;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-}
-
 .cont2 {
     display: grid;
     gap: 10px;
@@ -89,6 +83,10 @@ input:checked + .slider:before {
 
 .pointer-none {
     pointer-events: none;
+}
+
+.loaderOrSymbol a {
+    text-decoration: none;
 }
 
 /* class for round + button */
@@ -120,13 +118,16 @@ input:checked + .slider:before {
 }
 
 .imageBig {
-    width: 200px;
+    width: 100%;
     height: auto;
+    border-radius: 12px 0 0 12px;
 }
 
 .imagePrev {
-    width: 75px;
-    height: auto;
+    width: auto;
+    height: 75px;
+    border-radius: 6px;
+    margin-right: 5px;
 }
 
 #initHeight {
@@ -200,7 +201,7 @@ input:checked + .slider:before {
 
 .imageTypes {
     background-color: white;
-    border-radius: 6px;
+    border-radius: 0 12px 12px 0;
     padding: 7px;
 }
 
@@ -215,9 +216,6 @@ input:checked + .slider:before {
 
 .imageContainer {
     margin-top: 10px;
-}
-
-.imageContainer img {
     padding: 7px;
 }
 
@@ -236,4 +234,33 @@ input:checked + .slider:before {
 
 #svgContainer {
     width: 458px;
+}
+
+#preiskategorie_dropdown {
+    margin-left: -25px;
+    cursor: pointer;
+}
+
+.selectReplacer {
+    display: none;
+    border: 1px solid grey;
+    width: 162px;
+    padding: 0 !important;
+
+    position: absolute;
+    background: white;
+    box-shadow: 0 8px 16px 0 rgb(0 0 0 / 20%);
+}
+
+.selectReplacerShow {
+    display: block;
+}
+
+.optionReplacer {
+    padding: 21px 17px 21px 17px;
+    margin: 0;
+}
+
+.optionReplacer:hover {
+    background-color: #ababab;
 }

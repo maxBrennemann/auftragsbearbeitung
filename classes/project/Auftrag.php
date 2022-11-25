@@ -562,7 +562,7 @@ class Auftrag implements StatisticsInterface {
 
 	/*
 	 * removes a list, later the saved list data has to be removed as well
-	 * TODO implement data deletion
+	 * TODO: implement data deletion
 	*/
 	public function removeList($listId) {
 		DBAccess::deleteQuery("DELETE FROM auftrag_liste WHERE auftrags_id = {$this->Auftragsnummer} AND listen_id = $listId");
