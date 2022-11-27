@@ -390,6 +390,25 @@ window.addEventListener("click", function(event) {
     }
 }, false);
 
+async function changePreiskategorie(e) {
+    var element = document.getElementById("preiskategorie");
+    element.value = e.target.innerHTML;
+    var kategorieId = e.target.dataset.kategorieId;
+    document.getElementById("showPrice").innerHTML = e.target.dataset.defaultPrice + "€";
+
+    var data = {
+        categoryId: kategorieId,
+        id: mainVariables.motivId.innerHTML,
+    };
+    var response = await send(data, "changePreiskategorie");
+    if (response == "success") {
+        infoSaveSuccessfull("success");
+    } else {
+        console.log(response);
+        infoSaveSuccessfull();
+    }
+}
+
 async function write_productDescription(e) {
     var target = e.target.dataset.target;
     var content = e.target.value;

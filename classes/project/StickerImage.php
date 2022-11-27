@@ -82,6 +82,31 @@ class StickerImage {
         echo "success";
     }
 
+    public function getPriceTextilFormatted() {
+        $price = number_format($this->getPriceTextil(), 2, ',', '') . "€";
+        return $price;
+    }
+
+    private function getPriceTextil() {
+        switch ($this->data["price_type"]) {
+            case "57":
+                $price = "23.59";
+                break;
+            case "58":
+                $price = "20.52";
+                break;
+            case "59":
+                $price = "30.78";
+                break;
+            case "60":
+                $price = "33.85";
+                break;
+            default:
+                $price = 0;
+        }
+        return $price;
+    }
+
     public function saveAufkleber() {
         $this->generateAufkleber();
         if ($this->isInShop("aufkleber")) {
@@ -164,7 +189,7 @@ class StickerImage {
      */
     public function saveTextil() {
         $descriptions = $this->getDescriptions(3);
-        $this->stickerDB = new StickerShopDBController($this->id, "Textil " . $this->name, $descriptions["long"], $descriptions["short"], 20);
+        $this->stickerDB = new StickerShopDBController($this->id, "Textil " . $this->name, $descriptions["long"], $descriptions["short"], $this->getPriceTextil());
         $this->stickerDB->addImages($this->getImagesByType("is_textil"));
         $this->stickerDB->addAttributeArray([164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183]);
         $this->stickerDB->addSticker(25);

@@ -175,13 +175,13 @@
                     <input class="postenInput" id="preiskategorie">
                     <span id="preiskategorie_dropdown">▼</span>
                     <div class="selectReplacer" id="selectReplacerPreiskategorie">
-                        <p class="optionReplacer" onclick="document.getElementById('preiskategorie').value = this.innerHTML;" data-kategorie-id="58" title="Die Klebefux Standardkategorie für Textilmotive">Klebefux Standard</p>
-                        <p class="optionReplacer" onclick="document.getElementById('preiskategorie').value = this.innerHTML;" data-kategorie-id="57" title="Die Klebefux Premiumkategorie für Textilmotive">Klebefux Plus</p>
-                        <p class="optionReplacer" onclick="document.getElementById('preiskategorie').value = this.innerHTML;" data-kategorie-id="59" title="Die Gwandlaus Textilkategorie für einfache Motive">Gwandlaus Minus</p>
-                        <p class="optionReplacer" onclick="document.getElementById('preiskategorie').value = this.innerHTML;" data-kategorie-id="60" title="Die Gwandlaus Standardkategorie für Textilmotive">Gwandlaus Standard</p>
+                        <p class="optionReplacer" onclick="changePreiskategorie(event)" data-default-price="20,52" data-kategorie-id="58" title="Die Klebefux Standardkategorie für Textilmotive">Klebefux Standard</p>
+                        <p class="optionReplacer" onclick="changePreiskategorie(event)" data-kategorie-id="57" data-default-price="23,59" title="Die Klebefux Premiumkategorie für Textilmotive">Klebefux Plus</p>
+                        <p class="optionReplacer" onclick="changePreiskategorie(event)" data-kategorie-id="59" data-default-price="30,78" title="Die Gwandlaus Textilkategorie für einfache Motive">Gwandlaus Minus</p>
+                        <p class="optionReplacer" onclick="changePreiskategorie(event)" data-kategorie-id="60" data-default-price="33,85" title="Die Gwandlaus Standardkategorie für Textilmotive">Gwandlaus Standard</p>
                     </div>
                 </span>
-                <span id="showPrice"></span>
+                <span style="margin-left: 7px" id="showPrice"><?=$stickerImage->getPriceTextilFormatted()?></span>
             </div>
             <div>
                 <h4>Kurzbeschreibung</h4>
