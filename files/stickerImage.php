@@ -25,7 +25,7 @@
         <div>
             <h2>Motiv <span id="name"><?=$stickerImage->getName();?></span><button class="actionButton" data-binding="true" id="editName">✎</button></h2>
             <p>Artikelnummer: <span id="motivId" data-variable="true"><?=$id?></span></p>
-            <p>Erstellt am 29.12.2000<button class="actionButton" data-binding="true" id="editDate">✎</button><p>
+            <p>Erstellt am <?=$stickerImage->getDate()?><button class="actionButton" data-binding="true" id="editDate">✎</button><p>
             <div class="imageBigContainer">
                 <img src="<?=$mainImage["link"]?>" alt="<?=$mainImage["alt"]?>" title="<?=$mainImage["alt"]?>" class="imageBig" data-image-id="<?=$mainImage["id"]?>">
                 <div class="imageTypes">
@@ -112,9 +112,9 @@
             </div>
             <div>
                 <h4>Kurzbeschreibung</h4>
-                <textarea data-fun="shortDesc" data-target="1" data-write="true"></textarea>
+                <textarea data-fun="productDescription" data-target="1" data-type="short" data-write="true"><?=$stickerImage->descriptions[1]["short"]?></textarea>
                 <h4>Beschreibung</h4>
-                <textarea data-fun="longDesc" data-target="1" data-write="true"></textarea>
+                <textarea data-fun="productDescription" data-target="1" data-type= "long" data-write="true"><?=$stickerImage->descriptions[1]["long"]?></textarea>
             </div>
         </section>
         <section class="innerDefCont">
@@ -139,9 +139,9 @@
             </div>
             <div>
                 <h4>Kurzbeschreibung</h4>
-                <textarea data-fun="shortDesc" data-target="2" data-write="true"></textarea>
+                <textarea data-fun="productDescription" data-target="2" data-type="short" data-write="true"><?=$stickerImage->descriptions[2]["short"]?></textarea>
                 <h4>Beschreibung</h4>
-                <textarea data-fun="longDesc" data-target="2" data-write="true"></textarea>
+                <textarea data-fun="productDescription" data-target="2" data-type="long" data-write="true"><?=$stickerImage->descriptions[2]["long"]?></textarea>
             </div>
         </section>
         <section class="innerDefCont">
@@ -180,13 +180,14 @@
                         <p class="optionReplacer" onclick="document.getElementById('preiskategorie').value = this.innerHTML;" data-kategorie-id="59" title="Die Gwandlaus Textilkategorie für einfache Motive">Gwandlaus Minus</p>
                         <p class="optionReplacer" onclick="document.getElementById('preiskategorie').value = this.innerHTML;" data-kategorie-id="60" title="Die Gwandlaus Standardkategorie für Textilmotive">Gwandlaus Standard</p>
                     </div>
-                </span><br>
+                </span>
+                <span id="showPrice"></span>
             </div>
             <div>
                 <h4>Kurzbeschreibung</h4>
-                <textarea data-fun="shortDesc" data-target="3" data-write="true"></textarea>
+                <textarea data-fun="productDescription" data-target="3" data-type="short" data-write="true"><?=$stickerImage->descriptions[3]["short"]?></textarea>
                 <h4>Beschreibung</h4>
-                <textarea data-fun="longDesc" data-target="3" data-write="true"></textarea>
+                <textarea data-fun="productDescription" data-target="3" data-type="long" data-write="true"><?=$stickerImage->descriptions[3]["long"]?></textarea>
             </div>
         </section>
     </div>

@@ -16,6 +16,8 @@ class StickerImage {
     private $images = [];
     private $files = [];
 
+    public $descriptions;
+
     private $texts = [
         "kurzfristig" => "<p>Werbeaufkleber, der für den kurzfristigen Einsatz gedacht ist und sich daher auch wieder leicht ablösen lässt.</p>",
         "langfristig" => "<p>Diesen Aufkleber gibt es&nbsp;als Hochleistungsfolie, der für langfristige Beschriftungen oder Dekorationen gedacht&nbsp;ist.</p><p>Bringe Deinen Aufkleber als Deko für Privat oder für Dein Geschäft an.</p>",
@@ -39,6 +41,12 @@ class StickerImage {
 
         $this->shopProducts = StickerShopDBController::matchProductByRefernce($this->id);
         $this->getConnectedFiles();
+
+        $this->descriptions = [
+            1 => $this->getDescriptions(1),
+            2 => $this->getDescriptions(2),
+            3 => $this->getDescriptions(3),
+        ];
     }
 
     public static function creatStickerImage() {
@@ -64,6 +72,11 @@ class StickerImage {
         return $this->id;
     }
 
+    public function getDate() {
+        $date = $this->data["creation_date"];
+        return DateTime::createFromFormat("Y-m-d", $date)->format("d.m.Y");
+    }
+
     public function setName($name) {
         DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET name = '$name' WHERE id = $this->id");
         echo "success";
@@ -82,8 +95,27 @@ class StickerImage {
 
     }
 
+    /**
+     * TODO: remove hardcoded categories
+     */
     public function saveWandtattoo() {
-        $this->stickerDB = new StickerShopDBController($this->id, "Wandtattoo " . $this->name, "", $this->data["size_summary"], 20);
+        $descriptions = $this->getDescriptions(2);
+        $descriptionShort = $this->data["size_summary"] . $descriptions["short"];
+
+        $query = "SELECT id, width, height, price FROM module_sticker_sizes WHERE id_sticker = {$this->id} ORDER BY width";
+        $data = DBAccess::selectQuery($query);
+        $difficulty = 0;
+        $data = $this->calculatePrices($data, $difficulty, false);
+
+        $prices = [];
+        $sizes = $this->getSizeIds();
+        for ($i = 0; $i < sizeof($data); $i++) {
+            $price = $data[$i]["price"] / 100;
+            array_push($prices, [$sizes["ids"][$i] => $price]);
+        }
+
+        $this->stickerDB = new StickerShopDBController($this->id, "Wandtattoo " . $this->name, $descriptions["long"], $descriptionShort, 20);
+        $this->stickerDB->prices = $prices;
         $this->stickerDB->addImages($this->getImagesByType("is_wandtattoo"));
         $this->stickerDB->addAttributeArray($this->getSizeIds()["ids"]);
         $this->stickerDB->addSticker();
@@ -92,6 +124,9 @@ class StickerImage {
         $this->stickerDB->setCategory([62, 13]);
     }
 
+    /**
+     * @param currency when true, then the price is returned in € with tax, otherwise its a float without tax
+     */
     public function calculatePrices($priceTable, $difficulty, $currency = true) {
         foreach($priceTable as &$size) {
             if ($size["width"] >= 1200) {
@@ -116,6 +151,8 @@ class StickerImage {
 
             if ($currency) {
                 $size["price"] = number_format($size["price"] / 100, 2, ',', '') . "€";
+            } else {
+                $size["price"] = number_format($size["price"] / 100 / 1.19, 2);
             }
         }
 
@@ -126,7 +163,8 @@ class StickerImage {
      * TODO: remove hardcoded ids;
      */
     public function saveTextil() {
-        $this->stickerDB = new StickerShopDBController($this->id, "Textil " . $this->name, "", "", 20);
+        $descriptions = $this->getDescriptions(3);
+        $this->stickerDB = new StickerShopDBController($this->id, "Textil " . $this->name, $descriptions["long"], $descriptions["short"], 20);
         $this->stickerDB->addImages($this->getImagesByType("is_textil"));
         $this->stickerDB->addAttributeArray([164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183]);
         $this->stickerDB->addSticker(25);
@@ -135,6 +173,7 @@ class StickerImage {
     }
 
     private function generateAufkleber() {
+        $descriptions = $this->getDescriptions(1);
         $description = $this->texts["info"];
 
         if ($this->data["is_short_time"] == "1" && $this->data["is_long_time"] == "1") {
@@ -149,7 +188,9 @@ class StickerImage {
             $description .= $this->texts["mehrteilig"];
         }
         
-        $this->stickerDB = new StickerShopDBController($this->id, "Aufkleber " . $this->name, $description, $this->data["size_summary"], 20);
+        $description .= $descriptions["long"];
+        $descriptionShort = $this->data["size_summary"] . $descriptions["short"];
+        $this->stickerDB = new StickerShopDBController($this->id, "Aufkleber " . $this->name, $description, $descriptionShort, 20);
 
         if ($this->data["is_short_time"] == "1" && $this->data["is_long_time"] == "1") {
             $this->stickerDB->addAttributeArray([163, 162]);
@@ -171,6 +212,24 @@ class StickerImage {
         $this->stickerDB->addImages($this->getImagesByType("is_aufkleber"));
         $this->createCombinations();
         $this->stickerDB->addSticker();
+    }
+
+    private function getDescriptions($target) {
+        $description = DBAccess::selectQuery("SELECT content, `type` FROM module_sticker_texts WHERE id_sticker = $this->id AND `target` = $target AND `type` = 'long'");
+        if ($description != null) {
+            $description = $description[0]["content"];
+        } else {
+            $description = "";
+        }
+
+        $descriptionShort = DBAccess::selectQuery("SELECT content, `type` FROM module_sticker_texts WHERE id_sticker = $this->id AND `target` = $target AND `type` = 'short'");
+        if ($descriptionShort != null) {
+            $descriptionShort = $descriptionShort[0]["content"];
+        } else {
+            $descriptionShort = "";
+        }
+
+        return ["long" => $description, "short" => $descriptionShort];
     }
 
     public function resizeImage($file) {
@@ -331,7 +390,8 @@ class StickerImage {
         $download = "<p>Download ";
         foreach ($this->files as $f) {
             $link = Link::getResourcesShortLink($f["dateiname"], "upload");
-            $download .= "<a href=\"$link\">" . strtoupper($f["typ"]) . "</a> ";
+            $filename = $f["dateiname"];
+            $download .= "<a href=\"$link\" title=\"$filename\">" . strtoupper($f["typ"]) . "</a> ";
         }
         return $download . "</p>";
     }

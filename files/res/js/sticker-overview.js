@@ -267,6 +267,9 @@ async function sendRows(data, text) {
     console.log(response);
 }
 
+/**
+ * deletes the currently selected image
+ */
 async function deleteImage() {
     var imageId = document.querySelector(".imageBig");
     imageId = imageId.dataset.imageId;
@@ -277,6 +280,10 @@ async function deleteImage() {
     infoSaveSuccessfull(response); 
 }
 
+/**
+ * changes all data for main image
+ * @param {Event} e 
+ */
 function changeImage(e) {
     var main = document.querySelector(".imageBig");
     main.src = e.target.src;
@@ -382,3 +389,23 @@ window.addEventListener("click", function(event) {
         }
     }
 }, false);
+
+async function write_productDescription(e) {
+    var target = e.target.dataset.target;
+    var content = e.target.value;
+    var type = e.target.dataset.type;
+
+    var data = {
+        id: mainVariables.motivId.innerHTML,
+        target: target,
+        type: type,
+        content: content
+    };
+    var response = await send(data, "writeProductDescription");
+    if (response == "success") {
+        infoSaveSuccessfull("success");
+    } else {
+        console.log(response);
+        infoSaveSuccessfull();
+    }
+}
