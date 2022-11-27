@@ -1017,6 +1017,12 @@ class Ajax {
 				DBAccess::deleteQuery($query);
 				echo "success";
 			break;
+			case "changePreiskategorie":
+				$id = (int) $_POST['id'];
+				$categoryId = $_POST['categoryId'];
+				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET price_type = '$categoryId' WHERE id = $id");
+				echo "success";
+			break;
 			case "toggleTextil":
 				$id = (int) $_POST["id"];
 				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_shirtcollection` = NOT `is_shirtcollection` WHERE id = $id");
