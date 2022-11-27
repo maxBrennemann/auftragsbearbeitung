@@ -979,6 +979,16 @@ class Ajax {
 						echo "an error occured";
 				}
 			break;
+			case "writeProductDescription":
+				$id = (int) $_POST["id"];
+				$type = (String) $_POST["type"];
+				$target = (int) $_POST["target"];
+				$content = (String) $_POST["content"];
+
+				$query = "REPLACE INTO module_sticker_texts (id_sticker, `type`, `target`, content) VALUES ($id, '$type', $target, '$content');";
+				DBAccess::updateQuery($query);
+				echo "success";
+			break;
 			case "transferProduct":
 				require_once("classes/project/StickerImage.php");
 				$id = (int) $_POST["id"];
