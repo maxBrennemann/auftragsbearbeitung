@@ -28,6 +28,7 @@
 	$changelog = 		Link::getPageLink("changelog");
 	$zeiterfassung =	Link::getPageLink("zeiterfassung");
 	$motive = 			Link::getPageLink("sticker");
+	$motiveOverview = 	Link::getPageLink("sticker-overview");
 ?>
 <!DOCTYPE html>
 <html>
@@ -131,6 +132,9 @@
 			</li>
 			<li>
 				<a href="<?=$motive?>">Motive</a>
+			</li>
+			<li>
+				<a href="<?=$motiveOverview?>">Motivübersicht</a>
 			</li>
 			<li>
 				<a href="<?=$changelog?>">Versionsverlauf</a>

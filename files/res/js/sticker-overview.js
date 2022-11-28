@@ -9,8 +9,11 @@ if (document.readyState !== 'loading' ) {
 }
 
 function initStickerOverview() {
-    document.getElementById("preiskategorie_dropdown").addEventListener("click", preisListenerTextil, false);
-    document.getElementById("preiskategorie").addEventListener("click", preisListenerTextil, false);
+    var pk_dropdown = document.getElementById("preiskategorie_dropdown");
+    if (pk_dropdown != null) {
+        pk_dropdown.addEventListener("click", preisListenerTextil, false);
+        document.getElementById("preiskategorie").addEventListener("click", preisListenerTextil, false);
+    }
 
     initSVG();
     initBindings();
