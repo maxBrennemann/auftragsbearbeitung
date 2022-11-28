@@ -55,7 +55,7 @@ class Upload {
             $motivnummer = 0;
             if ($id == 0) {
                 $motivnummer = DBAccess::insertQuery("INSERT INTO module_sticker_sticker_data (`name`) VALUES ('$name')");
-            } else{
+            } else {
                 $motivnummer = $id;
             }
             

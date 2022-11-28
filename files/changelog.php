@@ -1,4 +1,8 @@
 <div class="changelog">
+    <h3>1.1.17</h3>
+    <ul>
+        <li>Produktexport für Prestashop wurde integriert</li>
+    </ul>
     <h3>1.1.16</h3>
     <ul>
         <li>Fehlerbehebungen</li>

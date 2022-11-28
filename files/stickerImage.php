@@ -26,6 +26,7 @@
             <h2>Motiv <span id="name"><?=$stickerImage->getName();?></span><button class="actionButton" data-binding="true" id="editName">✎</button></h2>
             <p>Artikelnummer: <span id="motivId" data-variable="true"><?=$id?></span></p>
             <p>Erstellt am <?=$stickerImage->getDate()?><button class="actionButton" data-binding="true" id="editDate">✎</button><p>
+            <button>Alles aktualisieren/ generieren</button>
             <div class="imageBigContainer">
                 <img src="<?=$mainImage["link"]?>" alt="<?=$mainImage["alt"]?>" title="<?=$mainImage["alt"]?>" class="imageBig" data-image-id="<?=$mainImage["id"]?>">
                 <div class="imageTypes">
