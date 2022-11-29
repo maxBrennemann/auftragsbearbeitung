@@ -554,3 +554,14 @@ async function toggleBookmark() {
         infoSaveSuccessfull();
     }
 }
+
+function addTag(event) {
+    if (event.key === ';') {
+        var dt = document.createElement("dt");
+        dt.innerHTML = event.target.value;
+        event.target.parentNode.children[0].appendChild(dt);
+        event.target.value = "";
+        event.preventDefault();
+    }
+}
+
