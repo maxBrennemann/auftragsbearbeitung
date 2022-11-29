@@ -39,7 +39,12 @@ class StickerImage {
         $this->name = $data["name"];
         $this->data = $data;
 
-        $this->shopProducts = StickerShopDBController::matchProductByRefernce($this->id);
+        $matches = StickerShopDBController::matchProductByRefernce($this->id);
+        $this->shopProducts = $matches["products"];
+        if ($matches["matches"] > 3) {
+            $this->displayError($matches["allLinks"]);
+        }
+
         $this->getConnectedFiles();
 
         $this->descriptions = [
@@ -74,7 +79,25 @@ class StickerImage {
 
     public function getDate() {
         $date = $this->data["creation_date"];
+        if ($date == null) {
+            return "kein Datum gefunden";
+        }
         return DateTime::createFromFormat("Y-m-d", $date)->format("d.m.Y");
+    }
+
+    public function displayError($links) {
+        $text = "<div class=\"defCont warning\"><div class=\"warningHead\"><svg style=\"width:24px;height:24px\" viewBox=\"0 0 24 24\">
+            <path fill=\"currentColor\" d=\"M23,12L20.56,9.22L20.9,5.54L17.29,4.72L15.4,1.54L12,3L8.6,1.54L6.71,4.72L3.1,5.53L3.44,9.21L1,12L3.44,14.78L3.1,18.47L6.71,19.29L8.6,22.47L12,21L15.4,22.46L17.29,19.28L20.9,18.46L20.56,14.78L23,12M13,17H11V15H13V17M13,13H11V7H13V13Z\" />
+        </svg><span>Es wurden mehr als drei Produkte zu diesem Motiv gefunden!</span></div>";
+
+        $count = 1;
+        foreach ($links as $l) {
+            $text .= "<a target=\"_blank\" href=\"$l\">Produkt $count</a>";
+            $count++;
+        }
+
+        $text .= "</div>";
+        echo $text;
     }
 
     public function setName($name) {
@@ -108,7 +131,12 @@ class StickerImage {
     }
 
     public function saveAufkleber() {
+        if ($this->data["is_plotted"] == "0") {
+            return;
+        }
+
         $this->generateAufkleber();
+        return;
         if ($this->isInShop("aufkleber")) {
             $this->updateAufkleber();
         } else {
@@ -124,6 +152,10 @@ class StickerImage {
      * TODO: remove hardcoded categories
      */
     public function saveWandtattoo() {
+        if ($this->data["is_walldecal"] == "0") {
+            return;
+        }
+
         $descriptions = $this->getDescriptions(2);
         $descriptionShort = $this->data["size_summary"] . $descriptions["short"];
 
@@ -188,6 +220,10 @@ class StickerImage {
      * TODO: remove hardcoded ids;
      */
     public function saveTextil() {
+        if ($this->data["is_shirtcollection"] == "0") {
+            return;
+        }
+
         $descriptions = $this->getDescriptions(3);
         $this->stickerDB = new StickerShopDBController($this->id, "Textil " . $this->name, $descriptions["long"], $descriptions["short"], $this->getPriceTextil());
         $this->stickerDB->addImages($this->getImagesByType("is_textil"));
@@ -416,7 +452,8 @@ class StickerImage {
         foreach ($this->files as $f) {
             $link = Link::getResourcesShortLink($f["dateiname"], "upload");
             $filename = $f["dateiname"];
-            $download .= "<a href=\"$link\" title=\"$filename\">" . strtoupper($f["typ"]) . "</a> ";
+            $id = $f["id"];
+            $download .= "<a data-image-id=\"$id\" download=\"$filename\" data-deletable=\"true\" href=\"$link\" title=\"$filename\">" . strtoupper($f["typ"]) . "</a> ";
         }
         return $download . "</p>";
     }
