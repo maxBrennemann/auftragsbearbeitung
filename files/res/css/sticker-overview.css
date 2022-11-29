@@ -353,3 +353,37 @@ input:checked + .slider:before {
     height: 24px;
     vertical-align: middle;
 }
+
+.tagList {
+    display: inline;
+}
+
+.tagList dt {
+    display: inline-block;
+    margin: 5px;
+    padding-left: 7px;
+    background-color: #2196F3;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.tagList dt::after {
+    content: "x";
+    width: 15px;
+    display: inline-block;
+    background-color: grey;
+    height: 19px;
+    margin-left: 5px;
+    padding: 7px;
+    border-radius: 0 6px 6px 0;
+}
+
+.tagInput {
+    display: inline;
+    margin: 5px;
+    padding: 7px;
+    border-radius: 6px;
+    border: none;
+    height: 19px;
+    width: 100px;
+}

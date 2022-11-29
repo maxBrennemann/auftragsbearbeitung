@@ -321,6 +321,43 @@ class StickerImage {
         return isset($this->shopProducts[$type]);
     }
 
+    public function getTags() {
+        $tagsHTML = "<dl class=\"tagList\">";
+
+        foreach (explode(" ", $this->name) as $query) {
+            $tags = array_slice($this->getSynonyms($query), 0, 3);
+            foreach ($tags as $tag) {
+                $tagsHTML .= "<dt>$tag</dt>";
+            }
+        }
+
+        return $tagsHTML . "</dl>";
+    }
+
+    public function getSynonyms($query) {
+        $ch = curl_init("https://www.openthesaurus.de/synonyme/search?q=$query&format=application/json");
+        # Setup request to send json via POST.
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        # Return response instead of printing.
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        # Send request.
+        $result = curl_exec($ch);
+        curl_close($ch);
+        # Print response.
+
+        $result = json_decode($result, true);
+        $synonyms = [];
+        foreach ($result["synsets"] as $set) {
+            foreach ($set["terms"] as $term) {
+                if (!in_array($term["term"], $synonyms)) {
+                    array_push($synonyms, $term["term"]);
+                }
+            }
+        }
+
+        return $synonyms;
+    }
+
     public function updateSizeTable($data) {
         $width = (int) $data["width"] * 10;
         $height = (int) $data["height"] * 10;

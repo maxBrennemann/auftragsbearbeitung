@@ -232,6 +232,10 @@
         <textarea class="data-input" data-fun="additionalInfo" data-write="true"><?=$stickerImage->data["additional_info"]?></textarea>
         <div class="lds-ring productLoader" id="productLoader5"><div></div><div></div><div></div><div></div></div>
         <button data-id="4" class="newButton marginTop30" data-fun="transferAll" data-binding="true">Alles aktualisieren/ generieren</button>
+        <div>
+            <?=$stickerImage->getTags()?>
+            <input type="text" class="tagInput" onkeydown="addTag(event)">
+        </div>
     </div>
 <?php else:
 
