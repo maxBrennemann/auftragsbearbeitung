@@ -318,7 +318,7 @@ class StickerImage {
     }
 
     public function isInShop($type) {
-        return $this->shopProducts[$type] == null ? false : true;
+        return isset($this->shopProducts[$type]);
     }
 
     public function updateSizeTable($data) {
