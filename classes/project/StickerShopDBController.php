@@ -112,13 +112,16 @@ class StickerShopDBController {
         $stickerShopDBController = new StickerShopDBController(0, null, null, null, null);
         $xml = $stickerShopDBController->getXML("products?filter[reference]=$reference");
         $productMatches = [];
+        $foundProducts = sizeof($xml->children()->children());
+        $productLinks = [];
         foreach ($xml->children()->children() as $product) {
             $categories = [];
             $productId = (int) $product["id"];
             $xmlProduct = $stickerShopDBController->getXML("products/$productId");
             $title = (String) $xmlProduct->children()->children()->name->language[0];
-            $link = "https://klebefux.de/home/$productId-" .(String) $xmlProduct->children()->children()->link_rewrite->language[0] . ".html";
+            $link = "https://klebefux.de/home/$productId-" . (String) $xmlProduct->children()->children()->link_rewrite->language[0] . ".html";
             $categoriesXML = $xmlProduct->children()->children()->associations->categories->category;
+            array_push($productLinks, $link);
             foreach ($categoriesXML as $category) {
                 array_push($categories, (int) $category->id);
             }
@@ -137,7 +140,7 @@ class StickerShopDBController {
                 $productMatches["aufkleber"] = ["id" => $productId, "title" => $title, "link" => $link];
             }
         }
-        return $productMatches;
+        return ["products" => $productMatches, "matches" => $foundProducts, "allLinks" => $productLinks];
     }
 
     /* https://www.prestashop.com/forums/topic/640693-how-to-add-a-product-through-the-webservice-with-custom-feature-values/#comment-2663527 */

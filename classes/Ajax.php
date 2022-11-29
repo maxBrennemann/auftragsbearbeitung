@@ -989,6 +989,22 @@ class Ajax {
 				DBAccess::updateQuery($query);
 				echo "success";
 			break;
+			case "writeSpeicherort":
+				$id = (int) $_POST["id"];
+				$content = (String) $_POST["content"];
+
+				$query = "UPDATE module_sticker_sticker_data SET additional_info = '$content' WHERE id = $id;";
+				DBAccess::updateQuery($query);
+				echo "success";
+			break;
+			case "writeAdditionalInfo":
+				$id = (int) $_POST["id"];
+				$content = (String) $_POST["content"];
+
+				$query = "UPDATE module_sticker_sticker_data SET directory_name = '$content' WHERE id = $id;";
+				DBAccess::updateQuery($query);
+				echo "success";
+			break;
 			case "transferProduct":
 				require_once("classes/project/StickerImage.php");
 				$id = (int) $_POST["id"];
@@ -1003,6 +1019,12 @@ class Ajax {
 						$stickerImage->saveWandtattoo();
 						break;
 					case 3:
+						$stickerImage->saveTextil();
+						break;
+					case 4:
+					case 5:
+						$stickerImage->saveAufkleber();
+						$stickerImage->saveWandtattoo();
 						$stickerImage->saveTextil();
 						break;
 				}
@@ -1031,6 +1053,16 @@ class Ajax {
 			case "toggleWandtattoo":
 				$id = (int) $_POST["id"];
 				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_walldecal` = NOT `is_walldecal` WHERE id = $id");
+				echo "success";
+			break;
+			case "toggleRevised":
+				$id = (int) $_POST["id"];
+				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_revised` = NOT `is_revised` WHERE id = $id");
+				echo "success";
+			break;
+			case "toggleBookmark":
+				$id = (int) $_POST["id"];
+				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_marked` = NOT `is_marked` WHERE id = $id");
 				echo "success";
 			break;
 			case "makeSVGColorable":

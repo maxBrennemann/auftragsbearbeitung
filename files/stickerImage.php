@@ -23,10 +23,21 @@
 ?>
     <div class="defCont cont1">
         <div>
-            <h2>Motiv <span id="name"><?=$stickerImage->getName();?></span><button class="actionButton" data-binding="true" id="editName">✎</button></h2>
+            <h2>Motiv <span id="name"><?=$stickerImage->getName();?></span><button class="actionButton" data-binding="true" id="editName">✎</button>
+                <?php if ($stickerImage->data["is_marked"] == "0"): ?>
+                <span><svg onclick="bookmark(event)" style="width:24px; height:24px; vertical-align:middle;" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M12,15.39L8.24,17.66L9.23,13.38L5.91,10.5L10.29,10.13L12,6.09L13.71,10.13L18.09,10.5L14.77,13.38L15.76,17.66M22,9.24L14.81,8.63L12,2L9.19,8.63L2,9.24L7.45,13.97L5.82,21L12,17.27L18.18,21L16.54,13.97L22,9.24Z" />
+                </svg></span>
+                <?php else: ?>
+                <span><svg onclick="unbookmark(event)" class="bookmarked" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z" />
+                </svg></span>
+                <?php endif; ?>
+            </h2>
             <p>Artikelnummer: <span id="motivId" data-variable="true"><?=$id?></span></p>
-            <p>Erstellt am <?=$stickerImage->getDate()?><button class="actionButton" data-binding="true" id="editDate">✎</button><p>
-            <button>Alles aktualisieren/ generieren</button>
+            <p>Erstellt am <?=$stickerImage->getDate()?><button class="actionButton" data-binding="true" id="editDate">✎</button></p>
+            <div class="lds-ring productLoader" id="productLoader4"><div></div><div></div><div></div><div></div></div>
+            <button class="newButton" data-id="4" data-fun="transferAll" data-binding="true">Alles aktualisieren/ generieren</button>
             <div class="imageBigContainer">
                 <img src="<?=$mainImage["link"]?>" alt="<?=$mainImage["alt"]?>" title="<?=$mainImage["alt"]?>" class="imageBig" data-image-id="<?=$mainImage["id"]?>">
                 <div class="imageTypes">
@@ -45,6 +56,14 @@
         </div>
         <div>
             <?=$getDownloadResources?>
+            <div id="delete-menu">
+                <div class="item">
+                    <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                    </svg>
+                    <span onclick="deleteImage(0)">Löschen</span>
+                </div>
+            </div>
         </div>
         <hr style="width: 100%;">
         <div>
@@ -105,7 +124,7 @@
             <div class="loaderOrSymbol">
                 <a target="_blank" href="<?=$stickerImage->getShopProducts("aufkleber", "link")?>" id="productStatus">
                     <div>
-                        <div class="lds-ring productLoader"><div></div><div></div><div></div><div></div></div>
+                        <div class="lds-ring productLoader" id="productLoader5"><div></div><div></div><div></div><div></div></div>
                         <span><?php if($stickerImage->isInShop("aufkleber")):?>✓ <?php else:?>x <?php endif;?></span>
                     </div>        
                     <p>Aufkleber ist im Shop</p>
@@ -113,9 +132,9 @@
             </div>
             <div>
                 <h4>Kurzbeschreibung</h4>
-                <textarea data-fun="productDescription" data-target="1" data-type="short" data-write="true"><?=$stickerImage->descriptions[1]["short"]?></textarea>
+                <textarea class="data-input" data-fun="productDescription" data-target="1" data-type="short" data-write="true"><?=$stickerImage->descriptions[1]["short"]?></textarea>
                 <h4>Beschreibung</h4>
-                <textarea data-fun="productDescription" data-target="1" data-type= "long" data-write="true"><?=$stickerImage->descriptions[1]["long"]?></textarea>
+                <textarea class="data-input" data-fun="productDescription" data-target="1" data-type= "long" data-write="true"><?=$stickerImage->descriptions[1]["long"]?></textarea>
             </div>
         </section>
         <section class="innerDefCont">
@@ -132,7 +151,7 @@
             <div class="loaderOrSymbol">
                 <a target="_blank" href="<?=$stickerImage->getShopProducts("wandtattoo", "link")?>" id="productStatus">
                     <div>
-                        <div class="lds-ring productLoader"><div></div><div></div><div></div><div></div></div>
+                        <div class="lds-ring productLoader" id="productLoader2"><div></div><div></div><div></div><div></div></div>
                         <span><?php if($stickerImage->isInShop("wandtattoo")):?>✓ <?php else:?>x <?php endif;?></span>
                     </div>        
                     <p>Wandtattoo ist im Shop</p>
@@ -140,9 +159,9 @@
             </div>
             <div>
                 <h4>Kurzbeschreibung</h4>
-                <textarea data-fun="productDescription" data-target="2" data-type="short" data-write="true"><?=$stickerImage->descriptions[2]["short"]?></textarea>
+                <textarea class="data-input" data-fun="productDescription" data-target="2" data-type="short" data-write="true"><?=$stickerImage->descriptions[2]["short"]?></textarea>
                 <h4>Beschreibung</h4>
-                <textarea data-fun="productDescription" data-target="2" data-type="long" data-write="true"><?=$stickerImage->descriptions[2]["long"]?></textarea>
+                <textarea class="data-input" data-fun="productDescription" data-target="2" data-type="long" data-write="true"><?=$stickerImage->descriptions[2]["long"]?></textarea>
             </div>
         </section>
         <section class="innerDefCont">
@@ -159,7 +178,7 @@
             <div class="loaderOrSymbol">
                 <a target="_blank" href="<?=$stickerImage->getShopProducts("textil", "link")?>" id="productStatus">
                     <div>
-                        <div class="lds-ring productLoader"><div></div><div></div><div></div><div></div></div>
+                        <div class="lds-ring productLoader" id="productLoader3"><div></div><div></div><div></div><div></div></div>
                         <span><?php if($stickerImage->isInShop("textil")):?>✓ <?php else:?>x <?php endif;?></span>
                     </div>        
                     <p>Textil ist im Shop</p>
@@ -186,9 +205,9 @@
             </div>
             <div>
                 <h4>Kurzbeschreibung</h4>
-                <textarea data-fun="productDescription" data-target="3" data-type="short" data-write="true"><?=$stickerImage->descriptions[3]["short"]?></textarea>
+                <textarea class="data-input" data-fun="productDescription" data-target="3" data-type="short" data-write="true"><?=$stickerImage->descriptions[3]["short"]?></textarea>
                 <h4>Beschreibung</h4>
-                <textarea data-fun="productDescription" data-target="3" data-type="long" data-write="true"><?=$stickerImage->descriptions[3]["long"]?></textarea>
+                <textarea class="data-input" data-fun="productDescription" data-target="3" data-type="long" data-write="true"><?=$stickerImage->descriptions[3]["long"]?></textarea>
             </div>
         </section>
     </div>
@@ -196,20 +215,41 @@
         <?=$stickerImage->getSizeTable()?>
         <div id="previewSizeText"></div>
     </div>
+    <div class="defCont">
+        <h2>Weitere Infos</h2>
+        <div class="revised">
+            <span>Wurde der Artikel neu überarbeitet?</span>
+            <span class="right">
+                <label class="switch">
+                    <input type="checkbox" id="revised" <?=$stickerImage->data["is_revised"] == 1 ? "checked" : ""?> data-variable="true">
+                    <span class="slider round" id="revisedClick" data-binding="true"></span>
+                </label>
+            </span>
+        </div>
+        <p>Speicherort:</p>
+        <input class="data-input" data-fun="speicherort" data-write="true" value="<?=$stickerImage->data["directory_name"]?>">
+        <p>Zusätzliche Infos und Notizen:</p>
+        <textarea class="data-input" data-fun="additionalInfo" data-write="true"><?=$stickerImage->data["additional_info"]?></textarea>
+        <div class="lds-ring productLoader" id="productLoader5"><div></div><div></div><div></div><div></div></div>
+        <button data-id="4" class="newButton marginTop30" data-fun="transferAll" data-binding="true">Alles aktualisieren/ generieren</button>
+    </div>
 <?php else:
 
-$query = "SELECT id, `name`, IF(is_plotted = 1, '✓', 'X') AS is_plotted, IF(is_short_time = 1, '✓', 'X') AS is_short_time, IF(is_long_time = 1, '✓', 'X') AS is_long_time, IF(is_multipart = 1, '✓', 'X') AS is_multipart, IF(is_walldecal = 1, '✓', 'X') AS is_walldecal, IF(is_shirtcollection = 1, '✓', 'X') AS is_shirtcollection FROM `module_sticker_sticker_data`";
+$query = "SELECT id, `name`, directory_name, IF(is_plotted = 1, '✓', 'X') AS is_plotted, IF(is_short_time = 1, '✓', 'X') AS is_short_time, IF(is_long_time = 1, '✓', 'X') AS is_long_time, IF(is_multipart = 1, '✓', 'X') AS is_multipart, IF(is_walldecal = 1, '✓', 'X') AS is_walldecal, IF(is_shirtcollection = 1, '✓', 'X') AS is_shirtcollection, IF(is_revised = 1, '✓', '') AS is_revised, IF(is_marked = 1, '★', '') AS is_marked FROM `module_sticker_sticker_data`";
 $data = DBAccess::selectQuery($query);
 
 $column_names = array(
     0 => array("COLUMN_NAME" => "id", "ALT" => "Nummer"),
     1 => array("COLUMN_NAME" => "name", "ALT" => "Name"),
-    2 => array("COLUMN_NAME" => "is_plotted", "ALT" => "geplottet"),
-    3 => array("COLUMN_NAME" => "is_short_time", "ALT" => "Werbeaufkleber"),
-    4 => array("COLUMN_NAME" => "is_long_time", "ALT" => "Hochleistungsfolie"),
-    5 => array("COLUMN_NAME" => "is_multipart", "ALT" => "mehrteilig"),
-    6 => array("COLUMN_NAME" => "is_walldecal", "ALT" => "Wandtattoo"),
-    7 => array("COLUMN_NAME" => "is_shirtcollection", "ALT" => "Textil"),
+    2 => array("COLUMN_NAME" => "directory_name", "ALT" => "Verzeichnis"),
+    3 => array("COLUMN_NAME" => "is_plotted", "ALT" => "geplottet"),
+    4 => array("COLUMN_NAME" => "is_short_time", "ALT" => "Werbeaufkleber"),
+    5 => array("COLUMN_NAME" => "is_long_time", "ALT" => "Hochleistungsfolie"),
+    6 => array("COLUMN_NAME" => "is_multipart", "ALT" => "mehrteilig"),
+    7 => array("COLUMN_NAME" => "is_walldecal", "ALT" => "Wandtattoo"),
+    8 => array("COLUMN_NAME" => "is_shirtcollection", "ALT" => "Textil"),
+    9 => array("COLUMN_NAME" => "is_revised", "ALT" => "Überarbeitet"),
+    10 => array("COLUMN_NAME" => "is_marked", "ALT" => "Gemerkt"),
 );
 
 //Protocoll::prettyPrint($column_names);

@@ -9,14 +9,38 @@ if (document.readyState !== 'loading' ) {
 }
 
 function initStickerOverview() {
+    initSVG();
+    initBindings();
+
     var pk_dropdown = document.getElementById("preiskategorie_dropdown");
     if (pk_dropdown != null) {
         pk_dropdown.addEventListener("click", preisListenerTextil, false);
         document.getElementById("preiskategorie").addEventListener("click", preisListenerTextil, false);
+
+        document.title = "b-schriftung - Motiv " + mainVariables.motivId.innerHTML + " " + document.getElementById("name").innerHTML;
     }
 
-    initSVG();
-    initBindings();
+    const contextMenu = document.getElementById("delete-menu");
+    const scope = document.querySelector("body");
+    scope.addEventListener("contextmenu", (event) => {
+        if (event.target.dataset.deletable != null) {
+            mainVariables.currentDelete = event.target.dataset.imageId;
+            event.preventDefault();
+
+            const { clientX: mouseX, clientY: mouseY } = event;
+    
+            contextMenu.style.top = `${mouseY}px`;
+            contextMenu.style.left = `${mouseX}px`;
+    
+            contextMenu.classList.add("visible");
+        }
+    });
+
+    scope.addEventListener("click", (e) => {
+        if (e.target.offsetParent != contextMenu) {
+          contextMenu.classList.remove("visible");
+        }
+    });
 }
 
 function initBindings() {
@@ -164,7 +188,25 @@ async function click_wandtattooClick() {
     }
 }
 
+async function click_revisedClick() {
+    var data =  {
+        id: mainVariables.motivId.innerHTML,
+    };
+    var response = await send(data, "toggleRevised");
+    if (response == "success") {
+        infoSaveSuccessfull("success");
+    } else {
+        console.log(response);
+        infoSaveSuccessfull();
+    }
+}
+
+
 function click_transferAufkleber() {
+    if (document.getElementById("previewSizeText").innerHTML == "") {
+        alert("Bitte überprüfe Breiten und Preise!");
+        return;
+    }
     transfer(1);
 }
 
@@ -177,7 +219,7 @@ function click_transferTextil() {
 }
 
 async function transfer(type) {
-    document.getElementsByClassName("productLoader")[type].style.display = "inline";
+    document.getElementById("productLoader" + type).style.display = "inline";
     var data = {
         id: mainVariables.motivId.innerHTML,
         type: type
@@ -185,7 +227,7 @@ async function transfer(type) {
     var response = await send(data, "transferProduct");
     console.log(response);
 
-    document.getElementsByClassName("productLoader")[type].style.display = "none";
+    document.getElementById("productLoader" + type).style.display = "none";
 }
 
 function send(data, intent, json = false) {
@@ -273,8 +315,11 @@ async function sendRows(data, text) {
 /**
  * deletes the currently selected image
  */
-async function deleteImage() {
-    var imageId = document.querySelector(".imageBig");
+async function deleteImage(imageId) {
+    if (imageId != undefined) {
+       imageId = mainVariables.currentDelete;
+    }
+    imageId = document.querySelector(".imageBig");
     imageId = imageId.dataset.imageId;
     var data = {
         imageId: imageId,
@@ -282,6 +327,8 @@ async function deleteImage() {
     var response = await send(data, "deleteImage");
     infoSaveSuccessfull(response); 
 }
+
+
 
 /**
  * changes all data for main image
@@ -424,6 +471,82 @@ async function write_productDescription(e) {
         content: content
     };
     var response = await send(data, "writeProductDescription");
+    if (response == "success") {
+        infoSaveSuccessfull("success");
+    } else {
+        console.log(response);
+        infoSaveSuccessfull();
+    }
+}
+
+async function write_speicherort(e) {
+    var content = e.target.value;
+    var data = {
+        id: mainVariables.motivId.innerHTML,
+        content: content
+    };
+    var response = await send(data, "writeSpeicherort");
+    if (response == "success") {
+        infoSaveSuccessfull("success");
+    } else {
+        console.log(response);
+        infoSaveSuccessfull();
+    }
+}
+
+async function write_additionalInfo(e) {
+    var content = e.target.value;
+    var data = {
+        id: mainVariables.motivId.innerHTML,
+        content: content
+    };
+    var response = await send(data, "writeAdditionalInfo");
+    if (response == "success") {
+        infoSaveSuccessfull("success");
+    } else {
+        console.log(response);
+        infoSaveSuccessfull();
+    }
+}
+
+async function click_transferAll(e) {
+    var id = e.target.dataset.id;
+    document.getElementsByClassName("productLoader")[id].style.display = "inline";
+    var data = {
+        id: mainVariables.motivId.innerHTML,
+        type: "all"
+    };
+    var response = await send(data, "transferProduct");
+    console.log(response);
+
+    document.getElementsByClassName("productLoader")[id].style.display = "none";
+}
+
+function bookmark(e) {
+    var star = e.target;
+    if (star.nodeName == "path") {
+        star = star.parentNode;
+    }
+    var newStar = `<svg onclick="unbookmark(event)" class="bookmarked" viewBox="0 0 24 24"><path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z" /></svg>`;
+    star.parentNode.innerHTML = newStar;
+    toggleBookmark();
+}
+
+function unbookmark(e) {
+    var star = e.target;
+    if (star.nodeName == "path") {
+        star = star.parentNode;
+    }
+    var newStar = `<svg onclick="bookmark(event)" style="width:24px;height:24px; vertical-align:middle;" viewBox="0 0 24 24"><path fill="currentColor" d="M12,15.39L8.24,17.66L9.23,13.38L5.91,10.5L10.29,10.13L12,6.09L13.71,10.13L18.09,10.5L14.77,13.38L15.76,17.66M22,9.24L14.81,8.63L12,2L9.19,8.63L2,9.24L7.45,13.97L5.82,21L12,17.27L18.18,21L16.54,13.97L22,9.24Z" /></svg>`;
+    star.parentNode.innerHTML = newStar;
+    toggleBookmark();
+}
+
+async function toggleBookmark() {
+    var data =  {
+        id: mainVariables.motivId.innerHTML,
+    };
+    var response = await send(data, "toggleBookmark");
     if (response == "success") {
         infoSaveSuccessfull("success");
     } else {
