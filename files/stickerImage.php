@@ -216,6 +216,14 @@
         <div id="previewSizeText"></div>
     </div>
     <div class="defCont">
+        <h2>Tags</h2>
+        <div>
+            <?=$stickerImage->getTags()?>
+            <input type="text" class="tagInput" onkeydown="addTag(event)">
+        </div>
+        <a href="#" onclick="loadTags()">Mehr Synonyme laden</a>
+    </div>
+    <div class="defCont">
         <h2>Weitere Infos</h2>
         <div class="revised">
             <span>Wurde der Artikel neu überarbeitet?</span>
@@ -232,10 +240,6 @@
         <textarea class="data-input" data-fun="additionalInfo" data-write="true"><?=$stickerImage->data["additional_info"]?></textarea>
         <div class="lds-ring productLoader" id="productLoader5"><div></div><div></div><div></div><div></div></div>
         <button data-id="4" class="newButton marginTop30" data-fun="transferAll" data-binding="true">Alles aktualisieren/ generieren</button>
-        <div>
-            <?=$stickerImage->getTags()?>
-            <input type="text" class="tagInput" onkeydown="addTag(event)">
-        </div>
     </div>
 <?php else:
 
