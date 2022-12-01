@@ -364,10 +364,10 @@ input:checked + .slider:before {
     padding-left: 7px;
     background-color: #2196F3;
     border-radius: 6px;
-    cursor: pointer;
+    cursor: default;
 }
 
-.tagList dt::after {
+.tagList dt .remove {
     content: "x";
     width: 15px;
     display: inline-block;
@@ -376,6 +376,7 @@ input:checked + .slider:before {
     margin-left: 5px;
     padding: 7px;
     border-radius: 0 6px 6px 0;
+    cursor: pointer;
 }
 
 .tagInput {
@@ -386,4 +387,13 @@ input:checked + .slider:before {
     border: none;
     height: 19px;
     width: 100px;
+}
+
+.tagList .suggestionTag {
+    background: #d5e9f9;
+    cursor: pointer;
+}
+
+.tagList .suggestionTag .remove {
+    background: #cdcdcd;
 }

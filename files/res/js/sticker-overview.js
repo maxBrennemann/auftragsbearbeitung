@@ -11,6 +11,7 @@ if (document.readyState !== 'loading' ) {
 function initStickerOverview() {
     initSVG();
     initBindings();
+    addTagEventListeners();
 
     var pk_dropdown = document.getElementById("preiskategorie_dropdown");
     if (pk_dropdown != null) {
@@ -555,6 +556,10 @@ async function toggleBookmark() {
     }
 }
 
+function loadTags() {
+    // load more cached tags from server, if none available, print: no more suggestions found
+}
+
 function addTag(event) {
     if (event.key === ';') {
         var dt = document.createElement("dt");
@@ -565,3 +570,24 @@ function addTag(event) {
     }
 }
 
+function manageTag(event) {
+    let element = event.target;
+    if (element.classList.contains("remove")) {
+        removeTag(event);
+    } else if (element.classList.contains("suggestionTag")) {
+        element.classList.remove("suggestionTag");
+        // save element
+    }
+}
+
+function removeTag(event) {
+    // remove tag, if with id even from db
+}
+
+function addTagEventListeners() {
+    var dts = document.querySelectorAll("dt");
+    for (let i = 0; i < dts.length; i++) {
+        let node = dts[i];
+        node.addEventListener("click", manageTag);
+    };
+}

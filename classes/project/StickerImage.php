@@ -322,12 +322,20 @@ class StickerImage {
     }
 
     public function getTags() {
+        $data = DBAccess::selectQuery("SELECT tags.id, tags.content FROM module_sticker_tags tags, module_sticker_sticker_tag `match` WHERE tags.id = match.id_tag AND match.id_sticker = $this->id");
+
         $tagsHTML = "<dl class=\"tagList\">";
+
+        foreach ($data as $tag) {
+            $id = $tag["id"];
+            $content = $tag["content"];
+            $tagsHTML .= "<dt>$content<span class=\"remove\" data-tag=\"$id\">x</span></dt>";
+        }
 
         foreach (explode(" ", $this->name) as $query) {
             $tags = array_slice($this->getSynonyms($query), 0, 3);
             foreach ($tags as $tag) {
-                $tagsHTML .= "<dt>$tag</dt>";
+                $tagsHTML .= "<dt class=\"suggestionTag\">$tag<span class=\"remove\">x</span></dt>";
             }
         }
 
@@ -366,13 +374,14 @@ class StickerImage {
     }
 
     public function getSizeTable() {
-        $query = "SELECT id, width, height, price FROM module_sticker_sizes WHERE id_sticker = {$this->id} ORDER BY width";
+        $query = "SELECT id, width, height, price, ((width / 1000) * (height / 1000) * 7.5) as costs FROM module_sticker_sizes WHERE id_sticker = {$this->id} ORDER BY width";
         $data = DBAccess::selectQuery($query);
         $column_names = array(
-            0 => array("COLUMN_NAME" => "id", "ALT" => "Kombinummer"),
+            0 => array("COLUMN_NAME" => "id", "ALT" => "Nummer"),
             1 => array("COLUMN_NAME" => "width", "ALT" => "Breite"),
             2 => array("COLUMN_NAME" => "height", "ALT" => "Höhe"),
             3 => array("COLUMN_NAME" => "price", "ALT" => "Preis (brutto)"),
+            4 => array("COLUMN_NAME" => "costs", "ALT" => "Material"),
         );
 
         if ($data == null) {
@@ -384,6 +393,7 @@ class StickerImage {
         foreach ($data as &$d) {
             $d["width"] = str_replace(".", ",", ((int) $d["width"]) / 10) . "cm";
             $d["height"] = str_replace(".", ",", ((int) $d["height"]) / 10) . "cm";
+            $d["costs"] = number_format($d["costs"], 2, ',', '') . "€";
         }
 
 		$t = new Table();
