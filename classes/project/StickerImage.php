@@ -368,7 +368,15 @@ class StickerImage {
 
     public function updateSizeTable($data) {
         $width = (int) $data["width"] * 10;
-        $height = (int) $data["height"] * 10;
+        $dataHeight = $data["height"];
+
+        $heightParts = explode(",", $dataHeight ?? "");
+        if (sizeof($heightParts) == 2) {
+            $height = (int) $heightParts[0] * 10 + (int) $heightParts[1];
+        } else {
+            $height = (int) ((float) $dataHeight * 10);
+        }
+
         $query = "UPDATE module_sticker_sizes SET height = $height WHERE id_sticker = $this->id AND width = $width";
         DBAccess::updateQuery($query);
     }
