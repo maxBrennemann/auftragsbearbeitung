@@ -287,7 +287,7 @@ function editRow(key, reference) {
             var heights = document.querySelectorAll('[data-height-change]');
             var height = e.target.value;
             var width = e.target.parentNode.parentNode.children[1].innerHTML;
-            height = parseInt(height);
+            height = parseNumber(height);
             width = parseInt(width);
             if (height != NaN) {
                 for (let i = 0; i < heights.length; i++) {
@@ -296,12 +296,22 @@ function editRow(key, reference) {
                         width2 = parseInt(width2);
                         console.log(`breite 1: ${width}, höhe 1: ${height}, breite 2: ${width2}`)
                         var height2 = (height / width) * width2;
+                        height2 = Math.round(height2 * 100) / 100;
                         heights[i].value = height2 + "cm";
                     }
                 }
             }
             updateSizeTableText();
         }, false);
+    }
+}
+
+function parseNumber(number) {
+    var parts = number.split(",");
+    if (parts.length == 2) {
+        return parseInt(parts[0]) + 0.1 * parseInt(parts[1]);
+    } else {
+        return parseInt(parts[0]);
     }
 }
 
@@ -371,7 +381,7 @@ function updateSizeTableText() {
     var data = {};
     data.ids = [];
 
-    var table = document.querySelector("[data-type]").children[0].children;
+    var table = document.querySelector("[data-type='module_sticker_sizes']").children[0].children;
     for (let i = 1; i < table.length; i++) {
         var breite = table[i].children[1].innerHTML;
         var hoehe = table[i].children[2];
@@ -385,8 +395,8 @@ function updateSizeTableText() {
         number = table[i].children[0].innerHTML;
         data["number" + number] = {};
         data.ids.push(number);
-        data["number" + number].width = parseInt(breite);
-        data["number" + number].height = parseInt(hoehe);
+        data["number" + number].width = breite;
+        data["number" + number].height = hoehe;
     }
 
     document.getElementById("previewSizeText").innerHTML = text;
