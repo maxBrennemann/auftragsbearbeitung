@@ -993,7 +993,7 @@ class Ajax {
 				$id = (int) $_POST["id"];
 				$content = (String) $_POST["content"];
 
-				$query = "UPDATE module_sticker_sticker_data SET additional_info = '$content' WHERE id = $id;";
+				$query = "UPDATE module_sticker_sticker_data SET directory_name = '$content' WHERE id = $id;";
 				DBAccess::updateQuery($query);
 				echo "success";
 			break;
@@ -1001,7 +1001,7 @@ class Ajax {
 				$id = (int) $_POST["id"];
 				$content = (String) $_POST["content"];
 
-				$query = "UPDATE module_sticker_sticker_data SET directory_name = '$content' WHERE id = $id;";
+				$query = "UPDATE module_sticker_sticker_data SET additional_info = '$content' WHERE id = $id;";
 				DBAccess::updateQuery($query);
 				echo "success";
 			break;
