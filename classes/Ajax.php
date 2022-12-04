@@ -1028,9 +1028,6 @@ class Ajax {
 						$stickerImage->saveTextil();
 						break;
 				}
-
-				$stickerImage = new StickerImage($id);
-				$stickerImage->saveAufkleber();
 				echo "ready";
 			break;
 			case "deleteImage":

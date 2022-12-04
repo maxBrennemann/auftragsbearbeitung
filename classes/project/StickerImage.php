@@ -251,22 +251,29 @@ class StickerImage {
         
         $description .= $descriptions["long"];
         $descriptionShort = $this->data["size_summary"] . $descriptions["short"];
-        $this->stickerDB = new StickerShopDBController($this->id, "Aufkleber " . $this->name, $description, $descriptionShort, 20);
-
-        if ($this->data["is_short_time"] == "1" && $this->data["is_long_time"] == "1") {
-            $this->stickerDB->addAttributeArray([163, 162]);
-        }
 
         $query = "SELECT id, width, height, price FROM module_sticker_sizes WHERE id_sticker = {$this->id} ORDER BY width";
         $data = DBAccess::selectQuery($query);
         $difficulty = 0;
         $data = $this->calculatePrices($data, $difficulty, false);
+        if (isset($data[0])) {
+            $basePrice = $data[0]["price"] / 1.19;
+        } else {
+            $basePrice = 0;
+        }
+
+        $this->stickerDB = new StickerShopDBController($this->id, "Aufkleber " . $this->name, $description, $descriptionShort, $basePrice);
+
+        if ($this->data["is_short_time"] == "1" && $this->data["is_long_time"] == "1") {
+            $this->stickerDB->addAttributeArray([163, 162]);
+        }
 
         $prices = [];
         $sizes = $this->getSizeIds();
         for ($i = 0; $i < sizeof($data); $i++) {
-            $price = $data[$i]["price"] / 100;
-            array_push($prices, [$sizes["ids"][$i] => $price]);
+            $price = $data[$i]["price"] / 1.19;
+            $price = $basePrice - $price;
+            $prices[$sizes["ids"][$i]] = $price;
         }
 
         $this->stickerDB->prices = $prices;
