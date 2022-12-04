@@ -124,7 +124,7 @@
             <div class="loaderOrSymbol">
                 <a target="_blank" href="<?=$stickerImage->getShopProducts("aufkleber", "link")?>" id="productStatus">
                     <div>
-                        <div class="lds-ring productLoader" id="productLoader5"><div></div><div></div><div></div><div></div></div>
+                        <div class="lds-ring productLoader" id="productLoader1"><div></div><div></div><div></div><div></div></div>
                         <span><?php if($stickerImage->isInShop("aufkleber")):?>✓ <?php else:?>x <?php endif;?></span>
                     </div>        
                     <p>Aufkleber ist im Shop</p>
@@ -213,7 +213,7 @@
     </div>
     <div class="defCont align-center">
         <?=$stickerImage->getSizeTable()?>
-        <div id="previewSizeText"></div>
+        <div id="previewSizeText"><?=$stickerImage->data["size_summary"]?></div>
     </div>
     <div class="defCont">
         <h2>Tags</h2>

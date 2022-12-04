@@ -126,7 +126,7 @@ class StickerShopDBController {
                 array_push($categories, (int) $category->id);
             }
 
-            /**
+            /*
              * TODO: hardcoded entfernen
              * Kategorie 25 ist die Textilkategorie, 
              * Kategorie ist die Wandtattookategorie,
@@ -303,7 +303,7 @@ class StickerShopDBController {
                 $prodVal = $product_option_values->addChild("product_option_value");
                 $prodVal->addChild("id", $a);
 
-                if ($this->prices != null && in_array($a, $this->prices)) {
+                if ($this->prices != null && array_key_exists($a, $this->prices)) {
                     $combination->price = $this->prices[$a];
                 }
             }
