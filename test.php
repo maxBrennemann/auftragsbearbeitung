@@ -1,5 +1,79 @@
 <?php
 
+define('_PS_CORE_DIR_', 'null');
+
+class ImageCreationTest {
+
+    private function imageCreation($motivId, $motivColor, $shirtId, $shirtColor) {
+        $svgPath = _PS_CORE_DIR_ ."/mainconf/img/svgFiles/{$motivId}.svg";
+        if ($motivColor == "unset") {
+            $imagePath = _PS_CORE_DIR_ ."/mainconf/img/imageFiles/{$shirtId}_{$shirtColor}_{$motivId}.png";
+        } else {
+            $imagePath = _PS_CORE_DIR_ ."/mainconf/img/imageFiles/{$shirtId}_{$shirtColor}_{$motivId}_{$motivColor}.png";
+        }
+        if (!file_exists($imagePath)) {
+            /* load contents into the variables */
+            $svgFile = file_get_contents($svgPath);
+            $imageFile = file_get_contents(_PS_CORE_DIR_ ."/mainconf/img/product/{$shirtId}/{$shirtColor}.jpg");
+        
+            /* sets the color of the motiv */
+            $dom = new DOMDocument('1.0', 'utf-8');
+            $dom->load($svgPath);
+            $svg = $dom->documentElement;
+
+            if ($motivColor != "unset") {
+                $svg->setAttribute("fill", "#" . $this->getColor($motivColor));
+            }
+            $svg->setAttribute("width", "1210px");
+            $svg->setAttribute("height", "1452px");
+            $svgFile = $dom->saveXML();
+
+            /* create the image data with imagick */
+            $layoutData = new Imagick();
+            $layoutData->setBackgroundColor(new ImagickPixel('transparent'));
+            $layoutData->readImageBlob($svgFile);
+            $layoutData->setImageFormat("png24");
+            $layoutData->setImageColorSpace(3);
+            
+            $backgroundImage = new Imagick();
+            $backgroundImage->readImageBlob($imageFile);
+            $backgroundImage->setImageColorSpace(3);
+            $backgroundImage->compositeImage($layoutData, Imagick::COMPOSITE_DEFAULT, 0, 0);
+            
+            $backgroundImage->writeImage($imagePath);
+            $backgroundImage->clear();
+            $backgroundImage->destroy();
+        }
+    }
+
+    private function getColor($colorName) {
+		$colors = array(
+            'maisgelb' => 'FCCC00',
+            'gelb' => 'F5E61A',
+            'rot' => '910C19',
+            'orange' => 'DB3400',
+            'schwarz' => '000000',
+            'konigsblau' => '11307D',
+            'enzianblau' => '0053AA',
+            'helltuerkis' => '009999',
+            'dunkelgruen' => '004429',
+            'hellgruen' => '008955',
+            'apfelgruen' => '60C340',
+            'braun' => '45291E',
+            'anthrazit' => '2C2E31',
+            'silber' => '748289',
+            'grau' => '878A8D',
+            'weiss' => 'FFFFFF',
+            'neongelb' => 'ccff00',
+            'neongruen' => '00ff00',
+            'neonorange' => 'fd5f00',
+            'neonpink' => 'ff019a'
+        );
+
+        return $colors[$colorName];
+	}
+}
+
 class UpdateSchedule {
 
     private $tableName;
