@@ -567,6 +567,30 @@ input#hamburg {
     }
 }
 
+@media screen and (max-width: 1300px), 
+       screen and (max-height: 500px) {
+    .moveToSide {
+        padding: 0;
+    }
+
+    .showBreadcrumb {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+    header h1 {
+        font-size: 1.3em;
+    }
+
+    input[type="search"] {
+        padding: 6px;
+    }
+
+    main {
+        margin-top: 100px;
+    }
+}
+
 @media (max-width: 850px) {
     tbody {
         max-width: 78vw;

@@ -261,6 +261,7 @@ class StickerImage {
         } else {
             $basePrice = 0;
         }
+        $basePrice = number_format($basePrice, 2);
 
         $this->stickerDB = new StickerShopDBController($this->id, "Aufkleber " . $this->name, $description, $descriptionShort, $basePrice);
 
@@ -272,8 +273,8 @@ class StickerImage {
         $sizes = $this->getSizeIds();
         for ($i = 0; $i < sizeof($data); $i++) {
             $price = $data[$i]["price"] / 1.19;
-            $price = $basePrice - $price;
-            $prices[$sizes["ids"][$i]] = $price;
+            $price = (float) $basePrice - $price;
+            $prices[$sizes["ids"][$i]] = number_format($price, 2);
         }
 
         $this->stickerDB->prices = $prices;
