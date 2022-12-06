@@ -172,6 +172,10 @@ class StickerImage {
         }
 
         $this->stickerDB = new StickerShopDBController($this->id, "Wandtattoo " . $this->name, $descriptions["long"], $descriptionShort, 20);
+
+        $this->stickerDB->addTags(["Wandtattoo", "Sticker", "Motiv"]);
+        $this->stickerDB->addTags($this->getAllTags());
+
         $this->stickerDB->prices = $prices;
         $this->stickerDB->addImages($this->getImagesByType("is_wandtattoo"));
         $this->stickerDB->addAttributeArray($this->getSizeIds()["ids"]);
@@ -232,6 +236,10 @@ class StickerImage {
 
         $descriptions = $this->getDescriptions(3);
         $this->stickerDB = new StickerShopDBController($this->id, "Textil " . $this->name, $descriptions["long"], $descriptions["short"], $this->getPriceTextil());
+
+        $this->stickerDB->addTags(["Textil", "Shirt", "Motiv", "Druck"]);
+        $this->stickerDB->addTags($this->getAllTags());
+
         $this->stickerDB->addImages($this->getImagesByType("is_textil"));
         $this->stickerDB->addAttributeArray([164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183]);
         $this->stickerDB->addSticker(25);
@@ -270,6 +278,8 @@ class StickerImage {
         $basePrice = number_format($basePrice, 2);
 
         $this->stickerDB = new StickerShopDBController($this->id, "Aufkleber " . $this->name, $description, $descriptionShort, $basePrice);
+        $this->stickerDB->addTags(["Aufkleber", "Sticker", "Motiv"]);
+        $this->stickerDB->addTags($this->getAllTags());
 
         if ($this->data["is_short_time"] == "1" && $this->data["is_long_time"] == "1") {
             $this->stickerDB->addAttributeArray([163, 162]);
@@ -397,6 +407,17 @@ class StickerImage {
         }
 
         DBAccess::updateQuery($query);
+    }
+
+    private function getAllTags() {
+        $data = DBAccess::selectQuery("SELECT tags.id, tags.content FROM module_sticker_tags tags, module_sticker_sticker_tag `match` WHERE tags.id = match.id_tag AND match.id_sticker = $this->id");
+        
+        $tags = [];
+        foreach ($data as $d) {
+            array_push($tags, $d["content"]);
+        }
+
+        return $tags;
     }
 
     public function getSizeTable() {

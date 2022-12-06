@@ -1102,6 +1102,31 @@ class Ajax {
 				$text = $data["text"];
 				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET size_summary = '$text' WHERE id = $id");
 			break;
+			case "addTag":
+				$id = (int) $_POST["id"];
+				$tag = (String) $_POST["tag"];
+
+				$query = "REPLACE INTO module_sticker_tags (content) VALUES ('$tag');";
+				$tagId = DBAccess::insertQuery($query);
+				$query = "INSERT INTO module_sticker_sticker_tag (id_sticker, id_tag) VALUES ($id, $tagId)";
+				DBAccess::insertQuery($query);
+				echo $tagId;
+			break;
+			case "removeTag":
+				$id = (int) $_POST["id"];
+				$tag = (String) $_POST["tag"];
+
+				$tagId = "SELECT id FROM module_sticker_tags WHERE content = '$tag'";
+				$tagId = DBAccess::selectQuery($tagId);
+				if ($tagId != null) {
+					$tagId = $tagId[0]["id"];
+
+					$query = "DELETE FROM module_sticker_sticker_tag WHERE id_tag = $tagId AND id_sticker = $id";
+					DBAccess::deleteQuery($query);
+				} else {
+					echo "not found";
+				}
+			break;
 			case "changeImageParameters":
 				require_once('classes/project/StickerImage.php');
 				StickerImage::updateImageStatus();
