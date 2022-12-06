@@ -588,6 +588,7 @@ input#hamburg {
 
     main {
         margin-top: 100px;
+        max-width: 95vw;
     }
 }
 

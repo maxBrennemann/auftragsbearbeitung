@@ -376,6 +376,110 @@ async function changeImageParameters(e) {
     }
 }
 
+const calcMaterial = (width, height) => {
+    return (width / 1000) * (height / 1000) * 7;
+}
+
+const calcHeight = (width, ratio) => {
+    return width * ratio;
+}
+
+const calcRatio = (width, height) => {
+    return height / width;
+}
+
+class SizeRow {
+    constructor(row) {
+        this.row = row.children;
+
+        this.id = parseInt(row.children[0].innerHTML);
+        this.width = this.cmTomm(row.children[1].innerHTML);
+        this.height = this.cmTomm(row.children[2].children[0].value);
+        this.material = calcMaterial(this.height, this.width);
+    }
+
+    recalcHeight(ratio) {
+        this.height = this.width * ratio;
+    }
+
+    updateMaterial() {
+        this.material = calcMaterial(this.height, this.width);
+        var materialFormatted = this.formatEuro(this.material);
+        this.row[4].innerHTML = materialFormatted;
+    }
+
+    updateHoehe() {
+        this.row[2].children[0].value = this.formatCM(this.height);
+    }
+
+    /*
+     * es wird nur die erste Nachkommastelle berücksichtigt
+     */
+    cmTomm(cm) {
+        var parts = cm.split(",");
+        if (parts.length == 2) {
+            return parseInt(parts[0]) * 10 + parseInt(parts[1][0]);
+        } else if (parts.length == 1) {
+            return parseInt(parts[0]) * 10;
+        }
+        return 0;
+    }
+
+    getRatio() {
+        return calcRatio(this.width, this.height);
+    }
+
+    formatEuro(param) {
+        let temp = Math.round((param * 100) / 100).toFixed(2);
+        temp = temp.replace(".", ",");
+        return temp + "€";
+    }
+
+    formatCM(param) {
+        let temp = Math.round(param / 10).toFixed(1);
+        temp = temp.toString(temp);
+        temp = temp.replace(".", ",");
+        return temp + "cm";
+    }
+}
+
+var sizes = [];
+
+function readSizeTable() {
+    var table = document.querySelector("[data-type='module_sticker_sizes']").children[0].children;
+
+    for (let i = 1; i < table.length; i++) {
+        var input = document.createElement("input");
+        input.classList.add("inputHeight");
+        input.dataset.id = i - 1;
+        input.value = table[i].children[2].innerHTML;
+        table[i].children[2].innerHTML = "";
+        table[i].children[2].appendChild(input);
+
+        let sr = new SizeRow(table[i]);
+        sizes.push(sr);
+
+        input.addEventListener("input", changeHeight, false);
+    }
+}
+
+function changeHeight(e) {
+    var targetId = parseInt(e.target.dataset.id);
+    var size = sizes[targetId];
+    var ratio = size.getRatio();
+
+    sizes.forEach((s) => {
+        if (s != size) {
+            s.recalcHeight(ratio);
+            s.updateHoehe();
+        }
+        
+        s.updateMaterial();
+    });
+
+    //updateSizeTableText();
+}
+
 function updateSizeTableText() {
     var text = "<br><p>Folie konturgeschnitten, ohne Hintergrund</p>";
     var data = {};
@@ -390,7 +494,9 @@ function updateSizeTableText() {
         } else {
             hoehe = hoehe.innerHTML;
         }
-        text += "<p class=\"breiten\">" + breite + " <span>x " + hoehe + "</span></p>";
+
+        var hoeheText = (Math.round(parseInt(hoehe) * 100) / 100).toFixed(1);
+        text += "<p class=\"breiten\">" + breite + " <span>x " + hoeheText + "cm</span></p>";
 
         number = table[i].children[0].innerHTML;
         data["number" + number] = {};
@@ -399,6 +505,8 @@ function updateSizeTableText() {
         data["number" + number].height = hoehe;
     }
 
+    /* replace . with , */
+    text = text.replace(".", ",");
     document.getElementById("previewSizeText").innerHTML = text;
     sendRows(data, text);
 }

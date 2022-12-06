@@ -197,7 +197,7 @@ input:checked + .slider:before {
 
 .imageBigContainer {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: max-content 1fr;
 }
 
 .imageTypes {
@@ -222,7 +222,7 @@ input:checked + .slider:before {
 
 .breiten {
     display: block;
-    width: 100px;
+    width: 120px;
 }
 
 .breiten span {
@@ -396,4 +396,15 @@ input:checked + .slider:before {
 
 .tagList .suggestionTag .remove {
     background: #cdcdcd;
+}
+
+.fastUpload {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    position: fixed;
+    height: 200px;
+    background: white;
+    border-top: 1px solid black;
 }
