@@ -59,6 +59,10 @@ class UpdateSchedule {
                     $values .= $val . ", ";
                 }
             }
+
+            if (isset($value["default"]) && $val == "") {
+                $val = $value["default"];
+            }
         }
 
         $this->columns = substr($columns, 0, -2);
