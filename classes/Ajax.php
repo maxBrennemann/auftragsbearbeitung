@@ -1030,6 +1030,13 @@ class Ajax {
 				}
 				echo "ready";
 			break;
+			case "getSizeTable":
+				require_once("classes/project/StickerImage.php");
+				$id = (int) $_POST["id"];
+
+				$stickerImage = new StickerImage($id);
+				echo $stickerImage->getSizeTable();
+			break;
 			case "deleteImage":
 				$imageId = (int) $_POST["imageId"];
 				$query = "DELETE FROM dateien WHERE id = $imageId";
@@ -1087,10 +1094,10 @@ class Ajax {
 				$data = json_decode($_POST["json"], true);
 
 				require_once('classes/project/StickerImage.php');
-				$id = $data["id"];
+				$id = (int) $data["id"];
 				$stickerImage = new StickerImage($id);
-				for ($i = 0; $i < sizeof($data["ids"]); $i++) {
-					$stickerImage->updateSizeTable($data["number" . $data["ids"][$i]]);
+				foreach ($data["sizes"] as $size) {
+					$stickerImage->updateSizeTable($size);
 				}
 				$text = $data["text"];
 				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET size_summary = '$text' WHERE id = $id");

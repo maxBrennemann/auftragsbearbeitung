@@ -19,6 +19,8 @@ function initStickerOverview() {
         document.getElementById("preiskategorie").addEventListener("click", preisListenerTextil, false);
 
         document.title = "b-schriftung - Motiv " + mainVariables.motivId.innerHTML + " " + document.getElementById("name").innerHTML;
+
+        readSizeTable();
     }
 
     const contextMenu = document.getElementById("delete-menu");
@@ -271,41 +273,6 @@ async function deleteRow(key, table, reference) {
     row.parentNode.removeChild(row);
 }
 
-/* editRow for sizetable */
-function editRow(key, reference) {
-    var table = reference.parentNode.parentNode.parentNode;
-    var heights = table.children;
-    for (let i = 1; i < heights.length; i++) {
-        var input = document.createElement("input");
-        input.classList.add("inputHeight");
-        input.dataset.heightChange = true;
-        input.value = heights[i].children[2].innerHTML;
-        heights[i].children[2].innerHTML = "";
-        heights[i].children[2].appendChild(input);
-
-        input.addEventListener("input", function(e) {
-            var heights = document.querySelectorAll('[data-height-change]');
-            var height = e.target.value;
-            var width = e.target.parentNode.parentNode.children[1].innerHTML;
-            height = parseNumber(height);
-            width = parseInt(width);
-            if (height != NaN) {
-                for (let i = 0; i < heights.length; i++) {
-                    if (e.target !=  heights[i]) {
-                        var width2 = heights[i].parentNode.parentNode.children[1].innerHTML;
-                        width2 = parseInt(width2);
-                        console.log(`breite 1: ${width}, höhe 1: ${height}, breite 2: ${width2}`)
-                        var height2 = (height / width) * width2;
-                        height2 = Math.round(height2 * 100) / 100;
-                        heights[i].value = height2 + "cm";
-                    }
-                }
-            }
-            updateSizeTableText();
-        }, false);
-    }
-}
-
 function parseNumber(number) {
     var parts = number.split(",");
     if (parts.length == 2) {
@@ -376,14 +343,17 @@ async function changeImageParameters(e) {
     }
 }
 
+/** calculates material prices */
 const calcMaterial = (width, height) => {
     return (width / 1000) * (height / 1000) * 7;
 }
 
+/** calculates height based on ratio */
 const calcHeight = (width, ratio) => {
     return width * ratio;
 }
 
+/** calculates ratio based on one width and height pair */
 const calcRatio = (width, height) => {
     return height / width;
 }
@@ -392,12 +362,14 @@ class SizeRow {
     constructor(row) {
         this.row = row.children;
 
-        this.id = parseInt(row.children[0].innerHTML);
-        this.width = this.cmTomm(row.children[1].innerHTML);
-        this.height = this.cmTomm(row.children[2].children[0].value);
+        this.id = parseInt(this.row[0].innerHTML);
+        this.width = this.cmTomm(this.row[1].innerHTML);
+        this.height = this.cmTomm(this.row[2].children[0].value);
+        this.price = this.getPriceInCent(this.row[3].innerHTML);
         this.material = calcMaterial(this.height, this.width);
     }
 
+    /* recalculates the height of a row based on ratio */
     recalcHeight(ratio) {
         this.height = this.width * ratio;
     }
@@ -418,7 +390,13 @@ class SizeRow {
     cmTomm(cm) {
         var parts = cm.split(",");
         if (parts.length == 2) {
-            return parseInt(parts[0]) * 10 + parseInt(parts[1][0]);
+            let first = parseInt(parts[0]) * 10;
+            let second = parseInt(parts[1][0]);
+            if (isNaN(second)) {
+                return first;
+            } else {
+                return first + second;
+            }
         } else if (parts.length == 1) {
             return parseInt(parts[0]) * 10;
         }
@@ -429,14 +407,20 @@ class SizeRow {
         return calcRatio(this.width, this.height);
     }
 
+    getPriceInCent(price) {
+        price = price.replace(",", ".");
+        price = parseFloat(price) * 100;
+        return parseInt(price);
+    }
+
     formatEuro(param) {
-        let temp = Math.round((param * 100) / 100).toFixed(2);
+        let temp = ((param * 100) / 100).toFixed(2);
         temp = temp.replace(".", ",");
         return temp + "€";
     }
 
     formatCM(param) {
-        let temp = Math.round(param / 10).toFixed(1);
+        let temp = (param / 10).toFixed(1);
         temp = temp.toString(temp);
         temp = temp.replace(".", ",");
         return temp + "cm";
@@ -463,53 +447,60 @@ function readSizeTable() {
     }
 }
 
+/**
+ * changes the height and material costs of all sizes
+ * @param {*} e event
+ */
 function changeHeight(e) {
     var targetId = parseInt(e.target.dataset.id);
     var size = sizes[targetId];
+    size.height = size.cmTomm(e.target.value);
     var ratio = size.getRatio();
 
+    var text = "<br><p>Folie konturgeschnitten, ohne Hintergrund</p>";
+    var data = {};
+    data.sizes = {};
+    var c = 0;
+
     sizes.forEach((s) => {
+        var innerData =  {};
         if (s != size) {
             s.recalcHeight(ratio);
             s.updateHoehe();
         }
-        
+
+        /* adds sizes to data object */
+        innerData.width = s.width;
+        innerData.height = s.height;
+        innerData.price = s.price;
+        data.sizes[c] = innerData;
+        c++;
+
         s.updateMaterial();
+
+        text += "<p class=\"breiten\">" + s.formatCM(s.width) + " <span>x " + s.formatCM(s.height) + "</span></p>";
     });
 
-    //updateSizeTableText();
-}
-
-function updateSizeTableText() {
-    var text = "<br><p>Folie konturgeschnitten, ohne Hintergrund</p>";
-    var data = {};
-    data.ids = [];
-
-    var table = document.querySelector("[data-type='module_sticker_sizes']").children[0].children;
-    for (let i = 1; i < table.length; i++) {
-        var breite = table[i].children[1].innerHTML;
-        var hoehe = table[i].children[2];
-        if (hoehe.children.length != 0) {
-            hoehe = hoehe.children[0].value;
-        } else {
-            hoehe = hoehe.innerHTML;
-        }
-
-        var hoeheText = (Math.round(parseInt(hoehe) * 100) / 100).toFixed(1);
-        text += "<p class=\"breiten\">" + breite + " <span>x " + hoeheText + "cm</span></p>";
-
-        number = table[i].children[0].innerHTML;
-        data["number" + number] = {};
-        data.ids.push(number);
-        data["number" + number].width = breite;
-        data["number" + number].height = hoehe;
-    }
-
-    /* replace . with , */
-    text = text.replace(".", ",");
     document.getElementById("previewSizeText").innerHTML = text;
     sendRows(data, text);
 }
+
+/**
+ * this function is called when the table is updated via
+ * the addNewLine functionality,
+ * the server responds with a new generated table
+ */
+async function tableUpdateCallback() {
+    var data = {
+        id: mainVariables.motivId.innerHTML,
+    };
+    var response = await send(data, "getSizeTable");
+    document.getElementById("sizeTableWrapper").innerHTML = response;
+    sizes = [];
+    readSizeTable();
+}
+
+/* todo: größe der neuen daten ergänzen und preise updatebar machen */
 
 var svg_elem;
 function initSVG() {

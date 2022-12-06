@@ -186,24 +186,9 @@ class StickerImage {
      */
     public function calculatePrices($priceTable, $difficulty, $currency = true) {
         foreach($priceTable as &$size) {
-            if ($size["width"] >= 1200) {
-                $base = 2100;
-            } else if ($size["width"] >= 900) {
-                $base = 1950;
-            } else if ($size["width"] >= 600) {
-                $base = 1700;
-            } else if ($size["width"] >= 300) {
-                $base = 1500;
-            } else {
-                $base = 1200;
-            }
-
             /* leeres Tabellenfeld heißt, dass der berechnete Wert verwendet werden soll */
             if ($size["price"] == null) {
-                $size["price"] = $base + 200 * $difficulty;
-                if ($size["height"] >= 0.5 * $size["width"]) {
-                    $size["price"] += 100;
-                }
+                $size["price"] = $this->getPrice($size["width"], $size["height"], $difficulty);
             }
 
             if ($currency) {
@@ -214,6 +199,27 @@ class StickerImage {
         }
 
         return $priceTable;
+    }
+
+    private function getPrice($width, $height, $difficulty) {
+        if ($width >= 1200) {
+            $base = 2100;
+        } else if ($width >= 900) {
+            $base = 1950;
+        } else if ($width >= 600) {
+            $base = 1700;
+        } else if ($width >= 300) {
+            $base = 1500;
+        } else {
+            $base = 1200;
+        }
+
+        $base = $base + 200 * $difficulty;
+        if ($height >= 0.5 * $width) {
+            $base += 100;
+        }
+        
+        return $base;
     }
 
     /**
@@ -374,18 +380,22 @@ class StickerImage {
         return $synonyms;
     }
 
+    /**
+     * if a new price is set, the price is written into the db
+     */
     public function updateSizeTable($data) {
-        $width = (int) $data["width"] * 10;
-        $dataHeight = $data["height"];
-
-        $heightParts = explode(",", $dataHeight ?? "");
-        if (sizeof($heightParts) == 2) {
-            $height = (int) $heightParts[0] * 10 + (int) $heightParts[1];
-        } else {
-            $height = (int) ((float) $dataHeight * 10);
-        }
+        $width = (int) $data["width"];
+        $height = (int) $data["height"];
+        
+        $currentPrice = $this->getPrice($width, $height, 1);
 
         $query = "UPDATE module_sticker_sizes SET height = $height WHERE id_sticker = $this->id AND width = $width";
+
+        if ($currentPrice != $data["price"]) {
+            $price = $data["price"];
+            $query = "UPDATE module_sticker_sizes SET height = $height, price = $price WHERE id_sticker = $this->id AND width = $width";
+        }
+
         DBAccess::updateQuery($query);
     }
 
@@ -414,7 +424,6 @@ class StickerImage {
 
 		$t = new Table();
 		$t->createByData($data, $column_names);
-		$t->addActionButton("edit");
 		$t->setType("module_sticker_sizes");
 		$t->addActionButton("delete", "id");
 		$t->addNewLineButton();
@@ -441,6 +450,7 @@ class StickerImage {
                 "value" => 3,
                 "type" => "float",
                 "cast" => ["separator" => ","],
+                "default" => null,
             ],
         ];
 

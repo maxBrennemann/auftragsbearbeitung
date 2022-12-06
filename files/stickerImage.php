@@ -212,7 +212,7 @@
         </section>
     </div>
     <div class="defCont align-center">
-        <?=$stickerImage->getSizeTable()?>
+        <div id="sizeTableWrapper"><?=$stickerImage->getSizeTable()?></div>
         <div id="previewSizeText"><?=$stickerImage->data["size_summary"]?></div>
     </div>
     <div class="defCont">
@@ -241,9 +241,9 @@
         <div class="lds-ring productLoader" id="productLoader5"><div></div><div></div><div></div><div></div></div>
         <button data-id="4" class="newButton marginTop30" data-fun="transferAll" data-binding="true">Alles aktualisieren/ generieren</button>
     </div>
-    <div class="fastUpload">
+    <!--<div class="fastUpload">
         test
-    </div>
+    </div>-->
 <?php else:
 
 $query = "SELECT id, `name`, directory_name, IF(is_plotted = 1, '✓', 'X') AS is_plotted, IF(is_short_time = 1, '✓', 'X') AS is_short_time, IF(is_long_time = 1, '✓', 'X') AS is_long_time, IF(is_multipart = 1, '✓', 'X') AS is_multipart, IF(is_walldecal = 1, '✓', 'X') AS is_walldecal, IF(is_shirtcollection = 1, '✓', 'X') AS is_shirtcollection, IF(is_revised = 1, '✓', '') AS is_revised, IF(is_marked = 1, '★', '') AS is_marked FROM `module_sticker_sticker_data`";

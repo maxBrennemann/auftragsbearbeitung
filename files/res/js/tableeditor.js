@@ -174,5 +174,9 @@ function tableSendnewLine() {
         } else {
             console.log(response);
         }
+
+        if (typeof tableUpdateCallback !== 'undefined' && typeof tableUpdateCallback === 'function') {
+            tableUpdateCallback();
+        }
     });
 }
