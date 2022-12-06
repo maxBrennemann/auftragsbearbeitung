@@ -679,18 +679,27 @@ function addTag(event) {
     }
 }
 
-function manageTag(event) {
+async function manageTag(event) {
     let element = event.target;
     if (element.classList.contains("remove")) {
-        removeTag(event);
+        var parent = element.parentNode.parentNode;
+        var child = element.parentNode;
+
+        if (element.parentNode.classList.contains("suggestionTag")) {
+            parent.removeChild(child);
+            return;
+        }
+
+        var response = await send({id: mainVariables.motivId.innerHTML, tag: child.childNodes[0].textContent}, "removeTag");
+        console.log(response);
+        if (response == "") {
+            parent.removeChild(child);
+        }
     } else if (element.classList.contains("suggestionTag")) {
         element.classList.remove("suggestionTag");
-        // save element
+        var response = await send({id: mainVariables.motivId.innerHTML, tag: event.target.childNodes[0].textContent}, "addTag");
+        console.log(response);
     }
-}
-
-function removeTag(event) {
-    // remove tag, if with id even from db
 }
 
 function addTagEventListeners() {
