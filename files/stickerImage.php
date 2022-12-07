@@ -1,5 +1,6 @@
 <?php
     require_once('classes/project/StickerImage.php');
+    require_once('classes/project/ProductCrawler.php');
     require_once('classes/project/StickerShopDBController.php');
 
     $id = 0;
@@ -46,6 +47,7 @@
                     <label>Textilbild: <input type="checkbox" id="textilbild" <?=$mainImage["is_textil"] == 1 ? "checked" : ""?> onchange="changeImageParameters(event)"></label>
                     <button onclick="deleteImage()">Löschen</button>
                     <a href="<?=$mainImage["link"]?>" download="<?=$mainImage["alt"]?>" title="<?=$mainImage["alt"]?>">Herunterladen</a>
+                    <button class="infoButton" data-info="7">i</button>
                 </div>
             </div>
             <div class="imageContainer">
@@ -61,7 +63,7 @@
                     <svg style="width:24px;height:24px" viewBox="0 0 24 24">
                     <path fill="currentColor" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
                     </svg>
-                    <span onclick="deleteImage(0)">Löschen</span>
+                    <span onclick="deleteImage(-1)">Löschen</span>
                 </div>
             </div>
         </div>
@@ -216,7 +218,7 @@
         <div id="previewSizeText"><?=$stickerImage->data["size_summary"]?></div>
     </div>
     <div class="defCont">
-        <h2>Tags</h2>
+        <h2>Tags<button class="infoButton" data-info="3">i</button></h2>
         <div>
             <?=$stickerImage->getTags()?>
             <input type="text" class="tagInput" onkeydown="addTag(event)">
@@ -226,7 +228,7 @@
     <div class="defCont">
         <h2>Weitere Infos</h2>
         <div class="revised">
-            <span>Wurde der Artikel neu überarbeitet?</span>
+            <span>Wurde der Artikel neu überarbeitet?<button class="infoButton" data-info="4">i</button></span>
             <span class="right">
                 <label class="switch">
                     <input type="checkbox" id="revised" <?=$stickerImage->data["is_revised"] == 1 ? "checked" : ""?> data-variable="true">
@@ -234,15 +236,17 @@
                 </label>
             </span>
         </div>
-        <p>Speicherort:</p>
+        <p>Speicherort:<button class="infoButton" data-info="5">i</button></p>
         <input class="data-input" data-fun="speicherort" data-write="true" value="<?=$stickerImage->data["directory_name"]?>">
-        <p>Zusätzliche Infos und Notizen:</p>
+        <p>Zusätzliche Infos und Notizen:<button class="infoButton" data-info="6">i</button></p>
         <textarea class="data-input" data-fun="additionalInfo" data-write="true"><?=$stickerImage->data["additional_info"]?></textarea>
         <div class="lds-ring productLoader" id="productLoader5"><div></div><div></div><div></div><div></div></div>
         <button data-id="4" class="newButton marginTop30" data-fun="transferAll" data-binding="true">Alles aktualisieren/ generieren</button>
     </div>
     <!--<div class="fastUpload">
-        test
+        Weitere Infos:
+        Facebook etc.
+        Google Analytics und Klicks, Verkäufe etc.
     </div>-->
 <?php else:
 
@@ -263,9 +267,6 @@ $column_names = array(
     10 => array("COLUMN_NAME" => "is_marked", "ALT" => "Gemerkt"),
 );
 
-//Protocoll::prettyPrint($column_names);
-
-
 $linker = new Link();
 $linker->addBaseLink("sticker-overview");
 $linker->setIterator("id", $data, "id");
@@ -273,6 +274,12 @@ $linker->setIterator("id", $data, "id");
 $t = new Table();
 $t->createByData($data, $column_names);
 $t->addLink($linker);
+?>
+<div class="defCont">
+    <div class="lds-ring productLoader" id="crawlAll"><div></div><div></div><div></div><div></div></div>
+    <a href="#" onclick="crawlAll(event)">Alle Produtke vom Shop crawlen</a>
+</div>
+<?php
 echo $t->getTable();
 
 endif; ?>
