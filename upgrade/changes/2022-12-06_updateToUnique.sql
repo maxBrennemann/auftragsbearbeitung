@@ -1,1 +1,6 @@
 ALTER TABLE `module_sticker_tags` ADD UNIQUE(`content`);
+
+INSERT INTO `info_texte` (`id`, `info`) VALUES (NULL, 'Um einen Tag dem Produkt hinzuzufügen, musst Du einfach auf den gewünschten Tagvorschlag klicken oder in das Eingabefeld ein neues Wort schreiben und mit \";\" bestätigen. Wenn Du einen Tag entfernen möchtest, klicke einfach auf das \"x\".');
+INSERT INTO `info_texte` (`id`, `info`) VALUES (NULL, 'Wenn Du diesen Artikel als \"überarbeitet\" markieren möchtest, musst du einfach den Button in dieser Zeile drücken. Diese Info wird auch auf der Übersichtseite angezeigt.');
+INSERT INTO `info_texte` (`id`, `info`) VALUES (NULL, 'Dies ist der Speicherort für alle Bilder und Dateien, die diesem Motiv zugeordnet sind.\r\nZu finden ist das unter \"Fertige Motive\".'), (NULL, 'Hier kannst Du dir Notizen zu diesem Motiv machen. Diese Notizen erscheinen nicht im Artikel.');
+INSERT INTO `info_texte` (`id`, `info`) VALUES (NULL, 'Hier kannst Du bestimmen, wo das aktuell ausgewählte Bild erscheinen soll.\r\nDu kannst es hier auch jederzeit herunterladen oder löschen.\r\nUm ein anderes Bild auszuwählen, klicke auf eines der kleineren Vorschaubilder.\r\nUm weitere Bilder oder Dateien hinzuzufügen, nutze bitte die Upload Funktion und lade die Seite neu.');

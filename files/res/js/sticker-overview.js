@@ -21,29 +21,29 @@ function initStickerOverview() {
         document.title = "b-schriftung - Motiv " + mainVariables.motivId.innerHTML + " " + document.getElementById("name").innerHTML;
 
         readSizeTable();
+
+        const contextMenu = document.getElementById("delete-menu");
+        const scope = document.querySelector("body");
+        scope.addEventListener("contextmenu", (event) => {
+            if (event.target.dataset.deletable != null) {
+                mainVariables.currentDelete = event.target.dataset.imageId;
+                event.preventDefault();
+
+                const { clientX: mouseX, clientY: mouseY } = event;
+        
+                contextMenu.style.top = `${mouseY}px`;
+                contextMenu.style.left = `${mouseX}px`;
+        
+                contextMenu.classList.add("visible");
+            }
+        });
+
+        scope.addEventListener("click", (e) => {
+            if (e.target.offsetParent != contextMenu) {
+            contextMenu.classList.remove("visible");
+            }
+        });
     }
-
-    const contextMenu = document.getElementById("delete-menu");
-    const scope = document.querySelector("body");
-    scope.addEventListener("contextmenu", (event) => {
-        if (event.target.dataset.deletable != null) {
-            mainVariables.currentDelete = event.target.dataset.imageId;
-            event.preventDefault();
-
-            const { clientX: mouseX, clientY: mouseY } = event;
-    
-            contextMenu.style.top = `${mouseY}px`;
-            contextMenu.style.left = `${mouseX}px`;
-    
-            contextMenu.classList.add("visible");
-        }
-    });
-
-    scope.addEventListener("click", (e) => {
-        if (e.target.offsetParent != contextMenu) {
-          contextMenu.classList.remove("visible");
-        }
-    });
 }
 
 function initBindings() {
@@ -294,11 +294,13 @@ async function sendRows(data, text) {
  * deletes the currently selected image
  */
 async function deleteImage(imageId) {
-    if (imageId != undefined) {
+    if (imageId == -1) {
        imageId = mainVariables.currentDelete;
+    } else {
+        imageId = document.querySelector(".imageBig");
+        imageId = imageId.dataset.imageId;
     }
-    imageId = document.querySelector(".imageBig");
-    imageId = imageId.dataset.imageId;
+
     var data = {
         imageId: imageId,
     };
@@ -708,4 +710,15 @@ function addTagEventListeners() {
         let node = dts[i];
         node.addEventListener("click", manageTag);
     };
+}
+
+async function crawlAll(e) {
+    e.preventDefault();
+
+    document.getElementById("crawlAll").style.display = "inline";
+
+    var response = await send({}, "crawlAll");
+    console.log(response);
+
+    document.getElementById("crawlAll").style.display = "none";
 }

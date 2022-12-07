@@ -165,10 +165,12 @@ class StickerImage {
         $data = $this->calculatePrices($data, $difficulty, false);
 
         $prices = [];
+        $buyingPrices = [];
         $sizes = $this->getSizeIds();
         for ($i = 0; $i < sizeof($data); $i++) {
             $price = $data[$i]["price"] / 100;
             array_push($prices, [$sizes["ids"][$i] => $price]);
+            array_push($buyingPrices, 0);
         }
 
         $this->stickerDB = new StickerShopDBController($this->id, "Wandtattoo " . $this->name, $descriptions["long"], $descriptionShort, 20);
@@ -177,6 +179,7 @@ class StickerImage {
         $this->stickerDB->addTags($this->getAllTags());
 
         $this->stickerDB->prices = $prices;
+        $this->stickerDb->buyingPrices = $buyingPrices;
         $this->stickerDB->addImages($this->getImagesByType("is_wandtattoo"));
         $this->stickerDB->addAttributeArray($this->getSizeIds()["ids"]);
         $this->stickerDB->addSticker();

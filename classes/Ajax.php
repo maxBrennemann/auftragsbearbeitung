@@ -1132,6 +1132,11 @@ class Ajax {
 				StickerImage::updateImageStatus();
 				echo "success";
 			break;
+			case "crawlAll":
+				require_once('classes/project/ProductCrawler.php');
+				$pc = new ProductCrawler();
+				$pc->crawlAll();
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);

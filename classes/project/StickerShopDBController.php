@@ -32,6 +32,7 @@ class StickerShopDBController {
     private $price;
 
     public $prices = null;
+    public $buyingPrices = null;
 
     function __construct($id_sticker, $title, $description, $description_short, $basePrice) {
         $this->id_sticker = $id_sticker;
@@ -305,6 +306,7 @@ class StickerShopDBController {
 
                 if ($this->prices != null && array_key_exists($a, $this->prices)) {
                     $combination->price = $this->prices[$a];
+                    $combination->wholesale_price = $this->buyingPrices[$a];
                 }
             }
 
