@@ -119,7 +119,7 @@ input:checked + .slider:before {
 
 .imageBig {
     width: 100%;
-    max-width: 200px;
+    max-width: 250px;
     height: auto;
     border-radius: 12px 0 0 12px;
 }
@@ -234,7 +234,8 @@ input:checked + .slider:before {
 }
 
 #svgContainer {
-    width: 458px;
+    width: 250px;
+    height: 250px;
 }
 
 #preiskategorie_dropdown {

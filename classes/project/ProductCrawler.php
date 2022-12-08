@@ -15,10 +15,23 @@ class ProductCrawler extends PrestaCommunicater {
         parent::__construct();
     }
 
+    /**
+     * https://stackoverflow.com/questions/9152373/php-flushing-while-loop-data-with-ajax
+     * Das Script soll auch laufen, falls der Nutzer die Seite neu lädt.
+     */
     public function crawlAll() {
+        ignore_user_abort(true);
+        set_time_limit(0);
+        if (ob_get_level() == 0) ob_start();
+
         $xml = $this->getXML("products");
         $products = $xml->products->product;
 
+        echo str_pad("{\"products\":" . sizeof($products) . "}", 4096);
+        ob_flush();
+        flush();
+
+        $count = 0;
         foreach ($products as $product) {
             $idProduct = $product["id"];
             $productXml = $this->getXML("products/$idProduct");
@@ -26,18 +39,27 @@ class ProductCrawler extends PrestaCommunicater {
             $productData = $productXml->product;
             $productNumber = (int) $productData->reference;
 
+            $info = ["shopId" => $idProduct, "productId" => $productNumber];
+
             if ($productNumber != null || $productNumber != 0) {
                 $checkIfExists = DBAccess::selectQuery("SELECT * FROM `module_sticker_sticker_data` WHERE id = $productNumber LIMIT 1");
 
                 if ($checkIfExists != null) {
                     $idSticker = $checkIfExists[0]["id"];
-                    echo "product $productNumber exists as sticker $idSticker";
+                    $info["existing"] = $idSticker;
                     $category = $this->getCategory($productData);
                     $this->updateCategory($productNumber, $category);
                 } else {
                     $this->analyseProduct($productData);
                 }
             }
+
+            $info["count"] = $count;
+            $count++;
+
+            echo str_pad(json_encode($info), 4096);
+            ob_flush();
+            flush();
         }
     }
 
@@ -70,12 +92,9 @@ class ProductCrawler extends PrestaCommunicater {
         $idCategories = [];
 
         foreach ($categories->category as $category) {
-            echo "test";
             $id = (int) $category->id;
             array_push($idCategories, $id);
         }
-
-        Protocoll::prettyPrint($idCategories);
 
         if (in_array(25, $idCategories)) {
             return 25;
@@ -103,6 +122,8 @@ class ProductCrawler extends PrestaCommunicater {
                 $query = "";
         }
 
+        if ($query == "")
+            return null;
         DBAccess::updateQuery($query);
     }
 

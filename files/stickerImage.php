@@ -176,6 +176,16 @@
                     </label>
                 </span>
             </div>
+            <div>
+                <span>Einfärbbar</span>
+                <span class="right">
+                    <label class="switch">
+                        <input type="checkbox" id="textil" <?=$stickerImage->data["is_colorable"] == 1 ? "checked" : ""?> data-variable="true">
+                        <span class="slider round" id="makeColorable" data-binding="true"></span>
+                    </label>
+                </span>
+                <!-- TODO: button muss funktionieren und einfärbbares svg gesondert speichern -->
+            </div>
             <button id="transferTextil" data-binding="true">Textil übertragen</button>
             <div class="loaderOrSymbol">
                 <a target="_blank" href="<?=$stickerImage->getShopProducts("textil", "link")?>" id="productStatus">
@@ -191,6 +201,7 @@
                 <button id="makeColorable" data-binding="true">Einfärbbar machen</button>
                 <button id="makeBlack" data-binding="true">Schwarz</button>
                 <button id="makeRed" data-binding="true">Rot</button>
+                <!-- TODO: lade alle Farbbuttons und cache diese -->
             </div>
             <div>
                 <span>Preiskategorie:<br>
@@ -276,7 +287,14 @@ $t->createByData($data, $column_names);
 $t->addLink($linker);
 ?>
 <div class="defCont">
-    <div class="lds-ring productLoader" id="crawlAll"><div></div><div></div><div></div><div></div></div>
+    <div class="productLoader" id="crawlAll">
+        <div class="lds-ring" id="loaderCrawlAll"><div></div><div></div><div></div><div></div></div>
+        <div>
+            <progress max="1000" value="0" id="productProgress"></progress>
+            <p><span id="currentProgress"></span> von <span id="maxProgress"></span></p>
+            <p id="statusProgress"></p>
+        </div>
+    </div>
     <a href="#" onclick="crawlAll(event)">Alle Produtke vom Shop crawlen</a>
 </div>
 <?php

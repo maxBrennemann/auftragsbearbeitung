@@ -103,6 +103,9 @@ class Link {
 			case "upload":
 				$link = REWRITE_BASE . "upload/" . $resource;
 				break;
+			case "img":
+				$link = REWRITE_BASE . "img/" . $resource;
+				break;
 			case "backup":
 				$link = REWRITE_BASE . "backup/" . $resource;
 				break;
