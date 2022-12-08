@@ -204,7 +204,6 @@ async function click_revisedClick() {
     }
 }
 
-
 function click_transferAufkleber() {
     if (document.getElementById("previewSizeText").innerHTML == "") {
         alert("Bitte überprüfe Breiten und Preise!");
@@ -578,19 +577,8 @@ async function click_makeColorable() {
     var data = {
         id: mainVariables.motivId.innerHTML,
     };
-    await send(data, "makeSVGColorable");
-}
-
-function click_makeBlack() {
-    if (svg_elem != null) {
-        svg_elem.setAttribute("fill", "rgb(0, 0, 0)");
-    }
-}
-
-function click_makeRed() {
-    if (svg_elem != null) {
-        svg_elem.setAttribute("fill", "rgb(256, 0, 0)");
-    }
+    var svg_url = await send(data, "makeSVGColorable");
+    console.log(svg_url);
 }
 
 function preisListenerTextil() {
@@ -806,4 +794,12 @@ function crawlAll(e) {
     ajaxCall.open("POST", "", true);
     ajaxCall.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajaxCall.send("getReason=crawlAll");
+}
+
+function changeColor(e) {
+    var color = e.target.dataset.color;
+
+    if (svg_elem != null) {
+        svg_elem.setAttribute("fill", color);
+    }
 }

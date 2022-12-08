@@ -84,8 +84,9 @@
             <div id="showFilePrev"></div>
         </div>
     </div>
-    <div class="defCont cont2">
-        <section class="innerDefCont">
+    <div class="cont2">
+        <section class="defCont">
+            <p class="pHeading">Aufkleber</p>
             <div>
                 <span>Aufkleber Plott</span>
                 <span class="right">
@@ -122,24 +123,44 @@
                     </label>
                 </span>
             </div>
-            <button id="transferAufkleber" data-binding="true" <?=$stickerImage->data["is_plotted"] == 1 ? "" : "disabled"?>>Aufkleber übertragen</button>
-            <div class="loaderOrSymbol">
-                <a target="_blank" href="<?=$stickerImage->getShopProducts("aufkleber", "link")?>" id="productStatus">
-                    <div>
-                        <div class="lds-ring productLoader" id="productLoader1"><div></div><div></div><div></div><div></div></div>
-                        <span><?php if($stickerImage->isInShop("aufkleber")):?>✓ <?php else:?>x <?php endif;?></span>
-                    </div>        
-                    <p>Aufkleber ist im Shop</p>
-                </a>
-            </div>
             <div>
                 <h4>Kurzbeschreibung</h4>
                 <textarea class="data-input" data-fun="productDescription" data-target="1" data-type="short" data-write="true"><?=$stickerImage->descriptions[1]["short"]?></textarea>
                 <h4>Beschreibung</h4>
                 <textarea class="data-input" data-fun="productDescription" data-target="1" data-type= "long" data-write="true"><?=$stickerImage->descriptions[1]["long"]?></textarea>
             </div>
+            <div class="shopStatus">
+                <div class="shopStatusIcon">
+                    <a target="_blank" href="<?=$stickerImage->getShopProducts("aufkleber", "link")?>">
+                    <?php if ($stickerImage->isInShop("aufkleber")):?>
+                    <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M20 6H4V4H20V6M15.69 14H14V15.69C13.37 16.64 13 17.77 13 19C13 19.34 13.04 19.67 13.09 20H4V14H3V12L4 7H20L21 12V13.35C20.37 13.13 19.7 13 19 13C17.77 13 16.64 13.37 15.69 14M12 14H6V18H12V14M21.34 15.84L17.75 19.43L16.16 17.84L15 19L17.75 22L22.5 17.25L21.34 15.84Z">
+                            <title>Aufkleber ist im Shop</title>
+                        </path>
+                    </svg>
+                    <?php else: ?>
+                    <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M4 4H20V6H4V4M15.46 16.88L16.88 15.46L19 17.59L21.12 15.47L22.54 16.88L20.41 19L22.54 21.12L21.12 22.54L19 20.41L16.88 22.54L15.46 21.12L17.59 19L15.47 16.88M4 7H20L21 12V13.34C20.33 13.09 19.62 12.96 18.91 12.96C17.71 12.96 16.54 13.33 15.54 14H14V15.53C13.3 16.53 12.92 17.73 12.92 18.95L13 20H4V14H3V12L4 7M6 14V18H12V14H6Z">
+                            <title>Aufkleber ist nicht im Shop</title>
+                        </path>
+                    </svg>
+                    <?php endif; ?>
+                    </a>
+                </div> 
+                <button class="transferBtn" id="transferAufkleber" data-binding="true" <?=$stickerImage->data["is_plotted"] == 1 ? "" : "disabled"?>>Aufkleber übertragen</button>
+                        <!-- wenn sich infos ändern oder im shop was anderes steht, dann updaten anzeigen -->
+                <!-- updaten: <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M18 4H2V2H18V4M17.5 13H16V18L19.61 20.16L20.36 18.94L17.5 17.25V13M24 17C24 20.87 20.87 24 17 24C13.47 24 10.57 21.39 10.08 18H2V12H1V10L2 5H18L19 10V10.29C21.89 11.16 24 13.83 24 17M4 16H10V12H4V16M22 17C22 14.24 19.76 12 17 12S12 14.24 12 17 14.24 22 17 22 22 19.76 22 17Z" />
+</svg> --><!-- hinzufügen <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M4 4H20V6H4V4M15.46 16.88L16.88 15.46L19 17.59L21.12 15.47L22.54 16.88L20.41 19L22.54 21.12L21.12 22.54L19 20.41L16.88 22.54L15.46 21.12L17.59 19L15.47 16.88M4 7H20L21 12V13.34C20.33 13.09 19.62 12.96 18.91 12.96C17.71 12.96 16.54 13.33 15.54 14H14V15.53C13.3 16.53 12.92 17.73 12.92 18.95L13 20H4V14H3V12L4 7M6 14V18H12V14H6Z" />
+</svg> -->
+            </div>
+            <div class="loaderOrSymbol">
+                <div class="lds-ring productLoader" id="productLoader1"><div></div><div></div><div></div><div></div></div>
+            </div>
         </section>
-        <section class="innerDefCont">
+        <section class="defCont">
+            <p class="pHeading">Wandtattoo</p>
             <div>
                 <span>Wandtattoo</span>
                 <span class="right">
@@ -149,24 +170,38 @@
                     </label>
                 </span>
             </div>
-            <button id="transferWandtattoo" data-binding="true">Wandtattoo übertragen</button>
-            <div class="loaderOrSymbol">
-                <a target="_blank" href="<?=$stickerImage->getShopProducts("wandtattoo", "link")?>" id="productStatus">
-                    <div>
-                        <div class="lds-ring productLoader" id="productLoader2"><div></div><div></div><div></div><div></div></div>
-                        <span><?php if($stickerImage->isInShop("wandtattoo")):?>✓ <?php else:?>x <?php endif;?></span>
-                    </div>        
-                    <p>Wandtattoo ist im Shop</p>
-                </a>
-            </div>
             <div>
                 <h4>Kurzbeschreibung</h4>
                 <textarea class="data-input" data-fun="productDescription" data-target="2" data-type="short" data-write="true"><?=$stickerImage->descriptions[2]["short"]?></textarea>
                 <h4>Beschreibung</h4>
                 <textarea class="data-input" data-fun="productDescription" data-target="2" data-type="long" data-write="true"><?=$stickerImage->descriptions[2]["long"]?></textarea>
             </div>
+            <div class="shopStatus">
+                <div class="shopStatusIcon">
+                <a target="_blank" href="<?=$stickerImage->getShopProducts("wandtattoo", "link")?>">
+                    <?php if ($stickerImage->isInShop("wandtattoo")):?>
+                    <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M20 6H4V4H20V6M15.69 14H14V15.69C13.37 16.64 13 17.77 13 19C13 19.34 13.04 19.67 13.09 20H4V14H3V12L4 7H20L21 12V13.35C20.37 13.13 19.7 13 19 13C17.77 13 16.64 13.37 15.69 14M12 14H6V18H12V14M21.34 15.84L17.75 19.43L16.16 17.84L15 19L17.75 22L22.5 17.25L21.34 15.84Z">
+                            <title>Wandtattoo ist im Shop</title>
+                        </path>
+                    </svg>
+                    <?php else: ?>
+                    <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M4 4H20V6H4V4M15.46 16.88L16.88 15.46L19 17.59L21.12 15.47L22.54 16.88L20.41 19L22.54 21.12L21.12 22.54L19 20.41L16.88 22.54L15.46 21.12L17.59 19L15.47 16.88M4 7H20L21 12V13.34C20.33 13.09 19.62 12.96 18.91 12.96C17.71 12.96 16.54 13.33 15.54 14H14V15.53C13.3 16.53 12.92 17.73 12.92 18.95L13 20H4V14H3V12L4 7M6 14V18H12V14H6Z">
+                            <title>Wandtattoo ist nicht im Shop</title>
+                        </path>
+                    </svg>
+                    <?php endif; ?>
+                    </a>
+                </div> 
+                <button class="transferBtn" id="transferWandtattoo" data-binding="true">Wandtattoo übertragen</button>
+            </div>
+            <div class="loaderOrSymbol">
+                <div class="lds-ring productLoader" id="productLoader2"><div></div><div></div><div></div><div></div></div>
+            </div>
         </section>
-        <section class="innerDefCont">
+        <section class="defCont">
+            <p class="pHeading">Textil</p>
             <div>
                 <span>Textil</span>
                 <span class="right">
@@ -184,24 +219,15 @@
                         <span class="slider round" id="makeColorable" data-binding="true"></span>
                     </label>
                 </span>
-                <!-- TODO: button muss funktionieren und einfärbbares svg gesondert speichern -->
-            </div>
-            <button id="transferTextil" data-binding="true">Textil übertragen</button>
-            <div class="loaderOrSymbol">
-                <a target="_blank" href="<?=$stickerImage->getShopProducts("textil", "link")?>" id="productStatus">
-                    <div>
-                        <div class="lds-ring productLoader" id="productLoader3"><div></div><div></div><div></div><div></div></div>
-                        <span><?php if($stickerImage->isInShop("textil")):?>✓ <?php else:?>x <?php endif;?></span>
-                    </div>        
-                    <p>Textil ist im Shop</p>
-                </a>
             </div>
             <div>
                 <object id="svgContainer" data="<?=$stickerImage->getSVGIfExists()?>" type="image/svg+xml"></object>
-                <button id="makeColorable" data-binding="true">Einfärbbar machen</button>
-                <button id="makeBlack" data-binding="true">Schwarz</button>
-                <button id="makeRed" data-binding="true">Rot</button>
-                <!-- TODO: lade alle Farbbuttons und cache diese -->
+                <br>
+                <?php if ($stickerImage->data["is_colorable"] == 1): ?>
+                <?php foreach ($stickerImage->textilColors as $color):?>
+                <button class="colorBtn" style="background:<?=$color["hexCol"]?>" title="<?=$color["name"]?>" onclick="changeColor(event)" data-color="<?=$color["hexCol"]?>"></button>
+                <?php endforeach; ?>
+                <?php endif; ?>
             </div>
             <div>
                 <span>Preiskategorie:<br>
@@ -221,6 +247,29 @@
                 <textarea class="data-input" data-fun="productDescription" data-target="3" data-type="short" data-write="true"><?=$stickerImage->descriptions[3]["short"]?></textarea>
                 <h4>Beschreibung</h4>
                 <textarea class="data-input" data-fun="productDescription" data-target="3" data-type="long" data-write="true"><?=$stickerImage->descriptions[3]["long"]?></textarea>
+            </div>
+            <div class="shopStatus">
+                <div class="shopStatusIcon">
+                <a target="_blank" href="<?=$stickerImage->getShopProducts("textil", "link")?>">
+                    <?php if ($stickerImage->isInShop("textil")):?>
+                    <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M20 6H4V4H20V6M15.69 14H14V15.69C13.37 16.64 13 17.77 13 19C13 19.34 13.04 19.67 13.09 20H4V14H3V12L4 7H20L21 12V13.35C20.37 13.13 19.7 13 19 13C17.77 13 16.64 13.37 15.69 14M12 14H6V18H12V14M21.34 15.84L17.75 19.43L16.16 17.84L15 19L17.75 22L22.5 17.25L21.34 15.84Z">
+                            <title>Textil ist im Shop</title>
+                        </path>
+                    </svg>
+                    <?php else: ?>
+                    <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M4 4H20V6H4V4M15.46 16.88L16.88 15.46L19 17.59L21.12 15.47L22.54 16.88L20.41 19L22.54 21.12L21.12 22.54L19 20.41L16.88 22.54L15.46 21.12L17.59 19L15.47 16.88M4 7H20L21 12V13.34C20.33 13.09 19.62 12.96 18.91 12.96C17.71 12.96 16.54 13.33 15.54 14H14V15.53C13.3 16.53 12.92 17.73 12.92 18.95L13 20H4V14H3V12L4 7M6 14V18H12V14H6Z">
+                            <title>Textil ist nicht im Shop</title>
+                        </path>
+                    </svg>
+                    <?php endif; ?>
+                    </a>
+                </div> 
+                <button class="transferBtn" id="transferTextil" data-binding="true">Textil übertragen</button>
+            </div>
+            <div class="loaderOrSymbol">
+                <div class="lds-ring productLoader" id="productLoader3"><div></div><div></div><div></div><div></div></div>
             </div>
         </section>
     </div>

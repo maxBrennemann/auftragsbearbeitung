@@ -31,7 +31,7 @@ class ProductCrawler extends PrestaCommunicater {
         ob_flush();
         flush();
 
-        $count = 0;
+        $count = 1;
         foreach ($products as $product) {
             $idProduct = $product["id"];
             $productXml = $this->getXML("products/$idProduct");
