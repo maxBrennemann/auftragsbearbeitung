@@ -7,6 +7,33 @@ class StickerImage {
     private $id;
     private $name;
 
+    /*
+     * SELECT color, prstshp_attribute_lang.name FROM `prstshp_attribute`, prstshp_attribute_lang WHERE prstshp_attribute.id_attribute = prstshp_attribute_lang.id_attribute AND id_attribute_group = 11 AND prstshp_attribute_lang.id_lang = 1; 
+     * TODO: read from shop and cache
+     */
+    public $textilColors = [
+        ["hexCol" => "#ffffff", "name" => "Weiss"],
+        ["hexCol" => "#FCCC00", "name" => "Maisgelb"],
+        ["hexCol" => "#F5E61A", "name" => "Gelb"],
+        ["hexCol" => "#910C19", "name" => "Rot"],
+        ["hexCol" => "#DB3400", "name" => "Orange"],
+        ["hexCol" => "#000000", "name" => "Schwarz"],
+        ["hexCol" => "#11307D", "name" => "Königsblau"],
+        ["hexCol" => "#0053AA", "name" => "Enzianblau"],
+        ["hexCol" => "#009999", "name" => "Helltuerkis"],
+        ["hexCol" => "#004429", "name" => "Dunkelgruen"],
+        ["hexCol" => "#008955", "name" => "Hellgruen"],
+        ["hexCol" => "#60C340", "name" => "Apfelgruen"],
+        ["hexCol" => "#45291E", "name" => "Braun"],
+        ["hexCol" => "#2C2E31", "name" => "Anthrazit"],
+        ["hexCol" => "#748289", "name" => "Silber"],
+        ["hexCol" => "#878A8D", "name" => "Grau"],
+        ["hexCol" => "#ccff00", "name" => "Neongelb"],
+        ["hexCol" => "#00ff00", "name" => "Neongruen"],
+        ["hexCol" => "#fd5f00", "name" => "Neonorange"],
+        ["hexCol" => "#ff019a", "name" => "Neonpink"],
+    ];
+
     public $data;
 
     private $shopProducts;
@@ -673,12 +700,39 @@ class StickerImage {
      */
     public function makeColorable() {
         $filename = $this->getSVG();
-        $file = file_get_contents($filename);
-        $file = preg_replace('/fill:#([0-9a-f]{6}|[0-9a-f]{3})/i', "", $file);
-        if (!str_contains($file, "<svg id=\"svg_elem\"")) {
-            $file = str_replace("<svg", "<svg id=\"svg_elem\"", $file);
+
+        if ($filename == "") {
+            return "";
         }
-        file_put_contents($filename, $file);
+
+        $newFile = substr($filename, 0, -4);
+        $newFile .= "_colorable.svg";
+
+        if (!file_exists($newFile)) {
+            $file = file_get_contents($filename);
+            $file = preg_replace('/fill:#([0-9a-f]{6}|[0-9a-f]{3})/i', "", $file);
+            if (!str_contains($file, "<svg id=\"svg_elem\"")) {
+                $file = str_replace("<svg", "<svg id=\"svg_elem\"", $file);
+            }
+
+            file_put_contents($newFile, $file);
+
+            $newFile = substr($newFile, 0, strlen("upload/"));
+
+            /* add file to db */
+            $today = date("Y-m-d");
+            $query = "INSERT INTO dateien (dateiname, originalname, `date`, `typ`) VALUES ('$newFile', '$newFile', $today, 'svg')";
+            $fileId = DBAccess::insertQuery($query);
+            $query = "INSERT INTO dateien_motive (id_datei, id_motive) VALUES ($fileId, $this->id)";
+            DBAccess::insertQuery($query);
+            $query = "INSERT INTO module_sticker_images (id_image, id_sticker) VALUES ($fileId, $this->id)";
+            DBAccess::insertQuery($query);
+
+            return Link::getResourcesShortLink($newFile, "upload");
+        } else {
+            $newFile = substr($newFile, 0, strlen("upload/"));
+            return Link::getResourcesShortLink($filename, "upload");
+        }
     }
 
 }
