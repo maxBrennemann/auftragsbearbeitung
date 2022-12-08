@@ -508,10 +508,69 @@ var svg_elem;
 function initSVG() {
     var a = document.getElementById("svgContainer");
     if (a != null || a!= undefined) {
-        a.addEventListener("load",function(){
+        a.addEventListener("load", loadSVGEvent, false);
+
+        if (a.contentDocument != null) {
+            a.removeEventListener("load", loadSVGEvent);
             var svgDoc = a.contentDocument;
             svg_elem = svgDoc.getElementById("svg_elem");
-        }, false);
+            adjustSVG();
+        }
+    }
+}
+
+function loadSVGEvent() {
+    var a = document.getElementById("svgContainer");
+    var svgDoc = a.contentDocument;
+    svg_elem = svgDoc.getElementById("svg_elem");
+    adjustSVG();
+}
+
+function adjustSVG() {
+    if (svg_elem != null) {
+        let children = svg_elem.children;
+
+        let positions = {
+            furthestX: 0,
+            nearestX: 0,
+            furthestY: 0,
+            nearestY: 0,
+
+            edited: false,
+        }
+
+        for (let i = 0; i< children.length; i++) {
+            let child = children[i];
+            if (child.getBBox() && child.nodeName != "defs") {
+                var coords = child.getBBox();
+                if (positions.edited == false) {
+                    positions.furthestX = coords.x + coords.width;
+                    positions.furthestY = coords.y + coords.height;
+                    positions.nearestX = coords.x;
+                    positions.nearestY = coords.y;
+
+                    positions.edited = true;
+                } else {
+                    if (coords.x < positions.nearestX) {
+                        positions.nearestX = coords.x;
+                    }
+                    if (coords.y < positions.nearestY) {
+                        positions.nearestY = coords.y;
+                    }
+                    if (coords.x + coords.width > positions.furthestX) {
+                        positions.furthestX = coords.x + coords.width;
+                    }
+                    if (coords.y + coords.height > positions.furthestY) {
+                        positions.furthestY = coords.y + coords.height;
+                    }
+                }
+            }
+        }
+
+        let width = positions.furthestX - positions.nearestX;
+        let height = positions.furthestY - positions.nearestY;
+
+        svg_elem.setAttribute("viewBox", `${positions.nearestX} ${positions.nearestY} ${width} ${height}`);
     }
 }
 
@@ -712,13 +771,39 @@ function addTagEventListeners() {
     };
 }
 
-async function crawlAll(e) {
+var responseLength = 0;
+function crawlAll(e) {
     e.preventDefault();
-
     document.getElementById("crawlAll").style.display = "inline";
 
-    var response = await send({}, "crawlAll");
-    console.log(response);
-
-    document.getElementById("crawlAll").style.display = "none";
+    var ajaxCall = new XMLHttpRequest();
+    ajaxCall.onload = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("loaderCrawlAll").style.display = "none";
+        }
+    }
+    ajaxCall.onprogress = function() {
+        /* https://stackoverflow.com/questions/42838609/how-to-flush-php-output-buffer-properly */
+        if (this.readyState == 3) {
+            let json = this.responseText.substring(responseLength);
+            responseLength = this.responseText.length;
+            json = json.replace(/ /g,'');
+            json = JSON.parse(json);
+            if (json.products) {
+                document.getElementById("productProgress").max = json.products;
+                document.getElementById("maxProgress").innerHTML = json.products;
+            } else if (json.shopId) {
+                document.getElementById("productProgress").value = json.count;
+                document.getElementById("currentProgress").innerHTML = json.count;
+                if (json.existing) {
+                    document.getElementById("statusProgress").innerHTML = "wurde schon gecrawlt";
+                } else {
+                    document.getElementById("statusProgress").innerHTML = "neu angelegt oder geupdatet";
+                }
+            }
+        }
+    }
+    ajaxCall.open("POST", "", true);
+    ajaxCall.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    ajaxCall.send("getReason=crawlAll");
 }

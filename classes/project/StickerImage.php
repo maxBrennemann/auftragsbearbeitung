@@ -322,7 +322,8 @@ class StickerImage {
 
     public function resizeImage($file) {
         list($width, $height) = getimagesize("upload/" . $file["dateiname"]);
-        if ($width >= 2000 || $height >= 2000 || filesize("upload/" . $file["dateiname"]) >= 2000000) {
+        /* width and height do not matter any longer, images are only resized if filesize exeeds 2MB */
+        if (filesize("upload/" . $file["dateiname"]) >= 2000000) {
             switch ($file["typ"]) {
                 case "jpg":
                     if (function_exists("imagecreatefromjpeg")) {
@@ -382,14 +383,18 @@ class StickerImage {
 
         $result = json_decode($result, true);
         $synonyms = [];
-        foreach ($result["synsets"] as $set) {
-            foreach ($set["terms"] as $term) {
-                if (!in_array($term["term"], $synonyms)) {
-                    array_push($synonyms, $term["term"]);
+        if ($result != null && $result["synsets"] != null) {
+            foreach ($result["synsets"] as $set) {
+                foreach ($set["terms"] as $term) {
+                    if (!in_array($term["term"], $synonyms)) {
+                        array_push($synonyms, $term["term"]);
+                    }
                 }
             }
         }
 
+        /* TODO: caching der Tags */
+        
         return $synonyms;
     }
 
@@ -528,7 +533,7 @@ class StickerImage {
                     "id" => 0,
                     "title" => "default image",
                     "alt" => "default image",
-                    "link" => Link::getResourcesShortLink("default_image.png", "upload"),
+                    "link" => Link::getResourcesShortLink("default_image.png", "img"),
                     "dateiname" => "Standardbild",
                     "typ" => "png",
                     "is_aufkleber" => 0,

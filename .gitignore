@@ -12,6 +12,11 @@ files/generated/sql_backups/*
 files/generated/invoice/*
 !files/generated/invoice/index.php
 
+!img/
+img/*
+!img/default_image.png
+!img/favicon.png
+
 upload/*
 !upload/index.php
 
@@ -19,7 +24,6 @@ favicon.ico
 .vs/
 .vscode/
 .VSCodeCounter
-img/
 auftragsbearbeitung.code-workspace
 cache/*
 !cache/index.php
