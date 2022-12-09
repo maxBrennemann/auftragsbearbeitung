@@ -55,8 +55,30 @@ class DBAccess {
 		return self::selectQuery($query);
 	}
 	
+	public static function updateQuery($query, $params = NULL) {
+		self::createConnection();
+
+		self::$statement = self::$connection->prepare($query);
+
+		if ($params != NULL) {
+			foreach($params as $key => &$val){
+				$dataType = getType($val);
+				switch($dataType) {
+					case "integer":
+						self::$statement->bindParam($key, $val, PDO::PARAM_INT);
+						break;
+					case "string":
+						self::$statement->bindParam($key, $val, PDO::PARAM_STR);
+						break;
+				}
+			}
+		}
+		
+		return self::$statement->execute();
+	}
+
 	/* exec for queries that don't return a result set */
-	public static function updateQuery($query) {
+	public static function updateQueryNonPrepared($query) {
 		self::createConnection();
 		
 		return self::$connection->exec($query);
@@ -76,7 +98,7 @@ class DBAccess {
 		
 		self::$statement = self::$connection->prepare($query);
 
-		if($params != NULL) {
+		if ($params != NULL) {
 			foreach($params as $key => &$val){
 				$dataType = getType($val);
 				switch($dataType) {

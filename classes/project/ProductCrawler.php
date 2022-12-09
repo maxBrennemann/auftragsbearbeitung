@@ -12,16 +12,9 @@ class ProductCrawler extends PrestaCommunicater {
      * alle ids checken und wenn nicht existert, dann wird ein neuer eintrag erstellt
      * daten werden eingetragen
      */
-    private $imageGetContext = "";
     
     function __construct() {
         parent::__construct();
-
-        $options = array('https' => array(
-            'method'  => 'GET',
-            'header' => 'Authorization', 'Basic ' . base64_encode($this->apiKey. ":"),
-        ));
-        $this->imageGetContext = stream_context_create($options);
     }
 
     /**
@@ -50,9 +43,6 @@ class ProductCrawler extends PrestaCommunicater {
 
             $info = ["shopId" => $idProduct, "productId" => $productNumber];
 
-            $this->getImages($productData);
-            return;
-
             if ($productNumber != null || $productNumber != 0) {
                 $checkIfExists = DBAccess::selectQuery("SELECT * FROM `module_sticker_sticker_data` WHERE id = $productNumber LIMIT 1");
 
@@ -61,6 +51,8 @@ class ProductCrawler extends PrestaCommunicater {
                     $info["existing"] = $idSticker;
                     $category = $this->getCategory($productData);
                     $this->updateCategory($productNumber, $category);
+
+                    $this->getImages($productData, $category);
                 } else {
                     $this->analyseProduct($productData);
                 }
@@ -68,8 +60,6 @@ class ProductCrawler extends PrestaCommunicater {
 
             $info["count"] = $count;
             $count++;
-
-            if ($count == 100) return null;
 
             echo str_pad(json_encode($info), 4096);
             ob_flush();
@@ -81,11 +71,12 @@ class ProductCrawler extends PrestaCommunicater {
         $id = (int) $productData->reference;
         $title = (String) $productData->name->language[0];
         $category = $this->getCategory($productData);
-        $this->getImages($productData);
 
         if ($category == 0) {
             return;
         }
+
+        $this->getImages($productData, $category);
 
         $creationDate = $productData->date_add;
         $creationDate = date("Y-m-d", strtotime($creationDate));
@@ -143,18 +134,16 @@ class ProductCrawler extends PrestaCommunicater {
     }
 
     /* TODO: Gedanken über den Speicherort machen, soll es in img/modules/sticker oder upload/ gespeichert werden? */
-    private function getImages($productData) {
+    private function getImages($productData, $category) {
         $images = $productData->associations->images;
+        $today = date("Y-m-d");
 
         foreach ($images->image as $image) {
             $imageId = (int) $image->id;
             $productId = (int) $productData->id;
+            $motivId = (int) $productData->reference;
             $apiKey = $this->apiKey;
             $url = "https://klebefux.de/api/images/products/$productId/$imageId";
-            
-            //$image = file_get_contents($url, false, $this->imageGetContext);
-            //$image = file_get_contents($url, false, $this->imageGetContext);
-            //file_put_contents("/upload/testfilename37.jpg", $image);
 
             $ch = curl_init ($url);
             curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -163,9 +152,36 @@ class ProductCrawler extends PrestaCommunicater {
             $image = curl_exec($ch);
             curl_close($ch);
 
-            $fp = fopen("upload/testfilename37.jpg", 'x');
+            $filename = "${productId}_${motivId}_${imageId}.jpg";
+            $fp = fopen("upload/$filename", 'w');
             fwrite($fp, $image);
             fclose($fp);
+
+            /* write image info to db */
+            $query = "INSERT INTO dateien (dateiname, originalname, `date`, `typ`) VALUES ('$filename', '$filename', '$today', 'jpg')";
+            $id_datei = DBAccess::insertQuery($query);
+            $query = "INSERT INTO dateien_motive (id_datei, id_motive) VALUES ($id_datei, $motivId);";
+            DBAccess::insertQuery($query);
+
+            switch ($category) {
+                case 25:
+                    $key = "is_textil";
+                    break;
+                case 13:
+                    $key = "is_aufkleber";
+                    break;
+                case 62;
+                    $key = "is_wandtattoo";
+                    break;
+                default:
+                    $key = "";
+                    break;
+            }
+
+            if ($key != "") {
+                $query = "INSERT INTO module_sticker_images (id_image, id_sticker, $key) VALUES ($id_datei, $motivId, 1);";
+                DBAccess::insertQuery($query);
+            }
         }
     }
 
