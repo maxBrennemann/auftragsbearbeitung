@@ -816,6 +816,7 @@ function crawlAll(e) {
     }
     ajaxCall.open("POST", "", true);
     ajaxCall.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    ajaxCall.setRequestHeader("header('X-Accel-Buffering: no');");
     ajaxCall.send("getReason=crawlAll");
 }
 
