@@ -1120,6 +1120,11 @@ class Ajax {
 				$id = (int) $_POST["id"];
 				$tag = (String) $_POST["tag"];
 
+				if ($tag == "") {
+					echo -1;
+					return;
+				}
+
 				$query = "REPLACE INTO module_sticker_tags (content) VALUES ('$tag');";
 				$tagId = DBAccess::insertQuery($query);
 				$query = "INSERT INTO module_sticker_sticker_tag (id_sticker, id_tag) VALUES ($id, $tagId)";

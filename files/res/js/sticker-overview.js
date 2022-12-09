@@ -737,17 +737,29 @@ async function toggleBookmark() {
     }
 }
 
+/* TODO: bitte tags erledigen */
 function loadTags() {
     // load more cached tags from server, if none available, print: no more suggestions found
 }
 
-function addTag(event) {
+async function addTag(event) {
     if (event.key === ';') {
         var dt = document.createElement("dt");
-        dt.innerHTML = event.target.value;
+        var newTagValue = event.target.value;
+        dt.innerHTML = newTagValue;
+
+        var remove = document.createElement("span");
+        remove.innerHTML = "x";
+        remove.classList.add("remove");
+        remove.addEventListener("click", manageTag);
+
+        dt.appendChild(remove);
         event.target.parentNode.children[0].appendChild(dt);
         event.target.value = "";
         event.preventDefault();
+
+        var response = await send({id: mainVariables.motivId.innerHTML, tag: newTagValue}, "addTag");
+        console.log(response);
     }
 }
 
@@ -790,6 +802,7 @@ function crawlAll(e) {
     var ajaxCall = new XMLHttpRequest();
     ajaxCall.onload = function() {
         if (this.readyState == 4 && this.status == 200) {
+            console.log(this.responseText);
             document.getElementById("loaderCrawlAll").style.display = "none";
         }
     }
@@ -798,6 +811,8 @@ function crawlAll(e) {
         if (this.readyState == 3) {
             let json = this.responseText.substring(responseLength);
             responseLength = this.responseText.length;
+            console.log(json);
+            /*
             json = json.replace(/ /g,'');
             json = JSON.parse(json);
             if (json.products) {
@@ -811,7 +826,7 @@ function crawlAll(e) {
                 } else {
                     document.getElementById("statusProgress").innerHTML = "neu angelegt oder geupdatet";
                 }
-            }
+            }*/
         }
     }
     ajaxCall.open("POST", "", true);
