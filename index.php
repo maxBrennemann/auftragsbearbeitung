@@ -15,6 +15,12 @@ require_once('classes/project/NotificationManager.php');
 require_once('classes/project/CacheManager.php');
 $isArticle = false;
 
+/* TODO: api requests hier abfangen */
+$apiRequest = false;
+if ($apiRequest == true) {
+	header('X-Accel-Buffering: no');
+}
+
 /*
 * Before: page was submitted via $_GET paramter, but now the REQUEST_URI is read;
 * $url is splitted into the REQUEST_URI and the parameter part

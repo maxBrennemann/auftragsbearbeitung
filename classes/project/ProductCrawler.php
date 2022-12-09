@@ -1,6 +1,8 @@
 <?php
 
-header('X-Accel-Buffering: no');
+/*
+ * TODO: nginx is still buffering, these headers do not affect it
+ */
 require_once("classes/project/PrestaCommunicater.php");
 
 class ProductCrawler extends PrestaCommunicater {
@@ -10,10 +12,16 @@ class ProductCrawler extends PrestaCommunicater {
      * alle ids checken und wenn nicht existert, dann wird ein neuer eintrag erstellt
      * daten werden eingetragen
      */
-
+    private $imageGetContext = "";
     
     function __construct() {
         parent::__construct();
+
+        $options = array('https' => array(
+            'method'  => 'GET',
+            'header' => 'Authorization', 'Basic ' . base64_encode($this->apiKey. ":"),
+        ));
+        $this->imageGetContext = stream_context_create($options);
     }
 
     /**
@@ -42,6 +50,9 @@ class ProductCrawler extends PrestaCommunicater {
 
             $info = ["shopId" => $idProduct, "productId" => $productNumber];
 
+            $this->getImages($productData);
+            return;
+
             if ($productNumber != null || $productNumber != 0) {
                 $checkIfExists = DBAccess::selectQuery("SELECT * FROM `module_sticker_sticker_data` WHERE id = $productNumber LIMIT 1");
 
@@ -58,6 +69,8 @@ class ProductCrawler extends PrestaCommunicater {
             $info["count"] = $count;
             $count++;
 
+            if ($count == 100) return null;
+
             echo str_pad(json_encode($info), 4096);
             ob_flush();
             flush();
@@ -68,6 +81,7 @@ class ProductCrawler extends PrestaCommunicater {
         $id = (int) $productData->reference;
         $title = (String) $productData->name->language[0];
         $category = $this->getCategory($productData);
+        $this->getImages($productData);
 
         if ($category == 0) {
             return;
@@ -126,6 +140,33 @@ class ProductCrawler extends PrestaCommunicater {
         if ($query == "")
             return null;
         DBAccess::updateQuery($query);
+    }
+
+    /* TODO: Gedanken über den Speicherort machen, soll es in img/modules/sticker oder upload/ gespeichert werden? */
+    private function getImages($productData) {
+        $images = $productData->associations->images;
+
+        foreach ($images->image as $image) {
+            $imageId = (int) $image->id;
+            $productId = (int) $productData->id;
+            $apiKey = $this->apiKey;
+            $url = "https://klebefux.de/api/images/products/$productId/$imageId";
+            
+            //$image = file_get_contents($url, false, $this->imageGetContext);
+            //$image = file_get_contents($url, false, $this->imageGetContext);
+            //file_put_contents("/upload/testfilename37.jpg", $image);
+
+            $ch = curl_init ($url);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_USERPWD, $apiKey.':');
+            $image = curl_exec($ch);
+            curl_close($ch);
+
+            $fp = fopen("upload/testfilename37.jpg", 'x');
+            fwrite($fp, $image);
+            fclose($fp);
+        }
     }
 
 }
