@@ -14,6 +14,7 @@ class UpgradeManager {
         return "git pull";
     }
 
+    /* no longer needed */
     public static function executeSecondCommand($script) {
         if ($script == null || $script == "." || $script == ".." || $script == "index.php") {
             return ["command" => "empty", "result" => "script name is empty"];
@@ -29,6 +30,18 @@ class UpgradeManager {
 
     private static function getSecondCommand() {
         return "mysql --user=" . USERNAME . " --password='" . PASSWORD . "' -h " . HOST . " -D  " . DATABASE . " < ";
+    }
+
+    public static function executeNewSQLQueries($file) {
+        if ($file == null || $file == "." || $file == ".." || $file == "index.php") {
+            return ["command" => "empty", "result" => "script name is empty"];
+        }
+
+        $date = substr($file, 0, 10);
+        DBAccess::insertQuery("INSERT INTO upgrade_tracker (`date`, title) VALUES ('$date', '$file')");
+
+        $anonymousUpdater = require("changes/" . $file);
+        return ["command" => "$file", "result" => $anonymousUpdater->upgrade()];
     }
 
     public static function checkNewSQL() {

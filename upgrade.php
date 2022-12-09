@@ -38,7 +38,8 @@
         }
 
         async function click_updateProject() {
-            var print = await send({query:1}, "upgrade");
+            var print = await send({'query':1}, "upgrade");
+            console.log(print);
             print = JSON.parse(print);
             codeAppend(print.command, true);
             codeAppend(print.result);
@@ -76,7 +77,8 @@
 
             paramString = temp.slice(0, -1);
 
-            var response = makeAsyncCall("POST", paramString, window.location.origin).then(result => {
+            console.log(paramString);
+            var response = makeAsyncCall("POST", paramString, '<?=WEB_URL . SUB_URL?>').then(result => {
                 return result;
             });
 
