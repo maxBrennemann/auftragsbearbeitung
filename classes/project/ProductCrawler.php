@@ -1,5 +1,6 @@
 <?php
 
+header('X-Accel-Buffering: no');
 require_once("classes/project/PrestaCommunicater.php");
 
 class ProductCrawler extends PrestaCommunicater {
