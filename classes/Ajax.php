@@ -1050,6 +1050,17 @@ class Ajax {
 				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET price_type = '$categoryId' WHERE id = $id");
 				echo "success";
 			break;
+			case "changeMotivDate":
+				$id = (int) $_POST['id'];
+				$creation_date = $_POST['date'];
+
+				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET creation_date = :creation_date WHERE id = :id", ["creation_date" => $creation_date, "id" => $id]);
+				echo "success";
+			break;
+			case "getStickerStatus":
+				$query = "SELECT id, in_shop_aufkleber, in_shop_wandtattoo, in_shop_textil FROM module_sticker_sticker_data";
+				echo json_encode(DBAccess::selectQuery($query));
+			break;
 			case "toggleTextil":
 				$id = (int) $_POST["id"];
 				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_shirtcollection` = NOT `is_shirtcollection` WHERE id = $id");

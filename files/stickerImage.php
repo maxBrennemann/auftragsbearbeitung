@@ -36,7 +36,7 @@
                 <?php endif; ?>
             </h2>
             <p>Artikelnummer: <span id="motivId" data-variable="true"><?=$id?></span></p>
-            <p>Erstellt am <?=$stickerImage->getDate()?><button class="actionButton" data-binding="true" id="editDate">✎</button></p>
+            <p>Erstellt am <input type="date" value="<?=$stickerImage->data["creation_date"]?>" onchange="changeDate(event)"></p>
             <div class="lds-ring productLoader" id="productLoader4"><div></div><div></div><div></div><div></div></div>
             <div class="shopStatus">
                 <div class="shopStatusIcon">
@@ -366,6 +366,14 @@ $t->addLink($linker);
         </div>
     </div>
     <a href="#" onclick="crawlAll(event)">Alle Produtke vom Shop crawlen</a>
+</div>
+<div class="defCont">
+    <div>
+        <p><button class="showBox" id="yellow"></button> Diese Motivvariante ist im Shop, aber die Daten aus der Auftragsbearbeitung wurde nicht hochgeladen</p>
+    </div>
+    <div>
+        <p><button class="showBox" id="green"></button> Diese Motivvariante ist im Shop und aktuell</p>
+    </div>
 </div>
 <?php
 echo $t->getTable();
