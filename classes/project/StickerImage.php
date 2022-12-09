@@ -271,7 +271,12 @@ class StickerImage {
         $this->stickerDB->addTags($this->getAllTags());
 
         $this->stickerDB->addImages($this->getImagesByType("is_textil"));
-        $this->stickerDB->addAttributeArray([164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183]);
+
+        /* if the textil is not colorable, the color options must not be set */
+        if ($this->data["is_colorable"] == "1") {
+            $this->stickerDB->addAttributeArray([164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183]);
+        }
+       
         $this->stickerDB->addSticker(25);
 
         $this->stickerDB->uploadSVG($this->getSVG());

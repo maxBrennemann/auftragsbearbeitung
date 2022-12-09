@@ -94,7 +94,7 @@
     </div>
     <div class="cont2">
         <section class="defCont">
-            <p class="pHeading">Aufkleber</p>
+            <p class="pHeading">Aufkleber <button class="infoButton" data-info="8">i</button></p>
             <div>
                 <span>Aufkleber Plott</span>
                 <span class="right">
@@ -166,7 +166,7 @@
             </div>
         </section>
         <section class="defCont">
-            <p class="pHeading">Wandtattoo</p>
+            <p class="pHeading">Wandtattoo<button class="infoButton" data-info="9">i</button></p>
             <div>
                 <span>Wandtattoo</span>
                 <span class="right">
@@ -207,7 +207,7 @@
             </div>
         </section>
         <section class="defCont">
-            <p class="pHeading">Textil</p>
+            <p class="pHeading">Textil <button class="infoButton" data-info="10">i</button></p>
             <div>
                 <span>Textil</span>
                 <span class="right">
@@ -346,6 +346,7 @@ $linker->setIterator("id", $data, "id");
 
 $t = new Table();
 $t->createByData($data, $column_names);
+$t->setType("module_sticker_sticker_data");
 $t->addLink($linker);
 ?>
 <div class="defCont">

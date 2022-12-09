@@ -94,6 +94,7 @@ function startFunc() {
 
 function listener_logout() {
 	var logout = document.getElementById("logoutBtn");
+	if (logout == null) return null;
 	logout.addEventListener("click", function() {
 		var cookies = checkCookies();
 		var loginkey = "false";
@@ -109,6 +110,7 @@ function listener_logout() {
 
 function listener_bellAndSearch() {
 	var bellAndSearch = document.getElementsByClassName("settingsContainer")[0];
+	if (bellAndSearch == null) return null;
 	bellAndSearch.addEventListener("click", function(event) {
 		if (event.target.id == "settings") {
 			/* link is hardcoded, maybe change later */

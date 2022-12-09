@@ -12,6 +12,7 @@ function initStickerOverview() {
     initSVG();
     initBindings();
     addTagEventListeners();
+    checkIfOverview();
 
     var pk_dropdown = document.getElementById("preiskategorie_dropdown");
     if (pk_dropdown != null) {
@@ -43,6 +44,25 @@ function initStickerOverview() {
             contextMenu.classList.remove("visible");
             }
         });
+    }
+}
+
+/**
+ * makes the table for the sticker-overview page sticky
+ */
+function checkIfOverview() {
+    let overviewTable = document.querySelector('[data-type="module_sticker_sticker_data"]');
+    if (overviewTable != null) {
+        let trElem = document.getElementsByClassName("tableHead");
+        let top = document.querySelector("header");
+        top = top.getBoundingClientRect();
+        top = top.height;
+        top = Math.ceil(top);
+        for (let i = 0; i < trElem.length; i++) {
+            let tr = trElem[i];
+            tr.style.position = "sticky";
+            tr.style.top = top + "px";
+        }
     }
 }
 
@@ -510,7 +530,6 @@ function initSVG() {
         a.addEventListener("load", loadSVGEvent, false);
 
         if (a.contentDocument != null) {
-            a.removeEventListener("load", loadSVGEvent);
             var svgDoc = a.contentDocument;
             svg_elem = svgDoc.getElementById("svg_elem");
             adjustSVG();
@@ -518,6 +537,7 @@ function initSVG() {
     }
 }
 
+/* sets the svg_elem element when the content is loaded */
 function loadSVGEvent() {
     var a = document.getElementById("svgContainer");
     var svgDoc = a.contentDocument;
@@ -525,6 +545,9 @@ function loadSVGEvent() {
     adjustSVG();
 }
 
+/**
+ * adjust the svg into the svg container, so that the element is not too small
+ */
 function adjustSVG() {
     if (svg_elem != null) {
         let children = svg_elem.children;

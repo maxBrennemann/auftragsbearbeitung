@@ -971,7 +971,8 @@ class Ajax {
 						$files = UpgradeManager::checkNewSQL();
 						$result = [];
 						foreach ($files as $file) {
-							array_push($result, UpgradeManager::executeSecondCommand($file));
+							array_push($result, UpgradeManager::executeNewSQLQueries($file));
+							//array_push($result, UpgradeManager::executeSecondCommand($file));
 						}
 						echo json_encode($result);
 					break;
