@@ -509,3 +509,18 @@ input:checked + .slider:before {
     padding-top: 3px;
     border: none;
 }
+
+.showBox {
+    border-radius: 0;
+    border: none;
+    width: 60px;
+    height: 20px;
+}
+
+#yellow {
+    background: rgb(255, 203, 119);
+}
+
+.inShop, #green {
+    background: rgb(111, 207, 65);
+}

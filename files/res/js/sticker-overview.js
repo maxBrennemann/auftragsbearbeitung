@@ -13,6 +13,7 @@ function initStickerOverview() {
     initBindings();
     addTagEventListeners();
     checkIfOverview();
+    showStickerStatus();
 
     var pk_dropdown = document.getElementById("preiskategorie_dropdown");
     if (pk_dropdown != null) {
@@ -160,6 +161,20 @@ function aufkleberPlottClick(e) {
         disableInputSlide(mainVariables.multi);
 
         document.getElementById("transferAufkleber").disabled = true;
+    }
+}
+
+async function changeDate(e) {
+    var data = {
+        date: e.target.value,
+        id: mainVariables.motivId.innerHTML,
+    }
+    var response = await send(data, "changeMotivDate");
+    if (response == "success") {
+        infoSaveSuccessfull("success");
+    } else {
+        console.log(response);
+        infoSaveSuccessfull();
     }
 }
 
@@ -847,4 +862,33 @@ function copyToClipboard(inputname) {
     input.select();
     input.setSelectionRange(0, 99999);
     navigator.clipboard.writeText(input.value); 
+}
+
+async function showStickerStatus() {
+    let overviewTable = document.querySelector('[data-type="module_sticker_sticker_data"]');
+    if (overviewTable == null) return;
+
+    var data = await send({}, "getStickerStatus");
+    data = JSON.parse(data);
+    var rows = overviewTable.children[0].children;
+
+    for (i in data) {
+        let el = data[i];
+        var isA = el.in_shop_aufkleber;
+        var isW = el.in_shop_wandtattoo;
+        var isT = el.in_shop_textil;
+        
+        let numb = parseInt(i);
+        var currRow = rows[numb + 1];
+        if (currRow != null) {
+            if (isA == 1)
+                currRow.children[3].classList.add("inShop");
+
+            if (isW == 1)
+                currRow.children[7].classList.add("inShop");
+
+            if (isT == 1)
+                currRow.children[8].classList.add("inShop");
+        }
+    }
 }

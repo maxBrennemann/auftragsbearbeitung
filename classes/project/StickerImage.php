@@ -72,6 +72,16 @@ class StickerImage {
             $this->displayError($matches["allLinks"]);
         }
 
+        if ($this->getShopProducts("aufkleber", "id") != "#") {
+            DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET in_shop_aufkleber = 1 WHERE id = $this->id");
+        }
+        if ($this->getShopProducts("wandtattoo", "is") != "#") {
+            DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET in_shop_wandtattoo = 1 WHERE id = $this->id");
+        }
+        if ($this->getShopProducts("textil", "id") != "#") {
+            DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET in_shop_textil = 1 WHERE id = $this->id");
+        }
+
         $this->getConnectedFiles();
 
         $this->descriptions = [

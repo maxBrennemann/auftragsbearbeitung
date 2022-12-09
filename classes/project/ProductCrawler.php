@@ -116,13 +116,13 @@ class ProductCrawler extends PrestaCommunicater {
     private function updateCategory($id, $category) {
         switch ($category) {
             case 25:
-                $query = "UPDATE `module_sticker_sticker_data` SET is_shirtcollection = 1 WHERE id = $id";
+                $query = "UPDATE `module_sticker_sticker_data` SET is_shirtcollection = 1, in_shop_textil = 1 WHERE id = $id";
                 break;
             case 62:
-                $query = "UPDATE `module_sticker_sticker_data` SET is_walldecal = 1 WHERE id = $id";
+                $query = "UPDATE `module_sticker_sticker_data` SET is_walldecal = 1, in_shop_wandtattoo = 1 WHERE id = $id";
                 break;
             case 13:
-                $query = "UPDATE `module_sticker_sticker_data` SET is_plotted = 1 WHERE id = $id";
+                $query = "UPDATE `module_sticker_sticker_data` SET is_plotted = 1, in_shop_aufkleber = 1 WHERE id = $id";
                 break;
             default:
                 $query = "";
