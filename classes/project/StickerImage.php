@@ -280,6 +280,7 @@ class StickerImage {
         $this->stickerDB->addSticker(25);
 
         $this->stickerDB->uploadSVG($this->getSVG());
+        $this->stickerDB->setCategory([25]);
     }
 
     private function generateAufkleber() {
@@ -332,6 +333,8 @@ class StickerImage {
         $this->stickerDB->addImages($this->getImagesByType("is_aufkleber"));
         $this->createCombinations();
         $this->stickerDB->addSticker();
+
+        $this->stickerDB->setCategory([2, 13]);
     }
 
     private function getDescriptions($target) {

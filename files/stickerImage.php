@@ -303,7 +303,14 @@
             </span>
         </div>
         <p>Speicherort:<button class="infoButton" data-info="5">i</button></p>
-        <input class="data-input" data-fun="speicherort" data-write="true" value="<?=$stickerImage->data["directory_name"]?>">
+        <div class="directoryContainer">
+            <input id="dirInput" class="data-input directoryName" data-fun="speicherort" data-write="true" value="<?=$stickerImage->data["directory_name"]?>">
+            <button class="directoryIcon" onclick="copyToClipboard('dirInput')">
+                <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M19,20H4C2.89,20 2,19.1 2,18V6C2,4.89 2.89,4 4,4H10L12,6H19A2,2 0 0,1 21,8H21L4,8V18L6.14,10H23.21L20.93,18.5C20.7,19.37 19.92,20 19,20Z" />
+                </svg>
+            </button>
+        </div>
         <p>Zusätzliche Infos und Notizen:<button class="infoButton" data-info="6">i</button></p>
         <textarea class="data-input" data-fun="additionalInfo" data-write="true"><?=$stickerImage->data["additional_info"]?></textarea>
         <div class="lds-ring productLoader" id="productLoader5"><div></div><div></div><div></div><div></div></div>

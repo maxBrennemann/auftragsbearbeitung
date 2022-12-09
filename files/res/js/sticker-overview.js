@@ -665,7 +665,7 @@ async function write_speicherort(e) {
     var content = e.target.value;
     var data = {
         id: mainVariables.motivId.innerHTML,
-        content: content
+        content: encodeURIComponent(content)
     };
     var response = await send(data, "writeSpeicherort");
     if (response == "success") {
@@ -812,7 +812,6 @@ function crawlAll(e) {
             let json = this.responseText.substring(responseLength);
             responseLength = this.responseText.length;
             console.log(json);
-            /*
             json = json.replace(/ /g,'');
             json = JSON.parse(json);
             if (json.products) {
@@ -826,7 +825,7 @@ function crawlAll(e) {
                 } else {
                     document.getElementById("statusProgress").innerHTML = "neu angelegt oder geupdatet";
                 }
-            }*/
+            }
         }
     }
     ajaxCall.open("POST", "", true);
@@ -841,4 +840,11 @@ function changeColor(e) {
     if (svg_elem != null) {
         svg_elem.setAttribute("fill", color);
     }
+}
+
+function copyToClipboard(inputname) {
+    var input = document.getElementById(inputname);
+    input.select();
+    input.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(input.value); 
 }
