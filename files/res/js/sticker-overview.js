@@ -339,10 +339,23 @@ async function deleteImage(imageId) {
         imageId: imageId,
     };
     var response = await send(data, "deleteImage");
-    infoSaveSuccessfull(response); 
+    infoSaveSuccessfull(response);
+
+    if (response == "successful") {
+        deleteImageUpdateDOMTree();
+    }
 }
 
-
+/* this function is called, when the image deletion process was successful */
+function deleteImageUpdateDOMTree() {
+    var element = document.querySelector(`[data-image-id="${imageId}"]`);
+    if (element.nodeName == "A") {
+        let parent = element.parentNode;
+        parent.remove(element);
+    } else {
+        /* TODO: image removal fertig implementieren */
+    }
+}
 
 /**
  * changes all data for main image
@@ -358,6 +371,9 @@ function changeImage(e) {
     document.getElementById("textilbild").checked = e.target.dataset.isTextil == 0 ? false : true;
 }
 
+/*
+ * TODO: image parameters als init methode mit json object
+ */
 async function changeImageParameters(e) {
     var main = document.querySelector(".imageBig");
     var is_aufkleber = document.getElementById("aufkleberbild").checked == true ? 1 : 0;
@@ -377,6 +393,66 @@ async function changeImageParameters(e) {
         console.log(response);
         infoSaveSuccessfull();
     }
+}
+
+class ImageManager {
+    constructor() {
+        /* ordered lists */
+        this.imagesA;
+        this.imagesW;
+        this.imagesT;
+
+        /* all images */
+        this.images = [];
+        this.mainImage;
+
+        this.mainImageHTML;
+    }
+
+    changeImage(changeTo) {
+        this.mainImage = changeTo;
+
+        /* set image data */
+        this.mainImageHTML.src = this.mainImage.src;
+        this.mainImageHTML.title = this.mainImage.title;
+        this.mainImageHTML.alt = this.mainImage.alt;
+        this.mainImageHTML.dataset.imageId = this.mainImageid;
+    }
+}
+
+class Image {
+    constructor(image) {
+        this.id = parseInt(image.dataset.imageId);
+        this.isA = parseInt(image.dataset.isAufkleber);
+        this.isW = parseInt(image.dataset.isWandtattoo);
+        this.isT = parseInt(image.dataset.isTextil);
+        this.node = image;
+        this.src = image.src;
+        this.title = image.title;
+        this.alt = image.alt;
+    }
+
+    clickImage() {
+        mainVariables.imageManager.changeImage(this);
+    }
+}
+
+function readImageParameters() {
+    let images = document.getElementsByClassName("imagePrev");
+    mainVariables.imageManger = new ImageManager();
+    if (images != null) {
+        mainVariables.images = {};
+
+        /* https://stackoverflow.com/questions/3871547/iterating-over-result-of-getelementsbyclassname-using-array-foreach */
+        Array.prototype.forEach.call(images, function(image) {
+            let id = parseInt(image.dataset.imageId);
+            let imageObj = new Image(image);
+            image.addEventListener("click", imageObj.clickImage, false);
+            mainVariables.images[id] = imageObj;
+        });
+    }
+
+    console.log(mainVariables.images);
 }
 
 /** calculates material prices */

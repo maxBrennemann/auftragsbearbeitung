@@ -67,11 +67,11 @@
         <div>
             <?=$getDownloadResources?>
             <div id="delete-menu">
-                <div class="item">
+                <div class="item" onclick="deleteImage(-1)">
                     <svg style="width:24px;height:24px" viewBox="0 0 24 24">
                     <path fill="currentColor" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
                     </svg>
-                    <span onclick="deleteImage(-1)">Löschen</span>
+                    <span>Löschen</span>
                 </div>
             </div>
         </div>
@@ -138,23 +138,19 @@
                 <textarea class="data-input" data-fun="productDescription" data-target="1" data-type= "long" data-write="true"><?=$stickerImage->descriptions[1]["long"]?></textarea>
             </div>
             <div class="shopStatus">
-                <div class="shopStatusIcon">
-                    <a target="_blank" href="<?=$stickerImage->getShopProducts("aufkleber", "link")?>">
-                    <?php if ($stickerImage->isInShop("aufkleber")):?>
-                    <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                        <path fill="currentColor" d="M20 6H4V4H20V6M15.69 14H14V15.69C13.37 16.64 13 17.77 13 19C13 19.34 13.04 19.67 13.09 20H4V14H3V12L4 7H20L21 12V13.35C20.37 13.13 19.7 13 19 13C17.77 13 16.64 13.37 15.69 14M12 14H6V18H12V14M21.34 15.84L17.75 19.43L16.16 17.84L15 19L17.75 22L22.5 17.25L21.34 15.84Z">
-                            <title>Aufkleber ist im Shop</title>
-                        </path>
-                    </svg>
-                    <?php else: ?>
-                    <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                        <path fill="currentColor" d="M4 4H20V6H4V4M15.46 16.88L16.88 15.46L19 17.59L21.12 15.47L22.54 16.88L20.41 19L22.54 21.12L21.12 22.54L19 20.41L16.88 22.54L15.46 21.12L17.59 19L15.47 16.88M4 7H20L21 12V13.34C20.33 13.09 19.62 12.96 18.91 12.96C17.71 12.96 16.54 13.33 15.54 14H14V15.53C13.3 16.53 12.92 17.73 12.92 18.95L13 20H4V14H3V12L4 7M6 14V18H12V14H6Z">
-                            <title>Aufkleber ist nicht im Shop</title>
-                        </path>
-                    </svg>
-                    <?php endif; ?>
-                    </a>
-                </div> 
+                <div class="shopStatusIcon" title="<?=$stickerImage->isInShop("aufkleber") == 1 ? "Aufkleber ist im Shop" : "Aufkleber ist nicht im Shop" ?>">
+                <?php if ($stickerImage->isInShop("aufkleber")):?>
+                <a title="Aufkleber ist im Shop" target="_blank" href="<?=$stickerImage->getShopProducts("aufkleber", "link")?>">
+                <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M20 6H4V4H20V6M15.69 14H14V15.69C13.37 16.64 13 17.77 13 19C13 19.34 13.04 19.67 13.09 20H4V14H3V12L4 7H20L21 12V13.35C20.37 13.13 19.7 13 19 13C17.77 13 16.64 13.37 15.69 14M12 14H6V18H12V14M21.34 15.84L17.75 19.43L16.16 17.84L15 19L17.75 22L22.5 17.25L21.34 15.84Z" />
+                </svg>
+                </a>
+                <?php else: ?>
+                <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M4 4H20V6H4V4M15.46 16.88L16.88 15.46L19 17.59L21.12 15.47L22.54 16.88L20.41 19L22.54 21.12L21.12 22.54L19 20.41L16.88 22.54L15.46 21.12L17.59 19L15.47 16.88M4 7H20L21 12V13.34C20.33 13.09 19.62 12.96 18.91 12.96C17.71 12.96 16.54 13.33 15.54 14H14V15.53C13.3 16.53 12.92 17.73 12.92 18.95L13 20H4V14H3V12L4 7M6 14V18H12V14H6Z" />
+                </svg>
+                <?php endif; ?>
+                </div>
                 <button class="transferBtn" id="transferAufkleber" data-binding="true" <?=$stickerImage->data["is_plotted"] == 1 ? "" : "disabled"?>>Aufkleber übertragen</button>
                         <!-- wenn sich infos ändern oder im shop was anderes steht, dann updaten anzeigen -->
                 <!-- updaten: <svg style="width:24px;height:24px" viewBox="0 0 24 24">
@@ -183,23 +179,19 @@
                 <textarea class="data-input" data-fun="productDescription" data-target="2" data-type="long" data-write="true"><?=$stickerImage->descriptions[2]["long"]?></textarea>
             </div>
             <div class="shopStatus">
-                <div class="shopStatusIcon">
-                <a target="_blank" href="<?=$stickerImage->getShopProducts("wandtattoo", "link")?>">
-                    <?php if ($stickerImage->isInShop("wandtattoo")):?>
-                    <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                        <path fill="currentColor" d="M20 6H4V4H20V6M15.69 14H14V15.69C13.37 16.64 13 17.77 13 19C13 19.34 13.04 19.67 13.09 20H4V14H3V12L4 7H20L21 12V13.35C20.37 13.13 19.7 13 19 13C17.77 13 16.64 13.37 15.69 14M12 14H6V18H12V14M21.34 15.84L17.75 19.43L16.16 17.84L15 19L17.75 22L22.5 17.25L21.34 15.84Z">
-                            <title>Wandtattoo ist im Shop</title>
-                        </path>
-                    </svg>
-                    <?php else: ?>
-                    <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                        <path fill="currentColor" d="M4 4H20V6H4V4M15.46 16.88L16.88 15.46L19 17.59L21.12 15.47L22.54 16.88L20.41 19L22.54 21.12L21.12 22.54L19 20.41L16.88 22.54L15.46 21.12L17.59 19L15.47 16.88M4 7H20L21 12V13.34C20.33 13.09 19.62 12.96 18.91 12.96C17.71 12.96 16.54 13.33 15.54 14H14V15.53C13.3 16.53 12.92 17.73 12.92 18.95L13 20H4V14H3V12L4 7M6 14V18H12V14H6Z">
-                            <title>Wandtattoo ist nicht im Shop</title>
-                        </path>
-                    </svg>
-                    <?php endif; ?>
-                    </a>
-                </div> 
+                <div class="shopStatusIcon" title="<?=$stickerImage->isInShop("wandtattoo") == 1 ? "Wandtattoo ist im Shop" : "Wandtattoo ist nicht im Shop" ?>">
+                <?php if ($stickerImage->isInShop("wandtattoo")):?>
+                <a title="Wandtattoo ist im Shop" target="_blank" href="<?=$stickerImage->getShopProducts("wandtattoo", "link")?>">
+                <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M20 6H4V4H20V6M15.69 14H14V15.69C13.37 16.64 13 17.77 13 19C13 19.34 13.04 19.67 13.09 20H4V14H3V12L4 7H20L21 12V13.35C20.37 13.13 19.7 13 19 13C17.77 13 16.64 13.37 15.69 14M12 14H6V18H12V14M21.34 15.84L17.75 19.43L16.16 17.84L15 19L17.75 22L22.5 17.25L21.34 15.84Z" />
+                </svg>
+                </a>
+                <?php else: ?>
+                <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M4 4H20V6H4V4M15.46 16.88L16.88 15.46L19 17.59L21.12 15.47L22.54 16.88L20.41 19L22.54 21.12L21.12 22.54L19 20.41L16.88 22.54L15.46 21.12L17.59 19L15.47 16.88M4 7H20L21 12V13.34C20.33 13.09 19.62 12.96 18.91 12.96C17.71 12.96 16.54 13.33 15.54 14H14V15.53C13.3 16.53 12.92 17.73 12.92 18.95L13 20H4V14H3V12L4 7M6 14V18H12V14H6Z" />
+                </svg>
+                <?php endif; ?>
+                </div>
                 <button class="transferBtn" id="transferWandtattoo" data-binding="true">Wandtattoo übertragen</button>
             </div>
             <div class="loaderOrSymbol">
@@ -255,23 +247,19 @@
                 <textarea class="data-input" data-fun="productDescription" data-target="3" data-type="long" data-write="true"><?=$stickerImage->descriptions[3]["long"]?></textarea>
             </div>
             <div class="shopStatus">
-                <div class="shopStatusIcon">
-                <a target="_blank" href="<?=$stickerImage->getShopProducts("textil", "link")?>">
-                    <?php if ($stickerImage->isInShop("textil")):?>
-                    <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                        <path fill="currentColor" d="M20 6H4V4H20V6M15.69 14H14V15.69C13.37 16.64 13 17.77 13 19C13 19.34 13.04 19.67 13.09 20H4V14H3V12L4 7H20L21 12V13.35C20.37 13.13 19.7 13 19 13C17.77 13 16.64 13.37 15.69 14M12 14H6V18H12V14M21.34 15.84L17.75 19.43L16.16 17.84L15 19L17.75 22L22.5 17.25L21.34 15.84Z">
-                            <title>Textil ist im Shop</title>
-                        </path>
-                    </svg>
-                    <?php else: ?>
-                    <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                        <path fill="currentColor" d="M4 4H20V6H4V4M15.46 16.88L16.88 15.46L19 17.59L21.12 15.47L22.54 16.88L20.41 19L22.54 21.12L21.12 22.54L19 20.41L16.88 22.54L15.46 21.12L17.59 19L15.47 16.88M4 7H20L21 12V13.34C20.33 13.09 19.62 12.96 18.91 12.96C17.71 12.96 16.54 13.33 15.54 14H14V15.53C13.3 16.53 12.92 17.73 12.92 18.95L13 20H4V14H3V12L4 7M6 14V18H12V14H6Z">
-                            <title>Textil ist nicht im Shop</title>
-                        </path>
-                    </svg>
-                    <?php endif; ?>
-                    </a>
-                </div> 
+                <div class="shopStatusIcon" title="<?=$stickerImage->isInShop("textil") == 1 ? "Textil ist im Shop" : "Textil ist nicht im Shop" ?>">
+                <?php if ($stickerImage->isInShop("textil")):?>
+                <a title="Textil ist im Shop" target="_blank" href="<?=$stickerImage->getShopProducts("textil", "link")?>">
+                <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M20 6H4V4H20V6M15.69 14H14V15.69C13.37 16.64 13 17.77 13 19C13 19.34 13.04 19.67 13.09 20H4V14H3V12L4 7H20L21 12V13.35C20.37 13.13 19.7 13 19 13C17.77 13 16.64 13.37 15.69 14M12 14H6V18H12V14M21.34 15.84L17.75 19.43L16.16 17.84L15 19L17.75 22L22.5 17.25L21.34 15.84Z" />
+                </svg>
+                </a>
+                <?php else: ?>
+                <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M4 4H20V6H4V4M15.46 16.88L16.88 15.46L19 17.59L21.12 15.47L22.54 16.88L20.41 19L22.54 21.12L21.12 22.54L19 20.41L16.88 22.54L15.46 21.12L17.59 19L15.47 16.88M4 7H20L21 12V13.34C20.33 13.09 19.62 12.96 18.91 12.96C17.71 12.96 16.54 13.33 15.54 14H14V15.53C13.3 16.53 12.92 17.73 12.92 18.95L13 20H4V14H3V12L4 7M6 14V18H12V14H6Z" />
+                </svg>
+                <?php endif; ?>
+                </div>
                 <button class="transferBtn" id="transferTextil" data-binding="true">Textil übertragen</button>
             </div>
             <div class="loaderOrSymbol">

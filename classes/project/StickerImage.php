@@ -599,8 +599,9 @@ class StickerImage {
         foreach ($this->files as $f) {
             $link = Link::getResourcesShortLink($f["dateiname"], "upload");
             $filename = $f["dateiname"];
+            $originalname = $f["alt"] ?: "ohne Name";
             $id = $f["id"];
-            $download .= "<a data-image-id=\"$id\" download=\"$filename\" data-deletable=\"true\" href=\"$link\" title=\"$filename\">" . strtoupper($f["typ"]) . "</a> ";
+            $download .= "<a data-image-id=\"$id\" download=\"$filename\" data-deletable=\"true\" href=\"$link\" title=\"Zum Herunterladen von '$originalname' klicken\">(" . $originalname . ") " . strtoupper($f["typ"]) . "</a> ";
         }
         return $download . "</p>";
     }
