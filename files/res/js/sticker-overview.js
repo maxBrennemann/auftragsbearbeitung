@@ -892,3 +892,16 @@ async function showStickerStatus() {
         }
     }
 }
+
+async function createNewSticker() {
+    var title = document.getElementById("newTitle").value;
+    if (title.length != 0) {
+        let redirectLink = await send({newTitle: title}, "createNewSticker");
+
+        if (redirectLink == "-1") {
+            alert("an error occured");
+        } else {
+            window.location.href = redirectLink;
+        }
+    }
+}

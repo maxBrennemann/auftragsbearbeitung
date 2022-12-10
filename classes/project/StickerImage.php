@@ -719,27 +719,35 @@ class StickerImage {
     public function makeColorable() {
         $filename = $this->getSVG();
 
+        echo $filename;
         if ($filename == "") {
             return "";
         }
 
         $newFile = substr($filename, 0, -4);
         $newFile .= "_colorable.svg";
+        echo $newFile;
 
         if (!file_exists($newFile)) {
             $file = file_get_contents($filename);
+
+            /* remove all fills */
             $file = preg_replace('/fill:#([0-9a-f]{6}|[0-9a-f]{3})/i', "", $file);
+
+            /* remove all strokes */
+            $file = preg_replace('/stroke:#([0-9a-f]{6}|[0-9a-f]{3})/i', "", $file);
+
             if (!str_contains($file, "<svg id=\"svg_elem\"")) {
                 $file = str_replace("<svg", "<svg id=\"svg_elem\"", $file);
             }
 
             file_put_contents($newFile, $file);
 
-            $newFile = substr($newFile, 0, strlen("upload/"));
+            $newFile = substr($newFile, strlen("upload/"));
 
             /* add file to db */
             $today = date("Y-m-d");
-            $query = "INSERT INTO dateien (dateiname, originalname, `date`, `typ`) VALUES ('$newFile', '$newFile', $today, 'svg')";
+            $query = "INSERT INTO dateien (dateiname, originalname, `date`, `typ`) VALUES ('$newFile', '$newFile', '$today', 'svg')";
             $fileId = DBAccess::insertQuery($query);
             $query = "INSERT INTO dateien_motive (id_datei, id_motive) VALUES ($fileId, $this->id)";
             DBAccess::insertQuery($query);

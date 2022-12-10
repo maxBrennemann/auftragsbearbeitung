@@ -375,7 +375,10 @@ $t->addLink($linker);
         <p><button class="showBox" id="green"></button> Diese Motivvariante ist im Shop und aktuell</p>
     </div>
 </div>
-<?php
-echo $t->getTable();
-
-endif; ?>
+<?php echo $t->getTable(); ?>
+<div class="defCont">
+    <p class="pHeading">Neues Motiv hinzufügen</p>
+    <input type="text" id="newTitle">
+    <button type="submit" onclick="createNewSticker()">Neues Motiv erstellen</button>
+</div>
+<?php endif; ?>
