@@ -1088,7 +1088,8 @@ class Ajax {
 
 				$status = DBAccess::selectQuery("SELECT is_colorable FROM module_sticker_sticker_data WHERE id = $id LIMIT 1");
 				if ($status != null) {
-					$status = (int) $status[0]["colorable"];
+					$status = (int) $status[0]["is_colorable"];
+					echo $status;
 					$stickerImage = new StickerImage($id);
 
 					/* TODO: es muss noch gespeichert oder erkannt werden, welches normale svg mit einem colorable svg zusammengehört, aktuell wird nur das letzte svg der liste zurückgegeben */
@@ -1099,6 +1100,16 @@ class Ajax {
 					}
 				} else {
 					echo "an error occured";
+				}
+			break;
+			case "createNewSticker":
+				$title = (String) $_POST["newTitle"];
+				$id = DBAccess::insertQuery("INSERT INTO module_sticker_sticker_data (`name`) VALUES (:title)", ["title" => $title]);
+				if ($id == 0 || !is_numeric($id)) {
+					echo -1;
+				} else {
+					$link = Link::getPageLink("sticker-overview") . "?id=" . $id;
+					echo $link;
 				}
 			break;
 			case "setAufkleberParameter":
