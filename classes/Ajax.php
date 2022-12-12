@@ -1112,6 +1112,13 @@ class Ajax {
 					echo $link;
 				}
 			break;
+			case "setPriceclass":
+				$priceclass = (int) $_POST["priceclass"];
+				$id = (int) $_POST["id"];
+
+				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET price_class = $priceclass WHERE id = $id");
+				echo "ok";
+			break;
 			case "setAufkleberParameter":
 				require_once('classes/project/StickerImage.php');
 				$id = (int) $_POST["id"];

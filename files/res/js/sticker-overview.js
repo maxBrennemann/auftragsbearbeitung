@@ -398,15 +398,24 @@ async function changeImageParameters(e) {
 class ImageManager {
     constructor() {
         /* ordered lists */
-        this.imagesA;
-        this.imagesW;
-        this.imagesT;
+        this.imagesA = [];
+        this.imagesW = [];
+        this.imagesT = [];
 
         /* all images */
         this.images = [];
         this.mainImage;
 
         this.mainImageHTML;
+    }
+
+    /* TODO: image order */
+    orderImages() {
+        for (let i = 0; i < this.images.length; i++) {
+            if (images) {
+
+            }
+        }
     }
 
     changeImage(changeTo) {
@@ -417,6 +426,14 @@ class ImageManager {
         this.mainImageHTML.title = this.mainImage.title;
         this.mainImageHTML.alt = this.mainImage.alt;
         this.mainImageHTML.dataset.imageId = this.mainImageid;
+    }
+
+    swap(image, position, type) {
+
+    }
+
+    delte() {
+
     }
 }
 
@@ -541,22 +558,52 @@ class SizeRow {
 
 var sizes = [];
 
+/**
+ * changes the price class, adds 1€ in price
+ * @param {*} e 
+ */
+async function changePriceclass(e) {
+    var newPrice = "";
+    if (e.target.id == "price1") {
+        newPrice = 0;
+    } else if (e.target.id == "price2") {
+        newPrice = 1;
+    }
+
+    if (newPrice != "") {
+        var response = await send({priceclass: newPrice, id: mainVariables.motivId.innerHTML}, "setPriceclass");
+        if (response == "ok") {
+            infoSaveSuccessfull("success");
+        } else {
+            infoSaveSuccessfull();
+        }
+    }
+}
+
 function readSizeTable() {
     var table = document.querySelector("[data-type='module_sticker_sizes']").children[0].children;
 
     for (let i = 1; i < table.length; i++) {
-        var input = document.createElement("input");
-        input.classList.add("inputHeight");
-        input.dataset.id = i - 1;
-        input.value = table[i].children[2].innerHTML;
-        table[i].children[2].innerHTML = "";
-        table[i].children[2].appendChild(input);
+        var inputSize = createInput(table[i].children[2], i - 1);
+        inputSize.addEventListener("input", changeHeight, false);
 
         let sr = new SizeRow(table[i]);
         sizes.push(sr);
 
-        input.addEventListener("input", changeHeight, false);
+        var inputPrice = createInput(table[i].children[3], i - 1);
+        inputPrice.addEventListener("input", changePrice, false);
     }
+}
+
+function createInput(tableField, id) {
+    var input = document.createElement("input");
+    input.classList.add("inputHeight");
+    input.dataset.id = id;
+    input.value = tableField.innerHTML;
+    tableField.innerHTML = "";
+    tableField.appendChild(input);
+
+    return input;
 }
 
 /**
@@ -595,6 +642,12 @@ function changeHeight(e) {
 
     document.getElementById("previewSizeText").innerHTML = text;
     sendRows(data, text);
+}
+
+function changePrice(e) {
+    var targetId = parseInt(e.target.dataset.id);
+    var size = sizes[targetId];
+    size.price = size.getPriceInCent(e.target.value);
 }
 
 /**
