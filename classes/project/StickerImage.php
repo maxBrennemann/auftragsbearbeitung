@@ -454,6 +454,7 @@ class StickerImage {
 
         $query = "UPDATE module_sticker_sizes SET height = $height WHERE id_sticker = $this->id AND width = $width";
 
+        echo "preis: " . $currentPrice . " " . $data["price"] . " ";
         if ($currentPrice != $data["price"]) {
             $price = $data["price"];
             $query = "UPDATE module_sticker_sizes SET height = $height, price = $price WHERE id_sticker = $this->id AND width = $width";

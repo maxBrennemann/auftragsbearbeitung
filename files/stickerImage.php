@@ -269,6 +269,17 @@
     </div>
     <div class="defCont align-center">
         <div id="sizeTableWrapper"><?=$stickerImage->getSizeTable()?></div>
+        <div>
+            <p>Aufkleberpreisklasse</p>
+            <div>
+                <label for="price1">Preisklasse 1 (günstiger)</label>
+                <input id="price1" type="radio" name="priceClass" <?=$stickerImage->data["price_class"] == 0 ? "checked" : ""?> onclick="changePriceclass(event)">
+            </div>
+            <div>
+                <label for="price2">Preisklasse 2 (teurer)</label>
+                <input id="price2" type="radio" name="priceClass" <?=$stickerImage->data["price_class"] == 1 ? "checked" : ""?> onclick="changePriceclass(event)">
+            </div>
+        </div>
         <div id="previewSizeText"><?=$stickerImage->data["size_summary"]?></div>
     </div>
     <div class="defCont">
