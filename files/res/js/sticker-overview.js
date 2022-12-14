@@ -570,7 +570,7 @@ async function changePriceclass(e) {
         newPrice = 1;
     }
 
-    if (newPrice != "") {
+    if (newPrice !== "") {
         var response = await send({priceclass: newPrice, id: mainVariables.motivId.innerHTML}, "setPriceclass");
         if (response == "ok") {
             infoSaveSuccessfull("success");
@@ -1033,4 +1033,8 @@ async function createNewSticker() {
             window.location.href = redirectLink;
         }
     }
+}
+
+async function performAction(key, event) {
+    
 }

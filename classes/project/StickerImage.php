@@ -198,7 +198,7 @@ class StickerImage {
 
         $query = "SELECT id, width, height, price FROM module_sticker_sizes WHERE id_sticker = {$this->id} ORDER BY width";
         $data = DBAccess::selectQuery($query);
-        $difficulty = 0;
+        $difficulty = (int) $this->data["price_class"];
         $data = $this->calculatePrices($data, $difficulty, false);
 
         $prices = [];
@@ -293,10 +293,14 @@ class StickerImage {
         $this->stickerDB->setCategory([25]);
     }
 
+    /**
+     * this function generates a new sticker in the shop 
+     */
     private function generateAufkleber() {
         $descriptions = $this->getDescriptions(1);
         $description = $this->texts["info"];
 
+        /* figering out which description is right */
         if ($this->data["is_short_time"] == "1" && $this->data["is_long_time"] == "1") {
             $description .= $this->texts["kurzundlang"];
         } else if ($this->data["is_short_time"] == "1") {
@@ -314,14 +318,15 @@ class StickerImage {
 
         $query = "SELECT id, width, height, price FROM module_sticker_sizes WHERE id_sticker = {$this->id} ORDER BY width";
         $data = DBAccess::selectQuery($query);
-        $difficulty = 0;
+        $difficulty = (int) $this->data["price_class"];;
         $data = $this->calculatePrices($data, $difficulty, false);
+        /* TODO: correct price calculation or correct format, currently just for rounding */
         if (isset($data[0])) {
-            $basePrice = $data[0]["price"] / 1.19;
+            $basePrice = $data[0]["price"];
         } else {
             $basePrice = 0;
         }
-        $basePrice = number_format($basePrice, 2);
+        $basePrice = number_format($basePrice, 4);
 
         $this->stickerDB = new StickerShopDBController($this->id, "Aufkleber " . $this->name, $description, $descriptionShort, $basePrice);
         $this->stickerDB->addTags(["Aufkleber", "Sticker", "Motiv"]);
@@ -334,13 +339,13 @@ class StickerImage {
         $prices = [];
         $sizes = $this->getSizeIds();
         for ($i = 0; $i < sizeof($data); $i++) {
-            $price = $data[$i]["price"] / 1.19;
-            $price = (float) $basePrice - $price;
-            $prices[$sizes["ids"][$i]] = number_format($price, 2);
+            $price = $data[$i]["price"];
+            $price = (float) $price - $basePrice;
+            $prices[$sizes["ids"][$i]] = number_format($price, 4);
         }
 
         $this->stickerDB->prices = $prices;
-        $this->stickerDB->addImages($this->getImagesByType("is_aufkleber"));
+        //$this->stickerDB->addImages($this->getImagesByType("is_aufkleber"));
         $this->createCombinations();
         $this->stickerDB->addSticker();
 
@@ -450,9 +455,10 @@ class StickerImage {
         $width = (int) $data["width"];
         $height = (int) $data["height"];
         
-        $currentPrice = $this->getPrice($width, $height, 1);
+        $difficulty = (int) $this->data["price_class"];
+        $currentPrice = $this->getPrice($width, $height, $difficulty);
 
-        $query = "UPDATE module_sticker_sizes SET height = $height WHERE id_sticker = $this->id AND width = $width";
+        $query = "UPDATE module_sticker_sizes SET height = $height, price = NULL WHERE id_sticker = $this->id AND width = $width";
 
         echo "preis: " . $currentPrice . " " . $data["price"] . " ";
         if ($currentPrice != $data["price"]) {
@@ -489,7 +495,8 @@ class StickerImage {
             $data = $this->loadDefault($query);
         }
 
-        $data = $this->calculatePrices($data, 0);
+        $difficulty = (int) $this->data["price_class"];
+        $data = $this->calculatePrices($data, $difficulty);
 
         foreach ($data as &$d) {
             $d["width"] = str_replace(".", ",", ((int) $d["width"]) / 10) . "cm";
@@ -497,12 +504,15 @@ class StickerImage {
             $d["costs"] = number_format($d["costs"], 2, ',', '') . "€";
         }
 
+        $resetIcon = "<svg style=\"width:20px;height:20px\" viewBox=\"0 0 24 24\"><path fill=\"currentColor\" d=\"M12.5,8C9.85,8 7.45,9 5.6,10.6L2,7V16H11L7.38,12.38C8.77,11.22 10.54,10.5 12.5,10.5C16.04,10.5 19.05,12.81 20.1,16L22.47,15.22C21.08,11.03 17.15,8 12.5,8Z\" /></svg>";
+
 		$t = new Table();
 		$t->createByData($data, $column_names);
 		$t->setType("module_sticker_sizes");
 		$t->addActionButton("delete", "id");
 		$t->addNewLineButton();
-			
+        $t->addAction(null, $resetIcon, "Preis zurücksetzen");
+
         $pattern = [
             "id_sticker" => [
                 "status" => "preset",
