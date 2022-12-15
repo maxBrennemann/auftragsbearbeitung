@@ -27,7 +27,7 @@
 	$listmaker =		Link::getPageLink("listmaker");
 	$changelog = 		Link::getPageLink("changelog");
 	$zeiterfassung =	Link::getPageLink("zeiterfassung");
-	$motive = 			Link::getPageLink("sticker");
+	$motive = 			Link::getPageLink("sticker-add");
 	$motiveOverview = 	Link::getPageLink("sticker-overview");
 ?>
 <!DOCTYPE html>

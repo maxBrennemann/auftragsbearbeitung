@@ -1119,6 +1119,22 @@ class Ajax {
 				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET price_class = $priceclass WHERE id = $id");
 				echo "ok";
 			break;
+			case "resetStickerPrice":
+				$tableRowKey = $_POST["row"];
+				$table = $_POST["table"];
+				$id = (int) $_POST["id"];
+
+				$postenNummer = Table::getIdentifierValue($table, $tableRowKey);
+				DBAccess::updateQuery("UPDATE module_sticker_sizes SET price = NULL WHERE id = $postenNummer");
+				$size = DBAccess::selectQuery("SELECT width, height FROM module_sticker_sizes WHERE id = $postenNummer LIMIT 1");
+
+				require_once('classes/project/StickerImage.php');
+				$stickerImage = new StickerImage($id);
+				$width = $size[0]["width"];
+				$height = $size[0]["height"];
+				$difficulty = $stickerImage->data["price_class"];
+				echo $stickerImage->getPrice($width, $height, $difficulty);
+			break;
 			case "setAufkleberParameter":
 				require_once('classes/project/StickerImage.php');
 				$id = (int) $_POST["id"];
