@@ -345,7 +345,7 @@ class StickerImage {
         }
 
         $this->stickerDB->prices = $prices;
-        //$this->stickerDB->addImages($this->getImagesByType("is_aufkleber"));
+        $this->stickerDB->addImages($this->getImagesByType("is_aufkleber"));
         $this->createCombinations();
         $this->stickerDB->addSticker();
 
