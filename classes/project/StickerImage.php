@@ -245,7 +245,7 @@ class StickerImage {
         return $priceTable;
     }
 
-    private function getPrice($width, $height, $difficulty) {
+    public function getPrice($width, $height, $difficulty) {
         if ($width >= 1200) {
             $base = 2100;
         } else if ($width >= 900) {
