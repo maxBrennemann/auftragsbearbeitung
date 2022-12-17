@@ -795,3 +795,17 @@ function checkCookies() {
 
 	return cookieObj;
 }
+
+/**
+ * template for adding new elements to DOM
+ * @param {*} elementType 
+ * @param {*} elemntId 
+ * @param {*} elementClass 
+ * @param  {...any} args 
+ */
+function createNewElement(elementType, elementId, elementClass, ...args) {
+	let element = document.createElement(elementType);
+	element.id = elementId;
+	element.classList.add(elementClass);
+	return element;
+}

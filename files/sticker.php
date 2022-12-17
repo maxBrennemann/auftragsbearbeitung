@@ -24,7 +24,7 @@
 ?>
     <div class="defCont cont1">
         <div>
-            <h2>Motiv <span id="name"><?=$stickerImage->getName();?></span><button class="actionButton" data-binding="true" id="editName">✎</button>
+            <h2>Motiv <input id="name" class="titleInput" value="<?=$stickerImage->getName();?>">
                 <?php if ($stickerImage->data["is_marked"] == "0"): ?>
                 <span><svg onclick="bookmark(event)" style="width:24px; height:24px; vertical-align:middle;" viewBox="0 0 24 24">
                     <path fill="currentColor" d="M12,15.39L8.24,17.66L9.23,13.38L5.91,10.5L10.29,10.13L12,6.09L13.71,10.13L18.09,10.5L14.77,13.38L15.76,17.66M22,9.24L14.81,8.63L12,2L9.19,8.63L2,9.24L7.45,13.97L5.82,21L12,17.27L18.18,21L16.54,13.97L22,9.24Z" />
@@ -94,7 +94,14 @@
     </div>
     <div class="cont2">
         <section class="defCont">
-            <p class="pHeading">Aufkleber <button class="infoButton" data-info="8">i</button></p>
+            <p class="pHeading">Aufkleber
+                <button class="addAltTitle" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="aufkleber">
+                    <svg style="width:10px;height:10px" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M15 16L11 20H21V16H15M12.06 7.19L3 16.25V20H6.75L15.81 10.94L12.06 7.19M18.71 8.04C19.1 7.65 19.1 7 18.71 6.63L16.37 4.29C16.17 4.09 15.92 4 15.66 4C15.41 4 15.15 4.1 14.96 4.29L13.13 6.12L16.88 9.87L18.71 8.04Z" />
+                    </svg>
+                </button>
+                <button class="infoButton" data-info="8">i</button>
+            </p>
             <div>
                 <span>Aufkleber Plott</span>
                 <span class="right">
@@ -162,7 +169,14 @@
             </div>
         </section>
         <section class="defCont">
-            <p class="pHeading">Wandtattoo<button class="infoButton" data-info="9">i</button></p>
+            <p class="pHeading">Wandtattoo
+                <button class="addAltTitle" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="aufkleber">
+                    <svg style="width:10px;height:10px" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M15 16L11 20H21V16H15M12.06 7.19L3 16.25V20H6.75L15.81 10.94L12.06 7.19M18.71 8.04C19.1 7.65 19.1 7 18.71 6.63L16.37 4.29C16.17 4.09 15.92 4 15.66 4C15.41 4 15.15 4.1 14.96 4.29L13.13 6.12L16.88 9.87L18.71 8.04Z" />
+                    </svg>
+                </button>
+                <button class="infoButton" data-info="9">i</button>
+            </p>
             <div>
                 <span>Wandtattoo</span>
                 <span class="right">
@@ -199,7 +213,14 @@
             </div>
         </section>
         <section class="defCont">
-            <p class="pHeading">Textil <button class="infoButton" data-info="10">i</button></p>
+            <p class="pHeading">Textil
+                <button class="addAltTitle" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="aufkleber">
+                    <svg style="width:10px;height:10px" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M15 16L11 20H21V16H15M12.06 7.19L3 16.25V20H6.75L15.81 10.94L12.06 7.19M18.71 8.04C19.1 7.65 19.1 7 18.71 6.63L16.37 4.29C16.17 4.09 15.92 4 15.66 4C15.41 4 15.15 4.1 14.96 4.29L13.13 6.12L16.88 9.87L18.71 8.04Z" />
+                    </svg>
+                </button>
+                <button class="infoButton" data-info="10">i</button>
+            </p>
             <div>
                 <span>Textil</span>
                 <span class="right">

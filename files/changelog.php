@@ -1,7 +1,13 @@
 <div class="changelog">
     <h3>1.1.17</h3>
     <ul>
-        <li>Produktexport für Prestashop wurde integriert</li>
+        <li>Produktexport für Prestashop wurde integriert
+            <ul>
+                <li>Aufkleber, Wandtattoos und Textilien können automatisch generiert werden</li>
+                <li>Es kann eine Liste der Produkte mit Motivnummer erstellt werden</li>
+            </ul>
+        </li>
+        <li>Upgrade Seite wurde hinzugefügt, um Datenbankupdates einfacher zu gestalten</li>
     </ul>
     <h3>1.1.16</h3>
     <ul>
