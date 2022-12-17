@@ -44,6 +44,11 @@ function initStickerOverview() {
             }
         });
     }
+
+    var input = document.getElementById('name');
+    input.addEventListener('input', resizeTitle);
+    input.addEventListener('change', sendTitle);
+    resizeTitle.call(input);
 }
 
 function initBindings() {
@@ -157,19 +162,13 @@ async function changeDate(e) {
     }
 }
 
-async function click_editName(e) {
-    e.target.innerHTML = e.target.innerHTML == "✔" ? "✎" : "✔";
-    if (e.target.innerHTML == "✔") {
-        document.getElementById("name").contentEditable = 'true';
-    } else {
-        document.getElementById("name").contentEditable = 'false';
-    }
-    document.getElementById("name").classList.toggle("contentEditable");
-
+async function sendTitle() {
+    title = this.value;
     var data = {
-        title: document.getElementById("name").innerHTML,
+        title: title,
         id: mainVariables.motivId.innerHTML,
-    }
+    };
+
     var response = await send(data, "setAufkleberTitle");
     if (response == "success") {
         infoSaveSuccessfull("success");
@@ -177,6 +176,10 @@ async function click_editName(e) {
         console.log(response);
         infoSaveSuccessfull();
     }
+}
+
+function resizeTitle() {
+  this.style.width = this.value.length + "ch";
 }
 
 async function click_textilClick() {
@@ -946,4 +949,13 @@ async function performAction(key, event) {
 
     priceField.value = newPrice;
     /* TODO: über sizes variable ändern */
+}
+
+/* must be redone; TODO: nachlesen, wie man event listener richtig bindet */
+async function click_addAltTitle() {
+    var input = createNewElement("input", "", "titleInput");
+    var node = this.event.currentTarget;
+    nodeType = node.dataset.type;
+    input.dataset.type = nodeType;
+    node.parentNode.insertBefore(input, node);
 }

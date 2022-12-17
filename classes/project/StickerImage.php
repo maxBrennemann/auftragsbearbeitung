@@ -172,8 +172,7 @@ class StickerImage {
             return;
         }
 
-        $this->generateAufkleber();
-        return;
+        /* needs a change log */
         if ($this->isInShop("aufkleber")) {
             $this->updateAufkleber();
         } else {
@@ -182,7 +181,29 @@ class StickerImage {
     }
 
     private function updateAufkleber() {
+        /* StickerChangeLog() */
+        $this->stickerDB = new StickerShopDBController($this->id, "Aufkleber " . $this->name, $description, $descriptionShort, $basePrice);
+        $this->stickerDB->addTags(["Aufkleber", "Sticker", "Motiv"]);
+        $this->stickerDB->addTags($this->getAllTags());
 
+        if ($this->data["is_short_time"] == "1" && $this->data["is_long_time"] == "1") {
+            $this->stickerDB->addAttributeArray([163, 162]);
+        }
+
+        $prices = [];
+        $sizes = $this->getSizeIds();
+        for ($i = 0; $i < sizeof($data); $i++) {
+            $price = $data[$i]["price"];
+            $price = (float) $price - $basePrice;
+            $prices[$sizes["ids"][$i]] = number_format($price, 4);
+        }
+
+        $this->stickerDB->prices = $prices;
+        $this->stickerDB->addImages($this->getImagesByType("is_aufkleber"));
+        $this->createCombinations();
+        $this->stickerDB->addSticker();
+
+        $this->stickerDB->setCategory([2, 13]);
     }
 
     /**
