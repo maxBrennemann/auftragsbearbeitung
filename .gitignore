@@ -12,6 +12,12 @@ files/generated/sql_backups/*
 files/generated/invoice/*
 !files/generated/invoice/index.php
 
+files/res/js/min/*
+!files/res/js/min/index.php
+
+files/res/css/min/*
+!files/res/css/min/index.php
+
 !img/
 img/*
 !img/default_image.png
