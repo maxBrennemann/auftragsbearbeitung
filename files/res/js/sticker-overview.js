@@ -148,21 +148,35 @@ async function showStickerStatus() {
 
     for (i in data) {
         let el = data[i];
-        var isA = el.in_shop_aufkleber;
-        var isW = el.in_shop_wandtattoo;
-        var isT = el.in_shop_textil;
-        
-        let numb = parseInt(i);
-        var currRow = rows[numb + 1];
-        if (currRow != null) {
-            if (isA == 1)
-                currRow.children[3].classList.add("inShop");
+        var additionalData = el.additional_data;
+        if (additionalData != null) {
+            additionalData = JSON.parse(additionalData);
+            additionalData = additionalData.products;
+            let isA = isW =  isT = 0;
+            if (additionalData.aufkleber) {
+                isA = 1;
+            }
 
-            if (isW == 1)
-                currRow.children[7].classList.add("inShop");
+            if (additionalData.wandtattoo) {
+                isW = 1;
+            }
 
-            if (isT == 1)
-                currRow.children[8].classList.add("inShop");
+            if (additionalData.textil) {
+                isT = 1;
+            }
+
+            let numb = parseInt(i);
+            var currRow = rows[numb + 1];
+            if (currRow != null) {
+                if (isA == 1)
+                    currRow.children[3].classList.add("inShop");
+    
+                if (isW == 1)
+                    currRow.children[7].classList.add("inShop");
+    
+                if (isT == 1)
+                    currRow.children[8].classList.add("inShop");
+            }
         }
     }
 }

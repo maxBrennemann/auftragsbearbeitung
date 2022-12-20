@@ -12,6 +12,7 @@ function initStickerOverview() {
     initSVG();
     initBindings();
     addTagEventListeners();
+    loadStickerStatus();
 
     var pk_dropdown = document.getElementById("preiskategorie_dropdown");
     if (pk_dropdown != null) {
@@ -92,6 +93,11 @@ function initBindings() {
             }
         }.bind(fun_name), false);
     });
+}
+
+async function loadStickerStatus() {
+    var response = await send({id: mainVariables.motivId.innerHTML}, "loadStickerStatus");
+    //
 }
 
 async function click_toggleCheckbox(e) {
@@ -374,6 +380,13 @@ async function changeImageParameters(e) {
     } else {
         console.log(response);
         infoSaveSuccessfull();
+    }
+}
+
+function insertNewlyUploadedImages(json) {
+    for (let key in json.imageData) {
+        let image = json.imageData[key];
+        console.log(image.id + " " + image.url);
     }
 }
 
@@ -660,6 +673,10 @@ function initSVG() {
             svg_elem = svgDoc.getElementById("svg_elem");
             adjustSVG();
         }
+    }
+
+    if (a.attributes.data.value == "") {
+        a.style.height = "0";
     }
 }
 

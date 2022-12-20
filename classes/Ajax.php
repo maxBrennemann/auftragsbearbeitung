@@ -1058,7 +1058,7 @@ class Ajax {
 				echo "success";
 			break;
 			case "getStickerStatus":
-				$query = "SELECT id, in_shop_aufkleber, in_shop_wandtattoo, in_shop_textil FROM module_sticker_sticker_data";
+				$query = "SELECT id, additional_data FROM module_sticker_sticker_data";
 				echo json_encode(DBAccess::selectQuery($query));
 			break;
 			case "toggleTextil":
@@ -1118,6 +1118,13 @@ class Ajax {
 
 				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET price_class = $priceclass WHERE id = $id");
 				echo "ok";
+			break;
+			case "loadStickerStatus":
+				require_once('classes/project/StickerImage.php');
+				$id = (int) $_POST["id"];
+				$stickerImage = new StickerImage($id);
+
+				$stickerImage->updateProductStatus();
 			break;
 			case "resetStickerPrice":
 				$tableRowKey = $_POST["row"];
