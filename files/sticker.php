@@ -76,7 +76,7 @@
             </div>
         </div>
         <hr style="width: 100%;">
-        <div>
+        <div style="max-width: 50%">
             <form class="fileUploader" method="post" enctype="multipart/form-data" data-target="motiv" id="uploadFilesMotive" name="motivUpload">
                 <input type="number" name="motivNumber" min="1" value="<?=$id?>" required hidden>
                 <input id="motivname" name="motivname" required value="<?=$stickerImage->getName()?>" hidden>
@@ -95,6 +95,7 @@
     <div class="cont2">
         <section class="defCont">
             <p class="pHeading">Aufkleber
+                <input value="<?=$stickerImage->getAltTitle("aufkleber")?>">
                 <button class="addAltTitle" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="aufkleber">
                     <svg style="width:10px;height:10px" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M15 16L11 20H21V16H15M12.06 7.19L3 16.25V20H6.75L15.81 10.94L12.06 7.19M18.71 8.04C19.1 7.65 19.1 7 18.71 6.63L16.37 4.29C16.17 4.09 15.92 4 15.66 4C15.41 4 15.15 4.1 14.96 4.29L13.13 6.12L16.88 9.87L18.71 8.04Z" />
@@ -170,6 +171,7 @@
         </section>
         <section class="defCont">
             <p class="pHeading">Wandtattoo
+                <input value="<?=$stickerImage->getAltTitle("wandtattoo")?>">
                 <button class="addAltTitle" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="aufkleber">
                     <svg style="width:10px;height:10px" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M15 16L11 20H21V16H15M12.06 7.19L3 16.25V20H6.75L15.81 10.94L12.06 7.19M18.71 8.04C19.1 7.65 19.1 7 18.71 6.63L16.37 4.29C16.17 4.09 15.92 4 15.66 4C15.41 4 15.15 4.1 14.96 4.29L13.13 6.12L16.88 9.87L18.71 8.04Z" />
@@ -214,6 +216,7 @@
         </section>
         <section class="defCont">
             <p class="pHeading">Textil
+                <input value="<?=$stickerImage->getAltTitle("textil")?>">
                 <button class="addAltTitle" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="aufkleber">
                     <svg style="width:10px;height:10px" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M15 16L11 20H21V16H15M12.06 7.19L3 16.25V20H6.75L15.81 10.94L12.06 7.19M18.71 8.04C19.1 7.65 19.1 7 18.71 6.63L16.37 4.29C16.17 4.09 15.92 4 15.66 4C15.41 4 15.15 4.1 14.96 4.29L13.13 6.12L16.88 9.87L18.71 8.04Z" />

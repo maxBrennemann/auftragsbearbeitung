@@ -44,30 +44,41 @@ class Upload {
             }
         }
 
-
         echo Upload::getFilesProduct($produktnummer);
     }
 
+    /*
+     * uploads sticker files and returns a json object with all data about images so that the new images can all be
+     * added via ajax
+     */
     public function uploadFilesMotive($name, $id = 0) {
         $ids = $this->uploadFiles();
 
         if (is_array($ids)) {
             $motivnummer = 0;
+
             if ($id == 0) {
                 $motivnummer = DBAccess::insertQuery("INSERT INTO module_sticker_sticker_data (`name`) VALUES ('$name')");
             } else {
                 $motivnummer = $id;
             }
             
-            $imageIds = [];
+            $imageData = [];
+
             foreach ($ids as $id) {
-                $imageId = DBAccess::insertQuery("INSERT INTO dateien_motive (id_datei, id_motive) VALUES ($id, $motivnummer)");
-                DBAccess::insertQuery("INSERT INTO module_sticker_images (id_image, id_sticker) VALUES ($id, $motivnummer)");
-                array_push($imageIds, $imageId);
+                DBAccess::insertQuery("INSERT INTO dateien_motive (id_datei, id_motive) VALUES ($id, $motivnummer)");
+                $imageId = DBAccess::insertQuery("INSERT INTO module_sticker_images (id_image, id_sticker) VALUES ($id, $motivnummer)");
+
+                $image = DBAccess::selectQuery("SELECT dateiname FROM dateien WHERE id = $id LIMIT 1");
+                $url = Link::getResourcesShortLink($image[0]["dateiname"], "upload");
+                array_push($imageData, ["id" => $imageId, "url" => $url]);
             }
-            return json_encode(["motiv" => $motivnummer, "imageIds" => $imageIds]);
+
+            echo json_encode(["motiv" => $motivnummer, "imageData" => $imageData]);
+            return;
         }
-        return json_encode(["error" => "an error occured"]);
+
+        echo json_encode(["error" => "an error occured"]);
     }
 
     public function uploadFilesPosten($postennummer) {

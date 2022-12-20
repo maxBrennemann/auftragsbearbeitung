@@ -133,6 +133,7 @@ class StickerShopDBController {
              * Kategorie ist die Wandtattookategorie,
              * Kategorie 13 ist die Aufkleberkategorie
              */
+            $title = htmlspecialchars($title);
             if (in_array(25, $categories)) {
                 $productMatches["textil"] = ["id" => $productId, "title" => $title, "link" => $link];
             } else if (in_array(62, $categories)) {
@@ -444,9 +445,12 @@ class StickerShopDBController {
         # Send request.
         $result = curl_exec($ch);
         curl_close($ch);
-        echo $result;
-        # Print response.
-        return $result;
+
+        /* TODO: image shop ids abspeichern */
+        $imageIds = json_decode($result);
+        foreach ($imageIds as $imageId) {
+            $key = array_search($imageId["url"], $imageURLs);
+        }
     }
 
     public function updateSticker() {

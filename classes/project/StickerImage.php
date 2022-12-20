@@ -66,29 +66,42 @@ class StickerImage {
         $this->name = $data["name"];
         $this->data = $data;
 
-        $matches = StickerShopDBController::matchProductByRefernce($this->id);
-        $this->shopProducts = $matches["products"];
-        if ($matches["matches"] > 3) {
-            $this->displayError($matches["allLinks"]);
-        }
-
-        if ($this->getShopProducts("aufkleber", "id") != "#") {
-            DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET in_shop_aufkleber = 1 WHERE id = $this->id");
-        }
-        if ($this->getShopProducts("wandtattoo", "is") != "#") {
-            DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET in_shop_wandtattoo = 1 WHERE id = $this->id");
-        }
-        if ($this->getShopProducts("textil", "id") != "#") {
-            DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET in_shop_textil = 1 WHERE id = $this->id");
-        }
-
         $this->getConnectedFiles();
-
         $this->descriptions = [
             1 => $this->getDescriptions(1),
             2 => $this->getDescriptions(2),
             3 => $this->getDescriptions(3),
         ];
+
+        $this->shopProducts = json_decode($data["additional_data"], true);
+    }
+
+    /**
+     * updates product status and checks if products are in shop or not;
+     */
+    public function updateProductStatus() {
+        $matches = StickerShopDBController::matchProductByRefernce($this->id);
+        $matchesJson = json_encode($matches, JSON_UNESCAPED_UNICODE);
+        DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET additional_data = '$matchesJson' WHERE id = $this->id");
+        $this->shopProducts = $matches;
+    }
+
+    public function getProductStatus() {
+        $this->updateProductStatus();
+
+        if ($this->shopProducts["matches"] > 3) {
+            $this->displayError($this->shopProducts["allLinks"]);
+        }
+    }
+
+    public function getAltTitle($type) {
+        if (isset($this->shopProducts["products"])) {
+            $prod = $this->shopProducts["products"];
+            if (isset($prod[$type])) {
+                return $prod[$type]["title"];
+            }
+        }
+        return "";
     }
 
     public static function creatStickerImage() {
@@ -98,9 +111,9 @@ class StickerImage {
     }
 
     public function getShopProducts($type, $data) {
-        if (isset($this->shopProducts[$type])) {
-            if (isset($this->shopProducts[$type][$data])) {
-                return $this->shopProducts[$type][$data];
+        if (isset($this->shopProducts["products"][$type])) {
+            if (isset($this->shopProducts["products"][$type][$data])) {
+                return $this->shopProducts["products"][$type][$data];
             }
         }
         return "#";
@@ -639,7 +652,7 @@ class StickerImage {
     }
 
     public function getSVGIfExists() {
-        $download = REWRITE_BASE . "files/res/image/b-schriftung_logo.jpg";
+        $download = "";
         foreach ($this->files as $f) {
             $link = Link::getResourcesShortLink($f["dateiname"], "upload");
             if ($f["typ"] == "svg") {

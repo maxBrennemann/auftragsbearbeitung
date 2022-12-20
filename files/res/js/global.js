@@ -511,7 +511,14 @@ FileUploader.prototype.upload = function() {
 		/* resolves the promise and then function with the form reset is called */
 		ajax.onreadystatechange = function() {
 			if(this.readyState == 4 && this.status == 200) {
-				document.getElementById("showFilePrev").innerHTML = this.responseText;
+				try {
+					let uploadJson = JSON.parse(this.responseText);
+					insertNewlyUploadedImages(uploadJson); /* TODO: callback function als Parameter übergeben, akutell hardcoded, ruft function in sticker.js auf */
+				} catch(e) {
+					document.getElementById("showFilePrev").innerHTML = this.responseText;
+					console.log(e);
+					console.log("no json found, continue with regular procedure...");
+				}
 
 				/* remove upload preview images */
 				document.querySelector(".filesList").parentNode.removeChild(document.querySelector(".filesList").previousSibling);
