@@ -69,9 +69,10 @@ class Upload {
                 DBAccess::insertQuery("INSERT INTO dateien_motive (id_datei, id_motive) VALUES ($id, $motivnummer)");
                 $imageId = DBAccess::insertQuery("INSERT INTO module_sticker_images (id_image, id_sticker) VALUES ($id, $motivnummer)");
 
-                $image = DBAccess::selectQuery("SELECT dateiname FROM dateien WHERE id = $id LIMIT 1");
+                $image = DBAccess::selectQuery("SELECT dateiname, originalname FROM dateien WHERE id = $id LIMIT 1");
                 $url = Link::getResourcesShortLink($image[0]["dateiname"], "upload");
-                array_push($imageData, ["id" => $imageId, "url" => $url]);
+                $originalname = $image[0]["originalname"];
+                array_push($imageData, ["id" => $imageId, "url" => $url, "original" => $originalname]);
             }
 
             echo json_encode(["motiv" => $motivnummer, "imageData" => $imageData]);
