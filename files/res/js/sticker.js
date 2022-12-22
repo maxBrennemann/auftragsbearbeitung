@@ -384,9 +384,25 @@ async function changeImageParameters(e) {
 }
 
 function insertNewlyUploadedImages(json) {
+    let imageContainer = document.getElementsByClassName("imageContainer")[0];
+
     for (let key in json.imageData) {
         let image = json.imageData[key];
         console.log(image.id + " " + image.url);
+
+        let imageEl = document.createElement("img");
+        imageEl.setAttribute("src", image.url);
+        imageEl.title = image.original;
+        imageEl.classList.add("imagePrev");
+        imageEl.dataset.imageId = image.id;
+        imageEl.dataset.isAufkleber = 0;
+        imageEl.dataset.insWandtattoo = 0;
+        imageEl.dataset.isTextil = 0;
+        imageEl.setAttribute("onclick", "change(event)");
+
+        imageContainer.appendChild(imageEl);
+
+        console.log("test");
     }
 }
 
