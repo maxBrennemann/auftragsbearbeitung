@@ -9,7 +9,7 @@ return new class extends UpdateMySql {
         "ALTER TABLE `module_sticker_sticker_data` CHANGE `additional_data` `additional_data` LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;",
         "ALTER TABLE module_sticker_sticker_data DROP COLUMN in_shop_aufkleber;",
         "ALTER TABLE module_sticker_sticker_data DROP COLUMN in_shop_wandtattoo;",
-        "ALTER TABLE module_sticker_sticker_data DROP COLUMN in_shop_texil;",
+        "ALTER TABLE module_sticker_sticker_data DROP COLUMN in_shop_textil;",
     ];
 
     public function upgrade() {
