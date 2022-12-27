@@ -828,13 +828,14 @@ class StickerImage {
         switch ($type) {
             case "aufkleber":
             case "wandtattoo":
-                $query = "SELECT width FROM module_sticker_sizes WHERE id_sticker = {$this->id} ORDER BY width";
+                $query = "SELECT width, height FROM module_sticker_sizes WHERE id_sticker = {$this->id} ORDER BY width";
                 $data = DBAccess::selectQuery($query);
 
                 foreach ($data as &$d) {
                     $size = str_replace(".", ",", ((int) $d["width"]) / 10) . "cm";
 
-                    $price = "";
+                    $price = $this->getPrice($d["width"], $d["height"], 0);
+                    $price = number_format($price / 100, 2, '.', '') . " EUR";
                     if ($this->data["is_multipart"] == "0") {
                         $colors = ["schwarz", "gelb", "rot", "dunkelblau", "grün", "grau", "weiß"];
                         foreach ($colors as $color) {
