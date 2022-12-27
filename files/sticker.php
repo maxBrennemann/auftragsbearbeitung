@@ -95,7 +95,7 @@
     <div class="cont2">
         <section class="defCont">
             <p class="pHeading">Aufkleber
-                <input class="titleInput" value="<?=$stickerImage->getAltTitle("aufkleber")?>">
+                <input class="titleInput invisible" value="<?=$stickerImage->getAltTitle("aufkleber")?>" data-write="true" data-type="aufkleber" data-fun="changeAltTitle">
                 <button class="addAltTitle" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="aufkleber">
                     <svg style="width:10px;height:10px" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M15 16L11 20H21V16H15M12.06 7.19L3 16.25V20H6.75L15.81 10.94L12.06 7.19M18.71 8.04C19.1 7.65 19.1 7 18.71 6.63L16.37 4.29C16.17 4.09 15.92 4 15.66 4C15.41 4 15.15 4.1 14.96 4.29L13.13 6.12L16.88 9.87L18.71 8.04Z" />
@@ -171,7 +171,7 @@
         </section>
         <section class="defCont">
             <p class="pHeading">Wandtattoo
-                <input class="titleInput" value="<?=$stickerImage->getAltTitle("wandtattoo")?>">
+                <input class="titleInput invisible" value="<?=$stickerImage->getAltTitle("wandtattoo")?>" data-write="true" data-type="wandtattoo" data-fun="changeAltTitle">
                 <button class="addAltTitle" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="aufkleber">
                     <svg style="width:10px;height:10px" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M15 16L11 20H21V16H15M12.06 7.19L3 16.25V20H6.75L15.81 10.94L12.06 7.19M18.71 8.04C19.1 7.65 19.1 7 18.71 6.63L16.37 4.29C16.17 4.09 15.92 4 15.66 4C15.41 4 15.15 4.1 14.96 4.29L13.13 6.12L16.88 9.87L18.71 8.04Z" />
@@ -216,7 +216,7 @@
         </section>
         <section class="defCont">
             <p class="pHeading">Textil
-                <input class="titleInput" value="<?=$stickerImage->getAltTitle("textil")?>">
+                <input class="titleInput invisible" value="<?=$stickerImage->getAltTitle("textil")?>" data-write="true" data-type="textil" data-fun="changeAltTitle">
                 <button class="addAltTitle" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="aufkleber">
                     <svg style="width:10px;height:10px" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M15 16L11 20H21V16H15M12.06 7.19L3 16.25V20H6.75L15.81 10.94L12.06 7.19M18.71 8.04C19.1 7.65 19.1 7 18.71 6.63L16.37 4.29C16.17 4.09 15.92 4 15.66 4C15.41 4 15.15 4.1 14.96 4.29L13.13 6.12L16.88 9.87L18.71 8.04Z" />

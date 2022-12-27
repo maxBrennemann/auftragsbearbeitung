@@ -54,7 +54,7 @@ class StickerImage {
     ];
 
     function __construct($id) {
-        $query = "SELECT * FROM module_sticker_sticker_data WHERE id = $id";
+        $query = "SELECT * FROM module_sticker_sticker_data WHERE id = $id LIMIT 1";
         $data = DBAccess::selectQuery($query);
         if ($data == null) {
             $this->id = 0;
@@ -94,6 +94,7 @@ class StickerImage {
         }
     }
 
+    /* TODO: es muss angezeigt werden, wenn sich die Titel unterscheiden, sodass Alttitel auch wirklich absichtlich festgelegt werden können */
     public function getAltTitle($type) {
         if (isset($this->shopProducts["products"])) {
             $prod = $this->shopProducts["products"];

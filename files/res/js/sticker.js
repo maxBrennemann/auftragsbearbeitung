@@ -991,10 +991,24 @@ async function performAction(key, event) {
 }
 
 /* must be redone; TODO: nachlesen, wie man event listener richtig bindet */
-async function click_addAltTitle() {
-    var input = createNewElement("input", "", "titleInput");
+function click_addAltTitle() {
     var node = this.event.currentTarget;
-    nodeType = node.dataset.type;
-    input.dataset.type = nodeType;
-    node.parentNode.insertBefore(input, node);
+    var parent = node.parentNode;
+    var input = parent.children[0];
+    input.classList.toggle("visible");
+}
+
+async function write_changeAltTitle(e) {
+    let val = e.target.value;
+    let type = e.target.dataset.type;
+    var response = await send({
+        "newTitle": val,
+        "type": type,
+        "id": mainVariables.motivId.innerHTML,
+    }, "setAltTitle");
+    if (response == "success") {
+        infoSaveSuccessfull("success");
+    } else {
+        infoSaveSuccessfull();
+    }
 }

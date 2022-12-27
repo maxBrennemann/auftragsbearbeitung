@@ -529,3 +529,11 @@ input:checked + .slider:before {
 form label {
     display: block;
 }
+
+.invisible {
+    display: none;
+}
+
+.visible {
+    display: inline;
+}
