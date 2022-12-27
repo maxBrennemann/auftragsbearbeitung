@@ -457,6 +457,13 @@ class StickerShopDBController {
         
     }
 
+    public function getDefaultImage($id) {
+        $xml = $this->getXML('products/' . $id);
+        $resource_product = $xml->children()->children();
+        $defaultImage = $resource_product->id_default_image;
+        return (int) $defaultImage;
+    }
+
     public function uploadSVG($image) {
         $url = $this->url . "?upload=svg&id=$this->id_product";
         $cImage = new CurlFile($image, 'image/svg+xml', "image");
