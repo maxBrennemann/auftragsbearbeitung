@@ -823,6 +823,12 @@ class StickerImage {
         }
     }
 
+    public function getDefaultImage($type) {
+        $id = $this->shopProducts["products"][$type]["id"];
+        $shop = new StickerShopDBController("", "", "", "", "");
+        return ["id" => $id, "image" => $shop->getDefaultImage($id)];
+    }
+
     public function getProductCombinations($type) {
         $combinations = [];
         switch ($type) {
