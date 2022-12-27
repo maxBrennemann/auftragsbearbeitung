@@ -359,7 +359,7 @@ class StickerImage {
 
         $query = "SELECT id, width, height, price FROM module_sticker_sizes WHERE id_sticker = {$this->id} ORDER BY width";
         $data = DBAccess::selectQuery($query);
-        $difficulty = (int) $this->data["price_class"];;
+        $difficulty = (int) $this->data["price_class"];
         $data = $this->calculatePrices($data, $difficulty, false);
         /* TODO: correct price calculation or correct format, currently just for rounding */
         if (isset($data[0])) {
@@ -399,7 +399,7 @@ class StickerImage {
         $this->stickerDB->setCategory([2, 13]);
     }
 
-    private function getDescriptions($target) {
+    public function getDescriptions($target) {
         $description = DBAccess::selectQuery("SELECT content, `type` FROM module_sticker_texts WHERE id_sticker = $this->id AND `target` = $target AND `type` = 'long'");
         if ($description != null) {
             $description = $description[0]["content"];
@@ -821,6 +821,46 @@ class StickerImage {
             $newFile = substr($newFile, 0, strlen("upload/"));
             return Link::getResourcesShortLink($filename, "upload");
         }
+    }
+
+    public function getProductCombinations($type) {
+        $combinations = [];
+        switch ($type) {
+            case "aufkleber":
+            case "wandtattoo":
+                $query = "SELECT width FROM module_sticker_sizes WHERE id_sticker = {$this->id} ORDER BY width";
+                $data = DBAccess::selectQuery($query);
+
+                foreach ($data as &$d) {
+                    $size = str_replace(".", ",", ((int) $d["width"]) / 10) . "cm";
+
+                    $price = "";
+                    if ($this->data["is_multipart"] == "0") {
+                        $colors = ["schwarz", "gelb", "rot", "dunkelblau", "grün", "grau", "weiß"];
+                        foreach ($colors as $color) {
+                            $combinations[] = [
+                                "price" => $price,
+                                "size" => $size,
+                                "color" => $color,
+                            ];
+                        }
+                    } else {
+                        $combinations[] = [
+                            "price" => $price,
+                            "size" => $size,
+                            "color" => "",
+                        ];
+                    }
+                }
+                break;
+            case "textil":
+                //foreach () {
+
+                //}
+                break;
+        }
+
+        return $combinations;
     }
 
 }
