@@ -1208,6 +1208,23 @@ class Ajax {
 				$pc = new ProductCrawler();
 				$pc->crawlAll();
 			break;
+			case "setAltTitle":
+				$id = (int) $_POST["id"];
+				$newTitle = (String) $_POST["newTitle"];
+				$type = (String) $_POST["type"];
+
+				$additionalData = DBAccess::selectQuery("SELECT additional_data FROM module_sticker_sticker_data WHERE id = :id LIMIT 1", ["id" => $id]);
+				if ($additionalData != null) {
+					$additionalData = json_decode($additionalData);
+					
+					$additionalData["products"][$type]["title"] = $newTitle;
+					$data = json_encode($additionalData);
+					DBAccess::insertQuery("UPDATE module_sticker_sticker_data SET additional_data = :data WHERE id = :id", ["data" => $data, "id" => $id]);
+					echo "success";
+				} else {
+					echo "no data found";
+				}
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
