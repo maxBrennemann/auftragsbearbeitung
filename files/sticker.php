@@ -95,7 +95,7 @@
     <div class="cont2">
         <section class="defCont">
             <p class="pHeading">Aufkleber
-                <input value="<?=$stickerImage->getAltTitle("aufkleber")?>">
+                <input class="titleInput" value="<?=$stickerImage->getAltTitle("aufkleber")?>">
                 <button class="addAltTitle" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="aufkleber">
                     <svg style="width:10px;height:10px" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M15 16L11 20H21V16H15M12.06 7.19L3 16.25V20H6.75L15.81 10.94L12.06 7.19M18.71 8.04C19.1 7.65 19.1 7 18.71 6.63L16.37 4.29C16.17 4.09 15.92 4 15.66 4C15.41 4 15.15 4.1 14.96 4.29L13.13 6.12L16.88 9.87L18.71 8.04Z" />
@@ -171,7 +171,7 @@
         </section>
         <section class="defCont">
             <p class="pHeading">Wandtattoo
-                <input value="<?=$stickerImage->getAltTitle("wandtattoo")?>">
+                <input class="titleInput" value="<?=$stickerImage->getAltTitle("wandtattoo")?>">
                 <button class="addAltTitle" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="aufkleber">
                     <svg style="width:10px;height:10px" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M15 16L11 20H21V16H15M12.06 7.19L3 16.25V20H6.75L15.81 10.94L12.06 7.19M18.71 8.04C19.1 7.65 19.1 7 18.71 6.63L16.37 4.29C16.17 4.09 15.92 4 15.66 4C15.41 4 15.15 4.1 14.96 4.29L13.13 6.12L16.88 9.87L18.71 8.04Z" />
@@ -216,7 +216,7 @@
         </section>
         <section class="defCont">
             <p class="pHeading">Textil
-                <input value="<?=$stickerImage->getAltTitle("textil")?>">
+                <input class="titleInput" value="<?=$stickerImage->getAltTitle("textil")?>">
                 <button class="addAltTitle" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="aufkleber">
                     <svg style="width:10px;height:10px" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M15 16L11 20H21V16H15M12.06 7.19L3 16.25V20H6.75L15.81 10.94L12.06 7.19M18.71 8.04C19.1 7.65 19.1 7 18.71 6.63L16.37 4.29C16.17 4.09 15.92 4 15.66 4C15.41 4 15.15 4.1 14.96 4.29L13.13 6.12L16.88 9.87L18.71 8.04Z" />
@@ -292,6 +292,7 @@
         </section>
     </div>
     <div class="defCont align-center">
+        <h2>Größen</h2>
         <div id="sizeTableWrapper"><?=$stickerImage->getSizeTable()?></div>
         <div>
             <p>Aufkleberpreisklasse</p>
@@ -345,6 +346,35 @@
             </div> 
             <button data-id="5" class="newButton marginTop30" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
         </div>
+    </div>
+    <div class="defCont">
+        <h2>Produktexport</h2>
+        <form>
+            <label>
+                <input id="exportFb" name="exportFb" type="checkbox">    
+                Nach Facebook exportieren<button class="infoButton" data-info="5">i</button><!-- TODO: neuen info text hinzufügen -->
+            </label>
+            <label>
+                <input id="exportGoogle" name="exportGoogle" type="checkbox">    
+                Nach Google exportieren
+            </label>
+            <label>
+                <input id="exportAmazon" name="exportAmazon" type="checkbox">    
+                Nach Amazon exportieren
+            </label>
+            <label>
+                <input id="exportEtsy" name="exportEtsy" type="checkbox">    
+                Nach Etsy exportieren
+            </label>
+            <label>
+                <input id="exportEbay" name="exportEbay" type="checkbox">    
+                Nach eBay exportieren
+            </label>
+            <label>
+                <input id="exportPinterest" name="exportPinterest" type="checkbox">    
+                Nach Pinterest exportieren
+            </label>
+        </form>
     </div>
     <!--<div class="fastUpload">
         Weitere Infos:

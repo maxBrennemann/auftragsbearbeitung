@@ -316,8 +316,10 @@ async function sendRows(data, text) {
  * deletes the currently selected image
  */
 async function deleteImage(imageId) {
+    let removeFromDom = false;
     if (imageId == -1) {
        imageId = mainVariables.currentDelete;
+       removeFromDom = true;
     } else {
         imageId = document.querySelector(".imageBig");
         imageId = imageId.dataset.imageId;
@@ -331,6 +333,10 @@ async function deleteImage(imageId) {
 
     if (response == "successful") {
         deleteImageUpdateDOMTree();
+        if (removeFromDom) {
+            let elem = document.querySelector('.imageTag[data-image-id="' + imageId + '"]');
+            elem.parentNode.removeChild(elem);
+        }
     }
 }
 

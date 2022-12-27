@@ -213,7 +213,13 @@ class StickerImage {
 
         $this->stickerDB->prices = $prices;
         $this->stickerDB->addImages($this->getImagesByType("is_aufkleber"));
-        $this->createCombinations();
+        
+        /* only if is_multipart is false, add colors */
+        $this->addSizesToProduct();
+        if ($this->data["is_multipart"] == "0") {
+            $this->addColorsToProduct();
+        }
+
         $this->stickerDB->addSticker();
 
         $this->stickerDB->setCategory([2, 13]);
@@ -380,7 +386,13 @@ class StickerImage {
 
         $this->stickerDB->prices = $prices;
         $this->stickerDB->addImages($this->getImagesByType("is_aufkleber"));
-        $this->createCombinations();
+
+        /* only if is_multipart is false, add colors */
+        $this->addSizesToProduct();
+        if ($this->data["is_multipart"] == "0") {
+            $this->addColorsToProduct();
+        }
+
         $this->stickerDB->addSticker();
 
         $this->stickerDB->setCategory([2, 13]);
@@ -580,7 +592,7 @@ class StickerImage {
 
     /* Änderung: proforma Daten erstellen als default value */
     private function loadDefault($query2) {
-        $query = "INSERT INTO module_sticker_sizes (id_sticker, width, height) VALUES ($this->id, 300, 0), ($this->id, 600, 0), ($this->id, 900, 0), ($this->id, 1200, 0)";
+        $query = "INSERT INTO module_sticker_sizes (id_sticker, width, height) VALUES ($this->id, 200, 0), ($this->id, 300, 0), ($this->id, 600, 0), ($this->id, 900, 0), ($this->id, 1200, 0)";
         DBAccess::insertQuery($query);
         return DBAccess::selectQuery($query2);
     }
@@ -646,7 +658,7 @@ class StickerImage {
             $filename = $f["dateiname"];
             $originalname = $f["alt"] ?: "ohne Name";
             $id = $f["id"];
-            $download .= "<a data-image-id=\"$id\" download=\"$filename\" data-deletable=\"true\" href=\"$link\" title=\"Zum Herunterladen von '$originalname' klicken\">(" . $originalname . ") " . strtoupper($f["typ"]) . "</a> ";
+            $download .= "<a class=\"imageTag\" data-image-id=\"$id\" download=\"$filename\" data-deletable=\"true\" href=\"$link\" title=\"Zum Herunterladen von '$originalname' klicken\">(" . $originalname . ") " . strtoupper($f["typ"]) . "</a> ";
         }
         return $download . "</p>";
     }
@@ -730,8 +742,11 @@ class StickerImage {
         return ["id" => 6, "ids" => [70, 60, 67, 79, 91, 107, 111]];
     }
 
-    public function createCombinations() {
+    public function addSizesToProduct() {
         $this->stickerDB->addAttributeArray($this->getSizeIds()["ids"]);
+    }
+
+    public function addColorsToProduct() {
         $this->stickerDB->addAttributeArray($this->getColorIds()["ids"]);
     }
 
