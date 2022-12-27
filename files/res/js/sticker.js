@@ -1012,3 +1012,10 @@ async function write_changeAltTitle(e) {
         infoSaveSuccessfull();
     }
 }
+
+async function exportFacebook() {
+    var response = await send({
+        "id": mainVariables.motivId.innerHTML,
+    }, "exportFacebook");
+    console.log(response);
+}

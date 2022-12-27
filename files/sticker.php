@@ -349,6 +349,7 @@
     </div>
     <div class="defCont">
         <h2>Produktexport</h2>
+        <button onclick="exportFacebook()">facebook export test</button>
         <form>
             <label>
                 <input id="exportFb" name="exportFb" type="checkbox">    

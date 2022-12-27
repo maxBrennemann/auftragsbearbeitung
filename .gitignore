@@ -35,3 +35,5 @@ cache/*
 !cache/index.php
 .DS_Store
 vendor
+
+files/res/form/modules/sticker/catalog_products.csv

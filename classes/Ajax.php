@@ -1225,6 +1225,15 @@ class Ajax {
 					echo "no data found";
 				}
 			break;
+			case "exportFacebook":
+				require_once('classes/project/StickerImage.php');
+				require_once('classes/project/modules/sticker/exports/ExportFacebook.php');
+
+				$id = (int) $_POST["id"];
+				$sticker = new StickerImage($id);
+				$export = new ExportFacebook();
+				$export->addProduct($sticker);
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
