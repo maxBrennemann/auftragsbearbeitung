@@ -26,7 +26,23 @@ class ExportFacebook {
 
     public function addProduct(StickerImage $stickerImage) {
         $types = ["aufkleber", "wandtattoo", "textil"];
-        $line = [];
+        $line = [
+            "id" => "",
+            "title" => "",
+            "description" => "",
+            "availability" => "",
+            "condition" => "",
+            "price" => "",
+            "link" => "",
+            "image_link" => "",
+            "brand" => "",
+            "item_group_id" => "",
+            "color" => "",
+            "size" => "",
+            "material" => "",
+            "shipping_weight" => "",
+        ];
+
         $line["availability"] = "In Stock";
         $line["condition"] = "New";
         $line["brand"] = "klebefux";
@@ -34,11 +50,11 @@ class ExportFacebook {
 
         foreach ($types as $index => $type) {
             $line["item_group_id"] = $type . $stickerImage->getId();
-            $line["title"] = $stickerImage->getAltTitle($type);
-            $line["description"] = $stickerImage->getDescriptions($index + 1)["long"];
+            $line["title"] = $stickerImage->getName();
+            $line["description"] = "test";//$stickerImage->getDescriptions($index + 1)["long"];
 
-            $line["link"] = "";
-            $line["image_link"] = "";
+            $line["link"] = "https://klebefux.de/home/721-aufkleber-mir-glangts-i-geh-in-die-berge.html";
+            $line["image_link"] = "https://klebefux.de/1363-thickbox_default/aufkleber-mir-glangts-i-geh-in-die-berge.jpg";
 
             $combinations = $stickerImage->getProductCombinations($type);
             foreach ($combinations as $key => $combination) {
@@ -47,7 +63,7 @@ class ExportFacebook {
                 $line["color"] = $combination["color"];
 
                 if (isset($combination["price"])) {
-                    $line["size"] = $combination["price"];
+                    $line["size"] = $combination["size"];
                 } else {
                     $line["size"] = "";
                 }

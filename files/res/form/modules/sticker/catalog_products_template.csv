@@ -1,1 +1,1 @@
-id;title;description;availability;condition;price;link;image_link;brand;item_group_id;color;size;material;shipping_weight
+id,title,description,availability,condition,price,link,image_link,brand,item_group_id,color,size,material,shipping_weight
