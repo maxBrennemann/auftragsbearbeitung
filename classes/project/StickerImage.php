@@ -468,31 +468,35 @@ class StickerImage {
     }
 
     public function getSynonyms($query) {
-        $ch = curl_init("https://www.openthesaurus.de/synonyme/search?q=$query&format=application/json");
-        # Setup request to send json via POST.
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-        # Return response instead of printing.
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        # Send request.
-        $result = curl_exec($ch);
-        curl_close($ch);
-        # Print response.
+        if (!file_exists('cache/modules/sticker/tags')) {
+            mkdir('cache/modules/sticker/tags', 0777, true);
+        }
 
-        $result = json_decode($result, true);
-        $synonyms = [];
-        if ($result != null && $result["synsets"] != null) {
-            foreach ($result["synsets"] as $set) {
-                foreach ($set["terms"] as $term) {
-                    if (!in_array($term["term"], $synonyms)) {
-                        array_push($synonyms, $term["term"]);
+        $cachedSynonyms = file_get_contents('cache/modules/sticker/tags/' . $query . '.json');
+        if ($cachedSynonyms == false) {
+            $ch = curl_init("https://www.openthesaurus.de/synonyme/search?q=$query&format=application/json");
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $result = curl_exec($ch);
+            curl_close($ch);
+
+            $result = json_decode($result, true);
+            $synonyms = [];
+            if ($result != null && $result["synsets"] != null) {
+                foreach ($result["synsets"] as $set) {
+                    foreach ($set["terms"] as $term) {
+                        if (!in_array($term["term"], $synonyms)) {
+                            array_push($synonyms, $term["term"]);
+                        }
                     }
                 }
             }
-        }
 
-        /* TODO: caching der Tags */
-        
-        return $synonyms;
+            return $synonyms;
+        } else {
+            $cachedSynonyms = json_decode($cachedSynonyms);
+            return $cachedSynonyms;
+        }
     }
 
     /**

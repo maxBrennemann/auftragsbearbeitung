@@ -25,7 +25,6 @@ class ExportFacebook {
     }
 
     public function addProduct(StickerImage $stickerImage) {
-        $types = ["aufkleber", "wandtattoo", "textil"];
         $line = [
             "id" => "",
             "title" => "",
@@ -48,52 +47,103 @@ class ExportFacebook {
         $line["brand"] = "klebefux";
         $line["shipping_weight"] = "0.5kg";
 
-        foreach ($types as $index => $type) {
-            $doImport = false;
-            switch ($type) {
-                case "aufkleber":
-                    if ($stickerImage->data["is_aufkleber"] == 1) {
-                        $doImport = true;
-                    }
-                    break;
-                case "wandtattoo":
-                    if ($stickerImage->data["is_wandtattoo"] == 1) {
-                        $doImport = true;
-                    }
-                    break;
-                case "textil":
-                    if ($stickerImage->data["is_textil"] == 1) {
-                        $doImport = true;
-                    }
-                    break;
-            }
+        $this->generateAufkleber($stickerImage, $line);
+        $this->generateWandtattoo($stickerImage, $line);
+        $this->generateTextil($stickerImage, $line);
+    }
 
-            if ($doImport) {
-                $line["item_group_id"] = $type . $stickerImage->getId();
-                $line["title"] = $stickerImage->getName();
-                $line["description"] = "Unsere Aufkleber und Textilien sind keine Lagerware. Diese werden nach der Bestellung individuell für Dich angefertigt. " . $stickerImage->getDescriptions($index + 1)["long"];
-    
-                $line["link"] = $stickerImage->getShopProducts($type, "link");
-                $ids = $stickerImage->getDefaultImage($type);
-                $line["image_link"] = "https://klebefux.de/auftragsbearbeitung/images.php?product={$ids["id"]}&image={$ids["image"]}";
-    
-                $combinations = $stickerImage->getProductCombinations($type);
-                foreach ($combinations as $key => $combination) {
-                    $line["id"] = $type . "_" . $stickerImage->getId() . "_" . $key;
-                    $line["price"] = $combination["price"];
-                    $line["color"] = $combination["color"];
-    
-                    if (isset($combination["price"])) {
-                        $line["size"] = $combination["size"];
-                    } else {
-                        $line["size"] = "";
-                    }
-                    
-                    $line["material"] = "";//$combination["material"];
-                    $this->storeCSV($line);
-                }
-            }
+    private function generateAufkleber($stickerImage, $line) {
+        $type = "aufkleber";
+        if ($stickerImage->data["is_plotted"] == 0) {
+            return;
         }
+
+        $line["item_group_id"] = $type . $stickerImage->getId();
+        $line["title"] = $stickerImage->getName();
+        $line["description"] = "Unsere Aufkleber und Textilien sind keine Lagerware. Diese werden nach der Bestellung individuell für Dich angefertigt. " . $stickerImage->getDescriptions(1)["long"];
+
+        $line["link"] = $stickerImage->getShopProducts($type, "link");
+        $ids = $stickerImage->getDefaultImage($type);
+        $line["image_link"] = "https://klebefux.de/auftragsbearbeitung/images.php?product={$ids["id"]}&image={$ids["image"]}";
+
+        $combinations = $stickerImage->getProductCombinations($type);
+        foreach ($combinations as $key => $combination) {
+            $line["id"] = $type . "_" . $stickerImage->getId() . "_" . $key;
+            $line["price"] = $combination["price"];
+            $line["color"] = $combination["color"];
+
+            if (isset($combination["price"])) {
+                $line["size"] = $combination["size"];
+            } else {
+                $line["size"] = "";
+            }
+            
+            $line["material"] = "";//$combination["material"];
+            $this->storeCSV($line);
+        }
+    }
+    
+    private function generateWandtattoo($stickerImage, $line) {
+        $type = "wandtattoo";
+        if ($stickerImage->data["is_walldecal"] == 0) {
+            return;
+        }
+
+        $line["item_group_id"] = $type . $stickerImage->getId();
+        $line["title"] = $stickerImage->getName();
+        $line["description"] = "Unsere Aufkleber und Textilien sind keine Lagerware. Diese werden nach der Bestellung individuell für Dich angefertigt. " . $stickerImage->getDescriptions(2)["long"];
+
+        $line["link"] = $stickerImage->getShopProducts($type, "link");
+        $ids = $stickerImage->getDefaultImage($type);
+        $line["image_link"] = "https://klebefux.de/auftragsbearbeitung/images.php?product={$ids["id"]}&image={$ids["image"]}";
+
+        $combinations = $stickerImage->getProductCombinations($type);
+        foreach ($combinations as $key => $combination) {
+            $line["id"] = $type . "_" . $stickerImage->getId() . "_" . $key;
+            $line["price"] = $combination["price"];
+            $line["color"] = $combination["color"];
+
+            if (isset($combination["price"])) {
+                $line["size"] = $combination["size"];
+            } else {
+                $line["size"] = "";
+            }
+            
+            $line["material"] = "";//$combination["material"];
+            $this->storeCSV($line);
+        }
+    }
+
+    private function generateTextil($stickerImage, $line) {
+        $type = "textil";
+        if ($stickerImage->data["is_shirtcollection"] == 0) {
+            return;
+        }
+
+        $line["item_group_id"] = $type . $stickerImage->getId();
+        $line["title"] = $stickerImage->getName();
+        $line["description"] = "Unsere Aufkleber und Textilien sind keine Lagerware. Diese werden nach der Bestellung individuell für Dich angefertigt. " . $stickerImage->getDescriptions(3)["long"];
+
+        $line["link"] = $stickerImage->getShopProducts($type, "link");
+        $ids = $stickerImage->getDefaultImage($type);
+        $line["image_link"] = "https://klebefux.de/auftragsbearbeitung/images.php?product={$ids["id"]}&image={$ids["image"]}";
+
+        $combinations = $stickerImage->getProductCombinations($type);
+        foreach ($combinations as $key => $combination) {
+            $line["id"] = $type . "_" . $stickerImage->getId() . "_" . $key;
+            $line["price"] = $combination["price"];
+            $line["color"] = $combination["color"];
+
+            if (isset($combination["price"])) {
+                $line["size"] = $combination["size"];
+            } else {
+                $line["size"] = "";
+            }
+            
+            $line["material"] = "";//$combination["material"];
+            $this->storeCSV($line);
+        }
+
     }
 
 }
