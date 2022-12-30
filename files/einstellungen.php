@@ -14,6 +14,17 @@ if ($cacheStatus == "on") {
     $cacheOff = "";
 }
 
+$minifyOn = "";
+$minifyOff = "checked";
+
+$query = "SELECT content FROM settings WHERE title = 'minifyStatus' LIMIT 1";
+$result = DBAccess::selectQuery($query);
+$minifyStatus = $result[0]["content"];
+if ($minifyStatus == "on") {
+    $minifyOn = "checked";
+    $minifyOff = "";
+}
+
 ?>
 <section>
     <h2>Auftragstypen festlegen</h2>
@@ -32,6 +43,13 @@ if ($cacheStatus == "on") {
 	<input onchange="toggleCache('on')" type="radio" name="cacheswitch" value="on" <?=$cacheOn?>> Cache aktivieren<br>
 	<input onchange="toggleCache('off')" type="radio" name="cacheswitch" value="off" <?=$cacheOff?>> Cache deaktivieren<br>
     <button id="deleteCache">Cache löschen</button>
+</section>
+<section>
+    <h2>CSS und JS komprimieren</h2>
+	<input onchange="toggleMinify('on')" type="radio" name="minifyswitch" value="on" <?=$minifyOn?>> Komprimierung aktivieren<br>
+	<input onchange="toggleMinify('off')" type="radio" name="minifyswitch" value="off" <?=$minifyOff?>> Komprimierung deaktivieren<br>
+    <button>Neu komprimieren</button>
+    <!-- TODO: neu komprimieren btn ohne Funktion -->
 </section>
 <section>
     <h2>Persönliche Einstellungen</h2>

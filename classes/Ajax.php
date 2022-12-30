@@ -914,6 +914,15 @@ class Ajax {
 						break;
 				}
 			break;
+			case "toggleMinify":
+				$status = (String) $_POST["status"];
+				if ($status == "off" || $status == "on") {
+					DBAccess::updateQuery("UPDATE settings SET content = :status WHERE title = 'minifyStatus'", ["status" => $status]);
+					echo "ok";
+				} else {
+					echo "error";
+				}
+			break;
 			case "setNotificationsRead":
 				$notificationIds = $_POST["notificationIds"];
 				if ($notificationIds == "all") {
@@ -966,7 +975,7 @@ class Ajax {
 				switch ($query) {
 					case 1:
 						UpgradeManager::executeFirstCommand();
-					break;
+						break;
 					case 2:
 						$files = UpgradeManager::checkNewSQL();
 						$result = [];
@@ -975,7 +984,28 @@ class Ajax {
 							//array_push($result, UpgradeManager::executeSecondCommand($file));
 						}
 						echo json_encode($result);
-					break;
+						break;
+					case 3:
+						require_once("classes/MinifyFiles.php");
+						MinifyFiles::minify();
+						echo json_encode(["result" => "all files are recompiled", "command" => "minify files"]);
+						break;
+					case 4:
+						$commandRes = shell_exec("composer install");
+						if ($commandRes === NULL) {
+							echo json_encode(["result" => "an error occured", "command" => "composer install"]);
+						} else {
+							echo json_encode(["result" => $commandRes, "command" => "composer install"]);
+						}
+						break;
+					case 5:
+						$commandRes = shell_exec("composer update");
+						if ($commandRes === NULL) {
+							echo json_encode(["result" => "an error occured", "command" => "composer update"]);
+						} else {
+							echo json_encode(["result" => $commandRes, "command" => "composer update"]);
+						}
+						break;
 					default:
 						echo "an error occured";
 				}
