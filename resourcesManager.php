@@ -15,7 +15,7 @@ if (isset($_GET['script'])) {
 	if ($script == "colorpicker.js") {
 		$file = file_get_contents(".res/colorpicker.js");
 	} else {
-		//Minify::minify();
+		//MinifyFiles::minify();
 		$fileName = explode(".", $script);
 
 		if (sizeof($fileName) == 2) {
@@ -97,7 +97,7 @@ if (isset($_GET['pdf_invoice'])) {
 }
 
 /* https://stackoverflow.com/questions/15774669/list-all-files-in-one-directory-php */
-class Minify {
+class MinifyFiles {
 
 	private static function getJs() {
 		$path    = 'files/res/js/';
