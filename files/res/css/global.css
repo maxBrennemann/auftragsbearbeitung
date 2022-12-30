@@ -1,10 +1,21 @@
-﻿/* general style */
-@import url('https://fonts.googleapis.com/css?family=Be+Vietnam|Raleway|Open+Sans&display=swap');
+﻿@font-face {
+    font-family: 'Be Vietnam';
+    src: url("../font/BeVietnamPro-Regular.ttf") format('truetype');
+    font-weight: normal;
+}
 
 @font-face {
-    font-family: "Segoe UI Emoji";
-    src: "auftragsbearbeitung/files/res/font/seguiemj.ttf";
+    font-family: 'Open Sans';
+    src: url("../font/OpenSans-Regular.ttf") format('truetype');
+    font-weight: normal;
 }
+
+@font-face {
+    font-family: 'Raleway';
+    src:  url("../font/Raleway-Regular.ttf") format('truetype');
+    font-weight: normal;
+}
+/* TODO: https://web.dev/defer-non-critical-css/ */
 
 body {
     font-family: 'Open Sans', Tahoma, Geneva, Verdana, sans-serif;

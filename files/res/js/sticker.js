@@ -331,24 +331,20 @@ async function deleteImage(imageId) {
     var response = await send(data, "deleteImage");
     infoSaveSuccessfull(response);
 
-    if (response == "successful") {
-        deleteImageUpdateDOMTree();
+    if (response == "success") {
         if (removeFromDom) {
             let elem = document.querySelector('.imageTag[data-image-id="' + imageId + '"]');
             elem.parentNode.removeChild(elem);
+        } else {
+            deleteImageUpdateDOMTree(imageId);
         }
     }
 }
 
 /* this function is called, when the image deletion process was successful */
-function deleteImageUpdateDOMTree() {
-    var element = document.querySelector(`[data-image-id="${imageId}"]`);
-    if (element.nodeName == "A") {
-        let parent = element.parentNode;
-        parent.remove(element);
-    } else {
-        /* TODO: image removal fertig implementieren */
-    }
+function deleteImageUpdateDOMTree(imageId) {
+    let element = document.querySelector('.imagePrev[data-image-id="' + imageId + '"]');
+    element.parentNode.removeChild(element);
 }
 
 /**

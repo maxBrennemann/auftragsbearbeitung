@@ -472,8 +472,8 @@ class StickerImage {
             mkdir('cache/modules/sticker/tags', 0777, true);
         }
 
-        $cachedSynonyms = file_get_contents('cache/modules/sticker/tags/' . $query . '.json');
-        if ($cachedSynonyms == false) {
+        @$cachedSynonyms = file_get_contents('cache/modules/sticker/tags/' . $query . '.json');
+        if ($cachedSynonyms === false) {
             $ch = curl_init("https://www.openthesaurus.de/synonyme/search?q=$query&format=application/json");
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -597,7 +597,7 @@ class StickerImage {
 
     /* Änderung: proforma Daten erstellen als default value */
     private function loadDefault($query2) {
-        $query = "INSERT INTO module_sticker_sizes (id_sticker, width, height) VALUES ($this->id, 200, 0), ($this->id, 300, 0), ($this->id, 600, 0), ($this->id, 900, 0), ($this->id, 1200, 0)";
+        $query = "INSERT INTO module_sticker_sizes (id_sticker, width, height) VALUES ($this->id, 100, 0), ($this->id, 200, 0), ($this->id, 300, 0), ($this->id, 600, 0), ($this->id, 900, 0), ($this->id, 1200, 0)";
         DBAccess::insertQuery($query);
         return DBAccess::selectQuery($query2);
     }
