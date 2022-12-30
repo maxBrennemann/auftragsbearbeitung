@@ -34,6 +34,21 @@ function toggleCache(status) {
     });
 }
 
+function toggleMinify(status) {
+    /* ajax parameter */
+    let params = {
+        getReason: "toggleMinify",
+        status: status
+    };
+
+    var toggle = new AjaxCall(params, "POST", window.location.href);
+    toggle.makeAjaxCall(function (response) {
+        console.log(response);
+        if (response == "ok") {
+            infoSaveSuccessfull("success");
+        }
+    });
+}
 
 if (document.readyState !== 'loading' ) {
     document.getElementById("download_db").addEventListener("click", getFileName, false);
