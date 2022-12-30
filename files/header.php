@@ -45,7 +45,7 @@
 		<?=ClientSettings::getColorConfiguration()?>
 	</style>
 	<link rel="stylesheet" href="<?=$globalCSS?>">
-	<script src="<?=$globalJS?>"></script>
+	<script src="<?=$globalJS?>" async></script>
 	<?php
 		$files;
 		if ($isArticle) {
@@ -61,7 +61,7 @@
 					break;
 				case 'js':
 				case 'extJs':
-					echo '<script src="' . $link . '"></script>';
+					echo '<script src="' . $link . '" async></script>';
 					break;
 				case 'font':
 					echo '<style> @font-face { font-family: ' . $file['fileName'] . '; src: url("' . $link . '"); }</style>';
@@ -74,7 +74,7 @@
 		/* used this query to try to select all cases for new implementation: SELECT attachments.*, CONCAT(articles.src, ".js") AS concatted FROM `attachments` LEFT JOIN articles ON articles.id = attachments.articleId WHERE CONCAT(articles.src, ".js") = attachments.fileSrc; */
 
 		$link = Link::getResourcesShortLink($page . ".js", "js");
-		echo '<script src="' . $link . '"></script>';
+		echo '<script src="' . $link . '" async></script>';
 		$link = Link::getResourcesShortLink($page . ".css", "css");
 		echo '<link rel="stylesheet" href="' . $link . '">';
 	?>
