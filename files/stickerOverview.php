@@ -72,3 +72,7 @@ $t->addLink($linker);
     <input type="text" id="newTitle">
     <button type="submit" onclick="createNewSticker()">Neues Motiv erstellen</button>
 </div>
+<div class="defCont">
+    <p class="pHeading">Motivexporte</p>
+    <button id="createFbExport">Facebook Export generieren</button>
+</div>
