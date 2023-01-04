@@ -885,6 +885,11 @@ class StickerImage {
         return $combinations;
     }
 
+    public function updateVisibility($type, $status) {
+        /* TODO: implement toggle type and access stickershopdbcontroller */
+        /* TODO: fo: implement status via db */
+    }
+
 }
 
 ?>

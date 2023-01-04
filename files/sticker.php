@@ -102,6 +102,11 @@
                     </svg>
                 </button>
                 <button class="infoButton" data-info="8">i</button>
+                <button class="addAltTitle" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
+                    <svg style="width: 10px; height: 10px;" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z" />
+                    </svg>
+                </button>
             </p>
             <div>
                 <span>Aufkleber Plott</span>
@@ -172,12 +177,17 @@
         <section class="defCont">
             <p class="pHeading">Wandtattoo
                 <input class="titleInput invisible" value="<?=$stickerImage->getAltTitle("wandtattoo")?>" data-write="true" data-type="wandtattoo" data-fun="changeAltTitle">
-                <button class="addAltTitle" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="aufkleber">
+                <button class="addAltTitle" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="wandtattoo">
                     <svg style="width:10px;height:10px" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M15 16L11 20H21V16H15M12.06 7.19L3 16.25V20H6.75L15.81 10.94L12.06 7.19M18.71 8.04C19.1 7.65 19.1 7 18.71 6.63L16.37 4.29C16.17 4.09 15.92 4 15.66 4C15.41 4 15.15 4.1 14.96 4.29L13.13 6.12L16.88 9.87L18.71 8.04Z" />
                     </svg>
                 </button>
                 <button class="infoButton" data-info="9">i</button>
+                <button class="addAltTitle" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
+                    <svg style="width: 10px; height: 10px;" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z" />
+                    </svg>
+                </button>
             </p>
             <div>
                 <span>Wandtattoo</span>
@@ -217,12 +227,15 @@
         <section class="defCont">
             <p class="pHeading">Textil
                 <input class="titleInput invisible" value="<?=$stickerImage->getAltTitle("textil")?>" data-write="true" data-type="textil" data-fun="changeAltTitle">
-                <button class="addAltTitle" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="aufkleber">
+                <button class="addAltTitle" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="textil">
                     <svg style="width:10px;height:10px" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M15 16L11 20H21V16H15M12.06 7.19L3 16.25V20H6.75L15.81 10.94L12.06 7.19M18.71 8.04C19.1 7.65 19.1 7 18.71 6.63L16.37 4.29C16.17 4.09 15.92 4 15.66 4C15.41 4 15.15 4.1 14.96 4.29L13.13 6.12L16.88 9.87L18.71 8.04Z" />
                     </svg>
                 </button>
                 <button class="infoButton" data-info="10">i</button>
+                <button class="addAltTitle" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
+                    <?=Icon::$iconVisible?>
+                </button>
             </p>
             <div>
                 <span>Textil</span>
