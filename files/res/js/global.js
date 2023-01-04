@@ -109,13 +109,10 @@ function listener_logout() {
 }
 
 function listener_bellAndSearch() {
-	var bellAndSearch = document.getElementsByClassName("settingsContainer")[0];
+	var bellAndSearch = document.getElementsByClassName("notificationContainer")[0];
 	if (bellAndSearch == null) return null;
 	bellAndSearch.addEventListener("click", function(event) {
-		if (event.target.id == "settings") {
-			/* link is hardcoded, maybe change later */
-			window.location.href = (document.getElementById("home_link").href) + "einstellungen";
-		} else if (document.getElementById("showNotifications") == null) {
+		if (document.getElementById("showNotifications") == null) {
 			let div = document.createElement("div");
 			div.id = "showNotifications";
 			document.body.appendChild(div);

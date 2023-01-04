@@ -1198,6 +1198,17 @@ class Ajax {
 				$text = $data["text"];
 				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET size_summary = '$text' WHERE id = $id");
 			break;
+			case "updateSpecificPrice":
+				require_once('classes/project/StickerImage.php');
+				$id = (int) $_POST["id"];
+				$width = (int) $_POST["width"];
+				$height = (int) $_POST["height"];
+				$price = (int) $_POST["price"];
+
+				$stickerImage = new StickerImage($id);
+				$stickerImage->updatePrice($width, $height, $price);
+				echo "success";
+			break;
 			case "addTag":
 				$id = (int) $_POST["id"];
 				$tag = (String) $_POST["tag"];

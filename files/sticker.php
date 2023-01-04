@@ -292,7 +292,7 @@
         </section>
     </div>
     <div class="defCont align-center">
-        <h2>Größen</h2>
+        <h2 style="text-align: left;">Größen</h2>
         <div id="sizeTableWrapper"><?=$stickerImage->getSizeTable()?></div>
         <div>
             <p>Aufkleberpreisklasse</p>
@@ -349,7 +349,8 @@
     </div>
     <div class="defCont">
         <h2>Produktexport</h2>
-        <button onclick="exportFacebook()">facebook export test</button>
+        <!-- TODO: facebook export überlegen, wo das angelegt wird und wie es funktioniert -->
+        <button style="display: none" onclick="exportFacebook()">facebook export test</button>
         <form>
             <label>
                 <input id="exportFb" name="exportFb" type="checkbox">    
@@ -377,9 +378,4 @@
             </label>
         </form>
     </div>
-    <!--<div class="fastUpload">
-        Weitere Infos:
-        Facebook etc.
-        Google Analytics und Klicks, Verkäufe etc.
-    </div>-->
 <?php endif; ?>

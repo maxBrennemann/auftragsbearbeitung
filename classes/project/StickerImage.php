@@ -520,6 +520,17 @@ class StickerImage {
         DBAccess::updateQuery($query);
     }
 
+    public function updatePrice(int $width, int $height, int $price) {
+        $difficulty = (int) $this->data["price_class"];
+        $currentPrice = $this->getPrice($width, $height, $difficulty);
+
+        if ($currentPrice != $price) {
+            $query = "UPDATE module_sticker_sizes SET price = $price WHERE id_sticker = $this->id AND width = $width";
+        }
+
+        DBAccess::updateQuery($query);
+    }
+
     private function getAllTags() {
         $data = DBAccess::selectQuery("SELECT tags.id, tags.content FROM module_sticker_tags tags, module_sticker_sticker_tag `match` WHERE tags.id = match.id_tag AND match.id_sticker = $this->id");
         
