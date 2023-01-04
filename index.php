@@ -9,11 +9,14 @@ require_once('classes/Ajax.php');
 require_once('classes/Link.php');
 require_once('classes/Protocoll.php');
 require_once('classes/project/FormGenerator.php');
+require_once('classes/project/CacheManager.php');
+require_once('classes/project/Icon.php');
 require_once('classes/project/Posten.php');
 require_once('classes/project/Angebot.php');
 require_once('classes/project/NotificationManager.php');
-require_once('classes/project/CacheManager.php');
 $isArticle = false;
+
+/* TODO: index.php neu überarbeiten und logischer aufbauen, eventuell mit htaccess mehr filtern? */
 
 /* TODO: api requests hier abfangen */
 $apiRequest = false;

@@ -1209,6 +1209,20 @@ class Ajax {
 				$stickerImage->updatePrice($width, $height, $price);
 				echo "success";
 			break;
+			case "productVisibility":
+				require_once('classes/project/StickerImage.php');
+				$id = (int) $_POST["id"];
+				$type = (String) $_POST["type"];
+				$status = (String) $_POST["status"];
+
+				$stickerImage = new StickerImage($id);
+				$icon = $stickerImage->updateVisibility($type, $status);
+
+				echo json_encode([
+					"status" => "success",
+					"icon" => $icon,
+				]);
+			break;
 			case "addTag":
 				$id = (int) $_POST["id"];
 				$tag = (String) $_POST["tag"];
