@@ -449,7 +449,7 @@ class StickerShopDBController {
         /* TODO: image shop ids abspeichern */
         $imageIds = json_decode($result);
         foreach ($imageIds as $imageId) {
-            $key = array_search($imageId["url"], $imageURLs);
+            //$key = array_search($imageId["url"], $imageURLs);
         }
     }
 
