@@ -70,8 +70,12 @@ header aside div {
     height: calc(80vh - 100px);
 }
 
-.settingsContainer {
+.settingsContainer, .notificationContainer {
     cursor: pointer;
+}
+
+#settings, #settings:visited {
+    color: unset;
 }
 
 .logoutContainer {

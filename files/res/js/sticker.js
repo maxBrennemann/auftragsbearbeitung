@@ -657,10 +657,21 @@ function changeHeight(e) {
     sendRows(data, text);
 }
 
-function changePrice(e) {
-    var targetId = parseInt(e.target.dataset.id);
-    var size = sizes[targetId];
+async function changePrice(e) {
+    let targetId = parseInt(e.target.dataset.id);
+    let size = sizes[targetId];
     size.price = size.getPriceInCent(e.target.value);
+
+    /* send price data to server */
+    let data = {
+        id: mainVariables.motivId.innerHTML,
+        size: size,
+        price: size.price,
+        width: size.width,
+        height: size.height,
+    };
+    let success = await send(data, "updateSpecificPrice");
+    infoSaveSuccessfull(success);
 }
 
 /**
@@ -857,7 +868,7 @@ async function click_transferAll(e) {
     document.getElementsByClassName("productLoader")[id].style.display = "inline";
     var data = {
         id: mainVariables.motivId.innerHTML,
-        type: "all"
+        type: 5
     };
     var response = await send(data, "transferProduct");
     console.log(response);
