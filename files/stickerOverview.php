@@ -74,5 +74,5 @@ $t->addLink($linker);
 </div>
 <div class="defCont">
     <p class="pHeading">Motivexporte</p>
-    <button id="createFbExport">Facebook Export generieren</button>
+    <button id="createFbExport" data-binding="true">Facebook Export generieren</button>
 </div>

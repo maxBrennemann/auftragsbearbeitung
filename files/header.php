@@ -122,9 +122,10 @@
 			<li>
 				<a href="<?=$zeiterfassung?>">Zeiterfassung</a>
 			</li>
-			<li>
+			<!--<li>
 				<a href="<?=$motive?>">Motive</a>
-			</li>
+			</li>-->
+			<!-- TODO: motive komplett entfernen -->
 			<li>
 				<a href="<?=$motiveOverview?>">Motivübersicht</a>
 			</li>
