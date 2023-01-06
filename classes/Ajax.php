@@ -1280,6 +1280,10 @@ class Ajax {
 					echo "no data found";
 				}
 			break;
+			case "createFbExport":
+				require_once('classes/project/modules/sticker/exports/ExportFacebook.php');
+				ExportFacebook::exportAll();
+			break;
 			case "exportFacebook":
 				require_once('classes/project/StickerImage.php');
 				require_once('classes/project/modules/sticker/exports/ExportFacebook.php');

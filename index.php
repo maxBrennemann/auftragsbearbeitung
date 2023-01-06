@@ -18,6 +18,8 @@ $isArticle = false;
 
 /* TODO: index.php neu überarbeiten und logischer aufbauen, eventuell mit htaccess mehr filtern? */
 
+/* TODO: alle db accesses auf parameterizes sql umstellen wegen sql injections */
+
 /* TODO: api requests hier abfangen */
 $apiRequest = false;
 if ($apiRequest == true) {

@@ -391,4 +391,7 @@
             </label>
         </form>
     </div>
+    <div class="defCont">
+        <h2>Statistiken</h2>
+    </div>
 <?php endif; ?>

@@ -193,3 +193,7 @@ async function createNewSticker() {
         }
     }
 }
+
+async function click_createFbExport() {
+    let fbExport = await send({}, "createFbExport");
+}

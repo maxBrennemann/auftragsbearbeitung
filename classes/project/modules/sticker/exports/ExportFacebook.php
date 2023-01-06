@@ -1,5 +1,7 @@
 <?php
 
+use ExportFacebook as GlobalExportFacebook;
+
 require_once("classes/project/StickerImage.php");
 
 class ExportFacebook {
@@ -10,6 +12,16 @@ class ExportFacebook {
     function __construct() {
         $this->file = fopen('files/res/form/modules/sticker/catalog_products.csv', 'a');
         //$this->readCSV();
+    }
+
+    public static function exportAll() {
+        $allProducts = DBAccess::selectQuery("SELECT id FROM module_sticker_sticker_data");
+        foreach ($allProducts as $product) {
+            $id = $product["id"];
+            $sticker = new StickerImage($id);
+            $export = new static();
+            $export->addProduct($sticker);
+        }
     }
 
     private function readCSV() {
