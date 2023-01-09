@@ -1138,7 +1138,7 @@ class Ajax {
 				if ($id == 0 || !is_numeric($id)) {
 					echo -1;
 				} else {
-					$link = Link::getPageLink("sticker-overview") . "?id=" . $id;
+					$link = Link::getPageLink("sticker") . "?id=" . $id;
 					echo $link;
 				}
 			break;
