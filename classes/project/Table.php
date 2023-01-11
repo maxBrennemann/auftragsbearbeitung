@@ -18,6 +18,10 @@ class Table {
 	private $link = null;
 	public $columnNames;
 
+	/* TODO: schauen, ob diese parameter public oder private sein sollen, weil ich die nur eingefügt habe, weil sie nicht definiert waren */
+	private $update;
+	private $sendTo;
+
 	private $dataset = [0=>false];
 	
 	/* action button variables */
@@ -248,17 +252,17 @@ class Table {
 
 	/* action buttons */
 	private function addUpdateButton($key) {
-        $button = "<button class='actionButton' onclick=\"updateIsDone('$key', event)\" title='Als erledigt markieren.'>&#x2714;</button>";
+        $button = "<button class='actionButton' onclick=\"updateIsDone('$key', event)\" title='Als erledigt markieren.'>" . Icon::$iconCheck . "</button>";
 		return $button;
     }
 
     private function addEditButton($key) {
-        $button = "<button class='actionButton' onclick=\"editRow('$key', this)\" title='Bearbeiten'>&#x270E;</button>";
+        $button = "<button class='actionButton' onclick=\"editRow('$key', this)\" title='Bearbeiten'>" . Icon::$iconEdit . "</button>";
 		return $button;
     }
 
     private function addDeleteButton($key) {
-		$button = "<button class='actionButton' onclick=\"deleteRow('$key', '$this->type', this)\" title='Löschen'><svg style=\"width:20px;height:20px\" viewBox=\"0 0 24 24\"><path fill=\"currentColor\" d=\"M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z\" /></svg></button>";
+		$button = "<button class='actionButton' onclick=\"deleteRow('$key', '$this->type', this)\" title='Löschen'>" . Icon::$iconDelete . "</button>";
 		return $button;
 	}
 	
@@ -268,7 +272,7 @@ class Table {
 	}
 
 	private function addMove($key) {
-		$button = "<button class='actionButton moveRow' onmousedown=\"moveInit(event)\" onmouseup=\"moveRemove(event)\" title='Reihenfolge verändern' data-key=\"$key\">&#x2725;</button>";
+		$button = "<button class='actionButton moveRow' onmousedown=\"moveInit(event)\" onmouseup=\"moveRemove(event)\" title='Reihenfolge verändern' data-key=\"$key\">" . Icon::$iconMove . "</button>";
 		return $button;
 	}
 
