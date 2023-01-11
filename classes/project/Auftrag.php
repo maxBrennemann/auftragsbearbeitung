@@ -264,7 +264,7 @@ class Auftrag implements StatisticsInterface {
 		$t->addActionButton("edit");
 		$t->setType("posten");
 		$t->addActionButton("delete", $identifier = "Postennummer");
-		$t->addAction(null, "+", "Rechnung/ Zahlung hinzufügen");
+		$t->addAction(null, Icon::$iconAdd, "Rechnung/ Zahlung hinzufügen");
 		$t->addActionButton("move");
 		$t->addDataset("type", "type");
 		$_SESSION["posten_table"] = serialize($t);
@@ -529,7 +529,7 @@ class Auftrag implements StatisticsInterface {
 			$content = $note['Notiz'];
 			$html .= "
 				<div class=\"notes\">
-					<div class=\"noteheader\">Notiz 📓</div>
+					<div class=\"noteheader\">Notiz " .  Icon::$iconNotebook . "</div>
 					<div class=\"notecontent\">$content</div>
 					<div class=\"notebutton\" onclick=\"removeNote(event)\">×</div>
 				</div>

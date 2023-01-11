@@ -20,24 +20,24 @@
 ?>
 <div>
 	<ul class="mainUl">
-		<li><a href="<?=$neuerKunde?>">+👤 Neuen Kunden erstellen</a></li>
+		<li><a href="<?=$neuerKunde?>"><?=Icon::$iconPersonAdd?> Neuen Kunden erstellen</a></li>
 		<li>
 			<input id="kundeninput" type="text"><a hef="#" data-url="<?=$kunde?>" id="kundenLink"> →</a><br>
 			<a href="<?=$kunde?>?showDetails=list">Zu den Kunden</a>
 		</li>
-		<li><a href="<?=$neuerAuftrag?>">+💼 Neuen Auftrag erstellen</a></li>
+		<li><a href="<?=$neuerAuftrag?>"><?=Icon::$iconOrderAdd?> Neuen Auftrag erstellen</a></li>
 		<li><a href="<?=$rechnung?>">Neue Rechnung erstellen</a></li>
 		<li>
 			<input id="rechnungsinput" type="number" min="1" oninput="document.getElementById('rechnungsLink').href = '<?=$rechnung?>?target=view&id=' + this.value;">
 			<a href="#" id="rechnungsLink">Rechnung anzeigen</a>
 		</li>
 		<li><a href="<?=$neuesAngebot?>">+ Neues Angebot erstellen</a></li>
-		<li><a href="<?=$neuesProdukt?>">+ Neues Produkt erstellen</a></li>
+		<li><a href="<?=$neuesProdukt?>"><?=Icon::$iconProductAdd?> Neues Produkt erstellen</a></li>
 		<li>
 			<input id="auftragsinput" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value + '&query=' + this.value;">
 			<a href="#" id="auftragsLink">Auftrag anzeigen</a>
 		</li>
-		<li><a href="<?=$diagramme?>">📈 Diagramme und Auswertungen</a></li>
+		<li><a href="<?=$diagramme?>"><?=Icon::$iconChart?> Diagramme und Auswertungen</a></li>
 		<li><a href="<?=$leistungenLinks?>">Leistungen</a></li>
 		<li><a href="<?=$toDo?>">Verbesserungen für die Auftragsbearbeitung</a></li>
 		<li><a href="<?=$offeneRechnungen?>">Offene Rechnungen:</a> <b><?=$offeneSumme?>€</b></li>
