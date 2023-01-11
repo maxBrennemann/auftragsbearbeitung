@@ -1,6 +1,7 @@
 <?php
 
 require_once('classes/project/StickerShopDBController.php');
+require_once('classes/project/modules/sticker/StickerChangelog.php');
 
 class StickerImage {
 
@@ -195,35 +196,6 @@ class StickerImage {
     }
 
     private function updateAufkleber() {
-        /* StickerChangeLog() */
-        $this->stickerDB = new StickerShopDBController($this->id, "Aufkleber " . $this->name, $description, $descriptionShort, $basePrice);
-        $this->stickerDB->addTags(["Aufkleber", "Sticker", "Motiv"]);
-        $this->stickerDB->addTags($this->getAllTags());
-
-        if ($this->data["is_short_time"] == "1" && $this->data["is_long_time"] == "1") {
-            $this->stickerDB->addAttributeArray([163, 162]);
-        }
-
-        $prices = [];
-        $sizes = $this->getSizeIds();
-        for ($i = 0; $i < sizeof($data); $i++) {
-            $price = $data[$i]["price"];
-            $price = (float) $price - $basePrice;
-            $prices[$sizes["ids"][$i]] = number_format($price, 4);
-        }
-
-        $this->stickerDB->prices = $prices;
-        $this->stickerDB->addImages($this->getImagesByType("is_aufkleber"));
-        
-        /* only if is_multipart is false, add colors */
-        $this->addSizesToProduct();
-        if ($this->data["is_multipart"] == "0") {
-            $this->addColorsToProduct();
-        }
-
-        $this->stickerDB->addSticker();
-
-        $this->stickerDB->setCategory([2, 13]);
     }
 
     /**
@@ -257,7 +229,7 @@ class StickerImage {
         $this->stickerDB->addTags($this->getAllTags());
 
         $this->stickerDB->prices = $prices;
-        $this->stickerDb->buyingPrices = $buyingPrices;
+        $this->stickerDB->buyingPrices = $buyingPrices;
         $this->stickerDB->addImages($this->getImagesByType("is_wandtattoo"));
         $this->stickerDB->addAttributeArray($this->getSizeIds()["ids"]);
         $this->stickerDB->addSticker();
