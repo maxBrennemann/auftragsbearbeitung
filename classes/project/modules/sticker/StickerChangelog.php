@@ -1,6 +1,8 @@
 <?php
 
-class StickerChangelog implements StickerShopController {
+require_once('classes/project/modules/sticker/StickerShopController.php');
+
+class StickerChangelog /*implements StickerShopController*/ {
 
     /**
      * Logs new or changed entries into the sticker data module
