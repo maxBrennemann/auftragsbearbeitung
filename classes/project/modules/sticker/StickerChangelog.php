@@ -1,6 +1,6 @@
 <?php
 
-require_once('classes/project/modules/sticker/StickerShopController.php');
+require_once('classes/project/modules/sticker/StickerController.php');
 
 class StickerChangelog /*implements StickerShopController*/ {
 
