@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * stellt allgemeine Stickerfunktionen zur Verfügung, ist die Elternklasse von
+ * Aufkleber, Wandtattoo und Textil
+ */
 class Sticker {
 
     function __construct() {

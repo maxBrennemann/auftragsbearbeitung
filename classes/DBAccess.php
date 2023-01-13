@@ -30,12 +30,26 @@ class DBAccess {
 		}
 	}
 	
-	public static function selectQuery($query) {
+	public static function selectQuery($query, $params = NULL) {
 		self::createConnection();
 		
 		self::$statement = self::$connection->prepare($query);
 		self::$statement->execute();
 		$result = self::$statement->fetchAll(PDO::FETCH_ASSOC);
+
+		if ($params != NULL) {
+			foreach($params as $key => &$val){
+				$dataType = getType($val);
+				switch($dataType) {
+					case "integer":
+						self::$statement->bindParam($key, $val, PDO::PARAM_INT);
+						break;
+					case "string":
+						self::$statement->bindParam($key, $val, PDO::PARAM_STR);
+						break;
+				}
+			}
+		}
 		
 		return $result;
 	}
