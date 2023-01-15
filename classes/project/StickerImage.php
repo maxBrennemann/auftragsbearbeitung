@@ -418,59 +418,6 @@ class StickerImage {
         return isset($this->shopProducts[$type]);
     }
 
-    public function getTags() {
-        $data = DBAccess::selectQuery("SELECT tags.id, tags.content FROM module_sticker_tags tags, module_sticker_sticker_tag `match` WHERE tags.id = match.id_tag AND match.id_sticker = $this->id");
-
-        $tagsHTML = "<dl class=\"tagList\">";
-
-        foreach ($data as $tag) {
-            $id = $tag["id"];
-            $content = $tag["content"];
-            $tagsHTML .= "<dt>$content<span class=\"remove\" data-tag=\"$id\">x</span></dt>";
-        }
-
-        foreach (explode(" ", $this->name) as $query) {
-            $tags = array_slice($this->getSynonyms($query), 0, 3);
-            foreach ($tags as $tag) {
-                $tagsHTML .= "<dt class=\"suggestionTag\">$tag<span class=\"remove\">x</span></dt>";
-            }
-        }
-
-        return $tagsHTML . "</dl>";
-    }
-
-    public function getSynonyms($query) {
-        if (!file_exists('cache/modules/sticker/tags')) {
-            mkdir('cache/modules/sticker/tags', 0777, true);
-        }
-
-        @$cachedSynonyms = file_get_contents('cache/modules/sticker/tags/' . $query . '.json');
-        if ($cachedSynonyms === false) {
-            $ch = curl_init("https://www.openthesaurus.de/synonyme/search?q=$query&format=application/json");
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $result = curl_exec($ch);
-            curl_close($ch);
-
-            $result = json_decode($result, true);
-            $synonyms = [];
-            if ($result != null && $result["synsets"] != null) {
-                foreach ($result["synsets"] as $set) {
-                    foreach ($set["terms"] as $term) {
-                        if (!in_array($term["term"], $synonyms)) {
-                            array_push($synonyms, $term["term"]);
-                        }
-                    }
-                }
-            }
-
-            return $synonyms;
-        } else {
-            $cachedSynonyms = json_decode($cachedSynonyms);
-            return $cachedSynonyms;
-        }
-    }
-
     /**
      * if a new price is set, the price is written into the db
      */

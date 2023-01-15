@@ -3,8 +3,12 @@
     require_once('classes/project/ProductCrawler.php');
     require_once('classes/project/StickerShopDBController.php');
 
+    /* temp */
+    require_once('classes/project/modules/sticker/StickerTagManager.php');
+
     $id = 0;
     $stickerImage = null;
+    $stickerTagManager = null;
     if (isset($_GET['id'])) {
         $id = (int) $_GET['id'];
         $stickerImage = new StickerImage($id);
@@ -18,6 +22,8 @@
             $mainImage = $images[0];
             $getDownloadResources = $stickerImage->getFiles();
         } while (0);
+
+        $stickerTagManager = new StickerTagManager($id, $stickerImage->getName());
     }
 
     if ($id != 0 && $stickerImage != null):
@@ -323,7 +329,7 @@
     <div class="defCont">
         <h2>Tags<button class="infoButton" data-info="3">i</button></h2>
         <div>
-            <?=$stickerImage->getTags()?>
+            <?=$stickerTagManager->getTagsHTML()?>
             <input type="text" class="tagInput" onkeydown="addTag(event)">
         </div>
         <a href="#" onclick="loadTags()">Mehr Synonyme laden</a>

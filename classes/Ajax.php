@@ -1224,34 +1224,12 @@ class Ajax {
 				]);
 			break;
 			case "addTag":
-				$id = (int) $_POST["id"];
-				$tag = (String) $_POST["tag"];
-
-				if ($tag == "") {
-					echo -1;
-					return;
-				}
-
-				$query = "REPLACE INTO module_sticker_tags (content) VALUES ('$tag');";
-				$tagId = DBAccess::insertQuery($query);
-				$query = "INSERT INTO module_sticker_sticker_tag (id_sticker, id_tag) VALUES ($id, $tagId)";
-				DBAccess::insertQuery($query);
-				echo $tagId;
+				require_once('classes/project/modules/sticker/StickerTagManager.php');
+				StickerTagManager::addTag();
 			break;
 			case "removeTag":
-				$id = (int) $_POST["id"];
-				$tag = (String) $_POST["tag"];
-
-				$tagId = "SELECT id FROM module_sticker_tags WHERE content = '$tag'";
-				$tagId = DBAccess::selectQuery($tagId);
-				if ($tagId != null) {
-					$tagId = $tagId[0]["id"];
-
-					$query = "DELETE FROM module_sticker_sticker_tag WHERE id_tag = $tagId AND id_sticker = $id";
-					DBAccess::deleteQuery($query);
-				} else {
-					echo "not found";
-				}
+				require_once('classes/project/modules/sticker/StickerTagManager.php');
+				StickerTagManager::removeTag();
 			break;
 			case "changeImageParameters":
 				require_once('classes/project/StickerImage.php');

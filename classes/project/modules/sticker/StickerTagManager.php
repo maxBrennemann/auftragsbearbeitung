@@ -7,12 +7,20 @@ require_once('classes/project/modules/sticker/Sticker.php');
 
 class StickerTagManager extends PrestashopConnection implements StickerExport {
 
-    private $idProduct;
+    private $idSticker;
     private $tags;
+    private $title;
 
-    function __construct($idProduct) {
-        $query = "SELECT * FROM module_sticker_tags t JOIN module_sticker_sticker_tag st ON st.id_tag = t.id WHERE st.id_sticker = $idProduct";
+    function __construct(int $idSticker, String $title = "") {
+        $query = "SELECT * FROM module_sticker_tags t JOIN module_sticker_sticker_tag st ON st.id_tag = t.id WHERE st.id_sticker = $idSticker";
         $this->tags = DBAccess::selectQuery($query);
+        $this->idSticker = $idSticker;
+
+        if ($title == "") {
+            $sticker = new StickerImage($idSticker);
+            $title = $sticker->getName();
+        }
+        $this->title = $title;
     }
 
     public function get() {
@@ -22,6 +30,25 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
         }
 
         return $tagsContent;
+    }
+
+    public function getTagsHTML() {
+        $tagsHTML = "<dl class=\"tagList\">";
+
+        foreach ($this->tags as $tag) {
+            $id = $tag["id"];
+            $content = $tag["content"];
+            $tagsHTML .= "<dt>$content<span class=\"remove\" data-tag=\"$id\">x</span></dt>";
+        }
+
+        foreach (explode(" ", $this->title) as $query) {
+            $tags = array_slice($this->getSynonyms($query), 0, 3);
+            foreach ($tags as $tag) {
+                $tagsHTML .= "<dt class=\"suggestionTag\">$tag<span class=\"remove\">x</span></dt>";
+            }
+        }
+
+        return $tagsHTML . "</dl>";
     }
 
     public function getTagIds() {
@@ -49,6 +76,10 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
      * this function does not sync tags with the shop
      */
     public function add(String $content) {
+        if (strlen($content) > 32) {
+            return;
+        }
+
         $query = "SELECT id FROM module_sticker_tags WHERE content = :content";
         $result = DBAccess::selectQuery($query, ["content" => $content]);
 
@@ -61,11 +92,13 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
         }
 
         $query = "INSERT INTO module_sticker_sticker_tag (id_tag, id_sticker) VALUES (:id_tag, :id_sticker)";
-        DBAccess::insertQuery($query, ["id_tag" => $id, "id_sticker" => $this->idProduct]);
+        DBAccess::insertQuery($query, ["id_tag" => $id, "id_sticker" => $this->idSticker]);
         
         /* write to changelog */
         /* TODO: testen, ob es funktioniert, wenn sticker data nicht direkt mit der anderen tabelle zusammenhängt */
-        StickerChangelog::log($this->idProduct, "", $id, "module_sticker_tags", "content", $content);
+        StickerChangelog::log($this->idSticker, "", $id, "module_sticker_tags", "content", $content);
+
+        return $id;
     }
 
     /* https://stackoverflow.com/questions/35975677/prestashop-webservice-add-products-tags-and-attachment-document */
@@ -129,6 +162,82 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
             $this->editXML($opt);
         }
     }
+
+    public function getSynonyms($query) {
+        if (!file_exists('cache/modules/sticker/tags')) {
+            mkdir('cache/modules/sticker/tags', 0777, true);
+        }
+
+        @$cachedSynonyms = file_get_contents('cache/modules/sticker/tags/' . $query . '.json');
+        if ($cachedSynonyms === false) {
+            $ch = curl_init("https://www.openthesaurus.de/synonyme/search?q=$query&format=application/json");
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $result = curl_exec($ch);
+            curl_close($ch);
+
+            $result = json_decode($result, true);
+            $synonyms = [];
+            if ($result != null && $result["synsets"] != null) {
+                foreach ($result["synsets"] as $set) {
+                    foreach ($set["terms"] as $term) {
+                        if (!in_array($term["term"], $synonyms)) {
+                            array_push($synonyms, $term["term"]);
+                        }
+                    }
+                }
+            }
+
+            return $synonyms;
+        } else {
+            $cachedSynonyms = json_decode($cachedSynonyms);
+            return $cachedSynonyms;
+        }
+    }
+
+    /**
+     * gets called when an ajax request is fired,
+     * loads more synonyms
+     */
+    public static function loadMoreSynonyms() {
+        
+    }
+
+    /**
+     * gets called when an ajax request is fired
+     */
+    public static function addTag() {
+        $id = getParameter("id", "POST");
+        $tag = getParameter("tag", "POST");
+
+        if ($tag == null || $tag == "") {
+            echo -1;
+            return;
+        }
+
+        $stickerTagManager = new StickerTagManager($id);
+        echo $stickerTagManager->add($tag);
+    }
+
+    /**
+     * gets called when an ajax request is fired
+     */
+    public static function removeTag() {
+        $id = getParameter("id", "POST");
+        $tag = getParameter("tag", "POST");
+
+        $tagId = "SELECT id FROM module_sticker_tags WHERE content = '$tag'";
+        $tagId = DBAccess::selectQuery($tagId);
+        if ($tagId != null) {
+            $tagId = $tagId[0]["id"];
+
+            $query = "DELETE FROM module_sticker_sticker_tag WHERE id_tag = $tagId AND id_sticker = $id";
+            DBAccess::deleteQuery($query);
+        } else {
+            echo "not found";
+        }
+    }
+
 }
 
 ?>
