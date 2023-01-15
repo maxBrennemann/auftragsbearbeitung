@@ -215,4 +215,20 @@ function errorReporting() {
 	}
 }
 
+function getParameter($value, $type = "GET") {
+	switch ($type) {
+		case "GET":
+			if (isset($_GET[$value])) {
+				return $_GET[$value];
+			}
+			break;
+		case "POST":
+			if (isset($_POST[$value])) {
+				return $_POST[$value];
+			}
+			break;
+	}
+	return null;
+}
+
 ?>
