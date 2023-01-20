@@ -9,6 +9,8 @@
     $id = 0;
     $stickerImage = null;
     $stickerTagManager = null;
+    $stickerChangelog = null;
+
     if (isset($_GET['id'])) {
         $id = (int) $_GET['id'];
         $stickerImage = new StickerImage($id);
@@ -24,6 +26,7 @@
         } while (0);
 
         $stickerTagManager = new StickerTagManager($id, $stickerImage->getName());
+        $stickerChangelog = new StickerChangelog($id);
     }
 
     if ($id != 0 && $stickerImage != null):
@@ -332,6 +335,7 @@
             <?=$stickerTagManager->getTagsHTML()?>
             <input type="text" class="tagInput" maxlength="32" onkeydown="addTag(event)">
         </div>
+        <p>Nicht erlaubt sind folgende Zeichen: !<;>;?=+#"°{}_$%.</p>
         <a href="#" onclick="loadTags()">Mehr Synonyme laden</a>
     </div>
     <div class="defCont">
@@ -399,5 +403,9 @@
     </div>
     <div class="defCont">
         <h2>Statistiken</h2>
+    </div>
+    <div class="defCont">
+        <h2>Changelog</h2>
+        <?=$stickerChangelog->getTable()?>
     </div>
 <?php endif; ?>

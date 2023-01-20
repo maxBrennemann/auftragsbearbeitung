@@ -307,7 +307,7 @@ class StickerShopDBController {
 
                 if ($this->prices != null && array_key_exists($a, $this->prices)) {
                     $combination->price = $this->prices[$a];
-                    $combination->wholesale_price = $this->buyingPrices[$a];
+                    $combination->wholesale_price = $this->buyingPrices[$a]; // TODO: zeile schmeißt am  Server einen Fehler: trying to access array ofset on value of type null
                 }
             }
 

@@ -34,9 +34,7 @@ class DBAccess {
 		self::createConnection();
 		
 		self::$statement = self::$connection->prepare($query);
-		self::$statement->execute();
-		$result = self::$statement->fetchAll(PDO::FETCH_ASSOC);
-
+		
 		if ($params != NULL) {
 			foreach($params as $key => &$val){
 				$dataType = getType($val);
@@ -50,6 +48,9 @@ class DBAccess {
 				}
 			}
 		}
+
+		self::$statement->execute();
+		$result = self::$statement->fetchAll(PDO::FETCH_ASSOC);
 		
 		return $result;
 	}

@@ -4,6 +4,37 @@ require_once('classes/project/modules/sticker/StickerController.php');
 
 class StickerChangelog /*implements StickerShopController*/ {
 
+    private $idSticker;
+    private $changelogData;
+
+    function __construct(int $idSticker) {
+        $this->idSticker = $idSticker;
+        $query = "SELECT * FROM `module_sticker_changelog` WHERE id_sticker = :idSticker";
+        $this->changelogData = DBAccess::selectQuery($query, ["idSticker" => $idSticker]);
+    }
+
+    public function getStickerId() {
+        return $this->idSticker;
+    }
+
+    public function getChangelogData() {
+        return $this->changelogData;
+    }
+
+    public function getTable() {
+        $column_names = array(
+            0 => array("COLUMN_NAME" => "id", "ALT" => "Nummer"),
+            1 => array("COLUMN_NAME" => "type", "ALT" => "Art"),
+            2 => array("COLUMN_NAME" => "table", "ALT" => "Tabelle (intern)"),
+            3 => array("COLUMN_NAME" => "column", "ALT" => "Spalte (intern)"),
+            4 => array("COLUMN_NAME" => "newValue", "ALT" => "Neuer Wert"),
+        );
+
+        $t = new Table();
+		$t->createByData($this->changelogData, $column_names);
+		return $t->getTable();
+    }
+
     /**
      * Logs new or changed entries into the sticker data module
      * @param int $stickerId the id of the current sticker
