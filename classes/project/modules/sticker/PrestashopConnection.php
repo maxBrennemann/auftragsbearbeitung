@@ -27,6 +27,19 @@ class PrestashopConnection {
     protected function editXML($options) {
         $this->xml = $this->webService->edit($options);
     }
+
+    protected function deleteXML($resource, $id, $debug = false) {
+        try {
+            $this->webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, $debug);
+
+            $this->webService->delete([
+                'resource' => $resource,
+                'id' => $id,
+            ]);
+        } catch (PrestaShopWebserviceException $e) {
+            echo 'Error:' . $e->getMessage();
+        }
+    }
 }
 
 ?>

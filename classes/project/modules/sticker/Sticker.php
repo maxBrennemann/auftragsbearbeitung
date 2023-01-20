@@ -4,7 +4,10 @@
  * stellt allgemeine Stickerfunktionen zur Verfügung, ist die Elternklasse von
  * Aufkleber, Wandtattoo und Textil
  */
-class Sticker {
+class Sticker extends PrestashopConnection {
+
+    protected $idSticker;
+    protected $idProduct;
 
     function __construct() {
 
@@ -38,6 +41,10 @@ class Sticker {
 
     }
 
+    public function getActiveStatus() {
+
+    }
+
     public function setName() {
 
     }
@@ -48,6 +55,32 @@ class Sticker {
 
     public function update() {
 
+    }
+
+    public function delete() {
+        $this->deleteXML("products", $this->idProduct);
+    }
+
+    /**
+     * switches the product active status
+     */
+    public function toggleActiveStatus() {
+        $xml = $this->getXML("product/$this->idProduct");
+        $resource_product = $xml->children()->children();
+        
+        $active = (int) $resource_product->active;
+        if ($active == 0) {
+            $active = 1;
+        } else {
+            $active = 0;
+        }
+
+        $opt = array(
+            'resource' => 'products',
+            'putXml' => $xml->asXML(),
+            'id' => $this->idProduct,
+        );
+        $this->editXML($opt);
     }
 }
 
