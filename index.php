@@ -26,6 +26,16 @@ if ($apiRequest == true) {
 	header('X-Accel-Buffering: no');
 }
 
+/**
+ * polyfill str_contains, maybe remove it later when support for older version drops
+ * https://www.php.net/manual/en/function.str-contains.php
+ */
+if (!function_exists('str_contains')) {
+    function str_contains($haystack, $needle) {
+        return $needle !== '' && mb_strpos($haystack, $needle) !== false;
+    }
+}
+
 /*
 * Before: page was submitted via $_GET paramter, but now the REQUEST_URI is read;
 * $url is splitted into the REQUEST_URI and the parameter part

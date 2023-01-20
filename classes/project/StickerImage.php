@@ -735,7 +735,7 @@ class StickerImage {
 
             if (!str_contains($file, "<svg id=\"svg_elem\"")) {
                 $file = str_replace("<svg", "<svg id=\"svg_elem\"", $file);
-            }
+            } // TODO: str_contains wird nicht gefunden am Server, vielleicht ein Problem der Version?
 
             file_put_contents($newFile, $file);
 
