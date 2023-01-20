@@ -145,30 +145,34 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
     public function saveChanges(Sticker $products) {
         foreach ($products as $product) {
             $productId = $product->getId();
-            $xml = $this->getXML("product/$productId");
-            $tags = $xml->{'assiciations'};
-
-            $tagIds = [];
-            /* read all existing tags from shop for this product */
-            foreach ($tags->tag as $tag) {
-                $tagIds = $tag->{'id'};
-            }
-
-            /* insert new tag if it does not exist */
-            foreach ($this->getTagIds() as $id) {
-                if (!in_array($id, $tagIds)) {
-                    $tag = $tags->addChild("tag");
-                    $tag->addChild("id", $id);
-                }
-            }
-
-            $opt = array(
-                'resource' => 'products',
-                'putXml' => $xml->asXML(),
-                'id' => $productId,
-            );
-            $this->editXML($opt);
+            $this->saveTags($productId);
         }
+    }
+
+    public function saveTags($productId) {
+        $xml = $this->getXML("product/$productId");
+        $tags = $xml->{'assiciations'};
+
+        $tagIds = [];
+        /* read all existing tags from shop for this product */
+        foreach ($tags->tag as $tag) {
+            $tagIds = $tag->{'id'};
+        }
+
+        /* insert new tag if it does not exist */
+        foreach ($this->getTagIds() as $id) {
+            if (!in_array($id, $tagIds)) {
+                $tag = $tags->addChild("tag");
+                $tag->addChild("id", $id);
+            }
+        }
+
+        $opt = array(
+            'resource' => 'products',
+            'putXml' => $xml->asXML(),
+            'id' => $productId,
+        );
+        $this->editXML($opt);
     }
 
     public function getSynonyms($query) {

@@ -153,8 +153,10 @@ class StickerImage {
     }
 
     public function setName($name) {
-        DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET name = '$name' WHERE id = $this->id");
+        DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET `name` = '$name' WHERE id = $this->id");
         echo "success";
+
+        StickerChangelog::log($this->id, "", $this->id, "module_sticker_sticker_data", "name", $name);
     }
 
     public function getPriceTextilFormatted() {
@@ -226,6 +228,11 @@ class StickerImage {
         $this->stickerDB = new StickerShopDBController($this->id, "Wandtattoo " . $this->name, $descriptions["long"], $descriptionShort, 20);
 
         $this->stickerDB->addTags(["Wandtattoo", "Sticker", "Motiv"]);
+
+        /* TODO: muss später so hinzugefügt werden, erst product erstellen und dann tags hinzufügen */
+        //$tags = new StickerTagManager($this->id);
+        //$tags->saveTags();
+
         $this->stickerDB->addTags($this->getAllTags());
 
         $this->stickerDB->prices = $prices;
@@ -419,7 +426,9 @@ class StickerImage {
     }
 
     /**
-     * if a new price is set, the price is written into the db
+     * sets new height for a sticker,
+     * adjusts price if necessary,
+     * writes to changelog
      */
     public function updateSizeTable($data) {
         $width = (int) $data["width"];
@@ -429,11 +438,14 @@ class StickerImage {
         $currentPrice = $this->getPrice($width, $height, $difficulty);
 
         $query = "UPDATE module_sticker_sizes SET height = $height, price = NULL WHERE id_sticker = $this->id AND width = $width";
-
+        
+        StickerChangelog::log($this->id, "", 0, "module_sticker_sizes", "height", $height);
         echo "preis: " . $currentPrice . " " . $data["price"] . " ";
+
         if ($currentPrice != $data["price"]) {
             $price = $data["price"];
             $query = "UPDATE module_sticker_sizes SET height = $height, price = $price WHERE id_sticker = $this->id AND width = $width";
+            StickerChangelog::log($this->id, "", 0, "module_sticker_sizes", "price", $price);
         }
 
         DBAccess::updateQuery($query);
@@ -445,11 +457,15 @@ class StickerImage {
 
         if ($currentPrice != $price) {
             $query = "UPDATE module_sticker_sizes SET price = $price WHERE id_sticker = $this->id AND width = $width";
+            StickerChangelog::log($this->id, "", 0, "module_sticker_sizes", "price", $price);
         }
 
         DBAccess::updateQuery($query);
     }
 
+    /**
+     * @deprecated
+     */
     private function getAllTags() {
         $data = DBAccess::selectQuery("SELECT tags.id, tags.content FROM module_sticker_tags tags, module_sticker_sticker_tag `match` WHERE tags.id = match.id_tag AND match.id_sticker = $this->id");
         
