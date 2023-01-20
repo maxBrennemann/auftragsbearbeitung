@@ -81,13 +81,13 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
             return;
         }
 
-        $query = "SELECT id FROM module_sticker_tags WHERE content = ':content'";
+        $query = "SELECT id FROM module_sticker_tags WHERE content = :content";
         $result = DBAccess::selectQuery($query, ["content" => $content]);
 
         if ($result != null) {
             $id = $result["id"];
         } else {
-            $query = "INSERT INTO module_sticker_tags (id_tag_shop, content) VALUES (:id_tag_shop, ':content')";
+            $query = "INSERT INTO module_sticker_tags (id_tag_shop, content) VALUES (:id_tag_shop, :content);";
             
             $id_tag_shop = $this->getTagIdFromShop($content);
             $parameters = [
@@ -96,7 +96,6 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
             ];
             
             $id = DBAccess::insertQuery($query, $parameters);
-            //$id = DBAccess::insertQuery("INSERT INTO module_sticker_tags (id_tag_shop, content) VALUES ($id_tag_shop, '$content')");
         }
 
         $query = "INSERT INTO module_sticker_sticker_tag (id_tag, id_sticker) VALUES (:id_tag, :id_sticker)";
@@ -110,9 +109,10 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
     }
 
     /* https://stackoverflow.com/questions/35975677/prestashop-webservice-add-products-tags-and-attachment-document */
-    private function getTagIdFromShop($tag) {
+    private function getTagIdFromShop($tag): int {
         /* check if tag exists */
-        $xml = $this->getXML("tags?filter[name]=$tag&limit=1");
+        $tagEncoded = str_replace(" ", "+", $tag);
+        $xml = $this->getXML("tags?filter[name]=$tagEncoded&limit=1");
 
         $resources = $xml->children()->children();
         if (!empty($resources)) {
@@ -135,7 +135,7 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
 
         $this->addXML($opt);
         $id = $this->xml->product->id;
-        return $id;
+        return (int) $id;
     }
 
     /**

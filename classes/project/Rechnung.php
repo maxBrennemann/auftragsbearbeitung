@@ -2,6 +2,8 @@
 
 error_reporting(E_ALL);
 
+/* TODO: fopen(): remote host file access not supported, file://c:/xampp/htdocs/auftragsbearbeitung/files/generated/invoice/115_322.pdf in /var/www/vhosts/organisierung.b-schriftung.de/httpdocs/vendor/tecnickcom/tcpdf/include/tcpdf_static.php on line 1811PHP message: PHP Warning:  fopen(file://c:/xampp/htdocs/auftragsbearbeitung/files/generated/invoice/115_322.pdf): failed to open stream: no suitable wrapper could be found in /var/www/vhosts/organisierung.b-schriftung.de/httpdocs/vendor/tecnickcom/tcpdf/include/tcpdf_static.php on line 1811', referer: https://organisierung.b-schriftung.de/c/rechnung?target=create&id=399 */
+
 if (0 > version_compare(PHP_VERSION, '5')) {
     die('This file was generated for PHP 5');
 }

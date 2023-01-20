@@ -71,7 +71,7 @@
     height: 20px;
 }
 
-#yellow {
+.notUpdated, #yellow {
     background: rgb(255, 203, 119);
 }
 
