@@ -330,7 +330,7 @@
         <h2>Tags<button class="infoButton" data-info="3">i</button></h2>
         <div>
             <?=$stickerTagManager->getTagsHTML()?>
-            <input type="text" class="tagInput" onkeydown="addTag(event)">
+            <input type="text" class="tagInput" maxlength="32" onkeydown="addTag(event)">
         </div>
         <a href="#" onclick="loadTags()">Mehr Synonyme laden</a>
     </div>
