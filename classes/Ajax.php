@@ -1011,14 +1011,8 @@ class Ajax {
 				}
 			break;
 			case "writeProductDescription":
-				$id = (int) $_POST["id"];
-				$type = (String) $_POST["type"];
-				$target = (int) $_POST["target"];
-				$content = (String) $_POST["content"];
-
-				$query = "REPLACE INTO module_sticker_texts (id_sticker, `type`, `target`, content) VALUES ($id, '$type', $target, '$content');";
-				DBAccess::updateQuery($query);
-				echo "success";
+				require_once("classes/project/modules/sticker/Sticker.php");
+				Sticker::setDescription();
 			break;
 			case "writeSpeicherort":
 				$id = (int) $_POST["id"];
@@ -1210,18 +1204,10 @@ class Ajax {
 				echo "success";
 			break;
 			case "productVisibility":
-				require_once('classes/project/StickerImage.php');
+				require_once('classes/project/modules/sticker/StickerCollection.php');
 				$id = (int) $_POST["id"];
-				$type = (String) $_POST["type"];
-				$status = (String) $_POST["status"];
-
-				$stickerImage = new StickerImage($id);
-				$icon = $stickerImage->updateVisibility($type, $status);
-
-				echo json_encode([
-					"status" => "success",
-					"icon" => $icon,
-				]);
+				$stickerCollection = new StickerCollection($id);
+				$stickerCollection->toggleActiveStatus();
 			break;
 			case "addTag":
 				require_once('classes/project/modules/sticker/StickerTagManager.php');
