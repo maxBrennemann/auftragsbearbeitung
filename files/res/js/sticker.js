@@ -918,20 +918,23 @@ async function addTag(event) {
     if (event.key === '#') {
         var dt = document.createElement("dt");
         var newTagValue = event.target.value;
-        dt.innerHTML = newTagValue;
+        
+        if (newTagValue.length <= 32) {
+            dt.innerHTML = newTagValue;
 
-        var remove = document.createElement("span");
-        remove.innerHTML = "x";
-        remove.classList.add("remove");
-        remove.addEventListener("click", manageTag);
-
-        dt.appendChild(remove);
-        event.target.parentNode.children[0].appendChild(dt);
-        event.target.value = "";
-        event.preventDefault();
-
-        var response = await send({id: mainVariables.motivId.innerHTML, tag: newTagValue}, "addTag");
-        console.log(response);
+            var remove = document.createElement("span");
+            remove.innerHTML = "x";
+            remove.classList.add("remove");
+            remove.addEventListener("click", manageTag);
+    
+            dt.appendChild(remove);
+            event.target.parentNode.children[0].appendChild(dt);
+            event.target.value = "";
+            event.preventDefault();
+    
+            var response = await send({id: mainVariables.motivId.innerHTML, tag: newTagValue}, "addTag");
+            console.log(response);
+        }
     }
 }
 

@@ -3,6 +3,7 @@
 require_once('classes/project/modules/sticker/PrestashopConnection.php');
 require_once('classes/project/modules/sticker/StickerExport.php');
 require_once('classes/project/modules/sticker/StickerChangelog.php');
+require_once('classes/project/StickerImage.php');
 require_once('classes/project/modules/sticker/Sticker.php');
 
 class StickerTagManager extends PrestashopConnection implements StickerExport {
@@ -80,15 +81,22 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
             return;
         }
 
-        $query = "SELECT id FROM module_sticker_tags WHERE content = :content";
+        $query = "SELECT id FROM module_sticker_tags WHERE content = ':content'";
         $result = DBAccess::selectQuery($query, ["content" => $content]);
 
         if ($result != null) {
             $id = $result["id"];
         } else {
-            $query = "INSERT INTO module_sticker_tags (id_tag_shop, content) VALUES (:id_tag_shop, :content)";
-            $idTagShop = $this->getTagIdFromShop($content);
-            $id = DBAccess::insertQuery($query, ["id_tag_shop" => $idTagShop, "content" => $content]);
+            $query = "INSERT INTO module_sticker_tags (id_tag_shop, content) VALUES (:id_tag_shop, ':content')";
+            
+            $id_tag_shop = $this->getTagIdFromShop($content);
+            $parameters = [
+                "id_tag_shop" => $id_tag_shop,
+                "content" => $content,
+            ];
+            
+            $id = DBAccess::insertQuery($query, $parameters);
+            //$id = DBAccess::insertQuery("INSERT INTO module_sticker_tags (id_tag_shop, content) VALUES ($id_tag_shop, '$content')");
         }
 
         $query = "INSERT INTO module_sticker_sticker_tag (id_tag, id_sticker) VALUES (:id_tag, :id_sticker)";
@@ -108,8 +116,7 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
 
         $resources = $xml->children()->children();
         if (!empty($resources)) {
-            $attributes = $resources->tag->attributes();
-            return $attributes['id'];
+            return (int) $resources->tag->attributes()->id;
         }
     
         /* add a new tag */
@@ -118,7 +125,8 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
     
         unset($resources->id);
         $resources->{'name'} = $tag;
-        $resources->{'id_lang'} = "de";
+        /* language_id for de is 1 */
+        $resources->{'id_lang'} = 1;
     
         $opt = array(
             'resource' => 'tags',
@@ -181,7 +189,7 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
             if ($result != null && $result["synsets"] != null) {
                 foreach ($result["synsets"] as $set) {
                     foreach ($set["terms"] as $term) {
-                        if (!in_array($term["term"], $synonyms)) {
+                        if (!in_array($term["term"], $synonyms) && strlen($term["term"] <= 32)) {
                             array_push($synonyms, $term["term"]);
                         }
                     }
@@ -207,7 +215,7 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
      * gets called when an ajax request is fired
      */
     public static function addTag() {
-        $id = getParameter("id", "POST");
+        $id = (int) getParameter("id", "POST");
         $tag = getParameter("tag", "POST");
 
         if ($tag == null || $tag == "") {
