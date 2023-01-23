@@ -148,7 +148,7 @@ class ProductCrawler extends PrestaCommunicater {
             $productId = (int) $productData->id;
             $motivId = (int) $productData->reference;
             $apiKey = $this->apiKey;
-            $url = "https://klebefux.de/api/images/products/$productId/$imageId";
+            $url = SHOPURL . "api/images/products/$productId/$imageId";
 
             $ch = curl_init ($url);
             curl_setopt($ch, CURLOPT_HEADER, 0);

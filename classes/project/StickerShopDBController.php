@@ -15,9 +15,9 @@ require_once('vendor/autoload.php');
 class StickerShopDBController {
 
     private $result = "";
-    private $url = "https://klebefux.de/auftragsbearbeitung/JSONresponder.php";
-    private $prestaKey = "GUG1XJLZ2F5WHMY3Q3FZLA1WTPI4SVHD";
-    private $prestaUrl = "https://klebefux.de";
+    private $url = SHOPURL . "/auftragsbearbeitung/JSONresponder.php";
+    private $prestaKey = SHOPKEY;
+    private $prestaUrl = SHOPURL;
 
     private $tags = array();
     private $images = array();
@@ -120,7 +120,7 @@ class StickerShopDBController {
             $productId = (int) $product["id"];
             $xmlProduct = $stickerShopDBController->getXML("products/$productId");
             $title = (String) $xmlProduct->children()->children()->name->language[0];
-            $link = "https://klebefux.de/home/$productId-" . (String) $xmlProduct->children()->children()->link_rewrite->language[0] . ".html";
+            $link = SHOPURL . "/home/$productId-" . (String) $xmlProduct->children()->children()->link_rewrite->language[0] . ".html";
             $categoriesXML = $xmlProduct->children()->children()->associations->categories->category;
             array_push($productLinks, $link);
             foreach ($categoriesXML as $category) {
