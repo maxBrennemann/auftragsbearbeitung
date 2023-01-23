@@ -2,8 +2,8 @@
 
 class PrestaCommunicater {
 
-    protected $apiKey = "GUG1XJLZ2F5WHMY3Q3FZLA1WTPI4SVHD";
-    private $shopUrl = "https://klebefux.de";
+    protected $apiKey = SHOPKEY;
+    private $shopUrl = SHOPURL;
 
     function __construct() {
         

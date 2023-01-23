@@ -76,7 +76,7 @@ class ExportFacebook {
 
         $line["link"] = $stickerImage->getShopProducts($type, "link");
         $ids = $stickerImage->getDefaultImage($type);
-        $line["image_link"] = "https://klebefux.de/auftragsbearbeitung/images.php?product={$ids["id"]}&image={$ids["image"]}";
+        $line["image_link"] = SHOPURL . "/auftragsbearbeitung/images.php?product={$ids["id"]}&image={$ids["image"]}";
 
         $combinations = $stickerImage->getProductCombinations($type);
         foreach ($combinations as $key => $combination) {
@@ -107,7 +107,7 @@ class ExportFacebook {
 
         $line["link"] = $stickerImage->getShopProducts($type, "link");
         $ids = $stickerImage->getDefaultImage($type);
-        $line["image_link"] = "https://klebefux.de/auftragsbearbeitung/images.php?product={$ids["id"]}&image={$ids["image"]}";
+        $line["image_link"] = SHOPURL . "/auftragsbearbeitung/images.php?product={$ids["id"]}&image={$ids["image"]}";
 
         $combinations = $stickerImage->getProductCombinations($type);
         foreach ($combinations as $key => $combination) {
@@ -138,7 +138,7 @@ class ExportFacebook {
 
         $line["link"] = $stickerImage->getShopProducts($type, "link");
         $ids = $stickerImage->getDefaultImage($type);
-        $line["image_link"] = "https://klebefux.de/auftragsbearbeitung/images.php?product={$ids["id"]}&image={$ids["image"]}";
+        $line["image_link"] = SHOPURL . "/auftragsbearbeitung/images.php?product={$ids["id"]}&image={$ids["image"]}";
 
         $combinations = $stickerImage->getProductCombinations($type);
         foreach ($combinations as $key => $combination) {

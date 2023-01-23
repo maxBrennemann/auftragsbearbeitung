@@ -2,9 +2,9 @@
 
 class PrestashopConnection {
 
-    private $url = "https://klebefux.de/auftragsbearbeitung/JSONresponder.php";
-    private $prestaKey = "GUG1XJLZ2F5WHMY3Q3FZLA1WTPI4SVHD";
-    private $prestaUrl = "https://klebefux.de";
+    private $url = SHOPURL . "/auftragsbearbeitung/JSONresponder.php";
+    private $prestaKey = SHOPKEY;
+    private $prestaUrl =  SHOPURL;
 
     protected $webService;
     protected $xml;
