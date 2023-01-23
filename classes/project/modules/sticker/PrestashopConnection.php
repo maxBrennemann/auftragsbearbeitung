@@ -2,7 +2,7 @@
 
 class PrestashopConnection {
 
-    private $url = SHOPURL . "/auftragsbearbeitung/JSONresponder.php";
+    protected $url = SHOPURL . "/auftragsbearbeitung/JSONresponder.php";
     private $prestaKey = SHOPKEY;
     private $prestaUrl =  SHOPURL;
 
