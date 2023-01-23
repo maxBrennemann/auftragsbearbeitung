@@ -173,6 +173,7 @@
                 </div>
                 <button class="transferBtn" id="transferAufkleber" data-binding="true" <?=$stickerImage->data["is_plotted"] == 1 ? "" : "disabled"?>>Aufkleber übertragen</button>
             </div>
+            <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $images])?>
             <div class="loaderOrSymbol">
                 <div class="lds-ring productLoader" id="productLoader1"><div></div><div></div><div></div><div></div></div>
             </div>

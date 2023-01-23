@@ -225,7 +225,7 @@ function errorReporting() {
 	}
 }
 
-function getParameter($value, $type = "GET") {
+function getParameter($value, $type = "GET", $default = "") {
 	switch ($type) {
 		case "GET":
 			if (isset($_GET[$value])) {
@@ -238,7 +238,14 @@ function getParameter($value, $type = "GET") {
 			}
 			break;
 	}
-	return null;
+	return $default;
+}
+
+function insertTemplate($path, array $parameters = []) {
+	if (file_exists($path)) {
+		extract($parameters);
+		include($path);
+	}
 }
 
 ?>
