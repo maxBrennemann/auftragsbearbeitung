@@ -7,7 +7,7 @@ $product_id = isset($_GET["id"]) ? $_GET["id"] : 0;
 if ($product_id != 0) {
     $product = new Produkt($product_id);
 
-    $product_url = "https://klebefux.de"; //"https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    $product_url = SHOPURL; //"https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     $product_price = $product->getPreis();
     $product_validUntil = "2022-12-01";
     $product_description = $product->getBeschreibung();
@@ -97,5 +97,4 @@ if ($product_id != 0) {
         mainImageSrc = document.getElementById("imagebig").src;
     }
 
-    
 </script>

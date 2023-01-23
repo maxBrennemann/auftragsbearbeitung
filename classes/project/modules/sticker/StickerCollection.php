@@ -4,11 +4,11 @@ require_once("classes/project/modules/sticker/Aufkleber.php");
 require_once("classes/project/modules/sticker/Wandtattoo.php");
 require_once("classes/project/modules/sticker/Textil.php");
 
-class StickerCollection {
+class StickerCollection implements Iterator {
 
-    private $aufkleber;
-    private $wandtattoo;
-    private $textil;
+    private $products = [];
+    private $current = 0;
+    private $position = 0;
 
     private $id;
 
@@ -16,28 +16,55 @@ class StickerCollection {
         $this->id = $id;
     }
 
+    /* Iterator */
+    public function current() {
+        return $this->getTarget($this->current);
+    }
+
+    public function key() {
+        return $this->position;
+    }
+
+    public function rewind(): void {
+        $this->position = 0;
+    }
+
+    public function next(): void {
+        ++$this->position;
+    }
+
+    public function valid(): bool {
+        return isset($this->products[$this->position]);
+    }
+
+    public function createAll() {
+        $this->getAufkleber();
+        $this->getWandtattoo();
+        $this->getTextil();
+    }
+
     public function getAufkleber() {
-        if ($this->aufkleber == null) {
-            $this->aufkleber = new Aufkleber($this->id);
+        if ($this->products[0] == null) {
+            $this->products[0] = new Aufkleber($this->id);
         }
 
-        return $this->aufkleber;
+        return $this->products[0];
     }
 
     public function getWandtattoo() {
-        if ($this->wandtattoo == null) {
-            $this->wandtattoo = new Wandtattoo($this->id);
+        if ($this->products[1] == null) {
+            $this->products[1] = new Wandtattoo($this->id);
         }
 
-        return $this->wandtattoo;
+        return $this->products[1];
     }
 
     public function getTextil() {
-        if ($this->textil == null) {
-            $this->textil = new Textil($this->id);
+        if ($this->products[2] == null) {
+            $this->products[2] = new Textil($this->id);
         }
 
-        return $this->textil;
+        return $this->products[2];
     }
 
     public function getTarget($type) {

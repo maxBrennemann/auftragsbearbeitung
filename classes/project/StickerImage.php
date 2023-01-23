@@ -233,8 +233,6 @@ class StickerImage {
         //$tags = new StickerTagManager($this->id);
         //$tags->saveTags();
 
-        $this->stickerDB->addTags($this->getAllTags());
-
         $this->stickerDB->prices = $prices;
         $this->stickerDB->buyingPrices = $buyingPrices;
         $this->stickerDB->addImages($this->getImagesByType("is_wandtattoo"));
@@ -298,7 +296,6 @@ class StickerImage {
         $this->stickerDB = new StickerShopDBController($this->id, "Textil " . $this->name, $descriptions["long"], $descriptions["short"], $this->getPriceTextil());
 
         $this->stickerDB->addTags(["Textil", "Shirt", "Motiv", "Druck"]);
-        $this->stickerDB->addTags($this->getAllTags());
 
         $this->stickerDB->addImages($this->getImagesByType("is_textil"));
 
@@ -350,7 +347,6 @@ class StickerImage {
 
         $this->stickerDB = new StickerShopDBController($this->id, "Aufkleber " . $this->name, $description, $descriptionShort, $basePrice);
         $this->stickerDB->addTags(["Aufkleber", "Sticker", "Motiv"]);
-        $this->stickerDB->addTags($this->getAllTags());
 
         if ($this->data["is_short_time"] == "1" && $this->data["is_long_time"] == "1") {
             $this->stickerDB->addAttributeArray([163, 162]);
@@ -461,20 +457,6 @@ class StickerImage {
         }
 
         DBAccess::updateQuery($query);
-    }
-
-    /**
-     * @deprecated
-     */
-    private function getAllTags() {
-        $data = DBAccess::selectQuery("SELECT tags.id, tags.content FROM module_sticker_tags tags, module_sticker_sticker_tag `match` WHERE tags.id = match.id_tag AND match.id_sticker = $this->id");
-        
-        $tags = [];
-        foreach ($data as $d) {
-            array_push($tags, $d["content"]);
-        }
-
-        return $tags;
     }
 
     public function getSizeTable() {
