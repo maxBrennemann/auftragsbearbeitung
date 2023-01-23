@@ -49,9 +49,7 @@
             <div class="lds-ring productLoader" id="productLoader4"><div></div><div></div><div></div><div></div></div>
             <div class="shopStatus">
                 <div class="shopStatusIcon">
-                    <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                        <path fill="currentColor" d="M4 4V6H20V4M4 7L3 12V14H4V20H13C12.95 19.66 12.92 19.31 12.92 18.95C12.92 17.73 13.3 16.53 14 15.53V14H15.54C16.54 13.33 17.71 12.96 18.91 12.96C19.62 12.96 20.33 13.09 21 13.34V12L20 7M6 14H12V18H6M18 15V18H15V20H18V23H20V20H23V18H20V15" />
-                    </svg>
+                   <?=Icon::$iconAddInShop?>
                 </div> 
                 <button class="newButton" data-id="4" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
             </div>
@@ -174,10 +172,6 @@
                 <?php endif; ?>
                 </div>
                 <button class="transferBtn" id="transferAufkleber" data-binding="true" <?=$stickerImage->data["is_plotted"] == 1 ? "" : "disabled"?>>Aufkleber übertragen</button>
-                        <!-- wenn sich infos ändern oder im shop was anderes steht, dann updaten anzeigen -->
-                <!-- updaten: <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-    <path fill="currentColor" d="M18 4H2V2H18V4M17.5 13H16V18L19.61 20.16L20.36 18.94L17.5 17.25V13M24 17C24 20.87 20.87 24 17 24C13.47 24 10.57 21.39 10.08 18H2V12H1V10L2 5H18L19 10V10.29C21.89 11.16 24 13.83 24 17M4 16H10V12H4V16M22 17C22 14.24 19.76 12 17 12S12 14.24 12 17 14.24 22 17 22 22 19.76 22 17Z" />
-</svg> -->
             </div>
             <div class="loaderOrSymbol">
                 <div class="lds-ring productLoader" id="productLoader1"><div></div><div></div><div></div><div></div></div>
@@ -296,14 +290,10 @@
                 <div class="shopStatusIcon" title="<?=$stickerImage->isInShop("textil") == 1 ? "Textil ist im Shop" : "Textil ist nicht im Shop" ?>">
                 <?php if ($stickerImage->isInShop("textil")):?>
                 <a title="Textil ist im Shop" target="_blank" href="<?=$stickerImage->getShopProducts("textil", "link")?>">
-                <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                    <path fill="currentColor" d="M20 6H4V4H20V6M15.69 14H14V15.69C13.37 16.64 13 17.77 13 19C13 19.34 13.04 19.67 13.09 20H4V14H3V12L4 7H20L21 12V13.35C20.37 13.13 19.7 13 19 13C17.77 13 16.64 13.37 15.69 14M12 14H6V18H12V14M21.34 15.84L17.75 19.43L16.16 17.84L15 19L17.75 22L22.5 17.25L21.34 15.84Z" />
-                </svg>
+                <?=Icon::$iconInShop?>
                 </a>
                 <?php else: ?>
-                <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                    <path fill="currentColor" d="M4 4H20V6H4V4M15.46 16.88L16.88 15.46L19 17.59L21.12 15.47L22.54 16.88L20.41 19L22.54 21.12L21.12 22.54L19 20.41L16.88 22.54L15.46 21.12L17.59 19L15.47 16.88M4 7H20L21 12V13.34C20.33 13.09 19.62 12.96 18.91 12.96C17.71 12.96 16.54 13.33 15.54 14H14V15.53C13.3 16.53 12.92 17.73 12.92 18.95L13 20H4V14H3V12L4 7M6 14V18H12V14H6Z" />
-                </svg>
+                <?=Icon::$iconNotInShop?>
                 <?php endif; ?>
                 </div>
                 <button class="transferBtn" id="transferTextil" data-binding="true">Textil übertragen</button>
@@ -363,9 +353,7 @@
         <div class="lds-ring productLoader" id="productLoader5"><div></div><div></div><div></div><div></div></div>
         <div class="shopStatus">
             <div class="shopStatusIcon">
-                <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                    <path fill="currentColor" d="M4 4V6H20V4M4 7L3 12V14H4V20H13C12.95 19.66 12.92 19.31 12.92 18.95C12.92 17.73 13.3 16.53 14 15.53V14H15.54C16.54 13.33 17.71 12.96 18.91 12.96C19.62 12.96 20.33 13.09 21 13.34V12L20 7M6 14H12V18H6M18 15V18H15V20H18V23H20V20H23V18H20V15" />
-                </svg>
+                <?=Icon::$iconAddInShop?>
             </div> 
             <button data-id="5" class="newButton marginTop30" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
         </div>
@@ -403,6 +391,7 @@
     </div>
     <div class="defCont">
         <h2>Statistiken</h2>
+        <!-- TODO: Statistiken von Google Analytics und Google Shopping, sowie von Google SearchConsole und shopintern einbinden -->
     </div>
     <div class="defCont">
         <h2>Changelog</h2>
