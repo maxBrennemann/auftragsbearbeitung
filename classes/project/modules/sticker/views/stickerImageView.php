@@ -1,7 +1,7 @@
-<div class="innerDefCont imageMovableContainer">
+<div class="innerDefCont imageMovableContainer" ondrop="itemDropHandler(event);" ondragover="itemDragOverHandler(event);">
     <?php foreach ($images as $image): ?>
-    <div class="imageMovable">
-        <img class="imgPreview" src="<?=$image["link"]?>" alt="<?=$image["alt"]?>">
+    <div class="imageMovable" draggable="true">
+        <img class="imgPreview" src="<?=$image["link"]?>" alt="<?=$image["alt"]?>" onclick="imagePreview(event)">
     </div>
     <?php endforeach; ?>
 </div>
