@@ -9,8 +9,8 @@ class StickerController {
         $this->stickerCollection = new StickerCollection($id);
     }
 
-    public function getImages() {
-        
+    public function getImages($type) {
+        return $this->stickerCollection->getTarget($type)->getImages();
     }
 
     public static function updateAll() {

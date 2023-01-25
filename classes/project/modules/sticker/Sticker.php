@@ -65,7 +65,7 @@ class Sticker extends PrestashopConnection {
     }
 
     public function getImages() {
-
+        //
     }
 
     public function getActiveStatus() {
