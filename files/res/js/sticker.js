@@ -1062,31 +1062,38 @@ function itemDropHandler(e) {
 
     /* https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/File_drag_and_drop */
     if (e.dataTransfer.items) {
-        [...e.dataTransfer.items].forEach((item, i) => {
-          if (item.kind === 'file') {
-            if (item.type.match('image.*')) {
-                const file = item.getAsFile();
-                const fileReader = new FileReader();
-                fileReader.readAsDataURL(file);
-                fileReader.onloadend = function() {
-                    let div = document.createElement("div");
-                    let img = document.createElement("img");
+        if (e.dataTransfer.getData("text/plain") !== "not_uploaded") {
+            [...e.dataTransfer.items].forEach((item, i) => {
+                if (item.kind === 'file') {
+                    if (item.type.match('image.*')) {
+                        const file = item.getAsFile();
+                        const fileReader = new FileReader();
+                        fileReader.readAsDataURL(file);
+                        fileReader.onloadend = function() {
+                            let div = document.createElement("div");
+                            let img = document.createElement("img");
 
-                    div.classList.add("imageMovable");
-                    div.draggable = true;
-                    div.appendChild(img);
+                            div.classList.add("imageMovable");
+                            div.draggable = true;
+                            div.appendChild(img);
 
-                    img.src = fileReader.result;
-                    img.alt = "Uploaded File";
-                    img.classList.add("imgPreview");
-                    img.addEventListener("click", imagePreview, false);
+                            img.src = fileReader.result;
+                            img.alt = "Uploaded File";
+                            img.classList.add("imgPreview");
+                            img.addEventListener("click", imagePreview, false);
 
-                    e.target.appendChild(div);
+                            e.target.appendChild(div);
+                        }
+                    }
                 }
-			}
-          }
-        });
+            });
+        }
     }
+}
+
+/* https://stackoverflow.com/questions/71822008/how-to-tell-if-an-image-is-drag-drop-from-the-same-page-or-drag-drop-uploaded */
+function preventCopy(e) {
+    e.dataTransfer.setData("text/plain", "not_uploaded");
 }
 
 function imageClickListener(event) {
