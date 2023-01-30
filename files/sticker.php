@@ -54,7 +54,7 @@
                 <button class="newButton" data-id="4" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
             </div>
             <br>
-            <div class="imageBigContainer">
+            <div class="imageBigContainer" style="display:none">
                 <img src="<?=$mainImage["link"]?>" alt="<?=$mainImage["alt"]?>" title="<?=$mainImage["alt"]?>" class="imageBig" data-image-id="<?=$mainImage["id"]?>">
                 <div class="imageTypes">
                     <label>Aufkleberbild: <input type="checkbox" id="aufkleberbild" <?=$mainImage["is_aufkleber"] == 1 ? "checked" : ""?> onchange="changeImageParameters(event)"></label>
@@ -65,13 +65,13 @@
                     <button class="infoButton" data-info="7">i</button>
                 </div>
             </div>
-            <div class="imageContainer">
+            <div class="imageContainer" style="display: none">
                 <?php foreach ($images as $image): ?>
                 <img src="<?=$image["link"]?>" class="imagePrev" alt="<?=$image["alt"]?>" title="<?=$image["alt"]?>" data-image-id="<?=$image["id"]?>" onclick="changeImage(event)" data-is-aufkleber="<?=$image["is_aufkleber"]?>" data-is-wandtattoo="<?=$image["is_wandtattoo"]?>" data-is-textil="<?=$image["is_textil"]?>">
                 <?php endforeach; ?>
             </div>
         </div>
-        <div>
+        <div style="display:none">
             <?=$getDownloadResources?>
             <div id="delete-menu">
                 <div class="item" onclick="deleteImage(-1)">
@@ -82,8 +82,8 @@
                 </div>
             </div>
         </div>
-        <hr style="width: 100%;">
-        <div style="max-width: 50%">
+        <hr style="width: 100%; display: none">
+        <div style="max-width: 50%; display: none">
             <form class="fileUploader" method="post" enctype="multipart/form-data" data-target="motiv" id="uploadFilesMotive" name="motivUpload">
                 <input type="number" name="motivNumber" min="1" value="<?=$id?>" required hidden>
                 <input id="motivname" name="motivname" required value="<?=$stickerImage->getName()?>" hidden>
@@ -389,5 +389,8 @@
     <div class="defCont">
         <h2>Changelog</h2>
         <?=$stickerChangelog->getTable()?>
+    </div>
+    <div>
+        <span id="showUploadProgress"></span>
     </div>
 <?php endif; ?>
