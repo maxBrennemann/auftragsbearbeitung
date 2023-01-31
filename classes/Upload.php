@@ -67,7 +67,31 @@ class Upload {
 
             foreach ($ids as $id) {
                 DBAccess::insertQuery("INSERT INTO dateien_motive (id_datei, id_motive) VALUES ($id, $motivnummer)");
-                $imageId = DBAccess::insertQuery("INSERT INTO module_sticker_images (id_image, id_sticker) VALUES ($id, $motivnummer)");
+                
+                $query = "INSERT INTO module_sticker_images (id_image, id_sticker) VALUES (:id, :motivnummer)";
+                $params = [
+                    "id" => $id,
+                    "motivnummer" => $motivnummer,
+                ];
+                $imageCategory = getParameter("imageCategory", "POST", null);
+
+                if ($imageCategory != null) {
+                    switch ($imageCategory) {
+                        case "aufkleber":
+                            $query = "INSERT INTO module_sticker_images (id_image, id_sticker, is_aufkleber) VALUES (:id, :motivnummer, :setCategory)";
+                            break;
+                        case "wandtattoo":
+                            $query = "INSERT INTO module_sticker_images (id_image, id_sticker, is_wandtattoo) VALUES (:id, :motivnummer, :setCategory)";
+                            break;
+                        case "textil":
+                            $query = "INSERT INTO module_sticker_images (id_image, id_sticker, is_textil) VALUES (:id, :motivnummer, :setCategory)";
+                            break;
+                    }
+
+                    $params["setCategory"] = 1;
+                }
+
+                $imageId = DBAccess::insertQuery($query, $params);
 
                 $image = DBAccess::selectQuery("SELECT dateiname, originalname FROM dateien WHERE id = $id LIMIT 1");
                 $url = Link::getResourcesShortLink($image[0]["dateiname"], "upload");

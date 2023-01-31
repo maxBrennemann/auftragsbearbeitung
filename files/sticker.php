@@ -5,6 +5,7 @@
 
     /* temp */
     require_once('classes/project/modules/sticker/StickerTagManager.php');
+    require_once('classes/project/modules/sticker/StickerImage.php');
 
     $id = 0;
     $stickerImage = null;
@@ -27,6 +28,7 @@
 
         $stickerTagManager = new StickerTagManager($id, $stickerImage->getName());
         $stickerChangelog = new StickerChangelog($id);
+        $si = new StickerImage2($id);
     }
 
     if ($id != 0 && $stickerImage != null):
@@ -169,7 +171,7 @@
                 </div>
                 <button class="transferBtn" id="transferAufkleber" data-binding="true" <?=$stickerImage->data["is_plotted"] == 1 ? "" : "disabled"?>>Aufkleber übertragen</button>
             </div>
-            <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $images])?>
+            <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $si->getAufkleberImages(), "imageCategory" => "aufkleber"])?>
             <div class="loaderOrSymbol">
                 <div class="lds-ring productLoader" id="productLoader1"><div></div><div></div><div></div><div></div></div>
             </div>
@@ -216,7 +218,7 @@
                 </div>
                 <button class="transferBtn" id="transferWandtattoo" data-binding="true">Wandtattoo übertragen</button>
             </div>
-            <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $images])?>
+            <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $si->getWandtattooImages(), "imageCategory" => "wandtattoo"])?>
             <div class="loaderOrSymbol">
                 <div class="lds-ring productLoader" id="productLoader2"><div></div><div></div><div></div><div></div></div>
             </div>
@@ -290,7 +292,7 @@
                 </div>
                 <button class="transferBtn" id="transferTextil" data-binding="true">Textil übertragen</button>
             </div>
-            <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $images])?>
+            <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $si->getTextilImages(), "imageCategory" => "textil"])?>
             <div class="loaderOrSymbol">
                 <div class="lds-ring productLoader" id="productLoader3"><div></div><div></div><div></div><div></div></div>
             </div>

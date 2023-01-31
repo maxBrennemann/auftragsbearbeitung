@@ -1058,7 +1058,7 @@ async function click_toggleProductVisibility(e) {
 }
 
 /* drag and drop handler */
-function itemDropHandler(e) {
+function itemDropHandler(e, imageCategory) {
 	e.preventDefault();
     let uploadableFiles = [];
 
@@ -1090,7 +1090,7 @@ function itemDropHandler(e) {
         });
     }
 
-    uploadFileForSticker(uploadableFiles);
+    uploadFileForSticker(uploadableFiles, imageCategory);
 }
 
 /* https://stackoverflow.com/questions/71822008/how-to-tell-if-an-image-is-drag-drop-from-the-same-page-or-drag-drop-uploaded */
@@ -1158,15 +1158,21 @@ function moveInit() {
     })
 }
 
-function uploadFileForSticker(files) {
+function uploadFileForSticker(files, imageCategory) {
     if (files.length == 0) {
         return;
     }
 
     let formData = new FormData();
     files.forEach(file => {
-        formData.append("files", file);
+        formData.append("files[]", file);
     });
+
+    /* set upload variable to be recognized by the backend */
+    formData.set("upload", "motiv");
+    formData.set("motivname", "");
+    formData.set("motivNumber", mainVariables.motivId.innerHTML);
+    formData.set("imageCategory", imageCategory);
 
 	return new Promise(function(resolve, reject) {
 		var ajax = new XMLHttpRequest();
