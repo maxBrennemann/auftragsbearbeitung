@@ -55,25 +55,9 @@
                 </div> 
                 <button class="newButton" data-id="4" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
             </div>
-            <br>
-            <div class="imageBigContainer" style="display:none">
-                <img src="<?=$mainImage["link"]?>" alt="<?=$mainImage["alt"]?>" title="<?=$mainImage["alt"]?>" class="imageBig" data-image-id="<?=$mainImage["id"]?>">
-                <div class="imageTypes">
-                    <label>Aufkleberbild: <input type="checkbox" id="aufkleberbild" <?=$mainImage["is_aufkleber"] == 1 ? "checked" : ""?> onchange="changeImageParameters(event)"></label>
-                    <label>Wandtattoobild: <input type="checkbox" id="wandtattoobild" <?=$mainImage["is_wandtattoo"] == 1 ? "checked" : ""?> onchange="changeImageParameters(event)"></label>
-                    <label>Textilbild: <input type="checkbox" id="textilbild" <?=$mainImage["is_textil"] == 1 ? "checked" : ""?> onchange="changeImageParameters(event)"></label>
-                    <button onclick="deleteImage()">Löschen</button>
-                    <a href="<?=$mainImage["link"]?>" download="<?=$mainImage["alt"]?>" title="<?=$mainImage["alt"]?>">Herunterladen</a>
-                    <button class="infoButton" data-info="7">i</button>
-                </div>
-            </div>
-            <div class="imageContainer" style="display: none">
-                <?php foreach ($images as $image): ?>
-                <img src="<?=$image["link"]?>" class="imagePrev" alt="<?=$image["alt"]?>" title="<?=$image["alt"]?>" data-image-id="<?=$image["id"]?>" onclick="changeImage(event)" data-is-aufkleber="<?=$image["is_aufkleber"]?>" data-is-wandtattoo="<?=$image["is_wandtattoo"]?>" data-is-textil="<?=$image["is_textil"]?>">
-                <?php endforeach; ?>
-            </div>
         </div>
-        <div style="display:none">
+        <div>
+            <p>Weitere Dateien:</p>
             <?=$getDownloadResources?>
             <div id="delete-menu">
                 <div class="item" onclick="deleteImage(-1)">
@@ -83,22 +67,6 @@
                     <span>Löschen</span>
                 </div>
             </div>
-        </div>
-        <hr style="width: 100%; display: none">
-        <div style="max-width: 50%; display: none">
-            <form class="fileUploader" method="post" enctype="multipart/form-data" data-target="motiv" id="uploadFilesMotive" name="motivUpload">
-                <input type="number" name="motivNumber" min="1" value="<?=$id?>" required hidden>
-                <input id="motivname" name="motivname" required value="<?=$stickerImage->getName()?>" hidden>
-                <input name="motiv" hidden>
-            </form>
-            <p>Hier Dateien per Drag&Drop ablegen oder 
-                <label class="uploadWrapper">
-                    <input type="file" name="uploadedFile" multiple class="fileUploadBtn" form="uploadFilesMotive">
-                    hier hochladen
-                </label>
-            </p>
-            <div class="filesList defCont"></div>
-            <div id="showFilePrev"></div>
         </div>
     </div>
     <div class="cont2">
@@ -321,7 +289,8 @@
             <input type="text" class="tagInput" maxlength="32" onkeydown="addTag(event)">
         </div>
         <p>Nicht erlaubt sind folgende Zeichen: !<;>;?=+#"°{}_$%.</p>
-        <a href="#" onclick="loadTags()">Mehr Synonyme laden</a>
+        <button onclick="loadTags()">Mehr Synonnyme laden</button>
+        <button onclick="showTaggroupManager()">Taggruppen</button>
     </div>
     <div class="defCont">
         <h2>Weitere Infos</h2>

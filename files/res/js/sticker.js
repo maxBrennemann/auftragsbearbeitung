@@ -881,6 +881,7 @@ async function click_transferAll(e) {
 
 function bookmark(e) {
     var star = e.target;
+
     if (star.nodeName == "path") {
         star = star.parentNode;
     }
@@ -891,6 +892,7 @@ function bookmark(e) {
 
 function unbookmark(e) {
     var star = e.target;
+
     if (star.nodeName == "path") {
         star = star.parentNode;
     }
@@ -904,6 +906,7 @@ async function toggleBookmark() {
         id: mainVariables.motivId.innerHTML,
     };
     var response = await send(data, "toggleBookmark");
+
     if (response == "success") {
         infoSaveSuccessfull("success");
     } else {
@@ -915,6 +918,26 @@ async function toggleBookmark() {
 /* TODO: bitte tags erledigen */
 function loadTags() {
     // load more cached tags from server, if none available, print: no more suggestions found
+}
+
+function showTaggroupManager() {
+    let div = document.createElement("div");
+    let data = [];//loadData
+
+    data.forEach(group => {
+        let innerDiv = document.createElement("div");
+        group.forEach(element => {
+            let dt = document.createElement("dt");
+            dt.innerHTML = element.value;
+            dt.id = "tag" + element.id;
+            innerDiv.appendChild(dt);
+        });
+
+        div.appendChild(innerDiv);
+    });
+
+    document.body.appendChild(div);
+    centerAbsoluteElement(div);
 }
 
 async function addTag(event) {
@@ -954,6 +977,7 @@ async function manageTag(event) {
 
         var response = await send({id: mainVariables.motivId.innerHTML, tag: child.childNodes[0].textContent}, "removeTag");
         console.log(response);
+
         if (response == "") {
             parent.removeChild(child);
         }
