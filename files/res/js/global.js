@@ -815,3 +815,50 @@ function createNewElement(elementType, elementId, elementClass, ...args) {
 	element.classList.add(elementClass);
 	return element;
 }
+
+/* https://stackoverflow.com/questions/14226803/wait-5-seconds-before-executing-next-line */
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
+class StatusInfo {
+	constructor(infoType, text) {
+		this.infoType = infoType;
+		this.text = text;
+	}
+
+	show() {
+		let div = document.createElement("div");
+		div.classList.add("showSuccess");
+		document.body.appendChild(div);
+
+		let infoText = document.createElement("div");
+		infoText.classList.add("inline");
+		infoText.innerHTML = this.text;
+
+		let loader = document.createElement("div");
+		loader.classList.add("inline");
+		loader.classList.add("loaderSettings");
+		loader.innerHTML = `<div class="loaderOrSymbol">
+		<div class="lds-ring"><div></div><div></div><div></div><div></div></div>`;
+
+		div.appendChild(loader);
+		div.appendChild(infoText);
+
+		this.infoHTML = div;
+		this.infoText = infoText;
+		this.loader = loader;
+	}
+
+	statusUpdate(text) {
+		this.text = text;
+		this.infoText.innerHTML = this.text;
+		this.loader.innerHTML = "✓";
+	}
+
+	async hide() {
+		await delay(1000);
+		this.infoHTML.classList.add("hidden");
+	
+		await delay(2000);
+		this.infoHTML.parentNode.removeChild(this.infoHTML);
+	}
+}

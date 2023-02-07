@@ -1038,7 +1038,10 @@ class Ajax {
 				$stickerImage = new StickerImage($id);
 				switch ($type) {
 					case 1:
-						$stickerImage->saveAufkleber();
+						//$stickerImage->saveAufkleber();
+						require_once("classes/project/modules/sticker/StickerTagManager.php");
+						$stickerTagManager = new StickerTagManager($id);
+						$stickerTagManager->saveTags(807);
 						break;
 					case 2:
 						$stickerImage->saveWandtattoo();

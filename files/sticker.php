@@ -140,9 +140,6 @@
                 <button class="transferBtn" id="transferAufkleber" data-binding="true" <?=$stickerImage->data["is_plotted"] == 1 ? "" : "disabled"?>>Aufkleber übertragen</button>
             </div>
             <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $si->getAufkleberImages(), "imageCategory" => "aufkleber"])?>
-            <div class="loaderOrSymbol">
-                <div class="lds-ring productLoader" id="productLoader1"><div></div><div></div><div></div><div></div></div>
-            </div>
         </section>
         <section class="defCont">
             <p class="pHeading">Wandtattoo
@@ -187,9 +184,6 @@
                 <button class="transferBtn" id="transferWandtattoo" data-binding="true">Wandtattoo übertragen</button>
             </div>
             <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $si->getWandtattooImages(), "imageCategory" => "wandtattoo"])?>
-            <div class="loaderOrSymbol">
-                <div class="lds-ring productLoader" id="productLoader2"><div></div><div></div><div></div><div></div></div>
-            </div>
         </section>
         <section class="defCont">
             <p class="pHeading">Textil
@@ -261,9 +255,6 @@
                 <button class="transferBtn" id="transferTextil" data-binding="true">Textil übertragen</button>
             </div>
             <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $si->getTextilImages(), "imageCategory" => "textil"])?>
-            <div class="loaderOrSymbol">
-                <div class="lds-ring productLoader" id="productLoader3"><div></div><div></div><div></div><div></div></div>
-            </div>
         </section>
     </div>
     <div class="defCont align-center">
