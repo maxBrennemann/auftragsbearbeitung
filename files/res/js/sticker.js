@@ -235,19 +235,21 @@ function click_transferAufkleber() {
         alert("Bitte überprüfe Breiten und Preise!");
         return;
     }
-    transfer(1);
+    transfer(1, "Aufkleber");
 }
 
 function click_transferWandtattoo() {
-    transfer(2);
+    transfer(2, "Wandtattoo");
 }
 
 function click_transferTextil() {
-   transfer(3);
+   transfer(3, "Textil");
 }
 
-async function transfer(type) {
-    document.getElementById("productLoader" + type).style.display = "inline";
+async function transfer(type, text) {
+    let test = new StatusInfo("test", `${text} wird übertragen`);
+    test.show();
+
     var data = {
         id: mainVariables.motivId.innerHTML,
         type: type
@@ -255,7 +257,8 @@ async function transfer(type) {
     var response = await send(data, "transferProduct");
     console.log(response);
 
-    document.getElementById("productLoader" + type).style.display = "none";
+    test.statusUpdate(`${text} ist übertragen`);
+    test.hide();
 }
 
 function send(data, intent, json = false) {
@@ -922,12 +925,26 @@ function loadTags() {
 
 function showTaggroupManager() {
     let div = document.createElement("div");
-    let data = [];//loadData
+    let data = {
+        "taggroup1": [{id: 1, value: "37"},{id: 37, value: "uno"}],
+    };
+    //loadData
 
-    data.forEach(group => {
+    let p = document.createElement("p");
+    p.innerHTML = "Taggruppen:";
+    div.appendChild(p);
+
+    Object.entries(data).forEach(element =>  {
+        const [groupName, group] = element;
         let innerDiv = document.createElement("div");
+        let titleP = document.createElement("p");
+        titleP.innerHTML = groupName;
+        innerDiv.appendChild(titleP);
+        innerDiv.classList.add("defCont");
+
         group.forEach(element => {
             let dt = document.createElement("dt");
+            dt.classList.add("inline");
             dt.innerHTML = element.value;
             dt.id = "tag" + element.id;
             innerDiv.appendChild(dt);
@@ -937,7 +954,9 @@ function showTaggroupManager() {
     });
 
     document.body.appendChild(div);
+    div.classList.add("centeredDiv");
     centerAbsoluteElement(div);
+    addActionButtonForDiv(div, "remove");
 }
 
 async function addTag(event) {

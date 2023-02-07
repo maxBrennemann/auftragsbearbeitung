@@ -790,3 +790,12 @@ input#hamburg {
         margin-right: auto;
     }
 }
+
+.inline {
+    display: inline-block;
+}
+
+.loaderSettings {
+    vertical-align: middle;
+    margin-right: 7px;
+}

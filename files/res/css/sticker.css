@@ -540,6 +540,7 @@ form label {
 
 .imageMovableContainer {
     overflow-x: scroll;
+    height: 100px;
 }
 
 .imageMovable {
@@ -569,4 +570,26 @@ form label {
 .cont1 {
     display: grid;
     grid-template-columns: 1fr 1fr;
+}
+
+.centeredDiv {
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 100;
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5); 
+	-webkit-box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5); 
+	-moz-box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5); 
+}
+
+dt.inline {
+    margin: 7px;
+    background: #d5e9f9;
+    cursor: pointer;
+    display: inline-block;
+    padding: 7px;
+    border-radius: 6px;
 }

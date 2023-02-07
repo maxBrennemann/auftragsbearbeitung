@@ -59,7 +59,7 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
 
             if ($id_tag_shop == "" || $id_tag_shop == 0) {
                 $id_tag_shop = $this->getTagIdFromShop($t["content"]);
-                $query = "UPDATE TABLE module_sticker_tags SET id_tag_shop = :id_tag_shop WHERE id = :id";
+                $query = "UPDATE module_sticker_tags SET id_tag_shop = :id_tag_shop WHERE id = :id";
                 DBAccess::updateQuery($query, ["id_tag_shop" => $id_tag_shop, "id" => $t["id"]]);
             }
             $tagIds[] = $id_tag_shop;
@@ -150,19 +150,27 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
     }
 
     public function saveTags($productId) {
-        $xml = $this->getXML("product/$productId");
-        $tags = $xml->{'assiciations'};
+        $xml = $this->getXML("products/$productId");
+        $product_reference = $xml->children()->children();
+        unset($product_reference->manufacturer_name);
+        unset($product_reference->quantity);
+        $tags = $product_reference->{'associations'};
 
         $tagIds = [];
         /* read all existing tags from shop for this product */
-        foreach ($tags->tag as $tag) {
-            $tagIds = $tag->{'id'};
+        if ($tags->tags != null) {
+            foreach ($tags->tags as $tag) {
+                $tagIds[] = $tag->{'id'};
+            }
         }
+
+        //var_dump($tags);
+        //die();
 
         /* insert new tag if it does not exist */
         foreach ($this->getTagIds() as $id) {
             if (!in_array($id, $tagIds)) {
-                $tag = $tags->addChild("tag");
+                $tag = $tags->tags->addChild("tag");
                 $tag->addChild("id", $id);
             }
         }
