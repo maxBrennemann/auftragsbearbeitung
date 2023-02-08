@@ -212,6 +212,39 @@ class Sticker extends PrestashopConnection {
         /* TODO: implement toggle type and access stickershopdbcontroller */
         /* TODO: fo: implement status via db */
     }
+
+    public function connectAccessoires($connectTo, $xml = null) {
+        if ($xml == null) {
+            $xml = $this->getXML("products/$this->idProduct");
+        }
+
+        $product_reference = $xml->children()->children();
+        unset($product_reference->manufacturer_name);
+        unset($product_reference->quantity);
+        $accessoires = $product_reference->{'associations'}->accessoires;
+
+        $existingAccessoires = [];
+        if ($accessoires != null) {
+            foreach ($accessoires as $productConnected) {
+                $existingAccessoires[] = $productConnected->{'id'};
+            }
+        }
+
+        /* insert new tag if it does not exist */
+        foreach ($connectTo as $id) {
+            if (!in_array($id, $existingAccessoires)) {
+                $product = $accessoires->addChild("product");
+                $product->addChild("id", $id);
+            }
+        }
+
+        $opt = array(
+            'resource' => 'products',
+            'putXml' => $xml->asXML(),
+            'id' => $this->idProduct,
+        );
+        $this->editXML($opt);
+    }
 }
 
 ?>

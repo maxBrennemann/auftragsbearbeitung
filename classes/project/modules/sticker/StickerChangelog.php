@@ -105,6 +105,10 @@ class StickerChangelog /*implements StickerShopController*/ {
 
         return false;
     }
+
+    /*
+     TODO: implement in this manner: https://stackoverflow.com/questions/12563706/is-there-a-mysql-option-feature-to-track-history-of-changes-to-records/12657012#12657012
+    */
 }
 
 ?>
