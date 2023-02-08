@@ -96,6 +96,11 @@ class StickerCollection implements Iterator {
         ]);
     }
 
+    /* updates or uploads all products and writes connections */
+    public function uploadAll() {
+        // TODO: implement function
+    }
+
 }
 
 ?>
