@@ -246,9 +246,13 @@ function click_transferTextil() {
    transfer(3, "Textil");
 }
 
+function click_transferAll(e) {
+    transfer(4, "Alles");
+}
+
 async function transfer(type, text) {
-    let test = new StatusInfo("test", `${text} wird übertragen`);
-    test.show();
+    let statusInfo = new StatusInfo("", `${text} wird übertragen`);
+    statusInfo.show();
 
     var data = {
         id: mainVariables.motivId.innerHTML,
@@ -257,8 +261,8 @@ async function transfer(type, text) {
     var response = await send(data, "transferProduct");
     console.log(response);
 
-    test.statusUpdate(`${text} ist übertragen`);
-    test.hide();
+    statusInfo.statusUpdate(`${text} ist übertragen`);
+    statusInfo.hide();
 }
 
 function send(data, intent, json = false) {
@@ -867,19 +871,6 @@ async function write_additionalInfo(e) {
         console.log(response);
         infoSaveSuccessfull();
     }
-}
-
-async function click_transferAll(e) {
-    var id = e.target.dataset.id;
-    document.getElementsByClassName("productLoader")[id].style.display = "inline";
-    var data = {
-        id: mainVariables.motivId.innerHTML,
-        type: 5
-    };
-    var response = await send(data, "transferProduct");
-    console.log(response);
-
-    document.getElementsByClassName("productLoader")[id].style.display = "none";
 }
 
 function bookmark(e) {

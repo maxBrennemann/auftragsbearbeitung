@@ -12,8 +12,8 @@ class Sticker extends PrestashopConnection {
     protected $idSticker;
     protected $idProduct;
 
-    function __construct() {
-
+    function __construct($idSticker) {
+        $this->idSticker = $idSticker;
     }
 
     public function getName() {
@@ -213,6 +213,9 @@ class Sticker extends PrestashopConnection {
         /* TODO: fo: implement status via db */
     }
 
+    /**
+     * connects a list of products with the current product
+     */
     public function connectAccessoires($connectTo, $xml = null) {
         if ($xml == null) {
             $xml = $this->getXML("products/$this->idProduct");
@@ -221,7 +224,7 @@ class Sticker extends PrestashopConnection {
         $product_reference = $xml->children()->children();
         unset($product_reference->manufacturer_name);
         unset($product_reference->quantity);
-        $accessoires = $product_reference->{'associations'}->accessoires;
+        $accessoires = $product_reference->{'associations'}->accessories;
 
         $existingAccessoires = [];
         if ($accessoires != null) {
@@ -245,6 +248,19 @@ class Sticker extends PrestashopConnection {
         );
         $this->editXML($opt);
     }
+
+    public function getAttributes() {
+
+    }
+
+    public function getPrices() {
+
+    }
+
+    public function getPurchasingPrices() {
+        
+    }
+
 }
 
 ?>

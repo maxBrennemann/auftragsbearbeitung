@@ -13,8 +13,10 @@ class Aufkleber extends Sticker {
     private $isLongTimeSticker = false;
     private $isMultipartSticker = false;
 
-    function __construct() {
-        parent::__construct();
+    function __construct($idSticker) {
+        // test
+        $this->idProduct = 810;
+        parent::__construct($idSticker);
     }
 
     public function getSizeTableFormatted() {
