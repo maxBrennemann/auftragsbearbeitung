@@ -1,0 +1,149 @@
+<?php
+
+class StickerCombination extends PrestashopConnection {
+
+    private $sticker;
+    private $arguments;
+    private $defaultOn = true;
+    private $attributes;
+    private $prices;
+    private $purchasingPrices;
+
+    private $test = [
+        [3,7],
+        [6,9],
+        [4,2,0],
+    ];
+    
+    /* aufbau der prices und purchasingPrices
+    $prices = [
+        3000 => 2736,
+        'width (mm)' => 'price (cent)'
+    ];
+    */
+
+    function __construct(Sticker $sticker) {
+        $this->sticker = $sticker;
+    }
+
+    public function createCombinations() {
+        // TODO: getAttributes, getPurchasingPrices and getPrices implementieren
+        $this->attributes = $this->sticker->getAttributes();
+        $this->prices = $this->sticker->getPrices();
+        $this->purchasingPrices = $this->sticker->getPurchasingPrices();
+
+        $this->arguments = $this->combine($this->attributes);
+        $xml = $this->getXML('combinations?schema=blank');
+
+        foreach ($this->arguments as $arg) {
+            $this->addCombination($xml, $arg);
+        }
+        
+        $this->setStockAvailables();
+    }
+
+    private function combine($elements) {
+        $result = [];
+        if (sizeof($elements) > 1) {
+            $combine = array_shift($elements);
+        
+            foreach ($combine as $el) {
+                $temp = $this->combine($elements);
+                foreach ($temp as $t) {
+                    array_unshift($t, $el);
+                    $result[] = $t;
+                }
+            }
+            return $result;
+        } else {
+            foreach ($elements[0] as $element) {
+                $result[] = [$element];
+            }
+            return $result;
+        }
+    }
+
+    private function addCombination($xml, $args) {
+        try {
+            $combination = $xml->children()->children();
+            $combination->id_product = $this->sticker->getId();
+
+            /* sets the default product combination */
+            if ($this->defaultOn) {
+                $combination->default_on = 1;
+                $this->defaultOn = false;
+            } else {
+                $combination->default_on = 0;
+            }
+
+            $combination->minimal_quantity = 0;
+            unset($combination->associations->product_option_values);
+            $product_option_values = $combination->associations->addChild("product_option_values");
+
+            foreach ($args as $a) {
+                $prodVal = $product_option_values->addChild("product_option_value");
+                $prodVal->addChild("id", $a);
+
+                if ($this->prices != null && array_key_exists($a, $this->prices)) {
+                    $combination->price = $this->prices[$a];
+                    $combination->wholesale_price = $this->purchasingPrices[$a];
+                }
+            }
+
+            $opt = array(
+                'resource' => 'combinations',
+                'postXml' => $xml->asXML(),
+            );
+            $this->addXML($opt);
+
+            return $this->xml->combination->id;
+        } catch (PrestaShopWebserviceException $e) {
+            echo $e;
+        }
+    }
+
+    private function getStockAvailablesIds() {
+        $stockAvailablesIds = array();
+
+        try {
+            $xml = $this->getXML('products/' . (int) $this->sticker->getId());
+            $stocks = $xml->children()->children()->associations->stock_availables;
+
+            foreach ($stocks->stock_available as $stock) {
+                array_push($stockAvailablesIds, $stock->id);
+            }
+        } catch (PrestaShopWebserviceException $e) {
+            echo $e;
+        }
+
+        return $stockAvailablesIds;
+    }
+
+    private function setStockAvailables($quantity = 20) {
+        $ids = $this->getStockAvailablesIds();
+
+        foreach ($ids as $id) {
+            $id = (int) $id;
+
+            try {
+                $xml = $this->getXML('stock_availables/' . $id);
+                $stock = $xml->children()->children();
+
+                $stock->{'quantity'} = $quantity;
+                $stock->{'id_shop'} = "1";
+
+                $opt = array(
+                    'resource' => 'stock_availables',
+                    'putXml' => $xml->asXML(),
+                    'id' => $id,
+                );
+                $this->editXML($opt);
+            } catch (PrestaShopWebserviceException $e) {
+                echo $e;
+            }
+        }
+    }
+
+}
+
+?>
