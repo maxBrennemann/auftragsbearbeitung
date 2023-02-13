@@ -1263,6 +1263,14 @@ class Ajax {
 				$export = new ExportFacebook();
 				$export->addProduct($sticker);
 			break;
+			case "showSearch":
+				include('classes/project/modules/sticker/views/showSearchView.php');
+			break;
+			case "searchShop":
+				require_once('classes/project/modules/sticker/SearchProducts.php');
+				$search = $_POST["query"];
+				echo json_encode(SearchProducts::search($search, ["name", "description"]));
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);

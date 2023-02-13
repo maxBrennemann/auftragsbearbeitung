@@ -42,6 +42,10 @@ class StickerCombination extends PrestashopConnection {
         $this->setStockAvailables();
     }
 
+    private function removeOldCombinations() {
+        // TODO: write update or remove functions
+    }
+
     private function combine($elements) {
         $result = [];
         if (sizeof($elements) > 1) {

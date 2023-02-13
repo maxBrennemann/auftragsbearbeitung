@@ -1241,3 +1241,36 @@ function uploadFileForSticker(files, imageCategory) {
 // TODO: write file uploader
 // TODO: prevent false copying of text
 // TODO: alt files like svg must be uploadable as well
+
+async function click_shortcutProduct() {
+    let div = document.createElement("div");
+    div.innerHTML = await send({}, "showSearch");
+    div.classList.add("centeredDiv");
+    centerAbsoluteElement(div);
+}
+
+async function searchShop() {
+    let searchQuery = document.getElementById("searchShopQuery").value;
+    let results = await send({query: searchQuery}, "searchShop");
+
+    let appendTo = document.getElementById("showSearchResults");
+
+    results = JSON.parse(results);
+    for (const [key, value] of Object.entries(results)) {
+        let link = document.createElement("a");
+        link.href = value.link;
+        link.innerHTML = value.name;
+
+        let span = document.createElement("span");
+        span.appendChild(document.createTextNode(`Artikel ${key}: `));
+        span.appendChild(link);
+
+        let label = document.createElement("label");
+        let checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        label.appendChild(checkbox);
+        label.appendChild(span);
+
+        appendTo.appendChild(label);
+    }
+}
