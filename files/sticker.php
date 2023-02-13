@@ -48,7 +48,6 @@
             </h2>
             <p>Artikelnummer: <span id="motivId" data-variable="true"><?=$id?></span></p>
             <p>Erstellt am <input type="date" value="<?=$stickerImage->data["creation_date"]?>" onchange="changeDate(event)"></p>
-            <div class="lds-ring productLoader" id="productLoader4"><div></div><div></div><div></div><div></div></div>
             <div class="shopStatus">
                 <div class="shopStatusIcon">
                    <?=Icon::$iconAddInShop?>
@@ -73,15 +72,18 @@
         <section class="defCont">
             <p class="pHeading">Aufkleber
                 <input class="titleInput invisible" value="<?=$stickerImage->getAltTitle("aufkleber")?>" data-write="true" data-type="aufkleber" data-fun="changeAltTitle">
-                <button class="addAltTitle" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="aufkleber">
+                <button title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="aufkleber">
                     <?=Icon::$iconEditText?>
                 </button>
                 <button class="infoButton" data-info="8">i</button>
-                <button class="addAltTitle" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
+                <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
                     <?=Icon::$iconVisible?>
                 </button>
-                <button title="Produkte verknüpfen">
+                <button title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct">
                     <?=Icon::$iconConnectTo?>
+                </button>
+                <button title="Kategorien auswählen" data-binding="true" data-fun="chooseCategory">
+                    <?=Icon::$iconCategory?>
                 </button>
             </p>
             <div>
@@ -147,12 +149,18 @@
         <section class="defCont">
             <p class="pHeading">Wandtattoo
                 <input class="titleInput invisible" value="<?=$stickerImage->getAltTitle("wandtattoo")?>" data-write="true" data-type="wandtattoo" data-fun="changeAltTitle">
-                <button class="addAltTitle" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="wandtattoo">
+                <button title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="wandtattoo">
                     <?=Icon::$iconEditText?>
                 </button>
                 <button class="infoButton" data-info="9">i</button>
-                <button class="addAltTitle" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
+                <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
                     <?=Icon::$iconVisible?>
+                </button>
+                <button title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct">
+                    <?=Icon::$iconConnectTo?>
+                </button>
+                <button title="Kategorien auswählen" data-binding="true" data-fun="chooseCategory">
+                    <?=Icon::$iconCategory?>
                 </button>
             </p>
             <div>
@@ -191,12 +199,18 @@
         <section class="defCont">
             <p class="pHeading">Textil
                 <input class="titleInput invisible" value="<?=$stickerImage->getAltTitle("textil")?>" data-write="true" data-type="textil" data-fun="changeAltTitle">
-                <button class="addAltTitle" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="textil">
+                <button title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="textil">
                     <?=Icon::$iconEditText?>
                 </button>
                 <button class="infoButton" data-info="10">i</button>
-                <button class="addAltTitle" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
+                <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
                     <?=Icon::$iconVisible?>
+                </button>
+                <button title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct">
+                    <?=Icon::$iconConnectTo?>
+                </button>
+                <button title="Kategorien auswählen" data-binding="true" data-fun="chooseCategory">
+                    <?=Icon::$iconCategory?>
                 </button>
             </p>
             <div>
@@ -308,7 +322,6 @@
         </div>
         <p>Zusätzliche Infos und Notizen:<button class="infoButton" data-info="6">i</button></p>
         <textarea class="data-input" data-fun="additionalInfo" data-write="true"><?=$stickerImage->data["additional_info"]?></textarea>
-        <div class="lds-ring productLoader" id="productLoader5"><div></div><div></div><div></div><div></div></div>
         <div class="shopStatus">
             <div class="shopStatusIcon">
                 <?=Icon::$iconAddInShop?>
