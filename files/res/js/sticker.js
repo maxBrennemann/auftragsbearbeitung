@@ -1245,6 +1245,8 @@ function uploadFileForSticker(files, imageCategory) {
 async function click_shortcutProduct() {
     let div = document.createElement("div");
     div.innerHTML = await send({}, "showSearch");
+    document.body.appendChild(div);
+    addActionButtonForDiv(div, "remove");
     div.classList.add("centeredDiv");
     centerAbsoluteElement(div);
 }
@@ -1256,21 +1258,72 @@ async function searchShop() {
     let appendTo = document.getElementById("showSearchResults");
 
     results = JSON.parse(results);
-    for (const [key, value] of Object.entries(results)) {
+    results.forEach((value) => {
         let link = document.createElement("a");
         link.href = value.link;
         link.innerHTML = value.name;
 
         let span = document.createElement("span");
-        span.appendChild(document.createTextNode(`Artikel ${key}: `));
+        span.appendChild(document.createTextNode(`Artikel ${value.id}: `));
         span.appendChild(link);
 
         let label = document.createElement("label");
+        label.style.display = "block";
         let checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         label.appendChild(checkbox);
         label.appendChild(span);
 
         appendTo.appendChild(label);
+    });
+}
+
+async function connectResults() {
+
+}
+
+var selectedCategories = [];
+
+async function click_chooseCategory() {
+    var categoryData = await send({categoryId: 13}, "getCategoryTree");
+    categoryData = JSON.parse(categoryData);
+
+    var ul = document.createElement("ul");
+    ul.appendChild(createUlCategoryList(categoryData)); 
+
+    let div = document.createElement("div");
+    div.appendChild(ul);
+    div.classList.add("paddingDefault");
+    document.body.appendChild(div);
+    addActionButtonForDiv(div, "remove");
+    div.classList.add("centeredDiv");
+    centerAbsoluteElement(div);
+}
+
+function createUlCategoryList(element) {
+    var ul = document.createElement("ul");
+    var li = document.createElement("li");
+    li.innerHTML = `${element.name} (${element.id})`;
+    li.dataset.id = element.id;
+    li.addEventListener("click", selectCategory, false);
+    ul.appendChild(li);
+    element.children.forEach(child => {
+        ul.appendChild(createUlCategoryList(child));
+    });
+
+    return ul;
+}
+
+function selectCategory(e) {
+    let target = e.target;
+    target.classList.toggle("selectedCategory");
+    let id = target.dataset.id;
+    if (!selectedCategories.includes(id)) {
+        selectedCategories.push(id);
+    } else {
+        var index = selectedCategories.indexOf(id);
+        if (index !== -1) {
+            selectedCategories.splice(index, 1);
+        }
     }
 }

@@ -1269,13 +1269,18 @@ class Ajax {
 			case "searchShop":
 				require_once('classes/project/modules/sticker/SearchProducts.php');
 				$search = $_POST["query"];
-				echo json_encode(SearchProducts::search($search, ["name", "description"]));
+				echo json_encode(SearchProducts::search($search, ["name", "description", "description_short"]));
+			break;
+			case "getCategoryTree":
+				$startCategory = $_POST["categoryId"];
+				require_once('classes/project/modules/sticker/StickerCategory.php');
+				echo json_encode(StickerCategory::getChildCategoriesNested($startCategory));
 			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
 		
-				if($result == null) {
+				if ($result == null) {
 					$baseUrl = 'files/generated/';
 					$result = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM generated_articles WHERE src = '$page'");
 				} else {

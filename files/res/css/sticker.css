@@ -520,12 +520,6 @@ input:checked + .slider:before {
     min-width: 120px;
 }
 
-.addAltTitle {
-    border: none;
-    border-radius: 12px;
-    padding: 7px;
-}
-
 form label {
     display: block;
 }
@@ -592,4 +586,22 @@ dt.inline {
     display: inline-block;
     padding: 7px;
     border-radius: 6px;
+}
+
+#showSearchResults {
+    max-height: 400px;
+    overflow-y: scroll;
+}
+
+#showSearchResults label {
+    margin: 5px;
+}
+
+.paddingDefault ul, .paddingDefault li {
+    list-style-type: disc;
+    padding-left: revert;
+}
+
+.selectedCategory {
+    color: blue;
 }
