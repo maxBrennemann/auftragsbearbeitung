@@ -80,6 +80,9 @@
                 <button class="addAltTitle" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
                     <?=Icon::$iconVisible?>
                 </button>
+                <button title="Produkte verknüpfen">
+                    <?=Icon::$iconConnectTo?>
+                </button>
             </p>
             <div>
                 <span>Aufkleber Plott</span>
