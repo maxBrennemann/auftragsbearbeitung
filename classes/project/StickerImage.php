@@ -756,6 +756,9 @@ class StickerImage {
     }
 
     public function getDefaultImage($type) {
+        if (!$this->shopProducts["products"][$type]) {
+            $this->updateProductStatus();
+        }
         $id = $this->shopProducts["products"][$type]["id"];
         $shop = new StickerShopDBController("", "", "", "", "");
         return ["id" => $id, "image" => $shop->getDefaultImage($id)];
