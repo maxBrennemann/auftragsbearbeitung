@@ -1,71 +1,67 @@
 <?php
 
-use ExportFacebook as GlobalExportFacebook;
+/* TODO: use new class structure */
 
 require_once("classes/project/StickerImage.php");
 
 class ExportFacebook {
 
-    private $csv;
-    private $file;
+    private static $csv;
+    private static $file;
 
-    function __construct() {
-        $this->file = fopen('files/res/form/modules/sticker/catalog_products.csv', 'a');
-        //$this->readCSV();
-    }
+    function __construct() {}
 
     public static function exportAll() {
-        $allProducts = DBAccess::selectQuery("SELECT id FROM module_sticker_sticker_data");
+        $allProducts = DBAccess::selectQuery("SELECT `id` FROM `module_sticker_sticker_data`");
+        /* TODO: absolute path must later be parameterized */
+        self::$file = fopen('files/res/form/modules/sticker/catalog_products.csv', 'a');
+
         foreach ($allProducts as $product) {
-            $id = $product["id"];
+            $id = (int) $product["id"];
             $sticker = new StickerImage($id);
-            $export = new static();
-            $export->addProduct($sticker);
+            self::addProduct($sticker);
         }
+        fclose(self::$file);
     }
 
-    private function readCSV() {
-        $csvString = file_get_contents($this->file);
-        $this->csv = str_getcsv($csvString);
+    private static function readCSV() {
+        $csvString = file_get_contents(self::$file);
+        self::$csv = str_getcsv($csvString);
     }
 
     /**
      * saves new data line by line to the csv file
      */
-    private function storeCSV($line) {
-        fputcsv($this->file, $line);
+    private static function storeCSV($line) {
+        fputcsv(self::$file, $line);
     }
 
-    public function addProduct(StickerImage $stickerImage) {
+    public static function addProduct(StickerImage $stickerImage) {
         $line = [
             "id" => "",
             "title" => "",
             "description" => "",
-            "availability" => "",
-            "condition" => "",
+            "availability" => "In Stock",
+            "condition" => "New",
             "price" => "",
             "link" => "",
             "image_link" => "",
-            "brand" => "",
+            "brand" => "klebefux",
             "item_group_id" => "",
             "color" => "",
             "size" => "",
             "material" => "",
-            "shipping_weight" => "",
+            "shipping_weight" => "0.5kg",
         ];
 
-        $line["availability"] = "In Stock";
-        $line["condition"] = "New";
-        $line["brand"] = "klebefux";
-        $line["shipping_weight"] = "0.5kg";
-
-        $this->generateAufkleber($stickerImage, $line);
-        $this->generateWandtattoo($stickerImage, $line);
-        $this->generateTextil($stickerImage, $line);
+        self::generateAufkleber($stickerImage, $line);
+        self::generateWandtattoo($stickerImage, $line);
+        self::generateTextil($stickerImage, $line);
     }
 
-    private function generateAufkleber($stickerImage, $line) {
+    private static function generateAufkleber($stickerImage, $line) {
         $type = "aufkleber";
+
         if ($stickerImage->data["is_plotted"] == 0) {
             return;
         }
@@ -79,6 +75,7 @@ class ExportFacebook {
         $line["image_link"] = SHOPURL . "/auftragsbearbeitung/images.php?product={$ids["id"]}&image={$ids["image"]}";
 
         $combinations = $stickerImage->getProductCombinations($type);
+
         foreach ($combinations as $key => $combination) {
             $line["id"] = $type . "_" . $stickerImage->getId() . "_" . $key;
             $line["price"] = $combination["price"];
@@ -90,13 +87,14 @@ class ExportFacebook {
                 $line["size"] = "";
             }
             
-            $line["material"] = "";//$combination["material"];
-            $this->storeCSV($line);
+            $line["material"] = ""; //$combination["material"];
+            self::storeCSV($line);
         }
     }
     
-    private function generateWandtattoo($stickerImage, $line) {
+    private static function generateWandtattoo($stickerImage, $line) {
         $type = "wandtattoo";
+
         if ($stickerImage->data["is_walldecal"] == 0) {
             return;
         }
@@ -110,6 +108,7 @@ class ExportFacebook {
         $line["image_link"] = SHOPURL . "/auftragsbearbeitung/images.php?product={$ids["id"]}&image={$ids["image"]}";
 
         $combinations = $stickerImage->getProductCombinations($type);
+
         foreach ($combinations as $key => $combination) {
             $line["id"] = $type . "_" . $stickerImage->getId() . "_" . $key;
             $line["price"] = $combination["price"];
@@ -121,13 +120,14 @@ class ExportFacebook {
                 $line["size"] = "";
             }
             
-            $line["material"] = "";//$combination["material"];
-            $this->storeCSV($line);
+            $line["material"] = ""; //$combination["material"];
+            self::storeCSV($line);
         }
     }
 
-    private function generateTextil($stickerImage, $line) {
+    private static function generateTextil($stickerImage, $line) {
         $type = "textil";
+
         if ($stickerImage->data["is_shirtcollection"] == 0) {
             return;
         }
@@ -141,6 +141,7 @@ class ExportFacebook {
         $line["image_link"] = SHOPURL . "/auftragsbearbeitung/images.php?product={$ids["id"]}&image={$ids["image"]}";
 
         $combinations = $stickerImage->getProductCombinations($type);
+
         foreach ($combinations as $key => $combination) {
             $line["id"] = $type . "_" . $stickerImage->getId() . "_" . $key;
             $line["price"] = $combination["price"];
@@ -152,8 +153,8 @@ class ExportFacebook {
                 $line["size"] = "";
             }
             
-            $line["material"] = "";//$combination["material"];
-            $this->storeCSV($line);
+            $line["material"] = ""; //$combination["material"];
+            self::storeCSV($line);
         }
 
     }
