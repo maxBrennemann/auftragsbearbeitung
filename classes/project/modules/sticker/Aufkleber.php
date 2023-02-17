@@ -19,6 +19,26 @@ class Aufkleber extends Sticker {
         parent::__construct($idSticker);
     }
 
+    public function getIsShortTimeSticker() {
+        return $this->isShortTimeSticker;
+    }
+
+    public function getIsLongTimeSticker() {
+        return $this->isLongTimeSticker;
+    }
+
+    public function getIsMultipart() {
+        return $this->isMultipartSticker;
+    }
+
+    public function getColors(): array {
+        return []; // TODO: implement
+    }
+
+    public function getSiezToPrice(): array {
+        return []; // TODO: implement
+    }
+
     public function getSizeTableFormatted() {
         return "";
     }
@@ -49,8 +69,8 @@ class Aufkleber extends Sticker {
         return $this->getSizeTableFormatted() . parent::getDescriptionShort($target);
     }
 
-    public function create() {
-
+    public function create($param1 = "", $param2 = "") {
+        parent::create($this->getDescription(), $this->getDescriptionShort());
     }
 }
 

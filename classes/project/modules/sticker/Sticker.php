@@ -12,16 +12,20 @@ class Sticker extends PrestashopConnection {
     protected $idSticker;
     protected $idProduct;
 
+    protected $name;
+
     function __construct($idSticker) {
         $this->idSticker = $idSticker;
+        
+        // TODO: implement db queries and get name
     }
 
     public function getName() {
-
+        return $this->name;
     }
 
     public function getId() {
-
+        return $this->idSticker;
     }
 
     public function getCreationDate() {
@@ -44,7 +48,7 @@ class Sticker extends PrestashopConnection {
         return $this->getDescr($target, "short");
     }
 
-    private function getDescr(int $target, String $type): String {
+    public function getDescr(int $target, String $type): String {
         $description = DBAccess::selectQuery("SELECT content, `type` FROM module_sticker_texts WHERE id_sticker = :id_sticker AND `target` = :target AND `type` = :type", [
             "id_sticker" => $this->idSticker,
             "target" => $target,
@@ -102,10 +106,7 @@ class Sticker extends PrestashopConnection {
 
     }
 
-    public function create() {
-        $descriptionLong = $this->getDescription();
-        $descriptionShort = $this->getDescriptionShort();
-
+    public function create($descriptionLong, $descriptionShort) {
         try {
             $xml = $this->getXML('products?schema=blank');
             $resource_product = $xml->children()->children();

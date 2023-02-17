@@ -1,7 +1,5 @@
 <?php
 
-/* TODO: use new class structure */
-
 require_once("classes/project/StickerImage.php");
 
 class ExportFacebook {
@@ -18,8 +16,7 @@ class ExportFacebook {
 
         foreach ($allProducts as $product) {
             $id = (int) $product["id"];
-            $sticker = new StickerImage($id);
-            self::addProduct($sticker);
+            self::addProduct($id);
         }
         fclose(self::$file);
     }
@@ -36,7 +33,7 @@ class ExportFacebook {
         fputcsv(self::$file, $line);
     }
 
-    public static function addProduct(StickerImage $stickerImage) {
+    public static function addProduct(int $id) {
         $line = [
             "id" => "",
             "title" => "",
@@ -54,107 +51,106 @@ class ExportFacebook {
             "shipping_weight" => "0.5kg",
         ];
 
-        self::generateAufkleber($stickerImage, $line);
-        self::generateWandtattoo($stickerImage, $line);
-        self::generateTextil($stickerImage, $line);
+        $stickerCollection = new StickerCollection($id);
+        
+        foreach ($stickerCollection as $product) {
+            if ($product != null) {
+                self::generate($product, $line, $product->getType());
+            }
+        }
     }
 
-    private static function generateAufkleber($stickerImage, $line) {
-        $type = "aufkleber";
+    private static function generate($product, $line, $type) {
+        $line["item_group_id"] = $type . $product->getId();
+        $line["title"] = $product->getName();
+        $line["description"] = "Unsere Aufkleber und Textilien sind keine Lagerware. Diese werden nach der Bestellung individuell für Dich angefertigt. " . $product->getDescr(1, "long");
+        $line["link"] = $product->getProductLink();
 
-        if ($stickerImage->data["is_plotted"] == 0) {
-            return;
+        $imageData = $product->getDefaultImage();
+        $line["image_link"] = SHOPURL . "/auftragsbearbeitung/images.php?product={$imageData["id"]}&image={$imageData["image"]}";
+
+        if ($product instanceof Aufkleber) {
+            self::generateAufkleber($product, $line);
+        } else if ($product instanceof Wandtattoo) {
+            self::generateWandtattoo($product, $line);
+        } else if ($product instanceof Textil) {
+            self::generateTextil($product, $line);
         }
+    }
 
-        $line["item_group_id"] = $type . $stickerImage->getId();
-        $line["title"] = $stickerImage->getName();
-        $line["description"] = "Unsere Aufkleber und Textilien sind keine Lagerware. Diese werden nach der Bestellung individuell für Dich angefertigt. " . $stickerImage->getDescriptions(1)["long"];
+    private static function generateAufkleber($product, $line) {
+        $combinationId = 0;
+        foreach ($product->getSizeToPrice() as $price => $size) {
+            $line["price"] = $price;
+            $line["size"] = $size;
 
-        $line["link"] = $stickerImage->getShopProducts($type, "link");
-        $ids = $stickerImage->getDefaultImage($type);
-        $line["image_link"] = SHOPURL . "/auftragsbearbeitung/images.php?product={$ids["id"]}&image={$ids["image"]}";
+            if ($product->getIsMultipart()) {
+                $line["id"] = "aufkleber" . "_" . $product->getId() . "_" . $combinationId;
 
-        $combinations = $stickerImage->getProductCombinations($type);
-
-        foreach ($combinations as $key => $combination) {
-            $line["id"] = $type . "_" . $stickerImage->getId() . "_" . $key;
-            $line["price"] = $combination["price"];
-            $line["color"] = $combination["color"];
-
-            if (isset($combination["price"])) {
-                $line["size"] = $combination["size"];
-            } else {
-                $line["size"] = "";
+                self::storeCSV($line);
+                $combinationId++;
+                continue;
             }
-            
-            $line["material"] = ""; //$combination["material"];
-            self::storeCSV($line);
+
+            /* iterate over all colors and add variants */
+            foreach ($product->getColors() as $color) {
+                $line["color"] = $color;
+
+                if ($product->getIsShortTimeSticker()) {
+                    $line["id"] = "aufkleber" . "_" . $product->getId() . "_" . $combinationId;
+                    $line["material"] = "Werbefolie";
+
+                    self::storeCSV($line);
+                    $combinationId++;
+                }
+                
+                if ($product->getIsLongTimeSticker()) {
+                    $line["id"] = "aufkleber" . "_" . $product->getId() . "_" . $combinationId;
+                    $line["material"] = "Hochleistungsfolie";
+
+                    self::storeCSV($line);
+                    $combinationId++;
+                }
+            }
         }
     }
     
-    private static function generateWandtattoo($stickerImage, $line) {
-        $type = "wandtattoo";
+    private static function generateWandtattoo($product, $line) {
+        $combinationId = 0;
+        foreach ($product->getSizeToPrice() as $price => $size) {
+            $line["price"] = $price;
+            $line["size"] = $size;
+            $line["material"] = "Wandtattoofolie";
 
-        if ($stickerImage->data["is_walldecal"] == 0) {
-            return;
-        }
+            if ($product->getIsMultipart()) {
+                $line["id"] = "wandtattoo" . "_" . $product->getId() . "_" . $combinationId;
 
-        $line["item_group_id"] = $type . $stickerImage->getId();
-        $line["title"] = $stickerImage->getName();
-        $line["description"] = "Unsere Aufkleber und Textilien sind keine Lagerware. Diese werden nach der Bestellung individuell für Dich angefertigt. " . $stickerImage->getDescriptions(2)["long"];
-
-        $line["link"] = $stickerImage->getShopProducts($type, "link");
-        $ids = $stickerImage->getDefaultImage($type);
-        $line["image_link"] = SHOPURL . "/auftragsbearbeitung/images.php?product={$ids["id"]}&image={$ids["image"]}";
-
-        $combinations = $stickerImage->getProductCombinations($type);
-
-        foreach ($combinations as $key => $combination) {
-            $line["id"] = $type . "_" . $stickerImage->getId() . "_" . $key;
-            $line["price"] = $combination["price"];
-            $line["color"] = $combination["color"];
-
-            if (isset($combination["price"])) {
-                $line["size"] = $combination["size"];
-            } else {
-                $line["size"] = "";
+                self::storeCSV($line);
+                $combinationId++;
+                continue;
             }
-            
-            $line["material"] = ""; //$combination["material"];
-            self::storeCSV($line);
+
+            /* iterate over all colors and add variants */
+            foreach ($product->getColors() as $color) {
+                $line["color"] = $color;
+                $line["id"] = "wandtattoo" . "_" . $product->getId() . "_" . $combinationId;
+
+                self::storeCSV($line);
+                $combinationId++;
+            }
         }
     }
 
-    private static function generateTextil($stickerImage, $line) {
-        $type = "textil";
+    private static function generateTextil($product, $line) {
+        $combinationId = 0;
+        foreach ($product->getColors() as $color) {
+            $line["price"] = $product->getPrice();
+            $line["color"] = $color;
 
-        if ($stickerImage->data["is_shirtcollection"] == 0) {
-            return;
-        }
+            $line["id"] = "textil" . "_" . $product->getId() . "_" . $combinationId;
 
-        $line["item_group_id"] = $type . $stickerImage->getId();
-        $line["title"] = $stickerImage->getName();
-        $line["description"] = "Unsere Aufkleber und Textilien sind keine Lagerware. Diese werden nach der Bestellung individuell für Dich angefertigt. " . $stickerImage->getDescriptions(3)["long"];
-
-        $line["link"] = $stickerImage->getShopProducts($type, "link");
-        $ids = $stickerImage->getDefaultImage($type);
-        $line["image_link"] = SHOPURL . "/auftragsbearbeitung/images.php?product={$ids["id"]}&image={$ids["image"]}";
-
-        $combinations = $stickerImage->getProductCombinations($type);
-
-        foreach ($combinations as $key => $combination) {
-            $line["id"] = $type . "_" . $stickerImage->getId() . "_" . $key;
-            $line["price"] = $combination["price"];
-            $line["color"] = $combination["color"];
-
-            if (isset($combination["price"])) {
-                $line["size"] = $combination["size"];
-            } else {
-                $line["size"] = "";
-            }
-            
-            $line["material"] = ""; //$combination["material"];
             self::storeCSV($line);
+            $combinationId++;
         }
 
     }

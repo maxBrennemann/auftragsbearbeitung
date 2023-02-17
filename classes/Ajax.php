@@ -1276,6 +1276,24 @@ class Ajax {
 				require_once('classes/project/modules/sticker/StickerCategory.php');
 				echo json_encode(StickerCategory::getChildCategoriesNested($startCategory));
 			break;
+			case "setExportStatus":
+				$status = (String) $_POST["export"];
+				$id = (int) $_POST["id"];
+
+				$export = DBAccess::selectQuery("SELECT * FROM module_sticker_exports WHERE idSticker = :idSticker", ["idSticker" => $id]);
+				//Protocoll::prettyPrint($export);
+				if ($export[0][$status] == NULL) {
+					$query = "UPDATE module_sticker_exports SET $status = -1 WHERE idSticker = :idSticker";
+					DBAccess::updateQuery($query, ["idSticker" => $id]);
+				} else if ($export[0][$status] != NULL) {
+					$query = "UPDATE module_sticker_exports SET $status = NULL WHERE idSticker = :idSticker";
+					DBAccess::updateQuery($query, ["idSticker" => $id]);
+				} else {
+					echo "error";
+				}
+				
+				echo "success";
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);

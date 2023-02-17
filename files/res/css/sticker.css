@@ -605,3 +605,12 @@ dt.inline {
 .selectedCategory {
     color: blue;
 }
+
+.exportContainer {
+    margin-bottom: 10px;
+    width: 400px;
+}
+
+.exportContainer .right {
+    float: right;
+}
