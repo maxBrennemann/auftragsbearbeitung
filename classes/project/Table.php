@@ -528,9 +528,9 @@ class Table {
 		}
 		
 		if ($amountOfData == -1) {
-			return DBAccess::selectQuery("SELECT * FROM ${type} {$whereConditionStatement} {$isOrderedByStatement}");
+			return DBAccess::selectQuery("SELECT * FROM $type {$whereConditionStatement} {$isOrderedByStatement}");
 		} else {
-			return DBAccess::selectQuery("SELECT * FROM ${type} {$whereConditionStatement} {$isOrderedByStatement} LIMIT ${amountOfData}");
+			return DBAccess::selectQuery("SELECT * FROM $type {$whereConditionStatement} {$isOrderedByStatement} LIMIT $amountOfData");
 		}
 	}
 
@@ -538,7 +538,6 @@ class Table {
     private static function html_createTableHeader($column_names) {
 		$table_header = "<tr>";
 
-		$count = 0;
 		foreach ($column_names as $entry) {
 			$showColumnName = $entry["COLUMN_NAME"];
 
@@ -546,8 +545,7 @@ class Table {
 				$showColumnName = $entry["ALT"];
 			}
 
-			$table_header .= "<th class='tableHead'>${showColumnName} <span class=\"cursortable\" onclick=\"sortTable(this, $count, true)\">&#x25B2;</span><span class=\"cursortable\" onclick=\"sortTable(this, $count, false)\">&#x25BC;</span></th>";
-			$count++;
+			$table_header .= "<th class='tableHead' onclick='sortTableNew(event)'>" . $showColumnName . " <span class=\"sortIcon\">" . Icon::$iconSortUndirected . "</span></th>";
 		}
 
 		return $table_header . "</tr>";
