@@ -41,6 +41,8 @@ class Icon {
 
     public static $iconCategory = '<svg xmlns="http://www.w3.org/2000/svg" style="width: 10px; height 10px" viewBox="0 0 24 24"><path d="M3,3H9V7H3V3M15,10H21V14H15V10M15,17H21V21H15V17M13,13H7V18H13V20H7L5,20V9H7V11H13V13Z" /></svg>';
 
+    public static $iconSortUndirected = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 12px; height 12px"><title>sort</title><path d="M18 21L14 17H17V7H14L18 3L22 7H19V17H22M2 19V17H12V19M2 13V11H9V13M2 7V5H6V7H2Z" fill="white" /></svg>';
+
 }
 
 ?>

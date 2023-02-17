@@ -9,6 +9,73 @@ document.addEventListener("click", function(event) {
 	}
 })
 
+/* https://stackoverflow.com/questions/14267781/sorting-html-table-with-javascript */
+const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+        v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2))(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+var currentSortedColumn;
+
+function sortTableNew(e) {
+	let th = e.target;
+	const table = th.closest('table');
+	Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
+		.sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+		.forEach(tr => table.appendChild(tr) );
+
+	let tr = th.closest('tr');
+	Array.from(tr.children).forEach(element => {
+		if (element != th) {
+			element.style.backgroundColor = "";
+		} else {
+			element.style.backgroundColor = "#005999";
+			let sortIcon = element.querySelector("span");
+			
+			if (currentSortedColumn == th) {
+				sortIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 12px; height 12px"><title>sort-descending</title><path d="M19 7H22L18 3L14 7H17V21H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z" fill="white" /></svg>`;
+			} else {
+				sortIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 12px; height 12px"><title>sort-ascending</title><path d="M19 17H22L18 21L14 17H17V3H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z" fill="white" /></svg>`;
+			}
+		}
+	});
+
+	const sortDirection = currentSortedColumn == th ? "desc" : "asc";
+	const sortedColumn = Array.from(tr.children).indexOf(th);
+	const tableNumber = Array.from(document.querySelectorAll("table")).indexOf(table);
+	saveSortSettings(sortDirection, sortedColumn, tableNumber);
+	currentSortedColumn = th;
+}
+
+function readTableSorted() {
+	const settings = getSortSettings();
+	if (settings == null) {
+		return;
+	}
+	const tables = document.querySelectorAll("table");
+	const ths = tables[settings.tableNumber].querySelectorAll("th");
+	const th = ths[settings.sortedColumn];
+
+	if (settings.sortDirection == "desc") {
+		currentSortedColumn = th;
+	}
+	th.click();
+}
+
+/* done by chatGPT */
+function saveSortSettings(sortDirection, sortedColumn, tableNumber) {
+	const url = window.location.href;
+	localStorage.setItem(url, JSON.stringify({
+	  sortDirection: sortDirection,
+	  sortedColumn: sortedColumn,
+	  tableNumber: tableNumber,
+	}));
+}
+  
+function getSortSettings() {
+	const url = window.location.href;
+	const sortSettings = JSON.parse(localStorage.getItem(url));
+	return sortSettings;
+}  
+
 var lastActivity = null;
 document.addEventListener("click", registerLastActivity, false);
 
@@ -90,6 +157,7 @@ function startFunc() {
 	listener_bellAndSearch();
 	initializeFileUpload();
 	initializeInfoBtn();
+	readTableSorted();
 }
 
 function listener_logout() {
