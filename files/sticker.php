@@ -6,9 +6,11 @@
     /* temp */
     require_once('classes/project/modules/sticker/StickerTagManager.php');
     require_once('classes/project/modules/sticker/StickerImage.php');
+    require_once('classes/project/modules/sticker/StickerCollection.php');
 
     $id = 0;
     $stickerImage = null;
+    $stickerCollection = null;
     $stickerTagManager = null;
     $stickerChangelog = null;
 
@@ -29,6 +31,7 @@
         $stickerTagManager = new StickerTagManager($id, $stickerImage->getName());
         $stickerChangelog = new StickerChangelog($id);
         $si = new StickerImage2($id);
+        $stickerCollection = new StickerCollection($id);
     }
 
     if ($id != 0 && $stickerImage != null):
@@ -334,30 +337,60 @@
         <!-- TODO: facebook export überlegen, wo das angelegt wird und wie es funktioniert -->
         <button style="display: none" onclick="exportFacebook()">facebook export test</button>
         <form>
-            <label>
-                <input id="exportFb" name="exportFb" type="checkbox">    
-                Nach Facebook exportieren<button class="infoButton" data-info="5">i</button><!-- TODO: neuen info text hinzufügen -->
-            </label>
-            <label>
-                <input id="exportGoogle" name="exportGoogle" type="checkbox">    
+            <div class="exportContainer">
+                Nach Facebook exportieren
+                <span class="right">
+                    <label class="switch">
+                        <input type="checkbox" <?=$stickerCollection->getExportStatus("facebook") ? "checked" : ""?>>
+                        <span class="slider round" id="revisedClick" data-binding="true" data-value="facebook" data-fun="exportToggle"></span>
+                    </label>
+                </span>
+            </div>
+            <div class="exportContainer">
                 Nach Google exportieren
-            </label>
-            <label>
-                <input id="exportAmazon" name="exportAmazon" type="checkbox">    
+                <span class="right">
+                    <label class="switch">
+                        <input type="checkbox" <?=$stickerCollection->getExportStatus("google") ? "checked" : ""?>>
+                        <span class="slider round" id="revisedClick" data-binding="true" data-value="google" data-fun="exportToggle"></span>
+                    </label>
+                </span>
+            </div>
+            <div class="exportContainer">
                 Nach Amazon exportieren
-            </label>
-            <label>
-                <input id="exportEtsy" name="exportEtsy" type="checkbox">    
+                <span class="right">
+                    <label class="switch">
+                        <input type="checkbox" <?=$stickerCollection->getExportStatus("amazon") ? "checked" : ""?>>
+                        <span class="slider round" id="revisedClick" data-binding="true" data-value="amazon" data-fun="exportToggle"></span>
+                    </label>
+                </span>
+            </div>
+            <div class="exportContainer">
                 Nach Etsy exportieren
-            </label>
-            <label>
-                <input id="exportEbay" name="exportEbay" type="checkbox">    
+                <span class="right">
+                    <label class="switch">
+                        <input type="checkbox" <?=$stickerCollection->getExportStatus("etsy") ? "checked" : ""?>>
+                        <span class="slider round" data-fun="exportToggle" data-binding="true" data-value="etsy"></span>
+                    </label>
+                </span>
+            </div>
+            <div class="exportContainer">
                 Nach eBay exportieren
-            </label>
-            <label>
-                <input id="exportPinterest" name="exportPinterest" type="checkbox">    
+                <span class="right">
+                    <label class="switch">
+                        <input type="checkbox" <?=$stickerCollection->getExportStatus("ebay") ? "checked" : ""?>>
+                        <span class="slider round" data-fun="exportToggle" data-binding="true" data-value="ebay"></span>
+                    </label>
+                </span>
+            </div>
+            <div class="exportContainer">
                 Nach Pinterest exportieren
-            </label>
+                <span class="right">
+                    <label class="switch">
+                        <input type="checkbox" <?=$stickerCollection->getExportStatus("pinterest") ? "checked" : ""?>>
+                        <span class="slider round" data-fun="exportToggle" data-binding="true" data-value="pinterest"></span>
+                    </label>
+                </span>
+            </div>
         </form>
     </div>
     <div class="defCont">

@@ -1327,3 +1327,12 @@ function selectCategory(e) {
         }
     }
 }
+
+async function click_exportToggle(e) {
+    let exportType = e.target.dataset.value;
+    let isSuccessfull = await send({
+        id: mainVariables.motivId.innerHTML, 
+        export: exportType
+    }, "setExportStatus");
+    infoSaveSuccessfull(isSuccessfull);
+}

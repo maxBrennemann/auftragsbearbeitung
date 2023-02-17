@@ -755,56 +755,6 @@ class StickerImage {
         }
     }
 
-    public function getDefaultImage($type) {
-        if (!$this->shopProducts["products"][$type]) {
-            $this->updateProductStatus();
-        }
-        $id = $this->shopProducts["products"][$type]["id"];
-        $shop = new StickerShopDBController("", "", "", "", "");
-        return ["id" => $id, "image" => $shop->getDefaultImage($id)];
-    }
-
-    public function getProductCombinations($type) {
-        $combinations = [];
-        switch ($type) {
-            case "aufkleber":
-            case "wandtattoo":
-                $query = "SELECT width, height FROM module_sticker_sizes WHERE id_sticker = {$this->id} ORDER BY width";
-                $data = DBAccess::selectQuery($query);
-
-                foreach ($data as &$d) {
-                    $size = str_replace(".", ",", ((int) $d["width"]) / 10) . "cm";
-
-                    $price = $this->getPrice($d["width"], $d["height"], 0);
-                    $price = number_format($price / 100, 2, '.', '') . " EUR";
-                    if ($this->data["is_multipart"] == "0") {
-                        $colors = ["schwarz", "gelb", "rot", "dunkelblau", "grün", "grau", "weiß"];
-                        foreach ($colors as $color) {
-                            $combinations[] = [
-                                "price" => $price,
-                                "size" => $size,
-                                "color" => $color,
-                            ];
-                        }
-                    } else {
-                        $combinations[] = [
-                            "price" => $price,
-                            "size" => $size,
-                            "color" => "",
-                        ];
-                    }
-                }
-                break;
-            case "textil":
-                //foreach () {
-
-                //}
-                break;
-        }
-
-        return $combinations;
-    }
-
 }
 
 ?>
