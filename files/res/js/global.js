@@ -321,6 +321,7 @@ function createTable(rows, columns, data, emptyFields) {
 	return table;
 }
 
+// TODO: unhandled promise rejection behandeln
 /*
 	paramString can be a string or an object with key value pairs
 
