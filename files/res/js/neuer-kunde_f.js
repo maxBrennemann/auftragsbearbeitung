@@ -31,3 +31,9 @@ function switchOeffPriv(event) {
             console.log("error");
     }
 }
+
+/* https://stackoverflow.com/questions/17651207/mask-us-phone-number-string-with-javascript */
+document.getElementById('telmobil').addEventListener('input', function (e) {
+    var x = e.target.value.replace(/\D/g, '').match(/(\d{0,4})(\d{0,})/);
+    e.target.value = !x[2] ? x[1] : x[1] + ' ' + x[2];
+});
