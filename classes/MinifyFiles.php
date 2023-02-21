@@ -7,14 +7,14 @@ use MatthiasMullie\Minify\JS;
 class MinifyFiles {
 
 	private static function getJs() {
-		$path    = 'files/res/js/';
+		$path = 'files/res/js/';
 		$files = scandir($path);
 		$files = array_diff(scandir($path), array('.', '..'));
 		return $files;
 	}
 
 	private static function getCss() {
-		$path    = 'files/res/css/';
+		$path = 'files/res/css/';
 		$files = scandir($path);
 		$files = array_diff(scandir($path), array('.', '..'));
 		return $files;

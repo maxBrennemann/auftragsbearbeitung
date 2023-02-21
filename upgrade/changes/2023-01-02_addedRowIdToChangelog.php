@@ -1,6 +1,6 @@
 <?php
 
-require "UpdateMySql.php";
+require_once "UpdateMySql.php";
 
 return new class extends UpdateMySql {
 
