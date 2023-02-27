@@ -214,10 +214,16 @@ class Sticker extends PrestashopConnection {
         /* TODO: fo: implement status via db */
     }
 
+    private function getAccessoires() {
+        $query = "SELECT id_product FROM module_sticker_accessoires WHERE id_sticker = :idSticker";
+        $result = DBAccess::selectQuery($query, ["idSticker" => $this->idSticker]);
+        return array_map(fn ($data): int => $data["id_product"], $result);
+    }
+
     /**
      * connects a list of products with the current product
      */
-    public function connectAccessoires($connectTo, $xml = null) {
+    public function connectAccessoires($xml = null) {
         if ($xml == null) {
             $xml = $this->getXML("products/$this->idProduct");
         }
@@ -235,6 +241,7 @@ class Sticker extends PrestashopConnection {
         }
 
         /* insert new tag if it does not exist */
+        $connectTo = $this->getAccessoires();
         foreach ($connectTo as $id) {
             if (!in_array($id, $existingAccessoires)) {
                 $product = $accessoires->addChild("product");

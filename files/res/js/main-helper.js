@@ -29,3 +29,8 @@ function ajaxSearch(query) {
     }
     document.getElementById("kundenLink").click();
 }
+
+function showCustomizeOptions() {
+    const div = document.createElement("div");
+    // TODO: linkauswahl zusammenstellen, die dann angepinnt werden kann
+}
