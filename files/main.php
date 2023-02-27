@@ -42,7 +42,7 @@
 		<li><a href="<?=$toDo?>">Verbesserungen für die Auftragsbearbeitung</a></li>
 		<li><a href="<?=$offeneRechnungen?>">Offene Rechnungen:</a> <b><?=$offeneSumme?>€</b></li>
 	</ul>
-	<span style="float: right;"><a href="<?=$funktionen?>">Mehr</a></span>
+	<span style="float: right;"><a href="#" onclick="showCustomizeOptions()">Anpassen</a> <a href="<?=$funktionen?>">Mehr</a></span>
 	<br>
 
 	<div class="tableContainer">

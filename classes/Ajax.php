@@ -1045,7 +1045,7 @@ class Ajax {
 
 						require_once("classes/project/modules/sticker/Aufkleber.php");
 						$aufkleber = new Aufkleber(810);
-						$aufkleber->connectAccessoires([809]);
+						$aufkleber->connectAccessoires();
 						break;
 					case 2:
 						$stickerImage->saveWandtattoo();
@@ -1259,12 +1259,12 @@ class Ajax {
 				require_once('classes/project/modules/sticker/exports/ExportFacebook.php');
 
 				$id = (int) $_POST["id"];
-				$sticker = new StickerImage($id);
-				$export = new ExportFacebook();
-				$export->addProduct($sticker);
+				ExportFacebook::addProduct($id);
 			break;
 			case "showSearch":
-				include('classes/project/modules/sticker/views/showSearchView.php');
+				$id = (int) $_POST["id"];
+				$products = DBAccess::selectQuery("SELECT a.id_product, s.name FROM module_sticker_accessoires a, module_sticker_sticker_data s WHERE a.id_sticker = :idSticker AND a.id_sticker = s.id", ["idSticker" => $id]);
+				insertTemplate('classes/project/modules/sticker/views/showSearchView.php', ["products" => $products]);
 			break;
 			case "searchShop":
 				require_once('classes/project/modules/sticker/SearchProducts.php');

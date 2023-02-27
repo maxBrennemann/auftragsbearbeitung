@@ -1244,7 +1244,8 @@ function uploadFileForSticker(files, imageCategory) {
 
 async function click_shortcutProduct() {
     let div = document.createElement("div");
-    div.innerHTML = await send({}, "showSearch");
+    div.innerHTML = await send({"id": mainVariables.motivId.innerHTML,}, "showSearch");
+    div.style.padding = "25px";
     document.body.appendChild(div);
     addActionButtonForDiv(div, "remove");
     div.classList.add("centeredDiv");

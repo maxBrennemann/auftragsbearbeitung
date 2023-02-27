@@ -588,15 +588,6 @@ dt.inline {
     border-radius: 6px;
 }
 
-#showSearchResults {
-    max-height: 400px;
-    overflow-y: scroll;
-}
-
-#showSearchResults label {
-    margin: 5px;
-}
-
 .paddingDefault ul, .paddingDefault li {
     list-style-type: disc;
     padding-left: revert;
