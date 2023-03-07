@@ -21,13 +21,9 @@
 		<a href="<?=$changelog?>" style="font-size: 0.5em; color: grey"><?=getCurrentVersion()?></a>
 	</footer>
 
-	<?php 
-		$files;
-		if($isArticle) {
-			$files = DBAccess::selectQuery("SELECT * FROM attachments_gen WHERE articleId = '${result['id']}' AND anchor = 'footer'");
-		} else {
-			$files = DBAccess::selectQuery("SELECT * FROM attachments WHERE articleId = '${result['id']}' AND anchor = 'footer'");
-		}
+	<?php
+		$articleId = $pageDetails["id"];
+		$files = DBAccess::selectQuery("SELECT * FROM attachments WHERE articleId = '$articleId' AND anchor = 'footer'");
 		
 		foreach($files as $file) {
 			$link = Link::getResourcesShortLink($file['fileSrc'], $file['fileType']);
