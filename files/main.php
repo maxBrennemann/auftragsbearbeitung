@@ -4,7 +4,7 @@
 	require_once('classes/project/Rechnung.php');
 
 	$showAktuelleSchritte = Aufgabenliste::aktuelleSchritteAlsTabelleAusgeben();
-	$showOffeneAuftraege = Auftrag::getOffeneAuftraege();
+	$showOffeneAuftraege = Auftrag::getAuftragsliste();
 	$showReady = Auftrag::getReadyOrders();
 	$offeneSumme = Rechnung::getOffeneRechnungssumme();
 
