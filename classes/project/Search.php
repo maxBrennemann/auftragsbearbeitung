@@ -75,7 +75,8 @@ class Search {
 
 				$data = "";
 				$ids = array_reverse($ids);
-				$data = Auftrag::getAuftragsListe($ids, 0);
+				$data = Auftrag::getAuftragsliste($ids, 0);
+				// TODO: fixen, da getAuftragsliste überarbeitet wurde
 
 				if (empty($data)) {
 					$data = "<span>Keine Ergebnisse!</span>";

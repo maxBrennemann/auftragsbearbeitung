@@ -137,22 +137,32 @@
 						<?=Icon::$iconSearch?>
 					</span></span>
 				</div>
-				<div class="notificationContainer">
-					<span title="Benachrichtigungen"><?=NotificationManager::getNotificationCount();?></span>
-					<span title="Benachrichtigungen">
-						<?=Icon::$iconBell?>
-					</span>
-				</div>
-				<div class="settingsContainer">
-					<a href="<?=$einstellungen?>" id="settings" title="Einstellungen">
-						<?=Icon::$iconSettings?>
+				<div>
+					<div>
+						<div class="notificationContainer">
+							<span title="Benachrichtigungen"><?=NotificationManager::getNotificationCount();?></span>
+							<span title="Benachrichtigungen">
+								<?=Icon::$iconBell?>
+							</span>
+						</div>
+						<div class="settingsContainer">
+							<a href="<?=$einstellungen?>" id="settings" title="Einstellungen">
+								<?=Icon::$iconSettings?>
+							</a>
+						</div>
+						<div class="logoutContainer">
+							<span id="logoutBtn" title="Ausloggen">
+								<?=Icon::$iconLogout?>
+							</span>
+						</div>
+					</div>
+					<?php if (Envs::get("showTimeGlobal") == "true"): ?>
+					<a href="<?=Link::getPageLink("zeiterfassung")?>" class="showTimeGlobal" >
+						<span>Zeit: <span id="timeGlobal">00:10:37</span></span>
 					</a>
+					<?php endif; ?>
 				</div>
-				<div class="logoutContainer">
-					<span id="logoutBtn" title="Ausloggen">
-						<?=Icon::$iconLogout?>
-					</span>
-				</div>
+				
 			</aside>
 		</section>
 		<div class="hamburgerDiv">

@@ -486,6 +486,7 @@ class Table {
 	 */
 	private static function html_createRow2($row, $rowNames, $link, $dataset, $lastColumnIsActionButton = null) {
 		$html = "<tr>";
+
 		if ($dataset[0] == true) {
 			$data = $row[$dataset[2]];
 			$html = "<tr data-{$dataset[1]}=\"{$data}\">";
@@ -493,6 +494,13 @@ class Table {
 		
 		for ($i = 0; $i < sizeof($rowNames); $i++) {
 			$column = $rowNames[$i]["COLUMN_NAME"];
+
+			$nowrap = false;
+			if (isset($rowNames[$i]["NOWRAP"])) {
+				$nowrap = $rowNames[$i]["NOWRAP"];
+			}
+			$nowrap = $nowrap ? "nowrap" : "";
+
 			$data = $row[$column];
 
 			/* sets the link to null, if the last column is reached and it is an action button in this column */
@@ -500,9 +508,9 @@ class Table {
 				$link = null;
 			
 			if ($link == null)
-				$html .= "<td>" . $data . "</td>";
+				$html .= "<td class=\"$nowrap\">" . $data . "</td>";
 			else
-				$html .= "<td class=\"linkTable\"><a href=\"$link\">" . $data . "</a>\r\n</td>";
+				$html .= "<td class=\"linkTable $nowrap\"><a href=\"$link\">" . $data . "</a>\r\n</td>";
 		}
 
 		$html .= "</tr>";

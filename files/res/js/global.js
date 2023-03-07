@@ -158,6 +158,7 @@ function startFunc() {
 	initializeFileUpload();
 	initializeInfoBtn();
 	readTableSorted();
+	timeGlobalListener();
 }
 
 function listener_logout() {
@@ -198,6 +199,37 @@ function listener_bellAndSearch() {
 			document.getElementById("showNotifications").style.display = "inline";
 		}
 	}, false);
+}
+
+var globalTimerInterval;
+function timeGlobalListener() {
+	const displayTime = document.getElementById("timeGlobal");
+	if (displayTime != null) {
+		const start = localStorage.getItem("startTime");
+		if (start != null) {
+			globalTimerInterval = setInterval(countTimeGlobal, 1000);
+		}
+	}
+}
+
+function countTimeGlobal() {
+    let curr = new Date().getTime().toString();
+    let startTime = parseInt(localStorage.getItem("startTime"));
+
+    let diff = curr - startTime;
+
+    let sec = Math.floor(diff / 1000);
+    let hou = Math.floor(sec / 60 / 60);
+    sec = sec - hou * 60 * 60;
+    let min = Math.floor(sec / 60);
+    sec = sec - min * 60;
+
+	const displayTime = document.getElementById("timeGlobal");
+    displayTime.innerHTML = `${pad(hou)}:${pad(min)}:${pad(sec)}`;
+}
+
+function pad(num) {
+    return ('00' + num).slice(-2);
 }
 
 function validateEmail(email) {

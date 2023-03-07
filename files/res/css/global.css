@@ -803,3 +803,17 @@ input#hamburg {
     vertical-align: middle;
     margin-right: 7px;
 }
+
+.searchContainer {
+    vertical-align: bottom;
+}
+
+.showTimeGlobal {
+    display: block;
+    font-size: 0.7em;
+    cursor: pointer;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
