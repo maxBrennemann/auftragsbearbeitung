@@ -1294,6 +1294,13 @@ class Ajax {
 				
 				echo "success";
 			break;
+			case "toggleShowTime":
+				Envs::toggle("showTimeGlobal");
+
+				echo json_encode([
+					"status" => "success",
+				]);
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
