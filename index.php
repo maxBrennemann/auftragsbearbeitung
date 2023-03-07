@@ -14,7 +14,6 @@ require_once('classes/project/Icon.php');
 require_once('classes/project/Posten.php');
 require_once('classes/project/Angebot.php');
 require_once('classes/project/NotificationManager.php');
-$isArticle = false;
 
 /* TODO: index.php neu überarbeiten und logischer aufbauen, eventuell mit htaccess mehr filtern? */
 
@@ -45,9 +44,6 @@ $url = explode('?', $url, 2);
 $page = str_replace(REWRITE_BASE . SUB_URL, "", $url[0]);
 $parts = explode('/', $page);
 $page = $parts[count($parts) - 1];
-if ($parts[0] == 'artikel') {
-	$isArticle = true;
-}
 
 /* 
  * simple caching from:
@@ -154,9 +150,9 @@ if (file_exists($cacheFile) && !(count($_GET) || count($_POST)) && $t && $status
 			}
 			
 		} else if (isLoggedIn()) {
-			showPage($page, $isArticle);
+			showPage($page);
 		} else {
-			showPage("login", false);
+			showPage("login");
 		}
 	}
 
@@ -166,32 +162,28 @@ if (file_exists($cacheFile) && !(count($_GET) || count($_POST)) && $t && $status
 	}
 }
 
-function showPage($page, $isArticle) {
+function showPage($page) {
 	if ($page == "test") {
 		include('test.php');
 		return null;
 	}
 
-	$result = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'");
+	$pageDetails = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'");
 	$articleUrl = "";
 
 	/* checks if file exists */
-	if ($result == null || !file_exists("files/" . $result[0]["articleUrl"])) {
-		/* generated articles does not exist in this project */
-		//$baseUrl = 'files/generated/';
-		//$result = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM generated_articles WHERE src = '$page'");
-
+	if ($pageDetails == null || !file_exists("files/" . $pageDetails[0]["articleUrl"])) {
 		http_response_code(404);
 
 		$baseUrl = 'files/';
-		$result['id'] = 0;
-		$result["articleUrl"] = $articleUrl = "404.php";
-		$result["pageName"] = $pageName = "Page not found";
+		$pageDetails['id'] = 0;
+		$pageDetails["articleUrl"] = $articleUrl = "404.php";
+		$pageDetails["pageName"] = $pageName = "Page not found";
 	} else {
 		$baseUrl = 'files/';
-		$result = $result[0];
-		$articleUrl = $result["articleUrl"];
-		$pageName = $result["pageName"];
+		$pageDetails = $pageDetails[0];
+		$articleUrl = $pageDetails["articleUrl"];
+		$pageName = $pageDetails["pageName"];
 	}
 	
 	include('files/header.php');

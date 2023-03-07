@@ -48,12 +48,8 @@
 	<!--<link rel="stylesheet" href="<?=$tailwindCSS?>">-->
 	<script src="<?=$globalJS?>"></script>
 	<?php
-		$files;
-		if ($isArticle) {
-			$files = DBAccess::selectQuery("SELECT * FROM attachments_gen WHERE articleId = '{$result['id']}' AND anchor = 'head'");
-		} else {
-			$files = DBAccess::selectQuery("SELECT * FROM attachments WHERE articleId = '{$result['id']}' AND anchor = 'head'");
-		}
+		$files = DBAccess::selectQuery("SELECT * FROM attachments WHERE articleId = '{$pageDetails['id']}' AND anchor = 'head'");
+		
 		foreach($files as $file) {
 			$link = Link::getResourcesShortLink($file['fileSrc'], $file['fileType']);
 			switch ($file['fileType']) {
