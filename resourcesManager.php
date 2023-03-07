@@ -39,6 +39,12 @@ if (isset($_GET['css'])) {
 	$script = $_GET['css'];
 	$fileName = explode(".", $script);
 
+	if ($fileName[0] == "tw") {
+		$file = file_get_contents(Link::getResourcesLink("min/t-style.min.css", "css", false));
+		echo $file;
+		return;
+	}
+
 	if (sizeof($fileName) == 2) {
 		$min = "min/" . $fileName[0] . ".min.css";
 		if (file_exists(Link::getResourcesLink($min, "css", false)) && MinifyFiles::isActivated()) {

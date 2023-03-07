@@ -4,8 +4,9 @@
 	require_once('classes/Login.php');
 	require_once('classes/project/ClientSettings.php');
 	
-	$globalCSS =  Link::getGlobalCSS();
-	$globalJS =  Link::getGlobalJS();
+	$globalCSS = Link::getGlobalCSS();
+	$tailwindCSS = Link::getTW();
+	$globalJS = Link::getGlobalJS();
 	$curr_Link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 	$adminLink = Link::getAdminLink();
 
@@ -44,6 +45,7 @@
 		<?=ClientSettings::getColorConfiguration()?>
 	</style>
 	<link rel="stylesheet" href="<?=$globalCSS?>">
+	<!--<link rel="stylesheet" href="<?=$tailwindCSS?>">-->
 	<script src="<?=$globalJS?>"></script>
 	<?php
 		$files;
