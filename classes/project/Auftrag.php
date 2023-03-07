@@ -42,8 +42,6 @@ class Auftrag implements StatisticsInterface {
 	private $isArchiviert = false;
 	private $isRechnung = false;
 
-	static $offeneAuftraege = array();
-
 	function __construct($auftragsnummer) {
 		$auftragsnummer = (int) $auftragsnummer;
 		if ($auftragsnummer > 0) {
@@ -388,53 +386,33 @@ class Auftrag implements StatisticsInterface {
 		return $t->getTable();
 	}
 
-	public static function getOffeneAuftraege() {
-		$query = "SELECT Auftragsnummer AS id FROM auftrag WHERE Rechnungsnummer = 0 AND archiviert != 0";
-		$data = DBAccess::selectQuery($query);
-		return self::getAuftragsListe($data, "id");
-	}
-
-	public static function getAuftragsListe($ids, $arrKey) {
+	public static function getAuftragsliste() {
 		$column_names = array(
-			0 => array("COLUMN_NAME" => "Auftragsnummer"), 
-			1 => array("COLUMN_NAME" => "Name"),	
-			2 => array("COLUMN_NAME" => "Auftragsbezeichnung"), 
-			3 => array("COLUMN_NAME" => "Auftragsbeschreibung"), 
-			4 => array("COLUMN_NAME" => "Datum"), 
-			5 => array("COLUMN_NAME" => "Termin"), 
-			6 => array("COLUMN_NAME" => "Angenommen durch")
-		);
-		
-		$query = "SELECT Auftragsnummer, IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ',";
-		$query .= " kunde.Nachname), kunde.Firmenname) as Name, Auftragsbezeichnung,";
-		$query .= " Auftragsbeschreibung, Datum, IF(auftrag.Termin = '0000-00-00', 'kein Termin', ";
-		$query .= "auftrag.Termin) AS Termin, CONCAT(mitarbeiter.Vorname, ' ', mitarbeiter.Nachname)";
-		$query .= " AS 'Angenommen durch', kunde.Kundennummer FROM auftrag LEFT JOIN kunde ON auftrag.Kundennummer =";
-		$query .= " kunde.Kundennummer LEFT JOIN mitarbeiter ON mitarbeiter.id = ";
-		$query .= "auftrag.AngenommenDurch WHERE Rechnungsnummer = 0";
-
-		$column_names = array(
-			0 => array("COLUMN_NAME" => "Nr."), 
-			1 => array("COLUMN_NAME" => "Datum"),
-			2 => array("COLUMN_NAME" => "Termin"), 
+			0 => array("COLUMN_NAME" => "Auftragsnummer", "ALT" => "Nr.", "NOWRAP"), 
+			1 => array("COLUMN_NAME" => "Datum", "NOWRAP" => true),
+			2 => array("COLUMN_NAME" => "Termin", "NOWRAP" => true), 
 			3 => array("COLUMN_NAME" => "Kunde"), 
 			4 => array("COLUMN_NAME" => "Auftragsbezeichnung")
 		);
 
-		$query = "SELECT Auftragsnummer AS 'Nr.', Datum, IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) as Kunde, Auftragsbezeichnung, IF(auftrag.Termin = '0000-00-00', 'kein Termin', auftrag.Termin) AS Termin FROM auftrag LEFT JOIN kunde ON auftrag.Kundennummer = kunde.Kundennummer WHERE ";
-
-		foreach($ids as $id) {
-			$nr = $id[$arrKey]; /* must be fixed later */
-			$query .= "Auftragsnummer = $nr OR ";
-		}
-		$query = substr($query, 0, -4);
+		$query = "SELECT Auftragsnummer, Datum, IF(kunde.Firmenname = '', 
+				CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) as Kunde, 
+				Auftragsbezeichnung, IF(auftrag.Termin = '0000-00-00', 'kein Termin', auftrag.Termin) AS Termin 
+			FROM auftrag 
+			LEFT JOIN kunde 
+				ON auftrag.Kundennummer = kunde.Kundennummer 
+			WHERE Rechnungsnummer = 0 AND archiviert != 0";
 
 		$data = DBAccess::selectQuery($query);
-		self::$offeneAuftraege = $data;
 
-		$form = new FormGenerator("auftrag", "Datum", "Rechnungsnummer = 0");
-		$table = $form->createTableByDataRowLink($data, $column_names, "auftrag", null);
-		return $table;
+		$link = new Link();
+		$link->addBaseLink("auftrag");
+		$link->setIterator("id", $data, "Auftragsnummer");
+
+		$t = new Table();
+		$t->createByData($data, $column_names);
+		$t->addLink($link);
+		return $t->getTable();
 	}
 
 	public function istRechnungGestellt() {
