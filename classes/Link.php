@@ -120,6 +120,10 @@ class Link {
 	public static function getGlobalCSS() {
 		return self::getResourcesShortLink("global.css", "css");
 	}
+
+	public static function getTW() {
+		return self::getResourcesShortLink("tw.css", "css");
+	}
 	
 	public static function getGlobalJS() {
 		return self::getResourcesShortLink("global.js", "js");

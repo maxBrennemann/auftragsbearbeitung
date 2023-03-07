@@ -1,4 +1,8 @@
-﻿@font-face {
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
     font-family: 'Be Vietnam';
     src: url("../font/BeVietnamPro-Regular.ttf") format('truetype');
     font-weight: normal;

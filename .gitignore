@@ -37,3 +37,5 @@ cache/*
 vendor
 
 files/res/form/modules/sticker/catalog_products.csv
+
+node_modules
