@@ -605,3 +605,10 @@ dt.inline {
 .exportContainer .right {
     float: right;
 }
+
+.iconGenerate {
+    background: inherit;
+    border: none;
+    vertical-align: middle;
+    cursor: pointer;
+}
