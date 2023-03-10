@@ -39,11 +39,11 @@ class StickerCollection implements Iterator {
     }
 
     /* Iterator */
-    public function current() {
+    public function current(): mixed {
         return $this->getTarget($this->current);
     }
 
-    public function key() {
+    public function key(): mixed {
         return $this->position;
     }
 
