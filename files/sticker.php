@@ -36,6 +36,7 @@
 
     if ($id != 0 && $stickerImage != null):
 ?>
+    <script src="<?=Link::getResourcesShortLink("sticker/productConnector.js", "js")?>" defer></script> 
     <div class="defCont cont1">
         <div>
             <h2>Motiv <input id="name" class="titleInput" value="<?=$stickerImage->getName();?>">

@@ -1,4 +1,6 @@
-var mainVariables = {};
+var mainVariables = {
+    productConnect: [],
+};
 
 if (document.readyState !== 'loading' ) {
     initStickerOverview();
@@ -265,8 +267,12 @@ async function transfer(type, text) {
     statusInfo.hide();
 }
 
-function send(data, intent, json = false) {
-    data.getReason = intent;
+function send(data, intent = "", json = false) {
+    if (intent == null) {
+        data.getReason = data.r;
+    } else {
+        data.getReason = intent;
+    }
 
     if (json) {
         paramString = "getReason=" + intent + "&json=" + JSON.stringify(data);
@@ -284,7 +290,41 @@ function send(data, intent, json = false) {
         return result;
     });
 
+    if (intent == null) {
+        return JSON.parse(response);
+    }
+
     return response;
+}
+
+const ajax = {
+    async post(data, noJSON = false) {
+        data.getReason = data.r;
+        const param = Object.keys(data).map(key => {
+            return `${key}=${data[key]}`;
+        });
+        let response = await makeAsyncCall("POST", param.join("&"), "").then(result => {
+            return result;
+        });
+    
+        if (noJSON) {
+            return response;
+        }
+
+        let json = {};
+        try {
+            json = JSON.parse(response);
+        } catch (e) {
+            infoSaveSuccessfull();
+            return {};
+        }
+
+        return json;
+    },
+
+    async get() {
+
+    },
 }
 
 /**
@@ -1242,7 +1282,18 @@ function uploadFileForSticker(files, imageCategory) {
 // TODO: prevent false copying of text
 // TODO: alt files like svg must be uploadable as well
 
-async function click_shortcutProduct() {
+async function click_shortcutProduct(e) {
+    const type = e.target.dataset.type;
+
+    if (mainVariables.productConnect[type]) {
+        mainVariables.productconnect[type].show();
+    } else {
+        const productConnector = new ProductConnector();
+        mainVariables.productConnect[type] = await productConnector.showSearchContainer();
+    }
+
+    return;
+
     let div = document.createElement("div");
     div.innerHTML = await send({"id": mainVariables.motivId.innerHTML,}, "showSearch");
     div.style.padding = "25px";
