@@ -34,13 +34,23 @@ class ProductConnector {
         searchContainer.style.padding = "25px";
         searchContainer.classList.add("centeredDiv");
 
-        const searchBtn = searchContainer.querySelector("#searchShopBtn");
-        searchBtn.addEventListener("click", () => this.getSearchResults());
-
         addActionButtonForDiv(searchContainer, "hide");
         centerAbsoluteElement(searchContainer);
 
         this.searchContainer = searchContainer;
+        this.setEventListeners();
+    }
+
+    setEventListeners() {
+        const searchQueryInput = this.searchContainer.querySelector("#searchShopQuery");
+        searchQueryInput.addEventListener("keydown", (e) => {
+            if (e.keyCode == 13) {
+                this.getSearchResults();
+            }
+        });
+
+        const searchBtn = this.searchContainer.querySelector("#searchShopBtn");
+        searchBtn.addEventListener("click", () => this.getSearchResults());
     }
 
     appendSearchResults() {
@@ -67,16 +77,18 @@ class ProductConnector {
 
             showSearchResultsDiv.appendChild(label);
         });
+
+        centerAbsoluteElement(this.searchContainer);
     }
 
     async connnectArticles(e) {
-        const status = e.checked;
+        const status = e.target.checked;
         const articleId = e.target.dataset.id;
         const result = await ajax.post({
             articleId: articleId,
             id: mainVariables.motivId.innerHTML,
             status: status,
-            r: this.connnectArticles,
+            r: "connectAccessoire",
         });
 
         infoSaveSuccessfull(result);

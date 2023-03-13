@@ -1266,6 +1266,16 @@ class Ajax {
 				$products = DBAccess::selectQuery("SELECT a.id_product, s.name FROM module_sticker_accessoires a, module_sticker_sticker_data s WHERE a.id_sticker = :idSticker AND a.id_sticker = s.id", ["idSticker" => $id]);
 				insertTemplate('classes/project/modules/sticker/views/showSearchView.php', ["products" => $products]);
 			break;
+			case "connectAccessoire":
+				$id = (int) $_POST["id"];
+				$article = (int) $_POST["artileId"];
+				$status = (bool) $_POST["status"];
+
+				/* TODO: richtigen code einfügen für connect accessoires */
+				require_once("classes/project/modules/sticker/Aufkleber.php");
+				$aufkleber = new Aufkleber($id);
+				$aufkleber->connectAccessoires();
+			break;
 			case "searchShop":
 				require_once('classes/project/modules/sticker/SearchProducts.php');
 				$search = $_POST["query"];

@@ -36,9 +36,4 @@
     #showSearchResults label {
         margin: 5px;
     }
-
-    .searchViewGrid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-    }
 </style>
