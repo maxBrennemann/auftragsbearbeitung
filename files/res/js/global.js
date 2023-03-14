@@ -1,80 +1,110 @@
 document.addEventListener("click", function(event) {
 	if (!event.target.matches('.showLog,.showLog *')) {
-		if(document.getElementById("login")) {
+		if (document.getElementById("login")) {
 			document.getElementById("login").style.display = "none";
 		}
-		if(document.getElementById("register")) {
+		if (document.getElementById("register")) {
 			document.getElementById("register").style.display = "none";
 		}
 	}
 })
 
+var currentTableSorter;
+
 /* https://stackoverflow.com/questions/14267781/sorting-html-table-with-javascript */
-const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
-const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
-        v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2))(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
-var currentSortedColumn;
+class TableSorter {
 
-function sortTableNew(e) {
-	let th = e.target;
-	const table = th.closest('table');
-	Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
-		.sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
-		.forEach(tr => table.appendChild(tr) );
+	constructor() {
+		this.url = window.location.href;
+		this.settings = this.getSortSettings();
+	}
 
-	let tr = th.closest('tr');
-	Array.from(tr.children).forEach(element => {
-		if (element != th) {
-			element.style.backgroundColor = "";
-		} else {
-			element.style.backgroundColor = "#005999";
-			let sortIcon = element.querySelector("span");
-			
-			if (currentSortedColumn == th) {
-				sortIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 12px; height 12px"><title>sort-descending</title><path d="M19 7H22L18 3L14 7H17V21H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z" fill="white" /></svg>`;
-			} else {
-				sortIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 12px; height 12px"><title>sort-ascending</title><path d="M19 17H22L18 21L14 17H17V3H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z" fill="white" /></svg>`;
+	saveSortSettings(sortDirection, sortedColumn, tableNumber) {
+		if (this.settings == null) {
+			this.settings = {
+	
 			}
 		}
-	});
-
-	const sortDirection = currentSortedColumn == th ? "desc" : "asc";
-	const sortedColumn = Array.from(tr.children).indexOf(th);
-	const tableNumber = Array.from(document.querySelectorAll("table")).indexOf(table);
-	saveSortSettings(sortDirection, sortedColumn, tableNumber);
-	currentSortedColumn = th;
-}
-
-function readTableSorted() {
-	const settings = getSortSettings();
-	if (settings == null) {
-		return;
+	
+		this.settings[tableNumber] = {
+			sortDirection: sortDirection,
+			sortedColumn: sortedColumn,
+		}
+	
+		localStorage.setItem(this.url, JSON.stringify(this.settings));
 	}
-	const tables = document.querySelectorAll("table");
-	const ths = tables[settings.tableNumber].querySelectorAll("th");
-	const th = ths[settings.sortedColumn];
 
-	if (settings.sortDirection == "desc") {
-		currentSortedColumn = th;
+	getSortSettings() {
+		this.settings = JSON.parse(localStorage.getItem(this.url));
+		return this.settings;
 	}
-	th.click();
+
+	readTableSorted() {
+		const tables = document.querySelectorAll("table");
+	
+		if (this.settings == null)
+			return;
+	
+		for (const [key, value] of Object.entries(this.settings)) {
+			const table = tables[key];
+	
+			if (table != undefined) {
+				const ths = table.querySelectorAll("th");
+				const th = ths[value.sortedColumn];
+				const sort = value.sortDirection == "asc";
+
+				this.sortColumn(table, th, sort);
+			}
+		}
+	}
+
+	sortColumn(table, th, sort) {
+		Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
+		.sort(this.comparer(Array.from(th.parentNode.children).indexOf(th), sort))
+		.forEach(tr => table.appendChild(tr));
+	
+		let tr = th.closest('tr');
+		Array.from(tr.children).forEach(element => {
+			if (element != th) {
+				element.style.backgroundColor = "";
+			} else {
+				element.style.backgroundColor = "#005999";
+				let sortIcon = element.querySelector("span");
+				
+				if (sort) {
+					sortIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 12px; height 12px"><title>Absteigend sortieren</title><path d="M19 7H22L18 3L14 7H17V21H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z" fill="white" /></svg>`;
+				} else {
+					sortIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 12px; height 12px"><title>Aufsteigend sortieren</title><path d="M19 17H22L18 21L14 17H17V3H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z" fill="white" /></svg>`;
+				}
+			}
+		});
+	
+		const sortedColumn = Array.from(tr.children).indexOf(th);
+		const tableNumber = Array.from(document.querySelectorAll("table")).indexOf(table);
+		/* turn sorting direction on click */
+		const sortDirection = sort ? "asc" : "desc";
+		this.saveSortSettings(sortDirection, sortedColumn, tableNumber);
+	}
+
+	sort(e) {
+		const th = e.target;
+		const table = th.closest('table');
+
+		const tableIndex = Array.from(document.querySelectorAll("table")).indexOf(table);
+		const sort = this.settings[tableIndex].sortDirection != "asc";
+
+		this.sortColumn(table, th, sort);
+	}
+
+	getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+
+	comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+        v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2))(this.getCellValue(asc ? a : b, idx), this.getCellValue(asc ? b : a, idx));
 }
 
-/* done by chatGPT */
-function saveSortSettings(sortDirection, sortedColumn, tableNumber) {
-	const url = window.location.href;
-	localStorage.setItem(url, JSON.stringify({
-	  sortDirection: sortDirection,
-	  sortedColumn: sortedColumn,
-	  tableNumber: tableNumber,
-	}));
-}
-  
-function getSortSettings() {
-	const url = window.location.href;
-	const sortSettings = JSON.parse(localStorage.getItem(url));
-	return sortSettings;
-}  
+function sortTableNew(e) {
+	currentTableSorter.sort(e);
+} 
 
 var lastActivity = null;
 document.addEventListener("click", registerLastActivity, false);
@@ -108,14 +138,6 @@ function toggleVisibility(id) {
 	} else {
 		document.getElementById(id).style.display = "none";
 	}
-}
-
-function logout() {
-	ac = new AjaxCall("info=logout");
-	ac.setUrl(window.location);
-	ac.makeAjaxCall(function() {
-		location.reload();
-	});
 }
 
 function goToProfile() {
@@ -157,7 +179,8 @@ function startFunc() {
 	listener_bellAndSearch();
 	initializeFileUpload();
 	initializeInfoBtn();
-	readTableSorted();
+	currentTableSorter = new TableSorter();
+	currentTableSorter.readTableSorted();
 	timeGlobalListener();
 }
 

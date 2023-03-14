@@ -236,6 +236,7 @@ tr:last-child td:last-child {
 }
 
 .tableHead {
+    cursor: pointer;
     white-space: nowrap;
 }
 
