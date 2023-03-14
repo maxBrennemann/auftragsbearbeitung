@@ -1283,24 +1283,15 @@ function uploadFileForSticker(files, imageCategory) {
 // TODO: alt files like svg must be uploadable as well
 
 async function click_shortcutProduct(e) {
-    const type = e.target.dataset.type;
+    const target = e.currentTarget;
+    const type = target.dataset.type;
 
     if (mainVariables.productConnect[type]) {
         mainVariables.productconnect[type].show();
     } else {
-        const productConnector = new ProductConnector();
+        const productConnector = new ProductConnector(type);
         mainVariables.productConnect[type] = await productConnector.showSearchContainer();
     }
-
-    return;
-
-    let div = document.createElement("div");
-    div.innerHTML = await send({"id": mainVariables.motivId.innerHTML,}, "showSearch");
-    div.style.padding = "25px";
-    document.body.appendChild(div);
-    addActionButtonForDiv(div, "remove");
-    div.classList.add("centeredDiv");
-    centerAbsoluteElement(div);
 }
 
 async function searchShop() {

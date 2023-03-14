@@ -1,6 +1,7 @@
 class ProductConnector {
 
-    constructor() {
+    constructor(type) {
+        this.type = type;
         this.results = [];
         this.searchContainer;
     }
@@ -8,7 +9,7 @@ class ProductConnector {
     getSearchResults() {
         const query = this.searchContainer.querySelector("#searchShopQuery").value;
 
-        const results = ajax.post({
+        ajax.post({
             query: query,
             r: "searchShop"
         }).then((results) => {
@@ -25,6 +26,7 @@ class ProductConnector {
         const template = document.createElement("template");
         template.innerHTML = await ajax.post({
             id: mainVariables.motivId.innerHTML,
+            type: this.type,
             r: "showSearch"
         }, true);
 
@@ -69,6 +71,7 @@ class ProductConnector {
             
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
+            checkbox.value = r.name;
             checkbox.addEventListener("click", e => this.connnectArticles(e));
             checkbox.dataset.id = r.id;
             
@@ -84,13 +87,16 @@ class ProductConnector {
     async connnectArticles(e) {
         const status = e.target.checked;
         const articleId = e.target.dataset.id;
+        const title = e.target.value;
         const result = await ajax.post({
             articleId: articleId,
             id: mainVariables.motivId.innerHTML,
             status: status,
+            type: this.type,
+            title: title,
             r: "connectAccessoire",
         });
 
-        infoSaveSuccessfull(result);
+        infoSaveSuccessfull(result.status);
     }
 }

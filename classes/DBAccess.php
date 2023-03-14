@@ -99,13 +99,26 @@ class DBAccess {
 		return self::$connection->exec($query);
 	}
 
-	public static function deleteQuery($query) {
+	public static function deleteQuery($query, $params = NULL) {
 		self::createConnection();
 		
 		self::$statement = self::$connection->prepare($query);
+
+		if ($params != NULL) {
+			foreach($params as $key => &$val){
+				$dataType = getType($val);
+				switch($dataType) {
+					case "integer":
+						self::$statement->bindParam($key, $val, PDO::PARAM_INT);
+						break;
+					case "string":
+						self::$statement->bindParam($key, $val, PDO::PARAM_STR);
+						break;
+				}
+			}
+		}
+
 		self::$statement->execute();
-		
-		return self::$statement->execute();
 	}
 	
 	public static function insertQuery($query, $params = NULL) {
