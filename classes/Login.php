@@ -83,29 +83,29 @@ class Login {
 	}
 
 	public static function handleAutoLogin() {
+
 		if (isset($_POST["setAutoLogin"])) {
-			$status = $_POST["setAutoLogin"];
-			if ($status == "0") {}
-				// store autologin hash and set expire date, set autologin checkbox to true as default value
-				// later:: my devices
 			
-				$jsData = $_POST["browserInfo"];
+			$status = $_POST["setAutoLogin"];
+			// store autologin hash and set expire date, set autologin checkbox to true as default value
+			// TODO: my devices
+			
+			$jsData = $_POST["browserInfo"];
 
-				$ip = $_SERVER['REMOTE_ADDR'];
-				$browser = $_SERVER['HTTP_USER_AGENT'];
-				$dateInTwoWeeks = new DateTime();
-				$dateInTwoWeeks->modify("+2 week");
-				$dateInTwoWeeks = $dateInTwoWeeks->format("Y-m-d");
-				$user_id = $_SESSION['userid'];
-				$random_part = bin2hex(random_bytes(6));
-				$hash = md5($jsData . $random_part);
-				/* browser agent stays empty for now */
+			$ip = $_SERVER['REMOTE_ADDR'];
+			$browser = $_SERVER['HTTP_USER_AGENT'];
+			$dateInTwoWeeks = new DateTime();
+			$dateInTwoWeeks->modify("+2 week");
+			$dateInTwoWeeks = $dateInTwoWeeks->format("Y-m-d");
+			$user_id = $_SESSION['userid'];
+			$random_part = bin2hex(random_bytes(6));
+			$hash = md5($jsData . $random_part);
+			/* browser agent stays empty for now */
 
-				$query = "INSERT INTO user_login (`user_id`, md_hash, expiration_date, device_name, ip_adress, loginkey) VALUES ($user_id, '$hash', '$dateInTwoWeeks', '$browser', '$ip', '$random_part')";
+			$query = "INSERT INTO user_login (`user_id`, md_hash, expiration_date, device_name, ip_adress, loginkey) VALUES ($user_id, '$hash', '$dateInTwoWeeks', '$browser', '$ip', '$random_part')";
 
-				echo json_encode([$jsData, $random_part]);
-				DBAccess::insertQuery($query);
-			//}
+			echo json_encode([$jsData, $random_part]);
+			DBAccess::insertQuery($query);
 		}
 	}
 	
