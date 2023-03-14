@@ -8,33 +8,6 @@ class StickerImage {
     private $id;
     private $name;
 
-    /*
-     * SELECT color, prstshp_attribute_lang.name FROM `prstshp_attribute`, prstshp_attribute_lang WHERE prstshp_attribute.id_attribute = prstshp_attribute_lang.id_attribute AND id_attribute_group = 11 AND prstshp_attribute_lang.id_lang = 1; 
-     * TODO: read from shop and cache
-     */
-    public $textilColors = [
-        ["hexCol" => "#ffffff", "name" => "Weiss"],
-        ["hexCol" => "#FCCC00", "name" => "Maisgelb"],
-        ["hexCol" => "#F5E61A", "name" => "Gelb"],
-        ["hexCol" => "#910C19", "name" => "Rot"],
-        ["hexCol" => "#DB3400", "name" => "Orange"],
-        ["hexCol" => "#000000", "name" => "Schwarz"],
-        ["hexCol" => "#11307D", "name" => "Königsblau"],
-        ["hexCol" => "#0053AA", "name" => "Enzianblau"],
-        ["hexCol" => "#009999", "name" => "Helltuerkis"],
-        ["hexCol" => "#004429", "name" => "Dunkelgruen"],
-        ["hexCol" => "#008955", "name" => "Hellgruen"],
-        ["hexCol" => "#60C340", "name" => "Apfelgruen"],
-        ["hexCol" => "#45291E", "name" => "Braun"],
-        ["hexCol" => "#2C2E31", "name" => "Anthrazit"],
-        ["hexCol" => "#748289", "name" => "Silber"],
-        ["hexCol" => "#878A8D", "name" => "Grau"],
-        ["hexCol" => "#ccff00", "name" => "Neongelb"],
-        ["hexCol" => "#00ff00", "name" => "Neongruen"],
-        ["hexCol" => "#fd5f00", "name" => "Neonorange"],
-        ["hexCol" => "#ff019a", "name" => "Neonpink"],
-    ];
-
     public $data;
 
     private $shopProducts;
@@ -95,17 +68,6 @@ class StickerImage {
         }
     }
 
-    /* TODO: es muss angezeigt werden, wenn sich die Titel unterscheiden, sodass Alttitel auch wirklich absichtlich festgelegt werden können */
-    public function getAltTitle($type) {
-        if (isset($this->shopProducts["products"])) {
-            $prod = $this->shopProducts["products"];
-            if (isset($prod[$type])) {
-                return $prod[$type]["title"];
-            }
-        }
-        return "";
-    }
-
     public static function creatStickerImage() {
         $query = "";
         $id = DBAccess::insertQuery($query);
@@ -129,14 +91,6 @@ class StickerImage {
         return $this->id;
     }
 
-    public function getDate() {
-        $date = $this->data["creation_date"];
-        if ($date == null) {
-            return "kein Datum gefunden";
-        }
-        return DateTime::createFromFormat("Y-m-d", $date)->format("d.m.Y");
-    }
-
     public function displayError($links) {
         $text = "<div class=\"defCont warning\"><div class=\"warningHead\"><svg style=\"width:24px;height:24px\" viewBox=\"0 0 24 24\">
             <path fill=\"currentColor\" d=\"M23,12L20.56,9.22L20.9,5.54L17.29,4.72L15.4,1.54L12,3L8.6,1.54L6.71,4.72L3.1,5.53L3.44,9.21L1,12L3.44,14.78L3.1,18.47L6.71,19.29L8.6,22.47L12,21L15.4,22.46L17.29,19.28L20.9,18.46L20.56,14.78L23,12M13,17H11V15H13V17M13,13H11V7H13V13Z\" />
@@ -157,11 +111,6 @@ class StickerImage {
         echo "success";
 
         StickerChangelog::log($this->id, "", $this->id, "module_sticker_sticker_data", "name", $name);
-    }
-
-    public function getPriceTextilFormatted() {
-        $price = number_format($this->getPriceTextil(), 2, ',', '') . "€";
-        return $price;
     }
 
     private function getPriceTextil() {
@@ -702,57 +651,6 @@ class StickerImage {
             }
         }
         return $filename;
-    }
-
-    /**
-     * seaches for all occurances of colors in these two patterns:
-     * fill:#FFFFFF
-     * fill:#FFF
-     * then it replaces "<svg" with "<svg id="svg_elem" only if it is not already set
-     */
-    public function makeColorable() {
-        $filename = $this->getSVG();
-
-        echo $filename;
-        if ($filename == "") {
-            return "";
-        }
-
-        $newFile = substr($filename, 0, -4);
-        $newFile .= "_colorable.svg";
-        echo $newFile;
-
-        if (!file_exists($newFile)) {
-            $file = file_get_contents($filename);
-
-            /* remove all fills */
-            $file = preg_replace('/fill:#([0-9a-f]{6}|[0-9a-f]{3})/i', "", $file);
-
-            /* remove all strokes */
-            $file = preg_replace('/stroke:#([0-9a-f]{6}|[0-9a-f]{3})/i', "", $file);
-
-            if (!str_contains($file, "<svg id=\"svg_elem\"")) {
-                $file = str_replace("<svg", "<svg id=\"svg_elem\"", $file);
-            }
-
-            file_put_contents($newFile, $file);
-
-            $newFile = substr($newFile, strlen("upload/"));
-
-            /* add file to db */
-            $today = date("Y-m-d");
-            $query = "INSERT INTO dateien (dateiname, originalname, `date`, `typ`) VALUES ('$newFile', '$newFile', '$today', 'svg')";
-            $fileId = DBAccess::insertQuery($query);
-            $query = "INSERT INTO dateien_motive (id_datei, id_motive) VALUES ($fileId, $this->id)";
-            DBAccess::insertQuery($query);
-            $query = "INSERT INTO module_sticker_images (id_image, id_sticker) VALUES ($fileId, $this->id)";
-            DBAccess::insertQuery($query);
-
-            return Link::getResourcesShortLink($newFile, "upload");
-        } else {
-            $newFile = substr($newFile, 0, strlen("upload/"));
-            return Link::getResourcesShortLink($filename, "upload");
-        }
     }
 
 }
