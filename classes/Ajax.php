@@ -1263,18 +1263,42 @@ class Ajax {
 			break;
 			case "showSearch":
 				$id = (int) $_POST["id"];
-				$products = DBAccess::selectQuery("SELECT a.id_product, s.name FROM module_sticker_accessoires a, module_sticker_sticker_data s WHERE a.id_sticker = :idSticker AND a.id_sticker = s.id", ["idSticker" => $id]);
+				$type = $_POST["type"];
+
+				$products = DBAccess::selectQuery("SELECT a.id_product_reference, a.`title` as `name` FROM module_sticker_accessoires a WHERE a.id_sticker = :idSticker AND a.`type` = :type;", [
+					"idSticker" => $id,
+					"type" => $type,
+				]);
+
 				insertTemplate('classes/project/modules/sticker/views/showSearchView.php', ["products" => $products]);
 			break;
 			case "connectAccessoire":
-				$id = (int) $_POST["id"];
-				$article = (int) $_POST["artileId"];
-				$status = (bool) $_POST["status"];
+				$idSticker = (int) $_POST["id"];
+				$idProductReference = (int) $_POST["articleId"];
+				$type = (String) $_POST["type"];
+				$title = (String) $_POST["title"];
+				$status = $_POST["status"] == "true";
 
-				/* TODO: richtigen code einfügen für connect accessoires */
-				require_once("classes/project/modules/sticker/Aufkleber.php");
-				$aufkleber = new Aufkleber($id);
-				$aufkleber->connectAccessoires();
+				if ($status) {
+					$query = "INSERT INTO `module_sticker_accessoires` (`id_sticker`, `type`, `id_product_reference`, `title`) VALUES (:idSticker, :type, :idProductReference, :title)";
+					DBAccess::insertQuery($query, [
+						"idSticker" => $idSticker,
+						"type" => $type,
+						"idProductReference" => $idProductReference,
+						"title" => $title,
+					]);
+				} else {
+					$query = "DELETE FROM `module_sticker_accessoires` WHERE `id_sticker` = :idSticker AND `id_product_reference` = :idProductReference AND `type` = :type";
+					DBAccess::deleteQuery($query, [
+						"idSticker" => $idSticker,
+						"type" => $type,
+						"idProductReference" => $idProductReference,
+					]);
+				}
+
+				echo json_encode([
+					"status" => "success",
+				]);
 			break;
 			case "searchShop":
 				require_once('classes/project/modules/sticker/SearchProducts.php');

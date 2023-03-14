@@ -8,10 +8,10 @@
     </div>
     <div>
         <?php foreach ($products as $product): ?>
-        <label>
+        <label class="dp-block">
             <input type="checkbox" checked>
             <span>
-                Artikel <?=$product["id_product"]?>: <a href=""><?=$product["name"]?></a>
+                Artikel <?=$product["id_product_reference"]?>: <a href=""><?=$product["name"]?></a>
             </span>
         </label>
         <?php endforeach; ?>
@@ -35,5 +35,9 @@
 
     #showSearchResults label {
         margin: 5px;
+    }
+
+    .dp-block {
+        display: block;
     }
 </style>
