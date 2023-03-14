@@ -13,7 +13,7 @@ if (document.readyState !== 'loading' ) {
 function initStickerOverview() {
     initSVG();
     initBindings();
-    addTagEventListeners();
+    initTagManager();
     loadStickerStatus();
     moveInit();
 
@@ -947,103 +947,6 @@ async function toggleBookmark() {
         console.log(response);
         infoSaveSuccessfull();
     }
-}
-
-/* TODO: bitte tags erledigen */
-function loadTags() {
-    // load more cached tags from server, if none available, print: no more suggestions found
-}
-
-function showTaggroupManager() {
-    let div = document.createElement("div");
-    let data = {
-        "taggroup1": [{id: 1, value: "37"},{id: 37, value: "uno"}],
-    };
-    //loadData
-
-    let p = document.createElement("p");
-    p.innerHTML = "Taggruppen:";
-    div.appendChild(p);
-
-    Object.entries(data).forEach(element =>  {
-        const [groupName, group] = element;
-        let innerDiv = document.createElement("div");
-        let titleP = document.createElement("p");
-        titleP.innerHTML = groupName;
-        innerDiv.appendChild(titleP);
-        innerDiv.classList.add("defCont");
-
-        group.forEach(element => {
-            let dt = document.createElement("dt");
-            dt.classList.add("inline");
-            dt.innerHTML = element.value;
-            dt.id = "tag" + element.id;
-            innerDiv.appendChild(dt);
-        });
-
-        div.appendChild(innerDiv);
-    });
-
-    document.body.appendChild(div);
-    div.classList.add("centeredDiv");
-    centerAbsoluteElement(div);
-    addActionButtonForDiv(div, "remove");
-}
-
-async function addTag(event) {
-    if (event.key === '#') {
-        var dt = document.createElement("dt");
-        var newTagValue = event.target.value;
-        
-        if (newTagValue.length <= 32) {
-            dt.innerHTML = newTagValue;
-
-            var remove = document.createElement("span");
-            remove.innerHTML = "x";
-            remove.classList.add("remove");
-            remove.addEventListener("click", manageTag);
-    
-            dt.appendChild(remove);
-            event.target.parentNode.children[0].appendChild(dt);
-            event.target.value = "";
-            event.preventDefault();
-    
-            var response = await send({id: mainVariables.motivId.innerHTML, tag: newTagValue}, "addTag");
-            console.log(response);
-        }
-    }
-}
-
-async function manageTag(event) {
-    let element = event.target;
-    if (element.classList.contains("remove")) {
-        var parent = element.parentNode.parentNode;
-        var child = element.parentNode;
-
-        if (element.parentNode.classList.contains("suggestionTag")) {
-            parent.removeChild(child);
-            return;
-        }
-
-        var response = await send({id: mainVariables.motivId.innerHTML, tag: child.childNodes[0].textContent}, "removeTag");
-        console.log(response);
-
-        if (response == "") {
-            parent.removeChild(child);
-        }
-    } else if (element.classList.contains("suggestionTag")) {
-        element.classList.remove("suggestionTag");
-        var response = await send({id: mainVariables.motivId.innerHTML, tag: event.target.childNodes[0].textContent}, "addTag");
-        console.log(response);
-    }
-}
-
-function addTagEventListeners() {
-    var dts = document.querySelectorAll("dt");
-    for (let i = 0; i < dts.length; i++) {
-        let node = dts[i];
-        node.addEventListener("click", manageTag);
-    };
 }
 
 function changeColor(e) {

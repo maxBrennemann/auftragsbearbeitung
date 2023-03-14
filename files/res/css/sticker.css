@@ -612,3 +612,8 @@ dt.inline {
     vertical-align: middle;
     cursor: pointer;
 }
+
+.tagGroupGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}

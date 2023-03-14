@@ -1223,6 +1223,28 @@ class Ajax {
 				require_once('classes/project/modules/sticker/StickerTagManager.php');
 				StickerTagManager::removeTag();
 			break;
+			case "getMoreTagSuggestions":
+				$id = (int) $_POST["id"];
+				$name = (String) $_POST["name"];
+				$stickerTagManager = new StickerTagManager($id, $name);
+				$stickerTagManager->getTagsHTML();
+			break;
+			case "getTagGroups":
+				$query = "SELECT g.id AS groupId, g.title AS groupName, t.id AS tagId, t.content AS tagName FROM module_sticker_sticker_tag_group g LEFT JOIN module_sticker_sticker_tag_group_match m ON g.id = m.idGroup LEFT JOIN module_sticker_tags t ON t.id = m.idTag;";
+				$data = DBAccess::selectQuery($query);
+				echo json_encode([
+					"tagGroups" => $data,
+				]);
+			break;
+			case "addNewTagGroup":
+				$title = (String) $_POST["title"];
+				require_once('classes/project/modules/sticker/StickerTagManager.php');
+				$idTagGroup = StickerTagManager::addTagGroup($title);
+				echo json_encode([
+					"status" => "success",
+					"idTagGroup" => $idTagGroup,
+				]);
+			break;
 			case "changeImageParameters":
 				require_once('classes/project/StickerImage.php');
 				StickerImage::updateImageStatus();

@@ -44,6 +44,9 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
 
         foreach (explode(" ", $this->title) as $query) {
             $tags = array_slice($this->getSynonyms($query), 0, 3);
+            if (count($tags) == 0) {
+               $tagsHTML .= "<p>Keine Tagvorschläge gefunden</p>"; 
+            }
             foreach ($tags as $tag) {
                 $tagsHTML .= "<dt class=\"suggestionTag\">$tag<span class=\"remove\">x</span></dt>";
             }
@@ -81,11 +84,10 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
             return;
         }
 
-        $query = "SELECT id FROM module_sticker_tags WHERE content = :content";
-        $result = DBAccess::selectQuery($query, ["content" => $content]);
+        $result = self::getTagId($content);
 
-        if ($result != null) {
-            $id = $result["id"];
+        if ($result != -1) {
+            $id = $result;
         } else {
             $query = "INSERT INTO module_sticker_tags (id_tag_shop, content) VALUES (:id_tag_shop, :content);";
             
@@ -164,9 +166,6 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
             }
         }
 
-        //var_dump($tags);
-        //die();
-
         /* insert new tag if it does not exist */
         foreach ($this->getTagIds() as $id) {
             if (!in_array($id, $tagIds)) {
@@ -198,16 +197,19 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
 
             $result = json_decode($result, true);
             $synonyms = [];
+
             if ($result != null && $result["synsets"] != null) {
                 foreach ($result["synsets"] as $set) {
                     foreach ($set["terms"] as $term) {
-                        if (!in_array($term["term"], $synonyms) && strlen($term["term"] <= 32)) {
+                        /* chatgpt reported the typo */
+                        if (!in_array($term["term"], $synonyms) && strlen($term["term"]) <= 32) {
                             array_push($synonyms, $term["term"]);
                         }
                     }
                 }
             }
 
+            file_put_contents('cache/modules/sticker/tags/' . $query . '.json', json_encode($synonyms));
             return $synonyms;
         } else {
             $cachedSynonyms = json_decode($cachedSynonyms);
@@ -256,6 +258,36 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
         } else {
             echo "not found";
         }
+    }
+
+    /**
+     * returns the id of a tag by its content,
+     * retruns -1 if not found
+     */
+    public static function getTagId(String $tagContent): int {
+        $query = "SELECT id FROM module_sticker_tags WHERE content = :content LIMIT 1;";
+        $result = DBAccess::selectQuery($query, ["content" => $tagContent]);
+
+        if ($result != null) {
+            return $result[0]["id"];
+        }
+        return -1;
+    }
+
+    public static function addTagGroup(String $title): int {
+        $query = "INSERT INTO module_sticker_sticker_tag_group (title) VALUES (:title)";
+        $tagGroupId = DBAccess::insertQuery($query, ["title" => $title]);
+        return $tagGroupId;
+    }
+
+    public static function addTagToTagGroup(String $tagContent, int $tagGroup) {
+        // get tag Id
+        $tagId = self::getTagId($tagContent);
+        $query = "INSERT INTO (module_sticker_sticker_tag_group_match) (idGroup, idTag) VALUES (:tagGroup, :tag)";
+        DBAccess::insertQuery($query, [
+            "tagGroup" => $tagGroup,
+            "tag" => $tagId
+        ]);
     }
 
 }

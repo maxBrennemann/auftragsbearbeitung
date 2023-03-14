@@ -45,6 +45,9 @@ class TableSorter {
 
 	getSortSettings() {
 		this.settings = JSON.parse(localStorage.getItem(this.url));
+		if (this.settings == null) {
+			this.settings = {};
+		}
 		return this.settings;
 	}
 
