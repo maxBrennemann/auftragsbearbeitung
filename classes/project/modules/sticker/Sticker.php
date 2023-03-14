@@ -13,23 +13,82 @@ class Sticker extends PrestashopConnection {
     protected $idProduct;
 
     protected $name;
+    protected $stickerData;
+    protected $additionalData;
 
-    function __construct($idSticker) {
+    function __construct(int $idSticker) {
         $this->idSticker = $idSticker;
-        
-        // TODO: implement db queries and get name
+        $this->stickerData = DBAccess::selectQuery("SELECT * FROM module_sticker_sticker_data WHERE id = :idSticker LIMIT 1;", ["idSticker" => $idSticker]);
+        if ($this->stickerData == null) {
+            throw new Exception("Sticker does not exist.");
+        }
+        $this->stickerData = $this->stickerData[0];
+        $this->additionalData = json_decode($this->stickerData["additional_data"], true);
     }
 
-    public function getName() {
-        return $this->name;
+    public function getName(): String {
+        return $this->stickerData["name"];
     }
 
-    public function getId() {
+    public function getId(): int {
         return $this->idSticker;
     }
 
-    public function getCreationDate() {
+    public function getDirectory() {
+        return $this->stickerData["directory_name"];
+    }
 
+    public function getIsMarked() {
+        return $this->stickerData["is_marked"];
+    }
+
+    public function getIsRevised() {
+        return $this->stickerData["is_revised"];
+    }
+
+    public function getAdditionalInfo() {
+        return $this->stickerData["additional_info"];
+    }
+
+    protected function isInShop() {}
+
+    protected function checkIsInShop($type): bool {
+        if ($this->additionalData != null) {
+            if (isset($this->additionalData["products"]) && isset($this->additionalData["products"][$type])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function getShopLink() {}
+
+    protected function getShopLinkHelper($type) {
+        if ($this->additionalData != null) {
+            if (isset($this->additionalData["products"]) && isset($this->additionalData["products"][$type])) {
+                return $this->additionalData["products"][$type]["link"];
+            }
+        }
+
+        return "#";
+    }
+    
+    public function getAltTitle($type = ""): String {
+        if ($type == "")
+            return "";
+
+        if (isset($this->additionalData["products"])) {
+            $prod = $this->additionalData["products"];
+            if (isset($prod[$type])) {
+                return $prod[$type]["title"];
+            }
+        }
+        return "";
+    }
+
+    public function getCreationDate() {
+        return $this->stickerData["creation_date"];
     }
 
     public function getIdCategory() {

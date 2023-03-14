@@ -1126,7 +1126,9 @@ class Ajax {
 					if ($status == 0) {
 						echo $stickerImage->getSVGIfExists();
 					} else {
-						echo $stickerImage->makeColorable();
+						require_once("classes/project/modules/sticker/Textil.php");
+						$textil = new Textil($id);
+						echo $textil->makeColorable();
 					}
 				} else {
 					echo "an error occured";

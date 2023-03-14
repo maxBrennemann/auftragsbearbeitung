@@ -12,10 +12,40 @@ class StickerCollection implements Iterator {
 
     private $exports = [];
 
-    private $id;
+    private int $id;
+    private Sticker $sticker;
 
     function __construct(int $id) {
         $this->id = $id;
+        $this->sticker = new Sticker($id);
+
+        $this->products[0] = new Aufkleber($this->id);
+        $this->products[1] = new Wandtattoo($this->id);
+        $this->products[2] = new Textil($this->id);
+    }
+
+    public function getName(): String {
+        return $this->sticker->getName();
+    }
+
+    public function getCreationDate() {
+        return $this->sticker->getCreationDate();
+    }
+
+    public function getDirectory() {
+        return $this->sticker->getDirectory();
+    }
+
+    public function getIsMarked() {
+        return $this->sticker->getIsMarked();
+    }
+
+    public function getIsRevised() {
+        return $this->sticker->getIsRevised();
+    }
+
+    public function getAdditionalInfo() {
+        return $this->sticker->getAdditionalInfo();
     }
 
     public function getExportStatus($export): bool {
@@ -66,26 +96,14 @@ class StickerCollection implements Iterator {
     }
 
     public function getAufkleber() {
-        if ($this->products[0] == null) {
-            $this->products[0] = new Aufkleber($this->id);
-        }
-
         return $this->products[0];
     }
 
     public function getWandtattoo() {
-        if ($this->products[1] == null) {
-            $this->products[1] = new Wandtattoo($this->id);
-        }
-
         return $this->products[1];
     }
 
     public function getTextil() {
-        if ($this->products[2] == null) {
-            $this->products[2] = new Textil($this->id);
-        }
-
         return $this->products[2];
     }
 

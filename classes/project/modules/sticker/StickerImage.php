@@ -15,7 +15,14 @@ class StickerImage2 {
     }
 
     private function getConnectedFiles() {
-        $allFiles = DBAccess::selectQuery("SELECT dateien.dateiname, dateien.originalname AS alt, dateien.typ, dateien.id, module_sticker_images.is_aufkleber, module_sticker_images.is_wandtattoo, module_sticker_images.is_textil FROM dateien, dateien_motive, module_sticker_images WHERE dateien_motive.id_datei = dateien.id AND module_sticker_images.id_image = dateien.id AND dateien_motive.id_motive = :idMotiv", ["idMotiv" => $this->idMotiv]);
+        $allFiles = DBAccess::selectQuery("SELECT dateien.dateiname, dateien.originalname AS alt, 
+                dateien.typ, dateien.id, module_sticker_images.is_aufkleber, 
+                module_sticker_images.is_wandtattoo, module_sticker_images.is_textil 
+            FROM dateien, dateien_motive, module_sticker_images 
+            WHERE dateien_motive.id_datei = dateien.id 
+                AND module_sticker_images.id_image = dateien.id 
+                AND dateien_motive.id_motive = :idMotiv",
+        ["idMotiv" => $this->idMotiv]);
 
         $this->allFiles = $allFiles;
         foreach ($this->allFiles as $f) {

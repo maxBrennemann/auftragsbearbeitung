@@ -5,9 +5,16 @@
             <ul>
                 <li>Aufkleber, Wandtattoos und Textilien können automatisch generiert werden</li>
                 <li>Es kann eine Liste der Produkte mit Motivnummer erstellt werden</li>
+                <li>Facebook-Export vorhanden</li>
             </ul>
         </li>
-        <li>Upgrade Seite wurde hinzugefügt, um Datenbankupdates einfacher zu gestalten</li>
+        <li>Upgrade Seite wurde hinzugefügt, um Datenbankupdates einfacher zu gestalten (/upgrade)</li>
+        <li>Tagmanager wurde eingeführt</li>
+        <li>Neuer Image-Upload für Motive</li>
+        <li>Listensortierung wird gespeichert und funktioniert zuverlässig</li>
+        <li>Erstes System zur Zeiterfassung hinzugefügt</li>
+        <li>CSS und JS Minifier hinzugefügt</li>
+        <li>Diverse Fehlerbehebungen</li>
     </ul>
     <h3>1.1.16</h3>
     <ul>

@@ -2,6 +2,42 @@
 
 class Wandtattoo extends Sticker {
 
+    const TYPE = "wandtattoo";
+
+    private $isWalldecal = false;
+
+    function __construct($idWaldecal) {
+        parent::__construct($idWaldecal);
+
+        /* is true, if sticker exists or is activated */
+        $this->isWalldecal = (int) $this->stickerData["is_walldecal"];
+    }
+
+    public function isInShop() {
+        parent::isInShop();
+        return parent::checkIsInShop(self::TYPE);
+    }
+
+    public function getIsWalldecal() {
+        return $this->isWalldecal;
+    }
+
+    public function getAltTitle($default = ""): String {
+        return parent::getAltTitle(self::TYPE);
+    }
+
+    public function getShopLink() {
+        return parent::getShopLinkHelper(self::TYPE);
+    }
+
+    public function getDescription(int $target = 2): String {
+        return parent::getDescription($target);
+    }
+
+    public function getDescriptionShort(int $target = 2): String {
+        return parent::getDescriptionShort($target);
+    }
+
 }
 
 ?>
