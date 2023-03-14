@@ -34,6 +34,15 @@ class TableSorter {
 		localStorage.setItem(this.url, JSON.stringify(this.settings));
 	}
 
+	get(tableIndex) {
+		if (this.settings[tableIndex]) {
+			return this.settings[tableIndex];
+		} else {
+			this.saveSortSettings("asc", 0, tableIndex);
+			return this.getSortSettings();
+		}
+	}
+
 	getSortSettings() {
 		this.settings = JSON.parse(localStorage.getItem(this.url));
 		return this.settings;
@@ -91,7 +100,7 @@ class TableSorter {
 		const table = th.closest('table');
 
 		const tableIndex = Array.from(document.querySelectorAll("table")).indexOf(table);
-		const sort = this.settings[tableIndex].sortDirection != "asc";
+		const sort = this.get(tableIndex).sortDirection != "asc";
 
 		this.sortColumn(table, th, sort);
 	}
