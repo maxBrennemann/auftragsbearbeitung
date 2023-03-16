@@ -161,6 +161,9 @@ class Sticker extends PrestashopConnection {
 
     }
 
+    /*
+     * TODO: unterscheide zwischen update und create via exists in shop
+     */
     public function update() {
 
     }
