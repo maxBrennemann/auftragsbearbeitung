@@ -1,41 +1,27 @@
 <?php
-    require_once('classes/project/StickerImage.php');
-    require_once('classes/project/ProductCrawler.php');
-    require_once('classes/project/StickerShopDBController.php');
+require_once('classes/project/modules/sticker/StickerTagManager.php');
+require_once('classes/project/modules/sticker/StickerImage.php');
+require_once('classes/project/modules/sticker/StickerCollection.php');
 
-    /* temp */
-    require_once('classes/project/modules/sticker/StickerTagManager.php');
-    require_once('classes/project/modules/sticker/StickerImage.php');
-    require_once('classes/project/modules/sticker/StickerCollection.php');
+$id = 0;
 
-    $id = 0;
-    $stickerImage = null;
-    $stickerCollection = null;
-    $stickerTagManager = null;
-    $stickerChangelog = null;
+$stickerCollection = null;
+$stickerTagManager = null;
+$stickerChangelog = null;
+$stickerImage = null;
 
-    if (isset($_GET['id'])) {
-        $id = (int) $_GET['id'];
-        $stickerImage = new StickerImage($id);
-        do {
-            if ($stickerImage->getId() == 0) {
-                $id = 0;
-                break;
-            }
+if (isset($_GET['id'])) {
+    $id = (int) $_GET['id'];
 
-            $images = $stickerImage->getImages();
-            $mainImage = $images[0];
-            $getDownloadResources = $stickerImage->getFiles();
-        } while (0);
+    $stickerImage = new StickerImage2($id);
+    $getDownloadResources = $stickerImage->getFiles();
 
-        $stickerCollection = new StickerCollection($id);
+    $stickerCollection = new StickerCollection($id);
+    $stickerTagManager = new StickerTagManager($id, $stickerCollection->getName());
+    $stickerChangelog = new StickerChangelog($id);
+}
 
-        $stickerTagManager = new StickerTagManager($id, $stickerCollection->getName());
-        $stickerChangelog = new StickerChangelog($id);
-        $si = new StickerImage2($id);
-    }
-
-    if ($id != 0 && $stickerImage != null):
+if ($id != 0):
 ?>
     <script src="<?=Link::getResourcesShortLink("sticker/productConnector.js", "js")?>"></script>
     <script src="<?=Link::getResourcesShortLink("sticker/tagManager.js", "js")?>"></script>
@@ -146,7 +132,7 @@
                 </div>
                 <button class="transferBtn" id="transferAufkleber" data-binding="true" <?=$stickerCollection->getAufkleber()->getIsPlotted() == 1 ? "" : "disabled"?>>Aufkleber übertragen</button>
             </div>
-            <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $si->getAufkleberImages(), "imageCategory" => "aufkleber"])?>
+            <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $stickerImage->getAufkleberImages(), "imageCategory" => "aufkleber"])?>
         </section>
         <section class="defCont">
             <p class="pHeading">Wandtattoo
@@ -192,7 +178,7 @@
                 </div>
                 <button class="transferBtn" id="transferWandtattoo" data-binding="true">Wandtattoo übertragen</button>
             </div>
-            <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $si->getWandtattooImages(), "imageCategory" => "wandtattoo"])?>
+            <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $stickerImage->getWandtattooImages(), "imageCategory" => "wandtattoo"])?>
         </section>
         <section class="defCont">
             <p class="pHeading">Textil
@@ -269,12 +255,12 @@
                 </div>
                 <button class="transferBtn" id="transferTextil" data-binding="true">Textil übertragen</button>
             </div>
-            <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $si->getTextilImages(), "imageCategory" => "textil"])?>
+            <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $stickerImage->getTextilImages(), "imageCategory" => "textil"])?>
         </section>
     </div>
     <div class="defCont align-center">
         <h2 style="text-align: left;">Größen</h2>
-        <div id="sizeTableWrapper"><?=$stickerImage->getSizeTable()?></div>
+        <div id="sizeTableWrapper"><?=$stickerCollection->getAufkleber()->getSizeTable()?></div>
         <div>
             <p>Aufkleberpreisklasse</p>
             <div>

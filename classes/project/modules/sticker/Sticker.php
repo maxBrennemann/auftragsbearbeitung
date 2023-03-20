@@ -331,7 +331,15 @@ class Sticker extends PrestashopConnection {
 
     }
 
+    public function getPricesMatched() {
+
+    }
+
     public function getPurchasingPrices() {
+        
+    }
+
+    public function getPurchasingPricesMatched() {
         
     }
 
