@@ -137,16 +137,7 @@ class StickerImage {
         if ($this->data["is_plotted"] == "0") {
             return;
         }
-
-        /* needs a change log */
-        if ($this->isInShop("aufkleber")) {
-            $this->updateAufkleber();
-        } else {
-            $this->generateAufkleber();
-        }
-    }
-
-    private function updateAufkleber() {
+        $this->generateAufkleber();
     }
 
     /**
@@ -366,10 +357,6 @@ class StickerImage {
         }
     }
 
-    public function isInShop($type) {
-        return isset($this->shopProducts[$type]);
-    }
-
     /**
      * sets new height for a sticker,
      * adjusts price if necessary,
@@ -419,10 +406,6 @@ class StickerImage {
             4 => array("COLUMN_NAME" => "costs", "ALT" => "Material"),
         );
 
-        if ($data == null) {
-            $data = $this->loadDefault($query);
-        }
-
         $difficulty = (int) $this->data["price_class"];
         $data = $this->calculatePrices($data, $difficulty);
 
@@ -470,13 +453,6 @@ class StickerImage {
 		$t->defineUpdateSchedule(new UpdateSchedule("module_sticker_sizes", $pattern));
         $_SESSION[$t->getTableKey()] = serialize($t);
 		return $t->getTable();
-    }
-
-    /* Änderung: proforma Daten erstellen als default value */
-    private function loadDefault($query2) {
-        $query = "INSERT INTO module_sticker_sizes (id_sticker, width, height) VALUES ($this->id, 100, 0), ($this->id, 200, 0), ($this->id, 300, 0), ($this->id, 600, 0), ($this->id, 900, 0), ($this->id, 1200, 0)";
-        DBAccess::insertQuery($query);
-        return DBAccess::selectQuery($query2);
     }
 
     private function getConnectedFiles() {

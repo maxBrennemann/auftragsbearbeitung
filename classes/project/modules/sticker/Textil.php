@@ -118,14 +118,14 @@ class Textil extends Sticker {
         $this->uploadSVG();
     }
 
-     /**
+    /**
      * seaches for all occurances of colors in these two patterns:
      * fill:#FFFFFF
      * fill:#FFF
      * then it replaces "<svg" with "<svg id="svg_elem" only if it is not already set
      */
     public function makeColorable() {
-        $filename = $this->getSVG();
+        $filename = $this->imageData->getSVG();
         if ($filename == "") {
             return "";
         }
@@ -174,6 +174,48 @@ class Textil extends Sticker {
             $newFile = substr($newFile, 0, strlen("upload/"));
             return Link::getResourcesShortLink($filename, "upload");
         }
+    }
+
+    /**
+     * aktuell ist der basePrice bei Textilien gleich dem Endpreis, muss später noch geändert werden
+     * TODO: Textilpreise dynamisch gestalten
+     */
+    public function getBasePrice() {
+        return $this->getPrice();
+    }
+
+    /**
+     * idCategory für Textilien ist 25
+     * TODO: überarbeiten, da hardcoded
+     */
+    public function getIdCategory() {
+        return 25;
+    }
+
+    public function save() {
+        if (!$this->getIsShirtcollection()) {
+            return;
+        }
+
+        $descriptionShort = $this->getDescriptionShort();
+        $descriptionLong = $this->getDescription();
+
+        if ($this->isInShop()) {
+            $this->update();
+        } else {
+            $this->create($descriptionLong, $descriptionShort);
+        }
+
+        if ($this->getIsColorable()) {
+            // addAttributeArray addAttributeArray([164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183]);
+        }
+
+        $this->uploadSVG();
+        $images = $this->imageData->getTextilImages();
+        $this->uploadImages($images);
+
+        $stickerTagManager = new StickerTagManager($this->getId());
+        $stickerTagManager->saveTags($this->getTags());
     }
 
 }

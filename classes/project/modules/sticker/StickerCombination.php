@@ -9,19 +9,6 @@ class StickerCombination extends PrestashopConnection {
     private $prices;
     private $purchasingPrices;
 
-    private $test = [
-        [3,7],
-        [6,9],
-        [4,2,0],
-    ];
-    
-    /* aufbau der prices und purchasingPrices
-    $prices = [
-        3000 => 2736,
-        'width (mm)' => 'price (cent)'
-    ];
-    */
-
     function __construct(Sticker $sticker) {
         $this->sticker = $sticker;
     }
@@ -88,8 +75,12 @@ class StickerCombination extends PrestashopConnection {
                 $prodVal = $product_option_values->addChild("product_option_value");
                 $prodVal->addChild("id", $a);
 
+                /* füge Preise und Einkaufspreise hinzu */
                 if ($this->prices != null && array_key_exists($a, $this->prices)) {
                     $combination->price = $this->prices[$a];
+                }
+
+                if ($this->prices != null && array_key_exists($a, $this->purchasingPrices)) {
                     $combination->wholesale_price = $this->purchasingPrices[$a];
                 }
             }
