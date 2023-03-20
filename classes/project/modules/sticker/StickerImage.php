@@ -63,6 +63,16 @@ class StickerImage2 {
         );
     }
 
+    public function getSVG() {
+        $filename = "";
+        foreach ($this->files as $f) {
+            if ($f["typ"] == "svg") {
+                $filename = "upload/" . $f["dateiname"];
+            }
+        }
+        return $filename;
+    }
+
 }
 
 ?>

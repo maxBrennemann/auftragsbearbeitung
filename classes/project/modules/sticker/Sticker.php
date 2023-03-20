@@ -16,6 +16,8 @@ class Sticker extends PrestashopConnection {
     protected $stickerData;
     protected $additionalData;
 
+    protected $imageData;
+
     function __construct(int $idSticker) {
         $this->idSticker = $idSticker;
         $this->stickerData = DBAccess::selectQuery("SELECT * FROM module_sticker_sticker_data WHERE id = :idSticker LIMIT 1;", ["idSticker" => $idSticker]);
@@ -24,6 +26,8 @@ class Sticker extends PrestashopConnection {
         }
         $this->stickerData = $this->stickerData[0];
         $this->additionalData = json_decode($this->stickerData["additional_data"], true);
+
+        $this->imageData = new StickerImage2($idSticker);
     }
 
     public function getName(): String {

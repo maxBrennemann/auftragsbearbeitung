@@ -1031,32 +1031,26 @@ class Ajax {
 				echo "success";
 			break;
 			case "transferProduct":
-				require_once("classes/project/StickerImage.php");
 				$id = (int) $_POST["id"];
 				$type = (int) $_POST["type"];
 
-				$stickerImage = new StickerImage($id);
 				switch ($type) {
 					case 1:
-						//$stickerImage->saveAufkleber();
-						require_once("classes/project/modules/sticker/StickerTagManager.php");
-						$stickerTagManager = new StickerTagManager($id);
-						$stickerTagManager->saveTags(807);
-
-						require_once("classes/project/modules/sticker/Aufkleber.php");
-						$aufkleber = new Aufkleber(810);
-						$aufkleber->connectAccessoires();
-						break;
+						$aufkleber = new Aufkleber($id);
+						$aufkleber->save();
 					case 2:
-						$stickerImage->saveWandtattoo();
+						$wandtattoo = new Wandtattoo($id);
+						$wandtattoo->save();
 						break;
 					case 3:
-						$stickerImage->saveTextil();
+						$textil = new Textil($id);
+						$textil->save();
 						break;
 					case 4:
-						$stickerImage->saveAufkleber();
-						$stickerImage->saveWandtattoo();
-						$stickerImage->saveTextil();
+						$stickerCollection = new StickerCollection($id);
+						foreach ($stickerCollection as $sticker) {
+							$sticker->save();
+						}
 						break;
 				}
 				echo "ready";
@@ -1137,6 +1131,11 @@ class Ajax {
 			case "createNewSticker":
 				$title = (String) $_POST["newTitle"];
 				$id = DBAccess::insertQuery("INSERT INTO module_sticker_sticker_data (`name`) VALUES (:title)", ["title" => $title]);
+
+				/* sets default values for sizes 10cm, 20cm, 30cm, 60cm, 90cm and 120cm */
+				$query = "INSERT INTO module_sticker_sizes (id_sticker, width, height) VALUES ($id, 100, 0), ($id, 200, 0), ($id, 300, 0), ($id, 600, 0), ($id, 900, 0), ($id, 1200, 0)";
+				DBAccess::insertQuery($query);
+
 				if ($id == 0 || !is_numeric($id)) {
 					echo -1;
 				} else {
