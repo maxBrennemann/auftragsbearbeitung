@@ -98,6 +98,18 @@ class Textil extends Sticker {
         return $price;
     }
 
+    public function toggleIsColorable() {
+        DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_colorable` = NOT `is_colorable` WHERE id = :id", ["id" => $this->getId()]);
+
+        if (!$this->imageData->getColorableSVG()) {
+            $this->makeColorable();
+        }
+    }
+
+    public function getCurrentSVG() {
+        return $this->imageData->getSVGIfExists();
+    }
+
     private function uploadSVG() {
         $url = $this->url . "?upload=svg&id=$this->idProduct";
         $cImage = new CurlFile($this->svg, 'image/svg+xml', "image");

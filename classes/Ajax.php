@@ -1108,25 +1108,14 @@ class Ajax {
 			case "makeSVGColorable":
 				require_once("classes/project/StickerImage.php");
 				$id = (int) $_POST["id"];
-				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_colorable` = NOT `is_colorable` WHERE id = $id");
 
-				$status = DBAccess::selectQuery("SELECT is_colorable FROM module_sticker_sticker_data WHERE id = $id LIMIT 1");
-				if ($status != null) {
-					$status = (int) $status[0]["is_colorable"];
-					echo $status;
-					$stickerImage = new StickerImage($id);
+				$textil = new Textil($id);
+				$textil->toggleIsColorable();
+				echo $textil->getCurrentSVG();
 
-					/* TODO: es muss noch gespeichert oder erkannt werden, welches normale svg mit einem colorable svg zusammengehört, aktuell wird nur das letzte svg der liste zurückgegeben */
-					if ($status == 0) {
-						echo $stickerImage->getSVGIfExists();
-					} else {
-						require_once("classes/project/modules/sticker/Textil.php");
-						$textil = new Textil($id);
-						echo $textil->makeColorable();
-					}
-				} else {
-					echo "an error occured";
-				}
+				/*
+				echo json_encode(["url" => $textil->getCurrentSVG()]);
+				*/
 			break;
 			case "createNewSticker":
 				$title = (String) $_POST["newTitle"];

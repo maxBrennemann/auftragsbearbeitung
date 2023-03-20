@@ -1,6 +1,8 @@
 <?php
 
-class Aufkleber extends Sticker {
+require_once('classes/project/modules/sticker/AufkleberWandtattoo.php');
+
+class Aufkleber extends AufkleberWandtattoo {
 
     const TYPE = "aufkleber";
 
@@ -121,6 +123,14 @@ class Aufkleber extends Sticker {
         return $this->getSizeTableFormatted() . parent::getDescriptionShort($target);
     }
 
+    public function getPricesMatched() {
+        return $this->prices;
+    }
+
+    public function getPurchasingPricesMatched() {
+        return $this->buyingPrices;
+    }
+
     public function create($param1 = "", $param2 = "") {
         parent::create($this->getDescription(), $this->getDescriptionShort());
     }
@@ -132,6 +142,9 @@ class Aufkleber extends Sticker {
         $stickerTagManager = new StickerTagManager($this->getId());
         $stickerTagManager->saveTags($this->getTags());
 
+        $stickerCombination = new StickerCombination($this);
+        $stickerCombination->createCombinations();
+        
         $this->connectAccessoires();
     }
 
@@ -165,7 +178,7 @@ class Aufkleber extends Sticker {
      * wird diese erstellt
      */
     private function getSizeIds() {
-        $query = "SELECT `price`, `width` FROM `module_sticker_sizes` WHERE `id_sticker` = :idSticker ORDER BY `width`";
+        $query = "SELECT `price`, `width`, (`width` / 1000) * (`height` / 1000) * 10) as `costs` FROM `module_sticker_sizes` WHERE `id_sticker` = :idSticker ORDER BY `width`";
         $data = DBAccess::selectQuery($query, ["idSticker" => $this->getId()]);
 
         /* TODO: hardcoded idAttributeGroup entfernen */
@@ -179,8 +192,8 @@ class Aufkleber extends Sticker {
             $sizeId = (int) $this->addAttribute($idAttributeGroup, $singleSizeInCm);
             $sizeIds[] = $sizeId;
 
-            $prices[$sizeId] = 0;
-            $buyingPrices[$sizeId] = 0;
+            $prices[$sizeId] = $d["price"];
+            $buyingPrices[$sizeId] = $d["costs"];
         }
 
         $this->idShopAttributes = $sizeIds;
@@ -223,51 +236,9 @@ class Aufkleber extends Sticker {
         }
     }
 
-    /**
-     * @param currency when true, then the price is returned in € with tax, otherwise its a float without tax
-     */
-    public function calculatePrices($priceTable, $difficulty, $currency = true) {
-        foreach($priceTable as &$size) {
-            /* leeres Tabellenfeld heißt, dass der berechnete Wert verwendet werden soll */
-            if ($size["price"] == null) {
-                $size["price"] = $this->getPrice($size["width"], $size["height"], $difficulty);
-            }
-
-            if ($currency) {
-                $size["price"] = number_format($size["price"] / 100, 2, ',', '') . "€";
-            } else {
-                $size["price"] = number_format($size["price"] / 100 / 1.19, 2);
-            }
-        }
-
-        return $priceTable;
-    }
-
-    // TODO: Aufkleber und Wandtattoo bei gleichen Funktionen zusammenführen
-    public function getPrice($width, $height, $difficulty) {
-        if ($width >= 1200) {
-            $base = 2100;
-        } else if ($width >= 900) {
-            $base = 1950;
-        } else if ($width >= 600) {
-            $base = 1700;
-        } else if ($width >= 300) {
-            $base = 1500;
-        } else {
-            $base = 1200;
-        }
-
-        $base = $base + 200 * $difficulty;
-        if ($height >= 0.5 * $width) {
-            $base += 100;
-        }
-        
-        return $base;
-    }
-
     public function getSizeTable() {
         $query = "SELECT id, width, height, price, 
-                ((width / 1000) * (height / 1000) * 7.5) as costs 
+                ((width / 1000) * (height / 1000) * 10) as costs 
             FROM module_sticker_sizes 
             WHERE id_sticker = :idSticker
             ORDER BY width";
@@ -281,12 +252,10 @@ class Aufkleber extends Sticker {
             4 => array("COLUMN_NAME" => "costs", "ALT" => "Material"),
         );
 
-        $difficulty = (int) $this->getPriceClass();
-        $data = $this->calculatePrices($data, $difficulty);
-
         foreach ($data as &$d) {
             $d["width"] = str_replace(".", ",", ((int) $d["width"]) / 10) . "cm";
             $d["height"] = str_replace(".", ",", ((int) $d["height"]) / 10) . "cm";
+            $d["price"] = number_format($d["price"], 2, ',', '') . "€";
             $d["costs"] = number_format($d["costs"], 2, ',', '') . "€";
         }
 

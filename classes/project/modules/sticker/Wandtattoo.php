@@ -1,6 +1,8 @@
 <?php
 
-class Wandtattoo extends Sticker {
+require_once('classes/project/modules/sticker/AufkleberWandtattoo.php');
+
+class Wandtattoo extends AufkleberWandtattoo {
 
     const TYPE = "wandtattoo";
 

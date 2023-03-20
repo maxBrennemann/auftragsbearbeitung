@@ -16,8 +16,8 @@ class StickerCombination extends PrestashopConnection {
     public function createCombinations() {
         // TODO: getAttributes, getPurchasingPrices and getPrices implementieren
         $this->attributes = $this->sticker->getAttributes();
-        $this->prices = $this->sticker->getPrices();
-        $this->purchasingPrices = $this->sticker->getPurchasingPrices();
+        $this->prices = $this->sticker->getPricesMatched();
+        $this->purchasingPrices = $this->sticker->getPurchasingPricesMatched();
 
         $this->arguments = $this->combine($this->attributes);
         $xml = $this->getXML('combinations?schema=blank');
