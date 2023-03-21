@@ -1,5 +1,6 @@
 <?php
 
+require_once("classes/project/modules/sticker/Sticker.php");
 require_once("classes/project/modules/sticker/Aufkleber.php");
 require_once("classes/project/modules/sticker/Wandtattoo.php");
 require_once("classes/project/modules/sticker/Textil.php");

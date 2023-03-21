@@ -3,6 +3,7 @@
 require_once('classes/project/modules/sticker/PrestashopConnection.php');
 require_once('classes/project/modules/sticker/StickerChangelog.php');
 require_once('classes/project/modules/sticker/StickerImage.php');
+require_once('classes/project/modules/sticker/StickerTagManager.php');
 
 /**
  * stellt allgemeine Stickerfunktionen zur Verfügung, ist die Elternklasse von
