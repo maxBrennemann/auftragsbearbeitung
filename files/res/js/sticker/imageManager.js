@@ -7,34 +7,45 @@ function itemDropHandler(e, imageCategory) {
     if (e.dataTransfer.items && e.dataTransfer.getData("text/plain") !== "not_uploaded") {
         [...e.dataTransfer.items].forEach((item, i) => {
             const file = item.getAsFile();
+            const div = generatePreviewContainer();
+
+            /* generate image preview */
             if (item.kind === 'file' && item.type.match('image.*')) {
                 const fileReader = new FileReader();
                 fileReader.readAsDataURL(file);
                 fileReader.onloadend = function() {
-                    let div = document.createElement("div");
                     let img = document.createElement("img");
-
-                    div.classList.add("imageMovable");
-                    div.draggable = true;
-                    div.appendChild(img);
 
                     img.src = fileReader.result;
                     img.alt = "Uploaded File";
                     img.classList.add("imgPreview");
                     img.addEventListener("click", imagePreview, false);
 
-                    e.target.appendChild(div);   
+                    div.appendChild(img); 
                 }
-
-                uploadableFiles.push(file);
-            } else if (item.kinde === 'file') {
-                /* no image files here, so .ltp or .cdr files get uploaded (also other files) */
-                uploadableFiles.push(file);
+            } else {
+                const icon = getIcon();
+                div.appendChild(icon);
             }
+
+            e.target.appendChild(div);
+            uploadableFiles.push(file);
         });
     }
 
     uploadFileForSticker(uploadableFiles, imageCategory);
+}
+
+function getIcon(type = "icon-file") {
+    const template = document.getElementById(type);
+    return template.content.cloneNode(true);
+}
+
+function generatePreviewContainer() {
+    const div = document.createElement("div");
+    div.classList.add("imageMovable");
+    div.draggable = true;
+    return div;
 }
 
 /* https://stackoverflow.com/questions/71822008/how-to-tell-if-an-image-is-drag-drop-from-the-same-page-or-drag-drop-uploaded */
@@ -118,21 +129,15 @@ function uploadFileForSticker(files, imageCategory) {
     formData.set("motivNumber", mainVariables.motivId.innerHTML);
     formData.set("imageCategory", imageCategory);
 
-	return new Promise(function(resolve, reject) {
+	const uploader = new Promise((resolve, reject) => {
 		var ajax = new XMLHttpRequest();
-
-		/* resolves the promise and then function with the form reset is called */
-		ajax.onreadystatechange = function() {
-			if(this.readyState == 4 && this.status == 200) {
-				// TODO: show success message
-                resolve();
+        ajax.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+                resolve(this.responseText);
 			}
 		}
 
-		ajax.onerror = function() {
-			reject();
-		}
-
+		ajax.onerror = reject;
 		ajax.open('POST', '');
 		ajax.upload.addEventListener("progress", function(e) {
 			if (e.lengthComputable) {
@@ -145,10 +150,34 @@ function uploadFileForSticker(files, imageCategory) {
 			}
 		}, false);
 		ajax.send(formData);
-	}); 
+	});
+
+    uploader.then((response) => handleUploadedImages(response));
+}
+
+/**
+ * TODO: es muss für mehrere Dateien gleichzeitig gehen, später eine Klasse aus dieser Datei machen
+ * @param {*} imageData 
+ */
+function handleUploadedImages(imageData) {
+    const data = JSON.parse(imageData);
+    const image = data.imageData[0];
+    var icon;
+
+    if (image.type.toLowerCase() == "cdr") {
+        icon = getIcon("icon-corel");
+    } else if (image.type.toLowerCase() == "ltp") {
+        icon = getIcon("icon-letterplot");
+    }
+
+    if (icon != null) {
+        const container = document.querySelector(".imageMovableContainer");
+        const el = container.getElementsByClassName("imageMovable");
+        el[el.length - 1].innerHTML = "";
+        el[el.length - 1].appendChild(icon);
+    }
 }
 
 // TODO: write file uploader
 // TODO: prevent false copying of text
-// TODO: alt files like svg must be uploadable as well
 document.addEventListener("click", imageClickListener);
