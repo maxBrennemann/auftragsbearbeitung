@@ -74,8 +74,9 @@ class Upload {
                     "motivnummer" => $motivnummer,
                 ];
                 $imageCategory = getParameter("imageCategory", "POST", null);
+                $imageId = -1;
 
-                if ($imageCategory != null || $imageCategory != "all") {
+                if ($imageCategory != null) {
                     switch ($imageCategory) {
                         case "aufkleber":
                             $query = "INSERT INTO module_sticker_images (id_image, id_sticker, is_aufkleber) VALUES (:id, :motivnummer, :setCategory)";
@@ -86,18 +87,29 @@ class Upload {
                         case "textil":
                             $query = "INSERT INTO module_sticker_images (id_image, id_sticker, is_textil) VALUES (:id, :motivnummer, :setCategory)";
                             break;
+                        case "all":
+                            $query = "INSERT INTO module_sticker_images (id_image, id_sticker) VALUES (:id, :motivnummer)";
+                            break;
                     }
 
-                    $params["setCategory"] = 1;
+                    if ($imageCategory != "all") {
+                        $params["setCategory"] = 1;
+                    }
                     $imageId = DBAccess::insertQuery($query, $params);
-                } else if ($imageCategory == "all") {
-                    $imageId = 0;
                 }
 
                 $image = DBAccess::selectQuery("SELECT dateiname, originalname FROM dateien WHERE id = $id LIMIT 1");
                 $url = Link::getResourcesShortLink($image[0]["dateiname"], "upload");
                 $originalname = $image[0]["originalname"];
-                array_push($imageData, ["id" => $imageId, "url" => $url, "original" => $originalname]);
+
+                $type = pathinfo($url)["extension"];
+
+                array_push($imageData, [
+                    "id" => $imageId,
+                    "url" => $url,
+                    "original" => $originalname,
+                    "type" => $type,
+                ]);
             }
 
             echo json_encode(["motiv" => $motivnummer, "imageData" => $imageData]);

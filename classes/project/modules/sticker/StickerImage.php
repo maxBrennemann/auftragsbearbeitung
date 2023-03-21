@@ -36,18 +36,7 @@ class StickerImage2 {
     }
 
     public function getFiles() {
-        if (sizeof($this->files) == 0) {
-            return;
-        }
-        $download = "<p>Download ";
-        foreach ($this->files as $f) {
-            $link = Link::getResourcesShortLink($f["dateiname"], "upload");
-            $filename = $f["dateiname"];
-            $originalname = $f["alt"] ?: "ohne Name";
-            $id = $f["id"];
-            $download .= "<a class=\"imageTag\" data-image-id=\"$id\" download=\"$filename\" data-deletable=\"true\" href=\"$link\" title=\"Zum Herunterladen von '$originalname' klicken\">(" . $originalname . ") " . strtoupper($f["typ"]) . "</a> ";
-        }
-        return $download . "</p>";
+        return $this->files;
     }
 
     public function getSVGIfExists() {
@@ -102,6 +91,13 @@ class StickerImage2 {
             }
         }
         return $filename;
+    }
+
+    public function getUnspecificImages() {
+        return array_filter(
+            $this->images,
+            fn($element) => $element["is_aufkleber"] != "1" && $element["is_wandtattoo"] != "1" && $element["is_textil"] != "1"
+        );
     }
 
 }

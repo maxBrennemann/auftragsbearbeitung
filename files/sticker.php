@@ -14,8 +14,6 @@ if (isset($_GET['id'])) {
     $id = (int) $_GET['id'];
 
     $stickerImage = new StickerImage2($id);
-    $getDownloadResources = $stickerImage->getFiles();
-
     $stickerCollection = new StickerCollection($id);
     $stickerTagManager = new StickerTagManager($id, $stickerCollection->getName());
     $stickerChangelog = new StickerChangelog($id);
@@ -50,8 +48,7 @@ if ($id != 0):
         </div>
         <div ondragover="">
             <p>Weitere Dateien:</p>
-            <?=$getDownloadResources?>
-            <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $stickerImage->getAufkleberImages(), "imageCategory" => "all"])?>
+            <?=insertTemplate("classes/project/modules/sticker/views/stickerFileView.php", ["images" => $stickerImage->getUnspecificImages(), "files" => $stickerImage->getFiles()])?>
             <div id="delete-menu">
                 <div class="item" onclick="deleteImage(-1)">
                     <svg style="width:24px;height:24px" viewBox="0 0 24 24">
@@ -385,4 +382,13 @@ if ($id != 0):
     <div>
         <span id="showUploadProgress"></span>
     </div>
+    <template id="icon-file">
+        <?=Icon::$iconFile?>
+    </template>
+    <template id="icon-corel">
+        <?=Icon::iconCorel()?>
+    </template>
+    <template id="icon-letterplot">
+        <?=Icon::iconLetterPlott()?>
+    </template>
 <?php endif; ?>
