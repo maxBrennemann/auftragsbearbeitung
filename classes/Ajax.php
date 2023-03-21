@@ -1034,10 +1034,12 @@ class Ajax {
 				$id = (int) $_POST["id"];
 				$type = (int) $_POST["type"];
 
+				require_once("classes/project/modules/sticker/StickerCollection.php");
 				switch ($type) {
 					case 1:
 						$aufkleber = new Aufkleber($id);
 						$aufkleber->save();
+						break;
 					case 2:
 						$wandtattoo = new Wandtattoo($id);
 						$wandtattoo->save();

@@ -395,66 +395,6 @@ class StickerImage {
         DBAccess::updateQuery($query);
     }
 
-    public function getSizeTable() {
-        $query = "SELECT id, width, height, price, ((width / 1000) * (height / 1000) * 7.5) as costs FROM module_sticker_sizes WHERE id_sticker = {$this->id} ORDER BY width";
-        $data = DBAccess::selectQuery($query);
-        $column_names = array(
-            0 => array("COLUMN_NAME" => "id", "ALT" => "Nummer"),
-            1 => array("COLUMN_NAME" => "width", "ALT" => "Breite"),
-            2 => array("COLUMN_NAME" => "height", "ALT" => "Höhe"),
-            3 => array("COLUMN_NAME" => "price", "ALT" => "Preis (brutto)"),
-            4 => array("COLUMN_NAME" => "costs", "ALT" => "Material"),
-        );
-
-        $difficulty = (int) $this->data["price_class"];
-        $data = $this->calculatePrices($data, $difficulty);
-
-        foreach ($data as &$d) {
-            $d["width"] = str_replace(".", ",", ((int) $d["width"]) / 10) . "cm";
-            $d["height"] = str_replace(".", ",", ((int) $d["height"]) / 10) . "cm";
-            $d["costs"] = number_format($d["costs"], 2, ',', '') . "€";
-        }
-
-        $resetIcon = "<svg style=\"width:20px;height:20px\" viewBox=\"0 0 24 24\"><path fill=\"currentColor\" d=\"M12.5,8C9.85,8 7.45,9 5.6,10.6L2,7V16H11L7.38,12.38C8.77,11.22 10.54,10.5 12.5,10.5C16.04,10.5 19.05,12.81 20.1,16L22.47,15.22C21.08,11.03 17.15,8 12.5,8Z\" /></svg>";
-
-		$t = new Table();
-		$t->createByData($data, $column_names);
-		$t->setType("module_sticker_sizes");
-		$t->addActionButton("delete", "id");
-		$t->addNewLineButton();
-        $t->addAction(null, $resetIcon, "Preis zurücksetzen");
-
-        $pattern = [
-            "id_sticker" => [
-                "status" => "preset",
-                "value" => $this->id,
-            ],
-            "width" => [
-                "status" => "unset",
-                "value" => 1,
-                "type" => "cm",
-                "cast" => [],
-            ],
-            "height" => [
-                "status" => "unset",
-                "value" => 2,
-                "type" => "cm",
-                "cast" => [],
-            ],
-            "price" => [
-                "status" => "unset",
-                "value" => 3,
-                "type" => "float",
-                "cast" => ["separator" => ","],
-                "default" => null,
-            ],
-        ];
-
-		$t->defineUpdateSchedule(new UpdateSchedule("module_sticker_sizes", $pattern));
-        $_SESSION[$t->getTableKey()] = serialize($t);
-		return $t->getTable();
-    }
-
     private function getConnectedFiles() {
         $allFiles = DBAccess::selectQuery("SELECT dateien.dateiname, dateien.originalname AS alt, dateien.typ, dateien.id, module_sticker_images.is_aufkleber, module_sticker_images.is_wandtattoo, module_sticker_images.is_textil FROM dateien, dateien_motive, module_sticker_images WHERE dateien_motive.id_datei = dateien.id AND module_sticker_images.id_image = dateien.id AND dateien_motive.id_motive = {$this->id}");
 
