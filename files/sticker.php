@@ -25,6 +25,7 @@ if ($id != 0):
 ?>
     <script src="<?=Link::getResourcesShortLink("sticker/productConnector.js", "js")?>"></script>
     <script src="<?=Link::getResourcesShortLink("sticker/tagManager.js", "js")?>"></script>
+    <script src="<?=Link::getResourcesShortLink("sticker/imageManager.js", "js")?>"></script>
     <div class="defCont cont1">
         <div>
             <h2>Motiv <input id="name" class="titleInput" value="<?=$stickerCollection->getName();?>">
@@ -47,9 +48,10 @@ if ($id != 0):
                 <button class="newButton" data-id="4" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
             </div>
         </div>
-        <div>
+        <div ondragover="">
             <p>Weitere Dateien:</p>
             <?=$getDownloadResources?>
+            <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $stickerImage->getAufkleberImages(), "imageCategory" => "all"])?>
             <div id="delete-menu">
                 <div class="item" onclick="deleteImage(-1)">
                     <svg style="width:24px;height:24px" viewBox="0 0 24 24">

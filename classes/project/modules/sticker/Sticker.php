@@ -2,6 +2,7 @@
 
 require_once('classes/project/modules/sticker/PrestashopConnection.php');
 require_once('classes/project/modules/sticker/StickerChangelog.php');
+require_once('classes/project/modules/sticker/StickerImage.php');
 
 /**
  * stellt allgemeine Stickerfunktionen zur Verfügung, ist die Elternklasse von
@@ -139,8 +140,13 @@ class Sticker extends PrestashopConnection {
 
     }
 
-    public function setName() {
+    public function setName(String $name) {
+        $query = "UPDATE module_sticker_sticker_data SET `name` = :stickerName WHERE id = :idSticker";
+        DBAccess::updateQuery($query, ["stickerName" => $name, "idSticker" => $this->getId()]);
 
+        StickerChangelog::log($this->getId(), 0, $this->getId(), "module_sticker_sticker_data", "name", $name);
+
+        return ["status" => "success"];
     }
 
     public static function setDescription() {

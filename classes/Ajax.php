@@ -1056,11 +1056,11 @@ class Ajax {
 				echo "ready";
 			break;
 			case "getSizeTable":
-				require_once("classes/project/StickerImage.php");
+				require_once("classes/project/modules/sticker/Aufkleber.php");
 				$id = (int) $_POST["id"];
 
-				$stickerImage = new StickerImage($id);
-				echo $stickerImage->getSizeTable();
+				$aufkleber = new Aufkleber($id);
+				echo $aufkleber->getSizeTable();
 			break;
 			case "deleteImage":
 				$imageId = (int) $_POST["imageId"];
@@ -1106,7 +1106,6 @@ class Ajax {
 				echo "success";
 			break;
 			case "makeSVGColorable":
-				require_once("classes/project/StickerImage.php");
 				$id = (int) $_POST["id"];
 
 				$textil = new Textil($id);
@@ -1170,11 +1169,15 @@ class Ajax {
 				$stickerImage->saveSentData($data);
 			break;
 			case "setAufkleberTitle":
-				require_once('classes/project/StickerImage.php');
+				require_once('classes/project/modules/sticker/Sticker.php');
 				$id = (int) $_POST["id"];
-				$title = $_POST["title"];
-				$stickerImage = new StickerImage($id);
-				$stickerImage->setName($title);
+				$title = (String) $_POST["title"];
+
+				$sticker = new Sticker($id);
+				$response = $sticker->setName($title);
+
+				echo $response["status"];
+				//echo json_encode($response);
 			break;
 			case "setAufkleberGroessen":
 				$data = json_decode($_POST["json"], true);
@@ -1267,7 +1270,6 @@ class Ajax {
 				ExportFacebook::exportAll();
 			break;
 			case "exportFacebook":
-				require_once('classes/project/StickerImage.php');
 				require_once('classes/project/modules/sticker/exports/ExportFacebook.php');
 
 				$id = (int) $_POST["id"];
@@ -1346,6 +1348,19 @@ class Ajax {
 				echo json_encode([
 					"status" => "success",
 				]);
+			break;
+			case "getIcon":
+				$type = (String) $_POST["type"];
+
+				if (isset(Icon::${$type})) {
+					echo json_encode([
+						"status" => "success",
+						"icon" => Icon::${$type}
+					]);
+					return;
+				}
+				
+				echo json_encode(["status" => "not found"]);
 			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
