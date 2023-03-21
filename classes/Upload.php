@@ -75,7 +75,7 @@ class Upload {
                 ];
                 $imageCategory = getParameter("imageCategory", "POST", null);
 
-                if ($imageCategory != null) {
+                if ($imageCategory != null || $imageCategory != "all") {
                     switch ($imageCategory) {
                         case "aufkleber":
                             $query = "INSERT INTO module_sticker_images (id_image, id_sticker, is_aufkleber) VALUES (:id, :motivnummer, :setCategory)";
@@ -89,9 +89,10 @@ class Upload {
                     }
 
                     $params["setCategory"] = 1;
+                    $imageId = DBAccess::insertQuery($query, $params);
+                } else if ($imageCategory == "all") {
+                    $imageId = 0;
                 }
-
-                $imageId = DBAccess::insertQuery($query, $params);
 
                 $image = DBAccess::selectQuery("SELECT dateiname, originalname FROM dateien WHERE id = $id LIMIT 1");
                 $url = Link::getResourcesShortLink($image[0]["dateiname"], "upload");
