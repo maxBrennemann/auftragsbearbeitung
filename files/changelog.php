@@ -1,5 +1,26 @@
 <div class="changelog">
-    <h3>1.1.17</h3>
+    <nav id="nav">
+        <p>Versionen</p>
+        <ul id="navUl">
+            <li><a href="#1.1.18">1.1.18</a></li>
+            <li><a href="#1.1.17">1.1.17</a></li>
+            <li><a href="#1.1.16">1.1.16</a></li>
+            <li><a href="#1.1.15">1.1.15</a></li>
+            <li><a href="#1.1.14">1.1.14</a></li>
+            <li><a href="#1.1.13">1.1.13</a></li>
+            <li><a href="#1.1.12">1.1.12</a></li>
+            <li><a href="#1.1.11">1.1.11</a></li>
+            <li><a href="#1.1.10">1.1.10</a></li>
+            <li><a href="#1.1.9">1.1.9</a></li>
+            <li><a href="#1.1.8">1.1.8</a></li>
+            <li><a href="#1.1.7">1.1.7</a></li>
+        </ul>
+    </nav>
+    <h3 id="1.1.18">1.1.18</h3>
+    <ul>
+        <li>Auftragstypen können ergänzt werden</li>
+    </ul>
+    <h3 id="1.1.17">1.1.17</h3>
     <ul>
         <li>Produktexport für Prestashop wurde integriert
             <ul>
@@ -16,7 +37,7 @@
         <li>CSS und JS Minifier hinzugefügt</li>
         <li>Diverse Fehlerbehebungen</li>
     </ul>
-    <h3>1.1.16</h3>
+    <h3 id="1.1.16">1.1.16</h3>
     <ul>
         <li>Fehlerbehebungen</li>
         <li>Einkaufspreis wird in Gesamtpreis und Einzelpreis angezeigt</li>
@@ -31,7 +52,7 @@
         <li>Drag and Drop für Dateiupload hinzugefügt</li>
         <li>Autologin eingeführt</li>
     </ul>
-    <h3>1.1.15</h3>
+    <h3 id="1.1.15">1.1.15</h3>
     <ul>
         <li>Erweiterte Zeiterfassung nun um Datum ergänzt. Felder werden bereinigt, wenn die Zeiten an den Server geschickt werden.</li>
         <li>Wenn Posten oder Bearbeitungsschritte gelöscht werden, wird das im Auftragsverlauf vermerkt</li>
@@ -48,7 +69,7 @@
         <li>Attributeerstellung wurde vereinfacht</li>
         <li>Leistung und Produkte werden zusammengeführt - noch in Arbeit</li>
     </ul>
-    <h3>1.1.14</h3>
+    <h3 id="1.1.14">1.1.14</h3>
     <ul>
         <li>Diagramm "Umsatz pro Monat" wird nun aufgrund des Fertigstellungsdatums generiert</li>
         <li>Externe Javascript Dateien können nun via PHP eingebunden werden</li>
@@ -63,7 +84,7 @@
         <li>Mengeneinheiten können direkt ausgewählt werden</li>
         <li>Diverse Fehlerbehebungen in Bezug auf Rechnungstellung und Posten</li>
     </ul>
-    <h3>1.1.13</h3>
+    <h3 id="1.1.13">1.1.13</h3>
     <ul>
         <li>Posten können nun in einem neuen Menü hinzugefügt werden</li>
         <li>Es können Posten mit Dateien verknüpft werden</li>
@@ -76,7 +97,7 @@
         <li>Überarbeitete Kundenadressen</li>
         <li>Ansprechpartner können nun gelöscht und bearbeitet werden</li>
     </ul>
-    <h3>1.1.12</h3>
+    <h3 id="1.1.12">1.1.12</h3>
     <ul>
         <li>Frontoffice wurde hinzugefügt</li>
         <li>Website nun mit Shopfunktion</li>
@@ -84,7 +105,7 @@
         <li>Verbesserungen für Produkte</li>
         <li>Cache wurde implementiert, aktuell deaktiviert</li>
     </ul>
-    <h3>1.1.11</h3>
+    <h3 id="1.1.11">1.1.11</h3>
     <ul>
         <li>Verschiedene Fehlerbehebungen</li>
         <li>Leistungen wurde verbessert</li>
@@ -102,7 +123,7 @@
             </ul>
         </li>
     </ul>
-    <h3>1.1.10</h3>
+    <h3 id="1.1.10">1.1.10</h3>
     <ul>
         <li>Aufträge können durchsucht werden</li>
         <li>Ansprechpartner wird nun beim Auftrag angezeigt und kann zukünftig geändert werden</li>
@@ -113,7 +134,7 @@
         <li>Auftragstyp muss nun festgelegt werden. Auftragstypen können in den Einstellungen angezeigt werden</li>
         <li>Infobuttons laden nun Text aus der Datenbank</li>
     </ul>
-    <h3>1.1.9</h3>
+    <h3 id="1.1.9">1.1.9</h3>
     <ul>
         <li>Erste Überarbeitung des NotificationManagers - Benachrichtigungen werden nun auch wieder entfernt</li>
         <li>Auftragsbeschreibung kann nun ordentlich geändert werden</li>
@@ -122,14 +143,14 @@
         <li>Weiterleitung zu neuem Kunden nun richtig</li>
         <li>Fehlerbehebungen</li>
     </ul>
-    <h3>1.1.8</h3>
+    <h3 id="1.1.8">1.1.8</h3>
     <ul>
         <li>Designfehler für Auftragskarten behoben</li>
         <li>Upload für mehrere Dateien funktioniert jetzt fehlerfrei - mit bebilderter Vorschau</li>
         <li>Farbeinstellungen wurden hinzugefügt</li>
         <li>Tabellenkopf wird bei Ansprechpartnern angezeigt - also Einfügen nun immer möglich</li>
     </ul>
-    <h3>1.1.7</h3>
+    <h3 id="1.1.7">1.1.7</h3>
     <ul>
         <li>Fahrzeuge werden nun über ein eigenes Menü hinzugefügt</li>
         <li>Ansprechpartner können nun über den neuen Tabellengenerator hinzugefügt werden</li>
@@ -144,5 +165,18 @@
 
     li ul {
         padding-left: 15px;
+    }
+
+    #nav {
+        margin-top: 45px;
+        background: #ececec;
+        width: fit-content;
+        padding: 10px;
+        padding-right: 160px;
+        border-radius: 12px;
+    }
+
+    #navUl {
+        list-style-type: none;
     }
 </style>
