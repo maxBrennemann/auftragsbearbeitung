@@ -700,6 +700,17 @@ class Ajax {
 				DBAccess::updateQuery("UPDATE auftrag SET Auftragsbezeichnung = '$text' WHERE Auftragsnummer = $auftrag");
 				echo "saved";
 			break;
+			case "saveOrderType";
+				$idOrderType = (int) $_POST['type'];
+				$idOrder = (int) $_POST['auftrag'];
+				$query = "UPDATE `auftrag` SET `Auftragstyp` = :idOrderType WHERE `Auftragsnummer` = :idOrder";
+				
+				DBAccess::updateQuery($query, [
+					"idOrder" => $idOrder,
+					"idOrderType" => $idOrderType,
+				]);
+				echo "saved";
+			break;
 			case "table":
 				/*
 				 * gets table data with action and key

@@ -31,7 +31,7 @@ class Auftrag implements StatisticsInterface {
 	protected $Auftragsbeschreibung = null;
 	protected $Auftragsposten = array();
 	protected $Bearbeitungsschritte = array();
-	protected $Auftragstyp = null;
+	protected $auftragstyp = null;
 	protected $rechnungsnummer = 0;
 
 	/* dates */
@@ -51,7 +51,7 @@ class Auftrag implements StatisticsInterface {
 			if (!empty($data)) {
 				$this->Auftragsbeschreibung = $data[0]['Auftragsbeschreibung'];
 				$this->Auftragsbezeichnung = $data[0]['Auftragsbezeichnung'];
-				$this->Auftragstyp = (int) $data[0]['Auftragstyp'];
+				$this->auftragstyp = (int) $data[0]['Auftragstyp'];
 				$this->rechnungsnummer = $data[0]['Rechnungsnummer'];
 
 				$this->datum = $data[0]['Datum'];
@@ -162,7 +162,19 @@ class Auftrag implements StatisticsInterface {
 	}
 
 	public function getAuftragstyp() {
-		return $this->Auftragstyp;
+		return $this->auftragstyp;
+	}
+
+	public function getAuftragstypBezeichnung() {
+		$query = "SELECT `Auftragstyp` FROM `auftragstyp` WHERE `id` = :idAuftragstyp LIMIT 1;";
+		$bez = DBAccess::selectQuery($query, ["idAuftragstyp" => $this->auftragstyp]);
+		return $bez[0]["Auftragstyp"];
+	}
+
+	public static function getAllOrderTypes() {
+		$query = "SELECT * FROM `auftragstyp`;";
+		$result = DBAccess::selectQuery($query);
+		return $result;
 	}
 
 	public function getAuftragsbezeichnung() {

@@ -1050,6 +1050,25 @@ function editDescription() {
     });
 }
 
+/**
+ * changes the order type
+ * TODO: alles auf neues ajax module umstellen
+ * TODO: alten code vereinfachen
+ * TODO: sql injectsion preventen
+ */
+function editOrderType() {
+    const select = document.getElementById("orderType");
+    const value = select.value;
+
+    const sendToServer = new AjaxCall(`getReason=saveOrderType&type=${value}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
+    sendToServer.makeAjaxCall(function (response) {
+        if (response == "saved") {
+            infoSaveSuccessfull("success");
+        } else
+            infoSaveSuccessfull();
+    });
+}
+
 /* shows auftragsblatt, from: https://stackoverflow.com/questions/19851782/how-to-open-a-url-in-a-new-tab-using-javascript-or-jquery */
 function showPreview() {
     let link = document.getElementById("home_link").href + "pdf?type=auftrag&id=" + globalData.auftragsId;

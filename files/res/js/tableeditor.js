@@ -2,30 +2,57 @@
 	this.columns = columns;
 }
 
-var currTable;
-var tableName;
-var sendTo;
+class TableManager {
 
-function init() {
-	console.log("initializing...");
-	
-	addableTables();
+    constructor() {
+        
+    }
+
+    getTableName() {
+        return this.tableName;
+    }
+
+    getSendTo() {
+        return this.target;
+    }
+
+    setCurrentTable(tbl) {
+        this.currentTable = tbl;
+    }
+
+    setTableName(name) {
+        this.tableName = name;
+    }
+
+    setSendTo(target) {
+        this.target = target;
+    }
+}
+
+const tblManager = new TableManager();
+
+if (document.readyState !== 'loading' ) {
+    addableTables();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        addableTables();
+    });
 }
 
 function addableTables(tname) {
-    tableName = tname;
+    tblManager.setTableName(tname);
     var allowAddingContent = document.getElementsByClassName("allowAddingContent");
     var addingContentColumn = document.getElementsByClassName("addingContentColumn");
 
     if (allowAddingContent.length != 0) {
-        sendTo = allowAddingContent[0].dataset.sendTo;
+        tblManager.setSendTo(allowAddingContent[0].dataset.sendTo);
 
         if (allowAddingContent.length != 0) {
             var btn = document.createElement("button");
             btn.addEventListener("click", addContent, false);
             btn.innerHTML = "Hinzufügen";
             allowAddingContent[0].parentNode.appendChild(btn);
-            currTable = new Table(0);
+            tblManager.setCurrentTable(new Table(0));
         }
     }
 
@@ -56,8 +83,8 @@ function addContent() {
 	var content = document.getElementsByClassName("addingContentColumn");
 	var tableHead = document.getElementsByClassName("tableHead");
 	
-	if(content.length != 0) {
-        let data = `getTable=${tableName}&getReason=${sendTo}&`;
+	if (content.length != 0) {
+        let data = `getTable=${tblManager.getTableName()}&getReason=${tblManager.getSendTo()}&`;
         let isChecked = true;
 		for(let i = 0; i < content.length; i++) {
             console.log("content: " + content[i].innerHTML);
@@ -90,28 +117,6 @@ function addContent() {
 		alert("leere");
     }
 }
-
-window.onload = function() {
-	init();
-}
-
-/*class Table {
-    constructor(html_table) {
-        this.html_table = html_table;
-        this.rows = html_table.rows;
-
-        var temp = [];
-        for (var i = 0; i < this.rows; i++) {
-            temp.push(this.rows[i]);
-        }
-        this.rows = temp;
-    }
-
-    sortByRow(rowId) {
-        this.rows.sort((a, b) => a[rowId] - b[rowId]);
-        //this.html_table.rows = 
-    }
-}*/
 
 /* adds a new line to a table to be sent to the server */
 function tableAddnewLine() {
@@ -150,12 +155,11 @@ function tableSendnewLine() {
     };
 
     var identifier = btn.dataset.table;
-    var table = document.querySelector(`[data-key="${identifier}"]`).children[0];
-    var lastRow = table.children[table.children.length - 1];
+    const lastTr = [...document.querySelectorAll(`[data-key="${identifier}"] tr`)].pop();
 
     var data = {};
-    for (let i = 0; i < lastRow.children.length; i++) {
-        data[i] = lastRow.children[i].innerText;
+    for (let i = 0; i < lastTr.children.length; i++) {
+        data[i] = lastTr.children[i].innerText;
     }
 
     data = JSON.stringify(data);
