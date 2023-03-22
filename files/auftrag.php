@@ -10,58 +10,58 @@ require_once('classes/Upload.php');
 require_once('classes/project/Liste.php');
 require_once('classes/project/Table.php');
 
-	$auftragsId = -1;
-	$auftragAnzeigen = Link::getPageLink("auftrag");
-	$show = false;
-	$searchTable = "";
+$auftragsId = -1;
+$auftragAnzeigen = Link::getPageLink("auftrag");
+$show = false;
+$searchTable = "";
+$auftragsTypBezeichnung = "";
 
-	if (isset($_GET['id'])) {
-		$auftragsId = (int) $_GET['id'];
-		if ($auftragsId > 0) {
-			$auftrag = new Auftrag($auftragsId);
-			$fahrzeugTable = $auftrag->getFahrzeuge();
-			$farbTable = $auftrag->getFarben();
-			$kunde = new Kunde($auftrag->getKundennummer());
+if (isset($_GET['id'])) {
+	$auftragsId = (int) $_GET['id'];
+	if ($auftragsId > 0) {
+		$auftrag = new Auftrag($auftragsId);
+		$fahrzeugTable = $auftrag->getFahrzeuge();
+		$farbTable = $auftrag->getFarben();
+		$kunde = new Kunde($auftrag->getKundennummer());
 
-			/* Parameter werden nur gebraucht, falls der Auftrag existiert */
-			if ($auftrag != null) {
-				$auftragstyp = $auftrag->getAuftragstyp();
-				if ($auftragstyp == 0) {
-					$fahrzeuge = Fahrzeug::getSelection($auftrag->getKundennummer());
-					$fahrzeugeAuftrag = $auftrag != null ? $auftrag->getLinkedVehicles() : null;
-				}
-				
-				$leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
-				$showFiles = Upload::getFilesAuftrag($auftragsId);
-				$auftragsverlauf = (new Auftragsverlauf($auftragsId))->representHistoryAsHTML();
-				$showLists = Liste::chooseList();
-				$showAttachedLists = $auftrag->showAttachedLists();
-				$ansprechpartner = $auftrag->bekommeAnsprechpartner();
-			}
-		} else {
-			$auftragsId = -1;
-		}
+		$fahrzeuge = Fahrzeug::getSelection($auftrag->getKundennummer());
+		$fahrzeugeAuftrag = $auftrag->getLinkedVehicles();
+		
+		$leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
+
+		$showFiles = Upload::getFilesAuftrag($auftragsId);
+		$auftragsverlauf = (new Auftragsverlauf($auftragsId))->representHistoryAsHTML();
+		$showLists = Liste::chooseList();
+		$showAttachedLists = $auftrag->showAttachedLists();
+		$ansprechpartner = $auftrag->bekommeAnsprechpartner();
+
+		$auftragsTypBezeichnung = $auftrag->getAuftragstypBezeichnung();
+		$auftragsTyp = $auftrag->getAuftragstyp();
+		$auftragsTypen = Auftrag::getAllOrderTypes();
+	} else {
+		$auftragsId = -1;
 	}
+}
 
-	if (isset($_GET['query'])) {
-		$query = $_GET['query'];
-		$searchTable = Search::getSearchTable($query, "order", null, true);
-	}
+if (isset($_GET['query'])) {
+	$query = $_GET['query'];
+	$searchTable = Search::getSearchTable($query, "order", null, true);
+}
 
-	if (isset($_POST['filesubmitbtnV'])) {
-		$vehicleId = $_POST['vehicleImageId'];
-		echo $vehicleId;
-		$upload = new Upload();
-		$upload->uploadFilesVehicle($vehicleId, $auftragsId);
-	}
-	
-	/* Paremter wird gebraucht, falls Rechnung gestellt wurde, aber der Auftrag trotzdem gezeigt werden soll */
-	if (isset($_GET['show'])) {
-		$show = true;
-	}
+if (isset($_POST['filesubmitbtnV'])) {
+	$vehicleId = $_POST['vehicleImageId'];
+	echo $vehicleId;
+	$upload = new Upload();
+	$upload->uploadFilesVehicle($vehicleId, $auftragsId);
+}
 
-	$mitarbeiter = DBAccess::selectQuery("SELECT Vorname, Nachname, id FROM mitarbeiter");
-	$colors = DBAccess::selectQuery("SELECT Farbe, Bezeichnung, Hersteller, Farbwert, id AS Nummer FROM color");
+/* Paremter wird gebraucht, falls Rechnung gestellt wurde, aber der Auftrag trotzdem gezeigt werden soll */
+if (isset($_GET['show'])) {
+	$show = true;
+}
+
+$mitarbeiter = DBAccess::selectQuery("SELECT Vorname, Nachname, id FROM mitarbeiter");
+$colors = DBAccess::selectQuery("SELECT Farbe, Bezeichnung, Hersteller, Farbwert, id AS Nummer FROM color");
 
 if ($auftragsId == -1): ?>
 	<style>
@@ -121,8 +121,18 @@ if ($auftragsId == -1): ?>
 			<label for="orderDescription">Auftragsbeschreibung:</label>
 			<textarea class="data-input" id="orderDescription" autocomplete="none" onchange="editDescription();" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"><?=$auftrag->getAuftragsbeschreibung()?></textarea>
 		</div>
+		<div class="inputCont">
+			<label for="orderType">Auftragstyp:</label>
+			<select class="data-input" id="orderType"  onchange="editOrderType();"><?=$auftrag->getAuftragsbeschreibung()?>
+				<?php foreach($auftragsTypen as $type): ?>
+				<option value="<?=$type["id"]?>" <?=$auftragsTyp == $type["id"] ? "selected" : "" ?>><?=$type["Auftragstyp"]?></option>
+				<?php endforeach; ?>
+			</select>
+		</div>
 		<br>
-		<span><button onclick="showPreview();">Auftragsblatt anzeigen</button></span>
+		<span style="display: none">
+			<button onclick="showPreview();">Auftragsblatt anzeigen</button>
+		</span>
 		<span><button onclick="location.href= '<?=Link::getPageLink('rechnung')?>?target=create&id=<?=$auftragsId?>'">Rechnung generieren</button></span>
 		<?php if ($auftrag->getIsArchiviert() == false) :?><span><button onclick="archvieren();">Auftrag archivieren</button></span><br><?php endif; ?>
 		Auftragsstellung: <span id="changeDate-1"><?=$auftrag->getDatum()?></span><button class="actionButton" onclick="changeDate(1, event)">✎</button><br>
@@ -291,7 +301,6 @@ if ($auftragsId == -1): ?>
 		</span>
 	</div>
 	<div class="defCont fahrzeuge">
-		<?php if ($auftragstyp == 0): ?>
 		<span><u>Fahrzeuge:</u><button class="infoButton" data-info="1">i</button><br>
 		<div>
 			<span>Fahrzeug hinzufügen</span>
@@ -316,7 +325,6 @@ if ($auftragsId == -1): ?>
 			<input type="file" name="uploadedFile" multiple>
 			<input name="orderid" value="<?=$auftragsId?>" hidden>
 		</form>
-		<?php endif; ?>
 	</div>
 	<div class="defCont farben">
 		<span><u>Farben:</u><br> <span id="showColors"><?=$farbTable?></span></span>

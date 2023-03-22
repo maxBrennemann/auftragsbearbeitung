@@ -41,9 +41,11 @@ class Table {
 	/* defines an update table schedule */
 	private $updateSchedule;
 
-    function __construct($type = 0, $limit = 10, $editable = false) {
-		if (is_numeric($limit) && $limit > 0)
-			$this->limit = $limit;
+	/**
+	 * limit -1 hebt das Limit auf
+	 */
+    function __construct($type = 0, int $limit = 10, $editable = false) {
+		$this->limit = $limit;
 
 		if (!is_numeric($type)) {
 			$cnames = self::getColumnNames($type);

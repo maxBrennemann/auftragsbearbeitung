@@ -20,6 +20,7 @@ class UpdateSchedule {
 
     private $columns;
     private $values;
+    private $parameters;
 
     function __construct($tableName, $pattern) {
         $this->tableName = $tableName;
@@ -29,44 +30,52 @@ class UpdateSchedule {
     public function executeTableUpdate($data) {
         $this->applyPattern($data);
 
-        $query = "INSERT INTO $this->tableName ($this->columns) VALUES ($this->values)";
-        DBAccess::insertQuery($query);
+        $query = "INSERT INTO $this->tableName ($this->columns) VALUES ($this->parameters)";
+
+        var_dump($query);
+        var_dump($this->values);
+
+        DBAccess::insertQuery($query, $this->values);
         echo "ok";
     }
 
     private function applyPattern($data) {
-        $columns = $values = "";
+        $columns = array();
+        $values = array();
+        $parameters = array();
+        $count = 0;
 
         foreach ($this->pattern as $key => $value) {
-            $columns .= $key . ", ";
+            $columns[] = $key;
 
             /* checks if value is preset or it is in data array */
-            $val = "";
-            if ($value['status'] == "preset") {
-                $val = $value['value'];
-            } else if ($value['status'] == "unset") {
-                $val = $data[$value['value']];
+            $insertValue = "";
+            switch ($value["status"]) {
+                case "preset":
+                    $insertValue = $value['value'];
+                    break;
+                case "unset":
+                    $insertValue = $data[$value['value']];
+                    break;
             }
 
-            /* checks if value is string or int to insert it correctly and checks if a cast is necessary */
+            /* checks if value is string or int to insert it correctly and checks if a typecast is necessary */
             if (isset($value['type']) && isset($value['cast'])) {
-                $val = $this->castValues($value['type'], $value['cast'], $val);
-                $values .= "'$val', ";
-            } else {
-                if (is_string($val)) {
-                    $values .= "'$val', ";
-                } else if (is_int($val)) {
-                    $values .= $val . ", ";
-                }
+                $insertValue = $this->castValues($value['type'], $value['cast'], $insertValue);
             }
 
-            if (isset($value["default"]) && $val == "") {
-                $val = $value["default"];
+            if (isset($value["default"]) && $insertValue == "") {
+                $insertValue = $value["default"];
             }
+
+            $values[":param$count"] = $insertValue;
+            $parameters[] = ":param$count";
+            $count++;
         }
 
-        $this->columns = substr($columns, 0, -2);
-        $this->values = substr($values, 0, -2);
+        $this->columns = implode(", ", $columns);
+        $this->parameters = implode(", ", $parameters);
+        $this->values = $values;
     }
 
     static function handlePostenDeletion() {

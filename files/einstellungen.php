@@ -9,6 +9,7 @@ $cacheOn = "";
 $cacheOff = "checked";
 
 $cacheStatus = CacheManager::getCacheStatus();
+
 if ($cacheStatus == "on") {
     $cacheOn = "checked";
     $cacheOff = "";
@@ -20,15 +21,34 @@ $minifyOff = "checked";
 $query = "SELECT content FROM settings WHERE title = 'minifyStatus' LIMIT 1";
 $result = DBAccess::selectQuery($query);
 $minifyStatus = $result[0]["content"];
+
 if ($minifyStatus == "on") {
     $minifyOn = "checked";
     $minifyOff = "";
 }
 
+/* Auftragstypen Tabelle */
+$tableOrderType = new Table("auftragstyp", -1);
+$tableOrderType->setType("auftragstyp");
+$tableOrderType->addNewLineButton();
+
+$patternOrderType = [
+    "Auftragstyp" => [
+        "status" => "unset",
+        "value" => 1,
+    ],
+];
+
+$tableOrderType->defineUpdateSchedule(new UpdateSchedule("auftragstyp", $patternOrderType));
+
+
+$_SESSION[$tableOrderType->getTableKey()] = serialize($tableOrderType);
+
 ?>
+<script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
 <section class="defCont">
     <h2>Auftragstypen festlegen</h2>
-    <?php echo (new Table("auftragstyp"))->getTable(); ?>
+    <?=$tableOrderType->getTable()?>
 </section>
 <section class="defCont">
     <h2>Einkaufsmöglichkeiten festlegen</h2>
@@ -89,77 +109,3 @@ if ($minifyStatus == "on") {
         Aktuelle Arbeitszeit global anzeigen
     </div>
 </section>
-
-<style>
-
-/* https://www.w3schools.com/howto/howto_css_switch.asp */
-/* The switch - the box around the slider */
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 30px;
-    height: 17px;
-}
-
-/* Hide default HTML checkbox */
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-/* The slider */
-.sliderTime {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    -webkit-transition: .4s;
-    transition: .4s;
-}
-
-.sliderTime:before {
-    position: absolute;
-    content: "";
-    height: 13px;
-    width: 13px;
-    left: 2px;
-    bottom: 2px;
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
-}
-
-input:checked + .sliderTime {
-    background-color: #2196F3;
-}
-
-input:focus + .sliderTime {
-    box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .sliderTime:before {
-    -webkit-transform: translateX(13px);
-    -ms-transform: translateX(13px);
-    transform: translateX(13px);
-}
-
-/* Rounded sliders */
-.sliderTime.round {
-    border-radius: 17px;
-}
-
-.sliderTime.round:before {
-    border-radius: 50%;
-}
-
-/* style vom rest */
-.switchCont > * {
-    display: inline-block;
-    vertical-align: middle;
-}
-
-</style>
