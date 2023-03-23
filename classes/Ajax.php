@@ -980,6 +980,11 @@ class Ajax {
 					echo "failed";
 				}
 			break;
+			case "minifyFiles":
+				require_once("classes/MinifyFiles.php");
+				MinifyFiles::minify();
+				echo json_encode(["status" => "success"]);
+			break;
 			case "upgrade":
 				require_once("upgrade/UpgradeManager.php");
 				$query = $_POST["query"];

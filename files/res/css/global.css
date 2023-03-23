@@ -4,19 +4,19 @@
 
 @font-face {
     font-family: 'Be Vietnam';
-    src: url("../font/BeVietnamPro-Regular.ttf") format('truetype');
+    src: url("font/BeVietnamPro-Regular.ttf") format('truetype');
     font-weight: normal;
 }
 
 @font-face {
     font-family: 'Open Sans';
-    src: url("../font/OpenSans-Regular.ttf") format('truetype');
+    src: url("font/OpenSans-Regular.ttf") format('truetype');
     font-weight: normal;
 }
 
 @font-face {
     font-family: 'Raleway';
-    src:  url("../font/Raleway-Regular.ttf") format('truetype');
+    src:  url("font/Raleway-Regular.ttf") format('truetype');
     font-weight: normal;
 }
 /* TODO: https://web.dev/defer-non-critical-css/ */

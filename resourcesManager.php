@@ -1,14 +1,34 @@
 <?php
 
+require_once('settings.php');
 require_once('classes/MinifyFiles.php');
 require_once('vendor/autoload.php');
-require_once('settings.php');
 require_once('classes/DBAccess.php');
 require_once('classes/Link.php');
 
-if (isset($_GET['script'])) {
+function get($type) {
+	return isset($_GET[$type]) ? $_GET[$type] : null;
+}
+
+$types = [
+	"script",
+	"css",
+	"font",
+	"upload",
+	"backup",
+	"pdf_invoice",
+];
+
+foreach ($types as $t) {
+	$val = get($t);
+	if ($val != null) {
+		call_user_func("get_" . $t, $val);
+		break;
+	}
+}
+
+function get_script($script) {
 	header('Content-Type: text/javascript');
-	$script = $_GET['script'];
 
 	if ($script == "colorpicker.js") {
 		$file = file_get_contents(".res/colorpicker.js");
@@ -34,9 +54,8 @@ if (isset($_GET['script'])) {
 	echo $file;
 }
 
-if (isset($_GET['css'])) {
+function get_css($script) {
 	header("Content-type: text/css");
-	$script = $_GET['css'];
 	$fileName = explode(".", $script);
 
 	if ($fileName[0] == "tw") {
@@ -63,37 +82,35 @@ if (isset($_GET['css'])) {
 	echo $file;
 }
 
-if (isset($_GET['font'])) {
+function get_font($font) {
 	header("Content-type: font/ttf");
-	$script = $_GET['font'];
-	$file = file_get_contents(Link::getResourcesLink($script, "font", false));
+	$file = file_get_contents(Link::getResourcesLink($font, "font", false));
 
 	echo $file;
 }
 
-if (isset($_GET['upload'])) {
+function get_upload($upload) {
 	$file_info = new finfo(FILEINFO_MIME_TYPE);
-	$mime_type = $file_info->buffer(file_get_contents(Link::getResourcesLink($_GET['upload'], "upload", false)));
+	$mime_type = $file_info->buffer(file_get_contents(Link::getResourcesLink($upload, "upload", false)));
 	
 	header("Content-type:$mime_type");
-	$file = file_get_contents(Link::getResourcesLink($_GET['upload'], "upload", false));
+	$file = file_get_contents(Link::getResourcesLink($upload, "upload", false));
 
 	echo $file;
 }
 
-if (isset($_GET['backup'])) {
+function get_backup($backup) {
 	$file_info = new finfo(FILEINFO_MIME_TYPE);
-	$mime_type = $file_info->buffer(file_get_contents(Link::getResourcesLink($_GET['backup'], "backup", false)));
+	$mime_type = $file_info->buffer(file_get_contents(Link::getResourcesLink($backup, "backup", false)));
 	
 	header("Content-type:$mime_type");
-	$file = file_get_contents(Link::getResourcesLink($_GET['backup'], "backup", false));
+	$file = file_get_contents(Link::getResourcesLink($backup, "backup", false));
 
 	echo $file;
 }
 
-if (isset($_GET['pdf_invoice'])) {
+function get_pdf_invoice($pdf) {
 	header("Content-type: application/pdf");
-	$pdf = $_GET['pdf_invoice'];
 	$file = file_get_contents(Link::getResourcesLink($pdf, "pdf", false));
 
 	echo $file;
