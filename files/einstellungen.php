@@ -68,8 +68,7 @@ $_SESSION[$tableOrderType->getTableKey()] = serialize($tableOrderType);
     <h2>CSS und JS komprimieren</h2>
 	<input onchange="toggleMinify('on')" type="radio" name="minifyswitch" value="on" <?=$minifyOn?>> Komprimierung aktivieren<br>
 	<input onchange="toggleMinify('off')" type="radio" name="minifyswitch" value="off" <?=$minifyOff?>> Komprimierung deaktivieren<br>
-    <button>Neu komprimieren</button>
-    <!-- TODO: neu komprimieren btn ohne Funktion -->
+    <button onclick="minifyFiles()">Neu komprimieren</button>
 </section>
 <section class="defCont">
     <h2>Persönliche Einstellungen</h2>

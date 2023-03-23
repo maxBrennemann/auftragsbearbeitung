@@ -76,6 +76,21 @@ function toggleMinify(status) {
     });
 }
 
+function minifyFiles() {
+    let params = {
+        getReason: "minifyFiles",
+    };
+
+    var toggle = new AjaxCall(params, "POST", window.location.href);
+    toggle.makeAjaxCall(function (response) {
+        console.log(response);
+        response = JSON.parse(response);
+        if (response.status === "success") {
+            infoSaveSuccessfull("success");
+        }
+    });
+}
+
 if (document.readyState !== 'loading' ) {
     document.getElementById("download_db").addEventListener("click", getFileName, false);
 } else {
