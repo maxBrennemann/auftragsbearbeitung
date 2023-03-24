@@ -5,6 +5,7 @@
  */
 require_once("classes/project/PrestaCommunicater.php");
 require_once("classes/project/StickerShopDBController.php");
+require_once("classes/project/modules/sticker/SearchProducts.php");
 
 class ProductCrawler extends PrestaCommunicater {
 
@@ -133,7 +134,7 @@ class ProductCrawler extends PrestaCommunicater {
             return null;
         DBAccess::updateQuery($query);
 
-        $matches = StickerShopDBController::matchProductByRefernce($id);
+        $matches = SearchProducts::getProductsByStickerId($id);
         $matchesJson = json_encode($matches, JSON_UNESCAPED_UNICODE);
         DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET additional_data = '$matchesJson' WHERE id = $id");
     }

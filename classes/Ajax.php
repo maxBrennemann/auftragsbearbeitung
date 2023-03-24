@@ -1156,13 +1156,6 @@ class Ajax {
 				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET price_class = $priceclass WHERE id = $id");
 				echo "ok";
 			break;
-			case "loadStickerStatus":
-				require_once('classes/project/StickerImage.php');
-				$id = (int) $_POST["id"];
-				$stickerImage = new StickerImage($id);
-
-				$stickerImage->updateProductStatus();
-			break;
 			case "resetStickerPrice":
 				$tableRowKey = $_POST["row"];
 				$table = $_POST["table"];

@@ -50,16 +50,6 @@ class StickerImage {
         $this->shopProducts = json_decode($data["additional_data"], true);
     }
 
-    /**
-     * updates product status and checks if products are in shop or not;
-     */
-    public function updateProductStatus() {
-        $matches = StickerShopDBController::matchProductByRefernce($this->id);
-        $matchesJson = json_encode($matches, JSON_UNESCAPED_UNICODE);
-        DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET additional_data = '$matchesJson' WHERE id = $this->id");
-        $this->shopProducts = $matches;
-    }
-
     public static function creatStickerImage() {
         $query = "";
         $id = DBAccess::insertQuery($query);

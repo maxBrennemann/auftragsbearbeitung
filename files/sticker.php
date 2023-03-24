@@ -116,9 +116,9 @@ if ($id != 0):
             </div>
             <div>
                 <h4>Kurzbeschreibung <button class="iconGenerate" title="Textvorschlag erstellen" data-binding="true" data-fun="textGeneration"><?=Icon::$iconGenerate?></button></h4>
-                <textarea class="data-input" data-fun="productDescription" data-target="1" data-type="short" data-write="true"><?=$stickerCollection->getAufkleber()->getDescriptionShort()?></textarea>
+                <textarea class="data-input" data-fun="productDescription" data-target="aufkleber" data-type="short" data-write="true"><?=$stickerCollection->getAufkleber()->getDescriptionShort()?></textarea>
                 <h4>Beschreibung</h4>
-                <textarea class="data-input" data-fun="productDescription" data-target="1" data-type= "long" data-write="true"><?=$stickerCollection->getAufkleber()->getDescription()?></textarea>
+                <textarea class="data-input" data-fun="productDescription" data-target="aufkleber" data-type= "long" data-write="true"><?=$stickerCollection->getAufkleber()->getDescription()?></textarea>
             </div>
             <div class="shopStatus">
                 <div class="shopStatusIcon" title="<?=$stickerCollection->getAufkleber()->isInShop() == 1 ? "Aufkleber ist im Shop" : "Aufkleber ist nicht im Shop" ?>">
@@ -162,9 +162,9 @@ if ($id != 0):
             </div>
             <div>
                 <h4>Kurzbeschreibung</h4>
-                <textarea class="data-input" data-fun="productDescription" data-target="2" data-type="short" data-write="true"><?=$stickerCollection->getWandtattoo()->getDescriptionShort()?></textarea>
+                <textarea class="data-input" data-fun="" data-target="wandtattoo" data-type="short" data-write="true"><?=$stickerCollection->getWandtattoo()->getDescriptionShort()?></textarea>
                 <h4>Beschreibung</h4>
-                <textarea class="data-input" data-fun="productDescription" data-target="2" data-type="long" data-write="true"><?=$stickerCollection->getWandtattoo()->getDescription()?></textarea>
+                <textarea class="data-input" data-fun="productDescription" data-target="wandtattoo" data-type="long" data-write="true"><?=$stickerCollection->getWandtattoo()->getDescription()?></textarea>
             </div>
             <div class="shopStatus">
                 <div class="shopStatusIcon" title="<?=$stickerCollection->getWandtattoo()->isInShop() == 1 ? "Wandtattoo ist im Shop" : "Wandtattoo ist nicht im Shop" ?>">
@@ -239,9 +239,9 @@ if ($id != 0):
             </div>
             <div>
                 <h4>Kurzbeschreibung</h4>
-                <textarea class="data-input" data-fun="productDescription" data-target="3" data-type="short" data-write="true"><?=$stickerCollection->getTextil()->getDescriptionShort()?></textarea>
+                <textarea class="data-input" data-fun="productDescription" data-target="textil" data-type="short" data-write="true"><?=$stickerCollection->getTextil()->getDescriptionShort()?></textarea>
                 <h4>Beschreibung</h4>
-                <textarea class="data-input" data-fun="productDescription" data-target="3" data-type="long" data-write="true"><?=$stickerCollection->getTextil()->getDescription()?></textarea>
+                <textarea class="data-input" data-fun="productDescription" data-target="textil" data-type="long" data-write="true"><?=$stickerCollection->getTextil()->getDescription()?></textarea>
             </div>
             <div class="shopStatus">
                 <div class="shopStatusIcon" title="<?=$stickerCollection->getTextil()->isInShop() == 1 ? "Textil ist im Shop" : "Textil ist nicht im Shop" ?>">
