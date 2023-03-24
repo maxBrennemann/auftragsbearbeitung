@@ -32,14 +32,6 @@ class Wandtattoo extends AufkleberWandtattoo {
         return parent::getShopLinkHelper(self::TYPE);
     }
 
-    public function getDescription(int $target = 2): String {
-        return parent::getDescription($target);
-    }
-
-    public function getDescriptionShort(int $target = 2): String {
-        return parent::getDescriptionShort($target);
-    }
-
 }
 
 ?>

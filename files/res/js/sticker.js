@@ -14,7 +14,6 @@ function initStickerOverview() {
     initSVG();
     initBindings();
     initTagManager();
-    loadStickerStatus();
     moveInit();
 
     var pk_dropdown = document.getElementById("preiskategorie_dropdown");
@@ -96,11 +95,6 @@ function initBindings() {
             }
         }.bind(fun_name), false);
     });
-}
-
-async function loadStickerStatus() {
-    var response = await send({id: mainVariables.motivId.innerHTML}, "loadStickerStatus");
-    //
 }
 
 async function click_toggleCheckbox(e) {

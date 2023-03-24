@@ -34,25 +34,18 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
     }
 
     public function getTagsHTML() {
-        $tagsHTML = "<dl class=\"tagList\">";
-
-        foreach ($this->tags as $tag) {
-            $id = $tag["id"];
-            $content = $tag["content"];
-            $tagsHTML .= "<dt>$content<span class=\"remove\" data-tag=\"$id\">x</span></dt>";
+        $queries = explode(" ", $this->title);
+        $suggestionTags = [];
+        foreach ($queries as $query) {
+            $tags = $this->getSynonyms($query);
+            $suggestions = array_slice($tags, 0, 3);
+            array_push($suggestionTags, ...$suggestions);
         }
 
-        foreach (explode(" ", $this->title) as $query) {
-            $tags = array_slice($this->getSynonyms($query), 0, 3);
-            if (count($tags) == 0) {
-               $tagsHTML .= "<p>Keine Tagvorschläge gefunden</p>"; 
-            }
-            foreach ($tags as $tag) {
-                $tagsHTML .= "<dt class=\"suggestionTag\">$tag<span class=\"remove\">x</span></dt>";
-            }
-        }
-
-        return $tagsHTML . "</dl>";
+        insertTemplate('classes/project/modules/sticker/views/showTagsView.php', [
+            "tags" => $this->tags,
+            "suggestionTags" => $suggestionTags,
+        ]);
     }
 
     public function getTagIds() {

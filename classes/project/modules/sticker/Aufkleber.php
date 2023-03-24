@@ -89,14 +89,6 @@ class Aufkleber extends AufkleberWandtattoo {
         return "";
     }
 
-    public function getDescription(int $target = 1): String {
-        return parent::getDescription($target);
-    }
-
-    public function getDescriptionShort(int $target = 1): String {
-        return parent::getDescriptionShort($target);
-    }
-
     public function getDescription2(int $target = 1): String {
         $descriptionEnd = parent::getDescription($target);
         $description = "<p><span>Es wird jeweils nur der entsprechende Artikel oder das einzelne Motiv verkauft. Andere auf den Bildern befindliche Dinge sind nicht Bestandteil des Angebotes.</span></p>";

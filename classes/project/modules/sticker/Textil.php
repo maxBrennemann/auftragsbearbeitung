@@ -65,14 +65,6 @@ class Textil extends Sticker {
         return parent::getShopLinkHelper(self::TYPE);
     }
 
-    public function getDescription(int $target = 3): String {
-        return parent::getDescription($target);
-    }
-
-    public function getDescriptionShort(int $target = 3): String {
-        return parent::getDescriptionShort($target);
-    }
-
     public function getPriceTextilFormatted() {
         $price = number_format($this->getPrice(), 2, ',', '') . "€";
         return $price;
@@ -227,7 +219,7 @@ class Textil extends Sticker {
         $this->uploadImages($images);
 
         $stickerTagManager = new StickerTagManager($this->getId());
-        $stickerTagManager->saveTags($this->getTags());
+        $stickerTagManager->saveTags($this->getIdProduct());
     }
 
 }
