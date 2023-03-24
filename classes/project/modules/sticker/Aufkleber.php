@@ -140,7 +140,7 @@ class Aufkleber extends AufkleberWandtattoo {
         parent::save();
 
         $stickerTagManager = new StickerTagManager($this->getId());
-        $stickerTagManager->saveTags($this->getTags());
+        $stickerTagManager->saveTags($this->getIdProduct());
 
         $stickerCombination = new StickerCombination($this);
         $stickerCombination->createCombinations();
@@ -178,7 +178,7 @@ class Aufkleber extends AufkleberWandtattoo {
      * wird diese erstellt
      */
     private function getSizeIds() {
-        $query = "SELECT `price`, `width`, (`width` / 1000) * (`height` / 1000) * 10) as `costs` FROM `module_sticker_sizes` WHERE `id_sticker` = :idSticker ORDER BY `width`";
+        $query = "SELECT `price`, `width`, ((`width` / 1000) * (`height` / 1000) * 10) as `costs` FROM `module_sticker_sizes` WHERE `id_sticker` = :idSticker ORDER BY `width`";
         $data = DBAccess::selectQuery($query, ["idSticker" => $this->getId()]);
 
         /* TODO: hardcoded idAttributeGroup entfernen */
@@ -255,8 +255,8 @@ class Aufkleber extends AufkleberWandtattoo {
         foreach ($data as &$d) {
             $d["width"] = str_replace(".", ",", ((int) $d["width"]) / 10) . "cm";
             $d["height"] = str_replace(".", ",", ((int) $d["height"]) / 10) . "cm";
-            $d["price"] = number_format($d["price"], 2, ',', '') . "€";
-            $d["costs"] = number_format($d["costs"], 2, ',', '') . "€";
+            $d["price"] = number_format((float) $d["price"], 2, ',', '') . "€";
+            $d["costs"] = number_format((float) $d["costs"], 2, ',', '') . "€";
         }
 
 		$t = new Table();

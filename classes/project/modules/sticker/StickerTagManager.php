@@ -151,7 +151,7 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
         }
     }
 
-    public function saveTags($productId) {
+    public function saveTags(int $productId) {
         $xml = $this->getXML("products/$productId");
         $product_reference = $xml->children()->children();
         unset($product_reference->manufacturer_name);
