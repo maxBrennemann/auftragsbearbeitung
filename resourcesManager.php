@@ -58,6 +58,13 @@ function get_css($script) {
 	header("Content-type: text/css");
 	$fileName = explode(".", $script);
 
+	/* quick workaround for font files accessed via css/font/ */
+	$font = checkFont($fileName);
+	if ($font != false) {
+		get_font($font);
+		return;
+	}
+
 	if ($fileName[0] == "tw") {
 		$file = file_get_contents(Link::getResourcesLink("min/t-style.min.css", "css", false));
 		echo $file;
@@ -80,6 +87,20 @@ function get_css($script) {
 	}
 
 	echo $file;
+}
+
+function checkFont($fileName) {
+	$len = count($fileName);
+	$last = $fileName[$len - 1];
+	
+	if ($last == "ttf") {
+		$names = explode("/", $fileName[0]);
+		$len = count($names);
+		$last = $names[$len - 1];
+		return $last . ".ttf";
+	}
+
+	return false;
 }
 
 function get_font($font) {
