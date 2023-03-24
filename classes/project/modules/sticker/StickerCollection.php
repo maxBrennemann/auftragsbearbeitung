@@ -1,6 +1,7 @@
 <?php
 
 require_once("classes/project/modules/sticker/Sticker.php");
+require_once("classes/project/modules/sticker/SearchProducts.php");
 require_once("classes/project/modules/sticker/Aufkleber.php");
 require_once("classes/project/modules/sticker/Wandtattoo.php");
 require_once("classes/project/modules/sticker/Textil.php");
@@ -15,6 +16,9 @@ class StickerCollection implements Iterator {
 
     private int $id;
     private Sticker $sticker;
+
+    private $productMatches;
+    private $displayError = false;
 
     function __construct(int $id) {
         $this->id = $id;
@@ -140,6 +144,33 @@ class StickerCollection implements Iterator {
     /* updates or uploads all products and writes connections */
     public function uploadAll() {
         // TODO: implement function
+    }
+
+    public function checkProductErrorStatus() {
+        $this->productMatches = SearchProducts::getProductsByStickerId($this->id);
+
+        if (count($this->productMatches["allLinks"]) > 3) {
+            $this->displayError = true;
+        }
+
+        $matchesJson = json_encode($this->productMatches, JSON_UNESCAPED_UNICODE);
+        DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET additional_data = :matchesJSON WHERE id = :idSticker", [
+            "matchesJSON" => $matchesJson,
+            "idSticker" => $this->id,
+        ]);
+
+        return $this->displayError;
+    }
+
+    public function getErrorMessage() {
+        $text = '<div class="defCont warning"><div class="warningHead">' . Icon::$iconWarning .'<span>Es wurden mehr als drei Produkte zu diesem Motiv gefunden!</span></div>';
+
+        $count = 1;
+        foreach ($this->productMatches["allLinks"] as $l) {
+            $text .= '<a target="_blank" href="$l">Produkt ' . $count++ . '</a>';
+        }
+
+        return $text . "</div>";
     }
 
 }

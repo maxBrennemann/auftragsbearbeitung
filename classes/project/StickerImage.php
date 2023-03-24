@@ -60,14 +60,6 @@ class StickerImage {
         $this->shopProducts = $matches;
     }
 
-    public function getProductStatus() {
-        $this->updateProductStatus();
-
-        if ($this->shopProducts["matches"] > 3) {
-            $this->displayError($this->shopProducts["allLinks"]);
-        }
-    }
-
     public static function creatStickerImage() {
         $query = "";
         $id = DBAccess::insertQuery($query);
@@ -89,21 +81,6 @@ class StickerImage {
 
     public function getId() {
         return $this->id;
-    }
-
-    public function displayError($links) {
-        $text = "<div class=\"defCont warning\"><div class=\"warningHead\"><svg style=\"width:24px;height:24px\" viewBox=\"0 0 24 24\">
-            <path fill=\"currentColor\" d=\"M23,12L20.56,9.22L20.9,5.54L17.29,4.72L15.4,1.54L12,3L8.6,1.54L6.71,4.72L3.1,5.53L3.44,9.21L1,12L3.44,14.78L3.1,18.47L6.71,19.29L8.6,22.47L12,21L15.4,22.46L17.29,19.28L20.9,18.46L20.56,14.78L23,12M13,17H11V15H13V17M13,13H11V7H13V13Z\" />
-        </svg><span>Es wurden mehr als drei Produkte zu diesem Motiv gefunden!</span></div>";
-
-        $count = 1;
-        foreach ($links as $l) {
-            $text .= "<a target=\"_blank\" href=\"$l\">Produkt $count</a>";
-            $count++;
-        }
-
-        $text .= "</div>";
-        echo $text;
     }
 
     public function setName($name) {

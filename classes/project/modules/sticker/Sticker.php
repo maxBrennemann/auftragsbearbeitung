@@ -2,6 +2,7 @@
 
 require_once('classes/project/modules/sticker/PrestashopConnection.php');
 require_once('classes/project/modules/sticker/StickerChangelog.php');
+require_once('classes/project/modules/sticker/StickerCombination.php');
 require_once('classes/project/modules/sticker/StickerImage.php');
 require_once('classes/project/modules/sticker/StickerTagManager.php');
 
@@ -28,8 +29,21 @@ class Sticker extends PrestashopConnection {
         }
         $this->stickerData = $this->stickerData[0];
         $this->additionalData = json_decode($this->stickerData["additional_data"], true);
+        $this->idProduct = $this->getIdProduct();
 
         $this->imageData = new StickerImage2($idSticker);
+    }
+
+    public function getIdProduct() {
+        if ($this instanceof Aufkleber) {
+            return (int) $this->additionalData["products"]["aufkleber"]["id"];
+        } else if ($this instanceof Wandtattoo) {
+            return (int) $this->additionalData["products"]["wandtattoo"]["id"];
+        } else if ($this instanceof Textil) {
+            return (int) $this->additionalData["products"]["textil"]["id"];
+        } else {
+            return -1;
+        }
     }
 
     public function getName(): String {
