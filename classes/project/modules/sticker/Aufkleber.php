@@ -26,6 +26,7 @@ class Aufkleber extends AufkleberWandtattoo {
 
     function __construct($idSticker) {
         parent::__construct($idSticker);
+        $this->instanceType = "aufkleber";
 
         /* is true, if sticker exists or is activated */
         $this->isPlotted = $this->stickerData["is_plotted"];
@@ -131,6 +132,7 @@ class Aufkleber extends AufkleberWandtattoo {
         // save parent
         parent::save();
 
+        die();
         $stickerTagManager = new StickerTagManager($this->getId());
         $stickerTagManager->saveTags($this->getIdProduct());
 

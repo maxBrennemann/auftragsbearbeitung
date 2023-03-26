@@ -38,6 +38,7 @@ class Textil extends Sticker {
 
     function __construct($idTextile) {
         parent::__construct($idTextile);
+        $this->instanceType = "textil";
 
         /* is true, if sticker exists or is activated */
         $this->isShirtcollection = (int) $this->stickerData["is_shirtcollection"];
