@@ -10,6 +10,7 @@ class Wandtattoo extends AufkleberWandtattoo {
 
     function __construct($idWaldecal) {
         parent::__construct($idWaldecal);
+        $this->instanceType = "wandtattoo";
 
         /* is true, if sticker exists or is activated */
         $this->isWalldecal = (int) $this->stickerData["is_walldecal"];
