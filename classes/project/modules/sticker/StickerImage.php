@@ -87,21 +87,21 @@ class StickerImage {
     public function getAufkleberImages() {
         return array_filter(
             $this->images,
-            fn($element) => $element["is_aufkleber"] === "1"
+            fn($element) => $element["is_aufkleber"] == "1"
         );
     }
 
     public function getWandtattooImages() {
         return array_filter(
             $this->images,
-            fn($element) => $element["is_wandtattoo"] === "1"
+            fn($element) => $element["is_wandtattoo"] == "1"
         );
     }
 
     public function getTextilImages() {
         return array_filter(
             $this->images,
-            fn($element) => $element["is_textil"] === "1"
+            fn($element) => $element["is_textil"] == "1"
         );
     }
 
