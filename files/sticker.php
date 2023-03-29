@@ -13,7 +13,7 @@ $stickerImage = null;
 if (isset($_GET['id'])) {
     $id = (int) $_GET['id'];
 
-    $stickerImage = new StickerImage2($id);
+    $stickerImage = new StickerImage($id);
     $stickerCollection = new StickerCollection($id);
     $stickerTagManager = new StickerTagManager($id, $stickerCollection->getName());
     $stickerChangelog = new StickerChangelog($id);
