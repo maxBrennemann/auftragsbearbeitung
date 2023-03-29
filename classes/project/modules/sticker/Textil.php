@@ -220,7 +220,7 @@ class Textil extends Sticker {
         $this->uploadImages($images);
 
         $stickerTagManager = new StickerTagManager($this->getId());
-        $stickerTagManager->saveTags($this->getIdProduct());
+        $stickerTagManager->saveTags();
     }
 
 }

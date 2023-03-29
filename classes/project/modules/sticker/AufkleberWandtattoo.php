@@ -22,6 +22,20 @@ class AufkleberWandtattoo extends Sticker {
         
         return $base;
     }
+
+    public function getBasePrice() {
+        parent::getBasePrice();
+
+        $query = "SELECT price FROM module_sticker_sizes WHERE id_sticker = :idSticker ORDER BY price ASC LIMIT 1;";
+        $params = ["idSticker" => $this->idSticker];
+        $result = DBAccess::selectQuery($query, $params);
+
+        if ($result == null) {
+            $result[] = ["price" => "1000"];
+        }
+        
+        return number_format((float) $result[0]["price"] / 100, 2, '.', '');
+    }
 }
 
 ?>

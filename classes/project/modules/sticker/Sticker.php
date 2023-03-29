@@ -5,6 +5,7 @@ require_once('classes/project/modules/sticker/StickerChangelog.php');
 require_once('classes/project/modules/sticker/StickerCombination.php');
 require_once('classes/project/modules/sticker/StickerImage.php');
 require_once('classes/project/modules/sticker/StickerTagManager.php');
+require_once('classes/project/modules/sticker/StickerUpload.php');
 
 /**
  * stellt allgemeine Stickerfunktionen zur Verfügung, ist die Elternklasse von
@@ -195,7 +196,7 @@ class Sticker extends PrestashopConnection {
         $productId = $this->getIdProduct();
 
         if ($productId == 0) {
-            //$this->create();
+            $this->create();
         } else {
             $this->update();
         }
@@ -264,8 +265,6 @@ class Sticker extends PrestashopConnection {
         $resource_product->{'show_price'} = 1;
         $resource_product->{'id_category_default'} = $this->getIdCategory();
         $resource_product->{'id_tax_rules_group'} = 8; /* Steuergruppennummer für DE 19% */
-        /* TODO: Preise anpassen */
-        //$resource_product->{'price'} = $this->getBasePrice(); /* an Steuer anpassen */
         $resource_product->{'active'} = 1;
         $resource_product->{'reference'} = $this->idSticker;
         $resource_product->{'visibility'} = 'both';

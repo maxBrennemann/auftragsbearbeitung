@@ -1,20 +1,21 @@
 <?php
 
 require_once('classes/project/modules/sticker/PrestashopConnection.php');
-require_once('classes/project/modules/sticker/StickerExport.php');
 require_once('classes/project/modules/sticker/StickerChangelog.php');
 require_once('classes/project/StickerImage.php');
 require_once('classes/project/modules/sticker/Sticker.php');
 
-class StickerTagManager extends PrestashopConnection implements StickerExport {
+class StickerTagManager extends PrestashopConnection {
 
     private $idSticker;
+    private $idProductReference;
     private $tags;
     private $title;
 
     function __construct(int $idSticker, String $title = "") {
         $query = "SELECT * FROM module_sticker_tags t JOIN module_sticker_sticker_tag st ON st.id_tag = t.id WHERE st.id_sticker = $idSticker";
         $this->tags = DBAccess::selectQuery($query);
+
         $this->idSticker = $idSticker;
 
         if ($title == "") {
@@ -22,6 +23,10 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
             $title = $sticker->getName();
         }
         $this->title = $title;
+    }
+
+    public function setProductId($idProductReference) {
+        $this->idProductReference = $idProductReference;
     }
 
     public function get() {
@@ -144,11 +149,13 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
         }
     }
 
-    public function saveTags(int $productId) {
-        $xml = $this->getXML("products/$productId");
+    public function saveTags() {
+        $xml = $this->getXML("products/$this->idProductReference");
         $product_reference = $xml->children()->children();
+
         unset($product_reference->manufacturer_name);
         unset($product_reference->quantity);
+
         $tags = $product_reference->{'associations'};
 
         $tagIds = [];
@@ -170,7 +177,7 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
         $opt = array(
             'resource' => 'products',
             'putXml' => $xml->asXML(),
-            'id' => $productId,
+            'id' => $this->idProductReference,
         );
         $this->editXML($opt);
     }
