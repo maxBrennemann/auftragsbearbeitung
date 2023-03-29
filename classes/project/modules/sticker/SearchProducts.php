@@ -15,21 +15,25 @@ class SearchProducts extends PrestashopConnection {
         
         foreach ($searchTypes as $search) {
             $url = "products/?display=[id,name,link_rewrite]&filter[$search]=%[$query]%";
-            $xml = $searchProduct->getXML($url);
+            try {
+                $xml = $searchProduct->getXML($url);
 
-            $productsReference = $xml->children()->children();
-            foreach ($productsReference as $product) {
-                $id = (int) $product->id;
-                $title = (String) $product->name->language[0];
-                $link = SHOPURL . "/home/$id-" . (String) $product->link_rewrite->language[0] . ".html";
-                if (!in_array($id, $ids)) {
-                    $products[] = [
-                        'id' => $id,
-                        'name' => $title,
-                        'link' => $link,
-                    ];
-                    $ids[] = $id;
+                $productsReference = $xml->children()->children();
+                foreach ($productsReference as $product) {
+                    $id = (int) $product->id;
+                    $title = (String) $product->name->language[0];
+                    $link = SHOPURL . "/home/$id-" . (String) $product->link_rewrite->language[0] . ".html";
+                    if (!in_array($id, $ids)) {
+                        $products[] = [
+                            'id' => $id,
+                            'name' => $title,
+                            'link' => $link,
+                        ];
+                        $ids[] = $id;
+                    }
                 }
+            } catch (PrestaShopWebserviceException $e) {
+                echo $e->getMessage();
             }
         }
 
@@ -38,44 +42,49 @@ class SearchProducts extends PrestashopConnection {
 
     public static function getProductsByStickerId($idSticker) {
         $searchProduct = new SearchProducts();
-        $xml = $searchProduct->getXML("products?filter[reference]=$idSticker");
-
         $productMatches = [];
-        $foundProducts = sizeof($xml->children()->children());
+        $foundProducts = 0;
         $productLinks = [];
 
-        foreach ($xml->children()->children() as $product) {
-            $categories = [];
-            $productId = (int) $product["id"];
-
-            $xmlProduct = $searchProduct->getXML("products/$productId");
-            $title = (String) $xmlProduct->children()->children()->name->language[0];
-            $link = SHOPURL . "/home/$productId-" . (String) $xmlProduct->children()->children()->link_rewrite->language[0] . ".html";
-            $categoriesXML = $xmlProduct->children()->children()->associations->categories->category;
-
-            array_push($productLinks, $link);
-
-            foreach ($categoriesXML as $category) {
-                array_push($categories, (int) $category->id);
+        try {
+            $xml = $searchProduct->getXML("products?filter[reference]=$idSticker");
+            $foundProducts = sizeof($xml->children()->children());
+           
+            foreach ($xml->children()->children() as $product) {
+                $categories = [];
+                $productId = (int) $product["id"];
+    
+                $xmlProduct = $searchProduct->getXML("products/$productId");
+                $title = (String) $xmlProduct->children()->children()->name->language[0];
+                $link = SHOPURL . "/home/$productId-" . (String) $xmlProduct->children()->children()->link_rewrite->language[0] . ".html";
+                $categoriesXML = $xmlProduct->children()->children()->associations->categories->category;
+    
+                array_push($productLinks, $link);
+    
+                foreach ($categoriesXML as $category) {
+                    array_push($categories, (int) $category->id);
+                }
+    
+                /*
+                 * TODO: hardcoded entfernen
+                 * Kategorie 25 ist die Textilkategorie, 
+                 * Kategorie ist die Wandtattookategorie,
+                 * Kategorie 13 ist die Aufkleberkategorie
+                 */
+                $title = htmlspecialchars($title);
+    
+                if (in_array(25, $categories)) {
+                    $productMatches["textil"] = ["id" => $productId, "title" => $title, "link" => $link];
+                } else if (in_array(62, $categories)) {
+                    $productMatches["wandtattoo"] = ["id" => $productId, "title" => $title, "link" => $link];
+                } else if (in_array(13, $categories)) {
+                    $productMatches["aufkleber"] = ["id" => $productId, "title" => $title, "link" => $link];
+                }
             }
-
-            /*
-             * TODO: hardcoded entfernen
-             * Kategorie 25 ist die Textilkategorie, 
-             * Kategorie ist die Wandtattookategorie,
-             * Kategorie 13 ist die Aufkleberkategorie
-             */
-            $title = htmlspecialchars($title);
-
-            if (in_array(25, $categories)) {
-                $productMatches["textil"] = ["id" => $productId, "title" => $title, "link" => $link];
-            } else if (in_array(62, $categories)) {
-                $productMatches["wandtattoo"] = ["id" => $productId, "title" => $title, "link" => $link];
-            } else if (in_array(13, $categories)) {
-                $productMatches["aufkleber"] = ["id" => $productId, "title" => $title, "link" => $link];
-            }
+        } catch (PrestaShopWebserviceException $e) {
+            echo $e->getMessage();
         }
-
+        
         return ["products" => $productMatches, "matches" => $foundProducts, "allLinks" => $productLinks];
     }
 

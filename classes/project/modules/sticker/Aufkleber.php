@@ -90,8 +90,8 @@ class Aufkleber extends AufkleberWandtattoo {
         return "";
     }
 
-    public function getDescription2(int $target = 1): String {
-        $descriptionEnd = parent::getDescription($target);
+    private function getDescriptionWithDefaultText(): String {
+        $descriptionEnd = $this->getDescription();
         $description = "<p><span>Es wird jeweils nur der entsprechende Artikel oder das einzelne Motiv verkauft. Andere auf den Bildern befindliche Dinge sind nicht Bestandteil des Angebotes.</span></p>";
 
         /* choose text by sticker type */
@@ -112,8 +112,8 @@ class Aufkleber extends AufkleberWandtattoo {
         return $description;
     }
 
-    public function getDescriptionShort2(int $target = 1): String {
-        return $this->getSizeTableFormatted() . parent::getDescriptionShort($target);
+    private function getDescriptionShortWithDefaultText(): String {
+        return $this->getSizeTableFormatted() . $this->getDescriptionShort();
     }
 
     public function getPricesMatched() {
@@ -124,17 +124,18 @@ class Aufkleber extends AufkleberWandtattoo {
         return $this->buyingPrices;
     }
 
-    public function create($param1 = "", $param2 = "") {
-        parent::create($this->getDescription(), $this->getDescriptionShort());
-    }
-
     public function save() {
-        // save parent
-        parent::save();
+        $productId = (int) $this->getIdProduct();
 
-        die();
-        $stickerTagManager = new StickerTagManager($this->getId());
-        $stickerTagManager->saveTags($this->getIdProduct());
+        if ($productId == 0) {
+            $this->idProduct = StickerUpload::createSticker($this->idSticker, $this->getName(), $this->getBasePrice(), $this->getDescriptionWithDefaultText(), $this->getDescriptionShortWithDefaultText());
+        } else {
+            StickerUpload::updateSticker($this->idSticker, $productId, $this->getName(), $this->getBasePrice(), $this->getDescriptionWithDefaultText(), $this->getDescriptionShortWithDefaultText());
+        }
+        
+        $stickerTagManager = new StickerTagManager($this->getId(), $this->getName());
+        $stickerTagManager->setProductId($this->idProduct);
+        $stickerTagManager->saveTags();
 
         $stickerCombination = new StickerCombination($this);
         $stickerCombination->createCombinations();
@@ -249,8 +250,8 @@ class Aufkleber extends AufkleberWandtattoo {
         foreach ($data as &$d) {
             $d["width"] = str_replace(".", ",", ((int) $d["width"]) / 10) . "cm";
             $d["height"] = str_replace(".", ",", ((int) $d["height"]) / 10) . "cm";
-            $d["price"] = number_format((float) $d["price"], 2, ',', '') . "€";
-            $d["costs"] = number_format((float) $d["costs"], 2, ',', '') . "€";
+            $d["price"] = number_format((float) $d["price"] / 100, 2, ',', '') . "€";
+            $d["costs"] = number_format((float) $d["costs"] / 100, 2, ',', '') . "€";
         }
 
 		$t = new Table();
