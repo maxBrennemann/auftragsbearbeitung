@@ -2,7 +2,6 @@
 
 require_once('classes/project/modules/sticker/PrestashopConnection.php');
 require_once('classes/project/modules/sticker/StickerChangelog.php');
-require_once('classes/project/StickerImage.php');
 require_once('classes/project/modules/sticker/Sticker.php');
 
 class StickerTagManager extends PrestashopConnection {
@@ -19,7 +18,7 @@ class StickerTagManager extends PrestashopConnection {
         $this->idSticker = $idSticker;
 
         if ($title == "") {
-            $sticker = new StickerImage($idSticker);
+            $sticker = new Sticker($idSticker);
             $title = $sticker->getName();
         }
         $this->title = $title;

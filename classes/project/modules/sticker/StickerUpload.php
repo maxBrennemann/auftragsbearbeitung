@@ -4,38 +4,42 @@ class StickerUpload extends PrestashopConnection {
 
     private $idSticker;
     private $idProduct;
+    private $idCategoryPrimary = 2;
     private $title;
-    private $idCategory;
     private $basePrice;
     private $description;
     private $descriptionShort;
+    private $categories;
 
-    function __construct() {
-
+    function __construct($idSticker, $title, $basePrice, $description, $descriptionShort) {
+        $this->idSticker = $idSticker;
+        $this->title = $title;
+        $this->basePrice = $basePrice;
+        $this->description = $description;
+        $this->descriptionShort = $descriptionShort;
     }
 
-    public static function createSticker($idSticker, $title, $basePrice, $description, $descriptionShort) {
-        $uploader = new StickerUpload();
-        $uploader->idSticker = $idSticker;
-        $uploader->title = $title;
-        $uploader->basePrice = $basePrice;
-        $uploader->description = $description;
-        $uploader->descriptionShort = $descriptionShort;
-
-        $uploader->create();
-        return $uploader->idProduct;
+    public function setIdProduct($idProduct) {
+        $this->idProduct = $idProduct;
     }
 
-    public static function updateSticker($idSticker, $idProduct, $title, $basePrice, $description, $descriptionShort) {
-        $uploader = new StickerUpload();
-        $uploader->idSticker = $idSticker;
-        $uploader->idProduct = $idProduct;
-        $uploader->title = $title;
-        $uploader->basePrice = $basePrice;
-        $uploader->description = $description;
-        $uploader->descriptionShort = $descriptionShort;
+    public function setIdCategoryPrimary($idCategoryPrimary) {
+        $this->idCategoryPrimary = $idCategoryPrimary;
+    }
 
-        $uploader->update();
+    public function setCategoires($categories) {
+        $this->categories = $categories;
+        $this->setCategory();
+    }
+
+    public function createSticker() {
+        $this->create();
+        return $this->idProduct;
+    }
+
+    public function updateSticker($idProduct) {
+        $this->setIdProduct($idProduct);
+        $this->update();
     }
 
     private function update() {
@@ -70,12 +74,10 @@ class StickerUpload extends PrestashopConnection {
         } catch(PrestaShopWebserviceException $e) {
             echo $e->getMessage();
         }
-
-        $this->setCategory();
     }
 
     /* https://www.prestashop.com/forums/topic/640693-how-to-add-a-product-through-the-webservice-with-custom-feature-values/#comment-2663527 */
-    private function manipulateProductXML(&$xml, $idCategory = 2) {
+    private function manipulateProductXML(&$xml) {
         $resource_product = $xml->children()->children();
 
         /* unset unused paramters */
@@ -97,7 +99,7 @@ class StickerUpload extends PrestashopConnection {
         $resource_product->{'minimal_quantity'} = 1;
         $resource_product->{'available_for_order'} = 1;
         $resource_product->{'show_price'} = 1;
-        $resource_product->{'id_category_default'} = $idCategory;
+        $resource_product->{'id_category_default'} = $this->idCategoryPrimary;
         $resource_product->{'id_tax_rules_group'} = 8; /* Steuergruppennummer für DE 19% */
         $resource_product->{'price'} = number_format(($this->basePrice) / 1.19, 2);
         $resource_product->{'active'} = 1;
@@ -109,7 +111,7 @@ class StickerUpload extends PrestashopConnection {
         $resource_product->{'state'} = 1;
     }
 
-    public function setCategory($id_category = 2, $unset = false) {
+    private function setCategory($unset = false) {
         try {
             $xml = $this->getXML("products/" . $this->idProduct);
             $product = $xml->children()->children();
@@ -127,14 +129,9 @@ class StickerUpload extends PrestashopConnection {
 
             $categories = $product->associations->addChild('categories');
 
-            if (is_array($id_category)) {
-                foreach ($id_category as $id) {
-                    $category = $categories->addChild("category");
-                    $category->addChild("id", $id);
-                }
-            } else {
+            foreach ($this->categories as $id) {
                 $category = $categories->addChild("category");
-                $category->addChild("id", $id_category);
+                $category->addChild("id", $id);
             }
 
             $opt = array(

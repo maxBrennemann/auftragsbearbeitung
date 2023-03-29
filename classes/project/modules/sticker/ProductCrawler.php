@@ -3,11 +3,9 @@
 /*
  * TODO: nginx is still buffering, these headers do not affect it
  */
-require_once("classes/project/PrestaCommunicater.php");
-require_once("classes/project/StickerShopDBController.php");
 require_once("classes/project/modules/sticker/SearchProducts.php");
 
-class ProductCrawler extends PrestaCommunicater {
+class ProductCrawler extends PrestashopConnection {
 
     /**
      * alle produkte durchgehen
@@ -148,7 +146,7 @@ class ProductCrawler extends PrestaCommunicater {
             $imageId = (int) $image->id;
             $productId = (int) $productData->id;
             $motivId = (int) $productData->reference;
-            $apiKey = $this->apiKey;
+            $apiKey = SHOPKEY;
             $url = SHOPURL . "api/images/products/$productId/$imageId";
 
             $ch = curl_init ($url);
