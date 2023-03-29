@@ -1,6 +1,5 @@
 <?php
-require_once('classes/project/ProductCrawler.php');
-require_once('classes/project/StickerShopDBController.php');
+require_once('classes/project/modules/sticker/ProductCrawler.php');
 
 $query = "SELECT id, `name`, directory_name, IF(is_plotted = 1, '✓', 'X') AS is_plotted, IF(is_short_time = 1, '✓', 'X') AS is_short_time, IF(is_long_time = 1, '✓', 'X') AS is_long_time, IF(is_multipart = 1, '✓', 'X') AS is_multipart, IF(is_walldecal = 1, '✓', 'X') AS is_walldecal, IF(is_shirtcollection = 1, '✓', 'X') AS is_shirtcollection, IF(is_revised = 1, '✓', '') AS is_revised, IF(is_marked = 1, '★', '') AS is_marked FROM `module_sticker_sticker_data`";
 $data = DBAccess::selectQuery($query);

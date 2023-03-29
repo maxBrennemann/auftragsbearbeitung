@@ -1126,6 +1126,7 @@ class Ajax {
 			case "makeSVGColorable":
 				$id = (int) $_POST["id"];
 
+				require_once('classes/project/modules/sticker/Textil.php');
 				$textil = new Textil($id);
 				$textil->toggleIsColorable();
 				echo $textil->getCurrentSVG();
@@ -1153,7 +1154,7 @@ class Ajax {
 				$priceclass = (int) $_POST["priceclass"];
 				$id = (int) $_POST["id"];
 
-				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET price_class = $priceclass WHERE id = $id");
+				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET price_class = :priceClass WHERE id = :id", ["priceClass" => $priceclass, "id" => $id]);
 				echo "ok";
 			break;
 			case "resetStickerPrice":
@@ -1162,22 +1163,24 @@ class Ajax {
 				$id = (int) $_POST["id"];
 
 				$postenNummer = Table::getIdentifierValue($table, $tableRowKey);
-				DBAccess::updateQuery("UPDATE module_sticker_sizes SET price = NULL WHERE id = $postenNummer");
 				$size = DBAccess::selectQuery("SELECT width, height FROM module_sticker_sizes WHERE id = $postenNummer LIMIT 1");
-
-				require_once('classes/project/StickerImage.php');
-				$stickerImage = new StickerImage($id);
 				$width = $size[0]["width"];
 				$height = $size[0]["height"];
-				$difficulty = $stickerImage->data["price_class"];
-				echo $stickerImage->getPrice($width, $height, $difficulty);
+
+				require_once('classes/project/modules/sticker/AufkleberWandtattoo.php');
+				$aufkleberWandtatto = new AufkleberWandtattoo($id);
+				$difficulty = $aufkleberWandtatto->getDifficulty();
+				$price = $aufkleberWandtatto->getPrice($width, $height, $difficulty);
+
+				DBAccess::updateQuery("UPDATE module_sticker_sizes SET price = '$price' WHERE id = $postenNummer");
+				echo $price;
 			break;
 			case "setAufkleberParameter":
-				require_once('classes/project/StickerImage.php');
+				require_once('classes/project/modules/sticker/Aufkleber.php');
 				$id = (int) $_POST["id"];
 				$data = $_POST["json"];
-				$stickerImage = new StickerImage($id);
-				$stickerImage->saveSentData($data);
+				$aufkleber = new Aufkleber($id);
+				$aufkleber->saveSentData($data);
 			break;
 			case "setAufkleberTitle":
 				require_once('classes/project/modules/sticker/Sticker.php');
@@ -1193,24 +1196,24 @@ class Ajax {
 			case "setAufkleberGroessen":
 				$data = json_decode($_POST["json"], true);
 
-				require_once('classes/project/StickerImage.php');
+				require_once('classes/project/modules/sticker/AufkleberWandtattoo.php');
 				$id = (int) $data["id"];
-				$stickerImage = new StickerImage($id);
+				$aufkleberWandtatto = new AufkleberWandtattoo($id);
 				foreach ($data["sizes"] as $size) {
-					$stickerImage->updateSizeTable($size);
+					$aufkleberWandtatto->updateSizeTable($size);
 				}
 				$text = $data["text"];
 				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET size_summary = '$text' WHERE id = $id");
 			break;
 			case "updateSpecificPrice":
-				require_once('classes/project/StickerImage.php');
 				$id = (int) $_POST["id"];
 				$width = (int) $_POST["width"];
 				$height = (int) $_POST["height"];
 				$price = (int) $_POST["price"];
 
-				$stickerImage = new StickerImage($id);
-				$stickerImage->updatePrice($width, $height, $price);
+				require_once('classes/project/modules/sticker/AufkleberWandtattoo.php');
+				$aufkleberWandtatto = new AufkleberWandtattoo($id);
+				$aufkleberWandtatto->updatePrice($width, $height, $price);
 				echo "success";
 			break;
 			case "productVisibility":
@@ -1249,13 +1252,8 @@ class Ajax {
 					"idTagGroup" => $idTagGroup,
 				]);
 			break;
-			case "changeImageParameters":
-				require_once('classes/project/StickerImage.php');
-				StickerImage::updateImageStatus();
-				echo "success";
-			break;
 			case "crawlAll":
-				require_once('classes/project/ProductCrawler.php');
+				require_once('classes/project/modules/stickerProductCrawler.php');
 				$pc = new ProductCrawler();
 				$pc->crawlAll();
 			break;

@@ -21,6 +21,10 @@ class Wandtattoo extends AufkleberWandtattoo {
         return parent::checkIsInShop(self::TYPE);
     }
 
+    public function getName(): String {
+        return "Wandtattoo " . parent::getName();
+    }
+
     public function getIsWalldecal() {
         return $this->isWalldecal;
     }
@@ -31,6 +35,31 @@ class Wandtattoo extends AufkleberWandtattoo {
 
     public function getShopLink() {
         return parent::getShopLinkHelper(self::TYPE);
+    }
+
+    public function save() {
+        $productId = (int) $this->getIdProduct();
+        $stickerUpload = new StickerUpload($this->idSticker, $this->getName(), $this->getBasePrice(), $this->getDescription(), $this->getDescriptionShortWithDefaultText());
+
+        if ($productId == 0) {
+            $stickerUpload->createSticker();
+        } else {
+            $stickerUpload->updateSticker($productId);
+        }
+        $stickerUpload->setCategoires([2, 62, 13]);
+        
+        $stickerTagManager = new StickerTagManager($this->getId(), $this->getName());
+        $stickerTagManager->setProductId($this->idProduct);
+        $stickerTagManager->saveTags();
+
+        $stickerCombination = new StickerCombination($this);
+        $stickerCombination->createCombinations();
+        
+        $this->connectAccessoires();
+    }
+
+    public function getAttributes() {
+        return [$this->getSizeIds()];
     }
 
 }

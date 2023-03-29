@@ -100,6 +100,31 @@ class StickerImage2 {
         );
     }
 
+    public function resizeImage($file) {
+        list($width, $height) = getimagesize("upload/" . $file["dateiname"]);
+        /* width and height do not matter any longer, images are only resized if filesize exeeds 2MB */
+        if (filesize("upload/" . $file["dateiname"]) >= 2000000) {
+            switch ($file["typ"]) {
+                case "jpg":
+                    if (function_exists("imagecreatefromjpeg")) {
+                        $image = imagecreatefromjpeg("upload/" . $file["dateiname"]);
+                        $imgResized = imagescale($image , 700, 700 * ($height / $width));
+                        imagejpeg($imgResized, "upload/" . $file["dateiname"]);
+                    }
+                    break;
+                case "png":
+                    if (function_exists("imagecreatefrompng")) {
+                        $image = imagecreatefrompng("upload/" . $file["dateiname"]);
+                        $imgResized = imagescale($image , 700, 700 * ($height / $width));
+                        imagepng($imgResized, "upload/" . $file["dateiname"]);
+                    }
+                    break;
+                default:
+                    return;
+            }
+        }
+    }
+
 }
 
 ?>
