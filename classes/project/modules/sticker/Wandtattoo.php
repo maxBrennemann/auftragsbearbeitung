@@ -56,6 +56,9 @@ class Wandtattoo extends AufkleberWandtattoo {
         $stickerCombination->createCombinations();
         
         $this->connectAccessoires();
+
+        $images = $this->imageData->getTextilImages();
+        $this->uploadImages($images);
     }
 
     public function getAttributes() {

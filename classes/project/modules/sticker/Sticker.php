@@ -33,7 +33,7 @@ class Sticker extends PrestashopConnection {
         $this->stickerData = $this->stickerData[0];
         $this->additionalData = json_decode($this->stickerData["additional_data"], true);
 
-        $this->imageData = new StickerImage2($idSticker);
+        $this->imageData = new StickerImage($idSticker);
 
         $this->instanceType = "sticker";
     }
@@ -188,91 +188,7 @@ class Sticker extends PrestashopConnection {
         echo "success";
     }
 
-    /**
-     * If a product for that sticker id already exists, the function calls the update function,
-     * otherwise the create function is triggered
-     */
-    public function save() {
-        $productId = $this->getIdProduct();
-
-        if ($productId == 0) {
-            $this->create();
-        } else {
-            $this->update();
-        }
-    }
-
-    /*
-     * TODO: unterscheide zwischen update und create via exists in shop
-     */
-    public function update() {
-        try {
-            $xml = $this->getXML("products/" . $this->getIdProduct(), true);
-            $this->manipulateProductXML($xml);
-            $resource_product = $xml->children()->children();
-            $resource_product->{"id"} = $this->getIdProduct();
-
-            var_dump($this->getIdProduct());
-
-            $opt = array(
-                'resource' => 'products',
-                'putXml' => $xml->asXML(),
-                'id' => $this->getIdProduct(),
-            );
-            $this->editXML($opt);
-        } catch (PrestaShopWebserviceException $e) {
-            echo $e->getMessage();
-        }
-    }
-
-    public function create() {
-        try {
-            $xml = $this->getXML('products?schema=blank');
-            $this->manipulateProductXML($xml);
-
-            $opt = array(
-                'resource' => 'products',
-                'postXml' => $xml->asXML(),
-            );
-            $this->addXML($opt);
-            $this->idProduct = $this->xml->product->id;
-        } catch(PrestaShopWebserviceException $e) {
-            echo $e->getMessage();
-        }
-    }
-
-    protected function manipulateProductXML(&$xml) {
-        $resource_product = $xml->children()->children();
-
-        /* unset unused paramters */
-        unset($resource_product->id);
-        unset($resource_product->position_in_category);
-        unset($resource_product->manufacturer_name);
-        unset($resource_product->id_default_combination);
-        unset($resource_product->associations);
-        unset($resource_product->associations->categories);
-        unset($resource_product->associations->images);
-        unset($resource_product->associations->combinations);
-        unset($resource_product->associations->product_option_values);
-        unset($resource_product->associations->stock_availables);
-        unset($resource_product->quantity);
-        unset($resource_product->position_in_category);
-        
-        /* set necessary parameters */
-        $resource_product->{'id_shop'} = 1;
-        $resource_product->{'minimal_quantity'} = 1;
-        $resource_product->{'available_for_order'} = 1;
-        $resource_product->{'show_price'} = 1;
-        $resource_product->{'id_category_default'} = $this->getIdCategory();
-        $resource_product->{'id_tax_rules_group'} = 8; /* Steuergruppennummer für DE 19% */
-        $resource_product->{'active'} = 1;
-        $resource_product->{'reference'} = $this->idSticker;
-        $resource_product->{'visibility'} = 'both';
-        $resource_product->{'name'}->language[0] = $this->getName();
-        $resource_product->{'description'}->language[0] = $this->getDescription();
-        $resource_product->{'description_short'}->language[0] = $this->getDescriptionShort();
-        $resource_product->{'state'} = 1;
-    }
+    public function save() {}
 
     public function createCombinations() {
 

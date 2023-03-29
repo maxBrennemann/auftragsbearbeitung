@@ -1,6 +1,6 @@
 <?php
 
-class StickerImage2 {
+class StickerImage {
     
     private $idMotiv;
 
@@ -37,6 +37,28 @@ class StickerImage2 {
 
     public function getFiles() {
         return $this->files;
+    }
+
+    public function getImages() {
+        foreach ($this->images as &$image) {
+            $image["link"] = Link::getResourcesShortLink($image["dateiname"], "upload");
+            $image["title"] = "product image";
+        }
+
+        if (sizeof($this->images) == 0) {
+            $this->images = [
+                0 => [
+                    "id" => 0,
+                    "title" => "default image",
+                    "alt" => "default image",
+                    "link" => Link::getResourcesShortLink("default_image.png", "img"),
+                    "dateiname" => "Standardbild",
+                    "typ" => "png",
+                ],
+            ];
+        }
+
+        return $this->images;
     }
 
     public function getSVGIfExists() {
