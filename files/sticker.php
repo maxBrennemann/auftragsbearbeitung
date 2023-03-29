@@ -24,6 +24,7 @@ if ($id != 0):
     <script src="<?=Link::getResourcesShortLink("sticker/productConnector.js", "js")?>"></script>
     <script src="<?=Link::getResourcesShortLink("sticker/tagManager.js", "js")?>"></script>
     <script src="<?=Link::getResourcesShortLink("sticker/imageManager.js", "js")?>"></script>
+    <script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
     <?=$stickerCollection->checkProductErrorStatus() ? $stickerCollection->getErrorMessage() : ""?>
     <div class="defCont cont1">
         <div>
