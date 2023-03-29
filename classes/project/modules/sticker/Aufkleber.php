@@ -87,7 +87,8 @@ class Aufkleber extends AufkleberWandtattoo {
     }
 
     public function getSizeTableFormatted() {
-        return "";
+        // TODO: eventuell size_summary im BO generieren oder direkt die Tabelle exportieren
+        return $this->stickerData["size_summary"];
     }
 
     private function getDescriptionWithDefaultText(): String {
@@ -160,7 +161,7 @@ class Aufkleber extends AufkleberWandtattoo {
          * fügt ids der id_attribute_group 6 (Farbe) zurück, also alle benötigten Farben für die Aufkleber,
          * kann später durch eine Auswahloption ergänzt oder ersetzt werden, selbes TODO wie oben;
          */
-        if ($this->getIsMultipart()) {
+        if (!$this->getIsMultipart()) {
             $attributes[] = [70, 60, 67, 79, 91, 107, 111];
         }
 
@@ -187,7 +188,7 @@ class Aufkleber extends AufkleberWandtattoo {
             $sizeId = (int) $this->addAttribute($idAttributeGroup, $singleSizeInCm);
             $sizeIds[] = $sizeId;
 
-            $prices[$sizeId] = $d["price"];
+            $prices[$sizeId] = number_format(($d["price"] / 100 - $this->getBasePrice()) / 1.19, 2);
             $buyingPrices[$sizeId] = $d["costs"];
         }
 

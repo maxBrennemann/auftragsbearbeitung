@@ -112,30 +112,41 @@ class StickerTagManager extends PrestashopConnection {
     private function getTagIdFromShop($tag): int {
         /* check if tag exists */
         $tagEncoded = str_replace(" ", "+", $tag);
-        $xml = $this->getXML("tags?filter[name]=$tagEncoded&limit=1");
 
-        $resources = $xml->children()->children();
-        if (!empty($resources)) {
-            return (int) $resources->tag->attributes()->id;
+        try {
+            $xml = $this->getXML("tags?filter[name]=$tagEncoded&limit=1");
+            $resources = $xml->children()->children();
+
+            if (!empty($resources)) {
+                return (int) $resources->tag->attributes()->id;
+            }
+        } catch (PrestaShopWebserviceException $e) {
+            echo $e->getMessage();
+        }
+
+        try {
+            /* add a new tag */
+            $xml = $this->getXML("tags?schema=synopsis");
+            $resources = $xml->children()->children();
+
+            unset($resources->id);
+            $resources->{'name'} = $tag;
+            /* language_id for de is 1 */
+            $resources->{'id_lang'} = 1;
+
+            $opt = array(
+                'resource' => 'tags',
+                'postXml' => $xml->asXML()
+            );
+            
+            $this->addXML($opt);
+            $id = $this->xml->tag->id;
+            return (int) $id;
+        } catch (PrestaShopWebserviceException $e) {
+            echo $e->getMessage();
         }
     
-        /* add a new tag */
-        $xml = $this->getXML("tags?schema=synopsis");
-        $resources = $xml->children()->children();
-    
-        unset($resources->id);
-        $resources->{'name'} = $tag;
-        /* language_id for de is 1 */
-        $resources->{'id_lang'} = 1;
-    
-        $opt = array(
-            'resource' => 'tags',
-            'postXml' => $xml->asXML()
-        );
-
-        $this->addXML($opt);
-        $id = $this->xml->product->id;
-        return (int) $id;
+        return -1;
     }
 
     /**
