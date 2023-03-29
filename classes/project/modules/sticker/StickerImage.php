@@ -1,6 +1,6 @@
 <?php
 
-class StickerImage2 {
+class StickerImage {
     
     private $idMotiv;
 
@@ -37,6 +37,28 @@ class StickerImage2 {
 
     public function getFiles() {
         return $this->files;
+    }
+
+    public function getImages() {
+        foreach ($this->images as &$image) {
+            $image["link"] = Link::getResourcesShortLink($image["dateiname"], "upload");
+            $image["title"] = "product image";
+        }
+
+        if (sizeof($this->images) == 0) {
+            $this->images = [
+                0 => [
+                    "id" => 0,
+                    "title" => "default image",
+                    "alt" => "default image",
+                    "link" => Link::getResourcesShortLink("default_image.png", "img"),
+                    "dateiname" => "Standardbild",
+                    "typ" => "png",
+                ],
+            ];
+        }
+
+        return $this->images;
     }
 
     public function getSVGIfExists() {
@@ -98,6 +120,31 @@ class StickerImage2 {
             $this->images,
             fn($element) => $element["is_aufkleber"] != "1" && $element["is_wandtattoo"] != "1" && $element["is_textil"] != "1"
         );
+    }
+
+    public function resizeImage($file) {
+        list($width, $height) = getimagesize("upload/" . $file["dateiname"]);
+        /* width and height do not matter any longer, images are only resized if filesize exeeds 2MB */
+        if (filesize("upload/" . $file["dateiname"]) >= 2000000) {
+            switch ($file["typ"]) {
+                case "jpg":
+                    if (function_exists("imagecreatefromjpeg")) {
+                        $image = imagecreatefromjpeg("upload/" . $file["dateiname"]);
+                        $imgResized = imagescale($image , 700, 700 * ($height / $width));
+                        imagejpeg($imgResized, "upload/" . $file["dateiname"]);
+                    }
+                    break;
+                case "png":
+                    if (function_exists("imagecreatefrompng")) {
+                        $image = imagecreatefrompng("upload/" . $file["dateiname"]);
+                        $imgResized = imagescale($image , 700, 700 * ($height / $width));
+                        imagepng($imgResized, "upload/" . $file["dateiname"]);
+                    }
+                    break;
+                default:
+                    return;
+            }
+        }
     }
 
 }

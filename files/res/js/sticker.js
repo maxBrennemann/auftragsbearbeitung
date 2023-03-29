@@ -403,30 +403,6 @@ function changeImage(e) {
     document.getElementById("textilbild").checked = e.target.dataset.isTextil == 0 ? false : true;
 }
 
-/*
- * TODO: image parameters als init methode mit json object
- */
-async function changeImageParameters(e) {
-    var main = document.querySelector(".imageBig");
-    var is_aufkleber = document.getElementById("aufkleberbild").checked == true ? 1 : 0;
-    var is_wandtatto = document.getElementById("wandtattoobild").checked == true ? 1 : 0;
-    var is_textil = document.getElementById("textilbild").checked == true ? 1 : 0;
-
-    var data = {
-        is_aufkleber: is_aufkleber,
-        is_wandtatto: is_wandtatto,
-        is_textil: is_textil,
-        id_image: main.dataset.imageId,
-    }
-    var response = await send(data, "changeImageParameters");
-    if (response == "success") {
-        infoSaveSuccessfull("success");
-    } else {
-        console.log(response);
-        infoSaveSuccessfull();
-    }
-}
-
 function insertNewlyUploadedImages(json) {
     let imageContainer = document.getElementsByClassName("imageContainer")[0];
 
@@ -448,83 +424,6 @@ function insertNewlyUploadedImages(json) {
 
         console.log("test");
     }
-}
-
-class ImageManager {
-    constructor() {
-        /* ordered lists */
-        this.imagesA = [];
-        this.imagesW = [];
-        this.imagesT = [];
-
-        /* all images */
-        this.images = [];
-        this.mainImage;
-
-        this.mainImageHTML;
-    }
-
-    /* TODO: image order */
-    orderImages() {
-        for (let i = 0; i < this.images.length; i++) {
-            if (images) {
-
-            }
-        }
-    }
-
-    changeImage(changeTo) {
-        this.mainImage = changeTo;
-
-        /* set image data */
-        this.mainImageHTML.src = this.mainImage.src;
-        this.mainImageHTML.title = this.mainImage.title;
-        this.mainImageHTML.alt = this.mainImage.alt;
-        this.mainImageHTML.dataset.imageId = this.mainImageid;
-    }
-
-    swap(image, position, type) {
-
-    }
-
-    delte() {
-
-    }
-}
-
-class Image {
-    constructor(image) {
-        this.id = parseInt(image.dataset.imageId);
-        this.isA = parseInt(image.dataset.isAufkleber);
-        this.isW = parseInt(image.dataset.isWandtattoo);
-        this.isT = parseInt(image.dataset.isTextil);
-        this.node = image;
-        this.src = image.src;
-        this.title = image.title;
-        this.alt = image.alt;
-    }
-
-    clickImage() {
-        mainVariables.imageManager.changeImage(this);
-    }
-}
-
-function readImageParameters() {
-    let images = document.getElementsByClassName("imagePrev");
-    mainVariables.imageManger = new ImageManager();
-    if (images != null) {
-        mainVariables.images = {};
-
-        /* https://stackoverflow.com/questions/3871547/iterating-over-result-of-getelementsbyclassname-using-array-foreach */
-        Array.prototype.forEach.call(images, function(image) {
-            let id = parseInt(image.dataset.imageId);
-            let imageObj = new Image(image);
-            image.addEventListener("click", imageObj.clickImage, false);
-            mainVariables.images[id] = imageObj;
-        });
-    }
-
-    console.log(mainVariables.images);
 }
 
 /** calculates material prices */
@@ -614,7 +513,7 @@ class SizeRow {
 var sizes = [];
 
 /**
- * changes the price class, adds 1€ in price
+ * changes the price class for Aufkleber and Wandtattoo, adds 1€ in price
  * @param {*} e 
  */
 async function changePriceclass(e) {

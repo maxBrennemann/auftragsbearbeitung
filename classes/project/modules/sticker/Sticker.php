@@ -5,6 +5,7 @@ require_once('classes/project/modules/sticker/StickerChangelog.php');
 require_once('classes/project/modules/sticker/StickerCombination.php');
 require_once('classes/project/modules/sticker/StickerImage.php');
 require_once('classes/project/modules/sticker/StickerTagManager.php');
+require_once('classes/project/modules/sticker/StickerUpload.php');
 
 /**
  * stellt allgemeine Stickerfunktionen zur Verfügung, ist die Elternklasse von
@@ -21,6 +22,8 @@ class Sticker extends PrestashopConnection {
 
     protected $imageData;
 
+    protected $instanceType = "sticker";
+
     function __construct(int $idSticker) {
         $this->idSticker = $idSticker;
         $this->stickerData = DBAccess::selectQuery("SELECT * FROM module_sticker_sticker_data WHERE id = :idSticker LIMIT 1;", ["idSticker" => $idSticker]);
@@ -29,32 +32,24 @@ class Sticker extends PrestashopConnection {
         }
         $this->stickerData = $this->stickerData[0];
         $this->additionalData = json_decode($this->stickerData["additional_data"], true);
-        $this->idProduct = $this->getIdProduct();
 
-        $this->imageData = new StickerImage2($idSticker);
-    }
+        $this->imageData = new StickerImage($idSticker);
 
-    private function getInstance() {
-        if ($this instanceof Aufkleber) {
-            return "aufkleber";
-        } else if ($this instanceof Wandtattoo) {
-            return "wandtattoo";
-        } else if ($this instanceof Textil) {
-            return "textil";
-        } else {
-            return "sticker";
-        }
+        $this->instanceType = "sticker";
     }
 
     public function getIdProduct() {
-        $instance = $this->getInstance();
-        $id = (int) $this->additionalData["products"][$instance]["id"];
-
-        if ($id == 0) {
-            $id = -1;
+        if ($this->idProduct != null) {
+            return $this->idProduct;
         }
 
-        return $id;
+        if (isset($this->additionalData["products"][$this->instanceType])) {
+            $this->idProduct = (int) $this->additionalData["products"][$this->instanceType]["id"];
+        } else {
+            $this->idProduct = 0;
+        }
+
+        return $this->idProduct;
     }
 
     public function getName(): String {
@@ -131,16 +126,14 @@ class Sticker extends PrestashopConnection {
     }
 
     public function getDescription(): String {
-        $target = $this->getInstance();
-        return $this->getDescr($target, "long");
+        return $this->getDescr($this->instanceType, "long");
     }
 
     public function getDescriptionShort(): String {
-        $target = $this->getInstance();
-        return $this->getDescr($target, "short");
+        return $this->getDescr($this->instanceType, "short");
     }
 
-    protected function getDescr(int $target, String $type): String {
+    protected function getDescr(String $target, String $type): String {
         $description = DBAccess::selectQuery("SELECT content, `type` FROM module_sticker_texts WHERE id_sticker = :id_sticker AND `target` = :target AND `type` = :type", [
             "id_sticker" => $this->idSticker,
             "target" => $target,
@@ -195,89 +188,7 @@ class Sticker extends PrestashopConnection {
         echo "success";
     }
 
-    /**
-     * If a product for that sticker id already exists, the function calls the update function,
-     * otherwise the create function is triggered
-     */
-    public function save() {
-        $productId = $this->getIdProduct();
-
-        if ($productId == -1) {
-            $this->create("", "");
-        } else {
-            $this->save();
-        }
-    }
-
-    /*
-     * TODO: unterscheide zwischen update und create via exists in shop
-     */
-    public function update() {
-        try {
-            $xml = $this->getXML('products?schema=blank');
-            $this->manipulateProductXML($xml);
-
-            $opt = array(
-                'resource' => 'products',
-                'putXML' => $xml->asXML(),
-            );
-            $this->editXML($opt);
-        } catch (PrestaShopWebserviceException $e) {
-            echo $e->getMessage();
-        }
-    }
-
-    public function create($descriptionLong, $descriptionShort) {
-        try {
-            $xml = $this->getXML('products?schema=blank');
-            $this->manipulateProductXML($xml);
-
-            $opt = array(
-                'resource' => 'products',
-                'postXml' => $xml->asXML(),
-            );
-            $this->addXML($opt);
-            $this->idProduct = $this->xml->product->id;
-        } catch(PrestaShopWebserviceException $e) {
-            echo $e->getMessage();
-        }
-    }
-
-    protected function manipulateProductXML(&$xml) {
-        $resource_product = $xml->children()->children();
-
-        /* unset unused paramters */
-        unset($resource_product->id);
-        unset($resource_product->position_in_category);
-        unset($resource_product->manufacturer_name);
-        unset($resource_product->id_default_combination);
-        unset($resource_product->associations);
-        
-        /* set necessary parameters */
-        $resource_product->{'id_shop'} = 1;
-        $resource_product->{'minimal_quantity'} = 1;
-        $resource_product->{'available_for_order'} = 1;
-        $resource_product->{'show_price'} = 1;
-        $resource_product->{'id_category_default'} = $this->getIdCategory();
-        $resource_product->{'id_tax_rules_group'} = 8; /* Steuergruppennummer für DE 19% */
-        $resource_product->{'price'} = $this->getBasePrice(); /* an Steuer anpassen */
-        $resource_product->{'active'} = 1;
-        $resource_product->{'reference'} = $this->idSticker;
-        $resource_product->{'visibility'} = 'both';
-        $resource_product->{'name'}->language[0] = $this->getName();
-        $resource_product->{'description'}->language[0] = $this->getDescription();
-        $resource_product->{'description_short'}->language[0] = $this->getDescriptionShort();
-        $resource_product->{'state'} = 1;
-
-        /*
-         * Unset fields that may not be updated, without this, a 400 bad request happens
-         * https://stackoverflow.com/questions/36883467/how-can-i-update-product-categories-using-prestashop-web-service
-         */
-        unset($resource_product->manufacturer_name);
-        unset($resource_product->quantity);
-
-        return $xml;
-    }
+    public function save() {}
 
     public function createCombinations() {
 
@@ -313,14 +224,14 @@ class Sticker extends PrestashopConnection {
     }
 
     public function delete() {
-        $this->deleteXML("products", $this->idProduct);
+        $this->deleteXML("products", $this->getIdProduct());
     }
 
     /**
      * switches the product active status
      */
     public function toggleActiveStatus() {
-        $xml = $this->getXML("product/$this->idProduct");
+        $xml = $this->getXML("product/" . $this->getIdProduct());
         $resource_product = $xml->children()->children();
         
         $active = (int) $resource_product->active;
@@ -333,7 +244,7 @@ class Sticker extends PrestashopConnection {
         $opt = array(
             'resource' => 'products',
             'putXml' => $xml->asXML(),
-            'id' => $this->idProduct,
+            'id' => $this->getIdProduct(),
         );
         $this->editXML($opt);
 
@@ -342,9 +253,13 @@ class Sticker extends PrestashopConnection {
     }
 
     private function getAccessoires() {
-        $query = "SELECT id_product FROM module_sticker_accessoires WHERE id_sticker = :idSticker";
-        $result = DBAccess::selectQuery($query, ["idSticker" => $this->idSticker]);
-        return array_map(fn ($data): int => $data["id_product"], $result);
+        $query = "SELECT id_product_reference FROM module_sticker_accessoires WHERE id_sticker = :idSticker AND `type` = :typeSticker";
+        $result = DBAccess::selectQuery($query, [
+            "idSticker" => $this->idSticker,
+            "typeSticker" => $this->instanceType,
+        ]);
+
+        return array_map(fn ($data): int => $data["id_product_reference"], $result);
     }
 
     /**
@@ -352,7 +267,7 @@ class Sticker extends PrestashopConnection {
      */
     public function connectAccessoires($xml = null) {
         if ($xml == null) {
-            $xml = $this->getXML("products/$this->idProduct");
+            $xml = $this->getXML("products/" . $this->getIdProduct());
         }
 
         $product_reference = $xml->children()->children();
@@ -379,7 +294,7 @@ class Sticker extends PrestashopConnection {
         $opt = array(
             'resource' => 'products',
             'putXml' => $xml->asXML(),
-            'id' => $this->idProduct,
+            'id' => $this->getIdProduct(),
         );
         $this->editXML($opt);
     }

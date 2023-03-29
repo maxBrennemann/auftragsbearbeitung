@@ -1,27 +1,31 @@
 <?php
 
 require_once('classes/project/modules/sticker/PrestashopConnection.php');
-require_once('classes/project/modules/sticker/StickerExport.php');
 require_once('classes/project/modules/sticker/StickerChangelog.php');
-require_once('classes/project/StickerImage.php');
 require_once('classes/project/modules/sticker/Sticker.php');
 
-class StickerTagManager extends PrestashopConnection implements StickerExport {
+class StickerTagManager extends PrestashopConnection {
 
     private $idSticker;
+    private $idProductReference;
     private $tags;
     private $title;
 
     function __construct(int $idSticker, String $title = "") {
         $query = "SELECT * FROM module_sticker_tags t JOIN module_sticker_sticker_tag st ON st.id_tag = t.id WHERE st.id_sticker = $idSticker";
         $this->tags = DBAccess::selectQuery($query);
+
         $this->idSticker = $idSticker;
 
         if ($title == "") {
-            $sticker = new StickerImage($idSticker);
+            $sticker = new Sticker($idSticker);
             $title = $sticker->getName();
         }
         $this->title = $title;
+    }
+
+    public function setProductId($idProductReference) {
+        $this->idProductReference = $idProductReference;
     }
 
     public function get() {
@@ -107,30 +111,41 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
     private function getTagIdFromShop($tag): int {
         /* check if tag exists */
         $tagEncoded = str_replace(" ", "+", $tag);
-        $xml = $this->getXML("tags?filter[name]=$tagEncoded&limit=1");
 
-        $resources = $xml->children()->children();
-        if (!empty($resources)) {
-            return (int) $resources->tag->attributes()->id;
+        try {
+            $xml = $this->getXML("tags?filter[name]=$tagEncoded&limit=1");
+            $resources = $xml->children()->children();
+
+            if (!empty($resources)) {
+                return (int) $resources->tag->attributes()->id;
+            }
+        } catch (PrestaShopWebserviceException $e) {
+            echo $e->getMessage();
+        }
+
+        try {
+            /* add a new tag */
+            $xml = $this->getXML("tags?schema=synopsis");
+            $resources = $xml->children()->children();
+
+            unset($resources->id);
+            $resources->{'name'} = $tag;
+            /* language_id for de is 1 */
+            $resources->{'id_lang'} = 1;
+
+            $opt = array(
+                'resource' => 'tags',
+                'postXml' => $xml->asXML()
+            );
+            
+            $this->addXML($opt);
+            $id = $this->xml->tag->id;
+            return (int) $id;
+        } catch (PrestaShopWebserviceException $e) {
+            echo $e->getMessage();
         }
     
-        /* add a new tag */
-        $xml = $this->getXML("tags?schema=synopsis");
-        $resources = $xml->children()->children();
-    
-        unset($resources->id);
-        $resources->{'name'} = $tag;
-        /* language_id for de is 1 */
-        $resources->{'id_lang'} = 1;
-    
-        $opt = array(
-            'resource' => 'tags',
-            'postXml' => $xml->asXML()
-        );
-
-        $this->addXML($opt);
-        $id = $this->xml->product->id;
-        return (int) $id;
+        return -1;
     }
 
     /**
@@ -144,11 +159,13 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
         }
     }
 
-    public function saveTags(int $productId) {
-        $xml = $this->getXML("products/$productId");
+    public function saveTags() {
+        $xml = $this->getXML("products/$this->idProductReference");
         $product_reference = $xml->children()->children();
+
         unset($product_reference->manufacturer_name);
         unset($product_reference->quantity);
+
         $tags = $product_reference->{'associations'};
 
         $tagIds = [];
@@ -170,7 +187,7 @@ class StickerTagManager extends PrestashopConnection implements StickerExport {
         $opt = array(
             'resource' => 'products',
             'putXml' => $xml->asXML(),
-            'id' => $productId,
+            'id' => $this->idProductReference,
         );
         $this->editXML($opt);
     }

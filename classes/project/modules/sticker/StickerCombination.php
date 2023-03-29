@@ -20,10 +20,15 @@ class StickerCombination extends PrestashopConnection {
         $this->purchasingPrices = $this->sticker->getPurchasingPricesMatched();
 
         $this->arguments = $this->combine($this->attributes);
-        $xml = $this->getXML('combinations?schema=blank');
 
-        foreach ($this->arguments as $arg) {
-            $this->addCombination($xml, $arg);
+        try {
+            $xml = $this->getXML('combinations?schema=blank');
+
+            foreach ($this->arguments as $arg) {
+                $this->addCombination($xml, $arg);
+            }
+        } catch (PrestaShopWebserviceException $e) {
+            echo $e->getMessage();
         }
         
         $this->setStockAvailables();
@@ -57,7 +62,7 @@ class StickerCombination extends PrestashopConnection {
     private function addCombination($xml, $args) {
         try {
             $combination = $xml->children()->children();
-            $combination->id_product = $this->sticker->getId();
+            $combination->id_product = $this->sticker->getIdProduct();
 
             /* sets the default product combination */
             if ($this->defaultOn) {
@@ -101,7 +106,7 @@ class StickerCombination extends PrestashopConnection {
         $stockAvailablesIds = array();
 
         try {
-            $xml = $this->getXML('products/' . (int) $this->sticker->getId());
+            $xml = $this->getXML('products/' . (int) $this->sticker->getIdProduct());
             $stocks = $xml->children()->children()->associations->stock_availables;
 
             foreach ($stocks->stock_available as $stock) {

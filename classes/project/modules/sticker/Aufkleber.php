@@ -20,12 +20,9 @@ class Aufkleber extends AufkleberWandtattoo {
 
     private $priceClass;
 
-    private $idShopAttributes = [];
-    private $prices = [];
-    private $buyingPrices = [];
-
     function __construct($idSticker) {
         parent::__construct($idSticker);
+        $this->instanceType = "aufkleber";
 
         /* is true, if sticker exists or is activated */
         $this->isPlotted = $this->stickerData["is_plotted"];
@@ -41,6 +38,10 @@ class Aufkleber extends AufkleberWandtattoo {
     public function isInShop() {
         parent::isInShop();
         return parent::checkIsInShop(self::TYPE);
+    }
+
+    public function getName(): String {
+        return "Aufkleber " . parent::getName();
     }
 
     /* TODO: es muss angezeigt werden, wenn sich die Titel unterscheiden, sodass Alttitel auch wirklich absichtlich festgelegt werden können */
@@ -77,7 +78,7 @@ class Aufkleber extends AufkleberWandtattoo {
     }
 
     public function getColors(): array {
-        return []; // TODO: implement
+        return [70, 60, 67, 79, 91, 107, 111];
     }
 
     public function getSizeToPrice(): array {
@@ -85,12 +86,8 @@ class Aufkleber extends AufkleberWandtattoo {
         return []; // TODO: implement
     }
 
-    public function getSizeTableFormatted() {
-        return "";
-    }
-
-    public function getDescription2(int $target = 1): String {
-        $descriptionEnd = parent::getDescription($target);
+    private function getDescriptionWithDefaultText(): String {
+        $descriptionEnd = $this->getDescription();
         $description = "<p><span>Es wird jeweils nur der entsprechende Artikel oder das einzelne Motiv verkauft. Andere auf den Bildern befindliche Dinge sind nicht Bestandteil des Angebotes.</span></p>";
 
         /* choose text by sticker type */
@@ -111,10 +108,6 @@ class Aufkleber extends AufkleberWandtattoo {
         return $description;
     }
 
-    public function getDescriptionShort2(int $target = 1): String {
-        return $this->getSizeTableFormatted() . parent::getDescriptionShort($target);
-    }
-
     public function getPricesMatched() {
         return $this->prices;
     }
@@ -123,21 +116,28 @@ class Aufkleber extends AufkleberWandtattoo {
         return $this->buyingPrices;
     }
 
-    public function create($param1 = "", $param2 = "") {
-        parent::create($this->getDescription(), $this->getDescriptionShort());
-    }
-
     public function save() {
-        // save parent
-        parent::save();
+        $productId = (int) $this->getIdProduct();
+        $stickerUpload = new StickerUpload($this->idSticker, $this->getName(), $this->getBasePrice(), $this->getDescriptionWithDefaultText(), $this->getDescriptionShortWithDefaultText());
 
-        $stickerTagManager = new StickerTagManager($this->getId());
-        $stickerTagManager->saveTags($this->getIdProduct());
+        if ($productId == 0) {
+            $stickerUpload->createSticker();
+        } else {
+            $stickerUpload->updateSticker($productId);
+        }
+        $stickerUpload->setCategoires([2, 13]);
+        
+        $stickerTagManager = new StickerTagManager($this->getId(), $this->getName());
+        $stickerTagManager->setProductId($this->idProduct);
+        $stickerTagManager->saveTags();
 
         $stickerCombination = new StickerCombination($this);
         $stickerCombination->createCombinations();
         
         $this->connectAccessoires();
+
+        $images = $this->imageData->getTextilImages();
+        $this->uploadImages($images);
     }
 
     public function getAttributes() {
@@ -157,137 +157,49 @@ class Aufkleber extends AufkleberWandtattoo {
          * fügt ids der id_attribute_group 6 (Farbe) zurück, also alle benötigten Farben für die Aufkleber,
          * kann später durch eine Auswahloption ergänzt oder ersetzt werden, selbes TODO wie oben;
          */
-        if ($this->getIsMultipart()) {
-            $attributes[] = [70, 60, 67, 79, 91, 107, 111];
+        if (!$this->getIsMultipart()) {
+            $attributes[] = $this->getColors();
         }
 
         return $attributes;
     }
 
-    /**
-     * gibt die ids der id_attribute_group 5 (Breite) zurück,
-     * dabei wird geprüft, ob zu dem Breitenwert schon eine id_attribute existiert und falls nicht,
-     * wird diese erstellt
-     */
-    private function getSizeIds() {
-        $query = "SELECT `price`, `width`, ((`width` / 1000) * (`height` / 1000) * 10) as `costs` FROM `module_sticker_sizes` WHERE `id_sticker` = :idSticker ORDER BY `width`";
-        $data = DBAccess::selectQuery($query, ["idSticker" => $this->getId()]);
-
-        /* TODO: hardcoded idAttributeGroup entfernen */
-        $idAttributeGroup = 5;
-        $sizeIds = [];
-        $prices = [];
-        $buyingPrices = [];
-
-        foreach ($data as &$d) {
-            $singleSizeInCm = str_replace(".", ",", ((int) $d["width"]) / 10) . "cm";
-            $sizeId = (int) $this->addAttribute($idAttributeGroup, $singleSizeInCm);
-            $sizeIds[] = $sizeId;
-
-            $prices[$sizeId] = $d["price"];
-            $buyingPrices[$sizeId] = $d["costs"];
+        /* save sticker fields */
+    public function saveSentData($jsonData) {
+        $data = json_decode($jsonData);
+        switch ($data->name) {
+            case "plotted":
+                $column = "is_plotted";
+                $newVal = $data->plotted;
+                if ($newVal == "0") {
+                    DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET `is_short_time` = 0 WHERE id = :id", ["id" => $this->getId()]);
+                    DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET `is_long_time` = 0 WHERE id = :id", ["id" => $this->getId()]);
+                    DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET `is_multipart` = 0 WHERE id = :id", ["id" => $this->getId()]);
+                }
+                break;
+            case "short":
+                $column = "is_short_time";
+                $newVal = $data->short;
+                break;
+            case "long":
+                $column = "is_long_time";
+                $newVal = $data->long;
+                break;
+            case "multi":
+                $column = "is_multipart";
+                $newVal = $data->multi;
+                break;
+            default:
+                echo "error";
+                return;
         }
 
-        $this->idShopAttributes = $sizeIds;
-        $this->prices = $prices;
-        $this->buyingPrices = $buyingPrices;
-        return $sizeIds;
+        $newVal = (int) $newVal;
+        $query = "UPDATE module_sticker_sticker_data SET `$column` = $newVal WHERE id = :id";
+        DBAccess::updateQuery($query, ["id" => $this->getId()]);
+        echo "success";
     }
-
-    private function addAttribute($attributeGroupId, $attributeName) {
-        try {
-            $xml = $this->getXML('product_option_values?filter[id_attribute_group]=' . $attributeGroupId . '&filter[name]=' . $attributeName . '&limit=1');
-            $resources = $xml->children()->children();
-
-            if (!empty($resources)) {
-                $attributes = $resources->product_option_value->attributes();
-                return $attributes['id'];
-            }
-        } catch(PrestaShopWebserviceException $e) {
-            echo $e->getMessage();
-        }
-        
-        try {
-            $xml = $this->getXML('/api/product_options?schema=synopsis');
-            $resources = $xml->children()->children();
-        
-            unset($resources->id);
-            $resources->{"name"} = $attributeName;
-            $resources->{"id_lang"} = "de";
-        
-            $opt = array(
-                'resource' => 'product_options',
-                'postXml' => $xml->asXML()
-            );
-
-            $this->addXML($opt);
-            $id = $this->xml->product->id;
-            return $id;
-        } catch(PrestaShopWebserviceException $e) {
-            echo $e->getMessage();
-        }
-    }
-
-    public function getSizeTable() {
-        $query = "SELECT id, width, height, price, 
-                ((width / 1000) * (height / 1000) * 10) as costs 
-            FROM module_sticker_sizes 
-            WHERE id_sticker = :idSticker
-            ORDER BY width";
-        
-        $data = DBAccess::selectQuery($query, ["idSticker" => $this->getId()]);
-        $column_names = array(
-            0 => array("COLUMN_NAME" => "id", "ALT" => "Nummer"),
-            1 => array("COLUMN_NAME" => "width", "ALT" => "Breite"),
-            2 => array("COLUMN_NAME" => "height", "ALT" => "Höhe"),
-            3 => array("COLUMN_NAME" => "price", "ALT" => "Preis (brutto)"),
-            4 => array("COLUMN_NAME" => "costs", "ALT" => "Material"),
-        );
-
-        foreach ($data as &$d) {
-            $d["width"] = str_replace(".", ",", ((int) $d["width"]) / 10) . "cm";
-            $d["height"] = str_replace(".", ",", ((int) $d["height"]) / 10) . "cm";
-            $d["price"] = number_format((float) $d["price"], 2, ',', '') . "€";
-            $d["costs"] = number_format((float) $d["costs"], 2, ',', '') . "€";
-        }
-
-		$t = new Table();
-		$t->createByData($data, $column_names);
-		$t->setType("module_sticker_sizes");
-		$t->addActionButton("delete", "id");
-		$t->addNewLineButton();
-        $t->addAction(null, Icon::$iconReset, "Preis zurücksetzen");
-
-        $pattern = [
-            "id_sticker" => [
-                "status" => "preset",
-                "value" => $this->getId(),
-            ],
-            "width" => [
-                "status" => "unset",
-                "value" => 1,
-                "type" => "cm",
-                "cast" => [],
-            ],
-            "height" => [
-                "status" => "unset",
-                "value" => 2,
-                "type" => "cm",
-                "cast" => [],
-            ],
-            "price" => [
-                "status" => "unset",
-                "value" => 3,
-                "type" => "float",
-                "cast" => ["separator" => ","],
-                "default" => null,
-            ],
-        ];
-
-		$t->defineUpdateSchedule(new UpdateSchedule("module_sticker_sizes", $pattern));
-        $_SESSION[$t->getTableKey()] = serialize($t);
-		return $t->getTable();
-    }
+    
 }
 
 ?>

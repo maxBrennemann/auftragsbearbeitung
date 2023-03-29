@@ -1,5 +1,7 @@
 <?php
 
+require_once("classes/project/modules/sticker/Sticker.php");
+
 class Textil extends Sticker {
 
     const TYPE = "textil";
@@ -38,6 +40,7 @@ class Textil extends Sticker {
 
     function __construct($idTextile) {
         parent::__construct($idTextile);
+        $this->instanceType = "textil";
 
         /* is true, if sticker exists or is activated */
         $this->isShirtcollection = (int) $this->stickerData["is_shirtcollection"];
@@ -47,6 +50,10 @@ class Textil extends Sticker {
     public function isInShop() {
         parent::isInShop();
         return parent::checkIsInShop(self::TYPE);
+    }
+
+    public function getName(): String {
+        return "Textil " . parent::getName();
     }
 
     public function getIsShirtcollection() {
@@ -201,25 +208,41 @@ class Textil extends Sticker {
             return;
         }
 
-        $descriptionShort = $this->getDescriptionShort();
-        $descriptionLong = $this->getDescription();
+        $productId = (int) $this->getIdProduct();
+        $category = 25;
+        $stickerUpload = new StickerUpload($this->idSticker, $this->getName(), $this->getBasePrice(), $this->getDescription(), $this->getDescriptionShort());
+        $stickerUpload->setIdCategoryPrimary($category);
 
-        if ($this->isInShop()) {
-            $this->update();
+        if ($productId == 0) {
+            $stickerUpload->createSticker();
         } else {
-            $this->create($descriptionLong, $descriptionShort);
+            $stickerUpload->updateSticker($productId);
         }
+        
+        $stickerTagManager = new StickerTagManager($this->getId(), $this->getName());
+        $stickerTagManager->setProductId($this->idProduct);
+        $stickerTagManager->saveTags();
 
-        if ($this->getIsColorable()) {
-            // addAttributeArray addAttributeArray([164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183]);
-        }
+        $stickerCombination = new StickerCombination($this);
+        $stickerCombination->createCombinations();
+        
+        $this->connectAccessoires();
 
         $this->uploadSVG();
         $images = $this->imageData->getTextilImages();
         $this->uploadImages($images);
+    }
 
-        $stickerTagManager = new StickerTagManager($this->getId());
-        $stickerTagManager->saveTags($this->getIdProduct());
+    /**
+     * returns hardcoded color ids
+     */
+    public function getAttributes() {
+        if ($this->getIsColorable()) {
+            return [
+                [164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183]
+            ];
+        }
+        return [];
     }
 
 }
