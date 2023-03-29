@@ -2,6 +2,8 @@
 
 class AufkleberWandtattoo extends Sticker {
 
+    protected $basePrice;
+
     public function getPrice($width, $height, $difficulty) {
         if ($width >= 1200) {
             $base = 2100;
@@ -24,6 +26,10 @@ class AufkleberWandtattoo extends Sticker {
     }
 
     public function getBasePrice() {
+        if ($this->basePrice != null) {
+            return $this->basePrice;
+        }
+
         parent::getBasePrice();
 
         $query = "SELECT price FROM module_sticker_sizes WHERE id_sticker = :idSticker ORDER BY price ASC LIMIT 1;";

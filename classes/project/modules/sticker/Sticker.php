@@ -337,9 +337,13 @@ class Sticker extends PrestashopConnection {
     }
 
     private function getAccessoires() {
-        $query = "SELECT id_product FROM module_sticker_accessoires WHERE id_sticker = :idSticker";
-        $result = DBAccess::selectQuery($query, ["idSticker" => $this->idSticker]);
-        return array_map(fn ($data): int => $data["id_product"], $result);
+        $query = "SELECT id_product_reference FROM module_sticker_accessoires WHERE id_sticker = :idSticker AND `type` = :typeSticker";
+        $result = DBAccess::selectQuery($query, [
+            "idSticker" => $this->idSticker,
+            "typeSticker" => $this->instanceType,
+        ]);
+
+        return array_map(fn ($data): int => $data["id_product_reference"], $result);
     }
 
     /**
