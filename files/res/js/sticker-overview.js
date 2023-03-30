@@ -196,4 +196,16 @@ async function createNewSticker() {
 
 async function click_createFbExport() {
     let fbExport = await send({}, "createFbExport");
+    fbExport = JSON.parse(fbExport);
+
+    if (fbExport.status == "successful") {
+        infoSaveSuccessfull("success");
+
+        const a = document.createElement("a");
+        a.href = fbExport.file;
+        a.download = fbExport.file;
+
+        document.body.appendChild(a);
+        a.click();
+    }
 }

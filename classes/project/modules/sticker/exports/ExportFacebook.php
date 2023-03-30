@@ -1,8 +1,9 @@
 <?php
 
-require_once("classes/project/StickerImage.php");
+require_once("classes/project/modules/sticker/StickerCollection.php");
+require_once('classes/project/modules/sticker/PrestashopConnection.php');
 
-class ExportFacebook {
+class ExportFacebook extends PrestashopConnection {
 
     private static $csv;
     private static $file;
@@ -54,7 +55,7 @@ class ExportFacebook {
         $stickerCollection = new StickerCollection($id);
         
         foreach ($stickerCollection as $product) {
-            if ($product != null) {
+            if ($product->isInShop()) {
                 self::generate($product, $line, $product->getType());
             }
         }
@@ -63,11 +64,9 @@ class ExportFacebook {
     private static function generate($product, $line, $type) {
         $line["item_group_id"] = $type . $product->getId();
         $line["title"] = $product->getName();
-        $line["description"] = "Unsere Aufkleber und Textilien sind keine Lagerware. Diese werden nach der Bestellung individuell für Dich angefertigt. " . $product->getDescr(1, "long");
-        $line["link"] = $product->getProductLink();
-
-        $imageData = $product->getDefaultImage();
-        $line["image_link"] = SHOPURL . "/auftragsbearbeitung/images.php?product={$imageData["id"]}&image={$imageData["image"]}";
+        $line["description"] = "Unsere Aufkleber und Textilien sind keine Lagerware. Diese werden nach der Bestellung individuell für Dich angefertigt. " . $product->getDescription();
+        $line["link"] = $product->getShopLink();
+        $line["image_link"] = self::getFirstImageLink($product);
 
         if ($product instanceof Aufkleber) {
             self::generateAufkleber($product, $line);
@@ -78,7 +77,25 @@ class ExportFacebook {
         }
     }
 
+    private static function getFirstImageLink($product) {
+        $prestashopConnection = new PrestashopConnection();
+        try  {
+            $xml = $prestashopConnection->getXML("images/products/" . $product->getIdProduct());
+            $resources = $xml->children()->children();
+            $id = (int) $resources->tag->attributes()->id;
+            return "https://klebefux.de/auftragsbearbeitung/images.php?product=" . $product->getIdProduct() . "&image=" . $id;
+        } catch (PrestaShopWebserviceException $e) {
+            echo 'Error:' . $e->getMessage();
+        } 
+    }
+
     private static function generateAufkleber($product, $line) {
+        // all attributes zusammentragen
+        // prices zusammentragen
+        // über combinations iteraten
+        // jeweilse eine zeile hinzufügen mit dem price match von stickerCombination        
+
+
         $combinationId = 0;
         foreach ($product->getSizeToPrice() as $price => $size) {
             $line["price"] = $price;
