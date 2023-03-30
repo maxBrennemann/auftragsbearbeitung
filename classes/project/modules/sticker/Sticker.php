@@ -60,6 +60,10 @@ class Sticker extends PrestashopConnection {
         return $this->idSticker;
     }
 
+    public function getType() {
+        return $this->instanceType;
+    }
+
     public function getDirectory() {
         return $this->stickerData["directory_name"];
     }

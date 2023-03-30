@@ -1277,6 +1277,11 @@ class Ajax {
 			case "createFbExport":
 				require_once('classes/project/modules/sticker/exports/ExportFacebook.php');
 				ExportFacebook::exportAll();
+				$fileLink = Link::getResourcesLink("modules/sticker/catalog_products.csv", "html");
+				echo json_encode([
+					"status" => "successful",
+					"file" => $fileLink,
+				]);
 			break;
 			case "exportFacebook":
 				require_once('classes/project/modules/sticker/exports/ExportFacebook.php');
