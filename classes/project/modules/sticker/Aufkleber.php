@@ -36,7 +36,6 @@ class Aufkleber extends AufkleberWandtattoo {
     }
 
     public function isInShop() {
-        parent::isInShop();
         return parent::checkIsInShop(self::TYPE);
     }
 
@@ -106,10 +105,6 @@ class Aufkleber extends AufkleberWandtattoo {
         
         $description .= $descriptionEnd;
         return $description;
-    }
-
-    public function getPricesMatched() {
-        return $this->prices;
     }
 
     public function getPurchasingPricesMatched() {

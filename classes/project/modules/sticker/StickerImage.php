@@ -8,20 +8,21 @@ class StickerImage {
     private $images = [];
     private $files = [];
 
+    private $svgs = [];
+
     function __construct($idMotiv) {
         $this->idMotiv = $idMotiv;
         $this->getConnectedFiles();
         $this->prepareImageData();
     }
 
+    /* reads from database */
     private function getConnectedFiles() {
         $allFiles = DBAccess::selectQuery("SELECT dateien.dateiname, dateien.originalname AS alt, 
-                dateien.typ, dateien.id, module_sticker_images.is_aufkleber, 
-                module_sticker_images.is_wandtattoo, module_sticker_images.is_textil 
-            FROM dateien, dateien_motive, module_sticker_images 
-            WHERE dateien_motive.id_datei = dateien.id 
-                AND module_sticker_images.id_image = dateien.id 
-                AND dateien_motive.id_motive = :idMotiv",
+                dateien.typ, dateien.id, module_sticker_image.image_sort, module_sticker_image.id_product
+            FROM dateien, module_sticker_image 
+            WHERE dateien.id = module_sticker_image.id_datei
+                AND module_sticker_image.id_motiv = :idMotiv;",
         ["idMotiv" => $this->idMotiv]);
 
         $this->allFiles = $allFiles;
@@ -39,37 +40,12 @@ class StickerImage {
         return $this->files;
     }
 
-    public function getImages() {
-        foreach ($this->images as &$image) {
-            $image["link"] = Link::getResourcesShortLink($image["dateiname"], "upload");
-            $image["title"] = "product image";
-        }
-
-        if (sizeof($this->images) == 0) {
-            $this->images = [
-                0 => [
-                    "id" => 0,
-                    "title" => "default image",
-                    "alt" => "default image",
-                    "link" => Link::getResourcesShortLink("default_image.png", "img"),
-                    "dateiname" => "Standardbild",
-                    "typ" => "png",
-                ],
-            ];
-        }
-
-        return $this->images;
-    }
-
     public function getSVGIfExists() {
-        $download = "";
-        foreach ($this->files as $f) {
-            $link = Link::getResourcesShortLink($f["dateiname"], "upload");
-            if ($f["typ"] == "svg") {
-                $download = $link;
-            }
+        $f = $this->getTextilSVG();
+        if ($f == null) {
+            return "";
         }
-        return $download;
+        return Link::getResourcesShortLink($f["dateiname"], "upload");
     }
 
     // TODO: Funktionen für colorable toggle fertig schreiben
@@ -77,6 +53,7 @@ class StickerImage {
         
     }
 
+    /* adds new attributes "link" and "title" to all images */
     private function prepareImageData() {
         foreach ($this->images as &$image) {
             $image["link"] = Link::getResourcesShortLink($image["dateiname"], "upload");
@@ -87,38 +64,38 @@ class StickerImage {
     public function getAufkleberImages() {
         return array_filter(
             $this->images,
-            fn($element) => $element["is_aufkleber"] == "1"
+            fn($element) => $element["image_sort"] == "aufkleber"
         );
     }
 
     public function getWandtattooImages() {
         return array_filter(
             $this->images,
-            fn($element) => $element["is_wandtattoo"] == "1"
+            fn($element) => $element["image_sort"] == "wandtattoo"
         );
     }
 
     public function getTextilImages() {
         return array_filter(
             $this->images,
-            fn($element) => $element["is_textil"] == "1"
+            fn($element) => $element["image_sort"] == "textil"
         );
     }
 
-    public function getSVG() {
-        $filename = "";
+    public function getTextilSVG() {
         foreach ($this->files as $f) {
-            if ($f["typ"] == "svg") {
-                $filename = "upload/" . $f["dateiname"];
+            if ($f["image_sort"] == "textilsvg") {
+                return $f;
             }
         }
-        return $filename;
+       
+        return null;
     }
 
-    public function getUnspecificImages() {
+    public function getGeneralImages() {
         return array_filter(
             $this->images,
-            fn($element) => $element["is_aufkleber"] != "1" && $element["is_wandtattoo"] != "1" && $element["is_textil"] != "1"
+            fn($element) => $element["image_sort"] == "general"
         );
     }
 
@@ -145,6 +122,96 @@ class StickerImage {
                     return;
             }
         }
+    }
+
+    public function getFirstImageLink() {
+
+    }
+
+    public function convertJPGtoAvif() {
+
+    }
+
+    private function saveImage($filename) {
+        /* add file to db */
+        $query = "INSERT INTO `dateien` (`dateiname`, `originalname`, `date`, `typ`) VALUES (:newFile1, :newFile2, :today, 'svg');";
+        $fileId = DBAccess::insertQuery($query, [
+            "newFile1" => $filename,
+            "newFile2" => $filename,
+            "today" => date("Y-m-d")
+        ]);
+
+        $query = "INSERT INTO module_sticker_image (id_datei, id_motiv, image_sort) VALUES (:id, :motivnummer, :imageCategory)";
+        $params = [
+            "id" => $fileId,
+            "motivnummer" => $this->idMotiv,
+            "imageCategory" => "textilsvg",
+        ];
+        DBAccess::insertQuery($query, $params);
+    }
+
+    /* SVG section */
+    public function getSVGCount() {
+        return sizeof($this->svgs);
+    }
+
+    public function getSVG($number = 0) {
+        $svgs = [];
+        foreach ($this->files as $f) {
+            if ($f["typ"] == "svg") {
+                $svgs[] = $f;
+            }
+        }
+
+        $this->svgs = $svgs;
+        if (sizeof($svgs) > $number) {
+            return "upload/" . $svgs[$number]["dateiname"];
+        }
+
+        return "";
+    }
+    
+    /**
+     * seaches for all occurances of colors in these two patterns:
+     * fill:#FFFFFF
+     * fill:#FFF
+     * then it replaces "<svg" with "<svg id="svg_elem" only if it is not already set
+     */
+    public function makeSVGColorable() {
+        $filename = $this->getTextilSVG();
+        if ($filename == "") {
+            return "";
+        }
+
+        $newFile = substr($filename, 0, -4);
+        $newFile .= "_colorable.svg";
+
+        if (!file_exists($newFile)) {
+            $file = file_get_contents($filename);
+
+            /* remove all fills */
+            $file = preg_replace('/fill:#([0-9a-f]{6}|[0-9a-f]{3})/i', "", $file);
+
+            /* remove all strokes */
+            $file = preg_replace('/stroke:#([0-9a-f]{6}|[0-9a-f]{3})/i', "", $file);
+
+            if (!str_contains($file, "<svg id=\"svg_elem\"")) {
+                $file = str_replace("<svg", "<svg id=\"svg_elem\"", $file);
+            }
+
+            file_put_contents($newFile, $file);
+            $newFile = substr($newFile, strlen("upload/"));
+
+            $this->saveImage($newFile);
+            return Link::getResourcesShortLink($newFile, "upload");
+        } else {
+            $newFile = substr($newFile, 0, strlen("upload/"));
+            return Link::getResourcesShortLink($filename, "upload");
+        }
+    }
+
+    public function uploadSVG($number) {
+
     }
 
 }

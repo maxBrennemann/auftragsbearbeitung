@@ -207,5 +207,7 @@ async function click_createFbExport() {
 
         document.body.appendChild(a);
         a.click();
+
+        console.log(fbExport.errorList);
     }
 }

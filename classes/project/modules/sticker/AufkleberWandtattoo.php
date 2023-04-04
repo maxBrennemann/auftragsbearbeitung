@@ -9,6 +9,7 @@ class AufkleberWandtattoo extends Sticker {
     protected $idShopAttributes = [];
     protected $prices = [];
     protected $buyingPrices = [];
+    protected $widthsToSizeIds = [];
 
     public function getPrice($width, $height, $difficulty) {
         if ($width >= 1200) {
@@ -29,6 +30,14 @@ class AufkleberWandtattoo extends Sticker {
         }
         
         return $base;
+    }
+
+    public function getSize($sizeId) {
+        return $this->widthsToSizeIds[$sizeId];
+    }
+
+    public function getPricesMatched() {
+        return $this->prices;
     }
 
     public function updatePrice(int $width, int $height, int $price) {
@@ -106,13 +115,14 @@ class AufkleberWandtattoo extends Sticker {
      * dabei wird geprüft, ob zu dem Breitenwert schon eine id_attribute existiert und falls nicht,
      * wird diese erstellt
      */
-    protected function getSizeIds() {
+    public function getSizeIds() {
         $query = "SELECT `price`, `width`, ((`width` / 1000) * (`height` / 1000) * 10) as `costs` FROM `module_sticker_sizes` WHERE `id_sticker` = :idSticker ORDER BY `width`";
         $data = DBAccess::selectQuery($query, ["idSticker" => $this->getId()]);
 
         /* TODO: hardcoded idAttributeGroup entfernen */
         $idAttributeGroup = 5;
         $sizeIds = [];
+        $widths =  [];
         $prices = [];
         $buyingPrices = [];
 
@@ -120,6 +130,7 @@ class AufkleberWandtattoo extends Sticker {
             $singleSizeInCm = str_replace(".", ",", ((int) $d["width"]) / 10) . "cm";
             $sizeId = (int) $this->addAttribute($idAttributeGroup, $singleSizeInCm);
             $sizeIds[] = $sizeId;
+            $widths[$sizeId] = $singleSizeInCm;
 
             $prices[$sizeId] = number_format(($d["price"] / 100 - $this->getBasePrice()) / 1.19, 2);
             $buyingPrices[$sizeId] = $d["costs"];
@@ -128,6 +139,7 @@ class AufkleberWandtattoo extends Sticker {
         $this->idShopAttributes = $sizeIds;
         $this->prices = $prices;
         $this->buyingPrices = $buyingPrices;
+        $this->widthsToSizeIds = $widths;
         return $sizeIds;
     }
 
