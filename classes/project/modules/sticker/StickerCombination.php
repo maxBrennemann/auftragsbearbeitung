@@ -13,6 +13,12 @@ class StickerCombination extends PrestashopConnection {
         $this->sticker = $sticker;
     }
 
+    public function getAttributeCombinations() {
+        $this->attributes = $this->sticker->getAttributes();
+        $this->arguments = $this->combine($this->attributes);
+        return $this->arguments;
+    }
+
     public function createCombinations() {
         // TODO: getAttributes, getPurchasingPrices and getPrices implementieren
         $this->attributes = $this->sticker->getAttributes();

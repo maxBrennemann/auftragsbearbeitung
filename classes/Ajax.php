@@ -1130,10 +1130,8 @@ class Ajax {
 				$textil = new Textil($id);
 				$textil->toggleIsColorable();
 				echo $textil->getCurrentSVG();
-
-				/*
+				
 				echo json_encode(["url" => $textil->getCurrentSVG()]);
-				*/
 			break;
 			case "createNewSticker":
 				$title = (String) $_POST["newTitle"];
@@ -1274,13 +1272,18 @@ class Ajax {
 					echo "no data found";
 				}
 			break;
+			case "clearFiles":
+				require_once('classes/Upload.php');
+				Upload::deleteUnusedFiles();
+			break;
 			case "createFbExport":
 				require_once('classes/project/modules/sticker/exports/ExportFacebook.php');
-				ExportFacebook::exportAll();
+				$errorList = ExportFacebook::exportAll();
 				$fileLink = Link::getResourcesLink("modules/sticker/catalog_products.csv", "html");
 				echo json_encode([
 					"status" => "successful",
 					"file" => $fileLink,
+					"errorList" => $errorList,
 				]);
 			break;
 			case "exportFacebook":

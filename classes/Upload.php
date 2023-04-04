@@ -57,6 +57,7 @@ class Upload {
         if (is_array($ids)) {
             $motivnummer = 0;
 
+            /* create new sticker if no id is set */
             if ($id == 0) {
                 $motivnummer = DBAccess::insertQuery("INSERT INTO module_sticker_sticker_data (`name`) VALUES ('$name')");
             } else {
@@ -65,47 +66,25 @@ class Upload {
             
             $imageData = [];
 
+            /* upload each image */
             foreach ($ids as $id) {
-                DBAccess::insertQuery("INSERT INTO dateien_motive (id_datei, id_motive) VALUES ($id, $motivnummer)");
-                
-                $query = "INSERT INTO module_sticker_images (id_image, id_sticker) VALUES (:id, :motivnummer)";
+                $imageCategory = getParameter("imageCategory", "POST", null);
+                $query = "INSERT INTO module_sticker_image (id_datei, id_motiv, image_sort) VALUES (:id, :motivnummer, :imageCategory)";
+
                 $params = [
                     "id" => $id,
                     "motivnummer" => $motivnummer,
+                    "imageCategory" => $imageCategory,
                 ];
-                $imageCategory = getParameter("imageCategory", "POST", null);
-                $imageId = -1;
-
-                if ($imageCategory != null) {
-                    switch ($imageCategory) {
-                        case "aufkleber":
-                            $query = "INSERT INTO module_sticker_images (id_image, id_sticker, is_aufkleber) VALUES (:id, :motivnummer, :setCategory)";
-                            break;
-                        case "wandtattoo":
-                            $query = "INSERT INTO module_sticker_images (id_image, id_sticker, is_wandtattoo) VALUES (:id, :motivnummer, :setCategory)";
-                            break;
-                        case "textil":
-                            $query = "INSERT INTO module_sticker_images (id_image, id_sticker, is_textil) VALUES (:id, :motivnummer, :setCategory)";
-                            break;
-                        case "all":
-                            $query = "INSERT INTO module_sticker_images (id_image, id_sticker) VALUES (:id, :motivnummer)";
-                            break;
-                    }
-
-                    if ($imageCategory != "all") {
-                        $params["setCategory"] = 1;
-                    }
-                    $imageId = DBAccess::insertQuery($query, $params);
-                }
+                DBAccess::insertQuery($query, $params);
 
                 $image = DBAccess::selectQuery("SELECT dateiname, originalname FROM dateien WHERE id = $id LIMIT 1");
                 $url = Link::getResourcesShortLink($image[0]["dateiname"], "upload");
                 $originalname = $image[0]["originalname"];
-
                 $type = pathinfo($url)["extension"];
 
                 array_push($imageData, [
-                    "id" => $imageId,
+                    "id" => $id,
                     "url" => $url,
                     "original" => $originalname,
                     "type" => $type,
@@ -155,10 +134,6 @@ class Upload {
         }
 
         return $ids;
-    }
-
-    public static function getFiles() {
-        
     }
 
     public static function getFilesAuftrag($auftragsnummer) {
@@ -229,6 +204,23 @@ class Upload {
     public function ajaxUpload() {
 
     }
+
+    public static function deleteUnusedFiles($folderPath = "upload") {
+        $query = "SELECT `dateiname` FROM dateien";
+        $result = DBAccess::selectQuery($query);
+        $usedFiles = array();
+
+        foreach ($result as $row) {
+            $usedFiles[] = $row['dateiname'];
+        }
+
+        $files = scandir($folderPath);
+        foreach ($files as $file) {
+            if ($file != "." && $file != ".." && !in_array($file, $usedFiles)) {
+                unlink($folderPath . "/" . $file);
+            }
+        }
+    }      
 
 }
 

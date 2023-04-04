@@ -49,9 +49,9 @@ if ($id == 0): ?>
             <button class="newButton" data-id="4" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
         </div>
     </div>
-    <div ondragover="">
-        <p>Weitere Dateien:</p>
-        <?=insertTemplate("classes/project/modules/sticker/views/stickerFileView.php", ["images" => $stickerImage->getUnspecificImages(), "files" => $stickerImage->getFiles()])?>
+    <div>
+        <p>Weitere Dateien (SVGs, CorelDraw, ...):</p>
+        <?=insertTemplate("classes/project/modules/sticker/views/stickerFileView.php", ["images" => $stickerImage->getGeneralImages(), "files" => $stickerImage->getFiles()])?>
         <div id="delete-menu">
             <div class="item" onclick="deleteImage(-1)">
                 <svg style="width:24px;height:24px" viewBox="0 0 24 24">
@@ -218,7 +218,7 @@ if ($id == 0): ?>
             </span>
         </div>
         <div>
-            <object id="svgContainer" data="<?=$stickerImage->getSVGIfExists()?>" type="image/svg+xml"></object>
+            <object id="svgContainer" data="<?=$stickerImage->getSVGIfExists()?>" type="image/svg+xml" class="innerDefCont imageMovableContainer" ondrop="itemDropHandler(event, 'textilsvg');" ondragover="itemDragOverHandler(event);"></object>
             <br>
             <?php if ($stickerCollection->getTextil()->getIsColorable() == 1): ?>
             <?php foreach ($stickerCollection->getTextil()->textilColors as $color):?>

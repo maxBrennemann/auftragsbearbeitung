@@ -3,15 +3,98 @@
 require_once("classes/project/modules/sticker/StickerCollection.php");
 require_once('classes/project/modules/sticker/PrestashopConnection.php');
 
+/**
+ * steps:
+ * 1: no more static
+ * 2: use stored images so that there is no need for requests
+ * 3: store images???
+ * 4: file versioning with datetimes
+ * 5: automatic export via cronjobs
+ */
 class ExportFacebook extends PrestashopConnection {
 
     private static $csv;
     private static $file;
 
-    function __construct() {}
+    private $idProducts;
+
+    private $line = [
+        "id" => "",
+        "title" => "",
+        "description" => "",
+        "availability" => "In Stock",
+        "condition" => "New",
+        "price" => "",
+        "link" => "",
+        "image_link" => "",
+        "brand" => "klebefux",
+        "item_group_id" => "",
+        "color" => "",
+        "size" => "",
+        "material" => "",
+        "shipping_weight" => "0.5kg",
+    ];
+
+    private static $errorList = [];
+
+    function __construct() {
+        $query = "SELECT `id` FROM `module_sticker_sticker_data` ORDER BY `id` ASC";
+        $this->idProducts = DBAccess::selectQuery($query);
+    }
+
+    public function generateCSV() {
+        $lines = [];
+        foreach ($this->idProducts as $id) {
+            $id = (int) $id["id"];
+
+            $stickerCollection = new StickerCollection($id);
+            if ($stickerCollection->getAufkleber()->isInShop()) {
+                $lines[] = $this->fillLine($stickerCollection->getAufkleber());
+            }
+    
+            if ($stickerCollection->getTextil()->isInShop()) {
+                $lines[] = $this->fillLine($stickerCollection->getTextil());
+            }
+    
+            if ($stickerCollection->getWandtattoo()->isInShop()) {
+                $lines[] = $this->fillLine($stickerCollection->getWandtattoo());
+            }
+        }
+    }
+
+    private function fillLine($product): String {
+        $type = $product->getType();
+        $this->line["item_group_id"] = $type . $product->getId();
+        $this->line["title"] = $product->getName();
+        $this->line["description"] = "Unsere Aufkleber und Textilien sind keine Lagerware. Diese werden nach der Bestellung individuell für Dich angefertigt. " . $product->getDescription();
+        $this->line["link"] = $product->getShopLink();
+        $this->line["image_link"] = self::getFirstImageLink($product);
+
+        if ($product instanceof Aufkleber) {
+            $this->fillLineAufkleber($product);
+        } else if ($product instanceof Wandtattoo) {
+            $this->fillLineWandtattoo($product);
+        } else if ($product instanceof Textil) {
+            $this->fillLineTextil($product);
+        }
+
+        return implode();
+    }
+
+    private function fillLineAufkleber($product) {
+
+    }
+
+    private function fillLineWandtattoo($product) {
+
+    }
+
+    private function fillLineTextil($product) {
+
+    }
 
     public static function exportAll() {
-        $allProducts = DBAccess::selectQuery("SELECT `id` FROM `module_sticker_sticker_data`");
+        $allProducts = DBAccess::selectQuery("SELECT `id` FROM `module_sticker_sticker_data` ORDER BY `id` ASC");
         /* TODO: absolute path must later be parameterized */
         self::$file = fopen('files/res/form/modules/sticker/catalog_products.csv', 'a');
 
@@ -20,6 +103,7 @@ class ExportFacebook extends PrestashopConnection {
             self::addProduct($id);
         }
         fclose(self::$file);
+        return self::$errorList;
     }
 
     private static function readCSV() {
@@ -51,17 +135,24 @@ class ExportFacebook extends PrestashopConnection {
             "material" => "",
             "shipping_weight" => "0.5kg",
         ];
-
-        $stickerCollection = new StickerCollection($id);
         
-        foreach ($stickerCollection as $product) {
-            if ($product->isInShop()) {
-                self::generate($product, $line, $product->getType());
-            }
+        $stickerCollection = new StickerCollection($id);
+
+        if ($stickerCollection->getAufkleber()->isInShop()) {
+            self::generate($stickerCollection->getAufkleber(), $line);
+        }
+
+        if ($stickerCollection->getTextil()->isInShop()) {
+            self::generate($stickerCollection->getTextil(), $line);
+        }
+
+        if ($stickerCollection->getWandtattoo()->isInShop()) {
+            self::generate($stickerCollection->getWandtattoo(), $line);
         }
     }
 
-    private static function generate($product, $line, $type) {
+    private static function generate($product, $line) {
+        $type = $product->getType();
         $line["item_group_id"] = $type . $product->getId();
         $line["title"] = $product->getName();
         $line["description"] = "Unsere Aufkleber und Textilien sind keine Lagerware. Diese werden nach der Bestellung individuell für Dich angefertigt. " . $product->getDescription();
@@ -71,9 +162,9 @@ class ExportFacebook extends PrestashopConnection {
         if ($product instanceof Aufkleber) {
             self::generateAufkleber($product, $line);
         } else if ($product instanceof Wandtattoo) {
-            self::generateWandtattoo($product, $line);
+            //self::generateWandtattoo($product, $line);
         } else if ($product instanceof Textil) {
-            self::generateTextil($product, $line);
+            //self::generateTextil($product, $line);
         }
     }
 
@@ -82,7 +173,10 @@ class ExportFacebook extends PrestashopConnection {
         try  {
             $xml = $prestashopConnection->getXML("images/products/" . $product->getIdProduct());
             $resources = $xml->children()->children();
-            $id = (int) $resources->tag->attributes()->id;
+            $declination = $resources->declination;
+            $image = $declination[0];
+            $id = (int) $image->attributes()->id;
+            
             return "https://klebefux.de/auftragsbearbeitung/images.php?product=" . $product->getIdProduct() . "&image=" . $id;
         } catch (PrestaShopWebserviceException $e) {
             echo 'Error:' . $e->getMessage();
@@ -90,16 +184,20 @@ class ExportFacebook extends PrestashopConnection {
     }
 
     private static function generateAufkleber($product, $line) {
-        // all attributes zusammentragen
-        // prices zusammentragen
-        // über combinations iteraten
-        // jeweilse eine zeile hinzufügen mit dem price match von stickerCombination        
-
-
         $combinationId = 0;
-        foreach ($product->getSizeToPrice() as $price => $size) {
-            $line["price"] = $price;
-            $line["size"] = $size;
+        $sizeIds = $product->getSizeIds();
+        $prices = $product->getPricesMatched();
+
+        foreach ($sizeIds as $size) {
+
+            if (array_key_exists($size, $prices) && $prices[$size] != 0.00) {
+                $line["price"] = $prices[$size];
+            } else {
+                self::$errorList[] = $size;
+                continue;
+            }
+
+            $line["size"] = $product->getSize($size);
 
             if ($product->getIsMultipart()) {
                 $line["id"] = "aufkleber" . "_" . $product->getId() . "_" . $combinationId;
