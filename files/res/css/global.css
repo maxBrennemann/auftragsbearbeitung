@@ -818,3 +818,21 @@ input#hamburg {
 .nowrap {
     white-space: nowrap;
 }
+
+/* error message btns */
+.removeFailiureMessage {
+    color: white;
+    background-color: unset;
+    border: none;
+    font-size: 1.1em;
+}
+
+.copyBtn {
+    color: white;
+    background-color: unset;
+    border: none;
+}
+
+.showFailiureW {
+    color: white;
+}

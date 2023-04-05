@@ -989,6 +989,57 @@ class StatusInfo {
 	constructor(infoType, text) {
 		this.infoType = infoType;
 		this.text = text;
+
+		this.persistant = false;
+	}
+	
+	setText(text) {
+		this.text = text;
+	}
+
+	makeBoxPersistantOnFailure() {
+		this.persistant = true;
+	}
+
+	showError() {
+		// showFailiure
+		let div = document.createElement("div");
+		div.classList.add("showFailiure");
+		div.classList.add("showFailiureW");
+		document.body.appendChild(div);
+
+		let infoText = document.createElement("div");
+		infoText.classList.add("inline");
+		infoText.innerHTML = "Ein Fehler ist aufgetreten.";
+
+		const removeBtn = document.createElement("button");
+		removeBtn.addEventListener("click", e => {
+			this.infoHTML.parentNode.removeChild(this.infoHTML);
+		});
+		removeBtn.innerHTML = "x";
+		removeBtn.classList.add("removeFailiureMessage");
+
+		const copyContent = document.createElement("input");
+		copyContent.value = this.text;
+		copyContent.style.display = "none";
+
+		const copyBtn = document.createElement("button");
+		copyBtn.addEventListener("click", () => {
+			copyContent.select();
+			copyContent.setSelectionRange(0, 99999);
+			navigator.clipboard.writeText(copyContent.value);
+		});
+		copyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15px" height="15px" fill="white"><title>content-copy</title><path d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z" /></svg>`;
+		copyBtn.classList.add("copyBtn");
+		
+
+		div.appendChild(removeBtn);
+		div.appendChild(copyContent);
+		div.appendChild(copyBtn);
+		div.appendChild(infoText);
+
+		this.infoHTML = div;
+		this.infoText = infoText;
 	}
 
 	show() {
@@ -1020,11 +1071,11 @@ class StatusInfo {
 		this.loader.innerHTML = "✓";
 	}
 
-	async hide() {
-		await delay(1000);
+	async hide(wait = 1000) {
+		await delay(wait);
 		this.infoHTML.classList.add("hidden");
 	
-		await delay(2000);
+		await delay(wait + 1000);
 		this.infoHTML.parentNode.removeChild(this.infoHTML);
 	}
 }
