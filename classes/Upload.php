@@ -76,6 +76,14 @@ class Upload {
                     "motivnummer" => $motivnummer,
                     "imageCategory" => $imageCategory,
                 ];
+
+                /* delete all textilsvg for this motiv id */
+                /* TODO: bad practice: refactor code */
+                if ($imageCategory == "textilsvg") {
+                    require_once("classes/project/modules/sticker/StickerImage.php");
+                    StickerImage::handleSVGStatus($motivnummer);
+                }
+
                 DBAccess::insertQuery($query, $params);
 
                 $image = DBAccess::selectQuery("SELECT dateiname, originalname FROM dateien WHERE id = $id LIMIT 1");

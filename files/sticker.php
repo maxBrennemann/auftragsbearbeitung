@@ -218,7 +218,7 @@ if ($id == 0): ?>
             </span>
         </div>
         <div>
-            <object id="svgContainer" data="<?=$stickerImage->getSVGIfExists()?>" type="image/svg+xml" class="innerDefCont imageMovableContainer" ondrop="itemDropHandler(event, 'textilsvg');" ondragover="itemDragOverHandler(event);"></object>
+            <object id="svgContainer" data="<?=$stickerImage->getSVGIfExists($stickerCollection->getTextil()->getIsColorable())?>" type="image/svg+xml" class="innerDefCont imageMovableContainer" ondrop="itemDropHandler(event, 'textilsvg');" ondragover="itemDragOverHandler(event);"></object>
             <br>
             <?php if ($stickerCollection->getTextil()->getIsColorable() == 1): ?>
             <?php foreach ($stickerCollection->getTextil()->textilColors as $color):?>
