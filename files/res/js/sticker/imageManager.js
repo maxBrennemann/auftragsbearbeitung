@@ -269,6 +269,7 @@ async function click_makeColorable() {
         id: mainVariables.motivId.innerHTML,
         r: "makeSVGColorable"
     }).then(r => {
-        console.log(r.url);
+        const svgContainer = document.getElementById("svgContainer");
+        svgContainer.data = r.url;
     });
 }
