@@ -3,14 +3,14 @@ var mainVariables = {
 };
 
 if (document.readyState !== 'loading' ) {
-    initStickerOverview();
+    initSticker();
 } else {
     document.addEventListener('DOMContentLoaded', function () {
-        initStickerOverview();
+        initSticker();
     });
 }
 
-function initStickerOverview() {
+function initSticker() {
     initSVG();
     initBindings();
     initTagManager();
@@ -186,29 +186,33 @@ function resizeTitle() {
 }
 
 async function click_textilClick() {
-    var data =  {
+    const statusInfo = new StatusInfo("", "");
+    ajax.post({
         id: mainVariables.motivId.innerHTML,
-    };
-    var response = await send(data, "toggleTextil");
-    if (response == "success") {
-        infoSaveSuccessfull("success");
-    } else {
-        console.log(response);
-        infoSaveSuccessfull();
-    }
+        r: "toggleTextil"
+    }).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+        }
+    }).catch(r => {
+        statusInfo.setText(r);
+        statusInfo.showError();
+    });
 }
 
 async function click_wandtattooClick() {
-    var data =  {
+    const statusInfo = new StatusInfo("", "");
+    ajax.post({
         id: mainVariables.motivId.innerHTML,
-    };
-    var response = await send(data, "toggleWandtattoo");
-    if (response == "success") {
-        infoSaveSuccessfull("success");
-    } else {
-        console.log(response);
-        infoSaveSuccessfull();
-    }
+        r: "toggleWandtattoo"
+    }).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+        }
+    }).catch(r => {
+        statusInfo.setText(r);
+        statusInfo.showError();
+    });
 }
 
 async function click_revisedClick() {
@@ -287,36 +291,6 @@ function send(data, intent = "", json = false) {
     }
 
     return response;
-}
-
-const ajax = {
-    async post(data, noJSON = false) {
-        data.getReason = data.r;
-        const param = Object.keys(data).map(key => {
-            return `${key}=${data[key]}`;
-        });
-        let response = await makeAsyncCall("POST", param.join("&"), "").then(result => {
-            return result;
-        });
-    
-        if (noJSON) {
-            return response;
-        }
-
-        let json = {};
-        try {
-            json = JSON.parse(response);
-        } catch (e) {
-            infoSaveSuccessfull();
-            return {};
-        }
-
-        return json;
-    },
-
-    async get() {
-
-    },
 }
 
 /**
@@ -631,91 +605,6 @@ async function tableUpdateCallback() {
 }
 
 /* todo: größe der neuen daten ergänzen und preise updatebar machen */
-
-var svg_elem;
-function initSVG() {
-    var a = document.getElementById("svgContainer");
-    if (a != null || a!= undefined) {
-        a.addEventListener("load", loadSVGEvent, false);
-
-        if (a.contentDocument != null) {
-            var svgDoc = a.contentDocument;
-            svg_elem = svgDoc.getElementById("svg_elem");
-            adjustSVG();
-        }
-    }
-
-    if (a.attributes.data.value == "") {
-        a.style.height = "0";
-    }
-}
-
-/* sets the svg_elem element when the content is loaded */
-function loadSVGEvent() {
-    var a = document.getElementById("svgContainer");
-    var svgDoc = a.contentDocument;
-    svg_elem = svgDoc.getElementById("svg_elem");
-    adjustSVG();
-}
-
-/**
- * adjust the svg into the svg container, so that the element is not too small
- */
-function adjustSVG() {
-    if (svg_elem != null) {
-        let children = svg_elem.children;
-
-        let positions = {
-            furthestX: 0,
-            nearestX: 0,
-            furthestY: 0,
-            nearestY: 0,
-
-            edited: false,
-        }
-
-        for (let i = 0; i< children.length; i++) {
-            let child = children[i];
-            if (child.getBBox() && child.nodeName != "defs") {
-                var coords = child.getBBox();
-                if (positions.edited == false) {
-                    positions.furthestX = coords.x + coords.width;
-                    positions.furthestY = coords.y + coords.height;
-                    positions.nearestX = coords.x;
-                    positions.nearestY = coords.y;
-
-                    positions.edited = true;
-                } else {
-                    if (coords.x < positions.nearestX) {
-                        positions.nearestX = coords.x;
-                    }
-                    if (coords.y < positions.nearestY) {
-                        positions.nearestY = coords.y;
-                    }
-                    if (coords.x + coords.width > positions.furthestX) {
-                        positions.furthestX = coords.x + coords.width;
-                    }
-                    if (coords.y + coords.height > positions.furthestY) {
-                        positions.furthestY = coords.y + coords.height;
-                    }
-                }
-            }
-        }
-
-        let width = positions.furthestX - positions.nearestX;
-        let height = positions.furthestY - positions.nearestY;
-
-        svg_elem.setAttribute("viewBox", `${positions.nearestX} ${positions.nearestY} ${width} ${height}`);
-    }
-}
-
-async function click_makeColorable() {
-    var data = {
-        id: mainVariables.motivId.innerHTML,
-    };
-    var svg_url = await send(data, "makeSVGColorable");
-    console.log(svg_url);
-}
 
 function preisListenerTextil() {
     document.getElementById("selectReplacerPreiskategorie").classList.add("selectReplacerShow");

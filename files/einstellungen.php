@@ -108,3 +108,7 @@ $_SESSION[$tableOrderType->getTableKey()] = serialize($tableOrderType);
         Aktuelle Arbeitszeit global anzeigen
     </div>
 </section>
+<section class="defCont">
+    <h2>Dateien</h2>
+    <button id="clearFiles">Dateien aufräumen</button>
+</section>

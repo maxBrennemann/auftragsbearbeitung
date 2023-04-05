@@ -60,6 +60,10 @@ class Sticker extends PrestashopConnection {
         return $this->idSticker;
     }
 
+    public function getType() {
+        return $this->instanceType;
+    }
+
     public function getDirectory() {
         return $this->stickerData["directory_name"];
     }
@@ -76,7 +80,9 @@ class Sticker extends PrestashopConnection {
         return $this->stickerData["additional_info"];
     }
 
-    protected function isInShop() {}
+    public function isInShop() {
+        return false;
+    }
 
     protected function checkIsInShop($type): bool {
         if ($this->additionalData != null) {
@@ -151,10 +157,6 @@ class Sticker extends PrestashopConnection {
 
     public function getTags() {
 
-    }
-
-    public function getImages() {
-        //
     }
 
     public function getActiveStatus() {

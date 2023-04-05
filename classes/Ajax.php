@@ -1065,10 +1065,11 @@ class Ajax {
 						$textil->save();
 						break;
 					case 4:
+						/* TODO: iteration bei StickerCollection überarbeiten */
 						$stickerCollection = new StickerCollection($id);
-						foreach ($stickerCollection as $sticker) {
-							$sticker->save();
-						}
+						$stickerCollection->getAufkleber()->save();
+						$stickerCollection->getWandtattoo()->save();
+						$stickerCollection->getTextil()->save();
 						break;
 				}
 				echo "ready";
@@ -1111,7 +1112,9 @@ class Ajax {
 			case "toggleWandtattoo":
 				$id = (int) $_POST["id"];
 				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_walldecal` = NOT `is_walldecal` WHERE id = $id");
-				echo "success";
+				echo json_encode([
+					"status" => "success",
+				]);
 			break;
 			case "toggleRevised":
 				$id = (int) $_POST["id"];
@@ -1129,11 +1132,10 @@ class Ajax {
 				require_once('classes/project/modules/sticker/Textil.php');
 				$textil = new Textil($id);
 				$textil->toggleIsColorable();
-				echo $textil->getCurrentSVG();
-
-				/*
-				echo json_encode(["url" => $textil->getCurrentSVG()]);
-				*/
+				$file = $textil->getCurrentSVG();
+				$url = Link::getResourcesShortLink($file["dateiname"], "upload");
+				
+				echo json_encode(["url" => $url]);
 			break;
 			case "createNewSticker":
 				$title = (String) $_POST["newTitle"];
@@ -1274,9 +1276,19 @@ class Ajax {
 					echo "no data found";
 				}
 			break;
+			case "clearFiles":
+				require_once('classes/Upload.php');
+				Upload::deleteUnusedFiles();
+			break;
 			case "createFbExport":
 				require_once('classes/project/modules/sticker/exports/ExportFacebook.php');
-				ExportFacebook::exportAll();
+				$errorList = ExportFacebook::exportAll();
+				$fileLink = Link::getResourcesLink("modules/sticker/catalog_products.csv", "html");
+				echo json_encode([
+					"status" => "successful",
+					"file" => $fileLink,
+					"errorList" => $errorList,
+				]);
 			break;
 			case "exportFacebook":
 				require_once('classes/project/modules/sticker/exports/ExportFacebook.php');

@@ -164,6 +164,7 @@ class ProductCrawler extends PrestashopConnection {
             /* write image info to db */
             $query = "INSERT INTO dateien (dateiname, originalname, `date`, `typ`) VALUES ('$filename', '$filename', '$today', 'jpg')";
             $id_datei = DBAccess::insertQuery($query);
+            /* TODO: über StickerImage machen */
             $query = "INSERT INTO dateien_motive (id_datei, id_motive) VALUES ($id_datei, $motivId);";
             DBAccess::insertQuery($query);
 
@@ -182,6 +183,7 @@ class ProductCrawler extends PrestashopConnection {
                     break;
             }
 
+            /* TODO: über StickerImage machen */
             if ($key != "") {
                 $query = "INSERT INTO module_sticker_images (id_image, id_sticker, $key) VALUES ($id_datei, $motivId, 1);";
                 DBAccess::insertQuery($query);

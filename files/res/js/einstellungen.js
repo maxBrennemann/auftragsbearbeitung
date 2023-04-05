@@ -22,6 +22,14 @@ function initEventListeners() {
             });
         });
     }
+
+    const clearFiles = document.getElementById("clearFiles");
+    clearFiles.addEventListener("click", () => {
+        const send = new AjaxCall({
+            getReason: "clearFiles",
+        }, "POST", window.location.href);
+        send.makeAjaxCall(response => {});
+    });
 }
 
 function setCustomColor(value) {

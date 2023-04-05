@@ -48,7 +48,6 @@ class Textil extends Sticker {
     }
 
     public function isInShop() {
-        parent::isInShop();
         return parent::checkIsInShop(self::TYPE);
     }
 
@@ -99,14 +98,11 @@ class Textil extends Sticker {
 
     public function toggleIsColorable() {
         DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_colorable` = NOT `is_colorable` WHERE id = :id", ["id" => $this->getId()]);
-
-        if (!$this->imageData->getColorableSVG()) {
-            $this->makeColorable();
-        }
+        $this->isColorable = !$this->isColorable;
     }
 
     public function getCurrentSVG() {
-        return $this->imageData->getSVGIfExists();
+        return $this->imageData->getTextilSVG($this->isColorable);
     }
 
     private function uploadSVG() {
@@ -127,64 +123,6 @@ class Textil extends Sticker {
     public function uploadImages($imageURLs) {
         parent::uploadImages($imageURLs);
         $this->uploadSVG();
-    }
-
-    /**
-     * seaches for all occurances of colors in these two patterns:
-     * fill:#FFFFFF
-     * fill:#FFF
-     * then it replaces "<svg" with "<svg id="svg_elem" only if it is not already set
-     */
-    public function makeColorable() {
-        $filename = $this->imageData->getSVG();
-        if ($filename == "") {
-            return "";
-        }
-
-        $newFile = substr($filename, 0, -4);
-        $newFile .= "_colorable.svg";
-
-        if (!file_exists($newFile)) {
-            $file = file_get_contents($filename);
-
-            /* remove all fills */
-            $file = preg_replace('/fill:#([0-9a-f]{6}|[0-9a-f]{3})/i', "", $file);
-
-            /* remove all strokes */
-            $file = preg_replace('/stroke:#([0-9a-f]{6}|[0-9a-f]{3})/i', "", $file);
-
-            if (!str_contains($file, "<svg id=\"svg_elem\"")) {
-                $file = str_replace("<svg", "<svg id=\"svg_elem\"", $file);
-            }
-
-            file_put_contents($newFile, $file);
-            $newFile = substr($newFile, strlen("upload/"));
-
-            /* add file to db */
-            $query = "INSERT INTO `dateien` (`dateiname`, `originalname`, `date`, `typ`) VALUES (:newFile1, :newFile2, :today, 'svg');";
-            $fileId = DBAccess::insertQuery($query, [
-                "newFile1" => $newFile,
-                "newFile2" => $newFile,
-                "today" => date("Y-m-d")
-            ]);
-
-            $query = "INSERT INTO `dateien_motive` (`id_datei`, `id_motive`) VALUES (:fileId, :id);";
-            DBAccess::insertQuery($query, [
-                "fileId" => $fileId,
-                "id" => $this->getId(),
-            ]);
-
-            $query = "INSERT INTO `module_sticker_images` (`id_image`, `id_sticker`) VALUES (:fileId, :id);";
-            DBAccess::insertQuery($query, [
-                "fileId" => $fileId,
-                "id" => $this->getId(),
-            ]);
-
-            return Link::getResourcesShortLink($newFile, "upload");
-        } else {
-            $newFile = substr($newFile, 0, strlen("upload/"));
-            return Link::getResourcesShortLink($filename, "upload");
-        }
     }
 
     /**

@@ -6,5 +6,7 @@ export default async function generateText(title, tags, type, length) {
         length: length,
     }
 
-    const text = await send(settings, "generateText");
+    const text = await ajax.post({
+        "r": "generateText",
+    });
 }

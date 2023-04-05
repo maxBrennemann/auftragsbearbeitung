@@ -17,7 +17,6 @@ class Wandtattoo extends AufkleberWandtattoo {
     }
 
     public function isInShop() {
-        parent::isInShop();
         return parent::checkIsInShop(self::TYPE);
     }
 
