@@ -40,17 +40,12 @@ class StickerImage {
         return $this->files;
     }
 
-    public function getSVGIfExists() {
-        $f = $this->getTextilSVG();
+    public function getSVGIfExists($colorable = false) {
+        $f = $this->getTextilSVG($colorable);
         if ($f == null) {
             return "";
         }
         return Link::getResourcesShortLink($f["dateiname"], "upload");
-    }
-
-    // TODO: Funktionen für colorable toggle fertig schreiben
-    public function getColorableSVG() {
-        
     }
 
     /* adds new attributes "link" and "title" to all images */
@@ -82,9 +77,12 @@ class StickerImage {
         );
     }
 
-    public function getTextilSVG() {
+    public function getTextilSVG($colorable = false) {
         foreach ($this->files as $f) {
             if ($f["image_sort"] == "textilsvg") {
+                if ($colorable) {
+                    return $this->makeSVGColorable($f);
+                }
                 return $f;
             }
         }
@@ -177,8 +175,8 @@ class StickerImage {
      * fill:#FFF
      * then it replaces "<svg" with "<svg id="svg_elem" only if it is not already set
      */
-    public function makeSVGColorable() {
-        $filename = $this->getTextilSVG();
+    public function makeSVGColorable($f) {
+        $filename = $f["dateiname"];
         if ($filename == "") {
             return "";
         }
@@ -186,7 +184,7 @@ class StickerImage {
         $newFile = substr($filename, 0, -4);
         $newFile .= "_colorable.svg";
 
-        if (!file_exists($newFile)) {
+        if (!file_exists("upload/" . $newFile)) {
             $file = file_get_contents($filename);
 
             /* remove all fills */
@@ -199,19 +197,24 @@ class StickerImage {
                 $file = str_replace("<svg", "<svg id=\"svg_elem\"", $file);
             }
 
-            file_put_contents($newFile, $file);
-            $newFile = substr($newFile, strlen("upload/"));
+            file_put_contents("upload/" . $newFile, $file);
 
             $this->saveImage($newFile);
-            return Link::getResourcesShortLink($newFile, "upload");
+            $f["dateiname"] = $newFile;
+            return $f;
         } else {
-            $newFile = substr($newFile, 0, strlen("upload/"));
-            return Link::getResourcesShortLink($filename, "upload");
+            $f["dateiname"] = $newFile;
+            return $f;
         }
     }
 
     public function uploadSVG($number) {
 
+    }
+
+    public static function handleSVGStatus(int $idMotiv) {
+        $query = "DELETE FROM module_sticker_image WHERE id_motiv = :idMotiv AND image_sort = 'textilsvg';";
+        DBAccess::deleteQuery($query, ["idMotiv" => $idMotiv]);
     }
 
 }

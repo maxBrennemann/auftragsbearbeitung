@@ -3,14 +3,14 @@ var mainVariables = {
 };
 
 if (document.readyState !== 'loading' ) {
-    initStickerOverview();
+    initSticker();
 } else {
     document.addEventListener('DOMContentLoaded', function () {
-        initStickerOverview();
+        initSticker();
     });
 }
 
-function initStickerOverview() {
+function initSticker() {
     initSVG();
     initBindings();
     initTagManager();
@@ -186,24 +186,17 @@ function resizeTitle() {
 }
 
 async function click_textilClick() {
-    /*var data =  {
-        id: mainVariables.motivId.innerHTML,
-    };
-    var response = await send(data, "toggleTextil");
-    if (response == "success") {
-        infoSaveSuccessfull("success");
-    } else {
-        console.log(response);
-        infoSaveSuccessfull();
-    }*/
-
+    const statusInfo = new StatusInfo("", "");
     ajax.post({
         id: mainVariables.motivId.innerHTML,
         r: "toggleTextil"
     }).then(r => {
-        console.log(r.url);
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+        }
     }).catch(r => {
-        console.log(r);
+        statusInfo.setText(r);
+        statusInfo.showError();
     });
 }
 

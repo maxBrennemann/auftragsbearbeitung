@@ -1065,10 +1065,11 @@ class Ajax {
 						$textil->save();
 						break;
 					case 4:
+						/* TODO: iteration bei StickerCollection überarbeiten */
 						$stickerCollection = new StickerCollection($id);
-						foreach ($stickerCollection as $sticker) {
-							$sticker->save();
-						}
+						$stickerCollection->getAufkleber()->save();
+						$stickerCollection->getWandtattoo()->save();
+						$stickerCollection->getTextil()->save();
 						break;
 				}
 				echo "ready";
@@ -1131,9 +1132,10 @@ class Ajax {
 				require_once('classes/project/modules/sticker/Textil.php');
 				$textil = new Textil($id);
 				$textil->toggleIsColorable();
-				echo $textil->getCurrentSVG();
+				$file = $textil->getCurrentSVG();
+				$url = Link::getResourcesShortLink($file["dateiname"], "upload");
 				
-				echo json_encode(["url" => $textil->getCurrentSVG()]);
+				echo json_encode(["url" => $url]);
 			break;
 			case "createNewSticker":
 				$title = (String) $_POST["newTitle"];
