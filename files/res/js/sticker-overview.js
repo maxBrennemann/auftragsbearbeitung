@@ -76,28 +76,6 @@ function initBindings() {
     });
 }
 
-function send(data, intent, json = false) {
-    data.getReason = intent;
-
-    if (json) {
-        paramString = "getReason=" + intent + "&json=" + JSON.stringify(data);
-    } else {
-        /* temporarily copied here */
-        let temp = "";
-        for (let key in data) {
-            temp += key + "=" + data[key] + "&";
-        }
-
-        paramString = temp.slice(0, -1);
-    }
-
-    var response = makeAsyncCall("POST", paramString, "").then(result => {
-        return result;
-    });
-
-    return response;
-}
-
 var responseLength = 0;
 function crawlAll(e) {
     e.preventDefault();
@@ -142,7 +120,10 @@ async function showStickerStatus() {
     let overviewTable = document.querySelector('[data-type="module_sticker_sticker_data"]');
     if (overviewTable == null) return;
 
-    var data = await send({}, "getStickerStatus");
+    var data = await ajax.post({
+        "r": "getStickerStatus",
+    })
+
     data = JSON.parse(data);
     var rows = overviewTable.children[0].children;
 
@@ -184,19 +165,23 @@ async function showStickerStatus() {
 async function createNewSticker() {
     var title = document.getElementById("newTitle").value;
     if (title.length != 0) {
-        let redirectLink = await send({newTitle: title}, "createNewSticker");
-
-        if (redirectLink == "-1") {
-            alert("an error occured");
-        } else {
-            window.location.href = redirectLink;
-        }
+        ajax.post({
+            "newTitle": title,
+            "r": "createNewSticker",
+        }, true).then(redirectLink => {
+            if (redirectLink == "-1") {
+                alert("an error occured");
+            } else {
+                window.location.href = redirectLink;
+            }
+        });
     }
 }
 
 async function click_createFbExport() {
-    let fbExport = await send({}, "createFbExport");
-    fbExport = JSON.parse(fbExport);
+    let fbExport = ajax.post({
+        "r": "createFbExport",
+    })
 
     if (fbExport.status == "successful") {
         infoSaveSuccessfull("success");

@@ -186,7 +186,7 @@ function resizeTitle() {
 }
 
 async function click_textilClick() {
-    var data =  {
+    /*var data =  {
         id: mainVariables.motivId.innerHTML,
     };
     var response = await send(data, "toggleTextil");
@@ -195,20 +195,29 @@ async function click_textilClick() {
     } else {
         console.log(response);
         infoSaveSuccessfull();
-    }
+    }*/
+
+    ajax.post({
+        id: mainVariables.motivId.innerHTML,
+        r: "toggleTextil"
+    }).then(r => {
+        console.log(r.url);
+    }).catch(r => {
+        console.log(r);
+    });
 }
 
 async function click_wandtattooClick() {
-    var data =  {
+    ajax.post({
         id: mainVariables.motivId.innerHTML,
-    };
-    var response = await send(data, "toggleWandtattoo");
-    if (response == "success") {
-        infoSaveSuccessfull("success");
-    } else {
-        console.log(response);
-        infoSaveSuccessfull();
-    }
+        r: "toggleWandtattoo"
+    }).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+        }
+    }).catch(r => {
+        infoSaveSuccessfull("failiure", r);
+    });
 }
 
 async function click_revisedClick() {
@@ -287,36 +296,6 @@ function send(data, intent = "", json = false) {
     }
 
     return response;
-}
-
-const ajax = {
-    async post(data, noJSON = false) {
-        data.getReason = data.r;
-        const param = Object.keys(data).map(key => {
-            return `${key}=${data[key]}`;
-        });
-        let response = await makeAsyncCall("POST", param.join("&"), "").then(result => {
-            return result;
-        });
-    
-        if (noJSON) {
-            return response;
-        }
-
-        let json = {};
-        try {
-            json = JSON.parse(response);
-        } catch (e) {
-            infoSaveSuccessfull();
-            return {};
-        }
-
-        return json;
-    },
-
-    async get() {
-
-    },
 }
 
 /**

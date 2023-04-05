@@ -465,6 +465,36 @@ AjaxCall.prototype.makeAjaxCall = function(dataCallback, ...args) {
 	}
 }
 
+const ajax = {
+    async post(data, noJSON = false) {
+        data.getReason = data.r;
+        const param = Object.keys(data).map(key => {
+            return `${key}=${data[key]}`;
+        });
+        let response = await makeAsyncCall("POST", param.join("&"), "").then(result => {
+            return result;
+        });
+    
+        if (noJSON) {
+            return response;
+        }
+
+        let json = {};
+        try {
+            json = JSON.parse(response);
+        } catch (e) {
+            infoSaveSuccessfull();
+            return {};
+        }
+
+        return json;
+    },
+
+    async get() {
+
+    },
+}
+
 async function makeAsyncCall(type, params, location) {
 	return new Promise((resolve, reject) => {
 		if (params == null) {
@@ -477,7 +507,7 @@ async function makeAsyncCall(type, params, location) {
 				if (this.readyState == 4 && this.status == 200) {
 					resolve(this.responseText);
 				} else {
-					reject();
+					reject(this.responseText);
 				}
 			}
 			ajaxCall.open("POST",  location, true);
@@ -805,7 +835,7 @@ window.addEventListener("click", function(event) {
 }, false);
 
 /* function shows an info text about the update status of an ajax query */
-function infoSaveSuccessfull(status = "failiure") {
+function infoSaveSuccessfull(status = "failiure", errorMessage = "") {
 	var statusClass = "";
 	var text = "";
 	
