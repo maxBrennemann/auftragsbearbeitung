@@ -98,6 +98,7 @@ class Textil extends Sticker {
 
     public function toggleIsColorable() {
         DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_colorable` = NOT `is_colorable` WHERE id = :id", ["id" => $this->getId()]);
+        $this->isColorable = !$this->isColorable;
     }
 
     public function getCurrentSVG() {
