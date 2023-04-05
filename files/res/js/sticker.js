@@ -208,6 +208,7 @@ async function click_textilClick() {
 }
 
 async function click_wandtattooClick() {
+    const statusInfo = new StatusInfo("", "");
     ajax.post({
         id: mainVariables.motivId.innerHTML,
         r: "toggleWandtattoo"
@@ -216,7 +217,8 @@ async function click_wandtattooClick() {
             infoSaveSuccessfull("success");
         }
     }).catch(r => {
-        infoSaveSuccessfull("failiure", r);
+        statusInfo.setText(r);
+        statusInfo.showError();
     });
 }
 

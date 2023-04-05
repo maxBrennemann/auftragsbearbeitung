@@ -1109,9 +1109,6 @@ class Ajax {
 				echo "success";
 			break;
 			case "toggleWandtattoo":
-				echo "test";
-				http_response_code(400);
-				die();
 				$id = (int) $_POST["id"];
 				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_walldecal` = NOT `is_walldecal` WHERE id = $id");
 				echo json_encode([
