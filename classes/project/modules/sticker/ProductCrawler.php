@@ -2,6 +2,9 @@
 
 /*
  * TODO: nginx is still buffering, these headers do not affect it
+ * nginx buffering könnte man mit https://stackoverflow.com/questions/63293990/how-can-i-track-upload-progress-from-app-behind-nginx-reverse-proxy
+ * sowas in der Art umgehen. Ich denke aber, dass ein Websocket oder eine Schleife mit mehreren Requests sinnvoller wäre.
+ * So wichtig ist es aber auch nicht.
  */
 require_once("classes/project/modules/sticker/SearchProducts.php");
 
@@ -12,7 +15,6 @@ class ProductCrawler extends PrestashopConnection {
      * alle ids checken und wenn nicht existert, dann wird ein neuer eintrag erstellt
      * daten werden eingetragen
      */
-    
     function __construct() {
         parent::__construct();
     }
@@ -24,54 +26,39 @@ class ProductCrawler extends PrestashopConnection {
     public function crawlAll() {
         ignore_user_abort(true);
         set_time_limit(0);
-        if (ob_get_level() == 0) ob_start();
 
         $xml = $this->getXML("products");
-        $products = $xml->products->product;
+        $allProducts = $xml->products->product;
 
-        echo str_pad("{\"products\":" . sizeof($products) . "}", 4096);
-        ob_flush();
-        flush();
-
-        $count = 1;
-        foreach ($products as $product) {
-            $idProduct = $product["id"];
+        foreach ($allProducts as $product) {
+            $idProduct = (int) $product["id"];
             $productXml = $this->getXML("products/$idProduct");
 
             $productData = $productXml->product;
-            $productNumber = (int) $productData->reference;
+            $idMotiv = (int) $productData->reference;
 
-            $info = ["shopId" => $idProduct, "productId" => $productNumber];
+            if ($idMotiv != null || $idMotiv != 0) {
+                $checkIfExists = DBAccess::selectQuery("SELECT id FROM `module_sticker_sticker_data` WHERE id = :idMotiv LIMIT 1", ["idMotiv" => $idMotiv]);
 
-            if ($productNumber != null || $productNumber != 0) {
-                $checkIfExists = DBAccess::selectQuery("SELECT * FROM `module_sticker_sticker_data` WHERE id = $productNumber LIMIT 1");
-
+                /* if product exists, update product info, otherwise create it */
                 if ($checkIfExists != null) {
-                    $idSticker = $checkIfExists[0]["id"];
-                    $info["existing"] = $idSticker;
                     $category = $this->getCategory($productData);
-                    $this->updateCategory($productNumber, $category);
+                    $this->updateCategory($idMotiv, $category);
 
                     $this->getImages($productData, $category);
                 } else {
                     $this->analyseProduct($productData);
                 }
             }
-
-            $info["count"] = $count;
-            $count++;
-
-            echo str_pad(json_encode($info), 4096);
-            ob_flush();
-            flush();
         }
     }
 
     private function analyseProduct($productData) {
-        $id = (int) $productData->reference;
+        $idMotiv = (int) $productData->reference;
         $title = (String) $productData->name->language[0];
         $category = $this->getCategory($productData);
 
+        /* if category is 0, the product does not belong to the sticker upload program */
         if ($category == 0) {
             return;
         }
@@ -81,10 +68,10 @@ class ProductCrawler extends PrestashopConnection {
         $creationDate = $productData->date_add;
         $creationDate = date("Y-m-d", strtotime($creationDate));
 
-        $query = "REPLACE INTO `module_sticker_sticker_data` (`id`, `name`, `creation_date`) VALUES ($id, '$title', '$creationDate')";
+        $query = "REPLACE INTO `module_sticker_sticker_data` (`id`, `name`, `creation_date`) VALUES (:idMotiv, :title, :creationDate);";
 
-        DBAccess::updateQuery($query);
-        $this->updateCategory($id, $category);
+        DBAccess::updateQuery($query, ["idMotiv" => $idMotiv, "title" => $title, "creationDate" => $creationDate]);
+        $this->updateCategory($idMotiv, $category);
     }
 
     /**
@@ -113,16 +100,19 @@ class ProductCrawler extends PrestashopConnection {
         return 0;
     }
 
+    /**
+     * updates the category info of the product and sets additonal_data column
+     */
     private function updateCategory($id, $category) {
         switch ($category) {
             case 25:
-                $query = "UPDATE `module_sticker_sticker_data` SET is_shirtcollection = 1 WHERE id = $id";
+                $query = "UPDATE `module_sticker_sticker_data` SET is_shirtcollection = 1 WHERE id = :id;";
                 break;
             case 62:
-                $query = "UPDATE `module_sticker_sticker_data` SET is_walldecal = 1 WHERE id = $id";
+                $query = "UPDATE `module_sticker_sticker_data` SET is_walldecal = 1 WHERE id = :id;";
                 break;
             case 13:
-                $query = "UPDATE `module_sticker_sticker_data` SET is_plotted = 1 WHERE id = $id";
+                $query = "UPDATE `module_sticker_sticker_data` SET is_plotted = 1 WHERE id = :id;";
                 break;
             default:
                 $query = "";
@@ -130,64 +120,109 @@ class ProductCrawler extends PrestashopConnection {
 
         if ($query == "")
             return null;
-        DBAccess::updateQuery($query);
+        DBAccess::updateQuery($query, ["id" => $id]);
 
+        /* sets the additional_data column */
         $matches = SearchProducts::getProductsByStickerId($id);
         $matchesJson = json_encode($matches, JSON_UNESCAPED_UNICODE);
-        DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET additional_data = '$matchesJson' WHERE id = $id");
+        DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET additional_data = '$matchesJson' WHERE id = :id;", ["id" => $id]);
     }
 
-    /* TODO: Gedanken über den Speicherort machen, soll es in img/modules/sticker oder upload/ gespeichert werden? */
+    /**
+     * vorgehen:
+     * img daten holen und mit den daten am server vergleichen
+     * dann bilder, die fehlen, herunterladen
+     */
+
     private function getImages($productData, $category) {
+        $idMotiv = (int) $productData->reference;
+        $idProduct = (int) $productData->id;
+
+        $queryImageStatus = "SELECT * FROM module_sticker_image WHERE id_motiv = :idMotiv";
+        $dataImageStatus = DBAccess::selectQuery($queryImageStatus, ["idMotiv" => $idMotiv]);
+
+        $idImagesDownloaded = [];
+
+        /* 
+         * compares all already stored images to the shop images,
+         * if the image is already downloaded,
+         * then do nothing,
+         * if not, download the image and store the necessary data
+         */
+        foreach ($dataImageStatus as $imageComp) {
+            $idImageShop = (int) $imageComp["id_image_shop"];
+
+            /* if is 0, the image was not yet uploaded to the shop */
+            if ($idImageShop != 0) {
+                $idImagesDownloaded[] = $idImageShop;
+            }
+        }
+
         $images = $productData->associations->images;
-        $today = date("Y-m-d");
+        $imagesData = [];
 
+        /* collect image data */
         foreach ($images->image as $image) {
-            $imageId = (int) $image->id;
-            $productId = (int) $productData->id;
-            $motivId = (int) $productData->reference;
-            $apiKey = SHOPKEY;
-            $url = SHOPURL . "api/images/products/$productId/$imageId";
+            $idImage = (int) $image->id;
 
-            $ch = curl_init ($url);
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_USERPWD, $apiKey.':');
-            $image = curl_exec($ch);
-            curl_close($ch);
+            $imagesData[] = $idImage;
 
-            $filename = "${productId}_${motivId}_${imageId}.jpg";
-            $fp = fopen("upload/$filename", 'w');
-            fwrite($fp, $image);
-            fclose($fp);
-
-            /* write image info to db */
-            $query = "INSERT INTO dateien (dateiname, originalname, `date`, `typ`) VALUES ('$filename', '$filename', '$today', 'jpg')";
-            $id_datei = DBAccess::insertQuery($query);
-            /* TODO: über StickerImage machen */
-            $query = "INSERT INTO dateien_motive (id_datei, id_motive) VALUES ($id_datei, $motivId);";
-            DBAccess::insertQuery($query);
-
-            switch ($category) {
-                case 25:
-                    $key = "is_textil";
-                    break;
-                case 13:
-                    $key = "is_aufkleber";
-                    break;
-                case 62;
-                    $key = "is_wandtattoo";
-                    break;
-                default:
-                    $key = "";
-                    break;
+            if (!in_array($idImage, $idImagesDownloaded)) {
+                $filename = $this->downloadImage($idProduct, $idImage, $idMotiv);
+                $this->saveDownloadedImageToDB($filename, $idMotiv, $category, $idProduct, $idImage);
             }
+        }
+    }
 
-            /* TODO: über StickerImage machen */
-            if ($key != "") {
-                $query = "INSERT INTO module_sticker_images (id_image, id_sticker, $key) VALUES ($id_datei, $motivId, 1);";
-                DBAccess::insertQuery($query);
-            }
+    private function downloadImage($idProduct, $idImage, $idMotiv) {
+        $ch = curl_init(SHOPURL . "/api/images/products/$idProduct/$idImage");
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_USERPWD, SHOPKEY . ':');
+        $image = curl_exec($ch);
+        curl_close($ch);
+
+        $filename = $idProduct . "_" . $idMotiv . "_" . $idImage . ".jpg";
+        $fp = fopen("upload/$filename", 'w');
+        fwrite($fp, $image);
+        fclose($fp);
+
+        return $filename;
+    }
+
+    private function saveDownloadedImageToDB($filename, $idMotiv, $category, $idProduct, $idImageShop) {
+        /* write image info to db */
+        $query = "INSERT INTO dateien (dateiname, originalname, `date`, `typ`) VALUES (:dateiname, :originalname, :dateToday, 'jpg')";
+        $idDatei = DBAccess::insertQuery($query, [
+            "dateiname" => $filename,
+            "originalname" => $filename,
+            "dateToday" => date("Y-m-d"),
+        ]);
+
+        switch ($category) {
+            case 25:
+                $key = "textil";
+                break;
+            case 13:
+                $key = "aufkleber";
+                break;
+            case 62;
+                $key = "wandtattoo";
+                break;
+            default:
+                $key = null;
+                break;
+        }
+
+        if ($key != null) {
+            $query = "INSERT INTO module_sticker_image (id_datei, id_motiv, image_sort, id_product, id_image_shop) VALUES (:idDatei, :idMotiv, :imageSort, :idProduct, :idImageShop)";
+            DBAccess::insertQuery($query, [
+                "idDatei" => $idDatei,
+                "idMotiv" => $idMotiv,
+                "imageSort" => $key,
+                "idProduct" => $idProduct,
+                "idImageShop" => $idImageShop,
+            ]);
         }
     }
 

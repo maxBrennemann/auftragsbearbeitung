@@ -76,90 +76,39 @@ function initBindings() {
     });
 }
 
-var responseLength = 0;
-function crawlAll(e) {
-    e.preventDefault();
-    document.getElementById("crawlAll").style.display = "inline";
-
-    var ajaxCall = new XMLHttpRequest();
-    ajaxCall.onload = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            console.log(this.responseText);
-            document.getElementById("loaderCrawlAll").style.display = "none";
-        }
-    }
-    ajaxCall.onprogress = function() {
-        /* https://stackoverflow.com/questions/42838609/how-to-flush-php-output-buffer-properly */
-        if (this.readyState == 3) {
-            let json = this.responseText.substring(responseLength);
-            responseLength = this.responseText.length;
-            console.log(json);
-            json = json.replace(/ /g,'');
-            json = JSON.parse(json);
-            if (json.products) {
-                document.getElementById("productProgress").max = json.products;
-                document.getElementById("maxProgress").innerHTML = json.products;
-            } else if (json.shopId) {
-                document.getElementById("productProgress").value = json.count;
-                document.getElementById("currentProgress").innerHTML = json.count;
-                if (json.existing) {
-                    document.getElementById("statusProgress").innerHTML = "wurde schon gecrawlt";
-                } else {
-                    document.getElementById("statusProgress").innerHTML = "neu angelegt oder geupdatet";
-                }
-            }
-        }
-    }
-    ajaxCall.open("POST", "", true);
-    ajaxCall.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    ajaxCall.setRequestHeader("X-Accel-Buffering", "no");
-    ajaxCall.send("getReason=crawlAll");
+function crawlAll() {
+    ajax.post({
+        r: "crawlAll",
+    });
 }
 
-async function showStickerStatus() {
+function showStickerStatus() {
     let overviewTable = document.querySelector('[data-type="module_sticker_sticker_data"]');
-    if (overviewTable == null) return;
+    if (overviewTable == null) 
+        return;
 
-    var data = await ajax.post({
+    ajax.post({
         "r": "getStickerStatus",
-    })
+    }).then(data => {
+        let rows = Array.from(overviewTable.rows);
+        rows = rows.slice(1);
+        rows.forEach(row => {
+            rowIndex = parseInt(row.children[0].textContent);
+            dataElement = data[rowIndex];
 
-    data = JSON.parse(data);
-    var rows = overviewTable.children[0].children;
-
-    for (i in data) {
-        let el = data[i];
-        var additionalData = el.additional_data;
-        if (additionalData != null) {
-            additionalData = JSON.parse(additionalData);
-            additionalData = additionalData.products;
-            let isA = isW =  isT = 0;
-            if (additionalData.aufkleber) {
-                isA = 1;
+            if (dataElement.a) {
+                row.children[3].classList.add("inShop");
             }
 
-            if (additionalData.wandtattoo) {
-                isW = 1;
+            if (dataElement.w) {
+                row.children[7].classList.add("inShop");
             }
 
-            if (additionalData.textil) {
-                isT = 1;
+            if (dataElement.t) {
+                row.children[8].classList.add("inShop");
             }
-
-            let numb = parseInt(i);
-            var currRow = rows[numb + 1];
-            if (currRow != null) {
-                if (isA == 1)
-                    currRow.children[3].classList.add("inShop");
-    
-                if (isW == 1)
-                    currRow.children[7].classList.add("inShop");
-    
-                if (isT == 1)
-                    currRow.children[8].classList.add("inShop");
-            }
-        }
-    }
+        });
+    });
 }
 
 async function createNewSticker() {

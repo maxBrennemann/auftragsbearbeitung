@@ -1101,8 +1101,33 @@ class Ajax {
 				echo "success";
 			break;
 			case "getStickerStatus":
-				$query = "SELECT id, additional_data FROM module_sticker_sticker_data";
-				echo json_encode(DBAccess::selectQuery($query));
+				$query = "SELECT id, additional_data FROM module_sticker_sticker_data ORDER BY id ASC";
+				$data = DBAccess::selectQuery($query);
+				$isInShopStatus = [];
+
+				foreach ($data as $row) {
+					$id = (int) $row["id"];
+					$isInShopStatus[$id] = [];
+					if ($row["additional_data"] == null) {
+						continue;
+					}
+					$additionalData = json_decode($row["additional_data"], true);
+
+					if (isset($additionalData["products"])) {
+						$products = $additionalData["products"];
+
+						if (isset($products["aufkleber"])) {
+							$isInShopStatus[$id]["a"] = $products["aufkleber"]["id"];
+						}
+						if (isset($products["wandtattoo"])) {
+							$isInShopStatus[$id]["w"] = $products["wandtattoo"]["id"];
+						}
+						if (isset($products["textil"])) {
+							$isInShopStatus[$id]["t"] = $products["textil"]["id"];
+						}
+					}
+				}
+				echo json_encode($isInShopStatus);
 			break;
 			case "toggleTextil":
 				$id = (int) $_POST["id"];
@@ -1255,7 +1280,7 @@ class Ajax {
 				]);
 			break;
 			case "crawlAll":
-				require_once('classes/project/modules/stickerProductCrawler.php');
+				require_once('classes/project/modules/sticker/ProductCrawler.php');
 				$pc = new ProductCrawler();
 				$pc->crawlAll();
 			break;
