@@ -1108,6 +1108,9 @@ class Ajax {
 				foreach ($data as $row) {
 					$id = (int) $row["id"];
 					$isInShopStatus[$id] = [];
+					if ($row["additional_data"] == null) {
+						continue;
+					}
 					$additionalData = json_decode($row["additional_data"], true);
 
 					if (isset($additionalData["products"])) {
