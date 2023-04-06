@@ -160,28 +160,69 @@ class StickerTagManager extends PrestashopConnection {
     }
 
     public function saveTags() {
-        $xml = $this->getXML("products/$this->idProductReference");
+        $xml = $this->getXML("products/$this->idProductReference", true);
         $product_reference = $xml->children()->children();
 
         unset($product_reference->manufacturer_name);
         unset($product_reference->quantity);
 
-        $tags = $product_reference->{'associations'};
+        $associations = $product_reference->{'associations'};
 
         $tagIds = [];
         /* read all existing tags from shop for this product */
-        if ($tags->tags != null) {
-            foreach ($tags->tags as $tag) {
-                $tagIds[] = $tag->{'id'};
+        if ($associations->{'tags'} != null) {
+            $tags = $associations->{'tags'};
+            foreach ($tags as $tag) {
+                /* 
+                 * I have basically no idea why it is this nested for tags, couldn't figure it out,
+                 * thats why I left all this xml code in here 
+                 */
+                if ($tag->{'tag'}) {
+                    $tagIds[] = (int) $tag->tag->{'id'};
+                }
             }
         }
 
-        /* insert new tag if it does not exist */
-        foreach ($this->getTagIds() as $id) {
-            if (!in_array($id, $tagIds)) {
-                $tag = $tags->tags->addChild("tag");
-                $tag->addChild("id", $id);
+        /*
+            object(SimpleXMLElement)#17 (2) { 
+                ["@attributes"]=> array(2) { 
+                    ["nodeType"]=> string(3) "tag" 
+                    ["api"]=> string(4) "tags" 
+                } 
+                ["tag"]=> object(SimpleXMLElement)#18 (1) { 
+                    ["id"]=> string(4) "6225" 
+                } 
             }
+
+            <tags nodeType="tag" api="tags">
+                <tag xlink:href="https://max-web.tech/api/tags/6225">
+                    <id><![CDATA[6225]]></id>
+                </tag>
+            </tags>
+
+            object(SimpleXMLElement)#16 (2) { 
+                ["@attributes"]=> array(2) { 
+                    ["nodeType"]=> string(3) "tag" 
+                    ["api"]=> string(4) "tags" 
+                } 
+                ["tag"]=> object(SimpleXMLElement)#19 (1) { 
+                    ["id"]=> string(4) "6225" 
+                } 
+            }
+        */
+
+        unset($product_reference->associations->tags);
+        $tagsAll = array_merge($tagIds, $this->getTagIds());
+
+        // create the "tags" node
+        $tagsNode = $product_reference->associations->addChild('tags');
+        $tagsNode->addAttribute('nodeType', 'tag');
+        $tagsNode->addAttribute('api', 'tags');
+
+        // add each "tag" node with its "id" child node to the "tags" node
+        foreach ($tagsAll as $id) {
+            $tagNode = $tagsNode->addChild('tag');
+            $tagNode->addChild('id', (string) $id);
         }
 
         $opt = array(
