@@ -1109,7 +1109,7 @@ class Ajax {
 					$id = (int) $row["id"];
 					$isInShopStatus[$id] = [];
 					$additionalData = json_decode($row["additional_data"], true);
-					
+
 					if (isset($additionalData["products"])) {
 						$products = $additionalData["products"];
 
@@ -1277,7 +1277,7 @@ class Ajax {
 				]);
 			break;
 			case "crawlAll":
-				require_once('classes/project/modules/stickerProductCrawler.php');
+				require_once('classes/project/modules/sticker/ProductCrawler.php');
 				$pc = new ProductCrawler();
 				$pc->crawlAll();
 			break;
