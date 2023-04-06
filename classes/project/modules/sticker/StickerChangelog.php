@@ -43,7 +43,7 @@ class StickerChangelog /*implements StickerShopController*/ {
      * @param mixed $newValue if it is the first entry, it is the init value, else it is the new value
      * @return null
      */
-    public static function log(int $stickerId, String $stickerType, int $rowId, $table, $column, $newValue) {
+    public static function log(int $stickerId, int $stickerType, int $rowId, $table, $column, $newValue) {
         $query = "INSERT INTO `module_sticker_changelog` (`id_sticker`, `type`, `rowId`, `table`, `column`, `newValue`) VALUES (:id_sticker, :type, :rowId, :table, :column, :newValue)";
         $values =  [
             "id_sticker" => $stickerId,
