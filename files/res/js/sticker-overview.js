@@ -116,50 +116,33 @@ function crawlAll(e) {
     ajaxCall.send("getReason=crawlAll");
 }
 
-async function showStickerStatus() {
+function showStickerStatus() {
     let overviewTable = document.querySelector('[data-type="module_sticker_sticker_data"]');
-    if (overviewTable == null) return;
+    if (overviewTable == null) 
+        return;
 
-    var data = await ajax.post({
+    ajax.post({
         "r": "getStickerStatus",
-    })
+    }).then(data => {
+        let rows = Array.from(overviewTable.rows);
+        rows = rows.slice(1);
+        rows.forEach(row => {
+            rowIndex = parseInt(row.children[0].textContent);
+            dataElement = data[rowIndex];
 
-    data = JSON.parse(data);
-    var rows = overviewTable.children[0].children;
-
-    for (i in data) {
-        let el = data[i];
-        var additionalData = el.additional_data;
-        if (additionalData != null) {
-            additionalData = JSON.parse(additionalData);
-            additionalData = additionalData.products;
-            let isA = isW =  isT = 0;
-            if (additionalData.aufkleber) {
-                isA = 1;
+            if (dataElement.a) {
+                row.children[3].classList.add("inShop");
             }
 
-            if (additionalData.wandtattoo) {
-                isW = 1;
+            if (dataElement.w) {
+                row.children[7].classList.add("inShop");
             }
 
-            if (additionalData.textil) {
-                isT = 1;
+            if (dataElement.t) {
+                row.children[8].classList.add("inShop");
             }
-
-            let numb = parseInt(i);
-            var currRow = rows[numb + 1];
-            if (currRow != null) {
-                if (isA == 1)
-                    currRow.children[3].classList.add("inShop");
-    
-                if (isW == 1)
-                    currRow.children[7].classList.add("inShop");
-    
-                if (isT == 1)
-                    currRow.children[8].classList.add("inShop");
-            }
-        }
-    }
+        });
+    });
 }
 
 async function createNewSticker() {
