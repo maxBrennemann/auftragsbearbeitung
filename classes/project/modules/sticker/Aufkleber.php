@@ -131,7 +131,7 @@ class Aufkleber extends AufkleberWandtattoo {
         
         $this->connectAccessoires();
 
-        $images = $this->imageData->getTextilImages();
+        $images = $this->imageData->getAufkleberImages();
         $this->uploadImages($images);
     }
 

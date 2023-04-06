@@ -56,7 +56,7 @@ class Wandtattoo extends AufkleberWandtattoo {
         
         $this->connectAccessoires();
 
-        $images = $this->imageData->getTextilImages();
+        $images = $this->imageData->getWandtattooImages();
         $this->uploadImages($images);
     }
 
