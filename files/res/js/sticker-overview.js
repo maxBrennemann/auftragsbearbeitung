@@ -76,44 +76,10 @@ function initBindings() {
     });
 }
 
-var responseLength = 0;
-function crawlAll(e) {
-    e.preventDefault();
-    document.getElementById("crawlAll").style.display = "inline";
-
-    var ajaxCall = new XMLHttpRequest();
-    ajaxCall.onload = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            console.log(this.responseText);
-            document.getElementById("loaderCrawlAll").style.display = "none";
-        }
-    }
-    ajaxCall.onprogress = function() {
-        /* https://stackoverflow.com/questions/42838609/how-to-flush-php-output-buffer-properly */
-        if (this.readyState == 3) {
-            let json = this.responseText.substring(responseLength);
-            responseLength = this.responseText.length;
-            console.log(json);
-            json = json.replace(/ /g,'');
-            json = JSON.parse(json);
-            if (json.products) {
-                document.getElementById("productProgress").max = json.products;
-                document.getElementById("maxProgress").innerHTML = json.products;
-            } else if (json.shopId) {
-                document.getElementById("productProgress").value = json.count;
-                document.getElementById("currentProgress").innerHTML = json.count;
-                if (json.existing) {
-                    document.getElementById("statusProgress").innerHTML = "wurde schon gecrawlt";
-                } else {
-                    document.getElementById("statusProgress").innerHTML = "neu angelegt oder geupdatet";
-                }
-            }
-        }
-    }
-    ajaxCall.open("POST", "", true);
-    ajaxCall.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    ajaxCall.setRequestHeader("X-Accel-Buffering", "no");
-    ajaxCall.send("getReason=crawlAll");
+function crawlAll() {
+    ajax.post({
+        r: "crawlAll",
+    });
 }
 
 function showStickerStatus() {

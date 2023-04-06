@@ -44,7 +44,7 @@ $t->addLink($linker);
             <p id="statusProgress"></p>
         </div>
     </div>
-    <a href="#" onclick="crawlAll(event)">Alle Produtke vom Shop crawlen</a>
+    <a href="#" onclick="crawlAll()">Alle Produtke vom Shop crawlen</a>
 </div>
 <div class="defCont">
     <div>
