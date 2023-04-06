@@ -175,7 +175,7 @@ class ProductCrawler extends PrestashopConnection {
     }
 
     private function downloadImage($idProduct, $idImage, $idMotiv) {
-        $ch = curl_init(SHOPURL . "api/images/products/$idProduct/$idImage");
+        $ch = curl_init(SHOPURL . "/api/images/products/$idProduct/$idImage");
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_USERPWD, SHOPKEY . ':');
@@ -192,31 +192,37 @@ class ProductCrawler extends PrestashopConnection {
 
     private function saveDownloadedImageToDB($filename, $idMotiv, $category, $idProduct, $idImageShop) {
         /* write image info to db */
-        $query = "INSERT INTO dateien (dateiname, originalname, `date`, `typ`) VALUES ('$filename', '$filename', '$today', 'jpg')";
-        $id_datei = DBAccess::insertQuery($query);
-        /* TODO: über StickerImage machen */
-        $query = "INSERT INTO dateien_motive (id_datei, id_motive) VALUES ($id_datei, $idMotiv);";
-        DBAccess::insertQuery($query);
+        $query = "INSERT INTO dateien (dateiname, originalname, `date`, `typ`) VALUES (:dateiname, :originalname, :dateToday, 'jpg')";
+        $idDatei = DBAccess::insertQuery($query, [
+            "dateiname" => $filename,
+            "originalname" => $filename,
+            "dateToday" => date("Y-m-d"),
+        ]);
 
         switch ($category) {
             case 25:
-                $key = "is_textil";
+                $key = "textil";
                 break;
             case 13:
-                $key = "is_aufkleber";
+                $key = "aufkleber";
                 break;
             case 62;
-                $key = "is_wandtattoo";
+                $key = "wandtattoo";
                 break;
             default:
-                $key = "";
+                $key = null;
                 break;
         }
 
-        /* TODO: über StickerImage machen */
-        if ($key != "") {
-            $query = "INSERT INTO module_sticker_images (id_image, id_sticker, $key) VALUES ($id_datei, $idMotiv, 1);";
-            DBAccess::insertQuery($query);
+        if ($key != null) {
+            $query = "INSERT INTO module_sticker_image (id_datei, id_motiv, image_sort, id_product, id_image_shop) VALUES (:idDatei, :idMotiv, :imageSort, :idProduct, :idImageShop)";
+            DBAccess::insertQuery($query, [
+                "idDatei" => $idDatei,
+                "idMotiv" => $idMotiv,
+                "imageSort" => $key,
+                "idProduct" => $idProduct,
+                "idImageShop" => $idImageShop,
+            ]);
         }
     }
 
