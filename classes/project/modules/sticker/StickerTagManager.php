@@ -102,7 +102,7 @@ class StickerTagManager extends PrestashopConnection {
         
         /* write to changelog */
         /* TODO: testen, ob es funktioniert, wenn sticker data nicht direkt mit der anderen tabelle zusammenhängt */
-        StickerChangelog::log($this->idSticker, "", $id, "module_sticker_tags", "content", $content);
+        StickerChangelog::log($this->idSticker, 0, $id, "module_sticker_tags", "content", $content);
 
         return $id;
     }

@@ -49,7 +49,7 @@ class AufkleberWandtattoo extends Sticker {
                 "idSticker" => $this->getId(),
                 "width" => $width,
             ];
-            StickerChangelog::log($this->getId(), "", 0, "module_sticker_sizes", "price", $price);
+            StickerChangelog::log($this->getId(), 0, 0, "module_sticker_sizes", "price", $price);
             DBAccess::updateQuery($query, $params);
         }
     }
@@ -67,13 +67,13 @@ class AufkleberWandtattoo extends Sticker {
 
         $query = "UPDATE module_sticker_sizes SET height = $height, price = NULL WHERE id_sticker = :id AND width = $width";
         
-        StickerChangelog::log($this->getId(), "", 0, "module_sticker_sizes", "height", $height);
+        StickerChangelog::log($this->getId(), 0, 0, "module_sticker_sizes", "height", $height);
         echo "preis: " . $currentPrice . " " . $data["price"] . " ";
 
         if ($currentPrice != $data["price"]) {
             $price = $data["price"];
             $query = "UPDATE module_sticker_sizes SET height = $height, price = $price WHERE id_sticker = :id AND width = $width";
-            StickerChangelog::log($this->getId(), "", 0, "module_sticker_sizes", "price", $price);
+            StickerChangelog::log($this->getId(), 0, 0, "module_sticker_sizes", "price", $price);
         }
 
         DBAccess::updateQuery($query, ["id" => $this->getId()]);
@@ -177,6 +177,21 @@ class AufkleberWandtattoo extends Sticker {
         }
     }
 
+    protected function generateDefaultData() {
+        $id = $this->getId();
+        $query = "INSERT INTO module_sticker_sizes (width, id_sticker) VALUES (100, $id), (150, $id), (200, $id), (300, $id), (600, $id), (900, $id), (1200, $id)";
+        DBAccess::insertQuery($query);
+        
+        $query = "SELECT id, width, height, price, 
+                ((width / 1000) * (height / 1000) * 10) as costs 
+            FROM module_sticker_sizes 
+            WHERE id_sticker = :idSticker
+            ORDER BY width";
+        
+        $data = DBAccess::selectQuery($query, ["idSticker" => $this->getId()]);
+        return $data; 
+    }
+
     public function getSizeTable() {
         $query = "SELECT id, width, height, price, 
                 ((width / 1000) * (height / 1000) * 10) as costs 
@@ -185,6 +200,11 @@ class AufkleberWandtattoo extends Sticker {
             ORDER BY width";
         
         $data = DBAccess::selectQuery($query, ["idSticker" => $this->getId()]);
+
+        if ($data == null) {
+            $data = $this->generateDefaultData();
+        }
+
         $column_names = array(
             0 => array("COLUMN_NAME" => "id", "ALT" => "Nummer"),
             1 => array("COLUMN_NAME" => "width", "ALT" => "Breite"),
@@ -197,7 +217,7 @@ class AufkleberWandtattoo extends Sticker {
             $d["width"] = str_replace(".", ",", ((int) $d["width"]) / 10) . "cm";
             $d["height"] = str_replace(".", ",", ((int) $d["height"]) / 10) . "cm";
             $d["price"] = number_format((float) $d["price"] / 100, 2, ',', '') . "€";
-            $d["costs"] = number_format((float) $d["costs"] / 100, 2, ',', '') . "€";
+            $d["costs"] = number_format((float) $d["costs"], 2, ',', '') . "€";
         }
 
 		$t = new Table();
