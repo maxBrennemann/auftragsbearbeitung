@@ -56,6 +56,7 @@ class SearchProducts extends PrestashopConnection {
     
                 $xmlProduct = $searchProduct->getXML("products/$productId");
                 $title = (String) $xmlProduct->children()->children()->name->language[0];
+                $statusActive = (int) $xmlProduct->children()->children()->active;
                 $link = SHOPURL . "/home/$productId-" . (String) $xmlProduct->children()->children()->link_rewrite->language[0] . ".html";
                 $categoriesXML = $xmlProduct->children()->children()->associations->categories->category;
     
@@ -74,11 +75,26 @@ class SearchProducts extends PrestashopConnection {
                 $title = htmlspecialchars($title);
     
                 if (in_array(25, $categories)) {
-                    $productMatches["textil"] = ["id" => $productId, "title" => $title, "link" => $link];
+                    $productMatches["textil"] = [
+                        "id" => $productId,
+                        "title" => $title,
+                        "link" => $link,
+                        "status" => $statusActive
+                    ];
                 } else if (in_array(62, $categories)) {
-                    $productMatches["wandtattoo"] = ["id" => $productId, "title" => $title, "link" => $link];
+                    $productMatches["wandtattoo"] = [
+                        "id" => $productId,
+                        "title" => $title,
+                        "link" => $link,
+                        "status" => $statusActive
+                    ];
                 } else if (in_array(13, $categories)) {
-                    $productMatches["aufkleber"] = ["id" => $productId, "title" => $title, "link" => $link];
+                    $productMatches["aufkleber"] = [
+                        "id" => $productId,
+                        "title" => $title,
+                        "link" => $link,
+                        "status" => $statusActive
+                    ];
                 }
             }
         } catch (PrestaShopWebserviceException $e) {
