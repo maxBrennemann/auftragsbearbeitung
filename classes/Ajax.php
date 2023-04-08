@@ -1284,6 +1284,10 @@ class Ajax {
 				$pc = new ProductCrawler();
 				$pc->crawlAll();
 			break;
+			case "crawlTags":
+				require_once('classes/project/modules/sticker/StickerTagManager.php');
+				StickerTagManager::crawlAllTags();
+			break;
 			case "setAltTitle":
 				$id = (int) $_POST["id"];
 				$newTitle = (String) $_POST["newTitle"];

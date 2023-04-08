@@ -45,6 +45,8 @@ $t->addLink($linker);
         </div>
     </div>
     <a href="#" onclick="crawlAll()">Alle Produtke vom Shop crawlen</a>
+    <br>
+    <a href="#" onclick="crawlTags()">Alle Tags vom Shop crawlen</a>
 </div>
 <div class="defCont">
     <div>

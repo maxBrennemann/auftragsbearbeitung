@@ -159,6 +159,36 @@ class StickerTagManager extends PrestashopConnection {
         }
     }
 
+    public function saveTagsXml(&$xml) {
+        $product_reference = $xml->children()->children();
+        $associations = $product_reference->{'associations'};
+
+        $tagIds = [];
+        /* read all existing tags from shop for this product */
+        if ($associations->{'tags'} != null) {
+            $tags = $associations->{'tags'};
+            foreach ($tags as $tag) {
+                /* 
+                 * I have basically no idea why it is this nested for tags, couldn't figure it out,
+                 * thats why I left all this xml code in here 
+                 */
+                if ($tag->{'tag'}) {
+                    $tagIds[] = (int) $tag->tag->{'id'};
+                }
+            }
+        }
+
+        unset($product_reference->associations->tags);
+        $tags = $product_reference->associations->addChild("tags");
+        $tagsAll = array_merge($tagIds, $this->getTagIds());
+
+        // add each "tag" node with its "id" child node to the "tags" node
+        foreach ($tagsAll as $id) {
+            $tagNode = $tags->addChild('tag');
+            $tagNode->addChild('id', (string) $id);
+        }
+    }
+
     public function saveTags() {
         $xml = $this->getXML("products/$this->idProductReference");
         $product_reference = $xml->children()->children();
@@ -166,24 +196,33 @@ class StickerTagManager extends PrestashopConnection {
         unset($product_reference->manufacturer_name);
         unset($product_reference->quantity);
 
-        $tags = $product_reference->{'associations'};
+        $associations = $product_reference->{'associations'};
 
         $tagIds = [];
         /* read all existing tags from shop for this product */
-        if ($tags->tags != null) {
-            foreach ($tags->tags as $tag) {
-                $tagIds[] = $tag->{'id'};
+        if ($associations->{'tags'} != null) {
+            $tags = $associations->{'tags'};
+            foreach ($tags as $tag) {
+                /* 
+                 * I have basically no idea why it is this nested for tags, couldn't figure it out,
+                 * thats why I left all this xml code in here 
+                 */
+                if ($tag->{'tag'}) {
+                    $tagIds[] = (int) $tag->tag->{'id'};
+                }
             }
         }
 
-        /* insert new tag if it does not exist */
-        foreach ($this->getTagIds() as $id) {
-            if (!in_array($id, $tagIds)) {
-                $tag = $tags->tags->addChild("tag");
-                $tag->addChild("id", $id);
-            }
-        }
+        unset($product_reference->associations->tags);
+        $tags = $product_reference->associations->addChild("tags");
+        $tagsAll = array_merge($tagIds, $this->getTagIds());
 
+        // add each "tag" node with its "id" child node to the "tags" node
+        foreach ($tagsAll as $id) {
+            $tagNode = $tags->addChild('tag');
+            $tagNode->addChild('id', (string) $id);
+        }
+        
         $opt = array(
             'resource' => 'products',
             'putXml' => $xml->asXML(),
@@ -298,6 +337,40 @@ class StickerTagManager extends PrestashopConnection {
             "tagGroup" => $tagGroup,
             "tag" => $tagId
         ]);
+    }
+
+    /**
+     * Die Funktion geht alle Tags im Shop durch und speichert sie einzeln ab.
+     * Wichtig: TagContent ist unique, wie im Shop. Deshalb müsste es später vielleicht ein REPLACE INTO werden? 
+     * Oder alles löschen und dann neu crawlen?
+     */
+    public static function crawlAllTags() {
+        $crawler = new PrestashopConnection();
+        try {
+            $xml = $crawler->getXML("tags");
+            $tags = $xml->children()->children();
+
+            foreach ($tags as $tag) {
+                $id = (int) $tag->attributes()->{"id"};
+
+                $innerCrawler = new PrestashopConnection();
+                try {
+                    $xml = $innerCrawler->getXML("tags/$id");
+                    $tag = $xml->children()->children();
+
+                    $name = (String) $tag->{"name"};
+                    /* TODO: insert multiple verwenden */
+                    DBAccess::insertQuery("INSERT INTO module_sticker_tags (id_tag_shop, `content`) VALUES (:idTag, :tagName);", [
+                        "idTag" => $id,
+                        "tagName" => $name,
+                    ]);
+                } catch (PrestaShopWebserviceException $e) {
+                    echo $e;
+                }
+            }
+        } catch (PrestaShopWebserviceException $e) {
+            echo $e;
+        }
     }
 
 }
