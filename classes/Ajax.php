@@ -1414,6 +1414,15 @@ class Ajax {
 				
 				echo json_encode(["status" => "not found"]);
 			break;
+			case "generateText":
+				$title = $_POST["title"];
+				$text = $_POST["text"];
+				$type = $_POST["type"];
+				$id = (int) $_POST["id"];
+				require_once('classes/project/modules/sticker/ChatGPTConnection.php');
+				$connector = new ChatGPTConnection($id);
+				$connector->getTextSuggestion($title, $type, $text, "", "lustig");
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
