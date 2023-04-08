@@ -204,7 +204,7 @@ class Sticker extends PrestashopConnection {
         /* https://www.prestashop.com/forums/topic/407476-how-to-add-image-during-programmatic-product-import/ */
         $images = array();
         foreach ($imageURLs as $i) {
-            $link = WEB_URL . "/upload" . $i["dateiname"];
+            $link = WEB_URL . "/upload/" . $i["dateiname"];
             $images[] = urlencode($link);
         }
 
