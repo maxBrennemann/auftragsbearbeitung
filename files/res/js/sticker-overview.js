@@ -82,6 +82,14 @@ function crawlAll() {
     });
 }
 
+function crawlTags() {
+    ajax.post({
+        r: "crawlTags",
+    }).then(r => {
+        console.log("ready");
+    });
+}
+
 function showStickerStatus() {
     let overviewTable = document.querySelector('[data-type="module_sticker_sticker_data"]');
     if (overviewTable == null) 

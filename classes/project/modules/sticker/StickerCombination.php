@@ -40,8 +40,24 @@ class StickerCombination extends PrestashopConnection {
         $this->setStockAvailables();
     }
 
-    private function removeOldCombinations() {
-        // TODO: write update or remove functions
+    private function getOldCombinations($productId) {
+        try {
+            $xml = $this->getXML("products/$productId");
+            $product = $xml->children()->children();
+            
+            return $product->associations->combinations;
+        } catch (PrestaShopWebserviceException $e) {
+            echo $e;
+        }
+    }
+
+    public function removeOldCombinations($productId) {
+        $productCombinations = $this->getOldCombinations($productId);
+        
+        foreach ($productCombinations->combination as $combination) {
+            $combinationId = (int) $combination->{"id"};
+            $this->deleteXML("combinations", $combinationId);
+        }
     }
 
     private function combine($elements) {

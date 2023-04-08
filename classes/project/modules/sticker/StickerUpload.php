@@ -46,6 +46,11 @@ class StickerUpload extends PrestashopConnection {
         try {
             $xml = $this->getXML("products/" . $this->idProduct);
             $this->manipulateProductXML($xml);
+
+            //$stickerTagManager = new StickerTagManager($this->idSticker, $this->title);
+            //$stickerTagManager->setProductId($this->idProduct);
+            //$stickerTagManager->saveTagsXml($xml);
+
             $resource_product = $xml->children()->children();
             $resource_product->{"id"} = $this->idProduct;
 
@@ -64,6 +69,10 @@ class StickerUpload extends PrestashopConnection {
         try {
             $xml = $this->getXML('products?schema=blank');
             $this->manipulateProductXML($xml);
+
+            //$stickerTagManager = new StickerTagManager($this->idSticker, $this->title);
+            //$stickerTagManager->setProductId($this->idProduct);
+            //$stickerTagManager->saveTagsXml($xml);
 
             $opt = array(
                 'resource' => 'products',

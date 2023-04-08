@@ -1,5 +1,6 @@
 var mainVariables = {
     productConnect: [],
+    pending: false,
 };
 
 if (document.readyState !== 'loading' ) {
@@ -248,19 +249,28 @@ function click_transferAll(e) {
     transfer(4, "Alles");
 }
 
-async function transfer(type, text) {
+function transfer(type, text) {
+    if (mainVariables.pending == true) {
+        return;
+    }
+
     let statusInfo = new StatusInfo("", `${text} wird übertragen`);
     statusInfo.show();
+    mainVariables.pending = true;
 
-    var data = {
+    console.log(mainVariables.pending);
+
+    ajax.post({
         id: mainVariables.motivId.innerHTML,
-        type: type
-    };
-    var response = await send(data, "transferProduct");
-    console.log(response);
+        type: type,
+        r: "transferProduct",
+    }, true).then(r => {
+        mainVariables.pending = false;
+        console.log(r);
 
-    statusInfo.statusUpdate(`${text} ist übertragen`);
-    statusInfo.hide();
+        statusInfo.statusUpdate(`${text} ist übertragen`);
+        statusInfo.hide();
+    });
 }
 
 function send(data, intent = "", json = false) {
