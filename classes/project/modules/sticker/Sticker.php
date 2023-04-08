@@ -221,11 +221,16 @@ class Sticker extends PrestashopConnection {
         $result = curl_exec($ch);
         curl_close($ch);
 
-        /* TODO: image shop ids abspeichern */
-        $imageIds = json_decode($result);
-        var_dump($imageIds);
-        foreach ($imageIds as $imageId) {
-            //$key = array_search($imageId["url"], $imageURLs);
+        $imagesData = json_decode($result, true);
+        $index = 0;
+        foreach ($imagesData as $image) {
+            $idImage = (int) $image["id"];
+            $idDatei = $imageURLs[$index]["id"];
+            DBAccess::updateQuery("UPDATE module_sticker_image SET id_image_shop = :idImage WHERE id_datei = :idDatei;", [
+                "idImage" => $idImage,
+                "idDatei" => $idDatei,
+            ]);
+            $index++;
         }
     }
 

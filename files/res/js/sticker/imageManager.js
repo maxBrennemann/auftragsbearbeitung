@@ -273,3 +273,79 @@ async function click_makeColorable() {
         svgContainer.data = r.url;
     });
 }
+
+if (document.readyState !== 'loading' ) {
+    initImageManager();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        initImageManager();
+    });
+}
+
+function initImageManager() {
+    const contextMenu = document.getElementById("delete-menu");
+    const scope = document.querySelector("body");
+
+    scope.addEventListener("contextmenu", (event) => {
+        const isDeletable = event.target.dataset.deletable != null || event.target.parentNode.dataset.deletable != null;
+        if (isDeletable) {
+            mainVariables.currentDelete = event.target.dataset.fileId;
+            event.preventDefault();
+
+            const {
+                clientX: mouseX, 
+                clientY: mouseY 
+            } = event;
+    
+            contextMenu.style.top = `${mouseY}px`;
+            contextMenu.style.left = `${mouseX}px`;
+    
+            contextMenu.classList.add("visible");
+        }
+    });
+
+    scope.addEventListener("click", (e) => {
+        if (e.target.offsetParent != contextMenu) {
+            contextMenu.classList.remove("visible");
+        }
+    });
+}
+
+/**
+ * deletes the currently selected image
+ */
+function deleteImage(imageId) {
+    ajax.post({
+        imageId: mainVariables.currentDelete,
+        r: "deleteImage",
+    }).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+            const image = document.querySelector(`[data-file-id="${mainVariables.currentDelete}"]`);
+            image.parentNode.removeChild(image);
+        }
+    });
+}
+
+function insertNewlyUploadedImages(json) {
+    let imageContainer = document.getElementsByClassName("imageContainer")[0];
+
+    for (let key in json.imageData) {
+        let image = json.imageData[key];
+        console.log(image.id + " " + image.url);
+
+        let imageEl = document.createElement("img");
+        imageEl.setAttribute("src", image.url);
+        imageEl.title = image.original;
+        imageEl.classList.add("imagePrev");
+        imageEl.dataset.imageId = image.id;
+        imageEl.dataset.isAufkleber = 0;
+        imageEl.dataset.insWandtattoo = 0;
+        imageEl.dataset.isTextil = 0;
+        imageEl.setAttribute("onclick", "change(event)");
+
+        imageContainer.appendChild(imageEl);
+
+        console.log("test");
+    }
+}

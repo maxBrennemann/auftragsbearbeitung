@@ -1083,9 +1083,11 @@ class Ajax {
 			break;
 			case "deleteImage":
 				$imageId = (int) $_POST["imageId"];
-				$query = "DELETE FROM dateien WHERE id = $imageId";
-				DBAccess::deleteQuery($query);
-				echo "success";
+				$query = "DELETE FROM dateien WHERE id = :idImage;";
+				DBAccess::deleteQuery($query, ["idImage" => $imageId]);
+				echo json_encode([
+					"status" => "success",
+				]);
 			break;
 			case "changePreiskategorie":
 				$id = (int) $_POST['id'];
