@@ -53,13 +53,13 @@ class Wandtattoo extends AufkleberWandtattoo {
         $stickerTagManager = new StickerTagManager($this->getId(), $this->getName());
         $stickerTagManager->setProductId($this->idProduct);
         $stickerTagManager->saveTags();
-        
+
         $stickerCombination->createCombinations();
         
         $this->connectAccessoires();
 
         $images = $this->imageData->getWandtattooImages();
-        $this->uploadImages($images);
+        $this->uploadImages($images, $this->idProduct);
     }
 
     public function getAttributes() {
