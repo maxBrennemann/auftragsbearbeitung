@@ -196,7 +196,7 @@ class Sticker extends PrestashopConnection {
 
     }
 
-    public function uploadImages($imageURLs) {
+    public function uploadImages($imageURLs, $productId) {
         if ($imageURLs == null) {
             return;
         }
@@ -212,7 +212,7 @@ class Sticker extends PrestashopConnection {
         $ch = curl_init($this->url);
 
         # Setup request to send json via POST.
-        $payload = json_encode(array("images"=> $images, "id" => $this->idProduct));
+        $payload = json_encode(array("images"=> $images, "id" => $productId));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
         # Return response instead of printing.
@@ -223,6 +223,7 @@ class Sticker extends PrestashopConnection {
 
         /* TODO: image shop ids abspeichern */
         $imageIds = json_decode($result);
+        var_dump($imageIds);
         foreach ($imageIds as $imageId) {
             //$key = array_search($imageId["url"], $imageURLs);
         }
