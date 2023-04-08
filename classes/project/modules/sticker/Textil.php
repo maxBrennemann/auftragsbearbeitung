@@ -33,8 +33,6 @@ class Textil extends Sticker {
         ["hexCol" => "#ff019a", "name" => "Neonpink"],
     ];
 
-    private $svg;
-
     private $isShirtcollection = false;
     private $isColorable = false;
 
@@ -101,13 +99,16 @@ class Textil extends Sticker {
         $this->isColorable = !$this->isColorable;
     }
 
+    /* returns the image array for the current svg */
     public function getCurrentSVG() {
         return $this->imageData->getTextilSVG($this->isColorable);
     }
 
     private function uploadSVG() {
-        $url = $this->url . "?upload=svg&id=$this->idProduct";
-        $cImage = new CurlFile($this->svg, 'image/svg+xml', "image");
+        $url = $this->url . "?upload=svg&id=" . $this->idProduct;
+        $currentSVG = $this->getCurrentSVG();
+        $filename = "upload/" . $currentSVG["dateiname"];
+        $cImage = new CurlFile($filename, 'image/svg+xml', "image");
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -120,8 +121,8 @@ class Textil extends Sticker {
         echo $result;
     }
 
-    public function uploadImages($imageURLs) {
-        parent::uploadImages($imageURLs);
+    public function uploadImages($imageURLs, $idProduct) {
+        parent::uploadImages($imageURLs, $idProduct);
         $this->uploadSVG();
     }
 
@@ -163,14 +164,14 @@ class Textil extends Sticker {
         $stickerTagManager = new StickerTagManager($this->getId(), $this->getName());
         $stickerTagManager->setProductId($this->idProduct);
         $stickerTagManager->saveTags();
-        
+
         $stickerCombination->createCombinations();
         
         $this->connectAccessoires();
 
         $this->uploadSVG();
         $images = $this->imageData->getTextilImages();
-        $this->uploadImages($images);
+        $this->uploadImages($images, $this->idProduct);
     }
 
     /**
