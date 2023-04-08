@@ -197,13 +197,20 @@ class Sticker extends PrestashopConnection {
     }
 
     public function uploadImages($imageURLs) {
+        if ($imageURLs == null) {
+            return;
+        }
+
         /* https://www.prestashop.com/forums/topic/407476-how-to-add-image-during-programmatic-product-import/ */
         $images = array();
         foreach ($imageURLs as $i) {
-            array_push($images, urlencode($i));
+            $link = WEB_URL . "/upload" . $i["dateiname"];
+            $images[] = urlencode($link);
         }
 
+        /* json resonder script on server */
         $ch = curl_init($this->url);
+
         # Setup request to send json via POST.
         $payload = json_encode(array("images"=> $images, "id" => $this->idProduct));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
