@@ -70,9 +70,14 @@ if ($id == 0): ?>
                 <?=Icon::$iconEditText?>
             </button>
             <button class="infoButton" data-info="8">i</button>
-            <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
+            <?php if ($stickerCollection->getAufkleber()->getActiveStatus()): ?>
+                <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
                 <?=Icon::$iconVisible?>
             </button>
+            <?php else: ?>
+                <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
+                <?=Icon::$iconInvisible?>
+            <?php endif; ?> 
             <button title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct" data-type="aufkleber">
                 <?=Icon::$iconConnectTo?>
             </button>
@@ -143,9 +148,14 @@ if ($id == 0): ?>
                 <?=Icon::$iconEditText?>
             </button>
             <button class="infoButton" data-info="9">i</button>
-            <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
+            <?php if ($stickerCollection->getWandtattoo()->getActiveStatus()): ?>
+                <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
                 <?=Icon::$iconVisible?>
             </button>
+            <?php else: ?>
+                <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
+                <?=Icon::$iconInvisible?>
+            <?php endif; ?>
             <button title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct" data-type="wandtattoo">
                 <?=Icon::$iconConnectTo?>
             </button>
@@ -189,9 +199,14 @@ if ($id == 0): ?>
                 <?=Icon::$iconEditText?>
             </button>
             <button class="infoButton" data-info="10">i</button>
-            <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
+            <?php if ($stickerCollection->getTextil()->getActiveStatus()): ?>
+                <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
                 <?=Icon::$iconVisible?>
             </button>
+            <?php else: ?>
+                <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
+                <?=Icon::$iconInvisible?>
+            <?php endif; ?> 
             <button title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct" data-type="textil">
                 <?=Icon::$iconConnectTo?>
             </button>
@@ -393,5 +408,11 @@ if ($id == 0): ?>
 </template>
 <template id="icon-letterplot">
     <?=Icon::iconLetterPlott()?>
+</template>
+<template id="icon-visible">
+    <?=Icon::$iconVisible?>
+</template>
+<template id="icon-invisible">
+    <?=Icon::$iconInvisible?>
 </template>
 <?php endif; ?>

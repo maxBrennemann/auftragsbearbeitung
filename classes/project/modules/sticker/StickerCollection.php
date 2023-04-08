@@ -133,11 +133,11 @@ class StickerCollection implements Iterator {
         $type = (String) $_POST["type"];
 
         $target = $this->getTarget($type);
-        $status = $target->toggleActiveStatus();
+        $target->toggleActiveStatus();
 
         echo json_encode([
             "status" => "success",
-            "icon" => $status,
+            "icon" => $target->getActiveStatus(),
         ]);
     }
 

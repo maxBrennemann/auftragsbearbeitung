@@ -160,7 +160,13 @@ class Sticker extends PrestashopConnection {
     }
 
     public function getActiveStatus() {
-
+        if (isset($this->additionalData["products"][$this->instanceType])) {
+            $ref = $this->additionalData["products"][$this->instanceType];
+            if (isset($ref["status"])) {
+                return $ref["status"] == 1;
+            }
+        }
+        return true;
     }
 
     public function setName(String $name) {
@@ -246,7 +252,7 @@ class Sticker extends PrestashopConnection {
      * switches the product active status
      */
     public function toggleActiveStatus() {
-        $xml = $this->getXML("product/" . $this->getIdProduct());
+        $xml = $this->getXML("products/" . $this->getIdProduct());
         $resource_product = $xml->children()->children();
         
         $active = (int) $resource_product->active;
@@ -255,6 +261,10 @@ class Sticker extends PrestashopConnection {
         } else {
             $active = 0;
         }
+
+        $resource_product->{"active"} = $active;
+        unset($resource_product->manufacturer_name);
+        unset($resource_product->quantity);
 
         $opt = array(
             'resource' => 'products',

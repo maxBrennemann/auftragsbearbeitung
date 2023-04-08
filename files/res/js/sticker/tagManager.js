@@ -202,12 +202,9 @@ class TagManager {
             }).then(r => {
                 if (r["status"] == "success") {
                     parent.removeChild(child);
+                    infoSaveSuccessfull("success");
                 }
             });
-
-            if (response == "") {
-                parent.removeChild(child);
-            }
         } else if (element.classList.contains("suggestionTag")) {
             element.classList.remove("suggestionTag");
             ajax.post({

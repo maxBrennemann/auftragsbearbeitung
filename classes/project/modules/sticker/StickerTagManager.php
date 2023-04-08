@@ -304,8 +304,10 @@ class StickerTagManager extends PrestashopConnection {
 
             $query = "DELETE FROM module_sticker_sticker_tag WHERE id_tag = $tagId AND id_sticker = $id";
             DBAccess::deleteQuery($query);
+
+            echo json_encode(["status" => "success"]);
         } else {
-            echo "not found";
+            echo json_encode(["status" => "not found"]);
         }
     }
 
