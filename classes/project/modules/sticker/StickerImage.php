@@ -1,6 +1,8 @@
 <?php
 
-class StickerImage {
+require_once('classes/project/modules/sticker/PrestashopConnection.php');
+
+class StickerImage extends PrestashopConnection {
     
     private $idMotiv;
 
@@ -215,6 +217,13 @@ class StickerImage {
     public static function handleSVGStatus(int $idMotiv) {
         $query = "DELETE FROM module_sticker_image WHERE id_motiv = :idMotiv AND image_sort = 'textilsvg';";
         DBAccess::deleteQuery($query, ["idMotiv" => $idMotiv]);
+    }
+
+    /**
+     * deletes an image from the shop
+     */
+    public function deleteImage($idProduct, $idImageShop) {
+        $this->deleteXML("images/products/$idProduct", $idImageShop);
     }
 
 }

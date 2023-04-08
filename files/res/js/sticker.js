@@ -25,28 +25,6 @@ function initSticker() {
         document.title = "b-schriftung - Motiv " + mainVariables.motivId.innerHTML + " " + document.getElementById("name").innerHTML;
 
         readSizeTable();
-
-        const contextMenu = document.getElementById("delete-menu");
-        const scope = document.querySelector("body");
-        scope.addEventListener("contextmenu", (event) => {
-            if (event.target.dataset.deletable != null) {
-                mainVariables.currentDelete = event.target.dataset.imageId;
-                event.preventDefault();
-
-                const { clientX: mouseX, clientY: mouseY } = event;
-        
-                contextMenu.style.top = `${mouseY}px`;
-                contextMenu.style.left = `${mouseX}px`;
-        
-                contextMenu.classList.add("visible");
-            }
-        });
-
-        scope.addEventListener("click", (e) => {
-            if (e.target.offsetParent != contextMenu) {
-            contextMenu.classList.remove("visible");
-            }
-        });
     }
 
     var input = document.getElementById('name');
@@ -336,78 +314,6 @@ async function sendRows(data, text) {
 
     var response = await send(data, "setAufkleberGroessen", true);
     console.log(response);
-}
-
-/**
- * deletes the currently selected image
- */
-async function deleteImage(imageId) {
-    let removeFromDom = false;
-    if (imageId == -1) {
-       imageId = mainVariables.currentDelete;
-       removeFromDom = true;
-    } else {
-        imageId = document.querySelector(".imageBig");
-        imageId = imageId.dataset.imageId;
-    }
-
-    var data = {
-        imageId: imageId,
-    };
-    var response = await send(data, "deleteImage");
-    infoSaveSuccessfull(response);
-
-    if (response == "success") {
-        if (removeFromDom) {
-            let elem = document.querySelector('.imageTag[data-image-id="' + imageId + '"]');
-            elem.parentNode.removeChild(elem);
-        } else {
-            deleteImageUpdateDOMTree(imageId);
-        }
-    }
-}
-
-/* this function is called, when the image deletion process was successful */
-function deleteImageUpdateDOMTree(imageId) {
-    let element = document.querySelector('.imagePrev[data-image-id="' + imageId + '"]');
-    element.parentNode.removeChild(element);
-}
-
-/**
- * changes all data for main image
- * @param {Event} e 
- */
-function changeImage(e) {
-    var main = document.querySelector(".imageBig");
-    main.src = e.target.src;
-    main.dataset.imageId = e.target.dataset.imageId;
-
-    document.getElementById("aufkleberbild").checked = e.target.dataset.isAufkleber == 0 ? false : true;
-    document.getElementById("wandtattoobild").checked = e.target.dataset.isWandtattoo == 0 ? false : true;
-    document.getElementById("textilbild").checked = e.target.dataset.isTextil == 0 ? false : true;
-}
-
-function insertNewlyUploadedImages(json) {
-    let imageContainer = document.getElementsByClassName("imageContainer")[0];
-
-    for (let key in json.imageData) {
-        let image = json.imageData[key];
-        console.log(image.id + " " + image.url);
-
-        let imageEl = document.createElement("img");
-        imageEl.setAttribute("src", image.url);
-        imageEl.title = image.original;
-        imageEl.classList.add("imagePrev");
-        imageEl.dataset.imageId = image.id;
-        imageEl.dataset.isAufkleber = 0;
-        imageEl.dataset.insWandtattoo = 0;
-        imageEl.dataset.isTextil = 0;
-        imageEl.setAttribute("onclick", "change(event)");
-
-        imageContainer.appendChild(imageEl);
-
-        console.log("test");
-    }
 }
 
 /** calculates material prices */
