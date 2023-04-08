@@ -836,3 +836,7 @@ input#hamburg {
 .showFailiureW {
     color: white;
 }
+
+h4 {
+    margin-bottom: 0;
+}

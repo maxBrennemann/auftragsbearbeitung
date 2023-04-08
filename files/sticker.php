@@ -2,6 +2,7 @@
 require_once('classes/project/modules/sticker/StickerTagManager.php');
 require_once('classes/project/modules/sticker/StickerImage.php');
 require_once('classes/project/modules/sticker/StickerCollection.php');
+require_once('classes/project/modules/sticker/ChatGPTConnection.php');
 
 $id = 0;
 
@@ -9,6 +10,7 @@ $stickerCollection = null;
 $stickerTagManager = null;
 $stickerChangelog = null;
 $stickerImage = null;
+$chatGPTConnection = null;
 
 if (isset($_GET['id'])) {
     $id = (int) $_GET['id'];
@@ -17,6 +19,7 @@ if (isset($_GET['id'])) {
     $stickerCollection = new StickerCollection($id);
     $stickerTagManager = new StickerTagManager($id, $stickerCollection->getName());
     $stickerChangelog = new StickerChangelog($id);
+    $chatGPTConnection = new ChatGPTConnection($id);
 }
 
 if ($id == 0): ?>
@@ -26,6 +29,7 @@ if ($id == 0): ?>
 <script src="<?=Link::getResourcesShortLink("sticker/tagManager.js", "js")?>"></script>
 <script src="<?=Link::getResourcesShortLink("sticker/imageManager.js", "js")?>"></script>
 <script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
+<script src="<?=Link::getResourcesShortLink("sticker/textGeneration.js", "js")?>"></script>
 <?=$stickerCollection->checkProductErrorStatus() ? $stickerCollection->getErrorMessage() : ""?>
 <div class="defCont cont1">
     <div>
@@ -122,9 +126,11 @@ if ($id == 0): ?>
             </span>
         </div>
         <div>
-            <h4>Kurzbeschreibung <button class="iconGenerate" title="Textvorschlag erstellen" data-binding="true" data-fun="textGeneration"><?=Icon::$iconGenerate?></button></h4>
+            <h4>Kurzbeschreibung</h4>
+            <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "aufkleber", "text" => "short", "gpt" => $chatGPTConnection])?>
             <textarea class="data-input" data-fun="productDescription" data-target="aufkleber" data-type="short" data-write="true"><?=$stickerCollection->getAufkleber()->getDescriptionShort()?></textarea>
             <h4>Beschreibung</h4>
+            <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "aufkleber", "text" => "long", "gpt" => $chatGPTConnection])?>
             <textarea class="data-input" data-fun="productDescription" data-target="aufkleber" data-type= "long" data-write="true"><?=$stickerCollection->getAufkleber()->getDescription()?></textarea>
         </div>
         <div class="shopStatus">
@@ -174,8 +180,10 @@ if ($id == 0): ?>
         </div>
         <div>
             <h4>Kurzbeschreibung</h4>
+            <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "wandtattoo", "text" => "short", "gpt" => $chatGPTConnection])?>
             <textarea class="data-input" data-fun="" data-target="wandtattoo" data-type="short" data-write="true"><?=$stickerCollection->getWandtattoo()->getDescriptionShort()?></textarea>
             <h4>Beschreibung</h4>
+            <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "wandtattoo", "text" => "long", "gpt" => $chatGPTConnection])?>
             <textarea class="data-input" data-fun="productDescription" data-target="wandtattoo" data-type="long" data-write="true"><?=$stickerCollection->getWandtattoo()->getDescription()?></textarea>
         </div>
         <div class="shopStatus">
@@ -256,8 +264,10 @@ if ($id == 0): ?>
         </div>
         <div>
             <h4>Kurzbeschreibung</h4>
+            <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "textil", "text" => "short", "gpt" => $chatGPTConnection])?>
             <textarea class="data-input" data-fun="productDescription" data-target="textil" data-type="short" data-write="true"><?=$stickerCollection->getTextil()->getDescriptionShort()?></textarea>
             <h4>Beschreibung</h4>
+            <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "textil", "text" => "long", "gpt" => $chatGPTConnection])?>
             <textarea class="data-input" data-fun="productDescription" data-target="textil" data-type="long" data-write="true"><?=$stickerCollection->getTextil()->getDescription()?></textarea>
         </div>
         <div class="shopStatus">
