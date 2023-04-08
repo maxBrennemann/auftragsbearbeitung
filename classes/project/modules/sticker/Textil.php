@@ -157,11 +157,13 @@ class Textil extends Sticker {
             $stickerUpload->updateSticker($productId);
         }
         
+        $stickerCombination = new StickerCombination($this);
+        $stickerCombination->removeOldCombinations($this->getIdProduct());
+
         $stickerTagManager = new StickerTagManager($this->getId(), $this->getName());
         $stickerTagManager->setProductId($this->idProduct);
         $stickerTagManager->saveTags();
-
-        $stickerCombination = new StickerCombination($this);
+        
         $stickerCombination->createCombinations();
         
         $this->connectAccessoires();
