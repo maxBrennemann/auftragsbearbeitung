@@ -25,28 +25,6 @@ function initSticker() {
         document.title = "b-schriftung - Motiv " + mainVariables.motivId.innerHTML + " " + document.getElementById("name").innerHTML;
 
         readSizeTable();
-
-        const contextMenu = document.getElementById("delete-menu");
-        const scope = document.querySelector("body");
-        scope.addEventListener("contextmenu", (event) => {
-            if (event.target.dataset.deletable != null) {
-                mainVariables.currentDelete = event.target.dataset.imageId;
-                event.preventDefault();
-
-                const { clientX: mouseX, clientY: mouseY } = event;
-        
-                contextMenu.style.top = `${mouseY}px`;
-                contextMenu.style.left = `${mouseX}px`;
-        
-                contextMenu.classList.add("visible");
-            }
-        });
-
-        scope.addEventListener("click", (e) => {
-            if (e.target.offsetParent != contextMenu) {
-            contextMenu.classList.remove("visible");
-            }
-        });
     }
 
     var input = document.getElementById('name');
@@ -336,78 +314,6 @@ async function sendRows(data, text) {
 
     var response = await send(data, "setAufkleberGroessen", true);
     console.log(response);
-}
-
-/**
- * deletes the currently selected image
- */
-async function deleteImage(imageId) {
-    let removeFromDom = false;
-    if (imageId == -1) {
-       imageId = mainVariables.currentDelete;
-       removeFromDom = true;
-    } else {
-        imageId = document.querySelector(".imageBig");
-        imageId = imageId.dataset.imageId;
-    }
-
-    var data = {
-        imageId: imageId,
-    };
-    var response = await send(data, "deleteImage");
-    infoSaveSuccessfull(response);
-
-    if (response == "success") {
-        if (removeFromDom) {
-            let elem = document.querySelector('.imageTag[data-image-id="' + imageId + '"]');
-            elem.parentNode.removeChild(elem);
-        } else {
-            deleteImageUpdateDOMTree(imageId);
-        }
-    }
-}
-
-/* this function is called, when the image deletion process was successful */
-function deleteImageUpdateDOMTree(imageId) {
-    let element = document.querySelector('.imagePrev[data-image-id="' + imageId + '"]');
-    element.parentNode.removeChild(element);
-}
-
-/**
- * changes all data for main image
- * @param {Event} e 
- */
-function changeImage(e) {
-    var main = document.querySelector(".imageBig");
-    main.src = e.target.src;
-    main.dataset.imageId = e.target.dataset.imageId;
-
-    document.getElementById("aufkleberbild").checked = e.target.dataset.isAufkleber == 0 ? false : true;
-    document.getElementById("wandtattoobild").checked = e.target.dataset.isWandtattoo == 0 ? false : true;
-    document.getElementById("textilbild").checked = e.target.dataset.isTextil == 0 ? false : true;
-}
-
-function insertNewlyUploadedImages(json) {
-    let imageContainer = document.getElementsByClassName("imageContainer")[0];
-
-    for (let key in json.imageData) {
-        let image = json.imageData[key];
-        console.log(image.id + " " + image.url);
-
-        let imageEl = document.createElement("img");
-        imageEl.setAttribute("src", image.url);
-        imageEl.title = image.original;
-        imageEl.classList.add("imagePrev");
-        imageEl.dataset.imageId = image.id;
-        imageEl.dataset.isAufkleber = 0;
-        imageEl.dataset.insWandtattoo = 0;
-        imageEl.dataset.isTextil = 0;
-        imageEl.setAttribute("onclick", "change(event)");
-
-        imageContainer.appendChild(imageEl);
-
-        console.log("test");
-    }
 }
 
 /** calculates material prices */
@@ -778,19 +684,19 @@ function click_addAltTitle() {
     input.classList.toggle("visible");
 }
 
-async function write_changeAltTitle(e) {
-    let val = e.target.value;
-    let type = e.target.dataset.type;
-    var response = await send({
-        "newTitle": val,
-        "type": type,
-        "id": mainVariables.motivId.innerHTML,
-    }, "setAltTitle");
-    if (response == "success") {
-        infoSaveSuccessfull("success");
-    } else {
-        infoSaveSuccessfull();
-    }
+function write_changeAltTitle(e) {
+    ajax.post({
+        newTitle: e.target.value,
+        type: e.target.dataset.type,
+        id: mainVariables.motivId.innerHTML,
+        r: "setAltTitle",
+    }).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+        } else {
+            infoSaveSuccessfull();
+        }
+    });
 }
 
 async function exportFacebook() {
@@ -805,23 +711,27 @@ async function exportFacebook() {
  * @param {} e 
  */
 async function click_toggleProductVisibility(e) {
-    let target = e.target;
+    let target = e.currentTarget;
     let type = target.dataset.type;
-    let status = target.dataset.status;
 
-    let result = await send({
+    ajax.post({
         id: mainVariables.motivId.innerHTML,
         type: type,
-        status: status,
-    }, "productVisibility");
-    result = JSON.parse(result);
-    infoSaveSuccessfull(result["status"]);
+        r: "productVisibility",
+    }).then(r => {
+        const icon = r.icon;
+        infoSaveSuccessfull(r.status);
 
-    if (result["icon" == "enabled"]) {
-        target.innerHTML = `<svg style="width: 10px; height: 10px;" viewBox="0 0 24 24"><path fill="currentColor" d="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z" /></svg>`;
-    } else {
-        target.innerHTML = `<svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="currentColor" d="M11.83,9L15,12.16C15,12.11 15,12.05 15,12A3,3 0 0,0 12,9C11.94,9 11.89,9 11.83,9M7.53,9.8L9.08,11.35C9.03,11.56 9,11.77 9,12A3,3 0 0,0 12,15C12.22,15 12.44,14.97 12.65,14.92L14.2,16.47C13.53,16.8 12.79,17 12,17A5,5 0 0,1 7,12C7,11.21 7.2,10.47 7.53,9.8M2,4.27L4.28,6.55L4.73,7C3.08,8.3 1.78,10 1,12C2.73,16.39 7,19.5 12,19.5C13.55,19.5 15.03,19.2 16.38,18.66L16.81,19.08L19.73,22L21,20.73L3.27,3M12,7A5,5 0 0,1 17,12C17,12.64 16.87,13.26 16.64,13.82L19.57,16.75C21.07,15.5 22.27,13.86 23,12C21.27,7.61 17,4.5 12,4.5C10.6,4.5 9.26,4.75 8,5.2L10.17,7.35C10.74,7.13 11.35,7 12,7Z" /></svg>`;
-    }
+        var template = "";
+        if (icon == 0) {
+            template = document.getElementById("icon-invisible");
+        } else {
+            template = document.getElementById("icon-visible");
+        }
+
+        target.innerHTML = "";
+        target.appendChild(template.content.cloneNode(true));
+    });
 }
 
 async function click_shortcutProduct(e) {

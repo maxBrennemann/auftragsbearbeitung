@@ -31,7 +31,12 @@ class Sticker extends PrestashopConnection {
             throw new Exception("Sticker does not exist.");
         }
         $this->stickerData = $this->stickerData[0];
-        $this->additionalData = json_decode($this->stickerData["additional_data"], true);
+
+        if ($this->stickerData["additional_data"] == null) {
+            $this->additionalData = [];
+        } else {
+            $this->additionalData = json_decode($this->stickerData["additional_data"], true);
+        }
 
         $this->imageData = new StickerImage($idSticker);
 
@@ -113,7 +118,11 @@ class Sticker extends PrestashopConnection {
         if (isset($this->additionalData["products"])) {
             $prod = $this->additionalData["products"];
             if (isset($prod[$type])) {
-                return $prod[$type]["title"];
+                $altTitle = $prod[$type]["altTitle"];
+                if ($altTitle == null) {
+                    return "";
+                }
+                return $altTitle;
             }
         }
         return "";
@@ -160,7 +169,13 @@ class Sticker extends PrestashopConnection {
     }
 
     public function getActiveStatus() {
-
+        if (isset($this->additionalData["products"][$this->instanceType])) {
+            $ref = $this->additionalData["products"][$this->instanceType];
+            if (isset($ref["status"])) {
+                return $ref["status"] == 1;
+            }
+        }
+        return true;
     }
 
     public function setName(String $name) {
@@ -221,11 +236,16 @@ class Sticker extends PrestashopConnection {
         $result = curl_exec($ch);
         curl_close($ch);
 
-        /* TODO: image shop ids abspeichern */
-        $imageIds = json_decode($result);
-        var_dump($imageIds);
-        foreach ($imageIds as $imageId) {
-            //$key = array_search($imageId["url"], $imageURLs);
+        $imagesData = json_decode($result, true);
+        $index = 0;
+        foreach ($imagesData as $image) {
+            $idImage = (int) $image["id"];
+            $idDatei = $imageURLs[$index]["id"];
+            DBAccess::updateQuery("UPDATE module_sticker_image SET id_image_shop = :idImage WHERE id_datei = :idDatei;", [
+                "idImage" => $idImage,
+                "idDatei" => $idDatei,
+            ]);
+            $index++;
         }
     }
 
@@ -241,7 +261,7 @@ class Sticker extends PrestashopConnection {
      * switches the product active status
      */
     public function toggleActiveStatus() {
-        $xml = $this->getXML("product/" . $this->getIdProduct());
+        $xml = $this->getXML("products/" . $this->getIdProduct());
         $resource_product = $xml->children()->children();
         
         $active = (int) $resource_product->active;
@@ -250,6 +270,10 @@ class Sticker extends PrestashopConnection {
         } else {
             $active = 0;
         }
+
+        $resource_product->{"active"} = $active;
+        unset($resource_product->manufacturer_name);
+        unset($resource_product->quantity);
 
         $opt = array(
             'resource' => 'products',
@@ -327,6 +351,35 @@ class Sticker extends PrestashopConnection {
 
     public function getPurchasingPricesMatched() {
         
+    }
+
+    /**
+     * inserts a new sticker into the database and sets all its initial values
+     * @param String $title the new sticker's name
+     */
+    public static function createNewSticker(String $title) {
+        /* insert sticker into database */
+        $query = "INSERT INTO module_sticker_sticker_data (`name`) VALUES (:title)";
+        $id = DBAccess::insertQuery($query, ["title" => $title]);
+
+        require_once('classes/project/modules/sticker/AufkleberWandtattoo.php');
+        $aufkleberWandtattoo = new AufkleberWandtattoo($id);
+        $sizes = [100, 200, 300, 600, 900, 1200];
+        foreach ($sizes as $size) {
+            $price = $aufkleberWandtattoo->getPrice($size, 0, 1);
+            $aufkleberWandtattoo->updatePrice($size, 0, $price);
+        }
+
+        /* sets exports defaults to true */
+        $query = "INSERT INTO module_sticker_exports (idSticker, facebook, google, amazon, etsy, ebay, pinterest) VALUES ($id, -1, -1, -1, -1, -1, -1);";
+        DBAccess::insertQuery($query);
+
+        if ($id == 0 || !is_numeric($id)) {
+            echo -1;
+        } else {
+            $link = Link::getPageLink("sticker") . "?id=" . $id;
+            echo $link;
+        }
     }
 
 }

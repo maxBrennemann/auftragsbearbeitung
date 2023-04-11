@@ -2,6 +2,7 @@
 require_once('classes/project/modules/sticker/StickerTagManager.php');
 require_once('classes/project/modules/sticker/StickerImage.php');
 require_once('classes/project/modules/sticker/StickerCollection.php');
+require_once('classes/project/modules/sticker/ChatGPTConnection.php');
 
 $id = 0;
 
@@ -9,6 +10,7 @@ $stickerCollection = null;
 $stickerTagManager = null;
 $stickerChangelog = null;
 $stickerImage = null;
+$chatGPTConnection = null;
 
 if (isset($_GET['id'])) {
     $id = (int) $_GET['id'];
@@ -17,6 +19,7 @@ if (isset($_GET['id'])) {
     $stickerCollection = new StickerCollection($id);
     $stickerTagManager = new StickerTagManager($id, $stickerCollection->getName());
     $stickerChangelog = new StickerChangelog($id);
+    $chatGPTConnection = new ChatGPTConnection($id);
 }
 
 if ($id == 0): ?>
@@ -26,6 +29,7 @@ if ($id == 0): ?>
 <script src="<?=Link::getResourcesShortLink("sticker/tagManager.js", "js")?>"></script>
 <script src="<?=Link::getResourcesShortLink("sticker/imageManager.js", "js")?>"></script>
 <script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
+<script src="<?=Link::getResourcesShortLink("sticker/textGeneration.js", "js")?>"></script>
 <?=$stickerCollection->checkProductErrorStatus() ? $stickerCollection->getErrorMessage() : ""?>
 <div class="defCont cont1">
     <div>
@@ -46,14 +50,14 @@ if ($id == 0): ?>
             <div class="shopStatusIcon">
                 <?=Icon::$iconAddInShop?>
             </div> 
-            <button class="newButton" data-id="4" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
+            <button class="newButton" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
         </div>
     </div>
     <div>
         <p>Weitere Dateien (SVGs, CorelDraw, ...):</p>
         <?=insertTemplate("classes/project/modules/sticker/views/stickerFileView.php", ["images" => $stickerImage->getGeneralImages(), "files" => $stickerImage->getFiles()])?>
         <div id="delete-menu">
-            <div class="item" onclick="deleteImage(-1)">
+            <div class="item" onclick="deleteImage()">
                 <svg style="width:24px;height:24px" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
                 </svg>
@@ -70,9 +74,14 @@ if ($id == 0): ?>
                 <?=Icon::$iconEditText?>
             </button>
             <button class="infoButton" data-info="8">i</button>
-            <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
+            <?php if ($stickerCollection->getAufkleber()->getActiveStatus()): ?>
+                <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
                 <?=Icon::$iconVisible?>
             </button>
+            <?php else: ?>
+                <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
+                <?=Icon::$iconInvisible?>
+            <?php endif; ?> 
             <button title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct" data-type="aufkleber">
                 <?=Icon::$iconConnectTo?>
             </button>
@@ -117,9 +126,11 @@ if ($id == 0): ?>
             </span>
         </div>
         <div>
-            <h4>Kurzbeschreibung <button class="iconGenerate" title="Textvorschlag erstellen" data-binding="true" data-fun="textGeneration"><?=Icon::$iconGenerate?></button></h4>
+            <h4>Kurzbeschreibung</h4>
+            <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "aufkleber", "text" => "short", "gpt" => $chatGPTConnection])?>
             <textarea class="data-input" data-fun="productDescription" data-target="aufkleber" data-type="short" data-write="true"><?=$stickerCollection->getAufkleber()->getDescriptionShort()?></textarea>
             <h4>Beschreibung</h4>
+            <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "aufkleber", "text" => "long", "gpt" => $chatGPTConnection])?>
             <textarea class="data-input" data-fun="productDescription" data-target="aufkleber" data-type= "long" data-write="true"><?=$stickerCollection->getAufkleber()->getDescription()?></textarea>
         </div>
         <div class="shopStatus">
@@ -143,9 +154,14 @@ if ($id == 0): ?>
                 <?=Icon::$iconEditText?>
             </button>
             <button class="infoButton" data-info="9">i</button>
-            <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
+            <?php if ($stickerCollection->getWandtattoo()->getActiveStatus()): ?>
+                <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
                 <?=Icon::$iconVisible?>
             </button>
+            <?php else: ?>
+                <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
+                <?=Icon::$iconInvisible?>
+            <?php endif; ?>
             <button title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct" data-type="wandtattoo">
                 <?=Icon::$iconConnectTo?>
             </button>
@@ -164,8 +180,10 @@ if ($id == 0): ?>
         </div>
         <div>
             <h4>Kurzbeschreibung</h4>
+            <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "wandtattoo", "text" => "short", "gpt" => $chatGPTConnection])?>
             <textarea class="data-input" data-fun="" data-target="wandtattoo" data-type="short" data-write="true"><?=$stickerCollection->getWandtattoo()->getDescriptionShort()?></textarea>
             <h4>Beschreibung</h4>
+            <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "wandtattoo", "text" => "long", "gpt" => $chatGPTConnection])?>
             <textarea class="data-input" data-fun="productDescription" data-target="wandtattoo" data-type="long" data-write="true"><?=$stickerCollection->getWandtattoo()->getDescription()?></textarea>
         </div>
         <div class="shopStatus">
@@ -189,9 +207,14 @@ if ($id == 0): ?>
                 <?=Icon::$iconEditText?>
             </button>
             <button class="infoButton" data-info="10">i</button>
-            <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
+            <?php if ($stickerCollection->getTextil()->getActiveStatus()): ?>
+                <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
                 <?=Icon::$iconVisible?>
             </button>
+            <?php else: ?>
+                <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
+                <?=Icon::$iconInvisible?>
+            <?php endif; ?> 
             <button title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct" data-type="textil">
                 <?=Icon::$iconConnectTo?>
             </button>
@@ -241,8 +264,10 @@ if ($id == 0): ?>
         </div>
         <div>
             <h4>Kurzbeschreibung</h4>
+            <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "textil", "text" => "short", "gpt" => $chatGPTConnection])?>
             <textarea class="data-input" data-fun="productDescription" data-target="textil" data-type="short" data-write="true"><?=$stickerCollection->getTextil()->getDescriptionShort()?></textarea>
             <h4>Beschreibung</h4>
+            <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "textil", "text" => "long", "gpt" => $chatGPTConnection])?>
             <textarea class="data-input" data-fun="productDescription" data-target="textil" data-type="long" data-write="true"><?=$stickerCollection->getTextil()->getDescription()?></textarea>
         </div>
         <div class="shopStatus">
@@ -310,12 +335,11 @@ if ($id == 0): ?>
         <div class="shopStatusIcon">
             <?=Icon::$iconAddInShop?>
         </div> 
-        <button data-id="5" class="newButton marginTop30" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
+        <button class="newButton marginTop30" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
     </div>
 </div>
 <div class="defCont">
     <h2>Produktexport</h2>
-    <!-- TODO: facebook export überlegen, wo das angelegt wird und wie es funktioniert -->
     <button style="display: none" onclick="exportFacebook()">facebook export test</button>
     <form>
         <div class="exportContainer">
@@ -393,5 +417,11 @@ if ($id == 0): ?>
 </template>
 <template id="icon-letterplot">
     <?=Icon::iconLetterPlott()?>
+</template>
+<template id="icon-visible">
+    <?=Icon::$iconVisible?>
+</template>
+<template id="icon-invisible">
+    <?=Icon::$iconInvisible?>
 </template>
 <?php endif; ?>

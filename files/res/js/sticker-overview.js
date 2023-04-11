@@ -135,21 +135,21 @@ async function createNewSticker() {
     }
 }
 
-async function click_createFbExport() {
-    let fbExport = ajax.post({
+function click_createFbExport() {
+    ajax.post({
         "r": "createFbExport",
-    })
-
-    if (fbExport.status == "successful") {
-        infoSaveSuccessfull("success");
-
-        const a = document.createElement("a");
-        a.href = fbExport.file;
-        a.download = fbExport.file;
-
-        document.body.appendChild(a);
-        a.click();
-
-        console.log(fbExport.errorList);
-    }
+    }).then(fbExport => {
+        if (fbExport.status == "successful") {
+            infoSaveSuccessfull("success");
+    
+            const a = document.createElement("a");
+            a.href = fbExport.file;
+            a.download = fbExport.file;
+    
+            document.body.appendChild(a);
+            a.click();
+    
+            console.log(fbExport.errorList);
+        }
+    });
 }

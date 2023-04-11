@@ -12,16 +12,15 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Masterminds/html5-php.git",
-                "reference": "05cc7305f1ef04064a27ad4d5f270fa04738d542"
+                "reference": "3d02e3afb75c2f8fcb4e1f78155018459039bdf8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Masterminds/html5-php/zipball/05cc7305f1ef04064a27ad4d5f270fa04738d542",
-                "reference": "05cc7305f1ef04064a27ad4d5f270fa04738d542",
+                "url": "https://api.github.com/repos/Masterminds/html5-php/zipball/3d02e3afb75c2f8fcb4e1f78155018459039bdf8",
+                "reference": "3d02e3afb75c2f8fcb4e1f78155018459039bdf8",
                 "shasum": ""
             },
             "require": {
-                "ext-ctype": "*",
                 "ext-dom": "*",
                 "php": ">=5.3.0"
             },
@@ -73,7 +72,7 @@
                 "issues": "https://github.com/Masterminds/html5-php/issues",
                 "source": "https://github.com/Masterminds/html5-php/tree/master"
             },
-            "time": "2023-01-11T19:44:18+00:00"
+            "time": "2023-01-19T12:38:17+00:00"
         },
         {
             "name": "matthiasmullie/minify",
@@ -205,12 +204,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PrestaShop/PrestaShop-webservice-lib.git",
-                "reference": "f9d9fdc6c3b34be6e55d9996cb62760e52b58122"
+                "reference": "94feb5f547b4a33cd9c759edfa581f30fa42803b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PrestaShop/PrestaShop-webservice-lib/zipball/f9d9fdc6c3b34be6e55d9996cb62760e52b58122",
-                "reference": "f9d9fdc6c3b34be6e55d9996cb62760e52b58122",
+                "url": "https://api.github.com/repos/PrestaShop/PrestaShop-webservice-lib/zipball/94feb5f547b4a33cd9c759edfa581f30fa42803b",
+                "reference": "94feb5f547b4a33cd9c759edfa581f30fa42803b",
                 "shasum": ""
             },
             "require": {
@@ -241,7 +240,7 @@
                 "issues": "https://github.com/PrestaShop/PrestaShop-webservice-lib/issues",
                 "source": "https://github.com/PrestaShop/PrestaShop-webservice-lib/tree/master"
             },
-            "time": "2022-11-18T13:49:27+00:00"
+            "time": "2023-03-31T09:12:52+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",

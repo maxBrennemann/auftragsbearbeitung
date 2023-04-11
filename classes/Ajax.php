@@ -1083,9 +1083,11 @@ class Ajax {
 			break;
 			case "deleteImage":
 				$imageId = (int) $_POST["imageId"];
-				$query = "DELETE FROM dateien WHERE id = $imageId";
-				DBAccess::deleteQuery($query);
-				echo "success";
+				$query = "DELETE FROM dateien WHERE id = :idImage;";
+				DBAccess::deleteQuery($query, ["idImage" => $imageId]);
+				echo json_encode([
+					"status" => "success",
+				]);
 			break;
 			case "changePreiskategorie":
 				$id = (int) $_POST['id'];
@@ -1163,19 +1165,9 @@ class Ajax {
 				echo json_encode(["url" => $url]);
 			break;
 			case "createNewSticker":
+				require_once('classes/project/modules/sticker/Sticker.php');
 				$title = (String) $_POST["newTitle"];
-				$id = DBAccess::insertQuery("INSERT INTO module_sticker_sticker_data (`name`) VALUES (:title)", ["title" => $title]);
-
-				/* sets default values for sizes 10cm, 20cm, 30cm, 60cm, 90cm and 120cm */
-				$query = "INSERT INTO module_sticker_sizes (id_sticker, width, height) VALUES ($id, 100, 0), ($id, 200, 0), ($id, 300, 0), ($id, 600, 0), ($id, 900, 0), ($id, 1200, 0)";
-				DBAccess::insertQuery($query);
-
-				if ($id == 0 || !is_numeric($id)) {
-					echo -1;
-				} else {
-					$link = Link::getPageLink("sticker") . "?id=" . $id;
-					echo $link;
-				}
+				Sticker::createNewSticker($title);
 			break;
 			case "setPriceclass":
 				$priceclass = (int) $_POST["priceclass"];
@@ -1294,15 +1286,17 @@ class Ajax {
 				$type = (String) $_POST["type"];
 
 				$additionalData = DBAccess::selectQuery("SELECT additional_data FROM module_sticker_sticker_data WHERE id = :id LIMIT 1", ["id" => $id]);
-				if ($additionalData != null) {
-					$additionalData = json_decode($additionalData);
+
+				if ($additionalData[0] != null) {
+					$additionalData = json_decode($additionalData[0]["additional_data"], true);
 					
-					$additionalData["products"][$type]["title"] = $newTitle;
+					$additionalData["products"][$type]["altTitle"] = $newTitle;
 					$data = json_encode($additionalData);
+
 					DBAccess::insertQuery("UPDATE module_sticker_sticker_data SET additional_data = :data WHERE id = :id", ["data" => $data, "id" => $id]);
-					echo "success";
+					echo json_encode(["status" => "success"]);
 				} else {
-					echo "no data found";
+					echo json_encode(["status" => "no data found"]);
 				}
 			break;
 			case "clearFiles":
@@ -1364,6 +1358,22 @@ class Ajax {
 					"status" => "success",
 				]);
 			break;
+			case "removeAccessoire":
+				$idSticker = (int) $_POST["id"];
+				$idProductReference = (int) $_POST["idProductReference"];
+				$type = (String) $_POST["type"];
+
+				$query = "DELETE FROM `module_sticker_accessoires` WHERE `id_sticker` = :idSticker AND `id_product_reference` = :idProductReference AND `type` = :type";
+				DBAccess::deleteQuery($query, [
+					"idSticker" => $idSticker,
+					"type" => $type,
+					"idProductReference" => $idProductReference,
+				]);
+
+				echo json_encode([
+					"status" => "success",
+				]);
+			break;
 			case "searchShop":
 				require_once('classes/project/modules/sticker/SearchProducts.php');
 				$search = $_POST["query"];
@@ -1411,6 +1421,15 @@ class Ajax {
 				}
 				
 				echo json_encode(["status" => "not found"]);
+			break;
+			case "generateText":
+				$title = $_POST["title"];
+				$text = $_POST["text"];
+				$type = $_POST["type"];
+				$id = (int) $_POST["id"];
+				require_once('classes/project/modules/sticker/ChatGPTConnection.php');
+				$connector = new ChatGPTConnection($id);
+				$connector->getTextSuggestion($title, $type, $text, "", "lustig");
 			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";

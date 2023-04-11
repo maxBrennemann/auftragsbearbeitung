@@ -1,3 +1,5 @@
+<script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
+
 <?php 
 	require_once('classes/project/Kunde.php');
 	require_once('classes/project/Table.php');
@@ -301,3 +303,4 @@
 		</div>
 	</div>
 <?php endif; ?>
+<script src="<?=Link::getResourcesShortLink("kunde_f.js", "js")?>"></script>

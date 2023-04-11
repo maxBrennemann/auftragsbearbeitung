@@ -51,3 +51,4 @@
 		<h3>Offene Aufträge:</h3><?=$showOffeneAuftraege?>
 	</div>
 </div>
+<script src="<?=Link::getResourcesShortLink("main-helper.js", "js")?>"></script>

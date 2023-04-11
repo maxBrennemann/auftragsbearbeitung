@@ -1,3 +1,5 @@
+<script src="<?=Link::getResourcesShortLink("https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js", "extJs")?>"></script>
+
 <?php
 	require_once('classes/project/Statistics.php');
 	require_once('classes/Link.php');

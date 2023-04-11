@@ -1,8 +1,4 @@
-﻿@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@font-face {
+﻿@font-face {
     font-family: 'Be Vietnam';
     src: url("font/BeVietnamPro-Regular.ttf") format('truetype');
     font-weight: normal;
@@ -835,4 +831,8 @@ input#hamburg {
 
 .showFailiureW {
     color: white;
+}
+
+h4 {
+    margin-bottom: 0;
 }

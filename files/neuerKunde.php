@@ -1,4 +1,7 @@
-﻿<?php
+﻿<script src="<?=Link::getResourcesShortLink("helper.js", "js")?>"></script>
+<script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
+
+<?php
 	require_once('classes/DBAccess.php');
 
 	$isSent = isset($_GET['oeffOderPriv']);
@@ -222,3 +225,4 @@
     	font-family: monospace;
 	}
 </style>
+<script src="<?=Link::getResourcesShortLink("neuer-kunde_f.js", "js")?>"></script>

@@ -143,11 +143,26 @@ class TagManager {
         });
     }
 
+    validateValue(text) {
+        var valid = true;
+        if (text.length <= 32) {
+            const excludedChars = `"!<;>;?=+#"°{}_$%.`.split('');
+            excludedChars.forEach(char => {
+                if (text.includes(char)) {
+                    valid = false;
+                }
+            });
+        }
+
+        return valid;
+    }
+
     addTag(e) {
         var dt = document.createElement("dt");
         var newTagValue = e.target.value;
 
-        if (newTagValue.length <= 32) {
+        const valid = this.validateValue(newTagValue);
+        if (valid) {
             dt.innerHTML = newTagValue;
 
             var remove = document.createElement("span");
@@ -165,6 +180,8 @@ class TagManager {
                 tag: newTagValue,
                 r: "addTag",
             });
+        } else {
+            alert("Der Tag ist zu lang oder enthält ein ungültiges Zeichen!");
         }
     }
 
@@ -202,12 +219,9 @@ class TagManager {
             }).then(r => {
                 if (r["status"] == "success") {
                     parent.removeChild(child);
+                    infoSaveSuccessfull("success");
                 }
             });
-
-            if (response == "") {
-                parent.removeChild(child);
-            }
         } else if (element.classList.contains("suggestionTag")) {
             element.classList.remove("suggestionTag");
             ajax.post({

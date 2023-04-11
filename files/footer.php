@@ -20,22 +20,5 @@
 		</div>
 		<a href="<?=$changelog?>" style="font-size: 0.5em; color: grey"><?=getCurrentVersion()?></a>
 	</footer>
-
-	<?php
-		$articleId = $pageDetails["id"];
-		$files = DBAccess::selectQuery("SELECT * FROM attachments WHERE articleId = '$articleId' AND anchor = 'footer'");
-		
-		foreach($files as $file) {
-			$link = Link::getResourcesShortLink($file['fileSrc'], $file['fileType']);
-			
-			if($file['fileType'] == 'css') {
-				echo '<link rel="stylesheet" href="' . $link . '">';
-			} else if($file['fileType'] == 'js') {
-				echo '<script src="' . $link . '"></script>';
-			} else if($file['fileType'] == 'font') {
-				echo '<style> @font-face { font-family: ' . $file['fileName'] . '; src: url("' . $link . '"); }</style>';
-			}
-		}
-	?>
 </body>
 </html>

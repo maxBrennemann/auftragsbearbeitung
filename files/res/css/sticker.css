@@ -617,3 +617,9 @@ dt.inline {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
 }
+
+/* chat gpt design */
+h4 {
+    display: inline-block;
+    margin-bottom: 10px;
+}
