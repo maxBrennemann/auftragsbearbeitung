@@ -340,7 +340,6 @@ if ($id == 0): ?>
 </div>
 <div class="defCont">
     <h2>Produktexport</h2>
-    <!-- TODO: facebook export überlegen, wo das angelegt wird und wie es funktioniert -->
     <button style="display: none" onclick="exportFacebook()">facebook export test</button>
     <form>
         <div class="exportContainer">

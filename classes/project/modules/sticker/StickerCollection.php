@@ -59,7 +59,6 @@ class StickerCollection implements Iterator {
             $data = DBAccess::selectQuery($query, ["idSticker" => $this->id]);
 
             $this->exports = $data[0];
-            // TODO: insert mysql trigger and update table in sql updater
         }
 
         return $this->exports[$export] != null;

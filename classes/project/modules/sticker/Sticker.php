@@ -118,7 +118,11 @@ class Sticker extends PrestashopConnection {
         if (isset($this->additionalData["products"])) {
             $prod = $this->additionalData["products"];
             if (isset($prod[$type])) {
-                return $prod[$type]["altTitle"];
+                $altTitle = $prod[$type]["altTitle"];
+                if ($altTitle == null) {
+                    return "";
+                }
+                return $altTitle;
             }
         }
         return "";
