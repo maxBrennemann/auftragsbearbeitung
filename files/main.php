@@ -1,5 +1,3 @@
-<script src="<?=Link::getResourcesShortLink("main.css", "css")?>"></script>
-
 <?php
 	require_once('classes/project/Aufgabenliste.php');
 	require_once('classes/project/Auftrag.php');
