@@ -1172,6 +1172,10 @@ class Ajax {
 				$query = "INSERT INTO module_sticker_sizes (id_sticker, width, height) VALUES ($id, 100, 0), ($id, 200, 0), ($id, 300, 0), ($id, 600, 0), ($id, 900, 0), ($id, 1200, 0)";
 				DBAccess::insertQuery($query);
 
+				/* sets exports defaults to true */
+				$query = "INSERT INTO module_sticker_exports (idSticker, facebook, google, amazon, etsy, ebay, pinterest) VALUES ($id, -1, -1, -1, -1, -1, -1);";#
+				DBAccess::insertQuery($query);
+
 				if ($id == 0 || !is_numeric($id)) {
 					echo -1;
 				} else {
@@ -1296,15 +1300,17 @@ class Ajax {
 				$type = (String) $_POST["type"];
 
 				$additionalData = DBAccess::selectQuery("SELECT additional_data FROM module_sticker_sticker_data WHERE id = :id LIMIT 1", ["id" => $id]);
-				if ($additionalData != null) {
-					$additionalData = json_decode($additionalData);
+
+				if ($additionalData[0] != null) {
+					$additionalData = json_decode($additionalData[0]["additional_data"], true);
 					
-					$additionalData["products"][$type]["title"] = $newTitle;
+					$additionalData["products"][$type]["altTitle"] = $newTitle;
 					$data = json_encode($additionalData);
+
 					DBAccess::insertQuery("UPDATE module_sticker_sticker_data SET additional_data = :data WHERE id = :id", ["data" => $data, "id" => $id]);
-					echo "success";
+					echo json_encode(["status" => "success"]);
 				} else {
-					echo "no data found";
+					echo json_encode(["status" => "no data found"]);
 				}
 			break;
 			case "clearFiles":
@@ -1361,6 +1367,22 @@ class Ajax {
 						"idProductReference" => $idProductReference,
 					]);
 				}
+
+				echo json_encode([
+					"status" => "success",
+				]);
+			break;
+			case "removeAccessoire":
+				$idSticker = (int) $_POST["id"];
+				$idProductReference = (int) $_POST["idProductReference"];
+				$type = (String) $_POST["type"];
+
+				$query = "DELETE FROM `module_sticker_accessoires` WHERE `id_sticker` = :idSticker AND `id_product_reference` = :idProductReference AND `type` = :type";
+				DBAccess::deleteQuery($query, [
+					"idSticker" => $idSticker,
+					"type" => $type,
+					"idProductReference" => $idProductReference,
+				]);
 
 				echo json_encode([
 					"status" => "success",

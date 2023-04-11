@@ -37,6 +37,10 @@ class Wandtattoo extends AufkleberWandtattoo {
     }
 
     public function save() {
+        if (!$this->getIsWalldecal()) {
+            return;
+        }
+
         $productId = (int) $this->getIdProduct();
         $stickerUpload = new StickerUpload($this->idSticker, $this->getName(), $this->getBasePrice(), $this->getDescription(), $this->getDescriptionShortWithDefaultText());
 

@@ -40,6 +40,19 @@ class Aufkleber extends AufkleberWandtattoo {
     }
 
     public function getName(): String {
+        $name = null;
+        if ($this->additionalData != null) {
+            if (isset($this->additionalData["products"])) {
+                if (isset($this->additionalData["products"][$this->instanceType]["title"])) {
+                    $name = $this->additionalData["products"][$this->instanceType]["title"];
+                }
+            }
+        }
+
+        if ($name != null) {
+            return "Aufkleber" . $name;
+        }
+
         return "Aufkleber " . parent::getName();
     }
 
@@ -112,6 +125,10 @@ class Aufkleber extends AufkleberWandtattoo {
     }
 
     public function save() {
+        if (!$this->getIsPlotted()) {
+            return;
+        }
+
         $productId = (int) $this->getIdProduct();
         $stickerUpload = new StickerUpload($this->idSticker, $this->getName(), $this->getBasePrice(), $this->getDescriptionWithDefaultText(), $this->getDescriptionShortWithDefaultText());
 
