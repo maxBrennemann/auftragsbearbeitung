@@ -20,7 +20,7 @@ return new class extends UpdateMySql {
     }
 
     public function downgrade() {
-        /* TODO: downgrade schreiben */
+        DBAccess::deleteQuery("DROP TABLE module_sticker_chatgpt;");
     }
 
     /* testing if anonymous class is accessible */

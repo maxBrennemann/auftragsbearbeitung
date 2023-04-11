@@ -45,7 +45,7 @@
 		<?=ClientSettings::getColorConfiguration()?>
 	</style>
 	<link rel="stylesheet" href="<?=$globalCSS?>">
-	<!--<link rel="stylesheet" href="<?=$tailwindCSS?>">-->
+	<link rel="stylesheet" href="<?=$tailwindCSS?>">
 	<script src="<?=$globalJS?>"></script>
 	<?php
 		$link = Link::getResourcesShortLink($page . ".js", "js");
