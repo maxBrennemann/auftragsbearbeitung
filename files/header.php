@@ -48,26 +48,6 @@
 	<!--<link rel="stylesheet" href="<?=$tailwindCSS?>">-->
 	<script src="<?=$globalJS?>"></script>
 	<?php
-		$files = DBAccess::selectQuery("SELECT * FROM attachments WHERE articleId = '{$pageDetails['id']}' AND anchor = 'head'");
-		
-		foreach($files as $file) {
-			$link = Link::getResourcesShortLink($file['fileSrc'], $file['fileType']);
-			switch ($file['fileType']) {
-				case 'css':
-					echo '<link rel="stylesheet" href="' . $link . '">';
-					break;
-				case 'js':
-				case 'extJs':
-					echo '<script src="' . $link . '"></script>';
-					break;
-				case 'font':
-					echo '<style> @font-face { font-family: ' . $file['fileName'] . '; src: url("' . $link . '"); }</style>';
-					break;
-				default:
-					break;
-			}
-		}
-
 		$link = Link::getResourcesShortLink($page . ".js", "js");
 		echo '<script src="' . $link . '"></script>';
 		$link = Link::getResourcesShortLink($page . ".css", "css");

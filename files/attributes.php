@@ -1,5 +1,5 @@
+<script src="<?=Link::getResourcesShortLink("attribute.js", "js")?>"></script>
 <?php
-require_once("classes/DBAccess.php");
 
 $getAttributes = "SELECT attribute_group FROM attribute_group";
 $getAttributes = DBAccess::selectQuery($getAttributes);
@@ -45,9 +45,5 @@ $attributeGroups = DBAccess::selectQuery("SELECT * FROM attribute_group");
         flex-wrap: wrap;
         gap: 10px;
         margin: auto;
-    }
-
-    .addAttribute {
-
     }
 </style>

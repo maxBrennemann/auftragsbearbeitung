@@ -48,3 +48,4 @@ $data = DBAccess::selectQuery("SELECT * FROM leistung");
 		<button onclick="add()">Hinzufügen</button>
 	<div>
 </div>
+<script src="<?=Link::getResourcesShortLink("leistungen_f.js", "js")?>"></script>
