@@ -1165,23 +1165,9 @@ class Ajax {
 				echo json_encode(["url" => $url]);
 			break;
 			case "createNewSticker":
+				require_once('classes/project/modules/sticker/Sticker.php');
 				$title = (String) $_POST["newTitle"];
-				$id = DBAccess::insertQuery("INSERT INTO module_sticker_sticker_data (`name`) VALUES (:title)", ["title" => $title]);
-
-				/* sets default values for sizes 10cm, 20cm, 30cm, 60cm, 90cm and 120cm */
-				$query = "INSERT INTO module_sticker_sizes (id_sticker, width, height) VALUES ($id, 100, 0), ($id, 200, 0), ($id, 300, 0), ($id, 600, 0), ($id, 900, 0), ($id, 1200, 0)";
-				DBAccess::insertQuery($query);
-
-				/* sets exports defaults to true */
-				$query = "INSERT INTO module_sticker_exports (idSticker, facebook, google, amazon, etsy, ebay, pinterest) VALUES ($id, -1, -1, -1, -1, -1, -1);";#
-				DBAccess::insertQuery($query);
-
-				if ($id == 0 || !is_numeric($id)) {
-					echo -1;
-				} else {
-					$link = Link::getPageLink("sticker") . "?id=" . $id;
-					echo $link;
-				}
+				Sticker::createNewSticker($title);
 			break;
 			case "setPriceclass":
 				$priceclass = (int) $_POST["priceclass"];
