@@ -9,10 +9,8 @@
     <div>
         <?php foreach ($products as $product): ?>
         <label class="dp-block">
-            <input type="checkbox" checked>
-            <span>
-                Artikel <?=$product["id_product_reference"]?>: <a href=""><?=$product["name"]?></a>
-            </span>
+            <input type="checkbox" checked data-article="<?=$product["id_product_reference"]?>">
+            <span>Artikel <?=$product["id_product_reference"]?>: <?=$product["name"]?></span>
         </label>
         <?php endforeach; ?>
     </div>

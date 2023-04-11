@@ -40,6 +40,9 @@ class SearchProducts extends PrestashopConnection {
         return $products;
     }
 
+    /**
+     * TODO: funktion muss alte data mit berücksichtigen und alt title nicht überschreiben
+     */
     public static function getProductsByStickerId($idSticker) {
         $searchProduct = new SearchProducts();
         $productMatches = [];
@@ -73,28 +76,21 @@ class SearchProducts extends PrestashopConnection {
                  * Kategorie 13 ist die Aufkleberkategorie
                  */
                 $title = htmlspecialchars($title);
+
+                $data = [
+                    "id" => $productId,
+                    "title" => $title,
+                    "link" => $link,
+                    "altTitle" => "",
+                    "status" => $statusActive,
+                ];
     
                 if (in_array(25, $categories)) {
-                    $productMatches["textil"] = [
-                        "id" => $productId,
-                        "title" => $title,
-                        "link" => $link,
-                        "status" => $statusActive
-                    ];
+                    $productMatches["textil"] = $data;
                 } else if (in_array(62, $categories)) {
-                    $productMatches["wandtattoo"] = [
-                        "id" => $productId,
-                        "title" => $title,
-                        "link" => $link,
-                        "status" => $statusActive
-                    ];
+                    $productMatches["wandtattoo"] = $data;
                 } else if (in_array(13, $categories)) {
-                    $productMatches["aufkleber"] = [
-                        "id" => $productId,
-                        "title" => $title,
-                        "link" => $link,
-                        "status" => $statusActive
-                    ];
+                    $productMatches["aufkleber"] = $data;
                 }
             }
         } catch (PrestaShopWebserviceException $e) {

@@ -60,37 +60,55 @@ class ExportFacebook extends PrestashopConnection {
                 $lines[] = $this->fillLine($stickerCollection->getWandtattoo());
             }
         }
+
+        $filename = "exportFB_" . date("Y-m-d") . ".csv";
+        $this->generateFile($lines, $filename);
     }
 
     private function fillLine($product): String {
         $type = $product->getType();
-        $this->line["item_group_id"] = $type . $product->getId();
-        $this->line["title"] = $product->getName();
-        $this->line["description"] = "Unsere Aufkleber und Textilien sind keine Lagerware. Diese werden nach der Bestellung individuell für Dich angefertigt. " . $product->getDescription();
-        $this->line["link"] = $product->getShopLink();
-        $this->line["image_link"] = self::getFirstImageLink($product);
+        $line = $this->line;
+        $line["item_group_id"] = $type . $product->getId();
+        $line["title"] = $product->getName();
+        $line["description"] = "Unsere Aufkleber und Textilien sind keine Lagerware. Diese werden nach der Bestellung individuell für Dich angefertigt. " . $product->getDescription();
+        $line["link"] = $product->getShopLink();
+        $line["image_link"] = self::getFirstImageLink($product);
 
         if ($product instanceof Aufkleber) {
-            $this->fillLineAufkleber($product);
+            self::generateAufkleber($product, $line);
+            $this->fillLineAufkleber($product, $line);
         } else if ($product instanceof Wandtattoo) {
-            $this->fillLineWandtattoo($product);
+            $this->fillLineWandtattoo($product, $line);
         } else if ($product instanceof Textil) {
-            $this->fillLineTextil($product);
+            $this->fillLineTextil($product, $line);
         }
 
-        return implode();
+        return implode(",", $line);
     }
 
-    private function fillLineAufkleber($product) {
-
-    }
-
-    private function fillLineWandtattoo($product) {
+    private function fillLineAufkleber($product, &$line) {
 
     }
 
-    private function fillLineTextil($product) {
+    private function fillLineWandtattoo($product, &$line) {
 
+    }
+
+    private function fillLineTextil($product, &$line) {
+
+    }
+
+    private function generateFile(array $strings, string $filename): void {
+        // Open the file for writing, overwriting any existing file with the same name
+        $file = fopen($filename, 'w');
+    
+        // Write each string to the file on a new line
+        foreach ($strings as $string) {
+            fwrite($file, $string . "\n");
+        }
+    
+        // Close the file
+        fclose($file);
     }
 
     public static function exportAll() {
@@ -183,7 +201,7 @@ class ExportFacebook extends PrestashopConnection {
         } 
     }
 
-    private static function generateAufkleber($product, $line) {
+    private static function generateAufkleber($product, &$line) {
         $combinationId = 0;
         $sizeIds = $product->getSizeIds();
         $prices = $product->getPricesMatched();

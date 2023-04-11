@@ -31,7 +31,12 @@ class Sticker extends PrestashopConnection {
             throw new Exception("Sticker does not exist.");
         }
         $this->stickerData = $this->stickerData[0];
-        $this->additionalData = json_decode($this->stickerData["additional_data"], true);
+
+        if ($this->stickerData["additional_data"] == null) {
+            $this->additionalData = [];
+        } else {
+            $this->additionalData = json_decode($this->stickerData["additional_data"], true);
+        }
 
         $this->imageData = new StickerImage($idSticker);
 
@@ -113,7 +118,7 @@ class Sticker extends PrestashopConnection {
         if (isset($this->additionalData["products"])) {
             $prod = $this->additionalData["products"];
             if (isset($prod[$type])) {
-                return $prod[$type]["title"];
+                return $prod[$type]["altTitle"];
             }
         }
         return "";

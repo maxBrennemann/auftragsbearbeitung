@@ -684,19 +684,19 @@ function click_addAltTitle() {
     input.classList.toggle("visible");
 }
 
-async function write_changeAltTitle(e) {
-    let val = e.target.value;
-    let type = e.target.dataset.type;
-    var response = await send({
-        "newTitle": val,
-        "type": type,
-        "id": mainVariables.motivId.innerHTML,
-    }, "setAltTitle");
-    if (response == "success") {
-        infoSaveSuccessfull("success");
-    } else {
-        infoSaveSuccessfull();
-    }
+function write_changeAltTitle(e) {
+    ajax.post({
+        newTitle: e.target.value,
+        type: e.target.dataset.type,
+        id: mainVariables.motivId.innerHTML,
+        r: "setAltTitle",
+    }).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+        } else {
+            infoSaveSuccessfull();
+        }
+    });
 }
 
 async function exportFacebook() {

@@ -58,14 +58,6 @@ class StickerCollection implements Iterator {
             $query = "SELECT * FROM module_sticker_exports WHERE `idSticker`= :idSticker";
             $data = DBAccess::selectQuery($query, ["idSticker" => $this->id]);
 
-            // TODO: code ändern, äußerst unschön
-            if ($data == null) {
-                DBAccess::insertQuery("INSERT INTO module_sticker_exports (`idSticker`) VALUES (:idSticker)", ["idSticker" => $this->id]);
-
-                $query = "SELECT * FROM module_sticker_exports WHERE `idSticker`= :idSticker";
-                $data = DBAccess::selectQuery($query, ["idSticker" => $this->id]);
-            }
-
             $this->exports = $data[0];
             // TODO: insert mysql trigger and update table in sql updater
         }

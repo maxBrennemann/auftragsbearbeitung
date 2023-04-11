@@ -13,11 +13,7 @@ class ProductConnector {
             query: query,
             r: "searchShop"
         }).then((results) => {
-            results.forEach(r => {
-                if (!this.results.includes(r)) {
-                    this.results.push(r);
-                }            
-            });
+            this.results = results;
             this.appendSearchResults()
         });
     }
@@ -53,13 +49,38 @@ class ProductConnector {
 
         const searchBtn = this.searchContainer.querySelector("#searchShopBtn");
         searchBtn.addEventListener("click", () => this.getSearchResults());
+
+        const alreadyConnected = this.searchContainer.querySelectorAll(`input[type="checkbox"]`);
+        Array.from(alreadyConnected).forEach(input => {
+            input.addEventListener("click", e => {
+                this.removeProductAccessoire(e);
+            })
+        });
+    }
+
+    /* deletes the connection and removes it from the DOM */
+    removeProductAccessoire(e) {
+        const idProductReference = e.target.dataset.article;
+        ajax.post({
+            idProductReference: idProductReference,
+            id: mainVariables.motivId.innerHTML,
+            type: this.type,
+            r: "removeAccessoire",
+        }).then(r => {
+            if (r.status == "success") {
+                const parent = e.target.parentNode;
+                parent.parentNode.removeChild(parent);
+            }
+        });
     }
 
     appendSearchResults() {
         const showSearchResultsDiv = this.searchContainer.querySelector("#showSearchResults");
+        showSearchResultsDiv.innerHTML = "";
         this.results.forEach(r => {
             const link = document.createElement("a");
             link.href = r.link;
+            link.target = "_blank";
             link.innerHTML = r.name;
 
             const span = document.createElement("span");
