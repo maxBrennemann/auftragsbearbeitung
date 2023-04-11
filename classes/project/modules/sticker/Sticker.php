@@ -349,6 +349,35 @@ class Sticker extends PrestashopConnection {
         
     }
 
+    /**
+     * inserts a new sticker into the database and sets all its initial values
+     * @param String $title the new sticker's name
+     */
+    public static function createNewSticker(String $title) {
+        /* insert sticker into database */
+        $query = "INSERT INTO module_sticker_sticker_data (`name`) VALUES (:title)";
+        $id = DBAccess::insertQuery($query, ["title" => $title]);
+
+        require_once('classes/project/modules/sticker/AufkleberWandtattoo.php');
+        $aufkleberWandtattoo = new AufkleberWandtattoo($id);
+        $sizes = [100, 200, 300, 600, 900, 1200];
+        foreach ($sizes as $size) {
+            $price = $aufkleberWandtattoo->getPrice($size, 0, 1);
+            $aufkleberWandtattoo->updatePrice($size, 0, $price);
+        }
+
+        /* sets exports defaults to true */
+        $query = "INSERT INTO module_sticker_exports (idSticker, facebook, google, amazon, etsy, ebay, pinterest) VALUES ($id, -1, -1, -1, -1, -1, -1);";
+        DBAccess::insertQuery($query);
+
+        if ($id == 0 || !is_numeric($id)) {
+            echo -1;
+        } else {
+            $link = Link::getPageLink("sticker") . "?id=" . $id;
+            echo $link;
+        }
+    }
+
 }
 
 ?>
