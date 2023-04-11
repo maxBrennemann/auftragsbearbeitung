@@ -1,3 +1,5 @@
+<script src="<?=Link::getResourcesShortLink("main.css", "css")?>"></script>
+
 <?php
 	require_once('classes/project/Aufgabenliste.php');
 	require_once('classes/project/Auftrag.php');
@@ -51,3 +53,4 @@
 		<h3>Offene Aufträge:</h3><?=$showOffeneAuftraege?>
 	</div>
 </div>
+<script src="<?=Link::getResourcesShortLink("main-helper.js", "js")?>"></script>

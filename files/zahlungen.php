@@ -1,3 +1,5 @@
+<script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
+
 <?php 
 
 // SELECT id, (CASE WHEN amount > 0 AND paymentDate = '0000-00-00' THEN amount ELSE 0 END) AS forderungen FROM payments GROUP BY id

@@ -1,3 +1,5 @@
+<script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
+
 <?php
 
 $query = "SELECT id, `name`, directory_name, 

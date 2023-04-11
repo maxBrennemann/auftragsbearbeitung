@@ -1,3 +1,6 @@
+<script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
+<script src="<?=Link::getResourcesShortLink("print.js", "js")?>"></script>
+
 <?php
 	$kdnr = -1;
 	if (isset($_GET['kdnr'])) {
@@ -118,3 +121,4 @@
 		float: right;
 	}
 </style>
+<script src="<?=Link::getResourcesShortLink("neuer-auftrag_f.js", "js")?>"></script>

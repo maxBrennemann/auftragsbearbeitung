@@ -1,3 +1,6 @@
+<script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
+<script src="<?=Link::getResourcesShortLink("neuesProdukt", "css")?>"></script>
+
 <?php 
 
 $productId = -1;
@@ -62,3 +65,4 @@ echo "<a href=\"" . Link::getPageLink("produkt") . "\">Zu den Produkten</a>";
 	<span id="addAttributeTable"></span>
 	<button onclick="saveProduct()">Produkt speichern</button>
 </div>
+<script src="<?=Link::getResourcesShortLink("neues-produkt_f.js", "js")?>"></script>

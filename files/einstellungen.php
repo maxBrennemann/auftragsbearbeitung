@@ -1,3 +1,5 @@
+<script src="<?=Link::getResourcesShortLink("colorpicker.js", "js")?>"></script>
+
 <?php 
 
 require_once('classes/project/Table.php');
