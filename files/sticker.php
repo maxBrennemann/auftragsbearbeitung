@@ -50,7 +50,7 @@ if ($id == 0): ?>
             <div class="shopStatusIcon">
                 <?=Icon::$iconAddInShop?>
             </div> 
-            <button class="newButton" data-id="4" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
+            <button class="newButton" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
         </div>
     </div>
     <div>
@@ -335,7 +335,7 @@ if ($id == 0): ?>
         <div class="shopStatusIcon">
             <?=Icon::$iconAddInShop?>
         </div> 
-        <button data-id="5" class="newButton marginTop30" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
+        <button class="newButton marginTop30" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
     </div>
 </div>
 <div class="defCont">
