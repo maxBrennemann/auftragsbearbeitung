@@ -1,4 +1,4 @@
-class ProductConnector {
+export default class ProductConnector {
 
     constructor(type) {
         this.type = type;

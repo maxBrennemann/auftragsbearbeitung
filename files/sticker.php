@@ -25,23 +25,15 @@ if (isset($_GET['id'])) {
 if ($id == 0): ?>
     <a href="<?=Link::getPageLink("sticker-overview")?>">Zur Motivübersicht</a>
 <?php else: ?>
-<script src="<?=Link::getResourcesShortLink("sticker/productConnector.js", "js")?>"></script>
-<script src="<?=Link::getResourcesShortLink("sticker/tagManager.js", "js")?>"></script>
-<script src="<?=Link::getResourcesShortLink("sticker/imageManager.js", "js")?>"></script>
 <script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
-<script src="<?=Link::getResourcesShortLink("sticker/textGeneration.js", "js")?>"></script>
 <?=$stickerCollection->checkProductErrorStatus() ? $stickerCollection->getErrorMessage() : ""?>
 <div class="defCont cont1">
     <div>
         <h2>Motiv <input id="name" class="titleInput" value="<?=$stickerCollection->getName();?>">
             <?php if ($stickerCollection->getIsMarked() == "0"): ?>
-            <span><svg onclick="bookmark(event)" style="width:24px; height:24px; vertical-align:middle;" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M12,15.39L8.24,17.66L9.23,13.38L5.91,10.5L10.29,10.13L12,6.09L13.71,10.13L18.09,10.5L14.77,13.38L15.76,17.66M22,9.24L14.81,8.63L12,2L9.19,8.63L2,9.24L7.45,13.97L5.82,21L12,17.27L18.18,21L16.54,13.97L22,9.24Z" />
-            </svg></span>
+            <span data-binding="true" data-fun="bookmark"><?=Icon::$iconBookmark?></span>
             <?php else: ?>
-            <span><svg onclick="unbookmark(event)" class="bookmarked" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z" />
-            </svg></span>
+            <span data-binding="true" data-fun="unbookmark" class="bookmarked"><?=Icon::$iconUnbookmark?></span>
             <?php endif; ?>
         </h2>
         <p>Artikelnummer: <span id="motivId" data-variable="true"><?=$id?></span></p>
@@ -58,9 +50,7 @@ if ($id == 0): ?>
         <?=insertTemplate("classes/project/modules/sticker/views/stickerFileView.php", ["images" => $stickerImage->getGeneralImages(), "files" => $stickerImage->getFiles()])?>
         <div id="delete-menu">
             <div class="item" onclick="deleteImage()">
-                <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
-                </svg>
+                <?=Icon::$iconDelete?>
                 <span>Löschen</span>
             </div>
         </div>
@@ -245,7 +235,7 @@ if ($id == 0): ?>
             <br>
             <?php if ($stickerCollection->getTextil()->getIsColorable() == 1): ?>
             <?php foreach ($stickerCollection->getTextil()->textilColors as $color):?>
-            <button class="colorBtn" style="background:<?=$color["hexCol"]?>" title="<?=$color["name"]?>" onclick="changeColor(event)" data-color="<?=$color["hexCol"]?>"></button>
+            <button class="colorBtn" style="background:<?=$color["hexCol"]?>" title="<?=$color["name"]?>" data-binding="true" data-fun="changeColor" data-color="<?=$color["hexCol"]?>"></button>
             <?php endforeach; ?>
             <?php endif; ?>
         </div>
@@ -254,10 +244,10 @@ if ($id == 0): ?>
                 <input class="postenInput" id="preiskategorie">
                 <span id="preiskategorie_dropdown">▼</span>
                 <div class="selectReplacer" id="selectReplacerPreiskategorie">
-                    <p class="optionReplacer" onclick="changePreiskategorie(event)" data-default-price="20,52" data-kategorie-id="58" title="Die Klebefux Standardkategorie für Textilmotive">Klebefux Standard</p>
-                    <p class="optionReplacer" onclick="changePreiskategorie(event)" data-kategorie-id="57" data-default-price="23,59" title="Die Klebefux Premiumkategorie für Textilmotive">Klebefux Plus</p>
-                    <p class="optionReplacer" onclick="changePreiskategorie(event)" data-kategorie-id="59" data-default-price="30,78" title="Die Gwandlaus Textilkategorie für einfache Motive">Gwandlaus Minus</p>
-                    <p class="optionReplacer" onclick="changePreiskategorie(event)" data-kategorie-id="60" data-default-price="33,85" title="Die Gwandlaus Standardkategorie für Textilmotive">Gwandlaus Standard</p>
+                    <p class="optionReplacer" data-binding="true" data-fun="changePreiskategorie" data-default-price="20,52" data-kategorie-id="58" title="Die Klebefux Standardkategorie für Textilmotive">Klebefux Standard</p>
+                    <p class="optionReplacer" data-binding="true" data-fun="changePreiskategorie" data-kategorie-id="57" data-default-price="23,59" title="Die Klebefux Premiumkategorie für Textilmotive">Klebefux Plus</p>
+                    <p class="optionReplacer" data-binding="true" data-fun="changePreiskategorie" data-kategorie-id="59" data-default-price="30,78" title="Die Gwandlaus Textilkategorie für einfache Motive">Gwandlaus Minus</p>
+                    <p class="optionReplacer" data-binding="true" data-fun="changePreiskategorie" data-kategorie-id="60" data-default-price="33,85" title="Die Gwandlaus Standardkategorie für Textilmotive">Gwandlaus Standard</p>
                 </div>
             </span>
             <span style="margin-left: 7px" id="showPrice"><?=$stickerCollection->getTextil()->getPriceTextilFormatted()?></span>
@@ -325,7 +315,7 @@ if ($id == 0): ?>
     <p>Speicherort:<button class="infoButton" data-info="5">i</button></p>
     <div class="directoryContainer">
         <input id="dirInput" class="data-input directoryName" data-fun="speicherort" data-write="true" value="<?=$stickerCollection->getDirectory()?>">
-        <button class="directoryIcon" onclick="copyToClipboard('dirInput')">
+        <button class="directoryIcon" data-binding="true" data-fun="copyToClipboard">
             <?=Icon::$iconDirectory?>
         </button>
     </div>
@@ -340,7 +330,7 @@ if ($id == 0): ?>
 </div>
 <div class="defCont">
     <h2>Produktexport</h2>
-    <button style="display: none" onclick="exportFacebook()">facebook export test</button>
+    <button style="display: none" data-fun="exportFacebook" data-binding="true">facebook export test</button>
     <form>
         <div class="exportContainer">
             Nach Facebook exportieren

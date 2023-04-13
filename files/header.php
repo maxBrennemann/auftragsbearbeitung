@@ -49,7 +49,14 @@
 	<script src="<?=$globalJS?>"></script>
 	<?php
 		$link = Link::getResourcesShortLink($page . ".js", "js");
-		echo '<script src="' . $link . '"></script>';
+
+		/* TODO: workaround mit module und if check muss noch geändert werden */
+		if ($page == "sticker") {
+			echo '<script type="module" src="' . $link . '"></script>';
+		} else {
+			echo '<script src="' . $link . '"></script>';
+		}
+
 		$link = Link::getResourcesShortLink($page . ".css", "css");
 		echo '<link rel="stylesheet" href="' . $link . '">';
 	?>

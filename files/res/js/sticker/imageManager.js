@@ -1,5 +1,5 @@
 /* drag and drop handler */
-function itemDropHandler(e, imageCategory) {
+export function itemDropHandler(e, imageCategory) {
 	e.preventDefault();
     let uploadableFiles = [];
 
@@ -36,12 +36,12 @@ function itemDropHandler(e, imageCategory) {
     uploadFileForSticker(uploadableFiles, imageCategory);
 }
 
-function getIcon(type = "icon-file") {
+export function getIcon(type = "icon-file") {
     const template = document.getElementById(type);
     return template.content.cloneNode(true);
 }
 
-function generatePreviewContainer() {
+export function generatePreviewContainer() {
     const div = document.createElement("div");
     div.classList.add("imageMovable");
     div.draggable = true;
@@ -49,11 +49,11 @@ function generatePreviewContainer() {
 }
 
 /* https://stackoverflow.com/questions/71822008/how-to-tell-if-an-image-is-drag-drop-from-the-same-page-or-drag-drop-uploaded */
-function preventCopy(e) {
+export function preventCopy(e) {
     e.dataTransfer.setData("text/plain", "not_uploaded");
 }
 
-function imageClickListener(event) {
+export function imageClickListener(event) {
     if (!event.target.matches(".imgAbsoluteCenter,.imgPreview")) {
         let elements = document.getElementsByClassName("imgAbsoluteCenter");
         Array.prototype.forEach.call(elements, function(element) {
@@ -62,7 +62,7 @@ function imageClickListener(event) {
     }
 }
 
-function imagePreview(e) {
+export function imagePreview(e) {
     let target = e.target;
     let copy = target.cloneNode();
     let imageSize = 500;
@@ -84,7 +84,7 @@ function itemDragOverHandler(e) {
 
 var currentMoveImage;
 var moveImages;
-function moveImagesInDiv(event) {
+export function moveImagesInDiv(event) {
     if (event.target.classList.contains("imgPreview")) {
         event.preventDefault();
 
@@ -95,15 +95,15 @@ function moveImagesInDiv(event) {
     }
 }
 
-function moveImageStart(event) {
+export function moveImageStart(event) {
     currentMoveImage = event.target;
 }
 
-function moveImageEnd(event) {
+export function moveImageEnd(event) {
     console.log("ended moving");
 }
 
-function moveInit() {
+export function moveInit() {
     moveImages = Array.from(document.getElementsByClassName("imageMovable"));
 
     moveImages.forEach(div => {
@@ -113,7 +113,7 @@ function moveInit() {
     })
 }
 
-function uploadFileForSticker(files, imageCategory) {
+export function uploadFileForSticker(files, imageCategory) {
     if (files.length == 0) {
         return;
     }
@@ -159,7 +159,7 @@ function uploadFileForSticker(files, imageCategory) {
  * TODO: es muss für mehrere Dateien gleichzeitig gehen, später eine Klasse aus dieser Datei machen
  * @param {*} imageData 
  */
-function handleUploadedImages(imageData) {
+export function handleUploadedImages(imageData) {
     const data = JSON.parse(imageData);
     const image = data.imageData[0];
     var icon;
@@ -182,12 +182,12 @@ function handleUploadedImages(imageData) {
 // TODO: prevent false copying of text
 document.addEventListener("click", imageClickListener);
 
-function checkSVGCount() {
+export function checkSVGCount() {
 
 }
 
 var svg_elem;
-function initSVG() {
+export function initSVG() {
     var a = document.getElementById("svgContainer");
     if (a != null || a != undefined) {
         a.addEventListener("load", loadSVGEvent, false);
@@ -206,7 +206,7 @@ function initSVG() {
 }
 
 /* sets the svg_elem element when the content is loaded */
-function loadSVGEvent() {
+export function loadSVGEvent() {
     var a = document.getElementById("svgContainer");
     var svgDoc = a.contentDocument;
     svg_elem = svgDoc.getElementById("svg_elem");
@@ -216,7 +216,7 @@ function loadSVGEvent() {
 /**
  * adjust the svg into the svg container, so that the element is not too small
  */
-function adjustSVG() {
+export function adjustSVG() {
     if (svg_elem != null) {
         let children = svg_elem.children;
 
@@ -264,7 +264,7 @@ function adjustSVG() {
     }
 }
 
-async function click_makeColorable() {
+export async function click_makeColorable() {
     ajax.post({
         id: mainVariables.motivId.innerHTML,
         r: "makeSVGColorable"
@@ -282,7 +282,7 @@ if (document.readyState !== 'loading' ) {
     });
 }
 
-function initImageManager() {
+export function initImageManager() {
     const contextMenu = document.getElementById("delete-menu");
     const scope = document.querySelector("body");
 
@@ -314,7 +314,7 @@ function initImageManager() {
 /**
  * deletes the currently selected image
  */
-function deleteImage(imageId) {
+export function deleteImage(imageId) {
     ajax.post({
         imageId: mainVariables.currentDelete,
         r: "deleteImage",
@@ -327,7 +327,7 @@ function deleteImage(imageId) {
     });
 }
 
-function insertNewlyUploadedImages(json) {
+export function insertNewlyUploadedImages(json) {
     let imageContainer = document.getElementsByClassName("imageContainer")[0];
 
     for (let key in json.imageData) {

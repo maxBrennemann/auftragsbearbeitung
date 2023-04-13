@@ -1,19 +1,19 @@
 var tagManager = null;
 
-function initTagManager() {
+export function initTagManager() {
     tagManager = new TagManager();
     tagManager.addTagEventListeners();
 }
 
-function loadTags() {
+export function loadTags() {
     tagManager.loadMoreSuggestions();
 }
 
-function showTaggroupManager() {
+export function showTaggroupManager() {
     tagManager.showTagGroupManager();
 }
 
-function addTag(event) {
+export function addTag(event) {
     if (event.key === '#') {
         tagManager.addTag(event);
     }
