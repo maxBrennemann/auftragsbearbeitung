@@ -74,7 +74,7 @@ class Angebot {
         $pdf->setCellMargins(0, 0, 0, 0);
 
         $cAddress = "<p>{$this->kunde->getFirmenname()}<br>{$this->kunde->getName()}<br>{$this->kunde->getStrasse()} {$this->kunde->getHausnummer()}<br>{$this->kunde->getPostleitzahl()} {$this->kunde->getOrt()}</p>";
-        $address = "<p>b-schriftung Brennemann ***REMOVED***<br>***REMOVED***<br>***REMOVED***</p>";
+        $address = "<p>" . COMPANY_NAME . "<br>" . COMPANY_STREET . "<br>" . COMPANY_CITY . "</p>";
 
         $pdf->writeHTMLCell(85, 40, 20, 45, $cAddress);
         $pdf->writeHTMLCell(85, 40, 120, 35, $address);

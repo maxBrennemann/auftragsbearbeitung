@@ -369,10 +369,10 @@ CREATE TABLE `mitarbeiter` (
 --
 
 INSERT INTO `mitarbeiter` (`id`, `Vorname`, `Nachname`, `Email`, `Rolle`) VALUES
-(1, '***REMOVED***', 'Brennemann', '***REMOVED***', 'Chef'),
-(2, 'Max', 'Brennemann', '***REMOVED***', ''),
-(3, '***REMOVED***', 'Brennemannn', '', ''),
-(4, 'Veronika', '***REMOVED***', '***REMOVED***', '');
+(1, 'defaultData', 'defaultData', 'defaultData', 'Chef'),
+(2, 'defaultData', 'defaultData', 'defaultData', ''),
+(3, 'defaultData', 'defaultData', '', ''),
+(4, 'defaultData', 'defaultData', 'defaultData', '');
 
 -- --------------------------------------------------------
 

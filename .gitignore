@@ -1,4 +1,5 @@
 settings.php
+companyInfo.php
 .htaccess
 
 files/generated/*
@@ -39,3 +40,4 @@ vendor
 files/res/form/modules/sticker/catalog_products.csv
 
 node_modules
+.git.bfg-report

@@ -209,8 +209,8 @@ class Login {
 	 */
 	public static function curlLogin($page) {
 		$loginUrl = 'http://' . $_SERVER['HTTP_HOST'] . Link::getPageLink("login"); //action from the login form
-		$username = '***REMOVED***';
-		$password = '***REMOVED***';
+		$username = CURL_USERNAME;
+		$password = CURL_PASSWORD;
 		$loginFields = "info=Einloggen&loginData=" . $username. "&password=" . $password;
 		$remotePageUrl = 'http://' . $_SERVER['HTTP_HOST'] . Link::getPageLink($page); //url of the page you want to save  
 

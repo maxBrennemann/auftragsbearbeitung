@@ -74,7 +74,7 @@ class Rechnung {
 		$pdf->setMargins(25, 45, 20, true);
 
 		$pdf->SetFont("helvetica", "", 8);
-		$address = "<p>b-schriftung Brennemann ***REMOVED***, ***REMOVED***, ***REMOVED***</p>";
+		$address = "<p>" . COMPANY_IMPRINT . "</p>";
 		$pdf->writeHTMLCell(0, 10, 25, 20, $address);
 
 		$pdf->SetFont("helvetica", "", 12);

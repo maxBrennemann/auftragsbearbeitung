@@ -660,9 +660,9 @@ CREATE TABLE `members` (
 --
 
 INSERT INTO `members` (`id`, `email`, `username`, `password`, `specialRole`) VALUES
-(1, '***REMOVED***', '***REMOVED***', '***REMOVED***', 'none'),
-(2, '***REMOVED***', '***REMOVED***', '***REMOVED***', 'none'),
-(3, '***REMOVED***', 'veronika***REMOVED***', '***REMOVED***', 'none');
+(1, 'defaultData', 'defaultData', 'defaultData', 'none'),
+(2, 'defaultData', 'defaultData', 'defaultData', 'none'),
+(3, 'defaultData', 'defaultData', 'defaultData', 'none');
 
 -- --------------------------------------------------------
 
@@ -683,10 +683,10 @@ CREATE TABLE `mitarbeiter` (
 --
 
 INSERT INTO `mitarbeiter` (`id`, `Vorname`, `Nachname`, `Email`, `Rolle`) VALUES
-(1, '***REMOVED***', 'Brennemann', '***REMOVED***', 'Chef'),
-(2, 'Max', 'Brennemann', '***REMOVED***', ''),
-(3, '***REMOVED***', 'Brennemannn', '', ''),
-(4, 'Veronika', '***REMOVED***', '***REMOVED***', '');
+(1, 'defaultData', 'defaultData', 'defaultData', 'Chef'),
+(2, 'defaultData', 'defaultData', 'defaultData', ''),
+(3, 'defaultData', 'defaultData', '', ''),
+(4, 'defaultData', 'defaultData', 'defaultData', '');
 
 -- --------------------------------------------------------
 
