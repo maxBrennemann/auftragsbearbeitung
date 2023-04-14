@@ -37,7 +37,7 @@ if ($id == 0): ?>
             <?php endif; ?>
         </h2>
         <p>Artikelnummer: <span id="motivId" data-variable="true"><?=$id?></span></p>
-        <p>Erstellt am <input type="date" value="<?=$stickerCollection->getCreationDate()?>" onchange="changeDate(event)"></p>
+        <p>Erstellt am <input type="date" id="creationDate" value="<?=$stickerCollection->getCreationDate()?>"></p>
         <div class="shopStatus">
             <div class="shopStatusIcon">
                 <?=Icon::$iconAddInShop?>
@@ -330,7 +330,6 @@ if ($id == 0): ?>
 </div>
 <div class="defCont">
     <h2>Produktexport</h2>
-    <button style="display: none" data-fun="exportFacebook" data-binding="true">facebook export test</button>
     <form>
         <div class="exportContainer">
             Nach Facebook exportieren
