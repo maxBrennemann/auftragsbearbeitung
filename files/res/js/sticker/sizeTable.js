@@ -141,7 +141,7 @@ async function changePriceclass(e) {
     }
 }
 
-function readSizeTable() {
+export function readSizeTable() {
     var table = document.querySelector("[data-type='module_sticker_sizes']").children[0].children;
 
     for (let i = 1; i < table.length; i++) {

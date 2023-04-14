@@ -2,8 +2,10 @@ import click_textGeneration from "./sticker/textGeneration.js";
 import {initTagManager, loadTags, showTaggroupManager, addTag} from "./sticker/tagManager.js";
 import ProductConnector from "./sticker/productConnector.js";
 import {initSVG, moveInit} from "./sticker/imageManager.js";
+import { readSizeTable } from "./sticker/sizeTable.js";
 
-var mainVariables = {
+const fnNames = {};
+const mainVariables = {
     productConnect: [],
     pending: false,
 };
@@ -36,6 +38,8 @@ function initSticker() {
     input.addEventListener('input', resizeTitle);
     input.addEventListener('change', sendTitle);
     resizeTitle.call(input);
+
+    document.getElementById("creationDate").addEventListener("change", changeDate, false);
 }
 
 function initBindings() {
@@ -49,7 +53,7 @@ function initBindings() {
         }
         
         el.addEventListener("click", function(e) {
-            var fun = window[fun_name];
+            var fun = fnNames[fun_name];
             if (typeof fun === "function") {
                 fun(e);
             } else {
@@ -71,7 +75,7 @@ function initBindings() {
         }
         
         el.addEventListener("change", function(e) {
-            var fun = window[fun_name];
+            var fun = fnNames[fun_name];
             if (typeof fun === "function") {
                 fun(e);
             } else {
@@ -81,32 +85,33 @@ function initBindings() {
     });
 }
 
-async function click_toggleCheckbox(e) {
+fnNames.click_toggleCheckbox = async function(e) {
     e.preventDefault();
     var inputNode = e.target.parentNode.children[0];
     inputNode.checked = !inputNode.checked;
 
     var checked = inputNode.checked == true ? 1 : 0;
     var name = inputNode.id;
-    var data =  {
-        json: JSON.stringify({
-            [name]: checked,
-            name: name,
-        }),
-        id: mainVariables.motivId.innerHTML,
-    };
 
     if (name == "plotted") {
         aufkleberPlottClick(e);
     }
 
-    var response = await send(data, "setAufkleberParameter");
-    if (response == "success") {
-        infoSaveSuccessfull("success");
-    } else {
-        console.log(response);
-        infoSaveSuccessfull();
-    }
+    ajax.post({
+        json: JSON.stringify({
+            [name]: checked,
+            name: name,
+        }),
+        id: mainVariables.motivId.innerHTML,
+        r: "setAufkleberParameter",
+    }, true).then(response => {
+        if (response == "success") {
+            infoSaveSuccessfull("success");
+        } else {
+            console.log(response);
+            infoSaveSuccessfull();
+        }
+    });
 }
 
 function disableInputSlide(input) {
@@ -135,41 +140,42 @@ function aufkleberPlottClick(e) {
     }
 }
 
-async function changeDate(e) {
-    var data = {
+function changeDate(e) {
+    ajax.post({
         date: e.target.value,
         id: mainVariables.motivId.innerHTML,
-    }
-    var response = await send(data, "changeMotivDate");
-    if (response == "success") {
-        infoSaveSuccessfull("success");
-    } else {
-        console.log(response);
-        infoSaveSuccessfull();
-    }
+        r: "changeMotivDate",
+    }, true).then(response => {
+        if (response == "success") {
+            infoSaveSuccessfull("success");
+        } else {
+            console.log(response);
+            infoSaveSuccessfull();
+        }
+    });
 }
 
-async function sendTitle() {
+function sendTitle() {
     title = this.value;
-    var data = {
+    ajax.post({
         title: title,
         id: mainVariables.motivId.innerHTML,
-    };
-
-    var response = await send(data, "setAufkleberTitle");
-    if (response == "success") {
-        infoSaveSuccessfull("success");
-    } else {
-        console.log(response);
-        infoSaveSuccessfull();
-    }
+        r: "setAufkleberTitle",
+    }, true).then(r => {
+        if (r == "success") {
+            infoSaveSuccessfull("success");
+        } else {
+            console.log(r);
+            infoSaveSuccessfull();
+        }
+    });
 }
 
 function resizeTitle() {
   this.style.width = this.value.length + "ch";
 }
 
-async function click_textilClick() {
+fnNames.click_textilClick = function() {
     const statusInfo = new StatusInfo("", "");
     ajax.post({
         id: mainVariables.motivId.innerHTML,
@@ -184,7 +190,7 @@ async function click_textilClick() {
     });
 }
 
-async function click_wandtattooClick() {
+fnNames.click_wandtattooClick = function() {
     const statusInfo = new StatusInfo("", "");
     ajax.post({
         id: mainVariables.motivId.innerHTML,
@@ -199,20 +205,21 @@ async function click_wandtattooClick() {
     });
 }
 
-async function click_revisedClick() {
-    var data =  {
+fnNames.click_revisedClick = function() {
+    ajax.post({
         id: mainVariables.motivId.innerHTML,
-    };
-    var response = await send(data, "toggleRevised");
-    if (response == "success") {
-        infoSaveSuccessfull("success");
-    } else {
-        console.log(response);
-        infoSaveSuccessfull();
-    }
+        r: "toggleRevised",
+    }, true).then(response => {
+        if (response == "success") {
+            infoSaveSuccessfull("success");
+        } else {
+            console.log(response);
+            infoSaveSuccessfull();
+        }
+    });
 }
 
-function click_transferAufkleber() {
+fnNames.click_transferAufkleber = function() {
     if (document.getElementById("previewSizeText").innerHTML == "") {
         alert("Bitte überprüfe Breiten und Preise!");
         return;
@@ -220,15 +227,15 @@ function click_transferAufkleber() {
     transfer(1, "Aufkleber");
 }
 
-function click_transferWandtattoo() {
+fnNames.click_transferWandtattoo = function() {
     transfer(2, "Wandtattoo");
 }
 
-function click_transferTextil() {
+fnNames.click_transferTextil = function() {
    transfer(3, "Textil");
 }
 
-function click_transferAll(e) {
+fnNames.click_transferAll = function(e) {
     transfer(4, "Alles");
 }
 
@@ -256,36 +263,6 @@ function transfer(type, text) {
     });
 }
 
-function send(data, intent = "", json = false) {
-    if (intent == null) {
-        data.getReason = data.r;
-    } else {
-        data.getReason = intent;
-    }
-
-    if (json) {
-        paramString = "getReason=" + intent + "&json=" + JSON.stringify(data);
-    } else {
-        /* temporarily copied here */
-        let temp = "";
-        for (let key in data) {
-            temp += key + "=" + data[key] + "&";
-        }
-
-        paramString = temp.slice(0, -1);
-    }
-
-    var response = makeAsyncCall("POST", paramString, "").then(result => {
-        return result;
-    });
-
-    if (intent == null) {
-        return JSON.parse(response);
-    }
-
-    return response;
-}
-
 /* todo: größe der neuen daten ergänzen und preise updatebar machen */
 
 function preisListenerTextil() {
@@ -306,52 +283,18 @@ window.addEventListener("click", function(event) {
     }
 }, false);
 
-async function click_changePreiskategorie(e) {
+fnNames.click_changePreiskategorie = function(e) {
     var element = document.getElementById("preiskategorie");
     element.value = e.target.innerHTML;
     var kategorieId = e.target.dataset.kategorieId;
     document.getElementById("showPrice").innerHTML = e.target.dataset.defaultPrice + "€";
 
-    var data = {
+    ajax.post({
         categoryId: kategorieId,
         id: mainVariables.motivId.innerHTML,
-    };
-    var response = await send(data, "changePreiskategorie");
-    if (response == "success") {
-        infoSaveSuccessfull("success");
-    } else {
-        console.log(response);
-        infoSaveSuccessfull();
-    }
-}
-
-async function write_productDescription(e) {
-    var target = e.target.dataset.target;
-    var content = e.target.value;
-    var type = e.target.dataset.type;
-
-    var data = {
-        id: mainVariables.motivId.innerHTML,
-        target: target,
-        type: type,
-        content: content
-    };
-    var response = await send(data, "writeProductDescription");
-    if (response == "success") {
-        infoSaveSuccessfull("success");
-    } else {
-        console.log(response);
-        infoSaveSuccessfull();
-    }
-}
-
-function write_speicherort(e) {
-    ajax.post({
-        id: mainVariables.motivId.innerHTML,
-        content: encodeURIComponent(e.target.value),
-        r: "writeSpeicherort",
-    }, true).then(r => {
-        if (r == "success") {
+        r: "changePreiskategorie",
+    }, true).then(response => {
+        if (response == "success") {
             infoSaveSuccessfull("success");
         } else {
             console.log(response);
@@ -360,22 +303,59 @@ function write_speicherort(e) {
     });
 }
 
-async function write_additionalInfo(e) {
+fnNames.write_productDescription = function(e) {
+    var target = e.target.dataset.target;
     var content = e.target.value;
-    var data = {
+    var type = e.target.dataset.type;
+
+    ajax.post({
         id: mainVariables.motivId.innerHTML,
-        content: content
-    };
-    var response = await send(data, "writeAdditionalInfo");
-    if (response == "success") {
-        infoSaveSuccessfull("success");
-    } else {
-        console.log(response);
-        infoSaveSuccessfull();
-    }
+        target: target,
+        type: type,
+        content: content,
+        r: "writeProductDescription",
+    }, true).then(response => {
+        if (response == "success") {
+            infoSaveSuccessfull("success");
+        } else {
+            console.log(response);
+            infoSaveSuccessfull();
+        }
+    });
 }
 
-function click_bookmark(e) {
+fnNames.write_speicherort = function(e) {
+    ajax.post({
+        id: mainVariables.motivId.innerHTML,
+        content: encodeURIComponent(e.target.value),
+        r: "writeSpeicherort",
+    }, true).then(r => {
+        if (r == "success") {
+            infoSaveSuccessfull("success");
+        } else {
+            console.log(r);
+            infoSaveSuccessfull();
+        }
+    });
+}
+
+fnNames.write_additionalInfo = function(e) {
+    var content = e.target.value;
+    ajax.post({
+        id: mainVariables.motivId.innerHTML,
+        content: content,
+        r: "writeAdditionalInfo",
+    }, true).then(r => {
+        if (r == "success") {
+            infoSaveSuccessfull("success");
+        } else {
+            console.log(r);
+            infoSaveSuccessfull();
+        }
+    });
+}
+
+fnNames.click_bookmark = function(e) {
     var star = e.target;
 
     if (star.nodeName == "path") {
@@ -386,7 +366,7 @@ function click_bookmark(e) {
     toggleBookmark();
 }
 
-function click_unbookmark(e) {
+fnNames.click_unbookmark = function(e) {
     var star = e.target;
 
     if (star.nodeName == "path") {
@@ -397,21 +377,21 @@ function click_unbookmark(e) {
     toggleBookmark();
 }
 
-async function toggleBookmark() {
-    var data =  {
+function toggleBookmark() {
+    ajax.post({
         id: mainVariables.motivId.innerHTML,
-    };
-    var response = await send(data, "toggleBookmark");
-
-    if (response == "success") {
-        infoSaveSuccessfull("success");
-    } else {
-        console.log(response);
-        infoSaveSuccessfull();
-    }
+        r: "toggleBookmark",
+    }, true).then(r => {
+        if (r == "success") {
+            infoSaveSuccessfull("success");
+        } else {
+            console.log(r);
+            infoSaveSuccessfull();
+        }
+    });
 }
 
-function click_changeColor(e) {
+fnNames.click_changeColor = function(e) {
     var color = e.target.dataset.color;
 
     if (svg_elem != null) {
@@ -419,38 +399,38 @@ function click_changeColor(e) {
     }
 }
 
-function click_copyToClipboard() {
+fnNames.click_copyToClipboard = function() {
     var input = document.getElementById("dirInput");
     input.select();
     input.setSelectionRange(0, 99999);
     navigator.clipboard.writeText(input.value); 
 }
 
-async function performAction(key, event) {
+function performAction(key, event) {
     let tableKey = document.querySelector('[data-type="module_sticker_sizes"]').dataset.key;
-    let data = {
+    ajax.post({
         row: key,
         table: tableKey,
         id:  mainVariables.motivId.innerHTML,
-    };
+        r: "resetStickerPrice",
+    }, true).then(newPrice => {
+        let priceRow = event.target.parentNode.parentNode;
+        let priceField = priceRow.children[3].chilren[0];
 
-    let newPrice = await send(data, "resetStickerPrice");
-    let priceRow = event.target.parentNode.parentNode;
-    let priceField = priceRow.children[3].chilren[0];
-
-    priceField.value = newPrice;
+        priceField.value = newPrice;
+    });
     /* TODO: über sizes variable ändern */
 }
 
 /* must be redone; TODO: nachlesen, wie man event listener richtig bindet */
-function click_addAltTitle() {
+fnNames.click_addAltTitle = function() {
     var node = this.event.currentTarget;
     var parent = node.parentNode;
     var input = parent.children[0];
     input.classList.toggle("visible");
 }
 
-function write_changeAltTitle(e) {
+fnNames.write_changeAltTitle = function(e) {
     ajax.post({
         newTitle: e.target.value,
         type: e.target.dataset.type,
@@ -465,18 +445,11 @@ function write_changeAltTitle(e) {
     });
 }
 
-async function click_exportFacebook() {
-    var response = await send({
-        "id": mainVariables.motivId.innerHTML,
-    }, "exportFacebook");
-    console.log(response);
-}
-
 /**
  * toggles the visibility of the product in the store
  * @param {} e 
  */
-async function click_toggleProductVisibility(e) {
+fnNames.click_toggleProductVisibility = function(e) {
     let target = e.currentTarget;
     let type = target.dataset.type;
 
@@ -500,7 +473,7 @@ async function click_toggleProductVisibility(e) {
     });
 }
 
-async function click_shortcutProduct(e) {
+fnNames.click_shortcutProduct = async function(e) {
     const target = e.currentTarget;
     const type = target.dataset.type;
 
@@ -512,53 +485,23 @@ async function click_shortcutProduct(e) {
     }
 }
 
-async function searchShop() {
-    let searchQuery = document.getElementById("searchShopQuery").value;
-    let results = await send({query: searchQuery}, "searchShop");
-
-    let appendTo = document.getElementById("showSearchResults");
-
-    results = JSON.parse(results);
-    results.forEach((value) => {
-        let link = document.createElement("a");
-        link.href = value.link;
-        link.innerHTML = value.name;
-
-        let span = document.createElement("span");
-        span.appendChild(document.createTextNode(`Artikel ${value.id}: `));
-        span.appendChild(link);
-
-        let label = document.createElement("label");
-        label.style.display = "block";
-        let checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        label.appendChild(checkbox);
-        label.appendChild(span);
-
-        appendTo.appendChild(label);
-    });
-}
-
-async function connectResults() {
-
-}
-
 var selectedCategories = [];
-
-async function click_chooseCategory() {
-    var categoryData = await send({categoryId: 13}, "getCategoryTree");
-    categoryData = JSON.parse(categoryData);
-
-    var ul = document.createElement("ul");
-    ul.appendChild(createUlCategoryList(categoryData)); 
-
-    let div = document.createElement("div");
-    div.appendChild(ul);
-    div.classList.add("paddingDefault");
-    document.body.appendChild(div);
-    addActionButtonForDiv(div, "remove");
-    div.classList.add("centeredDiv");
-    centerAbsoluteElement(div);
+fnNames.click_chooseCategory = function() {
+    ajax.post({
+        categoryId: 13,
+        r: "getCategoryTree",
+    }).then(categoryData => {
+        var ul = document.createElement("ul");
+        ul.appendChild(createUlCategoryList(categoryData)); 
+    
+        let div = document.createElement("div");
+        div.appendChild(ul);
+        div.classList.add("paddingDefault");
+        document.body.appendChild(div);
+        addActionButtonForDiv(div, "remove");
+        div.classList.add("centeredDiv");
+        centerAbsoluteElement(div);
+    });
 }
 
 function createUlCategoryList(element) {
@@ -589,11 +532,14 @@ function selectCategory(e) {
     }
 }
 
-async function click_exportToggle(e) {
+fnNames.click_exportToggle = function(e) {
     let exportType = e.target.dataset.value;
-    let isSuccessfull = await send({
+
+    ajax.post({
         id: mainVariables.motivId.innerHTML, 
-        export: exportType
-    }, "setExportStatus");
-    infoSaveSuccessfull(isSuccessfull);
+        export: exportType,
+        r: "setExportStatus",
+    }).then(() => {
+        infoSaveSuccessfull(isSuccessfull);
+    });
 }
