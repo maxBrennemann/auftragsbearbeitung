@@ -1,22 +1,47 @@
-# Auftragsbearbeitung
+# Invoice and Order Management System
+The Invoice and Order Management System is a web-based application built using PHP, JavaScript, and HTML. The system allows businesses to manage customer orders, products, pricing, invoices, and customer data.
 
-Das Projekt besteht aus einem Backoffice, in dem man Aufträge von Kunden anlegen und abarbeiten kann. Verschiedenen Mitarbeitern können Aufgaben zugewiesen werden. Es können Angebote und Rechnungen generiert werden.
+## Features
+The Invoice and Order Management System includes the following features:
 
-In Entwicklung befindet sich außerdem ein Frontoffice, das wie ein klassischer Onlineshop funktionieren soll. Mit dabei ist ein CMS.
+### Customer Management: 
+Easily manage customer data, including contact information, addresses, and order history.
+### Product Management: 
+Create and manage product data, including pricing and inventory.
+### Order Management: 
+Create and manage customer orders, assign tasks to team members, and track order status.
+### Invoice Generation: 
+Generate invoices for customer orders, with options for customization and branding.
+### Reporting: 
+Generate reports on customer data, sales data, and inventory levels.
+### Security: 
+Keep your data safe and secure with role-based access control and user authentication.
 
-# Produkterstellung
+## Installation
+To install the Invoice and Order Management System, follow these steps:
 
-attribute Tabelle:
-    Beschreibt den Attributwert (gelb, Baumwolle)
+Download the project files and extract them to your local machine.
+Upload the files to your web server.
+Configure the database settings in the settings.php file.
+Import the auftragsmanager.sql file into your database.
+Start using the application by navigating to the index.php file in your web browser.
 
-attribute_group Tabelle:
-    Gruppiert die Attribute (Farbe, Größe)
+An installer is currently under development!
 
-attribute_to_product Tabelle:
-    Produkt-Attribut-Id mit Attribut-Id gemached
+## Usage
+To use the Invoice and Order Management System, follow these steps:
 
-produkt_attribute Tabelle
-    Produkt-Id mit weiteren Informationen über Produktvariante mit mehreren Attributen
+Add products to the system using the product management interface.
+Add customers to the system using the customer management interface.
+Create orders for customers using the order management interface.
+Generate invoices for orders using the invoice generation interface.
+Generate reports on customer data, sales data, and inventory levels using the reporting interface.
 
-produkt Tabelle
-    Produkt allgemein mit Informationen
+## Contributing
+This project is not currently open source. If you have any feedback or suggestions, please feel free to open an issue on Github.
+
+## License
+This project is not currently open source and is not licensed under any particular license.
+
+## Contact
+If you have any questions or comments about the Invoice and Order Management System, please open an issue on Gihub.
