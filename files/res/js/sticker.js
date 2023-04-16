@@ -10,14 +10,6 @@ const mainVariables = {
     pending: false,
 };
 
-if (document.readyState !== 'loading' ) {
-    initSticker();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        initSticker();
-    });
-}
-
 function initSticker() {
     initSVG();
     initBindings();
@@ -155,8 +147,8 @@ function changeDate(e) {
     });
 }
 
-function sendTitle() {
-    title = this.value;
+function sendTitle(e) {
+    const title = e.target.value;
     ajax.post({
         title: title,
         id: mainVariables.motivId.innerHTML,
@@ -541,5 +533,13 @@ fnNames.click_exportToggle = function(e) {
         r: "setExportStatus",
     }).then(() => {
         infoSaveSuccessfull(isSuccessfull);
+    });
+}
+
+if (document.readyState !== 'loading' ) {
+    initSticker();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        initSticker();
     });
 }

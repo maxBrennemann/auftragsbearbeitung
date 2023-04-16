@@ -1072,6 +1072,9 @@ class Ajax {
 						$stickerCollection->getTextil()->save();
 						break;
 				}
+
+				require_once("classes/project/modules/sticker/SearchProducts.php");
+				SearchProducts::getProductsByStickerId($id);
 				echo "ready";
 			break;
 			case "getSizeTable":
