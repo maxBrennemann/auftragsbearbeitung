@@ -1,5 +1,5 @@
 import click_textGeneration from "./sticker/textGeneration.js";
-import {initTagManager, loadTags, showTaggroupManager, addTag} from "./sticker/tagManager.js";
+import {loadTags, showTaggroupManager, addTag} from "./sticker/tagManager.js";
 import ProductConnector from "./sticker/productConnector.js";
 import {initSVG, moveInit} from "./sticker/imageManager.js";
 import { readSizeTable } from "./sticker/sizeTable.js";
@@ -10,18 +10,12 @@ const mainVariables = {
     pending: false,
 };
 
-if (document.readyState !== 'loading' ) {
-    initSticker();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        initSticker();
-    });
-}
+/* TODO: besseres variable maangement */
+window.mainVariables = mainVariables;
 
 function initSticker() {
     initSVG();
     initBindings();
-    initTagManager();
     moveInit();
 
     var pk_dropdown = document.getElementById("preiskategorie_dropdown");
@@ -155,8 +149,8 @@ function changeDate(e) {
     });
 }
 
-function sendTitle() {
-    title = this.value;
+function sendTitle(e) {
+    const title = e.target.value;
     ajax.post({
         title: title,
         id: mainVariables.motivId.innerHTML,
@@ -541,5 +535,13 @@ fnNames.click_exportToggle = function(e) {
         r: "setExportStatus",
     }).then(() => {
         infoSaveSuccessfull(isSuccessfull);
+    });
+}
+
+if (document.readyState !== 'loading' ) {
+    initSticker();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        initSticker();
     });
 }

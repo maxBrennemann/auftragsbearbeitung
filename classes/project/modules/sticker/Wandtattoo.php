@@ -44,18 +44,19 @@ class Wandtattoo extends AufkleberWandtattoo {
         $productId = (int) $this->getIdProduct();
         $stickerUpload = new StickerUpload($this->idSticker, $this->getName(), $this->getBasePrice(), $this->getDescription(), $this->getDescriptionShortWithDefaultText());
 
+        $stickerCombination = new StickerCombination($this);
+
         if ($productId == 0) {
-            $stickerUpload->createSticker();
+            $this->idProduct = $productId = $stickerUpload->createSticker();
         } else {
             $stickerUpload->updateSticker($productId);
         }
         $stickerUpload->setCategoires([2, 62, 13]);
 
-        $stickerCombination = new StickerCombination($this);
-        $stickerCombination->removeOldCombinations($this->getIdProduct());
+        $stickerCombination->removeOldCombinations($productId);
         
         $stickerTagManager = new StickerTagManager($this->getId(), $this->getName());
-        $stickerTagManager->setProductId($this->idProduct);
+        $stickerTagManager->setProductId($productId);
         $stickerTagManager->saveTags();
 
         $stickerCombination->createCombinations();

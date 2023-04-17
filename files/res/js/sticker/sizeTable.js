@@ -236,3 +236,18 @@ async function tableUpdateCallback() {
     sizes = [];
     readSizeTable();
 }
+
+function initSizeTable() {
+    const price1 = document.getElementById("price1");
+    price1.addEventListener("click", changePriceclass, false);
+    const price2 = document.getElementById("price2");
+    price2.addEventListener("click", changePriceclass, false);
+}
+
+if (document.readyState !== 'loading' ) {
+    initSizeTable();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        initSizeTable();
+    });
+}

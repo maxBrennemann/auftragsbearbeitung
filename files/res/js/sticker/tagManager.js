@@ -1,8 +1,17 @@
 var tagManager = null;
 
-export function initTagManager() {
+function initTagManager() {
     tagManager = new TagManager();
     tagManager.addTagEventListeners();
+
+    const tagInput = document.getElementById("tagInput");
+    tagInput.addEventListener("click", addTag, false);
+
+    const synonyms = document.getElementById("loadSynonyms");
+    synonyms.addEventListener("click", loadTags, false);
+
+    const showTM = document.getElementById("showTaggroupManager");
+    showTM.addEventListener("click", showTaggroupManager, false);
 }
 
 export function loadTags() {
@@ -242,4 +251,12 @@ class TagManager {
         };
     }
 
+}
+
+if (document.readyState !== 'loading' ) {
+    initTagManager();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        initTagManager();
+    });
 }

@@ -141,10 +141,10 @@ export function uploadFileForSticker(files, imageCategory) {
 		ajax.open('POST', '');
 		ajax.upload.addEventListener("progress", function(e) {
 			if (e.lengthComputable) {
-				bytesUploaded = e.loaded;
-				bytesTotal = e.total;
+				const bytesUploaded = e.loaded;
+				const bytesTotal = e.total;
 		
-				percentage = Math.round(bytesUploaded * 100 / bytesTotal);
+				const percentage = Math.round(bytesUploaded * 100 / bytesTotal);
                 let uploadNode = document.getElementById("showUploadProgress");
 				uploadNode.value = percentage;
 			}
@@ -274,14 +274,6 @@ export async function click_makeColorable() {
     });
 }
 
-if (document.readyState !== 'loading' ) {
-    initImageManager();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        initImageManager();
-    });
-}
-
 export function initImageManager() {
     const contextMenu = document.getElementById("delete-menu");
     const scope = document.querySelector("body");
@@ -309,12 +301,34 @@ export function initImageManager() {
             contextMenu.classList.remove("visible");
         }
     });
+
+    const imgMovableContainers = document.querySelectorAll(".imageMovableContainer");
+    Array.from(imgMovableContainers).forEach(container => {
+        const dropType = container.dataset.dropType;
+        container.addEventListener("drop", e => itemDropHandler(e, dropType), false);
+        container.addEventListener("dragover", itemDragOverHandler, false);
+    });
+
+    const imgPrev = document.querySelectorAll(".imgPreview");
+    Array.from(imgPrev).forEach(img => {
+        img.addEventListener("click", imagePreview, false);
+        img.addEventListener("dragstart", preventCopy, false);
+    });
+
+    const delItems = document.querySelectorAll("#delete-menu.item");
+    Array.from(delItems).forEach(item => {
+        item.addEventListener("click", deleteImage, false);
+    });
+
+    const svgContainer = document.getElementById("svgContainer");
+    svgContainer.addEventListener("dragover", itemDragOverHandler, false);
+    svgContainer.addEventListener("drop", e => itemDropHandler(e, "textilsvg"), false);
 }
 
 /**
  * deletes the currently selected image
  */
-export function deleteImage(imageId) {
+function deleteImage() {
     ajax.post({
         imageId: mainVariables.currentDelete,
         r: "deleteImage",
@@ -348,4 +362,12 @@ export function insertNewlyUploadedImages(json) {
 
         console.log("test");
     }
+}
+
+if (document.readyState !== 'loading' ) {
+    initImageManager();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        initImageManager();
+    });
 }

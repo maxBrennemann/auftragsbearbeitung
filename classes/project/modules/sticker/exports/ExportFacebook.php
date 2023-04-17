@@ -75,7 +75,6 @@ class ExportFacebook extends PrestashopConnection {
         $line["image_link"] = self::getFirstImageLink($product);
 
         if ($product instanceof Aufkleber) {
-            self::generateAufkleber($product, $line);
             $this->fillLineAufkleber($product, $line);
         } else if ($product instanceof Wandtattoo) {
             $this->fillLineWandtattoo($product, $line);
