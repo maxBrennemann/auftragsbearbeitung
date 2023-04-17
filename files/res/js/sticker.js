@@ -1,5 +1,5 @@
 import click_textGeneration from "./sticker/textGeneration.js";
-import {initTagManager, loadTags, showTaggroupManager, addTag} from "./sticker/tagManager.js";
+import {loadTags, showTaggroupManager, addTag} from "./sticker/tagManager.js";
 import ProductConnector from "./sticker/productConnector.js";
 import {initSVG, moveInit} from "./sticker/imageManager.js";
 import { readSizeTable } from "./sticker/sizeTable.js";
@@ -10,10 +10,12 @@ const mainVariables = {
     pending: false,
 };
 
+/* TODO: besseres variable maangement */
+window.mainVariables = mainVariables;
+
 function initSticker() {
     initSVG();
     initBindings();
-    initTagManager();
     moveInit();
 
     var pk_dropdown = document.getElementById("preiskategorie_dropdown");

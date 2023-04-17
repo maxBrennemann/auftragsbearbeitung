@@ -49,7 +49,7 @@ if ($id == 0): ?>
         <p>Weitere Dateien (SVGs, CorelDraw, ...):</p>
         <?=insertTemplate("classes/project/modules/sticker/views/stickerFileView.php", ["images" => $stickerImage->getGeneralImages(), "files" => $stickerImage->getFiles()])?>
         <div id="delete-menu">
-            <div class="item" onclick="deleteImage()">
+            <div class="item">
                 <?=Icon::$iconDelete?>
                 <span>Löschen</span>
             </div>
@@ -231,7 +231,7 @@ if ($id == 0): ?>
             </span>
         </div>
         <div>
-            <object id="svgContainer" data="<?=$stickerImage->getSVGIfExists($stickerCollection->getTextil()->getIsColorable())?>" type="image/svg+xml" class="innerDefCont imageMovableContainer" ondrop="itemDropHandler(event, 'textilsvg');" ondragover="itemDragOverHandler(event);"></object>
+            <object id="svgContainer" data="<?=$stickerImage->getSVGIfExists($stickerCollection->getTextil()->getIsColorable())?>" type="image/svg+xml" class="innerDefCont imageMovableContainer"></object>
             <br>
             <?php if ($stickerCollection->getTextil()->getIsColorable() == 1): ?>
             <?php foreach ($stickerCollection->getTextil()->textilColors as $color):?>
@@ -282,11 +282,11 @@ if ($id == 0): ?>
         <p>Aufkleberpreisklasse</p>
         <div>
             <label for="price1">Preisklasse 1 (günstiger)</label>
-            <input id="price1" type="radio" name="priceClass" <?=$stickerCollection->getAufkleber()->getPriceClass() == 0 ? "checked" : ""?> onclick="changePriceclass(event)">
+            <input id="price1" type="radio" name="priceClass" <?=$stickerCollection->getAufkleber()->getPriceClass() == 0 ? "checked" : ""?>>
         </div>
         <div>
             <label for="price2">Preisklasse 2 (teurer)</label>
-            <input id="price2" type="radio" name="priceClass" <?=$stickerCollection->getAufkleber()->getPriceClass() == 1 ? "checked" : ""?> onclick="changePriceclass(event)">
+            <input id="price2" type="radio" name="priceClass" <?=$stickerCollection->getAufkleber()->getPriceClass() == 1 ? "checked" : ""?>>
         </div>
     </div>
     <div id="previewSizeText"><?=$stickerCollection->getAufkleber()->getSizeSummary()?></div>
@@ -295,11 +295,11 @@ if ($id == 0): ?>
     <h2>Tags<button class="infoButton" data-info="3">i</button></h2>
     <div>
         <?=$stickerTagManager->getTagsHTML()?>
-        <input type="text" class="tagInput" maxlength="32" onkeydown="addTag(event)">
+        <input type="text" class="tagInput" maxlength="32" id="tagInput">
     </div>
     <p>Nicht erlaubt sind folgende Zeichen: !<;>;?=+#"°{}_$%.</p>
-    <button onclick="loadTags()">Mehr Synonnyme laden</button>
-    <button onclick="showTaggroupManager()">Taggruppen</button>
+    <button id="loadSynonyms">Mehr Synonnyme laden</button>
+    <button id="showTaggroupManager">Taggruppen</button>
 </div>
 <div class="defCont">
     <h2>Weitere Infos</h2>
