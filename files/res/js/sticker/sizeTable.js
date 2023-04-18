@@ -4,16 +4,19 @@
  * @param {*} table the table name, used to get the table key
  * @param {*} reference the target
  */
-async function deleteRow(key, table, reference) {
+function deleteRow(key, table, reference) {
     var tableKey = document.querySelector(`[data-type="${table}"]`).dataset.key;
-    var data = {
+
+    ajax.post({
         id: mainVariables.motivId.innerHTML,
         key: key,
         table: tableKey,
-    };
-    console.log(await send(data, "deleteSize"));
-    var row = reference.parentNode.parentNode;
-    row.parentNode.removeChild(row);
+        r: "deleteSize",
+    }, true).then(response => {
+        console.log(response);
+        var row = reference.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+    });
 }
 
 function parseNumber(number) {
@@ -25,12 +28,15 @@ function parseNumber(number) {
     }
 }
 
-async function sendRows(data, text) {
-    data.id = mainVariables.motivId.innerHTML;
-    data.text = text;
-
-    var response = await send(data, "setAufkleberGroessen", true);
-    console.log(response);
+function sendRows(data, text) {
+    ajax.post({
+        sizes: JSON.stringify(data),
+        id: mainVariables.motivId.innerHTML,
+        text: text,
+        r: "setAufkleberGroessen",
+    }, true).then(response => {
+        console.log(response);
+    });
 }
 
 /** calculates material prices */
@@ -131,14 +137,17 @@ async function changePriceclass(e) {
         newPrice = 1;
     }
 
-    if (newPrice !== "") {
-        var response = await send({priceclass: newPrice, id: mainVariables.motivId.innerHTML}, "setPriceclass");
+    ajax.post({
+        priceclass: newPrice,
+        id: mainVariables.motivId.innerHTML,
+        r: "setPriceclass",
+    }, true).then(response => {
         if (response == "ok") {
             infoSaveSuccessfull("success");
         } else {
             infoSaveSuccessfull();
         }
-    }
+    });
 }
 
 export function readSizeTable() {
@@ -205,21 +214,22 @@ function changeHeight(e) {
     sendRows(data, text);
 }
 
-async function changePrice(e) {
+function changePrice(e) {
     let targetId = parseInt(e.target.dataset.id);
     let size = sizes[targetId];
     size.price = size.getPriceInCent(e.target.value);
 
     /* send price data to server */
-    let data = {
+    ajax.post({
         id: mainVariables.motivId.innerHTML,
         size: size,
         price: size.price,
         width: size.width,
         height: size.height,
-    };
-    let success = await send(data, "updateSpecificPrice");
-    infoSaveSuccessfull(success);
+        r: "updateSpecificPrice",
+    }, true).then(response => {
+        infoSaveSuccessfull(response);
+    });
 }
 
 /**
@@ -227,14 +237,15 @@ async function changePrice(e) {
  * the addNewLine functionality,
  * the server responds with a new generated table
  */
-async function tableUpdateCallback() {
-    var data = {
+function tableUpdateCallback() {
+    ajax.post({
         id: mainVariables.motivId.innerHTML,
-    };
-    var response = await send(data, "getSizeTable");
-    document.getElementById("sizeTableWrapper").innerHTML = response;
-    sizes = [];
-    readSizeTable();
+        r: "getSizeTable",
+    }, true).then(response => {
+        document.getElementById("sizeTableWrapper").innerHTML = response;
+        sizes = [];
+        readSizeTable();
+    });
 }
 
 function initSizeTable() {

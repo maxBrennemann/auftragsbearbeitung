@@ -1216,15 +1216,15 @@ class Ajax {
 				//echo json_encode($response);
 			break;
 			case "setAufkleberGroessen":
-				$data = json_decode($_POST["json"], true);
+				$sizes = json_decode($_POST["sizes"], true);
 
 				require_once('classes/project/modules/sticker/AufkleberWandtattoo.php');
-				$id = (int) $data["id"];
+				$id = (int) $_POST["id"];
 				$aufkleberWandtatto = new AufkleberWandtattoo($id);
-				foreach ($data["sizes"] as $size) {
+				foreach ($sizes["sizes"] as $size) {
 					$aufkleberWandtatto->updateSizeTable($size);
 				}
-				$text = $data["text"];
+				$text = $_POST["text"];
 				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET size_summary = '$text' WHERE id = $id");
 			break;
 			case "updateSpecificPrice":
