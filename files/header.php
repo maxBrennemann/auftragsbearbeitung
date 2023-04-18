@@ -114,12 +114,12 @@
 			</li>
 		</ul>
 	</div>
-	<header class="moveToSide">
-		<section>
+	<header class="moveToSide sticky p-5">
+		<section class="mx-auto w-4/5 lg:mb-7 mb-3">
 			<h1><?=$pageName?></h1>
-			<aside>
+			<aside class="right-1">
 				<div class="searchContainer">
-					<input class="searchItems" type="search" onchange="performGlobalSearch(event)">
+					<input class="searchItems m-0 p-2" type="search" onchange="performGlobalSearch(event)">
 					<span class="searchItems lupeSpan" title="suche"><span class="searchItems lupe" title="Suche">
 						<?=Icon::$iconSearch?>
 					</span></span>
@@ -128,7 +128,7 @@
 					<div>
 						<div class="notificationContainer">
 							<span title="Benachrichtigungen"><?=NotificationManager::getNotificationCount();?></span>
-							<span title="Benachrichtigungen">
+							<span title="Benachrichtigungen" class="inline-block">
 								<?=Icon::$iconBell?>
 							</span>
 						</div>
@@ -164,4 +164,4 @@
 		<hr class="headerline">
 		<div class="showBreadcrumb"><a href="<?=Link::getPageLink("")?>" id="home_link">Home</a>/<a href="<?=Link::getPageLink($page)?>"><?=$pageName?></a></div>
 	</header>
-	<main>
+	<main class="mt-2 w-4/5">

@@ -84,9 +84,6 @@ header aside div {
 }
 
 header h1 {
-    margin-left: auto;
-    margin-right: auto;
-    width: 80%;
     font-family: Raleway;
     letter-spacing: 1px;
 }
@@ -94,7 +91,6 @@ header h1 {
 main {
     max-width: 80vw;
     margin: auto;
-    margin-top: 150px;
     grid-area: main;
     z-index: 1;
 }
@@ -576,9 +572,6 @@ input#hamburg {
 
 @media screen and (max-width: 1300px), 
        screen and (max-height: 500px) {
-    .moveToSide {
-        padding: 0;
-    }
 
     .showBreadcrumb {
         margin-top: 5px;
@@ -594,7 +587,6 @@ input#hamburg {
     }
 
     main {
-        margin-top: 100px;
         max-width: 95vw;
     }
 }
