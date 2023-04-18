@@ -5,7 +5,7 @@ function initTagManager() {
     tagManager.addTagEventListeners();
 
     const tagInput = document.getElementById("tagInput");
-    tagInput.addEventListener("click", addTag, false);
+    tagInput.addEventListener("keydown", addTag, false);
 
     const synonyms = document.getElementById("loadSynonyms");
     synonyms.addEventListener("click", loadTags, false);

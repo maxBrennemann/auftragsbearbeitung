@@ -49,11 +49,16 @@ function click_startStopTime() {
     }
 }
 
-async function click_sendTimeTracking() {
+function click_sendTimeTracking() {
     var task = document.getElementById("getTask").value;
-    var table = await send({task:task}, "sendTimeTracking");
-    document.getElementById("showTaskTable").innerHTML = table;
-    localStorage.clear("startTime");
+
+    ajax.post({
+        task: task,
+        r: "sendTimeTracking",
+    }, true).then(response => {
+        document.getElementById("showTaskTable").innerHTML = response;
+        localStorage.clear("startTime");
+    });
 }
 
 function countTime() {
@@ -78,22 +83,4 @@ function storeTimestamp(stamp) {
 
 function pad(num) {
     return ('00' + num).slice(-2);
-}
-
-function send(data, intent) {
-    data.getReason = intent;
-
-    /* temporarily copied here */
-    let temp = "";
-    for (let key in data) {
-        temp += key + "=" + data[key] + "&";
-    }
-
-    paramString = temp.slice(0, -1);
-
-    var response = makeAsyncCall("POST", paramString, "").then(result => {
-        return result;
-    });
-
-    return response;
 }
