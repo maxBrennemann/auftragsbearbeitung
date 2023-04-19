@@ -19,6 +19,26 @@ function deleteRow(key, table, reference) {
     });
 }
 
+function performAction(key, event) {
+    let tableKey = document.querySelector('[data-type="module_sticker_sizes"]').dataset.key;
+    ajax.post({
+        row: key,
+        table: tableKey,
+        id:  mainVariables.motivId.innerHTML,
+        r: "resetStickerPrice",
+    }, true).then(newPrice => {
+        let priceRow = event.target.parentNode.parentNode;
+        let priceField = priceRow.children[3].chilren[0];
+
+        priceField.value = newPrice;
+    });
+    /* TODO: über sizes variable ändern */
+}
+
+/* TODO: überlegen, ob das so okay ist */
+window["deleteRow"] = deleteRow;
+window["performAction"] = performAction;
+
 function parseNumber(number) {
     var parts = number.split(",");
     if (parts.length == 2) {
@@ -247,6 +267,8 @@ function tableUpdateCallback() {
         readSizeTable();
     });
 }
+
+window["tableUpdateCallback"] = tableUpdateCallback;
 
 function initSizeTable() {
     const price1 = document.getElementById("price1");

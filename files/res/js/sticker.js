@@ -400,22 +400,6 @@ fnNames.click_copyToClipboard = function() {
     navigator.clipboard.writeText(input.value); 
 }
 
-function performAction(key, event) {
-    let tableKey = document.querySelector('[data-type="module_sticker_sizes"]').dataset.key;
-    ajax.post({
-        row: key,
-        table: tableKey,
-        id:  mainVariables.motivId.innerHTML,
-        r: "resetStickerPrice",
-    }, true).then(newPrice => {
-        let priceRow = event.target.parentNode.parentNode;
-        let priceField = priceRow.children[3].chilren[0];
-
-        priceField.value = newPrice;
-    });
-    /* TODO: über sizes variable ändern */
-}
-
 /* must be redone; TODO: nachlesen, wie man event listener richtig bindet */
 fnNames.click_addAltTitle = function() {
     var node = this.event.currentTarget;
