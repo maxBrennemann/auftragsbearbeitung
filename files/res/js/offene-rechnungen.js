@@ -1,13 +1,15 @@
+function updateIsDone(id, event) {
+    const targetRow = event.currentTarget.parentNode.parentNode;
+    const orderId = parseInt(targetRow.children[0].innerHTML);
+    const invoiceId = parseInt(targetRow.children[1].innerHTML);
 
-function updateIsDone(data, event) {
-    var auftragsnummer = event.target.parentNode.parentNode.children[0].innerHTML;
-    console.log(auftragsnummer);
-
-    var update = new AjaxCall(`getReason=setTo&rechnung=${auftragsnummer}`, "POST", window.location.href);
-    update.makeAjaxCall(function (response) {
-        document.getElementById("table").innerHTML = response;
+    ajax.post({
+        order: orderId,
+        invoice: invoiceId,
+        r: "setInvoicePaid",
+    }).then(res => {
+        if (res.status == "success") {
+            targetRow.parentNode.removeChild(targetRow);
+        }
     });
-
-    var setInvoiceData = new AjaxCall(`getReason=setInvoiceData&rechnung=${auftragsnummer}`, "POST", window.location.href);
-    setInvoiceData.makeAjaxCall(function (response) {});
 }

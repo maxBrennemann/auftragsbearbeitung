@@ -355,14 +355,25 @@ class Ajax {
 					echo json_encode(["error occured"]);
 				}
 			break;
+			case "setInvoicePaid":
+				$order = $_POST['order'];
+				$invoice = $_POST['invoice'];
+				DBAccess::updateQuery("UPDATE auftrag SET Bezahlt = 1 WHERE Auftragsnummer = :order AND Rechnungsnummer = :invoice", [
+					"order" => $order,
+					"invoice" => $invoice,
+				]);
+				echo json_encode([
+					"status" => "success",
+				]);
+			break;
 			case "setTo":
 				if (isset($_POST['auftrag'])) {
 					require_once("classes/project/InteractiveFormGenerator.php");
 					$table = unserialize($_SESSION['storedTable']);
 					$auftragsId = $_POST['auftrag'];
-					$row =  $_POST['row'];
+					$row = $_POST['row'];
 					$table->setIdentifier("Schrittnummer");
-					$date =  date("Y-m-d");
+					$date = date("Y-m-d");
 					$table->addParam("finishingDate", $date);
 					$table->editRow($row, "istErledigt", "0");
 				} else {
@@ -825,10 +836,6 @@ class Ajax {
 				$title = $_POST['title'];
 				$content = $_POST['content'];
 				DBAccess::insertQuery("INSERT INTO wiki_articles (title, content) VALUES ('$title', '$content')");
-			break;
-			case "setInvoiceData":
-				$orderId = (int) $_POST["rechnung"];
-				//$id = DBAccess::selectQuery("SELECT id FROM invoice WHERE ");
 			break;
 			case "getManual":
 				$pageName = $_POST['pageName'];
