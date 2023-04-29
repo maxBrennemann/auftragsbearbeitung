@@ -25,6 +25,16 @@ if (isset($_GET['id'])) {
 if ($id == 0): ?>
     <a href="<?=Link::getPageLink("sticker-overview")?>">Zur Motivübersicht</a>
 <?php else: ?>
+
+<?php
+/*
+require_once('classes/project/modules/sticker/exports/ExportFacebook.php');
+
+$export = new ExportFacebook();
+Protocoll::prettyPrint($export->getSpecificProductExport($id));
+*/
+?>
+
 <script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
 <?=$stickerCollection->checkProductErrorStatus() ? $stickerCollection->getErrorMessage() : ""?>
 <div class="defCont cont1">

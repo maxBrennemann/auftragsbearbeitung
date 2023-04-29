@@ -16,8 +16,13 @@ class ExportFacebook extends PrestashopConnection {
     private static $csv;
     private static $file;
 
+    private $currentFilename;
+
     private $idProducts;
 
+    /**
+     * the line array for the csv
+     */
     private $line = [
         "id" => "",
         "title" => "",
@@ -37,35 +42,60 @@ class ExportFacebook extends PrestashopConnection {
 
     private static $errorList = [];
 
+    /**
+     * gets all sticker ids from database;
+     */
     function __construct() {
         $query = "SELECT `id` FROM `module_sticker_sticker_data` ORDER BY `id` ASC";
         $this->idProducts = DBAccess::selectQuery($query);
     }
 
+    /**
+     * iterates over all products and creates the three variants if these exist in the shop
+     * then it takes the data and puts it into a file
+     */
     public function generateCSV() {
         $lines = [];
         foreach ($this->idProducts as $id) {
             $id = (int) $id["id"];
 
-            $stickerCollection = new StickerCollection($id);
-            if ($stickerCollection->getAufkleber()->isInShop()) {
-                $lines[] = $this->fillLine($stickerCollection->getAufkleber());
-            }
-    
-            if ($stickerCollection->getTextil()->isInShop()) {
-                $lines[] = $this->fillLine($stickerCollection->getTextil());
-            }
-    
-            if ($stickerCollection->getWandtattoo()->isInShop()) {
-                $lines[] = $this->fillLine($stickerCollection->getWandtattoo());
-            }
+            $productLines = $this->getSpecificProductExport($id);
+            $lines = [...$lines, ...$productLines];
         }
 
         $filename = "exportFB_" . date("Y-m-d") . ".csv";
+        $this->currentFilename = $filename;
         $this->generateFile($lines, $filename);
     }
 
-    private function fillLine($product): String {
+    /**
+     * generates the product csv lines for a specific sticker id
+     */
+    public function getSpecificProductExport($idSticker) {
+        $stickerCollection = new StickerCollection($idSticker);
+
+        $lines = [];
+        if ($stickerCollection->getAufkleber()->isInShop()) {
+            $productLines = $this->fillLine($stickerCollection->getAufkleber());
+            $lines = [...$lines, ...$productLines];
+        }
+
+        if ($stickerCollection->getTextil()->isInShop()) {
+            $productLines = $this->fillLine($stickerCollection->getTextil());
+            $lines = [...$lines, ...$productLines];
+        }
+
+        if ($stickerCollection->getWandtattoo()->isInShop()) {
+            $productLines = $this->fillLine($stickerCollection->getWandtattoo());
+            $lines = [...$lines, ...$productLines];
+        }
+
+        return $lines;
+    }
+
+    private function fillLine($product): Array {
+        $variantLines = [];
+
         $type = $product->getType();
         $line = $this->line;
         $line["item_group_id"] = $type . $product->getId();
@@ -74,40 +104,126 @@ class ExportFacebook extends PrestashopConnection {
         $line["link"] = $product->getShopLink();
         $line["image_link"] = self::getFirstImageLink($product);
 
-        if ($product instanceof Aufkleber) {
-            $this->fillLineAufkleber($product, $line);
-        } else if ($product instanceof Wandtattoo) {
-            $this->fillLineWandtattoo($product, $line);
-        } else if ($product instanceof Textil) {
-            $this->fillLineTextil($product, $line);
+        if ($line["image_link"] == null) {
+            $line["image_link"] = "";
         }
 
-        return implode(",", $line);
+        if ($product instanceof Aufkleber) {
+            $variantLines = $this->fillLineAufkleber($product, $line);
+        } else if ($product instanceof Wandtattoo) {
+            $variantLines =  $this->fillLineWandtattoo($product, $line);
+        } else if ($product instanceof Textil) {
+            $variantLines = $this->fillLineTextil($product, $line);
+        }
+
+        return $variantLines;
     }
 
-    private function fillLineAufkleber($product, &$line) {
+    private function fillLineAufkleber($product, $line) {
+        $combinationId = 0;
+        $combinationLines = [];
+        $sizeIds = $product->getSizeIds();
+        $prices = $product->getPricesMatched();
 
+        foreach ($sizeIds as $size) {
+            if (isset($prices[$size]) && $prices[$size] != 0.00) {
+                $line["price"] = $prices[$size];
+            } else {
+                self::$errorList[] = $size;
+                continue;
+            }
+
+            $line["size"] = $product->getSize($size);
+            $line["id"] = "aufkleber" . "_" . $product->getId() . "_" . $combinationId;
+
+            if ($product->getIsMultipart() == 1) {
+                $combinationId++;
+                $combinationLines[] = $line;
+                continue;
+            }
+
+            /* iterate over all colors and add variants */
+            foreach ($product->getColors() as $color) {
+                $line["color"] = $product->getColorName($color);
+
+                if ($product->getIsShortTimeSticker() == 1) {
+                    $line["material"] = "Werbefolie";
+                }
+                
+                if ($product->getIsLongTimeSticker() == 1) {
+                    $line["material"] = "Hochleistungsfolie";
+                }
+
+                $line["id"] = "aufkleber" . "_" . $product->getId() . "_" . $combinationId;
+                $combinationId++;
+                $combinationLines[] = $line;
+            }
+        }
+
+        return $combinationLines;
     }
 
-    private function fillLineWandtattoo($product, &$line) {
+    private function fillLineWandtattoo($product, $line) {
+        $combinationId = 0;
+        $combinationLines = [];
+        $sizeIds = $product->getSizeIds();
+        $prices = $product->getPricesMatched();
 
+        foreach ($sizeIds as $size) {
+            if (isset($prices[$size]) && $prices[$size] != 0.00) {
+                $line["price"] = $prices[$size];
+            } else {
+                self::$errorList[] = $size;
+                continue;
+            }
+
+            $line["size"] = $product->getSize($size);
+            $line["id"] = "wandtattoo" . "_" . $product->getId() . "_" . $combinationId;
+            $line["material"] = "Wandtattoofolie";
+        }
+
+        return $combinationLines;
     }
 
-    private function fillLineTextil($product, &$line) {
+    private function fillLineTextil($product, $line) {
+        $combinationId = 0;
+        $combinationLines = [];
 
-    }
-
-    private function generateFile(array $strings, string $filename): void {
-        // Open the file for writing, overwriting any existing file with the same name
-        $file = fopen($filename, 'w');
+        if ($product->getIsColorable() == 1) {
+            foreach ($product->getAttributes() as $color) {
+                $line["price"] = $product->getPrice();
+                $line["color"] = $product->textilColors[$combinationId]["name"];
     
-        // Write each string to the file on a new line
-        foreach ($strings as $string) {
+                $line["id"] = "textil" . "_" . $product->getId() . "_" . $combinationId;
+    
+                $combinationLines[] = $line;
+                $combinationId++;
+            }
+        } else {
+            $line["price"] = $product->getPrice();
+            $line["color"] = "zweifarbig";
+
+            $line["id"] = "textil" . "_" . $product->getId() . "_" . $combinationId;
+            return [$line];
+        }
+
+        return $combinationLines;
+    }
+
+    private function generateFile(array $lines, string $filename): void {
+        $path = "files/generated/fb_export/";
+        $file = fopen($path . $filename, 'w');
+    
+        foreach ($lines as $line) {
+            $string = implode(",", $line);
             fwrite($file, $string . "\n");
         }
     
-        // Close the file
         fclose($file);
+    }
+
+    public function getFilename(): String {
+        return $this->currentFilename;
     }
 
     public static function exportAll() {

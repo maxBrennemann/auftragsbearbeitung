@@ -50,7 +50,7 @@ class Aufkleber extends AufkleberWandtattoo {
         }
 
         if ($name != null) {
-            return "Aufkleber" . $name;
+            return "Aufkleber " . $name;
         }
 
         return "Aufkleber " . parent::getName();
@@ -91,6 +91,23 @@ class Aufkleber extends AufkleberWandtattoo {
 
     public function getColors(): array {
         return [70, 60, 67, 79, 91, 107, 111];
+    }
+
+    /* hardcoded color names */
+    public function getColorName(int $colorId): String {
+        $colors = [
+            70 => "schwarz", 
+            60 => "gelb", 
+            67 => "rot",
+            79 => "dunkelblau",
+            91 => "grün",
+            107 => "grau",
+            111 => "weiß",
+        ];
+        if (isset($colors[$colorId])) {
+            return $colors[$colorId];
+        }
+        return "";
     }
 
     public function getSizeToPrice(): array {
