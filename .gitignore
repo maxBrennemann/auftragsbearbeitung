@@ -13,6 +13,10 @@ files/generated/sql_backups/*
 files/generated/invoice/*
 !files/generated/invoice/index.php
 
+!files/generated/fb_export/
+files/generated/fb_export/*
+!files/generated/fb_export/index.php
+
 files/res/js/min/*
 !files/res/js/min/index.php
 

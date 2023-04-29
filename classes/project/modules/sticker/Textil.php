@@ -74,7 +74,7 @@ class Textil extends Sticker {
         return $price;
     }
 
-    private function getPrice() {
+    public function getPrice() {
         switch ($this->stickerData["price_type"]) {
             case "57":
                 $price = "23.59";

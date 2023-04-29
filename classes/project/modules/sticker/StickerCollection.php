@@ -158,7 +158,7 @@ class StickerCollection implements Iterator {
 
         $count = 1;
         foreach ($this->productMatches["allLinks"] as $l) {
-            $text .= '<a target="_blank" href="$l">Produkt ' . $count++ . '</a>';
+            $text .= '<a target="_blank" href="' . $l . '">Produkt ' . $count++ . '</a>';
         }
 
         return $text . "</div>";
