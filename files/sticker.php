@@ -39,14 +39,14 @@ Protocoll::prettyPrint($export->getSpecificProductExport($id));
 <?=$stickerCollection->checkProductErrorStatus() ? $stickerCollection->getErrorMessage() : ""?>
 <div class="defCont cont1">
     <div>
-        <h2>Motiv <input id="name" class="titleInput" value="<?=$stickerCollection->getName();?>">
+        <h2 class="font-semibold">Motiv <input id="name" class="titleInput inline" value="<?=$stickerCollection->getName();?>">
             <?php if ($stickerCollection->getIsMarked() == "0"): ?>
-            <span data-binding="true" data-fun="bookmark"><?=Icon::$iconBookmark?></span>
+            <span data-binding="true" data-fun="bookmark inline"><?=Icon::$iconBookmark?></span>
             <?php else: ?>
-            <span data-binding="true" data-fun="unbookmark" class="bookmarked"><?=Icon::$iconUnbookmark?></span>
+            <span data-binding="true" data-fun="unbookmark" class="bookmarked inline"><?=Icon::$iconUnbookmark?></span>
             <?php endif; ?>
         </h2>
-        <p>Artikelnummer: <span id="motivId" data-variable="true"><?=$id?></span></p>
+        <p class="mt-2">Artikelnummer: <span id="motivId" data-variable="true"><?=$id?></span></p>
         <p>Erstellt am <input type="date" id="creationDate" value="<?=$stickerCollection->getCreationDate()?>"></p>
         <div class="shopStatus">
             <div class="shopStatusIcon">
@@ -286,7 +286,7 @@ Protocoll::prettyPrint($export->getSpecificProductExport($id));
     </section>
 </div>
 <div class="defCont align-center">
-    <h2 style="text-align: left;">Größen</h2>
+    <h2 class="text-left mb-2 font-semibold">Größen</h2>
     <div id="sizeTableWrapper"><?=$stickerCollection->getAufkleber()->getSizeTable()?></div>
     <div>
         <p>Aufkleberpreisklasse</p>
@@ -302,17 +302,17 @@ Protocoll::prettyPrint($export->getSpecificProductExport($id));
     <div id="previewSizeText"><?=$stickerCollection->getAufkleber()->getSizeSummary()?></div>
 </div>
 <div class="defCont">
-    <h2>Tags<button class="infoButton" data-info="3">i</button></h2>
-    <div>
+    <h2 class="font-semibold">Tags<button class="infoButton" data-info="3">i</button></h2>
+    <div class="mt-2">
         <?=$stickerTagManager->getTagsHTML()?>
         <input type="text" class="tagInput" maxlength="32" id="tagInput">
     </div>
-    <p>Nicht erlaubt sind folgende Zeichen: !<;>;?=+#"°{}_$%.</p>
-    <button id="loadSynonyms">Mehr Synonnyme laden</button>
-    <button id="showTaggroupManager">Taggruppen</button>
+    <p class="italic">Nicht erlaubt sind folgende Zeichen: !<;>;?=+#"°{}_$%.</p>
+    <button id="loadSynonyms" class="px-2 py-2 m-2 bg-indigo-300 border-none">Mehr Synonnyme laden</button>
+    <button id="showTaggroupManager" class="px-2 py-2 m-2 bg-indigo-300 border-none">Taggruppen</button>
 </div>
 <div class="defCont">
-    <h2>Weitere Infos</h2>
+    <h2 class="font-semibold">Weitere Infos</h2>
     <div class="revised">
         <span>Wurde der Artikel neu überarbeitet?<button class="infoButton" data-info="4">i</button></span>
         <span class="right">
@@ -339,7 +339,7 @@ Protocoll::prettyPrint($export->getSpecificProductExport($id));
     </div>
 </div>
 <div class="defCont">
-    <h2>Produktexport</h2>
+    <h2 class="font-semibold mb-2">Produktexport</h2>
     <form>
         <div class="exportContainer">
             Nach Facebook exportieren
@@ -398,12 +398,14 @@ Protocoll::prettyPrint($export->getSpecificProductExport($id));
     </form>
 </div>
 <div class="defCont">
-    <h2>Statistiken</h2>
+    <h2 class="font-semibold mb-2">Statistiken</h2>
     <!-- TODO: Statistiken von Google Analytics und Google Shopping, sowie von Google SearchConsole und shopintern einbinden -->
 </div>
 <div class="defCont">
-    <h2>Changelog</h2>
-    <?=$stickerChangelog->getTable()?>
+    <h2 class="font-semibold mb-2">Changelog</h2>
+    <details>
+        <?=$stickerChangelog->getTable()?>
+    </details>
 </div>
 <div>
     <span id="showUploadProgress"></span>

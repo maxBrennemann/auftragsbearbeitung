@@ -4,7 +4,7 @@ module.exports = {
   content: [
     "./files/*.{html,js,php}",
     "./files/res/js/*.{html,js,php}",
-    "./classes/project/modules/**/*.{html,js,php}",
+    "./classes/project/**/*.{html,js,php}",
     "upgrade.php",
   ],
   theme: {

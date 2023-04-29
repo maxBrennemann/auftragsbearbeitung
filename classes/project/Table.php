@@ -166,9 +166,9 @@ class Table {
 			$key = $this->keys[$i];
 
 			if ($action != null) {
-				$btn = "<button class='actionButton' onclick=\"$action('$key', event)\" title='$text'>$symbol</button>";
+				$btn = "<button class='p-1 mr-1 actionButton' onclick=\"$action('$key', event)\" title='$text'>$symbol</button>";
 			} else {
-				$btn = "<button class='actionButton' onclick=\"performAction('$key', event)\" title='$text'>$symbol</button>";
+				$btn = "<button class='p-1 mr-1 actionButton' onclick=\"performAction('$key', event)\" title='$text'>$symbol</button>";
 			}
 			$array[$i] = $btn;
 		}
@@ -254,17 +254,17 @@ class Table {
 
 	/* action buttons */
 	private function addUpdateButton($key) {
-        $button = "<button class='actionButton' onclick=\"updateIsDone('$key', event)\" title='Als erledigt markieren.'>" . Icon::$iconCheck . "</button>";
+        $button = "<button class='p-1 mr-1 actionButton' onclick=\"updateIsDone('$key', event)\" title='Als erledigt markieren.'>" . Icon::$iconCheck . "</button>";
 		return $button;
     }
 
     private function addEditButton($key) {
-        $button = "<button class='actionButton' onclick=\"editRow('$key', this)\" title='Bearbeiten'>" . Icon::$iconEdit . "</button>";
+        $button = "<button class='p-1 mr-1 actionButton' onclick=\"editRow('$key', this)\" title='Bearbeiten'>" . Icon::$iconEdit . "</button>";
 		return $button;
     }
 
     private function addDeleteButton($key) {
-		$button = "<button class='actionButton' onclick=\"deleteRow('$key', '$this->type', this)\" title='Löschen'>" . Icon::$iconDelete . "</button>";
+		$button = "<button class='p-1 mr-1 actionButton' onclick=\"deleteRow('$key', '$this->type', this)\" title='Löschen'>" . Icon::$iconDelete . "</button>";
 		return $button;
 	}
 	
@@ -555,7 +555,7 @@ class Table {
 				$showColumnName = $entry["ALT"];
 			}
 
-			$table_header .= "<th class='tableHead' onclick='sortTableNew(event)'>" . $showColumnName . " <span class=\"sortIcon\">" . Icon::$iconSortUndirected . "</span></th>";
+			$table_header .= "<th class='tableHead whitespace-nowrap' onclick='sortTableNew(event)'>" . $showColumnName . " <span class=\"sortIcon\">" . Icon::$iconSortUndirected . "</span></th>";
 		}
 
 		return $table_header . "</tr>";
