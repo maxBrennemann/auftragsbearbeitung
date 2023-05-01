@@ -1,10 +1,11 @@
 import click_textGeneration from "./sticker/textGeneration.js";
 import {loadTags, showTaggroupManager, addTag} from "./sticker/tagManager.js";
 import ProductConnector from "./sticker/productConnector.js";
-import {initSVG, moveInit} from "./sticker/imageManager.js";
+import {initSVG, moveInit, click_makeColorable} from "./sticker/imageManager.js";
 import { readSizeTable } from "./sticker/sizeTable.js";
 
 const fnNames = {};
+fnNames.click_makeColorable = click_makeColorable;
 const mainVariables = {
     productConnect: [],
     pending: false,

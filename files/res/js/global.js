@@ -677,8 +677,8 @@ FileUploader.prototype.upload = function() {
 		ajax.onreadystatechange = function() {
 			if(this.readyState == 4 && this.status == 200) {
 				try {
-					let uploadJson = JSON.parse(this.responseText);
-					insertNewlyUploadedImages(uploadJson); /* TODO: callback function als Parameter übergeben, akutell hardcoded, ruft function in sticker.js auf */
+					//let uploadJson = JSON.parse(this.responseText);
+					//insertNewlyUploadedImages(uploadJson); /* TODO: callback function als Parameter übergeben, akutell hardcoded, ruft function in sticker.js auf */
 				} catch(e) {
 					document.getElementById("showFilePrev").innerHTML = this.responseText;
 					console.log(e);
