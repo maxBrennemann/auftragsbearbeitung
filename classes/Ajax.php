@@ -1327,12 +1327,6 @@ class Ajax {
 					"errorList" => $errorList,
 				]);
 			break;
-			case "exportFacebook":
-				require_once('classes/project/modules/sticker/exports/ExportFacebook.php');
-
-				$id = (int) $_POST["id"];
-				ExportFacebook::addProduct($id);
-			break;
 			case "showSearch":
 				$id = (int) $_POST["id"];
 				$type = $_POST["type"];

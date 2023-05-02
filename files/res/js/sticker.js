@@ -11,7 +11,7 @@ const mainVariables = {
     pending: false,
 };
 
-/* TODO: besseres variable maangement */
+/* TODO: besseres variable management */
 window.mainVariables = mainVariables;
 
 function initSticker() {
@@ -26,6 +26,7 @@ function initSticker() {
 
         document.title = "b-schriftung - Motiv " + mainVariables.motivId.innerHTML + " " + document.getElementById("name").innerHTML;
 
+        /* from sizeTable.js */
         readSizeTable();
     }
 

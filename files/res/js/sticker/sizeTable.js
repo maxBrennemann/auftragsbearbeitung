@@ -275,6 +275,121 @@ function initSizeTable() {
     price1.addEventListener("click", changePriceclass, false);
     const price2 = document.getElementById("price2");
     price2.addEventListener("click", changePriceclass, false);
+
+    const tbl = document.querySelector("[data-type='module_sticker_sizes']");
+    const test = new SizeTable(tbl);
+}
+
+class SizeTable {
+
+    constructor(tbl) {
+        this.table = tbl;
+        this.sizeTableRows = [];
+        this.parseTable();
+    }
+
+    parseTable() {
+        let rows = this.table.rows;
+        rows = Array.from(rows);
+        rows.shift();
+        rows.forEach(row => {
+            const parsedRow = new SizeTableRow(row);
+            this.sizeTableRows.push(parsedRow)
+        }, this);
+    }
+
+    add() {
+
+    }
+
+    delete() {
+
+    }
+
+    reset() {
+        
+    }
+
+    update() {
+
+    }
+
+}
+
+/**
+ * extracts the data of each row,
+ * converts the values into cents and millimeters,
+ * update functions to change the values when a value is changed
+ */
+class SizeTableRow {
+
+    constructor(row) {
+        this.row = row;
+        this.id = parseInt(row.children[0]);
+        this.width = parseInt(row.children[1]) * 10;
+        this.height = parseInt(row.children[2]) * 10;
+        this.price = this.parsePrice(row.children[3]);
+        this.purchasePrice = this.parsePrice(row.children[4]);
+
+        this.addListeners();
+    }
+
+    formatCentimeters(value) {
+        let cm = (value / 10).toFixed(1);
+        cm = cm.toString(cm);
+        cm = cm.replace(".", ",");
+        return cm + "cm";
+    }
+
+    setNewWidth(ratio) {
+        const newWidth = this.height * ratio;
+        this.width = parseInt(newWidth);
+        const cm = this.formatCentimeters(this.width);
+        this.row[1].innerHTML = cm;
+    }
+
+    setNewPrice() {
+
+    }
+
+    setNewPurchasePrice() {
+
+    }
+
+    parsePrice(el) {
+        const value = el.innerHTML;
+        const euro = value.split(",")[0];
+        const cent = value.split(",")[1];
+
+        return parseInt(euro) * 100 + parseInt(cent);
+    }
+
+    addListeners() {
+        const height = this.row.children[2];
+        const price = this.row.children[3];
+
+        const inputHeight = this.#createInput(height);
+        const inputPrice = this.#createInput(price);
+
+        inputHeight.addEventListener("change", fn);
+        inputHeight.addEventListener("input", fn);
+
+        inputPrice.addEventListener("change", fn);
+        inputPrice.addEventListener("input", fn);
+    }
+
+    #createInput(node) {
+        const input = document.createElement("input");
+        input.value = node.innerHTML;
+        input.classList.add("inputHeight");
+        input.dataset.id = this.id;
+
+        node.innerHTML = "";
+        node.appendChild(input);
+
+        return input;
+    }
+
 }
 
 if (document.readyState !== 'loading' ) {
