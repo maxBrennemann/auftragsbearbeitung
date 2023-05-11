@@ -15,6 +15,10 @@ function deleteRow(key, table, reference) {
     }, true).then(response => {
         console.log(response);
         var row = reference.parentNode.parentNode;
+
+        /* delete row from SizeTable */
+        sizeTable.delete(reference);
+
         row.parentNode.removeChild(row);
     });
 }
@@ -168,10 +172,12 @@ async function changePriceclass(e) {
             infoSaveSuccessfull();
         }
     });
+
+    sizeTable.setDifficulty(newPrice);
 }
 
 export function readSizeTable() {
-    var table = document.querySelector("[data-type='module_sticker_sizes']").children[0].children;
+    /*var table = document.querySelector("[data-type='module_sticker_sizes']").children[0].children;
 
     for (let i = 1; i < table.length; i++) {
         var inputSize = createInput(table[i].children[2], i - 1);
@@ -182,7 +188,7 @@ export function readSizeTable() {
 
         var inputPrice = createInput(table[i].children[3], i - 1);
         inputPrice.addEventListener("input", changePrice, false);
-    }
+    }*/
 }
 
 function createInput(tableField, id) {
@@ -263,21 +269,21 @@ function tableUpdateCallback() {
         r: "getSizeTable",
     }, true).then(response => {
         document.getElementById("sizeTableWrapper").innerHTML = response;
-        sizes = [];
-        readSizeTable();
+        initSizeTable();
     });
 }
 
 window["tableUpdateCallback"] = tableUpdateCallback;
+var sizeTable;
 
 function initSizeTable() {
+    const tbl = document.querySelector("[data-type='module_sticker_sizes']");
+    sizeTable = new SizeTable(tbl);
+
     const price1 = document.getElementById("price1");
     price1.addEventListener("click", changePriceclass, false);
     const price2 = document.getElementById("price2");
     price2.addEventListener("click", changePriceclass, false);
-
-    const tbl = document.querySelector("[data-type='module_sticker_sizes']");
-    const test = new SizeTable(tbl);
 }
 
 class SizeTable {
@@ -285,7 +291,16 @@ class SizeTable {
     constructor(tbl) {
         this.table = tbl;
         this.sizeTableRows = [];
+        this.ratio = 0;
+
+        this.difficulty = this.getInitDifficulty();
         this.parseTable();
+        this.addListeners()
+    }
+
+    addListeners() {
+        const addNewLineBtn = document.getElementById("sizeTableWrapper").querySelector(".addToTable");
+        addNewLineBtn.addEventListener("click", this.add.bind(this));
     }
 
     parseTable() {
@@ -293,25 +308,83 @@ class SizeTable {
         rows = Array.from(rows);
         rows.shift();
         rows.forEach(row => {
-            const parsedRow = new SizeTableRow(row);
+            const parsedRow = new SizeTableRow(row, this);
             this.sizeTableRows.push(parsedRow)
         }, this);
     }
 
-    add() {
-
+    iterateAll(ratio, noNewHeight) {
+        this.ratio = ratio;
+        console.log(ratio);
+        this.sizeTableRows.forEach(row => {
+            if (row != noNewHeight) {
+                row.setNewHeight(ratio);
+            }
+            row.setNewPrice();
+            row.setNewPurchasePrice();
+        });
     }
 
-    delete() {
+    getInitDifficulty() {
+        const el = document.getElementById("price1");
+        if (el.checked) {
+            return 0;
+        }
+        return 1;
+    }
 
+    setDifficulty(diff) {
+        this.difficulty = diff;
+    }
+
+    add() {
+        const lastChild = this.table.lastChild;
+        lastChild.children[2].contenteditable = false;
+        lastChild.children[4].contenteditable = false;
+        // TODO: implement 
+    }
+
+    delete(ref) {
+        var index = this.sizeTableRows.indexOf(ref);
+        if (index > -1) {
+            arr.splice(index, 1);
+        }
+    }
+
+    generatePreview() {
+        this.text = "<br><p>Folie konturgeschnitten, ohne Hintergrund</p>";
+        this.sizeTableRows.forEach(row => {
+            this.text += "<p class=\"breiten\">" + row.formatCentimeters(row.width / 10) + " <span>x " + row.formatCentimeters(row.height / 10) + "</span></p>";
+        });
+        document.getElementById("previewSizeText").innerHTML = this.text;
     }
 
     reset() {
         
     }
 
-    update() {
+    sendToServer() {
+        const data = {};
+        data.sizes = {};
+        let count = 0;
+        this.sizeTableRows.forEach(row => {
+            const rowData = {
+                width: row.width,
+                height: row.height,
+                price: row.price
+            };
+            data.sizes[count] = rowData;
+            count++;
+        });
 
+        ajax.post({
+            sizes: JSON.stringify(data),
+            id: mainVariables.motivId.innerHTML,
+            text: this.text,
+            r: "setAufkleberGroessen",
+        }, true).then(response => {
+            console.log(response);
+        });
     }
 
 }
@@ -323,37 +396,67 @@ class SizeTable {
  */
 class SizeTableRow {
 
-    constructor(row) {
+    constructor(row, parent) {
         this.row = row;
-        this.id = parseInt(row.children[0]);
-        this.width = parseInt(row.children[1]) * 10;
-        this.height = parseInt(row.children[2]) * 10;
+        this.id = parseInt(row.children[0].innerHTML);
+        this.width = parseFloat(row.children[1].innerHTML) * 10;
+        this.height = parseFloat(row.children[2].innerHTML) * 10;
         this.price = this.parsePrice(row.children[3]);
         this.purchasePrice = this.parsePrice(row.children[4]);
+
+        this.parent = parent;
 
         this.addListeners();
     }
 
     formatCentimeters(value) {
-        let cm = (value / 10).toFixed(1);
+        let cm = value.toFixed(1);
         cm = cm.toString(cm);
         cm = cm.replace(".", ",");
         return cm + "cm";
     }
 
-    setNewWidth(ratio) {
-        const newWidth = this.height * ratio;
-        this.width = parseInt(newWidth);
-        const cm = this.formatCentimeters(this.width);
-        this.row[1].innerHTML = cm;
+    formatEuro(value) {
+        let euro = value.toFixed(2);
+        euro = euro.toString(euro);
+        euro = euro.replace(".", ",");
+        return euro + " €";
+    }
+
+    setNewHeight(ratio) {
+        const newHeight = this.width * ratio;
+        this.height = parseInt(newHeight);
+        const cm = this.formatCentimeters(this.height / 10);
+        this.inputHeight.value = cm;
     }
 
     setNewPrice() {
+        let base = 0;
 
+        if (this.width >= 1200) {
+            base = 2100;
+        } else if (this.width >= 900) {
+            base = 1950;
+        } else if (this.width >= 600) {
+            base = 1700;
+        } else if (this.width >= 300) {
+            base = 1500;
+        } else {
+            base = 1200;
+        }
+        
+        base = base + 200 * this.parent.difficulty;
+        if (this.height >= 0.5 * this.width) {
+            base += 100;
+        }
+        
+        this.price = base / 100;
+        this.row.children[3].innerHTML = this.formatEuro(this.price);
     }
 
     setNewPurchasePrice() {
-
+        this.purchasePrice = (this.width * this.height) / 100000;
+        this.row.children[4].innerHTML = this.formatEuro(this.purchasePrice);
     }
 
     parsePrice(el) {
@@ -368,14 +471,14 @@ class SizeTableRow {
         const height = this.row.children[2];
         const price = this.row.children[3];
 
-        const inputHeight = this.#createInput(height);
-        const inputPrice = this.#createInput(price);
+        this.inputHeight = this.#createInput(height);
+        this.inputPrice = this.#createInput(price);
 
-        inputHeight.addEventListener("change", fn);
-        inputHeight.addEventListener("input", fn);
+        this.inputHeight.addEventListener("input", this.updateHeight.bind(this));
+        this.inputHeight.addEventListener("change", this.setHeight.bind(this));
 
-        inputPrice.addEventListener("change", fn);
-        inputPrice.addEventListener("input", fn);
+        this.inputPrice.addEventListener("change", this.updatePrice.bind(this));
+        this.inputPrice.addEventListener("input", this.setPrice.bind(this));
     }
 
     #createInput(node) {
@@ -388,6 +491,35 @@ class SizeTableRow {
         node.appendChild(input);
 
         return input;
+    }
+
+    updateHeight(e) {
+        let height = e.target.value;
+        height = height.replace(",", ".");
+        this.height = parseFloat(height) * 10;
+
+        const ratio = this.height / this.width;
+        this.parent.iterateAll(ratio, this);
+    }
+
+    setHeight(e) {
+        let height = e.target.value;
+        height = height.replace(",", ".");
+
+        this.height = parseFloat(height);
+        const cm = this.formatCentimeters(this.height);
+        this.inputHeight.value = cm;
+
+        this.parent.generatePreview();
+        this.parent.sendToServer();
+    }
+
+    updatePrice(e) {
+        // TODO: format
+    }
+
+    setPrice(e) {
+        // TODO: send to server
     }
 
 }
