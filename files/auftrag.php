@@ -68,11 +68,6 @@ if (isset($_GET['show'])) {
 $mitarbeiter = DBAccess::selectQuery("SELECT Vorname, Nachname, id FROM mitarbeiter");
 $colors = DBAccess::selectQuery("SELECT Farbe, Bezeichnung, Hersteller, Farbwert, id AS Nummer FROM color");
 
-$path = 'files/res/js/';
-$files = scandir($path);
-Protocoll::prettyPrint($files);
-
-
 if ($auftragsId == -1): ?>
 	<style>
 		main {
