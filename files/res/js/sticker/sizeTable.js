@@ -485,6 +485,7 @@ class SizeTableRow {
         const input = document.createElement("input");
         input.value = node.innerHTML;
         input.classList.add("inputHeight");
+        input.classList.add("w-24");
         input.dataset.id = this.id;
 
         node.innerHTML = "";

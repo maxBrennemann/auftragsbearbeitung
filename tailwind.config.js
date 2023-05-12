@@ -4,6 +4,7 @@ module.exports = {
   content: [
     "./files/*.{html,js,php}",
     "./files/res/js/*.{html,js,php}",
+    "./files/res/js/sticker/*.{html,js,php}",
     "./classes/project/**/*.{html,js,php}",
     "upgrade.php",
   ],

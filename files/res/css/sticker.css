@@ -137,7 +137,6 @@ input:checked + .slider:before {
 
 .inputHeight {
     border: none;
-    width: 50px;
     margin: inherit;
     background: inherit;
     font-size: inherit;
