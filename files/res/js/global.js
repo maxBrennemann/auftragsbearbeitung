@@ -408,7 +408,8 @@ var AjaxCall = function(param, ajaxType, url) {
 	} else if (typeof param === 'object') {
 		let temp = "";
 		for (let key in param) {
-			temp += key + "=" + param[key] + "&";
+			let parameterEncoded = encodeURIComponent(param[key]);
+			temp += key + "=" + parameterEncoded + "&";
 		}
 
 		this.paramString = temp.slice(0, -1);// encodeURIComponent(temp.slice(0, -1));
@@ -469,7 +470,7 @@ const ajax = {
     async post(data, noJSON = false) {
         data.getReason = data.r;
         const param = Object.keys(data).map(key => {
-            return `${key}=${data[key]}`;
+            return `${key}=${encodeURIComponent(data[key])}`;
         });
         let response = await makeAsyncCall("POST", param.join("&"), "").then(result => {
             return result;
