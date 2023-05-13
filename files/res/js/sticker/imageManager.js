@@ -1,4 +1,4 @@
-const mainVariables = window.mainVariables;
+const motivId = document.getElementById("motivId").innerHTML;
 
 /* drag and drop handler */
 function itemDropHandler(e, imageCategory) {
@@ -132,7 +132,7 @@ function uploadFileForSticker(files, imageCategory) {
     /* set upload variable to be recognized by the backend */
     formData.set("upload", "motiv");
     formData.set("motivname", "");
-    formData.set("motivNumber", mainVariables.motivId.innerHTML);
+    formData.set("motivNumber", motivId);
     formData.set("imageCategory", imageCategory);
 
 	const uploader = new Promise((resolve, reject) => {
@@ -269,7 +269,7 @@ function adjustSVG() {
 
 export function click_makeColorable() {
     ajax.post({
-        id: mainVariables.motivId.innerHTML,
+        id: motivId,
         r: "makeSVGColorable"
     }).then(r => {
         const svgContainer = document.getElementById("svgContainer");
