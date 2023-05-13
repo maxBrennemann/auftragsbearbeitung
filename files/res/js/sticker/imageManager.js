@@ -1,3 +1,5 @@
+const mainVariables = window.mainVariables;
+
 /* drag and drop handler */
 function itemDropHandler(e, imageCategory) {
 	e.preventDefault();
