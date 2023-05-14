@@ -1,3 +1,7 @@
+const textGenerationData = {
+    currentTextStyleNode: null,
+};
+
 export function click_textGeneration(e) {
     const title = document.getElementById("name").value;
     const type = e.currentTarget.dataset.type;
@@ -23,12 +27,29 @@ export function click_showTextSettings(e) {
         const template = r.template;
         const div = document.createElement("div");
         div.innerHTML = template;
-
         document.body.appendChild(div);
+
+        const textOptions = div.querySelectorAll("dt");
+        Array.from(textOptions).forEach(dt => {
+            dt.addEventListener("click", selectTextOption);
+        });
 
         /* adjust div */
         div.classList.add("centeredDiv");
         centerAbsoluteElement(div);
         addActionButtonForDiv(div, "hide");
     });
+}
+
+function selectTextOption(e) {
+    const target = e.currentTarget;
+
+    if (textGenerationData.currentTextStyleNode != null) {
+        textGenerationData.currentTextStyleNode.classList.remove("bg-indigo-300");
+        textGenerationData.currentTextStyleNode.classList.add("bg-slate-100");
+    }
+
+    target.classList.add("bg-indigo-300");
+    target.classList.remove("bg-slate-100");
+    textGenerationData.currentTextStyleNode = target;
 }

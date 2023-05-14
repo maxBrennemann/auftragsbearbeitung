@@ -1,6 +1,6 @@
 <div class="mt-2">
-    <div>
-        <p>Alle Texte</p>
+    <div class="ml-1">
+        <p class="font-semibold">Alle Texte</p>
         <?php foreach($texts as $text): ?>
             <div>
                 <p>Erstellt am <?=$text["creationDate"]?> mit <textarea readonly><?=$text["additionalQuery"]?></textarea></p>
@@ -9,18 +9,18 @@
             </div>
         <?php endforeach; ?>
     </div>
-    <div>
-        <p>Neuen Text erstellen</p>
+    <div class="ml-1">
+        <p class="font-semibold">Neuen Text erstellen</p>
         <div>
             <p>Art/ Stilrichtung des Textes</p>
-            <dt>Lustig</dt>
-            <dt>Ernst</dt>
-            <dt>Informativ</dt>
-            <dt>Für Gewerbetreibende</dt>
-            <dt>Für Privat</dt>
-            <dt>Hobbyaufkleber</dt>
-            <dt>Traurig</dt>
-            <dt>Bayrisch</dt>
+            <dt class="px-2 py-2 m-2 bg-slate-100 border-none inline rounded-lg">Lustig</dt>
+            <dt class="px-2 py-2 m-2 bg-slate-100 border-none inline rounded-lg">Ernst</dt>
+            <dt class="px-2 py-2 m-2 bg-slate-100 border-none inline rounded-lg">Informativ</dt>
+            <dt class="px-2 py-2 m-2 bg-slate-100 border-none inline rounded-lg">Für Gewerbetreibende</dt>
+            <dt class="px-2 py-2 m-2 bg-slate-100 border-none inline rounded-lg">Für Privat</dt>
+            <dt class="px-2 py-2 m-2 bg-slate-100 border-none inline rounded-lg">Hobbyaufkleber</dt>
+            <dt class="px-2 py-2 m-2 bg-slate-100 border-none inline rounded-lg">Traurig</dt>
+            <dt class="px-2 py-2 m-2 bg-slate-100 border-none inline rounded-lg">Bayrisch</dt>
         </div>
         <div class="mt-2">
             <p>Zusätzliche Anweisungen</p>
