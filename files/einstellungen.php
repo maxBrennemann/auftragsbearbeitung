@@ -113,4 +113,5 @@ $_SESSION[$tableOrderType->getTableKey()] = serialize($tableOrderType);
 <section class="defCont">
     <h2>Dateien</h2>
     <button id="clearFiles">Dateien aufräumen</button>
+    <button id="adjustFiles">Dateinamen anpassen</button>
 </section>

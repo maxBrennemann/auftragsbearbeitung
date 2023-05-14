@@ -30,6 +30,14 @@ function initEventListeners() {
         }, "POST", window.location.href);
         send.makeAjaxCall(response => {});
     });
+
+    const adjustFiles = document.getElementById("adjustFiles");
+    adjustFiles.addEventListener("click", () => {
+        const send = new AjaxCall({
+            getReason: "adjustFiles",
+        }, "POST", window.location.href);
+        send.makeAjaxCall(response => {});
+    });
 }
 
 function setCustomColor(value) {

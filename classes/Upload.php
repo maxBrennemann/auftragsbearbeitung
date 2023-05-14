@@ -127,7 +127,12 @@ class Upload {
         /* files is the name of the file input element in frontend */
 
         for ($i = 0; $i < $total; $i++) {
-            $filename = $datetime->getTimestamp() . basename($_FILES["files"]["name"][$i]);
+            /* remove " " and other special characters from filenames */
+            $filename = str_replace(" ", "", basename($_FILES["files"]["name"][$i]));
+            $filename = str_replace("&", "", basename($_FILES["files"]["name"][$i]));
+            $filename = str_replace("@", "", basename($_FILES["files"]["name"][$i]));
+            $filename = $datetime->getTimestamp() . $filename;
+
             $originalname = basename($_FILES["files"]["name"][$i]);
             $filetype = pathinfo($_FILES["files"]["name"][$i], PATHINFO_EXTENSION);
             $date = date("Y-m-d");
@@ -228,7 +233,28 @@ class Upload {
                 unlink($folderPath . "/" . $file);
             }
         }
-    }      
+    }
+
+    public static function adjustFileNames($folderPath = "upload") {
+        $query = "SELECT id, `dateiname` FROM dateien";
+        $result = DBAccess::selectQuery($query);
+       
+        foreach ($result as $row) {
+            $filename = $row["dateiname"];
+            $dateiId = $row["id"];
+
+            $adjustedFilename = str_replace(" ", "", $filename);
+            $adjustedFilename = str_replace("&", "", $adjustedFilename);
+            $adjustedFilename = str_replace("@", "", $adjustedFilename);
+
+            if(rename($folderPath . "/" . $filename, $folderPath . "/" . $adjustedFilename)) {
+                DBAccess::updateQuery("UPDATE dateien SET dateiname = :adjustedFilename WHERE id = :id", [
+                    "adjustedFilename" => $adjustedFilename,
+                    "id" => $dateiId,
+                ]);
+            }
+        }
+    }
 
 }
 

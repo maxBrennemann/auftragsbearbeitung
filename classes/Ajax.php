@@ -1313,6 +1313,10 @@ class Ajax {
 				require_once('classes/Upload.php');
 				Upload::deleteUnusedFiles();
 			break;
+			case "adjustFiles":
+				require_once('classes/Upload.php');
+				Upload::adjustFileNames();
+			break;
 			case "createFbExport":
 				require_once('classes/project/modules/sticker/exports/ExportFacebook.php');
 
