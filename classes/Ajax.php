@@ -1444,8 +1444,19 @@ class Ajax {
 				$connector->getTextSuggestion($title, $type, $text, "", "lustig");
 			break;
 			case "showGTPOptions":
+				$stickerId = $_POST["id"];
+				$stickerType = $_POST["type"];
+
+				$query = "SELECT id, chatgptResponse, creationDate, textType, additionalQuery, textStyle FROM module_sticker_chatgpt WHERE idSticker = :stickerId AND stickerType = :stickerType;";
+				$result = DBAccess::selectQuery($query, [
+					"stickerId" => $stickerId,
+					"stickerType" => $stickerType
+				]);
+
 				ob_start();
-				insertTemplate('classes/project/modules/sticker/views/chatGPTOptionsView.php');
+				insertTemplate('classes/project/modules/sticker/views/chatGPTOptionsView.php', [
+					"texts" => $result,
+				]);
 				$content = ob_get_clean();
 				echo json_encode([
 					"template" => $content,

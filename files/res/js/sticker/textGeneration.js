@@ -16,6 +16,8 @@ export function click_textGeneration(e) {
 export function click_showTextSettings(e) {
     // TODO: genrate template, show settings and show all texts
     ajax.post({
+        id: mainVariables.motivId.innerHTML,
+        type: "",
         r: "showGTPOptions",
     }).then(r => {
         const template = r.template;
