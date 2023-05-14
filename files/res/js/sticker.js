@@ -1,11 +1,13 @@
-import click_textGeneration from "./sticker/textGeneration.js";
-import {loadTags, showTaggroupManager, addTag} from "./sticker/tagManager.js";
+import { click_textGeneration, click_showTextSettings } from "./sticker/textGeneration.js";
+import { loadTags, showTaggroupManager, addTag } from "./sticker/tagManager.js";
 import ProductConnector from "./sticker/productConnector.js";
-import {initSVG, moveInit, click_makeColorable} from "./sticker/imageManager.js";
+import { initSVG, moveInit, click_makeColorable } from "./sticker/imageManager.js";
 import { readSizeTable } from "./sticker/sizeTable.js";
 
 const fnNames = {};
 fnNames.click_makeColorable = click_makeColorable;
+fnNames.click_textGeneration = click_textGeneration;
+fnNames.click_showTextSettings = click_showTextSettings;
 const mainVariables = {
     productConnect: [],
     pending: false,

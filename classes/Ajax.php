@@ -1443,6 +1443,14 @@ class Ajax {
 				$connector = new ChatGPTConnection($id);
 				$connector->getTextSuggestion($title, $type, $text, "", "lustig");
 			break;
+			case "showGTPOptions":
+				ob_start();
+				insertTemplate('classes/project/modules/sticker/views/chatGPTOptionsView.php');
+				$content = ob_get_clean();
+				echo json_encode([
+					"template" => $content,
+				]);
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);

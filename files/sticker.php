@@ -25,16 +25,6 @@ if (isset($_GET['id'])) {
 if ($id == 0): ?>
     <a href="<?=Link::getPageLink("sticker-overview")?>">Zur Motivübersicht</a>
 <?php else: ?>
-
-<?php
-/*
-require_once('classes/project/modules/sticker/exports/ExportFacebook.php');
-
-$export = new ExportFacebook();
-Protocoll::prettyPrint($export->getSpecificProductExport($id));
-*/
-?>
-
 <script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
 <?=$stickerCollection->checkProductErrorStatus() ? $stickerCollection->getErrorMessage() : ""?>
 <div class="defCont cont1">
@@ -70,24 +60,24 @@ Protocoll::prettyPrint($export->getSpecificProductExport($id));
     <section class="defCont">
         <p class="pHeading">Aufkleber
             <input class="titleInput invisible" value="<?=$stickerCollection->getAufkleber()->getAltTitle()?>" data-write="true" data-type="aufkleber" data-fun="changeAltTitle">
-            <button title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="aufkleber">
+            <button class="mr-1 p-1 border-none bg-slate-50" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="aufkleber">
                 <?=Icon::$iconEditText?>
             </button>
-            <button class="infoButton" data-info="8">i</button>
             <?php if ($stickerCollection->getAufkleber()->getActiveStatus()): ?>
-                <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
+                <button class="mr-1 p-1 border-none bg-slate-50" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
                 <?=Icon::$iconVisible?>
             </button>
             <?php else: ?>
-                <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
+                <button class="mr-1 p-1 border-none bg-slate-50" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
                 <?=Icon::$iconInvisible?>
             <?php endif; ?> 
-            <button title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct" data-type="aufkleber">
+            <button class="mr-1 p-1 border-none bg-slate-50" title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct" data-type="aufkleber">
                 <?=Icon::$iconConnectTo?>
             </button>
-            <button title="Kategorien auswählen" data-binding="true" data-fun="chooseCategory">
+            <button class="mr-1 p-1 border-none bg-slate-50" title="Kategorien auswählen" data-binding="true" data-fun="chooseCategory">
                 <?=Icon::$iconCategory?>
             </button>
+            <button class="infoButton" data-info="8">i</button>
         </p>
         <div>
             <span>Aufkleber Plott</span>
@@ -125,12 +115,16 @@ Protocoll::prettyPrint($export->getSpecificProductExport($id));
                 </label>
             </span>
         </div>
-        <div>
-            <h4>Kurzbeschreibung</h4>
-            <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "aufkleber", "text" => "short", "gpt" => $chatGPTConnection])?>
+        <div class="mt-2">
+            <div>
+                <h4>Kurzbeschreibung</h4>
+                <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "aufkleber", "text" => "short", "gpt" => $chatGPTConnection])?>
+            </div>
             <textarea class="data-input" data-fun="productDescription" data-target="aufkleber" data-type="short" data-write="true"><?=$stickerCollection->getAufkleber()->getDescriptionShort()?></textarea>
-            <h4>Beschreibung</h4>
-            <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "aufkleber", "text" => "long", "gpt" => $chatGPTConnection])?>
+            <div>
+                <h4>Beschreibung</h4>
+                <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "aufkleber", "text" => "long", "gpt" => $chatGPTConnection])?>
+            </div>
             <textarea class="data-input" data-fun="productDescription" data-target="aufkleber" data-type= "long" data-write="true"><?=$stickerCollection->getAufkleber()->getDescription()?></textarea>
         </div>
         <div class="shopStatus">
@@ -150,24 +144,24 @@ Protocoll::prettyPrint($export->getSpecificProductExport($id));
     <section class="defCont">
         <p class="pHeading">Wandtattoo
             <input class="titleInput invisible" value="<?=$stickerCollection->getWandtattoo()->getAltTitle()?>?>" data-write="true" data-type="wandtattoo" data-fun="changeAltTitle">
-            <button title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="wandtattoo">
+            <button class="mr-1 p-1 border-none bg-slate-50" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="wandtattoo">
                 <?=Icon::$iconEditText?>
             </button>
-            <button class="infoButton" data-info="9">i</button>
             <?php if ($stickerCollection->getWandtattoo()->getActiveStatus()): ?>
-                <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
+                <button class="mr-1 p-1 border-none bg-slate-50" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
                 <?=Icon::$iconVisible?>
             </button>
             <?php else: ?>
-                <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
+                <button class="mr-1 p-1 border-none bg-slate-50" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
                 <?=Icon::$iconInvisible?>
             <?php endif; ?>
-            <button title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct" data-type="wandtattoo">
+            <button class="mr-1 p-1 border-none bg-slate-50" title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct" data-type="wandtattoo">
                 <?=Icon::$iconConnectTo?>
             </button>
-            <button title="Kategorien auswählen" data-binding="true" data-fun="chooseCategory">
+            <button class="mr-1 p-1 border-none bg-slate-50" title="Kategorien auswählen" data-binding="true" data-fun="chooseCategory">
                 <?=Icon::$iconCategory?>
             </button>
+            <button class="infoButton" data-info="9">i</button>
         </p>
         <div>
             <span>Wandtattoo</span>
@@ -178,12 +172,16 @@ Protocoll::prettyPrint($export->getSpecificProductExport($id));
                 </label>
             </span>
         </div>
-        <div>
-            <h4>Kurzbeschreibung</h4>
-            <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "wandtattoo", "text" => "short", "gpt" => $chatGPTConnection])?>
+        <div class="mt-2">
+            <div>
+                <h4>Kurzbeschreibung</h4>
+                <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "wandtattoo", "text" => "short", "gpt" => $chatGPTConnection])?>
+            </div>
             <textarea class="data-input" data-fun="" data-target="wandtattoo" data-type="short" data-write="true"><?=$stickerCollection->getWandtattoo()->getDescriptionShort()?></textarea>
-            <h4>Beschreibung</h4>
-            <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "wandtattoo", "text" => "long", "gpt" => $chatGPTConnection])?>
+            <div>
+                <h4>Beschreibung</h4>
+                <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "wandtattoo", "text" => "long", "gpt" => $chatGPTConnection])?>
+            </div>
             <textarea class="data-input" data-fun="productDescription" data-target="wandtattoo" data-type="long" data-write="true"><?=$stickerCollection->getWandtattoo()->getDescription()?></textarea>
         </div>
         <div class="shopStatus">
@@ -203,24 +201,24 @@ Protocoll::prettyPrint($export->getSpecificProductExport($id));
     <section class="defCont">
         <p class="pHeading">Textil
             <input class="titleInput invisible" value="<?=$stickerCollection->getTextil()->getAltTitle()?>" data-write="true" data-type="textil" data-fun="changeAltTitle">
-            <button title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="textil">
+            <button class="mr-1 p-1 border-none bg-slate-50" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="textil">
                 <?=Icon::$iconEditText?>
             </button>
-            <button class="infoButton" data-info="10">i</button>
             <?php if ($stickerCollection->getTextil()->getActiveStatus()): ?>
-                <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
+                <button class="mr-1 p-1 border-none bg-slate-50" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
                 <?=Icon::$iconVisible?>
             </button>
             <?php else: ?>
-                <button title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
+                <button class="mr-1 p-1 border-none bg-slate-50" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
                 <?=Icon::$iconInvisible?>
             <?php endif; ?> 
-            <button title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct" data-type="textil">
+            <button class="mr-1 p-1 border-none bg-slate-50" title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct" data-type="textil">
                 <?=Icon::$iconConnectTo?>
             </button>
-            <button title="Kategorien auswählen" data-binding="true" data-fun="chooseCategory">
+            <button class="mr-1 p-1 border-none bg-slate-50" title="Kategorien auswählen" data-binding="true" data-fun="chooseCategory">
                 <?=Icon::$iconCategory?>
             </button>
+            <button class="infoButton" data-info="10">i</button>
         </p>
         <div>
             <span>Textil</span>
@@ -235,7 +233,7 @@ Protocoll::prettyPrint($export->getSpecificProductExport($id));
             <span>Einfärbbar</span>
             <span class="right">
                 <label class="switch">
-                    <input type="checkbox" id="textil" <?=$stickerCollection->getTextil()->getIsColorable() == 1 ? "checked" : ""?> data-variable="true">
+                    <input type="checkbox" <?=$stickerCollection->getTextil()->getIsColorable() == 1 ? "checked" : ""?> data-variable="true">
                     <span class="slider round" id="makeColorable" data-binding="true"></span>
                 </label>
             </span>
@@ -262,12 +260,16 @@ Protocoll::prettyPrint($export->getSpecificProductExport($id));
             </span>
             <span style="margin-left: 7px" id="showPrice"><?=$stickerCollection->getTextil()->getPriceTextilFormatted()?></span>
         </div>
-        <div>
-            <h4>Kurzbeschreibung</h4>
-            <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "textil", "text" => "short", "gpt" => $chatGPTConnection])?>
+        <div class="mt-2">
+            <div>
+                <h4>Kurzbeschreibung</h4>
+                <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "textil", "text" => "short", "gpt" => $chatGPTConnection])?>
+            </div>
             <textarea class="data-input" data-fun="productDescription" data-target="textil" data-type="short" data-write="true"><?=$stickerCollection->getTextil()->getDescriptionShort()?></textarea>
-            <h4>Beschreibung</h4>
-            <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "textil", "text" => "long", "gpt" => $chatGPTConnection])?>
+            <div>
+                <h4>Beschreibung</h4>
+                <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "textil", "text" => "long", "gpt" => $chatGPTConnection])?>
+            </div>
             <textarea class="data-input" data-fun="productDescription" data-target="textil" data-type="long" data-write="true"><?=$stickerCollection->getTextil()->getDescription()?></textarea>
         </div>
         <div class="shopStatus">
