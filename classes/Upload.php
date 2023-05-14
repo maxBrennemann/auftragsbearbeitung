@@ -129,8 +129,8 @@ class Upload {
         for ($i = 0; $i < $total; $i++) {
             /* remove " " and other special characters from filenames */
             $filename = str_replace(" ", "", basename($_FILES["files"]["name"][$i]));
-            $filename = str_replace("&", "", basename($_FILES["files"]["name"][$i]));
-            $filename = str_replace("@", "", basename($_FILES["files"]["name"][$i]));
+            $filename = str_replace("&", "", $filename);
+            $filename = str_replace("@", "", $filename);
             $filename = $datetime->getTimestamp() . $filename;
 
             $originalname = basename($_FILES["files"]["name"][$i]);
