@@ -14,13 +14,17 @@ var FileUploader = function(target) {
 	if (target.nodeName == "FORM") {
 		this.target = target;
 		this.files = document.querySelector(`input[type="file"][form="${this.target.id}"]`);
-		this.files.addEventListener("change", this.preview.bind(this), false);
-		this.fileArrayDragDrop = [];
 
-		this.initHTML();
-		this.initializeDragAndDrop();
-	} else
+		if (this.files != null) {
+			this.files.addEventListener("change", this.preview.bind(this), false);
+			this.fileArrayDragDrop = [];
+	
+			this.initHTML();
+			this.initializeDragAndDrop();
+		}
+	} else {
 		return null;
+	}
 }
 
 FileUploader.prototype.resetUploader = function() {
@@ -184,4 +188,12 @@ FileUploader.prototype.ondropHandler = function(e) {
 
 FileUploader.prototype.ondragHandler = function(e) {
 	e.preventDefault();
+}
+
+if (document.readyState !== 'loading' ) {
+    initializeFileUpload();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        initializeFileUpload();
+    });
 }

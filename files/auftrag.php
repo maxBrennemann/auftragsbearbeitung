@@ -1,4 +1,5 @@
 <script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
+<script src="<?=Link::getResourcesShortLink("classes/fileUploader.js", "js")?>"></script>
 <script src="<?=Link::getResourcesShortLink("print.js", "js")?>"></script>
 <script src="<?=Link::getResourcesShortLink("colorpicker.js", "js")?>"></script>
 <script src="<?=Link::getResourcesShortLink("list.js", "js")?>"></script>
@@ -327,7 +328,7 @@ if ($auftragsId == -1): ?>
 		<div><?=$auftrag->getFahrzeuge();?></div>
 		<br>
 		<form class="fileUploader" data-target="vehicle" name="vehicle" method="post" enctype="multipart/form-data" id="fileVehicle" style="display: none">
-			<input type="file" name="uploadedFile" multiple>
+			<input type="file" name="uploadedFile" multiple form="fileVehicle">
 			<input name="orderid" value="<?=$auftragsId?>" hidden>
 		</form>
 	</div>
@@ -367,7 +368,7 @@ if ($auftragsId == -1): ?>
 		</form>
 		<p>Hier Dateien per Drag&Drop ablegen oder 
 			<label class="uploadWrapper">
-				<input type="file" name="uploadedFile" multiple class="fileUploadBtn" form="auftragUpload">
+				<input type="file" name="uploadedFile" multiple class="fileUploadBtn" form="uploadFilesOrder">
 				hier hochladen
 			</label>
 		</p>
