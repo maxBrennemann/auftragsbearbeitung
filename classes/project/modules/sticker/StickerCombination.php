@@ -23,7 +23,7 @@ class StickerCombination extends PrestashopConnection {
         // TODO: getAttributes, getPurchasingPrices and getPrices implementieren
         $this->attributes = $this->sticker->getAttributes();
         $this->prices = $this->sticker->getPricesMatched();
-        $this->purchasingPrices = $this->sticker->getPurchasingPricesMatched();
+        $this->purchasingPrices = $this->sticker->getPurchasingPricesMatched() ?: [];
 
         $this->arguments = $this->combine($this->attributes);
 
