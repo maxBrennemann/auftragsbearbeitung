@@ -5,6 +5,9 @@
 require_once('classes/project/Table.php');
 require_once('classes/front/CategoryTree.php');
 
+/* get default wage */
+$defaultWage = Envs::get("defaultWage");
+
 $categoryitems = CategoryTree::getOneLayerArray();
 
 $cacheOn = "";
@@ -59,6 +62,10 @@ $_SESSION[$tableOrderType->getTableKey()] = serialize($tableOrderType);
 <section class="defCont">
     <h2>Mitarbeiter festlegen</h2>
     <?php echo (new Table("mitarbeiter"))->getTable(); ?>
+</section>
+<section class="defCont">
+    <h2>Stundenlohn festlegen</h2>
+    <input type="number" id="defaultWage" value="<?=$defaultWage?>">
 </section>
 <section class="defCont">
     <h2>Cache</h2>

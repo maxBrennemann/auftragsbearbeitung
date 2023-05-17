@@ -38,6 +38,15 @@ function initEventListeners() {
         }, "POST", window.location.href);
         send.makeAjaxCall(response => {});
     });
+
+    const setDefaultWage = document.getElementById("defaultWage");
+    setDefaultWage.addEventListener("change", e => {
+        const wage = e.target.value;
+        ajax.post({
+            defaultWage: wage,
+            r: "updateDefaultWage",
+        });
+    });
 }
 
 function setCustomColor(value) {

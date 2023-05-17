@@ -837,6 +837,11 @@ class Ajax {
 				$content = $_POST['content'];
 				DBAccess::insertQuery("INSERT INTO wiki_articles (title, content) VALUES ('$title', '$content')");
 			break;
+			case "updateDefaultWage":
+				$defaultWage = $_POST["defaultWage"];
+				Envs::set("defaultWage", $defaultWage);
+				echo json_encode([]);
+			break;
 			case "getManual":
 				$pageName = $_POST['pageName'];
 				$intent = $_POST['intent'];
