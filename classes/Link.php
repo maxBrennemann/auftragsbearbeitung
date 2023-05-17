@@ -65,6 +65,9 @@ class Link {
 			case "html":
 				$link = $rewriteBase . "files/res/form/" . $resource;
 				break;
+			case "csv":
+				$link = $rewriteBase . "files/generated/fb_export/" . $resource;
+				break;
 			case "upload":
 				$link = $rewriteBase . "upload/" . $resource;
 				break;

@@ -139,7 +139,11 @@ function get_pdf_invoice($pdf) {
 }
 
 function get_static($file) {
-	// TODO: do fb cronjob
+	if ($file == "facebook-product-export") {
+		header("Content-type: text/csv");
+		$file = file_get_contents(Link::getResourcesLink("exportFB_daily.csv", "csv"));
+		echo $file;
+	}
 }
 
 ?>

@@ -150,6 +150,8 @@ if (file_exists($cacheFile) && !(count($_GET) || count($_POST)) && $t && $status
 				break;
 			}
 			
+		} else if ($page == "cron") {
+			Ajax::manageRequests("testDummy", $page);
 		} else if (isLoggedIn()) {
 			showPage($page);
 		} else {
