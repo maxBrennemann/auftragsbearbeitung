@@ -868,17 +868,21 @@ function selectLeistung(e) {
 }
 
 function addColor() {
-    var div = document.getElementById("farbe");
-    div.style.display = "block";
+    const template = document.getElementById("farbe");
+	const div = document.createElement("div"); 
+	div.appendChild(template.content.cloneNode(true));
+    
+    document.body.appendChild(div);
 
     addActionButtonForDiv(div, "hide");
     centerAbsoluteElement(div);
 
-    var c = div.querySelector("canvas");
+    const cp = new Colorpicker(div.querySelector("#cpContainer"));
+    const c = div.querySelector("canvas");
     c.style.margin = "auto";
 
     c.addEventListener("mouseup", function() {
-        var element = document.querySelector("input.colorInput.jscolor");
+        const element = document.querySelector("input.colorInput.jscolor");
         element.value = cp.color.toUpperCase();
         checkHexCode(element);
     }, false);
