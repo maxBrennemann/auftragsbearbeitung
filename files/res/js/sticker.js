@@ -174,32 +174,32 @@ function resizeTitle() {
 }
 
 fnNames.click_textilClick = function() {
-    const statusInfo = new StatusInfo("", "");
+    const infoHandler = new StatusInfoHandler();
+    const infoBox = infoHandler.addInfoBox(StatusInfoHandler.TYPE_ERRORCOPY, "Wird gespeichert");
     ajax.post({
         id: mainVariables.motivId.innerHTML,
         r: "toggleTextil"
     }).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS);
         }
     }).catch(r => {
-        statusInfo.setText(r);
-        statusInfo.showError();
+        infoBox.statusUpdate(StatusInfoHandler.STATUS_FAILURE, "Fehler bei der Übertragung", r);
     });
 }
 
 fnNames.click_wandtattooClick = function() {
-    const statusInfo = new StatusInfo("", "");
+    const infoHandler = new StatusInfoHandler();
+    const infoBox = infoHandler.addInfoBox(StatusInfoHandler.TYPE_ERRORCOPY, "Wird gespeichert");
     ajax.post({
         id: mainVariables.motivId.innerHTML,
         r: "toggleWandtattoo"
     }).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS);
         }
     }).catch(r => {
-        statusInfo.setText(r);
-        statusInfo.showError();
+        infoBox.statusUpdate(StatusInfoHandler.STATUS_FAILURE, "Fehler bei der Übertragung", r);
     });
 }
 
@@ -242,10 +242,10 @@ function transfer(type, text) {
         return;
     }
 
-    let statusInfo = new StatusInfo("", `${text} wird übertragen`);
-    statusInfo.show();
-    mainVariables.pending = true;
+    const infoHandler = new StatusInfoHandler();
+    const infoBox = infoHandler.addInfoBox(StatusInfoHandler.TYPE_LOADER, "Wird gespeichert");
 
+    mainVariables.pending = true;
     console.log(mainVariables.pending);
 
     ajax.post({
@@ -254,10 +254,11 @@ function transfer(type, text) {
         r: "transferProduct",
     }, true).then(r => {
         mainVariables.pending = false;
-        console.log(r);
 
-        statusInfo.statusUpdate(`${text} ist übertragen`);
-        statusInfo.hide();
+        infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS, "Übertragung erfolgreich");
+    }).catch(error => {
+        infoBox.setType(StatusInfoHandler.TYPE_ERRORCOPY);
+        infoBox.statusUpdate(StatusInfoHandler.STATUS_FAILURE, "Übertragung fehlgeschlagen", error);
     });
 }
 

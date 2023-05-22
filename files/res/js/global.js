@@ -484,7 +484,6 @@ const ajax = {
         try {
             json = JSON.parse(response);
         } catch (e) {
-            infoSaveSuccessfull();
             return {};
         }
 
