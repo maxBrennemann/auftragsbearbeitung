@@ -868,14 +868,13 @@ function selectLeistung(e) {
 }
 
 function addColor() {
-    const template = document.getElementById("farbe");
-	const div = document.createElement("div"); 
+    const template = document.getElementById("templateFarbe");
+	const div = document.createElement("div");
+    div.id = "selectColor";
 	div.appendChild(template.content.cloneNode(true));
+    div.classList.add("w-2/3");
     
     document.body.appendChild(div);
-
-    addActionButtonForDiv(div, "hide");
-    centerAbsoluteElement(div);
 
     const cp = new Colorpicker(div.querySelector("#cpContainer"));
     const c = div.querySelector("canvas");
@@ -886,6 +885,9 @@ function addColor() {
         element.value = cp.color.toUpperCase();
         checkHexCode(element);
     }, false);
+
+    addActionButtonForDiv(div, "hide");
+    centerAbsoluteElement(div);
 }
 
 function removeColor(colorId) {
@@ -897,14 +899,6 @@ function removeColor(colorId) {
         //var data = JSON.parse(colorHTML);
         showColors.innerHTML = colorHTML; //data.farben;
     });
-}
-
-/*
- * toggles the colorpicker div
- */
-function toggleCP() {
-    document.getElementById("cpContainer").style.display = "block";
-    centerAbsoluteElement(document.getElementById("farbe"));
 }
 
 /*

@@ -165,10 +165,6 @@ aside {
     margin: 7px;
 }
 
-.colorInput {
-    float: right;
-}
-
 #farbe span {
     display: block;
     margin-top: 7px;
@@ -424,16 +420,6 @@ form[name="showSteps"] {
 
 .notes:hover .notecontent {
     border-radius: 0 0 0 0;
-}
-
-/* css for color input */
-#hexinputspan {
-    position: relative;
-}
-
-#hexinputspan input {
-    position: absolute;
-    right: 0;
 }
 
 #cpContainer {

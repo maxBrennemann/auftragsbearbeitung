@@ -286,7 +286,7 @@ function centerAbsoluteElement(div) {
 	var pageWidth = window.innerWidth;
 	var pageHeight = window.innerHeight;
 
-	var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+	var scrollTop = 0; //document.documentElement.scrollTop || document.body.scrollTop;
 
 	div.style.left = ((pageWidth - divWidth) / 2) + "px";
 	div.style.top = (((pageHeight - divHeight) / 2) + scrollTop) + "px";

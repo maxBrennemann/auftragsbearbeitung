@@ -365,18 +365,17 @@ if ($auftragsId == -1): ?>
 	<div class="liste">
 		<?=$showAttachedLists?>
 	</div>
-	<template id="farbe">
-		<div class="innerDefCont">
-			<span>Farbbezeichnung: <input class="colorInput" type="text" max="32" placeholder="619 verkehrsgrün"></span>
-			<span>Farbtyp: <input class="colorInput" type="text" max="32" placeholder="751C"></span>
-			<span>Hersteller: <input class="colorInput" tyep="text" max="32" placeholder="Oracal"></span>
+	<template id="templateFarbe">
+		<div class="defCont">
+			<span class="block">Farbbezeichnung: <input class="colorInput" type="text" max="32" placeholder="619 verkehrsgrün"></span>
+			<span class="block">Farbtyp: <input class="colorInput" type="text" max="32" placeholder="751C"></span>
+			<span class="block">Hersteller: <input class="colorInput" tyep="text" max="32" placeholder="Oracal"></span>
 			<span id="hexinputspan">Farbe (Hex): <input class="colorInput jscolor" type="text" max="32" onchange="checkHexCode(this);"></span>
 			<button onclick="sendColor();">Hinuzufügen</button>
 			<button onclick="toggleCS();">Vorhandene Farbe auswählen</button>
-			<button onclick="toggleCP();">Farbe über Colorpicker auswählen</button>
 		</div>
-		<div class="innerDefCont" id="cpContainer" style="display: none"></div>
-		<div class="innerDefCont" id="csContainer" style="display: none">
+		<div class="defCont" id="cpContainer"></div>
+		<div class="defCont" id="csContainer" style="display: none">
 			<p>Vorhandene Farben:</p>
 			<?php foreach ($colors as $color): ?>
 				<div class="singleColorContainer" data-colorid=<?=$color['Nummer']?>>
