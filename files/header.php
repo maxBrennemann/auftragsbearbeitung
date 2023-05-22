@@ -114,7 +114,7 @@
 			</li>
 		</ul>
 	</div>
-	<header class="moveToSide sticky p-5">
+	<header class="moveToSide sticky p-3 2xl:p-5">
 		<section class="mx-auto w-4/5 lg:mb-7 mb-3">
 			<h1><?=$pageName?></h1>
 			<aside class="right-1">
@@ -162,6 +162,6 @@
 			</label>
 		</div>
 		<hr class="headerline">
-		<div class="showBreadcrumb"><a href="<?=Link::getPageLink("")?>" id="home_link">Home</a>/<a href="<?=Link::getPageLink($page)?>"><?=$pageName?></a></div>
+		<div class="showBreadcrumb my-1 2xl:my-3"><a href="<?=Link::getPageLink("")?>" id="home_link">Home</a>/<a href="<?=Link::getPageLink($page)?>"><?=$pageName?></a></div>
 	</header>
 	<main class="mt-2 w-4/5">

@@ -303,75 +303,71 @@ function getAddToInvoice() {
     return document.getElementById("addToInvoice").checked;
 }
 
+function addBearbeitungsschritt() {
+    var tableData = document.getElementsByClassName("bearbeitungsschrittInput");
+    var steps = [];
+    for (var i = 0; i < tableData.length; i++) {
+        steps.push(tableData[i].value);
+    }
+
+    if (steps[1] == "") {
+        steps[1] = 0;
+    }
+
+    var el = document.getElementsByName("isAlreadyDone")[0];
+    var radio = el.elements["isDone"];
+    var hide;
+    for (var i = 0; i < radio.length; i++) {
+        if (radio[i].checked) {
+            hide = radio[i].value;
+            break;
+        }
+    }
+    
+    /* 0 = hide, 1 = show */
+    hide = hide == "hide" ? 0 : 1;
+
+    /* check for assigned task */
+    let assigned = document.querySelector('input[name="assignTo"]');
+    let assignedTo = "none";
+    if (assigned.checked == true) {
+        let e = document.getElementById("selectMitarbeiter");
+        assignedTo = e.options[e.selectedIndex].value;
+    }
+
+    /* ajax parameter */
+    let params = {
+        getReason: "insertStep",
+        bez: steps[0],
+        datum: steps[1],
+        auftrag: globalData.auftragsId,
+        hide: hide,
+        prio: steps[2],
+        assignedTo: assignedTo
+    };
+
+    var add = new AjaxCall(params, "POST", window.location.href);
+    add.makeAjaxCall(function (response) {
+        console.log(response);
+        document.getElementById("stepTable").innerHTML = response;
+
+        var tableData = document.getElementsByClassName("bearbeitungsschrittInput");
+        for (var i = 0; i < tableData.length; i++) {
+            tableData[i].value = "";
+        }
+
+        document.getElementById("bearbeitungsschritte").removeChild(document.getElementById("sendStepToServer"));
+        document.getElementById("bearbeitungsschritte").style.display = "none";
+    }.bind(this), false);
+}
+
 /* addes bearbeitungsschritte */
-function addBearbeitungsschritte() {
+function showBearbeitungsschritt() {
     var bearbeitungsschritte = document.getElementById("bearbeitungsschritte");
     bearbeitungsschritte.style.display = "block";
 
-    if (document.getElementById("sendStepToServer") == null) {
-        var btn = document.createElement("button");
-        btn.id = "sendStepToServer";
-        btn.innerHTML = "Hinzufügen";
-        btn.addEventListener("click", function () {
-            var tableData = document.getElementsByClassName("bearbeitungsschrittInput");
-            var steps = [];
-            for (var i = 0; i < tableData.length; i++) {
-                steps.push(tableData[i].value);
-            }
-
-            if (steps[1] == "") {
-                steps[1] = 0;
-            }
-
-            var el = document.getElementsByName("isAlreadyDone")[0];
-            var radio = el.elements["isDone"];
-            var hide;
-            for (var i = 0; i < radio.length; i++) {
-                if (radio[i].checked) {
-                    hide = radio[i].value;
-                    break;
-                }
-            }
-            
-            /* 0 = hide, 1 = show */
-            hide = hide == "hide" ? 0 : 1;
-
-            /* check for assigned task */
-            let assigned = document.querySelector('input[name="assignTo"]');
-            let assignedTo = "none";
-            if (assigned.checked == true) {
-                let e = document.getElementById("selectMitarbeiter");
-                assignedTo = e.options[e.selectedIndex].value;
-            }
-
-            /* ajax parameter */
-            let params = {
-                getReason: "insertStep",
-                bez: steps[0],
-                datum: steps[1],
-                auftrag: globalData.auftragsId,
-                hide: hide,
-                prio: steps[2],
-                assignedTo: assignedTo
-            };
-
-            var add = new AjaxCall(params, "POST", window.location.href);
-            add.makeAjaxCall(function (response) {
-                console.log(response);
-                document.getElementById("stepTable").innerHTML = response;
-
-                var tableData = document.getElementsByClassName("bearbeitungsschrittInput");
-                for (var i = 0; i < tableData.length; i++) {
-                    tableData[i].value = "";
-                }
-
-                document.getElementById("bearbeitungsschritte").removeChild(document.getElementById("sendStepToServer"));
-                document.getElementById("bearbeitungsschritte").style.display = "none";
-            }.bind(this), false);
-        }, false);
-
-        bearbeitungsschritte.appendChild(btn);
-    }
+    const textarea = document.querySelector("textarea.bearbeitungsschrittInput");
+    textarea.focus();
 }
 
 /* adds a note to the order */
@@ -1207,4 +1203,10 @@ function setOrderFinished() {
     } else {
         /* Abbruch */
     }
+}
+
+function addNewNote() {
+    document.getElementById("addNotes").style.display='block';
+    const textarea = document.querySelector(".noteInput");
+    textarea.focus();
 }

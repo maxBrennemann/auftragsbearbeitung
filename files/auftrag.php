@@ -103,7 +103,8 @@ if ($auftragsId == -1): ?>
 		}
 	</style>
 <?php else: ?>
-	<aside class="defCont">
+	<div class="defCont">
+		<p class="font-bold">Kundeninfo</p>
 		<p><?=$kunde->getVorname()?> <?=$kunde->getNachname()?></p>
 		<p><?=$kunde->getFirmenname()?></p>
 		<u>Adresse:</u>
@@ -116,9 +117,9 @@ if ($auftragsId == -1): ?>
 		<span>Ansprechpartner ändern<button class="actionButton" onclick="changeContact()">✎</button></span>
 		<br>
 		<a href="<?=Link::getPageLink("kunde")?>?id=<?=$auftrag->getKundennummer()?>">Kunde <span id="kundennummer"><?=$auftrag->getKundennummer()?></span> zeigen</a>
-	</aside>
+	</div>
 	<div class="defCont auftragsinfo">
-		<p><u>Auftrag:</u> <span id="auftragsnummer"><?=$auftrag->getAuftragsnummer()?></span></p>
+		<p class="font-bold">Auftrag <span id="auftragsnummer"><?=$auftrag->getAuftragsnummer()?></span></p>
 		<div class="inputCont">
 			<label for="orderTitle">Auftragsbezeichnung:</label>
 			<input class="data-input" id="orderTitle" value="<?=$auftrag->getAuftragsbezeichnung()?>" autocomplete="none" onchange="editTitle()">
@@ -135,41 +136,36 @@ if ($auftragsId == -1): ?>
 				<?php endforeach; ?>
 			</select>
 		</div>
-		<br>
-		<span style="display: none">
-			<button onclick="showPreview();">Auftragsblatt anzeigen</button>
-		</span>
-		<span><button onclick="location.href= '<?=Link::getPageLink('rechnung')?>?target=create&id=<?=$auftragsId?>'">Rechnung generieren</button></span>
-		<?php if ($auftrag->getIsArchiviert() == false) :?><span><button onclick="archvieren();">Auftrag archivieren</button></span><br><?php endif; ?>
-		Auftragsstellung: <span id="changeDate-1"><?=$auftrag->getDatum()?></span><button class="actionButton" onclick="changeDate(1, event)">✎</button><br>
-		Termin: <span id="changeDate-2"><?=$auftrag->getTermin()?></span><button class="actionButton" onclick="changeDate(2, event)">✎</button>
-		<br>
+		<div>
+			<p>Auftragsstellung: <span id="changeDate-1"><?=$auftrag->getDatum()?></span>
+				<button class="actionButton" onclick="changeDate(1, event)">✎</button>
+			</p>
+			<p>Termin: <span id="changeDate-2"><?=$auftrag->getTermin()?></span>
+				<button class="actionButton" onclick="changeDate(2, event)">✎</button>
+			</p>
+		</div>
+		<div>
+			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="location.href= '<?=Link::getPageLink('rechnung')?>?target=create&id=<?=$auftragsId?>'">Rechnung generieren</button>
+			<?php if ($auftrag->getIsArchiviert() == false) :?>
+				<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="archvieren();">Auftrag archivieren</button>
+			<?php endif; ?>
+			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="setOrderFinished()">Auftrag ist fertig</button>
+		</div>
 	</div>
 	<div class="defCont schritte">
-		<div><u>Schritte und Notizen:</u><br>
-			<form name="showSteps">
-				<input onchange="radio('hide')" type="radio" name="showDone" value="hide" checked> Zu erledigende Schritte anzeigen<br>
-				<input onchange="radio('show')" type="radio" name="showDone" value="show"> Alle Schritte anzeigen<br>
-			</form>
-			<div id="stepTable">
-				<?=$auftrag->getOpenBearbeitungsschritteTable()?>
-			</div>
-		</div>
-		<div id="noteContainer">
-			<?=$auftrag->getNotes()?>
-		</div>
-	</div>
-	<div class="defCont schritteAdd">
-		<button onclick="addBearbeitungsschritte()">Neuen Bearbeitungsschritt hinzufügen</button>
+		<p class="font-bold">Bearbeitungsschritte und Aufgaben</p>
+		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="showBearbeitungsschritt()">Neuen Bearbeitungsschritt hinzufügen</button>
 		<div class="innerDefCont" id="bearbeitungsschritte" style="display: none">
-			<span>Bezeichnung: <br><textarea class="bearbeitungsschrittInput" type="text" max="128" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span><br>
-			<span>Datum: <br><input class="bearbeitungsschrittInput" type="date" max="32"></span><br>
+			<div>
+				<p>Bezeichnung:</p>
+				<textarea class="bearbeitungsschrittInput m-1 text-slate-600 rounded-lg p-2" type="text" max="128" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
+			</div>
+			<span>Datum: <br><input class="bearbeitungsschrittInput m-1 text-slate-600 rounded-lg p-2" type="date" max="32"></span><br>
 			<span>Priorität: <br><input class="bearbeitungsschrittInput" type="range" min="0" max="100" step="1.0"></span><br>
 			<form name="isAlreadyDone">
 				<input type="radio" name="isDone" value="show" checked>Noch zu erledigen<br>
 				<input type="radio" name="isDone" value="hide">Schon erledigt<br>
 			</form>
-			<hr>
 			<input type="checkbox" name="assignTo" onclick="document.getElementById('selectMitarbeiter').disabled = false;">Zuweisen an:</input>
 			<br>
 			<select id="selectMitarbeiter" disabled>
@@ -177,19 +173,32 @@ if ($auftragsId == -1): ?>
 					<option value="<?=$m['id']?>"><?=$m['Vorname']?> <?=$m['Nachname']?></option>
 				<?php endforeach; ?>
 			</select>
-			<br>
+			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="addBearbeitungsschritt()">Hinzufügen</button>
 		</div>
-		<button onclick="document.getElementById('addNotes').style.display='block';">Neue Notiz hinzufügen</button>
+		<div>
+			<input onchange="radio('hide')" type="radio" name="showDone" value="hide" checked> Zu erledigende Schritte anzeigen<br>
+			<input onchange="radio('show')" type="radio" name="showDone" value="show"> Alle Schritte anzeigen
+		</div>
+		<div id="stepTable">
+			<?=$auftrag->getOpenBearbeitungsschritteTable()?>
+		</div>
+	</div>
+	<div class="defCont schritteAdd">
+		<p class="font-bold">Notizen</p>
+		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="addNewNote()">Neue Notiz hinzufügen</button>
 		<div class="innerDefCont" id="addNotes" style="display: none">
-			<span>Notiz: <br><input class="noteInput" type="text" max="128"></span><br>
-			<button onclick="addNote();">Hinzufügen</button>
+			<div>
+				<p>Notiz:</p>
+				<textarea class="noteInput m-1 text-slate-600 rounded-lg p-2" type="text" max="128"></textarea>
+			</div>
+			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="addNote();">Hinzufügen</button>
 		</div>
-		<button onclick="setOrderFinished()">Auftrag ist fertig</button>
+		<div id="noteContainer">
+			<?=$auftrag->getNotes()?>
+		</div>
 	</div>
 	<div class="defCont posten">
-		<u>Zeiten, Produkte und Kosten (netto):</u>
-		<br>
-		<br>
+		<p class="font-bold">Zeiten, Produkte und Kosten (netto)</p>
 		<div id="auftragsPostenTable">
 			<?=$auftrag->getAuftragspostenAsTable()?>
 		</div>
@@ -292,13 +301,11 @@ if ($auftragsId == -1): ?>
 		</div>
 	</div>
 	<div class="defCont invoice">
-		<u>Rechnungsposten (netto):</u>
-		<br><br>
+		<p class="font-bold">Rechnungsposten (netto)</p>
 		<div id="invoicePostenTable"><?=$auftrag->getInvoicePostenTable()?></div>
 	</div>
 	<div class="defCont preis">
-		<u>Gesamtpreis (netto):</u>
-		<br>
+		<p class="font-bold">Gesamtpreis (netto):</p>
 		<span id="gesamtpreis">
 			<?=number_format($auftrag->preisBerechnen(), 2, ',', '') . "€"?>
 		</span>
@@ -307,7 +314,7 @@ if ($auftragsId == -1): ?>
 		</span>
 	</div>
 	<div class="defCont fahrzeuge">
-		<span><u>Fahrzeuge:</u><button class="infoButton" data-info="1">i</button><br>
+		<p><span class="font-bold">Fahrzeuge</span><button class="ml-1 infoButton" data-info="1">i</button><p>
 		<div>
 			<span>Fahrzeug hinzufügen</span>
 			<br>
@@ -318,12 +325,12 @@ if ($auftragsId == -1): ?>
 				<?php endforeach; ?>
 				<option value="addNew">Neues Fahrzeug hinzufügen</option>
 			</select>
-			<button onclick="addFahrzeug(true)">Für diesen Auftrag übernehmen</button>
+			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="addFahrzeug(true)">Für diesen Auftrag übernehmen</button>
 		</div>
 		<div class="innerDefCont" id="addVehicle" style="display: none;">
 			<span>Kfz-Kennzeichen:<br><input id="kfz"></span><br>
 			<span>Fahrzeug:<br><input id="fahrzeug"></span><br>
-			<button onclick="addFahrzeug()">Neues Fahrzeug hinzufügen</button>
+			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="addFahrzeug()">Neues Fahrzeug hinzufügen</button>
 		</div>
 		<div><?=$auftrag->getFahrzeuge();?></div>
 		<br>
@@ -333,12 +340,13 @@ if ($auftragsId == -1): ?>
 		</form>
 	</div>
 	<div class="defCont farben">
-		<span><u>Farben:</u><br> <span id="showColors"><?=$farbTable?></span></span>
-		<button onclick="addColor()">Neuen Farbe hinzufügen</button>
+		<p class="font-bold">Farben</p>
+		<span id="showColors"><?=$farbTable?></span>
+		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="addColor()">Neuen Farbe hinzufügen</button>
 	</div>
 	<?php if ($show == false): ?>
 	<div class="defCont upload">
-		<u>Dateien zum Auftrag hinzufügen:</u>
+		<p class="font-bold">Dateien zum Auftrag hinzufügen</p>
 		<form class="fileUploader" method="post" enctype="multipart/form-data" data-target="order" name="auftragUpload" id="uploadFilesOrder">
 			<input name="auftrag" value="<?=$auftragsId?>" hidden>
 		</form>
@@ -354,10 +362,10 @@ if ($auftragsId == -1): ?>
 		</div>
 	</div>
 	<div class="defCont verlauf">
-		<p onclick="showAuftragsverlauf();">Auftragsverlauf anzeigen</p>
+		<p onclick="showAuftragsverlauf();" class="font-bold">Auftragsverlauf anzeigen</p>
 		<?=$auftragsverlauf?>
 		<br>
-		<button onclick="addList();">Liste hinzufügen</button><button class="infoButton" data-info="2">i</button>
+		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="addList();">Liste hinzufügen</button><button class="infoButton" data-info="2">i</button>
 		<div class="defCont" id="listauswahl" style="display: none;">
 			<?=$showLists?>
 		</div>

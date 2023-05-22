@@ -513,17 +513,20 @@ class Auftrag implements StatisticsInterface {
 	/* this function fetches the associated notes from the db */
 	public function getNotes() {
 		$html = "";
+		$iconNotebook = Icon::$iconNotebook;
+		$notes = DBAccess::selectQuery("SELECT Notiz FROM notizen WHERE Auftragsnummer = :id ORDER BY creation_date DESC", ["id" => $this->Auftragsnummer]);
 
-		$notes = DBAccess::selectQuery("SELECT Notiz FROM notizen WHERE Auftragsnummer = $this->Auftragsnummer");
 		foreach($notes as $note) {
 			$content = $note['Notiz'];
-			$html .= "
-				<div class=\"notes\">
-					<div class=\"noteheader\">Notiz " .  Icon::$iconNotebook . "</div>
-					<div class=\"notecontent\">$content</div>
-					<div class=\"notebutton\" onclick=\"removeNote(event)\">×</div>
+			$html .= <<<EOL
+				<div class="notes">
+					<div class="noteheader">Notiz 
+						<span class="inline">$iconNotebook</span>
+					</div>
+					<div class="notecontent">$content</div>
+					<div class="notebutton" onclick="removeNote(event)">×</div>
 				</div>
-			";
+			EOL;
 		}
 
 		return $html;
