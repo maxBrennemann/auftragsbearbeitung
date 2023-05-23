@@ -16,14 +16,14 @@
 	$mitarbeiter = DBAccess::selectQuery("SELECT Vorname, Nachname, id FROM mitarbeiter");
 	$annahme = DBAccess::selectQuery("SELECT Bezeichnung, id FROM angenommen");
 	$auftragstyp = DBAccess::selectQuery("SELECT * FROM auftragstyp");
+
 	if ($kdnr != -1) {
-		$kundendaten = DBAccess::selectQuery("SELECT Vorname, Nachname, Firmenname FROM kunde WHERE Kundennummer = $kdnr")[0];
+		$kundendaten = DBAccess::selectQuery("SELECT Vorname, Nachname, Firmenname FROM kunde WHERE Kundennummer = $kdnr");
+		$kundendaten = $kundendaten[0];
 		$ansprechpartner = DBAccess::selectQuery("SELECT Vorname, Nachname, Nummer FROM ansprechpartner WHERE Kundennummer = $kdnr");
 	}
-?>
 
-
-<?php if ($kdnr != -1) : ?>
+if ($kdnr != -1) : ?>
 	<div class="addOrder">
 		<div>
 			<span>Kundennummer: <?=$kdnr?></span><br>
