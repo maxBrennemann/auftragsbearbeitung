@@ -505,11 +505,41 @@ class Ajax {
 				echo "ok";
 			break;
 			case "addLeistung":
-				$bezeichung = $_POST['bezeichung'];
+				$bezeichnung = $_POST['bezeichnung'];
 				$description = $_POST['description'];
 				$source = $_POST['source'];
 				$aufschlag = $_POST['aufschlag'];
-				DBAccess::insertQuery("INSERT INTO leistung (Bezeichnung, Beschreibung, Quelle, Aufschlag) VALUES ('$bezeichung', '$description', '$source', $aufschlag)");
+
+				$newInserted = DBAccess::insertQuery("INSERT INTO leistung (Bezeichnung, Beschreibung, Quelle, Aufschlag) VALUES (:bez, :desc, :source, :aufschlag);", [
+					"bez" => $bezeichnung,
+					"desc" => $description,
+					"source" => $source,
+					"aufschlag" => $aufschlag,
+				]);
+
+				echo json_encode([
+					"status" => "success",
+					"leistungsId" => $newInserted,
+				]);
+			break;
+			case "editLeistung":
+				$id = (int) $_POST["id"];
+				$bezeichnung = $_POST['bezeichnung'];
+				$description = $_POST['description'];
+				$source = $_POST['source'];
+				$aufschlag = $_POST['aufschlag'];
+
+				DBAccess::updateQuery("UPDATE leistung SET Bezeichnung = :bez, Beschreibung = :desc, Quelle = :source, Aufschlag = :aufschlag WHERE Nummer = :id;", [
+					"bez" => $bezeichnung,
+					"desc" => $description,
+					"source" => $source,
+					"aufschlag" => $aufschlag,
+					"id" => $id,
+				]);
+
+				echo json_encode([
+					"status" => "success",
+				]);
 			break;
 			case "addTimeOffer":
 				$customerId = $_POST['customerId'];
