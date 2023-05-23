@@ -136,12 +136,13 @@ if ($auftragsId == -1): ?>
 				<?php endforeach; ?>
 			</select>
 		</div>
-		<div>
-			<p>Auftragsstellung: <span id="changeDate-1"><?=$auftrag->getDatum()?></span>
-				<button class="actionButton" onclick="changeDate(1, event)">✎</button>
+		<div class="m-2">
+			<p>Auftragseingang: 
+				<input class="m-1" type="date" value="<?=$auftrag->getDate()?>" onchange="updateDate(event)">
 			</p>
-			<p>Termin: <span id="changeDate-2"><?=$auftrag->getTermin()?></span>
-				<button class="actionButton" onclick="changeDate(2, event)">✎</button>
+			<p>Termin: 
+				<input class="m-1" type="date" value="<?=$auftrag->getDeadline()?>" onchange="updateDeadline(event)" id="inputDeadline">
+				<input type="checkbox" onclick="setDeadlineState(event)" <?=$auftrag->getDeadline() == "" ? "checked" : "" ?>> Kein Termin
 			</p>
 		</div>
 		<div>

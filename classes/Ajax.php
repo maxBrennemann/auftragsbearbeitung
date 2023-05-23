@@ -811,7 +811,16 @@ class Ajax {
 					3 => "Fertigstellung"
 				][$type];
 
-				DBAccess::updateQuery("UPDATE auftrag SET $type = '$date' WHERE Auftragsnummer = $order");
+				if ($date == "unset") {
+					DBAccess::updateQuery("UPDATE auftrag SET $type = NULL WHERE Auftragsnummer = :order;", [
+						"order" => $order,
+					]);
+				} else {
+					DBAccess::updateQuery("UPDATE auftrag SET $type = :setDate WHERE Auftragsnummer = :order;", [
+						"setDate" => $date,
+						"order" => $order,
+					]);
+				}
 				echo "success";
 			break;
 			case "overwritePosten":

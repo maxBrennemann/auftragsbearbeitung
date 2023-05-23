@@ -1072,38 +1072,33 @@ function showPreview() {
     }
 }
 
-/*
- * changes the text node that shows the date into an input field and adds an event listener to send
- * the new date to the server
- */
-function changeDate(type, e) {
-    let dateNode = document.getElementById("changeDate-" + type);
+function updateDate(e) {
+    const date = e.target.value;
+    sendDate(1, date);
+}
 
-    let newInput = document.createElement("input");
-    newInput.type = "date";
+function updateDeadline(e) {
+    const date = e.target.value;
+    sendDate(2, date);
+}
 
-    dateNode.innerHTML = "";
-    dateNode.appendChild(newInput);
-
-    let sendToServer = function(newInput, type, target) {
-        let date = newInput.value;
-        var send = new AjaxCall(`getReason=updateDate&auftrag=${globalData.auftragsId}&date=${date}&type=${type}`);
-        send.makeAjaxCall(function (response, args) {
-            infoSaveSuccessfull(response);
-            
-            var date = new Date(args[0].value);
-            var dateString = date.toLocaleDateString();
-            args[0].parentNode.innerHTML = dateString;
-
-            args[1].onclick = function() {changeDate(args[2], event)};
-            args[1].innerText = "✎";
-        }, newInput, target, type);
+function setDeadlineState(e) {
+    const checked = e.target.checked;
+    if (checked) {
+        document.getElementById("inputDeadline").value = "";
+        sendDate(2, "unset");
     }
+}
 
-    e.target.innerHTML = "✔";
-    e.target.onclick = function() {
-        sendToServer(newInput, type, e.target)
-    };
+function sendDate(type, value) {
+    ajax.post({
+        r: "updateDate",
+        auftrag: globalData.auftragsId,
+        date: value,
+        type: type,
+    }).then(r => {
+
+    });
 }
 
 /* from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_tabs and modified */

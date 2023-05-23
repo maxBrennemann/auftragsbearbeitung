@@ -168,7 +168,11 @@ class Auftrag implements StatisticsInterface {
 	public function getAuftragstypBezeichnung() {
 		$query = "SELECT `Auftragstyp` FROM `auftragstyp` WHERE `id` = :idAuftragstyp LIMIT 1;";
 		$bez = DBAccess::selectQuery($query, ["idAuftragstyp" => $this->auftragstyp]);
-		return $bez[0]["Auftragstyp"];
+		if ($bez != null) {
+			return $bez[0]["Auftragstyp"];
+		} else {
+			return "";
+		}
 	}
 
 	public static function getAllOrderTypes() {
@@ -181,12 +185,12 @@ class Auftrag implements StatisticsInterface {
 		return $this->Auftragsbezeichnung;
 	}
 
-	public function getDatum() {
-		return DateTime::createFromFormat("Y-m-d", $this->datum)->format("d.m.Y");
+	public function getDate() {
+		return $this->datum;
 	}
 
-	public function getTermin() {
-		return DateTime::createFromFormat("Y-m-d", $this->termin)->format("d.m.Y");
+	public function getDeadline() {
+		return $this->termin;
 	}
 
 	public function preisBerechnen() {
