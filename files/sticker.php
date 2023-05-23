@@ -311,8 +311,8 @@ if ($id == 0): ?>
         <input type="text" class="tagInput" maxlength="32" id="tagInput">
     </div>
     <p class="italic">Nicht erlaubt sind folgende Zeichen: !<;>;?=+#"°{}_$%.</p>
-    <button id="loadSynonyms" class="px-2 py-2 m-2 bg-indigo-300 border-none">Mehr Synonnyme laden</button>
-    <button id="showTaggroupManager" class="px-2 py-2 m-2 bg-indigo-300 border-none">Taggruppen</button>
+    <button id="loadSynonyms" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Mehr Synonnyme laden</button>
+    <button id="showTaggroupManager" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Taggruppen</button>
 </div>
 <div class="defCont">
     <h2 class="font-semibold">Weitere Infos</h2>

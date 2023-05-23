@@ -181,7 +181,7 @@ class Rechnung {
 		/* Speicherung (aktuell nur Windows) */
 		if ($store == true) {
 			$filename= "{$this->kunde->getKundennummer()}_{$this->getInvoiceId()}.pdf"; 
-            $filelocation = 'c:/xampp/htdocs/auftragsbearbeitung/files/generated/invoice/';
+            $filelocation = 'files/generated/invoice/';
             $fileNL = $filelocation . $filename;
 			echo WEB_URL . "/files/generated/invoice/" . $filename;
 			self::addAllPosten($_SESSION['currentInvoice_orderId']);
