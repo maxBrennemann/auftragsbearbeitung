@@ -17,8 +17,11 @@ export function click_textGeneration(e) {
     });
 }
 
+export function click_textGenerationExtended(e) {
+    // TODO: implement extended text generation
+}
+
 export function click_showTextSettings(e) {
-    // TODO: genrate template, show settings and show all texts
     ajax.post({
         id: mainVariables.motivId.innerHTML,
         type: "",
@@ -45,11 +48,11 @@ function selectTextOption(e) {
     const target = e.currentTarget;
 
     if (textGenerationData.currentTextStyleNode != null) {
-        textGenerationData.currentTextStyleNode.classList.remove("bg-indigo-300");
-        textGenerationData.currentTextStyleNode.classList.add("bg-slate-100");
+        textGenerationData.currentTextStyleNode.classList.remove("bg-indigo-500");
+        textGenerationData.currentTextStyleNode.classList.add("bg-blue-200");
     }
 
-    target.classList.add("bg-indigo-300");
-    target.classList.remove("bg-slate-100");
+    target.classList.add("bg-indigo-500");
+    target.classList.remove("bg-blue-200");
     textGenerationData.currentTextStyleNode = target;
 }
