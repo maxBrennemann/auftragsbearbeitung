@@ -1491,7 +1491,7 @@ class Ajax {
 				$stickerId = $_POST["id"];
 				$stickerType = $_POST["type"];
 
-				$query = "SELECT id, chatgptResponse, creationDate, textType, additionalQuery, textStyle FROM module_sticker_chatgpt WHERE idSticker = :stickerId AND stickerType = :stickerType;";
+				$query = "SELECT id, chatgptResponse, DATE_FORMAT(creationDate, '%d. %M %Y') as creationDate, textType, additionalQuery, textStyle FROM module_sticker_chatgpt WHERE idSticker = :stickerId AND stickerType = :stickerType;";
 				$result = DBAccess::selectQuery($query, [
 					"stickerId" => $stickerId,
 					"stickerType" => $stickerType

@@ -1,13 +1,18 @@
 <div class="mt-2">
     <div class="ml-1 my-3">
         <p class="font-bold">Alle Texte</p>
+        <div class="grid grid-cols-3">
         <?php foreach($texts as $text): ?>
-            <div>
-                <p>Erstellt am <?=$text["creationDate"]?> mit <textarea readonly><?=$text["additionalQuery"]?></textarea></p>
+            <div class="ml-1 mt-2 bg-slate-100 p-3 rounded-lg">
+                <p>Erstellt am <?=$text["creationDate"]?></p> 
+                <p>Weitere Anweisungen:</p>
+                <textarea readonly><?=$text["additionalQuery"]?></textarea>
+                <p>Text:</p>
                 <textarea data-id="<?=$text["id"]?>"><?=$text["chatgptResponse"]?></textarea>
-                <button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Text auswählen</button>
+                <button class="block px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Text auswählen</button>
             </div>
         <?php endforeach; ?>
+        </div>
     </div>
     <div class="ml-1">
         <p class="font-bold">Neuen Text erstellen</p>

@@ -22,9 +22,13 @@ export function click_textGenerationExtended(e) {
 }
 
 export function click_showTextSettings(e) {
+    const type = e.currentTarget.dataset.type;
+    const text = e.currentTarget.dataset.text;
+
     ajax.post({
         id: mainVariables.motivId.innerHTML,
-        type: "",
+        text: text,
+        type: type,
         r: "showGTPOptions",
     }).then(r => {
         const template = r.template;

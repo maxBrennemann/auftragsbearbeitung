@@ -5,5 +5,5 @@
     <button class="m-0 p-0 border-none cursor-pointer">⬅</button>
     <span class="bg-slate-50 px-1"><?=$gpt->getChatCount($type, $text)?></span>
     <button class="m-0 p-0 border-none">⮕</button>
-    <button class="m-0 p-0 border-none" data-binding="true" data-fun="showTextSettings"><?=Icon::$iconSettings?></button>
+    <button class="m-0 p-0 border-none" data-binding="true" data-fun="showTextSettings" data-type="<?=$type?>" data-text="<?=$text?>"><?=Icon::$iconSettings?></button>
 </span>
