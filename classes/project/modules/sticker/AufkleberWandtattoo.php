@@ -94,7 +94,7 @@ class AufkleberWandtattoo extends Sticker {
 
     public function getBasePrice() {
         if ($this->basePrice != null) {
-            return $this->basePrice;
+            return number_format((float) $this->basePrice / 100, 2, '.', '');
         }
 
         parent::getBasePrice();
