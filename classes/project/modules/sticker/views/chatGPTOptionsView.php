@@ -1,31 +1,36 @@
-<div class="mt-2">
-    <div class="ml-1">
-        <p class="font-semibold">Alle Texte</p>
+<div class="mt-4 p-3 mr-5 overflow-y-auto">
+    <div class="ml-1 my-3">
+        <p class="font-bold">Alle Texte</p>
+        <div class="grid grid-cols-3">
         <?php foreach($texts as $text): ?>
-            <div>
-                <p>Erstellt am <?=$text["creationDate"]?> mit <textarea readonly><?=$text["additionalQuery"]?></textarea></p>
+            <div class="ml-1 mt-2 bg-slate-100 p-3 rounded-lg">
+                <p>Erstellt am <?=$text["creationDate"]?></p> 
+                <p>Weitere Anweisungen:</p>
+                <textarea readonly><?=$text["additionalQuery"]?></textarea>
+                <p>Text:</p>
                 <textarea data-id="<?=$text["id"]?>"><?=$text["chatgptResponse"]?></textarea>
-                <button>Text auswählen</button>
+                <button class="block px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Text auswählen</button>
             </div>
         <?php endforeach; ?>
+        </div>
     </div>
     <div class="ml-1">
-        <p class="font-semibold">Neuen Text erstellen</p>
-        <div>
+        <p class="font-bold">Neuen Text erstellen</p>
+        <div class="ml-1 mt-2 bg-slate-100 p-3 rounded-lg selectTextStyle">
             <p>Art/ Stilrichtung des Textes</p>
-            <dt class="px-2 py-2 m-2 bg-slate-100 border-none inline rounded-lg">Lustig</dt>
-            <dt class="px-2 py-2 m-2 bg-slate-100 border-none inline rounded-lg">Ernst</dt>
-            <dt class="px-2 py-2 m-2 bg-slate-100 border-none inline rounded-lg">Informativ</dt>
-            <dt class="px-2 py-2 m-2 bg-slate-100 border-none inline rounded-lg">Für Gewerbetreibende</dt>
-            <dt class="px-2 py-2 m-2 bg-slate-100 border-none inline rounded-lg">Für Privat</dt>
-            <dt class="px-2 py-2 m-2 bg-slate-100 border-none inline rounded-lg">Hobbyaufkleber</dt>
-            <dt class="px-2 py-2 m-2 bg-slate-100 border-none inline rounded-lg">Traurig</dt>
-            <dt class="px-2 py-2 m-2 bg-slate-100 border-none inline rounded-lg">Bayrisch</dt>
+            <dt class="px-2 py-2 m-2 bg-blue-200 border-none inline-block rounded-lg font-semibold text-slate-600">Lustig</dt>
+            <dt class="px-2 py-2 m-2 bg-blue-200 border-none inline-block rounded-lg font-semibold text-slate-600">Ernst</dt>
+            <dt class="px-2 py-2 m-2 bg-blue-200 border-none inline-block rounded-lg font-semibold text-slate-600">Informativ</dt>
+            <dt class="px-2 py-2 m-2 bg-blue-200 border-none inline-block rounded-lg font-semibold text-slate-600">Für Gewerbetreibende</dt>
+            <dt class="px-2 py-2 m-2 bg-blue-200 border-none inline-block rounded-lg font-semibold text-slate-600">Für Privat</dt>
+            <dt class="px-2 py-2 m-2 bg-blue-200 border-none inline-block rounded-lg font-semibold text-slate-600">Hobbyaufkleber</dt>
+            <dt class="px-2 py-2 m-2 bg-blue-200 border-none inline-block rounded-lg font-semibold text-slate-600">Traurig</dt>
+            <dt class="px-2 py-2 m-2 bg-blue-200 border-none inline-block rounded-lg font-semibold text-slate-600">Bayrisch</dt>
         </div>
-        <div class="mt-2">
+        <div class="ml-1 mt-2 bg-slate-100 p-3 rounded-lg">
             <p>Zusätzliche Anweisungen</p>
-            <input class="w-64" type="text" placeholder="Schreibe hier zusätzliche Anweisunge für ChatGPT">
+            <input class="w-96 m-1 text-slate-600 rounded-lg p-2" type="text" id="additionalTextGPT" placeholder="Schreibe hier zusätzliche Anweisunge für ChatGPT">
         </div>
-        <button>Neuen Text generieren</button>
+        <button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="textGenerationExtended" id="generateNewText">Neuen Text generieren</button>
     </div>
 </div>

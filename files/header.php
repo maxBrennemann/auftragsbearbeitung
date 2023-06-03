@@ -46,6 +46,7 @@
 	</style>
 	<link rel="stylesheet" href="<?=$globalCSS?>">
 	<link rel="stylesheet" href="<?=$tailwindCSS?>">
+	<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.1/dist/cdn.min.js"></script>
 	<script src="<?=$globalJS?>"></script>
 	<?php
 		$link = Link::getResourcesShortLink($page . ".js", "js");

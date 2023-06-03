@@ -1,4 +1,4 @@
-import { click_textGeneration, click_showTextSettings } from "./sticker/textGeneration.js";
+import { click_textGeneration, click_showTextSettings, click_iterateText } from "./sticker/textGeneration.js";
 import { loadTags, showTaggroupManager, addTag } from "./sticker/tagManager.js";
 import ProductConnector from "./sticker/productConnector.js";
 import { initSVG, moveInit, click_makeColorable } from "./sticker/imageManager.js";
@@ -8,6 +8,7 @@ const fnNames = {};
 fnNames.click_makeColorable = click_makeColorable;
 fnNames.click_textGeneration = click_textGeneration;
 fnNames.click_showTextSettings = click_showTextSettings;
+fnNames.click_iterateText = click_iterateText;
 const mainVariables = {
     productConnect: [],
     pending: false,
