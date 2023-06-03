@@ -1,29 +1,49 @@
 const textGenerationData = {
-    currentTextStyleNode: null,
+    textStyleNode: null,
+    textType: null,
+    product: null,
 };
 
 export function click_textGeneration(e) {
     const title = document.getElementById("name").value;
-    const type = e.currentTarget.dataset.type;
-    const text = e.currentTarget.dataset.text;
+    const type = e.currentTarget.dataset.type || textGenerationData.product;
+    const text = e.currentTarget.dataset.text || textGenerationData.textType;
+    const additionalInfo = getAdditionalInfo();
+
     ajax.post({
         title: title,
         id: mainVariables.motivId.innerHTML,
         text: text,
         type: type,
+        additionalText: additionalInfo.text,
+        additionalStyle: additionalInfo.style,
         r: "generateText",
     }).then(r => {
         console.log(r.choices[0].message.content);
     });
 }
 
-export function click_textGenerationExtended(e) {
-    // TODO: implement extended text generation
+function getAdditionalInfo() {
+    const window = document.getElementById("showTextSettings");
+    
+    if (window != null) {
+        const text = window.querySelector("#additionalTextGPT").value;
+        const style = textGenerationData.textStyleNode.innerHTML;
+        return {text: text, style: style};
+    }
+    
+    return {
+        text: "",
+        style: "",
+    };
 }
 
 export function click_showTextSettings(e) {
     const type = e.currentTarget.dataset.type;
     const text = e.currentTarget.dataset.text;
+
+    textGenerationData.textType = text;
+    textGenerationData.product = type;
 
     ajax.post({
         id: mainVariables.motivId.innerHTML,
@@ -34,6 +54,8 @@ export function click_showTextSettings(e) {
         const template = r.template;
         const div = document.createElement("div");
         div.innerHTML = template;
+        div.classList.add("flex", "h-2/4", "w-4/5", "z-50", "max-h-fit", "overflow-y-auto", "fixed", "bg-white", "rounded-lg", "shadow-lg");
+        div.id = "showTextSettings";
         document.body.appendChild(div);
 
         const textOptions = div.querySelectorAll("dt");
@@ -41,22 +63,26 @@ export function click_showTextSettings(e) {
             dt.addEventListener("click", selectTextOption);
         });
 
-        /* adjust div */
-        div.classList.add("centeredDiv");
         centerAbsoluteElement(div);
         addActionButtonForDiv(div, "hide");
+        div.classList.remove("centeredContainer");
+
+        const newTextBtn = div.querySelector("#generateNewText");
+        newTextBtn.addEventListener("click", click_textGeneration);
     });
 }
 
 function selectTextOption(e) {
     const target = e.currentTarget;
 
-    if (textGenerationData.currentTextStyleNode != null) {
-        textGenerationData.currentTextStyleNode.classList.remove("bg-indigo-500");
-        textGenerationData.currentTextStyleNode.classList.add("bg-blue-200");
+    if (textGenerationData.textStyleNode != null) {
+        textGenerationData.textStyleNode.classList.remove("bg-indigo-500");
+        textGenerationData.textStyleNode.classList.add("bg-blue-200");
     }
 
-    target.classList.add("bg-indigo-500");
-    target.classList.remove("bg-blue-200");
-    textGenerationData.currentTextStyleNode = target;
+    if (target != textGenerationData.textStyleNode) {
+        target.classList.add("bg-indigo-500");
+        target.classList.remove("bg-blue-200");
+        textGenerationData.textStyleNode = target;
+    }
 }

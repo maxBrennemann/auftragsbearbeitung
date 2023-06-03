@@ -29,8 +29,8 @@
         </div>
         <div class="ml-1 mt-2 bg-slate-100 p-3 rounded-lg">
             <p>Zusätzliche Anweisungen</p>
-            <input class="w-96 m-1 text-slate-600 rounded-lg p-2" type="text" placeholder="Schreibe hier zusätzliche Anweisunge für ChatGPT">
+            <input class="w-96 m-1 text-slate-600 rounded-lg p-2" type="text" id="additionalTextGPT" placeholder="Schreibe hier zusätzliche Anweisunge für ChatGPT">
         </div>
-        <button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="textGenerationExtended">Neuen Text generieren</button>
+        <button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="textGenerationExtended" id="generateNewText">Neuen Text generieren</button>
     </div>
 </div>

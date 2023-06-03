@@ -86,7 +86,7 @@ class ChatGPTConnection {
                 break;
         }
 
-        $queryText = "Hallo, bitte erstelle mir einen Werbetext über $contentType $query, der ca. $length Wörter lang sein soll. Der Text soll in diesem Stil verfasst werden: $textStyle";
+        $queryText = "Hallo, bitte erstelle mir einen Werbetext über $contentType $query, der ca. $length Wörter lang sein soll. Der Text soll in diesem Stil verfasst werden: $textStyle. Verwende bitte folgende Zusatzinfos: $info. Vielen Dank!";
         return $queryText;
     }
 

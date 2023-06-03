@@ -1482,14 +1482,20 @@ class Ajax {
 				$title = $_POST["title"];
 				$text = $_POST["text"];
 				$type = $_POST["type"];
+
+				$additionalText = $_POST["additionalText"];
+				$additionalStyle = $_POST["additionalStyle"];
+
 				$id = (int) $_POST["id"];
+
 				require_once('classes/project/modules/sticker/ChatGPTConnection.php');
 				$connector = new ChatGPTConnection($id);
-				$connector->getTextSuggestion($title, $type, $text, "", "lustig");
+				$connector->getTextSuggestion($title, $type, $text, $additionalText, $additionalStyle);
 			break;
 			case "showGTPOptions":
 				$stickerId = $_POST["id"];
 				$stickerType = $_POST["type"];
+				$text = $_POST["text"];
 
 				$query = "SELECT id, chatgptResponse, DATE_FORMAT(creationDate, '%d. %M %Y') as creationDate, textType, additionalQuery, textStyle FROM module_sticker_chatgpt WHERE idSticker = :stickerId AND stickerType = :stickerType;";
 				$result = DBAccess::selectQuery($query, [
