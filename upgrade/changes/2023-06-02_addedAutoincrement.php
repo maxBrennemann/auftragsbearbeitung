@@ -7,6 +7,10 @@ return new class extends UpdateMySql {
     private $queries = [
         "ALTER TABLE `module_sticker_chatgpt` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT;",
         "ALTER TABLE `module_sticker_chatgpt` CHANGE `textStyle` `textStyle` VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;",
+        "ALTER TABLE `module_sticker_chatgpt` CHANGE `chatgptResponse` `chatgptResponse` LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+        ",
+        "ALTER TABLE `module_sticker_chatgpt` CHANGE `jsonResponse` `jsonResponse` JSON NOT NULL;
+        ",
     ];
 
     public function upgrade() {

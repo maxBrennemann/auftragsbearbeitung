@@ -4,10 +4,38 @@ const textGenerationData = {
     product: null,
 };
 
+export function click_iterateText(e) {
+    const target = e.currentTarget;
+    const direction = target.dataset.direction;
+    const currentTextNode = target.parentNode.querySelector(".chatCount");
+
+    ajax.post({
+        id: mainVariables.motivId.innerHTML,
+        direction: direction,
+        current: currentTextNode.innerHTML,
+        type: target.parentNode.dataset.type,
+        text: target.parentNode.dataset.text,
+        r: "iterateText",
+    }).then(r => {
+        if (r.status == "success") {
+            if (direction == "next") {
+                currentTextNode.innerHTML = parseInt(currentTextNode.innerHTML) + 1;
+            } else {
+                currentTextNode.innerHTML = parseInt(currentTextNode.innerHTML) - 1;
+            }
+            
+            const text = r.text;
+            const textarea = document.querySelector("textarea.data-input");
+            textarea.value = text;
+        }
+    });
+}
+
 export function click_textGeneration(e) {
     const title = document.getElementById("name").value;
-    const type = e.currentTarget.dataset.type || textGenerationData.product;
-    const text = e.currentTarget.dataset.text || textGenerationData.textType;
+    const target = e.currentTarget.parentNode;
+    const type = textGenerationData.product || target.dataset.type;
+    const text = textGenerationData.textType || target.dataset.text;
     const additionalInfo = getAdditionalInfo();
 
     ajax.post({
@@ -39,8 +67,8 @@ function getAdditionalInfo() {
 }
 
 export function click_showTextSettings(e) {
-    const type = e.currentTarget.dataset.type;
-    const text = e.currentTarget.dataset.text;
+    const type = e.currentTarget.parentNode.dataset.type;
+    const text = e.currentTarget.parentNode.dataset.text;
 
     textGenerationData.textType = text;
     textGenerationData.product = type;
@@ -54,7 +82,7 @@ export function click_showTextSettings(e) {
         const template = r.template;
         const div = document.createElement("div");
         div.innerHTML = template;
-        div.classList.add("flex", "h-2/4", "w-4/5", "z-50", "max-h-fit", "overflow-y-auto", "fixed", "bg-white", "rounded-lg", "shadow-lg");
+        div.classList.add("flex", "h-2/3", "lg:h-4/5", "w-4/5", "z-50", "max-h-fit", "fixed", "bg-white", "rounded-lg", "shadow-lg");
         div.id = "showTextSettings";
         document.body.appendChild(div);
 

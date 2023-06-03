@@ -23,6 +23,17 @@ class ChatGPTConnection {
         ));
     }
 
+    public function getText($motivType, $textType, $index) {
+        $filteredChats = array_filter(
+            $this->oldChats,
+            fn($element) => $element["stickerType"] == $motivType && $element["textType"] == $textType
+        );
+        if (isset($filteredChats[$index])) {
+            return $filteredChats[$index]["chatgptResponse"];
+        }
+        return false;
+    }
+
     /**
      * https://stackoverflow.com/questions/75780617/using-php-to-access-chatgpt-api
      * 
@@ -61,6 +72,7 @@ class ChatGPTConnection {
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         
         $result = curl_exec($curl);
+        $result = urldecode($result);
         if (curl_errno($curl)) {
             echo 'Error:' . curl_error($curl);
         } else {

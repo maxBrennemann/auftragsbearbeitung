@@ -1512,6 +1512,41 @@ class Ajax {
 					"template" => $content,
 				]);
 			break;
+			case "iterateText":
+				$id = (int) $_POST["id"];
+				$direction = $_POST["direction"];
+				$current = (int) $_POST["current"];
+				/* adapting to array index */
+				$current--;
+
+				$type = $_POST["type"];
+				$text = $_POST["text"];
+
+				if ($direction == "next") {
+					$current++;
+				} else if ($direction == "back") {
+					$current--;
+				}
+
+				if ($current < 0) {
+					$current = 0;
+				}
+
+				require_once('classes/project/modules/sticker/ChatGPTConnection.php');
+				$chatGPTConnection = new ChatGPTConnection($id);
+				$text = $chatGPTConnection->getText($type, $text, $current);
+
+				$status = "success";
+				if ($text == false) {
+					$status = "error";
+				}
+
+				echo json_encode([
+					"status" => $status,
+					"text" => $text,
+					"current" => $current,
+				]);
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
