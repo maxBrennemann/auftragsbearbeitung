@@ -407,11 +407,10 @@ fnNames.click_copyToClipboard = function() {
 }
 
 /* must be redone; TODO: nachlesen, wie man event listener richtig bindet */
-fnNames.click_addAltTitle = function() {
-    var node = this.event.currentTarget;
-    var parent = node.parentNode;
-    var input = parent.children[0];
-    input.classList.toggle("visible");
+fnNames.click_addAltTitle = function(e) {
+    const node = e.currentTarget.parentNode;
+    var input = node.children[0];
+    input.classList.toggle("hidden");
 }
 
 fnNames.write_changeAltTitle = function(e) {

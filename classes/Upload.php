@@ -127,10 +127,8 @@ class Upload {
         /* files is the name of the file input element in frontend */
 
         for ($i = 0; $i < $total; $i++) {
-            /* remove " " and other special characters from filenames */
-            $filename = str_replace(" ", "", basename($_FILES["files"]["name"][$i]));
-            $filename = str_replace("&", "", $filename);
-            $filename = str_replace("@", "", $filename);
+            $filename = basename($_FILES["files"]["name"][$i]);
+            $filename = self::adjustFileName($filename);
             $filename = $datetime->getTimestamp() . $filename;
 
             $originalname = basename($_FILES["files"]["name"][$i]);
@@ -235,6 +233,11 @@ class Upload {
         }
     }
 
+    /**
+     * Adjusts all filenames in the database,
+     * removes spaces, @ and & and if a filename is longer than 70 characters, it is renamed with tempnam
+     * the date is also removed from the filename
+     */
     public static function adjustFileNames($folderPath = "upload") {
         $query = "SELECT id, `dateiname` FROM dateien";
         $result = DBAccess::selectQuery($query);
@@ -243,9 +246,7 @@ class Upload {
             $filename = $row["dateiname"];
             $dateiId = $row["id"];
 
-            $adjustedFilename = str_replace(" ", "", $filename);
-            $adjustedFilename = str_replace("&", "", $adjustedFilename);
-            $adjustedFilename = str_replace("@", "", $adjustedFilename);
+            $adjustedFilename = self::adjustFileName($filename, $folderPath);
 
             if(rename($folderPath . "/" . $filename, $folderPath . "/" . $adjustedFilename)) {
                 DBAccess::updateQuery("UPDATE dateien SET dateiname = :adjustedFilename WHERE id = :id", [
@@ -254,6 +255,22 @@ class Upload {
                 ]);
             }
         }
+    }
+
+    /**
+     * Adjusts the filename to remove spaces, @ and &
+     * and uses tempnam if the name is longer than 70 characters
+     */
+    private static function adjustFileName($name, $folderPath = "upload"): String {
+        $adjustedFilename = str_replace(" ", "", $name);
+        $adjustedFilename = str_replace("&", "", $adjustedFilename);
+        $adjustedFilename = str_replace("@", "", $adjustedFilename);
+
+        if (strlen($adjustedFilename) > 70) {
+            $adjustedFilename = tempnam($folderPath, "");
+        }
+
+        return $adjustedFilename;
     }
 
 }

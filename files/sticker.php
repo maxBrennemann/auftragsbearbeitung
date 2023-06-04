@@ -39,12 +39,7 @@ if ($id == 0): ?>
         </h2>
         <p class="mt-2">Artikelnummer: <span id="motivId" data-variable="true"><?=$id?></span></p>
         <p>Erstellt am <input type="date" id="creationDate" value="<?=$stickerCollection->getCreationDate()?>"></p>
-        <div class="shopStatus">
-            <div class="shopStatusIcon">
-                <?=Icon::$iconAddInShop?>
-            </div> 
-            <button class="newButton" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
-        </div>
+        <button class="btn-primary" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
     </div>
     <div>
         <p>Weitere Dateien (SVGs, CorelDraw, ...):</p>
@@ -60,7 +55,7 @@ if ($id == 0): ?>
 <div class="cont2">
     <section class="defCont">
         <p class="pHeading">Aufkleber
-            <input class="titleInput invisible" value="<?=$stickerCollection->getAufkleber()->getAltTitle()?>" data-write="true" data-type="aufkleber" data-fun="changeAltTitle">
+            <input class="titleInput hidden" value="<?=$stickerCollection->getAufkleber()->getAltTitle()?>" data-write="true" data-type="aufkleber" data-fun="changeAltTitle" placeholder="Alternativtitel">
             <button class="mr-1 p-1 border-none bg-slate-50" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="aufkleber">
                 <?=Icon::$iconEditText?>
             </button>
@@ -80,6 +75,16 @@ if ($id == 0): ?>
             </button>
             <button class="infoButton" data-info="8">i</button>
         </p>
+        <div class="">
+            Status:
+            <?php if ($stickerCollection->getAufkleber()->isInShop()):?>
+                <a title="Aufkleber ist im Shop" target="_blank" href="<?=$stickerCollection->getAufkleber()->getShopLink()?>">
+                    <?=Icon::$iconInShop?>
+                </a>
+            <?php else: ?>
+                <?=Icon::$iconNotInShop?>
+            <?php endif; ?>
+        </div>
         <div>
             <span>Aufkleber Plott</span>
             <span class="right">
@@ -128,23 +133,12 @@ if ($id == 0): ?>
             </div>
             <textarea class="data-input" data-fun="productDescription" data-target="aufkleber" data-type= "long" data-write="true"><?=$stickerCollection->getAufkleber()->getDescription()?></textarea>
         </div>
-        <div class="shopStatus">
-            <div class="shopStatusIcon" title="<?=$stickerCollection->getAufkleber()->isInShop() == 1 ? "Aufkleber ist im Shop" : "Aufkleber ist nicht im Shop" ?>">
-            <?php if ($stickerCollection->getAufkleber()->isInShop()):?>
-            <a title="Aufkleber ist im Shop" target="_blank" href="<?=$stickerCollection->getAufkleber()->getShopLink()?>">
-            <?=Icon::$iconInShop?>
-            </a>
-            <?php else: ?>
-            <?=Icon::$iconNotInShop?>
-            <?php endif; ?>
-            </div>
-            <button class="transferBtn" id="transferAufkleber" data-binding="true" <?=$stickerCollection->getAufkleber()->getIsPlotted() == 1 ? "" : "disabled"?>>Aufkleber übertragen</button>
-        </div>
         <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $stickerImage->getAufkleberImages(), "imageCategory" => "aufkleber"])?>
+        <button class="transferBtn btn-primary w-full" id="transferAufkleber" data-binding="true" <?=$stickerCollection->getAufkleber()->getIsPlotted() == 1 ? "" : "disabled"?>>Aufkleber übertragen</button>
     </section>
     <section class="defCont">
         <p class="pHeading">Wandtattoo
-            <input class="titleInput invisible" value="<?=$stickerCollection->getWandtattoo()->getAltTitle()?>?>" data-write="true" data-type="wandtattoo" data-fun="changeAltTitle">
+            <input class="titleInput hidden" value="<?=$stickerCollection->getWandtattoo()->getAltTitle()?>" data-write="true" data-type="wandtattoo" data-fun="changeAltTitle" placeholder="Alternativtitel">
             <button class="mr-1 p-1 border-none bg-slate-50" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="wandtattoo">
                 <?=Icon::$iconEditText?>
             </button>
@@ -164,6 +158,16 @@ if ($id == 0): ?>
             </button>
             <button class="infoButton" data-info="9">i</button>
         </p>
+        <div class="">
+            Status: 
+            <?php if ($stickerCollection->getWandtattoo()->isInShop()):?>
+                <a title="Wandtattoo ist im Shop" target="_blank" href="<?=$stickerCollection->getWandtattoo()->getShopLink()?>">
+                    <?=Icon::$iconInShop?>
+                </a>
+            <?php else: ?>
+                <?=Icon::$iconNotInShop?>
+            <?php endif; ?>
+        </div>
         <div>
             <span>Wandtattoo</span>
             <span class="right">
@@ -185,23 +189,12 @@ if ($id == 0): ?>
             </div>
             <textarea class="data-input" data-fun="productDescription" data-target="wandtattoo" data-type="long" data-write="true"><?=$stickerCollection->getWandtattoo()->getDescription()?></textarea>
         </div>
-        <div class="shopStatus">
-            <div class="shopStatusIcon" title="<?=$stickerCollection->getWandtattoo()->isInShop() == 1 ? "Wandtattoo ist im Shop" : "Wandtattoo ist nicht im Shop" ?>">
-            <?php if ($stickerCollection->getWandtattoo()->isInShop()):?>
-            <a title="Wandtattoo ist im Shop" target="_blank" href="<?=$stickerCollection->getWandtattoo()->getShopLink()?>">
-            <?=Icon::$iconInShop?>
-            </a>
-            <?php else: ?>
-            <?=Icon::$iconNotInShop?>
-            <?php endif; ?>
-            </div>
-            <button class="transferBtn" id="transferWandtattoo" data-binding="true">Wandtattoo übertragen</button>
-        </div>
         <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $stickerImage->getWandtattooImages(), "imageCategory" => "wandtattoo"])?>
+        <button class="transferBtn btn-primary w-full" id="transferWandtattoo" data-binding="true">Wandtattoo übertragen</button>
     </section>
     <section class="defCont">
         <p class="pHeading">Textil
-            <input class="titleInput invisible" value="<?=$stickerCollection->getTextil()->getAltTitle()?>" data-write="true" data-type="textil" data-fun="changeAltTitle">
+            <input class="titleInput hidden" value="<?=$stickerCollection->getTextil()->getAltTitle()?>" data-write="true" data-type="textil" data-fun="changeAltTitle" placeholder="Alternativtitel">
             <button class="mr-1 p-1 border-none bg-slate-50" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="textil">
                 <?=Icon::$iconEditText?>
             </button>
@@ -221,6 +214,16 @@ if ($id == 0): ?>
             </button>
             <button class="infoButton" data-info="10">i</button>
         </p>
+        <div class="">
+            Status: 
+            <?php if ($stickerCollection->getTextil()->isInShop()):?>
+                <a title="Textil ist im Shop" target="_blank" href="<?=$stickerCollection->getTextil()->getShopLink()?>">
+                    <?=Icon::$iconInShop?>
+                </a>
+            <?php else: ?>
+                <?=Icon::$iconNotInShop?>
+            <?php endif; ?>
+        </div>
         <div>
             <span>Textil</span>
             <span class="right">
@@ -273,25 +276,14 @@ if ($id == 0): ?>
             </div>
             <textarea class="data-input" data-fun="productDescription" data-target="textil" data-type="long" data-write="true"><?=$stickerCollection->getTextil()->getDescription()?></textarea>
         </div>
-        <div class="shopStatus">
-            <div class="shopStatusIcon" title="<?=$stickerCollection->getTextil()->isInShop() == 1 ? "Textil ist im Shop" : "Textil ist nicht im Shop" ?>">
-            <?php if ($stickerCollection->getTextil()->isInShop()):?>
-            <a title="Textil ist im Shop" target="_blank" href="<?=$stickerCollection->getTextil()->getShopLink()?>">
-            <?=Icon::$iconInShop?>
-            </a>
-            <?php else: ?>
-            <?=Icon::$iconNotInShop?>
-            <?php endif; ?>
-            </div>
-            <button class="transferBtn" id="transferTextil" data-binding="true">Textil übertragen</button>
-        </div>
         <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $stickerImage->getTextilImages(), "imageCategory" => "textil"])?>
+        <button class="transferBtn btn-primary w-full" id="transferTextil" data-binding="true">Textil übertragen</button>
     </section>
 </div>
-<div class="defCont align-center">
-    <h2 class="text-left mb-2 font-semibold">Größen</h2>
+<div class="defCont">
+    <h2 class="mb-2 font-bold">Größen</h2>
     <div id="sizeTableWrapper"><?=$stickerCollection->getAufkleber()->getSizeTable()?></div>
-    <div>
+    <div class="mt-2">
         <p>Aufkleberpreisklasse</p>
         <div>
             <label for="price1">Preisklasse 1 (günstiger)</label>
@@ -302,7 +294,7 @@ if ($id == 0): ?>
             <input id="price2" type="radio" name="priceClass" <?=$stickerCollection->getAufkleber()->getPriceClass() == 1 ? "checked" : ""?>>
         </div>
     </div>
-    <div id="previewSizeText"><?=$stickerCollection->getAufkleber()->getSizeSummary()?></div>
+    <div id="previewSizeText" class="hidden text-left"><?=$stickerCollection->getAufkleber()->getSizeSummary()?></div>
 </div>
 <div class="defCont">
     <h2 class="font-semibold">Tags<button class="infoButton" data-info="3">i</button></h2>
@@ -311,8 +303,8 @@ if ($id == 0): ?>
         <input type="text" class="tagInput" maxlength="32" id="tagInput">
     </div>
     <p class="italic">Nicht erlaubt sind folgende Zeichen: !<;>;?=+#"°{}_$%.</p>
-    <button id="loadSynonyms" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Mehr Synonnyme laden</button>
-    <button id="showTaggroupManager" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Taggruppen</button>
+    <button id="loadSynonyms" class="btn-primary">Mehr Synonnyme laden</button>
+    <button id="showTaggroupManager" class="btn-primary">Taggruppen</button>
 </div>
 <div class="defCont">
     <h2 class="font-semibold">Weitere Infos</h2>
@@ -334,12 +326,7 @@ if ($id == 0): ?>
     </div>
     <p>Zusätzliche Infos und Notizen:<button class="infoButton" data-info="6">i</button></p>
     <textarea class="data-input" data-fun="additionalInfo" data-write="true"><?=$stickerCollection->getAdditionalInfo()?></textarea>
-    <div class="shopStatus">
-        <div class="shopStatusIcon">
-            <?=Icon::$iconAddInShop?>
-        </div> 
-        <button class="newButton marginTop30" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
-    </div>
+    <button class="btn-primary" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
 </div>
 <div class="defCont">
     <h2 class="font-semibold mb-2">Produktexport</h2>

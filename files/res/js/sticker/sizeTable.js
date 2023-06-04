@@ -295,12 +295,15 @@ class SizeTable {
 
         this.difficulty = this.getInitDifficulty();
         this.parseTable();
-        this.addListeners()
+        this.addNewLine();
     }
 
-    addListeners() {
-        const addNewLineBtn = document.getElementById("sizeTableWrapper").querySelector(".addToTable");
-        addNewLineBtn.addEventListener("click", this.add.bind(this));
+    addNewLine() {
+        const newRow = this.table.insertRow(-1);
+        for (let i = 0; i < 6; i++) {
+            let cell = newRow.insertCell(-1);
+            cell.classList.add("h-10");
+        }
     }
 
     parseTable() {

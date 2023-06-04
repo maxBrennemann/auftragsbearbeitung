@@ -224,36 +224,7 @@ class AufkleberWandtattoo extends Sticker {
 		$t->createByData($data, $column_names);
 		$t->setType("module_sticker_sizes");
 		$t->addActionButton("delete", "id");
-		$t->addNewLineButton();
         $t->addAction(null, Icon::$iconReset, "Preis zurücksetzen");
-
-        $pattern = [
-            "id_sticker" => [
-                "status" => "preset",
-                "value" => $this->getId(),
-            ],
-            "width" => [
-                "status" => "unset",
-                "value" => 1,
-                "type" => "cm",
-                "cast" => [],
-            ],
-            "height" => [
-                "status" => "unset",
-                "value" => 2,
-                "type" => "cm",
-                "cast" => [],
-            ],
-            "price" => [
-                "status" => "unset",
-                "value" => 3,
-                "type" => "float",
-                "cast" => ["separator" => ","],
-                "default" => null,
-            ],
-        ];
-
-		$t->defineUpdateSchedule(new UpdateSchedule("module_sticker_sizes", $pattern));
         $_SESSION[$t->getTableKey()] = serialize($t);
 		return $t->getTable();
     }
