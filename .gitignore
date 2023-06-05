@@ -22,7 +22,6 @@ files/res/js/min/*
 
 files/res/css/min/*
 !files/res/css/min/index.php
-!files/res/css/min/t-style.min.css
 
 !img/
 img/*
