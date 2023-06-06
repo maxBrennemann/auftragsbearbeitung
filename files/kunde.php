@@ -217,8 +217,8 @@
 			<div class="row">
 				<div class="width6">
 					<div class="buttonCont">
-						<button id="sendKundendaten" disabled onclick="kundendatenAbsenden()">Absenden</button>
-						<button id="sendKundendaten" onclick="showMore(event)" data-show="more">Mehr</button>
+						<button class="btn-primary" id="sendKundendaten" disabled onclick="kundendatenAbsenden()">Absenden</button>
+						<button class="btn-primary" id="sendKundendaten" onclick="showMore(event)" data-show="more">Mehr</button>
 					</div>
 				</div>
 			</div>
@@ -270,7 +270,7 @@
 			<div class="row">
 				<div class="width6">
 					<div class="buttonCont">
-						<button onclick="sendAddressForm()">Absenden</button>
+						<button class="btn-primary" onclick="sendAddressForm()">Absenden</button>
 					</div>
 				</div>
 			</div>
@@ -279,7 +279,7 @@
 		<div id="notizen">
 			<h3>Notizen</h3>
 			<div id="editNotes"><?=$kunde->getNotizen()?></div>
-			<button onclick="editText(event);">Bearbeiten</button>
+			<button class="btn-primary" onclick="editText(event);">Bearbeiten</button>
 		</div>
 		<div id="fahrzeuge">
 			<h3>Fahrzeuge</h3>

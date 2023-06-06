@@ -263,6 +263,70 @@ class Kunde implements StatisticsInterface {
 		return $text;
 	}
 
+	public static function addCustomer($data) {
+		switch ($data["type"]) {
+			case "company":
+				break;
+			case "private":
+				break;
+		}
+
+		$isSent = isset($_GET['oeffOderPriv']);
+		if ($isSent) {
+			$oeffOderPriv = $_GET['oeffOderPriv'];
+			$firmenname = isset($_GET['firmenname']) ? $_GET['firmenname'] : "";
+			$anredeAnspr = $_GET['anredeAnspr'];
+			$vornameAnspr = $_GET['vornameAnspr'];
+			$nachnameAnspr = $_GET['nachnameAnspr'];
+			$telmobilAnspr = $_GET['telMobilAnspr'];
+			$emailAnspr = $_GET['emailAnspr'];
+			$telAnspr = $_GET['telAnspr'];
+			$anrede = $_GET['anrede'];
+			$vorname = $_GET['vorname'];
+			$nachname = $_GET['nachname'];
+			$strasse = $_GET['strasse'];
+			$hausnummer = $_GET['hausnummer'];
+			$plz = $_GET['plz'];
+			$ort = $_GET['ort'];
+			$zusatz = $_GET['zusatz'];
+			$country = $_GET['country'];
+			$email = $_GET['emailaddress'];
+			$telfestnetz = $_GET['telfestnetz'];
+			$telmobil = $_GET['telmobil'];
+	
+			if ($plz == null) {
+				$plz = 0;
+			}
+	
+			$insertString = "INSERT INTO kunde (Firmenname, Anrede, Vorname, Nachname,";
+			$insertString .= " Straße, Hausnummer, Postleitzahl, Ort, Email,";
+			$insertString .= " TelefonFestnetz, TelefonMobil) VALUES";
+			$insertString .= "('$firmenname', '$anrede', '$vorname', '$nachname', ";
+			$insertString .= "'$strasse', '$hausnummer', $plz, '$ort', '$email', ";
+			$insertString .= "'$telfestnetz', '$telmobil')";
+	
+			/* insert customer data */
+			$insertString = "INSERT INTO kunde (Firmenname, Anrede, Vorname, Nachname, Email, TelefonFestnetz, TelefonMobil) VALUES ('$firmenname', '$anrede', '$vorname', '$nachname', '$email', '$telfestnetz', '$telmobil')";
+			$newCustomerId = DBAccess::insertQuery($insertString);
+	
+			/* insert address data */
+			$insertString = "INSERT INTO address (id_customer, strasse, hausnr, plz, ort, zusatz, country) VALUES ($newCustomerId, '$strasse', '$hausnummer', $plz, '$ort', '$zusatz', '$country')";
+			$insertID = DBAccess::insertQuery($insertString);
+	
+			/* update customer data */
+			DBAccess::updateQuery("UPDATE kunde SET id_address_primary = $insertID WHERE Kundennummer = $newCustomerId");
+	
+			/* insert ansprechpartner data */
+			if ($nachnameAnspr != "") {
+				$kdnr = $newCustomerId;
+				$insertString = "INSERT INTO ansprechpartner (Kundennummer, Vorname, Nachname,";
+				$insertString .= " Email, Durchwahl, Mobiltelefonnummer) VALUES ($kdnr, '$vornameAnspr', ";
+				$insertString .= "'$nachnameAnspr', '$emailAnspr', '$telAnspr', '$telmobilAnspr')";
+				DBAccess::insertQuery($insertString);
+			}
+		}
+	}
+
 }
 
 ?>

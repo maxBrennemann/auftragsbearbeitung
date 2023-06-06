@@ -107,8 +107,7 @@ if ($auftragsId == -1): ?>
 		<p class="font-bold">Kundeninfo</p>
 		<p><?=$kunde->getVorname()?> <?=$kunde->getNachname()?></p>
 		<p><?=$kunde->getFirmenname()?></p>
-		<u>Adresse:</u>
-		<p><?=$kunde->getStrasse()?> <?=$kunde->getHausnummer()?></p>
+		<p class="mt-2"><?=$kunde->getStrasse()?> <?=$kunde->getHausnummer()?></p>
 		<p><?=$kunde->getPostleitzahl()?> <?=$kunde->getOrt()?></p>
 		<p><?=$kunde->getTelefonFestnetz()?></p>
 		<p><?=$kunde->getTelefonMobil()?></p>
@@ -116,7 +115,7 @@ if ($auftragsId == -1): ?>
 		<p id="showAnspr"><?php if ($ansprechpartner != -1): ?>Ansprechpartner: <?=$ansprechpartner['Vorname']?> <?=$ansprechpartner['Nachname']?><?php endif;?></p>
 		<span>Ansprechpartner ändern<button class="actionButton" onclick="changeContact()">✎</button></span>
 		<br>
-		<a href="<?=Link::getPageLink("kunde")?>?id=<?=$auftrag->getKundennummer()?>">Kunde <span id="kundennummer"><?=$auftrag->getKundennummer()?></span> zeigen</a>
+		<a class="text-blue-500	font-semibold" href="<?=Link::getPageLink("kunde")?>?id=<?=$auftrag->getKundennummer()?>">Kunde <span id="kundennummer"><?=$auftrag->getKundennummer()?></span> zeigen</a>
 	</div>
 	<div class="defCont auftragsinfo">
 		<p class="font-bold">Auftrag <span id="auftragsnummer"><?=$auftrag->getAuftragsnummer()?></span></p>

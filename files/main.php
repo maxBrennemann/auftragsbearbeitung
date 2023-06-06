@@ -21,7 +21,7 @@
 <div>
 	<ul class="mainUl auto-rows-min">
 		<li class="rounded-lg bg-gray-100">
-			<a class="block px-4 py-8" href="<?=$neuerKunde?>"><span><?=Icon::$iconPersonAdd?></span> Neuen Kunden erstellen</a>
+			<a class="block px-4 py-8" href="<?=$neuerKunde?>"><?=Icon::$iconPersonAdd?> Neuen Kunden erstellen</a>
 		</li>
 		<li class="px-4 py-8 rounded-lg bg-gray-100">
 			<input id="kundeninput" type="text" class="w-32 rounded-md p-1">
@@ -78,4 +78,3 @@
 		</div>
 	</div>
 </div>
-<script src="<?=Link::getResourcesShortLink("main-helper.js", "js")?>"></script>
