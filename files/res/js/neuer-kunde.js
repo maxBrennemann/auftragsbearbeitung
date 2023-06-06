@@ -93,7 +93,7 @@ function sendCustomerData() {
 
     ajax.post({
         r: "addCustomer",
-        data: object,
+        data: JSON.stringify(object),
     }).then(r => {
         if (r.status == "success") {
             location.href = r.link;

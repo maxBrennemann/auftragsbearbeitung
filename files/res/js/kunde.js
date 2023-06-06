@@ -1,18 +1,10 @@
-var changedData = {};
-var isOnEdit = true;
-var search = document.getElementById("performSearch");
-
-var addressSet = [];
-var addressCount = 0;
-var addrCount = document.getElementById("addrCount");
-
-if (search != null) {
-    search.addEventListener("keyup", function (event) {
-        if (event.key === "Enter") {
-            location.href = event.target.dataset.url + "?mode=search&query=" + event.target.value;
-        }
-    });
-}
+const globalProperties = {
+    changedData: {},
+    search: null,
+    addressSet: [],
+    addressCount: 0,
+    addrCount: null,
+};
 
 function initialize() {
     var inputs = document.getElementById("showKundendaten").getElementsByTagName("input");
@@ -44,7 +36,7 @@ function initialize() {
                     break;
             }
 
-            changedData[column] = e.target.value;
+            globalProperties.changedData[column] = e.target.value;
         }, false);
     }
 
@@ -54,39 +46,39 @@ function initialize() {
         var width = window.innerWidth;
         
         if (mouseX < width / 2) {
-            if (addressCount > 0)
-                addressCount--;
+            if (globalProperties.addressCount > 0)
+                globalProperties.addressCount--;
             console.log("left");
         } else {
-            if (addressCount < addressSet.length - 1)
-                addressCount++;
+            if (globalProperties.addressCount < globalProperties.addressSet.length - 1)
+                globalProperties.addressCount++;
             console.log("right");
         }
 
-        document.getElementById("strasse").value = addressSet[addressCount].strasse;
-        document.getElementById("hausnr").value = addressSet[addressCount].hausnr;
-        document.getElementById("plz").value = addressSet[addressCount].plz;
-        document.getElementById("ort").value = addressSet[addressCount].ort;
+        document.getElementById("strasse").value = globalProperties.addressSet[globalProperties.addressCount].strasse;
+        document.getElementById("hausnr").value = globalProperties.addressSet[globalProperties.addressCount].hausnr;
+        document.getElementById("plz").value = globalProperties.addressSet[globalProperties.addressCount].plz;
+        document.getElementById("ort").value = globalProperties.addressSet[globalProperties.addressCount].ort;
 
-        addrCount.innerHTML = (addressCount + 1) + "/" + addressSet.length;
+        globalProperties.addrCount.innerHTML = (globalProperties.addressCount + 1) + "/" + globalProperties.addressSet.length;
     }, false);
 
     var kdnr = document.getElementById("kdnr").value;
     getAddresses = new AjaxCall(`getReason=getAddresses&kdnr=${kdnr}`, "POST", window.location.href);
     getAddresses.makeAjaxCall(function (response) {
-        addressSet = JSON.parse(response);
-        addrCount.innerHTML = (addressCount + 1) + "/" + addressSet.length;
+        globalProperties.addressSet = JSON.parse(response);
+        globalProperties.addrCount.innerHTML = (globalProperties.addressCount + 1) + "/" + globalProperties.addressSet.length;
     });
 }
 
 function kundendatenAbsenden() {
     var kdnr = document.getElementById("kdnr").value;
-    var data = `getReason=setData&type=kunde&kdnr=${kdnr}&addressCount=${addressCount}&`;
+    var data = `getReason=setData&type=kunde&kdnr=${kdnr}&addressCount=${globalProperties.addressCount}&`;
     var count = 0;
 
-    for (var key in changedData) {
-        if (changedData.hasOwnProperty(key)) {
-            data += key + "=" + changedData[key] + "&" + "dataKey" + count + "=" + key + "&";
+    for (var key in globalProperties.changedData) {
+        if (globalProperties.changedData.hasOwnProperty(key)) {
+            data += key + "=" + globalProperties.changedData[key] + "&" + "dataKey" + count + "=" + key + "&";
             count++;
         }
     }
@@ -102,7 +94,7 @@ function kundendatenAbsenden() {
             infoSaveSuccessfull();
         
         /* reset object, so that values are not sended twice */
-        changedData = {};
+        globalProperties.changedData = {};
     });
 }
 
@@ -114,13 +106,12 @@ function showMore(e) {
     var website = document.getElementById("websiteCont");
     var divs = document.getElementById("showKundendaten").getElementsByClassName("row");
     var pseudo = document.getElementById("pseudo");
-    var addrCount = document.getElementById("addrCount");
     if (e.target.dataset.show == "more") {
         e.target.dataset.show = "less";
         e.target.innerHTML = "Weniger";
         website.style.display = "";
         pseudo.style.display = "";
-        addrCount.style.display = "";
+        globalProperties.addrCount.style.display = "";
         
         divs[3].classList.add("background");
         divs[4].classList.add("background");
@@ -130,7 +121,7 @@ function showMore(e) {
         e.target.innerHTML = "Mehr";
         website.style.display = "none";
         pseudo.style.display = "none";
-        addrCount.style.display = "none";
+        globalProperties.addrCount.style.display = "none";
 
         divs[3].classList.remove("background");
         divs[4].classList.remove("background");
@@ -167,31 +158,6 @@ function getServerMessage() {
     });
 }
 
-function editText(event) {
-    if (isOnEdit) {
-        var editText = document.getElementById("editNotes");
-        editText.contentEditable = true;
-        editText.style.backgroundColor = "#FFFFFF";
-        editText.style.borderRadius = "6px";
-        editText.style.padding = "5px";
-        event.target.innerHTML = "Absenden";
-        isOnEdit = false;
-    } else {
-        var kundennummer = document.getElementById("kdnr").value;
-        var notes = document.getElementById("editNotes").innerHTML;
-        let sendNotes = new AjaxCall(`getReason=setNotes&kdnr=${kundennummer}&notes=${notes}`, "POST", window.location.href);
-        sendNotes.makeAjaxCall(function (res) {
-            console.log(res);
-            if (res == "ok")
-                infoSaveSuccessfull("success");
-            else
-                infoSaveSuccessfull();
-        });
-    }
-}
-
-initialize();
-
 /* functions for addresses */
 function showAddressForm() {
     let div = document.getElementById("addressForm");
@@ -215,7 +181,7 @@ function sendAddressForm() {
 
     var add = new AjaxCall(params, "POST", window.location.href);
     add.makeAjaxCall(function (response) {
-        addressSet = JSON.parse(response);
+        globalProperties.addressSet = JSON.parse(response);
         infoSaveSuccessfull("success");
     });
 }
@@ -267,5 +233,48 @@ function deleteRow(key, type, pointer) {
         document.getElementById("home_link").click();
     } else {
         /* Abbruch */
+    }
+}
+
+if (document.readyState !== 'loading' ) {
+    initCustomer();
+    initialize();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        initCustomer();
+        initialize();
+    });
+}
+
+function initCustomer() {
+    const notesTextarea = document.getElementById('notesTextarea');
+    notesTextarea.addEventListener('input', function () {
+        notesTextarea.style.height = 'auto';
+        notesTextarea.style.height = notesTextarea.scrollHeight + 'px';
+
+        const btn = document.getElementById('btnSendNotes');
+        btn.disabled = false;
+    });
+
+    const btn = document.getElementById('btnSendNotes');
+    btn.addEventListener('click', function () {
+        const kundennummer = document.getElementById("kdnr").value;
+        const notes = document.getElementById("notesTextarea").value;
+
+        ajax.post({
+            r: 'setNotes',
+            kdnr: kundennummer,
+            notes: notes
+        });
+    });
+
+    globalProperties.addrCount = document.getElementById("addrCount");
+    globalProperties.search = document.getElementById("performSearch");
+    if (globalProperties.search != null) {
+        globalProperties.search.addEventListener("keyup", function (event) {
+            if (event.key === "Enter") {
+                location.href = event.target.dataset.url + "?mode=search&query=" + event.target.value;
+            }
+        });
     }
 }

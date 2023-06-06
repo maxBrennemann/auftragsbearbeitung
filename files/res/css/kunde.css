@@ -142,12 +142,6 @@ a[href="#"] {
     }
 }
 
-.orderCard {
-    width: 25%;
-    height: auto;
-    flex-grow: 1;
-}
-
 /* class for round + button */
 .addToTable {
     width: 40px;

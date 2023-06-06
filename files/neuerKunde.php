@@ -54,6 +54,10 @@
 				Telefon Mobil
 				<input type="tel" form="cForm" name="telmobil" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
 			</label>
+			<label>
+				Website
+				<input type="url" form="cForm" name="website" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+			</label>
 			<label class="block">
 				Notizen
 				<textarea name="notes" form="cForm" class="block rounded-sm m-1 p-1 w-80"></textarea>

@@ -472,46 +472,27 @@ class Auftrag implements StatisticsInterface {
 	/*
 	 * creates a div card with the order details
 	*/
-	public function getOrderCard() {
-		$archievedBtn = $this->isArchiviert ? "<button>archiviert</button>" : "<!-- Auftrag archiviert -->";
-		$orderTitle = $this->Auftragsbezeichnung;
-		$orderDescription = $this->Auftragsbeschreibung;
+	public function getOrderCardData() {
+		$data = DBAccess::selectQuery("SELECT Datum, Termin, Fertigstellung FROM auftrag WHERE Auftragsnummer = :orderId", [
+			"orderId" => $this->getAuftragsnummer(),
+		]);
+		$data = $data[0];
 
-		$data = DBAccess::selectQuery("SELECT Datum, Termin, Fertigstellung FROM auftrag WHERE Auftragsnummer = $this->Auftragsnummer")[0];
 		$date = $data['Datum'];
 		$deadline = $data['Termin'];
 		$finished = $data['Fertigstellung'];
 
-		$invoice =  $this->rechnungsnummer == 0 ? "" : "Rechnung Nr. $this->rechnungsnummer";
-		$summe = $this->rechnungsnummer != 0 ? "<button>" . $this->preisBerechnen() . "€</button>" : "-€";
-
-		$html = "
-		<div class=\"innerDefCont orderCard\">
-			<h3>$orderTitle</h3>
-			<a href=\"" . Link::getPageLink("auftrag") . "?id=$this->Auftragsnummer" . "\">Zum Auftrag $this->Auftragsnummer</a>
-			<p>$orderDescription</p>
-			<table>
-				<tr>
-					<th>Datum</th>
-					<td>$date</td>
-				</tr>
-				<tr>
-					<th>Termin</th>
-					<td>$deadline</td>
-				</tr>
-				<tr>
-					<th>Fertigstellung</th>
-					<td>$finished</td>
-				</tr>
-			</table>
-			<br>
-			$archievedBtn
-			$invoice
-			<br>
-			<p>Auftragssumme: $summe </p>
-		</div>";
-
-		return $html;
+		return [
+			"id" => $this->Auftragsnummer,
+			"archived" => $this->isArchiviert,
+			"orderTitle" => $this->Auftragsbezeichnung,
+			"orderDescription" => $this->Auftragsbeschreibung,
+			"date" => $date,
+			"deadline" => $deadline,
+			"finished" => $finished,
+			"invoice" => $this->rechnungsnummer,
+			"summe" => $this->rechnungsnummer != 0 ? $this->preisBerechnen() : 0,
+		];
 	}
 
 	/* this function fetches the associated notes from the db */

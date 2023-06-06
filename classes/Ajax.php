@@ -109,10 +109,11 @@ class Ajax {
 			break;
 			case "addCustomer":
 				$data = $_POST['data'];
+				$data = json_decode($data, true);
 				require_once('classes/project/Kunde.php');
 				$customerId = Kunde::addCustomer($data);
 				$link = Link::getPageLink("kunde");
-				$link .= "&id=" . $customerId;
+				$link .= "?id=" . $customerId;
 
 				echo json_encode([
 					"status" => "success",
@@ -511,9 +512,13 @@ class Ajax {
 				AttributeGroup::getAttributes($attGroupId);
 			break;
 			case "setNotes":
-				$kdnr = $_POST['kdnr'];
+				$kdnr = (int) $_POST['kdnr'];
 				$note = $_POST['notes'];
-				DBAccess::updateQuery("UPDATE kunde_extended SET notizen = '$note' WHERE kundennummer = $kdnr");
+				DBAccess::updateQuery("UPDATE kunde_extended SET notizen = :notes WHERE kundennummer = :customerId", [
+					"notes" => $note,
+					"customerId" => $kdnr,
+				]);
+				
 				echo "ok";
 			break;
 			case "addLeistung":

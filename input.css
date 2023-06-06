@@ -4,7 +4,7 @@
 
 @layer components {
     .btn-primary {
-      @apply px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none;
+      @apply px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none disabled:bg-gray-300;
     }
 }
 
