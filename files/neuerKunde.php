@@ -74,11 +74,11 @@
 			</label>
 			<label class="block">
 				Vorname
-				<input form="cForm" type="text" name="prename" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input form="cForm" type="text" name="contactPrename" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Nachname
-				<input type="text" form="cForm" name="surname" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="text" form="cForm" name="contactSurname" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Email
