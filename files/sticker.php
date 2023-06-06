@@ -190,7 +190,7 @@ if ($id == 0): ?>
             <textarea class="data-input" data-fun="productDescription" data-target="wandtattoo" data-type="long" data-write="true"><?=$stickerCollection->getWandtattoo()->getDescription()?></textarea>
         </div>
         <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $stickerImage->getWandtattooImages(), "imageCategory" => "wandtattoo"])?>
-        <button class="transferBtn btn-primary w-full" id="transferWandtattoo" data-binding="true">Wandtattoo übertragen</button>
+        <button class="transferBtn btn-primary w-full" id="transferWandtattoo" data-binding="true" <?=$stickerCollection->getWandtattoo()->getIsWalldecal() == 1 ? "" : "disabled"?>>Wandtattoo übertragen</button>
     </section>
     <section class="defCont">
         <p class="pHeading">Textil
@@ -243,6 +243,24 @@ if ($id == 0): ?>
             </span>
         </div>
         <div>
+            <span>Personalisierbar</span>
+            <span class="right">
+                <label class="switch">
+                    <input type="checkbox" <?=$stickerCollection->getTextil()->getIsCustomizable() == 1 ? "checked" : ""?> data-variable="true">
+                    <span class="slider round" id="makeCustomizable" data-binding="true"></span>
+                </label>
+            </span>
+        </div>
+        <div>
+            <span>Im Konfigurator anzeigen</span>
+            <span class="right">
+                <label class="switch">
+                    <input type="checkbox" <?=$stickerCollection->getTextil()->getIsForConfigurator() == 1 ? "checked" : ""?> data-variable="true">
+                    <span class="slider round" id="makeForConfig" data-binding="true"></span>
+                </label>
+            </span>
+        </div>
+        <div>
             <object id="svgContainer" data="<?=$stickerImage->getSVGIfExists($stickerCollection->getTextil()->getIsColorable())?>" type="image/svg+xml" class="innerDefCont imageMovableContainer"></object>
             <br>
             <?php if ($stickerCollection->getTextil()->getIsColorable() == 1): ?>
@@ -277,7 +295,7 @@ if ($id == 0): ?>
             <textarea class="data-input" data-fun="productDescription" data-target="textil" data-type="long" data-write="true"><?=$stickerCollection->getTextil()->getDescription()?></textarea>
         </div>
         <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $stickerImage->getTextilImages(), "imageCategory" => "textil"])?>
-        <button class="transferBtn btn-primary w-full" id="transferTextil" data-binding="true">Textil übertragen</button>
+        <button class="transferBtn btn-primary w-full" id="transferTextil" data-binding="true" <?=$stickerCollection->getTextil()->getIsShirtcollection() == 1 ? "" : "disabled"?>>Textil übertragen</button>
     </section>
 </div>
 <div class="defCont">

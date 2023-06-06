@@ -527,6 +527,26 @@ fnNames.click_exportToggle = function(e) {
     });
 }
 
+fnNames.click_makeCustomizable = function(e) {
+    ajax.post({
+        id: mainVariables.motivId.innerHTML,
+        r: "makeCustomizable"
+    }).then(r => {
+        const svgContainer = document.getElementById("svgContainer");
+        svgContainer.data = r.url;
+    });
+}
+
+fnNames.click_makeForConfig = function(e) {
+    ajax.post({
+        id: mainVariables.motivId.innerHTML,
+        r: "makeForConfig"
+    }).then(r => {
+        const svgContainer = document.getElementById("svgContainer");
+        svgContainer.data = r.url;
+    });
+}
+
 if (document.readyState !== 'loading' ) {
     initSticker();
 } else {

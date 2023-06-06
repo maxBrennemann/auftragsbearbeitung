@@ -13,6 +13,8 @@ return new class extends UpdateMySql {
         ",
         "ALTER TABLE `kunde_extended` CHANGE `Faxnummer` `Faxnummer` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
         ",
+        "ALTER TABLE `module_sticker_sticker_data` ADD `is_customizable` BOOLEAN NOT NULL DEFAULT FALSE AFTER `is_colorable`, ADD `is_for_configurator` BOOLEAN NOT NULL DEFAULT FALSE AFTER `is_customizable`;
+        ",
     ];
 
     public function upgrade() {

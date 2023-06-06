@@ -61,6 +61,14 @@ class Textil extends Sticker {
         return $this->isColorable;
     }
 
+    public function getIsCustomizable() {
+        return $this->stickerData["is_customizable"];
+    }
+
+    public function getIsForConfigurator() {
+        return $this->stickerData["is_for_configurator"];
+    }
+
     public function getAltTitle($default = ""): String {
         return parent::getAltTitle(self::TYPE);
     }
@@ -97,6 +105,14 @@ class Textil extends Sticker {
     public function toggleIsColorable() {
         DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_colorable` = NOT `is_colorable` WHERE id = :id", ["id" => $this->getId()]);
         $this->isColorable = !$this->isColorable;
+    }
+
+    public function toggleCustomizable() {
+        DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_customizable` = NOT `is_customizable` WHERE id = :id", ["id" => $this->getId()]);
+    }
+
+    public function toggleConfig() {
+        DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_for_configurator` = NOT `is_for_configurator` WHERE id = :id", ["id" => $this->getId()]);
     }
 
     /* returns the image array for the current svg */

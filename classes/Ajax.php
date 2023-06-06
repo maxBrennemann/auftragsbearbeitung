@@ -1235,6 +1235,20 @@ class Ajax {
 				
 				echo json_encode(["url" => $url]);
 			break;
+			case "makeCustomizable":
+				$id = (int) $_POST["id"];
+
+				require_once('classes/project/modules/sticker/Textil.php');
+				$textil = new Textil($id);
+				$textil->toggleCustomizable();
+			break;
+			case "makeForConfig":
+				$id = (int) $_POST["id"];
+
+				require_once('classes/project/modules/sticker/Textil.php');
+				$textil = new Textil($id);
+				$textil->toggleConfig();
+			break;
 			case "createNewSticker":
 				require_once('classes/project/modules/sticker/Sticker.php');
 				$title = (String) $_POST["newTitle"];
