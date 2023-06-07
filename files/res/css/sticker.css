@@ -209,11 +209,6 @@ input:checked + .slider:before {
     height: 250px;
 }
 
-#preiskategorie_dropdown {
-    margin-left: -25px;
-    cursor: pointer;
-}
-
 .selectReplacer {
     display: none;
     border: 1px solid grey;
@@ -268,10 +263,6 @@ input:checked + .slider:before {
 .warningHead * {
     vertical-align: middle;
     margin-right: 10px;
-}
-
-.revised .right {
-    float: right;
 }
 
 #delete-menu {

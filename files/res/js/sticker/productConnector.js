@@ -79,11 +79,13 @@ export default class ProductConnector {
         showSearchResultsDiv.innerHTML = "";
         this.results.forEach(r => {
             const link = document.createElement("a");
+            link.classList.add("text-blue-500", "font-semibold");
             link.href = r.link;
             link.target = "_blank";
             link.innerHTML = r.name;
 
             const span = document.createElement("span");
+            span.classList.add("ml-2");
             span.appendChild(document.createTextNode(`Artikel ${r.id}: `));
             span.appendChild(link);
 
@@ -92,7 +94,6 @@ export default class ProductConnector {
             
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
-            checkbox.value = r.name;
             checkbox.addEventListener("click", e => this.connnectArticles(e));
             checkbox.dataset.id = r.id;
             

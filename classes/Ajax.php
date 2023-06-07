@@ -1101,6 +1101,7 @@ class Ajax {
 			case "writeSpeicherort":
 				$id = (int) $_POST["id"];
 				$content = (String) $_POST["content"];
+				$content = urldecode($content);
 
 				$query = "UPDATE module_sticker_sticker_data SET directory_name = :content WHERE id = :id;";
 				DBAccess::updateQuery($query, ["id" => $id, "content" => $content]);

@@ -2,13 +2,15 @@ import { click_textGeneration, click_showTextSettings, click_iterateText } from 
 import { loadTags, showTaggroupManager, addTag } from "./sticker/tagManager.js";
 import ProductConnector from "./sticker/productConnector.js";
 import { initSVG, moveInit, click_makeColorable } from "./sticker/imageManager.js";
-import { readSizeTable } from "./sticker/sizeTable.js";
+import { click_addNewWidth } from "./sticker/sizeTable.js";
 
 const fnNames = {};
 fnNames.click_makeColorable = click_makeColorable;
 fnNames.click_textGeneration = click_textGeneration;
 fnNames.click_showTextSettings = click_showTextSettings;
 fnNames.click_iterateText = click_iterateText;
+fnNames.click_addNewWidth = click_addNewWidth;
+
 const mainVariables = {
     productConnect: [],
     pending: false,
@@ -22,16 +24,7 @@ function initSticker() {
     initBindings();
     moveInit();
 
-    var pk_dropdown = document.getElementById("preiskategorie_dropdown");
-    if (pk_dropdown != null) {
-        pk_dropdown.addEventListener("click", preisListenerTextil, false);
-        document.getElementById("preiskategorie").addEventListener("click", preisListenerTextil, false);
-
-        document.title = "b-schriftung - Motiv " + mainVariables.motivId.innerHTML + " " + document.getElementById("name").innerHTML;
-
-        /* from sizeTable.js */
-        readSizeTable();
-    }
+    document.title = "b-schriftung - Motiv " + mainVariables.motivId.innerHTML + " " + document.getElementById("name").innerHTML;
 
     var input = document.getElementById('name');
     input.addEventListener('input', resizeTitle);
@@ -265,32 +258,12 @@ function transfer(type, text) {
 
 /* todo: größe der neuen daten ergänzen und preise updatebar machen */
 
-function preisListenerTextil() {
-    document.getElementById("selectReplacerPreiskategorie").classList.add("selectReplacerShow");
-}
-
-/* https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_dropdown */
-window.addEventListener("click", function(event) {
-    if (!event.target.matches('.selectReplacer') && !event.target.matches('#preiskategorie_dropdown') && !event.target.matches('#preiskategorie')) {
-        var dropdowns = document.getElementsByClassName("selectReplacer");
-        var i;
-        for (i = 0; i < dropdowns.length; i++) {
-            var openDropdown = dropdowns[i];
-            if (openDropdown.classList.contains('selectReplacerShow')) {
-                openDropdown.classList.remove('selectReplacerShow');
-            }
-        }
-    }
-}, false);
-
 fnNames.click_changePreiskategorie = function(e) {
-    var element = document.getElementById("preiskategorie");
-    element.value = e.target.innerHTML;
-    var kategorieId = e.target.dataset.kategorieId;
-    document.getElementById("showPrice").innerHTML = e.target.dataset.defaultPrice + "€";
+    const target = e.currentTarget;
+    const value = target.value;
 
     ajax.post({
-        categoryId: kategorieId,
+        categoryId: value,
         id: mainVariables.motivId.innerHTML,
         r: "changePreiskategorie",
     }, true).then(response => {

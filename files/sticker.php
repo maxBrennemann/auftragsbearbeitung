@@ -20,6 +20,8 @@ if (isset($_GET['id'])) {
     $stickerTagManager = new StickerTagManager($id, $stickerCollection->getName());
     $stickerChangelog = new StickerChangelog($id);
     $chatGPTConnection = new ChatGPTConnection($id);
+
+    $priceType = $stickerCollection->getTextil()->getPriceType();
 }
 
 if ($id == 0): ?>
@@ -38,8 +40,8 @@ if ($id == 0): ?>
             <?php endif; ?>
         </h2>
         <p class="mt-2">Artikelnummer: <span id="motivId" data-variable="true"><?=$id?></span></p>
-        <p>Erstellt am <input type="date" id="creationDate" value="<?=$stickerCollection->getCreationDate()?>"></p>
-        <button class="btn-primary" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
+        <p>Erstellt am <input type="date" class="rounded-sm" id="creationDate" value="<?=$stickerCollection->getCreationDate()?>"></p>
+        <button class="btn-primary mt-2" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
     </div>
     <div>
         <p>Weitere Dateien (SVGs, CorelDraw, ...):</p>
@@ -262,7 +264,6 @@ if ($id == 0): ?>
         </div>
         <div>
             <object id="svgContainer" data="<?=$stickerImage->getSVGIfExists($stickerCollection->getTextil()->getIsColorable())?>" type="image/svg+xml" class="innerDefCont imageMovableContainer"></object>
-            <br>
             <?php if ($stickerCollection->getTextil()->getIsColorable() == 1): ?>
             <?php foreach ($stickerCollection->getTextil()->textilColors as $color):?>
             <button class="colorBtn" style="background:<?=$color["hexCol"]?>" title="<?=$color["name"]?>" data-binding="true" data-fun="changeColor" data-color="<?=$color["hexCol"]?>"></button>
@@ -270,17 +271,25 @@ if ($id == 0): ?>
             <?php endif; ?>
         </div>
         <div>
-            <span>Preiskategorie:<br>
-                <input class="postenInput" id="preiskategorie">
-                <span id="preiskategorie_dropdown">▼</span>
-                <div class="selectReplacer" id="selectReplacerPreiskategorie">
-                    <p class="optionReplacer" data-binding="true" data-fun="changePreiskategorie" data-default-price="20,52" data-kategorie-id="58" title="Die Klebefux Standardkategorie für Textilmotive">Klebefux Standard</p>
-                    <p class="optionReplacer" data-binding="true" data-fun="changePreiskategorie" data-kategorie-id="57" data-default-price="23,59" title="Die Klebefux Premiumkategorie für Textilmotive">Klebefux Plus</p>
-                    <p class="optionReplacer" data-binding="true" data-fun="changePreiskategorie" data-kategorie-id="59" data-default-price="30,78" title="Die Gwandlaus Textilkategorie für einfache Motive">Gwandlaus Minus</p>
-                    <p class="optionReplacer" data-binding="true" data-fun="changePreiskategorie" data-kategorie-id="60" data-default-price="33,85" title="Die Gwandlaus Standardkategorie für Textilmotive">Gwandlaus Standard</p>
-                </div>
-            </span>
-            <span style="margin-left: 7px" id="showPrice"><?=$stickerCollection->getTextil()->getPriceTextilFormatted()?></span>
+            <p>Preiskategorie</p>
+            <div>
+                <label class="block bg-white rounded-3xl p-1 pl-2 mt-1" title="Die Klebefux Standardkategorie für Textilmotive">
+                    <input type="radio" name="textilPriceClass" value="58" data-binding="true" data-fun="changePreiskategorie" <?=$priceType == 58 ? "checked" : "" ?>>
+                    <span>Klebefux Standard (20,52 €)</span>
+                </label>
+                <label class="block bg-white rounded-3xl p-1 pl-2 mt-1" title="Die Klebefux Premiumkategorie für Textilmotive">
+                    <input type="radio" name="textilPriceClass" value="57" data-binding="true" data-fun="changePreiskategorie" <?=$priceType == 57 ? "checked" : "" ?>>
+                    <span>Klebefux Plus (23,59 €)</span>
+                </label>
+                <label class="block bg-white rounded-3xl p-1 pl-2 mt-1" title="Die Gwandlaus Textilkategorie für einfache Motive">
+                    <input type="radio" name="textilPriceClass" value="59" data-binding="true" data-fun="changePreiskategorie" <?=$priceType == 59 ? "checked" : "" ?>>
+                    <span>Gwandlaus Minus (30,78 €)</span>
+                </label>
+                <label class="block bg-white rounded-3xl p-1 pl-2 mt-1" title="Die Gwandlaus Standardkategorie für Textilmotive">
+                    <input type="radio" name="textilPriceClass" value="60" data-binding="true" data-fun="changePreiskategorie" <?=$priceType == 60 ? "checked" : "" ?>>
+                    <span>Gwandlaus Standard (33,85 €)</span>
+                </label>
+            </div>
         </div>
         <div class="mt-2">
             <div>
@@ -300,16 +309,35 @@ if ($id == 0): ?>
 </div>
 <div class="defCont">
     <h2 class="mb-2 font-bold">Größen</h2>
-    <div id="sizeTableWrapper"><?=$stickerCollection->getAufkleber()->getSizeTable()?></div>
-    <div class="mt-2">
-        <p>Aufkleberpreisklasse</p>
-        <div>
-            <label for="price1">Preisklasse 1 (günstiger)</label>
-            <input id="price1" type="radio" name="priceClass" <?=$stickerCollection->getAufkleber()->getPriceClass() == 0 ? "checked" : ""?>>
+    <div id="sizeTableWrapper">
+        <?=$stickerCollection->getAufkleber()->getSizeTable()?>
+    </div>
+    <div class="grid grid-cols-2 mt-2">
+        <div class="innerDefCont">
+            <label>
+                <p>Breite</p>
+                <input type="text" id="newWidth" class="w-48 rounded-md p-2">
+            </label>
+            <label>
+                <p>Preis</p>
+                <input type="text" id="newPrice" class="w-48 rounded-md p-2">
+            </label>
+            <button class="btn-primary block mt-2" data-binding="true" data-fun="addNewWidth">Hinzufügen</button>
         </div>
-        <div>
-            <label for="price2">Preisklasse 2 (teurer)</label>
-            <input id="price2" type="radio" name="priceClass" <?=$stickerCollection->getAufkleber()->getPriceClass() == 1 ? "checked" : ""?>>
+        <div class="innerDefCont">
+            <p>Aufkleberpreisklasse</p>
+            <div>
+                <label for="price1">
+                    <input id="price1" type="radio" name="priceClass" <?=$stickerCollection->getAufkleber()->getPriceClass() == 0 ? "checked" : ""?>>
+                    <span>Preisklasse 1 (günstiger)</span>
+                </label>
+            </div>
+            <div>
+                <label for="price2">
+                    <input id="price2" type="radio" name="priceClass" <?=$stickerCollection->getAufkleber()->getPriceClass() == 1 ? "checked" : ""?>>
+                    <span>Preisklasse 2 (teurer)</span>
+                </label>
+            </div>
         </div>
     </div>
     <div id="previewSizeText" class="hidden text-left"><?=$stickerCollection->getAufkleber()->getSizeSummary()?></div>
@@ -326,57 +354,60 @@ if ($id == 0): ?>
 </div>
 <div class="defCont">
     <h2 class="font-semibold">Weitere Infos</h2>
-    <div class="revised">
+    <div class="mt-2">
         <span>Wurde der Artikel neu überarbeitet?<button class="infoButton" data-info="4">i</button></span>
-        <span class="right">
+        <span class="float-right">
             <label class="switch">
                 <input type="checkbox" id="revised" <?=$stickerCollection->getIsRevised() == 1 ? "checked" : ""?> data-variable="true">
-                <span class="slider round" id="revisedClick" data-binding="true"></span>
+                <span class="slider round" data-binding="true"></span>
             </label>
         </span>
     </div>
-    <p>Speicherort:<button class="infoButton" data-info="5">i</button></p>
-    <div class="directoryContainer">
+    <p class="mt-2">Speicherort:<button class="infoButton" data-info="5">i</button></p>
+    <div class="directoryContainer mt-2">
         <input id="dirInput" class="data-input directoryName" data-fun="speicherort" data-write="true" value="<?=$stickerCollection->getDirectory()?>">
         <button class="directoryIcon" data-binding="true" data-fun="copyToClipboard">
             <?=Icon::$iconDirectory?>
         </button>
     </div>
-    <p>Zusätzliche Infos und Notizen:<button class="infoButton" data-info="6">i</button></p>
-    <textarea class="data-input" data-fun="additionalInfo" data-write="true"><?=$stickerCollection->getAdditionalInfo()?></textarea>
-    <button class="btn-primary" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
+    <p class="mt-2">Zusätzliche Infos und Notizen:<button class="infoButton" data-info="6">i</button></p>
+    <textarea class="data-input mt-2" data-fun="additionalInfo" data-write="true"><?=$stickerCollection->getAdditionalInfo()?></textarea>
+    <button class="btn-primary mt-2" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
 </div>
 <div class="defCont">
     <h2 class="font-semibold mb-2">Produktexport</h2>
     <form>
-        <div class="exportContainer">
+        <div class="exportContainer inline-block bg-white rounded-3xl p-3">
             Nach Facebook exportieren
             <span class="right">
                 <label class="switch">
                     <input type="checkbox" <?=$stickerCollection->getExportStatus("facebook") ? "checked" : ""?>>
-                    <span class="slider round" id="revisedClick" data-binding="true" data-value="facebook" data-fun="exportToggle"></span>
+                    <span class="slider round" data-binding="true" data-value="facebook" data-fun="exportToggle"></span>
                 </label>
             </span>
         </div>
-        <div class="exportContainer">
+        <br>
+        <div class="exportContainer inline-block bg-white rounded-3xl p-3">
             Nach Google exportieren
             <span class="right">
                 <label class="switch">
                     <input type="checkbox" <?=$stickerCollection->getExportStatus("google") ? "checked" : ""?>>
-                    <span class="slider round" id="revisedClick" data-binding="true" data-value="google" data-fun="exportToggle"></span>
+                    <span class="slider round" data-binding="true" data-value="google" data-fun="exportToggle"></span>
                 </label>
             </span>
         </div>
-        <div class="exportContainer">
+        <br>
+        <div class="exportContainer inline-block bg-white rounded-3xl p-3">
             Nach Amazon exportieren
             <span class="right">
                 <label class="switch">
                     <input type="checkbox" <?=$stickerCollection->getExportStatus("amazon") ? "checked" : ""?>>
-                    <span class="slider round" id="revisedClick" data-binding="true" data-value="amazon" data-fun="exportToggle"></span>
+                    <span class="slider round" data-binding="true" data-value="amazon" data-fun="exportToggle"></span>
                 </label>
             </span>
         </div>
-        <div class="exportContainer">
+        <br>
+        <div class="exportContainer inline-block bg-white rounded-3xl p-3">
             Nach Etsy exportieren
             <span class="right">
                 <label class="switch">
@@ -385,7 +416,8 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div class="exportContainer">
+        <br>
+        <div class="exportContainer inline-block bg-white rounded-3xl p-3">
             Nach eBay exportieren
             <span class="right">
                 <label class="switch">
@@ -394,7 +426,8 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div class="exportContainer">
+        <br>
+        <div class="exportContainer inline-block bg-white rounded-3xl p-3">
             Nach Pinterest exportieren
             <span class="right">
                 <label class="switch">
