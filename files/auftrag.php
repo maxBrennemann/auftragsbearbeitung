@@ -247,6 +247,7 @@ if ($auftragsId == -1): ?>
 							<p class="optionReplacer" onclick="document.getElementById('meh').value = this.innerHTML;">m²</p>
 							<p class="optionReplacer" onclick="document.getElementById('meh').value = this.innerHTML;">Meter</p>
 							<p class="optionReplacer" onclick="document.getElementById('meh').value = this.innerHTML;">Stunden</p>
+							<p class="optionReplacer" onclick="document.getElementById('meh').value = this.innerHTML;">lfm</p>
 						</div>
 					</span><br>
 					<span>Beschreibung:<br><textarea id="bes" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span><br>
