@@ -24,7 +24,8 @@ function deleteRow(key, table, reference) {
 }
 
 function performAction(key, event) {
-    let tableKey = document.querySelector('[data-type="module_sticker_sizes"]').dataset.key;
+    const tableKey = document.querySelector('[data-type="module_sticker_sizes"]').dataset.key;
+    const refRow = event.currentTarget.parentNode.parentNode;
     ajax.post({
         row: key,
         table: tableKey,
@@ -32,12 +33,13 @@ function performAction(key, event) {
         r: "resetStickerPrice",
     }, true)
     .then(newPrice => {
-        let priceRow = event.target.parentNode.parentNode;
-        let priceField = priceRow.children[3].chilren[0];
-
-        priceField.value = newPrice;
+        sizeTable.sizeTableRows.forEach(row => {
+            if (row.row == refRow) {
+                row.price = newPrice / 100;
+                row.row.children[3].innerHTML = SizeTableRow.formatEuro(row.price);
+            }
+        });
     });
-    /* TODO: über sizes variable ändern */
 }
 
 /**
@@ -99,6 +101,13 @@ class SizeTable {
 
         this.difficulty = this.getInitDifficulty();
         this.parseTable();
+        this.#initRatio();
+    }
+
+    #initRatio() {
+        const width = this.sizeTableRows[0].width;
+        const height = this.sizeTableRows[0].height;
+        this.ratio = height / width;
     }
 
     async addNewLine(width, price) {
@@ -108,16 +117,19 @@ class SizeTable {
             cell.classList.add("h-10");
         }
 
-        const id = await ajax.post({
-            width: width,
+        const height = Math.round(width * this.ratio);
+        const data = await ajax.post({
+            width: width * 10,
+            height: height,
             price: price,
             id: mainVariables.motivId.innerHTML,
             r: "addSize",
         });
+        const id = data.id;
 
         newRow.children[0].innerHTML = id;
-        newRow.children[1].innerHTML = width;
-        newRow.children[3].innerHTML = price;
+        newRow.children[1].innerHTML = width + "cm";
+        newRow.children[3].innerHTML = price / 100;
         
         this.sizeTableRows.push(new SizeTableRow(newRow, this));
     }
@@ -173,7 +185,7 @@ class SizeTable {
     generatePreview() {
         this.text = "<br><p>Folie konturgeschnitten, ohne Hintergrund</p>";
         this.sizeTableRows.forEach(row => {
-            this.text += "<p class=\"breiten\">" + row.formatCentimeters(row.width / 10) + " <span>x " + row.formatCentimeters(row.height / 10) + "</span></p>";
+            this.text += "<p class=\"breiten\">" + SizeTableRow.formatCentimeters(row.width / 10) + " <span>x " + SizeTableRow.formatCentimeters(row.height / 10) + "</span></p>";
         });
         document.getElementById("previewSizeText").innerHTML = this.text;
     }
@@ -190,7 +202,7 @@ class SizeTable {
             const rowData = {
                 width: row.width,
                 height: row.height,
-                price: row.price
+                price: row.price * 100,
             };
             data.sizes[count] = rowData;
             count++;
@@ -220,22 +232,27 @@ class SizeTableRow {
         this.id = parseInt(row.children[0].innerHTML);
         this.width = parseFloat(row.children[1].innerHTML) * 10;
         this.height = parseFloat(row.children[2].innerHTML) * 10;
-        this.price = this.parsePrice(row.children[3]);
-        this.purchasePrice = this.parsePrice(row.children[4]);
+        this.price = SizeTableRow.parsePrice(row.children[3]);
+        this.purchasePrice = SizeTableRow.parsePrice(row.children[4]);
 
         this.parent = parent;
 
         this.addListeners();
+
+        if (this.price / 100 == SizeTableRow.calcNewPrice(this.width, this.height, this.parent.difficulty)) {
+            let el = this.row.children[3];
+            el.children[0].classList.add("text-green-600", "italic");
+        }
     }
 
-    formatCentimeters(value) {
+    static formatCentimeters(value) {
         let cm = value.toFixed(1);
         cm = cm.toString(cm);
         cm = cm.replace(".", ",");
         return cm + "cm";
     }
 
-    formatEuro(value) {
+    static formatEuro(value) {
         let euro = value.toFixed(2);
         euro = euro.toString(euro);
         euro = euro.replace(".", ",");
@@ -245,43 +262,48 @@ class SizeTableRow {
     setNewHeight(ratio) {
         const newHeight = this.width * ratio;
         this.height = parseInt(newHeight);
-        const cm = this.formatCentimeters(this.height / 10);
+        const cm = SizeTableRow.formatCentimeters(this.height / 10);
         this.inputHeight.value = cm;
     }
 
-    setNewPrice() {
+    static calcNewPrice(width, height, difficulty) {
         let base = 0;
 
-        if (this.width >= 1200) {
+        if (width >= 1200) {
             base = 2100;
-        } else if (this.width >= 900) {
+        } else if (width >= 900) {
             base = 1950;
-        } else if (this.width >= 600) {
+        } else if (width >= 600) {
             base = 1700;
-        } else if (this.width >= 300) {
+        } else if (width >= 300) {
             base = 1500;
         } else {
             base = 1200;
         }
         
-        base = base + 200 * this.parent.difficulty;
-        if (this.height >= 0.5 * this.width) {
+        base = base + 200 * difficulty;
+        if (height >= 0.5 * width) {
             base += 100;
         }
         
-        this.price = base / 100;
-        this.row.children[3].innerHTML = this.formatEuro(this.price);
+        let price = base / 100;
+        return price;
+    }
+
+    setNewPrice() {
+        this.price = SizeTableRow.calcNewPrice(this.width, this.height, this.parent.difficulty);
+        this.row.children[3].innerHTML = SizeTableRow.formatEuro(this.price);
     }
 
     setNewPurchasePrice() {
         this.purchasePrice = (this.width * this.height) / 100000;
-        this.row.children[4].innerHTML = this.formatEuro(this.purchasePrice);
+        this.row.children[4].innerHTML = SizeTableRow.formatEuro(this.purchasePrice);
     }
 
-    parsePrice(el) {
-        const value = el.innerHTML;
+    static parsePrice(el) {
+        const value = el.innerHTML || el;
         const euro = value.split(",")[0];
-        const cent = value.split(",")[1];
+        const cent = value.split(",")[1] || 0;
 
         return parseInt(euro) * 100 + parseInt(cent);
     }
@@ -297,7 +319,7 @@ class SizeTableRow {
         this.inputHeight.addEventListener("change", this.setHeight.bind(this));
 
         this.inputPrice.addEventListener("change", this.updatePrice.bind(this));
-        this.inputPrice.addEventListener("input", this.setPrice.bind(this));
+        this.inputPrice.addEventListener("change", this.setPrice.bind(this));
     }
 
     #createInput(node) {
@@ -313,10 +335,16 @@ class SizeTableRow {
         return input;
     }
 
+    static heightToMM(height) {
+        height = height.toString();
+        height = height.replace(",", ".");
+        height = parseFloat(height);
+        return height * 10;
+    }
+
     updateHeight(e) {
         let height = e.target.value;
-        height = height.replace(",", ".");
-        this.height = parseFloat(height) * 10;
+        this.height = SizeTableRow.heightToMM(height);
 
         const ratio = this.height / this.width;
         this.parent.iterateAll(ratio, this);
@@ -325,9 +353,10 @@ class SizeTableRow {
     setHeight(e) {
         let height = e.target.value;
         height = height.replace(",", ".");
+        height = parseFloat(height);
 
-        this.height = parseFloat(height);
-        const cm = this.formatCentimeters(this.height);
+        const cm = SizeTableRow.formatCentimeters(height);
+        this.height = SizeTableRow.heightToMM(height);
         this.inputHeight.value = cm;
 
         this.parent.generatePreview();
@@ -339,7 +368,19 @@ class SizeTableRow {
     }
 
     setPrice(e) {
-        // TODO: send to server
+        const price = e.currentTarget.value;
+        const euro = price.split(",")[0];
+        const cent = price.split(",")[1] || 0;
+
+        const parsedPrice = parseInt(euro) * 100 + parseInt(cent);
+        ajax.post({
+            id: this.id,
+            price: parsedPrice,
+            r: "setSizePrice",
+        });
+
+        this.price = parsedPrice / 100;
+        this.row.children[3].innerHTML = SizeTableRow.formatEuro(this.price);
     }
 
 }
@@ -357,6 +398,8 @@ export function click_addNewWidth() {
     }
 
     sizeTable.addNewLine(newWidth, newPrice);
+    document.getElementById("newWidth").value = "";
+    document.getElementById("newPrice").value = "";
 }
 
 var sizeTable;

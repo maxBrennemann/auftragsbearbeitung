@@ -314,6 +314,7 @@ if ($id == 0): ?>
     </div>
     <div class="grid grid-cols-2 mt-2">
         <div class="innerDefCont">
+            <p class="font-semibold">Neue Breite hinzufügen</p>
             <label>
                 <p>Breite</p>
                 <input type="text" id="newWidth" class="w-48 rounded-md p-2">
@@ -325,7 +326,7 @@ if ($id == 0): ?>
             <button class="btn-primary block mt-2" data-binding="true" data-fun="addNewWidth">Hinzufügen</button>
         </div>
         <div class="innerDefCont">
-            <p>Aufkleberpreisklasse</p>
+            <p class="font-semibold">Aufkleberpreisklasse</p>
             <div>
                 <label for="price1">
                     <input id="price1" type="radio" name="priceClass" <?=$stickerCollection->getAufkleber()->getPriceClass() == 0 ? "checked" : ""?>>

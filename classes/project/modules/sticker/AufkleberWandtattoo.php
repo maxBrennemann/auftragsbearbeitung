@@ -65,18 +65,23 @@ class AufkleberWandtattoo extends Sticker {
         
         $currentPrice = $this->getPrice($width, $height, $this->getDifficulty());
 
-        $query = "UPDATE module_sticker_sizes SET height = $height, price = NULL WHERE id_sticker = :id AND width = $width";
+        $query = "UPDATE module_sticker_sizes SET height = :height, price = NULL WHERE id_sticker = :id AND width = :width";
         
-        StickerChangelog::log($this->getId(), 0, 0, "module_sticker_sizes", "height", $height);
+        //StickerChangelog::log($this->getId(), 0, 0, "module_sticker_sizes", "height", $height);
         echo "preis: " . $currentPrice . " " . $data["price"] . " ";
 
         if ($currentPrice != $data["price"]) {
             $price = $data["price"];
-            $query = "UPDATE module_sticker_sizes SET height = $height, price = $price WHERE id_sticker = :id AND width = $width";
-            StickerChangelog::log($this->getId(), 0, 0, "module_sticker_sizes", "price", $price);
+            $query = "UPDATE module_sticker_sizes SET height = :height, price = $price WHERE id_sticker = :id AND width = :width";
+
+            //StickerChangelog::log($this->getId(), 0, 0, "module_sticker_sizes", "price", $price);
         }
 
-        DBAccess::updateQuery($query, ["id" => $this->getId()]);
+        DBAccess::updateQuery($query, [
+            "height" => $height,
+            "width" => $width,
+            "id" => $this->getId(),
+        ]);
     }
 
     public function getDifficulty() {
@@ -122,7 +127,7 @@ class AufkleberWandtattoo extends Sticker {
         /* TODO: hardcoded idAttributeGroup entfernen */
         $idAttributeGroup = 5;
         $sizeIds = [];
-        $widths =  [];
+        $widths = [];
         $prices = [];
         $buyingPrices = [];
 

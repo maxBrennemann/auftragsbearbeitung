@@ -1310,6 +1310,35 @@ class Ajax {
 				$text = $_POST["text"];
 				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET size_summary = '$text' WHERE id = $id");
 			break;
+			case "addSize":
+				$width = (int) $_POST["width"];
+				$height = (int) $_POST["height"];
+				$price = (int) $_POST["price"];
+				$id = (int) $_POST["id"];
+
+				$query = "INSERT INTO module_sticker_sizes (width, height, price, id_sticker) VALUES (:width, :height, :price, :id)";
+				$id = DBAccess::insertQuery($query, [
+					"width" => $width,
+					"height" => $width,
+					"price" => $price,
+					"id" => $id
+				]);
+
+				echo json_encode([
+					"status" => "success",
+					"id" => $id,
+				]);
+			break;
+			case "setSizePrice":
+				$idWidth = (int) $_POST["id"];
+				$price = (int) $_POST["price"];
+
+				$query = "UPDATE module_sticker_sizes SET price = :price WHERE id = :id;";
+				DBAccess::insertQuery($query, [
+					"price" => $price,
+					"id" => $idWidth
+				]);
+			break;
 			case "updateSpecificPrice":
 				$id = (int) $_POST["id"];
 				$width = (int) $_POST["width"];
