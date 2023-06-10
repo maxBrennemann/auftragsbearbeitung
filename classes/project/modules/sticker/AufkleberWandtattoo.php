@@ -62,24 +62,13 @@ class AufkleberWandtattoo extends Sticker {
     public function updateSizeTable($data) {
         $width = (int) $data["width"];
         $height = (int) $data["height"];
-        
-        $currentPrice = $this->getPrice($width, $height, $this->getDifficulty());
+        $price = (int) $data["price"];
 
-        $query = "UPDATE module_sticker_sizes SET height = :height, price = NULL WHERE id_sticker = :id AND width = :width";
-        
-        //StickerChangelog::log($this->getId(), 0, 0, "module_sticker_sizes", "height", $height);
-        echo "preis: " . $currentPrice . " " . $data["price"] . " ";
-
-        if ($currentPrice != $data["price"]) {
-            $price = $data["price"];
-            $query = "UPDATE module_sticker_sizes SET height = :height, price = $price WHERE id_sticker = :id AND width = :width";
-
-            //StickerChangelog::log($this->getId(), 0, 0, "module_sticker_sizes", "price", $price);
-        }
-
+        $query = "UPDATE module_sticker_sizes SET height = :height, price = :price WHERE id_sticker = :id AND width = :width";
         DBAccess::updateQuery($query, [
             "height" => $height,
             "width" => $width,
+            "price" => $price,
             "id" => $this->getId(),
         ]);
     }
@@ -93,8 +82,22 @@ class AufkleberWandtattoo extends Sticker {
     }
 
     public function getSizeTableFormatted() {
-        // TODO: eventuell size_summary im BO generieren oder direkt die Tabelle exportieren
-        return $this->stickerData["size_summary"];
+        $query = "SELECT width, height
+            FROM module_sticker_sizes 
+            WHERE id_sticker = :idSticker
+            ORDER BY width";
+        $data = DBAccess::selectQuery($query, ["idSticker" => $this->getId()]);
+
+        foreach ($data as &$d) {
+            $d["width"] = str_replace(".", ",", ((int) $d["width"]) / 10) . "cm";
+            $d["height"] = str_replace(".", ",", ((int) $d["height"]) / 10) . "cm";
+        }
+
+        ob_start();
+        insertTemplate('classes/project/modules/sticker/views/sizeTableView.php', [
+            "sizes" => $data,
+        ]);
+        return ob_get_clean();
     }
 
     public function getBasePrice() {
@@ -199,7 +202,7 @@ class AufkleberWandtattoo extends Sticker {
 
     public function getSizeTable() {
         $query = "SELECT id, width, height, price, 
-                ((width / 1000) * (height / 1000) * 10) as costs 
+                ((width / 1000) * (height / 1000) * 10) as costs, price_default
             FROM module_sticker_sizes 
             WHERE id_sticker = :idSticker
             ORDER BY width";
@@ -230,6 +233,8 @@ class AufkleberWandtattoo extends Sticker {
 		$t->setType("module_sticker_sizes");
 		$t->addActionButton("delete", "id");
         $t->addAction(null, Icon::$iconReset, "Preis zurücksetzen");
+        $t->addDataset("is-default", "price_default");
+
         $_SESSION[$t->getTableKey()] = serialize($t);
 		return $t->getTable();
     }

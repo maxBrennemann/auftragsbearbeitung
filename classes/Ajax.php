@@ -1277,7 +1277,7 @@ class Ajax {
 				$difficulty = $aufkleberWandtatto->getDifficulty();
 				$price = $aufkleberWandtatto->getPrice($width, $height, $difficulty);
 
-				DBAccess::updateQuery("UPDATE module_sticker_sizes SET price = '$price' WHERE id = $postenNummer");
+				DBAccess::updateQuery("UPDATE module_sticker_sizes SET price = '$price', price_default = 1 WHERE id = $postenNummer");
 				echo $price;
 			break;
 			case "setAufkleberParameter":
@@ -1307,21 +1307,21 @@ class Ajax {
 				foreach ($sizes["sizes"] as $size) {
 					$aufkleberWandtatto->updateSizeTable($size);
 				}
-				$text = $_POST["text"];
-				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET size_summary = '$text' WHERE id = $id");
 			break;
 			case "addSize":
 				$width = (int) $_POST["width"];
 				$height = (int) $_POST["height"];
 				$price = (int) $_POST["price"];
 				$id = (int) $_POST["id"];
+				$isDefault = (int) $_POST["isDefaultPrice"];
 
-				$query = "INSERT INTO module_sticker_sizes (width, height, price, id_sticker) VALUES (:width, :height, :price, :id)";
+				$query = "INSERT INTO module_sticker_sizes (width, height, price, id_sticker, price_default) VALUES (:width, :height, :price, :id, :default)";
 				$id = DBAccess::insertQuery($query, [
 					"width" => $width,
 					"height" => $width,
 					"price" => $price,
-					"id" => $id
+					"id" => $id,
+					"default" => $isDefault,
 				]);
 
 				echo json_encode([
@@ -1329,26 +1329,35 @@ class Ajax {
 					"id" => $id,
 				]);
 			break;
+			case "deleteSizeRow":
+				$id = (int) $_POST["id"];
+				$query = "DELETE FROM module_sticker_sizes WHERE id = :id;";
+				DBAccess::deleteQuery($query, ["id" => $id]);
+				echo "success";
+			break;
+			case "resetSizeRow":
+				$id = (int) $_POST["id"];
+				$size = DBAccess::selectQuery("SELECT width, height FROM module_sticker_sizes WHERE id = :id LIMIT 1", ["id" => $id]);
+				$width = $size[0]["width"];
+				$height = $size[0]["height"];
+
+				require_once('classes/project/modules/sticker/AufkleberWandtattoo.php');
+				$aufkleberWandtatto = new AufkleberWandtattoo($id);
+				$difficulty = $aufkleberWandtatto->getDifficulty();
+				$price = $aufkleberWandtatto->getPrice($width, $height, $difficulty);
+
+				DBAccess::updateQuery("UPDATE module_sticker_sizes SET price = '$price', price_default = 1 WHERE id = $postenNummer");
+				echo $price;
+			break;
 			case "setSizePrice":
 				$idWidth = (int) $_POST["id"];
 				$price = (int) $_POST["price"];
-
-				$query = "UPDATE module_sticker_sizes SET price = :price WHERE id = :id;";
+				
+				$query = "UPDATE module_sticker_sizes SET price = :price, price_default = 0 WHERE id = :id;";
 				DBAccess::insertQuery($query, [
 					"price" => $price,
 					"id" => $idWidth
 				]);
-			break;
-			case "updateSpecificPrice":
-				$id = (int) $_POST["id"];
-				$width = (int) $_POST["width"];
-				$height = (int) $_POST["height"];
-				$price = (int) $_POST["price"];
-
-				require_once('classes/project/modules/sticker/AufkleberWandtattoo.php');
-				$aufkleberWandtatto = new AufkleberWandtattoo($id);
-				$aufkleberWandtatto->updatePrice($width, $height, $price);
-				echo "success";
 			break;
 			case "productVisibility":
 				require_once('classes/project/modules/sticker/StickerCollection.php');

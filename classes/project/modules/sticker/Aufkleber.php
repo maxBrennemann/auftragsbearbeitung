@@ -68,10 +68,6 @@ class Aufkleber extends AufkleberWandtattoo {
         return $this->priceClass;
     }
 
-    public function getSizeSummary() {
-        return $this->stickerData["size_summary"];
-    }
-
     public function getIsPlotted() {
         return $this->isPlotted;
     }

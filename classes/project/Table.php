@@ -22,7 +22,9 @@ class Table {
 	private $update;
 	private $sendTo;
 
-	private $dataset = [0=>false];
+	private $dataset = [
+		0 => false
+	];
 	
 	/* action button variables */
 	private $buttonEdit = false;

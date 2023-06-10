@@ -341,7 +341,6 @@ if ($id == 0): ?>
             </div>
         </div>
     </div>
-    <div id="previewSizeText" class="hidden text-left"><?=$stickerCollection->getAufkleber()->getSizeSummary()?></div>
 </div>
 <div class="defCont">
     <h2 class="font-semibold">Tags<button class="infoButton" data-info="3">i</button></h2>
