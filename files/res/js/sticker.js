@@ -212,10 +212,6 @@ fnNames.click_revisedClick = function() {
 }
 
 fnNames.click_transferAufkleber = function() {
-    if (document.getElementById("previewSizeText").innerHTML == "") {
-        alert("Bitte überprüfe Breiten und Preise!");
-        return;
-    }
     transfer(1, "Aufkleber");
 }
 
