@@ -61,6 +61,7 @@
 		$link = Link::getResourcesShortLink($page . ".css", "css");
 		echo '<link rel="stylesheet" href="' . $link . '">';
 	?>
+	<script src="<?=Link::getResourcesShortLink("classes/deviceDetector.js", "js")?>"></script>
 </head>
 <body>
 	<div class="sidenav" id="sidenav">

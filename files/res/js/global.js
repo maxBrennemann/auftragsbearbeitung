@@ -194,6 +194,39 @@ function startFunc() {
 	currentTableSorter = new TableSorter();
 	currentTableSorter.readTableSorted();
 	timeGlobalListener();
+	initSearch();
+}
+
+function initSearch() {
+	initSearchIcon();
+	initSearchListener();
+}
+
+function initSearchListener() {
+	document.addEventListener("keydown", function (event) {
+		if (event.key === "k" && event.ctrlKey) {
+			event.stopPropagation();
+			event.preventDefault();
+
+			const searchInput = document.querySelector(".searchContainer input");
+			searchInput.focus();
+		}
+	});
+}
+
+/**
+ * sets the placeholder of the search input according to the device operating system
+ */
+function initSearchIcon() {
+	const searchInput = document.querySelector(".searchContainer input");
+	if (searchInput != null) {
+		const device = DeviceDetector.getOS();
+		if (device == "Mac OS") {
+			searchInput.placeholder = "⌘ K";
+		} else if (device == "Windows" || device == "Linux") {
+			searchInput.placeholder = "Ctrl K";
+		}
+	}
 }
 
 function listener_logout() {
@@ -468,11 +501,19 @@ AjaxCall.prototype.makeAjaxCall = function(dataCallback, ...args) {
 
 const ajax = {
     async post(data, noJSON = false) {
-        data.getReason = data.r;
+        return this.request(data, "POST", noJSON);
+    },
+
+    async get(data, noJSON = false) {
+		return this.request(data, "GET", noJSON);
+    },
+
+	async request(data, type, noJSON = false) {
+		data.getReason = data.r;
         const param = Object.keys(data).map(key => {
             return `${key}=${encodeURIComponent(data[key])}`;
         });
-        let response = await makeAsyncCall("POST", param.join("&"), "").then(result => {
+        let response = await makeAsyncCall(type, param.join("&"), "").then(result => {
             return result;
         });
     
@@ -488,11 +529,7 @@ const ajax = {
         }
 
         return json;
-    },
-
-    async get() {
-
-    },
+	}
 }
 
 async function makeAsyncCall(type, params, location) {
