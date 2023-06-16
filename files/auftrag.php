@@ -66,7 +66,7 @@ if (isset($_GET['show'])) {
 	$show = true;
 }
 
-$mitarbeiter = DBAccess::selectQuery("SELECT Vorname, Nachname, id FROM mitarbeiter");
+$mitarbeiter = DBAccess::selectQuery("SELECT prename, lastname, id FROM user");
 $colors = DBAccess::selectQuery("SELECT Farbe, Bezeichnung, Hersteller, Farbwert, id AS Nummer FROM color");
 
 if ($auftragsId == -1): ?>
@@ -170,7 +170,7 @@ if ($auftragsId == -1): ?>
 			<br>
 			<select id="selectMitarbeiter" disabled>
 				<?php foreach ($mitarbeiter as $m): ?>
-					<option value="<?=$m['id']?>"><?=$m['Vorname']?> <?=$m['Nachname']?></option>
+					<option value="<?=$m['id']?>"><?=$m['prename']?> <?=$m['lastname']?></option>
 				<?php endforeach; ?>
 			</select>
 			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="addBearbeitungsschritt()">Hinzufügen</button>

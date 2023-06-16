@@ -60,7 +60,7 @@ $_SESSION[$tableOrderType->getTableKey()] = serialize($tableOrderType);
 </section>
 <section class="defCont">
     <h2 class="font-bold">Mitarbeiter festlegen</h2>
-    <?php echo (new Table("mitarbeiter"))->getTable(); ?>
+    <?php echo (new Table("user"))->exclude("password")->getTable(); ?>
 </section>
 <section class="defCont">
     <h2 class="font-bold">Stundenlohn festlegen</h2>

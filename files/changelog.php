@@ -19,6 +19,7 @@
     <h3 id="1.1.18">1.1.18</h3>
     <ul>
         <li>Auftragstypen können ergänzt werden</li>
+        <li>Neue Nutzerübersicht mit Verlauf</li>
     </ul>
     <h3 id="1.1.17">1.1.17</h3>
     <ul>

@@ -1,34 +1,32 @@
 <?php
-	require_once('classes/DBAccess.php');
-	require_once('classes/Link.php');
-	require_once('classes/Login.php');
-	require_once('classes/project/ClientSettings.php');
-	
-	$globalCSS = Link::getGlobalCSS();
-	$tailwindCSS = Link::getTW();
-	$globalJS = Link::getGlobalJS();
-	$curr_Link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-	$adminLink = Link::getAdminLink();
+require_once('classes/project/ClientSettings.php');
 
-	$neuerKunde   =		Link::getPageLink("neuer-kunde");
-	$neuerAuftrag =		Link::getPageLink("neuer-auftrag");
-	$rechnung =			Link::getPageLink("rechnung");
-	$neuesAngebot =		Link::getPageLink("angebot");
-	$neuesProdukt =		Link::getPageLink("neues-produkt");
-	$diagramme =		Link::getPageLink("diagramme");
-	$auftragAnzeigen =	Link::getPageLink("auftrag");
-	$kunde =			Link::getPageLink("kunde");
-	$leistungenLinks =	Link::getPageLink("leistungen");
-	$toDo =				Link::getPageLink("verbesserungen");
-	$offeneRechnungen = Link::getPageLink("offene-rechnungen");
-	$funktionen = 		Link::getPageLink("functionalities");
-	$produkt = 			Link::getPageLink("produkt");
-	$einstellungen =	Link::getPageLink("einstellungen");
-	$payments =			Link::getPageLink("payments");
-	$listmaker =		Link::getPageLink("listmaker");
-	$changelog = 		Link::getPageLink("changelog");
-	$zeiterfassung =	Link::getPageLink("zeiterfassung");
-	$motiveOverview = 	Link::getPageLink("sticker-overview");
+$globalCSS = Link::getGlobalCSS();
+$tailwindCSS = Link::getTW();
+$globalJS = Link::getGlobalJS();
+$curr_Link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+$adminLink = Link::getAdminLink();
+
+$neuerKunde   =		Link::getPageLink("neuer-kunde");
+$neuerAuftrag =		Link::getPageLink("neuer-auftrag");
+$rechnung =			Link::getPageLink("rechnung");
+$neuesAngebot =		Link::getPageLink("angebot");
+$neuesProdukt =		Link::getPageLink("neues-produkt");
+$diagramme =		Link::getPageLink("diagramme");
+$auftragAnzeigen =	Link::getPageLink("auftrag");
+$kunde =			Link::getPageLink("kunde");
+$leistungenLinks =	Link::getPageLink("leistungen");
+$toDo =				Link::getPageLink("verbesserungen");
+$offeneRechnungen = Link::getPageLink("offene-rechnungen");
+$funktionen = 		Link::getPageLink("functionalities");
+$produkt = 			Link::getPageLink("produkt");
+$einstellungen =	Link::getPageLink("einstellungen");
+$payments =			Link::getPageLink("payments");
+$listmaker =		Link::getPageLink("listmaker");
+$changelog = 		Link::getPageLink("changelog");
+$zeiterfassung =	Link::getPageLink("zeiterfassung");
+$motiveOverview = 	Link::getPageLink("sticker-overview");
+
 ?>
 <!DOCTYPE html>
 <html lang="de">

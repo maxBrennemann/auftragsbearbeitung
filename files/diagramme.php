@@ -7,7 +7,7 @@
 	$diagram = isset($_GET['type']) ? $_GET['type'] : "default";
 	$sqlQueries = [
 		0 => 'SELECT DISTINCT COUNT(auftrag.Kundennummer) AS Anzahl, kunde.Vorname, kunde.Nachname, kunde.Firmenname FROM auftrag LEFT JOIN kunde ON kunde.Kundennummer = auftrag.Kundennummer GROUP BY auftrag.Kundennummer',
-		1 => "SELECT CONCAT(mitarbeiter.Vorname, ' ', mitarbeiter.Nachname) AS `Mitarbeiter`, COUNT(*) AS 'Angenommene Aufträge' FROM auftrag LEFT JOIN mitarbeiter ON auftrag.AngenommenDurch = mitarbeiter.id GROUP BY `Mitarbeiter`"
+		1 => "SELECT CONCAT(user.prename, ' ', user.lastname) AS `Mitarbeiter`, COUNT(*) AS 'Angenommene Aufträge' FROM auftrag LEFT JOIN user ON auftrag.AngenommenDurch = user.id GROUP BY `Mitarbeiter`"
 	];
 
 	switch ($diagram) {

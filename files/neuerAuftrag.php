@@ -13,7 +13,7 @@
 		}
 	}
 
-	$mitarbeiter = DBAccess::selectQuery("SELECT Vorname, Nachname, id FROM mitarbeiter");
+	$mitarbeiter = DBAccess::selectQuery("SELECT prename, lastname, id FROM user");
 	$annahme = DBAccess::selectQuery("SELECT Bezeichnung, id FROM angenommen");
 	$auftragstyp = DBAccess::selectQuery("SELECT * FROM auftragstyp");
 
@@ -44,7 +44,7 @@ if ($kdnr != -1) : ?>
 				<select id="selectMitarbeiter">
 					<option value="-1" selected disabled>Bitte auswählen</option>
 					<?php foreach ($mitarbeiter as $m): ?>
-						<option value="<?=$m['id']?>"><?=$m['Vorname']?> <?=$m['Nachname']?></option>
+						<option value="<?=$m['id']?>"><?=$m['prename']?> <?=$m['lastname']?></option>
 					<?php endforeach; ?>
 				</select>
 			</span><br>

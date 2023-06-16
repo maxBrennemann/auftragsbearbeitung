@@ -8,6 +8,7 @@ require_once('classes/project/Envs.php');
 require_once('classes/DBAccess.php');
 require_once('classes/Ajax.php');
 require_once('classes/Link.php');
+require_once('classes/Login.php');
 require_once('classes/Protocoll.php');
 require_once('classes/project/FormGenerator.php');
 require_once('classes/project/CacheManager.php');
@@ -242,5 +243,3 @@ function insertTemplate($path, array $parameters = []) {
 		include($path);
 	}
 }
-
-?>

@@ -1,18 +1,12 @@
 <?php
 
-require_once('DBAccess.php');
 require_once('Mailer.php');
 
 class Login {
-	
-	/* Code an https://www.php-einfach.de/experte/php-codebeispiele/loginscript/ angelehnt */
-	function __construct() {
-		
-	}
 
 	public static function handleLogout() {
 		$key = $_POST["loginkey"];
-		DBAccess::deleteQuery("DELETE FROM `user_login` WHERE `loginkey` = '$key'");
+		//DBAccess::deleteQuery("DELETE FROM `user_login` WHERE `loginkey` = :key;", array(':key' => $key));
 
 		setcookie(session_name(), '', 100);
 		session_unset();
@@ -52,23 +46,21 @@ class Login {
 		$loginData = $_POST['loginData'];
 		$password = $_POST['password'];
 
-		$user = DBAccess::selectQuery("SELECT * FROM `members` WHERE `email` = '$loginData' OR `username` = '$loginData'");
-		if (empty($user)) return false;
+		$user = DBAccess::selectQuery("SELECT * FROM user WHERE `email` = :email OR `username` = :username LIMIT 1;", array(':email' => $loginData, ':username' => $loginData));
+
+		if (empty($user))  {
+			return false;
+		}
+
 		$user = $user[0];
 		
 		/* Überprüfung des Passworts */
 		if ($user !== false && password_verify($password, $user['password'])) {
 			$_SESSION['userid'] = $user['id'];
+
 			if ($user['specialRole'] == 'admin') {
 				$_SESSION['admin'] = $user['id'];
-				//die('Login erfolgreich. Weiter zum <a href="https://max-website.tk/admin/">Admin-Bereich</a>');
-			} else {
-				//die('Login erfolgreich. Weiter zu <a href="geheim.php">internen Bereich</a>');
 			}
-			
-			/*if() {
-				echo "Sie müssen Ihre E-Mail Adresse noch bestätigen! Bestätigunsmail nochmal senden.";
-			}*/
 			
 			$_SESSION['loggedIn'] = true;
 			self::handleAutoLogin();
@@ -77,13 +69,16 @@ class Login {
 			return false;
 		}
 
-		DBAccess::insertQuery("INSERT INTO last_login (id_member) VALUES ({$user['id']})");
+		DBAccess::insertQuery("INSERT INTO login_history (user_id, user_login_key) VALUES (:id, :uloginkey)",
+			array(
+				':id' => $user['id'],
+				':uloginkey' => 0,
+			));
 
 		return true;
 	}
 
 	public static function handleAutoLogin() {
-
 		if (isset($_POST["setAutoLogin"])) {
 			
 			$status = $_POST["setAutoLogin"];
@@ -102,10 +97,17 @@ class Login {
 			$hash = md5($jsData . $random_part);
 			/* browser agent stays empty for now */
 
-			$query = "INSERT INTO user_login (`user_id`, md_hash, expiration_date, device_name, ip_adress, loginkey) VALUES ($user_id, '$hash', '$dateInTwoWeeks', '$browser', '$ip', '$random_part')";
+			//$query = "INSERT INTO user_login (`user_id`, md_hash, expiration_date, device_name, ip_adress, loginkey) VALUES (:user_id, :hash, :date, :device_name, :ip_adress, :loginkey)";
 
 			echo json_encode([$jsData, $random_part]);
-			DBAccess::insertQuery($query);
+			/*DBAccess::insertQuery($query, [
+				':user_id' => $user_id,
+				':hash' => $hash,
+				':date' => $dateInTwoWeeks,
+				':device_name' => $browser,
+				':ip_adress' => $ip,
+				':loginkey' => $random_part
+			]);*/
 		}
 	}
 	
@@ -116,6 +118,8 @@ class Login {
 		
 		$error = false;
 		$email = $_POST['email'];
+		$prename = $_POST['prename'];
+		$lastname = $_POST['lastname'];
 		$username = $_POST['username'];
 		$password = $_POST['password'];
 		$password2 = $_POST['password2'];
@@ -137,16 +141,16 @@ class Login {
 		
 		/* Überprüfe, dass die E-Mail-Adresse noch nicht registriert wurde */
 		if (!$error) { 
-			$user = DBAccess::selectQuery("SELECT * FROM members WHERE email = '$email'");
+			$user = DBAccess::selectQuery("SELECT id FROM user WHERE email = :email", array(':email' => $email));
 			
-			if (!empty($user)) { //($user !== false) {
+			if (!empty($user)) {
 				echo 'Diese E-Mail-Adresse ist bereits vergeben<br>';
 				$error = true;
 			}
 			
-			$user = DBAccess::selectQuery("SELECT * FROM members WHERE username = '$username'");
+			$user = DBAccess::selectQuery("SELECT id FROM user WHERE username = :username", array(':username' => $username));
 			
-			if (!empty($user)) { //$user !== false) {
+			if (!empty($user)) {
 				echo 'Dieser Benutzername ist bereits vergeben<br>';
 				$error = true;
 			}
@@ -155,9 +159,14 @@ class Login {
 		/* Keine Fehler, wir können den Nutzer registrieren */
 		if (!$error) {    
 			$password_hash = password_hash($password, PASSWORD_DEFAULT);
-			
-			$params = array('username' => $username, 'email' => $email, 'password' => $password_hash);
-			$insert = "INSERT INTO members (username, email, password) VALUES (:username, :email, :password)";
+			$insert = "INSERT INTO user (username, prename, lastname, email, password, max_working_hours, role) VALUES (:username, :prename, :lastname, :email, :password, 0, 0)";
+			$params = array(
+				'username' => $username,
+				'prename' => $prename,
+				'lastname' => $lastname,
+				'email' => $email,
+				'password' => $password_hash
+			);
 			$result = DBAccess::insertQuery($insert, $params);
 			
 			if ($result) {        
@@ -170,6 +179,9 @@ class Login {
 		}
 	}
 	
+	/**
+	 * members_validate_email doesn't exist yet
+	 */
 	public static function generateMailKey($email) {
 		$mailKey = md5(microtime().rand());
 		
@@ -185,6 +197,9 @@ class Login {
 		Mailer::sendMail($email, "Bestätigen Sie Ihre E-Mail Adresse", $mailText, "no-reply@max-website.tk");
 	}
 	
+	/**
+	 * members_validate_email doesn't exist
+	 */
 	public static function registerEmail() {
 		$mailKey = $_GET['mailId'];
 		$memberId = DBAccess::selectQuery("SELECT memberId FROM members_validate_email WHERE mailKey = '$mailKey'");

@@ -20,7 +20,7 @@ class DeviceDetector {
     static getOS() {
         var userAgent = window.navigator.userAgent,
             platform = window.navigator?.userAgentData?.platform || window.navigator.platform,
-            macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+            macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K', 'macOS'],
             windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
             iosPlatforms = ['iPhone', 'iPad', 'iPod'],
             os = null;

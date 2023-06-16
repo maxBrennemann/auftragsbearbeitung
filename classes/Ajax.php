@@ -298,13 +298,6 @@ class Ajax {
 
 				$assignedTo = strval($_POST['assignedTo']);
 				if (strcmp($assignedTo, "none") != 0) {
-					$query = "SELECT id_member FrOM members_mitarbeiter WHERE id_mitarbeiter = $assignedTo";
-					$data = DBAccess::selectQuery($query);
-					if ($data == null)
-						return;
-					else 
-						$assignedTo = $data[0]["id_member"];
-
 					require_once("classes/project/NotificationManager.php");
 					NotificationManager::addNotification($userId = $assignedTo, $type = 1, $content = $_POST['bez'], $specificId = $postenNummer);
 				}
@@ -1033,7 +1026,7 @@ class Ajax {
 				$loginKey = $_POST["loginkey"];
 
 				$hash = md5($userAgent . $loginKey);
-				$query = "SELECT * FROM user_login WHERE md_hash = '$hash' AND expiration_date > CURDATE() LIMIT 1";
+				$query = "SELECT * FROM user_devices ud LEFT JOIN user_login_key ul ON ud.id = ul.user_device_id WHERE md_hash = '$hash' AND expiration_date > CURDATE() LIMIT 1";
 				$data = DBAccess::selectQuery($query);
 
 				if ($data != null) {

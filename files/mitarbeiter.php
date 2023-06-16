@@ -1,41 +1,49 @@
 <?php
+// TODO: show time tracking and order history
+require_once("classes/project/User.php");
 
-$column_names = array(0 => array("COLUMN_NAME" => "Email"), 1 => array("COLUMN_NAME" => "Benutzername"));
-$data = DBAccess::selectQuery("SELECT email AS Email, username AS Benutzername FROM members");
-
-$t = new Table();
-$t->createByData($data, $column_names);
-$members_table = $t->getTable();
-
-
-$column_names = array(0 => array("COLUMN_NAME" => "Vorname"), 1 => array("COLUMN_NAME" => "Nachname"), 2 => array("COLUMN_NAME" => "Email"));
-$data = DBAccess::selectQuery("SELECT Email, Vorname, Nachname FROM mitarbeiter");
-
-$t = new Table();
-$t->createByData($data, $column_names);
-$mitarbeiter_table = $t->getTable();
-
-echo $members_table;
-echo "<br><br>";
-echo $mitarbeiter_table;
-
-?>
-
-
-<?php
-
-$text = "";
-if (isset($_GET['article'])) {
-    $article = (int) $_GET['article'];
-    $text = DBAccess::selectQuery("SELECT info FROM help WHERE id = $article")[0]["info"];
+$user = null;
+$showUserList = true;
+if (isset($_GET["id"])) {
+    $user = new User($_GET["id"]);
+    $showUserList = false;
+} else {
+    $user = new User($_SESSION["userid"]);
 }
 
-echo $text;
-
-?>
-
-<?php
-
-$query = "SELECT * FROM mitarbeiter";
-
-?>
+if ($showUserList) : ?>
+    <?=User::getUserOverview()?>
+    <button class="btn-primary" disabled>Neuen Benutzer anlegen</button>
+<?php else: ?>
+    <div class="defCont">
+        <p class="font-bold">Benutzerdaten</p>
+        <label>
+            <p>Nutzername</p>
+            <input type="text" value="<?=$user->getUsername()?>" class="block rounded-sm m-1 ml-0 p-1 w-80" id="username">
+        </label>
+        <label>
+            <p>Vorname</p>
+            <input type="text" value="<?=$user->getPrename()?>" class="block rounded-sm m-1 ml-0 p-1 w-80" id="prename">
+        </label>
+        <label>
+            <p>Nachname</p>
+            <input type="text" value="<?=$user->getLastname()?>" class="block rounded-sm m-1 ml-0 p-1 w-80" id="lastname">
+        </label>
+        <label>
+            <p>Email</p>
+            <input type="text" value="<?=$user->getEmail()?>" class="block rounded-sm m-1 ml-0 p-1 w-80" id="email">
+        </label>
+    </div>
+    <div class="defCont">
+        <p class="font-bold">Arbeitszeiten</p>
+        <div>
+            <p>Maximale Arbeitszeit</p>
+            <input type="number" value="" class="block rounded-sm m-1 ml-0 p-1 w-80">
+            <button class="btn-primary">Speichern</button>
+        </div>
+    </div>
+    <div class="defCont">
+        <p class="font-bold">Verlauf</p>
+        <?=$user->getHistory()?>
+    </div>
+<?php endif; ?>
