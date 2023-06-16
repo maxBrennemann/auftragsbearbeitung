@@ -1,4 +1,18 @@
-const motivId = document.getElementById("motivId").innerHTML;
+/**
+ * toggles the is colorable flag of the svg,
+ * if the svg is colorable, the svg is displayed in the colorable svg container
+ * and all colors will be removed
+ * @file imageManager.js
+ */
+export function click_makeColorable() {
+    ajax.post({
+        id: motivId,
+        r: "makeSVGColorable"
+    }).then(r => {
+        const svgContainer = document.getElementById("svgContainer");
+        svgContainer.data = r.url;
+    });
+}
 
 /* drag and drop handler */
 function itemDropHandler(e, imageCategory) {
@@ -86,8 +100,6 @@ function itemDragOverHandler(e) {
 	e.preventDefault();
 }
 
-var currentMoveImage;
-var moveImages;
 function moveImagesInDiv(event) {
     if (event.target.classList.contains("imgPreview")) {
         event.preventDefault();
@@ -109,7 +121,7 @@ function moveImageEnd(event) {
     console.log("ended moving");
 }
 
-export function moveInit() {
+function moveInit() {
     moveImages = Array.from(document.getElementsByClassName("imageMovable"));
 
     moveImages.forEach(div => {
@@ -184,11 +196,23 @@ function handleUploadedImages(imageData) {
     }
 }
 
-// TODO: write file uploader
-// TODO: prevent false copying of text
+/**
+ * deletes the currently selected image
+ */
+function deleteImage() {
+    ajax.post({
+        imageId: mainVariables.currentDelete,
+        r: "deleteImage",
+    }).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+            const image = document.querySelector(`[data-file-id="${mainVariables.currentDelete}"]`);
+            image.parentNode.removeChild(image);
+        }
+    });
+}
 
-var svg_elem;
-export function initSVG() {
+function initSVG() {
     var a = document.getElementById("svgContainer");
     if (a != null || a != undefined) {
         a.addEventListener("load", loadSVGEvent, false);
@@ -267,16 +291,6 @@ function adjustSVG() {
     svg_elem.setAttribute("viewBox", `${positions.nearestX} ${positions.nearestY} ${width} ${height}`);
 }
 
-export function click_makeColorable() {
-    ajax.post({
-        id: motivId,
-        r: "makeSVGColorable"
-    }).then(r => {
-        const svgContainer = document.getElementById("svgContainer");
-        svgContainer.data = r.url;
-    });
-}
-
 function initImageManager() {
     document.addEventListener("click", imageClickListener);
 
@@ -330,27 +344,20 @@ function initImageManager() {
     svgContainer.addEventListener("drop", e => itemDropHandler(e, "textilsvg"), false);
 }
 
-/**
- * deletes the currently selected image
- */
-function deleteImage() {
-    ajax.post({
-        imageId: mainVariables.currentDelete,
-        r: "deleteImage",
-    }).then(r => {
-        if (r.status == "success") {
-            infoSaveSuccessfull("success");
-            const image = document.querySelector(`[data-file-id="${mainVariables.currentDelete}"]`);
-            image.parentNode.removeChild(image);
-        }
-    });
-}
+const motivId = document.getElementById("motivId").innerHTML;
+var currentMoveImage;
+var moveImages;
+var svg_elem;
 
 /* init */
 if (document.readyState !== 'loading' ) {
     initImageManager();
+    initSVG();
+    moveInit()
 } else {
     document.addEventListener('DOMContentLoaded', function () {
         initImageManager();
+        initSVG();
+        moveInit();
     });
 }

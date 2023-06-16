@@ -1,7 +1,7 @@
 import { click_textGeneration, click_showTextSettings, click_iterateText } from "./sticker/textGeneration.js";
 import { loadTags, showTaggroupManager, addTag } from "./sticker/tagManager.js";
 import ProductConnector from "./sticker/productConnector.js";
-import { initSVG, moveInit, click_makeColorable } from "./sticker/imageManager.js";
+import { click_makeColorable } from "./sticker/imageManager.js";
 import { click_addNewWidth } from "./sticker/sizeTable.js";
 
 const fnNames = {};
@@ -20,9 +20,7 @@ const mainVariables = {
 window.mainVariables = mainVariables;
 
 function initSticker() {
-    initSVG();
     initBindings();
-    moveInit();
 
     document.title = "b-schriftung - Motiv " + mainVariables.motivId.innerHTML + " " + document.getElementById("name").innerHTML;
 
