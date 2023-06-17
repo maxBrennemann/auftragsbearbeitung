@@ -17,6 +17,42 @@ class DeviceDetector {
         return check;
     }
 
+    /**
+     * https://codepedia.info/detect-browser-in-javascript
+     */
+    static getBrowser() {
+        let userAgent = navigator.userAgent;
+        let browserName;
+
+        browserName = (function (agent) {switch (true) {
+            case agent.indexOf("edge") > -1: return "MS Edge";
+            case agent.indexOf("edg/") > -1: return "Edge (chromium based)";
+            case agent.indexOf("opr") > -1 && !!window.opr: return "Opera";
+            case agent.indexOf("chrome") > -1 && !!window.chrome: return "Chrome";
+            case agent.indexOf("trident") > -1: return "MS IE";
+            case agent.indexOf("firefox") > -1: return "Mozilla Firefox";
+            case agent.indexOf("safari") > -1: return "Safari";
+            default: return "other";
+        }
+        })(window.navigator.userAgent.toLowerCase());
+
+        if (browserName === 'other') {
+            if (userAgent.match(/chrome|chromium|crios/i)) {
+                browserName = "Chrome";
+            } else if (userAgent.match(/firefox|fxios/i)) {
+                browserName = "Mozilla Firefox";
+            } else if (userAgent.match(/safari/i)) {
+                browserName = "Safari";
+            } else if (userAgent.match(/opr\//i)) {
+                browserName = "Opera";
+            } else if (userAgent.match(/edg/i)) {
+                browserName = "Edge";
+            }
+        }
+        
+        return browserName;
+    }
+
     static getOS() {
         var userAgent = window.navigator.userAgent,
             platform = window.navigator?.userAgentData?.platform || window.navigator.platform,

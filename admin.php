@@ -10,7 +10,7 @@ $curr_Link = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 $adminLink = Link::getAdminLink();
 
 if (isset($_POST['info'])) {
-	Login::manageRequest();
+	Login::handleLogin();
 }
 
 if (isset($_POST['article'])) {

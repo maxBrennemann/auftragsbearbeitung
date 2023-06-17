@@ -4,6 +4,51 @@ require_once('Mailer.php');
 
 class Login {
 
+	/**
+	 * handles the login process
+	 */
+	public static function handleLogin() {
+		if (!isset($_POST['name']) || !isset($_POST['password'])) {
+			return false;
+		}
+		
+		$loginCredentials = $_POST['name'];
+		$password = $_POST['password'];
+
+		/* check if user exists */
+		$user = DBAccess::selectQuery("SELECT * FROM user WHERE `email` = :email OR `username` = :username LIMIT 1;", array(
+			':email' => $loginCredentials, 
+			':username' => $loginCredentials
+		));
+
+		if (empty($user))  {
+			return false;
+		}
+
+		$user = $user[0];
+		
+		/* check password */
+		if ($user !== false && password_verify($password, $user['password'])) {
+			$_SESSION['userid'] = $user['id'];
+			$_SESSION['loggedIn'] = true;
+
+			$deviceId = self::generateDeviceKey(getParameter("userAgent", "unknown"));
+		} else {
+			return false;
+		}
+
+		DBAccess::insertQuery("INSERT INTO login_history (user_id, user_login_key_id) VALUES (:id, :uloginkey)",
+			array(
+				':id' => $user['id'],
+				':uloginkey' => 0,
+			));
+
+		return $deviceId;
+	}
+
+	/**
+	 * handles the logout process
+	 */
 	public static function handleLogout() {
 		$key = $_POST["loginkey"];
 		//DBAccess::deleteQuery("DELETE FROM `user_login` WHERE `loginkey` = :key;", array(':key' => $key));
@@ -13,71 +58,108 @@ class Login {
 		session_destroy();
 		$_SESSION = array();
 	}
-	
-	public static function manageRequest() {
-		if (isset($_POST['info'])) {
-			$info = $_POST['info'];
-			
-			if ($info == 'register') {
-				self::register();
-			} else if ($info == 'Einloggen') {
-				self::login();
-			} else if ($info == 'logout') {
-				$_SESSION = array();
-				
-				/* https://stackoverflow.com/questions/3512507/proper-way-to-logout-from-a-session-in-php*/
-				if (ini_get("session.use_cookies")) {
-					$params = session_get_cookie_params();
-					setcookie(session_name(), '', time() - 42000,
-						$params["path"], $params["domain"],
-						$params["secure"], $params["httponly"]
-					);
-				}
-				session_destroy();
-			}
+
+	public static function getLoginKey($deviceKey) {
+		if (!isset($_POST["setAutoLogin"]) || $_POST["setAutoLogin"] == false) {
+			return;
 		}
+
+		/* get expiration date */
+		$dateInTwoWeeks = new DateTime();
+		$dateInTwoWeeks->modify("+2 week");
+		$dateInTwoWeeks = $dateInTwoWeeks->format("Y-m-d");
 	}
-	
-	private static function login() {
-		if (!isset($_POST['loginData']) || !isset($_POST['password'])) {
-			return false;
-		}
-		
-		$loginData = $_POST['loginData'];
-		$password = $_POST['password'];
 
-		$user = DBAccess::selectQuery("SELECT * FROM user WHERE `email` = :email OR `username` = :username LIMIT 1;", array(':email' => $loginData, ':username' => $loginData));
-
-		if (empty($user))  {
-			return false;
+	/**
+	 * simple function to generate a unique device identifier
+	 */
+	private static function generateDeviceKey($userAgent) {
+		if (isset($_POST["deviceKey"])) {
+			return $_POST["deviceKey"];
 		}
 
-		$user = $user[0];
-		
-		/* Überprüfung des Passworts */
-		if ($user !== false && password_verify($password, $user['password'])) {
-			$_SESSION['userid'] = $user['id'];
+		$random_part = bin2hex(random_bytes(6));
+		$userAgentHash = md5($userAgent . $random_part);
 
-			if ($user['specialRole'] == 'admin') {
-				$_SESSION['admin'] = $user['id'];
-			}
-			
-			$_SESSION['loggedIn'] = true;
-			self::handleAutoLogin();
+		$browser = $_POST["browser"];
+		$os = $_POST["os"];
+		$isMobile = $_POST["isMobile"];
+		$isTablet = $_POST["isTablet"];
+
+		$query = "SELECT * FROM user_devices WHERE md_hash = :userAgentHash AND os = :os AND browser = :browser AND device_type = :deviceType AND user_id = :userId;";
+		$data = DBAccess::selectQuery($query, array(
+			':userAgentHash' => $userAgentHash,
+			':os' => $os,
+			':browser' => $browser,
+			':deviceType' => $isMobile ? "mobile" : ($isTablet ? "tablet" : "desktop"),
+			':userId' => $_SESSION['userid']
+		));
+
+		$duplicateDevice = self::checkDuplicateDevices($data);
+		if ($duplicateDevice != false) {
+			$userAgentHash = $duplicateDevice['md_hash'];
 		} else {
-			echo "E-Mail / Benutzername oder Passwort war ungültig<br>";
+			$id = self::saveDeviceKey($userAgentHash, $userAgent, $browser, $os, $isMobile, $isTablet);
+		}
+
+		return $userAgentHash;
+	}
+
+	private function saveDeviceKey($key, $userAgent, $browser, $os, $isMobile, $isTablet) {
+		$query = "INSERT INTO user_devices (md_hash, os, browser, device_type, user_id) VALUES (:key, :os, :browser, :deviceType, :userId);";
+		$id = DBAccess::insertQuery($query, array(
+			':key' => $key,
+			':os' => $os,
+			':browser' => $browser,
+			':deviceType' => $isMobile ? "mobile" : ($isTablet ? "tablet" : "desktop"),
+			':userId' => $_SESSION['userid']
+		));
+
+		return $id;
+	}
+
+	private function checkDuplicateDevices($list) {
+		if (count($list) == 0) {
 			return false;
 		}
 
-		DBAccess::insertQuery("INSERT INTO login_history (user_id, user_login_key) VALUES (:id, :uloginkey)",
-			array(
-				':id' => $user['id'],
-				':uloginkey' => 0,
-			));
+		$ip = $_SERVER['REMOTE_ADDR'];
 
-		return true;
+		foreach ($list as $device) {
+			if ($device['ip_adress'] == $ip) {
+				return $device;
+			}
+		}
+
+		return false;
 	}
 
+	public function test() {
+		$userAgent = $_POST["userAgent"];
+		$loginKey = $_POST["loginkey"];
+
+		$hash = md5($userAgent . $loginKey);
+		$query = "SELECT * FROM user_devices ud LEFT JOIN user_login_key ul ON ud.id = ul.user_device_id WHERE md_hash = '$hash' AND expiration_date > CURDATE() LIMIT 1";
+		$data = DBAccess::selectQuery($query);
+
+		if ($data != null) {
+			$user = $data[0]["user_id"];
+			$_SESSION['userid'] = $user;
+	
+			/* special role check must be added later for autologin */
+			$_SESSION['loggedIn'] = true;
+			Login::handleAutoLogin();
+			echo "success";
+		} else {
+			echo "failed";
+		}
+	}
+
+	/**
+	 * the autologin hash is stored in the database and the cookie,
+	 * the cookie, the browser type and os are used to identify the user
+	 * the current ip adress is also stored in the database but is not crucial
+	 */
 	public static function handleAutoLogin() {
 		if (isset($_POST["setAutoLogin"])) {
 			
@@ -97,104 +179,18 @@ class Login {
 			$hash = md5($jsData . $random_part);
 			/* browser agent stays empty for now */
 
-			//$query = "INSERT INTO user_login (`user_id`, md_hash, expiration_date, device_name, ip_adress, loginkey) VALUES (:user_id, :hash, :date, :device_name, :ip_adress, :loginkey)";
+			$query = "INSERT INTO user_login (`user_id`, md_hash, expiration_date, device_name, ip_adress, loginkey) VALUES (:user_id, :hash, :date, :device_name, :ip_adress, :loginkey)";
 
 			echo json_encode([$jsData, $random_part]);
-			/*DBAccess::insertQuery($query, [
+			DBAccess::insertQuery($query, [
 				':user_id' => $user_id,
 				':hash' => $hash,
 				':date' => $dateInTwoWeeks,
 				':device_name' => $browser,
 				':ip_adress' => $ip,
 				':loginkey' => $random_part
-			]);*/
+			]);
 		}
-	}
-	
-	private static function register() {
-		if (!isset($_POST['email']) || !isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['password2'])) {
-			return false;
-		}
-		
-		$error = false;
-		$email = $_POST['email'];
-		$prename = $_POST['prename'];
-		$lastname = $_POST['lastname'];
-		$username = $_POST['username'];
-		$password = $_POST['password'];
-		$password2 = $_POST['password2'];
-		
-		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-			echo 'Bitte eine gültige E-Mail-Adresse eingeben<br>';
-			$error = true;
-		}
-		
-		if (strlen($password) == 0) {
-			echo 'Bitte ein Passwort angeben<br>';
-			$error = true;
-		}
-		
-		if ($password != $password2) {
-			echo 'Die Passwörter müssen übereinstimmen<br>';
-			$error = true;
-		}
-		
-		/* Überprüfe, dass die E-Mail-Adresse noch nicht registriert wurde */
-		if (!$error) { 
-			$user = DBAccess::selectQuery("SELECT id FROM user WHERE email = :email", array(':email' => $email));
-			
-			if (!empty($user)) {
-				echo 'Diese E-Mail-Adresse ist bereits vergeben<br>';
-				$error = true;
-			}
-			
-			$user = DBAccess::selectQuery("SELECT id FROM user WHERE username = :username", array(':username' => $username));
-			
-			if (!empty($user)) {
-				echo 'Dieser Benutzername ist bereits vergeben<br>';
-				$error = true;
-			}
-		}
-		
-		/* Keine Fehler, wir können den Nutzer registrieren */
-		if (!$error) {    
-			$password_hash = password_hash($password, PASSWORD_DEFAULT);
-			$insert = "INSERT INTO user (username, prename, lastname, email, password, max_working_hours, role) VALUES (:username, :prename, :lastname, :email, :password, 0, 0)";
-			$params = array(
-				'username' => $username,
-				'prename' => $prename,
-				'lastname' => $lastname,
-				'email' => $email,
-				'password' => $password_hash
-			);
-			$result = DBAccess::insertQuery($insert, $params);
-			
-			if ($result) {        
-				echo 'Du wurdest erfolgreich registriert. <a href="login.php">Zum Login</a>';
-			} else {
-				echo 'Beim Abspeichern ist leider ein Fehler aufgetreten<br>';
-			}
-			
-			self::generateMailKey($email);
-		}
-	}
-	
-	/**
-	 * members_validate_email doesn't exist yet
-	 */
-	public static function generateMailKey($email) {
-		$mailKey = md5(microtime().rand());
-		
-		while(DBAccess::selectQuery("SELECT id FROM members_validate_email WHERE mailKey = '$mailKey'") != null) {
-			$mailKey = md5(microtime().rand());
-		}
-		
-		$userId = intval(DBAccess::selectQuery("SELECT id FROM members WHERE email = '$email'"));
-		DBAccess::insertQuery("INSERT INTO members_validate_email (memberId, email, mailKey) VALUES ($userId, '$email', '$mailKey')");
-		
-		$mailLink = REWRITE_BASE . "?mailId=" . $mailKey;
-		$mailText = '<a href="' . $mailLink . '">Hier</a> dem Link folgen!';
-		Mailer::sendMail($email, "Bestätigen Sie Ihre E-Mail Adresse", $mailText, "no-reply@max-website.tk");
 	}
 	
 	/**
@@ -238,8 +234,7 @@ class Login {
 		curl_setopt($ch, CURLOPT_COOKIEJAR, "cookies/cookies.txt");
 		//set the cookie the site has for certain features, this is optional
 		curl_setopt($ch, CURLOPT_COOKIE, "cookiename=0");
-		curl_setopt($ch, CURLOPT_USERAGENT,
-			"Mozilla/5.0 (Windows; U; Windows NT 5.0; en-US; rv:1.7.12) Gecko/20050915 Firefox/1.0.7");
+		curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.0; en-US; rv:1.7.12) Gecko/20050915 Firefox/1.0.7");
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_REFERER, $_SERVER['REQUEST_URI']);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -260,5 +255,3 @@ class Login {
 	}
 
 }
-
-?>

@@ -231,15 +231,19 @@ function initSearchIcon() {
 
 function listener_logout() {
 	var logout = document.getElementById("logoutBtn");
-	if (logout == null) return null;
+	if (logout == null) {
+		return null;
+	}
 	logout.addEventListener("click", function() {
 		var cookies = checkCookies();
 		var loginkey = "false";
 		if ("loginkey" in cookies) {
 			loginkey = cookies["loginkey"];
 		}
-		var logout = new AjaxCall(`logout_session=logout&loginkey=${loginkey}`, "POST", window.location.href);
-		logout.makeAjaxCall(function (response) {
+		ajax.post({
+			r: "logout",
+			loginkey: loginkey,
+		}).then(() => {
 			location.reload();
 		});
 	}, false);
@@ -773,17 +777,35 @@ function performGlobalSearch(e) {
     });
 }
 
+function getCookie(name) {
+    var allCookies = checkCookies();
+    if (name in allCookies) {
+        const val = allCookies[name];
+        return val;
+    }
+
+    return null;
+}
+
 /* https://www.geekstrick.com/snippets/how-to-parse-cookies-in-javascript/ */
 function checkCookies() {
-	var cookies = document.cookie.split(";");
-	var cookieObj = {};
-	for (let i = 0; i < cookies.length; i++) {
-		var parts = cookies[i].split("=");
-		parts[0] = parts[0].substring(1);
-		cookieObj[parts[0]] = parts[1];
-	}
+    var cookies = document.cookie.split(";");
+    var cookieObj = {};
+    for (let i = 0; i < cookies.length; i++) {
+        var parts = cookies[i].split("=");
+        parts[0] = parts[0].substring(1);
+        cookieObj[parts[0]] = parts[1];
+    }
 
-	return cookieObj;
+    return cookieObj;
+}
+
+/* https://www.w3schools.com/js/js_cookies.asp */
+function setCookie(cname, cvalue, exdays) {
+    const d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    let expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
 /**

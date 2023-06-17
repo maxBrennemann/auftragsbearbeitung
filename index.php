@@ -62,15 +62,6 @@ if (file_exists($cacheFile) && !(count($_GET) || count($_POST)) && $t && $status
 		ob_start();
 	}
 
-	if (isset($_POST['logout_session'])) {
-		Login::handleLogout();
-	}
-
-	if (isset($_POST['login_session'])) {
-		Login::manageRequest();
-		return null;
-	}
-
 	/*
 	* filters AJAX requests and delegates them to the right files
 	*/

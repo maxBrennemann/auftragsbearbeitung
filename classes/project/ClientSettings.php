@@ -8,33 +8,32 @@ class ClientSettings {
     }
 
     public static function getColorConfiguration() {
-        if (!isset($_SESSION['userid']))
-            return null;
-
-        $userId = $_SESSION['userid'];
-        $data = DBAccess::selectQuery("SELECT color, `type` FROM color_settings WHERE userid = $userId");
-
         $color_table = "d8d8d8";
         $color_def = "eff0f1";
         $color_innerDef = "b1b1b1";
 
-        foreach ($data as $d) {
-            switch($d['type']) {
-                case "1":
-                    if ($d['color'] != "")
-                        $color_table = $d['color'];
-                break;
-                case "2":
-                    if ($d['color'] != "")
-                        $color_def = $d['color'];
-                break;
-                case "3":
-                    if ($d['color'] != "")
-                        $color_innerDef = $d['color'];
-                break;
+        if (isset($_SESSION['userid'])) {
+            $userId = $_SESSION['userid'];
+            $data = DBAccess::selectQuery("SELECT color, `type` FROM color_settings WHERE userid = $userId");
+
+            foreach ($data as $d) {
+                switch($d['type']) {
+                    case "1":
+                        if ($d['color'] != "")
+                            $color_table = $d['color'];
+                    break;
+                    case "2":
+                        if ($d['color'] != "")
+                            $color_def = $d['color'];
+                    break;
+                    case "3":
+                        if ($d['color'] != "")
+                            $color_innerDef = $d['color'];
+                    break;
+                }
             }
         }
-
+        
         $colorCSS = ":root {
             --main-table-color: #$color_table;
             --main-def-color: #$color_def;

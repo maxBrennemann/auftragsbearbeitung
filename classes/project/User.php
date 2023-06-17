@@ -1,5 +1,7 @@
 <?php
 
+require_once('classes/Mailer.php');
+
 class User {
 
     private $id;
@@ -61,11 +63,7 @@ class User {
      * checks if email is available and sets it
      */
     public function setEmail($email) {
-        $query = "SELECT id FROM user WHERE email = :email";
-        $params = array(':email' => $email);
-        $user = DBAccess::selectQuery($query, $params);
-
-        if (empty($user)) {
+        if (self::checkEmailAvailable($email)) {
             $query = "UPDATE user SET email = :email WHERE id = :userId";
             $params = array(':email' => $email, ':userId' => $this->id);
             DBAccess::updateQuery($query, $params);
@@ -95,8 +93,16 @@ class User {
         
     }
 
+    /**
+     * returns a list of devices the user has logged in with
+     */
     public function getUserDeviceList() {
+        $query = "SELECT device_name, user_device_name, last_usage, ip_address FROM user_devices WHERE user_id = :userId";
+        $data = DBAccess::selectQuery($query, [
+            "userId" => $this->id,
+        ]);
 
+        return $data;
     }
 
     public function getHistory() {
@@ -194,6 +200,112 @@ class User {
 		$link->setIterator("id", $data, "id");
 		$t->addLink($link);
 		return $t->getTable();
+    }
+
+    public static function checkEmailAvailable($email) {
+        $query = "SELECT id FROM user WHERE email = :email";
+        $params = array(':email' => $email);
+        $user = DBAccess::selectQuery($query, $params);
+
+        if (empty($user)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static function checkUsernameAvailable($username) {
+        $query = "SELECT id FROM user WHERE username = :username";
+        $params = array(':username' => $username);
+        $user = DBAccess::selectQuery($query, $params);
+
+        if (empty($user)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * adds a new user to the database,
+     * if an error occurs, it returns -1,
+     * if the user was added successfully, it returns the id of the user
+     */
+    public static function add($username, $email, $prename, $lastname, $password) {
+        if (!self::checkUsernameAvailable($username) || !self::checkEmailAvailable($email)) {
+            return -1;
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			return -1;
+		}
+
+        if (!self::isPasswordSafe($password)) {
+            return -1;
+        }
+
+        $password_hash = password_hash($password, PASSWORD_DEFAULT);
+        $insert = "INSERT INTO user (username, prename, lastname, email, password, max_working_hours, role) VALUES (:username, :prename, :lastname, :email, :password, 0, 0)";
+        $params = array(
+            'username' => $username,
+            'prename' => $prename,
+            'lastname' => $lastname,
+            'email' => $email,
+            'password' => $password_hash
+        );
+        $result = DBAccess::insertQuery($insert, $params);
+        self::sendEmailVerification($result, $email);
+
+        return $result;
+    }
+
+    private static function sendEmailVerification($userId, $email) {
+        $mailKey = md5(microtime().rand());
+
+        while (self::mailKeyExists($mailKey)) {
+            $mailKey = md5(microtime().rand());
+        }
+
+		DBAccess::insertQuery("INSERT INTO user_validate_mail (user_id, mail_key) VALUES (:userId, :mailKey)", array(
+            ':userId' => $userId,
+            ':mailKey' => $mailKey
+        ));
+		
+		$mailLink = REWRITE_BASE . "/verify?id?" . $mailKey;
+		$mailText = '<a href="' . $mailLink . '">Hier</a> dem Link folgen!';
+
+        try {
+            Mailer::sendMail($email, "Bestätigen Sie Ihre E-Mail Adresse", $mailText, "no-reply@organisierung.b-schriftung.de");
+        } catch (Exception $e) {
+           
+        }
+    }
+
+    private static function mailKeyExists($mailKey) {
+        $query = "SELECT id FROM user_validate_mail WHERE mail_key = :mailKey";
+        $params = array(':mailKey' => $mailKey);
+        $result = DBAccess::selectQuery($query, $params);
+
+        if (empty($result)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * checks if the password is safe enough
+     */
+    private static function isPasswordSafe($password) {
+        if (strlen($password) < 8) {
+            return false;
+        }
+
+        if (!preg_match('/[A-Za-z]/', $password) || !preg_match('/[0-9]/', $password)) {
+            return false;
+        }
+
+        return true;
     }
 
 }

@@ -12,8 +12,45 @@ if (isset($_GET["id"])) {
 }
 
 if ($showUserList) : ?>
-    <?=User::getUserOverview()?>
-    <button class="btn-primary" disabled>Neuen Benutzer anlegen</button>
+    <div class="defCont">
+        <?=User::getUserOverview()?>
+    </div>
+    <div class="defCont">
+        <div class="hidden" id="addNewUserForm">
+            <form autocomplete="off">
+                <!-- https://stackoverflow.com/a/23234498/7113688 -->
+                <input autocomplete="false" name="hidden" type="text" class="hidden">
+                <input type="text" name="username" style="display:none">
+                <input type="password" style="display:none">
+                <label>
+                    <p>Nutzername</p>
+                    <input type="text" placeholder="Neuer Benutzername" class="block rounded-sm m-1 ml-0 p-1 w-80" name="somename" autocomplete="off">
+                </label>
+                <label>
+                    <p>Vorname</p>
+                    <input type="text" placeholder="Vorname" class="block rounded-sm m-1 ml-0 p-1 w-80" name="prename" autocomplete="off">
+                </label>
+                <label>
+                    <p>Nachname</p>
+                    <input type="text" placeholder="Nachname" class="block rounded-sm m-1 ml-0 p-1 w-80" name="lastname" autocomplete="off">
+                </label>
+                <label>
+                    <p>Email</p>
+                    <input type="email" placeholder="Email" class="block rounded-sm m-1 ml-0 p-1 w-80" name="email" autocomplete="off">
+                </label>
+                <label>
+                    <p>Passwort</p>
+                    <input type="password" class="block rounded-sm m-1 ml-0 p-1 w-80" name="newPassword" autocomplete="off">
+                </label>
+                <label>
+                    <p>Passwort wiederholen</p>
+                    <input type="password" class="block rounded-sm m-1 ml-0 p-1 w-80" name="newPasswordRepeat" autocomplete="off">
+                </label>
+                <button class="btn-primary">Abschicken</button>
+            </form>
+        </div>
+        <button class="btn-primary" id="addNewUserBtn">Neuen Benutzer anlegen</button>
+    </div>
 <?php else: ?>
     <div class="defCont">
         <p class="font-bold">Benutzerdaten</p>
@@ -40,6 +77,13 @@ if ($showUserList) : ?>
             <p>Maximale Arbeitszeit</p>
             <input type="number" value="" class="block rounded-sm m-1 ml-0 p-1 w-80">
             <button class="btn-primary">Speichern</button>
+        </div>
+    </div>
+    <div class="defCont">
+        <p class="font-bold">Deine Geräte</p>
+        <div>
+            <?php foreach ($user->getUserDeviceList() as $devices): ?>
+            <?php endforeach; ?>
         </div>
     </div>
     <div class="defCont">
