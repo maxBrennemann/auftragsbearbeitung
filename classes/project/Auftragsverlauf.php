@@ -1,8 +1,5 @@
 <?php
 
-require_once('classes/DBAccess.php');
-require_once('classes/Login.php');
-
 /*
  * Zu protokollierende Daten:
  * posten:   Beim Hinzufügen / Löschen / Bearbeiten speichern                       ✔

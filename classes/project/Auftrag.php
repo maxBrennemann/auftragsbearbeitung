@@ -1,11 +1,5 @@
 <?php
 
-error_reporting(E_ALL);
-
-if (0 > version_compare(PHP_VERSION, '5')) {
-    die('This file was generated for PHP 5');
-}
-
 require_once('Kunde.php');
 require_once('Schritt.php');
 require_once('Posten.php');
@@ -13,8 +7,6 @@ require_once('Priority.php');
 require_once('FormGenerator.php');
 require_once('InteractiveFormGenerator.php');
 require_once('StatisticsInterface.php');
-require_once('classes/DBAccess.php');
-require_once('classes/Link.php');
 require_once('Statistics.php');
 require_once('GlobalSettings.php');
 require_once("classes/project/Table.php");
@@ -97,8 +89,12 @@ class Auftrag implements StatisticsInterface {
 
 	public function getBearbeitungsschritteAsTable() {
 		$data = DBAccess::selectQuery("SELECT Bezeichnung, Datum, `Priority`, finishingDate as 'erledigt am' FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer}");
-		$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Datum"), 
-				2 => array("COLUMN_NAME" => "Priority"), 3 => array("COLUMN_NAME" => "erledigt am"));
+		$column_names = array(
+			0 => array("COLUMN_NAME" => "Bezeichnung"),
+			1 => array("COLUMN_NAME" => "Datum"),
+			2 => array("COLUMN_NAME" => "Priority"),
+			3 => array("COLUMN_NAME" => "erledigt am")
+		);
 
 		$form = new InteractiveFormGenerator("");
 		return $form->create($data, $column_names);
@@ -110,8 +106,11 @@ class Auftrag implements StatisticsInterface {
 		 * istErledigt = 0 -> ist schon erledigt
 		*/
 		$data = DBAccess::selectQuery("SELECT Schrittnummer, Bezeichnung, Datum, `Priority` FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer} AND istErledigt = 1 ORDER BY `Priority` DESC");
-		$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Datum"), 
-				2 => array("COLUMN_NAME" => "Priority"));
+		$column_names = array(
+			0 => array("COLUMN_NAME" => "Bezeichnung"),
+			1 => array("COLUMN_NAME" => "Datum"),
+			2 => array("COLUMN_NAME" => "Priority")
+		);
 
 		$form = new InteractiveFormGenerator("schritte");
 		$form->setRowDone(true);
@@ -122,7 +121,11 @@ class Auftrag implements StatisticsInterface {
 	/* getBearbeitungsschritte with new Table class */
 	public function getOpenBearbeitungsschritteTable() {
 		$data = DBAccess::selectQuery("SELECT Schrittnummer, Bezeichnung, Datum, `Priority` AS Priorotät FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer} AND istErledigt = 1 ORDER BY `Priority` DESC");
-		$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Datum"), 2 => array("COLUMN_NAME" => "Priorotät"));
+		$column_names = array(
+			0 => array("COLUMN_NAME" => "Bezeichnung"),
+			1 => array("COLUMN_NAME" => "Datum"),
+			2 => array("COLUMN_NAME" => "Priorotät")
+		);
 
 		for ($i = 0; $i < sizeof($data); $i++) {
 			$data[$i]["Priorotät"] = Priority::getPriorityLevel($data[$i]["Priorotät"]);
@@ -168,6 +171,7 @@ class Auftrag implements StatisticsInterface {
 	public function getAuftragstypBezeichnung() {
 		$query = "SELECT `Auftragstyp` FROM `auftragstyp` WHERE `id` = :idAuftragstyp LIMIT 1;";
 		$bez = DBAccess::selectQuery($query, ["idAuftragstyp" => $this->auftragstyp]);
+
 		if ($bez != null) {
 			return $bez[0]["Auftragstyp"];
 		} else {
@@ -562,6 +566,29 @@ class Auftrag implements StatisticsInterface {
 	public function getDefaultWage() {
 		$defaultWage = GlobalSettings::getSetting("defaultWage");
 		return $defaultWage;
+	}
+
+	public static function add() {
+		$customerId = (int) $_POST["customerId"];
+
+		//self::addToDB();
+	}
+
+	private static function addToDB(int $customerId, $type, $deadline, $description, $title, $user, $partner, $medium) {
+		$date = date("Y-m-d");
+		$query = "INSERT INTO auftrag (Kundennummer, Auftragsbezeichnung, Auftragsbeschreibung, Auftragstyp, Datum, Termin, AngenommenDurch, AngenommenPer, Ansprechpartner) VALUES (:customerId, :title, : description, :type, :date, :deadline, :user, :medium, :partner);";
+		$parameters = [
+			"customerId" => $customerId,
+			"title" => $title,
+			"description" => $description,
+			"type" => $type,
+			"date" => $date,
+			"deadline" => $deadline,
+			"user" => $user,
+			"medium" => $medium,
+			"partner" => $partner,
+		];
+		$orderId = DBAccess::insertQuery($query, $parameters);
 	}
 
 }

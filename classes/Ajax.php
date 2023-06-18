@@ -130,6 +130,8 @@ class Ajax {
 				echo NotificationManager::htmlNotification();
 			break;
 			case "createAuftrag":
+				Auftrag::add();
+
 				$bez = $_POST['bez'];
 				$bes = $_POST['bes'];
 				$typ = $_POST['typ'];
