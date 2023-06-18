@@ -5,6 +5,9 @@ define('WEB_URL', '');
 define('SUB_URL', '');
 define('FRONT', '');
 
+define('CURL_USERNAME', '');
+define('CURL_PASSWORD', '');
+
 define('ERRORREPORTING', true);
 define('CURRENTVERSION', '');
 

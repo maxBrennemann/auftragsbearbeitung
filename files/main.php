@@ -19,36 +19,62 @@
 	}
 ?>
 <div>
-	<ul class="mainUl">
-		<li><a href="<?=$neuerKunde?>"><?=Icon::$iconPersonAdd?> Neuen Kunden erstellen</a></li>
-		<li>
-			<input id="kundeninput" type="text"><a hef="#" data-url="<?=$kunde?>" id="kundenLink"> →</a><br>
-			<a href="<?=$kunde?>?showDetails=list">Zu den Kunden</a>
+	<ul class="mainUl auto-rows-min">
+		<li class="rounded-lg bg-gray-100">
+			<a class="block px-4 py-8" href="<?=$neuerKunde?>"><?=Icon::$iconPersonAdd?> Neuen Kunden erstellen</a>
 		</li>
-		<li><a href="<?=$neuerAuftrag?>"><?=Icon::$iconOrderAdd?> Neuen Auftrag erstellen</a></li>
-		<li><a href="<?=$rechnung?>">Neue Rechnung erstellen</a></li>
-		<li>
-			<input id="rechnungsinput" type="number" min="1" oninput="document.getElementById('rechnungsLink').href = '<?=$rechnung?>?target=view&id=' + this.value;">
+		<li class="px-4 py-8 rounded-lg bg-gray-100">
+			<input id="kundeninput" type="text" class="w-32 rounded-md p-1">
+			<a hef="#" data-url="<?=$kunde?>" id="kundenLink"> →</a>
+			<a class="inline" href="<?=$kunde?>?showDetails=list">Zu den Kunden</a>
+		</li>
+		<li class="rounded-lg bg-gray-100">
+			<a class="block px-4 py-8" href="<?=$neuerAuftrag?>"><?=Icon::$iconOrderAdd?> Neuen Auftrag erstellen</a>
+		</li>
+		<li class="rounded-lg bg-gray-100">
+			<a class="block px-4 py-8" href="<?=$rechnung?>">Neue Rechnung erstellen</a>
+		</li>
+		<li class="px-4 py-8 rounded-lg bg-gray-100">
+			<input id="rechnungsinput" type="number" min="1" oninput="document.getElementById('rechnungsLink').href = '<?=$rechnung?>?target=view&id=' + this.value;" class="w-32 rounded-md p-1">
 			<a href="#" id="rechnungsLink">Rechnung anzeigen</a>
 		</li>
-		<li><a href="<?=$neuesAngebot?>">+ Neues Angebot erstellen</a></li>
-		<li><a href="<?=$neuesProdukt?>"><?=Icon::$iconProductAdd?> Neues Produkt erstellen</a></li>
-		<li>
-			<input id="auftragsinput" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value + '&query=' + this.value;">
+		<li class="rounded-lg bg-gray-100">
+			<a class="block px-4 py-8" href="<?=$neuesAngebot?>">+ Neues Angebot erstellen</a>
+		</li>
+		<li class="rounded-lg bg-gray-100">
+			<a class="block px-4 py-8" href="<?=$neuesProdukt?>"><?=Icon::$iconProductAdd?> Neues Produkt erstellen</a>
+		</li>
+		<li class="px-4 py-8 rounded-lg bg-gray-100">
+			<input id="auftragsinput" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value + '&query=' + this.value;" class="w-32 rounded-md p-1">
 			<a href="#" id="auftragsLink">Auftrag anzeigen</a>
 		</li>
-		<li><a href="<?=$diagramme?>"><?=Icon::$iconChart?> Diagramme und Auswertungen</a></li>
-		<li><a href="<?=$leistungenLinks?>">Leistungen</a></li>
-		<li><a href="<?=$toDo?>">Verbesserungen für die Auftragsbearbeitung</a></li>
-		<li><a href="<?=$offeneRechnungen?>">Offene Rechnungen:</a> <b><?=$offeneSumme?>€</b></li>
+		<li class="rounded-lg bg-gray-100">
+			<a class="block px-4 py-8" href="<?=$diagramme?>"><?=Icon::$iconChart?> Diagramme und Auswertungen</a>
+		</li>
+		<li class="rounded-lg bg-gray-100">
+			<a class="block px-4 py-8" href="<?=$leistungenLinks?>">Leistungen</a>
+		</li>
+		<li class="rounded-lg bg-gray-100">
+			<a class="block px-4 py-8" href="<?=$toDo?>">Verbesserungen</a>
+		</li>
+		<li class="rounded-lg bg-gray-100">
+			<a class="block px-4 py-8" href="<?=$offeneRechnungen?>">Offene Rechnungen: <b><?=$offeneSumme?>€</b></a>
+		</li>
 	</ul>
 	<span style="float: right;"><a href="#" onclick="showCustomizeOptions()">Anpassen</a> <a href="<?=$funktionen?>">Mehr</a></span>
 	<br>
-
 	<div class="tableContainer">
-		<h3>Offene Bearbeitungsschritte:</h3><?=$showAktuelleSchritte?>
-		<h3>Fertig zum Abschließen:</h3><?=$showReady?>
-		<h3>Offene Aufträge:</h3><?=$showOffeneAuftraege?>
+		<div>
+			<h3 class="font-bold my-3">Offene Bearbeitungsschritte</h3>
+			<?=$showAktuelleSchritte?>
+		</div>
+		<div>
+			<h3 class="font-bold my-3">Fertig zum Abschließen</h3>
+			<?=$showReady?>
+		</div>
+		<div>
+			<h3 class="font-bold my-3">Offene Aufträge</h3>
+			<?=$showOffeneAuftraege?>
+		</div>
 	</div>
 </div>
-<script src="<?=Link::getResourcesShortLink("main-helper.js", "js")?>"></script>

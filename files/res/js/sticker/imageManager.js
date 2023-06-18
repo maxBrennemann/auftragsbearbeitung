@@ -1,5 +1,21 @@
+/**
+ * toggles the is colorable flag of the svg,
+ * if the svg is colorable, the svg is displayed in the colorable svg container
+ * and all colors will be removed
+ * @file imageManager.js
+ */
+export function click_makeColorable() {
+    ajax.post({
+        id: motivId,
+        r: "makeSVGColorable"
+    }).then(r => {
+        const svgContainer = document.getElementById("svgContainer");
+        svgContainer.data = r.url;
+    });
+}
+
 /* drag and drop handler */
-export function itemDropHandler(e, imageCategory) {
+function itemDropHandler(e, imageCategory) {
 	e.preventDefault();
     let uploadableFiles = [];
 
@@ -36,12 +52,13 @@ export function itemDropHandler(e, imageCategory) {
     uploadFileForSticker(uploadableFiles, imageCategory);
 }
 
-export function getIcon(type = "icon-file") {
+function getIcon(type = "icon-file") {
     const template = document.getElementById(type);
     return template.content.cloneNode(true);
 }
 
-export function generatePreviewContainer() {
+/* generates the div container for the image in the grey boxes */
+function generatePreviewContainer() {
     const div = document.createElement("div");
     div.classList.add("imageMovable");
     div.draggable = true;
@@ -49,11 +66,11 @@ export function generatePreviewContainer() {
 }
 
 /* https://stackoverflow.com/questions/71822008/how-to-tell-if-an-image-is-drag-drop-from-the-same-page-or-drag-drop-uploaded */
-export function preventCopy(e) {
+function preventCopy(e) {
     e.dataTransfer.setData("text/plain", "not_uploaded");
 }
 
-export function imageClickListener(event) {
+function imageClickListener(event) {
     if (!event.target.matches(".imgAbsoluteCenter,.imgPreview")) {
         let elements = document.getElementsByClassName("imgAbsoluteCenter");
         Array.prototype.forEach.call(elements, function(element) {
@@ -62,7 +79,8 @@ export function imageClickListener(event) {
     }
 }
 
-export function imagePreview(e) {
+/* displays a div with the image preview */
+function imagePreview(e) {
     let target = e.target;
     let copy = target.cloneNode();
     let imageSize = 500;
@@ -82,28 +100,28 @@ function itemDragOverHandler(e) {
 	e.preventDefault();
 }
 
-var currentMoveImage;
-var moveImages;
-export function moveImagesInDiv(event) {
+function moveImagesInDiv(event) {
     if (event.target.classList.contains("imgPreview")) {
         event.preventDefault();
 
-        if (moveImages.indexOf(event.target.parentNode.parentNode) > moveImages.indexOf(currentMoveImage))
+        if (moveImages.indexOf(event.target.parentNode.parentNode) > moveImages.indexOf(currentMoveImage)) {
             event.target.parentNode.after(currentMoveImage.parentNode);
-        else
+        } else {
             event.target.parentNode.before(currentMoveImage.parentNode);
+        }
+        // TODO: reihenfolge ausgeben
     }
 }
 
-export function moveImageStart(event) {
+function moveImageStart(event) {
     currentMoveImage = event.target;
 }
 
-export function moveImageEnd(event) {
+function moveImageEnd(event) {
     console.log("ended moving");
 }
 
-export function moveInit() {
+function moveInit() {
     moveImages = Array.from(document.getElementsByClassName("imageMovable"));
 
     moveImages.forEach(div => {
@@ -113,7 +131,7 @@ export function moveInit() {
     })
 }
 
-export function uploadFileForSticker(files, imageCategory) {
+function uploadFileForSticker(files, imageCategory) {
     if (files.length == 0) {
         return;
     }
@@ -126,7 +144,7 @@ export function uploadFileForSticker(files, imageCategory) {
     /* set upload variable to be recognized by the backend */
     formData.set("upload", "motiv");
     formData.set("motivname", "");
-    formData.set("motivNumber", mainVariables.motivId.innerHTML);
+    formData.set("motivNumber", motivId);
     formData.set("imageCategory", imageCategory);
 
 	const uploader = new Promise((resolve, reject) => {
@@ -159,7 +177,7 @@ export function uploadFileForSticker(files, imageCategory) {
  * TODO: es muss für mehrere Dateien gleichzeitig gehen, später eine Klasse aus dieser Datei machen
  * @param {*} imageData 
  */
-export function handleUploadedImages(imageData) {
+function handleUploadedImages(imageData) {
     const data = JSON.parse(imageData);
     const image = data.imageData[0];
     var icon;
@@ -178,16 +196,23 @@ export function handleUploadedImages(imageData) {
     }
 }
 
-// TODO: write file uploader
-// TODO: prevent false copying of text
-document.addEventListener("click", imageClickListener);
-
-export function checkSVGCount() {
-
+/**
+ * deletes the currently selected image
+ */
+function deleteImage() {
+    ajax.post({
+        imageId: mainVariables.currentDelete,
+        r: "deleteImage",
+    }).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+            const image = document.querySelector(`[data-file-id="${mainVariables.currentDelete}"]`);
+            image.parentNode.removeChild(image);
+        }
+    });
 }
 
-var svg_elem;
-export function initSVG() {
+function initSVG() {
     var a = document.getElementById("svgContainer");
     if (a != null || a != undefined) {
         a.addEventListener("load", loadSVGEvent, false);
@@ -206,7 +231,7 @@ export function initSVG() {
 }
 
 /* sets the svg_elem element when the content is loaded */
-export function loadSVGEvent() {
+function loadSVGEvent() {
     var a = document.getElementById("svgContainer");
     var svgDoc = a.contentDocument;
     svg_elem = svgDoc.getElementById("svg_elem");
@@ -216,65 +241,59 @@ export function loadSVGEvent() {
 /**
  * adjust the svg into the svg container, so that the element is not too small
  */
-export function adjustSVG() {
-    if (svg_elem != null) {
-        let children = svg_elem.children;
+function adjustSVG() {
+    if (svg_elem == null) {
+        return;
+    }
 
-        let positions = {
-            furthestX: 0,
-            nearestX: 0,
-            furthestY: 0,
-            nearestY: 0,
+    let children = svg_elem.children;
+    let positions = {
+        furthestX: 0,
+        nearestX: 0,
+        furthestY: 0,
+        nearestY: 0,
 
-            edited: false,
-        }
+        edited: false,
+    }
 
-        for (let i = 0; i< children.length; i++) {
-            let child = children[i];
-            if (child.getBBox() && child.nodeName != "defs") {
-                var coords = child.getBBox();
-                if (positions.edited == false) {
-                    positions.furthestX = coords.x + coords.width;
-                    positions.furthestY = coords.y + coords.height;
+    for (let i = 0; i< children.length; i++) {
+        let child = children[i];
+
+        if (child.getBBox() && child.nodeName != "defs") {
+            var coords = child.getBBox();
+            if (positions.edited == false) {
+                positions.furthestX = coords.x + coords.width;
+                positions.furthestY = coords.y + coords.height;
+                positions.nearestX = coords.x;
+                positions.nearestY = coords.y;
+
+                positions.edited = true;
+            } else {
+                if (coords.x < positions.nearestX) {
                     positions.nearestX = coords.x;
+                }
+                if (coords.y < positions.nearestY) {
                     positions.nearestY = coords.y;
-
-                    positions.edited = true;
-                } else {
-                    if (coords.x < positions.nearestX) {
-                        positions.nearestX = coords.x;
-                    }
-                    if (coords.y < positions.nearestY) {
-                        positions.nearestY = coords.y;
-                    }
-                    if (coords.x + coords.width > positions.furthestX) {
-                        positions.furthestX = coords.x + coords.width;
-                    }
-                    if (coords.y + coords.height > positions.furthestY) {
-                        positions.furthestY = coords.y + coords.height;
-                    }
+                }
+                if (coords.x + coords.width > positions.furthestX) {
+                    positions.furthestX = coords.x + coords.width;
+                }
+                if (coords.y + coords.height > positions.furthestY) {
+                    positions.furthestY = coords.y + coords.height;
                 }
             }
         }
-
-        let width = positions.furthestX - positions.nearestX;
-        let height = positions.furthestY - positions.nearestY;
-
-        svg_elem.setAttribute("viewBox", `${positions.nearestX} ${positions.nearestY} ${width} ${height}`);
     }
+
+    let width = positions.furthestX - positions.nearestX;
+    let height = positions.furthestY - positions.nearestY;
+
+    svg_elem.setAttribute("viewBox", `${positions.nearestX} ${positions.nearestY} ${width} ${height}`);
 }
 
-export async function click_makeColorable() {
-    ajax.post({
-        id: mainVariables.motivId.innerHTML,
-        r: "makeSVGColorable"
-    }).then(r => {
-        const svgContainer = document.getElementById("svgContainer");
-        svgContainer.data = r.url;
-    });
-}
+function initImageManager() {
+    document.addEventListener("click", imageClickListener);
 
-export function initImageManager() {
     const contextMenu = document.getElementById("delete-menu");
     const scope = document.querySelector("body");
 
@@ -325,49 +344,20 @@ export function initImageManager() {
     svgContainer.addEventListener("drop", e => itemDropHandler(e, "textilsvg"), false);
 }
 
-/**
- * deletes the currently selected image
- */
-function deleteImage() {
-    ajax.post({
-        imageId: mainVariables.currentDelete,
-        r: "deleteImage",
-    }).then(r => {
-        if (r.status == "success") {
-            infoSaveSuccessfull("success");
-            const image = document.querySelector(`[data-file-id="${mainVariables.currentDelete}"]`);
-            image.parentNode.removeChild(image);
-        }
-    });
-}
+const motivId = document.getElementById("motivId").innerHTML;
+var currentMoveImage;
+var moveImages;
+var svg_elem;
 
-export function insertNewlyUploadedImages(json) {
-    let imageContainer = document.getElementsByClassName("imageContainer")[0];
-
-    for (let key in json.imageData) {
-        let image = json.imageData[key];
-        console.log(image.id + " " + image.url);
-
-        let imageEl = document.createElement("img");
-        imageEl.setAttribute("src", image.url);
-        imageEl.title = image.original;
-        imageEl.classList.add("imagePrev");
-        imageEl.dataset.imageId = image.id;
-        imageEl.dataset.isAufkleber = 0;
-        imageEl.dataset.insWandtattoo = 0;
-        imageEl.dataset.isTextil = 0;
-        imageEl.setAttribute("onclick", "change(event)");
-
-        imageContainer.appendChild(imageEl);
-
-        console.log("test");
-    }
-}
-
+/* init */
 if (document.readyState !== 'loading' ) {
     initImageManager();
+    initSVG();
+    moveInit()
 } else {
     document.addEventListener('DOMContentLoaded', function () {
         initImageManager();
+        initSVG();
+        moveInit();
     });
 }

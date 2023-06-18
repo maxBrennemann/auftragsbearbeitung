@@ -2,8 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+    .btn-primary {
+      @apply px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none disabled:bg-gray-300;
+    }
+}
+
 @font-face {
     font-family: 'Open Sans';
-    src: url("./font/OpenSans-Regular.ttf") format('truetype');
+    src: url("./font/OpenSans-VariableFont.ttf") format('truetype');
     font-weight: normal;
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    src: url("./font/OpenSans-SemiBold.ttf") format('truetype');
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    src: url("./font/OpenSans-Bold.ttf") format('truetype');
+    font-weight: bold;
 }

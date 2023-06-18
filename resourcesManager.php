@@ -17,6 +17,7 @@ $types = [
 	"upload",
 	"backup",
 	"pdf_invoice",
+	"static",
 ];
 
 foreach ($types as $t) {
@@ -135,6 +136,14 @@ function get_pdf_invoice($pdf) {
 	$file = file_get_contents(Link::getResourcesLink($pdf, "pdf", false));
 
 	echo $file;
+}
+
+function get_static($file) {
+	if ($file == "facebook-product-export") {
+		header("Content-type: text/csv");
+		$file = file_get_contents(Link::getResourcesLink("exportFB_daily.csv", "csv"));
+		echo $file;
+	}
 }
 
 ?>

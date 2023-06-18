@@ -4,5 +4,8 @@
   },
   "scripts": {
     "tailwind": "npx tailwindcss -i input.css -o ./files/res/css/min/t-style.min.css --watch"
+  },
+  "dependencies": {
+    "alpinejs": "^3.12.1"
   }
 }

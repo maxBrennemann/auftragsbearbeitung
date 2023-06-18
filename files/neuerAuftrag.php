@@ -13,17 +13,17 @@
 		}
 	}
 
-	$mitarbeiter = DBAccess::selectQuery("SELECT Vorname, Nachname, id FROM mitarbeiter");
+	$mitarbeiter = DBAccess::selectQuery("SELECT prename, lastname, id FROM user");
 	$annahme = DBAccess::selectQuery("SELECT Bezeichnung, id FROM angenommen");
 	$auftragstyp = DBAccess::selectQuery("SELECT * FROM auftragstyp");
+
 	if ($kdnr != -1) {
-		$kundendaten = DBAccess::selectQuery("SELECT Vorname, Nachname, Firmenname FROM kunde WHERE Kundennummer = $kdnr")[0];
+		$kundendaten = DBAccess::selectQuery("SELECT Vorname, Nachname, Firmenname FROM kunde WHERE Kundennummer = $kdnr");
+		$kundendaten = $kundendaten[0];
 		$ansprechpartner = DBAccess::selectQuery("SELECT Vorname, Nachname, Nummer FROM ansprechpartner WHERE Kundennummer = $kdnr");
 	}
-?>
 
-
-<?php if ($kdnr != -1) : ?>
+if ($kdnr != -1) : ?>
 	<div class="addOrder">
 		<div>
 			<span>Kundennummer: <?=$kdnr?></span><br>
@@ -44,7 +44,7 @@
 				<select id="selectMitarbeiter">
 					<option value="-1" selected disabled>Bitte auswählen</option>
 					<?php foreach ($mitarbeiter as $m): ?>
-						<option value="<?=$m['id']?>"><?=$m['Vorname']?> <?=$m['Nachname']?></option>
+						<option value="<?=$m['id']?>"><?=$m['prename']?> <?=$m['lastname']?></option>
 					<?php endforeach; ?>
 				</select>
 			</span><br>

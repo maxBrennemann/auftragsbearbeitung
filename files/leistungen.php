@@ -1,51 +1,50 @@
 ﻿<?php
+
 require_once('classes/DBAccess.php');
 
 $data = DBAccess::selectQuery("SELECT * FROM leistung");
 ?>
-
-<a href="#" class="abutton">Folie konfigurieren</a>
-<a href="#" class="abutton">T-Shirt konfigurieren</a>
-
-<div class="container">
+<script src="<?=Link::getResourcesShortLink("classes/statusInfo.js", "js")?>"></script>
+<a href="#" class="font-bold">Folie konfigurieren</a>
+<a href="#" class="font-bold">T-Shirt konfigurieren</a>
+<div class="grid grid-cols-3 gap-4" id="leistungen">
 	<?php foreach ($data as $leistung): ?>
-		<div class="leistungsblock">
-			<div class="leistungsHeader">
-				<p><?=$leistung['Bezeichnung']?></p>
-			</div>
-			<p><span>Beschreibung:</span> <?=$leistung['Beschreibung']?></p>
-			<p><span>Quelle:</span> <?=$leistung['Quelle']?></p>
-			<p><span>Aufschlag:</span> <?=$leistung['Aufschlag']?>%</p>
-			<button onclick="remove('<?=$leistung['Nummer']?>')">🗑</button>
+		<div class="leistungen border-none defCont p-4 rounded-lg" data-remove-id="<?=$leistung['Nummer']?>">
+			<p class="font-bold mb-2">
+				<input class="bg-inherit w-fit" value="<?=$leistung['Bezeichnung']?>">
+			</p>
+			<p>Beschreibung
+				<input class="w-full block m-1 text-slate-600 rounded-lg p-2" value="<?=$leistung['Beschreibung']?>">
+			</p>
+			<p>Quelle
+				<input class="block m-1 text-slate-600 rounded-lg p-2" value="<?=$leistung['Quelle']?>">
+			</p>
+			<p>Aufschlag (%)
+				<input class="block m-1 text-slate-600 rounded-lg p-2" type="number" value="<?=$leistung['Aufschlag']?>">
+			</p>
+			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Löschen</button>
+			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Speichern</button>
 		</div>
 	<?php endforeach; ?>
-	<div class="leistungsblock">
-		<div class="leistungsHeader">
-			<p>Neue Leistung hinzufügen</p>
-		</div>
-		<div>
-			<p>
-				<span>Bezeichnung:</span>
-				<br>
-				<input type="text"  maxlength="32" id="bezeichnung"></input>
-			</p>
-			<p>
-				<span>Beschreibung:</span>
-				<br>
-				<textarea id="description"></textarea>
-			</p>
-			<p>
-				<span>Quelle:</span>
-				<br>
-				<input type="text" maxlength="64" id="source"></input>
-			</p>
-			<p>
-				<span>Aufschlag (%):</span>
-				<br>
-				<input type="number" id="aufschlag"></input>
-			</p>
-		</div>
-		<button onclick="add()">Hinzufügen</button>
+	<div class="border-none defCont p-4 rounded-lg">
+		<p class="font-bold">Neue Leistung hinzufügen</p>
+		<label>
+			Bezeichnung
+			<input class="w-full block m-1 text-slate-600 rounded-lg p-2" type="text" maxlength="32" id="bezeichnung">
+		</label>
+		<label>
+			Beschreibung
+			<textarea class="block m-1 text-slate-600 rounded-lg p-2" id="description"></textarea>
+		</label>
+		<label>
+			Quelle
+			<input class="block m-1 text-slate-600 rounded-lg p-2" type="text" id="source">
+		</label>
+		<label>
+			Aufschlag (%)
+			<input class="block m-1 text-slate-600 rounded-lg p-2" type="number" id="aufschlag">
+		</label>
+		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" id="addNew">Hinzufügen</button>
+		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" id="cancleNew">Abbrechen</button>
 	<div>
 </div>
-<script src="<?=Link::getResourcesShortLink("leistungen_f.js", "js")?>"></script>

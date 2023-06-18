@@ -303,75 +303,71 @@ function getAddToInvoice() {
     return document.getElementById("addToInvoice").checked;
 }
 
+function addBearbeitungsschritt() {
+    var tableData = document.getElementsByClassName("bearbeitungsschrittInput");
+    var steps = [];
+    for (var i = 0; i < tableData.length; i++) {
+        steps.push(tableData[i].value);
+    }
+
+    if (steps[1] == "") {
+        steps[1] = 0;
+    }
+
+    var el = document.getElementsByName("isAlreadyDone")[0];
+    var radio = el.elements["isDone"];
+    var hide;
+    for (var i = 0; i < radio.length; i++) {
+        if (radio[i].checked) {
+            hide = radio[i].value;
+            break;
+        }
+    }
+    
+    /* 0 = hide, 1 = show */
+    hide = hide == "hide" ? 0 : 1;
+
+    /* check for assigned task */
+    let assigned = document.querySelector('input[name="assignTo"]');
+    let assignedTo = "none";
+    if (assigned.checked == true) {
+        let e = document.getElementById("selectMitarbeiter");
+        assignedTo = e.options[e.selectedIndex].value;
+    }
+
+    /* ajax parameter */
+    let params = {
+        getReason: "insertStep",
+        bez: steps[0],
+        datum: steps[1],
+        auftrag: globalData.auftragsId,
+        hide: hide,
+        prio: steps[2],
+        assignedTo: assignedTo
+    };
+
+    var add = new AjaxCall(params, "POST", window.location.href);
+    add.makeAjaxCall(function (response) {
+        console.log(response);
+        document.getElementById("stepTable").innerHTML = response;
+
+        var tableData = document.getElementsByClassName("bearbeitungsschrittInput");
+        for (var i = 0; i < tableData.length; i++) {
+            tableData[i].value = "";
+        }
+
+        document.getElementById("bearbeitungsschritte").removeChild(document.getElementById("sendStepToServer"));
+        document.getElementById("bearbeitungsschritte").style.display = "none";
+    }.bind(this), false);
+}
+
 /* addes bearbeitungsschritte */
-function addBearbeitungsschritte() {
+function showBearbeitungsschritt() {
     var bearbeitungsschritte = document.getElementById("bearbeitungsschritte");
     bearbeitungsschritte.style.display = "block";
 
-    if (document.getElementById("sendStepToServer") == null) {
-        var btn = document.createElement("button");
-        btn.id = "sendStepToServer";
-        btn.innerHTML = "Hinzufügen";
-        btn.addEventListener("click", function () {
-            var tableData = document.getElementsByClassName("bearbeitungsschrittInput");
-            var steps = [];
-            for (var i = 0; i < tableData.length; i++) {
-                steps.push(tableData[i].value);
-            }
-
-            if (steps[1] == "") {
-                steps[1] = 0;
-            }
-
-            var el = document.getElementsByName("isAlreadyDone")[0];
-            var radio = el.elements["isDone"];
-            var hide;
-            for (var i = 0; i < radio.length; i++) {
-                if (radio[i].checked) {
-                    hide = radio[i].value;
-                    break;
-                }
-            }
-            
-            /* 0 = hide, 1 = show */
-            hide = hide == "hide" ? 0 : 1;
-
-            /* check for assigned task */
-            let assigned = document.querySelector('input[name="assignTo"]');
-            let assignedTo = "none";
-            if (assigned.checked == true) {
-                let e = document.getElementById("selectMitarbeiter");
-                assignedTo = e.options[e.selectedIndex].value;
-            }
-
-            /* ajax parameter */
-            let params = {
-                getReason: "insertStep",
-                bez: steps[0],
-                datum: steps[1],
-                auftrag: globalData.auftragsId,
-                hide: hide,
-                prio: steps[2],
-                assignedTo: assignedTo
-            };
-
-            var add = new AjaxCall(params, "POST", window.location.href);
-            add.makeAjaxCall(function (response) {
-                console.log(response);
-                document.getElementById("stepTable").innerHTML = response;
-
-                var tableData = document.getElementsByClassName("bearbeitungsschrittInput");
-                for (var i = 0; i < tableData.length; i++) {
-                    tableData[i].value = "";
-                }
-
-                document.getElementById("bearbeitungsschritte").removeChild(document.getElementById("sendStepToServer"));
-                document.getElementById("bearbeitungsschritte").style.display = "none";
-            }.bind(this), false);
-        }, false);
-
-        bearbeitungsschritte.appendChild(btn);
-    }
+    const textarea = document.querySelector("textarea.bearbeitungsschrittInput");
+    textarea.focus();
 }
 
 /* adds a note to the order */
@@ -868,20 +864,26 @@ function selectLeistung(e) {
 }
 
 function addColor() {
-    var div = document.getElementById("farbe");
-    div.style.display = "block";
+    const template = document.getElementById("templateFarbe");
+	const div = document.createElement("div");
+    div.id = "selectColor";
+	div.appendChild(template.content.cloneNode(true));
+    div.classList.add("w-2/3");
+    
+    document.body.appendChild(div);
 
-    addActionButtonForDiv(div, "hide");
-    centerAbsoluteElement(div);
-
-    var c = div.querySelector("canvas");
+    const cp = new Colorpicker(div.querySelector("#cpContainer"));
+    const c = div.querySelector("canvas");
     c.style.margin = "auto";
 
     c.addEventListener("mouseup", function() {
-        var element = document.querySelector("input.colorInput.jscolor");
+        const element = document.querySelector("input.colorInput.jscolor");
         element.value = cp.color.toUpperCase();
         checkHexCode(element);
     }, false);
+
+    addActionButtonForDiv(div, "hide");
+    centerAbsoluteElement(div);
 }
 
 function removeColor(colorId) {
@@ -893,14 +895,6 @@ function removeColor(colorId) {
         //var data = JSON.parse(colorHTML);
         showColors.innerHTML = colorHTML; //data.farben;
     });
-}
-
-/*
- * toggles the colorpicker div
- */
-function toggleCP() {
-    document.getElementById("cpContainer").style.display = "block";
-    centerAbsoluteElement(document.getElementById("farbe"));
 }
 
 /*
@@ -1078,38 +1072,33 @@ function showPreview() {
     }
 }
 
-/*
- * changes the text node that shows the date into an input field and adds an event listener to send
- * the new date to the server
- */
-function changeDate(type, e) {
-    let dateNode = document.getElementById("changeDate-" + type);
+function updateDate(e) {
+    const date = e.target.value;
+    sendDate(1, date);
+}
 
-    let newInput = document.createElement("input");
-    newInput.type = "date";
+function updateDeadline(e) {
+    const date = e.target.value;
+    sendDate(2, date);
+}
 
-    dateNode.innerHTML = "";
-    dateNode.appendChild(newInput);
-
-    let sendToServer = function(newInput, type, target) {
-        let date = newInput.value;
-        var send = new AjaxCall(`getReason=updateDate&auftrag=${globalData.auftragsId}&date=${date}&type=${type}`);
-        send.makeAjaxCall(function (response, args) {
-            infoSaveSuccessfull(response);
-            
-            var date = new Date(args[0].value);
-            var dateString = date.toLocaleDateString();
-            args[0].parentNode.innerHTML = dateString;
-
-            args[1].onclick = function() {changeDate(args[2], event)};
-            args[1].innerText = "✎";
-        }, newInput, target, type);
+function setDeadlineState(e) {
+    const checked = e.target.checked;
+    if (checked) {
+        document.getElementById("inputDeadline").value = "";
+        sendDate(2, "unset");
     }
+}
 
-    e.target.innerHTML = "✔";
-    e.target.onclick = function() {
-        sendToServer(newInput, type, e.target)
-    };
+function sendDate(type, value) {
+    ajax.post({
+        r: "updateDate",
+        auftrag: globalData.auftragsId,
+        date: value,
+        type: type,
+    }).then(r => {
+
+    });
 }
 
 /* from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_tabs and modified */
@@ -1209,4 +1198,10 @@ function setOrderFinished() {
     } else {
         /* Abbruch */
     }
+}
+
+function addNewNote() {
+    document.getElementById("addNotes").style.display='block';
+    const textarea = document.querySelector(".noteInput");
+    textarea.focus();
 }

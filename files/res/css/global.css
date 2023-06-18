@@ -408,7 +408,20 @@ iframe {
     padding: 5px;
 }
 
-/* css for the update status box */
+/* css for the status box on create */
+.showDefault {
+    position: fixed;
+    background-color: #b3b3b3;
+    color: #2b2b2b;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    right: 10px;
+    bottom: 10px;
+    z-index: 10;
+}
+
+/* css for the status box on success */
 .showSuccess {
     position: fixed;
     background-color: #60bf60;
@@ -421,16 +434,24 @@ iframe {
     z-index: 10;
 }
 
-.showFailiure {
+/* css for the status box on failure */
+.showFailure {
     position: fixed;
     background-color: #c14949;
-    color: #bd9292;
+    color: #d6cccc;
     padding: 10px;
     border: none;
     border-radius: 6px;
     right: 10px;
     bottom: 10px;
     z-index: 10;
+}
+
+/* status box error button */
+.removeFailureMessage {
+    width: 18px;
+    height: 18px;
+    border: none;
 }
 
 .hidden {
@@ -805,14 +826,6 @@ input#hamburg {
 
 .nowrap {
     white-space: nowrap;
-}
-
-/* error message btns */
-.removeFailiureMessage {
-    color: white;
-    background-color: unset;
-    border: none;
-    font-size: 1.1em;
 }
 
 .copyBtn {

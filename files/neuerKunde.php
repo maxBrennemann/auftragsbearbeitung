@@ -1,228 +1,167 @@
-﻿<script src="<?=Link::getResourcesShortLink("helper.js", "js")?>"></script>
-<script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
-
-<?php
-	require_once('classes/DBAccess.php');
-
-	$isSent = isset($_GET['oeffOderPriv']);
-	if ($isSent) {
-		$oeffOderPriv = $_GET['oeffOderPriv'];
-		$firmenname = isset($_GET['firmenname']) ? $_GET['firmenname'] : "";
-		$anredeAnspr = $_GET['anredeAnspr'];
-		$vornameAnspr = $_GET['vornameAnspr'];
-		$nachnameAnspr = $_GET['nachnameAnspr'];
-		$telmobilAnspr = $_GET['telMobilAnspr'];
-		$emailAnspr = $_GET['emailAnspr'];
-		$telAnspr = $_GET['telAnspr'];
-		$anrede = $_GET['anrede'];
-		$vorname = $_GET['vorname'];
-		$nachname = $_GET['nachname'];
-		$strasse = $_GET['strasse'];
-		$hausnummer = $_GET['hausnummer'];
-		$plz = $_GET['plz'];
-		$ort = $_GET['ort'];
-		$zusatz = $_GET['zusatz'];
-		$country = $_GET['country'];
-		$email = $_GET['emailaddress'];
-		$telfestnetz = $_GET['telfestnetz'];
-		$telmobil = $_GET['telmobil'];
-
-		if ($plz == null) {
-			$plz = 0;
-		}
-
-		$insertString = "INSERT INTO kunde (Firmenname, Anrede, Vorname, Nachname,";
-		$insertString .= " Straße, Hausnummer, Postleitzahl, Ort, Email,";
-		$insertString .= " TelefonFestnetz, TelefonMobil) VALUES";
-		$insertString .= "('$firmenname', '$anrede', '$vorname', '$nachname', ";
-		$insertString .= "'$strasse', '$hausnummer', $plz, '$ort', '$email', ";
-		$insertString .= "'$telfestnetz', '$telmobil')";
-
-		/* insert customer data */
-		$insertString = "INSERT INTO kunde (Firmenname, Anrede, Vorname, Nachname, Email, TelefonFestnetz, TelefonMobil) VALUES ('$firmenname', '$anrede', '$vorname', '$nachname', '$email', '$telfestnetz', '$telmobil')";
-		$newCustomerId = DBAccess::insertQuery($insertString);
-
-		/* insert address data */
-		$insertString = "INSERT INTO address (id_customer, strasse, hausnr, plz, ort, zusatz, country) VALUES ($newCustomerId, '$strasse', '$hausnummer', $plz, '$ort', '$zusatz', '$country')";
-		$insertID = DBAccess::insertQuery($insertString);
-
-		/* update customer data */
-		DBAccess::updateQuery("UPDATE kunde SET id_address_primary = $insertID WHERE Kundennummer = $newCustomerId");
-
-		/* insert ansprechpartner data */
-		if ($nachnameAnspr != "") {
-			$kdnr = $newCustomerId;
-			$insertString = "INSERT INTO ansprechpartner (Kundennummer, Vorname, Nachname,";
-			$insertString .= " Email, Durchwahl, Mobiltelefonnummer) VALUES ($kdnr, '$vornameAnspr', ";
-			$insertString .= "'$nachnameAnspr', '$emailAnspr', '$telAnspr', '$telmobilAnspr')";
-			DBAccess::insertQuery($insertString);
-		}
-	}
-
-	if (!$isSent) :
-?>
-<div class="addcustomer" id="customer">
-	<form>
-		<input type="radio" name="oeffOderPriv" value="firma" checked onchange="switchOeffPriv(this)">Firma oder Vereinsname
-		<input type="radio" name="oeffOderPriv" value="privat" onchange="switchOeffPriv(this)">Privat
-		<div class="basicInfo">
-			<p class="manual" data-intent="create" data-id="0" data-action="highlight">
-				<label>Firmenname
-					<input class="dataInput" type="text" name="firmenname" autocomplete="some-unrecognised-value">
-				</label>
-			</p>
-			<div class="specificData manual" data-intent="create" data-id="1" data-action="highlight">
-				<h4>Ansprechpartner:</h4>
-				<p>
-					<label>Anrede
-						<select class="dataInput" name="anredeAnspr">
-							<option value="0">Herr</option>
-							<option value="1">Frau</option>
-							<option value="2">Firma</option>
-						</select>
-					</label>
-				</p>
-				<p>
-					<label>Vorname
-						<input class="dataInput" type="text" name="vornameAnspr" autocomplete="some-unrecognised-value">
-					</label>
-				</p>
-				<p>
-					<label>Nachname
-						<input class="dataInput" type="text" name="nachnameAnspr" autocomplete="some-unrecognised-value">
-					</label>
-				</p>
-				<p>
-					<label>Email
-						<input class="dataInput" type="email" name="emailAnspr" autocomplete="some-unrecognised-value">
-					</label>
-				</p>
-				<p>
-					<label>Durchwahl
-						<input class="dataInput" type="text" name="telAnspr" autocomplete="some-unrecognised-value">
-					</label>
-				</p>
-				<p>
-					<label>Mobilnummer
-						<input class="dataInput" type="text" name="telMobilAnspr" autocomplete="some-unrecognised-value">
-					</label>
-				</p>
-			</div>
+﻿<form id="cForm" name="cForm"></form>
+<form id="pForm" name="pForm"></form>
+<div class="defCont">
+	<h2 class="font-bold">Neuen Kunden anlegen</h2>
+	<div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
+		<ul class="flex flex-wrap -mb-px">
+			<li class="mr-2">
+				<span class="inline-block p-2 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500" aria-current="page" id="showCompanies">Firmen und Vereine</span>
+			</li>
+			<li class="mr-2">
+				<span class="inline-block p-2 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="showPersons">Privatkunden</span>
+			</li>
+		</ul>
+	</div>
+	<div class="mt-2 grid grid-cols-2" id="companyForm">
+		<div>
+			<label class="block">
+				Firmen- oder Vereinsname
+				<input type="text" form="cForm" class="block rounded-sm m-1 p-1 w-80" name="customerName" autocomplete="some-unrecognised-value">
+			</label>
+			<label class="block">
+				Straße
+				<input type="text" form="cForm" name="street" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+			</label>
+			<label class="block">
+				Hausnummer
+				<input type="text" form="cForm" name="houseNumber" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+			</label>
+			<label class="block">
+				Adresszusatz
+				<input type="text" form="cForm" name="addressAddition" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+			</label>
+			<label class="block">
+				Postleitzahl
+				<input type="number" form="cForm" name="plz" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+			</label>
+			<label class="block">
+				Ort
+				<input type="text" form="cForm" name="city" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+			</label>
+			<label class="block">
+				Land
+				<input type="text" form="cForm" name="country" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+			</label>
+			<label class="block">
+				Email
+				<input type="email" form="cForm" name="companyemail" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+			</label>
+			<label class="block">
+				Telefon Festnetz
+				<input type="tel" form="cForm" name="telfestnetz" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+			</label>
+			<label class="block">
+				Telefon Mobil
+				<input type="tel" form="cForm" name="telmobil" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+			</label>
+			<label>
+				Website
+				<input type="url" form="cForm" name="website" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+			</label>
+			<label class="block">
+				Notizen
+				<textarea name="notes" form="cForm" class="block rounded-sm m-1 p-1 w-80"></textarea>
+			</label>
 		</div>
-		<div class="basicInfo" style="display: none;">
-			<p>
-				<label>Anrede
-					<select class="dataInput" name="anrede">
-						<option value="0">Herr</option>
-						<option value="1">Frau</option>
-						<option value="2">Firma</option>
-					</select>
-				</label>
-			</p>
-			<p>
-				<label>Vorname
-					<input class="dataInput" type="text" name="vorname" autocomplete="some-unrecognised-value">
-				</label>
-			</p>
-			<p>
-				<label>Nachname
-					<input class="dataInput" type="text" name="nachname" autocomplete="some-unrecognised-value">
-				</label>
-			</p>
+		<div>
+			<p class="font-semibold mb-1">Kontaktdaten Ansprechpartner</p>
+			<label class="block">
+				Anrede
+				<select form="cForm" class="block rounded-sm m-1 p-1 w-80" name="anrede">
+					<option value="0">Herr</option>
+					<option value="1">Frau</option>
+					<option value="5">Divers</option>
+					<option value="2">Firma</option>
+					<option value="3">Verein</option>
+					<option value="4">Sonstiges</option>
+				</select>
+			</label>
+			<label class="block">
+				Vorname
+				<input form="cForm" type="text" name="contactPrename" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+			</label>
+			<label class="block">
+				Nachname
+				<input type="text" form="cForm" name="contactSurname" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+			</label>
+			<label class="block">
+				Email
+				<input type="email" form="cForm" name="emailaddress" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+			</label>
+			<label class="block">
+				Telefon Durchwahl
+				<input type="tel" form="cForm" name="phoneExtension" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+			</label>
+			<label class="block">
+				Mobilnummer
+				<input type="tel" form="cForm" name="mobileNumber" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+			</label>
 		</div>
-		<p>
-			<label>Straße
-				<input class="dataInput" type="text" name="strasse" autocomplete="some-unrecognised-value">
+	</div>
+	<div class="mt-2 hidden grid-cols-2" id="privateForm">
+		<div>
+			<label class="block">
+				Anrede
+				<select form="pForm" class="block rounded-sm m-1 p-1 w-80" name="anrede">
+					<option value="0">Herr</option>
+					<option value="1">Frau</option>
+					<option value="5">Divers</option>
+					<option value="2">Firma</option>
+					<option value="3">Verein</option>
+					<option value="4">Sonstiges</option>
+				</select>
 			</label>
-		</p>
-		<p>
-			<label>Hausnummer
-				<input class="dataInput" type="text" name="hausnummer" autocomplete="some-unrecognised-value">
+			<label class="block">
+				Vorname
+				<input type="text" form="pForm" name="prename" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
 			</label>
-		</p>
-		<p>
-			<label>Adresszusatz
-				<input class="dataInput" type="text" name="zusatz" autocomplete="some-unrecognised-value">
+			<label class="block">
+				Nachname
+				<input type="text" form="pForm" name="surname" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
 			</label>
-		</p>
-		<p>
-			<label>Postleitzahl
-				<input class="dataInput" type="number" name="plz" autocomplete="some-unrecognised-value">
+			<label class="block">
+				Email
+				<input type="email" form="pForm" name="companyemail" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
 			</label>
-		</p>
-		<p>
-			<label>Ort
-				<input class="dataInput" type="text" name="ort" autocomplete="some-unrecognised-value">
+			<label class="block">
+				Telefon Festnetz
+				<input type="tel" form="pForm" name="telfestnetz" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
 			</label>
-		</p>
-		<p>
-			<label>Land
-				<input class="dataInput" type="text" name="country" autocomplete="some-unrecognised-value">
+			<label class="block">
+				Telefon Mobil
+				<input type="tel" form="pForm" name="telmobil" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
 			</label>
-		</p>
-		<p>
-			<label>Email
-				<input class="dataInput" type="email" name="emailaddress" autocomplete="some-unrecognised-value">
+			<label class="block">
+				Notizen
+				<textarea name="notes" form="pForm" class="block rounded-sm m-1 p-1 w-80"></textarea>
 			</label>
-		</p>
-		<p>
-			<label>Telefon Festnetz
-				<input class="dataInput" type="tel" name="telfestnetz" pattern="[0-9]{5}\/[0-9]+" autocomplete="some-unrecognised-value">
-				<br>
-				<span class="hinweis">Muster: 09933/1234</span>
-			</label>
-		</p>
-		<div class="basicInfo" style="display: none;">
-			<p>
-				<label>Telefon Mobil
-					<input class="dataInput" type="tel" name="telmobil" id="telmobil" pattern="[0][1-9]{3} [0-9]+" autocomplete="some-unrecognised-value">
-					<br>
-					<span class="hinweis">Muster: 0172 1234567</span>
-				</label>
-			</p>
 		</div>
-
-		<input type="submit" id="submitCustomer">
-	</form>
+		<div>
+			<label class="block">
+				Straße
+				<input type="text" form="pForm" name="street" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+			</label>
+			<label class="block">
+				Hausnummer
+				<input type="text" form="pForm" name="houseNumber" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+			</label>
+			<label class="block">
+				Adresszusatz
+				<input type="text" form="pForm" name="addressAddition" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+			</label>
+			<label class="block">
+				Postleitzahl
+				<input type="number" form="pForm" name="plz" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+			</label>
+			<label class="block">
+				Ort
+				<input type="text" form="pForm" name="city" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+			</label>
+			<label class="block">
+				Land
+				<input type="text" form="pForm" name="country" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+			</label>
+		</div>
+	</div>
+	<button id="addNewCustomer" class="btn-primary">Neuen Kunden erstellen</button>
 </div>
-<?php else: ?>
-	<p>Kunde wurde hinzugefügt.</p>
-	<a href="<?=Link::getPageLink("neuer-kunde");?>">Weiteren Kunden hinzufügen.</a>
-	<br>
-	<a href="<?=Link::getPageLink("kunde");?>?id=<?=$newCustomerId?>">Zum neuen Kunden.</a>
-<?php endif; ?>
-<style>
-	form p {
-		display: block;
-	}
-
-	.dataInput {
-		float: right;
-	}
-
-	.specificData {
-		margin: 5px;
-		padding: 10px;
-		border: 1px solid grey;
-		border-radius: 6px;
-	}
-
-	.addcustomer {
-		background: #eff0f1;
-		border-radius: 6px;
-		padding: 10px;
-	}
-
-	#submitCustomer {
-		border-radius: 6px;
-		background: #B2B2BE;
-		border: none;
-		padding: 15px;
-	}
-
-	.hinweis {
-		font-size: 0.9em;
-    	font-family: monospace;
-	}
-</style>
-<script src="<?=Link::getResourcesShortLink("neuer-kunde_f.js", "js")?>"></script>

@@ -8,6 +8,7 @@ require_once('classes/project/Envs.php');
 require_once('classes/DBAccess.php');
 require_once('classes/Ajax.php');
 require_once('classes/Link.php');
+require_once('classes/Login.php');
 require_once('classes/Protocoll.php');
 require_once('classes/project/FormGenerator.php');
 require_once('classes/project/CacheManager.php');
@@ -59,15 +60,6 @@ if (file_exists($cacheFile) && !(count($_GET) || count($_POST)) && $t && $status
 } else {
 	if ($status == "on") {
 		ob_start();
-	}
-
-	if (isset($_POST['logout_session'])) {
-		Login::handleLogout();
-	}
-
-	if (isset($_POST['login_session'])) {
-		Login::manageRequest();
-		return null;
 	}
 
 	/*
@@ -150,6 +142,8 @@ if (file_exists($cacheFile) && !(count($_GET) || count($_POST)) && $t && $status
 				break;
 			}
 			
+		} else if ($page == "cron") {
+			Ajax::manageRequests("testDummy", $page);
 		} else if (isLoggedIn()) {
 			showPage($page);
 		} else {
@@ -240,5 +234,3 @@ function insertTemplate($path, array $parameters = []) {
 		include($path);
 	}
 }
-
-?>

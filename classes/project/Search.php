@@ -118,6 +118,12 @@ class Search {
 
 		$table = new Table();
 		$table->createByData($data, $columnNames);
+
+		/* TODO:quick fix, customer search results can be clicked */
+		if ($searchType == "kunde") {
+
+		}
+
 		return $table->getTable();
 	}
 
@@ -351,7 +357,7 @@ class Search {
 
 	private static function calculateSimilarity(&$mostSimilar, $searchQuery, $text, $number) {
 		$searchQuery = strtolower($searchQuery);
-		$text = strtolower($text);
+		$text = $text != null ? strtolower($text) : "";
 		$pieces = explode(" ", $text);
 
 		$cumulatedpercentage = 0.0;

@@ -2,20 +2,6 @@ ul.mainUl {
     display: grid;
     grid-gap: 10px;
     grid-template-columns: repeat(3, 1fr);
-    grid-auto-rows: minmax(100px, auto);
-}
-
-.mainUl li {
-    padding: 15px;
-    background-color: #eff0f1;
-    border-radius: 6px;
-}
-
-.mainUl li input {
-    border-radius: 6px;
-    border: none;
-    padding: 4px;
-    max-width: 170px;
 }
 
 table {

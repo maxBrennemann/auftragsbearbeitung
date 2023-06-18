@@ -1,28 +1,29 @@
 <?php
-	require_once('classes/DBAccess.php');
-	require_once('classes/Link.php');
-	require_once('classes/Login.php');
-	require_once('classes/Articles.php');
-	
-	$globalCSS =  Link::getGlobalCSS();
-	$globalJS =  Link::getGlobalJS();
-	$curr_Link = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-	$adminLink = Link::getAdminLink();
-	
-	if(isset($_POST['info'])) {
-		Login::manageRequest();
+require_once('classes/DBAccess.php');
+require_once('classes/Link.php');
+require_once('classes/Login.php');
+require_once('classes/Articles.php');
+
+$globalCSS =  Link::getGlobalCSS();
+$globalJS =  Link::getGlobalJS();
+$curr_Link = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+$adminLink = Link::getAdminLink();
+
+if (isset($_POST['info'])) {
+	Login::handleLogin();
+}
+
+if (isset($_POST['article'])) {
+	if($_POST['article'] == "add") {
+		Articles::addArticle();
 	}
-	
-	if(isset($_POST['article'])) {
-		if($_POST['article'] == "add") {
-			Articles::addArticle();
-		}
-	}
-	
-	$pageName = 'Admin';
-	if(isset($_GET['page']) && $_GET['page'] != null) {
-		$pageName = $_GET['page'];
-	}
+}
+
+$pageName = 'Admin';
+if (isset($_GET['page']) && $_GET['page'] != null) {
+	$pageName = $_GET['page'];
+}
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -39,12 +40,12 @@
 <body>
 	<?php
 		session_start();
-		if(!isset($_SESSION['userid']) && !isset($_SESSION['admin'])) {
+		if (!isset($_SESSION['userid']) && !isset($_SESSION['admin'])) {
 			die("Melde dich bitte an!");
 		}
 		
 		$userId = $_SESSION['userid'];
-		$user = DBAccess::selectQuery("SELECT * FROM members WHERE id = '$userId'");
+		$user = DBAccess::selectQuery("SELECT * FROM user WHERE id = :id", array('id' => $userId));
 		$user = $user[0];
 	?>
 
@@ -108,28 +109,4 @@
 		</script>
 	</div>
 	<br>
-	
-	<?php
-		
-		/*if(isset($_POST["article"])) {
-			$pageName = $_POST["pageName"];
-			$src = $_POST["src"];
-			$articleUrl = basename($_FILES['userfile']['name']);
-			
-			/* http://php.net/manual/de/features.file-upload.post-method.php */
-			/*$uploaddir = '/files/generated/';
-			$uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
-			
-			$params = (object) array(
-				'articleUrl' => $articleUrl,
-				'pageName' => $pageName,
-				'src' => $src
-			);
-			
-			move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile);
-			DBAccess::insertQuery("INSERT INTO generated_articles (articleUrl, pageName, src) VALUES (:articleUrl, :pageName, :src)", $params);
-		}*/
-	
-	?>
-	
 	<?php include('files/footer.php'); ?>

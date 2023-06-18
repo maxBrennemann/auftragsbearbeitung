@@ -1,32 +1,28 @@
-import click_textGeneration from "./sticker/textGeneration.js";
-import {loadTags, showTaggroupManager, addTag} from "./sticker/tagManager.js";
+import { click_textGeneration, click_showTextSettings, click_iterateText } from "./sticker/textGeneration.js";
+import { loadTags, showTaggroupManager, addTag } from "./sticker/tagManager.js";
 import ProductConnector from "./sticker/productConnector.js";
-import {initSVG, moveInit} from "./sticker/imageManager.js";
-import { readSizeTable } from "./sticker/sizeTable.js";
+import { click_makeColorable } from "./sticker/imageManager.js";
+import { click_addNewWidth } from "./sticker/sizeTable.js";
 
 const fnNames = {};
+fnNames.click_makeColorable = click_makeColorable;
+fnNames.click_textGeneration = click_textGeneration;
+fnNames.click_showTextSettings = click_showTextSettings;
+fnNames.click_iterateText = click_iterateText;
+fnNames.click_addNewWidth = click_addNewWidth;
+
 const mainVariables = {
     productConnect: [],
     pending: false,
 };
 
-/* TODO: besseres variable maangement */
+/* TODO: besseres variable management */
 window.mainVariables = mainVariables;
 
 function initSticker() {
-    initSVG();
     initBindings();
-    moveInit();
 
-    var pk_dropdown = document.getElementById("preiskategorie_dropdown");
-    if (pk_dropdown != null) {
-        pk_dropdown.addEventListener("click", preisListenerTextil, false);
-        document.getElementById("preiskategorie").addEventListener("click", preisListenerTextil, false);
-
-        document.title = "b-schriftung - Motiv " + mainVariables.motivId.innerHTML + " " + document.getElementById("name").innerHTML;
-
-        readSizeTable();
-    }
+    document.title = "b-schriftung - Motiv " + mainVariables.motivId.innerHTML + " " + document.getElementById("name").innerHTML;
 
     var input = document.getElementById('name');
     input.addEventListener('input', resizeTitle);
@@ -170,32 +166,32 @@ function resizeTitle() {
 }
 
 fnNames.click_textilClick = function() {
-    const statusInfo = new StatusInfo("", "");
+    const infoHandler = new StatusInfoHandler();
+    const infoBox = infoHandler.addInfoBox(StatusInfoHandler.TYPE_ERRORCOPY, "Wird gespeichert");
     ajax.post({
         id: mainVariables.motivId.innerHTML,
         r: "toggleTextil"
     }).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS);
         }
     }).catch(r => {
-        statusInfo.setText(r);
-        statusInfo.showError();
+        infoBox.statusUpdate(StatusInfoHandler.STATUS_FAILURE, "Fehler bei der Übertragung", r);
     });
 }
 
 fnNames.click_wandtattooClick = function() {
-    const statusInfo = new StatusInfo("", "");
+    const infoHandler = new StatusInfoHandler();
+    const infoBox = infoHandler.addInfoBox(StatusInfoHandler.TYPE_ERRORCOPY, "Wird gespeichert");
     ajax.post({
         id: mainVariables.motivId.innerHTML,
         r: "toggleWandtattoo"
     }).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS);
         }
     }).catch(r => {
-        statusInfo.setText(r);
-        statusInfo.showError();
+        infoBox.statusUpdate(StatusInfoHandler.STATUS_FAILURE, "Fehler bei der Übertragung", r);
     });
 }
 
@@ -214,10 +210,6 @@ fnNames.click_revisedClick = function() {
 }
 
 fnNames.click_transferAufkleber = function() {
-    if (document.getElementById("previewSizeText").innerHTML == "") {
-        alert("Bitte überprüfe Breiten und Preise!");
-        return;
-    }
     transfer(1, "Aufkleber");
 }
 
@@ -238,10 +230,10 @@ function transfer(type, text) {
         return;
     }
 
-    let statusInfo = new StatusInfo("", `${text} wird übertragen`);
-    statusInfo.show();
-    mainVariables.pending = true;
+    const infoHandler = new StatusInfoHandler();
+    const infoBox = infoHandler.addInfoBox(StatusInfoHandler.TYPE_LOADER, "Wird gespeichert");
 
+    mainVariables.pending = true;
     console.log(mainVariables.pending);
 
     ajax.post({
@@ -250,41 +242,22 @@ function transfer(type, text) {
         r: "transferProduct",
     }, true).then(r => {
         mainVariables.pending = false;
-        console.log(r);
 
-        statusInfo.statusUpdate(`${text} ist übertragen`);
-        statusInfo.hide();
+        infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS, "Übertragung erfolgreich");
+    }).catch(error => {
+        infoBox.setType(StatusInfoHandler.TYPE_ERRORCOPY);
+        infoBox.statusUpdate(StatusInfoHandler.STATUS_FAILURE, "Übertragung fehlgeschlagen", error);
     });
 }
 
 /* todo: größe der neuen daten ergänzen und preise updatebar machen */
 
-function preisListenerTextil() {
-    document.getElementById("selectReplacerPreiskategorie").classList.add("selectReplacerShow");
-}
-
-/* https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_dropdown */
-window.addEventListener("click", function(event) {
-    if (!event.target.matches('.selectReplacer') && !event.target.matches('#preiskategorie_dropdown') && !event.target.matches('#preiskategorie')) {
-        var dropdowns = document.getElementsByClassName("selectReplacer");
-        var i;
-        for (i = 0; i < dropdowns.length; i++) {
-            var openDropdown = dropdowns[i];
-            if (openDropdown.classList.contains('selectReplacerShow')) {
-                openDropdown.classList.remove('selectReplacerShow');
-            }
-        }
-    }
-}, false);
-
 fnNames.click_changePreiskategorie = function(e) {
-    var element = document.getElementById("preiskategorie");
-    element.value = e.target.innerHTML;
-    var kategorieId = e.target.dataset.kategorieId;
-    document.getElementById("showPrice").innerHTML = e.target.dataset.defaultPrice + "€";
+    const target = e.currentTarget;
+    const value = target.value;
 
     ajax.post({
-        categoryId: kategorieId,
+        categoryId: value,
         id: mainVariables.motivId.innerHTML,
         r: "changePreiskategorie",
     }, true).then(response => {
@@ -401,11 +374,10 @@ fnNames.click_copyToClipboard = function() {
 }
 
 /* must be redone; TODO: nachlesen, wie man event listener richtig bindet */
-fnNames.click_addAltTitle = function() {
-    var node = this.event.currentTarget;
-    var parent = node.parentNode;
-    var input = parent.children[0];
-    input.classList.toggle("visible");
+fnNames.click_addAltTitle = function(e) {
+    const node = e.currentTarget.parentNode;
+    var input = node.children[0];
+    input.classList.toggle("hidden");
 }
 
 fnNames.write_changeAltTitle = function(e) {
@@ -519,6 +491,26 @@ fnNames.click_exportToggle = function(e) {
         r: "setExportStatus",
     }).then(() => {
         infoSaveSuccessfull(isSuccessfull);
+    });
+}
+
+fnNames.click_makeCustomizable = function(e) {
+    ajax.post({
+        id: mainVariables.motivId.innerHTML,
+        r: "makeCustomizable"
+    }).then(r => {
+        const svgContainer = document.getElementById("svgContainer");
+        svgContainer.data = r.url;
+    });
+}
+
+fnNames.click_makeForConfig = function(e) {
+    ajax.post({
+        id: mainVariables.motivId.innerHTML,
+        r: "makeForConfig"
+    }).then(r => {
+        const svgContainer = document.getElementById("svgContainer");
+        svgContainer.data = r.url;
     });
 }
 

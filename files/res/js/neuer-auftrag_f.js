@@ -1,9 +1,3 @@
-
-window.onload = function() {
-    if (document.getElementById("termin") != null)
-        document.getElementById("termin").value = getDate(12096e5);
-}
-
 function performSearchButton(e) {
 	var query = e.target.previousSibling.value;
 	console.log(query);

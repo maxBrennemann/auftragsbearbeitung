@@ -223,12 +223,16 @@ class StickerTagManager extends PrestashopConnection {
             $tagNode->addChild('id', (string) $id);
         }
         
-        $opt = array(
-            'resource' => 'products',
-            'putXml' => $xml->asXML(),
-            'id' => $this->idProductReference,
-        );
-        $this->editXML($opt);
+        try {
+            $opt = array(
+                'resource' => 'products',
+                'putXml' => $xml->asXML(),
+                'id' => $this->idProductReference,
+            );
+            $this->editXML($opt);
+        } catch (PrestaShopWebserviceException $e) {
+            echo $e;
+        }
     }
 
     public function getSynonyms($query) {

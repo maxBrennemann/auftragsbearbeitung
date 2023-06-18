@@ -4,10 +4,6 @@ error_reporting(E_ALL);
 
 /* TODO: fopen(): remote host file access not supported, file://c:/xampp/htdocs/auftragsbearbeitung/files/generated/invoice/115_322.pdf in /var/www/vhosts/organisierung.b-schriftung.de/httpdocs/vendor/tecnickcom/tcpdf/include/tcpdf_static.php on line 1811PHP message: PHP Warning:  fopen(file://c:/xampp/htdocs/auftragsbearbeitung/files/generated/invoice/115_322.pdf): failed to open stream: no suitable wrapper could be found in /var/www/vhosts/organisierung.b-schriftung.de/httpdocs/vendor/tecnickcom/tcpdf/include/tcpdf_static.php on line 1811', referer: https://organisierung.b-schriftung.de/c/rechnung?target=create&id=399 */
 
-if (0 > version_compare(PHP_VERSION, '5')) {
-    die('This file was generated for PHP 5');
-}
-
 require_once('vendor/autoload.php');
 require_once('classes/DBAccess.php');
 require_once('classes/project/Auftrag.php');
@@ -19,6 +15,8 @@ class Rechnung {
 	private $kunde;
 	private $address = 0;
 	private $auftrag;
+
+	private $invoiceId;
 
 	private $tempId = 0;
 
@@ -183,7 +181,7 @@ class Rechnung {
 		/* Speicherung (aktuell nur Windows) */
 		if ($store == true) {
 			$filename= "{$this->kunde->getKundennummer()}_{$this->getInvoiceId()}.pdf"; 
-            $filelocation = 'c:/xampp/htdocs/auftragsbearbeitung/files/generated/invoice/';
+            $filelocation = 'files/generated/invoice/';
             $fileNL = $filelocation . $filename;
 			echo WEB_URL . "/files/generated/invoice/" . $filename;
 			self::addAllPosten($_SESSION['currentInvoice_orderId']);
@@ -391,16 +389,27 @@ class Rechnung {
 
 	private function storeDates() {
 		$orderId = $this->auftrag->getAuftragsnummer();
-		$creationDate = DateTime::createFromFormat("d.m.Y", $this->getDate())->format("Y-m-d");
-		$performanceDate = DateTime::createFromFormat("d.m.Y", $this->performanceDate)->format("Y-m-d");
+		$creationDate = DateTime::createFromFormat("d.m.Y", $this->getDate());
+		$performanceDate = DateTime::createFromFormat("d.m.Y", $this->performanceDate);
 		$payment_date = "0000-00-00";
 		$payment_type = -1;
 		$amount = (int) $this->auftrag->preisBerechnen() * 100;
 
+		if (!checkdate($performanceDate->format("m"), $performanceDate->format("d"), $performanceDate->format("Y"))) {
+			$performanceDate = new DateTime("now");
+		}
+
 		DBAccess::deleteQuery("DELETE FROM invoice WHERE order_id = $orderId");
 
-		$query = "INSERT INTO invoice (order_id, creation_date, performance_date, payment_date, payment_type, amount) VALUES ($orderId, '$creationDate', '$performanceDate', '$payment_date', $payment_type, '$amount')";
-		DBAccess::insertQuery($query);
+		$query = "INSERT INTO invoice (order_id, creation_date, performance_date, payment_date, payment_type, amount) VALUES (:orderId, :creationDate, :performanceDate, :paymentDate, :paymentType, :amount)";
+		DBAccess::insertQuery($query, [
+			"orderId" => $orderId,
+			"creationDate" => $creationDate->format("Y-m-d"),
+			"performanceDate" => $performanceDate->format("Y-m-d"),
+			"paymentDate" => $payment_date,
+			"paymentType" => $payment_type,
+			"amount" => $amount,
+		]);
 	}
 
 	/**

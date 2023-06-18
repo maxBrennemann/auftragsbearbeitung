@@ -1,37 +1,35 @@
 <?php
-	require_once('classes/DBAccess.php');
-	require_once('classes/Link.php');
-	require_once('classes/Login.php');
-	require_once('classes/project/ClientSettings.php');
-	
-	$globalCSS = Link::getGlobalCSS();
-	$tailwindCSS = Link::getTW();
-	$globalJS = Link::getGlobalJS();
-	$curr_Link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-	$adminLink = Link::getAdminLink();
+require_once('classes/project/ClientSettings.php');
 
-	$neuerKunde   =		Link::getPageLink("neuer-kunde");
-	$neuerAuftrag =		Link::getPageLink("neuer-auftrag");
-	$rechnung =			Link::getPageLink("rechnung");
-	$neuesAngebot =		Link::getPageLink("angebot");
-	$neuesProdukt =		Link::getPageLink("neues-produkt");
-	$diagramme =		Link::getPageLink("diagramme");
-	$auftragAnzeigen =	Link::getPageLink("auftrag");
-	$kunde =			Link::getPageLink("kunde");
-	$leistungenLinks =	Link::getPageLink("leistungen");
-	$toDo =				Link::getPageLink("verbesserungen");
-	$offeneRechnungen = Link::getPageLink("offene-rechnungen");
-	$funktionen = 		Link::getPageLink("functionalities");
-	$produkt = 			Link::getPageLink("produkt");
-	$einstellungen =	Link::getPageLink("einstellungen");
-	$payments =			Link::getPageLink("payments");
-	$listmaker =		Link::getPageLink("listmaker");
-	$changelog = 		Link::getPageLink("changelog");
-	$zeiterfassung =	Link::getPageLink("zeiterfassung");
-	$motiveOverview = 	Link::getPageLink("sticker-overview");
+$globalCSS = Link::getGlobalCSS();
+$tailwindCSS = Link::getTW();
+$globalJS = Link::getGlobalJS();
+$curr_Link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+$adminLink = Link::getAdminLink();
+
+$neuerKunde   =		Link::getPageLink("neuer-kunde");
+$neuerAuftrag =		Link::getPageLink("neuer-auftrag");
+$rechnung =			Link::getPageLink("rechnung");
+$neuesAngebot =		Link::getPageLink("angebot");
+$neuesProdukt =		Link::getPageLink("neues-produkt");
+$diagramme =		Link::getPageLink("diagramme");
+$auftragAnzeigen =	Link::getPageLink("auftrag");
+$kunde =			Link::getPageLink("kunde");
+$leistungenLinks =	Link::getPageLink("leistungen");
+$toDo =				Link::getPageLink("verbesserungen");
+$offeneRechnungen = Link::getPageLink("offene-rechnungen");
+$funktionen = 		Link::getPageLink("functionalities");
+$produkt = 			Link::getPageLink("produkt");
+$einstellungen =	Link::getPageLink("einstellungen");
+$payments =			Link::getPageLink("payments");
+$listmaker =		Link::getPageLink("listmaker");
+$changelog = 		Link::getPageLink("changelog");
+$zeiterfassung =	Link::getPageLink("zeiterfassung");
+$motiveOverview = 	Link::getPageLink("sticker-overview");
+
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<meta charset="UTF-8">
@@ -46,6 +44,7 @@
 	</style>
 	<link rel="stylesheet" href="<?=$globalCSS?>">
 	<link rel="stylesheet" href="<?=$tailwindCSS?>">
+	<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.1/dist/cdn.min.js"></script>
 	<script src="<?=$globalJS?>"></script>
 	<?php
 		$link = Link::getResourcesShortLink($page . ".js", "js");
@@ -60,6 +59,7 @@
 		$link = Link::getResourcesShortLink($page . ".css", "css");
 		echo '<link rel="stylesheet" href="' . $link . '">';
 	?>
+	<script src="<?=Link::getResourcesShortLink("classes/deviceDetector.js", "js")?>"></script>
 </head>
 <body>
 	<div class="sidenav" id="sidenav">
@@ -114,7 +114,7 @@
 			</li>
 		</ul>
 	</div>
-	<header class="moveToSide sticky p-5">
+	<header class="moveToSide sticky p-3 2xl:p-5">
 		<section class="mx-auto w-4/5 lg:mb-7 mb-3">
 			<h1><?=$pageName?></h1>
 			<aside class="right-1">
@@ -162,6 +162,6 @@
 			</label>
 		</div>
 		<hr class="headerline">
-		<div class="showBreadcrumb"><a href="<?=Link::getPageLink("")?>" id="home_link">Home</a>/<a href="<?=Link::getPageLink($page)?>"><?=$pageName?></a></div>
+		<div class="showBreadcrumb my-1 2xl:my-3"><a href="<?=Link::getPageLink("")?>" id="home_link">Home</a>/<a href="<?=Link::getPageLink($page)?>"><?=$pageName?></a></div>
 	</header>
 	<main class="mt-2 w-4/5">

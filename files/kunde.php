@@ -121,7 +121,6 @@
 	</div>
 	<div id="gridShowCustomerList"><?=$showListHTML?></div>
 <?php else: ?>
-	<h3>Kundendaten</h3>
 	<div class="gridCont">
 		<div id="showKundendaten">
 			<div class="row">
@@ -217,8 +216,8 @@
 			<div class="row">
 				<div class="width6">
 					<div class="buttonCont">
-						<button id="sendKundendaten" disabled onclick="kundendatenAbsenden()">Absenden</button>
-						<button id="sendKundendaten" onclick="showMore(event)" data-show="more">Mehr</button>
+						<button class="btn-primary" id="sendKundendaten" disabled onclick="kundendatenAbsenden()">Absenden</button>
+						<button class="btn-primary" id="sendKundendaten" onclick="showMore(event)" data-show="more">Mehr</button>
 					</div>
 				</div>
 			</div>
@@ -270,35 +269,35 @@
 			<div class="row">
 				<div class="width6">
 					<div class="buttonCont">
-						<button onclick="sendAddressForm()">Absenden</button>
+						<button class="btn-primary" onclick="sendAddressForm()">Absenden</button>
 					</div>
 				</div>
 			</div>
 		</div>
 
 		<div id="notizen">
-			<h3>Notizen</h3>
-			<div id="editNotes"><?=$kunde->getNotizen()?></div>
-			<button onclick="editText(event);">Bearbeiten</button>
+			<h3 class="font-bold">Notizen</h3>
+			<textarea class="m-1 p-1 rounded-lg w-64 block" id="notesTextarea"><?=$kunde->getNotizen()?></textarea>
+			<button class="btn-primary" id="btnSendNotes" disabled>Abschicken</button>
 		</div>
 		<div id="fahrzeuge">
-			<h3>Fahrzeuge</h3>
+			<h3 class="font-bold">Fahrzeuge</h3>
 			<?=$kunde->getFahrzeuge()?>
 		</div>
 
 		<div id="ansprechpartner">
-			<h3>Ansprechpartner</h3>
+			<h3 class="font-bold">Ansprechpartner</h3>
 			<div id="ansprechpartnerTable">
 				<?=$ansprechpartner?>
 			</div>
 		</div>
 		<div id="farben">
-			<h3>Farben</h3>
+			<h3 class="font-bold">Farben</h3>
 			<div id="showFarben"><?=$kunde->getFarben()?></div>
 		</div>
 		<div id="auftraege">
-			<h3>Aufträge</h3>
-			<a href="<?=Link::getPageLink("neuer-auftrag")?>?kdnr=<?=$kundenid?>">Neuen Auftrag erstellen</a>
+			<h3 class="font-bold">Aufträge</h3>
+			<a class="text-blue-500 font-semibold" href="<?=Link::getPageLink("neuer-auftrag")?>?kdnr=<?=$kundenid?>">Neuen Auftrag erstellen</a>
 			<?=$kunde->getOrderCards()?>
 		</div>
 	</div>

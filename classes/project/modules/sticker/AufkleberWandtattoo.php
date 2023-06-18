@@ -62,21 +62,15 @@ class AufkleberWandtattoo extends Sticker {
     public function updateSizeTable($data) {
         $width = (int) $data["width"];
         $height = (int) $data["height"];
-        
-        $currentPrice = $this->getPrice($width, $height, $this->getDifficulty());
+        $price = (int) $data["price"];
 
-        $query = "UPDATE module_sticker_sizes SET height = $height, price = NULL WHERE id_sticker = :id AND width = $width";
-        
-        StickerChangelog::log($this->getId(), 0, 0, "module_sticker_sizes", "height", $height);
-        echo "preis: " . $currentPrice . " " . $data["price"] . " ";
-
-        if ($currentPrice != $data["price"]) {
-            $price = $data["price"];
-            $query = "UPDATE module_sticker_sizes SET height = $height, price = $price WHERE id_sticker = :id AND width = $width";
-            StickerChangelog::log($this->getId(), 0, 0, "module_sticker_sizes", "price", $price);
-        }
-
-        DBAccess::updateQuery($query, ["id" => $this->getId()]);
+        $query = "UPDATE module_sticker_sizes SET height = :height, price = :price WHERE id_sticker = :id AND width = :width";
+        DBAccess::updateQuery($query, [
+            "height" => $height,
+            "width" => $width,
+            "price" => $price,
+            "id" => $this->getId(),
+        ]);
     }
 
     public function getDifficulty() {
@@ -88,13 +82,27 @@ class AufkleberWandtattoo extends Sticker {
     }
 
     public function getSizeTableFormatted() {
-        // TODO: eventuell size_summary im BO generieren oder direkt die Tabelle exportieren
-        return $this->stickerData["size_summary"];
+        $query = "SELECT width, height
+            FROM module_sticker_sizes 
+            WHERE id_sticker = :idSticker
+            ORDER BY width";
+        $data = DBAccess::selectQuery($query, ["idSticker" => $this->getId()]);
+
+        foreach ($data as &$d) {
+            $d["width"] = str_replace(".", ",", ((int) $d["width"]) / 10) . "cm";
+            $d["height"] = str_replace(".", ",", ((int) $d["height"]) / 10) . "cm";
+        }
+
+        ob_start();
+        insertTemplate('classes/project/modules/sticker/views/sizeTableView.php', [
+            "sizes" => $data,
+        ]);
+        return ob_get_clean();
     }
 
     public function getBasePrice() {
         if ($this->basePrice != null) {
-            return $this->basePrice;
+            return number_format((float) $this->basePrice / 100, 2, '.', '');
         }
 
         parent::getBasePrice();
@@ -122,7 +130,7 @@ class AufkleberWandtattoo extends Sticker {
         /* TODO: hardcoded idAttributeGroup entfernen */
         $idAttributeGroup = 5;
         $sizeIds = [];
-        $widths =  [];
+        $widths = [];
         $prices = [];
         $buyingPrices = [];
 
@@ -194,7 +202,7 @@ class AufkleberWandtattoo extends Sticker {
 
     public function getSizeTable() {
         $query = "SELECT id, width, height, price, 
-                ((width / 1000) * (height / 1000) * 10) as costs 
+                ((width / 1000) * (height / 1000) * 10) as costs, price_default
             FROM module_sticker_sizes 
             WHERE id_sticker = :idSticker
             ORDER BY width";
@@ -224,36 +232,9 @@ class AufkleberWandtattoo extends Sticker {
 		$t->createByData($data, $column_names);
 		$t->setType("module_sticker_sizes");
 		$t->addActionButton("delete", "id");
-		$t->addNewLineButton();
         $t->addAction(null, Icon::$iconReset, "Preis zurücksetzen");
+        $t->addDataset("is-default", "price_default");
 
-        $pattern = [
-            "id_sticker" => [
-                "status" => "preset",
-                "value" => $this->getId(),
-            ],
-            "width" => [
-                "status" => "unset",
-                "value" => 1,
-                "type" => "cm",
-                "cast" => [],
-            ],
-            "height" => [
-                "status" => "unset",
-                "value" => 2,
-                "type" => "cm",
-                "cast" => [],
-            ],
-            "price" => [
-                "status" => "unset",
-                "value" => 3,
-                "type" => "float",
-                "cast" => ["separator" => ","],
-                "default" => null,
-            ],
-        ];
-
-		$t->defineUpdateSchedule(new UpdateSchedule("module_sticker_sizes", $pattern));
         $_SESSION[$t->getTableKey()] = serialize($t);
 		return $t->getTable();
     }

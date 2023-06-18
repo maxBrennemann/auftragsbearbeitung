@@ -84,9 +84,9 @@ class TableSorter {
 				let sortIcon = element.querySelector("span");
 				
 				if (sort) {
-					sortIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 12px; height 12px"><title>Absteigend sortieren</title><path d="M19 7H22L18 3L14 7H17V21H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z" fill="white" /></svg>`;
+					sortIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="inline" viewBox="0 0 24 24" style="width: 12px; height 12px"><title>Absteigend sortieren</title><path d="M19 7H22L18 3L14 7H17V21H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z" fill="white" /></svg>`;
 				} else {
-					sortIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 12px; height 12px"><title>Aufsteigend sortieren</title><path d="M19 17H22L18 21L14 17H17V3H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z" fill="white" /></svg>`;
+					sortIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="inline" viewBox="0 0 24 24" style="width: 12px; height 12px"><title>Aufsteigend sortieren</title><path d="M19 17H22L18 21L14 17H17V3H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z" fill="white" /></svg>`;
 				}
 			}
 		});
@@ -189,24 +189,61 @@ function startFunc() {
 
 	listener_logout();
 	listener_bellAndSearch();
-	initializeFileUpload();
+	//initializeFileUpload();
 	initializeInfoBtn();
 	currentTableSorter = new TableSorter();
 	currentTableSorter.readTableSorted();
 	timeGlobalListener();
+	initSearch();
+}
+
+function initSearch() {
+	initSearchIcon();
+	initSearchListener();
+}
+
+function initSearchListener() {
+	document.addEventListener("keydown", function (event) {
+		if (event.key === "k" && event.ctrlKey) {
+			event.stopPropagation();
+			event.preventDefault();
+
+			const searchInput = document.querySelector(".searchContainer input");
+			searchInput.focus();
+		}
+	});
+}
+
+/**
+ * sets the placeholder of the search input according to the device operating system
+ */
+function initSearchIcon() {
+	const searchInput = document.querySelector(".searchContainer input");
+	if (searchInput != null) {
+		const device = DeviceDetector.getOS();
+		if (device == "Mac OS") {
+			searchInput.placeholder = "⌘ K";
+		} else if (device == "Windows" || device == "Linux") {
+			searchInput.placeholder = "Ctrl K";
+		}
+	}
 }
 
 function listener_logout() {
 	var logout = document.getElementById("logoutBtn");
-	if (logout == null) return null;
+	if (logout == null) {
+		return null;
+	}
 	logout.addEventListener("click", function() {
 		var cookies = checkCookies();
 		var loginkey = "false";
 		if ("loginkey" in cookies) {
 			loginkey = cookies["loginkey"];
 		}
-		var logout = new AjaxCall(`logout_session=logout&loginkey=${loginkey}`, "POST", window.location.href);
-		logout.makeAjaxCall(function (response) {
+		ajax.post({
+			r: "logout",
+			loginkey: loginkey,
+		}).then(() => {
 			location.reload();
 		});
 	}, false);
@@ -286,7 +323,7 @@ function centerAbsoluteElement(div) {
 	var pageWidth = window.innerWidth;
 	var pageHeight = window.innerHeight;
 
-	var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+	var scrollTop = 0; //document.documentElement.scrollTop || document.body.scrollTop;
 
 	div.style.left = ((pageWidth - divWidth) / 2) + "px";
 	div.style.top = (((pageHeight - divHeight) / 2) + scrollTop) + "px";
@@ -408,7 +445,8 @@ var AjaxCall = function(param, ajaxType, url) {
 	} else if (typeof param === 'object') {
 		let temp = "";
 		for (let key in param) {
-			temp += key + "=" + param[key] + "&";
+			let parameterEncoded = encodeURIComponent(param[key]);
+			temp += key + "=" + parameterEncoded + "&";
 		}
 
 		this.paramString = temp.slice(0, -1);// encodeURIComponent(temp.slice(0, -1));
@@ -467,11 +505,19 @@ AjaxCall.prototype.makeAjaxCall = function(dataCallback, ...args) {
 
 const ajax = {
     async post(data, noJSON = false) {
-        data.getReason = data.r;
+        return this.request(data, "POST", noJSON);
+    },
+
+    async get(data, noJSON = false) {
+		return this.request(data, "GET", noJSON);
+    },
+
+	async request(data, type, noJSON = false) {
+		data.getReason = data.r;
         const param = Object.keys(data).map(key => {
-            return `${key}=${data[key]}`;
+            return `${key}=${encodeURIComponent(data[key])}`;
         });
-        let response = await makeAsyncCall("POST", param.join("&"), "").then(result => {
+        let response = await makeAsyncCall(type, param.join("&"), "").then(result => {
             return result;
         });
     
@@ -483,16 +529,11 @@ const ajax = {
         try {
             json = JSON.parse(response);
         } catch (e) {
-            infoSaveSuccessfull();
             return {};
         }
 
         return json;
-    },
-
-    async get() {
-
-    },
+	}
 }
 
 async function makeAsyncCall(type, params, location) {
@@ -590,194 +631,6 @@ class TableClass {
     }
 }
 
-/* adds file upload class to every form with that class */
-var fileUploader;
-function initializeFileUpload() {
-	let forms = document.querySelectorAll("form.fileUploader");
-	fileUploaders = [];
-	for (let i = 0, f; f = forms[i]; i++) {
-		let u = new FileUploader(f);
-		fileUploaders.push(u);
-	}
-}
-
-/* https://stackoverflow.com/questions/30008114/how-do-i-promisify-native-xhr */
-var FileUploader = function(target) {
-	if (target.nodeName == "FORM") {
-		this.target = target;
-		this.files = document.querySelector(`input[type="file"][form="${this.target.id}"]`);
-		this.files.addEventListener("change", this.preview.bind(this), false);
-		this.fileArrayDragDrop = [];
-
-		this.initHTML();
-		this.initializeDragAndDrop();
-	} else
-		return null;
-}
-
-FileUploader.prototype.resetUploader = function() {
-	this.target.reset();
-	var filesList = document.querySelector(".filesList");
-	filesList.innerHTML = "";
-	filesList.style.height = "100px";
-	this.uploadNode.value = 0;
-}
-
-FileUploader.prototype.initHTML = function() {
-	let uploadNode = document.createElement("input");
-	uploadNode.type = "range";
-	uploadNode.min = 0;
-	uploadNode.max = 100;
-	uploadNode.value = 0;
-	uploadNode.disabled = true;
-
-	let uploadButton = document.createElement("input");
-	uploadButton.type = "button";
-	uploadButton.value = "Hochladen";
-	uploadButton.classList.add("custom-file-upload");
-	uploadButton.addEventListener("click", function() {
-		const upload = this.upload();
-		upload.then(result => {
-				this.resetUploader();
-				infoSaveSuccessfull("success");
-			}).catch((e) => {
-				console.log(e);
-			});
-	}.bind(this), false);
-
-	this.target.appendChild(uploadButton);
-	this.target.appendChild(uploadNode);
-
-	this.uploadNode = uploadNode;
-
-	/* adds form element to set a post parameter to determine on the server that it is an file upload */
-	let hidden = document.createElement("input");
-	hidden.name = "upload";
-	hidden.hidden = true;
-	hidden.type = "text";
-	hidden.value = this.target.dataset.target;
-	this.target.appendChild(hidden);
-}
-
-FileUploader.prototype.upload = function() {
-	let target = document.forms.namedItem(this.target.name);
-	let uploadNode = this.uploadNode;
-
-	let files = document.querySelector(`input[type="file"][form="${target.id}"]`);
-
-	if (this.fileArrayDragDrop.length == 0 && files.files.length == 0) {
-		return Promise.reject("no files selected");
-	}
-
-	return new Promise(function(resolve, reject) {
-		var formData = new FormData(target);
-		var ajax = new XMLHttpRequest();
-
-		/* resolves the promise and then function with the form reset is called */
-		ajax.onreadystatechange = function() {
-			if(this.readyState == 4 && this.status == 200) {
-				try {
-					let uploadJson = JSON.parse(this.responseText);
-					insertNewlyUploadedImages(uploadJson); /* TODO: callback function als Parameter übergeben, akutell hardcoded, ruft function in sticker.js auf */
-				} catch(e) {
-					document.getElementById("showFilePrev").innerHTML = this.responseText;
-					console.log(e);
-					console.log("no json found, continue with regular procedure...");
-				}
-
-				/* remove upload preview images */
-				document.querySelector(".filesList").parentNode.removeChild(document.querySelector(".filesList").previousSibling);
-				resolve();
-			}
-		}
-
-		for (let i = 0; i < this.fileArrayDragDrop.length; i++) {
-			formData.append("files[]", this.fileArrayDragDrop[i]);
-		}
-		for (let i = 0; i < files.files.length; i++) {
-			formData.append("files[]", files.files[i]);
-		}
-
-		console.log(formData.getAll("files[]"));
-
-		ajax.onerror = function() {
-			reject();
-		}
-
-		ajax.open('POST', '');
-		ajax.upload.addEventListener("progress", function(e) {
-			if (e.lengthComputable) {
-				bytesUploaded = e.loaded;
-				bytesTotal = e.total;
-		
-				percentage = Math.round(bytesUploaded * 100 / bytesTotal);
-				uploadNode.value = percentage;
-			}
-		}, false);
-		ajax.send(formData);
-	}.bind(this)); 
-}
-
-/* https://www.mediaevent.de/javascript/ajax-2-xmlhttprequest.html */
-FileUploader.prototype.preview = function() {
-	let files = this.files.files;
-	for (let i = 0, f; f = files[i]; i++) {
-		if (!f.type.match('image.*'))
-			continue;
-		let reader = new FileReader();
-		reader.onload = (function(_file) {
-			return function(e) {
-				let span = document.createElement("span");
-				span.innerHTML = ['<img class="upload_prev" src="', e.target.result, '" title="', escape(_file.name), '"/>'].join('');
-				document.querySelector(".filesList").insertBefore(span, null);
-			}
-		})(f);
-		reader.readAsDataURL(f);
-		document.querySelector(".filesList").style.height = "auto";
-	}
-}
-
-FileUploader.prototype.initializeDragAndDrop = function() {
-	document.getElementsByClassName("filesList")[0].addEventListener("drop", function(e) {
-		this.ondropHandler(e);
-	}.bind(this), false);
-	document.getElementsByClassName("filesList")[0].addEventListener("dragover", function(e) {
-		this.ondragHandler(e);
-	}.bind(this), false);
-}
-
-FileUploader.prototype.ondropHandler = function(e) {
-	e.preventDefault();
-
-	if (e.dataTransfer.files) {
-		[...e.dataTransfer.files].forEach((item, i) => {
-			if (item.type.match('image.*')) {
-				let reader = new FileReader();
-				reader.onload = (function(_file) {
-					return function(e) {
-						let span = document.createElement("span");
-						span.innerHTML = ['<img class="upload_prev" src="', e.target.result, '" title="', escape(_file.name), '"/>'].join('');
-						document.querySelector(".filesList").insertBefore(span, null);
-					}
-				})(item);
-				reader.readAsDataURL(item);
-			} else {
-				let span = document.createElement("span");
-				span.innerHTML = `<i>${item.name}</i>`;
-				document.querySelector(".filesList").insertBefore(span, null);
-			}
-
-			this.fileArrayDragDrop.push(item);
-		})
-	}
-
-	e.target.style.height = "auto";
-}
-
-FileUploader.prototype.ondragHandler = function(e) {
-	e.preventDefault();
-}
-
 /* info button code 
  * adds an event listener to each btn of that class
  * which loads the info text from the server and displays its content
@@ -833,37 +686,6 @@ window.addEventListener("click", function(event) {
 		}
 	}
 }, false);
-
-/* function shows an info text about the update status of an ajax query */
-function infoSaveSuccessfull(status = "failiure", errorMessage = "") {
-	var statusClass = "";
-	var text = "";
-	
-	switch (status) {
-		case "success":
-			statusClass = "showSuccess";
-			text = "Speichern erfolgreich!";
-			break;
-		case "failiure":
-		default:
-			statusClass = "showFailiure";
-			text = "Speichern hat nicht geklappt!";
-			break;
-	}
-
-	let div = document.createElement("div");
-    div.innerHTML = text;
-    div.classList.add(statusClass);
-    document.body.appendChild(div);
-
-    setTimeout(function () {
-        div.classList.add("hidden");
-    }, 1000);
-
-    setTimeout(function () {
-        div.parentNode.removeChild(div);
-    }, 2000);
-}
 
 /**
  * clears all inputs, supported types: id, array of ids, classes
@@ -955,17 +777,35 @@ function performGlobalSearch(e) {
     });
 }
 
+function getCookie(name) {
+    var allCookies = checkCookies();
+    if (name in allCookies) {
+        const val = allCookies[name];
+        return val;
+    }
+
+    return null;
+}
+
 /* https://www.geekstrick.com/snippets/how-to-parse-cookies-in-javascript/ */
 function checkCookies() {
-	var cookies = document.cookie.split(";");
-	var cookieObj = {};
-	for (let i = 0; i < cookies.length; i++) {
-		var parts = cookies[i].split("=");
-		parts[0] = parts[0].substring(1);
-		cookieObj[parts[0]] = parts[1];
-	}
+    var cookies = document.cookie.split(";");
+    var cookieObj = {};
+    for (let i = 0; i < cookies.length; i++) {
+        var parts = cookies[i].split("=");
+        parts[0] = parts[0].substring(1);
+        cookieObj[parts[0]] = parts[1];
+    }
 
-	return cookieObj;
+    return cookieObj;
+}
+
+/* https://www.w3schools.com/js/js_cookies.asp */
+function setCookie(cname, cvalue, exdays) {
+    const d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    let expires = "expires=" + d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
 /**
@@ -980,102 +820,4 @@ function createNewElement(elementType, elementId, elementClass, ...args) {
 	element.id = elementId;
 	element.classList.add(elementClass);
 	return element;
-}
-
-/* https://stackoverflow.com/questions/14226803/wait-5-seconds-before-executing-next-line */
-const delay = ms => new Promise(res => setTimeout(res, ms));
-
-class StatusInfo {
-	constructor(infoType, text) {
-		this.infoType = infoType;
-		this.text = text;
-
-		this.persistant = false;
-	}
-	
-	setText(text) {
-		this.text = text;
-	}
-
-	makeBoxPersistantOnFailure() {
-		this.persistant = true;
-	}
-
-	showError() {
-		// showFailiure
-		let div = document.createElement("div");
-		div.classList.add("showFailiure");
-		div.classList.add("showFailiureW");
-		document.body.appendChild(div);
-
-		let infoText = document.createElement("div");
-		infoText.classList.add("inline");
-		infoText.innerHTML = "Ein Fehler ist aufgetreten.";
-
-		const removeBtn = document.createElement("button");
-		removeBtn.addEventListener("click", e => {
-			this.infoHTML.parentNode.removeChild(this.infoHTML);
-		});
-		removeBtn.innerHTML = "x";
-		removeBtn.classList.add("removeFailiureMessage");
-
-		const copyContent = document.createElement("input");
-		copyContent.value = this.text;
-		copyContent.style.display = "none";
-
-		const copyBtn = document.createElement("button");
-		copyBtn.addEventListener("click", () => {
-			copyContent.select();
-			copyContent.setSelectionRange(0, 99999);
-			navigator.clipboard.writeText(copyContent.value);
-		});
-		copyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15px" height="15px" fill="white"><title>content-copy</title><path d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z" /></svg>`;
-		copyBtn.classList.add("copyBtn");
-		
-
-		div.appendChild(removeBtn);
-		div.appendChild(copyContent);
-		div.appendChild(copyBtn);
-		div.appendChild(infoText);
-
-		this.infoHTML = div;
-		this.infoText = infoText;
-	}
-
-	show() {
-		let div = document.createElement("div");
-		div.classList.add("showSuccess");
-		document.body.appendChild(div);
-
-		let infoText = document.createElement("div");
-		infoText.classList.add("inline");
-		infoText.innerHTML = this.text;
-
-		let loader = document.createElement("div");
-		loader.classList.add("inline");
-		loader.classList.add("loaderSettings");
-		loader.innerHTML = `<div class="loaderOrSymbol">
-		<div class="lds-ring"><div></div><div></div><div></div><div></div></div>`;
-
-		div.appendChild(loader);
-		div.appendChild(infoText);
-
-		this.infoHTML = div;
-		this.infoText = infoText;
-		this.loader = loader;
-	}
-
-	statusUpdate(text) {
-		this.text = text;
-		this.infoText.innerHTML = this.text;
-		this.loader.innerHTML = "✓";
-	}
-
-	async hide(wait = 1000) {
-		await delay(wait);
-		this.infoHTML.classList.add("hidden");
-	
-		await delay(wait + 1000);
-		this.infoHTML.parentNode.removeChild(this.infoHTML);
-	}
 }

@@ -48,25 +48,7 @@ class Auftragsverlauf {
      * added member join to get the user id
     */
     public function getHistory() {
-        $query = "SELECT history.id, history.insertstamp, history_type.name, 
-                CONCAT(COALESCE(history.alternative_text, 'Fehler: kein Text gefunden'), COALESCE(CONCAT(fahrzeuge.Kennzeichen, ' ', fahrzeuge.Fahrzeug), ''), COALESCE(notizen.Notiz, '')) AS Beschreibung, members.username, mitarbeiter.vorname, history.state
-            FROM history 
-            LEFT JOIN history_type ON history_type.type_id = history.type 
-            LEFT JOIN postendata ON postendata.Auftragsnummer = history.orderid 
-                AND postendata.Postennummer = history.number 
-            LEFT JOIN schritte ON schritte.Auftragsnummer = history.orderid 
-                AND schritte.Schrittnummer = history.number 
-            LEFT JOIN members ON members.id = history.member_id
-            LEFT JOIN members_mitarbeiter ON members.id = members_mitarbeiter.id_member
-            LEFT JOIN mitarbeiter ON members_mitarbeiter.id_mitarbeiter = mitarbeiter.id
-            LEFT JOIN fahrzeuge_auftraege ON fahrzeuge_auftraege.id_auftrag = history.orderid
-                AND fahrzeuge_auftraege.id_fahrzeug = history.number
-            LEFT JOIN fahrzeuge ON fahrzeuge.Nummer = fahrzeuge_auftraege.id_fahrzeug
-            LEFT JOIN notizen ON notizen.Nummer = history.number
-            WHERE history.orderid = {$this->auftragsnummer}
-                ";
-
-        $new_query = "SELECT history.id, history.insertstamp, history_type.name , CONCAT(COALESCE(history.alternative_text, ''), COALESCE(ids.descr, '')) AS Beschreibung, history.state, members.username, mitarbeiter.vorname
+        $query = "SELECT history.id, history.insertstamp, history_type.name , CONCAT(COALESCE(history.alternative_text, ''), COALESCE(ids.descr, '')) AS Beschreibung, history.state, user.username, user.prename
             FROM history
             LEFT JOIN (
                 (SELECT CONCAT(fahrzeuge.Kennzeichen, ' ', fahrzeuge.Fahrzeug) AS `descr`, fahrzeuge_auftraege.id_fahrzeug AS id, 3 AS `type` FROM fahrzeuge, fahrzeuge_auftraege WHERE fahrzeuge.Nummer = fahrzeuge_auftraege.id_fahrzeug)
@@ -75,12 +57,10 @@ class Auftragsverlauf {
             ) ids ON history.number = ids.id 
             AND history.type = ids.type
             LEFT JOIN history_type ON history_type.type_id = history.type
-            LEFT JOIN members ON members.id = history.member_id
-            LEFT JOIN members_mitarbeiter ON members.id = members_mitarbeiter.id_member
-            LEFT JOIN mitarbeiter ON members_mitarbeiter.id_mitarbeiter = mitarbeiter.id
+            LEFT JOIN user ON user.id = history.member_id
             WHERE history.orderid = {$this->auftragsnummer}";
 
-        return DBAccess::selectQuery($new_query);
+        return DBAccess::selectQuery($query);
     }
 
     public function representHistoryAsHTML() {
@@ -90,7 +70,7 @@ class Auftragsverlauf {
             $datetime = $h['insertstamp'];
             $datetime = date('d.m.Y H:i', strtotime($datetime));
             $beschreibung = $h['Beschreibung'];
-            $person = $h['vorname'];
+            $person = $h['prename'];
 
             switch ($h['state']) {
                 case "added":
@@ -107,8 +87,6 @@ class Auftragsverlauf {
                     $html .= "<div class=\"showInMiddle\">{$h['name']}: <i>{$beschreibung}</i><br>gelöscht am {$datetime}<br>von {$person}</div><div class=\"verticalLine\"></div>";
                     break;
             }
-
-            
         }
 
         $html .= "<div class=\"showInMiddle\">Keine weiteren Einträge</div>";
@@ -117,5 +95,3 @@ class Auftragsverlauf {
     }
 
 }
-
-?>

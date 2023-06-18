@@ -168,7 +168,11 @@ class Auftrag implements StatisticsInterface {
 	public function getAuftragstypBezeichnung() {
 		$query = "SELECT `Auftragstyp` FROM `auftragstyp` WHERE `id` = :idAuftragstyp LIMIT 1;";
 		$bez = DBAccess::selectQuery($query, ["idAuftragstyp" => $this->auftragstyp]);
-		return $bez[0]["Auftragstyp"];
+		if ($bez != null) {
+			return $bez[0]["Auftragstyp"];
+		} else {
+			return "";
+		}
 	}
 
 	public static function getAllOrderTypes() {
@@ -181,12 +185,12 @@ class Auftrag implements StatisticsInterface {
 		return $this->Auftragsbezeichnung;
 	}
 
-	public function getDatum() {
-		return DateTime::createFromFormat("Y-m-d", $this->datum)->format("d.m.Y");
+	public function getDate() {
+		return $this->datum;
 	}
 
-	public function getTermin() {
-		return DateTime::createFromFormat("Y-m-d", $this->termin)->format("d.m.Y");
+	public function getDeadline() {
+		return $this->termin;
 	}
 
 	public function preisBerechnen() {
@@ -468,62 +472,46 @@ class Auftrag implements StatisticsInterface {
 	/*
 	 * creates a div card with the order details
 	*/
-	public function getOrderCard() {
-		$archievedBtn = $this->isArchiviert ? "<button>archiviert</button>" : "<!-- Auftrag archiviert -->";
-		$orderTitle = $this->Auftragsbezeichnung;
-		$orderDescription = $this->Auftragsbeschreibung;
+	public function getOrderCardData() {
+		$data = DBAccess::selectQuery("SELECT Datum, Termin, Fertigstellung FROM auftrag WHERE Auftragsnummer = :orderId", [
+			"orderId" => $this->getAuftragsnummer(),
+		]);
+		$data = $data[0];
 
-		$data = DBAccess::selectQuery("SELECT Datum, Termin, Fertigstellung FROM auftrag WHERE Auftragsnummer = $this->Auftragsnummer")[0];
 		$date = $data['Datum'];
 		$deadline = $data['Termin'];
 		$finished = $data['Fertigstellung'];
 
-		$invoice =  $this->rechnungsnummer == 0 ? "" : "Rechnung Nr. $this->rechnungsnummer";
-		$summe = $this->rechnungsnummer != 0 ? "<button>" . $this->preisBerechnen() . "€</button>" : "-€";
-
-		$html = "
-		<div class=\"innerDefCont orderCard\">
-			<h3>$orderTitle</h3>
-			<a href=\"" . Link::getPageLink("auftrag") . "?id=$this->Auftragsnummer" . "\">Zum Auftrag $this->Auftragsnummer</a>
-			<p>$orderDescription</p>
-			<table>
-				<tr>
-					<th>Datum</th>
-					<td>$date</td>
-				</tr>
-				<tr>
-					<th>Termin</th>
-					<td>$deadline</td>
-				</tr>
-				<tr>
-					<th>Fertigstellung</th>
-					<td>$finished</td>
-				</tr>
-			</table>
-			<br>
-			$archievedBtn
-			$invoice
-			<br>
-			<p>Auftragssumme: $summe </p>
-		</div>";
-
-		return $html;
+		return [
+			"id" => $this->Auftragsnummer,
+			"archived" => $this->isArchiviert,
+			"orderTitle" => $this->Auftragsbezeichnung,
+			"orderDescription" => $this->Auftragsbeschreibung,
+			"date" => $date,
+			"deadline" => $deadline,
+			"finished" => $finished,
+			"invoice" => $this->rechnungsnummer,
+			"summe" => $this->rechnungsnummer != 0 ? $this->preisBerechnen() : 0,
+		];
 	}
 
 	/* this function fetches the associated notes from the db */
 	public function getNotes() {
 		$html = "";
+		$iconNotebook = Icon::$iconNotebook;
+		$notes = DBAccess::selectQuery("SELECT Notiz FROM notizen WHERE Auftragsnummer = :id ORDER BY creation_date DESC", ["id" => $this->Auftragsnummer]);
 
-		$notes = DBAccess::selectQuery("SELECT Notiz FROM notizen WHERE Auftragsnummer = $this->Auftragsnummer");
 		foreach($notes as $note) {
 			$content = $note['Notiz'];
-			$html .= "
-				<div class=\"notes\">
-					<div class=\"noteheader\">Notiz " .  Icon::$iconNotebook . "</div>
-					<div class=\"notecontent\">$content</div>
-					<div class=\"notebutton\" onclick=\"removeNote(event)\">×</div>
+			$html .= <<<EOL
+				<div class="notes">
+					<div class="noteheader">Notiz 
+						<span class="inline">$iconNotebook</span>
+					</div>
+					<div class="notecontent">$content</div>
+					<div class="notebutton" onclick="removeNote(event)">×</div>
 				</div>
-			";
+			EOL;
 		}
 
 		return $html;

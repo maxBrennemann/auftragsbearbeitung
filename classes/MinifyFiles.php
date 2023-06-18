@@ -13,6 +13,13 @@ class MinifyFiles {
 		return $files;
 	}
 
+	private static function getJsClasses() {
+		$path = 'files/res/js/classes/';
+		$files = scandir($path);
+		$files = array_diff(scandir($path), array('.', '..'));
+		return $files;
+	}
+
 	private static function getCss() {
 		$path = 'files/res/css/';
 		$files = scandir($path);
@@ -47,6 +54,27 @@ class MinifyFiles {
 			}
 		}
 	}
+
+	/**
+	 * takes in all js files in classes and makes a new minified file called global.js out of it
+	 */
+	public static function generateGlobalJS() {
+		$files = self::getJsClasses();
+		$minifier = new JS();
+
+		foreach ($files as $file) {
+			if (is_dir($file)) {
+				continue;
+			}
+
+			$sourcePath = "files/res/js/classes/" . $file;
+			$minifier->add($sourcePath);
+		}
+
+		$minifier->add("files/res/js/global.js");
+		$minifiedPath = "files/res/js/min/global.min.js";
+		$minifier->minify($minifiedPath);
+	}
 	
 	public static function minify() {
 		$filesJs = self::getJs();
@@ -54,6 +82,8 @@ class MinifyFiles {
 
 		self::minifyByType($filesJs);
 		self::minifyByType($filesCss);
+
+		self::generateGlobalJS();
 	}
 
     public static function isActivated() {

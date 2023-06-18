@@ -127,15 +127,15 @@ class PDF_Auftrag {
         $auftrags_daten = DBAccess::selectQuery("SELECT * FROM auftrag, `address`, kunde  WHERE auftrag.Kundennummer = kunde.Kundennummer AND Auftragsnummer = $nummer AND `address`.id_customer = auftrag.Kundennummer AND `address`.art = 1");
 
         $id = $auftrags_daten[0]["AngenommenDurch"];
-        $angenommenDurch = DBAccess::selectQuery("SELECT Vorname, Nachname FROM mitarbeiter WHERE id = $id");
-        $auftrags_daten[0]["AngenommenDurch"] = $angenommenDurch[0]["Vorname"] . " " . $angenommenDurch[0]["Nachname"];
+        $angenommenDurch = DBAccess::selectQuery("SELECT prename, lastname FROM user WHERE id = :id;", array("id" => $id));
+        $auftrags_daten[0]["AngenommenDurch"] = $angenommenDurch[0]["prename"] . " " . $angenommenDurch[0]["Nachname"];
 
         if ($auftrags_daten[0]["Fertigstellung"] == '0000-00-00') {
             $auftrags_daten[0]["Fertigstellung"] = "";
         }
 
         if ((int) $auftrags_daten[0]["Ansprechpartner"] == 0) {
-            $auftrags_daten[0]["Ansprechpartner"] = $auftrags_daten[0]["Vorname"] . " " . $auftrags_daten[0]["Nachname"];
+            $auftrags_daten[0]["Ansprechpartner"] = $auftrags_daten[0]["lastname"] . " " . $auftrags_daten[0]["Nachname"];
         } else {
             $nummer = (int) $auftrags_daten[0]["Ansprechpartner"];
             $name = DBAccess::selectQuery("SELECT Vorname, Nachname FROM ansprechpartner WHERE Nummer = $nummer")[0];

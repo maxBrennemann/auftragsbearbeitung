@@ -16,6 +16,7 @@ $links = [
     Link::getPageLink("kunde"),
     Link::getPageLink("neuer-auftrag"),
     Link::getPageLink("angebot"),
+    Link::getPageLink("mitarbeiter"),
 ];
 
 /*
@@ -89,6 +90,7 @@ function loadExternalByClassName($page, $classname) {
         <li><a href="<?=$links[2]?>">Analyse und Statistik</a></li>
         <li><a href="<?=$links[1]?>">Finanzmanager</a></li>
         <li><a href="<?=$links[0]?>">Firmenwiki</a></li>
+        <li><a href="<?=$links[9]?>">Mitarbeiter</a></li>
     </ul>
     <h2>Funktionen der Besucherseite</h2>
     <ul>

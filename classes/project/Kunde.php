@@ -1,14 +1,7 @@
 <?php
 
-error_reporting(E_ALL);
-
-if (0 > version_compare(PHP_VERSION, '5')) {
-    die('This file was generated for PHP 5');
-}
-
 require_once('Auftrag.php');
 require_once('StatisticsInterface.php');
-require_once('classes/DBAccess.php');
 require_once('classes/project/Address.php');
 
 class Kunde implements StatisticsInterface {
@@ -141,11 +134,13 @@ class Kunde implements StatisticsInterface {
 	}
 
 	public function getFarben() {
-		$farben = DBAccess::selectQuery("SELECT CONCAT(Farbe, ' ', Bezeichnung, ' ', Hersteller) AS Farbe, Auftragsnummer, Farbwert FROM color, color_auftrag, auftrag WHERE Kundennummer = {$this->kundennummer} AND color.id = color_auftrag.id_color AND color_auftrag.id_auftrag = Auftragsnummer");
-		
-		for ($i = 0; $i < sizeof($farben); $i++) {
-			$farbe = $farben[$i]["Farbwert"];
-			$farben[$i]["Farbwert"] = "<div class=\"farbe\" style=\"background-color: #$farbe\"></div>";
+		$query = "SELECT CONCAT(Farbe, ' ', Bezeichnung, ' ', Hersteller) AS Farbe, Auftragsnummer, Farbwert FROM color, color_auftrag, auftrag WHERE Kundennummer = :kdnr AND color.id = color_auftrag.id_color AND color_auftrag.id_auftrag = Auftragsnummer";
+		$data = DBAccess::selectQuery($query, [
+			"kdnr" => $this->kundennummer
+		]);
+
+		foreach ($data as $key => $value) {
+			$data[$key]["Farbwert"] = "<div class=\"farbe\" style=\"background-color: #" . $value["Farbwert"] . "\"></div>";
 		}
 
 		$column_names = array(
@@ -154,7 +149,7 @@ class Kunde implements StatisticsInterface {
 			2 => array("COLUMN_NAME" => "Auftragsnummer"));
 
 		$table = new Table();
-		$table->createByData($farben, $column_names);
+		$table->createByData($data, $column_names);
 	
 		return $table->getTable();
 	}
@@ -169,14 +164,23 @@ class Kunde implements StatisticsInterface {
 	}
 
 	public function getOrderCards() {
-		$auftraege = DBAccess::selectQuery("SELECT Auftragsnummer FROM auftrag WHERE Kundennummer = {$this->kundennummer} ORDER BY Auftragsnummer DESC");
-		$html = "<div style=\"display: flex; flex-wrap: wrap;\">";
-		foreach ($auftraege as $id) {
-			$order = new Auftrag($id['Auftragsnummer']);
-			$html .= $order->getOrderCard();
+		$query = "SELECT Auftragsnummer FROM auftrag WHERE Kundennummer = :kdnr ORDER BY Auftragsnummer DESC";
+		$data = DBAccess::selectQuery($query, [
+			"kdnr" => $this->kundennummer
+		]);
+
+		$orders = [];
+		foreach ($data as $key => $value) {
+			$order = new Auftrag($value["Auftragsnummer"]);
+			$orders[] = $order->getOrderCardData();
 		}
-		$html .= "</div";
-		return $html;
+
+		ob_start();
+		insertTemplate('files/res/views/orderCartView.php', [
+			"orders" => $orders,
+		]);
+		$content = ob_get_clean();
+		return $content;
 	}
 
 	public function getAnsprechpartner() {
@@ -184,7 +188,10 @@ class Kunde implements StatisticsInterface {
 	}
 
 	public function getNotizen() {
-		$data = DBAccess::selectQuery("SELECT notizen FROM kunde_extended WHERE kundennummer = {$this->kundennummer}");
+		$data = DBAccess::selectQuery("SELECT notizen FROM kunde_extended WHERE kundennummer = :kdnr", [
+			"kdnr" => $this->getKundennummer(),
+		]);
+
 		if ($data != null) {
 			return $data[0]['notizen'];
 		}
@@ -192,10 +199,25 @@ class Kunde implements StatisticsInterface {
 	}
 
 	public function getFahrzeuge() {
-		$fahrzeuge = DBAccess::selectQuery("SELECT Kennzeichen, Fahrzeug, Nummer FROM fahrzeuge WHERE Kundennummer = {$this->getKundennummer()}");
-		$column_names = array(0 => array("COLUMN_NAME" => "Nummer"), 1 => array("COLUMN_NAME" => "Kennzeichen"), 2 => array("COLUMN_NAME" => "Fahrzeug"));
-		$fahrzeugTable = new FormGenerator("fahrzeug", "", "");
-		return $fahrzeugTable->createTableByDataRowLink($fahrzeuge, $column_names, "fahrzeug", "fahrzeug");
+		$query = "SELECT Kennzeichen, Fahrzeug, Nummer FROM fahrzeuge WHERE Kundennummer = :kdnr";
+		$data = DBAccess::selectQuery($query, [
+			"kdnr" => $this->getKundennummer(),
+		]);
+
+		$column_names = array(
+			0 => array("COLUMN_NAME" => "Nummer"),
+			1 => array("COLUMN_NAME" => "Kennzeichen"),
+			2 => array("COLUMN_NAME" => "Fahrzeug")
+		);
+
+		$link = new Link();
+		$link->addBaseLink("fahrzeug");
+		$link->setIterator("id", $data, "Nummer");
+
+		$t = new Table();
+		$t->createByData($data, $column_names);
+		$t->addLink($link);
+		return $t->getTable();
 	}
 
 	public function recalculate() {
@@ -261,6 +283,65 @@ class Kunde implements StatisticsInterface {
 		}
 
 		return $text;
+	}
+
+	/**
+	 * @return int
+	 */
+	public static function addCustomer($data): int {
+		/* insert customer data */
+		$query = "INSERT INTO kunde (Firmenname, Anrede, Vorname, Nachname, Email, TelefonFestnetz, TelefonMobil, Website) VALUES (:firmenname, :anrede, :vorname, :nachname, :email, :telfestnetz, :telmobil, :website)";
+		$customerId = DBAccess::insertQuery($query, [
+			"firmenname" => $data["customerName"] ?? "",
+			"anrede" => (int) $data["anrede"],
+			"vorname" => $data["prename"] ?? "",
+			"nachname" => $data["surname"] ?? "",
+			"email" => $data["companyemail"],
+			"telfestnetz" => $data["telfestnetz"],
+			"telmobil" => $data["telmobil"],
+			"website" => $data["website"],
+		]);
+
+		/* insert address data */
+		$query = "INSERT INTO address (id_customer, strasse, hausnr, plz, ort, zusatz, country) VALUES (:id_customer, :strasse, :hausnr, :plz, :ort, :zusatz, :country)";
+		$addressId = DBAccess::insertQuery($query, [
+			"id_customer" => $customerId,
+			"strasse" => $data["street"],
+			"hausnr" => $data["houseNumber"],
+			"plz" => (int) $data["plz"],
+			"ort" => $data["city"],
+			"zusatz" => $data["addressAddition"],
+			"country" => $data["country"],
+		]);
+
+		/* update customer data */
+		DBAccess::updateQuery("UPDATE kunde SET id_address_primary = :addressId WHERE Kundennummer = :customerId", [
+			"addressId" => $addressId,
+			"customerId" => $customerId,
+		]);
+
+		/* insert ansprechpartner data */
+		if ($data["type"] == "company") {
+			$query = "INSERT INTO ansprechpartner (Kundennummer, Vorname, Nachname, Email, Durchwahl, Mobiltelefonnummer) VALUES (:customerId, :vorname, :nachname, :email, :durchwahl, :mobiltelefonnummer)";
+			DBAccess::insertQuery($query, [
+				"customerId" => $customerId,
+				"vorname" => $data["contactPrename"],
+				"nachname" => $data["contactSurname"],
+				"email" => $data["emailaddress"],
+				"durchwahl" => $data["phoneExtension"],
+				"mobiltelefonnummer" => $data["mobileNumber"],
+			]);
+		}
+
+		if ($data["notes"] != "") {
+			$query = "INSERT INTO kunde_extended (kundennummer, notizen) VALUES (:customerId, :notes);";
+			DBAccess::insertQuery($query, [
+				"customerId" => $customerId,
+				"notes" => $data["notes"],
+			]);
+		}
+
+		return $customerId;
 	}
 
 }

@@ -22,7 +22,9 @@ class Table {
 	private $update;
 	private $sendTo;
 
-	private $dataset = [0=>false];
+	private $dataset = [
+		0 => false
+	];
 	
 	/* action button variables */
 	private $buttonEdit = false;
@@ -65,6 +67,24 @@ class Table {
 
 		$this->dataKey = "key_" . bin2hex(random_bytes(6));
     }
+
+	/**
+	 * removes a column from the table,
+	 * TODO: this is no ideal solution and the whole "COLUMN_NAME" thing should be changed
+	 * @param String $columnName
+	 */
+	public function exclude(String $columnName) {
+		$count = 0;
+		foreach ($this->columnNames as $key => $column) {
+			if ($column["COLUMN_NAME"] == $columnName) {
+				unset($this->columnNames[$key]);
+			} else {
+				$this->columnNames[$count] = $column;
+				$count++;
+			}
+		}
+		return $this;
+	}
 
 	public function getTableKey() {
 		return $this->dataKey;
@@ -166,9 +186,9 @@ class Table {
 			$key = $this->keys[$i];
 
 			if ($action != null) {
-				$btn = "<button class='actionButton' onclick=\"$action('$key', event)\" title='$text'>$symbol</button>";
+				$btn = "<button class='p-1 mr-1 actionButton' onclick=\"$action('$key', event)\" title='$text'>$symbol</button>";
 			} else {
-				$btn = "<button class='actionButton' onclick=\"performAction('$key', event)\" title='$text'>$symbol</button>";
+				$btn = "<button class='p-1 mr-1 actionButton' onclick=\"performAction('$key', event)\" title='$text'>$symbol</button>";
 			}
 			$array[$i] = $btn;
 		}
@@ -254,17 +274,17 @@ class Table {
 
 	/* action buttons */
 	private function addUpdateButton($key) {
-        $button = "<button class='actionButton' onclick=\"updateIsDone('$key', event)\" title='Als erledigt markieren.'>" . Icon::$iconCheck . "</button>";
+        $button = "<button class='p-1 mr-1 actionButton' onclick=\"updateIsDone('$key', event)\" title='Als erledigt markieren.'>" . Icon::$iconCheck . "</button>";
 		return $button;
     }
 
     private function addEditButton($key) {
-        $button = "<button class='actionButton' onclick=\"editRow('$key', this)\" title='Bearbeiten'>" . Icon::$iconEdit . "</button>";
+        $button = "<button class='p-1 mr-1 actionButton' onclick=\"editRow('$key', this)\" title='Bearbeiten'>" . Icon::$iconEdit . "</button>";
 		return $button;
     }
 
     private function addDeleteButton($key) {
-		$button = "<button class='actionButton' onclick=\"deleteRow('$key', '$this->type', this)\" title='Löschen'>" . Icon::$iconDelete . "</button>";
+		$button = "<button class='p-1 mr-1 actionButton' onclick=\"deleteRow('$key', '$this->type', this)\" title='Löschen'>" . Icon::$iconDelete . "</button>";
 		return $button;
 	}
 	
@@ -423,9 +443,9 @@ class Table {
         $html = "";
 
         if ($this->editable) {
-			$html = "<table class='allowAddingContent' data-type='{$this->type}' data-key='{$this->dataKey}' data-send-to='{$this->sendTo}'>";
+			$html = "<table class='table-auto allowAddingContent' data-type='{$this->type}' data-key='{$this->dataKey}' data-send-to='{$this->sendTo}'>";
 		} else {
-			$html = "<table data-type='{$this->type}' data-key='{$this->dataKey}'>";
+			$html = "<table class='table-auto' data-type='{$this->type}' data-key='{$this->dataKey}'>";
 		}
         
 		$html .= self::html_createTableHeader($this->columnNames);
@@ -555,7 +575,7 @@ class Table {
 				$showColumnName = $entry["ALT"];
 			}
 
-			$table_header .= "<th class='tableHead' onclick='sortTableNew(event)'>" . $showColumnName . " <span class=\"sortIcon\">" . Icon::$iconSortUndirected . "</span></th>";
+			$table_header .= "<th class='tableHead whitespace-nowrap' onclick='sortTableNew(event)'>" . $showColumnName . " <span class=\"sortIcon\">" . Icon::$iconSortUndirected . "</span></th>";
 		}
 
 		return $table_header . "</tr>";

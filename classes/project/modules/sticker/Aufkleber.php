@@ -40,17 +40,8 @@ class Aufkleber extends AufkleberWandtattoo {
     }
 
     public function getName(): String {
-        $name = null;
-        if ($this->additionalData != null) {
-            if (isset($this->additionalData["products"])) {
-                if (isset($this->additionalData["products"][$this->instanceType]["title"])) {
-                    $name = $this->additionalData["products"][$this->instanceType]["title"];
-                }
-            }
-        }
-
-        if ($name != null) {
-            return "Aufkleber " . $name;
+        if ($this->getAltTitle() != "") {
+            return $this->getAltTitle();
         }
 
         return "Aufkleber " . parent::getName();
@@ -75,10 +66,6 @@ class Aufkleber extends AufkleberWandtattoo {
 
     public function getPriceClass() {
         return $this->priceClass;
-    }
-
-    public function getSizeSummary() {
-        return $this->stickerData["size_summary"];
     }
 
     public function getIsPlotted() {

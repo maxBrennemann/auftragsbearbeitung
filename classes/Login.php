@@ -1,198 +1,232 @@
 <?php
 
-require_once('DBAccess.php');
 require_once('Mailer.php');
 
 class Login {
-	
-	/* Code an https://www.php-einfach.de/experte/php-codebeispiele/loginscript/ angelehnt */
-	function __construct() {
+
+	/**
+	 * handles the login process
+	 */
+	public static function handleLogin() {
+		if (!isset($_POST['name']) || !isset($_POST['password'])) {
+			return false;
+		}
 		
+		$loginCredentials = $_POST['name'];
+		$password = $_POST['password'];
+
+		/* check if user exists */
+		$user = DBAccess::selectQuery("SELECT * FROM user WHERE `email` = :email OR `username` = :username LIMIT 1;", array(
+			':email' => $loginCredentials, 
+			':username' => $loginCredentials
+		));
+
+		if (empty($user))  {
+			return false;
+		}
+
+		$user = $user[0];
+		
+		/* check password */
+		if ($user !== false && password_verify($password, $user['password'])) {
+			self::login($user['id']);
+			$device = self::getDeviceKey();
+		} else {
+			return false;
+		}
+
+		DBAccess::insertQuery("INSERT INTO login_history (user_id, user_login_key_id, loginstamp) VALUES (:id, :uloginkey, :loginstamp)", array(
+			':id' => $user['id'],
+			':uloginkey' => 0,
+			'loginstamp' => (new DateTime())->format('Y-m-d H:i:s'),
+		));
+
+		return $device;
 	}
 
+	private static function login($userId) {
+		$_SESSION['userid'] = $userId;
+		$_SESSION['loggedIn'] = true;
+	}
+
+	/**
+	 * handles the logout process
+	 */
 	public static function handleLogout() {
-		$key = $_POST["loginkey"];
-		DBAccess::deleteQuery("DELETE FROM `user_login` WHERE `loginkey` = '$key'");
+		$key = $_POST["loginKey"];
+		//DBAccess::deleteQuery("DELETE FROM `user_login` WHERE `login_key` = :key;", array(':key' => $key));
 
 		setcookie(session_name(), '', 100);
 		session_unset();
 		session_destroy();
 		$_SESSION = array();
 	}
-	
-	public static function manageRequest() {
-		if (isset($_POST['info'])) {
-			$info = $_POST['info'];
-			
-			if ($info == 'register') {
-				self::register();
-			} else if ($info == 'Einloggen') {
-				self::login();
-			} else if ($info == 'logout') {
-				$_SESSION = array();
-				
-				/* https://stackoverflow.com/questions/3512507/proper-way-to-logout-from-a-session-in-php*/
-				if (ini_get("session.use_cookies")) {
-					$params = session_get_cookie_params();
-					setcookie(session_name(), '', time() - 42000,
-						$params["path"], $params["domain"],
-						$params["secure"], $params["httponly"]
-					);
-				}
-				session_destroy();
-			}
-		}
-	}
-	
-	private static function login() {
-		if (!isset($_POST['loginData']) || !isset($_POST['password'])) {
-			return false;
-		}
-		
-		$loginData = $_POST['loginData'];
-		$password = $_POST['password'];
 
-		$user = DBAccess::selectQuery("SELECT * FROM `members` WHERE `email` = '$loginData' OR `username` = '$loginData'");
-		if (empty($user)) return false;
-		$user = $user[0];
-		
-		/* Überprüfung des Passworts */
-		if ($user !== false && password_verify($password, $user['password'])) {
-			$_SESSION['userid'] = $user['id'];
-			if ($user['specialRole'] == 'admin') {
-				$_SESSION['admin'] = $user['id'];
-				//die('Login erfolgreich. Weiter zum <a href="https://max-website.tk/admin/">Admin-Bereich</a>');
-			} else {
-				//die('Login erfolgreich. Weiter zu <a href="geheim.php">internen Bereich</a>');
-			}
-			
-			/*if() {
-				echo "Sie müssen Ihre E-Mail Adresse noch bestätigen! Bestätigunsmail nochmal senden.";
-			}*/
-			
-			$_SESSION['loggedIn'] = true;
-			self::handleAutoLogin();
+	public static function getLoginKey($deviceId) {
+		if (!isset($_POST["setAutoLogin"]) || $_POST["setAutoLogin"] == "false") {
+			return;
+		}
+
+		/* get expiration date */
+		$dateInTwoWeeks = new DateTime();
+		$dateInTwoWeeks->modify("+2 week");
+		$dateInTwoWeeks = $dateInTwoWeeks->format("Y-m-d");
+
+		/* generate login key */
+		$loginKey = bin2hex(random_bytes(6));
+
+		/* save login key */
+		DBAccess::insertQuery("INSERT INTO user_login_key (user_id, login_key, expiration_date, user_device_id) VALUES (:id, :loginkey, :expiration, :userDeviceId)", array(
+			':id' => $_SESSION['userid'],
+			':loginkey' => $loginKey,
+			':expiration' => $dateInTwoWeeks,
+			':userDeviceId' => $deviceId
+		));
+
+		return $loginKey;
+	}
+
+	/**
+	 * simple function to generate a unique device identifier
+	 */
+	private static function getDeviceKey() {
+		$userAgent = getParameter("userAgent", "POST", "unknown");
+		if (isset($_POST["deviceKey"]) && strlen($_POST["deviceKey"]) == 32) {
+
+			return [
+				"deviceKey" => $_POST["deviceKey"],
+				"deviceId" => self::getDeviceId($_POST["deviceKey"])
+			];
+		}
+
+		$userAgentHash = self::generateDeviceKey($userAgent);
+
+		$browser = $_POST["browser"];
+		$os = $_POST["os"];
+		$isMobile = $_POST["isMobile"];
+		$isTablet = $_POST["isTablet"];
+		$deviceType = self::castDevice($isMobile, $isTablet);
+
+		$query = "SELECT * FROM user_devices WHERE browser_agent = :userAgent AND os = :os AND browser = :browser AND device_type = :deviceType AND user_id = :userId;";
+		$data = DBAccess::selectQuery($query, array(
+			':userAgent' => $userAgent,
+			':os' => $os,
+			':browser' => $browser,
+			':deviceType' => $deviceType,
+			':userId' => $_SESSION['userid']
+		));
+
+		$duplicateDevice = self::checkDuplicateDevices($data);
+		if ($duplicateDevice != false) {
+			$userAgentHash = $duplicateDevice['md_hash'];
 		} else {
-			echo "E-Mail / Benutzername oder Passwort war ungültig<br>";
+			$id = self::saveDeviceKey($userAgentHash, $userAgent, $browser, $os, $deviceType);
+		}
+
+		return [
+			"deviceKey" => $userAgentHash,
+			"deviceId" => $id
+		];
+	}
+
+	private static function generateDeviceKey($userAgent) {
+		$random_part = bin2hex(random_bytes(6));
+		$userAgentHash = md5($userAgent . $random_part);
+		return $userAgentHash;
+	}
+
+	private static function saveDeviceKey($key, $userAgent, $browser, $os, $deviceType): int {
+		$query = "INSERT INTO user_devices (md_hash, os, browser, device_type, user_id, browser_agent, ip_address) VALUES (:key, :os, :browser, :deviceType, :userId, :browserAgent, :ipAddress);";
+		$id = DBAccess::insertQuery($query, array(
+			':key' => $key,
+			':os' => $os,
+			':browser' => $browser,
+			':deviceType' => $deviceType,
+			':userId' => $_SESSION['userid'],
+			':browserAgent' => $userAgent,
+			':ipAddress' => $_SERVER['REMOTE_ADDR'],
+		));
+
+		return $id;
+	}
+
+	private static function getDeviceId($deviceKey): int {
+		$query = "SELECT id FROM user_devices WHERE md_hash = :deviceKey;";
+		$data = DBAccess::selectQuery($query, array(
+			':deviceKey' => $deviceKey
+		));
+
+		if (count($data) == 0) {
 			return false;
 		}
 
-		DBAccess::insertQuery("INSERT INTO last_login (id_member) VALUES ({$user['id']})");
-
-		return true;
+		return (int) $data[0]['id'];
 	}
 
+	private static function checkDuplicateDevices($list) {
+		if (count($list) == 0) {
+			return false;
+		}
+
+		$ip = $_SERVER['REMOTE_ADDR'];
+
+		foreach ($list as $device) {
+			if ($device['ip_address'] == $ip) {
+				return $device;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * the autologin hash is stored in the database and the cookie,
+	 * the cookie, the browser type and os are used to identify the user
+	 * the current ip adress is also stored in the database but is not crucial
+	 */
 	public static function handleAutoLogin() {
+		$userAgent = getParameter("userAgent", "POST", "unknown");
+		$browser = $_POST["browser"];
+		$os = $_POST["os"];
+		$isMobile = $_POST["isMobile"];
+		$isTablet = $_POST["isTablet"];
+		$deviceType = self::castDevice($isMobile, $isTablet);
 
-		if (isset($_POST["setAutoLogin"])) {
-			
-			$status = $_POST["setAutoLogin"];
-			// store autologin hash and set expire date, set autologin checkbox to true as default value
-			// TODO: my devices
-			
-			$jsData = $_POST["browserInfo"];
+		$deviceId = self::getDeviceId($_POST["deviceKey"]);
+		$data = DBAccess::selectQuery("SELECT browser_agent, browser, os, device_type FROM user_devices WHERE id = :id", [
+			':id' => $deviceId
+		]);
 
-			$ip = $_SERVER['REMOTE_ADDR'];
-			$browser = $_SERVER['HTTP_USER_AGENT'];
-			$dateInTwoWeeks = new DateTime();
-			$dateInTwoWeeks->modify("+2 week");
-			$dateInTwoWeeks = $dateInTwoWeeks->format("Y-m-d");
-			$user_id = $_SESSION['userid'];
-			$random_part = bin2hex(random_bytes(6));
-			$hash = md5($jsData . $random_part);
-			/* browser agent stays empty for now */
-
-			$query = "INSERT INTO user_login (`user_id`, md_hash, expiration_date, device_name, ip_adress, loginkey) VALUES ($user_id, '$hash', '$dateInTwoWeeks', '$browser', '$ip', '$random_part')";
-
-			echo json_encode([$jsData, $random_part]);
-			DBAccess::insertQuery($query);
-		}
-	}
-	
-	private static function register() {
-		if (!isset($_POST['email']) || !isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['password2'])) {
+		if ($data[0]['browser_agent'] != $userAgent || $data[0]['browser'] != $browser || $data[0]['os'] != $os || $data[0]['device_type'] != $deviceType) {
+			// device has changed
+			// expire all login keys
 			return false;
-		}
-		
-		$error = false;
-		$email = $_POST['email'];
-		$username = $_POST['username'];
-		$password = $_POST['password'];
-		$password2 = $_POST['password2'];
-		
-		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-			echo 'Bitte eine gültige E-Mail-Adresse eingeben<br>';
-			$error = true;
-		}
-		
-		if (strlen($password) == 0) {
-			echo 'Bitte ein Passwort angeben<br>';
-			$error = true;
-		}
-		
-		if ($password != $password2) {
-			echo 'Die Passwörter müssen übereinstimmen<br>';
-			$error = true;
-		}
-		
-		/* Überprüfe, dass die E-Mail-Adresse noch nicht registriert wurde */
-		if (!$error) { 
-			$user = DBAccess::selectQuery("SELECT * FROM members WHERE email = '$email'");
-			
-			if (!empty($user)) { //($user !== false) {
-				echo 'Diese E-Mail-Adresse ist bereits vergeben<br>';
-				$error = true;
-			}
-			
-			$user = DBAccess::selectQuery("SELECT * FROM members WHERE username = '$username'");
-			
-			if (!empty($user)) { //$user !== false) {
-				echo 'Dieser Benutzername ist bereits vergeben<br>';
-				$error = true;
-			}
-		}
-		
-		/* Keine Fehler, wir können den Nutzer registrieren */
-		if (!$error) {    
-			$password_hash = password_hash($password, PASSWORD_DEFAULT);
-			
-			$params = array('username' => $username, 'email' => $email, 'password' => $password_hash);
-			$insert = "INSERT INTO members (username, email, password) VALUES (:username, :email, :password)";
-			$result = DBAccess::insertQuery($insert, $params);
-			
-			if ($result) {        
-				echo 'Du wurdest erfolgreich registriert. <a href="login.php">Zum Login</a>';
+		} else {
+			$loginKey = $_POST["loginKey"];
+			$query = "SELECT * FROM user_login_key WHERE login_key = :loginKey AND user_device_id = :deviceId LIMIT 1;";
+			$data = DBAccess::selectQuery($query, array(
+				'loginKey' => $loginKey,
+				'deviceId' => $deviceId,
+			));
+
+			if (count($data) == 0) {
+				// login key is not valid
+				return false;
 			} else {
-				echo 'Beim Abspeichern ist leider ein Fehler aufgetreten<br>';
+				self::login($data[0]['user_id']);
+				return self::getLoginKey($deviceId);
 			}
-			
-			self::generateMailKey($email);
 		}
 	}
-	
-	public static function generateMailKey($email) {
-		$mailKey = md5(microtime().rand());
-		
-		while(DBAccess::selectQuery("SELECT id FROM members_validate_email WHERE mailKey = '$mailKey'") != null) {
-			$mailKey = md5(microtime().rand());
+
+	private static function castDevice($isMobile, $isTablet) {
+		if ($isMobile == "true") {
+			return "mobile";
 		}
-		
-		$userId = intval(DBAccess::selectQuery("SELECT id FROM members WHERE email = '$email'"));
-		DBAccess::insertQuery("INSERT INTO members_validate_email (memberId, email, mailKey) VALUES ($userId, '$email', '$mailKey')");
-		
-		$mailLink = REWRITE_BASE . "?mailId=" . $mailKey;
-		$mailText = '<a href="' . $mailLink . '">Hier</a> dem Link folgen!';
-		Mailer::sendMail($email, "Bestätigen Sie Ihre E-Mail Adresse", $mailText, "no-reply@max-website.tk");
-	}
-	
-	public static function registerEmail() {
-		$mailKey = $_GET['mailId'];
-		$memberId = DBAccess::selectQuery("SELECT memberId FROM members_validate_email WHERE mailKey = '$mailKey'");
-		
-		if($memberId != null) {
-			$memberId = intval($memberId[0]['memberId']);
-			DBAccess::updateQuery("UPDATE members SET isEmailValidated = 0 WHERE id = $memberId");
+		if ($isTablet == "true") {
+			return "tablet";
 		}
+		return "desktop";
 	}
 
 	public static function getUserId() {
@@ -223,8 +257,7 @@ class Login {
 		curl_setopt($ch, CURLOPT_COOKIEJAR, "cookies/cookies.txt");
 		//set the cookie the site has for certain features, this is optional
 		curl_setopt($ch, CURLOPT_COOKIE, "cookiename=0");
-		curl_setopt($ch, CURLOPT_USERAGENT,
-			"Mozilla/5.0 (Windows; U; Windows NT 5.0; en-US; rv:1.7.12) Gecko/20050915 Firefox/1.0.7");
+		curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.0; en-US; rv:1.7.12) Gecko/20050915 Firefox/1.0.7");
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_REFERER, $_SERVER['REQUEST_URI']);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -245,5 +278,3 @@ class Login {
 	}
 
 }
-
-?>

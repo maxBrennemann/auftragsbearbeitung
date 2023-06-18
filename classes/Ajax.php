@@ -107,6 +107,19 @@ class Ajax {
 
 				echo "success";
 			break;
+			case "addCustomer":
+				$data = $_POST['data'];
+				$data = json_decode($data, true);
+				require_once('classes/project/Kunde.php');
+				$customerId = Kunde::addCustomer($data);
+				$link = Link::getPageLink("kunde");
+				$link .= "?id=" . $customerId;
+
+				echo json_encode([
+					"status" => "success",
+					"link" => $link,
+				]);
+			break;
 			case "notification":
 				require_once('classes/project/NotificationManager.php');
 				echo NotificationManager::htmlNotification();
@@ -285,13 +298,6 @@ class Ajax {
 
 				$assignedTo = strval($_POST['assignedTo']);
 				if (strcmp($assignedTo, "none") != 0) {
-					$query = "SELECT id_member FrOM members_mitarbeiter WHERE id_mitarbeiter = $assignedTo";
-					$data = DBAccess::selectQuery($query);
-					if ($data == null)
-						return;
-					else 
-						$assignedTo = $data[0]["id_member"];
-
 					require_once("classes/project/NotificationManager.php");
 					NotificationManager::addNotification($userId = $assignedTo, $type = 1, $content = $_POST['bez'], $specificId = $postenNummer);
 				}
@@ -499,17 +505,51 @@ class Ajax {
 				AttributeGroup::getAttributes($attGroupId);
 			break;
 			case "setNotes":
-				$kdnr = $_POST['kdnr'];
+				$kdnr = (int) $_POST['kdnr'];
 				$note = $_POST['notes'];
-				DBAccess::updateQuery("UPDATE kunde_extended SET notizen = '$note' WHERE kundennummer = $kdnr");
+				DBAccess::updateQuery("UPDATE kunde_extended SET notizen = :notes WHERE kundennummer = :customerId", [
+					"notes" => $note,
+					"customerId" => $kdnr,
+				]);
+				
 				echo "ok";
 			break;
 			case "addLeistung":
-				$bezeichung = $_POST['bezeichung'];
+				$bezeichnung = $_POST['bezeichnung'];
 				$description = $_POST['description'];
 				$source = $_POST['source'];
 				$aufschlag = $_POST['aufschlag'];
-				DBAccess::insertQuery("INSERT INTO leistung (Bezeichnung, Beschreibung, Quelle, Aufschlag) VALUES ('$bezeichung', '$description', '$source', $aufschlag)");
+
+				$newInserted = DBAccess::insertQuery("INSERT INTO leistung (Bezeichnung, Beschreibung, Quelle, Aufschlag) VALUES (:bez, :desc, :source, :aufschlag);", [
+					"bez" => $bezeichnung,
+					"desc" => $description,
+					"source" => $source,
+					"aufschlag" => $aufschlag,
+				]);
+
+				echo json_encode([
+					"status" => "success",
+					"leistungsId" => $newInserted,
+				]);
+			break;
+			case "editLeistung":
+				$id = (int) $_POST["id"];
+				$bezeichnung = $_POST['bezeichnung'];
+				$description = $_POST['description'];
+				$source = $_POST['source'];
+				$aufschlag = $_POST['aufschlag'];
+
+				DBAccess::updateQuery("UPDATE leistung SET Bezeichnung = :bez, Beschreibung = :desc, Quelle = :source, Aufschlag = :aufschlag WHERE Nummer = :id;", [
+					"bez" => $bezeichnung,
+					"desc" => $description,
+					"source" => $source,
+					"aufschlag" => $aufschlag,
+					"id" => $id,
+				]);
+
+				echo json_encode([
+					"status" => "success",
+				]);
 			break;
 			case "addTimeOffer":
 				$customerId = $_POST['customerId'];
@@ -781,7 +821,16 @@ class Ajax {
 					3 => "Fertigstellung"
 				][$type];
 
-				DBAccess::updateQuery("UPDATE auftrag SET $type = '$date' WHERE Auftragsnummer = $order");
+				if ($date == "unset") {
+					DBAccess::updateQuery("UPDATE auftrag SET $type = NULL WHERE Auftragsnummer = :order;", [
+						"order" => $order,
+					]);
+				} else {
+					DBAccess::updateQuery("UPDATE auftrag SET $type = :setDate WHERE Auftragsnummer = :order;", [
+						"setDate" => $date,
+						"order" => $order,
+					]);
+				}
 				echo "success";
 			break;
 			case "overwritePosten":
@@ -836,6 +885,11 @@ class Ajax {
 				$title = $_POST['title'];
 				$content = $_POST['content'];
 				DBAccess::insertQuery("INSERT INTO wiki_articles (title, content) VALUES ('$title', '$content')");
+			break;
+			case "updateDefaultWage":
+				$defaultWage = $_POST["defaultWage"];
+				Envs::set("defaultWage", $defaultWage);
+				echo json_encode([]);
 			break;
 			case "getManual":
 				$pageName = $_POST['pageName'];
@@ -967,25 +1021,27 @@ class Ajax {
 				Produkt::addAttributeVariations($productId, $data);
 				echo "ok";
 			break;
-			case "checkAutoLogin":
-				$userAgent = $_POST["userAgent"];
-				$loginKey = $_POST["loginkey"];
-
-				$hash = md5($userAgent . $loginKey);
-				$query = "SELECT * FROM user_login WHERE md_hash = '$hash' AND expiration_date > CURDATE() LIMIT 1";
-				$data = DBAccess::selectQuery($query);
-
-				if ($data != null) {
-					$user = $data[0]["user_id"];
-					$_SESSION['userid'] = $user;
-			
-					/* special role check must be added later for autologin */
-					$_SESSION['loggedIn'] = true;
-					Login::handleAutoLogin();
-					echo "success";
+			case "login":
+				$login = Login::handleLogin();
+				if ($login == false) {
+					echo json_encode(["status" => "error"]);
 				} else {
-					echo "failed";
+					echo json_encode([
+						"status" => "success",
+						"deviceKey" => $login["deviceKey"],
+						"loginKey" => Login::getLoginKey($login["deviceId"]),
+					]);
 				}
+			break;
+			case "logout":
+				Login::handleLogout();
+			break;
+			case "checkAutoLogin":
+				$loginKey = Login::handleAutoLogin();
+				echo json_encode([
+					"status" => "success",
+					"loginKey" => $loginKey,
+				]);
 			break;
 			case "minifyFiles":
 				require_once("classes/MinifyFiles.php");
@@ -1040,6 +1096,7 @@ class Ajax {
 			case "writeSpeicherort":
 				$id = (int) $_POST["id"];
 				$content = (String) $_POST["content"];
+				$content = urldecode($content);
 
 				$query = "UPDATE module_sticker_sticker_data SET directory_name = :content WHERE id = :id;";
 				DBAccess::updateQuery($query, ["id" => $id, "content" => $content]);
@@ -1174,6 +1231,20 @@ class Ajax {
 				
 				echo json_encode(["url" => $url]);
 			break;
+			case "makeCustomizable":
+				$id = (int) $_POST["id"];
+
+				require_once('classes/project/modules/sticker/Textil.php');
+				$textil = new Textil($id);
+				$textil->toggleCustomizable();
+			break;
+			case "makeForConfig":
+				$id = (int) $_POST["id"];
+
+				require_once('classes/project/modules/sticker/Textil.php');
+				$textil = new Textil($id);
+				$textil->toggleConfig();
+			break;
 			case "createNewSticker":
 				require_once('classes/project/modules/sticker/Sticker.php');
 				$title = (String) $_POST["newTitle"];
@@ -1201,7 +1272,7 @@ class Ajax {
 				$difficulty = $aufkleberWandtatto->getDifficulty();
 				$price = $aufkleberWandtatto->getPrice($width, $height, $difficulty);
 
-				DBAccess::updateQuery("UPDATE module_sticker_sizes SET price = '$price' WHERE id = $postenNummer");
+				DBAccess::updateQuery("UPDATE module_sticker_sizes SET price = '$price', price_default = 1 WHERE id = $postenNummer");
 				echo $price;
 			break;
 			case "setAufkleberParameter":
@@ -1231,19 +1302,57 @@ class Ajax {
 				foreach ($sizes["sizes"] as $size) {
 					$aufkleberWandtatto->updateSizeTable($size);
 				}
-				$text = $_POST["text"];
-				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET size_summary = '$text' WHERE id = $id");
 			break;
-			case "updateSpecificPrice":
-				$id = (int) $_POST["id"];
+			case "addSize":
 				$width = (int) $_POST["width"];
 				$height = (int) $_POST["height"];
 				$price = (int) $_POST["price"];
+				$id = (int) $_POST["id"];
+				$isDefault = (int) $_POST["isDefaultPrice"];
+
+				$query = "INSERT INTO module_sticker_sizes (width, height, price, id_sticker, price_default) VALUES (:width, :height, :price, :id, :default)";
+				$id = DBAccess::insertQuery($query, [
+					"width" => $width,
+					"height" => $width,
+					"price" => $price,
+					"id" => $id,
+					"default" => $isDefault,
+				]);
+
+				echo json_encode([
+					"status" => "success",
+					"id" => $id,
+				]);
+			break;
+			case "deleteSizeRow":
+				$id = (int) $_POST["id"];
+				$query = "DELETE FROM module_sticker_sizes WHERE id = :id;";
+				DBAccess::deleteQuery($query, ["id" => $id]);
+				echo "success";
+			break;
+			case "resetSizeRow":
+				$id = (int) $_POST["id"];
+				$size = DBAccess::selectQuery("SELECT width, height FROM module_sticker_sizes WHERE id = :id LIMIT 1", ["id" => $id]);
+				$width = $size[0]["width"];
+				$height = $size[0]["height"];
 
 				require_once('classes/project/modules/sticker/AufkleberWandtattoo.php');
 				$aufkleberWandtatto = new AufkleberWandtattoo($id);
-				$aufkleberWandtatto->updatePrice($width, $height, $price);
-				echo "success";
+				$difficulty = $aufkleberWandtatto->getDifficulty();
+				$price = $aufkleberWandtatto->getPrice($width, $height, $difficulty);
+
+				DBAccess::updateQuery("UPDATE module_sticker_sizes SET price = '$price', price_default = 1 WHERE id = $postenNummer");
+				echo $price;
+			break;
+			case "setSizePrice":
+				$idWidth = (int) $_POST["id"];
+				$price = (int) $_POST["price"];
+				
+				$query = "UPDATE module_sticker_sizes SET price = :price, price_default = 0 WHERE id = :id;";
+				DBAccess::insertQuery($query, [
+					"price" => $price,
+					"id" => $idWidth
+				]);
 			break;
 			case "productVisibility":
 				require_once('classes/project/modules/sticker/StickerCollection.php');
@@ -1281,6 +1390,20 @@ class Ajax {
 					"idTagGroup" => $idTagGroup,
 				]);
 			break;
+			case "addNewUser":
+				$username = (String) $_POST["username"];
+				$password = (String) $_POST["password"];
+				$email = (String) $_POST["email"];
+				$prename = (String) $_POST["prename"];
+				$lastname = (String) $_POST["lastname"];
+
+				require_once('classes/project/User.php');
+				User::add($username, $email, $prename, $lastname, $password);
+
+				echo json_encode([
+					"status" => "success",
+				]);
+			break;
 			case "crawlAll":
 				require_once('classes/project/modules/sticker/ProductCrawler.php');
 				$pc = new ProductCrawler();
@@ -1313,6 +1436,10 @@ class Ajax {
 				require_once('classes/Upload.php');
 				Upload::deleteUnusedFiles();
 			break;
+			case "adjustFiles":
+				require_once('classes/Upload.php');
+				Upload::adjustFileNames();
+			break;
 			case "createFbExport":
 				require_once('classes/project/modules/sticker/exports/ExportFacebook.php');
 
@@ -1326,12 +1453,6 @@ class Ajax {
 					"file" => $fileLink,
 					"errorList" => $errorList,
 				]);
-			break;
-			case "exportFacebook":
-				require_once('classes/project/modules/sticker/exports/ExportFacebook.php');
-
-				$id = (int) $_POST["id"];
-				ExportFacebook::addProduct($id);
 			break;
 			case "showSearch":
 				$id = (int) $_POST["id"];
@@ -1440,10 +1561,70 @@ class Ajax {
 				$title = $_POST["title"];
 				$text = $_POST["text"];
 				$type = $_POST["type"];
+
+				$additionalText = $_POST["additionalText"];
+				$additionalStyle = $_POST["additionalStyle"];
+
 				$id = (int) $_POST["id"];
+
 				require_once('classes/project/modules/sticker/ChatGPTConnection.php');
 				$connector = new ChatGPTConnection($id);
-				$connector->getTextSuggestion($title, $type, $text, "", "lustig");
+				$connector->getTextSuggestion($title, $type, $text, $additionalText, $additionalStyle);
+			break;
+			case "showGTPOptions":
+				$stickerId = $_POST["id"];
+				$stickerType = $_POST["type"];
+				$text = $_POST["text"];
+
+				$query = "SELECT id, chatgptResponse, DATE_FORMAT(creationDate, '%d. %M %Y') as creationDate, textType, additionalQuery, textStyle FROM module_sticker_chatgpt WHERE idSticker = :stickerId AND stickerType = :stickerType;";
+				$result = DBAccess::selectQuery($query, [
+					"stickerId" => $stickerId,
+					"stickerType" => $stickerType
+				]);
+
+				ob_start();
+				insertTemplate('classes/project/modules/sticker/views/chatGPTOptionsView.php', [
+					"texts" => $result,
+				]);
+				$content = ob_get_clean();
+				echo json_encode([
+					"template" => $content,
+				]);
+			break;
+			case "iterateText":
+				$id = (int) $_POST["id"];
+				$direction = $_POST["direction"];
+				$current = (int) $_POST["current"];
+				/* adapting to array index */
+				$current--;
+
+				$type = $_POST["type"];
+				$text = $_POST["text"];
+
+				if ($direction == "next") {
+					$current++;
+				} else if ($direction == "back") {
+					$current--;
+				}
+
+				if ($current < 0) {
+					$current = 0;
+				}
+
+				require_once('classes/project/modules/sticker/ChatGPTConnection.php');
+				$chatGPTConnection = new ChatGPTConnection($id);
+				$text = $chatGPTConnection->getText($type, $text, $current);
+
+				$status = "success";
+				if ($text == false) {
+					$status = "error";
+				}
+
+				echo json_encode([
+					"status" => $status,
+					"text" => $text,
+					"current" => $current,
+				]);
 			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";

@@ -165,10 +165,6 @@ aside {
     margin: 7px;
 }
 
-.colorInput {
-    float: right;
-}
-
 #farbe span {
     display: block;
     margin-top: 7px;
@@ -370,10 +366,6 @@ aside {
     }
 }
 
-form[name="showSteps"] {
-    padding-bottom: 10px;
-}
-
 .descriptionEditable {
     background: white;
     padding: 10px;
@@ -426,16 +418,6 @@ form[name="showSteps"] {
     border-radius: 0 0 0 0;
 }
 
-/* css for color input */
-#hexinputspan {
-    position: relative;
-}
-
-#hexinputspan input {
-    position: absolute;
-    right: 0;
-}
-
 #cpContainer {
     font-family: 'Courier New', Courier, monospace;
 }
@@ -473,7 +455,6 @@ form[name="showSteps"] {
     -webkit-box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
     border-radius: 4px;
-    height: 30px;
     background: #fff;
     display: block;
     width: 100%;
