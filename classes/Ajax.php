@@ -1022,14 +1022,14 @@ class Ajax {
 				echo "ok";
 			break;
 			case "login":
-				$status = Login::handleLogin();
-				if ($status == false) {
+				$login = Login::handleLogin();
+				if ($login == false) {
 					echo json_encode(["status" => "error"]);
 				} else {
 					echo json_encode([
 						"status" => "success",
-						"deviceKey" => $status,
-						"loginKey" => Login::getLoginKey($status),
+						"deviceKey" => $login["deviceKey"],
+						"loginKey" => Login::getLoginKey($login["deviceId"]),
 					]);
 				}
 			break;
@@ -1037,7 +1037,11 @@ class Ajax {
 				Login::handleLogout();
 			break;
 			case "checkAutoLogin":
-				Login::handleAutoLogin();
+				$loginKey = Login::handleAutoLogin();
+				echo json_encode([
+					"status" => "success",
+					"loginKey" => $loginKey,
+				]);
 			break;
 			case "minifyFiles":
 				require_once("classes/MinifyFiles.php");

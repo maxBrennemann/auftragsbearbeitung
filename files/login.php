@@ -16,6 +16,6 @@
     </div>
     <div class="innerDefCont" id="autoLogin">
         <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-        <p>Prüfe automatischen Login</p>
+        <p id="autologinStatus">Prüfe automatischen Login</p>
     </div>
 </div>

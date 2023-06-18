@@ -29,29 +29,32 @@ class Login {
 		
 		/* check password */
 		if ($user !== false && password_verify($password, $user['password'])) {
-			$_SESSION['userid'] = $user['id'];
-			$_SESSION['loggedIn'] = true;
-
-			$deviceId = self::generateDeviceKey(getParameter("userAgent", "unknown"));
+			self::login($user['id']);
+			$device = self::getDeviceKey();
 		} else {
 			return false;
 		}
 
-		DBAccess::insertQuery("INSERT INTO login_history (user_id, user_login_key_id) VALUES (:id, :uloginkey)",
-			array(
-				':id' => $user['id'],
-				':uloginkey' => 0,
-			));
+		DBAccess::insertQuery("INSERT INTO login_history (user_id, user_login_key_id, loginstamp) VALUES (:id, :uloginkey, :loginstamp)", array(
+			':id' => $user['id'],
+			':uloginkey' => 0,
+			'loginstamp' => (new DateTime())->format('Y-m-d H:i:s'),
+		));
 
-		return $deviceId;
+		return $device;
+	}
+
+	private static function login($userId) {
+		$_SESSION['userid'] = $userId;
+		$_SESSION['loggedIn'] = true;
 	}
 
 	/**
 	 * handles the logout process
 	 */
 	public static function handleLogout() {
-		$key = $_POST["loginkey"];
-		//DBAccess::deleteQuery("DELETE FROM `user_login` WHERE `loginkey` = :key;", array(':key' => $key));
+		$key = $_POST["loginKey"];
+		//DBAccess::deleteQuery("DELETE FROM `user_login` WHERE `login_key` = :key;", array(':key' => $key));
 
 		setcookie(session_name(), '', 100);
 		session_unset();
@@ -59,8 +62,8 @@ class Login {
 		$_SESSION = array();
 	}
 
-	public static function getLoginKey($deviceKey) {
-		if (!isset($_POST["setAutoLogin"]) || $_POST["setAutoLogin"] == false) {
+	public static function getLoginKey($deviceId) {
+		if (!isset($_POST["setAutoLogin"]) || $_POST["setAutoLogin"] == "false") {
 			return;
 		}
 
@@ -68,30 +71,48 @@ class Login {
 		$dateInTwoWeeks = new DateTime();
 		$dateInTwoWeeks->modify("+2 week");
 		$dateInTwoWeeks = $dateInTwoWeeks->format("Y-m-d");
+
+		/* generate login key */
+		$loginKey = bin2hex(random_bytes(6));
+
+		/* save login key */
+		DBAccess::insertQuery("INSERT INTO user_login_key (user_id, login_key, expiration_date, user_device_id) VALUES (:id, :loginkey, :expiration, :userDeviceId)", array(
+			':id' => $_SESSION['userid'],
+			':loginkey' => $loginKey,
+			':expiration' => $dateInTwoWeeks,
+			':userDeviceId' => $deviceId
+		));
+
+		return $loginKey;
 	}
 
 	/**
 	 * simple function to generate a unique device identifier
 	 */
-	private static function generateDeviceKey($userAgent) {
-		if (isset($_POST["deviceKey"])) {
-			return $_POST["deviceKey"];
+	private static function getDeviceKey() {
+		$userAgent = getParameter("userAgent", "POST", "unknown");
+		if (isset($_POST["deviceKey"]) && strlen($_POST["deviceKey"]) == 32) {
+
+			return [
+				"deviceKey" => $_POST["deviceKey"],
+				"deviceId" => self::getDeviceId($_POST["deviceKey"])
+			];
 		}
 
-		$random_part = bin2hex(random_bytes(6));
-		$userAgentHash = md5($userAgent . $random_part);
+		$userAgentHash = self::generateDeviceKey($userAgent);
 
 		$browser = $_POST["browser"];
 		$os = $_POST["os"];
 		$isMobile = $_POST["isMobile"];
 		$isTablet = $_POST["isTablet"];
+		$deviceType = self::castDevice($isMobile, $isTablet);
 
-		$query = "SELECT * FROM user_devices WHERE md_hash = :userAgentHash AND os = :os AND browser = :browser AND device_type = :deviceType AND user_id = :userId;";
+		$query = "SELECT * FROM user_devices WHERE browser_agent = :userAgent AND os = :os AND browser = :browser AND device_type = :deviceType AND user_id = :userId;";
 		$data = DBAccess::selectQuery($query, array(
-			':userAgentHash' => $userAgentHash,
+			':userAgent' => $userAgent,
 			':os' => $os,
 			':browser' => $browser,
-			':deviceType' => $isMobile ? "mobile" : ($isTablet ? "tablet" : "desktop"),
+			':deviceType' => $deviceType,
 			':userId' => $_SESSION['userid']
 		));
 
@@ -99,26 +120,50 @@ class Login {
 		if ($duplicateDevice != false) {
 			$userAgentHash = $duplicateDevice['md_hash'];
 		} else {
-			$id = self::saveDeviceKey($userAgentHash, $userAgent, $browser, $os, $isMobile, $isTablet);
+			$id = self::saveDeviceKey($userAgentHash, $userAgent, $browser, $os, $deviceType);
 		}
 
+		return [
+			"deviceKey" => $userAgentHash,
+			"deviceId" => $id
+		];
+	}
+
+	private static function generateDeviceKey($userAgent) {
+		$random_part = bin2hex(random_bytes(6));
+		$userAgentHash = md5($userAgent . $random_part);
 		return $userAgentHash;
 	}
 
-	private function saveDeviceKey($key, $userAgent, $browser, $os, $isMobile, $isTablet) {
-		$query = "INSERT INTO user_devices (md_hash, os, browser, device_type, user_id) VALUES (:key, :os, :browser, :deviceType, :userId);";
+	private static function saveDeviceKey($key, $userAgent, $browser, $os, $deviceType): int {
+		$query = "INSERT INTO user_devices (md_hash, os, browser, device_type, user_id, browser_agent, ip_address) VALUES (:key, :os, :browser, :deviceType, :userId, :browserAgent, :ipAddress);";
 		$id = DBAccess::insertQuery($query, array(
 			':key' => $key,
 			':os' => $os,
 			':browser' => $browser,
-			':deviceType' => $isMobile ? "mobile" : ($isTablet ? "tablet" : "desktop"),
-			':userId' => $_SESSION['userid']
+			':deviceType' => $deviceType,
+			':userId' => $_SESSION['userid'],
+			':browserAgent' => $userAgent,
+			':ipAddress' => $_SERVER['REMOTE_ADDR'],
 		));
 
 		return $id;
 	}
 
-	private function checkDuplicateDevices($list) {
+	private static function getDeviceId($deviceKey): int {
+		$query = "SELECT id FROM user_devices WHERE md_hash = :deviceKey;";
+		$data = DBAccess::selectQuery($query, array(
+			':deviceKey' => $deviceKey
+		));
+
+		if (count($data) == 0) {
+			return false;
+		}
+
+		return (int) $data[0]['id'];
+	}
+
+	private static function checkDuplicateDevices($list) {
 		if (count($list) == 0) {
 			return false;
 		}
@@ -126,33 +171,12 @@ class Login {
 		$ip = $_SERVER['REMOTE_ADDR'];
 
 		foreach ($list as $device) {
-			if ($device['ip_adress'] == $ip) {
+			if ($device['ip_address'] == $ip) {
 				return $device;
 			}
 		}
 
 		return false;
-	}
-
-	public function test() {
-		$userAgent = $_POST["userAgent"];
-		$loginKey = $_POST["loginkey"];
-
-		$hash = md5($userAgent . $loginKey);
-		$query = "SELECT * FROM user_devices ud LEFT JOIN user_login_key ul ON ud.id = ul.user_device_id WHERE md_hash = '$hash' AND expiration_date > CURDATE() LIMIT 1";
-		$data = DBAccess::selectQuery($query);
-
-		if ($data != null) {
-			$user = $data[0]["user_id"];
-			$_SESSION['userid'] = $user;
-	
-			/* special role check must be added later for autologin */
-			$_SESSION['loggedIn'] = true;
-			Login::handleAutoLogin();
-			echo "success";
-		} else {
-			echo "failed";
-		}
 	}
 
 	/**
@@ -161,49 +185,48 @@ class Login {
 	 * the current ip adress is also stored in the database but is not crucial
 	 */
 	public static function handleAutoLogin() {
-		if (isset($_POST["setAutoLogin"])) {
-			
-			$status = $_POST["setAutoLogin"];
-			// store autologin hash and set expire date, set autologin checkbox to true as default value
-			// TODO: my devices
-			
-			$jsData = $_POST["browserInfo"];
+		$userAgent = getParameter("userAgent", "POST", "unknown");
+		$browser = $_POST["browser"];
+		$os = $_POST["os"];
+		$isMobile = $_POST["isMobile"];
+		$isTablet = $_POST["isTablet"];
+		$deviceType = self::castDevice($isMobile, $isTablet);
 
-			$ip = $_SERVER['REMOTE_ADDR'];
-			$browser = $_SERVER['HTTP_USER_AGENT'];
-			$dateInTwoWeeks = new DateTime();
-			$dateInTwoWeeks->modify("+2 week");
-			$dateInTwoWeeks = $dateInTwoWeeks->format("Y-m-d");
-			$user_id = $_SESSION['userid'];
-			$random_part = bin2hex(random_bytes(6));
-			$hash = md5($jsData . $random_part);
-			/* browser agent stays empty for now */
+		$deviceId = self::getDeviceId($_POST["deviceKey"]);
+		$data = DBAccess::selectQuery("SELECT browser_agent, browser, os, device_type FROM user_devices WHERE id = :id", [
+			':id' => $deviceId
+		]);
 
-			$query = "INSERT INTO user_login (`user_id`, md_hash, expiration_date, device_name, ip_adress, loginkey) VALUES (:user_id, :hash, :date, :device_name, :ip_adress, :loginkey)";
+		if ($data[0]['browser_agent'] != $userAgent || $data[0]['browser'] != $browser || $data[0]['os'] != $os || $data[0]['device_type'] != $deviceType) {
+			// device has changed
+			// expire all login keys
+			return false;
+		} else {
+			$loginKey = $_POST["loginKey"];
+			$query = "SELECT * FROM user_login_key WHERE login_key = :loginKey AND user_device_id = :deviceId LIMIT 1;";
+			$data = DBAccess::selectQuery($query, array(
+				'loginKey' => $loginKey,
+				'deviceId' => $deviceId,
+			));
 
-			echo json_encode([$jsData, $random_part]);
-			DBAccess::insertQuery($query, [
-				':user_id' => $user_id,
-				':hash' => $hash,
-				':date' => $dateInTwoWeeks,
-				':device_name' => $browser,
-				':ip_adress' => $ip,
-				':loginkey' => $random_part
-			]);
+			if (count($data) == 0) {
+				// login key is not valid
+				return false;
+			} else {
+				self::login($data[0]['user_id']);
+				return self::getLoginKey($deviceId);
+			}
 		}
 	}
-	
-	/**
-	 * members_validate_email doesn't exist
-	 */
-	public static function registerEmail() {
-		$mailKey = $_GET['mailId'];
-		$memberId = DBAccess::selectQuery("SELECT memberId FROM members_validate_email WHERE mailKey = '$mailKey'");
-		
-		if($memberId != null) {
-			$memberId = intval($memberId[0]['memberId']);
-			DBAccess::updateQuery("UPDATE members SET isEmailValidated = 0 WHERE id = $memberId");
+
+	private static function castDevice($isMobile, $isTablet) {
+		if ($isMobile == "true") {
+			return "mobile";
 		}
+		if ($isTablet == "true") {
+			return "tablet";
+		}
+		return "desktop";
 	}
 
 	public static function getUserId() {

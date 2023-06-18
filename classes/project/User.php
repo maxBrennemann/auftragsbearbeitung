@@ -97,12 +97,53 @@ class User {
      * returns a list of devices the user has logged in with
      */
     public function getUserDeviceList() {
-        $query = "SELECT device_name, user_device_name, last_usage, ip_address FROM user_devices WHERE user_id = :userId";
+        $query = "SELECT device_type, user_device_name, last_usage, ip_address, browser, os FROM user_devices WHERE user_id = :userId";
         $data = DBAccess::selectQuery($query, [
             "userId" => $this->id,
         ]);
 
         return $data;
+    }
+
+    public function getDeviceIcon($type, $os) {
+        $icon = "";
+        switch ($type) {
+            case "mobile":
+                switch ($os) {
+                    case "Android":
+                        $icon = Icon::$iconAndroid;
+                        break;
+                    case "iOS":
+                        $icon = Icon::$iconApplePhone;
+                        break;
+                    default:
+                        $icon = Icon::$iconPhone;
+                        break;
+                }
+                break;
+            case "tablet":
+                $icon = Icon::$iconTablet;
+                break;
+            case "desktop":
+                switch ($os) {
+                    case "Mac OS":
+                        $icon = Icon::$iconMac;
+                        break;
+                    case "Linux":
+                        $icon = Icon::$iconLinux;
+                        break;
+                    case "Windows":
+                    default:
+                        $icon = Icon::$iconWindows;
+                        break;
+                }
+                break;
+            default:
+                $icon = Icon::$iconUnrecognized;
+                break;
+        }
+
+        return $icon;
     }
 
     public function getHistory() {

@@ -82,7 +82,18 @@ if ($showUserList) : ?>
     <div class="defCont">
         <p class="font-bold">Deine Geräte</p>
         <div>
-            <?php foreach ($user->getUserDeviceList() as $devices): ?>
+            <?php foreach ($user->getUserDeviceList() as $device): ?>
+                <div class="bg-white rounded-lg p-4 mt-2 grid grid-cols-3">
+                    <div>
+                        <?=$user->getDeviceIcon($device["device_type"], $device["os"])?>
+                    </div>
+                    <div class="col-span-2">
+                        <p><?=$device["user_device_name"]?></p>
+                        <p><?=$device["browser"]?> auf <?=$device["os"]?></p>
+                        <p>IP-Adresse: <?=$device["ip_address"]?>, letze Verwendung: <?=$device["last_usage"]?></p>
+                        <button class="btn-primary" disabled>Entfernen</button>
+                    </div>
+                </div>
             <?php endforeach; ?>
         </div>
     </div>

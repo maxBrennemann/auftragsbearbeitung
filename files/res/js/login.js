@@ -1,4 +1,8 @@
 function login() {
+    if (document.getElementById("autologin").checked) {
+        setCookie("autologin", "on", 356);
+    }
+
     ajax.post({
         r: "login",
         name: document.getElementById("name").value,
@@ -12,10 +16,13 @@ function login() {
         isMobile: DeviceDetector.isMobile(),
         isTablet: DeviceDetector.isMobileTablet(),
     }).then(r => {
-        if (r.length == 2) {
-            setCookie("loginkey", r[1], 14);
+        if (r.status == "success") {
+            const deviceKey = r.deviceKey;
+            const loginKey = r.loginKey;
+            setCookie("deviceKey", deviceKey, 356);
+            setCookie("loginKey", loginKey, 14);
+            location.reload();
         }
-        //location.reload();
     });
 }
 
@@ -24,9 +31,13 @@ function autoLogin() {
         return;
     }
 
+    document.getElementById("autologin").checked = true;
+
     ajax.post({
         r: "checkAutoLogin",
-        loginkey: getCookie("loginkey"),
+        loginKey: getCookie("loginKey"),
+        deviceKey: getCookie("deviceKey"),
+        setAutoLogin: document.getElementById("autologin").checked,
         /* data for device detection */
         userAgent: window.navigator.userAgent,
         browser: DeviceDetector.getBrowser(),
@@ -35,13 +46,17 @@ function autoLogin() {
         isTablet: DeviceDetector.isMobileTablet(),
     }).then(r => {
         if (r.status == "success") {
-            setTimeout(function(){
-                //location.reload();
+            setTimeout(function() {
+                document.getElementById("autologinStatus").innerHTML = "Sie werden eingeloggt...";
+                document.getElementById("autologin").checked = true;
+                setCookie("loginKey", r.loginKey, 14);
+                setCookie("autologin", "on", 356);
+                location.reload();
             }, 1000);
         } else if (r.status == "failed") {
             console.log("auto login failed");
             setTimeout(function(){
-                document.getElementById("autoLogin").innerHTML = "Bitte geben Sie Ihre Zugangsdaten ein.";
+                document.getElementById("autologinStatus").innerHTML = "Bitte geben Sie Ihre Zugangsdaten ein.";
             }, 1000);
         }
     });
