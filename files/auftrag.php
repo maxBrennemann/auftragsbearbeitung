@@ -92,10 +92,7 @@ if ($auftragsId == -1): ?>
 			$invoiceLink = Link::getResourcesShortLink($invoiceLink, "pdf");
 		?>
 		<a href="<?=$invoiceLink?>">Zur Rechnung</a>
-		<embed type="application/pdf"
-		src="<?=$invoiceLink?>"
-		width="100%"
-		height="400">
+		<embed type="application/pdf" src="<?=$invoiceLink?>" width="100%" height="400">
 	</div>
 	<style>
 		main {

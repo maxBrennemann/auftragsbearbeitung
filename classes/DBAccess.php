@@ -45,6 +45,9 @@ class DBAccess {
 					case "string":
 						self::$statement->bindParam($key, $val, PDO::PARAM_STR);
 						break;
+					case "NULL":
+						self::$statement->bindParam($key, $val, PDO::PARAM_NULL);
+						break;
 				}
 			}
 		}
@@ -84,6 +87,9 @@ class DBAccess {
 						break;
 					case "string":
 						self::$statement->bindParam($key, $val, PDO::PARAM_STR);
+						break;
+					case "NULL":
+						self::$statement->bindParam($key, $val, PDO::PARAM_NULL);
 						break;
 				}
 			}
@@ -135,6 +141,9 @@ class DBAccess {
 						break;
 					case "string":
 						self::$statement->bindParam($key, $val, PDO::PARAM_STR);
+						break;
+					case "NULL":
+						self::$statement->bindParam($key, $val, PDO::PARAM_NULL);
 						break;
 				}
 			}

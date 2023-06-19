@@ -1,6 +1,7 @@
 <?php
 
 require_once("classes/project/Produkt.php");
+require_once("classes/project/Auftrag.php");
 
 class Ajax {
 	
@@ -27,9 +28,14 @@ class Ajax {
 			
 				if (strcmp($type, "custom") == 0) {
 					$data = DBAccess::selectQuery(self::$sqlStatements);
-					$column_names = array(0 => array("COLUMN_NAME" => "Postennummer"), 1 => array("COLUMN_NAME" => "Bezeichnung"), 
-							2 => array("COLUMN_NAME" => "Beschreibung"), 3 => array("COLUMN_NAME" => "Preis"), 
-							4 => array("COLUMN_NAME" => "ZeitInMinuten"), 5 => array("COLUMN_NAME" => "Stundenlohn"));
+					$column_names = array(
+						0 => array("COLUMN_NAME" => "Postennummer"),
+						1 => array("COLUMN_NAME" => "Bezeichnung"), 
+						2 => array("COLUMN_NAME" => "Beschreibung"),
+						3 => array("COLUMN_NAME" => "Preis"), 
+						4 => array("COLUMN_NAME" => "ZeitInMinuten"),
+						5 => array("COLUMN_NAME" => "Stundenlohn")
+					);
 					$table = new FormGenerator($type, "", "");
 					echo $table->createTableByData($data, $column_names);
 				} else {
@@ -131,35 +137,6 @@ class Ajax {
 			break;
 			case "createAuftrag":
 				Auftrag::add();
-
-				$bez = $_POST['bez'];
-				$bes = $_POST['bes'];
-				$typ = $_POST['typ'];
-				$ter = $_POST['ter'];
-				$ang = $_POST['ang'];
-				$kdn = $_POST['kdn'];
-				$per = $_POST['per'];
-				$ans = $_POST['ans'];
-				$dat = date("Y-m-d");
-
-				$insertQuery = "INSERT INTO auftrag (Kundennummer, Auftragsbezeichnung, Auftragsbeschreibung, Auftragstyp, Datum, Termin, AngenommenDurch, AngenommenPer, Ansprechpartner)";
-				$insertQuery .= "VALUES ($kdn, '$bez', '$bes', '$typ', '$dat', '$ter', $ang, $per, $ans)";
-
-				$orderId = DBAccess::insertQuery($insertQuery);
-
-				if (isset($_SESSION['offer_is_order']) && $_SESSION['offer_is_order'] == true) {
-					$isLoadPosten = true;
-				} else {
-					$isLoadPosten = false;
-				}
-
-				$data = array("responseLink" => Link::getPageLink("auftrag") . "?id=$orderId", "loadFromOffer" => $isLoadPosten, "orderId" => $orderId);
-				echo json_encode($data, JSON_FORCE_OBJECT);
-
-				require_once("classes/project/NotificationManager.php");
-				$link = $data["responseLink"];
-				NotificationManager::addNotification(-1, 4, "Auftrag <a href=\"$link\">$orderId</a> wurde angelegt", $orderId);
-				//Statistics::auftragEroeffnen(new Auftrag($orderId));
 			break;
 			case "insTime":
 				$data = array();
@@ -246,8 +223,13 @@ class Ajax {
 				$kunde = new Kunde($nextId);
 				$table = new FormGenerator("ansprechpartner", "", "");
 				$data = DBAccess::selectQuery("SELECT * FROM ansprechpartner WHERE Kundennummer = $nextId");
-				$column_names = array(0 => array("COLUMN_NAME" => "Vorname"), 1 => array("COLUMN_NAME" => "Nachname"), 
-								2 => array("COLUMN_NAME" => "Email"), 3 => array("COLUMN_NAME" => "Durchwahl"), 4 => array("COLUMN_NAME" => "Mobiltelefonnummer"));
+				$column_names = array(
+					0 => array("COLUMN_NAME" => "Vorname"),
+					1 => array("COLUMN_NAME" => "Nachname"),
+					2 => array("COLUMN_NAME" => "Email"),
+					3 => array("COLUMN_NAME" => "Durchwahl"),
+					4 => array("COLUMN_NAME" => "Mobiltelefonnummer")
+				);
 				$ansprechpartner = $table->createTableByData($data, $column_names);
 				echo $ansprechpartner;
 			break;
@@ -292,7 +274,6 @@ class Ajax {
 				$data['hide'] = $_POST['hide'];
 
 				require_once("classes/project/Schritt.php");
-				require_once("classes/project/Auftrag.php");
 
 				$postenNummer = Schritt::insertStep($data);
 				$auftrag = new Auftrag($data['Auftragsnummer']);
@@ -305,20 +286,21 @@ class Ajax {
 				}
 			break;
 			case "addStep":
-				$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Priority"));
+				$column_names = array(
+					0 => array("COLUMN_NAME" => "Bezeichnung"),
+					1 => array("COLUMN_NAME" => "Priority")
+				);
 
 				$addClass = $_POST['addClass'];
 
 				echo FormGenerator::createEmptyTable($column_names, $addClass);
 			break;
 			case "getAllSteps":
-				require_once("classes/project/Auftrag.php");
 				$auftragsId = $_POST['auftrag'];
 				$Auftrag = new Auftrag($auftragsId);
 				echo $Auftrag->getBearbeitungsschritteAsTable();
 			break;
 			case "getOpenSteps":
-				require_once("classes/project/Auftrag.php");
 				$auftragsId = $_POST['auftrag'];
 				$Auftrag = new Auftrag($auftragsId);
 				echo $Auftrag->getOpenBearbeitungsschritteTable();
@@ -601,7 +583,6 @@ class Ajax {
 				DBAccess::insertQuery("UPDATE auftrag SET archiviert = -1 WHERE Auftragsnummer = $auftrag");
 			break;
 			case "existingColors":
-				require_once('classes/project/Auftrag.php');
 				$auftrag = $_POST['auftrag'];
 				$ids = json_decode($_POST['ids'], true);
 
@@ -615,7 +596,6 @@ class Ajax {
 				echo json_encode($data, JSON_FORCE_OBJECT);
 			break;
 			case "newColor":
-				require_once('classes/project/Auftrag.php');
 				$auftrag = $_POST['auftrag'];
 				$farbname = $_POST['farbname'];
 				$farbwert = $_POST['farbwert'];
@@ -641,7 +621,6 @@ class Ajax {
 				echo $auftrag->getFarben();
 			break;
 			case "archivieren":
-				require_once('classes/project/Auftrag.php');
 				$auftrag = $_POST['auftrag'];
 				$auftrag = new Auftrag($auftrag);
 				$auftrag->archiveOrder();

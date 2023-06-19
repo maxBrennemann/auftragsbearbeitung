@@ -1,71 +1,78 @@
 <?php
 $kdnr = -1;
 
-if (isset($_GET['showDetails']) || isset($_GET['kdnr'])) {
-	$kdnr = $_GET['showDetails'] || $_GET['kdnr'];
+if (isset($_GET['showDetails'])) {
+	$kdnr = $_GET['showDetails'];
+} else if (isset($_GET['kdnr'])) {
+	$kdnr = $_GET['kdnr'];
+}
 
+if ($kdnr != -1) {
 	$mitarbeiter = DBAccess::selectQuery("SELECT prename, lastname, id FROM user");
 	$annahme = DBAccess::selectQuery("SELECT Bezeichnung, id FROM angenommen");
 	$auftragstyp = DBAccess::selectQuery("SELECT * FROM auftragstyp");
 	
-	$kundendaten = DBAccess::selectQuery("SELECT Vorname, Nachname, Firmenname FROM kunde WHERE Kundennummer = $kdnr");
+	$kundendaten = DBAccess::selectQuery("SELECT Vorname, Nachname, Firmenname FROM kunde WHERE Kundennummer = :kdnr", [":kdnr" => $kdnr]);
 	$kundendaten = $kundendaten[0];
-	$ansprechpartner = DBAccess::selectQuery("SELECT Vorname, Nachname, Nummer FROM ansprechpartner WHERE Kundennummer = $kdnr");
+	$ansprechpartner = DBAccess::selectQuery("SELECT Vorname, Nachname, Nummer FROM ansprechpartner WHERE Kundennummer = :kdnr", [":kdnr" => $kdnr]);
 }
 
 if ($kdnr != -1) : ?>
-<div class="addOrder">
+<div class="defCont">
 	<div>
-		<span>Kundennummer: <?=$kdnr?></span><br>
-		<span>Name: <?=$kundendaten['Vorname']?> <?=$kundendaten['Nachname']?></span><br>
-		<span>Firma: <?=$kundendaten['Firmenname']?></span><br>
-		<span>Kurzbeschreibung: <input id="bezeichnung" maxlength="255"></span><br>
-		<span>Beschreibung: <br><textarea id="beschreibung" maxlength="65535" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span><br>
-		<span>Auftragstyp:
-			<select id="selectTyp">
+		<p>Kundennummer: <input class="block mt-1 p-1 pl-2 w-64 disabled:bg-gray-300 rounded-lg" disabled value="<?=$kdnr?>"></p>
+		<?php if ($kundendaten['Vorname'] != "" && $kundendaten['Nachname'] != ""): ?>
+			<p>Name: <input class="block mt-1 p-1 pl-2 w-64 disabled:bg-gray-300 rounded-lg" disabled value="<?=$kundendaten['Vorname']?> <?=$kundendaten['Nachname']?>"></p>
+		<?php endif; ?> 
+		<p>Firma: <input class="block mt-1 p-1 pl-2 w-64 disabled:bg-gray-300 rounded-lg" disabled value="<?=$kundendaten['Firmenname']?>"></p>
+		<p>Kurzbeschreibung: <input id="bezeichnung" class="block mt-1 p-1 pl-2 w-64 disabled:bg-gray-300 rounded-lg" maxlength="255"></p>
+		<p>Beschreibung: <br>
+			<textarea id="beschreibung" maxlength="65535" class="block mt-1 p-1 pl-2 w-64 disabled:bg-gray-300 rounded-lg" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
+		</p>
+		<p>Auftragstyp:
+			<select class="block mt-1 p-1 pl-2 w-64 disabled:bg-gray-300 rounded-lg" id="selectTyp">
 				<option value="-1" selected disabled>Bitte auswählen</option>
 				<?php foreach ($auftragstyp as $t): ?>
 					<option value="<?=$t['id']?>"><?=$t['Auftragstyp']?></option>
 				<?php endforeach; ?>
 			</select>
-		</span><br>
-		<span>Termin: <input id="termin" type="date"></span><br>
-		<span>Angenommen durch: 
-			<select id="selectMitarbeiter">
+		</p>
+		<p>Termin: <input id="termin" type="date" class="block mt-1 p-1 pl-2 w-64 disabled:bg-gray-300 rounded-lg"></p>
+		<p>Angenommen durch: 
+			<select class="block mt-1 p-1 pl-2 w-64 disabled:bg-gray-300 rounded-lg" id="selectMitarbeiter">
 				<option value="-1" selected disabled>Bitte auswählen</option>
 				<?php foreach ($mitarbeiter as $m): ?>
 					<option value="<?=$m['id']?>"><?=$m['prename']?> <?=$m['lastname']?></option>
 				<?php endforeach; ?>
 			</select>
-		</span><br>
-		<span>Angenommen per: 
-			<select id="selectAngenommen">
+		</p>
+		<p>Angenommen per: 
+			<select class="block mt-1 p-1 pl-2 w-64 disabled:bg-gray-300 rounded-lg" id="selectAngenommen">
 				<option value="-1" selected disabled>Bitte auswählen</option>
 				<?php foreach ($annahme as $m): ?>
 					<option value="<?=$m['id']?>"><?=$m['Bezeichnung']?></option>
 				<?php endforeach; ?>
 			</select>
-		</span><br>
-		<?php if (sizeOf($ansprechpartner) > 0) : ?>
-		<span>Ansprechpartner: 
-			<select id="selectAnsprechpartner">
+		</p>
+		<p>Ansprechpartner: 
+			<select class="block mt-1 p-1 pl-2 w-64 disabled:bg-gray-300 rounded-lg" id="selectAnsprechpartner">
 				<option value="-1" selected disabled>Bitte auswählen</option>
 				<?php foreach ($ansprechpartner as $m): ?>
 					<option value="<?=$m['Nummer']?>"><?=$m['Vorname']?> <?=$m['Nachname']?></option>
 				<?php endforeach; ?>
 			</select>
-		</span><br>
-		<?php endif; ?>
+		</p>
 	</div>
-	<button class="btn-primary" id="absenden" onclick="auftragHinzufuegen()">Absenden</button>
+	<button class="btn-primary" id="absenden">Absenden</button>
 </div>
 <div id="showLinkToOrder" style="display: none;"></div>
 <?php else: ?>
 	<div class="defCont">
-		<span>Kundennummer oder Suchen: <input id="kundensuche" onkeyup="performSearchEnter(event, this.value);"><button onclick="performSearchButton(event)">&#x1F50E;</button></span>
+		<p>Kundennummer eingeben oder Kunde suchen:</p>
+		<input id="kundensuche" class="px-4 py-2 m-1 rounded-lg">
 	</div>
+	<div class="defCont hidden" id="searchResults"></div>
 	<div class="defCont">
-		<span>Oder <a href="<?=Link::getPageLink("angebot")?>?open">Angebot übernehmen</a></span>
+		<span>Oder <a href="<?=Link::getPageLink("angebot")?>?open" class="link-primary">Angebot übernehmen</a></span>
 	</div>
-	<span id="searchResults"></span>
 <?php endif; ?>

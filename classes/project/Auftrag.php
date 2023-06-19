@@ -10,6 +10,7 @@ require_once('StatisticsInterface.php');
 require_once('Statistics.php');
 require_once('GlobalSettings.php');
 require_once("classes/project/Table.php");
+require_once("classes/project/NotificationManager.php");
 
 /**
  * Klasse generiert im Zusammenhang mit der Template Datei auftrag.php die Übersicht für einen bestimmten Auftrag.
@@ -568,27 +569,58 @@ class Auftrag implements StatisticsInterface {
 		return $defaultWage;
 	}
 
+	/**
+	 * adds a new order to the database by using the data from the form,
+	 * which is sent by the client;
+	 * the function echos a json object with the response link and the order id
+	 */
 	public static function add() {
-		$customerId = (int) $_POST["customerId"];
+		$bezeichnung = $_POST['bezeichnung'];
+		$beschreibung = $_POST['beschreibung'];
+		$typ = $_POST['typ'];
+		$termin = getParameter($_POST['termin'], "POST", null);
+		$angenommenVon = $_POST['angenommenVon'];
+		$kdnr = $_POST['customerId'];
+		$angenommenPer = $_POST['angenommenPer'];
+		$ansprechpartner = (int) $_POST['ansprechpartner'];
 
-		//self::addToDB();
+		$orderId = self::addToDB($kdnr, $bezeichnung, $beschreibung, $typ, $termin, $angenommenVon, $angenommenPer, $ansprechpartner);
+
+		$isLoadPosten = false;
+		if (isset($_SESSION['offer_is_order']) && $_SESSION['offer_is_order'] == true) {
+			$isLoadPosten = true;
+		}
+
+		$data = array(
+			"success" => true,
+			"responseLink" => Link::getPageLink("auftrag") . "?id=$orderId",
+			"loadFromOffer" => $isLoadPosten,
+			"orderId" => $orderId
+		);
+		
+		NotificationManager::addNotification(Login::getUserId(), 4, "Auftrag <a href=" . $data["responseLink"] . ">$orderId</a> wurde angelegt", $orderId);
+		echo json_encode($data, JSON_FORCE_OBJECT);
 	}
 
-	private static function addToDB(int $customerId, $type, $deadline, $description, $title, $user, $partner, $medium) {
+	/**
+	 * adds a new order to the database
+	 */
+	private static function addToDB($kdnr, $bezeichnung, $beschreibung, $typ, $termin, $angenommenVon, $angenommenPer, $ansprechpartner) {
 		$date = date("Y-m-d");
-		$query = "INSERT INTO auftrag (Kundennummer, Auftragsbezeichnung, Auftragsbeschreibung, Auftragstyp, Datum, Termin, AngenommenDurch, AngenommenPer, Ansprechpartner) VALUES (:customerId, :title, : description, :type, :date, :deadline, :user, :medium, :partner);";
+		$query = "INSERT INTO auftrag (Kundennummer, Auftragsbezeichnung, Auftragsbeschreibung, Auftragstyp, Datum, Termin, AngenommenDurch, AngenommenPer, Ansprechpartner) VALUES (:kdnr, :bezeichnung, :beschreibung, :typ, :datum, :termin, :angenommenVon, :angenommenPer, :ansprechpartner);";
 		$parameters = [
-			"customerId" => $customerId,
-			"title" => $title,
-			"description" => $description,
-			"type" => $type,
-			"date" => $date,
-			"deadline" => $deadline,
-			"user" => $user,
-			"medium" => $medium,
-			"partner" => $partner,
+			":kdnr" => $kdnr,
+			":bezeichnung" => $bezeichnung,
+			":beschreibung" => $beschreibung,
+			":typ" => $typ,
+			":datum" => $date,
+			":termin" => $termin,
+			":angenommenVon" => $angenommenVon,
+			":angenommenPer" => $angenommenPer,
+			":ansprechpartner" => $ansprechpartner
 		];
 		$orderId = DBAccess::insertQuery($query, $parameters);
+		return $orderId;
 	}
 
 }

@@ -10,8 +10,8 @@ return new class extends UpdateMySql {
         "ALTER TABLE `user_devices` DROP `device_name`;",
         "ALTER TABLE `user_devices` ADD `os` VARCHAR(32) NOT NULL AFTER `user_device_name`, ADD `browser` VARCHAR(32) NOT NULL AFTER `os`, ADD `device_type` ENUM('mobile','tablet','desktop','unrecognized') NOT NULL AFTER `browser`;",
         "ALTER TABLE `user_devices` CHANGE `user_device_name` `user_device_name` VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL;",
-        "ALTER TABLE `user_devices` CHANGE `browser_agent` `browser_agent` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
-        ",
+        "ALTER TABLE `user_devices` CHANGE `browser_agent` `browser_agent` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;",
+        "",
     ];
 
     public function upgrade() {

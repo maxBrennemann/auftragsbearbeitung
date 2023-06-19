@@ -1,82 +1,121 @@
-function performSearchButton(e) {
-	var query = e.target.previousSibling.value;
-	console.log(query);
-	ajaxSearch(query);
-}
-
-function performSearchEnter(e, query) {
-    if (e.key === "Enter") {
-        ajaxSearch(query);
-    }
-}
-
-function ajaxSearch(query) {
-    if (isNaN(query)) {
-        var search = new AjaxCall(`getReason=search&query=${query}&stype=kunde&urlid=1&shortSummary=false`, "POST", window.location.href);
-        search.makeAjaxCall(function (responseTable) {
-            document.getElementById("searchResults").innerHTML = responseTable;
-            addableTables();
+function initNewOrder() {
+    const input = document.getElementById("kundensuche");
+    if (input != null) {
+        input.addEventListener("input", performAjaxSearch);
+        input.addEventListener("keyup", function (e) {
+            if (e.key === "Escape") {
+                const searchResults = document.getElementById("searchResults");
+                searchResults.innerHTML = "";
+                searchResults.classList.add("hidden");
+            } else if (e.key === "Enter") {
+                const value = e.target.value;
+                if (!isNaN(value)) {
+                    openCustomer(value);
+                }
+            }
         });
-    } else {
-        window.location.href = window.location.href + "?kdnr=" + query;
+    }
+
+    const button = document.getElementById("absenden");
+    if (button != null) {
+        button.addEventListener("click", addOrder);
     }
 }
 
-function auftragHinzufuegen() {
-    var bez = document.getElementById("bezeichnung").value;
-    var bes = document.getElementById("beschreibung").value;
-    var ter = document.getElementById("termin").value;
-    var kdn = new URL(window.location.href).searchParams.get("kdnr") ||
-                new URL(window.location.href).searchParams.get("id");
+function openCustomer(id) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("kdnr", id);
+    window.location.href = url.href;
+}
 
-    var e = document.getElementById("selectMitarbeiter");
-    var ang = e.options[e.selectedIndex].value;
-    e = document.getElementById("selectAngenommen");
-    var per = e.options[e.selectedIndex].value;
-    e = document.getElementById("selectAnsprechpartner");
-    var ans = 0;
-    if (e != null) {
-        ans = e.options[e.selectedIndex].value;
+function performAjaxSearch(e) {
+    const value = e.target.value;
+    if (value.length == 0) {
+        return
     }
-    var typ = document.getElementById("selectTyp");
-    typ = typ.options[typ.selectedIndex].value;
+    ajax.post({
+        r: "search",
+        query: value,
+        stype: "kunde",
+        urlid: 1,
+        shortSummary: false,
+    }, true).then(r => {
+        const searchResults = document.getElementById("searchResults");
+        searchResults.innerHTML = r;
+        searchResults.classList.remove("hidden");
 
-    if (typ == -1) {
-        alert("Auftragstyp muss gewählt werden");
-        return 0;
-    }
+        searchResults.classList.add("overflow-x-auto");
+        const table = document.querySelector("table");
+        table.classList.add("table-fixed", "w-full");
 
-    var paramString = new URLSearchParams();
-    paramString.append("bez", bez);
-    paramString.append("bes", bes);
-    paramString.append("typ", typ);
-    paramString.append("ter", ter);
-    paramString.append("ang", ang);
-    paramString.append("kdn", kdn);
-    paramString.append("per", per);
-    paramString.append("ans", ans);
+        tableRowClickable(table);
+    });
+}
 
-    paramString = paramString.toString() + "&type=auftrag&getReason=createAuftrag";
-
-    console.log(paramString);
-
-    var createAuftrag = new AjaxCall(paramString, "POST", window.location.href);
-    createAuftrag.makeAjaxCall(function (response) {
-        response = JSON.parse(response);
-        responseLink = response.responseLink;
-        loadFromOffer = response.loadFromOffer;
-
-        console.log(responseLink);
-
-        document.getElementById("absenden").disabled = true;
-        document.getElementById("showLinkToOrder").style.display = "inline";
-        document.getElementById("showLinkToOrder").innerHTML = `<p>Falls Sie nicht automatisch weitergeleitet werden, bitte <a href=\"${responseLink}\">hier klicken</a></p>`;
-
-        if (loadFromOffer) {
-            var loadPosten = new AjaxCall(`getReason=loadPosten&auftragsId=${response.orderId}`);
-            loadPosten.makeAjaxCall(function (response) {});
+function tableRowClickable(table) {
+    Array.from(table.querySelectorAll("tr")).forEach(tr => {
+        if (tr.children[0].classList.contains("tableHead")) {
+            return;
         }
 
-        window.location.href = responseLink;
+        tr.classList.add("cursor-pointer");
+        tr.addEventListener("click", function (e) {
+            const kdnr = e.currentTarget.children[0].innerHTML;
+            openCustomer(kdnr);
+        })
+    });
+}
+
+function getCustomerId() {
+    const url = new URL(window.location.href);
+    const id = url.searchParams.get("kdnr") || url.searchParams.get("id");
+    return id;
+}
+
+async function addOrder() {
+    var bezeichnung = document.getElementById("bezeichnung").value;
+    var beschreibung = document.getElementById("beschreibung").value;
+    var termin = document.getElementById("termin").value;
+    var customerId = getCustomerId();
+    var angenommenVon = document.getElementById("selectMitarbeiter").value;
+    var angenommenPer = document.getElementById("selectAngenommen").value;
+    var ansprechpartner = document.getElementById("selectAnsprechpartner").value
+    var typ = document.getElementById("selectTyp").value;
+
+    const response = await ajax.post({
+        r: "createAuftrag",
+        bezeichnung: bezeichnung,
+        beschreibung: beschreibung,
+        termin: termin,
+        customerId: customerId,
+        angenommenVon: angenommenVon,
+        angenommenPer: angenommenPer,
+        ansprechpartner: ansprechpartner,
+        typ: typ
+    });
+
+    if (!response.success) {
+        return;
+    }
+
+    const responseLink = response.responseLink;
+    const loadFromOffer = response.loadFromOffer;
+
+    if (loadFromOffer) {
+        const loadPosten = await ajax.post({
+            r: "loadPosten",
+            auftragsId: response.orderId,
+        });
+    }
+
+    window.location.href = responseLink;
+}
+
+/* init */
+if (document.readyState !== 'loading' ) {
+    initNewOrder();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        initNewOrder();
     });
 }
