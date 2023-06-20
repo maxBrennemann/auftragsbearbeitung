@@ -1,5 +1,4 @@
-﻿
-/* global variables */
+﻿/* global variables */
 var globalData = {
     aufschlag: 0,
     vehicleId: 0,
@@ -40,6 +39,22 @@ function initCode() {
             document.getElementById("addVehicle").style.display = "inline-block";
         }
     });
+
+    initPostenFilter();
+}
+
+function initPostenFilter() {
+    const inputRechnungspostenAusblenden = document.getElementById("rechnungspostenAusblenden");
+    if (inputRechnungspostenAusblenden != null) {
+        inputRechnungspostenAusblenden.addEventListener("change", function (e) {
+            const value = e.target.checked;
+            ajax.post({
+                r: "setRechnungspostenAusblenden",
+                value: value,
+            });
+            reloadPostenListe();
+        });
+    }
 }
 
 function addSearchEventListeners() {
@@ -267,7 +282,16 @@ function addProductCompactOld() {
     add.makeAjaxCall(function (response) {
         console.log(response);
         reloadPostenListe();
-        clearInputs({"ids":["posten_produkt_menge", "posten_produkt_marke", "posten_produkt_ek", "posten_produkt_vk", "posten_produkt_name", "posten_produkt_besch"]});
+        clearInputs({
+            "ids": [
+                "posten_produkt_menge",
+                "posten_produkt_marke",
+                "posten_produkt_ek",
+                "posten_produkt_vk",
+                "posten_produkt_name",
+                "posten_produkt_besch"
+            ]
+        });
     });
 }
 

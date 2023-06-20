@@ -1572,6 +1572,10 @@ class Ajax {
 					"template" => $content,
 				]);
 			break;
+			case "setRechnungspostenAusblenden":
+				require_once('classes/project/ClientSettings.php');
+				ClientSettings::setFilterOrderPosten();
+			break;
 			case "iterateText":
 				$id = (int) $_POST["id"];
 				$direction = $_POST["direction"];

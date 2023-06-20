@@ -11,6 +11,7 @@ require_once('Statistics.php');
 require_once('GlobalSettings.php');
 require_once("classes/project/Table.php");
 require_once("classes/project/NotificationManager.php");
+require_once('classes/project/ClientSettings.php');
 
 /**
  * Klasse generiert im Zusammenhang mit der Template Datei auftrag.php die Übersicht für einen bestimmten Auftrag.
@@ -256,6 +257,17 @@ class Auftrag implements StatisticsInterface {
 			return $data;
 		}
 
+		/* check if ClientSettings::getFilterOrderPosten is set */
+		if (ClientSettings::getFilterOrderPosten()) {
+			for ($i = 0; $i < sizeof($this->Auftragsposten); $i++) {
+				if ($this->Auftragsposten[$i]->isInvoice() == false) {
+					array_push($data, $this->Auftragsposten[$i]->fillToArray($subArr));
+				}
+			}
+	
+			return $data;
+		}
+
 		for ($i = 0; $i < sizeof($this->Auftragsposten); $i++) {
 			array_push($data, $this->Auftragsposten[$i]->fillToArray($subArr));
 		}
@@ -465,13 +477,15 @@ class Auftrag implements StatisticsInterface {
 	}
 
 	public function getFarben() {
-		$farben = DBAccess::selectQuery("SELECT Farbe, Farbwert, id AS Nummer, Hersteller, Bezeichnung FROM color, color_auftrag WHERE id_color = id AND id_auftrag = {$this->getAuftragsnummer()}");
-		$farbTable = "";
-		foreach ($farben as $farbe) {
-			$farbTable .= "<div class=\"singleColorContainer\"><p class=\"singleColorName\">{$farbe['Farbe']}, {$farbe['Hersteller']}: {$farbe['Bezeichnung']}</p><div class=\"farbe\" style=\"background-color: #{$farbe['Farbwert']}\"></div><button onclick=\"removeColor({$farbe['Nummer']});\">×</button></div><br>";
-		}
+		$farben = DBAccess::selectQuery("SELECT Farbe, Farbwert, id AS Nummer, Hersteller, Bezeichnung FROM color, color_auftrag WHERE id_color = id AND id_auftrag = :orderId", ["orderId" => $this->getAuftragsnummer()]);
 
-		return $farbTable;
+		ob_start();
+		insertTemplate('files/res/views/colorView.php', [
+			"farben" => $farben,
+		]);
+		$content = ob_get_clean();
+
+		return $content;
 	}
 
 	/*
@@ -599,6 +613,8 @@ class Auftrag implements StatisticsInterface {
 		);
 		
 		NotificationManager::addNotification(Login::getUserId(), 4, "Auftrag <a href=" . $data["responseLink"] . ">$orderId</a> wurde angelegt", $orderId);
+		$auftragsverlauf = new Auftragsverlauf($orderId);
+		$auftragsverlauf->addToHistory($orderId, 5, "added", "Neuer Auftrag");
 		echo json_encode($data, JSON_FORCE_OBJECT);
 	}
 

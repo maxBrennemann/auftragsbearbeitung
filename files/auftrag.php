@@ -194,7 +194,7 @@ if ($auftragsId == -1): ?>
 		</div>
 	</div>
 	<div class="defCont posten">
-		<p class="font-bold">Zeiten, Produkte und Kosten (netto)</p>
+		<p><span class="font-bold">Zeiten, Produkte und Kosten (netto)</span> <input id="rechnungspostenAusblenden" type="checkbox" <?=ClientSettings::getFilterOrderPosten() == true ? "checked" : ""?>> Rechnungsposten ausblenden</p>
 		<div id="auftragsPostenTable">
 			<?=$auftrag->getAuftragspostenAsTable()?>
 		</div>
@@ -205,7 +205,6 @@ if ($auftragsId == -1): ?>
 			<div class="tabcontainer">
 				<button class="tablinks activetab" onclick="openTab(event, 0)">Zeiterfassung</button>
 				<button class="tablinks" onclick="openTab(event, 1)">Kostenerfassung</button>
-				<!--<button class="tablinks" onclick="openTab(event, 2)">Produkt</button>-->
 				<button class="tablinks" onclick="openTab(event, 3)">Produkte</button>
 			</div>
 			<div class="tabcontent" id="tabZeit" style="display: block;">
