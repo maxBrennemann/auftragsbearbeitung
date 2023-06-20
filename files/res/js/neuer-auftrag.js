@@ -72,7 +72,15 @@ function getCustomerId() {
     return id;
 }
 
-async function addOrder() {
+function addOrder() {
+    const btn = document.getElementById("absenden");
+    btn.disabled = true;
+    sendOrder().then(() => {
+        btn.disabled = false;
+    });
+}
+
+async function sendOrder() {
     var bezeichnung = document.getElementById("bezeichnung").value;
     var beschreibung = document.getElementById("beschreibung").value;
     var termin = document.getElementById("termin").value;

@@ -4,7 +4,6 @@ require_once('classes/DBAccess.php');
 
 $data = DBAccess::selectQuery("SELECT * FROM leistung");
 ?>
-<script src="<?=Link::getResourcesShortLink("classes/statusInfo.js", "js")?>"></script>
 <a href="#" class="font-bold">Folie konfigurieren</a>
 <a href="#" class="font-bold">T-Shirt konfigurieren</a>
 <div class="grid grid-cols-3 gap-4" id="leistungen">

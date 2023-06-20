@@ -1,0 +1,43 @@
+RewriteEngine on
+
+#Domain localhost
+RewriteBase /auftragsbearbeitung/
+RewriteRule ^content/(.*)$ index.php [NC,L]
+# RewriteRule ^content/(.*)$ index.php?page=$1 [NC,L]
+RewriteRule ^js/(.*)$ resourcesManager.php?script=$1 [NC,L]
+RewriteRule ^css/(.*)$ resourcesManager.php?css=$1 [NC,L]
+RewriteRule ^font/(.*)$ resourcesManager.php?font=$1 [NC,L]
+RewriteRule ^static/(.*)$ resourcesManager.php?static=$1 [NC,L]
+RewriteRule ^pdf_invoice/(.*)$ resourcesManager.php?pdf_invoice=$1 [NC,L]
+RewriteRule ^backup/(.*)$ resourcesManager.php?backup=$1 [NC,L]
+RewriteRule ^static/(.*)$ resourcesManager.php?static=$1 [NC,L]
+RewriteRule ^shop/ frontOfficeController.php [NC,L]
+RewriteRule ^upgrade/(.*)$ upgrade.php?info=$1 [NC,L]
+# RewriteRule ^$ index.php [NC,L]
+# RewriteRule (.*) index.php [NC,L]
+RewriteRule ^/ index.php [NC,L]
+
+ErrorDocument 404 /index.php?page=404
+
+<IfModule mod_expires.c>
+	ExpiresActive On
+	ExpiresByType image/gif "access plus 1 month"
+	ExpiresByType image/jpeg "access plus 1 month"
+	ExpiresByType image/png "access plus 1 month"
+	ExpiresByType text/css "access plus 1 week"
+	ExpiresByType text/javascript "access plus 1 week"
+	ExpiresByType application/javascript "access plus 1 week"
+	ExpiresByType application/x-javascript "access plus 1 week"
+	ExpiresByType image/x-icon "access plus 1 year"
+	ExpiresByType image/svg+xml "access plus 1 year"
+	ExpiresByType image/vnd.microsoft.icon "access plus 1 year"
+	ExpiresByType application/font-woff "access plus 1 year"
+	ExpiresByType application/x-font-woff "access plus 1 year"
+	ExpiresByType font/woff2 "access plus 1 year"
+	ExpiresByType application/vnd.ms-fontobject "access plus 1 year"
+	ExpiresByType font/opentype "access plus 1 year"
+	ExpiresByType font/ttf "access plus 1 year"
+	ExpiresByType font/otf "access plus 1 year"
+	ExpiresByType application/x-font-ttf "access plus 1 year"
+	ExpiresByType application/x-font-otf "access plus 1 year"
+</IfModule>

@@ -1,23 +1,24 @@
 <?php
-	require_once('classes/project/Aufgabenliste.php');
-	require_once('classes/project/Auftrag.php');
-	require_once('classes/project/Rechnung.php');
+require_once('classes/project/Aufgabenliste.php');
+require_once('classes/project/Auftrag.php');
+require_once('classes/project/Rechnung.php');
 
-	$showAktuelleSchritte = Aufgabenliste::aktuelleSchritteAlsTabelleAusgeben();
-	$showOffeneAuftraege = Auftrag::getAuftragsliste();
-	$showReady = Auftrag::getReadyOrders();
-	$offeneSumme = Rechnung::getOffeneRechnungssumme();
+$showAktuelleSchritte = Aufgabenliste::aktuelleSchritteAlsTabelleAusgeben();
+$showOffeneAuftraege = Auftrag::getAuftragsliste();
+$showReady = Auftrag::getReadyOrders();
+$offeneSumme = Rechnung::getOffeneRechnungssumme();
 
-	if (isset($_GET['showDetails'])) {
-		$showDetails = $_GET['showDetails'];
-		if ($showDetails == "auftrag") {
-			if (isset($_GET['id'])) {
-				$id = $_GET['id'];
-				header("Location: " . Link::getPageLink('auftrag') . "?id={$id}");
-			}
+if (isset($_GET['showDetails'])) {
+	$showDetails = $_GET['showDetails'];
+	if ($showDetails == "auftrag") {
+		if (isset($_GET['id'])) {
+			$id = $_GET['id'];
+			header("Location: " . Link::getPageLink('auftrag') . "?id={$id}");
 		}
 	}
+}
 ?>
+<script src="<?=Link::getResourcesShortLink("main-helper.js", "js")?>"></script>
 <div>
 	<ul class="mainUl auto-rows-min">
 		<li class="rounded-lg bg-gray-100">
@@ -61,7 +62,7 @@
 			<a class="block px-4 py-8" href="<?=$offeneRechnungen?>">Offene Rechnungen: <b><?=$offeneSumme?>€</b></a>
 		</li>
 	</ul>
-	<span style="float: right;"><a href="#" onclick="showCustomizeOptions()">Anpassen</a> <a href="<?=$funktionen?>">Mehr</a></span>
+	<span style="float: right;"><a href="#" class="link-primary" onclick="showCustomizeOptions()">Anpassen</a> | <a class="link-primary" href="<?=$funktionen?>">Mehr</a></span>
 	<br>
 	<div class="tableContainer">
 		<div>

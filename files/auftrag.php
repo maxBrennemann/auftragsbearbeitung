@@ -1,5 +1,4 @@
 <script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
-<script src="<?=Link::getResourcesShortLink("classes/fileUploader.js", "js")?>"></script>
 <script src="<?=Link::getResourcesShortLink("print.js", "js")?>"></script>
 <script src="<?=Link::getResourcesShortLink("colorpicker.js", "js")?>"></script>
 <script src="<?=Link::getResourcesShortLink("list.js", "js")?>"></script>

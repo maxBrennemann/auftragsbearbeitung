@@ -1,25 +1,3 @@
-var kundeninput = document.getElementById("kundeninput");
-var rechnungsinput = document.getElementById("rechnungsinput");
-var auftragsinput = document.getElementById("auftragsinput");
-
-kundeninput.addEventListener("keyup", function (event) {
-    if (event.key === "Enter") {
-        ajaxSearch(event.target.value);
-    }
-});
-
-rechnungsinput.addEventListener("keyup", function (event) {
-    if (event.key === "Enter") {
-        document.getElementById("rechnungsLink").click();
-    }
-});
-
-auftragsinput.addEventListener("keyup", function (event) {
-    if (event.key === "Enter") {
-        document.getElementById("auftragsLink").click();
-    }
-});
-
 function ajaxSearch(query) {
     var link = document.getElementById('kundenLink');
     if (isNaN(query)) {
@@ -33,4 +11,36 @@ function ajaxSearch(query) {
 function showCustomizeOptions() {
     const div = document.createElement("div");
     // TODO: linkauswahl zusammenstellen, die dann angepinnt werden kann
+}
+
+function initInputs() {
+    var kundeninput = document.getElementById("kundeninput");
+    var rechnungsinput = document.getElementById("rechnungsinput");
+    var auftragsinput = document.getElementById("auftragsinput");
+    
+    kundeninput.addEventListener("keyup", function (event) {
+        if (event.key === "Enter") {
+            ajaxSearch(event.target.value);
+        }
+    });
+    
+    rechnungsinput.addEventListener("keyup", function (event) {
+        if (event.key === "Enter") {
+            document.getElementById("rechnungsLink").click();
+        }
+    });
+    
+    auftragsinput.addEventListener("keyup", function (event) {
+        if (event.key === "Enter") {
+            document.getElementById("auftragsLink").click();
+        }
+    });
+}
+
+if (document.readyState !== 'loading' ) {
+	initInputs();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+		initInputs();
+    });
 }

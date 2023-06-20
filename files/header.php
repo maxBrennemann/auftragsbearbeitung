@@ -5,7 +5,6 @@ $globalCSS = Link::getGlobalCSS();
 $tailwindCSS = Link::getTW();
 $globalJS = Link::getGlobalJS();
 $curr_Link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-$adminLink = Link::getAdminLink();
 
 $neuerKunde   =		Link::getPageLink("neuer-kunde");
 $neuerAuftrag =		Link::getPageLink("neuer-auftrag");
@@ -45,7 +44,7 @@ $motiveOverview = 	Link::getPageLink("sticker-overview");
 	<link rel="stylesheet" href="<?=$globalCSS?>">
 	<link rel="stylesheet" href="<?=$tailwindCSS?>">
 	<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.1/dist/cdn.min.js"></script>
-	<script src="<?=$globalJS?>"></script>
+	<script src="<?=$globalJS?>" type="module"></script>
 	<?php
 		$link = Link::getResourcesShortLink($page . ".js", "js");
 
@@ -59,7 +58,6 @@ $motiveOverview = 	Link::getPageLink("sticker-overview");
 		$link = Link::getResourcesShortLink($page . ".css", "css");
 		echo '<link rel="stylesheet" href="' . $link . '">';
 	?>
-	<script src="<?=Link::getResourcesShortLink("classes/deviceDetector.js", "js")?>"></script>
 </head>
 <body>
 	<div class="sidenav" id="sidenav">

@@ -624,5 +624,3 @@ class Auftrag implements StatisticsInterface {
 	}
 
 }
-
-?>

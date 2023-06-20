@@ -129,11 +129,6 @@ class Link {
 	public static function getGlobalFrontCSS() {
 		return self::getResourcesShortLink("front/global.css", "css");
 	}
-	
-	public static function getAdminLink() {
-		$link = REWRITE_BASE . "admin/";
-		return $link;
-	}
 
 	public static function getCategoryLink($page) {
         $link = WEB_URL . "/shop/category/" . $page;
