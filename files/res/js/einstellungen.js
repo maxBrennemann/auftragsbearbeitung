@@ -47,6 +47,20 @@ function initEventListeners() {
             r: "updateDefaultWage",
         });
     });
+
+    const addDocs = document.getElementById("addDocs");
+    addDocs.addEventListener("click", () => {
+        ajax.post({
+            r: "indexAll",
+        });
+    });
+
+    const test = document.getElementById("test");
+    test.addEventListener("click", () => {
+        ajax.post({
+            r: "testsearch",
+        });
+    });
 }
 
 function setCustomColor(value) {

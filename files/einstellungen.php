@@ -100,6 +100,11 @@ $_SESSION[$tableOrderType->getTableKey()] = serialize($tableOrderType);
     <button onclick="minifyFiles()" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Neu komprimieren</button>
 </section>
 <section class="defCont">
+    <h2 class="font-bold">Suche</h2>
+	<button class="btn-primary" id="addDocs">Neu indizieren</button>
+    <button class="btn-primary" id="test">Neu test</button>
+</section>
+<section class="defCont">
     <h2 class="font-bold">Persönliche Einstellungen</h2>
     <div class="defCont" id="farbe">
         <h4>Farbtöne festlegen</h4>

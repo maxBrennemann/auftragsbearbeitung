@@ -1611,6 +1611,14 @@ class Ajax {
 					"current" => $current,
 				]);
 			break;
+			case "indexAll":
+				require_once('classes/project/Search.php');
+				Search::indexAll();
+			break;
+			case "testsearch":
+				require_once('classes/project/Search.php');
+				Search::search();
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);

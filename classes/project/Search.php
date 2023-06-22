@@ -1,18 +1,179 @@
 <?php
 
 require_once('classes/DBAccess.php');
-require_once('classes/project/ClientSocket.php');
 require_once('classes/project/Produkt.php');
+require_once('classes/project/Posten.php');
+require 'vendor/autoload.php';
+use Elastic\Elasticsearch\ClientBuilder;
+use GuzzleHttp\Client as HttpClient;
 
 class Search {
 
-	public static function searchForData($query, $type) {
-		$query = "search $type $query";
-		return ClientSocket::writeMessage($query, false);
+	private $client;
+	private static $search;
+
+	function __construct() {
+		$this->client = ClientBuilder::create()->setHttpClient(new HttpClient(['verify' => false ]))->setHosts(['localhost:9200'])->build();
 	}
 
-	public static function insertData($insertQuery) {
-		ClientSocket::writeMessage($insertQuery, true);
+	/**
+	 * adds a document to the index
+	 */
+	private function addDocument($index, $id, $body) {
+		$params = [
+			'index' => $index,
+			'id' => $id,
+			'body' => $body
+		];
+
+		$response = $this->client->index($params);
+	}
+
+	private function searchDocument($params) {
+		$response = $this->client->search($params);
+		return $response;
+	}
+
+	public static function search() {
+		self::$search = new Search();
+		$params = [
+			'index' => 'kunde',
+			'body'  => [
+				'query' => [
+					'match' => [
+						'customerName' => 'max'
+					]
+				]
+			]
+		];
+		$response = self::$search->searchDocument($params);
+		Protocoll::prettyPrint($response);
+	}
+
+	/**
+	 * indexing all types of data
+	 */
+	public static function indexAll() {
+		self::$search = new Search();
+		self::getAllCustomerData();
+		self::getAllOrderData();
+		self::getAllProductData();
+		self::getAllPostenData();
+		self::getAllWikiData();
+		self::getAllStickerData();
+	}
+
+	private static function getAllCustomerData() {
+		$query = "SELECT k.Kundennummer, k.Firmenname, k.Vorname, k.Nachname, k.Email, k.Website, a.ort, a.plz, a.strasse, ke.notizen FROM kunde k LEFT JOIN kunde_extended ke ON k.Kundennummer = ke.id LEFT JOIN address a ON k.Kundennummer = a.id_customer";
+		$data = DBAccess::selectQuery($query);
+
+		foreach ($data as $d) {
+			$document = array(
+				"companyName" => $d["Firmenname"],
+				"customerName" => $d["Vorname"] . " " . $d["Nachname"],
+				"email" => $d["Email"],
+				"website" => $d["Website"],
+				"address" => $d["strasse"] . " " . $d["ort"] . " " . $d["plz"],
+				"notes" => $d["notizen"],
+			);
+
+			self::$search->addDocument("kunde", $d["Kundennummer"], $document);
+		}
+	}
+
+	private static function getAllOrderData() {
+		$query = "SELECT Auftragsbezeichnung, Auftragsbeschreibung, Auftragsnummer FROM auftrag";
+		$data = DBAccess::selectQuery($query);
+
+		foreach ($data as $d) {
+			$document = array(
+				"orderName" => $d["Auftragsbezeichnung"],
+				"orderDescription" => $d["Auftragsbeschreibung"],
+			);
+
+			self::$search->addDocument("auftrag", $d["Auftragsnummer"], $document);
+		}
+	}
+
+	private static function getAllProductData() {
+		$query = "SELECT Nummer, Bezeichnung, Beschreibung, Marke FROM produkt";
+		$data = DBAccess::selectQuery($query);
+
+		foreach ($data as $d) {
+			$document = array(
+				"productName" => $d["Bezeichnung"],
+				"productDescription" => $d["Beschreibung"],
+				"productBrand" => $d["Marke"],
+			);
+
+			self::$search->addDocument("produkt", $d["Nummer"], $document);
+		}
+	}
+
+	private static function getAllPostenData() {
+		$query = "SELECT Auftragsnummer FROM auftrag;";
+		$data = DBAccess::selectQuery($query);
+
+		foreach ($data as $d) {
+			$postenData = Posten::bekommeAllePosten($d["Auftragsnummer"]);
+
+			foreach ($postenData as $posten) {
+				$arr = array(
+					"Postennummer" => "", 
+					"Bezeichnung" => "", 
+					"Beschreibung" => "", 
+					"Stundenlohn" => "", 
+					"MEH" => "", 
+					"Preis" => "",
+					"Gesamtpreis" => "",
+					"Anzahl" => "", 
+					"Einkaufspreis" => "",
+					"type" => ""
+				);
+
+				$response = $posten->fillToArray($arr);
+				$document = array(
+					"orderNumber" => $d["Auftragsnummer"],
+					"title" => $response["Bezeichnung"],
+					"description" => $response["Beschreibung"],
+					"price" => $response["Preis"],
+				);
+	
+				self::$search->addDocument("posten", $response["Postennummer"], $document);
+			}
+		}
+	}
+
+	private static function getAllWikiData() {
+		$query = "SELECT id, title, content, keywords FROM wiki_articles";
+		$data = DBAccess::selectQuery($query);
+
+		foreach ($data as $d) {
+			$document = array(
+				"title" => $d["title"],
+				"content" => $d["content"],
+				"keywords" => $d["keywords"],
+			);
+
+			self::$search->addDocument("wiki", $d["id"], $document);
+		}
+	}
+
+	private static function getAllStickerData() {
+		$query = "SELECT d.id, d.category, d.name, d.additional_info, t.target, t.content FROM module_sticker_sticker_data d, module_sticker_texts t WHERE d.id = t.id_sticker;";
+		$data = DBAccess::selectQuery($query);
+
+		foreach ($data as $d) {
+			$document = array(
+				"category" => $d["category"],
+				"name" => $d["name"],
+				"additional_info" => $d["additional_info"],
+				"target" => $d["target"],
+				"content" => $d["content"],
+			);
+
+			self::$search->addDocument("sticker", $d["id"], $document);
+		}
 	}
 	
 	/*

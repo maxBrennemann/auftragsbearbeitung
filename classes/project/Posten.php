@@ -59,8 +59,15 @@ abstract class Posten {
 					$element = new ProduktPosten($speziefischerPosten['Preis'], $speziefischerPosten['Bezeichnung'], $speziefischerPosten['Beschreibung'], $speziefischerPosten['Anzahl'], $speziefischerPosten['Einkaufspreis'], "", $step['discount'], (int) $step['isInvoice']);
 				break;
 				case 'leistung':
-					$speziefischerPosten = DBAccess::selectQuery("SELECT Leistungsnummer, Beschreibung, SpeziefischerPreis, Einkaufspreis, qty, meh FROM leistung_posten WHERE leistung_posten.Postennummer = {$step['Postennummer']}")[0];
-					$element = new Leistung($speziefischerPosten['Leistungsnummer'], $speziefischerPosten['Beschreibung'], $speziefischerPosten['SpeziefischerPreis'], $speziefischerPosten['Einkaufspreis'], $speziefischerPosten['qty'], $speziefischerPosten['meh'], $step['discount'], (int) $step['isInvoice']);
+					$query = "SELECT Leistungsnummer, Beschreibung, SpeziefischerPreis, Einkaufspreis, qty, meh FROM leistung_posten WHERE leistung_posten.Postennummer = :postennummer";
+					$data = DBAccess::selectQuery($query, array("postennummer" => $step['Postennummer']));
+
+					if (count($data) != 0) {
+						$speziefischerPosten = $data[0];
+						$element = new Leistung($speziefischerPosten['Leistungsnummer'], $speziefischerPosten['Beschreibung'], $speziefischerPosten['SpeziefischerPreis'], $speziefischerPosten['Einkaufspreis'], $speziefischerPosten['qty'], $speziefischerPosten['meh'], $step['discount'], (int) $step['isInvoice']);
+					} else {
+						continue 2;
+					}
 				break;
 				case 'compact':
 					$speziefischerPosten = DBAccess::selectQuery("SELECT amount, marke, price, purchasing_price, `description`, `name` FROM product_compact WHERE product_compact.postennummer = {$step['Postennummer']}")[0];
