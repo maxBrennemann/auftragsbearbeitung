@@ -150,10 +150,15 @@ FileUploader.prototype.preview = function() {
 }
 
 FileUploader.prototype.initializeDragAndDrop = function() {
-	document.getElementsByClassName("filesList")[0].addEventListener("drop", function(e) {
+	const filesList = document.querySelector(".filesList");
+	if (filesList == null) {
+		return;
+	}
+
+	filesList.addEventListener("drop", function(e) {
 		this.ondropHandler(e);
 	}.bind(this), false);
-	document.getElementsByClassName("filesList")[0].addEventListener("dragover", function(e) {
+	filesList.addEventListener("dragover", function(e) {
 		this.ondragHandler(e);
 	}.bind(this), false);
 }

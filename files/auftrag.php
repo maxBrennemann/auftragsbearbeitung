@@ -340,7 +340,6 @@ if ($auftragsId == -1): ?>
 		<span id="showColors"><?=$farbTable?></span>
 		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="addColor()">Neuen Farbe hinzufügen</button>
 	</div>
-	<?php if ($show == false): ?>
 	<div class="defCont upload">
 		<p class="font-bold">Dateien zum Auftrag hinzufügen</p>
 		<form class="fileUploader" method="post" enctype="multipart/form-data" data-target="order" name="auftragUpload" id="uploadFilesOrder">
@@ -391,5 +390,4 @@ if ($auftragsId == -1): ?>
 			<button onclick="addSelectedColors()">Farbe(n) übernehmen</button>
 		</div>
 	</template>
-	<?php endif; ?>
 <?php endif; ?>

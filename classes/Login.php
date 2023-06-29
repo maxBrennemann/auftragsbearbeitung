@@ -203,7 +203,7 @@ class Login {
 			return false;
 		} else {
 			$loginKey = $_POST["loginKey"];
-			$query = "SELECT * FROM user_login_key WHERE login_key = :loginKey AND user_device_id = :deviceId LIMIT 1;";
+			$query = "SELECT * FROM user_login_key WHERE login_key = :loginKey AND user_device_id = :deviceId ORDER BY id ASC LIMIT 1;";
 			$data = DBAccess::selectQuery($query, array(
 				'loginKey' => $loginKey,
 				'deviceId' => $deviceId,

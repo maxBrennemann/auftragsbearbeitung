@@ -59,12 +59,14 @@ $t->addLink($linker);
     </div>
 </div>
 <div class="defCont">
-    <p class="pHeading">Neues Motiv hinzufügen</p>
+    <p class="font-bold">Neues Motiv hinzufügen</p>
     <input type="text" id="newTitle" class="px-4 py-2 m-1 text-sm text-slate-600 rounded-lg">
     <button type="submit" onclick="createNewSticker()" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Neues Motiv erstellen</button>
 </div>
 <div class="defCont">
-    <p class="pHeading">Motivexporte</p>
+    <p class="font-bold">Motivexporte</p>
     <button id="createFbExport" data-binding="true" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Facebook Export generieren</button>
 </div>
-<?=$t->getTable()?>
+<div class="overflow-x-scroll h-96">
+    <?=$t->getTable()?>
+</div>

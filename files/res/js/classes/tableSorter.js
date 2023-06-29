@@ -107,6 +107,6 @@ export class TableSorter {
         v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2))(this.getCellValue(asc ? a : b, idx), this.getCellValue(asc ? b : a, idx));
 }
 
-function sortTableNew(e) {
+export function sortTableNew(e) {
 	currentTableSorter.sort(e);
 } 

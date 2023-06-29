@@ -44,10 +44,6 @@
     }
 }
 
-.pHeading {
-    font-weight: bold;
-}
-
 .productLoader {
     display: none;
     top: -6px;
