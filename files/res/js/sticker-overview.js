@@ -21,14 +21,10 @@ function checkIfOverview() {
     let overviewTable = document.querySelector('[data-type="module_sticker_sticker_data"]');
     if (overviewTable != null) {
         let trElem = document.getElementsByClassName("tableHead");
-        let top = document.querySelector("header");
-        top = top.getBoundingClientRect();
-        top = top.height;
-        top = Math.ceil(top);
         for (let i = 0; i < trElem.length; i++) {
             let tr = trElem[i];
             tr.style.position = "sticky";
-            tr.style.top = top + "px";
+            tr.style.top = 0;
         }
     }
 }
