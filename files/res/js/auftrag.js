@@ -41,6 +41,7 @@ function initCode() {
     });
 
     initPostenFilter();
+    initExtraOptions();
 }
 
 function initPostenFilter() {
@@ -55,6 +56,47 @@ function initPostenFilter() {
             reloadPostenListe();
         });
     }
+}
+
+function initExtraOptions() {
+    const inputExtraOptions = document.getElementById("extraOptions");
+    if (inputExtraOptions == null) {
+        return;
+    }
+    inputExtraOptions.addEventListener("click", function (e) {
+        const showExtraOptions = document.getElementById("showExtraOptions");
+        showExtraOptions.classList.toggle("hidden");
+    });
+
+    const deleteOrder = document.getElementById("deleteOrder");
+    deleteOrder.addEventListener("click", showDeleteConfirmation);
+}
+
+function showDeleteConfirmation() {
+    const template = document.getElementById("templateAlertBox");
+	const div = document.createElement("div");
+    div.id = "alertBox";
+	div.appendChild(template.content.cloneNode(true));
+
+    document.body.appendChild(div);
+    div.classList.add("absolute", "w-96", "z-20");
+    centerAbsoluteElement(div);
+    addActionButtonForDiv(div, "remove");
+}
+
+function deleteOrder() {
+    ajax.post({
+        r: "deleteOrder",
+        id: globalData.auftragsId,
+    }).then(r => {
+        if (r.success) {
+            window.location.href = r.home;
+        }
+    });
+}
+
+function closeAlert() {
+    document.getElementById("alertBox").remove();
 }
 
 function addSearchEventListeners() {

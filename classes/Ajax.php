@@ -415,6 +415,16 @@ class Ajax {
 					$user = $_SESSION['userid'];
 				NotificationManager::addNotificationCheck($user, 0, "Bearbeitungsschritt erledigt", $postennummer);
 			break;
+			case "deleteOrder":
+				// TODO: implement db triggers for order deletion
+				$id = (int) $_POST["id"];
+				$query = "DELETE FROM auftrag WHERE Auftragsnummer = :id;";
+				DBAccess::deleteQuery($query);
+				echo json_encode([
+					"success" => true,
+					"home" => Link::getPageLink(""),
+				]);
+			break;
 			case "sendPostenPositions":
 				$tableKey = $_POST["tablekey"];
 				$order = $_POST["order"];
