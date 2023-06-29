@@ -114,7 +114,12 @@ if ($auftragsId == -1): ?>
 		<a class="text-blue-500	font-semibold" href="<?=Link::getPageLink("kunde")?>?id=<?=$auftrag->getKundennummer()?>">Kunde <span id="kundennummer"><?=$auftrag->getKundennummer()?></span> zeigen</a>
 	</div>
 	<div class="defCont auftragsinfo">
-		<p class="font-bold">Auftrag <span id="auftragsnummer"><?=$auftrag->getAuftragsnummer()?></span></p>
+		<div class="relative">
+			<span class="font-bold">Auftrag <span id="auftragsnummer"><?=$auftrag->getAuftragsnummer()?></span><button class="float-right border-none" id="extraOptions">⋮</button></span>
+			<div class="hidden absolute right-0 top-0 bg-white rounded-lg drop-shadow-lg p-3 mt-5" id="showExtraOptions">
+				<button class="btn-attention mt-5" id="deleteOrder">Auftrag löschen</button>
+			</div>
+		</div>
 		<div class="inputCont">
 			<label for="orderTitle">Auftragsbezeichnung:</label>
 			<input class="data-input" id="orderTitle" value="<?=$auftrag->getAuftragsbezeichnung()?>" autocomplete="none" onchange="editTitle()">
@@ -389,5 +394,29 @@ if ($auftragsId == -1): ?>
 			<?php endforeach; ?>
 			<button onclick="addSelectedColors()">Farbe(n) übernehmen</button>
 		</div>
+	</template>
+	<template id="templateAlertBox">
+		<p>Möchtest Du den Auftrag sicher löschen?</p>
+		<button onclick="deleteOrder();" class="btn-attention">Ja</button>
+		<button onclick="closeAlert();" class="btn-primary">Nein</button>
+	</template>
+	<template id="templateCalculateGas">
+		<p>Spritpreisrechner</p>
+		<label>
+			Fahrzeug auswählen
+			<select>
+				<option>Dacia Duster</option>
+				<option>Fiat</option>
+				<option>Verbrauch selbst eingeben</option>
+			</select>
+		</label>
+		<label>
+			Strecke in km
+			<input type="number">
+		</label>
+		<label>
+			Preis pro Liter
+			<input>
+		</label>
 	</template>
 <?php endif; ?>
