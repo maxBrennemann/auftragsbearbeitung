@@ -443,9 +443,9 @@ class Table {
         $html = "";
 
         if ($this->editable) {
-			$html = "<table class='table-auto allowAddingContent' data-type='{$this->type}' data-key='{$this->dataKey}' data-send-to='{$this->sendTo}'>";
+			$html = "<table class='table-auto overflow-x-scroll w-full allowAddingContent' data-type='{$this->type}' data-key='{$this->dataKey}' data-send-to='{$this->sendTo}'>";
 		} else {
-			$html = "<table class='table-auto' data-type='{$this->type}' data-key='{$this->dataKey}'>";
+			$html = "<table class='table-auto overflow-x-scroll w-full' data-type='{$this->type}' data-key='{$this->dataKey}'>";
 		}
         
 		$html .= self::html_createTableHeader($this->columnNames);

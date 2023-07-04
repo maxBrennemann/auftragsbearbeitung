@@ -162,4 +162,4 @@ $motiveOverview = 	Link::getPageLink("sticker-overview");
 		<hr class="headerline">
 		<div class="showBreadcrumb my-1 2xl:my-3"><a href="<?=Link::getPageLink("")?>" id="home_link">Home</a>/<a href="<?=Link::getPageLink($page)?>"><?=$pageName?></a></div>
 	</header>
-	<main class="mt-2 w-4/5">
+	<main class="mt-2 lg:w-4/5">

@@ -419,7 +419,7 @@ class Ajax {
 				// TODO: implement db triggers for order deletion
 				$id = (int) $_POST["id"];
 				$query = "DELETE FROM auftrag WHERE Auftragsnummer = :id;";
-				DBAccess::deleteQuery($query);
+				DBAccess::deleteQuery($query, ["id" => $id]);
 				echo json_encode([
 					"success" => true,
 					"home" => Link::getPageLink(""),

@@ -82,6 +82,7 @@ if ($auftragsId == -1): ?>
 	<br><br>
 	<?=$searchTable?>
 <?php elseif ($auftrag->istRechnungGestellt() && $show == false): ?>
+<div>
 	<div class="defCont">
 		<p>Auftrag <?=$auftrag->getAuftragsnummer()?> wurde abgeschlossen. Rechnungsnummer: <span id="rechnungsnummer"><?=$auftrag->getRechnungsnummer()?></span></p>
 		<button onclick="print('rechnungsnummer', 'Rechnung');">Rechnungsblatt anzeigen</button>
@@ -200,7 +201,7 @@ if ($auftragsId == -1): ?>
 	</div>
 	<div class="defCont posten">
 		<p><span class="font-bold">Zeiten, Produkte und Kosten (netto)</span> <input id="rechnungspostenAusblenden" type="checkbox" <?=ClientSettings::getFilterOrderPosten() == true ? "checked" : ""?>> Rechnungsposten ausblenden</p>
-		<div id="auftragsPostenTable">
+		<div id="auftragsPostenTable" class="overflow-x-auto lg:w-full">
 			<?=$auftrag->getAuftragspostenAsTable()?>
 		</div>
 		<div class="buttonDiv">
@@ -419,4 +420,11 @@ if ($auftragsId == -1): ?>
 			<input>
 		</label>
 	</template>
+</div>
 <?php endif; ?>
+
+<style>
+	/* * {
+  outline: 1px solid #f00 !important;
+}*/
+</style>

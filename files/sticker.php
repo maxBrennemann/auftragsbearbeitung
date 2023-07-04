@@ -28,6 +28,7 @@ if ($id == 0): ?>
     <a href="<?=Link::getPageLink("sticker-overview")?>">Zur Motivübersicht</a>
 <?php else: ?>
 <script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
+<div class="w-full">
 <?=$stickerCollection->checkProductErrorStatus() ? $stickerCollection->getErrorMessage() : ""?>
 <div class="defCont cont1">
     <div>
@@ -466,3 +467,4 @@ if ($id == 0): ?>
     <?=Icon::$iconInvisible?>
 </template>
 <?php endif; ?>
+</div>
