@@ -10,7 +10,6 @@ require_once('classes/project/Rechnung.php');
 require_once('classes/project/Auftragsverlauf.php');
 require_once('classes/project/Fahrzeug.php');
 require_once('classes/project/Kunde.php');
-require_once('classes/DBAccess.php');
 require_once('classes/Upload.php');
 require_once('classes/project/Liste.php');
 require_once('classes/project/Table.php');
@@ -110,7 +109,7 @@ if ($auftragsId == -1): ?>
 		<p><?=$kunde->getTelefonMobil()?></p>
 		<p><a href="mailto:<?=$kunde->getEmail()?>"><?=$kunde->getEmail()?></a></p>
 		<p id="showAnspr"><?php if ($ansprechpartner != -1): ?>Ansprechpartner: <?=$ansprechpartner['Vorname']?> <?=$ansprechpartner['Nachname']?><?php endif;?></p>
-		<span>Ansprechpartner ändern<button class="actionButton" onclick="changeContact()">✎</button></span>
+		<span>Ansprechpartner ändern<button class="actionButton" data-binding="true" data-fun="changeContact">✎</button></span>
 		<br>
 		<a class="text-blue-500	font-semibold" href="<?=Link::getPageLink("kunde")?>?id=<?=$auftrag->getKundennummer()?>">Kunde <span id="kundennummer"><?=$auftrag->getKundennummer()?></span> zeigen</a>
 	</div>
@@ -123,15 +122,15 @@ if ($auftragsId == -1): ?>
 		</div>
 		<div class="inputCont">
 			<label for="orderTitle">Auftragsbezeichnung:</label>
-			<input class="data-input" id="orderTitle" value="<?=$auftrag->getAuftragsbezeichnung()?>" autocomplete="none" onchange="editTitle()">
+			<input class="data-input" id="orderTitle" value="<?=$auftrag->getAuftragsbezeichnung()?>" autocomplete="none" data-write="true" data-fun="editTitle">
 		</div>
 		<div class="inputCont">
 			<label for="orderDescription">Auftragsbeschreibung:</label>
-			<textarea class="data-input" id="orderDescription" autocomplete="none" onchange="editDescription();" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"><?=$auftrag->getAuftragsbeschreibung()?></textarea>
+			<textarea class="data-input" id="orderDescription" autocomplete="none" data-write="true" data-fun="editDescription" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"><?=$auftrag->getAuftragsbeschreibung()?></textarea>
 		</div>
 		<div class="inputCont">
 			<label for="orderType">Auftragstyp:</label>
-			<select class="data-input" id="orderType"  onchange="editOrderType();"><?=$auftrag->getAuftragsbeschreibung()?>
+			<select class="data-input" id="orderType" data-write="true" data-fun="editOrderType"><?=$auftrag->getAuftragsbeschreibung()?>
 				<?php foreach($auftragsTypen as $type): ?>
 				<option value="<?=$type["id"]?>" <?=$auftragsTyp == $type["id"] ? "selected" : "" ?>><?=$type["Auftragstyp"]?></option>
 				<?php endforeach; ?>
@@ -139,24 +138,24 @@ if ($auftragsId == -1): ?>
 		</div>
 		<div class="m-2">
 			<p>Auftragseingang: 
-				<input class="m-1" type="date" value="<?=$auftrag->getDate()?>" onchange="updateDate(event)">
+				<input class="m-1" type="date" value="<?=$auftrag->getDate()?>" data-write="true" data-fun="updateDate">
 			</p>
 			<p>Termin: 
-				<input class="m-1" type="date" value="<?=$auftrag->getDeadline()?>" onchange="updateDeadline(event)" id="inputDeadline">
-				<input type="checkbox" onclick="setDeadlineState(event)" <?=$auftrag->getDeadline() == "" ? "checked" : "" ?>> Kein Termin
+				<input class="m-1" type="date" value="<?=$auftrag->getDeadline()?>" id="inputDeadline" data-write="true" data-fun="updateDeadline">
+				<input type="checkbox" data-binding="true" data-fun="setDeadlineState" <?=$auftrag->getDeadline() == "" ? "checked" : "" ?>> Kein Termin
 			</p>
 		</div>
 		<div>
 			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="location.href= '<?=Link::getPageLink('rechnung')?>?target=create&id=<?=$auftragsId?>'">Rechnung generieren</button>
 			<?php if ($auftrag->getIsArchiviert() == false) :?>
-				<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="archvieren();">Auftrag archivieren</button>
+				<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="archvieren">Auftrag archivieren</button>
 			<?php endif; ?>
-			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="setOrderFinished()">Auftrag ist fertig</button>
+			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="setOrderFinished">Auftrag ist fertig</button>
 		</div>
 	</div>
 	<div class="defCont schritte">
 		<p class="font-bold">Bearbeitungsschritte und Aufgaben</p>
-		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="showBearbeitungsschritt()">Neuen Bearbeitungsschritt hinzufügen</button>
+		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="showBearbeitungsschritt">Neuen Bearbeitungsschritt hinzufügen</button>
 		<div class="innerDefCont" id="bearbeitungsschritte" style="display: none">
 			<div>
 				<p>Bezeichnung:</p>
@@ -175,7 +174,7 @@ if ($auftragsId == -1): ?>
 					<option value="<?=$m['id']?>"><?=$m['prename']?> <?=$m['lastname']?></option>
 				<?php endforeach; ?>
 			</select>
-			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="addBearbeitungsschritt()">Hinzufügen</button>
+			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="addBearbeitungsschritt">Hinzufügen</button>
 		</div>
 		<div>
 			<input onchange="radio('hide')" type="radio" name="showDone" value="hide" checked> Zu erledigende Schritte anzeigen<br>
@@ -187,13 +186,13 @@ if ($auftragsId == -1): ?>
 	</div>
 	<div class="defCont schritteAdd">
 		<p class="font-bold">Notizen</p>
-		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="addNewNote()">Neue Notiz hinzufügen</button>
+		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="addNewNote">Neue Notiz hinzufügen</button>
 		<div class="innerDefCont" id="addNotes" style="display: none">
 			<div>
 				<p>Notiz:</p>
 				<textarea class="noteInput m-1 text-slate-600 rounded-lg p-2" type="text" max="128"></textarea>
 			</div>
-			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="addNote();">Hinzufügen</button>
+			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="addNote">Hinzufügen</button>
 		</div>
 		<div id="noteContainer">
 			<?=$auftrag->getNotes()?>
@@ -219,21 +218,21 @@ if ($auftragsId == -1): ?>
 						<span>Zeit in Minuten<br><input class="postenInput" id="time" type="number" min="0"></span><br>
 						<span>Stundenlohn in €<br><input class="postenInput" id="wage" type="number" value="<?=$auftrag->getDefaultWage()?>"></span><br>
 						<span>Beschreibung<br><textarea id="descr" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span><br>
-						<button id="addTimeButton" onclick="addTime()">Hinzufügen</button>
+						<button id="addTimeButton" data-binding="true" data-fun="addTime">Hinzufügen</button>
 					</div>
 					<div class="container">
 						<span>Erweiterte Zeiterfassung:</span>
 						<br>
 						<span>Arbeitszeit(en)</span>
 						<p class="timeInputWrapper">von <input class="timeInput" type="time" min="05:00" max="23:00"> bis <input class="timeInput"  type="time" min="05:00" max="23:00"> am <input class="dateInput" type="date"></p>
-						<button class="addToTable" onclick="addTimeInputs(event)">+</button>
+						<button class="addToTable" data-binding="true" data-fun="addTimeInputs">+</button>
 						<p id="showTimeSummary"></p>
 					</div>
 				</div>
 			</div>
 			<div class="tabcontent" id="tabLeistung">
 				<div id="addPostenLeistung">
-					<select id="selectLeistung" onchange="selectLeistung(event);">
+					<select id="selectLeistung" data-write="true" data-fun="selectLeistung">
 						<?php foreach ($leistungen as $leistung): ?>
 							<option value="<?=$leistung['Nummer']?>" data-aufschlag="<?=$leistung['Aufschlag']?>"><?=$leistung['Bezeichnung']?></option>
 						<?php endforeach; ?>
@@ -241,8 +240,8 @@ if ($auftragsId == -1): ?>
 					<br>
 					<span>Menge:<br><input class="postenInput" id="anz" value="1"></span><br>
 					<span>Mengeneinheit:<br>
-						<input class="postenInput" id="meh">
-						<span id="meh_dropdown">▼</span>
+						<input class="postenInput" id="meh" data-binding="true" data-fun="mehListener">
+						<span id="meh_dropdown" data-binding="true" data-fun="mehListener">▼</span>
 						<div class="selectReplacer" id="selectReplacerMEH">
 							<p class="optionReplacer" onclick="document.getElementById('meh').value = this.innerHTML;">Stück</p>
 							<p class="optionReplacer" onclick="document.getElementById('meh').value = this.innerHTML;">m²</p>
@@ -254,7 +253,7 @@ if ($auftragsId == -1): ?>
 					<span>Beschreibung:<br><textarea id="bes" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span><br>
 					<span>Einkaufspreis:<br><input class="postenInput" id="ekp" value="0"></span><br>
 					<span>Verkaufspreis:<br><input class="postenInput" id="pre" value="0"></span><br>
-					<button onclick="addLeistung()" id="addLeistungButton">Hinzufügen</button>
+					<button data-binding="true" data-fun="addLeistung" id="addLeistungButton" >Hinzufügen</button>
 				</div>		
 			</div>
 			<div class="tabcontent" id="tabProdukt">
@@ -265,7 +264,7 @@ if ($auftragsId == -1): ?>
 					<span>VK-Preis: <input class="postenInput" id="posten_produkt_vk" type="text"></span>
 					<span>Name: <input class="postenInput" id="posten_produkt_name" type="text"></span>
 					<span>Beschreibung: <textarea id="posten_produkt_besch" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span>
-					<button onclick="addProductCompactOld()">Hinzufügen</button>
+					<button data-binding="true" data-fun="addProductCompactOld">Hinzufügen</button>
 				</div>
 			</div>
 			<div class="tabcontent" id="tabProdukte">
@@ -278,7 +277,7 @@ if ($auftragsId == -1): ?>
 					</div>
 					<div id="resultContainer"></div>
 					<span>Menge: <input class="postenInput" id="posten_produkt_menge" type="number"></span>
-					<button onclick="addProductCompact()">Hinzufügen</button>
+					<button data-binding="true" data-fun="addProductCompact">Hinzufügen</button>
 					<br>
 					<a href="<?=Link::getPageLink("neues-produkt");?>">Neues Produkt hinzufügen</a>
 				</div>
@@ -320,19 +319,19 @@ if ($auftragsId == -1): ?>
 		<div>
 			<span>Fahrzeug hinzufügen</span>
 			<br>
-			<select id="selectVehicle" onchange="selectVehicle(event);">
+			<select id="selectVehicle" data-write="true" data-fun="selectVehicle">
 				<option value="0" selected disabled>Bitte auswählen</option>
 				<?php foreach ($fahrzeuge as $f): ?>
 					<option value="<?=$f['Nummer']?>"><?=$f['Kennzeichen']?> <?=$f['Fahrzeug']?></option>
 				<?php endforeach; ?>
 				<option value="addNew">Neues Fahrzeug hinzufügen</option>
 			</select>
-			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="addFahrzeug(true)">Für diesen Auftrag übernehmen</button>
+			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="addExistingVehicle">Für diesen Auftrag übernehmen</button>
 		</div>
 		<div class="innerDefCont" id="addVehicle" style="display: none;">
 			<span>Kfz-Kennzeichen:<br><input id="kfz"></span><br>
 			<span>Fahrzeug:<br><input id="fahrzeug"></span><br>
-			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="addFahrzeug()">Neues Fahrzeug hinzufügen</button>
+			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="addNewVehicle">Neues Fahrzeug hinzufügen</button>
 		</div>
 		<div><?=$auftrag->getFahrzeuge();?></div>
 		<br>
@@ -344,7 +343,7 @@ if ($auftragsId == -1): ?>
 	<div class="defCont farben">
 		<p class="font-bold">Farben</p>
 		<span id="showColors"><?=$farbTable?></span>
-		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="addColor()">Neuen Farbe hinzufügen</button>
+		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="addColor">Neuen Farbe hinzufügen</button>
 	</div>
 	<div class="defCont upload">
 		<p class="font-bold">Dateien zum Auftrag hinzufügen</p>
@@ -376,12 +375,25 @@ if ($auftragsId == -1): ?>
 	</div>
 	<template id="templateFarbe">
 		<div class="defCont">
-			<span class="block">Farbbezeichnung: <input class="colorInput" type="text" max="32" placeholder="619 verkehrsgrün"></span>
-			<span class="block">Farbtyp: <input class="colorInput" type="text" max="32" placeholder="751C"></span>
-			<span class="block">Hersteller: <input class="colorInput" tyep="text" max="32" placeholder="Oracal"></span>
-			<span id="hexinputspan">Farbe (Hex): <input class="colorInput jscolor" type="text" max="32" onchange="checkHexCode(this);"></span>
-			<button onclick="sendColor();">Hinuzufügen</button>
-			<button onclick="toggleCS();">Vorhandene Farbe auswählen</button>
+			<label>
+				<p>Farbbezeichnung</p>
+				<input class="colorInput" type="text" max="32" placeholder="619 verkehrsgrün">
+			</label>
+			<label>
+				<p>Farbtyp</p>
+				<input class="colorInput" type="text" max="32" placeholder="751C">
+			</label>
+			<label>
+				<p>Hersteller</p>
+				<input class="colorInput" tyep="text" max="32" placeholder="Oracal">
+			</label>
+			<label>
+				<p>Farbe (Hex)</p>
+				<input class="colorInput jscolor" type="text" max="32" data-write="true" data-fun="checkHexCode">
+			</label>
+			<br>
+			<button class="btn-primary" data-fun="sendColor">Hinuzufügen</button>
+			<button class="btn-primary" data-fun="toggleCS">Vorhandene Farbe auswählen</button>
 		</div>
 		<div class="defCont" id="cpContainer"></div>
 		<div class="defCont" id="csContainer" style="display: none">
@@ -393,13 +405,13 @@ if ($auftragsId == -1): ?>
 				</div>
 				<br>
 			<?php endforeach; ?>
-			<button onclick="addSelectedColors()">Farbe(n) übernehmen</button>
+			<button class="btn-primary" data-binding="true" data-fun="addSelectedColors">Farbe(n) übernehmen</button>
 		</div>
 	</template>
 	<template id="templateAlertBox">
 		<p>Möchtest Du den Auftrag sicher löschen?</p>
-		<button onclick="deleteOrder();" class="btn-attention">Ja</button>
-		<button onclick="closeAlert();" class="btn-primary">Nein</button>
+		<button id="deleteOrder" class="btn-attention">Ja</button>
+		<button id="closeAlert" class="btn-primary">Nein</button>
 	</template>
 	<template id="templateCalculateGas">
 		<p>Spritpreisrechner</p>

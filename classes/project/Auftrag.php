@@ -520,20 +520,13 @@ class Auftrag implements StatisticsInterface {
 		$iconNotebook = Icon::$iconNotebook;
 		$notes = DBAccess::selectQuery("SELECT Notiz FROM notizen WHERE Auftragsnummer = :id ORDER BY creation_date DESC", ["id" => $this->Auftragsnummer]);
 
-		foreach($notes as $note) {
-			$content = $note['Notiz'];
-			$html .= <<<EOL
-				<div class="notes">
-					<div class="noteheader">Notiz 
-						<span class="inline">$iconNotebook</span>
-					</div>
-					<div class="notecontent">$content</div>
-					<div class="notebutton" onclick="removeNote(event)">×</div>
-				</div>
-			EOL;
-		}
+		ob_start();
+		insertTemplate('files/res/views/noteView.php', [
+			"notes" => $notes,
+		]);
+		$content = ob_get_clean();
 
-		return $html;
+		return $content;
 	}
 
 	public function recalculate() {

@@ -49,7 +49,7 @@ $motiveOverview = 	Link::getPageLink("sticker-overview");
 		$link = Link::getResourcesShortLink($page . ".js", "js");
 
 		/* TODO: workaround mit module und if check muss noch geändert werden */
-		if ($page == "sticker") {
+		if ($page == "sticker" || $page == "auftrag") {
 			echo '<script type="module" src="' . $link . '"></script>';
 		} else {
 			echo '<script src="' . $link . '"></script>';
