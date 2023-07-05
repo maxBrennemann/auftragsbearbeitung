@@ -252,7 +252,9 @@ class Sticker extends PrestashopConnection {
     protected function uploadImageDescription($descriptions) {
         $client = new \GuzzleHttp\Client();
         $client->request('POST', SHOPURL . "/auftragsbearbeitung/setImageDescription.php", [
-            "descriptions" => json_encode($descriptions),
+            'form_params' => [
+                'descriptions' => json_encode($descriptions),
+            ],
         ]);
     }
 
