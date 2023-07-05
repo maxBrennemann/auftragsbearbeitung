@@ -4,7 +4,7 @@ import { addColor, addSelectedColors, checkHexCode, removeColor } from "./auftra
 import { addBearbeitungsschritt, showBearbeitungsschritt, addNote, removeNote, addNewNote } from "./auftrag/noteStepManager.js";
 import { setOrderFinished, updateDate, updateDeadline, setDeadlineState, initExtraOptions, editDescription, editOrderType, editTitle, archvieren } from "./auftrag/orderManager.js";
 import { addExistingVehicle, addNewVehicle, selectVehicle } from "./auftrag/vehicleManager.js";
-import { addProductCompactOld, addLeistung, addTime, addTimeInputs, selectLeistung, initPostenFilter, addProductCompact, calcTime, showPostenAdd } from "./auftrag/postenManager.js";
+import { addProductCompactOld, addLeistung, addTime, selectLeistung, initPostenFilter, addProductCompact, showPostenAdd, createTimeInputRow } from "./auftrag/postenManager.js";
 import "./auftrag/postenOrder.js";
 import "./auftrag/calculateGas.js";
 
@@ -15,10 +15,7 @@ window.globalData = {
     erledigendeSchritte : null,
     alleSchritte : null,
     auftragsId : parseInt(new URL(window.location.href).searchParams.get("id")),
-    times : {
-        0: "00:00",
-        1: "00:00"
-    },
+    times : [],
 }
 
 const fnNames = {};
@@ -53,7 +50,7 @@ fnNames.click_showPostenAdd = showPostenAdd;
 fnNames.click_addProductCompactOld = addProductCompactOld;
 fnNames.click_addLeistung = addLeistung;
 fnNames.click_addTime = addTime;
-fnNames.click_addTimeInputs = addTimeInputs;
+fnNames.click_createTimeInputRow = createTimeInputRow;
 fnNames.click_addProductCompact = addProductCompact;
 fnNames.write_selectLeistung = selectLeistung;
 
@@ -67,12 +64,7 @@ if (document.readyState !== 'loading' ) {
 
 function initCode() {
     initBindings(fnNames);
-
-    /* auto sizes textareas on page load */
-	var timeInputs = document.getElementsByClassName("timeInput");
-	for (let t of timeInputs) {
-		t.addEventListener("change", calcTime, false);
-	}
+    createTimeInputRow();
 
     addSearchEventListeners();
 

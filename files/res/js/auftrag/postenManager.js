@@ -57,43 +57,24 @@ export function addLeistung() {
 }
 
 export function addTime() {
-    var zeiterfassung = {
-        times: globalData.times,
-        dates: {}
-    }
-    var dates = document.getElementsByClassName("dateInput");
-    for (let i = 0; i < dates.length; i++) {
-        zeiterfassung.dates[i] = dates[i].value;
+    const wage = document.getElementById("wage").value;
+    if (wage == "" || wage == null) {
+        alert("Stundenlohn kann nicht leer sein.");
+        return;
     }
 
-    let params = {
-        getReason: "insTime",
+    ajax.post({
+        r: "insTime",
         time: document.getElementById("time").value,
-        wage: document.getElementById("wage").value,
+        wage: wage,
         auftrag: globalData.auftragsId,
         descr: document.getElementById("descr").value,
         ohneBerechnung: getOhneBerechnung() ? 1 : 0,
         addToInvoice: getAddToInvoice() ? 1 : 0,
         discount: document.getElementById("showDiscount").children[0].value,
-        zeiterfassung : JSON.stringify(zeiterfassung)
-    };
-
-    if (globalData.isOverwrite) {
-        params.isOverwrite = true;
-    }
-
-    if (params.wage == "" || params.wage == null) {
-        alert("Stundenlohn kann nicht leer sein.");
-        return;
-    }
-
-    /* quick fix, if times didn't get a new value, set to empty */
-    if (globalData.times[0] == "00:00") {
-        params.zeiterfassung = "empty";
-    }
-
-    var add = new AjaxCall(params, "POST", window.location.href);
-    add.makeAjaxCall(function (response) {
+        isOverwrite: globalData.isOverwrite ? 1 : 0,
+        zeiterfassung: JSON.stringify(globalData.times),
+    }, true).then(response => {
         updatePrice(response);
         reloadPostenListe();
         infoSaveSuccessfull("success");
@@ -105,44 +86,72 @@ export function addTime() {
 }
 
 /**
- * this function gets executed when the "+" button is pressed to add a new timeframe
+ * this function gets executed when the "+" button is pressed to add a new timeframe or on init
  * @param {*} event this is the passed event
  */
-export function addTimeInputs(event) {
-    var p = document.createElement("p");
-    var text1 = document.createTextNode("von ");
-    var text2 = document.createTextNode(" bis ");
-    var text3 = document.createTextNode(" am ");
-    var input1 = document.createElement("input");
-    var input2 = document.createElement("input");
-    var input3 = document.createElement("input");
+export function createTimeInputRow() {
+    const template = document.getElementById("templateTimeInput");
+	const div = document.createElement("div");
+	div.appendChild(template.content.cloneNode(true));
+    
+    const extendedTimeInput = document.getElementById("extendedTimeInput");
+    extendedTimeInput.appendChild(div);
+    
+    const dateInput = div.querySelector(".dateInput");
+    dateInput.dataset.index = globalData.times.length;
+    dateInput.addEventListener("change", () => {
+        globalData.times[dateInput.dataset.index].date = dateInput.value;
+    }, false);
 
-    input1.classList.add("timeInput");
-    input1.type = "time";
-    input1.min = "05:00";
-    input1.max = "23:00";
+    const timeInputs = div.getElementsByClassName("timeInput");
+    const start = timeInputs[0];
+    const end = timeInputs[1];
 
-    input2.classList.add("timeInput");
-    input2.type = "time";
-    input2.min = "05:00";
-    input2.max = "23:00";
+	start.addEventListener("change", calcTime, false);
+    end.addEventListener("change", calcTime, false);
 
-    input3.classList.add("dateInput");
-    input3.type = "date";
+    start.dataset.index = globalData.times.length;
+    start.dataset.type = "start";
+    end.dataset.index = globalData.times.length;
+    end.dataset.type = "end";
 
-    p.classList.add("timeInputWrapper");
-    p.appendChild(text1);
-    p.appendChild(input1);
-    p.appendChild(text2);
-    p.appendChild(input2);
-    p.appendChild(text3);
-    p.appendChild(input3);
+    globalData.times.push({start: "00:00", end: "00:00", date: ""});
 
-    event.target.parentNode.insertBefore(p, event.target);
-    input1.addEventListener("change", calcTime, false);
-    input2.addEventListener("change", calcTime, false);
+    start.focus();
+}
 
-    input1.focus();
+/**
+ * this function gets executed when a time input is filled in
+ * @param {*} e this is the passed event
+ */
+function calcTime(e) {
+    var time = e.target.value;
+    var addPostenZeit = document.getElementById("addPostenZeit");
+    var elements = addPostenZeit.getElementsByClassName("timeInput");
+
+    const index = e.target.dataset.index;
+    const type = e.target.dataset.type;
+
+    var timeDiff = 0;
+    for (var i = 0; i < elements.length; i += 2) {
+        var start = elements[i].value.split(":");
+        var stop = elements[i + 1].value.split(":");
+
+        var temp = parseInt(stop[0]) * 60 + parseInt(stop[1]) - parseInt(start[0]) * 60 - parseInt(start[1]);
+
+        if (temp > 0) {
+            timeDiff += temp;
+            elements[i].parentNode.classList.remove("timeInputWrapperRed");
+        } else {
+            elements[i].parentNode.classList.add("timeInputWrapperRed");
+        }
+    }
+
+    document.getElementById("showTimeSummary").innerHTML = timeDiff + " Minuten";
+    document.getElementById("time").value = timeDiff;
+
+    globalData.times[index][type] = time;
+    console.log(globalData.times);
 }
 
 export function selectLeistung(e) {
@@ -282,43 +291,6 @@ export function initPostenFilter() {
 
 export function click_mehListener() {
     document.getElementById("selectReplacerMEH").classList.add("selectReplacerShow");
-}
-
-/**
- * this function gets executed when a time input is filled in
- * @param {*} e this is the passed event
- */
-export function calcTime(e) {
-    var time = e.target.value;
-    var addPostenZeit = document.getElementById("addPostenZeit");
-    var elements = addPostenZeit.getElementsByClassName("timeInput");
-    var index = -1;
-    for (var i = 0; i < elements.length; i++) {
-        if (elements[i] === e.target) {
-            index = i;
-        }
-    }
-
-    var timeDiff = 0;
-    for (var i = 0; i < elements.length; i += 2) {
-        var start = elements[i].value.split(":");
-        var stop = elements[i + 1].value.split(":");
-
-        var temp = parseInt(stop[0]) * 60 + parseInt(stop[1]) - parseInt(start[0]) * 60 - parseInt(start[1]);
-
-        if (temp > 0) {
-            timeDiff += temp;
-            elements[i].parentNode.classList.remove("timeInputWrapperRed");
-        } else {
-            elements[i].parentNode.classList.add("timeInputWrapperRed");
-        }
-    }
-
-    document.getElementById("showTimeSummary").innerHTML = timeDiff + " Minuten";
-    document.getElementById("time").value = timeDiff;
-
-    globalData.times[index] = time;
-    console.log(globalData.times);
 }
 
 /* https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_dropdown */

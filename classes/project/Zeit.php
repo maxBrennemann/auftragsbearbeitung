@@ -212,17 +212,19 @@ class Zeit extends Posten {
 	}
 
 	public static function erweiterteZeiterfassung($data, $id) {
-		$data = json_decode($data, true);
-
 		$db_array = array();
-		for ($i = 0; $i < sizeof($data["times"]); $i += 2) {
-			$from = self::timeString_toInt($data["times"][$i]);
-			$to = self::timeString_toInt($data["times"][$i + 1]);
-			$date = $data["dates"][$i + 2 * $i];
-			if ($date == "")
+
+		foreach ($data as $timeEntry) {
+			$from = self::timeString_toInt($timeEntry["start"]);
+			$to = self::timeString_toInt($timeEntry["end"]);
+			$date = $timeEntry["date"];
+
+			if ($date == "") {
 				array_push($db_array, [$id, $from, $to, "null" => $date]);
-			else
+			}
+			else {
 				array_push($db_array, [$id, $from, $to, $date]);
+			}
 		}
 
 		DBAccess::insertMultiple("INSERT INTO zeiterfassung (id_zeit, from_time, to_time, `date`) VALUES ", $db_array);

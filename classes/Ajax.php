@@ -148,15 +148,15 @@ class Ajax {
 				$data['discount'] = (int) $_POST['discount'];
 				$data['addToInvoice'] = (int) $_POST['addToInvoice'];
 
-				if (!isset($_POST['isOverwrite'])) {
+				if (isset($_POST['isOverwrite']) && (int) $_POST['isOverwrite'] == 1) {
 					$_SESSION['overwritePosten'] = false;
 				}
 
 				$ids = Posten::insertPosten("zeit", $data);
 
 				/* erweiterte Zeiterfassung */
-				$zeiterfassung = $_POST['zeiterfassung'];
-				if ($zeiterfassung != "empty") {
+				$zeiterfassung = json_decode($_POST['zeiterfassung'], true);
+				if (count($zeiterfassung) != 0) {
 					require_once("classes/project/Zeit.php");
 					Zeit::erweiterteZeiterfassung($zeiterfassung, $ids[1]);
 				}
