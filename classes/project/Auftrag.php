@@ -430,7 +430,7 @@ class Auftrag implements StatisticsInterface {
 
 		$query = "SELECT Auftragsnummer, Datum, IF(kunde.Firmenname = '', 
 				CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) as Kunde, 
-				Auftragsbezeichnung, IF(auftrag.Termin = '0000-00-00', 'kein Termin', auftrag.Termin) AS Termin 
+				Auftragsbezeichnung, IF(auftrag.Termin IS NULL OR auftrag.Termin = '0000-00-00', 'kein Termin', auftrag.Termin) AS Termin 
 			FROM auftrag 
 			LEFT JOIN kunde 
 				ON auftrag.Kundennummer = kunde.Kundennummer 

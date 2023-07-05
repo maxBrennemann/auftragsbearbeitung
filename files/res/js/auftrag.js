@@ -414,15 +414,14 @@ function addBearbeitungsschritt() {
 
     var add = new AjaxCall(params, "POST", window.location.href);
     add.makeAjaxCall(function (response) {
-        console.log(response);
         document.getElementById("stepTable").innerHTML = response;
 
+        /* clear inputs */
         var tableData = document.getElementsByClassName("bearbeitungsschrittInput");
         for (var i = 0; i < tableData.length; i++) {
             tableData[i].value = "";
         }
 
-        document.getElementById("bearbeitungsschritte").removeChild(document.getElementById("sendStepToServer"));
         document.getElementById("bearbeitungsschritte").style.display = "none";
     }.bind(this), false);
 }
