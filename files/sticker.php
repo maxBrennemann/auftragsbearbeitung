@@ -46,12 +46,6 @@ if ($id == 0): ?>
     <div>
         <p>Weitere Dateien (SVGs, CorelDraw, ...):</p>
         <?=insertTemplate("classes/project/modules/sticker/views/stickerFileView.php", ["images" => $stickerImage->getGeneralImages(), "files" => $stickerImage->getFiles()])?>
-        <div id="delete-menu">
-            <div class="item">
-                <?=Icon::$iconDelete?>
-                <span>Löschen</span>
-            </div>
-        </div>
     </div>
 </div>
 <div class="cont2">

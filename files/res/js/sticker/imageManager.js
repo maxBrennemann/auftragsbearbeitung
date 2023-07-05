@@ -196,22 +196,6 @@ function handleUploadedImages(imageData) {
     }
 }
 
-/**
- * deletes the currently selected image
- */
-function deleteImage() {
-    ajax.post({
-        imageId: mainVariables.currentDelete,
-        r: "deleteImage",
-    }).then(r => {
-        if (r.status == "success") {
-            infoSaveSuccessfull("success");
-            const image = document.querySelector(`[data-file-id="${mainVariables.currentDelete}"]`);
-            image.parentNode.removeChild(image);
-        }
-    });
-}
-
 function initSVG() {
     var a = document.getElementById("svgContainer");
     if (a != null || a != undefined) {
@@ -294,33 +278,6 @@ function adjustSVG() {
 function initImageManager() {
     document.addEventListener("click", imageClickListener);
 
-    const contextMenu = document.getElementById("delete-menu");
-    const scope = document.querySelector("body");
-
-    scope.addEventListener("contextmenu", (event) => {
-        const isDeletable = event.target.dataset.deletable != null || event.target.parentNode.dataset.deletable != null;
-        if (isDeletable) {
-            mainVariables.currentDelete = event.target.dataset.fileId;
-            event.preventDefault();
-
-            const {
-                clientX: mouseX, 
-                clientY: mouseY 
-            } = event;
-    
-            contextMenu.style.top = `${mouseY}px`;
-            contextMenu.style.left = `${mouseX}px`;
-    
-            contextMenu.classList.add("visible");
-        }
-    });
-
-    scope.addEventListener("click", (e) => {
-        if (e.target.offsetParent != contextMenu) {
-            contextMenu.classList.remove("visible");
-        }
-    });
-
     const imgMovableContainers = document.querySelectorAll(".imageMovableContainer");
     Array.from(imgMovableContainers).forEach(container => {
         const dropType = container.dataset.dropType;
@@ -334,11 +291,6 @@ function initImageManager() {
         img.addEventListener("dragstart", preventCopy, false);
     });
 
-    const delItems = document.querySelectorAll("#delete-menu.item");
-    Array.from(delItems).forEach(item => {
-        item.addEventListener("click", deleteImage, false);
-    });
-
     const svgContainer = document.getElementById("svgContainer");
     svgContainer.addEventListener("dragover", itemDragOverHandler, false);
     svgContainer.addEventListener("drop", e => itemDropHandler(e, "textilsvg"), false);
@@ -349,15 +301,45 @@ var currentMoveImage;
 var moveImages;
 var svg_elem;
 
-/* init */
 if (document.readyState !== 'loading' ) {
+    init();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        init();
+    });
+}
+
+function init() {
     initImageManager();
     initSVG();
     moveInit()
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        initImageManager();
-        initSVG();
-        moveInit();
+}
+
+export function deleteImage(e) {
+    const imageId = e.currentTarget.dataset.fileId;
+    ajax.post({
+        imageId: imageId,
+        r: "deleteImage",
+    }).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+            const image = document.querySelector(`[data-file-id="${imageId}"]`);
+            const imageRow = image.parentNode.parentNode;
+            imageRow.parentNode.removeChild(imageRow);
+        }
+    });
+}
+
+export function updateImageDescription(e) {
+    const imageId = e.currentTarget.dataset.fileId;
+    const description = e.currentTarget.value;
+    ajax.post({
+        imageId: imageId,
+        description: description,
+        r: "updateImageDescription",
+    }).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+        }
     });
 }

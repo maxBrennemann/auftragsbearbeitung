@@ -1629,6 +1629,20 @@ class Ajax {
 				require_once('classes/project/Search.php');
 				Search::search();
 			break;
+			case "updateImageDescription":
+				$id = (int) $_POST["imageId"];
+				$description = $_POST["description"];
+
+				$query = "UPDATE module_sticker_image SET `description` = :description WHERE id_datei = :id;";
+				DBAccess::updateQuery($query, [
+					"description" => $description,
+					"id" => $id,
+				]);
+
+				echo json_encode([
+					"status" => "success",
+				]);
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);

@@ -1,7 +1,7 @@
 import { click_textGeneration, click_showTextSettings, click_iterateText } from "./sticker/textGeneration.js";
 import { loadTags, showTaggroupManager, addTag } from "./sticker/tagManager.js";
 import ProductConnector from "./sticker/productConnector.js";
-import { click_makeColorable } from "./sticker/imageManager.js";
+import { click_makeColorable, deleteImage, updateImageDescription } from "./sticker/imageManager.js";
 import { click_addNewWidth } from "./sticker/sizeTable.js";
 import { initBindings } from "./classes/bindings.js";
 
@@ -11,6 +11,8 @@ fnNames.click_textGeneration = click_textGeneration;
 fnNames.click_showTextSettings = click_showTextSettings;
 fnNames.click_iterateText = click_iterateText;
 fnNames.click_addNewWidth = click_addNewWidth;
+fnNames.click_deleteImage = deleteImage;
+fnNames.write_updateImageDescription = updateImageDescription;
 
 const mainVariables = {
     productConnect: [],
