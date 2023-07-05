@@ -4,7 +4,7 @@ import { addColor, addSelectedColors, checkHexCode, removeColor } from "./auftra
 import { addBearbeitungsschritt, showBearbeitungsschritt, addNote, removeNote, addNewNote } from "./auftrag/noteStepManager.js";
 import { setOrderFinished, updateDate, updateDeadline, setDeadlineState, initExtraOptions, editDescription, editOrderType, editTitle, archvieren } from "./auftrag/orderManager.js";
 import { addExistingVehicle, addNewVehicle, selectVehicle } from "./auftrag/vehicleManager.js";
-import { addProductCompactOld, addLeistung, addTime, addTimeInputs, selectLeistung, initPostenFilter, addProductCompact, calcTime } from "./auftrag/postenManager.js";
+import { addProductCompactOld, addLeistung, addTime, addTimeInputs, selectLeistung, initPostenFilter, addProductCompact, calcTime, showPostenAdd } from "./auftrag/postenManager.js";
 import "./auftrag/postenOrder.js";
 import "./auftrag/calculateGas.js";
 
@@ -49,6 +49,7 @@ fnNames.click_addExistingVehicle = addExistingVehicle;
 fnNames.click_addNewVehicle = addNewVehicle;
 fnNames.write_selectVehicle = selectVehicle;
 
+fnNames.click_showPostenAdd = showPostenAdd;
 fnNames.click_addProductCompactOld = addProductCompactOld;
 fnNames.click_addLeistung = addLeistung;
 fnNames.click_addTime = addTime;
@@ -155,7 +156,7 @@ async function changeContact() {
     centerAbsoluteElement(div);
 }
 
-function performSearch(e) {
+window.performSearch = function(e) {
     var query = e.target.previousSibling.value;
     console.log(query);
 
@@ -239,14 +240,14 @@ function showDeleteMessage(row, header, key, type) {
 }
 
 /* function starts deletion of the row */
-function deleteRow(key, type = "schritte", node) {
+window.deleteRow = function(key, type = "schritte", node) {
     let row = node.parentNode.parentNode;
     let header = row.parentNode.children[0];
 
     showDeleteMessage(row, header, key, type);
 }
 
-function updateIsDone(key, event) {
+window.updateIsDone = function(key, event) {
     var update = new AjaxCall(`getReason=update&key=${key}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
     update.makeAjaxCall(function (response, args) {
         console.log(response);
@@ -257,19 +258,15 @@ function updateIsDone(key, event) {
     }, event.target);
 }
 
-function showAuftrag() {
+window.showAuftrag = function() {
     var url = window.location.href;
     url += "&show=t";
     window.location.href = url;
 }
 
-function showAuftragsverlauf() {
-    var container = document.createElement("div");
-}
+fnNames.click_showAuftragsverlauf = function() {}
 
-/* product section */
-
-function chooseProduct(productId) {
+window.chooseProduct = function(productId) {
     var amount = document.getElementById(productId + "_getAmount").value;
     var isFree = getOhneBerechnung() ? 1 : 0;
     var addToInvoice = getAddToInvoice() ? 1 : 0;
@@ -281,7 +278,7 @@ function chooseProduct(productId) {
 }
 
 /* shows auftragsblatt, from: https://stackoverflow.com/questions/19851782/how-to-open-a-url-in-a-new-tab-using-javascript-or-jquery */
-function showPreview() {
+window.showPreview = function() {
     let link = document.getElementById("home_link").href + "pdf?type=auftrag&id=" + globalData.auftragsId;
     var win = window.open(link, '_blank');
     if (win) {
@@ -290,7 +287,7 @@ function showPreview() {
 }
 
 /* from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_tabs and modified */
-function openTab(evt, id) {
+window.openTab = function(evt, id) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
@@ -304,12 +301,8 @@ function openTab(evt, id) {
     evt.currentTarget.className += " activetab";
 }
 
-function showPostenAdd() {
-    document.getElementById("showPostenAdd").style.display = "";
-}
-
 /* performAction section of the table */
-function performAction(key, event) {
+window.performAction = function(key, event) {
     /* centered upload div */
     var div = document.createElement("div");
     var form = document.createElement("form");

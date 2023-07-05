@@ -90,56 +90,54 @@ class Auftrag implements StatisticsInterface {
 	}
 
 	public function getBearbeitungsschritteAsTable() {
-		$data = DBAccess::selectQuery("SELECT Bezeichnung, Datum, `Priority`, finishingDate as 'erledigt am' FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer}");
+		$query = "SELECT Schrittnummer, Bezeichnung, Datum, `Priority`, finishingDate FROM schritte WHERE Auftragsnummer = :id ORDER BY `Priority` DESC";
+		$data = DBAccess::selectQuery($query, ["id" => $this->Auftragsnummer]);
+
 		$column_names = array(
 			0 => array("COLUMN_NAME" => "Bezeichnung"),
 			1 => array("COLUMN_NAME" => "Datum"),
-			2 => array("COLUMN_NAME" => "Priority"),
-			3 => array("COLUMN_NAME" => "erledigt am")
-		);
-
-		$form = new InteractiveFormGenerator("");
-		return $form->create($data, $column_names);
-	}
-
-	public function getOpenBearbeitungsschritteAsTable() {
-		/* 
-		 * istErledigt = 1 -> ist noch zu erledigen
-		 * istErledigt = 0 -> ist schon erledigt
-		*/
-		$data = DBAccess::selectQuery("SELECT Schrittnummer, Bezeichnung, Datum, `Priority` FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer} AND istErledigt = 1 ORDER BY `Priority` DESC");
-		$column_names = array(
-			0 => array("COLUMN_NAME" => "Bezeichnung"),
-			1 => array("COLUMN_NAME" => "Datum"),
-			2 => array("COLUMN_NAME" => "Priority")
-		);
-
-		$form = new InteractiveFormGenerator("schritte");
-		$form->setRowDone(true);
-		$_SESSION['storedTable'] = serialize($form);
-		return $form->create($data, $column_names);
-	}
-
-	/* getBearbeitungsschritte with new Table class */
-	public function getOpenBearbeitungsschritteTable() {
-		$data = DBAccess::selectQuery("SELECT Schrittnummer, Bezeichnung, Datum, `Priority` AS Priorotät FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer} AND istErledigt = 1 ORDER BY `Priority` DESC");
-		$column_names = array(
-			0 => array("COLUMN_NAME" => "Bezeichnung"),
-			1 => array("COLUMN_NAME" => "Datum"),
-			2 => array("COLUMN_NAME" => "Priorotät")
+			2 => array("COLUMN_NAME" => "Priority", "ALT" => "Priorotät"),
+			3 => array("COLUMN_NAME" => "finishingDate", "ALT" => "erledigt am"),
 		);
 
 		for ($i = 0; $i < sizeof($data); $i++) {
-			$data[$i]["Priorotät"] = Priority::getPriorityLevel($data[$i]["Priorotät"]);
+			$data[$i]["Priority"] = Priority::getPriorityLevel($data[$i]["Priority"]);
 		}
 
 		/* addes three buttons to table */
 		$t = new Table();
 		$t->createByData($data, $column_names);
-		$t->addActionButton("update", $identifier = "Schrittnummer", $update = "istErledigt = 0");
 		$t->addActionButton("edit");
 		$t->setType("schritte");
-		$t->addActionButton("delete", $identifier = "Schrittnummer");
+		$t->addActionButton("delete", "Schrittnummer");
+
+		$_SESSION["schritte_table"] = serialize($t);
+
+		return $t->getTable();
+	}
+
+	/* getBearbeitungsschritte with new Table class */
+	public function getOpenBearbeitungsschritteTable() {
+		$query = "SELECT Schrittnummer, Bezeichnung, Datum, `Priority` FROM schritte WHERE Auftragsnummer = :id AND istErledigt = 1 ORDER BY `Priority` DESC";
+		$data = DBAccess::selectQuery($query, ["id" => $this->Auftragsnummer]);
+
+		$column_names = array(
+			0 => array("COLUMN_NAME" => "Bezeichnung"),
+			1 => array("COLUMN_NAME" => "Datum"),
+			2 => array("COLUMN_NAME" => "Priority", "ALT" => "Priorotät")
+		);
+
+		for ($i = 0; $i < sizeof($data); $i++) {
+			$data[$i]["Priority"] = Priority::getPriorityLevel($data[$i]["Priority"]);
+		}
+
+		/* addes three buttons to table */
+		$t = new Table();
+		$t->createByData($data, $column_names);
+		$t->addActionButton("update", "Schrittnummer", $update = "istErledigt = 0");
+		$t->addActionButton("edit");
+		$t->setType("schritte");
+		$t->addActionButton("delete", "Schrittnummer");
 
 		$_SESSION["schritte_table"] = serialize($t);
 

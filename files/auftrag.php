@@ -204,13 +204,13 @@ if ($auftragsId == -1): ?>
 			<?=$auftrag->getAuftragspostenAsTable()?>
 		</div>
 		<div class="buttonDiv">
-			<button class="addToTable" onclick="showPostenAdd();">+</button>
+			<button class="addToTable" data-binding="true" data-fun="showPostenAdd">+</button>
 		</div>
 		<div id="showPostenAdd" style="display: none;">
 			<div class="tabcontainer">
 				<button class="tablinks activetab" onclick="openTab(event, 0)">Zeiterfassung</button>
 				<button class="tablinks" onclick="openTab(event, 1)">Kostenerfassung</button>
-				<button class="tablinks" onclick="openTab(event, 3)">Produkte</button>
+				<button class="tablinks" onclick="openTab(event, 2)">Produkte</button>
 			</div>
 			<div class="tabcontent" id="tabZeit" style="display: block;">
 				<div id="addPostenZeit">
@@ -255,17 +255,6 @@ if ($auftragsId == -1): ?>
 					<span>Verkaufspreis:<br><input class="postenInput" id="pre" value="0"></span><br>
 					<button data-binding="true" data-fun="addLeistung" id="addLeistungButton" >Hinzufügen</button>
 				</div>		
-			</div>
-			<div class="tabcontent" id="tabProdukt">
-				<div id="addPostenProdukt">
-					<span>Menge: <input class="postenInput" id="posten_produkt_menge" type="number"></span>
-					<span>Marke: <input class="postenInput" id="posten_produkt_marke" type="text"></span>
-					<span>EK-Preis: <input class="postenInput" id="posten_produkt_ek" type="text"></span>
-					<span>VK-Preis: <input class="postenInput" id="posten_produkt_vk" type="text"></span>
-					<span>Name: <input class="postenInput" id="posten_produkt_name" type="text"></span>
-					<span>Beschreibung: <textarea id="posten_produkt_besch" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span>
-					<button data-binding="true" data-fun="addProductCompactOld">Hinzufügen</button>
-				</div>
 			</div>
 			<div class="tabcontent" id="tabProdukte">
 				<div id="addPostenProdukt">
@@ -319,7 +308,7 @@ if ($auftragsId == -1): ?>
 		<div>
 			<span>Fahrzeug hinzufügen</span>
 			<br>
-			<select id="selectVehicle" data-write="true" data-fun="selectVehicle">
+			<select id="selectVehicle" data-write="true" data-fun="selectVehicle" class="px-4 py-2 rounded-lg">
 				<option value="0" selected disabled>Bitte auswählen</option>
 				<?php foreach ($fahrzeuge as $f): ?>
 					<option value="<?=$f['Nummer']?>"><?=$f['Kennzeichen']?> <?=$f['Fahrzeug']?></option>
@@ -362,7 +351,7 @@ if ($auftragsId == -1): ?>
 		</div>
 	</div>
 	<div class="defCont verlauf">
-		<p onclick="showAuftragsverlauf();" class="font-bold">Auftragsverlauf anzeigen</p>
+		<p class="font-bold" data-binding="true" data-fun="showAuftragsverlauf">Auftragsverlauf anzeigen</p>
 		<?=$auftragsverlauf?>
 		<br>
 		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="addList();">Liste hinzufügen</button><button class="infoButton" data-info="2">i</button>

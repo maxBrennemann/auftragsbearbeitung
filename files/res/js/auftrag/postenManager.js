@@ -180,6 +180,10 @@ window.editRow = function(key, element) {
     });
 }
 
+export function showPostenAdd() {
+    document.getElementById("showPostenAdd").style.display = "";
+}
+
 function setParameters(postentype, parameters) {
     var btns = document.getElementsByClassName("tablinks");
     showPostenAdd();

@@ -147,6 +147,7 @@ export function addNewNote() {
 window.radio = function(val) {
     var stepTable = document.getElementById("stepTable");
     var params = "", data;
+    
     if (val == "show") {
         params = `getReason=getAllSteps&auftrag=${globalData.auftragsId}`;
         data = globalData.alleSchritte;

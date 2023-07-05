@@ -297,13 +297,13 @@ class Ajax {
 			break;
 			case "getAllSteps":
 				$auftragsId = $_POST['auftrag'];
-				$Auftrag = new Auftrag($auftragsId);
-				echo $Auftrag->getBearbeitungsschritteAsTable();
+				$auftrag = new Auftrag($auftragsId);
+				echo $auftrag->getBearbeitungsschritteAsTable();
 			break;
 			case "getOpenSteps":
 				$auftragsId = $_POST['auftrag'];
-				$Auftrag = new Auftrag($auftragsId);
-				echo $Auftrag->getOpenBearbeitungsschritteTable();
+				$auftrag = new Auftrag($auftragsId);
+				echo $auftrag->getOpenBearbeitungsschritteTable();
 			break;
 			case "editAnspr":
 				$table = $_POST['name'];
