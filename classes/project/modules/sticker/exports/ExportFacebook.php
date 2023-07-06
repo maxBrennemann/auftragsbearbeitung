@@ -211,6 +211,9 @@ class ExportFacebook extends PrestashopConnection {
         $path = "files/generated/fb_export/";
         $file = fopen($path . $filename, 'w');
     
+        /* initial line for facebook to recognize columns */
+        fwrite($file, "id,title,description,availability,condition,price,link,image_link,brand,item_group_id,color,size,material,shipping_weight" . "\n");
+
         foreach ($lines as $line) {
             $string = implode(",", $line);
             fwrite($file, $string . "\n");
