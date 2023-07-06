@@ -144,6 +144,12 @@ function get_static($file) {
 		$filename = "exportFB_" . date("Y-m-d") . ".csv";
 		$file = file_get_contents(Link::getResourcesLink($filename, "csv"));
 		echo $file;
+		// TODO: check if file exists and if not, return latest file
+	} else if ($file == "generate-facebook") {
+		require_once("classes/project/modules/sticker/export/ExportFacebook.php");
+
+		$exportFacebook = new ExportFacebook();
+		$exportFacebook->generateCSV();
 	}
 }
 
