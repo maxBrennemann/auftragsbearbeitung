@@ -141,7 +141,8 @@ function get_pdf_invoice($pdf) {
 function get_static($file) {
 	if ($file == "facebook-product-export") {
 		header("Content-type: text/csv");
-		$file = file_get_contents(Link::getResourcesLink("exportFB_daily.csv", "csv"));
+		$filename = "exportFB_" . date("Y-m-d") . ".csv";
+		$file = file_get_contents(Link::getResourcesLink($filename, "csv"));
 		echo $file;
 	}
 }
