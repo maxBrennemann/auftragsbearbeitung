@@ -234,3 +234,14 @@ function insertTemplate($path, array $parameters = []) {
 		include($path);
 	}
 }
+
+/** https://stackoverflow.com/a/2792045/7113688 */
+function dashesToCamelCase($string, $capitalizeFirstCharacter = false) {
+    $str = str_replace('-', '', ucwords($string, '-'));
+
+    if (!$capitalizeFirstCharacter) {
+        $str = lcfirst($str);
+    }
+
+    return $str;
+}

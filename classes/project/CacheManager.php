@@ -23,6 +23,16 @@ class CacheManager {
         $status = $status[0]['content'];
         return $status;
     }
-}
 
-?>
+    static function deleteCache() {
+        $path = 'cache/';
+		$files = scandir($path);
+		$files = array_diff(scandir($path), array('.', '..', 'index.php', 'modules'));
+		
+        foreach ($files as $file) {
+            if (is_file($path . $file)) {
+                unlink($path . $file);
+            }
+        }
+    }
+}

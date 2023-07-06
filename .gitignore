@@ -18,8 +18,8 @@ files/generated/fb_export/*
 !files/generated/fb_export/index.php
 
 files/res/js/min/*
-!files/res/js/min/index.php
 
+files/res/css/tailwind.css
 files/res/css/min/*
 !files/res/css/min/index.php
 

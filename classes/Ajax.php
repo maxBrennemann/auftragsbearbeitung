@@ -1305,7 +1305,7 @@ class Ajax {
 				$query = "INSERT INTO module_sticker_sizes (width, height, price, id_sticker, price_default) VALUES (:width, :height, :price, :id, :default)";
 				$id = DBAccess::insertQuery($query, [
 					"width" => $width,
-					"height" => $width,
+					"height" => $height,
 					"price" => $price,
 					"id" => $id,
 					"default" => $isDefault,
@@ -1643,6 +1643,14 @@ class Ajax {
 				echo json_encode([
 					"status" => "success",
 				]);
+			break;
+			case "deleteCache":
+				require_once('classes/project/CacheManager.php');
+				CacheManager::deleteCache();
+
+				echo json_encode([
+					"status" => "success",
+				]); 
 			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
