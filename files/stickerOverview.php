@@ -63,7 +63,7 @@ $t->addLink($linker);
     <input type="text" id="newTitle" class="px-4 py-2 m-1 text-sm text-slate-600 rounded-lg">
     <button type="submit" onclick="createNewSticker()" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Neues Motiv erstellen</button>
 </div>
-<div class="defCont">
+<div class="defCont hidden">
     <p class="font-bold">Motivexporte</p>
     <button id="createFbExport" data-binding="true" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Facebook Export generieren</button>
 </div>

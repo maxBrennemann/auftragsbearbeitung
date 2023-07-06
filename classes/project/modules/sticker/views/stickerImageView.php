@@ -18,7 +18,7 @@
             <td></td>
             <td>
                 <button class="p-1 mr-1 actionButton" title="Löschen" data-file-id="<?=$image["id"]?>" data-binding="true" data-fun="deleteImage"><?=Icon::$iconDelete?></button>
-                <button class="p-1 mr-1 actionButton" title="Verschieben" data-file-id="<?=$image["id"]?>"><?=Icon::$iconMove?></button>
+                <button class="p-1 mr-1 actionButton moveRow" title="Verschieben" onmousedown="moveInit(event)" onmouseup="moveRemove(event)" data-file-id="<?=$image["id"]?>"><?=Icon::$iconMove?></button>
             </td>
         </tr>
         <?php endforeach; ?>
