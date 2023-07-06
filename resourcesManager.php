@@ -136,7 +136,7 @@ function get_static($file) {
 	if ($file == "facebook-product-export") {
 		header("Content-type: text/csv");
 		$filename = "exportFB_" . date("Y-m-d") . ".csv";
-		$file = file_get_contents(Link::getResourcesLink($filename, "csv"));
+		$file = file_get_contents(Link::getResourcesLink($filename, "csv", false));
 		echo $file;
 		// TODO: check if file exists and if not, return latest file
 	} else if ($file == "generate-facebook") {
