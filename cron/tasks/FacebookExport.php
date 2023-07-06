@@ -9,7 +9,7 @@ require_once('classes/DBAccess.php');
 require_once("classes/MinifyFiles.php");
 require_once("upgrade/UpgradeManager.php");
 
-require_once("classes/project/modules/sticker/export/ExportFacebook.php");
+require_once("classes/project/modules/sticker/exports/ExportFacebook.php");
 
 $exportFacebook = new ExportFacebook();
 $exportFacebook->generateCSV();

@@ -146,7 +146,7 @@ function get_static($file) {
 		echo $file;
 		// TODO: check if file exists and if not, return latest file
 	} else if ($file == "generate-facebook") {
-		require_once("classes/project/modules/sticker/export/ExportFacebook.php");
+		require_once("classes/project/modules/sticker/exports/ExportFacebook.php");
 
 		$exportFacebook = new ExportFacebook();
 		$exportFacebook->generateCSV();
