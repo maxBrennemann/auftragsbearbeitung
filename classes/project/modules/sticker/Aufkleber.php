@@ -158,6 +158,10 @@ class Aufkleber extends AufkleberWandtattoo {
         $images = $this->imageData->getAufkleberImages();
         $this->uploadImages($images, $this->idProduct);
 
+        /* reload images, because they were just uploaded */
+        $this->imageData = new StickerImage($this->idSticker);
+        $images = $this->imageData->getAufkleberImages();
+
         $imageDescriptions =  [];
         foreach ($images as $i) {
             $imageDescriptions[] = [
