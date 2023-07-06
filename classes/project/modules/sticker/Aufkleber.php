@@ -128,9 +128,9 @@ class Aufkleber extends AufkleberWandtattoo {
         return $this->buyingPrices;
     }
 
-    public function save(): String|Null {
+    public function save(): String|null {
         if (!$this->getIsPlotted()) {
-            return;
+            return null;
         }
 
         $errorStatus = "";
