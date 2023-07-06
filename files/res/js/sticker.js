@@ -200,10 +200,16 @@ function transfer(type, text) {
         id: mainVariables.motivId.innerHTML,
         type: type,
         r: "transferProduct",
-    }, true).then(r => {
-        mainVariables.pending = false;
-
-        infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS, "Übertragung erfolgreich");
+    }).then(r => {
+        if (r.status == "success") {
+            mainVariables.pending = false;
+            infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS, "Übertragung erfolgreich");
+        } else {
+            mainVariables.pending = false;
+            infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS, "Übertragung erfolgreich");
+            // TODO: error handling for try catch error in backend like: could not transfer all data, "semi-success"
+            console.log(r.error);
+        }
     }).catch(error => {
         infoBox.setType(StatusInfoHandler.TYPE_ERRORCOPY);
         infoBox.statusUpdate(StatusInfoHandler.STATUS_FAILURE, "Übertragung fehlgeschlagen", error);

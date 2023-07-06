@@ -1130,7 +1130,8 @@ class Ajax {
 
 				require_once("classes/project/modules/sticker/SearchProducts.php");
 				SearchProducts::getProductsByStickerId($id);
-				echo "ready";
+				
+				echo json_encode(["status" => "success"]);
 			break;
 			case "getSizeTable":
 				require_once("classes/project/modules/sticker/Aufkleber.php");
