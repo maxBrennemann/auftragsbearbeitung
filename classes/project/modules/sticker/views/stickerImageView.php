@@ -1,10 +1,10 @@
-<div class="bg-zinc-300 rounded-lg imageUpload h-24 flex items-center" data-drop-type="<?=$imageCategory?>">
+<div class="bg-zinc-300 rounded-lg imageUpload h-24 flex items-center cursor-pointer" data-drop-type="<?=$imageCategory?>">
     <div class="m-auto w-full text-center">
         <p class="font-bold text-gray-500">Bild hochladen</p>
     </div>
 </div>
 <div>
-    <table class="w-full">
+    <table class="w-full" data-image-type="<?=$imageCategory?>">
         <tr>
             <th>Bild</th>
             <th>Text</th>

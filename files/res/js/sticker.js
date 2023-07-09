@@ -3,7 +3,7 @@ import { loadTags, showTaggroupManager, addTag } from "./sticker/tagManager.js";
 import ProductConnector from "./sticker/productConnector.js";
 import { click_makeColorable, deleteImage, updateImageDescription } from "./sticker/imageManager.js";
 import { click_addNewWidth } from "./sticker/sizeTable.js";
-import { initBindings } from "./classes/bindings.js";
+import { initBindings, addBindings } from "./classes/bindings.js";
 import "./sticker/imageMove.js";
 
 const fnNames = {};

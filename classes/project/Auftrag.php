@@ -630,4 +630,40 @@ class Auftrag implements StatisticsInterface {
 		return $orderId;
 	}
 
+	public static function getFiles($auftragsnummer) {
+        $files = DBAccess::selectQuery("SELECT DISTINCT dateiname AS Datei, originalname, `date` AS Datum, typ as Typ FROM dateien LEFT JOIN dateien_auftraege ON dateien_auftraege.id_datei = dateien.id WHERE dateien_auftraege.id_auftrag = $auftragsnummer");
+        
+        for ($i = 0; $i < sizeof($files); $i++) {
+            $link = Link::getResourcesShortLink($files[$i]['Datei'], "upload");
+
+            $filePath = "upload/" . $files[$i]['Datei'];
+            /*
+             * checks at first if the image exists
+             * then checks if it is an image with exif_imagetype function,
+             * suppresses with @ the notice and then checks if getimagesize
+             * returns a value
+             */
+            if (file_exists($filePath) && (@exif_imagetype($filePath) != false) && getimagesize($filePath) != false) {
+                $html = "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\"><img class=\"img_prev_i\" src=\"$link\" width=\"40px\"><p class=\"img_prev\">{$files[$i]['originalname']}</p></a>";
+            } else {
+                $html = "<span><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\">{$files[$i]['originalname']}</a></span>";
+            }
+
+            $files[$i]['Datei'] = $html;
+        }
+
+        $column_names = array(
+            0 => array("COLUMN_NAME" => "Datei"), 
+            1 => array("COLUMN_NAME" => "Typ"), 
+            2 => array("COLUMN_NAME" => "Datum")
+        );
+
+        $t = new Table();
+		$t->createByData($files, $column_names);
+		$t->setType("dateien");
+        $t->addActionButton("delete", $identifier = "id");
+
+		return $t->getTable();
+    }
+
 }

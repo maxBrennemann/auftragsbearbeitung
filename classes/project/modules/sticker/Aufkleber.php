@@ -160,22 +160,7 @@ class Aufkleber extends AufkleberWandtattoo {
         $stickerCombination->createCombinations();
         
         $this->connectAccessoires();
-
-        $images = $this->imageData->getAufkleberImages();
-        $this->uploadImages($images, $this->idProduct);
-
-        /* reload images, because they were just uploaded */
-        $this->imageData = new StickerImage($this->idSticker);
-        $images = $this->imageData->getAufkleberImages();
-
-        $imageDescriptions =  [];
-        foreach ($images as $i) {
-            $imageDescriptions[] = [
-                "id" => $i["id_image_shop"],
-                "description" => $i["description"],
-            ];
-        }
-        $this->uploadImageDescription($imageDescriptions);
+        $this->imageData->handleImageProductSync("aufkleber", $this->idProduct);
 
         if ($errorStatus != "") {
             return $errorStatus;
@@ -244,5 +229,3 @@ class Aufkleber extends AufkleberWandtattoo {
     }
     
 }
-
-?>

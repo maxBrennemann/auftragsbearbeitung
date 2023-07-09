@@ -94,7 +94,61 @@ export const ajax = {
         }
 
         return json;
+	},
+
+	async uploadFiles(files, uploadType, additionalInfo = null) {
+		if (files == null || files.length == 0 || uploadType == null) {
+			return null;
+		}
+
+		const response = await uploadFilesHelper(files, uploadType, additionalInfo).then(result => {
+			return result;
+		});
+
+		let json = {};
+        try {
+            json = JSON.parse(response);
+        } catch (e) {
+            return {};
+        }
+
+        return json;
 	}
+}
+
+/**
+ * 
+ * @param {*} files
+ * @param {*} uploadType
+ * @param {*} additionalInfo
+ */
+async function uploadFilesHelper(files, uploadType, additionalInfo = null) {
+	let formData = new FormData();
+    files.forEach(file => {
+        formData.append("files[]", file);
+    });
+
+    /* set upload variable to be recognized by the backend */
+    formData.set("upload", uploadType);
+
+	for (let key in additionalInfo) {
+		formData.set(key, additionalInfo[key]);
+	}
+
+	return new Promise((resolve, reject) => {
+		var ajax = new XMLHttpRequest();
+        ajax.onload = function() {
+			if (this.readyState == 4 && this.status == 200) {
+                resolve(this.responseText);
+			} else {
+				reject(this.responseText);
+			}
+		}
+
+		ajax.onerror = reject;
+		ajax.open('POST', '');
+		ajax.send(formData);
+	});
 }
 
 export async function makeAsyncCall(type, params, location) {
@@ -105,14 +159,14 @@ export async function makeAsyncCall(type, params, location) {
 		
 		if (type == "POST") {
 			var ajaxCall = new XMLHttpRequest();
-			ajaxCall.onload  = function() {
+			ajaxCall.onload = function() {
 				if (this.readyState == 4 && this.status == 200) {
 					resolve(this.responseText);
 				} else {
 					reject(this.responseText);
 				}
 			}
-			ajaxCall.open("POST",  location, true);
+			ajaxCall.open("POST", location, true);
 			ajaxCall.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			ajaxCall.send(params);
 		} else if (type == "GET") {

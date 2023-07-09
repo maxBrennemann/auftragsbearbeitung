@@ -33,7 +33,7 @@ if (isset($_GET['id'])) {
 		
 		$leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
 
-		$showFiles = Upload::getFilesAuftrag($auftragsId);
+		$showFiles = Auftrag::getFiles($auftragsId);
 		$auftragsverlauf = (new Auftragsverlauf($auftragsId))->representHistoryAsHTML();
 		$showLists = Liste::chooseList();
 		$showAttachedLists = $auftrag->showAttachedLists();

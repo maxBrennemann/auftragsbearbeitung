@@ -1148,6 +1148,23 @@ class Ajax {
 					"status" => "success",
 				]);
 			break;
+			case "setImageOrder":
+				$order = $_POST["order"];
+
+				require_once("classes/project/modules/sticker/StickerImage.php");
+
+				try {
+					StickerImage::setImageOrder($order);
+					echo json_encode([
+						"status" => "success",
+					]);
+				} catch (Exception $e) {
+					echo json_encode([
+						"status" => "error",
+						"message" => $e->getMessage(),
+					]);
+				}
+			break;
 			case "changePreiskategorie":
 				$id = (int) $_POST['id'];
 				$categoryId = $_POST['categoryId'];

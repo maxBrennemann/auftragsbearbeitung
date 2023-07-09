@@ -460,5 +460,16 @@ if ($id == 0): ?>
 <template id="icon-invisible">
     <?=Icon::$iconInvisible?>
 </template>
+<template id="templateImageRow">
+    <tr>
+        <td><img class="imgPreview cursor-pointer" data-file-id="" src="" alt=""></td>
+        <td><input class="px-2 bg-inherit w-32" type="text" maxlength="125" placeholder="Beschreibung" data-write="true" data-fun="updateImageDescription" data-file-id=""></td>
+        <td></td>
+        <td>
+            <button class="p-1 mr-1 actionButton" title="Löschen" data-file-id="" data-binding="true" data-fun="deleteImage"><?=Icon::$iconDelete?></button>
+            <button class="p-1 mr-1 actionButton moveRow" title="Verschieben" onmousedown="moveInit(event)" onmouseup="moveRemove(event)" data-file-id=""><?=Icon::$iconMove?></button>
+        </td>
+    </tr>
+</template>
 <?php endif; ?>
 </div>

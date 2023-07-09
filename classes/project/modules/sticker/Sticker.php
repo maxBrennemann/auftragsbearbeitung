@@ -211,53 +211,6 @@ class Sticker extends PrestashopConnection {
 
     }
 
-    public function uploadImages($imageURLs, $productId) {
-        if ($imageURLs == null) {
-            return;
-        }
-
-        /* https://www.prestashop.com/forums/topic/407476-how-to-add-image-during-programmatic-product-import/ */
-        $images = array();
-        foreach ($imageURLs as $i) {
-            $link = WEB_URL . "/upload/" . $i["dateiname"];
-            $images[] = urlencode($link);
-        }
-
-        /* json resonder script on server */
-        $ch = curl_init($this->url);
-
-        # Setup request to send json via POST.
-        $payload = json_encode(array("images"=> $images, "id" => $productId));
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-        # Return response instead of printing.
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        # Send request.
-        $result = curl_exec($ch);
-        curl_close($ch);
-
-        $imagesData = json_decode($result, true);
-        $index = 0;
-        foreach ($imagesData as $image) {
-            $idImage = (int) $image["id"];
-            $idDatei = $imageURLs[$index]["id"];
-            DBAccess::updateQuery("UPDATE module_sticker_image SET id_image_shop = :idImage WHERE id_datei = :idDatei;", [
-                "idImage" => $idImage,
-                "idDatei" => $idDatei,
-            ]);
-            $index++;
-        }
-    }
-
-    protected function uploadImageDescription($descriptions) {
-        $client = new \GuzzleHttp\Client();
-        $client->request('POST', SHOPURL . "/auftragsbearbeitung/setImageDescription.php", [
-            'form_params' => [
-                'descriptions' => json_encode($descriptions),
-            ],
-        ]);
-    }
-
     public function setCategory() {
 
     }

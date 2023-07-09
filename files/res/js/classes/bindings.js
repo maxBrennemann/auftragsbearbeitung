@@ -40,3 +40,20 @@ export function initBindings(fnNames) {
         }.bind(fun_name), false);
     });
 }
+
+export function addBindings(elements) {
+    Array.from(elements).forEach(el => {
+        addBinding(el);
+    });
+}
+
+function addBinding(el) {
+    let fun_name = "";
+    if (el.dataset.fun) {
+        fun_name = "clikc_" + el.dataset.fun
+    } else {
+        fun_name = "click_" + el.id
+    }
+
+    el.addEventListener("click", fun_name, false);
+}

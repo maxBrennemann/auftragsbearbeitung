@@ -141,11 +141,6 @@ class Textil extends Sticker {
         echo $result;
     }
 
-    public function uploadImages($imageURLs, $idProduct) {
-        parent::uploadImages($imageURLs, $idProduct);
-        $this->uploadSVG();
-    }
-
     /**
      * aktuell ist der basePrice bei Textilien gleich dem Endpreis, muss später noch geändert werden
      * TODO: Textilpreise dynamisch gestalten
@@ -191,8 +186,7 @@ class Textil extends Sticker {
         $this->connectAccessoires();
 
         $this->uploadSVG();
-        $images = $this->imageData->getTextilImages();
-        $this->uploadImages($images, $this->idProduct);
+        $this->imageData->handleImageProductSync("textil", $this->idProduct);
     }
 
     /**

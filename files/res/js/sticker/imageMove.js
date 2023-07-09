@@ -1,3 +1,5 @@
+import { StatusInfoHandler } from "../classes/statusInfo.js";
+
 /* https://www.therogerlab.com/sandbox/pages/how-to-reorder-table-rows-in-javascript?s=0ea4985d74a189e8b7b547976e7192ae.4122809346f6a15e41c9a43f6fcb5fd5 */
 var row;
 var rows;
@@ -75,23 +77,20 @@ function sendPostenOrder(event) {
     var btns = Array.from(table.getElementsByClassName("moveRow"));
     var positions = [];
     for (let i = 0; i < btns.length; i++) {
-        positions.push(btns[i].dataset.key);
+        positions.push(btns[i].dataset.fileId);
     }
-    positions = JSON.stringify(positions);
 
-    /*let params = {
-        getReason: "sendPostenPositions",
-        auftrag: globalData.auftragsId,
-        order: positions,
-        tablekey: table.dataset.key
-    };
-
-    /*var send = new AjaxCall(params, "POST", window.location.href);
-    send.makeAjaxCall(function (response) {
-        if (response == "ok") {
-            infoSaveSuccessfull("success");
+    ajax.post({
+        r: "setImageOrder",
+        order: JSON.stringify(positions),
+    }).then(r => {
+        if (r.status) {
+            infoSaveSuccessfull(r.status);
         } else {
-            infoSaveSuccessfull();
+            const infoHandler = new StatusInfoHandler();
+            const infoBox = infoHandler.addInfoBox(StatusInfoHandler.TYPE_ERRORCOPY, "wird übertragen");
+
+            infoBox.statusUpdate(StatusInfoHandler.STATUS_FAILURE, "Fehler beim Speichern der Reihenfolge", r.messsage);
         }
-    });*/
+    });
 }
