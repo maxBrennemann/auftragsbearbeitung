@@ -1,7 +1,5 @@
 <?php
 
-require_once('classes/DBAccess.php');
-
 class Listenauswahl {
     
     private $bezeichnung;
@@ -34,5 +32,3 @@ class Listenauswahl {
         DBAccess::insertQuery("INSERT INTO listenauswahl (listenpunktid, `bezeichnung`, ordnung) VALUES ($listenpunktid, '{$this->bezeichnung}', {$this->ordnung})");
     }
 }
-
-?>

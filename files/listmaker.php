@@ -1,20 +1,21 @@
 <?php
-    require_once('classes/project/Liste.php');
 
-    $showLists = "";
+require_once('classes/project/Liste.php');
 
-    if (!isset($_GET['new']) && !isset($_GET['lid'])) {
-        $showLists = Liste::getAllListPrevs();
-    }
+$showLists = "";
 
-    if (isset($_GET['new'])) :
+if (!isset($_GET['new']) && !isset($_GET['lid'])) {
+    $showLists = Liste::getAllListPrevs();
+}
+
+if (isset($_GET['new'])) :
 ?>
 <div class="defCont left">
     <h3>Neue Liste:</h3>
     <input id="newListName">
-    <button id="createNewList" onclick="createNewList();">Neue Liste erstellen</button>
+    <button class="btn-primary" id="createNewList" onclick="createNewList();">Neue Liste erstellen</button>
     <br>
-    <button onclick="saveList();">Liste speichern</button>
+    <button class="btn-primary" onclick="saveList();">Liste speichern</button>
 </div>
 <div class="defCont left">
     <h3>Neuen Unterpunkt:</h3>
@@ -46,7 +47,21 @@
         <label for="textfeld">Text eingeben:</label>
         <input type="text" name="textfeld">
     </div>
-    <button id="createNewListenpunkt" onclick="createNewListenpunkt();" disabled>Neuen Listenpunkt erstellen</button>
+    <button class="btn-primary">Mehr Optionen anzeigen</button>
+    <div>
+        <!-- input texfeld options: email, number, tel, url -->
+        <!-- input field ideas: color, date, datetime-local, file, range, search, time -->
+        <!-- other interaction types: textarea, link (button), download (file), table -->
+        <div>
+            <p>Farbe:</p>
+            <label>
+                Bezeichnung:
+                <input type="text">
+            </label>
+            <input type="color">
+        </div>
+    </div>
+    <button id="createNewListenpunkt" class="btn-primary" onclick="createNewListenpunkt();" disabled>Neuen Listenpunkt erstellen</button>
 </div>
 <div class="defCont left">
     <h3>Neue Auswahlmöglichkeit:</h3>
@@ -67,7 +82,9 @@
 ?>
     <?=$list->toHTML()?>
 <?php else : ?>
-    <h3>Alle Listen</h3>
-    <div class="defCont"><a href="<?=Link::getPageLink("listmaker");?>?new">Neue Liste erstellen</a></div>
-    <?=$showLists?>
+    <div class="defCont">
+        <h3>Alle Listen</h3>
+        <button class="btn-primary" onclick="window.location.href='<?=Link::getPageLink("listmaker");?>?new'">Neue Liste erstellen</button>
+        <?=$showLists?>
+    </div>
 <?php endif; ?>
