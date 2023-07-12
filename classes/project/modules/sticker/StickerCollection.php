@@ -5,6 +5,7 @@ require_once("classes/project/modules/sticker/SearchProducts.php");
 require_once("classes/project/modules/sticker/Aufkleber.php");
 require_once("classes/project/modules/sticker/Wandtattoo.php");
 require_once("classes/project/modules/sticker/Textil.php");
+require_once("classes/project/modules/sticker/imports/ImportGoogleSearchConsole.php");
 
 class StickerCollection implements Iterator {
 
@@ -164,6 +165,20 @@ class StickerCollection implements Iterator {
         return $text . "</div>";
     }
 
-}
+    public function getSearchConsoleStats($type) {
+        return "";
 
-?>
+        $url = "https://klebefux.de/home/877-aufkleber-camping.html";
+        $stats = ImportGoogleSearchConsole::getStats($url);
+
+        switch ($type) {
+            case "impressions":
+                break;
+            case "clicks":
+                break;
+        }
+
+        return $stats;
+    }
+
+}

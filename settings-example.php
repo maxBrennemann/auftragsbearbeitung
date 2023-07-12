@@ -32,4 +32,7 @@ define('OPENAI_API_KEY', '');
 /* deepL */
 define('DEEPL_API_KEY', '');
 
+/* google search console api keys */
+define('GOOGLE_SEARCHCONSOLE', '');
+
 ?>

@@ -1,3 +1,5 @@
+import { addBindings } from "../classes/bindings.js";
+
 /**
  * toggles the is colorable flag of the svg,
  * if the svg is colorable, the svg is displayed in the colorable svg container
@@ -55,7 +57,7 @@ function itemDropHandler(e, imageCategory) {
             uploadableFiles.push(file);
         }
     });
-    
+
     uploadFileForSticker(uploadableFiles, imageCategory, handleImagesPreview);
 }
 
@@ -70,17 +72,20 @@ function handleImagesPreview(filesInfo, imageCategory) {
 }
 
 function addTableRow(imageSrc, imageCategory, imageFileId) {
+    console.log(imageCategory);
+
     const parent = document.querySelector(`[data-image-type="${imageCategory}"]`);
     const template = document.getElementById("templateImageRow");
 	parent.appendChild(template.content.cloneNode(true));
+    const copy = parent.lastElementChild;
 
-    const image = document.querySelector("img");
+    const image = copy.querySelector("img");
     image.src = imageSrc;
     image.alt = "New uploaded image";
     image.classList.add("imgPreview");
     image.addEventListener("click", imagePreview, false);
 
-    const fileIds = document.querySelectorAll(`[data-file-id]`);
+    const fileIds = copy.querySelectorAll(`[data-file-id]`);
     Array.from(fileIds).forEach(f => {
         f.dataset.fileId = imageFileId;
     });
@@ -147,6 +152,8 @@ async function uploadFileForSticker(files, imageCategory, callback = null) {
         imageCategory: imageCategory
     };
 
+    console.log(files);
+    //return;
     const response = await ajax.uploadFiles(files, "motiv", data);
 
     if (callback != null) {
@@ -341,9 +348,17 @@ function openFileDialog(event) {
     // Trigger click event on the file input
     fileInput.click();
   
+    const imageCategory = event.target.dataset.dropType;
+
     // Handle selected files
     fileInput.addEventListener("change", function(event) {
-      var files = event.target.files;
-      uploadFileForSticker(files, e.target.dataset.dropType, handleImagesPreview);
+        var files = event.target.files;
+        files = Array.from(files);
+
+        if (files.length == 0) {
+            return;
+        }
+
+        uploadFileForSticker(files, imageCategory, handleImagesPreview);
     });
 }

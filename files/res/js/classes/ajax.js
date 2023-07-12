@@ -124,7 +124,7 @@ export const ajax = {
  */
 async function uploadFilesHelper(files, uploadType, additionalInfo = null) {
 	let formData = new FormData();
-    files.forEach(file => {
+	Array.from(files).forEach(file => {
         formData.append("files[]", file);
     });
 

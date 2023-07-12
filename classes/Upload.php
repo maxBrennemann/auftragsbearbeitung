@@ -107,11 +107,18 @@ class Upload {
                 ]);
             }
 
-            echo json_encode(["motiv" => $motivnummer, "imageData" => $imageData]);
+            echo json_encode([
+                "motiv" => $motivnummer, 
+                "imageData" => $imageData,
+                "files" => $_FILES["files"]["tmp_name"],
+            ]);
             return;
         }
 
-        echo json_encode(["error" => "an error occured"]);
+        echo json_encode([
+            "error" => "an error occured",
+            "files" => $_FILES["files"]["tmp_name"],
+        ]);
     }
 
     public function uploadFilesPosten($postennummer) {

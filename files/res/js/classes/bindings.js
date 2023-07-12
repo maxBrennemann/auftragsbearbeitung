@@ -51,9 +51,13 @@ function addBinding(el) {
     let fun_name = "";
     if (el.dataset.fun) {
         fun_name = "clikc_" + el.dataset.fun
-    } else {
+    } else if (el.id) {
         fun_name = "click_" + el.id
+    } else {
+        return;
     }
 
-    el.addEventListener("click", fun_name, false);
+    el.addEventListener("click", () => {
+        fun_name();
+    }, false);
 }
