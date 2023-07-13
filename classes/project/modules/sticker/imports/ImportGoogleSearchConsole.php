@@ -1,5 +1,7 @@
 <?php
 
+require_once 'vendor/autoload.php';
+
 class ImportGoogleSearchConsole {
 
     public static function getStats($url) {
@@ -14,6 +16,22 @@ class ImportGoogleSearchConsole {
                 "languageCode" => "de-DE",
             ] 
         ]);
+    }
+
+    private static function authenticate() {
+        $client = new Google\Client();
+        $client->setApplicationName("Auftragsbearbeitung");
+        $client->setAuthConfig('/config/google-api.json');
+        $client->setScopes([
+            Google\Service\SearchConsole::WEBMASTERS,
+        ]);
+
+        $redirect_uri = 'https://' . $_SERVER['HTTP_HOST'] . '/oauth2callback.php';
+        $client->setRedirectUri($redirect_uri);
+    }
+
+    public static function import() {
+
     }
 
 }

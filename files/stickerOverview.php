@@ -38,17 +38,24 @@ $t->setType("module_sticker_sticker_data");
 $t->addLink($linker);
 ?>
 <div class="defCont">
-    <div class="productLoader" id="crawlAll">
-        <div class="lds-ring" id="loaderCrawlAll"><div></div><div></div><div></div><div></div></div>
-        <div>
-            <progress max="1000" value="0" id="productProgress"></progress>
-            <p><span id="currentProgress"></span> von <span id="maxProgress"></span></p>
-            <p id="statusProgress"></p>
+    <details>
+        <summary class="font-bold">
+            Importe
+        </summary>
+        <div class="productLoader" id="crawlAll">
+            <div class="lds-ring" id="loaderCrawlAll"><div></div><div></div><div></div><div></div></div>
+            <div>
+                <progress max="1000" value="0" id="productProgress"></progress>
+                <p><span id="currentProgress"></span> von <span id="maxProgress"></span></p>
+                <p id="statusProgress"></p>
+            </div>
         </div>
-    </div>
-    <a href="#" onclick="crawlAll()">Alle Produtke vom Shop crawlen</a>
-    <br>
-    <a href="#" onclick="crawlTags()">Alle Tags vom Shop crawlen</a>
+        <a href="#" class="link-primary" onclick="crawlAll()">Alle Produtke vom Shop crawlen</a>
+        <br>
+        <a href="#" class="link-primary" onclick="crawlTags()">Alle Tags vom Shop crawlen</a>
+        <br>
+        <button class="btn-primary" data-binding="true" data-fun="manageImports">Importe verwalten</button>
+    </details>
 </div>
 <div class="defCont">
     <div>

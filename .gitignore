@@ -31,6 +31,9 @@ img/*
 upload/*
 !upload/index.php
 
+config/*
+!config/index.php
+
 favicon.ico
 .vs/
 .vscode/

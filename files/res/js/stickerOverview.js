@@ -14,6 +14,10 @@ function initStickerOverview() {
     showStickerStatus();
 }
 
+function click_manageImports() {
+    
+}
+
 /**
  * makes the table for the sticker-overview page sticky
  */
