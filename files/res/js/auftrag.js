@@ -64,6 +64,11 @@ if (document.readyState !== 'loading' ) {
 
 function initCode() {
     initBindings(fnNames);
+
+    if (document.getElementById("orderFinished")) {
+        return;
+    }
+
     createTimeInputRow();
 
     addSearchEventListeners();

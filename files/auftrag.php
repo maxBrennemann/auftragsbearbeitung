@@ -82,15 +82,17 @@ if ($auftragsId == -1): ?>
 	<?=$searchTable?>
 <?php elseif ($auftrag->istRechnungGestellt() && $show == false): ?>
 <div>
-	<div class="defCont">
+	<div class="defCont" id="orderFinished">
 		<p>Auftrag <?=$auftrag->getAuftragsnummer()?> wurde abgeschlossen. Rechnungsnummer: <span id="rechnungsnummer"><?=$auftrag->getRechnungsnummer()?></span></p>
-		<button onclick="print('rechnungsnummer', 'Rechnung');">Rechnungsblatt anzeigen</button>
-		<button onclick="showAuftrag()">Auftrag anzeigen</button>
+		<button class="btn-primary" onclick="print('rechnungsnummer', 'Rechnung');">Rechnungsblatt anzeigen</button>
+		<button class="btn-primary" onclick="showAuftrag()">Auftrag anzeigen</button>
 		<?php
 			$invoiceLink = $auftrag->getKundennummer() . "_" . $auftrag->getRechnungsnummer() . ".pdf";
 			$invoiceLink = Link::getResourcesShortLink($invoiceLink, "pdf");
 		?>
-		<a href="<?=$invoiceLink?>">Zur Rechnung</a>
+		<a class="link-primary" href="<?=$invoiceLink?>">Zur Rechnung</a>
+	</div>
+	<div class="defCont">
 		<embed type="application/pdf" src="<?=$invoiceLink?>" width="100%" height="400">
 	</div>
 	<style>
