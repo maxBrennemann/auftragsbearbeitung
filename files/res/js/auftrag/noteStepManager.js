@@ -70,72 +70,63 @@ export function addNote() {
     if (noteNode == undefined)
         return null;
 
-    note = noteNode.value;
-    noteNode.value = "";
-
-    /* ajax parameter */
-    let params = {
-        getReason: "addNoteOrder",
+    ajax.post({
+        r: "addNoteOrder",
         auftrag: globalData.auftragsId,
-        note: note
-    };
+        note: noteNode.value,
+    }).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+            noteNode.value = "";
 
-    var add = new AjaxCall(params, "POST", window.location.href);
-    add.makeAjaxCall(function (response) {
-        document.getElementById("noteContainer").innerHTML = response;
-        infoSaveSuccessfull("success");
-    }.bind(this), false);
+            /* update note container */
+            const newNote = r.content;
+            const noteContainer = document.getElementById("noteContainer");
+            noteContainer.innerHTML = noteContainer.innerHTML + newNote;
+            // TODO: note event listener via bindings adden
+        }
+    });
 }
 
 /* function creates a popup window that asks the user whether he wants the note to be deleted or not */
 export function removeNote(event) {
     let note = event.target.parentNode.children[1].innerHTML;
-
     let number = indexInClass(event.target.parentNode);
 
     var div = document.createElement("div");
-    let textnode = document.createTextNode(`Willst Du die Notiz "${note}" wirklich löschen?`);
+    const html = `
+        <div class="p-4">
+            <span>Willst Du die Notiz "${note}" wirklich löschen?</span>
+            <br>
+            <button class="btn-primary" onclick="notesDeleteNode(${number}, this.parentNode)">Ja</button>
+            <button class="btn-primary" onclick="notesClose(this.parentNode)">Nein</button>
+        </div>
+    `;
 
-    let btn_yes = document.createElement("button");
-    btn_yes.innerHTML = "Ja";
-    let btn_no = document.createElement("button");
-    btn_no.innerHTML = "Nein";
-
-    /* inner function to delete the node */
-    function delNode(number, div) {
-        div.parentNode.removeChild(div);
-
-        console.log(number);
-
-        /* ajax call to delete note from db, note is then removed from webpage */
-        var del = new AjaxCall(`getReason=deleteNote&number=${number}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
-        del.makeAjaxCall(function (response) {
-            document.getElementById("noteContainer").innerHTML = response;
-        });
-    }
-
-    /* inner function for node button to remove the div */
-    function close(div) {
-        div.parentNode.removeChild(div);
-    }
-
-    /* event listeners */
-    btn_yes.addEventListener("click", function() {
-        delNode(number, div);
-    }, false);
-
-    btn_no.addEventListener("click", function() {
-        close(div);
-    }, false);
-
-    div.appendChild(textnode);
-    div.appendChild(document.createElement("br"));
-    div.appendChild(btn_yes);
-    div.appendChild(btn_no);
+    div.innerHTML = html;
     document.body.appendChild(div);
 
     addActionButtonForDiv(div, "remove");
     centerAbsoluteElement(div);
+}
+
+/* function to delete the node */
+window.notesDeleteNode = function(number, div) {
+    div.parentNode.removeChild(div);
+    console.log(number);
+
+    ajax.post({
+        r: "deleteNote",
+        number: number,
+        auftrag: globalData.auftragsId,
+    }, true).then(r => {
+        document.getElementById("noteContainer").innerHTML = r;
+    });
+}
+
+/* function for node button to remove the div */
+window.notesClose = function(div) {
+    div.parentNode.removeChild(div);
 }
 
 export function addNewNote() {

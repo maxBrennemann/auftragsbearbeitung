@@ -514,16 +514,16 @@ class Auftrag implements StatisticsInterface {
 
 	/* this function fetches the associated notes from the db */
 	public function getNotes() {
-		$html = "";
-		$iconNotebook = Icon::$iconNotebook;
-		$notes = DBAccess::selectQuery("SELECT Notiz FROM notizen WHERE Auftragsnummer = :id ORDER BY creation_date DESC", ["id" => $this->Auftragsnummer]);
+		$notes = DBAccess::selectQuery("SELECT Notiz, Nummer FROM notizen WHERE Auftragsnummer = :id ORDER BY creation_date DESC", [
+			"id" => $this->Auftragsnummer
+		]);
 
 		ob_start();
 		insertTemplate('files/res/views/noteView.php', [
 			"notes" => $notes,
+			"icon" => Icon::$iconNotebook,
 		]);
 		$content = ob_get_clean();
-
 		return $content;
 	}
 
