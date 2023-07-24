@@ -22,6 +22,8 @@ function login() {
             setCookie("deviceKey", deviceKey, 356);
             setCookie("loginKey", loginKey, 14);
             location.reload();
+        } else if (r.status == "error") {
+            document.getElementById("loginStatus").innerHTML = "Falscher Benutzername oder falsches Passwort.";
         }
     });
 }

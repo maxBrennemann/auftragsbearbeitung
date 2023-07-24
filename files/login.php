@@ -18,4 +18,5 @@
         <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
         <p id="autologinStatus">Prüfe automatischen Login</p>
     </div>
+    <span id="loginStatus"></span>
 </div>

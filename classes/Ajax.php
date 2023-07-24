@@ -1047,8 +1047,9 @@ class Ajax {
 			break;
 			case "checkAutoLogin":
 				$loginKey = Login::handleAutoLogin();
+				$status = $loginKey === false ? "failed" : "success";
 				echo json_encode([
-					"status" => "success",
+					"status" => $status,
 					"loginKey" => $loginKey,
 				]);
 			break;

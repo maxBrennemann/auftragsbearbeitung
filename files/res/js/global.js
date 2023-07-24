@@ -550,7 +550,11 @@ function checkCookies() {
     var cookieObj = {};
     for (let i = 0; i < cookies.length; i++) {
         var parts = cookies[i].split("=");
-        parts[0] = parts[0].substring(1);
+
+		if (parts[0].charAt(0) == " ") {
+			parts[0] = parts[0].substring(1);
+		}
+        
         cookieObj[parts[0]] = parts[1];
     }
 
