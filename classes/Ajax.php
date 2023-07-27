@@ -1688,6 +1688,10 @@ class Ajax {
 					"status" => "success",
 				]); 
 			break;
+			case "diagramme":
+				require_once('classes/project/Statistics.php');
+				Statistics::dispatcher();
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);

@@ -13,6 +13,11 @@ export function addColor() {
 
     c.addEventListener("mouseup", function() {
         const element = document.querySelector("input.colorInput.jscolor");
+
+        if (!element) {
+            return;
+        }
+
         element.value = cp.color.toUpperCase();
         checkHexCode(element);
     }, false);
@@ -23,7 +28,7 @@ export function addColor() {
     const toggleCSBtn = div.querySelector('[data-fun="toggleCS"]');
     toggleCSBtn.addEventListener("click", toggleCS, false);
 
-    addActionButtonForDiv(div, "hide");
+    addActionButtonForDiv(div, "remove");
     centerAbsoluteElement(div);
 }
 

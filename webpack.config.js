@@ -9,7 +9,6 @@ module.exports = {
     angebot: './files/res/js/angebot.js',
     attribute: './files/res/js/attribute.js',
     auftrag: './files/res/js/auftrag.js',
-    diagram: './files/res/js/diagram.js',
     diagramme: './files/res/js/diagramme.js',
     einstellungen: './files/res/js/einstellungen.js',
     funktionen: './files/res/js/funktionen.js',

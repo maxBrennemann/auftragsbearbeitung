@@ -46,6 +46,11 @@ function performAjaxSearch(e) {
 
         searchResults.classList.add("overflow-x-auto");
         const table = document.querySelector("table");
+
+        if (!table) {
+            return;
+        }
+
         table.classList.add("table-fixed", "w-full");
 
         tableRowClickable(table);
@@ -75,12 +80,12 @@ function getCustomerId() {
 function addOrder() {
     const btn = document.getElementById("absenden");
     btn.disabled = true;
-    sendOrder().then(() => {
-        btn.disabled = false;
-    });
+    sendOrder();
 }
 
 async function sendOrder() {
+    console.log("send order");
+
     var bezeichnung = document.getElementById("bezeichnung").value;
     var beschreibung = document.getElementById("beschreibung").value;
     var termin = document.getElementById("termin").value;

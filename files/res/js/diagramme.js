@@ -1,55 +1,129 @@
+import { ajax } from "./classes/ajax.js";
+import { initBindings } from "./classes/bindings.js";
 
-if (document.readyState !== 'loading' ) {
-    executediagram(labels, data);
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        executediagram(labels, data);
-    });
-}
+class Diagram {
 
-var colors;
-var borders;
+	constructor() {
+		this.data = [];
+		this.canvas = null;
+		this.startDate = null;
+		this.endDate = null;
+		this.dimension = null;
+		this.datatype = "getOrders";
+		this.chart = null;
+	}
 
-function executediagram(labels, data) {
-	temp_getColors(data);
+	addChart() {
+		this.canvas = document.getElementById('diagram');
+	}
 
-	var ctx = document.getElementById("showGraph").getContext('2d');
-	var myChart = new Chart(ctx, {
-		type: 'bar',
-		data: {
-			labels: labels,
-			datasets: [{
-				label: 'Umsatz pro Monat (netto)',
-				data: data,
-				backgroundColor: colors,
-				borderColor: borders,
-				borderWidth: 1
-			}]
-		},
-		options: {
-			scales: {
-				yAxes: [{
-					ticks: {
-						beginAtZero: true
-					}
+	setStartDate(date) {
+		this.startDate = date;
+	}
+
+	setEndDate(date) {
+		this.endDate = date;
+	}
+
+	setDimension(dimension) {
+		this.dimension = dimension;
+	}
+
+	setDatatype(datatype) {
+		this.datatype = datatype;
+	}
+
+	async getData() {
+		this.data = await ajax.post({
+			r: 'diagramme',
+			function: this.datatype,
+			startDate: this.startDate,
+			endDate: this.endDate,
+			dimension: this.dimension,
+			datatype: this.datatype
+		});
+	}
+
+	async updateChart() {
+		await this.getData();
+		if (this.chart) {
+			this.chart.destroy();
+		}
+
+		this.chart = new Chart(this.canvas, {
+			type: 'line',
+			data: {
+				labels: this.data.map((item) => item.date),
+				datasets: [{
+					label: this.dimension,
+					data: this.data.map((item) => item.value),
+					backgroundColor: 'rgba(0, 0, 0, 0)',
+					borderColor: 'rgba(0, 0, 0, 1)',
+					borderWidth: 1
 				}]
 			}
-		}
-	});
+		});
+	}
+
 }
 
-function temp_getColors(data) {
-    var data = data;
-    colors = [];
-    borders =  [];
-    var minimum = 0;
-    var maximum = 255;
-    for (let i = 0; i < data.length; i++) {
-        let r = Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
-        let b = Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
-        let g = Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
+const diagram = new Diagram();
 
-        colors.push(`rgba(${r}, ${g}, ${b}, 0.2)`);
-        borders.push(`rgba(${r}, ${g}, ${b}, 1.0)`);
-    }
+function initCode() {
+	diagram.addChart();
+	initBindings(fnNames);
+
+	const startDate = document.getElementById('startDate');
+	const endDate = document.getElementById('endDate');
+
+	const today = new Date();
+	const dd = String(today.getDate()).padStart(2, '0');
+	const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+	const yyyy = today.getFullYear();
+
+	startDate.value = (yyyy - 1) + '-' + mm + '-' + dd;
+	endDate.value = yyyy + '-' + mm + '-' + dd;
+
+	diagram.setStartDate(startDate.value);
+	diagram.setEndDate(endDate.value);
+	diagram.updateChart();
+}
+
+function changeStartDate() {
+	const value = document.getElementById('startDate').value;
+	diagram.setStartDate(value);
+	diagram.updateChart();
+}
+
+function changeEndDate() {
+	const value = document.getElementById('endDate').value;
+	diagram.setEndDate(value);
+	diagram.updateChart();
+}
+
+function setDimension() {
+	const value = document.getElementById('dimension').value;
+	diagram.setDimension(value);
+	diagram.updateChart();
+}
+
+function setDatatype() {
+	const value = document.getElementById('datatype').value;
+	diagram.setDatatype(value);
+	diagram.updateChart();
+}
+
+const fnNames = {
+	write_changeStartDate: changeStartDate,
+	write_changeEndDate: changeEndDate,
+	write_setDimension: setDimension,
+	write_setDatatype: setDatatype
+};
+
+if (document.readyState !== 'loading' ) {
+    initCode();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        initCode();
+    });
 }
