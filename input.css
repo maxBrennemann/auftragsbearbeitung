@@ -12,6 +12,9 @@
     .link-primary {
       @apply text-blue-500 hover:text-blue-600 font-semibold;
     }
+    .input-primary {
+      @apply px-4 py-2 rounded-lg;
+    }
 }
 
 @font-face {

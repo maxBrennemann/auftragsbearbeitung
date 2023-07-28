@@ -47,15 +47,10 @@ class Statistics {
 		]);
 	}
 
-	public static function getOrders($startDate, $endDate, $open) {
-		$addition = "";
-		if ($open == "getOpenOrders") {
-			$addition = "AND Rechnungsnummer = 0 AND archiviert = 0";
-		}
-
+	public static function getOrders($startDate, $endDate) {
 		$query = "SELECT COUNT(Auftragsnummer) as `value`, DATE_FORMAT(Datum,'%Y-%m') as `date` 
 			FROM auftrag 
-			WHERE Datum BETWEEN :startDate AND :endDate $addition
+			WHERE Datum BETWEEN :startDate AND :endDate
 			GROUP BY DATE_FORMAT(Datum,'%Y-%m')";
 
 		return DBAccess::selectQuery($query, [
@@ -64,14 +59,40 @@ class Statistics {
 		]);
 	}
 
+	public static function getOrdersByCustomer($startDate, $endDate) {
+		$query = "SELECT COUNT(Auftragsnummer) as `value`, CONCAT(Firmenname, ' ', Vorname, ' ', Nachname) as `date` 
+			FROM auftrag, kunde
+			WHERE kunde.Kundennummer = auftrag.Kundennummer AND Datum BETWEEN :startDate AND :endDate
+			GROUP BY `date`";
+
+		return DBAccess::selectQuery($query, [
+			"startDate" => $startDate,
+			"endDate" => $endDate,
+		]);
+	}
+
+	public static function getVolumeByOrderType($startDate, $endDate) {
+		$query = "SELECT SUM(av.price) as `value`, `at`.Auftragstyp as `date` 
+			FROM auftragssumme_view av, auftrag a, auftragstyp `at`
+			WHERE av.id = a.Auftragsnummer
+			AND at.id = a.Auftragstyp
+			AND a.Fertigstellung BETWEEN :startDate AND :endDate
+			GROUP BY `date`";
+
+		return DBAccess::selectQuery($query, [
+			"startDate" => $startDate,
+			"endDate" => $endDate,
+		]);
+	}
+
 	public static function dispatcher() {
-		$function = $_POST["function"];
+		$diagramType = $_POST["diagramType"];
 		$startDate = $_POST["startDate"];
 		$endDate = $_POST["endDate"];
 		$dimension = $_POST["dimension"];
 		$datatype = $_POST["datatype"];
 
-		switch ($function) {
+		switch ($diagramType) {
 			case "getOrderSum":
 				$data = self::getOrderSum(10);
 				break;
@@ -83,7 +104,13 @@ class Statistics {
 				break;
 			case "getOrders":
 			case "getOpenOrders":
-				$data = self::getOrders($startDate, $endDate, $datatype);
+				$data = self::getOrders($startDate, $endDate);
+				break;
+			case "getOrdersByCustomer":
+				$data = self::getOrdersByCustomer($startDate, $endDate);
+				break;
+			case "getVolumeByOrderType":
+				$data = self::getVolumeByOrderType($startDate, $endDate);
 				break;
 			default:
 				$data = [];

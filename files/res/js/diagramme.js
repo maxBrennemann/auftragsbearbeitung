@@ -9,7 +9,8 @@ class Diagram {
 		this.startDate = null;
 		this.endDate = null;
 		this.dimension = null;
-		this.datatype = "getOrders";
+		this.datatype = null;
+		this.diagramType = null;
 		this.chart = null;
 	}
 
@@ -17,35 +18,20 @@ class Diagram {
 		this.canvas = document.getElementById('diagram');
 	}
 
-	setStartDate(date) {
-		this.startDate = date;
-	}
-
-	setEndDate(date) {
-		this.endDate = date;
-	}
-
-	setDimension(dimension) {
-		this.dimension = dimension;
-	}
-
-	setDatatype(datatype) {
-		this.datatype = datatype;
-	}
-
 	async getData() {
 		this.data = await ajax.post({
 			r: 'diagramme',
-			function: this.datatype,
 			startDate: this.startDate,
 			endDate: this.endDate,
 			dimension: this.dimension,
-			datatype: this.datatype
+			datatype: this.datatype,
+			diagramType: this.diagramType,
 		});
 	}
 
 	async updateChart() {
 		await this.getData();
+
 		if (this.chart) {
 			this.chart.destroy();
 		}
@@ -55,7 +41,7 @@ class Diagram {
 			data: {
 				labels: this.data.map((item) => item.date),
 				datasets: [{
-					label: this.dimension,
+					label: this.diagramType,
 					data: this.data.map((item) => item.value),
 					backgroundColor: 'rgba(0, 0, 0, 0)',
 					borderColor: 'rgba(0, 0, 0, 1)',
@@ -71,7 +57,7 @@ const diagram = new Diagram();
 
 function initCode() {
 	diagram.addChart();
-	initBindings(fnNames);
+	initListeners();
 
 	const startDate = document.getElementById('startDate');
 	const endDate = document.getElementById('endDate');
@@ -84,41 +70,12 @@ function initCode() {
 	startDate.value = (yyyy - 1) + '-' + mm + '-' + dd;
 	endDate.value = yyyy + '-' + mm + '-' + dd;
 
-	diagram.setStartDate(startDate.value);
-	diagram.setEndDate(endDate.value);
+	diagram.startDate = startDate.value;
+	diagram.endDate = endDate.value;
+	diagram.diagramType = document.getElementById('diagramType').value;
+
 	diagram.updateChart();
 }
-
-function changeStartDate() {
-	const value = document.getElementById('startDate').value;
-	diagram.setStartDate(value);
-	diagram.updateChart();
-}
-
-function changeEndDate() {
-	const value = document.getElementById('endDate').value;
-	diagram.setEndDate(value);
-	diagram.updateChart();
-}
-
-function setDimension() {
-	const value = document.getElementById('dimension').value;
-	diagram.setDimension(value);
-	diagram.updateChart();
-}
-
-function setDatatype() {
-	const value = document.getElementById('datatype').value;
-	diagram.setDatatype(value);
-	diagram.updateChart();
-}
-
-const fnNames = {
-	write_changeStartDate: changeStartDate,
-	write_changeEndDate: changeEndDate,
-	write_setDimension: setDimension,
-	write_setDatatype: setDatatype
-};
 
 if (document.readyState !== 'loading' ) {
     initCode();
@@ -126,4 +83,36 @@ if (document.readyState !== 'loading' ) {
     document.addEventListener('DOMContentLoaded', function () {
         initCode();
     });
+}
+
+function initListeners() {
+	document.getElementById('startDate').addEventListener('change', e => {
+		const date = e.target.value;
+		diagram.startDate = date;
+		diagram.updateChart();
+	});
+
+	document.getElementById('endDate').addEventListener('change', e => {
+		const date = e.target.value;
+		diagram.endDate = date;
+		diagram.updateChart();
+	});
+
+	document.getElementById('dimension').addEventListener('change', e => {
+		const dimension = e.target.value;
+		diagram.dimension = dimension;
+		diagram.updateChart();
+	});
+
+	document.getElementById('datatype').addEventListener('change', e => {
+		const datatype = e.target.value;
+		diagram.datatype = datatype;
+		diagram.updateChart();
+	});
+
+	document.getElementById('diagramType').addEventListener('change', e => {
+		const diagramType = e.target.value;
+		diagram.diagramType = diagramType;
+		diagram.updateChart();
+	});
 }
