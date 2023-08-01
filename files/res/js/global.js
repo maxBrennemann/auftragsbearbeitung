@@ -394,8 +394,7 @@ function initializeInfoBtn() {
 	Array.from(btns).forEach(btn => {
 		btn.addEventListener("click", async function() {
 			const id = btn.dataset.info;
-
-			await ajax.post({
+			const response = await ajax.post({
 				r: "getInfoText",
 				info : id,
 			}, true);

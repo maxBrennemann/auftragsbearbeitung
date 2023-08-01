@@ -817,7 +817,14 @@ class Ajax {
 			break;
 			case "getInfoText":
 				$infoId = (int) $_POST['info'];
-				$infoText = DBAccess::selectQuery("SELECT info FROM info_texte WHERE id = $infoId");
+				$infoText = DBAccess::selectQuery("SELECT info FROM info_texte WHERE id = :infoId;", [
+					"infoId" => $infoId,
+				]);
+
+				if ($infoText == null) {
+					echo "Kein Text vorhanden";
+					return;
+				}
 				echo $infoText[0]['info'];
 			break;
 			case "updateDate":
