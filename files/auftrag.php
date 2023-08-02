@@ -176,7 +176,7 @@ if ($auftragsId == -1): ?>
 					<option value="<?=$m['id']?>"><?=$m['prename']?> <?=$m['lastname']?></option>
 				<?php endforeach; ?>
 			</select>
-			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="addBearbeitungsschritt">Hinzufügen</button>
+			<button class="btn-primary" data-binding="true" data-fun="addBearbeitungsschritt" class="btn-primary">Hinzufügen</button>
 		</div>
 		<div>
 			<input onchange="radio('hide')" type="radio" name="showDone" value="hide" checked> Zu erledigende Schritte anzeigen<br>
@@ -188,13 +188,13 @@ if ($auftragsId == -1): ?>
 	</div>
 	<div class="defCont schritteAdd">
 		<p class="font-bold">Notizen</p>
-		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="addNewNote">Neue Notiz hinzufügen</button>
+		<button class="btn-primary" data-binding="true" data-fun="addNewNote">Neue Notiz hinzufügen</button>
 		<div class="innerDefCont" id="addNotes" style="display: none">
 			<div>
 				<p>Notiz:</p>
 				<textarea class="noteInput m-1 text-slate-600 rounded-lg p-2" type="text" max="128"></textarea>
 			</div>
-			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="addNote">Hinzufügen</button>
+			<button class="btn-primary" data-binding="true" data-fun="addNote" class="btn-primary">Hinzufügen</button>
 		</div>
 		<div id="noteContainer">
 			<?=$auftrag->getNotes()?>
@@ -217,10 +217,15 @@ if ($auftragsId == -1): ?>
 			<div class="tabcontent" id="tabZeit" style="display: block;">
 				<div id="addPostenZeit">
 					<div class="container">
-						<span>Zeit in Minuten<br><input class="postenInput" id="time" type="number" min="0"></span><br>
-						<span>Stundenlohn in €<br><input class="postenInput" id="wage" type="number" value="<?=$auftrag->getDefaultWage()?>"></span><br>
-						<span>Beschreibung<br><textarea id="descr" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span><br>
-						<button id="addTimeButton" data-binding="true" data-fun="addTime">Hinzufügen</button>
+						<span>Zeit in Minuten<br><input class="postenInput" id="time" type="number" min="0"></span>
+						<br>
+						<span>Stundenlohn in €<br><input class="postenInput" id="wage" type="number" value="<?=$auftrag->getDefaultWage()?>"></span>
+						<br>
+						<span>Beschreibung<br>
+							<textarea id="descr" class="border-2 rounded-md" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
+						</span>
+						<br>
+						<button id="addTimeButton" data-binding="true" data-fun="addTime" class="btn-primary">Hinzufügen</button>
 					</div>
 					<div class="container">
 						<span>Erweiterte Zeiterfassung:</span>
@@ -253,10 +258,14 @@ if ($auftragsId == -1): ?>
 							<p class="optionReplacer" onclick="document.getElementById('meh').value = this.innerHTML;">lfm</p>
 						</div>
 					</span><br>
-					<span>Beschreibung:<br><textarea id="bes" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea></span><br>
+					<span>Beschreibung:
+						<br>
+						<textarea id="bes" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'" class="border-2 rounded-md"></textarea>
+					</span>
+					<br>
 					<span>Einkaufspreis:<br><input class="postenInput" id="ekp" value="0"></span><br>
 					<span>Verkaufspreis:<br><input class="postenInput" id="pre" value="0"></span><br>
-					<button data-binding="true" data-fun="addLeistung" id="addLeistungButton" >Hinzufügen</button>
+					<button data-binding="true" data-fun="addLeistung" id="addLeistungButton" class="btn-primary">Hinzufügen</button>
 				</div>		
 			</div>
 			<div class="tabcontent" id="tabProdukte">
@@ -269,7 +278,7 @@ if ($auftragsId == -1): ?>
 					</div>
 					<div id="resultContainer"></div>
 					<span>Menge: <input class="postenInput" id="posten_produkt_menge" type="number"></span>
-					<button data-binding="true" data-fun="addProductCompact">Hinzufügen</button>
+					<button data-binding="true" data-fun="addProductCompact" class="btn-primary">Hinzufügen</button>
 					<br>
 					<a href="<?=Link::getPageLink("neues-produkt");?>">Neues Produkt hinzufügen</a>
 				</div>

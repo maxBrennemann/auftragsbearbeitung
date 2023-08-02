@@ -197,7 +197,10 @@ class Auftrag implements StatisticsInterface {
 		return $this->termin;
 	}
 
-	public function preisBerechnen() {
+	/**
+	 * calculates the sum of all items in the order
+	 */
+	public function calcOrderSum () {
 		$price = 0;
 		foreach ($this->Auftragsposten as $posten) {
 			if ($posten->isInvoice() == 1) {
@@ -207,12 +210,18 @@ class Auftrag implements StatisticsInterface {
 		return $price;
 	}
 
+	public function preisBerechnen() {
+		$price = 0;
+		foreach ($this->Auftragsposten as $posten) {
+			$price += $posten->bekommePreis();
+		}
+		return $price;
+	}
+
 	public function gewinnBerechnen() {
 		$price = 0;
 		foreach ($this->Auftragsposten as $posten) {
-			if ($posten->isInvoice() == 1) {
-				$price += $posten->bekommeDifferenz();
-			}
+			$price += $posten->bekommeDifferenz();
 		}
 		return $price;
 	}
@@ -583,7 +592,7 @@ class Auftrag implements StatisticsInterface {
 		$bezeichnung = $_POST['bezeichnung'];
 		$beschreibung = $_POST['beschreibung'];
 		$typ = $_POST['typ'];
-		$termin = getParameter($_POST['termin'], "POST", null);
+		$termin = getParameter("termin", "POST", null);
 		$angenommenVon = $_POST['angenommenVon'];
 		$kdnr = $_POST['customerId'];
 		$angenommenPer = $_POST['angenommenPer'];

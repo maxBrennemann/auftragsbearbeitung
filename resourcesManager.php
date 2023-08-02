@@ -146,5 +146,3 @@ function get_static($file) {
 		$exportFacebook->generateCSV();
 	}
 }
-
-?>

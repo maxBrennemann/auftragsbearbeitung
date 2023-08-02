@@ -137,7 +137,7 @@ class Rechnung {
 		}
 
 		/* Code für Zwischensumme und Rechnungssumme */
-		$summe = $this->auftrag->preisBerechnen();
+		$summe = $this->auftrag->calcOrderSum();
 		$zwischensumme = number_format($summe, 2, ',', '') . ' €';
 		$mwst = number_format($summe * 0.19, 2, ',', '') . ' €';
 		$rechnungssumme = number_format($summe * 1.19, 2, ',', '') . ' €';
