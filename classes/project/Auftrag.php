@@ -435,9 +435,9 @@ class Auftrag implements StatisticsInterface {
 			4 => array("COLUMN_NAME" => "Auftragsbezeichnung")
 		);
 
-		$query = "SELECT Auftragsnummer, Datum, IF(kunde.Firmenname = '', 
+		$query = "SELECT Auftragsnummer, DATE_FORMAT(Datum, '%d.%m.%Y') as Datum, IF(kunde.Firmenname = '', 
 				CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) as Kunde, 
-				Auftragsbezeichnung, IF(auftrag.Termin IS NULL OR auftrag.Termin = '0000-00-00', 'kein Termin', auftrag.Termin) AS Termin 
+				Auftragsbezeichnung, IF(auftrag.Termin IS NULL OR auftrag.Termin = '0000-00-00', 'kein Termin', DATE_FORMAT(auftrag.Termin, '%d.%m.%Y')) AS Termin 
 			FROM auftrag 
 			LEFT JOIN kunde 
 				ON auftrag.Kundennummer = kunde.Kundennummer 

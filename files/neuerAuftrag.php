@@ -69,7 +69,7 @@ if ($kdnr != -1) : ?>
 <?php else: ?>
 	<div class="defCont">
 		<p>Kundennummer eingeben oder Kunde suchen:</p>
-		<input id="kundensuche" class="px-4 py-2 m-1 rounded-lg">
+		<input id="kundensuche" class="px-4 py-2 m-1 rounded-lg focus:border-gray-700">
 	</div>
 	<div class="defCont hidden" id="searchResults"></div>
 	<div class="defCont">

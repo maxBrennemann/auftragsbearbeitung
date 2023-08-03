@@ -153,6 +153,10 @@ function listener_logout() {
 	}, false);
 }
 
+/**
+ * shows the notification container when the bell is clicked
+ * @returns {null} if the bellAndSearch element is not found
+ */
 function listener_bellAndSearch() {
 	var bellAndSearch = document.getElementsByClassName("notificationContainer")[0];
 	if (bellAndSearch == null) {
@@ -163,6 +167,7 @@ function listener_bellAndSearch() {
 		if (document.getElementById("showNotifications") == null) {
 			const div = document.createElement("div");
 			div.id = "showNotifications";
+			div.classList.add("w-7/12", "z-10", "h-96");
 			document.body.appendChild(div);
 
 			const htmlContent = await ajax.post({

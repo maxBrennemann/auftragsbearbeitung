@@ -2,6 +2,7 @@
 
 session_start();
 errorReporting();
+define('CURRENTVERSION', '1.1.18');
 
 require_once('settings.php');
 require_once('classes/project/Envs.php');

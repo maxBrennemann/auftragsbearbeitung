@@ -1,7 +1,5 @@
 <?php
 
-require_once('classes/Link.php');
-
 /*
  * notification types:
  *  0 -> undefined / unset
@@ -19,42 +17,63 @@ require_once('classes/Link.php');
  */
 class NotificationManager {
 
-    /*
-    * gets all unviewed notifications counted and returned
-    */
-    public static function getNotificationCount() {
+    /**
+     * returns the user id of the current user
+     * @return int|null
+     */
+    private static function getUserId(): ?int {
         if (isset($_SESSION['userid'])) {
-            $user = $_SESSION['userid'];
-            $result = DBAccess::selectQuery("SELECT COUNT(id) AS c FROM user_notifications WHERE user_id = $user AND ischecked = 'false'");
-            if ($result == null) {
-                return 0;
-            } else {
-                return $result[0]["c"];
-            }
+            return $_SESSION['userid'];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * gets all unviewed notifications counted and returned
+     */
+    public static function getNotificationCount() {
+        $user = self::getUserId();
+        if ($user == null) {
+            return 0;
+        }
+
+        $result = DBAccess::selectQuery("SELECT COUNT(id) AS c FROM user_notifications WHERE user_id = :user AND ischecked = 'false'", [":user" => $user]);
+
+        if ($result == null) {
+            return 0;
+        } else {
+            return $result[0]["c"];
         }
     }
 
     public static function getTaskCount() {
-        if (isset($_SESSION['userid'])) {
-            $user = $_SESSION['userid'];
-            $result = DBAccess::selectQuery("SELECT COUNT(id) AS c FROM user_notifications WHERE user_id = $user AND ischecked = 'false' AND (`type` = 1)");
-            if ($result == null) {
-                return 0;
-            } else {
-                return $result[0]["c"];
-            }
+        $user = self::getUserId();
+        if ($user == null) {
+            return 0;
+        }
+
+        $result = DBAccess::selectQuery("SELECT COUNT(id) AS c FROM user_notifications WHERE user_id = :user AND ischecked = 'false' AND (`type` = 1)", [":user" => $user]);
+
+        if ($result == null) {
+            return 0;
+        } else {
+            return $result[0]["c"];
         }
     }
 
     public static function getNewsCount() {
-        if (isset($_SESSION['userid'])) {
-            $user = $_SESSION['userid'];
-            $result = DBAccess::selectQuery("SELECT COUNT(id) AS c FROM user_notifications WHERE user_id = $user AND ischecked = 'false' AND (`type` = 4 OR `type` = 0)");
-            if ($result == null) {
-                return 0;
-            } else {
-                return $result[0]["c"];
-            }
+        $user = self::getUserId();
+        if ($user == null) {
+            return 0;
+        }
+
+        $result = DBAccess::selectQuery("SELECT COUNT(id) AS c FROM user_notifications WHERE user_id = :user AND ischecked = 'false' AND (`type` = 4 OR `type` = 0)", [":user" => $user]);
+
+        if ($result == null) {
+            return 0;
+        } else {
+            return $result[0]["c"];
         }
     }
 
@@ -83,38 +102,28 @@ class NotificationManager {
         $tasks = self::getTasks();
         $news = self::getNews();
 
+        foreach ($tasks as $key => $task) {
+            $tasks[$key]['typeName'] = self::getTypeName((int) $task['type']);
+            $tasks[$key]['link'] = self::getSpecificLink((int) $task['type'], (int) $task['specific_id']);
+        }
+
+        foreach ($news as $key => $n) {
+            $news[$key]['typeName'] = self::getTypeName((int) $n['type']);
+            $news[$key]['link'] = self::getSpecificLink((int) $n['type'], (int) $n['specific_id']);
+        }
+
         $tasksCount = self::getTaskCount();
         $newsCount = self::getNewsCount();
-        ?>
-        <h3>Benachrichtigungen und Aufgaben</h3>
-        <div style="display: block;">
-            <!-- content -->
-            <h4>Meine Aufgaben (<?=$tasksCount?>)<button onclick="updateNotifications()" class="floatRight noButton" title="Benachrichtigungen neu laden">⭮</button><button onclick="setRead()" class="floatRight noButton" title="Alles als gelesen markieren">✓</button></h4>
-            <?php
-                $count = 1;
-                foreach ($tasks as $n): ?>
-            <span class="taskList">
-                <span><?=($count++)?></span>
-                <button class="redButton"><?=self::getTypeName((int) $n["type"])?>: </button>
-                <a href="<?=self::getSpecificLink((int) $n['type'], (int) $n['specific_id'])?>"><?=$n["content"]?></a>
-            </span>
-            <?php endforeach; ?>
-        </div>
-        <div style="display: block;">
-            <!-- content -->
-            <h4>Benachrichtigungen und Neuigkeiten (<?=$newsCount?>)<button onclick="updateNotifications()" class="floatRight noButton" title="Benachrichtigungen neu laden">⭮</button><button onclick="setRead()" class="floatRight noButton" title="Alles als gelesen markieren">✓</button></h4>
-            <?php
-                $count = 1;
-                foreach ($news as $n): ?>
-            <span class="taskList">
-                <span><?=($count++)?></span>
-                <button class="redButton"><?=self::getTypeName((int) $n["type"])?>: </button>
-                <a href="<?=self::getSpecificLink((int) $n['type'], (int) $n['specific_id'])?>"><?=$n["content"]?></a>
-            </span>
-            <?php endforeach; ?>
-        </div>
-        <p><a href="#">Ältere Benachrichtigungen anzeigen</a></p>
-        <?php
+
+        ob_start();
+        insertTemplate('files/res/views/notificationMenuView.php', [
+            "tasks" => $tasks,
+            "news" => $news,
+            "tasksCount" => $tasksCount,
+            "newsCount" => $newsCount
+        ]);
+        $content = ob_get_clean();
+        return $content;
     }
 
     private static function getSpecificLink($type, $id) {
@@ -204,5 +213,3 @@ class NotificationManager {
         }
     }
 }
-
-?>

@@ -21,44 +21,44 @@ if (isset($_GET['showDetails'])) {
 <script src="<?=Link::getResourcesShortLink("main.js", "js")?>"></script>
 <div>
 	<ul class="mainUl auto-rows-min">
-		<li class="rounded-lg bg-gray-100">
+		<li class="rounded-lg bg-gray-100 hover:underline">
 			<a class="block px-4 py-8" href="<?=$neuerKunde?>"><?=Icon::$iconPersonAdd?> Neuen Kunden erstellen</a>
 		</li>
-		<li class="px-4 py-8 rounded-lg bg-gray-100">
+		<li class="px-4 py-8 rounded-lg bg-gray-100 hover:underline">
 			<input id="kundeninput" type="text" class="w-32 rounded-md p-1">
 			<a hef="#" data-url="<?=$kunde?>" id="kundenLink"> →</a>
 			<a class="inline" href="<?=$kunde?>?showDetails=list">Zu den Kunden</a>
 		</li>
-		<li class="rounded-lg bg-gray-100">
+		<li class="rounded-lg bg-gray-100 hover:underline">
 			<a class="block px-4 py-8" href="<?=$neuerAuftrag?>"><?=Icon::$iconOrderAdd?> Neuen Auftrag erstellen</a>
 		</li>
-		<li class="rounded-lg bg-gray-100">
+		<li class="rounded-lg bg-gray-100 hover:underline">
 			<a class="block px-4 py-8" href="<?=$rechnung?>">Neue Rechnung erstellen</a>
 		</li>
-		<li class="px-4 py-8 rounded-lg bg-gray-100">
+		<li class="px-4 py-8 rounded-lg bg-gray-100 hover:underline">
 			<input id="rechnungsinput" type="number" min="1" oninput="document.getElementById('rechnungsLink').href = '<?=$rechnung?>?target=view&id=' + this.value;" class="w-32 rounded-md p-1">
 			<a href="#" id="rechnungsLink">Rechnung anzeigen</a>
 		</li>
-		<li class="rounded-lg bg-gray-100">
+		<li class="rounded-lg bg-gray-100 hover:underline">
 			<a class="block px-4 py-8" href="<?=$neuesAngebot?>">+ Neues Angebot erstellen</a>
 		</li>
-		<li class="rounded-lg bg-gray-100">
+		<li class="rounded-lg bg-gray-100 hover:underline">
 			<a class="block px-4 py-8" href="<?=$neuesProdukt?>"><?=Icon::$iconProductAdd?> Neues Produkt erstellen</a>
 		</li>
-		<li class="px-4 py-8 rounded-lg bg-gray-100">
+		<li class="px-4 py-8 rounded-lg bg-gray-100 hover:underline">
 			<input id="auftragsinput" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value + '&query=' + this.value;" class="w-32 rounded-md p-1">
 			<a href="#" id="auftragsLink">Auftrag anzeigen</a>
 		</li>
-		<li class="rounded-lg bg-gray-100">
+		<li class="rounded-lg bg-gray-100 hover:underline">
 			<a class="block px-4 py-8" href="<?=$diagramme?>"><?=Icon::$iconChart?> Diagramme und Auswertungen</a>
 		</li>
-		<li class="rounded-lg bg-gray-100">
+		<li class="rounded-lg bg-gray-100 hover:underline">
 			<a class="block px-4 py-8" href="<?=$leistungenLinks?>">Leistungen</a>
 		</li>
-		<li class="rounded-lg bg-gray-100">
-			<a class="block px-4 py-8" href="<?=$toDo?>">Verbesserungen</a>
+		<li class="rounded-lg bg-gray-100 hover:underline">
+			<a class="block px-4 py-8" href="<?=$motiveOverview?>">Motivübersicht</a>
 		</li>
-		<li class="rounded-lg bg-gray-100">
+		<li class="rounded-lg bg-gray-100 hover:underline">
 			<a class="block px-4 py-8" href="<?=$offeneRechnungen?>">Offene Rechnungen: <b><?=$offeneSumme?>€</b></a>
 		</li>
 	</ul>

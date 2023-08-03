@@ -466,19 +466,6 @@ class Ajax {
 			case "getSelect":
 				Produkt::getSelectSource();	
 			break;
-			case "insertVerbesserung":
-				if (isset($_POST['verbesserung'])) {
-					$verbesserung = $_POST['verbesserung'];
-					$timestamp = date("Y-m-d H:i:s");
-
-					$user = 0;
-					if (isset($_SESSION['userid'])) {
-						$user = $_SESSION['userid'];
-					}
-
-					DBAccess::insertQuery("INSERT INTO verbesserungen (verbesserungen, erstelldatum, creator) VALUES ('$verbesserung', '$timestamp', $user)");
-				}
-			break;
 			case "getServerMsg":
 				echo $_SESSION['searchResult'];
 			break;

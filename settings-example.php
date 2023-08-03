@@ -9,7 +9,6 @@ define('CURL_USERNAME', '');
 define('CURL_PASSWORD', '');
 
 define('ERRORREPORTING', true);
-define('CURRENTVERSION', '');
 
 /* database connection */
 define('HOST', '');
