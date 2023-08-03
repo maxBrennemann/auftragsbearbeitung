@@ -44,7 +44,7 @@ function click_startStopTime() {
         case false:
             clearInterval(interval);
             document.getElementById("updateStartStopName").innerHTML = "starten";
-            document.getElementById("askTask").style.display = "inline";
+            document.getElementById("askTask").style.display = "block";
         break;
     }
 }
@@ -54,9 +54,23 @@ function click_sendTimeTracking() {
 
     ajax.post({
         task: task,
+        startTime: localStorage.getItem("startTime"),
+        stopTime: new Date().getTime().toString(),
         r: "sendTimeTracking",
-    }, true).then(response => {
-        document.getElementById("showTaskTable").innerHTML = response;
+    }).then(response => {
+        const table = document.querySelector("table");
+        const row = table.insertRow(1);
+        const cell1 = row.insertCell(0);
+        const cell2 = row.insertCell(1);
+        const cell3 = row.insertCell(2);
+        const cell4 = row.insertCell(3);
+        const cell5 = row.insertCell(4);
+
+        cell1.innerHTML = response.start;
+        cell2.innerHTML = response.stop;
+        cell3.innerHTML = response.durationMs;
+        cell4.innerHTML = response.task;
+
         localStorage.clear("startTime");
     });
 }

@@ -57,8 +57,8 @@ class TimeTracking {
 
         /* https://stackoverflow.com/questions/61990604/sql-how-to-convert-milliseconds-from-a-table-to-hhmmss-in-sql-query */
         $query = "SELECT 
-                DATE_FORMAT(started_at, '%h:%i:%s %d.%m.%Y') AS Beginn, 
-                DATE_FORMAT(stopped_at, '%h:%i:%s %d.%m.%Y') AS Ende, 
+                DATE_FORMAT(started_at, '%H:%i:%s %d.%m.%Y') AS Beginn, 
+                DATE_FORMAT(stopped_at, '%H:%i:%s %d.%m.%Y') AS Ende, 
                 YEAR(started_at) AS Jahr,
                 time_format(sec_to_time(duration_ms / 1000), '%H:%i:%s') AS Zeit, 
                 MONTHNAME(started_at) AS month_started, task AS Aufgabe, 
@@ -88,6 +88,44 @@ class TimeTracking {
         return $timeTables;
     }
 
-}
+    /**
+     * this function is called from Ajax.php,
+     * it adds a new entry to the database and calculates the duration
+     */
+    public static function addEntry() {
+        $start = (int) $_POST["startTime"];
+        $stop = (int) $_POST["stopTime"];
+        $task = $_POST["task"];
 
-?>
+        $durationMs = $stop - $start;
+
+        /**
+         * $start and $stop are passed as unix timestamps in milliseconds,
+         * strtotime() expects seconds, so we have to divide by 1000,
+         * also we have to add 2 hours because of the timezone,
+         * otherwise the time would be 2 hours behind, because UTC is 2 hours behind UTC+2 (Berlin),
+         * gmdate() is used to get the date in UTC
+         */
+        $start = gmdate("Y-m-d H:i:s", strtotime('+2 hours', $start / 1000));
+        $stop = gmdate("Y-m-d H:i:s", strtotime('+2 hours', $stop / 1000));
+
+        $query = "INSERT INTO user_timetracking (user_id, started_at, stopped_at, duration_ms, task) VALUES (:userId, :start, :stop, :durationMs, :task);";
+
+        $queryId = DBAccess::insertQuery($query, [
+            "userId" => $_SESSION["userid"],
+            "start" => $start,
+            "stop" => $stop,
+            "durationMs" => $durationMs,
+            "task" => $task,
+        ]);
+
+        echo json_encode([
+            "id" => $queryId,
+            "start" => $start,
+            "stop" => $stop,
+            "durationMs" => $durationMs,
+            "task" => $task,
+        ]);
+    }
+
+}

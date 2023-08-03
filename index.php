@@ -63,6 +63,14 @@ if (file_exists($cacheFile) && !(count($_GET) || count($_POST)) && $t && $status
 		ob_start();
 	}
 
+	if (file_get_contents("php://input") != "") {
+		$PHP_INPUT = json_decode(file_get_contents("php://input"), true);
+
+		if ($PHP_INPUT != null) {
+			$_POST = array_merge($_POST, $PHP_INPUT);
+		}
+	}
+
 	/*
 	* filters AJAX requests and delegates them to the right files
 	*/

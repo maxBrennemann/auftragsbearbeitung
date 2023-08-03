@@ -1686,6 +1686,20 @@ class Ajax {
 				require_once('classes/project/Statistics.php');
 				Statistics::dispatcher();
 			break;
+			case "sendTimeTracking":
+				require_once('classes/project/TimeTracking.php');
+				TimeTracking::addEntry();
+			break;
+			case "getTimeTables":
+				require_once('classes/project/TimeTracking.php');
+				$idUser = $_SESSION['userid'];
+				$timeTables = TimeTracking::getTimeTables((int) $idUser);
+
+				echo json_encode([
+					"status" => "success",
+					"timeTables" => $timeTables,
+				]);
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
