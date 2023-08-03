@@ -128,10 +128,12 @@ class Aufkleber extends AufkleberWandtattoo {
         return $this->buyingPrices;
     }
 
-    public function save() {
+    public function save(): String|null {
         if (!$this->getIsPlotted()) {
-            return;
+            return null;
         }
+
+        $errorStatus = "";
 
         $productId = (int) $this->getIdProduct();
         $stickerUpload = new StickerUpload($this->idSticker, $this->getName(), $this->getBasePrice(), $this->getDescriptionWithDefaultText(), $this->getDescriptionShortWithDefaultText());
@@ -149,14 +151,21 @@ class Aufkleber extends AufkleberWandtattoo {
         
         $stickerTagManager = new StickerTagManager($this->getId(), $this->getName());
         $stickerTagManager->setProductId($productId);
-        $stickerTagManager->saveTags();
+        try {
+            $stickerTagManager->saveTags();
+        } catch (Exception $e) {
+            $errorStatus = "Fehler beim Speichern der Tags: " . $e->getMessage();
+        }
         
         $stickerCombination->createCombinations();
         
         $this->connectAccessoires();
+        $this->imageData->handleImageProductSync("aufkleber", $this->idProduct);
 
-        $images = $this->imageData->getAufkleberImages();
-        $this->uploadImages($images, $this->idProduct);
+        if ($errorStatus != "") {
+            return $errorStatus;
+        }
+        return null;
     }
 
     public function getAttributes() {
@@ -220,5 +229,3 @@ class Aufkleber extends AufkleberWandtattoo {
     }
     
 }
-
-?>

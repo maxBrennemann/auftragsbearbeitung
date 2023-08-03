@@ -1,5 +1,4 @@
 <script src="<?=Link::getResourcesShortLink("colorpicker.js", "js")?>"></script>
-
 <?php 
 
 require_once('classes/project/Table.php');
@@ -7,12 +6,10 @@ require_once('classes/front/CategoryTree.php');
 
 /* get default wage */
 $defaultWage = Envs::get("defaultWage");
-
 $categoryitems = CategoryTree::getOneLayerArray();
 
 $cacheOn = "";
 $cacheOff = "checked";
-
 $cacheStatus = CacheManager::getCacheStatus();
 
 if ($cacheStatus == "on") {
@@ -44,6 +41,30 @@ $patternOrderType = [
     ],
 ];
 
+function getUserTable() {
+    $data = DBAccess::selectQuery("SELECT * FROM user");
+    $column_names = array(
+        0 => array("COLUMN_NAME" => "id", "ALT" => "Nummer"),
+        1 => array("COLUMN_NAME" => "lastname", "ALT" => "Nachname"),
+        2 => array("COLUMN_NAME" => "prename", "ALT" => "Vorname"),
+        3 => array("COLUMN_NAME" => "username", "ALT" => "Username"),
+        4 => array("COLUMN_NAME" => "email", "ALT" => "Mail"),
+        5 => array("COLUMN_NAME" => "role", "ALT" => "Rolle"),
+        6 => array("COLUMN_NAME" => "max_working_hours", "ALT" => "Arbeitsstunden"),
+    );
+
+    $link = new Link();
+    $link->addBaseLink("mitarbeiter");
+    $link->setIterator("id", $data, "id");
+
+    $t = new Table();
+    $t->createByData($data, $column_names);
+    $t->addLink($link);
+    return $t->getTable();
+}
+
+$userTable = getUserTable();
+
 $tableOrderType->defineUpdateSchedule(new UpdateSchedule("auftragstyp", $patternOrderType));
 
 $_SESSION[$tableOrderType->getTableKey()] = serialize($tableOrderType);
@@ -60,7 +81,7 @@ $_SESSION[$tableOrderType->getTableKey()] = serialize($tableOrderType);
 </section>
 <section class="defCont">
     <h2 class="font-bold">Mitarbeiter festlegen</h2>
-    <?php echo (new Table("user"))->exclude("password")->getTable(); ?>
+    <?=$userTable?>
 </section>
 <section class="defCont">
     <h2 class="font-bold">Stundenlohn festlegen</h2>
@@ -77,6 +98,11 @@ $_SESSION[$tableOrderType->getTableKey()] = serialize($tableOrderType);
 	<input onchange="toggleMinify('on')" type="radio" name="minifyswitch" value="on" <?=$minifyOn?>> Komprimierung aktivieren<br>
 	<input onchange="toggleMinify('off')" type="radio" name="minifyswitch" value="off" <?=$minifyOff?>> Komprimierung deaktivieren<br>
     <button onclick="minifyFiles()" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Neu komprimieren</button>
+</section>
+<section class="defCont">
+    <h2 class="font-bold">Suche</h2>
+	<button class="btn-primary" id="addDocs">Neu indizieren</button>
+    <button class="btn-primary" id="test">Neu test</button>
 </section>
 <section class="defCont">
     <h2 class="font-bold">Persönliche Einstellungen</h2>

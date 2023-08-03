@@ -47,6 +47,33 @@ function initEventListeners() {
             r: "updateDefaultWage",
         });
     });
+
+    const addDocs = document.getElementById("addDocs");
+    addDocs.addEventListener("click", () => {
+        ajax.post({
+            r: "indexAll",
+        });
+    });
+
+    const test = document.getElementById("test");
+    test.addEventListener("click", () => {
+        ajax.post({
+            r: "testsearch",
+        });
+    });
+
+    const deleteCacheBtn = document.getElementById("deleteCache");
+    deleteCacheBtn.addEventListener("click", deleteCache);
+}
+
+function deleteCache() {
+    ajax.post({
+        r: "deleteCache",
+    }).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+        }
+    });
 }
 
 function setCustomColor(value) {
@@ -102,15 +129,10 @@ function toggleMinify(status) {
 }
 
 function minifyFiles() {
-    let params = {
-        getReason: "minifyFiles",
-    };
-
-    var toggle = new AjaxCall(params, "POST", window.location.href);
-    toggle.makeAjaxCall(function (response) {
-        console.log(response);
-        response = JSON.parse(response);
-        if (response.status === "success") {
+    ajax.post({
+        r: "minifyFiles",
+    }).then(r => {
+        if (r.status == "success") {
             infoSaveSuccessfull("success");
         }
     });

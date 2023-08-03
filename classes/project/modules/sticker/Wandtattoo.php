@@ -63,8 +63,7 @@ class Wandtattoo extends AufkleberWandtattoo {
         
         $this->connectAccessoires();
 
-        $images = $this->imageData->getWandtattooImages();
-        $this->uploadImages($images, $this->idProduct);
+        $this->imageData->handleImageProductSync("wandtattoo", $this->idProduct);
     }
 
     public function getAttributes() {
@@ -72,5 +71,3 @@ class Wandtattoo extends AufkleberWandtattoo {
     }
 
 }
-
-?>

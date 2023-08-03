@@ -176,7 +176,7 @@ class Kunde implements StatisticsInterface {
 		}
 
 		ob_start();
-		insertTemplate('files/res/views/orderCartView.php', [
+		insertTemplate('files/res/views/orderCardView.php', [
 			"orders" => $orders,
 		]);
 		$content = ob_get_clean();
@@ -345,5 +345,3 @@ class Kunde implements StatisticsInterface {
 	}
 
 }
-
-?>

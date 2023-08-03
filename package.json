@@ -1,11 +1,17 @@
 {
   "devDependencies": {
-    "tailwindcss": "^3.2.7"
+    "compression-webpack-plugin": "^10.0.0",
+    "tailwindcss": "^3.2.7",
+    "terser-webpack-plugin": "^5.3.9",
+    "webpack": "^5.88.1",
+    "webpack-cli": "^5.1.4"
   },
   "scripts": {
-    "tailwind": "npx tailwindcss -i input.css -o ./files/res/css/min/t-style.min.css --watch"
+    "tailwind": "npx tailwindcss -i input.css -o ./files/res/css/tailwind.css --watch",
+    "build": "webpack"
   },
   "dependencies": {
-    "alpinejs": "^3.12.1"
+    "alpinejs": "^3.12.1",
+    "chart.js": "^4.3.2"
   }
 }

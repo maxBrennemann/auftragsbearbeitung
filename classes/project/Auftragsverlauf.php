@@ -1,8 +1,5 @@
 <?php
 
-require_once('classes/DBAccess.php');
-require_once('classes/Login.php');
-
 /*
  * Zu protokollierende Daten:
  * posten:   Beim Hinzufügen / Löschen / Bearbeiten speichern                       ✔
@@ -41,7 +38,16 @@ class Auftragsverlauf {
      */
     public function addToHistory($number, $type, $state, $alternative_text = "") {
         $userId = Login::getUserId();
-        DBAccess::insertQuery("INSERT INTO history (`orderid`, `number`, `type`, `state`, `member_id`, `alternative_text`) VALUES ({$this->auftragsnummer}, $number, $type, '$state', $userId, '$alternative_text')");
+        $query = "INSERT INTO history (orderid, `number`, `type`, `state`, member_id, alternative_text) VALUES (:orderId, :number, :type, :state, :userId, :alternative_text)";
+        $params = array(
+            ":orderId" => $this->auftragsnummer,
+            ":number" => $number,
+            ":type" => $type,
+            ":state" => $state,
+            ":userId" => $userId,
+            ":alternative_text" => $alternative_text
+        );
+        DBAccess::insertQuery($query, $params);
     }
 
     /*

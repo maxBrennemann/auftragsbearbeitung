@@ -35,20 +35,7 @@ class DBAccess {
 		
 		self::$statement = self::$connection->prepare($query);
 		
-		if ($params != NULL) {
-			foreach($params as $key => &$val){
-				$dataType = getType($val);
-				switch($dataType) {
-					case "integer":
-						self::$statement->bindParam($key, $val, PDO::PARAM_INT);
-						break;
-					case "string":
-						self::$statement->bindParam($key, $val, PDO::PARAM_STR);
-						break;
-				}
-			}
-		}
-
+		self::bindParams($params);
 		self::$statement->execute();
 		$result = self::$statement->fetchAll(PDO::FETCH_ASSOC);
 		
@@ -75,20 +62,7 @@ class DBAccess {
 
 		self::$statement = self::$connection->prepare($query);
 
-		if ($params != NULL) {
-			foreach($params as $key => &$val){
-				$dataType = getType($val);
-				switch($dataType) {
-					case "integer":
-						self::$statement->bindParam($key, $val, PDO::PARAM_INT);
-						break;
-					case "string":
-						self::$statement->bindParam($key, $val, PDO::PARAM_STR);
-						break;
-				}
-			}
-		}
-		
+		self::bindParams($params);
 		return self::$statement->execute();
 	}
 
@@ -104,20 +78,7 @@ class DBAccess {
 		
 		self::$statement = self::$connection->prepare($query);
 
-		if ($params != NULL) {
-			foreach($params as $key => &$val){
-				$dataType = getType($val);
-				switch($dataType) {
-					case "integer":
-						self::$statement->bindParam($key, $val, PDO::PARAM_INT);
-						break;
-					case "string":
-						self::$statement->bindParam($key, $val, PDO::PARAM_STR);
-						break;
-				}
-			}
-		}
-
+		self::bindParams($params);
 		self::$statement->execute();
 	}
 	
@@ -126,20 +87,7 @@ class DBAccess {
 		
 		self::$statement = self::$connection->prepare($query);
 
-		if ($params != NULL) {
-			foreach($params as $key => &$val){
-				$dataType = getType($val);
-				switch($dataType) {
-					case "integer":
-						self::$statement->bindParam($key, $val, PDO::PARAM_INT);
-						break;
-					case "string":
-						self::$statement->bindParam($key, $val, PDO::PARAM_STR);
-						break;
-				}
-			}
-		}
-		
+		self::bindParams($params);
 		self::$statement->execute();
 		return self::$connection->lastInsertId();
 	}
@@ -173,6 +121,25 @@ class DBAccess {
 		self::$statement = self::$connection->prepare($query);
 		self::$statement->execute();
 		return self::$connection->lastInsertId();
+	}
+
+	private static function bindParams(&$params) {
+		if ($params != NULL) {
+			foreach($params as $key => &$val){
+				$dataType = getType($val);
+				switch($dataType) {
+					case "integer":
+						self::$statement->bindParam($key, $val, PDO::PARAM_INT);
+						break;
+					case "string":
+						self::$statement->bindParam($key, $val, PDO::PARAM_STR);
+						break;
+					case "NULL":
+						self::$statement->bindParam($key, $val, PDO::PARAM_NULL);
+						break;
+				}
+			}
+		}
 	}
 
 	public static function executeQuery($query) {
@@ -228,5 +195,3 @@ class DBAccess {
 	}
 
 }
-
-?>

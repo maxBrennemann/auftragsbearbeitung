@@ -1,5 +1,7 @@
 <?php
 
+require_once('classes/project/GlobalSettings.php');
+
 class ClientSettings {
 
     public static function setGrayScale($color, $type) {
@@ -41,6 +43,30 @@ class ClientSettings {
         }";
 
         echo $colorCSS;
+    }
+
+    public static function getFilterOrderPosten(): bool {
+        $userId = $_SESSION['userid'];
+        $value = GlobalSettings::getSetting("filterOrderPosten_$userId");
+
+        if ($value == "true") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static function setFilterOrderPosten() {
+        $setTo = $_POST["value"];
+
+        $userId = $_SESSION['userid'];
+        $value = GlobalSettings::getSetting("filterOrderPosten_$userId");
+
+        if ($value == null) {
+            GlobalSettings::addSetting("filterOrderPosten_$userId", $setTo);
+        } else {
+            GlobalSettings::changeSetting("filterOrderPosten_$userId", $setTo);
+        }
     }
 
 }

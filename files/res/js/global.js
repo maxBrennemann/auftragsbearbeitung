@@ -1,3 +1,42 @@
+import { DeviceDetector } from "./classes/deviceDetector.js";
+import { TableSorter, currentTableSorter, setTableSorter, sortTableNew } from "./classes/tableSorter.js";
+import { StatusInfoHandler, infoSaveSuccessfull } from "./classes/statusInfo.js";
+import { FileUploader } from "./classes/fileUploader.js";
+import { AjaxCall, ajax, makeAsyncCall } from "./classes/ajax.js";
+
+/**
+ * function is called when the page is loaded,
+ * workaround for new modules in js
+ */
+function exportToWindow() {
+	window.DeviceDetector = DeviceDetector;
+	window.TableSorter = TableSorter;
+	window.currentTableSorter = currentTableSorter;
+	window.setTableSorter = setTableSorter;
+	window.sortTableNew = sortTableNew;
+	window.StatusInfoHandler = StatusInfoHandler;
+	window.infoSaveSuccessfull = infoSaveSuccessfull;
+	window.FileUploader = FileUploader;
+	window.AjaxCall = AjaxCall;
+	window.ajax = ajax;
+	window.makeAsyncCall = makeAsyncCall;
+
+	window.centerAbsoluteElement = centerAbsoluteElement;
+	window.addActionButtonForDiv = addActionButtonForDiv;
+	window.removeElement = removeElement;
+	window.indexInClass = indexInClass;
+	window.createTable = createTable;
+	window.sortTable = sortTable;
+	window.clearInputs = clearInputs;
+	window.toggleNav = toggleNav;
+	window.setRead = setRead;
+	window.updateNotifications = updateNotifications;
+	window.performGlobalSearch = performGlobalSearch;
+	window.getCookie = getCookie;
+	window.checkCookies = checkCookies;
+	window.setCookie = setCookie;
+}
+
 document.addEventListener("click", function(event) {
 	if (!event.target.matches('.showLog,.showLog *')) {
 		if (document.getElementById("login")) {
@@ -8,115 +47,6 @@ document.addEventListener("click", function(event) {
 		}
 	}
 })
-
-var currentTableSorter;
-
-/* https://stackoverflow.com/questions/14267781/sorting-html-table-with-javascript */
-class TableSorter {
-
-	constructor() {
-		this.url = window.location.href;
-		this.settings = this.getSortSettings();
-	}
-
-	saveSortSettings(sortDirection, sortedColumn, tableNumber) {
-		if (this.settings == null) {
-			this.settings = {
-	
-			}
-		}
-	
-		this.settings[tableNumber] = {
-			sortDirection: sortDirection,
-			sortedColumn: sortedColumn,
-		}
-	
-		localStorage.setItem(this.url, JSON.stringify(this.settings));
-	}
-
-	get(tableIndex) {
-		if (this.settings[tableIndex]) {
-			return this.settings[tableIndex];
-		} else {
-			this.saveSortSettings("asc", 0, tableIndex);
-			return this.getSortSettings();
-		}
-	}
-
-	getSortSettings() {
-		this.settings = JSON.parse(localStorage.getItem(this.url));
-		if (this.settings == null) {
-			this.settings = {};
-		}
-		return this.settings;
-	}
-
-	readTableSorted() {
-		const tables = document.querySelectorAll("table");
-	
-		if (this.settings == null)
-			return;
-	
-		for (const [key, value] of Object.entries(this.settings)) {
-			const table = tables[key];
-	
-			if (table != undefined) {
-				const ths = table.querySelectorAll("th");
-				const th = ths[value.sortedColumn];
-				const sort = value.sortDirection == "asc";
-
-				this.sortColumn(table, th, sort);
-			}
-		}
-	}
-
-	sortColumn(table, th, sort) {
-		Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
-		.sort(this.comparer(Array.from(th.parentNode.children).indexOf(th), sort))
-		.forEach(tr => table.appendChild(tr));
-	
-		let tr = th.closest('tr');
-		Array.from(tr.children).forEach(element => {
-			if (element != th) {
-				element.style.backgroundColor = "";
-			} else {
-				element.style.backgroundColor = "#005999";
-				let sortIcon = element.querySelector("span");
-				
-				if (sort) {
-					sortIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="inline" viewBox="0 0 24 24" style="width: 12px; height 12px"><title>Absteigend sortieren</title><path d="M19 7H22L18 3L14 7H17V21H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z" fill="white" /></svg>`;
-				} else {
-					sortIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="inline" viewBox="0 0 24 24" style="width: 12px; height 12px"><title>Aufsteigend sortieren</title><path d="M19 17H22L18 21L14 17H17V3H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z" fill="white" /></svg>`;
-				}
-			}
-		});
-	
-		const sortedColumn = Array.from(tr.children).indexOf(th);
-		const tableNumber = Array.from(document.querySelectorAll("table")).indexOf(table);
-		/* turn sorting direction on click */
-		const sortDirection = sort ? "asc" : "desc";
-		this.saveSortSettings(sortDirection, sortedColumn, tableNumber);
-	}
-
-	sort(e) {
-		const th = e.target;
-		const table = th.closest('table');
-
-		const tableIndex = Array.from(document.querySelectorAll("table")).indexOf(table);
-		const sort = this.get(tableIndex).sortDirection != "asc";
-
-		this.sortColumn(table, th, sort);
-	}
-
-	getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
-
-	comparer = (idx, asc) => (a, b) => ((v1, v2) =>
-        v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2))(this.getCellValue(asc ? a : b, idx), this.getCellValue(asc ? b : a, idx));
-}
-
-function sortTableNew(e) {
-	currentTableSorter.sort(e);
-} 
 
 var lastActivity = null;
 document.addEventListener("click", registerLastActivity, false);
@@ -132,34 +62,12 @@ function registerLastActivity() {
 	}
 }
 
-function toggleHamList() {
-	var hamlist = document.getElementById("hamlist"),
-		hammen = document.getElementById("hammen");
-	if(hammen.className.includes("hideHamlist")) {
-		hammen.className = "showHamlist";
-		hamlist.style.display = "inline";
-	} else {
-		hammen.className = "hideHamlist";
-		hamlist.style.display = "none";
-	}
-}
-
-function toggleVisibility(id) {
-	if (document.getElementById(id).style.display == "none") {
-		document.getElementById(id).style.display = "inline";
-	} else {
-		document.getElementById(id).style.display = "none";
-	}
-}
-
-function goToProfile() {
-	document.getElementById("goToProfile").click();
-}
-
 if (document.readyState !== 'loading' ) {
+	exportToWindow();
     startFunc();
 } else {
     document.addEventListener('DOMContentLoaded', function () {
+		exportToWindow();
         startFunc();
     });
 }
@@ -180,7 +88,7 @@ function startFunc() {
 
 	/* auto sizes textareas on page load */
 	var textareas = document.querySelectorAll("textarea");
-	for (t of textareas) {
+	for (let t of textareas) {
 		if (t.scrollHeight != 0) {
 			t.style.height = '';
 			t.style.height = t.scrollHeight + 'px';
@@ -189,15 +97,11 @@ function startFunc() {
 
 	listener_logout();
 	listener_bellAndSearch();
-	//initializeFileUpload();
 	initializeInfoBtn();
-	currentTableSorter = new TableSorter();
+	setTableSorter(new TableSorter());
 	currentTableSorter.readTableSorted();
 	timeGlobalListener();
-	initSearch();
-}
-
-function initSearch() {
+	/* initSearch */
 	initSearchIcon();
 	initSearchListener();
 }
@@ -249,24 +153,34 @@ function listener_logout() {
 	}, false);
 }
 
+/**
+ * shows the notification container when the bell is clicked
+ * @returns {null} if the bellAndSearch element is not found
+ */
 function listener_bellAndSearch() {
 	var bellAndSearch = document.getElementsByClassName("notificationContainer")[0];
-	if (bellAndSearch == null) return null;
-	bellAndSearch.addEventListener("click", function(event) {
+	if (bellAndSearch == null) {
+		return null;
+	}
+
+	bellAndSearch.addEventListener("click", async function() {
 		if (document.getElementById("showNotifications") == null) {
-			let div = document.createElement("div");
+			const div = document.createElement("div");
 			div.id = "showNotifications";
+			div.classList.add("w-7/12", "z-10", "h-96");
 			document.body.appendChild(div);
 
-			var getHTMLContent = new AjaxCall(`getReason=notification`, "POST", window.location.href);
-			getHTMLContent.makeAjaxCall(function (response, args) {
-				var responseDiv = document.createElement("div");
-				responseDiv.innerHTML = response;
-				args[0].appendChild(responseDiv);
-				responseDiv.classList.add("notificationWrapper");
-				addActionButtonForDiv(args[0], "hide");
-				centerAbsoluteElement(args[0]);
-			}, div);
+			const htmlContent = await ajax.post({
+				r: "notification",
+			}, true);
+
+			const innerDiv = document.createElement("div");
+			innerDiv.innerHTML = htmlContent;
+
+			div.appendChild(innerDiv);
+			innerDiv.classList.add("notificationWrapper");
+			addActionButtonForDiv(div, "hide");
+			centerAbsoluteElement(div);
 		} else {
 			document.getElementById("showNotifications").style.display = "inline";
 		}
@@ -368,16 +282,6 @@ function removeElement(element) {
 	}
 }
 
-function getDate(offset = 0) {
-	var today = new Date(Date.now() + offset);
-	var dd = String(today.getDate()).padStart(2, '0');
-	var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-	var yyyy = today.getFullYear();
-
-	today = yyyy + "-" + mm + "-" + dd;
-	return today;
-}
-
 /* https://stackoverflow.com/questions/34910042/get-index-of-class/34910134 */
 function indexInClass(node) {
 	var collection = document.getElementsByClassName(node.className);
@@ -423,152 +327,6 @@ function createTable(rows, columns, data, emptyFields) {
 	table.appendChild(tbody);
 
 	return table;
-}
-
-// TODO: unhandled promise rejection behandeln
-/*
-	paramString can be a string or an object with key value pairs
-
-	string: "r=test&value=1";
-	object: {
-		r : "test",
-		value : "1"
-	};
-
-	added encodeURIComponent to make ajax requests safer
-*/
-var AjaxCall = function(param, ajaxType, url) {
-	this.type = (ajaxType != null) ? ajaxType : "POST";
-
-	if (typeof param === 'string') {
-		this.paramString = (param != null) ? param : ""; //encodeURIComponent((param != null) ? param : "");
-	} else if (typeof param === 'object') {
-		let temp = "";
-		for (let key in param) {
-			let parameterEncoded = encodeURIComponent(param[key]);
-			temp += key + "=" + parameterEncoded + "&";
-		}
-
-		this.paramString = temp.slice(0, -1);// encodeURIComponent(temp.slice(0, -1));
-	}
-	this.url = url;
-}
-
-AjaxCall.prototype.setType = function(type) {
-	if(type != null) {
-		this.type = type;
-	} else {
-		console.error("Ajax Type not defined");
-	}
-}
-
-AjaxCall.prototype.setParamString = function(paramString) {
-	if(paramString != null) {
-		this.paramString = paramString;
-	} else {
-		console.warn("AjaxCall: no parameters given");
-	}
-}
-
-AjaxCall.prototype.setUrl = function(url) {
-	this.url = url;
-}
-
-AjaxCall.prototype.makeAjaxCall = function(dataCallback, ...args) {
-	if (this.paramString == null) {
-		console.warn("AjaxCall: no parameters given");
-	}
-	
-	if (this.type == "POST") {
-		var ajaxCall = new XMLHttpRequest();
-		ajaxCall.onreadystatechange = function() {
-			if(this.readyState == 4 && this.status == 200) {
-				dataCallback(this.responseText, args);
-			}
-		}
-		ajaxCall.open(this.type, this.url, true);
-		ajaxCall.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		ajaxCall.send(this.paramString);
-	} else if (this.type == "GET") {
-		var ajaxCall = new XMLHttpRequest();
-		ajaxCall.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-				dataCallback(this.responseText, args);
-			}
-		}
-		ajaxCall.open("GET", this.url + this.paramString, true);
-		ajaxCall.send();
-	} else {
-		console.error("AjaxCall: Ajax Type not defined");
-	}
-}
-
-const ajax = {
-    async post(data, noJSON = false) {
-        return this.request(data, "POST", noJSON);
-    },
-
-    async get(data, noJSON = false) {
-		return this.request(data, "GET", noJSON);
-    },
-
-	async request(data, type, noJSON = false) {
-		data.getReason = data.r;
-        const param = Object.keys(data).map(key => {
-            return `${key}=${encodeURIComponent(data[key])}`;
-        });
-        let response = await makeAsyncCall(type, param.join("&"), "").then(result => {
-            return result;
-        });
-    
-        if (noJSON) {
-            return response;
-        }
-
-        let json = {};
-        try {
-            json = JSON.parse(response);
-        } catch (e) {
-            return {};
-        }
-
-        return json;
-	}
-}
-
-async function makeAsyncCall(type, params, location) {
-	return new Promise((resolve, reject) => {
-		if (params == null) {
-			console.warn("AjaxCall: no parameters given");
-		}
-		
-		if (type == "POST") {
-			var ajaxCall = new XMLHttpRequest();
-			ajaxCall.onload  = function() {
-				if (this.readyState == 4 && this.status == 200) {
-					resolve(this.responseText);
-				} else {
-					reject(this.responseText);
-				}
-			}
-			ajaxCall.open("POST",  location, true);
-			ajaxCall.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			ajaxCall.send(params);
-		} else if (type == "GET") {
-			var ajaxCall = new XMLHttpRequest();
-			ajaxCall.onload = function() {
-				if (this.readyState == 4 && this.status == 200) {
-					resolve(this.responseText);
-				} else {
-					reject();
-				}
-			}
-			ajaxCall.open("GET", location + params, true);
-			ajaxCall.send();
-		} else {
-			console.error("AjaxCall: Ajax Type not defined");
-		}
-	});
 }
 
 /* submit button onenter */
@@ -638,39 +396,39 @@ class TableClass {
  */
 function initializeInfoBtn() {
 	let btns = document.getElementsByClassName("infoButton");
-	Array.from(btns).forEach(function(btn) {
-		btn.addEventListener("click", function() {
-			let id = btn.dataset.info;
-			var getInfo = new AjaxCall(`getReason=getInfoText&info=${id}`, "POST", window.location.href);
-			getInfo.makeAjaxCall(function (response, args) {
-				let btn = args[0];
-				
-				let infoBox = document.getElementById("infoBox" + args[1]);
-				if (infoBox == undefined) {
-					infoBox = document.createElement("div");
-					infoBox.classList.add("infoBox");
-					infoBox.classList.add("infoBoxShow");
-					infoBox.id = "infoBox" + args[1];
+	Array.from(btns).forEach(btn => {
+		btn.addEventListener("click", async function() {
+			const id = btn.dataset.info;
+			const response = await ajax.post({
+				r: "getInfoText",
+				info : id,
+			}, true);
 
-					let text = document.createTextNode(response);
-					infoBox.appendChild(text);
-					document.body.appendChild(infoBox);
-				} else {
-					if (!infoBox.classList.contains('infoBoxShow')) {
-						infoBox.classList.add('infoBoxShow');
-					}
+			let infoBox = document.getElementById("infoBox" + id);
+			if (infoBox == undefined) {
+				infoBox = document.createElement("div");
+				infoBox.classList.add("infoBox");
+				infoBox.classList.add("infoBoxShow");
+				infoBox.id = "infoBox" + id;
+
+				let text = document.createTextNode(response);
+				infoBox.appendChild(text);
+				document.body.appendChild(infoBox);
+			} else {
+				if (!infoBox.classList.contains('infoBoxShow')) {
+					infoBox.classList.add('infoBoxShow');
 				}
-				
-				let left = parseInt(btn.offsetWidth + btn.offsetLeft);
-				let top = parseInt(- (0.75 * btn.offsetHeight) + btn.offsetTop);
+			}
+			
+			let left = parseInt(btn.offsetWidth + btn.offsetLeft);
+			let top = parseInt(- (0.75 * btn.offsetHeight) + btn.offsetTop);
 
-				if (left + infoBox.getBoundingClientRect().width > document.body.offsetWidth) {
-					left = left - infoBox.getBoundingClientRect().width - btn.offsetWidth - 15;
-				}
+			if (left + infoBox.getBoundingClientRect().width > document.body.offsetWidth) {
+				left = left - infoBox.getBoundingClientRect().width - btn.offsetWidth - 15;
+			}
 
-				infoBox.style.top = top + "px";
-				infoBox.style.left = left + "px";
-			}, btn, id);
+			infoBox.style.top = top + "px";
+			infoBox.style.left = left + "px";
 		}, false);
 	});
 }
@@ -692,7 +450,7 @@ window.addEventListener("click", function(event) {
  * @param {Object} inputs JSON object with this pattern: {"id":"clearthisid", "class":"clearthisclass"}
  */
 function clearInputs(inputs) {
-	for (key in inputs) {
+	for (let key in inputs) {
 		switch (key) {
 			case "id":
 				document.getElementById(inputs[key]).value = "";
@@ -711,7 +469,7 @@ function clearInputs(inputs) {
 			case "classes":
 				for (let i = 0; i < inputs[key].length; i++) {
 					var classes = document.getElementsByClassName(inputs[key][i]);
-					for (c of classes) {
+					for (let c of classes) {
 						c.value = "";
 					}
 				}
@@ -740,41 +498,44 @@ function toggleNav() {
 
 /* code for notifications */
 function setRead() {
-	var setNotificationsRead = new AjaxCall(`getReason=setNotificationsRead&notificationIds=all`, "POST", window.location.href);
-    setNotificationsRead.makeAjaxCall(function (response) {
-    });
+	ajax.post([
+		"r", "setNotificationsRead",
+		"notificationIds", "all",
+	]);
 }
 
 async function updateNotifications() {
-	var containerDiv = document.getElementById("showNotifications");
-	var replacementDiv = document.createElement("div");
-	replacementDiv.innerHTML = await makeAsyncCall("POST", `getReason=testDummy`, window.location.href).then(result => {
-		return result;
-	});
+	const containerDiv = document.getElementById("showNotifications");
+	const replacementDiv = document.createElement("div");
+	replacementDiv.innerHTML = await ajax.post({
+		r: "testDummy",
+	}, true);
 
 	replacementDiv.classList.add("notificationWrapper");
 
-	var toReplace = containerDiv.children[1];
+	const toReplace = containerDiv.children[1];
 	containerDiv.replaceChild(replacementDiv, toReplace); 
 }
 
-function performGlobalSearch(e) {
-	var query = e.target.value;
-	var search = new AjaxCall(`getReason=globalSearch&query=${query}`, "POST", window.location.href);
-    search.makeAjaxCall(function (response) {
-		var div = document.createElement("div");
-		div.innerHTML = response;
+async function performGlobalSearch(e) {
+	const query = e.target.value;
+	const search = await ajax.post({
+		r: "globalSearch",
+		query: query,
+	}, true);
 
-		div.style.height = "500px";
-		if (innerHeight < 550) {
-			div.style.height = "200px";
-		}
-		div.style.overflowY = "scroll";
+	const div = document.createElement("div");
+	div.innerHTML = search;
 
-		document.body.appendChild(div);
-		addActionButtonForDiv(div, "remove");
-		centerAbsoluteElement(div);
-    });
+	div.style.height = "500px";
+	if (innerHeight < 550) {
+		div.style.height = "200px";
+	}
+	div.style.overflowY = "scroll";
+
+	document.body.appendChild(div);
+	addActionButtonForDiv(div, "remove");
+	centerAbsoluteElement(div);
 }
 
 function getCookie(name) {
@@ -793,7 +554,11 @@ function checkCookies() {
     var cookieObj = {};
     for (let i = 0; i < cookies.length; i++) {
         var parts = cookies[i].split("=");
-        parts[0] = parts[0].substring(1);
+
+		if (parts[0].charAt(0) == " ") {
+			parts[0] = parts[0].substring(1);
+		}
+        
         cookieObj[parts[0]] = parts[1];
     }
 
@@ -803,21 +568,7 @@ function checkCookies() {
 /* https://www.w3schools.com/js/js_cookies.asp */
 function setCookie(cname, cvalue, exdays) {
     const d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
     let expires = "expires=" + d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
-
-/**
- * template for adding new elements to DOM
- * @param {*} elementType 
- * @param {*} elemntId 
- * @param {*} elementClass 
- * @param  {...any} args 
- */
-function createNewElement(elementType, elementId, elementClass, ...args) {
-	let element = document.createElement(elementType);
-	element.id = elementId;
-	element.classList.add(elementClass);
-	return element;
 }

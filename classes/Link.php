@@ -88,6 +88,7 @@ class Link {
 				$link = REWRITE_BASE . "css/" . $resource;
 				break;
 			case "js":
+				$resource = dashesToCamelCase($resource);
 				$link = REWRITE_BASE . "js/" . $resource;
 				break;
 			case "extJs":
@@ -119,7 +120,7 @@ class Link {
 	}
 
 	public static function getTW() {
-		return self::getResourcesShortLink("tw.css", "css");
+		return self::getResourcesShortLink("tailwind.css", "css");
 	}
 	
 	public static function getGlobalJS() {
@@ -128,11 +129,6 @@ class Link {
 
 	public static function getGlobalFrontCSS() {
 		return self::getResourcesShortLink("front/global.css", "css");
-	}
-	
-	public static function getAdminLink() {
-		$link = REWRITE_BASE . "admin/";
-		return $link;
 	}
 
 	public static function getCategoryLink($page) {

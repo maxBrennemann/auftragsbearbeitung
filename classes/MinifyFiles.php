@@ -80,10 +80,11 @@ class MinifyFiles {
 		$filesJs = self::getJs();
 		$filesCss = self::getCss();
 
-		self::minifyByType($filesJs);
+		//self::minifyByType($filesJs);
 		self::minifyByType($filesCss);
 
-		self::generateGlobalJS();
+		//self::generateGlobalJS();
+		// TODO: rewrite minifier to only minify css and use webpack for js
 	}
 
     public static function isActivated() {

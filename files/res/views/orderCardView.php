@@ -1,4 +1,4 @@
-<div class="grid grid-cols-4 gap-3 mt-3">
+<div class="grid grid-cols-3 2xl:grid-cols-4 gap-3 mt-3">
     <?php foreach ($orders as $order): ?>
         <div class="bg-white p-3 rounded-md">
 			<h3 class="font-bold"><?=$order["orderTitle"]?></h3>

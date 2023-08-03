@@ -38,17 +38,24 @@ $t->setType("module_sticker_sticker_data");
 $t->addLink($linker);
 ?>
 <div class="defCont">
-    <div class="productLoader" id="crawlAll">
-        <div class="lds-ring" id="loaderCrawlAll"><div></div><div></div><div></div><div></div></div>
-        <div>
-            <progress max="1000" value="0" id="productProgress"></progress>
-            <p><span id="currentProgress"></span> von <span id="maxProgress"></span></p>
-            <p id="statusProgress"></p>
+    <details>
+        <summary class="font-bold">
+            Importe
+        </summary>
+        <div class="productLoader" id="crawlAll">
+            <div class="lds-ring" id="loaderCrawlAll"><div></div><div></div><div></div><div></div></div>
+            <div>
+                <progress max="1000" value="0" id="productProgress"></progress>
+                <p><span id="currentProgress"></span> von <span id="maxProgress"></span></p>
+                <p id="statusProgress"></p>
+            </div>
         </div>
-    </div>
-    <a href="#" onclick="crawlAll()">Alle Produtke vom Shop crawlen</a>
-    <br>
-    <a href="#" onclick="crawlTags()">Alle Tags vom Shop crawlen</a>
+        <a href="#" class="link-primary" onclick="crawlAll()">Alle Produtke vom Shop crawlen</a>
+        <br>
+        <a href="#" class="link-primary" onclick="crawlTags()">Alle Tags vom Shop crawlen</a>
+        <br>
+        <button class="btn-primary" data-binding="true" data-fun="manageImports">Importe verwalten</button>
+    </details>
 </div>
 <div class="defCont">
     <div>
@@ -59,12 +66,14 @@ $t->addLink($linker);
     </div>
 </div>
 <div class="defCont">
-    <p class="pHeading">Neues Motiv hinzufügen</p>
+    <p class="font-bold">Neues Motiv hinzufügen</p>
     <input type="text" id="newTitle" class="px-4 py-2 m-1 text-sm text-slate-600 rounded-lg">
     <button type="submit" onclick="createNewSticker()" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Neues Motiv erstellen</button>
 </div>
-<div class="defCont">
-    <p class="pHeading">Motivexporte</p>
+<div class="defCont hidden">
+    <p class="font-bold">Motivexporte</p>
     <button id="createFbExport" data-binding="true" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Facebook Export generieren</button>
 </div>
-<?=$t->getTable()?>
+<div class="overflow-x-scroll h-96">
+    <?=$t->getTable()?>
+</div>

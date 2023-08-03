@@ -1,3 +1,5 @@
+import { addBindings } from "../classes/bindings.js";
+
 /**
  * toggles the is colorable flag of the svg,
  * if the svg is colorable, the svg is displayed in the colorable svg container
@@ -14,42 +16,81 @@ export function click_makeColorable() {
     });
 }
 
+function dropMiscHandler(e, imageCategory) {
+    e.preventDefault();
+    let uploadableFiles = [];
+
+    /* https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/File_drag_and_drop */
+    if (!e.dataTransfer.items || e.dataTransfer.getData("text/plain") == "not_uploaded") {
+        return;
+    }
+
+    const div = generatePreviewContainer();
+    [...e.dataTransfer.items].forEach((item, i) => {
+        const file = item.getAsFile();
+
+        if (item.kind !== 'file' || !item.type.match('image.*')) {
+            uploadableFiles.push(file);
+            const icon = getIcon();
+            div.appendChild(icon);
+        }
+    });
+    
+    e.target.appendChild(div);
+    uploadFileForSticker(uploadableFiles, imageCategory, handleUploadedImages);
+}
+
 /* drag and drop handler */
 function itemDropHandler(e, imageCategory) {
 	e.preventDefault();
     let uploadableFiles = [];
 
     /* https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/File_drag_and_drop */
-    if (e.dataTransfer.items && e.dataTransfer.getData("text/plain") !== "not_uploaded") {
-        [...e.dataTransfer.items].forEach((item, i) => {
-            const file = item.getAsFile();
-            const div = generatePreviewContainer();
-
-            /* generate image preview */
-            if (item.kind === 'file' && item.type.match('image.*')) {
-                const fileReader = new FileReader();
-                fileReader.readAsDataURL(file);
-                fileReader.onloadend = function() {
-                    let img = document.createElement("img");
-
-                    img.src = fileReader.result;
-                    img.alt = "Uploaded File";
-                    img.classList.add("imgPreview");
-                    img.addEventListener("click", imagePreview, false);
-
-                    div.appendChild(img); 
-                }
-            } else {
-                const icon = getIcon();
-                div.appendChild(icon);
-            }
-
-            e.target.appendChild(div);
-            uploadableFiles.push(file);
-        });
+    if (!e.dataTransfer.items || e.dataTransfer.getData("text/plain") == "not_uploaded") {
+        return;
     }
 
-    uploadFileForSticker(uploadableFiles, imageCategory);
+    [...e.dataTransfer.items].forEach((item, i) => {
+        const file = item.getAsFile();
+
+        if (item.kind === 'file' && item.type.match('image.*')) {
+            uploadableFiles.push(file);
+        }
+    });
+
+    uploadFileForSticker(uploadableFiles, imageCategory, handleImagesPreview);
+}
+
+function handleImagesPreview(filesInfo, imageCategory) {
+    filesInfo = filesInfo.imageData;
+
+    filesInfo.forEach(f => {
+        const src = f.url;
+        const imageFileId = f.id;
+        addTableRow(src, imageCategory, imageFileId);
+    });
+}
+
+function addTableRow(imageSrc, imageCategory, imageFileId) {
+    console.log(imageCategory);
+
+    const parent = document.querySelector(`[data-image-type="${imageCategory}"]`);
+    const template = document.getElementById("templateImageRow");
+	parent.appendChild(template.content.cloneNode(true));
+    const copy = parent.lastElementChild;
+
+    const image = copy.querySelector("img");
+    image.src = imageSrc;
+    image.alt = "New uploaded image";
+    image.classList.add("imgPreview");
+    image.addEventListener("click", imagePreview, false);
+
+    const fileIds = copy.querySelectorAll(`[data-file-id]`);
+    Array.from(fileIds).forEach(f => {
+        f.dataset.fileId = imageFileId;
+    });
+
+    addBindings(fileIds);
 }
 
 function getIcon(type = "icon-file") {
@@ -100,84 +141,31 @@ function itemDragOverHandler(e) {
 	e.preventDefault();
 }
 
-function moveImagesInDiv(event) {
-    if (event.target.classList.contains("imgPreview")) {
-        event.preventDefault();
-
-        if (moveImages.indexOf(event.target.parentNode.parentNode) > moveImages.indexOf(currentMoveImage)) {
-            event.target.parentNode.after(currentMoveImage.parentNode);
-        } else {
-            event.target.parentNode.before(currentMoveImage.parentNode);
-        }
-        // TODO: reihenfolge ausgeben
-    }
-}
-
-function moveImageStart(event) {
-    currentMoveImage = event.target;
-}
-
-function moveImageEnd(event) {
-    console.log("ended moving");
-}
-
-function moveInit() {
-    moveImages = Array.from(document.getElementsByClassName("imageMovable"));
-
-    moveImages.forEach(div => {
-        div.addEventListener("dragstart", moveImageStart, false);
-        div.addEventListener("dragover", moveImagesInDiv, false);
-        div.addEventListener("dragend", moveImageEnd, false);
-    })
-}
-
-function uploadFileForSticker(files, imageCategory) {
+async function uploadFileForSticker(files, imageCategory, callback = null) {
     if (files.length == 0) {
         return;
     }
 
-    let formData = new FormData();
-    files.forEach(file => {
-        formData.append("files[]", file);
-    });
+    const data = {
+        motivname: "",
+        motivNumber: motivId,
+        imageCategory: imageCategory
+    };
 
-    /* set upload variable to be recognized by the backend */
-    formData.set("upload", "motiv");
-    formData.set("motivname", "");
-    formData.set("motivNumber", motivId);
-    formData.set("imageCategory", imageCategory);
+    console.log(files);
+    //return;
+    const response = await ajax.uploadFiles(files, "motiv", data);
 
-	const uploader = new Promise((resolve, reject) => {
-		var ajax = new XMLHttpRequest();
-        ajax.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-                resolve(this.responseText);
-			}
-		}
-
-		ajax.onerror = reject;
-		ajax.open('POST', '');
-		ajax.upload.addEventListener("progress", function(e) {
-			if (e.lengthComputable) {
-				const bytesUploaded = e.loaded;
-				const bytesTotal = e.total;
-		
-				const percentage = Math.round(bytesUploaded * 100 / bytesTotal);
-                let uploadNode = document.getElementById("showUploadProgress");
-				uploadNode.value = percentage;
-			}
-		}, false);
-		ajax.send(formData);
-	});
-
-    uploader.then((response) => handleUploadedImages(response));
+    if (callback != null) {
+        callback(response, imageCategory);
+    }
 }
 
 /**
  * TODO: es muss für mehrere Dateien gleichzeitig gehen, später eine Klasse aus dieser Datei machen
  * @param {*} imageData 
  */
-function handleUploadedImages(imageData) {
+function handleUploadedImages(imageData, imageCategory) {
     const data = JSON.parse(imageData);
     const image = data.imageData[0];
     var icon;
@@ -189,27 +177,11 @@ function handleUploadedImages(imageData) {
     }
 
     if (icon != null) {
-        const container = document.querySelector(".imageMovableContainer");
+        const container = document.querySelector(".imageUpload");
         const el = container.getElementsByClassName("imageMovable");
         el[el.length - 1].innerHTML = "";
         el[el.length - 1].appendChild(icon);
     }
-}
-
-/**
- * deletes the currently selected image
- */
-function deleteImage() {
-    ajax.post({
-        imageId: mainVariables.currentDelete,
-        r: "deleteImage",
-    }).then(r => {
-        if (r.status == "success") {
-            infoSaveSuccessfull("success");
-            const image = document.querySelector(`[data-file-id="${mainVariables.currentDelete}"]`);
-            image.parentNode.removeChild(image);
-        }
-    });
 }
 
 function initSVG() {
@@ -294,49 +266,23 @@ function adjustSVG() {
 function initImageManager() {
     document.addEventListener("click", imageClickListener);
 
-    const contextMenu = document.getElementById("delete-menu");
-    const scope = document.querySelector("body");
-
-    scope.addEventListener("contextmenu", (event) => {
-        const isDeletable = event.target.dataset.deletable != null || event.target.parentNode.dataset.deletable != null;
-        if (isDeletable) {
-            mainVariables.currentDelete = event.target.dataset.fileId;
-            event.preventDefault();
-
-            const {
-                clientX: mouseX, 
-                clientY: mouseY 
-            } = event;
-    
-            contextMenu.style.top = `${mouseY}px`;
-            contextMenu.style.left = `${mouseX}px`;
-    
-            contextMenu.classList.add("visible");
-        }
-    });
-
-    scope.addEventListener("click", (e) => {
-        if (e.target.offsetParent != contextMenu) {
-            contextMenu.classList.remove("visible");
-        }
-    });
-
-    const imgMovableContainers = document.querySelectorAll(".imageMovableContainer");
+    const imgMovableContainers = document.querySelectorAll(".imageUpload");
     Array.from(imgMovableContainers).forEach(container => {
         const dropType = container.dataset.dropType;
         container.addEventListener("drop", e => itemDropHandler(e, dropType), false);
         container.addEventListener("dragover", itemDragOverHandler, false);
+        container.addEventListener("click", openFileDialog);
     });
+
+    const imgMovable = document.querySelector(".imageMovableContainer");
+    const dropType = imgMovable.dataset.dropType;
+    imgMovable.addEventListener("drop", e => dropMiscHandler(e, dropType), false);
+    imgMovable.addEventListener("dragover", itemDragOverHandler, false);
 
     const imgPrev = document.querySelectorAll(".imgPreview");
     Array.from(imgPrev).forEach(img => {
         img.addEventListener("click", imagePreview, false);
         img.addEventListener("dragstart", preventCopy, false);
-    });
-
-    const delItems = document.querySelectorAll("#delete-menu.item");
-    Array.from(delItems).forEach(item => {
-        item.addEventListener("click", deleteImage, false);
     });
 
     const svgContainer = document.getElementById("svgContainer");
@@ -345,19 +291,74 @@ function initImageManager() {
 }
 
 const motivId = document.getElementById("motivId").innerHTML;
-var currentMoveImage;
-var moveImages;
 var svg_elem;
 
-/* init */
 if (document.readyState !== 'loading' ) {
-    initImageManager();
-    initSVG();
-    moveInit()
+    init();
 } else {
     document.addEventListener('DOMContentLoaded', function () {
-        initImageManager();
-        initSVG();
-        moveInit();
+        init();
+    });
+}
+
+function init() {
+    initImageManager();
+    initSVG();
+}
+
+export function deleteImage(e) {
+    const imageId = e.currentTarget.dataset.fileId;
+    ajax.post({
+        imageId: imageId,
+        r: "deleteImage",
+    }).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+            const image = document.querySelector(`[data-file-id="${imageId}"]`);
+            const imageRow = image.parentNode.parentNode;
+            imageRow.parentNode.removeChild(imageRow);
+        }
+    });
+}
+
+export function updateImageDescription(e) {
+    const imageId = e.currentTarget.dataset.fileId;
+    const description = e.currentTarget.value;
+    ajax.post({
+        imageId: imageId,
+        description: description,
+        r: "updateImageDescription",
+    }).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+        }
+    });
+}
+
+/**
+ * chatGPT generated
+ * @param {*} event 
+ */
+function openFileDialog(event) {
+    // Create a hidden file input element
+    var fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+  
+    // Trigger click event on the file input
+    fileInput.click();
+  
+    const imageCategory = event.target.dataset.dropType;
+
+    // Handle selected files
+    fileInput.addEventListener("change", function(event) {
+        var files = event.target.files;
+        files = Array.from(files);
+
+        if (files.length == 0) {
+            return;
+        }
+
+        uploadFileForSticker(files, imageCategory, handleImagesPreview);
     });
 }

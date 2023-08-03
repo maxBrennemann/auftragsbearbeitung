@@ -21,7 +21,7 @@ class StickerImage extends PrestashopConnection {
     /* reads from database */
     private function getConnectedFiles() {
         $allFiles = DBAccess::selectQuery("SELECT dateien.dateiname, dateien.originalname AS alt, 
-                dateien.typ, dateien.id, module_sticker_image.image_sort, module_sticker_image.id_product
+                dateien.typ, dateien.id, module_sticker_image.image_sort, module_sticker_image.id_product, module_sticker_image.description, module_sticker_image.id_image_shop, module_sticker_image.image_order
             FROM dateien, module_sticker_image 
             WHERE dateien.id = module_sticker_image.id_datei
                 AND module_sticker_image.id_motiv = :idMotiv;",
@@ -59,24 +59,29 @@ class StickerImage extends PrestashopConnection {
     }
 
     public function getAufkleberImages() {
-        return array_filter(
-            $this->images,
-            fn($element) => $element["image_sort"] == "aufkleber"
-        );
-    }
+        return $this->getImagesByType("aufkleber");
+    }    
 
     public function getWandtattooImages() {
-        return array_filter(
-            $this->images,
-            fn($element) => $element["image_sort"] == "wandtattoo"
-        );
+        return $this->getImagesByType("wandtattoo");
     }
 
     public function getTextilImages() {
-        return array_filter(
+        return $this->getImagesByType("textil");
+    }
+
+    private function getImagesByType($type) {
+        $images = array_filter(
             $this->images,
-            fn($element) => $element["image_sort"] == "textil"
+            fn($element) => $element["image_sort"] == $type
         );
+
+        // Sort the array by the "image_order" attribute
+        usort($images, function($a, $b) {
+            return $a["image_order"] - $b["image_order"];
+        });
+    
+        return $images;
     }
 
     public function getTextilSVG($colorable = false) {
@@ -219,11 +224,101 @@ class StickerImage extends PrestashopConnection {
         DBAccess::deleteQuery($query, ["idMotiv" => $idMotiv]);
     }
 
+    public function uploadImages($imageURLs, $productId) {
+        if ($imageURLs == null) {
+            return;
+        }
+
+        /* https://www.prestashop.com/forums/topic/407476-how-to-add-image-during-programmatic-product-import/ */
+        $images = array();
+        foreach ($imageURLs as $i) {
+            $link = WEB_URL . "/upload/" . $i["dateiname"];
+            $images[] = urlencode($link);
+        }
+
+        /* json resonder script on server */
+        $ch = curl_init($this->url);
+
+        # Setup request to send json via POST.
+        $payload = json_encode(array("images"=> $images, "id" => $productId));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        # Return response instead of printing.
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        # Send request.
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        $imagesData = json_decode($result, true);
+        $index = 0;
+        foreach ($imagesData as $image) {
+            $idImage = (int) $image["id"];
+            $idDatei = $imageURLs[$index]["id"];
+            DBAccess::updateQuery("UPDATE module_sticker_image SET id_image_shop = :idImage WHERE id_datei = :idDatei;", [
+                "idImage" => $idImage,
+                "idDatei" => $idDatei,
+            ]);
+            $index++;
+        }
+    }
+
+    public function uploadImageDescription($descriptions) {
+        $client = new \GuzzleHttp\Client();
+        $client->request('POST', SHOPURL . "/auftragsbearbeitung/setImageDescription.php", [
+            'form_params' => [
+                'descriptions' => json_encode($descriptions),
+            ],
+        ]);
+    }
+
     /**
      * deletes an image from the shop
      */
     public function deleteImage($idProduct, $idImageShop) {
         $this->deleteXML("images/products/$idProduct", $idImageShop);
+    }
+
+    /**
+     * 
+     */
+    public function handleImageProductSync($type, $productId) {
+        $images = $this->getImagesByType($type);
+        $this->uploadImages($images, $productId);
+
+        $imageDescriptions =  [];
+        foreach ($images as $i) {
+            $imageDescriptions[] = [
+                "id" => $i["id_image_shop"],
+                "description" => $i["description"],
+            ];
+        }
+
+        $this->uploadImageDescription($imageDescriptions);
+
+        /* reload images, because they were just uploaded */
+
+        /* get all images from the shop */
+
+        /* get all images from the database */
+
+        /* compare them */
+
+        /* delete images from the shop that are not in the database */
+
+        /* upload images to the shop that are not in the shop and adjust order if necessary */
+    }
+
+    /**
+     * orders the images according to the json string
+     */
+    public static function setImageOrder($order) {
+        $order = json_decode($order);
+        $count = 0;
+        foreach ($order as $id) {
+            $query = "UPDATE module_sticker_image SET image_order = :order WHERE id_datei = :id;";
+            DBAccess::updateQuery($query, ["order" => $count, "id" => $id]);
+            $count++;
+        }
     }
 
 }

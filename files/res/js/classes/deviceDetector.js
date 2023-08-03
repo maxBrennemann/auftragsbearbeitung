@@ -1,4 +1,4 @@
-class DeviceDetector {
+export class DeviceDetector {
     static isMobile() {
         var check = false;
         (function(a) {

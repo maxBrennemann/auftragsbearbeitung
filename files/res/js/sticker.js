@@ -1,8 +1,10 @@
 import { click_textGeneration, click_showTextSettings, click_iterateText } from "./sticker/textGeneration.js";
 import { loadTags, showTaggroupManager, addTag } from "./sticker/tagManager.js";
 import ProductConnector from "./sticker/productConnector.js";
-import { click_makeColorable } from "./sticker/imageManager.js";
+import { click_makeColorable, deleteImage, updateImageDescription } from "./sticker/imageManager.js";
 import { click_addNewWidth } from "./sticker/sizeTable.js";
+import { initBindings } from "./classes/bindings.js";
+import "./sticker/imageMove.js";
 
 const fnNames = {};
 fnNames.click_makeColorable = click_makeColorable;
@@ -10,6 +12,8 @@ fnNames.click_textGeneration = click_textGeneration;
 fnNames.click_showTextSettings = click_showTextSettings;
 fnNames.click_iterateText = click_iterateText;
 fnNames.click_addNewWidth = click_addNewWidth;
+fnNames.click_deleteImage = deleteImage;
+fnNames.write_updateImageDescription = updateImageDescription;
 
 const mainVariables = {
     productConnect: [],
@@ -20,7 +24,7 @@ const mainVariables = {
 window.mainVariables = mainVariables;
 
 function initSticker() {
-    initBindings();
+    initBindings(fnNames);
 
     document.title = "b-schriftung - Motiv " + mainVariables.motivId.innerHTML + " " + document.getElementById("name").innerHTML;
 
@@ -30,49 +34,6 @@ function initSticker() {
     resizeTitle.call(input);
 
     document.getElementById("creationDate").addEventListener("change", changeDate, false);
-}
-
-function initBindings() {
-    let bindings = document.querySelectorAll('[data-binding]');
-    [].forEach.call(bindings, function(el) {
-        var fun_name = "";
-        if (el.dataset.fun) {
-            fun_name = "click_" + el.dataset.fun;
-        } else {
-            fun_name = "click_" + el.id;
-        }
-        
-        el.addEventListener("click", function(e) {
-            var fun = fnNames[fun_name];
-            if (typeof fun === "function") {
-                fun(e);
-            } else {
-                console.warn("event listener may not be defined or wrong");
-            }
-        }.bind(fun_name), false);
-    });
-    let variables = document.querySelectorAll('[data-variable]');
-    [].forEach.call(variables, function(v) {
-        mainVariables[v.id] = v;
-    });
-    let autowriter = document.querySelectorAll('[data-write]');
-    [].forEach.call(autowriter, function(el) {
-        var fun_name = "";
-        if (el.dataset.fun) {
-            fun_name = "write_" + el.dataset.fun;
-        } else {
-            fun_name = "write_" + el.id;
-        }
-        
-        el.addEventListener("change", function(e) {
-            var fun = fnNames[fun_name];
-            if (typeof fun === "function") {
-                fun(e);
-            } else {
-                console.warn("event listener may not be defined or wrong");
-            }
-        }.bind(fun_name), false);
-    });
 }
 
 fnNames.click_toggleCheckbox = async function(e) {
@@ -240,10 +201,16 @@ function transfer(type, text) {
         id: mainVariables.motivId.innerHTML,
         type: type,
         r: "transferProduct",
-    }, true).then(r => {
-        mainVariables.pending = false;
-
-        infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS, "Übertragung erfolgreich");
+    }).then(r => {
+        if (r.status == "success") {
+            mainVariables.pending = false;
+            infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS, "Übertragung erfolgreich");
+        } else {
+            mainVariables.pending = false;
+            infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS, "Übertragung erfolgreich");
+            // TODO: error handling for try catch error in backend like: could not transfer all data, "semi-success"
+            console.log(r.error);
+        }
     }).catch(error => {
         infoBox.setType(StatusInfoHandler.TYPE_ERRORCOPY);
         infoBox.statusUpdate(StatusInfoHandler.STATUS_FAILURE, "Übertragung fehlgeschlagen", error);

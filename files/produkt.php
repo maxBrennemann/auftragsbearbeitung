@@ -1,24 +1,24 @@
-<?php 
-	require_once('classes/project/Produkt.php');
-	require_once('classes/Upload.php');
+<?php
 
-	$id = isset($_GET["id"]) ? $_GET["id"] : -1;
+require_once('classes/project/Produkt.php');
 
-	if ($id == -1) {
-		$linker = new Link();
-		$linker->addBaseLink("produkt");
+$id = isset($_GET["id"]) ? $_GET["id"] : -1;
 
-		$productTable = new Table("produkt");
-		$productTable->addLink($linker);
+if ($id == -1) {
+	$linker = new Link();
+	$linker->addBaseLink("produkt");
 
-		$linker->setIterator("id", $productTable->getData(), "Nummer");
+	$productTable = new Table("produkt");
+	$productTable->addLink($linker);
 
-		$table = $productTable->getTable();
-	}
+	$linker->setIterator("id", $productTable->getData(), "Nummer");
 
-	$p = new Produkt($id);
-	$showFiles = Upload::getFilesProduct($id);
-	$products = Produkt::getAllProducts();
+	$table = $productTable->getTable();
+}
+
+$p = new Produkt($id);
+$showFiles = Produkt::getFiles($id);
+$products = Produkt::getAllProducts();
 
 ?>
 <?php if ($id != -1): ?>

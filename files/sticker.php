@@ -28,7 +28,7 @@ if ($id == 0): ?>
     <a href="<?=Link::getPageLink("sticker-overview")?>">Zur Motivübersicht</a>
 <?php else: ?>
 <script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
-<script src="<?=Link::getResourcesShortLink("classes/statusInfo.js", "js")?>"></script>
+<div class="w-full">
 <?=$stickerCollection->checkProductErrorStatus() ? $stickerCollection->getErrorMessage() : ""?>
 <div class="defCont cont1">
     <div>
@@ -46,12 +46,6 @@ if ($id == 0): ?>
     <div>
         <p>Weitere Dateien (SVGs, CorelDraw, ...):</p>
         <?=insertTemplate("classes/project/modules/sticker/views/stickerFileView.php", ["images" => $stickerImage->getGeneralImages(), "files" => $stickerImage->getFiles()])?>
-        <div id="delete-menu">
-            <div class="item">
-                <?=Icon::$iconDelete?>
-                <span>Löschen</span>
-            </div>
-        </div>
     </div>
 </div>
 <div class="cont2">
@@ -441,6 +435,11 @@ if ($id == 0): ?>
 <div class="defCont">
     <h2 class="font-semibold mb-2">Statistiken</h2>
     <!-- TODO: Statistiken von Google Analytics und Google Shopping, sowie von Google SearchConsole und shopintern einbinden -->
+    <div>
+        <h3>Google SearchConsole</h3>
+        <p>Impressions: <?=$stickerCollection->getSearchConsoleStats("impressions")?></p>
+        <p>Klicks: <?=$stickerCollection->getSearchConsoleStats("clicks")?></p>
+    </div>
 </div>
 <div class="defCont">
     <h2 class="font-semibold mb-2">Changelog</h2>
@@ -466,4 +465,16 @@ if ($id == 0): ?>
 <template id="icon-invisible">
     <?=Icon::$iconInvisible?>
 </template>
+<template id="templateImageRow">
+    <tr>
+        <td><img class="imgPreview cursor-pointer" data-file-id="" src="" alt=""></td>
+        <td><input class="px-2 bg-inherit w-32" type="text" maxlength="125" placeholder="Beschreibung" data-write="true" data-fun="updateImageDescription" data-file-id=""></td>
+        <td></td>
+        <td>
+            <button class="p-1 mr-1 actionButton" title="Löschen" data-file-id="" data-binding="true" data-fun="deleteImage"><?=Icon::$iconDelete?></button>
+            <button class="p-1 mr-1 actionButton moveRow" title="Verschieben" onmousedown="moveInit(event)" onmouseup="moveRemove(event)" data-file-id=""><?=Icon::$iconMove?></button>
+        </td>
+    </tr>
+</template>
 <?php endif; ?>
+</div>

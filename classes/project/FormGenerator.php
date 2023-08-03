@@ -1,12 +1,5 @@
 <?php
 
-require_once('classes/DBAccess.php');
-error_reporting(E_ALL);
-
-if (0 > version_compare(PHP_VERSION, '5')) {
-    die('This file was generated for PHP 5');
-}
-
 /**
  * Klasse generiert Tabellen für Formulare
  *
@@ -56,9 +49,9 @@ class FormGenerator {
 		}
 
 		if($editable) {
-			$html_table = "<table class='allowAddingContent' data-type=${type} data-send-to=${sendTo}>";
+			$html_table = "<table class='allowAddingContent' data-type=$type data-send-to=$sendTo>";
 		} else {
-			$html_table = "<table data-type=${type}>";
+			$html_table = "<table data-type=$type>";
 		}
 
 		$html_table .= self::createTableHeader($column_names);
@@ -100,9 +93,9 @@ class FormGenerator {
 		}
 		
 		if ($amountOfData == -1) {
-			return DBAccess::selectQuery("SELECT * FROM ${type} {$whereConditionStatement} {$isOrderedByStatement}");
+			return DBAccess::selectQuery("SELECT * FROM $type $whereConditionStatement $isOrderedByStatement;");
 		} else {
-			return DBAccess::selectQuery("SELECT * FROM ${type} {$whereConditionStatement} {$isOrderedByStatement} LIMIT ${amountOfData}");
+			return DBAccess::selectQuery("SELECT * FROM $type $whereConditionStatement $isOrderedByStatement LIMIT $amountOfData;");
 		}
 	}
 
@@ -148,12 +141,12 @@ class FormGenerator {
 			$url = $_SERVER['REQUEST_URI'];
 			$url = strtok($url, '?');
 			if ($retUrl != null) {
-				$html = $html . "<td><a href='{$retUrl}?showDetails={$type}&id={$showColumnData}'>{$showColumnData}</a></td>";
+				$html = $html . "<td><a href='$retUrl?showDetails=$type&id=$showColumnData'>$showColumnData</a></td>";
 			} else {
-				$html = $html . "<td><a href='{$url}?showDetails={$type}&id={$showColumnData}'>{$showColumnData}</a></td>";
+				$html = $html . "<td><a href='$url?showDetails=$type&id=$showColumnData'>$showColumnData</a></td>";
 			}
 		} else {
-			$html = $html . "<td>{$showColumnData}</td>";
+			$html = $html . "<td>$showColumnData</td>";
 		}
 
 		return $html;
@@ -167,7 +160,7 @@ class FormGenerator {
 
 		for ($i = 0; $i < sizeof($column_names); $i++) {
 			$showColumnName = $column_names[$i]["COLUMN_NAME"];
-			$table_header .= "<th class='tableHead'>${showColumnName} <span class=\"cursortable\" onclick=\"sortTable(this, $i, true)\">&#x25B2;</span><span class=\"cursortable\" onclick=\"sortTable(this, $i, false)\">&#x25BC;</span></th>";
+			$table_header .= "<th class='tableHead'>$showColumnName <span class=\"cursortable\" onclick=\"sortTable(this, $i, true)\">&#x25B2;</span><span class=\"cursortable\" onclick=\"sortTable(this, $i, false)\">&#x25BC;</span></th>";
 		}
 
 		return $table_header . "</tr>";
@@ -176,7 +169,7 @@ class FormGenerator {
 	public static function insertData($type, $data) {
 		$column_names = DBAccess::selectColumnNames($type);
 
-		$input_string = "INSERT INTO ${type} (";
+		$input_string = "INSERT INTO $type (";
 		$columns = "";
 		$values = "VALUES (";
 		for ($i = 0; $i < sizeof($column_names); $i++) {
@@ -192,7 +185,7 @@ class FormGenerator {
 	}
 
 	public function setIsOrderedBy($isOrderedBy) {
-		$this->isOrderedBy = $orderBy;
+		$this->isOrderedBy = $isOrderedBy;
 	}
 
 	public function setWhereCondition($whereCondition) {

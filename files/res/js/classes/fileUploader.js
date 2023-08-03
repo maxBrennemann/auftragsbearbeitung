@@ -1,6 +1,6 @@
 /* adds file upload class to every form with that class */
-var fileUploader;
-function initializeFileUpload() {
+var fileUploaders;
+export function initializeFileUpload() {
 	let forms = document.querySelectorAll("form.fileUploader");
 	fileUploaders = [];
 	for (let i = 0, f; f = forms[i]; i++) {
@@ -10,7 +10,7 @@ function initializeFileUpload() {
 }
 
 /* https://stackoverflow.com/questions/30008114/how-do-i-promisify-native-xhr */
-var FileUploader = function(target) {
+export var FileUploader = function(target) {
 	if (target.nodeName == "FORM") {
 		this.target = target;
 		this.files = document.querySelector(`input[type="file"][form="${this.target.id}"]`);
@@ -150,10 +150,15 @@ FileUploader.prototype.preview = function() {
 }
 
 FileUploader.prototype.initializeDragAndDrop = function() {
-	document.getElementsByClassName("filesList")[0].addEventListener("drop", function(e) {
+	const filesList = document.querySelector(".filesList");
+	if (filesList == null) {
+		return;
+	}
+
+	filesList.addEventListener("drop", function(e) {
 		this.ondropHandler(e);
 	}.bind(this), false);
-	document.getElementsByClassName("filesList")[0].addEventListener("dragover", function(e) {
+	filesList.addEventListener("dragover", function(e) {
 		this.ondragHandler(e);
 	}.bind(this), false);
 }

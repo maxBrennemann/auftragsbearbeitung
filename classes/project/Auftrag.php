@@ -1,11 +1,5 @@
 <?php
 
-error_reporting(E_ALL);
-
-if (0 > version_compare(PHP_VERSION, '5')) {
-    die('This file was generated for PHP 5');
-}
-
 require_once('Kunde.php');
 require_once('Schritt.php');
 require_once('Posten.php');
@@ -13,11 +7,11 @@ require_once('Priority.php');
 require_once('FormGenerator.php');
 require_once('InteractiveFormGenerator.php');
 require_once('StatisticsInterface.php');
-require_once('classes/DBAccess.php');
-require_once('classes/Link.php');
 require_once('Statistics.php');
 require_once('GlobalSettings.php');
 require_once("classes/project/Table.php");
+require_once("classes/project/NotificationManager.php");
+require_once('classes/project/ClientSettings.php');
 
 /**
  * Klasse generiert im Zusammenhang mit der Template Datei auftrag.php die Übersicht für einen bestimmten Auftrag.
@@ -96,45 +90,54 @@ class Auftrag implements StatisticsInterface {
 	}
 
 	public function getBearbeitungsschritteAsTable() {
-		$data = DBAccess::selectQuery("SELECT Bezeichnung, Datum, `Priority`, finishingDate as 'erledigt am' FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer}");
-		$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Datum"), 
-				2 => array("COLUMN_NAME" => "Priority"), 3 => array("COLUMN_NAME" => "erledigt am"));
+		$query = "SELECT Schrittnummer, Bezeichnung, Datum, `Priority`, finishingDate FROM schritte WHERE Auftragsnummer = :id ORDER BY `Priority` DESC";
+		$data = DBAccess::selectQuery($query, ["id" => $this->Auftragsnummer]);
 
-		$form = new InteractiveFormGenerator("");
-		return $form->create($data, $column_names);
-	}
-
-	public function getOpenBearbeitungsschritteAsTable() {
-		/* 
-		 * istErledigt = 1 -> ist noch zu erledigen
-		 * istErledigt = 0 -> ist schon erledigt
-		*/
-		$data = DBAccess::selectQuery("SELECT Schrittnummer, Bezeichnung, Datum, `Priority` FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer} AND istErledigt = 1 ORDER BY `Priority` DESC");
-		$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Datum"), 
-				2 => array("COLUMN_NAME" => "Priority"));
-
-		$form = new InteractiveFormGenerator("schritte");
-		$form->setRowDone(true);
-		$_SESSION['storedTable'] = serialize($form);
-		return $form->create($data, $column_names);
-	}
-
-	/* getBearbeitungsschritte with new Table class */
-	public function getOpenBearbeitungsschritteTable() {
-		$data = DBAccess::selectQuery("SELECT Schrittnummer, Bezeichnung, Datum, `Priority` AS Priorotät FROM schritte WHERE Auftragsnummer = {$this->Auftragsnummer} AND istErledigt = 1 ORDER BY `Priority` DESC");
-		$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Datum"), 2 => array("COLUMN_NAME" => "Priorotät"));
+		$column_names = array(
+			0 => array("COLUMN_NAME" => "Bezeichnung"),
+			1 => array("COLUMN_NAME" => "Datum"),
+			2 => array("COLUMN_NAME" => "Priority", "ALT" => "Priorotät"),
+			3 => array("COLUMN_NAME" => "finishingDate", "ALT" => "erledigt am"),
+		);
 
 		for ($i = 0; $i < sizeof($data); $i++) {
-			$data[$i]["Priorotät"] = Priority::getPriorityLevel($data[$i]["Priorotät"]);
+			$data[$i]["Priority"] = Priority::getPriorityLevel($data[$i]["Priority"]);
 		}
 
 		/* addes three buttons to table */
 		$t = new Table();
 		$t->createByData($data, $column_names);
-		$t->addActionButton("update", $identifier = "Schrittnummer", $update = "istErledigt = 0");
 		$t->addActionButton("edit");
 		$t->setType("schritte");
-		$t->addActionButton("delete", $identifier = "Schrittnummer");
+		$t->addActionButton("delete", "Schrittnummer");
+
+		$_SESSION["schritte_table"] = serialize($t);
+
+		return $t->getTable();
+	}
+
+	/* getBearbeitungsschritte with new Table class */
+	public function getOpenBearbeitungsschritteTable() {
+		$query = "SELECT Schrittnummer, Bezeichnung, Datum, `Priority` FROM schritte WHERE Auftragsnummer = :id AND istErledigt = 1 ORDER BY `Priority` DESC";
+		$data = DBAccess::selectQuery($query, ["id" => $this->Auftragsnummer]);
+
+		$column_names = array(
+			0 => array("COLUMN_NAME" => "Bezeichnung"),
+			1 => array("COLUMN_NAME" => "Datum"),
+			2 => array("COLUMN_NAME" => "Priority", "ALT" => "Priorotät")
+		);
+
+		for ($i = 0; $i < sizeof($data); $i++) {
+			$data[$i]["Priority"] = Priority::getPriorityLevel($data[$i]["Priority"]);
+		}
+
+		/* addes three buttons to table */
+		$t = new Table();
+		$t->createByData($data, $column_names);
+		$t->addActionButton("update", "Schrittnummer", $update = "istErledigt = 0");
+		$t->addActionButton("edit");
+		$t->setType("schritte");
+		$t->addActionButton("delete", "Schrittnummer");
 
 		$_SESSION["schritte_table"] = serialize($t);
 
@@ -168,6 +171,7 @@ class Auftrag implements StatisticsInterface {
 	public function getAuftragstypBezeichnung() {
 		$query = "SELECT `Auftragstyp` FROM `auftragstyp` WHERE `id` = :idAuftragstyp LIMIT 1;";
 		$bez = DBAccess::selectQuery($query, ["idAuftragstyp" => $this->auftragstyp]);
+
 		if ($bez != null) {
 			return $bez[0]["Auftragstyp"];
 		} else {
@@ -193,7 +197,10 @@ class Auftrag implements StatisticsInterface {
 		return $this->termin;
 	}
 
-	public function preisBerechnen() {
+	/**
+	 * calculates the sum of all items in the order
+	 */
+	public function calcOrderSum () {
 		$price = 0;
 		foreach ($this->Auftragsposten as $posten) {
 			if ($posten->isInvoice() == 1) {
@@ -203,12 +210,18 @@ class Auftrag implements StatisticsInterface {
 		return $price;
 	}
 
+	public function preisBerechnen() {
+		$price = 0;
+		foreach ($this->Auftragsposten as $posten) {
+			$price += $posten->bekommePreis();
+		}
+		return $price;
+	}
+
 	public function gewinnBerechnen() {
 		$price = 0;
 		foreach ($this->Auftragsposten as $posten) {
-			if ($posten->isInvoice() == 1) {
-				$price += $posten->bekommeDifferenz();
-			}
+			$price += $posten->bekommeDifferenz();
 		}
 		return $price;
 	}
@@ -244,6 +257,17 @@ class Auftrag implements StatisticsInterface {
 		if ($isInvoice) {
 			for ($i = 0; $i < sizeof($this->Auftragsposten); $i++) {
 				if ($this->Auftragsposten[$i]->isInvoice() == true) {
+					array_push($data, $this->Auftragsposten[$i]->fillToArray($subArr));
+				}
+			}
+	
+			return $data;
+		}
+
+		/* check if ClientSettings::getFilterOrderPosten is set */
+		if (ClientSettings::getFilterOrderPosten()) {
+			for ($i = 0; $i < sizeof($this->Auftragsposten); $i++) {
+				if ($this->Auftragsposten[$i]->isInvoice() == false) {
 					array_push($data, $this->Auftragsposten[$i]->fillToArray($subArr));
 				}
 			}
@@ -411,9 +435,9 @@ class Auftrag implements StatisticsInterface {
 			4 => array("COLUMN_NAME" => "Auftragsbezeichnung")
 		);
 
-		$query = "SELECT Auftragsnummer, Datum, IF(kunde.Firmenname = '', 
+		$query = "SELECT Auftragsnummer, DATE_FORMAT(Datum, '%d.%m.%Y') as Datum, IF(kunde.Firmenname = '', 
 				CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) as Kunde, 
-				Auftragsbezeichnung, IF(auftrag.Termin = '0000-00-00', 'kein Termin', auftrag.Termin) AS Termin 
+				Auftragsbezeichnung, IF(auftrag.Termin IS NULL OR auftrag.Termin = '0000-00-00', 'kein Termin', DATE_FORMAT(auftrag.Termin, '%d.%m.%Y')) AS Termin 
 			FROM auftrag 
 			LEFT JOIN kunde 
 				ON auftrag.Kundennummer = kunde.Kundennummer 
@@ -460,13 +484,15 @@ class Auftrag implements StatisticsInterface {
 	}
 
 	public function getFarben() {
-		$farben = DBAccess::selectQuery("SELECT Farbe, Farbwert, id AS Nummer, Hersteller, Bezeichnung FROM color, color_auftrag WHERE id_color = id AND id_auftrag = {$this->getAuftragsnummer()}");
-		$farbTable = "";
-		foreach ($farben as $farbe) {
-			$farbTable .= "<div class=\"singleColorContainer\"><p class=\"singleColorName\">{$farbe['Farbe']}, {$farbe['Hersteller']}: {$farbe['Bezeichnung']}</p><div class=\"farbe\" style=\"background-color: #{$farbe['Farbwert']}\"></div><button onclick=\"removeColor({$farbe['Nummer']});\">×</button></div><br>";
-		}
+		$farben = DBAccess::selectQuery("SELECT Farbe, Farbwert, id AS Nummer, Hersteller, Bezeichnung FROM color, color_auftrag WHERE id_color = id AND id_auftrag = :orderId", ["orderId" => $this->getAuftragsnummer()]);
 
-		return $farbTable;
+		ob_start();
+		insertTemplate('files/res/views/colorView.php', [
+			"farben" => $farben,
+		]);
+		$content = ob_get_clean();
+
+		return $content;
 	}
 
 	/*
@@ -497,24 +523,17 @@ class Auftrag implements StatisticsInterface {
 
 	/* this function fetches the associated notes from the db */
 	public function getNotes() {
-		$html = "";
-		$iconNotebook = Icon::$iconNotebook;
-		$notes = DBAccess::selectQuery("SELECT Notiz FROM notizen WHERE Auftragsnummer = :id ORDER BY creation_date DESC", ["id" => $this->Auftragsnummer]);
+		$notes = DBAccess::selectQuery("SELECT Notiz, Nummer FROM notizen WHERE Auftragsnummer = :id ORDER BY creation_date DESC", [
+			"id" => $this->Auftragsnummer
+		]);
 
-		foreach($notes as $note) {
-			$content = $note['Notiz'];
-			$html .= <<<EOL
-				<div class="notes">
-					<div class="noteheader">Notiz 
-						<span class="inline">$iconNotebook</span>
-					</div>
-					<div class="notecontent">$content</div>
-					<div class="notebutton" onclick="removeNote(event)">×</div>
-				</div>
-			EOL;
-		}
-
-		return $html;
+		ob_start();
+		insertTemplate('files/res/views/noteView.php', [
+			"notes" => $notes,
+			"icon" => Icon::$iconNotebook,
+		]);
+		$content = ob_get_clean();
+		return $content;
 	}
 
 	public function recalculate() {
@@ -564,6 +583,96 @@ class Auftrag implements StatisticsInterface {
 		return $defaultWage;
 	}
 
-}
+	/**
+	 * adds a new order to the database by using the data from the form,
+	 * which is sent by the client;
+	 * the function echos a json object with the response link and the order id
+	 */
+	public static function add() {
+		$bezeichnung = $_POST['bezeichnung'];
+		$beschreibung = $_POST['beschreibung'];
+		$typ = $_POST['typ'];
+		$termin = getParameter("termin", "POST", null);
+		$angenommenVon = $_POST['angenommenVon'];
+		$kdnr = $_POST['customerId'];
+		$angenommenPer = $_POST['angenommenPer'];
+		$ansprechpartner = (int) $_POST['ansprechpartner'];
 
-?>
+		$orderId = self::addToDB($kdnr, $bezeichnung, $beschreibung, $typ, $termin, $angenommenVon, $angenommenPer, $ansprechpartner);
+
+		$isLoadPosten = false;
+		if (isset($_SESSION['offer_is_order']) && $_SESSION['offer_is_order'] == true) {
+			$isLoadPosten = true;
+		}
+
+		$data = array(
+			"success" => true,
+			"responseLink" => Link::getPageLink("auftrag") . "?id=$orderId",
+			"loadFromOffer" => $isLoadPosten,
+			"orderId" => $orderId
+		);
+		
+		NotificationManager::addNotification(Login::getUserId(), 4, "Auftrag <a href=" . $data["responseLink"] . ">$orderId</a> wurde angelegt", $orderId);
+		$auftragsverlauf = new Auftragsverlauf($orderId);
+		$auftragsverlauf->addToHistory($orderId, 5, "added", "Neuer Auftrag");
+		echo json_encode($data, JSON_FORCE_OBJECT);
+	}
+
+	/**
+	 * adds a new order to the database
+	 */
+	private static function addToDB($kdnr, $bezeichnung, $beschreibung, $typ, $termin, $angenommenVon, $angenommenPer, $ansprechpartner) {
+		$date = date("Y-m-d");
+		$query = "INSERT INTO auftrag (Kundennummer, Auftragsbezeichnung, Auftragsbeschreibung, Auftragstyp, Datum, Termin, AngenommenDurch, AngenommenPer, Ansprechpartner) VALUES (:kdnr, :bezeichnung, :beschreibung, :typ, :datum, :termin, :angenommenVon, :angenommenPer, :ansprechpartner);";
+		$parameters = [
+			":kdnr" => $kdnr,
+			":bezeichnung" => $bezeichnung,
+			":beschreibung" => $beschreibung,
+			":typ" => $typ,
+			":datum" => $date,
+			":termin" => $termin,
+			":angenommenVon" => $angenommenVon,
+			":angenommenPer" => $angenommenPer,
+			":ansprechpartner" => $ansprechpartner
+		];
+		$orderId = DBAccess::insertQuery($query, $parameters);
+		return $orderId;
+	}
+
+	public static function getFiles($auftragsnummer) {
+        $files = DBAccess::selectQuery("SELECT DISTINCT dateiname AS Datei, originalname, `date` AS Datum, typ as Typ FROM dateien LEFT JOIN dateien_auftraege ON dateien_auftraege.id_datei = dateien.id WHERE dateien_auftraege.id_auftrag = $auftragsnummer");
+        
+        for ($i = 0; $i < sizeof($files); $i++) {
+            $link = Link::getResourcesShortLink($files[$i]['Datei'], "upload");
+
+            $filePath = "upload/" . $files[$i]['Datei'];
+            /*
+             * checks at first if the image exists
+             * then checks if it is an image with exif_imagetype function,
+             * suppresses with @ the notice and then checks if getimagesize
+             * returns a value
+             */
+            if (file_exists($filePath) && (@exif_imagetype($filePath) != false) && getimagesize($filePath) != false) {
+                $html = "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\"><img class=\"img_prev_i\" src=\"$link\" width=\"40px\"><p class=\"img_prev\">{$files[$i]['originalname']}</p></a>";
+            } else {
+                $html = "<span><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\">{$files[$i]['originalname']}</a></span>";
+            }
+
+            $files[$i]['Datei'] = $html;
+        }
+
+        $column_names = array(
+            0 => array("COLUMN_NAME" => "Datei"), 
+            1 => array("COLUMN_NAME" => "Typ"), 
+            2 => array("COLUMN_NAME" => "Datum")
+        );
+
+        $t = new Table();
+		$t->createByData($files, $column_names);
+		$t->setType("dateien");
+        $t->addActionButton("delete", $identifier = "id");
+
+		return $t->getTable();
+    }
+
+}

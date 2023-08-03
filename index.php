@@ -2,6 +2,7 @@
 
 session_start();
 errorReporting();
+define('CURRENTVERSION', '1.1.18');
 
 require_once('settings.php');
 require_once('classes/project/Envs.php');
@@ -233,4 +234,15 @@ function insertTemplate($path, array $parameters = []) {
 		extract($parameters);
 		include($path);
 	}
+}
+
+/** https://stackoverflow.com/a/2792045/7113688 */
+function dashesToCamelCase($string, $capitalizeFirstCharacter = false) {
+    $str = str_replace('-', '', ucwords($string, '-'));
+
+    if (!$capitalizeFirstCharacter) {
+        $str = lcfirst($str);
+    }
+
+    return $str;
 }

@@ -66,12 +66,6 @@ function get_css($script) {
 		return;
 	}
 
-	if ($fileName[0] == "tw") {
-		$file = file_get_contents(Link::getResourcesLink("min/t-style.min.css", "css", false));
-		echo $file;
-		return;
-	}
-
 	if (sizeof($fileName) == 2) {
 		$min = "min/" . $fileName[0] . ".min.css";
 		if (file_exists(Link::getResourcesLink($min, "css", false)) && MinifyFiles::isActivated()) {
@@ -141,9 +135,14 @@ function get_pdf_invoice($pdf) {
 function get_static($file) {
 	if ($file == "facebook-product-export") {
 		header("Content-type: text/csv");
-		$file = file_get_contents(Link::getResourcesLink("exportFB_daily.csv", "csv"));
+		$filename = "exportFB_" . date("Y-m-d") . ".csv";
+		$file = file_get_contents(Link::getResourcesLink($filename, "csv", false));
 		echo $file;
+		// TODO: check if file exists and if not, return latest file
+	} else if ($file == "generate-facebook") {
+		require_once("classes/project/modules/sticker/exports/ExportFacebook.php");
+
+		$exportFacebook = new ExportFacebook();
+		$exportFacebook->generateCSV();
 	}
 }
-
-?>

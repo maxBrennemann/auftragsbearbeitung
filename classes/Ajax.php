@@ -1,6 +1,7 @@
 <?php
 
 require_once("classes/project/Produkt.php");
+require_once("classes/project/Auftrag.php");
 
 class Ajax {
 	
@@ -27,9 +28,14 @@ class Ajax {
 			
 				if (strcmp($type, "custom") == 0) {
 					$data = DBAccess::selectQuery(self::$sqlStatements);
-					$column_names = array(0 => array("COLUMN_NAME" => "Postennummer"), 1 => array("COLUMN_NAME" => "Bezeichnung"), 
-							2 => array("COLUMN_NAME" => "Beschreibung"), 3 => array("COLUMN_NAME" => "Preis"), 
-							4 => array("COLUMN_NAME" => "ZeitInMinuten"), 5 => array("COLUMN_NAME" => "Stundenlohn"));
+					$column_names = array(
+						0 => array("COLUMN_NAME" => "Postennummer"),
+						1 => array("COLUMN_NAME" => "Bezeichnung"), 
+						2 => array("COLUMN_NAME" => "Beschreibung"),
+						3 => array("COLUMN_NAME" => "Preis"), 
+						4 => array("COLUMN_NAME" => "ZeitInMinuten"),
+						5 => array("COLUMN_NAME" => "Stundenlohn")
+					);
 					$table = new FormGenerator($type, "", "");
 					echo $table->createTableByData($data, $column_names);
 				} else {
@@ -130,34 +136,7 @@ class Ajax {
 				echo NotificationManager::htmlNotification();
 			break;
 			case "createAuftrag":
-				$bez = $_POST['bez'];
-				$bes = $_POST['bes'];
-				$typ = $_POST['typ'];
-				$ter = $_POST['ter'];
-				$ang = $_POST['ang'];
-				$kdn = $_POST['kdn'];
-				$per = $_POST['per'];
-				$ans = $_POST['ans'];
-				$dat = date("Y-m-d");
-
-				$insertQuery = "INSERT INTO auftrag (Kundennummer, Auftragsbezeichnung, Auftragsbeschreibung, Auftragstyp, Datum, Termin, AngenommenDurch, AngenommenPer, Ansprechpartner)";
-				$insertQuery .= "VALUES ($kdn, '$bez', '$bes', '$typ', '$dat', '$ter', $ang, $per, $ans)";
-
-				$orderId = DBAccess::insertQuery($insertQuery);
-
-				if (isset($_SESSION['offer_is_order']) && $_SESSION['offer_is_order'] == true) {
-					$isLoadPosten = true;
-				} else {
-					$isLoadPosten = false;
-				}
-
-				$data = array("responseLink" => Link::getPageLink("auftrag") . "?id=$orderId", "loadFromOffer" => $isLoadPosten, "orderId" => $orderId);
-				echo json_encode($data, JSON_FORCE_OBJECT);
-
-				require_once("classes/project/NotificationManager.php");
-				$link = $data["responseLink"];
-				NotificationManager::addNotification(-1, 4, "Auftrag <a href=\"$link\">$orderId</a> wurde angelegt", $orderId);
-				//Statistics::auftragEroeffnen(new Auftrag($orderId));
+				Auftrag::add();
 			break;
 			case "insTime":
 				$data = array();
@@ -169,15 +148,15 @@ class Ajax {
 				$data['discount'] = (int) $_POST['discount'];
 				$data['addToInvoice'] = (int) $_POST['addToInvoice'];
 
-				if (!isset($_POST['isOverwrite'])) {
+				if (isset($_POST['isOverwrite']) && (int) $_POST['isOverwrite'] == 1) {
 					$_SESSION['overwritePosten'] = false;
 				}
 
 				$ids = Posten::insertPosten("zeit", $data);
 
 				/* erweiterte Zeiterfassung */
-				$zeiterfassung = $_POST['zeiterfassung'];
-				if ($zeiterfassung != "empty") {
+				$zeiterfassung = json_decode($_POST['zeiterfassung'], true);
+				if (count($zeiterfassung) != 0) {
 					require_once("classes/project/Zeit.php");
 					Zeit::erweiterteZeiterfassung($zeiterfassung, $ids[1]);
 				}
@@ -244,8 +223,13 @@ class Ajax {
 				$kunde = new Kunde($nextId);
 				$table = new FormGenerator("ansprechpartner", "", "");
 				$data = DBAccess::selectQuery("SELECT * FROM ansprechpartner WHERE Kundennummer = $nextId");
-				$column_names = array(0 => array("COLUMN_NAME" => "Vorname"), 1 => array("COLUMN_NAME" => "Nachname"), 
-								2 => array("COLUMN_NAME" => "Email"), 3 => array("COLUMN_NAME" => "Durchwahl"), 4 => array("COLUMN_NAME" => "Mobiltelefonnummer"));
+				$column_names = array(
+					0 => array("COLUMN_NAME" => "Vorname"),
+					1 => array("COLUMN_NAME" => "Nachname"),
+					2 => array("COLUMN_NAME" => "Email"),
+					3 => array("COLUMN_NAME" => "Durchwahl"),
+					4 => array("COLUMN_NAME" => "Mobiltelefonnummer")
+				);
 				$ansprechpartner = $table->createTableByData($data, $column_names);
 				echo $ansprechpartner;
 			break;
@@ -290,7 +274,6 @@ class Ajax {
 				$data['hide'] = $_POST['hide'];
 
 				require_once("classes/project/Schritt.php");
-				require_once("classes/project/Auftrag.php");
 
 				$postenNummer = Schritt::insertStep($data);
 				$auftrag = new Auftrag($data['Auftragsnummer']);
@@ -303,23 +286,24 @@ class Ajax {
 				}
 			break;
 			case "addStep":
-				$column_names = array(0 => array("COLUMN_NAME" => "Bezeichnung"), 1 => array("COLUMN_NAME" => "Priority"));
+				$column_names = array(
+					0 => array("COLUMN_NAME" => "Bezeichnung"),
+					1 => array("COLUMN_NAME" => "Priority")
+				);
 
 				$addClass = $_POST['addClass'];
 
 				echo FormGenerator::createEmptyTable($column_names, $addClass);
 			break;
 			case "getAllSteps":
-				require_once("classes/project/Auftrag.php");
 				$auftragsId = $_POST['auftrag'];
-				$Auftrag = new Auftrag($auftragsId);
-				echo $Auftrag->getBearbeitungsschritteAsTable();
+				$auftrag = new Auftrag($auftragsId);
+				echo $auftrag->getBearbeitungsschritteAsTable();
 			break;
 			case "getOpenSteps":
-				require_once("classes/project/Auftrag.php");
 				$auftragsId = $_POST['auftrag'];
-				$Auftrag = new Auftrag($auftragsId);
-				echo $Auftrag->getOpenBearbeitungsschritteTable();
+				$auftrag = new Auftrag($auftragsId);
+				echo $auftrag->getOpenBearbeitungsschritteTable();
 			break;
 			case "editAnspr":
 				$table = $_POST['name'];
@@ -431,6 +415,16 @@ class Ajax {
 					$user = $_SESSION['userid'];
 				NotificationManager::addNotificationCheck($user, 0, "Bearbeitungsschritt erledigt", $postennummer);
 			break;
+			case "deleteOrder":
+				// TODO: implement db triggers for order deletion
+				$id = (int) $_POST["id"];
+				$query = "DELETE FROM auftrag WHERE Auftragsnummer = :id;";
+				DBAccess::deleteQuery($query, ["id" => $id]);
+				echo json_encode([
+					"success" => true,
+					"home" => Link::getPageLink(""),
+				]);
+			break;
 			case "sendPostenPositions":
 				$tableKey = $_POST["tablekey"];
 				$order = $_POST["order"];
@@ -471,19 +465,6 @@ class Ajax {
 			break;
 			case "getSelect":
 				Produkt::getSelectSource();	
-			break;
-			case "insertVerbesserung":
-				if (isset($_POST['verbesserung'])) {
-					$verbesserung = $_POST['verbesserung'];
-					$timestamp = date("Y-m-d H:i:s");
-
-					$user = 0;
-					if (isset($_SESSION['userid'])) {
-						$user = $_SESSION['userid'];
-					}
-
-					DBAccess::insertQuery("INSERT INTO verbesserungen (verbesserungen, erstelldatum, creator) VALUES ('$verbesserung', '$timestamp', $user)");
-				}
 			break;
 			case "getServerMsg":
 				echo $_SESSION['searchResult'];
@@ -599,7 +580,6 @@ class Ajax {
 				DBAccess::insertQuery("UPDATE auftrag SET archiviert = -1 WHERE Auftragsnummer = $auftrag");
 			break;
 			case "existingColors":
-				require_once('classes/project/Auftrag.php');
 				$auftrag = $_POST['auftrag'];
 				$ids = json_decode($_POST['ids'], true);
 
@@ -613,7 +593,6 @@ class Ajax {
 				echo json_encode($data, JSON_FORCE_OBJECT);
 			break;
 			case "newColor":
-				require_once('classes/project/Auftrag.php');
 				$auftrag = $_POST['auftrag'];
 				$farbname = $_POST['farbname'];
 				$farbwert = $_POST['farbwert'];
@@ -639,7 +618,6 @@ class Ajax {
 				echo $auftrag->getFarben();
 			break;
 			case "archivieren":
-				require_once('classes/project/Auftrag.php');
 				$auftrag = $_POST['auftrag'];
 				$auftrag = new Auftrag($auftrag);
 				$auftrag->archiveOrder();
@@ -793,11 +771,29 @@ class Ajax {
 				$orderId = (int) $_POST['auftrag'];
 				$history_number = DBAccess::insertQuery("INSERT INTO notizen (Auftragsnummer, Notiz) VALUES ($orderId, '$note')");
 				$auftrag = new Auftrag($orderId);
-				echo $auftrag->getNotes();
 
 				require_once("classes/project/Auftragsverlauf.php");
 				$auftragsverlauf = new Auftragsverlauf($orderId);
 				$auftragsverlauf->addToHistory($history_number, 7, "added", $note);
+
+				$notes = [
+					[
+						"Notiz" => $note,
+						"Nummer" => $history_number,
+					]
+				];
+		
+				ob_start();
+				insertTemplate('files/res/views/noteView.php', [
+					"notes" => $notes,
+					"icon" => Icon::$iconNotebook,
+				]);
+				$content = ob_get_clean();
+
+				echo json_encode([
+					"status" => "success",
+					"content" => $content,
+				]);
 			break;
 			case "setCustomColor":
 				require_once("classes/project/ClientSettings.php");
@@ -808,7 +804,14 @@ class Ajax {
 			break;
 			case "getInfoText":
 				$infoId = (int) $_POST['info'];
-				$infoText = DBAccess::selectQuery("SELECT info FROM info_texte WHERE id = $infoId");
+				$infoText = DBAccess::selectQuery("SELECT info FROM info_texte WHERE id = :infoId;", [
+					"infoId" => $infoId,
+				]);
+
+				if ($infoText == null) {
+					echo "Kein Text vorhanden";
+					return;
+				}
 				echo $infoText[0]['info'];
 			break;
 			case "updateDate":
@@ -1038,8 +1041,9 @@ class Ajax {
 			break;
 			case "checkAutoLogin":
 				$loginKey = Login::handleAutoLogin();
+				$status = $loginKey === false ? "failed" : "success";
 				echo json_encode([
-					"status" => "success",
+					"status" => $status,
 					"loginKey" => $loginKey,
 				]);
 			break;
@@ -1139,7 +1143,8 @@ class Ajax {
 
 				require_once("classes/project/modules/sticker/SearchProducts.php");
 				SearchProducts::getProductsByStickerId($id);
-				echo "ready";
+				
+				echo json_encode(["status" => "success"]);
 			break;
 			case "getSizeTable":
 				require_once("classes/project/modules/sticker/Aufkleber.php");
@@ -1155,6 +1160,23 @@ class Ajax {
 				echo json_encode([
 					"status" => "success",
 				]);
+			break;
+			case "setImageOrder":
+				$order = $_POST["order"];
+
+				require_once("classes/project/modules/sticker/StickerImage.php");
+
+				try {
+					StickerImage::setImageOrder($order);
+					echo json_encode([
+						"status" => "success",
+					]);
+				} catch (Exception $e) {
+					echo json_encode([
+						"status" => "error",
+						"message" => $e->getMessage(),
+					]);
+				}
 			break;
 			case "changePreiskategorie":
 				$id = (int) $_POST['id'];
@@ -1313,7 +1335,7 @@ class Ajax {
 				$query = "INSERT INTO module_sticker_sizes (width, height, price, id_sticker, price_default) VALUES (:width, :height, :price, :id, :default)";
 				$id = DBAccess::insertQuery($query, [
 					"width" => $width,
-					"height" => $width,
+					"height" => $height,
 					"price" => $price,
 					"id" => $id,
 					"default" => $isDefault,
@@ -1591,6 +1613,10 @@ class Ajax {
 					"template" => $content,
 				]);
 			break;
+			case "setRechnungspostenAusblenden":
+				require_once('classes/project/ClientSettings.php');
+				ClientSettings::setFilterOrderPosten();
+			break;
 			case "iterateText":
 				$id = (int) $_POST["id"];
 				$direction = $_POST["direction"];
@@ -1625,6 +1651,40 @@ class Ajax {
 					"text" => $text,
 					"current" => $current,
 				]);
+			break;
+			case "indexAll":
+				require_once('classes/project/Search.php');
+				Search::indexAll();
+			break;
+			case "testsearch":
+				require_once('classes/project/Search.php');
+				Search::search();
+			break;
+			case "updateImageDescription":
+				$id = (int) $_POST["imageId"];
+				$description = $_POST["description"];
+
+				$query = "UPDATE module_sticker_image SET `description` = :description WHERE id_datei = :id;";
+				DBAccess::updateQuery($query, [
+					"description" => $description,
+					"id" => $id,
+				]);
+
+				echo json_encode([
+					"status" => "success",
+				]);
+			break;
+			case "deleteCache":
+				require_once('classes/project/CacheManager.php');
+				CacheManager::deleteCache();
+
+				echo json_encode([
+					"status" => "success",
+				]); 
+			break;
+			case "diagramme":
+				require_once('classes/project/Statistics.php');
+				Statistics::dispatcher();
 			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";

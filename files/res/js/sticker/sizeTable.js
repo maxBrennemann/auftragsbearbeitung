@@ -140,7 +140,7 @@ class SizeTable {
     #initRatio() {
         const width = this.sizeTableRows[0].width;
         const height = this.sizeTableRows[0].height;
-        this.ratio = height / width;
+        this.ratio = width / height;
     }
 
     async addNewLine(width, price, isDefaultPrice) {
@@ -153,7 +153,7 @@ class SizeTable {
         const height = Math.round(width * this.ratio);
         const data = await ajax.post({
             width: width * 10,
-            height: height,
+            height: height * 10,
             price: price * 100,
             id: mainVariables.motivId.innerHTML,
             isDefaultPrice: isDefaultPrice,
@@ -179,10 +179,14 @@ class SizeTable {
         newRowActions.innerHTML = refRowActions.innerHTML;
 
         newRowActions.children[0].removeAttribute("onclick");
-        newRowActions.children[0].addEventListener("click", deleteSizeRow(id), false);
+        newRowActions.children[0].addEventListener("click", () => {
+            deleteSizeRow(id);
+        }, false);
 
         newRowActions.children[1].removeAttribute("onclick");
-        newRowActions.children[1].addEventListener("click", resetSizeRow(row, id), false);
+        newRowActions.children[1].addEventListener("click", () => {
+            resetSizeRow(row, id);
+        }, false);
     }
 
     parseTable() {

@@ -5,7 +5,6 @@ $globalCSS = Link::getGlobalCSS();
 $tailwindCSS = Link::getTW();
 $globalJS = Link::getGlobalJS();
 $curr_Link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-$adminLink = Link::getAdminLink();
 
 $neuerKunde   =		Link::getPageLink("neuer-kunde");
 $neuerAuftrag =		Link::getPageLink("neuer-auftrag");
@@ -16,7 +15,6 @@ $diagramme =		Link::getPageLink("diagramme");
 $auftragAnzeigen =	Link::getPageLink("auftrag");
 $kunde =			Link::getPageLink("kunde");
 $leistungenLinks =	Link::getPageLink("leistungen");
-$toDo =				Link::getPageLink("verbesserungen");
 $offeneRechnungen = Link::getPageLink("offene-rechnungen");
 $funktionen = 		Link::getPageLink("functionalities");
 $produkt = 			Link::getPageLink("produkt");
@@ -45,12 +43,12 @@ $motiveOverview = 	Link::getPageLink("sticker-overview");
 	<link rel="stylesheet" href="<?=$globalCSS?>">
 	<link rel="stylesheet" href="<?=$tailwindCSS?>">
 	<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.1/dist/cdn.min.js"></script>
-	<script src="<?=$globalJS?>"></script>
+	<script src="<?=$globalJS?>" type="module"></script>
 	<?php
 		$link = Link::getResourcesShortLink($page . ".js", "js");
 
 		/* TODO: workaround mit module und if check muss noch geändert werden */
-		if ($page == "sticker") {
+		if ($page == "sticker" || $page == "auftrag" || $page == "diagramme") {
 			echo '<script type="module" src="' . $link . '"></script>';
 		} else {
 			echo '<script src="' . $link . '"></script>';
@@ -59,86 +57,89 @@ $motiveOverview = 	Link::getPageLink("sticker-overview");
 		$link = Link::getResourcesShortLink($page . ".css", "css");
 		echo '<link rel="stylesheet" href="' . $link . '">';
 	?>
-	<script src="<?=Link::getResourcesShortLink("classes/deviceDetector.js", "js")?>"></script>
 </head>
 <body>
 	<div class="sidenav" id="sidenav">
 		<ul>
-			<li>
+			<li class="hover:underline">
 				<a href="<?=$neuerKunde?>">Neuen Kunden erstellen</a>
 			</li>
-			<li>
+			<li class="hover:underline">
 				<a href="<?=$kunde?>">Kunden</a>
 			</li>
-			<li>
+			<li class="hover:underline">
 				<a href="<?=$neuerAuftrag?>">Neuen Auftrag erstellen</a>
 			</li>
-			<li>
+			<li class="hover:underline">
 				<a href="<?=$neuesAngebot?>">Neues Angebot erstellen</a>
 			</li>
-			<li>
+			<li class="hover:underline">
 				<a href="<?=$neuesProdukt?>">Neues Produkt erstellen</a>
 			</li>
-			<li>
+			<li class="hover:underline">
 				<a href="<?=$produkt?>">Produktübersicht</a>
 			</li>
-			<li>
+			<li class="hover:underline">
 				<a href="<?=$auftragAnzeigen?>">Aufträge</a>
 			</li>
-			<li>
+			<li class="hover:underline">
 				<a href="<?=$diagramme?>">Diagramme und Auswertungen</a>
 			</li>
-			<li>
+			<li class="hover:underline">
 				<a href="<?=$leistungenLinks?>">Leistungen</a>
 			</li>
-			<li>
+			<li class="hover:underline">
 				<a href="<?=$listmaker?>">Listen</a>
 			</li>
-			<li>
+			<li class="hover:underline">
 				<a href="<?=$payments?>">Finanzen</a>
 			</li>
-			<li>
+			<li class="hover:underline">
 				<a href="<?=$einstellungen?>">Einstellungen</a>
 			</li>
-			<li>
+			<li class="hover:underline">
 				<a href="<?=$funktionen?>">Funktionen</a>
 			</li>
-			<li>
+			<li class="hover:underline">
 				<a href="<?=$zeiterfassung?>">Zeiterfassung</a>
 			</li>
-			<li>
+			<li class="hover:underline">
 				<a href="<?=$motiveOverview?>">Motivübersicht</a>
 			</li>
-			<li>
+			<li class="hover:underline">
 				<a href="<?=$changelog?>">Versionsverlauf</a>
 			</li>
 		</ul>
 	</div>
 	<header class="moveToSide sticky p-3 2xl:p-5">
-		<section class="mx-auto w-4/5 lg:mb-7 mb-3">
-			<h1><?=$pageName?></h1>
+		<section class="mx-auto w-4/5 lg:mb-5 mb-3">
+			<h1 class="font-semibold">b-schriftung Auftragsstellung<br><span class="font-normal text-sm"><?=$pageName?></span></h1>
 			<aside class="right-1">
 				<div class="searchContainer">
 					<input class="searchItems m-0 p-2" type="search" onchange="performGlobalSearch(event)">
-					<span class="searchItems lupeSpan" title="suche"><span class="searchItems lupe" title="Suche">
+					<span class="searchItems lupeSpan" title="suche"><span class="text-gray-700 searchItems lupe" title="Suche">
 						<?=Icon::$iconSearch?>
 					</span></span>
 				</div>
 				<div>
-					<div>
-						<div class="notificationContainer">
-							<span title="Benachrichtigungen"><?=NotificationManager::getNotificationCount();?></span>
+					<div class="text-gray-700">
+						<div class="notificationContainer p-1 hover:bg-gray-200 hover:rounded-sm relative">
+							<div title="Benachrichtigungen" class="absolute -top-2 right-0">
+								<div class="w-3 h-3">
+									<p class="text-xxs p-0.5 bg-red-400 text-white rounded-full text-center"><?=NotificationManager::getNotificationCount();?></p>
+								</div>
+							</div>
 							<span title="Benachrichtigungen" class="inline-block">
 								<?=Icon::$iconBell?>
 							</span>
 						</div>
 						<div class="settingsContainer">
-							<a href="<?=$einstellungen?>" id="settings" title="Einstellungen">
+							<a href="<?=$einstellungen?>" id="settings" title="Einstellungen" class="p-1 hover:bg-gray-200 hover:rounded-sm">
 								<?=Icon::$iconSettings?>
 							</a>
 						</div>
 						<div class="logoutContainer">
-							<span id="logoutBtn" title="Ausloggen">
+							<span id="logoutBtn" title="Ausloggen" class="p-1 hover:bg-gray-200 hover:rounded-sm">
 								<?=Icon::$iconLogout?>
 							</span>
 						</div>
@@ -152,16 +153,18 @@ $motiveOverview = 	Link::getPageLink("sticker-overview");
 				
 			</aside>
 		</section>
-		<div class="hamburgerDiv">
+		<div class="hamburgerDiv cursor-pointer">
 			<!-- https://www.mediaevent.de/tutorial/css-transform.html -->
 			<input type="checkbox" id="hamburg" onclick="toggleNav()">
-			<label for="hamburg" class="hamburg">
+			<label for="hamburg" class="hamburg cursor-pointer" title="Menü anzeigen">
 				<span class="line"></span>
 				<span class="line"></span>
 				<span class="line"></span>
 			</label>
 		</div>
-		<hr class="headerline">
-		<div class="showBreadcrumb my-1 2xl:my-3"><a href="<?=Link::getPageLink("")?>" id="home_link">Home</a>/<a href="<?=Link::getPageLink($page)?>"><?=$pageName?></a></div>
+		<hr class="bg-gray-700 headerline">
+		<div class="showBreadcrumb my-1 2xl:my-3">
+			<a href="<?=Link::getPageLink("")?>" id="home_link" class="link-primary">Home</a>/<a href="<?=Link::getPageLink($page)?>" class="link-primary"><?=$pageName?></a>
+		</div>
 	</header>
-	<main class="mt-2 w-4/5">
+	<main class="mt-2 lg:w-4/5">
