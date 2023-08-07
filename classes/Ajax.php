@@ -1117,34 +1117,55 @@ class Ajax {
 			case "transferProduct":
 				$id = (int) $_POST["id"];
 				$type = (int) $_POST["type"];
+				$message = "";
+				$responseData = [];
 
 				require_once("classes/project/modules/sticker/StickerCollection.php");
-				switch ($type) {
-					case 1:
-						$aufkleber = new Aufkleber($id);
-						$aufkleber->save();
-						break;
-					case 2:
-						$wandtattoo = new Wandtattoo($id);
-						$wandtattoo->save();
-						break;
-					case 3:
-						$textil = new Textil($id);
-						$textil->save();
-						break;
-					case 4:
-						/* TODO: iteration bei StickerCollection überarbeiten */
-						$stickerCollection = new StickerCollection($id);
-						$stickerCollection->getAufkleber()->save();
-						$stickerCollection->getWandtattoo()->save();
-						$stickerCollection->getTextil()->save();
-						break;
+				try {
+					switch ($type) {
+						case 1:
+							$aufkleber = new Aufkleber($id);
+							$aufkleber->save();
+							break;
+						case 2:
+							$wandtattoo = new Wandtattoo($id);
+							$wandtattoo->save();
+							break;
+						case 3:
+							$textil = new Textil($id);
+							$textil->save();
+							break;
+						case 4:
+							/* TODO: iteration bei StickerCollection überarbeiten */
+							$stickerCollection = new StickerCollection($id);
+							$stickerCollection->getAufkleber()->save();
+							$stickerCollection->getWandtattoo()->save();
+							$stickerCollection->getTextil()->save();
+							break;
+					}
+				} catch (Exception $e) {
+					$message = $e->getMessage();
 				}
 
 				require_once("classes/project/modules/sticker/SearchProducts.php");
-				SearchProducts::getProductsByStickerId($id);
+				try {
+					$responseData = SearchProducts::getProductsByStickerId($id);
+				} catch (Exception $e) {
+					$message = $e->getMessage();
+				}
 				
-				echo json_encode(["status" => "success"]);
+				if ($message == "") {
+					echo json_encode([
+						"status" => "success",
+						"responseData" => $responseData,
+					]);
+				} else {
+					echo json_encode([
+						"status" => "error",
+						"message" => $message,
+						"responseData" => $responseData,
+					]);
+				}
 			break;
 			case "getSizeTable":
 				require_once("classes/project/modules/sticker/Aufkleber.php");

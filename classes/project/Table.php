@@ -366,7 +366,6 @@ class Table {
 					$actionObject = unserialize($_SESSION[$table. "_del"]);
 					$actionObject->delete();
 				} else {
-					echo "DELETE FROM $actionObject->type WHERE $actionObject->identifier = $rowId";
 					DBAccess::deleteQuery("DELETE FROM $actionObject->type WHERE $actionObject->identifier = $rowId");
 				}
 			} else if ($action == "check") {
@@ -375,7 +374,6 @@ class Table {
         		$data = json_decode($data, true);
 			} else if ($action == "update") {
 				DBAccess::updateQuery("UPDATE $actionObject->type SET $actionObject->update WHERE $actionObject->identifier = $rowId");
-				echo "UPDATE $actionObject->type SET $actionObject->update WHERE $actionObject->identifier = $rowId";
 			}
 		} else {
 			return "no data found";

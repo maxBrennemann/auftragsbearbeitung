@@ -32,7 +32,7 @@ if ($id == 0): ?>
 <?=$stickerCollection->checkProductErrorStatus() ? $stickerCollection->getErrorMessage() : ""?>
 <div class="defCont cont1">
     <div>
-        <h2 class="font-semibold">Motiv <input id="name" class="titleInput inline" value="<?=$stickerCollection->getName();?>">
+        <h2 class="font-semibold">Motiv <input id="name" class="titleInput inline bg-inherit border-b border-b-gray-600 pl-1" value="<?=$stickerCollection->getName();?>" title="Faceboook hat ein internes Limit für die Titellänge von 65 Zeichen">
             <?php if ($stickerCollection->getIsMarked() == "0"): ?>
             <span data-binding="true" data-fun="bookmark inline"><?=Icon::getDefault("iconBookmark")?></span>
             <?php else: ?>

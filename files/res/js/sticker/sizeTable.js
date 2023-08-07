@@ -13,14 +13,13 @@ function deleteRow(key, table, reference) {
         table: tableKey,
         r: "deleteSize",
     }, true)
-    .then(response => {
-        handleAfterDeleteSizeRow(response);
+    .then(() => {
+        handleAfterDeleteSizeRow(reference);
     });
 }
 
-function handleAfterDeleteSizeRow(response) {
+function handleAfterDeleteSizeRow(reference) {
     var row = reference.parentNode.parentNode;
-    console.log(response);
 
     /* delete row from SizeTable */
     sizeTable.delete(reference);

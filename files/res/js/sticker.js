@@ -26,12 +26,12 @@ window.mainVariables = mainVariables;
 function initSticker() {
     initBindings(fnNames);
 
-    document.title = "b-schriftung - Motiv " + mainVariables.motivId.innerHTML + " " + document.getElementById("name").innerHTML;
+    document.title = "b-schriftung - Motiv " + mainVariables.motivId.innerHTML + " " + document.getElementById("name").value;
 
     var input = document.getElementById('name');
-    input.addEventListener('input', resizeTitle);
+    input.addEventListener('input', manageTitle);
     input.addEventListener('change', sendTitle);
-    resizeTitle.call(input);
+    manageTitle.call(input);
 
     document.getElementById("creationDate").addEventListener("change", changeDate, false);
 }
@@ -122,8 +122,17 @@ function sendTitle(e) {
     });
 }
 
-function resizeTitle() {
-  this.style.width = this.value.length + "ch";
+function manageTitle() {
+    var title = this.value;
+    this.style.width = title.length + "ch";
+
+    if (title.length > 50) {
+        this.classList.remove("border-b-gray-600");
+        this.classList.add("text-red-500", "border-b-red-500");
+    } else {
+        this.classList.remove("text-red-500", "border-b-red-500");
+        this.classList.add("border-b-gray-600");
+    }
 }
 
 fnNames.click_textilClick = function() {
@@ -207,9 +216,7 @@ function transfer(type, text) {
             infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS, "Übertragung erfolgreich");
         } else {
             mainVariables.pending = false;
-            infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS, "Übertragung erfolgreich");
-            // TODO: error handling for try catch error in backend like: could not transfer all data, "semi-success"
-            console.log(r.error);
+            infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS, "Übertragung erfolgreich", r.message);
         }
     }).catch(error => {
         infoBox.setType(StatusInfoHandler.TYPE_ERRORCOPY);
