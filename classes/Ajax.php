@@ -786,7 +786,7 @@ class Ajax {
 				ob_start();
 				insertTemplate('files/res/views/noteView.php', [
 					"notes" => $notes,
-					"icon" => Icon::$iconNotebook,
+					"icon" => Icon::getDefault("iconNotebook"),
 				]);
 				$content = ob_get_clean();
 
@@ -1569,13 +1569,11 @@ class Ajax {
 			case "getIcon":
 				$type = (String) $_POST["type"];
 
-				if (isset(Icon::${$type})) {
-					echo json_encode([
-						"status" => "success",
-						"icon" => Icon::${$type}
-					]);
-					return;
-				}
+				echo json_encode([
+					"status" => "success",
+					"icon" => Icon::getDefault($type),
+				]);
+				return;
 				
 				echo json_encode(["status" => "not found"]);
 			break;

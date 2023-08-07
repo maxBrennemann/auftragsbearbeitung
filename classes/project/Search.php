@@ -288,93 +288,124 @@ class Search {
 		return $table->getTable();
 	}
 
+	/**
+	 * suchen in:
+	 * Produktbeschreibung und Produkttitel
+	 * 
+	 * Auftragsbeschreibung und Auftragsbezeichnung
+	 * Auftragsnotizen
+	 * Auftragsbearbeitungsschritten
+	 * Auftragsposten
+	 * 
+	 * Kundennamen und Firmennamen
+	 * Kundennotizen	 
+	 */ 
 	public static function globalSearch($searchQuery) {
-		/* suchen in:
-		 * Produktbeschreibung und Produkttitel
-		 * 
-		 * Auftragsbeschreibung und Auftragsbezeichnung
-		 * Auftragsnotizen
-		 * Auftragsbearbeitungsschritten
-		 * Auftragsposten
-		 * 
-		 * Kundennamen und Firmennamen
-		 * Kundennotizen
-		 */
-
 		$results = array();
 
-		$results[0] = self::searchInCustomers($searchQuery);
-		$results[1] = self::searchInProducts($searchQuery);
-		$results[2] = self::searchInOrders($searchQuery);
-		$results[3] = self::searchInPosten($searchQuery);
-		$results[4] = self::searchInWiki($searchQuery);
+		$customerResults = self::searchInCustomers($searchQuery);
+		if (!empty($customerResults)) {
+			$results[0] = [
+				"groupName" => "Kunden",
+				"results" => $customerResults
+			];
+		}
+
+		$productResults = self::searchInProducts($searchQuery);
+		if (!empty($productResults)) {
+			$results[1] = [
+				"groupName" => "Produkte",
+				"results" => $productResults
+			];
+		}
+
+		$orderResults = self::searchInOrders($searchQuery);
+		if (!empty($orderResults)) {
+			$results[2] = [
+				"groupName" => "Aufträge",
+				"results" => $orderResults
+			];
+		}
+
+		$postenResults = self::searchInPosten($searchQuery);
+		if (!empty($postenResults)) {
+			$results[3] = [
+				"groupName" => "Posten",
+				"results" => $postenResults
+			];
+		}
+
+		$wikiResults = self::searchInWiki($searchQuery);
+		if (!empty($wikiResults)) {
+			$results[4] = [
+				"groupName" => "Wiki",
+				"results" => $wikiResults
+			];
+		}
 
 		$html = "";
-		foreach ($results as $key => $r) {
+		foreach ($results as &$resultType) {
 			$name = "";
 
-			switch ($key) {
-				case 0:
-					$name = "Kunden: ";
-					break;
-				case 1:
-					$name = "Produkte: ";
-					break;
-				case 2:
-					$name = "Aufträge: ";
-					break;
-				case 3:
-					$name = "Posten: ";
-					break;
-				case 4:
-					$name = "Wiki: ";
-					break;
-				default:
-					$name = "Es ist ein Fehler aufgetreten";
-			}
-
 			$html .= "<h3>$name</h3>";
-			foreach ($r as $item) {
+			foreach ($resultType["results"] as &$item) {
 				$data = null;
 				$link = "";
-				switch ($key) {
-					case 0:
-						$query = "SELECT Kundennummer AS id, CONCAT(COALESCE(Firmenname, ''), ' ', COALESCE(Vorname, ''), ' ', COALESCE(Nachname, '')) AS `message` FROM kunde WHERE Kundennummer = {$item[0]}";
-						$data = DBAccess::selectQuery($query)[0];
+				switch ($resultType["groupName"]) {
+					case "Kunden":
+						$query = "SELECT CONCAT(COALESCE(Firmenname, ''), ' ', COALESCE(Vorname, ''), ' ', COALESCE(Nachname, '')) AS `message` FROM kunde WHERE Kundennummer = :kdnr";
+						$data = DBAccess::selectQuery($query, [
+							"kdnr" => $item[0],
+						])[0];
 
-						$link = Link::getPageLink("kunde") . "?id=" . $data["id"];
+						$link = Link::getPageLink("kunde") . "?id=" . $item[0];
 						break;
-					case 1:
-						$query = "SELECT Nummer AS id, CONCAT(COALESCE(Marke, ''), ' ', COALESCE(Bezeichnung, ''), ' ', COALESCE(Beschreibung, '')) AS `message` FROM produkt WHERE Nummer = {$item[0]}";
-						$data = DBAccess::selectQuery($query)[0];
+					case "Produkte":
+						$query = "SELECT CONCAT(COALESCE(Marke, ''), ' ', COALESCE(Bezeichnung, ''), ' ', COALESCE(Beschreibung, '')) AS `message` FROM produkt WHERE Nummer = :id";
+						$data = DBAccess::selectQuery($query, [
+							"id" => $item[0],
+						])[0];
 
-						$link = Link::getPageLink("produkt") . "?id=" . $data["id"];
+						$link = Link::getPageLink("produkt") . "?id=" . $item[0];
 						break;
-					case 2:
-						$query = "SELECT Auftragsnummer AS id, CONCAT(COALESCE(Auftragsbezeichnung, ''), ' ', COALESCE(Auftragsbeschreibung, '')) AS `message` FROM auftrag WHERE Auftragsnummer = {$item[0]}";
-						$data = DBAccess::selectQuery($query)[0];
+					case "Aufträge":
+						$query = "SELECT CONCAT(COALESCE(Auftragsbezeichnung, ''), ' ', COALESCE(Auftragsbeschreibung, '')) AS `message` FROM auftrag WHERE Auftragsnummer = :id";
+						$data = DBAccess::selectQuery($query, [
+							"id" => $item[0],
+						])[0];
 
-						$link = Link::getPageLink("auftrag") . "?id=" . $data["id"];
+						$link = Link::getPageLink("auftrag") . "?id=" . $item[0];
 						break;
-					case 3:
-						$query = "SELECT Auftragsnummer AS id, COALESCE(Beschreibung, ' ') AS `message` FROM postendata WHERE Postennummer = {$item[0]}";
-						$data = DBAccess::selectQuery($query)[0];
+					case "Posten":
+						$query = "SELECT COALESCE(Beschreibung, ' ') AS `message` FROM postendata WHERE Postennummer = :id";
+						$data = DBAccess::selectQuery($query, [
+							"id" => $item[0],
+						])[0];
 
-						$link = Link::getPageLink("auftrag") . "?id=" . $data["id"];
+						$link = Link::getPageLink("auftrag") . "?id=" . $item[0];
 						break;
-					case 4:
-						$query = "SELECT id, COALESCE(title, ' ') AS `message` FROM wiki_articles WHERE id = {$item[0]}";
-						$data = DBAccess::selectQuery($query)[0];
+					case "Wiki":
+						$query = "SELECT COALESCE(title, ' ') AS `message` FROM wiki_articles WHERE id = :id";
+						$data = DBAccess::selectQuery($query, [
+							"id" => $item[0],
+						])[0];
 
-						$link = Link::getPageLink("wiki") . "?id=" . $data["id"];
+						$link = Link::getPageLink("wiki") . "?id=" . $item[0];
 						break;
 				}
 
-				$html .= "<a href=\"$link\">Zu: {$data['message']}</a><br>";
+				$item["link"] = $link;
+				$item["message"] = $data["message"];
 			}
 		}
 
-		return $html;
+		/* Protocoll::prettyPrint($results); */
+
+		ob_start();
+		insertTemplate('files/res/views/ajaxSearchView.php', [
+			"resultGroups" => $results,
+		]);
+		echo ob_get_clean();
 	}
 
 	/*

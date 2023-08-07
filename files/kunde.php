@@ -41,8 +41,9 @@
 		$kundenid = $_GET['id'];
 		try {
 			$kunde = new Kunde($kundenid);
-
-			$data = DBAccess::selectQuery("SELECT * FROM ansprechpartner WHERE Kundennummer = $kundenid");
+			$data = DBAccess::selectQuery("SELECT * FROM ansprechpartner WHERE Kundennummer = :kdnr", [
+				"kdnr" => $kundenid,
+			]);
 			$column_names = array(
 				0 => array("COLUMN_NAME" => "Vorname"),
 				1 => array("COLUMN_NAME" => "Nachname"),

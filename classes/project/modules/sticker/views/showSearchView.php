@@ -2,7 +2,7 @@
     <div>
         <div class="searchBarContainer">
             <input type="search" id="searchShopQuery" placeholder="Aufkleber suchen">
-            <span id="searchShopBtn" class="searchIcon"><?=Icon::$iconSearch?></span>
+            <span id="searchShopBtn" class="searchIcon"><?=Icon::getDefault("iconSearch")?></span>
         </div>
         <div id="showSearchResults"></div>
     </div>

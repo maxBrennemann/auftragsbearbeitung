@@ -22,7 +22,7 @@ if (isset($_GET['showDetails'])) {
 <div>
 	<ul class="mainUl auto-rows-min">
 		<li class="rounded-lg bg-gray-100 hover:underline">
-			<a class="block px-4 py-8" href="<?=$neuerKunde?>"><?=Icon::$iconPersonAdd?> Neuen Kunden erstellen</a>
+			<a class="block px-4 py-8" href="<?=$neuerKunde?>"><?=Icon::getDefault("iconPersonAdd")?> Neuen Kunden erstellen</a>
 		</li>
 		<li class="px-4 py-8 rounded-lg bg-gray-100 hover:underline">
 			<input id="kundeninput" type="text" class="w-32 rounded-md p-1">
@@ -30,7 +30,7 @@ if (isset($_GET['showDetails'])) {
 			<a class="inline" href="<?=$kunde?>?showDetails=list">Zu den Kunden</a>
 		</li>
 		<li class="rounded-lg bg-gray-100 hover:underline">
-			<a class="block px-4 py-8" href="<?=$neuerAuftrag?>"><?=Icon::$iconOrderAdd?> Neuen Auftrag erstellen</a>
+			<a class="block px-4 py-8" href="<?=$neuerAuftrag?>"><?=Icon::getDefault("iconOrderAdd")?> Neuen Auftrag erstellen</a>
 		</li>
 		<li class="rounded-lg bg-gray-100 hover:underline">
 			<a class="block px-4 py-8" href="<?=$rechnung?>">Neue Rechnung erstellen</a>
@@ -43,14 +43,14 @@ if (isset($_GET['showDetails'])) {
 			<a class="block px-4 py-8" href="<?=$neuesAngebot?>">+ Neues Angebot erstellen</a>
 		</li>
 		<li class="rounded-lg bg-gray-100 hover:underline">
-			<a class="block px-4 py-8" href="<?=$neuesProdukt?>"><?=Icon::$iconProductAdd?> Neues Produkt erstellen</a>
+			<a class="block px-4 py-8" href="<?=$neuesProdukt?>"><?=Icon::getDefault("iconProductAdd")?> Neues Produkt erstellen</a>
 		</li>
 		<li class="px-4 py-8 rounded-lg bg-gray-100 hover:underline">
 			<input id="auftragsinput" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value + '&query=' + this.value;" class="w-32 rounded-md p-1">
 			<a href="#" id="auftragsLink">Auftrag anzeigen</a>
 		</li>
 		<li class="rounded-lg bg-gray-100 hover:underline">
-			<a class="block px-4 py-8" href="<?=$diagramme?>"><?=Icon::$iconChart?> Diagramme und Auswertungen</a>
+			<a class="block px-4 py-8" href="<?=$diagramme?>"><?=Icon::getDefault("iconChart")?> Diagramme und Auswertungen</a>
 		</li>
 		<li class="rounded-lg bg-gray-100 hover:underline">
 			<a class="block px-4 py-8" href="<?=$leistungenLinks?>">Leistungen</a>

@@ -404,26 +404,34 @@ fnNames.click_shortcutProduct = async function(e) {
 
 var selectedCategories = [];
 fnNames.click_chooseCategory = function() {
+    const div = document.createElement("div");
+    div.classList.add("z-20", "paddingDefault");
+    document.body.appendChild(div);
+
+    const innerDiv = document.createElement("div");
+    innerDiv.classList.add("my-6", "mr-4");
+    div.appendChild(innerDiv);
+
+    addActionButtonForDiv(div, "remove");
+    div.classList.add("centeredDiv");
+    centerAbsoluteElement(div);
+
     ajax.post({
         categoryId: 13,
         r: "getCategoryTree",
     }).then(categoryData => {
-        var ul = document.createElement("ul");
+        const ul = document.createElement("ul");
         ul.appendChild(createUlCategoryList(categoryData)); 
-    
-        let div = document.createElement("div");
-        div.appendChild(ul);
-        div.classList.add("paddingDefault");
-        document.body.appendChild(div);
-        addActionButtonForDiv(div, "remove");
-        div.classList.add("centeredDiv");
+        
+        innerDiv.appendChild(ul);
         centerAbsoluteElement(div);
     });
 }
 
 function createUlCategoryList(element) {
-    var ul = document.createElement("ul");
-    var li = document.createElement("li");
+    const ul = document.createElement("ul");
+    const li = document.createElement("li");
+    li.classList.add("cursor-pointer", "hover:underline", "hover:text-blue-500");
     li.innerHTML = `${element.name} (${element.id})`;
     li.dataset.id = element.id;
     li.addEventListener("click", selectCategory, false);

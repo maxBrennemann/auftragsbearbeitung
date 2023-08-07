@@ -17,8 +17,8 @@
             <td><input class="px-2 bg-inherit w-32" type="text" maxlength="125" placeholder="Beschreibung" data-write="true" data-fun="updateImageDescription" data-file-id="<?=$image["id"]?>" value="<?=$image["description"]?>"></td>
             <td></td>
             <td>
-                <button class="p-1 mr-1 actionButton" title="Löschen" data-file-id="<?=$image["id"]?>" data-binding="true" data-fun="deleteImage"><?=Icon::$iconDelete?></button>
-                <button class="p-1 mr-1 actionButton moveRow" title="Verschieben" onmousedown="moveInit(event)" onmouseup="moveRemove(event)" data-file-id="<?=$image["id"]?>"><?=Icon::$iconMove?></button>
+                <button class="p-1 mr-1 actionButton" title="Löschen" data-file-id="<?=$image["id"]?>" data-binding="true" data-fun="deleteImage"><?=Icon::getDefault("iconDelete")?></button>
+                <button class="p-1 mr-1 actionButton moveRow" title="Verschieben" onmousedown="moveInit(event)" onmouseup="moveRemove(event)" data-file-id="<?=$image["id"]?>"><?=Icon::getDefault("iconMove")?></button>
             </td>
         </tr>
         <?php endforeach; ?>

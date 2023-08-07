@@ -274,17 +274,17 @@ class Table {
 
 	/* action buttons */
 	private function addUpdateButton($key) {
-        $button = "<button class='p-1 mr-1 actionButton' onclick=\"updateIsDone('$key', event)\" title='Als erledigt markieren.'>" . Icon::$iconCheck . "</button>";
+        $button = "<button class='p-1 mr-1 actionButton' onclick=\"updateIsDone('$key', event)\" title='Als erledigt markieren.'>" . Icon::getDefault("iconCheck") . "</button>";
 		return $button;
     }
 
     private function addEditButton($key) {
-        $button = "<button class='p-1 mr-1 actionButton' onclick=\"editRow('$key', this)\" title='Bearbeiten'>" . Icon::$iconEdit . "</button>";
+        $button = "<button class='p-1 mr-1 actionButton' onclick=\"editRow('$key', this)\" title='Bearbeiten'>" . Icon::getDefault("iconEdit") . "</button>";
 		return $button;
     }
 
     private function addDeleteButton($key) {
-		$button = "<button class='p-1 mr-1 actionButton' onclick=\"deleteRow('$key', '$this->type', this)\" title='Löschen'>" . Icon::$iconDelete . "</button>";
+		$button = "<button class='p-1 mr-1 actionButton' onclick=\"deleteRow('$key', '$this->type', this)\" title='Löschen'>" . Icon::getDefault("iconDelete") . "</button>";
 		return $button;
 	}
 	
@@ -294,7 +294,7 @@ class Table {
 	}
 
 	private function addMove($key) {
-		$button = "<button class='actionButton moveRow' onmousedown=\"moveInit(event)\" onmouseup=\"moveRemove(event)\" title='Reihenfolge verändern' data-key=\"$key\">" . Icon::$iconMove . "</button>";
+		$button = "<button class='actionButton moveRow' onmousedown=\"moveInit(event)\" onmouseup=\"moveRemove(event)\" title='Reihenfolge verändern' data-key=\"$key\">" . Icon::getDefault("iconMove") . "</button>";
 		return $button;
 	}
 
@@ -575,7 +575,7 @@ class Table {
 				$showColumnName = $entry["ALT"];
 			}
 
-			$table_header .= "<th class='tableHead whitespace-nowrap' onclick='sortTableNew(event)'>" . $showColumnName . " <span class=\"sortIcon\">" . Icon::$iconSortUndirected . "</span></th>";
+			$table_header .= "<th class='tableHead whitespace-nowrap' onclick='sortTableNew(event)'>" . $showColumnName . " <span class='sortIcon'>" . Icon::getDefault("iconSortUndirected") . "</span></th>";
 		}
 
 		return $table_header . "</tr>";

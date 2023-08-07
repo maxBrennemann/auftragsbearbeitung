@@ -302,34 +302,6 @@ input:checked + .slider:before {
     vertical-align: middle;
 }
 
-.tagList {
-    display: inline;
-}
-
-.tagList dt {
-    display: inline-block;
-    margin: 5px;
-    padding-left: 7px;
-    background-color: #2196F3;
-    border-radius: 6px;
-    cursor: default;
-}
-
-.tagInput {
-    display: inline;
-    margin: 5px;
-    padding: 7px;
-    border-radius: 6px;
-    border: none;
-    height: 19px;
-    width: 100px;
-}
-
-.tagList .suggestionTag {
-    background: #d5e9f9;
-    cursor: pointer;
-}
-
 .fastUpload {
     left: 0;
     right: 0;
@@ -437,7 +409,6 @@ form label {
     position: absolute;
     margin-left: auto;
     margin-right: auto;
-    z-index: 100;
     background: white;
     padding: 15px;
     border-radius: 12px;

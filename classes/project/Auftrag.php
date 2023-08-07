@@ -301,8 +301,8 @@ class Auftrag implements StatisticsInterface {
 		$t->createByData($data, $column_names);
 		$t->addActionButton("edit");
 		$t->setType("posten");
-		$t->addActionButton("delete", $identifier = "Postennummer");
-		$t->addAction(null, Icon::$iconAdd, "Rechnung/ Zahlung hinzufügen");
+		$t->addActionButton("delete", "Postennummer");
+		$t->addAction(null, Icon::getDefault("iconAdd"), "Rechnung/ Zahlung hinzufügen");
 		$t->addActionButton("move");
 		$t->addDataset("type", "type");
 		$_SESSION["posten_table"] = serialize($t);
@@ -530,7 +530,7 @@ class Auftrag implements StatisticsInterface {
 		ob_start();
 		insertTemplate('files/res/views/noteView.php', [
 			"notes" => $notes,
-			"icon" => Icon::$iconNotebook,
+			"icon" => Icon::getDefault("iconNotebook"),
 		]);
 		$content = ob_get_clean();
 		return $content;

@@ -25,6 +25,7 @@ class PrestashopConnection {
     }
 
     protected function getXML($resource, $debug = false) {
+        //$debug = true;
         $this->webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, $debug);
         $this->xml = $this->webService->get(array('resource' => $resource));
 
@@ -52,5 +53,3 @@ class PrestashopConnection {
         }
     }
 }
-
-?>
