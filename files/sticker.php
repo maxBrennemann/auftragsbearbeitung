@@ -34,9 +34,13 @@ if ($id == 0): ?>
     <div>
         <h2 class="font-semibold">Motiv <input id="name" class="titleInput inline bg-inherit border-b border-b-gray-600 pl-1" value="<?=$stickerCollection->getName();?>" title="Faceboook hat ein internes Limit für die Titellänge von 65 Zeichen">
             <?php if ($stickerCollection->getIsMarked() == "0"): ?>
-            <span data-binding="true" data-fun="bookmark inline"><?=Icon::getDefault("iconBookmark")?></span>
+                <span data-binding="true" data-fun="bookmark" data-status="unmarked" class="inline" title="Motiv markieren">
+                    <?=Icon::get("iconBookmark", 18, 18, ["inline"])?>
+                </span>
             <?php else: ?>
-            <span data-binding="true" data-fun="unbookmark" class="bookmarked inline cursor-pointer"><?=Icon::getDefault("iconUnbookmark")?></span>
+                <span data-binding="true" data-fun="bookmark" data-status="marked" class="bookmarked inline cursor-pointer" title="Motiv markieren">
+                    <?=Icon::get("iconUnbookmark", 18, 18, ["inline"])?>
+                </span>
             <?php endif; ?>
         </h2>
         <p class="mt-2">Artikelnummer: <span id="motivId" data-variable="true"><?=$id?></span></p>

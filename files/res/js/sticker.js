@@ -296,25 +296,36 @@ fnNames.write_additionalInfo = function(e) {
     });
 }
 
-fnNames.click_bookmark = function(e) {
-    var star = e.target;
+fnNames.click_bookmark = async function(e) {
+    const target = e.currentTarget;
+    const type = target.dataset.status;
 
-    if (star.nodeName == "path") {
-        star = star.parentNode;
+    let iconNew = "";
+
+    switch (type) {
+        case "unmarked":
+            iconNew = await ajax.post({
+                r: "getIcon",
+                custom: true,
+                icon: "iconUnbookmark",
+                width: 18,
+                height: 18,
+                classes: "inline,bookmarked",
+            });
+            break;
+        case "marked":
+            iconNew = await ajax.post({
+                r: "getIcon",
+                custom: true,
+                icon: "iconBookmark",
+                width: 18,
+                height: 18,
+                classes: "inline",
+            });
+            break;
     }
-    var newStar = `<svg onclick="unbookmark(event)" class="bookmarked" viewBox="0 0 24 24"><path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z" /></svg>`;
-    star.parentNode.innerHTML = newStar;
-    toggleBookmark();
-}
 
-fnNames.click_unbookmark = function(e) {
-    var star = e.target;
-
-    if (star.nodeName == "path") {
-        star = star.parentNode;
-    }
-    var newStar = `<svg onclick="bookmark(event)" style="width:24px;height:24px; vertical-align:middle;" viewBox="0 0 24 24"><path fill="currentColor" d="M12,15.39L8.24,17.66L9.23,13.38L5.91,10.5L10.29,10.13L12,6.09L13.71,10.13L18.09,10.5L14.77,13.38L15.76,17.66M22,9.24L14.81,8.63L12,2L9.19,8.63L2,9.24L7.45,13.97L5.82,21L12,17.27L18.18,21L16.54,13.97L22,9.24Z" /></svg>`;
-    star.parentNode.innerHTML = newStar;
+    target.innerHTML = iconNew.icon;
     toggleBookmark();
 }
 

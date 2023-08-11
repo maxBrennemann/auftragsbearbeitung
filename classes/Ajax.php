@@ -1588,15 +1588,44 @@ class Ajax {
 				]);
 			break;
 			case "getIcon":
-				$type = (String) $_POST["type"];
+				$type = (String) $_POST["icon"];
+				$icon = "";
 
-				echo json_encode([
-					"status" => "success",
-					"icon" => Icon::getDefault($type),
-				]);
-				return;
-				
-				echo json_encode(["status" => "not found"]);
+				if (isset($_POST["custom"])) {
+					$width = (int) $_POST["width"];
+					$height = (int) $_POST["height"];
+
+					/* classes from frontend come as commma separated string */
+					$classes = (String) $_POST["classes"];
+					$classes = explode(",", $classes);
+
+					if (isset($_POST["title"])) {
+						$title = (String) $_POST["title"];
+					} else {
+						$title = "";
+					}
+
+					if (isset($_POST["color"])) {
+						$color = (String) $_POST["color"];
+					} else {
+						$color = "#000000";
+					}
+
+					$icon = Icon::getColorized($type, $width, $height, $color, $classes, $title);
+				} else {
+					$icon = Icon::getDefault($type);
+				}
+
+				if ($icon != "") {
+					echo json_encode([
+						"status" => "success",
+						"icon" => $icon,
+					]);
+				} else {
+					echo json_encode([
+						"status" => "not found",
+					]);
+				}
 			break;
 			case "generateText":
 				$title = $_POST["title"];

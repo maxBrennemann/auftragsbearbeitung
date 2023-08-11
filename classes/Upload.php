@@ -117,6 +117,7 @@ class Upload {
 
         echo json_encode([
             "error" => "an error occured",
+            "message" => $ids,
             "files" => $_FILES["files"]["tmp_name"],
         ]);
     }
@@ -130,35 +131,46 @@ class Upload {
         }
     }
 
-    private function uploadFiles() {
-        error_reporting(-1);
+    /**
+     * Uploads the files in $_FILES["files"] to the server and 
+     * returns an array with the ids of the files in the database,
+     * or a string with an error message
+     * 
+     * @return array|string
+     */
+    private function uploadFiles(): array|string {
+        $msg = "";
 
-        /* https://stackoverflow.com/questions/2704314/multiple-file-upload-in-php */
-        $datetime = new DateTime();
-        $total = count($_FILES["files"]["name"]);
-        /*echo "filename: " . $_FILES["files"]["name"][0];*/
-        $ids = array();
+        try {
+            /* https://stackoverflow.com/questions/2704314/multiple-file-upload-in-php */
+            $datetime = new DateTime();
+            $total = count($_FILES["files"]["name"]);
+            /*echo "filename: " . $_FILES["files"]["name"][0];*/
+            $ids = array();
 
-        /* files is the name of the file input element in frontend */
-        for ($i = 0; $i < $total; $i++) {
-            $filename = basename($_FILES["files"]["name"][$i]);
-            $filename = self::adjustFileName($filename);
-            $filename = $datetime->getTimestamp() . $filename;
+            /* files is the name of the file input element in frontend */
+            for ($i = 0; $i < $total; $i++) {
+                $filename = basename($_FILES["files"]["name"][$i]);
+                $filename = self::adjustFileName($filename);
+                $filename = $datetime->getTimestamp() . $filename;
 
-            $originalname = basename($_FILES["files"]["name"][$i]);
-            $filetype = pathinfo($_FILES["files"]["name"][$i], PATHINFO_EXTENSION);
-            $date = date("Y-m-d");
+                $originalname = basename($_FILES["files"]["name"][$i]);
+                $filetype = pathinfo($_FILES["files"]["name"][$i], PATHINFO_EXTENSION);
+                $date = date("Y-m-d");
 
-            $insertQuery = "INSERT INTO dateien (dateiname, originalname, typ, `date`) VALUES ('$filename', '$originalname','$filetype', '$date')";
-            
-            if (move_uploaded_file($_FILES["files"]["tmp_name"][$i], $this->uploadDir . $filename)) {
-                array_push($ids, DBAccess::insertQuery($insertQuery));
-            } else {
-                return -1;
+                $insertQuery = "INSERT INTO dateien (dateiname, originalname, typ, `date`) VALUES ('$filename', '$originalname','$filetype', '$date')";
+                
+                if (move_uploaded_file($_FILES["files"]["tmp_name"][$i], $this->uploadDir . $filename)) {
+                    array_push($ids, DBAccess::insertQuery($insertQuery));
+                } else {
+                    return -1;
+                }
             }
+        } catch (Exception $e) {
+            $msg = $e->getMessage();
         }
 
-        return $ids;
+        return $msg == "" ? $ids : $msg;
     }
 
     /**

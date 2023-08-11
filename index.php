@@ -56,6 +56,7 @@ $page = $parts[count($parts) - 1];
 $t = false;
 $cacheFile = "cache/cache_" . md5($_SERVER['REQUEST_URI']) . ".txt";
 $status = CacheManager::getCacheStatus();
+
 if (file_exists($cacheFile) && !(count($_GET) || count($_POST)) && $t && $status == "on") {
 	echo file_get_contents_utf8($cacheFile);
 } else {
@@ -65,7 +66,7 @@ if (file_exists($cacheFile) && !(count($_GET) || count($_POST)) && $t && $status
 
 	if (file_get_contents("php://input") != "") {
 		$PHP_INPUT = json_decode(file_get_contents("php://input"), true);
-
+		
 		if ($PHP_INPUT != null) {
 			$_POST = array_merge($_POST, $PHP_INPUT);
 		}
@@ -82,35 +83,41 @@ if (file_exists($cacheFile) && !(count($_GET) || count($_POST)) && $t && $status
 		require_once('classes/Upload.php');
 
 		/* checks which upload mechanism should be called */
-		if (strcmp($uploadDestination, "order") == 0) {
-			$auftragsId = (int) $_POST['auftrag'];
-			$upload = new Upload();
-			$upload->uploadFilesAuftrag($auftragsId);
-		} else if (strcmp($uploadDestination, "product") == 0) {
-			$auftragsId = (int) $_POST['produkt'];
-			$upload = new Upload();
-			$upload->uploadFilesProduct($auftragsId);
-		} else if (strcmp($uploadDestination, "postenAttachment") == 0) {
-			$key = $_POST['key'];
-			$table = $_POST['tableKey'];
-			Posten::addFile($key, $table);
-		}  else if (strcmp($uploadDestination, "vehicle") == 0) {
-			$key = $_POST['key'];
-			$table = $_POST['tableKey'];
-			$fahrzeugnummer = Table::getIdentifierValue($table, $key);
+		switch ($uploadDestination) {
+			case "order":
+				$auftragsId = (int) $_POST['auftrag'];
+				$upload = new Upload();
+				$upload->uploadFilesAuftrag($auftragsId);
+				break;
+			case "product":
+				$auftragsId = (int) $_POST['produkt'];
+				$upload = new Upload();
+				$upload->uploadFilesProduct($auftragsId);
+				break;
+			case "postenAttachment":
+				$key = $_POST['key'];
+				$table = $_POST['tableKey'];
+				Posten::addFile($key, $table);
+				break;
+			case "vehicle":
+				$key = $_POST['key'];
+				$table = $_POST['tableKey'];
+				$fahrzeugnummer = Table::getIdentifierValue($table, $key);
 
-			$auftragsnummer = $_POST['orderid'];
-			$upload = new Upload();
-			$upload->uploadFilesVehicle($fahrzeugnummer, $auftragsnummer);
-		} else if (strcmp($uploadDestination, "motiv") == 0) {
-			$motivname = $_POST['motivname'];
+				$auftragsnummer = $_POST['orderid'];
+				$upload = new Upload();
+				$upload->uploadFilesVehicle($fahrzeugnummer, $auftragsnummer);
+				break;
+			case "motiv":
+				$motivname = $_POST['motivname'];
+				$upload = new Upload();
 
-			$upload = new Upload();
-			if (isset($_POST["motivNumber"])) {
-				$upload->uploadFilesMotive($motivname, $_POST["motivNumber"]);
-			} else {
-				$upload->uploadFilesMotive($motivname);
-			}
+				if (isset($_POST["motivNumber"])) {
+					$upload->uploadFilesMotive($motivname, $_POST["motivNumber"]);
+				} else {
+					$upload->uploadFilesMotive($motivname);
+				}
+				break;
 		}
 	} else {
 		if ($page == "pdf") {

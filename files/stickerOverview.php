@@ -74,6 +74,6 @@ $t->addLink($linker);
     <p class="font-bold">Motivexporte</p>
     <button id="createFbExport" data-binding="true" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Facebook Export generieren</button>
 </div>
-<div class="overflow-x-scroll h-96">
+<div class="overflow-x-scroll h-5/6">
     <?=$t->getTable()?>
 </div>

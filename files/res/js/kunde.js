@@ -7,7 +7,10 @@ const globalProperties = {
 };
 
 function initialize() {
-    var inputs = document.getElementById("showKundendaten").getElementsByTagName("input");
+    var showKundendaten = document.getElementById("showKundendaten");
+    if (showKundendaten == null) return;
+    var inputs = showKundendaten.getElementsByTagName("input");
+
     for (var i = 0; i < inputs.length; i++) {
         inputs[i].addEventListener("input", function (e) {
             document.getElementById("sendKundendaten").disabled = false;
@@ -248,6 +251,9 @@ if (document.readyState !== 'loading' ) {
 
 function initCustomer() {
     const notesTextarea = document.getElementById('notesTextarea');
+
+    if (notesTextarea == null) return;
+
     notesTextarea.addEventListener('input', function () {
         notesTextarea.style.height = 'auto';
         notesTextarea.style.height = notesTextarea.scrollHeight + 'px';
