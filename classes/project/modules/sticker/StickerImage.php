@@ -1,6 +1,10 @@
 <?php
 
 require_once('classes/project/modules/sticker/PrestashopConnection.php');
+require_once('vendor/autoload.php');
+
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 
 class StickerImage extends PrestashopConnection {
     
@@ -224,17 +228,40 @@ class StickerImage extends PrestashopConnection {
         DBAccess::deleteQuery($query, ["idMotiv" => $idMotiv]);
     }
 
+    /**
+     * uploads all images to the shop using the json responder script on the server;
+     * 
+     * @param $imageURLs array of image urls
+     * @param $productId id of the product in the shop
+     * 
+     * @return void
+     */
     public function uploadImages($imageURLs, $productId) {
         if ($imageURLs == null) {
             return;
         }
 
+        if (defined("DEV_MODE") && DEV_MODE == true) {
+            $result = $this->directUpload($imageURLs, $productId);
+            $this->processImageIds($result, $imageURLs);
+        } else {
+            $result = $this->generateImageUrls($imageURLs, $productId);
+            $this->processImageIds($result, $imageURLs);
+        }
+    }
+
+    private function generateImageUrls($imageURLs, $productId) {
         /* https://www.prestashop.com/forums/topic/407476-how-to-add-image-during-programmatic-product-import/ */
         $images = array();
         foreach ($imageURLs as $i) {
             $link = WEB_URL . "/upload/" . $i["dateiname"];
-            $images[] = urlencode($link);
+            $images[] = [
+                "url" => urlencode($link),
+                "cover" => false, //$i["image_sort"] == "aufkleber" ? 1 : 0,
+            ];
         }
+
+        // TODO: manage cover image
 
         /* json resonder script on server */
         $ch = curl_init($this->url);
@@ -249,6 +276,68 @@ class StickerImage extends PrestashopConnection {
         $result = curl_exec($ch);
         curl_close($ch);
 
+        return $result;
+    }
+
+    /**
+     * this is currently a workaround for them problem that prestashop wants urls for image upload;
+     * I upload the images to the server that generates urls which are then passed to prestashop
+     */
+    private function directUpload($imageURLs, $productId) {
+        $client = new Client();
+        $results = [];
+
+        foreach ($imageURLs as $i) {
+            $path = "upload/" . $i["dateiname"];
+
+            try {
+                $response = $client->post($this->url, [
+                    'multipart' => [
+                        [
+                            'name' => 'image',
+                            'contents' => fopen($path, 'r'),
+                        ],
+                        [
+                            'name' => 'uploadImage',
+                            'contents' => true,
+                        ],
+                        [
+                            'name' => 'id',
+                            'contents' => $productId,
+                        ],
+                    ],
+                ]);
+            
+                $result = $response->getBody();
+                echo $result;
+            } catch (RequestException $e) {
+                echo 'Request error: ' . $e->getMessage();
+            }
+
+            if (isset($result)) {
+                $results[] = $result;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * uploads the image descriptions to the shop using the json responder script on the server;
+     */
+    public function uploadImageDescription($descriptions) {
+        $client = new \GuzzleHttp\Client();
+        $client->request('POST', SHOPURL . "/auftragsbearbeitung/setImageDescription.php", [
+            'form_params' => [
+                'descriptions' => json_encode($descriptions),
+            ],
+        ]);
+    }
+
+    /**
+     * sets the image ids in the database after the images were uploaded to the shop
+     */
+    private function processImageIds($result, $imageURLs) {
         $imagesData = json_decode($result, true);
         $index = 0;
         foreach ($imagesData as $image) {
@@ -260,15 +349,6 @@ class StickerImage extends PrestashopConnection {
             ]);
             $index++;
         }
-    }
-
-    public function uploadImageDescription($descriptions) {
-        $client = new \GuzzleHttp\Client();
-        $client->request('POST', SHOPURL . "/auftragsbearbeitung/setImageDescription.php", [
-            'form_params' => [
-                'descriptions' => json_encode($descriptions),
-            ],
-        ]);
     }
 
     /**
@@ -322,5 +402,3 @@ class StickerImage extends PrestashopConnection {
     }
 
 }
-
-?>
