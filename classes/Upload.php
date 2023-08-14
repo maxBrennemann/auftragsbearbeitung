@@ -163,7 +163,7 @@ class Upload {
                 if (move_uploaded_file($_FILES["files"]["tmp_name"][$i], $this->uploadDir . $filename)) {
                     array_push($ids, DBAccess::insertQuery($insertQuery));
                 } else {
-                    return -1;
+                    return $filename . " could not be uploaded, " . $_FILES["files"]["error"][$i];
                 }
             }
         } catch (Exception $e) {
