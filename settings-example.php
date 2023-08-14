@@ -16,6 +16,9 @@ define('USERNAME', '');
 define('PASSWORD', '');
 define('DATABASE', '');
 
+/* mail addresses */
+define('MAIL_ADDRESS_ALERTS', '');
+
 /* shop api keys */
 define('SHOPURL', '');
 define('SHOPKEY', '');

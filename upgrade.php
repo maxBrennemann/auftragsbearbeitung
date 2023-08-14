@@ -1,19 +1,21 @@
 <?php
-    require_once('settings.php');
-    require_once('classes/Link.php');
 
-    $tailwindCSS = Link::getTW();
+require_once('settings.php');
+require_once('globalFunctions.php');
+require_once('classes/Link.php');
+
+$tailwindCSS = Link::getTW();
 ?>
 <!DOCTYPE html>
 <head>
     <title>Die Auftragsbearbeitung updaten</title>
     <link rel="stylesheet" href="<?=$tailwindCSS?>">
-    <script src="<?=Link::getGlobalJS()?>"></script>
+    <script type="module" src="<?=Link::getGlobalJS()?>"></script>
 </head>
 <body>
     <div class="mx-auto w-4/5">
         <h1 class="mt-2 font-bold">Auftragsbearbeitungsupdater</h1>
-        <p>Aktuelle Version: <span id="actualVersion" class="font-mono"><?=CURRENTVERSION?></span></p>
+        <p>Aktuelle Version: <span id="actualVersion" class="font-mono"><?=getCurrentVersion()?></span></p>
         <button id="updateProject" class="border-solid border-2 rounded-md px-2 py-1 bg-amber-400 border-transparent" data-binding="true">Update</button>
         <button id="composerUpdate" class="border-solid border-2 rounded-md px-2 py-1 bg-amber-400 border-transparent" data-binding="true">Composer Update</button>
         <button id="composerInstall" class="border-solid border-2 rounded-md px-2 py-1 bg-amber-400 border-transparent" data-binding="true">Composer Install</button>
