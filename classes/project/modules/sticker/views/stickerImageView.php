@@ -15,7 +15,11 @@
         <tr>
             <td><img class="imgPreview cursor-pointer" data-file-id="<?=$image["id"]?>" src="<?=$image["link"]?>" alt="<?=$image["alt"]?>"></td>
             <td><input class="px-2 bg-inherit w-32" type="text" maxlength="125" placeholder="Beschreibung" data-write="true" data-fun="updateImageDescription" data-file-id="<?=$image["id"]?>" value="<?=$image["description"]?>"></td>
-            <td></td>
+            <td>
+                <?php if ($image["typ"] == "avif" || $image["typ"] == "webp"): ?>
+                    <p class="text-sm">Dieser Dateityp wird von Prestashop nicht unterstützt</p>
+                <?php endif; ?>
+            </td>
             <td>
                 <button class="p-1 mr-1 actionButton" title="Löschen" data-file-id="<?=$image["id"]?>" data-binding="true" data-fun="deleteImage"><?=Icon::getDefault("iconDelete")?></button>
                 <button class="p-1 mr-1 actionButton moveRow" title="Verschieben" onmousedown="moveInit(event)" onmouseup="moveRemove(event)" data-file-id="<?=$image["id"]?>"><?=Icon::getDefault("iconMove")?></button>

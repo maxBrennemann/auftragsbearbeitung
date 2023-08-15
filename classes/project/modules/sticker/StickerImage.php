@@ -241,12 +241,28 @@ class StickerImage extends PrestashopConnection {
             return;
         }
 
+        $this->stripUnsupportedFileTypes($imageURLs);
+
         if (defined("DEV_MODE") && DEV_MODE == true) {
             $result = $this->directUpload($imageURLs, $productId);
             $this->processImageIds($result, $imageURLs);
         } else {
             $result = $this->generateImageUrls($imageURLs, $productId);
             $this->processImageIds($result, $imageURLs);
+        }
+    }
+
+    /**
+     * removes all images that are not supported by the shop
+     * 
+     * @param $images array of images
+     */
+    private function stripUnsupportedFileTypes(&$images) {
+        $unsupported = ["svg", "eps", "ai", "webp", "avif"];
+        foreach ($images as $key => $image) {
+            if (in_array($image["typ"], $unsupported)) {
+                unset($images[$key]);
+            }
         }
     }
 
@@ -359,11 +375,19 @@ class StickerImage extends PrestashopConnection {
     }
 
     /**
+     * syncs the images of a product with the images in the database and deletes 
+     * all images that are not in the database,
+     * also sets the image description
      * 
+     * @param $type type of the product, e.g. "aufkleber"
+     * @param $productId id of the product in the shop
+     * 
+     * @return void
      */
-    public function handleImageProductSync($type, $productId) {
+    public function handleImageProductSync(String $type, int $productId) {
         $images = $this->getImagesByType($type);
-        $this->uploadImages($images, $productId);
+        $status = $this->checkImageStatus($images, $productId);
+        $this->uploadImages($status["missingImages"], $productId);
 
         $imageDescriptions =  [];
         foreach ($images as $i) {
@@ -375,17 +399,107 @@ class StickerImage extends PrestashopConnection {
 
         $this->uploadImageDescription($imageDescriptions);
 
-        /* reload images, because they were just uploaded */
+        /* delete all images that are not in the database */
+        foreach ($status["deleteImages"] as $i) {
+            $this->deleteImage($productId, $i);
+        }
 
-        /* get all images from the shop */
+        $this->manageImageOrder();
+    }
 
-        /* get all images from the database */
+    /**
+     * checks if all images are on the server and if they are in the correct order,
+     * returns an array with the missing images and the images that are not in the database
+     * 
+     * @param $images array of images from the database
+     * @param $productId id of the product in the shop
+     * 
+     * @return array with missing images and images that are not in the database
+     */
+    private function checkImageStatus(array $images, int $productId): array {
+        $xml = $this->getXML("images/products/$productId");
+        $imageIds = [];
 
-        /* compare them */
+        foreach ($xml->children()->children() as $image) {
+            $imageIds[] = (int) $image->attributes()["id"];
+        }
 
-        /* delete images from the shop that are not in the database */
+        $imageIds = array_unique($imageIds);
+        return $this->compareIds($imageIds, $images);
+    }
 
-        /* upload images to the shop that are not in the shop and adjust order if necessary */
+    /**
+     * compares the ids of the images in the database with the ids of the images in the shop
+     * 
+     * @param $inShop array of image ids in the shop
+     * @param $inDatabase array of image ids in the database
+     * 
+     * @return array with missing images and images that are not in the database
+     */
+    private function compareIds($inShop, $inDatabase): array {
+        $delete = [];
+        $upload = [];
+
+        foreach ($inDatabase as $i) {
+            if (!in_array($i["id_image_shop"], $inShop)) {
+                $upload[] = $i;
+            }
+        }
+
+        foreach ($inShop as $i) {
+            if (!$this->inArrayDB($i, $inDatabase)) {
+                $delete[] = $i;
+            }
+        }
+
+        return [
+            "deleteImages" => $delete,
+            "missingImages" => $upload,
+        ];
+    }
+
+    /**
+     * checks if an image is in the database
+     * 
+     * @param $id id of the image
+     * @param $inDB array of images from the database
+     * 
+     * @return true if the image is in the database, false otherwise
+     */
+    private function inArrayDB($id, $inDB): bool {
+        foreach ($inDB as $i) {
+            if ($i["id_image_shop"] == $id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * sets the image order in the shop according to the order in the database
+     */
+    private function manageImageOrder() {
+        $query = "SELECT id_image_shop, image_order FROM module_sticker_image WHERE id_motiv = :idMotiv ORDER BY image_order;";
+        $images = DBAccess::selectQuery($query, ["idMotiv" => $this->idMotiv]);
+
+        $imageIds = [];
+        foreach ($images as $i) {
+            $imageIds[] = $i["id_image_shop"];
+        }
+
+        $client = new Client();
+        try  {
+            $response = $client->post($this->url, [
+                'json' => [
+                    'positions' => $imageIds,
+                ],
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                ]
+            ]);
+        } catch (Exception $e) {
+            echo 'Request error: ' . $e->getMessage();
+        }
     }
 
     /**

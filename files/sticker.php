@@ -29,7 +29,9 @@ if ($id == 0): ?>
 <?php else: ?>
 <script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
 <div class="w-full">
-<?=$stickerCollection->checkProductErrorStatus() ? $stickerCollection->getErrorMessage() : ""?>
+<?php if ($stickerCollection->checkProductErrorStatus()) : ?>
+<p class="text-red-700 p-5 bg-red-200 rounded-lg mt-2"><?=$stickerCollection->getErrorMessage()?></p>
+<?php endif; ?>
 <div class="defCont cont1">
     <div>
         <h2 class="font-semibold">Motiv <input id="name" class="titleInput inline bg-inherit border-b border-b-gray-600 pl-1" value="<?=$stickerCollection->getName();?>" title="Faceboook hat ein internes Limit für die Titellänge von 65 Zeichen">
