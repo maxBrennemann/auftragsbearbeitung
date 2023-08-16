@@ -1122,6 +1122,7 @@ class Ajax {
 				$responseData = [];
 				
 				require_once("classes/project/modules/sticker/StickerCollection.php");
+				ob_start();
 				try {
 					switch ($type) {
 						case 1:
@@ -1147,6 +1148,7 @@ class Ajax {
 				} catch (Exception $e) {
 					$message = $e->getMessage();
 				}
+				$responseData["output"] = ob_get_clean();
 
 				require_once("classes/project/modules/sticker/SearchProducts.php");
 				try {

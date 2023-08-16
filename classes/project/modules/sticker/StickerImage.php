@@ -273,7 +273,6 @@ class StickerImage extends PrestashopConnection {
 
     /**
      * generates the image urls and sends them to the shop using the json responder script on the server;
-     * TODO: manage image cover
      * 
      * @param $imageURLs array of image urls
      * @param $productId id of the product in the shop
@@ -283,12 +282,15 @@ class StickerImage extends PrestashopConnection {
     private function generateImageUrls($imageURLs, $productId) {
         /* https://www.prestashop.com/forums/topic/407476-how-to-add-image-during-programmatic-product-import/ */
         $images = array();
+        $first = true;
         foreach ($imageURLs as $i) {
             $link = WEB_URL . "/upload/" . $i["dateiname"];
             $images[] = [
                 "url" => urlencode($link),
-                "cover" => false, //$i["image_sort"] == "aufkleber" ? 1 : 0,
+                "cover" => $first,
             ];
+
+            $first = false;
         }
 
         /* json resonder script on server */
@@ -307,44 +309,49 @@ class StickerImage extends PrestashopConnection {
     /**
      * this is currently a workaround for them problem that prestashop wants urls for image upload;
      * I upload the images to the server that generates urls which are then passed to prestashop
+     * 
+     * @param $imageURLs array of image urls
+     * @param $productId id of the product in the shop
+     * 
+     * @return String
      */
-    private function directUpload($imageURLs, $productId) {
+    private function directUpload($imageURLs, $productId): ?String {
         $client = new Client();
-        $results = [];
+        $result = "";
+        $files = [];
 
         foreach ($imageURLs as $i) {
             $path = "upload/" . $i["dateiname"];
-
-            try {
-                $response = $client->post($this->url, [
-                    'multipart' => [
-                        [
-                            'name' => 'image',
-                            'contents' => fopen($path, 'r'),
-                        ],
-                        [
-                            'name' => 'uploadImage',
-                            'contents' => true,
-                        ],
-                        [
-                            'name' => 'id',
-                            'contents' => $productId,
-                        ],
-                    ],
-                ]);
-            
-                $result = $response->getBody();
-                echo $result;
-            } catch (RequestException $e) {
-                echo 'Request error: ' . $e->getMessage();
-            }
-
-            if (isset($result)) {
-                $results[] = $result;
-            }
+            $files[] = [
+                'name' => 'image[]',
+                'contents' => fopen($path, 'r'),
+            ];
         }
 
-        return $result;
+        $files[] = [
+            'name' => 'uploadImage',
+            'contents' => true,
+        ];
+
+        $files[] = [
+            'name' => 'id',
+            'contents' => $productId,
+        ];
+
+        try {
+            $response = $client->post($this->url, [
+                'multipart' => $files,
+            ]);
+        
+            $result = $response->getBody()->getContents();
+        } catch (RequestException $e) {
+        }
+
+        if (isset($result)) {
+            return $result;
+        }
+
+        return null;
     }
 
     /**
@@ -380,7 +387,7 @@ class StickerImage extends PrestashopConnection {
      * deletes an image from the shop
      */
     public function deleteImage($idProduct, $idImageShop) {
-        $this->deleteXML("images/products/$idProduct", $idImageShop);
+        return $this->deleteXML("images/products/$idProduct", $idImageShop);
     }
 
     /**
@@ -399,10 +406,13 @@ class StickerImage extends PrestashopConnection {
             return;
         }
         
+        $msgs = [];
         foreach ($xml->children()->children() as $image) {
             $id = (int) $image->attributes()["id"];
-            $this->deleteImage($idProduct, $id);
+            $msgs[] = $this->deleteImage($idProduct, $id);
         }
+
+        return $msgs;
     }
 
     /**
@@ -452,7 +462,16 @@ class StickerImage extends PrestashopConnection {
      * @return array with missing images and images that are not in the database
      */
     private function checkImageStatus(array $images, int $productId): array {
-        $xml = $this->getXML("images/products/$productId");
+        try {
+            $xml = $this->getXML("images/products/$productId");
+        } catch(Exception $e) {
+            echo $e->getMessage();
+            return [
+                "deleteImages" => [],
+                "missingImages" => $images,
+            ];
+        }
+
         $imageIds = [];
 
         foreach ($xml->children()->children() as $image) {
@@ -460,6 +479,14 @@ class StickerImage extends PrestashopConnection {
         }
 
         $imageIds = array_unique($imageIds);
+
+        if (count($imageIds) == 0) {
+            return [
+                "deleteImages" => [],
+                "missingImages" => $images,
+            ];
+        }
+
         return $this->compareIds($imageIds, $images);
     }
 
@@ -514,7 +541,7 @@ class StickerImage extends PrestashopConnection {
      * sets the image order in the shop according to the order in the database
      */
     private function manageImageOrder() {
-        $query = "SELECT id_image_shop, image_order FROM module_sticker_image WHERE id_motiv = :idMotiv AND image_sort = :imageSort ORDER BY image_order;";
+        $query = "SELECT id_image_shop, image_order FROM module_sticker_image WHERE id_motiv = :idMotiv AND image_sort = :imageSort ORDER BY image_order DESC, id_datei ASC;";
         $images = DBAccess::selectQuery($query, [
             "idMotiv" => $this->idMotiv,
             "imageSort" => $this->currentType,
@@ -522,6 +549,9 @@ class StickerImage extends PrestashopConnection {
 
         $imageIds = [];
         foreach ($images as $i) {
+            if ($i["image_order"] == null) {
+                continue;
+            }
             $imageIds[] = $i["id_image_shop"];
         }
 

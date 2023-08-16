@@ -491,6 +491,9 @@ export function click_addNewWidth() {
         let tempWidth = SizeTableRow.stringToMM(newWidth);
         let tempHeight = tempWidth * sizeTable.ratio;
         newPrice = SizeTableRow.calcNewPriceEuro(tempWidth, tempHeight, sizeTable.difficulty);
+    } else {
+        newPrice = SizeTableRow.parsePrice(newPrice);
+        newPrice = newPrice / 100;
     }
 
     sizeTable.addNewLine(newWidth, newPrice, isDefaultPrice);

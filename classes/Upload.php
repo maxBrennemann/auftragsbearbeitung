@@ -198,17 +198,18 @@ class Upload {
      * removes spaces, @ and & and if a filename is longer than 70 characters, it is renamed with tempnam
      * the date is also removed from the filename
      */
-    public static function adjustFileNames($folderPath = "upload") {
+    public static function adjustFileNames() {
         $query = "SELECT id, `dateiname` FROM dateien";
         $result = DBAccess::selectQuery($query);
-       
+        $folderPath = "upload";
+        
         foreach ($result as $row) {
             $filename = $row["dateiname"];
             $dateiId = $row["id"];
 
-            $adjustedFilename = self::adjustFileName($filename, $folderPath);
+            $adjustedFilename = self::adjustFileName($filename);
 
-            if(rename($folderPath . "/" . $filename, $folderPath . "/" . $adjustedFilename)) {
+            if (rename($folderPath . "/" . $filename, $folderPath . "/" . $adjustedFilename)) {
                 DBAccess::updateQuery("UPDATE dateien SET dateiname = :adjustedFilename WHERE id = :id", [
                     "adjustedFilename" => $adjustedFilename,
                     "id" => $dateiId,
@@ -219,15 +220,16 @@ class Upload {
 
     /**
      * Adjusts the filename to remove spaces, @ and &
-     * and uses tempnam if the name is longer than 70 characters
+     * and shortens the name if it is longer than 70 characters
      */
-    private static function adjustFileName($name, $folderPath = "upload"): String {
+    private static function adjustFileName($name): String {
         $adjustedFilename = str_replace(" ", "", $name);
         $adjustedFilename = str_replace("&", "", $adjustedFilename);
         $adjustedFilename = str_replace("@", "", $adjustedFilename);
 
+        /* cuts the last 30 characters from the end if the name is too long */
         if (strlen($adjustedFilename) > 70) {
-            $adjustedFilename = tempnam($folderPath, "");
+            $adjustedFilename = substr($adjustedFilename, -30);
         }
 
         return $adjustedFilename;

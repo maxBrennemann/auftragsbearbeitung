@@ -41,6 +41,7 @@ class PrestashopConnection {
     }
 
     protected function deleteXML($resource, $id, $debug = false) {
+        //$debug = true;
         try {
             $this->webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, $debug);
 
@@ -49,7 +50,7 @@ class PrestashopConnection {
                 'id' => $id,
             ]);
         } catch (PrestaShopWebserviceException $e) {
-            echo 'Error:' . $e->getMessage();
+            return 'Error:' . $e->getMessage();
         }
     }
 }

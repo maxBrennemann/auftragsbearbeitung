@@ -9,6 +9,7 @@ define('CURL_USERNAME', '');
 define('CURL_PASSWORD', '');
 
 define('ERRORREPORTING', true);
+define('DEV_MODE', false);
 
 /* database connection */
 define('HOST', '');
@@ -30,11 +31,10 @@ define('MEISTERTASK_URI_REDIRECT', '');
 
 /* openai chatgpt and dall-e */
 define('OPENAI_API_KEY', '');
+define('OPENAI_ORGANISATION_ID', '');
 
 /* deepL */
 define('DEEPL_API_KEY', '');
 
 /* google search console api keys */
 define('GOOGLE_SEARCHCONSOLE', '');
-
-?>
