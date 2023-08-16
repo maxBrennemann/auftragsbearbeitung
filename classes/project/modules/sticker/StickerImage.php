@@ -264,6 +264,9 @@ class StickerImage extends PrestashopConnection {
                 unset($images[$key]);
             }
         }
+
+        /* reindex array */
+        $images = array_values($images);
     }
 
     private function generateImageUrls($imageURLs, $productId) {
@@ -489,7 +492,7 @@ class StickerImage extends PrestashopConnection {
 
         $client = new Client();
         try  {
-            $response = $client->post($this->url, [
+            $client->post($this->url, [
                 'json' => [
                     'positions' => $imageIds,
                 ],
@@ -503,7 +506,7 @@ class StickerImage extends PrestashopConnection {
     }
 
     /**
-     * orders the images according to the json string
+     * orders the images according to the json string in the local database
      */
     public static function setImageOrder($order) {
         $order = json_decode($order);

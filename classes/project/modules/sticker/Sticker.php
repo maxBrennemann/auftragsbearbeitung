@@ -201,7 +201,7 @@ class Sticker extends PrestashopConnection {
             "content" => $content,
         ]);
 
-        StickerChangelog::log($id, $target, 0, "module_sticker_texts", "content", $content);
+        //StickerChangelog::log($id, $target, 0, "module_sticker_texts", "content", $content);
         echo "success";
     }
 
