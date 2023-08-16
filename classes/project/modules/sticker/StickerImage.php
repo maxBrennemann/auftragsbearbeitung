@@ -385,10 +385,20 @@ class StickerImage extends PrestashopConnection {
 
     /**
      * deletes all images in the shop that are connected to the current product
+     * 
+     * @param $idProduct id of the product in the shop
      */
     public function deleteAllImages($idProduct) {
-        $xml = $this->getXML("images/products/$idProduct");
+        try {
+            $xml = $this->getXML("images/products/$idProduct");
 
+            if ($xml == null) {
+                return;
+            }
+        } catch (Exception $e) {
+            return;
+        }
+        
         foreach ($xml->children()->children() as $image) {
             $id = (int) $image->attributes()["id"];
             $this->deleteImage($idProduct, $id);
