@@ -41,22 +41,19 @@ class Auftrag implements StatisticsInterface {
 		if ($auftragsnummer > 0) {
 			$this->Auftragsnummer = $auftragsnummer;
 			$data = DBAccess::selectAllByCondition("auftrag", "Auftragsnummer", $auftragsnummer);
+			$data = $data[0];
 
 			if (!empty($data)) {
-				$this->Auftragsbeschreibung = $data[0]['Auftragsbeschreibung'];
-				$this->Auftragsbezeichnung = $data[0]['Auftragsbezeichnung'];
-				$this->auftragstyp = (int) $data[0]['Auftragstyp'];
-				$this->rechnungsnummer = $data[0]['Rechnungsnummer'];
+				$this->Auftragsbeschreibung = $data['Auftragsbeschreibung'];
+				$this->Auftragsbezeichnung = $data['Auftragsbezeichnung'];
+				$this->auftragstyp = (int) $data['Auftragstyp'];
+				$this->rechnungsnummer = $data['Rechnungsnummer'];
 
-				$this->datum = $data[0]['Datum'];
-				$this->termin = $data[0]['Termin'];
-				$this->fertigstellung = $data[0]['Fertigstellung'];
+				$this->datum = $data['Datum'];
+				$this->termin = $data['Termin'];
+				$this->fertigstellung = $data['Fertigstellung'];
 
-				if ($data[0]['archiviert'] == 0 || $data[0]['archiviert'] == "0") {
-					$this->isArchiviert = true;
-				}
-
-				if ($data[0]['Rechnungsnummer'] != 0) {
+				if ($data['archiviert'] == 0 || $data['archiviert'] == "0") {
 					$this->isArchiviert = true;
 				}
 				
@@ -547,6 +544,13 @@ class Auftrag implements StatisticsInterface {
 	public function archiveOrder() {
 		$query = "UPDATE auftrag SET archiviert = 0 WHERE Auftragsnummer = {$this->Auftragsnummer}";
 		DBAccess::updateQuery($query);
+	}
+
+	public function rearchiveOrder() {
+		$query = "UPDATE auftrag SET archiviert = 1 WHERE Auftragsnummer = :orderId";
+		DBAccess::updateQuery($query, [
+			"orderId" => $this->Auftragsnummer
+		]);
 	}
 
 	/*

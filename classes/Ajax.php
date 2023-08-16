@@ -622,6 +622,11 @@ class Ajax {
 				$auftrag = new Auftrag($auftrag);
 				$auftrag->archiveOrder();
 			break;
+			case "rearchive":
+				$auftrag = $_POST['auftrag'];
+				$auftrag = new Auftrag($auftrag);
+				$auftrag->rearchiveOrder();
+			break;
 			case 'loadTemplateOrder':
 				require_once('classes/project/Angebot.php');
 				$customerId = $_POST['customerId'];

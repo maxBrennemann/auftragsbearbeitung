@@ -284,3 +284,17 @@ function initCustomer() {
         });
     }
 }
+
+/**
+ * changes the archive state to false
+ * 
+ * @param {int} id 
+ */
+function rearchive(id) {
+    ajax.post({
+        r: 'rearchive',
+        auftrag: id
+    }).then(() => {
+        location.reload();
+    });
+}

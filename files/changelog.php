@@ -26,6 +26,8 @@
         <li>Designanpassungen</li>
         <li>Integration von Webpack, damit JavaScript Module richtig gebundelt werden können</li>
         <li>JavaScript wurde modularisiert</li>
+        <li>Archivierung von Aufträgen kann rückgängig gemacht werden</li>
+        <li>Bildreihenfolge kann nun bearbeitet werden</li>
         <li>Diverse Fehlerbehebungen</li>
     </ul>
     <h3 id="1.1.17" class="font-bold my-5">1.1.17</h3>

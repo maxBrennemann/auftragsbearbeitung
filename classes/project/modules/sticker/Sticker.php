@@ -227,6 +227,7 @@ class Sticker extends PrestashopConnection {
         $resource_product = $xml->children()->children();
         
         $active = (int) $resource_product->active;
+        
         if ($active == 0) {
             $active = 1;
         } else {
