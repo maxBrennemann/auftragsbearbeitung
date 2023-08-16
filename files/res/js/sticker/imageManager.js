@@ -362,3 +362,12 @@ function openFileDialog(event) {
         uploadFileForSticker(files, imageCategory, handleImagesPreview);
     });
 }
+
+/**
+ * called from stickerImageView.php to update the overwrite images
+ * 
+ * @param {*} type Image type that should be updated
+ */
+export function updateImageOverwrite(type) {
+    window.mainVariables.overwriteImages[type] = !window.mainVariables.overwriteImages[type];
+}

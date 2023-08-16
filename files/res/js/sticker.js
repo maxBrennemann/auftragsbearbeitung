@@ -1,7 +1,7 @@
 import { click_textGeneration, click_showTextSettings, click_iterateText } from "./sticker/textGeneration.js";
 import { loadTags, showTaggroupManager, addTag } from "./sticker/tagManager.js";
 import ProductConnector from "./sticker/productConnector.js";
-import { click_makeColorable, deleteImage, updateImageDescription } from "./sticker/imageManager.js";
+import { click_makeColorable, deleteImage, updateImageDescription, updateImageOverwrite } from "./sticker/imageManager.js";
 import { click_addNewWidth } from "./sticker/sizeTable.js";
 import { initBindings } from "./classes/bindings.js";
 import "./sticker/imageMove.js";
@@ -18,10 +18,16 @@ fnNames.write_updateImageDescription = updateImageDescription;
 const mainVariables = {
     productConnect: [],
     pending: false,
+    overwriteImages: {
+        aufkleber: false,
+        wandtattoo: false,
+        textil: false,
+    },
 };
 
 /* TODO: besseres variable management */
 window.mainVariables = mainVariables;
+window.updateImageOverwrite = updateImageOverwrite
 
 function initSticker() {
     initBindings(fnNames);
@@ -192,9 +198,16 @@ fnNames.click_transferTextil = function() {
 }
 
 fnNames.click_transferAll = function(e) {
-    transfer(4, "Alles");
+    transfer(4, "Allen Produkten");
 }
 
+/**
+ * Sends an ajax request to transfer the product to the shop
+ * 
+ * @param {String} type 
+ * @param {String} text 
+ * @returns null
+ */
 function transfer(type, text) {
     if (mainVariables.pending == true) {
         return;
@@ -204,23 +217,31 @@ function transfer(type, text) {
     const infoBox = infoHandler.addInfoBox(StatusInfoHandler.TYPE_LOADER, "Wird gespeichert");
 
     mainVariables.pending = true;
-    console.log(mainVariables.pending);
+    
+    if (mainVariables.overwriteImages.aufkleber == true || mainVariables.overwriteImages.wandtattoo || mainVariables.overwriteImages.textil) {
+        if (!confirm("Möchtest du die Bilder überschreiben?")) {
+            mainVariables.overwriteImages.aufkleber = false;
+            mainVariables.overwriteImages.wandtattoo = false;
+            mainVariables.overwriteImages.textil = false;
+        }
+    }
 
     ajax.post({
         id: mainVariables.motivId.innerHTML,
         type: type,
+        overwrite: JSON.stringify(mainVariables.overwriteImages),
         r: "transferProduct",
     }).then(r => {
         if (r.status == "success") {
             mainVariables.pending = false;
-            infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS, "Übertragung erfolgreich");
+            infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS, `Übertragung von ${text} erfolgreich`);
         } else {
             mainVariables.pending = false;
-            infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS, "Übertragung erfolgreich", r.message);
+            infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS, `Übertragung von ${text} erfolgreich`, r.message);
         }
     }).catch(error => {
         infoBox.setType(StatusInfoHandler.TYPE_ERRORCOPY);
-        infoBox.statusUpdate(StatusInfoHandler.STATUS_FAILURE, "Übertragung fehlgeschlagen", error);
+        infoBox.statusUpdate(StatusInfoHandler.STATUS_FAILURE, `Übertragung von ${text} fehlgeschlagen`, error);
     });
 }
 

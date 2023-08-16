@@ -14,6 +14,8 @@ class StickerImage extends PrestashopConnection {
     private $images = [];
     private $files = [];
 
+    private $currentType = "";
+
     private $svgs = [];
 
     function __construct($idMotiv) {
@@ -269,6 +271,15 @@ class StickerImage extends PrestashopConnection {
         $images = array_values($images);
     }
 
+    /**
+     * generates the image urls and sends them to the shop using the json responder script on the server;
+     * TODO: manage image cover
+     * 
+     * @param $imageURLs array of image urls
+     * @param $productId id of the product in the shop
+     * 
+     * @return String
+     */
     private function generateImageUrls($imageURLs, $productId) {
         /* https://www.prestashop.com/forums/topic/407476-how-to-add-image-during-programmatic-product-import/ */
         $images = array();
@@ -280,18 +291,13 @@ class StickerImage extends PrestashopConnection {
             ];
         }
 
-        // TODO: manage cover image
-
         /* json resonder script on server */
         $ch = curl_init($this->url);
 
-        # Setup request to send json via POST.
         $payload = json_encode(array("images"=> $images, "id" => $productId));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-        # Return response instead of printing.
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        # Send request.
         $result = curl_exec($ch);
         curl_close($ch);
 
@@ -378,6 +384,18 @@ class StickerImage extends PrestashopConnection {
     }
 
     /**
+     * deletes all images in the shop that are connected to the current product
+     */
+    public function deleteAllImages($idProduct) {
+        $xml = $this->getXML("images/products/$idProduct");
+
+        foreach ($xml->children()->children() as $image) {
+            $id = (int) $image->attributes()["id"];
+            $this->deleteImage($idProduct, $id);
+        }
+    }
+
+    /**
      * syncs the images of a product with the images in the database and deletes 
      * all images that are not in the database,
      * also sets the image description
@@ -388,6 +406,8 @@ class StickerImage extends PrestashopConnection {
      * @return void
      */
     public function handleImageProductSync(String $type, int $productId) {
+        $this->currentType = $type;
+
         $images = $this->getImagesByType($type);
         $status = $this->checkImageStatus($images, $productId);
         $this->uploadImages($status["missingImages"], $productId);
@@ -408,6 +428,8 @@ class StickerImage extends PrestashopConnection {
         }
 
         $this->manageImageOrder();
+
+        $this->currentType = "";
     }
 
     /**
@@ -482,8 +504,11 @@ class StickerImage extends PrestashopConnection {
      * sets the image order in the shop according to the order in the database
      */
     private function manageImageOrder() {
-        $query = "SELECT id_image_shop, image_order FROM module_sticker_image WHERE id_motiv = :idMotiv ORDER BY image_order;";
-        $images = DBAccess::selectQuery($query, ["idMotiv" => $this->idMotiv]);
+        $query = "SELECT id_image_shop, image_order FROM module_sticker_image WHERE id_motiv = :idMotiv AND image_sort = :imageSort ORDER BY image_order;";
+        $images = DBAccess::selectQuery($query, [
+            "idMotiv" => $this->idMotiv,
+            "imageSort" => $this->currentType,
+        ]);
 
         $imageIds = [];
         foreach ($images as $i) {

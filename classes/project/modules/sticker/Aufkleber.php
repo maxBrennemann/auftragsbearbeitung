@@ -128,7 +128,7 @@ class Aufkleber extends AufkleberWandtattoo {
         return $this->buyingPrices;
     }
 
-    public function save(): String|null {
+    public function save($isOverwrite = false): String|null {
         if (!$this->getIsPlotted()) {
             return null;
         }
@@ -160,6 +160,11 @@ class Aufkleber extends AufkleberWandtattoo {
         $stickerCombination->createCombinations();
         
         $this->connectAccessoires();
+
+        if ($isOverwrite) {
+            $this->imageData->deleteAllImages($this->idProduct);
+        }
+
         $this->imageData->handleImageProductSync("aufkleber", $this->idProduct);
 
         if ($errorStatus != "") {

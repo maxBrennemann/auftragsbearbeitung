@@ -157,7 +157,7 @@ class Textil extends Sticker {
         return 25;
     }
 
-    public function save() {
+    public function save($isOverwrite = false) {
         if (!$this->getIsShirtcollection()) {
             return;
         }
@@ -186,6 +186,11 @@ class Textil extends Sticker {
         $this->connectAccessoires();
 
         $this->uploadSVG();
+
+        if ($isOverwrite) {
+            $this->imageData->deleteAllImages($this->idProduct);
+        }
+
         $this->imageData->handleImageProductSync("textil", $this->idProduct);
     }
 

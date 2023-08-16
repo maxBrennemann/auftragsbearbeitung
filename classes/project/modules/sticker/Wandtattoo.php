@@ -36,7 +36,7 @@ class Wandtattoo extends AufkleberWandtattoo {
         return parent::getShopLinkHelper(self::TYPE);
     }
 
-    public function save() {
+    public function save($isOverwrite = false) {
         if (!$this->getIsWalldecal()) {
             return;
         }
@@ -62,6 +62,10 @@ class Wandtattoo extends AufkleberWandtattoo {
         $stickerCombination->createCombinations();
         
         $this->connectAccessoires();
+
+        if ($isOverwrite) {
+            $this->imageData->deleteAllImages($this->idProduct);
+        }
 
         $this->imageData->handleImageProductSync("wandtattoo", $this->idProduct);
     }

@@ -1117,30 +1117,31 @@ class Ajax {
 			case "transferProduct":
 				$id = (int) $_POST["id"];
 				$type = (int) $_POST["type"];
+				$overwrite = json_decode($_POST["overwrite"], true);
 				$message = "";
 				$responseData = [];
-
+				
 				require_once("classes/project/modules/sticker/StickerCollection.php");
 				try {
 					switch ($type) {
 						case 1:
 							$aufkleber = new Aufkleber($id);
-							$aufkleber->save();
+							$aufkleber->save($overwrite["aufkleber"]);
 							break;
 						case 2:
 							$wandtattoo = new Wandtattoo($id);
-							$wandtattoo->save();
+							$wandtattoo->save($overwrite["wandtattoo"]);
 							break;
 						case 3:
 							$textil = new Textil($id);
-							$textil->save();
+							$textil->save($overwrite["textil"]);
 							break;
 						case 4:
 							/* TODO: iteration bei StickerCollection überarbeiten */
 							$stickerCollection = new StickerCollection($id);
-							$stickerCollection->getAufkleber()->save();
-							$stickerCollection->getWandtattoo()->save();
-							$stickerCollection->getTextil()->save();
+							$stickerCollection->getAufkleber()->save($overwrite["aufkleber"]);
+							$stickerCollection->getWandtattoo()->save($overwrite["wandtattoo"]);
+							$stickerCollection->getTextil()->save($overwrite["textil"]);
 							break;
 					}
 				} catch (Exception $e) {

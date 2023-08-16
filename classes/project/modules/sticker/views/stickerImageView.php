@@ -27,4 +27,16 @@
         </tr>
         <?php endforeach; ?>
     </table>
+    <div x-data="{ open: false }">
+        <button class="text-xs border-0 float-right p-1 hover:underline" @click="open = ! open">Mehr</button>
+        <div x-show="open" @click.outside="open = false" class="absolute h-48 place-items-center bg-white z-20 rounded-md p-8">
+            <!-- TODO: add close button -->
+            <p class="text-base">Vorsicht: Diese Option überschreibt die aktuellen Bilder des Artikels!</p>
+            <div class="px-2">
+                <p class="text-sm italic">Die Einstellung bleibt nur für diese Sitzung erhalten.</p>
+                <input type="checkbox" id="forceUpload" name="forceUpload" value="true" onchange="updateImageOverwrite('<?=$imageCategory?>')">
+                <label for="forceUpload">Bilder erneut hochladen</label>
+            </div>
+        </div>
+    </div>
 </div>
