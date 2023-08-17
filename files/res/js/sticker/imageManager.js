@@ -85,12 +85,19 @@ function addTableRow(imageSrc, imageCategory, imageFileId) {
     image.classList.add("imgPreview");
     image.addEventListener("click", imagePreview, false);
 
+    const deleteButton = copy.querySelector(".deleteImage");
+    deleteButton.addEventListener("click", deleteImage, false);
+
+    const description = copy.querySelector(".imageDescription");
+    description.addEventListener("change", updateImageDescription, false);
+
     const fileIds = copy.querySelectorAll(`[data-file-id]`);
     Array.from(fileIds).forEach(f => {
         f.dataset.fileId = imageFileId;
     });
 
-    addBindings(fileIds);
+    //addBindings(fileIds);
+    // TODO: add bindings to the new elements and fix addBindings function
 }
 
 function getIcon(type = "icon-file") {

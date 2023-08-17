@@ -37,7 +37,7 @@ $t->createByData($data, $column_names);
 $t->setType("module_sticker_sticker_data");
 $t->addLink($linker);
 ?>
-<div class="defCont grid grid-cols-2">
+<div class="defCont grid grid-cols-3">
     <details>
         <summary class="font-bold">
             Importe
@@ -58,6 +58,9 @@ $t->addLink($linker);
     </details>
     <div>
         <a href="<?=Link::getPageLink("sticker-images")?>" class="link-primary">Zur Bildübersicht</a>
+    </div>
+    <div>
+        <button class="btn-primary" onclick="openTagOverview()">Zur Tagübersicht</button>
     </div>
 </div>
 <div class="defCont">

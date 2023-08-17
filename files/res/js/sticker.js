@@ -527,6 +527,7 @@ function getSuggestions(e) {
     ajax.post({
         name: "Aufkleber " + name,
         r: "getCategoriesSuggestion",
+        id: 13,
     }).then(r => {
         r.categories.forEach(id => {
             let element = div.querySelector(`[data-id="${id}"]`);
