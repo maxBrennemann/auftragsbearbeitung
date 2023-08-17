@@ -379,6 +379,17 @@ class StickerTagManager extends PrestashopConnection {
         }
     }
 
-}
+    public static function countTagOccurences() {
+        $query = "SELECT COUNT(t.id_tag_shop) AS occurences, t.content 
+            FROM module_sticker_tags t 
+            LEFT JOIN module_sticker_sticker_tag c 
+                ON t.id = c.id_tag 
+            GROUP BY t.id_tag_shop 
+            ORDER BY `occurences` 
+            DESC;";
+        $result = DBAccess::selectQuery($query);
 
-?>
+        return $result;
+    }
+
+}

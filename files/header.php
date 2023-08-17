@@ -32,7 +32,11 @@ $motiveOverview = 	Link::getPageLink("sticker-overview");
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, height=device-height">
-	<title>b-schriftung - <?=$pageName?></title>
+	<?php if (isset($pageName) && $pageName == ""): ?>
+		<title>b-schriftung - Übersicht</title>
+	<?php else: ?>
+		<title>b-schriftung - <?=$pageName?></title>
+	<?php endif; ?>
 	<meta name="Description" content="Auftragsübersicht">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="shortcut icon" type="image/x-icon" href="<?=WEB_URL?>/favicon.ico">
@@ -118,34 +122,36 @@ $motiveOverview = 	Link::getPageLink("sticker-overview");
 				<div class="searchContainer">
 					<input class="searchItems m-0 p-2" type="search" onchange="performGlobalSearch(event)">
 					<span class="searchItems lupeSpan" title="suche"><span class="text-gray-700 searchItems lupe" title="Suche">
-						<?=Icon::$iconSearch?>
+						<?=Icon::getDefault("iconSearch")?>
 					</span></span>
 				</div>
 				<div>
 					<div class="text-gray-700">
 						<div class="notificationContainer p-1 hover:bg-gray-200 hover:rounded-sm relative">
+							<?php if (NotificationManager::getNotificationCount() > 0): ?>
 							<div title="Benachrichtigungen" class="absolute -top-2 right-0">
 								<div class="w-3 h-3">
 									<p class="text-xxs p-0.5 bg-red-400 text-white rounded-full text-center"><?=NotificationManager::getNotificationCount();?></p>
 								</div>
 							</div>
+							<?php endif; ?>
 							<span title="Benachrichtigungen" class="inline-block">
-								<?=Icon::$iconBell?>
+								<?=Icon::getDefault("iconBell")?>
 							</span>
 						</div>
 						<div class="settingsContainer">
 							<a href="<?=$einstellungen?>" id="settings" title="Einstellungen" class="p-1 hover:bg-gray-200 hover:rounded-sm">
-								<?=Icon::$iconSettings?>
+								<?=Icon::getDefault("iconSettings")?>
 							</a>
 						</div>
 						<div class="logoutContainer">
 							<span id="logoutBtn" title="Ausloggen" class="p-1 hover:bg-gray-200 hover:rounded-sm">
-								<?=Icon::$iconLogout?>
+								<?=Icon::getDefault("iconLogout")?>
 							</span>
 						</div>
 					</div>
 					<?php if (Envs::get("showTimeGlobal") == "true"): ?>
-					<a href="<?=Link::getPageLink("zeiterfassung")?>" class="showTimeGlobal" >
+					<a href="<?=Link::getPageLink("zeiterfassung")?>" class="showTimeGlobal hover:bg-gray-200 rounded-lg pl-3">
 						<span>Zeit: <span id="timeGlobal">00:10:37</span></span>
 					</a>
 					<?php endif; ?>

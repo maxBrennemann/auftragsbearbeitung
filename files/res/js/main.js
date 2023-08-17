@@ -5,7 +5,7 @@ function ajaxSearch(query) {
     } else {
         link.href = link.dataset.url + '?id=' + query;
     }
-    document.getElementById("kundenLink").click();
+    link.click();
 }
 
 function showCustomizeOptions() {
@@ -19,9 +19,18 @@ function initInputs() {
     var auftragsinput = document.getElementById("auftragsinput");
     
     kundeninput.addEventListener("keyup", function (event) {
-        if (event.key === "Enter") {
-            ajaxSearch(event.target.value);
+        if (event.key !== "Enter") {
+            return;
         }
+
+        if (event.target.value === "" || event.target.value.length == 0) {
+            var link = document.getElementById('kundenLink');
+            link.href = link.dataset.url + "?showDetails=list";
+            link.click();
+            return;
+        }
+
+        ajaxSearch(event.target.value);
     });
     
     rechnungsinput.addEventListener("keyup", function (event) {

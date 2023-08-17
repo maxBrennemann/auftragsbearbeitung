@@ -111,35 +111,35 @@ class User {
             case "mobile":
                 switch ($os) {
                     case "Android":
-                        $icon = Icon::$iconAndroid;
+                        $icon = Icon::getDefault("iconAndroid");
                         break;
                     case "iOS":
-                        $icon = Icon::$iconApplePhone;
+                        $icon = Icon::getDefault("iconApplePhone");
                         break;
                     default:
-                        $icon = Icon::$iconPhone;
+                        $icon = Icon::getDefault("iconPhone");
                         break;
                 }
                 break;
             case "tablet":
-                $icon = Icon::$iconTablet;
+                $icon = Icon::getDefault("iconTablet");
                 break;
             case "desktop":
                 switch ($os) {
                     case "Mac OS":
-                        $icon = Icon::$iconMac;
+                        $icon = Icon::getDefault("iconMac");
                         break;
                     case "Linux":
-                        $icon = Icon::$iconLinux;
+                        $icon = Icon::getDefault("iconLinux");
                         break;
                     case "Windows":
                     default:
-                        $icon = Icon::$iconWindows;
+                        $icon = Icon::getDefault("iconWindows");
                         break;
                 }
                 break;
             default:
-                $icon = Icon::$iconUnrecognized;
+                $icon = Icon::getDefault("iconUnrecognized");
                 break;
         }
 

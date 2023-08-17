@@ -29,14 +29,20 @@ if ($id == 0): ?>
 <?php else: ?>
 <script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
 <div class="w-full">
-<?=$stickerCollection->checkProductErrorStatus() ? $stickerCollection->getErrorMessage() : ""?>
+<?php if ($stickerCollection->checkProductErrorStatus()) : ?>
+<p class="text-red-700 p-5 bg-red-200 rounded-lg mt-2"><?=$stickerCollection->getErrorMessage()?></p>
+<?php endif; ?>
 <div class="defCont cont1">
     <div>
-        <h2 class="font-semibold">Motiv <input id="name" class="titleInput inline" value="<?=$stickerCollection->getName();?>">
+        <h2 class="font-semibold">Motiv <input id="name" class="titleInput inline bg-inherit border-b border-b-gray-600 pl-1" value="<?=$stickerCollection->getName();?>" title="Faceboook hat ein internes Limit für die Titellänge von 65 Zeichen">
             <?php if ($stickerCollection->getIsMarked() == "0"): ?>
-            <span data-binding="true" data-fun="bookmark inline"><?=Icon::$iconBookmark?></span>
+                <span data-binding="true" data-fun="bookmark" data-status="unmarked" class="inline" title="Motiv markieren">
+                    <?=Icon::get("iconBookmark", 18, 18, ["inline"])?>
+                </span>
             <?php else: ?>
-            <span data-binding="true" data-fun="unbookmark" class="bookmarked inline"><?=Icon::$iconUnbookmark?></span>
+                <span data-binding="true" data-fun="bookmark" data-status="marked" class="bookmarked inline cursor-pointer" title="Motiv markieren">
+                    <?=Icon::get("iconUnbookmark", 18, 18, ["inline"])?>
+                </span>
             <?php endif; ?>
         </h2>
         <p class="mt-2">Artikelnummer: <span id="motivId" data-variable="true"><?=$id?></span></p>
@@ -53,21 +59,21 @@ if ($id == 0): ?>
         <p class="pHeading">Aufkleber
             <input class="titleInput hidden" value="<?=$stickerCollection->getAufkleber()->getAltTitle()?>" data-write="true" data-type="aufkleber" data-fun="changeAltTitle" placeholder="Alternativtitel">
             <button class="mr-1 p-1 border-none bg-slate-50" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="aufkleber">
-                <?=Icon::$iconEditText?>
+                <?=Icon::getDefault("iconEditText")?>
             </button>
             <?php if ($stickerCollection->getAufkleber()->getActiveStatus()): ?>
                 <button class="mr-1 p-1 border-none bg-slate-50" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
-                <?=Icon::$iconVisible?>
+                <?=Icon::getDefault("iconVisible")?>
             </button>
             <?php else: ?>
                 <button class="mr-1 p-1 border-none bg-slate-50" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
-                <?=Icon::$iconInvisible?>
+                <?=Icon::getDefault("iconInvisible")?>
             <?php endif; ?> 
             <button class="mr-1 p-1 border-none bg-slate-50" title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct" data-type="aufkleber">
-                <?=Icon::$iconConnectTo?>
+                <?=Icon::getDefault("iconConnectTo")?>
             </button>
             <button class="mr-1 p-1 border-none bg-slate-50" title="Kategorien auswählen" data-binding="true" data-fun="chooseCategory">
-                <?=Icon::$iconCategory?>
+                <?=Icon::getDefault("iconCategory")?>
             </button>
             <button class="infoButton" data-info="8">i</button>
         </p>
@@ -75,10 +81,12 @@ if ($id == 0): ?>
             Status:
             <?php if ($stickerCollection->getAufkleber()->isInShop()):?>
                 <a title="Aufkleber ist im Shop" target="_blank" href="<?=$stickerCollection->getAufkleber()->getShopLink()?>">
-                    <?=Icon::$iconInShop?>
+                    <?=Icon::getDefault("iconInShop")?>
                 </a>
             <?php else: ?>
-                <?=Icon::$iconNotInShop?>
+                <a title="Aufkleber ist nicht im Shop" href="#">
+                    <?=Icon::getDefault("iconNotInShop")?>
+                </a>
             <?php endif; ?>
         </div>
         <div>
@@ -136,21 +144,21 @@ if ($id == 0): ?>
         <p class="pHeading">Wandtattoo
             <input class="titleInput hidden" value="<?=$stickerCollection->getWandtattoo()->getAltTitle()?>" data-write="true" data-type="wandtattoo" data-fun="changeAltTitle" placeholder="Alternativtitel">
             <button class="mr-1 p-1 border-none bg-slate-50" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="wandtattoo">
-                <?=Icon::$iconEditText?>
+                <?=Icon::getDefault("iconEditText")?>
             </button>
             <?php if ($stickerCollection->getWandtattoo()->getActiveStatus()): ?>
                 <button class="mr-1 p-1 border-none bg-slate-50" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
-                <?=Icon::$iconVisible?>
+                <?=Icon::getDefault("iconVisible")?>
             </button>
             <?php else: ?>
                 <button class="mr-1 p-1 border-none bg-slate-50" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
-                <?=Icon::$iconInvisible?>
+                <?=Icon::getDefault("iconInvisible")?>
             <?php endif; ?>
             <button class="mr-1 p-1 border-none bg-slate-50" title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct" data-type="wandtattoo">
-                <?=Icon::$iconConnectTo?>
+                <?=Icon::getDefault("iconConnectTo")?>
             </button>
             <button class="mr-1 p-1 border-none bg-slate-50" title="Kategorien auswählen" data-binding="true" data-fun="chooseCategory">
-                <?=Icon::$iconCategory?>
+                <?=Icon::getDefault("iconCategory")?>
             </button>
             <button class="infoButton" data-info="9">i</button>
         </p>
@@ -158,10 +166,12 @@ if ($id == 0): ?>
             Status: 
             <?php if ($stickerCollection->getWandtattoo()->isInShop()):?>
                 <a title="Wandtattoo ist im Shop" target="_blank" href="<?=$stickerCollection->getWandtattoo()->getShopLink()?>">
-                    <?=Icon::$iconInShop?>
+                    <?=Icon::getDefault("iconInShop")?>
                 </a>
             <?php else: ?>
-                <?=Icon::$iconNotInShop?>
+                <a title="Wandtattoo ist nicht im Shop" href="#">
+                    <?=Icon::getDefault("iconNotInShop")?>
+                </a>
             <?php endif; ?>
         </div>
         <div>
@@ -192,21 +202,21 @@ if ($id == 0): ?>
         <p class="pHeading">Textil
             <input class="titleInput hidden" value="<?=$stickerCollection->getTextil()->getAltTitle()?>" data-write="true" data-type="textil" data-fun="changeAltTitle" placeholder="Alternativtitel">
             <button class="mr-1 p-1 border-none bg-slate-50" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="textil">
-                <?=Icon::$iconEditText?>
+                <?=Icon::getDefault("iconEditText")?>
             </button>
             <?php if ($stickerCollection->getTextil()->getActiveStatus()): ?>
                 <button class="mr-1 p-1 border-none bg-slate-50" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
-                <?=Icon::$iconVisible?>
+                <?=Icon::getDefault("iconVisible")?>
             </button>
             <?php else: ?>
                 <button class="mr-1 p-1 border-none bg-slate-50" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
-                <?=Icon::$iconInvisible?>
+                <?=Icon::getDefault("iconInvisible")?>
             <?php endif; ?> 
             <button class="mr-1 p-1 border-none bg-slate-50" title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct" data-type="textil">
-                <?=Icon::$iconConnectTo?>
+                <?=Icon::getDefault("iconConnectTo")?>
             </button>
             <button class="mr-1 p-1 border-none bg-slate-50" title="Kategorien auswählen" data-binding="true" data-fun="chooseCategory">
-                <?=Icon::$iconCategory?>
+                <?=Icon::getDefault("iconCategory")?>
             </button>
             <button class="infoButton" data-info="10">i</button>
         </p>
@@ -214,10 +224,12 @@ if ($id == 0): ?>
             Status: 
             <?php if ($stickerCollection->getTextil()->isInShop()):?>
                 <a title="Textil ist im Shop" target="_blank" href="<?=$stickerCollection->getTextil()->getShopLink()?>">
-                    <?=Icon::$iconInShop?>
+                    <?=Icon::getDefault("iconInShop")?>
                 </a>
             <?php else: ?>
-                <?=Icon::$iconNotInShop?>
+                <a title="Textil ist nicht im Shop" href="#">
+                    <?=Icon::getDefault("iconNotInShop")?>
+                </a>
             <?php endif; ?>
         </div>
         <div>
@@ -340,7 +352,7 @@ if ($id == 0): ?>
     <h2 class="font-semibold">Tags<button class="infoButton" data-info="3">i</button></h2>
     <div class="mt-2">
         <?=$stickerTagManager->getTagsHTML()?>
-        <input type="text" class="tagInput" maxlength="32" id="tagInput">
+        <input type="text" class="tagInput inline m-1 p-2 rounded-lg w-32" maxlength="32" id="tagInput">
     </div>
     <p class="italic">Nicht erlaubt sind folgende Zeichen: !<;>;?=+#"°{}_$%.</p>
     <button id="loadSynonyms" class="btn-primary">Mehr Synonnyme laden</button>
@@ -361,7 +373,7 @@ if ($id == 0): ?>
     <div class="directoryContainer mt-2">
         <input id="dirInput" class="data-input directoryName" data-fun="speicherort" data-write="true" value="<?=$stickerCollection->getDirectory()?>">
         <button class="directoryIcon" data-binding="true" data-fun="copyToClipboard">
-            <?=Icon::$iconDirectory?>
+            <?=Icon::getDefault("iconDirectory")?>
         </button>
     </div>
     <p class="mt-2">Zusätzliche Infos und Notizen:<button class="infoButton" data-info="6">i</button></p>
@@ -451,7 +463,7 @@ if ($id == 0): ?>
     <span id="showUploadProgress"></span>
 </div>
 <template id="icon-file">
-    <?=Icon::$iconFile?>
+    <?=Icon::getDefault("iconFile")?>
 </template>
 <template id="icon-corel">
     <?=Icon::iconCorel()?>
@@ -460,19 +472,19 @@ if ($id == 0): ?>
     <?=Icon::iconLetterPlott()?>
 </template>
 <template id="icon-visible">
-    <?=Icon::$iconVisible?>
+    <?=Icon::getDefault("iconVisible")?>
 </template>
 <template id="icon-invisible">
-    <?=Icon::$iconInvisible?>
+    <?=Icon::getDefault("iconInvisible")?>
 </template>
 <template id="templateImageRow">
     <tr>
         <td><img class="imgPreview cursor-pointer" data-file-id="" src="" alt=""></td>
-        <td><input class="px-2 bg-inherit w-32" type="text" maxlength="125" placeholder="Beschreibung" data-write="true" data-fun="updateImageDescription" data-file-id=""></td>
+        <td><input class="px-2 bg-inherit w-32 imageDescription" type="text" maxlength="125" placeholder="Beschreibung" data-write="true" data-fun="updateImageDescription" data-file-id=""></td>
         <td></td>
         <td>
-            <button class="p-1 mr-1 actionButton" title="Löschen" data-file-id="" data-binding="true" data-fun="deleteImage"><?=Icon::$iconDelete?></button>
-            <button class="p-1 mr-1 actionButton moveRow" title="Verschieben" onmousedown="moveInit(event)" onmouseup="moveRemove(event)" data-file-id=""><?=Icon::$iconMove?></button>
+            <button class="p-1 mr-1 actionButton deleteImage deleteImage" title="Löschen" data-file-id="" data-binding="true" data-fun="deleteImage"><?=Icon::getDefault("iconDelete")?></button>
+            <button class="p-1 mr-1 actionButton moveRow" title="Verschieben" onmousedown="moveInit(event)" onmouseup="moveRemove(event)" data-file-id=""><?=Icon::getDefault("iconMove")?></button>
         </td>
     </tr>
 </template>

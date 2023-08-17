@@ -37,7 +37,7 @@ $t->createByData($data, $column_names);
 $t->setType("module_sticker_sticker_data");
 $t->addLink($linker);
 ?>
-<div class="defCont">
+<div class="defCont grid grid-cols-3">
     <details>
         <summary class="font-bold">
             Importe
@@ -56,6 +56,12 @@ $t->addLink($linker);
         <br>
         <button class="btn-primary" data-binding="true" data-fun="manageImports">Importe verwalten</button>
     </details>
+    <div>
+        <a href="<?=Link::getPageLink("sticker-images")?>" class="link-primary">Zur Bildübersicht</a>
+    </div>
+    <div>
+        <button class="btn-primary" onclick="openTagOverview()">Zur Tagübersicht</button>
+    </div>
 </div>
 <div class="defCont">
     <div>
@@ -74,6 +80,6 @@ $t->addLink($linker);
     <p class="font-bold">Motivexporte</p>
     <button id="createFbExport" data-binding="true" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Facebook Export generieren</button>
 </div>
-<div class="overflow-x-scroll h-96">
+<div class="overflow-x-scroll h-5/6">
     <?=$t->getTable()?>
 </div>

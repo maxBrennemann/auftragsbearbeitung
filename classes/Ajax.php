@@ -356,6 +356,27 @@ class Ajax {
 					"status" => "success",
 				]);
 			break;
+			case "setInvoiceData":
+				$order = $_POST['id'];
+				$invoice = $_POST['invoice'];
+				$date = $_POST['date'];
+				$paymentType = $_POST['paymentType'];
+
+				DBAccess::updateQuery("UPDATE auftrag SET Bezahlt = 1 WHERE Auftragsnummer = :order AND Rechnungsnummer = :invoice", [
+					"order" => $order,
+					"invoice" => $invoice,
+				]);
+
+				DBAccess::updateQuery("UPDATE invoice SET payment_date = :paymentDate, payment_type = :paymentType WHERE order_id = :order", [
+					"paymentDate" => $date,
+					"paymentType" => $paymentType,
+					"order" => $order,
+				]);
+
+				echo json_encode([
+					"status" => "success",
+				]);
+			break;
 			case "setTo":
 				if (isset($_POST['auftrag'])) {
 					require_once("classes/project/InteractiveFormGenerator.php");
@@ -622,6 +643,11 @@ class Ajax {
 				$auftrag = new Auftrag($auftrag);
 				$auftrag->archiveOrder();
 			break;
+			case "rearchive":
+				$auftrag = $_POST['auftrag'];
+				$auftrag = new Auftrag($auftrag);
+				$auftrag->rearchiveOrder();
+			break;
 			case 'loadTemplateOrder':
 				require_once('classes/project/Angebot.php');
 				$customerId = $_POST['customerId'];
@@ -786,7 +812,7 @@ class Ajax {
 				ob_start();
 				insertTemplate('files/res/views/noteView.php', [
 					"notes" => $notes,
-					"icon" => Icon::$iconNotebook,
+					"icon" => Icon::getDefault("iconNotebook"),
 				]);
 				$content = ob_get_clean();
 
@@ -1117,34 +1143,58 @@ class Ajax {
 			case "transferProduct":
 				$id = (int) $_POST["id"];
 				$type = (int) $_POST["type"];
-
+				$overwrite = json_decode($_POST["overwrite"], true);
+				$message = "";
+				$responseData = [];
+				
 				require_once("classes/project/modules/sticker/StickerCollection.php");
-				switch ($type) {
-					case 1:
-						$aufkleber = new Aufkleber($id);
-						$aufkleber->save();
-						break;
-					case 2:
-						$wandtattoo = new Wandtattoo($id);
-						$wandtattoo->save();
-						break;
-					case 3:
-						$textil = new Textil($id);
-						$textil->save();
-						break;
-					case 4:
-						/* TODO: iteration bei StickerCollection überarbeiten */
-						$stickerCollection = new StickerCollection($id);
-						$stickerCollection->getAufkleber()->save();
-						$stickerCollection->getWandtattoo()->save();
-						$stickerCollection->getTextil()->save();
-						break;
+				ob_start();
+				try {
+					switch ($type) {
+						case 1:
+							$aufkleber = new Aufkleber($id);
+							$aufkleber->save($overwrite["aufkleber"]);
+							break;
+						case 2:
+							$wandtattoo = new Wandtattoo($id);
+							$wandtattoo->save($overwrite["wandtattoo"]);
+							break;
+						case 3:
+							$textil = new Textil($id);
+							$textil->save($overwrite["textil"]);
+							break;
+						case 4:
+							/* TODO: iteration bei StickerCollection überarbeiten */
+							$stickerCollection = new StickerCollection($id);
+							$stickerCollection->getAufkleber()->save($overwrite["aufkleber"]);
+							$stickerCollection->getWandtattoo()->save($overwrite["wandtattoo"]);
+							$stickerCollection->getTextil()->save($overwrite["textil"]);
+							break;
+					}
+				} catch (Exception $e) {
+					$message = $e->getMessage();
 				}
+				$responseData["output"] = ob_get_clean();
 
 				require_once("classes/project/modules/sticker/SearchProducts.php");
-				SearchProducts::getProductsByStickerId($id);
+				try {
+					$responseData = SearchProducts::getProductsByStickerId($id);
+				} catch (Exception $e) {
+					$message = $e->getMessage();
+				}
 				
-				echo json_encode(["status" => "success"]);
+				if ($message == "") {
+					echo json_encode([
+						"status" => "success",
+						"responseData" => $responseData,
+					]);
+				} else {
+					echo json_encode([
+						"status" => "error",
+						"message" => $message,
+						"responseData" => $responseData,
+					]);
+				}
 			break;
 			case "getSizeTable":
 				require_once("classes/project/modules/sticker/Aufkleber.php");
@@ -1396,6 +1446,13 @@ class Ajax {
 				$stickerTagManager = new StickerTagManager($id, $name);
 				$stickerTagManager->getTagsHTML();
 			break;
+			case "getTagOverview":
+				require_once('classes/project/modules/sticker/StickerTagManager.php');
+				echo json_encode([
+					"status" => "success",
+					"tags" => StickerTagManager::countTagOccurences(),
+				]);
+			break;
 			case "getTagGroups":
 				$query = "SELECT g.id AS groupId, g.title AS groupName, t.id AS tagId, t.content AS tagName FROM module_sticker_sticker_tag_group g LEFT JOIN module_sticker_sticker_tag_group_match m ON g.id = m.idGroup LEFT JOIN module_sticker_tags t ON t.id = m.idTag;";
 				$data = DBAccess::selectQuery($query);
@@ -1539,7 +1596,24 @@ class Ajax {
 			case "getCategoryTree":
 				$startCategory = $_POST["categoryId"];
 				require_once('classes/project/modules/sticker/StickerCategory.php');
-				echo json_encode(StickerCategory::getChildCategoriesNested($startCategory));
+				echo json_encode(StickerCategory::getCategories($startCategory));
+			break;
+			case "getCategories":
+				$id = (int) $_POST["id"];
+				require_once('classes/project/modules/sticker/StickerCategory.php');
+				echo json_encode(StickerCategory::getCategoriesForSticker($id));
+			break;
+			case "getCategoriesSuggestion":
+				$name = $_POST["name"];
+				$id = (int) $_POST["id"];
+				require_once('classes/project/modules/sticker/StickerCategory.php');
+				echo StickerCategory::getCategoriesSuggestion($name, $id);
+			break;
+			case "setCategories":
+				$id = (int) $_POST["id"];
+				$categories = $_POST["categories"];
+				require_once('classes/project/modules/sticker/StickerCategory.php');
+				StickerCategory::setCategories($id, $categories);
 			break;
 			case "setExportStatus":
 				$status = (String) $_POST["export"];
@@ -1567,17 +1641,44 @@ class Ajax {
 				]);
 			break;
 			case "getIcon":
-				$type = (String) $_POST["type"];
+				$type = (String) $_POST["icon"];
+				$icon = "";
 
-				if (isset(Icon::${$type})) {
+				if (isset($_POST["custom"])) {
+					$width = (int) $_POST["width"];
+					$height = (int) $_POST["height"];
+
+					/* classes from frontend come as commma separated string */
+					$classes = (String) $_POST["classes"];
+					$classes = explode(",", $classes);
+
+					if (isset($_POST["title"])) {
+						$title = (String) $_POST["title"];
+					} else {
+						$title = "";
+					}
+
+					if (isset($_POST["color"])) {
+						$color = (String) $_POST["color"];
+					} else {
+						$color = "#000000";
+					}
+
+					$icon = Icon::getColorized($type, $width, $height, $color, $classes, $title);
+				} else {
+					$icon = Icon::getDefault($type);
+				}
+
+				if ($icon != "") {
 					echo json_encode([
 						"status" => "success",
-						"icon" => Icon::${$type}
+						"icon" => $icon,
 					]);
-					return;
+				} else {
+					echo json_encode([
+						"status" => "not found",
+					]);
 				}
-				
-				echo json_encode(["status" => "not found"]);
 			break;
 			case "generateText":
 				$title = $_POST["title"];
@@ -1686,6 +1787,20 @@ class Ajax {
 				require_once('classes/project/Statistics.php');
 				Statistics::dispatcher();
 			break;
+			case "sendTimeTracking":
+				require_once('classes/project/TimeTracking.php');
+				TimeTracking::addEntry();
+			break;
+			case "getTimeTables":
+				require_once('classes/project/TimeTracking.php');
+				$idUser = $_SESSION['userid'];
+				$timeTables = TimeTracking::getTimeTables((int) $idUser);
+
+				echo json_encode([
+					"status" => "success",
+					"timeTables" => $timeTables,
+				]);
+			break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
 				$result = DBAccess::selectQuery($selectQuery);
@@ -1705,5 +1820,3 @@ class Ajax {
 	}
 
 }
-
-?>

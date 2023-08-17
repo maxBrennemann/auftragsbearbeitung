@@ -526,6 +526,7 @@ async function performGlobalSearch(e) {
 
 	const div = document.createElement("div");
 	div.innerHTML = search;
+	div.classList.add("w-7/12", "z-10", "h-96");
 
 	div.style.height = "500px";
 	if (innerHeight < 550) {

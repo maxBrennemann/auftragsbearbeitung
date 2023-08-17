@@ -7,7 +7,7 @@
     <?php foreach ($files as $file): ?>
         <?php
             $type = pathinfo("upload/" . $file["dateiname"])["extension"];
-            $icon = Icon::$iconFile;
+            $icon = Icon::getDefault("iconFile");
             $link = Link::getResourcesShortLink($file["dateiname"], "upload");
             $originalname = $file["alt"] ?: "ohne Name";
         ?>

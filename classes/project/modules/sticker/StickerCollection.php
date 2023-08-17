@@ -155,7 +155,7 @@ class StickerCollection implements Iterator {
     }
 
     public function getErrorMessage() {
-        $text = '<div class="defCont warning"><div class="warningHead">' . Icon::$iconWarning .'<span>Es wurden mehr als drei Produkte zu diesem Motiv gefunden!</span></div>';
+        $text = '<div class="defCont warning"><div class="warningHead">' . Icon::getDefault("iconWarning") .'<span>Es wurden mehr als drei Produkte zu diesem Motiv gefunden!</span></div>';
 
         $count = 1;
         foreach ($this->productMatches["allLinks"] as $l) {

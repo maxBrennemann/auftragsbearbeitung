@@ -25,6 +25,7 @@ class PrestashopConnection {
     }
 
     protected function getXML($resource, $debug = false) {
+        //$debug = true;
         $this->webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, $debug);
         $this->xml = $this->webService->get(array('resource' => $resource));
 
@@ -40,6 +41,7 @@ class PrestashopConnection {
     }
 
     protected function deleteXML($resource, $id, $debug = false) {
+        //$debug = true;
         try {
             $this->webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, $debug);
 
@@ -48,9 +50,7 @@ class PrestashopConnection {
                 'id' => $id,
             ]);
         } catch (PrestaShopWebserviceException $e) {
-            echo 'Error:' . $e->getMessage();
+            return 'Error:' . $e->getMessage();
         }
     }
 }
-
-?>

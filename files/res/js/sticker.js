@@ -1,7 +1,7 @@
 import { click_textGeneration, click_showTextSettings, click_iterateText } from "./sticker/textGeneration.js";
 import { loadTags, showTaggroupManager, addTag } from "./sticker/tagManager.js";
 import ProductConnector from "./sticker/productConnector.js";
-import { click_makeColorable, deleteImage, updateImageDescription } from "./sticker/imageManager.js";
+import { click_makeColorable, deleteImage, updateImageDescription, updateImageOverwrite } from "./sticker/imageManager.js";
 import { click_addNewWidth } from "./sticker/sizeTable.js";
 import { initBindings } from "./classes/bindings.js";
 import "./sticker/imageMove.js";
@@ -18,20 +18,26 @@ fnNames.write_updateImageDescription = updateImageDescription;
 const mainVariables = {
     productConnect: [],
     pending: false,
+    overwriteImages: {
+        aufkleber: false,
+        wandtattoo: false,
+        textil: false,
+    },
 };
 
 /* TODO: besseres variable management */
 window.mainVariables = mainVariables;
+window.updateImageOverwrite = updateImageOverwrite
 
 function initSticker() {
     initBindings(fnNames);
 
-    document.title = "b-schriftung - Motiv " + mainVariables.motivId.innerHTML + " " + document.getElementById("name").innerHTML;
+    document.title = "b-schriftung - Motiv " + mainVariables.motivId.innerHTML + " " + document.getElementById("name").value;
 
     var input = document.getElementById('name');
-    input.addEventListener('input', resizeTitle);
+    input.addEventListener('input', manageTitle);
     input.addEventListener('change', sendTitle);
-    resizeTitle.call(input);
+    manageTitle.call(input);
 
     document.getElementById("creationDate").addEventListener("change", changeDate, false);
 }
@@ -122,8 +128,17 @@ function sendTitle(e) {
     });
 }
 
-function resizeTitle() {
-  this.style.width = this.value.length + "ch";
+function manageTitle() {
+    var title = this.value;
+    this.style.width = title.length + "ch";
+
+    if (title.length > 50) {
+        this.classList.remove("border-b-gray-600");
+        this.classList.add("text-red-500", "border-b-red-500");
+    } else {
+        this.classList.remove("text-red-500", "border-b-red-500");
+        this.classList.add("border-b-gray-600");
+    }
 }
 
 fnNames.click_textilClick = function() {
@@ -183,9 +198,16 @@ fnNames.click_transferTextil = function() {
 }
 
 fnNames.click_transferAll = function(e) {
-    transfer(4, "Alles");
+    transfer(4, "Allen Produkten");
 }
 
+/**
+ * Sends an ajax request to transfer the product to the shop
+ * 
+ * @param {String} type 
+ * @param {String} text 
+ * @returns null
+ */
 function transfer(type, text) {
     if (mainVariables.pending == true) {
         return;
@@ -195,25 +217,31 @@ function transfer(type, text) {
     const infoBox = infoHandler.addInfoBox(StatusInfoHandler.TYPE_LOADER, "Wird gespeichert");
 
     mainVariables.pending = true;
-    console.log(mainVariables.pending);
+    
+    if (mainVariables.overwriteImages.aufkleber == true || mainVariables.overwriteImages.wandtattoo || mainVariables.overwriteImages.textil) {
+        if (!confirm("Möchtest du die Bilder überschreiben?")) {
+            mainVariables.overwriteImages.aufkleber = false;
+            mainVariables.overwriteImages.wandtattoo = false;
+            mainVariables.overwriteImages.textil = false;
+        }
+    }
 
     ajax.post({
         id: mainVariables.motivId.innerHTML,
         type: type,
+        overwrite: JSON.stringify(mainVariables.overwriteImages),
         r: "transferProduct",
     }).then(r => {
         if (r.status == "success") {
             mainVariables.pending = false;
-            infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS, "Übertragung erfolgreich");
+            infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS, `Übertragung von ${text} erfolgreich`);
         } else {
             mainVariables.pending = false;
-            infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS, "Übertragung erfolgreich");
-            // TODO: error handling for try catch error in backend like: could not transfer all data, "semi-success"
-            console.log(r.error);
+            infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS, `Übertragung von ${text} erfolgreich`, r.message);
         }
     }).catch(error => {
         infoBox.setType(StatusInfoHandler.TYPE_ERRORCOPY);
-        infoBox.statusUpdate(StatusInfoHandler.STATUS_FAILURE, "Übertragung fehlgeschlagen", error);
+        infoBox.statusUpdate(StatusInfoHandler.STATUS_FAILURE, `Übertragung von ${text} fehlgeschlagen`, error);
     });
 }
 
@@ -289,25 +317,36 @@ fnNames.write_additionalInfo = function(e) {
     });
 }
 
-fnNames.click_bookmark = function(e) {
-    var star = e.target;
+fnNames.click_bookmark = async function(e) {
+    const target = e.currentTarget;
+    const type = target.dataset.status;
 
-    if (star.nodeName == "path") {
-        star = star.parentNode;
+    let iconNew = "";
+
+    switch (type) {
+        case "unmarked":
+            iconNew = await ajax.post({
+                r: "getIcon",
+                custom: true,
+                icon: "iconUnbookmark",
+                width: 18,
+                height: 18,
+                classes: "inline,bookmarked",
+            });
+            break;
+        case "marked":
+            iconNew = await ajax.post({
+                r: "getIcon",
+                custom: true,
+                icon: "iconBookmark",
+                width: 18,
+                height: 18,
+                classes: "inline",
+            });
+            break;
     }
-    var newStar = `<svg onclick="unbookmark(event)" class="bookmarked" viewBox="0 0 24 24"><path fill="currentColor" d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z" /></svg>`;
-    star.parentNode.innerHTML = newStar;
-    toggleBookmark();
-}
 
-fnNames.click_unbookmark = function(e) {
-    var star = e.target;
-
-    if (star.nodeName == "path") {
-        star = star.parentNode;
-    }
-    var newStar = `<svg onclick="bookmark(event)" style="width:24px;height:24px; vertical-align:middle;" viewBox="0 0 24 24"><path fill="currentColor" d="M12,15.39L8.24,17.66L9.23,13.38L5.91,10.5L10.29,10.13L12,6.09L13.71,10.13L18.09,10.5L14.77,13.38L15.76,17.66M22,9.24L14.81,8.63L12,2L9.19,8.63L2,9.24L7.45,13.97L5.82,21L12,17.27L18.18,21L16.54,13.97L22,9.24Z" /></svg>`;
-    star.parentNode.innerHTML = newStar;
+    target.innerHTML = iconNew.icon;
     toggleBookmark();
 }
 
@@ -403,27 +442,60 @@ fnNames.click_shortcutProduct = async function(e) {
 }
 
 var selectedCategories = [];
-fnNames.click_chooseCategory = function() {
-    ajax.post({
+fnNames.click_chooseCategory = async function() {
+    const div = document.createElement("div");
+    div.classList.add("z-20", "paddingDefault");
+    document.body.appendChild(div);
+
+    const innerDiv = document.createElement("div");
+    innerDiv.classList.add("my-6", "mr-4", "overflow-y-auto", "h-96");
+    div.appendChild(innerDiv);
+
+    addActionButtonForDiv(div, "remove");
+    div.classList.add("centeredDiv");
+    centerAbsoluteElement(div);
+
+    const suggestionBtn = document.createElement("button");
+    const applyBtn = document.createElement("button");
+
+    suggestionBtn.classList.add("btn-primary", "mr-2");
+    suggestionBtn.innerHTML = "Vorschlag";
+    suggestionBtn.addEventListener("click", getSuggestions, false);
+
+    applyBtn.classList.add("btn-primary");
+    applyBtn.innerHTML = "Übernehmen";
+    applyBtn.addEventListener("click", setCategories, false);
+
+    innerDiv.appendChild(suggestionBtn);
+    innerDiv.appendChild(applyBtn);
+
+    await ajax.post({
         categoryId: 13,
         r: "getCategoryTree",
     }).then(categoryData => {
-        var ul = document.createElement("ul");
+        const ul = document.createElement("ul");
         ul.appendChild(createUlCategoryList(categoryData)); 
-    
-        let div = document.createElement("div");
-        div.appendChild(ul);
-        div.classList.add("paddingDefault");
-        document.body.appendChild(div);
-        addActionButtonForDiv(div, "remove");
-        div.classList.add("centeredDiv");
+        
+        innerDiv.appendChild(ul);
         centerAbsoluteElement(div);
+    });
+
+    ajax.post({
+        id: mainVariables.motivId.innerHTML,
+        r: "getCategories",
+    }).then(r => {
+        r.forEach(id => {
+            let element = div.querySelector(`[data-id="${id}"]`);
+            element.classList.add("selectedCategory");
+            selectedCategories.push(id);
+        });
     });
 }
 
 function createUlCategoryList(element) {
-    var ul = document.createElement("ul");
-    var li = document.createElement("li");
+    const ul = document.createElement("ul");
+    const li = document.createElement("li");
+    li.classList.add("cursor-pointer", "hover:underline", "hover:text-blue-500");
     li.innerHTML = `${element.name} (${element.id})`;
     li.dataset.id = element.id;
     li.addEventListener("click", selectCategory, false);
@@ -447,6 +519,30 @@ function selectCategory(e) {
             selectedCategories.splice(index, 1);
         }
     }
+}
+
+function getSuggestions(e) {
+    const name = document.getElementById("name").value;
+    const div = e.currentTarget.parentNode;
+    ajax.post({
+        name: "Aufkleber " + name,
+        r: "getCategoriesSuggestion",
+        id: 13,
+    }).then(r => {
+        r.categories.forEach(id => {
+            let element = div.querySelector(`[data-id="${id}"]`);
+            element.classList.add("selectedCategory");
+            selectedCategories.push(id);
+        });
+    });
+}
+
+function setCategories() {
+    ajax.post({
+        id: mainVariables.motivId.innerHTML,
+        categories: JSON.stringify(selectedCategories),
+        r: "setCategories",
+    });
 }
 
 fnNames.click_exportToggle = function(e) {

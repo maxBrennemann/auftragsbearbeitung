@@ -1,108 +1,120 @@
 <script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
 
 <?php 
-	require_once('classes/project/Kunde.php');
-	require_once('classes/project/Table.php');
-	require_once('classes/project/Search.php');
-	require_once('classes/project/Address.php');
 
-	$kundenid = -1;
-	$isSearch = false;
-	$showList = false;
+require_once('classes/project/Kunde.php');
+require_once('classes/project/Table.php');
+require_once('classes/project/Search.php');
+require_once('classes/project/Address.php');
 
-	if (isset($_GET['showDetails'])) {
-		$showDetails = $_GET['showDetails'];
-		if ($showDetails == "auftrag") {
-			if (isset($_GET['id'])) {
-				$id = $_GET['id'];
-				header("Location: " . Link::getPageLink('auftrag') . "?id={$id}");
+$kundenid = -1;
+$isSearch = false;
+$showList = false;
+
+if (isset($_GET['showDetails'])) {
+	$showDetails = $_GET['showDetails'];
+	if ($showDetails == "auftrag") {
+		if (isset($_GET['id'])) {
+			$id = (int) $_GET['id'];
+
+			if ($id == 0) {
+				$kundenid = -1;
 			}
-		} else if ($showDetails == "list") {
-			$showList = true;
-			$showListHTML = "";
-			$ids = DBAccess::selectQuery("SELECT Kundennummer FROM kunde ORDER BY CONCAT(Firmenname, Nachname)");
-			foreach ($ids as $id) {
-				$showListHTML .= (new Kunde($id['Kundennummer']))->getHTMLShortSummary();
-			}
+
+			header("Location: " . Link::getPageLink('auftrag') . "?id={$id}");
+		}
+	} else if ($showDetails == "list") {
+		$showList = true;
+		$showListHTML = "";
+		$ids = DBAccess::selectQuery("SELECT Kundennummer FROM kunde ORDER BY CONCAT(Firmenname, Nachname)");
+		foreach ($ids as $id) {
+			$showListHTML .= (new Kunde($id['Kundennummer']))->getHTMLShortSummary();
 		}
 	}
+}
 
-	if (isset($_GET['mode']) && $_GET['mode'] == "search" && $_GET['query']) {
-		$query = $_GET['query'];
-		$searchTable = Search::getSearchTable($query, "kunde", Link::getPageLink("kunde"), true);
-		if ($searchTable == "") {
-			$link =  Link::getPageLink('neuer-kunde');
-			$searchTable = "Es wurden keine Ergebnisse gefunden. <a href=\"$link\">Diesen Kunden erstellen</a>";
-		}
-		$isSearch = true;
+if (isset($_GET['mode']) && $_GET['mode'] == "search" && $_GET['query']) {
+	$query = $_GET['query'];
+	$searchTable = Search::getSearchTable($query, "kunde", Link::getPageLink("kunde"), true);
+	if ($searchTable == "") {
+		$link =  Link::getPageLink('neuer-kunde');
+		$searchTable = "Es wurden keine Ergebnisse gefunden. <a href=\"$link\">Diesen Kunden erstellen</a>";
+	}
+	$isSearch = true;
+}
+
+if (isset($_GET['id'])) {
+	$kundenid = (int) $_GET['id'];
+
+	if ($kundenid == 0) {
+		$kundenid = -1;
 	}
 
-	if (isset($_GET['id'])) {
-		$kundenid = $_GET['id'];
-		try {
-			$kunde = new Kunde($kundenid);
+	try {
+		$kunde = new Kunde($kundenid);
+		$data = DBAccess::selectQuery("SELECT * FROM ansprechpartner WHERE Kundennummer = :kdnr", [
+			"kdnr" => $kundenid,
+		]);
+		$column_names = array(
+			0 => array("COLUMN_NAME" => "Vorname"),
+			1 => array("COLUMN_NAME" => "Nachname"),
+			2 => array("COLUMN_NAME" => "Email"),
+			3 => array("COLUMN_NAME" => "Durchwahl"),
+			4 => array("COLUMN_NAME" => "Mobiltelefonnummer"),
+		);
 
-			$data = DBAccess::selectQuery("SELECT * FROM ansprechpartner WHERE Kundennummer = $kundenid");
-			$column_names = array(
-				0 => array("COLUMN_NAME" => "Vorname"),
-				1 => array("COLUMN_NAME" => "Nachname"),
-				2 => array("COLUMN_NAME" => "Email"),
-				3 => array("COLUMN_NAME" => "Durchwahl"),
-				4 => array("COLUMN_NAME" => "Mobiltelefonnummer"),
-			);
+		/* create ansprechpartner table */
+		$t = new Table();
+		$t->createByData($data, $column_names);
+		$t->addActionButton("edit");
+		$t->addActionButton("delete");
+		$t->setIdentifier("Nummer");
+		$t->setType("ansprechpartner");
+		$t->addNewLineButton();
+		
+		$pattern = [
+			"Kundennummer" => [
+				"status" => "preset",
+				"value" => $kundenid
+			],
+			"Vorname" => [
+				"status" => "unset",
+				"value" => 0
+			],
+			"Nachname" => [
+				"status" => "unset",
+				"value" => 1
+			],
+			"Email" => [
+				"status" => "unset",
+				"value" => 2
+			],
+			"Durchwahl" => [
+				"status" => "unset",
+				"value" => 3
+			],
+			"Mobiltelefonnummer" => [
+				"status" => "unset",
+				"value" => 4
+			]
+		];
 
-			/* create ansprechpartner table */
-			$t = new Table();
-			$t->createByData($data, $column_names);
-			$t->addActionButton("edit");
-			$t->addActionButton("delete");
-			$t->setIdentifier("Nummer");
-			$t->setType("ansprechpartner");
-			$t->addNewLineButton();
-			
-			$pattern = [
-				"Kundennummer" => [
-					"status" => "preset",
-					"value" => $kundenid
-				],
-				"Vorname" => [
-					"status" => "unset",
-					"value" => 0
-				],
-				"Nachname" => [
-					"status" => "unset",
-					"value" => 1
-				],
-				"Email" => [
-					"status" => "unset",
-					"value" => 2
-				],
-				"Durchwahl" => [
-					"status" => "unset",
-					"value" => 3
-				],
-				"Mobiltelefonnummer" => [
-					"status" => "unset",
-					"value" => 4
-				]
-			];
-
-			$t->defineUpdateSchedule(new UpdateSchedule("ansprechpartner", $pattern));
-			$ansprechpartner = $t->getTable(true);
-			
-			$_SESSION[$t->getTableKey()] = serialize($t);
-		} catch (Exception $e){
-			echo $e->getMessage();
-			$kundenid = -1;
-		}
+		$t->defineUpdateSchedule(new UpdateSchedule("ansprechpartner", $pattern));
+		$ansprechpartner = $t->getTable(true);
+		
+		$_SESSION[$t->getTableKey()] = serialize($t);
+	} catch (Exception $e){
+		echo $e->getMessage();
+		$kundenid = -1;
 	}
-	
-	$nextNumber = Kunde::getNextAssignedKdnr($kundenid, 1);
-	$linkForward = Link::getPageLink("kunde") . "?id=" . ($nextNumber);
-	if ($nextNumber == -1) $linkForward = "#";
-	$nextNumber = Kunde::getNextAssignedKdnr($kundenid, -1);
-	$linkBackward = Link::getPageLink("kunde") . "?id=" . ($nextNumber);
-	if ($nextNumber == -1) $linkBackward = "#";
+}
+
+$nextNumber = Kunde::getNextAssignedKdnr($kundenid, 1);
+$linkForward = Link::getPageLink("kunde") . "?id=" . ($nextNumber);
+if ($nextNumber == -1) $linkForward = "#";
+$nextNumber = Kunde::getNextAssignedKdnr($kundenid, -1);
+$linkBackward = Link::getPageLink("kunde") . "?id=" . ($nextNumber);
+if ($nextNumber == -1) $linkBackward = "#";
 
 ?>
 <p><a href="<?=$linkBackward?>">&#129092;</a><a href="<?=$linkForward?>" id="forwards">&#129094;</a></p>

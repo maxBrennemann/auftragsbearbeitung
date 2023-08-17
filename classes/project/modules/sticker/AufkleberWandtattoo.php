@@ -165,7 +165,7 @@ class AufkleberWandtattoo extends Sticker {
         }
         
         try {
-            $xml = $this->getXML('/api/product_options?schema=synopsis');
+            $xml = $this->getXML('product_options?schema=synopsis');
             $resources = $xml->children()->children();
         
             unset($resources->id);
@@ -232,7 +232,7 @@ class AufkleberWandtattoo extends Sticker {
 		$t->createByData($data, $column_names);
 		$t->setType("module_sticker_sizes");
 		$t->addActionButton("delete", "id");
-        $t->addAction(null, Icon::$iconReset, "Preis zurücksetzen");
+        $t->addAction(null, Icon::getDefault("iconReset"), "Preis zurücksetzen");
         $t->addDataset("is-default", "price_default");
 
         $_SESSION[$t->getTableKey()] = serialize($t);

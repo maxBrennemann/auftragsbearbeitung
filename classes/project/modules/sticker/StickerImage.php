@@ -1,6 +1,10 @@
 <?php
 
 require_once('classes/project/modules/sticker/PrestashopConnection.php');
+require_once('vendor/autoload.php');
+
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 
 class StickerImage extends PrestashopConnection {
     
@@ -10,12 +14,28 @@ class StickerImage extends PrestashopConnection {
     private $images = [];
     private $files = [];
 
+    private $currentType = "";
+
     private $svgs = [];
 
     function __construct($idMotiv) {
         $this->idMotiv = $idMotiv;
         $this->getConnectedFiles();
         $this->prepareImageData();
+    }
+
+    /**
+     * returns all images from the database that are connected to a sticker via
+     * the module_sticker_image table and are of type "aufkleber", "wandtattoo" or "textil"
+     */
+    public static function getAllImageFiles() {
+        $query = "SELECT dateien.dateiname, dateien.originalname AS alt, 
+                dateien.typ, dateien.id, module_sticker_image.image_sort, module_sticker_image.id_product, module_sticker_image.description, module_sticker_image.id_image_shop, module_sticker_image.image_order
+            FROM dateien, module_sticker_image 
+            WHERE dateien.id = module_sticker_image.id_datei
+                AND module_sticker_image.image_sort IN ('aufkleber', 'wandtattoo', 'textil');";
+        $data = DBAccess::selectQuery($query);
+        return $data;
     }
 
     /* reads from database */
@@ -224,31 +244,146 @@ class StickerImage extends PrestashopConnection {
         DBAccess::deleteQuery($query, ["idMotiv" => $idMotiv]);
     }
 
+    /**
+     * uploads all images to the shop using the json responder script on the server;
+     * 
+     * @param $imageURLs array of image urls
+     * @param $productId id of the product in the shop
+     * 
+     * @return void
+     */
     public function uploadImages($imageURLs, $productId) {
         if ($imageURLs == null) {
             return;
         }
 
+        $this->stripUnsupportedFileTypes($imageURLs);
+
+        if (defined("DEV_MODE") && DEV_MODE == true) {
+            $result = $this->directUpload($imageURLs, $productId);
+            $this->processImageIds($result, $imageURLs);
+        } else {
+            $result = $this->generateImageUrls($imageURLs, $productId);
+            $this->processImageIds($result, $imageURLs);
+        }
+    }
+
+    /**
+     * removes all images that are not supported by the shop
+     * 
+     * @param $images array of images
+     */
+    private function stripUnsupportedFileTypes(&$images) {
+        $unsupported = ["svg", "eps", "ai", "webp", "avif"];
+        foreach ($images as $key => $image) {
+            if (in_array($image["typ"], $unsupported)) {
+                unset($images[$key]);
+            }
+        }
+
+        /* reindex array */
+        $images = array_values($images);
+    }
+
+    /**
+     * generates the image urls and sends them to the shop using the json responder script on the server;
+     * 
+     * @param $imageURLs array of image urls
+     * @param $productId id of the product in the shop
+     * 
+     * @return String
+     */
+    private function generateImageUrls($imageURLs, $productId) {
         /* https://www.prestashop.com/forums/topic/407476-how-to-add-image-during-programmatic-product-import/ */
         $images = array();
+        $first = true;
         foreach ($imageURLs as $i) {
             $link = WEB_URL . "/upload/" . $i["dateiname"];
-            $images[] = urlencode($link);
+            $images[] = [
+                "url" => urlencode($link),
+                "cover" => $first,
+            ];
+
+            $first = false;
         }
 
         /* json resonder script on server */
         $ch = curl_init($this->url);
 
-        # Setup request to send json via POST.
         $payload = json_encode(array("images"=> $images, "id" => $productId));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-        # Return response instead of printing.
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        # Send request.
         $result = curl_exec($ch);
         curl_close($ch);
 
+        return $result;
+    }
+
+    /**
+     * this is currently a workaround for them problem that prestashop wants urls for image upload;
+     * I upload the images to the server that generates urls which are then passed to prestashop
+     * 
+     * @param $imageURLs array of image urls
+     * @param $productId id of the product in the shop
+     * 
+     * @return String
+     */
+    private function directUpload($imageURLs, $productId): ?String {
+        $client = new Client();
+        $result = "";
+        $files = [];
+
+        foreach ($imageURLs as $i) {
+            $path = "upload/" . $i["dateiname"];
+            $files[] = [
+                'name' => 'image[]',
+                'contents' => fopen($path, 'r'),
+            ];
+        }
+
+        $files[] = [
+            'name' => 'uploadImage',
+            'contents' => true,
+        ];
+
+        $files[] = [
+            'name' => 'id',
+            'contents' => $productId,
+        ];
+
+        try {
+            $response = $client->post($this->url, [
+                'multipart' => $files,
+            ]);
+        
+            $result = $response->getBody()->getContents();
+        } catch (RequestException $e) {
+        }
+
+        if (isset($result)) {
+            return $result;
+        }
+
+        return null;
+    }
+
+    /**
+     * uploads the image descriptions to the shop using the json responder script on the server;
+     */
+    public function uploadImageDescription($descriptions) {
+        $client = new \GuzzleHttp\Client();
+        $client->request('POST', SHOPURL . "/auftragsbearbeitung/setImageDescription.php", [
+            'form_params' => [
+                'descriptions' => json_encode($descriptions),
+            ],
+        ]);
+    }
+
+    /**
+     * sets the image ids in the database after the images were uploaded to the shop
+     */
+    private function processImageIds($result, $imageURLs) {
         $imagesData = json_decode($result, true);
         $index = 0;
         foreach ($imagesData as $image) {
@@ -262,28 +397,54 @@ class StickerImage extends PrestashopConnection {
         }
     }
 
-    public function uploadImageDescription($descriptions) {
-        $client = new \GuzzleHttp\Client();
-        $client->request('POST', SHOPURL . "/auftragsbearbeitung/setImageDescription.php", [
-            'form_params' => [
-                'descriptions' => json_encode($descriptions),
-            ],
-        ]);
-    }
-
     /**
      * deletes an image from the shop
      */
     public function deleteImage($idProduct, $idImageShop) {
-        $this->deleteXML("images/products/$idProduct", $idImageShop);
+        return $this->deleteXML("images/products/$idProduct", $idImageShop);
     }
 
     /**
+     * deletes all images in the shop that are connected to the current product
      * 
+     * @param $idProduct id of the product in the shop
      */
-    public function handleImageProductSync($type, $productId) {
+    public function deleteAllImages($idProduct) {
+        try {
+            $xml = $this->getXML("images/products/$idProduct");
+
+            if ($xml == null) {
+                return;
+            }
+        } catch (Exception $e) {
+            return;
+        }
+        
+        $msgs = [];
+        foreach ($xml->children()->children() as $image) {
+            $id = (int) $image->attributes()["id"];
+            $msgs[] = $this->deleteImage($idProduct, $id);
+        }
+
+        return $msgs;
+    }
+
+    /**
+     * syncs the images of a product with the images in the database and deletes 
+     * all images that are not in the database,
+     * also sets the image description
+     * 
+     * @param $type type of the product, e.g. "aufkleber"
+     * @param $productId id of the product in the shop
+     * 
+     * @return void
+     */
+    public function handleImageProductSync(String $type, int $productId) {
+        $this->currentType = $type;
+
         $images = $this->getImagesByType($type);
-        $this->uploadImages($images, $productId);
+        $status = $this->checkImageStatus($images, $productId);
+        $this->uploadImages($status["missingImages"], $productId);
 
         $imageDescriptions =  [];
         foreach ($images as $i) {
@@ -295,21 +456,136 @@ class StickerImage extends PrestashopConnection {
 
         $this->uploadImageDescription($imageDescriptions);
 
-        /* reload images, because they were just uploaded */
+        /* delete all images that are not in the database */
+        foreach ($status["deleteImages"] as $i) {
+            $this->deleteImage($productId, $i);
+        }
 
-        /* get all images from the shop */
+        $this->manageImageOrder();
 
-        /* get all images from the database */
-
-        /* compare them */
-
-        /* delete images from the shop that are not in the database */
-
-        /* upload images to the shop that are not in the shop and adjust order if necessary */
+        $this->currentType = "";
     }
 
     /**
-     * orders the images according to the json string
+     * checks if all images are on the server and if they are in the correct order,
+     * returns an array with the missing images and the images that are not in the database
+     * 
+     * @param $images array of images from the database
+     * @param $productId id of the product in the shop
+     * 
+     * @return array with missing images and images that are not in the database
+     */
+    private function checkImageStatus(array $images, int $productId): array {
+        try {
+            $xml = $this->getXML("images/products/$productId");
+        } catch(Exception $e) {
+            echo $e->getMessage();
+            return [
+                "deleteImages" => [],
+                "missingImages" => $images,
+            ];
+        }
+
+        $imageIds = [];
+
+        foreach ($xml->children()->children() as $image) {
+            $imageIds[] = (int) $image->attributes()["id"];
+        }
+
+        $imageIds = array_unique($imageIds);
+
+        if (count($imageIds) == 0) {
+            return [
+                "deleteImages" => [],
+                "missingImages" => $images,
+            ];
+        }
+
+        return $this->compareIds($imageIds, $images);
+    }
+
+    /**
+     * compares the ids of the images in the database with the ids of the images in the shop
+     * 
+     * @param $inShop array of image ids in the shop
+     * @param $inDatabase array of image ids in the database
+     * 
+     * @return array with missing images and images that are not in the database
+     */
+    private function compareIds($inShop, $inDatabase): array {
+        $delete = [];
+        $upload = [];
+
+        foreach ($inDatabase as $i) {
+            if (!in_array($i["id_image_shop"], $inShop)) {
+                $upload[] = $i;
+            }
+        }
+
+        foreach ($inShop as $i) {
+            if (!$this->inArrayDB($i, $inDatabase)) {
+                $delete[] = $i;
+            }
+        }
+
+        return [
+            "deleteImages" => $delete,
+            "missingImages" => $upload,
+        ];
+    }
+
+    /**
+     * checks if an image is in the database
+     * 
+     * @param $id id of the image
+     * @param $inDB array of images from the database
+     * 
+     * @return true if the image is in the database, false otherwise
+     */
+    private function inArrayDB($id, $inDB): bool {
+        foreach ($inDB as $i) {
+            if ($i["id_image_shop"] == $id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * sets the image order in the shop according to the order in the database
+     */
+    private function manageImageOrder() {
+        $query = "SELECT id_image_shop, image_order FROM module_sticker_image WHERE id_motiv = :idMotiv AND image_sort = :imageSort ORDER BY image_order DESC, id_datei ASC;";
+        $images = DBAccess::selectQuery($query, [
+            "idMotiv" => $this->idMotiv,
+            "imageSort" => $this->currentType,
+        ]);
+
+        $imageIds = [];
+        foreach ($images as $i) {
+            if ($i["image_order"] == null) {
+                continue;
+            }
+            $imageIds[] = $i["id_image_shop"];
+        }
+
+        $client = new Client();
+        try  {
+            $client->post($this->url, [
+                'json' => [
+                    'positions' => $imageIds,
+                ],
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                ]
+            ]);
+        } catch (Exception $e) {
+            echo 'Request error: ' . $e->getMessage();
+        }
+    }
+
+    /**
+     * orders the images according to the json string in the local database
      */
     public static function setImageOrder($order) {
         $order = json_decode($order);
@@ -322,5 +598,3 @@ class StickerImage extends PrestashopConnection {
     }
 
 }
-
-?>

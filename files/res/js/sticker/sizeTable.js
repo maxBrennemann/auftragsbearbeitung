@@ -13,14 +13,13 @@ function deleteRow(key, table, reference) {
         table: tableKey,
         r: "deleteSize",
     }, true)
-    .then(response => {
-        handleAfterDeleteSizeRow(response);
+    .then(() => {
+        handleAfterDeleteSizeRow(reference);
     });
 }
 
-function handleAfterDeleteSizeRow(response) {
+function handleAfterDeleteSizeRow(reference) {
     var row = reference.parentNode.parentNode;
-    console.log(response);
 
     /* delete row from SizeTable */
     sizeTable.delete(reference);
@@ -377,7 +376,15 @@ class SizeTableRow {
     static parsePrice(el) {
         const value = el.innerHTML || el;
         const euro = value.split(",")[0];
-        const cent = value.split(",")[1] || 0;
+        let cent = value.split(",")[1] || 0;
+
+        /**
+         * important: when the user enters a value with a comma, like: 1,7
+         * the 7 is interpreted as 7 cents, but it should be 70 cents, therefore this fix
+         */
+        if (cent.length == 1) {
+            cent = cent * 10;
+        }
 
         return parseInt(euro) * 100 + parseInt(cent);
     }
@@ -445,16 +452,22 @@ class SizeTableRow {
     setPrice(e) {
         const price = e.currentTarget.value;
         const euro = price.split(",")[0];
-        const cent = price.split(",")[1] || 0;
+        let cent = price.split(",")[1] || 0;
+
+        /**
+         * important: when the user enters a value with a comma, like: 1,7
+         * the 7 is interpreted as 7 cents, but it should be 70 cents, therefore this fix
+         */
+        if (cent.length == 1) {
+            cent = cent * 10;
+        }
 
         const parsedPrice = parseInt(euro) * 100 + parseInt(cent);
         ajax.post({
             id: this.id,
             price: parsedPrice,
             r: "setSizePrice",
-        }, true).then(r => {
-            console.log(r);
-        });
+        }, true);
         
         this.priceCent = parsedPrice;
         this.priceEuro = parsedPrice / 100;
@@ -478,6 +491,9 @@ export function click_addNewWidth() {
         let tempWidth = SizeTableRow.stringToMM(newWidth);
         let tempHeight = tempWidth * sizeTable.ratio;
         newPrice = SizeTableRow.calcNewPriceEuro(tempWidth, tempHeight, sizeTable.difficulty);
+    } else {
+        newPrice = SizeTableRow.parsePrice(newPrice);
+        newPrice = newPrice / 100;
     }
 
     sizeTable.addNewLine(newWidth, newPrice, isDefaultPrice);

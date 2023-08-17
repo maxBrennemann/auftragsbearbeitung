@@ -15,12 +15,28 @@
         <tr>
             <td><img class="imgPreview cursor-pointer" data-file-id="<?=$image["id"]?>" src="<?=$image["link"]?>" alt="<?=$image["alt"]?>"></td>
             <td><input class="px-2 bg-inherit w-32" type="text" maxlength="125" placeholder="Beschreibung" data-write="true" data-fun="updateImageDescription" data-file-id="<?=$image["id"]?>" value="<?=$image["description"]?>"></td>
-            <td></td>
             <td>
-                <button class="p-1 mr-1 actionButton" title="Löschen" data-file-id="<?=$image["id"]?>" data-binding="true" data-fun="deleteImage"><?=Icon::$iconDelete?></button>
-                <button class="p-1 mr-1 actionButton moveRow" title="Verschieben" onmousedown="moveInit(event)" onmouseup="moveRemove(event)" data-file-id="<?=$image["id"]?>"><?=Icon::$iconMove?></button>
+                <?php if ($image["typ"] == "avif" || $image["typ"] == "webp"): ?>
+                    <p class="text-sm">Dieser Dateityp wird von Prestashop nicht unterstützt</p>
+                <?php endif; ?>
+            </td>
+            <td>
+                <button class="p-1 mr-1 actionButton" title="Löschen" data-file-id="<?=$image["id"]?>" data-binding="true" data-fun="deleteImage"><?=Icon::getDefault("iconDelete")?></button>
+                <button class="p-1 mr-1 actionButton moveRow" title="Verschieben" onmousedown="moveInit(event)" onmouseup="moveRemove(event)" data-file-id="<?=$image["id"]?>"><?=Icon::getDefault("iconMove")?></button>
             </td>
         </tr>
         <?php endforeach; ?>
     </table>
+    <div x-data="{ open: false }">
+        <button class="text-xs border-0 float-right p-1 hover:underline" @click="open = ! open">Mehr</button>
+        <div x-show="open" @click.outside="open = false" class="absolute h-48 place-items-center bg-white z-20 rounded-md p-8">
+            <!-- TODO: add close button -->
+            <p class="text-base">Vorsicht: Diese Option überschreibt die aktuellen Bilder des Artikels!</p>
+            <div class="px-2">
+                <p class="text-sm italic">Die Einstellung bleibt nur für diese Sitzung erhalten.</p>
+                <input type="checkbox" id="forceUpload" name="forceUpload" value="true" onchange="updateImageOverwrite('<?=$imageCategory?>')">
+                <label for="forceUpload">Bilder erneut hochladen</label>
+            </div>
+        </div>
+    </div>
 </div>

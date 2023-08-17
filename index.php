@@ -1,8 +1,9 @@
 <?php
 
+require_once('globalFunctions.php');
+
 session_start();
 errorReporting();
-define('CURRENTVERSION', '1.1.18');
 
 require_once('settings.php');
 require_once('classes/project/Envs.php');
@@ -56,11 +57,20 @@ $page = $parts[count($parts) - 1];
 $t = false;
 $cacheFile = "cache/cache_" . md5($_SERVER['REQUEST_URI']) . ".txt";
 $status = CacheManager::getCacheStatus();
+
 if (file_exists($cacheFile) && !(count($_GET) || count($_POST)) && $t && $status == "on") {
 	echo file_get_contents_utf8($cacheFile);
 } else {
 	if ($status == "on") {
 		ob_start();
+	}
+
+	if (file_get_contents("php://input") != "") {
+		$PHP_INPUT = json_decode(file_get_contents("php://input"), true);
+		
+		if ($PHP_INPUT != null) {
+			$_POST = array_merge($_POST, $PHP_INPUT);
+		}
 	}
 
 	/*
@@ -74,35 +84,41 @@ if (file_exists($cacheFile) && !(count($_GET) || count($_POST)) && $t && $status
 		require_once('classes/Upload.php');
 
 		/* checks which upload mechanism should be called */
-		if (strcmp($uploadDestination, "order") == 0) {
-			$auftragsId = (int) $_POST['auftrag'];
-			$upload = new Upload();
-			$upload->uploadFilesAuftrag($auftragsId);
-		} else if (strcmp($uploadDestination, "product") == 0) {
-			$auftragsId = (int) $_POST['produkt'];
-			$upload = new Upload();
-			$upload->uploadFilesProduct($auftragsId);
-		} else if (strcmp($uploadDestination, "postenAttachment") == 0) {
-			$key = $_POST['key'];
-			$table = $_POST['tableKey'];
-			Posten::addFile($key, $table);
-		}  else if (strcmp($uploadDestination, "vehicle") == 0) {
-			$key = $_POST['key'];
-			$table = $_POST['tableKey'];
-			$fahrzeugnummer = Table::getIdentifierValue($table, $key);
+		switch ($uploadDestination) {
+			case "order":
+				$auftragsId = (int) $_POST['auftrag'];
+				$upload = new Upload();
+				$upload->uploadFilesAuftrag($auftragsId);
+				break;
+			case "product":
+				$auftragsId = (int) $_POST['produkt'];
+				$upload = new Upload();
+				$upload->uploadFilesProduct($auftragsId);
+				break;
+			case "postenAttachment":
+				$key = $_POST['key'];
+				$table = $_POST['tableKey'];
+				Posten::addFile($key, $table);
+				break;
+			case "vehicle":
+				$key = $_POST['key'];
+				$table = $_POST['tableKey'];
+				$fahrzeugnummer = Table::getIdentifierValue($table, $key);
 
-			$auftragsnummer = $_POST['orderid'];
-			$upload = new Upload();
-			$upload->uploadFilesVehicle($fahrzeugnummer, $auftragsnummer);
-		} else if (strcmp($uploadDestination, "motiv") == 0) {
-			$motivname = $_POST['motivname'];
+				$auftragsnummer = $_POST['orderid'];
+				$upload = new Upload();
+				$upload->uploadFilesVehicle($fahrzeugnummer, $auftragsnummer);
+				break;
+			case "motiv":
+				$motivname = $_POST['motivname'];
+				$upload = new Upload();
 
-			$upload = new Upload();
-			if (isset($_POST["motivNumber"])) {
-				$upload->uploadFilesMotive($motivname, $_POST["motivNumber"]);
-			} else {
-				$upload->uploadFilesMotive($motivname);
-			}
+				if (isset($_POST["motivNumber"])) {
+					$upload->uploadFilesMotive($motivname, $_POST["motivNumber"]);
+				} else {
+					$upload->uploadFilesMotive($motivname);
+				}
+				break;
 		}
 	} else {
 		if ($page == "pdf") {
@@ -142,7 +158,6 @@ if (file_exists($cacheFile) && !(count($_GET) || count($_POST)) && $t && $status
 					}
 				break;
 			}
-			
 		} else if ($page == "cron") {
 			Ajax::manageRequests("testDummy", $page);
 		} else if (isLoggedIn()) {
@@ -185,64 +200,4 @@ function showPage($page) {
 	include('files/header.php');
 	include($baseUrl . $articleUrl);
 	include('files/footer.php');
-}
-
-/*
-* https://stackoverflow.com/questions/2236668/file-get-contents-breaks-up-utf-8-characters
-*/
-function file_get_contents_utf8($fn) {
-	$content = file_get_contents($fn);
-	return mb_convert_encoding($content, 'UTF-8', mb_detect_encoding($content, 'UTF-8, ISO-8859-1', true));
-}
-
-function isLoggedIn() {
-	if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true) {
-		return true;	
-	}
-	return false;
-}
-
-function getCurrentVersion() {
-	return CURRENTVERSION;
-}
-
-function errorReporting() {
-	if (defined('ERRORREPORTING') && ERRORREPORTING) {
-		error_reporting(E_ALL);
-		ini_set('display_errors', '1');
-	}
-}
-
-function getParameter($value, $type = "GET", $default = "") {
-	switch ($type) {
-		case "GET":
-			if (isset($_GET[$value])) {
-				return $_GET[$value];
-			}
-			break;
-		case "POST":
-			if (isset($_POST[$value])) {
-				return $_POST[$value];
-			}
-			break;
-	}
-	return $default;
-}
-
-function insertTemplate($path, array $parameters = []) {
-	if (file_exists($path)) {
-		extract($parameters);
-		include($path);
-	}
-}
-
-/** https://stackoverflow.com/a/2792045/7113688 */
-function dashesToCamelCase($string, $capitalizeFirstCharacter = false) {
-    $str = str_replace('-', '', ucwords($string, '-'));
-
-    if (!$capitalizeFirstCharacter) {
-        $str = lcfirst($str);
-    }
-
-    return $str;
 }

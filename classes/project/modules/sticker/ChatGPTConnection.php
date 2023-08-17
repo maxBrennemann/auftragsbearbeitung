@@ -12,6 +12,46 @@ class ChatGPTConnection {
     }
 
     /**
+     * This function sends a request to the chatGPT API and returns the response
+     * 
+     * @param String $message The message which is passed to chat gpt
+     */
+    public static function request($message) {
+        $apiKey = OPENAI_API_KEY;
+        $organisationKey = OPENAI_ORGANISATION_ID;
+        $url = 'https://api.openai.com/v1/chat/completions';
+        
+        $headers = array(
+            "Authorization: Bearer {$apiKey}",
+            "OpenAI-Organization: $organisationKey",
+            "Content-Type: application/json"
+        );
+        
+        $messages = array();
+        $messages[] = array("role" => "user", "content" => $message);
+        
+        $data = array();
+        $data["model"] = "gpt-3.5-turbo";
+        $data["messages"] = $messages;
+        $data["max_tokens"] = 100;
+        
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        
+        $result = curl_exec($curl);
+        $result = urldecode($result);
+        if (curl_errno($curl)) {
+            $result = 'Error:' . curl_error($curl);
+        }
+        
+        curl_close($curl);
+        return $result;
+    }
+
+    /**
      * This function takes two parameters, $motivType and $textType, which are used to filter an array of old chat data. 
      * The function then returns the count of elements in the filtered array where the "stickerType" property matches 
      * the $motivType parameter and the "textType" property matches the $textType parameter

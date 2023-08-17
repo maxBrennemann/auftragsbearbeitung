@@ -117,6 +117,7 @@ class Upload {
 
         echo json_encode([
             "error" => "an error occured",
+            "message" => $ids,
             "files" => $_FILES["files"]["tmp_name"],
         ]);
     }
@@ -130,35 +131,46 @@ class Upload {
         }
     }
 
-    private function uploadFiles() {
-        error_reporting(-1);
+    /**
+     * Uploads the files in $_FILES["files"] to the server and 
+     * returns an array with the ids of the files in the database,
+     * or a string with an error message
+     * 
+     * @return array|string
+     */
+    private function uploadFiles(): array|string {
+        $msg = "";
 
-        /* https://stackoverflow.com/questions/2704314/multiple-file-upload-in-php */
-        $datetime = new DateTime();
-        $total = count($_FILES["files"]["name"]);
-        /*echo "filename: " . $_FILES["files"]["name"][0];*/
-        $ids = array();
+        try {
+            /* https://stackoverflow.com/questions/2704314/multiple-file-upload-in-php */
+            $datetime = new DateTime();
+            $total = count($_FILES["files"]["name"]);
+            /*echo "filename: " . $_FILES["files"]["name"][0];*/
+            $ids = array();
 
-        /* files is the name of the file input element in frontend */
-        for ($i = 0; $i < $total; $i++) {
-            $filename = basename($_FILES["files"]["name"][$i]);
-            $filename = self::adjustFileName($filename);
-            $filename = $datetime->getTimestamp() . $filename;
+            /* files is the name of the file input element in frontend */
+            for ($i = 0; $i < $total; $i++) {
+                $filename = basename($_FILES["files"]["name"][$i]);
+                $filename = self::adjustFileName($filename);
+                $filename = $datetime->getTimestamp() . $filename;
 
-            $originalname = basename($_FILES["files"]["name"][$i]);
-            $filetype = pathinfo($_FILES["files"]["name"][$i], PATHINFO_EXTENSION);
-            $date = date("Y-m-d");
+                $originalname = basename($_FILES["files"]["name"][$i]);
+                $filetype = pathinfo($_FILES["files"]["name"][$i], PATHINFO_EXTENSION);
+                $date = date("Y-m-d");
 
-            $insertQuery = "INSERT INTO dateien (dateiname, originalname, typ, `date`) VALUES ('$filename', '$originalname','$filetype', '$date')";
-            
-            if (move_uploaded_file($_FILES["files"]["tmp_name"][$i], $this->uploadDir . $filename)) {
-                array_push($ids, DBAccess::insertQuery($insertQuery));
-            } else {
-                return -1;
+                $insertQuery = "INSERT INTO dateien (dateiname, originalname, typ, `date`) VALUES ('$filename', '$originalname','$filetype', '$date')";
+                
+                if (move_uploaded_file($_FILES["files"]["tmp_name"][$i], $this->uploadDir . $filename)) {
+                    array_push($ids, DBAccess::insertQuery($insertQuery));
+                } else {
+                    return $filename . " could not be uploaded, " . $_FILES["files"]["error"][$i];
+                }
             }
+        } catch (Exception $e) {
+            $msg = $e->getMessage();
         }
 
-        return $ids;
+        return $msg == "" ? $ids : $msg;
     }
 
     /**
@@ -186,17 +198,18 @@ class Upload {
      * removes spaces, @ and & and if a filename is longer than 70 characters, it is renamed with tempnam
      * the date is also removed from the filename
      */
-    public static function adjustFileNames($folderPath = "upload") {
+    public static function adjustFileNames() {
         $query = "SELECT id, `dateiname` FROM dateien";
         $result = DBAccess::selectQuery($query);
-       
+        $folderPath = "upload";
+        
         foreach ($result as $row) {
             $filename = $row["dateiname"];
             $dateiId = $row["id"];
 
-            $adjustedFilename = self::adjustFileName($filename, $folderPath);
+            $adjustedFilename = self::adjustFileName($filename);
 
-            if(rename($folderPath . "/" . $filename, $folderPath . "/" . $adjustedFilename)) {
+            if (rename($folderPath . "/" . $filename, $folderPath . "/" . $adjustedFilename)) {
                 DBAccess::updateQuery("UPDATE dateien SET dateiname = :adjustedFilename WHERE id = :id", [
                     "adjustedFilename" => $adjustedFilename,
                     "id" => $dateiId,
@@ -207,15 +220,16 @@ class Upload {
 
     /**
      * Adjusts the filename to remove spaces, @ and &
-     * and uses tempnam if the name is longer than 70 characters
+     * and shortens the name if it is longer than 70 characters
      */
-    private static function adjustFileName($name, $folderPath = "upload"): String {
+    private static function adjustFileName($name): String {
         $adjustedFilename = str_replace(" ", "", $name);
         $adjustedFilename = str_replace("&", "", $adjustedFilename);
         $adjustedFilename = str_replace("@", "", $adjustedFilename);
 
+        /* cuts the last 30 characters from the end if the name is too long */
         if (strlen($adjustedFilename) > 70) {
-            $adjustedFilename = tempnam($folderPath, "");
+            $adjustedFilename = substr($adjustedFilename, -30);
         }
 
         return $adjustedFilename;

@@ -153,3 +153,23 @@ function click_createFbExport() {
         }
     });
 }
+
+function openTagOverview() {
+    ajax.post({
+        r: "getTagOverview",
+    }).then(r => {
+        const tags = r.tags;
+        const div = document.createElement("div");
+        div.classList.add("absolute", "bg-white", "border", "border-black", "p-2", "rounded-lg", "shadow-lg", "z-20");
+        document.body.appendChild(div);
+
+        tags.forEach(tag => {
+            const tagElement = document.createElement("div");
+            tagElement.classList.add("rounded-lg", "inline-block");
+            tagElement.textContent = tag.content;
+            div.appendChild(tagElement);
+        });
+
+        centerAbsoluteElement(div);
+    });
+}

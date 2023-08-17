@@ -201,7 +201,7 @@ class Sticker extends PrestashopConnection {
             "content" => $content,
         ]);
 
-        StickerChangelog::log($id, $target, 0, "module_sticker_texts", "content", $content);
+        //StickerChangelog::log($id, $target, 0, "module_sticker_texts", "content", $content);
         echo "success";
     }
 
@@ -227,11 +227,15 @@ class Sticker extends PrestashopConnection {
         $resource_product = $xml->children()->children();
         
         $active = (int) $resource_product->active;
+        
         if ($active == 0) {
             $active = 1;
         } else {
             $active = 0;
         }
+
+        $this->additionalData["products"][$this->instanceType]["status"] = $active;
+        $this->saveAdditionalData();
 
         $resource_product->{"active"} = $active;
         unset($resource_product->manufacturer_name);
@@ -344,6 +348,12 @@ class Sticker extends PrestashopConnection {
         }
     }
 
-}
+    private function saveAdditionalData() {
+        $query = "UPDATE module_sticker_sticker_data SET `additional_data` = :additionalData WHERE id = :idSticker";
+        DBAccess::updateQuery($query, [
+            "additionalData" => json_encode($this->additionalData),
+            "idSticker" => $this->getId()
+        ]);
+    }
 
-?>
+}
