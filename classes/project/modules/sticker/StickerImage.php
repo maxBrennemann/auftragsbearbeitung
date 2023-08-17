@@ -24,6 +24,20 @@ class StickerImage extends PrestashopConnection {
         $this->prepareImageData();
     }
 
+    /**
+     * returns all images from the database that are connected to a sticker via
+     * the module_sticker_image table and are of type "aufkleber", "wandtattoo" or "textil"
+     */
+    public static function getAllImageFiles() {
+        $query = "SELECT dateien.dateiname, dateien.originalname AS alt, 
+                dateien.typ, dateien.id, module_sticker_image.image_sort, module_sticker_image.id_product, module_sticker_image.description, module_sticker_image.id_image_shop, module_sticker_image.image_order
+            FROM dateien, module_sticker_image 
+            WHERE dateien.id = module_sticker_image.id_datei
+                AND module_sticker_image.image_sort IN ('aufkleber', 'wandtattoo', 'textil');";
+        $data = DBAccess::selectQuery($query);
+        return $data;
+    }
+
     /* reads from database */
     private function getConnectedFiles() {
         $allFiles = DBAccess::selectQuery("SELECT dateien.dateiname, dateien.originalname AS alt, 

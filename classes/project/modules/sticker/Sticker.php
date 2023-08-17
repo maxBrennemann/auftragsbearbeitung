@@ -234,6 +234,9 @@ class Sticker extends PrestashopConnection {
             $active = 0;
         }
 
+        $this->additionalData["products"][$this->instanceType]["status"] = $active;
+        $this->saveAdditionalData();
+
         $resource_product->{"active"} = $active;
         unset($resource_product->manufacturer_name);
         unset($resource_product->quantity);
@@ -345,6 +348,12 @@ class Sticker extends PrestashopConnection {
         }
     }
 
-}
+    private function saveAdditionalData() {
+        $query = "UPDATE module_sticker_sticker_data SET `additional_data` = :additionalData WHERE id = :idSticker";
+        DBAccess::updateQuery($query, [
+            "additionalData" => json_encode($this->additionalData),
+            "idSticker" => $this->getId()
+        ]);
+    }
 
-?>
+}

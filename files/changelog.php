@@ -28,6 +28,8 @@
         <li>JavaScript wurde modularisiert</li>
         <li>Archivierung von Aufträgen kann rückgängig gemacht werden</li>
         <li>Bildreihenfolge kann nun bearbeitet werden</li>
+        <li>Kategorien können gespeichert werden und es werden Vorschläge von ChatGPT generiert</li>
+        <li>Bezahldatum und Bezahlweise für Rechnungen können hinterlegt werden</li>
         <li>Diverse Fehlerbehebungen</li>
     </ul>
     <h3 id="1.1.17" class="font-bold my-5">1.1.17</h3>

@@ -92,6 +92,48 @@ if ($auftragsId == -1): ?>
 		?>
 		<a class="link-primary" href="<?=$invoiceLink?>">Zur Rechnung</a>
 	</div>
+	<?php if (!$auftrag->getIsPayed()): ?>
+		<div class="defCont">
+			<div id="orderPaymentState">
+				<p>Die Rechnung wurde noch nicht beglichen.</p>
+				<label>
+					<input type="date" id="inputPayDate">
+				</label>
+				<select id="paymentType">
+					<option value="unbezahlt">Unbezahlt</option>
+					<option value="ueberweisung">Überweisung</option>
+					<option value="bar">Bar</option>
+					<option value="paypal">PayPal</option>
+					<option value="kreditkarte">Kreditkarte</option>
+					<option value="amazonpay">AmazonPay</option>
+					<option value="weiteres">Weiteres</option>
+				</select>
+				<button class="btn-primary" onclick="setPayed()">Rechnung wurde bezahlt</button>
+			</div>
+			<script>
+				function setPayed() {
+					const date = document.getElementById('inputPayDate').value;
+					const paymentType = document.getElementById('paymentType').value;
+
+					ajax.post({
+						r: "setInvoiceData",
+						id: <?=$auftragsId?>,
+						invoice: <?=$auftrag->getRechnungsnummer()?>,
+						date: date,
+						paymentType: paymentType,
+					}).then(r => {
+						if (r.status == "success") {
+							document.getElementById('orderPaymentState').innerHTML = `<p>Die Rechnung wurde am ${date} mit ${paymentType} bezahlt.</p>`;
+						}
+					});
+				}
+			</script>
+		</div>
+	<?php else: ?>
+		<div class="defCont">
+			<p>Die Rechnung wurde am <?=$auftrag->getPaymentDate()?> mit <?=$auftrag->getPaymentType()?> bezahlt.</p>
+		</div>
+	<?php endif; ?>
 	<div class="defCont">
 		<embed type="application/pdf" src="<?=$invoiceLink?>" width="100%" height="400">
 	</div>

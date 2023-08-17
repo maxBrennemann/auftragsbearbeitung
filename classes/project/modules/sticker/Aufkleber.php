@@ -1,6 +1,7 @@
 <?php
 
 require_once('classes/project/modules/sticker/AufkleberWandtattoo.php');
+require_once('classes/project/modules/sticker/StickerCategory.php');
 
 class Aufkleber extends AufkleberWandtattoo {
 
@@ -147,7 +148,9 @@ class Aufkleber extends AufkleberWandtattoo {
             $stickerCombination->removeOldCombinations($productId);
         }
 
-        $stickerUpload->setCategoires([2, 13]);
+        $categories = StickerCategory::getCategoriesForSticker($this->getId());
+        $defaultCategories = [2, 13];
+        $stickerUpload->setCategoires(array_merge($categories, $defaultCategories));
         
         $stickerTagManager = new StickerTagManager($this->getId(), $this->getName());
         $stickerTagManager->setProductId($productId);

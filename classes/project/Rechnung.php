@@ -380,8 +380,13 @@ class Rechnung {
 		
 		$data = DBAccess::selectQuery("SELECT auftrag.Auftragsnummer as Auftragsnr, auftrag.Auftragsbezeichnung as Bezeichnung, auftrag.Auftragsbeschreibung as Beschreibung, auftrag.AngenommenDurch, auftrag.Kundennummer, auftrag.Datum, auftrag.Termin, auftrag.Rechnungsnummer, kunde.Firmenname, CONCAT(FORMAT(auftragssumme.orderPrice, 2, 'de_DE'), ' €') AS Summe FROM auftrag, auftragssumme, kunde WHERE auftrag.Kundennummer = kunde.Kundennummer AND Rechnungsnummer != 0 AND auftrag.Bezahlt = 0 AND auftrag.Auftragsnummer = auftragssumme.id");
 
+		$link = new Link();
+		$link->addBaseLink("auftrag");
+		$link->setIterator("id", $data, "Auftragsnr");
+
 		$table = new Table();
 		$table->createByData($data, $column_names);
+		$table->addLink($link);
 		$table->addActionButton("update", $identifier = "Auftragsnr", $update = "istErledigt = 0");
 		
 		return $table->getTable();

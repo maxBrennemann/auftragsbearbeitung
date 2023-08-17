@@ -28,6 +28,8 @@ class Auftrag implements StatisticsInterface {
 	protected $auftragstyp = null;
 	protected $rechnungsnummer = 0;
 
+	protected $isPayed = false;
+
 	/* dates */
 	public $datum;
 	public $termin;
@@ -52,6 +54,8 @@ class Auftrag implements StatisticsInterface {
 				$this->datum = $data['Datum'];
 				$this->termin = $data['Termin'];
 				$this->fertigstellung = $data['Fertigstellung'];
+
+				$this->isPayed = $data['Bezahlt'] == 1 ? true : false;
 
 				if ($data['archiviert'] == 0 || $data['archiviert'] == "0") {
 					$this->isArchiviert = true;
@@ -147,6 +151,40 @@ class Auftrag implements StatisticsInterface {
 
 	public function getAuftragsnummer() {
 		return $this->Auftragsnummer;
+	}
+
+	public function getIsPayed() {
+		return $this->isPayed;
+	}
+
+	public function getPaymentDate() {
+		if (!$this->getIsPayed()) {
+			return "";
+		}
+
+		$query = "SELECT payment_date FROM invoice WHERE order_id = :orderId";
+		$data = DBAccess::selectQuery($query, ["orderId" => $this->Auftragsnummer]);
+
+		if (empty($data)) {
+			return "";
+		}
+
+		return $data[0]["payment_date"];
+	}
+
+	public function getPaymentType() {
+		if (!$this->getIsPayed()) {
+			return "";
+		}
+		
+		$query = "SELECT payment_type FROM invoice WHERE order_id = :orderId";
+		$data = DBAccess::selectQuery($query, ["orderId" => $this->Auftragsnummer]);
+
+		if (empty($data)) {
+			return "";
+		}
+
+		return $data[0]["payment_type"];
 	}
 
 	public function getAuftragsposten() {

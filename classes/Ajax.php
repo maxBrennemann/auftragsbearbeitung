@@ -356,6 +356,27 @@ class Ajax {
 					"status" => "success",
 				]);
 			break;
+			case "setInvoiceData":
+				$order = $_POST['id'];
+				$invoice = $_POST['invoice'];
+				$date = $_POST['date'];
+				$paymentType = $_POST['paymentType'];
+
+				DBAccess::updateQuery("UPDATE auftrag SET Bezahlt = 1 WHERE Auftragsnummer = :order AND Rechnungsnummer = :invoice", [
+					"order" => $order,
+					"invoice" => $invoice,
+				]);
+
+				DBAccess::updateQuery("UPDATE invoice SET payment_date = :paymentDate, payment_type = :paymentType WHERE order_id = :order", [
+					"paymentDate" => $date,
+					"paymentType" => $paymentType,
+					"order" => $order,
+				]);
+
+				echo json_encode([
+					"status" => "success",
+				]);
+			break;
 			case "setTo":
 				if (isset($_POST['auftrag'])) {
 					require_once("classes/project/InteractiveFormGenerator.php");
@@ -1568,7 +1589,24 @@ class Ajax {
 			case "getCategoryTree":
 				$startCategory = $_POST["categoryId"];
 				require_once('classes/project/modules/sticker/StickerCategory.php');
-				echo json_encode(StickerCategory::getChildCategoriesNested($startCategory));
+				echo json_encode(StickerCategory::getCategories($startCategory));
+			break;
+			case "getCategories":
+				$id = (int) $_POST["id"];
+				require_once('classes/project/modules/sticker/StickerCategory.php');
+				echo json_encode(StickerCategory::getCategoriesForSticker($id));
+			break;
+			case "getCategoriesSuggestion":
+				$name = $_POST["name"];
+				$id = (int) $_POST["id"];
+				require_once('classes/project/modules/sticker/StickerCategory.php');
+				echo StickerCategory::getCategoriesSuggestion($name, $id);
+			break;
+			case "setCategories":
+				$id = (int) $_POST["id"];
+				$categories = $_POST["categories"];
+				require_once('classes/project/modules/sticker/StickerCategory.php');
+				StickerCategory::setCategories($id, $categories);
 			break;
 			case "setExportStatus":
 				$status = (String) $_POST["export"];

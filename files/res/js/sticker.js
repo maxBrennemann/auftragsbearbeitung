@@ -442,20 +442,34 @@ fnNames.click_shortcutProduct = async function(e) {
 }
 
 var selectedCategories = [];
-fnNames.click_chooseCategory = function() {
+fnNames.click_chooseCategory = async function() {
     const div = document.createElement("div");
     div.classList.add("z-20", "paddingDefault");
     document.body.appendChild(div);
 
     const innerDiv = document.createElement("div");
-    innerDiv.classList.add("my-6", "mr-4");
+    innerDiv.classList.add("my-6", "mr-4", "overflow-y-auto", "h-96");
     div.appendChild(innerDiv);
 
     addActionButtonForDiv(div, "remove");
     div.classList.add("centeredDiv");
     centerAbsoluteElement(div);
 
-    ajax.post({
+    const suggestionBtn = document.createElement("button");
+    const applyBtn = document.createElement("button");
+
+    suggestionBtn.classList.add("btn-primary", "mr-2");
+    suggestionBtn.innerHTML = "Vorschlag";
+    suggestionBtn.addEventListener("click", getSuggestions, false);
+
+    applyBtn.classList.add("btn-primary");
+    applyBtn.innerHTML = "Übernehmen";
+    applyBtn.addEventListener("click", setCategories, false);
+
+    innerDiv.appendChild(suggestionBtn);
+    innerDiv.appendChild(applyBtn);
+
+    await ajax.post({
         categoryId: 13,
         r: "getCategoryTree",
     }).then(categoryData => {
@@ -464,6 +478,17 @@ fnNames.click_chooseCategory = function() {
         
         innerDiv.appendChild(ul);
         centerAbsoluteElement(div);
+    });
+
+    ajax.post({
+        id: mainVariables.motivId.innerHTML,
+        r: "getCategories",
+    }).then(r => {
+        r.forEach(id => {
+            let element = div.querySelector(`[data-id="${id}"]`);
+            element.classList.add("selectedCategory");
+            selectedCategories.push(id);
+        });
     });
 }
 
@@ -494,6 +519,29 @@ function selectCategory(e) {
             selectedCategories.splice(index, 1);
         }
     }
+}
+
+function getSuggestions(e) {
+    const name = document.getElementById("name").value;
+    const div = e.currentTarget.parentNode;
+    ajax.post({
+        name: "Aufkleber " + name,
+        r: "getCategoriesSuggestion",
+    }).then(r => {
+        r.categories.forEach(id => {
+            let element = div.querySelector(`[data-id="${id}"]`);
+            element.classList.add("selectedCategory");
+            selectedCategories.push(id);
+        });
+    });
+}
+
+function setCategories() {
+    ajax.post({
+        id: mainVariables.motivId.innerHTML,
+        categories: JSON.stringify(selectedCategories),
+        r: "setCategories",
+    });
 }
 
 fnNames.click_exportToggle = function(e) {

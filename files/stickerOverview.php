@@ -37,7 +37,7 @@ $t->createByData($data, $column_names);
 $t->setType("module_sticker_sticker_data");
 $t->addLink($linker);
 ?>
-<div class="defCont">
+<div class="defCont grid grid-cols-2">
     <details>
         <summary class="font-bold">
             Importe
@@ -56,6 +56,9 @@ $t->addLink($linker);
         <br>
         <button class="btn-primary" data-binding="true" data-fun="manageImports">Importe verwalten</button>
     </details>
+    <div>
+        <a href="<?=Link::getPageLink("sticker-images")?>" class="link-primary">Zur Bildübersicht</a>
+    </div>
 </div>
 <div class="defCont">
     <div>
