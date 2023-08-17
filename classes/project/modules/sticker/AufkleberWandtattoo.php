@@ -101,11 +101,15 @@ class AufkleberWandtattoo extends Sticker {
     }
 
     public function getBasePrice() {
-        if ($this->basePrice != null) {
-            return number_format((float) $this->basePrice / 100, 2, '.', '');
-        }
+        $basePrice = $this->getBasePriceUnformatted();
+        $this->basePrice = $basePrice;
+        return number_format((float) $basePrice, 2, '.', '');
+    }
 
-        parent::getBasePrice();
+    public function getBasePriceUnformatted() {
+        if ($this->basePrice != null) {
+            return $this->basePrice / 100;
+        }
 
         $query = "SELECT price FROM module_sticker_sizes WHERE id_sticker = :idSticker ORDER BY price ASC LIMIT 1;";
         $params = ["idSticker" => $this->idSticker];
@@ -115,7 +119,7 @@ class AufkleberWandtattoo extends Sticker {
             $result[] = ["price" => "1000"];
         }
         
-        return number_format((float) $result[0]["price"] / 100, 2, '.', '');
+        return (float) $result[0]["price"] / 100;
     }
 
     /**
