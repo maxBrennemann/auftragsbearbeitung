@@ -12,6 +12,15 @@ function initStickerOverview() {
     initBindings();
     checkIfOverview();
     showStickerStatus();
+
+    const newTitle = document.getElementById("newTitle");
+    newTitle.addEventListener("keyup", function (event) {
+        if (event.key !== "Enter") {
+            return;
+        }
+
+        createNewSticker();
+    });
 }
 
 function click_manageImports() {

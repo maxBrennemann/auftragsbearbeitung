@@ -4,12 +4,7 @@ require_once("classes/project/modules/sticker/StickerCollection.php");
 require_once('classes/project/modules/sticker/PrestashopConnection.php');
 
 /**
- * steps:
- * 1: no more static
- * 2: use stored images so that there is no need for requests
- * 3: store images???
- * 4: file versioning with datetimes
- * 5: automatic export via cronjobs
+ * generates a csv file for facebook product export
  */
 class ExportFacebook extends PrestashopConnection {
 
@@ -121,10 +116,11 @@ class ExportFacebook extends PrestashopConnection {
         $combinationLines = [];
         $sizeIds = $product->getSizeIds();
         $prices = $product->getPricesMatched();
+        $basePrice = $product->getBasePriceUnformatted();
 
         foreach ($sizeIds as $size) {
             if (isset($prices[$size]) && $prices[$size] != 0.00) {
-                $line["price"] = $prices[$size];
+                $line["price"] = $prices[$size] + $basePrice;
             } else {
                 self::$errorList[] = $size;
                 continue;
@@ -165,10 +161,11 @@ class ExportFacebook extends PrestashopConnection {
         $combinationLines = [];
         $sizeIds = $product->getSizeIds();
         $prices = $product->getPricesMatched();
+        $basePrice = $product->getBasePriceUnformatted();
 
         foreach ($sizeIds as $size) {
             if (isset($prices[$size]) && $prices[$size] != 0.00) {
-                $line["price"] = $prices[$size];
+                $line["price"] = $prices[$size] + $basePrice;
             } else {
                 self::$errorList[] = $size;
                 continue;
@@ -242,5 +239,3 @@ class ExportFacebook extends PrestashopConnection {
     }
 
 }
-
-?>
