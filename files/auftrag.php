@@ -264,7 +264,7 @@ if ($auftragsId == -1): ?>
 						<span>Stundenlohn in €<br><input class="postenInput" id="wage" type="number" value="<?=$auftrag->getDefaultWage()?>"></span>
 						<br>
 						<span>Beschreibung<br>
-							<textarea id="descr" class="border-2 rounded-md" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
+							<textarea id="descr" class="border-2 rounded-md p-2" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
 						</span>
 						<br>
 						<button id="addTimeButton" data-binding="true" data-fun="addTime" class="btn-primary">Hinzufügen</button>
@@ -302,7 +302,7 @@ if ($auftragsId == -1): ?>
 					</span><br>
 					<span>Beschreibung:
 						<br>
-						<textarea id="bes" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'" class="border-2 rounded-md"></textarea>
+						<textarea id="bes" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'" class="border-2 rounded-md p-2"></textarea>
 					</span>
 					<br>
 					<span>Einkaufspreis:<br><input class="postenInput" id="ekp" value="0"></span><br>
@@ -327,15 +327,17 @@ if ($auftragsId == -1): ?>
 			</div>
 			<div class="tabcontentEnd">
 				<div>
-					<span id="showOhneBerechnung">
-						<input id="ohneBerechnung" type="checkbox">Ohne Berechnung
+					<span id="showOhneBerechnung" class="ml-2">
+						<input id="ohneBerechnung" type="checkbox">
+						<span class="ml-2">Ohne Berechnung</span>
 					</span>
 					<br>
-					<span id="showAddToInvoice">
-						<input id="addToInvoice" type="checkbox">Der Rechnung hinzufügen
+					<span id="showAddToInvoice" class="ml-2">
+						<input id="addToInvoice" type="checkbox">
+						<span class="ml-2">Der Rechnung hinzufügen</span>
 					</span>
 					<br>
-					<span id="showDiscount">
+					<span id="showDiscount" class="ml-2 mt-2">
 						<input type="range" min="0" max="100" value="0" name="discountInput" id="discountInput" oninput="showDiscountValue.value = discountInput.value + '%'">
 						<output id="showDiscountValue" name="showDiscountValue" for="discountInput">0%</output> Rabatt
 					</span>

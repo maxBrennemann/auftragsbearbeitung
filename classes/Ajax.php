@@ -1177,8 +1177,15 @@ class Ajax {
 				$responseData["output"] = ob_get_clean();
 
 				require_once("classes/project/modules/sticker/SearchProducts.php");
+
 				try {
 					$responseData = SearchProducts::getProductsByStickerId($id);
+
+					$matchesJson = json_encode($responseData, JSON_UNESCAPED_UNICODE);
+					DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET additional_data = :matchesJSON WHERE id = :idSticker", [
+						"matchesJSON" => $matchesJson,
+						"idSticker" => $id,
+					]);
 				} catch (Exception $e) {
 					$message = $e->getMessage();
 				}
@@ -1273,7 +1280,9 @@ class Ajax {
 			case "toggleTextil":
 				$id = (int) $_POST["id"];
 				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_shirtcollection` = NOT `is_shirtcollection` WHERE id = $id");
-				echo "success";
+				echo json_encode([
+					"status" => "success",
+				]);
 			break;
 			case "toggleWandtattoo":
 				$id = (int) $_POST["id"];

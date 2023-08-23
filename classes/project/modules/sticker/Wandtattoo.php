@@ -41,8 +41,10 @@ class Wandtattoo extends AufkleberWandtattoo {
             return;
         }
 
+        $description = "<p><span>Es wird jeweils nur der entsprechende Artikel oder das einzelne Motiv verkauft. Andere auf den Bildern befindliche Dinge sind nicht Bestandteil des Angebotes.</span></p>" . $this->getDescription();
+
         $productId = (int) $this->getIdProduct();
-        $stickerUpload = new StickerUpload($this->idSticker, $this->getName(), $this->getBasePrice(), $this->getDescription(), $this->getDescriptionShortWithDefaultText());
+        $stickerUpload = new StickerUpload($this->idSticker, $this->getName(), $this->getBasePrice(), $description, $this->getDescriptionShortWithDefaultText());
 
         $stickerCombination = new StickerCombination($this);
 

@@ -82,6 +82,9 @@ function enableInputSlide(input) {
     input.parentNode.children[1].classList.remove("pointer-none");
 }
 
+/**
+ * called from the checkbox "Aufkleber Plott" to enable or disable the input fields for the sticker
+ */
 function aufkleberPlottClick(e) {
     if (mainVariables.plotted.checked == true) {
         enableInputSlide(mainVariables.short);
@@ -150,6 +153,16 @@ fnNames.click_textilClick = function() {
     }).then(r => {
         if (r.status == "success") {
             infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS);
+
+            /* not the best solution, but it works */
+            const status = document.getElementById("textil").checked;
+            const btn = document.getElementById("transferTextil");
+
+            if (status == true) {
+                btn.disabled = false;
+            } else {
+                btn.disabled = true;
+            }
         }
     }).catch(r => {
         infoBox.statusUpdate(StatusInfoHandler.STATUS_FAILURE, "Fehler bei der Übertragung", r);
@@ -165,6 +178,16 @@ fnNames.click_wandtattooClick = function() {
     }).then(r => {
         if (r.status == "success") {
             infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS);
+
+            /* not the best solution, but it works */
+            const status = document.getElementById("wandtattoo").checked;
+            const btn = document.getElementById("transferWandtattoo");
+
+            if (status == true) {
+                btn.disabled = false;
+            } else {
+                btn.disabled = true;
+            }
         }
     }).catch(r => {
         infoBox.statusUpdate(StatusInfoHandler.STATUS_FAILURE, "Fehler bei der Übertragung", r);
