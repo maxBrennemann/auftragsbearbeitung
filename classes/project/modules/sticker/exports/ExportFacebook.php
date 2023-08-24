@@ -226,7 +226,9 @@ class ExportFacebook extends PrestashopConnection {
         $firstLine = array_keys($this->line);
         $lines = [$firstLine, ...$lines];
 
-        fputcsv($file, $lines);
+        foreach ($lines as $entry) {
+            fputcsv($file, $entry);
+        }
     
         fclose($file);
     }
