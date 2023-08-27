@@ -24,3 +24,4 @@
         </div>
     <?php endforeach; ?>
 </div>
+<!-- TODO: Datei mit Context Menü oder Extra DIV versehen, um es löschen zu können, oder auch einfach Table? -->

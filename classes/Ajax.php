@@ -1308,9 +1308,13 @@ class Ajax {
 				$textil = new Textil($id);
 				$textil->toggleIsColorable();
 				$file = $textil->getCurrentSVG();
-				$url = Link::getResourcesShortLink($file["dateiname"], "upload");
-				
-				echo json_encode(["url" => $url]);
+
+				if ($file == null) {
+					echo json_encode(["status" => "no file found"]);
+				} else {
+					$url = Link::getResourcesShortLink($file["dateiname"], "upload");
+					echo json_encode(["url" => $url]);
+				}
 			break;
 			case "makeCustomizable":
 				$id = (int) $_POST["id"];
