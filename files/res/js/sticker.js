@@ -534,6 +534,8 @@ function selectCategory(e) {
     let target = e.target;
     target.classList.toggle("selectedCategory");
     let id = target.dataset.id;
+    id = parseInt(id);
+    
     if (!selectedCategories.includes(id)) {
         selectedCategories.push(id);
     } else {
@@ -555,6 +557,7 @@ function getSuggestions(e) {
         r.categories.forEach(id => {
             let element = div.querySelector(`[data-id="${id}"]`);
             element.classList.add("selectedCategory");
+            id = parseInt(id);
             selectedCategories.push(id);
         });
     });
