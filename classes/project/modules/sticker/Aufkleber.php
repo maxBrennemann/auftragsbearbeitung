@@ -78,7 +78,7 @@ class Aufkleber extends AufkleberWandtattoo {
     }
 
     public function getColors(): array {
-        return [70, 60, 67, 79, 91, 107, 111];
+        return [70, 60, 67, 79, 91, 107, 111, 225, 226, 74, 68, 294];
     }
 
     /* hardcoded color names */
@@ -91,6 +91,11 @@ class Aufkleber extends AufkleberWandtattoo {
             91 => "grün",
             107 => "grau",
             111 => "weiß",
+            225 => "silber",
+            226 => "gold",
+            74 => "pink",
+            68 => "hellrot",
+            294 => "lichtblau",
         ];
         if (isset($colors[$colorId])) {
             return $colors[$colorId];
