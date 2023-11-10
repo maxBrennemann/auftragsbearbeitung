@@ -17,6 +17,9 @@ config/*
 cache/*
 !cache/index.php
 
+.res/sql/init/*
+!res/sql/init/.gitkeep
+
 # generated files
 files/generated/*
 !files/generated/index.php

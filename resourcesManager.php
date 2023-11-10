@@ -6,26 +6,21 @@ require_once('vendor/autoload.php');
 require_once('classes/DBAccess.php');
 require_once('classes/Link.php');
 
-function get($type) {
-	return isset($_GET[$type]) ? $_GET[$type] : null;
+$requestUri = $_SERVER['REQUEST_URI'];
+$requestUri = explode('/', $requestUri);
+
+$type = $requestUri[1];
+$resource = $requestUri[2];
+$resource = explode('?', $resource)[0];
+
+if ($type == null || $resource == null) {
+	return;
 }
 
-$types = [
-	"script",
-	"css",
-	"font",
-	"upload",
-	"backup",
-	"pdf_invoice",
-	"static",
-];
+call_user_func("get_" . $type, $resource);
 
-foreach ($types as $t) {
-	$val = get($t);
-	if ($val != null) {
-		call_user_func("get_" . $t, $val);
-		break;
-	}
+function get($type) {
+	return isset($_GET[$type]) ? $_GET[$type] : null;
 }
 
 function get_script($script) {

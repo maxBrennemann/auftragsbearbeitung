@@ -7,6 +7,9 @@ ARG GID
 # Install PDO extension
 RUN docker-php-ext-install pdo_mysql
 
+# Enable apache mod_rewrite
+RUN a2enmod rewrite
+
 # Set the document root
 WORKDIR /var/www/html
 

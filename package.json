@@ -8,7 +8,8 @@
   },
   "scripts": {
     "tailwind": "npx tailwindcss -i input.css -o ./files/res/css/tailwind.css --watch",
-    "build": "webpack"
+    "build": "webpack",
+    "mysqldump": "mysqldump --host=host.docker.internal --user=root auftragsmanager --result-file=dumps/dump.sql"
   },
   "dependencies": {
     "alpinejs": "^3.12.1",

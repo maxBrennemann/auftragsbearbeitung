@@ -1,11 +1,46 @@
 <?php
 
+/**
+ * Before: page was submitted via $_GET paramter, but now the REQUEST_URI is read;
+ * $url is splitted into the REQUEST_URI and the parameter part
+ */
+require_once('settings.php');
+$url = $_SERVER['REQUEST_URI'];
+$url = explode('?', $url, 2);
+$page = str_replace(REWRITE_BASE . SUB_URL, "", $url[0]);
+$parts = explode('/', $page);
+$page = $parts[count($parts) - 1];
+
+switch ($parts[1]) {
+	case "js":
+	case "css":
+	case "font":
+	case "pdf_invoice":
+	case "upload":
+		require_once('resourcesManager.php');
+		exit;
+	case "api":
+		require_once('ajaxRouter.php');
+		exit;
+	case "admin":
+		require_once('admin.php');
+		exit;
+	case "account":
+		require_once('account.php');
+		exit;
+	case "shop":
+		require_once('frontOfficeController.php');
+		exit;
+	case "upgrade":
+		require_once('upgrade.php');
+		exit;
+}
+
 require_once('globalFunctions.php');
 
 session_start();
 errorReporting();
 
-require_once('settings.php');
 require_once('classes/project/Envs.php');
 require_once('classes/DBAccess.php');
 require_once('classes/Ajax.php');
@@ -38,16 +73,6 @@ if (!function_exists('str_contains')) {
         return $needle !== '' && mb_strpos($haystack, $needle) !== false;
     }
 }
-
-/*
-* Before: page was submitted via $_GET paramter, but now the REQUEST_URI is read;
-* $url is splitted into the REQUEST_URI and the parameter part
-*/
-$url = $_SERVER['REQUEST_URI'];
-$url = explode('?', $url, 2);
-$page = str_replace(REWRITE_BASE . SUB_URL, "", $url[0]);
-$parts = explode('/', $page);
-$page = $parts[count($parts) - 1];
 
 /* 
  * simple caching from:
@@ -183,7 +208,7 @@ function showPage($page) {
 	$articleUrl = "";
 
 	/* checks if file exists */
-	if ($pageDetails == null || !file_exists("files/" . $pageDetails[0]["articleUrl"])) {
+	if ($pageDetails == null || !file_exists("./files/" . $pageDetails[0]["articleUrl"])) {
 		http_response_code(404);
 
 		$baseUrl = 'files/';
@@ -191,13 +216,13 @@ function showPage($page) {
 		$pageDetails["articleUrl"] = $articleUrl = "404.php";
 		$pageDetails["pageName"] = $pageName = "Page not found";
 	} else {
-		$baseUrl = 'files/';
+		$baseUrl = './files/';
 		$pageDetails = $pageDetails[0];
 		$articleUrl = $pageDetails["articleUrl"];
 		$pageName = $pageDetails["pageName"];
 	}
 	
-	include('files/header.php');
+	include('./files/header.php');
 	include($baseUrl . $articleUrl);
-	include('files/footer.php');
+	include('./files/footer.php');
 }
