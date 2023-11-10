@@ -10,14 +10,44 @@ $requestUri = $_SERVER['REQUEST_URI'];
 $requestUri = explode('/', $requestUri);
 
 $type = $requestUri[1];
-$resource = $requestUri[2];
+$pathToResource = implode('/', array_slice($requestUri, 0, 2));
+$resource = str_replace($pathToResource, "", $_SERVER['REQUEST_URI']);
 $resource = explode('?', $resource)[0];
 
-if ($type == null || $resource == null) {
-	return;
+if ($resource == "") {
+	http_response_code(404);
+	exit();
 }
 
-call_user_func("get_" . $type, $resource);
+switch ($type) {
+	case "js":
+		get_script($resource);
+		break;
+	case "css":
+		get_css($resource);
+		break;
+	case "font":
+		get_font($resource);
+		break;
+	case "pdf_invoice":
+		get_pdf_invoice($resource);
+		break;
+	case "upload":
+		get_upload($resource);
+		break;
+	case "backup":
+		get_backup($resource);
+		break;
+	case "static":
+		get_static($resource);
+		break;
+	case "img":
+		get_image($resource);
+		break;
+	default:
+		http_response_code(404);
+		exit();
+}
 
 function get($type) {
 	return isset($_GET[$type]) ? $_GET[$type] : null;
@@ -123,6 +153,13 @@ function get_backup($backup) {
 function get_pdf_invoice($pdf) {
 	header("Content-type: application/pdf");
 	$file = file_get_contents(Link::getResourcesLink($pdf, "pdf", false));
+
+	echo $file;
+}
+
+function get_image($file) {
+	header("Content-type: image/png");
+	$file = file_get_contents("img/" . $file);
 
 	echo $file;
 }

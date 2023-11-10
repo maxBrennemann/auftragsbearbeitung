@@ -17,6 +17,7 @@ switch ($parts[1]) {
 	case "font":
 	case "pdf_invoice":
 	case "upload":
+	case "img":
 		require_once('resourcesManager.php');
 		exit;
 	case "api":
@@ -33,6 +34,9 @@ switch ($parts[1]) {
 		exit;
 	case "upgrade":
 		require_once('upgrade.php');
+		exit;
+	case "favicon.ico":
+		require_once('favicon.php');
 		exit;
 }
 
