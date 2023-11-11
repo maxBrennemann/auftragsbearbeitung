@@ -29,7 +29,7 @@ class UpgradeManager {
     }
 
     private static function getSecondCommand() {
-        return "mysql --user=" . USERNAME . " --password='" . PASSWORD . "' -h " . HOST . " -D  " . DATABASE . " < ";
+        return "mysql --user=" . $_ENV["USERNAME"] . " --password='" . $_ENV["PASSWORD"] . "' -h " . $_ENV["HOST"] . " -D  " . $_ENV["DATABASE"] . " < ";
     }
 
     public static function executeNewSQLQueries($file) {

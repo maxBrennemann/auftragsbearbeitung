@@ -13,15 +13,17 @@
  */
 class PrestashopConnection {
 
-    protected $url = SHOPURL . "/auftragsbearbeitung/JSONresponder.php";
-    private $prestaKey = SHOPKEY;
-    private $prestaUrl =  SHOPURL;
+    protected $url = "";
+    private $prestaKey = "";
+    private $prestaUrl =  "";
 
     protected $webService;
     protected $xml;
 
     function __construct() {
-        
+        $this->url = $_ENV["SHOPURL"] . "/auftragsbearbeitung/JSONresponder.php";
+        $this->prestaKey = $_ENV["SHOPKEY"];
+        $this->prestaUrl = $_ENV["SHOPURL"];
     }
 
     protected function getXML($resource, $debug = false) {

@@ -6,7 +6,6 @@ auftragsbearbeitung.code-workspace
 .DS_Store
 
 # settings and config files
-settings.php
 companyInfo.php
 .htaccess
 .env

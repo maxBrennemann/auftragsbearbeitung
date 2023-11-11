@@ -22,7 +22,7 @@ class SearchProducts extends PrestashopConnection {
                 foreach ($productsReference as $product) {
                     $id = (int) $product->id;
                     $title = (String) $product->name->language[0];
-                    $link = SHOPURL . "/home/$id-" . (String) $product->link_rewrite->language[0] . ".html";
+                    $link = $_ENV["SHOPURL"] . "/home/$id-" . (String) $product->link_rewrite->language[0] . ".html";
                     if (!in_array($id, $ids)) {
                         $products[] = [
                             'id' => $id,
@@ -60,7 +60,7 @@ class SearchProducts extends PrestashopConnection {
                 $xmlProduct = $searchProduct->getXML("products/$productId");
                 $title = (String) $xmlProduct->children()->children()->name->language[0];
                 $statusActive = (int) $xmlProduct->children()->children()->active;
-                $link = SHOPURL . "/home/$productId-" . (String) $xmlProduct->children()->children()->link_rewrite->language[0] . ".html";
+                $link = $_ENV["SHOPURL"] . "/home/$productId-" . (String) $xmlProduct->children()->children()->link_rewrite->language[0] . ".html";
                 $categoriesXML = $xmlProduct->children()->children()->associations->categories->category;
     
                 array_push($productLinks, $link);

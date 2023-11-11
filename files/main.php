@@ -18,7 +18,6 @@ if (isset($_GET['showDetails'])) {
 	}
 }
 ?>
-<script src="<?=Link::getResourcesShortLink("main.js", "js")?>"></script>
 <div>
 	<ul class="mainUl auto-rows-min">
 		<li class="rounded-lg bg-gray-100 hover:underline">

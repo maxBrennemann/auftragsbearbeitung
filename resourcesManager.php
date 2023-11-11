@@ -158,7 +158,7 @@ function get_pdf_invoice($pdf) {
 }
 
 function get_image($file) {
-	header("Content-type: image/png");
+	header("Content-type: " .  mime_content_type("img/" . $file));
 	$file = file_get_contents("img/" . $file);
 
 	echo $file;

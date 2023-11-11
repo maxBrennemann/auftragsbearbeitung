@@ -13,21 +13,21 @@ class Link {
 	
 	public static function getPageLink($resourceName) {
 		if (DBAccess::selectQuery("SELECT * FROM articles WHERE src = '$resourceName'") == null) {
-			$link = WEB_URL . SUB_URL . "404";
+			$link = $_ENV["WEB_URL"] . $_ENV["SUB_URL"] . "404";
 			return $link; 
 		}
 		
-		$link = WEB_URL . SUB_URL . $resourceName;
+		$link = $_ENV["WEB_URL"] . $_ENV["SUB_URL"] . $resourceName;
 		return $link;
 	}
 
 	public static function getFrontOfficeLink($page) {
 		if (DBAccess::selectQuery("SELECT * FROM frontpage WHERE src = '$page'") == null) {
-			$link = WEB_URL . FRONT . "";
+			$link = $_ENV["WEB_URL"] . $_ENV["FRONT"] . "";
 			return $link; 
 		}
 		
-		$link = WEB_URL . FRONT . $page;
+		$link = $_ENV["WEB_URL"] . $_ENV["FRONT"] . $page;
 		return $link;
 	}
 
@@ -42,13 +42,13 @@ class Link {
 	}
 	
 	public static function getImageLink($resourceName) {
-		$link = REWRITE_BASE . "files/res/image/" . $resourceName;
+		$link = $_ENV["REWRITE_BASE"] . "files/res/image/" . $resourceName;
 		return $link;
 	}
 	
 	public static function getResourcesLink($resource, $type, $rewriteBase = true) {
 		if($rewriteBase) {
-			$rewriteBase = REWRITE_BASE;
+			$rewriteBase = $_ENV["REWRITE_BASE"];
 		} else {
 			$rewriteBase = "";
 		}
@@ -85,30 +85,30 @@ class Link {
 	public static function getResourcesShortLink($resource, $type) {
 		switch($type) {
 			case "css":
-				$link = REWRITE_BASE . "css/" . $resource;
+				$link = $_ENV["REWRITE_BASE"] . "css/" . $resource;
 				break;
 			case "js":
 				$resource = dashesToCamelCase($resource);
-				$link = REWRITE_BASE . "js/" . $resource;
+				$link = $_ENV["REWRITE_BASE"] . "js/" . $resource;
 				break;
 			case "extJs":
 				/* extJs is for external js files, therefoe the fileSrc table column is returned ($resource) */
 				$link = $resource;
 				break;
 			case "font":
-				$link = REWRITE_BASE . "font/" . $resource;
+				$link = $_ENV["REWRITE_BASE"] . "font/" . $resource;
 				break;
 			case "upload":
-				$link = REWRITE_BASE . "upload/" . $resource;
+				$link = $_ENV["REWRITE_BASE"] . "upload/" . $resource;
 				break;
 			case "img":
-				$link = REWRITE_BASE . "img/" . $resource;
+				$link = $_ENV["REWRITE_BASE"] . "img/" . $resource;
 				break;
 			case "backup":
-				$link = REWRITE_BASE . "backup/" . $resource;
+				$link = $_ENV["REWRITE_BASE"] . "backup/" . $resource;
 				break;
 			case "pdf":
-				$link = REWRITE_BASE . "pdf_invoice/" . $resource;
+				$link = $_ENV["REWRITE_BASE"] . "pdf_invoice/" . $resource;
 				break;
 		}
 		
@@ -132,7 +132,7 @@ class Link {
 	}
 
 	public static function getCategoryLink($page) {
-        $link = WEB_URL . "/shop/category/" . $page;
+        $link = $_ENV["WEB_URL"] . "/shop/category/" . $page;
 		return $link;
     }
 
@@ -147,14 +147,14 @@ class Link {
 		/* remove GET parameters */
 		$url = explode("?", $url)[0];
 		
-		/* remove WEB_URL and FRONT */
-		$url = str_replace(WEB_URL . substr(FRONT, 0, -1), "", $url);
+		/* remove $_ENV["WEB_URL"] and $_ENV["FRONT"] */
+		$url = str_replace($_ENV["WEB_URL"] . substr($_ENV["FRONT"], 0, -1), "", $url);
 
 		$url_parts = explode("/", $url);
 
 		$links = array();
 		foreach ($url_parts as $u) {
-			if (strcmp($u, WEB_URL) != 0) {
+			if (strcmp($u, $_ENV["WEB_URL"]) != 0) {
 				$urlLink = new Link();
 				$link = [
 					"link" => Link::getFrontOfficeLink($u),

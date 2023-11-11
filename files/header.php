@@ -39,8 +39,8 @@ $motiveOverview = 	Link::getPageLink("sticker-overview");
 	<?php endif; ?>
 	<meta name="Description" content="Auftragsübersicht">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="shortcut icon" type="image/x-icon" href="<?=WEB_URL?>favicon.ico">
-	<link rel="shortcut icon" type="image/png" href="<?=WEB_URL?>img/favicon.png">
+	<link rel="shortcut icon" type="image/x-icon" href="<?=$_ENV["WEB_URL"]?>favicon.ico">
+	<link rel="shortcut icon" type="image/png" href="<?=$_ENV["WEB_URL"]?>img/favicon.png">
 	<style>
 		<?=ClientSettings::getColorConfiguration()?>
 	</style>

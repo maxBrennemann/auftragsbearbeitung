@@ -175,10 +175,10 @@ class ProductCrawler extends PrestashopConnection {
     }
 
     private function downloadImage($idProduct, $idImage, $idMotiv) {
-        $ch = curl_init(SHOPURL . "/api/images/products/$idProduct/$idImage");
+        $ch = curl_init($_ENV["SHOPURL"] . "/api/images/products/$idProduct/$idImage");
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_USERPWD, SHOPKEY . ':');
+        curl_setopt($ch, CURLOPT_USERPWD, $_ENV["SHOPKEY"] . ':');
         $image = curl_exec($ch);
         curl_close($ch);
 

@@ -72,7 +72,7 @@ class Rechnung {
 		$pdf->setMargins(25, 45, 20, true);
 
 		$pdf->SetFont("helvetica", "", 8);
-		$address = "<p>" . COMPANY_IMPRINT . "</p>";
+		$address = "<p>" . $_ENV["COMPANY_IMPRINT"] . "</p>";
 		$pdf->writeHTMLCell(0, 10, 25, 20, $address);
 
 		$pdf->SetFont("helvetica", "", 12);
@@ -183,7 +183,7 @@ class Rechnung {
 			$filename= "{$this->kunde->getKundennummer()}_{$this->getInvoiceId()}.pdf"; 
             $filelocation = 'files/generated/invoice/';
             $fileNL = $filelocation . $filename;
-			echo WEB_URL . "/files/generated/invoice/" . $filename;
+			echo$_ENV["WEB_URL"] . "/files/generated/invoice/" . $filename;
 			self::addAllPosten($_SESSION['currentInvoice_orderId']);
 			$pdf->Output($fileNL, 'F');
 		} else {

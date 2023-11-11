@@ -1,5 +1,7 @@
 <?php
 
+$start = microtime(true);
+
 /**
  * Before: page was submitted via $_GET paramter, but now the REQUEST_URI is read;
  * $url is splitted into the REQUEST_URI and the parameter part
@@ -7,7 +9,7 @@
 require_once('settings.php');
 $url = $_SERVER['REQUEST_URI'];
 $url = explode('?', $url, 2);
-$page = str_replace(REWRITE_BASE . SUB_URL, "", $url[0]);
+$page = str_replace($_ENV["REWRITE_BASE"] . $_ENV["SUB_URL"], "", $url[0]);
 $parts = explode('/', $page);
 $page = $parts[count($parts) - 1];
 
@@ -203,6 +205,8 @@ if (file_exists($cacheFile) && !(count($_GET) || count($_POST)) && $t && $status
 }
 
 function showPage($page) {
+	GLOBAL $start;
+
 	if ($page == "test") {
 		include('test.php');
 		return null;
@@ -229,4 +233,12 @@ function showPage($page) {
 	include('./files/header.php');
 	include($baseUrl . $articleUrl);
 	include('./files/footer.php');
+
+	if ($_ENV["DEV_MODE"] == true) {
+		$stop = microtime(true);
+		$duration = $stop - $start;
+		echo "<script>console.log('Page loaded in " . $duration . " seconds');</script>";
+	}
+
+	DBAccess::close();
 }

@@ -24,27 +24,27 @@ class RechnungsPDF extends TCPDF {
     }
 
     private function getBankverbindung() {
-        return COMPANY_BANK;
+        return$_ENV["COMPANY_BANK"];
     }
 
     private function getIBAN() {
-        return COMPANY_IBAN;
+        return $_ENV["COMPANY_IBAN"];
     }
 
     private function getTel() {
-        return COMPANY_TEL;
+        return $_ENV["COMPANY_TEL"];
     }
 
     private function getImprint() {
-        return COMPANY_IMPRINT;
+        return $_ENV["COMPANY_IMPRINT"];
     }
 
     private function getUstIDNr() {
-        return COMPANY_USTIDNR;
+        return $_ENV["COMPANY_USTIDNR"];
     }
 
     private function getWebsite() {
-        return COMPANY_WEBSITE;
+        return $_ENV["COMPANY_WEBSITE"];
     }
 
 }

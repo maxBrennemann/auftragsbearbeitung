@@ -28,7 +28,7 @@ if (count($errors) > 0) {
         echo $error;
     }
 
-    Mailer::sendMail(MAIL_ADDRESS_ALERTS, "Fehler beim Autoupgrade", "Fehler beim Ausführen der SQL-Dateien: " . implode("\n", $errors), "error@staging.organiserung.b-schriftung.de");
+    Mailer::sendMail($_ENV["MAIL_ADDRESS_ALERTS"], "Fehler beim Autoupgrade", "Fehler beim Ausführen der SQL-Dateien: " . implode("\n", $errors), "error@staging.organiserung.b-schriftung.de");
 }
 
 ?>
