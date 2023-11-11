@@ -359,16 +359,16 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:elastic/elasticsearch-php.git",
-                "reference": "3e4d93c57afaecd5fb7f159c1786f81413adb323"
+                "reference": "4c16dc67788afdec63294f072999594d0fd14ebb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elastic/elasticsearch-php/zipball/3e4d93c57afaecd5fb7f159c1786f81413adb323",
-                "reference": "3e4d93c57afaecd5fb7f159c1786f81413adb323",
+                "url": "https://api.github.com/repos/elastic/elasticsearch-php/zipball/4c16dc67788afdec63294f072999594d0fd14ebb",
+                "reference": "4c16dc67788afdec63294f072999594d0fd14ebb",
                 "shasum": ""
             },
             "require": {
-                "elastic/transport": "^8.7",
+                "elastic/transport": "^8.8",
                 "guzzlehttp/guzzle": "^7.0",
                 "php": "^7.4 || ^8.0",
                 "psr/http-client": "^1.0",
@@ -405,7 +405,7 @@
                 "elasticsearch",
                 "search"
             ],
-            "time": "2023-11-09T14:55:25+00:00"
+            "time": "2023-11-11T09:01:22+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -1249,12 +1249,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "59c8bdf6a2a9e76bf4e1b0daaca83f69cce4f407"
+                "reference": "c412c2e0d6c98525e55746294dc40413f6ffebf3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/59c8bdf6a2a9e76bf4e1b0daaca83f69cce4f407",
-                "reference": "59c8bdf6a2a9e76bf4e1b0daaca83f69cce4f407",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/c412c2e0d6c98525e55746294dc40413f6ffebf3",
+                "reference": "c412c2e0d6c98525e55746294dc40413f6ffebf3",
                 "shasum": ""
             },
             "require": {
@@ -1343,7 +1343,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-11-10T12:09:41+00:00"
+            "time": "2023-11-10T12:29:35+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
