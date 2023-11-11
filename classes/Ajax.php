@@ -1034,7 +1034,7 @@ class Ajax {
 				}
 			break;
 			case "getBackup":
-				$result = DBAccess::EXPORT_DATABASE(HOST, USERNAME, PASSWORD, DATABASE);
+				$result = DBAccess::EXPORT_DATABASE($_ENV["HOST"], $_ENV["USERNAME"], $_ENV["PASSWORD"], $_ENV["DATABASE"]);
 				$filePath = "files/generated/sql_backups/";
 				$fileName = date("d-m-Y_h-i-s") . ".sql";
 				file_put_contents(($filePath . $fileName), $result);
@@ -1627,6 +1627,9 @@ class Ajax {
 				$categories = $_POST["categories"];
 				require_once('classes/project/modules/sticker/StickerCategory.php');
 				StickerCategory::setCategories($id, $categories);
+				echo json_encode([
+					"status" => "success",
+				]);
 			break;
 			case "setExportStatus":
 				$status = (String) $_POST["export"];

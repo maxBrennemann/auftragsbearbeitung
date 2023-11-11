@@ -125,6 +125,17 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
+        <div class="">
+            <details>
+                <summary>Farbauswahl</summary>
+                <div class="ml-2">
+                    <!-- Farbauswahl einbauen -->
+                    <label>
+                        <input type="checkbox" checked>Standardfarbauswahl verwenden
+                    </label>
+                </div>
+            </details>
+        </div>
         <div class="mt-2">
             <div>
                 <h4>Kurzbeschreibung</h4>

@@ -568,6 +568,8 @@ function setCategories() {
         id: mainVariables.motivId.innerHTML,
         categories: JSON.stringify(selectedCategories),
         r: "setCategories",
+    }).then(r => {
+        infoSaveSuccessfull(r.status);
     });
 }
 

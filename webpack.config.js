@@ -17,7 +17,7 @@ module.exports = {
     list: './files/res/js/list.js',
     listmaker: './files/res/js/listmaker.js',
     login: './files/res/js/login.js',
-    main: './files/res/js/main.js',
+    main: './files/res/js/.js',
     mitarbeiter: './files/res/js/mitarbeiter.js',
     neuerAuftrag: './files/res/js/neuerAuftrag.js',
     neuerKunde: './files/res/js/neuerKunde.js',
