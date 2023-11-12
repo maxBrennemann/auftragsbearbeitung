@@ -41,6 +41,10 @@ class StickerCombination extends PrestashopConnection {
     }
 
     private function getOldCombinations($productId) {
+        if ($productId == 0) {
+            return null;
+        }
+
         try {
             $xml = $this->getXML("products/$productId");
             $product = $xml->children()->children();
@@ -53,6 +57,9 @@ class StickerCombination extends PrestashopConnection {
 
     public function removeOldCombinations($productId) {
         $productCombinations = $this->getOldCombinations($productId);
+
+        var_dump($productCombinations);
+        die();
         
         foreach ($productCombinations->combination as $combination) {
             $combinationId = (int) $combination->{"id"};
@@ -128,7 +135,13 @@ class StickerCombination extends PrestashopConnection {
         $stockAvailablesIds = array();
 
         try {
-            $xml = $this->getXML('products/' . (int) $this->sticker->getIdProduct());
+            $idProduct = (int) $this->sticker->getIdProduct();
+
+            if ($idProduct == 0) {
+                return $stockAvailablesIds;
+            }
+
+            $xml = $this->getXML('products/' . $idProduct);
             $stocks = $xml->children()->children()->associations->stock_availables;
 
             foreach ($stocks->stock_available as $stock) {

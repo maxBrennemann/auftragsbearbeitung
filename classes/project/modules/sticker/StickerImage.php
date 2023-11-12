@@ -298,7 +298,7 @@ class StickerImage extends PrestashopConnection {
         $images = array();
         $first = true;
         foreach ($imageURLs as $i) {
-            $link = $_ENV["WEB_URL"] . "/upload/" . $i["dateiname"];
+            $link = $_ENV["WEB_URL"] . "upload/" . $i["dateiname"];
             $images[] = [
                 "url" => urlencode($link),
                 "cover" => $first,
@@ -359,6 +359,7 @@ class StickerImage extends PrestashopConnection {
         
             $result = $response->getBody()->getContents();
         } catch (RequestException $e) {
+            
         }
 
         if (isset($result)) {

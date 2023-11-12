@@ -155,5 +155,3 @@ class StickerUpload extends PrestashopConnection {
     }
 
 }
-
-?>

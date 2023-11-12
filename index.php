@@ -52,7 +52,7 @@ require_once('classes/DBAccess.php');
 require_once('classes/Ajax.php');
 require_once('classes/Link.php');
 require_once('classes/Login.php');
-require_once('classes/Protocoll.php');
+require_once('classes/Protocol.php');
 require_once('classes/project/FormGenerator.php');
 require_once('classes/project/CacheManager.php');
 require_once('classes/project/Icon.php');
@@ -240,5 +240,6 @@ function showPage($page) {
 		echo "<script>console.log('Page loaded in " . $duration . " seconds');</script>";
 	}
 
+	Protocol::close();
 	DBAccess::close();
 }

@@ -1172,9 +1172,11 @@ class Ajax {
 							break;
 					}
 				} catch (Exception $e) {
+					echo $e->getMessage();
 					$message = $e->getMessage();
 				}
 				$responseData["output"] = ob_get_clean();
+				var_dump($responseData);
 
 				require_once("classes/project/modules/sticker/SearchProducts.php");
 
@@ -1187,9 +1189,13 @@ class Ajax {
 						"idSticker" => $id,
 					]);
 				} catch (Exception $e) {
+					echo  $e->getMessage();
 					$message = $e->getMessage();
 				}
 				
+				var_dump($message);
+				die();
+
 				if ($message == "") {
 					echo json_encode([
 						"status" => "success",
@@ -1636,7 +1642,7 @@ class Ajax {
 				$id = (int) $_POST["id"];
 
 				$export = DBAccess::selectQuery("SELECT * FROM module_sticker_exports WHERE idSticker = :idSticker", ["idSticker" => $id]);
-				//Protocoll::prettyPrint($export);
+				//Protocol::prettyPrint($export);
 				if ($export[0][$status] == NULL) {
 					$query = "UPDATE module_sticker_exports SET $status = -1 WHERE idSticker = :idSticker";
 					DBAccess::updateQuery($query, ["idSticker" => $id]);

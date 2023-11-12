@@ -47,7 +47,7 @@ class Search {
 			]
 		];
 		$response = self::$search->searchDocument($params);
-		Protocoll::prettyPrint($response);
+		Protocol::prettyPrint($response);
 	}
 
 	/**
@@ -399,7 +399,7 @@ class Search {
 			}
 		}
 
-		/* Protocoll::prettyPrint($results); */
+		/* Protocol::prettyPrint($results); */
 
 		ob_start();
 		insertTemplate('files/res/views/ajaxSearchView.php', [

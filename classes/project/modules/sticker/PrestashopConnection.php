@@ -28,6 +28,10 @@ class PrestashopConnection {
 
     protected function getXML($resource, $debug = false) {
         //$debug = true;
+
+        $debugText = $debug ? "true" : "false";
+        Protocol::write("PrestashopConnection::getXML($resource, debug = $debugText)");
+
         $this->webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, $debug);
         $this->xml = $this->webService->get(array('resource' => $resource));
 
@@ -35,15 +39,23 @@ class PrestashopConnection {
     }
 
     protected function addXML($options) {
+        Protocol::write("PrestashopConnection::addXML()");
+
         $this->xml = $this->webService->add($options);
     }
 
     protected function editXML($options) {
+        Protocol::write("PrestashopConnection::editXML()");
+
         $this->xml = $this->webService->edit($options);
     }
 
     protected function deleteXML($resource, $id, $debug = false) {
         //$debug = true;
+
+        $debugText = $debug ? "true" : "false";
+        Protocol::write("PrestashopConnection::getXML($resource, debug = $debugText)");
+
         try {
             $this->webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, $debug);
 
