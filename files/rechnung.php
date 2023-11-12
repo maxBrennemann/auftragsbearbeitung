@@ -37,7 +37,7 @@ if ($target != -1) {
 		case "view":
 			$rechnungsnummer = $id;
 			$order = DBAccess::selectQuery("SELECT Kundennummer FROM auftrag WHERE Rechnungsnummer = $id")[0]["Kundennummer"];
-			$rechnungslink = WEB_URL . "/files/generated/invoice/" . $order . "_" . $id . ".pdf";
+			$rechnungslink = $_ENV["WEB_URL"] . "/files/generated/invoice/" . $order . "_" . $id . ".pdf";
 			break;
 		case "create":
 			$auftrag = new Auftrag($id);

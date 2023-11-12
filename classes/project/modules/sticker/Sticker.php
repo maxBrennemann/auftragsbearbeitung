@@ -27,6 +27,7 @@ class Sticker extends PrestashopConnection {
     function __construct(int $idSticker) {
         $this->idSticker = $idSticker;
         $this->stickerData = DBAccess::selectQuery("SELECT * FROM module_sticker_sticker_data WHERE id = :idSticker LIMIT 1;", ["idSticker" => $idSticker]);
+
         if ($this->stickerData == null) {
             throw new Exception("Sticker does not exist.");
         }
@@ -39,7 +40,6 @@ class Sticker extends PrestashopConnection {
         }
 
         $this->imageData = new StickerImage($idSticker);
-
         $this->instanceType = "sticker";
     }
 

@@ -33,7 +33,9 @@ class PrestashopConnection {
         Protocol::write("PrestashopConnection::getXML($resource, debug = $debugText)");
 
         $this->webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, $debug);
-        $this->xml = $this->webService->get(array('resource' => $resource));
+        $this->xml = $this->webService->get([
+            'resource' => $resource
+        ]);
 
         return $this->xml;
     }

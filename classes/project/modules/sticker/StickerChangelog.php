@@ -1,6 +1,6 @@
 <?php
 
-class StickerChangelog /*implements StickerShopController*/ {
+class StickerChangelog {
 
     private $idSticker;
     private $changelogData;
@@ -108,5 +108,3 @@ class StickerChangelog /*implements StickerShopController*/ {
      TODO: implement in this manner: https://stackoverflow.com/questions/12563706/is-there-a-mysql-option-feature-to-track-history-of-changes-to-records/12657012#12657012
     */
 }
-
-?>

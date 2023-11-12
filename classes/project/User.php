@@ -312,7 +312,7 @@ class User {
             ':mailKey' => $mailKey
         ));
 		
-		$mailLink = REWRITE_BASE . "/verify?id?" . $mailKey;
+		$mailLink = $_ENV["REWRITE_BASE"] . "/verify?id?" . $mailKey;
 		$mailText = '<a href="' . $mailLink . '">Hier</a> dem Link folgen!';
 
         try {

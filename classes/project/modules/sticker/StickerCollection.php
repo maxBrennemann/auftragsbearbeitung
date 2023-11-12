@@ -19,7 +19,7 @@ class StickerCollection implements Iterator {
     private Sticker $sticker;
 
     private $productMatches;
-    private $displayError = false;
+    private String $displayError = "";
 
     function __construct(int $id) {
         $this->id = $id;
@@ -138,11 +138,19 @@ class StickerCollection implements Iterator {
         // TODO: implement function
     }
 
+    /**
+     * is called via AJAX to reduce page load
+     */
     public function checkProductErrorStatus() {
         $this->productMatches = SearchProducts::getProductsByStickerId($this->id);
 
+        if ($this->productMatches == null) {
+            $this->displayError = "noConnection";
+            return $this->displayError;
+        }
+
         if (count($this->productMatches["allLinks"]) > 3) {
-            $this->displayError = true;
+            $this->displayError = "tooManyProducts";
         }
 
         $matchesJson = json_encode($this->productMatches, JSON_UNESCAPED_UNICODE);
@@ -154,15 +162,31 @@ class StickerCollection implements Iterator {
         return $this->displayError;
     }
 
-    public function getErrorMessage() {
-        $text = '<div class="defCont warning"><div class="warningHead">' . Icon::getDefault("iconWarning") .'<span>Es wurden mehr als drei Produkte zu diesem Motiv gefunden!</span></div>';
+    /**
+     * generates an error message in html
+     */
+    public function getErrorMessage(): ?String {
+        $text = "";
 
-        $count = 1;
-        foreach ($this->productMatches["allLinks"] as $l) {
-            $text .= '<a target="_blank" href="' . $l . '">Produkt ' . $count++ . '</a>';
+        switch ($this->displayError) {
+            case "tooManyProducts":
+                $text = '<div class="defCont warning"><div class="warningHead">' . Icon::getDefault("iconWarning") .'<span>Es wurden mehr als drei Produkte zu diesem Motiv gefunden!</span></div>';
+
+                $count = 1;
+                foreach ($this->productMatches["allLinks"] as $l) {
+                    $text .= '<a target="_blank" href="' . $l . '">Produkt ' . $count++ . '</a>';
+                }
+
+                $text .= "</div>";
+                break;
+            case "noConnection":
+                $text = "Es konnte keine Verbindung zum Shop hergestellt werden.";
+                break;
+            default:
+                $text = "";
         }
-
-        return $text . "</div>";
+        
+        return $text;
     }
 
     public function getSearchConsoleStats($type) {

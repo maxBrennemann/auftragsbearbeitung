@@ -24,7 +24,7 @@ class RechnungsPDF extends TCPDF {
     }
 
     private function getBankverbindung() {
-        return$_ENV["COMPANY_BANK"];
+        return $_ENV["COMPANY_BANK"];
     }
 
     private function getIBAN() {

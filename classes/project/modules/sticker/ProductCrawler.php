@@ -124,16 +124,17 @@ class ProductCrawler extends PrestashopConnection {
 
         /* sets the additional_data column */
         $matches = SearchProducts::getProductsByStickerId($id);
-        $matchesJson = json_encode($matches, JSON_UNESCAPED_UNICODE);
-        DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET additional_data = '$matchesJson' WHERE id = :id;", ["id" => $id]);
+        if ($matches != null) {
+            $matchesJson = json_encode($matches, JSON_UNESCAPED_UNICODE);
+            DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET additional_data = '$matchesJson' WHERE id = :id;", ["id" => $id]);
+        }
     }
 
     /**
-     * vorgehen:
+     * Vorgehen:
      * img daten holen und mit den daten am server vergleichen
      * dann bilder, die fehlen, herunterladen
      */
-
     private function getImages($productData, $category) {
         $idMotiv = (int) $productData->reference;
         $idProduct = (int) $productData->id;
@@ -227,5 +228,3 @@ class ProductCrawler extends PrestashopConnection {
     }
 
 }
-
-?>

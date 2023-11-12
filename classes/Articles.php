@@ -42,18 +42,18 @@ class Articles {
 						
 						switch($extension) {
 							case "js":
-								$uploaddir = REWRITE_BASE . "files/js/" . $name . "_" . $maxId . ".js";
+								$uploaddir = $_ENV["REWRITE_BASE"] . "files/js/" . $name . "_" . $maxId . ".js";
 								$fileName = $name . "_" . $maxId . ".js";
 								break;
 							case "css":
-								$uploaddir = REWRITE_BASE . "files/css/" . $name . "_" . $maxId . ".css";
+								$uploaddir = $_ENV["REWRITE_BASE"] . "files/css/" . $name . "_" . $maxId . ".css";
 								$fileName = $name . "_" . $maxId . ".css";
 								break;
 							case "png":
 							case "svg":
 							case "jpg":
 							case "jpeg":
-								$uploaddir = REWRITE_BASE . "files/img/upload/";
+								$uploaddir = $_ENV["REWRITE_BASE"] . "files/img/upload/";
 								break;
 						}
 						

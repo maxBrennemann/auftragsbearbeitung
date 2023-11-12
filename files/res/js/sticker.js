@@ -31,6 +31,7 @@ window.updateImageOverwrite = updateImageOverwrite
 
 function initSticker() {
     initBindings(fnNames);
+    checkProductErrorStatus();
 
     document.title = "b-schriftung - Motiv " + mainVariables.motivId.innerHTML + " " + document.getElementById("name").value;
 
@@ -602,6 +603,26 @@ fnNames.click_makeForConfig = function(e) {
     }).then(r => {
         const svgContainer = document.getElementById("svgContainer");
         svgContainer.data = r.url;
+    });
+}
+
+function checkProductErrorStatus() {
+    ajax.post({
+        r: "checkProductErrorStatus",
+        stickerId: mainVariables.motivId.innerHTML,
+    }).then(r => {
+        if (r.errorStatus == "") {
+            return;
+        }
+
+        const div = document.createElement("div");
+        const p = document.createElement("p");
+        p.classList.add("text-red-700", "p-5", "bg-red-200", "rounded-lg", "mt-2");
+        p.innerText = r.errorData;
+
+        div.appendChild(p);
+        const anchor = document.querySelector(".cont1");
+        anchor.parentNode.insertBefore(div, anchor);
     });
 }
 

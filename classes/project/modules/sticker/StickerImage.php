@@ -259,7 +259,7 @@ class StickerImage extends PrestashopConnection {
 
         $this->stripUnsupportedFileTypes($imageURLs);
 
-        if (defined("DEV_MODE") && $_ENV["DEV_MODE"] == true) {
+        if ($_ENV["DEV_MODE"] == true) {
             $result = $this->directUpload($imageURLs, $productId);
             $this->processImageIds($result, $imageURLs);
         } else {

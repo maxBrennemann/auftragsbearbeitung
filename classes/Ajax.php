@@ -1172,29 +1172,23 @@ class Ajax {
 							break;
 					}
 				} catch (Exception $e) {
-					echo $e->getMessage();
 					$message = $e->getMessage();
 				}
 				$responseData["output"] = ob_get_clean();
-				var_dump($responseData);
 
 				require_once("classes/project/modules/sticker/SearchProducts.php");
 
-				try {
-					$responseData = SearchProducts::getProductsByStickerId($id);
-
+				
+				$responseData = SearchProducts::getProductsByStickerId($id);
+				if ($responseData == null) {
+					$message = "no new sticker found";
+				} else {
 					$matchesJson = json_encode($responseData, JSON_UNESCAPED_UNICODE);
 					DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET additional_data = :matchesJSON WHERE id = :idSticker", [
 						"matchesJSON" => $matchesJson,
 						"idSticker" => $id,
-					]);
-				} catch (Exception $e) {
-					echo  $e->getMessage();
-					$message = $e->getMessage();
+					]);	
 				}
-				
-				var_dump($message);
-				die();
 
 				if ($message == "") {
 					echo json_encode([
@@ -1821,6 +1815,18 @@ class Ajax {
 				echo json_encode([
 					"status" => "success",
 					"timeTables" => $timeTables,
+				]);
+			break;
+			case "checkProductErrorStatus":
+				require_once('classes/project/modules/sticker/StickerCollection.php');
+				$id = (int) $_POST["stickerId"];
+				$sc = new StickerCollection($id);
+				$errorStatus = $sc->checkProductErrorStatus();
+				$errorData = $sc->getErrorMessage();
+
+				echo json_encode([
+					"errorStatus" => $errorStatus,
+					"errorData" => $errorData,
 				]);
 			break;
 			default:

@@ -22,7 +22,7 @@ function getCurrentVersion() {
 }
 
 function errorReporting() {
-	if (defined('ERRORREPORTING') && ERRORREPORTING) {
+	if ($_ENV["ERRORREPORTING"]) {
 		error_reporting(E_ALL);
 		ini_set('display_errors', '1');
 	}

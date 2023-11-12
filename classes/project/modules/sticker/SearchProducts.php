@@ -43,7 +43,7 @@ class SearchProducts extends PrestashopConnection {
     /**
      * TODO: funktion muss alte data mit berücksichtigen und alt title nicht überschreiben
      */
-    public static function getProductsByStickerId($idSticker) {
+    public static function getProductsByStickerId($idSticker): Array|null {
         $searchProduct = new SearchProducts();
         $productMatches = [];
         $foundProducts = 0;
@@ -94,7 +94,8 @@ class SearchProducts extends PrestashopConnection {
                 }
             }
         } catch (PrestaShopWebserviceException $e) {
-            echo $e->getMessage();
+            Protocol::write($e->getMessage());
+            return null;
         }
         
         return ["products" => $productMatches, "matches" => $foundProducts, "allLinks" => $productLinks];

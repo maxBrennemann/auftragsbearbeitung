@@ -41,6 +41,7 @@ class StickerCombination extends PrestashopConnection {
     }
 
     private function getOldCombinations($productId) {
+        $productId = (int) $productId;
         if ($productId == 0) {
             return null;
         }
@@ -51,15 +52,22 @@ class StickerCombination extends PrestashopConnection {
             
             return $product->associations->combinations;
         } catch (PrestaShopWebserviceException $e) {
-            echo $e;
+            Protocol::write($e->getMessage());
+            return [];
         }
     }
 
     public function removeOldCombinations($productId) {
+        $productId = (int) $productId;
+        if ($productId == 0) {
+            return null;
+        }
+
         $productCombinations = $this->getOldCombinations($productId);
 
-        var_dump($productCombinations);
-        die();
+        if (count($productCombinations) == 0) {
+            return null;
+        }
         
         foreach ($productCombinations->combination as $combination) {
             $combinationId = (int) $combination->{"id"};
@@ -132,7 +140,7 @@ class StickerCombination extends PrestashopConnection {
     }
 
     private function getStockAvailablesIds() {
-        $stockAvailablesIds = array();
+        $stockAvailablesIds = [];
 
         try {
             $idProduct = (int) $this->sticker->getIdProduct();
@@ -148,7 +156,7 @@ class StickerCombination extends PrestashopConnection {
                 array_push($stockAvailablesIds, $stock->id);
             }
         } catch (PrestaShopWebserviceException $e) {
-            echo $e;
+            Protocol::write($e->getMessage());
         }
 
         return $stockAvailablesIds;
