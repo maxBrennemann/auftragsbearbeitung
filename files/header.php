@@ -150,7 +150,7 @@ $motiveOverview = 	Link::getPageLink("sticker-overview");
 							</span>
 						</div>
 					</div>
-					<?php if (Envs::get("showTimeGlobal") == "true"): ?>
+					<?php if (Config::get("showTimeGlobal") == "true"): ?>
 					<a href="<?=Link::getPageLink("zeiterfassung")?>" class="showTimeGlobal hover:bg-gray-200 rounded-lg pl-3">
 						<span>Zeit: <span id="timeGlobal">00:10:37</span></span>
 					</a>

@@ -154,15 +154,6 @@ class Kunde implements StatisticsInterface {
 		return $table->getTable();
 	}
 
-	public function getAuftraege() {
-		$auftraege = DBAccess::selectQuery("SELECT Auftragsnummer, Auftragsbezeichnung, Auftragsbeschreibung, Datum, Termin, Fertigstellung, Rechnungsnummer, archiviert FROM auftrag WHERE Kundennummer = {$this->kundennummer}");
-		$column_names = array(0 => array("COLUMN_NAME" => "Auftragsnummer"), 1 => array("COLUMN_NAME" => "Auftragsbezeichnung"), 
-		2 => array("COLUMN_NAME" => "Auftragsbeschreibung"), 3 => array("COLUMN_NAME" => "Datum"), 4 => array("COLUMN_NAME" => "Termin"), 5 => array("COLUMN_NAME" => "Fertigstellung"), 6 => array("COLUMN_NAME" => "Rechnungsnummer"), 7 => array("COLUMN_NAME" => "archiviert"));
-
-		$form = new FormGenerator("", "", "");
-		return $form->createTableByDataRowLink($auftraege, $column_names, "auftrag", Link::getPageLink("auftrag"));
-	}
-
 	public function getOrderCards() {
 		$query = "SELECT Auftragsnummer FROM auftrag WHERE Kundennummer = :kdnr ORDER BY Auftragsnummer DESC";
 		$data = DBAccess::selectQuery($query, [

@@ -4,8 +4,6 @@ require_once('Kunde.php');
 require_once('Schritt.php');
 require_once('Posten.php');
 require_once('Priority.php');
-require_once('FormGenerator.php');
-require_once('InteractiveFormGenerator.php');
 require_once('StatisticsInterface.php');
 require_once('Statistics.php');
 require_once('GlobalSettings.php');

@@ -47,7 +47,7 @@ require_once('globalFunctions.php');
 session_start();
 errorReporting();
 
-require_once('classes/project/Envs.php');
+require_once('classes/project/Config.php');
 require_once('classes/DBAccess.php');
 require_once('classes/Ajax.php');
 require_once('classes/Link.php');

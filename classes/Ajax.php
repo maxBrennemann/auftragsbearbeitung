@@ -379,7 +379,6 @@ class Ajax {
 			break;
 			case "setTo":
 				if (isset($_POST['auftrag'])) {
-					require_once("classes/project/InteractiveFormGenerator.php");
 					$table = unserialize($_SESSION['storedTable']);
 					$auftragsId = $_POST['auftrag'];
 					$row = $_POST['row'];
@@ -917,7 +916,7 @@ class Ajax {
 			break;
 			case "updateDefaultWage":
 				$defaultWage = $_POST["defaultWage"];
-				Envs::set("defaultWage", $defaultWage);
+				Config::set("defaultWage", $defaultWage);
 				echo json_encode([]);
 			break;
 			case "getManual":
@@ -1166,9 +1165,7 @@ class Ajax {
 						case 4:
 							/* TODO: iteration bei StickerCollection überarbeiten */
 							$stickerCollection = new StickerCollection($id);
-							$stickerCollection->getAufkleber()->save($overwrite["aufkleber"]);
-							$stickerCollection->getWandtattoo()->save($overwrite["wandtattoo"]);
-							$stickerCollection->getTextil()->save($overwrite["textil"]);
+							$stickerCollection->uploadAll($overwrite);
 							break;
 					}
 				} catch (Exception $e) {
@@ -1177,7 +1174,6 @@ class Ajax {
 				$responseData["output"] = ob_get_clean();
 
 				require_once("classes/project/modules/sticker/SearchProducts.php");
-
 				
 				$responseData = SearchProducts::getProductsByStickerId($id);
 				if ($responseData == null) {
@@ -1650,7 +1646,7 @@ class Ajax {
 				echo "success";
 			break;
 			case "toggleShowTime":
-				Envs::toggle("showTimeGlobal");
+				Config::toggle("showTimeGlobal");
 
 				echo json_encode([
 					"status" => "success",

@@ -5,7 +5,7 @@ require_once('classes/project/Table.php');
 require_once('classes/front/CategoryTree.php');
 
 /* get default wage */
-$defaultWage = Envs::get("defaultWage");
+$defaultWage = Config::get("defaultWage");
 $categoryitems = CategoryTree::getOneLayerArray();
 
 $cacheOn = "";
@@ -136,7 +136,7 @@ $_SESSION[$tableOrderType->getTableKey()] = serialize($tableOrderType);
     <h2 class="font-bold">Zeiterfassung</h2>
     <div class="switchCont">
         <label class="switch">
-            <input type="checkbox" id="showTimeTracking" <?=Envs::get("showTimeGlobal") == "true" ? "checked" : "" ?>>
+            <input type="checkbox" id="showTimeTracking" <?=Config::get("showTimeGlobal") == "true" ? "checked" : "" ?>>
             <span class="sliderTime round" id="startStopTime" data-binding="true"></span>
         </label>
         Aktuelle Arbeitszeit global anzeigen

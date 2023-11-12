@@ -26,6 +26,8 @@ class Protocol {
 	 * Closes the protocol.txt file
 	 */
 	public static function close() {
+		if (self::$file == null)
+			return;
 		fclose(self::$file);
 	}
 

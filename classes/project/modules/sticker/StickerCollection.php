@@ -133,9 +133,13 @@ class StickerCollection implements Iterator {
         ]);
     }
 
-    /* updates or uploads all products and writes connections */
-    public function uploadAll() {
-        // TODO: implement function
+    /**
+     *  updates or uploads all products and writes connections 
+     */
+    public function uploadAll($overwriteImages) {
+        $this->getAufkleber()->save($overwriteImages["aufkleber"]);
+        $this->getWandtattoo()->save($overwriteImages["wandtattoo"]);
+        $this->getTextil()->save($overwriteImages["textil"]);
     }
 
     /**

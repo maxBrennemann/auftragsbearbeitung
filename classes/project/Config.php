@@ -1,6 +1,6 @@
 <?php
 
-class Envs {
+class Config {
 
     /**
      * adds a new setting value
