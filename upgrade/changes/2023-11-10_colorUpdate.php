@@ -30,12 +30,9 @@ return new class extends UpdateMySql {
     }
 
     public function downgrade() {
-        
-    }
+        DBAccess::deleteQuery("DELETE FROM `color` WHERE `Hersteller` = 'klebefux'");
 
-    /* testing if anonymous class is accessible */
-    public function getHello() {
-        return "hello";
+        return "downgraded database";
     }
 
 }
