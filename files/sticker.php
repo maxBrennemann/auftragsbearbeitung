@@ -32,24 +32,24 @@ if ($id == 0): ?>
 <?php if ($stickerCollection->checkProductErrorStatus()) : ?>
 <p class="text-red-700 p-5 bg-red-200 rounded-lg mt-2"><?=$stickerCollection->getErrorMessage()?></p>
 <?php endif; ?>
-<div class="defCont cont1">
-    <div>
+<div class="cont1">
+    <div class="defCont">
         <h2 class="font-semibold">Motiv <input id="name" class="titleInput inline bg-inherit border-b border-b-gray-600 pl-1" value="<?=$stickerCollection->getName();?>" title="Faceboook hat ein internes Limit für die Titellänge von 65 Zeichen">
             <?php if ($stickerCollection->getIsMarked() == "0"): ?>
                 <span data-binding="true" data-fun="bookmark" data-status="unmarked" class="inline" title="Motiv markieren">
-                    <?=Icon::get("iconBookmark", 18, 18, ["inline"])?>
+                    <?=Icon::get("iconBookmark", 18, 18, ["inline", "cursor-pointer"])?>
                 </span>
             <?php else: ?>
                 <span data-binding="true" data-fun="bookmark" data-status="marked" class="bookmarked inline cursor-pointer" title="Motiv markieren">
-                    <?=Icon::get("iconUnbookmark", 18, 18, ["inline"])?>
+                    <?=Icon::get("iconUnbookmark", 18, 18, ["inline", "cursor-pointer"])?>
                 </span>
             <?php endif; ?>
         </h2>
-        <p class="mt-2">Artikelnummer: <span id="motivId" data-variable="true"><?=$id?></span></p>
-        <p>Erstellt am <input type="date" class="rounded-sm" id="creationDate" value="<?=$stickerCollection->getCreationDate()?>"></p>
-        <button class="btn-primary mt-2" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
+        <p class="mt-2 ml-2">Artikelnummer: <span id="motivId" data-variable="true"><?=$id?></span></p>
+        <p class="ml-2">Erstellt am <input type="date" class="rounded-sm px-2" id="creationDate" value="<?=$stickerCollection->getCreationDate()?>"></p>
+        <button class="btn-primary mt-4" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
     </div>
-    <div>
+    <div class="defCont">
         <p>Weitere Dateien (SVGs, CorelDraw, ...):</p>
         <?=insertTemplate("classes/project/modules/sticker/views/stickerFileView.php", ["images" => $stickerImage->getGeneralImages(), "files" => $stickerImage->getFiles()])?>
     </div>
@@ -89,7 +89,7 @@ if ($id == 0): ?>
                 </a>
             <?php endif; ?>
         </div>
-        <div>
+        <div class="hover:underline">
             <span>Aufkleber Plott</span>
             <span class="right">
                 <label class="switch">
@@ -98,7 +98,7 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div>
+        <div class="hover:underline">
             <span>kurzfristiger Aufkleber</span>
             <span class="right">
                 <label class="switch">
@@ -107,7 +107,7 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div>
+        <div class="hover:underline">
             <span>langfristiger Aufkleber</span>
             <span class="right">
                 <label class="switch">
@@ -116,7 +116,7 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div>
+        <div class="hover:underline">
             <span>mehrteilig</span>
             <span class="right">
                 <label class="switch">
@@ -162,7 +162,7 @@ if ($id == 0): ?>
             </button>
             <button class="infoButton" data-info="9">i</button>
         </p>
-        <div class="">
+        <div>
             Status: 
             <?php if ($stickerCollection->getWandtattoo()->isInShop()):?>
                 <a title="Wandtattoo ist im Shop" target="_blank" href="<?=$stickerCollection->getWandtattoo()->getShopLink()?>">
@@ -174,7 +174,7 @@ if ($id == 0): ?>
                 </a>
             <?php endif; ?>
         </div>
-        <div>
+        <div class="hover:underline">
             <span>Wandtattoo</span>
             <span class="right">
                 <label class="switch">
@@ -188,7 +188,7 @@ if ($id == 0): ?>
                 <h4>Kurzbeschreibung</h4>
                 <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "wandtattoo", "text" => "short", "gpt" => $chatGPTConnection])?>
             </div>
-            <textarea class="data-input" data-fun="" data-target="wandtattoo" data-type="short" data-write="true"><?=$stickerCollection->getWandtattoo()->getDescriptionShort()?></textarea>
+            <textarea class="data-input" data-fun="productDescription" data-target="wandtattoo" data-type="short" data-write="true"><?=$stickerCollection->getWandtattoo()->getDescriptionShort()?></textarea>
             <div>
                 <h4>Beschreibung</h4>
                 <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "wandtattoo", "text" => "long", "gpt" => $chatGPTConnection])?>
@@ -232,7 +232,7 @@ if ($id == 0): ?>
                 </a>
             <?php endif; ?>
         </div>
-        <div>
+        <div class="hover:underline">
             <span>Textil</span>
             <span class="right">
                 <label class="switch">
@@ -241,7 +241,7 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div>
+        <div class="hover:underline">
             <span>Einfärbbar</span>
             <span class="right">
                 <label class="switch">
@@ -250,7 +250,7 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div>
+        <div class="hover:underline">
             <span>Personalisierbar</span>
             <span class="right">
                 <label class="switch">
@@ -259,7 +259,7 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div>
+        <div class="hover:underline">
             <span>Im Konfigurator anzeigen</span>
             <span class="right">
                 <label class="switch">
@@ -269,11 +269,11 @@ if ($id == 0): ?>
             </span>
         </div>
         <div>
-            <object id="svgContainer" data="<?=$stickerImage->getSVGIfExists($stickerCollection->getTextil()->getIsColorable())?>" type="image/svg+xml" class="innerDefCont imageMovableContainer"></object>
+            <object id="svgContainer" data="<?=$stickerImage->getSVGIfExists($stickerCollection->getTextil()->getIsColorable())?>" type="image/svg+xml" class="innerDefCont"></object>
             <?php if ($stickerCollection->getTextil()->getIsColorable() == 1): ?>
-            <?php foreach ($stickerCollection->getTextil()->textilColors as $color):?>
-            <button class="colorBtn" style="background:<?=$color["hexCol"]?>" title="<?=$color["name"]?>" data-binding="true" data-fun="changeColor" data-color="<?=$color["hexCol"]?>"></button>
-            <?php endforeach; ?>
+                <?php foreach ($stickerCollection->getTextil()->textilColors as $color):?>
+                <button class="colorBtn" style="background:<?=$color["hexCol"]?>" title="<?=$color["name"]?>" data-binding="true" data-fun="changeColor" data-color="<?=$color["hexCol"]?>"></button>
+                <?php endforeach; ?>
             <?php endif; ?>
         </div>
         <div>
@@ -383,7 +383,7 @@ if ($id == 0): ?>
 <div class="defCont">
     <h2 class="font-semibold mb-2">Produktexport</h2>
     <form>
-        <div class="exportContainer inline-block bg-white rounded-3xl p-3">
+        <div class="exportContainer inline-block bg-white rounded-3xl p-3 hover:underline">
             Nach Facebook exportieren
             <span class="right">
                 <label class="switch">
@@ -393,7 +393,7 @@ if ($id == 0): ?>
             </span>
         </div>
         <br>
-        <div class="exportContainer inline-block bg-white rounded-3xl p-3">
+        <div class="exportContainer inline-block bg-white rounded-3xl p-3 hover:underline">
             Nach Google exportieren
             <span class="right">
                 <label class="switch">
@@ -403,7 +403,7 @@ if ($id == 0): ?>
             </span>
         </div>
         <br>
-        <div class="exportContainer inline-block bg-white rounded-3xl p-3">
+        <div class="exportContainer inline-block bg-white rounded-3xl p-3 hover:underline">
             Nach Amazon exportieren
             <span class="right">
                 <label class="switch">
@@ -413,7 +413,7 @@ if ($id == 0): ?>
             </span>
         </div>
         <br>
-        <div class="exportContainer inline-block bg-white rounded-3xl p-3">
+        <div class="exportContainer inline-block bg-white rounded-3xl p-3 hover:underline">
             Nach Etsy exportieren
             <span class="right">
                 <label class="switch">
@@ -423,7 +423,7 @@ if ($id == 0): ?>
             </span>
         </div>
         <br>
-        <div class="exportContainer inline-block bg-white rounded-3xl p-3">
+        <div class="exportContainer inline-block bg-white rounded-3xl p-3 hover:underline">
             Nach eBay exportieren
             <span class="right">
                 <label class="switch">
@@ -433,7 +433,7 @@ if ($id == 0): ?>
             </span>
         </div>
         <br>
-        <div class="exportContainer inline-block bg-white rounded-3xl p-3">
+        <div class="exportContainer inline-block bg-white rounded-3xl p-3 hover:underline">
             Nach Pinterest exportieren
             <span class="right">
                 <label class="switch">

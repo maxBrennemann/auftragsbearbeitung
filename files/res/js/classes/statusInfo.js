@@ -70,7 +70,7 @@ class StatusInfoBox {
     this.type = type;
   }
 
-  statusUpdate(status, message, errorMessage = "") {
+  statusUpdate(status, message = "Übertragung erfolgreich", errorMessage = "") {
     this.status = status;
     this.message = message;
     this.errorMessage = errorMessage;

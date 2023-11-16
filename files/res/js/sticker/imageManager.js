@@ -62,6 +62,11 @@ function itemDropHandler(e, imageCategory) {
 }
 
 function handleImagesPreview(filesInfo, imageCategory) {
+    if (imageCategory == "textilsvg") {
+        handleSVGPreview(filesInfo);
+        return;
+    }
+
     filesInfo = filesInfo.imageData;
 
     filesInfo.forEach(f => {
@@ -69,6 +74,17 @@ function handleImagesPreview(filesInfo, imageCategory) {
         const imageFileId = f.id;
         addTableRow(src, imageCategory, imageFileId);
     });
+}
+
+/**
+ * replaces the svg in the svg container with the new svg
+ * 
+ * @param {*} filesInfo 
+ */
+function handleSVGPreview(filesInfo) {
+    const svgContainer = document.getElementById("svgContainer");
+    const svg = filesInfo.imageData[0].url;
+    svgContainer.data = svg;
 }
 
 function addTableRow(imageSrc, imageCategory, imageFileId) {

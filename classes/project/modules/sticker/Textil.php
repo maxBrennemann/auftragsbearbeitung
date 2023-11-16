@@ -163,9 +163,8 @@ class Textil extends Sticker {
         }
 
         $productId = (int) $this->getIdProduct();
-        $category = 25;
         $stickerUpload = new StickerUpload($this->idSticker, $this->getName(), $this->getBasePrice(), $this->getDescription(), $this->getDescriptionShort());
-        $stickerUpload->setIdCategoryPrimary($category);
+        $stickerUpload->setIdCategoryPrimary($this->getIdCategory());
 
         $stickerCombination = new StickerCombination($this);
 
@@ -174,7 +173,8 @@ class Textil extends Sticker {
         } else {
             $stickerUpload->updateSticker($productId);
         }
-        
+
+        $stickerUpload->setCategoires([$this->getIdCategory()]);
         $stickerCombination->removeOldCombinations($productId);
 
         $stickerTagManager = new StickerTagManager($this->getId(), $this->getName());

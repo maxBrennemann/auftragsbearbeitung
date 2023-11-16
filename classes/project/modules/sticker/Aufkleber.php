@@ -103,6 +103,9 @@ class Aufkleber extends AufkleberWandtattoo {
         return []; // TODO: implement
     }
 
+    /**
+     * sets the descriptions for the sticker with default text
+     */
     private function getDescriptionWithDefaultText(): String {
         $descriptionEnd = $this->getDescription();
         $description = "<p><span>Es wird jeweils nur der entsprechende Artikel oder das einzelne Motiv verkauft. Andere auf den Bildern befindliche Dinge sind nicht Bestandteil des Angebotes.</span></p>";
@@ -129,6 +132,10 @@ class Aufkleber extends AufkleberWandtattoo {
         return $this->buyingPrices;
     }
 
+    /**
+     * updates or saves the current sticker and uploads all
+     * tags, combinations and images
+     */
     public function save($isOverwrite = false): String|null {
         if (!$this->getIsPlotted()) {
             return null;
@@ -148,9 +155,12 @@ class Aufkleber extends AufkleberWandtattoo {
             $stickerCombination->removeOldCombinations($productId);
         }
 
+        /* set categories, duplicate entries of category ids causes errors with prestashop */
         $categories = StickerCategory::getCategoriesForSticker($this->getId());
         $defaultCategories = [2, 13];
-        $stickerUpload->setCategoires(array_merge($categories, $defaultCategories));
+        $mergedCategories = [...$defaultCategories, ...$categories];
+        $mergedCategories = array_unique($mergedCategories);
+        $stickerUpload->setCategoires($mergedCategories);
         
         $stickerTagManager = new StickerTagManager($this->getId(), $this->getName());
         $stickerTagManager->setProductId($productId);

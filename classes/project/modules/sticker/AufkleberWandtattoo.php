@@ -102,7 +102,7 @@ class AufkleberWandtattoo extends Sticker {
 
     public function getBasePrice() {
         $basePrice = $this->getBasePriceUnformatted();
-        $this->basePrice = $basePrice;
+        //$this->basePrice = $basePrice;
         return number_format((float) $basePrice, 2, '.', '');
     }
 

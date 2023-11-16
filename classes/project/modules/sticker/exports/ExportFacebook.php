@@ -16,20 +16,21 @@ class ExportFacebook extends PrestashopConnection {
      * the line array for the csv
      */
     private $line = [
-        "id" => "",
-        "title" => "",
-        "description" => "",
+        "id" => "", // aufkleber wandtattoo textil
+        "title" => "", // name
+        "description" => "", // description
         "availability" => "In Stock",
         "condition" => "New",
-        "price" => "",
-        "link" => "",
-        "image_link" => "",
+        "price" => "", // aufkleber wandtattoo textil
+        "link" => "", // shop link
+        "image_link" => "", // first image
         "brand" => "klebefux",
-        "item_group_id" => "",
-        "color" => "",
-        "size" => "",
-        "material" => "",
+        "item_group_id" => "", // type + id
+        "color" => "", // aufkleber textil
+        "size" => "", // aufkleber wandtattoo
+        "material" => "", // aufkleber wandtattoo
         "shipping_weight" => "0.5kg",
+        "google_product_category" => "", // aufkleber wandtattoo textil
     ];
 
     private static $errorList = [];
@@ -148,6 +149,9 @@ class ExportFacebook extends PrestashopConnection {
                 }
 
                 $line["id"] = "aufkleber" . "_" . $product->getId() . "_" . $combinationId;
+
+                $line["google_product_category"] = "4054";
+
                 $combinationId++;
                 $combinationLines[] = $line;
             }
@@ -174,6 +178,10 @@ class ExportFacebook extends PrestashopConnection {
             $line["size"] = $product->getSize($size);
             $line["id"] = "wandtattoo" . "_" . $product->getId() . "_" . $combinationId;
             $line["material"] = "Wandtattoofolie";
+            $line["google_product_category"] = "3221";
+
+            $combinationId++;
+            $combinationLines[] = $line;
         }
 
         return $combinationLines;
@@ -189,6 +197,7 @@ class ExportFacebook extends PrestashopConnection {
                 $line["color"] = $product->textilColors[$combinationId]["name"];
     
                 $line["id"] = "textil" . "_" . $product->getId() . "_" . $combinationId;
+                $line["google_product_category"] = "505384";
     
                 $combinationLines[] = $line;
                 $combinationId++;
@@ -196,6 +205,7 @@ class ExportFacebook extends PrestashopConnection {
         } else {
             $line["price"] = $product->getPrice();
             $line["color"] = "zweifarbig";
+            $line["google_product_category"] = "505384";
 
             $line["id"] = "textil" . "_" . $product->getId() . "_" . $combinationId;
             return [$line];
@@ -204,16 +214,20 @@ class ExportFacebook extends PrestashopConnection {
         return $combinationLines;
     }
 
+    /**
+     * generates the csv file by using built in functions from php to avoid manual 
+     * handling of escape characters
+     * https://stackoverflow.com/questions/4617935/is-there-a-way-to-include-commas-in-csv-columns-without-breaking-the-formatting
+     */
     private function generateFile(array $lines, string $filename): void {
         $path = "files/generated/fb_export/";
         $file = fopen($path . $filename, 'w');
-    
-        /* initial line for facebook to recognize columns */
-        fwrite($file, "id,title,description,availability,condition,price,link,image_link,brand,item_group_id,color,size,material,shipping_weight" . "\n");
 
-        foreach ($lines as $line) {
-            $string = implode(",", $line);
-            fwrite($file, $string . "\n");
+        $firstLine = array_keys($this->line);
+        $lines = [$firstLine, ...$lines];
+
+        foreach ($lines as $entry) {
+            fputcsv($file, $entry);
         }
     
         fclose($file);

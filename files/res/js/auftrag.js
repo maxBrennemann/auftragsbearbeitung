@@ -175,24 +175,39 @@ function showDeleteMessage(row, header, key, type) {
 
     /* creates table */
     let table = document.createElement("table");
-    tbody = document.createElement("tbody");
+    const tbody = document.createElement("tbody");
     table.appendChild(tbody);
     tbody.appendChild(header.cloneNode(true));
     tbody.appendChild(row.cloneNode(true));
 
+    /* remove last column */
+    let lastColumn = tbody.rows[0].lastChild;
+    lastColumn.parentNode.removeChild(lastColumn);
+    lastColumn = tbody.rows[1].lastChild;
+    lastColumn.parentNode.removeChild(lastColumn);
+
     /* creates inner text of deletion verification */
-    let content = `Willst Du diese Zeile wirklich löschen?:<br>`;
     let contentNode = document.createElement("p");
-    contentNode.innerHTML = content;
+    
+    /* create the delete note */
+    const note = document.createElement("p");
+    note.innerHTML = "Willst Du diese Zeile wirklich löschen?";
+    note.classList.add("font-bold", "mb-2");
+    contentNode.appendChild(note);
+
+    /* adds the table to the content node */
     contentNode.appendChild(table);
 
     /* creates the yes and no buttons */
     let btn_yes = document.createElement("button");
+    btn_yes.classList.add("btn-primary", "mr-2");
     btn_yes.innerHTML = "Ja";
     let btn_no = document.createElement("button");
+    btn_no.classList.add("btn-primary");
     btn_no.innerHTML = "Nein";
 
-    /* inner function to delete the node
+    /**
+     * inner function to delete the node
      * type => type of data to be deleted
      * key => the key for the server so that the correct data is deleted
      * row => row for the frontend to be deleted 

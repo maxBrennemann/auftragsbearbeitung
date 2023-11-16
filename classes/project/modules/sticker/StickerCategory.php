@@ -34,6 +34,10 @@ class StickerCategory extends PrestashopConnection {
         $categories = DBAccess::selectQuery($query, ["stickerId" => $stickerId]);
 
         $categories = array_column($categories, "categoryId");
+        $categories = array_map(function ($category) {
+            return (int) $category;
+        }, $categories);
+        
         return $categories;
     }
 

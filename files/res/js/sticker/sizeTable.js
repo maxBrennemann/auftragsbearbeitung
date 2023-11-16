@@ -139,9 +139,15 @@ class SizeTable {
     #initRatio() {
         const width = this.sizeTableRows[0].width;
         const height = this.sizeTableRows[0].height;
-        this.ratio = width / height;
+        this.ratio = height / width;
     }
 
+    /**
+     * adds a new line to the size table and sends the data to the server
+     * @param {*} width in mm
+     * @param {*} price in euro
+     * @param {*} isDefaultPrice 
+     */
     async addNewLine(width, price, isDefaultPrice) {
         const newRow = this.table.insertRow(-1);
         for (let i = 0; i < 6; i++) {
@@ -151,8 +157,8 @@ class SizeTable {
 
         const height = Math.round(width * this.ratio);
         const data = await ajax.post({
-            width: width * 10,
-            height: height * 10,
+            width: width,
+            height: height,
             price: price * 100,
             id: mainVariables.motivId.innerHTML,
             isDefaultPrice: isDefaultPrice,
@@ -161,10 +167,10 @@ class SizeTable {
         const id = data.id;
 
         newRow.children[0].innerHTML = id;
-        newRow.children[1].innerHTML = width + "cm";
-        newRow.children[2].innerHTML = height + "cm";
+        newRow.children[1].innerHTML = SizeTableRow.formatCentimeters(width / 10);
+        newRow.children[2].innerHTML = SizeTableRow.formatCentimeters(height / 10);
         newRow.children[3].innerHTML = SizeTableRow.formatEuro(price);
-        newRow.children[4].innerHTML = SizeTableRow.formatEuro((width * height) / 1000);
+        newRow.children[4].innerHTML = SizeTableRow.formatEuro((width * height) / 100000);
 
         this.#copyRowActions(newRow, id);
         this.sizeTableRows.push(new SizeTableRow(newRow, this));
@@ -275,8 +281,8 @@ class SizeTableRow {
     constructor(row, parent) {
         this.row = row;
         this.id = parseInt(row.children[0].innerHTML);
-        this.width = parseFloat(row.children[1].innerHTML) * 10;
-        this.height = parseFloat(row.children[2].innerHTML) * 10;
+        this.width = SizeTableRow.stringToMM(row.children[1].innerHTML);
+        this.height = SizeTableRow.stringToMM(row.children[2].innerHTML);
         this.priceCent = SizeTableRow.parsePrice(row.children[3]);
         this.priceEuro = parseInt(row.children[3].innerHTML);
         this.purchasePrice = SizeTableRow.parsePrice(row.children[4]);
@@ -414,8 +420,16 @@ class SizeTableRow {
         return input;
     }
 
+    /**
+     * parses a value like 1,7cm to 17 (in mm)
+     * by removing the cm and replacing the comma with a dot
+     * 
+     * @param {*} length 
+     * @returns {float} length in mm
+     */
     static stringToMM(length) {
         length = length.toString();
+        length = length.replace("cm", "");
         length = length.replace(",", ".");
         length = parseFloat(length);
         return length * 10;
@@ -478,7 +492,7 @@ class SizeTableRow {
 }
 
 export function click_addNewWidth() {
-    const newWidth = document.getElementById("newWidth").value;
+    let newWidth = document.getElementById("newWidth").value;
     let newPrice = document.getElementById("newPrice").value;
     let isDefaultPrice = false;
 
@@ -486,11 +500,12 @@ export function click_addNewWidth() {
         return;
     }
 
+    newWidth = SizeTableRow.stringToMM(newWidth);
+
     if (newPrice == "") {
         isDefaultPrice = true;
-        let tempWidth = SizeTableRow.stringToMM(newWidth);
-        let tempHeight = tempWidth * sizeTable.ratio;
-        newPrice = SizeTableRow.calcNewPriceEuro(tempWidth, tempHeight, sizeTable.difficulty);
+        let tempHeight = newWidth * sizeTable.ratio;
+        newPrice = SizeTableRow.calcNewPriceEuro(newWidth, tempHeight, sizeTable.difficulty);
     } else {
         newPrice = SizeTableRow.parsePrice(newPrice);
         newPrice = newPrice / 100;
