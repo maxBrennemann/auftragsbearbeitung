@@ -16,6 +16,9 @@ config/*
 cache/*
 !cache/index.php
 
+apiKeys/*
+!apiKeys/.gitkeep
+
 .res/sql/init/*
 !.res/sql/init/.gitkeep
 

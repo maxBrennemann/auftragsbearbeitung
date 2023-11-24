@@ -194,10 +194,9 @@ class StickerCollection implements Iterator {
     }
 
     public function getSearchConsoleStats($type) {
-        return "";
-
         $url = "https://klebefux.de/home/877-aufkleber-camping.html";
-        $stats = ImportGoogleSearchConsole::getStats($url);
+        $googleSearchConsole = new ImportGoogleSearchConsole();
+        $stats = $googleSearchConsole->getStats($url);
 
         switch ($type) {
             case "impressions":
