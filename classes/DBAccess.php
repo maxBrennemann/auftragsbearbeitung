@@ -79,34 +79,23 @@ class DBAccess {
 		return self::$connection->lastInsertId();
 	}
 
-	public static function insertMultiple($query, $data) {
-		foreach ($data as $rows) {
-			$query_row = "(";
-			foreach ($rows as $identifier => $item) {
-				switch ($identifier) {
-					case "int":
-					case "integer":
-						$query_row .= (int) $item . ", ";
-						break;
-					case "null":
-						$query_row .= "NULL, ";
-						break;
-					case "string":
-					default:
-						$query_row .= "'" . $item . "', ";
-						break;
-				}
-			}
-			$query_row = substr($query_row, 0, -2);
-			$query_row .= "),";
-			$query .= $query_row;
-		}
-
-		$query = substr(($query), 0, -1);
+	/**
+	 * https://stackoverflow.com/questions/1176352/pdo-prepared-inserts-multiple-rows-in-single-query
+	 * Switched to prepared statements to avoid SQL injection and escape errors
+	 * 
+	 * @param string $queryPart has to look like "INSER INTO tbl (col1, ...) VALUES 
+	 * @param array $data
+	 * 
+	 * @return int
+	 */
+	public static function insertMultiple($queryPart, $data) {
+		$values = str_repeat('?,', count($data[0]) - 1) . '?';
+		$sql = $queryPart .
+			str_repeat("($values),", count($data) - 1) . "($values)";
 
 		self::createConnection();
-		self::$statement = self::$connection->prepare($query);
-		self::$statement->execute();
+		self::$statement = self::$connection->prepare($sql);
+		self::$statement->execute(array_merge(...$data));
 		return self::$connection->lastInsertId();
 	}
 

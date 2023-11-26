@@ -27,14 +27,14 @@ class ImportGoogleSearchConsole {
 
     public function getStats($url) {
         $queryRequest = new SearchAnalyticsQueryRequest();
-        $queryRequest->setStartDate("2023-10-01");
-        $queryRequest->setEndDate("2023-10-31");
+        $queryRequest->setStartDate(date('Y-m-d', strtotime('-7 days')));
+        $queryRequest->setEndDate(date('Y-m-d', strtotime('-3 days')));
+        $queryRequest->setDimensions(['page', 'date']);
+        $queryRequest->setAggregationType("byPage");
 
         try {
             $response = $this->searchConsole->searchanalytics->query($url, $queryRequest);
         } catch (Exception $e) {
-            $this->addUrl($url);
-            echo "Fehler bei der Abfrage";
             Protocol::write("Google Search Console", "Error querying: " . $e->getMessage());
             return;
         }
@@ -42,15 +42,23 @@ class ImportGoogleSearchConsole {
         $rows = $response->getRows();
 
         if (is_null($rows)) {
-            echo "Keine Daten gefunden";
+            Protocol::write("Google Search Console", "No data available");
+            return;
         } else {
+            $completeData = [];
             foreach ($rows as $row) {
-                $html = "<p>Clicks: " . $row->getClicks() . "</p>";
-                $html .= "<p>Impressions: " . $row->getImpressions() . "</p>";
-                $html .= "<p>CTR: " . $row->getCTR() . "</p>";
-                $html .= "<p>Position: " . $row->getPosition() . "</p>";
-                echo $html;
+                $data = [];
+                $data[] = $row->getClicks();
+                $data[] = $row->getImpressions();
+                $data[] = $row->getCTR();
+                $data[] = $row->getPosition();
+                $data[] = $row->keys[0];
+                $data[] = $row->keys[1];
+
+                $completeData[] = $data;
             }
+
+            DBAccess::insertMultiple("INSERT INTO module_sticker_search_data (clicks, impressions, ctr, position, `site`, `date`) VALUES ", $completeData);
         }
     }
 
@@ -59,8 +67,19 @@ class ImportGoogleSearchConsole {
         var_dump($data);
     }
 
-    public function import() {
+    public static function import() {
+        $import = new ImportGoogleSearchConsole();
+        $import->getStats("https://klebefux.de/");
+    }
 
+    public static function get($url, $startDate, $endDate) {
+        $query = "SELECT * FROM module_sticker_search_data WHERE `site`= :url AND `date` >= :startDate AND `date` <= :endDate;";
+        $data = DBAccess::selectQuery($query, [
+            "url" => $url,
+            "startDate" => $startDate,
+            "endDate" => $endDate,
+        ]);
+        return $data;
     }
     
 }

@@ -457,9 +457,20 @@ if ($id == 0): ?>
     <h2 class="font-semibold mb-2">Statistiken</h2>
     <!-- TODO: Statistiken von Google Analytics und Google Shopping, sowie von Google SearchConsole und shopintern einbinden -->
     <div>
+        <label>
+            Von
+            <input type="date" id="statsStart">
+        </label>
+        <label>
+            Bis
+            <input type="date" id="statsEnd">
+        </label>
+    </div>
+    <div class="mt-2">
         <h3>Google SearchConsole</h3>
-        <p>Impressions: <?=$stickerCollection->getSearchConsoleStats("impressions")?></p>
-        <p>Klicks: <?=$stickerCollection->getSearchConsoleStats("clicks")?></p>
+        <div id="google-searchconsole">
+
+        </div>
     </div>
 </div>
 <div class="defCont">
