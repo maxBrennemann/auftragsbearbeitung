@@ -1,5 +1,4 @@
 <script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
-<script src="<?=Link::getResourcesShortLink("print.js", "js")?>"></script>
 <script src="<?=Link::getResourcesShortLink("colorpicker.js", "js")?>"></script>
 <script src="<?=Link::getResourcesShortLink("list.js", "js")?>"></script>
 
@@ -84,7 +83,6 @@ if ($auftragsId == -1): ?>
 <div>
 	<div class="defCont" id="orderFinished">
 		<p>Auftrag <?=$auftrag->getAuftragsnummer()?> wurde abgeschlossen. Rechnungsnummer: <span id="rechnungsnummer"><?=$auftrag->getRechnungsnummer()?></span></p>
-		<button class="btn-primary" onclick="print('rechnungsnummer', 'Rechnung');">Rechnungsblatt anzeigen</button>
 		<button class="btn-primary" onclick="showAuftrag()">Auftrag anzeigen</button>
 		<?php
 			$invoiceLink = $auftrag->getKundennummer() . "_" . $auftrag->getRechnungsnummer() . ".pdf";

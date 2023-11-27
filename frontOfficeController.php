@@ -27,7 +27,6 @@ if (isset($_POST['getReason'])) {
 
 function showPage($page, $isArticle) {
     if ($page == "test") {
-        include('test.php');
         return null;
     }
 

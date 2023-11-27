@@ -2,63 +2,12 @@
 
 $start = microtime(true);
 
-/**
- * Before: page was submitted via $_GET paramter, but now the REQUEST_URI is read;
- * $url is splitted into the REQUEST_URI and the parameter part
- */
 require_once('settings.php');
-$url = $_SERVER['REQUEST_URI'];
-$url = explode('?', $url, 2);
-$page = str_replace($_ENV["REWRITE_BASE"] . $_ENV["SUB_URL"], "", $url[0]);
-$parts = explode('/', $page);
-$page = $parts[count($parts) - 1];
-
-switch ($parts[1]) {
-	case "js":
-	case "css":
-	case "font":
-	case "pdf_invoice":
-	case "upload":
-	case "img":
-		require_once('resourcesManager.php');
-		exit;
-	case "api":
-		require_once('ajaxRouter.php');
-		exit;
-	case "admin":
-		require_once('admin.php');
-		exit;
-	case "account":
-		require_once('account.php');
-		exit;
-	case "shop":
-		require_once('frontOfficeController.php');
-		exit;
-	case "upgrade":
-		require_once('upgrade.php');
-		exit;
-	case "favicon.ico":
-		require_once('favicon.php');
-		exit;
-}
-
 require_once('globalFunctions.php');
+require_once('classes/ResourceManager.php');
 
-session_start();
-errorReporting();
-
-require_once('classes/project/Config.php');
-require_once('classes/DBAccess.php');
-require_once('classes/Ajax.php');
-require_once('classes/Link.php');
-require_once('classes/Login.php');
-require_once('classes/Protocol.php');
-require_once('classes/project/FormGenerator.php');
-require_once('classes/project/CacheManager.php');
-require_once('classes/project/Icon.php');
-require_once('classes/project/Posten.php');
-require_once('classes/project/Angebot.php');
-require_once('classes/project/NotificationManager.php');
+ResourceManager::pass();
+ResourceManager::session();
 
 /* TODO: index.php neu überarbeiten und logischer aufbauen, eventuell mit htaccess mehr filtern? */
 
@@ -68,16 +17,6 @@ require_once('classes/project/NotificationManager.php');
 $apiRequest = false;
 if ($apiRequest == true) {
 	header('X-Accel-Buffering: no');
-}
-
-/**
- * polyfill str_contains, maybe remove it later when support for older version drops
- * https://www.php.net/manual/en/function.str-contains.php
- */
-if (!function_exists('str_contains')) {
-    function str_contains($haystack, $needle) {
-        return $needle !== '' && mb_strpos($haystack, $needle) !== false;
-    }
 }
 
 /* 
@@ -208,7 +147,6 @@ function showPage($page) {
 	GLOBAL $start;
 
 	if ($page == "test") {
-		include('test.php');
 		return null;
 	}
 

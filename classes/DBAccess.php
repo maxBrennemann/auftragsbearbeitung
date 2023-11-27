@@ -1,7 +1,5 @@
 <?php
 
-require_once('settings.php');
-
 class DBAccess {
 
 	protected static $connection;
@@ -104,16 +102,6 @@ class DBAccess {
 		
 		self::$statement = self::$connection->prepare($query);
 		self::$statement->execute();
-		
-		self::$statement->execute();
-	}
-
-	/* exec for queries, that don't return result sets, otherwise the general mySQL error 2014 can occur */
-	public static function execQuery($query) {
-		self::createConnection();
-		
-		self::$statement = self::$connection->prepare($query);
-		self::$statement->exec();
 	}
 
 	/**

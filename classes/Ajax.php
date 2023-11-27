@@ -15,14 +15,6 @@ class Ajax {
 					echo file_get_contents_utf8($file);
 				}
 			break;
-			case "fillForm":
-				if (isset($_POST['file'])) {
-					require_once("classes/project/FillForm.php");
-					$filled = new FillForm(($_POST['file']));
-					$filled->fill($_POST['nr']);
-					$filled->show();
-				}
-			break;
 			case "createTable":
 				$type = $_POST['type'];
 			
@@ -1422,7 +1414,7 @@ class Ajax {
 				$difficulty = $aufkleberWandtatto->getDifficulty();
 				$price = $aufkleberWandtatto->getPrice($width, $height, $difficulty);
 
-				DBAccess::updateQuery("UPDATE module_sticker_sizes SET price = '$price', price_default = 1 WHERE id = $postenNummer");
+				DBAccess::updateQuery("UPDATE module_sticker_sizes SET price = '$price', price_default = 1 WHERE id = $id");
 				echo $price;
 			break;
 			case "setSizePrice":
