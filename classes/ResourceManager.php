@@ -17,6 +17,9 @@ require_once('classes/project/NotificationManager.php');
 
 class ResourceManager {
 
+    private static $cacheStatus = null;
+    private static $page = "";
+
     function __construct() {
         
     }
@@ -30,7 +33,7 @@ class ResourceManager {
         $url = explode('?', $url, 2);
         $page = str_replace($_ENV["REWRITE_BASE"] . $_ENV["SUB_URL"], "", $url[0]);
         $parts = explode('/', $page);
-        $page = $parts[count($parts) - 1];
+        self::$page = $parts[count($parts) - 1];
 
         switch ($parts[1]) {
             case "js":
@@ -42,7 +45,7 @@ class ResourceManager {
                 self::handleResources();
                 exit;
             case "api":
-                Ajax::manageRequests($_POST['getReason'], $page);
+                Ajax::manageRequests($_POST['getReason'], self::$page);
                 exit;
             case "admin":
                 require_once('admin.php');
@@ -65,6 +68,184 @@ class ResourceManager {
     public static function session() {
         session_start();
         errorReporting();
+    }
+
+    /**
+     * simple caching from:
+     * https://www.a-coding-project.de/ratgeber/php/simples-caching 
+     * added a time stamp check and added triggers to recreate page
+     */
+    public static function handleCache() {
+        $t = false;
+        $cacheFile = "cache/cache_" . md5($_SERVER['REQUEST_URI']) . ".txt";
+        self::$cacheStatus = CacheManager::getCacheStatus();
+
+        if (file_exists($cacheFile) && !(count($_GET) || count($_POST)) && $t && self::$cacheStatus == "on") {
+            echo file_get_contents_utf8($cacheFile);
+            return true;
+        }
+
+        return false;
+    }
+
+    private static function getPostParameters() {
+        if (file_get_contents("php://input") != "") {
+            $PHP_INPUT = json_decode(file_get_contents("php://input"), true);
+            
+            if ($PHP_INPUT != null) {
+                $_POST = array_merge($_POST, $PHP_INPUT);
+            }
+        }
+    }
+
+    public static function initPage() {
+        if (self::$cacheStatus == "on") {
+            ob_start();
+        }
+    
+        self::getPostParameters();
+    
+        /*
+        * filters AJAX requests and delegates them to the right files
+        */
+        if (isset($_POST['getReason'])) {
+            Ajax::manageRequests($_POST['getReason'], self::$page);
+        }
+        else if (isset($_POST['upload'])) {
+            $uploadDestination = $_POST['upload'];
+            require_once('classes/Upload.php');
+    
+            /* checks which upload mechanism should be called */
+            switch ($uploadDestination) {
+                case "order":
+                    $auftragsId = (int) $_POST['auftrag'];
+                    $upload = new Upload();
+                    $upload->uploadFilesAuftrag($auftragsId);
+                    break;
+                case "product":
+                    $auftragsId = (int) $_POST['produkt'];
+                    $upload = new Upload();
+                    $upload->uploadFilesProduct($auftragsId);
+                    break;
+                case "postenAttachment":
+                    $key = $_POST['key'];
+                    $table = $_POST['tableKey'];
+                    Posten::addFile($key, $table);
+                    break;
+                case "vehicle":
+                    $key = $_POST['key'];
+                    $table = $_POST['tableKey'];
+                    $fahrzeugnummer = Table::getIdentifierValue($table, $key);
+    
+                    $auftragsnummer = $_POST['orderid'];
+                    $upload = new Upload();
+                    $upload->uploadFilesVehicle($fahrzeugnummer, $auftragsnummer);
+                    break;
+                case "motiv":
+                    $motivname = $_POST['motivname'];
+                    $upload = new Upload();
+    
+                    if (isset($_POST["motivNumber"])) {
+                        $upload->uploadFilesMotive($motivname, $_POST["motivNumber"]);
+                    } else {
+                        $upload->uploadFilesMotive($motivname);
+                    }
+                    break;
+            }
+        } else {
+            if (self::$page == "pdf") {
+                $type = $_GET['type'];
+                switch ($type) {
+                    case "angebot":
+                        $angebot = new Angebot();
+                        $angebot->PDFgenerieren();
+                    break;
+                    case "rechnung":
+                        require_once('classes/project/Rechnung.php');
+                        if (isset($_SESSION['tempInvoice'])) {
+                            $rechnung = unserialize($_SESSION['tempInvoice']);
+    
+                            if (!isset($_SESSION['currentInvoice_orderId'])) {
+                                echo "Fehler beim Generieren der Rechnung!";
+                                return null;
+                            }
+    
+                            if ($rechnung->getOrderId() == $_SESSION['currentInvoice_orderId']) {
+                                $rechnung->PDFgenerieren();
+                            } else {
+                                $rechnung = new Rechnung();
+                                $rechnung->PDFgenerieren();
+                            }
+                        } else {
+                            $rechnung = new Rechnung();
+                            $rechnung->PDFgenerieren();
+                        }
+                    break;
+                    case "auftrag":
+                        require_once('classes/project/PDF_Auftrag.php');
+    
+                        if (isset($_GET['id'])) {
+                            $id = (int) $_GET['id'];
+                            PDF_Auftrag::getPDF($id);
+                        }
+                    break;
+                }
+            } else if (self::$page == "cron") {
+                Ajax::manageRequests("testDummy", self::$page);
+            } else if (isLoggedIn()) {
+                self::showPage(self::$page);
+            } else {
+                self::showPage("login");
+            }
+        }
+    
+        if (self::$cacheStatus == "on") {
+            $cachedFileContent = ob_get_flush();
+            file_put_contents($cacheFile, $cachedFileContent);
+        }
+    }
+
+    private static function showPage($page) {
+        GLOBAL $start;
+    
+        if ($page == "test") {
+            return null;
+        }
+    
+        $pageDetails = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM articles WHERE src = :page", [
+            "page" => $page
+        ]);
+        $articleUrl = "";
+    
+        /* checks if file exists */
+        if ($pageDetails == null || !file_exists("./files/" . $pageDetails[0]["articleUrl"])) {
+            http_response_code(404);
+    
+            $baseUrl = 'files/';
+            $pageDetails['id'] = 0;
+            $pageDetails["articleUrl"] = $articleUrl = "404.php";
+            $pageDetails["pageName"] = $pageName = "Page not found";
+        } else {
+            $baseUrl = './files/';
+            $pageDetails = $pageDetails[0];
+            $articleUrl = $pageDetails["articleUrl"];
+            $pageName = $pageDetails["pageName"];
+        }
+        
+        include('./files/header.php');
+        include($baseUrl . $articleUrl);
+        include('./files/footer.php');
+    
+        if ($_ENV["DEV_MODE"] == true) {
+            $stop = microtime(true);
+            $duration = $stop - $start;
+            echo "<script>console.log('Page loaded in " . $duration . " seconds');</script>";
+        }
+    }
+
+    public static function close() {
+        Protocol::close();
+        DBAccess::close();
     }
 
     private static function handleResources() {

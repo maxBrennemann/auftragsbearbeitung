@@ -1226,7 +1226,7 @@ class Ajax {
 			case "changePreiskategorie":
 				$id = (int) $_POST['id'];
 				$categoryId = $_POST['categoryId'];
-				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET price_type = '$categoryId' WHERE id = $id");
+				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET price_type = '$categoryId' WHERE id = :id", ["id" => $id]);
 				echo "success";
 			break;
 			case "changeMotivDate":
@@ -1267,26 +1267,26 @@ class Ajax {
 			break;
 			case "toggleTextil":
 				$id = (int) $_POST["id"];
-				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_shirtcollection` = NOT `is_shirtcollection` WHERE id = $id");
+				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_shirtcollection` = NOT `is_shirtcollection` WHERE id = :id", ["id" => $id]);
 				echo json_encode([
 					"status" => "success",
 				]);
 			break;
 			case "toggleWandtattoo":
 				$id = (int) $_POST["id"];
-				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_walldecal` = NOT `is_walldecal` WHERE id = $id");
+				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_walldecal` = NOT `is_walldecal` WHERE id = :id", ["id" => $id]);
 				echo json_encode([
 					"status" => "success",
 				]);
 			break;
 			case "toggleRevised":
 				$id = (int) $_POST["id"];
-				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_revised` = NOT `is_revised` WHERE id = $id");
+				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_revised` = NOT `is_revised` WHERE id = :id", ["id" => $id]);
 				echo "success";
 			break;
 			case "toggleBookmark":
 				$id = (int) $_POST["id"];
-				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_marked` = NOT `is_marked` WHERE id = $id");
+				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_marked` = NOT `is_marked` WHERE id = :id", ["id" => $id]);
 				echo "success";
 			break;
 			case "makeSVGColorable":
@@ -1336,7 +1336,7 @@ class Ajax {
 				$id = (int) $_POST["id"];
 
 				$postenNummer = Table::getIdentifierValue($table, $tableRowKey);
-				$size = DBAccess::selectQuery("SELECT width, height FROM module_sticker_sizes WHERE id = $postenNummer LIMIT 1");
+				$size = DBAccess::selectQuery("SELECT width, height FROM module_sticker_sizes WHERE id = :postennummer LIMIT 1", ["postennummer" => $postenNummer]);
 				$width = $size[0]["width"];
 				$height = $size[0]["height"];
 
@@ -1345,7 +1345,10 @@ class Ajax {
 				$difficulty = $aufkleberWandtatto->getDifficulty();
 				$price = $aufkleberWandtatto->getPrice($width, $height, $difficulty);
 
-				DBAccess::updateQuery("UPDATE module_sticker_sizes SET price = '$price', price_default = 1 WHERE id = $postenNummer");
+				DBAccess::updateQuery("UPDATE module_sticker_sizes SET price = :price, price_default = 1 WHERE id = :postennummer", [
+					"price" => $price,
+					"postennummer" => $postenNummer,
+				]);
 				echo $price;
 			break;
 			case "setAufkleberParameter":
@@ -1414,7 +1417,10 @@ class Ajax {
 				$difficulty = $aufkleberWandtatto->getDifficulty();
 				$price = $aufkleberWandtatto->getPrice($width, $height, $difficulty);
 
-				DBAccess::updateQuery("UPDATE module_sticker_sizes SET price = '$price', price_default = 1 WHERE id = $id");
+				DBAccess::updateQuery("UPDATE module_sticker_sizes SET price = :price, price_default = 1 WHERE id = :id", [
+					"price" => $price,
+					"id" => $id,
+				]);
 				echo $price;
 			break;
 			case "setSizePrice":
@@ -1818,12 +1824,12 @@ class Ajax {
 				]);
 			break;
 			default:
-				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
-				$result = DBAccess::selectQuery($selectQuery);
+				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = :page;";
+				$result = DBAccess::selectQuery($selectQuery, ["page" => $page]);
 		
 				if ($result == null) {
 					$baseUrl = 'files/generated/';
-					$result = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM generated_articles WHERE src = '$page'");
+					$result = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM generated_articles WHERE src = :page", ["page" => $page]);
 				} else {
 					$baseUrl = 'files/';
 				}
