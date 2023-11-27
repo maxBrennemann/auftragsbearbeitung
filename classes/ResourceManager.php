@@ -5,6 +5,7 @@ require_once('classes/DBAccess.php');
 require_once('classes/Link.php');
 require_once('classes/project/Config.php');
 require_once('classes/Ajax.php');
+require_once('classes/JSONResponseHandler.php');
 require_once('classes/Link.php');
 require_once('classes/Login.php');
 require_once('classes/Protocol.php');
@@ -45,7 +46,11 @@ class ResourceManager {
                 self::handleResources();
                 exit;
             case "api":
-                Ajax::manageRequests($_POST['getReason'], self::$page);
+                $apiVersion = $parts[2];
+                $category = $parts[3];
+                $type = $parts[4];
+                $action = $parts[5];
+                Ajax::handleRequests($apiVersion, $category, $type, $action);
                 exit;
             case "admin":
                 require_once('admin.php');

@@ -7,6 +7,14 @@ class Ajax {
 	
 	private static $sqlStatements = "SELECT posten.Postennummer, leistung.Bezeichnung, leistung_posten.Beschreibung, leistung_posten.SpeziefischerPreis, zeit.ZeitInMinuten, zeit.Stundenlohn FROM posten INNER JOIN leistung_posten ON posten.Postennummer = leistung_posten.Postennummer INNER JOIN zeit ON posten.Postennummer = zeit.Postennummer INNER JOIN leistung ON leistung_posten.Leistungsnummer = leistung.Nummer WHERE istStandard = 1;";
 
+	public static function handleRequests(String $apiVersion, String $category, String $type, String $action) {
+		$currentApiVersion = "v1";
+
+		if ($currentApiVersion != $apiVersion) {
+			JSONResponseHandler::throwError(404, "api version not supported");
+		}
+	}
+
 	public static function manageRequests($reason, $page) {
 		switch ($reason) {
 			case "fileRequest":
