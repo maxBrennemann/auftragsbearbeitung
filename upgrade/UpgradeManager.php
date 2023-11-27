@@ -1,6 +1,6 @@
 <?php
 
-require_once("Console.php");
+require_once("upgrade/Console.php");
 
 class UpgradeManager {
 
@@ -70,5 +70,3 @@ class UpgradeManager {
     }
 
 }
-
-?>
