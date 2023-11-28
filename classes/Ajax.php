@@ -7,11 +7,71 @@ class Ajax {
 	
 	private static $sqlStatements = "SELECT posten.Postennummer, leistung.Bezeichnung, leistung_posten.Beschreibung, leistung_posten.SpeziefischerPreis, zeit.ZeitInMinuten, zeit.Stundenlohn FROM posten INNER JOIN leistung_posten ON posten.Postennummer = leistung_posten.Postennummer INNER JOIN zeit ON posten.Postennummer = zeit.Postennummer INNER JOIN leistung ON leistung_posten.Leistungsnummer = leistung.Nummer WHERE istStandard = 1;";
 
-	public static function handleRequests(String $apiVersion, String $category, String $type, String $action) {
+	public static function handleRequests() {
 		$currentApiVersion = "v1";
+		ResourceManager::outputHeaderJSON();
+
+		$url = $_SERVER['REQUEST_URI'];
+        $url = explode('?', $url, 2);
+        $apiPath = str_replace($_ENV["REWRITE_BASE"] . $_ENV["SUB_URL"] . "/", "", $url[0]);
+		$apiParts = explode("/", $apiPath);
+		$apiVersion = $apiParts[2];
+		$routeType = $apiParts[3];
 
 		if ($currentApiVersion != $apiVersion) {
 			JSONResponseHandler::throwError(404, "api version not supported");
+		}
+
+		$path = str_replace("api/" . $apiVersion . "/", "", $apiPath);
+
+		switch ($routeType) {
+			case "customer":
+				require_once("classes/routes/CustomerRoutes.php");
+				CustomerRoutes::handleRequest($path);
+				break;
+			case "invoice":
+				require_once("classes/routes/InvoiceRoutes.php");
+				InvoiceRoutes::handleRequest($path);
+				break;
+			case "login":
+				require_once("classes/routes/LoginRoutes.php");
+				LoginRoutes::handleRequest($path);
+				break;
+			case "notes":
+				require_once("classes/routes/NotesRoutes.php");
+				NotesRoutes::handleRequest($path);
+				break;
+			case "notification":
+				require_once("classes/routes/NotificationRoutes.php");
+				NotificationRoutes::handleRequest($path);
+				break;
+			case "order-item":
+				require_once("classes/routes/OrderItemRoutes.php");
+				OrderItemRoutes::handleRequest($path);
+				break;
+			case "order":
+				require_once("classes/routes/OrderRoutes.php");
+				OrderRoutes::handleRequest($path);
+				break;
+			case "product":
+				require_once("classes/routes/ProductRoutes.php");
+				ProductRoutes::handleRequest($path);
+				break;
+			case "search":
+				require_once("classes/routes/SearchRoutes.php");
+				SearchRoutes::handleRequest($path);
+				break;
+			case "settings":
+				require_once("classes/routes/SettingsRoutes.php");
+				SettingsRoutes::handleRequest($path);
+				break;
+			case "sticker":
+				require_once("classes/routes/StickerRoutes.php");
+				StickerRoutes::handleRequest($path);
+				break;
+			default:
+				JSONResponseHandler::throwError(404, "Path not found");
+				break;
 		}
 	}
 

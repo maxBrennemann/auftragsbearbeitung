@@ -6,35 +6,65 @@ class Routes {
         
     }
 
-    protected static $routes = [];
+    protected static $getRoutes = [];
+    protected static $postRoutes = [];
+    protected static $putRoutes = [];
+    protected static $deleteRoutes = [];
 
-    public static function get($path, $callback) {
-        self::$routes[$path] = $callback;
-        self::validateServerRequest("GET", $path);
-    }
-
-    public static function post($path, $callback) {
-        self::$routes[$path] = $callback;
-        self::validateServerRequest("POST", $path);
-    }
-
-    public static function put($path, $callback) {
-        self::$routes[$path] = $callback;
-        self::validateServerRequest("PUT", $path);
-    }
-
-    public static function delete($path, $callback) {
-        self::$routes[$path] = $callback;
-        self::validateServerRequest("DELETE", $path);
-    }
-
-    private static function validateServerRequest($requestMethod, $path) {
-        if ($_SERVER['REQUEST_METHOD'] != $requestMethod) {
-            JSONResponseHandler::throwError(405, "Method not allowed");
+    protected static function get($route) {
+        if (!isset(self::$getRoutes[$route])) {
+            JSONResponseHandler::throwError(404, "Path not found");
         }
 
-        if (!array_key_exists($path, self::$routes)) {
+        $callback = self::$getRoutes[$route];
+        $callback();
+    }
+
+    protected static function post($route) {
+        if (!isset(self::$postRoutes[$route])) {
             JSONResponseHandler::throwError(404, "Path not found");
+        }
+
+        $callback = self::$postRoutes[$route];
+        $callback();
+    }
+
+    protected static function put($route) {
+        if (!isset(self::$putRoutes[$route])) {
+            JSONResponseHandler::throwError(404, "Path not found");
+        }
+
+        $callback = self::$putRoutes[$route];
+        $callback();
+    
+    }
+
+    protected static function delete($route) {
+        if (!isset(self::$deleteRoutes[$route])) {
+            JSONResponseHandler::throwError(404, "Path not found");
+        }
+
+        $callback = self::$deleteRoutes[$route];
+        $callback();
+    }
+
+    public static function handleRequest($route) {
+        $method = $_SERVER["REQUEST_METHOD"];
+        switch ($method) {
+            case "GET":
+                self::get($route);
+                break;
+            case "POST":
+                self::post($route);
+                break;
+            case "PUT":
+                self::put($route);
+                break;
+            case "DELETE":
+                self::delete($route);
+                break;
+            default:
+                JSONResponseHandler::throwError(405, "Method not allowed");
         }
     }
 

@@ -1,20 +1,15 @@
 <?php
 
-use Routes;
+require_once("classes/routes/Routes.php");
 
 class OrderRoutes extends Routes {
+
+    protected static $getRoutes = [
+        
+    ];
 
     public function __construct() {
         parent::__construct();
     }
 
-    public function testApiRoute() {
-        $this->get("/api/test", function() {
-            echo "test";
-        });
-    }
-
 }
-
-$orderRoutes = new OrderRoutes();
-$orderRoutes->testApiRoute();

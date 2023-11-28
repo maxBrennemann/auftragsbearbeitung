@@ -46,11 +46,7 @@ class ResourceManager {
                 self::handleResources();
                 exit;
             case "api":
-                $apiVersion = $parts[2];
-                $category = $parts[3];
-                $type = $parts[4];
-                $action = $parts[5];
-                Ajax::handleRequests($apiVersion, $category, $type, $action);
+                Ajax::handleRequests();
                 exit;
             case "admin":
                 require_once('admin.php');
@@ -426,6 +422,15 @@ class ResourceManager {
             $exportFacebook = new ExportFacebook();
             $exportFacebook->generateCSV();
         }
+    }
+
+    public static function outputHeaderJSON() {
+        session_start();
+    
+        header("Access-Control-Allow-Headers: *");
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+        header('Access-Control-Allow-Origin: http://localhost:5173');
+        header('Content-Type: application/json; charset=utf-8');
     }
 
 }
