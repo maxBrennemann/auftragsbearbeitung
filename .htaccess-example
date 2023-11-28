@@ -3,7 +3,7 @@ php_value display_errors on
 
 RewriteBase /
 
-RewriteCond %{REQUEST_METHOD} !^(POST|GET|OPTIONS)
+RewriteCond %{REQUEST_METHOD} !^(POST|GET|OPTIONS|PUT|DELETE)
 RewriteRule .* - [F]
 RewriteRule ^(.*)$ index.php [NC,L]
 

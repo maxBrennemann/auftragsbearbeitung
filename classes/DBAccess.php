@@ -112,6 +112,10 @@ class DBAccess {
 		return self::$statement->rowCount();
 	}
 
+	public static function getLastInsertId() {
+		return self::$connection->lastInsertId();
+	}
+
 	/* 
 	##### EXAMPLE #####
 	EXPORT_DATABASE("localhost","user","pass","db_name" ); 

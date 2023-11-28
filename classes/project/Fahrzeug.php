@@ -39,13 +39,25 @@ class Fahrzeug {
         return DBAccess::selectQuery("SELECT Nummer, Kennzeichen, Fahrzeug FROM fahrzeuge WHERE Kundennummer = $kundennummer");
     }
 
-    public static function attachVehicle($fahrzeugId, $auftragsId) {
-        DBAccess::insertQuery("INSERT INTO fahrzeuge_auftraege (id_fahrzeug, id_auftrag) VALUES ($fahrzeugId, $auftragsId)");
+    public static function attachVehicle() {
+        $orderId = (int) Tools::get("id");
+        $vehicleId = (int) Tools::get("vehicleId");
+
+        DBAccess::insertQuery("INSERT INTO fahrzeuge_auftraege (id_fahrzeug, id_auftrag) VALUES (:vehicleId, :orderId)", [
+            "vehicleId" => $vehicleId,
+            "orderId" => $orderId
+        ]);
         
-        $auftragsverlauf = new Auftragsverlauf($auftragsId);
-		$auftragsverlauf->addToHistory($fahrzeugId, 3, "added");
+        $auftragsverlauf = new Auftragsverlauf($orderId);
+		$auftragsverlauf->addToHistory($vehicleId, 3, "added");
+        $table = (new Auftrag($orderId))->getFahrzeuge();
+
+        JSONResponseHandler::sendResponse(array(
+            "message" => "Vehicle attached to order",
+            "vehicleId" => $vehicleId,
+            "orderId" => $orderId,
+            "table" => $table,
+        ));
     }
 
 }
-
-?>

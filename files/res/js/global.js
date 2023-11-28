@@ -507,9 +507,7 @@ function setRead() {
 async function updateNotifications() {
 	const containerDiv = document.getElementById("showNotifications");
 	const replacementDiv = document.createElement("div");
-	replacementDiv.innerHTML = await ajax.post({
-		r: "testDummy",
-	}, true);
+	replacementDiv.innerHTML = "test"; // TODO: replace with ajax call
 
 	replacementDiv.classList.add("notificationWrapper");
 

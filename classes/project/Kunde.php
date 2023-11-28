@@ -276,6 +276,15 @@ class Kunde implements StatisticsInterface {
 		return $text;
 	}
 
+	public static function getContacts() {
+		$kdnr = (int) Tools::get("id");
+		$data = DBAccess::selectQuery("SELECT Nummer as id, Vorname as firstName, Nachname as lastName, Email as email FROM ansprechpartner WHERE Kundennummer = :kdnr", [
+			"kdnr" => $kdnr,
+		]);
+
+		JSONResponseHandler::sendResponse($data);
+	}
+
 	/**
 	 * @return int
 	 */

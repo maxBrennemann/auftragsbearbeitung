@@ -5,8 +5,6 @@ require_once("classes/project/Auftrag.php");
 
 class Ajax {
 	
-	private static $sqlStatements = "SELECT posten.Postennummer, leistung.Bezeichnung, leistung_posten.Beschreibung, leistung_posten.SpeziefischerPreis, zeit.ZeitInMinuten, zeit.Stundenlohn FROM posten INNER JOIN leistung_posten ON posten.Postennummer = leistung_posten.Postennummer INNER JOIN zeit ON posten.Postennummer = zeit.Postennummer INNER JOIN leistung ON leistung_posten.Leistungsnummer = leistung.Nummer WHERE istStandard = 1;";
-
 	public static function handleRequests() {
 		$currentApiVersion = "v1";
 		ResourceManager::outputHeaderJSON();
@@ -87,7 +85,16 @@ class Ajax {
 				$type = $_POST['type'];
 			
 				if (strcmp($type, "custom") == 0) {
-					$data = DBAccess::selectQuery(self::$sqlStatements);
+					$query = "SELECT posten.Postennummer, leistung.Bezeichnung, leistung_posten.Beschreibung, leistung_posten.SpeziefischerPreis, zeit.ZeitInMinuten, zeit.Stundenlohn 
+						FROM posten 
+						INNER JOIN leistung_posten 
+							ON posten.Postennummer = leistung_posten.Postennummer 
+						INNER JOIN zeit 
+							ON posten.Postennummer = zeit.Postennummer 
+						INNER JOIN leistung 
+							ON leistung_posten.Leistungsnummer = leistung.Nummer 
+						WHERE istStandard = 1;";
+					$data = DBAccess::selectQuery($query);
 					$column_names = array(
 						0 => array("COLUMN_NAME" => "Postennummer"),
 						1 => array("COLUMN_NAME" => "Bezeichnung"), 
@@ -319,12 +326,6 @@ class Ajax {
 				Fahrzeug::attachVehicle($fahrzeugId, $auftragsId);
 				echo (new Auftrag($auftragsId))->getFahrzeuge();
 			break;
-			case "test":
-				var_dump(unserialize($_SESSION['data']));
-			break;
-			case "testDummy":
-				echo "this is a test string";
-			break;
 			case "insertStep":
 				$data = array();
 				$data['Bezeichnung'] = $_POST['bez'];
@@ -548,13 +549,6 @@ class Ajax {
 			break;
 			case "getServerMsg":
 				echo $_SESSION['searchResult'];
-			break;
-			case "attachCar":
-				$auftragsId = $_POST['auftrag'];
-				$fahrzeugId = $_POST['fahrzeug'];
-				require_once("classes/project/Fahrzeug.php");
-				Fahrzeug::attachVehicle($fahrzeugId, $auftragsId);
-				echo (new Auftrag($auftragsId))->getFahrzeuge();
 			break;
 			case "getAttributeMatcher":
 				require_once("classes/project/AttributeGroup.php");

@@ -12,56 +12,103 @@ class Routes {
     protected static $deleteRoutes = [];
 
     protected static function get($route) {
-        if (!isset(self::$getRoutes[$route])) {
+        if (static::checkUrlPatterns($route, static::$getRoutes)) {
+            return;
+        }
+
+        if (!isset(static::$getRoutes[$route])) {
             JSONResponseHandler::throwError(404, "Path not found");
         }
 
-        $callback = self::$getRoutes[$route];
+        $callback = static::$getRoutes[$route];
         $callback();
     }
 
     protected static function post($route) {
-        if (!isset(self::$postRoutes[$route])) {
+        if (!isset(static::$postRoutes[$route])) {
             JSONResponseHandler::throwError(404, "Path not found");
         }
 
-        $callback = self::$postRoutes[$route];
+        $callback = static::$postRoutes[$route];
         $callback();
     }
 
     protected static function put($route) {
-        if (!isset(self::$putRoutes[$route])) {
+        if (static::checkUrlPatterns($route, static::$putRoutes)) {
+            return;
+        }
+
+        if (!isset(static::$putRoutes[$route])) {
             JSONResponseHandler::throwError(404, "Path not found");
         }
 
-        $callback = self::$putRoutes[$route];
+        $callback = static::$putRoutes[$route];
         $callback();
     
     }
 
     protected static function delete($route) {
-        if (!isset(self::$deleteRoutes[$route])) {
+        if (!isset(static::$deleteRoutes[$route])) {
             JSONResponseHandler::throwError(404, "Path not found");
         }
 
-        $callback = self::$deleteRoutes[$route];
+        $callback = static::$deleteRoutes[$route];
         $callback();
+    }
+
+    private static function checkUrlPatterns($url, $routes) {
+        foreach ($routes as $route => $callback) {
+            if (static::matchUrlPattern($url, $route)) {
+                $callback();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static function matchUrlPattern($url, $route) {
+        $urlParts = explode("/", $url);
+        $routeParts = explode("/", $route);
+
+        if (count($urlParts) != count($routeParts)) {
+            return false;
+        }
+
+        for ($i = 0; $i < count($urlParts); $i++) {
+            if ($routeParts[$i] == $urlParts[$i]) {
+                continue;
+            }
+
+            if (substr($routeParts[$i], 0, 1) == "{" && substr($routeParts[$i], -1) == "}") {
+                self::setUrlParameter(substr($routeParts[$i], 1, -1), $urlParts[$i]);
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private static function setUrlParameter($key, $value) {
+        Tools::add($key, $value);
     }
 
     public static function handleRequest($route) {
         $method = $_SERVER["REQUEST_METHOD"];
         switch ($method) {
             case "GET":
-                self::get($route);
+                static::get($route);
                 break;
             case "POST":
-                self::post($route);
+                static::post($route);
                 break;
             case "PUT":
-                self::put($route);
+                static::put($route);
                 break;
             case "DELETE":
-                self::delete($route);
+                static::delete($route);
                 break;
             default:
                 JSONResponseHandler::throwError(405, "Method not allowed");

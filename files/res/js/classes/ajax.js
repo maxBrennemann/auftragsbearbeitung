@@ -59,6 +59,26 @@ AjaxCall.prototype.makeAjaxCall = function(dataCallback, ...args) {
 		}
 		ajaxCall.open("GET", this.url + this.paramString, true);
 		ajaxCall.send();
+	} else if (this.type == "PUT") {
+		var ajaxCall = new XMLHttpRequest();
+		ajaxCall.onreadystatechange = function() {
+			if(this.readyState == 4 && this.status == 200) {
+				dataCallback(this.responseText, args);
+			}
+		}
+		ajaxCall.open(this.type, this.url, true);
+		ajaxCall.setRequestHeader("Content-type", "application/json");
+		ajaxCall.send(this.paramString);
+	} else if (this.type == "DELETE") {
+		var ajaxCall = new XMLHttpRequest();
+		ajaxCall.onreadystatechange = function() {
+			if(this.readyState == 4 && this.status == 200) {
+				dataCallback(this.responseText, args);
+			}
+		}
+		ajaxCall.open(this.type, this.url, true);
+		ajaxCall.setRequestHeader("Content-type", "application/json");
+		ajaxCall.send(this.paramString);
 	} else {
 		console.error("AjaxCall: Ajax Type not defined");
 	}
@@ -73,12 +93,42 @@ export const ajax = {
 		return this.request(data, "GET", noJSON);
     },
 
+	async put(url, data = {}, noJSON = false) {
+		return this.requestLocation(url, data, "PUT", noJSON);
+	},
+
+	async delete(data, noJSON = false) {
+		return this.request(data, "DELETE", noJSON);
+	},
+
 	async request(data, type, noJSON = false) {
 		data.getReason = data.r;
         const param = Object.keys(data).map(key => {
             return `${key}=${encodeURIComponent(data[key])}`;
         });
         let response = await makeAsyncCall(type, param.join("&"), "").then(result => {
+            return result;
+        });
+    
+        if (noJSON) {
+            return response;
+        }
+
+        let json = {};
+        try {
+            json = JSON.parse(response);
+        } catch (e) {
+            return {};
+        }
+
+        return json;
+	},
+
+	async requestLocation(url, data, type, noJSON = false) {
+        const param = Object.keys(data).map(key => {
+            return `${key}=${encodeURIComponent(data[key])}`;
+        });
+        let response = await makeAsyncCall(type, param.join("&"), url).then(result => {
             return result;
         });
     
@@ -180,6 +230,30 @@ export async function makeAsyncCall(type, params, location) {
 			}
 			ajaxCall.open("GET", location + params, true);
 			ajaxCall.send();
+		} else if (type == "PUT") {
+			var ajaxCall = new XMLHttpRequest();
+			ajaxCall.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					resolve(this.responseText);
+				} else {
+					reject(this.responseText);
+				}
+			}
+			ajaxCall.open(type, location, true);
+			ajaxCall.setRequestHeader("Content-type", "application/json");
+			ajaxCall.send(params);
+		} else if (type == "DELETE") {
+			var ajaxCall = new XMLHttpRequest();
+			ajaxCall.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					resolve(this.responseText);
+				} else {
+					reject(this.responseText);
+				}
+			}
+			ajaxCall.open(type, location, true);
+			ajaxCall.setRequestHeader("Content-type", "application/json");
+			ajaxCall.send(params);
 		} else {
 			console.error("AjaxCall: Ajax Type not defined");
 		}

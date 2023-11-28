@@ -24,12 +24,9 @@ export function addExistingVehicle() {
         return;
     }
         
-    ajax.post({
-        r: "attachCar",
-        auftrag: globalData.auftragsId,
-        fahrzeug: globalData.vehicleId,
-    }, true).then(response => {
-        document.getElementById("fahrzeugTable").innerHTML = response;
+    ajax.put(`/api/v1/order/${globalData.auftragsId}/vehicles/${globalData.vehicleId}`)
+    .then(response => {
+        document.getElementById("fahrzeugTable").innerHTML = response.table;
     });
 }
 
