@@ -1,0 +1,3 @@
+[submodule ".res/colorpicker"]
+	path = .res/colorpicker
+	url = git@github.com:maxBrennemann/colorpicker.git

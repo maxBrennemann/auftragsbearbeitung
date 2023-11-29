@@ -301,9 +301,9 @@ class ResourceManager {
 
     private static function get_script($script) {
         header('Content-Type: text/javascript');
-
-        if ($script == "colorpicker.js") {
-            $file = file_get_contents(".res/colorpicker.js");
+        
+        if ($script == "/colorpicker.js") {
+            $file = file_get_contents(".res/colorpicker/min/colorpicker.js");
         } else {
             $fileName = explode(".", $script);
 
