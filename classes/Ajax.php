@@ -323,7 +323,11 @@ class Ajax {
 				$auftragsId =  $_POST['auftrag'];
 				$fahrzeugId = DBAccess::insertQuery("INSERT INTO fahrzeuge (Kundennummer, Kennzeichen, Fahrzeug) VALUES($nummer, '$kfzKenn', '$fahrzeug')");
 				require_once("classes/project/Fahrzeug.php");
-				Fahrzeug::attachVehicle($fahrzeugId, $auftragsId);
+
+				Tools::add("id", $auftragsId);
+				Tools::add("vehicleId", $fahrzeugId);
+
+				Fahrzeug::attachVehicle();
 				echo (new Auftrag($auftragsId))->getFahrzeuge();
 			break;
 			case "insertStep":
