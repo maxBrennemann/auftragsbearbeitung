@@ -23,5 +23,8 @@
         "google/apiclient-services": [
             "SearchConsole"
         ]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10"
     }
 }

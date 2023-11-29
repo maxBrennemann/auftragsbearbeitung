@@ -10,6 +10,16 @@ function file_get_contents_utf8($fn) {
 	return mb_convert_encoding($content, 'UTF-8', mb_detect_encoding($content, 'UTF-8, ISO-8859-1', true));
 }
 
+/**
+ * polyfill str_contains, maybe remove it later when support for older version drops
+ * https://www.php.net/manual/en/function.str-contains.php
+ */
+if (!function_exists('str_contains')) {
+    function str_contains($haystack, $needle) {
+        return $needle !== '' && mb_strpos($haystack, $needle) !== false;
+    }
+}
+
 function isLoggedIn() {
 	if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true) {
 		return true;	

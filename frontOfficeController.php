@@ -27,18 +27,15 @@ if (isset($_POST['getReason'])) {
 
 function showPage($page, $isArticle) {
     if ($page == "test") {
-        include('test.php');
         return null;
     }
 
-    $result = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM frontpage WHERE src = '$page'");
+    $result = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM frontpage WHERE src = :page", [
+        "page" => $page
+    ]);
     $articleUrl = "";
 
     if ($result == null) {
-        /* generated articles does not exist in this project */
-        //$baseUrl = 'files/generated/';
-        //$result = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM generated_articles WHERE src = '$page'");
-
         http_response_code(404);
 
         $baseUrl = 'files/frontOffice/';
@@ -55,8 +52,10 @@ function showPage($page, $isArticle) {
 
         if ($articleUrl == "productPage.php") {
             $nummer = isset($_GET["id"]) ? $_GET["id"] : 0;
-            $query = "SELECT Bezeichnung FROM produkt WHERE Nummer = $nummer";
-            $data =  DBAccess::selectQuery($query);
+            $query = "SELECT Bezeichnung FROM produkt WHERE Nummer = :nummer";
+            $data =  DBAccess::selectQuery($query, [
+                "nummer" => $nummer
+            ]);
             $title = $data[0]["Bezeichnung"];
         }
     }
@@ -65,5 +64,3 @@ function showPage($page, $isArticle) {
     include($baseUrl . $articleUrl);
     include('files/frontOffice/footer.php');
 }
-
-?>

@@ -23,7 +23,6 @@ module.exports = {
     neuerKunde: './files/res/js/neuerKunde.js',
     neuesProdukt: './files/res/js/neuesProdukt.js',
     offeneRechnungen: './files/res/js/offeneRechnungen.js',
-    print: './files/res/js/print.js',
     produkt: './files/res/js/produkt.js',
     rechnung: './files/res/js/rechnung.js',
     stickerOverview: './files/res/js/stickerOverview.js',
