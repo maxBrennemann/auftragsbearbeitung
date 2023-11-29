@@ -1,6 +1,5 @@
 <?php
 
-require_once('classes/DBAccess.php');
 require_once('classes/project/Listenpunkt.php');
 require_once('classes/project/Listenauswahl.php');
 
@@ -137,20 +136,20 @@ class Liste {
   }
 
   public static function getAllListPrevs() {
-    $lists = array();
-    $listIds = DBAccess::selectQuery("SELECT id, name FROM liste");
-
+    $listIds = DBAccess::selectQuery("SELECT id, `name` FROM liste");
     $data = "";
     $pageLink = Link::getPageLink("listmaker");
+
     foreach ($listIds as $lid) {
-      $data .= "<div class=\"defCont\"><a href=\"{$pageLink}?lid={$lid['id']}\">{$lid['name']}</a></div>";
+      $id = $lid['id'];
+      $name = $lid['name'];
+      $data .= "<div class=\"defCont\"><a href=\"$pageLink?lid=$id\">$name</a></div>";
     }
 
     return $data;
   }
 
   public static function chooseList() {
-    $lists = array();
     $listIds = DBAccess::selectQuery("SELECT id, name FROM liste");
 
     $data = "";
@@ -264,6 +263,8 @@ listenauswahl.id speichern für listenpunkt typ radio
 listenauswahl.id mit notitz speichern in tabelle für text
 listenauswahl.id true false für checked
 
-*/
+ <!-- input texfeld options: email, number, tel, url -->
+        <!-- input field ideas: color, date, datetime-local, file, range, search, time -->
+        <!-- other interaction types: textarea, link (button), download (file), table -->
 
-?>
+*/
