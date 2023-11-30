@@ -72,7 +72,18 @@ class ImportGoogleSearchConsole {
         $import->getStats("https://klebefux.de/");
     }
 
-    public static function get($url, $startDate, $endDate) {
+    /** 
+     * gets all search data for a given url,
+     * if no start and end date are given, the last 7 days are used
+     */
+    public static function get($url, ?string $startDate = null, ?string $endDate = null) {
+        if ($startDate == null) {
+            $startDate = date('Y-m-d', strtotime('-7 days'));
+        }
+        if ($endDate == null) {
+            $endDate = date('Y-m-d', strtotime('-3 days'));
+        }
+
         $query = "SELECT * FROM module_sticker_search_data WHERE `site`= :url AND `date` >= :startDate AND `date` <= :endDate;";
         $data = DBAccess::selectQuery($query, [
             "url" => $url,

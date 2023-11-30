@@ -13,12 +13,17 @@ class Protocol {
 	 * 
 	 * @param $text string
 	 */
-	public static function write($text) {
+	public static function write(string $textContent, ?string $details = null) {
 		if (self::$file == null) {
 			self::$file = fopen("protocol.txt", "a");
 		}
 		
-		$text = $text . "\n";
+		if ($details != null) {
+			$text = $textContent . " - " . $details . "\n";
+		} else {
+			$text = $textContent . "\n";
+		}
+		
 		fwrite(self::$file, $text);
 	}
 

@@ -44,6 +44,7 @@ class ResourceManager {
             case "pdf_invoice":
             case "upload":
             case "img":
+            case "static":
                 self::handleResources();
                 exit;
             case "api":
@@ -417,11 +418,16 @@ class ResourceManager {
             $file = file_get_contents(Link::getResourcesLink($filename, "csv", false));
             echo $file;
             // TODO: check if file exists and if not, return latest file
-        } else if ($file == "generate-facebook") {
+        } else if ($file == "/generate-facebook") {
             require_once("classes/project/modules/sticker/exports/ExportFacebook.php");
 
             $exportFacebook = new ExportFacebook();
             $exportFacebook->generateCSV();
+        } else if ($file == "/import-search-console") {
+            require_once("classes/project/modules/sticker/imports/ImportGoogleSearchConsole.php");
+
+            $importGoogleSearchConsole = new ImportGoogleSearchConsole();
+            $importGoogleSearchConsole->import();
         }
     }
 
