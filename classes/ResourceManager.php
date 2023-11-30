@@ -426,8 +426,7 @@ class ResourceManager {
         } else if ($file == "/import-search-console") {
             require_once("classes/project/modules/sticker/imports/ImportGoogleSearchConsole.php");
 
-            $importGoogleSearchConsole = new ImportGoogleSearchConsole();
-            $importGoogleSearchConsole->import();
+            ImportGoogleSearchConsole::import();
         }
     }
 
