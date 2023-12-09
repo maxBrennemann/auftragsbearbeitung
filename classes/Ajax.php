@@ -67,6 +67,10 @@ class Ajax {
 				require_once("classes/routes/StickerRoutes.php");
 				StickerRoutes::handleRequest($path);
 				break;
+			case "time-tracking":
+				require_once("classes/routes/TimeTrackingRoutes.php");
+				TimeTrackingRoutes::handleRequest($path);
+				break;
 			default:
 				JSONResponseHandler::throwError(404, "Path not found");
 				break;
@@ -1862,10 +1866,6 @@ class Ajax {
 			case "diagramme":
 				require_once('classes/project/Statistics.php');
 				Statistics::dispatcher();
-			break;
-			case "sendTimeTracking":
-				require_once('classes/project/TimeTracking.php');
-				TimeTracking::addEntry();
 			break;
 			case "getTimeTables":
 				require_once('classes/project/TimeTracking.php');

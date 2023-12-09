@@ -1,0 +1,39 @@
+<?php
+
+class TimeTrackingController {
+
+    public static function showTimeTracking(?int $id = null) {
+
+    }
+
+    public static function showTimeTrackingOverview() {
+        
+    }
+
+    public static function addEntry() {
+
+    }
+
+    public static function editEntry($id) {
+
+    }
+
+    public static function deleteEntry($id) {
+        if (!User::isAdmin()) {
+            return;
+        }
+
+        $id = (int) $id;
+        $query = "DELETE FROM zeiterfassung WHERE id = :id;";
+        DBAccess::deleteQuery($query, ["id" => $id]);
+
+        $affectedRows = DBAccess::getAffectedRows();
+
+        if ($affectedRows === 0) {
+            return JSONResponseHandler::returnNotFound();
+        }
+
+        JSONResponseHandler::returnOK();
+    }
+
+}

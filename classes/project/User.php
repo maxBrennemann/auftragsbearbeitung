@@ -357,4 +357,32 @@ class User {
         return -1;
     }
 
+    /**
+     * returns the admin status of the current user
+     * 
+     * @return bool
+     */
+    public static function isAdmin() {
+        $userId = self::getCurrentUserId();
+
+        if ($userId === -1) {
+            return false;
+        }
+
+        $query = "SELECT id FROM user_roles 
+            JOIN users 
+                ON users.role = user_roles.id 
+            WHERE users.id = :userId 
+                AND user_roles.name = 'admin'";
+        $data = DBAccess::selectQuery($query, [
+            "userId" => $userId,
+        ]);
+
+        if (empty($data)) {
+            return false;
+        }
+
+        return true;
+    }
+
 }

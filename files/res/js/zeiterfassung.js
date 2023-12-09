@@ -49,14 +49,16 @@ function click_startStopTime() {
     }
 }
 
+/**
+ * 
+ */
 function click_sendTimeTracking() {
     var task = document.getElementById("getTask").value;
 
-    ajax.post({
+    ajax.post(`/api/v1/time-tracking/add`, {
         task: task,
-        startTime: localStorage.getItem("startTime"),
-        stopTime: new Date().getTime().toString(),
-        r: "sendTimeTracking",
+        start: localStorage.getItem("startTime"),
+        stop: new Date().getTime().toString(),
     }).then(response => {
         const table = document.querySelector("table");
         const row = table.insertRow(1);

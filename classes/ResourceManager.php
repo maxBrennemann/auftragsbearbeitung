@@ -20,6 +20,7 @@ require_once('classes/project/NotificationManager.php');
 class ResourceManager {
 
     private static $cacheStatus = null;
+    private static $cacheFile = null;
     private static $page = "";
 
     function __construct() {
@@ -80,11 +81,11 @@ class ResourceManager {
      */
     public static function handleCache() {
         $t = false;
-        $cacheFile = "cache/cache_" . md5($_SERVER['REQUEST_URI']) . ".txt";
+        self::$cacheFile = "cache/cache_" . md5($_SERVER['REQUEST_URI']) . ".txt";
         self::$cacheStatus = CacheManager::getCacheStatus();
 
-        if (file_exists($cacheFile) && !(count($_GET) || count($_POST)) && $t && self::$cacheStatus == "on") {
-            echo file_get_contents_utf8($cacheFile);
+        if (file_exists(self::$cacheFile) && !(count($_GET) || count($_POST)) && $t && self::$cacheStatus == "on") {
+            echo file_get_contents_utf8(self::$cacheFile);
             return true;
         }
 
@@ -204,7 +205,7 @@ class ResourceManager {
     
         if (self::$cacheStatus == "on") {
             $cachedFileContent = ob_get_flush();
-            file_put_contents($cacheFile, $cachedFileContent);
+            file_put_contents(self::$cacheFile, $cachedFileContent);
         }
     }
 

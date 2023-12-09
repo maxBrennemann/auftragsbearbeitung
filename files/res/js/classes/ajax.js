@@ -85,20 +85,37 @@ AjaxCall.prototype.makeAjaxCall = function(dataCallback, ...args) {
 }
 
 export const ajax = {
-    async post(data, noJSON = false) {
-        return this.request(data, "POST", noJSON);
+	/**
+	 * currently with if else, because the old ajax calles are still used
+	 * 
+	 * @param {*} dataOrUrl 
+	 * @param {*} dataOrNoJSON 
+	 * @returns 
+	 */
+    async post(dataOrUrl, dataOrNoJSON = false) {
+		if (typeof dataOrUrl === 'string') {
+			const url = dataOrUrl;
+			const data = dataOrNoJSON;
+			return this.requestLocation(url, data, "POST");
+		} else if (typeof dataOrUrl === 'object') {
+			const data = dataOrUrl;
+			const noJSON = dataOrNoJSON;
+        	return this.request(data, "POST", noJSON);
+		} else {
+			throw new Error("Invalid parameter");
+		}
     },
 
-    async get(data, noJSON = false) {
-		return this.request(data, "GET", noJSON);
+    async get(url, data = {}) {
+		return this.requestLocation(url, data, "GET");
     },
 
-	async put(url, data = {}, noJSON = false) {
-		return this.requestLocation(url, data, "PUT", noJSON);
+	async put(url, data = {}) {
+		return this.requestLocation(url, data, "PUT");
 	},
 
-	async delete(data, noJSON = false) {
-		return this.request(data, "DELETE", noJSON);
+	async delete(url, data = {}) {
+		return this.requestLocation(url, data, "DELETE");
 	},
 
 	async request(data, type, noJSON = false) {
@@ -124,17 +141,13 @@ export const ajax = {
         return json;
 	},
 
-	async requestLocation(url, data, type, noJSON = false) {
+	async requestLocation(url, data, type) {
         const param = Object.keys(data).map(key => {
             return `${key}=${encodeURIComponent(data[key])}`;
         });
         let response = await makeAsyncCall(type, param.join("&"), url).then(result => {
             return result;
         });
-    
-        if (noJSON) {
-            return response;
-        }
 
         let json = {};
         try {
