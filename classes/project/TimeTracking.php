@@ -134,4 +134,8 @@ class TimeTracking {
         ]);
     }
 
+    public function isOwner($id) {
+        
+    }
+
 }

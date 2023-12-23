@@ -219,56 +219,37 @@ export async function makeAsyncCall(type, params, location) {
 		if (params == null) {
 			console.warn("AjaxCall: no parameters given");
 		}
-		
-		if (type == "POST") {
-			var ajaxCall = new XMLHttpRequest();
-			ajaxCall.onload = function() {
-				if (this.readyState == 4 && this.status == 200) {
-					resolve(this.responseText);
-				} else {
-					reject(this.responseText);
-				}
+
+		const ajaxCall = new XMLHttpRequest();
+		ajaxCall.onload = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				resolve(this.responseText);
+			} else {
+				reject(this.responseText);
 			}
-			ajaxCall.open("POST", location, true);
-			ajaxCall.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			ajaxCall.send(params);
-		} else if (type == "GET") {
-			var ajaxCall = new XMLHttpRequest();
-			ajaxCall.onload = function() {
-				if (this.readyState == 4 && this.status == 200) {
-					resolve(this.responseText);
-				} else {
-					reject();
-				}
-			}
-			ajaxCall.open("GET", location + params, true);
-			ajaxCall.send();
-		} else if (type == "PUT") {
-			var ajaxCall = new XMLHttpRequest();
-			ajaxCall.onreadystatechange = function() {
-				if (this.readyState == 4 && this.status == 200) {
-					resolve(this.responseText);
-				} else {
-					reject(this.responseText);
-				}
-			}
-			ajaxCall.open(type, location, true);
-			ajaxCall.setRequestHeader("Content-type", "application/json");
-			ajaxCall.send(params);
-		} else if (type == "DELETE") {
-			var ajaxCall = new XMLHttpRequest();
-			ajaxCall.onreadystatechange = function() {
-				if (this.readyState == 4 && this.status == 200) {
-					resolve(this.responseText);
-				} else {
-					reject(this.responseText);
-				}
-			}
-			ajaxCall.open(type, location, true);
-			ajaxCall.setRequestHeader("Content-type", "application/json");
-			ajaxCall.send(params);
-		} else {
-			console.error("AjaxCall: Ajax Type not defined");
 		}
+
+		switch (type) {
+			case "POST":
+				ajaxCall.open("POST", location, true);
+				ajaxCall.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				break;
+			case "GET":
+				ajaxCall.open("GET", location + params, true);
+				break;
+			case "PUT":
+				ajaxCall.open(type, location, true);
+				ajaxCall.setRequestHeader("Content-type", "application/json");
+				break;
+			case "DELETE":
+				ajaxCall.open(type, location, true);
+				ajaxCall.setRequestHeader("Content-type", "application/json");
+				break;
+			default:
+				console.error("AjaxCall: Ajax Type not defined");
+				break;
+		}
+
+		ajaxCall.send(params);
 	});
 }

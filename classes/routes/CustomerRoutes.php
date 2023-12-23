@@ -10,7 +10,7 @@ class CustomerRoutes extends Routes {
     ];
 
     protected static $postRoutes = [
-        "customer/add" => "Kunde::addCustomer",
+        "/customer/add" => "Kunde::addCustomer",
     ];
 
     public function __construct() {

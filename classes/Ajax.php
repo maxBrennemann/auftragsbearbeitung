@@ -1713,13 +1713,6 @@ class Ajax {
 				
 				echo "success";
 			break;
-			case "toggleShowTime":
-				Config::toggle("showTimeGlobal");
-
-				echo json_encode([
-					"status" => "success",
-				]);
-			break;
 			case "getIcon":
 				$type = (String) $_POST["icon"];
 				$icon = "";

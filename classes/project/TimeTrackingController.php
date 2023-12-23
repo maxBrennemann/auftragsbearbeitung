@@ -14,7 +14,12 @@ class TimeTrackingController {
 
     }
 
-    public static function editEntry($id) {
+    public static function editEntry(int $id) {
+        $timeTracking = new TimeTracking(0);
+        if (!User::isAdmin() && !$timeTracking->isOwner($id)) {
+            return;
+        }
+
 
     }
 
@@ -33,6 +38,14 @@ class TimeTrackingController {
             return JSONResponseHandler::returnNotFound();
         }
 
+        JSONResponseHandler::returnOK();
+    }
+
+    /**
+     * toggles global time tracking view
+     */
+    public static function toggleDisplayTimeTracking() {
+        Config::toggle("showTimeGlobal");
         JSONResponseHandler::returnOK();
     }
 

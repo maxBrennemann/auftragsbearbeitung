@@ -31,6 +31,62 @@ function init() {
         document.getElementById("updateStartStopName").innerHTML = "stoppen";
         document.getElementById("startStopChecked").checked = true;
     }
+
+    initTabSwitcher();
+    initTimeTracking();
+}
+
+/**
+ * Tab switcher to distinguish between
+ *  - my time tracking
+ *  - overview
+ *  - calendar
+ */
+function initTabSwitcher() {
+    const tabButtons = document.querySelector(".tab-switch-ul").children;
+    Array.from(tabButtons).forEach((button, index) => {
+        button.addEventListener("click", () => {
+            const tabs = document.querySelectorAll(".tab-switch");
+            currentTab = tabs[index];
+
+            if (currentTab.classList.contains("hidden")) {
+                Array.from(tabs).forEach(tab => {
+                    tab.classList.add("hidden");
+                });
+                currentTab.classList.remove("hidden");
+            }
+        });
+    });
+}
+
+/**
+ * shows the time tracking status and adds a listenre to the checkbox
+ */
+function initTimeTracking() {
+    const status = document.getElementById("statusTimeTracking");
+    const input = document.getElementById("inputTimeTracking");
+
+    if (input.checked) {
+        status.innerHTML = "Zeiterfassung stoppen";
+    } else {
+        status.innerHTML = "Zeiterfassung starten";
+    }
+
+    input.addEventListener("change", () => {
+        if (input.checked) {
+            status.innerHTML = "Zeiterfassung stoppen";
+        } else {
+            status.innerHTML = "Zeiterfassung starten";
+        }
+        setTimeTracking();
+    });
+}
+
+/**
+ * 
+ */
+function setTimeTracking() {
+
 }
 
 function click_startStopTime() {
