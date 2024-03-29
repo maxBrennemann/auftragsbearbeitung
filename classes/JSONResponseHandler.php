@@ -16,7 +16,7 @@ class JSONResponseHandler {
     public static function returnOK() {
         http_response_code(200);
         echo json_encode(array("message" => "OK"));
-    }
+    }  
 
     public static function returnNotFound() {
         http_response_code(404);
