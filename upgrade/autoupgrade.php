@@ -3,7 +3,6 @@
 $_SERVER["DOCUMENT_ROOT"] = "../";
 
 require_once('settings.php');
-require_once('vendor/autoload.php');
 require_once('classes/DBAccess.php');
 require_once('classes/Mailer.php');
 
@@ -28,7 +27,5 @@ if (count($errors) > 0) {
         echo $error;
     }
 
-    Mailer::sendMail(MAIL_ADDRESS_ALERTS, "Fehler beim Autoupgrade", "Fehler beim Ausführen der SQL-Dateien: " . implode("\n", $errors), "error@staging.organiserung.b-schriftung.de");
+    Mailer::sendMail($_ENV["MAIL_ADDRESS_ALERTS"], "Fehler beim Autoupgrade", "Fehler beim Ausführen der SQL-Dateien: " . implode("\n", $errors), "error@staging.organiserung.b-schriftung.de");
 }
-
-?>

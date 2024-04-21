@@ -6,7 +6,6 @@ auftragsbearbeitung.code-workspace
 .DS_Store
 
 # settings and config files
-settings.php
 companyInfo.php
 .htaccess
 .env
@@ -16,6 +15,12 @@ config/*
 !config/index.php
 cache/*
 !cache/index.php
+
+apiKeys/*
+!apiKeys/.gitkeep
+
+.res/sql/init/*
+!.res/sql/init/.gitkeep
 
 # generated files
 files/generated/*
@@ -55,3 +60,4 @@ files/res/form/modules/sticker/catalog_products.csv
 .git.bfg-report
 words.txt
 favicon.ico
+protocol.txt

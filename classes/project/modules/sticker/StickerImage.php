@@ -259,7 +259,7 @@ class StickerImage extends PrestashopConnection {
 
         $this->stripUnsupportedFileTypes($imageURLs);
 
-        if (defined("DEV_MODE") && DEV_MODE == true) {
+        if ($_ENV["DEV_MODE"] == true) {
             $result = $this->directUpload($imageURLs, $productId);
             $this->processImageIds($result, $imageURLs);
         } else {
@@ -298,7 +298,7 @@ class StickerImage extends PrestashopConnection {
         $images = array();
         $first = true;
         foreach ($imageURLs as $i) {
-            $link = WEB_URL . "/upload/" . $i["dateiname"];
+            $link = $_ENV["WEB_URL"] . "upload/" . $i["dateiname"];
             $images[] = [
                 "url" => urlencode($link),
                 "cover" => $first,
@@ -359,6 +359,7 @@ class StickerImage extends PrestashopConnection {
         
             $result = $response->getBody()->getContents();
         } catch (RequestException $e) {
+            
         }
 
         if (isset($result)) {
@@ -373,7 +374,7 @@ class StickerImage extends PrestashopConnection {
      */
     public function uploadImageDescription($descriptions) {
         $client = new \GuzzleHttp\Client();
-        $client->request('POST', SHOPURL . "/auftragsbearbeitung/setImageDescription.php", [
+        $client->request('POST', $_ENV["SHOPURL"] . "/auftragsbearbeitung/setImageDescription.php", [
             'form_params' => [
                 'descriptions' => json_encode($descriptions),
             ],

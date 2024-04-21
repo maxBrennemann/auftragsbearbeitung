@@ -347,11 +347,13 @@ class StickerTagManager extends PrestashopConnection {
 
     /**
      * Die Funktion geht alle Tags im Shop durch und speichert sie einzeln ab.
-     * Wichtig: TagContent ist unique, wie im Shop. Deshalb müsste es später vielleicht ein REPLACE INTO werden? 
+     * Wichtig: TagContent ist unique, wie im Shop.
+     * Deshalb müsste es später vielleicht ein REPLACE INTO werden? 
      * Oder alles löschen und dann neu crawlen?
      */
     public static function crawlAllTags() {
         $crawler = new PrestashopConnection();
+
         try {
             $xml = $crawler->getXML("tags");
             $tags = $xml->children()->children();
@@ -360,22 +362,25 @@ class StickerTagManager extends PrestashopConnection {
                 $id = (int) $tag->attributes()->{"id"};
 
                 $innerCrawler = new PrestashopConnection();
+                $data = [];
+
                 try {
                     $xml = $innerCrawler->getXML("tags/$id");
                     $tag = $xml->children()->children();
 
                     $name = (String) $tag->{"name"};
-                    /* TODO: insert multiple verwenden */
-                    DBAccess::insertQuery("INSERT INTO module_sticker_tags (id_tag_shop, `content`) VALUES (:idTag, :tagName);", [
-                        "idTag" => $id,
-                        "tagName" => $name,
-                    ]);
+                    $data[] = [
+                        "int" => $id,
+                        "string" => $name,
+                    ];
                 } catch (PrestaShopWebserviceException $e) {
-                    echo $e;
+                    Protocol::write($e->getMessage());
                 }
+
+                DBAccess::insertMultiple("INSERT INTO module_sticker_tags (id_tag_shop, `content`) VALUES ", $data);
             }
         } catch (PrestaShopWebserviceException $e) {
-            echo $e;
+            Protocol::write($e->getMessage());
         }
     }
 

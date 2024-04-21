@@ -1,4 +1,5 @@
 <?php
+
 require_once('classes/project/modules/sticker/StickerTagManager.php');
 require_once('classes/project/modules/sticker/StickerImage.php');
 require_once('classes/project/modules/sticker/StickerCollection.php');
@@ -29,9 +30,6 @@ if ($id == 0): ?>
 <?php else: ?>
 <script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
 <div class="w-full">
-<?php if ($stickerCollection->checkProductErrorStatus()) : ?>
-<p class="text-red-700 p-5 bg-red-200 rounded-lg mt-2"><?=$stickerCollection->getErrorMessage()?></p>
-<?php endif; ?>
 <div class="cont1">
     <div class="defCont">
         <h2 class="font-semibold">Motiv <input id="name" class="titleInput inline bg-inherit border-b border-b-gray-600 pl-1" value="<?=$stickerCollection->getName();?>" title="Faceboook hat ein internes Limit für die Titellänge von 65 Zeichen">
@@ -124,6 +122,17 @@ if ($id == 0): ?>
                     <span class="slider round" data-binding="true" data-fun="toggleCheckbox"></span>
                 </label>
             </span>
+        </div>
+        <div class="">
+            <details>
+                <summary>Farbauswahl</summary>
+                <div class="ml-2">
+                    <!-- Farbauswahl einbauen -->
+                    <label>
+                        <input type="checkbox" checked>Standardfarbauswahl verwenden
+                    </label>
+                </div>
+            </details>
         </div>
         <div class="mt-2">
             <div>
@@ -448,9 +457,20 @@ if ($id == 0): ?>
     <h2 class="font-semibold mb-2">Statistiken</h2>
     <!-- TODO: Statistiken von Google Analytics und Google Shopping, sowie von Google SearchConsole und shopintern einbinden -->
     <div>
+        <label>
+            Von
+            <input type="date" id="statsStart">
+        </label>
+        <label>
+            Bis
+            <input type="date" id="statsEnd">
+        </label>
+    </div>
+    <div class="mt-2">
         <h3>Google SearchConsole</h3>
-        <p>Impressions: <?=$stickerCollection->getSearchConsoleStats("impressions")?></p>
-        <p>Klicks: <?=$stickerCollection->getSearchConsoleStats("clicks")?></p>
+        <div id="google-searchconsole">
+
+        </div>
     </div>
 </div>
 <div class="defCont">

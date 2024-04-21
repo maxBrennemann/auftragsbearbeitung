@@ -12,7 +12,7 @@
             <input type="checkbox" name="setAutoLogin" id="autologin">
             <span>Eingeloggt bleiben</span>
         </label>
-        <button class="btn-primary block" onclick="login()">Einloggen</button>
+        <button class="btn-primary block" id="loginBtn">Einloggen</button>
     </div>
     <div class="innerDefCont" id="autoLogin">
         <div class="lds-ring"><div></div><div></div><div></div><div></div></div>

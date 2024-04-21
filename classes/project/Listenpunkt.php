@@ -1,6 +1,5 @@
 <?php
 
-require_once('classes/DBAccess.php');
 require_once('classes/project/Listenauswahl.php');
 
 class Listenpunkt {
@@ -49,5 +48,3 @@ class Listenpunkt {
     }
 
 }
-
-?>

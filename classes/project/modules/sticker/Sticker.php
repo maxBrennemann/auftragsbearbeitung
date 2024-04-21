@@ -27,6 +27,7 @@ class Sticker extends PrestashopConnection {
     function __construct(int $idSticker) {
         $this->idSticker = $idSticker;
         $this->stickerData = DBAccess::selectQuery("SELECT * FROM module_sticker_sticker_data WHERE id = :idSticker LIMIT 1;", ["idSticker" => $idSticker]);
+
         if ($this->stickerData == null) {
             throw new Exception("Sticker does not exist.");
         }
@@ -39,7 +40,6 @@ class Sticker extends PrestashopConnection {
         }
 
         $this->imageData = new StickerImage($idSticker);
-
         $this->instanceType = "sticker";
     }
 
@@ -321,9 +321,9 @@ class Sticker extends PrestashopConnection {
 
     /**
      * inserts a new sticker into the database and sets all its initial values
-     * @param String $title the new sticker's name
+     * @param string $title the new sticker's name
      */
-    public static function createNewSticker(String $title) {
+    public static function createNewSticker(string $title) {
         /* insert sticker into database */
         $query = "INSERT INTO module_sticker_sticker_data (`name`) VALUES (:title)";
         $id = DBAccess::insertQuery($query, ["title" => $title]);

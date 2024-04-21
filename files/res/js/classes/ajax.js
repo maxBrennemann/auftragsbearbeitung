@@ -59,19 +59,64 @@ AjaxCall.prototype.makeAjaxCall = function(dataCallback, ...args) {
 		}
 		ajaxCall.open("GET", this.url + this.paramString, true);
 		ajaxCall.send();
+	} else if (this.type == "PUT") {
+		var ajaxCall = new XMLHttpRequest();
+		ajaxCall.onreadystatechange = function() {
+			if(this.readyState == 4 && this.status == 200) {
+				dataCallback(this.responseText, args);
+			}
+		}
+		ajaxCall.open(this.type, this.url, true);
+		ajaxCall.setRequestHeader("Content-type", "application/json");
+		ajaxCall.send(this.paramString);
+	} else if (this.type == "DELETE") {
+		var ajaxCall = new XMLHttpRequest();
+		ajaxCall.onreadystatechange = function() {
+			if(this.readyState == 4 && this.status == 200) {
+				dataCallback(this.responseText, args);
+			}
+		}
+		ajaxCall.open(this.type, this.url, true);
+		ajaxCall.setRequestHeader("Content-type", "application/json");
+		ajaxCall.send(this.paramString);
 	} else {
 		console.error("AjaxCall: Ajax Type not defined");
 	}
 }
 
 export const ajax = {
-    async post(data, noJSON = false) {
-        return this.request(data, "POST", noJSON);
+	/**
+	 * currently with if else, because the old ajax calles are still used
+	 * 
+	 * @param {*} dataOrUrl 
+	 * @param {*} dataOrNoJSON 
+	 * @returns 
+	 */
+    async post(dataOrUrl, dataOrNoJSON = false) {
+		if (typeof dataOrUrl === 'string') {
+			const url = dataOrUrl;
+			const data = dataOrNoJSON;
+			return this.requestLocation(url, data, "POST");
+		} else if (typeof dataOrUrl === 'object') {
+			const data = dataOrUrl;
+			const noJSON = dataOrNoJSON;
+        	return this.request(data, "POST", noJSON);
+		} else {
+			throw new Error("Invalid parameter");
+		}
     },
 
-    async get(data, noJSON = false) {
-		return this.request(data, "GET", noJSON);
+    async get(url, data = {}) {
+		return this.requestLocation(url, data, "GET");
     },
+
+	async put(url, data = {}) {
+		return this.requestLocation(url, data, "PUT");
+	},
+
+	async delete(url, data = {}) {
+		return this.requestLocation(url, data, "DELETE");
+	},
 
 	async request(data, type, noJSON = false) {
 		data.getReason = data.r;
@@ -85,6 +130,24 @@ export const ajax = {
         if (noJSON) {
             return response;
         }
+
+        let json = {};
+        try {
+            json = JSON.parse(response);
+        } catch (e) {
+            return {};
+        }
+
+        return json;
+	},
+
+	async requestLocation(url, data, type) {
+        const param = Object.keys(data).map(key => {
+            return `${key}=${encodeURIComponent(data[key])}`;
+        });
+        let response = await makeAsyncCall(type, param.join("&"), url).then(result => {
+            return result;
+        });
 
         let json = {};
         try {
@@ -156,32 +219,35 @@ export async function makeAsyncCall(type, params, location) {
 		if (params == null) {
 			console.warn("AjaxCall: no parameters given");
 		}
-		
-		if (type == "POST") {
-			var ajaxCall = new XMLHttpRequest();
-			ajaxCall.onload = function() {
-				if (this.readyState == 4 && this.status == 200) {
-					resolve(this.responseText);
-				} else {
-					reject(this.responseText);
-				}
+
+		const ajaxCall = new XMLHttpRequest();
+		ajaxCall.onload = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				resolve(this.responseText);
+			} else {
+				reject(this.responseText);
 			}
-			ajaxCall.open("POST", location, true);
-			ajaxCall.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			ajaxCall.send(params);
-		} else if (type == "GET") {
-			var ajaxCall = new XMLHttpRequest();
-			ajaxCall.onload = function() {
-				if (this.readyState == 4 && this.status == 200) {
-					resolve(this.responseText);
-				} else {
-					reject();
-				}
-			}
-			ajaxCall.open("GET", location + params, true);
-			ajaxCall.send();
-		} else {
-			console.error("AjaxCall: Ajax Type not defined");
 		}
+
+		switch (type) {
+			case "POST":
+				ajaxCall.open("POST", location, true);
+				break;
+			case "GET":
+				ajaxCall.open("GET", location + params, true);
+				break;
+			case "PUT":
+				ajaxCall.open(type, location, true);
+				break;
+			case "DELETE":
+				ajaxCall.open(type, location, true);
+				break;
+			default:
+				console.error("AjaxCall: Ajax Type not defined");
+				break;
+		}
+
+		ajaxCall.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		ajaxCall.send(params);
 	});
 }

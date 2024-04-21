@@ -17,8 +17,8 @@ class ChatGPTConnection {
      * @param String $message The message which is passed to chat gpt
      */
     public static function request($message) {
-        $apiKey = OPENAI_API_KEY;
-        $organisationKey = OPENAI_ORGANISATION_ID;
+        $apiKey = $_ENV["OPENAI_API_KEY"];
+        $organisationKey = $_ENV["OPENAI_ORGANISATION_ID"];
         $url = 'https://api.openai.com/v1/chat/completions';
         
         $headers = array(
@@ -84,8 +84,8 @@ class ChatGPTConnection {
      * @param String $textStyle The kind of text (e.g ironic, funny, sad)
      */
     public function getTextSuggestion($query, $stickerType, $textType, $info, $textStyle) {
-        $apiKey = OPENAI_API_KEY;
-        $organisationKey = OPENAI_ORGANISATION_ID;
+        $apiKey = $_ENV["OPENAI_API_KEY"];
+        $organisationKey = $_ENV["OPENAI_ORGANISATION_ID"];
         $url = 'https://api.openai.com/v1/chat/completions';
         
         $headers = array(

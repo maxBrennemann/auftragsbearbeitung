@@ -2,12 +2,13 @@
 
 require_once('classes/project/UpdateSchedule.php');
 
-/*
+/**
   * Anforderungen der Table Klasse:
-  * static Funktionen, um schnell eine Tabelle aus der Datenbank zu generieren, angelehnt an die alte FormGenerator Class
-  * initialisierbare Klasse, um Tabellen bearbeitbar zu machen, damit sind verknüpfte Aktionen, wie löschen, hinzufügen und bearbeiten gemeint
-*/
-
+  * static Funktionen, um schnell eine Tabelle aus der Datenbank zu generieren,
+  * angelehnt an die alte FormGenerator Class
+  * initialisierbare Klasse, um Tabellen bearbeitbar zu machen,
+  * damit sind verknüpfte Aktionen, wie löschen, hinzufügen und bearbeiten gemeint
+  */
 class Table {
 
 	private $type = "";

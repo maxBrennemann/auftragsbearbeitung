@@ -144,6 +144,9 @@ class StickerCategory extends PrestashopConnection {
     private static function cacheCategoryTree($categories, $startCategory) {
         $filename = 'cache/modules/sticker/categories/' . $startCategory . '.json';
 
+        if (is_writable($filename) === false) {
+            return;
+        }
         file_put_contents($filename, json_encode($categories));
     }
 

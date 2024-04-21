@@ -124,16 +124,17 @@ class ProductCrawler extends PrestashopConnection {
 
         /* sets the additional_data column */
         $matches = SearchProducts::getProductsByStickerId($id);
-        $matchesJson = json_encode($matches, JSON_UNESCAPED_UNICODE);
-        DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET additional_data = '$matchesJson' WHERE id = :id;", ["id" => $id]);
+        if ($matches != null) {
+            $matchesJson = json_encode($matches, JSON_UNESCAPED_UNICODE);
+            DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET additional_data = '$matchesJson' WHERE id = :id;", ["id" => $id]);
+        }
     }
 
     /**
-     * vorgehen:
+     * Vorgehen:
      * img daten holen und mit den daten am server vergleichen
      * dann bilder, die fehlen, herunterladen
      */
-
     private function getImages($productData, $category) {
         $idMotiv = (int) $productData->reference;
         $idProduct = (int) $productData->id;
@@ -175,10 +176,10 @@ class ProductCrawler extends PrestashopConnection {
     }
 
     private function downloadImage($idProduct, $idImage, $idMotiv) {
-        $ch = curl_init(SHOPURL . "/api/images/products/$idProduct/$idImage");
+        $ch = curl_init($_ENV["SHOPURL"] . "/api/images/products/$idProduct/$idImage");
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_USERPWD, SHOPKEY . ':');
+        curl_setopt($ch, CURLOPT_USERPWD, $_ENV["SHOPKEY"] . ':');
         $image = curl_exec($ch);
         curl_close($ch);
 
@@ -227,5 +228,3 @@ class ProductCrawler extends PrestashopConnection {
     }
 
 }
-
-?>

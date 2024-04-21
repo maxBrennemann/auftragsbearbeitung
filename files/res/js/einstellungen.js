@@ -9,14 +9,9 @@ if (document.readyState !== 'loading' ) {
 function initEventListeners() {
     const switchTimeTracking = document.getElementById("showTimeTracking");
     if (switchTimeTracking != null) {
-        switchTimeTracking.addEventListener("change", (e) => {
-            const send = new AjaxCall({
-                getReason: "toggleShowTime",
-            }, "POST", window.location.href);
-            send.makeAjaxCall(response => {
-                response = JSON.parse(response);
-
-                if (response.status == "success") {
+        switchTimeTracking.addEventListener("change", () => {
+            ajax.put("/api/v1/settings/global-timetracking").then(r => {
+                if (r.message == "ok") {
                     infoSaveSuccessfull("success");
                 }
             });

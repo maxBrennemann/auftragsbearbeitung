@@ -11,37 +11,59 @@
  * 
  * https://docs.prestashop-project.org/1-6-documentation/english-documentation/developer-guide/developer-tutorials/using-the-prestashop-web-service/web-service-tutorial
  */
-class PrestashopConnection {
+class PrestashopConnection
+{
 
-    protected $url = SHOPURL . "/auftragsbearbeitung/JSONresponder.php";
-    private $prestaKey = SHOPKEY;
-    private $prestaUrl =  SHOPURL;
+    protected $url = "";
+    private $prestaKey = "";
+    private $prestaUrl =  "";
 
     protected $webService;
     protected $xml;
 
-    function __construct() {
-        
+    function __construct()
+    {
+        $this->url = $_ENV["SHOPURL"] . "/auftragsbearbeitung/JSONresponder.php";
+        $this->prestaKey = $_ENV["SHOPKEY"];
+        $this->prestaUrl = $_ENV["SHOPURL"];
     }
 
-    protected function getXML($resource, $debug = false) {
+    protected function getXML($resource, $debug = false)
+    {
         //$debug = true;
+
+        $debugText = $debug ? "true" : "false";
+        Protocol::write("PrestashopConnection::getXML($resource, debug = $debugText)");
+
         $this->webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, $debug);
-        $this->xml = $this->webService->get(array('resource' => $resource));
+        $this->xml = $this->webService->get([
+            'resource' => $resource
+        ]);
 
         return $this->xml;
     }
 
-    protected function addXML($options) {
+    protected function addXML($options)
+    {
+        Protocol::write("PrestashopConnection::addXML()");
+
         $this->xml = $this->webService->add($options);
     }
 
-    protected function editXML($options) {
+    protected function editXML($options)
+    {
+        Protocol::write("PrestashopConnection::editXML()");
+
         $this->xml = $this->webService->edit($options);
     }
 
-    protected function deleteXML($resource, $id, $debug = false) {
+    protected function deleteXML($resource, $id, $debug = false)
+    {
         //$debug = true;
+
+        $debugText = $debug ? "true" : "false";
+        Protocol::write("PrestashopConnection::getXML($resource, debug = $debugText)");
+
         try {
             $this->webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, $debug);
 

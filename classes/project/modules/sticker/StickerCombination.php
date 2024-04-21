@@ -41,18 +41,33 @@ class StickerCombination extends PrestashopConnection {
     }
 
     private function getOldCombinations($productId) {
+        $productId = (int) $productId;
+        if ($productId == 0) {
+            return null;
+        }
+
         try {
             $xml = $this->getXML("products/$productId");
             $product = $xml->children()->children();
             
             return $product->associations->combinations;
         } catch (PrestaShopWebserviceException $e) {
-            echo $e;
+            Protocol::write($e->getMessage());
+            return [];
         }
     }
 
     public function removeOldCombinations($productId) {
+        $productId = (int) $productId;
+        if ($productId == 0) {
+            return null;
+        }
+
         $productCombinations = $this->getOldCombinations($productId);
+
+        if (count($productCombinations) == 0) {
+            return null;
+        }
         
         foreach ($productCombinations->combination as $combination) {
             $combinationId = (int) $combination->{"id"};
@@ -125,17 +140,23 @@ class StickerCombination extends PrestashopConnection {
     }
 
     private function getStockAvailablesIds() {
-        $stockAvailablesIds = array();
+        $stockAvailablesIds = [];
 
         try {
-            $xml = $this->getXML('products/' . (int) $this->sticker->getIdProduct());
+            $idProduct = (int) $this->sticker->getIdProduct();
+
+            if ($idProduct == 0) {
+                return $stockAvailablesIds;
+            }
+
+            $xml = $this->getXML('products/' . $idProduct);
             $stocks = $xml->children()->children()->associations->stock_availables;
 
             foreach ($stocks->stock_available as $stock) {
                 array_push($stockAvailablesIds, $stock->id);
             }
         } catch (PrestaShopWebserviceException $e) {
-            echo $e;
+            Protocol::write($e->getMessage());
         }
 
         return $stockAvailablesIds;

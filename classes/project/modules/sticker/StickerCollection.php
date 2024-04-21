@@ -7,7 +7,8 @@ require_once("classes/project/modules/sticker/Wandtattoo.php");
 require_once("classes/project/modules/sticker/Textil.php");
 require_once("classes/project/modules/sticker/imports/ImportGoogleSearchConsole.php");
 
-class StickerCollection implements Iterator {
+class StickerCollection implements Iterator
+{
 
     private $products = [];
     private $current = 0;
@@ -19,9 +20,10 @@ class StickerCollection implements Iterator {
     private Sticker $sticker;
 
     private $productMatches;
-    private $displayError = false;
+    private String $displayError = "";
 
-    function __construct(int $id) {
+    function __construct(int $id)
+    {
         $this->id = $id;
         $this->sticker = new Sticker($id);
 
@@ -30,31 +32,38 @@ class StickerCollection implements Iterator {
         $this->products[2] = new Textil($this->id);
     }
 
-    public function getName(): String {
+    public function getName(): String
+    {
         return $this->sticker->getName();
     }
 
-    public function getCreationDate() {
+    public function getCreationDate()
+    {
         return $this->sticker->getCreationDate();
     }
 
-    public function getDirectory() {
+    public function getDirectory()
+    {
         return $this->sticker->getDirectory();
     }
 
-    public function getIsMarked() {
+    public function getIsMarked()
+    {
         return $this->sticker->getIsMarked();
     }
 
-    public function getIsRevised() {
+    public function getIsRevised()
+    {
         return $this->sticker->getIsRevised();
     }
 
-    public function getAdditionalInfo() {
+    public function getAdditionalInfo()
+    {
         return $this->sticker->getAdditionalInfo();
     }
 
-    public function getExportStatus($export): bool {
+    public function getExportStatus($export): bool
+    {
         if ($this->exports == []) {
             $query = "SELECT * FROM module_sticker_exports WHERE `idSticker`= :idSticker";
             $data = DBAccess::selectQuery($query, ["idSticker" => $this->id]);
@@ -66,45 +75,55 @@ class StickerCollection implements Iterator {
     }
 
     /* Iterator */
-    public function current(): mixed {
+    public function current(): mixed
+    {
         return $this->getTarget($this->current);
     }
 
-    public function key(): mixed {
+    public function key(): mixed
+    {
         return $this->position;
     }
 
-    public function rewind(): void {
+    public function rewind(): void
+    {
         $this->position = 0;
     }
 
-    public function next(): void {
+    public function next(): void
+    {
         ++$this->position;
     }
 
-    public function valid(): bool {
+    public function valid(): bool
+    {
         return isset($this->products[$this->position]);
     }
 
-    public function createAll() {
+    public function createAll()
+    {
         $this->getAufkleber();
         $this->getWandtattoo();
         $this->getTextil();
     }
 
-    public function getAufkleber() {
+    public function getAufkleber()
+    {
         return $this->products[0];
     }
 
-    public function getWandtattoo() {
+    public function getWandtattoo()
+    {
         return $this->products[1];
     }
 
-    public function getTextil() {
+    public function getTextil()
+    {
         return $this->products[2];
     }
 
-    public function getTarget($type) {
+    public function getTarget($type)
+    {
         $target = null;
         switch ($type) {
             case "aufkleber":
@@ -121,8 +140,9 @@ class StickerCollection implements Iterator {
         return $target;
     }
 
-    public function toggleActiveStatus() {
-        $type = (String) $_POST["type"];
+    public function toggleActiveStatus()
+    {
+        $type = (string) $_POST["type"];
 
         $target = $this->getTarget($type);
         $target->toggleActiveStatus();
@@ -133,16 +153,30 @@ class StickerCollection implements Iterator {
         ]);
     }
 
-    /* updates or uploads all products and writes connections */
-    public function uploadAll() {
-        // TODO: implement function
+    /**
+     *  updates or uploads all products and writes connections 
+     */
+    public function uploadAll($overwriteImages)
+    {
+        $this->getAufkleber()->save($overwriteImages["aufkleber"]);
+        $this->getWandtattoo()->save($overwriteImages["wandtattoo"]);
+        $this->getTextil()->save($overwriteImages["textil"]);
     }
 
-    public function checkProductErrorStatus() {
+    /**
+     * is called via AJAX to reduce page load
+     */
+    public function checkProductErrorStatus()
+    {
         $this->productMatches = SearchProducts::getProductsByStickerId($this->id);
 
+        if ($this->productMatches == null) {
+            $this->displayError = "noConnection";
+            return $this->displayError;
+        }
+
         if (count($this->productMatches["allLinks"]) > 3) {
-            $this->displayError = true;
+            $this->displayError = "tooManyProducts";
         }
 
         $matchesJson = json_encode($this->productMatches, JSON_UNESCAPED_UNICODE);
@@ -154,31 +188,111 @@ class StickerCollection implements Iterator {
         return $this->displayError;
     }
 
-    public function getErrorMessage() {
-        $text = '<div class="defCont warning"><div class="warningHead">' . Icon::getDefault("iconWarning") .'<span>Es wurden mehr als drei Produkte zu diesem Motiv gefunden!</span></div>';
+    /**
+     * generates an error message in html
+     */
+    public function getErrorMessage(): ?String
+    {
+        $text = "";
 
-        $count = 1;
-        foreach ($this->productMatches["allLinks"] as $l) {
-            $text .= '<a target="_blank" href="' . $l . '">Produkt ' . $count++ . '</a>';
+        switch ($this->displayError) {
+            case "tooManyProducts":
+                $text = '<div class="defCont warning"><div class="warningHead">' . Icon::getDefault("iconWarning") . '<span>Es wurden mehr als drei Produkte zu diesem Motiv gefunden!</span></div>';
+
+                $count = 1;
+                foreach ($this->productMatches["allLinks"] as $l) {
+                    $text .= '<a target="_blank" href="' . $l . '">Produkt ' . $count++ . '</a>';
+                }
+
+                $text .= "</div>";
+                break;
+            case "noConnection":
+                $text = "Es konnte keine Verbindung zum Shop hergestellt werden.";
+                break;
+            default:
+                $text = "";
         }
 
-        return $text . "</div>";
+        return $text;
     }
 
-    public function getSearchConsoleStats($type) {
-        return "";
+    public function getSearchConsoleStats($startDate, $endDate)
+    {
+        $url = "";
+        $data = ImportGoogleSearchConsole::get($url, $startDate, $endDate);
+        return $data;
+    }
 
-        $url = "https://klebefux.de/home/877-aufkleber-camping.html";
-        $stats = ImportGoogleSearchConsole::getStats($url);
+    public static function getStickerStatus()
+    {
+        $id = (int) Tools::get("id");
+
+        $sc = new StickerCollection($id);
+        $errorStatus = $sc->checkProductErrorStatus();
+        $errorData = $sc->getErrorMessage();
+
+        JSONResponseHandler::sendResponse([
+            "errorStatus" => $errorStatus,
+            "errorData" => $errorData,
+        ]);
+    }
+
+    public static function exportSticker()
+    {
+        $id = (int) Tools::get("id");
+        $type = (int) Tools::get("stickerType");
+        $overwrite = json_decode(Tools::get("overwrite"), true);
+
+        $message = "";
+        $responseData = [];
+
+        ob_start();
 
         switch ($type) {
-            case "impressions":
+            case 1:
+                $aufkleber = new Aufkleber($id);
+                $aufkleber->save($overwrite["aufkleber"]);
                 break;
-            case "clicks":
+            case 2:
+                $wandtattoo = new Wandtattoo($id);
+                $wandtattoo->save($overwrite["wandtattoo"]);
+                break;
+            case 3:
+                $textil = new Textil($id);
+                $textil->save($overwrite["textil"]);
+                break;
+            case 4:
+                /* TODO: iteration bei StickerCollection überarbeiten */
+                $stickerCollection = new StickerCollection($id);
+                $stickerCollection->uploadAll($overwrite);
                 break;
         }
 
-        return $stats;
-    }
+        $responseData["output"] = ob_get_clean();
 
+        /* search for new stickers */
+        $stickerSearch = SearchProducts::getProductsByStickerId($id);
+        $responseData["search"] = $stickerSearch;
+        if ($stickerSearch == null) {
+            $message = "no new sticker found";
+        } else {
+            $matchesJson = json_encode($stickerSearch, JSON_UNESCAPED_UNICODE);
+            DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET additional_data = :matchesJSON WHERE id = :idSticker", [
+                "matchesJSON" => $matchesJson,
+                "idSticker" => $id,
+            ]);
+        }
+
+        if ($message == "") {
+            JSONResponseHandler::sendResponse([
+                "status" => "success",
+                "responseData" => $responseData,
+            ]);
+        } else {
+            JSONResponseHandler::throwError(500, json_encode([
+                "status" => "error",
+                "responseData" => $responseData,
+            ]));
+        }
+    }
 }

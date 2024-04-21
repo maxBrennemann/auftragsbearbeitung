@@ -2,12 +2,22 @@
 
 define('CURRENTVERSION', '1.1.18');
 
-/*
-* https://stackoverflow.com/questions/2236668/file-get-contents-breaks-up-utf-8-characters
-*/
+/**
+ * https://stackoverflow.com/questions/2236668/file-get-contents-breaks-up-utf-8-characters
+ */
 function file_get_contents_utf8($fn) {
 	$content = file_get_contents($fn);
 	return mb_convert_encoding($content, 'UTF-8', mb_detect_encoding($content, 'UTF-8, ISO-8859-1', true));
+}
+
+/**
+ * polyfill str_contains, maybe remove it later when support for older version drops
+ * https://www.php.net/manual/en/function.str-contains.php
+ */
+if (!function_exists('str_contains')) {
+    function str_contains($haystack, $needle) {
+        return $needle !== '' && mb_strpos($haystack, $needle) !== false;
+    }
 }
 
 function isLoggedIn() {
@@ -22,7 +32,7 @@ function getCurrentVersion() {
 }
 
 function errorReporting() {
-	if (defined('ERRORREPORTING') && ERRORREPORTING) {
+	if ($_ENV["ERRORREPORTING"]) {
 		error_reporting(E_ALL);
 		ini_set('display_errors', '1');
 	}

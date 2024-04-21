@@ -5,7 +5,77 @@ require_once("classes/project/Auftrag.php");
 
 class Ajax {
 	
-	private static $sqlStatements = "SELECT posten.Postennummer, leistung.Bezeichnung, leistung_posten.Beschreibung, leistung_posten.SpeziefischerPreis, zeit.ZeitInMinuten, zeit.Stundenlohn FROM posten INNER JOIN leistung_posten ON posten.Postennummer = leistung_posten.Postennummer INNER JOIN zeit ON posten.Postennummer = zeit.Postennummer INNER JOIN leistung ON leistung_posten.Leistungsnummer = leistung.Nummer WHERE istStandard = 1;";
+	public static function handleRequests() {
+		$currentApiVersion = "v1";
+		ResourceManager::outputHeaderJSON();
+
+		$url = $_SERVER['REQUEST_URI'];
+        $url = explode('?', $url, 2);
+        $apiPath = str_replace($_ENV["REWRITE_BASE"] . $_ENV["SUB_URL"] . "/", "", $url[0]);
+		$apiParts = explode("/", $apiPath);
+		$apiVersion = $apiParts[2];
+		$routeType = $apiParts[3];
+
+		if ($currentApiVersion != $apiVersion) {
+			JSONResponseHandler::throwError(404, "api version not supported");
+		}
+
+		$path = str_replace("api/" . $apiVersion . "/", "", $apiPath);
+
+		switch ($routeType) {
+			case "customer":
+				require_once("classes/routes/CustomerRoutes.php");
+				CustomerRoutes::handleRequest($path);
+				break;
+			case "invoice":
+				require_once("classes/routes/InvoiceRoutes.php");
+				InvoiceRoutes::handleRequest($path);
+				break;
+			case "login":
+				require_once("classes/routes/LoginRoutes.php");
+				LoginRoutes::handleRequest($path);
+				break;
+			case "notes":
+				require_once("classes/routes/NotesRoutes.php");
+				NotesRoutes::handleRequest($path);
+				break;
+			case "notification":
+				require_once("classes/routes/NotificationRoutes.php");
+				NotificationRoutes::handleRequest($path);
+				break;
+			case "order-item":
+				require_once("classes/routes/OrderItemRoutes.php");
+				OrderItemRoutes::handleRequest($path);
+				break;
+			case "order":
+				require_once("classes/routes/OrderRoutes.php");
+				OrderRoutes::handleRequest($path);
+				break;
+			case "product":
+				require_once("classes/routes/ProductRoutes.php");
+				ProductRoutes::handleRequest($path);
+				break;
+			case "search":
+				require_once("classes/routes/SearchRoutes.php");
+				SearchRoutes::handleRequest($path);
+				break;
+			case "settings":
+				require_once("classes/routes/SettingsRoutes.php");
+				SettingsRoutes::handleRequest($path);
+				break;
+			case "sticker":
+				require_once("classes/routes/StickerRoutes.php");
+				StickerRoutes::handleRequest($path);
+				break;
+			case "time-tracking":
+				require_once("classes/routes/TimeTrackingRoutes.php");
+				TimeTrackingRoutes::handleRequest($path);
+				break;
+			default:
+				JSONResponseHandler::throwError(404, "Path not found");
+				break;
+		}
+	}
 
 	public static function manageRequests($reason, $page) {
 		switch ($reason) {
@@ -15,19 +85,20 @@ class Ajax {
 					echo file_get_contents_utf8($file);
 				}
 			break;
-			case "fillForm":
-				if (isset($_POST['file'])) {
-					require_once("classes/project/FillForm.php");
-					$filled = new FillForm(($_POST['file']));
-					$filled->fill($_POST['nr']);
-					$filled->show();
-				}
-			break;
 			case "createTable":
 				$type = $_POST['type'];
 			
 				if (strcmp($type, "custom") == 0) {
-					$data = DBAccess::selectQuery(self::$sqlStatements);
+					$query = "SELECT posten.Postennummer, leistung.Bezeichnung, leistung_posten.Beschreibung, leistung_posten.SpeziefischerPreis, zeit.ZeitInMinuten, zeit.Stundenlohn 
+						FROM posten 
+						INNER JOIN leistung_posten 
+							ON posten.Postennummer = leistung_posten.Postennummer 
+						INNER JOIN zeit 
+							ON posten.Postennummer = zeit.Postennummer 
+						INNER JOIN leistung 
+							ON leistung_posten.Leistungsnummer = leistung.Nummer 
+						WHERE istStandard = 1;";
+					$data = DBAccess::selectQuery($query);
 					$column_names = array(
 						0 => array("COLUMN_NAME" => "Postennummer"),
 						1 => array("COLUMN_NAME" => "Bezeichnung"), 
@@ -256,14 +327,12 @@ class Ajax {
 				$auftragsId =  $_POST['auftrag'];
 				$fahrzeugId = DBAccess::insertQuery("INSERT INTO fahrzeuge (Kundennummer, Kennzeichen, Fahrzeug) VALUES($nummer, '$kfzKenn', '$fahrzeug')");
 				require_once("classes/project/Fahrzeug.php");
-				Fahrzeug::attachVehicle($fahrzeugId, $auftragsId);
+
+				Tools::add("id", $auftragsId);
+				Tools::add("vehicleId", $fahrzeugId);
+
+				Fahrzeug::attachVehicle();
 				echo (new Auftrag($auftragsId))->getFahrzeuge();
-			break;
-			case "test":
-				var_dump(unserialize($_SESSION['data']));
-			break;
-			case "testDummy":
-				echo "this is a test string";
 			break;
 			case "insertStep":
 				$data = array();
@@ -379,7 +448,6 @@ class Ajax {
 			break;
 			case "setTo":
 				if (isset($_POST['auftrag'])) {
-					require_once("classes/project/InteractiveFormGenerator.php");
 					$table = unserialize($_SESSION['storedTable']);
 					$auftragsId = $_POST['auftrag'];
 					$row = $_POST['row'];
@@ -489,13 +557,6 @@ class Ajax {
 			break;
 			case "getServerMsg":
 				echo $_SESSION['searchResult'];
-			break;
-			case "attachCar":
-				$auftragsId = $_POST['auftrag'];
-				$fahrzeugId = $_POST['fahrzeug'];
-				require_once("classes/project/Fahrzeug.php");
-				Fahrzeug::attachVehicle($fahrzeugId, $auftragsId);
-				echo (new Auftrag($auftragsId))->getFahrzeuge();
 			break;
 			case "getAttributeMatcher":
 				require_once("classes/project/AttributeGroup.php");
@@ -917,7 +978,7 @@ class Ajax {
 			break;
 			case "updateDefaultWage":
 				$defaultWage = $_POST["defaultWage"];
-				Envs::set("defaultWage", $defaultWage);
+				Config::set("defaultWage", $defaultWage);
 				echo json_encode([]);
 			break;
 			case "getManual":
@@ -1034,7 +1095,7 @@ class Ajax {
 				}
 			break;
 			case "getBackup":
-				$result = DBAccess::EXPORT_DATABASE(HOST, USERNAME, PASSWORD, DATABASE);
+				$result = DBAccess::EXPORT_DATABASE($_ENV["HOST"], $_ENV["USERNAME"], $_ENV["PASSWORD"], $_ENV["DATABASE"]);
 				$filePath = "files/generated/sql_backups/";
 				$fileName = date("d-m-Y_h-i-s") . ".sql";
 				file_put_contents(($filePath . $fileName), $result);
@@ -1050,28 +1111,8 @@ class Ajax {
 				Produkt::addAttributeVariations($productId, $data);
 				echo "ok";
 			break;
-			case "login":
-				$login = Login::handleLogin();
-				if ($login == false) {
-					echo json_encode(["status" => "error"]);
-				} else {
-					echo json_encode([
-						"status" => "success",
-						"deviceKey" => $login["deviceKey"],
-						"loginKey" => Login::getLoginKey($login["deviceId"]),
-					]);
-				}
-			break;
 			case "logout":
 				Login::handleLogout();
-			break;
-			case "checkAutoLogin":
-				$loginKey = Login::handleAutoLogin();
-				$status = $loginKey === false ? "failed" : "success";
-				echo json_encode([
-					"status" => $status,
-					"loginKey" => $loginKey,
-				]);
 			break;
 			case "minifyFiles":
 				require_once("classes/MinifyFiles.php");
@@ -1140,69 +1181,6 @@ class Ajax {
 				DBAccess::updateQuery($query);
 				echo "success";
 			break;
-			case "transferProduct":
-				$id = (int) $_POST["id"];
-				$type = (int) $_POST["type"];
-				$overwrite = json_decode($_POST["overwrite"], true);
-				$message = "";
-				$responseData = [];
-				
-				require_once("classes/project/modules/sticker/StickerCollection.php");
-				ob_start();
-				try {
-					switch ($type) {
-						case 1:
-							$aufkleber = new Aufkleber($id);
-							$aufkleber->save($overwrite["aufkleber"]);
-							break;
-						case 2:
-							$wandtattoo = new Wandtattoo($id);
-							$wandtattoo->save($overwrite["wandtattoo"]);
-							break;
-						case 3:
-							$textil = new Textil($id);
-							$textil->save($overwrite["textil"]);
-							break;
-						case 4:
-							/* TODO: iteration bei StickerCollection überarbeiten */
-							$stickerCollection = new StickerCollection($id);
-							$stickerCollection->getAufkleber()->save($overwrite["aufkleber"]);
-							$stickerCollection->getWandtattoo()->save($overwrite["wandtattoo"]);
-							$stickerCollection->getTextil()->save($overwrite["textil"]);
-							break;
-					}
-				} catch (Exception $e) {
-					$message = $e->getMessage();
-				}
-				$responseData["output"] = ob_get_clean();
-
-				require_once("classes/project/modules/sticker/SearchProducts.php");
-
-				try {
-					$responseData = SearchProducts::getProductsByStickerId($id);
-
-					$matchesJson = json_encode($responseData, JSON_UNESCAPED_UNICODE);
-					DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET additional_data = :matchesJSON WHERE id = :idSticker", [
-						"matchesJSON" => $matchesJson,
-						"idSticker" => $id,
-					]);
-				} catch (Exception $e) {
-					$message = $e->getMessage();
-				}
-				
-				if ($message == "") {
-					echo json_encode([
-						"status" => "success",
-						"responseData" => $responseData,
-					]);
-				} else {
-					echo json_encode([
-						"status" => "error",
-						"message" => $message,
-						"responseData" => $responseData,
-					]);
-				}
-			break;
 			case "getSizeTable":
 				require_once("classes/project/modules/sticker/Aufkleber.php");
 				$id = (int) $_POST["id"];
@@ -1238,7 +1216,7 @@ class Ajax {
 			case "changePreiskategorie":
 				$id = (int) $_POST['id'];
 				$categoryId = $_POST['categoryId'];
-				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET price_type = '$categoryId' WHERE id = $id");
+				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET price_type = '$categoryId' WHERE id = :id", ["id" => $id]);
 				echo "success";
 			break;
 			case "changeMotivDate":
@@ -1279,26 +1257,26 @@ class Ajax {
 			break;
 			case "toggleTextil":
 				$id = (int) $_POST["id"];
-				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_shirtcollection` = NOT `is_shirtcollection` WHERE id = $id");
+				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_shirtcollection` = NOT `is_shirtcollection` WHERE id = :id", ["id" => $id]);
 				echo json_encode([
 					"status" => "success",
 				]);
 			break;
 			case "toggleWandtattoo":
 				$id = (int) $_POST["id"];
-				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_walldecal` = NOT `is_walldecal` WHERE id = $id");
+				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_walldecal` = NOT `is_walldecal` WHERE id = :id", ["id" => $id]);
 				echo json_encode([
 					"status" => "success",
 				]);
 			break;
 			case "toggleRevised":
 				$id = (int) $_POST["id"];
-				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_revised` = NOT `is_revised` WHERE id = $id");
+				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_revised` = NOT `is_revised` WHERE id = :id", ["id" => $id]);
 				echo "success";
 			break;
 			case "toggleBookmark":
 				$id = (int) $_POST["id"];
-				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_marked` = NOT `is_marked` WHERE id = $id");
+				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_marked` = NOT `is_marked` WHERE id = :id", ["id" => $id]);
 				echo "success";
 			break;
 			case "makeSVGColorable":
@@ -1348,7 +1326,7 @@ class Ajax {
 				$id = (int) $_POST["id"];
 
 				$postenNummer = Table::getIdentifierValue($table, $tableRowKey);
-				$size = DBAccess::selectQuery("SELECT width, height FROM module_sticker_sizes WHERE id = $postenNummer LIMIT 1");
+				$size = DBAccess::selectQuery("SELECT width, height FROM module_sticker_sizes WHERE id = :postennummer LIMIT 1", ["postennummer" => $postenNummer]);
 				$width = $size[0]["width"];
 				$height = $size[0]["height"];
 
@@ -1357,7 +1335,10 @@ class Ajax {
 				$difficulty = $aufkleberWandtatto->getDifficulty();
 				$price = $aufkleberWandtatto->getPrice($width, $height, $difficulty);
 
-				DBAccess::updateQuery("UPDATE module_sticker_sizes SET price = '$price', price_default = 1 WHERE id = $postenNummer");
+				DBAccess::updateQuery("UPDATE module_sticker_sizes SET price = :price, price_default = 1 WHERE id = :postennummer", [
+					"price" => $price,
+					"postennummer" => $postenNummer,
+				]);
 				echo $price;
 			break;
 			case "setAufkleberParameter":
@@ -1426,7 +1407,10 @@ class Ajax {
 				$difficulty = $aufkleberWandtatto->getDifficulty();
 				$price = $aufkleberWandtatto->getPrice($width, $height, $difficulty);
 
-				DBAccess::updateQuery("UPDATE module_sticker_sizes SET price = '$price', price_default = 1 WHERE id = $postenNummer");
+				DBAccess::updateQuery("UPDATE module_sticker_sizes SET price = :price, price_default = 1 WHERE id = :id", [
+					"price" => $price,
+					"id" => $id,
+				]);
 				echo $price;
 			break;
 			case "setSizePrice":
@@ -1627,13 +1611,16 @@ class Ajax {
 				$categories = $_POST["categories"];
 				require_once('classes/project/modules/sticker/StickerCategory.php');
 				StickerCategory::setCategories($id, $categories);
+				echo json_encode([
+					"status" => "success",
+				]);
 			break;
 			case "setExportStatus":
 				$status = (String) $_POST["export"];
 				$id = (int) $_POST["id"];
 
 				$export = DBAccess::selectQuery("SELECT * FROM module_sticker_exports WHERE idSticker = :idSticker", ["idSticker" => $id]);
-				//Protocoll::prettyPrint($export);
+				//Protocol::prettyPrint($export);
 				if ($export[0][$status] == NULL) {
 					$query = "UPDATE module_sticker_exports SET $status = -1 WHERE idSticker = :idSticker";
 					DBAccess::updateQuery($query, ["idSticker" => $id]);
@@ -1645,13 +1632,6 @@ class Ajax {
 				}
 				
 				echo "success";
-			break;
-			case "toggleShowTime":
-				Envs::toggle("showTimeGlobal");
-
-				echo json_encode([
-					"status" => "success",
-				]);
 			break;
 			case "getIcon":
 				$type = (String) $_POST["icon"];
@@ -1800,10 +1780,6 @@ class Ajax {
 				require_once('classes/project/Statistics.php');
 				Statistics::dispatcher();
 			break;
-			case "sendTimeTracking":
-				require_once('classes/project/TimeTracking.php');
-				TimeTracking::addEntry();
-			break;
 			case "getTimeTables":
 				require_once('classes/project/TimeTracking.php');
 				$idUser = $_SESSION['userid'];
@@ -1815,12 +1791,12 @@ class Ajax {
 				]);
 			break;
 			default:
-				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = '$page'";
-				$result = DBAccess::selectQuery($selectQuery);
+				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = :page;";
+				$result = DBAccess::selectQuery($selectQuery, ["page" => $page]);
 		
 				if ($result == null) {
 					$baseUrl = 'files/generated/';
-					$result = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM generated_articles WHERE src = '$page'");
+					$result = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM generated_articles WHERE src = :page", ["page" => $page]);
 				} else {
 					$baseUrl = 'files/';
 				}

@@ -3,8 +3,10 @@ import { loadTags, showTaggroupManager, addTag } from "./sticker/tagManager.js";
 import ProductConnector from "./sticker/productConnector.js";
 import { click_makeColorable, deleteImage, updateImageDescription, updateImageOverwrite } from "./sticker/imageManager.js";
 import { click_addNewWidth } from "./sticker/sizeTable.js";
+import { } from "./sticker/statsManager.js";
 import { initBindings } from "./classes/bindings.js";
 import "./sticker/imageMove.js";
+import { ajax } from "./classes/ajax.js";
 
 const fnNames = {};
 fnNames.click_makeColorable = click_makeColorable;
@@ -31,6 +33,7 @@ window.updateImageOverwrite = updateImageOverwrite
 
 function initSticker() {
     initBindings(fnNames);
+    checkProductErrorStatus();
 
     document.title = "b-schriftung - Motiv " + mainVariables.motivId.innerHTML + " " + document.getElementById("name").value;
 
@@ -249,11 +252,9 @@ function transfer(type, text) {
         }
     }
 
-    ajax.post({
-        id: mainVariables.motivId.innerHTML,
-        type: type,
+    ajax.post(`/api/v1/sticker/${mainVariables.motivId.innerHTML}/export`, {
+        stickerType: type,
         overwrite: JSON.stringify(mainVariables.overwriteImages),
-        r: "transferProduct",
     }).then(r => {
         if (r.status == "success") {
             mainVariables.pending = false;
@@ -568,6 +569,8 @@ function setCategories() {
         id: mainVariables.motivId.innerHTML,
         categories: JSON.stringify(selectedCategories),
         r: "setCategories",
+    }).then(r => {
+        infoSaveSuccessfull(r.status);
     });
 }
 
@@ -600,6 +603,23 @@ fnNames.click_makeForConfig = function(e) {
     }).then(r => {
         const svgContainer = document.getElementById("svgContainer");
         svgContainer.data = r.url;
+    });
+}
+
+function checkProductErrorStatus() {
+    ajax.get(`/api/v1/sticker/${mainVariables.motivId.innerHTML}/status`).then(r => {
+        if (r.errorStatus == "") {
+            return;
+        }
+
+        const div = document.createElement("div");
+        const p = document.createElement("p");
+        p.classList.add("text-red-700", "p-5", "bg-red-200", "rounded-lg", "mt-2");
+        p.innerText = r.errorData;
+
+        div.appendChild(p);
+        const anchor = document.querySelector(".cont1");
+        anchor.parentNode.insertBefore(div, anchor);
     });
 }
 

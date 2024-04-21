@@ -1,42 +1,36 @@
 <?php
 
-require_once('settings.php');
-
 class DBAccess {
 
 	protected static $connection;
 	protected static $statement;
-
-	private static $host = HOST;
-    private static $database = DATABASE;
-    private static $username = USERNAME;
-    private static $password = PASSWORD;
 	
 	function __construct() {
 		
 	}
 	
 	private static function createConnection() {
+		if (self::$connection != null)
+			return;
+
 		try {
-			$host = self::$host;
-            $database = self::$database;
-            $username = self::$username;
-            $password = self::$password;
+			$host = $_ENV["HOST"];
+            $database = $_ENV["DATABASE"];
+            $username = $_ENV["USERNAME"];
+            $password = $_ENV["PASSWORD"];
 
 			self::$connection = new PDO("mysql:host=$host;dbname=$database;charset=utf8", $username, $password);
 			self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} catch(PDOException $e) {
-			die("Error connecting to database:<br>" . $e);
+			echo "Error connecting to the database.";
+    		error_log($e->getMessage());
 		}
 	}
 	
 	public static function selectQuery($query, $params = NULL) {
 		self::createConnection();
-		
 		self::$statement = self::$connection->prepare($query);
-		
-		self::bindParams($params);
-		self::$statement->execute();
+		self::$statement->execute($params);
 		$result = self::$statement->fetchAll(PDO::FETCH_ASSOC);
 		
 		return $result;
@@ -51,7 +45,7 @@ class DBAccess {
 	}
 
 	public static function selectColumnNames($table) {
-		$query = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{$table}' AND TABLE_SCHEMA = '" . DATABASE . "'";
+		$query = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{$table}' AND TABLE_SCHEMA = '" . $_ENV["DATABASE"] . "'";
 		if ($query == null)
 			return null;
 		return self::selectQuery($query);
@@ -59,11 +53,8 @@ class DBAccess {
 	
 	public static function updateQuery($query, $params = NULL) {
 		self::createConnection();
-
 		self::$statement = self::$connection->prepare($query);
-
-		self::bindParams($params);
-		return self::$statement->execute();
+		return self::$statement->execute($params);
 	}
 
 	/* exec for queries that don't return a result set */
@@ -75,71 +66,35 @@ class DBAccess {
 
 	public static function deleteQuery($query, $params = NULL) {
 		self::createConnection();
-		
 		self::$statement = self::$connection->prepare($query);
-
-		self::bindParams($params);
-		self::$statement->execute();
+		self::$statement->execute($params);
 	}
 	
 	public static function insertQuery($query, $params = NULL) {
 		self::createConnection();
-		
 		self::$statement = self::$connection->prepare($query);
-
-		self::bindParams($params);
-		self::$statement->execute();
+		self::$statement->execute($params);
 		return self::$connection->lastInsertId();
 	}
 
-	public static function insertMultiple($query, $data) {
-		foreach ($data as $rows) {
-			$query_row = "(";
-			foreach ($rows as $identifier => $item) {
-				switch ($identifier) {
-					case "int":
-					case "integer":
-						$query_row .= (int) $item . ", ";
-						break;
-					case "null":
-						$query_row .= "NULL, ";
-						break;
-					case "string":
-					default:
-						$query_row .= "'" . $item . "', ";
-						break;
-				}
-			}
-			$query_row = substr($query_row, 0, -2);
-			$query_row .= "),";
-			$query .= $query_row;
-		}
-
-		$query = substr(($query), 0, -1);
+	/**
+	 * https://stackoverflow.com/questions/1176352/pdo-prepared-inserts-multiple-rows-in-single-query
+	 * Switched to prepared statements to avoid SQL injection and escape errors
+	 * 
+	 * @param string $queryPart has to look like "INSER INTO tbl (col1, ...) VALUES 
+	 * @param array $data
+	 * 
+	 * @return int
+	 */
+	public static function insertMultiple($queryPart, $data) {
+		$values = str_repeat('?,', count($data[0]) - 1) . '?';
+		$sql = $queryPart .
+			str_repeat("($values),", count($data) - 1) . "($values)";
 
 		self::createConnection();
-		self::$statement = self::$connection->prepare($query);
-		self::$statement->execute();
+		self::$statement = self::$connection->prepare($sql);
+		self::$statement->execute(array_merge(...$data));
 		return self::$connection->lastInsertId();
-	}
-
-	private static function bindParams(&$params) {
-		if ($params != NULL) {
-			foreach($params as $key => &$val){
-				$dataType = getType($val);
-				switch($dataType) {
-					case "integer":
-						self::$statement->bindParam($key, $val, PDO::PARAM_INT);
-						break;
-					case "string":
-						self::$statement->bindParam($key, $val, PDO::PARAM_STR);
-						break;
-					case "NULL":
-						self::$statement->bindParam($key, $val, PDO::PARAM_NULL);
-						break;
-				}
-			}
-		}
 	}
 
 	public static function executeQuery($query) {
@@ -147,16 +102,6 @@ class DBAccess {
 		
 		self::$statement = self::$connection->prepare($query);
 		self::$statement->execute();
-		
-		self::$statement->execute();
-	}
-
-	/* exec for queries, that don't return result sets, otherwise the general mySQL error 2014 can occur */
-	public static function execQuery($query) {
-		self::createConnection();
-		
-		self::$statement = self::$connection->prepare($query);
-		self::$statement->exec();
 	}
 
 	/**
@@ -165,6 +110,10 @@ class DBAccess {
 	 */
 	public static function getAffectedRows(): int {
 		return self::$statement->rowCount();
+	}
+
+	public static function getLastInsertId() {
+		return self::$connection->lastInsertId();
 	}
 
 	/* 
@@ -200,6 +149,19 @@ class DBAccess {
 		$backup_name = $backup_name ? $backup_name : $name.'___('.date('H-i-s').'_'.date('d-m-Y').').sql';
 		ob_get_clean(); header('Content-Type: application/octet-stream');  header("Content-Transfer-Encoding: Binary");  header('Content-Length: '. (function_exists('mb_strlen') ? mb_strlen($content, '8bit'): strlen($content)) );    header("Content-disposition: attachment; filename=\"".$backup_name."\""); 
 		return $content;
+	}
+
+	private static function closeStatement() {
+		self::$statement = null;
+	}
+	
+	private static function closeConnection() {
+		self::$connection = null;
+	}
+
+	public static function close() {
+		self::closeStatement();
+		self::closeConnection();
 	}
 
 }

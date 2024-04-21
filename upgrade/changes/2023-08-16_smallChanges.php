@@ -24,11 +24,6 @@ return new class extends UpdateMySql {
         
     }
 
-    /* testing if anonymous class is accessible */
-    public function getHello() {
-        return "hello";
-    }
-
 }
 
 ?>

@@ -2,8 +2,14 @@
 
 class TimeTracking {
 
-    function __construct() {
-        
+    private int $userId;
+
+    function __construct($userId) {
+        $this->userId = (int) $userId;
+
+        if ($this->userId <= 0) {
+            throw new Exception("Invalid user id");
+        }
     }
 
     /**
@@ -126,6 +132,10 @@ class TimeTracking {
             "durationMs" => $durationMs,
             "task" => $task,
         ]);
+    }
+
+    public function isOwner($id) {
+        
     }
 
 }

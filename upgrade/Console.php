@@ -6,5 +6,3 @@ class Console {
         return shell_exec($command);
     }
 }
-
-?>

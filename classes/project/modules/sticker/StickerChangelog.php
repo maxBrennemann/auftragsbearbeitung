@@ -1,6 +1,6 @@
 <?php
 
-class StickerChangelog /*implements StickerShopController*/ {
+class StickerChangelog {
 
     private $idSticker;
     private $changelogData;
@@ -78,11 +78,14 @@ class StickerChangelog /*implements StickerShopController*/ {
             $column = $revert["row"];
             $value = $before["newValue"];
 
-            /* TODO: fallback einbauen, falls keine id vorhanden */
-            DBAccess::updateQuery("UPDATE $table SET $column = $value WHERE id = $rowId");
+            DBAccess::updateQuery("UPDATE $table SET $column = $value WHERE id = :rowId", [
+                "rowId" => $rowId,
+            ]);
 
             $revertId = $revert["id"];
-            DBAccess::deleteQuery("DELETE FROM `module_sticker_changelog` WHERE id = $revertId");
+            DBAccess::deleteQuery("DELETE FROM `module_sticker_changelog` WHERE id = :revertId", [
+                "revertId" => $revertId,
+            ]);
 
             return true;
         } else if (sizeof($lastChanges) == 1) {
@@ -92,11 +95,17 @@ class StickerChangelog /*implements StickerShopController*/ {
             $column = $revert["row"];
             $value = $revert["newValue"];
 
-            /* TODO: fallback einbauen, falls keine id vorhanden */
-            DBAccess::updateQuery("DELETE FROM $table WHERE id = $rowId AND $column = $value");
+            DBAccess::updateQuery("DELETE FROM :table WHERE id = :rowId AND :column = :value", [
+                "table" => $table,
+                "rowId" => $rowId,
+                "column" => $column,
+                "value" => $value,
+            ]);
 
             $revertId = $revert["id"];
-            DBAccess::deleteQuery("DELETE FROM `module_sticker_changelog` WHERE id = $revertId");
+            DBAccess::deleteQuery("DELETE FROM `module_sticker_changelog` WHERE id = :revertId", [
+                "revertId" => $revertId,
+            ]);
 
             return true;
         }
@@ -108,5 +117,3 @@ class StickerChangelog /*implements StickerShopController*/ {
      TODO: implement in this manner: https://stackoverflow.com/questions/12563706/is-there-a-mysql-option-feature-to-track-history-of-changes-to-records/12657012#12657012
     */
 }
-
-?>

@@ -2,31 +2,33 @@
 
 require_once('Mailer.php');
 
-class Login {
+class Login
+{
 
 	/**
 	 * handles the login process
 	 */
-	public static function handleLogin() {
+	public static function handleLogin()
+	{
 		if (!isset($_POST['name']) || !isset($_POST['password'])) {
 			return false;
 		}
-		
+
 		$loginCredentials = $_POST['name'];
 		$password = $_POST['password'];
 
 		/* check if user exists */
 		$user = DBAccess::selectQuery("SELECT * FROM user WHERE `email` = :email OR `username` = :username LIMIT 1;", array(
-			':email' => $loginCredentials, 
+			':email' => $loginCredentials,
 			':username' => $loginCredentials
 		));
 
-		if (empty($user))  {
+		if (empty($user)) {
 			return false;
 		}
 
 		$user = $user[0];
-		
+
 		/* check password */
 		if ($user !== false && password_verify($password, $user['password'])) {
 			self::login($user['id']);
@@ -41,10 +43,19 @@ class Login {
 			'loginstamp' => (new DateTime())->format('Y-m-d H:i:s'),
 		));
 
-		return $device;
+		if (!$device) {
+			echo json_encode(["status" => "error"]);
+		} else {
+			echo json_encode([
+				"status" => "success",
+				"deviceKey" => $device["deviceKey"],
+				"loginKey" => Login::getLoginKey($device["deviceId"]),
+			]);
+		}
 	}
 
-	private static function login($userId) {
+	private static function login($userId)
+	{
 		$_SESSION['userid'] = $userId;
 		$_SESSION['loggedIn'] = true;
 	}
@@ -52,17 +63,16 @@ class Login {
 	/**
 	 * handles the logout process
 	 */
-	public static function handleLogout() {
-		$key = $_POST["loginKey"];
-		//DBAccess::deleteQuery("DELETE FROM `user_login` WHERE `login_key` = :key;", array(':key' => $key));
-
+	public static function handleLogout()
+	{
 		setcookie(session_name(), '', 100);
 		session_unset();
 		session_destroy();
 		$_SESSION = array();
 	}
 
-	public static function getLoginKey($deviceId) {
+	public static function getLoginKey($deviceId)
+	{
 		if (!isset($_POST["setAutoLogin"]) || $_POST["setAutoLogin"] == "false") {
 			return;
 		}
@@ -89,7 +99,8 @@ class Login {
 	/**
 	 * simple function to generate a unique device identifier
 	 */
-	private static function getDeviceKey() {
+	private static function getDeviceKey()
+	{
 		$userAgent = getParameter("userAgent", "POST", "unknown");
 		if (isset($_POST["deviceKey"]) && strlen($_POST["deviceKey"]) == 32) {
 
@@ -129,13 +140,15 @@ class Login {
 		];
 	}
 
-	private static function generateDeviceKey($userAgent) {
+	private static function generateDeviceKey($userAgent)
+	{
 		$random_part = bin2hex(random_bytes(6));
 		$userAgentHash = md5($userAgent . $random_part);
 		return $userAgentHash;
 	}
 
-	private static function saveDeviceKey($key, $userAgent, $browser, $os, $deviceType): int {
+	private static function saveDeviceKey($key, $userAgent, $browser, $os, $deviceType): int
+	{
 		$query = "INSERT INTO user_devices (md_hash, os, browser, device_type, user_id, browser_agent, ip_address) VALUES (:key, :os, :browser, :deviceType, :userId, :browserAgent, :ipAddress);";
 		$id = DBAccess::insertQuery($query, array(
 			':key' => $key,
@@ -150,7 +163,8 @@ class Login {
 		return $id;
 	}
 
-	private static function getDeviceId($deviceKey): int {
+	private static function getDeviceId($deviceKey): int
+	{
 		$query = "SELECT id FROM user_devices WHERE md_hash = :deviceKey;";
 		$data = DBAccess::selectQuery($query, array(
 			':deviceKey' => $deviceKey
@@ -163,7 +177,8 @@ class Login {
 		return (int) $data[0]['id'];
 	}
 
-	private static function checkDuplicateDevices($list) {
+	private static function checkDuplicateDevices($list)
+	{
 		if (count($list) == 0) {
 			return false;
 		}
@@ -179,12 +194,23 @@ class Login {
 		return false;
 	}
 
+	public static function autloginWrapper()
+	{
+		$loginKey = self::handleAutoLogin();
+		$status = $loginKey === false ? "failed" : "success";
+		echo json_encode([
+			"status" => $status,
+			"loginKey" => $loginKey,
+		]);
+	}
+
 	/**
 	 * the autologin hash is stored in the database and the cookie,
 	 * the cookie, the browser type and os are used to identify the user
 	 * the current ip adress is also stored in the database but is not crucial
 	 */
-	public static function handleAutoLogin() {
+	public static function handleAutoLogin()
+	{
 		$userAgent = getParameter("userAgent", "POST", "unknown");
 		$browser = $_POST["browser"];
 		$os = $_POST["os"];
@@ -192,14 +218,12 @@ class Login {
 		$isTablet = $_POST["isTablet"];
 		$deviceType = self::castDevice($isMobile, $isTablet);
 
-		$deviceId = self::getDeviceId($_POST["deviceKey"]);
-		$data = DBAccess::selectQuery("SELECT browser_agent, browser, os, device_type FROM user_devices WHERE id = :id", [
-			':id' => $deviceId
+		$data = DBAccess::selectQuery("SELECT id, browser_agent, browser, os, device_type FROM user_devices WHERE md_hash = :deviceKey", [
+			'deviceKey' => $_POST["deviceKey"]
 		]);
+		$deviceId = $data[0]['id'];
 
-		if ($data[0]['browser_agent'] != $userAgent || $data[0]['browser'] != $browser || $data[0]['os'] != $os || $data[0]['device_type'] != $deviceType) {
-			// device has changed
-			// expire all login keys
+		if ($data[0]['browser_agent'] == $userAgent && $data[0]['browser'] == $browser && $data[0]['os'] == $os && $data[0]['device_type'] == $deviceType) {
 			return false;
 		} else {
 			$loginKey = $_POST["loginKey"];
@@ -219,7 +243,8 @@ class Login {
 		}
 	}
 
-	private static function castDevice($isMobile, $isTablet) {
+	private static function castDevice($isMobile, $isTablet)
+	{
 		if ($isMobile == "true") {
 			return "mobile";
 		}
@@ -229,7 +254,8 @@ class Login {
 		return "desktop";
 	}
 
-	public static function getUserId() {
+	public static function getUserId()
+	{
 		if (isset($_SESSION['userid'])) {
 			$user = $_SESSION['userid'];
 			return $user;
@@ -241,11 +267,12 @@ class Login {
 	 * https://stackoverflow.com/questions/1082302/file-get-contents-from-url-that-is-only-accessible-after-log-in-to-website
 	 * https://stackoverflow.com/questions/3008817/login-to-remote-site-with-php-curl
 	 */
-	public static function curlLogin($page) {
+	public static function curlLogin($page)
+	{
 		$loginUrl = 'http://' . $_SERVER['HTTP_HOST'] . Link::getPageLink("login"); //action from the login form
-		$username = CURL_USERNAME;
-		$password = CURL_PASSWORD;
-		$loginFields = "info=Einloggen&loginData=" . $username. "&password=" . $password;
+		$username = $_ENV["CURL_USERNAME"];
+		$password = $_ENV["CURL_PASSWORD"];
+		$loginFields = "info=Einloggen&loginData=" . $username . "&password=" . $password;
 		$remotePageUrl = 'http://' . $_SERVER['HTTP_HOST'] . Link::getPageLink($page); //url of the page you want to save  
 
 		$ch = curl_init();
@@ -276,5 +303,4 @@ class Login {
 
 		return $html;
 	}
-
 }

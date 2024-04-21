@@ -4,8 +4,6 @@ require_once('Kunde.php');
 require_once('Schritt.php');
 require_once('Posten.php');
 require_once('Priority.php');
-require_once('FormGenerator.php');
-require_once('InteractiveFormGenerator.php');
 require_once('StatisticsInterface.php');
 require_once('Statistics.php');
 require_once('GlobalSettings.php');
@@ -716,5 +714,31 @@ class Auftrag implements StatisticsInterface {
 
 		return $t->getTable();
     }
+
+	public static function deleteOrder() {
+		$id = (int) Tools::get("id");
+		$query = "DELETE FROM auftrag WHERE Auftragsnummer = :id;";
+		DBAccess::deleteQuery($query, ["id" => $id]);
+
+		if (DBAccess::getAffectedRows() == 0) {
+			JSONResponseHandler::throwError(404, "Auftrag existiert nicht");
+		}
+
+		JSONResponseHandler::sendResponse([
+			"success" => true,
+			"home" => Link::getPageLink(""),
+		]);
+	}
+
+	public static function setOrderArchived() {
+		$id = (int) Tools::get("id");
+		$auftrag = new Auftrag($id);
+		$auftrag->archiveOrder();
+
+		JSONResponseHandler::sendResponse([
+			"success" => true,
+			"home" => Link::getPageLink(""),
+		]);
+	}
 
 }

@@ -1,4 +1,5 @@
 <?php
+
 require_once('classes/project/ClientSettings.php');
 
 $globalCSS = Link::getGlobalCSS();
@@ -39,8 +40,8 @@ $motiveOverview = 	Link::getPageLink("sticker-overview");
 	<?php endif; ?>
 	<meta name="Description" content="Auftragsübersicht">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="shortcut icon" type="image/x-icon" href="<?=WEB_URL?>/favicon.ico">
-	<link rel="shortcut icon" type="image/png" href="<?=WEB_URL?>/img/favicon.png">
+	<link rel="shortcut icon" type="image/x-icon" href="<?=$_ENV["WEB_URL"]?>favicon.ico">
+	<link rel="shortcut icon" type="image/png" href="<?=$_ENV["WEB_URL"]?>img/favicon.png">
 	<style>
 		<?=ClientSettings::getColorConfiguration()?>
 	</style>
@@ -52,7 +53,7 @@ $motiveOverview = 	Link::getPageLink("sticker-overview");
 		$link = Link::getResourcesShortLink($page . ".js", "js");
 
 		/* TODO: workaround mit module und if check muss noch geändert werden */
-		if ($page == "sticker" || $page == "auftrag" || $page == "diagramme") {
+		if ($page == "sticker" || $page == "auftrag" || $page == "diagramme" || $page == "login") {
 			echo '<script type="module" src="' . $link . '"></script>';
 		} else {
 			echo '<script src="' . $link . '"></script>';
@@ -150,7 +151,7 @@ $motiveOverview = 	Link::getPageLink("sticker-overview");
 							</span>
 						</div>
 					</div>
-					<?php if (Envs::get("showTimeGlobal") == "true"): ?>
+					<?php if (Config::get("showTimeGlobal") == "true"): ?>
 					<a href="<?=Link::getPageLink("zeiterfassung")?>" class="showTimeGlobal hover:bg-gray-200 rounded-lg pl-3">
 						<span>Zeit: <span id="timeGlobal">00:10:37</span></span>
 					</a>

@@ -1,23 +1,22 @@
 RewriteEngine on
+php_value display_errors on
 
-#Domain localhost
-RewriteBase /auftragsbearbeitung/
-RewriteRule ^content/(.*)$ index.php [NC,L]
-# RewriteRule ^content/(.*)$ index.php?page=$1 [NC,L]
-RewriteRule ^js/(.*)$ resourcesManager.php?script=$1 [NC,L]
-RewriteRule ^css/(.*)$ resourcesManager.php?css=$1 [NC,L]
-RewriteRule ^font/(.*)$ resourcesManager.php?font=$1 [NC,L]
-RewriteRule ^static/(.*)$ resourcesManager.php?static=$1 [NC,L]
-RewriteRule ^pdf_invoice/(.*)$ resourcesManager.php?pdf_invoice=$1 [NC,L]
-RewriteRule ^backup/(.*)$ resourcesManager.php?backup=$1 [NC,L]
-RewriteRule ^static/(.*)$ resourcesManager.php?static=$1 [NC,L]
-RewriteRule ^shop/ frontOfficeController.php [NC,L]
-RewriteRule ^upgrade/(.*)$ upgrade.php?info=$1 [NC,L]
-# RewriteRule ^$ index.php [NC,L]
-# RewriteRule (.*) index.php [NC,L]
-RewriteRule ^/ index.php [NC,L]
+RewriteBase /
+
+RewriteCond %{REQUEST_METHOD} !^(POST|GET|OPTIONS|PUT|DELETE)
+RewriteRule .* - [F]
+RewriteRule ^(.*)$ index.php [NC,L]
 
 ErrorDocument 404 /index.php?page=404
+ErrorDocument 403 /forbidden.html
+ErrorDocument 500 /servererror.html
+
+# https://www.keycdn.com/support/popular-htaccess-examples
+<IfModule mod_headers.c>
+    <FilesMatch "\.(ttf|ttc|otf|eot|woff|font.css|css|js|gif|png|jpe?g|svg|svgz|ico|webp)$">
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
+</IfModule>
 
 <IfModule mod_expires.c>
 	ExpiresActive On

@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   php:
     build:
@@ -13,63 +11,39 @@ services:
     volumes:
       - ./:/var/www/html/
 
-  mysql:
-    image: mysql:latest
-    restart: always
+  database:
+    image: mariadb:10.6.14
     ports:
       - "3306:3306"
+    command:
+      --lower_case_table_names=1
+    volumes:
+      - ./.res/sql/init/${INIT_DB}:/docker-entrypoint-initdb.d/init.sql
     environment:
+      MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    volumes:
-      - ./data:/docker-entrypoint-initdb.d/init.sql
-    
+      MYSQL_KEY_BUFFER_SIZE: 16M
+      MYSQL_READ_BUFFER_SIZE: 2M
+      MYSQL_SORT_BUFFER_SIZE: 1M
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+
   phpmyadmin:
     depends_on:
       - database
     image: phpmyadmin/phpmyadmin
-    restart: always
     ports:
       - '8080:80'
     environment:
       PMA_HOST: database
-      MYSQL_ROOT_PASSWORD: system 
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      UPLOAD_LIMIT: 300M
 
-  # Elasticsearch Docker Images: https://www.docker.elastic.co/
-  # https://medium.com/@TimvanBaarsen/how-to-run-an-elasticsearch-7-x-single-node-cluster-for-local-development-using-docker-compose-2b7ab73d8b82
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
-    container_name: elasticsearch
-    environment:
-      - xpack.security.enabled=false
-      - discovery.type=single-node
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65536
-        hard: 65536
-    cap_add:
-      - IPC_LOCK
-    volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
-      - 9300:9300
-
-  kibana:
-    container_name: kibana
-    image: docker.elastic.co/kibana/kibana:7.4.0
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    ports:
-      - 5601:5601
-    depends_on:
-      - elasticsearch
-
-  volumes:
-    elasticsearch-data:
-      driver: local
+volumes:
+  elasticsearch-data:
+    driver: local

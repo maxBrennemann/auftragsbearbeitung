@@ -312,7 +312,7 @@ class User {
             ':mailKey' => $mailKey
         ));
 		
-		$mailLink = REWRITE_BASE . "/verify?id?" . $mailKey;
+		$mailLink = $_ENV["REWRITE_BASE"] . "/verify?id?" . $mailKey;
 		$mailText = '<a href="' . $mailLink . '">Hier</a> dem Link folgen!';
 
         try {
@@ -355,6 +355,34 @@ class User {
         }
 
         return -1;
+    }
+
+    /**
+     * returns the admin status of the current user
+     * 
+     * @return bool
+     */
+    public static function isAdmin() {
+        $userId = self::getCurrentUserId();
+
+        if ($userId === -1) {
+            return false;
+        }
+
+        $query = "SELECT id FROM user_roles 
+            JOIN users 
+                ON users.role = user_roles.id 
+            WHERE users.id = :userId 
+                AND user_roles.name = 'admin'";
+        $data = DBAccess::selectQuery($query, [
+            "userId" => $userId,
+        ]);
+
+        if (empty($data)) {
+            return false;
+        }
+
+        return true;
     }
 
 }
