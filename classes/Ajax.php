@@ -1111,28 +1111,8 @@ class Ajax {
 				Produkt::addAttributeVariations($productId, $data);
 				echo "ok";
 			break;
-			case "login":
-				$login = Login::handleLogin();
-				if ($login == false) {
-					echo json_encode(["status" => "error"]);
-				} else {
-					echo json_encode([
-						"status" => "success",
-						"deviceKey" => $login["deviceKey"],
-						"loginKey" => Login::getLoginKey($login["deviceId"]),
-					]);
-				}
-			break;
 			case "logout":
 				Login::handleLogout();
-			break;
-			case "checkAutoLogin":
-				$loginKey = Login::handleAutoLogin();
-				$status = $loginKey === false ? "failed" : "success";
-				echo json_encode([
-					"status" => $status,
-					"loginKey" => $loginKey,
-				]);
 			break;
 			case "minifyFiles":
 				require_once("classes/MinifyFiles.php");

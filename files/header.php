@@ -1,4 +1,5 @@
 <?php
+
 require_once('classes/project/ClientSettings.php');
 
 $globalCSS = Link::getGlobalCSS();
@@ -52,7 +53,7 @@ $motiveOverview = 	Link::getPageLink("sticker-overview");
 		$link = Link::getResourcesShortLink($page . ".js", "js");
 
 		/* TODO: workaround mit module und if check muss noch geändert werden */
-		if ($page == "sticker" || $page == "auftrag" || $page == "diagramme") {
+		if ($page == "sticker" || $page == "auftrag" || $page == "diagramme" || $page == "login") {
 			echo '<script type="module" src="' . $link . '"></script>';
 		} else {
 			echo '<script src="' . $link . '"></script>';

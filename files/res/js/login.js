@@ -1,10 +1,11 @@
+import { ajax } from "./classes/ajax.js";
+
 function login() {
     if (document.getElementById("autologin").checked) {
         setCookie("autologin", "on", 356);
     }
 
-    ajax.post({
-        r: "login",
+    ajax.post(`/api/v1/login`, {
         name: document.getElementById("name").value,
         password: document.getElementById("password").value,
         setAutoLogin: document.getElementById("autologin").checked,
@@ -20,7 +21,7 @@ function login() {
             const deviceKey = r.deviceKey;
             const loginKey = r.loginKey;
             setCookie("deviceKey", deviceKey, 356);
-            setCookie("loginKey", loginKey, 14);
+            setCookie("loginKey", loginKey, 28);
             location.reload();
         } else if (r.status == "error") {
             document.getElementById("loginStatus").innerHTML = "Falscher Benutzername oder falsches Passwort.";
@@ -35,8 +36,7 @@ function autoLogin() {
 
     document.getElementById("autologin").checked = true;
 
-    ajax.post({
-        r: "checkAutoLogin",
+    ajax.post(`/api/v1/login/auto`, {
         loginKey: getCookie("loginKey"),
         deviceKey: getCookie("deviceKey"),
         setAutoLogin: document.getElementById("autologin").checked,
@@ -51,7 +51,7 @@ function autoLogin() {
             setTimeout(function() {
                 document.getElementById("autologinStatus").innerHTML = "Sie werden eingeloggt...";
                 document.getElementById("autologin").checked = true;
-                setCookie("loginKey", r.loginKey, 14);
+                setCookie("loginKey", r.loginKey, 28);
                 setCookie("autologin", "on", 356);
                 location.reload();
             }, 1000);
@@ -64,10 +64,16 @@ function autoLogin() {
     });
 }
 
-if (document.readyState !== 'loading' ) {
+function init() {
+    const loginBtn = document.getElementById("loginBtn");
+    loginBtn.addEventListener("click", login);
     autoLogin();
+}
+
+if (document.readyState !== 'loading' ) {
+    init();
 } else {
     document.addEventListener('DOMContentLoaded', function () {
-        autoLogin();
+        init();
     });
 }
