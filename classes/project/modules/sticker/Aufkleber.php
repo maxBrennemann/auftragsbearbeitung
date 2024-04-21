@@ -178,8 +178,6 @@ class Aufkleber extends AufkleberWandtattoo
             $stickerCombination->removeOldCombinations($productId);
         }
 
-        return null;
-
         /* set categories, duplicate entries of category ids causes errors with prestashop */
         $categories = StickerCategory::getCategoriesForSticker($this->getId());
         $defaultCategories = [2, 13];
