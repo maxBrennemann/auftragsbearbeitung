@@ -3,7 +3,8 @@
 require_once('classes/project/modules/sticker/AufkleberWandtattoo.php');
 require_once('classes/project/modules/sticker/StickerCategory.php');
 
-class Aufkleber extends AufkleberWandtattoo {
+class Aufkleber extends AufkleberWandtattoo
+{
 
     const TYPE = "aufkleber";
 
@@ -21,7 +22,8 @@ class Aufkleber extends AufkleberWandtattoo {
 
     private $priceClass;
 
-    function __construct($idSticker) {
+    function __construct($idSticker)
+    {
         parent::__construct($idSticker);
         $this->instanceType = "aufkleber";
 
@@ -36,11 +38,13 @@ class Aufkleber extends AufkleberWandtattoo {
         $this->priceClass = (int) $this->stickerData["price_class"];
     }
 
-    public function isInShop() {
+    public function isInShop()
+    {
         return parent::checkIsInShop(self::TYPE);
     }
 
-    public function getName(): String {
+    public function getName(): String
+    {
         if ($this->getAltTitle() != "") {
             return $this->getAltTitle();
         }
@@ -49,43 +53,52 @@ class Aufkleber extends AufkleberWandtattoo {
     }
 
     /* TODO: es muss angezeigt werden, wenn sich die Titel unterscheiden, sodass Alttitel auch wirklich absichtlich festgelegt werden können */
-    public function getAltTitle($default = ""): String {
+    public function getAltTitle($default = ""): String
+    {
         return parent::getAltTitle(self::TYPE);
     }
 
-    public function getIsShortTimeSticker() {
+    public function getIsShortTimeSticker()
+    {
         return $this->isShortTimeSticker;
     }
 
-    public function getIsLongTimeSticker() {
+    public function getIsLongTimeSticker()
+    {
         return $this->isLongTimeSticker;
     }
 
-    public function getIsMultipart() {
+    public function getIsMultipart()
+    {
         return $this->isMultipartSticker;
     }
 
-    public function getPriceClass() {
+    public function getPriceClass()
+    {
         return $this->priceClass;
     }
 
-    public function getIsPlotted() {
+    public function getIsPlotted()
+    {
         return $this->isPlotted;
     }
 
-    public function getShopLink() {
+    public function getShopLink()
+    {
         return parent::getShopLinkHelper(self::TYPE);
     }
 
-    public function getColors(): array {
+    public function getColors(): array
+    {
         return [70, 60, 67, 79, 91, 107, 111, 225, 226, 74, 68, 294];
     }
 
     /* hardcoded color names */
-    public function getColorName(int $colorId): String {
+    public function getColorName(int $colorId): String
+    {
         $colors = [
-            70 => "schwarz", 
-            60 => "gelb", 
+            70 => "schwarz",
+            60 => "gelb",
             67 => "rot",
             79 => "dunkelblau",
             91 => "grün",
@@ -103,15 +116,11 @@ class Aufkleber extends AufkleberWandtattoo {
         return "";
     }
 
-    public function getSizeToPrice(): array {
-        $attributeIds = [];
-        return []; // TODO: implement
-    }
-
     /**
      * sets the descriptions for the sticker with default text
      */
-    private function getDescriptionWithDefaultText(): String {
+    private function getDescriptionWithDefaultText(): String
+    {
         $descriptionEnd = $this->getDescription();
         $description = "<p><span>Es wird jeweils nur der entsprechende Artikel oder das einzelne Motiv verkauft. Andere auf den Bildern befindliche Dinge sind nicht Bestandteil des Angebotes.</span></p>";
 
@@ -128,20 +137,24 @@ class Aufkleber extends AufkleberWandtattoo {
         if ($this->isMultipartSticker) {
             $description .= $this->texts["mehrteilig"];
         }
-        
+
         $description .= $descriptionEnd;
         return $description;
     }
 
-    public function getPurchasingPricesMatched() {
+    public function getPurchasingPricesMatched()
+    {
         return $this->buyingPrices;
     }
 
     /**
      * updates or saves the current sticker and uploads all
      * tags, combinations and images
+     * 
+     * @param bool $isOverwrite if true, all images will be overwritten
      */
-    public function save($isOverwrite = false): String|null {
+    public function save($isOverwrite = false): String|null
+    {
         if (!$this->getIsPlotted()) {
             return null;
         }
@@ -149,16 +162,23 @@ class Aufkleber extends AufkleberWandtattoo {
         $errorStatus = "";
 
         $productId = (int) $this->getIdProduct();
-        $stickerUpload = new StickerUpload($this->idSticker, $this->getName(), $this->getBasePrice(), $this->getDescriptionWithDefaultText(), $this->getDescriptionShortWithDefaultText());
 
+        $stickerUpload = new StickerUpload($this->idSticker, $this->getName(), $this->getBasePrice(), $this->getDescriptionWithDefaultText(), $this->getDescriptionShortWithDefaultText());
         $stickerCombination = new StickerCombination($this);
 
+        /**
+         * if the product does not exist, create a new one,
+         * otherwise update the existing one
+         */
         if ($productId == 0) {
-            $this->idProduct = $productId = $stickerUpload->createSticker();
+            $this->idProduct = $stickerUpload->createSticker();
+            $productId = $this->idProduct;
         } else {
             $stickerUpload->updateSticker($productId);
             $stickerCombination->removeOldCombinations($productId);
         }
+
+        return null;
 
         /* set categories, duplicate entries of category ids causes errors with prestashop */
         $categories = StickerCategory::getCategoriesForSticker($this->getId());
@@ -166,17 +186,18 @@ class Aufkleber extends AufkleberWandtattoo {
         $mergedCategories = [...$defaultCategories, ...$categories];
         $mergedCategories = array_unique($mergedCategories);
         $stickerUpload->setCategoires($mergedCategories);
-        
+
         $stickerTagManager = new StickerTagManager($this->getId(), $this->getName());
         $stickerTagManager->setProductId($productId);
+
         try {
             $stickerTagManager->saveTags();
         } catch (Exception $e) {
             $errorStatus = "Fehler beim Speichern der Tags: " . $e->getMessage();
         }
-        
+
         $stickerCombination->createCombinations();
-        
+
         $this->connectAccessoires();
 
         if ($isOverwrite) {
@@ -188,10 +209,12 @@ class Aufkleber extends AufkleberWandtattoo {
         if ($errorStatus != "") {
             return $errorStatus;
         }
+
         return null;
     }
 
-    public function getAttributes() {
+    public function getAttributes()
+    {
         $attributes = [];
 
         $attributes[] = $this->getSizeIds();
@@ -215,8 +238,9 @@ class Aufkleber extends AufkleberWandtattoo {
         return $attributes;
     }
 
-        /* save sticker fields */
-    public function saveSentData($jsonData) {
+    /* save sticker fields */
+    public function saveSentData($jsonData)
+    {
         $data = json_decode($jsonData);
         switch ($data->name) {
             case "plotted":
@@ -250,5 +274,4 @@ class Aufkleber extends AufkleberWandtattoo {
         DBAccess::updateQuery($query, ["id" => $this->getId()]);
         echo "success";
     }
-    
 }

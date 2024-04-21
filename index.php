@@ -6,6 +6,7 @@ require_once('settings.php');
 require_once('globalFunctions.php');
 require_once('classes/ResourceManager.php');
 
+ResourceManager::getParameters();
 ResourceManager::pass();
 ResourceManager::session();
 

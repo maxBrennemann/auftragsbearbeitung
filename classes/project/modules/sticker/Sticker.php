@@ -321,9 +321,9 @@ class Sticker extends PrestashopConnection {
 
     /**
      * inserts a new sticker into the database and sets all its initial values
-     * @param String $title the new sticker's name
+     * @param string $title the new sticker's name
      */
-    public static function createNewSticker(String $title) {
+    public static function createNewSticker(string $title) {
         /* insert sticker into database */
         $query = "INSERT INTO module_sticker_sticker_data (`name`) VALUES (:title)";
         $id = DBAccess::insertQuery($query, ["title" => $title]);

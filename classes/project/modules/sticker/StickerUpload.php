@@ -1,6 +1,7 @@
 <?php
 
-class StickerUpload extends PrestashopConnection {
+class StickerUpload extends PrestashopConnection
+{
 
     private $idSticker;
     private $idProduct;
@@ -11,7 +12,8 @@ class StickerUpload extends PrestashopConnection {
     private $descriptionShort;
     private $categories;
 
-    function __construct($idSticker, $title, $basePrice, $description, $descriptionShort) {
+    function __construct($idSticker, $title, $basePrice, $description, $descriptionShort)
+    {
         $this->idSticker = $idSticker;
         $this->title = $title;
         $this->basePrice = $basePrice;
@@ -19,30 +21,36 @@ class StickerUpload extends PrestashopConnection {
         $this->descriptionShort = $descriptionShort;
     }
 
-    public function setIdProduct($idProduct) {
+    public function setIdProduct($idProduct)
+    {
         $this->idProduct = $idProduct;
     }
 
-    public function setIdCategoryPrimary($idCategoryPrimary) {
+    public function setIdCategoryPrimary($idCategoryPrimary)
+    {
         $this->idCategoryPrimary = $idCategoryPrimary;
     }
 
-    public function setCategoires($categories) {
+    public function setCategoires($categories)
+    {
         $this->categories = $categories;
         $this->setCategory();
     }
 
-    public function createSticker() {
+    public function createSticker()
+    {
         $this->create();
         return $this->idProduct;
     }
 
-    public function updateSticker($idProduct) {
+    public function updateSticker($idProduct)
+    {
         $this->setIdProduct($idProduct);
         $this->update();
     }
 
-    private function update() {
+    private function update()
+    {
         try {
             $xml = $this->getXML("products/" . $this->idProduct);
             $this->manipulateProductXML($xml);
@@ -65,7 +73,8 @@ class StickerUpload extends PrestashopConnection {
         }
     }
 
-    private function create() {
+    private function create()
+    {
         try {
             $xml = $this->getXML('products?schema=blank');
             $this->manipulateProductXML($xml);
@@ -80,13 +89,14 @@ class StickerUpload extends PrestashopConnection {
             );
             $this->addXML($opt);
             $this->idProduct = (int) $this->xml->product->id;
-        } catch(PrestaShopWebserviceException $e) {
+        } catch (PrestaShopWebserviceException $e) {
             echo $e->getMessage();
         }
     }
 
     /* https://www.prestashop.com/forums/topic/640693-how-to-add-a-product-through-the-webservice-with-custom-feature-values/#comment-2663527 */
-    private function manipulateProductXML(&$xml) {
+    private function manipulateProductXML(&$xml)
+    {
         $resource_product = $xml->children()->children();
 
         /* unset unused paramters */
@@ -102,7 +112,7 @@ class StickerUpload extends PrestashopConnection {
         unset($resource_product->associations->stock_availables);
         unset($resource_product->quantity);
         unset($resource_product->position_in_category);
-        
+
         /* set necessary parameters */
         $resource_product->{'id_shop'} = 1;
         $resource_product->{'minimal_quantity'} = 1;
@@ -120,7 +130,8 @@ class StickerUpload extends PrestashopConnection {
         $resource_product->{'state'} = 1;
     }
 
-    private function setCategory($unset = false) {
+    private function setCategory($unset = false)
+    {
         try {
             $xml = $this->getXML("products/" . $this->idProduct);
             $product = $xml->children()->children();
@@ -153,5 +164,4 @@ class StickerUpload extends PrestashopConnection {
             echo $e->getMessage();
         }
     }
-
 }

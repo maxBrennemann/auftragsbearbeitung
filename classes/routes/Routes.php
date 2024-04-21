@@ -1,9 +1,10 @@
 <?php
 
-class Routes {
+class Routes
+{
 
-    function __construct() {
-        
+    function __construct()
+    {
     }
 
     protected static $getRoutes = [];
@@ -11,7 +12,8 @@ class Routes {
     protected static $putRoutes = [];
     protected static $deleteRoutes = [];
 
-    protected static function get($route) {
+    protected static function get($route)
+    {
         if (static::checkUrlPatterns($route, static::$getRoutes)) {
             return;
         }
@@ -24,7 +26,12 @@ class Routes {
         $callback();
     }
 
-    protected static function post($route) {
+    protected static function post($route)
+    {
+        if (static::checkUrlPatterns($route, static::$postRoutes)) {
+            return;
+        }
+
         if (!isset(static::$postRoutes[$route])) {
             JSONResponseHandler::throwError(404, "Path not found");
         }
@@ -33,7 +40,8 @@ class Routes {
         $callback();
     }
 
-    protected static function put($route) {
+    protected static function put($route)
+    {
         if (static::checkUrlPatterns($route, static::$putRoutes)) {
             return;
         }
@@ -44,10 +52,14 @@ class Routes {
 
         $callback = static::$putRoutes[$route];
         $callback();
-    
     }
 
-    protected static function delete($route) {
+    protected static function delete($route)
+    {
+        if (static::checkUrlPatterns($route, static::$deleteRoutes)) {
+            return;
+        }
+
         if (!isset(static::$deleteRoutes[$route])) {
             JSONResponseHandler::throwError(404, "Path not found");
         }
@@ -56,7 +68,8 @@ class Routes {
         $callback();
     }
 
-    private static function checkUrlPatterns($url, $routes) {
+    private static function checkUrlPatterns($url, $routes)
+    {
         foreach ($routes as $route => $callback) {
             if (static::matchUrlPattern($url, $route)) {
                 $callback();
@@ -67,7 +80,8 @@ class Routes {
         return false;
     }
 
-    private static function matchUrlPattern($url, $route) {
+    private static function matchUrlPattern($url, $route)
+    {
         $urlParts = explode("/", $url);
         $routeParts = explode("/", $route);
 
@@ -91,11 +105,13 @@ class Routes {
         return true;
     }
 
-    private static function setUrlParameter($key, $value) {
+    private static function setUrlParameter($key, $value)
+    {
         Tools::add($key, $value);
     }
 
-    public static function handleRequest($route) {
+    public static function handleRequest($route)
+    {
         $method = $_SERVER["REQUEST_METHOD"];
         switch ($method) {
             case "GET":
@@ -114,5 +130,4 @@ class Routes {
                 JSONResponseHandler::throwError(405, "Method not allowed");
         }
     }
-
 }

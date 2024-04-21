@@ -2,7 +2,8 @@
 
 require_once("classes/routes/Routes.php");
 
-class OrderRoutes extends Routes {
+class OrderRoutes extends Routes
+{
 
     protected static $getRoutes = [
         "/order/{id}/colors" => "Auftrag::getColors",
@@ -13,6 +14,12 @@ class OrderRoutes extends Routes {
         "/order/{id}/colors/add" => "Auftrag::addColor",
     ];
 
+    /**
+     * @uses Auftrag::updateOrder
+     * @uses Auftrag::setOrderArchived
+     * @uses Auftrag::updateColor
+     * @uses Fahrzeug::attachVehicle
+     */
     protected static $putRoutes = [
         "/order/{id}" => "Auftrag::updateOrder",
         "/order/{id}/to-archive" => "Auftrag::setOrderArchived",
@@ -25,8 +32,8 @@ class OrderRoutes extends Routes {
         "/order/{id}/colors/{colorId}" => "Auftrag::deleteColor",
     ];
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
-
 }

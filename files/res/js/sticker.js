@@ -6,6 +6,7 @@ import { click_addNewWidth } from "./sticker/sizeTable.js";
 import { } from "./sticker/statsManager.js";
 import { initBindings } from "./classes/bindings.js";
 import "./sticker/imageMove.js";
+import { ajax } from "./classes/ajax.js";
 
 const fnNames = {};
 fnNames.click_makeColorable = click_makeColorable;
@@ -251,11 +252,9 @@ function transfer(type, text) {
         }
     }
 
-    ajax.post({
-        id: mainVariables.motivId.innerHTML,
-        type: type,
+    ajax.post(`/api/v1/sticker/${mainVariables.motivId.innerHTML}/export`, {
+        stickerType: type,
         overwrite: JSON.stringify(mainVariables.overwriteImages),
-        r: "transferProduct",
     }).then(r => {
         if (r.status == "success") {
             mainVariables.pending = false;
@@ -608,10 +607,7 @@ fnNames.click_makeForConfig = function(e) {
 }
 
 function checkProductErrorStatus() {
-    ajax.post({
-        r: "checkProductErrorStatus",
-        stickerId: mainVariables.motivId.innerHTML,
-    }).then(r => {
+    ajax.get(`/api/v1/sticker/${mainVariables.motivId.innerHTML}/status`).then(r => {
         if (r.errorStatus == "") {
             return;
         }

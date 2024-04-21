@@ -232,24 +232,22 @@ export async function makeAsyncCall(type, params, location) {
 		switch (type) {
 			case "POST":
 				ajaxCall.open("POST", location, true);
-				ajaxCall.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 				break;
 			case "GET":
 				ajaxCall.open("GET", location + params, true);
 				break;
 			case "PUT":
 				ajaxCall.open(type, location, true);
-				ajaxCall.setRequestHeader("Content-type", "application/json");
 				break;
 			case "DELETE":
 				ajaxCall.open(type, location, true);
-				ajaxCall.setRequestHeader("Content-type", "application/json");
 				break;
 			default:
 				console.error("AjaxCall: Ajax Type not defined");
 				break;
 		}
 
+		ajaxCall.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		ajaxCall.send(params);
 	});
 }

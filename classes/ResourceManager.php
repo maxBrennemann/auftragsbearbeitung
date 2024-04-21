@@ -17,21 +17,24 @@ require_once('classes/project/Posten.php');
 require_once('classes/project/Angebot.php');
 require_once('classes/project/NotificationManager.php');
 
-class ResourceManager {
+class ResourceManager
+{
 
     private static $cacheStatus = null;
     private static $cacheFile = null;
     private static $page = "";
 
-    function __construct() {
-        
+    function __construct()
+    {
+
     }
 
     /**
      * Before: page was submitted via $_GET paramter, but now the REQUEST_URI is read;
      * $url is splitted into the REQUEST_URI and the parameter part
      */
-    public static function pass() {
+    public static function pass()
+    {
         $url = $_SERVER['REQUEST_URI'];
         $url = explode('?', $url, 2);
         $page = str_replace($_ENV["REWRITE_BASE"] . $_ENV["SUB_URL"], "", $url[0]);
@@ -69,7 +72,8 @@ class ResourceManager {
         }
     }
 
-    public static function session() {
+    public static function session()
+    {
         session_start();
         errorReporting();
     }
@@ -79,7 +83,8 @@ class ResourceManager {
      * https://www.a-coding-project.de/ratgeber/php/simples-caching 
      * added a time stamp check and added triggers to recreate page
      */
-    public static function handleCache() {
+    public static function handleCache()
+    {
         $t = false;
         self::$cacheFile = "cache/cache_" . md5($_SERVER['REQUEST_URI']) . ".txt";
         self::$cacheStatus = CacheManager::getCacheStatus();
@@ -92,33 +97,42 @@ class ResourceManager {
         return false;
     }
 
-    private static function getPostParameters() {
+    public static function getParameters()
+    {
         if (file_get_contents("php://input") != "") {
             $PHP_INPUT = json_decode(file_get_contents("php://input"), true);
-            
+
             if ($PHP_INPUT != null) {
+                Tools::$data = array_merge(Tools::$data, $PHP_INPUT);
                 $_POST = array_merge($_POST, $PHP_INPUT);
             }
         }
+
+        switch ($_SERVER['REQUEST_METHOD']) {
+            case 'POST':
+                Tools::$data = array_merge(Tools::$data, $_POST);
+                break;
+            case 'GET':
+                Tools::$data = array_merge(Tools::$data, $_GET);
+                break;
+        }
     }
 
-    public static function initPage() {
+    public static function initPage()
+    {
         if (self::$cacheStatus == "on") {
             ob_start();
         }
-    
-        self::getPostParameters();
-    
+
         /*
         * filters AJAX requests and delegates them to the right files
         */
         if (isset($_POST['getReason'])) {
             Ajax::manageRequests($_POST['getReason'], self::$page);
-        }
-        else if (isset($_POST['upload'])) {
+        } else if (isset($_POST['upload'])) {
             $uploadDestination = $_POST['upload'];
             require_once('classes/Upload.php');
-    
+
             /* checks which upload mechanism should be called */
             switch ($uploadDestination) {
                 case "order":
@@ -140,7 +154,7 @@ class ResourceManager {
                     $key = $_POST['key'];
                     $table = $_POST['tableKey'];
                     $fahrzeugnummer = Table::getIdentifierValue($table, $key);
-    
+
                     $auftragsnummer = $_POST['orderid'];
                     $upload = new Upload();
                     $upload->uploadFilesVehicle($fahrzeugnummer, $auftragsnummer);
@@ -148,7 +162,7 @@ class ResourceManager {
                 case "motiv":
                     $motivname = $_POST['motivname'];
                     $upload = new Upload();
-    
+
                     if (isset($_POST["motivNumber"])) {
                         $upload->uploadFilesMotive($motivname, $_POST["motivNumber"]);
                     } else {
@@ -163,17 +177,17 @@ class ResourceManager {
                     case "angebot":
                         $angebot = new Angebot();
                         $angebot->PDFgenerieren();
-                    break;
+                        break;
                     case "rechnung":
                         require_once('classes/project/Rechnung.php');
                         if (isset($_SESSION['tempInvoice'])) {
                             $rechnung = unserialize($_SESSION['tempInvoice']);
-    
+
                             if (!isset($_SESSION['currentInvoice_orderId'])) {
                                 echo "Fehler beim Generieren der Rechnung!";
                                 return null;
                             }
-    
+
                             if ($rechnung->getOrderId() == $_SESSION['currentInvoice_orderId']) {
                                 $rechnung->PDFgenerieren();
                             } else {
@@ -184,15 +198,15 @@ class ResourceManager {
                             $rechnung = new Rechnung();
                             $rechnung->PDFgenerieren();
                         }
-                    break;
+                        break;
                     case "auftrag":
                         require_once('classes/project/PDF_Auftrag.php');
-    
+
                         if (isset($_GET['id'])) {
                             $id = (int) $_GET['id'];
                             PDF_Auftrag::getPDF($id);
                         }
-                    break;
+                        break;
                 }
             } else if (self::$page == "cron") {
                 Ajax::manageRequests("testDummy", self::$page);
@@ -202,29 +216,30 @@ class ResourceManager {
                 self::showPage("login");
             }
         }
-    
+
         if (self::$cacheStatus == "on") {
             $cachedFileContent = ob_get_flush();
             file_put_contents(self::$cacheFile, $cachedFileContent);
         }
     }
 
-    private static function showPage($page) {
-        GLOBAL $start;
-    
+    private static function showPage($page)
+    {
+        global $start;
+
         if ($page == "test") {
             return null;
         }
-    
+
         $pageDetails = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM articles WHERE src = :page", [
             "page" => $page
         ]);
         $articleUrl = "";
-    
+
         /* checks if file exists */
         if ($pageDetails == null || !file_exists("./files/" . $pageDetails[0]["articleUrl"])) {
             http_response_code(404);
-    
+
             $baseUrl = 'files/';
             $pageDetails['id'] = 0;
             $pageDetails["articleUrl"] = $articleUrl = "404.php";
@@ -235,11 +250,11 @@ class ResourceManager {
             $articleUrl = $pageDetails["articleUrl"];
             $pageName = $pageDetails["pageName"];
         }
-        
+
         include('./files/header.php');
         include($baseUrl . $articleUrl);
         include('./files/footer.php');
-    
+
         if ($_ENV["DEV_MODE"] == true) {
             $stop = microtime(true);
             $duration = $stop - $start;
@@ -247,12 +262,14 @@ class ResourceManager {
         }
     }
 
-    public static function close() {
+    public static function close()
+    {
         Protocol::close();
         DBAccess::close();
     }
 
-    private static function handleResources() {
+    private static function handleResources()
+    {
         $requestUri = $_SERVER['REQUEST_URI'];
         $requestUri = explode('/', $requestUri);
 
@@ -297,13 +314,10 @@ class ResourceManager {
         }
     }
 
-    private static function get($type) {
-        return isset($_GET[$type]) ? $_GET[$type] : null;
-    }
-
-    private static function get_script($script) {
+    private static function get_script($script)
+    {
         header('Content-Type: text/javascript');
-        
+
         if ($script == "/colorpicker.js") {
             $file = file_get_contents(".res/colorpicker/min/colorpicker.js");
         } else {
@@ -328,7 +342,8 @@ class ResourceManager {
         echo $file;
     }
 
-    private static function get_css($script) {
+    private static function get_css($script)
+    {
         header("Content-type: text/css");
         $fileName = explode(".", $script);
 
@@ -357,10 +372,11 @@ class ResourceManager {
         echo $file;
     }
 
-    private static function checkFont($fileName) {
+    private static function checkFont($fileName)
+    {
         $len = count($fileName);
         $last = $fileName[$len - 1];
-        
+
         if ($last == "ttf") {
             $names = explode("/", $fileName[0]);
             $len = count($names);
@@ -371,48 +387,54 @@ class ResourceManager {
         return false;
     }
 
-    private static function get_font($font) {
+    private static function get_font($font)
+    {
         header("Content-type: font/ttf");
         $file = file_get_contents(Link::getResourcesLink($font, "font", false));
 
         echo $file;
     }
 
-    private static function get_upload($upload) {
+    private static function get_upload($upload)
+    {
         $file_info = new finfo(FILEINFO_MIME_TYPE);
         $mime_type = $file_info->buffer(file_get_contents(Link::getResourcesLink($upload, "upload", false)));
-        
+
         header("Content-type:$mime_type");
         $file = file_get_contents(Link::getResourcesLink($upload, "upload", false));
 
         echo $file;
     }
 
-    private static function get_backup($backup) {
+    private static function get_backup($backup)
+    {
         $file_info = new finfo(FILEINFO_MIME_TYPE);
         $mime_type = $file_info->buffer(file_get_contents(Link::getResourcesLink($backup, "backup", false)));
-        
+
         header("Content-type:$mime_type");
         $file = file_get_contents(Link::getResourcesLink($backup, "backup", false));
 
         echo $file;
     }
 
-    private static function get_pdf_invoice($pdf) {
+    private static function get_pdf_invoice($pdf)
+    {
         header("Content-type: application/pdf");
         $file = file_get_contents(Link::getResourcesLink($pdf, "pdf", false));
 
         echo $file;
     }
 
-    private static function get_image($file) {
+    private static function get_image($file)
+    {
         header("Content-type: " .  mime_content_type("img/" . $file));
         $file = file_get_contents("img/" . $file);
 
         echo $file;
     }
 
-    private static function get_static($file) {
+    private static function get_static($file)
+    {
         if ($file == "facebook-product-export") {
             header("Content-type: text/csv");
             $filename = "exportFB_" . date("Y-m-d") . ".csv";
@@ -431,13 +453,13 @@ class ResourceManager {
         }
     }
 
-    public static function outputHeaderJSON() {
+    public static function outputHeaderJSON()
+    {
         session_start();
-    
+
         header("Access-Control-Allow-Headers: *");
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
         header('Access-Control-Allow-Origin: http://localhost:5173');
         header('Content-Type: application/json; charset=utf-8');
     }
-
 }

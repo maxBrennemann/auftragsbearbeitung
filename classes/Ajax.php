@@ -1181,66 +1181,6 @@ class Ajax {
 				DBAccess::updateQuery($query);
 				echo "success";
 			break;
-			case "transferProduct":
-				$id = (int) $_POST["id"];
-				$type = (int) $_POST["type"];
-				$overwrite = json_decode($_POST["overwrite"], true);
-				$message = "";
-				$responseData = [];
-				
-				require_once("classes/project/modules/sticker/StickerCollection.php");
-				ob_start();
-				try {
-					switch ($type) {
-						case 1:
-							$aufkleber = new Aufkleber($id);
-							$aufkleber->save($overwrite["aufkleber"]);
-							break;
-						case 2:
-							$wandtattoo = new Wandtattoo($id);
-							$wandtattoo->save($overwrite["wandtattoo"]);
-							break;
-						case 3:
-							$textil = new Textil($id);
-							$textil->save($overwrite["textil"]);
-							break;
-						case 4:
-							/* TODO: iteration bei StickerCollection überarbeiten */
-							$stickerCollection = new StickerCollection($id);
-							$stickerCollection->uploadAll($overwrite);
-							break;
-					}
-				} catch (Exception $e) {
-					$message = $e->getMessage();
-				}
-				$responseData["output"] = ob_get_clean();
-
-				require_once("classes/project/modules/sticker/SearchProducts.php");
-				
-				$responseData = SearchProducts::getProductsByStickerId($id);
-				if ($responseData == null) {
-					$message = "no new sticker found";
-				} else {
-					$matchesJson = json_encode($responseData, JSON_UNESCAPED_UNICODE);
-					DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET additional_data = :matchesJSON WHERE id = :idSticker", [
-						"matchesJSON" => $matchesJson,
-						"idSticker" => $id,
-					]);	
-				}
-
-				if ($message == "") {
-					echo json_encode([
-						"status" => "success",
-						"responseData" => $responseData,
-					]);
-				} else {
-					echo json_encode([
-						"status" => "error",
-						"message" => $message,
-						"responseData" => $responseData,
-					]);
-				}
-			break;
 			case "getSizeTable":
 				require_once("classes/project/modules/sticker/Aufkleber.php");
 				$id = (int) $_POST["id"];
@@ -1848,18 +1788,6 @@ class Ajax {
 				echo json_encode([
 					"status" => "success",
 					"timeTables" => $timeTables,
-				]);
-			break;
-			case "checkProductErrorStatus":
-				require_once('classes/project/modules/sticker/StickerCollection.php');
-				$id = (int) $_POST["stickerId"];
-				$sc = new StickerCollection($id);
-				$errorStatus = $sc->checkProductErrorStatus();
-				$errorData = $sc->getErrorMessage();
-
-				echo json_encode([
-					"errorStatus" => $errorStatus,
-					"errorData" => $errorData,
 				]);
 			break;
 			default:
