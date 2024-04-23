@@ -32,6 +32,11 @@ class ProductCrawler extends PrestashopConnection {
 
         foreach ($allProducts as $product) {
             $idProduct = (int) $product["id"];
+
+            if ($idProduct == 0) {
+                continue;
+            }
+
             $productXml = $this->getXML("products/$idProduct");
 
             $productData = $productXml->product;

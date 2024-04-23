@@ -223,6 +223,10 @@ class Sticker extends PrestashopConnection {
      * switches the product active status
      */
     public function toggleActiveStatus() {
+        if ($this->getIdProduct() == 0) {
+            return;
+        }
+
         $xml = $this->getXML("products/" . $this->getIdProduct());
         $resource_product = $xml->children()->children();
         
@@ -266,6 +270,10 @@ class Sticker extends PrestashopConnection {
      * connects a list of products with the current product
      */
     public function connectAccessoires($xml = null) {
+        if ($this->getIdProduct() == 0) {
+            return;
+        }
+
         if ($xml == null) {
             $xml = $this->getXML("products/" . $this->getIdProduct());
         }

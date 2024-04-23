@@ -239,6 +239,11 @@ class ExportFacebook extends PrestashopConnection {
 
     private static function getFirstImageLink($product) {
         $prestashopConnection = new PrestashopConnection();
+
+        if ($product->getIdProduct() == 0) {
+            return null;
+        }
+
         try  {
             $xml = $prestashopConnection->getXML("images/products/" . $product->getIdProduct());
             $resources = $xml->children()->children();

@@ -56,6 +56,10 @@ class SearchProducts extends PrestashopConnection {
             foreach ($xml->children()->children() as $product) {
                 $categories = [];
                 $productId = (int) $product["id"];
+
+                if ($productId == 0) {
+                    continue;
+                }
     
                 $xmlProduct = $searchProduct->getXML("products/$productId");
                 $title = (String) $xmlProduct->children()->children()->name->language[0];

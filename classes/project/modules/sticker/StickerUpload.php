@@ -51,6 +51,10 @@ class StickerUpload extends PrestashopConnection
 
     private function update()
     {
+        if ($this->idProduct == 0) {
+            return;
+        }
+
         try {
             $xml = $this->getXML("products/" . $this->idProduct);
             $this->manipulateProductXML($xml);
@@ -132,6 +136,10 @@ class StickerUpload extends PrestashopConnection
 
     private function setCategory($unset = false)
     {
+        if ($this->idProduct == 0) {
+            return;
+        }
+
         try {
             $xml = $this->getXML("products/" . $this->idProduct);
             $product = $xml->children()->children();
