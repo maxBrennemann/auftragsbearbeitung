@@ -4,23 +4,26 @@ require_once('classes/project/Produkt.php');
 require_once('classes/project/Auftrag.php');
 require_once('classes/project/Auftragsverlauf.php');
 
-class Upload {
+class Upload
+{
 
     private $uploadDir = "upload/";
 
-    function __construct($setUploadDir = "") {
+    function __construct($setUploadDir = "")
+    {
         if ($setUploadDir != "") {
             $this->uploadDir = $setUploadDir;
         }
     }
-    
-    public function uploadFilesAuftrag($auftragsnummer) {
+
+    public function uploadFilesAuftrag($auftragsnummer)
+    {
         $ids = $this->uploadFiles();
         if (is_array($ids)) {
             foreach ($ids as $id) {
                 /*echo "id: " . $id . " /id";*/
                 DBAccess::insertQuery("INSERT INTO dateien_auftraege (id_datei, id_auftrag) VALUES ($id, $auftragsnummer)");
-        
+
                 $auftragsverlauf = new Auftragsverlauf($auftragsnummer);
                 $auftragsverlauf->addToHistory($id, 4, "added");
 
@@ -32,7 +35,8 @@ class Upload {
         return $ids;
     }
 
-    public function uploadFilesVehicle($fahrzeugnummer, $auftragsnummer) {
+    public function uploadFilesVehicle($fahrzeugnummer, $auftragsnummer)
+    {
         $ids = $this->uploadFilesAuftrag($auftragsnummer);
         if (is_array($ids)) {
             foreach ($ids as $id) {
@@ -43,7 +47,8 @@ class Upload {
         }
     }
 
-    public function uploadFilesProduct($produktnummer) {
+    public function uploadFilesProduct($produktnummer)
+    {
         $ids = $this->uploadFiles();
         if (is_array($ids)) {
             foreach ($ids as $id) {
@@ -56,10 +61,11 @@ class Upload {
     }
 
     /*
-     * uploads sticker files and returns a json object with all data about images so that the new images can all be
-     * added via ajax
+     * uploads sticker files and returns a json object with all data about images,
+     * so that the new images can all be added via ajax
      */
-    public function uploadFilesMotive($name, $id = 0) {
+    public function uploadFilesMotive($name, $id = 0)
+    {
         $ids = $this->uploadFiles();
 
         if (is_array($ids)) {
@@ -71,7 +77,7 @@ class Upload {
             } else {
                 $motivnummer = $id;
             }
-            
+
             $imageData = [];
 
             /* upload each image */
@@ -108,7 +114,7 @@ class Upload {
             }
 
             echo json_encode([
-                "motiv" => $motivnummer, 
+                "motiv" => $motivnummer,
                 "imageData" => $imageData,
                 "files" => $_FILES["files"]["tmp_name"],
             ]);
@@ -122,7 +128,8 @@ class Upload {
         ]);
     }
 
-    public function uploadFilesPosten($postennummer) {
+    public function uploadFilesPosten($postennummer)
+    {
         $ids = $this->uploadFiles();
         if (is_array($ids)) {
             foreach ($ids as $id) {
@@ -138,7 +145,8 @@ class Upload {
      * 
      * @return array|string
      */
-    private function uploadFiles(): array|string {
+    private function uploadFiles(): array|string
+    {
         $msg = "";
 
         try {
@@ -159,7 +167,7 @@ class Upload {
                 $date = date("Y-m-d");
 
                 $insertQuery = "INSERT INTO dateien (dateiname, originalname, typ, `date`) VALUES ('$filename', '$originalname','$filetype', '$date')";
-                
+
                 if (move_uploaded_file($_FILES["files"]["tmp_name"][$i], $this->uploadDir . $filename)) {
                     array_push($ids, DBAccess::insertQuery($insertQuery));
                 } else {
@@ -176,7 +184,8 @@ class Upload {
     /**
      * deletes files that are not linked to any database entry
      */
-    public static function deleteUnusedFiles($folderPath = "upload") {
+    public static function deleteUnusedFiles($folderPath = "upload")
+    {
         $query = "SELECT `dateiname` FROM dateien";
         $result = DBAccess::selectQuery($query);
         $usedFiles = array();
@@ -198,11 +207,12 @@ class Upload {
      * removes spaces, @ and & and if a filename is longer than 70 characters, it is renamed with tempnam
      * the date is also removed from the filename
      */
-    public static function adjustFileNames() {
+    public static function adjustFileNames()
+    {
         $query = "SELECT id, `dateiname` FROM dateien";
         $result = DBAccess::selectQuery($query);
         $folderPath = "upload";
-        
+
         foreach ($result as $row) {
             $filename = $row["dateiname"];
             $dateiId = $row["id"];
@@ -222,7 +232,8 @@ class Upload {
      * Adjusts the filename to remove spaces, @ and &
      * and shortens the name if it is longer than 70 characters
      */
-    private static function adjustFileName($name): String {
+    private static function adjustFileName($name): String
+    {
         $adjustedFilename = str_replace(" ", "", $name);
         $adjustedFilename = str_replace("&", "", $adjustedFilename);
         $adjustedFilename = str_replace("@", "", $adjustedFilename);
@@ -234,5 +245,4 @@ class Upload {
 
         return $adjustedFilename;
     }
-
 }

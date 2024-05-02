@@ -175,8 +175,6 @@ async function uploadFileForSticker(files, imageCategory, callback = null) {
         imageCategory: imageCategory
     };
 
-    console.log(files);
-    //return;
     const response = await ajax.uploadFiles(files, "motiv", data);
 
     if (callback != null) {
@@ -358,22 +356,14 @@ export function updateImageDescription(e) {
     });
 }
 
-/**
- * chatGPT generated
- * @param {*} event 
- */
 function openFileDialog(event) {
-    // Create a hidden file input element
     var fileInput = document.createElement("input");
     fileInput.type = "file";
     fileInput.accept = "image/*";
-  
-    // Trigger click event on the file input
     fileInput.click();
   
-    const imageCategory = event.target.dataset.dropType;
-
-    // Handle selected files
+    const imageCategory = event.currentTarget.dataset.dropType;
+    
     fileInput.addEventListener("change", function(event) {
         var files = event.target.files;
         files = Array.from(files);
