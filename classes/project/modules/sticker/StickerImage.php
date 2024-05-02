@@ -19,6 +19,8 @@ class StickerImage extends PrestashopConnection {
     private $svgs = [];
 
     function __construct($idMotiv) {
+        parent::__construct();
+
         $this->idMotiv = $idMotiv;
         $this->getConnectedFiles();
         $this->prepareImageData();

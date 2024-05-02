@@ -25,6 +25,8 @@ class Sticker extends PrestashopConnection {
     protected $instanceType = "sticker";
 
     function __construct(int $idSticker) {
+        parent::__construct();
+
         $this->idSticker = $idSticker;
         $this->stickerData = DBAccess::selectQuery("SELECT * FROM module_sticker_sticker_data WHERE id = :idSticker LIMIT 1;", ["idSticker" => $idSticker]);
 
