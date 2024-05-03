@@ -27,6 +27,9 @@ if (isset($_GET['id'])) {
 
 if ($id == 0): ?>
     <a href="<?=Link::getPageLink("sticker-overview")?>">Zur Motivübersicht</a>
+    <script>
+        window.location.href = "<?=Link::getPageLink("sticker-overview")?>";
+    </script>
 <?php else: ?>
 <script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
 <div class="w-full">

@@ -96,10 +96,10 @@ class Table {
 		$this->data = DBAccess::selectQuery("SELECT * FROM `$type` LIMIT " . $this->limit);
     }
 
-    public function createByData($data, $columnNames) {
+    public function createByData($data, $columnSpecs) {
         $this->type = 0;
         $this->data = $data;
-        $this->columnNames = $columnNames;
+        $this->columnNames = $columnSpecs;
 	}
 
 	public function setType($type) {
@@ -515,6 +515,7 @@ class Table {
 		
 		for ($i = 0; $i < sizeof($rowNames); $i++) {
 			$column = $rowNames[$i]["COLUMN_NAME"];
+			$cssClasses = $rowNames[$i]["CSS"] ?? "";
 
 			$nowrap = false;
 			if (isset($rowNames[$i]["NOWRAP"])) {
@@ -529,9 +530,9 @@ class Table {
 				$link = null;
 			
 			if ($link == null)
-				$html .= "<td class=\"$nowrap\">" . $data . "</td>";
+				$html .= "<td class=\"$nowrap $cssClasses\">" . $data . "</td>";
 			else
-				$html .= "<td class=\"linkTable $nowrap\"><a href=\"$link\">" . $data . "</a>\r\n</td>";
+				$html .= "<td class=\"linkTable $nowrap $cssClasses\"><a href=\"$link\">" . $data . "</a>\r\n</td>";
 		}
 
 		$html .= "</tr>";

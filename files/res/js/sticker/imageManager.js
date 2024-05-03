@@ -296,9 +296,9 @@ function initImageManager() {
     });
 
     const imgMovable = document.querySelector(".imageMovableContainer");
-    const dropType = imgMovable.dataset.dropType;
-    imgMovable.addEventListener("drop", e => dropMiscHandler(e, dropType), false);
-    imgMovable.addEventListener("dragover", itemDragOverHandler, false);
+    const dropType = imgMovable?.dataset.dropType;
+    imgMovable?.addEventListener("drop", e => dropMiscHandler(e, dropType), false);
+    imgMovable?.addEventListener("dragover", itemDragOverHandler, false);
 
     const imgPrev = document.querySelectorAll(".imgPreview");
     Array.from(imgPrev).forEach(img => {
@@ -307,11 +307,11 @@ function initImageManager() {
     });
 
     const svgContainer = document.getElementById("svgContainer");
-    svgContainer.addEventListener("dragover", itemDragOverHandler, false);
-    svgContainer.addEventListener("drop", e => itemDropHandler(e, "textilsvg"), false);
+    svgContainer?.addEventListener("dragover", itemDragOverHandler, false);
+    svgContainer?.addEventListener("drop", e => itemDropHandler(e, "textilsvg"), false);
 }
 
-const motivId = document.getElementById("motivId").innerHTML;
+const motivId = document.getElementById("motivId")?.innerHTML;
 var svg_elem;
 
 if (document.readyState !== 'loading' ) {

@@ -1429,20 +1429,6 @@ class Ajax {
 				$stickerCollection = new StickerCollection($id);
 				$stickerCollection->toggleActiveStatus();
 			break;
-			case "addTag":
-				require_once('classes/project/modules/sticker/StickerTagManager.php');
-				StickerTagManager::addTag();
-			break;
-			case "removeTag":
-				require_once('classes/project/modules/sticker/StickerTagManager.php');
-				StickerTagManager::removeTag();
-			break;
-			case "getMoreTagSuggestions":
-				$id = (int) $_POST["id"];
-				$name = (String) $_POST["name"];
-				$stickerTagManager = new StickerTagManager($id, $name);
-				$stickerTagManager->getTagsHTML();
-			break;
 			case "getTagOverview":
 				require_once('classes/project/modules/sticker/StickerTagManager.php');
 				echo json_encode([

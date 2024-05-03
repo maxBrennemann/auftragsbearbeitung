@@ -35,6 +35,10 @@ function initSticker() {
     initBindings(fnNames);
     checkProductErrorStatus();
 
+    if (mainVariables.motivId == null) {
+        return;
+    }
+
     document.title = "b-schriftung - Motiv " + mainVariables.motivId.innerHTML + " " + document.getElementById("name").value;
 
     var input = document.getElementById('name');
@@ -607,6 +611,10 @@ fnNames.click_makeForConfig = function(e) {
 }
 
 function checkProductErrorStatus() {
+    if (mainVariables.motivId == null) {
+        return;
+    }
+
     ajax.get(`/api/v1/sticker/${mainVariables.motivId.innerHTML}/status`).then(r => {
         if (r.errorStatus == "") {
             return;
