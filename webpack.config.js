@@ -30,7 +30,15 @@ module.exports = {
     tableeditor: './files/res/js/tableeditor.js',
     tags: './files/res/js/tags.js',
     wiki: './files/res/js/wiki.js',
-    zeiterfassung: './files/res/js/zeiterfassung.js'
+    zeiterfassung: './files/res/js/zeiterfassung.js',
+
+    ajax: './files/res/js/classes/ajax.js',
+    binding: './files/res/js/classes/binding.js',
+    deviceDetector: './files/res/js/classes/deviceDetector.js',
+    fileUploader: './files/res/js/classes/fileUploader.js',
+    statusInfo: './files/res/js/classes/statusInfo.js',
+    tableManager: './files/res/js/classes/tableManager.js',
+    tableSorter: './files/res/js/classes/tableSorter.js',
   },
   output: {
     filename: '[name].min.js',

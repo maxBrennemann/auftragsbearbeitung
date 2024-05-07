@@ -3,13 +3,14 @@
 require_once('classes/project/UpdateSchedule.php');
 
 /**
-  * Anforderungen der Table Klasse:
-  * static Funktionen, um schnell eine Tabelle aus der Datenbank zu generieren,
-  * angelehnt an die alte FormGenerator Class
-  * initialisierbare Klasse, um Tabellen bearbeitbar zu machen,
-  * damit sind verknüpfte Aktionen, wie löschen, hinzufügen und bearbeiten gemeint
-  */
-class Table {
+ * Anforderungen der Table Klasse:
+ * static Funktionen, um schnell eine Tabelle aus der Datenbank zu generieren,
+ * angelehnt an die alte FormGenerator Class
+ * initialisierbare Klasse, um Tabellen bearbeitbar zu machen,
+ * damit sind verknüpfte Aktionen, wie löschen, hinzufügen und bearbeiten gemeint
+ */
+class Table
+{
 
 	private $type = "";
 	private $identifier = "";
@@ -26,7 +27,7 @@ class Table {
 	private $dataset = [
 		0 => false
 	];
-	
+
 	/* action button variables */
 	private $buttonEdit = false;
 	private $buttonDelete = false;
@@ -47,7 +48,8 @@ class Table {
 	/**
 	 * limit -1 hebt das Limit auf
 	 */
-    function __construct($type = 0, int $limit = 10, $editable = false) {
+	function __construct($type = 0, int $limit = 10, $editable = false)
+	{
 		$this->limit = $limit;
 
 		if (!is_numeric($type)) {
@@ -67,14 +69,15 @@ class Table {
 		$this->editable = $editable;
 
 		$this->dataKey = "key_" . bin2hex(random_bytes(6));
-    }
+	}
 
 	/**
 	 * removes a column from the table,
 	 * TODO: this is no ideal solution and the whole "COLUMN_NAME" thing should be changed
-	 * @param String $columnName
+	 * @param string $columnName
 	 */
-	public function exclude(String $columnName) {
+	public function exclude(String $columnName)
+	{
 		$count = 0;
 		foreach ($this->columnNames as $key => $column) {
 			if ($column["COLUMN_NAME"] == $columnName) {
@@ -87,30 +90,36 @@ class Table {
 		return $this;
 	}
 
-	public function getTableKey() {
+	public function getTableKey()
+	{
 		return $this->dataKey;
 	}
 
-    public function createByDB($type) {
+	public function createByDB($type)
+	{
 		$this->columnNames = self::getColumnNames($type);
 		$this->data = DBAccess::selectQuery("SELECT * FROM `$type` LIMIT " . $this->limit);
-    }
-
-    public function createByData($data, $columnSpecs) {
-        $this->type = 0;
-        $this->data = $data;
-        $this->columnNames = $columnSpecs;
 	}
 
-	public function setType($type) {
+	public function createByData($data, $columnSpecs)
+	{
+		$this->type = 0;
+		$this->data = $data;
+		$this->columnNames = $columnSpecs;
+	}
+
+	public function setType($type)
+	{
 		$this->type = $type;
 	}
-	
-	public function addLink($link) {
+
+	public function addLink($link)
+	{
 		$this->link = $link;
 	}
 
-	public function addDataset($key, $value) {
+	public function addDataset($key, $value)
+	{
 		$this->dataset = [
 			0 => true,
 			1 => $key,
@@ -118,24 +127,14 @@ class Table {
 		];
 	}
 
-	public function getData() {
+	public function getData()
+	{
 		return $this->data;
 	}
 
-	/*
-	 * if no identifier is set, the default identifier is the first column name of the dataset
-	 * to find this, the first row is selected ([0]) and then the array_key_first function is executed
-	 */
-	public function getIdentifier() {
-		if ($this->identifier == null) {
-			return array_key_first($this->data[0]);
-		} else {
-			return $this->identifier;
-		}
-	}
-
 	/* every index of the keys array is interpreted as a key for the data array */
-	public function createKeys() {
+	public function createKeys()
+	{
 		$this->keys = [];
 		for ($i = 0; $i < sizeof($this->data); $i++) {
 			$key = bin2hex(random_bytes(6));
@@ -146,37 +145,36 @@ class Table {
 		}
 	}
 
-	public function addUpdateFunction($callback) {
-		$this->callback = $callback;
-	}
-
 	/*
 	 * function adds a new column for selections
 	 * can currently only be used to add an input checkbox
 	 */
-	public function addSelector($type) {
+	public function addSelector($type)
+	{
 		switch ($type) {
 			case "check":
 				$array = [];
 				if ($this->keys == null)
 					$this->createKeys();
-				
+
 				for ($i = 0; $i < sizeof($this->data); $i++) {
 					$btn = $this->addCheckSelector($this->keys[$i]);
 					$array[$i] = $btn;
 				}
 				$this->addColumn("Auswählen", $array);
-			break;
+				break;
 		}
 	}
 
 	/* helper function for addSelector */
-	private function addCheckSelector($key) {
-        $button = "<input type=\"checkbox\" onchange=\"changeInput(event, '$key')\"></input>";
+	private function addCheckSelector($key)
+	{
+		$button = "<input type=\"checkbox\" onchange=\"changeInput(event, '$key')\"></input>";
 		return $button;
-    }
+	}
 
-	public function addAction($action, $symbol, $text) {
+	public function addAction($action, $symbol, $text)
+	{
 		if ($this->data == null)
 			return null;
 
@@ -196,7 +194,8 @@ class Table {
 		$this->addColumn("Aktionen", $array);
 	}
 
-	public function addActionButton($button, $identifier = null, $update = null) {
+	public function addActionButton($button, $identifier = null, $update = null)
+	{
 		if ($this->data == null)
 			return 0;
 
@@ -207,13 +206,13 @@ class Table {
 			case "update":
 				$this->buttonUpdate = !$this->buttonUpdate;
 				$array = [];
-				
+
 				for ($i = 0; $i < sizeof($this->data); $i++) {
 					$btn = $this->addUpdateButton($this->keys[$i]);
 					$array[$i] = $btn;
 				}
 				$this->addColumn("Aktionen", $array);
-				
+
 				if ($identifier != null) {
 					$this->setIdentifier($identifier);
 				}
@@ -224,7 +223,7 @@ class Table {
 			case "edit":
 				$this->buttonUpdate = !$this->buttonEdit;
 				$array = [];
-				
+
 				for ($i = 0; $i < sizeof($this->data); $i++) {
 					$btn = $this->addEditButton($this->keys[$i]);
 					$array[$i] = $btn;
@@ -233,7 +232,7 @@ class Table {
 				break;
 			case "delete":
 				$this->buttonUpdate = !$this->buttonDelete;
-				
+
 				for ($i = 0; $i < sizeof($this->data); $i++) {
 					$btn = $this->addDeleteButton($this->keys[$i]);
 					$array[$i] = $btn;
@@ -258,43 +257,38 @@ class Table {
 					$array[$i] = $btn;
 				}
 				$this->addColumn("Aktionen", $array);
-				
+
 				break;
 		}
 	}
 
-	/* 
-	 * https://stackoverflow.com/questions/2147614/same-named-function-with-multiple-arguments-in-php/2147751
-	 * currently not used, maybe later
-	*/
-	public function __call($method, $arguments) {
-		/*if ($method == "addActionButton") {
-			if (count($arguments) )
-		}*/
+	/* action buttons */
+	private function addUpdateButton($key)
+	{
+		$button = "<button class='p-1 mr-1 actionButton' onclick=\"updateIsDone('$key', event)\" title='Als erledigt markieren.'>" . Icon::getDefault("iconCheck") . "</button>";
+		return $button;
 	}
 
-	/* action buttons */
-	private function addUpdateButton($key) {
-        $button = "<button class='p-1 mr-1 actionButton' onclick=\"updateIsDone('$key', event)\" title='Als erledigt markieren.'>" . Icon::getDefault("iconCheck") . "</button>";
+	private function addEditButton($key)
+	{
+		$button = "<button class='p-1 mr-1 actionButton' onclick=\"editRow('$key', this)\" title='Bearbeiten'>" . Icon::getDefault("iconEdit") . "</button>";
 		return $button;
-    }
+	}
 
-    private function addEditButton($key) {
-        $button = "<button class='p-1 mr-1 actionButton' onclick=\"editRow('$key', this)\" title='Bearbeiten'>" . Icon::getDefault("iconEdit") . "</button>";
-		return $button;
-    }
-
-    private function addDeleteButton($key) {
+	private function addDeleteButton($key)
+	{
 		$button = "<button class='p-1 mr-1 actionButton' onclick=\"deleteRow('$key', '$this->type', this)\" title='Löschen'>" . Icon::getDefault("iconDelete") . "</button>";
 		return $button;
 	}
-	
-	private function addCheck($key) {
+
+	private function addCheck($key)
+	{
 		$check = "<input type=\"checkbox\" name=\"checkRow_$key\">";
 		return $check;
 	}
 
-	private function addMove($key) {
+	private function addMove($key)
+	{
 		$button = "<button class='actionButton moveRow' onmousedown=\"moveInit(event)\" onmouseup=\"moveRemove(event)\" title='Reihenfolge verändern' data-key=\"$key\">" . Icon::getDefault("iconMove") . "</button>";
 		return $button;
 	}
@@ -302,7 +296,8 @@ class Table {
 	/*
 	 * checks if a rowname already exists and returns boolean accordingly
 	*/
-	private function rowNameExists($rowName) {
+	private function rowNameExists($rowName)
+	{
 		foreach ($this->columnNames as $c) {
 			if ($c['COLUMN_NAME'] == $rowName) {
 				return true;
@@ -311,7 +306,8 @@ class Table {
 		return false;
 	}
 
-    public function addColumn($rowName, $data) {
+	public function addColumn($rowName, $data)
+	{
 		if (sizeof($data) == sizeof($this->data)) {
 			if ($this->rowNameExists($rowName)) {
 				for ($i = 0; $i < sizeof($this->data); $i++) {
@@ -331,8 +327,9 @@ class Table {
 			throw new Exception("Array sizes do not match");
 		}
 	}
-	
-	public function addRow($row) {
+
+	public function addRow($row)
+	{
 		if (sizeof($row) == sizeof($this->data[0])) {
 			array_push($this->data, $row);
 		} else {
@@ -340,7 +337,8 @@ class Table {
 		}
 	}
 
-	public function setIdentifier($val) {
+	public function setIdentifier($val)
+	{
 		if (is_string($val)) {
 			$this->identifier = $val;
 		} else {
@@ -348,7 +346,8 @@ class Table {
 		}
 	}
 
-	public static function updateValue($table, $action, $key) {
+	public static function updateValue($table, $action, $key)
+	{
 		if (!is_string($table) || !is_string($action) || !is_string($key))
 			return "data cannot be processed";
 
@@ -364,7 +363,7 @@ class Table {
 			if ($action == "delete") {
 				/* if there is a session object for deletion, then this one is used */
 				if (isset($_SESSION[$table . "_del"])) {
-					$actionObject = unserialize($_SESSION[$table. "_del"]);
+					$actionObject = unserialize($_SESSION[$table . "_del"]);
 					$actionObject->delete();
 				} else {
 					DBAccess::deleteQuery("DELETE FROM $actionObject->type WHERE $actionObject->identifier = $rowId");
@@ -372,7 +371,7 @@ class Table {
 			} else if ($action == "check") {
 				/* data string for checked rows is $_POST["checked"] as JSON */
 				$data = $_POST["checked"];
-        		$data = json_decode($data, true);
+				$data = json_decode($data, true);
 			} else if ($action == "update") {
 				DBAccess::updateQuery("UPDATE $actionObject->type SET $actionObject->update WHERE $actionObject->identifier = $rowId");
 			}
@@ -381,7 +380,8 @@ class Table {
 		}
 	}
 
-	public static function getIdentifierValue($table, $key) {
+	public static function getIdentifierValue($table, $key)
+	{
 		$actionObject = unserialize($_SESSION[$table]);
 
 		/* gets the row by key, then the row identifier for the db action is selected */
@@ -396,7 +396,8 @@ class Table {
 		}
 	}
 
-	public static function getValueByIdentifierColumn($table, $key, $column) {
+	public static function getValueByIdentifierColumn($table, $key, $column)
+	{
 		$actionObject = unserialize($_SESSION[$table]);
 
 		/* gets the row by key, then the row identifier for the db action is selected */
@@ -412,11 +413,13 @@ class Table {
 	}
 
 
-	public function defineUpdateSchedule($updateSchedule) {
+	public function defineUpdateSchedule($updateSchedule)
+	{
 		$this->updateSchedule = $updateSchedule;
 	}
 
-	public static function updateTable_AddNewLine($key, $data) {
+	public static function updateTable_AddNewLine($key, $data)
+	{
 		if (!is_string($key) || !is_string($data))
 			return "data cannot be processed";
 
@@ -435,18 +438,19 @@ class Table {
 	 * erstellt die Tabelle
 	 * wenn $this->data null ist, wird eine Nachricht zurückgegeben
 	 */
-    public function getTable($zeroTable = false) {
+	public function getTable($zeroTable = false)
+	{
 		if ($this->data == null && !$zeroTable)
 			return "<p>Keine Einträge vorhanden</p>";
 
-        $html = "";
+		$html = "";
 
-        if ($this->editable) {
+		if ($this->editable) {
 			$html = "<table class='table-auto overflow-x-scroll w-full allowAddingContent' data-type='{$this->type}' data-key='{$this->dataKey}' data-send-to='{$this->sendTo}'>";
 		} else {
 			$html = "<table class='table-auto overflow-x-scroll w-full' data-type='{$this->type}' data-key='{$this->dataKey}'>";
 		}
-        
+
 		$html .= self::html_createTableHeader($this->columnNames);
 
 		/* for each row of the result */
@@ -470,11 +474,12 @@ class Table {
 		if ($this->addNewLineButtonTrue) {
 			$html .= "<br><button class=\"addToTable\" data-table=\"$this->dataKey\" onclick=\"tableAddnewLine();\">+</button>";
 		}
-		
+
 		return $html;
 	}
 
-	public function getLink($id) {
+	public function getLink($id)
+	{
 		if (is_string($this->link)) {
 			return $this->link;
 		} else if (!is_null($this->link)) {
@@ -485,15 +490,16 @@ class Table {
 	/*
 	 * function to generate a html button to add a new line to the table
 	 */
-	public function addNewLineButton($add = true) {
+	public function addNewLineButton($add = true)
+	{
 		$this->addNewLineButtonTrue = $add;
 	}
 
-    /* static functions */
-    public static function createTable($dbName, $rowCount) {
-
+	/* static functions */
+	public static function createTable($dbName, $rowCount)
+	{
 	}
-	
+
 	/*
 	 * erstellt eine Zeile
 	 * 
@@ -505,14 +511,15 @@ class Table {
 	 * 
 	 * @return	Gibt eine Tabellenzeile in HTML zurück
 	 */
-	private static function html_createRow2($row, $rowNames, $link, $dataset, $lastColumnIsActionButton = null) {
+	private static function html_createRow2($row, $rowNames, $link, $dataset, $lastColumnIsActionButton = null)
+	{
 		$html = "<tr>";
 
 		if ($dataset[0] == true) {
 			$data = $row[$dataset[2]];
 			$html = "<tr data-{$dataset[1]}=\"{$data}\">";
 		}
-		
+
 		for ($i = 0; $i < sizeof($rowNames); $i++) {
 			$column = $rowNames[$i]["COLUMN_NAME"];
 			$cssClasses = $rowNames[$i]["CSS"] ?? "";
@@ -526,9 +533,9 @@ class Table {
 			$data = $row[$column];
 
 			/* sets the link to null, if the last column is reached and it is an action button in this column */
-			if ($lastColumnIsActionButton == true && $i == sizeof($rowNames) -1)
+			if ($lastColumnIsActionButton == true && $i == sizeof($rowNames) - 1)
 				$link = null;
-			
+
 			if ($link == null)
 				$html .= "<td class=\"$nowrap $cssClasses\">" . $data . "</td>";
 			else
@@ -539,33 +546,15 @@ class Table {
 		return $html;
 	}
 
-    /* returns the column names of a specific sql table */
-    private static function getColumnNames($type) {
+	/* returns the column names of a specific sql table */
+	private static function getColumnNames($type)
+	{
 		return DBAccess::selectColumnNames($type);
 	}
 
-    /*
-	* executes the SQL Query composed of the type of the table, the amount of data to be extracted and the where condition as well as the order condition
-	*/
-	private static function executeSQLQuery($type, $amountOfData, $orderBy = "", $whereCondition = "") {
-		$isOrderedByStatement = "";
-		$whereConditionStatement = "";
-		if (strcmp($orderBy, "") != 0) {
-			$isOrderedByStatement = "ORDER BY {$orderBy}";
-		}
-		if (strcmp($whereCondition, "") != 0) {
-			$whereConditionStatement = "WHERE {$whereCondition}";
-		}
-		
-		if ($amountOfData == -1) {
-			return DBAccess::selectQuery("SELECT * FROM $type {$whereConditionStatement} {$isOrderedByStatement}");
-		} else {
-			return DBAccess::selectQuery("SELECT * FROM $type {$whereConditionStatement} {$isOrderedByStatement} LIMIT $amountOfData");
-		}
-	}
-
-    /* html generator functions */
-    private static function html_createTableHeader($column_names) {
+	/* html generator functions */
+	private static function html_createTableHeader($column_names)
+	{
 		$table_header = "<tr>";
 
 		foreach ($column_names as $entry) {
@@ -579,26 +568,5 @@ class Table {
 		}
 
 		return $table_header . "</tr>";
-    }
-    
-    private static function html_createRow($showColumnData, $retUrl, $columnName, $n, $isRowLink, $type) {
-		$html = "";
-
-		if ($n == 0 && $isRowLink) {
-			$url = $_SERVER['REQUEST_URI'];
-			$url = strtok($url, '?');
-			if ($retUrl != null) {
-				$html = $html . "<td><a href='{$retUrl}?showDetails={$type}&id={$showColumnData}'>{$showColumnData}</a></td>";
-			} else {
-				$html = $html . "<td><a href='{$url}?showDetails={$type}&id={$showColumnData}'>{$showColumnData}</a></td>";
-			}
-		} else {
-			$html = $html . "<td>{$showColumnData}</td>";
-		}
-
-		return $html;
 	}
-
 }
-
-?>
