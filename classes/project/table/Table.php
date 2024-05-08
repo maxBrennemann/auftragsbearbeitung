@@ -1,8 +1,10 @@
 <?php
 
-namespace project\table;
+namespace Classes\Project\Table;
 
-class Table
+include "classes/project/models/Model.php";
+
+class Table extends \Classes\Project\Models\Model
 {
 
     private $headers = [];
@@ -23,18 +25,66 @@ class Table
 
     private $extraOptions = [];
 
+    private $model;
+
     public function __construct()
     {
     }
 
-    public function setHeaders($headers)
+    /**
+     * Sets the headers of the table,
+     * if extra options are set, they will be merged with the extra options array
+     * 
+     * @param array $headers
+     * 
+     * @return bool
+     */
+    public function setHeaders(array $headers): bool
     {
-        $this->headers = $headers;
+        if (empty($headers)) {
+            return false;
+        }
+
+        $this->headers = array_keys($headers);
+
+        foreach ($headers as $key => $header) {
+            if ($this->extraOptions[$key]) {
+                $this->extraOptions[$key] = array_merge($this->extraOptions[$key], $header);
+            }
+        }
+
+        return true;
     }
 
-    public function setRows($rows)
+    /**
+     * Sets the rows of the table
+     * 
+     * @param array $rows
+     * 
+     * @return bool
+     */
+    public function setRows($rows): bool
     {
+        if (empty($rows)) {
+            return false;
+        }
+
         $this->rows = $rows;
+
+        return true;
+    }
+
+    public function setModel($model)
+    {
+        $this->model = $model;
+    }
+
+    public function addActionButton($icon, $action)
+    {
+        $this->extraOptions[] = [
+            'icon' => $icon,
+            'action' => $action
+        ];
     }
 
     public function generateTable()
@@ -50,21 +100,21 @@ class Table
         return $html;
     }
 
+    /**
+     * 
+     */
     private function generateTableHeader(): string
     {
-        $html = <<<html
+        $html = "
             <thead>
-                <tr>
-        html;
+                <tr>";
 
         foreach ($this->headers as $header) {
             $html .= "<th>{$header}</th>";
         }
 
-        $html .= <<<html
-                </tr>
-            </thead>
-        html;
+        $html .= "</tr>
+            </thead>";
 
         return $html;
     }
@@ -96,7 +146,9 @@ class Table
 
         $html .= "<td colspan='" . count($this->headers) . "'>";
 
-        $html .= $this->generatePagination();
+        if ($this->model != null) {
+            $html .= $this->generatePagination();
+        }
 
         $html .= "</td>";
 
@@ -112,4 +164,10 @@ class Table
         return "";
     }
 
+    public static function create($model)
+    {
+        $table = new Table();
+        $table->setModel($model);
+        return $table;
+    }
 }
