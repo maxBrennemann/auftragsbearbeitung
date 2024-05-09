@@ -7,7 +7,7 @@ module.exports = {
   entry: {
     global: './files/res/js/global.js',
     angebot: './files/res/js/angebot.js',
-    attribute: './files/res/js/attribute.js',
+    attributes: './files/res/js/attributes.js',
     auftrag: './files/res/js/auftrag.js',
     diagramme: './files/res/js/diagramme.js',
     einstellungen: './files/res/js/einstellungen.js',

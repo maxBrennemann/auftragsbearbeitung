@@ -132,7 +132,7 @@ class Link {
 	}
 
 	public static function getCategoryLink($page) {
-        $link = $_ENV["WEB_URL"] . "/shop/category/" . $page;
+        $link = $_ENV["WEB_URL"] . "shop/category/" . $page;
 		return $link;
     }
 

@@ -1,46 +1,34 @@
+import { ajax } from "./classes/ajax.js";
 
-if (document.readyState !== 'loading' ) {
-    initializeEditButtons();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        initializeEditButtons();
+function init() {
+    const urlString = window.location.href;
+    const url = new URL(urlString);
+    if (!url.searchParams.get("id")) {
+        return;
+    }
+
+    const productInfo = document.querySelectorAll(".productInfo");
+    Array.from(productInfo).forEach((element) => {
+        element.addEventListener("change", function(event) {
+            const type = event.target.dataset.type;
+            const content = event.target.value;
+            updateProduct(type, content);
+        });
     });
 }
 
-function initializeEditButtons() {
-    var buttons = document.getElementsByTagName("button");
-
-    buttons[0].addEventListener("click", function() {setText(this, 1)}, false);
-    buttons[1].addEventListener("click", function() {setText(this, 2)}, false);
-    buttons[2].addEventListener("click", function() {setText(this, 3)}, false);
-}
-
-function setText(button, id) {
-    var node = getEdibleNode(button);
-    node.contentEditable = node.isContentEditable ? "false" : "true";
-
-    if (node.contentEditable == "true") {
-        button.innerText = "💾";
-    } else {
-        button.innerText = "✎";
-        sendToServer(id, node.innerText);
-    }
-}
-
-function getEdibleNode(button) {
-    return button.parentNode.children[0];
-}
-
-function sendToServer(type, content) {
-    console.log(type + " " + content);
-    if (type == 1 && content.length > 64)
+function updateProduct(type, content) {
+    if (content.length > 64) {
         return;
+    }
 
-    var productId = document.getElementById("product-id").innerText;
-    var update = new AjaxCall(`getReason=updateProductValues&productId=${productId}&type=${type}&content=${content}`, "POST", window.location.href);
-    update.makeAjaxCall(function (response) {
+    const id = document.getElementById("productId").dataset.id;
+    ajax.put(`/api/v1/product/${id}/${type}`, {
+        content: content,
+    }).then((response) => {
         infoSaveSuccessfull(response);
-        console.log(response);
+    }).catch((error) => {
+        console.error(error);
     });
 }
 
@@ -220,12 +208,20 @@ function sendAttributeTable() {
     let params = {
         getReason: "insertAttributeTable",
         attributes: attribute_string,
-        productId: document.getElementById("product-id").innerHTML
+        productId: document.getElementById("productId").dataset.id
     };
     
     var ajax = new AjaxCall(params, "POST", window.location.href);
     ajax.makeAjaxCall(function (response) {
         if (response == "ok")
             infoSaveSuccessfull("success");
+    });
+}
+
+if (document.readyState !== 'loading' ) {
+    init();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        init();
     });
 }

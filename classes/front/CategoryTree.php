@@ -1,6 +1,5 @@
 <?php
 
-require_once('classes/DBAccess.php');
 require_once('classes/front/Category.php');
 
 class CategoryTree

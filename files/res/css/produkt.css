@@ -1,14 +1,3 @@
-.product-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-}
-
-.product-preview {
-    border: 1px solid grey;
-    border-radius: 6px;
-    margin: 20px;
-    padding: 15px;
-}
 
 .ajaxBox {
     position: absolute;

@@ -115,6 +115,11 @@ class ResourceManager
             case 'GET':
                 Tools::$data = array_merge(Tools::$data, $_GET);
                 break;
+            case 'PUT':
+                /* https://stackoverflow.com/questions/20320634/how-to-get-put-delete-arguments-in-php */
+                parse_str(file_get_contents("php://input"), $_PUT);
+                Tools::$data = array_merge(Tools::$data, $_PUT);
+                break;
         }
     }
 

@@ -2,12 +2,14 @@
 
 require_once('classes/Files.php');
 
-class AttributeGroup {
+class AttributeGroup
+{
 
     private $attributeGroup = null;
     private $description = null;
 
-    function __construct($id) {
+    function __construct($id)
+    {
         if (is_numeric($id)) {
             $data = DBAccess::selectQuery("SELECT attribute_group, descr FROM attribute_group WHERE id = $id");
             if (!empty($data)) {
@@ -19,8 +21,9 @@ class AttributeGroup {
             throw new Exception("Keine gültige Zahl übergeben.");
         }
     }
-    
-    public static function getProductToAttributeMatcher() {
+
+    public static function getProductToAttributeMatcher()
+    {
         $fileContent = Files::get_file_contents("attributes.html");
 
         $attributeGroups = DBAccess::selectQuery("SELECT id, attribute_group FROM attribute_group");
@@ -42,7 +45,8 @@ class AttributeGroup {
         echo $fileContent;
     }
 
-    public static function getAttributes($attributeGroupId) {
+    public static function getAttributes($attributeGroupId)
+    {
         $attributes = DBAccess::selectQuery("SELECT id, value FROM attribute WHERE attribute_group_id = $attributeGroupId");
         $size = sizeof($attributes);
         $html = "";
@@ -53,6 +57,38 @@ class AttributeGroup {
 
         echo $html . "</select>";
     }
-}
 
-?>
+    public static function addAttributeGroup(): void
+    {
+        $attribute = Tools::get("name");
+        $descr = Tools::get("descr");
+
+        if ($attribute == null || $descr == null) {
+            JSONResponseHandler::throwError(400, "Name und Beschreibung müssen ausgefüllt sein");
+        }
+
+        $id = DBAccess::insertQuery("INSERT INTO attribute_group (attribute_group, `descr`) VALUES (:name, :descr)", [
+            "name" => $attribute,
+            "descr" => $descr
+        ]);
+
+        JSONResponseHandler::sendResponse(["id" => $id]);
+    }
+
+    public static function addAttribute()
+    {
+        $attributeId = Tools::get("id");
+        $value = Tools::get("value");
+
+        if ($attributeId == null || $value == null) {
+            JSONResponseHandler::throwError(400, "ID und Wert müssen ausgefüllt sein");
+        }
+
+        $result = DBAccess::insertQuery("INSERT INTO attribute (attribute_group_id, `value`) VALUES (:id, :value)", [
+            "id" => $attributeId,
+            "value" => $value
+        ]);
+
+        JSONResponseHandler::sendResponse(["result" => $result]);
+    }
+}

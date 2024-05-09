@@ -52,6 +52,7 @@ class Ajax {
 				OrderRoutes::handleRequest($path);
 				break;
 			case "product":
+			case "attribute":
 				require_once("classes/routes/ProductRoutes.php");
 				ProductRoutes::handleRequest($path);
 				break;
@@ -738,18 +739,6 @@ class Ajax {
 				}
 				echo "ok";
 			break;
-			case "addAttVal":
-				$attributeId = $_POST['att'];
-				$value = $_POST['value'];
-				$result = DBAccess::insertQuery("INSERT INTO attribute (attribute_group_id, `value`) VALUES ($attributeId, '$value')");
-				echo $result;
-			break;
-			case "addAtt":
-				$attribute = $_POST['name'];
-				$descr = $_POST['descr'];
-				$result = DBAccess::insertQuery("INSERT INTO attribute_group (attribute_group, `descr`) VALUES ('$attribute', '$descr')");
-				echo $result;
-			break;
 			case "getList":
 				require_once('classes/project/Liste.php');
 				$lid = $_POST['listId'];
@@ -921,28 +910,6 @@ class Ajax {
 					"id" => $_SESSION['overwritePosten_postennummer'],
 					"data" => $data
 				]);
-			break;
-			case "updateProductValues":
-				$productId = (int) $_POST['productId'];
-				$content = $_POST['content'];
-				$type = (int) $_POST['type'];
-
-				switch($type) {
-					case 1:
-						DBAccess::updateQuery("UPDATE produkt SET Bezeichnung = '$content' WHERE Nummer = $productId");
-						break;
-					case 2:
-						DBAccess::updateQuery("UPDATE produkt SET Beschreibung = '$content' WHERE Nummer = $productId");
-						break;
-					case 3:
-						DBAccess::updateQuery("UPDATE produkt SET Preis = '$content' WHERE Nummer = $productId");
-						break;
-					default:
-						echo "failiure";
-						return;
-				}
-				
-				echo "ok";
 			break;
 			case "frontAddToCart":
 				$productId = (int) $_POST['productId'];

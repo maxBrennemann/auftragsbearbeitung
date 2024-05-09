@@ -5,7 +5,7 @@ require_once('classes/project/Image.php');
 class Produkt
 {
 
-	private $preis = null;
+	private $price = null;
 	private $produktnummer = null;
 	private $bezeichnung = null;
 	private $beschreibung = null;
@@ -15,7 +15,7 @@ class Produkt
 		$data = DBAccess::selectAllByCondition("produkt", "Nummer", $produktnummer);
 		if (!empty($data)) {
 			$data = $data[0];
-			$this->preis = $data['Preis'];
+			$this->price = $data['Preis'];
 			$this->produktnummer = $data['Nummer'];
 			$this->bezeichnung = $data['Bezeichnung'];
 			$this->beschreibung = $data['Beschreibung'];
@@ -36,14 +36,14 @@ class Produkt
 		return $this->beschreibung;
 	}
 
-	public function getPreis()
+	public function getPrice()
 	{
-		return $this->preis;
+		return $this->price;
 	}
 
-	public function getPreisBrutto()
+	public function getPriceWithTax()
 	{
-		return number_format((float) $this->preis / 100, 2, ",", ".");
+		return number_format((float) $this->price / 100, 2, ",", ".");
 	}
 
 	public function getProductId()
@@ -257,5 +257,37 @@ class Produkt
 		$t->addActionButton("delete", $identifier = "id");
 
 		return $t->getTable();
+	}
+
+	public static function update()
+	{
+		$productId = (int) Tools::get("id");
+		$type = (string) Tools::get("type");
+		$content = (string) Tools::get("content");
+
+		$query = "";
+
+		switch ($type) {
+			case "productTitle":
+				$query = "UPDATE produkt SET Bezeichnung = :content WHERE Nummer = :id";
+				break;
+			case "productDescription":
+				$query = "UPDATE produkt SET Beschreibung = :content WHERE Nummer = :id";
+				break;
+			case "productPrice":
+				$query = "UPDATE produkt SET Preis = :content WHERE Nummer = :id";
+				break;
+		}
+
+		if ($query != "") {
+			DBAccess::updateQuery($query, [
+				"content" => $content,
+				"id" => $productId
+			]);
+
+			JSONResponseHandler::sendResponse(["message" => "success"]);
+		} else {
+			JSONResponseHandler::throwError(400, "Type not found");
+		}
 	}
 }
