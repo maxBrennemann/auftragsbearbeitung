@@ -7,8 +7,13 @@ require_once("classes/project/AttributeGroup.php");
 
 class ProductRoutes extends Routes {
 
+    /**
+     * @uses AttributeGroup::getGroups()
+     * @uses AttributeGroup::getAttributes()
+     */
     protected static $getRoutes = [
-        
+        "/attribute/group/{id}" => "AttributeGroup::getAttributes",
+        "/attribute/groups" => "AttributeGroup::getGroups",
     ];
 
     /**

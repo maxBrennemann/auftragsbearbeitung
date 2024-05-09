@@ -8,7 +8,7 @@ class AttributeGroup
     private $attributeGroup = null;
     private $description = null;
 
-    function __construct($id)
+    function __construct(int $id)
     {
         if (is_numeric($id)) {
             $data = DBAccess::selectQuery("SELECT attribute_group, descr FROM attribute_group WHERE id = $id");
@@ -22,40 +22,19 @@ class AttributeGroup
         }
     }
 
-    public static function getProductToAttributeMatcher()
+    public static function getGroups()
     {
-        $fileContent = Files::get_file_contents("attributes.html");
-
-        $attributeGroups = DBAccess::selectQuery("SELECT id, attribute_group FROM attribute_group");
-        $anzahl = sizeof($attributeGroups);
-        $attr = "";
-
-        foreach ($attributeGroups as $agroup) {
-            $attr .= "<option value=\"{$agroup['id']}\">{$agroup['attribute_group']}</option>";
-        }
-
-        $replacements = array(
-            "ANZAHLATT" => $anzahl,
-            "ATTR" => $attr
-        );
-
-        $fileContent = str_replace("ANZAHLATT", $replacements["ANZAHLATT"], $fileContent);
-        $fileContent = str_replace("ATTR", $replacements["ATTR"], $fileContent);
-
-        echo $fileContent;
+        $groups = DBAccess::selectQuery("SELECT id, attribute_group FROM attribute_group");
+        JSONResponseHandler::sendResponse($groups);
     }
 
-    public static function getAttributes($attributeGroupId)
+    public static function getAttributes()
     {
-        $attributes = DBAccess::selectQuery("SELECT id, value FROM attribute WHERE attribute_group_id = $attributeGroupId");
-        $size = sizeof($attributes);
-        $html = "";
-
-        foreach ($attributes as $a) {
-            $html .= "<span class=\"selectSim\" onclick=\"addAttributeToProduct($attributeGroupId, {$a['id']}, '{$a['value']}');\">{$a['value']} ⊕</span><br>";
-        }
-
-        echo $html . "</select>";
+        $attributeGroupId = (int) Tools::get("id");
+        $attributes = DBAccess::selectQuery("SELECT id, value FROM attribute WHERE attribute_group_id = :id", [
+            "id" => $attributeGroupId
+        ]);
+        JSONResponseHandler::sendResponse($attributes);
     }
 
     public static function addAttributeGroup(): void

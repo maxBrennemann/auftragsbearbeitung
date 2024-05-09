@@ -547,15 +547,6 @@ class Ajax {
 			case "getServerMsg":
 				echo $_SESSION['searchResult'];
 			break;
-			case "getAttributeMatcher":
-				require_once("classes/project/AttributeGroup.php");
-				AttributeGroup::getProductToAttributeMatcher();
-			break;
-			case "getAttributes":
-				require_once("classes/project/AttributeGroup.php");
-				$attGroupId = $_POST['attGroupId'];
-				AttributeGroup::getAttributes($attGroupId);
-			break;
 			case "setNotes":
 				$kdnr = (int) $_POST['kdnr'];
 				$note = $_POST['notes'];

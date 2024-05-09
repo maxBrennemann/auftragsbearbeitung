@@ -23,31 +23,52 @@ $products = Produkt::getAllProducts();
 
 /* konkrete Produktseite */
 if ($id != -1) : ?>
-	<div class="mt-4">
-		<h2 class="font-bold"><input type="text" class="productInfo" data-type="productTitle" value="<?= $p->getBezeichnung() ?>"></h2>
+	<div class="mt-4 defCont">
+		<input type="text" class="productInfo input-primary font-bold" data-type="productTitle" value="<?= $p->getBezeichnung() ?>">
 
-		<p>
-			<textarea class="productInfo" data-type="productDescription"><?= $p->getBeschreibung() ?></textarea>
-		</p>
+		<p class="mt-2"><textarea class="productInfo input-primary" data-type="productDescription"><?= $p->getBeschreibung() ?></textarea></p>
 
-		<p><input type="number" class="productInfo" data-type="productPrice" step="0.01" value="<?= $p->getPrice() ?>"> €</p>
+		<p><input type="number" class="productInfo input-primary" data-type="productPrice" step="0.01" value="<?= $p->getPrice() ?>"> €</p>
 
-		<form class="fileUploader" method="post" enctype="multipart/form-data" data-target="product" name="auftragUpload">
+		<form class="fileUploader mt-2" method="post" enctype="multipart/form-data" data-target="product" name="auftragUpload">
 			Dateien hinzufügen:
 			<input type="file" name="uploadedFile" multiple>
 			<input name="produkt" value="<?= $id ?>" hidden>
 		</form>
 
 		<div class="filesList defCont"></div>
-
 		<div id="showFilePrev">
 			<?= $showFiles ?>
 		</div>
 
 		<div id="addAttributeTable"></div>
-		<button onclick="getHTMLForAttributes();" class="btn-primary">Attribute hinzufügen</button>
+		<button id="btnAddAttribute" class="btn-primary">Attribute hinzufügen</button>
 		<button onclick="sendAttributeTable();" class="btn-primary">Abschicken</button>
 		<span style="display: none" id="productId" data-id="<?= $id ?>"></span>
+	</div>
+	<div id="addAttributes" class="hidden z-20 h-2/6 w-2/6 fixed m-auto inset-x-0 inset-y-0 bg-white p-5 rounded-md shadow-2xl">
+		<p class="underline">Attribute hinzufügen</p>
+		<button class="close closeButton" id="btnToggle">×</button>
+		<div class="grid grid-cols-3 mb-2 py-2 gap-1">
+			<div class="border-r-2 overflow-y-scroll">
+				<h3>Auswahl</h3>
+				<select class="w-28" id="attributeSelector" multiple>
+				</select>
+				<button class="block btn-primary" id="btnAttributeGroupSelector">⟶</button>
+			</div>
+			<div class="border-r-2 overflow-y-scroll">
+				<h3>Attribute</h3>
+				<div id="showAttributeValues"></div>
+				<button class="block btn-primary" id="btnAttributeSelector">⟶</button>
+			</div>
+			<div class="">
+				<div id="addedValues">
+					<h3>Hinzugefügt</h3>
+				</div>
+			</div>
+		</div>
+		<buton class="btn-primary mt-4 inline-block" id="btnSaveConfig">Übernehmen</buton>
+		<buton class="btn-attention mt-4 inline-block" id="btnAbort">Abbrechen</buton>
 	</div>
 <?php else : ?>
 	<div class="mt-4">

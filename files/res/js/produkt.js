@@ -1,5 +1,8 @@
 import { ajax } from "./classes/ajax.js";
 
+/* global variables for attribute selection */
+var attributes = {};
+
 function init() {
     const urlString = window.location.href;
     const url = new URL(urlString);
@@ -15,8 +18,38 @@ function init() {
             updateProduct(type, content);
         });
     });
+
+    const btnAddAttribute = document.getElementById("btnAddAttribute");
+    btnAddAttribute.addEventListener("click", () => {
+        getHTMLForAttributes();
+        const el = document.getElementById("addAttributes");
+        el.classList.toggle("hidden");
+    });
+
+    const btnToggle = document.getElementById("btnToggle");
+    btnToggle.addEventListener("click", () => {
+        const el = document.getElementById("addAttributes");
+        el.classList.toggle("hidden");
+    });
+
+    const btnAttributeGroupSelector = document.getElementById("btnAttributeGroupSelector");
+    btnAttributeGroupSelector.addEventListener("click", addToSelector);
+
+    const btnAttributeSelector = document.getElementById("btnAttributeSelector");
+    btnAttributeSelector.addEventListener("click", matchAttributeGroups);
+
+    const btnSaveConfig = document.getElementById("btnSaveConfig");
+    btnSaveConfig.addEventListener("click", takeConfiguration);
+
+    console.log(generateCombinations({1: [1, 2], 2: [3, 4]}));
 }
 
+/**
+ * Updates the current product with the given type and content
+ * 
+ * @param {*} type The field to update
+ * @param {*} content The new content
+ */
 function updateProduct(type, content) {
     if (content.length > 64) {
         return;
@@ -32,91 +65,99 @@ function updateProduct(type, content) {
     });
 }
 
-/* js for attributes */
-function getHTMLForAttributes() {
-    var getHTML = new AjaxCall(`getReason=getAttributeMatcher`, "POST", window.location.href);
-    getHTML.makeAjaxCall(function (responseHTML) {
-        var div = document.createElement("div");
-        div.innerHTML = responseHTML;
-        div.id = "htmlForAddingAttributes";
-        div.classList.add("ajaxBox");
-        document.body.appendChild(div);
-        centerAbsoluteElement(div);
+/**
+ * Loads the attribute groups into the select element
+ */
+async function getHTMLForAttributes() {
+    const attributeGroups = await ajax.get(`/api/v1/attribute/groups`);
+    const attributeSelector = document.getElementById("attributeSelector");
+    
+    attributeGroups.forEach((group) => {
+        const option = document.createElement("option");
+        option.value = group.id;
+        option.innerText = group.attribute_group;
+        attributeSelector.appendChild(option);
     });
 }
 
-function removeHTMLForAttributes() {
-    var child = document.getElementById("htmlForAddingAttributes");
-    child.parentNode.removeChild(child);
-    loadNewSelect();
-}
-
-/* attribute matcher functions */
-
-/* this function adds the attribute to the attribute value selector */
+/**
+ * Adds the selected attribute(s) to the product
+ * by adding new select elements to the DOM
+ */
 function addToSelector() {
-    var attributeSelector = document.getElementById("attributeSelector");
-    var title = attributeSelector.options[attributeSelector.selectedIndex].innerHTML;
-    attributeSelector = attributeSelector.options[attributeSelector.selectedIndex].value;
+    const attributeSelector = document.getElementById("attributeSelector");
+    const selectedAttributeGroups = Array.from(attributeSelector.selectedOptions).map(option => option.value);
+    
+    attributeSelector.selectedIndex = -1;
 
-    var attValues = document.getElementById("showAttributeValues");
-    var heading = document.createElement("h3");
-    heading.innerHTML = title;
+    selectedAttributeGroups.forEach(async (attributeGroupId) => {
+        const attributeValues = await loadAttributes(attributeGroupId);
+        const attributeValueSelector = document.createElement("select");
+        attributeValueSelector.multiple = true;
+        attributeValueSelector.classList.add("w-28");
 
-    attValues.appendChild(heading);
-    loadAttributes(attributeSelector);
-}
+        attributeValues.forEach((attribute) => {
+            const option = document.createElement("option");
+            option.value = attribute.id;
+            option.innerText = attribute.value;
+            attributeValueSelector.appendChild(option);
+        });
 
-/* only used by addToSelector to load the attribute values */
-function loadAttributes(attributeGroupId) {
-    var getAttributes = new AjaxCall(`getReason=getAttributes&attGroupId=${attributeGroupId}`, "POST", window.location.href);
-    getAttributes.makeAjaxCall(function (responseHTML) {
-        var attValues = document.getElementById("showAttributeValues");
-        attValues.innerHTML += responseHTML;
+        const showAttributeValues = document.getElementById("showAttributeValues");
+        showAttributeValues.appendChild(attributeValueSelector);
     });
 }
 
-/* global variables for attribute selection */
-var attributes = {};
-var tableAnchor = null;
+/**
+ * Loads the attributes for the given attribute group
+ * 
+ * @param {*} attributeGroupId 
+ * @returns 
+ */
+async function loadAttributes(attributeGroupId) {
+    return await ajax.get(`/api/v1/attribute/group/${attributeGroupId}`);
+}
 
 /* adds the attribute value to the product */
-function addAttributeToProduct(attributeGroupId, attributeId, bez) {
-    var anchor = document.getElementById("addedValues");
-    var div = document.getElementById( attributeGroupId + "addedValues");
-    if (div == null) {
-        div = document.createElement("div");
-        div.id = attributeGroupId + "addedValues";
-        div.classList.add("selectedAttList");
+function matchAttributeGroups() {
+    const anchor = document.getElementById("showAttributeValues");
+    const selects = anchor.querySelectorAll("select");
+    const groups = {};
 
-        attributes[attributeGroupId] = {};
-        attributes[attributeGroupId][attributeId] = bez;
+    /* select all selected values and generate new array out of it */
+    selects.forEach((select) => {
+        const selectedValues = Array.from(select.selectedOptions).map(option => option.value);
+        const attributeGroupId = select.dataset.id;
+
+        selectedValues.forEach((attributeValueId) => {
+            if (!groups[attributeGroupId]) {
+                groups[attributeGroupId] = [];
+            }
+
+            groups[attributeGroupId].push(attributeValueId);
+        });
+    });
+
+    const combinations = generateCombinations(groups);
+}
+
+function generateCombinations(groups) {
+    const combinations = [];
+
+    for (const value of Object.entries(groups)) {
+
     }
 
-    if (!attributes[attributeGroupId].hasOwnProperty(bez)) {
-        var span = document.createElement("span");
-        var remove = document.createElement("span");
+    return combinations;
+}
 
-        span.innerHTML = bez;
+function combineArrays(arr1, arr2) {
+    const combinations = [];
 
-        remove.innerHTML = "⊖";
-        remove.style.cursor = "default";
-        remove.addEventListener("click", function(event) {
-            var child = event.target.parentNode;
-            var parent = event.target.parentNode.parentNode;
-            parent.removeChild(child);
-
-            if (attributes[attributeGroupId].hasOwnProperty(attributeId)) {
-                delete attributes[attributeGroupId].attributeId;
-            }
-        }.bind(attributeGroupId), false);
-
-        span.appendChild(remove);
-        span.appendChild(document.createElement("br"));
-        div.appendChild(span);
-        anchor.appendChild(div);
-
-        attributes[attributeGroupId][attributeId] = bez;
+    for (let i = 0; i < arr1.length; i++) {
+        for (let n = 0; n < arr2.length; n++) {
+            combinations.push(arr1[i].concat(arr2[n]));
+        }
     }
 }
 
@@ -202,6 +243,9 @@ function matchAttributeArray(attributeArray) {
     return result;
 }
 
+/**
+ * 
+ */
 function sendAttributeTable() {
     var attribute_string = JSON.stringify(matchAttributeArray(objectToArrays(attributes, true)));
     
