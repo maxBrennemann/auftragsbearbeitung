@@ -2,6 +2,7 @@
 
 require_once('classes/project/Produkt.php');
 
+/* check if a specific product is requested */
 $id = isset($_GET["id"]) ? $_GET["id"] : -1;
 
 if ($id == -1) {
@@ -20,60 +21,66 @@ $p = new Produkt($id);
 $showFiles = Produkt::getFiles($id);
 $products = Produkt::getAllProducts();
 
-?>
-<?php if ($id != -1): ?>
+/* konkrete Produktseite */
+if ($id != -1) : ?>
 	<span>
-		<h2><?=$p->getBezeichnung()?></h2>
+		<h2><?= $p->getBezeichnung() ?></h2>
 		<button>✎</button>
 	</span>
 
 	<br>
-    <span>
-		<p><?=$p->getBeschreibung()?></p>
+	<span>
+		<p><?= $p->getBeschreibung() ?></p>
 		<button>✎</button>
 	</span>
 	<br>
 	<span>
-		<p><?=$p->getPreisBrutto()?> €</p>
+		<p><?= $p->getPreisBrutto() ?> €</p>
 		<button>✎</button>
 	</span>
 	<br>
 	<form class="fileUploader" method="post" enctype="multipart/form-data" data-target="product" name="auftragUpload">
 		Dateien hinzufügen:
 		<input type="file" name="uploadedFile" multiple>
-		<input name="produkt" value="<?=$id?>" hidden>
+		<input name="produkt" value="<?= $id ?>" hidden>
 	</form>
 	<div class="filesList defCont"></div>
 	<div id="showFilePrev">
-		<?=$showFiles?>
+		<?= $showFiles ?>
 	</div>
 	<style>
-		main span > * {
+		main span>* {
 			display: inline;
 		}
 	</style>
 	<span>Attribute hinzufügen<br>
-			<button onclick="getHTMLForAttributes();">Hinzufügen</button>
+		<button onclick="getHTMLForAttributes();">Hinzufügen</button>
 	</span>
 	<div id="addAttributeTable"></div>
 	<button onclick="sendAttributeTable();">Abschicken</button>
-	<span style="display: none" id="product-id"><?=$id?></span>
-<?php else: ?>
-	<div id='tableContainer'><?=$table?></div>
+	<span style="display: none" id="product-id"><?= $id ?></span>
+<?php else : ?>
+	<div class="mt-4">
+		<a class="link-button" href="<?= Link::getPageLink("attributes") ?>">Zu den Produktattributetn</a>
+		<a class="link-button" href="<?= Link::getPageLink("neues-produkt") ?>">Zum Produktformular</a>
+		<div class="mt-4" id='tableContainer'><?= $table ?></div>
 
-	<div class="product-container">
-		<?php foreach ($products as $p): ?>
-			<div class="product-preview" data-product-id="<?=$p->getProductId()?>">
-				<a href="<?=$p->getProduktLink()?>"><h2><?=$p->getBezeichnung()?></h2></a>
-				<p><?=$p->getBeschreibung()?></p>
-				<p><?=$p->getPreisBrutto()?> €</p>
-				<button>In den Warenkorb</button>
-				<?php foreach ($p->getImages() as $i): ?>
-					<div data-image-id="<?=$i->getImageId()?>">
-						<img src="<?=$i->getImageURL()?>" alt="" width="50px" height="auto">
-					</div>
-				<?php endforeach; ?>
-			</div>
-		<?php endforeach; ?>
+		<div class="product-container">
+			<?php foreach ($products as $p) : ?>
+				<div class="product-preview" data-product-id="<?= $p->getProductId() ?>">
+					<a href="<?= $p->getProduktLink() ?>">
+						<h2><?= $p->getBezeichnung() ?></h2>
+					</a>
+					<p><?= $p->getBeschreibung() ?></p>
+					<p><?= $p->getPreisBrutto() ?> €</p>
+					<button>In den Warenkorb</button>
+					<?php foreach ($p->getImages() as $i) : ?>
+						<div data-image-id="<?= $i->getImageId() ?>">
+							<img src="<?= $i->getImageURL() ?>" alt="" width="50px" height="auto">
+						</div>
+					<?php endforeach; ?>
+				</div>
+			<?php endforeach; ?>
+		</div>
 	</div>
 <?php endif; ?>

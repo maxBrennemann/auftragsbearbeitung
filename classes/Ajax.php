@@ -79,12 +79,6 @@ class Ajax {
 
 	public static function manageRequests($reason, $page) {
 		switch ($reason) {
-			case "fileRequest":
-				if (isset($_POST['file'])) {
-					$file = Link::getResourcesLink($_POST['file'], "html", false);
-					echo file_get_contents_utf8($file);
-				}
-			break;
 			case "createTable":
 				$type = $_POST['type'];
 			
@@ -549,12 +543,6 @@ class Ajax {
 				$table = $_POST["table"];
 				Table::updateValue($table, "delete", $_POST['key']);
 			break;
-			case "sendSource":
-				Produkt::addSource();
-			break;
-			case "getSelect":
-				Produkt::getSelectSource();	
-			break;
 			case "getServerMsg":
 				echo $_SESSION['searchResult'];
 			break;
@@ -774,16 +762,6 @@ class Ajax {
 					$rechnung = unserialize($_SESSION['tempInvoice']);
 					$rechnung->PDFgenerieren(true);
 				}
-			break;
-			case "saveProduct":
-				$attData = $_POST['attData'];
-				$marke = $_POST['marke'];
-				$quelle = $_POST['quelle'];
-				$vkNetto = $_POST['vkNetto'];
-				$ekNetto = $_POST['ekNetto'];
-				$title = $_POST['title'];
-				$desc = $_POST['desc'];
-				Produkt::createProduct($title, $marke, $desc, $ekNetto, $vkNetto, $quelle, $attData);
 			break;
 			case "reloadPostenListe":
 				$auftragsId = $_POST['id'];
