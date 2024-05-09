@@ -10,6 +10,8 @@ class StickerCombination extends PrestashopConnection {
     private $purchasingPrices;
 
     function __construct(Sticker $sticker) {
+        parent::__construct();
+        
         $this->sticker = $sticker;
     }
 

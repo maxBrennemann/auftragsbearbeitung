@@ -34,8 +34,8 @@
             <p class="text-base">Vorsicht: Diese Option überschreibt die aktuellen Bilder des Artikels!</p>
             <div class="px-2">
                 <p class="text-sm italic">Die Einstellung bleibt nur für diese Sitzung erhalten.</p>
-                <input type="checkbox" id="forceUpload" name="forceUpload" value="true" onchange="updateImageOverwrite('<?=$imageCategory?>')">
-                <label for="forceUpload">Bilder erneut hochladen</label>
+                <input type="checkbox" id="forceUpload-<?=$imageCategory?>" name="forceUpload" value="true" onchange="updateImageOverwrite('<?=$imageCategory?>')">
+                <label for="forceUpload-<?=$imageCategory?>">Bilder erneut hochladen</label>
             </div>
         </div>
     </div>

@@ -1,6 +1,7 @@
 <?php
 
-class Category {
+class Category
+{
 
     public $title;
     public $parent;
@@ -8,17 +9,20 @@ class Category {
 
     public $children = [];
 
-    function __construct($title, $parent, $id) {
+    function __construct($title, $parent, $id)
+    {
         $this->title = $title;
         $this->parent = (int) $parent;
         $this->id = (int) $id;
     }
 
-    public function addChild($categoryNode) {
+    public function addChild($categoryNode)
+    {
         array_push($this->children, $categoryNode);
     }
 
-    public function getHTML() {
+    public function getHTML()
+    {
         $html = "<li><a href=\"" . Link::getCategoryLink($this->id) . "\">" . $this->title . "</a>";
 
         foreach ($this->children as $child) {
@@ -29,7 +33,8 @@ class Category {
         return $html;
     }
 
-    public function getOneLayerArray() {
+    public function getOneLayerArray()
+    {
         $onelayerarray = array();
 
         array_push($onelayerarray, $this);
@@ -43,7 +48,4 @@ class Category {
 
         return $onelayerarray;
     }
-
 }
-
-?>

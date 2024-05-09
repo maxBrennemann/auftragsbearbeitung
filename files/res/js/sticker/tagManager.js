@@ -5,13 +5,13 @@ function initTagManager() {
     tagManager.addTagEventListeners();
 
     const tagInput = document.getElementById("tagInput");
-    tagInput.addEventListener("keydown", addTag, false);
+    tagInput?.addEventListener("keydown", addTag, false);
 
     const synonyms = document.getElementById("loadSynonyms");
-    synonyms.addEventListener("click", loadTags, false);
+    synonyms?.addEventListener("click", loadTags, false);
 
     const showTM = document.getElementById("showTaggroupManager");
-    showTM.addEventListener("click", showTaggroupManager, false);
+    showTM?.addEventListener("click", showTaggroupManager, false);
 }
 
 export function loadTags() {
@@ -195,10 +195,9 @@ class TagManager {
     }
 
     loadMoreSuggestions() {
-        ajax.post({
+        ajax.get(`/api/v1/sticker/tags/suggestions`, {
             id: mainVariables.motivId.innerHTML,
             name: document.getElementById("name").value,
-            r: "getMoreTagSuggestions"
         }).then((results) => {
             const synonyms = results["synonyms"];
 
@@ -221,10 +220,9 @@ class TagManager {
                 return;
             }
 
-            ajax.post({
+            ajax.delete(`/api/v1/sticker/tags`, {
                 id: mainVariables.motivId.innerHTML,
                 tag: child.childNodes[0].textContent,
-                r: "removeTag",
             }).then(r => {
                 if (r["status"] == "success") {
                     parent.removeChild(child);
@@ -233,10 +231,10 @@ class TagManager {
             });
         } else if (element.classList.contains("suggestionTag")) {
             element.classList.remove("suggestionTag");
-            ajax.post({
-                id: mainVariables.motivId.innerHTML,
+
+            ajax.post(`/api/v1/sticker/tags`, {
                 tag: e.target.childNodes[0].textContent,
-                r: "addTag",
+                id: mainVariables.motivId.innerHTML,
             });
         } else {
             //load more suggestions

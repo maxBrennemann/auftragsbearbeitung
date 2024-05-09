@@ -175,8 +175,6 @@ async function uploadFileForSticker(files, imageCategory, callback = null) {
         imageCategory: imageCategory
     };
 
-    console.log(files);
-    //return;
     const response = await ajax.uploadFiles(files, "motiv", data);
 
     if (callback != null) {
@@ -298,9 +296,9 @@ function initImageManager() {
     });
 
     const imgMovable = document.querySelector(".imageMovableContainer");
-    const dropType = imgMovable.dataset.dropType;
-    imgMovable.addEventListener("drop", e => dropMiscHandler(e, dropType), false);
-    imgMovable.addEventListener("dragover", itemDragOverHandler, false);
+    const dropType = imgMovable?.dataset.dropType;
+    imgMovable?.addEventListener("drop", e => dropMiscHandler(e, dropType), false);
+    imgMovable?.addEventListener("dragover", itemDragOverHandler, false);
 
     const imgPrev = document.querySelectorAll(".imgPreview");
     Array.from(imgPrev).forEach(img => {
@@ -309,11 +307,11 @@ function initImageManager() {
     });
 
     const svgContainer = document.getElementById("svgContainer");
-    svgContainer.addEventListener("dragover", itemDragOverHandler, false);
-    svgContainer.addEventListener("drop", e => itemDropHandler(e, "textilsvg"), false);
+    svgContainer?.addEventListener("dragover", itemDragOverHandler, false);
+    svgContainer?.addEventListener("drop", e => itemDropHandler(e, "textilsvg"), false);
 }
 
-const motivId = document.getElementById("motivId").innerHTML;
+const motivId = document.getElementById("motivId")?.innerHTML;
 var svg_elem;
 
 if (document.readyState !== 'loading' ) {
@@ -358,22 +356,14 @@ export function updateImageDescription(e) {
     });
 }
 
-/**
- * chatGPT generated
- * @param {*} event 
- */
 function openFileDialog(event) {
-    // Create a hidden file input element
     var fileInput = document.createElement("input");
     fileInput.type = "file";
     fileInput.accept = "image/*";
-  
-    // Trigger click event on the file input
     fileInput.click();
   
-    const imageCategory = event.target.dataset.dropType;
-
-    // Handle selected files
+    const imageCategory = event.currentTarget.dataset.dropType;
+    
     fileInput.addEventListener("change", function(event) {
         var files = event.target.files;
         files = Array.from(files);

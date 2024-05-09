@@ -27,6 +27,9 @@ if (isset($_GET['id'])) {
 
 if ($id == 0): ?>
     <a href="<?=Link::getPageLink("sticker-overview")?>">Zur Motivübersicht</a>
+    <script>
+        window.location.href = "<?=Link::getPageLink("sticker-overview")?>";
+    </script>
 <?php else: ?>
 <script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
 <div class="w-full">
@@ -82,7 +85,7 @@ if ($id == 0): ?>
                     <?=Icon::getDefault("iconInShop")?>
                 </a>
             <?php else: ?>
-                <a title="Aufkleber ist nicht im Shop" href="#">
+                <a title="Aufkleber ist nicht im Shop" href="#" onclick="return false;">
                     <?=Icon::getDefault("iconNotInShop")?>
                 </a>
             <?php endif; ?>
@@ -178,7 +181,7 @@ if ($id == 0): ?>
                     <?=Icon::getDefault("iconInShop")?>
                 </a>
             <?php else: ?>
-                <a title="Wandtattoo ist nicht im Shop" href="#">
+                <a title="Wandtattoo ist nicht im Shop" href="#" onclick="return false;">
                     <?=Icon::getDefault("iconNotInShop")?>
                 </a>
             <?php endif; ?>
@@ -236,7 +239,7 @@ if ($id == 0): ?>
                     <?=Icon::getDefault("iconInShop")?>
                 </a>
             <?php else: ?>
-                <a title="Textil ist nicht im Shop" href="#">
+                <a title="Textil ist nicht im Shop" href="#" onclick="return false;">
                     <?=Icon::getDefault("iconNotInShop")?>
                 </a>
             <?php endif; ?>
@@ -324,7 +327,7 @@ if ($id == 0): ?>
 </div>
 <div class="defCont">
     <h2 class="mb-2 font-bold">Größen</h2>
-    <div id="sizeTableWrapper">
+    <div id="sizeTableWrapper" class="overflow-x-scroll">
         <?=$stickerCollection->getAufkleber()->getSizeTable()?>
     </div>
     <div class="grid grid-cols-2 mt-2">

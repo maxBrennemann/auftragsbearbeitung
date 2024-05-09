@@ -1,11 +1,12 @@
 <?php
 
-require_once('classes/DBAccess.php');
 require_once('classes/front/Category.php');
 
-class CategoryTree {
-    
-    public static function getHTMLRepresentation() {
+class CategoryTree
+{
+
+    public static function getHTMLRepresentation()
+    {
         $data = self::parseCategoryTree();
         $html = "<ul>";
 
@@ -18,7 +19,8 @@ class CategoryTree {
         return $html;
     }
 
-    public static function getOneLayerArray() {
+    public static function getOneLayerArray()
+    {
         $data = self::parseCategoryTree();
         $onelayerarray = array();
 
@@ -32,7 +34,8 @@ class CategoryTree {
         return $onelayerarray;
     }
 
-    public static function parseCategoryTree() {
+    public static function parseCategoryTree()
+    {
         $data = self::getData();
         $categoryTree = [];
         $remove_buff = [];
@@ -55,10 +58,8 @@ class CategoryTree {
         return $categoryTree;
     }
 
-    private static function getData() {
+    private static function getData()
+    {
         return DBAccess::selectQuery("SELECT * FROM category");
     }
-
 }
-
-?>

@@ -52,6 +52,7 @@ class Ajax {
 				OrderRoutes::handleRequest($path);
 				break;
 			case "product":
+			case "attribute":
 				require_once("classes/routes/ProductRoutes.php");
 				ProductRoutes::handleRequest($path);
 				break;
@@ -79,12 +80,6 @@ class Ajax {
 
 	public static function manageRequests($reason, $page) {
 		switch ($reason) {
-			case "fileRequest":
-				if (isset($_POST['file'])) {
-					$file = Link::getResourcesLink($_POST['file'], "html", false);
-					echo file_get_contents_utf8($file);
-				}
-			break;
 			case "createTable":
 				$type = $_POST['type'];
 			
@@ -549,23 +544,8 @@ class Ajax {
 				$table = $_POST["table"];
 				Table::updateValue($table, "delete", $_POST['key']);
 			break;
-			case "sendSource":
-				Produkt::addSource();
-			break;
-			case "getSelect":
-				Produkt::getSelectSource();	
-			break;
 			case "getServerMsg":
 				echo $_SESSION['searchResult'];
-			break;
-			case "getAttributeMatcher":
-				require_once("classes/project/AttributeGroup.php");
-				AttributeGroup::getProductToAttributeMatcher();
-			break;
-			case "getAttributes":
-				require_once("classes/project/AttributeGroup.php");
-				$attGroupId = $_POST['attGroupId'];
-				AttributeGroup::getAttributes($attGroupId);
 			break;
 			case "setNotes":
 				$kdnr = (int) $_POST['kdnr'];
@@ -750,18 +730,6 @@ class Ajax {
 				}
 				echo "ok";
 			break;
-			case "addAttVal":
-				$attributeId = $_POST['att'];
-				$value = $_POST['value'];
-				$result = DBAccess::insertQuery("INSERT INTO attribute (attribute_group_id, `value`) VALUES ($attributeId, '$value')");
-				echo $result;
-			break;
-			case "addAtt":
-				$attribute = $_POST['name'];
-				$descr = $_POST['descr'];
-				$result = DBAccess::insertQuery("INSERT INTO attribute_group (attribute_group, `descr`) VALUES ('$attribute', '$descr')");
-				echo $result;
-			break;
 			case "getList":
 				require_once('classes/project/Liste.php');
 				$lid = $_POST['listId'];
@@ -774,16 +742,6 @@ class Ajax {
 					$rechnung = unserialize($_SESSION['tempInvoice']);
 					$rechnung->PDFgenerieren(true);
 				}
-			break;
-			case "saveProduct":
-				$attData = $_POST['attData'];
-				$marke = $_POST['marke'];
-				$quelle = $_POST['quelle'];
-				$vkNetto = $_POST['vkNetto'];
-				$ekNetto = $_POST['ekNetto'];
-				$title = $_POST['title'];
-				$desc = $_POST['desc'];
-				Produkt::createProduct($title, $marke, $desc, $ekNetto, $vkNetto, $quelle, $attData);
 			break;
 			case "reloadPostenListe":
 				$auftragsId = $_POST['id'];
@@ -943,28 +901,6 @@ class Ajax {
 					"id" => $_SESSION['overwritePosten_postennummer'],
 					"data" => $data
 				]);
-			break;
-			case "updateProductValues":
-				$productId = (int) $_POST['productId'];
-				$content = $_POST['content'];
-				$type = (int) $_POST['type'];
-
-				switch($type) {
-					case 1:
-						DBAccess::updateQuery("UPDATE produkt SET Bezeichnung = '$content' WHERE Nummer = $productId");
-						break;
-					case 2:
-						DBAccess::updateQuery("UPDATE produkt SET Beschreibung = '$content' WHERE Nummer = $productId");
-						break;
-					case 3:
-						DBAccess::updateQuery("UPDATE produkt SET Preis = '$content' WHERE Nummer = $productId");
-						break;
-					default:
-						echo "failiure";
-						return;
-				}
-				
-				echo "ok";
 			break;
 			case "frontAddToCart":
 				$productId = (int) $_POST['productId'];
@@ -1428,20 +1364,6 @@ class Ajax {
 				$id = (int) $_POST["id"];
 				$stickerCollection = new StickerCollection($id);
 				$stickerCollection->toggleActiveStatus();
-			break;
-			case "addTag":
-				require_once('classes/project/modules/sticker/StickerTagManager.php');
-				StickerTagManager::addTag();
-			break;
-			case "removeTag":
-				require_once('classes/project/modules/sticker/StickerTagManager.php');
-				StickerTagManager::removeTag();
-			break;
-			case "getMoreTagSuggestions":
-				$id = (int) $_POST["id"];
-				$name = (String) $_POST["name"];
-				$stickerTagManager = new StickerTagManager($id, $name);
-				$stickerTagManager->getTagsHTML();
 			break;
 			case "getTagOverview":
 				require_once('classes/project/modules/sticker/StickerTagManager.php');

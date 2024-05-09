@@ -1,39 +1,47 @@
-/* further reading:
-https://stackoverflow.com/questions/24923469/modeling-product-variants
-https://dba.stackexchange.com/questions/123467/schema-design-for-products-with-multiple-variants-attributes?newreg=9504cc9890d1461ea745070f28f70543
-https://stackoverflow.com/questions/19144200/designing-a-sql-schema-for-a-combination-of-many-to-many-relationship-variation
-*/
+/**
+ * @file neuesProdukt.js
+ * @description This file is used to handle the creation of a new product.
+ * 
+ * https://stackoverflow.com/questions/24923469/modeling-product-variants
+ * https://dba.stackexchange.com/questions/123467/schema-design-for-products-with-multiple-variants-attributes?newreg=9504cc9890d1461ea745070f28f70543
+ * https://stackoverflow.com/questions/19144200/designing-a-sql-schema-for-a-combination-of-many-to-many-relationship-variation
+ */
 
-document.getElementById("selectSource").addEventListener("change", function(event) {
-    if (event.target.value == "addNew") {
-        getHTMLForAddingSource();
-    }
-});
+import { ajax } from "./classes/ajax.js"; 
 
-function getHTMLForAddingSource() {
-    var getHTML = new AjaxCall(`getReason=fileRequest&file=source.html`, "POST", window.location.href);
-    getHTML.makeAjaxCall(function (responseHTML) {
-        var div = document.createElement("div");
-        div.innerHTML = responseHTML;
-        div.id = "htmlForAddingSource";
-        div.classList.add("ajaxBox");
-        document.body.appendChild(div);
-        centerAbsoluteElement(div);
-        addActionButtonForDiv(div, 'remove');
+function init() {
+    const save = document.getElementById("save");
+    save.addEventListener("click", saveProduct);
+
+    const abort = document.getElementById("abort");
+    abort.addEventListener("click", function() {
+        window.location.href = "index.php";
+    });
+
+    document.getElementById("source").addEventListener("change", function(event) {
+        if (event.target.value == "addNew") {
+            const el = document.getElementById("addSource");
+            el.classList.remove("hidden");
+        }
+    });
+
+    document.getElementById("saveSource").addEventListener("click", function() {
+        sendSource();
+    });
+
+    document.getElementById("abortSource").addEventListener("click", function() {
+        const el = document.getElementById("addSource");
+        el.classList.add("hidden");
+
+        document.getElementById("source").value = -1;
     });
 }
 
-function removeHTMLForAddingSource() {
-    var child = document.getElementById("htmlForAddingSource");
-    child.parentNode.removeChild(child);
-    loadNewSelect();
-}
-
-function loadNewSelect() {
-    var getSelect = new AjaxCall(`getReason=getSelect`, "POST", window.location.href);
-    getSelect.makeAjaxCall(function (responseHTML) {
-        var select = document.getElementById("selectSource");
-        select.innerHTML = responseHTML;
+if (document.readyState !== 'loading' ) {
+    init();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        init();
     });
 }
 
@@ -41,25 +49,37 @@ function sendSource() {
     var name = document.getElementById("getName").value;
     var desc = document.getElementById("getDesc").value;
 
-    var send = new AjaxCall(`getReason=sendSource&name=${name}&desc=${desc}`, "POST", window.location.href);
-    send.makeAjaxCall(function (responseHTML) {
-        removeHTMLForAddingSource();
+    ajax.post("/api/v1/product/source", {
+        name: name,
+        desc: desc
+    }).then(() => {
+        
+    }).catch((error) => {
+        console.error(error);
     });
 }
 
 function saveProduct() {
-    var data = "",
-        marke = document.getElementsByName("marke")[0].value,
-        source = document.getElementById("selectSource"),
-        quelle =  source.options[source.selectedIndex].value,
-        vkNetto = document.getElementsByName("vk_netto")[0].value,
-        ekNetto = document.getElementsByName("ek_netto")[0].value,
-        title = document.getElementsByName("short_description")[0].value,
-        desc = document.getElementsByName("description")[0].value;
+    const title = document.getElementById("productName").value;
+    const brand = document.getElementById("productBrand").value;
+    const source = document.getElementById("source").value;
+    const price = document.getElementById("productPrice").value;
+    const purchasePrice = document.getElementById("purchasingPrice").value;
+    const description = document.getElementById("productDescription").value;
+    const attributes = document.getElementById("productAttributes").value;
 
-    var send = new AjaxCall(`getReason=saveProduct&attData=${data}&marke=${marke}&quelle=${quelle}&vkNetto=${vkNetto}&ekNetto=${ekNetto}&title=${title}&desc=${desc}`, "POST", window.location.href);
-    send.makeAjaxCall(function (responseLink) {
-        console.log(responseLink);
-        //window.location.href = responseLink;
+    /* check if all required fields are filled */
+    if (title == "" || brand == "" || source == "" || price == "" || purchasePrice == "" || description == "" || attributes == "") {
+        return;
+    }
+
+    ajax.post("/api/v1/product", {
+        title: title,
+        brand: brand,
+        source: source,
+        price: price.replace(",", "."),
+        purchasePrice: purchasePrice.replace(",", "."),
+        description: description,
+        attributes: attributes
     });
 }

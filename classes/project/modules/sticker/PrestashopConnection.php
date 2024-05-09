@@ -35,6 +35,10 @@ class PrestashopConnection
         $debugText = $debug ? "true" : "false";
         Protocol::write("PrestashopConnection::getXML($resource, debug = $debugText)");
 
+        if ($resource == "" || $this->prestaUrl == "" || $this->prestaKey == "") {
+            throw new Exception("Malconfigured resource in PrestashopConnection::getXML()");
+        }
+
         $this->webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, $debug);
         $this->xml = $this->webService->get([
             'resource' => $resource
@@ -47,6 +51,10 @@ class PrestashopConnection
     {
         Protocol::write("PrestashopConnection::addXML()");
 
+        if ($this->prestaUrl == "" || $this->prestaKey == "") {
+            throw new Exception("Malconfigured resource in PrestashopConnection::getXML()");
+        }
+
         $this->xml = $this->webService->add($options);
     }
 
@@ -54,15 +62,23 @@ class PrestashopConnection
     {
         Protocol::write("PrestashopConnection::editXML()");
 
+        if ($this->prestaUrl == "" || $this->prestaKey == "") {
+            throw new Exception("Malconfigured resource in PrestashopConnection::getXML()");
+        }
+
         $this->xml = $this->webService->edit($options);
     }
 
     protected function deleteXML($resource, $id, $debug = false)
     {
-        //$debug = true;
+        $debug = true;
 
         $debugText = $debug ? "true" : "false";
         Protocol::write("PrestashopConnection::getXML($resource, debug = $debugText)");
+
+        if ($this->prestaUrl == "" || $this->prestaKey == "") {
+            throw new Exception("Malconfigured resource in PrestashopConnection::getXML()");
+        }
 
         try {
             $this->webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, $debug);

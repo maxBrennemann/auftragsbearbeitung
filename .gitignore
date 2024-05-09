@@ -53,7 +53,7 @@ img/*
 
 # upload
 upload/*
-!upload/index.php
+!upload/.gitkeep
 
 # misc
 files/res/form/modules/sticker/catalog_products.csv

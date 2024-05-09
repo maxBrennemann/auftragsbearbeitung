@@ -19,6 +19,8 @@ class StickerImage extends PrestashopConnection {
     private $svgs = [];
 
     function __construct($idMotiv) {
+        parent::__construct();
+
         $this->idMotiv = $idMotiv;
         $this->getConnectedFiles();
         $this->prepareImageData();
@@ -291,7 +293,7 @@ class StickerImage extends PrestashopConnection {
      * @param $imageURLs array of image urls
      * @param $productId id of the product in the shop
      * 
-     * @return String
+     * @return string
      */
     private function generateImageUrls($imageURLs, $productId) {
         /* https://www.prestashop.com/forums/topic/407476-how-to-add-image-during-programmatic-product-import/ */
@@ -327,7 +329,7 @@ class StickerImage extends PrestashopConnection {
      * @param $imageURLs array of image urls
      * @param $productId id of the product in the shop
      * 
-     * @return String
+     * @return string
      */
     private function directUpload($imageURLs, $productId): ?String {
         $client = new Client();
@@ -373,7 +375,7 @@ class StickerImage extends PrestashopConnection {
      * uploads the image descriptions to the shop using the json responder script on the server;
      */
     public function uploadImageDescription($descriptions) {
-        $client = new \GuzzleHttp\Client();
+        $client = new Client();
         $client->request('POST', $_ENV["SHOPURL"] . "/auftragsbearbeitung/setImageDescription.php", [
             'form_params' => [
                 'descriptions' => json_encode($descriptions),

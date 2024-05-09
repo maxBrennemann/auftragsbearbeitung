@@ -14,6 +14,8 @@ class StickerUpload extends PrestashopConnection
 
     function __construct($idSticker, $title, $basePrice, $description, $descriptionShort)
     {
+        parent::__construct();
+
         $this->idSticker = $idSticker;
         $this->title = $title;
         $this->basePrice = $basePrice;

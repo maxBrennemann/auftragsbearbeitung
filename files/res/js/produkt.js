@@ -1,136 +1,163 @@
-
-if (document.readyState !== 'loading' ) {
-    console.log( 'document is already ready, just execute code here' );
-    initializeEditButtons();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        console.log( 'document was not ready, place code here' );
-        initializeEditButtons();
-    });
-}
-
-function initializeEditButtons() {
-    var buttons = document.getElementsByTagName("button");
-
-    buttons[0].addEventListener("click", function() {setText(this, 1)}, false);
-    buttons[1].addEventListener("click", function() {setText(this, 2)}, false);
-    buttons[2].addEventListener("click", function() {setText(this, 3)}, false);
-}
-
-function setText(button, id) {
-    var node = getEdibleNode(button);
-    node.contentEditable = node.isContentEditable ? "false" : "true";
-
-    if (node.contentEditable == "true") {
-        button.innerText = "💾";
-    } else {
-        button.innerText = "✎";
-        sendToServer(id, node.innerText);
-    }
-}
-
-function getEdibleNode(button) {
-    return button.parentNode.children[0];
-}
-
-function sendToServer(type, content) {
-    console.log(type + " " + content);
-    if (type == 1 && content.length > 64)
-        return;
-
-    var productId = document.getElementById("product-id").innerText;
-    var update = new AjaxCall(`getReason=updateProductValues&productId=${productId}&type=${type}&content=${content}`, "POST", window.location.href);
-    update.makeAjaxCall(function (response) {
-        infoSaveSuccessfull(response);
-        console.log(response);
-    });
-}
-
-/* js for attributes */
-function getHTMLForAttributes() {
-    var getHTML = new AjaxCall(`getReason=getAttributeMatcher`, "POST", window.location.href);
-    getHTML.makeAjaxCall(function (responseHTML) {
-        var div = document.createElement("div");
-        div.innerHTML = responseHTML;
-        div.id = "htmlForAddingAttributes";
-        div.classList.add("ajaxBox");
-        document.body.appendChild(div);
-        centerAbsoluteElement(div);
-    });
-}
-
-function removeHTMLForAttributes() {
-    var child = document.getElementById("htmlForAddingAttributes");
-    child.parentNode.removeChild(child);
-    loadNewSelect();
-}
-
-/* attribute matcher functions */
-
-/* this function adds the attribute to the attribute value selector */
-function addToSelector() {
-    var attributeSelector = document.getElementById("attributeSelector");
-    var title = attributeSelector.options[attributeSelector.selectedIndex].innerHTML;
-    attributeSelector = attributeSelector.options[attributeSelector.selectedIndex].value;
-
-    var attValues = document.getElementById("showAttributeValues");
-    var heading = document.createElement("h3");
-    heading.innerHTML = title;
-
-    attValues.appendChild(heading);
-    loadAttributes(attributeSelector);
-}
-
-/* only used by addToSelector to load the attribute values */
-function loadAttributes(attributeGroupId) {
-    var getAttributes = new AjaxCall(`getReason=getAttributes&attGroupId=${attributeGroupId}`, "POST", window.location.href);
-    getAttributes.makeAjaxCall(function (responseHTML) {
-        var attValues = document.getElementById("showAttributeValues");
-        attValues.innerHTML += responseHTML;
-    });
-}
+import { ajax } from "./classes/ajax.js";
 
 /* global variables for attribute selection */
 var attributes = {};
-var tableAnchor = null;
 
-/* adds the attribute value to the product */
-function addAttributeToProduct(attributeGroupId, attributeId, bez) {
-    var anchor = document.getElementById("addedValues");
-    var div = document.getElementById( attributeGroupId + "addedValues");
-    if (div == null) {
-        div = document.createElement("div");
-        div.id = attributeGroupId + "addedValues";
-        div.classList.add("selectedAttList");
-
-        attributes[attributeGroupId] = {};
-        attributes[attributeGroupId][attributeId] = bez;
+function init() {
+    const urlString = window.location.href;
+    const url = new URL(urlString);
+    if (!url.searchParams.get("id")) {
+        return;
     }
 
-    if (!attributes[attributeGroupId].hasOwnProperty(bez)) {
-        var span = document.createElement("span");
-        var remove = document.createElement("span");
+    const productInfo = document.querySelectorAll(".productInfo");
+    Array.from(productInfo).forEach((element) => {
+        element.addEventListener("change", function(event) {
+            const type = event.target.dataset.type;
+            const content = event.target.value;
+            updateProduct(type, content);
+        });
+    });
 
-        span.innerHTML = bez;
+    const btnAddAttribute = document.getElementById("btnAddAttribute");
+    btnAddAttribute.addEventListener("click", () => {
+        getHTMLForAttributes();
+        const el = document.getElementById("addAttributes");
+        el.classList.toggle("hidden");
+    });
 
-        remove.innerHTML = "⊖";
-        remove.style.cursor = "default";
-        remove.addEventListener("click", function(event) {
-            var child = event.target.parentNode;
-            var parent = event.target.parentNode.parentNode;
-            parent.removeChild(child);
+    const btnToggle = document.getElementById("btnToggle");
+    btnToggle.addEventListener("click", () => {
+        const el = document.getElementById("addAttributes");
+        el.classList.toggle("hidden");
+    });
 
-            if (attributes[attributeGroupId].hasOwnProperty(attributeId)) {
-                delete attributes[attributeGroupId].attributeId;
+    const btnAttributeGroupSelector = document.getElementById("btnAttributeGroupSelector");
+    btnAttributeGroupSelector.addEventListener("click", addToSelector);
+
+    const btnAttributeSelector = document.getElementById("btnAttributeSelector");
+    btnAttributeSelector.addEventListener("click", matchAttributeGroups);
+
+    const btnSaveConfig = document.getElementById("btnSaveConfig");
+    btnSaveConfig.addEventListener("click", takeConfiguration);
+
+    console.log(generateCombinations({1: [1, 2], 2: [3, 4]}));
+}
+
+/**
+ * Updates the current product with the given type and content
+ * 
+ * @param {*} type The field to update
+ * @param {*} content The new content
+ */
+function updateProduct(type, content) {
+    if (content.length > 64) {
+        return;
+    }
+
+    const id = document.getElementById("productId").dataset.id;
+    ajax.put(`/api/v1/product/${id}/${type}`, {
+        content: content,
+    }).then((response) => {
+        infoSaveSuccessfull(response);
+    }).catch((error) => {
+        console.error(error);
+    });
+}
+
+/**
+ * Loads the attribute groups into the select element
+ */
+async function getHTMLForAttributes() {
+    const attributeGroups = await ajax.get(`/api/v1/attribute/groups`);
+    const attributeSelector = document.getElementById("attributeSelector");
+    
+    attributeGroups.forEach((group) => {
+        const option = document.createElement("option");
+        option.value = group.id;
+        option.innerText = group.attribute_group;
+        attributeSelector.appendChild(option);
+    });
+}
+
+/**
+ * Adds the selected attribute(s) to the product
+ * by adding new select elements to the DOM
+ */
+function addToSelector() {
+    const attributeSelector = document.getElementById("attributeSelector");
+    const selectedAttributeGroups = Array.from(attributeSelector.selectedOptions).map(option => option.value);
+    
+    attributeSelector.selectedIndex = -1;
+
+    selectedAttributeGroups.forEach(async (attributeGroupId) => {
+        const attributeValues = await loadAttributes(attributeGroupId);
+        const attributeValueSelector = document.createElement("select");
+        attributeValueSelector.multiple = true;
+        attributeValueSelector.classList.add("w-28");
+
+        attributeValues.forEach((attribute) => {
+            const option = document.createElement("option");
+            option.value = attribute.id;
+            option.innerText = attribute.value;
+            attributeValueSelector.appendChild(option);
+        });
+
+        const showAttributeValues = document.getElementById("showAttributeValues");
+        showAttributeValues.appendChild(attributeValueSelector);
+    });
+}
+
+/**
+ * Loads the attributes for the given attribute group
+ * 
+ * @param {*} attributeGroupId 
+ * @returns 
+ */
+async function loadAttributes(attributeGroupId) {
+    return await ajax.get(`/api/v1/attribute/group/${attributeGroupId}`);
+}
+
+/* adds the attribute value to the product */
+function matchAttributeGroups() {
+    const anchor = document.getElementById("showAttributeValues");
+    const selects = anchor.querySelectorAll("select");
+    const groups = {};
+
+    /* select all selected values and generate new array out of it */
+    selects.forEach((select) => {
+        const selectedValues = Array.from(select.selectedOptions).map(option => option.value);
+        const attributeGroupId = select.dataset.id;
+
+        selectedValues.forEach((attributeValueId) => {
+            if (!groups[attributeGroupId]) {
+                groups[attributeGroupId] = [];
             }
-        }.bind(attributeGroupId), false);
 
-        span.appendChild(remove);
-        span.appendChild(document.createElement("br"));
-        div.appendChild(span);
-        anchor.appendChild(div);
+            groups[attributeGroupId].push(attributeValueId);
+        });
+    });
 
-        attributes[attributeGroupId][attributeId] = bez;
+    const combinations = generateCombinations(groups);
+}
+
+function generateCombinations(groups) {
+    const combinations = [];
+
+    for (const value of Object.entries(groups)) {
+
+    }
+
+    return combinations;
+}
+
+function combineArrays(arr1, arr2) {
+    const combinations = [];
+
+    for (let i = 0; i < arr1.length; i++) {
+        for (let n = 0; n < arr2.length; n++) {
+            combinations.push(arr1[i].concat(arr2[n]));
+        }
     }
 }
 
@@ -216,18 +243,29 @@ function matchAttributeArray(attributeArray) {
     return result;
 }
 
+/**
+ * 
+ */
 function sendAttributeTable() {
     var attribute_string = JSON.stringify(matchAttributeArray(objectToArrays(attributes, true)));
     
     let params = {
         getReason: "insertAttributeTable",
         attributes: attribute_string,
-        productId: document.getElementById("product-id").innerHTML
+        productId: document.getElementById("productId").dataset.id
     };
     
     var ajax = new AjaxCall(params, "POST", window.location.href);
     ajax.makeAjaxCall(function (response) {
         if (response == "ok")
             infoSaveSuccessfull("success");
+    });
+}
+
+if (document.readyState !== 'loading' ) {
+    init();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        init();
     });
 }

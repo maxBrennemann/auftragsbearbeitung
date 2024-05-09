@@ -1,5 +1,7 @@
 <?php
 
+#namespace Classes\Project;
+
 class Icon {
 
     /**

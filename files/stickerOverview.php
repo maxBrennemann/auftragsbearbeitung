@@ -17,7 +17,7 @@ $data = DBAccess::selectQuery($query);
 $column_names = array(
     0 => array("COLUMN_NAME" => "id", "ALT" => "Nummer"),
     1 => array("COLUMN_NAME" => "name", "ALT" => "Name"),
-    2 => array("COLUMN_NAME" => "directory_name", "ALT" => "Verzeichnis"),
+    2 => array("COLUMN_NAME" => "directory_name", "ALT" => "Verzeichnis", "CSS" => "w-96 overflow-x-hidden text-ellipsis"),
     3 => array("COLUMN_NAME" => "is_plotted", "ALT" => "geplottet"),
     4 => array("COLUMN_NAME" => "is_short_time", "ALT" => "Werbeaufkleber"),
     5 => array("COLUMN_NAME" => "is_long_time", "ALT" => "Hochleistungsfolie"),

@@ -400,7 +400,6 @@ form label {
 }
 
 .centeredDiv {
-    position: absolute;
     margin-left: auto;
     margin-right: auto;
     background: white;

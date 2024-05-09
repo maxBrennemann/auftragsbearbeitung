@@ -4,14 +4,16 @@ require_once('classes/project/modules/sticker/PrestashopConnection.php');
 require_once('classes/project/modules/sticker/StickerChangelog.php');
 require_once('classes/project/modules/sticker/Sticker.php');
 
-class StickerTagManager extends PrestashopConnection {
+class StickerTagManager extends PrestashopConnection
+{
 
     private $idSticker;
     private $idProductReference;
     private $tags;
     private $title;
 
-    function __construct(int $idSticker, String $title = "") {
+    function __construct(int $idSticker, String $title = "")
+    {
         $query = "SELECT * FROM module_sticker_tags t JOIN module_sticker_sticker_tag st ON st.id_tag = t.id WHERE st.id_sticker = $idSticker";
         $this->tags = DBAccess::selectQuery($query);
 
@@ -24,12 +26,15 @@ class StickerTagManager extends PrestashopConnection {
         $this->title = $title;
     }
 
-    public function setProductId($idProductReference) {
+    public function setProductId($idProductReference)
+    {
         $this->idProductReference = $idProductReference;
     }
 
-    public function get() {
+    public function get()
+    {
         $tagsContent = [];
+
         foreach ($this->tags as $t) {
             $tagsContent[] = $t["content"];
         }
@@ -37,9 +42,11 @@ class StickerTagManager extends PrestashopConnection {
         return $tagsContent;
     }
 
-    public function getTagsHTML() {
+    public function getTagsHTML()
+    {
         $queries = explode(" ", $this->title);
         $suggestionTags = [];
+
         foreach ($queries as $query) {
             $tags = $this->getSynonyms($query);
             $suggestions = array_slice($tags, 0, 3);
@@ -52,8 +59,10 @@ class StickerTagManager extends PrestashopConnection {
         ]);
     }
 
-    public function getTagIds() {
+    public function getTagIds()
+    {
         $tagIds = [];
+        
         foreach ($this->tags as $t) {
             $id_tag_shop = $t["id_tag_shop"];
 
@@ -68,15 +77,16 @@ class StickerTagManager extends PrestashopConnection {
         return $tagIds;
     }
 
-    public function remove(int $id) {
-
+    public function remove(int $id)
+    {
     }
 
     /**
      * adds a tag to a product,
      * this function does not sync tags with the shop
      */
-    public function add(String $content) {
+    public function add(String $content)
+    {
         if (strlen($content) > 32) {
             return;
         }
@@ -87,19 +97,19 @@ class StickerTagManager extends PrestashopConnection {
             $id = $result;
         } else {
             $query = "INSERT INTO module_sticker_tags (id_tag_shop, content) VALUES (:id_tag_shop, :content);";
-            
+
             $id_tag_shop = $this->getTagIdFromShop($content);
             $parameters = [
                 "id_tag_shop" => $id_tag_shop,
                 "content" => $content,
             ];
-            
+
             $id = DBAccess::insertQuery($query, $parameters);
         }
 
         $query = "INSERT INTO module_sticker_sticker_tag (id_tag, id_sticker) VALUES (:id_tag, :id_sticker)";
         DBAccess::insertQuery($query, ["id_tag" => $id, "id_sticker" => $this->idSticker]);
-        
+
         /* write to changelog */
         /* TODO: testen, ob es funktioniert, wenn sticker data nicht direkt mit der anderen tabelle zusammenhängt */
         StickerChangelog::log($this->idSticker, 0, $id, "module_sticker_tags", "content", $content);
@@ -108,7 +118,8 @@ class StickerTagManager extends PrestashopConnection {
     }
 
     /* https://stackoverflow.com/questions/35975677/prestashop-webservice-add-products-tags-and-attachment-document */
-    private function getTagIdFromShop($tag): int {
+    private function getTagIdFromShop($tag): int
+    {
         /* check if tag exists */
         $tagEncoded = str_replace(" ", "+", $tag);
 
@@ -137,14 +148,14 @@ class StickerTagManager extends PrestashopConnection {
                 'resource' => 'tags',
                 'postXml' => $xml->asXML()
             );
-            
+
             $this->addXML($opt);
             $id = $this->xml->tag->id;
             return (int) $id;
         } catch (PrestaShopWebserviceException $e) {
             echo $e->getMessage();
         }
-    
+
         return -1;
     }
 
@@ -152,14 +163,16 @@ class StickerTagManager extends PrestashopConnection {
      * iterates over all three product categories and adds tags to the specific product if
      * they don't exist
      */
-    public function saveChanges(Sticker $products) {
+    public function saveChanges(Sticker $products)
+    {
         foreach ($products as $product) {
             $productId = $product->getId();
             $this->saveTags($productId);
         }
     }
 
-    public function saveTagsXml(&$xml) {
+    public function saveTagsXml(&$xml)
+    {
         $product_reference = $xml->children()->children();
         $associations = $product_reference->{'associations'};
 
@@ -189,7 +202,8 @@ class StickerTagManager extends PrestashopConnection {
         }
     }
 
-    public function saveTags() {
+    public function saveTags()
+    {
         $xml = $this->getXML("products/$this->idProductReference");
         $product_reference = $xml->children()->children();
 
@@ -222,7 +236,7 @@ class StickerTagManager extends PrestashopConnection {
             $tagNode = $tags->addChild('tag');
             $tagNode->addChild('id', (string) $id);
         }
-        
+
         try {
             $opt = array(
                 'resource' => 'products',
@@ -235,7 +249,8 @@ class StickerTagManager extends PrestashopConnection {
         }
     }
 
-    public function getSynonyms($query) {
+    public function getSynonyms($query)
+    {
         if (!file_exists('cache/modules/sticker/tags')) {
             mkdir('cache/modules/sticker/tags', 0777, true);
         }
@@ -274,16 +289,19 @@ class StickerTagManager extends PrestashopConnection {
      * gets called when an ajax request is fired,
      * loads more synonyms
      */
-    public static function loadMoreSynonyms() {
-        
+    public static function loadMoreSynonyms()
+    {
     }
 
     /**
      * gets called when an ajax request is fired
+     * 
+     * @return void
      */
-    public static function addTag() {
-        $id = (int) getParameter("id", "POST");
-        $tag = getParameter("tag", "POST");
+    public static function addTag(): void
+    {
+        $id = (int) Tools::get("id");
+        $tag = Tools::get("tag");
 
         if ($tag == null || $tag == "") {
             echo -1;
@@ -291,35 +309,46 @@ class StickerTagManager extends PrestashopConnection {
         }
 
         $stickerTagManager = new StickerTagManager($id);
-        echo $stickerTagManager->add($tag);
+
+        JSONResponseHandler::sendResponse($stickerTagManager->add($tag));
     }
 
     /**
      * gets called when an ajax request is fired
      */
-    public static function removeTag() {
-        $id = getParameter("id", "POST");
-        $tag = getParameter("tag", "POST");
+    public static function removeTag(): void
+    {
+        $id = Tools::get("id");
+        $tag = Tools::get("tag");
 
-        $tagId = "SELECT id FROM module_sticker_tags WHERE content = '$tag'";
-        $tagId = DBAccess::selectQuery($tagId);
-        if ($tagId != null) {
-            $tagId = $tagId[0]["id"];
+        /* get tag id */
+        $query = "SELECT id FROM module_sticker_tags WHERE content = :tag LIMIT 1;";
+        $tagId = DBAccess::selectQuery($query, [
+            "tag" => $tag,
+        ]);
 
-            $query = "DELETE FROM module_sticker_sticker_tag WHERE id_tag = $tagId AND id_sticker = $id";
-            DBAccess::deleteQuery($query);
-
-            echo json_encode(["status" => "success"]);
-        } else {
-            echo json_encode(["status" => "not found"]);
+        if ($tagId == null) {
+            JSONResponseHandler::returnNotFound();
         }
+
+        $tagId = (int) $tagId[0]["id"];
+
+        /* remove tag from sticker */
+        $query = "DELETE FROM module_sticker_sticker_tag WHERE id_tag = :tagId AND id_sticker = :id;";
+        DBAccess::deleteQuery($query, [
+            "tagId" => $tagId,
+            "id" => $id,
+        ]);
+
+        JSONResponseHandler::sendResponse(["status" => "success"]);
     }
 
     /**
      * returns the id of a tag by its content,
      * retruns -1 if not found
      */
-    public static function getTagId(String $tagContent): int {
+    public static function getTagId(String $tagContent): int
+    {
         $query = "SELECT id FROM module_sticker_tags WHERE content = :content LIMIT 1;";
         $result = DBAccess::selectQuery($query, ["content" => $tagContent]);
 
@@ -329,13 +358,15 @@ class StickerTagManager extends PrestashopConnection {
         return -1;
     }
 
-    public static function addTagGroup(String $title): int {
+    public static function addTagGroup(String $title): int
+    {
         $query = "INSERT INTO module_sticker_sticker_tag_group (title) VALUES (:title)";
         $tagGroupId = DBAccess::insertQuery($query, ["title" => $title]);
         return $tagGroupId;
     }
 
-    public static function addTagToTagGroup(String $tagContent, int $tagGroup) {
+    public static function addTagToTagGroup(String $tagContent, int $tagGroup)
+    {
         // get tag Id
         $tagId = self::getTagId($tagContent);
         $query = "INSERT INTO (module_sticker_sticker_tag_group_match) (idGroup, idTag) VALUES (:tagGroup, :tag)";
@@ -351,7 +382,8 @@ class StickerTagManager extends PrestashopConnection {
      * Deshalb müsste es später vielleicht ein REPLACE INTO werden? 
      * Oder alles löschen und dann neu crawlen?
      */
-    public static function crawlAllTags() {
+    public static function crawlAllTags()
+    {
         $crawler = new PrestashopConnection();
 
         try {
@@ -368,7 +400,7 @@ class StickerTagManager extends PrestashopConnection {
                     $xml = $innerCrawler->getXML("tags/$id");
                     $tag = $xml->children()->children();
 
-                    $name = (String) $tag->{"name"};
+                    $name = (string) $tag->{"name"};
                     $data[] = [
                         "int" => $id,
                         "string" => $name,
@@ -384,7 +416,8 @@ class StickerTagManager extends PrestashopConnection {
         }
     }
 
-    public static function countTagOccurences() {
+    public static function countTagOccurences()
+    {
         $query = "SELECT COUNT(t.id_tag_shop) AS occurences, t.content 
             FROM module_sticker_tags t 
             LEFT JOIN module_sticker_sticker_tag c 
@@ -397,4 +430,12 @@ class StickerTagManager extends PrestashopConnection {
         return $result;
     }
 
+    public static function getTagSuggestions()
+    {
+        $id = (int) Tools::get("id");
+        $name = Tools::get("name");
+
+        $stickerTagManager = new StickerTagManager($id, $name);
+        $stickerTagManager->getTagsHTML();
+    }
 }

@@ -137,8 +137,8 @@ class SizeTable {
     }
 
     #initRatio() {
-        const width = this.sizeTableRows[0].width;
-        const height = this.sizeTableRows[0].height;
+        const width = this.sizeTableRows[0]?.width;
+        const height = this.sizeTableRows[0]?.height;
         this.ratio = height / width;
     }
 
@@ -195,7 +195,12 @@ class SizeTable {
     }
 
     parseTable() {
-        let rows = this.table.rows;
+        let rows = this.table?.rows;
+
+        if (!rows) {
+            return;
+        }
+
         rows = Array.from(rows);
         rows.shift();
         rows.forEach(row => {
@@ -223,7 +228,7 @@ class SizeTable {
 
     getInitDifficulty() {
         const el = document.getElementById("price1");
-        if (el.checked) {
+        if (el?.checked) {
             return 0;
         }
         return 1;
@@ -523,9 +528,9 @@ function initSizeTable() {
     sizeTable = new SizeTable(tbl);
 
     const price1 = document.getElementById("price1");
-    price1.addEventListener("click", changePriceclass, false);
+    price1?.addEventListener("click", changePriceclass, false);
     const price2 = document.getElementById("price2");
-    price2.addEventListener("click", changePriceclass, false);
+    price2?.addEventListener("click", changePriceclass, false);
 }
 
 if (document.readyState !== 'loading' ) {
