@@ -53,6 +53,7 @@ class Ajax {
 				break;
 			case "product":
 			case "attribute":
+			case "category":
 				require_once("classes/routes/ProductRoutes.php");
 				ProductRoutes::handleRequest($path);
 				break;

@@ -3,15 +3,15 @@
 class Category
 {
 
-    public $title;
+    public $name;
     public $parent;
     public $id;
 
     public $children = [];
 
-    function __construct($title, $parent, $id)
+    function __construct($name, $parent, $id)
     {
-        $this->title = $title;
+        $this->name = $name;
         $this->parent = (int) $parent;
         $this->id = (int) $id;
     }
@@ -21,16 +21,21 @@ class Category
         array_push($this->children, $categoryNode);
     }
 
-    public function getHTML()
+    public static function addNewCategory()
     {
-        $html = "<li><a href=\"" . Link::getCategoryLink($this->id) . "\">" . $this->title . "</a>";
+        $name = Tools::get("name");
+        $parent = (int) Tools::get("parent");
 
-        foreach ($this->children as $child) {
-            $html .= "<ul>" . $child->getHTML() . "</ul>";
-        }
+        $query = "INSERT INTO category (`name`, `parent`) VALUES (:name, :parent)";
+        $id = DBAccess::insertQuery($query, [
+            "name" => $name, 
+            "parent" => $parent
+        ]);
 
-        $html .= "</li>";
-        return $html;
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+            "id" => $id
+        ]);
     }
 
     public function getOneLayerArray()
@@ -48,4 +53,5 @@ class Category
 
         return $onelayerarray;
     }
+    
 }

@@ -5,18 +5,9 @@ require_once('classes/front/Category.php');
 class CategoryTree
 {
 
-    public static function getHTMLRepresentation()
+    public static function getParsedCategories()
     {
-        $data = self::parseCategoryTree();
-        $html = "<ul>";
-
-        foreach ($data as $node) {
-            $html .= $node->getHTML();
-        }
-
-        $html .= "</ul>";
-
-        return $html;
+        JSONResponseHandler::sendResponse(self::parseCategoryTree());
     }
 
     public static function getOneLayerArray()

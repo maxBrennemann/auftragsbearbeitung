@@ -3,7 +3,7 @@
 class JSONResponseHandler
 {
 
-    public static function throwError(int $httpStatusCode, String $message)
+    public static function throwError(int $httpStatusCode, String|array $message)
     {
         http_response_code($httpStatusCode);
         echo json_encode(array("message" => $message));

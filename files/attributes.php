@@ -24,7 +24,7 @@ foreach ($data as $d) {
 
 ?>
 <div class="mt-4">
-    <a class="link-button" href="<?= Link::getPageLink("attributes") ?>">Zu den Produktattributetn</a>
+    <a class="link-button" href="<?= Link::getPageLink("produkt") ?>">Zu den Produkten</a>
     <a class="link-button" href="<?= Link::getPageLink("neues-produkt") ?>">Zum Produktformular</a>
 </div>
 <div class="mt-2 flex flex-row flex-wrap gap-2.5 m-auto">

@@ -125,7 +125,9 @@ export const ajax = {
         });
         let response = await makeAsyncCall(type, param.join("&"), "").then(result => {
             return result;
-        });
+        }).catch(() => {
+			return {};
+		});
     
         if (noJSON) {
             return response;
@@ -147,7 +149,9 @@ export const ajax = {
         });
         let response = await makeAsyncCall(type, param.join("&"), url).then(result => {
             return result;
-        });
+        }).catch(() => {
+			return {};
+		});
 
         let json = {};
         try {
@@ -225,6 +229,7 @@ export async function makeAsyncCall(type, params, location) {
 			if (this.readyState == 4 && this.status == 200) {
 				resolve(this.responseText);
 			} else {
+				console.error("AjaxCall: Error while making the ajax call");
 				reject(this.responseText);
 			}
 		}

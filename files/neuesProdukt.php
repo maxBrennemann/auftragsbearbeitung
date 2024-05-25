@@ -11,11 +11,11 @@ $attributeGroups = DBAccess::selectQuery("SELECT * FROM attribute_group");
 	<a class="link-button" href="<?= Link::getPageLink("attributes") ?>">Zu den Produktattributetn</a>
 	<a class="link-button" href="<?= Link::getPageLink("produkt") ?>">Zu den Produkten</a>
 	<div class="defCont mt-4">
-		<p>Produktname</p>
-		<input type="text" class="input-primary" id="productName">
-
 		<p>Marke</p>
 		<input type="text" class="input-primary" id="productBrand">
+
+		<p>Produktname</p>
+		<input type="text" class="input-primary" id="productName">
 
 		<p>Kategorie</p>
 		<select id="category" class="input-primary">
