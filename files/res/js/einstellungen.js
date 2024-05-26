@@ -87,6 +87,11 @@ function addCategory() {
     const newCategory = document.getElementById("newCategory").value;
     const parentCategory = document.getElementById("parentCategory").value;
 
+    if (newCategory === "") {
+        infoSaveSuccessfull("error");
+        return;
+    }
+
     ajax.post(`/api/v1/category`, {
         name: newCategory,
         parent: parentCategory,

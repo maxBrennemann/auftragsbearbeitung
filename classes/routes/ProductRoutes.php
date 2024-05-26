@@ -4,7 +4,7 @@ require_once("classes/routes/Routes.php");
 
 require_once("classes/project/Produkt.php");
 require_once("classes/project/AttributeGroup.php");
-require_once("classes/front/CategoryTree.php");
+require_once("classes/front/Category.php");
 
 class ProductRoutes extends Routes {
 
@@ -12,13 +12,13 @@ class ProductRoutes extends Routes {
      * @uses AttributeGroup::getGroups()
      * @uses AttributeGroup::getAttributes()
      * 
-     * @uses CategoryTree::getParsedCategories()
+     * @uses Category::getJSONOneLayer()
      */
     protected static $getRoutes = [
         "/attribute/group/{id}" => "AttributeGroup::getAttributes",
         "/attribute/groups" => "AttributeGroup::getGroups",
 
-        "/category" => "CategoryTree::getParsedCategories",
+        "/category" => "Category::getJSONOneLayer",
     ];
 
     /**

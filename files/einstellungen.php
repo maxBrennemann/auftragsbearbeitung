@@ -2,7 +2,6 @@
 <?php 
 
 require_once('classes/project/Table.php');
-require_once('classes/front/CategoryTree.php');
 
 /* get default wage */
 $defaultWage = Config::get("defaultWage");
@@ -119,7 +118,10 @@ $_SESSION[$tableOrderType->getTableKey()] = serialize($tableOrderType);
 </section>
 <section class="defCont">
     <h2 class="font-bold">Kategorien festlegen</h2>
-    <select id="categories" class="input-primary mt-2"></select>
+    <div class="flex mt-2">
+        <select id="categories" class="input-primary"></select>
+        <button class="btn-primary" id="showTree">Kategorien anzeigen</button>
+    </div>
     <div class="mt-2 p-2 bg-slate-300 rounded-lg">
         <input type="text" class="input-primary" id="newCategory">
         <select id="parentCategory" class="input-primary"></select>

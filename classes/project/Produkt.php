@@ -103,7 +103,7 @@ class Produkt
 		$price = (float) Tools::get("price");
 		$purchasePrice = (float) Tools::get("purchasePrice");
 		$description = (string) Tools::get("description");
-		$attributes = Tools::get("attributes");
+		//$attributes = Tools::get("attributes");
 
 		$newProductId = DBAccess::insertQuery("INSERT INTO produkt (Bezeichnung, Marke, Beschreibung, Einkaufspreis, Preis, einkaufs_id) VALUES (:title, :brand, :description, :purchasePrice, :price, :source)", [
 			"title" => $title,
@@ -114,6 +114,7 @@ class Produkt
 			"source" => $source
 		]);
 
+		JSONResponseHandler::sendResponse(["id" => $newProductId]);
 		return $newProductId;
 	}
 

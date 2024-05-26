@@ -1,8 +1,10 @@
 <?php
 
 require_once("classes/project/Produkt.php");
+require_once("classes/front/Category.php");
 
 $quelle = Produkt::getSources();
+$categories = Category::getOneLayerRepresentation();
 $attributeGroups = DBAccess::selectQuery("SELECT * FROM attribute_group");
 
 ?>
@@ -20,10 +22,9 @@ $attributeGroups = DBAccess::selectQuery("SELECT * FROM attribute_group");
 		<p>Kategorie</p>
 		<select id="category" class="input-primary">
 			<option value="-1" selected disabled>Bitte auswählen</option>
-			<?php foreach ($quelle as $q) : ?>
-				<option value="<?= $q['id'] ?>"><?= $q['name'] ?></option>
+			<?php foreach ($categories as $c) : ?>
+				<option value="<?= $c['id'] ?>"><?= $c['name'] ?></option>
 			<?php endforeach; ?>
-			<option value="addNew">Neue Option hinzufügen</option>
 		</select>
 
 		<p>Quelle</p>
