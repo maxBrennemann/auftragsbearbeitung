@@ -21,6 +21,12 @@ $p = new Produkt($id);
 $showFiles = Produkt::getFiles($id);
 $products = Produkt::getAllProducts();
 
+?>
+<div class="mt-4">
+		<a class="link-button" href="<?= Link::getPageLink("attributes") ?>">Zu den Produktattributetn</a>
+		<a class="link-button" href="<?= Link::getPageLink("neues-produkt") ?>">Zum Produktformular</a>
+
+<?php
 /* konkrete Produktseite */
 if ($id != -1) : ?>
 	<div class="mt-4 defCont">
@@ -71,31 +77,27 @@ if ($id != -1) : ?>
 		<buton class="btn-attention mt-4 inline-block" id="btnAbort">Abbrechen</buton>
 	</div>
 <?php else : ?>
-	<div class="mt-4">
-		<a class="link-button" href="<?= Link::getPageLink("attributes") ?>">Zu den Produktattributetn</a>
-		<a class="link-button" href="<?= Link::getPageLink("neues-produkt") ?>">Zum Produktformular</a>
-
-		<div class="defCont mt-4">
-			<div id='tableContainer'>
-				<?= $table ?>
-			</div>
-			<h2 class="mt-4 font-bold">Produkte <span class="text-xs">(Link zur Frontpage)</span>:</h2>
-			<div class="grid grid-cols-3 gap-3 mt-1">
-				<?php foreach ($products as $p) : ?>
-					<div class="bg-white border-2 rounded-lg p-4 border-gray-700 m-3" data-product-id="<?= $p->getProductId() ?>">
-						<a href="<?= $p->getProduktLink() ?>">
-							<h2 class="font-bold"><?= $p->getBezeichnung() ?></h2>
-						</a>
-						<p><?= $p->getBeschreibung() ?></p>
-						<p><?= $p->getPriceWithTax() ?> €</p>
-						<?php foreach ($p->getImages() as $i) : ?>
-							<div data-image-id="<?= $i->getImageId() ?>">
-								<img src="<?= $i->getImageURL() ?>" alt="" width="50px" height="auto">
-							</div>
-						<?php endforeach; ?>
-					</div>
-				<?php endforeach; ?>
-			</div>
+	<div class="defCont mt-4">
+		<div id='tableContainer'>
+			<?= $table ?>
+		</div>
+		<h2 class="mt-4 font-bold">Produkte <span class="text-xs">(Link zur Frontpage)</span>:</h2>
+		<div class="grid grid-cols-3 gap-3 mt-1">
+			<?php foreach ($products as $p) : ?>
+				<div class="bg-white border-2 rounded-lg p-4 border-gray-700 m-3" data-product-id="<?= $p->getProductId() ?>">
+					<a href="<?= $p->getProduktLink() ?>">
+						<h2 class="font-bold"><?= $p->getBezeichnung() ?></h2>
+					</a>
+					<p><?= $p->getBeschreibung() ?></p>
+					<p><?= $p->getPriceWithTax() ?> €</p>
+					<?php foreach ($p->getImages() as $i) : ?>
+						<div data-image-id="<?= $i->getImageId() ?>">
+							<img src="<?= $i->getImageURL() ?>" alt="" width="50px" height="auto">
+						</div>
+					<?php endforeach; ?>
+				</div>
+			<?php endforeach; ?>
 		</div>
 	</div>
 <?php endif; ?>
+</div>
