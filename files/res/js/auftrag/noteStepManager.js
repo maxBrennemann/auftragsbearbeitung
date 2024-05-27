@@ -1,3 +1,69 @@
+const notes = [];
+
+export function initNotes() {
+    const nodeContainer = document.getElementById("noteContainer");
+    if (nodeContainer != null) {
+        getNotes().then(r => {
+            displayNotes(r.data);
+        });
+    }
+}
+
+/**
+ * Iterate through notes and display them
+ * 
+ * @param {*} notes 
+ * @returns 
+ */
+function displayNotes(notes) {
+    const noteContainer = document.getElementById("noteContainer");
+    if (noteContainer == null) {
+        return;
+    }
+
+    document.getElementById("notesContainer").classList.remove("hidden");
+    notes.forEach((note, index) => {
+        notes.push(note);
+
+        /* clone templateNote */
+        const templateNote = document.getElementById("templateNote");
+        const clone = templateNote.content.cloneNode(true);
+        
+        const noteTitle = clone.querySelector(".noteTitle");
+        noteTitle.innerHTML = note.note;
+        noteTitle.dataset.id = note.id;
+        noteTitle.dataset.type = "title";
+        noteTitle.addEventListener("change", updateNote);
+
+        const noteText = clone.querySelector(".noteText");
+        noteText.innerHTML = note.note;
+        noteText.dataset.id = note.id;
+        noteText.dataset.type = "note";
+        noteText.addEventListener("change", updateNote);
+
+        const noteDate = clone.querySelector(".noteDate");
+        noteDate.innerHTML = note.date;
+
+        noteContainer.appendChild(clone);
+    });
+}
+
+function updateNote(e) {
+    const data = e.target.value;
+    const id = e.target.dataset.id;
+    const type = e.target.dataset.type;
+
+    ajax.put(`/api/v1/notes/${globalData.auftragsId}`, {
+        id: id,
+        type: type,
+        data: data
+    }).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+        }
+    });
+}
+
 export function addBearbeitungsschritt() {
     var tableData = document.getElementsByClassName("bearbeitungsschrittInput");
     var steps = [];
@@ -64,26 +130,44 @@ export function showBearbeitungsschritt() {
     textarea.focus();
 }
 
-/* adds a note to the order */
-export function addNote() {
-    var noteNode = document.querySelector(".noteInput");
-    if (noteNode == undefined)
-        return null;
+export async function getNotes() {
+    return ajax.get(`/api/v1/notes/${globalData.auftragsId}`);
+}
 
-    ajax.post({
-        r: "addNoteOrder",
-        auftrag: globalData.auftragsId,
-        note: noteNode.value,
+/**
+ * adds a note to the database
+ * 
+ * @returns 
+ */
+export function addNote() {
+    var noteNode = document.querySelector("#addNotes");
+    if (noteNode == undefined) {
+        return null;
+    }
+
+    const title = noteNode.querySelector(".noteTitle").value;
+    const note = noteNode.querySelector(".noteText").value;
+
+    if (title == "") {
+        return null;
+    }
+
+    ajax.post(`/api/v1/notes/${globalData.auftragsId}`, {
+        title: title,
+        note: note
     }).then(r => {
         if (r.status == "success") {
             infoSaveSuccessfull("success");
-            noteNode.value = "";
+            displayNotes([{
+                    title: title,
+                    note: note,
+                    date: r.date
+            }]);
 
-            /* update note container */
-            const newNote = r.content;
-            const noteContainer = document.getElementById("noteContainer");
-            noteContainer.innerHTML = noteContainer.innerHTML + newNote;
-            // TODO: note event listener via bindings adden
+            noteNode.querySelector(".noteTitle").value = "";
+            noteNode.querySelector(".noteText").value = "";
+
+            noteNode.classList.toggle("hidden");
         }
     });
 }
@@ -110,29 +194,16 @@ export function removeNote(event) {
     centerAbsoluteElement(div);
 }
 
-/* function to delete the node */
-window.notesDeleteNode = function(number, div) {
-    div.parentNode.removeChild(div);
-    console.log(number);
-
-    ajax.post({
-        r: "deleteNote",
-        number: number,
-        auftrag: globalData.auftragsId,
-    }, true).then(r => {
-        document.getElementById("noteContainer").innerHTML = r;
-    });
-}
-
 /* function for node button to remove the div */
 window.notesClose = function(div) {
     div.parentNode.removeChild(div);
 }
 
 export function addNewNote() {
-    document.getElementById("addNotes").style.display='block';
-    const textarea = document.querySelector(".noteInput");
-    textarea.focus();
+    const addNotes = document.getElementById("addNotes");
+    addNotes.classList.toggle("hidden");
+    const input = document.querySelector(".noteInput");
+    input.focus();
 }
 
 window.radio = function(val) {

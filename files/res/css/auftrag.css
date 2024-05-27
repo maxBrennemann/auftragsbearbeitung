@@ -1,7 +1,7 @@
 
 main {
     display: grid;
-    grid-template-areas: "auftrag auftrag kunde" "schritte schritte schritteAdd" "posten posten posten" "invoice invoice invoice" "fahrzeuge farben preis" "upload upload verlauf" "liste liste liste";
+    grid-template-areas: "auftrag auftrag kunde" "schritte schritte schritteAdd" "notes notes notes" "posten posten posten" "invoice invoice invoice" "fahrzeuge farben preis" "upload upload verlauf" "liste liste liste";
 }
 
 table {
@@ -54,6 +54,10 @@ aside {
 
 .schritteAdd {
     grid-area: schritteAdd;
+}
+
+.notes {
+    grid-area: notes;
 }
 
 .description {
@@ -369,53 +373,6 @@ aside {
 .descriptionEditable {
     background: white;
     padding: 10px;
-}
-
-.notes {
-    margin-top: 10px;
-    font-size: 0em;
-}
-
-.notes .noteheader {
-    display: inline-block;
-    background: var(--main-inner-def-color);
-    padding: 7px;
-    margin-right: 0;
-    border-radius: 6px 0 0 6px;
-    font-size: 14.4px;
-}
-
-.notes .notecontent {
-    display: inline-block;
-    padding: 7px;
-    margin-left: 0;
-    background: white;
-    border-radius: 0 6px 6px 0;
-    font-size: 14.4px;
-}
-
-/* css for button hover */
-.notes .notebutton {
-    visibility: hidden;
-    display: inline-block;
-}
-
-.notes .notebutton {
-    margin: 0;
-    border-radius: 0 6px 6px 0;
-    border: none;
-    padding: 7px;
-    background: #c14949;
-    font-size: 14.4px;
-    cursor: pointer;
-}
-
-.notes:hover .notebutton {
-    visibility: visible;
-}
-
-.notes:hover .notecontent {
-    border-radius: 0 0 0 0;
 }
 
 #cpContainer {

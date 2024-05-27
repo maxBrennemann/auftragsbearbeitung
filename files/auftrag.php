@@ -227,18 +227,27 @@ if ($auftragsId == -1): ?>
 		</div>
 	</div>
 	<div class="defCont schritteAdd">
-		<p class="font-bold">Notizen</p>
-		<button class="btn-primary" data-binding="true" data-fun="addNewNote">Neue Notiz hinzufügen</button>
-		<div class="innerDefCont" id="addNotes" style="display: none">
-			<div>
-				<p>Notiz:</p>
-				<textarea class="noteInput m-1 text-slate-600 rounded-lg p-2" type="text" max="128"></textarea>
+		<div class="flex">
+			<p class="font-bold">Notizen hinzufügen</p>
+			<button class="btn-primary flex justify-center items-center select-none text-xl font-bold p-2 m-2 rounded-full shadow h-8 w-8" data-binding="true" data-fun="addNewNote">
+				<?=Icon::getDefault("iconAdd")?>
+			</button>
+		</div>
+		<div class="hidden" id="addNotes">
+			<div class="bg-white w-2/3 rounded-lg p-2">
+				<input type="text" class="noteInput text-slate-700 font-bold outline-0" max="128">
+				<textarea class="noteInput mt-2 text-slate-500 resize-none w-full outline-0" type="text" max="128"></textarea>
+				<div class="relative flex">
+					<span class="noteDate"></span>
+					<button class="border-0 ml-auto">...</button>
+				</div>
 			</div>
-			<button class="btn-primary" data-binding="true" data-fun="addNote" class="btn-primary">Hinzufügen</button>
+			<button class="btn-primary" data-fun="sendNote">Hinzufügen</button>
 		</div>
-		<div id="noteContainer">
-			<?=$auftrag->getNotes()?>
-		</div>
+	</div>
+	<div class="defCont notes hidden" id="notesContainer">
+		<p>Alle Notizen</p>
+		<div class="grid grid-cols-4" id="noteContainer"></div>
 	</div>
 	<div class="defCont posten">
 		<p><span class="font-bold">Zeiten, Produkte und Kosten (netto)</span> <input id="rechnungspostenAusblenden" type="checkbox" <?=ClientSettings::getFilterOrderPosten() == true ? "checked" : ""?>> Rechnungsposten ausblenden</p>
@@ -435,7 +444,7 @@ if ($auftragsId == -1): ?>
 				<input class="colorInput jscolor" type="text" max="32" data-write="true" data-fun="checkHexCode">
 			</label>
 			<br>
-			<button class="btn-primary" data-fun="sendColor">Hinuzufügen</button>
+			<button class="btn-primary" data-fun="sendColor">Hinzufügen</button>
 			<button class="btn-primary" data-fun="toggleCS">Vorhandene Farbe auswählen</button>
 		</div>
 		<div class="defCont" id="cpContainer"></div>
@@ -478,11 +487,16 @@ if ($auftragsId == -1): ?>
 	<template id="templateTimeInput">
 		<p class="timeInputWrapper">von <input class="timeInput" type="time" min="05:00" max="23:00"> bis <input class="timeInput"  type="time" min="05:00" max="23:00"> am <input class="dateInput" type="date"></p>
 	</template>
+	<template id="templateNote">
+		<div class="bg-white rounded-lg p-2 m-2">
+			<input type="text" class="noteTitle text-slate-900 font-bold outline-0" max="128">
+			<textarea class="noteText mt-2 text-slate-600 resize-none w-full outline-0 h-32" type="text" max="128"></textarea>
+			<hr class="p-2 mt-1">
+			<div class="relative flex text-slate-600">
+				<span class="noteDate"></span>
+				<button class="border-0 ml-auto">...</button>
+			</div>
+		</div>
+	</template>
 </div>
 <?php endif; ?>
-
-<style>
-	/* * {
-  outline: 1px solid #f00 !important;
-}*/
-</style>

@@ -1,10 +1,9 @@
 ﻿import { initBindings } from "./classes/bindings.js";
-import { click_mehListener } from "./auftrag/postenManager.js";
 import { addColor, addSelectedColors, checkHexCode, removeColor } from "./auftrag/colorManager.js";
-import { addBearbeitungsschritt, showBearbeitungsschritt, addNote, removeNote, addNewNote } from "./auftrag/noteStepManager.js";
+import { addBearbeitungsschritt, showBearbeitungsschritt, addNote, removeNote, addNewNote, initNotes } from "./auftrag/noteStepManager.js";
 import { setOrderFinished, updateDate, updateDeadline, setDeadlineState, initExtraOptions, editDescription, editOrderType, editTitle, archvieren } from "./auftrag/orderManager.js";
 import { addExistingVehicle, addNewVehicle, selectVehicle } from "./auftrag/vehicleManager.js";
-import { addProductCompactOld, addLeistung, addTime, selectLeistung, initPostenFilter, addProductCompact, showPostenAdd, createTimeInputRow } from "./auftrag/postenManager.js";
+import { click_mehListener, addProductCompactOld, addLeistung, addTime, selectLeistung, initPostenFilter, addProductCompact, showPostenAdd, createTimeInputRow } from "./auftrag/postenManager.js";
 import "./auftrag/postenOrder.js";
 import "./auftrag/calculateGas.js";
 
@@ -85,6 +84,7 @@ function initCode() {
 
     initPostenFilter();
     initExtraOptions();
+    initNotes();
 }
 
 function addSearchEventListeners() {

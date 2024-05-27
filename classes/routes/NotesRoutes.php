@@ -1,24 +1,38 @@
 <?php
 
 require_once("classes/routes/Routes.php");
+require_once("classes/project/Auftrag.php");
 
 class NotesRoutes extends Routes {
 
+    /**
+     * @uses Auftrag::getNotes
+     * @uses Auftrag::getNote
+     */
     protected static $getRoutes = [
-        "/notes" => "Notes::getNotes",
-        "/notes/{id}" => "Notes::getNote",
+        "/notes/{orderId}" => "Auftrag::getNotes",
+        "/notes/{orderId}/{id}" => "Auftrag::getNote",
     ];
 
+    /**
+     * @ueses Auftrag::addNote
+     */
     protected static $postRoutes = [
-        "/notes/add" => "Notes::addNote",
+        "/notes/add/{id}" => "Auftrag::addNote",
     ];
 
+    /**
+     * @uses Auftrag::updateNote
+     */
     protected static $putRoutes = [
-        "/notes/{id}" => "Notes::updateNote",
+        "/notes/{id}" => "Auftrag::updateNote",
     ];
 
+    /**
+     * @uses Auftrag::deleteNote
+     */
     protected static $deleteRoutes = [
-        "/notes/{id}" => "Notes::deleteNote",
+        "/notes/{id}" => "Auftrag::deleteNote",
     ];
 
     public function __construct() {
