@@ -18,7 +18,7 @@ class NotesRoutes extends Routes {
      * @ueses Auftrag::addNote
      */
     protected static $postRoutes = [
-        "/notes/add/{id}" => "Auftrag::addNote",
+        "/notes/{orderId}" => "Auftrag::addNote",
     ];
 
     /**

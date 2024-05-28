@@ -1,6 +1,6 @@
 ﻿import { initBindings } from "./classes/bindings.js";
 import { addColor, addSelectedColors, checkHexCode, removeColor } from "./auftrag/colorManager.js";
-import { addBearbeitungsschritt, showBearbeitungsschritt, addNote, removeNote, addNewNote, initNotes } from "./auftrag/noteStepManager.js";
+import { addBearbeitungsschritt, showBearbeitungsschritt, sendNote, removeNote, addNewNote, initNotes } from "./auftrag/noteStepManager.js";
 import { setOrderFinished, updateDate, updateDeadline, setDeadlineState, initExtraOptions, editDescription, editOrderType, editTitle, archvieren } from "./auftrag/orderManager.js";
 import { addExistingVehicle, addNewVehicle, selectVehicle } from "./auftrag/vehicleManager.js";
 import { click_mehListener, addProductCompactOld, addLeistung, addTime, selectLeistung, initPostenFilter, addProductCompact, showPostenAdd, createTimeInputRow } from "./auftrag/postenManager.js";
@@ -28,7 +28,7 @@ fnNames.write_checkHexCode = checkHexCode;
 
 fnNames.click_addBearbeitungsschritt = addBearbeitungsschritt;
 fnNames.click_showBearbeitungsschritt = showBearbeitungsschritt;
-fnNames.click_addNote = addNote;
+fnNames.click_sendNote = sendNote;
 fnNames.click_removeNote = removeNote;
 fnNames.click_addNewNote = addNewNote;
 

@@ -235,14 +235,13 @@ if ($auftragsId == -1): ?>
 		</div>
 		<div class="hidden" id="addNotes">
 			<div class="bg-white w-2/3 rounded-lg p-2">
-				<input type="text" class="noteInput text-slate-700 font-bold outline-0" max="128">
-				<textarea class="noteInput mt-2 text-slate-500 resize-none w-full outline-0" type="text" max="128"></textarea>
-				<div class="relative flex">
-					<span class="noteDate"></span>
-					<button class="border-0 ml-auto">...</button>
+				<input type="text" class="noteTitle text-slate-700 font-bold outline-0" max="128">
+				<textarea class="noteText mt-2 text-slate-500 resize-none w-full outline-0" type="text" max="128"></textarea>
+				<div class="relative flex text-slate-600">
+					<span class="noteDate"><?=date("d.m.Y")?></span>
 				</div>
 			</div>
-			<button class="btn-primary" data-fun="sendNote">Hinzufügen</button>
+			<button class="btn-primary" data-binding="true" data-fun="sendNote">Hinzufügen</button>
 		</div>
 	</div>
 	<div class="defCont notes hidden" id="notesContainer">
@@ -488,14 +487,15 @@ if ($auftragsId == -1): ?>
 		<p class="timeInputWrapper">von <input class="timeInput" type="time" min="05:00" max="23:00"> bis <input class="timeInput"  type="time" min="05:00" max="23:00"> am <input class="dateInput" type="date"></p>
 	</template>
 	<template id="templateNote">
-		<div class="bg-white rounded-lg p-2 m-2">
+		<div class="bg-white rounded-lg p-2 m-2 relative">
 			<input type="text" class="noteTitle text-slate-900 font-bold outline-0" max="128">
 			<textarea class="noteText mt-2 text-slate-600 resize-none w-full outline-0 h-32" type="text" max="128"></textarea>
 			<hr class="p-2 mt-1">
 			<div class="relative flex text-slate-600">
 				<span class="noteDate"></span>
-				<button class="border-0 ml-auto">...</button>
+				<button class="border-0 ml-auto showDelete">...</button>
 			</div>
+			<button class="btn-attention noteDelete hidden absolute right-0 bottom-4">Löschen</button>
 		</div>
 	</template>
 </div>

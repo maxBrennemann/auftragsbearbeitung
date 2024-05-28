@@ -4,6 +4,10 @@ export function initNotes() {
     const nodeContainer = document.getElementById("noteContainer");
     if (nodeContainer != null) {
         getNotes().then(r => {
+            if (r.data.length == 0) {
+                return;
+            }
+
             displayNotes(r.data);
         });
     }
@@ -22,7 +26,7 @@ function displayNotes(notes) {
     }
 
     document.getElementById("notesContainer").classList.remove("hidden");
-    notes.forEach((note, index) => {
+    notes.forEach((note) => {
         notes.push(note);
 
         /* clone templateNote */
@@ -30,7 +34,7 @@ function displayNotes(notes) {
         const clone = templateNote.content.cloneNode(true);
         
         const noteTitle = clone.querySelector(".noteTitle");
-        noteTitle.innerHTML = note.note;
+        noteTitle.value = note.title;
         noteTitle.dataset.id = note.id;
         noteTitle.dataset.type = "title";
         noteTitle.addEventListener("change", updateNote);
@@ -41,8 +45,24 @@ function displayNotes(notes) {
         noteText.dataset.type = "note";
         noteText.addEventListener("change", updateNote);
 
+        noteTitle.addEventListener("keyup", function(e) {
+            if (e.key == "Enter") {
+                noteText.focus();
+            }
+        });
+
         const noteDate = clone.querySelector(".noteDate");
         noteDate.innerHTML = note.date;
+
+        const noteShowDelete = clone.querySelector(".showDelete");
+        noteShowDelete.addEventListener("click", function(e) {
+            const el = e.target.parentNode.parentNode;
+            const noteDelete = el.querySelector(".noteDelete");
+            noteDelete.classList.toggle("hidden");
+        });
+
+        const noteDelete = clone.querySelector(".noteDelete");
+        noteDelete.addEventListener("click", removeNote);
 
         noteContainer.appendChild(clone);
     });
@@ -139,14 +159,14 @@ export async function getNotes() {
  * 
  * @returns 
  */
-export function addNote() {
-    var noteNode = document.querySelector("#addNotes");
-    if (noteNode == undefined) {
+export function sendNote() {
+    var note = document.querySelector("#addNotes");
+    if (note == undefined) {
         return null;
     }
 
-    const title = noteNode.querySelector(".noteTitle").value;
-    const note = noteNode.querySelector(".noteText").value;
+    const title = note.querySelector(".noteTitle").value;
+    const content = note.querySelector(".noteText").value;
 
     if (title == "") {
         return null;
@@ -154,44 +174,32 @@ export function addNote() {
 
     ajax.post(`/api/v1/notes/${globalData.auftragsId}`, {
         title: title,
-        note: note
+        note: content
     }).then(r => {
-        if (r.status == "success") {
-            infoSaveSuccessfull("success");
-            displayNotes([{
-                    title: title,
-                    note: note,
-                    date: r.date
-            }]);
+        infoSaveSuccessfull("success");
+        displayNotes([{
+                title: title,
+                note: content,
+                date: r.date
+        }]);
 
-            noteNode.querySelector(".noteTitle").value = "";
-            noteNode.querySelector(".noteText").value = "";
+        note.querySelector(".noteTitle").value = "";
+        note.querySelector(".noteText").value = "";
 
-            noteNode.classList.toggle("hidden");
-        }
+        note.classList.toggle("hidden");
     });
 }
 
 /* function creates a popup window that asks the user whether he wants the note to be deleted or not */
 export function removeNote(event) {
-    let note = event.target.parentNode.children[1].innerHTML;
-    let number = indexInClass(event.target.parentNode);
-
-    var div = document.createElement("div");
-    const html = `
-        <div class="p-4">
-            <span>Willst Du die Notiz "${note}" wirklich löschen?</span>
-            <br>
-            <button class="btn-primary" onclick="notesDeleteNode(${number}, this.parentNode)">Ja</button>
-            <button class="btn-primary" onclick="notesClose(this.parentNode)">Nein</button>
-        </div>
-    `;
-
-    div.innerHTML = html;
-    document.body.appendChild(div);
-
-    addActionButtonForDiv(div, "remove");
-    centerAbsoluteElement(div);
+    const id = event.target.parentNode.querySelector(".noteTitle").dataset.id;
+    ajax.delete(`/api/v1/notes/${id}`).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+            const noteContainer = event.target.parentNode;
+            noteContainer.parentNode.removeChild(noteContainer);
+        }
+    });
 }
 
 /* function for node button to remove the div */
@@ -202,8 +210,16 @@ window.notesClose = function(div) {
 export function addNewNote() {
     const addNotes = document.getElementById("addNotes");
     addNotes.classList.toggle("hidden");
-    const input = document.querySelector(".noteInput");
+    const input = addNotes.querySelector(".noteTitle");
     input.focus();
+
+    input.addEventListener("keyup", function(e) {
+        if (e.key == "Enter") {
+            const addNotes = document.getElementById("addNotes");
+            const noteText = addNotes.querySelector(".noteText");
+            noteText.focus();
+        }
+    });
 }
 
 window.radio = function(val) {

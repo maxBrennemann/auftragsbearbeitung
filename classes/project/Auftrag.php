@@ -557,9 +557,19 @@ class Auftrag implements StatisticsInterface {
 	public static function getNotes() {
 		$orderId = (int) Tools::get("orderId");
 
-		$notes = DBAccess::selectQuery("SELECT id, note, title, DATE_FORMAT(creation_date, '%d.%m.%Y') as `date` FROM notes WHERE orderId = :id ORDER BY creation_date DESC", [
+		$notes = DBAccess::selectQuery("SELECT id, note, title, creation_date as `date` FROM notes WHERE orderId = :id ORDER BY creation_date DESC", [
 			"id" => $orderId,
 		]);
+
+		foreach ($notes as $key => $note) {
+			if ($notes[$key]["date"] == date("Y-m-d")) {
+				$notes[$key]["date"] = "Heute";
+			} else if ($notes[$key]["date"] == date("Y-m-d", strtotime("-1 day"))) {
+				$notes[$key]["date"] = "Gestern";
+			} else {
+				$notes[$key]["date"] = date("d.m.Y", strtotime($note["date"]));
+			}
+		}
 
 		return JSONResponseHandler::sendResponse([
 			"data" => $notes,
@@ -758,7 +768,7 @@ class Auftrag implements StatisticsInterface {
 	}
 
 	public static function addNote() {
-		$orderId = (int) Tools::get("id");
+		$orderId = (int) Tools::get("orderId");
 		$order = new Auftrag($orderId);
 		$order->addNewNote();
 	}
@@ -779,7 +789,7 @@ class Auftrag implements StatisticsInterface {
 	}
 
 	public static function deleteNote() {
-		$note = (int) Tools::get("note");
+		$note = (int) Tools::get("id");
 		DBAccess::deleteQuery("DELETE FROM notes WHERE id = :note", [
 			"note" => $note,
 		]);
