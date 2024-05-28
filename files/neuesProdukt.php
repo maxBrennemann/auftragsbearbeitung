@@ -10,7 +10,7 @@ $attributeGroups = DBAccess::selectQuery("SELECT * FROM attribute_group");
 ?>
 
 <div class="mt-4">
-	<a class="link-button" href="<?= Link::getPageLink("attributes") ?>">Zu den Produktattributetn</a>
+	<a class="link-button" href="<?= Link::getPageLink("attributes") ?>">Zu den Produktattributen</a>
 	<a class="link-button" href="<?= Link::getPageLink("produkt") ?>">Zu den Produkten</a>
 	<div class="defCont mt-4">
 		<p>Marke</p>

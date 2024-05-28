@@ -23,7 +23,7 @@ $products = Produkt::getAllProducts();
 
 ?>
 <div class="mt-4">
-		<a class="link-button" href="<?= Link::getPageLink("attributes") ?>">Zu den Produktattributetn</a>
+		<a class="link-button" href="<?= Link::getPageLink("attributes") ?>">Zu den Produktattributen</a>
 		<a class="link-button" href="<?= Link::getPageLink("neues-produkt") ?>">Zum Produktformular</a>
 
 <?php

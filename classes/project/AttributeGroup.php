@@ -70,4 +70,25 @@ class AttributeGroup
 
         JSONResponseHandler::sendResponse(["result" => $result]);
     }
+
+    public static function updatePositions() {
+        $groupId = (int) Tools::get("id");
+        $positions = Tools::get("positions");
+        $positions = json_decode($positions, true);
+
+        if ($groupId == null || $positions == null) {
+            JSONResponseHandler::throwError(400, "ID und Positionen müssen ausgefüllt sein");
+        }
+
+        foreach ($positions as $position) {
+            $id = $position["id"];
+            $pos = $position["position"];
+            DBAccess::updateQuery("UPDATE attribute SET position = :position WHERE id = :id", [
+                "position" => $pos,
+                "id" => $id
+            ]);
+        }
+
+        JSONResponseHandler::returnOK();
+    }
 }

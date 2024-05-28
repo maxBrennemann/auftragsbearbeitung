@@ -43,10 +43,16 @@ class ProductRoutes extends Routes {
     /**
      * @uses Produkt::update()
      * 
+     * @uses AttributeGroup::updateAttribute()
+     * @uses AttributeGroup::updatePositions()
+     * 
      * @uses Category::updateCategory()
      */
     protected static $putRoutes = [
         "/product/{id}/{type}" => "Produkt::update",
+
+        "/attribute/{id}/value/{valueId}" => "AttributeGroup::updateAttribute",
+        "/attribute/{id}/positions" => "AttributeGroup::updatePositions",
 
         "/category/{id}" => "Category::updateCategory",
     ];
