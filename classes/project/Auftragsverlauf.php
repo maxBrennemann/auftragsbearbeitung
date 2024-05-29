@@ -59,7 +59,7 @@ class Auftragsverlauf {
             LEFT JOIN (
                 (SELECT CONCAT(fahrzeuge.Kennzeichen, ' ', fahrzeuge.Fahrzeug) AS `descr`, fahrzeuge_auftraege.id_fahrzeug AS id, 3 AS `type` FROM fahrzeuge, fahrzeuge_auftraege WHERE fahrzeuge.Nummer = fahrzeuge_auftraege.id_fahrzeug)
                 UNION
-                (SELECT notizen.Notiz AS `descr`, notizen.Nummer AS id, 7 AS `type` FROM notizen)
+                (SELECT notes.note AS `descr`, notes.id AS id, 7 AS `type` FROM notes)
             ) ids ON history.number = ids.id 
             AND history.type = ids.type
             LEFT JOIN history_type ON history_type.type_id = history.type

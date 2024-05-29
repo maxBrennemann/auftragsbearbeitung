@@ -53,6 +53,7 @@ class Ajax {
 				break;
 			case "product":
 			case "attribute":
+			case "category":
 				require_once("classes/routes/ProductRoutes.php");
 				ProductRoutes::handleRequest($path);
 				break;
@@ -528,17 +529,6 @@ class Ajax {
 
 				echo "ok";
 			break;
-			case "deleteNote":
-				$index = $_POST['number'];
-				$order = $_POST['auftrag'];
-
-				/* finds the possible note for deletion and sends back the left over ones */
-				$possibleMatches = DBAccess::selectQuery("SELECT Nummer FROM notizen WHERE Auftragsnummer = $order");
-				$match = $possibleMatches[$index]["Nummer"];
-				DBAccess::deleteQuery("DELETE FROM notizen WHERE Nummer = $match");
-				$order = new Auftrag($order);
-				echo $order->getNotes();
-			break;
 			case "deleteSize":
 				$key = $_POST["key"];
 				$table = $_POST["table"];
@@ -810,35 +800,6 @@ class Ajax {
 				$key = $_POST['key'];
 				$data = $_POST['data'];
 				echo Table::updateTable_AddNewLine($key, $data);
-			break;
-			case "addNoteOrder":
-				$note = $_POST['note'];
-				$orderId = (int) $_POST['auftrag'];
-				$history_number = DBAccess::insertQuery("INSERT INTO notizen (Auftragsnummer, Notiz) VALUES ($orderId, '$note')");
-				$auftrag = new Auftrag($orderId);
-
-				require_once("classes/project/Auftragsverlauf.php");
-				$auftragsverlauf = new Auftragsverlauf($orderId);
-				$auftragsverlauf->addToHistory($history_number, 7, "added", $note);
-
-				$notes = [
-					[
-						"Notiz" => $note,
-						"Nummer" => $history_number,
-					]
-				];
-		
-				ob_start();
-				insertTemplate('files/res/views/noteView.php', [
-					"notes" => $notes,
-					"icon" => Icon::getDefault("iconNotebook"),
-				]);
-				$content = ob_get_clean();
-
-				echo json_encode([
-					"status" => "success",
-					"content" => $content,
-				]);
 			break;
 			case "setCustomColor":
 				require_once("classes/project/ClientSettings.php");

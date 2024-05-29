@@ -1,6 +1,54 @@
 <?php
 
 define('CURRENTVERSION', '1.1.18');
+ini_set('display_errors', false);
+
+function printError($message) {
+	if ($_ENV["DEV_MODE"] == "true") {
+		JSONResponseHandler::throwError(500, $message);
+	} else {
+		JSONResponseHandler::throwError(500, "Internal server error");
+	}
+
+	die();
+}
+
+function exception_error_handler($severity, $message, $file, $line) {
+    if (!(error_reporting() & $severity)) {
+        return;
+    }
+
+	printError([
+		"message" => $message,
+		"file" => $file,
+		"line" => $line,
+		"severity" => $severity
+	]);
+}
+
+set_error_handler("exception_error_handler");
+
+function fatal_handler() {
+	$error = error_get_last();
+
+	if ($error == null) {
+		return;
+	}
+
+	$message = $error["message"];
+	$file = $error["file"];
+	$line = $error["line"];
+	$severity = $error["type"];
+
+	printError([
+		"message" => $message,
+		"file" => $file,
+		"line" => $line,
+		"severity" => $severity
+	]);
+}
+
+register_shutdown_function("fatal_handler");
 
 /**
  * https://stackoverflow.com/questions/2236668/file-get-contents-breaks-up-utf-8-characters
@@ -36,6 +84,8 @@ function errorReporting() {
 		error_reporting(E_ALL);
 		ini_set('display_errors', '1');
 	}
+
+	ini_set('display_errors', false);
 }
 
 function getParameter($value, $type = "GET", $default = "") {

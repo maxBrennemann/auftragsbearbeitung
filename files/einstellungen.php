@@ -2,11 +2,9 @@
 <?php 
 
 require_once('classes/project/Table.php');
-require_once('classes/front/CategoryTree.php');
 
 /* get default wage */
 $defaultWage = Config::get("defaultWage");
-$categoryitems = CategoryTree::getOneLayerArray();
 
 $cacheOn = "";
 $cacheOff = "checked";
@@ -120,12 +118,15 @@ $_SESSION[$tableOrderType->getTableKey()] = serialize($tableOrderType);
 </section>
 <section class="defCont">
     <h2 class="font-bold">Kategorien festlegen</h2>
-    <?=CategoryTree::getHTMLRepresentation()?>
-    <select name="categories" id="select-category">
-        <?php foreach ($categoryitems as $c): ?>
-        <option value="<?=$c->id?>"><?=$c->title?></option>
-        <?php endforeach; ?>
-    </select>
+    <div class="flex mt-2">
+        <select id="categories" class="input-primary"></select>
+        <button class="btn-primary" id="showTree">Kategorien anzeigen</button>
+    </div>
+    <div class="mt-2 p-2 bg-slate-300 rounded-lg">
+        <input type="text" class="input-primary" id="newCategory">
+        <select id="parentCategory" class="input-primary"></select>
+        <button id="addCategory" class="btn-primary">Kategorie hinzufügen</button>
+    </div>
 </section>
 <section class="defCont">
     <h2 class="font-bold">Backups und Datensicherung</h2>

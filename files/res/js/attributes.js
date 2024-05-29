@@ -1,5 +1,9 @@
 import { ajax } from "./classes/ajax.js";
 
+let currentDraggedGroup = null;
+let currentDraggedElement = null;
+let currentIndex = null;
+
 function init() {
     const btnAddAttribute = document.getElementById("btnAddAttribute");
     btnAddAttribute.addEventListener("click", addNewAttribute);
@@ -11,6 +15,68 @@ function init() {
 
     const btnAddAttributeValue = document.getElementById("btnAddValue");
     btnAddAttributeValue.addEventListener("click", addNewAttributeValue);
+
+    initSortAttributes();
+    initSortAttributeValues();
+}
+
+function initSortAttributes() {
+
+}
+
+function initSortAttributeValues() {
+    const attributeValueGroups = document.getElementsByClassName("attributeValueGroups");
+    Array.from(attributeValueGroups).forEach((group) => {
+        const groupElements = group.getElementsByTagName("li");
+        Array.from(groupElements).forEach((element) => {
+            element.addEventListener("dragstart", function(event) {
+                currentDraggedGroup = group;
+                currentDraggedElement = event.target;
+                currentIndex = Array.from(group.children).indexOf(event.target);
+            });
+    
+            element.addEventListener("dragover", function(event) {
+                event.preventDefault();
+            });
+    
+            element.addEventListener("drop", function(event) {
+                event.preventDefault();
+                let indexDrop = Array.from(group.children).indexOf(event.target);
+                const targetElement = event.target;
+                const targetGroup = targetElement.parentElement;
+
+                if (currentDraggedGroup !== targetGroup) {
+                    return;
+                }
+    
+                if (currentIndex > indexDrop) {
+                    targetElement.before(currentDraggedElement);
+                } else {
+                    targetElement.after(currentDraggedElement);
+                }
+
+                updatePositions();
+            });
+        });
+    });
+}
+
+function updatePositions() {
+    const listItems = currentDraggedGroup.getElementsByTagName("li");
+    let positions = [];
+    Array.from(listItems).forEach((el, idx) => {
+        const id = el.dataset.id;
+        const newPosition = idx + 1;
+        positions.push({id: id, position: newPosition});
+    });
+
+    ajax.put(`/api/v1/attribute/${currentDraggedGroup.dataset.id}/positions`, {
+        positions: JSON.stringify(positions),
+    }).then(() => {
+        infoSaveSuccessfull("success");
+    }).catch((error) => {
+        console.error(error);
+    });
 }
 
 function addNewAttribute() {

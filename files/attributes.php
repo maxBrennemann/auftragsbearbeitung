@@ -1,9 +1,10 @@
 <?php
 
-$data = DBAccess::selectQuery("SELECT ag.attribute_group, ag.descr, a.id, a.value, a.attribute_group_id 
+$data = DBAccess::selectQuery("SELECT ag.attribute_group, ag.descr, a.id, a.value, a.attribute_group_id, a.position 
     FROM attribute_group ag 
     LEFT JOIN attribute a 
-        ON ag.id = a.attribute_group_id");
+        ON ag.id = a.attribute_group_id
+    ORDER BY ag.position, a.position");
 
 $attributeGroups = [];
 
@@ -24,7 +25,7 @@ foreach ($data as $d) {
 
 ?>
 <div class="mt-4">
-    <a class="link-button" href="<?= Link::getPageLink("attributes") ?>">Zu den Produktattributetn</a>
+    <a class="link-button" href="<?= Link::getPageLink("produkt") ?>">Zu den Produkten</a>
     <a class="link-button" href="<?= Link::getPageLink("neues-produkt") ?>">Zum Produktformular</a>
 </div>
 <div class="mt-2 flex flex-row flex-wrap gap-2.5 m-auto">
@@ -32,9 +33,9 @@ foreach ($data as $d) {
         <div class="defCont singleAttribute">
             <h2 data-id="<?= $group['id'] ?>" class="underline"><?= $group["name"] ?></h2>
             <p><i><?= $group["descr"] ?></i></p>
-            <ul class="mt-2" id="attributeValues_<?= $group["id"] ?>">
+            <ul class="attributeValueGroups mt-2" id="attributeValues_<?= $group["id"] ?>" data-id="<?= $group['id'] ?>">
                 <?php foreach ($group["attributes"] as $a) : ?>
-                    <li class="bg-white rounded-md p-1 pl-2 hover:bg-blue-300"><?= $a["value"] ?></li>
+                    <li class="bg-white rounded-md p-1 pl-2 hover:bg-blue-300 cursor-pointer" draggable="true" data-id="<?= $a["id"] ?>"><?= $a["value"] ?></li>
                 <?php endforeach; ?>
             </ul>
         </div>

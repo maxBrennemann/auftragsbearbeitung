@@ -1,19 +1,25 @@
 <?php
 
+use MatthiasMullie\Minify\JS;
+
 class Category
 {
 
-    public $title;
-    public $parent;
-    public $id;
+    private string $name;
+    private int $parent = 0;
+    private int $id;
 
-    public $children = [];
+    private array $children = [];
 
-    function __construct($title, $parent, $id)
+    private static array $categories = [];
+
+    function __construct(int $id, string $name, int $parent = 0)
     {
-        $this->title = $title;
-        $this->parent = (int) $parent;
-        $this->id = (int) $id;
+        $this->name = $name;
+        $this->parent = $parent;
+        $this->id = $id;
+
+        $this->children = [];
     }
 
     public function addChild($categoryNode)
@@ -21,21 +27,29 @@ class Category
         array_push($this->children, $categoryNode);
     }
 
-    public function getHTML()
+    /**
+     * adds a new category to the database by the given name and parent
+     */
+    public static function addNewCategory()
     {
-        $html = "<li><a href=\"" . Link::getCategoryLink($this->id) . "\">" . $this->title . "</a>";
+        $name = Tools::get("name");
+        $parent = (int) Tools::get("parent");
 
-        foreach ($this->children as $child) {
-            $html .= "<ul>" . $child->getHTML() . "</ul>";
-        }
+        $query = "INSERT INTO category (`name`, `parent`) VALUES (:name, :parent)";
+        $id = DBAccess::insertQuery($query, [
+            "name" => $name,
+            "parent" => $parent
+        ]);
 
-        $html .= "</li>";
-        return $html;
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+            "id" => $id
+        ]);
     }
 
     public function getOneLayerArray()
     {
-        $onelayerarray = array();
+        $onelayerarray = [];
 
         array_push($onelayerarray, $this);
 
@@ -47,5 +61,68 @@ class Category
         }
 
         return $onelayerarray;
+    }
+
+    private static function parseCategories() {
+        $categories = DBAccess::selectQuery("SELECT * FROM category");
+
+        $categoryNodes = [];
+        self::$categories = [];
+
+        foreach ($categories as $c) {
+            $categoryNodes[$c["id"]] = new Category($c["id"], $c["name"], $c["parent"]);
+        }
+
+        foreach ($categoryNodes as $node) {
+            if ($node->parent == 0) {
+                array_push(self::$categories, $node);
+            } else {
+                $categoryNodes[$node->parent]->addChild($node);
+            }
+        }
+
+        return self::$categories;
+    }
+
+    public static function getOneLayerRepresentation()
+    {
+        self::parseCategories();
+
+        $onelayerarray = [];
+
+        foreach (self::$categories as $category) {
+            $pushTo = $category->getOneLayerArray();
+            foreach ($pushTo as $p) {
+                array_push($onelayerarray, [
+                    "id" => $p->id,
+                    "name" => $p->name,
+                    "parent" => $p->parent
+                ]);
+            }
+        }
+
+        return $onelayerarray;
+    }
+
+    public static function getJSONOneLayer() {
+        return JSONResponseHandler::sendResponse(self::getOneLayerRepresentation());
+    }
+
+    public static function updateCategory()
+    {
+        $id = Tools::get("id");
+        $name = Tools::get("name");
+        $parent = Tools::get("parent");
+
+        $query = "UPDATE category SET `name` = :name, `parent` = :parent WHERE `id` = :id";
+        DBAccess::updateQuery($query, [
+            "name" => $name,
+            "parent" => $parent,
+            "id" => $id
+        ]);
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success"
+        ]);
     }
 }

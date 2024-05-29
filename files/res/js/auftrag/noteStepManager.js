@@ -1,3 +1,89 @@
+const notes = [];
+
+export function initNotes() {
+    const nodeContainer = document.getElementById("noteContainer");
+    if (nodeContainer != null) {
+        getNotes().then(r => {
+            if (r.data.length == 0) {
+                return;
+            }
+
+            displayNotes(r.data);
+        });
+    }
+}
+
+/**
+ * Iterate through notes and display them
+ * 
+ * @param {*} notes 
+ * @returns 
+ */
+function displayNotes(notes) {
+    const noteContainer = document.getElementById("noteContainer");
+    if (noteContainer == null) {
+        return;
+    }
+
+    document.getElementById("notesContainer").classList.remove("hidden");
+    notes.forEach((note) => {
+        notes.push(note);
+
+        /* clone templateNote */
+        const templateNote = document.getElementById("templateNote");
+        const clone = templateNote.content.cloneNode(true);
+        
+        const noteTitle = clone.querySelector(".noteTitle");
+        noteTitle.value = note.title;
+        noteTitle.dataset.id = note.id;
+        noteTitle.dataset.type = "title";
+        noteTitle.addEventListener("change", updateNote);
+
+        const noteText = clone.querySelector(".noteText");
+        noteText.innerHTML = note.note;
+        noteText.dataset.id = note.id;
+        noteText.dataset.type = "note";
+        noteText.addEventListener("change", updateNote);
+
+        noteTitle.addEventListener("keyup", function(e) {
+            if (e.key == "Enter") {
+                noteText.focus();
+            }
+        });
+
+        const noteDate = clone.querySelector(".noteDate");
+        noteDate.innerHTML = note.date;
+
+        const noteShowDelete = clone.querySelector(".showDelete");
+        noteShowDelete.addEventListener("click", function(e) {
+            const el = e.target.parentNode.parentNode;
+            const noteDelete = el.querySelector(".noteDelete");
+            noteDelete.classList.toggle("hidden");
+        });
+
+        const noteDelete = clone.querySelector(".noteDelete");
+        noteDelete.addEventListener("click", removeNote);
+
+        noteContainer.appendChild(clone);
+    });
+}
+
+function updateNote(e) {
+    const data = e.target.value;
+    const id = e.target.dataset.id;
+    const type = e.target.dataset.type;
+
+    ajax.put(`/api/v1/notes/${globalData.auftragsId}`, {
+        id: id,
+        type: type,
+        data: data
+    }).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+        }
+    });
+}
+
 export function addBearbeitungsschritt() {
     var tableData = document.getElementsByClassName("bearbeitungsschrittInput");
     var steps = [];
@@ -64,63 +150,55 @@ export function showBearbeitungsschritt() {
     textarea.focus();
 }
 
-/* adds a note to the order */
-export function addNote() {
-    var noteNode = document.querySelector(".noteInput");
-    if (noteNode == undefined)
+export async function getNotes() {
+    return ajax.get(`/api/v1/notes/${globalData.auftragsId}`);
+}
+
+/**
+ * adds a note to the database
+ * 
+ * @returns 
+ */
+export function sendNote() {
+    var note = document.querySelector("#addNotes");
+    if (note == undefined) {
         return null;
+    }
 
-    ajax.post({
-        r: "addNoteOrder",
-        auftrag: globalData.auftragsId,
-        note: noteNode.value,
+    const title = note.querySelector(".noteTitle").value;
+    const content = note.querySelector(".noteText").value;
+
+    if (title == "") {
+        return null;
+    }
+
+    ajax.post(`/api/v1/notes/${globalData.auftragsId}`, {
+        title: title,
+        note: content
     }).then(r => {
-        if (r.status == "success") {
-            infoSaveSuccessfull("success");
-            noteNode.value = "";
+        infoSaveSuccessfull("success");
+        displayNotes([{
+                title: title,
+                note: content,
+                date: r.date
+        }]);
 
-            /* update note container */
-            const newNote = r.content;
-            const noteContainer = document.getElementById("noteContainer");
-            noteContainer.innerHTML = noteContainer.innerHTML + newNote;
-            // TODO: note event listener via bindings adden
-        }
+        note.querySelector(".noteTitle").value = "";
+        note.querySelector(".noteText").value = "";
+
+        note.classList.toggle("hidden");
     });
 }
 
 /* function creates a popup window that asks the user whether he wants the note to be deleted or not */
 export function removeNote(event) {
-    let note = event.target.parentNode.children[1].innerHTML;
-    let number = indexInClass(event.target.parentNode);
-
-    var div = document.createElement("div");
-    const html = `
-        <div class="p-4">
-            <span>Willst Du die Notiz "${note}" wirklich löschen?</span>
-            <br>
-            <button class="btn-primary" onclick="notesDeleteNode(${number}, this.parentNode)">Ja</button>
-            <button class="btn-primary" onclick="notesClose(this.parentNode)">Nein</button>
-        </div>
-    `;
-
-    div.innerHTML = html;
-    document.body.appendChild(div);
-
-    addActionButtonForDiv(div, "remove");
-    centerAbsoluteElement(div);
-}
-
-/* function to delete the node */
-window.notesDeleteNode = function(number, div) {
-    div.parentNode.removeChild(div);
-    console.log(number);
-
-    ajax.post({
-        r: "deleteNote",
-        number: number,
-        auftrag: globalData.auftragsId,
-    }, true).then(r => {
-        document.getElementById("noteContainer").innerHTML = r;
+    const id = event.target.parentNode.querySelector(".noteTitle").dataset.id;
+    ajax.delete(`/api/v1/notes/${id}`).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+            const noteContainer = event.target.parentNode;
+            noteContainer.parentNode.removeChild(noteContainer);
+        }
     });
 }
 
@@ -130,9 +208,18 @@ window.notesClose = function(div) {
 }
 
 export function addNewNote() {
-    document.getElementById("addNotes").style.display='block';
-    const textarea = document.querySelector(".noteInput");
-    textarea.focus();
+    const addNotes = document.getElementById("addNotes");
+    addNotes.classList.toggle("hidden");
+    const input = addNotes.querySelector(".noteTitle");
+    input.focus();
+
+    input.addEventListener("keyup", function(e) {
+        if (e.key == "Enter") {
+            const addNotes = document.getElementById("addNotes");
+            const noteText = addNotes.querySelector(".noteText");
+            noteText.focus();
+        }
+    });
 }
 
 window.radio = function(val) {

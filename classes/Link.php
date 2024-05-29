@@ -41,7 +41,23 @@ class Link {
 		return null;
 	}
 	
+	/**
+	 * function returns the link to the image resource;
+	 * if the resource does not exist, the default image is returned
+	 * 
+	 * @param $resourceName: the name of the image resource
+	 * @return $link: the link to the image resource
+	 */
 	public static function getImageLink($resourceName) {
+		if ($resourceName == null || $resourceName == "" || !file_exists("files/res/image/" . $resourceName)) {
+			$resourceName = "default_image.png";
+		}
+
+		if ($resourceName == "default_image.png") {
+			$link = $_ENV["REWRITE_BASE"] . "img/" . $resourceName;
+			return $link;
+		}
+
 		$link = $_ENV["REWRITE_BASE"] . "files/res/image/" . $resourceName;
 		return $link;
 	}

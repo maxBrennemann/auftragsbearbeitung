@@ -1,3 +1,5 @@
+import {AjaxCall, ajax} from "./classes/ajax.js";
+
 if (document.readyState !== 'loading' ) {
     initEventListeners();
 } else {
@@ -59,7 +61,72 @@ function initEventListeners() {
 
     const deleteCacheBtn = document.getElementById("deleteCache");
     deleteCacheBtn.addEventListener("click", deleteCache);
+
+    const addCategoryBtn = document.getElementById("addCategory");
+    addCategoryBtn.addEventListener("click", addCategory);
+
+    getCategories();
 }
+
+function getCategories() {
+    ajax.get("/api/v1/category").then(categories => {
+        const select = document.getElementById("categories");
+        const select2 = document.getElementById("parentCategory");
+        Object.keys(categories).forEach(key => {
+            const category = categories[key];
+            const option = document.createElement("option");
+            option.value = category.id;
+            option.text = category.name;
+            select.appendChild(option);
+            select2.appendChild(option.cloneNode(true));
+        });
+    });
+}
+
+function addCategory() {
+    const newCategory = document.getElementById("newCategory").value;
+    const parentCategory = document.getElementById("parentCategory").value;
+
+    if (newCategory === "") {
+        infoSaveSuccessfull("error");
+        return;
+    }
+
+    ajax.post(`/api/v1/category`, {
+        name: newCategory,
+        parent: parentCategory,
+    }).then(r => {
+        clearInputs({"id": "newCategory"});
+        
+        if (r.status !== "success") {
+            infoSaveSuccessfull("error");
+            return;
+        }
+        
+        infoSaveSuccessfull("success");
+    });
+}
+
+function editCategory() {
+    const category = document.getElementById("category").value;
+    const newName = document.getElementById("newName").value;
+    const newParent = document.getElementById("newParent").value;
+
+    ajax.put(`/api/v1/category/${category}`, {
+        name: newName,
+        parent: newParent,
+    }).then(r => {
+        if (r.message == "ok") {
+            infoSaveSuccessfull("success");
+        }
+    });
+}
+
+window.deleteCache = deleteCache;
+window.setCustomColor = setCustomColor;
+window.toggleCache = toggleCache;
+window.toggleMinify = toggleMinify;
+window.minifyFiles = minifyFiles;
 
 function deleteCache() {
     ajax.post({

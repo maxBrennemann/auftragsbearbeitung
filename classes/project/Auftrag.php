@@ -554,19 +554,26 @@ class Auftrag implements StatisticsInterface {
 		];
 	}
 
-	/* this function fetches the associated notes from the db */
-	public function getNotes() {
-		$notes = DBAccess::selectQuery("SELECT Notiz, Nummer FROM notizen WHERE Auftragsnummer = :id ORDER BY creation_date DESC", [
-			"id" => $this->Auftragsnummer
+	public static function getNotes() {
+		$orderId = (int) Tools::get("orderId");
+
+		$notes = DBAccess::selectQuery("SELECT id, note, title, creation_date as `date` FROM notes WHERE orderId = :id ORDER BY creation_date DESC", [
+			"id" => $orderId,
 		]);
 
-		ob_start();
-		insertTemplate('files/res/views/noteView.php', [
-			"notes" => $notes,
-			"icon" => Icon::getDefault("iconNotebook"),
+		foreach ($notes as $key => $note) {
+			if ($notes[$key]["date"] == date("Y-m-d")) {
+				$notes[$key]["date"] = "Heute";
+			} else if ($notes[$key]["date"] == date("Y-m-d", strtotime("-1 day"))) {
+				$notes[$key]["date"] = "Gestern";
+			} else {
+				$notes[$key]["date"] = date("d.m.Y", strtotime($note["date"]));
+			}
+		}
+
+		return JSONResponseHandler::sendResponse([
+			"data" => $notes,
 		]);
-		$content = ob_get_clean();
-		return $content;
 	}
 
 	public function recalculate() {
@@ -738,6 +745,57 @@ class Auftrag implements StatisticsInterface {
 		JSONResponseHandler::sendResponse([
 			"success" => true,
 			"home" => Link::getPageLink(""),
+		]);
+	}
+
+	public function addNewNote() {
+		$title = (string) Tools::get("title");
+		$note = (string) Tools::get("note");
+
+		$historyId = DBAccess::insertQuery("INSERT INTO notes (orderId, title, note) VALUES (:orderId, :title, :note)", [
+			"orderId" => $this->Auftragsnummer,
+			"title" => $title,
+			"note" => $note,
+		]);
+		
+		$auftragsverlauf = new Auftragsverlauf($this->Auftragsnummer);
+		$auftragsverlauf->addToHistory($historyId, 7, "added", $note);
+	
+		JSONResponseHandler::sendResponse([
+			"success" => true,
+			"date" => date("d.m.Y"),
+		]);
+	}
+
+	public static function addNote() {
+		$orderId = (int) Tools::get("orderId");
+		$order = new Auftrag($orderId);
+		$order->addNewNote();
+	}
+
+	public static function updateNote() {
+		$id = (int) Tools::get("id");
+		$type = (string) Tools::get("type");
+		$data = (string) Tools::get("data");
+
+		DBAccess::updateQuery("UPDATE notes SET $type = :data WHERE id = :id", [
+			"id" => $id,
+			"data" => $data,
+		]);
+
+		JSONResponseHandler::sendResponse([
+			"status" => "success",
+		]);
+	}
+
+	public static function deleteNote() {
+		$note = (int) Tools::get("id");
+		DBAccess::deleteQuery("DELETE FROM notes WHERE id = :note", [
+			"note" => $note,
+		]);
+
+		JSONResponseHandler::sendResponse([
+			"status" => "success",
 		]);
 	}
 

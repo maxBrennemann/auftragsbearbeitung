@@ -23,7 +23,7 @@ class Routes
         }
 
         $callback = static::$getRoutes[$route];
-        $callback();
+        self::callCallback($callback);
     }
 
     protected static function post($route)
@@ -37,7 +37,7 @@ class Routes
         }
 
         $callback = static::$postRoutes[$route];
-        $callback();
+        self::callCallback($callback);
     }
 
     protected static function put($route)
@@ -51,7 +51,7 @@ class Routes
         }
 
         $callback = static::$putRoutes[$route];
-        $callback();
+        self::callCallback($callback);
     }
 
     protected static function delete($route)
@@ -65,7 +65,7 @@ class Routes
         }
 
         $callback = static::$deleteRoutes[$route];
-        $callback();
+        self::callCallback($callback);
     }
 
     private static function checkUrlPatterns($url, $routes)
@@ -129,5 +129,10 @@ class Routes
             default:
                 JSONResponseHandler::throwError(405, "Method not allowed");
         }
+    }
+
+    private static function callCallback($callback)
+    {
+        $callback();
     }
 }
