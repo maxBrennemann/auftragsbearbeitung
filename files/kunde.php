@@ -7,6 +7,8 @@ require_once('classes/project/Table.php');
 require_once('classes/project/Search.php');
 require_once('classes/project/Address.php');
 
+$orderCount = 0;
+
 $kundenid = -1;
 $isSearch = false;
 $showList = false;
@@ -109,15 +111,7 @@ if (isset($_GET['id'])) {
 	}
 }
 
-$nextNumber = Kunde::getNextAssignedKdnr($kundenid, 1);
-$linkForward = Link::getPageLink("kunde") . "?id=" . ($nextNumber);
-if ($nextNumber == -1) $linkForward = "#";
-$nextNumber = Kunde::getNextAssignedKdnr($kundenid, -1);
-$linkBackward = Link::getPageLink("kunde") . "?id=" . ($nextNumber);
-if ($nextNumber == -1) $linkBackward = "#";
-
 ?>
-<p><a href="<?=$linkBackward?>">&#129092;</a><a href="<?=$linkForward?>" id="forwards">&#129094;</a></p>
 <?php if ($kundenid == -1 && !$isSearch && !$showList) : ?>
 	<p>Kunde kann nicht angezeigt werden.</p>
 <?php elseif ($kundenid == -1 && $isSearch) : ?>
@@ -133,8 +127,20 @@ if ($nextNumber == -1) $linkBackward = "#";
 	</div>
 	<div id="gridShowCustomerList"><?=$showListHTML?></div>
 <?php else: ?>
-	<div class="gridCont">
+	<div class="mt-4 bg-gray-100 p-4 rounded-lg">
+		<h2 class="font-bold">Allgemein</h2>
+		<p>Anzahl der Aufträge: <?=$orderCount?></p>
+		<button class="btn-primary">Neuen Auftrag erstellen</button>
+		<button class="btn-primary">Neue Notiz erstellen</button>
+		<button class="btn-primary">Neuen Ansprechpartner erstellen</button>
+		<button class="btn-primary">Neue Farbe erstellen</button>
+		<button class="btn-primary">Neues Fahrzeug erstellen</button>
+		<button class="btn-primary">Neue Adresse erstellen</button>
+		<button class="btn-attention">Kunde löschen</button>
+	</div>
+	<div class="gridCont mt-4">
 		<div id="showKundendaten">
+			<h3 class="font-bold ml-3">Kundendaten</h3>
 			<div class="row">
 				<div class="width12">
 					<div class="inputCont">
@@ -235,7 +241,7 @@ if ($nextNumber == -1) $linkBackward = "#";
 			</div>
 		</div>
 		<div id="addNewAddress">
-			<h4>Neue Adresse hinzufügen</h4>
+			<h4 class="font-bold">Neue Adresse hinzufügen</h4>
 			<div class="row">
 				<div class="width6">
 					<div class="inputCont">
