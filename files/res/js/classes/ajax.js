@@ -220,39 +220,34 @@ async function uploadFilesHelper(files, uploadType, additionalInfo = null) {
 
 export async function makeAsyncCall(type, params, location) {
 	return new Promise((resolve, reject) => {
-		if (params == null) {
-			console.warn("AjaxCall: no parameters given");
-		}
-
 		const ajaxCall = new XMLHttpRequest();
 		ajaxCall.onload = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				resolve(this.responseText);
 			} else {
-				console.error("AjaxCall: Error while making the ajax call");
-				reject(this.responseText);
+				reject(new Error(this.responseText));
 			}
 		}
 
-		switch (type) {
-			case "POST":
-				ajaxCall.open("POST", location, true);
-				break;
-			case "GET":
-				ajaxCall.open("GET", location + params, true);
-				break;
-			case "PUT":
-				ajaxCall.open(type, location, true);
-				break;
-			case "DELETE":
-				ajaxCall.open(type, location, true);
-				break;
-			default:
-				console.error("AjaxCall: Ajax Type not defined");
-				break;
-		}
+		ajaxCall.onerror = function() {
+            reject(new Error('Network error'));
+        };
 
-		ajaxCall.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		ajaxCall.send(params);
+		switch (type) {
+            case "POST":
+            case "PUT":
+            case "DELETE":
+                ajaxCall.open(type, location, true);
+                ajaxCall.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                ajaxCall.send(params);
+                break;
+            case "GET":
+                ajaxCall.open("GET", `${location}?${params}`, true);
+                ajaxCall.send();
+                break;
+            default:
+                reject(new Error("Ajax Type not defined"));
+                break;
+        }
 	});
 }
