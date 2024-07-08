@@ -24,10 +24,14 @@ class StickerRoutes extends Routes
     /**
      * @uses StickerCollection::exportSticker
      * 
+     * @uses StickerCollection::addSticker
+     * 
      * @uses StickerTagManager::addTag
      */
     protected static $postRoutes = [
         "/sticker/{id}/export" => "StickerCollection::exportSticker",
+
+        "/sticker" => "StickerCollection::addSticker",
 
         "/sticker/tags" => "StickerTagManager::addTag",
         "/sticker/tags/groups" => "",

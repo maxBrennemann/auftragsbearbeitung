@@ -1205,11 +1205,6 @@ class Ajax {
 				$textil = new Textil($id);
 				$textil->toggleConfig();
 			break;
-			case "createNewSticker":
-				require_once('classes/project/modules/sticker/Sticker.php');
-				$title = (String) $_POST["newTitle"];
-				Sticker::createNewSticker($title);
-			break;
 			case "setPriceclass":
 				$priceclass = (int) $_POST["priceclass"];
 				$id = (int) $_POST["id"];
