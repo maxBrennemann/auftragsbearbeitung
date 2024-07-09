@@ -2,7 +2,7 @@
 
 require_once("classes/project/modules/sticker/Sticker.php");
 
-class Textil extends Sticker {
+class Textil extends Sticker implements Queable {
 
     const TYPE = "textil";
 
@@ -206,6 +206,30 @@ class Textil extends Sticker {
         return [];
     }
 
-}
+    public function generateAllTextiles() {
+        $category = 0;
+        $textiles = Produkt::getAllProductsByCategory($category);
 
-?>
+        foreach ($textiles as $textil) {
+            $idTextile = $textil["id"];
+            $idSticker = $this->idSticker;
+            $images = StickerImage::getCombinedImages($idSticker, $idTextile);
+            // TODO: add product to prestashop
+
+            $this->save();
+        }
+    }
+
+    public function add() {
+
+    }
+
+    public function delete() {
+
+    }
+
+    public function edit() {
+        
+    }
+
+}

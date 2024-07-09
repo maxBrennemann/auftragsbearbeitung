@@ -291,4 +291,8 @@ class Produkt
 			JSONResponseHandler::throwError(400, "Type not found");
 		}
 	}
+
+	public static function getAllProductsByCategory(int $idCategory) {
+		return [];
+	}
 }

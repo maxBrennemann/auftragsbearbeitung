@@ -16,5 +16,3 @@ foreach ($result as $cron) {
     curl_exec($ch);
     curl_close($ch);
 }
-
-?>

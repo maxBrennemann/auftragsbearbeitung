@@ -6,7 +6,7 @@ require_once('vendor/autoload.php');
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 
-class StickerImage extends PrestashopConnection {
+class StickerImage extends PrestashopConnection implements Queable {
     
     private $idMotiv;
 
@@ -598,6 +598,22 @@ class StickerImage extends PrestashopConnection {
             DBAccess::updateQuery($query, ["order" => $count, "id" => $id]);
             $count++;
         }
+    }
+
+    public static function getCombinedImages(int $stickerId, int $textileId) {
+
+    }
+
+    public function add() {
+
+    }
+
+    public function delete() {
+
+    }
+
+    public function edit() {
+        
     }
 
 }
