@@ -1,21 +1,13 @@
 <?php
 
+require_once "classes/project/modules/sticker/Textil.php";
+require_once "classes/project/modules/sticker/StickerImage.php";
+
 class CronManager {
 
-    function __construct() {
-        
-    }
-
-    public function addCronjob() {
-
-    }
-
-    public function deleteCronjob() {
-
-    }
-
-    public function editCronjob() {
-
+    public static function schedule() {
+        Textil::handle();
+        StickerImage::handle();
     }
 
 }

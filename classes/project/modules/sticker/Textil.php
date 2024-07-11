@@ -1,6 +1,7 @@
 <?php
 
-require_once("classes/project/modules/sticker/Sticker.php");
+require_once "classes/project/modules/sticker/Sticker.php";
+require_once "cron/Queuable.php";
 
 class Textil extends Sticker implements Queable {
 
@@ -220,16 +221,8 @@ class Textil extends Sticker implements Queable {
         }
     }
 
-    public function add() {
+    public static function handle() {
 
-    }
-
-    public function delete() {
-
-    }
-
-    public function edit() {
-        
     }
 
 }

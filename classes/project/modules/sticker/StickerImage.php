@@ -1,7 +1,8 @@
 <?php
 
-require_once('classes/project/modules/sticker/PrestashopConnection.php');
-require_once('vendor/autoload.php');
+require_once "classes/project/modules/sticker/PrestashopConnection.php";
+require_once "vendor/autoload.php";
+require_once "cron/Queuable.php";
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -604,16 +605,8 @@ class StickerImage extends PrestashopConnection implements Queable {
 
     }
 
-    public function add() {
+    public static function handle() {
 
-    }
-
-    public function delete() {
-
-    }
-
-    public function edit() {
-        
     }
 
 }

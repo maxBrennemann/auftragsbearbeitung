@@ -2,9 +2,6 @@
 
 interface Queable {
 
-    public function add();
+    public static function handle();
 
-    public function delete();
-
-    public function edit();
 }
