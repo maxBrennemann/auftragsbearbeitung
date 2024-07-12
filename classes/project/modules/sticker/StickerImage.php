@@ -7,7 +7,7 @@ require_once "cron/Queuable.php";
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 
-class StickerImage extends PrestashopConnection implements Queable {
+class StickerImage extends PrestashopConnection {
     
     private $idMotiv;
 
@@ -602,10 +602,6 @@ class StickerImage extends PrestashopConnection implements Queable {
     }
 
     public static function getCombinedImages(int $stickerId, int $textileId) {
-
-    }
-
-    public static function handle() {
 
     }
 

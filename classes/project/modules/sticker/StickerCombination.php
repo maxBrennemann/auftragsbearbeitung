@@ -190,5 +190,3 @@ class StickerCombination extends PrestashopConnection {
     }
 
 }
-
-?>
