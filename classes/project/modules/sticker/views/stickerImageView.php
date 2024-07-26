@@ -27,9 +27,9 @@
         </tr>
         <?php endforeach; ?>
     </table>
-    <div x-data="{ open: false }">
-        <button class="text-xs border-0 float-right p-1 hover:underline" @click="open = ! open">Mehr</button>
-        <div x-show="open" @click.outside="open = false" class="absolute h-48 place-items-center bg-white z-20 rounded-md p-8">
+    <div>
+        <button class="text-xs border-0 float-right p-1 hover:underline" onclick="((e) => {e.target.nextElementSibling.classList.toggle('hidden')})(event)">Mehr</button>
+        <div class="hidden absolute h-48 place-items-center bg-white z-20 rounded-md p-8">
             <!-- TODO: add close button -->
             <p class="text-base">Vorsicht: Diese Option überschreibt die aktuellen Bilder des Artikels!</p>
             <div class="px-2">

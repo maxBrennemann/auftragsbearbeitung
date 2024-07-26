@@ -11,7 +11,7 @@ return new class extends UpdateMySql {
         "ALTER TABLE `produkt` ADD `id_category` INT NULL AFTER `einkaufs_id`;",
         "CREATE TABLE `auftragsbearbeitung`.`module_sticker_textiles` (`id` INT NOT NULL AUTO_INCREMENT , `id_module_textile` INT NOT NULL , `id_product` INT NOT NULL , `activated` BOOLEAN NOT NULL DEFAULT FALSE , `price` INT NOT NULL DEFAULT '0' , PRIMARY KEY (`id`)) ENGINE = InnoDB;",
         "DELETE FROM category;",
-        "INSERT INTO `category` (`id`, `name`, `parent`) VALUES ('1', 'Start', '0'), ('2', 'Textilien', '1')",
+        "INSERT INTO `category` (`id`, `name`, `parent`) VALUES ('1', 'Start', '0'), ('2', 'Textilien', '1');",
     ];
 
     public function upgrade() {
