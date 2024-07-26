@@ -17,6 +17,12 @@
                     <img src="<?=Link::getImageLink("CorelDraw_Logo2.svg")?>">
                 <?php elseif ($type == "ltp"): ?>
                     <img src="<?=Link::getImageLink("plotter.svg")?>">
+                <?php elseif ($type == "svg"): ?>
+                    <svg class="w-8 h-8">
+                        <image xlink:href="<?= $link ?>" />
+                    </svg>
+                <?php elseif ($type == "png" || $type == "jpeg" || $type = "jpg"): ?>
+                    <img class="w-8 h-8" src="<?= $link ?>">
                 <?php else: ?>
                     <?=$icon?>
                 <?php endif; ?>
@@ -24,4 +30,3 @@
         </div>
     <?php endforeach; ?>
 </div>
-<!-- TODO: Datei mit Context Menü oder Extra DIV versehen, um es löschen zu können, oder auch einfach Table? -->

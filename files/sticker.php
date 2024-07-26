@@ -281,7 +281,7 @@ if ($id == 0): ?>
         </div>
         <div>
             <div class="relative">
-                <object id="svgContainer" data="<?=$stickerImage->getSVGIfExists($stickerCollection->getTextil()->getIsColorable())?>" type="image/svg+xml" class="bg-gray-200 rounded-lg w-full"></object>
+                <object id="svgContainer" data="<?=$stickerImage->getSVGIfExists($stickerCollection->getTextil()->getIsColorable())?>" type="image/svg+xml" class="bg-gray-200 rounded-lg w-full h-36"></object>
                 <p class="absolute inset-0 flex items-center justify-center select-none">SVG hochladen</p>
             </div>
             <?php if ($stickerCollection->getTextil()->getIsColorable() == 1): ?>

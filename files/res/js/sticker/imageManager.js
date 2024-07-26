@@ -1,5 +1,3 @@
-import { addBindings } from "../classes/bindings.js";
-
 /**
  * toggles the is colorable flag of the svg,
  * if the svg is colorable, the svg is displayed in the colorable svg container
