@@ -5,6 +5,8 @@ require_once('classes/project/modules/sticker/StickerImage.php');
 require_once('classes/project/modules/sticker/StickerCollection.php');
 require_once('classes/project/modules/sticker/ChatGPTConnection.php');
 
+require_once('classes/project/Produkt.php');
+
 $id = 0;
 
 $stickerCollection = null;
@@ -342,8 +344,24 @@ if ($id == 0): ?>
 <div class="defCont">
     <h2 class="font-semibold">Textilien</h2>
     <div class="mt-2">
-        <div id="productTableWrapper" class="overflow-x-scroll">
-            <?=$stickerCollection->getTextil()->getProductTable()?>
+        <div>
+            <?php foreach ($stickerCollection->getTextil()->getProducts() as $product):?>
+                <div class="productContainer inline-block bg-white rounded-3xl p-3 hover:underline">
+                    <div class="flex">
+                        <span class="flex-1"><?=$product['name']?></span>
+                        <span class="">
+                            Aktiv
+                            <label class=" ml-1 switch">
+                                <input type="checkbox" class="textiles-switches" data-id="<?=$product['id']?>" <?=$product['activated'] ? 'checked' : '' ?>>
+                                <span class="slider round"></span>
+                            </label>
+                        </span>
+                    </div>
+                    <div>
+                        <input type="number" step="0.01" class="textiles-prices" data-id="<?=$product['id']?>" value="<?=$product['price']?>">
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
 </div>

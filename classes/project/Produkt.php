@@ -223,14 +223,14 @@ class Produkt
 		$products = array();
 		if ($categoryId == null) {
 			$sql = "SELECT Nummer FROM produkt";
-			$ids = DBAccess::selectQuery($sql);
-
-			foreach ($ids as $id) {
-				$id = $id["Nummer"];
-				array_push($products, new Produkt($id));
-			}
 		} else {
 			$sql = "SELECT Nummer FROM produkt WHERE id_category = $categoryId";
+		}
+
+		$ids = DBAccess::selectQuery($sql);
+		foreach ($ids as $id) {
+			$id = $id["Nummer"];
+			array_push($products, new Produkt($id));
 		}
 
 		return $products;
