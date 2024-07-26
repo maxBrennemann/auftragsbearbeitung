@@ -100,18 +100,20 @@ class Produkt
 		$title = (string) Tools::get("title");
 		$brand = (string) Tools::get("brand");
 		$source = (string) Tools::get("source");
+		$categoryId = (int) Tools::get("category");
 		$price = (float) Tools::get("price");
 		$purchasePrice = (float) Tools::get("purchasePrice");
 		$description = (string) Tools::get("description");
 		//$attributes = Tools::get("attributes");
 
-		$newProductId = DBAccess::insertQuery("INSERT INTO produkt (Bezeichnung, Marke, Beschreibung, Einkaufspreis, Preis, einkaufs_id) VALUES (:title, :brand, :description, :purchasePrice, :price, :source)", [
+		$newProductId = DBAccess::insertQuery("INSERT INTO produkt (Bezeichnung, Marke, Beschreibung, Einkaufspreis, Preis, einkaufs_id, id_category) VALUES (:title, :brand, :description, :purchasePrice, :price, :source, :idCategory)", [
 			"title" => $title,
 			"brand" => $brand,
 			"description" => $description,
 			"purchasePrice" => $purchasePrice,
 			"price" => $price,
-			"source" => $source
+			"source" => $source,
+			"idCategory" => $categoryId,
 		]);
 
 		JSONResponseHandler::sendResponse(["id" => $newProductId]);
@@ -228,7 +230,7 @@ class Produkt
 				array_push($products, new Produkt($id));
 			}
 		} else {
-			$sql = "SELECT Nummer FROM produkt WHERE categoryId = $categoryId";
+			$sql = "SELECT Nummer FROM produkt WHERE id_category = $categoryId";
 		}
 
 		return $products;
@@ -294,9 +296,5 @@ class Produkt
 		} else {
 			JSONResponseHandler::throwError(400, "Type not found");
 		}
-	}
-
-	public static function getAllProductsByCategory(int $idCategory) {
-		return [];
 	}
 }

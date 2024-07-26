@@ -21,8 +21,6 @@ if (isset($_GET['id'])) {
     $stickerTagManager = new StickerTagManager($id, $stickerCollection->getName());
     $stickerChangelog = new StickerChangelog($id);
     $chatGPTConnection = new ChatGPTConnection($id);
-
-    $priceType = $stickerCollection->getTextil()->getPriceType();
 }
 
 if ($id == 0): ?>
@@ -31,7 +29,6 @@ if ($id == 0): ?>
         window.location.href = "<?=Link::getPageLink("sticker-overview")?>";
     </script>
 <?php else: ?>
-<script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
 <div class="w-full">
 <div class="cont1">
     <div class="defCont">
@@ -281,33 +278,15 @@ if ($id == 0): ?>
             </span>
         </div>
         <div>
-            <object id="svgContainer" data="<?=$stickerImage->getSVGIfExists($stickerCollection->getTextil()->getIsColorable())?>" type="image/svg+xml" class="innerDefCont"></object>
+            <div class="relative">
+                <object id="svgContainer" data="<?=$stickerImage->getSVGIfExists($stickerCollection->getTextil()->getIsColorable())?>" type="image/svg+xml" class="bg-gray-200 rounded-lg w-full"></object>
+                <p class="absolute inset-0 flex items-center justify-center select-none">SVG hochladen</p>
+            </div>
             <?php if ($stickerCollection->getTextil()->getIsColorable() == 1): ?>
                 <?php foreach ($stickerCollection->getTextil()->textilColors as $color):?>
                 <button class="colorBtn" style="background:<?=$color["hexCol"]?>" title="<?=$color["name"]?>" data-binding="true" data-fun="changeColor" data-color="<?=$color["hexCol"]?>"></button>
                 <?php endforeach; ?>
             <?php endif; ?>
-        </div>
-        <div>
-            <p>Preiskategorie</p>
-            <div>
-                <label class="block bg-white rounded-3xl p-1 pl-2 mt-1" title="Die Klebefux Standardkategorie für Textilmotive">
-                    <input type="radio" name="textilPriceClass" value="58" data-binding="true" data-fun="changePreiskategorie" <?=$priceType == 58 ? "checked" : "" ?>>
-                    <span>Klebefux Standard (20,52 €)</span>
-                </label>
-                <label class="block bg-white rounded-3xl p-1 pl-2 mt-1" title="Die Klebefux Premiumkategorie für Textilmotive">
-                    <input type="radio" name="textilPriceClass" value="57" data-binding="true" data-fun="changePreiskategorie" <?=$priceType == 57 ? "checked" : "" ?>>
-                    <span>Klebefux Plus (23,59 €)</span>
-                </label>
-                <label class="block bg-white rounded-3xl p-1 pl-2 mt-1" title="Die Gwandlaus Textilkategorie für einfache Motive">
-                    <input type="radio" name="textilPriceClass" value="59" data-binding="true" data-fun="changePreiskategorie" <?=$priceType == 59 ? "checked" : "" ?>>
-                    <span>Gwandlaus Minus (30,78 €)</span>
-                </label>
-                <label class="block bg-white rounded-3xl p-1 pl-2 mt-1" title="Die Gwandlaus Standardkategorie für Textilmotive">
-                    <input type="radio" name="textilPriceClass" value="60" data-binding="true" data-fun="changePreiskategorie" <?=$priceType == 60 ? "checked" : "" ?>>
-                    <span>Gwandlaus Standard (33,85 €)</span>
-                </label>
-            </div>
         </div>
         <div class="mt-2">
             <div>
@@ -357,6 +336,14 @@ if ($id == 0): ?>
                     <span>Preisklasse 2 (teurer)</span>
                 </label>
             </div>
+        </div>
+    </div>
+</div>
+<div class="defCont">
+    <h2 class="font-semibold">Textilien</h2>
+    <div class="mt-2">
+        <div id="productTableWrapper" class="overflow-x-scroll">
+            <?=$stickerCollection->getTextil()->getProductTable()?>
         </div>
     </div>
 </div>

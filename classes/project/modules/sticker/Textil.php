@@ -82,28 +82,8 @@ class Textil extends Sticker {
         return $price;
     }
 
-    public function getPriceType() {
-        return $this->stickerData["price_type"];
-    }
-
     public function getPrice() {
-        switch ($this->stickerData["price_type"]) {
-            case "57":
-                $price = "23.59";
-                break;
-            case "58":
-                $price = "20.52";
-                break;
-            case "59":
-                $price = "30.78";
-                break;
-            case "60":
-                $price = "33.85";
-                break;
-            default:
-                $price = 0;
-        }
-        return $price;
+        return 0;
     }
 
     public function toggleIsColorable() {
@@ -208,7 +188,7 @@ class Textil extends Sticker {
 
     public function generateAllTextiles() {
         $category = 0;
-        $textiles = Produkt::getAllProductsByCategory($category);
+        $textiles = Produkt::getAllProducts($category);
 
         foreach ($textiles as $textil) {
             $idTextile = $textil["id"];
@@ -218,6 +198,20 @@ class Textil extends Sticker {
 
             $this->save();
         }
+    }
+
+    public function getProductTable() {
+        $products = Produkt::getAllProducts($this->getIdCategory());
+
+        $column_names = array(
+            0 => array("COLUMN_NAME" => "Nummer", "ALT" => "Id"),
+            1 => array("COLUMN_NAME" => "Bezeichnung", "ALT" => "Name"),
+        );
+
+		$t = new Table();
+		$t->createByData($products, $column_names);
+
+		return $t->getTable();
     }
 
 }

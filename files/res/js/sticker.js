@@ -273,26 +273,6 @@ function transfer(type, text) {
     });
 }
 
-/* todo: größe der neuen daten ergänzen und preise updatebar machen */
-
-fnNames.click_changePreiskategorie = function(e) {
-    const target = e.currentTarget;
-    const value = target.value;
-
-    ajax.post({
-        categoryId: value,
-        id: mainVariables.motivId.innerHTML,
-        r: "changePreiskategorie",
-    }, true).then(response => {
-        if (response == "success") {
-            infoSaveSuccessfull("success");
-        } else {
-            console.log(response);
-            infoSaveSuccessfull();
-        }
-    });
-}
-
 fnNames.write_productDescription = function(e) {
     var target = e.target.dataset.target;
     var content = e.target.value;

@@ -204,11 +204,6 @@ input:checked + .slider:before {
     float: right;
 }
 
-#svgContainer {
-    width: 250px;
-    height: 250px;
-}
-
 .selectReplacer {
     display: none;
     border: 1px solid grey;

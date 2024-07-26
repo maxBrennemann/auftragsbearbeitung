@@ -1102,12 +1102,6 @@ class Ajax {
 					]);
 				}
 			break;
-			case "changePreiskategorie":
-				$id = (int) $_POST['id'];
-				$categoryId = $_POST['categoryId'];
-				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET price_type = '$categoryId' WHERE id = :id", ["id" => $id]);
-				echo "success";
-			break;
 			case "changeMotivDate":
 				$id = (int) $_POST['id'];
 				$creation_date = $_POST['date'];

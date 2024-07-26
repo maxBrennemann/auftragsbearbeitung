@@ -13,12 +13,14 @@ class ProductRoutes extends Routes {
      * @uses AttributeGroup::getAttributes()
      * 
      * @uses Category::getJSONOneLayer()
+     * @uses Category::getJSONTree()
      */
     protected static $getRoutes = [
         "/attribute/group/{id}" => "AttributeGroup::getAttributes",
         "/attribute/groups" => "AttributeGroup::getGroups",
 
         "/category" => "Category::getJSONOneLayer",
+        "/category/tree" => "Category::getJSONTree",
     ];
 
     /**
