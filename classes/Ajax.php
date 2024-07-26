@@ -1000,14 +1000,6 @@ class Ajax {
 				$data = array("fileName" => $fileName, "url" => Link::getResourcesShortLink($fileName, "backup"), "status" => "ok");
 				echo json_encode($data, JSON_FORCE_OBJECT);
 			break;
-			case "insertAttributeTable":
-				$productId = (int) $_POST["productId"];
-				$attributeTable = $_POST["attributes"];
-				$data = json_decode($attributeTable, true);
-
-				Produkt::addAttributeVariations($productId, $data);
-				echo "ok";
-			break;
 			case "logout":
 				Login::handleLogout();
 			break;

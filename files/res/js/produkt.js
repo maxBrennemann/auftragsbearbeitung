@@ -39,9 +39,10 @@ function init() {
     btnAttributeSelector.addEventListener("click", matchAttributeGroups);
 
     const btnSaveConfig = document.getElementById("btnSaveConfig");
-    btnSaveConfig.addEventListener("click", takeConfiguration);
-
-    console.log(generateCombinations({1: [1, 2], 2: [3, 4]}));
+    btnSaveConfig.addEventListener("click", () => {
+        generateTable();
+        sendAttributeTable();
+    });
 }
 
 /**
@@ -56,7 +57,7 @@ function updateProduct(type, content) {
     }
 
     const id = document.getElementById("productId").dataset.id;
-    ajax.put(`/api/v1/product/${id}/${type}`, {
+    ajax.put(`/api/v1/product/${id}/type/${type}`, {
         content: content,
     }).then((response) => {
         infoSaveSuccessfull(response);
@@ -95,6 +96,7 @@ function addToSelector() {
         const attributeValueSelector = document.createElement("select");
         attributeValueSelector.multiple = true;
         attributeValueSelector.classList.add("w-28");
+        attributeValueSelector.dataset.id = attributeGroupId;
 
         attributeValues.forEach((attribute) => {
             const option = document.createElement("option");
@@ -138,14 +140,42 @@ function matchAttributeGroups() {
         });
     });
 
-    const combinations = generateCombinations(groups);
+    attributes = generateCombinations(groups);
+    const addedValues = document.getElementById("addedValues");
+    addedValues.innerHTML += "Tabelle wird erstellt...";
+}
+
+function generateTable() {
+    const table = document.createElement("table");
+
+    for (let i = 0; i < attributes.length; i++) {
+        const row = document.createElement("tr");
+
+        for (let n = 0; n < attributes[i].length; n++) {
+            const cell = document.createElement("td");
+            cell.innerText = attributes[i][n];
+            row.appendChild(cell);
+        }
+
+        table.appendChild(row);
+    }
+
+    const tableContainer = document.getElementById("addAttributeTable");
+    tableContainer.innerHTML = "";
+    tableContainer.appendChild(table);
 }
 
 function generateCombinations(groups) {
-    const combinations = [];
+    let combinations = [];
 
-    for (const value of Object.entries(groups)) {
-
+    for (const [key, value] of Object.entries(groups)) {
+        if (combinations.length === 0) {
+            for (let i = 0; i < value.length; i++) {
+                combinations.push([value[i]]);
+            }
+        } else {
+            combinations = combineArrays(combinations, value);
+        }
     }
 
     return combinations;
@@ -159,106 +189,18 @@ function combineArrays(arr1, arr2) {
             combinations.push(arr1[i].concat(arr2[n]));
         }
     }
+
+    return combinations;
 }
 
-/*
-* Entfernt den Attribute-Matcher, berechnet die Anzahl der Zeilen und mit Hilfe der for Schleife wird der Array generiert;
-* Die Tabelle wird mit der passenden Funktion erstellt;
-*/
-function takeConfiguration() {
-    removeElement("htmlForAddingAttributes");
-
-    var y = 1,
-        x = Object.keys(attributes).length,
-        data = [];
-    for (const [key, value] of Object.entries(attributes)) {
-        y *= Object.keys(value).length;
-    }
-
-    var d = [];
-    for (let i = 0; i < x; i++) {
-        d[i] = "Test";
-    }
-    data = matchAttributeArray(objectToArrays(attributes));
-    data.unshift(d);
-
-    var table = createTable(y, x, data, true);
-    document.getElementById("addAttributeTable").appendChild(table);
-    tableAnchor = table;
-}
-
-function objectToArrays(attributeObject, toAttributeKeys = false) {
-    var attributeArray = [];
-    for (const [key, value] of Object.entries(attributeObject)) {
-        var tempArray =  [];
-        for (const [innerKey, innerValue] of Object.entries(value)) {
-            if (toAttributeKeys) {
-                tempArray.push(innerKey)
-            } else {
-                tempArray.push(innerValue);
-            }
-        }
-        attributeArray.push(tempArray);
-    }
-    return attributeArray;
-}
-
-function matchAttributeArray(attributeArray) {
-    /* inner function permute, not needed outside of function scope */
-    function permute(element, partialArray) {
-        /* edge case szenarios */
-        if (partialArray.length == 0) {
-            return [[]];
-        }
-
-        var result =  [];
-        for (let i = 0; i < partialArray[0].length; i++) {
-            var temp = permute(partialArray[0][i], partialArray.slice(1));
-            for (let n = 0; n < temp.length; n++) {
-                temp[n].push(partialArray[0][i]);
-                result.push(temp[n]);
-            }
-        }
-        return result;
-    }
-
-    /* edge case szenarios */
-    if (attributeArray.length == 0) {
-        return [];
-    }
-
-    if (attributeArray.length == 1) {
-        return attributeArray;
-    }
-
-    var result =  [];
-    for (let i = 0; i < attributeArray[0].length; i++) {
-        var temp = permute(attributeArray[0][i], attributeArray.slice(1));
-        for (let n = 0; n < temp.length; n++) {
-            temp[n].push(attributeArray[0][i]);
-            result.push(temp[n]);
-        }
-    }
-
-    return result;
-}
-
-/**
- * 
- */
 function sendAttributeTable() {
-    var attribute_string = JSON.stringify(matchAttributeArray(objectToArrays(attributes, true)));
-    
-    let params = {
-        getReason: "insertAttributeTable",
-        attributes: attribute_string,
-        productId: document.getElementById("productId").dataset.id
-    };
-    
-    var ajax = new AjaxCall(params, "POST", window.location.href);
-    ajax.makeAjaxCall(function (response) {
-        if (response == "ok")
-            infoSaveSuccessfull("success");
+    const id = document.getElementById("productId").dataset.id;
+    ajax.put(`/api/v1/product/${id}/combinations`, {
+        combinations: JSON.stringify(attributes),
+    }).then((response) => {
+        infoSaveSuccessfull(response);
+    }).catch((error) => {
+        console.error(error);
     });
 }
 

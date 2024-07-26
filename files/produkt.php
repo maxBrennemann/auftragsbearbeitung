@@ -49,7 +49,7 @@ if ($id != -1) : ?>
 
 		<div id="addAttributeTable"></div>
 		<button id="btnAddAttribute" class="btn-primary">Attribute hinzufügen</button>
-		<button onclick="sendAttributeTable();" class="btn-primary">Abschicken</button>
+		
 		<span style="display: none" id="productId" data-id="<?= $id ?>"></span>
 	</div>
 	<div id="addAttributes" class="hidden z-20 h-2/6 w-2/6 fixed m-auto inset-x-0 inset-y-0 bg-white p-5 rounded-md shadow-2xl">
