@@ -216,13 +216,13 @@ function initSVG() {
         return;
     }
 
-    svg_elem = svgContainer.contentDocument.getElementById("svg_elem");
+    svg_elem = svgContainer.contentDocument.querySelector("svg");
     adjustSVG();
 }
 
 /* sets the svg_elem element when the content is loaded */
 function loadSVGEvent() {
-    svg_elem = svgContainer.contentDocument.getElementById("svg_elem");
+    svg_elem = svgContainer.contentDocument.querySelector("svg");
     adjustSVG();
 }
 
