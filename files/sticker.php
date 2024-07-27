@@ -49,10 +49,10 @@ if ($id == 0): ?>
         <p class="ml-2">Erstellt am <input type="date" class="rounded-sm px-2" id="creationDate" value="<?=$stickerCollection->getCreationDate()?>"></p>
         <button class="btn-primary mt-4" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
     </div>
-    <div class="defCont">
-        <p>Weitere Dateien (SVGs, CorelDraw, ...):</p>
-        <?=insertTemplate("classes/project/modules/sticker/views/stickerFileView.php", ["images" => $stickerImage->getGeneralImages(), "files" => $stickerImage->getFiles()])?>
-    </div>
+</div>
+<div class="defCont hidden">
+    <p>Dateien und Bilder</p>
+    <?=insertTemplate("classes/project/modules/sticker/views/stickerFileView.php", ["images" => $stickerImage->getGeneralImages(), "files" => $stickerImage->getFiles()])?>
 </div>
 <div class="cont2">
     <section class="defCont">
@@ -279,11 +279,13 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div>
-            <div class="relative">
-                <object id="svgContainer" data="<?=$stickerImage->getSVGIfExists($stickerCollection->getTextil()->getIsColorable())?>" type="image/svg+xml" class="bg-gray-200 rounded-lg w-full h-36"></object>
-                <p class="absolute inset-0 flex items-center justify-center select-none">SVG hochladen</p>
+        <div class="grid grid-cols-2">
+            <div class="relative bg-gray-200 rounded-lg w-full h-24 cursor-pointer" id="svgDropZone">
+                <p class="absolute inset-0 flex items-center justify-center select-none font-bold text-gray-500">SVG hochladen</p>
             </div>
+            <object id="svgContainer" class="w-full h-24" data="<?=$stickerImage->getSVGIfExists($stickerCollection->getTextil()->getIsColorable())?>"></object>
+        </div>
+        <div>
             <?php if ($stickerCollection->getTextil()->getIsColorable() == 1): ?>
                 <?php foreach ($stickerCollection->getTextil()->textilColors as $color):?>
                 <button class="colorBtn" style="background:<?=$color["hexCol"]?>" title="<?=$color["name"]?>" data-binding="true" data-fun="changeColor" data-color="<?=$color["hexCol"]?>"></button>

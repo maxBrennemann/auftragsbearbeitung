@@ -403,6 +403,16 @@ class ResourceManager
     private static function get_upload($upload)
     {
         $file_info = new finfo(FILEINFO_MIME_TYPE);
+
+        if (!file_exists(Link::getResourcesLink($upload, "upload", false))) {
+            $mime_type = $file_info->buffer("img/default_image.png");
+            header("Content-type:$mime_type");
+            $file = file_get_contents("img/default_image.png");
+
+            echo $file;
+            return;
+        }
+
         $mime_type = $file_info->buffer(file_get_contents(Link::getResourcesLink($upload, "upload", false)));
 
         header("Content-type:$mime_type");

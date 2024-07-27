@@ -215,6 +215,10 @@ class StickerImage extends PrestashopConnection {
         $newFile .= "_colorable.svg";
 
         if (!file_exists("upload/" . $newFile)) {
+            if (!file_exists($filename)) {
+                return "";
+            }
+
             $file = file_get_contents($filename);
 
             /* remove all fills */

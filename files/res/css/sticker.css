@@ -77,10 +77,6 @@ input:checked + .slider:before {
     float: right;
 }
 
-.cont2 section div {
-    margin: 10px;
-}
-
 .pointer-none {
     pointer-events: none;
 }
@@ -387,11 +383,6 @@ form label {
     box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5); 
 	-webkit-box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5); 
 	-moz-box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5); 
-}
-
-.cont1 {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
 }
 
 .centeredDiv {
