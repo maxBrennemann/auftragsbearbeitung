@@ -89,7 +89,7 @@ if ($id == 0): ?>
                 </a>
             <?php endif; ?>
         </div>
-        <div class="hover:underline">
+        <div class="hover:underline mt-1">
             <span>Aufkleber Plott</span>
             <span class="right">
                 <label class="switch">
@@ -98,7 +98,7 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div class="hover:underline">
+        <div class="hover:underline mt-1">
             <span>kurzfristiger Aufkleber</span>
             <span class="right">
                 <label class="switch">
@@ -107,7 +107,7 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div class="hover:underline">
+        <div class="hover:underline mt-1">
             <span>langfristiger Aufkleber</span>
             <span class="right">
                 <label class="switch">
@@ -116,7 +116,7 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div class="hover:underline">
+        <div class="hover:underline mt-1">
             <span>mehrteilig</span>
             <span class="right">
                 <label class="switch">
@@ -243,7 +243,7 @@ if ($id == 0): ?>
                 </a>
             <?php endif; ?>
         </div>
-        <div class="hover:underline">
+        <div class="hover:underline mt-1">
             <span>Textil</span>
             <span class="right">
                 <label class="switch">
@@ -252,7 +252,7 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div class="hover:underline">
+        <div class="hover:underline mt-1">
             <span>Einfärbbar</span>
             <span class="right">
                 <label class="switch">
@@ -261,7 +261,7 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div class="hover:underline">
+        <div class="hover:underline mt-1">
             <span>Personalisierbar</span>
             <span class="right">
                 <label class="switch">
@@ -270,7 +270,7 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div class="hover:underline">
+        <div class="hover:underline mt-1">
             <span>Im Konfigurator anzeigen</span>
             <span class="right">
                 <label class="switch">
@@ -279,26 +279,26 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div class="grid grid-cols-2">
+        <div class="grid grid-cols-2 mt-1">
             <div class="relative bg-gray-200 rounded-lg w-full h-24 cursor-pointer" id="svgDropZone">
                 <p class="absolute inset-0 flex items-center justify-center select-none font-bold text-gray-500">SVG hochladen</p>
             </div>
             <object id="svgContainer" class="w-full h-24" data="<?=$stickerImage->getSVGIfExists($stickerCollection->getTextil()->getIsColorable())?>"></object>
         </div>
-        <div>
+        <div class="mt-1">
             <?php if ($stickerCollection->getTextil()->getIsColorable() == 1): ?>
                 <?php foreach ($stickerCollection->getTextil()->textilColors as $color):?>
                 <button class="colorBtn" style="background:<?=$color["hexCol"]?>" title="<?=$color["name"]?>" data-binding="true" data-fun="changeColor" data-color="<?=$color["hexCol"]?>"></button>
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>
-        <div class="mt-2">
+        <div class="my-2">
             <div>
                 <h4>Kurzbeschreibung</h4>
                 <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "textil", "text" => "short", "gpt" => $chatGPTConnection])?>
             </div>
             <textarea class="data-input" data-fun="productDescription" data-target="textil" data-type="short" data-write="true"><?=$stickerCollection->getTextil()->getDescriptionShort()?></textarea>
-            <div>
+            <div class="mt-1">
                 <h4>Beschreibung</h4>
                 <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "textil", "text" => "long", "gpt" => $chatGPTConnection])?>
             </div>
