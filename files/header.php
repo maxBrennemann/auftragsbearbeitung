@@ -47,13 +47,12 @@ $motiveOverview = 	Link::getPageLink("sticker-overview");
 	</style>
 	<link rel="stylesheet" href="<?=$globalCSS?>">
 	<link rel="stylesheet" href="<?=$tailwindCSS?>">
-	<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.1/dist/cdn.min.js"></script>
 	<script src="<?=$globalJS?>" type="module"></script>
 	<?php
 		$link = Link::getResourcesShortLink($page . ".js", "js");
 
 		/* TODO: workaround mit module und if check muss noch geändert werden */
-		if ($page == "sticker" || $page == "auftrag" || $page == "diagramme" || $page == "login" || $page == "neues-produkt" || $page == "produkt" || $page == "attributes" || $page == "zahlungen" || $page == "einstellungen") {
+		if ($page == "sticker" || $page == "auftrag" || $page == "diagramme" || $page == "login" || $page == "neues-produkt" || $page == "produkt" || $page == "attributes" || $page == "zahlungen" || $page == "einstellungen" || $page == "sticker-overview") {
 			echo '<script type="module" src="' . $link . '"></script>';
 		} else {
 			echo '<script src="' . $link . '"></script>';

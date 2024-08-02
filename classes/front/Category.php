@@ -1,7 +1,5 @@
 <?php
 
-use MatthiasMullie\Minify\JS;
-
 class Category
 {
 
@@ -10,8 +8,6 @@ class Category
     private int $id;
 
     private array $children = [];
-
-    private static array $categories = [];
 
     function __construct(int $id, string $name, int $parent = 0)
     {
@@ -66,31 +62,41 @@ class Category
     private static function parseCategories() {
         $categories = DBAccess::selectQuery("SELECT * FROM category");
 
-        $categoryNodes = [];
-        self::$categories = [];
+        $categoryTree = [];
+        $nodes = [];
 
         foreach ($categories as $c) {
-            $categoryNodes[$c["id"]] = new Category($c["id"], $c["name"], $c["parent"]);
+            $nodes[$c["id"]] = new Category($c["id"], $c["name"], $c["parent"]);
         }
 
-        foreach ($categoryNodes as $node) {
-            if ($node->parent == 0) {
-                array_push(self::$categories, $node);
-            } else {
-                $categoryNodes[$node->parent]->addChild($node);
+        while (count($nodes) > 0) {
+            foreach ($nodes as $id => $node) {
+                if ($node->parent == 0) {
+                    array_push($categoryTree, $node);
+                    unset($nodes[$id]);
+                } else {
+                    foreach ($categoryTree as $c) {
+                        if ($c->id == $node->parent) {
+                            $parent = $c;
+                            $parent->addChild($node);
+                            unset($nodes[$id]);
+                            break;
+                        }
+                    }
+                }
             }
         }
 
-        return self::$categories;
+        return $categoryTree;
     }
 
     public static function getOneLayerRepresentation()
     {
-        self::parseCategories();
+        $data = self::parseCategories();
 
         $onelayerarray = [];
 
-        foreach (self::$categories as $category) {
+        foreach ($data as $category) {
             $pushTo = $category->getOneLayerArray();
             foreach ($pushTo as $p) {
                 array_push($onelayerarray, [
@@ -104,8 +110,28 @@ class Category
         return $onelayerarray;
     }
 
+    public static function getCategoryTree($data) {
+        $categoryTree = [];
+
+        foreach ($data as $category) {
+            array_push($categoryTree, [
+                "id" => $category->id,
+                "name" => $category->name,
+                "parent" => $category->parent,
+                "children" => self::getCategoryTree($category->children)
+            ]);
+        }
+
+        return $categoryTree;
+    }
+
     public static function getJSONOneLayer() {
         return JSONResponseHandler::sendResponse(self::getOneLayerRepresentation());
+    }
+
+    public static function getJSONTree() {
+        $data = self::parseCategories();
+        return JSONResponseHandler::sendResponse(self::getCategoryTree($data));
     }
 
     public static function updateCategory()

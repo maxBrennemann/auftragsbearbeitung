@@ -1000,14 +1000,6 @@ class Ajax {
 				$data = array("fileName" => $fileName, "url" => Link::getResourcesShortLink($fileName, "backup"), "status" => "ok");
 				echo json_encode($data, JSON_FORCE_OBJECT);
 			break;
-			case "insertAttributeTable":
-				$productId = (int) $_POST["productId"];
-				$attributeTable = $_POST["attributes"];
-				$data = json_decode($attributeTable, true);
-
-				Produkt::addAttributeVariations($productId, $data);
-				echo "ok";
-			break;
 			case "logout":
 				Login::handleLogout();
 			break;
@@ -1110,12 +1102,6 @@ class Ajax {
 					]);
 				}
 			break;
-			case "changePreiskategorie":
-				$id = (int) $_POST['id'];
-				$categoryId = $_POST['categoryId'];
-				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET price_type = '$categoryId' WHERE id = :id", ["id" => $id]);
-				echo "success";
-			break;
 			case "changeMotivDate":
 				$id = (int) $_POST['id'];
 				$creation_date = $_POST['date'];
@@ -1204,11 +1190,6 @@ class Ajax {
 				require_once('classes/project/modules/sticker/Textil.php');
 				$textil = new Textil($id);
 				$textil->toggleConfig();
-			break;
-			case "createNewSticker":
-				require_once('classes/project/modules/sticker/Sticker.php');
-				$title = (String) $_POST["newTitle"];
-				Sticker::createNewSticker($title);
 			break;
 			case "setPriceclass":
 				$priceclass = (int) $_POST["priceclass"];

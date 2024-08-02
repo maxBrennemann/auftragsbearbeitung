@@ -5,6 +5,8 @@ require_once('classes/project/modules/sticker/StickerImage.php');
 require_once('classes/project/modules/sticker/StickerCollection.php');
 require_once('classes/project/modules/sticker/ChatGPTConnection.php');
 
+require_once('classes/project/Produkt.php');
+
 $id = 0;
 
 $stickerCollection = null;
@@ -21,8 +23,6 @@ if (isset($_GET['id'])) {
     $stickerTagManager = new StickerTagManager($id, $stickerCollection->getName());
     $stickerChangelog = new StickerChangelog($id);
     $chatGPTConnection = new ChatGPTConnection($id);
-
-    $priceType = $stickerCollection->getTextil()->getPriceType();
 }
 
 if ($id == 0): ?>
@@ -31,7 +31,6 @@ if ($id == 0): ?>
         window.location.href = "<?=Link::getPageLink("sticker-overview")?>";
     </script>
 <?php else: ?>
-<script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
 <div class="w-full">
 <div class="cont1">
     <div class="defCont">
@@ -50,10 +49,10 @@ if ($id == 0): ?>
         <p class="ml-2">Erstellt am <input type="date" class="rounded-sm px-2" id="creationDate" value="<?=$stickerCollection->getCreationDate()?>"></p>
         <button class="btn-primary mt-4" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
     </div>
-    <div class="defCont">
-        <p>Weitere Dateien (SVGs, CorelDraw, ...):</p>
-        <?=insertTemplate("classes/project/modules/sticker/views/stickerFileView.php", ["images" => $stickerImage->getGeneralImages(), "files" => $stickerImage->getFiles()])?>
-    </div>
+</div>
+<div class="defCont hidden">
+    <p>Dateien und Bilder</p>
+    <?=insertTemplate("classes/project/modules/sticker/views/stickerFileView.php", ["images" => $stickerImage->getGeneralImages(), "files" => $stickerImage->getFiles()])?>
 </div>
 <div class="cont2">
     <section class="defCont">
@@ -90,7 +89,7 @@ if ($id == 0): ?>
                 </a>
             <?php endif; ?>
         </div>
-        <div class="hover:underline">
+        <div class="hover:underline mt-1">
             <span>Aufkleber Plott</span>
             <span class="right">
                 <label class="switch">
@@ -99,7 +98,7 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div class="hover:underline">
+        <div class="hover:underline mt-1">
             <span>kurzfristiger Aufkleber</span>
             <span class="right">
                 <label class="switch">
@@ -108,7 +107,7 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div class="hover:underline">
+        <div class="hover:underline mt-1">
             <span>langfristiger Aufkleber</span>
             <span class="right">
                 <label class="switch">
@@ -117,7 +116,7 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div class="hover:underline">
+        <div class="hover:underline mt-1">
             <span>mehrteilig</span>
             <span class="right">
                 <label class="switch">
@@ -244,7 +243,7 @@ if ($id == 0): ?>
                 </a>
             <?php endif; ?>
         </div>
-        <div class="hover:underline">
+        <div class="hover:underline mt-1">
             <span>Textil</span>
             <span class="right">
                 <label class="switch">
@@ -253,7 +252,7 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div class="hover:underline">
+        <div class="hover:underline mt-1">
             <span>Einfärbbar</span>
             <span class="right">
                 <label class="switch">
@@ -262,7 +261,7 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div class="hover:underline">
+        <div class="hover:underline mt-1">
             <span>Personalisierbar</span>
             <span class="right">
                 <label class="switch">
@@ -271,7 +270,7 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div class="hover:underline">
+        <div class="hover:underline mt-1">
             <span>Im Konfigurator anzeigen</span>
             <span class="right">
                 <label class="switch">
@@ -280,42 +279,26 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div>
-            <object id="svgContainer" data="<?=$stickerImage->getSVGIfExists($stickerCollection->getTextil()->getIsColorable())?>" type="image/svg+xml" class="innerDefCont"></object>
+        <div class="grid grid-cols-2 mt-1">
+            <div class="relative bg-gray-200 rounded-lg w-full h-24 cursor-pointer" id="svgDropZone">
+                <p class="absolute inset-0 flex items-center justify-center select-none font-bold text-gray-500">SVG hochladen</p>
+            </div>
+            <object id="svgContainer" class="w-full h-24" data="<?=$stickerImage->getSVGIfExists($stickerCollection->getTextil()->getIsColorable())?>"></object>
+        </div>
+        <div class="mt-1">
             <?php if ($stickerCollection->getTextil()->getIsColorable() == 1): ?>
                 <?php foreach ($stickerCollection->getTextil()->textilColors as $color):?>
                 <button class="colorBtn" style="background:<?=$color["hexCol"]?>" title="<?=$color["name"]?>" data-binding="true" data-fun="changeColor" data-color="<?=$color["hexCol"]?>"></button>
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>
-        <div>
-            <p>Preiskategorie</p>
-            <div>
-                <label class="block bg-white rounded-3xl p-1 pl-2 mt-1" title="Die Klebefux Standardkategorie für Textilmotive">
-                    <input type="radio" name="textilPriceClass" value="58" data-binding="true" data-fun="changePreiskategorie" <?=$priceType == 58 ? "checked" : "" ?>>
-                    <span>Klebefux Standard (20,52 €)</span>
-                </label>
-                <label class="block bg-white rounded-3xl p-1 pl-2 mt-1" title="Die Klebefux Premiumkategorie für Textilmotive">
-                    <input type="radio" name="textilPriceClass" value="57" data-binding="true" data-fun="changePreiskategorie" <?=$priceType == 57 ? "checked" : "" ?>>
-                    <span>Klebefux Plus (23,59 €)</span>
-                </label>
-                <label class="block bg-white rounded-3xl p-1 pl-2 mt-1" title="Die Gwandlaus Textilkategorie für einfache Motive">
-                    <input type="radio" name="textilPriceClass" value="59" data-binding="true" data-fun="changePreiskategorie" <?=$priceType == 59 ? "checked" : "" ?>>
-                    <span>Gwandlaus Minus (30,78 €)</span>
-                </label>
-                <label class="block bg-white rounded-3xl p-1 pl-2 mt-1" title="Die Gwandlaus Standardkategorie für Textilmotive">
-                    <input type="radio" name="textilPriceClass" value="60" data-binding="true" data-fun="changePreiskategorie" <?=$priceType == 60 ? "checked" : "" ?>>
-                    <span>Gwandlaus Standard (33,85 €)</span>
-                </label>
-            </div>
-        </div>
-        <div class="mt-2">
+        <div class="my-2">
             <div>
                 <h4>Kurzbeschreibung</h4>
                 <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "textil", "text" => "short", "gpt" => $chatGPTConnection])?>
             </div>
             <textarea class="data-input" data-fun="productDescription" data-target="textil" data-type="short" data-write="true"><?=$stickerCollection->getTextil()->getDescriptionShort()?></textarea>
-            <div>
+            <div class="mt-1">
                 <h4>Beschreibung</h4>
                 <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "textil", "text" => "long", "gpt" => $chatGPTConnection])?>
             </div>
@@ -357,6 +340,30 @@ if ($id == 0): ?>
                     <span>Preisklasse 2 (teurer)</span>
                 </label>
             </div>
+        </div>
+    </div>
+</div>
+<div class="defCont">
+    <h2 class="font-semibold">Textilien</h2>
+    <div class="mt-2">
+        <div>
+            <?php foreach ($stickerCollection->getTextil()->getProducts() as $product):?>
+                <div class="productContainer inline-block bg-white rounded-3xl p-3 hover:underline">
+                    <div class="flex">
+                        <span class="flex-1"><?=$product['name']?></span>
+                        <span class="">
+                            Aktiv
+                            <label class=" ml-1 switch">
+                                <input type="checkbox" class="textiles-switches" data-id="<?=$product['id']?>" <?=$product['activated'] ? 'checked' : '' ?>>
+                                <span class="slider round"></span>
+                            </label>
+                        </span>
+                    </div>
+                    <div>
+                        <input type="number" step="0.01" class="textiles-prices" data-id="<?=$product['id']?>" value="<?=$product['price']?>">
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
 </div>

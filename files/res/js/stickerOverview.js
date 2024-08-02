@@ -1,15 +1,24 @@
-var mainVariables = {};
+import { initBindings } from "./classes/bindings.js";
+
+const fnNames = {};
+fnNames.click_createFbExport = click_createFbExport;
+fnNames.click_openTagOverview = openTagOverview;
+fnNames.click_loadSticker = click_loadSticker;
+fnNames.click_manageImports = click_manageImports;
+fnNames.click_crawlAll = crawlAll;
+fnNames.click_crawlTags = crawlTags;
+fnNames.click_createNewSticker = createNewSticker;
 
 if (document.readyState !== 'loading' ) {
-    initStickerOverview();
+    init();
 } else {
     document.addEventListener('DOMContentLoaded', function () {
-        initStickerOverview();
+        init();
     });
 }
 
-function initStickerOverview() {
-    initBindings();
+function init() {
+    initBindings(fnNames);
     checkIfOverview();
     showStickerStatus();
 
@@ -42,49 +51,6 @@ function checkIfOverview() {
     }
 }
 
-function initBindings() {
-    let bindings = document.querySelectorAll('[data-binding]');
-    [].forEach.call(bindings, function(el) {
-        var fun_name = "";
-        if (el.dataset.fun) {
-            fun_name = "click_" + el.dataset.fun;
-        } else {
-            fun_name = "click_" + el.id;
-        }
-        
-        el.addEventListener("click", function(e) {
-            var fun = window[fun_name];
-            if (typeof fun === "function") {
-                fun(e);
-            } else {
-                console.warn("event listener may not be defined or wrong");
-            }
-        }.bind(fun_name), false);
-    });
-    let variables = document.querySelectorAll('[data-variable]');
-    [].forEach.call(variables, function(v) {
-        mainVariables[v.id] = v;
-    });
-    let autowriter = document.querySelectorAll('[data-write]');
-    [].forEach.call(autowriter, function(el) {
-        var fun_name = "";
-        if (el.dataset.fun) {
-            fun_name = "write_" + el.dataset.fun;
-        } else {
-            fun_name = "write_" + el.id;
-        }
-        
-        el.addEventListener("change", function(e) {
-            var fun = window[fun_name];
-            if (typeof fun === "function") {
-                fun(e);
-            } else {
-                console.warn("event listener may not be defined or wrong");
-            }
-        }.bind(fun_name), false);
-    });
-}
-
 function crawlAll() {
     ajax.post({
         r: "crawlAll",
@@ -101,8 +67,9 @@ function crawlTags() {
 
 function showStickerStatus() {
     let overviewTable = document.querySelector('[data-type="module_sticker_sticker_data"]');
-    if (overviewTable == null) 
+    if (overviewTable == null) {
         return;
+    }
 
     ajax.post({
         "r": "getStickerStatus",
@@ -130,36 +97,39 @@ function showStickerStatus() {
 
 async function createNewSticker() {
     var title = document.getElementById("newTitle").value;
-    if (title.length != 0) {
-        ajax.post({
-            "newTitle": title,
-            "r": "createNewSticker",
-        }, true).then(redirectLink => {
-            if (redirectLink == "-1") {
-                alert("an error occured");
-            } else {
-                window.location.href = redirectLink;
-            }
-        });
+    if (title.length == 0) {
+        return;
     }
+    
+    ajax.post("/api/v1/sticker", {
+        "name": title,
+    }).then(redirectLink => {
+        if (redirectLink == "-1") {
+            alert("an error occured");
+        } else {
+            window.location.href = redirectLink;
+        }
+    });
 }
 
 function click_createFbExport() {
     ajax.post({
         "r": "createFbExport",
     }).then(fbExport => {
-        if (fbExport.status == "successful") {
-            infoSaveSuccessfull("success");
-    
-            const a = document.createElement("a");
-            a.href = fbExport.file;
-            a.download = fbExport.file;
-    
-            document.body.appendChild(a);
-            a.click();
-    
-            console.log(fbExport.errorList);
+        if (fbExport.status !== "successful") {
+            return;
         }
+
+        infoSaveSuccessfull("success");
+
+        const a = document.createElement("a");
+        a.href = fbExport.file;
+        a.download = fbExport.file;
+
+        document.body.appendChild(a);
+        a.click();
+
+        console.log(fbExport.errorList);
     });
 }
 

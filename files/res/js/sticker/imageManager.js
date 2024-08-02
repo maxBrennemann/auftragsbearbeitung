@@ -1,4 +1,6 @@
-import { addBindings } from "../classes/bindings.js";
+const svgContainer = document.getElementById("svgContainer");
+const motivId = document.getElementById("motivId")?.innerHTML;
+var svg_elem;
 
 /**
  * toggles the is colorable flag of the svg,
@@ -11,7 +13,6 @@ export function click_makeColorable() {
         id: motivId,
         r: "makeSVGColorable"
     }).then(r => {
-        const svgContainer = document.getElementById("svgContainer");
         svgContainer.data = r.url;
     });
 }
@@ -82,7 +83,6 @@ function handleImagesPreview(filesInfo, imageCategory) {
  * @param {*} filesInfo 
  */
 function handleSVGPreview(filesInfo) {
-    const svgContainer = document.getElementById("svgContainer");
     const svg = filesInfo.imageData[0].url;
     svgContainer.data = svg;
 }
@@ -206,28 +206,23 @@ function handleUploadedImages(imageData, imageCategory) {
 }
 
 function initSVG() {
-    var a = document.getElementById("svgContainer");
-    if (a != null || a != undefined) {
-        a.addEventListener("load", loadSVGEvent, false);
-
-        if (a.contentDocument != null) {
-            var svgDoc = a.contentDocument;
-            svg_elem = svgDoc.getElementById("svg_elem");
-            adjustSVG();
-        }
-    
-        if (a.attributes.data.value == "") {
-            a.style.height = "100px";
-            a.style.backgroundColor = "#b1b1b1";
-        }
+    if (svgContainer == null || svgContainer == undefined) {
+        return;
     }
+
+    svgContainer.addEventListener("load", loadSVGEvent, false);
+
+    if (svgContainer.contentDocument == null) {
+        return;
+    }
+
+    svg_elem = svgContainer.contentDocument.querySelector("svg");
+    adjustSVG();
 }
 
 /* sets the svg_elem element when the content is loaded */
 function loadSVGEvent() {
-    var a = document.getElementById("svgContainer");
-    var svgDoc = a.contentDocument;
-    svg_elem = svgDoc.getElementById("svg_elem");
+    svg_elem = svgContainer.contentDocument.querySelector("svg");
     adjustSVG();
 }
 
@@ -306,20 +301,10 @@ function initImageManager() {
         img.addEventListener("dragstart", preventCopy, false);
     });
 
-    const svgContainer = document.getElementById("svgContainer");
-    svgContainer?.addEventListener("dragover", itemDragOverHandler, false);
-    svgContainer?.addEventListener("drop", e => itemDropHandler(e, "textilsvg"), false);
-}
-
-const motivId = document.getElementById("motivId")?.innerHTML;
-var svg_elem;
-
-if (document.readyState !== 'loading' ) {
-    init();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        init();
-    });
+    const svgDropZone = document.getElementById("svgDropZone");
+    svgDropZone.addEventListener("dragover", itemDragOverHandler, false);
+    svgDropZone.addEventListener("drop", e => itemDropHandler(e, "textilsvg"), false);
+    svgDropZone.addEventListener("click", openFileDialog);
 }
 
 function init() {
@@ -383,4 +368,12 @@ function openFileDialog(event) {
  */
 export function updateImageOverwrite(type) {
     window.mainVariables.overwriteImages[type] = !window.mainVariables.overwriteImages[type];
+}
+
+if (document.readyState !== 'loading' ) {
+    init();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        init();
+    });
 }

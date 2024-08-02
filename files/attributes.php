@@ -35,7 +35,10 @@ foreach ($data as $d) {
             <p><i><?= $group["descr"] ?></i></p>
             <ul class="attributeValueGroups mt-2" id="attributeValues_<?= $group["id"] ?>" data-id="<?= $group['id'] ?>">
                 <?php foreach ($group["attributes"] as $a) : ?>
-                    <li class="bg-white rounded-md p-1 pl-2 hover:bg-blue-300 cursor-pointer" draggable="true" data-id="<?= $a["id"] ?>"><?= $a["value"] ?></li>
+                    <li class="bg-white rounded-md p-1 pl-2 hover:bg-blue-300 cursor-pointer flex" draggable="true" data-id="<?= $a["id"] ?>">
+                        <span class="flex-1"><?= $a["value"] ?></span>
+                        <div class="flex-none mr-1"><button></button></div>
+                    </li>
                 <?php endforeach; ?>
             </ul>
         </div>

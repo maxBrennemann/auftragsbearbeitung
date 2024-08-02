@@ -230,19 +230,6 @@ class Kunde implements StatisticsInterface {
 		return Address::createNewAddress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz, $land, $art);
 	}
 
-	public static function getNextAssignedKdnr($kdnr, $direction) {
-		if ($direction == 1) {
-			$result = DBAccess::selectQuery("SELECT Kundennummer FROM kunde WHERE kundennummer > $kdnr LIMIT 1");
-		} else if ($direction == -1) {
-			$result = DBAccess::selectQuery("SELECT Kundennummer FROM kunde WHERE kundennummer < $kdnr ORDER BY Kundennummer DESC LIMIT 1");
-		}
-		if ($result == null) {
-			return -1;
-		} else {
-			return (int) $result[0]['Kundennummer'];
-		}
-	}
-
 	public function getHTMLShortSummary() {
 		$link = Link::getPageLink("kunde") . "?id=" . $this->kundennummer;
 		$text = "<div class=\"shortSummary\"><div class=\"shortSummaryHeader\">";

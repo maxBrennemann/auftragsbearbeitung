@@ -295,4 +295,9 @@ class StickerCollection implements Iterator
             ]));
         }
     }
+
+    public static function addSticker() {
+        $name = (String) Tools::get("name");
+        Sticker::createNewSticker($name);
+    }
 }

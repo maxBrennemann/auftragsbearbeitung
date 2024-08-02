@@ -47,6 +47,8 @@ function initSticker() {
     manageTitle.call(input);
 
     document.getElementById("creationDate").addEventListener("change", changeDate, false);
+
+    initTextiles();
 }
 
 fnNames.click_toggleCheckbox = async function(e) {
@@ -76,6 +78,44 @@ fnNames.click_toggleCheckbox = async function(e) {
             infoSaveSuccessfull();
         }
     });
+}
+
+function initTextiles() {
+    const textiles = document.getElementsByClassName("textiles-switches");
+    for (let i = 0; i < textiles.length; i++) {
+        textiles[i].addEventListener("click", function(e) {
+            const target = e.target;
+            const id = target.dataset.id;
+            const idSticker = mainVariables.motivId.innerHTML;
+
+            ajax.post(`/api/v1/sticker/${idSticker}/textile/${id}/toggle`, {
+                status: target.checked,
+            }).then(r => {
+                infoSaveSuccessfull(r.status);
+            });
+        });
+    }
+
+    const prices = document.getElementsByClassName("textiles-prices");
+    for (let i = 0; i < prices.length; i++) {
+        prices[i].addEventListener("change", function(e) {
+            const target = e.target;
+            const id = target.dataset.id;
+            const idSticker = mainVariables.motivId.innerHTML;
+
+            let price = target.value;
+            price = price.replace(",", ".");
+            price = parseFloat(price);
+            price = price * 100;
+            price = parseInt(price);
+
+            ajax.post(`/api/v1/sticker/${idSticker}/textile/${id}/price`, {
+                price: price,
+            }).then(r => {
+                infoSaveSuccessfull(r.status);
+            });
+        });
+    }
 }
 
 function disableInputSlide(input) {
@@ -270,26 +310,6 @@ function transfer(type, text) {
     }).catch(error => {
         infoBox.setType(StatusInfoHandler.TYPE_ERRORCOPY);
         infoBox.statusUpdate(StatusInfoHandler.STATUS_FAILURE, `Übertragung von ${text} fehlgeschlagen`, error);
-    });
-}
-
-/* todo: größe der neuen daten ergänzen und preise updatebar machen */
-
-fnNames.click_changePreiskategorie = function(e) {
-    const target = e.currentTarget;
-    const value = target.value;
-
-    ajax.post({
-        categoryId: value,
-        id: mainVariables.motivId.innerHTML,
-        r: "changePreiskategorie",
-    }, true).then(response => {
-        if (response == "success") {
-            infoSaveSuccessfull("success");
-        } else {
-            console.log(response);
-            infoSaveSuccessfull();
-        }
     });
 }
 

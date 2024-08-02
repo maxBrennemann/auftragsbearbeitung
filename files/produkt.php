@@ -22,34 +22,29 @@ $showFiles = Produkt::getFiles($id);
 $products = Produkt::getAllProducts();
 
 ?>
-<div class="mt-4">
+<div class="mt-4 w-full">
 		<a class="link-button" href="<?= Link::getPageLink("attributes") ?>">Zu den Produktattributen</a>
 		<a class="link-button" href="<?= Link::getPageLink("neues-produkt") ?>">Zum Produktformular</a>
 
 <?php
 /* konkrete Produktseite */
 if ($id != -1) : ?>
-	<div class="mt-4 defCont">
+	<div class="mt-4 defCont w-full">
 		<input type="text" class="productInfo input-primary font-bold" data-type="productTitle" value="<?= $p->getBezeichnung() ?>">
 
 		<p class="mt-2"><textarea class="productInfo input-primary" data-type="productDescription"><?= $p->getBeschreibung() ?></textarea></p>
 
 		<p><input type="number" class="productInfo input-primary" data-type="productPrice" step="0.01" value="<?= $p->getPrice() ?>"> €</p>
 
-		<form class="fileUploader mt-2" method="post" enctype="multipart/form-data" data-target="product" name="auftragUpload">
-			Dateien hinzufügen:
-			<input type="file" name="uploadedFile" multiple>
-			<input name="produkt" value="<?= $id ?>" hidden>
-		</form>
-
-		<div class="filesList defCont"></div>
+		<div id="uploadAnchor"></div>
+		
 		<div id="showFilePrev">
 			<?= $showFiles ?>
 		</div>
 
 		<div id="addAttributeTable"></div>
 		<button id="btnAddAttribute" class="btn-primary">Attribute hinzufügen</button>
-		<button onclick="sendAttributeTable();" class="btn-primary">Abschicken</button>
+		
 		<span style="display: none" id="productId" data-id="<?= $id ?>"></span>
 	</div>
 	<div id="addAttributes" class="hidden z-20 h-2/6 w-2/6 fixed m-auto inset-x-0 inset-y-0 bg-white p-5 rounded-md shadow-2xl">

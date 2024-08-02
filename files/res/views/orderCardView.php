@@ -2,10 +2,10 @@
     <?php foreach ($orders as $order): ?>
         <div class="bg-white p-3 rounded-md">
 			<?php if ($order["archived"]): ?>
-			    <div class="relative" x-data="{ open: false }">
-					<h3 class="font-bold"><?=$order["orderTitle"]?> <button @click="open = ! open" class="float-right border-none" id="extraOptions">⋮</button></h3>
-					<div class="absolute right-0 top-0 bg-white rounded-lg drop-shadow-lg p-3 mt-5" id="showExtraOptions" x-show="open" @click.outside="open = false">
-						<button class="btn-attention mt-5" onclick="rearchive(<?=$order["id"]?>)">Auftrag aus dem Archiv holen</button>
+			    <div class="relative">
+					<h3 class="font-bold"><?=$order["orderTitle"]?> <button onclick="((e) => {e.target.parentNode.nextElementSibling.classList.toggle('hidden')})(event)" class="float-right border-none" id="extraOptions">⋮</button></h3>
+					<div class="hidden absolute right-0 top-0 bg-white rounded-lg drop-shadow-lg p-3 mt-5" id="showExtraOptions">
+						<button class="btn-attention mt-5" onclick="rearchive(<?=$order['id']?>)">Auftrag aus dem Archiv holen</button>
 					</div>
 				</div>
             <?php else: ?>

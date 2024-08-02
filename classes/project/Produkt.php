@@ -90,7 +90,7 @@ class Produkt
 	 */
 	public function getAttributeTable()
 	{
-		$query = "SELECT produkt_attribute.id, GROUP_CONCAT(attribute.value SEPARATOR ', ') AS `Werte` FROM attribute, produkt_attribute JOIN produkt_attribute_to_attribute ON produkt_attribute_to_attribute.id_produkt_attribute = produkt_attribute.id WHERE attribute.id = produkt_attribute_to_attribute.attribute_id GROUP BY produkt_attribute.id;";
+		$query = "SELECT product_combination.id, GROUP_CONCAT(attribute.value SEPARATOR ', ') AS `Werte` FROM attribute, product_combination JOIN product_attribute_combination ON product_attribute_combination.id_produkt_attribute = product_combination.id WHERE attribute.id = product_attribute_combination.attribute_id GROUP BY product_combination.id;";
 		$data = DBAccess::selectQuery($query);
 		return $data;
 	}
@@ -100,35 +100,41 @@ class Produkt
 		$title = (string) Tools::get("title");
 		$brand = (string) Tools::get("brand");
 		$source = (string) Tools::get("source");
+		$categoryId = (int) Tools::get("category");
 		$price = (float) Tools::get("price");
 		$purchasePrice = (float) Tools::get("purchasePrice");
 		$description = (string) Tools::get("description");
 		//$attributes = Tools::get("attributes");
 
-		$newProductId = DBAccess::insertQuery("INSERT INTO produkt (Bezeichnung, Marke, Beschreibung, Einkaufspreis, Preis, einkaufs_id) VALUES (:title, :brand, :description, :purchasePrice, :price, :source)", [
+		$newProductId = DBAccess::insertQuery("INSERT INTO produkt (Bezeichnung, Marke, Beschreibung, Einkaufspreis, Preis, einkaufs_id, id_category) VALUES (:title, :brand, :description, :purchasePrice, :price, :source, :idCategory)", [
 			"title" => $title,
 			"brand" => $brand,
 			"description" => $description,
 			"purchasePrice" => $purchasePrice,
 			"price" => $price,
-			"source" => $source
+			"source" => $source,
+			"idCategory" => $categoryId,
 		]);
 
 		JSONResponseHandler::sendResponse(["id" => $newProductId]);
 		return $newProductId;
 	}
 
-	public static function addAttributeVariations($productId, $variations)
-	{
+	public static function addCombinations() {
+		$productId = (int) Tools::get("id");
+		$combinations = Tools::get("combinations");
+		$combinations = json_decode($combinations);
+
 		$data = array();
-		foreach ($variations as $v) {
-			$id_product_attribute = DBAccess::insertQuery("INSERT INTO produkt_attribute (id_produkt) VALUES ($productId)");
-			foreach ($v as $value) {
+		foreach ($combinations as $c) {
+			$id_product_attribute = DBAccess::insertQuery("INSERT INTO product_combination (id_produkt) VALUES ($productId)");
+			
+			foreach ($c as $value) {
 				array_push($data, [$id_product_attribute, $value]);
 			}
 		}
 
-		DBAccess::insertMultiple("INSERT INTO produkt_attribute_to_attribute (id_produkt_attribute, attribute_id) VALUES ", $data);
+		DBAccess::insertMultiple("INSERT INTO product_attribute_combination (id_produkt_attribute, attribute_id) VALUES ", $data);
 	}
 
 	public static function searchInProducts($searchQuery)
@@ -217,14 +223,14 @@ class Produkt
 		$products = array();
 		if ($categoryId == null) {
 			$sql = "SELECT Nummer FROM produkt";
-			$ids = DBAccess::selectQuery($sql);
-
-			foreach ($ids as $id) {
-				$id = $id["Nummer"];
-				array_push($products, new Produkt($id));
-			}
 		} else {
-			$sql = "SELECT Nummer FROM produkt WHERE categoryId = $categoryId";
+			$sql = "SELECT Nummer FROM produkt WHERE id_category = $categoryId";
+		}
+
+		$ids = DBAccess::selectQuery($sql);
+		foreach ($ids as $id) {
+			$id = $id["Nummer"];
+			array_push($products, new Produkt($id));
 		}
 
 		return $products;

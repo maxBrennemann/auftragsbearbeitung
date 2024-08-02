@@ -1,6 +1,6 @@
 <?php
 
-require_once("classes/project/modules/sticker/Sticker.php");
+require_once "classes/project/modules/sticker/Sticker.php";
 
 class Textil extends Sticker {
 
@@ -82,28 +82,8 @@ class Textil extends Sticker {
         return $price;
     }
 
-    public function getPriceType() {
-        return $this->stickerData["price_type"];
-    }
-
     public function getPrice() {
-        switch ($this->stickerData["price_type"]) {
-            case "57":
-                $price = "23.59";
-                break;
-            case "58":
-                $price = "20.52";
-                break;
-            case "59":
-                $price = "30.78";
-                break;
-            case "60":
-                $price = "33.85";
-                break;
-            default:
-                $price = 0;
-        }
-        return $price;
+        return 0;
     }
 
     public function toggleIsColorable() {
@@ -206,6 +186,113 @@ class Textil extends Sticker {
         return [];
     }
 
-}
+    public function generateAllTextiles() {
+        $category = 0;
+        $textiles = Produkt::getAllProducts($category);
 
-?>
+        foreach ($textiles as $textil) {
+            $idTextile = $textil["id"];
+            $idSticker = $this->idSticker;
+            $images = StickerImage::getCombinedImages($idSticker, $idTextile);
+            // TODO: add product to prestashop
+
+            $this->save();
+        }
+    }
+
+    /**
+     * product category is hardcoded
+     */
+    public function getProducts() {
+        $products = Produkt::getAllProducts(2);
+        $additionalData = "SELECT id, id_product, activated, price FROM module_sticker_textiles WHERE id_module_textile = :id";
+        $additionalData = DBAccess::selectQuery($additionalData, [
+            "id" => $this->idSticker
+        ]);
+
+        $adapter = [];
+        foreach ($products as $key => $product) {
+            $idProduct = $product->getProductId();
+            $adapter[$key] = [
+                "id" => $idProduct,
+                "name" => $product->getBezeichnung(),
+                "activated" => false,
+                "price" => 0
+            ];
+
+            foreach ($additionalData as $data) {
+                if ($data["id_product"] == $idProduct) {
+                    $adapter[$key]["activated"] = $data["activated"];
+                    $adapter[$key]["price"] = $data["price"];
+                    break;
+                }
+            }
+        }
+
+        return $adapter;
+    }
+
+    public static function toggleTextile() {
+        $idSticker = Tools::get("id");
+        $idProduct = Tools::get("idTextile");
+        $status = Tools::get("status");
+        $status = $status == "true" ? 1 : 0;
+
+        if (!self::checkIfExists($idSticker, $idProduct)) {
+            $query = "INSERT INTO module_sticker_textiles (id_module_textile, id_product, activated) VALUES (:idSticker, :idProduct, :status)";
+            DBAccess::insertQuery($query, [
+                "idSticker" => $idSticker,
+                "idProduct" => $idProduct,
+                "status" => $status
+            ]);
+        } else {
+            $query = "UPDATE module_sticker_textiles SET activated = :status WHERE id_module_textile = :idSticker AND id_product = :idProduct";
+            DBAccess::updateQuery($query, [
+                "idSticker" => $idSticker,
+                "idProduct" => $idProduct,
+                "status" => $status
+            ]);
+        }
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success"
+        ]);
+    }
+
+    public static function setPrice() {
+        $idSticker = Tools::get("id");
+        $idProduct = Tools::get("idTextile");
+        $price = Tools::get("price");
+
+        if (!self::checkIfExists($idSticker, $idProduct)) {
+            $query = "INSERT INTO module_sticker_textiles (id_module_textile, id_product, price) VALUES (:idSticker, :idProduct, :price)";
+            DBAccess::insertQuery($query, [
+                "idSticker" => $idSticker,
+                "idProduct" => $idProduct,
+                "price" => $price
+            ]);
+        } else {
+            $query = "UPDATE module_sticker_textiles SET price = :price WHERE id_module_textile = :idSticker AND id_product = :idProduct";
+            DBAccess::updateQuery($query, [
+                "idSticker" => $idSticker,
+                "idProduct" => $idProduct,
+                "price" => $price
+            ]);
+        }
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success"
+        ]);
+    }
+
+    private static function checkIfExists($idSticker, $idProduct) {
+        $query = "SELECT id FROM module_sticker_textiles WHERE id_module_textile = :idSticker AND id_product = :idProduct";
+        $result = DBAccess::selectQuery($query, [
+            "idSticker" => $idSticker,
+            "idProduct" => $idProduct
+        ]);
+
+        return sizeof($result) > 0;
+    }
+
+}

@@ -3,6 +3,7 @@
 require_once("classes/routes/Routes.php");
 require_once("classes/project/modules/sticker/StickerCollection.php");
 require_once("classes/project/modules/sticker/StickerTagManager.php");
+require_once("classes/project/modules/sticker/Textil.php");
 
 class StickerRoutes extends Routes
 {
@@ -23,11 +24,19 @@ class StickerRoutes extends Routes
 
     /**
      * @uses StickerCollection::exportSticker
+     * @uses Textil::toggleTextile
+     * @uses Textil::setPrice
+     * 
+     * @uses StickerCollection::addSticker
      * 
      * @uses StickerTagManager::addTag
      */
     protected static $postRoutes = [
         "/sticker/{id}/export" => "StickerCollection::exportSticker",
+        "/sticker/{id}/textile/{idTextile}/toggle" => "Textil::toggleTextile",
+        "/sticker/{id}/textile/{idTextile}/price" => "Textil::setPrice",
+
+        "/sticker" => "StickerCollection::addSticker",
 
         "/sticker/tags" => "StickerTagManager::addTag",
         "/sticker/tags/groups" => "",

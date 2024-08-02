@@ -1,7 +1,8 @@
 <?php
 
-require_once('classes/project/modules/sticker/PrestashopConnection.php');
-require_once('vendor/autoload.php');
+require_once "classes/project/modules/sticker/PrestashopConnection.php";
+require_once "vendor/autoload.php";
+require_once "cron/Queuable.php";
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -214,6 +215,10 @@ class StickerImage extends PrestashopConnection {
         $newFile .= "_colorable.svg";
 
         if (!file_exists("upload/" . $newFile)) {
+            if (!file_exists($filename)) {
+                return "";
+            }
+
             $file = file_get_contents($filename);
 
             /* remove all fills */
@@ -598,6 +603,10 @@ class StickerImage extends PrestashopConnection {
             DBAccess::updateQuery($query, ["order" => $count, "id" => $id]);
             $count++;
         }
+    }
+
+    public static function getCombinedImages(int $stickerId, int $textileId) {
+
     }
 
 }

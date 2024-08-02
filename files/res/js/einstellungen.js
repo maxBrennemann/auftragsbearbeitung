@@ -66,19 +66,18 @@ function initEventListeners() {
     addCategoryBtn.addEventListener("click", addCategory);
 
     getCategories();
+    showTree();
 }
 
 function getCategories() {
     ajax.get("/api/v1/category").then(categories => {
-        const select = document.getElementById("categories");
-        const select2 = document.getElementById("parentCategory");
+        const select = document.getElementById("parentCategory");
         Object.keys(categories).forEach(key => {
             const category = categories[key];
             const option = document.createElement("option");
             option.value = category.id;
             option.text = category.name;
             select.appendChild(option);
-            select2.appendChild(option.cloneNode(true));
         });
     });
 }
@@ -119,6 +118,35 @@ function editCategory() {
         if (r.message == "ok") {
             infoSaveSuccessfull("success");
         }
+    });
+}
+
+function showTree() {
+    ajax.get("/api/v1/category/tree").then(categories => {
+        const tree = document.getElementById("categoryTree");
+        tree.innerHTML = "";
+
+        createCategoryTree(tree, categories);
+    });
+}
+
+function createCategoryTree(anchor, categories) {
+    const ul = document.createElement("ul");
+    ul.classList.add("pl-2", "list-disc");
+    anchor.appendChild(ul);
+
+    categories.forEach(category => {
+        const li = document.createElement("li");
+
+        li.innerHTML =  `
+            <span class="cursor-pointer" data-id="${category.id}">${category.name}</span>
+            <button class="btn-primary">Bearbeiten</button>`;
+
+        li.classList.add("cursor-pointer");
+        li.dataset.id = category.id;
+        ul.appendChild(li);
+
+        createCategoryTree(ul, category.children);
     });
 }
 

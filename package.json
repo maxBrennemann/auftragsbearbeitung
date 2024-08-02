@@ -12,7 +12,6 @@
     "mysqldump": "mysqldump --host=host.docker.internal --user=root auftragsmanager --result-file=dumps/dump.sql"
   },
   "dependencies": {
-    "alpinejs": "^3.13.5",
     "chart.js": "^4.4.1"
   }
 }

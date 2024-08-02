@@ -1,19 +1,19 @@
 <script src="<?=Link::getResourcesShortLink("listcreator.js", "js")?>" type="module"></script>
-<div x-data="listcreator">
+<div>
     <div class="defCont">
         <h1>Listenübersicht</h1>
         <div>
         </div>
-        <button @click="toggle" class="btn-primary">Neue Liste erstellen</button>
-        <div x-show="open">
+        <button class="btn-primary">Neue Liste erstellen</button>
+        <div>
             <div>
                 <label>
                     Listenname
-                    <input type="text" placeholder="Listenname" class="rounded-sm m-1 p-1 w-80" @input="validate">
+                    <input type="text" placeholder="Listenname" class="rounded-sm m-1 p-1 w-80">
                 </label>
-                <span x-show="nameValidated" class="text-green-500 text-xl">✓</span>
+                <span class="text-green-500 text-xl">✓</span>
             </div>
-            <div x-show="nameValidated">
+            <div>
                 <label>
                     Listenpunktbezeichnung
                     <input type="text" placeholder="Listenpunktbezeichnung" class="rounded-sm m-1 p-1 w-80">
@@ -39,35 +39,7 @@
             </div>
         </div>
     </div>
-    <div class="defCont" x-show="nameValidated" id="previewContainer">
+    <div class="defCont" id="previewContainer">
         <!-- preview -->
     </div>
 </div>
-
-<script>
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('listcreator', () => ({
-            open: false,
-            nameValidated: false,
-
-            toggle() {
-                this.open = ! this.open;
-                if (this.open) {
-                    history.pushState({}, null, "?addlist");
-                } else {
-                    history.back();
-                }
-            },
-            validate(e) {
-                const value = e.target.value;
-                if (value.length < 3) {
-                    this.nameValidated = false;
-                    return;
-                }
-                this.nameValidated = true;
-                history.pushState({}, null, "?addlist=" + value);
-            },
-        }))
-    })
-
-</script>
