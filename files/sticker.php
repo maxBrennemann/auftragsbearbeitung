@@ -305,7 +305,7 @@ if ($id == 0): ?>
             <textarea class="data-input" data-fun="productDescription" data-target="textil" data-type="long" data-write="true"><?=$stickerCollection->getTextil()->getDescription()?></textarea>
         </div>
         <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $stickerImage->getTextilImages(), "imageCategory" => "textil"])?>
-        <button class="transferBtn btn-primary w-full" id="transferTextil" data-binding="true" <?=$stickerCollection->getTextil()->getIsShirtcollection() == 1 ? "" : "disabled"?>>Textil übertragen</button>
+        <button class="transferBtn btn-primary w-full hidden" id="transferTextil" data-binding="true" <?=$stickerCollection->getTextil()->getIsShirtcollection() == 1 ? "" : "disabled"?>>Textil übertragen</button>
     </section>
 </div>
 <div class="defCont">
