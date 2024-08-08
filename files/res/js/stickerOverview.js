@@ -3,7 +3,7 @@ import { initBindings } from "./classes/bindings.js";
 const fnNames = {};
 fnNames.click_createFbExport = click_createFbExport;
 fnNames.click_openTagOverview = openTagOverview;
-fnNames.click_loadSticker = click_loadSticker;
+//fnNames.click_loadSticker = click_loadSticker;
 fnNames.click_manageImports = click_manageImports;
 fnNames.click_crawlAll = crawlAll;
 fnNames.click_crawlTags = crawlTags;
