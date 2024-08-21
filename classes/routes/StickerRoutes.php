@@ -1,9 +1,9 @@
 <?php
 
-require_once("classes/routes/Routes.php");
-require_once("classes/project/modules/sticker/StickerCollection.php");
-require_once("classes/project/modules/sticker/StickerTagManager.php");
-require_once("classes/project/modules/sticker/Textil.php");
+require_once "classes/routes/Routes.php";
+require_once "classes/project/modules/sticker/StickerCollection.php";
+require_once "classes/project/modules/sticker/StickerTagManager.php";
+require_once "classes/project/modules/sticker/Textil.php";
 
 class StickerRoutes extends Routes
 {
@@ -12,6 +12,8 @@ class StickerRoutes extends Routes
      * @uses StickerCollection::getStickerStatus
      * 
      * @uses StickerTagManager::getTagSuggestions
+     * 
+     * @uses StickerCollection::getStickerOverview
      */
     protected static $getRoutes = [
         "/sticker/{id}/status" => "StickerCollection::getStickerStatus",
@@ -20,6 +22,8 @@ class StickerRoutes extends Routes
         "/sticker/tags/crawl" => "",
         "/sticker/tags/suggestions" => "StickerTagManager::getTagSuggestions",
         "/sticker/tags/groups" => "",
+
+        "/sticker/overview" => "StickerCollection::getStickerOverview",
     ];
 
     /**

@@ -1,24 +1,18 @@
 import { initBindings } from "./classes/bindings.js";
+import { ajax } from "./classes/ajax.js";
+import { getTable } from "./classes/table.js";
 
 const fnNames = {};
 fnNames.click_createFbExport = click_createFbExport;
 fnNames.click_openTagOverview = openTagOverview;
-//fnNames.click_loadSticker = click_loadSticker;
 fnNames.click_manageImports = click_manageImports;
 fnNames.click_crawlAll = crawlAll;
 fnNames.click_crawlTags = crawlTags;
 fnNames.click_createNewSticker = createNewSticker;
 
-if (document.readyState !== 'loading' ) {
-    init();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        init();
-    });
-}
-
 function init() {
     initBindings(fnNames);
+    initTable();
     checkIfOverview();
     showStickerStatus();
 
@@ -30,6 +24,64 @@ function init() {
 
         createNewSticker();
     });
+}
+
+const initTable = async () => {
+    const data = await ajax.get(`/api/v1/sticker/overview`);
+    const tableConfig = {
+        config: [
+            {
+                "name": "id",
+                "title": "Nummer",
+            },
+            {
+                "name": "name",
+                "title": "Name",
+            },
+            {
+                "name": "directory_name",
+                "title": "Verzeichnis",
+                "css": ["w-96", "overflow-x-hidden", "text-ellipsis"],
+            },
+            {
+                "name": "is_plotted",
+                "title": "geplottet",
+            },
+            {
+                "name": "is_short_time",
+                "title": "Werbeaufkleber",
+            },
+            {
+                "name": "is_long_time",
+                "title": "Hochleistungsfolie",
+            },
+            {
+                "name": "is_multipart",
+                "title": "mehrteilig",
+            },
+            {
+                "name": "is_walldecal",
+                "title": "Wandtattoo",
+            },
+            {
+                "name": "is_shirtcollection",
+                "title": "Textil",
+            },
+            {
+                "name": "is_revised",
+                "title": "Überarbeitet",
+            },
+            {
+                "name": "is_marked",
+                "title": "Gemerkt",
+            },
+        ],
+        rows: data.sticker,
+        tableCss: ["w-full", "table-auto"],
+    }
+    const table = getTable(tableConfig);
+    const tableContainer = document.getElementById("stickerTable");
+    tableContainer.appendChild(table);
 }
 
 function click_manageImports() {
@@ -150,5 +202,13 @@ function openTagOverview() {
         });
 
         centerAbsoluteElement(div);
+    });
+}
+
+if (document.readyState !== 'loading' ) {
+    init();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        init();
     });
 }
