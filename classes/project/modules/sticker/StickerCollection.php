@@ -302,6 +302,29 @@ class StickerCollection implements Iterator
     }
 
     public static function getStickerOverview() {
+        $orderBy = (String) Tools::get("orderBy");
+        $order = (String) Tools::get("order");
+        $order = $order == "asc" ? "ASC" : "DESC";
+
+        $columns = [
+            "id",
+            "name",
+            "directory_name",
+            "is_plotted",
+            "is_short_time",
+            "is_long_time",
+            "is_multipart",
+            "is_walldecal",
+            "is_shirtcollection",
+            "is_revised",
+            "is_marked",
+        ];
+
+        if (!in_array($orderBy, $columns)) {
+            $orderBy = "id";
+            $order = "ASC";
+        }
+
         $query = "SELECT id, `name`, directory_name, 
                 IF(is_plotted = 1, '✓', 'X') AS is_plotted, 
                 IF(is_short_time = 1, '✓', 'X') AS is_short_time, 
@@ -311,11 +334,42 @@ class StickerCollection implements Iterator
                 IF(is_shirtcollection = 1, '✓', 'X') AS is_shirtcollection, 
                 IF(is_revised = 1, '✓', '') AS is_revised, 
                 IF(is_marked = 1, '★', '') AS is_marked
-            FROM `module_sticker_sticker_data`";
+            FROM `module_sticker_sticker_data` ORDER BY $orderBy $order";
         $data = DBAccess::selectQuery($query);
 
         JSONResponseHandler::sendResponse([
            "sticker" => $data,
         ]);
+    }
+
+    public static function getStickerStates() {
+        $query = "SELECT id, additional_data FROM module_sticker_sticker_data ORDER BY id ASC";
+        $data = DBAccess::selectQuery($query);
+        $isInShopStatus = [];
+
+        foreach ($data as $row) {
+            $id = (int) $row["id"];
+            $isInShopStatus[$id] = [];
+            if ($row["additional_data"] == null) {
+                continue;
+            }
+            $additionalData = json_decode($row["additional_data"], true);
+
+            if (isset($additionalData["products"])) {
+                $products = $additionalData["products"];
+
+                if (isset($products["aufkleber"])) {
+                    $isInShopStatus[$id]["a"] = $products["aufkleber"]["id"];
+                }
+                if (isset($products["wandtattoo"])) {
+                    $isInShopStatus[$id]["w"] = $products["wandtattoo"]["id"];
+                }
+                if (isset($products["textil"])) {
+                    $isInShopStatus[$id]["t"] = $products["textil"]["id"];
+                }
+            }
+        }
+
+        JSONResponseHandler::sendResponse($isInShopStatus);
     }
 }

@@ -14,6 +14,7 @@ class StickerRoutes extends Routes
      * @uses StickerTagManager::getTagSuggestions
      * 
      * @uses StickerCollection::getStickerOverview
+     * @uses StickerCollection::getStickerStates
      */
     protected static $getRoutes = [
         "/sticker/{id}/status" => "StickerCollection::getStickerStatus",
@@ -24,6 +25,7 @@ class StickerRoutes extends Routes
         "/sticker/tags/groups" => "",
 
         "/sticker/overview" => "StickerCollection::getStickerOverview",
+        "/sticker/states" => "StickerCollection::getStickerStates",
     ];
 
     /**

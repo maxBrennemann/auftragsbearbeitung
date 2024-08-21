@@ -1096,35 +1096,6 @@ class Ajax {
 				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET creation_date = :creation_date WHERE id = :id", ["creation_date" => $creation_date, "id" => $id]);
 				echo "success";
 			break;
-			case "getStickerStatus":
-				$query = "SELECT id, additional_data FROM module_sticker_sticker_data ORDER BY id ASC";
-				$data = DBAccess::selectQuery($query);
-				$isInShopStatus = [];
-
-				foreach ($data as $row) {
-					$id = (int) $row["id"];
-					$isInShopStatus[$id] = [];
-					if ($row["additional_data"] == null) {
-						continue;
-					}
-					$additionalData = json_decode($row["additional_data"], true);
-
-					if (isset($additionalData["products"])) {
-						$products = $additionalData["products"];
-
-						if (isset($products["aufkleber"])) {
-							$isInShopStatus[$id]["a"] = $products["aufkleber"]["id"];
-						}
-						if (isset($products["wandtattoo"])) {
-							$isInShopStatus[$id]["w"] = $products["wandtattoo"]["id"];
-						}
-						if (isset($products["textil"])) {
-							$isInShopStatus[$id]["t"] = $products["textil"]["id"];
-						}
-					}
-				}
-				echo json_encode($isInShopStatus);
-			break;
 			case "toggleTextil":
 				$id = (int) $_POST["id"];
 				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_shirtcollection` = NOT `is_shirtcollection` WHERE id = :id", ["id" => $id]);

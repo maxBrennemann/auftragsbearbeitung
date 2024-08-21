@@ -47,4 +47,4 @@
         </div>
     </div>
 </div>
-<div class="" id="stickerTable"></div>
+<div class="w-full overflow-x-scroll h-96 overflow-y-scroll" id="stickerTable"></div>
