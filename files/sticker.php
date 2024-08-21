@@ -136,14 +136,14 @@ if ($id == 0): ?>
                 </div>
             </details>
         </div>
-        <div class="mt-2">
-            <div>
-                <h4>Kurzbeschreibung</h4>
+        <div class="my-2">
+            <div class="my-2 flex">
+                <p>Kurzbeschreibung</p>
                 <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "aufkleber", "text" => "short", "gpt" => $chatGPTConnection])?>
             </div>
             <textarea class="data-input" data-fun="productDescription" data-target="aufkleber" data-type="short" data-write="true"><?=$stickerCollection->getAufkleber()->getDescriptionShort()?></textarea>
-            <div>
-                <h4>Beschreibung</h4>
+            <div class="my-2 flex">
+                <p>Beschreibung</p>
                 <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "aufkleber", "text" => "long", "gpt" => $chatGPTConnection])?>
             </div>
             <textarea class="data-input" data-fun="productDescription" data-target="aufkleber" data-type= "long" data-write="true"><?=$stickerCollection->getAufkleber()->getDescription()?></textarea>
@@ -194,14 +194,14 @@ if ($id == 0): ?>
                 </label>
             </span>
         </div>
-        <div class="mt-2">
-            <div>
-                <h4>Kurzbeschreibung</h4>
+        <div class="my-2">
+            <div class="my-2 flex">
+                <p>Kurzbeschreibung</p>
                 <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "wandtattoo", "text" => "short", "gpt" => $chatGPTConnection])?>
             </div>
             <textarea class="data-input" data-fun="productDescription" data-target="wandtattoo" data-type="short" data-write="true"><?=$stickerCollection->getWandtattoo()->getDescriptionShort()?></textarea>
-            <div>
-                <h4>Beschreibung</h4>
+            <div class="my-2 flex">
+                <p>Beschreibung</p>
                 <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "wandtattoo", "text" => "long", "gpt" => $chatGPTConnection])?>
             </div>
             <textarea class="data-input" data-fun="productDescription" data-target="wandtattoo" data-type="long" data-write="true"><?=$stickerCollection->getWandtattoo()->getDescription()?></textarea>
@@ -292,14 +292,14 @@ if ($id == 0): ?>
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>
-        <div class="my-2">
-            <div>
-                <h4>Kurzbeschreibung</h4>
+        <div class="mb-2">
+            <div class="my-2 flex">
+                <p>Kurzbeschreibung</p>
                 <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "textil", "text" => "short", "gpt" => $chatGPTConnection])?>
             </div>
             <textarea class="data-input" data-fun="productDescription" data-target="textil" data-type="short" data-write="true"><?=$stickerCollection->getTextil()->getDescriptionShort()?></textarea>
-            <div class="mt-1">
-                <h4>Beschreibung</h4>
+            <div class="my-2 flex">
+                <p>Beschreibung</p>
                 <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "textil", "text" => "long", "gpt" => $chatGPTConnection])?>
             </div>
             <textarea class="data-input" data-fun="productDescription" data-target="textil" data-type="long" data-write="true"><?=$stickerCollection->getTextil()->getDescription()?></textarea>

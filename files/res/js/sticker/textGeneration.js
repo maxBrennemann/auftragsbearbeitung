@@ -1,33 +1,42 @@
+import { ajax } from "../classes/ajax.js";
+
 const textGenerationData = {
     textStyleNode: null,
     textType: null,
     product: null,
 };
 
+/**
+ * Iterates through the texts of the sticker
+ * depending on the product and text type
+ * @param {*} e 
+ */
 export function click_iterateText(e) {
     const target = e.currentTarget;
     const direction = target.dataset.direction;
     const currentTextNode = target.parentNode.querySelector(".chatCount");
 
-    ajax.post({
-        id: mainVariables.motivId.innerHTML,
+    const id = mainVariables.motivId.innerHTML;
+    const type = target.parentNode.dataset.type;
+    const text = target.parentNode.dataset.text;
+
+    ajax.get(`/api/v1/sticker/${id}/texts/${type}/${text}`, {
         direction: direction,
         current: currentTextNode.innerHTML,
-        type: target.parentNode.dataset.type,
-        text: target.parentNode.dataset.text,
-        r: "iterateText",
     }).then(r => {
-        if (r.status == "success") {
-            if (direction == "next") {
-                currentTextNode.innerHTML = parseInt(currentTextNode.innerHTML) + 1;
-            } else {
-                currentTextNode.innerHTML = parseInt(currentTextNode.innerHTML) - 1;
-            }
-            
-            const text = r.text;
-            const textarea = document.querySelector("textarea.data-input");
-            textarea.value = text;
+        if (r.status !== "success") {
+            return;
         }
+
+        if (direction === "next") {
+            currentTextNode.innerHTML = parseInt(currentTextNode.innerHTML) + 1;
+        } else {
+            currentTextNode.innerHTML = parseInt(currentTextNode.innerHTML) - 1;
+        }
+        
+        const text = r.text;
+        const textarea = document.querySelector("textarea.data-input");
+        textarea.value = text;
     });
 }
 
@@ -36,16 +45,13 @@ export function click_textGeneration(e) {
     const target = e.currentTarget.parentNode;
     const type = textGenerationData.product || target.dataset.type;
     const text = textGenerationData.textType || target.dataset.text;
+    const id = mainVariables.motivId.innerHTML;
     const additionalInfo = getAdditionalInfo();
 
-    ajax.post({
+    ajax.post(`/api/v1/sticker/${id}/texts/${type}/${text}`, {
         title: title,
-        id: mainVariables.motivId.innerHTML,
-        text: text,
-        type: type,
         additionalText: additionalInfo.text,
         additionalStyle: additionalInfo.style,
-        r: "generateText",
     }).then(r => {
         console.log(r.choices[0].message.content);
     });
@@ -57,7 +63,11 @@ function getAdditionalInfo() {
     if (window != null) {
         const text = window.querySelector("#additionalTextGPT").value;
         const style = textGenerationData.textStyleNode.innerHTML;
-        return {text: text, style: style};
+        
+        return {
+            text: text, 
+            style: style
+        };
     }
     
     return {
@@ -82,7 +92,7 @@ export function click_showTextSettings(e) {
         const template = r.template;
         const div = document.createElement("div");
         div.innerHTML = template;
-        div.classList.add("flex", "h-2/3", "lg:h-4/5", "w-4/5", "z-50", "max-h-fit", "fixed", "bg-white", "rounded-lg", "shadow-lg");
+        div.classList.add("overflow-y-auto", "overflow-x-hidden", "fixed", "top-0", "right-0", "left-0", "z-50", "justify-center", "items-center", "w-full", "md:inset-0", "h-[calc(100%-1rem)]", "max-h-full", "bg-white/75");
         div.id = "showTextSettings";
         document.body.appendChild(div);
 

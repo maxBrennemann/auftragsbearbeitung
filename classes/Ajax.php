@@ -1,7 +1,7 @@
 <?php
 
-require_once("classes/project/Produkt.php");
-require_once("classes/project/Auftrag.php");
+require_once "classes/project/Produkt.php";
+require_once "classes/project/Auftrag.php";
 
 class Ajax {
 	
@@ -1495,20 +1495,6 @@ class Ajax {
 					]);
 				}
 			break;
-			case "generateText":
-				$title = $_POST["title"];
-				$text = $_POST["text"];
-				$type = $_POST["type"];
-
-				$additionalText = $_POST["additionalText"];
-				$additionalStyle = $_POST["additionalStyle"];
-
-				$id = (int) $_POST["id"];
-
-				require_once('classes/project/modules/sticker/ChatGPTConnection.php');
-				$connector = new ChatGPTConnection($id);
-				$connector->getTextSuggestion($title, $type, $text, $additionalText, $additionalStyle);
-			break;
 			case "showGTPOptions":
 				$stickerId = $_POST["id"];
 				$stickerType = $_POST["type"];
@@ -1532,41 +1518,6 @@ class Ajax {
 			case "setRechnungspostenAusblenden":
 				require_once('classes/project/ClientSettings.php');
 				ClientSettings::setFilterOrderPosten();
-			break;
-			case "iterateText":
-				$id = (int) $_POST["id"];
-				$direction = $_POST["direction"];
-				$current = (int) $_POST["current"];
-				/* adapting to array index */
-				$current--;
-
-				$type = $_POST["type"];
-				$text = $_POST["text"];
-
-				if ($direction == "next") {
-					$current++;
-				} else if ($direction == "back") {
-					$current--;
-				}
-
-				if ($current < 0) {
-					$current = 0;
-				}
-
-				require_once('classes/project/modules/sticker/ChatGPTConnection.php');
-				$chatGPTConnection = new ChatGPTConnection($id);
-				$text = $chatGPTConnection->getText($type, $text, $current);
-
-				$status = "success";
-				if ($text == false) {
-					$status = "error";
-				}
-
-				echo json_encode([
-					"status" => $status,
-					"text" => $text,
-					"current" => $current,
-				]);
 			break;
 			case "indexAll":
 				require_once('classes/project/Search.php');

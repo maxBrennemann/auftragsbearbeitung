@@ -14,26 +14,30 @@ class ChatGPTConnection {
     /**
      * This function sends a request to the chatGPT API and returns the response
      * 
-     * @param String $message The message which is passed to chat gpt
+     * @param string $message The message which is passed to chat gpt
      */
     public static function request($message) {
         $apiKey = $_ENV["OPENAI_API_KEY"];
         $organisationKey = $_ENV["OPENAI_ORGANISATION_ID"];
         $url = 'https://api.openai.com/v1/chat/completions';
         
-        $headers = array(
+        $headers = [
             "Authorization: Bearer {$apiKey}",
             "OpenAI-Organization: $organisationKey",
             "Content-Type: application/json"
-        );
+        ];
         
-        $messages = array();
-        $messages[] = array("role" => "user", "content" => $message);
+        $messages = [];
+        $messages[] = [
+            "role" => "user",
+            "content" => $message
+        ];
         
-        $data = array();
-        $data["model"] = "gpt-3.5-turbo";
-        $data["messages"] = $messages;
-        $data["max_tokens"] = 100;
+        $data = [
+            "model" => "gpt-3.5-turbo",
+            "messages" => $messages,
+            "max_tokens" => 100
+        ];
         
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_POST, 1);
@@ -43,6 +47,7 @@ class ChatGPTConnection {
         
         $result = curl_exec($curl);
         $result = urldecode($result);
+
         if (curl_errno($curl)) {
             $result = 'Error:' . curl_error($curl);
         }
@@ -77,11 +82,11 @@ class ChatGPTConnection {
     /**
      * https://stackoverflow.com/questions/75780617/using-php-to-access-chatgpt-api
      * 
-     * @param String $query The query which is passed to chat gpt
-     * @param String $stickerType The type of the sticker: aufkleber, wandtattoo, textil
-     * @param String $textType If the text is for a short description or a long description
-     * @param String $info Additional info for chat gpt to generate the text
-     * @param String $textStyle The kind of text (e.g ironic, funny, sad)
+     * @param string $query The query which is passed to chat gpt
+     * @param string $stickerType The type of the sticker: aufkleber, wandtattoo, textil
+     * @param string $textType If the text is for a short description or a long description
+     * @param string $info Additional info for chat gpt to generate the text
+     * @param string $textStyle The kind of text (e.g ironic, funny, sad)
      */
     public function getTextSuggestion($query, $stickerType, $textType, $info, $textStyle) {
         $apiKey = $_ENV["OPENAI_API_KEY"];
@@ -162,6 +167,52 @@ class ChatGPTConnection {
         DBAccess::insertQuery($query, $params);
     }
 
-}
+    public static function iterateText() {
+        $id = (int) Tools::get("id");
+        $type = Tools::get("type");
+        $text = Tools::get("form");
+        
+        $direction = Tools::get("direction");
+        $current = (int) Tools::get("current");
+        /* adapting to array index */
+        $current--;
 
-?>
+        if ($direction == "next") {
+            $current++;
+        } else if ($direction == "back") {
+            $current--;
+        }
+
+        if ($current < 0) {
+            $current = 0;
+        }
+
+        $chatGPTConnection = new ChatGPTConnection($id);
+        $text = $chatGPTConnection->getText($type, $text, $current);
+
+        $status = "success";
+        if ($text == false) {
+            $status = "error";
+        }
+
+        JSONResponseHandler::sendResponse([
+            "status" => $status,
+            "text" => $text,
+            "current" => $current,
+        ]);
+    }
+
+    public static function newText() {
+        $id = (int) Tools::get("id");
+        $type = Tools::get("type");
+        $text = Tools::get("form");
+
+        $title = Tools::get("title");
+        $additionalText = Tools::get("additionalText");
+        $additionalStyle = Tools::get("additionalStyle");
+
+        $connector = new ChatGPTConnection($id);
+        $connector->getTextSuggestion($title, $type, $text, $additionalText, $additionalStyle);
+    }
+
+}

@@ -4,12 +4,14 @@ require_once "classes/routes/Routes.php";
 require_once "classes/project/modules/sticker/StickerCollection.php";
 require_once "classes/project/modules/sticker/StickerTagManager.php";
 require_once "classes/project/modules/sticker/Textil.php";
+require_once "classes/project/modules/sticker/ChatGPTConnection.php";
 
 class StickerRoutes extends Routes
 {
 
     /**
      * @uses StickerCollection::getStickerStatus
+     * @uses ChatGPTConnection::iterateText
      * 
      * @uses StickerTagManager::getTagSuggestions
      * 
@@ -18,6 +20,7 @@ class StickerRoutes extends Routes
      */
     protected static $getRoutes = [
         "/sticker/{id}/status" => "StickerCollection::getStickerStatus",
+        "/sticker/{id}/texts/{type}/{form}" => "ChatGPTConnection::iterateText",
 
         "/sticker/tags" => "",
         "/sticker/tags/crawl" => "",
@@ -41,6 +44,8 @@ class StickerRoutes extends Routes
         "/sticker/{id}/export" => "StickerCollection::exportSticker",
         "/sticker/{id}/textile/{idTextile}/toggle" => "Textil::toggleTextile",
         "/sticker/{id}/textile/{idTextile}/price" => "Textil::setPrice",
+
+        "/sticker/{id}/texts/{type}/{form}" => "ChatGPTConnection::newText",
 
         "/sticker" => "StickerCollection::addSticker",
 
