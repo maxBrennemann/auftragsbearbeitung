@@ -18,20 +18,15 @@ services:
     command:
       --lower_case_table_names=1
     volumes:
-      - ./.res/sql/init/${INIT_DB}:/docker-entrypoint-initdb.d/init.sql
+      - ./.res/sql/init/${INIT_DB}:/docker-entrypoint-initdb.d/init.sql.zip
     environment:
-      MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_KEY_BUFFER_SIZE: 16M
       MYSQL_READ_BUFFER_SIZE: 2M
       MYSQL_SORT_BUFFER_SIZE: 1M
-      MARIADB_DATABASE: ${MARIADB_DATABASE}
-      MARIADB_USER: ${MARIADB_USER}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
-      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DATABASE}
+      MARIADB_USER: ${USERNAME}
+      MARIADB_PASSWORD: ${PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${ROOT_PASSWORD}
 
   phpmyadmin:
     depends_on:
@@ -41,7 +36,7 @@ services:
       - '8080:80'
     environment:
       PMA_HOST: database
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
       UPLOAD_LIMIT: 300M
 
 volumes:

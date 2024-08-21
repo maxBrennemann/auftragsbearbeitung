@@ -180,19 +180,6 @@ class Ajax {
 
 				echo "success";
 			break;
-			case "addCustomer":
-				$data = $_POST['data'];
-				$data = json_decode($data, true);
-				require_once('classes/project/Kunde.php');
-				$customerId = Kunde::addCustomer($data);
-				$link = Link::getPageLink("kunde");
-				$link .= "?id=" . $customerId;
-
-				echo json_encode([
-					"status" => "success",
-					"link" => $link,
-				]);
-			break;
 			case "notification":
 				require_once('classes/project/NotificationManager.php');
 				echo NotificationManager::htmlNotification();
