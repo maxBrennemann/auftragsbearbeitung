@@ -15,12 +15,6 @@ if (document.readyState !== 'loading' ) {
 }
 
 function initAddCustomer() {
-    /* https://stackoverflow.com/questions/17651207/mask-us-phone-number-string-with-javascript */
-    /*document.getElementById('telmobil').addEventListener('input', function (e) {
-        var x = e.target.value.replace(/\D/g, '').match(/(\d{0,4})(\d{0,})/);
-        e.target.value = !x[2] ? x[1] : x[1] + ' ' + x[2];
-    });*/
-
     globalProperties.company = document.getElementById("showCompanies");
     globalProperties.person = document.getElementById("showPersons");
     globalProperties.current = globalProperties.company;
@@ -94,8 +88,7 @@ function sendCustomerData() {
     data.forEach((value, key) => object[key] = value);
     object.type = globalProperties.current == globalProperties.company ? "company" : "private";
 
-    ajax.post({
-        r: "addCustomer",
+    ajax.post(`/api/v1/customer`, {
         data: JSON.stringify(object),
     }).then(r => {
         if (r.status == "success") {

@@ -167,7 +167,8 @@ class StickerTagManager extends PrestashopConnection
     {
         foreach ($products as $product) {
             $productId = $product->getId();
-            $this->saveTags($productId);
+            $this->saveTags();
+            //$this->saveTags($productId);
         }
     }
 

@@ -1,26 +1,33 @@
 import { initBindings } from "./classes/bindings.js";
+import { ajax } from "./classes/ajax.js";
+import { getTable } from "./classes/table.js";
+import { loadFromLocalStorage, saveToLocalStorage } from "./global.js";
 
-const fnNames = {};
-fnNames.click_createFbExport = click_createFbExport;
-fnNames.click_openTagOverview = openTagOverview;
-//fnNames.click_loadSticker = click_loadSticker;
-fnNames.click_manageImports = click_manageImports;
-fnNames.click_crawlAll = crawlAll;
-fnNames.click_crawlTags = crawlTags;
-fnNames.click_createNewSticker = createNewSticker;
+const fnNames = {
+    click_createFbExport: click_createFbExport,
+    click_openTagOverview: openTagOverview,
+    click_manageImports: click_manageImports,
+    click_crawlAll: crawlAll,
+    click_crawlTags: crawlTags,
+    click_createNewSticker: createNewSticker,
+};
 
-if (document.readyState !== 'loading' ) {
-    init();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        init();
-    });
+const tableOrder = {
+    orderBy: "id",
+    order: "asc",
 }
 
 function init() {
     initBindings(fnNames);
+
+    const tblOrder = loadFromLocalStorage("stickerOverviewTableOrder");
+    if (tblOrder) {
+        tableOrder.orderBy = tblOrder.orderBy;
+        tableOrder.order = tblOrder.order;
+    }
+
+    createStickerTable(tableOrder);
     checkIfOverview();
-    showStickerStatus();
 
     const newTitle = document.getElementById("newTitle");
     newTitle.addEventListener("keyup", function (event) {
@@ -31,6 +38,83 @@ function init() {
         createNewSticker();
     });
 }
+
+const createStickerTable = async (tblOrder) => {
+    const data = await ajax.get(`/api/v1/sticker/overview`, {
+        orderBy: tblOrder.orderBy,
+        order: tblOrder.order,
+    });
+    const tableConfig = {
+        config: [
+            {
+                "name": "id",
+                "title": "Nummer",
+            },
+            {
+                "name": "name",
+                "title": "Name",
+            },
+            {
+                "name": "directory_name",
+                "title": "Verzeichnis",
+                "css": ["w-96", "overflow-x-hidden", "text-ellipsis"],
+            },
+            {
+                "name": "is_plotted",
+                "title": "geplottet",
+            },
+            {
+                "name": "is_short_time",
+                "title": "Werbeaufkleber",
+            },
+            {
+                "name": "is_long_time",
+                "title": "Hochleistungsfolie",
+            },
+            {
+                "name": "is_multipart",
+                "title": "mehrteilig",
+            },
+            {
+                "name": "is_walldecal",
+                "title": "Wandtattoo",
+            },
+            {
+                "name": "is_shirtcollection",
+                "title": "Textil",
+            },
+            {
+                "name": "is_revised",
+                "title": "Überarbeitet",
+            },
+            {
+                "name": "is_marked",
+                "title": "Gemerkt",
+            },
+        ],
+        rows: data.sticker,
+        tableCss: ["w-full", "table-auto"],
+        callback: tblHeaderClicked,
+        link: "/sticker?id=",
+    }
+    const table = getTable(tableConfig);
+    const tableContainer = document.getElementById("stickerTable");
+    tableContainer.innerHTML = "";
+    tableContainer.appendChild(table);
+
+    showStickerStatus();
+}
+
+const tblHeaderClicked = (col) => {
+    if (tableOrder.orderBy === col) {
+        tableOrder.order = tableOrder.order === "asc" ? "desc" : "asc";
+    } else {
+        tableOrder.order = "asc";
+    }
+    tableOrder.orderBy = col;
+    createStickerTable(tableOrder);
+    saveToLocalStorage("stickerOverviewTableOrder", tableOrder);
+};
 
 function click_manageImports() {
     
@@ -66,19 +150,13 @@ function crawlTags() {
 }
 
 function showStickerStatus() {
-    let overviewTable = document.querySelector('[data-type="module_sticker_sticker_data"]');
-    if (overviewTable == null) {
-        return;
-    }
+    const overviewTable = document.getElementById("stickerTable").querySelector("tbody");
 
-    ajax.post({
-        "r": "getStickerStatus",
-    }).then(data => {
+    ajax.get("/api/v1/sticker/states").then(data => {
         let rows = Array.from(overviewTable.rows);
-        rows = rows.slice(1);
         rows.forEach(row => {
-            rowIndex = parseInt(row.children[0].textContent);
-            dataElement = data[rowIndex];
+            let rowIndex = parseInt(row.children[0].textContent);
+            let dataElement = data[rowIndex];
 
             if (dataElement.a) {
                 row.children[3].classList.add("inShop");
@@ -103,12 +181,10 @@ async function createNewSticker() {
     
     ajax.post("/api/v1/sticker", {
         "name": title,
-    }).then(redirectLink => {
-        if (redirectLink == "-1") {
-            alert("an error occured");
-        } else {
-            window.location.href = redirectLink;
-        }
+    }).then(r => {
+        window.location.href = r.link;
+    }).catch(() => {
+        alert("an error occured");
     });
 }
 
@@ -150,5 +226,13 @@ function openTagOverview() {
         });
 
         centerAbsoluteElement(div);
+    });
+}
+
+if (document.readyState !== 'loading' ) {
+    init();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        init();
     });
 }

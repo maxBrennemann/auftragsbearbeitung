@@ -71,25 +71,6 @@ class Table
 		$this->dataKey = "key_" . bin2hex(random_bytes(6));
 	}
 
-	/**
-	 * removes a column from the table,
-	 * TODO: this is no ideal solution and the whole "COLUMN_NAME" thing should be changed
-	 * @param string $columnName
-	 */
-	public function exclude(String $columnName)
-	{
-		$count = 0;
-		foreach ($this->columnNames as $key => $column) {
-			if ($column["COLUMN_NAME"] == $columnName) {
-				unset($this->columnNames[$key]);
-			} else {
-				$this->columnNames[$count] = $column;
-				$count++;
-			}
-		}
-		return $this;
-	}
-
 	public function getTableKey()
 	{
 		return $this->dataKey;
@@ -323,15 +304,6 @@ class Table
 				];
 				array_push($this->columnNames, $columnName);
 			}
-		} else {
-			throw new Exception("Array sizes do not match");
-		}
-	}
-
-	public function addRow($row)
-	{
-		if (sizeof($row) == sizeof($this->data[0])) {
-			array_push($this->data, $row);
 		} else {
 			throw new Exception("Array sizes do not match");
 		}

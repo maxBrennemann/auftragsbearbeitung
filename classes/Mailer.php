@@ -17,5 +17,3 @@ class Mailer {
 		mail($receiver, $subject, $message, $header);
 	}
 }
-
-?>

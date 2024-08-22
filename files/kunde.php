@@ -136,6 +136,7 @@ if (isset($_GET['id'])) {
 		<button class="btn-primary">Neue Farbe erstellen</button>
 		<button class="btn-primary">Neues Fahrzeug erstellen</button>
 		<button class="btn-primary">Neue Adresse erstellen</button>
+		<button class="btn-primary">Kunde zusammenführen</button>
 		<button class="btn-attention">Kunde löschen</button>
 	</div>
 	<div class="gridCont mt-4">

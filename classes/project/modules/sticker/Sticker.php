@@ -1,11 +1,11 @@
 <?php
 
-require_once('classes/project/modules/sticker/PrestashopConnection.php');
-require_once('classes/project/modules/sticker/StickerChangelog.php');
-require_once('classes/project/modules/sticker/StickerCombination.php');
-require_once('classes/project/modules/sticker/StickerImage.php');
-require_once('classes/project/modules/sticker/StickerTagManager.php');
-require_once('classes/project/modules/sticker/StickerUpload.php');
+require_once 'classes/project/modules/sticker/PrestashopConnection.php';
+require_once 'classes/project/modules/sticker/StickerChangelog.php';
+require_once 'classes/project/modules/sticker/StickerCombination.php';
+require_once 'classes/project/modules/sticker/StickerImage.php';
+require_once 'classes/project/modules/sticker/StickerTagManager.php';
+require_once 'classes/project/modules/sticker/StickerUpload.php';
 
 /**
  * stellt allgemeine Stickerfunktionen zur Verfügung, ist die Elternklasse von
@@ -338,7 +338,7 @@ class Sticker extends PrestashopConnection {
         $query = "INSERT INTO module_sticker_sticker_data (`name`) VALUES (:title)";
         $id = DBAccess::insertQuery($query, ["title" => $title]);
 
-        require_once('classes/project/modules/sticker/AufkleberWandtattoo.php');
+        require_once 'classes/project/modules/sticker/AufkleberWandtattoo.php';
         $aufkleberWandtattoo = new AufkleberWandtattoo($id);
         $sizes = [100, 200, 300, 600, 900, 1200];
         foreach ($sizes as $size) {
@@ -351,10 +351,10 @@ class Sticker extends PrestashopConnection {
         DBAccess::insertQuery($query);
 
         if ($id == 0 || !is_numeric($id)) {
-            echo -1;
+            JSONResponseHandler::throwError(400, "Sticker could not be created.");
         } else {
             $link = Link::getPageLink("sticker") . "?id=" . $id;
-            echo $link;
+            JSONResponseHandler::sendResponse(["status" => "success", "link" => $link]);
         }
     }
 

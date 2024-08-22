@@ -571,3 +571,18 @@ function setCookie(cname, cvalue, exdays) {
     let expires = "expires=" + d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
+
+export const loadFromLocalStorage = (key) => {
+	const item = localStorage.getItem(key);
+	try {
+		const json = JSON.parse(item);
+		return json;
+	} catch (e) {
+		return item;
+	}
+}
+
+export const saveToLocalStorage = (key, value) => {
+	value = JSON.stringify(value);
+	localStorage.setItem(key, value);
+}

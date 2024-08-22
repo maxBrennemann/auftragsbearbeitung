@@ -275,7 +275,8 @@ class Kunde implements StatisticsInterface {
 	/**
 	 * @return int
 	 */
-	public static function addCustomer($data): int {
+	public static function addCustomer($data): int 
+	{
 		/* insert customer data */
 		$query = "INSERT INTO kunde (Firmenname, Anrede, Vorname, Nachname, Email, TelefonFestnetz, TelefonMobil, Website) VALUES (:firmenname, :anrede, :vorname, :nachname, :email, :telfestnetz, :telmobil, :website)";
 		$customerId = DBAccess::insertQuery($query, [
@@ -286,7 +287,7 @@ class Kunde implements StatisticsInterface {
 			"email" => $data["companyemail"],
 			"telfestnetz" => $data["telfestnetz"],
 			"telmobil" => $data["telmobil"],
-			"website" => $data["website"],
+			"website" => $data["website"] ?? "",
 		]);
 
 		/* insert address data */
@@ -329,6 +330,20 @@ class Kunde implements StatisticsInterface {
 		}
 
 		return $customerId;
+	}
+
+	public static function addCustomerAjax() {
+		$data = Tools::get("data");
+		$data = json_decode($data, true);
+
+		$customerId = self::addCustomer($data);
+		$link = Link::getPageLink("kunde");
+		$link .= "?id=" . $customerId;
+
+		JSONResponseHandler::sendResponse([
+			"status" => "success",
+			"link" => $link,
+		]);
 	}
 
 }

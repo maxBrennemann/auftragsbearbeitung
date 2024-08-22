@@ -1,40 +1,3 @@
-<?php
-
-$query = "SELECT id, `name`, directory_name, 
-        IF(is_plotted = 1, '✓', 'X') AS is_plotted, 
-        IF(is_short_time = 1, '✓', 'X') AS is_short_time, 
-        IF(is_long_time = 1, '✓', 'X') AS is_long_time, 
-        IF(is_multipart = 1, '✓', 'X') AS is_multipart, 
-        IF(is_walldecal = 1, '✓', 'X') AS is_walldecal, 
-        IF(is_shirtcollection = 1, '✓', 'X') AS is_shirtcollection, 
-        IF(is_revised = 1, '✓', '') AS is_revised, 
-        IF(is_marked = 1, '★', '') AS is_marked
-    FROM `module_sticker_sticker_data`";
-$data = DBAccess::selectQuery($query);
-
-$column_names = array(
-    0 => array("COLUMN_NAME" => "id", "ALT" => "Nummer"),
-    1 => array("COLUMN_NAME" => "name", "ALT" => "Name"),
-    2 => array("COLUMN_NAME" => "directory_name", "ALT" => "Verzeichnis", "CSS" => "w-96 overflow-x-hidden text-ellipsis"),
-    3 => array("COLUMN_NAME" => "is_plotted", "ALT" => "geplottet"),
-    4 => array("COLUMN_NAME" => "is_short_time", "ALT" => "Werbeaufkleber"),
-    5 => array("COLUMN_NAME" => "is_long_time", "ALT" => "Hochleistungsfolie"),
-    6 => array("COLUMN_NAME" => "is_multipart", "ALT" => "mehrteilig"),
-    7 => array("COLUMN_NAME" => "is_walldecal", "ALT" => "Wandtattoo"),
-    8 => array("COLUMN_NAME" => "is_shirtcollection", "ALT" => "Textil"),
-    9 => array("COLUMN_NAME" => "is_revised", "ALT" => "Überarbeitet"),
-    10 => array("COLUMN_NAME" => "is_marked", "ALT" => "Gemerkt"),
-);
-
-$linker = new Link();
-$linker->addBaseLink("sticker");
-$linker->setIterator("id", $data, "id");
-
-$t = new Table();
-$t->createByData($data, $column_names);
-$t->setType("module_sticker_sticker_data");
-$t->addLink($linker);
-?>
 <div class="grid grid-cols-3">
     <div class="defCont">
         <h1 class="font-bold">Import/ Export</h1>
@@ -84,6 +47,4 @@ $t->addLink($linker);
         </div>
     </div>
 </div>
-<div class="overflow-x-scroll h-5/6">
-    <?=$t->getTable()?>
-</div>
+<div class="w-full overflow-x-scroll h-96 overflow-y-scroll" id="stickerTable"></div>

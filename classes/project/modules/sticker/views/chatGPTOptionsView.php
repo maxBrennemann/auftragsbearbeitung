@@ -1,4 +1,4 @@
-<div class="mt-4 p-3 mr-5 overflow-y-auto">
+<div class="mt-4 p-3 mr-5 overflow-y-auto bg-gray-100 w-1/3">
     <div class="ml-1 my-3">
         <p class="font-bold">Alle Texte</p>
         <div class="grid grid-cols-3">

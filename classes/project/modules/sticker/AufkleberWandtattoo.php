@@ -1,6 +1,6 @@
 <?php
 
-require_once("classes/project/modules/sticker/Sticker.php");
+require_once "classes/project/modules/sticker/Sticker.php";
 
 class AufkleberWandtattoo extends Sticker {
 

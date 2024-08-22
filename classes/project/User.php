@@ -19,7 +19,7 @@ class User {
         $user = DBAccess::selectQuery($query, $params);
 
         if (empty($user)) {
-            return false;
+            return;
         }
 
         $this->id = $user[0]['id'];

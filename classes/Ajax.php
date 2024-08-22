@@ -1,7 +1,7 @@
 <?php
 
-require_once("classes/project/Produkt.php");
-require_once("classes/project/Auftrag.php");
+require_once "classes/project/Produkt.php";
+require_once "classes/project/Auftrag.php";
 
 class Ajax {
 	
@@ -179,19 +179,6 @@ class Ajax {
 				Liste::storeListData($listid, $listname, $listtype, $listvalue, $orderId);
 
 				echo "success";
-			break;
-			case "addCustomer":
-				$data = $_POST['data'];
-				$data = json_decode($data, true);
-				require_once('classes/project/Kunde.php');
-				$customerId = Kunde::addCustomer($data);
-				$link = Link::getPageLink("kunde");
-				$link .= "?id=" . $customerId;
-
-				echo json_encode([
-					"status" => "success",
-					"link" => $link,
-				]);
 			break;
 			case "notification":
 				require_once('classes/project/NotificationManager.php');
@@ -1109,35 +1096,6 @@ class Ajax {
 				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET creation_date = :creation_date WHERE id = :id", ["creation_date" => $creation_date, "id" => $id]);
 				echo "success";
 			break;
-			case "getStickerStatus":
-				$query = "SELECT id, additional_data FROM module_sticker_sticker_data ORDER BY id ASC";
-				$data = DBAccess::selectQuery($query);
-				$isInShopStatus = [];
-
-				foreach ($data as $row) {
-					$id = (int) $row["id"];
-					$isInShopStatus[$id] = [];
-					if ($row["additional_data"] == null) {
-						continue;
-					}
-					$additionalData = json_decode($row["additional_data"], true);
-
-					if (isset($additionalData["products"])) {
-						$products = $additionalData["products"];
-
-						if (isset($products["aufkleber"])) {
-							$isInShopStatus[$id]["a"] = $products["aufkleber"]["id"];
-						}
-						if (isset($products["wandtattoo"])) {
-							$isInShopStatus[$id]["w"] = $products["wandtattoo"]["id"];
-						}
-						if (isset($products["textil"])) {
-							$isInShopStatus[$id]["t"] = $products["textil"]["id"];
-						}
-					}
-				}
-				echo json_encode($isInShopStatus);
-			break;
 			case "toggleTextil":
 				$id = (int) $_POST["id"];
 				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_shirtcollection` = NOT `is_shirtcollection` WHERE id = :id", ["id" => $id]);
@@ -1537,20 +1495,6 @@ class Ajax {
 					]);
 				}
 			break;
-			case "generateText":
-				$title = $_POST["title"];
-				$text = $_POST["text"];
-				$type = $_POST["type"];
-
-				$additionalText = $_POST["additionalText"];
-				$additionalStyle = $_POST["additionalStyle"];
-
-				$id = (int) $_POST["id"];
-
-				require_once('classes/project/modules/sticker/ChatGPTConnection.php');
-				$connector = new ChatGPTConnection($id);
-				$connector->getTextSuggestion($title, $type, $text, $additionalText, $additionalStyle);
-			break;
 			case "showGTPOptions":
 				$stickerId = $_POST["id"];
 				$stickerType = $_POST["type"];
@@ -1574,41 +1518,6 @@ class Ajax {
 			case "setRechnungspostenAusblenden":
 				require_once('classes/project/ClientSettings.php');
 				ClientSettings::setFilterOrderPosten();
-			break;
-			case "iterateText":
-				$id = (int) $_POST["id"];
-				$direction = $_POST["direction"];
-				$current = (int) $_POST["current"];
-				/* adapting to array index */
-				$current--;
-
-				$type = $_POST["type"];
-				$text = $_POST["text"];
-
-				if ($direction == "next") {
-					$current++;
-				} else if ($direction == "back") {
-					$current--;
-				}
-
-				if ($current < 0) {
-					$current = 0;
-				}
-
-				require_once('classes/project/modules/sticker/ChatGPTConnection.php');
-				$chatGPTConnection = new ChatGPTConnection($id);
-				$text = $chatGPTConnection->getText($type, $text, $current);
-
-				$status = "success";
-				if ($text == false) {
-					$status = "error";
-				}
-
-				echo json_encode([
-					"status" => $status,
-					"text" => $text,
-					"current" => $current,
-				]);
 			break;
 			case "indexAll":
 				require_once('classes/project/Search.php');
