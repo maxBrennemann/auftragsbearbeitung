@@ -523,7 +523,12 @@ export function click_addNewWidth() {
 
 var sizeTable;
 
-function initSizeTable() {
+const getStickerSizes = async () => {
+    const data = await ajax.get(`/api/v1/sticker/${mainVariables.motivId.innerHTML}/sizes`);
+    return data;
+}
+
+export const initSizeTable = () => {
     const tbl = document.querySelector("[data-type='module_sticker_sizes']");
     sizeTable = new SizeTable(tbl);
 
@@ -531,12 +536,4 @@ function initSizeTable() {
     price1?.addEventListener("click", changePriceclass, false);
     const price2 = document.getElementById("price2");
     price2?.addEventListener("click", changePriceclass, false);
-}
-
-if (document.readyState !== 'loading' ) {
-    initSizeTable();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        initSizeTable();
-    });
-}
+};

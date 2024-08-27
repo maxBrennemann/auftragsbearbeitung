@@ -372,4 +372,15 @@ class StickerCollection implements Iterator
 
         JSONResponseHandler::sendResponse($isInShopStatus);
     }
+
+    public static function getStickerSizes() {
+        $id = (int) Tools::get("id");
+        $stickerCollection = new StickerCollection($id);
+        $aufkleber = $stickerCollection->getAufkleber();
+        $sizes = $aufkleber->getSizes();
+
+        JSONResponseHandler::sendResponse([
+            "sizes" => $sizes,
+        ]);
+    }
 }

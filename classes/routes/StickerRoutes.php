@@ -12,6 +12,7 @@ class StickerRoutes extends Routes
     /**
      * @uses StickerCollection::getStickerStatus
      * @uses ChatGPTConnection::iterateText
+     * @uses StickerCollection::getStickerSizes
      * 
      * @uses StickerTagManager::getTagSuggestions
      * 
@@ -21,6 +22,7 @@ class StickerRoutes extends Routes
     protected static $getRoutes = [
         "/sticker/{id}/status" => "StickerCollection::getStickerStatus",
         "/sticker/{id}/texts/{type}/{form}" => "ChatGPTConnection::iterateText",
+        "/sticker/{id}/sizes" => "StickerCollection::getStickerSizes",
 
         "/sticker/tags" => "",
         "/sticker/tags/crawl" => "",
