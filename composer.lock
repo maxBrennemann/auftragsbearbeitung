@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/chronos.git",
-                "reference": "3993536456d01c0b5f19d7cb843c1536b674c431"
+                "reference": "a4e7ea3f6a2e31bc3bb6c27d8b7e9091efe936f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/chronos/zipball/3993536456d01c0b5f19d7cb843c1536b674c431",
-                "reference": "3993536456d01c0b5f19d7cb843c1536b674c431",
+                "url": "https://api.github.com/repos/cakephp/chronos/zipball/a4e7ea3f6a2e31bc3bb6c27d8b7e9091efe936f9",
+                "reference": "a4e7ea3f6a2e31bc3bb6c27d8b7e9091efe936f9",
                 "shasum": ""
             },
             "require": {
@@ -64,7 +64,7 @@
                 "issues": "https://github.com/cakephp/chronos/issues",
                 "source": "https://github.com/cakephp/chronos"
             },
-            "time": "2024-07-22T02:46:36+00:00"
+            "time": "2024-08-29T17:44:19+00:00"
         },
         {
             "name": "cakephp/core",
@@ -499,12 +499,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client.git",
-                "reference": "b1f63d72c44307ec8ef7bf18f1012de35d8944ed"
+                "reference": "76c312e2696575d315f56aba31f8979d06da06ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/b1f63d72c44307ec8ef7bf18f1012de35d8944ed",
-                "reference": "b1f63d72c44307ec8ef7bf18f1012de35d8944ed",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/76c312e2696575d315f56aba31f8979d06da06ff",
+                "reference": "76c312e2696575d315f56aba31f8979d06da06ff",
                 "shasum": ""
             },
             "require": {
@@ -559,22 +559,22 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client/issues",
-                "source": "https://github.com/googleapis/google-api-php-client/tree/v2.17.0"
+                "source": "https://github.com/googleapis/google-api-php-client/tree/main"
             },
-            "time": "2024-07-10T14:57:54+00:00"
+            "time": "2024-08-26T16:50:03+00:00"
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.369.0",
+            "version": "v0.371.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "002f610e4c3acf0636b4fb1f46314a2097e1c8b4"
+                "reference": "2bebce17e419fb69917f8e807dc56298de38ea4e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/002f610e4c3acf0636b4fb1f46314a2097e1c8b4",
-                "reference": "002f610e4c3acf0636b4fb1f46314a2097e1c8b4",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/2bebce17e419fb69917f8e807dc56298de38ea4e",
+                "reference": "2bebce17e419fb69917f8e807dc56298de38ea4e",
                 "shasum": ""
             },
             "require": {
@@ -603,22 +603,22 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
-                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.369.0"
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.371.0"
             },
-            "time": "2024-08-14T20:31:16+00:00"
+            "time": "2024-09-01T00:58:42+00:00"
         },
         {
             "name": "google/auth",
-            "version": "v1.41.0",
+            "version": "v1.42.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-auth-library-php.git",
-                "reference": "1043ea18fe7f5dfbf5b208ce3ee6d6b6ab8cb038"
+                "reference": "0c25599a91530b5847f129b271c536f75a7563f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/1043ea18fe7f5dfbf5b208ce3ee6d6b6ab8cb038",
-                "reference": "1043ea18fe7f5dfbf5b208ce3ee6d6b6ab8cb038",
+                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/0c25599a91530b5847f129b271c536f75a7563f5",
+                "reference": "0c25599a91530b5847f129b271c536f75a7563f5",
                 "shasum": ""
             },
             "require": {
@@ -663,9 +663,9 @@
             "support": {
                 "docs": "https://googleapis.github.io/google-auth-library-php/main/",
                 "issues": "https://github.com/googleapis/google-auth-library-php/issues",
-                "source": "https://github.com/googleapis/google-auth-library-php/tree/v1.41.0"
+                "source": "https://github.com/googleapis/google-auth-library-php/tree/v1.42.0"
             },
-            "time": "2024-07-10T15:21:07+00:00"
+            "time": "2024-08-26T18:33:48+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -1274,12 +1274,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "b914d02a9d86fda9625320c0e8f426fade86928e"
+                "reference": "3327c29d3799da2eb321032afc73d01b6aa51cb8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/b914d02a9d86fda9625320c0e8f426fade86928e",
-                "reference": "b914d02a9d86fda9625320c0e8f426fade86928e",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/3327c29d3799da2eb321032afc73d01b6aa51cb8",
+                "reference": "3327c29d3799da2eb321032afc73d01b6aa51cb8",
                 "shasum": ""
             },
             "require": {
@@ -1368,7 +1368,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-08-17T08:11:50+00:00"
+            "time": "2024-08-27T07:51:08+00:00"
         },
         {
             "name": "open-telemetry/api",
@@ -1376,12 +1376,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/api.git",
-                "reference": "277a4548b552145be81ee8abd23aaafc5b48f1d3"
+                "reference": "e67b49b26b4e6cd196b0b91337ca6446aa3d9d73"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/api/zipball/277a4548b552145be81ee8abd23aaafc5b48f1d3",
-                "reference": "277a4548b552145be81ee8abd23aaafc5b48f1d3",
+                "url": "https://api.github.com/repos/opentelemetry-php/api/zipball/e67b49b26b4e6cd196b0b91337ca6446aa3d9d73",
+                "reference": "e67b49b26b4e6cd196b0b91337ca6446aa3d9d73",
                 "shasum": ""
             },
             "require": {
@@ -1434,20 +1434,20 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2024-08-18T10:52:43+00:00"
+            "time": "2024-08-30T23:17:53+00:00"
         },
         {
             "name": "open-telemetry/context",
-            "version": "dev-main",
+            "version": "1.1.0beta1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/context.git",
-                "reference": "da3572b117ecd3804ccc0c77e0016a7087f47250"
+                "reference": "0cba875ea1953435f78aec7f1d75afa87bdbf7f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/context/zipball/da3572b117ecd3804ccc0c77e0016a7087f47250",
-                "reference": "da3572b117ecd3804ccc0c77e0016a7087f47250",
+                "url": "https://api.github.com/repos/opentelemetry-php/context/zipball/0cba875ea1953435f78aec7f1d75afa87bdbf7f3",
+                "reference": "0cba875ea1953435f78aec7f1d75afa87bdbf7f3",
                 "shasum": ""
             },
             "require": {
@@ -1457,7 +1457,6 @@
             "suggest": {
                 "ext-ffi": "To allow context switching in Fibers"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1494,7 +1493,7 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2024-04-29T05:24:44+00:00"
+            "time": "2024-08-21T00:29:20+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
@@ -1810,12 +1809,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "dd2d8665f96f1e159969531c7542f3a8146fbe9f"
+                "reference": "ce0aeec4023bb984b497ab1e97cd258e84b12fee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/dd2d8665f96f1e159969531c7542f3a8146fbe9f",
-                "reference": "dd2d8665f96f1e159969531c7542f3a8146fbe9f",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/ce0aeec4023bb984b497ab1e97cd258e84b12fee",
+                "reference": "ce0aeec4023bb984b497ab1e97cd258e84b12fee",
                 "shasum": ""
             },
             "require": {
@@ -1912,7 +1911,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-08-19T11:06:49+00:00"
+            "time": "2024-08-26T01:10:38+00:00"
         },
         {
             "name": "prestashop/prestashop-webservice-lib",
@@ -2280,12 +2279,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/log.git",
-                "reference": "fe5ea303b0887d5caefd3d431c3e61ad47037001"
+                "reference": "79dff0b268932c640297f5208d6298f71855c03e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/fe5ea303b0887d5caefd3d431c3e61ad47037001",
-                "reference": "fe5ea303b0887d5caefd3d431c3e61ad47037001",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/79dff0b268932c640297f5208d6298f71855c03e",
+                "reference": "79dff0b268932c640297f5208d6298f71855c03e",
                 "shasum": ""
             },
             "require": {
@@ -2321,9 +2320,9 @@
                 "psr-3"
             ],
             "support": {
-                "source": "https://github.com/php-fig/log/tree/3.0.0"
+                "source": "https://github.com/php-fig/log/tree/3.0.1"
             },
-            "time": "2021-07-14T16:46:02+00:00"
+            "time": "2024-08-21T13:31:24+00:00"
         },
         {
             "name": "psr/simple-cache",
@@ -2515,12 +2514,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "52eb837b9f74e37bf73508154483f7846246bad2"
+                "reference": "6cbbca1038782b10a16405219a03f2589ed765ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/52eb837b9f74e37bf73508154483f7846246bad2",
-                "reference": "52eb837b9f74e37bf73508154483f7846246bad2",
+                "url": "https://api.github.com/repos/symfony/config/zipball/6cbbca1038782b10a16405219a03f2589ed765ca",
+                "reference": "6cbbca1038782b10a16405219a03f2589ed765ca",
                 "shasum": ""
             },
             "require": {
@@ -2582,7 +2581,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-08-12T13:56:45+00:00"
+            "time": "2024-08-30T15:52:23+00:00"
         },
         {
             "name": "symfony/console",
@@ -2590,12 +2589,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "cc2dd55c49e04b10cec4aa6e47e099a2d1656845"
+                "reference": "ee7ee22b1dabcff731b7d79d3633c96251ad8404"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/cc2dd55c49e04b10cec4aa6e47e099a2d1656845",
-                "reference": "cc2dd55c49e04b10cec4aa6e47e099a2d1656845",
+                "url": "https://api.github.com/repos/symfony/console/zipball/ee7ee22b1dabcff731b7d79d3633c96251ad8404",
+                "reference": "ee7ee22b1dabcff731b7d79d3633c96251ad8404",
                 "shasum": ""
             },
             "require": {
@@ -2675,7 +2674,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-08-15T22:49:18+00:00"
+            "time": "2024-08-30T15:40:32+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -3773,28 +3772,28 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "09d5f55e54c20f2353a790d09772db3ad577b9ac"
+                "reference": "7e308268858ed6baedc8704a304727d20bc07c77"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/09d5f55e54c20f2353a790d09772db3ad577b9ac",
-                "reference": "09d5f55e54c20f2353a790d09772db3ad577b9ac",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/7e308268858ed6baedc8704a304727d20bc07c77",
+                "reference": "7e308268858ed6baedc8704a304727d20bc07c77",
                 "shasum": ""
             },
             "require": {
                 "ext-dom": "*",
                 "ext-libxml": "*",
                 "ext-xmlwriter": "*",
-                "nikic/php-parser": "^4.18 || ^5.0",
+                "nikic/php-parser": "^4.19.1 || ^5.1.0",
                 "php": ">=8.1",
-                "phpunit/php-file-iterator": "^4.0",
-                "phpunit/php-text-template": "^3.0",
-                "sebastian/code-unit-reverse-lookup": "^3.0",
-                "sebastian/complexity": "^3.0",
-                "sebastian/environment": "^6.0",
-                "sebastian/lines-of-code": "^2.0",
-                "sebastian/version": "^4.0",
-                "theseer/tokenizer": "^1.2.0"
+                "phpunit/php-file-iterator": "^4.1.0",
+                "phpunit/php-text-template": "^3.0.1",
+                "sebastian/code-unit-reverse-lookup": "^3.0.0",
+                "sebastian/complexity": "^3.2.0",
+                "sebastian/environment": "^6.1.0",
+                "sebastian/lines-of-code": "^2.0.2",
+                "sebastian/version": "^4.0.1",
+                "theseer/tokenizer": "^1.2.3"
             },
             "require-dev": {
                 "phpunit/phpunit": "^10.1"
@@ -3835,7 +3834,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
                 "security": "https://github.com/sebastianbergmann/php-code-coverage/security/policy",
-                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/10.1"
+                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/10.1.16"
             },
             "funding": [
                 {
@@ -3843,7 +3842,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-07-17T05:15:22+00:00"
+            "time": "2024-08-22T04:31:57+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -4096,12 +4095,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "23c7646b4ccd88a4dc383ceef9a8a11c57c8b972"
+                "reference": "43e7c3e6a484e538453f89dfa6a6f308c32792da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/23c7646b4ccd88a4dc383ceef9a8a11c57c8b972",
-                "reference": "23c7646b4ccd88a4dc383ceef9a8a11c57c8b972",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/43e7c3e6a484e538453f89dfa6a6f308c32792da",
+                "reference": "43e7c3e6a484e538453f89dfa6a6f308c32792da",
                 "shasum": ""
             },
             "require": {
@@ -4115,7 +4114,7 @@
                 "phar-io/manifest": "^2.0.4",
                 "phar-io/version": "^3.2.1",
                 "php": ">=8.1",
-                "phpunit/php-code-coverage": "^10.1.15",
+                "phpunit/php-code-coverage": "^10.1.16",
                 "phpunit/php-file-iterator": "^4.1.0",
                 "phpunit/php-invoker": "^4.0.0",
                 "phpunit/php-text-template": "^3.0.1",
@@ -4173,7 +4172,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.31"
             },
             "funding": [
                 {
@@ -4189,7 +4188,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-08-16T13:12:51+00:00"
+            "time": "2024-09-03T11:57:55+00:00"
         },
         {
             "name": "sebastian/cli-parser",
