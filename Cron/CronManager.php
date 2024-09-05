@@ -1,6 +1,6 @@
 <?php
 
-use Cron\Schedule;
+use Classes\Cron\Schedule;
 
 require_once "classes/project/modules/sticker/TextilManager.php";
 require_once "classes/project/modules/sticker/StickerImageManager.php";

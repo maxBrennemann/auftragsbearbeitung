@@ -1,6 +1,6 @@
 <?php
 
-namespace Cron;
+namespace Classes\Cron;
 
 class Schedule {
 
