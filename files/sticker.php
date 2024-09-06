@@ -311,7 +311,7 @@ if ($id == 0): ?>
 <div class="defCont">
     <h2 class="mb-2 font-bold">Größen</h2>
     <div id="sizeTableWrapper" class="overflow-x-scroll">
-        <?=$stickerCollection->getAufkleber()->getSizeTable()?>
+        <!--<?=$stickerCollection->getAufkleber()->getSizeTable()?>-->
     </div>
     <div class="grid grid-cols-2 mt-2">
         <div class="innerDefCont">

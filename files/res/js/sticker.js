@@ -2,20 +2,21 @@ import { click_textGeneration, click_showTextSettings, click_iterateText } from 
 import { loadTags, showTaggroupManager, addTag } from "./sticker/tagManager.js";
 import ProductConnector from "./sticker/productConnector.js";
 import { click_makeColorable, deleteImage, updateImageDescription, updateImageOverwrite } from "./sticker/imageManager.js";
-import { click_addNewWidth } from "./sticker/sizeTable.js";
+import { click_addNewWidth, initSizeTable } from "./sticker/sizeTable.js";
 import { } from "./sticker/statsManager.js";
 import { initBindings } from "./classes/bindings.js";
 import "./sticker/imageMove.js";
 import { ajax } from "./classes/ajax.js";
 
-const fnNames = {};
-fnNames.click_makeColorable = click_makeColorable;
-fnNames.click_textGeneration = click_textGeneration;
-fnNames.click_showTextSettings = click_showTextSettings;
-fnNames.click_iterateText = click_iterateText;
-fnNames.click_addNewWidth = click_addNewWidth;
-fnNames.click_deleteImage = deleteImage;
-fnNames.write_updateImageDescription = updateImageDescription;
+const fnNames = {
+    click_makeColorable: click_makeColorable,
+    click_textGeneration: click_textGeneration,
+    click_showTextSettings: click_showTextSettings,
+    click_iterateText: click_iterateText,
+    click_addNewWidth: click_addNewWidth,
+    click_deleteImage: deleteImage,
+    write_updateImageDescription: updateImageDescription,
+};
 
 const mainVariables = {
     productConnect: [],
@@ -49,6 +50,7 @@ function initSticker() {
     document.getElementById("creationDate").addEventListener("change", changeDate, false);
 
     initTextiles();
+    initSizeTable();
 }
 
 fnNames.click_toggleCheckbox = async function(e) {

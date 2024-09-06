@@ -7,4 +7,4 @@ require_once "vendor/autoload.php";
 require_once "classes/DBAccess.php";
 require_once "cron/CronManager.php";
 
-CronManager::schedule();
+\Classes\Cron\CronManager::schedule();
