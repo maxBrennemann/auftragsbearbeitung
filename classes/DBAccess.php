@@ -14,10 +14,10 @@ class DBAccess {
 			return;
 
 		try {
-			$host = $_ENV["HOST"];
-            $database = $_ENV["DATABASE"];
-            $username = $_ENV["USERNAME"];
-            $password = $_ENV["PASSWORD"];
+			$host = $_ENV["DB_HOST"];
+            $database = $_ENV["DB_DATABASE"];
+            $username = $_ENV["DB_USERNAME"];
+            $password = $_ENV["DB_PASSWORD"];
 
 			self::$connection = new PDO("mysql:host=$host;dbname=$database;charset=utf8", $username, $password);
 			self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
