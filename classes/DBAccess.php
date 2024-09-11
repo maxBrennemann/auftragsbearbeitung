@@ -10,20 +10,20 @@ class DBAccess {
 	}
 	
 	private static function createConnection() {
-		if (self::$connection != null)
+		if (self::$connection != null) {
 			return;
+		}
 
 		try {
-			$host = $_ENV["DB_HOST"];
-            $database = $_ENV["DB_DATABASE"];
-            $username = $_ENV["DB_USERNAME"];
-            $password = $_ENV["DB_PASSWORD"];
+			$host = $_ENV["DB_HOST"] ?? "";
+            $database = $_ENV["DB_DATABASE"] ?? "";
+            $username = $_ENV["DB_USERNAME"] ?? "";
+            $password = $_ENV["DB_PASSWORD"] ?? "";
 
 			self::$connection = new PDO("mysql:host=$host;dbname=$database;charset=utf8", $username, $password);
 			self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} catch(PDOException $e) {
-			echo "Error connecting to the database.";
-    		error_log($e->getMessage());
+			JSONResponseHandler::throwError(500, $e->getMessage());
 		}
 	}
 	

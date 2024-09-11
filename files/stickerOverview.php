@@ -36,12 +36,12 @@
     </div>
     <div class="defCont">
         <h1 class="font-bold">Neues Motiv hinzufügen</h1>
-        <div class="flex">
+        <div class="flex flex-wrap">
             <input type="text" id="newTitle" class="px-4 py-2 m-1 text-sm text-slate-600 rounded-lg">
             <button type="submit" data-binding="true" data-fun="createNewSticker" class="btn-primary">Hinzufügen</button>
         </div>
         <h1 class="font-bold">Altes Motiv aus Shop laden</h1>
-        <div class="flex">
+        <div class="flex flex-wrap">
             <input type="text" id="oldLink" class="px-4 py-2 m-1 text-sm text-slate-600 rounded-lg">
             <button type="submit" data-binding="true" data-fun="loadSticker" class="btn-primary">Laden</button>
         </div>
