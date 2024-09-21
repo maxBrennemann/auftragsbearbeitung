@@ -272,4 +272,5 @@ class Aufkleber extends AufkleberWandtattoo
         DBAccess::updateQuery($query, ["id" => $this->getId()]);
         echo "success";
     }
+    
 }

@@ -383,4 +383,16 @@ class StickerCollection implements Iterator
             "sizes" => $sizes,
         ]);
     }
+
+    public static function getPriceScheme() {
+        $id = (int) Tools::get("id");
+        $stickerCollection = new StickerCollection($id);
+        $aufkleber = $stickerCollection->getAufkleber();
+        $priceClass = $aufkleber->getPriceClass();
+        $priceClass = $priceClass == 0 ? "price1" : "price2";
+
+        JSONResponseHandler::sendResponse([
+            "priceScheme" => $priceClass,
+        ]);
+    }
 }

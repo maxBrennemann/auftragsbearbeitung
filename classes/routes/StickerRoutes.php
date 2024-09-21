@@ -13,6 +13,7 @@ class StickerRoutes extends Routes
      * @uses StickerCollection::getStickerStatus
      * @uses ChatGPTConnection::iterateText
      * @uses StickerCollection::getStickerSizes
+     * @uses StickerCollection::getPriceScheme
      * 
      * @uses StickerTagManager::getTagSuggestions
      * 
@@ -23,6 +24,7 @@ class StickerRoutes extends Routes
         "/sticker/{id}/status" => "StickerCollection::getStickerStatus",
         "/sticker/{id}/texts/{type}/{form}" => "ChatGPTConnection::iterateText",
         "/sticker/{id}/sizes" => "StickerCollection::getStickerSizes",
+        "/sticker/{id}/priceScheme" => [StickerCollection::class, "getPriceScheme"],
 
         "/sticker/tags" => "",
         "/sticker/tags/crawl" => "",
