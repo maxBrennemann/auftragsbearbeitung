@@ -5,6 +5,7 @@ require_once "classes/project/modules/sticker/StickerCollection.php";
 require_once "classes/project/modules/sticker/StickerTagManager.php";
 require_once "classes/project/modules/sticker/Textil.php";
 require_once "classes/project/modules/sticker/ChatGPTConnection.php";
+require_once "classes/project/modules/sticker/AufkleberWandtattoo.php";
 
 class StickerRoutes extends Routes
 {
@@ -43,6 +44,8 @@ class StickerRoutes extends Routes
      * @uses StickerCollection::addSticker
      * 
      * @uses StickerTagManager::addTag
+     * 
+     * @uses 
      */
     protected static $postRoutes = [
         "/sticker/{id}/export" => "StickerCollection::exportSticker",
@@ -55,14 +58,24 @@ class StickerRoutes extends Routes
 
         "/sticker/tags" => "StickerTagManager::addTag",
         "/sticker/tags/groups" => "",
+
+        "/sticker/sizes/{id}" => [],
+    ];
+
+    /**
+     * @uses AufkleberWandtattoo::addSize
+     */
+    protected static $putRoutes = [
+        "/sticker/sizes" => [AufkleberWandtattoo::class, "addSize"],
     ];
 
     /**
      * @uses StickerTagManager::removeTag
+     * @uses AufkleberWandtattoo::deleteSize
      */
     protected static $deleteRoutes = [
-        
         "/sticker/tags" => "StickerTagManager::removeTag",
+        "/sticker/sizes/{id}" => [AufkleberWandtattoo::class, "deleteSize"],
     ];
 
     public function __construct()

@@ -1226,12 +1226,6 @@ class Ajax {
 					"id" => $id,
 				]);
 			break;
-			case "deleteSizeRow":
-				$id = (int) $_POST["id"];
-				$query = "DELETE FROM module_sticker_sizes WHERE id = :id;";
-				DBAccess::deleteQuery($query, ["id" => $id]);
-				echo "success";
-			break;
 			case "resetSizeRow":
 				$id = (int) $_POST["id"];
 				$size = DBAccess::selectQuery("SELECT width, height FROM module_sticker_sizes WHERE id = :id LIMIT 1", ["id" => $id]);

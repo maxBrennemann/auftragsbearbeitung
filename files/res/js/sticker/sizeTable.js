@@ -1,11 +1,12 @@
 import { ajax } from "../classes/ajax.js";
 import { getStickerId } from "../sticker.js";
-import { deleteButton, editButton, resetInputs } from "./helper.js";
+import { deleteButton, editButton, parseInput, resetInputs } from "./helper.js";
 
 const sizeData = {
     sizes: [],
     priceScheme: "price1",
     edit: false,
+    editId: 0,
 }
 
 export const initSizeTable = async () => {
@@ -27,24 +28,23 @@ const getPriceScheme = async () => {
     sizeData.priceScheme = data.priceScheme;
 }
 
-const sendSizeData = () => {
-
-}
-
 const sendPriceScheme = () => {
-
+    ajax.post(``);
 }
 
-const setSinglePrice = () => {
+const calcTable = (id) => {
+    const el = sizeData.sizes.filter(s => s.id == id)[0];
+    const ratio = el.height / el.widht;
 
-}
-
-const resetPrice = () => {
-
+    sizeData.sizes.forEach(s => {
+        s.height = ratio * s.width;
+        s.costs = (s.height * s.width) / 100000;
+    });
 }
 
 const createTable = () => {
     const anchor = document.getElementById("sizeTableAnchor");
+    anchor.innerHTML = "";
     
     if (sizeData.sizes.length == 0) {
         const row = anchor.insertRow();
@@ -91,8 +91,13 @@ const deleteWidth = (e) => {
     }
 
     const id = e.currentTarget.dataset?.id;
-    ajax.delete(`/api/v1/`).then(r => {
+    ajax.delete(`/api/v1/sticker/sizes/${id}`).then(async r => {
+        if (r.status != "success") {
+            return;
+        }
 
+        await getSizeData();
+        createTable();
     });
 }
 
@@ -107,10 +112,7 @@ const editWidth = (e) => {
     changeButtons();
 
     const id = e.currentTarget.dataset?.id;
-
-    
-    sizeWidthAnchor
-    sizePriceAnchor
+    sizeData.editId = id;
 }
 
 const changeEditText = () => {
@@ -143,24 +145,33 @@ const changeButtons = () => {
     }
 }
 
+/**
+ * listeners for edit, delete and add
+ */
 const initListeners = () => {
     const btnSave = document.getElementById("sizeBtnAdd");
-    btbtnSavenEdit.addEventListener("click", () => {
+    btnSave.addEventListener("click", () => {
         const newHeight = document.getElementById("sizeInputAnchor").value;
         const newPrice = document.getElementById("sizePriceAnchor").value;
 
-        ajax.put().then(r => {});
+        const height = parseInput(newHeight);
+        const price = parseInput(newPrice);
+
+        ajax.put(`/api/v1/sticker/sizes`, {
+            "height": height,
+            "price": price,
+        }).then(async r => {
+            if (r.status != "success") {
+                return;
+            }
+    
+            await getSizeData();
+            createTable();
+        });
     });
 
     const btnEdit = document.getElementById("sizeBtnEdit");
-    btnEdit.addEventListener("click", () => {
-        const newHeight = document.getElementById("sizeInputAnchor").value;
-        const newPrice = document.getElementById("sizePriceAnchor").value;
-
-        ajax.post().then(r => {
-            changeAfterAction();
-        });
-    });
+    btnEdit.addEventListener("click", calculateEdit);
 
     const btnCancel = document.getElementById("sizeBtnCancel");
     btnCancel.addEventListener("click", () => {
@@ -168,8 +179,30 @@ const initListeners = () => {
     });
 }
 
+const calculateEdit = () => {
+    const newHeight = document.getElementById("sizeInputAnchor").value;
+    const newPrice = document.getElementById("sizePriceAnchor").value;
+
+    const parsedHeight = parseInput(newHeight);
+    sizeData.sizes.forEach(s => {
+
+    });
+
+    ajax.post(`/api/v1/`, {
+
+    }).then(async r => {
+        await getSizeData();
+        changeAfterAction();
+    });
+}
+
+/**
+ * changes back various changes for edit
+ */
 const changeAfterAction = () => {
     sizeData.edit = false;
+    sizeData.editId = 0;
+
     changeEditText();
     changeButtons();
 

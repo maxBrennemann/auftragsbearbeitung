@@ -259,4 +259,14 @@ class AufkleberWandtattoo extends Sticker {
         return $data;
     }
 
+    public static function deleteSize() {
+        $id = (int) Tools::get("id");
+        $query = "DELETE FROM module_sticker_sizes WHERE id = :id;";
+        DBAccess::deleteQuery($query, ["id" => $id]);
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+        ]);
+    }
+
 }

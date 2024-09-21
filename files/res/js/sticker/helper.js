@@ -28,9 +28,19 @@ export const editButton = (id) => {
     return template.content.firstElementChild;
 }
 
-export function resetInputs(inputs) {
+export const resetInputs = (inputs) => {
     Array.from(inputs).forEach(input => {
         const defaultValue = input.dataset.default;
         input.value = defaultValue ?? "";
     });
+}
+
+export const parseInput = (value) => {
+    value *= 100;
+    value = parseInt(value);
+    return value;
+}
+
+export const parseEuro = (value) => {
+    return value;
 }
