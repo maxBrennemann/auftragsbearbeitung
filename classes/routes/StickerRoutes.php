@@ -40,6 +40,7 @@ class StickerRoutes extends Routes
      * @uses StickerCollection::exportSticker
      * @uses Textil::toggleTextile
      * @uses Textil::setPrice
+     * @uses StickerCollection::setPriceScheme
      * 
      * @uses StickerCollection::addSticker
      * 
@@ -51,6 +52,7 @@ class StickerRoutes extends Routes
         "/sticker/{id}/export" => "StickerCollection::exportSticker",
         "/sticker/{id}/textile/{idTextile}/toggle" => "Textil::toggleTextile",
         "/sticker/{id}/textile/{idTextile}/price" => "Textil::setPrice",
+        "/sticker/{id}/priceScheme" => [StickerCollection::class, "setPriceScheme"],
 
         "/sticker/{id}/texts/{type}/{form}" => "ChatGPTConnection::newText",
 

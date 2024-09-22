@@ -1057,13 +1057,6 @@ class Ajax {
 				DBAccess::updateQuery($query);
 				echo "success";
 			break;
-			case "getSizeTable":
-				require_once("classes/project/modules/sticker/Aufkleber.php");
-				$id = (int) $_POST["id"];
-
-				$aufkleber = new Aufkleber($id);
-				echo $aufkleber->getSizeTable();
-			break;
 			case "deleteImage":
 				$imageId = (int) $_POST["imageId"];
 				$query = "DELETE FROM dateien WHERE id = :idImage;";
@@ -1193,44 +1186,6 @@ class Ajax {
 				$response = $sticker->setName($title);
 
 				echo $response["status"];
-				//echo json_encode($response);
-			break;
-			case "setAufkleberGroessen":
-				$sizes = json_decode($_POST["sizes"], true);
-
-				require_once('classes/project/modules/sticker/AufkleberWandtattoo.php');
-				$id = (int) $_POST["id"];
-				$aufkleberWandtatto = new AufkleberWandtattoo($id);
-				foreach ($sizes["sizes"] as $size) {
-					$aufkleberWandtatto->updateSizeTable($size);
-				}
-			break;
-			case "resetSizeRow":
-				$id = (int) $_POST["id"];
-				$size = DBAccess::selectQuery("SELECT width, height FROM module_sticker_sizes WHERE id = :id LIMIT 1", ["id" => $id]);
-				$width = $size[0]["width"];
-				$height = $size[0]["height"];
-
-				require_once('classes/project/modules/sticker/AufkleberWandtattoo.php');
-				$aufkleberWandtatto = new AufkleberWandtattoo($id);
-				$difficulty = $aufkleberWandtatto->getDifficulty();
-				$price = $aufkleberWandtatto->getPrice($width, $height, $difficulty);
-
-				DBAccess::updateQuery("UPDATE module_sticker_sizes SET price = :price, price_default = 1 WHERE id = :id", [
-					"price" => $price,
-					"id" => $id,
-				]);
-				echo $price;
-			break;
-			case "setSizePrice":
-				$idWidth = (int) $_POST["id"];
-				$price = (int) $_POST["price"];
-				
-				$query = "UPDATE module_sticker_sizes SET price = :price, price_default = 0 WHERE id = :id;";
-				DBAccess::insertQuery($query, [
-					"price" => $price,
-					"id" => $idWidth
-				]);
 			break;
 			case "productVisibility":
 				require_once('classes/project/modules/sticker/StickerCollection.php');

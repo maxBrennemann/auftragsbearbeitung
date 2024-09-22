@@ -204,45 +204,6 @@ class AufkleberWandtattoo extends Sticker {
         return $data; 
     }
 
-    public function getSizeTable() {
-        $query = "SELECT id, width, height, price, 
-                ((width / 1000) * (height / 1000) * 10) as costs, price_default
-            FROM module_sticker_sizes 
-            WHERE id_sticker = :idSticker
-            ORDER BY width";
-        
-        $data = DBAccess::selectQuery($query, ["idSticker" => $this->getId()]);
-
-        if ($data == null) {
-            $data = $this->generateDefaultData();
-        }
-
-        $column_names = array(
-            0 => array("COLUMN_NAME" => "id", "ALT" => "Nummer"),
-            1 => array("COLUMN_NAME" => "width", "ALT" => "Breite"),
-            2 => array("COLUMN_NAME" => "height", "ALT" => "Höhe"),
-            3 => array("COLUMN_NAME" => "price", "ALT" => "Preis (brutto)"),
-            4 => array("COLUMN_NAME" => "costs", "ALT" => "Material"),
-        );
-
-        foreach ($data as &$d) {
-            $d["width"] = str_replace(".", ",", ((int) $d["width"]) / 10) . "cm";
-            $d["height"] = str_replace(".", ",", ((int) $d["height"]) / 10) . "cm";
-            $d["price"] = number_format((float) $d["price"] / 100, 2, ',', '') . "€";
-            $d["costs"] = number_format((float) $d["costs"], 2, ',', '') . "€";
-        }
-
-		$t = new Table();
-		$t->createByData($data, $column_names);
-		$t->setType("module_sticker_sizes");
-		$t->addActionButton("delete", "id");
-        $t->addAction(null, Icon::getDefault("iconReset"), "Preis zurücksetzen");
-        $t->addDataset("is-default", "price_default");
-
-        $_SESSION[$t->getTableKey()] = serialize($t);
-		return $t->getTable();
-    }
-
     public function getSizes() {
         $query = "SELECT id, width, height, price, 
                 ((width / 1000) * (height / 1000) * 10) as costs, price_default
@@ -289,6 +250,15 @@ class AufkleberWandtattoo extends Sticker {
         JSONResponseHandler::sendResponse([
             "status" => "success",
         ]);
+    }
+
+    public static function updateSizes() {
+        $sizes = json_decode($_POST["sizes"], true);
+        $id = (int) $_POST["id"];
+        $aufkleberWandtatto = new AufkleberWandtattoo($id);
+        foreach ($sizes["sizes"] as $size) {
+            $aufkleberWandtatto->updateSizeTable($size);
+        }
     }
 
 }

@@ -323,7 +323,6 @@ if ($id == 0): ?>
             </thead>
             <tbody id="sizeTableAnchor"></tbody>
         </table>
-        <!--<?=$stickerCollection->getAufkleber()->getSizeTable()?>-->
     </div>
     <div class="grid grid-cols-2 mt-2">
         <div class="innerDefCont bg-gray-200">
@@ -348,13 +347,13 @@ if ($id == 0): ?>
             <p class="font-semibold">Aufkleberpreisklasse</p>
             <div>
                 <label>
-                    <input id="sizesPrice1" type="radio" name="priceClass" <?=$stickerCollection->getAufkleber()->getPriceClass() == 0 ? "checked" : ""?>>
+                    <input id="sizesPrice1" type="radio" name="priceClass">
                     <span>Preisklasse 1 (günstiger)</span>
                 </label>
             </div>
             <div>
                 <label>
-                    <input id="sizesPrice2" type="radio" name="priceClass" <?=$stickerCollection->getAufkleber()->getPriceClass() == 1 ? "checked" : ""?>>
+                    <input id="sizesPrice2" type="radio" name="priceClass">
                     <span>Preisklasse 2 (teurer)</span>
                 </label>
             </div>

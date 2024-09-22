@@ -27,10 +27,27 @@ const getPriceScheme = async () => {
     const idSticker = getStickerId();
     const data = await ajax.get(`/api/v1/sticker/${idSticker}/priceScheme`);
     sizeData.priceScheme = data.priceScheme;
+
+    if (sizeData.priceScheme == "price1") {
+        document.getElementById("sizesPrice1").checked = true;
+    } else {
+        document.getElementById("sizesPrice2").checked = true;
+    }
 }
 
 const sendPriceScheme = () => {
-    ajax.post(``);
+    const sizesPrice1 = document.getElementById("sizesPrice1");
+    const value = sizesPrice1.checked;
+
+    if (value) {
+        sizeData.priceScheme = "price1";
+    } else {
+        sizeData.priceScheme = "price2";
+    }
+    
+    ajax.post(`/api/v1/sticker/${idSticker}/priceScheme`, {
+        "priceScheme": sizeData.priceScheme == "price1" ? 0 : 1,
+    });
 }
 
 const calcTable = (id) => {
@@ -166,6 +183,12 @@ const initListeners = () => {
     btnCancel.addEventListener("click", () => {
         changeAfterAction();
     });
+
+    const sizesPrice1 = document.getElementById("sizesPrice1");
+    sizesPrice1.addEventListener("click", sendPriceScheme);
+
+    const sizesPrice2 = document.getElementById("sizesPrice2");
+    sizesPrice2.addEventListener("click", sendPriceScheme);
 }
 
 const addWidth = () => {
