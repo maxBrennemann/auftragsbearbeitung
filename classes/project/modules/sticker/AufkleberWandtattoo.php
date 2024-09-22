@@ -259,6 +259,28 @@ class AufkleberWandtattoo extends Sticker {
         return $data;
     }
 
+    public static function addSize() {
+        $width = (int) Tools::get("width");
+        $height = (int) Tools::get("height");
+        $price = (int) Tools::get("price");
+        $id = (int) Tools::get("idSticker");
+        $isDefault = (int) Tools::get("isDefaultPrice");
+
+        $query = "INSERT INTO module_sticker_sizes (width, height, price, id_sticker, price_default) VALUES (:width, :height, :price, :id, :default)";
+        $id = DBAccess::insertQuery($query, [
+            "width" => $width,
+            "height" => $height,
+            "price" => $price,
+            "id" => $id,
+            "default" => $isDefault,
+        ]);
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+            "id" => $id,
+        ]);
+    }
+
     public static function deleteSize() {
         $id = (int) Tools::get("id");
         $query = "DELETE FROM module_sticker_sizes WHERE id = :id;";

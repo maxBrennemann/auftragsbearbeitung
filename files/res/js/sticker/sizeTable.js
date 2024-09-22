@@ -1,12 +1,13 @@
 import { ajax } from "../classes/ajax.js";
 import { getStickerId } from "../sticker.js";
-import { deleteButton, editButton, parseInput, resetInputs } from "./helper.js";
+import { deleteButton, editButton, parseEuro, parseInput, resetInputs } from "./helper.js";
 
 const sizeData = {
     sizes: [],
     priceScheme: "price1",
     edit: false,
     editId: 0,
+    ratio: 0,
 }
 
 export const initSizeTable = async () => {
@@ -34,12 +35,15 @@ const sendPriceScheme = () => {
 
 const calcTable = (id) => {
     const el = sizeData.sizes.filter(s => s.id == id)[0];
-    const ratio = el.height / el.widht;
+    const ratio = el.height / el.width;
+    sizeData.ratio = ratio;
 
     sizeData.sizes.forEach(s => {
         s.height = ratio * s.width;
-        s.costs = (s.height * s.width) / 100000;
+        s.costs = (s.height * s.width) / 1000;
     });
+
+    createTable();
 }
 
 const createTable = () => {
@@ -68,7 +72,7 @@ const createTable = () => {
         price.innerHTML = s.price / 100;
 
         const cost = row.insertCell();
-        cost.innerHTML = s.costs / 100;
+        cost.innerHTML = Math.round((s.costs / 100 + Number.EPSILON) * 100) / 100
 
         const actions = row.insertCell();
         const actionsDiv = document.createElement("div");
@@ -112,7 +116,10 @@ const editWidth = (e) => {
     changeButtons();
 
     const id = e.currentTarget.dataset?.id;
-    sizeData.editId = id;
+    sizeData.editId = parseInt(id);
+    const el = sizeData.sizes.filter(s => s.id == id)[0];
+    document.getElementById("sizeInputAnchor").value = el.height / 100;
+    document.getElementById("sizePriceAnchor").value = el.price / 100;
 }
 
 const changeEditText = () => {
@@ -150,25 +157,7 @@ const changeButtons = () => {
  */
 const initListeners = () => {
     const btnSave = document.getElementById("sizeBtnAdd");
-    btnSave.addEventListener("click", () => {
-        const newHeight = document.getElementById("sizeInputAnchor").value;
-        const newPrice = document.getElementById("sizePriceAnchor").value;
-
-        const height = parseInput(newHeight);
-        const price = parseInput(newPrice);
-
-        ajax.put(`/api/v1/sticker/sizes`, {
-            "height": height,
-            "price": price,
-        }).then(async r => {
-            if (r.status != "success") {
-                return;
-            }
-    
-            await getSizeData();
-            createTable();
-        });
-    });
+    btnSave.addEventListener("click", addWidth);
 
     const btnEdit = document.getElementById("sizeBtnEdit");
     btnEdit.addEventListener("click", calculateEdit);
@@ -179,14 +168,81 @@ const initListeners = () => {
     });
 }
 
+const addWidth = () => {
+    const newWidth = document.getElementById("sizeInputAnchor").value;
+    const newPrice = document.getElementById("sizePriceAnchor").value;
+
+    const width = parseInput(newWidth);
+    const height = sizeData.ratio * width;
+    let price = parseEuro(newPrice);
+
+    if (price == 0) {
+        price = getDefaultPrice(width, height);
+    }
+
+    let isDefaultPrice = 0;
+    if (price == getDefaultPrice(width, height)) {
+        isDefaultPrice = 1;
+    }
+
+    ajax.put(`/api/v1/sticker/sizes`, {
+        "width": width,
+        "height": height,
+        "price": price,
+        "idSticker": getStickerId(),
+        "isDefaultPrice": isDefaultPrice,
+    }).then(async r => {
+        if (r.status != "success") {
+            return;
+        }
+
+        await getSizeData();
+        createTable();
+    });
+}
+
+const getDefaultPrice = (width, height) => {
+    let base = 0;
+    if (width >= 1200) {
+        base = 2100;
+    } else if (width >= 900) {
+        base = 1950;
+    } else if (width >= 600) {
+        base = 1700;
+    } else if (width >= 300) {
+        base = 1500;
+    } else {
+        base = 1200;
+    }
+
+    const priceSchemeFactor = sizeData.priceScheme == 1 ? 1: 0;
+    base = base + 200 * priceSchemeFactor;
+    if (height >= 0.5 * width) {
+        base += 100;
+    }
+    
+    return base;
+}
+
 const calculateEdit = () => {
     const newHeight = document.getElementById("sizeInputAnchor").value;
     const newPrice = document.getElementById("sizePriceAnchor").value;
 
     const parsedHeight = parseInput(newHeight);
-    sizeData.sizes.forEach(s => {
+    const parsedPrice = parseEuro(newPrice);
 
-    });
+    sizeData.sizes.forEach(el => {
+        if (el.id !== sizeData.editId) {
+            return;
+        }
+
+        el.height = parsedHeight;
+        if (el.price !== 0) {
+            el.price = parsedPrice;
+        }
+    })
+
+    calcTable(sizeData.editId);
 
     ajax.post(`/api/v1/`, {
 

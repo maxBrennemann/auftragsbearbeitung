@@ -36,11 +36,13 @@ export const resetInputs = (inputs) => {
 }
 
 export const parseInput = (value) => {
-    value *= 100;
+    value *= 10;
     value = parseInt(value);
     return value;
 }
 
 export const parseEuro = (value) => {
+    value *= 100;
+    value = parseInt(value);
     return value;
 }

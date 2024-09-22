@@ -1205,27 +1205,6 @@ class Ajax {
 					$aufkleberWandtatto->updateSizeTable($size);
 				}
 			break;
-			case "addSize":
-				$width = (int) $_POST["width"];
-				$height = (int) $_POST["height"];
-				$price = (int) $_POST["price"];
-				$id = (int) $_POST["id"];
-				$isDefault = (int) $_POST["isDefaultPrice"];
-
-				$query = "INSERT INTO module_sticker_sizes (width, height, price, id_sticker, price_default) VALUES (:width, :height, :price, :id, :default)";
-				$id = DBAccess::insertQuery($query, [
-					"width" => $width,
-					"height" => $height,
-					"price" => $price,
-					"id" => $id,
-					"default" => $isDefault,
-				]);
-
-				echo json_encode([
-					"status" => "success",
-					"id" => $id,
-				]);
-			break;
 			case "resetSizeRow":
 				$id = (int) $_POST["id"];
 				$size = DBAccess::selectQuery("SELECT width, height FROM module_sticker_sizes WHERE id = :id LIMIT 1", ["id" => $id]);
