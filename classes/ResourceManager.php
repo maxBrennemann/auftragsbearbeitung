@@ -1,21 +1,6 @@
 <?php
 
-require_once('classes/MinifyFiles.php');
-require_once('classes/DBAccess.php');
-require_once('classes/Link.php');
-require_once('classes/project/Config.php');
-require_once('classes/Ajax.php');
-require_once('classes/JSONResponseHandler.php');
-require_once('classes/Link.php');
-require_once('classes/Login.php');
-require_once('classes/Protocol.php');
-require_once('classes/Tools.php');
-require_once('classes/project/FormGenerator.php');
-require_once('classes/project/CacheManager.php');
-require_once('classes/project/Icon.php');
-require_once('classes/project/Posten.php');
-require_once('classes/project/Angebot.php');
-require_once('classes/project/NotificationManager.php');
+namespace Classes;
 
 class ResourceManager
 {

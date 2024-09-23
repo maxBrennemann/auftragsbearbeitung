@@ -1,7 +1,6 @@
 <?php
 
-require_once "classes/project/Produkt.php";
-require_once "classes/project/Auftrag.php";
+namespace Classes;
 
 class Ajax {
 	

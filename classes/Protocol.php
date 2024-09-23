@@ -1,5 +1,7 @@
 <?php
 
+namespace Classes;
+
 class Protocol {
 
 	private static $file;

@@ -1,4 +1,6 @@
-<?php 
+<?php
+
+namespace Classes;
 
 class Files {
 
@@ -13,5 +15,3 @@ class Files {
     }
     
 }
-
-?>

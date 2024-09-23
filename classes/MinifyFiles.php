@@ -1,5 +1,7 @@
 <?php
 
+namespace Classes;
+
 use MatthiasMullie\Minify\CSS;
 use MatthiasMullie\Minify\JS;
 

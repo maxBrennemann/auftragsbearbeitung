@@ -1,8 +1,6 @@
 <?php
 
-require_once('classes/project/Produkt.php');
-require_once('classes/project/Auftrag.php');
-require_once('classes/project/Auftragsverlauf.php');
+namespace Classes;
 
 class Upload
 {

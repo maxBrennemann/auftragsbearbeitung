@@ -1,6 +1,6 @@
 <?php
 
-require_once('Mailer.php');
+namespace Classes;
 
 class Login
 {

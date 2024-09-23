@@ -1,5 +1,7 @@
 <?php
 
+namespace Classes;
+
 class Mailer {
 	
 	function __construct() {

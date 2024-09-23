@@ -1,5 +1,7 @@
 <?php
 
+namespace Classes;
+
 class DBAccess {
 
 	protected static $connection;
