@@ -2,7 +2,7 @@
 
 require_once "classes/project/modules/sticker/PrestashopConnection.php";
 require_once "vendor/autoload.php";
-require_once "cron/Queuable.php";
+require_once "Cron/Queuable.php";
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
