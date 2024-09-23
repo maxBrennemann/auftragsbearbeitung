@@ -2,22 +2,19 @@
 
 namespace Classes\Routes;
 
-class TimeTrackingRoutes extends Routes {
+class TimeTrackingRoutes extends Routes
+{
 
-    protected static $getRoutes = [
-    ];
+    protected static $getRoutes = [];
 
-    protected static $postRoutes = [
-    ];
+    protected static $postRoutes = [];
 
-    protected static $putRoutes = [
-    ];
+    protected static $putRoutes = [];
 
-    protected static $deleteRoutes = [
-    ];
+    protected static $deleteRoutes = [];
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
-
 }

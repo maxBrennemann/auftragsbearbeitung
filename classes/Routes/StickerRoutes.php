@@ -20,7 +20,7 @@ class StickerRoutes extends Routes
         "/sticker/{id}/status" => "StickerCollection::getStickerStatus",
         "/sticker/{id}/texts/{type}/{form}" => "ChatGPTConnection::iterateText",
         "/sticker/{id}/sizes" => "StickerCollection::getStickerSizes",
-        "/sticker/{id}/priceScheme" => [StickerCollection::class, "getPriceScheme"],
+        "/sticker/{id}/priceScheme" => [\Classes\Project\Modules\Sticker\StickerCollection::class, "getPriceScheme"],
 
         "/sticker/tags" => "",
         "/sticker/tags/crawl" => "",
@@ -47,7 +47,7 @@ class StickerRoutes extends Routes
         "/sticker/{id}/export" => "StickerCollection::exportSticker",
         "/sticker/{id}/textile/{idTextile}/toggle" => "Textil::toggleTextile",
         "/sticker/{id}/textile/{idTextile}/price" => "Textil::setPrice",
-        "/sticker/{id}/priceScheme" => [StickerCollection::class, "setPriceScheme"],
+        "/sticker/{id}/priceScheme" => [\Classes\Project\Modules\Sticker\StickerCollection::class, "setPriceScheme"],
 
         "/sticker/{id}/texts/{type}/{form}" => "ChatGPTConnection::newText",
 
@@ -63,7 +63,7 @@ class StickerRoutes extends Routes
      * @uses AufkleberWandtattoo::addSize
      */
     protected static $putRoutes = [
-        "/sticker/sizes" => [AufkleberWandtattoo::class, "addSize"],
+        "/sticker/sizes" => [\Classes\Project\Modules\Sticker\AufkleberWandtattoo::class, "addSize"],
     ];
 
     /**
@@ -72,7 +72,7 @@ class StickerRoutes extends Routes
      */
     protected static $deleteRoutes = [
         "/sticker/tags" => "StickerTagManager::removeTag",
-        "/sticker/sizes/{id}" => [AufkleberWandtattoo::class, "deleteSize"],
+        "/sticker/sizes/{id}" => [\Classes\Project\Modules\Sticker\AufkleberWandtattoo::class, "deleteSize"],
     ];
 
     public function __construct()

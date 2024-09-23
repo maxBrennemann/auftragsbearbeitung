@@ -2,6 +2,12 @@
 
 namespace Classes;
 
+use Classes\Project\Auftragsverlauf;
+use Classes\Project\Auftrag;
+use Classes\Project\Produkt;
+
+use Classes\Project\Modules\Sticker\StickerImage;
+
 class Upload
 {
 
@@ -149,7 +155,7 @@ class Upload
 
         try {
             /* https://stackoverflow.com/questions/2704314/multiple-file-upload-in-php */
-            $datetime = new DateTime();
+            $datetime = new \DateTime();
             $total = count($_FILES["files"]["name"]);
             /*echo "filename: " . $_FILES["files"]["name"][0];*/
             $ids = array();
@@ -172,7 +178,7 @@ class Upload
                     return $filename . " could not be uploaded, " . $_FILES["files"]["error"][$i];
                 }
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $msg = $e->getMessage();
         }
 
