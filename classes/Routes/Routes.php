@@ -2,6 +2,9 @@
 
 namespace Classes\Routes;
 
+use \Classes\JSONResponseHandler;
+use \Classes\Tools;
+
 class Routes
 {
 

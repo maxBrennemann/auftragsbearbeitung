@@ -2,7 +2,8 @@
 
 namespace Classes\Routes;
 
-class ProductRoutes extends Routes {
+class ProductRoutes extends Routes
+{
 
     /**
      * @uses AttributeGroup::getGroups()
@@ -37,30 +38,30 @@ class ProductRoutes extends Routes {
         "/attribute" => "AttributeGroup::addAttributeGroup",
         "/attribute/{id}/value" => "AttributeGroup::addAttribute",
 
-        "/category" => "Category::addNewCategory",
+        "/category" => [\Classes\Front\Category::class, "addNewCategory"],
     ];
 
     /**
-     * @uses Produkt::update()
-     * @uses Produkt::addCombinations()
+     * @uses \Classes\Project\Produkt::update()
+     * @uses \Classes\Project\Produkt::addCombinations()
      * 
-     * @uses AttributeGroup::updateAttribute()
-     * @uses AttributeGroup::updatePositions()
+     * @uses \Classes\Project\AttributeGroup::updateAttribute()
+     * @uses \Classes\Project\AttributeGroup::updatePositions()
      * 
-     * @uses Category::updateCategory()
+     * @uses \Classes\Front\Category::updateCategory()
      */
     protected static $putRoutes = [
-        "/product/{id}/type/{type}" => "Produkt::update",
-        "/product/{id}/combinations" => "Produkt::addCombinations",
+        "/product/{id}/type/{type}" => [\Classes\Project\Produkt::class, "update"],
+        "/product/{id}/combinations" => [\Classes\Project\Produkt::class, "addCombinations"],
 
-        "/attribute/{id}/value/{valueId}" => "AttributeGroup::updateAttribute",
-        "/attribute/{id}/positions" => "AttributeGroup::updatePositions",
+        "/attribute/{id}/value/{valueId}" => [\Classes\Project\AttributeGroup::class, "updateAttribute"],
+        "/attribute/{id}/positions" => [\Classes\Project\AttributeGroup::class, "updatePositions"],
 
-        "/category/{id}" => "Category::updateCategory",
+        "/category/{id}" => [\Classes\Front\Category::class, "updateCategory"],
     ];
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
-
 }
