@@ -2,38 +2,39 @@
 
 namespace Classes\Project;
 
-/**
- * Klasse generiert Tabellen für Formulare
- *
- * @access public
- * @author Max Brennemann, maxgoogelt@gmail.com
- */
-class FormGenerator {
-	
+use Classes\DBAccess;
+
+class FormGenerator
+{
+
 	protected $type;
 	protected $isOrderedBy;
 	protected $whereCondition;
 	protected $tableData;
 	protected $dataTypes = null;
 
-	function __construct($type, $isOrderedBy, $whereCondition) {
+	function __construct($type, $isOrderedBy, $whereCondition)
+	{
 		$this->type = $type;
 		$this->isOrderedBy = $isOrderedBy;
 		$this->whereCondition = $whereCondition;
 	}
 
-	public function setData($data) {
+	public function setData($data)
+	{
 		$this->tableData = $data;
 	}
 
-	private static function getColumnNames($type) {
+	private static function getColumnNames($type)
+	{
 		return DBAccess::selectColumnNames($type);
 	}
 
 	/*
 	* static function is used to cover the private static function generateTable(), because some parameters are not needed for this function
 	*/
-	public static function createTable($type, $editable, $showData, $sendTo, $amountOfData = 5, $isRowLink = false) {
+	public static function createTable($type, $editable, $showData, $sendTo, $amountOfData = 5, $isRowLink = false)
+	{
 		return self::generateTable($type, $editable, $showData, $sendTo, $amountOfData, $isRowLink);
 	}
 
@@ -45,19 +46,20 @@ class FormGenerator {
 	* $isRowLink creates a link for every first element of a row, the link is composed of the current page link and the getParameters showDetails and id, $isRowLink only works, if the page
 	* can show details for a specific value and if the first column represents a unique number
 	*/
-	private static function generateTable($type, $editable, $showData, $sendTo, $amountOfData, $isRowLink, $data = null, $column_names = null, $forceData = false, $retUrl = null, $addClass = "") {
+	private static function generateTable($type, $editable, $showData, $sendTo, $amountOfData, $isRowLink, $data = null, $column_names = null, $forceData = false, $retUrl = null, $addClass = "")
+	{
 		if ($column_names == null) {
 			$column_names = self::getColumnNames($type);
 		}
 
-		if($editable) {
+		if ($editable) {
 			$html_table = "<table class='allowAddingContent' data-type=$type data-send-to=$sendTo>";
 		} else {
 			$html_table = "<table data-type=$type>";
 		}
 
 		$html_table .= self::createTableHeader($column_names);
-		
+
 		if ($showData) {
 			if ($data == null && $forceData == false) {
 				$data = self::executeSQLQuery($type, $amountOfData);
@@ -74,7 +76,7 @@ class FormGenerator {
 				$html_table = $html_table . "</tr>";
 			}
 		}
-		
+
 		if ($editable) {
 			$html_table = $html_table . self::createEmptyRow(sizeof($column_names), $addClass, $type);
 		}
@@ -84,7 +86,8 @@ class FormGenerator {
 	/*
 	* executes the SQL Query composed of the type of the table, the amount of data to be extracted and the where condition as well as the order condition
 	*/
-	private static function executeSQLQuery($type, $amountOfData, $orderBy = "", $whereCondition = "") {
+	private static function executeSQLQuery($type, $amountOfData, $orderBy = "", $whereCondition = "")
+	{
 		$isOrderedByStatement = "";
 		$whereConditionStatement = "";
 		if (strcmp($orderBy, "") != 0) {
@@ -93,7 +96,7 @@ class FormGenerator {
 		if (strcmp($whereCondition, "") != 0) {
 			$whereConditionStatement = "WHERE {$whereCondition}";
 		}
-		
+
 		if ($amountOfData == -1) {
 			return DBAccess::selectQuery("SELECT * FROM $type $whereConditionStatement $isOrderedByStatement;");
 		} else {
@@ -104,15 +107,16 @@ class FormGenerator {
 	/*
 	* creates an empty table row the size of the input $number
 	*/
-	private static function createEmptyRow($number, $addClass, $type) {
+	private static function createEmptyRow($number, $addClass, $type)
+	{
 		$tableInfo = DBAccess::selectQuery("DESCRIBE $type");
 		$empty_row = "<tr>";
 
 		for ($i = 0; $i < $number; $i++) {
 			$dataType = $tableInfo[$i]['Type'];
-			if(strpos($dataType, "int") === 0) {
+			if (strpos($dataType, "int") === 0) {
 				$dataType = "number";
-			} else if(strpos($dataType, "varchar") === 0) {
+			} else if (strpos($dataType, "varchar") === 0) {
 				$dataType = (int) str_replace("varchar(", "", $dataType);
 			}
 			if ($addClass == "") {
@@ -125,7 +129,8 @@ class FormGenerator {
 		return $empty_row . "</tr>";
 	}
 
-	private static function createRow($showColumnData, $retUrl, $columnName, $n, $isRowLink, $type) {
+	private static function createRow($showColumnData, $retUrl, $columnName, $n, $isRowLink, $type)
+	{
 		$html = "";
 
 		/*
@@ -157,7 +162,8 @@ class FormGenerator {
 	/*
 	* creates the <th> row of the table containing the column names
 	*/
-	private static function createTableHeader($column_names) {
+	private static function createTableHeader($column_names)
+	{
 		$table_header = "<tr>";
 
 		for ($i = 0; $i < sizeof($column_names); $i++) {
@@ -168,7 +174,8 @@ class FormGenerator {
 		return $table_header . "</tr>";
 	}
 
-	public static function insertData($type, $data) {
+	public static function insertData($type, $data)
+	{
 		$column_names = DBAccess::selectColumnNames($type);
 
 		$input_string = "INSERT INTO $type (";
@@ -186,11 +193,13 @@ class FormGenerator {
 		DBAccess::insertQuery($input_string);
 	}
 
-	public function setIsOrderedBy($isOrderedBy) {
+	public function setIsOrderedBy($isOrderedBy)
+	{
 		$this->isOrderedBy = $isOrderedBy;
 	}
 
-	public function setWhereCondition($whereCondition) {
+	public function setWhereCondition($whereCondition)
+	{
 		$this->whereCondition = $whereCondition;
 	}
 
@@ -199,8 +208,9 @@ class FormGenerator {
 	*		- isOrderedBy
 	*		- whereCondition
 	*/
-	public function createSpecializedTable($editable, $showData, $sendTo, $amountOfData, $isRowLink, $column_names = null) {
-		if(strcmp($this->isOrderedBy, "") == 0 || $this->isOrderedBy == null) {
+	public function createSpecializedTable($editable, $showData, $sendTo, $amountOfData, $isRowLink, $column_names = null)
+	{
+		if (strcmp($this->isOrderedBy, "") == 0 || $this->isOrderedBy == null) {
 			return "";
 		} else {
 			$data = self::executeSQLQuery($this->type, $amountOfData, $this->isOrderedBy, $this->whereCondition);
@@ -213,18 +223,18 @@ class FormGenerator {
 	* type is not needed, because the column names are passed in an array, the table is not editable;
 	* Last parameter of generateTable is true, so the use of the passed data is forced (no null pointer or something else);
 	*/
-	public function createTableByData($data, $column_names) {
+	public function createTableByData($data, $column_names)
+	{
 		return self::generateTable($this->type, false, true, "", -1, false, $data, $column_names, true);
 	}
 
-	public function createTableByDataRowLink($data, $column_names, $type, $retUrl) {
+	public function createTableByDataRowLink($data, $column_names, $type, $retUrl)
+	{
 		return self::generateTable($type, false, true, "", -1, true, $data, $column_names, true, $retUrl);
 	}
 
-	public static function createEmptyTable($column_names, $addClass) {
+	public static function createEmptyTable($column_names, $addClass)
+	{
 		return self::generateTable("", true, false, "", 0, false, null, $column_names, false, null, $addClass);
 	}
-
 }
-
-?>

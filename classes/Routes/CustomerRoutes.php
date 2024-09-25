@@ -2,23 +2,25 @@
 
 namespace Classes\Routes;
 
-class CustomerRoutes extends Routes {
+class CustomerRoutes extends Routes
+{
 
     protected static $getRoutes = [
-        "/customer/{id}/contacts" => "Kunde::getContacts",
-        "/customer/{id}/addresses" => "",
+        "/customer/{id}/contacts" => [\Classes\Project\Kunde::class, "getContacts"],
+        "/customer/{id}/addresses" => [],
     ];
 
     protected static $postRoutes = [
-        "/customer" => "Kunde::addCustomerAjax",
+        "/customer" => [\Classes\Project\Kunde::class, "addCustomerAjax"],
     ];
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
 
-    public static function handleRequest($route) {
+    public static function handleRequest($route)
+    {
         parent::handleRequest($route);
     }
-
 }

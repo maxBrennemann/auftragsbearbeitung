@@ -2,20 +2,10 @@
 
 namespace Classes\Project;
 
-/*
-* pattern:
-* {
-*  rowname0 => {
-*      status => "preset",
-*      value => "presetValue"
-*  },
-*  rowname1 => {
-*      status => "unset,
-*      value => 0
-*  }
-* }
-*/
-class UpdateSchedule {
+use Classes\DBAccess;
+
+class UpdateSchedule
+{
 
     private $tableName;
     private $pattern;
@@ -24,12 +14,14 @@ class UpdateSchedule {
     private $values;
     private $parameters;
 
-    function __construct($tableName, $pattern) {
+    function __construct($tableName, $pattern)
+    {
         $this->tableName = $tableName;
         $this->pattern = $pattern;
     }
 
-    public function executeTableUpdate($data) {
+    public function executeTableUpdate($data)
+    {
         $this->applyPattern($data);
 
         $query = "INSERT INTO $this->tableName ($this->columns) VALUES ($this->parameters)";
@@ -41,7 +33,8 @@ class UpdateSchedule {
         echo "ok";
     }
 
-    private function applyPattern($data) {
+    private function applyPattern($data)
+    {
         $columns = array();
         $values = array();
         $parameters = array();
@@ -80,17 +73,16 @@ class UpdateSchedule {
         $this->values = $values;
     }
 
-    static function handlePostenDeletion() {
-        
-    }
+    static function handlePostenDeletion() {}
 
-    private function castValues($type, $cast, $value) {
+    private function castValues($type, $cast, $value)
+    {
         $result = null;
         switch ($type) {
             case "date":
                 $from = isset($cast["from"]) ? $cast["from"] : null;
                 $to = isset($cast["to"]) ? $cast["to"] : null;
-                $result = DateTime::createFromFormat($from, $value)->format($to);
+                $result = \DateTime::createFromFormat($from, $value)->format($to);
                 break;
             case "float":
                 $separator = isset($cast["separator"]) ? $cast["separator"] : null;
@@ -98,7 +90,7 @@ class UpdateSchedule {
                 $value = (float) $value;
                 $value = 100 * $value;
                 $value = (int) $value;
-                
+
                 $result = $value;
                 break;
             case "cm":
@@ -108,14 +100,11 @@ class UpdateSchedule {
                 } else {
                     $value = ((int) $value[0]) * 10;
                 }
-                
+
                 $result = $value;
                 break;
         }
 
         return $result;
     }
-
 }
-
-?>

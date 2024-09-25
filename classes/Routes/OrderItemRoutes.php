@@ -2,14 +2,13 @@
 
 namespace Classes\Routes;
 
-class OrderItemRoutes extends Routes {
+class OrderItemRoutes extends Routes
+{
 
-    protected static $getRoutes = [
-        
-    ];
+    protected static $getRoutes = [];
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
-
 }

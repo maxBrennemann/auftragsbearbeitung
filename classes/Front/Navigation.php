@@ -2,7 +2,10 @@
 
 namespace Classes\Front;
 
-class Navigation {
+use Classes\DBAccess;
+
+class Navigation
+{
 
     private $types = [
         "top" => 1
@@ -10,21 +13,25 @@ class Navigation {
 
     private $link = "";
     private $name = "";
-    
-    function __construct($link, $name) {
+
+    function __construct($link, $name)
+    {
         $this->link = $link;
         $this->name = $name;
     }
 
-    function getItemLink() {
+    function getItemLink()
+    {
         return $this->link;
     }
 
-    function getItemName() {
+    function getItemName()
+    {
         return $this->name;
     }
 
-    static function getNavigationLinks($type) {
+    static function getNavigationLinks($type)
+    {
         $items = array();
 
         if ($type == "top") {
@@ -52,8 +59,8 @@ class Navigation {
         return $items;
     }
 
-    static function getFooterLinks() {
+    static function getFooterLinks()
+    {
         return DBAccess::selectQuery("SELECT * FROM footer_links");
     }
-
 }

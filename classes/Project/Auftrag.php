@@ -2,14 +2,21 @@
 
 namespace Classes\Project;
 
+use Classes\DBAccess;
+use Classes\Link;
+use Classes\JSONResponseHandler;
+use Classes\Tools;
+use Classes\Login;
+
 /**
  * Klasse generiert im Zusammenhang mit der Template Datei auftrag.php die Übersicht für einen bestimmten Auftrag.
  * Dabei werden alle Auftragsposten und alle Bearbeitungsschritte aus der Datenbank geladen und als Objekte erstellt.
  * Diese können bearbeitet, ergänzt und abgearbeitet werden.
  */
-class Auftrag implements StatisticsInterface {
+class Auftrag implements StatisticsInterface
+{
 
-    protected $Auftragsnummer = null;
+	protected $Auftragsnummer = null;
 	protected $Auftragsbezeichnung = null;
 	protected $Auftragsbeschreibung = null;
 	protected $Auftragsposten = array();
@@ -27,7 +34,8 @@ class Auftrag implements StatisticsInterface {
 	private $isArchiviert = false;
 	private $isRechnung = false;
 
-	function __construct($auftragsnummer) {
+	function __construct($auftragsnummer)
+	{
 		$auftragsnummer = (int) $auftragsnummer;
 		if ($auftragsnummer > 0) {
 			$this->Auftragsnummer = $auftragsnummer;
@@ -49,7 +57,7 @@ class Auftrag implements StatisticsInterface {
 				if ($data['archiviert'] == 0 || $data['archiviert'] == "0") {
 					$this->isArchiviert = true;
 				}
-				
+
 				$data = DBAccess::selectQuery("SELECT * FROM schritte WHERE Auftragsnummer = {$auftragsnummer}");
 				foreach ($data as $step) {
 					$element = new Schritt($step['Auftragsnummer'], $step['Schrittnummer'], $step['Bezeichnung'], $step['Datum'], $step['Priority'], $step['istErledigt']);
@@ -58,12 +66,13 @@ class Auftrag implements StatisticsInterface {
 
 				$this->Auftragsposten = Posten::bekommeAllePosten($auftragsnummer);
 			} else {
-				throw new Exception("Auftragsnummer " . $auftragsnummer . " existiert nicht oder kann nicht gefunden werden<br>");
+				throw new \Exception("Auftragsnummer " . $auftragsnummer . " existiert nicht oder kann nicht gefunden werden<br>");
 			}
 		}
 	}
 
-	public function bekommeAnsprechpartner() {
+	public function bekommeAnsprechpartner()
+	{
 		$data = DBAccess::selectQuery("SELECT Vorname, Nachname, Email, Durchwahl, Mobiltelefonnummer FROM ansprechpartner, auftrag WHERE auftrag.Ansprechpartner = ansprechpartner.Nummer AND auftrag.Auftragsnummer = {$this->Auftragsnummer}");
 		if (empty($data)) {
 			return -1;
@@ -71,7 +80,8 @@ class Auftrag implements StatisticsInterface {
 		return $data[0];
 	}
 
-	public function getBearbeitungsschritte() {
+	public function getBearbeitungsschritte()
+	{
 		$htmlData = "";
 		foreach ($this->Bearbeitungsschritte as $schritt) {
 			$htmlData .= $schritt->getHTMLData();
@@ -79,7 +89,8 @@ class Auftrag implements StatisticsInterface {
 		return $htmlData;
 	}
 
-	public function getBearbeitungsschritteAsTable() {
+	public function getBearbeitungsschritteAsTable()
+	{
 		$query = "SELECT Schrittnummer, Bezeichnung, Datum, `Priority`, finishingDate FROM schritte WHERE Auftragsnummer = :id ORDER BY `Priority` DESC";
 		$data = DBAccess::selectQuery($query, ["id" => $this->Auftragsnummer]);
 
@@ -107,7 +118,8 @@ class Auftrag implements StatisticsInterface {
 	}
 
 	/* getBearbeitungsschritte with new Table class */
-	public function getOpenBearbeitungsschritteTable() {
+	public function getOpenBearbeitungsschritteTable()
+	{
 		$query = "SELECT Schrittnummer, Bezeichnung, Datum, `Priority` FROM schritte WHERE Auftragsnummer = :id AND istErledigt = 1 ORDER BY `Priority` DESC";
 		$data = DBAccess::selectQuery($query, ["id" => $this->Auftragsnummer]);
 
@@ -134,19 +146,23 @@ class Auftrag implements StatisticsInterface {
 		return $t->getTable();
 	}
 
-	public function getAuftragsbeschreibung() {
+	public function getAuftragsbeschreibung()
+	{
 		return $this->Auftragsbeschreibung;
 	}
 
-	public function getAuftragsnummer() {
+	public function getAuftragsnummer()
+	{
 		return $this->Auftragsnummer;
 	}
 
-	public function getIsPayed() {
+	public function getIsPayed()
+	{
 		return $this->isPayed;
 	}
 
-	public function getPaymentDate() {
+	public function getPaymentDate()
+	{
 		if (!$this->getIsPayed()) {
 			return "";
 		}
@@ -161,11 +177,12 @@ class Auftrag implements StatisticsInterface {
 		return $data[0]["payment_date"];
 	}
 
-	public function getPaymentType() {
+	public function getPaymentType()
+	{
 		if (!$this->getIsPayed()) {
 			return "";
 		}
-		
+
 		$query = "SELECT payment_type FROM invoice WHERE order_id = :orderId";
 		$data = DBAccess::selectQuery($query, ["orderId" => $this->Auftragsnummer]);
 
@@ -176,7 +193,8 @@ class Auftrag implements StatisticsInterface {
 		return $data[0]["payment_type"];
 	}
 
-	public function getAuftragsposten() {
+	public function getAuftragsposten()
+	{
 		$htmlData = "";
 		foreach ($this->Auftragsposten as $posten) {
 			$htmlData .= $posten->getHTMLData();
@@ -184,15 +202,18 @@ class Auftrag implements StatisticsInterface {
 		return $htmlData;
 	}
 
-	public function getAuftragspostenData() {
+	public function getAuftragspostenData()
+	{
 		return $this->Auftragsposten;
 	}
 
-	public function getAuftragstyp() {
+	public function getAuftragstyp()
+	{
 		return $this->auftragstyp;
 	}
 
-	public function getAuftragstypBezeichnung() {
+	public function getAuftragstypBezeichnung()
+	{
 		$query = "SELECT `Auftragstyp` FROM `auftragstyp` WHERE `id` = :idAuftragstyp LIMIT 1;";
 		$bez = DBAccess::selectQuery($query, ["idAuftragstyp" => $this->auftragstyp]);
 
@@ -203,28 +224,33 @@ class Auftrag implements StatisticsInterface {
 		}
 	}
 
-	public static function getAllOrderTypes() {
+	public static function getAllOrderTypes()
+	{
 		$query = "SELECT * FROM `auftragstyp`;";
 		$result = DBAccess::selectQuery($query);
 		return $result;
 	}
 
-	public function getAuftragsbezeichnung() {
+	public function getAuftragsbezeichnung()
+	{
 		return $this->Auftragsbezeichnung;
 	}
 
-	public function getDate() {
+	public function getDate()
+	{
 		return $this->datum;
 	}
 
-	public function getDeadline() {
+	public function getDeadline()
+	{
 		return $this->termin;
 	}
 
 	/**
 	 * calculates the sum of all items in the order
 	 */
-	public function calcOrderSum () {
+	public function calcOrderSum()
+	{
 		$price = 0;
 		foreach ($this->Auftragsposten as $posten) {
 			if ($posten->isInvoice() == 1) {
@@ -234,7 +260,8 @@ class Auftrag implements StatisticsInterface {
 		return $price;
 	}
 
-	public function preisBerechnen() {
+	public function preisBerechnen()
+	{
 		$price = 0;
 		foreach ($this->Auftragsposten as $posten) {
 			$price += $posten->bekommePreis();
@@ -242,7 +269,8 @@ class Auftrag implements StatisticsInterface {
 		return $price;
 	}
 
-	public function gewinnBerechnen() {
+	public function gewinnBerechnen()
+	{
 		$price = 0;
 		foreach ($this->Auftragsposten as $posten) {
 			$price += $posten->bekommeDifferenz();
@@ -250,7 +278,8 @@ class Auftrag implements StatisticsInterface {
 		return $price;
 	}
 
-	public function getKundennummer() {
+	public function getKundennummer()
+	{
 		return DBAccess::selectQuery("SELECT Kundennummer FROM auftrag WHERE auftragsnummer = {$this->Auftragsnummer}")[0]['Kundennummer'];
 	}
 
@@ -258,16 +287,17 @@ class Auftrag implements StatisticsInterface {
 	 * helper function for creating the AuftragsPosten table
 	 * function returns the data for the table
 	 */
-	private function getAuftragsPostenHelper($isInvoice = false) {
+	private function getAuftragsPostenHelper($isInvoice = false)
+	{
 		$subArr = array(
-			"Postennummer" => "", 
-			"Bezeichnung" => "", 
-			"Beschreibung" => "", 
-			"Stundenlohn" => "", 
-			"MEH" => "", 
+			"Postennummer" => "",
+			"Bezeichnung" => "",
+			"Beschreibung" => "",
+			"Stundenlohn" => "",
+			"MEH" => "",
 			"Preis" => "",
 			"Gesamtpreis" => "",
-			"Anzahl" => "", 
+			"Anzahl" => "",
 			"Einkaufspreis" => "",
 			"type" => ""
 		);
@@ -284,7 +314,7 @@ class Auftrag implements StatisticsInterface {
 					array_push($data, $this->Auftragsposten[$i]->fillToArray($subArr));
 				}
 			}
-	
+
 			return $data;
 		}
 
@@ -295,7 +325,7 @@ class Auftrag implements StatisticsInterface {
 					array_push($data, $this->Auftragsposten[$i]->fillToArray($subArr));
 				}
 			}
-	
+
 			return $data;
 		}
 
@@ -306,7 +336,8 @@ class Auftrag implements StatisticsInterface {
 		return $data;
 	}
 
-	public function getAuftragspostenAsTable() {
+	public function getAuftragspostenAsTable()
+	{
 		$column_names = array(
 			0 => array("COLUMN_NAME" => "Bezeichnung"),
 			1 => array("COLUMN_NAME" => "Beschreibung"),
@@ -335,14 +366,15 @@ class Auftrag implements StatisticsInterface {
 		return $t->getTable();
 	}
 
-	public function getAuftragsPostenCheckTable() {
+	public function getAuftragsPostenCheckTable()
+	{
 		$column_names = array(
-			0 => array("COLUMN_NAME" => "Bezeichnung"), 
-			1 => array("COLUMN_NAME" => "Beschreibung"), 
-			2 => array("COLUMN_NAME" => "Stundenlohn"), 
-			3 => array("COLUMN_NAME" => "Anzahl"), 
-			4 => array("COLUMN_NAME" => "MEH"), 
-			5 => array("COLUMN_NAME" => "Preis"), 
+			0 => array("COLUMN_NAME" => "Bezeichnung"),
+			1 => array("COLUMN_NAME" => "Beschreibung"),
+			2 => array("COLUMN_NAME" => "Stundenlohn"),
+			3 => array("COLUMN_NAME" => "Anzahl"),
+			4 => array("COLUMN_NAME" => "MEH"),
+			5 => array("COLUMN_NAME" => "Preis"),
 			6 => array("COLUMN_NAME" => "Einkaufspreis")
 		);
 
@@ -365,12 +397,13 @@ class Auftrag implements StatisticsInterface {
 	/*
 	 * returns all invoice columns from invoice_posten table
 	 */
-	public function getInvoicePostenTable() {
+	public function getInvoicePostenTable()
+	{
 		$column_names = array(
-			0 => array("COLUMN_NAME" => "Menge"), 
-			1 => array("COLUMN_NAME" => "MEH"), 
-			2 => array("COLUMN_NAME" => "Bezeichnung"), 
-			3 => array("COLUMN_NAME" => "E-Preis"), 
+			0 => array("COLUMN_NAME" => "Menge"),
+			1 => array("COLUMN_NAME" => "MEH"),
+			2 => array("COLUMN_NAME" => "Bezeichnung"),
+			3 => array("COLUMN_NAME" => "E-Preis"),
 			4 => array("COLUMN_NAME" => "G-Preis"),
 		);
 
@@ -398,45 +431,35 @@ class Auftrag implements StatisticsInterface {
 		return $t->getTable();
 	}
 
-	public function getIsArchiviert() {
+	public function getIsArchiviert()
+	{
 		return $this->isArchiviert;
 	}
 
-    public function bearbeitungsschrittHinzufuegen() {
-        
-    }
+	public function bearbeitungsschrittHinzufuegen() {}
 
-    public function bearbeitungsschrittEntfernen() {
-        
-    }
+	public function bearbeitungsschrittEntfernen() {}
 
-    public function bearbeitunsschrittBearbeiten() {
-		
-    }
+	public function bearbeitunsschrittBearbeiten() {}
 
-    public function postenHinzufuegen() {
-        
-    }
+	public function postenHinzufuegen() {}
 
-    public function postenEntfernen() {
-        
-    }
+	public function postenEntfernen() {}
 
-    public function schritteNachTypGenerieren() {
-        
-    }
+	public function schritteNachTypGenerieren() {}
 
 	/* 
 	 * this function returns all orders which are marked as ready to finish;
 	 * an order is ready when its "archived" column is set to -1
 	 */
-	public static function getReadyOrders() {
+	public static function getReadyOrders()
+	{
 		$query = "SELECT Auftragsnummer, IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) as Kunde, Auftragsbezeichnung FROM auftrag, kunde WHERE archiviert = -1 AND kunde.Kundennummer = auftrag.Kundennummer AND Rechnungsnummer = 0";
 		$data = DBAccess::selectQuery($query);
 
 		$column_names = array(
-			0 => array("COLUMN_NAME" => "Auftragsnummer"), 
-			1 => array("COLUMN_NAME" => "Kunde"),	
+			0 => array("COLUMN_NAME" => "Auftragsnummer"),
+			1 => array("COLUMN_NAME" => "Kunde"),
 			2 => array("COLUMN_NAME" => "Auftragsbezeichnung")
 		);
 
@@ -450,12 +473,13 @@ class Auftrag implements StatisticsInterface {
 		return $t->getTable();
 	}
 
-	public static function getAuftragsliste() {
+	public static function getAuftragsliste()
+	{
 		$column_names = array(
-			0 => array("COLUMN_NAME" => "Auftragsnummer", "ALT" => "Nr.", "NOWRAP"), 
+			0 => array("COLUMN_NAME" => "Auftragsnummer", "ALT" => "Nr.", "NOWRAP"),
 			1 => array("COLUMN_NAME" => "Datum", "NOWRAP" => true),
-			2 => array("COLUMN_NAME" => "Termin", "NOWRAP" => true), 
-			3 => array("COLUMN_NAME" => "Kunde"), 
+			2 => array("COLUMN_NAME" => "Termin", "NOWRAP" => true),
+			3 => array("COLUMN_NAME" => "Kunde"),
 			4 => array("COLUMN_NAME" => "Auftragsbezeichnung")
 		);
 
@@ -479,19 +503,23 @@ class Auftrag implements StatisticsInterface {
 		return $t->getTable();
 	}
 
-	public function istRechnungGestellt() {
+	public function istRechnungGestellt()
+	{
 		return $this->rechnungsnummer == 0 ? false : true;
 	}
 
-	public function getRechnungsnummer() {
+	public function getRechnungsnummer()
+	{
 		return $this->rechnungsnummer;
 	}
 
-	public function getLinkedVehicles() {
+	public function getLinkedVehicles()
+	{
 		return DBAccess::selectQuery("SELECT Nummer, Kennzeichen, Fahrzeug FROM fahrzeuge LEFT JOIN fahrzeuge_auftraege ON fahrzeuge_auftraege.id_fahrzeug = Nummer WHERE fahrzeuge_auftraege.id_auftrag = {$this->getAuftragsnummer()}");
 	}
 
-	public function getFahrzeuge() {
+	public function getFahrzeuge()
+	{
 		$fahrzeuge = $this->getLinkedVehicles();
 		$column_names = array(0 => array("COLUMN_NAME" => "Nummer"), 1 => array("COLUMN_NAME" => "Kennzeichen"), 2 => array("COLUMN_NAME" => "Fahrzeug"));
 
@@ -507,7 +535,8 @@ class Auftrag implements StatisticsInterface {
 		return $t->getTable();
 	}
 
-	public function getFarben() {
+	public function getFarben()
+	{
 		$farben = DBAccess::selectQuery("SELECT Farbe, Farbwert, id AS Nummer, Hersteller, Bezeichnung FROM color, color_auftrag WHERE id_color = id AND id_auftrag = :orderId", ["orderId" => $this->getAuftragsnummer()]);
 
 		ob_start();
@@ -522,7 +551,8 @@ class Auftrag implements StatisticsInterface {
 	/*
 	 * creates a div card with the order details
 	*/
-	public function getOrderCardData() {
+	public function getOrderCardData()
+	{
 		$data = DBAccess::selectQuery("SELECT Datum, Termin, Fertigstellung FROM auftrag WHERE Auftragsnummer = :orderId", [
 			"orderId" => $this->getAuftragsnummer(),
 		]);
@@ -545,7 +575,8 @@ class Auftrag implements StatisticsInterface {
 		];
 	}
 
-	public static function getNotes() {
+	public static function getNotes()
+	{
 		$orderId = (int) Tools::get("orderId");
 
 		$notes = DBAccess::selectQuery("SELECT id, note, title, creation_date as `date` FROM notes WHERE orderId = :id ORDER BY creation_date DESC", [
@@ -567,7 +598,8 @@ class Auftrag implements StatisticsInterface {
 		]);
 	}
 
-	public function recalculate() {
+	public function recalculate()
+	{
 		//Statistics::auftragEroeffnen();
 		/*
 		* Theoretisch sollte auftragAbschliessen() aufgerufen werden, jedoch müssen
@@ -575,12 +607,14 @@ class Auftrag implements StatisticsInterface {
 		*/
 	}
 
-	public function archiveOrder() {
+	public function archiveOrder()
+	{
 		$query = "UPDATE auftrag SET archiviert = 0 WHERE Auftragsnummer = {$this->Auftragsnummer}";
 		DBAccess::updateQuery($query);
 	}
 
-	public function rearchiveOrder() {
+	public function rearchiveOrder()
+	{
 		$query = "UPDATE auftrag SET archiviert = 1 WHERE Auftragsnummer = :orderId";
 		DBAccess::updateQuery($query, [
 			"orderId" => $this->Auftragsnummer
@@ -591,7 +625,8 @@ class Auftrag implements StatisticsInterface {
 	 * adds a list to the order
 	 * lists can be edited
 	*/
-	public function addList($listId) {
+	public function addList($listId)
+	{
 		DBAccess::insertQuery("INSERT INTO auftrag_liste (auftrags_id, listen_id) VALUES ({$this->Auftragsnummer}, $listId)");
 	}
 
@@ -599,15 +634,18 @@ class Auftrag implements StatisticsInterface {
 	 * removes a list, later the saved list data has to be removed as well
 	 * TODO: implement data deletion
 	*/
-	public function removeList($listId) {
+	public function removeList($listId)
+	{
 		DBAccess::deleteQuery("DELETE FROM auftrag_liste WHERE auftrags_id = {$this->Auftragsnummer} AND listen_id = $listId");
 	}
 
-	public function getListIds() {
+	public function getListIds()
+	{
 		return DBAccess::selectQuery("SELECT listen_id FROM auftrag_liste WHERE auftrags_id = {$this->Auftragsnummer}");
 	}
 
-	public function showAttachedLists() {
+	public function showAttachedLists()
+	{
 		$listenIds = self::getListIds();
 		$html = "";
 		foreach ($listenIds as $id) {
@@ -616,7 +654,8 @@ class Auftrag implements StatisticsInterface {
 		return $html;
 	}
 
-	public function getDefaultWage() {
+	public function getDefaultWage()
+	{
 		$defaultWage = GlobalSettings::getSetting("defaultWage");
 		return $defaultWage;
 	}
@@ -626,7 +665,8 @@ class Auftrag implements StatisticsInterface {
 	 * which is sent by the client;
 	 * the function echos a json object with the response link and the order id
 	 */
-	public static function add() {
+	public static function add()
+	{
 		$bezeichnung = $_POST['bezeichnung'];
 		$beschreibung = $_POST['beschreibung'];
 		$typ = $_POST['typ'];
@@ -649,7 +689,7 @@ class Auftrag implements StatisticsInterface {
 			"loadFromOffer" => $isLoadPosten,
 			"orderId" => $orderId
 		);
-		
+
 		NotificationManager::addNotification(Login::getUserId(), 4, "Auftrag <a href=" . $data["responseLink"] . ">$orderId</a> wurde angelegt", $orderId);
 		$auftragsverlauf = new Auftragsverlauf($orderId);
 		$auftragsverlauf->addToHistory($orderId, 5, "added", "Neuer Auftrag");
@@ -659,7 +699,8 @@ class Auftrag implements StatisticsInterface {
 	/**
 	 * adds a new order to the database
 	 */
-	private static function addToDB($kdnr, $bezeichnung, $beschreibung, $typ, $termin, $angenommenVon, $angenommenPer, $ansprechpartner) {
+	private static function addToDB($kdnr, $bezeichnung, $beschreibung, $typ, $termin, $angenommenVon, $angenommenPer, $ansprechpartner)
+	{
 		$date = date("Y-m-d");
 		$query = "INSERT INTO auftrag (Kundennummer, Auftragsbezeichnung, Auftragsbeschreibung, Auftragstyp, Datum, Termin, AngenommenDurch, AngenommenPer, Ansprechpartner) VALUES (:kdnr, :bezeichnung, :beschreibung, :typ, :datum, :termin, :angenommenVon, :angenommenPer, :ansprechpartner);";
 		$parameters = [
@@ -677,43 +718,45 @@ class Auftrag implements StatisticsInterface {
 		return $orderId;
 	}
 
-	public static function getFiles($auftragsnummer) {
-        $files = DBAccess::selectQuery("SELECT DISTINCT dateiname AS Datei, originalname, `date` AS Datum, typ as Typ FROM dateien LEFT JOIN dateien_auftraege ON dateien_auftraege.id_datei = dateien.id WHERE dateien_auftraege.id_auftrag = $auftragsnummer");
-        
-        for ($i = 0; $i < sizeof($files); $i++) {
-            $link = Link::getResourcesShortLink($files[$i]['Datei'], "upload");
+	public static function getFiles($auftragsnummer)
+	{
+		$files = DBAccess::selectQuery("SELECT DISTINCT dateiname AS Datei, originalname, `date` AS Datum, typ as Typ FROM dateien LEFT JOIN dateien_auftraege ON dateien_auftraege.id_datei = dateien.id WHERE dateien_auftraege.id_auftrag = $auftragsnummer");
 
-            $filePath = "upload/" . $files[$i]['Datei'];
-            /*
+		for ($i = 0; $i < sizeof($files); $i++) {
+			$link = Link::getResourcesShortLink($files[$i]['Datei'], "upload");
+
+			$filePath = "upload/" . $files[$i]['Datei'];
+			/*
              * checks at first if the image exists
              * then checks if it is an image with exif_imagetype function,
              * suppresses with @ the notice and then checks if getimagesize
              * returns a value
              */
-            if (file_exists($filePath) && (@exif_imagetype($filePath) != false) && getimagesize($filePath) != false) {
-                $html = "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\"><img class=\"img_prev_i\" src=\"$link\" width=\"40px\"><p class=\"img_prev\">{$files[$i]['originalname']}</p></a>";
-            } else {
-                $html = "<span><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\">{$files[$i]['originalname']}</a></span>";
-            }
+			if (file_exists($filePath) && (@exif_imagetype($filePath) != false) && getimagesize($filePath) != false) {
+				$html = "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\"><img class=\"img_prev_i\" src=\"$link\" width=\"40px\"><p class=\"img_prev\">{$files[$i]['originalname']}</p></a>";
+			} else {
+				$html = "<span><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\">{$files[$i]['originalname']}</a></span>";
+			}
 
-            $files[$i]['Datei'] = $html;
-        }
+			$files[$i]['Datei'] = $html;
+		}
 
-        $column_names = array(
-            0 => array("COLUMN_NAME" => "Datei"), 
-            1 => array("COLUMN_NAME" => "Typ"), 
-            2 => array("COLUMN_NAME" => "Datum")
-        );
+		$column_names = array(
+			0 => array("COLUMN_NAME" => "Datei"),
+			1 => array("COLUMN_NAME" => "Typ"),
+			2 => array("COLUMN_NAME" => "Datum")
+		);
 
-        $t = new Table();
+		$t = new Table();
 		$t->createByData($files, $column_names);
 		$t->setType("dateien");
-        $t->addActionButton("delete", $identifier = "id");
+		$t->addActionButton("delete", $identifier = "id");
 
 		return $t->getTable();
-    }
+	}
 
-	public static function deleteOrder() {
+	public static function deleteOrder()
+	{
 		$id = (int) Tools::get("id");
 		$query = "DELETE FROM auftrag WHERE Auftragsnummer = :id;";
 		DBAccess::deleteQuery($query, ["id" => $id]);
@@ -728,7 +771,8 @@ class Auftrag implements StatisticsInterface {
 		]);
 	}
 
-	public static function setOrderArchived() {
+	public static function setOrderArchived()
+	{
 		$id = (int) Tools::get("id");
 		$auftrag = new Auftrag($id);
 		$auftrag->archiveOrder();
@@ -739,7 +783,8 @@ class Auftrag implements StatisticsInterface {
 		]);
 	}
 
-	public function addNewNote() {
+	public function addNewNote()
+	{
 		$title = (string) Tools::get("title");
 		$note = (string) Tools::get("note");
 
@@ -748,23 +793,25 @@ class Auftrag implements StatisticsInterface {
 			"title" => $title,
 			"note" => $note,
 		]);
-		
+
 		$auftragsverlauf = new Auftragsverlauf($this->Auftragsnummer);
 		$auftragsverlauf->addToHistory($historyId, 7, "added", $note);
-	
+
 		JSONResponseHandler::sendResponse([
 			"success" => true,
 			"date" => date("d.m.Y"),
 		]);
 	}
 
-	public static function addNote() {
+	public static function addNote()
+	{
 		$orderId = (int) Tools::get("orderId");
 		$order = new Auftrag($orderId);
 		$order->addNewNote();
 	}
 
-	public static function updateNote() {
+	public static function updateNote()
+	{
 		$id = (int) Tools::get("id");
 		$type = (string) Tools::get("type");
 		$data = (string) Tools::get("data");
@@ -779,7 +826,8 @@ class Auftrag implements StatisticsInterface {
 		]);
 	}
 
-	public static function deleteNote() {
+	public static function deleteNote()
+	{
 		$note = (int) Tools::get("id");
 		DBAccess::deleteQuery("DELETE FROM notes WHERE id = :note", [
 			"note" => $note,
@@ -789,5 +837,4 @@ class Auftrag implements StatisticsInterface {
 			"status" => "success",
 		]);
 	}
-
 }

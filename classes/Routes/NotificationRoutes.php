@@ -2,14 +2,13 @@
 
 namespace Classes\Routes;
 
-class NotificationRoutes extends Routes {
+class NotificationRoutes extends Routes
+{
 
-    protected static $getRoutes = [
-        
-    ];
+    protected static $getRoutes = [];
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
-
 }

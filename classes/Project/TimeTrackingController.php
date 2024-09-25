@@ -2,30 +2,28 @@
 
 namespace Classes\Project;
 
-class TimeTrackingController {
+use Classes\DBAccess;
+use Classes\JSONResponseHandler;
 
-    public static function showTimeTracking(?int $id = null) {
+class TimeTrackingController
+{
 
-    }
+    public static function showTimeTracking(?int $id = null) {}
 
-    public static function showTimeTrackingOverview() {
-        
-    }
+    public static function showTimeTrackingOverview() {}
 
-    public static function addEntry() {
+    public static function addEntry() {}
 
-    }
-
-    public static function editEntry(int $id) {
+    public static function editEntry(int $id)
+    {
         $timeTracking = new TimeTracking(0);
         if (!User::isAdmin() && !$timeTracking->isOwner($id)) {
             return;
         }
-
-
     }
 
-    public static function deleteEntry($id) {
+    public static function deleteEntry($id)
+    {
         if (!User::isAdmin()) {
             return;
         }
@@ -46,9 +44,9 @@ class TimeTrackingController {
     /**
      * toggles global time tracking view
      */
-    public static function toggleDisplayTimeTracking() {
+    public static function toggleDisplayTimeTracking()
+    {
         Config::toggle("showTimeGlobal");
         JSONResponseHandler::returnOK();
     }
-
 }

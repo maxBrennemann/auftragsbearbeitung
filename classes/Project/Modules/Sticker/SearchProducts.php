@@ -2,17 +2,22 @@
 
 namespace Classes\Project\Modules\Sticker;
 
-class SearchProducts extends PrestashopConnection {
+use Classes\Protocol;
 
-    function __construct() {
+class SearchProducts extends PrestashopConnection
+{
+
+    function __construct()
+    {
         parent::__construct();
     }
 
-    public static function search($query, $searchTypes) {
+    public static function search($query, $searchTypes)
+    {
         $searchProduct = new SearchProducts();
         $products = [];
         $ids = [];
-        
+
         foreach ($searchTypes as $search) {
             $url = "products/?display=[id,name,link_rewrite]&filter[$search]=%[$query]%";
             try {
@@ -21,8 +26,8 @@ class SearchProducts extends PrestashopConnection {
                 $productsReference = $xml->children()->children();
                 foreach ($productsReference as $product) {
                     $id = (int) $product->id;
-                    $title = (String) $product->name->language[0];
-                    $link = $_ENV["SHOPURL"] . "/home/$id-" . (String) $product->link_rewrite->language[0] . ".html";
+                    $title = (string) $product->name->language[0];
+                    $link = $_ENV["SHOPURL"] . "/home/$id-" . (string) $product->link_rewrite->language[0] . ".html";
                     if (!in_array($id, $ids)) {
                         $products[] = [
                             'id' => $id,
@@ -32,7 +37,7 @@ class SearchProducts extends PrestashopConnection {
                         $ids[] = $id;
                     }
                 }
-            } catch (PrestaShopWebserviceException $e) {
+            } catch (\PrestaShopWebserviceException $e) {
                 echo $e->getMessage();
             }
         }
@@ -43,7 +48,8 @@ class SearchProducts extends PrestashopConnection {
     /**
      * TODO: funktion muss alte data mit berücksichtigen und alt title nicht überschreiben
      */
-    public static function getProductsByStickerId($idSticker): Array|null {
+    public static function getProductsByStickerId($idSticker): array|null
+    {
         $searchProduct = new SearchProducts();
         $productMatches = [];
         $foundProducts = 0;
@@ -52,7 +58,7 @@ class SearchProducts extends PrestashopConnection {
         try {
             $xml = $searchProduct->getXML("products?filter[reference]=$idSticker");
             $foundProducts = sizeof($xml->children()->children());
-           
+
             foreach ($xml->children()->children() as $product) {
                 $categories = [];
                 $productId = (int) $product["id"];
@@ -60,19 +66,19 @@ class SearchProducts extends PrestashopConnection {
                 if ($productId == 0) {
                     continue;
                 }
-    
+
                 $xmlProduct = $searchProduct->getXML("products/$productId");
-                $title = (String) $xmlProduct->children()->children()->name->language[0];
+                $title = (string) $xmlProduct->children()->children()->name->language[0];
                 $statusActive = (int) $xmlProduct->children()->children()->active;
-                $link = $_ENV["SHOPURL"] . "/home/$productId-" . (String) $xmlProduct->children()->children()->link_rewrite->language[0] . ".html";
+                $link = $_ENV["SHOPURL"] . "/home/$productId-" . (string) $xmlProduct->children()->children()->link_rewrite->language[0] . ".html";
                 $categoriesXML = $xmlProduct->children()->children()->associations->categories->category;
-    
+
                 array_push($productLinks, $link);
-    
+
                 foreach ($categoriesXML as $category) {
                     array_push($categories, (int) $category->id);
                 }
-    
+
                 /*
                  * TODO: hardcoded entfernen
                  * Kategorie 25 ist die Textilkategorie, 
@@ -88,7 +94,7 @@ class SearchProducts extends PrestashopConnection {
                     "altTitle" => "",
                     "status" => $statusActive,
                 ];
-    
+
                 if (in_array(25, $categories)) {
                     $productMatches["textil"] = $data;
                 } else if (in_array(62, $categories)) {
@@ -97,14 +103,11 @@ class SearchProducts extends PrestashopConnection {
                     $productMatches["aufkleber"] = $data;
                 }
             }
-        } catch (PrestaShopWebserviceException $e) {
+        } catch (\PrestaShopWebserviceException $e) {
             Protocol::write($e->getMessage());
             return null;
         }
-        
+
         return ["products" => $productMatches, "matches" => $foundProducts, "allLinks" => $productLinks];
     }
-
 }
-
-?>

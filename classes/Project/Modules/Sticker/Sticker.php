@@ -2,11 +2,16 @@
 
 namespace Classes\Project\Modules\Sticker;
 
+use Classes\DBAccess;
+use Classes\Link;
+use Classes\JSONResponseHandler;
+
 /**
  * stellt allgemeine Stickerfunktionen zur Verfügung, ist die Elternklasse von
  * Aufkleber, Wandtattoo und Textil
  */
-class Sticker extends PrestashopConnection {
+class Sticker extends PrestashopConnection
+{
 
     protected $idSticker;
     protected $idProduct;
@@ -19,14 +24,15 @@ class Sticker extends PrestashopConnection {
 
     protected $instanceType = "sticker";
 
-    function __construct(int $idSticker) {
+    function __construct(int $idSticker)
+    {
         parent::__construct();
 
         $this->idSticker = $idSticker;
         $this->stickerData = DBAccess::selectQuery("SELECT * FROM module_sticker_sticker_data WHERE id = :idSticker LIMIT 1;", ["idSticker" => $idSticker]);
 
         if ($this->stickerData == null) {
-            throw new Exception("Sticker does not exist.");
+            throw new \Exception("Sticker does not exist.");
         }
         $this->stickerData = $this->stickerData[0];
 
@@ -40,7 +46,8 @@ class Sticker extends PrestashopConnection {
         $this->instanceType = "sticker";
     }
 
-    public function getIdProduct() {
+    public function getIdProduct()
+    {
         if ($this->idProduct != null) {
             return $this->idProduct;
         }
@@ -54,39 +61,48 @@ class Sticker extends PrestashopConnection {
         return $this->idProduct;
     }
 
-    public function getName(): String {
+    public function getName(): String
+    {
         return $this->stickerData["name"];
     }
 
-    public function getId(): int {
+    public function getId(): int
+    {
         return $this->idSticker;
     }
 
-    public function getType() {
+    public function getType()
+    {
         return $this->instanceType;
     }
 
-    public function getDirectory() {
+    public function getDirectory()
+    {
         return $this->stickerData["directory_name"];
     }
 
-    public function getIsMarked() {
+    public function getIsMarked()
+    {
         return $this->stickerData["is_marked"];
     }
 
-    public function getIsRevised() {
+    public function getIsRevised()
+    {
         return $this->stickerData["is_revised"];
     }
 
-    public function getAdditionalInfo() {
+    public function getAdditionalInfo()
+    {
         return $this->stickerData["additional_info"];
     }
 
-    public function isInShop() {
+    public function isInShop()
+    {
         return false;
     }
 
-    protected function checkIsInShop($type): bool {
+    protected function checkIsInShop($type): bool
+    {
         if ($this->additionalData != null) {
             if (isset($this->additionalData["products"]) && isset($this->additionalData["products"][$type])) {
                 return true;
@@ -98,7 +114,8 @@ class Sticker extends PrestashopConnection {
 
     protected function getShopLink() {}
 
-    protected function getShopLinkHelper($type) {
+    protected function getShopLinkHelper($type)
+    {
         if ($this->additionalData != null) {
             if (isset($this->additionalData["products"]) && isset($this->additionalData["products"][$type])) {
                 return $this->additionalData["products"][$type]["link"];
@@ -107,8 +124,9 @@ class Sticker extends PrestashopConnection {
 
         return "#";
     }
-    
-    public function getAltTitle($type = ""): String {
+
+    public function getAltTitle($type = ""): String
+    {
         if ($type == "")
             return "";
 
@@ -125,27 +143,27 @@ class Sticker extends PrestashopConnection {
         return "";
     }
 
-    public function getCreationDate() {
+    public function getCreationDate()
+    {
         return $this->stickerData["creation_date"];
     }
 
-    public function getIdCategory() {
+    public function getIdCategory() {}
 
-    }
-    
-    public function getBasePrice() {
+    public function getBasePrice() {}
 
-    }
-
-    public function getDescription(): String {
+    public function getDescription(): String
+    {
         return $this->getDescr($this->instanceType, "long");
     }
 
-    public function getDescriptionShort(): String {
+    public function getDescriptionShort(): String
+    {
         return $this->getDescr($this->instanceType, "short");
     }
 
-    protected function getDescr(String $target, String $type): String {
+    protected function getDescr(String $target, String $type): String
+    {
         $description = DBAccess::selectQuery("SELECT content, `type` FROM module_sticker_texts WHERE id_sticker = :id_sticker AND `target` = :target AND `type` = :type", [
             "id_sticker" => $this->idSticker,
             "target" => $target,
@@ -161,11 +179,10 @@ class Sticker extends PrestashopConnection {
         return $description;
     }
 
-    public function getTags() {
+    public function getTags() {}
 
-    }
-
-    public function getActiveStatus() {
+    public function getActiveStatus()
+    {
         if (isset($this->additionalData["products"][$this->instanceType])) {
             $ref = $this->additionalData["products"][$this->instanceType];
             if (isset($ref["status"])) {
@@ -175,7 +192,8 @@ class Sticker extends PrestashopConnection {
         return true;
     }
 
-    public function setName(String $name) {
+    public function setName(String $name)
+    {
         $query = "UPDATE module_sticker_sticker_data SET `name` = :stickerName WHERE id = :idSticker";
         DBAccess::updateQuery($query, ["stickerName" => $name, "idSticker" => $this->getId()]);
 
@@ -184,11 +202,12 @@ class Sticker extends PrestashopConnection {
         return ["status" => "success"];
     }
 
-    public static function setDescription() {
+    public static function setDescription()
+    {
         $id = (int) $_POST["id"];
-        $type = (String) $_POST["type"];
-        $target = (String) $_POST["target"];
-        $content = (String) $_POST["content"];
+        $type = (string) $_POST["type"];
+        $target = (string) $_POST["target"];
+        $content = (string) $_POST["content"];
 
         $query = "REPLACE INTO module_sticker_texts (id_sticker, `type`, `target`, content) VALUES (:id, :type, :target, :content);";
         DBAccess::updateQuery($query, [
@@ -204,31 +223,29 @@ class Sticker extends PrestashopConnection {
 
     public function save() {}
 
-    public function createCombinations() {
+    public function createCombinations() {}
 
-    }
+    public function setCategory() {}
 
-    public function setCategory() {
-
-    }
-
-    public function delete() {
+    public function delete()
+    {
         $this->deleteXML("products", $this->getIdProduct());
     }
 
     /**
      * switches the product active status
      */
-    public function toggleActiveStatus() {
+    public function toggleActiveStatus()
+    {
         if ($this->getIdProduct() == 0) {
             return;
         }
 
         $xml = $this->getXML("products/" . $this->getIdProduct());
         $resource_product = $xml->children()->children();
-        
+
         $active = (int) $resource_product->active;
-        
+
         if ($active == 0) {
             $active = 1;
         } else {
@@ -253,20 +270,22 @@ class Sticker extends PrestashopConnection {
         /* TODO: fo: implement status via db */
     }
 
-    private function getAccessoires() {
+    private function getAccessoires()
+    {
         $query = "SELECT id_product_reference FROM module_sticker_accessoires WHERE id_sticker = :idSticker AND `type` = :typeSticker";
         $result = DBAccess::selectQuery($query, [
             "idSticker" => $this->idSticker,
             "typeSticker" => $this->instanceType,
         ]);
 
-        return array_map(fn ($data): int => $data["id_product_reference"], $result);
+        return array_map(fn($data): int => $data["id_product_reference"], $result);
     }
 
     /**
      * connects a list of products with the current product
      */
-    public function connectAccessoires($xml = null) {
+    public function connectAccessoires($xml = null)
+    {
         if ($this->getIdProduct() == 0) {
             return;
         }
@@ -304,31 +323,22 @@ class Sticker extends PrestashopConnection {
         $this->editXML($opt);
     }
 
-    public function getAttributes() {
+    public function getAttributes() {}
 
-    }
+    public function getPrices() {}
 
-    public function getPrices() {
+    public function getPricesMatched() {}
 
-    }
+    public function getPurchasingPrices() {}
 
-    public function getPricesMatched() {
-
-    }
-
-    public function getPurchasingPrices() {
-        
-    }
-
-    public function getPurchasingPricesMatched() {
-        
-    }
+    public function getPurchasingPricesMatched() {}
 
     /**
      * inserts a new sticker into the database and sets all its initial values
      * @param string $title the new sticker's name
      */
-    public static function createNewSticker(string $title) {
+    public static function createNewSticker(string $title)
+    {
         /* insert sticker into database */
         $query = "INSERT INTO module_sticker_sticker_data (`name`) VALUES (:title)";
         $id = DBAccess::insertQuery($query, ["title" => $title]);
@@ -353,12 +363,12 @@ class Sticker extends PrestashopConnection {
         }
     }
 
-    private function saveAdditionalData() {
+    private function saveAdditionalData()
+    {
         $query = "UPDATE module_sticker_sticker_data SET `additional_data` = :additionalData WHERE id = :idSticker";
         DBAccess::updateQuery($query, [
             "additionalData" => json_encode($this->additionalData),
             "idSticker" => $this->getId()
         ]);
     }
-
 }

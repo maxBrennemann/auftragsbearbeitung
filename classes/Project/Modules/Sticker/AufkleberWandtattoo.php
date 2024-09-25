@@ -2,7 +2,12 @@
 
 namespace Classes\Project\Modules\Sticker;
 
-class AufkleberWandtattoo extends Sticker {
+use Classes\DBAccess;
+use Classes\Tools;
+use Classes\JSONResponseHandler;
+
+class AufkleberWandtattoo extends Sticker
+{
 
     protected $basePrice;
 
@@ -11,7 +16,8 @@ class AufkleberWandtattoo extends Sticker {
     protected $buyingPrices = [];
     protected $widthsToSizeIds = [];
 
-    public function getPrice($width, $height, $difficulty) {
+    public function getPrice($width, $height, $difficulty)
+    {
         if ($width >= 1200) {
             $base = 2100;
         } else if ($width >= 900) {
@@ -28,19 +34,22 @@ class AufkleberWandtattoo extends Sticker {
         if ($height >= 0.5 * $width) {
             $base += 100;
         }
-        
+
         return $base;
     }
 
-    public function getSize($sizeId) {
+    public function getSize($sizeId)
+    {
         return $this->widthsToSizeIds[$sizeId];
     }
 
-    public function getPricesMatched() {
+    public function getPricesMatched()
+    {
         return $this->prices;
     }
 
-    public function updatePrice(int $width, int $height, int $price) {
+    public function updatePrice(int $width, int $height, int $price)
+    {
         $currentPrice = $this->getPrice($width, $height, $this->getDifficulty());
         if ($currentPrice != $price) {
             $query = "UPDATE module_sticker_sizes SET price = :price WHERE id_sticker = :idSticker AND width = :width";
@@ -59,7 +68,8 @@ class AufkleberWandtattoo extends Sticker {
      * adjusts price if necessary,
      * writes to changelog
      */
-    public function updateSizeTable($data) {
+    public function updateSizeTable($data)
+    {
         $width = (int) $data["width"];
         $height = (int) $data["height"];
         $price = (int) $data["price"];
@@ -73,15 +83,18 @@ class AufkleberWandtattoo extends Sticker {
         ]);
     }
 
-    public function getDifficulty() {
+    public function getDifficulty()
+    {
         return $this->stickerData["price_class"];
     }
 
-    protected function getDescriptionShortWithDefaultText(): String {
+    protected function getDescriptionShortWithDefaultText(): String
+    {
         return $this->getSizeTableFormatted() . $this->getDescriptionShort();
     }
 
-    public function getSizeTableFormatted() {
+    public function getSizeTableFormatted()
+    {
         $query = "SELECT width, height
             FROM module_sticker_sizes 
             WHERE id_sticker = :idSticker
@@ -100,13 +113,15 @@ class AufkleberWandtattoo extends Sticker {
         return ob_get_clean();
     }
 
-    public function getBasePrice() {
+    public function getBasePrice()
+    {
         $basePrice = $this->getBasePriceUnformatted();
         //$this->basePrice = $basePrice;
         return number_format((float) $basePrice, 2, '.', '');
     }
 
-    public function getBasePriceUnformatted() {
+    public function getBasePriceUnformatted()
+    {
         if ($this->basePrice != null) {
             return $this->basePrice / 100;
         }
@@ -118,7 +133,7 @@ class AufkleberWandtattoo extends Sticker {
         if ($result == null) {
             $result[] = ["price" => "1000"];
         }
-        
+
         return (float) $result[0]["price"] / 100;
     }
 
@@ -127,7 +142,8 @@ class AufkleberWandtattoo extends Sticker {
      * dabei wird geprüft, ob zu dem Breitenwert schon eine id_attribute existiert und falls nicht,
      * wird diese erstellt
      */
-    public function getSizeIds() {
+    public function getSizeIds()
+    {
         $query = "SELECT `price`, `width`, ((`width` / 1000) * (`height` / 1000) * 10) as `costs` FROM `module_sticker_sizes` WHERE `id_sticker` = :idSticker ORDER BY `width`";
         $data = DBAccess::selectQuery($query, ["idSticker" => $this->getId()]);
 
@@ -155,7 +171,8 @@ class AufkleberWandtattoo extends Sticker {
         return $sizeIds;
     }
 
-    protected function addAttribute($attributeGroupId, $attributeName) {
+    protected function addAttribute($attributeGroupId, $attributeName)
+    {
         try {
             $xml = $this->getXML('product_option_values?filter[id_attribute_group]=' . $attributeGroupId . '&filter[name]=' . $attributeName . '&limit=1');
             $resources = $xml->children()->children();
@@ -164,18 +181,18 @@ class AufkleberWandtattoo extends Sticker {
                 $attributes = $resources->product_option_value->attributes();
                 return $attributes['id'];
             }
-        } catch(PrestaShopWebserviceException $e) {
+        } catch (\PrestaShopWebserviceException $e) {
             echo $e->getMessage();
         }
-        
+
         try {
             $xml = $this->getXML('product_options?schema=synopsis');
             $resources = $xml->children()->children();
-        
+
             unset($resources->id);
             $resources->{"name"} = $attributeName;
             $resources->{"id_lang"} = "de";
-        
+
             $opt = array(
                 'resource' => 'product_options',
                 'postXml' => $xml->asXML()
@@ -184,33 +201,35 @@ class AufkleberWandtattoo extends Sticker {
             $this->addXML($opt);
             $id = $this->xml->product->id;
             return $id;
-        } catch(PrestaShopWebserviceException $e) {
+        } catch (\PrestaShopWebserviceException $e) {
             echo $e->getMessage();
         }
     }
 
-    protected function generateDefaultData() {
+    protected function generateDefaultData()
+    {
         $id = $this->getId();
         $query = "INSERT INTO module_sticker_sizes (width, id_sticker) VALUES (100, $id), (150, $id), (200, $id), (300, $id), (600, $id), (900, $id), (1200, $id)";
         DBAccess::insertQuery($query);
-        
+
         $query = "SELECT id, width, height, price, 
                 ((width / 1000) * (height / 1000) * 10) as costs 
             FROM module_sticker_sizes 
             WHERE id_sticker = :idSticker
             ORDER BY width";
-        
+
         $data = DBAccess::selectQuery($query, ["idSticker" => $this->getId()]);
-        return $data; 
+        return $data;
     }
 
-    public function getSizes() {
+    public function getSizes()
+    {
         $query = "SELECT id, width, height, price, 
                 ((width / 1000) * (height / 1000) * 10) as costs, price_default
             FROM module_sticker_sizes 
             WHERE id_sticker = :idSticker
             ORDER BY width";
-        
+
         $data = DBAccess::selectQuery($query, ["idSticker" => $this->getId()]);
 
         if ($data == null) {
@@ -220,7 +239,8 @@ class AufkleberWandtattoo extends Sticker {
         return $data;
     }
 
-    public static function addSize() {
+    public static function addSize()
+    {
         $width = (int) Tools::get("width");
         $height = (int) Tools::get("height");
         $price = (int) Tools::get("price");
@@ -242,7 +262,8 @@ class AufkleberWandtattoo extends Sticker {
         ]);
     }
 
-    public static function deleteSize() {
+    public static function deleteSize()
+    {
         $id = (int) Tools::get("id");
         $query = "DELETE FROM module_sticker_sizes WHERE id = :id;";
         DBAccess::deleteQuery($query, ["id" => $id]);
@@ -252,7 +273,8 @@ class AufkleberWandtattoo extends Sticker {
         ]);
     }
 
-    public static function updateSizes() {
+    public static function updateSizes()
+    {
         $sizes = json_decode($_POST["sizes"], true);
         $id = (int) $_POST["id"];
         $aufkleberWandtatto = new AufkleberWandtattoo($id);
@@ -260,5 +282,4 @@ class AufkleberWandtattoo extends Sticker {
             $aufkleberWandtatto->updateSizeTable($size);
         }
     }
-
 }

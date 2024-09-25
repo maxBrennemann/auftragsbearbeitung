@@ -2,7 +2,10 @@
 
 namespace Classes\Project\Modules\Sticker;
 
-class StickerCategory extends PrestashopConnection {
+use Classes\DBAccess;
+
+class StickerCategory extends PrestashopConnection
+{
 
     /**
      * sets the categories of a sticker by deleting all old categories and inserting the new ones
@@ -10,7 +13,8 @@ class StickerCategory extends PrestashopConnection {
      * @param int $stickerId
      * @param string $categories
      */
-    public static function setCategories($stickerId, $categories) {
+    public static function setCategories($stickerId, $categories)
+    {
         $categories = json_decode($categories, true);
         $categories = array_unique($categories);
 
@@ -28,7 +32,8 @@ class StickerCategory extends PrestashopConnection {
      * 
      * @param int $stickerId
      */
-    public static function getCategoriesForSticker($stickerId) {
+    public static function getCategoriesForSticker($stickerId)
+    {
         $query = "SELECT categoryId FROM module_sticker_categories WHERE stickerId = :stickerId";
         $categories = DBAccess::selectQuery($query, ["stickerId" => $stickerId]);
 
@@ -36,7 +41,7 @@ class StickerCategory extends PrestashopConnection {
         $categories = array_map(function ($category) {
             return (int) $category;
         }, $categories);
-        
+
         return $categories;
     }
 
@@ -47,7 +52,8 @@ class StickerCategory extends PrestashopConnection {
      * @param string $articleName
      * @param int $category
      */
-    public static function getCategoriesSuggestion($articleName, $category = 13) {
+    public static function getCategoriesSuggestion($articleName, $category = 13)
+    {
         $categories = self::getCategories($category);
         $categories = json_encode($categories, JSON_UNESCAPED_UNICODE);
         $query = "Hi, bitte antworte nur mit einem JSON String. Es muss nicht für einen menschen lesbar sein. Verwende keine Einführung.
@@ -57,14 +63,15 @@ class StickerCategory extends PrestashopConnection {
         try {
             $data = json_decode($data, true);
             $data = $data["choices"][0]["message"]["content"];
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return [$e->getMessage()];
         }
 
         return $data;
     }
 
-    public static function getCategories($startCategory) {
+    public static function getCategories($startCategory)
+    {
         $cachedCategories = self::getCachedCategoryTree($startCategory);
 
         if ($cachedCategories != false) {
@@ -84,7 +91,8 @@ class StickerCategory extends PrestashopConnection {
      * 
      * @return array
      */
-    private static function getCategoryTreeFromShop($startCategory) {
+    private static function getCategoryTreeFromShop($startCategory)
+    {
         $stickerCategory = new StickerCategory();
 
         $xml = $stickerCategory->getXML("categories/$startCategory");
@@ -92,12 +100,12 @@ class StickerCategory extends PrestashopConnection {
 
         $categoriesSimplified = [
             "id" => (int) $categories->id,
-            "name" => (String) $categories->name->language[0],
+            "name" => (string) $categories->name->language[0],
         ];
         $categoriesSimplified["children"] = [];
 
         /* warum es hier so kompliziert aufgerufen wird, weiß ich nicht, aber es funktioniert */
-        foreach ($categories->associations->categories->category as $category) {  
+        foreach ($categories->associations->categories->category as $category) {
             $categoriesSimplified["children"][] = self::getCategoryTreeFromShop((int) $category->id);
         }
 
@@ -111,7 +119,8 @@ class StickerCategory extends PrestashopConnection {
      * 
      * @return array|false
      */
-    private static function getCachedCategoryTree($startCategory) {
+    private static function getCachedCategoryTree($startCategory)
+    {
         if (!file_exists('cache/modules/sticker/categories')) {
             mkdir('cache/modules/sticker/categories', 0777, true);
         }
@@ -140,7 +149,8 @@ class StickerCategory extends PrestashopConnection {
      * @param array $categories
      * @param int $startCategory
      */
-    private static function cacheCategoryTree($categories, $startCategory) {
+    private static function cacheCategoryTree($categories, $startCategory)
+    {
         $filename = 'cache/modules/sticker/categories/' . $startCategory . '.json';
 
         if (is_writable($filename) === false) {
@@ -148,5 +158,4 @@ class StickerCategory extends PrestashopConnection {
         }
         file_put_contents($filename, json_encode($categories));
     }
-
 }

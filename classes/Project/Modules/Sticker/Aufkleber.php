@@ -2,6 +2,8 @@
 
 namespace Classes\Project\Modules\Sticker;
 
+use Classes\DBAccess;
+
 class Aufkleber extends AufkleberWandtattoo
 {
 
@@ -189,7 +191,7 @@ class Aufkleber extends AufkleberWandtattoo
 
         try {
             $stickerTagManager->saveTags();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $errorStatus = "Fehler beim Speichern der Tags: " . $e->getMessage();
         }
 
@@ -271,5 +273,4 @@ class Aufkleber extends AufkleberWandtattoo
         DBAccess::updateQuery($query, ["id" => $this->getId()]);
         echo "success";
     }
-    
 }

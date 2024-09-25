@@ -2,6 +2,4 @@
 
 namespace project\table;
 
-class AjaxTable {
-
-}
+class AjaxTable {}

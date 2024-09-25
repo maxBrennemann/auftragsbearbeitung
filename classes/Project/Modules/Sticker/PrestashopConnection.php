@@ -2,6 +2,8 @@
 
 namespace Classes\Project\Modules\Sticker;
 
+use Classes\Protocol;
+
 /**
  * musste https://www.prestashop.com/forums/topic/912956-webservice-count-parameter-must-be-an-array-or-an-object-that-implements-countable/#comment-3296957
  * zu classes/webservice/WebserviceRequest.php hinzufügen, da es hier einene countable error gab
@@ -38,10 +40,10 @@ class PrestashopConnection
         Protocol::write("PrestashopConnection::getXML($resource, debug = $debugText)");
 
         if ($resource == "" || $this->prestaUrl == "" || $this->prestaKey == "") {
-            throw new Exception("Malconfigured resource in PrestashopConnection::getXML()");
+            throw new \Exception("Malconfigured resource in PrestashopConnection::getXML()");
         }
 
-        $this->webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, $debug);
+        $this->webService = new \PrestaShopWebservice($this->prestaUrl, $this->prestaKey, $debug);
         $this->xml = $this->webService->get([
             'resource' => $resource
         ]);
@@ -54,7 +56,7 @@ class PrestashopConnection
         Protocol::write("PrestashopConnection::addXML()");
 
         if ($this->prestaUrl == "" || $this->prestaKey == "") {
-            throw new Exception("Malconfigured resource in PrestashopConnection::getXML()");
+            throw new \Exception("Malconfigured resource in PrestashopConnection::getXML()");
         }
 
         $this->xml = $this->webService->add($options);
@@ -65,7 +67,7 @@ class PrestashopConnection
         Protocol::write("PrestashopConnection::editXML()");
 
         if ($this->prestaUrl == "" || $this->prestaKey == "") {
-            throw new Exception("Malconfigured resource in PrestashopConnection::getXML()");
+            throw new \Exception("Malconfigured resource in PrestashopConnection::getXML()");
         }
 
         $this->xml = $this->webService->edit($options);
@@ -79,17 +81,17 @@ class PrestashopConnection
         Protocol::write("PrestashopConnection::getXML($resource, debug = $debugText)");
 
         if ($this->prestaUrl == "" || $this->prestaKey == "") {
-            throw new Exception("Malconfigured resource in PrestashopConnection::getXML()");
+            throw new \Exception("Malconfigured resource in PrestashopConnection::getXML()");
         }
 
         try {
-            $this->webService = new PrestaShopWebservice($this->prestaUrl, $this->prestaKey, $debug);
+            $this->webService = new \PrestaShopWebservice($this->prestaUrl, $this->prestaKey, $debug);
 
             $this->webService->delete([
                 'resource' => $resource,
                 'id' => $id,
             ]);
-        } catch (PrestaShopWebserviceException $e) {
+        } catch (\PrestaShopWebserviceException $e) {
             return 'Error:' . $e->getMessage();
         }
     }

@@ -2,21 +2,15 @@
 
 namespace Classes\Project;
 
-error_reporting(E_ALL);
+use Classes\DBAccess;
 
-if (0 > version_compare(PHP_VERSION, '5')) {
-    die('This file was generated for PHP 5');
-}
+class Leistung extends Posten
+{
 
-require_once('Posten.php');
-require_once('classes/DBAccess.php');
-
-class Leistung extends Posten {
-    
-    private $preis = 0;
-    private $einkaufspreis = 0;
+	private $preis = 0;
+	private $einkaufspreis = 0;
 	private $discount = -1;
-    private $bezeichnung = null;
+	private $bezeichnung = null;
 	private $beschreibung = null;
 	private $leistungsnummer = 0;
 	private $isInvoice = false;
@@ -27,7 +21,8 @@ class Leistung extends Posten {
 	private $quantity;
 	private $meh;
 
-	function __construct($leistungsnummer, $beschreibung, $speziefischerPreis, $einkaufspreis, $quantity, $meh, $discount, $isInvoice) {
+	function __construct($leistungsnummer, $beschreibung, $speziefischerPreis, $einkaufspreis, $quantity, $meh, $discount, $isInvoice)
+	{
 		$this->beschreibung = $beschreibung;
 		$this->preis = (float) $speziefischerPreis;
 		$this->einkaufspreis = (float) $einkaufspreis;
@@ -51,12 +46,14 @@ class Leistung extends Posten {
 		$this->meh = $meh;
 	}
 
-	public function getHTMLData() {
+	public function getHTMLData()
+	{
 		return "<div><span>{$this->bezeichnung}</span><br><span>Beschreibung: {$this->beschreibung}</span><br><span>Preis: {$this->preis}</span></div>";
 	}
 
 	/* fills array for Postentable */
-	public function fillToArray($arr) {
+	public function fillToArray($arr)
+	{
 		$arr['Postennummer'] = $this->postennummer;
 		$arr['Preis'] = $this->bekommePreisTabelle();
 		$arr['Bezeichnung'] = "<button class=\"postenButton\">Leistung</button>" . $this->bezeichnung;
@@ -72,7 +69,8 @@ class Leistung extends Posten {
 	}
 
 	/* returns the price if no discount is applied, else calculates the discount and returns the according table */
-	private function bekommePreisTabelle() {
+	private function bekommePreisTabelle()
+	{
 		$price_formatted = number_format($this->preis, 2, ',', '') . "€";
 
 		if ($this->discount != -1) {
@@ -89,21 +87,23 @@ class Leistung extends Posten {
 						<td colspan=\"2\">{$this->discount}%</td>
 					</tr>
 				</table>";
-			
+
 			return $discount_table;
 		} else {
 			return $price_formatted;
 		}
 	}
 
-	public function storeToDB($auftragsNr) {
+	public function storeToDB($auftragsNr)
+	{
 		$data = $this->fillToArray(array());
 		$data['ohneBerechnung'] = 1;
 		$data['Auftragsnummer'] = $auftragsNr;
 		Posten::insertPosten("leistung", $data);
 	}
 
-    public function bekommePreis() {
+	public function bekommePreis()
+	{
 		if ($this->ohneBerechnung == true) {
 			return 0;
 		}
@@ -115,49 +115,56 @@ class Leistung extends Posten {
 			return (float) $this->preis * $this->quantity * (1 - ($this->discount / 100));
 		}
 
-        return (float) $this->preis * $this->quantity;
+		return (float) $this->preis * $this->quantity;
 	}
 
-	public function bekommeEinzelPreis() {
+	public function bekommeEinzelPreis()
+	{
 		return $this->preis;
 	}
 
-	public function bekommePreis_formatted() {
+	public function bekommePreis_formatted()
+	{
 		return number_format($this->bekommePreis(), 2, ',', '') . ' €';
 	}
 
-	public function bekommeEinzelPreis_formatted() {
+	public function bekommeEinzelPreis_formatted()
+	{
 		return number_format($this->bekommeEinzelPreis(), 2, ',', '') . ' €';
 	}
 
-	public function bekommeDifferenz() {
+	public function bekommeDifferenz()
+	{
 		if ($this->ohneBerechnung == true) {
 			return 0;
 		}
-        return (float) ($this->bekommePreis() - $this->bekommeEKPreis());
+		return (float) ($this->bekommePreis() - $this->bekommeEKPreis());
 	}
 
-	public function getOhneBerechnung() {
+	public function getOhneBerechnung()
+	{
 		return $this->ohneBerechnung;
 	}
 
-	public function bekommeEKPreis() {
+	public function bekommeEKPreis()
+	{
 		return $this->einkaufspreis * $this->quantity;
 	}
 
-	public function calculateDiscount() {
-		
-	}
-	
-	public function getDescription() {
+	public function calculateDiscount() {}
+
+	public function getDescription()
+	{
 		return $this->beschreibung;
 	}
 
-	public function getEinheit() {
+	public function getEinheit()
+	{
 		return $this->meh;
 	}
 
-	public static function bearbeitungsschritteHinzufuegen($leistungsnummer, $auftragsnummer) {
+	public static function bearbeitungsschritteHinzufuegen($leistungsnummer, $auftragsnummer)
+	{
 		$schritte = DBAccess::selectQuery("SELECT * FROM schritte_vordefiniert WHERE Leistungsnummer = $leistungsnummer");
 
 		foreach ($schritte as $schritt) {
@@ -171,15 +178,18 @@ class Leistung extends Posten {
 		}
 	}
 
-	public function getQuantity() {
+	public function getQuantity()
+	{
 		return $this->quantity;
 	}
 
-	public function isInvoice() {
+	public function isInvoice()
+	{
 		return $this->isInvoice;
 	}
 
-	public static function getPostenData($postennummer) {
+	public static function getPostenData($postennummer)
+	{
 		$query = "SELECT Nummer, Beschreibung, `Einkaufspreis`, SpeziefischerPreis, meh, qty, Leistungsnummer, ohneBerechnung, discount, isInvoice FROM leistung_posten, posten WHERE leistung_posten.Postennummer = posten.Postennummer AND posten.Postennummer = $postennummer";
 		$result = DBAccess::selectQuery($query)[0];
 
@@ -197,8 +207,4 @@ class Leistung extends Posten {
 
 		return $data;
 	}
-
-
 }
-
-?>

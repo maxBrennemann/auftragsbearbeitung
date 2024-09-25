@@ -5,8 +5,12 @@ namespace Classes\Project\Modules\Sticker;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 
-class StickerImage extends PrestashopConnection {
-    
+use Classes\DBAccess;
+use Classes\Link;
+
+class StickerImage extends PrestashopConnection
+{
+
     private $idMotiv;
 
     private $allFiles = [];
@@ -17,7 +21,8 @@ class StickerImage extends PrestashopConnection {
 
     private $svgs = [];
 
-    function __construct($idMotiv) {
+    function __construct($idMotiv)
+    {
         parent::__construct();
 
         $this->idMotiv = $idMotiv;
@@ -29,7 +34,8 @@ class StickerImage extends PrestashopConnection {
      * returns all images from the database that are connected to a sticker via
      * the module_sticker_image table and are of type "aufkleber", "wandtattoo" or "textil"
      */
-    public static function getAllImageFiles() {
+    public static function getAllImageFiles()
+    {
         $query = "SELECT dateien.dateiname, dateien.originalname AS alt, 
                 dateien.typ, dateien.id, module_sticker_image.image_sort, module_sticker_image.id_product, module_sticker_image.description, module_sticker_image.id_image_shop, module_sticker_image.image_order
             FROM dateien, module_sticker_image 
@@ -40,18 +46,21 @@ class StickerImage extends PrestashopConnection {
     }
 
     /* reads from database */
-    private function getConnectedFiles() {
-        $allFiles = DBAccess::selectQuery("SELECT dateien.dateiname, dateien.originalname AS alt, 
+    private function getConnectedFiles()
+    {
+        $allFiles = DBAccess::selectQuery(
+            "SELECT dateien.dateiname, dateien.originalname AS alt, 
                 dateien.typ, dateien.id, module_sticker_image.image_sort, module_sticker_image.id_product, module_sticker_image.description, module_sticker_image.id_image_shop, module_sticker_image.image_order
             FROM dateien, module_sticker_image 
             WHERE dateien.id = module_sticker_image.id_datei
                 AND module_sticker_image.id_motiv = :idMotiv;",
-        ["idMotiv" => $this->idMotiv]);
+            ["idMotiv" => $this->idMotiv]
+        );
 
         $this->allFiles = $allFiles;
         foreach ($this->allFiles as $f) {
             /* https://stackoverflow.com/questions/15408125/php-check-if-file-is-an-image */
-            if (@is_array(getimagesize("upload/" . $f["dateiname"]))){
+            if (@is_array(getimagesize("upload/" . $f["dateiname"]))) {
                 array_push($this->images, $f);
             } else {
                 array_push($this->files, $f);
@@ -59,11 +68,13 @@ class StickerImage extends PrestashopConnection {
         }
     }
 
-    public function getFiles() {
+    public function getFiles()
+    {
         return $this->files;
     }
 
-    public function getSVGIfExists($colorable = false) {
+    public function getSVGIfExists($colorable = false)
+    {
         $f = $this->getTextilSVG($colorable);
         if ($f == null) {
             return "";
@@ -72,40 +83,46 @@ class StickerImage extends PrestashopConnection {
     }
 
     /* adds new attributes "link" and "title" to all images */
-    private function prepareImageData() {
+    private function prepareImageData()
+    {
         foreach ($this->images as &$image) {
             $image["link"] = Link::getResourcesShortLink($image["dateiname"], "upload");
             $image["title"] = "Produktbild";
         }
     }
 
-    public function getAufkleberImages() {
+    public function getAufkleberImages()
+    {
         return $this->getImagesByType("aufkleber");
-    }    
+    }
 
-    public function getWandtattooImages() {
+    public function getWandtattooImages()
+    {
         return $this->getImagesByType("wandtattoo");
     }
 
-    public function getTextilImages() {
+    public function getTextilImages()
+    {
         return $this->getImagesByType("textil");
     }
 
-    private function getImagesByType($type) {
+    private function getImagesByType($type)
+    {
         $images = array_filter(
             $this->images,
             fn($element) => $element["image_sort"] == $type
         );
 
         // Sort the array by the "image_order" attribute
-        usort($images, function($a, $b) {
+        usort($images, function ($a, $b) {
             return $a["image_order"] - $b["image_order"];
         });
-    
+
         return $images;
     }
 
-    public function getTextilSVG($colorable = false) {
+    public function getTextilSVG($colorable = false)
+    {
         foreach ($this->files as $f) {
             if ($f["image_sort"] == "textilsvg") {
                 if ($colorable) {
@@ -114,18 +131,20 @@ class StickerImage extends PrestashopConnection {
                 return $f;
             }
         }
-       
+
         return null;
     }
 
-    public function getGeneralImages() {
+    public function getGeneralImages()
+    {
         return array_filter(
             $this->images,
             fn($element) => $element["image_sort"] == "general"
         );
     }
 
-    public function resizeImage($file) {
+    public function resizeImage($file)
+    {
         list($width, $height) = getimagesize("upload/" . $file["dateiname"]);
         /* width and height do not matter any longer, images are only resized if filesize exeeds 2MB */
         if (filesize("upload/" . $file["dateiname"]) >= 2000000) {
@@ -133,14 +152,14 @@ class StickerImage extends PrestashopConnection {
                 case "jpg":
                     if (function_exists("imagecreatefromjpeg")) {
                         $image = imagecreatefromjpeg("upload/" . $file["dateiname"]);
-                        $imgResized = imagescale($image , 700, 700 * ($height / $width));
+                        $imgResized = imagescale($image, 700, 700 * ($height / $width));
                         imagejpeg($imgResized, "upload/" . $file["dateiname"]);
                     }
                     break;
                 case "png":
                     if (function_exists("imagecreatefrompng")) {
                         $image = imagecreatefrompng("upload/" . $file["dateiname"]);
-                        $imgResized = imagescale($image , 700, 700 * ($height / $width));
+                        $imgResized = imagescale($image, 700, 700 * ($height / $width));
                         imagepng($imgResized, "upload/" . $file["dateiname"]);
                     }
                     break;
@@ -150,15 +169,12 @@ class StickerImage extends PrestashopConnection {
         }
     }
 
-    public function getFirstImageLink() {
+    public function getFirstImageLink() {}
 
-    }
+    public function convertJPGtoAvif() {}
 
-    public function convertJPGtoAvif() {
-
-    }
-
-    private function saveImage($filename) {
+    private function saveImage($filename)
+    {
         /* add file to db */
         $query = "INSERT INTO `dateien` (`dateiname`, `originalname`, `date`, `typ`) VALUES (:newFile1, :newFile2, :today, 'svg');";
         $fileId = DBAccess::insertQuery($query, [
@@ -177,11 +193,13 @@ class StickerImage extends PrestashopConnection {
     }
 
     /* SVG section */
-    public function getSVGCount() {
+    public function getSVGCount()
+    {
         return sizeof($this->svgs);
     }
 
-    public function getSVG($number = 0) {
+    public function getSVG($number = 0)
+    {
         $svgs = [];
         foreach ($this->files as $f) {
             if ($f["typ"] == "svg") {
@@ -196,14 +214,15 @@ class StickerImage extends PrestashopConnection {
 
         return "";
     }
-    
+
     /**
      * seaches for all occurances of colors in these two patterns:
      * fill:#FFFFFF
      * fill:#FFF
      * then it replaces "<svg" with "<svg id="svg_elem" only if it is not already set
      */
-    public function makeSVGColorable($f) {
+    public function makeSVGColorable($f)
+    {
         $filename = $f["dateiname"];
         if ($filename == "") {
             return "";
@@ -240,11 +259,10 @@ class StickerImage extends PrestashopConnection {
         }
     }
 
-    public function uploadSVG($number) {
+    public function uploadSVG($number) {}
 
-    }
-
-    public static function handleSVGStatus(int $idMotiv) {
+    public static function handleSVGStatus(int $idMotiv)
+    {
         $query = "DELETE FROM module_sticker_image WHERE id_motiv = :idMotiv AND image_sort = 'textilsvg';";
         DBAccess::deleteQuery($query, ["idMotiv" => $idMotiv]);
     }
@@ -257,7 +275,8 @@ class StickerImage extends PrestashopConnection {
      * 
      * @return void
      */
-    public function uploadImages($imageURLs, $productId) {
+    public function uploadImages($imageURLs, $productId)
+    {
         if ($imageURLs == null) {
             return;
         }
@@ -278,7 +297,8 @@ class StickerImage extends PrestashopConnection {
      * 
      * @param $images array of images
      */
-    private function stripUnsupportedFileTypes(&$images) {
+    private function stripUnsupportedFileTypes(&$images)
+    {
         $unsupported = ["svg", "eps", "ai", "webp", "avif"];
         foreach ($images as $key => $image) {
             if (in_array($image["typ"], $unsupported)) {
@@ -298,7 +318,8 @@ class StickerImage extends PrestashopConnection {
      * 
      * @return string
      */
-    private function generateImageUrls($imageURLs, $productId) {
+    private function generateImageUrls($imageURLs, $productId)
+    {
         /* https://www.prestashop.com/forums/topic/407476-how-to-add-image-during-programmatic-product-import/ */
         $images = array();
         $first = true;
@@ -315,7 +336,7 @@ class StickerImage extends PrestashopConnection {
         /* json resonder script on server */
         $ch = curl_init($this->url);
 
-        $payload = json_encode(array("images"=> $images, "id" => $productId));
+        $payload = json_encode(array("images" => $images, "id" => $productId));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -334,7 +355,8 @@ class StickerImage extends PrestashopConnection {
      * 
      * @return string
      */
-    private function directUpload($imageURLs, $productId): ?String {
+    private function directUpload($imageURLs, $productId): ?String
+    {
         $client = new Client();
         $result = "";
         $files = [];
@@ -361,10 +383,9 @@ class StickerImage extends PrestashopConnection {
             $response = $client->post($this->url, [
                 'multipart' => $files,
             ]);
-        
+
             $result = $response->getBody()->getContents();
         } catch (RequestException $e) {
-            
         }
 
         if (isset($result)) {
@@ -377,7 +398,8 @@ class StickerImage extends PrestashopConnection {
     /**
      * uploads the image descriptions to the shop using the json responder script on the server;
      */
-    public function uploadImageDescription($descriptions) {
+    public function uploadImageDescription($descriptions)
+    {
         $client = new Client();
         $client->request('POST', $_ENV["SHOPURL"] . "/auftragsbearbeitung/setImageDescription.php", [
             'form_params' => [
@@ -389,7 +411,8 @@ class StickerImage extends PrestashopConnection {
     /**
      * sets the image ids in the database after the images were uploaded to the shop
      */
-    private function processImageIds($result, $imageURLs) {
+    private function processImageIds($result, $imageURLs)
+    {
         $imagesData = json_decode($result, true);
         $index = 0;
         foreach ($imagesData as $image) {
@@ -406,7 +429,8 @@ class StickerImage extends PrestashopConnection {
     /**
      * deletes an image from the shop
      */
-    public function deleteImage($idProduct, $idImageShop) {
+    public function deleteImage($idProduct, $idImageShop)
+    {
         return $this->deleteXML("images/products/$idProduct", $idImageShop);
     }
 
@@ -415,17 +439,18 @@ class StickerImage extends PrestashopConnection {
      * 
      * @param $idProduct id of the product in the shop
      */
-    public function deleteAllImages($idProduct) {
+    public function deleteAllImages($idProduct)
+    {
         try {
             $xml = $this->getXML("images/products/$idProduct");
 
             if ($xml == null) {
                 return;
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return;
         }
-        
+
         $msgs = [];
         foreach ($xml->children()->children() as $image) {
             $id = (int) $image->attributes()["id"];
@@ -445,7 +470,8 @@ class StickerImage extends PrestashopConnection {
      * 
      * @return void
      */
-    public function handleImageProductSync(String $type, int $productId) {
+    public function handleImageProductSync(String $type, int $productId)
+    {
         $this->currentType = $type;
 
         $images = $this->getImagesByType($type);
@@ -481,10 +507,11 @@ class StickerImage extends PrestashopConnection {
      * 
      * @return array with missing images and images that are not in the database
      */
-    private function checkImageStatus(array $images, int $productId): array {
+    private function checkImageStatus(array $images, int $productId): array
+    {
         try {
             $xml = $this->getXML("images/products/$productId");
-        } catch(Exception $e) {
+        } catch (\Exception $e) {
             echo $e->getMessage();
             return [
                 "deleteImages" => [],
@@ -518,7 +545,8 @@ class StickerImage extends PrestashopConnection {
      * 
      * @return array with missing images and images that are not in the database
      */
-    private function compareIds($inShop, $inDatabase): array {
+    private function compareIds($inShop, $inDatabase): array
+    {
         $delete = [];
         $upload = [];
 
@@ -548,7 +576,8 @@ class StickerImage extends PrestashopConnection {
      * 
      * @return true if the image is in the database, false otherwise
      */
-    private function inArrayDB($id, $inDB): bool {
+    private function inArrayDB($id, $inDB): bool
+    {
         foreach ($inDB as $i) {
             if ($i["id_image_shop"] == $id) {
                 return true;
@@ -560,7 +589,8 @@ class StickerImage extends PrestashopConnection {
     /**
      * sets the image order in the shop according to the order in the database
      */
-    private function manageImageOrder() {
+    private function manageImageOrder()
+    {
         $query = "SELECT id_image_shop, image_order FROM module_sticker_image WHERE id_motiv = :idMotiv AND image_sort = :imageSort ORDER BY image_order DESC, id_datei ASC;";
         $images = DBAccess::selectQuery($query, [
             "idMotiv" => $this->idMotiv,
@@ -576,7 +606,7 @@ class StickerImage extends PrestashopConnection {
         }
 
         $client = new Client();
-        try  {
+        try {
             $client->post($this->url, [
                 'json' => [
                     'positions' => $imageIds,
@@ -585,7 +615,7 @@ class StickerImage extends PrestashopConnection {
                     'Content-Type' => 'application/json',
                 ]
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             echo 'Request error: ' . $e->getMessage();
         }
     }
@@ -593,7 +623,8 @@ class StickerImage extends PrestashopConnection {
     /**
      * orders the images according to the json string in the local database
      */
-    public static function setImageOrder($order) {
+    public static function setImageOrder($order)
+    {
         $order = json_decode($order);
         $count = 0;
         foreach ($order as $id) {
@@ -603,8 +634,5 @@ class StickerImage extends PrestashopConnection {
         }
     }
 
-    public static function getCombinedImages(int $stickerId, int $textileId) {
-
-    }
-
+    public static function getCombinedImages(int $stickerId, int $textileId) {}
 }

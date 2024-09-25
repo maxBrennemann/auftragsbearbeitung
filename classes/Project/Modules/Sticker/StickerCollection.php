@@ -2,7 +2,14 @@
 
 namespace Classes\Project\Modules\Sticker;
 
-class StickerCollection implements Iterator
+use Classes\DBAccess;
+use Classes\Tools;
+use Classes\JSONResponseHandler;
+use Classes\Project\Icon;
+
+use Classes\Project\Modules\Sticker\Imports\ImportGoogleSearchConsole;
+
+class StickerCollection implements \Iterator
 {
 
     private $products = [];
@@ -291,14 +298,16 @@ class StickerCollection implements Iterator
         }
     }
 
-    public static function addSticker() {
-        $name = (String) Tools::get("name");
+    public static function addSticker()
+    {
+        $name = (string) Tools::get("name");
         Sticker::createNewSticker($name);
     }
 
-    public static function getStickerOverview() {
-        $orderBy = (String) Tools::get("orderBy");
-        $order = (String) Tools::get("order");
+    public static function getStickerOverview()
+    {
+        $orderBy = (string) Tools::get("orderBy");
+        $order = (string) Tools::get("order");
         $order = $order == "asc" ? "ASC" : "DESC";
 
         $columns = [
@@ -333,11 +342,12 @@ class StickerCollection implements Iterator
         $data = DBAccess::selectQuery($query);
 
         JSONResponseHandler::sendResponse([
-           "sticker" => $data,
+            "sticker" => $data,
         ]);
     }
 
-    public static function getStickerStates() {
+    public static function getStickerStates()
+    {
         $query = "SELECT id, additional_data FROM module_sticker_sticker_data ORDER BY id ASC";
         $data = DBAccess::selectQuery($query);
         $isInShopStatus = [];
@@ -368,7 +378,8 @@ class StickerCollection implements Iterator
         JSONResponseHandler::sendResponse($isInShopStatus);
     }
 
-    public static function getStickerSizes() {
+    public static function getStickerSizes()
+    {
         $id = (int) Tools::get("id");
         $stickerCollection = new StickerCollection($id);
         $aufkleber = $stickerCollection->getAufkleber();
@@ -379,7 +390,8 @@ class StickerCollection implements Iterator
         ]);
     }
 
-    public static function getPriceScheme() {
+    public static function getPriceScheme()
+    {
         $id = (int) Tools::get("id");
         $stickerCollection = new StickerCollection($id);
         $aufkleber = $stickerCollection->getAufkleber();

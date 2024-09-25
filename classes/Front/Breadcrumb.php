@@ -2,11 +2,15 @@
 
 namespace Classes\Front;
 
-class Breadcrumb {
+use Classes\Link;
+
+class Breadcrumb
+{
 
     private $sublinks = array();
 
-    function __construct() {
+    function __construct()
+    {
         $url = $_SERVER["REQUEST_URI"];
 
         $this->sublinks = Link::parseUri();
@@ -19,7 +23,8 @@ class Breadcrumb {
         //var_dump($this->sublinks);
     }
 
-    public function getBreadcrumbNavigation() {
+    public function getBreadcrumbNavigation()
+    {
         $html = "<ol itemscope itemtype=\"https://schema.org/BreadcrumbList\">";
         $diffElement = " ›";
         $count = 1;
@@ -42,9 +47,9 @@ class Breadcrumb {
         return $html;
     }
 
-    static function getNav() {
+    static function getNav()
+    {
         $b = new self();
         return $b->getBreadcrumbNavigation();
     }
-
 }

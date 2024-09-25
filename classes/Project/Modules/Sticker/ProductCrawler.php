@@ -2,22 +2,27 @@
 
 namespace Classes\Project\Modules\Sticker;
 
+use Classes\DBAccess;
+
 /*
  * TODO: nginx is still buffering, these headers do not affect it
  * nginx buffering könnte man mit https://stackoverflow.com/questions/63293990/how-can-i-track-upload-progress-from-app-behind-nginx-reverse-proxy
  * sowas in der Art umgehen. Ich denke aber, dass ein Websocket oder eine Schleife mit mehreren Requests sinnvoller wäre.
  * So wichtig ist es aber auch nicht.
  */
+
 require_once("classes/project/modules/sticker/SearchProducts.php");
 
-class ProductCrawler extends PrestashopConnection {
+class ProductCrawler extends PrestashopConnection
+{
 
     /**
      * alle produkte durchgehen
      * alle ids checken und wenn nicht existert, dann wird ein neuer eintrag erstellt
      * daten werden eingetragen
      */
-    function __construct() {
+    function __construct()
+    {
         parent::__construct();
     }
 
@@ -25,7 +30,8 @@ class ProductCrawler extends PrestashopConnection {
      * https://stackoverflow.com/questions/9152373/php-flushing-while-loop-data-with-ajax
      * Das Script soll auch laufen, falls der Nutzer die Seite neu lädt.
      */
-    public function crawlAll() {
+    public function crawlAll()
+    {
         ignore_user_abort(true);
         set_time_limit(0);
 
@@ -60,9 +66,10 @@ class ProductCrawler extends PrestashopConnection {
         }
     }
 
-    private function analyseProduct($productData) {
+    private function analyseProduct($productData)
+    {
         $idMotiv = (int) $productData->reference;
-        $title = (String) $productData->name->language[0];
+        $title = (string) $productData->name->language[0];
         $category = $this->getCategory($productData);
 
         /* if category is 0, the product does not belong to the sticker upload program */
@@ -87,7 +94,8 @@ class ProductCrawler extends PrestashopConnection {
      * 62: Wandtattoo
      * 13: Aufkleber
      */
-    private function getCategory($productData) {
+    private function getCategory($productData)
+    {
         $categories = $productData->associations->categories;
         $idCategories = [];
 
@@ -110,7 +118,8 @@ class ProductCrawler extends PrestashopConnection {
     /**
      * updates the category info of the product and sets additonal_data column
      */
-    private function updateCategory($id, $category) {
+    private function updateCategory($id, $category)
+    {
         switch ($category) {
             case 25:
                 $query = "UPDATE `module_sticker_sticker_data` SET is_shirtcollection = 1 WHERE id = :id;";
@@ -142,7 +151,8 @@ class ProductCrawler extends PrestashopConnection {
      * img daten holen und mit den daten am server vergleichen
      * dann bilder, die fehlen, herunterladen
      */
-    private function getImages($productData, $category) {
+    private function getImages($productData, $category)
+    {
         $idMotiv = (int) $productData->reference;
         $idProduct = (int) $productData->id;
 
@@ -182,7 +192,8 @@ class ProductCrawler extends PrestashopConnection {
         }
     }
 
-    private function downloadImage($idProduct, $idImage, $idMotiv) {
+    private function downloadImage($idProduct, $idImage, $idMotiv)
+    {
         $ch = curl_init($_ENV["SHOPURL"] . "/api/images/products/$idProduct/$idImage");
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -198,7 +209,8 @@ class ProductCrawler extends PrestashopConnection {
         return $filename;
     }
 
-    private function saveDownloadedImageToDB($filename, $idMotiv, $category, $idProduct, $idImageShop) {
+    private function saveDownloadedImageToDB($filename, $idMotiv, $category, $idProduct, $idImageShop)
+    {
         /* write image info to db */
         $query = "INSERT INTO dateien (dateiname, originalname, `date`, `typ`) VALUES (:dateiname, :originalname, :dateToday, 'jpg')";
         $idDatei = DBAccess::insertQuery($query, [
@@ -233,5 +245,4 @@ class ProductCrawler extends PrestashopConnection {
             ]);
         }
     }
-
 }

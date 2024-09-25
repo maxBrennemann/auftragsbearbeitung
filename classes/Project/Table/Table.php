@@ -25,9 +25,7 @@ class Table extends \Classes\Project\Models\Model
 
     private $model;
 
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     /**
      * Sets the headers of the table,

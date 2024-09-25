@@ -2,26 +2,35 @@
 
 namespace Classes\Project\Modules\Sticker;
 
-class StickerChangelog {
+use Classes\DBAccess;
+
+use Classes\Project\Table;
+
+class StickerChangelog
+{
 
     private $idSticker;
     private $changelogData;
 
-    function __construct(int $idSticker) {
+    function __construct(int $idSticker)
+    {
         $this->idSticker = $idSticker;
         $query = "SELECT * FROM `module_sticker_changelog` WHERE id_sticker = :idSticker";
         $this->changelogData = DBAccess::selectQuery($query, ["idSticker" => $idSticker]);
     }
 
-    public function getStickerId() {
+    public function getStickerId()
+    {
         return $this->idSticker;
     }
 
-    public function getChangelogData() {
+    public function getChangelogData()
+    {
         return $this->changelogData;
     }
 
-    public function getTable() {
+    public function getTable()
+    {
         $column_names = array(
             0 => array("COLUMN_NAME" => "id", "ALT" => "Nummer"),
             1 => array("COLUMN_NAME" => "type", "ALT" => "Art"),
@@ -31,8 +40,8 @@ class StickerChangelog {
         );
 
         $t = new Table();
-		$t->createByData($this->changelogData, $column_names);
-		return $t->getTable();
+        $t->createByData($this->changelogData, $column_names);
+        return $t->getTable();
     }
 
     /**
@@ -45,7 +54,8 @@ class StickerChangelog {
      * @param mixed $newValue if it is the first entry, it is the init value, else it is the new value
      * @return null
      */
-    public static function log(int $stickerId, int $stickerType, int $rowId, $table, $column, $newValue) {
+    public static function log(int $stickerId, int $stickerType, int $rowId, $table, $column, $newValue)
+    {
         $query = "INSERT INTO `module_sticker_changelog` (`id_sticker`, `type`, `rowId`, `table`, `column`, `newValue`) VALUES (:id_sticker, :type, :rowId, :table, :column, :newValue)";
         $values =  [
             "id_sticker" => $stickerId,
@@ -65,7 +75,8 @@ class StickerChangelog {
      * @param int $rowId specific row identifier
      * @return boolean true if the revert was successfull
      */
-    public static function revert(int $stickerId, String $stickerType, int $rowId) {
+    public static function revert(int $stickerId, String $stickerType, int $rowId)
+    {
         $lastChanges = DBAccess::selectQuery("SELECT * FROM `module_sticker_changelog` WHERE `id_sticker` = :id_sticker AND `type` = :type ORDER BY id DESC LIMIT 2", ["id_sticker" => $stickerId, "type" => $stickerType]);
 
         if ($lastChanges == null) {

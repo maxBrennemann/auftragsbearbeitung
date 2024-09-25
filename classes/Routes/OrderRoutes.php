@@ -6,12 +6,12 @@ class OrderRoutes extends Routes
 {
 
     protected static $getRoutes = [
-        "/order/{id}/colors" => "Auftrag::getColors",
+        "/order/{id}/colors" => [\Classes\Project\Auftrag::class, "getColors"],
     ];
 
     protected static $postRoutes = [
-        "/order/add" => "Auftrag::addOrder",
-        "/order/{id}/colors/add" => "Auftrag::addColor",
+        "/order/add" => [\Classes\Project\Auftrag::class, "addOrder"],
+        "/order/{id}/colors/add" => [\Classes\Project\Auftrag::class, "addColor"],
     ];
 
     /**
@@ -21,15 +21,15 @@ class OrderRoutes extends Routes
      * @uses Fahrzeug::attachVehicle
      */
     protected static $putRoutes = [
-        "/order/{id}" => "Auftrag::updateOrder",
-        "/order/{id}/to-archive" => "Auftrag::setOrderArchived",
-        "/order/{id}/colors/{colorId}" => "Auftrag::updateColor",
-        "/order/{id}/vehicles/{vehicleId}" => "Fahrzeug::attachVehicle",
+        "/order/{id}" => [\Classes\Project\Auftrag::class, "updateOrder"],
+        "/order/{id}/to-archive" => [\Classes\Project\Auftrag::class, "setOrderArchived"],
+        "/order/{id}/colors/{colorId}" => [\Classes\Project\Auftrag::class, "updateColor"],
+        "/order/{id}/vehicles/{vehicleId}" => [\Classes\Project\Fahrzeug::class, "attachVehicle"],
     ];
 
     protected static $deleteRoutes = [
-        "/order/{id}" => "Auftrag::deleteOrder",
-        "/order/{id}/colors/{colorId}" => "Auftrag::deleteColor",
+        "/order/{id}" => [\Classes\Project\Auftrag::class, "deleteOrder"],
+        "/order/{id}/colors/{colorId}" => [\Classes\Project\Auftrag::class, "deleteColor"],
     ];
 
     public function __construct()

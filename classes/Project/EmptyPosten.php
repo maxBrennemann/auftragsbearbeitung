@@ -2,84 +2,85 @@
 
 namespace Classes\Project;
 
-error_reporting(E_ALL);
+class EmptyPosten extends Posten
+{
 
-if (0 > version_compare(PHP_VERSION, '5')) {
-    die('This file was generated for PHP 5');
-}
-
-require_once('Posten.php');
-
-class EmptyPosten extends Posten {
-    
 	protected $postenTyp = "empty";
-    public $beschreibung = "";
-    public $id = 0;
+	public $beschreibung = "";
+	public $id = 0;
 
-	function __construct($id, $beschreibung) {
-        $this->beschreibung = $beschreibung;
-        $this->id = (int) $id;
+	function __construct($id, $beschreibung)
+	{
+		$this->beschreibung = $beschreibung;
+		$this->id = (int) $id;
 	}
 
-	public function getHTMLData() {
+	public function getHTMLData()
+	{
 		return "";
 	}
 
-	public function fillToArray($arr) {
+	public function fillToArray($arr)
+	{
 		return $arr;
 	}
-	
-	public function bekommeEinzelPreis() {
+
+	public function bekommeEinzelPreis()
+	{
 		return 0;
 	}
 
-    public function bekommePreis() {
+	public function bekommePreis()
+	{
 		return 0;
-    }
+	}
 
-	public function bekommePreis_formatted() {
+	public function bekommePreis_formatted()
+	{
 		return "";
 	}
 
-	public function bekommeEinzelPreis_formatted() {
+	public function bekommeEinzelPreis_formatted()
+	{
 		return "";
 	}
 
-	public function bekommeDifferenz() {
+	public function bekommeDifferenz()
+	{
 		return 0;
 	}
-	
-	public function getDescription() {
+
+	public function getDescription()
+	{
 		return $this->beschreibung;
 	}
 
-	public function getEinheit() {
+	public function getEinheit()
+	{
 		return "";
 	}
 
-	public function getWage() {
+	public function getWage()
+	{
 		return "";
 	}
 
-	public function getQuantity() {
+	public function getQuantity()
+	{
 		return "";
 	}
 
-	public function getOhneBerechnung() {
+	public function getOhneBerechnung()
+	{
 		return "";
 	}
 
-	public function isInvoice() {
+	public function isInvoice()
+	{
 		return "";
 	}
 
-	public function calculateDiscount() {
+	public function calculateDiscount() {}
 
-	}
-
-	public function storeToDB($auftragsNr) {
-	}
-
+	public function storeToDB($auftragsNr) {}
 }
-
-?>

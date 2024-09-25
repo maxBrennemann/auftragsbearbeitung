@@ -2,10 +2,19 @@
 
 namespace Classes\Project\Modules\Sticker\Exports;
 
+use Classes\DBAccess;
+
+use Classes\Project\Modules\Sticker\Aufkleber;
+use Classes\Project\Modules\Sticker\Wandtattoo;
+use Classes\Project\Modules\Sticker\Textil;
+use Classes\Project\Modules\Sticker\PrestashopConnection;
+use Classes\Project\Modules\Sticker\StickerCollection;
+
 /**
  * generates a csv file for facebook product export
  */
-class ExportFacebook extends PrestashopConnection {
+class ExportFacebook extends PrestashopConnection
+{
 
     private static $file;
     private $currentFilename;
@@ -37,7 +46,8 @@ class ExportFacebook extends PrestashopConnection {
     /**
      * gets all sticker ids from database;
      */
-    function __construct() {
+    function __construct()
+    {
         $query = "SELECT `id` FROM `module_sticker_sticker_data` ORDER BY `id` ASC";
         $this->idProducts = DBAccess::selectQuery($query);
     }
@@ -46,7 +56,8 @@ class ExportFacebook extends PrestashopConnection {
      * iterates over all products and creates the three variants if these exist in the shop
      * then it takes the data and puts it into a file
      */
-    public function generateCSV() {
+    public function generateCSV()
+    {
         $lines = [];
         foreach ($this->idProducts as $id) {
             $id = (int) $id["id"];
@@ -63,7 +74,8 @@ class ExportFacebook extends PrestashopConnection {
     /**
      * generates the product csv lines for a specific sticker id
      */
-    public function getSpecificProductExport($idSticker) {
+    public function getSpecificProductExport($idSticker)
+    {
         $stickerCollection = new StickerCollection($idSticker);
 
         $lines = [];
@@ -85,7 +97,8 @@ class ExportFacebook extends PrestashopConnection {
         return $lines;
     }
 
-    private function fillLine($product): Array {
+    private function fillLine($product): array
+    {
         $variantLines = [];
 
         $type = $product->getType();
@@ -111,7 +124,8 @@ class ExportFacebook extends PrestashopConnection {
         return $variantLines;
     }
 
-    private function fillLineAufkleber($product, $line) {
+    private function fillLineAufkleber($product, $line)
+    {
         $combinationId = 0;
         $combinationLines = [];
         $sizeIds = $product->getSizeIds();
@@ -142,7 +156,7 @@ class ExportFacebook extends PrestashopConnection {
                 if ($product->getIsShortTimeSticker() == 1) {
                     $line["material"] = "Werbefolie";
                 }
-                
+
                 if ($product->getIsLongTimeSticker() == 1) {
                     $line["material"] = "Hochleistungsfolie";
                 }
@@ -159,7 +173,8 @@ class ExportFacebook extends PrestashopConnection {
         return $combinationLines;
     }
 
-    private function fillLineWandtattoo($product, $line) {
+    private function fillLineWandtattoo($product, $line)
+    {
         $combinationId = 0;
         $combinationLines = [];
         $sizeIds = $product->getSizeIds();
@@ -186,7 +201,8 @@ class ExportFacebook extends PrestashopConnection {
         return $combinationLines;
     }
 
-    private function fillLineTextil($product, $line) {
+    private function fillLineTextil($product, $line)
+    {
         $combinationId = 0;
         $combinationLines = [];
 
@@ -194,10 +210,10 @@ class ExportFacebook extends PrestashopConnection {
             foreach ($product->getAttributes() as $color) {
                 $line["price"] = $product->getPrice();
                 $line["color"] = $product->textilColors[$combinationId]["name"];
-    
+
                 $line["id"] = "textil" . "_" . $product->getId() . "_" . $combinationId;
                 $line["google_product_category"] = "505384";
-    
+
                 $combinationLines[] = $line;
                 $combinationId++;
             }
@@ -218,7 +234,8 @@ class ExportFacebook extends PrestashopConnection {
      * handling of escape characters
      * https://stackoverflow.com/questions/4617935/is-there-a-way-to-include-commas-in-csv-columns-without-breaking-the-formatting
      */
-    private function generateFile(array $lines, string $filename): void {
+    private function generateFile(array $lines, string $filename): void
+    {
         $path = "files/generated/fb_export/";
         $file = fopen($path . $filename, 'w');
 
@@ -228,32 +245,33 @@ class ExportFacebook extends PrestashopConnection {
         foreach ($lines as $entry) {
             fputcsv($file, $entry);
         }
-    
+
         fclose($file);
     }
 
-    public function getFilename(): String {
+    public function getFilename(): String
+    {
         return $this->currentFilename;
     }
 
-    private static function getFirstImageLink($product) {
+    private static function getFirstImageLink($product)
+    {
         $prestashopConnection = new PrestashopConnection();
 
         if ($product->getIdProduct() == 0) {
             return null;
         }
 
-        try  {
+        try {
             $xml = $prestashopConnection->getXML("images/products/" . $product->getIdProduct());
             $resources = $xml->children()->children();
             $declination = $resources->declination;
             $image = $declination[0];
             $id = (int) $image->attributes()->id;
-            
-            return "https://klebefux.de/auftragsbearbeitung/images.php?product=" . $product->getIdProduct() . "&image=" . $id;
-        } catch (PrestaShopWebserviceException $e) {
-            echo 'Error:' . $e->getMessage();
-        } 
-    }
 
+            return "https://klebefux.de/auftragsbearbeitung/images.php?product=" . $product->getIdProduct() . "&image=" . $id;
+        } catch (\PrestaShopWebserviceException $e) {
+            echo 'Error:' . $e->getMessage();
+        }
+    }
 }

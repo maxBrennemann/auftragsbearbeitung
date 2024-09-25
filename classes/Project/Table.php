@@ -2,6 +2,8 @@
 
 namespace Classes\Project;
 
+use Classes\DBAccess;
+
 /**
  * Anforderungen der Table Klasse:
  * static Funktionen, um schnell eine Tabelle aus der Datenbank zu generieren,
@@ -305,7 +307,7 @@ class Table
 				array_push($this->columnNames, $columnName);
 			}
 		} else {
-			throw new Exception("Array sizes do not match");
+			throw new \Exception("Array sizes do not match");
 		}
 	}
 
@@ -314,7 +316,7 @@ class Table
 		if (is_string($val)) {
 			$this->identifier = $val;
 		} else {
-			throw new Exception("wrong data type, String required");
+			throw new \Exception("wrong data type, String required");
 		}
 	}
 
@@ -468,9 +470,7 @@ class Table
 	}
 
 	/* static functions */
-	public static function createTable($dbName, $rowCount)
-	{
-	}
+	public static function createTable($dbName, $rowCount) {}
 
 	/*
 	 * erstellt eine Zeile

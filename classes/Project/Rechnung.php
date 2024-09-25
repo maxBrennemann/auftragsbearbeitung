@@ -2,15 +2,8 @@
 
 namespace Classes\Project;
 
-error_reporting(E_ALL);
-
-/* TODO: fopen(): remote host file access not supported, file://c:/xampp/htdocs/auftragsbearbeitung/files/generated/invoice/115_322.pdf in /var/www/vhosts/organisierung.b-schriftung.de/httpdocs/vendor/tecnickcom/tcpdf/include/tcpdf_static.php on line 1811PHP message: PHP Warning:  fopen(file://c:/xampp/htdocs/auftragsbearbeitung/files/generated/invoice/115_322.pdf): failed to open stream: no suitable wrapper could be found in /var/www/vhosts/organisierung.b-schriftung.de/httpdocs/vendor/tecnickcom/tcpdf/include/tcpdf_static.php on line 1811', referer: https://organisierung.b-schriftung.de/c/rechnung?target=create&id=399 */
-
-require_once('vendor/autoload.php');
-require_once('classes/DBAccess.php');
-require_once('classes/project/Auftrag.php');
-require_once('classes/project/RechnungsPDF.php');
-require_once('classes/project/EmptyPosten.php');
+use Classes\DBAccess;
+use Classes\Link;
 
 class Rechnung {
 
@@ -247,7 +240,7 @@ class Rechnung {
 	}
 
 	public function setDate($date) {
-		if (DateTime::createFromFormat('d.m.Y', $date) !== false) {
+		if (\DateTime::createFromFormat('d.m.Y', $date) !== false) {
 			$this->date = $date;
 		}
 	}
@@ -396,14 +389,14 @@ class Rechnung {
 
 	private function storeDates() {
 		$orderId = $this->auftrag->getAuftragsnummer();
-		$creationDate = DateTime::createFromFormat("d.m.Y", $this->getDate());
-		$performanceDate = DateTime::createFromFormat("d.m.Y", $this->performanceDate);
+		$creationDate = \DateTime::createFromFormat("d.m.Y", $this->getDate());
+		$performanceDate = \DateTime::createFromFormat("d.m.Y", $this->performanceDate);
 		$payment_date = "0000-00-00";
 		$payment_type = -1;
 		$amount = (int) $this->auftrag->preisBerechnen() * 100;
 
 		if (!checkdate($performanceDate->format("m"), $performanceDate->format("d"), $performanceDate->format("Y"))) {
-			$performanceDate = new DateTime("now");
+			$performanceDate = new \DateTime("now");
 		}
 
 		DBAccess::deleteQuery("DELETE FROM invoice WHERE order_id = $orderId");
@@ -507,5 +500,3 @@ class Rechnung {
 	}
 
 }
-
-?>

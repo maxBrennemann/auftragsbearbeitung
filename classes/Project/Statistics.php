@@ -2,9 +2,13 @@
 
 namespace Classes\Project;
 
-class Statistics {
+use Classes\DBAccess;
 
-	public static function getOrderSum($orderId) {
+class Statistics
+{
+
+	public static function getOrderSum($orderId)
+	{
 		$query = "SELECT ROUND(SUM(all_posten.price), 2) AS orderPrice 
 			FROM (
 					SELECT (zeit.ZeitInMinuten / 60) * zeit.Stundenlohn AS price 
@@ -21,7 +25,8 @@ class Statistics {
 		return DBAccess::selectQuery($query);
 	}
 
-	public static function getAllOrdersSum() {
+	public static function getAllOrdersSum()
+	{
 		$query = "SELECT ROUND(SUM(all_posten.price), 2) AS orderPrice, all_posten.id AS id 
 			FROM (
 					SELECT (zeit.ZeitInMinuten / 60) * zeit.Stundenlohn AS price, posten.Auftragsnummer as id 
@@ -37,7 +42,8 @@ class Statistics {
 		return DBAccess::selectQuery($query);
 	}
 
-	public static function getVolumeByMonth($startDate, $endDate) {
+	public static function getVolumeByMonth($startDate, $endDate)
+	{
 		$query = "SELECT CONCAT(MONTHNAME(Fertigstellung), ' ', YEAR(Fertigstellung)) AS `date`, SUM(orderPrice) AS `value`
 			FROM auftragssumme
 			WHERE Fertigstellung BETWEEN :startDate AND :endDate
@@ -49,7 +55,8 @@ class Statistics {
 		]);
 	}
 
-	public static function getOrders($startDate, $endDate) {
+	public static function getOrders($startDate, $endDate)
+	{
 		$query = "SELECT COUNT(Auftragsnummer) as `value`, DATE_FORMAT(Datum,'%Y-%m') as `date` 
 			FROM auftrag 
 			WHERE Datum BETWEEN :startDate AND :endDate
@@ -61,7 +68,8 @@ class Statistics {
 		]);
 	}
 
-	public static function getOrdersByCustomer($startDate, $endDate) {
+	public static function getOrdersByCustomer($startDate, $endDate)
+	{
 		$query = "SELECT COUNT(Auftragsnummer) as `value`, CONCAT(Firmenname, ' ', Vorname, ' ', Nachname) as `date` 
 			FROM auftrag, kunde
 			WHERE kunde.Kundennummer = auftrag.Kundennummer AND Datum BETWEEN :startDate AND :endDate
@@ -73,7 +81,8 @@ class Statistics {
 		]);
 	}
 
-	public static function getVolumeByOrderType($startDate, $endDate) {
+	public static function getVolumeByOrderType($startDate, $endDate)
+	{
 		$query = "SELECT SUM(av.price) as `value`, `at`.Auftragstyp as `date` 
 			FROM auftragssumme_view av, auftrag a, auftragstyp `at`
 			WHERE av.id = a.Auftragsnummer
@@ -87,7 +96,8 @@ class Statistics {
 		]);
 	}
 
-	public static function dispatcher() {
+	public static function dispatcher()
+	{
 		$diagramType = $_POST["diagramType"];
 		$startDate = $_POST["startDate"];
 		$endDate = $_POST["endDate"];
@@ -121,5 +131,4 @@ class Statistics {
 
 		echo json_encode($data);
 	}
-
 }

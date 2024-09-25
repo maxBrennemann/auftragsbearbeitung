@@ -2,18 +2,23 @@
 
 namespace Classes\Project;
 
-class GlobalSettings {
+use Classes\DBAccess;
 
-    public static function getSetting($title) {
+class GlobalSettings
+{
+
+    public static function getSetting($title)
+    {
         $query = "SELECT content FROM settings WHERE title = '$title'";
         $response = DBAccess::selectQuery($query);
         if ($response != null) {
             return $response[0]["content"];
-        } 
+        }
         return null;
     }
 
-    public static function addSetting($title, $content) {
+    public static function addSetting($title, $content)
+    {
         if (self::getSetting($title) == null) {
             $query = "INSERT INTO settings (title, content) VALUES ('$title', '$content')";
             DBAccess::insertQuery($query);
@@ -22,7 +27,8 @@ class GlobalSettings {
         return false;
     }
 
-    public static function changeSetting($title, $content) {
+    public static function changeSetting($title, $content)
+    {
         if (self::getSetting($title) != null) {
             $query = "UPDATE settings SET content = '$content' WHERE title = '$title'";
             DBAccess::updateQuery($query);
@@ -30,7 +36,4 @@ class GlobalSettings {
         }
         return false;
     }
-
 }
-
-?>

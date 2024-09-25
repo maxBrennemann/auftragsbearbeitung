@@ -2,25 +2,32 @@
 
 namespace Classes\Project;
 
-class Kunde implements StatisticsInterface {
+use Classes\DBAccess;
+use Classes\Link;
+use Classes\Tools;
+use Classes\JSONResponseHandler;
 
-    private $kundennummer = null;
+class Kunde implements StatisticsInterface
+{
+
+	private $kundennummer = null;
 	private $vorname = null;
 	private $nachname = null;
 	private $firmenname = null;
 	private $strasse = null;
 	private $hausnummer = null;
-    private $postleitzahl = null;
-    private $ort = null;
-    private $email = null;
-    private $telefonFestnetz = null;
+	private $postleitzahl = null;
+	private $ort = null;
+	private $email = null;
+	private $telefonFestnetz = null;
 	private $telefonMobil = null;
 	private $website = null;
 
 	/* new */
 	private $addresses = array();
 
-	function __construct($kundennummer) {
+	function __construct($kundennummer)
+	{
 		$data = DBAccess::selectQuery("SELECT * FROM kunde, `address` WHERE Kundennummer = $kundennummer AND kunde.id_address_primary = address.id");
 		if (!empty($data)) {
 			$data = $data[0];
@@ -38,28 +45,33 @@ class Kunde implements StatisticsInterface {
 			$this->website = $data['Website'];
 		} else {
 			echo "<div class=\"defcont\"><form><input type=\"number\"><input type=\"submit\">Neue Kundennummer setzen</form></div><br>";
-			
-			throw new Exception("Kundennummer " . $kundennummer . " existiert nicht oder kann nicht gefunden werden");
+
+			throw new \Exception("Kundennummer " . $kundennummer . " existiert nicht oder kann nicht gefunden werden");
 		}
 	}
 
-	public function getKundennummer() {
+	public function getKundennummer()
+	{
 		return $this->kundennummer;
 	}
 
-	public function getVorname() {
+	public function getVorname()
+	{
 		return $this->vorname;
 	}
 
-	public function getNachname() {
+	public function getNachname()
+	{
 		return $this->nachname;
 	}
 
-	public function getFirmenname() {
+	public function getFirmenname()
+	{
 		return $this->firmenname;
 	}
 
-	public function getStrasse($id = 0) {
+	public function getStrasse($id = 0)
+	{
 		if ($id != 0) {
 			$this->loadAddresses();
 			if (array_key_exists($id, $this->addresses))
@@ -70,7 +82,8 @@ class Kunde implements StatisticsInterface {
 		return $this->strasse;
 	}
 
-	public function getHausnummer($id = 0) {
+	public function getHausnummer($id = 0)
+	{
 		if ($id != 0) {
 			$this->loadAddresses();
 			if (array_key_exists($id, $this->addresses))
@@ -78,12 +91,13 @@ class Kunde implements StatisticsInterface {
 			else
 				return "";
 		}
-		if ($this->hausnummer == 0 || $this->hausnummer == "0") 
+		if ($this->hausnummer == 0 || $this->hausnummer == "0")
 			return "";
 		return $this->hausnummer;
 	}
 
-	public function getPostleitzahl($id = 0) {
+	public function getPostleitzahl($id = 0)
+	{
 		if ($id != 0) {
 			$this->loadAddresses();
 			if (array_key_exists($id, $this->addresses))
@@ -96,7 +110,8 @@ class Kunde implements StatisticsInterface {
 		return $this->postleitzahl;
 	}
 
-	public function getOrt($id = 0) {
+	public function getOrt($id = 0)
+	{
 		if ($id != 0) {
 			$this->loadAddresses();
 			if (array_key_exists($id, $this->addresses))
@@ -107,31 +122,35 @@ class Kunde implements StatisticsInterface {
 		return $this->ort;
 	}
 
-	public function getEmail() {
+	public function getEmail()
+	{
 		return $this->email;
 	}
 
-	public function getWebsite() {
+	public function getWebsite()
+	{
 		return $this->website;
 	}
 
-	public function isPrivate() {
-		
-	}
+	public function isPrivate() {}
 
-	public function getName() {
+	public function getName()
+	{
 		return $this->getVorname() . ' ' . $this->getNachname();
 	}
 
-	public function getTelefonFestnetz() {
+	public function getTelefonFestnetz()
+	{
 		return $this->telefonFestnetz;
 	}
 
-	public function getTelefonMobil() {
+	public function getTelefonMobil()
+	{
 		return $this->telefonMobil;
 	}
 
-	public function getFarben() {
+	public function getFarben()
+	{
 		$query = "SELECT CONCAT(Farbe, ' ', Bezeichnung, ' ', Hersteller) AS Farbe, Auftragsnummer, Farbwert FROM color, color_auftrag, auftrag WHERE Kundennummer = :kdnr AND color.id = color_auftrag.id_color AND color_auftrag.id_auftrag = Auftragsnummer";
 		$data = DBAccess::selectQuery($query, [
 			"kdnr" => $this->kundennummer
@@ -142,17 +161,19 @@ class Kunde implements StatisticsInterface {
 		}
 
 		$column_names = array(
-			0 => array("COLUMN_NAME" => "Farbe"), 
-			1 => array("COLUMN_NAME" => "Farbwert"), 
-			2 => array("COLUMN_NAME" => "Auftragsnummer"));
+			0 => array("COLUMN_NAME" => "Farbe"),
+			1 => array("COLUMN_NAME" => "Farbwert"),
+			2 => array("COLUMN_NAME" => "Auftragsnummer")
+		);
 
 		$table = new Table();
 		$table->createByData($data, $column_names);
-	
+
 		return $table->getTable();
 	}
 
-	public function getOrderCards() {
+	public function getOrderCards()
+	{
 		$query = "SELECT Auftragsnummer FROM auftrag WHERE Kundennummer = :kdnr ORDER BY Auftragsnummer DESC";
 		$data = DBAccess::selectQuery($query, [
 			"kdnr" => $this->kundennummer
@@ -172,11 +193,13 @@ class Kunde implements StatisticsInterface {
 		return $content;
 	}
 
-	public function getAnsprechpartner() {
+	public function getAnsprechpartner()
+	{
 		return "";
 	}
 
-	public function getNotizen() {
+	public function getNotizen()
+	{
 		$data = DBAccess::selectQuery("SELECT notizen FROM kunde_extended WHERE kundennummer = :kdnr", [
 			"kdnr" => $this->getKundennummer(),
 		]);
@@ -187,7 +210,8 @@ class Kunde implements StatisticsInterface {
 		return "";
 	}
 
-	public function getFahrzeuge() {
+	public function getFahrzeuge()
+	{
 		$query = "SELECT Kennzeichen, Fahrzeug, Nummer FROM fahrzeuge WHERE Kundennummer = :kdnr";
 		$data = DBAccess::selectQuery($query, [
 			"kdnr" => $this->getKundennummer(),
@@ -209,11 +233,10 @@ class Kunde implements StatisticsInterface {
 		return $t->getTable();
 	}
 
-	public function recalculate() {
-	
-	}
+	public function recalculate() {}
 
-	private function loadAddresses() {
+	private function loadAddresses()
+	{
 		if ($this->addresses != null)
 			return null;
 
@@ -224,11 +247,13 @@ class Kunde implements StatisticsInterface {
 		}
 	}
 
-	public static function addAddress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz, $land, $art = 3) {
+	public static function addAddress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz, $land, $art = 3)
+	{
 		return Address::createNewAddress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz, $land, $art);
 	}
 
-	public function getHTMLShortSummary() {
+	public function getHTMLShortSummary()
+	{
 		$link = Link::getPageLink("kunde") . "?id=" . $this->kundennummer;
 		$text = "<div class=\"shortSummary\"><div class=\"shortSummaryHeader\">";
 		if ($this->firmenname == "") {
@@ -237,11 +262,11 @@ class Kunde implements StatisticsInterface {
 			$text .= "<a href=\"$link\">{$this->firmenname}</a></div>";
 		}
 		$text .= "<p>{$this->strasse} {$this->hausnummer}<br>{$this->postleitzahl} {$this->ort}<br>";
-		
+
 		if ($this->telefonFestnetz != null) {
 			$text .= "☎ {$this->telefonFestnetz}<br>";
-		} 
-		
+		}
+
 		if ($this->telefonMobil != null) {
 			$text .= "✆ {$this->telefonMobil}<br>";
 		}
@@ -261,7 +286,8 @@ class Kunde implements StatisticsInterface {
 		return $text;
 	}
 
-	public static function getContacts() {
+	public static function getContacts()
+	{
 		$kdnr = (int) Tools::get("id");
 		$data = DBAccess::selectQuery("SELECT Nummer as id, Vorname as firstName, Nachname as lastName, Email as email FROM ansprechpartner WHERE Kundennummer = :kdnr", [
 			"kdnr" => $kdnr,
@@ -273,7 +299,7 @@ class Kunde implements StatisticsInterface {
 	/**
 	 * @return int
 	 */
-	public static function addCustomer($data): int 
+	public static function addCustomer($data): int
 	{
 		/* insert customer data */
 		$query = "INSERT INTO kunde (Firmenname, Anrede, Vorname, Nachname, Email, TelefonFestnetz, TelefonMobil, Website) VALUES (:firmenname, :anrede, :vorname, :nachname, :email, :telfestnetz, :telmobil, :website)";
@@ -330,7 +356,8 @@ class Kunde implements StatisticsInterface {
 		return $customerId;
 	}
 
-	public static function addCustomerAjax() {
+	public static function addCustomerAjax()
+	{
 		$data = Tools::get("data");
 		$data = json_decode($data, true);
 
@@ -343,5 +370,4 @@ class Kunde implements StatisticsInterface {
 			"link" => $link,
 		]);
 	}
-
 }

@@ -2,6 +2,8 @@
 
 namespace Classes\Project\Modules\Sticker;
 
+use Classes\DBAccess;
+
 class StickerUpload extends PrestashopConnection
 {
 
@@ -76,7 +78,7 @@ class StickerUpload extends PrestashopConnection
                 'id' => $this->idProduct,
             );
             $this->editXML($opt);
-        } catch (PrestaShopWebserviceException $e) {
+        } catch (\PrestaShopWebserviceException $e) {
             echo $e->getMessage();
         }
     }
@@ -97,7 +99,7 @@ class StickerUpload extends PrestashopConnection
             );
             $this->addXML($opt);
             $this->idProduct = (int) $this->xml->product->id;
-        } catch (PrestaShopWebserviceException $e) {
+        } catch (\PrestaShopWebserviceException $e) {
             echo $e->getMessage();
         }
     }
@@ -172,7 +174,7 @@ class StickerUpload extends PrestashopConnection
                 'id' => $this->idProduct,
             );
             $this->editXML($opt);
-        } catch (PrestaShopWebserviceException $e) {
+        } catch (\PrestaShopWebserviceException $e) {
             echo $e->getMessage();
         }
     }

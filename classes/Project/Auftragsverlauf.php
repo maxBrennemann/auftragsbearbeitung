@@ -2,6 +2,9 @@
 
 namespace Classes\Project;
 
+use Classes\DBAccess;
+use Classes\Login;
+
 /*
  * Zu protokollierende Daten:
  * posten:   Beim Hinzufügen / Löschen / Bearbeiten speichern                       ✔
@@ -21,14 +24,16 @@ namespace Classes\Project;
  * finished
 */
 
-class Auftragsverlauf {
+class Auftragsverlauf
+{
 
     private $auftragsnummer = 0;
 
-    function __construct($auftragsnummer) {
+    function __construct($auftragsnummer)
+    {
         $this->auftragsnummer = (int) $auftragsnummer;
         if ($this->auftragsnummer <= 0) {
-            throw new error("Auftrag existiert nicht");
+            throw new \Error("Auftrag existiert nicht");
         }
     }
 
@@ -38,7 +43,8 @@ class Auftragsverlauf {
      * Id zur Identifikation der anderen Tabellenspalten und ein Zeitstempel miteingetragen.
      * Eventuell kann später noch ein Notizfeld hinzugefügt werden.
      */
-    public function addToHistory($number, $type, $state, $alternative_text = "") {
+    public function addToHistory($number, $type, $state, $alternative_text = "")
+    {
         $userId = Login::getUserId();
         $query = "INSERT INTO history (orderid, `number`, `type`, `state`, member_id, alternative_text) VALUES (:orderId, :number, :type, :state, :userId, :alternative_text)";
         $params = array(
@@ -55,7 +61,8 @@ class Auftragsverlauf {
     /*
      * added member join to get the user id
     */
-    public function getHistory() {
+    public function getHistory()
+    {
         $query = "SELECT history.id, history.insertstamp, history_type.name , CONCAT(COALESCE(history.alternative_text, ''), COALESCE(ids.descr, '')) AS Beschreibung, history.state, user.username, user.prename
             FROM history
             LEFT JOIN (
@@ -71,7 +78,8 @@ class Auftragsverlauf {
         return DBAccess::selectQuery($query);
     }
 
-    public function representHistoryAsHTML() {
+    public function representHistoryAsHTML()
+    {
         $history = $this->getHistory();
         $html = "";
         foreach ($history as $h) {
@@ -101,5 +109,4 @@ class Auftragsverlauf {
 
         return $html;
     }
-
 }

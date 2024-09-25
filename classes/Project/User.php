@@ -2,7 +2,12 @@
 
 namespace Classes\Project;
 
-class User {
+use Classes\DBAccess;
+use Classes\Link;
+use Classes\Mailer;
+
+class User
+{
 
     private $id;
     private $username;
@@ -13,7 +18,8 @@ class User {
     private $maxWorkingHours;
     private $role;
 
-    function __construct($userId) {
+    function __construct($userId)
+    {
         $query = "SELECT * FROM user WHERE id = :userId LIMIT 1;";
         $params = array(':userId' => $userId);
         $user = DBAccess::selectQuery($query, $params);
@@ -31,38 +37,46 @@ class User {
         $this->role = $user[0]['role'];
     }
 
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
-    public function getUsername() {
+    public function getUsername()
+    {
         return $this->username;
     }
 
-    public function getEmail() {
+    public function getEmail()
+    {
         return $this->email;
     }
 
-    public function getPrename() {
+    public function getPrename()
+    {
         return $this->prename;
     }
 
-    public function getLastname() {
+    public function getLastname()
+    {
         return $this->lastname;
     }
 
-    public function getMaxWorkingHours() {
+    public function getMaxWorkingHours()
+    {
         return $this->maxWorkingHours;
     }
 
-    public function getRole() {
+    public function getRole()
+    {
         return $this->role;
     }
 
     /**
      * checks if email is available and sets it
      */
-    public function setEmail($email) {
+    public function setEmail($email)
+    {
         if (self::checkEmailAvailable($email)) {
             $query = "UPDATE user SET email = :email WHERE id = :userId";
             $params = array(':email' => $email, ':userId' => $this->id);
@@ -71,32 +85,34 @@ class User {
         }
     }
 
-    public function setPrename($prename) {
+    public function setPrename($prename)
+    {
         $query = "UPDATE user SET prename = :prename WHERE id = :userId";
         $params = array(':prename' => $prename, ':userId' => $this->id);
         DBAccess::updateQuery($query, $params);
     }
 
-    public function setLastname($lastname) {
+    public function setLastname($lastname)
+    {
         $query = "UPDATE user SET lastname = :lastname WHERE id = :userId";
         $params = array(':lastname' => $lastname, ':userId' => $this->id);
         DBAccess::updateQuery($query, $params);
     }
 
-    public function setMaxWorkingHours($maxWorkingHours) {
+    public function setMaxWorkingHours($maxWorkingHours)
+    {
         $query = "UPDATE user SET max_working_hours = :maxWorkingHours WHERE id = :userId";
         $params = array(':maxWorkingHours' => $maxWorkingHours, ':userId' => $this->id);
         DBAccess::updateQuery($query, $params);
     }
 
-    public function setRole($role) {
-        
-    }
+    public function setRole($role) {}
 
     /**
      * returns a list of devices the user has logged in with
      */
-    public function getUserDeviceList() {
+    public function getUserDeviceList()
+    {
         $query = "SELECT device_type, user_device_name, last_usage, ip_address, browser, os FROM user_devices WHERE user_id = :userId";
         $data = DBAccess::selectQuery($query, [
             "userId" => $this->id,
@@ -105,7 +121,8 @@ class User {
         return $data;
     }
 
-    public function getDeviceIcon($type, $os) {
+    public function getDeviceIcon($type, $os)
+    {
         $icon = "";
         switch ($type) {
             case "mobile":
@@ -146,7 +163,8 @@ class User {
         return $icon;
     }
 
-    public function getHistory() {
+    public function getHistory()
+    {
         $query = "SELECT history.orderid, history.id, history.insertstamp, history_type.name , CONCAT(COALESCE(history.alternative_text, ''), COALESCE(ids.descr, '')) AS Beschreibung, history.state, user.username, user.prename
             FROM history
             LEFT JOIN (
@@ -197,11 +215,12 @@ class User {
         ];
 
         $t = new Table();
-		$t->createByData($data, $column_names);
-		return $t->getTable();
+        $t->createByData($data, $column_names);
+        return $t->getTable();
     }
 
-    public static function getUserOverview() {
+    public static function getUserOverview()
+    {
         $column_names = [
             0 => [
                 "COLUMN_NAME" => "id",
@@ -233,17 +252,18 @@ class User {
             ],
         ];
         $data = DBAccess::selectQuery("SELECT * FROM user ORDER BY id ASC;");
-		
-		$t = new Table();
-		$t->createByData($data, $column_names);
+
+        $t = new Table();
+        $t->createByData($data, $column_names);
         $link = new Link();
-		$link->addBaseLink("mitarbeiter");
-		$link->setIterator("id", $data, "id");
-		$t->addLink($link);
-		return $t->getTable();
+        $link->addBaseLink("mitarbeiter");
+        $link->setIterator("id", $data, "id");
+        $t->addLink($link);
+        return $t->getTable();
     }
 
-    public static function checkEmailAvailable($email) {
+    public static function checkEmailAvailable($email)
+    {
         $query = "SELECT id FROM user WHERE email = :email";
         $params = array(':email' => $email);
         $user = DBAccess::selectQuery($query, $params);
@@ -255,7 +275,8 @@ class User {
         return false;
     }
 
-    public static function checkUsernameAvailable($username) {
+    public static function checkUsernameAvailable($username)
+    {
         $query = "SELECT id FROM user WHERE username = :username";
         $params = array(':username' => $username);
         $user = DBAccess::selectQuery($query, $params);
@@ -272,14 +293,15 @@ class User {
      * if an error occurs, it returns -1,
      * if the user was added successfully, it returns the id of the user
      */
-    public static function add($username, $email, $prename, $lastname, $password) {
+    public static function add($username, $email, $prename, $lastname, $password)
+    {
         if (!self::checkUsernameAvailable($username) || !self::checkEmailAvailable($email)) {
             return -1;
         }
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-			return -1;
-		}
+            return -1;
+        }
 
         if (!self::isPasswordSafe($password)) {
             return -1;
@@ -300,29 +322,30 @@ class User {
         return $result;
     }
 
-    private static function sendEmailVerification($userId, $email) {
-        $mailKey = md5(microtime().rand());
+    private static function sendEmailVerification($userId, $email)
+    {
+        $mailKey = md5(microtime() . rand());
 
         while (self::mailKeyExists($mailKey)) {
-            $mailKey = md5(microtime().rand());
+            $mailKey = md5(microtime() . rand());
         }
 
-		DBAccess::insertQuery("INSERT INTO user_validate_mail (user_id, mail_key) VALUES (:userId, :mailKey)", array(
+        DBAccess::insertQuery("INSERT INTO user_validate_mail (user_id, mail_key) VALUES (:userId, :mailKey)", array(
             ':userId' => $userId,
             ':mailKey' => $mailKey
         ));
-		
-		$mailLink = $_ENV["REWRITE_BASE"] . "/verify?id?" . $mailKey;
-		$mailText = '<a href="' . $mailLink . '">Hier</a> dem Link folgen!';
+
+        $mailLink = $_ENV["REWRITE_BASE"] . "/verify?id?" . $mailKey;
+        $mailText = '<a href="' . $mailLink . '">Hier</a> dem Link folgen!';
 
         try {
             Mailer::sendMail($email, "Bestätigen Sie Ihre E-Mail Adresse", $mailText, "no-reply@organisierung.b-schriftung.de");
-        } catch (Exception $e) {
-           
+        } catch (\Exception $e) {
         }
     }
 
-    private static function mailKeyExists($mailKey) {
+    private static function mailKeyExists($mailKey)
+    {
         $query = "SELECT id FROM user_validate_mail WHERE mail_key = :mailKey";
         $params = array(':mailKey' => $mailKey);
         $result = DBAccess::selectQuery($query, $params);
@@ -337,7 +360,8 @@ class User {
     /**
      * checks if the password is safe enough
      */
-    private static function isPasswordSafe($password) {
+    private static function isPasswordSafe($password)
+    {
         if (strlen($password) < 8) {
             return false;
         }
@@ -349,7 +373,8 @@ class User {
         return true;
     }
 
-    public static function getCurrentUserId() {
+    public static function getCurrentUserId()
+    {
         if (isset($_SESSION['user_id'])) {
             return $_SESSION['user_id'];
         }
@@ -362,7 +387,8 @@ class User {
      * 
      * @return bool
      */
-    public static function isAdmin() {
+    public static function isAdmin()
+    {
         $userId = self::getCurrentUserId();
 
         if ($userId === -1) {
@@ -384,5 +410,4 @@ class User {
 
         return true;
     }
-
 }

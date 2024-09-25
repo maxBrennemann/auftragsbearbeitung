@@ -2,6 +2,11 @@
 
 namespace Classes\Project\Modules\Sticker;
 
+use Classes\DBAccess;
+use Classes\Tools;
+use Classes\JSONResponseHandler;
+use Classes\Protocol;
+
 class StickerTagManager extends PrestashopConnection
 {
 
@@ -60,7 +65,7 @@ class StickerTagManager extends PrestashopConnection
     public function getTagIds()
     {
         $tagIds = [];
-        
+
         foreach ($this->tags as $t) {
             $id_tag_shop = $t["id_tag_shop"];
 
@@ -75,9 +80,7 @@ class StickerTagManager extends PrestashopConnection
         return $tagIds;
     }
 
-    public function remove(int $id)
-    {
-    }
+    public function remove(int $id) {}
 
     /**
      * adds a tag to a product,
@@ -128,7 +131,7 @@ class StickerTagManager extends PrestashopConnection
             if (!empty($resources)) {
                 return (int) $resources->tag->attributes()->id;
             }
-        } catch (PrestaShopWebserviceException $e) {
+        } catch (\PrestaShopWebserviceException $e) {
             echo $e->getMessage();
         }
 
@@ -150,7 +153,7 @@ class StickerTagManager extends PrestashopConnection
             $this->addXML($opt);
             $id = $this->xml->tag->id;
             return (int) $id;
-        } catch (PrestaShopWebserviceException $e) {
+        } catch (\PrestaShopWebserviceException $e) {
             echo $e->getMessage();
         }
 
@@ -243,7 +246,7 @@ class StickerTagManager extends PrestashopConnection
                 'id' => $this->idProductReference,
             );
             $this->editXML($opt);
-        } catch (PrestaShopWebserviceException $e) {
+        } catch (\PrestaShopWebserviceException $e) {
             echo $e;
         }
     }
@@ -288,9 +291,7 @@ class StickerTagManager extends PrestashopConnection
      * gets called when an ajax request is fired,
      * loads more synonyms
      */
-    public static function loadMoreSynonyms()
-    {
-    }
+    public static function loadMoreSynonyms() {}
 
     /**
      * gets called when an ajax request is fired
@@ -404,13 +405,13 @@ class StickerTagManager extends PrestashopConnection
                         "int" => $id,
                         "string" => $name,
                     ];
-                } catch (PrestaShopWebserviceException $e) {
+                } catch (\PrestaShopWebserviceException $e) {
                     Protocol::write($e->getMessage());
                 }
 
                 DBAccess::insertMultiple("INSERT INTO module_sticker_tags (id_tag_shop, `content`) VALUES ", $data);
             }
-        } catch (PrestaShopWebserviceException $e) {
+        } catch (\PrestaShopWebserviceException $e) {
             Protocol::write($e->getMessage());
         }
     }

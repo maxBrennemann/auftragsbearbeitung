@@ -2,44 +2,47 @@
 
 namespace Classes\Project;
 
-class TimeTracking {
+use Classes\DBAccess;
+
+class TimeTracking
+{
 
     private int $userId;
 
-    function __construct($userId) {
+    function __construct($userId)
+    {
         $this->userId = (int) $userId;
 
         if ($this->userId <= 0) {
-            throw new Exception("Invalid user id");
+            throw new \Exception("Invalid user id");
         }
     }
 
     /**
      * returns time table of current user in this month
      */
-    public static function current(int $userId = -1) {
+    public static function current(int $userId = -1)
+    {
         return self::month(0, $userId);
     }
 
     /**
      * 
      */
-    public static function month(int $month, int $userId = -1) {
+    public static function month(int $month, int $userId = -1)
+    {
         $query = "SELECT started_at, stopped_at, duration_ms, MONTHNAME(started_at) AS month_started, task, edit_log FROM user_timetracking WHERE user_id = :userId and MONTH(started_at) = MONTH(CURDATE());";
         $data = DBAccess::selectQuery($query, ["userId" => $userId]);
         return $data;
     }
 
-    public static function toTable() {
+    public static function toTable() {}
 
-    }
-
-    public static function sum(int $month = 0) {
-
-    }
+    public static function sum(int $month = 0) {}
 
     //temp
-    public static function getTimeTables($idUser) {
+    public static function getTimeTables($idUser)
+    {
         $column_names = array(
             0 => array("COLUMN_NAME" => "Beginn"),
             1 => array("COLUMN_NAME" => "Ende"),
@@ -100,7 +103,8 @@ class TimeTracking {
      * this function is called from Ajax.php,
      * it adds a new entry to the database and calculates the duration
      */
-    public static function addEntry() {
+    public static function addEntry()
+    {
         $start = (int) $_POST["startTime"];
         $stop = (int) $_POST["stopTime"];
         $task = $_POST["task"];
@@ -136,8 +140,5 @@ class TimeTracking {
         ]);
     }
 
-    public function isOwner($id) {
-        
-    }
-
+    public function isOwner($id) {}
 }

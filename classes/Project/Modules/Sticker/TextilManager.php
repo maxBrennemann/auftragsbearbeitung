@@ -2,10 +2,8 @@
 
 namespace Classes\Project\Modules\Sticker;
 
-class TextilManager implements Queable {
-    
-    public static function handle() {
+class TextilManager implements Classes\Cron\Queueable
+{
 
-    }
-
+    public static function handle() {}
 }

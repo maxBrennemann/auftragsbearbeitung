@@ -2,18 +2,21 @@
 
 namespace Project\Modules\AiConnector;
 
-class ChatGPTConnection implements AiInterface {
+class ChatGPTConnection implements AiInterface
+{
 
-    public function getTextSuggestions(mixed $data): array {
+    public function getTextSuggestions(mixed $data): array
+    {
         return [];
     }
 
-    public function getImagesSuggestions(mixed $data): array {
+    public function getImagesSuggestions(mixed $data): array
+    {
         return [];
     }
 
-    public function getJSONSuggestions(mixed $data): array {
+    public function getJSONSuggestions(mixed $data): array
+    {
         return [];
     }
-
 }

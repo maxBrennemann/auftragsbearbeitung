@@ -2,6 +2,10 @@
 
 namespace Classes\Front;
 
+use Classes\DBAccess;
+use Classes\Tools;
+use Classes\JSONResponseHandler;
+
 class Category
 {
 
@@ -61,7 +65,8 @@ class Category
         return $onelayerarray;
     }
 
-    private static function parseCategories() {
+    private static function parseCategories()
+    {
         $categories = DBAccess::selectQuery("SELECT * FROM category");
 
         $categoryTree = [];
@@ -112,7 +117,8 @@ class Category
         return $onelayerarray;
     }
 
-    public static function getCategoryTree($data) {
+    public static function getCategoryTree($data)
+    {
         $categoryTree = [];
 
         foreach ($data as $category) {
@@ -127,11 +133,13 @@ class Category
         return $categoryTree;
     }
 
-    public static function getJSONOneLayer() {
+    public static function getJSONOneLayer()
+    {
         return JSONResponseHandler::sendResponse(self::getOneLayerRepresentation());
     }
 
-    public static function getJSONTree() {
+    public static function getJSONTree()
+    {
         $data = self::parseCategories();
         return JSONResponseHandler::sendResponse(self::getCategoryTree($data));
     }

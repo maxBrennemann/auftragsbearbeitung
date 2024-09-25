@@ -5,16 +5,21 @@ namespace Classes\Project\Modules\Sticker\Imports;
 use Google\Service\SearchConsole;
 use Google\Service\SearchConsole\SearchAnalyticsQueryRequest;
 
-class ImportGoogleSearchConsole {
+use Classes\DBAccess;
+use Classes\Protocol;
+
+class ImportGoogleSearchConsole
+{
 
     private $searchConsole;
 
-    function __construct() {
+    function __construct()
+    {
         $keyFileLocation = $_ENV["GOOGLE_SEARCHCONSOLE"];
-        $client = new Google\Client();
+        $client = new \Google\Client();
         try {
             $client->setAuthConfig($keyFileLocation);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             echo "Fehler bei der Authentifizierung";
             Protocol::write("Google Search Console", "Error authenticating: " . $e->getMessage());
             return;
@@ -25,7 +30,8 @@ class ImportGoogleSearchConsole {
         $this->searchConsole = new SearchConsole($client);
     }
 
-    public function getStats($url) {
+    public function getStats($url)
+    {
         $queryRequest = new SearchAnalyticsQueryRequest();
         $queryRequest->setStartDate(date('Y-m-d', strtotime('-7 days')));
         $queryRequest->setEndDate(date('Y-m-d', strtotime('-3 days')));
@@ -34,11 +40,11 @@ class ImportGoogleSearchConsole {
 
         try {
             $response = $this->searchConsole->searchanalytics->query($url, $queryRequest);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Protocol::write("Google Search Console", "Error querying: " . $e->getMessage());
             return;
         }
-        
+
         $rows = $response->getRows();
 
         if (is_null($rows)) {
@@ -62,12 +68,14 @@ class ImportGoogleSearchConsole {
         }
     }
 
-    private function addUrl($url) {
+    private function addUrl($url)
+    {
         $data = $this->searchConsole->sites->add($url);
         var_dump($data);
     }
 
-    public static function import() {
+    public static function import()
+    {
         $import = new ImportGoogleSearchConsole();
         $import->getStats("https://klebefux.de/");
     }
@@ -76,7 +84,8 @@ class ImportGoogleSearchConsole {
      * gets all search data for a given url,
      * if no start and end date are given, the last 7 days are used
      */
-    public static function get($url, ?string $startDate = null, ?string $endDate = null) {
+    public static function get($url, ?string $startDate = null, ?string $endDate = null)
+    {
         if ($startDate == null) {
             $startDate = date('Y-m-d', strtotime('-7 days'));
         }
@@ -92,5 +101,4 @@ class ImportGoogleSearchConsole {
         ]);
         return $data;
     }
-    
 }

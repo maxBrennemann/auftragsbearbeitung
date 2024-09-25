@@ -2,7 +2,7 @@
 
 namespace Classes\Project;
 
-class RechnungsPDF extends TCPDF {
+class RechnungsPDF extends \TCPDF {
 
     public function Footer() {
          // Position at 15 mm from bottom
@@ -48,5 +48,3 @@ class RechnungsPDF extends TCPDF {
     }
 
 }
-
-?>

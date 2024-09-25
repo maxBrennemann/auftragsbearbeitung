@@ -2,13 +2,15 @@
 
 namespace Classes\Project\Modules\Sticker;
 
-class Wandtattoo extends AufkleberWandtattoo {
+class Wandtattoo extends AufkleberWandtattoo
+{
 
     const TYPE = "wandtattoo";
 
     private $isWalldecal = false;
 
-    function __construct($idWaldecal) {
+    function __construct($idWaldecal)
+    {
         parent::__construct($idWaldecal);
         $this->instanceType = "wandtattoo";
 
@@ -16,27 +18,33 @@ class Wandtattoo extends AufkleberWandtattoo {
         $this->isWalldecal = (int) $this->stickerData["is_walldecal"];
     }
 
-    public function isInShop() {
+    public function isInShop()
+    {
         return parent::checkIsInShop(self::TYPE);
     }
 
-    public function getName(): String {
+    public function getName(): String
+    {
         return "Wandtattoo " . parent::getName();
     }
 
-    public function getIsWalldecal() {
+    public function getIsWalldecal()
+    {
         return $this->isWalldecal;
     }
 
-    public function getAltTitle($default = ""): String {
+    public function getAltTitle($default = ""): String
+    {
         return parent::getAltTitle(self::TYPE);
     }
 
-    public function getShopLink() {
+    public function getShopLink()
+    {
         return parent::getShopLinkHelper(self::TYPE);
     }
 
-    public function save($isOverwrite = false) {
+    public function save($isOverwrite = false)
+    {
         if (!$this->getIsWalldecal()) {
             return;
         }
@@ -56,13 +64,13 @@ class Wandtattoo extends AufkleberWandtattoo {
         $stickerUpload->setCategoires([2, 62, 13]);
 
         $stickerCombination->removeOldCombinations($productId);
-        
+
         $stickerTagManager = new StickerTagManager($this->getId(), $this->getName());
         $stickerTagManager->setProductId($productId);
         $stickerTagManager->saveTags();
 
         $stickerCombination->createCombinations();
-        
+
         $this->connectAccessoires();
 
         if ($isOverwrite) {
@@ -72,8 +80,8 @@ class Wandtattoo extends AufkleberWandtattoo {
         $this->imageData->handleImageProductSync("wandtattoo", $this->idProduct);
     }
 
-    public function getAttributes() {
+    public function getAttributes()
+    {
         return [$this->getSizeIds()];
     }
-
 }

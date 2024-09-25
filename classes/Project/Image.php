@@ -2,6 +2,9 @@
 
 namespace Classes\Project;
 
+use Classes\DBAccess;
+use Classes\Link;
+
 class Image
 {
 

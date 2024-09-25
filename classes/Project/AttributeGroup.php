@@ -2,6 +2,10 @@
 
 namespace Classes\Project;
 
+use Classes\DBAccess;
+use Classes\Tools;
+use Classes\JSONResponseHandler;
+
 class AttributeGroup
 {
 
@@ -18,7 +22,7 @@ class AttributeGroup
                 $this->description = $data['descr'];
             }
         } else {
-            throw new Exception("Keine gültige Zahl übergeben.");
+            throw new \Exception("Keine gültige Zahl übergeben.");
         }
     }
 
@@ -71,7 +75,8 @@ class AttributeGroup
         JSONResponseHandler::sendResponse(["result" => $result]);
     }
 
-    public static function updatePositions() {
+    public static function updatePositions()
+    {
         $groupId = (int) Tools::get("id");
         $positions = Tools::get("positions");
         $positions = json_decode($positions, true);

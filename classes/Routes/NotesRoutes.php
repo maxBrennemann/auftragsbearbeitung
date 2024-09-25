@@ -9,29 +9,29 @@ class NotesRoutes extends Routes {
      * @uses Auftrag::getNote
      */
     protected static $getRoutes = [
-        "/notes/{orderId}" => "Auftrag::getNotes",
-        "/notes/{orderId}/{id}" => "Auftrag::getNote",
+        "/notes/{orderId}" => [\Classes\Project\Auftrag::class, "getNotes"],
+        "/notes/{orderId}/{id}" => [\Classes\Project\Auftrag::class, "getNote"],
     ];
 
     /**
      * @ueses Auftrag::addNote
      */
     protected static $postRoutes = [
-        "/notes/{orderId}" => "Auftrag::addNote",
+        "/notes/{orderId}" => [\Classes\Project\Auftrag::class, "addNote"],
     ];
 
     /**
      * @uses Auftrag::updateNote
      */
     protected static $putRoutes = [
-        "/notes/{id}" => "Auftrag::updateNote",
+        "/notes/{id}" => [\Classes\Project\Auftrag::class, "updateNote"],
     ];
 
     /**
      * @uses Auftrag::deleteNote
      */
     protected static $deleteRoutes = [
-        "/notes/{id}" => "Auftrag::deleteNote",
+        "/notes/{id}" => [\Classes\Project\Auftrag::class, "deleteNote"],
     ];
 
     public function __construct() {

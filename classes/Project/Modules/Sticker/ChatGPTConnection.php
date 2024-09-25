@@ -2,12 +2,18 @@
 
 namespace Classes\Project\Modules\Sticker;
 
-class ChatGPTConnection {
+use Classes\DBAccess;
+use Classes\Tools;
+use Classes\JSONResponseHandler;
+
+class ChatGPTConnection
+{
 
     private $oldChats;
     private $idSticker;
 
-    function __construct($idSticker) {
+    function __construct($idSticker)
+    {
         $this->idSticker = $idSticker;
         $query = "SELECT * FROM module_sticker_chatgpt WHERE idSticker = :idSticker";
         $this->oldChats = DBAccess::selectQuery($query, ["idSticker" => $idSticker]);
@@ -18,42 +24,43 @@ class ChatGPTConnection {
      * 
      * @param string $message The message which is passed to chat gpt
      */
-    public static function request($message) {
+    public static function request($message)
+    {
         $apiKey = $_ENV["OPENAI_API_KEY"];
         $organisationKey = $_ENV["OPENAI_ORGANISATION_ID"];
         $url = 'https://api.openai.com/v1/chat/completions';
-        
+
         $headers = [
             "Authorization: Bearer {$apiKey}",
             "OpenAI-Organization: $organisationKey",
             "Content-Type: application/json"
         ];
-        
+
         $messages = [];
         $messages[] = [
             "role" => "user",
             "content" => $message
         ];
-        
+
         $data = [
             "model" => "gpt-3.5-turbo",
             "messages" => $messages,
             "max_tokens" => 100
         ];
-        
+
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_POST, 1);
         curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        
+
         $result = curl_exec($curl);
         $result = urldecode($result);
 
         if (curl_errno($curl)) {
             $result = 'Error:' . curl_error($curl);
         }
-        
+
         curl_close($curl);
         return $result;
     }
@@ -63,14 +70,16 @@ class ChatGPTConnection {
      * The function then returns the count of elements in the filtered array where the "stickerType" property matches 
      * the $motivType parameter and the "textType" property matches the $textType parameter
      */
-    public function getChatCount($motivType, $textType) {
+    public function getChatCount($motivType, $textType)
+    {
         return count(array_filter(
             $this->oldChats,
             fn($element) => $element["stickerType"] == $motivType && $element["textType"] == $textType
         ));
     }
 
-    public function getText($motivType, $textType, $index) {
+    public function getText($motivType, $textType, $index)
+    {
         $filteredChats = array_filter(
             $this->oldChats,
             fn($element) => $element["stickerType"] == $motivType && $element["textType"] == $textType
@@ -90,34 +99,35 @@ class ChatGPTConnection {
      * @param string $info Additional info for chat gpt to generate the text
      * @param string $textStyle The kind of text (e.g ironic, funny, sad)
      */
-    public function getTextSuggestion($query, $stickerType, $textType, $info, $textStyle) {
+    public function getTextSuggestion($query, $stickerType, $textType, $info, $textStyle)
+    {
         $apiKey = $_ENV["OPENAI_API_KEY"];
         $organisationKey = $_ENV["OPENAI_ORGANISATION_ID"];
         $url = 'https://api.openai.com/v1/chat/completions';
-        
+
         $headers = array(
             "Authorization: Bearer {$apiKey}",
             "OpenAI-Organization: $organisationKey",
             "Content-Type: application/json"
         );
-        
+
         // Define messages
         $messages = array();
         $messages[] = array("role" => "user", "content" => $this->getMessage($query, $stickerType, $textType, $info, $textStyle));
-        
+
         // Define data
         $data = array();
         $data["model"] = "gpt-3.5-turbo";
         $data["messages"] = $messages;
         $data["max_tokens"] = 100;
-        
+
         // init curl
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_POST, 1);
         curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        
+
         $result = curl_exec($curl);
         $result = urldecode($result);
         if (curl_errno($curl)) {
@@ -125,11 +135,12 @@ class ChatGPTConnection {
         } else {
             $this->saveResponse($result, $stickerType, $textType, $info, $textStyle);
         }
-        
+
         curl_close($curl);
     }
 
-    private function getMessage($query, $stickerType, $textType, $info, $textStyle) {
+    private function getMessage($query, $stickerType, $textType, $info, $textStyle)
+    {
         $length = $textType == "long" ? "50" : "20";
 
         $contentType = "";
@@ -149,12 +160,13 @@ class ChatGPTConnection {
         return $queryText;
     }
 
-    private function saveResponse($result, $stickerType, $textType, $info, $textStyle) {
+    private function saveResponse($result, $stickerType, $textType, $info, $textStyle)
+    {
         $data = json_decode($result, true);
         $text = $data["choices"][0]["message"]["content"];
         $date = date("Y-m-d");
-        
-        $query = "INSERT INTO module_sticker_chatgpt (idSticker, creationDate, chatgptResponse, jsonResponse, stickerType, textType, additionalQuery, textStyle) VALUES (:idSticker, :date, :text, :json, :stickerType, :textType, :info, :textStyle);"; 
+
+        $query = "INSERT INTO module_sticker_chatgpt (idSticker, creationDate, chatgptResponse, jsonResponse, stickerType, textType, additionalQuery, textStyle) VALUES (:idSticker, :date, :text, :json, :stickerType, :textType, :info, :textStyle);";
         $params = [
             "idSticker" => $this->idSticker,
             "date" => $date,
@@ -169,11 +181,12 @@ class ChatGPTConnection {
         DBAccess::insertQuery($query, $params);
     }
 
-    public static function iterateText() {
+    public static function iterateText()
+    {
         $id = (int) Tools::get("id");
         $type = Tools::get("type");
         $text = Tools::get("form");
-        
+
         $direction = Tools::get("direction");
         $current = (int) Tools::get("current");
         /* adapting to array index */
@@ -204,7 +217,8 @@ class ChatGPTConnection {
         ]);
     }
 
-    public static function newText() {
+    public static function newText()
+    {
         $id = (int) Tools::get("id");
         $type = Tools::get("type");
         $text = Tools::get("form");
@@ -216,5 +230,4 @@ class ChatGPTConnection {
         $connector = new ChatGPTConnection($id);
         $connector->getTextSuggestion($title, $type, $text, $additionalText, $additionalStyle);
     }
-
 }

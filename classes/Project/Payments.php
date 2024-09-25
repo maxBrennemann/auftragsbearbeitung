@@ -2,26 +2,16 @@
 
 namespace Classes\Project;
 
-class Payments {
+class Payments
+{
 
-    public static function addPayment() {
+    public static function addPayment() {}
 
-    }
+    public static function importCSV() {}
 
-    public static function importCSV() {
+    public static function removePayment() {}
 
-    }
+    public static function editPayment() {}
 
-    public static function removePayment() {
-
-    }
-
-    public static function editPayment() {
-
-    }
-
-    public static function addBankaccount($bank, $name, $startAmount, $type) {
-
-    }
-    
+    public static function addBankaccount($bank, $name, $startAmount, $type) {}
 }

@@ -2,9 +2,11 @@
 
 namespace Classes\Front;
 
-class Cart {
+class Cart
+{
 
-    public static function addToCart($productId) {
+    public static function addToCart($productId)
+    {
         if (isset($_SESSION)) {
             $products = isset($_SESSION["cart_Products"]) ? unserialize($_SESSION["cart_Products"]) : [];
 
@@ -25,5 +27,4 @@ class Cart {
             $_SESSION["cart_Products"] = serialize($products);
         }
     }
-
 }

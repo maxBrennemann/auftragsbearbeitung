@@ -13,11 +13,11 @@ class ProductRoutes extends Routes
      * @uses Category::getJSONTree()
      */
     protected static $getRoutes = [
-        "/attribute/group/{id}" => "AttributeGroup::getAttributes",
-        "/attribute/groups" => "AttributeGroup::getGroups",
+        "/attribute/group/{id}" => [\Classes\Project\AttributeGroup::class, "getAttributes"],
+        "/attribute/groups" => [\Classes\Project\AttributeGroup::class, "getGroups"],
 
-        "/category" => "Category::getJSONOneLayer",
-        "/category/tree" => "Category::getJSONTree",
+        "/category" => [\Classes\Front\Category::class, "getJSONOneLayer"],
+        "/category/tree" => [\Classes\Front\Category::class, "getJSONTree"],
     ];
 
     /**
@@ -31,12 +31,12 @@ class ProductRoutes extends Routes
      * @uses Category::addNewCategory()
      */
     protected static $postRoutes = [
-        "/product" => "Produkt::createProduct", // TODO: schauen, was hier generiert wurde "ProductController@createProduct",
-        "/product/source" => "Produkt::addSource",
-        "/product/{id}/combinations" => "Produkt::addCombinations",
+        "/product" => [\Classes\Project\Produkt::class, "createProduct"],
+        "/product/source" => [\Classes\Project\Produkt::class, "addSource"],
+        "/product/{id}/combinations" => [\Classes\Project\Produkt::class, "addCombinations"],
 
-        "/attribute" => "AttributeGroup::addAttributeGroup",
-        "/attribute/{id}/value" => "AttributeGroup::addAttribute",
+        "/attribute" => [\Classes\Project\AttributeGroup::class, "addAttributeGroup"],
+        "/attribute/{id}/value" => [\Classes\Project\AttributeGroup::class, "addAttribute"],
 
         "/category" => [\Classes\Front\Category::class, "addNewCategory"],
     ];

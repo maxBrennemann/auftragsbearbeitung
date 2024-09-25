@@ -5,19 +5,26 @@ namespace Classes\Project;
 use Elastic\Elasticsearch\ClientBuilder;
 use GuzzleHttp\Client as HttpClient;
 
-class Search {
+use Classes\DBAccess;
+use Classes\Protocol;
+use Classes\Link;
+
+class Search
+{
 
 	private $client;
 	private static $search;
 
-	function __construct() {
-		$this->client = ClientBuilder::create()->setHttpClient(new HttpClient(['verify' => false ]))->setHosts(['localhost:9200'])->build();
+	function __construct()
+	{
+		$this->client = ClientBuilder::create()->setHttpClient(new HttpClient(['verify' => false]))->setHosts(['localhost:9200'])->build();
 	}
 
 	/**
 	 * adds a document to the index
 	 */
-	private function addDocument($index, $id, $body) {
+	private function addDocument($index, $id, $body)
+	{
 		$params = [
 			'index' => $index,
 			'id' => $id,
@@ -27,12 +34,14 @@ class Search {
 		$response = $this->client->index($params);
 	}
 
-	private function searchDocument($params) {
+	private function searchDocument($params)
+	{
 		$response = $this->client->search($params);
 		return $response;
 	}
 
-	public static function search() {
+	public static function search()
+	{
 		self::$search = new Search();
 		$params = [
 			'index' => 'kunde',
@@ -51,7 +60,8 @@ class Search {
 	/**
 	 * indexing all types of data
 	 */
-	public static function indexAll() {
+	public static function indexAll()
+	{
 		self::$search = new Search();
 		self::getAllCustomerData();
 		self::getAllOrderData();
@@ -61,7 +71,8 @@ class Search {
 		self::getAllStickerData();
 	}
 
-	private static function getAllCustomerData() {
+	private static function getAllCustomerData()
+	{
 		$query = "SELECT k.Kundennummer, k.Firmenname, k.Vorname, k.Nachname, k.Email, k.Website, a.ort, a.plz, a.strasse, ke.notizen FROM kunde k LEFT JOIN kunde_extended ke ON k.Kundennummer = ke.id LEFT JOIN address a ON k.Kundennummer = a.id_customer";
 		$data = DBAccess::selectQuery($query);
 
@@ -79,7 +90,8 @@ class Search {
 		}
 	}
 
-	private static function getAllOrderData() {
+	private static function getAllOrderData()
+	{
 		$query = "SELECT Auftragsbezeichnung, Auftragsbeschreibung, Auftragsnummer FROM auftrag";
 		$data = DBAccess::selectQuery($query);
 
@@ -93,7 +105,8 @@ class Search {
 		}
 	}
 
-	private static function getAllProductData() {
+	private static function getAllProductData()
+	{
 		$query = "SELECT Nummer, Bezeichnung, Beschreibung, Marke FROM produkt";
 		$data = DBAccess::selectQuery($query);
 
@@ -108,7 +121,8 @@ class Search {
 		}
 	}
 
-	private static function getAllPostenData() {
+	private static function getAllPostenData()
+	{
 		$query = "SELECT Auftragsnummer FROM auftrag;";
 		$data = DBAccess::selectQuery($query);
 
@@ -117,14 +131,14 @@ class Search {
 
 			foreach ($postenData as $posten) {
 				$arr = array(
-					"Postennummer" => "", 
-					"Bezeichnung" => "", 
-					"Beschreibung" => "", 
-					"Stundenlohn" => "", 
-					"MEH" => "", 
+					"Postennummer" => "",
+					"Bezeichnung" => "",
+					"Beschreibung" => "",
+					"Stundenlohn" => "",
+					"MEH" => "",
 					"Preis" => "",
 					"Gesamtpreis" => "",
-					"Anzahl" => "", 
+					"Anzahl" => "",
 					"Einkaufspreis" => "",
 					"type" => ""
 				);
@@ -136,13 +150,14 @@ class Search {
 					"description" => $response["Beschreibung"],
 					"price" => $response["Preis"],
 				);
-	
+
 				self::$search->addDocument("posten", $response["Postennummer"], $document);
 			}
 		}
 	}
 
-	private static function getAllWikiData() {
+	private static function getAllWikiData()
+	{
 		$query = "SELECT id, title, content, keywords FROM wiki_articles";
 		$data = DBAccess::selectQuery($query);
 
@@ -157,7 +172,8 @@ class Search {
 		}
 	}
 
-	private static function getAllStickerData() {
+	private static function getAllStickerData()
+	{
 		$query = "SELECT d.id, d.category, d.name, d.additional_info, t.target, t.content FROM module_sticker_sticker_data d, module_sticker_texts t WHERE d.id = t.id_sticker;";
 		$data = DBAccess::selectQuery($query);
 
@@ -173,11 +189,12 @@ class Search {
 			self::$search->addDocument("sticker", $d["id"], $document);
 		}
 	}
-	
+
 	/*
 	 * returns a table with the search results
 	 */
-	public static function getSearchTable($searchQuery, $searchType, $retUrl = null, $getShortSummary = false) {
+	public static function getSearchTable($searchQuery, $searchType, $retUrl = null, $getShortSummary = false)
+	{
 		$ids = array();
 		$query = "";
 		$columnNames = array();
@@ -202,16 +219,16 @@ class Search {
 				$ids = self::searchInProducts($searchQuery);
 				$query = "SELECT Nummer, Bezeichnung, Beschreibung, Marke, CONCAT(FORMAT(Preis / 100,2,'de_DE'), ' €') AS Preis,  CONCAT(FORMAT(Einkaufspreis / 100,2,'de_DE'), ' €') AS Einkaufspreis FROM produkt WHERE Nummer = ";
 				$columnNames = array(
-					0 => array("COLUMN_NAME" => "Bezeichnung"), 
-					1 => array("COLUMN_NAME" => "Beschreibung"),	
-					2 => array("COLUMN_NAME" => "Marke"), 
-					3 => array("COLUMN_NAME" => "Preis"), 
+					0 => array("COLUMN_NAME" => "Bezeichnung"),
+					1 => array("COLUMN_NAME" => "Beschreibung"),
+					2 => array("COLUMN_NAME" => "Marke"),
+					3 => array("COLUMN_NAME" => "Preis"),
 					4 => array("COLUMN_NAME" => "Einkaufspreis")
 				);
 
 				if (!$getShortSummary)
 					break;
-				
+
 				$data = "";
 				$ids = array_reverse($ids);
 				foreach ($ids as $id) {
@@ -242,7 +259,7 @@ class Search {
 				}
 
 				return $data;
-				
+
 				break;
 			case "posten":
 				$ids = self::searchInPosten($searchQuery);
@@ -280,7 +297,6 @@ class Search {
 
 		/* TODO:quick fix, customer search results can be clicked */
 		if ($searchType == "kunde") {
-
 		}
 
 		return $table->getTable();
@@ -297,8 +313,9 @@ class Search {
 	 * 
 	 * Kundennamen und Firmennamen
 	 * Kundennotizen	 
-	 */ 
-	public static function globalSearch($searchQuery) {
+	 */
+	public static function globalSearch($searchQuery)
+	{
 		$results = array();
 
 		$customerResults = self::searchInCustomers($searchQuery);
@@ -409,7 +426,8 @@ class Search {
 	/*
 	 * searches in customer data
 	 */
-	private static function searchInCustomers($searchQuery) {
+	private static function searchInCustomers($searchQuery)
+	{
 		$query = "SELECT kunde.Kundennummer, Vorname, Nachname, Firmenname, kunde_extended.notizen AS Notiz FROM kunde, kunde_extended WHERE kunde_extended.kundennummer = kunde.Kundennummer AND (Vorname LIKE '%$searchQuery%' OR Nachname LIKE '%$searchQuery%' OR Firmenname LIKE '%$searchQuery%' OR kunde_extended.notizen LIKE '%$searchQuery%')";
 		$kunden = DBAccess::selectQuery($query);
 		$mostSimilar = array();
@@ -429,7 +447,8 @@ class Search {
 	/*
 	 * searches in product data
 	 */
-	private static function searchInProducts($searchQuery) {
+	private static function searchInProducts($searchQuery)
+	{
 		$products = DBAccess::selectQuery("SELECT Nummer, Bezeichnung, Beschreibung FROM produkt");
 		$mostSimilar = array();
 
@@ -447,7 +466,8 @@ class Search {
 	/*
 	 * searches in order data
 	 */
-	private static function searchInOrders($searchQuery) {
+	private static function searchInOrders($searchQuery)
+	{
 		$orders = DBAccess::selectQuery("SELECT auftrag.Auftragsnummer AS Nummer, Auftragsbezeichnung, Auftragsbeschreibung, GROUP_CONCAT(Bezeichnung SEPARATOR ', ') AS Schritte FROM auftrag, schritte WHERE auftrag.Auftragsnummer = schritte.Auftragsnummer GROUP BY auftrag.Auftragsnummer");
 		$mostSimilar = array();
 
@@ -466,7 +486,8 @@ class Search {
 	/*
 	 * searches in posten
 	 */
-	private static function searchInPosten($searchQuery) {
+	private static function searchInPosten($searchQuery)
+	{
 		$orders = DBAccess::selectQuery("SELECT Postennummer, Auftragsnummer, Beschreibung FROM postendata WHERE Beschreibung LIKE '%$searchQuery%'");
 		$mostSimilar = array();
 
@@ -483,7 +504,8 @@ class Search {
 	/*
 	 * searches in wiki articles
 	 */
-	private static function searchInWiki($searchQuery) {
+	private static function searchInWiki($searchQuery)
+	{
 		$articles = DBAccess::selectQuery("SELECT id, content, title FROM wiki_articles WHERE title LIKE '%$searchQuery%' OR content LIKE '%$searchQuery%' OR keywords LIKE '%$searchQuery%'");
 		$mostSimilar = array();
 
@@ -502,9 +524,11 @@ class Search {
 	/*
 	 * sorts results by similiarity
 	 */
-	private static function sortByPercentage(&$mostSimilar) {
+	private static function sortByPercentage(&$mostSimilar)
+	{
 		if (!function_exists("cmp")) {
-			function cmp($a, $b) {
+			function cmp($a, $b)
+			{
 				return ($a[1] < $b[1]) ? -1 : (($a[1] > $b[1]) ? 1 : 0);
 			}
 		}
@@ -516,9 +540,11 @@ class Search {
 		usort($mostSimilar, "cmp");
 	}
 
-	private static function filterByPercentage($mostSimilar) {
+	private static function filterByPercentage($mostSimilar)
+	{
 		if (!function_exists("inArray")) {
-			function inArray($search, $arr) {
+			function inArray($search, $arr)
+			{
 				foreach ($arr as $el) {
 					if ($el[0] == $search) {
 						return true;
@@ -545,7 +571,8 @@ class Search {
 		return $filteredArray;
 	}
 
-	private static function calculateSimilarity(&$mostSimilar, $searchQuery, $text, $number) {
+	private static function calculateSimilarity(&$mostSimilar, $searchQuery, $text, $number)
+	{
 		$searchQuery = strtolower($searchQuery);
 		$text = $text != null ? strtolower($text) : "";
 		$pieces = explode(" ", $text);
@@ -567,7 +594,4 @@ class Search {
 
 		array_push($mostSimilar, array($number, $cumulatedpercentage));
 	}
-
-} 
-
-?>
+}

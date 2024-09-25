@@ -2,14 +2,8 @@
 
 namespace Classes\Project;
 
-error_reporting(E_ALL);
-
-if (0 > version_compare(PHP_VERSION, '5')) {
-    die('This file was generated for PHP 5');
-}
-
-require_once('Auftrag.php');
-require_once('Auftragsverlauf.php');
+use Classes\DBAccess;
+use Classes\Project\Auftragsverlauf;
 
 class Schritt {
     
@@ -71,5 +65,3 @@ class Schritt {
 	}
 
 }
-
-?>

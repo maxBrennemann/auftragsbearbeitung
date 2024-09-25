@@ -2,20 +2,25 @@
 
 namespace Classes\Project;
 
-class PDF_Auftrag {
+use Classes\DBAccess;
+use Classes\Link;
+
+class PDF_Auftrag
+{
 
     /*
      * creates empty pdf, then adds customer data to heading,
      * then vehicle info is loaded if available
      * after that basic information about the order is shown
      */
-    public static function getPDF($id_auftrag) {
-        $pdf = new TCPDF('p', 'mm', 'A4');
+    public static function getPDF($id_auftrag)
+    {
+        $pdf = new \TCPDF('p', 'mm', 'A4');
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor("Auftragsbearbeitung");
         $pdf->SetTitle("Auftragsblatt");
         $pdf->SetSubject("Auftragsblatt für Auftrag");
-        
+
         //$pdf->AddFont('arial');
         $pdf->SetFont('dejavusans ', "", 10);
         $pdf->AddPage();
@@ -115,15 +120,11 @@ class PDF_Auftrag {
         $pdf->Output();
     }
 
-    private static function file_get_contents_utf8($fn) {
-		$content = file_get_contents($fn);
-		return mb_convert_encoding($content, 'UTF-8', mb_detect_encoding($content, 'UTF-8, ISO-8859-1', true));
-    }
-    
     /*
      * von FillForm.php kopiert, muss später überarbeitet werden
     */
-    private static function getData($nummer) {
+    private static function getData($nummer)
+    {
         $auftrags_daten = DBAccess::selectQuery("SELECT * FROM auftrag, `address`, kunde  WHERE auftrag.Kundennummer = kunde.Kundennummer AND Auftragsnummer = $nummer AND `address`.id_customer = auftrag.Kundennummer AND `address`.art = 1");
 
         $id = $auftrags_daten[0]["AngenommenDurch"];
@@ -158,7 +159,4 @@ class PDF_Auftrag {
                 AND Auftragsnummer = 6
         */
     }
-
 }
-
-?>

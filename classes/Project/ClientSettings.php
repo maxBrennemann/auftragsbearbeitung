@@ -2,14 +2,19 @@
 
 namespace Classes\Project;
 
-class ClientSettings {
+use Classes\DBAccess;
 
-    public static function setGrayScale($color, $type) {
+class ClientSettings
+{
+
+    public static function setGrayScale($color, $type)
+    {
         $userId = $_SESSION['userid'];
         DBAccess::updateQuery("UPDATE color_settings SET color = '$color' WHERE userid = $userId AND type = $type");
     }
 
-    public static function getColorConfiguration() {
+    public static function getColorConfiguration()
+    {
         $color_table = "d8d8d8";
         $color_def = "eff0f1";
         $color_innerDef = "b1b1b1";
@@ -19,23 +24,23 @@ class ClientSettings {
             $data = DBAccess::selectQuery("SELECT color, `type` FROM color_settings WHERE userid = $userId");
 
             foreach ($data as $d) {
-                switch($d['type']) {
+                switch ($d['type']) {
                     case "1":
                         if ($d['color'] != "")
                             $color_table = $d['color'];
-                    break;
+                        break;
                     case "2":
                         if ($d['color'] != "")
                             $color_def = $d['color'];
-                    break;
+                        break;
                     case "3":
                         if ($d['color'] != "")
                             $color_innerDef = $d['color'];
-                    break;
+                        break;
                 }
             }
         }
-        
+
         $colorCSS = ":root {
             --main-table-color: #$color_table;
             --main-def-color: #$color_def;
@@ -45,7 +50,8 @@ class ClientSettings {
         echo $colorCSS;
     }
 
-    public static function getFilterOrderPosten(): bool {
+    public static function getFilterOrderPosten(): bool
+    {
         $userId = $_SESSION['userid'];
         $value = GlobalSettings::getSetting("filterOrderPosten_$userId");
 
@@ -56,7 +62,8 @@ class ClientSettings {
         }
     }
 
-    public static function setFilterOrderPosten() {
+    public static function setFilterOrderPosten()
+    {
         $setTo = $_POST["value"];
 
         $userId = $_SESSION['userid'];
@@ -68,7 +75,4 @@ class ClientSettings {
             GlobalSettings::changeSetting("filterOrderPosten_$userId", $setTo);
         }
     }
-
 }
-
-?>

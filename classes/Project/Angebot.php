@@ -2,9 +2,8 @@
 
 namespace Classes\Project;
 
-if (0 > version_compare(PHP_VERSION, '5')) {
-    die('This file was generated for PHP 5');
-}
+use Classes\DBAccess;
+use Classes\Link;
 
 /*
 * Status bei Angeboten:
@@ -22,20 +21,20 @@ if (0 > version_compare(PHP_VERSION, '5')) {
  * offer_order is the order id
 */
 
-require_once('Auftrag.php');
+class Angebot
+{
 
-class Angebot {
-    
     private $kdnr = 0;
     private $kunde = null;
     private $angebotsnr = 0;
 
     private $leistungen = null;
     private $fahrzeuge = null;
-    
+
     private $posten = array();
 
-    function __construct($cid = null) {
+    function __construct($cid = null)
+    {
         if (isset($_SESSION['offer_id'])) {
             $offerId = $_SESSION['offer_id'];
         } else {
@@ -43,10 +42,10 @@ class Angebot {
         }
 
         if ($cid == null && $offerId == -1) {
-            throw new Exception("cannot fetch any data");
+            throw new \Exception("cannot fetch any data");
         } else if ($cid == null) {
             $cid = $offerId;
-        } else if($cid != $offerId) {
+        } else if ($cid != $offerId) {
             $this->deleteOldSessionData();
             $_SESSION['offer_id'] = $cid;
         }
@@ -57,8 +56,9 @@ class Angebot {
         $this->fahrzeuge = Fahrzeug::getSelection($cid);
     }
 
-    public function PDFgenerieren($store = false) {
-        $pdf = new TCPDF('p', 'mm', 'A4');
+    public function PDFgenerieren($store = false)
+    {
+        $pdf = new \TCPDF('p', 'mm', 'A4');
         $pdf->setPrintHeader(false);
         $pdf->setPrintFooter(false);
         $pdf->SetTitle('Angebot ' . $this->kunde->getKundennummer());
@@ -100,7 +100,7 @@ class Angebot {
 
         /* generates a pdf when offer is converted to an order */
         if ($store == true) {
-            $filename= "{$this->kunde->getKundennummer()}_{$this->angebotsnr}.pdf"; 
+            $filename = "{$this->kunde->getKundennummer()}_{$this->angebotsnr}.pdf";
             $filelocation = "C:\\xampp\htdocs\\auftragsbearbeitung\\files\\generated\\offer";
             $fileNL = $filelocation . "\\" . $filename;
             $pdf->Output($fileNL, 'F');
@@ -109,7 +109,8 @@ class Angebot {
         }
     }
 
-    private function getPc() {
+    private function getPc()
+    {
         if (isset($_SESSION['offer_' . $this->kdnr . '_pc'])) {
             return (int) $_SESSION['offer_' . $this->kdnr . '_pc'];
         } else {
@@ -118,13 +119,15 @@ class Angebot {
         }
     }
 
-    private function incPc() {
+    private function incPc()
+    {
         $newPc = $this->getPc() + 1;
         $_SESSION['offer_' . $this->kdnr . '_pc'] = $newPc;
         return $newPc;
     }
 
-    private function decPc() {
+    private function decPc()
+    {
         $newPc = $this->getPc() - 1;
         if ($newPc >= 0) {
             $_SESSION['offer_' . $this->kdnr . '_pc'] = $newPc;
@@ -132,7 +135,8 @@ class Angebot {
         return $newPc;
     }
 
-    private function loadPostenFromSession() {
+    private function loadPostenFromSession()
+    {
         $num = $this->getPc();
         if (is_numeric($num)) {
             for ($i = 1; $i <= $num; $i++) {
@@ -144,7 +148,8 @@ class Angebot {
         }
     }
 
-    private function deleteOldSessionData() {
+    private function deleteOldSessionData()
+    {
         $num = $this->getPc();
         for ($i = 1; $i <= $num; $i++) {
             if (isset($_SESSION['offer_' . $this->kdnr . '_' . $i])) {
@@ -154,7 +159,8 @@ class Angebot {
         $_SESSION['offer_' . $this->kdnr . '_pc'] = null;
     }
 
-    private function postenSum() {
+    private function postenSum()
+    {
         $sum = 0;
         foreach ($this->posten as $p) {
             $sum += $p->bekommePreis();
@@ -162,7 +168,8 @@ class Angebot {
         return $sum;
     }
 
-    public function addPosten($posten) {
+    public function addPosten($posten)
+    {
         $postenId = $this->incPc();
         $_SESSION['offer_' . $this->kdnr . '_' . $postenId] = serialize($posten);
 
@@ -170,12 +177,14 @@ class Angebot {
         array_push($this->posten, $posten);
     }
 
-    static function setIsOrder() {
+    static function setIsOrder()
+    {
         $_SESSION['offer_is_order'] = true;
     }
 
     /* function is called from createOrder page only if offer session data is available */
-    public function storeOffer($orderId) {
+    public function storeOffer($orderId)
+    {
         $this->angebotsnr = DBAccess::insertQuery("INSERT INTO angebot (kdnr, `status`) VALUES ({$this->kdnr}, 0)");
         $this->loadPostenFromSession();
         if ($this->posten != null) {
@@ -188,19 +197,20 @@ class Angebot {
         $this->PDFgenerieren(true);
     }
 
-    public function loadCachedPosten() {
+    public function loadCachedPosten()
+    {
         $this->loadPostenFromSession();
         if ($this->posten != null) {
             foreach ($this->posten as $p) {
                 if ($p instanceof Zeit) {
                     echo "Zeit: {$p->getQuantity()} min, Stundenlohn: {$p->getWage()}€ für {$p->getDescription()}";
                     if ($p->getOhneBerechnung()) {
-                    echo ", wird nicht berechnet";
+                        echo ", wird nicht berechnet";
                     }
                 } else if ($p instanceof Leistung) {
                     echo "Leistung: {$p->getQuantity()}, Preis {$p->bekommeEinzelPreis()}€ EK Preis {$p->bekommeEKPreis()} für {$p->getDescription()}";
                     if ($p->getOhneBerechnung()) {
-                    echo ", wird nicht berechnet";
+                        echo ", wird nicht berechnet";
                     }
                 }
                 echo "<br>";
@@ -208,23 +218,22 @@ class Angebot {
         }
     }
 
-    public function loadAngebot() {
-        
-    }
+    public function loadAngebot() {}
 
-    public function getHTMLTemplate() {
+    public function getHTMLTemplate()
+    {
         $kundenlink = Link::getPageLink("kunde") . "?id=" . $this->kunde->getKundennummer();
         if (true) : ?>
             <div class="defCont">
                 <div class="inlineC">
-                    <span><a href="<?=$kundenlink?>"><b><?=$this->kunde->getFirmenname()?></b></a></span><br>
-                    <span><?=$this->kunde->getVorname()?> <?=$this->kunde->getNachname()?></span><br>
-                    <span><?=$this->kunde->getStrasse()?> <?=$this->kunde->getHausnummer()?></span><br>
-                    <span><?=$this->kunde->getPostleitzahl()?> <?=$this->kunde->getOrt()?></span><br>
+                    <span><a href="<?= $kundenlink ?>"><b><?= $this->kunde->getFirmenname() ?></b></a></span><br>
+                    <span><?= $this->kunde->getVorname() ?> <?= $this->kunde->getNachname() ?></span><br>
+                    <span><?= $this->kunde->getStrasse() ?> <?= $this->kunde->getHausnummer() ?></span><br>
+                    <span><?= $this->kunde->getPostleitzahl() ?> <?= $this->kunde->getOrt() ?></span><br>
                 </div>
                 <div class="inlineC">
-                    <span>Datum: <input id="angebotsdatum" type="date" value="<?=date('Y-m-d')?>"></span><br>
-                    <span>Angebotsnummer: <?=$this->angebotsnr?></span>
+                    <span>Datum: <input id="angebotsdatum" type="date" value="<?= date('Y-m-d') ?>"></span><br>
+                    <span>Angebotsnummer: <?= $this->angebotsnr ?></span>
                 </div>
             </div>
 
@@ -246,12 +255,12 @@ class Angebot {
                         <div class="columnLeistung">
                             <select id="selectLeistung" onchange="selectLeistung(event);">
                                 <?php foreach ($this->leistungen as $leistung): ?>
-                                    <option value="<?=$leistung['Nummer']?>" data-aufschlag="<?=$leistung['Aufschlag']?>"><?=$leistung['Bezeichnung']?></option>
+                                    <option value="<?= $leistung['Nummer'] ?>" data-aufschlag="<?= $leistung['Aufschlag'] ?>"><?= $leistung['Bezeichnung'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                             <br>
                             <span>Menge:<br><input class="postenInput" id="anz" value="1"></span><br>
-					        <span>Mengeneinheit:<br><input class="postenInput" id="meh"></span><br>
+                            <span>Mengeneinheit:<br><input class="postenInput" id="meh"></span><br>
                             <span>Beschreibung:<br><input id="bes"></span><br>
                             <span>Einkaufspreis:<br><input id="ekp" value="0"></span><br>
                             <span>Speziefischer Preis:<br><input id="pre" value="0"></span><br>
@@ -265,7 +274,7 @@ class Angebot {
                             <select id="selectVehicle" onchange="selectVehicle(event);">
                                 <option value="0" selected disabled>Bitte auswählen</option>
                                 <?php foreach ($this->fahrzeuge as $f): ?>
-                                    <option value="<?=$f['Nummer']?>"><?=$f['Kennzeichen']?> <?=$f['Fahrzeug']?></option>
+                                    <option value="<?= $f['Nummer'] ?>"><?= $f['Kennzeichen'] ?> <?= $f['Fahrzeug'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                             <button onclick="addFahrzeug(true)">Für diesen Auftrag übernehmen</button>
@@ -277,7 +286,7 @@ class Angebot {
                 </div>
             </div>
 
-            
+
 
 
             <div class="defCont" id="allePosten">
@@ -290,11 +299,7 @@ class Angebot {
             <button onclick="showOffer();">Angebot anzeigen</button>
             <button onclick="storeOffer();">Angebot abschließen</button>
             <br>
-            <iframe src="<?=Link::getPageLink('pdf') . "?type=angebot" ?>" id="showOffer"></iframe>
-        <?php endif;
-        
+            <iframe src="<?= Link::getPageLink('pdf') . "?type=angebot" ?>" id="showOffer"></iframe>
+<?php endif;
     }
-
 }
-
-?>

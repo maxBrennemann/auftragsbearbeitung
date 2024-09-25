@@ -2,6 +2,11 @@
 
 namespace Classes\Project;
 
+use Classes\DBAccess;
+use Classes\Tools;
+use Classes\Link;
+use Classes\JSONResponseHandler;
+
 class Produkt
 {
 
