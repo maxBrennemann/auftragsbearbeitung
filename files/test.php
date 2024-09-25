@@ -1,8 +1,6 @@
 <?php
 
-include "classes/project/table/Table.php";
-
-$table = new Table();
+$table = new Classes\Project\Table();
 
 $columns = [
     "Bezeichnung",

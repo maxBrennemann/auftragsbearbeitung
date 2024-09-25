@@ -1,6 +1,6 @@
 <?php 
 
-$eintraege = DBAccess::selectQuery("SELECT title, content FROM wiki_articles");
+$eintraege = Classes\DBAccess::selectQuery("SELECT title, content FROM wiki_articles");
 
 $content_id = 0;
 if (isset($_GET["id"])) {
