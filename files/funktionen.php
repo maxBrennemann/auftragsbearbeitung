@@ -7,10 +7,7 @@ use Classes\Link;
 <script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
 <script src="<?=Link::getResourcesShortLink("funktionen.js", "js")?>"></script>
 
-<?php 
-
-require "vendor/autoload.php";
-use Masterminds\HTML5;
+<?php
 
 $links = [
     Link::getPageLink("wiki"),

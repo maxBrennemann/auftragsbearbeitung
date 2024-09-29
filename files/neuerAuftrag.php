@@ -1,6 +1,9 @@
 <?php
 $kdnr = -1;
 
+use Classes\DBAccess;
+use Classes\Link;
+
 if (isset($_GET['showDetails'])) {
 	$kdnr = $_GET['showDetails'];
 } else if (isset($_GET['kdnr'])) {

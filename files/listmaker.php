@@ -1,4 +1,4 @@
-<script src="<?=Link::getResourcesShortLink("listcreator.js", "js")?>" type="module"></script>
+<script src="<?=Classes\Link::getResourcesShortLink("listcreator.js", "js")?>" type="module"></script>
 <div>
     <div class="defCont">
         <h1>Listenübersicht</h1>
