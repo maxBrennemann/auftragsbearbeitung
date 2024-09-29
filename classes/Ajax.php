@@ -15,6 +15,47 @@ use Classes\Routes\SettingsRoutes;
 use Classes\Routes\StickerRoutes;
 use Classes\Routes\TimeTrackingRoutes;
 
+use Upgrade\UpgradeManager;
+
+use Classes\Front\Cart;
+
+use Classes\Project\FormGenerator;
+use Classes\Project\Search;
+use Classes\Project\Liste;
+use Classes\Project\NotificationManager;
+use Classes\Project\Auftrag;
+use Classes\Project\Zeit;
+use Classes\Project\Posten;
+use Classes\Project\Kunde;
+use Classes\Project\Fahrzeug;
+use Classes\Project\Schritt;
+use Classes\Project\Table;
+use Classes\Project\Rechnung;
+use Classes\Project\Auftragsverlauf;
+use Classes\Project\Angebot;
+use Classes\Project\Leistung;
+use Classes\Project\Address;
+use Classes\Project\ClientSettings;
+use Classes\Project\Config;
+use Classes\Project\CacheManager;
+use Classes\Project\TimeTracking;
+use Classes\Project\Statistics;
+use Classes\Project\Icon;
+use Classes\Project\User;
+
+use Classes\Project\Modules\Sticker\Sticker;
+use Classes\Project\Modules\Sticker\StickerImage;
+use Classes\Project\Modules\Sticker\StickerCategory;
+use Classes\Project\Modules\Sticker\StickerCollection;
+use Classes\Project\Modules\Sticker\SearchProducts;
+use Classes\Project\Modules\Sticker\Textil;
+use Classes\Project\Modules\Sticker\Aufkleber;
+use Classes\Project\Modules\Sticker\AufkleberWandtattoo;
+use Classes\Project\Modules\Sticker\StickerTagManager;
+use Classes\Project\Modules\Sticker\ProductCrawler;
+
+use Classes\Project\Modules\Sticker\Exports\ExportFacebook;
+
 class Ajax
 {
 
@@ -38,53 +79,41 @@ class Ajax
 
 		switch ($routeType) {
 			case "customer":
-				require_once("classes/routes/CustomerRoutes.php");
 				CustomerRoutes::handleRequest($path);
 				break;
 			case "invoice":
-				require_once("classes/routes/InvoiceRoutes.php");
 				InvoiceRoutes::handleRequest($path);
 				break;
 			case "login":
-				require_once("classes/routes/LoginRoutes.php");
 				LoginRoutes::handleRequest($path);
 				break;
 			case "notes":
-				require_once("classes/routes/NotesRoutes.php");
 				NotesRoutes::handleRequest($path);
 				break;
 			case "notification":
-				require_once("classes/routes/NotificationRoutes.php");
 				NotificationRoutes::handleRequest($path);
 				break;
 			case "order-item":
-				require_once("classes/routes/OrderItemRoutes.php");
 				OrderItemRoutes::handleRequest($path);
 				break;
 			case "order":
-				require_once("classes/routes/OrderRoutes.php");
 				OrderRoutes::handleRequest($path);
 				break;
 			case "product":
 			case "attribute":
 			case "category":
-				require_once("classes/routes/ProductRoutes.php");
 				ProductRoutes::handleRequest($path);
 				break;
 			case "search":
-				require_once("classes/routes/SearchRoutes.php");
 				SearchRoutes::handleRequest($path);
 				break;
 			case "settings":
-				require_once("classes/routes/SettingsRoutes.php");
 				SettingsRoutes::handleRequest($path);
 				break;
 			case "sticker":
-				require_once("classes/routes/StickerRoutes.php");
 				StickerRoutes::handleRequest($path);
 				break;
 			case "time-tracking":
-				require_once("classes/routes/TimeTrackingRoutes.php");
 				TimeTrackingRoutes::handleRequest($path);
 				break;
 			default:
@@ -139,7 +168,6 @@ class Ajax
 				}
 				break;
 			case "search":
-				require_once('classes/project/Search.php');
 				$stype = $_POST['stype'];
 				if (isset($_POST['urlid']) && $_POST['urlid'] == "1") {
 					$shortSummary = false;
@@ -160,18 +188,15 @@ class Ajax
 				}
 				break;
 			case "searchProduct":
-				require_once('classes/project/Search.php');
 				$query = $_POST['query'];
 				echo Search::getSearchTable($query, "produkt");
 				break;
 			case "globalSearch":
-				require_once('classes/project/Search.php');
 				$query = $_POST['query'];
 				echo Search::globalSearch($query);
 				break;
 			case "saveList":
 				$data = $_POST['data'];
-				require_once('classes/project/Liste.php');
 				Liste::saveData($data);
 				echo Link::getPageLink("listmaker");
 				break;
@@ -190,17 +215,14 @@ class Ajax
 
 				$listtype = $types[$listtype];
 
-				require_once('classes/project/Liste.php');
 				Liste::storeListData($listid, $listname, $listtype, $listvalue, $orderId);
 
 				echo "success";
 				break;
 			case "notification":
-				require_once('classes/project/NotificationManager.php');
 				echo NotificationManager::htmlNotification();
 				break;
 			case "updateNotification":
-				require_once('classes/project/NotificationManager.php');
 				NotificationManager::checkActuality();
 				echo NotificationManager::htmlNotification();
 				break;
@@ -226,7 +248,6 @@ class Ajax
 				/* erweiterte Zeiterfassung */
 				$zeiterfassung = json_decode($_POST['zeiterfassung'], true);
 				if (count($zeiterfassung) != 0) {
-					require_once("classes/project/Zeit.php");
 					Zeit::erweiterteZeiterfassung($zeiterfassung, $ids[1]);
 				}
 
@@ -324,7 +345,6 @@ class Ajax
 				$nummer =  $_POST['kdnr'];
 				$auftragsId =  $_POST['auftrag'];
 				$fahrzeugId = DBAccess::insertQuery("INSERT INTO fahrzeuge (Kundennummer, Kennzeichen, Fahrzeug) VALUES($nummer, '$kfzKenn', '$fahrzeug')");
-				require_once("classes/project/Fahrzeug.php");
 
 				Tools::add("id", $auftragsId);
 				Tools::add("vehicleId", $fahrzeugId);
@@ -340,15 +360,12 @@ class Ajax
 				$data['Auftragsnummer'] = $_POST['auftrag'];
 				$data['hide'] = $_POST['hide'];
 
-				require_once("classes/project/Schritt.php");
-
 				$postenNummer = Schritt::insertStep($data);
 				$auftrag = new Auftrag($data['Auftragsnummer']);
 				echo $auftrag->getOpenBearbeitungsschritteTable();
 
 				$assignedTo = strval($_POST['assignedTo']);
 				if (strcmp($assignedTo, "none") != 0) {
-					require_once("classes/project/NotificationManager.php");
 					NotificationManager::addNotification($userId = $assignedTo, $type = 1, $content = $_POST['bez'], $specificId = $postenNummer);
 				}
 				break;
@@ -454,7 +471,6 @@ class Ajax
 					$table->addParam("finishingDate", $date);
 					$table->editRow($row, "istErledigt", "0");
 				} else {
-					require_once("classes/project/Rechnung.php");
 					$rechnung = $_POST['rechnung'];
 					DBAccess::updateQuery("UPDATE auftrag SET Bezahlt = 1 WHERE Auftragsnummer = $rechnung");
 					echo Rechnung::getOffeneRechnungen();
@@ -462,7 +478,6 @@ class Ajax
 				break;
 			case "delete":
 				/* using new table functionality */
-				require_once("classes/project/Table.php");
 				$type = $_POST['type'];
 				Table::updateValue($type . "_table", "delete", $_POST['key']);
 
@@ -471,7 +486,6 @@ class Ajax
 					$postennummer = Table::getIdentifierValue("schritte_table", $_POST['key']);
 					$bezeichnung = Table::getValueByIdentifierColumn("schritte_table", $_POST['key'], "Bezeichnung");
 
-					require_once("classes/project/Auftragsverlauf.php");
 					$auftragsverlauf = new Auftragsverlauf($_POST['auftrag']);
 					$auftragsverlauf->addToHistory($postennummer, 2, "deleted", $bezeichnung);
 
@@ -481,14 +495,12 @@ class Ajax
 					$postennummer = Table::getIdentifierValue("posten_table", $_POST['key']);
 					$beschreibung = Table::getValueByIdentifierColumn("posten_table", $_POST['key'], "Beschreibung");
 
-					require_once("classes/project/Auftragsverlauf.php");
 					$auftragsverlauf = new Auftragsverlauf($_POST['auftrag']);
 					$auftragsverlauf->addToHistory($postennummer, 1, "deleted", $beschreibung);
 				}
 				break;
 			case "update":
 				/* using new table functionality */
-				require_once("classes/project/Table.php");
 				Table::updateValue("schritte_table", "update", $_POST['key']);
 				/* adds an update step to the history by using orderId and identifier */
 				$postennummer = Table::getIdentifierValue("schritte_table", $_POST['key']);
@@ -497,7 +509,6 @@ class Ajax
 					"postennummer" => $postennummer
 				]);
 
-				require_once("classes/project/NotificationManager.php");
 				if (isset($_SESSION['userid']))
 					$user = $_SESSION['userid'];
 				NotificationManager::addNotificationCheck($user, 0, "Bearbeitungsschritt erledigt", $postennummer);
@@ -517,7 +528,6 @@ class Ajax
 				$order = $_POST["order"];
 				$auftrag = $_POST["auftrag"];
 
-				require_once('classes/project/Table.php');
 				$order = json_decode($order);
 				$counter = 1;
 				foreach ($order as $row) {
@@ -593,7 +603,6 @@ class Ajax
 				$descr = $_POST['descr'];
 				$isFree = (int) $_POST['isFree'];
 				$angebot = new Angebot($customerId);
-				require_once("classes/project/Zeit.php");
 				$zeitPosten = new Zeit($wage, $time, $descr, 0, 0);
 				$angebot->addPosten($zeitPosten);
 				break;
@@ -607,7 +616,6 @@ class Ajax
 				$meh = $_POST['meh'];
 				$isFree = (int) $_POST['isFree'];
 				$angebot = new Angebot($customerId);
-				require_once("classes/project/Leistung.php");
 				$leistungsPosten = new Leistung($lei, $bes, $pre, $ekp, $qty, $meh, 0, 0);
 				$angebot->addPosten($leistungsPosten);
 				break;
@@ -626,7 +634,6 @@ class Ajax
 				$zusatz = $_POST['zusatz'];
 				$land = $_POST['land'];
 				Kunde::addAddress($kdnr, $strasse, $hnr, $plz, $ort, $zusatz, $land);
-				require_once("classes/project/Address.php");
 				echo json_encode(Address::loadAllAddresses($kdnr));
 				break;
 			case "setOrderFinished":
@@ -682,19 +689,16 @@ class Ajax
 				$auftrag->rearchiveOrder();
 				break;
 			case 'loadTemplateOrder':
-				require_once('classes/project/Angebot.php');
 				$customerId = $_POST['customerId'];
 				$angebot = new Angebot($customerId);
 				echo $angebot->getHTMLTemplate();
 				break;
 			case 'loadCachedPosten':
-				require_once('classes/project/Angebot.php');
 				$customerId = $_POST['customerId'];
 				$angebot = new Angebot($customerId);
 				echo $angebot->loadCachedPosten();
 				break;
 			case "getAddresses":
-				require_once('classes/project/Address.php');
 				$kdnr = (int) $_POST['kdnr'];
 				echo json_encode(Address::loadAllAddresses($kdnr));
 				break;
@@ -710,7 +714,6 @@ class Ajax
 						if ($dataKey == "ort" || $dataKey == "plz" || $dataKey == "strasse" || $dataKey == "hausnr") {
 							/* gets from client the number of which address should be changed, must check the number with the array from Address class (same as client gets), then can update the correct row */
 							$addressCount = (int) $_POST['addressCount'];
-							require_once('classes/project/Address.php');
 							$addressData = Address::loadAllAddresses($kdnr);
 							$addressId = $addressData[$addressCount]["id"];
 							DBAccess::updateQuery("UPDATE `address` SET $dataKey = '$data' WHERE id_customer = $kdnr AND id = $addressId");
@@ -723,13 +726,11 @@ class Ajax
 				echo "ok";
 				break;
 			case "getList":
-				require_once('classes/project/Liste.php');
 				$lid = $_POST['listId'];
 				$list = Liste::readList($lid);
 				echo $list->toHTML();
 				break;
 			case "generateInvoicePDF":
-				require_once("classes/project/Rechnung.php");
 				if (isset($_SESSION['tempInvoice'])) {
 					$rechnung = unserialize($_SESSION['tempInvoice']);
 					$rechnung->PDFgenerieren(true);
@@ -786,7 +787,6 @@ class Ajax
 				$action = $_POST['action'];
 				$key = $_POST['key'];
 
-				require_once("classes/project/Table.php");
 				$response = Table::updateValue($table, $action, $key);
 				echo $response;
 				break;
@@ -797,14 +797,12 @@ class Ajax
 				$order->addList($listId);
 				break;
 			case "addNewLine":
-				require_once("classes/project/Table.php");
 
 				$key = $_POST['key'];
 				$data = $_POST['data'];
 				echo Table::updateTable_AddNewLine($key, $data);
 				break;
 			case "setCustomColor":
-				require_once("classes/project/ClientSettings.php");
 				$color = $_POST['color'];
 				$type = $_POST['type'];
 				ClientSettings::setGrayScale($color, $type);
@@ -867,7 +865,6 @@ class Ajax
 				break;
 			case "frontAddToCart":
 				$productId = (int) $_POST['productId'];
-				require_once('classes/front/Cart.php');
 				Cart::addToCart($productId);
 				break;
 			case "sendToDB":
@@ -887,7 +884,6 @@ class Ajax
 				echo json_encode($data, JSON_FORCE_OBJECT);
 				break;
 			case "setDateInvoice":
-				require_once('classes/project/Rechnung.php');
 				$date = $_POST['date'];
 				$date = date('d.m.Y', strtotime($date));
 
@@ -901,7 +897,6 @@ class Ajax
 				], JSON_FORCE_OBJECT);
 				break;
 			case "setDatePerformance":
-				require_once('classes/project/Rechnung.php');
 				$date = $_POST['date'];
 				$date = date('d.m.Y', strtotime($date));
 
@@ -915,7 +910,6 @@ class Ajax
 				], JSON_FORCE_OBJECT);
 				break;
 			case "invoiceAddText":
-				require_once('classes/project/Rechnung.php');
 				$id = (int) $_POST['id'];
 				$text = $_POST['text'];
 
@@ -924,7 +918,6 @@ class Ajax
 				$_SESSION['tempInvoice'] = serialize($rechnung);
 				break;
 			case "invoiceRemoveText":
-				require_once('classes/project/Rechnung.php');
 				$id = (int) $_POST['id'];
 
 				$rechnung = unserialize($_SESSION['tempInvoice']);
@@ -932,7 +925,6 @@ class Ajax
 				$_SESSION['tempInvoice'] = serialize($rechnung);
 				break;
 			case "setInvoiceParameters":
-				require_once('classes/project/Rechnung.php');
 
 				$orderId = (int) $_POST["auftrag"];
 				$address = (int) $_POST["address"];
@@ -959,7 +951,6 @@ class Ajax
 				echo "ok";
 				break;
 			case "toggleCache":
-				require_once('classes/project/CacheManager.php');
 				$status = $_POST['status'];
 				switch ($status) {
 					case "on":
@@ -987,7 +978,6 @@ class Ajax
 			case "setNotificationsRead":
 				$notificationIds = $_POST["notificationIds"];
 				if ($notificationIds == "all") {
-					require_once('classes/project/NotificationManager.php');
 					NotificationManager::setNotificationsRead(-1);
 				} else {
 				}
@@ -1005,12 +995,10 @@ class Ajax
 				Login::handleLogout();
 				break;
 			case "minifyFiles":
-				require_once("classes/MinifyFiles.php");
 				MinifyFiles::minify();
 				echo json_encode(["status" => "success"]);
 				break;
 			case "upgrade":
-				require_once("upgrade/UpgradeManager.php");
 				$query = $_POST["query"];
 				switch ($query) {
 					case 1:
@@ -1026,7 +1014,6 @@ class Ajax
 						echo json_encode($result);
 						break;
 					case 3:
-						require_once("classes/MinifyFiles.php");
 						MinifyFiles::minify();
 						echo json_encode(["result" => "all files are recompiled", "command" => "minify files"]);
 						break;
@@ -1051,7 +1038,6 @@ class Ajax
 				}
 				break;
 			case "writeProductDescription":
-				require_once("classes/project/modules/sticker/Sticker.php");
 				Sticker::setDescription();
 				break;
 			case "writeSpeicherort":
@@ -1082,14 +1068,12 @@ class Ajax
 			case "setImageOrder":
 				$order = $_POST["order"];
 
-				require_once("classes/project/modules/sticker/StickerImage.php");
-
 				try {
 					StickerImage::setImageOrder($order);
 					echo json_encode([
 						"status" => "success",
 					]);
-				} catch (Exception $e) {
+				} catch (\Exception $e) {
 					echo json_encode([
 						"status" => "error",
 						"message" => $e->getMessage(),
@@ -1130,7 +1114,6 @@ class Ajax
 			case "makeSVGColorable":
 				$id = (int) $_POST["id"];
 
-				require_once('classes/project/modules/sticker/Textil.php');
 				$textil = new Textil($id);
 				$textil->toggleIsColorable();
 				$file = $textil->getCurrentSVG();
@@ -1145,14 +1128,12 @@ class Ajax
 			case "makeCustomizable":
 				$id = (int) $_POST["id"];
 
-				require_once('classes/project/modules/sticker/Textil.php');
 				$textil = new Textil($id);
 				$textil->toggleCustomizable();
 				break;
 			case "makeForConfig":
 				$id = (int) $_POST["id"];
 
-				require_once('classes/project/modules/sticker/Textil.php');
 				$textil = new Textil($id);
 				$textil->toggleConfig();
 				break;
@@ -1173,7 +1154,6 @@ class Ajax
 				$width = $size[0]["width"];
 				$height = $size[0]["height"];
 
-				require_once('classes/project/modules/sticker/AufkleberWandtattoo.php');
 				$aufkleberWandtatto = new AufkleberWandtattoo($id);
 				$difficulty = $aufkleberWandtatto->getDifficulty();
 				$price = $aufkleberWandtatto->getPrice($width, $height, $difficulty);
@@ -1185,14 +1165,12 @@ class Ajax
 				echo $price;
 				break;
 			case "setAufkleberParameter":
-				require_once('classes/project/modules/sticker/Aufkleber.php');
 				$id = (int) $_POST["id"];
 				$data = $_POST["json"];
 				$aufkleber = new Aufkleber($id);
 				$aufkleber->saveSentData($data);
 				break;
 			case "setAufkleberTitle":
-				require_once('classes/project/modules/sticker/Sticker.php');
 				$id = (int) $_POST["id"];
 				$title = (string) $_POST["title"];
 
@@ -1202,13 +1180,11 @@ class Ajax
 				echo $response["status"];
 				break;
 			case "productVisibility":
-				require_once('classes/project/modules/sticker/StickerCollection.php');
 				$id = (int) $_POST["id"];
 				$stickerCollection = new StickerCollection($id);
 				$stickerCollection->toggleActiveStatus();
 				break;
 			case "getTagOverview":
-				require_once('classes/project/modules/sticker/StickerTagManager.php');
 				echo json_encode([
 					"status" => "success",
 					"tags" => StickerTagManager::countTagOccurences(),
@@ -1223,7 +1199,6 @@ class Ajax
 				break;
 			case "addNewTagGroup":
 				$title = (string) $_POST["title"];
-				require_once('classes/project/modules/sticker/StickerTagManager.php');
 				$idTagGroup = StickerTagManager::addTagGroup($title);
 				echo json_encode([
 					"status" => "success",
@@ -1237,7 +1212,6 @@ class Ajax
 				$prename = (string) $_POST["prename"];
 				$lastname = (string) $_POST["lastname"];
 
-				require_once('classes/project/User.php');
 				User::add($username, $email, $prename, $lastname, $password);
 
 				echo json_encode([
@@ -1245,12 +1219,10 @@ class Ajax
 				]);
 				break;
 			case "crawlAll":
-				require_once('classes/project/modules/sticker/ProductCrawler.php');
 				$pc = new ProductCrawler();
 				$pc->crawlAll();
 				break;
 			case "crawlTags":
-				require_once('classes/project/modules/sticker/StickerTagManager.php');
 				StickerTagManager::crawlAllTags();
 				break;
 			case "setAltTitle":
@@ -1273,16 +1245,12 @@ class Ajax
 				}
 				break;
 			case "clearFiles":
-				require_once('classes/Upload.php');
 				Upload::deleteUnusedFiles();
 				break;
 			case "adjustFiles":
-				require_once('classes/Upload.php');
 				Upload::adjustFileNames();
 				break;
 			case "createFbExport":
-				require_once('classes/project/modules/sticker/exports/ExportFacebook.php');
-
 				$export = new ExportFacebook();
 				$export->generateCSV();
 				$filename = $export->getFilename();
@@ -1291,7 +1259,7 @@ class Ajax
 				echo json_encode([
 					"status" => "successful",
 					"file" => $fileLink,
-					"errorList" => $errorList,
+					"errorList" => "",//$errorList,
 				]);
 				break;
 			case "showSearch":
@@ -1350,30 +1318,25 @@ class Ajax
 				]);
 				break;
 			case "searchShop":
-				require_once('classes/project/modules/sticker/SearchProducts.php');
 				$search = $_POST["query"];
 				echo json_encode(SearchProducts::search($search, ["name", "description", "description_short"]));
 				break;
 			case "getCategoryTree":
 				$startCategory = $_POST["categoryId"];
-				require_once('classes/project/modules/sticker/StickerCategory.php');
 				echo json_encode(StickerCategory::getCategories($startCategory));
 				break;
 			case "getCategories":
 				$id = (int) $_POST["id"];
-				require_once('classes/project/modules/sticker/StickerCategory.php');
 				echo json_encode(StickerCategory::getCategoriesForSticker($id));
 				break;
 			case "getCategoriesSuggestion":
 				$name = $_POST["name"];
 				$id = (int) $_POST["id"];
-				require_once('classes/project/modules/sticker/StickerCategory.php');
 				echo StickerCategory::getCategoriesSuggestion($name, $id);
 				break;
 			case "setCategories":
 				$id = (int) $_POST["id"];
 				$categories = $_POST["categories"];
-				require_once('classes/project/modules/sticker/StickerCategory.php');
 				StickerCategory::setCategories($id, $categories);
 				echo json_encode([
 					"status" => "success",
@@ -1458,15 +1421,12 @@ class Ajax
 				]);
 				break;
 			case "setRechnungspostenAusblenden":
-				require_once('classes/project/ClientSettings.php');
 				ClientSettings::setFilterOrderPosten();
 				break;
 			case "indexAll":
-				require_once('classes/project/Search.php');
 				Search::indexAll();
 				break;
 			case "testsearch":
-				require_once('classes/project/Search.php');
 				Search::search();
 				break;
 			case "updateImageDescription":
@@ -1484,7 +1444,6 @@ class Ajax
 				]);
 				break;
 			case "deleteCache":
-				require_once('classes/project/CacheManager.php');
 				CacheManager::deleteCache();
 
 				echo json_encode([
@@ -1492,11 +1451,9 @@ class Ajax
 				]);
 				break;
 			case "diagramme":
-				require_once('classes/project/Statistics.php');
 				Statistics::dispatcher();
 				break;
 			case "getTimeTables":
-				require_once('classes/project/TimeTracking.php');
 				$idUser = $_SESSION['userid'];
 				$timeTables = TimeTracking::getTimeTables((int) $idUser);
 
