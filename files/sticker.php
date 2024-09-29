@@ -488,11 +488,11 @@ if ($id == 0): ?>
     <div>
         <label>
             Von
-            <input type="date" id="statsStart">
+            <input type="date" id="statsStart" class="input-primary">
         </label>
         <label>
             Bis
-            <input type="date" id="statsEnd">
+            <input type="date" id="statsEnd" class="input-primary">
         </label>
     </div>
     <div class="mt-2">

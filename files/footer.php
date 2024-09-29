@@ -4,7 +4,7 @@
 	?>
 	<footer class="moveToSide">
 		<div class="linkBundle">
-			<a class="linkBundleLink hover:underline" href="<?=Link::getPageLink('')?>">← Zur Main Page</a><br>
+			<a class="linkBundleLink hover:underline" href="<?=Classes\Link::getPageLink('')?>">← Zur Main Page</a><br>
 			<a class="linkBundleLink hover:underline" href="https://klebefux.de">Zu klebefux</a><br>
 			<a class="linkBundleLink hover:underline" href="https://b-schriftung.de">Zu b-schriftung</a>
 		</div>

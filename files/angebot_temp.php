@@ -73,7 +73,7 @@
 					<span>Menge: <input class="postenInput" id="posten_produkt_menge" type="number"></span>
 					<button onclick="addProductCompact()">Hinzufügen</button>
 					<br>
-					<a href="<?=Link::getPageLink("neues-produkt");?>">Neues Produkt hinzufügen</a>
+					<a href="<?=Classes\Link::getPageLink("neues-produkt");?>">Neues Produkt hinzufügen</a>
 				</div>
 			</div>
 			<div class="tabcontentEnd">
