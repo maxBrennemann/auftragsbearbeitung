@@ -1,6 +1,6 @@
 <?php
 
-require_once('Mailer.php');
+namespace Classes;
 
 class Login
 {
@@ -40,7 +40,7 @@ class Login
 		DBAccess::insertQuery("INSERT INTO login_history (user_id, user_login_key_id, loginstamp) VALUES (:id, :uloginkey, :loginstamp)", array(
 			':id' => $user['id'],
 			':uloginkey' => 0,
-			'loginstamp' => (new DateTime())->format('Y-m-d H:i:s'),
+			'loginstamp' => (new \DateTime())->format('Y-m-d H:i:s'),
 		));
 
 		if (!$device) {
@@ -78,7 +78,7 @@ class Login
 		}
 
 		/* get expiration date */
-		$dateInTwoWeeks = new DateTime();
+		$dateInTwoWeeks = new \DateTime();
 		$dateInTwoWeeks->modify("+2 week");
 		$dateInTwoWeeks = $dateInTwoWeeks->format("Y-m-d");
 

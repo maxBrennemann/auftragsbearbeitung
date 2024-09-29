@@ -11,8 +11,6 @@ companyInfo.php
 .env
 node_modules
 vendor
-config/*
-!config/index.php
 cache/*
 !cache/index.php
 

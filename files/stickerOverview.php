@@ -28,7 +28,7 @@
             <p><button class="showBox" id="green"></button> Diese Motivvariante ist im Shop und aktuell</p>
         </div>
         <div>
-            <a href="<?=Link::getPageLink("sticker-images")?>" class="link-primary">Zur Bildübersicht</a>
+            <a href="<?=Classes\Link::getPageLink("sticker-images")?>" class="link-primary">Zur Bildübersicht</a>
         </div>
         <div>
             <button class="btn-primary" data-binding="true" data-fun="openTagOverview">Zur Tagübersicht</button>

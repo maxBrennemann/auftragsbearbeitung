@@ -1,37 +1,45 @@
 <?php
 
+namespace Classes;
+
 use MatthiasMullie\Minify\CSS;
 use MatthiasMullie\Minify\JS;
 
 /* https://stackoverflow.com/questions/15774669/list-all-files-in-one-directory-php */
-class MinifyFiles {
 
-	private static function getJs() {
+class MinifyFiles
+{
+
+	private static function getJs()
+	{
 		$path = 'files/res/js/';
 		$files = scandir($path);
 		$files = array_diff(scandir($path), array('.', '..'));
 		return $files;
 	}
 
-	private static function getJsClasses() {
+	private static function getJsClasses()
+	{
 		$path = 'files/res/js/classes/';
 		$files = scandir($path);
 		$files = array_diff(scandir($path), array('.', '..'));
 		return $files;
 	}
 
-	private static function getCss() {
+	private static function getCss()
+	{
 		$path = 'files/res/css/';
 		$files = scandir($path);
 		$files = array_diff(scandir($path), array('.', '..'));
 		return $files;
 	}
 
-	private static function minifyByType($files) {
+	private static function minifyByType($files)
+	{
 		foreach ($files as $file) {
 			$name = explode("/", $file);
 			$name = $name[array_key_last($name)];
-	
+
 			$name = explode(".", $name);
 			if (sizeof($name) > 1) {
 				$type = $name[array_key_last($name)];
@@ -58,7 +66,8 @@ class MinifyFiles {
 	/**
 	 * takes in all js files in classes and makes a new minified file called global.js out of it
 	 */
-	public static function generateGlobalJS() {
+	public static function generateGlobalJS()
+	{
 		$files = self::getJsClasses();
 		$minifier = new JS();
 
@@ -75,8 +84,9 @@ class MinifyFiles {
 		$minifiedPath = "files/res/js/min/global.min.js";
 		$minifier->minify($minifiedPath);
 	}
-	
-	public static function minify() {
+
+	public static function minify()
+	{
 		$filesJs = self::getJs();
 		$filesCss = self::getCss();
 
@@ -87,14 +97,14 @@ class MinifyFiles {
 		// TODO: rewrite minifier to only minify css and use webpack for js
 	}
 
-    public static function isActivated() {
-        $query = "SELECT content FROM settings WHERE title = 'minifyStatus' LIMIT 1";
-        $result = DBAccess::selectQuery($query);
-        $minifyStatus = $result[0]["content"];
-        if ($minifyStatus == "on") {
-            return true;
-        }
-        return false;
-    }
-
+	public static function isActivated()
+	{
+		$query = "SELECT content FROM settings WHERE title = 'minifyStatus' LIMIT 1";
+		$result = DBAccess::selectQuery($query);
+		$minifyStatus = $result[0]["content"];
+		if ($minifyStatus == "on") {
+			return true;
+		}
+		return false;
+	}
 }

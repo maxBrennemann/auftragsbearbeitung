@@ -1,21 +1,16 @@
 <?php
 
-require_once('classes/MinifyFiles.php');
-require_once('classes/DBAccess.php');
-require_once('classes/Link.php');
-require_once('classes/project/Config.php');
-require_once('classes/Ajax.php');
-require_once('classes/JSONResponseHandler.php');
-require_once('classes/Link.php');
-require_once('classes/Login.php');
-require_once('classes/Protocol.php');
-require_once('classes/Tools.php');
-require_once('classes/project/FormGenerator.php');
-require_once('classes/project/CacheManager.php');
-require_once('classes/project/Icon.php');
-require_once('classes/project/Posten.php');
-require_once('classes/project/Angebot.php');
-require_once('classes/project/NotificationManager.php');
+namespace Classes;
+
+use Classes\Project\CacheManager;
+use Classes\Project\Posten;
+use Classes\Project\Table;
+use Classes\Project\Angebot;
+use Classes\Project\Rechnung;
+use Classes\Project\PDF_Auftrag;
+
+use Classes\Project\Modules\Sticker\Exports\ExportFacebook;
+use Classes\Project\Modules\Sticker\Imports\ImportGoogleSearchConsole;
 
 class ResourceManager
 {
@@ -24,10 +19,7 @@ class ResourceManager
     private static $cacheFile = null;
     private static $page = "";
 
-    function __construct()
-    {
-
-    }
+    function __construct() {}
 
     /**
      * Before: page was submitted via $_GET paramter, but now the REQUEST_URI is read;
@@ -402,7 +394,7 @@ class ResourceManager
 
     private static function get_upload($upload)
     {
-        $file_info = new finfo(FILEINFO_MIME_TYPE);
+        $file_info = new \finfo(FILEINFO_MIME_TYPE);
 
         if (!file_exists(Link::getResourcesLink($upload, "upload", false))) {
             $mime_type = $file_info->buffer("img/default_image.png");
@@ -423,7 +415,7 @@ class ResourceManager
 
     private static function get_backup($backup)
     {
-        $file_info = new finfo(FILEINFO_MIME_TYPE);
+        $file_info = new \finfo(FILEINFO_MIME_TYPE);
         $mime_type = $file_info->buffer(file_get_contents(Link::getResourcesLink($backup, "backup", false)));
 
         header("Content-type:$mime_type");
