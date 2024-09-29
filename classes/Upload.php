@@ -98,7 +98,6 @@ class Upload
                 /* delete all textilsvg for this motiv id */
                 /* TODO: bad practice: refactor code */
                 if ($imageCategory == "textilsvg") {
-                    require_once("classes/project/modules/sticker/StickerImage.php");
                     StickerImage::handleSVGStatus($motivnummer);
                 }
 

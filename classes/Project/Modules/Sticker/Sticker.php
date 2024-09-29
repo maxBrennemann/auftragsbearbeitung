@@ -342,8 +342,6 @@ class Sticker extends PrestashopConnection
         /* insert sticker into database */
         $query = "INSERT INTO module_sticker_sticker_data (`name`) VALUES (:title)";
         $id = DBAccess::insertQuery($query, ["title" => $title]);
-
-        require_once 'classes/project/modules/sticker/AufkleberWandtattoo.php';
         $aufkleberWandtattoo = new AufkleberWandtattoo($id);
         $sizes = [100, 200, 300, 600, 900, 1200];
         foreach ($sizes as $size) {

@@ -1,6 +1,8 @@
 <?php
 
-require_once("upgrade/Console.php");
+namespace Upgrade;
+
+use Classes\DBAccess;
 
 class UpgradeManager {
 

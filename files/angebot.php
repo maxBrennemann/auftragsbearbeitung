@@ -1,7 +1,7 @@
 <?php
 
-require_once('classes/Link.php');
-require_once('classes/project/Angebot.php');
+use Classes\Link;
+use Classes\DBAccess;
 
 $showAngebot = 0;
 $showOffer = false;

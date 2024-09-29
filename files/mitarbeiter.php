@@ -1,6 +1,7 @@
 <?php
 // TODO: show time tracking and order history
-require_once("classes/project/User.php");
+
+use Classes\Project\User;
 
 $user = null;
 $showUserList = true;

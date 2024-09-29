@@ -173,7 +173,6 @@ class Leistung extends Posten
 			$data['Datum'] = date("Y-m-d");
 			$data['Priority'] = 1;
 			$data['Auftragsnummer'] = $auftragsnummer;
-			require_once("classes/project/Schritt.php");
 			Schritt::insertStep($data);
 		}
 	}

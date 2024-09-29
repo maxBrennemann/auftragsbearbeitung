@@ -11,8 +11,6 @@ use Classes\DBAccess;
  * So wichtig ist es aber auch nicht.
  */
 
-require_once("classes/project/modules/sticker/SearchProducts.php");
-
 class ProductCrawler extends PrestashopConnection
 {
 

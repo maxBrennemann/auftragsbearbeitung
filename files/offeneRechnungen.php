@@ -1,7 +1,8 @@
 <?php
-	require_once('classes/project/Rechnung.php');
 
-    $showOffeneRechnungen = Rechnung::getOffeneRechnungen();
+use Classes\Project\Rechnung;
+
+$showOffeneRechnungen = Rechnung::getOffeneRechnungen();
 ?>
 <br>
 <div id="table"><?=$showOffeneRechnungen?></div>

@@ -1,11 +1,13 @@
 <?php
 
-require_once('classes/project/modules/sticker/StickerTagManager.php');
-require_once('classes/project/modules/sticker/StickerImage.php');
-require_once('classes/project/modules/sticker/StickerCollection.php');
-require_once('classes/project/modules/sticker/ChatGPTConnection.php');
+use Classes\Link;
+use Classes\Project\Icon;
 
-require_once('classes/project/Produkt.php');
+use Classes\Project\Modules\Sticker\StickerImage;
+use Classes\Project\Modules\Sticker\StickerCollection;
+use Classes\Project\Modules\Sticker\StickerTagManager;
+use Classes\Project\Modules\Sticker\StickerChangelog;
+use Classes\Project\Modules\Sticker\ChatGPTConnection;
 
 $id = 0;
 

@@ -1,6 +1,6 @@
 ﻿<?php
 
-require_once('classes/DBAccess.php');
+use Classes\DBAccess;
 
 $data = DBAccess::selectQuery("SELECT * FROM leistung");
 ?>

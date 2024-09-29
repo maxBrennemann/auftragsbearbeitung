@@ -128,7 +128,6 @@ class ResourceManager
             Ajax::manageRequests($_POST['getReason'], self::$page);
         } else if (isset($_POST['upload'])) {
             $uploadDestination = $_POST['upload'];
-            require_once('classes/Upload.php');
 
             /* checks which upload mechanism should be called */
             switch ($uploadDestination) {
@@ -176,7 +175,6 @@ class ResourceManager
                         $angebot->PDFgenerieren();
                         break;
                     case "rechnung":
-                        require_once('classes/project/Rechnung.php');
                         if (isset($_SESSION['tempInvoice'])) {
                             $rechnung = unserialize($_SESSION['tempInvoice']);
 
@@ -197,8 +195,6 @@ class ResourceManager
                         }
                         break;
                     case "auftrag":
-                        require_once('classes/project/PDF_Auftrag.php');
-
                         if (isset($_GET['id'])) {
                             $id = (int) $_GET['id'];
                             PDF_Auftrag::getPDF($id);
@@ -449,13 +445,9 @@ class ResourceManager
             echo $file;
             // TODO: check if file exists and if not, return latest file
         } else if ($file == "/generate-facebook") {
-            require_once("classes/project/modules/sticker/exports/ExportFacebook.php");
-
             $exportFacebook = new ExportFacebook();
             $exportFacebook->generateCSV();
         } else if ($file == "/import-search-console") {
-            require_once("classes/project/modules/sticker/imports/ImportGoogleSearchConsole.php");
-
             ImportGoogleSearchConsole::import();
         }
     }

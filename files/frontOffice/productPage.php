@@ -1,6 +1,6 @@
 <?php
 
-require_once('classes/project/Produkt.php');
+use Classes\Project\Produkt;
 
 $product_id = isset($_GET["id"]) ? $_GET["id"] : 0;
 

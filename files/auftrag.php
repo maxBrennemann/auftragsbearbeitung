@@ -1,17 +1,25 @@
+<?php
+
+use Classes\Link;
+use Classes\DBAccess;
+use Classes\Upload;
+
+use Classes\Project\Auftrag;
+use Classes\Project\Icon;
+use Classes\Project\Kunde;
+use Classes\Project\Fahrzeug;
+use Classes\Project\Auftragsverlauf;
+use Classes\Project\Liste;
+use Classes\Project\Search;
+use Classes\Project\ClientSettings;
+
+?>
+
 <script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
 <script src="<?=Link::getResourcesShortLink("colorpicker.js", "js")?>"></script>
 <script src="<?=Link::getResourcesShortLink("list.js", "js")?>"></script>
 
 <?php
-require_once('classes/project/Auftrag.php');
-require_once('classes/project/Search.php');
-require_once('classes/project/Rechnung.php');
-require_once('classes/project/Auftragsverlauf.php');
-require_once('classes/project/Fahrzeug.php');
-require_once('classes/project/Kunde.php');
-require_once('classes/Upload.php');
-require_once('classes/project/Liste.php');
-require_once('classes/project/Table.php');
 
 $auftragsId = -1;
 $auftragAnzeigen = Link::getPageLink("auftrag");

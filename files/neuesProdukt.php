@@ -1,7 +1,10 @@
 <?php
 
-require_once("classes/project/Produkt.php");
-require_once("classes/front/Category.php");
+use Classes\Link;
+use Classes\DBAccess;
+
+use Classes\Project\Produkt;
+use Classes\Front\Category;
 
 $quelle = Produkt::getSources();
 $categories = Category::getOneLayerRepresentation();
