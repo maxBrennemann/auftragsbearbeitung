@@ -61,7 +61,7 @@ class StickerRoutes extends Routes
         "/sticker/tags" => "StickerTagManager::addTag",
         "/sticker/tags/groups" => "",
 
-        "/sticker/sizes/{id}" => [],
+        "/sticker/{id}/sizes" => [AufkleberWandtattoo::class, "updateSizes"],
     ];
 
     /**

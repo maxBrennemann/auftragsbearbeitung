@@ -253,12 +253,16 @@ class AufkleberWandtattoo extends Sticker {
     }
 
     public static function updateSizes() {
-        $sizes = json_decode($_POST["sizes"], true);
-        $id = (int) $_POST["id"];
+        $sizes = json_decode(Tools::get("sizes"), true);
+        $id = (int) Tools::get("id");
         $aufkleberWandtatto = new AufkleberWandtattoo($id);
-        foreach ($sizes["sizes"] as $size) {
+        foreach ($sizes as $size) {
             $aufkleberWandtatto->updateSizeTable($size);
         }
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success"
+        ]);
     }
 
 }

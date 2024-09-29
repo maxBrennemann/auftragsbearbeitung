@@ -267,9 +267,9 @@ const calculateEdit = () => {
 
     calcTable(sizeData.editId);
 
-    ajax.post(`/api/v1/`, {
-
-    }).then(async r => {
+    ajax.post(`/api/v1/sticker/${getStickerId()}/sizes`, {
+        "sizes": JSON.stringify(sizeData.sizes),
+    }).then(async () => {
         await getSizeData();
         changeAfterAction();
     });
