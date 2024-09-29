@@ -1,7 +1,5 @@
 <?php 
 
-require_once('classes/front/ProductController.php');
-
 if (isset($_POST["delete"]) && isset($_SESSION["cart_Products"])) {
     $_SESSION["cart_Products"] = serialize([]);
 }

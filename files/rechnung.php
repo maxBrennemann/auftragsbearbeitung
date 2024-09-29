@@ -1,6 +1,11 @@
 <?php
-require_once('classes/Link.php');
-require_once('classes/project/Rechnung.php');
+
+use Classes\Link;
+use Classes\DBAccess;
+
+use Classes\Project\Auftrag;
+use Classes\Project\Rechnung;
+use Classes\Project\Address;
 
 $rechnung =  Link::getPageLink("rechnung");
 $home =  Link::getPageLink("");

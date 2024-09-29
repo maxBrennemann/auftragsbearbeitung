@@ -1,11 +1,18 @@
+<?php
+
+use Classes\Link;
+use Classes\DBAccess;
+
+use Classes\Project\Kunde;
+use Classes\Project\Search;
+use Classes\Project\Table;
+use Classes\Project\UpdateSchedule;
+
+?>
+
 <script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
 
-<?php 
-
-require_once('classes/project/Kunde.php');
-require_once('classes/project/Table.php');
-require_once('classes/project/Search.php');
-require_once('classes/project/Address.php');
+<?php
 
 $orderCount = 0;
 

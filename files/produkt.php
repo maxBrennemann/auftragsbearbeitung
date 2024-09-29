@@ -1,6 +1,9 @@
 <?php
 
-require_once('classes/project/Produkt.php');
+use Classes\Link;
+
+use Classes\Project\Produkt;
+use Classes\Project\Table;
 
 /* check if a specific product is requested */
 $id = isset($_GET["id"]) ? $_GET["id"] : -1;

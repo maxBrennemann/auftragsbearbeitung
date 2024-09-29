@@ -1,46 +1,50 @@
 <?php
 
-class Link {
+namespace Classes;
+
+class Link
+{
 
 	public $baseLink;
 	public $key;
 	public $data;
 	public $datakey;
-	
-	function __construct() {
-		
-	}
-	
-	public static function getPageLink($resourceName) {
+
+	function __construct() {}
+
+	public static function getPageLink($resourceName)
+	{
 		if (DBAccess::selectQuery("SELECT * FROM articles WHERE src = '$resourceName'") == null) {
 			$link = $_ENV["WEB_URL"] . $_ENV["SUB_URL"] . "404";
-			return $link; 
+			return $link;
 		}
-		
+
 		$link = $_ENV["WEB_URL"] . $_ENV["SUB_URL"] . $resourceName;
 		return $link;
 	}
 
-	public static function getFrontOfficeLink($page) {
+	public static function getFrontOfficeLink($page)
+	{
 		if (DBAccess::selectQuery("SELECT * FROM frontpage WHERE src = '$page'") == null) {
 			$link = $_ENV["WEB_URL"] . $_ENV["FRONT"] . "";
-			return $link; 
+			return $link;
 		}
-		
+
 		$link = $_ENV["WEB_URL"] . $_ENV["FRONT"] . $page;
 		return $link;
 	}
 
-	public static function getFrontOfficeName($page) {
+	public static function getFrontOfficeName($page)
+	{
 		$data = DBAccess::selectQuery("SELECT pageName FROM frontpage WHERE src = '$page'");
 
 		if ($data != null) {
 			return $data[0]["pageName"];
 		}
-			
+
 		return null;
 	}
-	
+
 	/**
 	 * function returns the link to the image resource;
 	 * if the resource does not exist, the default image is returned
@@ -48,7 +52,8 @@ class Link {
 	 * @param $resourceName: the name of the image resource
 	 * @return $link: the link to the image resource
 	 */
-	public static function getImageLink($resourceName) {
+	public static function getImageLink($resourceName)
+	{
 		if ($resourceName == null || $resourceName == "" || !file_exists("files/res/image/" . $resourceName)) {
 			$resourceName = "default_image.png";
 		}
@@ -61,14 +66,15 @@ class Link {
 		$link = $_ENV["REWRITE_BASE"] . "files/res/image/" . $resourceName;
 		return $link;
 	}
-	
-	public static function getResourcesLink($resource, $type, $rewriteBase = true) {
-		if($rewriteBase) {
+
+	public static function getResourcesLink($resource, $type, $rewriteBase = true)
+	{
+		if ($rewriteBase) {
 			$rewriteBase = $_ENV["REWRITE_BASE"];
 		} else {
 			$rewriteBase = "";
 		}
-		switch($type) {
+		switch ($type) {
 			case "css":
 				$link = $rewriteBase . "files/res/css/" . $resource;
 				break;
@@ -94,12 +100,13 @@ class Link {
 				$link = $rewriteBase . "files/generated/invoice/" . $resource;
 				break;
 		}
-		
+
 		return $link;
 	}
 
-	public static function getResourcesShortLink($resource, $type) {
-		switch($type) {
+	public static function getResourcesShortLink($resource, $type)
+	{
+		switch ($type) {
 			case "css":
 				$link = $_ENV["REWRITE_BASE"] . "css/" . $resource;
 				break;
@@ -127,42 +134,48 @@ class Link {
 				$link = $_ENV["REWRITE_BASE"] . "pdf_invoice/" . $resource;
 				break;
 		}
-		
+
 		return $link;
 	}
-	
-	public static function getGlobalCSS() {
+
+	public static function getGlobalCSS()
+	{
 		return self::getResourcesShortLink("global.css", "css");
 	}
 
-	public static function getTW() {
+	public static function getTW()
+	{
 		return self::getResourcesShortLink("tailwind.css", "css");
 	}
-	
-	public static function getGlobalJS() {
+
+	public static function getGlobalJS()
+	{
 		return self::getResourcesShortLink("global.js", "js");
 	}
 
-	public static function getGlobalFrontCSS() {
+	public static function getGlobalFrontCSS()
+	{
 		return self::getResourcesShortLink("front/global.css", "css");
 	}
 
-	public static function getCategoryLink($page) {
-        $link = $_ENV["WEB_URL"] . "shop/category/" . $page;
+	public static function getCategoryLink($page)
+	{
+		$link = $_ENV["WEB_URL"] . "shop/category/" . $page;
 		return $link;
-    }
+	}
 
 	/*
 	 * function returns an array of link objects by breaking down the server uri
 	 * variable.
 	 * the links are representing the depth of the link
 	 */
-	public static function parseUri() {
+	public static function parseUri()
+	{
 		$url = $_SERVER["REQUEST_URI"];
 
 		/* remove GET parameters */
 		$url = explode("?", $url)[0];
-		
+
 		/* remove $_ENV["WEB_URL"] and $_ENV["FRONT"] */
 		$url = str_replace($_ENV["WEB_URL"] . substr($_ENV["FRONT"], 0, -1), "", $url);
 
@@ -184,24 +197,25 @@ class Link {
 	}
 
 	/* new link functionalities */
-	public function addBaseLink($target) {
+	public function addBaseLink($target)
+	{
 		$this->baseLink = self::getPageLink($target);
 	}
 
-	public function addParameter($key, $value) {
+	public function addParameter($key, $value)
+	{
 		return $this->baseLink . "?$key=$value";
 	}
 
-	public function setIterator($key, $data, $datakey) {
+	public function setIterator($key, $data, $datakey)
+	{
 		$this->key = $key;
 		$this->data = $data;
 		$this->datakey = $datakey;
 	}
 
-	public function getLink($id) {
+	public function getLink($id)
+	{
 		return self::addParameter($this->key, $this->data[$id][$this->datakey]);
 	}
-	
 }
-
-?>

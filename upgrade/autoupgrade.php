@@ -3,11 +3,10 @@
 $_SERVER["DOCUMENT_ROOT"] = "../";
 
 require_once('settings.php');
-require_once('classes/DBAccess.php');
-require_once('classes/Mailer.php');
 
-require_once("classes/MinifyFiles.php");
-require_once("upgrade/UpgradeManager.php");
+use Classes\MinifyFiles;
+use Classes\Mailer;
+use Upgrade\UpgradeManager;
 
 MinifyFiles::minify();
 $files = UpgradeManager::checkNewSQL();

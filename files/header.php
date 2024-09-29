@@ -1,6 +1,11 @@
 <?php
 
-require_once('classes/project/ClientSettings.php');
+use Classes\Link;
+
+use Classes\Project\Icon;
+use Classes\Project\NotificationManager;
+use Classes\Project\Config;
+use Classes\Project\ClientSettings;
 
 $globalCSS = Link::getGlobalCSS();
 $tailwindCSS = Link::getTW();

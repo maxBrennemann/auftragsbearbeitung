@@ -3,10 +3,8 @@
 /* starts session for registered users and shopping carts */
 session_start();
 
-require_once('classes/Link.php');
-require_once('classes/project/Produkt.php');
-require_once('classes/front/Navigation.php');
-require_once('classes/Ajax.php');
+use Classes\DBAccess;
+use Classes\Ajax;
 
 $isArticle = false;
 

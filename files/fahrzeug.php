@@ -1,7 +1,8 @@
 <?php
 
-require_once('classes/project/Fahrzeug.php');
-require_once('classes/project/Kunde.php');
+use Classes\Link;
+
+use Classes\Project\Fahrzeug;
 
 $id = isset($_GET['id']) ? (int) $_GET['id'] : -1;
 $kunde = Fahrzeug::returnCustomer($id);

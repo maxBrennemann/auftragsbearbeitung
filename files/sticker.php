@@ -1,11 +1,13 @@
 <?php
 
-require_once('classes/project/modules/sticker/StickerTagManager.php');
-require_once('classes/project/modules/sticker/StickerImage.php');
-require_once('classes/project/modules/sticker/StickerCollection.php');
-require_once('classes/project/modules/sticker/ChatGPTConnection.php');
+use Classes\Link;
+use Classes\Project\Icon;
 
-require_once('classes/project/Produkt.php');
+use Classes\Project\Modules\Sticker\StickerImage;
+use Classes\Project\Modules\Sticker\StickerCollection;
+use Classes\Project\Modules\Sticker\StickerTagManager;
+use Classes\Project\Modules\Sticker\StickerChangelog;
+use Classes\Project\Modules\Sticker\ChatGPTConnection;
 
 $id = 0;
 
@@ -311,32 +313,49 @@ if ($id == 0): ?>
 <div class="defCont">
     <h2 class="mb-2 font-bold">Größen</h2>
     <div id="sizeTableWrapper" class="overflow-x-scroll">
-        <!--<?=$stickerCollection->getAufkleber()->getSizeTable()?>-->
+        <table>
+            <thead>
+                <tr>
+                    <th>Breite in [cm]</th>
+                    <th>Höhe in [cm]</th>
+                    <th>Preis in [€]</th>
+                    <th>Kosten in [€]</th>
+                    <th>Aktion</th>
+                </tr>
+            </thead>
+            <tbody id="sizeTableAnchor"></tbody>
+        </table>
     </div>
     <div class="grid grid-cols-2 mt-2">
-        <div class="innerDefCont">
-            <p class="font-semibold">Neue Breite hinzufügen</p>
+        <div class="innerDefCont bg-gray-200">
+            <p class="font-semibold" id="sizeActionTextAnchor">Neue Breite hinzufügen</p>
             <label>
-                <p>Breite</p>
-                <input type="text" id="newWidth" class="w-48 rounded-md p-2">
+                <p id="sizeInputTextAnchor">Breite in [cm]</p>
+                <input type="number" id="sizeInputAnchor" class="w-48 rounded-md p-2">
             </label>
             <label>
-                <p>Preis</p>
-                <input type="text" id="newPrice" class="w-48 rounded-md p-2">
+                <p>Preis in [€]</p>
+                <input type="number" id="sizePriceAnchor" class="w-48 rounded-md p-2">
             </label>
-            <button class="btn-primary block mt-2" data-binding="true" data-fun="addNewWidth">Hinzufügen</button>
+            <div id="sizeBtnAddAnchor">
+                <button class="btn-primary-new block mt-2" id="sizeBtnAdd">Hinzufügen</button>
+            </div>
+            <div class="hidden flex" id="sizeBtnEditAnchor">
+                <button class="btn-primary-new block mt-2" id="sizeBtnEdit">Speichern</button>
+                <button class="btn-cancel block ml-2 mt-2" id="sizeBtnCancel">Abbrechen</button>
+            </div>
         </div>
-        <div class="innerDefCont">
+        <div class="innerDefCont bg-gray-200">
             <p class="font-semibold">Aufkleberpreisklasse</p>
             <div>
-                <label for="price1">
-                    <input id="price1" type="radio" name="priceClass" <?=$stickerCollection->getAufkleber()->getPriceClass() == 0 ? "checked" : ""?>>
+                <label>
+                    <input id="sizesPrice1" type="radio" name="priceClass">
                     <span>Preisklasse 1 (günstiger)</span>
                 </label>
             </div>
             <div>
-                <label for="price2">
-                    <input id="price2" type="radio" name="priceClass" <?=$stickerCollection->getAufkleber()->getPriceClass() == 1 ? "checked" : ""?>>
+                <label>
+                    <input id="sizesPrice2" type="radio" name="priceClass">
                     <span>Preisklasse 2 (teurer)</span>
                 </label>
             </div>

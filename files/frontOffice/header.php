@@ -1,6 +1,9 @@
 <?php
 
-require_once('classes/front/Breadcrumb.php');
+use Classes\Link;
+use Classes\Front\Breadcrumb;
+use Classes\Front\Navigation;
+use Classes\Project\Produkt;
 
 $globalCSS =  Link::getGlobalCSS();
 $globalFrontCSS =  Link::getGlobalFrontCSS();

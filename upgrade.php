@@ -1,8 +1,6 @@
 <?php
 
-require_once('settings.php');
-require_once('globalFunctions.php');
-require_once('classes/Link.php');
+use Classes\Link;
 
 $tailwindCSS = Link::getTW();
 ?>

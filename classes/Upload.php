@@ -1,8 +1,12 @@
 <?php
 
-require_once('classes/project/Produkt.php');
-require_once('classes/project/Auftrag.php');
-require_once('classes/project/Auftragsverlauf.php');
+namespace Classes;
+
+use Classes\Project\Auftragsverlauf;
+use Classes\Project\Auftrag;
+use Classes\Project\Produkt;
+
+use Classes\Project\Modules\Sticker\StickerImage;
 
 class Upload
 {
@@ -94,7 +98,6 @@ class Upload
                 /* delete all textilsvg for this motiv id */
                 /* TODO: bad practice: refactor code */
                 if ($imageCategory == "textilsvg") {
-                    require_once("classes/project/modules/sticker/StickerImage.php");
                     StickerImage::handleSVGStatus($motivnummer);
                 }
 
@@ -151,7 +154,7 @@ class Upload
 
         try {
             /* https://stackoverflow.com/questions/2704314/multiple-file-upload-in-php */
-            $datetime = new DateTime();
+            $datetime = new \DateTime();
             $total = count($_FILES["files"]["name"]);
             /*echo "filename: " . $_FILES["files"]["name"][0];*/
             $ids = array();
@@ -174,7 +177,7 @@ class Upload
                     return $filename . " could not be uploaded, " . $_FILES["files"]["error"][$i];
                 }
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $msg = $e->getMessage();
         }
 

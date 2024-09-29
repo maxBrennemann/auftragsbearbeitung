@@ -1,7 +1,17 @@
+<?php
+
+use Classes\Link;
+use Classes\DBAccess;
+
+use Classes\Project\CacheManager;
+use Classes\Project\Config;
+use Classes\Project\Table;
+use Classes\Project\UpdateSchedule;
+
+?>
+
 <script src="<?=Link::getResourcesShortLink("colorpicker.js", "js")?>"></script>
 <?php 
-
-require_once('classes/project/Table.php');
 
 /* get default wage */
 $defaultWage = Config::get("defaultWage");

@@ -1,7 +1,11 @@
 <?php
-require_once('classes/project/Aufgabenliste.php');
-require_once('classes/project/Auftrag.php');
-require_once('classes/project/Rechnung.php');
+
+use Classes\Link;
+
+use Classes\Project\Aufgabenliste;
+use Classes\Project\Auftrag;
+use Classes\Project\Rechnung;
+use Classes\Project\Icon;
 
 $showAktuelleSchritte = Aufgabenliste::aktuelleSchritteAlsTabelleAusgeben();
 $showOffeneAuftraege = Auftrag::getAuftragsliste();

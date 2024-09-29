@@ -1,9 +1,8 @@
 import { click_textGeneration, click_showTextSettings, click_iterateText } from "./sticker/textGeneration.js";
-import { loadTags, showTaggroupManager, addTag } from "./sticker/tagManager.js";
 import ProductConnector from "./sticker/productConnector.js";
 import { click_makeColorable, deleteImage, updateImageDescription, updateImageOverwrite } from "./sticker/imageManager.js";
-import { click_addNewWidth, initSizeTable } from "./sticker/sizeTable.js";
 import { } from "./sticker/statsManager.js";
+import { initSizeTable } from "./sticker/sizeTable.js";
 import { initBindings } from "./classes/bindings.js";
 import "./sticker/imageMove.js";
 import { ajax } from "./classes/ajax.js";
@@ -13,7 +12,6 @@ const fnNames = {
     click_textGeneration: click_textGeneration,
     click_showTextSettings: click_showTextSettings,
     click_iterateText: click_iterateText,
-    click_addNewWidth: click_addNewWidth,
     click_deleteImage: deleteImage,
     write_updateImageDescription: updateImageDescription,
 };
@@ -651,6 +649,10 @@ function checkProductErrorStatus() {
         const anchor = document.querySelector(".cont1");
         anchor.parentNode.insertBefore(div, anchor);
     });
+}
+
+export const getStickerId = () => {
+    return mainVariables.motivId.innerHTML;
 }
 
 if (document.readyState !== 'loading' ) {
