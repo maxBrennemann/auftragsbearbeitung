@@ -340,7 +340,7 @@ if ($id == 0): ?>
             <div id="sizeBtnAddAnchor">
                 <button class="btn-primary-new block mt-2" id="sizeBtnAdd">Hinzufügen</button>
             </div>
-            <div class="hidden flex" id="sizeBtnEditAnchor">
+            <div class="hidden" id="sizeBtnEditAnchor">
                 <button class="btn-primary-new block mt-2" id="sizeBtnEdit">Speichern</button>
                 <button class="btn-cancel block ml-2 mt-2" id="sizeBtnCancel">Abbrechen</button>
             </div>

@@ -51,7 +51,7 @@ class DBAccess
 
 	public static function selectColumnNames($table)
 	{
-		$query = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{$table}' AND TABLE_SCHEMA = '" . $_ENV["DATABASE"] . "'";
+		$query = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{$table}' AND TABLE_SCHEMA = '" . $_ENV["DB_DATABASE"] . "'";
 		if ($query == null)
 			return null;
 		return self::selectQuery($query);
