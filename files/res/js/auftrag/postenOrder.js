@@ -86,8 +86,7 @@ function sendPostenOrder(event) {
         tablekey: table.dataset.key
     };
 
-    var send = new AjaxCall(params, "POST", window.location.href);
-    send.makeAjaxCall(function (response) {
+    ajax.post(params).then(response => {
         if (response == "ok") {
             infoSaveSuccessfull("success");
         } else {

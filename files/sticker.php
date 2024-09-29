@@ -340,7 +340,7 @@ if ($id == 0): ?>
             <div id="sizeBtnAddAnchor">
                 <button class="btn-primary-new block mt-2" id="sizeBtnAdd">Hinzufügen</button>
             </div>
-            <div class="hidden flex" id="sizeBtnEditAnchor">
+            <div class="hidden" id="sizeBtnEditAnchor">
                 <button class="btn-primary-new block mt-2" id="sizeBtnEdit">Speichern</button>
                 <button class="btn-cancel block ml-2 mt-2" id="sizeBtnCancel">Abbrechen</button>
             </div>
@@ -488,11 +488,11 @@ if ($id == 0): ?>
     <div>
         <label>
             Von
-            <input type="date" id="statsStart">
+            <input type="date" id="statsStart" class="input-primary">
         </label>
         <label>
             Bis
-            <input type="date" id="statsEnd">
+            <input type="date" id="statsEnd" class="input-primary">
         </label>
     </div>
     <div class="mt-2">

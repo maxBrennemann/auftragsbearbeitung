@@ -161,10 +161,12 @@ const changeButtons = () => {
         case true:
             showBtnAdd.classList.add("hidden");
             showBtnEdit.classList.remove("hidden");
+            showBtnEdit.classList.add("flex");
             break;
         case false:
             showBtnEdit.classList.add("hidden");
             showBtnAdd.classList.remove("hidden");
+            showBtnEdit.classList.remove("flex");
             break;
     }
 }

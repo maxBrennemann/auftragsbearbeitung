@@ -38,7 +38,3 @@ services:
       PMA_HOST: database
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       UPLOAD_LIMIT: 300M
-
-volumes:
-  elasticsearch-data:
-    driver: local

@@ -97,6 +97,10 @@ export const ajax = {
 			const url = dataOrUrl;
 			const data = dataOrNoJSON;
 			return this.requestLocation(url, data, "POST");
+		} else if (typeof dataOrUrl === 'object') {
+			const data = dataOrUrl;
+			const noJSON = dataOrNoJSON;
+        	return this.request(data, "POST", noJSON);
 		} else {
 			throw new Error("Invalid parameter");
 		}
@@ -114,16 +118,49 @@ export const ajax = {
 		return this.requestLocation(url, data, "DELETE");
 	},
 
-	async requestLocation(url, data, type) {
-        const param = Object.keys(data).map(key => `${key}=${encodeURIComponent(data[key])}`).join("&");
-
-        try {
-            let response = await makeAsyncCall(type, param, url);
-            return JSON.parse(response);
-        } catch (e) {
-            console.error('Request failed', e);
-            return JSON.parse(e.message);
+	async request(data, type, noJSON = false) {
+		data.getReason = data.r;
+        const param = Object.keys(data).map(key => {
+            return `${key}=${encodeURIComponent(data[key])}`;
+        });
+        let response = await makeAsyncCall(type, param.join("&"), "").then(result => {
+            return result;
+        }).catch(() => {
+			return {};
+		});
+    
+        if (noJSON) {
+            return response;
         }
+
+        let json = {};
+        try {
+            json = JSON.parse(response);
+        } catch (e) {
+            return {};
+        }
+
+        return json;
+	},
+
+	async requestLocation(url, data, type) {
+        const param = Object.keys(data).map(key => {
+            return `${key}=${encodeURIComponent(data[key])}`;
+        });
+        let response = await makeAsyncCall(type, param.join("&"), url).then(result => {
+            return result;
+        }).catch(() => {
+			return {};
+		});
+
+        let json = {};
+        try {
+            json = JSON.parse(response);
+        } catch (e) {
+            return {};
+        }
+
+        return json;
 	},
 
 	async uploadFiles(files, uploadType, additionalInfo = null) {
@@ -176,7 +213,7 @@ async function uploadFilesHelper(files, uploadType, additionalInfo = null) {
 		}
 
 		ajax.onerror = reject;
-		ajax.open('POST', '/api/?/v1/upload', true);
+		ajax.open('POST', '');
 		ajax.send(formData);
 	});
 }
@@ -205,11 +242,7 @@ export async function makeAsyncCall(type, params, location) {
                 ajaxCall.send(params);
                 break;
             case "GET":
-				if (params) {
-					ajaxCall.open("GET", `${location}&${params}`, true);
-				} else {
-					ajaxCall.open("GET", `${location}`, true);
-				}
+                ajaxCall.open("GET", `${location}?${params}`, true);
                 ajaxCall.send();
                 break;
             default:

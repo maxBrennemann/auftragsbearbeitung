@@ -1,10 +1,13 @@
+<?php
+
+use Classes\Link;
+
+?>
+
 <script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
 <script src="<?=Link::getResourcesShortLink("funktionen.js", "js")?>"></script>
 
-<?php 
-
-require "vendor/autoload.php";
-use Masterminds\HTML5;
+<?php
 
 $links = [
     Link::getPageLink("wiki"),
@@ -18,48 +21,6 @@ $links = [
     Link::getPageLink("angebot"),
     Link::getPageLink("mitarbeiter"),
 ];
-
-/*
- * funktionen.php nutzt DomDocument, um auf die Inhalte der anderen Seiten zuzugreifen.
- * Besser wäre es wahrscheinlich, wenn diese modular wären und die Funktionen für die Inhalte
- * den passenden Code liefern.
- * Problem bei der jetzigen Lösung: wechselnde Ids oder veränderte Strukturen.
- */
-function loadExternalById($page, $id) {
-    $html5 = new HTML5();
-    $page = Login::curlLogin($page);
-    $dom1 = $html5->loadHTML($page);
-
-    $idContent = $dom1->getElementById($id);
-    if ($idContent != null)
-        echo $html5->saveHTML($idContent);
-}
-
-function loadById($page, $id) {
-    $html5 = new HTML5();
-    $page = "files/" . $page . ".php";
-    $dom1 = $html5->loadHTML($page);
-
-    $idContent = $dom1->getElementById($id);
-    if ($idContent != null)
-        echo $html5->saveHTML($idContent);
-}
-
-/* 
-* https://stackoverflow.com/questions/6366351/getting-dom-elements-by-classname 
-*/
-function loadExternalByClassName($page, $classname) {
-    $page = 'http://' . $_SERVER['HTTP_HOST'] . Link::getPageLink($page);
-
-    $external = new DOMDocument();
-    $external->validateOnParse = true;
-    $external->loadHtml(file_get_contents($page));
-
-    $finder = new DomXPath($external);
-    $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
-
-    return var_dump($nodes);
-}
 
 ?>
 

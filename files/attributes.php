@@ -1,6 +1,6 @@
 <?php
 
-$data = DBAccess::selectQuery("SELECT ag.attribute_group, ag.descr, a.id, a.value, a.attribute_group_id, a.position 
+$data = Classes\DBAccess::selectQuery("SELECT ag.attribute_group, ag.descr, a.id, a.value, a.attribute_group_id, a.position 
     FROM attribute_group ag 
     LEFT JOIN attribute a 
         ON ag.id = a.attribute_group_id
@@ -25,8 +25,8 @@ foreach ($data as $d) {
 
 ?>
 <div class="mt-4">
-    <a class="link-button" href="<?= Link::getPageLink("produkt") ?>">Zu den Produkten</a>
-    <a class="link-button" href="<?= Link::getPageLink("neues-produkt") ?>">Zum Produktformular</a>
+    <a class="link-button" href="<?= Classes\Link::getPageLink("produkt") ?>">Zu den Produkten</a>
+    <a class="link-button" href="<?= Classes\Link::getPageLink("neues-produkt") ?>">Zum Produktformular</a>
 </div>
 <div class="mt-2 flex flex-row flex-wrap gap-2.5 m-auto">
     <?php foreach ($attributeGroups as $group) : ?>

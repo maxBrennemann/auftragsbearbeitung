@@ -47,8 +47,7 @@ export function addLeistung() {
         params.isOverwrite = true;
     }
 
-    var add = new AjaxCall(params, "POST", window.location.href);
-    add.makeAjaxCall(function (response) {
+    ajax.post(params).then(response => {
         updatePrice(response);
         reloadPostenListe();
         infoSaveSuccessfull("success");
@@ -201,8 +200,12 @@ window.editRow = function(key, element) {
     /* sends token to server to overwrite a posten */
     var table = document.getElementById("auftragsPostenTable").children[0].dataset.key;
     var postenId = key;
-    var update = new AjaxCall(`getReason=overwritePosten&postenId=${postenId}&table=${table}`, "POST", window.location.href);
-    update.makeAjaxCall(function (response) {
+
+    ajax.post({
+        "getReason": "overwritePosten",
+        "postenId": postenId,
+        "table": table,
+    }).then(response => {
         var data = JSON.parse(response);
         console.log(data);
 
@@ -362,8 +365,10 @@ export function addProductCompact() {
 }
 
 function reloadPostenListe() {
-    var reload = new AjaxCall(`getReason=reloadPostenListe&id=${globalData.auftragsId}`, "POST", window.location.href);
-    reload.makeAjaxCall(function (response) {
+    ajax.post({
+        getReason: "reloadPostenListe",
+        id: globalData.auftragsId,
+    }).then(response => {
         response = JSON.parse(response);
         document.getElementById("auftragsPostenTable").innerHTML = response[0];
         document.getElementById("invoicePostenTable").innerHTML = response[1];

@@ -1,6 +1,6 @@
 <?php
 
-namespace Classes\Front;
+namespace Classes\Project;
 
 use Classes\DBAccess;
 use Classes\Tools;

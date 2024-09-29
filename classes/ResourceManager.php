@@ -52,9 +52,6 @@ class ResourceManager
             case "account":
                 require_once('account.php');
                 exit;
-            case "shop":
-                require_once('frontOfficeController.php');
-                exit;
             case "upgrade":
                 require_once('upgrade.php');
                 exit;

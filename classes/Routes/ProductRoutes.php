@@ -16,8 +16,8 @@ class ProductRoutes extends Routes
         "/attribute/group/{id}" => [\Classes\Project\AttributeGroup::class, "getAttributes"],
         "/attribute/groups" => [\Classes\Project\AttributeGroup::class, "getGroups"],
 
-        "/category" => [\Classes\Front\Category::class, "getJSONOneLayer"],
-        "/category/tree" => [\Classes\Front\Category::class, "getJSONTree"],
+        "/category" => [\Classes\Project\Category::class, "getJSONOneLayer"],
+        "/category/tree" => [\Classes\Project\Category::class, "getJSONTree"],
     ];
 
     /**
@@ -38,7 +38,7 @@ class ProductRoutes extends Routes
         "/attribute" => [\Classes\Project\AttributeGroup::class, "addAttributeGroup"],
         "/attribute/{id}/value" => [\Classes\Project\AttributeGroup::class, "addAttribute"],
 
-        "/category" => [\Classes\Front\Category::class, "addNewCategory"],
+        "/category" => [\Classes\Project\Category::class, "addNewCategory"],
     ];
 
     /**
@@ -48,7 +48,7 @@ class ProductRoutes extends Routes
      * @uses \Classes\Project\AttributeGroup::updateAttribute()
      * @uses \Classes\Project\AttributeGroup::updatePositions()
      * 
-     * @uses \Classes\Front\Category::updateCategory()
+     * @uses \Classes\Project\Category::updateCategory()
      */
     protected static $putRoutes = [
         "/product/{id}/type/{type}" => [\Classes\Project\Produkt::class, "update"],
@@ -57,7 +57,7 @@ class ProductRoutes extends Routes
         "/attribute/{id}/value/{valueId}" => [\Classes\Project\AttributeGroup::class, "updateAttribute"],
         "/attribute/{id}/positions" => [\Classes\Project\AttributeGroup::class, "updatePositions"],
 
-        "/category/{id}" => [\Classes\Front\Category::class, "updateCategory"],
+        "/category/{id}" => [\Classes\Project\Category::class, "updateCategory"],
     ];
 
     public function __construct()
