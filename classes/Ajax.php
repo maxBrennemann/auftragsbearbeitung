@@ -17,8 +17,6 @@ use Classes\Routes\TimeTrackingRoutes;
 
 use Upgrade\UpgradeManager;
 
-use Classes\Front\Cart;
-
 use Classes\Project\FormGenerator;
 use Classes\Project\Search;
 use Classes\Project\Liste;
@@ -862,10 +860,6 @@ class Ajax
 					"id" => $_SESSION['overwritePosten_postennummer'],
 					"data" => $data
 				]);
-				break;
-			case "frontAddToCart":
-				$productId = (int) $_POST['productId'];
-				Cart::addToCart($productId);
 				break;
 			case "sendToDB":
 				$title = $_POST['title'];

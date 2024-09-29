@@ -153,17 +153,6 @@ class Link
 		return self::getResourcesShortLink("global.js", "js");
 	}
 
-	public static function getGlobalFrontCSS()
-	{
-		return self::getResourcesShortLink("front/global.css", "css");
-	}
-
-	public static function getCategoryLink($page)
-	{
-		$link = $_ENV["WEB_URL"] . "shop/category/" . $page;
-		return $link;
-	}
-
 	/*
 	 * function returns an array of link objects by breaking down the server uri
 	 * variable.
