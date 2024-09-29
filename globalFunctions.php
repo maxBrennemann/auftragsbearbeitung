@@ -1,7 +1,9 @@
 <?php
 
 define('CURRENTVERSION', '1.1.18');
-ini_set('display_errors', false);
+ini_set('display_errors', true);
+
+use Classes\JSONResponseHandler;
 
 function printError($message) {
 	if ($_ENV["DEV_MODE"] == "true") {

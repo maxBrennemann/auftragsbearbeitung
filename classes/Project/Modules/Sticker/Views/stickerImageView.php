@@ -1,3 +1,9 @@
+<?php
+
+use Classes\Project\Icon;
+
+?>
+
 <div class="bg-zinc-300 rounded-lg imageUpload h-24 flex items-center cursor-pointer" data-drop-type="<?=$imageCategory?>">
     <div class="m-auto w-full text-center">
         <p class="font-bold text-gray-500">Bild hochladen</p>

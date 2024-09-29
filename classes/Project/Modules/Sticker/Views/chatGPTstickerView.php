@@ -1,3 +1,9 @@
+<?php
+
+use Classes\Project\Icon;
+
+?>
+
 <span class="mx-2 px-2 border-none bg-slate-300 rounded-lg flex" data-type="<?=$type?>" data-text="<?=$text?>">
     <button class="border-none m-0 p-0" title="Textvorschlag erstellen" data-binding="true" data-fun="textGeneration">
         <?=Icon::get("iconGenerate", 15, 15, ["block"])?>

@@ -1,3 +1,9 @@
+<?php
+
+use Classes\Project\Icon;
+
+?>
+
 <div class="searchViewGrid">
     <div>
         <div class="searchBarContainer">

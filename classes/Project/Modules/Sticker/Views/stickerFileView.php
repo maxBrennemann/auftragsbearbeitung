@@ -1,3 +1,10 @@
+<?php
+
+use Classes\Link;
+use Classes\Project\Icon;
+
+?>
+
 <div class="innerDefCont imageMovableContainer cursor-pointer" data-drop-type="general">
     <?php foreach ($images as $image): ?>
         <div class="imageMovable">
