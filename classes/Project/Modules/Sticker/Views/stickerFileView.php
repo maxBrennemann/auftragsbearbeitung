@@ -1,5 +1,7 @@
 <?php
 
+namespace Classes\Project\Modules\Sticker\Views;
+
 use Classes\Link;
 use Classes\Project\Icon;
 
