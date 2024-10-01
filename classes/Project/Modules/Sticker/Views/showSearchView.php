@@ -2,6 +2,8 @@
 
 namespace Classes\Project\Modules\Sticker\Views;
 
+require "vendor/autoload.php";
+
 use Classes\Project\Icon;
 
 ?>
