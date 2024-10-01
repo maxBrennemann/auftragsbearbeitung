@@ -1,5 +1,7 @@
 <?php
 
+namespace Classes;
+
 use Classes\Project\Icon;
 
 ?>
