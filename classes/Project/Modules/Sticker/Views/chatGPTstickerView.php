@@ -1,6 +1,6 @@
 <?php
 
-namespace Classes;
+namespace Classes\Project\Modules\Sticker\Views;
 
 use Classes\Project\Icon;
 
