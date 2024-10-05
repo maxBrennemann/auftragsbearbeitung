@@ -98,7 +98,7 @@ class AufkleberWandtattoo extends Sticker {
         }
 
         ob_start();
-        insertTemplate('classes/project/modules/sticker/views/sizeTableView.php', [
+        insertTemplate('classes/Project/Modules/Sticker/Views/sizeTableView.php', [
             "sizes" => $data,
         ]);
         return ob_get_clean();
