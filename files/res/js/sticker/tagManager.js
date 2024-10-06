@@ -1,6 +1,6 @@
 var tagManager = null;
 
-function initTagManager() {
+export function initTagManager() {
     tagManager = new TagManager();
     tagManager.addTagEventListeners();
 
@@ -249,12 +249,4 @@ class TagManager {
         };
     }
 
-}
-
-if (document.readyState !== 'loading' ) {
-    initTagManager();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        initTagManager();
-    });
 }

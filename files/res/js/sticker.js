@@ -6,6 +6,7 @@ import { initSizeTable } from "./sticker/sizeTable.js";
 import { initBindings } from "./classes/bindings.js";
 import "./sticker/imageMove.js";
 import { ajax } from "./classes/ajax.js";
+import { initTagManager } from "./sticker/tagManager.js";
 
 const fnNames = {
     click_makeColorable: click_makeColorable,
@@ -49,6 +50,7 @@ function initSticker() {
 
     initTextiles();
     initSizeTable();
+    initTagManager();
 }
 
 fnNames.click_toggleCheckbox = async function(e) {

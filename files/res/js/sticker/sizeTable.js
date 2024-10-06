@@ -135,7 +135,7 @@ const editWidth = (e) => {
     const id = e.currentTarget.dataset?.id;
     sizeData.editId = parseInt(id);
     const el = sizeData.sizes.filter(s => s.id == id)[0];
-    document.getElementById("sizeInputAnchor").value = el.height / 100;
+    document.getElementById("sizeInputAnchor").value = el.height / 10;
     document.getElementById("sizePriceAnchor").value = el.price / 100;
 }
 
