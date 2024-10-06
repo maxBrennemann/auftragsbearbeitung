@@ -54,7 +54,7 @@ if ($id == 0): ?>
 </div>
 <div class="defCont hidden">
     <p>Dateien und Bilder</p>
-    <?=insertTemplate("classes/project/modules/sticker/views/stickerFileView.php", ["images" => $stickerImage->getGeneralImages(), "files" => $stickerImage->getFiles()])?>
+    <?=insertTemplate("classes/Project/Modules/Sticker/Views/stickerFileView.php", ["images" => $stickerImage->getGeneralImages(), "files" => $stickerImage->getFiles()])?>
 </div>
 <div class="cont2">
     <section class="defCont">
@@ -141,16 +141,16 @@ if ($id == 0): ?>
         <div class="my-2">
             <div class="my-2 flex">
                 <p>Kurzbeschreibung</p>
-                <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "aufkleber", "text" => "short", "gpt" => $chatGPTConnection])?>
+                <?=insertTemplate("classes/Project/Modules/Sticker/Views/chatGPTstickerView.php", ["type" => "aufkleber", "text" => "short", "gpt" => $chatGPTConnection])?>
             </div>
             <textarea class="data-input" data-fun="productDescription" data-target="aufkleber" data-type="short" data-write="true"><?=$stickerCollection->getAufkleber()->getDescriptionShort()?></textarea>
             <div class="my-2 flex">
                 <p>Beschreibung</p>
-                <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "aufkleber", "text" => "long", "gpt" => $chatGPTConnection])?>
+                <?=insertTemplate("classes/Project/Modules/Sticker/Views/chatGPTstickerView.php", ["type" => "aufkleber", "text" => "long", "gpt" => $chatGPTConnection])?>
             </div>
             <textarea class="data-input" data-fun="productDescription" data-target="aufkleber" data-type= "long" data-write="true"><?=$stickerCollection->getAufkleber()->getDescription()?></textarea>
         </div>
-        <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $stickerImage->getAufkleberImages(), "imageCategory" => "aufkleber"])?>
+        <?=insertTemplate("classes/Project/Modules/Sticker/Views/stickerImageView.php", ["images" => $stickerImage->getAufkleberImages(), "imageCategory" => "aufkleber"])?>
         <button class="transferBtn btn-primary w-full" id="transferAufkleber" data-binding="true" <?=$stickerCollection->getAufkleber()->getIsPlotted() == 1 ? "" : "disabled"?>>Aufkleber übertragen</button>
     </section>
     <section class="defCont">
@@ -199,16 +199,16 @@ if ($id == 0): ?>
         <div class="my-2">
             <div class="my-2 flex">
                 <p>Kurzbeschreibung</p>
-                <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "wandtattoo", "text" => "short", "gpt" => $chatGPTConnection])?>
+                <?=insertTemplate("classes/Project/Modules/Sticker/Views/chatGPTstickerView.php", ["type" => "wandtattoo", "text" => "short", "gpt" => $chatGPTConnection])?>
             </div>
             <textarea class="data-input" data-fun="productDescription" data-target="wandtattoo" data-type="short" data-write="true"><?=$stickerCollection->getWandtattoo()->getDescriptionShort()?></textarea>
             <div class="my-2 flex">
                 <p>Beschreibung</p>
-                <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "wandtattoo", "text" => "long", "gpt" => $chatGPTConnection])?>
+                <?=insertTemplate("classes/Project/Modules/Sticker/Views/chatGPTstickerView.php", ["type" => "wandtattoo", "text" => "long", "gpt" => $chatGPTConnection])?>
             </div>
             <textarea class="data-input" data-fun="productDescription" data-target="wandtattoo" data-type="long" data-write="true"><?=$stickerCollection->getWandtattoo()->getDescription()?></textarea>
         </div>
-        <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $stickerImage->getWandtattooImages(), "imageCategory" => "wandtattoo"])?>
+        <?=insertTemplate("classes/Project/Modules/Sticker/Views/stickerImageView.php", ["images" => $stickerImage->getWandtattooImages(), "imageCategory" => "wandtattoo"])?>
         <button class="transferBtn btn-primary w-full" id="transferWandtattoo" data-binding="true" <?=$stickerCollection->getWandtattoo()->getIsWalldecal() == 1 ? "" : "disabled"?>>Wandtattoo übertragen</button>
     </section>
     <section class="defCont">
@@ -297,16 +297,16 @@ if ($id == 0): ?>
         <div class="mb-2">
             <div class="my-2 flex">
                 <p>Kurzbeschreibung</p>
-                <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "textil", "text" => "short", "gpt" => $chatGPTConnection])?>
+                <?=insertTemplate("classes/Project/Modules/Sticker/Views/chatGPTstickerView.php", ["type" => "textil", "text" => "short", "gpt" => $chatGPTConnection])?>
             </div>
             <textarea class="data-input" data-fun="productDescription" data-target="textil" data-type="short" data-write="true"><?=$stickerCollection->getTextil()->getDescriptionShort()?></textarea>
             <div class="my-2 flex">
                 <p>Beschreibung</p>
-                <?=insertTemplate("classes/project/modules/sticker/views/chatGPTstickerView.php", ["type" => "textil", "text" => "long", "gpt" => $chatGPTConnection])?>
+                <?=insertTemplate("classes/Project/Modules/Sticker/Views/chatGPTstickerView.php", ["type" => "textil", "text" => "long", "gpt" => $chatGPTConnection])?>
             </div>
             <textarea class="data-input" data-fun="productDescription" data-target="textil" data-type="long" data-write="true"><?=$stickerCollection->getTextil()->getDescription()?></textarea>
         </div>
-        <?=insertTemplate("classes/project/modules/sticker/views/stickerImageView.php", ["images" => $stickerImage->getTextilImages(), "imageCategory" => "textil"])?>
+        <?=insertTemplate("classes/Project/Modules/Sticker/Views/stickerImageView.php", ["images" => $stickerImage->getTextilImages(), "imageCategory" => "textil"])?>
         <button class="transferBtn btn-primary w-full hidden" id="transferTextil" data-binding="true" <?=$stickerCollection->getTextil()->getIsShirtcollection() == 1 ? "" : "disabled"?>>Textil übertragen</button>
     </section>
 </div>

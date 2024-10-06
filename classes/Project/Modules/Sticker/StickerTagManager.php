@@ -56,7 +56,7 @@ class StickerTagManager extends PrestashopConnection
             array_push($suggestionTags, ...$suggestions);
         }
 
-        insertTemplate('classes/project/modules/sticker/views/showTagsView.php', [
+        insertTemplate('classes/Project/Modules/Sticker/Views/showTagsView.php', [
             "tags" => $this->tags,
             "suggestionTags" => $suggestionTags,
         ]);
