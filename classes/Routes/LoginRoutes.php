@@ -13,9 +13,9 @@ class LoginRoutes extends Routes
     }
 
     /**
-     * @uses Login::handleLogin()
-     * @uses Login::autloginWrapper()
-     * @uses Login::logout()
+     * @uses \Classes\Login::handleLogin()
+     * @uses \Classes\Login::autloginWrapper()
+     * @uses \Classes\Login::logout()
      */
     protected static $postRoutes = [
         "/login" => [\Classes\Login::class, "handleLogin"],
