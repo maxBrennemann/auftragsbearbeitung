@@ -8,7 +8,8 @@
         "robmorgan/phinx": "0.x-dev",
         "elasticsearch/elasticsearch": "dev-main",
         "google/apiclient": "^2.12.1",
-        "symfony/dotenv": "7.0.x-dev"
+        "symfony/dotenv": "7.0.x-dev",
+        "max/php-utilities": "dev-main"
     },
     "minimum-stability": "dev",
     "config": {
@@ -27,6 +28,13 @@
     "require-dev": {
         "phpunit/phpunit": "^10"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "name": "max/php-utilities",
+            "url": "https://github.com/maxBrennemann/php-utilities.git"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Classes\\": "classes/"
