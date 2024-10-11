@@ -15,10 +15,10 @@ class OrderRoutes extends Routes
     ];
 
     /**
-     * @uses Auftrag::updateOrder
-     * @uses Auftrag::setOrderArchived
-     * @uses Auftrag::updateColor
-     * @uses Fahrzeug::attachVehicle
+     * @uses \Classes\Project\Auftrag::updateOrder()
+     * @uses \Classes\Project\Auftrag::setOrderArchived()
+     * @uses \Classes\Project\Auftrag::updateColor()
+     * @uses \Classes\Project\Fahrzeug::attachVehicle()
      */
     protected static $putRoutes = [
         "/order/{id}" => [\Classes\Project\Auftrag::class, "updateOrder"],

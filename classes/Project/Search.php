@@ -195,9 +195,9 @@ class Search
 	 */
 	public static function getSearchTable($searchQuery, $searchType, $retUrl = null, $getShortSummary = false)
 	{
-		$ids = array();
+		$ids = [];
 		$query = "";
-		$columnNames = array();
+		$columnNames = [];
 
 		switch ($searchType) {
 			case "kunde":
