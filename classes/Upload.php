@@ -2,6 +2,8 @@
 
 namespace Classes;
 
+use MaxBrennemann\PhpUtilities\DBAccess;
+
 use Classes\Project\Auftragsverlauf;
 use Classes\Project\Auftrag;
 use Classes\Project\Produkt;
