@@ -2,6 +2,10 @@
 
 namespace Classes;
 
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\Tools;
+
 use Classes\Routes\CustomerRoutes;
 use Classes\Routes\InvoiceRoutes;
 use Classes\Routes\LoginRoutes;

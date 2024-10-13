@@ -5,7 +5,7 @@ namespace Classes\Project\Modules\Sticker\Imports;
 use Google\Service\SearchConsole;
 use Google\Service\SearchConsole\SearchAnalyticsQueryRequest;
 
-use Classes\DBAccess;
+use MaxBrennemann\PhpUtilities\DBAccess;
 use Classes\Protocol;
 
 class ImportGoogleSearchConsole

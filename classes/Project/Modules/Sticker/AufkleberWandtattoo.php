@@ -2,9 +2,9 @@
 
 namespace Classes\Project\Modules\Sticker;
 
-use Classes\DBAccess;
-use Classes\JSONResponseHandler;
-use Classes\Tools;
+use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
 
 class AufkleberWandtattoo extends Sticker {
 

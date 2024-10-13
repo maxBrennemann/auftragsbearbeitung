@@ -2,6 +2,8 @@
 
 namespace Classes\Routes;
 
+use MaxBrennemann\PhpUtilities\Routes;
+
 class OrderRoutes extends Routes
 {
 
@@ -31,9 +33,4 @@ class OrderRoutes extends Routes
         "/order/{id}" => [\Classes\Project\Auftrag::class, "deleteOrder"],
         "/order/{id}/colors/{colorId}" => [\Classes\Project\Auftrag::class, "deleteColor"],
     ];
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 }

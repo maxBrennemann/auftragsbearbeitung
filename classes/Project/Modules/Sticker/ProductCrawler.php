@@ -2,7 +2,7 @@
 
 namespace Classes\Project\Modules\Sticker;
 
-use Classes\DBAccess;
+use MaxBrennemann\PhpUtilities\DBAccess;
 
 /*
  * TODO: nginx is still buffering, these headers do not affect it

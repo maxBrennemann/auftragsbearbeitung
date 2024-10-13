@@ -2,19 +2,21 @@
 
 namespace Classes\Routes;
 
+use MaxBrennemann\PhpUtilities\Routes;
+
 class StickerRoutes extends Routes
 {
 
     /**
-     * @uses \Classes\Project\Modules\Sticker\StickerCollection::getStickerStatus
-     * @uses \Classes\Project\Modules\Sticker\ChatGPTConnection::iterateText
-     * @uses \Classes\Project\Modules\Sticker\StickerCollection::getStickerSizes
-     * @uses \Classes\Project\Modules\Sticker\StickerCollection::getPriceScheme
+     * @uses Classes\Project\Modules\Sticker\StickerCollection::getStickerStatus()
+     * @uses Classes\Project\Modules\Sticker\ChatGPTConnection::iterateText()
+     * @uses Classes\Project\Modules\Sticker\StickerCollection::getStickerSizes()
+     * @uses Classes\Project\Modules\Sticker\StickerCollection::getPriceScheme()
      * 
-     * @uses \Classes\Project\Modules\Sticker\StickerTagManager::getTagSuggestions
+     * @uses Classes\Project\Modules\Sticker\StickerTagManager::getTagSuggestions()
      * 
-     * @uses \Classes\Project\Modules\Sticker\StickerCollection::getStickerOverview
-     * @uses \Classes\Project\Modules\Sticker\StickerCollection::getStickerStates
+     * @uses Classes\Project\Modules\Sticker\StickerCollection::getStickerOverview()
+     * @uses Classes\Project\Modules\Sticker\StickerCollection::getStickerStates()
      */
     protected static $getRoutes = [
         "/sticker/{id}/status" => [\Classes\Project\Modules\Sticker\StickerCollection::class, "getStickerStatus"],
@@ -32,14 +34,14 @@ class StickerRoutes extends Routes
     ];
 
     /**
-     * @uses \Classes\Project\Modules\Sticker\StickerCollection::exportSticker
-     * @uses \Classes\Project\Modules\Sticker\Textil::toggleTextile
-     * @uses \Classes\Project\Modules\Sticker\Textil::setPrice
-     * @uses \Classes\Project\Modules\Sticker\StickerCollection::setPriceScheme
+     * @uses Classes\Project\Modules\Sticker\StickerCollection::exportSticker()
+     * @uses Classes\Project\Modules\Sticker\Textil::toggleTextile()
+     * @uses Classes\Project\Modules\Sticker\Textil::setPrice()
+     * @uses Classes\Project\Modules\Sticker\StickerCollection::setPriceScheme()
      * 
-     * @uses \Classes\Project\Modules\Sticker\StickerCollection::addSticker
+     * @uses Classes\Project\Modules\Sticker\StickerCollection::addSticker()
      * 
-     * @uses \Classes\Project\Modules\Sticker\StickerTagManager::addTag
+     * @uses Classes\Project\Modules\Sticker\StickerTagManager::addTag()
      * 
      * @uses 
      */
@@ -60,23 +62,18 @@ class StickerRoutes extends Routes
     ];
 
     /**
-     * @uses \Classes\Project\Modules\Sticker\AufkleberWandtattoo::addSize
+     * @uses Classes\Project\Modules\Sticker\AufkleberWandtattoo::addSize()
      */
     protected static $putRoutes = [
         "/sticker/sizes" => [\Classes\Project\Modules\Sticker\AufkleberWandtattoo::class, "addSize"],
     ];
 
     /**
-     * @uses \Classes\Project\Modules\Sticker\StickerTagManager::removeTag
-     * @uses AufkleberWan\Classes\Project\Modules\Sticker\AufkleberWandtattoodtattoo::deleteSize
+     * @uses Classes\Project\Modules\Sticker\StickerTagManager::removeTag()
+     * @uses Classes\Project\Modules\Sticker\AufkleberWandtattoodtattoo::deleteSize()
      */
     protected static $deleteRoutes = [
         "/sticker/tags" => [\Classes\Project\Modules\Sticker\StickerTagManager::class, "removeTag"],
         "/sticker/sizes/{id}" => [\Classes\Project\Modules\Sticker\AufkleberWandtattoo::class, "deleteSize"],
     ];
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 }

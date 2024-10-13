@@ -2,10 +2,10 @@
 
 namespace Classes\Project;
 
-use Classes\DBAccess;
-use Classes\Tools;
+use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\Tools;
 use Classes\Link;
-use Classes\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 class Produkt
 {

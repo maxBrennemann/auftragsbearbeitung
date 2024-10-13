@@ -2,6 +2,8 @@
 
 namespace Classes\Routes;
 
+use MaxBrennemann\PhpUtilities\Routes;
+
 class NotesRoutes extends Routes {
 
     /**
@@ -33,9 +35,4 @@ class NotesRoutes extends Routes {
     protected static $deleteRoutes = [
         "/notes/{id}" => [\Classes\Project\Auftrag::class, "deleteNote"],
     ];
-
-    public function __construct() {
-        parent::__construct();
-    }
-
 }

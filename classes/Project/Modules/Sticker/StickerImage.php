@@ -5,7 +5,7 @@ namespace Classes\Project\Modules\Sticker;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 
-use Classes\DBAccess;
+use MaxBrennemann\PhpUtilities\DBAccess;
 use Classes\Link;
 
 class StickerImage extends PrestashopConnection

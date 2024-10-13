@@ -5,7 +5,7 @@ namespace Classes\Project;
 use Elastic\Elasticsearch\ClientBuilder;
 use GuzzleHttp\Client as HttpClient;
 
-use Classes\DBAccess;
+use MaxBrennemann\PhpUtilities\DBAccess;
 use Classes\Protocol;
 use Classes\Link;
 

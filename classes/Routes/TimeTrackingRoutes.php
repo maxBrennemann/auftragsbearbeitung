@@ -2,6 +2,8 @@
 
 namespace Classes\Routes;
 
+use MaxBrennemann\PhpUtilities\Routes;
+
 class TimeTrackingRoutes extends Routes
 {
 
@@ -22,9 +24,4 @@ class TimeTrackingRoutes extends Routes
     protected static $deleteRoutes = [
         "/time-tracking/delete/{id}" => [\Classes\Project\TimeTrackingController::class, "deleteEntry"],
     ];
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 }

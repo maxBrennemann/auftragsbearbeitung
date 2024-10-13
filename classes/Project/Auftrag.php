@@ -2,10 +2,10 @@
 
 namespace Classes\Project;
 
-use Classes\DBAccess;
+use MaxBrennemann\PhpUtilities\DBAccess;
 use Classes\Link;
-use Classes\JSONResponseHandler;
-use Classes\Tools;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
 use Classes\Login;
 
 /**

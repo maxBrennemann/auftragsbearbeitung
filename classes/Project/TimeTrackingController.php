@@ -2,8 +2,8 @@
 
 namespace Classes\Project;
 
-use Classes\DBAccess;
-use Classes\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 class TimeTrackingController
 {

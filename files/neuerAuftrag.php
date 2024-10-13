@@ -1,7 +1,7 @@
 <?php
 $kdnr = -1;
 
-use Classes\DBAccess;
+use MaxBrennemann\PhpUtilities\DBAccess;
 use Classes\Link;
 
 if (isset($_GET['showDetails'])) {

@@ -2,15 +2,15 @@
 
 namespace Classes\Project;
 
-use Classes\DBAccess;
+use MaxBrennemann\PhpUtilities\DBAccess;
 
 class Config
 {
 
     /**
      * adds a new setting value
-     * @param String $title
-     * @param String $defaultValue
+     * @param string $title
+     * @param string $defaultValue
      * @param bool $isBool
      * @param bool $isNullable
      * @return int the id of the setting value
@@ -37,8 +37,8 @@ class Config
     /**
      * sets the content of a setting value,
      * if the setting value does not exist, it will be created
-     * @param String $title
-     * @param String $value
+     * @param string $title
+     * @param string $value
      */
     public static function set(String $setting, String $value = null)
     {
@@ -60,8 +60,8 @@ class Config
     /**
      * gets the content of a setting value,
      * if the setting value does not exist, null is returned
-     * @param String $title
-     * @return String|null
+     * @param string $title
+     * @return string|null
      */
     public static function get(String $title): ?String
     {
@@ -87,8 +87,8 @@ class Config
 
     /**
      * toggles a setting value between true and false
-     * @param String $title
-     * @return String the new value
+     * @param string $title
+     * @return string the new value
      */
     public static function toggle(String $title): String
     {

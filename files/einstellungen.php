@@ -1,7 +1,7 @@
 <?php
 
 use Classes\Link;
-use Classes\DBAccess;
+use MaxBrennemann\PhpUtilities\DBAccess;
 
 use Classes\Project\CacheManager;
 use Classes\Project\Config;

@@ -2,7 +2,9 @@
 
 namespace Classes\Routes;
 
-class TimeTrackingRoutes extends Routes
+use MaxBrennemann\PhpUtilities\Routes;
+
+class UploadRoutes extends Routes
 {
 
     protected static $getRoutes = [];
@@ -12,9 +14,4 @@ class TimeTrackingRoutes extends Routes
     protected static $putRoutes = [];
 
     protected static $deleteRoutes = [];
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 }

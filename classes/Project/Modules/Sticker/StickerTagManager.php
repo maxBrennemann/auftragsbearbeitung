@@ -2,9 +2,9 @@
 
 namespace Classes\Project\Modules\Sticker;
 
-use Classes\DBAccess;
-use Classes\Tools;
-use Classes\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\Tools;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use Classes\Protocol;
 
 class StickerTagManager extends PrestashopConnection

@@ -1,7 +1,7 @@
 <?php
 
 use Classes\Link;
-use Classes\DBAccess;
+use MaxBrennemann\PhpUtilities\DBAccess;
 
 $showAngebot = 0;
 $showOffer = false;

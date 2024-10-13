@@ -2,7 +2,7 @@
 
 namespace Classes\Project\Modules\Sticker\Exports;
 
-use Classes\DBAccess;
+use MaxBrennemann\PhpUtilities\DBAccess;
 
 use Classes\Project\Modules\Sticker\Aufkleber;
 use Classes\Project\Modules\Sticker\Wandtattoo;

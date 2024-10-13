@@ -2,15 +2,12 @@
 
 namespace Classes\Routes;
 
+use MaxBrennemann\PhpUtilities\Routes;
+
 class LoginRoutes extends Routes
 {
 
     protected static $getRoutes = [];
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * @uses \Classes\Login::handleLogin()
