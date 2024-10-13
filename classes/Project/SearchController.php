@@ -1,6 +1,6 @@
 <?php
 
-use Classes\DBAccess;
+use MaxBrennemann\PhpUtilities\DBAccess;
 
 class SearchController
 {

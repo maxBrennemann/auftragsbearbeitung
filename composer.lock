@@ -1272,19 +1272,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/maxBrennemann/php-utilities.git",
-                "reference": "dd3e62dca947e73b74e911628d85026a7b0cd6f1"
+                "reference": "4f4a030d23476810039c36fe917a4b27c58b0fe6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/maxBrennemann/php-utilities/zipball/dd3e62dca947e73b74e911628d85026a7b0cd6f1",
-                "reference": "dd3e62dca947e73b74e911628d85026a7b0cd6f1",
+                "url": "https://api.github.com/repos/maxBrennemann/php-utilities/zipball/4f4a030d23476810039c36fe917a4b27c58b0fe6",
+                "reference": "4f4a030d23476810039c36fe917a4b27c58b0fe6",
                 "shasum": ""
             },
             "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Max\\PhpUtilities\\": "src/"
+                    "MaxBrennemann\\PhpUtilities\\": "src/"
                 }
             },
             "authors": [
@@ -1297,7 +1297,7 @@
                 "source": "https://github.com/maxBrennemann/php-utilities/tree/main",
                 "issues": "https://github.com/maxBrennemann/php-utilities/issues"
             },
-            "time": "2024-10-09T07:34:40+00:00"
+            "time": "2024-10-13T17:16:58+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -2545,12 +2545,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "8957818a578eadc2e278ef03796ca2d519bb4863"
+                "reference": "4e59caa4a1120aadcddfd86ae777e9e076881c25"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/8957818a578eadc2e278ef03796ca2d519bb4863",
-                "reference": "8957818a578eadc2e278ef03796ca2d519bb4863",
+                "url": "https://api.github.com/repos/symfony/config/zipball/4e59caa4a1120aadcddfd86ae777e9e076881c25",
+                "reference": "4e59caa4a1120aadcddfd86ae777e9e076881c25",
                 "shasum": ""
             },
             "require": {
@@ -2612,7 +2612,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-09-27T08:52:18+00:00"
+            "time": "2024-10-09T13:07:54+00:00"
         },
         {
             "name": "symfony/console",
@@ -4126,12 +4126,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "249a07845e665deb2dd13b8a548a78f6bb2adec9"
+                "reference": "0c843b0dfe6781c1f62d2b958766674ab10a4a40"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/249a07845e665deb2dd13b8a548a78f6bb2adec9",
-                "reference": "249a07845e665deb2dd13b8a548a78f6bb2adec9",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/0c843b0dfe6781c1f62d2b958766674ab10a4a40",
+                "reference": "0c843b0dfe6781c1f62d2b958766674ab10a4a40",
                 "shasum": ""
             },
             "require": {
@@ -4219,7 +4219,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-10-09T05:19:03+00:00"
+            "time": "2024-10-13T08:36:54+00:00"
         },
         {
             "name": "sebastian/cli-parser",

@@ -2,6 +2,8 @@
 
 namespace Classes\Routes;
 
+use MaxBrennemann\PhpUtilities\Routes;
+
 class TableRoutes extends Routes
 {
 
@@ -10,9 +12,4 @@ class TableRoutes extends Routes
     protected static $postRoutes = [];
 
     protected static $deleteRoutes = [];
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 }

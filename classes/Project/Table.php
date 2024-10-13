@@ -2,7 +2,7 @@
 
 namespace Classes\Project;
 
-use Classes\DBAccess;
+use MaxBrennemann\PhpUtilities\DBAccess;
 
 /**
  * Anforderungen der Table Klasse:

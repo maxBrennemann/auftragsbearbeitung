@@ -2,6 +2,8 @@
 
 namespace Classes;
 
+use MaxBrennemann\PhpUtilities\DBAccess;
+
 class Link
 {
 

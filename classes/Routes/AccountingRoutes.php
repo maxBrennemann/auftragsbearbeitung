@@ -2,6 +2,8 @@
 
 namespace Classes\Routes;
 
+use MaxBrennemann\PhpUtilities\Routes;
+
 class AccountingRoutes extends Routes
 {
 
@@ -12,9 +14,4 @@ class AccountingRoutes extends Routes
     protected static $putRoutes = [];
 
     protected static $deleteRoutes = [];
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 }

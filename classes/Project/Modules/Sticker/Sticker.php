@@ -2,9 +2,9 @@
 
 namespace Classes\Project\Modules\Sticker;
 
-use Classes\DBAccess;
+use MaxBrennemann\PhpUtilities\DBAccess;
 use Classes\Link;
-use Classes\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 /**
  * stellt allgemeine Stickerfunktionen zur Verfügung, ist die Elternklasse von

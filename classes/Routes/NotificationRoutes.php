@@ -2,13 +2,10 @@
 
 namespace Classes\Routes;
 
+use MaxBrennemann\PhpUtilities\Routes;
+
 class NotificationRoutes extends Routes
 {
 
     protected static $getRoutes = [];
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 }

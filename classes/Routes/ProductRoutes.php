@@ -2,6 +2,8 @@
 
 namespace Classes\Routes;
 
+use MaxBrennemann\PhpUtilities\Routes;
+
 class ProductRoutes extends Routes
 {
 
@@ -59,9 +61,4 @@ class ProductRoutes extends Routes
 
         "/category/{id}" => [\Classes\Project\Category::class, "updateCategory"],
     ];
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 }

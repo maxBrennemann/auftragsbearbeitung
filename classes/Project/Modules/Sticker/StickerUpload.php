@@ -2,7 +2,7 @@
 
 namespace Classes\Project\Modules\Sticker;
 
-use Classes\DBAccess;
+use MaxBrennemann\PhpUtilities\DBAccess;
 
 class StickerUpload extends PrestashopConnection
 {

@@ -5,6 +5,8 @@ namespace Classes;
 use MatthiasMullie\Minify\CSS;
 use MatthiasMullie\Minify\JS;
 
+use MaxBrennemann\PhpUtilities\DBAccess;
+
 /* https://stackoverflow.com/questions/15774669/list-all-files-in-one-directory-php */
 
 class MinifyFiles

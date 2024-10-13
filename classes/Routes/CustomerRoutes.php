@@ -2,6 +2,8 @@
 
 namespace Classes\Routes;
 
+use MaxBrennemann\PhpUtilities\Routes;
+
 class CustomerRoutes extends Routes
 {
 
@@ -13,11 +15,6 @@ class CustomerRoutes extends Routes
     protected static $postRoutes = [
         "/customer" => [\Classes\Project\Kunde::class, "addCustomerAjax"],
     ];
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     public static function handleRequest($route)
     {

@@ -2,7 +2,7 @@
 
 namespace Classes\Project;
 
-use Classes\DBAccess;
+use MaxBrennemann\PhpUtilities\DBAccess;
 use Classes\Link;
 
 /*
@@ -148,12 +148,10 @@ class NotificationManager
             case 1:
                 $orderId = DBAccess::selectQuery("SELECT Auftragsnummer FROM schritte WHERE Schrittnummer = $id")[0]['Auftragsnummer'];
                 return Link::getPageLink("auftrag") . "?id=$orderId";
-                break;
             case 0:
                 break;
             case 4:
                 return Link::getPageLink("auftrag") . "?id=$id";
-                break;
             default:
                 break;
         }

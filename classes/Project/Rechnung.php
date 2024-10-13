@@ -2,7 +2,7 @@
 
 namespace Classes\Project;
 
-use Classes\DBAccess;
+use MaxBrennemann\PhpUtilities\DBAccess;
 use Classes\Link;
 
 class Rechnung {
@@ -189,7 +189,7 @@ class Rechnung {
 
 	/**
 	 * fügt einen Tabellenkopf und die allgemeinen Rechnungsdaten ein;
-	 * @param TCPDF &$pdf Refernz auf PDF Variable
+	 * @param \TCPDF &$pdf Refernz auf PDF Variable
 	 * @param int $y Abstand zu oben, Standard ist 45, damit die erste Seite richtig generiert wird
 	 */
 	private function addTableHeader(&$pdf, $y = 45) {

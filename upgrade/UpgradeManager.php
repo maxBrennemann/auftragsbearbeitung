@@ -2,7 +2,7 @@
 
 namespace Upgrade;
 
-use Classes\DBAccess;
+use MaxBrennemann\PhpUtilities\DBAccess;
 
 class UpgradeManager {
 
