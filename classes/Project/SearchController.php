@@ -1,81 +1,57 @@
 <?php
 
-use MaxBrennemann\PhpUtilities\DBAccess;
+namespace Classes\Project;
 
 class SearchController
 {
 
-    private string $query = "";
+    private array $searches = [];
     private string $searchQuery = "";
-
-    private array $fields = [];
-    private array $data = [];
     private array $response = [];
 
     public function __construct(string $query, array $fields, string $searchQuery)
     {
-        $this->query = $query;
-        $this->fields = $fields;
         $this->searchQuery = $searchQuery;
+        $this->searches[] = new Search2($query, $fields, $searchQuery);
+    }
+
+    public function add(string $query, array $fields)
+    {
+        $this->searches[] = new Search2($query, $fields, $this->searchQuery);
     }
 
     public function search(): array
     {
-        $this->data = DBAccess::selectQuery($this->query);
-
-        foreach ($this->data as $row) {
-            $this->response[] = [
-                "row" => $row,
-                "match" => 0,
-            ];
+        foreach ($this->searches as $search) {
+            $this->response[] = $search->search();
         }
 
-        return [];
+        return $this->evaluate();
     }
 
-    private function evaluateMatches(): array {
-        foreach ($this->response as $calculatedResponse) {
-            $row = $calculatedResponse["row"];
+    private function evaluate(): array
+    {
+        $sortedResults = [];
 
-            foreach ($this->fields as $field) {
-                $searchIn = $row[$field];
-                
-                if (!isset($searchIn)) {
-                    continue;
+        foreach ($this->response as &$r) {
+            usort($r, function ($a, $b) {
+                if ($a["match"] == $b["match"]) {
+                    return 0;
                 }
-
-                if ($searchIn == $this->searchQuery) {
-                    $calculatedResponse["match"] += 300;
-                    continue;
-                }
-
-                $substCount = substr_count($searchIn, $this->searchQuery);
-                $calculatedResponse["match"] += $substCount * 15;
-
-                if ($substCount >= 3) {
-                    continue;
-                }
-
-                $parts = explode($searchIn, " ");
-                foreach ($parts as $part) {
-                    $ld = levenshtein($this->searchQuery, $part);
-
-                    switch ($ld) {
-                        case 1:
-                            $calculatedResponse["match"] += 10;
-                            break;
-                        case 2:
-                            $calculatedResponse["match"] += 5;
-                            break;
-                        case 3:
-                            $calculatedResponse["match"] += 3;
-                            break;
-                    }
-                }
-            }
+                return ($a["match"] > $b["match"]) ? -1 : 1;
+            });
+            $r = array_slice($r, 0, 5);
+            $sortedResults[] = $r;
         }
 
+        return $sortedResults;
+    }
 
-        return [];
+    public static function init()
+    {
+        $sc = new SearchController("SELECT * FROM kunde", ["Firmenname", "Vorname"], "schule");
+        var_dump($sc->search());
+
+        //var_dump($sc->response);
     }
 }

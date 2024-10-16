@@ -733,15 +733,6 @@ input#hamburg {
         margin-bottom: 2px;
     }
 
-    .searchContainer {
-        width: auto;
-        position: relative;
-        grid-area: searchItems;
-
-        margin-top: 2px;
-        margin-bottom: 2px;
-    }
-
     header div {
         width: auto;
     }
@@ -790,10 +781,6 @@ input#hamburg {
 .loaderSettings {
     vertical-align: middle;
     margin-right: 7px;
-}
-
-.searchContainer {
-    vertical-align: bottom;
 }
 
 .showTimeGlobal {

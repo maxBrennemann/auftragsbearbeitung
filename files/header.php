@@ -124,12 +124,7 @@ $motiveOverview = 	Link::getPageLink("sticker-overview");
 		<section class="mx-auto w-4/5 lg:mb-5 mb-3">
 			<h1 class="font-semibold">b-schriftung Auftragsstellung<br><span class="font-normal text-sm"><?=$pageName?></span></h1>
 			<aside class="right-1">
-				<div class="searchContainer">
-					<input class="searchItems m-0 p-2" type="search" onchange="performGlobalSearch(event)">
-					<span class="searchItems lupeSpan" title="suche"><span class="text-gray-700 searchItems lupe" title="Suche">
-						<?=Icon::getDefault("iconSearch")?>
-					</span></span>
-				</div>
+				<?=insertTemplate("files/res/views/searchView.php")?>
 				<div>
 					<div class="text-gray-700">
 						<div class="notificationContainer p-1 hover:bg-gray-200 hover:rounded-sm relative">

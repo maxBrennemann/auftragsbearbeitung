@@ -102,7 +102,7 @@ function startFunc() {
 	currentTableSorter.readTableSorted();
 	timeGlobalListener();
 	/* initSearch */
-	initSearchIcon();
+	initSearchIcons();
 	initSearchListener();
 }
 
@@ -121,16 +121,18 @@ function initSearchListener() {
 /**
  * sets the placeholder of the search input according to the device operating system
  */
-function initSearchIcon() {
-	const searchInput = document.querySelector(".searchContainer input");
-	if (searchInput != null) {
-		const device = DeviceDetector.getOS();
-		if (device == "Mac OS") {
-			searchInput.placeholder = "⌘ K";
-		} else if (device == "Windows" || device == "Linux") {
-			searchInput.placeholder = "Ctrl K";
+function initSearchIcons() {
+	const searchInputs = document.querySelectorAll(".searchContainer input");
+	Array.from(searchInputs).forEach(searchInput => {
+		if (searchInput != null) {
+			const device = DeviceDetector.getOS();
+			if (device == "Mac OS") {
+				searchInput.placeholder = "⌘ K";
+			} else if (device == "Windows" || device == "Linux") {
+				searchInput.placeholder = "Ctrl K";
+			}
 		}
-	}
+	});
 }
 
 function listener_logout() {

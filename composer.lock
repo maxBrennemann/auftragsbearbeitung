@@ -563,16 +563,16 @@
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.376.0",
+            "version": "v0.377.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "013c4fcdda03c804e96c6aad332456e05916c665"
+                "reference": "912727289dd617a97da7d2700debbe81a59cea19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/013c4fcdda03c804e96c6aad332456e05916c665",
-                "reference": "013c4fcdda03c804e96c6aad332456e05916c665",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/912727289dd617a97da7d2700debbe81a59cea19",
+                "reference": "912727289dd617a97da7d2700debbe81a59cea19",
                 "shasum": ""
             },
             "require": {
@@ -601,9 +601,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
-                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.376.0"
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.377.0"
             },
-            "time": "2024-10-06T01:06:23+00:00"
+            "time": "2024-10-14T00:56:24+00:00"
         },
         {
             "name": "google/auth",
@@ -1272,12 +1272,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/maxBrennemann/php-utilities.git",
-                "reference": "4f4a030d23476810039c36fe917a4b27c58b0fe6"
+                "reference": "c08e7480f9785d44d37aa63b10428e72421c8072"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/maxBrennemann/php-utilities/zipball/4f4a030d23476810039c36fe917a4b27c58b0fe6",
-                "reference": "4f4a030d23476810039c36fe917a4b27c58b0fe6",
+                "url": "https://api.github.com/repos/maxBrennemann/php-utilities/zipball/c08e7480f9785d44d37aa63b10428e72421c8072",
+                "reference": "c08e7480f9785d44d37aa63b10428e72421c8072",
                 "shasum": ""
             },
             "default-branch": true,
@@ -1297,7 +1297,7 @@
                 "source": "https://github.com/maxBrennemann/php-utilities/tree/main",
                 "issues": "https://github.com/maxBrennemann/php-utilities/issues"
             },
-            "time": "2024-10-13T17:16:58+00:00"
+            "time": "2024-10-14T07:13:34+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -1407,12 +1407,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/api.git",
-                "reference": "f2800372b245b44f6b07497917338223609362f4"
+                "reference": "542064815d38a6df55af7957cd6f1d7d967c99c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/api/zipball/f2800372b245b44f6b07497917338223609362f4",
-                "reference": "f2800372b245b44f6b07497917338223609362f4",
+                "url": "https://api.github.com/repos/opentelemetry-php/api/zipball/542064815d38a6df55af7957cd6f1d7d967c99c6",
+                "reference": "542064815d38a6df55af7957cd6f1d7d967c99c6",
                 "shasum": ""
             },
             "require": {
@@ -1429,6 +1429,11 @@
             "extra": {
                 "branch-alias": {
                     "dev-main": "1.1.x-dev"
+                },
+                "spi": {
+                    "OpenTelemetry\\API\\Instrumentation\\AutoInstrumentation\\HookManagerInterface": [
+                        "OpenTelemetry\\API\\Instrumentation\\AutoInstrumentation\\ExtensionHookManager"
+                    ]
                 }
             },
             "autoload": {
@@ -1465,7 +1470,7 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2024-10-05T06:00:52+00:00"
+            "time": "2024-10-15T22:42:37+00:00"
         },
         {
             "name": "open-telemetry/context",
@@ -2620,12 +2625,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "de23257c024f6b7ca426ef7b5c0b6ea4efb14b13"
+                "reference": "a97129d215b0730fe86c59f1ceefc6ad2e93533d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/de23257c024f6b7ca426ef7b5c0b6ea4efb14b13",
-                "reference": "de23257c024f6b7ca426ef7b5c0b6ea4efb14b13",
+                "url": "https://api.github.com/repos/symfony/console/zipball/a97129d215b0730fe86c59f1ceefc6ad2e93533d",
+                "reference": "a97129d215b0730fe86c59f1ceefc6ad2e93533d",
                 "shasum": ""
             },
             "require": {
@@ -2705,7 +2710,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-10-08T07:22:49+00:00"
+            "time": "2024-10-13T12:36:15+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -2713,12 +2718,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/deprecation-contracts.git",
-                "reference": "0e0d29ce1f20deffb4ab1b016a7257c4f1e789a1"
+                "reference": "63afe740e99a13ba87ec199bb07bbdee937a5b62"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/0e0d29ce1f20deffb4ab1b016a7257c4f1e789a1",
-                "reference": "0e0d29ce1f20deffb4ab1b016a7257c4f1e789a1",
+                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/63afe740e99a13ba87ec199bb07bbdee937a5b62",
+                "reference": "63afe740e99a13ba87ec199bb07bbdee937a5b62",
                 "shasum": ""
             },
             "require": {
@@ -2728,7 +2733,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "3.5-dev"
+                    "dev-main": "3.6-dev"
                 },
                 "thanks": {
                     "name": "symfony/contracts",
@@ -2757,7 +2762,7 @@
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.5.0"
+                "source": "https://github.com/symfony/deprecation-contracts/tree/main"
             },
             "funding": [
                 {
@@ -2773,7 +2778,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-04-18T09:32:20+00:00"
+            "time": "2024-09-25T14:21:43+00:00"
         },
         {
             "name": "symfony/dotenv",
@@ -3320,12 +3325,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/service-contracts.git",
-                "reference": "bd1d9e59a81d8fa4acdcea3f617c581f7475a80f"
+                "reference": "5ad38698559cf88b6296629e19b15ef3239c9d7a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/bd1d9e59a81d8fa4acdcea3f617c581f7475a80f",
-                "reference": "bd1d9e59a81d8fa4acdcea3f617c581f7475a80f",
+                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/5ad38698559cf88b6296629e19b15ef3239c9d7a",
+                "reference": "5ad38698559cf88b6296629e19b15ef3239c9d7a",
                 "shasum": ""
             },
             "require": {
@@ -3340,7 +3345,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "3.5-dev"
+                    "dev-main": "3.6-dev"
                 },
                 "thanks": {
                     "name": "symfony/contracts",
@@ -3380,7 +3385,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/service-contracts/tree/v3.5.0"
+                "source": "https://github.com/symfony/service-contracts/tree/main"
             },
             "funding": [
                 {
@@ -3396,7 +3401,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-04-18T09:32:20+00:00"
+            "time": "2024-09-25T14:21:43+00:00"
         },
         {
             "name": "symfony/string",
