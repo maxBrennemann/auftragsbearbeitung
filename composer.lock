@@ -497,12 +497,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client.git",
-                "reference": "76c312e2696575d315f56aba31f8979d06da06ff"
+                "reference": "846f149c9f879449145326dad99ef00bf1d879f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/76c312e2696575d315f56aba31f8979d06da06ff",
-                "reference": "76c312e2696575d315f56aba31f8979d06da06ff",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/846f149c9f879449145326dad99ef00bf1d879f3",
+                "reference": "846f149c9f879449145326dad99ef00bf1d879f3",
                 "shasum": ""
             },
             "require": {
@@ -557,9 +557,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client/issues",
-                "source": "https://github.com/googleapis/google-api-php-client/tree/main"
+                "source": "https://github.com/googleapis/google-api-php-client/tree/v2.18.0"
             },
-            "time": "2024-08-26T16:50:03+00:00"
+            "time": "2024-10-16T21:58:58+00:00"
         },
         {
             "name": "google/apiclient-services",
@@ -1272,12 +1272,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/maxBrennemann/php-utilities.git",
-                "reference": "c08e7480f9785d44d37aa63b10428e72421c8072"
+                "reference": "3b0d3025de7e3b6a6876203b6e22e5f0129bec04"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/maxBrennemann/php-utilities/zipball/c08e7480f9785d44d37aa63b10428e72421c8072",
-                "reference": "c08e7480f9785d44d37aa63b10428e72421c8072",
+                "url": "https://api.github.com/repos/maxBrennemann/php-utilities/zipball/3b0d3025de7e3b6a6876203b6e22e5f0129bec04",
+                "reference": "3b0d3025de7e3b6a6876203b6e22e5f0129bec04",
                 "shasum": ""
             },
             "default-branch": true,
@@ -1297,7 +1297,7 @@
                 "source": "https://github.com/maxBrennemann/php-utilities/tree/main",
                 "issues": "https://github.com/maxBrennemann/php-utilities/issues"
             },
-            "time": "2024-10-14T07:13:34+00:00"
+            "time": "2024-10-17T08:49:22+00:00"
         },
         {
             "name": "monolog/monolog",

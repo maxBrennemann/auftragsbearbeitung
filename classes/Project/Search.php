@@ -526,39 +526,27 @@ class Search
 	 */
 	private static function sortByPercentage(&$mostSimilar)
 	{
-		if (!function_exists("cmp")) {
-			function cmp($a, $b)
-			{
-				return ($a[1] < $b[1]) ? -1 : (($a[1] > $b[1]) ? 1 : 0);
+		usort($mostSimilar, function ($a, $b) {
+			return ($a[1] < $b[1]) ? -1 : (($a[1] > $b[1]) ? 1 : 0);
+		});
+	}
+
+	private static function inArray($search, $arr) {
+		foreach ($arr as $el) {
+			if ($el[0] == $search) {
+				return true;
 			}
 		}
-
-		/*print "<pre>";
-		print_r($mostSimilar);
-		print "</pre>";*/
-
-		usort($mostSimilar, "cmp");
+		return false;
 	}
 
 	private static function filterByPercentage($mostSimilar)
 	{
-		if (!function_exists("inArray")) {
-			function inArray($search, $arr)
-			{
-				foreach ($arr as $el) {
-					if ($el[0] == $search) {
-						return true;
-					}
-				}
-				return false;
-			}
-		}
-
 		$filteredArray = array();
 		foreach ($mostSimilar as $product) {
 			/* 35 is the current similarity value, which is necessary to be displayed in search results */
 			if ((float) $product[1] > 35) {
-				if (inArray($product[0], $filteredArray)) {
+				if (self::inArray($product[0], $filteredArray)) {
 					if ($product[1] >= end($filteredArray)[1]) {
 						//$filteredArray[sizeof($filteredArray) - 1] = $product;
 					}

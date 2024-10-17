@@ -57,6 +57,7 @@ function autoLogin() {
             }, 1000);
         } else if (r.status == "failed") {
             console.log("auto login failed");
+            document.getElementById("spinningStatus").classList.add("hidden");
             setTimeout(function(){
                 document.getElementById("autologinStatus").innerHTML = "Bitte geben Sie Ihre Zugangsdaten ein.";
             }, 1000);

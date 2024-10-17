@@ -62,16 +62,6 @@ function registerLastActivity() {
 	}
 }
 
-if (document.readyState !== 'loading' ) {
-	exportToWindow();
-    startFunc();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-		exportToWindow();
-        startFunc();
-    });
-}
-
 function startFunc() {
 	var el = document.querySelector("input[type=email");
 	if (el != null) {
@@ -101,6 +91,13 @@ function startFunc() {
 	setTableSorter(new TableSorter());
 	currentTableSorter.readTableSorted();
 	timeGlobalListener();
+	initSearch();
+}
+
+const initSearch = () => {
+	const globalSearch = document.querySelector(".searchContainer input");
+	globalSearch.addEventListener("change", performGlobalSearch);
+
 	/* initSearch */
 	initSearchIcons();
 	initSearchListener();
@@ -223,10 +220,6 @@ function pad(num) {
 function validateEmail(email) {
 	var re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 	return re.test(String(email).toLowerCase());
-}
-
-function getElement(id) {
-	return document.getElementById(id);
 }
 
 /* 
@@ -587,4 +580,14 @@ export const loadFromLocalStorage = (key) => {
 export const saveToLocalStorage = (key, value) => {
 	value = JSON.stringify(value);
 	localStorage.setItem(key, value);
+}
+
+if (document.readyState !== 'loading' ) {
+	exportToWindow();
+    startFunc();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+		exportToWindow();
+        startFunc();
+    });
 }

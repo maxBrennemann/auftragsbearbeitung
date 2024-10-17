@@ -29,6 +29,11 @@ class SearchController
         return $this->evaluate();
     }
 
+    /**
+     * TODO: it must be decided when to cut the results
+     * 
+     * @return array
+     */
     private function evaluate(): array
     {
         $sortedResults = [];

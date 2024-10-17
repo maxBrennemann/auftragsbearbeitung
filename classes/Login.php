@@ -223,6 +223,11 @@ class Login
 		$data = DBAccess::selectQuery("SELECT id, browser_agent, browser, os, device_type FROM user_devices WHERE md_hash = :deviceKey", [
 			'deviceKey' => $_POST["deviceKey"]
 		]);
+
+		if (count($data) == 0) {
+			return false;
+		}
+
 		$deviceId = $data[0]['id'];
 
 		if ($data[0]['browser_agent'] == $userAgent && $data[0]['browser'] == $browser && $data[0]['os'] == $os && $data[0]['device_type'] == $deviceType) {
