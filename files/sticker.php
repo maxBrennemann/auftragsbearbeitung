@@ -77,7 +77,7 @@ if ($id == 0): ?>
             <button class="mr-1 p-1 border-none bg-slate-50" title="Kategorien auswählen" data-binding="true" data-fun="chooseCategory">
                 <?=Icon::getDefault("iconCategory")?>
             </button>
-            <button class="infoButton" data-info="8">i</button>
+            <button class="infoButton ml-1" data-info="8">i</button>
         </p>
         <div class="">
             Status:
@@ -173,7 +173,7 @@ if ($id == 0): ?>
             <button class="mr-1 p-1 border-none bg-slate-50" title="Kategorien auswählen" data-binding="true" data-fun="chooseCategory">
                 <?=Icon::getDefault("iconCategory")?>
             </button>
-            <button class="infoButton" data-info="9">i</button>
+            <button class="infoButton ml-1" data-info="9">i</button>
         </p>
         <div>
             Status: 
@@ -231,7 +231,7 @@ if ($id == 0): ?>
             <button class="mr-1 p-1 border-none bg-slate-50" title="Kategorien auswählen" data-binding="true" data-fun="chooseCategory">
                 <?=Icon::getDefault("iconCategory")?>
             </button>
-            <button class="infoButton" data-info="10">i</button>
+            <button class="infoButton ml-1" data-info="10">i</button>
         </p>
         <div class="">
             Status: 
@@ -372,7 +372,7 @@ if ($id == 0): ?>
                         <span class="flex-1"><?=$product['name']?></span>
                         <span class="">
                             Aktiv
-                            <label class=" ml-1 switch">
+                            <label class="ml-1 switch">
                                 <input type="checkbox" class="textiles-switches" data-id="<?=$product['id']?>" <?=$product['activated'] ? 'checked' : '' ?>>
                                 <span class="slider round"></span>
                             </label>
@@ -387,19 +387,22 @@ if ($id == 0): ?>
     </div>
 </div>
 <div class="defCont">
-    <h2 class="font-semibold">Tags<button class="infoButton" data-info="3">i</button></h2>
+    <h2 class="font-semibold">Tags<button class="infoButton ml-1" data-info="3">i</button></h2>
     <div class="mt-2">
         <?=$stickerTagManager->getTagsHTML()?>
-        <input type="text" class="tagInput inline m-1 p-2 rounded-lg w-32" maxlength="32" id="tagInput">
     </div>
-    <p class="italic">Nicht erlaubt sind folgende Zeichen: !<;>;?=+#"°{}_$%.</p>
-    <button id="loadSynonyms" class="btn-primary">Mehr Synonnyme laden</button>
-    <button id="showTaggroupManager" class="btn-primary">Taggruppen</button>
+    <div class="my-2">
+        <input type="text" class="input-primary-new" maxlength="32" id="tagInput" placeholder="Tag eingeben">
+        <button type="button" class="btn-primary-new">Hinzufügen</button>
+        <p class="italic">Nicht erlaubt sind folgende Zeichen: !<;>;?=+#"°{}_$%.</p>
+    </div>
+    <button id="loadSynonyms" class="btn-primary-new">Mehr Synonnyme laden</button>
+    <button id="showTaggroupManager" class="btn-primary-new">Taggruppen</button>
 </div>
 <div class="defCont">
     <h2 class="font-semibold">Weitere Infos</h2>
     <div class="mt-2">
-        <span>Wurde der Artikel neu überarbeitet?<button class="infoButton" data-info="4">i</button></span>
+        <span>Wurde der Artikel neu überarbeitet?<button class="infoButton ml-1" data-info="4">i</button></span>
         <span class="float-right">
             <label class="switch">
                 <input type="checkbox" id="revised" <?=$stickerCollection->getIsRevised() == 1 ? "checked" : ""?> data-variable="true">
@@ -407,14 +410,14 @@ if ($id == 0): ?>
             </label>
         </span>
     </div>
-    <p class="mt-2">Speicherort:<button class="infoButton" data-info="5">i</button></p>
+    <p class="mt-2">Speicherort:<button class="infoButton ml-1" data-info="5">i</button></p>
     <div class="directoryContainer mt-2">
         <input id="dirInput" class="data-input directoryName" data-fun="speicherort" data-write="true" value="<?=$stickerCollection->getDirectory()?>">
         <button class="directoryIcon" data-binding="true" data-fun="copyToClipboard">
             <?=Icon::getDefault("iconDirectory")?>
         </button>
     </div>
-    <p class="mt-2">Zusätzliche Infos und Notizen:<button class="infoButton" data-info="6">i</button></p>
+    <p class="mt-2">Zusätzliche Infos und Notizen:<button class="infoButton ml-1" data-info="6">i</button></p>
     <textarea class="data-input mt-2" data-fun="additionalInfo" data-write="true"><?=$stickerCollection->getAdditionalInfo()?></textarea>
     <button class="btn-primary mt-2" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
 </div>

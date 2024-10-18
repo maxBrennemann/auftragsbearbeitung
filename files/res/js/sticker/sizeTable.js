@@ -83,7 +83,7 @@ const createTable = () => {
         width.innerHTML = s.width / 10;
 
         const height = row.insertCell();
-        height.innerHTML = s.height / 10;
+        height.innerHTML = Math.round((s.height / 10 + Number.EPSILON) * 100) / 100;
 
         const price = row.insertCell();
         price.innerHTML = s.price / 100;
