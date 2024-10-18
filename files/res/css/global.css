@@ -36,20 +36,6 @@ header {
     z-index: 10;
 }
 
-header section {
-    position: relative;
-}
-
-header aside {
-    position: absolute;
-    margin-right: auto;
-    top: 0;
-}
-
-header aside div {
-    display: inline-block;
-}
-
 .lupeSpan {
     position: absolute;
     left: 80px;
@@ -601,10 +587,6 @@ input#hamburg {
     tbody {
         max-width: 78vw;
     }
-
-    aside input[type="search"] {
-        width: 100px;
-    }
 }
 
 .highlight {
@@ -702,29 +684,9 @@ input#hamburg {
         margin-left: 25px;
     }
 
-    header aside {
-        margin-top: 10px;
-        right: 7px;
-    }
-
-    aside input[type="search"] {
-        width: 70px;
-    }
-
     table {
         max-width: 95vw;
         overflow-x: scroll;
-    }
-
-    header section {
-        display: grid;
-        padding-left: 35px;
-        grid-template-areas:
-            "headline aside";
-    }
-
-    header section h1 {
-        grid-area: headline;
     }
 
     .settingsContainer {

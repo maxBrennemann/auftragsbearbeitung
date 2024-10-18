@@ -31,6 +31,11 @@ $changelog = 		Link::getPageLink("changelog");
 $zeiterfassung =	Link::getPageLink("zeiterfassung");
 $motiveOverview = 	Link::getPageLink("sticker-overview");
 
+$pageTitle = $pageName;
+if ($pageName == "") {
+	$pageTitle = "Übersicht";
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="de">
@@ -38,11 +43,7 @@ $motiveOverview = 	Link::getPageLink("sticker-overview");
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, height=device-height">
-	<?php if (isset($pageName) && $pageName == ""): ?>
-		<title>b-schriftung - Übersicht</title>
-	<?php else: ?>
-		<title>b-schriftung - <?=$pageName?></title>
-	<?php endif; ?>
+	<title>b-schriftung - <?=$pageTitle?></title>
 	<meta name="Description" content="Auftragsübersicht">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="shortcut icon" type="image/x-icon" href="<?=$_ENV["WEB_URL"]?>favicon.ico">
@@ -121,46 +122,45 @@ $motiveOverview = 	Link::getPageLink("sticker-overview");
 		</ul>
 	</div>
 	<header class="moveToSide sticky p-3 2xl:p-5">
-		<section class="mx-auto w-4/5 lg:mb-5 mb-3">
-			<h1 class="font-semibold">b-schriftung Auftragsstellung<br><span class="font-normal text-sm"><?=$pageName?></span></h1>
-			<aside class="right-1">
+		<div class="mx-auto w-4/5 lg:mb-5 mb-3 flex">
+			<div class="flex-1">
+				<h1 class="font-semibold">b-schriftung Auftragsstellung</h1>
+				<p class="font-normal text-sm"><?=$pageTitle?></p>
+			</div>
+			<div class="inline-flex">
 				<?=insertTemplate("files/res/views/searchView.php")?>
-				<div>
-					<div class="text-gray-700">
-						<div class="notificationContainer p-1 hover:bg-gray-200 hover:rounded-sm relative">
-							<?php if (NotificationManager::getNotificationCount() > 0): ?>
-							<div title="Benachrichtigungen" class="absolute -top-2 right-0">
-								<div class="w-3 h-3">
-									<p class="text-xxs p-0.5 bg-red-400 text-white rounded-full text-center"><?=NotificationManager::getNotificationCount();?></p>
-								</div>
+				<div class="inline-flex ml-1">
+					<div class="notificationContainer inline-flex items-center p-1 hover:bg-gray-200 hover:rounded-sm relative text-gray-700">
+						<?php if (NotificationManager::getNotificationCount() > 0): ?>
+						<div title="Benachrichtigungen" class="absolute -top-0.5 right-0">
+							<div class="w-3 h-3">
+								<p class="text-xxs p-0.5 bg-red-400 text-white rounded-full text-center"><?=NotificationManager::getNotificationCount();?></p>
 							</div>
-							<?php endif; ?>
-							<span title="Benachrichtigungen" class="inline-block">
-								<?=Icon::getDefault("iconBell")?>
-							</span>
 						</div>
-						<div class="settingsContainer">
-							<a href="<?=$einstellungen?>" id="settings" title="Einstellungen" class="p-1 hover:bg-gray-200 hover:rounded-sm">
-								<?=Icon::getDefault("iconSettings")?>
-							</a>
-						</div>
-						<div class="logoutContainer">
-							<span id="logoutBtn" title="Ausloggen" class="p-1 hover:bg-gray-200 hover:rounded-sm">
-								<?=Icon::getDefault("iconLogout")?>
-							</span>
-						</div>
+						<?php endif; ?>
+						<span title="Benachrichtigungen" class="inline-block">
+							<?=Icon::getDefault("iconBell")?>
+						</span>
+					</div>
+					<div class="settingsContainer inline-flex items-center text-gray-700">
+						<a href="<?=$einstellungen?>" id="settings" title="Einstellungen" class="inline-block p-1 hover:bg-gray-200 hover:rounded-sm">
+							<?=Icon::getDefault("iconSettings")?>
+						</a>
+					</div>
+					<div class="logoutContainer inline-flex items-center text-gray-700">
+						<span id="logoutBtn" title="Ausloggen" class="inline-block p-1 hover:bg-gray-200 hover:rounded-sm">
+							<?=Icon::getDefault("iconLogout")?>
+						</span>
 					</div>
 					<?php if (Config::get("showTimeGlobal") == "true"): ?>
-					<a href="<?=Link::getPageLink("zeiterfassung")?>" class="showTimeGlobal hover:bg-gray-200 rounded-lg pl-3">
-						<span>Zeit: <span id="timeGlobal">00:10:37</span></span>
+					<a href="<?=Link::getPageLink("zeiterfassung")?>" class="showTimeGlobal inline-flex items-center hover:bg-gray-200 rounded-lg pl-3">
+						<span>Zeit: <span id="timeGlobal">00:00:00</span></span>
 					</a>
 					<?php endif; ?>
 				</div>
-				
-			</aside>
-		</section>
+			</div>
+		</div>
 		<div class="hamburgerDiv cursor-pointer">
-			<!-- https://www.mediaevent.de/tutorial/css-transform.html -->
 			<input type="checkbox" id="hamburg" onclick="toggleNav()">
 			<label for="hamburg" class="hamburg cursor-pointer" title="Menü anzeigen">
 				<span class="line"></span>
@@ -173,4 +173,4 @@ $motiveOverview = 	Link::getPageLink("sticker-overview");
 			<a href="<?=Link::getPageLink("")?>" id="home_link" class="link-primary">Home</a>/<a href="<?=Link::getPageLink($page)?>" class="link-primary"><?=$pageName?></a>
 		</div>
 	</header>
-	<main class="mt-2 lg:w-4/5">
+	<main class="mt-4 lg:w-4/5">
