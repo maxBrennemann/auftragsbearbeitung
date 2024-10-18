@@ -62,16 +62,6 @@ function registerLastActivity() {
 	}
 }
 
-if (document.readyState !== 'loading' ) {
-	exportToWindow();
-    startFunc();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-		exportToWindow();
-        startFunc();
-    });
-}
-
 function startFunc() {
 	var el = document.querySelector("input[type=email");
 	if (el != null) {
@@ -101,8 +91,15 @@ function startFunc() {
 	setTableSorter(new TableSorter());
 	currentTableSorter.readTableSorted();
 	timeGlobalListener();
+	initSearch();
+}
+
+const initSearch = () => {
+	const globalSearch = document.querySelector(".searchContainer input");
+	globalSearch.addEventListener("change", performGlobalSearch);
+
 	/* initSearch */
-	initSearchIcon();
+	initSearchIcons();
 	initSearchListener();
 }
 
@@ -121,16 +118,18 @@ function initSearchListener() {
 /**
  * sets the placeholder of the search input according to the device operating system
  */
-function initSearchIcon() {
-	const searchInput = document.querySelector(".searchContainer input");
-	if (searchInput != null) {
-		const device = DeviceDetector.getOS();
-		if (device == "Mac OS") {
-			searchInput.placeholder = "⌘ K";
-		} else if (device == "Windows" || device == "Linux") {
-			searchInput.placeholder = "Ctrl K";
+function initSearchIcons() {
+	const searchInputs = document.querySelectorAll(".searchContainer input");
+	Array.from(searchInputs).forEach(searchInput => {
+		if (searchInput != null) {
+			const device = DeviceDetector.getOS();
+			if (device == "Mac OS") {
+				searchInput.placeholder = "⌘ K";
+			} else if (device == "Windows" || device == "Linux") {
+				searchInput.placeholder = "Ctrl K";
+			}
 		}
-	}
+	});
 }
 
 function listener_logout() {
@@ -221,10 +220,6 @@ function pad(num) {
 function validateEmail(email) {
 	var re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 	return re.test(String(email).toLowerCase());
-}
-
-function getElement(id) {
-	return document.getElementById(id);
 }
 
 /* 
@@ -585,4 +580,14 @@ export const loadFromLocalStorage = (key) => {
 export const saveToLocalStorage = (key, value) => {
 	value = JSON.stringify(value);
 	localStorage.setItem(key, value);
+}
+
+if (document.readyState !== 'loading' ) {
+	exportToWindow();
+    startFunc();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+		exportToWindow();
+        startFunc();
+    });
 }

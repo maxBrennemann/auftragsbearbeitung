@@ -14,9 +14,9 @@
         </label>
         <button class="btn-primary block" id="loginBtn">Einloggen</button>
     </div>
-    <div class="innerDefCont" id="autoLogin">
-        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-        <p id="autologinStatus">Prüfe automatischen Login</p>
+    <div class="innerDefCont inline-flex" id="autoLogin">
+        <div id="spinningStatus" class="lds-ring"><div></div><div></div><div></div><div></div></div>
+        <p id="autologinStatus" class="ml-2">Prüfe automatischen Login</p>
     </div>
     <span id="loginStatus"></span>
 </div>

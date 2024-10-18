@@ -1421,12 +1421,6 @@ class Ajax
 			case "setRechnungspostenAusblenden":
 				ClientSettings::setFilterOrderPosten();
 				break;
-			case "indexAll":
-				Search::indexAll();
-				break;
-			case "testsearch":
-				Search::search();
-				break;
 			case "updateImageDescription":
 				$id = (int) $_POST["imageId"];
 				$description = $_POST["description"];

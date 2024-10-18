@@ -35,6 +35,12 @@ class Icon
         return Icon::get($icon, 15, 15, ["inline"]);
     }
 
+    public static function getDefaultColorized($icon, $color): string
+    {
+        $icon = Icon::get($icon, 15, 15, ["inline"]);
+        return str_replace("currentColor", $color, $icon);
+    }
+
     /**
      * returns an svg icon with the given parameters and a color
      * @param string $icon

@@ -6,7 +6,6 @@
         "matthiasmullie/minify": "^1.3",
         "guzzlehttp/guzzle": "7.7.x-dev",
         "robmorgan/phinx": "0.x-dev",
-        "elasticsearch/elasticsearch": "dev-main",
         "google/apiclient": "^2.12.1",
         "symfony/dotenv": "7.0.x-dev",
         "max/php-utilities": "dev-main"

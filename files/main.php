@@ -25,47 +25,47 @@ if (isset($_GET['showDetails'])) {
 <div>
 	<ul class="mainUl auto-rows-min">
 		<li class="rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
-			<a class="block px-4 py-8" href="<?=$neuerKunde?>"><?=Icon::getDefault("iconPersonAdd")?> Neuen Kunden erstellen</a>
+			<a class="inline-flex items-center gap-x-1 px-4 py-6" href="<?=$neuerKunde?>"><?=Icon::getDefault("iconPersonAdd")?> Neuen Kunden erstellen</a>
 		</li>
-		<li class="px-4 py-8 rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
+		<li class="px-4 py-6 rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
 			<input id="kundeninput" type="text" class="w-32 rounded-md p-1">
 			<a hef="#" data-url="<?=$kunde?>" id="kundenLink"> →</a>
 			<a class="inline" href="<?=$kunde?>?showDetails=list">Zu den Kunden</a>
 		</li>
 		<li class="rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
-			<a class="block px-4 py-8" href="<?=$neuerAuftrag?>"><?=Icon::getDefault("iconOrderAdd")?> Neuen Auftrag erstellen</a>
+			<a class="inline-flex items-center gap-x-1 px-4 py-6" href="<?=$neuerAuftrag?>"><?=Icon::getDefault("iconOrderAdd")?> Neuen Auftrag erstellen</a>
 		</li>
 		<li class="rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
-			<a class="block px-4 py-8" href="<?=$rechnung?>">Neue Rechnung erstellen</a>
+			<a class="block px-4 py-6" href="<?=$rechnung?>">Neue Rechnung erstellen</a>
 		</li>
-		<li class="px-4 py-8 rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
+		<li class="px-4 py-6 rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
 			<input id="rechnungsinput" type="number" min="1" oninput="document.getElementById('rechnungsLink').href = '<?=$rechnung?>?target=view&id=' + this.value;" class="w-32 rounded-md p-1">
 			<a href="#" id="rechnungsLink">Rechnung anzeigen</a>
 		</li>
 		<li class="rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
-			<a class="block px-4 py-8" href="<?=$neuesAngebot?>">+ Neues Angebot erstellen</a>
+			<a class="block px-4 py-6" href="<?=$neuesAngebot?>">+ Neues Angebot erstellen</a>
 		</li>
 		<li class="rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
-			<a class="block px-4 py-8" href="<?=$neuesProdukt?>"><?=Icon::getDefault("iconProductAdd")?> Neues Produkt erstellen</a>
+			<a class="inline-flex items-center gap-x-1 px-4 py-6" href="<?=$neuesProdukt?>"><?=Icon::getDefault("iconProductAdd")?> Neues Produkt erstellen</a>
 		</li>
-		<li class="px-4 py-8 rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
+		<li class="px-4 py-6 rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
 			<input id="auftragsinput" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value + '&query=' + this.value;" class="w-32 rounded-md p-1">
 			<a href="#" id="auftragsLink">Auftrag anzeigen</a>
 		</li>
 		<li class="rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
-			<a class="block px-4 py-8" href="<?=$diagramme?>"><?=Icon::getDefault("iconChart")?> Diagramme und Auswertungen</a>
+			<a class="inline-flex items-center gap-x-1 px-4 py-6" href="<?=$diagramme?>"><?=Icon::getDefault("iconChart")?> Diagramme und Auswertungen</a>
 		</li>
 		<li class="rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
-			<a class="block px-4 py-8" href="<?=$leistungenLinks?>">Leistungen</a>
+			<a class="block px-4 py-6" href="<?=$leistungenLinks?>">Leistungen</a>
 		</li>
 		<li class="rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
-			<a class="block px-4 py-8" href="<?=$motiveOverview?>">Motivübersicht</a>
+			<a class="block px-4 py-6" href="<?=$motiveOverview?>">Motivübersicht</a>
 		</li>
 		<li class="rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
-			<a class="block px-4 py-8" href="<?=$offeneRechnungen?>">Offene Rechnungen: <b><?=$offeneSumme?>€</b></a>
+			<a class="block px-4 py-6" href="<?=$offeneRechnungen?>">Offene Rechnungen: <b><?=$offeneSumme?>€</b></a>
 		</li>
 	</ul>
-	<span style="float: right;"><a href="#" class="link-primary" onclick="showCustomizeOptions()">Anpassen</a> | <a class="link-primary" href="<?=$funktionen?>">Mehr</a></span>
+	<span style="float: right;" class="mr-2"><a href="#" class="link-primary" onclick="showCustomizeOptions()">Anpassen</a> | <a class="link-primary" href="<?=$funktionen?>">Mehr</a></span>
 	<br>
 	<div class="tableContainer">
 		<div>

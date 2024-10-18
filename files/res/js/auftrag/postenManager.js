@@ -369,7 +369,12 @@ function reloadPostenListe() {
         getReason: "reloadPostenListe",
         id: globalData.auftragsId,
     }).then(response => {
-        response = JSON.parse(response);
+        try {
+            response = JSON.parse(response);
+        } catch(e) {
+
+        }
+        
         document.getElementById("auftragsPostenTable").innerHTML = response[0];
         document.getElementById("invoicePostenTable").innerHTML = response[1];
     });
