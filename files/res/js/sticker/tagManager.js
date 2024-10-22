@@ -17,7 +17,7 @@ export default function initTagManager() {
 }
 
 function showTaggroupManager() {
-    tagManager.showTagGroupManager();
+    
 }
 
 /**
