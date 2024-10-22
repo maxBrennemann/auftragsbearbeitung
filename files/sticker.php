@@ -312,7 +312,7 @@ if ($id == 0): ?>
 </div>
 <div class="defCont">
     <h2 class="mb-2 font-bold">Größen</h2>
-    <div id="sizeTableWrapper" class="overflow-x-scroll">
+    <div id="sizeTableWrapper">
         <table>
             <thead>
                 <tr>
@@ -393,7 +393,7 @@ if ($id == 0): ?>
     </div>
     <div class="my-2">
         <input type="text" class="input-primary-new" maxlength="32" id="tagInput" placeholder="Tag eingeben">
-        <button type="button" class="btn-primary-new">Hinzufügen</button>
+        <button type="button" class="btn-primary-new" id="addNewTag" title="Mit Hashtag oder Button hinzufügen">Hinzufügen</button>
         <p class="italic">Nicht erlaubt sind folgende Zeichen: !<;>;?=+#"°{}_$%.</p>
     </div>
     <button id="loadSynonyms" class="btn-primary-new">Mehr Synonnyme laden</button>

@@ -7,7 +7,7 @@ module.exports = {
         "./files/res/js/sticker/*.{html,js,php}",
         "./files/res/js/classes/*.{html,js,php}",
         "./files/res/views/*.{html,js,php}",
-        "./classes/project/**/*.{html,js,php}",
+        "./classes/Project/**/*.{html,js,php}",
         "upgrade.php",
     ],
     theme: {
