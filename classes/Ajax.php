@@ -19,8 +19,6 @@ use Classes\Routes\SettingsRoutes;
 use Classes\Routes\StickerRoutes;
 use Classes\Routes\TimeTrackingRoutes;
 
-use Upgrade\UpgradeManager;
-
 use Classes\Project\FormGenerator;
 use Classes\Project\Search;
 use Classes\Project\Liste;
@@ -995,45 +993,6 @@ class Ajax
 			case "minifyFiles":
 				MinifyFiles::minify();
 				echo json_encode(["status" => "success"]);
-				break;
-			case "upgrade":
-				$query = $_POST["query"];
-				switch ($query) {
-					case 1:
-						UpgradeManager::executeFirstCommand();
-						break;
-					case 2:
-						$files = UpgradeManager::checkNewSQL();
-						$result = [];
-						foreach ($files as $file) {
-							array_push($result, UpgradeManager::executeNewSQLQueries($file));
-							//array_push($result, UpgradeManager::executeSecondCommand($file));
-						}
-						echo json_encode($result);
-						break;
-					case 3:
-						MinifyFiles::minify();
-						echo json_encode(["result" => "all files are recompiled", "command" => "minify files"]);
-						break;
-					case 4:
-						$commandRes = shell_exec("composer install");
-						if ($commandRes === NULL) {
-							echo json_encode(["result" => "an error occured", "command" => "composer install"]);
-						} else {
-							echo json_encode(["result" => $commandRes, "command" => "composer install"]);
-						}
-						break;
-					case 5:
-						$commandRes = shell_exec("composer update");
-						if ($commandRes === NULL) {
-							echo json_encode(["result" => "an error occured", "command" => "composer update"]);
-						} else {
-							echo json_encode(["result" => $commandRes, "command" => "composer update"]);
-						}
-						break;
-					default:
-						echo "an error occured";
-				}
 				break;
 			case "writeProductDescription":
 				Sticker::setDescription();
