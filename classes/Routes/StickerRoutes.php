@@ -43,7 +43,7 @@ class StickerRoutes extends Routes
      * 
      * @uses Classes\Project\Modules\Sticker\StickerTagManager::addTag()
      * 
-     * @uses 
+     * @uses Classes\Project\Modules\Sticker\AufkleberWandtattoo::updateSizes()
      */
     protected static $postRoutes = [
         "/sticker/{id}/export" => [\Classes\Project\Modules\Sticker\StickerCollection::class, "exportSticker"],
