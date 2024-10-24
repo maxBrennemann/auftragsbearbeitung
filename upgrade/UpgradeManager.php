@@ -3,72 +3,148 @@
 namespace Upgrade;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\Tools;
 
-class UpgradeManager {
+class UpgradeManager
+{
 
-    public static function executeFirstCommand() {
-        $command = self::getFirstCommand();
-        $result = Console::execute($command);
-        echo json_encode(["command" => $command, "result" => $result]);
+    private static bool $forceUpdate = false;
+
+    public static function upgrade($forceUpdate = false)
+    {
+        self::$forceUpdate = $forceUpdate;
+        self::checkForInitialization();
+        $matches = self::checkForSQLQueries();
+        self::executeMatches($matches);
     }
 
-    private static function getFirstCommand() {
-        return "git pull";
-    }
+    public static function downgrade() {}
 
-    /* no longer needed */
-    public static function executeSecondCommand($script) {
-        if ($script == null || $script == "." || $script == ".." || $script == "index.php") {
-            return ["command" => "empty", "result" => "script name is empty"];
-        }
-        $command = self::getSecondCommand() . ' ' . $script;
-        $result = Console::execute($command);
-
-        $date = substr($script, 0, 10);
-        DBAccess::insertQuery("INSERT INTO upgrade_tracker (`date`, title) VALUES ('$date', '$script')");
-
-        return ["command" => $command, "result" => $result];
-    }
-
-    private static function getSecondCommand() {
-        return "mysql --user=" . $_ENV["USERNAME"] . " --password='" . $_ENV["PASSWORD"] . "' -h " . $_ENV["HOST"] . " -D  " . $_ENV["DATABASE"] . " < ";
-    }
-
-    public static function executeNewSQLQueries($file) {
-        if ($file == null || $file == "." || $file == ".." || $file == "index.php") {
-            return ["command" => "empty", "result" => "script name is empty"];
+    private static function checkForSQLQueries()
+    {
+        $query = "SELECT migration_date FROM migration_tracker ORDER BY migration_date DESC LIMIT 1";
+        $data = DBAccess::selectQuery($query);
+        $initDate = strtotime("1970-01-01");
+        if ($data != null) {
+            $initDate = strtotime($data[0]["migration_date"]);
         }
 
-        $date = substr($file, 0, 10);
-        DBAccess::insertQuery("INSERT INTO upgrade_tracker (`date`, title) VALUES ('$date', '$file')");
-
-        $anonymousUpdater = require("changes/" . $file);
-        return ["command" => "$file", "result" => $anonymousUpdater->upgrade()];
-    }
-
-    public static function checkNewSQL() {
-        $query = DBAccess::selectQuery("SELECT `date`, `title` FROM upgrade_tracker ORDER BY date DESC LIMIT 1");
-        $directory = dirname(__FILE__) . "/changes";
-        $files = scandir($directory);
-        $upgrade = [];
-
-        /* if there has never been made the upgrade */
-        if ($query == null) {
-            return $files;
+        $files = [];
+        if (is_dir("upgrade/Changes")) {
+            $files = scandir("upgrade/Changes");
+            Tools::outputLog("found " . count($files) - 2 . " file(s)", "migration");
+        } else {
+            Tools::outputLog("migrations directory is missing", "migration", "warning");
         }
 
-        foreach ($files as $f) {
-            $substr = substr($f, 0, 10);
-            if (strlen($substr) == 10) {
-                $date = strtotime($substr);
-                $comp = strtotime($query[0]["date"]);
-                if ($date > $comp) {
-                    array_push($upgrade, $f);
+        $possibleMatches = [];
+
+        foreach ($files as $file) {
+            $parts = explode("_", $file, 2);
+            if (count($parts) <= 1) {
+                continue;
+            }
+
+            $date = $parts[0];
+            $name = $parts[1];
+
+            $migrationDate = strtotime($date);
+            if ($migrationDate >= $initDate) {
+                $possibleMatches[] = [
+                    "date" => $date,
+                    "name" => $name,
+                    "fileName" => $file,
+                ];
+            }
+        }
+
+        $matches = [];
+        foreach ($possibleMatches as $pMatch) {
+            $query = "SELECT id FROM migration_tracker WHERE `migration_date` = :mDate AND `migration_name` = :mName LIMIT 1;";
+            $data = DBAccess::selectQuery($query, [
+                "mDate" => $pMatch["date"],
+                "mName" => $pMatch["name"],
+            ]);
+
+            if ($data == null) {
+                $matches[] = $pMatch;
+            }
+        }
+
+        Tools::outputLog("found " . count($matches) . " match(es)", "migration");
+
+        return $matches;
+    }
+    
+    private static function executeMatches($matches)
+    {
+        foreach ($matches as $match) {
+            $fileName = $match["fileName"];
+            $anonymousUpdater = require "upgrade/Changes/" . $fileName;
+
+            $queries = $anonymousUpdater->getQueries();
+            Tools::outputLog("found " . count($queries) . " query(-ies) in " . $match["name"], "migration");
+
+            $output = self::executeSQLQueries($queries, $match);
+            if (!$output) {
+                return;
+            }
+        }
+    }
+
+    private static function executeSQLQueries($queries, $match) {
+        $noError = true;
+
+        foreach ($queries as $query) {
+            try {
+                DBAccess::executeQuery($query);
+            } catch (\Exception $e) {
+                Tools::outputLog($e->getMessage(), "migration", "error");
+
+                $noError = false;
+
+                if (!self::$forceUpdate) {
+                    return false;
                 }
             }
         }
 
-        return $upgrade;
+        if (self::$forceUpdate || $noError) {
+            self::updateMigrationTracker($match);
+        }
+
+        return true;
     }
 
+    private static function updateMigrationTracker($match) {
+        $query = "INSERT INTO migration_tracker (migration_name, migration_date, file_name) VALUES (:mName, :mDate, :fName);";
+        DBAccess::insertQuery($query, [
+            "mDate" => $match["date"],
+            "mName" => $match["name"],
+            "fName" => $match["fileName"],
+        ]);
+    }
+
+    private static function checkForInitialization()
+    {
+        $query = "SELECT * FROM information_schema.tables WHERE table_name = 'migration_tracker' LIMIT 1;";
+        $data = DBAccess::selectQuery($query);
+
+        if ($data == null) {
+            self::init();
+        }
+    }
+
+    private static function init()
+    {
+        Tools::outputLog("initializing migration", "migration");
+        $query = "CREATE TABLE migration_tracker (
+            id INT NOT NULL AUTO_INCREMENT,
+            migration_name VARCHAR(255) NOT NULL,
+            migration_date DATE,
+            file_name VARCHAR(255) NOT NULL,
+            PRIMARY KEY (`id`)
+        ) ENGINE = InnoDB;";
+        DBAccess::executeQuery($query);
+    }
 }

@@ -132,9 +132,9 @@ if ($pageName == "") {
 				<div class="inline-flex ml-1">
 					<div class="notificationContainer inline-flex items-center p-1 hover:bg-gray-200 hover:rounded-sm relative text-gray-700">
 						<?php if (NotificationManager::getNotificationCount() > 0): ?>
-						<div title="Benachrichtigungen" class="absolute -top-0.5 right-0">
+						<div title="Benachrichtigungen" class="absolute top-[6px] right-0">
 							<div class="w-3 h-3">
-								<p class="text-xxs p-0.5 bg-red-400 text-white rounded-full text-center"><?=NotificationManager::getNotificationCount();?></p>
+								<p class="text-xxs bg-red-400 text-white rounded-full text-center"><?=NotificationManager::getNotificationCount();?></p>
 							</div>
 						</div>
 						<?php endif; ?>
