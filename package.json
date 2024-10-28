@@ -13,6 +13,6 @@
   },
   "dependencies": {
     "chart.js": "^4.4.1",
-    "colorpicker": "git://github.com/maxBrennemann/colorpicker#7650573"
+    "colorpicker": "https://github.com/maxBrennemann/colorpicker.git"
   }
 }
