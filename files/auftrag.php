@@ -160,9 +160,9 @@ if ($auftragsId == -1): ?>
 			<p><?=$kunde->getTelefonMobil()?></p>
 			<p><a href="mailto:<?=$kunde->getEmail()?>"><?=$kunde->getEmail()?></a></p>
 			<select class="input-primary-new mt-2 w-60" data-write="true" data-fun="changeContact" id="showAnspr">
-				<? foreach ($contactPersons as $contact): ?>
+				<?php foreach ($contactPersons as $contact): ?>
 					<option value="<?=$contact['id']?>" <?=$contact['isSelected'] ? "selected" : "" ?>><?=$contact['firstName']?> <?=$contact['lastName']?></option>
-				<? endforeach; ?>
+				<?php endforeach; ?>
 			</select>
 		</div>
 		<a class="text-blue-500	font-semibold mt-3" href="<?=Link::getPageLink("kunde")?>?id=<?=$auftrag->getKundennummer()?>">Kunde <span id="kundennummer"><?=$auftrag->getKundennummer()?></span> anzeigen</a>
