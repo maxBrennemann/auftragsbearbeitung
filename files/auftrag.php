@@ -44,7 +44,7 @@ if (isset($_GET['id'])) {
 		$auftragsverlauf = (new Auftragsverlauf($auftragsId))->representHistoryAsHTML();
 		$showLists = Liste::chooseList();
 		$showAttachedLists = $auftrag->showAttachedLists();
-		$ansprechpartner = $auftrag->bekommeAnsprechpartner();
+		$contactPersons = $auftrag->getContactPersons();
 
 		$auftragsTypBezeichnung = $auftrag->getAuftragstypBezeichnung();
 		$auftragsTyp = $auftrag->getAuftragstyp();
@@ -151,36 +151,42 @@ if ($auftragsId == -1): ?>
 <?php else: ?>
 	<div class="defCont">
 		<p class="font-bold">Kundeninfo</p>
-		<p><?=$kunde->getVorname()?> <?=$kunde->getNachname()?></p>
-		<p><?=$kunde->getFirmenname()?></p>
-		<p class="mt-2"><?=$kunde->getStrasse()?> <?=$kunde->getHausnummer()?></p>
-		<p><?=$kunde->getPostleitzahl()?> <?=$kunde->getOrt()?></p>
-		<p><?=$kunde->getTelefonFestnetz()?></p>
-		<p><?=$kunde->getTelefonMobil()?></p>
-		<p><a href="mailto:<?=$kunde->getEmail()?>"><?=$kunde->getEmail()?></a></p>
-		<p id="showAnspr"><?php if ($ansprechpartner != -1): ?>Ansprechpartner: <?=$ansprechpartner['Vorname']?> <?=$ansprechpartner['Nachname']?><?php endif;?></p>
-		<span>Ansprechpartner ändern<button class="actionButton" data-binding="true" data-fun="changeContact">✎</button></span>
-		<br>
-		<a class="text-blue-500	font-semibold" href="<?=Link::getPageLink("kunde")?>?id=<?=$auftrag->getKundennummer()?>">Kunde <span id="kundennummer"><?=$auftrag->getKundennummer()?></span> zeigen</a>
+		<div class="bg-white p-2 rounded-sm">
+			<p><?=$kunde->getVorname()?> <?=$kunde->getNachname()?></p>
+			<p><?=$kunde->getFirmenname()?></p>
+			<p class="mt-2"><?=$kunde->getStrasse()?> <?=$kunde->getHausnummer()?></p>
+			<p><?=$kunde->getPostleitzahl()?> <?=$kunde->getOrt()?></p>
+			<p><?=$kunde->getTelefonFestnetz()?></p>
+			<p><?=$kunde->getTelefonMobil()?></p>
+			<p><a href="mailto:<?=$kunde->getEmail()?>"><?=$kunde->getEmail()?></a></p>
+			<? if (count($contactPersons) > 0):?>
+				<select class="input-primary-new mt-2 w-60" data-write="true" data-fun="changeContact" id="showAnspr">
+					<? foreach ($contactPersons as $contact): ?>
+						<option value="<?=$contact['id']?>" <?=$contact['isSelected'] ? "selected" : "" ?>><?=$contact['firstName']?> <?=$contact['lastName']?></option>
+					<? endforeach; ?>
+				</select>
+			<? endif;?>
+		</div>
+		<a class="text-blue-500	font-semibold mt-3" href="<?=Link::getPageLink("kunde")?>?id=<?=$auftrag->getKundennummer()?>">Kunde <span id="kundennummer"><?=$auftrag->getKundennummer()?></span> anzeigen</a>
 	</div>
 	<div class="defCont auftragsinfo">
 		<div class="relative">
-			<span class="font-bold">Auftrag <span id="auftragsnummer"><?=$auftrag->getAuftragsnummer()?></span><button class="float-right border-none" id="extraOptions">⋮</button></span>
+			<span class="font-bold">Auftrag <span id="auftragsnummer"><?=$auftrag->getAuftragsnummer()?></span><button class="float-right border-none w-4" id="extraOptions">⋮</button></span>
 			<div class="hidden absolute right-0 top-0 bg-white rounded-lg drop-shadow-lg p-3 mt-5" id="showExtraOptions">
 				<button class="btn-attention mt-5" id="deleteOrder">Auftrag löschen</button>
 			</div>
 		</div>
 		<div class="inputCont">
 			<label for="orderTitle">Auftragsbezeichnung:</label>
-			<input class="data-input" id="orderTitle" value="<?=$auftrag->getAuftragsbezeichnung()?>" autocomplete="none" data-write="true" data-fun="editTitle">
+			<input class="input-primary-new w-full" id="orderTitle" value="<?=$auftrag->getAuftragsbezeichnung()?>" autocomplete="none" data-write="true" data-fun="editTitle">
 		</div>
 		<div class="inputCont">
 			<label for="orderDescription">Auftragsbeschreibung:</label>
-			<textarea class="data-input" id="orderDescription" autocomplete="none" data-write="true" data-fun="editDescription" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"><?=$auftrag->getAuftragsbeschreibung()?></textarea>
+			<textarea class="input-primary-new w-full" id="orderDescription" autocomplete="none" data-write="true" data-fun="editDescription" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"><?=$auftrag->getAuftragsbeschreibung()?></textarea>
 		</div>
 		<div class="inputCont">
 			<label for="orderType">Auftragstyp:</label>
-			<select class="data-input" id="orderType" data-write="true" data-fun="editOrderType"><?=$auftrag->getAuftragsbeschreibung()?>
+			<select class="input-primary-new w-full" id="orderType" data-write="true" data-fun="editOrderType"><?=$auftrag->getAuftragsbeschreibung()?>
 				<?php foreach($auftragsTypen as $type): ?>
 				<option value="<?=$type["id"]?>" <?=$auftragsTyp == $type["id"] ? "selected" : "" ?>><?=$type["Auftragstyp"]?></option>
 				<?php endforeach; ?>
@@ -188,24 +194,24 @@ if ($auftragsId == -1): ?>
 		</div>
 		<div class="m-2">
 			<p>Auftragseingang: 
-				<input class="m-1" type="date" value="<?=$auftrag->getDate()?>" data-write="true" data-fun="updateDate">
+				<input class="input-primary-new m-1" type="date" value="<?=$auftrag->getDate()?>" data-write="true" data-fun="updateDate">
 			</p>
 			<p>Termin: 
-				<input class="m-1" type="date" value="<?=$auftrag->getDeadline()?>" id="inputDeadline" data-write="true" data-fun="updateDeadline">
+				<input class="input-primary-new m-1" type="date" value="<?=$auftrag->getDeadline()?>" id="inputDeadline" data-write="true" data-fun="updateDeadline">
 				<input type="checkbox" data-binding="true" data-fun="setDeadlineState" <?=$auftrag->getDeadline() == "" ? "checked" : "" ?>> Kein Termin
 			</p>
 		</div>
 		<div>
-			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="location.href= '<?=Link::getPageLink('rechnung')?>?target=create&id=<?=$auftragsId?>'">Rechnung generieren</button>
+			<button class="btn-primary-new" onclick="location.href= '<?=Link::getPageLink('rechnung')?>?target=create&id=<?=$auftragsId?>'">Rechnung generieren</button>
 			<?php if ($auftrag->getIsArchiviert() == false) :?>
-				<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="archvieren">Auftrag archivieren</button>
+				<button class="btn-primary-new" data-binding="true" data-fun="archvieren">Auftrag archivieren</button>
 			<?php endif; ?>
-			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="setOrderFinished">Auftrag ist fertig</button>
+			<button class="btn-primary-new" data-binding="true" data-fun="setOrderFinished">Auftrag ist fertig</button>
 		</div>
 	</div>
 	<div class="defCont schritte">
 		<p class="font-bold">Bearbeitungsschritte und Aufgaben</p>
-		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="showBearbeitungsschritt">Neuen Bearbeitungsschritt hinzufügen</button>
+		<button class="btn-primary-new" data-binding="true" data-fun="showBearbeitungsschritt">Neu</button>
 		<div class="innerDefCont" id="bearbeitungsschritte" style="display: none">
 			<div>
 				<p>Bezeichnung:</p>
@@ -385,7 +391,7 @@ if ($auftragsId == -1): ?>
 				<?php endforeach; ?>
 				<option value="addNew">Neues Fahrzeug hinzufügen</option>
 			</select>
-			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="addExistingVehicle">Für diesen Auftrag übernehmen</button>
+			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="addExistingVehicle">Übernehmen</button>
 		</div>
 		<div class="innerDefCont" id="addVehicle" style="display: none;">
 			<span>Kfz-Kennzeichen:<br><input id="kfz"></span><br>

@@ -311,6 +311,8 @@ class ResourceManager
     {
         header('Content-Type: text/javascript');
 
+        $file = "";
+
         if ($script == "/colorpicker.js") {
             $file = file_get_contents("node_modules/colorpicker/min/colorpicker.js");
             echo $file;
@@ -330,8 +332,6 @@ class ResourceManager
                     $file = "";
                 }
             }
-        } else {
-            $file = "";
         }
 
         echo $file;

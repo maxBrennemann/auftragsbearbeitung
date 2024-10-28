@@ -71,13 +71,22 @@ class Auftrag implements StatisticsInterface
 		}
 	}
 
-	public function bekommeAnsprechpartner()
+	public function getContactPersons(): array
 	{
-		$data = DBAccess::selectQuery("SELECT Vorname, Nachname, Email, Durchwahl, Mobiltelefonnummer FROM ansprechpartner, auftrag WHERE auftrag.Ansprechpartner = ansprechpartner.Nummer AND auftrag.Auftragsnummer = {$this->Auftragsnummer}");
-		if (empty($data)) {
-			return -1;
-		}
-		return $data[0];
+		$query = "SELECT ap.Nummer AS id, ap.Vorname AS firstName, ap.Nachname AS lastName, ap.Email AS email, 
+				CASE
+					WHEN a.Ansprechpartner = ap.Nummer THEN 1
+					ELSE 0
+				END AS isSelected
+			FROM ansprechpartner ap 
+				JOIN kunde k ON ap.Kundennummer = k.Kundennummer
+				JOIN auftrag a ON a.Kundennummer = k.Kundennummer
+			WHERE a.Auftragsnummer = :id;";
+		$data = DBAccess::selectQuery($query, [
+			"id" => $this->Auftragsnummer,
+		]);
+
+		return $data;
 	}
 
 	public function getBearbeitungsschritte()
@@ -833,6 +842,51 @@ class Auftrag implements StatisticsInterface
 			"note" => $note,
 		]);
 
+		JSONResponseHandler::sendResponse([
+			"status" => "success",
+		]);
+	}
+
+	public static function updateOrderType()
+	{
+		$idOrderType = (int) Tools::get("type");
+		$idOrder = (int) Tools::get("id");
+
+		$query = "UPDATE `auftrag` SET `Auftragstyp` = :idOrderType WHERE `Auftragsnummer` = :idOrder";
+		DBAccess::updateQuery($query, [
+			"idOrder" => $idOrder,
+			"idOrderType" => $idOrderType,
+		]);
+		
+		JSONResponseHandler::sendResponse([
+			"status" => "success",
+		]);
+	}
+
+	public static function updateOrderTitle() {
+		$orderTitle = (string) Tools::get("title");
+		$idOrder = (int) Tools::get("id");
+
+		$query = "UPDATE auftrag SET Auftragsbezeichnung = :title WHERE Auftragsnummer = :idOrder";
+		DBAccess::updateQuery($query, [
+			"idOrder" => $idOrder,
+			"title" => $orderTitle,
+		]);
+		
+		JSONResponseHandler::sendResponse([
+			"status" => "success",
+		]);
+	}
+
+	public static function updateContactPerson() {
+		$idContact = (string) Tools::get("idContact");
+		$idOrder = (int) Tools::get("id");
+
+		$query = "UPDATE auftrag SET Ansprechpartner = :idContact WHERE Auftragsnummer = :idOrder";
+		DBAccess::updateQuery($query, [
+			"idOrder" => $idOrder,
+			"idContact" => $idContact,
+		]);
 		JSONResponseHandler::sendResponse([
 			"status" => "success",
 		]);

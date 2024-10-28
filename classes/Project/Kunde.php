@@ -193,9 +193,15 @@ class Kunde implements StatisticsInterface
 		return $content;
 	}
 
-	public function getAnsprechpartner()
-	{
-		return "";
+	public function getContactPersons() {
+		$query = "SELECT a.Nummer AS id, a.Vorname AS firstName, a.Nachname AS lastName, a.Email AS email
+			FROM ansprechpartner a 
+			WHERE a.Kundennummer = :kdnr";
+		$data = DBAccess::selectQuery($query, [
+			"kdnr" => $this->getKundennummer(),
+		]);
+
+		return $data;
 	}
 
 	public function getNotizen()

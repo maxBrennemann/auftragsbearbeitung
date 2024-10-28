@@ -6,6 +6,7 @@ import { addExistingVehicle, addNewVehicle, selectVehicle } from "./auftrag/vehi
 import { click_mehListener, addProductCompactOld, addLeistung, addTime, selectLeistung, initPostenFilter, addProductCompact, showPostenAdd, createTimeInputRow } from "./auftrag/postenManager.js";
 import "./auftrag/postenOrder.js";
 import "./auftrag/calculateGas.js";
+import { ajax } from "./classes/ajax.js";
 
 /* global variables */
 window.globalData = {
@@ -18,48 +19,6 @@ window.globalData = {
 }
 
 const fnNames = {};
-fnNames.click_mehListener = click_mehListener;
-fnNames.click_changeContact = changeContact;
-
-fnNames.click_addColor = addColor;
-fnNames.click_removeColor = removeColor;
-fnNames.click_addSelectedColors = addSelectedColors;
-fnNames.write_checkHexCode = checkHexCode;
-
-fnNames.click_addBearbeitungsschritt = addBearbeitungsschritt;
-fnNames.click_showBearbeitungsschritt = showBearbeitungsschritt;
-fnNames.click_sendNote = sendNote;
-fnNames.click_removeNote = removeNote;
-fnNames.click_addNewNote = addNewNote;
-
-fnNames.click_setOrderFinished = setOrderFinished;
-fnNames.write_updateDate = updateDate;
-fnNames.write_updateDeadline = updateDeadline;
-fnNames.write_editDescription = editDescription;
-fnNames.write_editOrderType = editOrderType;
-fnNames.write_editTitle = editTitle;
-fnNames.click_setDeadlineState = setDeadlineState;
-fnNames.click_archvieren = archvieren;
-
-fnNames.click_addExistingVehicle = addExistingVehicle;
-fnNames.click_addNewVehicle = addNewVehicle;
-fnNames.write_selectVehicle = selectVehicle;
-
-fnNames.click_showPostenAdd = showPostenAdd;
-fnNames.click_addProductCompactOld = addProductCompactOld;
-fnNames.click_addLeistung = addLeistung;
-fnNames.click_addTime = addTime;
-fnNames.click_createTimeInputRow = createTimeInputRow;
-fnNames.click_addProductCompact = addProductCompact;
-fnNames.write_selectLeistung = selectLeistung;
-
-if (document.readyState !== 'loading' ) {
-    initCode();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        initCode();
-    });
-}
 
 function initCode() {
     initBindings(fnNames);
@@ -111,46 +70,18 @@ function performProductSearch() {
 }
 
 /* changes the contact person connected with the order */
-async function changeContact() {
-    var div = document.createElement("div");
-
-    var kdnr = document.getElementById("kundennummer").innerHTML;
-    var response = await makeAsyncCall("POST", `getReason=getAnspr&id=${kdnr}`, window.location.href)
-        .then(function (response) {
-            return response;
-        })
-        .catch(function (err) {
-            console.error('Augh, there was an error!', err);
+const changeContact = (e) => {
+    const value = e.currentTarget.value;
+    
+    ajax.post(`/api/v1/order/${globalData.auftragsId}/contact-person`, {
+        "idContact": value,
+    }).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+        } else {
+            infoSaveSuccessfull();
+        }
     });
-
-    div.innerHTML = response;
-    document.body.appendChild(div);
-
-    var btn = div.getElementsByTagName("button");
-    btn[0].addEventListener("click", function(event) {
-        var checkedId = document.querySelector('input[name="anspr"]:checked');
-        if (checkedId == null)
-            return;
-        checkedId = checkedId.dataset.ansprid;
-        var sendAnsprId = new AjaxCall(`getReason=setAnspr&order=${globalData.auftragsId}&ansprId=${checkedId}`, "POST", window.location.href);
-        sendAnsprId.makeAjaxCall(function (ansprResponse) {
-            var data = JSON.parse(ansprResponse);
-            var error = data[0];
-            if (error == "ok") {
-                infoSaveSuccessfull("success");
-                document.getElementById("showAnspr").innerHTML = data[1];
-            } else {
-                alert(response);
-                infoSaveSuccessfull();
-            }
-        });
-
-        /* accesses the first childnode of the parent container, this child contains a close button */
-        event.target.parentNode.children[0].click();
-    }, false);
-
-    addActionButtonForDiv(div, "hide");
-    centerAbsoluteElement(div);
 }
 
 window.performSearch = function(e) {
@@ -353,4 +284,47 @@ window.performAction = function(key, event) {
     /* add new file uploader */
     fileUploaders.push(new FileUploader(form));
     centerAbsoluteElement(div);
+}
+
+fnNames.click_mehListener = click_mehListener;
+fnNames.write_changeContact = changeContact;
+
+fnNames.click_addColor = addColor;
+fnNames.click_removeColor = removeColor;
+fnNames.click_addSelectedColors = addSelectedColors;
+fnNames.write_checkHexCode = checkHexCode;
+
+fnNames.click_addBearbeitungsschritt = addBearbeitungsschritt;
+fnNames.click_showBearbeitungsschritt = showBearbeitungsschritt;
+fnNames.click_sendNote = sendNote;
+fnNames.click_removeNote = removeNote;
+fnNames.click_addNewNote = addNewNote;
+
+fnNames.click_setOrderFinished = setOrderFinished;
+fnNames.write_updateDate = updateDate;
+fnNames.write_updateDeadline = updateDeadline;
+fnNames.write_editDescription = editDescription;
+fnNames.write_editOrderType = editOrderType;
+fnNames.write_editTitle = editTitle;
+fnNames.click_setDeadlineState = setDeadlineState;
+fnNames.click_archvieren = archvieren;
+
+fnNames.click_addExistingVehicle = addExistingVehicle;
+fnNames.click_addNewVehicle = addNewVehicle;
+fnNames.write_selectVehicle = selectVehicle;
+
+fnNames.click_showPostenAdd = showPostenAdd;
+fnNames.click_addProductCompactOld = addProductCompactOld;
+fnNames.click_addLeistung = addLeistung;
+fnNames.click_addTime = addTime;
+fnNames.click_createTimeInputRow = createTimeInputRow;
+fnNames.click_addProductCompact = addProductCompact;
+fnNames.write_selectLeistung = selectLeistung;
+
+if (document.readyState !== 'loading' ) {
+    initCode();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        initCode();
+    });
 }
