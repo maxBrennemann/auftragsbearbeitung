@@ -323,22 +323,6 @@ class Ajax
 				$ansprechpartner = $table->createTableByData($data, $column_names);
 				echo $ansprechpartner;
 				break;
-			case "getAnspr":
-				$kdnr = (int) $_POST['id'];
-				$data = DBAccess::selectQuery("SELECT Nummer, Vorname, Nachname, Email FROM ansprechpartner WHERE Kundennummer = $kdnr");
-
-				$data_html = "";
-				foreach ($data as $line) {
-					$v = $line['Vorname'];
-					$n = $line['Nachname'];
-					$e = $line['Email'];
-					$id = $line['Nummer'];
-					$data_html .= "<input id=\"anspr-$id\" type=\"radio\" name=\"anspr\" data-ansprid=\"$id\"><label for=\"anspr-$id\">$v $n - $e</label><br>";
-				}
-
-				$data_html .= "<button>Änderungen speichern</button>";
-				echo $data_html;
-				break;
 			case "insertCar":
 				$kfzKenn = $_POST['kfz'];
 				$fahrzeug = $_POST['fahrzeug'];
@@ -412,21 +396,6 @@ class Ajax
 					echo "ok";
 				} else {
 					echo "error occured";
-				}
-				break;
-			case "setAnspr":
-				$idOrder = (int) $_POST["order"];
-				$idAnspr = (int) $_POST["ansprId"];
-
-				if (DBAccess::updateQuery("UPDATE auftrag SET Ansprechpartner = $idAnspr WHERE Auftragsnummer = $idOrder") == 1) {
-					$ansprechpartner = (new Auftrag($idOrder))->bekommeAnsprechpartner();
-					$data = [
-						0 => "ok",
-						1 => "Ansprechpartner: " . $ansprechpartner['Vorname'] . " " . $ansprechpartner['Nachname']
-					];
-					echo json_encode($data);
-				} else {
-					echo json_encode(["error occured"]);
 				}
 				break;
 			case "setInvoicePaid":
@@ -759,23 +728,6 @@ class Ajax
 				$text = $_POST['text'];
 				$auftrag = $_POST['auftrag'];
 				DBAccess::updateQuery("UPDATE auftrag SET Auftragsbeschreibung = '$text' WHERE Auftragsnummer = $auftrag");
-				echo "saved";
-				break;
-			case "saveTitle":
-				$text = $_POST['text'];
-				$auftrag = $_POST['auftrag'];
-				DBAccess::updateQuery("UPDATE auftrag SET Auftragsbezeichnung = '$text' WHERE Auftragsnummer = $auftrag");
-				echo "saved";
-				break;
-			case "saveOrderType";
-				$idOrderType = (int) $_POST['type'];
-				$idOrder = (int) $_POST['auftrag'];
-				$query = "UPDATE `auftrag` SET `Auftragstyp` = :idOrderType WHERE `Auftragsnummer` = :idOrder";
-
-				DBAccess::updateQuery($query, [
-					"idOrder" => $idOrder,
-					"idOrderType" => $idOrderType,
-				]);
 				echo "saved";
 				break;
 			case "table":

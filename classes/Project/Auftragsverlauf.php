@@ -105,7 +105,7 @@ class Auftragsverlauf
             }
         }
 
-        $html .= "<div class=\"showInMiddle\">Keine weiteren Einträge</div>";
+        $html .= "<div class=\"showInMiddle\">Keine (weiteren) Einträge</div>";
 
         return $html;
     }

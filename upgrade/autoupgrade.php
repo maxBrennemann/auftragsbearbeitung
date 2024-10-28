@@ -1,5 +1,7 @@
 <?php
 
+use MaxBrennemann\PhpUtilities\Migrations\UpgradeManager;
+
 $_SERVER["DOCUMENT_ROOT"] = "../";
 
 require_once('settings.php');
@@ -7,7 +9,7 @@ require_once('settings.php');
 Classes\MinifyFiles::minify();
 
 if (isset($argv) && count($argv) >= 2 && $argv[1] == "--force") {
-    Upgrade\UpgradeManager::upgrade(true);
+    UpgradeManager::upgrade(true, "upgrade/Changes/");
 } else {
-    Upgrade\UpgradeManager::upgrade();
+    UpgradeManager::upgrade(false, "upgrade/Changes/");
 }

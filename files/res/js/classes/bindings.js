@@ -17,10 +17,12 @@ export function initBindings(fnNames) {
             }
         }.bind(fun_name), false);
     });
+
     let variables = document.querySelectorAll('[data-variable]');
     [].forEach.call(variables, function(v) {
         mainVariables[v.id] = v;
     });
+    
     let autowriter = document.querySelectorAll('[data-write]');
     [].forEach.call(autowriter, function(el) {
         var fun_name = "";

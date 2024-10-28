@@ -1,3 +1,5 @@
+import { ajax } from "../classes/ajax.js";
+
 export async function setOrderFinished() {
     if (confirm('Möchtest Du den Auftrag als "Erledigt" markieren?')) {
         await ajax.post({
@@ -104,16 +106,14 @@ export function editDescription() {
     });
 }
 
-export function editOrderType() {
-    const select = document.getElementById("orderType");
-    const value = select.value;
+export const editOrderType = () => {
+    const el = document.getElementById("orderType");
+    const value = el.value;
 
-    ajax.post({
-        r: "saveOrderType",
-        type: value,
-        auftrag: globalData.auftragsId,
-    }, true).then(response => {
-        if (response == "saved") {
+    ajax.post(`/api/v1/order/${globalData.auftragsId}/type`, {
+        "type": value,
+    }).then(r => {
+        if (r.status == "success") {
             infoSaveSuccessfull("success");
         } else {
             infoSaveSuccessfull();
@@ -121,15 +121,14 @@ export function editOrderType() {
     });
 }
 
-export function editTitle() {
-    var text = document.getElementById("orderTitle");
+export const editTitle = () => {
+    const el = document.getElementById("orderTitle");
+    const value = el.value;
 
-    ajax.post({
-        r: "saveTitle",
-        text: text.value,
-        auftrag: globalData.auftragsId,
-    }, true).then(response => {
-        if (response == "saved") {
+    ajax.post(`/api/v1/order/${globalData.auftragsId}/title`, {
+        "title": value,
+    }).then(r => {
+        if (r.status == "success") {
             infoSaveSuccessfull("success");
         } else {
             infoSaveSuccessfull();

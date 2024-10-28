@@ -311,24 +311,26 @@ class ResourceManager
     {
         header('Content-Type: text/javascript');
 
-        if ($script == "/colorpicker.js") {
-            $file = file_get_contents(".res/colorpicker/min/colorpicker.js");
-        } else {
-            $fileName = explode(".", $script);
+        $file = "";
 
-            if (sizeof($fileName) == 2) {
-                $min = "min/" . $fileName[0] . ".min.js";
-                if (file_exists(Link::getResourcesLink($min, "js", false)) && MinifyFiles::isActivated()) {
-                    $file = file_get_contents(Link::getResourcesLink($min, "js", false));
-                } else {
-                    if (file_exists(Link::getResourcesLink($script, "js", false))) {
-                        $file = file_get_contents(Link::getResourcesLink($script, "js", false));
-                    } else {
-                        $file = "";
-                    }
-                }
+        if ($script == "/colorpicker.js") {
+            $file = file_get_contents("node_modules/colorpicker/min/colorpicker.js");
+            echo $file;
+            return;
+        }
+
+        $fileName = explode(".", $script);
+
+        if (sizeof($fileName) == 2) {
+            $min = "min/" . $fileName[0] . ".min.js";
+            if (file_exists(Link::getResourcesLink($min, "js", false)) && MinifyFiles::isActivated()) {
+                $file = file_get_contents(Link::getResourcesLink($min, "js", false));
             } else {
-                $file = "";
+                if (file_exists(Link::getResourcesLink($script, "js", false))) {
+                    $file = file_get_contents(Link::getResourcesLink($script, "js", false));
+                } else {
+                    $file = "";
+                }
             }
         }
 
