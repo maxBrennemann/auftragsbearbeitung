@@ -12,6 +12,7 @@
     "mysqldump": "mysqldump --host=host.docker.internal --user=root auftragsmanager --result-file=dumps/dump.sql"
   },
   "dependencies": {
-    "chart.js": "^4.4.1"
+    "chart.js": "^4.4.1",
+    "colorpicker": "git://github.com/maxBrennemann/colorpicker#7650573"
   }
 }
