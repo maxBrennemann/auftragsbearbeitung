@@ -772,28 +772,6 @@ class Ajax
 				}
 				echo $infoText[0]['info'];
 				break;
-			case "updateDate":
-				$order = (int) $_POST['auftrag'];
-				$date = $_POST['date'];
-				$type = (int) $_POST['type'];
-				$type = [
-					1 => "Datum",
-					2 => "Termin",
-					3 => "Fertigstellung"
-				][$type];
-
-				if ($date == "unset") {
-					DBAccess::updateQuery("UPDATE auftrag SET $type = NULL WHERE Auftragsnummer = :order;", [
-						"order" => $order,
-					]);
-				} else {
-					DBAccess::updateQuery("UPDATE auftrag SET $type = :setDate WHERE Auftragsnummer = :order;", [
-						"setDate" => $date,
-						"order" => $order,
-					]);
-				}
-				echo "success";
-				break;
 			case "overwritePosten":
 				$_SESSION['overwritePosten'] = true;
 				$postennummer = Table::getIdentifierValue($_POST['table'], $_POST['postenId']);

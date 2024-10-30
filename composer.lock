@@ -1155,12 +1155,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/maxBrennemann/php-utilities.git",
-                "reference": "bd66a6ddb7a937a8a4552fb44f0f5f5337bf223f"
+                "reference": "6bc47f1e7316962f9a37d4f67d60c5fbc33ba862"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/maxBrennemann/php-utilities/zipball/bd66a6ddb7a937a8a4552fb44f0f5f5337bf223f",
-                "reference": "bd66a6ddb7a937a8a4552fb44f0f5f5337bf223f",
+                "url": "https://api.github.com/repos/maxBrennemann/php-utilities/zipball/6bc47f1e7316962f9a37d4f67d60c5fbc33ba862",
+                "reference": "6bc47f1e7316962f9a37d4f67d60c5fbc33ba862",
                 "shasum": ""
             },
             "default-branch": true,
@@ -1180,7 +1180,7 @@
                 "source": "https://github.com/maxBrennemann/php-utilities/tree/main",
                 "issues": "https://github.com/maxBrennemann/php-utilities/issues"
             },
-            "time": "2024-10-28T12:04:58+00:00"
+            "time": "2024-10-30T21:02:51+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -2187,12 +2187,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "de74db6d7c9f4ecabf7b4a1a20655e021b034001"
+                "reference": "c32691c80952990ee151c054f62d09aceeece23b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/de74db6d7c9f4ecabf7b4a1a20655e021b034001",
-                "reference": "de74db6d7c9f4ecabf7b4a1a20655e021b034001",
+                "url": "https://api.github.com/repos/symfony/console/zipball/c32691c80952990ee151c054f62d09aceeece23b",
+                "reference": "c32691c80952990ee151c054f62d09aceeece23b",
                 "shasum": ""
             },
             "require": {
@@ -2272,7 +2272,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-10-23T06:56:12+00:00"
+            "time": "2024-10-27T06:46:44+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",

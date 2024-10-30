@@ -7,16 +7,28 @@ use MaxBrennemann\PhpUtilities\Routes;
 class OrderRoutes extends Routes
 {
 
+    /**
+     * @uses \Classes\Project\Auftrag::getColors()
+     */
     protected static $getRoutes = [
         "/order/{id}/colors" => [\Classes\Project\Auftrag::class, "getColors"],
     ];
 
+    /**
+     * @uses \Classes\Project\Auftrag::addOrder()
+     * @uses \Classes\Project\Auftrag::addColor()
+     * @uses \Classes\Project\Auftrag::updateOrderType()
+     * @uses \Classes\Project\Fahrzeug::updateOrderTitle()
+     * @uses \Classes\Project\Auftrag::updateContactPerson()
+     * @uses \Classes\Project\Fahrzeug::updateDate()
+     */
     protected static $postRoutes = [
         "/order/add" => [\Classes\Project\Auftrag::class, "addOrder"],
         "/order/{id}/colors/add" => [\Classes\Project\Auftrag::class, "addColor"],
         "/order/{id}/type" => [\Classes\Project\Auftrag::class, "updateOrderType"],
         "/order/{id}/title" => [\Classes\Project\Auftrag::class, "updateOrderTitle"],
         "/order/{id}/contact-person" => [\Classes\Project\Auftrag::class, "updateContactPerson"],
+        "/order/{id}/update-date" => [\Classes\Project\Auftrag::class, "updateDate"],
     ];
 
     /**

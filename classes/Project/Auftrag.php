@@ -891,4 +891,37 @@ class Auftrag implements StatisticsInterface
 			"status" => "success",
 		]);
 	}
+
+	public static function updateDate() {
+		$order = (int) Tools::get("id");
+		$date =  Tools::get("date");
+		$type = (int)  Tools::get("type");
+
+		$types = [
+			1 => "Datum",
+			2 => "Termin",
+			3 => "Fertigstellung"
+		];
+
+		if (!isset($types[$type])) {
+			JSONResponseHandler::throwError(400, "Type does not exist");
+		}
+
+		$type = $types[$type];
+
+		if ($date == "unset") {
+			DBAccess::updateQuery("UPDATE auftrag SET $type = NULL WHERE Auftragsnummer = :order;", [
+				"order" => $order,
+			]);
+		} else {
+			DBAccess::updateQuery("UPDATE auftrag SET $type = :setDate WHERE Auftragsnummer = :order;", [
+				"setDate" => $date,
+				"order" => $order,
+			]);
+		}
+		
+		JSONResponseHandler::sendResponse([
+			"status" => "success",
+		]);
+	}
 }
