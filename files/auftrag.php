@@ -450,7 +450,7 @@ if ($auftragsId == -1): ?>
 	<div class="defCont farben">
 		<p class="font-bold">Farben</p>
 		<span id="showColors"><?=$farbTable?></span>
-		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="addColor">Neuen Farbe hinzufügen</button>
+		<button class="btn-primary-new" data-binding="true" data-fun="addColor">Neue Farbe hinzufügen</button>
 	</div>
 	<div class="defCont upload">
 		<p class="font-bold">Dateien zum Auftrag hinzufügen</p>
@@ -483,24 +483,24 @@ if ($auftragsId == -1): ?>
 	<template id="templateFarbe">
 		<div class="defCont">
 			<label>
-				<p>Farbbezeichnung</p>
-				<input class="colorInput" type="text" max="32" placeholder="619 verkehrsgrün">
+				<p class="text-sm">Farbbezeichnung</p>
+				<input class="colorInput input-primary-new" type="text" max="32" placeholder="619 verkehrsgrün">
 			</label>
 			<label>
-				<p>Farbtyp</p>
-				<input class="colorInput" type="text" max="32" placeholder="751C">
+				<p class="text-sm">Farbtyp</p>
+				<input class="colorInput input-primary-new" type="text" max="32" placeholder="751C">
 			</label>
 			<label>
-				<p>Hersteller</p>
-				<input class="colorInput" tyep="text" max="32" placeholder="Oracal">
+				<p class="text-sm">Hersteller</p>
+				<input class="colorInput input-primary-new" tyep="text" max="32" placeholder="Oracal">
 			</label>
-			<label>
-				<p>Farbe (Hex)</p>
-				<input class="colorInput jscolor" type="text" max="32" data-write="true" data-fun="checkHexCode">
+			<label class="ml-1">
+				<p class="text-sm">Farbe (Hex)</p>
+				<input class="colorInput jscolor input-primary-new outline outline-offset-1" type="text" max="32" data-write="true" data-fun="checkHexCode">
 			</label>
 			<br>
-			<button class="btn-primary" data-fun="sendColor">Hinzufügen</button>
-			<button class="btn-primary" data-fun="toggleCS">Vorhandene Farbe auswählen</button>
+			<button class="btn-primary-new" data-fun="sendColor">Hinzufügen</button>
+			<button class="btn-primary-new" data-fun="toggleCS">Vorhandene Farbe auswählen</button>
 		</div>
 		<div class="defCont" id="cpContainer"></div>
 		<div class="defCont" id="csContainer" style="display: none">

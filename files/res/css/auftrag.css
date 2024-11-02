@@ -385,22 +385,6 @@ aside {
     border-radius: 6px;
 }
 
-.validInput::after {
-    content: "✔";
-    float: right;
-    position: relative;
-    padding-right: 10px;
-    color: green;
-}
-
-.invalidInput::after {
-    content: "☓";
-    float: right;
-    position: relative;
-    padding-right: 10px;
-    color: red;
-}
-
 #farbe span {
     margin: 10px;
 }

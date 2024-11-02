@@ -6,6 +6,7 @@ module.exports = {
         "./files/res/js/*.{html,js,php}",
         "./files/res/js/sticker/*.{html,js,php}",
         "./files/res/js/classes/*.{html,js,php}",
+        "./files/res/js/auftrag/*.{html,js,php}",
         "./files/res/views/*.{html,js,php}",
         "./classes/Project/**/*.{html,js,php}",
         "upgrade.php",
