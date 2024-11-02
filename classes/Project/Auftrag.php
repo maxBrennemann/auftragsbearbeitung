@@ -60,7 +60,7 @@ class Auftrag implements StatisticsInterface
 
 				$data = DBAccess::selectQuery("SELECT * FROM schritte WHERE Auftragsnummer = {$auftragsnummer}");
 				foreach ($data as $step) {
-					$element = new Schritt($step['Auftragsnummer'], $step['Schrittnummer'], $step['Bezeichnung'], $step['Datum'], $step['Priority'], $step['istErledigt']);
+					$element = new Step($step['Auftragsnummer'], $step['Schrittnummer'], $step['Bezeichnung'], $step['Datum'], $step['Priority'], $step['istErledigt']);
 					array_push($this->Bearbeitungsschritte, $element);
 				}
 
@@ -127,7 +127,7 @@ class Auftrag implements StatisticsInterface
 	}
 
 	/* getBearbeitungsschritte with new Table class */
-	public function getOpenBearbeitungsschritteTable()
+	public function getOpenBearbeitungsschritteTable(): string
 	{
 		$query = "SELECT Schrittnummer, Bezeichnung, Datum, `Priority` FROM schritte WHERE Auftragsnummer = :id AND istErledigt = 1 ORDER BY `Priority` DESC";
 		$data = DBAccess::selectQuery($query, ["id" => $this->Auftragsnummer]);
@@ -160,7 +160,7 @@ class Auftrag implements StatisticsInterface
 		return $this->Auftragsbeschreibung;
 	}
 
-	public function getAuftragsnummer()
+	public function getAuftragsnummer(): int
 	{
 		return $this->Auftragsnummer;
 	}
@@ -216,7 +216,7 @@ class Auftrag implements StatisticsInterface
 		return $this->Auftragsposten;
 	}
 
-	public function getAuftragstyp()
+	public function getAuftragstyp(): int
 	{
 		return $this->auftragstyp;
 	}
@@ -296,7 +296,7 @@ class Auftrag implements StatisticsInterface
 	 * helper function for creating the AuftragsPosten table
 	 * function returns the data for the table
 	 */
-	private function getAuftragsPostenHelper($isInvoice = false)
+	private function getAuftragsPostenHelper($isInvoice = false): array|string
 	{
 		$subArr = array(
 			"Postennummer" => "",
@@ -375,34 +375,6 @@ class Auftrag implements StatisticsInterface
 		return $t->getTable();
 	}
 
-	public function getAuftragsPostenCheckTable()
-	{
-		$column_names = array(
-			0 => array("COLUMN_NAME" => "Bezeichnung"),
-			1 => array("COLUMN_NAME" => "Beschreibung"),
-			2 => array("COLUMN_NAME" => "Stundenlohn"),
-			3 => array("COLUMN_NAME" => "Anzahl"),
-			4 => array("COLUMN_NAME" => "MEH"),
-			5 => array("COLUMN_NAME" => "Preis"),
-			6 => array("COLUMN_NAME" => "Einkaufspreis")
-		);
-
-		/* checks if postenarray is empty */
-		$data = $this->getAuftragsPostenHelper();
-		if (sizeof($this->Auftragsposten) == 0) {
-			$data = [];
-		}
-
-		/* addes edit and delete to table */
-		$t = new Table();
-		$t->createByData($data, $column_names);
-		$t->addSelector("check");
-		$t->setType("posten");
-		$_SESSION[$t->getTableKey()] = serialize($t);
-
-		return $t->getTable();
-	}
-
 	/*
 	 * returns all invoice columns from invoice_posten table
 	 */
@@ -444,18 +416,6 @@ class Auftrag implements StatisticsInterface
 	{
 		return $this->isArchiviert;
 	}
-
-	public function bearbeitungsschrittHinzufuegen() {}
-
-	public function bearbeitungsschrittEntfernen() {}
-
-	public function bearbeitunsschrittBearbeiten() {}
-
-	public function postenHinzufuegen() {}
-
-	public function postenEntfernen() {}
-
-	public function schritteNachTypGenerieren() {}
 
 	/* 
 	 * this function returns all orders which are marked as ready to finish;
@@ -609,11 +569,6 @@ class Auftrag implements StatisticsInterface
 
 	public function recalculate()
 	{
-		//Statistics::auftragEroeffnen();
-		/*
-		* Theoretisch sollte auftragAbschliessen() aufgerufen werden, jedoch müssen
-		* die Methoden in Statistics noch angepasst werden
-		*/
 	}
 
 	public function archiveOrder()
@@ -891,4 +846,38 @@ class Auftrag implements StatisticsInterface
 			"status" => "success",
 		]);
 	}
+
+	public static function updateDate() {
+		$order = (int) Tools::get("id");
+		$date =  Tools::get("date");
+		$type = (int)  Tools::get("type");
+
+		$types = [
+			1 => "Datum",
+			2 => "Termin",
+			3 => "Fertigstellung"
+		];
+
+		if (!isset($types[$type])) {
+			JSONResponseHandler::throwError(400, "Type does not exist");
+		}
+
+		$type = $types[$type];
+
+		if ($date == "unset") {
+			DBAccess::updateQuery("UPDATE auftrag SET $type = NULL WHERE Auftragsnummer = :order;", [
+				"order" => $order,
+			]);
+		} else {
+			DBAccess::updateQuery("UPDATE auftrag SET $type = :setDate WHERE Auftragsnummer = :order;", [
+				"setDate" => $date,
+				"order" => $order,
+			]);
+		}
+		
+		JSONResponseHandler::sendResponse([
+			"status" => "success",
+		]);
+	}
+
 }

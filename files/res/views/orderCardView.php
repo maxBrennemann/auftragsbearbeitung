@@ -12,7 +12,7 @@
 				<h3 class="font-bold"><?=$order["orderTitle"]?></h3>
 			<?php endif; ?>
 			<a class="text-blue-500 font-semibold" href="<?=Classes\Link::getPageLink("auftrag")?>?id=<?=$order["id"]?>">Zum Auftrag <?=$order["id"]?></a>
-			<textarea class="m-1 p-1 rounded-lg w-full block" disabled><?=$order["orderDescription"]?></textarea>
+			<p class="m-1 p-1 rounded-lg w-full block text-ellipsis overflow-hidden whitespace-nowrap" title="<?=$order["orderDescription"]?>"><?=$order["orderDescription"]?></p>
 			<table class="rounded-md m-1 mt-2 w-full">
 				<tr class="border-b-2 border-black">
 					<th class="bg-gray-200 text-gray-800">Datum</th>

@@ -244,15 +244,18 @@ class ResourceManager
             $pageName = $pageDetails["pageName"];
         }
 
-        include('./files/header.php');
-        include($baseUrl . $articleUrl);
-        include('./files/footer.php');
+        include "./files/header.php";
+        include $baseUrl . $articleUrl;
 
+        $duration = false;
         if ($_ENV["DEV_MODE"] == true) {
             $stop = microtime(true);
             $duration = $stop - $start;
-            echo "<script>console.log('Page loaded in " . $duration . " seconds');</script>";
         }
+        
+        insertTemplate("./files/footer.php", [
+            "duration" => $duration,
+        ]);
     }
 
     public static function close()

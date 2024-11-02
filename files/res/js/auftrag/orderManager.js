@@ -29,11 +29,15 @@ export function setDeadlineState(e) {
 }
 
 function sendDate(type, value) {
-    ajax.post({
-        r: "updateDate",
-        auftrag: globalData.auftragsId,
-        date: value,
-        type: type,
+    ajax.post(`/api/v1/order/${globalData.auftragsId}/update-date`, {
+        "date": value,
+        "type": type,
+    }).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+        } else {
+            infoSaveSuccessfull();
+        }
     });
 }
 

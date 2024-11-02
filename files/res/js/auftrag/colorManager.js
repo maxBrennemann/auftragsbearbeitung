@@ -18,9 +18,19 @@ export function addColor() {
             return;
         }
 
-        element.value = cp.color.toUpperCase();
-        checkHexCode(element);
+        const hex = cp.color.toUpperCase();
+        if (isHexValid(hex)) {
+            element.value = hex;
+            element.classList.add("outline-green-500");
+            element.classList.remove("outline-red-500");
+        } else {
+            element.classList.remove("outline-green-500");
+            element.classList.add("outline-red-500");
+        }
     }, false);
+
+    const colorInputHex = document.querySelector("input.colorInput.jscolor");
+    colorInputHex.addEventListener("change", checkHexCode);
 
     const sendColorBtn = div.querySelector('[data-fun="sendColor"]');
     sendColorBtn.addEventListener("click", sendColor, false);
@@ -129,13 +139,18 @@ export function sendColor() {
 }
 
 export function checkHexCode(e) {
-    var el = e.target || e;
+    const el = e.currentTarget;
 
-    if (/^[0-9a-fA-F]{6}$/.test(el.value)) {
-        el.parentNode.classList.add("validInput");
-        el.parentNode.classList.remove("invalidInput");
+    if (isHexValid(el.value)) {
+        el.classList.add("outline-green-500");
+        el.classList.remove("outline-red-500");
         return null;
     }
-    el.parentNode.classList.add("invalidInput");
-    el.parentNode.classList.remove("validInput");
+
+    el.classList.remove("outline-green-500");
+    el.classList.add("outline-red-500");
+}
+
+export const isHexValid = (hex) => {
+    return /^[0-9a-fA-F]{6}$/.test(hex);
 }

@@ -3,9 +3,12 @@
 namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\Tools;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+
 use Classes\Project\Auftragsverlauf;
 
-class Schritt {
+class Step {
     
 	private $istAllgemein = null;
 	private $bezeichnung = null;
@@ -62,6 +65,30 @@ class Schritt {
 
 	public  static function deleteStep() {
 		
+	}
+
+	public static function getSteps() {
+		$id = Tools::get("id");
+		$type = Tools::get("type");
+
+		$order = new Auftrag($id);
+		$table = "";
+
+		switch ($type) {
+			case "getAllSteps":
+				$table = $order->getBearbeitungsschritteAsTable();
+				break;
+			case "getOpenSteps":
+				$table = $order->getOpenBearbeitungsschritteTable();
+				break;
+			default:
+				JSONResponseHandler::returnNotFound("unsupported type");
+		}
+
+		JSONResponseHandler::sendResponse([
+			"table" => $table,
+			"status" => "success",
+		]);
 	}
 
 }

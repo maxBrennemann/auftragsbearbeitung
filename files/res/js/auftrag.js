@@ -1,6 +1,6 @@
 ﻿import { initBindings } from "./classes/bindings.js";
 import { addColor, addSelectedColors, checkHexCode, removeColor } from "./auftrag/colorManager.js";
-import { addBearbeitungsschritt, showBearbeitungsschritt, sendNote, removeNote, addNewNote, initNotes } from "./auftrag/noteStepManager.js";
+import { addBearbeitungsschritt, addStep, sendNote, removeNote, addNewNote, initNotes } from "./auftrag/noteStepManager.js";
 import { setOrderFinished, updateDate, updateDeadline, setDeadlineState, initExtraOptions, editDescription, editOrderType, editTitle, archvieren } from "./auftrag/orderManager.js";
 import { addExistingVehicle, addNewVehicle, selectVehicle } from "./auftrag/vehicleManager.js";
 import { click_mehListener, addProductCompactOld, addLeistung, addTime, selectLeistung, initPostenFilter, addProductCompact, showPostenAdd, createTimeInputRow } from "./auftrag/postenManager.js";
@@ -12,8 +12,6 @@ import { ajax } from "./classes/ajax.js";
 window.globalData = {
     aufschlag: 0,
     vehicleId: 0,
-    erledigendeSchritte : null,
-    alleSchritte : null,
     auftragsId : parseInt(new URL(window.location.href).searchParams.get("id")),
     times : [],
 }
@@ -295,7 +293,7 @@ fnNames.click_addSelectedColors = addSelectedColors;
 fnNames.write_checkHexCode = checkHexCode;
 
 fnNames.click_addBearbeitungsschritt = addBearbeitungsschritt;
-fnNames.click_showBearbeitungsschritt = showBearbeitungsschritt;
+fnNames.click_addStep = addStep;
 fnNames.click_sendNote = sendNote;
 fnNames.click_removeNote = removeNote;
 fnNames.click_addNewNote = addNewNote;

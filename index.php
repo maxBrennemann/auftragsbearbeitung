@@ -2,8 +2,8 @@
 
 $start = microtime(true);
 
-require_once('settings.php');
-require_once('globalFunctions.php');
+require_once "settings.php";
+require_once "globalFunctions.php";
 
 use Classes\ResourceManager;
 

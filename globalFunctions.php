@@ -109,7 +109,7 @@ function getParameter($value, $type = "GET", $default = "") {
 function insertTemplate($path, array $parameters = []) {
 	if (file_exists($path)) {
 		extract($parameters);
-		include($path);
+		include $path;
 	}
 }
 
