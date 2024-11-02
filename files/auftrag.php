@@ -211,37 +211,72 @@ if ($auftragsId == -1): ?>
 		<p class="font-bold">Bearbeitungsschritte und Aufgaben</p>
 		<div class="flex mt-2 items-center">
 			<div>
-				<button class="btn-primary-new" data-binding="true" data-fun="showBearbeitungsschritt">Neu</button>
+				<button class="btn-primary-new" data-binding="true" data-fun="addStep">Neu</button>
 			</div>
 			<div class="px-2 rounded ml-2">
 				<label class="flex items-center cursor-pointer">
-					<input type="checkbox" value="" data-type="courtage" class="sr-only peer">
+					<input type="checkbox" id="toggleSteps" value="" class="sr-only peer">
 					<div class="relative w-11 h-6 bg-gray-400 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
 					<span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Alle Schritte anzeigen</span>
 				</label>
 			</div>
-			<!-- <input onchange="radio('hide')" type="radio" name="showDone" value="hide" checked> Zu erledigende Schritte anzeigen<br>
-				<input onchange="radio('show')" type="radio" name="showDone" value="show"> Alle Schritte anzeigen-->
 		</div>
-		<div class="innerDefCont" id="bearbeitungsschritte" style="display: none">
+		<div class="bg-white p-2 rounded-md hidden" id="bearbeitungsschritte">
 			<div>
-				<p>Bezeichnung:</p>
-				<textarea class="bearbeitungsschrittInput m-1 text-slate-600 rounded-lg p-2" type="text" max="128" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
+				<div class="flex flex-col">
+					<p>Bezeichnung:</p>
+					<input class="bearbeitungsschrittInput input-primary-new w-full" type="text" max="128">
+				</div>
 			</div>
-			<span>Datum: <br><input class="bearbeitungsschrittInput m-1 text-slate-600 rounded-lg p-2" type="date" max="32"></span><br>
-			<span>Priorität: <br><input class="bearbeitungsschrittInput" type="range" min="0" max="100" step="1.0"></span><br>
-			<form name="isAlreadyDone">
+			<div>
+				<div class="flex flex-col">
+					<p>Datum:</p>
+					<div>
+						<input class="bearbeitungsschrittInput input-primary-new" type="date" max="32">
+					</div>
+				</div>
+			</div>
+			<div>
+				<div class="flex flex-col">
+					<p>Priorität:</p>
+					<div>
+						<input class="bearbeitungsschrittInput" type="range" list="priority">
+					</div>
+				</div>
+				<datalist id="priority">
+					<option value="0"></option>
+					<option value="25"></option>
+					<option value="50"></option>
+					<option value="75"></option>
+					<option value="100"></option>
+				</datalist>
+			</div>
+			<div>
+				<div class="flex flex-col">
+					<p>Noch zu erledigen:</p>
+					<label>
+						<input type="checkbox" id="" value="checked" class="sr-only peer">
+						<div class="relative w-11 h-6 bg-gray-400 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+					</label>
+				</div>
+			</div>
+			<form name="isAlreadyDone" class="hidden">
 				<input type="radio" name="isDone" value="show" checked>Noch zu erledigen<br>
 				<input type="radio" name="isDone" value="hide">Schon erledigt<br>
 			</form>
-			<input type="checkbox" name="assignTo" onclick="document.getElementById('selectMitarbeiter').disabled = false;">Zuweisen an:</input>
-			<br>
-			<select id="selectMitarbeiter" disabled>
-				<?php foreach ($mitarbeiter as $m): ?>
-					<option value="<?=$m['id']?>"><?=$m['prename']?> <?=$m['lastname']?></option>
-				<?php endforeach; ?>
-			</select>
-			<button class="btn-primary" data-binding="true" data-fun="addBearbeitungsschritt" class="btn-primary">Hinzufügen</button>
+			<div>
+				<input type="checkbox" name="assignTo" onclick="document.getElementById('selectMitarbeiter').disabled = false;">Zuweisen an:</input>
+				<br>
+				<select id="selectMitarbeiter" disabled>
+					<?php foreach ($mitarbeiter as $m): ?>
+						<option value="<?=$m['id']?>"><?=$m['prename']?> <?=$m['lastname']?></option>
+					<?php endforeach; ?>
+				</select>
+			</div>
+			<div class="mt-2">
+				<button class="btn-primary-new" data-binding="true" data-fun="addBearbeitungsschritt" class="btn-primary">Hinzufügen</button>
+				<button class="btn-cancel" data-binding="true" data-fun="addBearbeitungsschritt" class="btn-primary">Abbrechen</button>
+			</div>
 		</div>
 		<div id="stepTable">
 			<?=$auftrag->getOpenBearbeitungsschritteTable()?>

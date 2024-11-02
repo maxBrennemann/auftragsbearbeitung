@@ -28,7 +28,7 @@ use Classes\Project\Zeit;
 use Classes\Project\Posten;
 use Classes\Project\Kunde;
 use Classes\Project\Fahrzeug;
-use Classes\Project\Schritt;
+use Classes\Project\Step;
 use Classes\Project\Table;
 use Classes\Project\Rechnung;
 use Classes\Project\Auftragsverlauf;
@@ -344,7 +344,7 @@ class Ajax
 				$data['Auftragsnummer'] = $_POST['auftrag'];
 				$data['hide'] = $_POST['hide'];
 
-				$postenNummer = Schritt::insertStep($data);
+				$postenNummer = Step::insertStep($data);
 				$auftrag = new Auftrag($data['Auftragsnummer']);
 				echo $auftrag->getOpenBearbeitungsschritteTable();
 
@@ -352,26 +352,6 @@ class Ajax
 				if (strcmp($assignedTo, "none") != 0) {
 					NotificationManager::addNotification($userId = $assignedTo, $type = 1, $content = $_POST['bez'], $specificId = $postenNummer);
 				}
-				break;
-			case "addStep":
-				$column_names = array(
-					0 => array("COLUMN_NAME" => "Bezeichnung"),
-					1 => array("COLUMN_NAME" => "Priority")
-				);
-
-				$addClass = $_POST['addClass'];
-
-				echo FormGenerator::createEmptyTable($column_names, $addClass);
-				break;
-			case "getAllSteps":
-				$auftragsId = $_POST['auftrag'];
-				$auftrag = new Auftrag($auftragsId);
-				echo $auftrag->getBearbeitungsschritteAsTable();
-				break;
-			case "getOpenSteps":
-				$auftragsId = $_POST['auftrag'];
-				$auftrag = new Auftrag($auftragsId);
-				echo $auftrag->getOpenBearbeitungsschritteTable();
 				break;
 			case "editAnspr":
 				$table = $_POST['name'];
@@ -473,7 +453,7 @@ class Ajax
 				Table::updateValue("schritte_table", "update", $_POST['key']);
 				/* adds an update step to the history by using orderId and identifier */
 				$postennummer = Table::getIdentifierValue("schritte_table", $_POST['key']);
-				Schritt::updateStep([
+				Step::updateStep([
 					"orderId" => $_POST['auftrag'],
 					"postennummer" => $postennummer
 				]);

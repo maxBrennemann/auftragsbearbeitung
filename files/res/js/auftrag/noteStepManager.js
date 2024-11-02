@@ -1,4 +1,4 @@
-const notes = [];
+import { ajax } from "../classes/ajax.js";
 
 export function initNotes() {
     const nodeContainer = document.getElementById("noteContainer");
@@ -142,12 +142,12 @@ export function addBearbeitungsschritt() {
 }
 
 /* addes bearbeitungsschritte */
-export function showBearbeitungsschritt() {
-    var bearbeitungsschritte = document.getElementById("bearbeitungsschritte");
-    bearbeitungsschritte.style.display = "block";
-
-    const textarea = document.querySelector("textarea.bearbeitungsschrittInput");
-    textarea.focus();
+export function addStep() {
+    const bearbeitungsschritte = document.getElementById("bearbeitungsschritte");
+    if (!bearbeitungsschritte.classList.toggle("hidden")) {
+        const textarea = document.querySelector("input.bearbeitungsschrittInput");
+        textarea.focus();
+    }
 }
 
 export async function getNotes() {
@@ -222,32 +222,29 @@ export function addNewNote() {
     });
 }
 
-window.radio = function(val) {
-    var stepTable = document.getElementById("stepTable");
-    var params = "", data;
-    
-    if (val == "show") {
-        params = `getReason=getAllSteps&auftrag=${globalData.auftragsId}`;
-        data = globalData.alleSchritte;
-    } else if (val == "hide") {
-        params = `getReason=getOpenSteps&auftrag=${globalData.auftragsId}`;
-        data = globalData.erledigendeSchritte;
-    }
-    
-    if (data == null) {
-        var add = new AjaxCall(params, "POST", window.location.href);
-        add.makeAjaxCall(function (response, data) {
-            stepTable.innerHTML = response;
-            switch (data[0]) {
-                case "show":
-                    globalData.alleSchritte = response;
-                break;
-                case "hide":
-                    globalData.erledigendeSchritte = response;
-                break;
-            }
-        }, val);
-    } else {
-        stepTable.innerHTML = data;
-    }
+const toggleSteps = (e) => {
+    const value = e.currentTarget.value;
+    ajax.get(`/api/v1/order/${globalData.auftragsId}/steps`, {
+        "type": value.checked ? "getAllSteps" : "getOpenSteps",
+    }).then(r => {
+        if (r.status != "success") {
+            return;
+        }
+
+        const stepTable = document.getElementById("stepTable");
+        stepTable.innerHTML = r.table;
+    });
+}
+
+const init = () => {
+    const toggleStepsInput = document.getElementById("toggleSteps");
+    toggleStepsInput.addEventListener("change", toggleSteps);
+}
+
+if (document.readyState !== 'loading' ) {
+    init();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        init();
+    });
 }
