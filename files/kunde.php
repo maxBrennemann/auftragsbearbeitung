@@ -308,7 +308,7 @@ if (isset($_GET['id'])) {
 		</div>
 		<div id="fahrzeuge">
 			<h3 class="font-bold">Fahrzeuge</h3>
-			<?=$kunde->getFahrzeuge()?>
+			<?=$kunde->getVehicles()?>
 		</div>
 
 		<div id="ansprechpartner">

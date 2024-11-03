@@ -76,11 +76,7 @@ $mitarbeiter = DBAccess::selectQuery("SELECT prename, lastname, id FROM user");
 $colors = Color::get();
 
 if ($auftragsId == -1): ?>
-	<style>
-		main {
-			display: inline; /* quick fix */
-		}
-	</style>
+<div class="w-full bg-gray-100 p-2 rounded-md">
 	<input type="number" min="1" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value;">
 	<a href="#" id="auftragsLink">Auftrag anzeigen</a>
 	<br>
@@ -88,6 +84,7 @@ if ($auftragsId == -1): ?>
 	<a href="#" id="auftragSuche">Auftrag suchen</a>
 	<br><br>
 	<?=$searchTable?>
+</div>
 <?php elseif ($auftrag->istRechnungGestellt() && $show == false): ?>
 <div>
 	<div class="defCont" id="orderFinished">
@@ -425,19 +422,19 @@ if ($auftragsId == -1): ?>
 	<div class="defCont fahrzeuge">
 		<p><span class="font-bold">Fahrzeuge</span><button class="ml-1 infoButton" data-info="1">i</button><p>
 		<div>
-			<select id="selectVehicle" data-write="true" data-fun="selectVehicle" class="px-4 py-2 rounded-lg">
+			<select id="selectVehicle" data-write="true" data-fun="selectVehicle" class="input-primary-new">
 				<option value="0" selected disabled>Bitte auswählen</option>
 				<?php foreach ($fahrzeuge as $f): ?>
 					<option value="<?=$f['Nummer']?>"><?=$f['Kennzeichen']?> <?=$f['Fahrzeug']?></option>
 				<?php endforeach; ?>
 				<option value="addNew">Neues Fahrzeug hinzufügen</option>
 			</select>
-			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="addExistingVehicle">Übernehmen</button>
+			<button class="m-1 btn-primary-new" data-binding="true" data-fun="addExistingVehicle">Übernehmen</button>
 		</div>
 		<div class="innerDefCont" id="addVehicle" style="display: none;">
-			<span>Kfz-Kennzeichen:<br><input id="kfz"></span><br>
-			<span>Fahrzeug:<br><input id="fahrzeug"></span><br>
-			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="addNewVehicle">Neues Fahrzeug hinzufügen</button>
+			<p>Kfz-Kennzeichen:<br><input id="kfz" class="input-primary-new"></p>
+			<p>Fahrzeug:<br><input id="fahrzeug" class="input-primary-new"></p>
+			<button class="btn-primary-new mt-2" data-binding="true" data-fun="addNewVehicle">Hinzufügen</button>
 		</div>
 		<div><?=$auftrag->getFahrzeuge();?></div>
 		<br>

@@ -1,7 +1,7 @@
 <?php
 
 use Classes\Link;
-
+use Classes\Project\BreadcrumbController;
 use Classes\Project\Icon;
 use Classes\Project\NotificationManager;
 use Classes\Project\Config;
@@ -170,7 +170,7 @@ if ($pageName == "") {
 		</div>
 		<hr class="bg-gray-700 headerline">
 		<div class="showBreadcrumb my-1 2xl:my-3">
-			<a href="<?=Link::getPageLink("")?>" id="home_link" class="link-primary">Home</a>/<a href="<?=Link::getPageLink($page)?>" class="link-primary"><?=$pageName?></a>
+			<?=BreadcrumbController::createBreadcrumbMenu($page, $pageName)?>
 		</div>
 	</header>
 	<main class="mt-4 lg:w-4/5">

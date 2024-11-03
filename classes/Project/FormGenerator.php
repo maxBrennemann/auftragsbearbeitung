@@ -20,11 +20,6 @@ class FormGenerator
 		$this->whereCondition = $whereCondition;
 	}
 
-	public function setData($data)
-	{
-		$this->tableData = $data;
-	}
-
 	private static function getColumnNames($type)
 	{
 		return DBAccess::selectColumnNames($type);
@@ -174,50 +169,6 @@ class FormGenerator
 		return $table_header . "</tr>";
 	}
 
-	public static function insertData($type, $data)
-	{
-		$column_names = DBAccess::selectColumnNames($type);
-
-		$input_string = "INSERT INTO $type (";
-		$columns = "";
-		$values = "VALUES (";
-		for ($i = 0; $i < sizeof($column_names); $i++) {
-			$columns = $columns . $column_names[$i]["COLUMN_NAME"];
-			$values = $values . "'" . $data[$i] . "'";
-			if ($i < sizeof($column_names) - 1) {
-				$columns = $columns . ", ";
-				$values = $values . ", ";
-			}
-		}
-		$input_string = $input_string . $columns . ") " . $values . ")";
-		DBAccess::insertQuery($input_string);
-	}
-
-	public function setIsOrderedBy($isOrderedBy)
-	{
-		$this->isOrderedBy = $isOrderedBy;
-	}
-
-	public function setWhereCondition($whereCondition)
-	{
-		$this->whereCondition = $whereCondition;
-	}
-
-	/*
-	* creates table orderd by the specified settings:
-	*		- isOrderedBy
-	*		- whereCondition
-	*/
-	public function createSpecializedTable($editable, $showData, $sendTo, $amountOfData, $isRowLink, $column_names = null)
-	{
-		if (strcmp($this->isOrderedBy, "") == 0 || $this->isOrderedBy == null) {
-			return "";
-		} else {
-			$data = self::executeSQLQuery($this->type, $amountOfData, $this->isOrderedBy, $this->whereCondition);
-			return self::generateTable($this->type, $editable, $showData, $sendTo, $amountOfData, $isRowLink, $data, $column_names);
-		}
-	}
-
 	/*
 	* creates a table by the passed data and the $column_names
 	* type is not needed, because the column names are passed in an array, the table is not editable;
@@ -228,13 +179,4 @@ class FormGenerator
 		return self::generateTable($this->type, false, true, "", -1, false, $data, $column_names, true);
 	}
 
-	public function createTableByDataRowLink($data, $column_names, $type, $retUrl)
-	{
-		return self::generateTable($type, false, true, "", -1, true, $data, $column_names, true, $retUrl);
-	}
-
-	public static function createEmptyTable($column_names, $addClass)
-	{
-		return self::generateTable("", true, false, "", 0, false, null, $column_names, false, null, $addClass);
-	}
 }
