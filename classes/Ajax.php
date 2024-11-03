@@ -589,44 +589,6 @@ class Ajax
 				$auftrag = $_POST['auftrag'];
 				DBAccess::insertQuery("UPDATE auftrag SET archiviert = -1 WHERE Auftragsnummer = $auftrag");
 				break;
-			case "existingColors":
-				$auftrag = $_POST['auftrag'];
-				$ids = json_decode($_POST['ids'], true);
-
-				foreach ($ids as $id) {
-					$id = (int) $id;
-					DBAccess::insertQuery("INSERT INTO color_auftrag (id_color, id_auftrag) VALUES ($id, $auftrag)");
-				}
-
-				$auftrag = new Auftrag($auftrag);
-				$data = array("farben" => $auftrag->getFarben());
-				echo json_encode($data, JSON_FORCE_OBJECT);
-				break;
-			case "newColor":
-				$auftrag = $_POST['auftrag'];
-				$farbname = $_POST['farbname'];
-				$farbwert = $_POST['farbwert'];
-				$bezeichnung = $_POST['bezeichnung'];
-				$hersteller = $_POST['hersteller'];
-
-				$query = "INSERT INTO color (Farbe, Farbwert, Bezeichnung, Hersteller) VALUES ('$farbname', '$farbwert', '$bezeichnung', '$hersteller')";
-				$id = DBAccess::insertQuery($query);
-
-				DBAccess::insertQuery("INSERT INTO color_auftrag (id_color, id_auftrag) VALUES ($id, $auftrag)");
-
-				$auftrag = new Auftrag($auftrag);
-				$data = array("farben" => $auftrag->getFarben());
-				echo json_encode($data, JSON_FORCE_OBJECT);
-				break;
-			case "removeColor":
-				$colorId = $_POST['colorId'];
-				$auftragsId = $_POST['auftrag'];
-
-				DBAccess::deleteQuery("DELETE FROM color_auftrag WHERE id_color = $colorId AND id_auftrag = $auftragsId");
-
-				$auftrag = new Auftrag($auftragsId);
-				echo $auftrag->getFarben();
-				break;
 			case "archivieren":
 				$auftrag = $_POST['auftrag'];
 				$auftrag = new Auftrag($auftrag);

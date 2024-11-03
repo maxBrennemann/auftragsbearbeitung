@@ -12,6 +12,7 @@ use Classes\Project\Auftragsverlauf;
 use Classes\Project\Liste;
 use Classes\Project\Search;
 use Classes\Project\ClientSettings;
+use Classes\Project\Color;
 
 ?>
 
@@ -32,7 +33,7 @@ if (isset($_GET['id'])) {
 	if ($auftragsId > 0) {
 		$auftrag = new Auftrag($auftragsId);
 		$fahrzeugTable = $auftrag->getFahrzeuge();
-		$farbTable = $auftrag->getFarben();
+		$farbTable = $auftrag->getColors();
 		$kunde = new Kunde($auftrag->getKundennummer());
 
 		$fahrzeuge = Fahrzeug::getSelection($auftrag->getKundennummer());
@@ -72,7 +73,7 @@ if (isset($_GET['show'])) {
 }
 
 $mitarbeiter = DBAccess::selectQuery("SELECT prename, lastname, id FROM user");
-$colors = DBAccess::selectQuery("SELECT Farbe, Bezeichnung, Hersteller, Farbwert, id AS Nummer FROM color");
+$colors = Color::get();
 
 if ($auftragsId == -1): ?>
 	<style>
@@ -424,8 +425,6 @@ if ($auftragsId == -1): ?>
 	<div class="defCont fahrzeuge">
 		<p><span class="font-bold">Fahrzeuge</span><button class="ml-1 infoButton" data-info="1">i</button><p>
 		<div>
-			<span>Fahrzeug hinzufügen</span>
-			<br>
 			<select id="selectVehicle" data-write="true" data-fun="selectVehicle" class="px-4 py-2 rounded-lg">
 				<option value="0" selected disabled>Bitte auswählen</option>
 				<?php foreach ($fahrzeuge as $f): ?>
@@ -450,7 +449,11 @@ if ($auftragsId == -1): ?>
 	<div class="defCont farben">
 		<p class="font-bold">Farben</p>
 		<span id="showColors"><?=$farbTable?></span>
-		<button class="btn-primary-new" data-binding="true" data-fun="addColor">Neue Farbe hinzufügen</button>
+		<div class="mt-2">
+			<button class="btn-primary-new" data-binding="true" data-fun="addColor">Neue Farbe</button>
+			<br>
+			<button class="btn-primary-new mt-2" data-fun="toggleCS" data-binding="true">Vorhandene Farbe</button>
+		</div>
 	</div>
 	<div class="defCont upload">
 		<p class="font-bold">Dateien zum Auftrag hinzufügen</p>
@@ -500,19 +503,16 @@ if ($auftragsId == -1): ?>
 			</label>
 			<br>
 			<button class="btn-primary-new" data-fun="sendColor">Hinzufügen</button>
-			<button class="btn-primary-new" data-fun="toggleCS">Vorhandene Farbe auswählen</button>
 		</div>
 		<div class="defCont" id="cpContainer"></div>
-		<div class="defCont" id="csContainer" style="display: none">
-			<p>Vorhandene Farben:</p>
-			<?php foreach ($colors as $color): ?>
-				<div class="singleColorContainer" data-colorid=<?=$color['Nummer']?>>
-					<p class="singleColorName"><?=$color['Farbe']?> <?=$color['Bezeichnung']?> <?=$color['Hersteller']?></p>
-					<div class="farbe" style="background-color: #<?=$color['Farbwert']?>"></div>
-				</div>
-				<br>
-			<?php endforeach; ?>
-			<button class="btn-primary" data-binding="true" data-fun="addSelectedColors">Farbe(n) übernehmen</button>
+	</template>
+	<template id="templateExistingColor">
+		<div class="defCont" id="csContainer">
+			<p class="font-semibold mb-2">Vorhandene Farben:</p>
+			<div class="w-full h-60 overflow-y-scroll p-2 m-2 bg-white rounded-md">
+			<?php insertTemplate('files/res/views/colorView.php', ["colors" => $colors,]);?>
+			</div>
+			<button class="btn-primary-new" data-binding="true" data-fun="addSelectedColors">Farbe(n) übernehmen</button>
 		</div>
 	</template>
 	<template id="templateAlertBox">

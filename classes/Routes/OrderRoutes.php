@@ -19,6 +19,7 @@ class OrderRoutes extends Routes
     /**
      * @uses \Classes\Project\Auftrag::addOrder()
      * @uses \Classes\Project\Auftrag::addColor()
+     * @uses \Classes\Project\Auftrag::addColors()
      * @uses \Classes\Project\Auftrag::updateOrderType()
      * @uses \Classes\Project\Fahrzeug::updateOrderTitle()
      * @uses \Classes\Project\Auftrag::updateContactPerson()
@@ -27,6 +28,7 @@ class OrderRoutes extends Routes
     protected static $postRoutes = [
         "/order/add" => [\Classes\Project\Auftrag::class, "addOrder"],
         "/order/{id}/colors/add" => [\Classes\Project\Auftrag::class, "addColor"],
+        "/order/{id}/colors/multiple" => [\Classes\Project\Auftrag::class, "addColors"],
         "/order/{id}/type" => [\Classes\Project\Auftrag::class, "updateOrderType"],
         "/order/{id}/title" => [\Classes\Project\Auftrag::class, "updateOrderTitle"],
         "/order/{id}/contact-person" => [\Classes\Project\Auftrag::class, "updateContactPerson"],
@@ -46,6 +48,10 @@ class OrderRoutes extends Routes
         "/order/{id}/vehicles/{vehicleId}" => [\Classes\Project\Fahrzeug::class, "attachVehicle"],
     ];
 
+    /**
+     * @uses \Classes\Project\Auftrag::deleteOrder()
+     * @uses \Classes\Project\Auftrag::deleteColor()
+     */
     protected static $deleteRoutes = [
         "/order/{id}" => [\Classes\Project\Auftrag::class, "deleteOrder"],
         "/order/{id}/colors/{colorId}" => [\Classes\Project\Auftrag::class, "deleteColor"],

@@ -149,20 +149,25 @@ class Kunde implements StatisticsInterface
 		return $this->telefonMobil;
 	}
 
-	public function getFarben()
+	public function getColors()
 	{
-		$query = "SELECT CONCAT(Farbe, ' ', Bezeichnung, ' ', Hersteller) AS Farbe, Auftragsnummer, Farbwert FROM color, color_auftrag, auftrag WHERE Kundennummer = :kdnr AND color.id = color_auftrag.id_color AND color_auftrag.id_auftrag = Auftragsnummer";
+		$query = "SELECT CONCAT(color_name, ' ', short_name, ' ', producer) AS color, Auftragsnummer, hex_value 
+			FROM color, color_auftrag, auftrag 
+			WHERE Kundennummer = :kdnr 
+				AND color.id = color_auftrag.id_color 
+				AND color_auftrag.id_auftrag = Auftragsnummer";
+
 		$data = DBAccess::selectQuery($query, [
 			"kdnr" => $this->kundennummer
 		]);
 
 		foreach ($data as $key => $value) {
-			$data[$key]["Farbwert"] = "<div class=\"farbe\" style=\"background-color: #" . $value["Farbwert"] . "\"></div>";
+			$data[$key]["hex_value"] = "<div class=\"farbe\" style=\"background-color: #" . $value["hex_value"] . "\"></div>";
 		}
 
 		$column_names = array(
-			0 => array("COLUMN_NAME" => "Farbe"),
-			1 => array("COLUMN_NAME" => "Farbwert"),
+			0 => array("COLUMN_NAME" => "color"),
+			1 => array("COLUMN_NAME" => "hex_value"),
 			2 => array("COLUMN_NAME" => "Auftragsnummer")
 		);
 
