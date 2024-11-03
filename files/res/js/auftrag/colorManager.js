@@ -1,3 +1,8 @@
+import { ajax } from "../classes/ajax.js";
+
+var cp = null;
+const addToOrderColors = [];
+
 export function addColor() {
     const template = document.getElementById("templateFarbe");
 	const div = document.createElement("div");
@@ -7,27 +12,11 @@ export function addColor() {
     
     document.body.appendChild(div);
 
-    const cp = new Colorpicker(div.querySelector("#cpContainer"));
+    cp = new Colorpicker(div.querySelector("#cpContainer"));
     const c = div.querySelector("canvas");
     c.style.margin = "auto";
 
-    c.addEventListener("mouseup", function() {
-        const element = document.querySelector("input.colorInput.jscolor");
-
-        if (!element) {
-            return;
-        }
-
-        const hex = cp.color.toUpperCase();
-        if (isHexValid(hex)) {
-            element.value = hex;
-            element.classList.add("outline-green-500");
-            element.classList.remove("outline-red-500");
-        } else {
-            element.classList.remove("outline-green-500");
-            element.classList.add("outline-red-500");
-        }
-    }, false);
+    c.addEventListener("mouseup", colorPanelMouseUp);
 
     const colorInputHex = document.querySelector("input.colorInput.jscolor");
     colorInputHex.addEventListener("change", checkHexCode);
@@ -35,43 +24,63 @@ export function addColor() {
     const sendColorBtn = div.querySelector('[data-fun="sendColor"]');
     sendColorBtn.addEventListener("click", sendColor, false);
 
-    const toggleCSBtn = div.querySelector('[data-fun="toggleCS"]');
-    toggleCSBtn.addEventListener("click", toggleCS, false);
-
     addActionButtonForDiv(div, "remove");
     centerAbsoluteElement(div);
 }
 
-export function removeColor(e) {
-    var colorId = e.currentTarget.dataset.color;
+const colorPanelMouseUp = () => {
+    const element = document.querySelector("input.colorInput.jscolor");
 
-    ajax.post({
-        r: "removeColor",
-        auftrag: globalData.auftragsId,
-        colorId: colorId,
-    }, true).then(colorHTML => {
-        var showColors = document.getElementById("showColors");
-        showColors.innerHTML = colorHTML;
+    if (!element) {
+        return;
+    }
+
+    const hex = cp.color.toUpperCase();
+    if (isHexValid(hex)) {
+        element.value = hex;
+        element.classList.add("outline-green-500");
+        element.classList.remove("outline-red-500");
+    } else {
+        element.classList.remove("outline-green-500");
+        element.classList.add("outline-red-500");
+    }
+}
+
+export function removeColor(e) {
+    var colorId = e.currentTarget.dataset.colorId;
+    ajax.delete(`/api/v1/order/${globalData.auftragsId}/colors/${colorId}`).then(r => {
+        const showColors = document.getElementById("showColors");
+        showColors.innerHTML = r.colors;
     });
 }
 
-/*
+/**
  * you can select multiple existing colors, which are added to this variable via the function
  * beneath;
- * all colors are highlighted via the colorElementUnderline class
  */
-var addToOrderColors = [];
 export function toggleCS() {
-    var container = document.getElementById("csContainer");
-    container.style.display = "block";
-    centerAbsoluteElement(document.getElementById("farbe"));
+    const template = document.getElementById("templateExistingColor");
+	const div = document.createElement("div");
+	div.appendChild(template.content.cloneNode(true));
+    div.classList.add("w-2/3");
 
-    var elements = container.getElementsByClassName("singleColorContainer");
-    for (let i = 0; i < elements.length; i++) {
-        var e = elements[i];
-        e.addEventListener("click", function(event) {
-            event.currentTarget.classList.toggle("colorElementUnderline");
-            let id = event.currentTarget.dataset.colorid;
+    document.body.appendChild(div);
+    
+    addActionButtonForDiv(div, "remove");
+    centerAbsoluteElement(div);
+
+    const sendColorsBtn = div.querySelector('[data-fun="addSelectedColors"]');
+    sendColorsBtn.addEventListener("click", addSelectedColors, false);
+
+    const elements = div.getElementsByClassName("singleColorContainer");
+    Array.from(elements).forEach(element => {
+        element.addEventListener("click", (e) => {
+            e.currentTarget.classList.toggle("bg-white");
+            e.currentTarget.classList.toggle("italic");
+            e.currentTarget.classList.toggle("rounded-md");
+
+            let id = e.currentTarget.dataset.colorId;
+
             if (addToOrderColors.includes(id)) {
                 let index = addToOrderColors.indexOf(id);
                 addToOrderColors.slice(index, -1);
@@ -79,30 +88,27 @@ export function toggleCS() {
                 addToOrderColors.push(id);
             }
         }, false);
-    }
+    });
 }
 
-/*
+/**
  * adds all selected colors to the order;
  */
 export function addSelectedColors() {
-    ajax.post({
-        r: "existingColors",
-        auftrag: globalData.auftragsId,
-        ids: JSON.stringify(addToOrderColors),
-    }, true).then(colorHTML => {
-        var showColors = document.getElementById("showColors");
-        var data = JSON.parse(colorHTML);
-        showColors.innerHTML = data.farben;
-        
-        var elements = document.getElementsByClassName("colorInput");
+    ajax.post(`/api/v1/order/${globalData.auftragsId}/colors/multiple`, {
+        "colors": JSON.stringify(addToOrderColors),
+    }).then(r => {
+        const showColors = document.getElementById("showColors");
+        showColors.innerHTML = r.colors;
+
+        const elements = document.getElementsByClassName("colorInput");
         for (let i = 0; i < elements.length; i++) {
             elements[i].value = "";
         }
     });
 }
 
-/*
+/**
  * sends the newly created color to the backend;
  * then resets the form and shows the newly added color
  */
@@ -119,19 +125,16 @@ export function sendColor() {
         data.push(currVal);
     }
 
-    ajax.post({
-        r: "newColor",
-        auftrag: globalData.auftragsId,
-        farbname: data[0],
-        farbwert: data[3],
-        bezeichnung: data[1],
-        hersteller: data[2],
-    }, true).then(colorHTML => {
-        var showColors = document.getElementById("showColors");
-        var data = JSON.parse(colorHTML);
-        showColors.innerHTML = data.farben;
-        
-        var elements = document.getElementsByClassName("colorInput");
+    ajax.post(`/api/v1/order/${globalData.auftragsId}/colors/add`, {
+        "colorName": data[0],
+        "hexValue": data[3],
+        "shortName": data[1],
+        "producer": data[2],
+    }).then(r => {
+        const showColors = document.getElementById("showColors");
+        showColors.innerHTML = r.colors;
+
+        const elements = document.getElementsByClassName("colorInput");
         for (let i = 0; i < elements.length; i++) {
             elements[i].value = "";
         }

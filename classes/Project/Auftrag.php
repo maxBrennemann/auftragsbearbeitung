@@ -504,16 +504,23 @@ class Auftrag implements StatisticsInterface
 		return $t->getTable();
 	}
 
-	public function getFarben()
+	public function getColors()
 	{
-		$farben = DBAccess::selectQuery("SELECT Farbe, Farbwert, id AS Nummer, Hersteller, Bezeichnung FROM color, color_auftrag WHERE id_color = id AND id_auftrag = :orderId", ["orderId" => $this->getAuftragsnummer()]);
+		$query = "SELECT color_name, hex_value, id, producer, short_name 
+			FROM color, color_auftrag 
+			WHERE id_color = id 
+				AND id_auftrag = :orderId";
+
+		$colors = DBAccess::selectQuery($query, [
+			"orderId" => $this->getAuftragsnummer()
+		]);
 
 		ob_start();
 		insertTemplate('files/res/views/colorView.php', [
-			"farben" => $farben,
+			"colors" => $colors,
 		]);
-		$content = ob_get_clean();
 
+		$content = ob_get_clean();
 		return $content;
 	}
 
@@ -567,9 +574,7 @@ class Auftrag implements StatisticsInterface
 		]);
 	}
 
-	public function recalculate()
-	{
-	}
+	public function recalculate() {}
 
 	public function archiveOrder()
 	{
@@ -812,13 +817,14 @@ class Auftrag implements StatisticsInterface
 			"idOrder" => $idOrder,
 			"idOrderType" => $idOrderType,
 		]);
-		
+
 		JSONResponseHandler::sendResponse([
 			"status" => "success",
 		]);
 	}
 
-	public static function updateOrderTitle() {
+	public static function updateOrderTitle()
+	{
 		$orderTitle = (string) Tools::get("title");
 		$idOrder = (int) Tools::get("id");
 
@@ -827,13 +833,14 @@ class Auftrag implements StatisticsInterface
 			"idOrder" => $idOrder,
 			"title" => $orderTitle,
 		]);
-		
+
 		JSONResponseHandler::sendResponse([
 			"status" => "success",
 		]);
 	}
 
-	public static function updateContactPerson() {
+	public static function updateContactPerson()
+	{
 		$idContact = (string) Tools::get("idContact");
 		$idOrder = (int) Tools::get("id");
 
@@ -847,7 +854,8 @@ class Auftrag implements StatisticsInterface
 		]);
 	}
 
-	public static function updateDate() {
+	public static function updateDate()
+	{
 		$order = (int) Tools::get("id");
 		$date =  Tools::get("date");
 		$type = (int)  Tools::get("type");
@@ -874,10 +882,71 @@ class Auftrag implements StatisticsInterface
 				"order" => $order,
 			]);
 		}
-		
+
 		JSONResponseHandler::sendResponse([
 			"status" => "success",
 		]);
 	}
 
+	public static function addColors()
+	{
+		$id = (int) Tools::get("id");
+		$colors = Tools::get("colors");
+		$colors = json_decode($colors, false);
+
+		$query = "INSERT INTO color_auftrag (id_auftrag, id_color) VALUES ";
+		$data = [];
+
+		foreach ($colors as $colorId) {
+			$data[] = [$id, (int) $colorId];
+		}
+
+		DBAccess::insertMultiple($query, $data);
+
+		$order = new Auftrag($id);
+		$response = $order->getColors();
+		JSONResponseHandler::sendResponse([
+			"colors" => $response,
+		]);
+	}
+
+	public static function addColor()
+	{
+		$orderId = (int) Tools::get("id");
+		$colorName = (string) Tools::get("colorName");
+		$hexValue = (string) Tools::get("hexValue");
+		$shortName = (string) Tools::get("shortName");
+		$producer = (string) Tools::get("producer");
+
+		$color = new Color($colorName, $hexValue, $shortName, $producer);
+		$colorId = $color->save();
+
+		DBAccess::insertQuery("INSERT INTO color_auftrag (id_color, id_auftrag) VALUES (:colorId, :orderId)", [
+			"colorId" => $colorId,
+			"orderId" => $orderId,
+		]);
+
+		$order = new Auftrag($orderId);
+		$response = $order->getColors();
+		JSONResponseHandler::sendResponse([
+			"colors" => $response,
+		]);
+	}
+
+	public static function deleteColor()
+	{
+		$orderId = (int) Tools::get("id");
+		$colorId = (int) Tools::get("colorId");
+
+		DBAccess::deleteQuery("DELETE FROM color_auftrag WHERE id_color = :colorId AND id_auftrag = :orderId", [
+			"colorId" => $colorId,
+			"orderId" => $orderId,
+		]);
+
+		$order = new Auftrag($orderId);
+		$response = $order->getColors();
+		JSONResponseHandler::sendResponse([
+			"colors" => $response,
+		]);
+	}
 }

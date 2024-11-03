@@ -319,7 +319,7 @@ if (isset($_GET['id'])) {
 		</div>
 		<div id="farben">
 			<h3 class="font-bold">Farben</h3>
-			<div id="showFarben"><?=$kunde->getFarben()?></div>
+			<div id="showFarben"><?=$kunde->getColors()?></div>
 		</div>
 		<div id="auftraege">
 			<h3 class="font-bold">Aufträge</h3>

@@ -119,56 +119,6 @@ aside {
     margin: auto;
 }
 
-.singleColorContainer {
-    display: inline-block;
-    height: 34px;
-    width: auto;
-    position: relative;
-}
-
-.singleColorContainer button {
-    visibility: hidden;
-}
-
-.singleColorContainer:hover {
-    background: white;
-    border-radius: 6px;
-}
-
-.singleColorContainer:hover .farbe {
-    border: 1px solid grey;
-    height: 18px;
-    width: 18px;
-}
-
-.singleColorContainer:hover .singleColorContainer:before {
-    width: auto;
-}
-
-.singleColorContainer:hover button {
-    visibility: visible;
-    position: relative;
-    left: auto;
-    right: 0;
-    top: 0;
-    float: right;
-    margin: 0;
-    height: 34px;
-    border-radius: 0 6px 6px 0;
-    border: none;
-    padding: 7px;
-    background: grey;
-}
-
-.singleColorName {
-    display: inline-block;
-    padding: 0;
-    margin: 0;
-    margin-right: 5px;
-    vertical-align: top;
-    margin: 7px;
-}
-
 #farbe span {
     display: block;
     margin-top: 7px;
@@ -377,12 +327,6 @@ aside {
 
 #cpContainer {
     font-family: 'Courier New', Courier, monospace;
-}
-
-.colorElementUnderline {
-    background-color: white;
-    font-style: italic;
-    border-radius: 6px;
 }
 
 #farbe span {

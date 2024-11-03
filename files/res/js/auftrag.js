@@ -1,5 +1,5 @@
 ﻿import { initBindings } from "./classes/bindings.js";
-import { addColor, addSelectedColors, checkHexCode, removeColor } from "./auftrag/colorManager.js";
+import { addColor, addSelectedColors, checkHexCode, removeColor, toggleCS } from "./auftrag/colorManager.js";
 import { addBearbeitungsschritt, addStep, sendNote, removeNote, addNewNote, initNotes } from "./auftrag/noteStepManager.js";
 import { setOrderFinished, updateDate, updateDeadline, setDeadlineState, initExtraOptions, editDescription, editOrderType, editTitle, archvieren } from "./auftrag/orderManager.js";
 import { addExistingVehicle, addNewVehicle, selectVehicle } from "./auftrag/vehicleManager.js";
@@ -291,6 +291,7 @@ fnNames.click_addColor = addColor;
 fnNames.click_removeColor = removeColor;
 fnNames.click_addSelectedColors = addSelectedColors;
 fnNames.write_checkHexCode = checkHexCode;
+fnNames.click_toggleCS = toggleCS;
 
 fnNames.click_addBearbeitungsschritt = addBearbeitungsschritt;
 fnNames.click_addStep = addStep;
