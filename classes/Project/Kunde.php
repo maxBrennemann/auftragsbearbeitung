@@ -198,7 +198,8 @@ class Kunde implements StatisticsInterface
 		return $content;
 	}
 
-	public function getContactPersons() {
+	public function getContactPersons()
+	{
 		$query = "SELECT a.Nummer AS id, a.Vorname AS firstName, a.Nachname AS lastName, a.Email AS email
 			FROM ansprechpartner a 
 			WHERE a.Kundennummer = :kdnr";
@@ -221,7 +222,7 @@ class Kunde implements StatisticsInterface
 		return "";
 	}
 
-	public function getFahrzeuge()
+	public function getVehicles()
 	{
 		$query = "SELECT Kennzeichen, Fahrzeug, Nummer FROM fahrzeuge WHERE Kundennummer = :kdnr";
 		$data = DBAccess::selectQuery($query, [
@@ -248,8 +249,9 @@ class Kunde implements StatisticsInterface
 
 	private function loadAddresses()
 	{
-		if ($this->addresses != null)
+		if ($this->addresses != null) {
 			return null;
+		}
 
 		$addresses = Address::loadAllAddresses($this->kundennummer);
 		foreach ($addresses as $address) {
