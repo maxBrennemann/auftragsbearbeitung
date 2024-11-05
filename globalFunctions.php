@@ -3,9 +3,11 @@
 define('CURRENTVERSION', '1.1.18');
 ini_set('display_errors', true);
 
+use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
-function printError($message) {
+function printError($message)
+{
 	if ($_ENV["DEV_MODE"] == "true") {
 		JSONResponseHandler::throwError(500, $message);
 	} else {
@@ -15,10 +17,11 @@ function printError($message) {
 	die();
 }
 
-function exception_error_handler($severity, $message, $file, $line) {
-    if (!(error_reporting() & $severity)) {
-        return;
-    }
+function exception_error_handler($severity, $message, $file, $line)
+{
+	if (!(error_reporting() & $severity)) {
+		return;
+	}
 
 	printError([
 		"message" => $message,
@@ -30,7 +33,8 @@ function exception_error_handler($severity, $message, $file, $line) {
 
 set_error_handler("exception_error_handler");
 
-function fatal_handler() {
+function fatal_handler()
+{
 	$error = error_get_last();
 
 	if ($error == null) {
@@ -55,7 +59,8 @@ register_shutdown_function("fatal_handler");
 /**
  * https://stackoverflow.com/questions/2236668/file-get-contents-breaks-up-utf-8-characters
  */
-function file_get_contents_utf8($fn) {
+function file_get_contents_utf8($fn)
+{
 	$content = file_get_contents($fn);
 	return mb_convert_encoding($content, 'UTF-8', mb_detect_encoding($content, 'UTF-8, ISO-8859-1', true));
 }
@@ -65,23 +70,27 @@ function file_get_contents_utf8($fn) {
  * https://www.php.net/manual/en/function.str-contains.php
  */
 if (!function_exists('str_contains')) {
-    function str_contains($haystack, $needle) {
-        return $needle !== '' && mb_strpos($haystack, $needle) !== false;
-    }
+	function str_contains($haystack, $needle)
+	{
+		return $needle !== '' && mb_strpos($haystack, $needle) !== false;
+	}
 }
 
-function isLoggedIn() {
+function isLoggedIn()
+{
 	if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true) {
-		return true;	
+		return true;
 	}
 	return false;
 }
 
-function getCurrentVersion() {
+function getCurrentVersion()
+{
 	return CURRENTVERSION;
 }
 
-function errorReporting() {
+function errorReporting()
+{
 	if ($_ENV["ERRORREPORTING"]) {
 		error_reporting(E_ALL);
 		ini_set('display_errors', '1');
@@ -90,7 +99,8 @@ function errorReporting() {
 	ini_set('display_errors', false);
 }
 
-function getParameter($value, $type = "GET", $default = "") {
+function getParameter($value, $type = "GET", $default = "")
+{
 	switch ($type) {
 		case "GET":
 			if (isset($_GET[$value])) {
@@ -106,7 +116,8 @@ function getParameter($value, $type = "GET", $default = "") {
 	return $default;
 }
 
-function insertTemplate($path, array $parameters = []) {
+function insertTemplate($path, array $parameters = [])
+{
 	if (file_exists($path)) {
 		extract($parameters);
 		include $path;
@@ -114,12 +125,13 @@ function insertTemplate($path, array $parameters = []) {
 }
 
 /** https://stackoverflow.com/a/2792045/7113688 */
-function dashesToCamelCase($string, $capitalizeFirstCharacter = false) {
-    $str = str_replace('-', '', ucwords($string, '-'));
+function dashesToCamelCase($string, $capitalizeFirstCharacter = false)
+{
+	$str = str_replace('-', '', ucwords($string, '-'));
 
-    if (!$capitalizeFirstCharacter) {
-        $str = lcfirst($str);
-    }
+	if (!$capitalizeFirstCharacter) {
+		$str = lcfirst($str);
+	}
 
-    return $str;
+	return $str;
 }
