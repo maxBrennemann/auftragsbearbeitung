@@ -639,7 +639,7 @@ class Auftrag implements StatisticsInterface
 		$bezeichnung = $_POST['bezeichnung'];
 		$beschreibung = $_POST['beschreibung'];
 		$typ = $_POST['typ'];
-		$termin = getParameter("termin", "POST", null);
+		$termin = Tools::get("termin");
 		$angenommenVon = $_POST['angenommenVon'];
 		$kdnr = $_POST['customerId'];
 		$angenommenPer = $_POST['angenommenPer'];
