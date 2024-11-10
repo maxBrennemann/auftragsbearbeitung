@@ -3,6 +3,7 @@
 namespace Classes;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\Tools;
 
 class Login
 {
@@ -103,9 +104,12 @@ class Login
 	 */
 	private static function getDeviceKey()
 	{
-		$userAgent = getParameter("userAgent", "POST", "unknown");
-		if (isset($_POST["deviceKey"]) && strlen($_POST["deviceKey"]) == 32) {
+		$userAgent = Tools::get("userAgent");
+		if ($userAgent == null) {
+			$userAgent = "unknown";
+		}
 
+		if (isset($_POST["deviceKey"]) && strlen($_POST["deviceKey"]) == 32) {
 			return [
 				"deviceKey" => $_POST["deviceKey"],
 				"deviceId" => self::getDeviceId($_POST["deviceKey"])
@@ -213,15 +217,19 @@ class Login
 	 */
 	public static function handleAutoLogin()
 	{
-		$userAgent = getParameter("userAgent", "POST", "unknown");
-		$browser = $_POST["browser"];
-		$os = $_POST["os"];
-		$isMobile = $_POST["isMobile"];
-		$isTablet = $_POST["isTablet"];
+		$userAgent = Tools::get("userAgent");
+		if ($userAgent == null) {
+			$userAgent = "unknown";
+		}
+
+		$browser = Tools::get("browser");
+		$os = Tools::get("os");
+		$isMobile = Tools::get("isMobile");
+		$isTablet = Tools::get("isTablet");
 		$deviceType = self::castDevice($isMobile, $isTablet);
 
 		$data = DBAccess::selectQuery("SELECT id, browser_agent, browser, os, device_type FROM user_devices WHERE md_hash = :deviceKey", [
-			'deviceKey' => $_POST["deviceKey"]
+			'deviceKey' => Tools::get("deviceKey")
 		]);
 
 		if (count($data) == 0) {

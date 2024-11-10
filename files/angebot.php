@@ -43,22 +43,3 @@ if (isset($_GET['open'])) :
 </div>
 <div id="insTemp"></div>
 <?php endif; ?>
-<style>
-
-	.address {
-		padding-right: 15px;
-	}
-
-	.fleft {
-		float: left;
-	}
-
-	.fright {
-		float: right;
-	}
-
-	.inlineC {
-		display: inline-block;
-	}
-
-</style>

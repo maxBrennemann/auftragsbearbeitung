@@ -3,6 +3,7 @@
 namespace Classes;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\Tools;
 
 use Classes\Project\Auftragsverlauf;
 use Classes\Project\Auftrag;
@@ -88,7 +89,7 @@ class Upload
 
             /* upload each image */
             foreach ($ids as $id) {
-                $imageCategory = getParameter("imageCategory", "POST", null);
+                $imageCategory = Tools::get("imageCategory");
                 $query = "INSERT INTO module_sticker_image (id_datei, id_motiv, image_sort) VALUES (:id, :motivnummer, :imageCategory)";
 
                 $params = [

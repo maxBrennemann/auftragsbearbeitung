@@ -3,7 +3,6 @@
 define('CURRENTVERSION', '1.1.18');
 ini_set('display_errors', true);
 
-use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 function printError($message)
@@ -97,23 +96,6 @@ function errorReporting()
 	}
 
 	ini_set('display_errors', false);
-}
-
-function getParameter($value, $type = "GET", $default = "")
-{
-	switch ($type) {
-		case "GET":
-			if (isset($_GET[$value])) {
-				return $_GET[$value];
-			}
-			break;
-		case "POST":
-			if (isset($_POST[$value])) {
-				return $_POST[$value];
-			}
-			break;
-	}
-	return $default;
 }
 
 function insertTemplate($path, array $parameters = [])
