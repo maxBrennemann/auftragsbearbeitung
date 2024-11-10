@@ -552,9 +552,6 @@ class Ajax
 				$angebot->addPosten($leistungsPosten);
 				break;
 			case "storeOffer":
-				/*$customerId = $_POST['customerId'];
-				$angebot = new Angebot($customerId);
-				$angebot->storeOffer();*/
 				Angebot::setIsOrder();
 				break;
 			case "sendNewAddress":
@@ -643,7 +640,6 @@ class Ajax
 				break;
 			case "loadPosten":
 				if (isset($_SESSION['offer_is_order']) && $_SESSION['offer_is_order'] == true) {
-					$offerId = $_SESSION['offer_id'];
 					$orderId = $_POST['auftragsId'];
 					$angebot = new Angebot();
 					$angebot->storeOffer($orderId);

@@ -303,7 +303,7 @@ if ($auftragsId == -1): ?>
 		<div class="grid grid-cols-4" id="noteContainer"></div>
 	</div>
 	<div class="defCont posten">
-		<p><span class="font-bold">Zeiten, Produkte und Kosten (netto)</span> <input id="rechnungspostenAusblenden" type="checkbox" <?=ClientSettings::getFilterOrderPosten() == true ? "checked" : ""?>> Rechnungsposten ausblenden</p>
+		<p><span class="font-bold inline-flex items-center">Zeiten, Produkte und Kosten (netto)</span> <input id="rechnungspostenAusblenden" type="checkbox" <?=ClientSettings::getFilterOrderPosten() == true ? "checked" : ""?>> Rechnungsposten ausblenden</p>
 		<div id="auftragsPostenTable" class="overflow-x-auto lg:w-full">
 			<?=$auftrag->getAuftragspostenAsTable()?>
 		</div>
