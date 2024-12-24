@@ -180,6 +180,20 @@ function showDeleteMessage(row, header, key, type) {
     centerAbsoluteElement(div);
 }
 
+const toggleOrderDescription = () => {
+    const toggleUp = document.querySelector(".toggle-up");
+    const toggleDown = document.querySelector(".toggle-down");
+
+    const el = document.querySelector(".orderDescription.hidden");
+    const rep = document.querySelector(".orderDescription:not(.hidden)");
+
+    el.classList.toggle("hidden");
+    rep.classList.toggle("hidden");
+
+    toggleUp.classList.toggle("hidden");
+    toggleDown.classList.toggle("hidden");
+}
+
 /* function starts deletion of the row */
 window.deleteRow = function(key, type = "schritte", node) {
     let row = node.parentNode.parentNode;
@@ -307,6 +321,7 @@ fnNames.write_editOrderType = editOrderType;
 fnNames.write_editTitle = editTitle;
 fnNames.click_setDeadlineState = setDeadlineState;
 fnNames.click_archvieren = archvieren;
+fnNames.click_toggleOrderDescription = toggleOrderDescription;
 
 fnNames.click_addExistingVehicle = addExistingVehicle;
 fnNames.click_addNewVehicle = addNewVehicle;

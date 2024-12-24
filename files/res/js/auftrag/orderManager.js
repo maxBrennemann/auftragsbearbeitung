@@ -95,7 +95,7 @@ function closeAlert() {
 }
 
 export function editDescription() {
-    var text = document.getElementById("orderDescription");
+    var text = document.querySelector(".orderDescription:not(.hidden)");
 
     ajax.post({
         r: "saveDescription",

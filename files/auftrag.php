@@ -177,12 +177,21 @@ if ($auftragsId == -1): ?>
 			<input class="input-primary-new w-full" id="orderTitle" value="<?=$auftrag->getAuftragsbezeichnung()?>" autocomplete="none" data-write="true" data-fun="editTitle">
 		</div>
 		<div class="inputCont">
-			<label for="orderDescription">Auftragsbeschreibung:</label>
-			<textarea class="input-primary-new w-full" id="orderDescription" autocomplete="none" data-write="true" data-fun="editDescription" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"><?=$auftrag->getAuftragsbeschreibung()?></textarea>
+			<div>
+				<span>Auftragsbeschreibung:</span>
+				<span class="cursor-pointer" data-fun="toggleOrderDescription" data-binding="true">
+					<span class="toggle-up"><?=Icon::getDefault("iconChevronUp")?></span>
+					<span class="toggle-down hidden"><?=Icon::getDefault("iconChevronDown")?></span>
+				</span>
+			</div>
+			<div>
+				<textarea class="orderDescription input-primary-new w-full" autocomplete="none" data-write="true" data-fun="editDescription" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"><?=$auftrag->getAuftragsbeschreibung()?></textarea>
+				<input class="orderDescription input-primary-new w-full hidden" autocomplete="none" data-write="true" data-fun="editDescription" value="<?=$auftrag->getAuftragsbeschreibung()?>">
+			</div>
 		</div>
 		<div class="inputCont">
 			<label for="orderType">Auftragstyp:</label>
-			<select class="input-primary-new w-full" id="orderType" data-write="true" data-fun="editOrderType"><?=$auftrag->getAuftragsbeschreibung()?>
+			<select class="input-primary-new w-full" id="orderType" data-write="true" data-fun="editOrderType">
 				<?php foreach($auftragsTypen as $type): ?>
 				<option value="<?=$type["id"]?>" <?=$auftragsTyp == $type["id"] ? "selected" : "" ?>><?=$type["Auftragstyp"]?></option>
 				<?php endforeach; ?>
