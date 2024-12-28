@@ -94,7 +94,7 @@ class Ajax
 			case "notification":
 				NotificationRoutes::handleRequest($path);
 				break;
-			case "order-item":
+			case "order-items":
 				OrderItemRoutes::handleRequest($path);
 				break;
 			case "order":
@@ -626,17 +626,6 @@ class Ajax
 					$rechnung = unserialize($_SESSION['tempInvoice']);
 					$rechnung->PDFgenerieren(true);
 				}
-				break;
-			case "reloadPostenListe":
-				$auftragsId = $_POST['id'];
-				$auftrag = new Auftrag($auftragsId);
-
-				$data = [
-					0 => $auftrag->getAuftragspostenAsTable(),
-					1 => $auftrag->getInvoicePostenTable()
-				];
-
-				echo json_encode($data);
 				break;
 			case "loadPosten":
 				if (isset($_SESSION['offer_is_order']) && $_SESSION['offer_is_order'] == true) {
@@ -1227,9 +1216,6 @@ class Ajax
 				echo json_encode([
 					"template" => $content,
 				]);
-				break;
-			case "setRechnungspostenAusblenden":
-				ClientSettings::setFilterOrderPosten();
 				break;
 			case "updateImageDescription":
 				$id = (int) $_POST["imageId"];

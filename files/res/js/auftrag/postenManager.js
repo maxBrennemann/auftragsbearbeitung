@@ -320,16 +320,18 @@ function manageCancleBtn(insertBefore, id, cancleFunction) {
 
 export function initPostenFilter() {
     const inputRechnungspostenAusblenden = document.getElementById("rechnungspostenAusblenden");
-    if (inputRechnungspostenAusblenden != null) {
-        inputRechnungspostenAusblenden.addEventListener("change", function (e) {
-            const value = e.target.checked;
-            ajax.post({
-                r: "setRechnungspostenAusblenden",
-                value: value,
-            });
-            reloadPostenListe();
-        });
+    if (inputRechnungspostenAusblenden == null) {
+        return;
     }
+
+    inputRechnungspostenAusblenden.addEventListener("change", function (e) {
+        const value = e.target.checked;
+        ajax.put(`/api/v1/settings/filter-order-posten`, {
+            "value": value,
+        }).then(() => {
+            reloadPostenListe();
+        })
+    });
 }
 
 export function click_mehListener() {
@@ -364,20 +366,14 @@ export function addProductCompact() {
     btns[1].click();
 }
 
-function reloadPostenListe() {
-    ajax.post({
+const reloadPostenListe = async () => {
+    const response = await ajax.post(``, {
         getReason: "reloadPostenListe",
-        id: globalData.auftragsId,
-    }).then(response => {
-        try {
-            response = JSON.parse(response);
-        } catch(e) {
-
-        }
-        
-        document.getElementById("auftragsPostenTable").innerHTML = response[0];
-        document.getElementById("invoicePostenTable").innerHTML = response[1];
+        "id": globalData.auftragsId,
     });
+
+    document.getElementById("auftragsPostenTable").innerHTML = response[0];
+    document.getElementById("invoicePostenTable").innerHTML = response[1];
 }
 
 function updatePrice(newPrice) {

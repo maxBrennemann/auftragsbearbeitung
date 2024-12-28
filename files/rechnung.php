@@ -7,8 +7,8 @@ use Classes\Project\Auftrag;
 use Classes\Project\Rechnung;
 use Classes\Project\Address;
 
-$rechnung =  Link::getPageLink("rechnung");
-$home =  Link::getPageLink("");
+$rechnung = Link::getPageLink("rechnung");
+$home = Link::getPageLink("");
 $rechnungsnummer = 0;
 $rechnungslink;
 $rechnungsadressen;
