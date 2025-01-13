@@ -3,6 +3,8 @@
 namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
 
 class ClientSettings
 {
@@ -64,9 +66,9 @@ class ClientSettings
 
     public static function setFilterOrderPosten()
     {
-        $setTo = $_POST["value"];
-
+        $setTo = Tools::get("value");
         $userId = $_SESSION['userid'];
+
         $value = GlobalSettings::getSetting("filterOrderPosten_$userId");
 
         if ($value == null) {
@@ -74,5 +76,7 @@ class ClientSettings
         } else {
             GlobalSettings::changeSetting("filterOrderPosten_$userId", $setTo);
         }
+
+        JSONResponseHandler::returnOK();
     }
 }

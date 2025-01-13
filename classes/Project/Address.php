@@ -20,6 +20,7 @@ class Address
     private $ort = null;
     private $zusatz = null;
     private $art = null;
+    private $land = null;
 
     function __construct() {}
 

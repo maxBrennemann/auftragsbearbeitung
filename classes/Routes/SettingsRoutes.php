@@ -13,8 +13,10 @@ class SettingsRoutes extends Routes
 
     /**
      * @uses Classes\Project\TimeTrackingController::toggleDisplayTimeTracking()
+     * @uses Classes\Project\ClientSettings::setFilterOrderPosten()
      */
     protected static $putRoutes = [
         "/settings/global-timetracking" => [\Classes\Project\TimeTrackingController::class, "toggleDisplayTimeTracking"],
+        "/settings/filter-order-posten" => [\Classes\Project\ClientSettings::class, "setFilterOrderPosten"],
     ];
 }

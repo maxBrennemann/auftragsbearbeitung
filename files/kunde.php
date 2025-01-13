@@ -329,3 +329,4 @@ if (isset($_GET['id'])) {
 	</div>
 <?php endif; ?>
 <script src="<?=Link::getResourcesShortLink("kunde_f.js", "js")?>"></script>
+<!-- TODO: add addresses -->
