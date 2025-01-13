@@ -21,4 +21,5 @@ class Offer
     }
 
     public static function getAllOffers() {}
+    
 }
