@@ -49,15 +49,6 @@ class ResourceManager
             case "api":
                 Ajax::handleRequests();
                 exit;
-            case "admin":
-                require_once('admin.php');
-                exit;
-            case "account":
-                require_once('account.php');
-                exit;
-            case "upgrade":
-                require_once('upgrade.php');
-                exit;
             case "favicon.ico":
                 require_once('favicon.php');
                 exit;

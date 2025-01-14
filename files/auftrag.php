@@ -89,7 +89,7 @@ if ($auftragsId == -1): ?>
 <div>
 	<div class="defCont" id="orderFinished">
 		<p>Auftrag <?=$auftrag->getAuftragsnummer()?> wurde abgeschlossen. Rechnungsnummer: <span id="rechnungsnummer"><?=$auftrag->getRechnungsnummer()?></span></p>
-		<button class="btn-primary" onclick="showAuftrag()">Auftrag anzeigen</button>
+		<button class="btn-primary-new" data-fun="showAuftrag" data-binding="true">Auftrag anzeigen</button>
 		<?php
 			$invoiceLink = $auftrag->getKundennummer() . "_" . $auftrag->getRechnungsnummer() . ".pdf";
 			$invoiceLink = Link::getResourcesShortLink($invoiceLink, "pdf");

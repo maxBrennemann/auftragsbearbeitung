@@ -3,6 +3,8 @@
 namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
 
 class Zeit extends Posten
 {
@@ -255,4 +257,38 @@ class Zeit extends Posten
 
 		return $timeInInt;
 	}
+
+	public static function add() {
+		$data = [];
+		$data['ZeitInMinuten'] = Tools::get("time");
+		$data['Stundenlohn'] = Tools::get("wage");
+		$data['Beschreibung'] = Tools::get("description");
+		$data['Auftragsnummer'] = Tools::get("id");
+		$data['ohneBerechnung'] = Tools::get("noPayment");
+		$data['discount'] = (int) Tools::get("discount");
+		$data['addToInvoice'] = (int) Tools::get("addToInvoice");
+
+		$isOverwrite = Tools::get("overwrite");
+		if (isset($isOverwrite) && (int) $isOverwrite == 1) {
+			$_SESSION['overwritePosten'] = false;
+		}
+
+		$ids = Posten::insertPosten("zeit", $data);
+
+		/* erweiterte Zeiterfassung */
+		$zeiterfassung = json_decode(Tools::get("times"), true);
+		if (count($zeiterfassung) != 0) {
+			Zeit::erweiterteZeiterfassung($zeiterfassung, $ids[1]);
+		}
+
+		$_SESSION['overwritePosten'] = false;
+
+		$newOrder = new Auftrag(Tools::get("id"));
+		$price = $newOrder->preisBerechnen();
+
+		JSONResponseHandler::sendResponse([
+			"price" => $price,
+		]);
+	}
+
 }

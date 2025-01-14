@@ -11,29 +11,17 @@ class OrderItemRoutes extends Routes
      *
      */
     protected static $getRoutes = [
-        "/order-items/{id}/table" => []
+        "/order-items/{id}/table" => [],
+        "/order-items/{id}/all" => [\Classes\Project\Auftrag::class, "itemsOverview"],
     ];
 
     /**
      * @uses Classes\Project\Auftrag::getItemsOverview()
+     * @uses Classes\Project\Zeit::add()
      */
     protected static $postRoutes = [
         "/order-items/{id}/overview" => [],
+        "/order-items/{id}/times" => [\Classes\Project\Zeit::class, "add"],
     ];
 
 }
-
-
-/*
-case "reloadPostenListe":
-				$auftragsId = $_POST['id'];
-				$auftrag = new Auftrag($auftragsId);
-
-				$data = [
-					0 => $auftrag->getAuftragspostenAsTable(),
-					1 => $auftrag->getInvoicePostenTable()
-				];
-
-				echo json_encode($data);
-				break;
-                */
