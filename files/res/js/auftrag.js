@@ -25,8 +25,6 @@ function initCode() {
         return;
     }
 
-    createTimeInputRow();
-
     addSearchEventListeners();
 
     if (document.getElementById("selectVehicle") == null) {

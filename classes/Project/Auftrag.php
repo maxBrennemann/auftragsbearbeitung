@@ -949,4 +949,20 @@ class Auftrag implements StatisticsInterface
 			"colors" => $response,
 		]);
 	}
+
+	public static function itemsOverview()
+	{
+		$auftragsId = Tools::get("id");
+		$auftrag = new Auftrag($auftragsId);
+
+		$data = [
+			0 => $auftrag->getAuftragspostenAsTable(),
+			1 => $auftrag->getInvoicePostenTable()
+		];
+
+		JSONResponseHandler::sendResponse([
+			"data" => $data,
+		]);
+	}
+
 }

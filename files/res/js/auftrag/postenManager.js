@@ -1,3 +1,5 @@
+import { ajax } from "../classes/ajax.js";
+
 export async function addProductCompactOld() {
     await ajax.post({
         r: "insertProductCompact",
@@ -55,26 +57,32 @@ export function addLeistung() {
     });
 }
 
-export function addTime() {
+export const addTime = () => {
     const wage = document.getElementById("wage").value;
     if (wage == "" || wage == null) {
         alert("Stundenlohn kann nicht leer sein.");
         return;
     }
 
-    ajax.post({
-        r: "insTime",
-        time: document.getElementById("time").value,
-        wage: wage,
-        auftrag: globalData.auftragsId,
-        descr: document.getElementById("descr").value,
-        ohneBerechnung: getOhneBerechnung() ? 1 : 0,
-        addToInvoice: getAddToInvoice() ? 1 : 0,
-        discount: document.getElementById("showDiscount").children[0].value,
-        isOverwrite: globalData.isOverwrite ? 1 : 0,
-        zeiterfassung: JSON.stringify(globalData.times),
-    }, true).then(response => {
-        updatePrice(response);
+    const time = document.getElementById("time").value;
+    const description = document.getElementById("descr").value;
+    const noPayment = getOhneBerechnung() ? 1 : 0;
+    const addToInvoice = getAddToInvoice() ? 1 : 0;
+    const discount = document.getElementById("showDiscount").children[0].value;
+    const overwrite = globalData.isOverwrite ? 1 : 0;
+    const times = JSON.stringify(globalData.times);
+
+    ajax.post(`/api/v1/order-items/${globalData.auftragsId}/times`, {
+        "time": time,
+        "wage": wage,
+        "description": description,
+        "noPayment": noPayment,
+        "addToInvoice": addToInvoice,
+        "discount": discount,
+        "overwrite": overwrite,
+        "times": times,
+    }).then(r => {
+        updatePrice(r.price);
         reloadPostenListe();
         infoSaveSuccessfull("success");
         clearInputs({
@@ -367,13 +375,10 @@ export function addProductCompact() {
 }
 
 const reloadPostenListe = async () => {
-    const response = await ajax.post(``, {
-        getReason: "reloadPostenListe",
-        "id": globalData.auftragsId,
-    });
+    const response = await ajax.get(`/api/v1/order-items/${globalData.auftragsId}/all`);
 
-    document.getElementById("auftragsPostenTable").innerHTML = response[0];
-    document.getElementById("invoicePostenTable").innerHTML = response[1];
+    document.getElementById("auftragsPostenTable").innerHTML = response.data[0];
+    document.getElementById("invoicePostenTable").innerHTML = response.data[1];
 }
 
 function updatePrice(newPrice) {

@@ -233,31 +233,6 @@ class Ajax
 			case "createAuftrag":
 				Auftrag::add();
 				break;
-			case "insTime":
-				$data = array();
-				$data['ZeitInMinuten'] = $_POST['time'];
-				$data['Stundenlohn'] = $_POST['wage'];
-				$data['Beschreibung'] = $_POST['descr'];
-				$data['Auftragsnummer'] = $_POST['auftrag'];
-				$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
-				$data['discount'] = (int) $_POST['discount'];
-				$data['addToInvoice'] = (int) $_POST['addToInvoice'];
-
-				if (isset($_POST['isOverwrite']) && (int) $_POST['isOverwrite'] == 1) {
-					$_SESSION['overwritePosten'] = false;
-				}
-
-				$ids = Posten::insertPosten("zeit", $data);
-
-				/* erweiterte Zeiterfassung */
-				$zeiterfassung = json_decode($_POST['zeiterfassung'], true);
-				if (count($zeiterfassung) != 0) {
-					Zeit::erweiterteZeiterfassung($zeiterfassung, $ids[1]);
-				}
-
-				$_SESSION['overwritePosten'] = false;
-				echo (new Auftrag($_POST['auftrag']))->preisBerechnen();
-				break;
 			case "insertLeistung":
 				$data = array();
 				$data['Leistungsnummer'] = $_POST['lei'];
