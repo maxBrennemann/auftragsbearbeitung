@@ -213,7 +213,7 @@ window.updateIsDone = function(key, event) {
     }, event.target);
 }
 
-window.showAuftrag = function() {
+const showAuftrag = () => {
     var url = window.location.href;
     url += "&show=t";
     window.location.href = url;
@@ -297,6 +297,8 @@ window.performAction = function(key, event) {
     fileUploaders.push(new FileUploader(form));
     centerAbsoluteElement(div);
 }
+
+fnNames.click_showAuftrag = showAuftrag;
 
 fnNames.click_mehListener = click_mehListener;
 fnNames.write_changeContact = changeContact;

@@ -238,7 +238,7 @@ const toggleSteps = (e) => {
 
 const init = () => {
     const toggleStepsInput = document.getElementById("toggleSteps");
-    toggleStepsInput.addEventListener("change", toggleSteps);
+    toggleStepsInput?.addEventListener("change", toggleSteps);
 }
 
 if (document.readyState !== 'loading' ) {
