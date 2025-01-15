@@ -12,9 +12,87 @@ class Model
     protected string $primary = "id";
     protected array $hooks = [];
 
+    protected string $conditions = "";
+
+    public function read(array $conditions)
+    {
+        $query = "SELECT * FROM {$this->tableName}";
+
+        if (!empty($conditions)) {
+            $whereClauses = [];
+            $params = [];
+
+            foreach ($conditions as $key => $value) {
+                $whereClauses[] = "{$key} = :{$key}";
+                $params[$key] = $value;
+            }
+
+            $query .= " WHERE " . implode(" AND ", $whereClauses);
+        }
+
+        return DBAccess::selectQuery($query, $params ?? []);
+    }
+
+    public function join(
+        string $relatedTable,
+        string $localKey,
+        string $foreignKey,
+        string $joinType = "INNER",
+        array $conditions = [],
+    ) {
+        $this->triggerHook("beforeJoin", [
+            "relatedTable" => $relatedTable,
+            "localKey" => $localKey,
+            "foreignKey" => $foreignKey,
+            "joinType" => $joinType,
+            "conditions" => &$conditions,
+        ]);
+
+        $onClause = "{$this->tableName}.{$localKey} = {$relatedTable}.{$foreignKey}";
+
+        foreach ($conditions as $key => $value) {
+            $onClause .= " AND {$key} = :{$key}";
+            $parameters[$key] = $value;
+        }
+
+        $query = "SELECT * FROM {$this->tableName}
+            {$joinType} JOIN {$relatedTable}
+            ON {$onClause};";
+
+        $this->triggerHook("modifyJoinQuery", ["query" => &$query]);
+
+        $results = DBAccess::selectQuery($query, $parameters);
+
+        $this->triggerHook("afterJoin", [
+            "results" => &$results,
+            "query" => $query,
+        ]);
+
+        return $results;
+    }
+
     public function add() {}
 
-    public function delete() {}
+    public function delete($conditions)
+    {
+        $query = "DELETE FROM {$this->tableName}";
+
+        if (empty($conditions)) {
+            return false;
+        }
+
+        $whereClauses = [];
+        $params = [];
+
+        foreach ($conditions as $key => $value) {
+            $whereClauses[] = "{$key} = :{$key}";
+            $params[$key] = $value;
+        }
+
+        $query .= " WHERE " . implode(" AND ", $whereClauses);
+
+        return DBAccess::selectQuery($query, $params ?? []);
+    }
 
     public function update($id, array $data): bool
     {

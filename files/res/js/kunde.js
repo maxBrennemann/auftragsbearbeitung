@@ -1,4 +1,4 @@
-import { createTable } from "./classes/table_new.js";
+import { addRow, createHeader, createTable } from "./classes/table_new.js";
 
 const globalProperties = {
     changedData: {},
@@ -9,6 +9,8 @@ const globalProperties = {
 };
 
 function initialize() {
+    contactPersonTable();
+
     var showKundendaten = document.getElementById("showKundendaten");
     if (showKundendaten == null) return;
     var inputs = showKundendaten.getElementsByTagName("input");
@@ -69,6 +71,7 @@ function initialize() {
     }, false);
 
     var kdnr = document.getElementById("kdnr").value;
+    return;
     getAddresses = new AjaxCall(`getReason=getAddresses&kdnr=${kdnr}`, "POST", window.location.href);
     getAddresses.makeAjaxCall(function (response) {
         globalProperties.addressSet = JSON.parse(response);
@@ -219,16 +222,6 @@ function deleteRow(key, type, pointer) {
     }
 }
 
-if (document.readyState !== 'loading' ) {
-    initCustomer();
-    initialize();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        initCustomer();
-        initialize();
-    });
-}
-
 function initCustomer() {
     const notesTextarea = document.getElementById('notesTextarea');
 
@@ -279,6 +272,56 @@ function rearchive(id) {
     });
 }
 
-const contactPersonTable = () => {
-    createTable("contactPersonTable");
+const contactPersonTable = async () => {
+    const table = createTable("contactPersonTable");
+    createHeader([
+        {
+            key: "Vorname",
+            label: "Vorname"
+        },
+        {
+            key: "Nachname",
+            label: "Nachname"
+        },
+        {
+            key: "Email",
+            label: "Email"
+        },
+        {
+            key: "Durchwahl",
+            label: "Durchwahl"
+        },
+        {
+            key: "Mobiltelefonnummer",
+            label: "Mobiltelefonnummer"
+        },
+    ], table);
+
+    const conditions = JSON.stringify({
+        "Kundennummer": document.getElementById("kdnr").value,
+    });
+
+    const data = await ajax.get(`/api/v1/tables/ansprechpartner`, {
+        "conditions": conditions,
+    });
+
+    data.forEach(row => {
+        addRow(row, table, {
+            "hide": ["Nummer", "Kundennummer"],
+        });
+    });
+
+    table.addEventListener("rowDelete", (event) => {
+        console.log(event.details);
+    });
+}
+
+if (document.readyState !== 'loading' ) {
+    initCustomer();
+    initialize();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        initCustomer();
+        initialize();
+    });
 }

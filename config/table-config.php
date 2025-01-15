@@ -11,8 +11,12 @@ return [
             "Durchwahl", 
             "Mobiltelefonnummer"
         ],
+        "primaryKey" => "Nummer",
         "names" => [],
         "permissions" => [],
-        "hooks" => [],
+        "hooks" => [
+            "beforeSelect" => "",
+        ],
+        "joins" => [],
     ]
 ];
