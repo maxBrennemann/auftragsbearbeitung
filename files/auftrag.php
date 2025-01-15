@@ -16,7 +16,6 @@ use Classes\Project\Color;
 
 ?>
 
-<script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
 <script src="<?=Link::getResourcesShortLink("colorpicker.js", "js")?>"></script>
 <script src="<?=Link::getResourcesShortLink("list.js", "js")?>"></script>
 

@@ -1,4 +1,5 @@
 import { addRow, createHeader, createTable } from "./classes/table_new.js";
+import { tableConfig } from "./js/tableconfig.js";
 
 const globalProperties = {
     changedData: {},
@@ -274,28 +275,8 @@ function rearchive(id) {
 
 const contactPersonTable = async () => {
     const table = createTable("contactPersonTable");
-    createHeader([
-        {
-            key: "Vorname",
-            label: "Vorname"
-        },
-        {
-            key: "Nachname",
-            label: "Nachname"
-        },
-        {
-            key: "Email",
-            label: "Email"
-        },
-        {
-            key: "Durchwahl",
-            label: "Durchwahl"
-        },
-        {
-            key: "Mobiltelefonnummer",
-            label: "Mobiltelefonnummer"
-        },
-    ], table);
+    const config = tableConfig["ansprechpartner"];
+    createHeader(config.columns, table);
 
     const conditions = JSON.stringify({
         "Kundennummer": document.getElementById("kdnr").value,

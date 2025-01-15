@@ -10,8 +10,6 @@ use Classes\Project\UpdateSchedule;
 
 ?>
 
-<script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
-
 <?php
 
 $orderCount = 0;

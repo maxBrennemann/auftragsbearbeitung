@@ -446,7 +446,7 @@ class Table
 		}
 
 		if ($this->addNewLineButtonTrue) {
-			$html .= "<br><button class=\"addToTable\" data-table=\"$this->dataKey\" onclick=\"tableAddnewLine();\">+</button>";
+			$html .= "<br><button class=\"addToTable\" data-table=\"$this->dataKey\">+</button>";
 		}
 
 		return $html;

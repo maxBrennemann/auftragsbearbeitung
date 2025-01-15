@@ -92,8 +92,6 @@ window.performSearch = function(e) {
         document.body.appendChild(div);
         centerAbsoluteElement(div);
         addActionButtonForDiv(div, 'remove');
-
-        addableTables();
     });
 }
 

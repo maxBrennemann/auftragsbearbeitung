@@ -78,7 +78,6 @@ $tableOrderType->defineUpdateSchedule(new UpdateSchedule("auftragstyp", $pattern
 $_SESSION[$tableOrderType->getTableKey()] = serialize($tableOrderType);
 
 ?>
-<script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
 <section class="defCont">
     <h2 class="font-bold">Auftragstypen festlegen</h2>
     <?=$tableOrderType->getTable()?>

@@ -48,7 +48,6 @@ function getSelections() {
         showProducts.makeAjaxCall(function (responseTable) {
             document.getElementById("addPostenProdukt").innerHTML = responseTable;
             document.getElementById("addPostenProdukt").style.display = "inline";
-            addableTables();
         });
     }
 

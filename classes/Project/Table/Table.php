@@ -12,7 +12,8 @@ class Table extends Model
 
     private static function getTableConfig()
     {
-        $data = require_once("config/table-config.php");
+        require_once "config/table-config.php";
+        $data = getTableConfig();
         return $data;
     }
 

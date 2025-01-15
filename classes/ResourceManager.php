@@ -12,6 +12,8 @@ use Classes\Project\Angebot;
 use Classes\Project\Rechnung;
 use Classes\Project\PDF_Auftrag;
 
+use Classes\Project\Table\TableConfig;
+
 use Classes\Project\Modules\Sticker\Exports\ExportFacebook;
 use Classes\Project\Modules\Sticker\Imports\ImportGoogleSearchConsole;
 
@@ -318,6 +320,12 @@ class ResourceManager
         if ($script == "/notifications.js") {
             $file = file_get_contents("node_modules/js-classes/notifications.js");
             echo $file;
+            return;
+        }
+
+        /* tableconfig.js */
+        if ($script == "/tableconfig.js") {
+            TableConfig::generate();
             return;
         }
 
