@@ -10,6 +10,7 @@ use Classes\Project\ClientSettings;
 $globalCSS = Link::getGlobalCSS();
 $tailwindCSS = Link::getTW();
 $globalJS = Link::getGlobalJS();
+$notifications = Link::getResourcesShortLink("notifications.js", "js");
 $curr_Link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
 $neuerKunde   =		Link::getPageLink("neuer-kunde");
@@ -54,11 +55,12 @@ if ($pageName == "") {
 	<link rel="stylesheet" href="<?=$globalCSS?>">
 	<link rel="stylesheet" href="<?=$tailwindCSS?>">
 	<script src="<?=$globalJS?>" type="module"></script>
+	<script src="<?=$notifications?>" type="module"></script>
 	<?php
 		$link = Link::getResourcesShortLink($page . ".js", "js");
 
 		/* TODO: workaround mit module und if check muss noch geändert werden */
-		if ($page == "sticker" || $page == "auftrag" || $page == "diagramme" || $page == "login" || $page == "neues-produkt" || $page == "produkt" || $page == "attributes" || $page == "zahlungen" || $page == "einstellungen" || $page == "sticker-overview") {
+		if ($page == "sticker" || $page == "auftrag" || $page == "diagramme" || $page == "login" || $page == "neues-produkt" || $page == "produkt" || $page == "attributes" || $page == "zahlungen" || $page == "einstellungen" || $page == "sticker-overview" || $page == "kunde") {
 			echo '<script type="module" src="' . $link . '"></script>';
 		} else {
 			echo '<script src="' . $link . '"></script>';

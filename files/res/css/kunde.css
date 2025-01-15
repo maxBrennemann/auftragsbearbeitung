@@ -156,16 +156,6 @@ a[href="#"] {
     color: grey;
 }
 
-/* positionating button in middle of table */
-#ansprechpartnerTable {
-    display: inline-block;
-    text-align: center;
-}
-
-#ansprechpartnerTable table {
-    text-align: left;
-}
-
 .data-input {
     max-width: 100%;
     border: none;

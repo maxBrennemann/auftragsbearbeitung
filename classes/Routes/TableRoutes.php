@@ -7,9 +7,32 @@ use MaxBrennemann\PhpUtilities\Routes;
 class TableRoutes extends Routes
 {
 
-    protected static $getRoutes = [];
+    /**
+     * @uses \Classes\Project\Table\Table::readData
+     */
+    protected static $getRoutes = [
+        "/tables/{tablename}" => [\Classes\Project\Table\Table::class, "readData"],
+    ];
 
-    protected static $postRoutes = [];
+    /**
+     * @uses \Classes\Project\Table\Table::createData
+     */
+    protected static $postRoutes = [
+        "/tables/{tablename}" => [\Classes\Project\Table\Table::class, "createData"],
+    ];
 
-    protected static $deleteRoutes = [];
+    /**
+     * @uses \Classes\Project\Table\Table::updateData
+     */
+    protected static $putRoutes = [
+        "/tables/{tablename}" => [\Classes\Project\Table\Table::class, "updateData"],
+    ];
+
+    /**
+     * @uses \Classes\Project\Table\Table::deleteData
+     */
+    protected static $deleteRoutes = [
+        "/tables/{tablename}" => [\Classes\Project\Table\Table::class, "deleteData"],
+    ];
+
 }

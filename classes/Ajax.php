@@ -55,6 +55,7 @@ use Classes\Project\Modules\Sticker\StickerTagManager;
 use Classes\Project\Modules\Sticker\ProductCrawler;
 
 use Classes\Project\Modules\Sticker\Exports\ExportFacebook;
+use Classes\Routes\TableRoutes;
 use Classes\Routes\TestingRoutes;
 
 class Ajax
@@ -114,11 +115,14 @@ class Ajax
 			case "sticker":
 				StickerRoutes::handleRequest($path);
 				break;
-			case "time-tracking":
-				TimeTrackingRoutes::handleRequest($path);
-				break;
 			case "test":
 				TestingRoutes::handleRequest($path);
+				break;
+			case "tables":
+				TableRoutes::handleRequest($path);
+				break;
+			case "time-tracking":
+				TimeTrackingRoutes::handleRequest($path);
 				break;
 			default:
 				JSONResponseHandler::throwError(404, "Path not found");

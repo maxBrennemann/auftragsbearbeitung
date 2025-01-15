@@ -307,8 +307,15 @@ class ResourceManager
 
         $file = "";
 
+        /* workaround for colorpicker and other packages */
         if ($script == "/colorpicker.js") {
             $file = file_get_contents("node_modules/colorpicker/min/colorpicker.js");
+            echo $file;
+            return;
+        }
+
+        if ($script == "/notifications.js") {
+            $file = file_get_contents("node_modules/js-classes/notifications.js");
             echo $file;
             return;
         }
