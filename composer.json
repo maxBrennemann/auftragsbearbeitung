@@ -8,7 +8,8 @@
         "robmorgan/phinx": "0.x-dev",
         "google/apiclient": "^2.12.1",
         "symfony/dotenv": "7.0.x-dev",
-        "max/php-utilities": "dev-main"
+        "max/php-utilities": "dev-main",
+        "ramsey/uuid": "5.x-dev"
     },
     "minimum-stability": "dev",
     "config": {
