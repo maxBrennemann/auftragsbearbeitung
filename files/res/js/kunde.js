@@ -9,7 +9,15 @@ const globalProperties = {
     addrCount: null,
 };
 
+const customerData = {
+    id: document.getElementById("kdnr")?.value ?? 0,
+};
+
 function initialize() {
+    if (customerData.id == 0) {
+        return;
+    }
+
     contactPersonTable();
 
     var showKundendaten = document.getElementById("showKundendaten");
@@ -279,7 +287,7 @@ const contactPersonTable = async () => {
     createHeader(config.columns, table);
 
     const conditions = JSON.stringify({
-        "Kundennummer": document.getElementById("kdnr").value,
+        "Kundennummer": customerData.id,
     });
     const data = await ajax.get(`/api/v1/tables/ansprechpartner`, {
         "conditions": conditions,
@@ -300,7 +308,7 @@ const contactPersonTable = async () => {
         });
         ajax.delete(`/api/v1/tables/ansprechpartner`, {
             "conditions": conditions,
-            "customerId": document.getElementById("kdnr").value,
+            "customerId": customerData.id,
         });
     });
 }

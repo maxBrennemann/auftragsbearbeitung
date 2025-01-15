@@ -21,7 +21,8 @@ $neuesAngebot =		Link::getPageLink("angebot");
 $neuesProdukt =		Link::getPageLink("neues-produkt");
 $diagramme =		Link::getPageLink("diagramme");
 $auftragAnzeigen =	Link::getPageLink("auftrag");
-$kunde =			Link::getPageLink("kunde");
+$customer = 		Link::getPageLink("kunde");
+$customerOverview =	Link::getPageLink("customer-overview");
 $leistungenLinks =	Link::getPageLink("leistungen");
 $offeneRechnungen = Link::getPageLink("offene-rechnungen");
 $funktionen = 		Link::getPageLink("functionalities");
@@ -62,7 +63,7 @@ if ($pageName == "") {
 		$link = Link::getResourcesShortLink($page . ".js", "js");
 
 		/* TODO: workaround mit module und if check muss noch geändert werden */
-		if ($page == "sticker" || $page == "auftrag" || $page == "diagramme" || $page == "login" || $page == "neues-produkt" || $page == "produkt" || $page == "attributes" || $page == "zahlungen" || $page == "einstellungen" || $page == "sticker-overview" || $page == "kunde") {
+		if ($page == "sticker" || $page == "auftrag" || $page == "diagramme" || $page == "login" || $page == "neues-produkt" || $page == "produkt" || $page == "attributes" || $page == "zahlungen" || $page == "einstellungen" || $page == "sticker-overview" || $page == "kunde" || $page == "customer-overview") {
 			echo '<script type="module" src="' . $link . '"></script>';
 		} else {
 			echo '<script src="' . $link . '"></script>';
@@ -79,7 +80,7 @@ if ($pageName == "") {
 				<a href="<?=$neuerKunde?>">Neuen Kunden erstellen</a>
 			</li>
 			<li class="hover:underline">
-				<a href="<?=$kunde?>">Kunden</a>
+				<a href="<?=$customerOverview?>">Kunden</a>
 			</li>
 			<li class="hover:underline">
 				<a href="<?=$neuerAuftrag?>">Neuen Auftrag erstellen</a>

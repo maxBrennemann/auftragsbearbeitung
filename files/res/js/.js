@@ -1,10 +1,15 @@
 function ajaxSearch(query) {
-    var link = document.getElementById('kundenLink');
+    const customerOverview = document.getElementById("kundenLink").dataset.customerOverview;
+    const customer = document.getElementById("kundenLink").dataset.customer;
+
+    const link = document.getElementById("kundenLink");
+
     if (isNaN(query)) {
-        link.href = link.dataset.url + '?mode=search&query=' + query;
+        link.href = customerOverview + '?query=' + query;
     } else {
-        link.href = link.dataset.url + '?id=' + query;
+        link.href = customer + '?id=' + query;
     }
+
     link.click();
 }
 
