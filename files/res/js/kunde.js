@@ -300,7 +300,6 @@ const contactPersonTable = async () => {
     const conditions = JSON.stringify({
         "Kundennummer": document.getElementById("kdnr").value,
     });
-
     const data = await ajax.get(`/api/v1/tables/ansprechpartner`, {
         "conditions": conditions,
     });
@@ -312,7 +311,16 @@ const contactPersonTable = async () => {
     });
 
     table.addEventListener("rowDelete", (event) => {
-        console.log(event.details);
+        const data = event.detail;
+        const id = data.Nummer;
+
+        const conditions = JSON.stringify({
+            "Nummer": id,
+        });
+        ajax.delete(`/api/v1/tables/ansprechpartner`, {
+            "conditions": conditions,
+            "customerId": document.getElementById("kdnr").value,
+        });
     });
 }
 

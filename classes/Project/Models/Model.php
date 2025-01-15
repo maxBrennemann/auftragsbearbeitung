@@ -12,6 +12,11 @@ class Model
     protected string $primary = "id";
     protected array $hooks = [];
 
+    function __construct(array $hooks)
+    {
+        $this->hooks = $hooks;
+    }
+
     protected string $conditions = "";
 
     public function read(array $conditions)
@@ -73,8 +78,10 @@ class Model
 
     public function add() {}
 
-    public function delete($conditions)
+    public function delete($conditions): bool
     {
+        $this->triggerHook("beforeDelete", $conditions);
+
         $query = "DELETE FROM {$this->tableName}";
 
         if (empty($conditions)) {
@@ -91,7 +98,11 @@ class Model
 
         $query .= " WHERE " . implode(" AND ", $whereClauses);
 
-        return DBAccess::selectQuery($query, $params ?? []);
+        DBAccess::deleteQuery($query, $params ?? []);
+
+        $this->triggerHook("afterDelete", $conditions);
+
+        return true;
     }
 
     public function update($id, array $data): bool
@@ -127,7 +138,8 @@ class Model
     protected function triggerHook(string $hookName, array $data)
     {
         if (isset($this->hooks[$hookName]) && is_callable($this->hooks[$hookName])) {
-            $this->hooks[$hookName]($data);
+            $callback = $this->hooks[$hookName];
+            call_user_func($callback, $data);
         }
     }
 }

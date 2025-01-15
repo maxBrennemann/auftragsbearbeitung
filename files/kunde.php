@@ -61,57 +61,6 @@ if (isset($_GET['id'])) {
 
 	try {
 		$kunde = new Kunde($kundenid);
-		$data = DBAccess::selectQuery("SELECT * FROM ansprechpartner WHERE Kundennummer = :kdnr", [
-			"kdnr" => $kundenid,
-		]);
-		$column_names = array(
-			0 => array("COLUMN_NAME" => "Vorname"),
-			1 => array("COLUMN_NAME" => "Nachname"),
-			2 => array("COLUMN_NAME" => "Email"),
-			3 => array("COLUMN_NAME" => "Durchwahl"),
-			4 => array("COLUMN_NAME" => "Mobiltelefonnummer"),
-		);
-
-		/* create ansprechpartner table */
-		$t = new Table();
-		$t->createByData($data, $column_names);
-		$t->addActionButton("edit");
-		$t->addActionButton("delete");
-		$t->setIdentifier("Nummer");
-		$t->setType("ansprechpartner");
-		$t->addNewLineButton();
-		
-		$pattern = [
-			"Kundennummer" => [
-				"status" => "preset",
-				"value" => $kundenid
-			],
-			"Vorname" => [
-				"status" => "unset",
-				"value" => 0
-			],
-			"Nachname" => [
-				"status" => "unset",
-				"value" => 1
-			],
-			"Email" => [
-				"status" => "unset",
-				"value" => 2
-			],
-			"Durchwahl" => [
-				"status" => "unset",
-				"value" => 3
-			],
-			"Mobiltelefonnummer" => [
-				"status" => "unset",
-				"value" => 4
-			]
-		];
-
-		$t->defineUpdateSchedule(new UpdateSchedule("ansprechpartner", $pattern));
-		$ansprechpartner = $t->getTable(true);
-		
-		$_SESSION[$t->getTableKey()] = serialize($t);
 	} catch (Exception $e){
 		echo $e->getMessage();
 		$kundenid = -1;
@@ -314,7 +263,6 @@ if (isset($_GET['id'])) {
 		<div id="ansprechpartner">
 			<h3 class="font-bold">Ansprechpartner</h3>
 			<div id="contactPersonTable">
-				<?=$ansprechpartner?>
 			</div>
 		</div>
 		<div id="farben">

@@ -28,7 +28,7 @@ class Table extends Model
             ]);
         }
 
-        $model = new Model();
+        $model = new Model($tableConfig["hooks"]);
         $model->tableName = $table;
         $model->fillable = [];
 
@@ -80,7 +80,7 @@ class Table extends Model
             ]);
         }
 
-        $model = new Model();
+        $model = new Model($tableConfig["hooks"]);
         $model->tableName = $table;
         $model->fillable = [];
 
@@ -103,6 +103,9 @@ class Table extends Model
                 "error" => "Invalid deletion",
             ]);
         }
-        JSONResponseHandler::sendResponse($results);
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+        ]);
     }
 }

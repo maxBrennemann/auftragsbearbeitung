@@ -91,14 +91,15 @@ class ResourceManager
             }
         }
 
-        switch ($_SERVER['REQUEST_METHOD']) {
-            case 'POST':
+        switch ($_SERVER["REQUEST_METHOD"]) {
+            case "POST":
                 Tools::$data = array_merge(Tools::$data, $_POST);
                 break;
-            case 'GET':
+            case "GET":
                 Tools::$data = array_merge(Tools::$data, $_GET);
                 break;
-            case 'PUT':
+            case "PUT":
+            case "DELETE":
                 /* https://stackoverflow.com/questions/20320634/how-to-get-put-delete-arguments-in-php */
                 parse_str(file_get_contents("php://input"), $_PUT);
                 Tools::$data = array_merge(Tools::$data, $_PUT);

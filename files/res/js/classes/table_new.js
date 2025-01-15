@@ -72,14 +72,9 @@ export const addRow = (data, table, conditions = {}) => {
     tbody.appendChild(row);
 }
 
-const addCustomAction = () => {
-
-}
-
 const dispatchActionEvent = (actionType, rowData, table) => {
-    console.log(rowData);
     const event = new CustomEvent(actionType, {
-        details: rowData,
+        detail: rowData,
         bubbles: true,
     });
 

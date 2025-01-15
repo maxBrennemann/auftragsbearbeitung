@@ -13,9 +13,10 @@ return [
         ],
         "primaryKey" => "Nummer",
         "names" => [],
-        "permissions" => [],
+        "permissions" => ["read", "create", "update", "delete"],
         "hooks" => [
             "beforeSelect" => "",
+            "beforeDelete" => [\Classes\Project\Auftrag::class, "resetAnsprechpartner"],
         ],
         "joins" => [],
     ]

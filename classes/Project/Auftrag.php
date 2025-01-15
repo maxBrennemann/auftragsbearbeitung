@@ -965,4 +965,15 @@ class Auftrag implements StatisticsInterface
 		]);
 	}
 
+	public static function resetAnsprechpartner($data)
+	{
+		$customerId = Tools::get("customerId");
+		$query = "UPDATE auftrag SET Ansprechpartner = 0 WHERE Kundennummer = :customerId AND Ansprechpartner = :contactPerson;";
+
+		DBAccess::updateQuery($query, [
+			"customerId" => $customerId,
+			"contactPerson" => $data["Nummer"],
+		]);
+	}
+
 }
