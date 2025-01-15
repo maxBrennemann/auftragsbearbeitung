@@ -313,7 +313,7 @@ if (isset($_GET['id'])) {
 
 		<div id="ansprechpartner">
 			<h3 class="font-bold">Ansprechpartner</h3>
-			<div id="ansprechpartnerTable">
+			<div id="contactPersonTable">
 				<?=$ansprechpartner?>
 			</div>
 		</div>

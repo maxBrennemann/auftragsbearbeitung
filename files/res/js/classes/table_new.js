@@ -45,12 +45,14 @@ export const addRow = (data, table) => {
     const actionsCell = document.createElement("td");
     const editBtn = document.createElement("button");
     editBtn.textContent = "";
+    editBtn.title = "Bearbeiten";
     editBtn.addEventListener("click", () => {
         dispatchActionEvent("rowEdit", data);
     });
 
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "";
+    deleteBtn.title = "Löschen";
     deleteBtn.addEventListener("click", () => {
         dispatchActionEvent("rowDelete", data);
     });

@@ -1,3 +1,5 @@
+import { createTable } from "./classes/table_new.js";
+
 const globalProperties = {
     changedData: {},
     search: null,
@@ -130,12 +132,6 @@ function showMore(e) {
         divs[4].classList.remove("background");
         pseudo.classList.remove("pseudo");
     }
-}
-
-function showAddAnsprechpartner() {
-    document.getElementById("addAnsprechpartner").style.display = "inline-block";
-    document.getElementById("addAnsprechpartnerBtn").style.display = "inline";
-    document.getElementById("showAddAnsprechpartner").style.display = "none";
 }
 
 function getServerMessage() {
@@ -281,4 +277,8 @@ function rearchive(id) {
     }).then(() => {
         location.reload();
     });
+}
+
+const contactPersonTable = () => {
+    createTable("contactPersonTable");
 }
