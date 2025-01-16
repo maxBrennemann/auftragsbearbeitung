@@ -1,12 +1,6 @@
 import {AjaxCall, ajax} from "./classes/ajax.js";
-
-if (document.readyState !== 'loading' ) {
-    initEventListeners();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        initEventListeners();
-    });
-}
+import { createHeader, createTable, addRow } from "./classes/table_new.js";
+import { tableConfig } from "./js/tableconfig.js";
 
 function initEventListeners() {
     const switchTimeTracking = document.getElementById("showTimeTracking");
@@ -67,6 +61,8 @@ function initEventListeners() {
 
     getCategories();
     showTree();
+
+    createOrderTypeTable();
 }
 
 function getCategories() {
@@ -254,5 +250,27 @@ function getFileName() {
         if (response.status == "ok") {
             infoSaveSuccessfull("success");
         }
+    });
+}
+
+const createOrderTypeTable = async () => {
+    const table = createTable("orderTypes");
+    const config = tableConfig["auftragstyp"];
+    createHeader(config.columns, table);
+
+    const data = await ajax.get(`/api/v1/tables/auftragstyp`);
+
+    data.forEach(row => {
+        addRow(row, table, {
+            "hideOptions": ["delete"],
+        });
+    });
+}
+
+if (document.readyState !== 'loading' ) {
+    initEventListeners();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        initEventListeners();
     });
 }

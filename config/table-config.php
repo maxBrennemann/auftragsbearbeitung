@@ -30,6 +30,18 @@ function getTableConfig()
             ],
             "joins" => [],
         ],
+        "auftragstyp" => [
+            "columns" => [
+                "id",
+                "Auftragstyp",
+            ],
+            "primaryKey" => ["id"],
+            "names" => [
+                "Nummer",
+                "Auftragstyp",
+            ],
+            "permissions" => ["read", "create", "update"],
+        ],
         "color" => [
             "columns" => [
                 "id",

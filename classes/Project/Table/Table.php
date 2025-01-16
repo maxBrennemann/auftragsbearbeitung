@@ -29,7 +29,8 @@ class Table extends Model
             ]);
         }
 
-        $model = new Model($tableConfig["hooks"]);
+        $hooks = $tableConfig["hooks"] ?? [];
+        $model = new Model($hooks);
         $model->tableName = $table;
         $model->fillable = [];
 
@@ -45,7 +46,8 @@ class Table extends Model
             $conditions = [];
         }
 
-        foreach ($tableConfig["joins"] as $key => $join) {
+        $joins = $tableConfig["joins"] ?? [];
+        foreach ($joins as $key => $join) {
             if (Tools::get($key) !== null) {
                 $value = Tools::get($key); 
 

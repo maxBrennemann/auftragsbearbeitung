@@ -41,6 +41,7 @@ export const createHeader = (headers, table, conditions = {}) => {
     thead.appendChild(row);
 
     createPlaceholderRow(count, table);
+    createAddRow(count, table);
 }
 
 const createPlaceholderRow = (count, table) => {
@@ -50,6 +51,24 @@ const createPlaceholderRow = (count, table) => {
     cell.setAttribute("colspan", count);
     cell.style.textAlign = "center";
     cell.textContent = "Keine Daten verfügbar.";
+    row.appendChild(cell);
+    table.querySelector("tbody").appendChild(row);
+}
+
+const createAddRow = (count, table) => {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.setAttribute("colspan", count);
+    cell.style.textAlign = "center";
+
+    const btn = document.createElement("button");
+    btn.innerHTML = "";
+    cell.appendChild(btn);
+
+    const text = document.createElement("p");
+    text.textContent = "Neuer Eintrag";
+
+    cell.appendChild(text);
     row.appendChild(cell);
     table.querySelector("tbody").appendChild(row);
 }
@@ -74,24 +93,30 @@ export const addRow = (data, table, conditions = {}) => {
     });
 
     const actionsCell = document.createElement("td");
-    const editBtn = document.createElement("button");
-    editBtn.innerHTML = getEditBtn();
-    editBtn.title = "Bearbeiten";
-    editBtn.className = "inline-flex border-0 bg-green-400 p-1 rounded-md";
-    editBtn.addEventListener("click", () => {
-        dispatchActionEvent("rowEdit", data, table);
-    });
+    if (!conditions?.hideOptions?.includes("edit")) {
+        const editBtn = document.createElement("button");
+        editBtn.innerHTML = getEditBtn();
+        editBtn.title = "Bearbeiten";
+        editBtn.className = "inline-flex border-0 bg-green-400 p-1 rounded-md";
+        editBtn.addEventListener("click", () => {
+            dispatchActionEvent("rowEdit", data, table);
+        });
 
-    const deleteBtn = document.createElement("button");
-    deleteBtn.innerHTML = getDeleteBtn();
-    deleteBtn.title = "Löschen";
-    deleteBtn.className = "inline-flex border-0 bg-red-400 p-1 rounded-md ml-1";
-    deleteBtn.addEventListener("click", () => {
-        dispatchActionEvent("rowDelete", data, table);
-    });
+        actionsCell.appendChild(editBtn);
+    }
 
-    actionsCell.appendChild(editBtn);
-    actionsCell.appendChild(deleteBtn);
+    if (!conditions?.hideOptions?.includes("delete")) {
+        const deleteBtn = document.createElement("button");
+        deleteBtn.innerHTML = getDeleteBtn();
+        deleteBtn.title = "Löschen";
+        deleteBtn.className = "inline-flex border-0 bg-red-400 p-1 rounded-md ml-1";
+        deleteBtn.addEventListener("click", () => {
+            dispatchActionEvent("rowDelete", data, table);
+        });
+
+        actionsCell.appendChild(deleteBtn);
+    }
+
     row.appendChild(actionsCell);
 
     tbody.appendChild(row);
