@@ -197,8 +197,7 @@ $customer = new Kunde($customerId);
 
 	<div id="ansprechpartner">
 		<h3 class="font-bold">Ansprechpartner</h3>
-		<div id="contactPersonTable">
-		</div>
+		<div id="contactPersonTable"></div>
 	</div>
 	<div id="farben">
 		<h3 class="font-bold">Farben</h3>

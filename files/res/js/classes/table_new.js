@@ -15,11 +15,18 @@ export const createTable = (containerId) => {
     return table;
 }
 
-export const createHeader = (headers, table) => {
+export const createHeader = (headers, table, conditions = {}) => {
     const thead = table.querySelector("thead");
     const row = document.createElement("tr");
 
+    let count = 1;
     headers.forEach(header => {
+        if (conditions?.hide?.includes(header.key)) {
+            return;
+        }
+
+        count++;
+
         const th = document.createElement("th");
         th.textContent = header.label;
         th.dataset.key = header.key;
@@ -32,14 +39,32 @@ export const createHeader = (headers, table) => {
     row.appendChild(actionsTh);
 
     thead.appendChild(row);
+
+    createPlaceholderRow(count, table);
+}
+
+const createPlaceholderRow = (count, table) => {
+    const row = document.createElement("tr");
+    row.className = "empty-placeholder";
+    const cell = document.createElement("td");
+    cell.setAttribute("colspan", count);
+    cell.style.textAlign = "center";
+    cell.textContent = "Keine Daten verfügbar.";
+    row.appendChild(cell);
+    table.querySelector("tbody").appendChild(row);
 }
 
 export const addRow = (data, table, conditions = {}) => {
     const tbody = table.querySelector("tbody");
     const row = document.createElement("tr");
 
+    const placeholderRow = table.querySelector("tr.empty-placeholder");
+    if (placeholderRow) {
+        tbody.removeChild(placeholderRow);
+    }
+
     Object.keys(data).forEach(key => {
-        if (conditions.hide.includes(key)) {
+        if (conditions?.hide?.includes(key)) {
             return;
         }
 

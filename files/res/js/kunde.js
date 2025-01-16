@@ -284,7 +284,11 @@ function rearchive(id) {
 const contactPersonTable = async () => {
     const table = createTable("contactPersonTable");
     const config = tableConfig["ansprechpartner"];
-    createHeader(config.columns, table);
+    const columnConfig = {
+        "hide": ["Nummer", "Kundennummer"],
+    };
+
+    createHeader(config.columns, table, columnConfig);
 
     const conditions = JSON.stringify({
         "Kundennummer": customerData.id,
@@ -294,9 +298,7 @@ const contactPersonTable = async () => {
     });
 
     data.forEach(row => {
-        addRow(row, table, {
-            "hide": ["Nummer", "Kundennummer"],
-        });
+        addRow(row, table, columnConfig);
     });
 
     table.addEventListener("rowDelete", (event) => {

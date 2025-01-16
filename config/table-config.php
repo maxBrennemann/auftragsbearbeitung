@@ -30,6 +30,26 @@ function getTableConfig()
             ],
             "joins" => [],
         ],
+        "color" => [
+            "columns" => [
+                "id",
+                "color_name",
+                "hex_value",
+                "short_name",
+                "producer",
+            ],
+            "primaryKey" => "id",
+            "names" => [
+                "Id",
+                "Farbname",
+                "Hexwert",
+                "Kurzbezeichnung",
+                "Hersteller",
+            ],
+            "permissions" => ["read", "create", "update", "delete"],
+            "hooks" => [],
+            "joins" => [],
+        ],
     ];
 }
 
@@ -39,7 +59,7 @@ function getTableConfigFrontOffice()
     $data = [];
     foreach ($tableConfig as $key => $table) {
         $data[$key] = [
-            "primaryKey" => $table["primaryKey"],
+            "primaryKey" => $table["primaryKey"] ?? "",
             "columns" => [],
         ];
 
