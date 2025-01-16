@@ -16,7 +16,6 @@ use Classes\Project\Color;
 
 ?>
 
-<script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
 <script src="<?=Link::getResourcesShortLink("colorpicker.js", "js")?>"></script>
 <script src="<?=Link::getResourcesShortLink("list.js", "js")?>"></script>
 
@@ -27,6 +26,7 @@ $auftragAnzeigen = Link::getPageLink("auftrag");
 $show = false;
 $searchTable = "";
 $auftragsTypBezeichnung = "";
+$optionsDefault = true;
 
 if (isset($_GET['id'])) {
 	$auftragsId = (int) $_GET['id'];
@@ -159,8 +159,15 @@ if ($auftragsId == -1): ?>
 			<p><a href="mailto:<?=$kunde->getEmail()?>"><?=$kunde->getEmail()?></a></p>
 			<select class="input-primary-new mt-2 w-60" data-write="true" data-fun="changeContact" id="showAnspr">
 				<?php foreach ($contactPersons as $contact): ?>
-					<option value="<?=$contact['id']?>" <?=$contact['isSelected'] ? "selected" : "" ?>><?=$contact['firstName']?> <?=$contact['lastName']?></option>
+					<?php
+						$selected = $contact['isSelected'] ? "selected" : "";
+						$optionsDefault = $contact['isSelected'] ? false : true;
+					?>
+					<option value="<?=$contact['id']?>" <?=$selected?>><?=$contact['firstName']?> <?=$contact['lastName']?></option>
 				<?php endforeach; ?>
+				<?php if ($optionsDefault): ?>
+					<option disabled selected>Kein Ansprechpartner ausgewählt</option>
+				<?php endif; ?>
 			</select>
 		</div>
 		<a class="text-blue-500	font-semibold mt-3" href="<?=Link::getPageLink("kunde")?>?id=<?=$auftrag->getKundennummer()?>">Kunde <span id="kundennummer"><?=$auftrag->getKundennummer()?></span> anzeigen</a>

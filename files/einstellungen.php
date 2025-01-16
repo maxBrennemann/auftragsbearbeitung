@@ -37,11 +37,6 @@ if ($minifyStatus == "on") {
     $minifyOff = "";
 }
 
-/* Auftragstypen Tabelle */
-$tableOrderType = new Table("auftragstyp", -1);
-$tableOrderType->setType("auftragstyp");
-$tableOrderType->addNewLineButton();
-
 $patternOrderType = [
     "Auftragstyp" => [
         "status" => "unset",
@@ -73,15 +68,10 @@ function getUserTable() {
 
 $userTable = getUserTable();
 
-$tableOrderType->defineUpdateSchedule(new UpdateSchedule("auftragstyp", $patternOrderType));
-
-$_SESSION[$tableOrderType->getTableKey()] = serialize($tableOrderType);
-
 ?>
-<script src="<?=Link::getResourcesShortLink("tableeditor.js", "js")?>"></script>
 <section class="defCont">
     <h2 class="font-bold">Auftragstypen festlegen</h2>
-    <?=$tableOrderType->getTable()?>
+    <div id="orderTypes"></div>
 </section>
 <section class="defCont">
     <h2 class="font-bold">Einkaufsmöglichkeiten festlegen</h2>

@@ -1,4 +1,5 @@
-import { createTable } from "./classes/table_new.js";
+import { addRow, createHeader, createTable } from "./classes/table_new.js";
+import { tableConfig } from "./js/tableconfig.js";
 
 const globalProperties = {
     changedData: {},
@@ -8,7 +9,17 @@ const globalProperties = {
     addrCount: null,
 };
 
+const customerData = {
+    id: document.getElementById("kdnr")?.value ?? 0,
+};
+
 function initialize() {
+    if (customerData.id == 0) {
+        return;
+    }
+
+    contactPersonTable();
+
     var showKundendaten = document.getElementById("showKundendaten");
     if (showKundendaten == null) return;
     var inputs = showKundendaten.getElementsByTagName("input");
@@ -69,6 +80,7 @@ function initialize() {
     }, false);
 
     var kdnr = document.getElementById("kdnr").value;
+    return;
     getAddresses = new AjaxCall(`getReason=getAddresses&kdnr=${kdnr}`, "POST", window.location.href);
     getAddresses.makeAjaxCall(function (response) {
         globalProperties.addressSet = JSON.parse(response);
@@ -219,16 +231,6 @@ function deleteRow(key, type, pointer) {
     }
 }
 
-if (document.readyState !== 'loading' ) {
-    initCustomer();
-    initialize();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        initCustomer();
-        initialize();
-    });
-}
-
 function initCustomer() {
     const notesTextarea = document.getElementById('notesTextarea');
 
@@ -279,6 +281,46 @@ function rearchive(id) {
     });
 }
 
-const contactPersonTable = () => {
-    createTable("contactPersonTable");
+const contactPersonTable = async () => {
+    const table = createTable("contactPersonTable");
+    const config = tableConfig["ansprechpartner"];
+    const columnConfig = {
+        "hide": ["Nummer", "Kundennummer"],
+    };
+
+    createHeader(config.columns, table, columnConfig);
+
+    const conditions = JSON.stringify({
+        "Kundennummer": customerData.id,
+    });
+    const data = await ajax.get(`/api/v1/tables/ansprechpartner`, {
+        "conditions": conditions,
+    });
+
+    data.forEach(row => {
+        addRow(row, table, columnConfig);
+    });
+
+    table.addEventListener("rowDelete", (event) => {
+        const data = event.detail;
+        const id = data.Nummer;
+
+        const conditions = JSON.stringify({
+            "Nummer": id,
+        });
+        ajax.delete(`/api/v1/tables/ansprechpartner`, {
+            "conditions": conditions,
+            "customerId": customerData.id,
+        });
+    });
+}
+
+if (document.readyState !== 'loading' ) {
+    initCustomer();
+    initialize();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        initCustomer();
+        initialize();
+    });
 }

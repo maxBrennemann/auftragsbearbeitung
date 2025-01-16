@@ -383,4 +383,16 @@ class Kunde implements StatisticsInterface
 			"link" => $link,
 		]);
 	}
+
+	public static function getAllCustomerOverviews() {
+		$query = "SELECT Kundennummer FROM kunde ORDER BY CONCAT(Firmenname, Nachname);";
+		$data = DBAccess::selectQuery($query);
+
+		$customers = [];
+		foreach ($data as $row) {
+			$customers[] = new Kunde($row["Kundennummer"]);
+		}
+
+		return $customers;
+	}
 }

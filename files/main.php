@@ -29,8 +29,8 @@ if (isset($_GET['showDetails'])) {
 		</li>
 		<li class="px-4 py-6 rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
 			<input id="kundeninput" type="text" class="w-32 rounded-md p-1">
-			<a hef="#" data-url="<?=$kunde?>" id="kundenLink"> →</a>
-			<a class="inline" href="<?=$kunde?>?showDetails=list">Zu den Kunden</a>
+			<a hef="#" data-customer-overview="<?=$customerOverview?>" data-customer="<?=$customer?>" id="kundenLink"> →</a>
+			<a class="inline" href="<?=$customerOverview?>">Zu den Kunden</a>
 		</li>
 		<li class="rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
 			<a class="inline-flex items-center gap-x-1 px-4 py-6" href="<?=$neuerAuftrag?>"><?=Icon::getDefault("iconOrderAdd")?> Neuen Auftrag erstellen</a>
