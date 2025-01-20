@@ -215,7 +215,7 @@ class Zeit extends Posten
 		$queryTimeTable = "SELECT from_time, to_time, `date` FROM zeiterfassung WHERE id_zeit =  $zeitid";
 		$resultTimeTable = DBAccess::selectQuery($queryTimeTable);
 
-		$data =  [
+		$data = [
 			"time" => $result["ZeitInMinuten"],
 			"wage" => $result["Stundenlohn"],
 			"description" => $result["Beschreibung"],
