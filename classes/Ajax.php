@@ -237,27 +237,6 @@ class Ajax
 			case "createAuftrag":
 				Auftrag::add();
 				break;
-			case "insertLeistung":
-				$data = array();
-				$data['Leistungsnummer'] = $_POST['lei'];
-				$data['Beschreibung'] = $_POST['bes'];
-				$data['Einkaufspreis'] = str_replace(",", ".", $_POST['ekp']);
-				$data['SpeziefischerPreis'] = str_replace(",", ".", $_POST['pre']);
-				$data['Auftragsnummer'] = $_POST['auftrag'];
-				$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
-				$data['discount'] = (int) $_POST['discount'];
-				$data['MEH'] = $_POST['meh'];
-				$data['anzahl'] = str_replace(",", ".", $_POST['anz']);
-				$data['addToInvoice'] = (int) $_POST['addToInvoice'];
-
-				if (!isset($_POST['isOverwrite'])) {
-					$_SESSION['overwritePosten'] = false;
-				}
-
-				Posten::insertPosten("leistung", $data);
-				$_SESSION['overwritePosten'] = false;
-				echo (new Auftrag($_POST['auftrag']))->preisBerechnen();
-				break;
 			case "insertProduct":
 				$data = array();
 				$data['amount'] = $_POST['amount'];

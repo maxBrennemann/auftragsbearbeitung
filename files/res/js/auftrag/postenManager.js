@@ -31,14 +31,17 @@ export async function addProductCompactOld() {
 export function addLeistung() {
     var e = document.getElementById("selectLeistung");
 
+    let ekp = document.getElementById("ekp").value;
+    let pre = document.getElementById("pre").value;
+    let anz = document.getElementById("anz").value;
+
     let params = {
-        getReason: "insertLeistung",
         lei: e.options[e.selectedIndex].value,
         bes: document.getElementById("bes").value,
-        ekp: document.getElementById("ekp").value,
-        pre: document.getElementById("pre").value,
+        ekp: ekp,
+        pre: pre,
         meh: document.getElementById("meh").value,
-        anz: document.getElementById("anz").value,
+        anz: anz,
         auftrag: globalData.auftragsId,
         ohneBerechnung: getOhneBerechnung() ? 1 : 0,
         addToInvoice: getAddToInvoice() ? 1 : 0,
@@ -49,7 +52,7 @@ export function addLeistung() {
         params.isOverwrite = true;
     }
 
-    ajax.post(params).then(response => {
+    ajax.post(`/api/v1/order-items/${globalData.auftragsId}/services`, params).then(response => {
         updatePrice(response);
         reloadPostenListe();
         infoSaveSuccessfull("success");

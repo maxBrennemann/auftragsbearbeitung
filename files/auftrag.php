@@ -364,7 +364,7 @@ if ($auftragsId == -1): ?>
 						<?php endforeach; ?>
 					</select>
 					<br>
-					<span>Menge:<br><input class="postenInput" id="anz" value="1"></span><br>
+					<span>Menge:<br><input class="postenInput" id="anz" type="number" value="1"></span><br>
 					<span>Mengeneinheit:<br>
 						<input class="postenInput" id="meh" data-binding="true" data-fun="mehListener">
 						<span id="meh_dropdown" data-binding="true" data-fun="mehListener">▼</span>
@@ -381,8 +381,8 @@ if ($auftragsId == -1): ?>
 						<textarea id="bes" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'" class="border-2 rounded-md p-2"></textarea>
 					</span>
 					<br>
-					<span>Einkaufspreis:<br><input class="postenInput" id="ekp" value="0"></span><br>
-					<span>Verkaufspreis:<br><input class="postenInput" id="pre" value="0"></span><br>
+					<span>Einkaufspreis:<br><input class="postenInput" type="number" id="ekp" value="0"></span><br>
+					<span>Verkaufspreis:<br><input class="postenInput" type="number" id="pre" value="0"></span><br>
 					<button data-binding="true" data-fun="addLeistung" id="addLeistungButton" class="btn-primary">Hinzufügen</button>
 				</div>		
 			</div>

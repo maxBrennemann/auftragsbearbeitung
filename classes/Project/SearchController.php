@@ -2,6 +2,9 @@
 
 namespace Classes\Project;
 
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
+
 class SearchController
 {
 
@@ -20,13 +23,13 @@ class SearchController
         $this->searches[] = new Search2($query, $fields, $this->searchQuery);
     }
 
-    public function search(): array
+    public function search($results = 15): array
     {
         foreach ($this->searches as $search) {
             $this->response[] = $search->search();
         }
 
-        return $this->evaluate();
+        return $this->evaluate($results);
     }
 
     /**
@@ -34,7 +37,7 @@ class SearchController
      * 
      * @return array
      */
-    private function evaluate(): array
+    private function evaluate($results): array
     {
         $sortedResults = [];
 
@@ -45,18 +48,49 @@ class SearchController
                 }
                 return ($a["match"] > $b["match"]) ? -1 : 1;
             });
-            $r = array_slice($r, 0, 5);
+            $r = array_filter($r, fn($el) => $el["match"] > 0);
+            $r = array_slice($r, 0, $results);
             $sortedResults[] = $r;
         }
 
         return $sortedResults;
     }
 
+    public static function initSearch($type, $query, $results = 10) {
+        $sql = "";
+        $fields = [];
+
+        switch ($type) {
+            case "customer":
+                $sql = "SELECT * FROM kunde";
+                $fields = ["Firmenname", "Vorname"];
+                break;
+            case "":
+                break;
+            default:
+                throw new \Exception("unsupported search type");
+        } 
+
+        $sc = new SearchController($sql, $fields, $query);
+        return $sc->search($results);
+    }
+
     public static function init()
     {
-        $sc = new SearchController("SELECT * FROM kunde", ["Firmenname", "Vorname"], "schule");
-        var_dump($sc->search());
+        $type = Tools::get("type");
+        $query = Tools::get("query");
+        $results = Tools::get("results");
 
-        //var_dump($sc->response);
+        if ($query == null) {
+            JSONResponseHandler::throwError(400, "no query parameter found");
+        }
+
+        try {
+            $results = self::initSearch($type, $query, $results);
+        } catch (\Exception $e) {
+            JSONResponseHandler::throwError(400, $e->getMessage());
+        }
+
+        JSONResponseHandler::sendResponse($results);
     }
 }

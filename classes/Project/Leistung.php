@@ -3,6 +3,8 @@
 namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\Tools;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 class Leistung extends Posten
 {
@@ -206,4 +208,36 @@ class Leistung extends Posten
 
 		return $data;
 	}
+
+	public static function add() {
+		$data = [];
+		$data['Leistungsnummer'] = Tools::get("lei");
+		$data['Beschreibung'] = Tools::get("bes");
+		$data['Auftragsnummer'] = Tools::get("auftrag");
+		$data['ohneBerechnung'] = Tools::get("ohneBerechnung");
+		$data['discount'] = (int) Tools::get("discount");
+		$data['MEH'] = Tools::get("bes");
+		$data['addToInvoice'] = (int) Tools::get("addToInvoice");
+
+		$data['Einkaufspreis'] = (float) Tools::get("ekp");
+		$data['SpeziefischerPreis'] = (float) Tools::get("pre");
+		$data['anzahl'] = (float) Tools::get("anz");
+
+		$isOverwrite = Tools::get("isOverwrite");
+		if (isset($isOverwrite) && (int) $isOverwrite == 1) {
+			$_SESSION['overwritePosten'] = false;
+		}
+
+		$_SESSION['overwritePosten'] = false;
+
+		Posten::insertPosten("leistung", $data);
+
+		$newOrder = new Auftrag(Tools::get("auftrag"));
+		$price = $newOrder->preisBerechnen();
+
+		JSONResponseHandler::sendResponse([
+			"price" => $price,
+		]);
+	}
+
 }
