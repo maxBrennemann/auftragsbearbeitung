@@ -19,8 +19,8 @@ class Auftrag implements StatisticsInterface
 	protected $Auftragsnummer = null;
 	protected $Auftragsbezeichnung = null;
 	protected $Auftragsbeschreibung = null;
-	protected $Auftragsposten = array();
-	protected $Bearbeitungsschritte = array();
+	protected $Auftragsposten = [];
+	protected $Bearbeitungsschritte = [];
 	protected $auftragstyp = null;
 	protected $rechnungsnummer = 0;
 
@@ -373,6 +373,14 @@ class Auftrag implements StatisticsInterface
 		$_SESSION[$t->getTableKey()] = serialize($t);
 
 		return $t->getTable();
+	}
+
+	public static function getOrderItems() {
+		$id = Tools::get("id");
+		$order = new Auftrag($id);
+		$data = $order->getAuftragsPostenHelper();
+
+		JSONResponseHandler::sendResponse($data);
 	}
 
 	/*

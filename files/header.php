@@ -23,6 +23,7 @@ $diagramme =		Link::getPageLink("diagramme");
 $auftragAnzeigen =	Link::getPageLink("auftrag");
 $customer = 		Link::getPageLink("kunde");
 $customerOverview =	Link::getPageLink("customer-overview");
+$orderOverview =	Link::getPageLink("order-overview");
 $leistungenLinks =	Link::getPageLink("leistungen");
 $offeneRechnungen = Link::getPageLink("offene-rechnungen");
 $funktionen = 		Link::getPageLink("functionalities");
