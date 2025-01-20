@@ -4,12 +4,18 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 use Classes\Link;
 use Classes\Project\Kunde;
+use Classes\Project\SearchController;
 
 $query = Tools::get("query");
 $customers = [];
 
 if ($query !== null) {
-    $customers = [];
+    $results = SearchController::initSearch("customer", $query, 10);
+    foreach ($results as $resultType) {
+        foreach ($resultType as $result) {
+            $customers[] = new Kunde($result["row"]["Kundennummer"]);
+        }
+    }
 } else {
     $customers = Kunde::getAllCustomerOverviews();
 }
