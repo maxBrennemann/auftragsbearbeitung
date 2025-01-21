@@ -563,16 +563,9 @@ class Ajax
 				$order->addList($listId);
 				break;
 			case "addNewLine":
-
 				$key = $_POST['key'];
 				$data = $_POST['data'];
 				echo Table::updateTable_AddNewLine($key, $data);
-				break;
-			case "setCustomColor":
-				$color = $_POST['color'];
-				$type = $_POST['type'];
-				ClientSettings::setGrayScale($color, $type);
-				echo "ok";
 				break;
 			case "getInfoText":
 				$infoId = (int) $_POST['info'];
@@ -677,43 +670,8 @@ class Ajax
 					echo $rechnung->setAddress($address);
 				}
 
-				/*
-				if ($invoiceDate != "") {
-					$rechnung->setInvoiceDate($invoiceDate);
-				}
-
-				if ($leistungsDate != "") {
-					$rechnung->setLeistungsDate($leistungsDate);
-				}
-				*/
-
 				$_SESSION['tempInvoice'] = serialize($rechnung);
 				echo "ok";
-				break;
-			case "toggleCache":
-				$status = $_POST['status'];
-				switch ($status) {
-					case "on":
-						if (CacheManager::cacheOn() == true)
-							echo "ok";
-						break;
-					case "off":
-						if (CacheManager::cacheOff() == true)
-							echo "ok";
-						break;
-					default:
-						echo "an unexpected error occured";
-						break;
-				}
-				break;
-			case "toggleMinify":
-				$status = (string) $_POST["status"];
-				if ($status == "off" || $status == "on") {
-					DBAccess::updateQuery("UPDATE settings SET content = :status WHERE title = 'minifyStatus'", ["status" => $status]);
-					echo "ok";
-				} else {
-					echo "error";
-				}
 				break;
 			case "setNotificationsRead":
 				$notificationIds = $_POST["notificationIds"];
@@ -721,15 +679,6 @@ class Ajax
 					NotificationManager::setNotificationsRead(-1);
 				} else {
 				}
-				break;
-			case "getBackup":
-				$result = DBAccess::EXPORT_DATABASE($_ENV["HOST"], $_ENV["USERNAME"], $_ENV["PASSWORD"], $_ENV["DATABASE"]);
-				$filePath = "files/generated/sql_backups/";
-				$fileName = date("d-m-Y_h-i-s") . ".sql";
-				file_put_contents(($filePath . $fileName), $result);
-
-				$data = array("fileName" => $fileName, "url" => Link::getResourcesShortLink($fileName, "backup"), "status" => "ok");
-				echo json_encode($data, JSON_FORCE_OBJECT);
 				break;
 			case "logout":
 				Login::handleLogout();
@@ -944,12 +893,6 @@ class Ajax
 				} else {
 					echo json_encode(["status" => "no data found"]);
 				}
-				break;
-			case "clearFiles":
-				Upload::deleteUnusedFiles();
-				break;
-			case "adjustFiles":
-				Upload::adjustFileNames();
 				break;
 			case "createFbExport":
 				$export = new ExportFacebook();

@@ -11,6 +11,8 @@ class Model
     protected string $tableName = "";
     protected string $primary = "id";
     protected array $hooks = [];
+    protected array $hidden = [];
+    protected array $columns = [];
 
     function __construct(array $hooks)
     {
@@ -22,6 +24,14 @@ class Model
     public function read(array $conditions)
     {
         $query = "SELECT * FROM {$this->tableName}";
+
+        if (!empty($this->hidden)) {
+            $columns = array_filter(
+                $this->columns,
+                fn($el) => !in_array($el, $this->hidden ?? [])
+            );
+            $query = "SELECT " . implode(", ", $columns) . " FROM {$this->tableName}";
+        }
 
         if (!empty($conditions)) {
             $whereClauses = [];

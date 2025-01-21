@@ -5,12 +5,6 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 
 use Classes\Project\CacheManager;
 use Classes\Project\Config;
-use Classes\Project\Table;
-
-?>
-
-<script src="<?=Link::getResourcesShortLink("colorpicker.js", "js")?>"></script>
-<?php 
 
 /* get default wage */
 $defaultWage = Config::get("defaultWage");
@@ -42,43 +36,19 @@ $patternOrderType = [
         "value" => 1,
     ],
 ];
-
-function getUserTable() {
-    $data = DBAccess::selectQuery("SELECT * FROM user");
-    $column_names = array(
-        0 => array("COLUMN_NAME" => "id", "ALT" => "Nummer"),
-        1 => array("COLUMN_NAME" => "lastname", "ALT" => "Nachname"),
-        2 => array("COLUMN_NAME" => "prename", "ALT" => "Vorname"),
-        3 => array("COLUMN_NAME" => "username", "ALT" => "Username"),
-        4 => array("COLUMN_NAME" => "email", "ALT" => "Mail"),
-        5 => array("COLUMN_NAME" => "role", "ALT" => "Rolle"),
-        6 => array("COLUMN_NAME" => "max_working_hours", "ALT" => "Arbeitsstunden"),
-    );
-
-    $link = new Link();
-    $link->addBaseLink("mitarbeiter");
-    $link->setIterator("id", $data, "id");
-
-    $t = new Table();
-    $t->createByData($data, $column_names);
-    $t->addLink($link);
-    return $t->getTable();
-}
-
-$userTable = getUserTable();
-
 ?>
+<script src="<?=Link::getResourcesShortLink("colorpicker.js", "js")?>"></script>
 <section class="defCont">
     <h2 class="font-bold">Auftragstypen festlegen</h2>
-    <div id="orderTypes"></div>
+    <div id="orderTypes" class="mt-2"></div>
 </section>
 <section class="defCont">
     <h2 class="font-bold">Einkaufsmöglichkeiten festlegen</h2>
-    <?php echo (new Table("einkauf"))->getTable(); ?>
+    <div id="wholesalerTypes" class="mt-2"></div>
 </section>
 <section class="defCont">
     <h2 class="font-bold">Mitarbeiter festlegen</h2>
-    <?=$userTable?>
+    <div id="userTable" class="mt-2"></div>
 </section>
 <section class="defCont">
     <h2 class="font-bold">Stundenlohn festlegen</h2>

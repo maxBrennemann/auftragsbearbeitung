@@ -46,7 +46,10 @@ class TimeTrackingController
      */
     public static function toggleDisplayTimeTracking()
     {
-        Config::toggle("showTimeGlobal");
-        JSONResponseHandler::returnOK();
+        $value = Config::toggle("showTimeGlobal");
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+            "display" => $value,
+        ]);
     }
 }

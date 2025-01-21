@@ -1,4 +1,4 @@
-export const createTable = (containerId) => {
+export const createTable = (containerId, options = {}) => {
     const container = document.getElementById(containerId);
     if (container == null) {
         return;
@@ -11,6 +11,10 @@ export const createTable = (containerId) => {
     table.appendChild(thead);
     table.appendChild(tbody);
     container.appendChild(table);
+
+    if (options?.styles?.table?.className) {
+        table.className = options.styles.table.className;
+    }
 
     return table;
 }

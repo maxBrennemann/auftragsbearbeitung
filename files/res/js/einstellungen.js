@@ -1,33 +1,18 @@
-import {AjaxCall, ajax} from "./classes/ajax.js";
+import { ajax } from "./classes/ajax.js";
 import { createHeader, createTable, addRow } from "./classes/table_new.js";
 import { tableConfig } from "./js/tableconfig.js";
 
 function initEventListeners() {
-    const switchTimeTracking = document.getElementById("showTimeTracking");
-    if (switchTimeTracking != null) {
-        switchTimeTracking.addEventListener("change", () => {
-            ajax.put("/api/v1/settings/global-timetracking").then(r => {
-                if (r.message == "ok") {
-                    infoSaveSuccessfull("success");
-                }
-            });
-        });
-    }
-
+    timeTracking();
+    
     const clearFiles = document.getElementById("clearFiles");
     clearFiles.addEventListener("click", () => {
-        const send = new AjaxCall({
-            getReason: "clearFiles",
-        }, "POST", window.location.href);
-        send.makeAjaxCall(response => {});
+        ajax.post(`/api/v1/upload/clear-files`);
     });
 
     const adjustFiles = document.getElementById("adjustFiles");
     adjustFiles.addEventListener("click", () => {
-        const send = new AjaxCall({
-            getReason: "adjustFiles",
-        }, "POST", window.location.href);
-        send.makeAjaxCall(response => {});
+        ajax.post(`/api/v1/upload/adjust-files`);
     });
 
     const setDefaultWage = document.getElementById("defaultWage");
@@ -63,6 +48,33 @@ function initEventListeners() {
     showTree();
 
     createOrderTypeTable();
+    createWholesalerTable();
+    createUserTable();
+}
+
+const timeTracking = () => {
+    const switchTimeTracking = document.getElementById("showTimeTracking");
+    if (switchTimeTracking == null) {
+        return;
+    }
+    
+    switchTimeTracking.addEventListener("change", () => {
+        ajax.put("/api/v1/settings/global-timetracking").then(r => {
+            if (r.status == "success") {
+                infoSaveSuccessfull("success");
+                const el = document.getElementById("timeTrackingContainer");
+                if (r.display == "false") {
+                    el.classList.add("hidden");
+                    el.classList.remove("inline-flex");
+                } else {
+                    el.classList.remove("hidden");
+                    el.classList.add("inline-flex");
+                }
+            } else {
+                infoSaveSuccessfull("failiure")
+            }
+        });
+    });
 }
 
 function getCategories() {
@@ -146,7 +158,6 @@ function createCategoryTree(anchor, categories) {
     });
 }
 
-window.deleteCache = deleteCache;
 window.setCustomColor = setCustomColor;
 window.toggleCache = toggleCache;
 window.toggleMinify = toggleMinify;
@@ -167,48 +178,31 @@ function setCustomColor(value) {
     let type = document.querySelector("select")
     type = type.options[type.selectedIndex].value;
 
-    /* ajax parameter */
-    let params = {
-        getReason: "setCustomColor",
-        type: type,
-        color: color
-    };
-
-    var add = new AjaxCall(params, "POST", window.location.href);
-    add.makeAjaxCall(function (response) {
-        if (response == "ok") {
+    ajax.put(`/api/v1/settings/color`, {
+        "type": type,
+        "color": color
+    }).then(r => {
+        if (r.status == "success") {
             location.reload();
         }
     });
 }
 
 function toggleCache(status) {
-    /* ajax parameter */
-    let params = {
-        getReason: "toggleCache",
-        status: status
-    };
-
-    var toggle = new AjaxCall(params, "POST", window.location.href);
-    toggle.makeAjaxCall(function (response) {
-        console.log(response);
-        if (response == "ok") {
+    ajax.put(`/api/v1/settings/cache`, {
+        "status": status,
+    }).then(r => {
+        if (r.status == "success") {
             infoSaveSuccessfull("success");
         }
     });
 }
 
 function toggleMinify(status) {
-    /* ajax parameter */
-    let params = {
-        getReason: "toggleMinify",
-        status: status
-    };
-
-    var toggle = new AjaxCall(params, "POST", window.location.href);
-    toggle.makeAjaxCall(function (response) {
-        console.log(response);
-        if (response == "ok") {
+    ajax.put(`/api/v1/settings/cache`, {
+        "status": status,
+    }).then(r => {
+        if (r.status == "success") {
             infoSaveSuccessfull("success");
         }
     });
@@ -235,26 +229,25 @@ if (document.readyState !== 'loading' ) {
 function getFileName() {
     document.getElementById("download_db").removeEventListener("click", getFileName);
 
-    /* ajax parameter */
-    let params = {
-        getReason: "getBackup"
-    };
-
-    var backup = new AjaxCall(params, "POST", window.location.href);
-    backup.makeAjaxCall(function (response) {
-        response = JSON.parse(response);
-        document.getElementById("download_db").download = response.fileName;
-        document.getElementById("download_db").href = response.url;
+    ajax.post(`/api/v1/settings/bakckup`).then(r => {
+        document.getElementById("download_db").download = r.fileName;
+        document.getElementById("download_db").href = r.url;
         document.getElementById("download_db").click();
 
-        if (response.status == "ok") {
+        if (r.status == "success") {
             infoSaveSuccessfull("success");
         }
     });
 }
 
 const createOrderTypeTable = async () => {
-    const table = createTable("orderTypes");
+    const table = createTable("orderTypes", {
+        "styles": {
+            "table": {
+                "className": "w-full",
+            },
+        },
+    });
     const config = tableConfig["auftragstyp"];
     createHeader(config.columns, table);
 
@@ -262,8 +255,49 @@ const createOrderTypeTable = async () => {
 
     data.forEach(row => {
         addRow(row, table, {
-            "hideOptions": ["delete"],
+            "hideOptions": ["delete", "check"],
         });
+    });
+}
+
+const createWholesalerTable = async () => {
+    const table = createTable("wholesalerTypes", {
+        "styles": {
+            "table": {
+                "className": "w-full",
+            },
+        },
+    });
+    const config = tableConfig["einkauf"];
+    createHeader(config.columns, table);
+
+    const data = await ajax.get(`/api/v1/tables/einkauf`);
+
+    data.forEach(row => {
+        addRow(row, table, {
+            "hideOptions": ["delete", "check"],
+        });
+    });
+}
+
+const createUserTable = async () => {
+    const table = createTable("userTable", {
+        "styles": {
+            "table": {
+                "className": "w-full",
+            },
+        },
+    });
+    const config = tableConfig["user"];
+    const columnConfig = {
+        "hideOptions": ["all"],
+    };
+    createHeader(config.columns, table, columnConfig);
+
+    const data = await ajax.get(`/api/v1/tables/user`);
+
+    data.forEach(row => {
+        addRow(row, table, columnConfig);
     });
 }
 
