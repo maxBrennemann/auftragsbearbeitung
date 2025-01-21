@@ -19,7 +19,7 @@ export const createHeader = (headers, table, conditions = {}) => {
     const thead = table.querySelector("thead");
     const row = document.createElement("tr");
 
-    let count = 1;
+    let count = 0;
     headers.forEach(header => {
         if (conditions?.hide?.includes(header.key)) {
             return;
@@ -34,15 +34,19 @@ export const createHeader = (headers, table, conditions = {}) => {
         row.appendChild(th);
     });
 
-    const actionsTh = document.createElement("th");
-    actionsTh.textContent = "Aktionen";
-    row.appendChild(actionsTh);
+    if (!conditions?.hideOptions?.includes("all")) {
+        const actionsTh = document.createElement("th");
+        actionsTh.textContent = "Aktionen";
+        row.appendChild(actionsTh);
+        count++;
+    }
 
     thead.appendChild(row);
 
     createPlaceholderRow(count, table);
 
-    if (!conditions?.hideOptions?.includes("addRow")) {
+    if (!conditions?.hideOptions?.includes("addRow") 
+        && !conditions?.hideOptions?.includes("all")) {
         createAddRow(count, table);
     }
 }
@@ -90,6 +94,10 @@ export const addRow = (data, table, conditions = {}) => {
     const tbody = table.querySelector("tbody");
     const row = document.createElement("tr");
 
+    if (Object.keys(data).includes(conditions?.primaryKey)) {
+        row.dataset.id = data[conditions?.primaryKey];
+    }
+
     const placeholderRow = table.querySelector("tr.empty-placeholder");
     if (placeholderRow) {
         tbody.removeChild(placeholderRow);
@@ -102,11 +110,14 @@ export const addRow = (data, table, conditions = {}) => {
 
         const cell = document.createElement("td");
         cell.textContent = data[key];
+
         row.appendChild(cell);
     });
 
     const actionsCell = document.createElement("td");
-    if (!conditions?.hideOptions?.includes("edit")) {
+
+    if (!conditions?.hideOptions?.includes("edit")
+        && !conditions?.hideOptions?.includes("all")) {
         const editBtn = document.createElement("button");
         editBtn.innerHTML = getEditBtn();
         editBtn.title = "Bearbeiten";
@@ -118,7 +129,8 @@ export const addRow = (data, table, conditions = {}) => {
         actionsCell.appendChild(editBtn);
     }
 
-    if (!conditions?.hideOptions?.includes("delete")) {
+    if (!conditions?.hideOptions?.includes("delete")
+        && !conditions?.hideOptions?.includes("all")) {
         const deleteBtn = document.createElement("button");
         deleteBtn.innerHTML = getDeleteBtn();
         deleteBtn.title = "Löschen";
@@ -130,9 +142,28 @@ export const addRow = (data, table, conditions = {}) => {
         actionsCell.appendChild(deleteBtn);
     }
 
-    row.appendChild(actionsCell);
+    if (!conditions?.hideOptions?.includes("check")
+        && !conditions?.hideOptions?.includes("all")) {
+        const deleteBtn = document.createElement("button");
+        deleteBtn.innerHTML = getCheckBtn();
+        deleteBtn.title = "Erledigt";
+        deleteBtn.className = "inline-flex border-0 bg-blue-400 p-1 rounded-md ml-1";
+        deleteBtn.addEventListener("click", () => {
+            dispatchActionEvent("rowCheck", data, table, {row});
+        });
+
+        actionsCell.appendChild(deleteBtn);
+    }
+
+    if (!conditions?.hideOptions?.includes("all")) {
+        row.appendChild(actionsCell);
+    }
 
     tbody.appendChild(row);
+}
+
+export const deleteRow = (data, table) => {
+
 }
 
 const addEditableRow = (table) => {
@@ -142,13 +173,11 @@ const addEditableRow = (table) => {
     if (lastRowAnchor == null) {
         return;
     }
-
-    
 }
 
-const dispatchActionEvent = (actionType, rowData, table) => {
+const dispatchActionEvent = (actionType, rowData, table, options = {}) => {
     const event = new CustomEvent(actionType, {
-        detail: rowData,
+        detail: { ...rowData, ...options },
         bubbles: true,
     });
 
@@ -173,5 +202,12 @@ const getAddBtn = () => {
     return `
     <svg class="inline" style="width:15px;height:15px" viewBox="0 0 24 24" title="Löschen">
         <path class="fill-white" d="M20 14H14V20H10V14H4V10H10V4H14V10H20V14Z" />
+    </svg>`;
+}
+
+const getCheckBtn = () => {
+    return `
+    <svg class="inline" style="width:15px;height:15px" viewBox="0 0 24 24" title="Löschen">
+        <path class="fill-white" d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z" />
     </svg>`;
 }

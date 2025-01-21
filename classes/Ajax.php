@@ -294,17 +294,6 @@ class Ajax
 					NotificationManager::addNotification($userId = $assignedTo, $type = 1, $content = $_POST['bez'], $specificId = $postenNummer);
 				}
 				break;
-			case "setInvoicePaid":
-				$order = $_POST['order'];
-				$invoice = $_POST['invoice'];
-				DBAccess::updateQuery("UPDATE auftrag SET Bezahlt = 1 WHERE Auftragsnummer = :order AND Rechnungsnummer = :invoice", [
-					"order" => $order,
-					"invoice" => $invoice,
-				]);
-				echo json_encode([
-					"status" => "success",
-				]);
-				break;
 			case "setInvoiceData":
 				$order = $_POST['id'];
 				$invoice = $_POST['invoice'];
@@ -325,21 +314,6 @@ class Ajax
 				echo json_encode([
 					"status" => "success",
 				]);
-				break;
-			case "setTo":
-				if (isset($_POST['auftrag'])) {
-					$table = unserialize($_SESSION['storedTable']);
-					$auftragsId = $_POST['auftrag'];
-					$row = $_POST['row'];
-					$table->setIdentifier("Schrittnummer");
-					$date = date("Y-m-d");
-					$table->addParam("finishingDate", $date);
-					$table->editRow($row, "istErledigt", "0");
-				} else {
-					$rechnung = $_POST['rechnung'];
-					DBAccess::updateQuery("UPDATE auftrag SET Bezahlt = 1 WHERE Auftragsnummer = $rechnung");
-					echo Rechnung::getOffeneRechnungen();
-				}
 				break;
 			case "delete":
 				/* using new table functionality */
