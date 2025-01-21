@@ -6,13 +6,22 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 
+use Classes\Link;
+
 class ClientSettings
 {
 
-    public static function setGrayScale($color, $type)
+    public static function setGrayScale()
     {
+        $color = Tools::get("color");
+        $type = Tools::get("type");
+
         $userId = $_SESSION['userid'];
         DBAccess::updateQuery("UPDATE color_settings SET color = '$color' WHERE userid = $userId AND type = $type");
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+        ]);
     }
 
     public static function getColorConfiguration()
@@ -78,5 +87,24 @@ class ClientSettings
         }
 
         JSONResponseHandler::returnOK();
+    }
+
+    public static function createBackup()
+    {
+        $result = DBAccess::EXPORT_DATABASE($_ENV["HOST"], $_ENV["USERNAME"], $_ENV["PASSWORD"], $_ENV["DATABASE"]);
+
+        $filePath = "files/generated/sql_backups/";
+        $fileName = date("d-m-Y_h-i-s") . ".sql";
+        file_put_contents(($filePath . $fileName), $result);
+
+        $data =  [
+            "filename" => $fileName,
+            "url" => Link::getResourcesShortLink($fileName, "backup"),
+            "status" => "success",
+        ];
+
+        JSONResponseHandler::sendResponse([
+            "data" => $data,
+        ]);
     }
 }

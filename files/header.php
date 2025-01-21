@@ -158,11 +158,11 @@ if ($pageName == "") {
 							<?=Icon::getDefault("iconLogout")?>
 						</span>
 					</div>
-					<?php if (Config::get("showTimeGlobal") == "true"): ?>
-					<a href="<?=Link::getPageLink("zeiterfassung")?>" class="showTimeGlobal inline-flex items-center hover:bg-gray-200 rounded-lg pl-3">
-						<span>Zeit: <span id="timeGlobal">00:00:00</span></span>
-					</a>
-					<?php endif; ?>
+					<div class="<?=(Config::get("showTimeGlobal") == "true") ? "inline-flex" : "hidden" ?> items-center text-gray-700" id="timeTrackingContainer">
+						<a href="<?=Link::getPageLink("zeiterfassung")?>" class="showTimeGlobal inline-block p-1 hover:bg-gray-200 hover:rounded-sm">
+							<span>Zeit: <span id="timeGlobal" class="inline-block p-1 hover:bg-gray-200 hover:rounded-sm">00:00:00</span></span>
+						</a>
+					</div>
 				</div>
 			</div>
 		</div>

@@ -9,7 +9,14 @@ class UploadRoutes extends Routes
 
     protected static $getRoutes = [];
 
-    protected static $postRoutes = [];
+    /**
+     * @uses \Classes\Upload::deleteUnusedFiles()
+     * @uses \Classes\Upload::adjustFileNames()
+     */
+    protected static $postRoutes = [
+        "/upload/clear-files" => [\Classes\Upload::class, "deleteUnusedFiles"],
+        "/upload/adjust-files" => [\Classes\Upload::class, "adjustFileNames"],
+    ];
 
     protected static $putRoutes = [];
 

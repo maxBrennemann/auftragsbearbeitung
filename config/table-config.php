@@ -62,6 +62,19 @@ function getTableConfig()
             "hooks" => [],
             "joins" => [],
         ],
+        "einkauf" => [
+            "columns" => [
+                "id",
+                "name",
+                "description",
+            ],
+            "primaryKey" => "id",
+            "names" => [
+                "Nummer",
+                "Name",
+                "Beschreibung",
+            ]
+        ],
         "fahrzeuge" => [
             "columns" => [
                 "Nummer",
@@ -78,6 +91,33 @@ function getTableConfig()
             ],
             "permissions" => ["read", "create", "update", "delete"],
         ],
+        "user" => [
+            "columns" => [
+                "id",
+                "lastname",
+                "prename",
+                "username",
+                "email",
+                "password",
+                "validated",
+                "role",
+                "max_working_hours",
+            ],
+            "primaryKey" => "id",
+            "names" => [
+                "Nummer",
+                "Nachname",
+                "Vorname",
+                "Username",
+                "Email",
+                "Rolle",
+                "Arbeitsstunden",
+            ],
+            "hidden" => [
+                "password",
+                "validated",
+            ]
+        ],
     ];
 }
 
@@ -91,8 +131,13 @@ function getTableConfigFrontOffice()
             "columns" => [],
         ];
 
+        $table["columns"] = array_filter(
+            $table["columns"], 
+            fn($el) => !in_array($el, $table["hidden"] ?? [])
+        );
+
         foreach ($table["columns"] as $index => $column) {
-            $label = $table["names"][$index];
+            $label = $table["names"][$index] ?? $column;
             $data[$key]["columns"][] = [
                 "key" => $column,
                 "label" => $label,

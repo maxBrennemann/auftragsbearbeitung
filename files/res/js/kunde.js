@@ -176,7 +176,7 @@ const vehiclesTable = async () => {
     const config = tableConfig["fahrzeuge"];
     const columnConfig = {
         "hide": ["Kundennummer"],
-        "hideOptions": ["addRow"],
+        "hideOptions": ["addRow", "check"],
     };
 
     createHeader(config.columns, table, columnConfig);
@@ -198,6 +198,7 @@ const contactPersonTable = async () => {
     const config = tableConfig["ansprechpartner"];
     const columnConfig = {
         "hide": ["Nummer", "Kundennummer"],
+        "hideOptions": ["check"],
     };
 
     createHeader(config.columns, table, columnConfig);
