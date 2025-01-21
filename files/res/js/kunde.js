@@ -19,11 +19,20 @@ function initialize() {
     }
 
     contactPersonTable();
+    vehiclesTable();
 
     var showKundendaten = document.getElementById("showKundendaten");
-    if (showKundendaten == null) return;
-    var inputs = showKundendaten.getElementsByTagName("input");
+    if (showKundendaten == null) {
+        return;
+    }
 
+    const sendKundendaten = document.getElementById("sendKundendaten");
+    sendKundendaten.addEventListener("click", kundendatenAbsenden);
+
+    const sendAdress = document.getElementById("sendAdress");
+    sendAdress.addEventListener("click", sendAddressForm);
+
+    var inputs = showKundendaten.getElementsByTagName("input");
     for (var i = 0; i < inputs.length; i++) {
         inputs[i].addEventListener("input", function (e) {
             document.getElementById("sendKundendaten").disabled = false;
@@ -55,29 +64,6 @@ function initialize() {
             globalProperties.changedData[column] = e.target.value;
         }, false);
     }
-
-    var pseudo = document.getElementById("pseudo");
-    pseudo.addEventListener("click", function(event) {
-        var mouseX = event.clientX;
-        var width = window.innerWidth;
-        
-        if (mouseX < width / 2) {
-            if (globalProperties.addressCount > 0)
-                globalProperties.addressCount--;
-            console.log("left");
-        } else {
-            if (globalProperties.addressCount < globalProperties.addressSet.length - 1)
-                globalProperties.addressCount++;
-            console.log("right");
-        }
-
-        document.getElementById("strasse").value = globalProperties.addressSet[globalProperties.addressCount].strasse;
-        document.getElementById("hausnr").value = globalProperties.addressSet[globalProperties.addressCount].hausnr;
-        document.getElementById("plz").value = globalProperties.addressSet[globalProperties.addressCount].plz;
-        document.getElementById("ort").value = globalProperties.addressSet[globalProperties.addressCount].ort;
-
-        globalProperties.addrCount.innerHTML = (globalProperties.addressCount + 1) + "/" + globalProperties.addressSet.length;
-    }, false);
 
     var kdnr = document.getElementById("kdnr").value;
     return;
@@ -115,52 +101,6 @@ function kundendatenAbsenden() {
     });
 }
 
-/*
- * klappt mehr Optionen für die Kundendaten aus,
- * außerdem kann man hier die verschiedenen Adressen durchgehen
- */
-function showMore(e) {
-    var website = document.getElementById("websiteCont");
-    var divs = document.getElementById("showKundendaten").getElementsByClassName("row");
-    var pseudo = document.getElementById("pseudo");
-    if (e.target.dataset.show == "more") {
-        e.target.dataset.show = "less";
-        e.target.innerHTML = "Weniger";
-        website.style.display = "";
-        pseudo.style.display = "";
-        globalProperties.addrCount.style.display = "";
-        
-        divs[3].classList.add("background");
-        divs[4].classList.add("background");
-        pseudo.classList.add("pseudo");
-    } else {
-        e.target.dataset.show = "more";
-        e.target.innerHTML = "Mehr";
-        website.style.display = "none";
-        pseudo.style.display = "none";
-        globalProperties.addrCount.style.display = "none";
-
-        divs[3].classList.remove("background");
-        divs[4].classList.remove("background");
-        pseudo.classList.remove("pseudo");
-    }
-}
-
-function getServerMessage() {
-    let getServerMsg = new AjaxCall(`getReason=getServerMsg`, "POST", window.location.href);
-    getServerMsg.makeAjaxCall(function (res) {
-        console.log(res);
-    });
-}
-
-/* functions for addresses */
-function showAddressForm() {
-    let div = document.getElementById("addressForm");
-    div.style.display = "inline";
-    addActionButtonForDiv(div, "hide");
-    centerAbsoluteElement(div);
-}
-
 function sendAddressForm() {
     /* ajax parameter */
     let params = {
@@ -179,56 +119,6 @@ function sendAddressForm() {
         globalProperties.addressSet = JSON.parse(response);
         infoSaveSuccessfull("success");
     });
-}
-
-function editRow(key, pointer) {
-    var row = pointer.parentNode.parentNode;
-
-    if (pointer.dataset.editable == "true") {
-        pointer.innerHTML = "✎";
-        pointer.dataset.editable = "false";
-
-        var data = {};
-        for (var i = 0; i < row.children.length - 1; i++) {
-            row.children[i].contentEditable = "false";
-            data[i] = row.children[i].innerHTML;
-        }
-
-        var tKey = pointer.parentNode.parentNode.parentNode.parentNode.dataset.key;
-        if (tKey == null || tKey == 0)
-            return;
-
-        data = JSON.stringify(data);
-        var edit = new AjaxCall(`getReason=editAnspr&key=${key}&name=${tKey}&data=${data}`, "POST", window.location.href);
-        edit.makeAjaxCall(function (response) {
-            if (response == "ok")
-                infoSaveSuccessfull("success");
-            else {
-                alert(response);
-                infoSaveSuccessfull();
-            }
-        });
-    } else {
-        pointer.innerHTML = "✔";
-        pointer.dataset.editable = "true";
-        for (var i = 0; i < row.children.length - 1; i++) {
-            row.children[i].contentEditable = "true";
-        }
-    }
-}
-
-function deleteRow(key, type, pointer) {
-    var tKey = pointer.parentNode.parentNode.parentNode.parentNode.dataset.key;
-    if (tKey == null || tKey == 0)
-        return;
-    if (confirm('Möchtest Du den Ansprechpartner wirklich löschen?')) {
-        /* Erledigt */
-        var send = new AjaxCall(`getReason=table&key=${key}&name=${tKey}&action=delete`);
-        send.makeAjaxCall(function () {});
-        document.getElementById("home_link").click();
-    } else {
-        /* Abbruch */
-    }
 }
 
 function initCustomer() {
@@ -278,6 +168,28 @@ function rearchive(id) {
         auftrag: id
     }).then(() => {
         location.reload();
+    });
+}
+
+const vehiclesTable = async () => {
+    const table = createTable("vehiclesTable");
+    const config = tableConfig["fahrzeuge"];
+    const columnConfig = {
+        "hide": ["Kundennummer"],
+        "hideOptions": ["addRow"],
+    };
+
+    createHeader(config.columns, table, columnConfig);
+
+    const conditions = JSON.stringify({
+        "Kundennummer": customerData.id,
+    });
+    const data = await ajax.get(`/api/v1/tables/fahrzeuge`, {
+        "conditions": conditions,
+    });
+
+    data.forEach(row => {
+        addRow(row, table, columnConfig);
     });
 }
 

@@ -3,9 +3,13 @@
 namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
-use Classes\Link;
+use MaxBrennemann\PhpUtilities\Tools;
 
-class Rechnung {
+use Classes\Link;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+
+class Rechnung
+{
 
 	private $kunde;
 	private $address = 0;
@@ -21,7 +25,8 @@ class Rechnung {
 	private $date = "00.00.0000";
 	private $performanceDate = "00.00.0000";
 
-	function __construct($invoiceId = null) {
+	function __construct($invoiceId = null)
+	{
 		/* 
 		 * session object currentInvoice_orderId stores the currently used invoice id;
 		 * if no invoice id exists, a new invoice id is created
@@ -34,7 +39,7 @@ class Rechnung {
 			if (!empty($order)) {
 				$orderId = (int) $order[0]["Auftragsnummer"];
 			}
- 		}
+		}
 
 		$this->auftrag = new Auftrag($orderId);
 		$this->kunde = new Kunde($this->auftrag->getKundennummer());
@@ -45,25 +50,26 @@ class Rechnung {
 	/*
 	 * creates and stores a pdf if parameter is set to true
 	*/
-    public function PDFgenerieren($store = false) {
-        $pdf = new RechnungsPDF('p', 'mm', 'A4');
+	public function PDFgenerieren($store = false)
+	{
+		$pdf = new RechnungsPDF('p', 'mm', 'A4');
 
 		/* header and footer */
-        $pdf->setPrintHeader(false);
-        //$pdf->setPrintFooter(false);
+		$pdf->setPrintHeader(false);
+		//$pdf->setPrintFooter(false);
 
-        $pdf->SetTitle('Rechnung für ' . $this->kunde->getFirmenname() . " " . $this->kunde->getName());
-        $pdf->SetSubject('Angebot');
-        $pdf->SetKeywords('pdf, angebot');
+		$pdf->SetTitle('Rechnung für ' . $this->kunde->getFirmenname() . " " . $this->kunde->getName());
+		$pdf->SetSubject('Angebot');
+		$pdf->SetKeywords('pdf, angebot');
 		//$pdf->SetAutoPageBreak(true, 35);
 
-		$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+		$pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 		$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
-        $pdf->AddPage();
+		$pdf->AddPage();
 
-        $pdf->setCellPaddings(1, 1, 1, 1);
-        $pdf->setCellMargins(0, 0, 0, 0);
+		$pdf->setCellPaddings(1, 1, 1, 1);
+		$pdf->setCellMargins(0, 0, 0, 0);
 		$pdf->setMargins(25, 45, 20, true);
 
 		$pdf->SetFont("helvetica", "", 8);
@@ -71,7 +77,7 @@ class Rechnung {
 		$pdf->writeHTMLCell(0, 10, 25, 20, $address);
 
 		$pdf->SetFont("helvetica", "", 12);
-        $this->fillAddress($pdf);
+		$this->fillAddress($pdf);
 
 		$pdf->Image("files/res/image/b-schriftung_logo.jpg", 120, 22, 60);
 
@@ -82,7 +88,7 @@ class Rechnung {
 		$pdf->setFontStretching();
 
 		$this->addTableHeader($pdf);
-		
+
 		/* iterates over all posten and adds lines */
 		$lineheight = 10;
 		$this->loadPostenFromAuftrag();
@@ -97,7 +103,7 @@ class Rechnung {
 
 				$height = $pdf->getStringHeight(70, $p->getDescription());
 				$addToOffset = $lineheight;
-				
+
 				if ($p->getOhneBerechnung() == true) {
 					$addToOffset = $this->ohneBerechnungBtn($pdf, $height, $lineheight, $p);
 				} else {
@@ -111,7 +117,7 @@ class Rechnung {
 
 				$pdf->Cell(20, $lineheight, $p->bekommeEinzelPreis_formatted());
 				$pdf->Cell(20, $lineheight, $p->bekommePreis_formatted(), 0, 0, 'R');
-				
+
 				$offset += $addToOffset;
 				$pdf->ln($addToOffset);
 
@@ -175,10 +181,10 @@ class Rechnung {
 
 		/* Speicherung (aktuell nur Windows) */
 		if ($store == true) {
-			$filename= "{$this->kunde->getKundennummer()}_{$this->getInvoiceId()}.pdf"; 
-            $filelocation = 'files/generated/invoice/';
-            $fileNL = $filelocation . $filename;
-			echo$_ENV["WEB_URL"] . "/files/generated/invoice/" . $filename;
+			$filename = "{$this->kunde->getKundennummer()}_{$this->getInvoiceId()}.pdf";
+			$filelocation = 'files/generated/invoice/';
+			$fileNL = $filelocation . $filename;
+			echo $_ENV["WEB_URL"] . "/files/generated/invoice/" . $filename;
 			self::addAllPosten($_SESSION['currentInvoice_orderId']);
 			$pdf->Output($fileNL, 'F');
 		} else {
@@ -192,7 +198,8 @@ class Rechnung {
 	 * @param \TCPDF &$pdf Refernz auf PDF Variable
 	 * @param int $y Abstand zu oben, Standard ist 45, damit die erste Seite richtig generiert wird
 	 */
-	private function addTableHeader(&$pdf, $y = 45) {
+	private function addTableHeader(&$pdf, $y = 45)
+	{
 		$pdf->SetFont("helvetica", "", 12);
 		$pdf->setXY(120, $y);
 		$pdf->Cell(30, 10, "Rechnungs-Nr:");
@@ -210,13 +217,13 @@ class Rechnung {
 		$pdf->Cell(30, 10, "Seite:");
 		$pdf->Cell(30, 10, $pdf->getAliasRightShift() . $pdf->PageNo() . ' von ' . $pdf->getAliasNbPages(), 0, 0, 'R');
 
-        $pdf->setXY(25, $y + 45);
+		$pdf->setXY(25, $y + 45);
 		$pdf->SetFont("helvetica", "B", 12);
 		$pdf->Cell(10, 10, 'Pos', 'B');
-        $pdf->Cell(20, 10, 'Menge', 'B');
-        $pdf->Cell(20, 10, 'MEH', 'B');
-        $pdf->Cell(70, 10, 'Bezeichnung', 'B');
-        $pdf->Cell(20, 10, 'E-Preis', 'B');
+		$pdf->Cell(20, 10, 'Menge', 'B');
+		$pdf->Cell(20, 10, 'MEH', 'B');
+		$pdf->Cell(70, 10, 'Bezeichnung', 'B');
+		$pdf->Cell(20, 10, 'E-Preis', 'B');
 		$pdf->Cell(20, 10, 'G-Preis', 'B');
 		$pdf->SetFont("helvetica", "", 12);
 	}
@@ -224,7 +231,8 @@ class Rechnung {
 	/*
 	 * returns the invoice id by filtering for the order id
 	*/
-	private function getInvoiceId() {
+	private function getInvoiceId()
+	{
 		$orderId = $this->auftrag->getAuftragsnummer();
 		$invoiceId = (int) DBAccess::selectQuery("SELECT Rechnungsnummer FROM auftrag WHERE Auftragsnummer = $orderId")[0]['Rechnungsnummer'];
 		if ($invoiceId == 0 || $invoiceId == null) {
@@ -234,30 +242,35 @@ class Rechnung {
 		}
 		return $invoiceId;
 	}
-	
-	public function getOrderId() {
+
+	public function getOrderId()
+	{
 		return $this->auftrag->getAuftragsnummer();
 	}
 
-	public function setDate($date) {
+	public function setDate($date)
+	{
 		if (\DateTime::createFromFormat('d.m.Y', $date) !== false) {
 			$this->date = $date;
 		}
 	}
 
-	private function getDate() {
+	private function getDate()
+	{
 		if ($this->date == null || $this->date == "00.00.0000")
 			return date("d.m.Y");
 		return $this->date;
 	}
-	
-	public function loadPostenFromAuftrag() {
+
+	public function loadPostenFromAuftrag()
+	{
 		$orderId = $this->auftrag->getAuftragsnummer();
 		$this->posten = Posten::bekommeAllePosten($orderId, true);
 		$this->posten = array_merge($this->posten, $this->texts);
 	}
 
-	public function addText($id, $text) {
+	public function addText($id, $text)
+	{
 		$empty = new EmptyPosten($id, $text);
 		array_push($this->posten, $empty);
 		$this->texts[$id] = $empty;
@@ -268,7 +281,8 @@ class Rechnung {
 	 * das Leistungsdatum als "addText" hinzugefügt.
 	 * Es ist überschreibbar, wieso auch immer
 	 */
-	public function setDatePerformance($date) {
+	public function setDatePerformance($date)
+	{
 		$this->performanceDate = $date;
 		$this->addText(-20, "Leistungsdatum: " . $date);
 		return null;
@@ -292,7 +306,8 @@ class Rechnung {
 		}
 	}
 
-	public function removeText($id) {
+	public function removeText($id)
+	{
 		$result = 0;
 		foreach ($this->posten as $key => $p) {
 			if (isset($p->id) && $p->id == $id) {
@@ -305,11 +320,13 @@ class Rechnung {
 		unset($this->texts[$id]);
 	}
 
-	public function getTempInvoiceId() {
+	public function getTempInvoiceId()
+	{
 		return $this->tempId;
 	}
 
-	private function fillAddress(&$pdf) {
+	private function fillAddress(&$pdf)
+	{
 		$lineheight = 10;
 		$pdf->setXY(25, 25);
 
@@ -319,7 +336,7 @@ class Rechnung {
 		$strasse = $this->kunde->getStrasse($this->address);
 		$plz = $this->kunde->getPostleitzahl($this->address);
 		$ort = $this->kunde->getOrt($this->address);
-		
+
 		if ($firma != null || $firma != "") {
 			$pdf->Cell(85, $lineheight, $firma);
 			$pdf->ln(5);
@@ -332,24 +349,22 @@ class Rechnung {
 		$pdf->ln(5);
 		$pdf->Cell(85, $lineheight, $plz . " " . $ort);
 	}
-	
-	public function setAddress($address) {
+
+	public function setAddress($address)
+	{
 		if (Address::hasAddress($this->kunde->getKundennummer(), $address))
 			$this->address = $address;
 	}
 
-	public function setInvoiceDAte($date) {
+	public function setInvoiceDAte($date) {}
 
-	}
+	public function setLeistungsDAte($date) {}
 
-	public function setLeistungsDAte($date) {
-
-	}
-
-	private function ohneBerechnungBtn(&$pdf, &$height, &$lineheight, &$p) {
+	private function ohneBerechnungBtn(&$pdf, &$height, &$lineheight, &$p)
+	{
 		$pdf->MultiCell(50, $lineheight, $p->getDescription(), '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
 		$addToOffset = ceil($height);
-		
+
 		$pdf->SetFont("helvetica", "", 7);
 		$pdf->MultiCell(20, $lineheight, "Ohne Berechnung", '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
 		$pdf->SetFont("helvetica", "", 12);
@@ -357,37 +372,16 @@ class Rechnung {
 		return $addToOffset;
 	}
 
-	public static function getNextNumber() {
+	public static function getNextNumber()
+	{
 		$number = DBAccess::selectQuery("SELECT MAX(Rechnungsnummer) FROM auftrag")[0]['MAX(Rechnungsnummer)'];
 		$number = (int) $number;
 		$number++;
 		return $number;
 	}
 
-	public static function getOffeneRechnungen() {
-		$column_names = array(
-			0 => array("COLUMN_NAME" => "Auftragsnr"),
-			1 => array("COLUMN_NAME" => "Rechnungsnummer"),
-			2 => array("COLUMN_NAME" => "Firmenname"),
-			3 => array("COLUMN_NAME" => "Bezeichnung"),
-			4 => array("COLUMN_NAME" => "Summe"),
-			5 => array("COLUMN_NAME" => "Datum"));
-		
-		$data = DBAccess::selectQuery("SELECT auftrag.Auftragsnummer as Auftragsnr, auftrag.Auftragsbezeichnung as Bezeichnung, auftrag.Auftragsbeschreibung as Beschreibung, auftrag.AngenommenDurch, auftrag.Kundennummer, auftrag.Datum, auftrag.Termin, auftrag.Rechnungsnummer, kunde.Firmenname, CONCAT(FORMAT(auftragssumme.orderPrice, 2, 'de_DE'), ' €') AS Summe FROM auftrag, auftragssumme, kunde WHERE auftrag.Kundennummer = kunde.Kundennummer AND Rechnungsnummer != 0 AND auftrag.Bezahlt = 0 AND auftrag.Auftragsnummer = auftragssumme.id");
-
-		$link = new Link();
-		$link->addBaseLink("auftrag");
-		$link->setIterator("id", $data, "Auftragsnr");
-
-		$table = new Table();
-		$table->createByData($data, $column_names);
-		$table->addLink($link);
-		$table->addActionButton("update", $identifier = "Auftragsnr", $update = "istErledigt = 0");
-		
-		return $table->getTable();
-	}
-
-	private function storeDates() {
+	private function storeDates()
+	{
 		$orderId = $this->auftrag->getAuftragsnummer();
 		$creationDate = \DateTime::createFromFormat("d.m.Y", $this->getDate());
 		$performanceDate = \DateTime::createFromFormat("d.m.Y", $this->performanceDate);
@@ -418,7 +412,8 @@ class Rechnung {
 	 * TODO: für später:
 	 * eventuell eigene Tabelle für Rechnungssummen, um Unveränderbarkeit zu garantieren
 	 */
-	public static function getOffeneRechnungssumme() {
+	public static function getOffeneRechnungssumme()
+	{
 		$query = "SELECT ROUND(SUM(all_posten.price), 2) AS summe
 		FROM (SELECT (zeit.ZeitInMinuten / 60) * zeit.Stundenlohn AS price, posten.Auftragsnummer as id FROM zeit, posten WHERE zeit.Postennummer = posten.Postennummer
 			  UNION ALL
@@ -432,9 +427,10 @@ class Rechnung {
 	 * adds an invoice id to all posten for a specific order
 	 * sql query only works if no invoice id has ever been added to that
 	*/
-	public static function addAllPosten($orderId) {
+	public static function addAllPosten($orderId)
+	{
 		$auftrag = new Auftrag($orderId);
-		
+
 		$nextNumber = Rechnung::getNextNumber();
 		DBAccess::updateQuery("UPDATE auftrag SET Rechnungsnummer = $nextNumber WHERE Auftragsnummer = $orderId AND Rechnungsnummer = 0");
 		DBAccess::updateQuery("UPDATE posten SET rechnungsNr = $nextNumber WHERE Auftragsnummer = $orderId AND isInvoice = 1");
@@ -443,12 +439,13 @@ class Rechnung {
 		DBAccess::updateQuery("UPDATE auftrag SET Fertigstellung = current_date() WHERE Auftragsnummer = $orderId");
 	}
 
-	public static function getAllInvoiceItems($orderId, $rechnung = null) {
+	public static function getAllInvoiceItems($orderId, $rechnung = null)
+	{
 		/* posten, leistungsdatum, texte, fahrzeuge */
 		if ($rechnung == null && isset($_SESSION['tempInvoice'])) {
 			$rechnung = unserialize($_SESSION['tempInvoice']);
 		}
-		
+
 		if ($rechnung instanceof Rechnung && $rechnung->auftrag->getAuftragsnummer() == $orderId) {
 			$fahrzeuge = $rechnung->auftrag->getLinkedVehicles();
 
@@ -499,4 +496,39 @@ class Rechnung {
 		}
 	}
 
+	public static function getOpenInvoiceData()
+	{
+		$data = DBAccess::selectQuery("SELECT auftrag.Auftragsnummer AS Nummer,
+			auftrag.Rechnungsnummer,
+			auftrag.Auftragsbezeichnung AS Bezeichnung, 
+			auftrag.Auftragsbeschreibung AS Beschreibung, 
+			auftrag.Kundennummer,
+			auftrag.Datum,
+			kunde.Firmenname,
+			CONCAT(FORMAT(auftragssumme.orderPrice, 2, 'de_DE'), ' €') AS Summe 
+			FROM auftrag, auftragssumme, kunde 
+			WHERE auftrag.Kundennummer = kunde.Kundennummer 
+				AND Rechnungsnummer != 0 
+				AND auftrag.Bezahlt = 0 
+				AND auftrag.Auftragsnummer = auftragssumme.id");
+
+		JSONResponseHandler::sendResponse([
+			"data" => $data,
+		]);
+	}
+
+	public static function setInvoicePaid()
+	{
+		$invoiceId =  Tools::get("invoiceId");
+		$query = "UPDATE auftrag SET Bezahlt = 1 
+			WHERE Rechnungsnummer = :invoice";
+
+		DBAccess::updateQuery($query, [
+			"invoice" => $invoiceId,
+		]);
+
+		JSONResponseHandler::sendResponse([
+			"status" => "success",
+		]);
+	}
 }

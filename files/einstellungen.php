@@ -6,7 +6,6 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 use Classes\Project\CacheManager;
 use Classes\Project\Config;
 use Classes\Project\Table;
-use Classes\Project\UpdateSchedule;
 
 ?>
 

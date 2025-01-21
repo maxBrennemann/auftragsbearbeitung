@@ -45,9 +45,24 @@ function initInputs() {
     });
     
     auftragsinput.addEventListener("keyup", function (event) {
-        if (event.key === "Enter") {
-            document.getElementById("auftragsLink").click();
+        if (event.key !== "Enter") {
+            return;
         }
+
+        const query = event.target.value;
+
+        const orderOverview = document.getElementById("auftragsLink").dataset.orderOverview;
+        const order = document.getElementById("auftragsLink").dataset.order;
+
+        const link = document.getElementById("auftragsLink");
+
+        if (isNaN(query)) {
+            link.href = orderOverview + '?query=' + query;
+        } else {
+            link.href = order + '?id=' + query;
+        }
+
+        link.click();
     });
 }
 

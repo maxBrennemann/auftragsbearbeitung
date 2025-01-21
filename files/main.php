@@ -49,8 +49,8 @@ if (isset($_GET['showDetails'])) {
 			<a class="inline-flex items-center gap-x-1 px-4 py-6" href="<?=$neuesProdukt?>"><?=Icon::getDefault("iconProductAdd")?> Neues Produkt erstellen</a>
 		</li>
 		<li class="px-4 py-6 rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
-			<input id="auftragsinput" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value + '&query=' + this.value;" class="w-32 rounded-md p-1">
-			<a href="#" id="auftragsLink">Auftrag anzeigen</a>
+			<input id="auftragsinput" class="w-32 rounded-md p-1">
+			<a href="#" data-order-overview="<?=$orderOverview?>" data-order="<?=$auftragAnzeigen?>" id="auftragsLink">Auftrag anzeigen</a>
 		</li>
 		<li class="rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
 			<a class="inline-flex items-center gap-x-1 px-4 py-6" href="<?=$diagramme?>"><?=Icon::getDefault("iconChart")?> Diagramme und Auswertungen</a>

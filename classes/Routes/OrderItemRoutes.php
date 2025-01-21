@@ -8,11 +8,11 @@ class OrderItemRoutes extends Routes
 {
 
     /**
-     *
+     * @uses Classes\Project\Auftrag::itemsOverview()
      */
     protected static $getRoutes = [
         "/order-items/{id}/table" => [],
-        "/order-items/{id}/all" => [\Classes\Project\Auftrag::class, "itemsOverview"],
+        "/order-items/{id}/all" => [\Classes\Project\Auftrag::class, "getOrderItems"],
     ];
 
     /**

@@ -65,7 +65,9 @@ class SearchController
                 $sql = "SELECT * FROM kunde";
                 $fields = ["Firmenname", "Vorname"];
                 break;
-            case "":
+            case "order":
+                $sql = "SELECT Auftragsnummer, Kundennummer, Auftragsbezeichnung, Auftragsbeschreibung FROM auftrag;";
+                $fields = ["Auftragsbezeichnung", "Auftragsbeschreibung"];
                 break;
             default:
                 throw new \Exception("unsupported search type");

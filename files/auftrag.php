@@ -55,11 +55,6 @@ if (isset($_GET['id'])) {
 	}
 }
 
-if (isset($_GET['query'])) {
-	$query = $_GET['query'];
-	$searchTable = Search::getSearchTable($query, "order", null, true);
-}
-
 if (isset($_POST['filesubmitbtnV'])) {
 	$vehicleId = $_POST['vehicleImageId'];
 	echo $vehicleId;
@@ -75,17 +70,7 @@ if (isset($_GET['show'])) {
 $mitarbeiter = DBAccess::selectQuery("SELECT prename, lastname, id FROM user");
 $colors = Color::get();
 
-if ($auftragsId == -1): ?>
-<div class="w-full bg-gray-100 p-2 rounded-md">
-	<input type="number" min="1" oninput="document.getElementById('auftragsLink').href = '<?=$auftragAnzeigen?>?id=' + this.value;">
-	<a href="#" id="auftragsLink">Auftrag anzeigen</a>
-	<br>
-	<input type="text" oninput="document.getElementById('auftragSuche').href = '<?=$auftragAnzeigen?>?query=' + this.value;">
-	<a href="#" id="auftragSuche">Auftrag suchen</a>
-	<br><br>
-	<?=$searchTable?>
-</div>
-<?php elseif ($auftrag->istRechnungGestellt() && $show == false): ?>
+if ($auftrag->istRechnungGestellt() && $show == false): ?>
 <div>
 	<div class="defCont" id="orderFinished">
 		<p>Auftrag <?=$auftrag->getAuftragsnummer()?> wurde abgeschlossen. Rechnungsnummer: <span id="rechnungsnummer"><?=$auftrag->getRechnungsnummer()?></span></p>

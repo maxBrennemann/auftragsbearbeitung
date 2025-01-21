@@ -294,42 +294,6 @@ class Ajax
 					NotificationManager::addNotification($userId = $assignedTo, $type = 1, $content = $_POST['bez'], $specificId = $postenNummer);
 				}
 				break;
-			case "editAnspr":
-				$table = $_POST['name'];
-				$key =  $_POST['key'];
-				$data = json_decode($_POST['data']);
-
-				$tableObj = unserialize($_SESSION[$table]);
-				$rowId = Table::getIdentifierValue($table, $key);
-
-				$index = 0;
-				$query = "UPDATE `ansprechpartner` SET ";
-				foreach ($data as $d) {
-					$t = $tableObj->columnNames[$index]["COLUMN_NAME"];
-					$query .= "`" . $t . "` = '" . $d . "', ";
-					$index++;
-				}
-
-				$query = substr($query, 0, -2);
-				$query .= " WHERE Nummer = $rowId";
-
-				if (DBAccess::updateQuery($query) == 1) {
-					echo "ok";
-				} else {
-					echo "error occured";
-				}
-				break;
-			case "setInvoicePaid":
-				$order = $_POST['order'];
-				$invoice = $_POST['invoice'];
-				DBAccess::updateQuery("UPDATE auftrag SET Bezahlt = 1 WHERE Auftragsnummer = :order AND Rechnungsnummer = :invoice", [
-					"order" => $order,
-					"invoice" => $invoice,
-				]);
-				echo json_encode([
-					"status" => "success",
-				]);
-				break;
 			case "setInvoiceData":
 				$order = $_POST['id'];
 				$invoice = $_POST['invoice'];
@@ -350,21 +314,6 @@ class Ajax
 				echo json_encode([
 					"status" => "success",
 				]);
-				break;
-			case "setTo":
-				if (isset($_POST['auftrag'])) {
-					$table = unserialize($_SESSION['storedTable']);
-					$auftragsId = $_POST['auftrag'];
-					$row = $_POST['row'];
-					$table->setIdentifier("Schrittnummer");
-					$date = date("Y-m-d");
-					$table->addParam("finishingDate", $date);
-					$table->editRow($row, "istErledigt", "0");
-				} else {
-					$rechnung = $_POST['rechnung'];
-					DBAccess::updateQuery("UPDATE auftrag SET Bezahlt = 1 WHERE Auftragsnummer = $rechnung");
-					echo Rechnung::getOffeneRechnungen();
-				}
 				break;
 			case "delete":
 				/* using new table functionality */
@@ -435,9 +384,6 @@ class Ajax
 				$key = $_POST["key"];
 				$table = $_POST["table"];
 				Table::updateValue($table, "delete", $_POST['key']);
-				break;
-			case "getServerMsg":
-				echo $_SESSION['searchResult'];
 				break;
 			case "setNotes":
 				$kdnr = (int) $_POST['kdnr'];
