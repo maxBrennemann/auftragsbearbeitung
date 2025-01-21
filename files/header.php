@@ -64,7 +64,20 @@ if ($pageName == "") {
 		$link = Link::getResourcesShortLink($page . ".js", "js");
 
 		/* TODO: workaround mit module und if check muss noch geändert werden */
-		if ($page == "sticker" || $page == "auftrag" || $page == "diagramme" || $page == "login" || $page == "neues-produkt" || $page == "produkt" || $page == "attributes" || $page == "zahlungen" || $page == "einstellungen" || $page == "sticker-overview" || $page == "kunde" || $page == "customer-overview" || $page == "offene-rechnungen") {
+		if ($page == "sticker" 
+			|| $page == "auftrag" 
+			|| $page == "diagramme" 
+			|| $page == "login" 
+			|| $page == "neues-produkt" 
+			|| $page == "produkt" 
+			|| $page == "attributes" 
+			|| $page == "zahlungen" 
+			|| $page == "einstellungen" 
+			|| $page == "sticker-overview" 
+			|| $page == "kunde" 
+			|| $page == "customer-overview" 
+			|| $page == "offene-rechnungen"
+			|| $page == "zeiterfassung") {
 			echo '<script type="module" src="' . $link . '"></script>';
 		} else {
 			echo '<script src="' . $link . '"></script>';

@@ -31,7 +31,15 @@ class TimeTracking
      */
     public static function month(int $month, int $userId = -1)
     {
-        $query = "SELECT started_at, stopped_at, duration_ms, MONTHNAME(started_at) AS month_started, task, edit_log FROM user_timetracking WHERE user_id = :userId and MONTH(started_at) = MONTH(CURDATE());";
+        $query = "SELECT started_at, 
+                stopped_at, 
+                duration_ms, 
+                MONTHNAME(started_at) AS month_started, 
+                task,
+                edit_log 
+            FROM user_timetracking 
+            WHERE user_id = :userId 
+                AND MONTH(started_at) = MONTH(CURDATE());";
         $data = DBAccess::selectQuery($query, ["userId" => $userId]);
         return $data;
     }
