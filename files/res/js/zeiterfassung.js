@@ -1,29 +1,14 @@
+import { initBindings } from "./classes/bindings.js";
+
+const fnNames = {};
+
 var started = false;
 var interval = null;
 var startTime = null;
 var stopTime = null;
 
-if (document.readyState !== 'loading' ) {
-    code = document.querySelector("code");
-    init();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        code = document.querySelector("code");
-        init();
-    });
-}
-
 function init() {
-    let bindings = document.querySelectorAll('[data-binding]');
-    [].forEach.call(bindings, function(el) {
-        var fun_name = "click_" + el.id;
-        el.addEventListener("click", function() {
-            var fun = window[fun_name];
-            if (typeof fun === "function") {
-                fun();
-            }
-        }.bind(fun_name), false);
-    });
+    initBindings(fnNames);
 
     if (localStorage.getItem("startTime")) {
         started = true;
@@ -32,31 +17,7 @@ function init() {
         document.getElementById("startStopChecked").checked = true;
     }
 
-    initTabSwitcher();
     initTimeTracking();
-}
-
-/**
- * Tab switcher to distinguish between
- *  - my time tracking
- *  - overview
- *  - calendar
- */
-function initTabSwitcher() {
-    const tabButtons = document.querySelector(".tab-switch-ul").children;
-    Array.from(tabButtons).forEach((button, index) => {
-        button.addEventListener("click", () => {
-            const tabs = document.querySelectorAll(".tab-switch");
-            currentTab = tabs[index];
-
-            if (currentTab.classList.contains("hidden")) {
-                Array.from(tabs).forEach(tab => {
-                    tab.classList.add("hidden");
-                });
-                currentTab.classList.remove("hidden");
-            }
-        });
-    });
 }
 
 /**
@@ -89,7 +50,7 @@ function setTimeTracking() {
 
 }
 
-function click_startStopTime() {
+fnNames.click_startStopTime = () => {
     started = !started;
     switch (started) {
         case true:
@@ -108,7 +69,7 @@ function click_startStopTime() {
 /**
  * 
  */
-function click_sendTimeTracking() {
+fnNames.click_sendTimeTracking = () => {
     var task = document.getElementById("getTask").value;
 
     ajax.post(`/api/v1/time-tracking/add`, {
@@ -155,4 +116,16 @@ function storeTimestamp(stamp) {
 
 function pad(num) {
     return ('00' + num).slice(-2);
+}
+
+const getTimeTrackingEntries = () => {
+    
+}
+
+if (document.readyState !== 'loading' ) {
+    init();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        init();
+    });
 }

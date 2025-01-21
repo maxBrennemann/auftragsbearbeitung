@@ -110,6 +110,8 @@ function getTableConfig()
                 "Vorname",
                 "Username",
                 "Email",
+                "Passwort",
+                "Validiert",
                 "Rolle",
                 "Arbeitsstunden",
             ],

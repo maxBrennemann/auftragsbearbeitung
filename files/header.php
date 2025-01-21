@@ -64,7 +64,20 @@ if ($pageName == "") {
 		$link = Link::getResourcesShortLink($page . ".js", "js");
 
 		/* TODO: workaround mit module und if check muss noch geändert werden */
-		if ($page == "sticker" || $page == "auftrag" || $page == "diagramme" || $page == "login" || $page == "neues-produkt" || $page == "produkt" || $page == "attributes" || $page == "zahlungen" || $page == "einstellungen" || $page == "sticker-overview" || $page == "kunde" || $page == "customer-overview" || $page == "offene-rechnungen") {
+		if ($page == "sticker" 
+			|| $page == "auftrag" 
+			|| $page == "diagramme" 
+			|| $page == "login" 
+			|| $page == "neues-produkt" 
+			|| $page == "produkt" 
+			|| $page == "attributes" 
+			|| $page == "zahlungen" 
+			|| $page == "einstellungen" 
+			|| $page == "sticker-overview" 
+			|| $page == "kunde" 
+			|| $page == "customer-overview" 
+			|| $page == "offene-rechnungen"
+			|| $page == "zeiterfassung") {
 			echo '<script type="module" src="' . $link . '"></script>';
 		} else {
 			echo '<script src="' . $link . '"></script>';
@@ -159,7 +172,7 @@ if ($pageName == "") {
 						</span>
 					</div>
 					<div class="<?=(Config::get("showTimeGlobal") == "true") ? "inline-flex" : "hidden" ?> items-center text-gray-700" id="timeTrackingContainer">
-						<a href="<?=Link::getPageLink("zeiterfassung")?>" class="showTimeGlobal inline-block p-1 hover:bg-gray-200 hover:rounded-sm">
+						<a href="<?=Link::getPageLink("zeiterfassung")?>" class="showTimeGlobal inline-block p-1 hover:bg-gray-200 hover:rounded-sm" title="Zeiterfassung">
 							<span>Zeit: <span id="timeGlobal" class="inline-block p-1 hover:bg-gray-200 hover:rounded-sm">00:00:00</span></span>
 						</a>
 					</div>

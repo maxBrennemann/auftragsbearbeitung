@@ -29,7 +29,7 @@ class TimeTrackingController
         }
 
         $id = (int) $id;
-        $query = "DELETE FROM zeiterfassung WHERE id = :id;";
+        $query = "DELETE FROM user_timetracking WHERE id = :id;";
         DBAccess::deleteQuery($query, ["id" => $id]);
 
         $affectedRows = DBAccess::getAffectedRows();
