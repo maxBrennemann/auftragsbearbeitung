@@ -100,13 +100,13 @@ abstract class Posten
 			$type = $row["Posten"];
 			switch ($type) {
 				case "zeit":
-					continue;
+					break;
 				case "leistung":
-					continue;
+					break;
 				case "product":
-					continue;
+					break;
 				case "compact":
-					continue;
+					break;
 			}
 		}
 

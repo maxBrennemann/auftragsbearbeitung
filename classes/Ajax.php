@@ -294,31 +294,6 @@ class Ajax
 					NotificationManager::addNotification($userId = $assignedTo, $type = 1, $content = $_POST['bez'], $specificId = $postenNummer);
 				}
 				break;
-			case "editAnspr":
-				$table = $_POST['name'];
-				$key =  $_POST['key'];
-				$data = json_decode($_POST['data']);
-
-				$tableObj = unserialize($_SESSION[$table]);
-				$rowId = Table::getIdentifierValue($table, $key);
-
-				$index = 0;
-				$query = "UPDATE `ansprechpartner` SET ";
-				foreach ($data as $d) {
-					$t = $tableObj->columnNames[$index]["COLUMN_NAME"];
-					$query .= "`" . $t . "` = '" . $d . "', ";
-					$index++;
-				}
-
-				$query = substr($query, 0, -2);
-				$query .= " WHERE Nummer = $rowId";
-
-				if (DBAccess::updateQuery($query) == 1) {
-					echo "ok";
-				} else {
-					echo "error occured";
-				}
-				break;
 			case "setInvoicePaid":
 				$order = $_POST['order'];
 				$invoice = $_POST['invoice'];
@@ -435,9 +410,6 @@ class Ajax
 				$key = $_POST["key"];
 				$table = $_POST["table"];
 				Table::updateValue($table, "delete", $_POST['key']);
-				break;
-			case "getServerMsg":
-				echo $_SESSION['searchResult'];
 				break;
 			case "setNotes":
 				$kdnr = (int) $_POST['kdnr'];

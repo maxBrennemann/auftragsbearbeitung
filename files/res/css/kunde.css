@@ -221,42 +221,6 @@ h4 {
     background-color: aliceblue;
 }
 
-.pseudo {
-    position: relative;
-    width: 100%;
-    height: 10px;
-    pointer-events: none;
-}
-
-.pseudo::before {
-    content: '';
-    position: absolute;
-    left: 5px;
-    top: 58%;
-    display: block;
-    border-right: 5px solid #81c2fb;
-    border-bottom: 5px solid #81c2fb;
-    width: 15px;
-    height: 15px;
-    transform: translate(-50%, -50%) rotate(135deg);
-    pointer-events: all;
-}
-
-.pseudo::after {
-    content: '';
-    float: right;
-    position: absolute;
-    right: -10px;
-    top: 58%;
-    display: block;
-    border-right: 5px solid #81c2fb;
-    border-bottom: 5px solid #81c2fb;
-    width: 15px;
-    height: 15px;
-    transform: translate(-50%, -50%) rotate(-45deg);
-    pointer-events: all;
-}
-
 #addrCount {
     float: right;
     border-radius: 10px;

@@ -78,7 +78,6 @@ $customer = new Kunde($customerId);
 				</div>
 			</div>
 		</div>
-		<div id="pseudo" style="display: none" class="background"></div>
 		<div class="row">
 			<div class="width6">
 				<div class="inputCont">
@@ -101,7 +100,7 @@ $customer = new Kunde($customerId);
 				</div>
 			</div>
 		</div>
-		<div class="row" style="display: none" id="websiteCont">
+		<div class="row">
 			<div class="width12">
 				<div class="inputCont">
 					<label for="website">Website:</label>
@@ -126,8 +125,7 @@ $customer = new Kunde($customerId);
 		<div class="row">
 			<div class="width6">
 				<div class="buttonCont">
-					<button class="btn-primary" id="sendKundendaten" disabled onclick="kundendatenAbsenden()">Absenden</button>
-					<button class="btn-primary" id="sendKundendaten" onclick="showMore(event)" data-show="more">Mehr</button>
+					<button class="btn-primary" id="sendKundendaten" disabled>Absenden</button>
 				</div>
 			</div>
 		</div>
@@ -179,7 +177,7 @@ $customer = new Kunde($customerId);
 		<div class="row">
 			<div class="width6">
 				<div class="buttonCont">
-					<button class="btn-primary" onclick="sendAddressForm()">Absenden</button>
+					<button class="btn-primary" id="sendAdress">Absenden</button>
 				</div>
 			</div>
 		</div>
@@ -193,6 +191,7 @@ $customer = new Kunde($customerId);
 	<div id="fahrzeuge">
 		<h3 class="font-bold">Fahrzeuge</h3>
 		<?=$customer->getVehicles()?>
+		<div id="vehiclesTable"></div>
 	</div>
 
 	<div id="ansprechpartner">
@@ -209,5 +208,4 @@ $customer = new Kunde($customerId);
 		<?=$customer->getOrderCards()?>
 	</div>
 </div>
-<!-- TODO: add addresses -->
 <?php endif; ?>

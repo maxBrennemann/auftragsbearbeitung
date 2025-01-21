@@ -62,6 +62,22 @@ function getTableConfig()
             "hooks" => [],
             "joins" => [],
         ],
+        "fahrzeuge" => [
+            "columns" => [
+                "Nummer",
+                "Kundennummer",
+                "Kennzeichen",
+                "Fahrzeug"
+            ],
+            "primaryKey" => "Nummer",
+            "names" => [
+                "Nummer",
+                "Kundennummer",
+                "Kennzeichen",
+                "Fahrzeug"
+            ],
+            "permissions" => ["read", "create", "update", "delete"],
+        ],
     ];
 }
 

@@ -41,7 +41,10 @@ export const createHeader = (headers, table, conditions = {}) => {
     thead.appendChild(row);
 
     createPlaceholderRow(count, table);
-    createAddRow(count, table);
+
+    if (!conditions?.hideOptions?.includes("addRow")) {
+        createAddRow(count, table);
+    }
 }
 
 const createPlaceholderRow = (count, table) => {
@@ -60,15 +63,25 @@ const createAddRow = (count, table) => {
     const cell = document.createElement("td");
     cell.setAttribute("colspan", count);
     cell.style.textAlign = "center";
+    
+    const container = document.createElement("div");
+    container.className = "inline-flex cursor-pointer";
+    container.title = "Neuen Eintrag hinzufügen";
 
     const btn = document.createElement("button");
-    btn.innerHTML = "";
-    cell.appendChild(btn);
+    btn.innerHTML = getAddBtn();
+    btn.className = "inline-flex border-0 bg-green-400 p-1 rounded-md";
+    btn.addEventListener("click", () => {
+        addEditableRow(table);
+    });
+    container.appendChild(btn);
 
     const text = document.createElement("p");
     text.textContent = "Neuer Eintrag";
+    text.className = "ml-1";
 
-    cell.appendChild(text);
+    container.appendChild(text);
+    cell.appendChild(container);
     row.appendChild(cell);
     table.querySelector("tbody").appendChild(row);
 }
@@ -122,6 +135,17 @@ export const addRow = (data, table, conditions = {}) => {
     tbody.appendChild(row);
 }
 
+const addEditableRow = (table) => {
+    const tbody = table.querySelector("tbody");
+    const lastRowAnchor = tbody.lastChild;
+
+    if (lastRowAnchor == null) {
+        return;
+    }
+
+    
+}
+
 const dispatchActionEvent = (actionType, rowData, table) => {
     const event = new CustomEvent(actionType, {
         detail: rowData,
@@ -142,5 +166,12 @@ const getDeleteBtn = () => {
     return `
     <svg class="inline" style="width:15px;height:15px" viewBox="0 0 24 24" title="Löschen">
         <path class="fill-white" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"></path>
+    </svg>`;
+}
+
+const getAddBtn = () => {
+    return `
+    <svg class="inline" style="width:15px;height:15px" viewBox="0 0 24 24" title="Löschen">
+        <path class="fill-white" d="M20 14H14V20H10V14H4V10H10V4H14V10H20V14Z" />
     </svg>`;
 }
