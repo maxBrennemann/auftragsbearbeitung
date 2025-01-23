@@ -373,10 +373,10 @@ class User
         return true;
     }
 
-    public static function getCurrentUserId()
+    public static function getCurrentUserId(): int
     {
         if (isset($_SESSION['user_id'])) {
-            return $_SESSION['user_id'];
+            return (int) $_SESSION['user_id'];
         }
 
         return -1;

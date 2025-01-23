@@ -16,7 +16,7 @@ class ClientSettings
         $color = Tools::get("color");
         $type = Tools::get("type");
 
-        $userId = $_SESSION['userid'];
+        $userId = User::getCurrentUserId();
         DBAccess::updateQuery("UPDATE color_settings SET color = '$color' WHERE userid = $userId AND type = $type");
 
         JSONResponseHandler::sendResponse([
@@ -30,8 +30,8 @@ class ClientSettings
         $color_def = "eff0f1";
         $color_innerDef = "b1b1b1";
 
-        if (isset($_SESSION['userid'])) {
-            $userId = $_SESSION['userid'];
+        if (User::getCurrentUserId() !== -1) {
+            $userId = User::getCurrentUserId();
             $data = DBAccess::selectQuery("SELECT color, `type` FROM color_settings WHERE userid = $userId");
 
             foreach ($data as $d) {
@@ -63,7 +63,7 @@ class ClientSettings
 
     public static function getFilterOrderPosten(): bool
     {
-        $userId = $_SESSION['userid'];
+        $userId = $_SESSION['user_id'];
         $value = GlobalSettings::getSetting("filterOrderPosten_$userId");
 
         if ($value == "true") {
@@ -76,7 +76,7 @@ class ClientSettings
     public static function setFilterOrderPosten()
     {
         $setTo = Tools::get("value");
-        $userId = $_SESSION['userid'];
+        $userId = $_SESSION['user_id'];
 
         $value = GlobalSettings::getSetting("filterOrderPosten_$userId");
 

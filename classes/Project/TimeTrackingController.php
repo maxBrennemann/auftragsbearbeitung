@@ -4,15 +4,42 @@ namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
+
+use Classes\Project\User;
 
 class TimeTrackingController
 {
+
+    private static function validateUser()
+    {
+        $userId = User::getCurrentUserId();
+        if ($userId == -1) {
+            return false;
+        }
+
+        return true;
+    }
 
     public static function showTimeTracking(?int $id = null) {}
 
     public static function showTimeTrackingOverview() {}
 
-    public static function addEntry() {}
+    public static function addEntry() {
+        $start = (int) Tools::get("startTime");
+        $stop = (int) Tools::get("stopTime");
+        $task = (string) Tools::get("task");
+
+        if (!self::validateUser()) {
+            JSONResponseHandler::throwError(400, "Unvalidated user");
+        }
+
+        $userId = User::getCurrentUserId();
+        $timeTracking = new TimeTracking($userId);
+        $data = $timeTracking->addEntry($start, $stop, $task);
+
+        JSONResponseHandler::sendResponse($data);
+    }
 
     public static function editEntry(int $id)
     {

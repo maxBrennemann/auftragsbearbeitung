@@ -4,50 +4,15 @@ const fnNames = {};
 
 var started = false;
 var interval = null;
-var startTime = null;
-var stopTime = null;
 
-function init() {
+const init = () => {
     initBindings(fnNames);
 
     if (localStorage.getItem("startTime")) {
         started = true;
-        interval = setInterval(countTime, 1000);
         document.getElementById("updateStartStopName").innerHTML = "stoppen";
         document.getElementById("startStopChecked").checked = true;
     }
-
-    initTimeTracking();
-}
-
-/**
- * shows the time tracking status and adds a listenre to the checkbox
- */
-function initTimeTracking() {
-    const status = document.getElementById("statusTimeTracking");
-    const input = document.getElementById("inputTimeTracking");
-
-    if (input.checked) {
-        status.innerHTML = "Zeiterfassung stoppen";
-    } else {
-        status.innerHTML = "Zeiterfassung starten";
-    }
-
-    input.addEventListener("change", () => {
-        if (input.checked) {
-            status.innerHTML = "Zeiterfassung stoppen";
-        } else {
-            status.innerHTML = "Zeiterfassung starten";
-        }
-        setTimeTracking();
-    });
-}
-
-/**
- * 
- */
-function setTimeTracking() {
-
 }
 
 fnNames.click_startStopTime = () => {
@@ -55,22 +20,19 @@ fnNames.click_startStopTime = () => {
     switch (started) {
         case true:
             storeTimestamp("startTime");
-            interval = setInterval(countTime, 1000);
             document.getElementById("updateStartStopName").innerHTML = "stoppen";
         break;
         case false:
-            clearInterval(interval);
-            document.getElementById("updateStartStopName").innerHTML = "starten";
-            document.getElementById("askTask").style.display = "block";
+            const askTask = document.getElementById("askTask");
+            askTask.classList.add("flex");
+            askTask.classList.remove("hidden");
+            document.getElementById("getTask").focus();
         break;
     }
 }
 
-/**
- * 
- */
 fnNames.click_sendTimeTracking = () => {
-    var task = document.getElementById("getTask").value;
+    const task = document.getElementById("getTask").value;
 
     ajax.post(`/api/v1/time-tracking/add`, {
         task: task,
@@ -91,31 +53,23 @@ fnNames.click_sendTimeTracking = () => {
         cell4.innerHTML = response.task;
 
         localStorage.clear("startTime");
+        document.getElementById("updateStartStopName").innerHTML = "starten";
+
+        const askTask = document.getElementById("askTask");
+        askTask.classList.add("flex");
+        askTask.classList.remove("hidden");
     });
 }
 
-function countTime() {
-    let curr = new Date().getTime().toString();
-    let startTime = parseInt(localStorage.getItem("startTime"));
-
-    let diff = curr - startTime;
-
-    let sec = Math.floor(diff / 1000);
-    let hou = Math.floor(sec / 60 / 60);
-    sec = sec - hou * 60 * 60;
-    let min = Math.floor(sec / 60);
-    sec = sec - min * 60;
-
-    document.getElementById("timer").innerHTML = `${this.pad(hou)}:${this.pad(min)}:${this.pad(sec)}`;
+fnNames.click_cancelTimeTracking = () => {
+    const askTask = document.getElementById("askTask");
+    askTask.classList.remove("flex");
+    askTask.classList.add("hidden");
 }
 
-function storeTimestamp(stamp) {
+const storeTimestamp = (stamp) => {
     let time = new Date().getTime().toString();
     localStorage.setItem(stamp, time);
-}
-
-function pad(num) {
-    return ('00' + num).slice(-2);
 }
 
 const getTimeTrackingEntries = () => {

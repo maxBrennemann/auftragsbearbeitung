@@ -9,7 +9,7 @@ class TimeTracking
 
     private int $userId;
 
-    function __construct($userId)
+    public function __construct(int $userId)
     {
         $this->userId = (int) $userId;
 
@@ -107,16 +107,8 @@ class TimeTracking
         return $timeTables;
     }
 
-    /**
-     * this function is called from Ajax.php,
-     * it adds a new entry to the database and calculates the duration
-     */
-    public static function addEntry()
+    public function addEntry(int $start, int $stop, string $task): array
     {
-        $start = (int) $_POST["startTime"];
-        $stop = (int) $_POST["stopTime"];
-        $task = $_POST["task"];
-
         $durationMs = $stop - $start;
 
         /**
@@ -129,23 +121,23 @@ class TimeTracking
         $start = gmdate("Y-m-d H:i:s", strtotime('+2 hours', $start / 1000));
         $stop = gmdate("Y-m-d H:i:s", strtotime('+2 hours', $stop / 1000));
 
-        $query = "INSERT INTO user_timetracking (user_id, started_at, stopped_at, duration_ms, task) VALUES (:userId, :start, :stop, :durationMs, :task);";
+        $query = "INSERT INTO user_timetracking (`user_id`, started_at, stopped_at, duration_ms, task) VALUES (:userId, :start, :stop, :durationMs, :task);";
 
         $queryId = DBAccess::insertQuery($query, [
-            "userId" => $_SESSION["userid"],
+            "userId" => $this->userId,
             "start" => $start,
             "stop" => $stop,
             "durationMs" => $durationMs,
             "task" => $task,
         ]);
 
-        echo json_encode([
+        return [
             "id" => $queryId,
             "start" => $start,
             "stop" => $stop,
             "durationMs" => $durationMs,
             "task" => $task,
-        ]);
+        ];
     }
 
     public function isOwner($id) {}

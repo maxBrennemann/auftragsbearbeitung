@@ -35,7 +35,6 @@ use Classes\Project\Auftragsverlauf;
 use Classes\Project\Angebot;
 use Classes\Project\Leistung;
 use Classes\Project\Address;
-use Classes\Project\ClientSettings;
 use Classes\Project\Config;
 use Classes\Project\CacheManager;
 use Classes\Project\TimeTracking;
@@ -348,8 +347,7 @@ class Ajax
 					"postennummer" => $postennummer
 				]);
 
-				if (isset($_SESSION['userid']))
-					$user = $_SESSION['userid'];
+				$user = User::getCurrentUserId();
 				NotificationManager::addNotificationCheck($user, 0, "Bearbeitungsschritt erledigt", $postennummer);
 				break;
 			case "deleteOrder":
@@ -1089,8 +1087,8 @@ class Ajax
 				Statistics::dispatcher();
 				break;
 			case "getTimeTables":
-				$idUser = $_SESSION['userid'];
-				$timeTables = TimeTracking::getTimeTables((int) $idUser);
+				$idUser = User::getCurrentUserId();
+				$timeTables = TimeTracking::getTimeTables($idUser);
 
 				echo json_encode([
 					"status" => "success",
