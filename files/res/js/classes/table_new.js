@@ -1,3 +1,29 @@
+import { tableConfig } from "./js/tableconfig.js";
+import { ajax } from "./js/classes/ajax.js";
+
+export const renderTable = (containerId, headers, data, options = {}) => {
+    const table = createTable(containerId, options);
+    createHeader(headers, table, conditions);
+    data.forEach(row => {
+        addRow(row, table, columnConfig);
+    });
+
+    return table;
+}
+
+export const fetchAndRenderTable = async (containerId, headers, data, tableName, options = {}) => {
+    const config = tableConfig[tableName];
+    if (config == null) {
+        return;
+    }
+
+    const data = await ajax.get(`/api/v1/tables/fahrzeuge`, {
+        "conditions": options?.conditions ?? {},
+    });
+
+    return createTableSimplified(containerId, headers, data, options);
+}
+
 export const createTable = (containerId, options = {}) => {
     const container = document.getElementById(containerId);
     if (container == null) {

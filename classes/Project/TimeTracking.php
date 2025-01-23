@@ -48,17 +48,8 @@ class TimeTracking
 
     public static function sum(int $month = 0) {}
 
-    //temp
-    public static function getTimeTables($idUser)
+    public function getTimeTables()
     {
-        $column_names = array(
-            0 => array("COLUMN_NAME" => "Beginn"),
-            1 => array("COLUMN_NAME" => "Ende"),
-            2 => array("COLUMN_NAME" => "Zeit"),
-            3 => array("COLUMN_NAME" => "Aufgabe"),
-            4 => array("COLUMN_NAME" => "Bearbeitungsnotiz"),
-        );
-
         $matchMonths = [
             "January" => "Januar",
             "February" => "Februar",
@@ -85,7 +76,7 @@ class TimeTracking
             FROM user_timetracking 
             WHERE user_id = :idUser
             ORDER BY started_at DESC;";
-        $data = DBAccess::selectQuery($query, ["idUser" => $idUser]);
+        $data = DBAccess::selectQuery($query, ["idUser" => $this->userId]);
 
         $months = [];
         foreach ($data as $row) {
@@ -97,14 +88,7 @@ class TimeTracking
             }
         }
 
-        $timeTables = [];
-        foreach ($months as $month => $entries) {
-            $t = new Table();
-            $t->createByData($entries, $column_names);
-            $timeTables[$month] = $t->getTable();
-        }
-
-        return $timeTables;
+        return $months;
     }
 
     public function addEntry(int $start, int $stop, string $task): array

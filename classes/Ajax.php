@@ -1086,15 +1086,6 @@ class Ajax
 			case "diagramme":
 				Statistics::dispatcher();
 				break;
-			case "getTimeTables":
-				$idUser = User::getCurrentUserId();
-				$timeTables = TimeTracking::getTimeTables($idUser);
-
-				echo json_encode([
-					"status" => "success",
-					"timeTables" => $timeTables,
-				]);
-				break;
 			default:
 				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = :page;";
 				$result = DBAccess::selectQuery($selectQuery, ["page" => $page]);

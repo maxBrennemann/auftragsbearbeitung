@@ -72,8 +72,8 @@ const storeTimestamp = (stamp) => {
     localStorage.setItem(stamp, time);
 }
 
-const getTimeTrackingEntries = () => {
-    
+const getTimeTrackingEntries = async () => {
+    const table = document.getElementById("timeTrackingTable");
 }
 
 if (document.readyState !== 'loading' ) {
