@@ -13,6 +13,13 @@ const countTimeGlobal = () => {
     let curr = new Date().getTime().toString();
     let startTime = parseInt(localStorage.getItem("startTime"));
 
+    if (localStorage.getItem("startTime") == null) {
+        clearInterval(globalTimerInterval);
+        const displayTime = document.getElementById("timeGlobal");
+        displayTime.innerHTML = "00:00:00";
+        return;
+    }
+
     let diff = curr - startTime;
 
     let sec = Math.floor(diff / 1000);

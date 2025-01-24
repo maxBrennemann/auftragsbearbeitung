@@ -1,4 +1,6 @@
 import { initBindings } from "./classes/bindings.js";
+import { addRow, renderTable } from "./classes/table_new.js";
+import { timeGlobalListener } from "./classes/timetracking.js";
 
 const fnNames = {};
 
@@ -13,6 +15,15 @@ const init = () => {
         document.getElementById("updateStartStopName").innerHTML = "stoppen";
         document.getElementById("startStopChecked").checked = true;
     }
+
+    const getTask = document.getElementById("getTask");
+    getTask.addEventListener("keydown", e => {
+        if (e.key == "Enter") {
+            fnNames.click_sendTimeTracking();
+        }
+    })
+
+    getTimeTrackingEntries();
 }
 
 fnNames.click_startStopTime = () => {
@@ -21,6 +32,7 @@ fnNames.click_startStopTime = () => {
         case true:
             storeTimestamp("startTime");
             document.getElementById("updateStartStopName").innerHTML = "stoppen";
+            timeGlobalListener();
         break;
         case false:
             const askTask = document.getElementById("askTask");
@@ -40,24 +52,17 @@ fnNames.click_sendTimeTracking = () => {
         stop: new Date().getTime().toString(),
     }).then(response => {
         const table = document.querySelector("table");
-        const row = table.insertRow(1);
-        const cell1 = row.insertCell(0);
-        const cell2 = row.insertCell(1);
-        const cell3 = row.insertCell(2);
-        const cell4 = row.insertCell(3);
-        const cell5 = row.insertCell(4);
-
-        cell1.innerHTML = response.start;
-        cell2.innerHTML = response.stop;
-        cell3.innerHTML = response.durationMs;
-        cell4.innerHTML = response.task;
+        const options = {
+            "hideOptions": ["addRow", "check"],
+        };
+        addRow(response, table, options);
 
         localStorage.clear("startTime");
         document.getElementById("updateStartStopName").innerHTML = "starten";
 
         const askTask = document.getElementById("askTask");
-        askTask.classList.add("flex");
-        askTask.classList.remove("hidden");
+        askTask.classList.remove("flex");
+        askTask.classList.add("hidden");
     });
 }
 
@@ -73,7 +78,47 @@ const storeTimestamp = (stamp) => {
 }
 
 const getTimeTrackingEntries = async () => {
-    const table = document.getElementById("timeTrackingTable");
+    const data = await ajax.get(`/api/v1/time-tracking/current-user`);
+    const headers = [
+        {
+            "key": "start",
+            "label": "Beginn",
+        },
+        {
+            "key": "stop",
+            "label": "Ende",
+        },
+        {
+            "key": "time",
+            "label": "Zeit",
+        },
+        {
+            "key": "date",
+            "label": "Datum",
+        },
+        {
+            "key": "task",
+            "label": "Aufgabe",
+        },
+        {
+            "key": "edit",
+            "label": "Bearbeitungsnotiz",
+        },
+    ];
+    const options = {
+        "hide": ["id"],
+        "hideOptions": ["addRow", "check"],
+    };
+    renderTable("timeTrackingTable", headers, data, options);
+    document.getElementById("timeTrackingTable").addEventListener("rowDelete", async (event) => {
+        const data = event.detail;
+        const id = data.id;
+
+        const status = await ajax.delete(`/api/v1/time-tracking/${id}`);
+        if (status.message == "OK") {
+            data.row.remove();
+        }
+    });
 }
 
 if (document.readyState !== 'loading' ) {

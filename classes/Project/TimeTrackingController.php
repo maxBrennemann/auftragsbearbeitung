@@ -26,9 +26,19 @@ class TimeTrackingController
             JSONResponseHandler::throwError(401, "Unvalidated user");
         }
 
+        $start = Tools::get("start");
+        $stop = Tools::get("stop");
+
+        $all = Tools::get("all");
+        $all = $all == "true";
+
+        if ($start == null || $stop == null) {
+            $all = true;
+        }
+
         $userId = User::getCurrentUserId();
         $timeTracking = new TimeTracking($userId);
-        $data = $timeTracking->getTimeTables();
+        $data = $timeTracking->getTimeTables($start, $stop, $all);
 
         JSONResponseHandler::sendResponse($data);
     }
@@ -36,8 +46,8 @@ class TimeTrackingController
     public static function showTimeTrackingOverview() {}
 
     public static function addEntry() {
-        $start = (int) Tools::get("startTime");
-        $stop = (int) Tools::get("stopTime");
+        $start = (int) Tools::get("start");
+        $stop = (int) Tools::get("stop");
         $task = (string) Tools::get("task");
 
         if (!self::validateUser()) {
@@ -46,9 +56,22 @@ class TimeTrackingController
 
         $userId = User::getCurrentUserId();
         $timeTracking = new TimeTracking($userId);
-        $data = $timeTracking->addEntry($start, $stop, $task);
+        $id = $timeTracking->addEntry($start, $stop, $task);
+        $data = DBAccess::selectQuery("SELECT
+                id,
+                DATE_FORMAT(started_at, '%H:%i:%s') AS `start`, 
+                DATE_FORMAT(stopped_at, '%H:%i:%s') AS `stop`,
+                time_format(sec_to_time(duration_ms / 1000), '%H:%i:%s') AS `time`,
+                DATE_FORMAT(started_at, '%d.%m.%Y') as `date`,
+                task AS `task`, 
+                edit_log AS `edit`
+            FROM user_timetracking 
+            WHERE id = :id
+            ORDER BY started_at DESC;", [
+                "id" => $id,
+            ]);
 
-        JSONResponseHandler::sendResponse($data);
+        JSONResponseHandler::sendResponse($data[0]);
     }
 
     public static function editEntry(int $id)
@@ -59,13 +82,20 @@ class TimeTrackingController
         }
     }
 
-    public static function deleteEntry($id)
+    public static function deleteEntry()
     {
-        if (!User::isAdmin()) {
+        $userId = User::getCurrentUserId();
+        $id = (int) Tools::get("id");
+
+        $query = "SELECT user_id FROM user_timetracking WHERE id = :id";
+        $timeTrackingUserId = DBAccess::selectQuery($query, [
+            "id" => $id,
+        ]);
+
+        if (!User::isAdmin() && (int) $timeTrackingUserId[0]["user_id"] !== $userId) {
             return;
         }
 
-        $id = (int) $id;
         $query = "DELETE FROM user_timetracking WHERE id = :id;";
         DBAccess::deleteQuery($query, ["id" => $id]);
 
