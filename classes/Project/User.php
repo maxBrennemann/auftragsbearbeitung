@@ -373,10 +373,10 @@ class User
         return true;
     }
 
-    public static function getCurrentUserId()
+    public static function getCurrentUserId(): int
     {
         if (isset($_SESSION['user_id'])) {
-            return $_SESSION['user_id'];
+            return (int) $_SESSION['user_id'];
         }
 
         return -1;
@@ -395,11 +395,11 @@ class User
             return false;
         }
 
-        $query = "SELECT id FROM user_roles 
-            JOIN users 
-                ON users.role = user_roles.id 
-            WHERE users.id = :userId 
-                AND user_roles.name = 'admin'";
+        $query = "SELECT user.id FROM user_roles 
+            JOIN user
+                ON user.role = user_roles.id 
+            WHERE user.id = :userId 
+                AND user_roles.role_name = 'admin'";
         $data = DBAccess::selectQuery($query, [
             "userId" => $userId,
         ]);

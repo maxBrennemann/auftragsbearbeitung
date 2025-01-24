@@ -1,3 +1,29 @@
+import { tableConfig } from "../tableconfig.js";
+import { ajax } from "./ajax.js";
+
+export const renderTable = (containerId, headers, data, options = {}) => {
+    const table = createTable(containerId, options);
+    createHeader(headers, table, options);
+    data.forEach(row => {
+        addRow(row, table, options);
+    });
+
+    return table;
+}
+
+export const fetchAndRenderTable = async (containerId, headers, tableName, options = {}) => {
+    const config = tableConfig[tableName];
+    if (config == null) {
+        return;
+    }
+
+    const data = await ajax.get(`/api/v1/tables/fahrzeuge`, {
+        "conditions": options?.conditions ?? {},
+    });
+
+    return createTableSimplified(containerId, headers, data, options);
+}
+
 export const createTable = (containerId, options = {}) => {
     const container = document.getElementById(containerId);
     if (container == null) {
@@ -19,13 +45,13 @@ export const createTable = (containerId, options = {}) => {
     return table;
 }
 
-export const createHeader = (headers, table, conditions = {}) => {
+export const createHeader = (headers, table, options = {}) => {
     const thead = table.querySelector("thead");
     const row = document.createElement("tr");
 
     let count = 0;
     headers.forEach(header => {
-        if (conditions?.hide?.includes(header.key)) {
+        if (options?.hide?.includes(header.key)) {
             return;
         }
 
@@ -38,7 +64,7 @@ export const createHeader = (headers, table, conditions = {}) => {
         row.appendChild(th);
     });
 
-    if (!conditions?.hideOptions?.includes("all")) {
+    if (!options?.hideOptions?.includes("all")) {
         const actionsTh = document.createElement("th");
         actionsTh.textContent = "Aktionen";
         row.appendChild(actionsTh);
@@ -49,8 +75,8 @@ export const createHeader = (headers, table, conditions = {}) => {
 
     createPlaceholderRow(count, table);
 
-    if (!conditions?.hideOptions?.includes("addRow") 
-        && !conditions?.hideOptions?.includes("all")) {
+    if (!options?.hideOptions?.includes("addRow") 
+        && !options?.hideOptions?.includes("all")) {
         createAddRow(count, table);
     }
 }
@@ -94,12 +120,12 @@ const createAddRow = (count, table) => {
     table.querySelector("tbody").appendChild(row);
 }
 
-export const addRow = (data, table, conditions = {}) => {
+export const addRow = (data, table, options = {}) => {
     const tbody = table.querySelector("tbody");
     const row = document.createElement("tr");
 
-    if (Object.keys(data).includes(conditions?.primaryKey)) {
-        row.dataset.id = data[conditions?.primaryKey];
+    if (Object.keys(data).includes(options?.primaryKey)) {
+        row.dataset.id = data[options?.primaryKey];
     }
 
     const placeholderRow = table.querySelector("tr.empty-placeholder");
@@ -108,7 +134,7 @@ export const addRow = (data, table, conditions = {}) => {
     }
 
     Object.keys(data).forEach(key => {
-        if (conditions?.hide?.includes(key)) {
+        if (options?.hide?.includes(key)) {
             return;
         }
 
@@ -120,46 +146,46 @@ export const addRow = (data, table, conditions = {}) => {
 
     const actionsCell = document.createElement("td");
 
-    if (!conditions?.hideOptions?.includes("edit")
-        && !conditions?.hideOptions?.includes("all")) {
+    if (!options?.hideOptions?.includes("edit")
+        && !options?.hideOptions?.includes("all")) {
         const editBtn = document.createElement("button");
         editBtn.innerHTML = getEditBtn();
         editBtn.title = "Bearbeiten";
         editBtn.className = "inline-flex border-0 bg-green-400 p-1 rounded-md";
         editBtn.addEventListener("click", () => {
-            dispatchActionEvent("rowEdit", data, table);
+            dispatchActionEvent("rowEdit", data, table, {row});
         });
 
         actionsCell.appendChild(editBtn);
     }
 
-    if (!conditions?.hideOptions?.includes("delete")
-        && !conditions?.hideOptions?.includes("all")) {
+    if (!options?.hideOptions?.includes("delete")
+        && !options?.hideOptions?.includes("all")) {
         const deleteBtn = document.createElement("button");
         deleteBtn.innerHTML = getDeleteBtn();
         deleteBtn.title = "Löschen";
         deleteBtn.className = "inline-flex border-0 bg-red-400 p-1 rounded-md ml-1";
         deleteBtn.addEventListener("click", () => {
-            dispatchActionEvent("rowDelete", data, table);
+            dispatchActionEvent("rowDelete", data, table, {row});
         });
 
         actionsCell.appendChild(deleteBtn);
     }
 
-    if (!conditions?.hideOptions?.includes("check")
-        && !conditions?.hideOptions?.includes("all")) {
-        const deleteBtn = document.createElement("button");
-        deleteBtn.innerHTML = getCheckBtn();
-        deleteBtn.title = "Erledigt";
-        deleteBtn.className = "inline-flex border-0 bg-blue-400 p-1 rounded-md ml-1";
-        deleteBtn.addEventListener("click", () => {
+    if (!options?.hideOptions?.includes("check")
+        && !options?.hideOptions?.includes("all")) {
+        const checkBtn = document.createElement("button");
+        checkBtn.innerHTML = getCheckBtn();
+        checkBtn.title = "Erledigt";
+        checkBtn.className = "inline-flex border-0 bg-blue-400 p-1 rounded-md ml-1";
+        checkBtn.addEventListener("click", () => {
             dispatchActionEvent("rowCheck", data, table, {row});
         });
 
-        actionsCell.appendChild(deleteBtn);
+        actionsCell.appendChild(checkBtn);
     }
 
-    if (!conditions?.hideOptions?.includes("all")) {
+    if (!options?.hideOptions?.includes("all")) {
         row.appendChild(actionsCell);
     }
 

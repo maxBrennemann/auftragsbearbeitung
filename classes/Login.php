@@ -5,6 +5,8 @@ namespace Classes;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 
+use Classes\Project\User;
+
 class Login
 {
 
@@ -59,7 +61,7 @@ class Login
 
 	private static function login($userId)
 	{
-		$_SESSION['userid'] = $userId;
+		$_SESSION['user_id'] = $userId;
 		$_SESSION['loggedIn'] = true;
 	}
 
@@ -71,7 +73,7 @@ class Login
 		setcookie(session_name(), '', 100);
 		session_unset();
 		session_destroy();
-		$_SESSION = array();
+		$_SESSION = [];
 	}
 
 	public static function getLoginKey($deviceId)
@@ -90,7 +92,7 @@ class Login
 
 		/* save login key */
 		DBAccess::insertQuery("INSERT INTO user_login_key (user_id, login_key, expiration_date, user_device_id) VALUES (:id, :loginkey, :expiration, :userDeviceId)", array(
-			':id' => $_SESSION['userid'],
+			':id' => User::getCurrentUserId(),
 			':loginkey' => $loginKey,
 			':expiration' => $dateInTwoWeeks,
 			':userDeviceId' => $deviceId
@@ -130,7 +132,7 @@ class Login
 			':os' => $os,
 			':browser' => $browser,
 			':deviceType' => $deviceType,
-			':userId' => $_SESSION['userid']
+			':userId' => User::getCurrentUserId(),
 		));
 
 		$duplicateDevice = self::checkDuplicateDevices($data);
@@ -161,7 +163,7 @@ class Login
 			':os' => $os,
 			':browser' => $browser,
 			':deviceType' => $deviceType,
-			':userId' => $_SESSION['userid'],
+			':userId' => User::getCurrentUserId(),
 			':browserAgent' => $userAgent,
 			':ipAddress' => $_SERVER['REMOTE_ADDR'],
 		));
@@ -271,8 +273,8 @@ class Login
 
 	public static function getUserId()
 	{
-		if (isset($_SESSION['userid'])) {
-			$user = $_SESSION['userid'];
+		if (isset($_SESSION['user_id'])) {
+			$user = $_SESSION['user_id'];
 			return $user;
 		}
 		return -1;

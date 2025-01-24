@@ -3,6 +3,7 @@ import { TableSorter, currentTableSorter, setTableSorter, sortTableNew } from ".
 import { StatusInfoHandler, infoSaveSuccessfull } from "./classes/statusInfo.js";
 import { FileUploader } from "./classes/fileUploader.js";
 import { AjaxCall, ajax, makeAsyncCall } from "./classes/ajax.js";
+import { timeGlobalListener } from "./classes/timetracking.js";
 
 /**
  * function is called when the page is loaded,
@@ -63,6 +64,8 @@ function registerLastActivity() {
 }
 
 function startFunc() {
+	timeGlobalListener();
+
 	var el = document.querySelector("input[type=email");
 	if (el != null) {
 		el.addEventListener("input", function() {
@@ -90,7 +93,6 @@ function startFunc() {
 	initializeInfoBtn();
 	setTableSorter(new TableSorter());
 	currentTableSorter.readTableSorted();
-	timeGlobalListener();
 	initSearch();
 }
 
@@ -184,37 +186,6 @@ function listener_bellAndSearch() {
 			document.getElementById("showNotifications").style.display = "inline";
 		}
 	}, false);
-}
-
-var globalTimerInterval;
-function timeGlobalListener() {
-	const displayTime = document.getElementById("timeGlobal");
-	if (displayTime != null) {
-		const start = localStorage.getItem("startTime");
-		if (start != null) {
-			globalTimerInterval = setInterval(countTimeGlobal, 1000);
-		}
-	}
-}
-
-function countTimeGlobal() {
-    let curr = new Date().getTime().toString();
-    let startTime = parseInt(localStorage.getItem("startTime"));
-
-    let diff = curr - startTime;
-
-    let sec = Math.floor(diff / 1000);
-    let hou = Math.floor(sec / 60 / 60);
-    sec = sec - hou * 60 * 60;
-    let min = Math.floor(sec / 60);
-    sec = sec - min * 60;
-
-	const displayTime = document.getElementById("timeGlobal");
-    displayTime.innerHTML = `${pad(hou)}:${pad(min)}:${pad(sec)}`;
-}
-
-function pad(num) {
-    return ('00' + num).slice(-2);
 }
 
 function validateEmail(email) {

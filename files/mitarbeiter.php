@@ -9,7 +9,7 @@ if (isset($_GET["id"])) {
     $user = new User($_GET["id"]);
     $showUserList = false;
 } else {
-    $user = new User($_SESSION["userid"]);
+    $user = new User($_SESSION["user_id"]);
 }
 
 if ($showUserList) : ?>

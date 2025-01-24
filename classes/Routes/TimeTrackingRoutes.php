@@ -29,13 +29,13 @@ class TimeTrackingRoutes extends Routes
      * @uses \Classes\Project\TimeTrackingController::editEntry()
      */
     protected static $putRoutes = [
-        "time-tracking/edit/{id}" => [\Classes\Project\TimeTrackingController::class, "editEntry"],
+        "time-tracking/{id}" => [\Classes\Project\TimeTrackingController::class, "editEntry"],
     ];
 
     /**
      * @uses \Classes\Project\TimeTrackingController::deleteEntry()
      */
     protected static $deleteRoutes = [
-        "/time-tracking/delete/{id}" => [\Classes\Project\TimeTrackingController::class, "deleteEntry"],
+        "/time-tracking/{id}" => [\Classes\Project\TimeTrackingController::class, "deleteEntry"],
     ];
 }

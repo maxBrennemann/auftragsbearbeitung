@@ -30,8 +30,8 @@ class NotificationManager
      */
     private static function getUserId(): ?int
     {
-        if (isset($_SESSION['userid'])) {
-            return $_SESSION['userid'];
+        if (isset($_SESSION['user_id'])) {
+            return $_SESSION['user_id'];
         } else {
             return null;
         }
@@ -90,25 +90,25 @@ class NotificationManager
 
     private static function getNotifications()
     {
-        $user = $_SESSION['userid'];
+        $user = $_SESSION['user_id'];
         return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = $user AND ischecked = 'false'");
     }
 
     private static function getTasks()
     {
-        $user = $_SESSION['userid'];
+        $user = $_SESSION['user_id'];
         return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = $user AND ischecked = 'false' AND (`type` = 1)");
     }
 
     private static function getNews()
     {
-        $user = $_SESSION['userid'];
+        $user = $_SESSION['user_id'];
         return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = $user AND ischecked = 'false' AND (`type` = 4 OR `type`= 0)");
     }
 
     public static function checkActuality()
     {
-        $user = $_SESSION['userid'];
+        $user = $_SESSION['user_id'];
         $query = "UPDATE user_notifications JOIN schritte ON user_notifications.specific_id = schritte.Schrittnummer SET ischecked = 1 WHERE user_notifications.`type` = 1 AND schritte.istErledigt = 0 AND user_id = $user;";
         DBAccess::updateQuery($query);
     }
@@ -176,8 +176,8 @@ class NotificationManager
     public static function addNotification($user_id, $type, $content, $specificId)
     {
         $initiator = 0;
-        if (isset($_SESSION['userid']))
-            $initiator = $_SESSION['userid'];
+        if (isset($_SESSION['user_id']))
+            $initiator = $_SESSION['user_id'];
 
         if ($user_id == -1) {
             $query = "INSERT INTO user_notifications (`user_id`, `initiator`, `type`, content, specific_id) VALUES ";
@@ -217,8 +217,8 @@ class NotificationManager
 
     public static function setNotificationsRead($notifications)
     {
-        if (isset($_SESSION['userid']))
-            $uid = $_SESSION['userid'];
+        if (isset($_SESSION['user_id']))
+            $uid = $_SESSION['user_id'];
         else
             return null;
 
