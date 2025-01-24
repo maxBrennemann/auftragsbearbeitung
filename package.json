@@ -7,12 +7,11 @@
     "webpack-cli": "^5.1.4"
   },
   "scripts": {
-    "tailwind": "npx @tailwindcss/cli -i input.css -o ./files/res/css/tailwind.css --watch",
+    "tailwind": "npx tailwindcss -i input.css -o ./files/res/css/tailwind.css --watch",
     "build": "webpack",
     "mysqldump": "mysqldump --host=host.docker.internal --user=root auftragsmanager --result-file=dumps/dump.sql"
   },
   "dependencies": {
-    "@tailwindcss/cli": "^4.0.0",
     "chart.js": "^4.4.1",
     "colorpicker": "https://github.com/maxBrennemann/colorpicker.git",
     "js-classes": "https://github.com/maxBrennemann/js-functions.git"
