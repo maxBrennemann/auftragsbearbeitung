@@ -51,7 +51,7 @@ function getTableConfig()
             ],
             "permissions" => ["read", "create", "update", "delete"],
             "hooks" => [
-                "beforeSelect" => "",
+                "beforeRead" => "",
                 "beforeDelete" => [\Classes\Project\Auftrag::class, "resetAnsprechpartner"],
             ],
             "joins" => [],
@@ -85,7 +85,9 @@ function getTableConfig()
                 "Hersteller",
             ],
             "permissions" => ["read", "create", "update", "delete"],
-            "hooks" => [],
+            "hooks" => [
+                "afterRead" => [\Classes\Project\Color::class, "convertHexToHTML"],
+            ],
             "joins" => [],
         ],
         "einkauf" => [

@@ -31,11 +31,7 @@ if ($query !== null) {
         <?php $link = Link::getPageLink("kunde") . "?id=" . $customer->getKundennummer(); ?>
         <div class="shortSummary">
             <a class="shortSummaryHeader" href="<?=$link?>">
-                <?php if ($customer->getFirmenname() == ""): ?>
-                    <p><?=$customer->getVorname()?> <?=$customer->getNachname()?></p>
-                <?php else: ?>
-                    <p><?=$customer->getFirmenname()?></p>
-                <?php endif; ?>
+                <p><?=$customer->getAlternativeName()?></p>
             </a>
             <p><?=$customer->getStrasse()?> <?=$customer->getHausnummer()?></p>
             <p><?=$customer->getPostleitzahl()?> <?=$customer->getOrt()?></p>

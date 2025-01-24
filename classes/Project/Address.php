@@ -15,17 +15,17 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 class Address
 {
 
-    private $strasse = null;
-    private $hausnummer = null;
-    private $postleitzahl = null;
-    private $ort = null;
-    private $zusatz = null;
-    private $art = null;
-    private $land = null;
+    private string $strasse = "";
+    private string $hausnummer = "";
+    private int $postleitzahl = 0;
+    private string $ort = "";
+    private string$zusatz = "";
+    private int $art = 0;
+    private string $land = "";
 
     function __construct() {}
 
-    public function getStrasse()
+    public function getStrasse(): string
     {
         return $this->strasse;
     }
@@ -45,7 +45,7 @@ class Address
         return $this->ort;
     }
 
-    public static function loadAddress($addressId)
+    public static function loadAddress(int $addressId)
     {
         $addressInstance = new Address();
 

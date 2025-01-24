@@ -256,6 +256,13 @@ const addressTable = () => {
     fetchAndRenderTable("addressTable", "address", options);
 }
 
+const colorTable = () => {
+    const options = {
+
+    };
+    fetchAndRenderTable("colorTable", "color", options);
+}
+
 if (document.readyState !== 'loading' ) {
     init();
 } else {
