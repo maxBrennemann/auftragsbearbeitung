@@ -9,7 +9,7 @@
                 <textarea readonly><?=$text["additionalQuery"]?></textarea>
                 <p>Text:</p>
                 <textarea data-id="<?=$text["id"]?>"><?=$text["chatgptResponse"]?></textarea>
-                <button class="block px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Text auswählen</button>
+                <button class="block px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-xs border-none">Text auswählen</button>
             </div>
         <?php endforeach; ?>
         </div>
@@ -31,6 +31,6 @@
             <p>Zusätzliche Anweisungen</p>
             <input class="w-96 m-1 text-slate-600 rounded-lg p-2" type="text" id="additionalTextGPT" placeholder="Schreibe hier zusätzliche Anweisunge für ChatGPT">
         </div>
-        <button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" data-binding="true" data-fun="textGenerationExtended" id="generateNewText">Neuen Text generieren</button>
+        <button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-xs border-none" data-binding="true" data-fun="textGenerationExtended" id="generateNewText">Neuen Text generieren</button>
     </div>
 </div>

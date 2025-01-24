@@ -9,14 +9,14 @@
             <div>
                 <label>
                     Listenname
-                    <input type="text" placeholder="Listenname" class="rounded-sm m-1 p-1 w-80">
+                    <input type="text" placeholder="Listenname" class="rounded-xs m-1 p-1 w-80">
                 </label>
                 <span class="text-green-500 text-xl">✓</span>
             </div>
             <div>
                 <label>
                     Listenpunktbezeichnung
-                    <input type="text" placeholder="Listenpunktbezeichnung" class="rounded-sm m-1 p-1 w-80">
+                    <input type="text" placeholder="Listenpunktbezeichnung" class="rounded-xs m-1 p-1 w-80">
                 </label>
                 <label>
                     Listenpunkt Typ auwählen

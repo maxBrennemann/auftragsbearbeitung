@@ -3,7 +3,7 @@
         <h1 class="font-bold">Import/ Export</h1>
         <div class="defCont hidden">
             <p class="font-bold">Motivexporte</p>
-            <button id="createFbExport" data-binding="true" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Facebook Export generieren</button>
+            <button id="createFbExport" data-binding="true" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-xs border-none">Facebook Export generieren</button>
         </div>
         <div class="productLoader" id="crawlAll">
             <div class="lds-ring" id="loaderCrawlAll"><div></div><div></div><div></div><div></div></div>

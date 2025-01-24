@@ -16,58 +16,58 @@
 		<div>
 			<label class="block">
 				Firmen- oder Vereinsname
-				<input type="text" form="cForm" class="block rounded-sm m-1 p-1 w-80" name="customerName" autocomplete="some-unrecognised-value">
+				<input type="text" form="cForm" class="block rounded-xs m-1 p-1 w-80" name="customerName" autocomplete="some-unrecognised-value">
 			</label>
 			<label class="block">
 				Straße
-				<input type="text" form="cForm" name="street" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="text" form="cForm" name="street" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Hausnummer
-				<input type="text" form="cForm" name="houseNumber" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="text" form="cForm" name="houseNumber" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Adresszusatz
-				<input type="text" form="cForm" name="addressAddition" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="text" form="cForm" name="addressAddition" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Postleitzahl
-				<input type="number" form="cForm" name="plz" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="number" form="cForm" name="plz" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Ort
-				<input type="text" form="cForm" name="city" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="text" form="cForm" name="city" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Land
-				<input type="text" form="cForm" name="country" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="text" form="cForm" name="country" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Email
-				<input type="email" form="cForm" name="companyemail" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="email" form="cForm" name="companyemail" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Telefon Festnetz
-				<input type="tel" form="cForm" name="telfestnetz" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="tel" form="cForm" name="telfestnetz" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Telefon Mobil
-				<input type="tel" form="cForm" name="telmobil" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="tel" form="cForm" name="telmobil" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label>
 				Website
-				<input type="url" form="cForm" name="website" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="url" form="cForm" name="website" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Notizen
-				<textarea name="notes" form="cForm" class="block rounded-sm m-1 p-1 w-80"></textarea>
+				<textarea name="notes" form="cForm" class="block rounded-xs m-1 p-1 w-80"></textarea>
 			</label>
 		</div>
 		<div>
 			<p class="font-semibold mb-1">Kontaktdaten Ansprechpartner</p>
 			<label class="block">
 				Anrede
-				<select form="cForm" class="block rounded-sm m-1 p-1 w-80" name="anrede">
+				<select form="cForm" class="block rounded-xs m-1 p-1 w-80" name="anrede">
 					<option value="0">Herr</option>
 					<option value="1">Frau</option>
 					<option value="5">Divers</option>
@@ -78,23 +78,23 @@
 			</label>
 			<label class="block">
 				Vorname
-				<input form="cForm" type="text" name="contactPrename" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input form="cForm" type="text" name="contactPrename" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Nachname
-				<input type="text" form="cForm" name="contactSurname" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="text" form="cForm" name="contactSurname" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Email
-				<input type="email" form="cForm" name="emailaddress" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="email" form="cForm" name="emailaddress" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Telefon Durchwahl
-				<input type="tel" form="cForm" name="phoneExtension" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="tel" form="cForm" name="phoneExtension" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Mobilnummer
-				<input type="tel" form="cForm" name="mobileNumber" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="tel" form="cForm" name="mobileNumber" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 		</div>
 	</div>
@@ -102,7 +102,7 @@
 		<div>
 			<label class="block">
 				Anrede
-				<select form="pForm" class="block rounded-sm m-1 p-1 w-80" name="anrede">
+				<select form="pForm" class="block rounded-xs m-1 p-1 w-80" name="anrede">
 					<option value="0">Herr</option>
 					<option value="1">Frau</option>
 					<option value="5">Divers</option>
@@ -113,53 +113,53 @@
 			</label>
 			<label class="block">
 				Vorname
-				<input type="text" form="pForm" name="prename" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="text" form="pForm" name="prename" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Nachname
-				<input type="text" form="pForm" name="surname" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="text" form="pForm" name="surname" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Email
-				<input type="email" form="pForm" name="companyemail" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="email" form="pForm" name="companyemail" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Telefon Festnetz
-				<input type="tel" form="pForm" name="telfestnetz" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="tel" form="pForm" name="telfestnetz" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Telefon Mobil
-				<input type="tel" form="pForm" name="telmobil" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="tel" form="pForm" name="telmobil" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Notizen
-				<textarea name="notes" form="pForm" class="block rounded-sm m-1 p-1 w-80"></textarea>
+				<textarea name="notes" form="pForm" class="block rounded-xs m-1 p-1 w-80"></textarea>
 			</label>
 		</div>
 		<div>
 			<label class="block">
 				Straße
-				<input type="text" form="pForm" name="street" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="text" form="pForm" name="street" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Hausnummer
-				<input type="text" form="pForm" name="houseNumber" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="text" form="pForm" name="houseNumber" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Adresszusatz
-				<input type="text" form="pForm" name="addressAddition" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="text" form="pForm" name="addressAddition" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Postleitzahl
-				<input type="number" form="pForm" name="plz" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="number" form="pForm" name="plz" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Ort
-				<input type="text" form="pForm" name="city" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="text" form="pForm" name="city" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 			<label class="block">
 				Land
-				<input type="text" form="pForm" name="country" autocomplete="some-unrecognised-value" class="block rounded-sm m-1 p-1 w-80">
+				<input type="text" form="pForm" name="country" autocomplete="some-unrecognised-value" class="block rounded-xs m-1 p-1 w-80">
 			</label>
 		</div>
 	</div>

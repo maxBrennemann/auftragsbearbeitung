@@ -1,47 +1,63 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-@layer components {
-    .btn-primary {
-        @apply px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none disabled:bg-gray-300 hover:bg-blue-300;
-    }
+@config './tailwind.config.js';
 
-    .btn-primary-new {
-        @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 bg-green-500 rounded text-sm border-0 text-white hover:bg-green-700 disabled:bg-green-200 disabled:hover:bg-green-300 disabled:hover:cursor-not-allowed;
-    }
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
 
-    .btn-attention {
-        @apply px-4 py-2 m-1 font-semibold text-sm bg-red-200 text-slate-600 rounded-lg shadow-sm border-none disabled:bg-gray-300 hover:bg-red-300;
-    }
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
 
-    .link-primary {
-        @apply text-blue-500 hover:text-blue-600 font-semibold hover:underline visited:text-blue-800;
-    }
+@utility btn-primary {
+  @apply px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-xs border-none disabled:bg-gray-300 hover:bg-blue-300;
+}
 
-    .input-primary {
-        @apply px-4 py-2 rounded-lg;
-    }
+@utility btn-primary-new {
+  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 bg-green-500 rounded-sm text-sm border-0 text-white hover:bg-green-700 disabled:bg-green-200 disabled:hover:bg-green-300 disabled:hover:cursor-not-allowed;
+}
 
-    .input-primary-new {
-        @apply w-36 h-8 px-2.5 py-1 rounded ring-1 ring-gray-300;
-    }
+@utility btn-attention {
+  @apply px-4 py-2 m-1 font-semibold text-sm bg-red-200 text-slate-600 rounded-lg shadow-xs border-none disabled:bg-gray-300 hover:bg-red-300;
+}
 
-    .link-button {
-        @apply px-3 py-1 m-1 font-semibold text-sm bg-slate-100 text-slate-700 rounded-lg shadow-sm disabled:bg-gray-300 border-2 border-blue-300 hover:bg-blue-200;
-    }
+@utility link-primary {
+  @apply text-blue-500 hover:text-blue-600 font-semibold hover:underline visited:text-blue-800;
+}
 
-    .btn-delete {
-        @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 bg-red-400 rounded text-sm border-0 text-white hover:bg-red-600 disabled:bg-red-200 disabled:hover:bg-red-300 disabled:hover:cursor-not-allowed;
-    }
+@utility input-primary {
+  @apply px-4 py-2 rounded-lg;
+}
 
-    .btn-edit {
-        @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 bg-blue-400 rounded text-sm border-0 text-white hover:bg-blue-600;
-    }
+@utility input-primary-new {
+  @apply w-36 h-8 px-2.5 py-1 rounded-sm ring-1 ring-gray-300;
+}
 
-    .btn-cancel {
-        @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 bg-white rounded text-sm border-0 text-black hover:bg-slate-100 shadow-sm ring-offset-black gap-2 data-[focus]:outline-1 data-[focus]:outline-black ring-1 ring-gray-300;
-    }
+@utility link-button {
+  @apply px-3 py-1 m-1 font-semibold text-sm bg-slate-100 text-slate-700 rounded-lg shadow-xs disabled:bg-gray-300 border-2 border-blue-300 hover:bg-blue-200;
+}
+
+@utility btn-delete {
+  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 bg-red-400 rounded-sm text-sm border-0 text-white hover:bg-red-600 disabled:bg-red-200 disabled:hover:bg-red-300 disabled:hover:cursor-not-allowed;
+}
+
+@utility btn-edit {
+  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 bg-blue-400 rounded-sm text-sm border-0 text-white hover:bg-blue-600;
+}
+
+@utility btn-cancel {
+  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 bg-white rounded-sm text-sm border-0 text-black hover:bg-slate-100 shadow-xs ring-offset-black gap-2 data-focus:outline-1 data-focus:outline-black ring-1 ring-gray-300;
 }
 
 @font-face {

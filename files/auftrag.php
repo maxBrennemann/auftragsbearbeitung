@@ -134,7 +134,7 @@ if ($auftrag->istRechnungGestellt() && $show == false): ?>
 <?php else: ?>
 	<div class="defCont">
 		<p class="font-bold">Kundeninfo</p>
-		<div class="bg-white p-2 rounded-sm">
+		<div class="bg-white p-2 rounded-xs">
 			<p><?=$kunde->getVorname()?> <?=$kunde->getNachname()?></p>
 			<p><?=$kunde->getFirmenname()?></p>
 			<p class="mt-2"><?=$kunde->getStrasse()?> <?=$kunde->getHausnummer()?></p>
@@ -212,10 +212,10 @@ if ($auftrag->istRechnungGestellt() && $show == false): ?>
 			<div>
 				<button class="btn-primary-new" data-binding="true" data-fun="addStep">Neu</button>
 			</div>
-			<div class="px-2 rounded ml-2">
+			<div class="px-2 rounded-sm ml-2">
 				<label class="flex items-center cursor-pointer">
 					<input type="checkbox" id="toggleSteps" value="" class="sr-only peer">
-					<div class="relative w-11 h-6 bg-gray-400 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+					<div class="relative w-11 h-6 bg-gray-400 peer-focus:outline-hidden peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:rtl:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
 					<span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Alle Schritte anzeigen</span>
 				</label>
 			</div>
@@ -255,7 +255,7 @@ if ($auftrag->istRechnungGestellt() && $show == false): ?>
 					<p>Noch zu erledigen:</p>
 					<label>
 						<input type="checkbox" id="" value="checked" class="sr-only peer">
-						<div class="relative w-11 h-6 bg-gray-400 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+						<div class="relative w-11 h-6 bg-gray-400 peer-focus:outline-hidden peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:rtl:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
 					</label>
 				</div>
 			</div>
@@ -284,7 +284,7 @@ if ($auftrag->istRechnungGestellt() && $show == false): ?>
 	<div class="defCont schritteAdd">
 		<div class="flex">
 			<p class="font-bold">Notizen hinzufügen</p>
-			<button class="btn-primary flex justify-center items-center select-none text-xl font-bold p-2 m-2 rounded-full shadow h-8 w-8" data-binding="true" data-fun="addNewNote">
+			<button class="btn-primary flex justify-center items-center select-none text-xl font-bold p-2 m-2 rounded-full shadow-sm h-8 w-8" data-binding="true" data-fun="addNewNote">
 				<?=Icon::getDefault("iconAdd")?>
 			</button>
 		</div>
@@ -473,7 +473,7 @@ if ($auftrag->istRechnungGestellt() && $show == false): ?>
 		<p class="font-bold" data-binding="true" data-fun="showAuftragsverlauf">Auftragsverlauf anzeigen</p>
 		<?=$auftragsverlauf?>
 		<br>
-		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="addList();">Liste hinzufügen</button><button class="infoButton" data-info="2">i</button>
+		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-xs border-none" onclick="addList();">Liste hinzufügen</button><button class="infoButton" data-info="2">i</button>
 		<div class="defCont" id="listauswahl" style="display: none;">
 			<?=$showLists?>
 		</div>
