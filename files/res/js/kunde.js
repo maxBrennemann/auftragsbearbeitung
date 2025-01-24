@@ -1,5 +1,6 @@
-import { addRow, createHeader, createTable } from "./classes/table_new.js";
+import { addRow, createHeader, createTable, fetchAndRenderTable } from "./classes/table_new.js";
 import { tableConfig } from "./js/tableconfig.js";
+import { initBindings } from "./classes/bindings.js";
 
 const globalProperties = {
     changedData: {},
@@ -12,6 +13,15 @@ const globalProperties = {
 const customerData = {
     id: document.getElementById("kdnr")?.value ?? 0,
 };
+
+const fnNames = {};
+
+const init = () => {
+    initBindings(fnNames);
+    initCustomer();
+    initialize();
+    addressTable();
+}
 
 function initialize() {
     if (customerData.id == 0) {
@@ -157,6 +167,13 @@ function initCustomer() {
     }
 }
 
+fnNames.click_createNewOrder = () => {
+    const link = `/neuer-auftrag?kdnr=${customerData.id}`;
+    const linkEl = document.createElement("a");
+    linkEl.href = link;
+    linkEl.click();
+}
+
 /**
  * changes the archive state to false
  * 
@@ -228,12 +245,28 @@ const contactPersonTable = async () => {
     });
 }
 
+const addressTable = () => {
+    const options = {
+        "conditions": {
+            "id_customer": customerData.id,
+        },
+        "hide": ["id", "id_customer"],
+        "hideOptions": ["check", "addRow"],
+    };
+    fetchAndRenderTable("addressTable", "address", options);
+}
+
+const colorTable = () => {
+    const options = {
+
+    };
+    fetchAndRenderTable("colorTable", "color", options);
+}
+
 if (document.readyState !== 'loading' ) {
-    initCustomer();
-    initialize();
+    init();
 } else {
     document.addEventListener('DOMContentLoaded', function () {
-        initCustomer();
-        initialize();
+        init();
     });
 }

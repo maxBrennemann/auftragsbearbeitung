@@ -11,17 +11,18 @@ export const renderTable = (containerId, headers, data, options = {}) => {
     return table;
 }
 
-export const fetchAndRenderTable = async (containerId, headers, tableName, options = {}) => {
+export const fetchAndRenderTable = async (containerId, tableName, options = {}) => {
     const config = tableConfig[tableName];
     if (config == null) {
         return;
     }
 
-    const data = await ajax.get(`/api/v1/tables/fahrzeuge`, {
-        "conditions": options?.conditions ?? {},
+    const conditions = options?.conditions ?? {}
+    const data = await ajax.get(`/api/v1/tables/${tableName}`, {
+        "conditions": JSON.stringify(conditions),
     });
 
-    return createTableSimplified(containerId, headers, data, options);
+    return renderTable(containerId, config.columns, data, options);
 }
 
 export const createTable = (containerId, options = {}) => {

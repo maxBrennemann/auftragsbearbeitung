@@ -9,7 +9,7 @@ use Classes\Mailer;
 class User
 {
 
-    private $id;
+    private int $id;
     private $username;
     private $email;
     private $prename;
@@ -18,7 +18,7 @@ class User
     private $maxWorkingHours;
     private $role;
 
-    function __construct($userId)
+    public function __construct(int $userId)
     {
         $query = "SELECT * FROM user WHERE id = :userId LIMIT 1;";
         $params = array(':userId' => $userId);
@@ -121,7 +121,7 @@ class User
         return $data;
     }
 
-    public function getDeviceIcon($type, $os)
+    public function getDeviceIcon($type, $os): string
     {
         $icon = "";
         switch ($type) {
@@ -262,7 +262,7 @@ class User
         return $t->getTable();
     }
 
-    public static function checkEmailAvailable($email)
+    public static function checkEmailAvailable($email): bool
     {
         $query = "SELECT id FROM user WHERE email = :email";
         $params = array(':email' => $email);
@@ -344,7 +344,7 @@ class User
         }
     }
 
-    private static function mailKeyExists($mailKey)
+    private static function mailKeyExists($mailKey): bool
     {
         $query = "SELECT id FROM user_validate_mail WHERE mail_key = :mailKey";
         $params = array(':mailKey' => $mailKey);
@@ -382,12 +382,7 @@ class User
         return -1;
     }
 
-    /**
-     * returns the admin status of the current user
-     * 
-     * @return bool
-     */
-    public static function isAdmin()
+    public static function isAdmin(): bool
     {
         $userId = self::getCurrentUserId();
 

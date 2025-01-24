@@ -6,25 +6,26 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 
 /*
 * Adressarten:
-* 1 - Standeardadresse / Rechnungsadresse
-* 2 - Lieferadresse, wenn keine Lieferadresse definiert ist, ist diese auch die Standardadresse
-* 3 - zusätzliche Adresse, bspw. Heimadresse, anderer Standort oder Filiale, usw.
+* (1) Standardadresse/ Rechnungsadresse
+* (2) Lieferadresse
+* (3) Filiale
+* (4) Sonstige Adresse
 */
 
 class Address
 {
 
-    private $strasse = null;
-    private $hausnummer = null;
-    private $postleitzahl = null;
-    private $ort = null;
-    private $zusatz = null;
-    private $art = null;
-    private $land = null;
+    private string $strasse = "";
+    private string $hausnummer = "";
+    private int $postleitzahl = 0;
+    private string $ort = "";
+    private string$zusatz = "";
+    private int $art = 0;
+    private string $land = "";
 
     function __construct() {}
 
-    public function getStrasse()
+    public function getStrasse(): string
     {
         return $this->strasse;
     }
@@ -44,7 +45,7 @@ class Address
         return $this->ort;
     }
 
-    public static function loadAddress($addressId)
+    public static function loadAddress(int $addressId)
     {
         $addressInstance = new Address();
 
@@ -64,18 +65,24 @@ class Address
         return $addressInstance;
     }
 
-    public static function loadAllAddresses($kdnr)
+    public static function loadAllAddresses(int $kdnr): array
     {
-        $data = DBAccess::selectQuery("SELECT * FROM `address` WHERE id_customer = $kdnr ORDER BY art");
+        $data = DBAccess::selectQuery("SELECT * FROM `address` WHERE id_customer = :customerId ORDER BY art", [
+            "customerId" => $kdnr,
+        ]);
         return $data;
     }
 
-    public static function hasAddress($kdnr, $addressId)
+    public static function hasAddress(int $kdnr, int $addressId): bool
     {
-        $query = "SELECT id FROM address WHERE id = $addressId AND id_customer = $kdnr";
-        $result = DBAccess::selectQuery($query);
-        if (empty($result))
+        $query = "SELECT id FROM address WHERE id = $addressId AND id_customer = :customerId;";
+        $result = DBAccess::selectQuery($query, [
+            "customerId" => $kdnr,
+        ]);
+
+        if (empty($result)) {
             return false;
+        }
         return true;
     }
 

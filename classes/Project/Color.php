@@ -54,4 +54,13 @@ class Color
     {
         return DBAccess::selectAll("color");
     }
+
+    public static function convertHexToHTML($data)
+    {
+        foreach ($data as $key => $value) {
+			$data[$key]["hex_value"] = "<div class=\"farbe\" style=\"background-color: #" . $value["hex_value"] . "\"></div>";
+		}
+
+        return $data;
+    }
 }

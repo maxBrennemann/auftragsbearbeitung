@@ -21,8 +21,11 @@ class Model
 
     protected string $conditions = "";
 
-    public function read(array $conditions)
+    public function read(array $conditions): array
     {
+        $this->triggerHook("beforeRead", [
+
+        ]);
         $query = "SELECT * FROM {$this->tableName}";
 
         if (!empty($this->hidden)) {
@@ -45,7 +48,12 @@ class Model
             $query .= " WHERE " . implode(" AND ", $whereClauses);
         }
 
-        return DBAccess::selectQuery($query, $params ?? []);
+        $data = DBAccess::selectQuery($query, $params ?? []);
+        $this->triggerHook("afterRead", [
+
+        ]);
+
+        return $data;
     }
 
     public function join(
@@ -54,7 +62,7 @@ class Model
         string $foreignKey,
         string $joinType = "INNER",
         array $conditions = [],
-    ) {
+    ): array {
         $this->triggerHook("beforeJoin", [
             "relatedTable" => $relatedTable,
             "localKey" => $localKey,
@@ -86,7 +94,7 @@ class Model
         return $results;
     }
 
-    public function add() {}
+    public function add(): void {}
 
     public function delete($conditions): bool
     {

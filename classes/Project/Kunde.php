@@ -10,141 +10,153 @@ use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 class Kunde implements StatisticsInterface
 {
 
-	private $kundennummer = null;
-	private $vorname = null;
-	private $nachname = null;
-	private $firmenname = null;
-	private $strasse = null;
-	private $hausnummer = null;
-	private $postleitzahl = null;
-	private $ort = null;
-	private $email = null;
-	private $telefonFestnetz = null;
-	private $telefonMobil = null;
-	private $website = null;
+	private int $kundennummer = 0;
+	private string $vorname = "";
+	private string $nachname = "";
+	private string $firmenname = "";
+	private string $strasse = "";
+	private string $hausnummer = "";
+	private int $postleitzahl = 0;
+	private string $ort = "";
+	private string $email = "";
+	private string $telefonFestnetz = "";
+	private string $telefonMobil = "";
+	private string $website = "";
 
-	/* new */
-	private $addresses = array();
+	private $addresses = [];
 
-	function __construct($kundennummer)
+	public function __construct(int $kundennummer)
 	{
-		$data = DBAccess::selectQuery("SELECT * FROM kunde, `address` WHERE Kundennummer = $kundennummer AND kunde.id_address_primary = address.id");
-		if (!empty($data)) {
-			$data = $data[0];
-			$this->kundennummer = $data['Kundennummer'];
-			$this->vorname = $data['Vorname'];
-			$this->nachname = $data['Nachname'];
-			$this->firmenname = $data['Firmenname'];
-			$this->strasse = $data['strasse'];
-			$this->hausnummer = $data['hausnr'];
-			$this->postleitzahl = (int) $data['plz'];
-			$this->ort = $data['ort'];
-			$this->email = $data['Email'];
-			$this->telefonFestnetz = $data['TelefonFestnetz'];
-			$this->telefonMobil = $data['TelefonMobil'];
-			$this->website = $data['Website'];
-		} else {
-			echo "<div class=\"defcont\"><form><input type=\"number\"><input type=\"submit\">Neue Kundennummer setzen</form></div><br>";
+		$data = DBAccess::selectQuery("SELECT * FROM kunde, `address` WHERE Kundennummer = :customerId AND kunde.id_address_primary = address.id;", [
+			"customerId" => $kundennummer,
+		]);
 
-			throw new \Exception("Kundennummer " . $kundennummer . " existiert nicht oder kann nicht gefunden werden");
+		if (empty($data)) {
+			throw new \Exception("Customer id does not exist or cannot be found");
 		}
+
+		$data = $data[0];
+
+		$this->kundennummer = $data['Kundennummer'];
+		$this->vorname = $data['Vorname'];
+		$this->nachname = $data['Nachname'];
+		$this->firmenname = $data['Firmenname'];
+		$this->strasse = $data['strasse'];
+		$this->hausnummer = $data['hausnr'];
+		$this->postleitzahl = (int) $data['plz'];
+		$this->ort = $data['ort'];
+		$this->email = $data['Email'];
+		$this->telefonFestnetz = $data['TelefonFestnetz'];
+		$this->telefonMobil = $data['TelefonMobil'];
+		$this->website = $data['Website'];
 	}
 
-	public function getKundennummer()
+	public function getKundennummer(): int
 	{
 		return $this->kundennummer;
 	}
 
-	public function getVorname()
+	public function getVorname(): string
 	{
 		return $this->vorname;
 	}
 
-	public function getNachname()
+	public function getNachname(): string
 	{
 		return $this->nachname;
 	}
 
-	public function getFirmenname()
+	public function getFirmenname(): string
 	{
 		return $this->firmenname;
 	}
 
-	public function getStrasse($id = 0)
+	public function getAlternativeName(): string
+	{
+		if ($this->firmenname != "") {
+			return $this->firmenname;
+		}
+
+		return $this->getName();
+	}
+
+	public function getStrasse(int $id = 0): string
 	{
 		if ($id != 0) {
 			$this->loadAddresses();
-			if (array_key_exists($id, $this->addresses))
+
+			if (array_key_exists($id, $this->addresses)) {
 				return $this->addresses[$id]->getStrasse();
-			else
+			} else {
 				return "";
+			}
 		}
+
 		return $this->strasse;
 	}
 
-	public function getHausnummer($id = 0)
+	public function getHausnummer($id = 0): string
 	{
 		if ($id != 0) {
 			$this->loadAddresses();
-			if (array_key_exists($id, $this->addresses))
+			if (array_key_exists($id, $this->addresses)) {
 				return $this->addresses[$id]->getHausnummer();
-			else
+			} else {
 				return "";
+			}
 		}
-		if ($this->hausnummer == 0 || $this->hausnummer == "0")
-			return "";
+
 		return $this->hausnummer;
 	}
 
-	public function getPostleitzahl($id = 0)
+	public function getPostleitzahl($id = 0): int
 	{
 		if ($id != 0) {
 			$this->loadAddresses();
-			if (array_key_exists($id, $this->addresses))
+			if (array_key_exists($id, $this->addresses)) {
 				return $this->addresses[$id]->getPostleitzahl();
-			else
-				return "";
+			} else {
+				return 0;
+			}
 		}
-		if ($this->postleitzahl == 0 || $this->postleitzahl == "0")
-			return "";
+
 		return $this->postleitzahl;
 	}
 
-	public function getOrt($id = 0)
+	public function getOrt($id = 0): string
 	{
 		if ($id != 0) {
 			$this->loadAddresses();
-			if (array_key_exists($id, $this->addresses))
+			if (array_key_exists($id, $this->addresses)) {
 				return $this->addresses[$id]->getOrt();
-			else
+			} else {
 				return "";
+			}
 		}
 		return $this->ort;
 	}
 
-	public function getEmail()
+	public function getEmail(): string
 	{
 		return $this->email;
 	}
 
-	public function getWebsite()
+	public function getWebsite(): string
 	{
 		return $this->website;
 	}
 
-	public function isPrivate() {}
-
-	public function getName()
+	public function getName(): string
 	{
-		return $this->getVorname() . ' ' . $this->getNachname();
+		return $this->getVorname() . " " . $this->getNachname();
 	}
 
-	public function getTelefonFestnetz()
+	public function getTelefonFestnetz(): string
 	{
 		return $this->telefonFestnetz;
 	}
 
-	public function getTelefonMobil()
+	public function getTelefonMobil(): string
 	{
 		return $this->telefonMobil;
 	}
@@ -177,16 +189,23 @@ class Kunde implements StatisticsInterface
 		return $table->getTable();
 	}
 
-	public function getOrderCards()
+	public function getOrderIds(): array
 	{
 		$query = "SELECT Auftragsnummer FROM auftrag WHERE Kundennummer = :kdnr ORDER BY Auftragsnummer DESC";
 		$data = DBAccess::selectQuery($query, [
 			"kdnr" => $this->kundennummer
 		]);
 
+		return $data;
+	}
+
+	public function getOrderCards()
+	{
+		$data = $this->getOrderIds();
 		$orders = [];
-		foreach ($data as $key => $value) {
-			$order = new Auftrag($value["Auftragsnummer"]);
+
+		foreach ($data as $row) {
+			$order = new Auftrag($row["Auftragsnummer"]);
 			$orders[] = $order->getOrderCardData();
 		}
 
@@ -195,10 +214,11 @@ class Kunde implements StatisticsInterface
 			"orders" => $orders,
 		]);
 		$content = ob_get_clean();
+
 		return $content;
 	}
 
-	public function getContactPersons()
+	public function getContactPersons(): array
 	{
 		$query = "SELECT a.Nummer AS id, a.Vorname AS firstName, a.Nachname AS lastName, a.Email AS email
 			FROM ansprechpartner a 
@@ -260,7 +280,7 @@ class Kunde implements StatisticsInterface
 		}
 	}
 
-	public static function addAddress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz, $land, $art = 3)
+	public static function addAddress(int $id_customer, string $strasse, string $hausnummer, int $postleitzahl, string $ort, string $zusatz, string $land, int $art = 3)
 	{
 		return Address::createNewAddress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz, $land, $art);
 	}
@@ -302,20 +322,20 @@ class Kunde implements StatisticsInterface
 	public static function getContacts()
 	{
 		$kdnr = (int) Tools::get("id");
-		$data = DBAccess::selectQuery("SELECT Nummer as id, Vorname as firstName, Nachname as lastName, Email as email FROM ansprechpartner WHERE Kundennummer = :kdnr", [
+		$data = DBAccess::selectQuery("SELECT Nummer AS id, Vorname AS firstName, Nachname AS lastName, Email AS email 
+			FROM ansprechpartner 
+			WHERE Kundennummer = :kdnr", [
 			"kdnr" => $kdnr,
 		]);
 
 		JSONResponseHandler::sendResponse($data);
 	}
 
-	/**
-	 * @return int
-	 */
 	public static function addCustomer($data): int
 	{
 		/* insert customer data */
 		$query = "INSERT INTO kunde (Firmenname, Anrede, Vorname, Nachname, Email, TelefonFestnetz, TelefonMobil, Website) VALUES (:firmenname, :anrede, :vorname, :nachname, :email, :telfestnetz, :telmobil, :website)";
+
 		$customerId = DBAccess::insertQuery($query, [
 			"firmenname" => $data["customerName"] ?? "",
 			"anrede" => (int) $data["anrede"],
@@ -329,6 +349,7 @@ class Kunde implements StatisticsInterface
 
 		/* insert address data */
 		$query = "INSERT INTO address (id_customer, strasse, hausnr, plz, ort, zusatz, country) VALUES (:id_customer, :strasse, :hausnr, :plz, :ort, :zusatz, :country)";
+		
 		$addressId = DBAccess::insertQuery($query, [
 			"id_customer" => $customerId,
 			"strasse" => $data["street"],
@@ -384,7 +405,8 @@ class Kunde implements StatisticsInterface
 		]);
 	}
 
-	public static function getAllCustomerOverviews() {
+	public static function getAllCustomerOverviews()
+	{
 		$query = "SELECT Kundennummer FROM kunde ORDER BY CONCAT(Firmenname, Nachname);";
 		$data = DBAccess::selectQuery($query);
 

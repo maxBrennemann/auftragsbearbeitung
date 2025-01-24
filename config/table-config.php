@@ -3,6 +3,32 @@
 function getTableConfig()
 {
     return [
+        "address" => [
+            "columns" => [
+                "id",
+                "id_customer",
+                "ort",
+                "plz",
+                "strasse",
+                "hausnr",
+                "zusatz",
+                "country",
+                "art",
+            ],
+            "primaryKey" => "id",
+            "names" => [
+                "Id",
+                "Kundennummer",
+                "Ort",
+                "PLZ",
+                "Straße",
+                "Hausnummer",
+                "Zusatz",
+                "Land",
+                "Art der Adresse",
+            ],
+            "permissions" => ["reade", "create", "update"],
+        ],
         "ansprechpartner" => [
             "columns" => [
                 "Nummer",
@@ -25,7 +51,7 @@ function getTableConfig()
             ],
             "permissions" => ["read", "create", "update", "delete"],
             "hooks" => [
-                "beforeSelect" => "",
+                "beforeRead" => "",
                 "beforeDelete" => [\Classes\Project\Auftrag::class, "resetAnsprechpartner"],
             ],
             "joins" => [],
@@ -59,7 +85,9 @@ function getTableConfig()
                 "Hersteller",
             ],
             "permissions" => ["read", "create", "update", "delete"],
-            "hooks" => [],
+            "hooks" => [
+                "afterRead" => [\Classes\Project\Color::class, "convertHexToHTML"],
+            ],
             "joins" => [],
         ],
         "einkauf" => [
