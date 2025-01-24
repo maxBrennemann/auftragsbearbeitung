@@ -48,7 +48,7 @@ if ($id == 0): ?>
             <?php endif; ?>
         </h2>
         <p class="mt-2 ml-2">Artikelnummer: <span id="motivId" data-variable="true"><?=$id?></span></p>
-        <p class="ml-2">Erstellt am <input type="date" class="rounded-xs px-2" id="creationDate" value="<?=$stickerCollection->getCreationDate()?>"></p>
+        <p class="ml-2">Erstellt am <input type="date" class="rounded-sm px-2" id="creationDate" value="<?=$stickerCollection->getCreationDate()?>"></p>
         <button class="btn-primary mt-4" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
     </div>
 </div>

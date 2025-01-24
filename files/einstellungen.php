@@ -58,13 +58,13 @@ $patternOrderType = [
     <h2 class="font-bold">Cache</h2>
 	<input onchange="toggleCache('on')" type="radio" name="cacheswitch" value="on" <?=$cacheOn?>> Cache aktivieren<br>
 	<input onchange="toggleCache('off')" type="radio" name="cacheswitch" value="off" <?=$cacheOff?>> Cache deaktivieren<br>
-    <button id="deleteCache" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-xs border-none">Cache löschen</button>
+    <button id="deleteCache" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Cache löschen</button>
 </section>
 <section class="defCont">
     <h2 class="font-bold">CSS und JS komprimieren</h2>
 	<input onchange="toggleMinify('on')" type="radio" name="minifyswitch" value="on" <?=$minifyOn?>> Komprimierung aktivieren<br>
 	<input onchange="toggleMinify('off')" type="radio" name="minifyswitch" value="off" <?=$minifyOff?>> Komprimierung deaktivieren<br>
-    <button onclick="minifyFiles()" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-xs border-none">Neu komprimieren</button>
+    <button onclick="minifyFiles()" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Neu komprimieren</button>
 </section>
 <section class="defCont">
     <h2 class="font-bold">Suche</h2>
@@ -81,8 +81,8 @@ $patternOrderType = [
             <option value="3">Innere Rahmen</option>
         </select>
         <script>var cp = new Colorpicker(document.getElementById("farbe"));</script>
-        <button onclick="setCustomColor();" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-xs border-none">Diese Farbe übernehmen</button>
-        <button onclick="setCustomColor(0);" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-xs border-none">Auf Standard zurücksetzen</button>
+        <button onclick="setCustomColor();" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Diese Farbe übernehmen</button>
+        <button onclick="setCustomColor(0);" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Auf Standard zurücksetzen</button>
     </div>
 </section>
 <section class="defCont">
@@ -97,7 +97,7 @@ $patternOrderType = [
 <section class="defCont">
     <h2 class="font-bold">Backups und Datensicherung</h2>
     <a href="#" download="temp_file_name" id="download_db">Datenbank herunterladen</a>
-    <button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-xs border-none">Alle Dateien herunterladen</button>
+    <button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Alle Dateien herunterladen</button>
 </section>
 <section class="defCont">
     <h2 class="font-bold">Zeiterfassung</h2>
@@ -111,8 +111,8 @@ $patternOrderType = [
 </section>
 <section class="defCont">
     <h2 class="font-bold">Dateien</h2>
-    <button id="clearFiles" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-xs border-none">Dateien aufräumen</button>
-    <button id="adjustFiles" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-xs border-none">Dateinamen anpassen</button>
+    <button id="clearFiles" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Dateien aufräumen</button>
+    <button id="adjustFiles" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Dateinamen anpassen</button>
 </section>
 <section class="defCont">
     <h2 class="font-bold">Routineaufgaben</h2>

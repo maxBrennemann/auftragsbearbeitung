@@ -21,8 +21,8 @@ $data = DBAccess::selectQuery("SELECT * FROM leistung");
 			<p>Aufschlag (%)
 				<input class="block m-1 text-slate-600 rounded-lg p-2" type="number" value="<?=$leistung['Aufschlag']?>">
 			</p>
-			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-xs border-none">Löschen</button>
-			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-xs border-none">Speichern</button>
+			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Löschen</button>
+			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Speichern</button>
 		</div>
 	<?php endforeach; ?>
 	<div class="border-none defCont p-4 rounded-lg">
@@ -43,7 +43,7 @@ $data = DBAccess::selectQuery("SELECT * FROM leistung");
 			Aufschlag (%)
 			<input class="block m-1 text-slate-600 rounded-lg p-2" type="number" id="aufschlag">
 		</label>
-		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-xs border-none" id="addNew">Hinzufügen</button>
-		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-xs border-none" id="cancleNew">Abbrechen</button>
+		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" id="addNew">Hinzufügen</button>
+		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" id="cancleNew">Abbrechen</button>
 	<div>
 </div>

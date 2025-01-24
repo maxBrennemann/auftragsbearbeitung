@@ -149,7 +149,7 @@ if ($pageName == "") {
 			<div class="inline-flex">
 				<?=insertTemplate("files/res/views/searchView.php")?>
 				<div class="inline-flex ml-1">
-					<div class="notificationContainer inline-flex items-center p-1 hover:bg-gray-200 hover:rounded-xs relative text-gray-700">
+					<div class="notificationContainer inline-flex items-center p-1 hover:bg-gray-200 hover:rounded-sm relative text-gray-700">
 						<?php if (NotificationManager::getNotificationCount() > 0): ?>
 						<div title="Benachrichtigungen" class="absolute top-[6px] right-0">
 							<div class="w-3 h-3">
@@ -162,18 +162,18 @@ if ($pageName == "") {
 						</span>
 					</div>
 					<div class="settingsContainer inline-flex items-center text-gray-700">
-						<a href="<?=$einstellungen?>" id="settings" title="Einstellungen" class="inline-block p-1 hover:bg-gray-200 hover:rounded-xs">
+						<a href="<?=$einstellungen?>" id="settings" title="Einstellungen" class="inline-block p-1 hover:bg-gray-200 hover:rounded-sm">
 							<?=Icon::getDefault("iconSettings")?>
 						</a>
 					</div>
 					<div class="logoutContainer inline-flex items-center text-gray-700">
-						<span id="logoutBtn" title="Ausloggen" class="inline-block p-1 hover:bg-gray-200 hover:rounded-xs">
+						<span id="logoutBtn" title="Ausloggen" class="inline-block p-1 hover:bg-gray-200 hover:rounded-sm">
 							<?=Icon::getDefault("iconLogout")?>
 						</span>
 					</div>
 					<div class="<?=(Config::get("showTimeGlobal") == "true") ? "inline-flex" : "hidden" ?> items-center text-gray-700" id="timeTrackingContainer">
-						<a href="<?=Link::getPageLink("zeiterfassung")?>" class="showTimeGlobal inline-block p-1 hover:bg-gray-200 hover:rounded-xs" title="Zeiterfassung">
-							<span>Zeit: <span id="timeGlobal" class="inline-block p-1 hover:bg-gray-200 hover:rounded-xs">00:00:00</span></span>
+						<a href="<?=Link::getPageLink("zeiterfassung")?>" class="showTimeGlobal inline-block p-1 hover:bg-gray-200 hover:rounded-sm" title="Zeiterfassung">
+							<span>Zeit: <span id="timeGlobal" class="inline-block p-1 hover:bg-gray-200 hover:rounded-sm">00:00:00</span></span>
 						</a>
 					</div>
 				</div>

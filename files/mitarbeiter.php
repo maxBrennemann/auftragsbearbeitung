@@ -25,27 +25,27 @@ if ($showUserList) : ?>
                 <input type="password" style="display:none">
                 <label>
                     <p>Nutzername</p>
-                    <input type="text" placeholder="Neuer Benutzername" class="block rounded-xs m-1 ml-0 p-1 w-80" name="somename" autocomplete="off">
+                    <input type="text" placeholder="Neuer Benutzername" class="block rounded-sm m-1 ml-0 p-1 w-80" name="somename" autocomplete="off">
                 </label>
                 <label>
                     <p>Vorname</p>
-                    <input type="text" placeholder="Vorname" class="block rounded-xs m-1 ml-0 p-1 w-80" name="prename" autocomplete="off">
+                    <input type="text" placeholder="Vorname" class="block rounded-sm m-1 ml-0 p-1 w-80" name="prename" autocomplete="off">
                 </label>
                 <label>
                     <p>Nachname</p>
-                    <input type="text" placeholder="Nachname" class="block rounded-xs m-1 ml-0 p-1 w-80" name="lastname" autocomplete="off">
+                    <input type="text" placeholder="Nachname" class="block rounded-sm m-1 ml-0 p-1 w-80" name="lastname" autocomplete="off">
                 </label>
                 <label>
                     <p>Email</p>
-                    <input type="email" placeholder="Email" class="block rounded-xs m-1 ml-0 p-1 w-80" name="email" autocomplete="off">
+                    <input type="email" placeholder="Email" class="block rounded-sm m-1 ml-0 p-1 w-80" name="email" autocomplete="off">
                 </label>
                 <label>
                     <p>Passwort</p>
-                    <input type="password" class="block rounded-xs m-1 ml-0 p-1 w-80" name="newPassword" autocomplete="off">
+                    <input type="password" class="block rounded-sm m-1 ml-0 p-1 w-80" name="newPassword" autocomplete="off">
                 </label>
                 <label>
                     <p>Passwort wiederholen</p>
-                    <input type="password" class="block rounded-xs m-1 ml-0 p-1 w-80" name="newPasswordRepeat" autocomplete="off">
+                    <input type="password" class="block rounded-sm m-1 ml-0 p-1 w-80" name="newPasswordRepeat" autocomplete="off">
                 </label>
                 <button class="btn-primary">Abschicken</button>
             </form>
@@ -57,26 +57,26 @@ if ($showUserList) : ?>
         <p class="font-bold">Benutzerdaten</p>
         <label>
             <p>Nutzername</p>
-            <input type="text" value="<?=$user->getUsername()?>" class="block rounded-xs m-1 ml-0 p-1 w-80" id="username">
+            <input type="text" value="<?=$user->getUsername()?>" class="block rounded-sm m-1 ml-0 p-1 w-80" id="username">
         </label>
         <label>
             <p>Vorname</p>
-            <input type="text" value="<?=$user->getPrename()?>" class="block rounded-xs m-1 ml-0 p-1 w-80" id="prename">
+            <input type="text" value="<?=$user->getPrename()?>" class="block rounded-sm m-1 ml-0 p-1 w-80" id="prename">
         </label>
         <label>
             <p>Nachname</p>
-            <input type="text" value="<?=$user->getLastname()?>" class="block rounded-xs m-1 ml-0 p-1 w-80" id="lastname">
+            <input type="text" value="<?=$user->getLastname()?>" class="block rounded-sm m-1 ml-0 p-1 w-80" id="lastname">
         </label>
         <label>
             <p>Email</p>
-            <input type="text" value="<?=$user->getEmail()?>" class="block rounded-xs m-1 ml-0 p-1 w-80" id="email">
+            <input type="text" value="<?=$user->getEmail()?>" class="block rounded-sm m-1 ml-0 p-1 w-80" id="email">
         </label>
     </div>
     <div class="defCont">
         <p class="font-bold">Arbeitszeiten</p>
         <div>
             <p>Maximale Arbeitszeit</p>
-            <input type="number" value="" class="block rounded-xs m-1 ml-0 p-1 w-80">
+            <input type="number" value="" class="block rounded-sm m-1 ml-0 p-1 w-80">
             <button class="btn-primary">Speichern</button>
         </div>
     </div>
