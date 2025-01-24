@@ -53,6 +53,7 @@ fnNames.click_sendTimeTracking = () => {
     }).then(response => {
         const table = document.querySelector("table");
         const options = {
+            "hide": ["id"],
             "hideOptions": ["addRow", "check"],
         };
         addRow(response, table, options);

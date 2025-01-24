@@ -11,7 +11,13 @@
     </div>
     <div class="mt-2">
         <div>
-            <h2>Zeitenübersicht</h2>
+            <h2 class="font-bold">Zeitenübersicht</h2>
+        </div>
+        <div>
+            <button class="btn-primary-new">Alle</button>
+            <button class="btn-primary-new">Heute</button>
+            <button class="btn-primary-new">Diese Woche</button>
+            <button class="btn-primary-new">Dieser Monat</button>
         </div>
         <div id="timeTrackingTable" class="mt-2"></div>
     </div>
