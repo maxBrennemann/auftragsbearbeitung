@@ -3,6 +3,32 @@
 function getTableConfig()
 {
     return [
+        "address" => [
+            "columns" => [
+                "id",
+                "id_customer",
+                "ort",
+                "plz",
+                "strasse",
+                "hausnr",
+                "zusatz",
+                "country",
+                "art",
+            ],
+            "primaryKey" => "id",
+            "names" => [
+                "Id",
+                "Kundennummer",
+                "Ort",
+                "PLZ",
+                "Straße",
+                "Hausnummer",
+                "Zusatz",
+                "Land",
+                "Art der Adresse",
+            ],
+            "permissions" => ["reade", "create", "update"],
+        ],
         "ansprechpartner" => [
             "columns" => [
                 "Nummer",

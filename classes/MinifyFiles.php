@@ -109,4 +109,9 @@ class MinifyFiles
 		}
 		return false;
 	}
+
+	public static function createStaticTableConfig()
+	{
+		// TODO: implement
+	}
 }

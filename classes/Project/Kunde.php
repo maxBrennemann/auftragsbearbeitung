@@ -177,16 +177,23 @@ class Kunde implements StatisticsInterface
 		return $table->getTable();
 	}
 
-	public function getOrderCards()
+	public function getOrderIds()
 	{
 		$query = "SELECT Auftragsnummer FROM auftrag WHERE Kundennummer = :kdnr ORDER BY Auftragsnummer DESC";
 		$data = DBAccess::selectQuery($query, [
 			"kdnr" => $this->kundennummer
 		]);
 
+		return $data;
+	}
+
+	public function getOrderCards()
+	{
+		$data = $this->getOrderIds();
 		$orders = [];
-		foreach ($data as $key => $value) {
-			$order = new Auftrag($value["Auftragsnummer"]);
+
+		foreach ($data as $row) {
+			$order = new Auftrag($row["Auftragsnummer"]);
 			$orders[] = $order->getOrderCardData();
 		}
 
@@ -195,6 +202,7 @@ class Kunde implements StatisticsInterface
 			"orders" => $orders,
 		]);
 		$content = ob_get_clean();
+		
 		return $content;
 	}
 
