@@ -30,6 +30,23 @@ class Table extends Model
         return true;
     }
 
+    private static function getConditions(): array
+    {
+        $conditions = Tools::get("conditions");
+        if ($conditions) {
+            $conditions = json_decode(($conditions), true);
+            if (!is_array($conditions)) {
+                JSONResponseHandler::throwError(400, [
+                    "error" => "Invalid conditions format",
+                ]);
+            }
+        } else {
+            $conditions = [];
+        }
+
+        return $conditions;
+    }
+
     public static function readData()
     {
         $table = Tools::get("tablename");
@@ -53,17 +70,7 @@ class Table extends Model
         $model->columns = $tableConfig["columns"] ?? [];
         $model->fillable = [];
 
-        $conditions = Tools::get("conditions");
-        if ($conditions) {
-            $conditions = json_decode(($conditions), true);
-            if (!is_array($conditions)) {
-                JSONResponseHandler::throwError(400, [
-                    "error" => "Invalid conditions format",
-                ]);
-            }
-        } else {
-            $conditions = [];
-        }
+        $conditions = self::getConditions();
 
         $joins = $tableConfig["joins"] ?? [];
         foreach ($joins as $key => $join) {
@@ -105,9 +112,11 @@ class Table extends Model
 
         $model = new Model($tableConfig["hooks"]);
         $model->tableName = $table;
+        $model->hidden = $tableConfig["hidden"] ?? [];
+        $model->columns = $tableConfig["columns"] ?? [];
         $model->fillable = [];
 
-        $conditions = Tools::get("conditions");
+        $conditions = self::getConditions();
         $results = $model->add($conditions);
 
         JSONResponseHandler::sendResponse($results);
@@ -150,18 +159,7 @@ class Table extends Model
         $model->tableName = $table;
         $model->fillable = [];
 
-        $conditions = Tools::get("conditions");
-        if ($conditions) {
-            $conditions = json_decode(($conditions), true);
-            if (!is_array($conditions)) {
-                JSONResponseHandler::throwError(400, [
-                    "error" => "Invalid conditions format",
-                ]);
-            }
-        } else {
-            $conditions = [];
-        }
-
+        $conditions = self::getConditions();
         $results = $model->delete($conditions);
 
         if ($results == false) {

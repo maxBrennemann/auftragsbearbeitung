@@ -23,7 +23,9 @@ class Model
 
     public function read(array $conditions): array
     {
-        $this->triggerHook("beforeRead", []);
+        $this->triggerHook("beforeRead", [
+            "conditions" => &$conditions,
+        ]);
         $query = "SELECT * FROM {$this->tableName}";
 
         if (!empty($this->hidden)) {
@@ -47,7 +49,10 @@ class Model
         }
 
         $data = DBAccess::selectQuery($query, $params ?? []);
-        $this->triggerHook("afterRead", []);
+        $this->triggerHook("afterRead", [
+            "conditions" => $conditions,
+            "results" => &$data,
+        ]);
 
         return $data;
     }
@@ -92,10 +97,34 @@ class Model
 
     public function add($conditions): int
     {
-        $this->triggerHook("beforeAdd", $conditions);
-        $this->triggerHook("afterAdd", $conditions);
+        $this->triggerHook("beforeAdd", [
+            "conditions" => &$conditions,
+        ]);
 
-        return 0;
+        $query = "INSERT INTO {$this->tableName} ";
+
+        if (empty($conditions)) {
+            return false;
+        }
+
+        $params = [];
+        $keys = [];
+        $columns = [];
+        foreach ($conditions as $key => $value) {
+            $keys[] = ":{$key}";
+            $columns[] = $key;
+            $params[$key] = $value;
+        }
+
+        $query .= " (" . implode(",", $columns) . ") VALUES (" . implode(",", $keys) . ")";
+        $result = DBAccess::insertQuery($query, $params);
+
+        $this->triggerHook("afterAdd", [
+            "conditions" => $conditions,
+            "results" => &$result,
+        ]);
+
+        return $result;
     }
 
     public function delete($conditions): bool
