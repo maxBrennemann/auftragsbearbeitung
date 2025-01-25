@@ -27,7 +27,7 @@ function getTableConfig()
                 "Land",
                 "Art der Adresse",
             ],
-            "permissions" => ["reade", "create", "update"],
+            "permissions" => ["read", "create", "update"],
         ],
         "ansprechpartner" => [
             "columns" => [
@@ -101,7 +101,8 @@ function getTableConfig()
                 "Nummer",
                 "Name",
                 "Beschreibung",
-            ]
+            ],
+            "permissions" => ["read", "create", "update"],
         ],
         "fahrzeuge" => [
             "columns" => [
@@ -146,7 +147,8 @@ function getTableConfig()
             "hidden" => [
                 "password",
                 "validated",
-            ]
+            ],
+            "permissions" => ["read", "create", "update"],
         ],
     ];
 }

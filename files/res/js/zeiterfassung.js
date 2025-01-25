@@ -44,10 +44,10 @@ fnNames.click_startStopTime = () => {
 }
 
 fnNames.click_sendTimeTracking = () => {
-    const task = document.getElementById("getTask").value;
+    const task = document.getElementById("getTask");
 
     ajax.post(`/api/v1/time-tracking/add`, {
-        task: task,
+        task: task.value,
         start: localStorage.getItem("startTime"),
         stop: new Date().getTime().toString(),
     }).then(response => {
@@ -60,6 +60,8 @@ fnNames.click_sendTimeTracking = () => {
 
         localStorage.clear("startTime");
         document.getElementById("updateStartStopName").innerHTML = "starten";
+
+        task.value = "";
 
         const askTask = document.getElementById("askTask");
         askTask.classList.remove("flex");

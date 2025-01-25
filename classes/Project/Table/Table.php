@@ -17,6 +17,19 @@ class Table extends Model
         return $data;
     }
 
+    private static function checkPermissions($tableConfig, $action): bool
+    {
+        if (!array_key_exists("permissions", $tableConfig)) {
+            return false;
+        }
+
+        if (!in_array($action, $tableConfig["permissions"])) {
+            return false;
+        }
+
+        return true;
+    }
+
     public static function readData()
     {
         $table = Tools::get("tablename");
@@ -27,6 +40,10 @@ class Table extends Model
             JSONResponseHandler::returnNotFound([
                 "error" => "Invalid table namne",
             ]);
+        }
+
+        if (!self::checkPermissions($tableConfig, "read")) {
+            JSONResponseHandler::throwError(401, "Insufficient permissions");
         }
 
         $hooks = $tableConfig["hooks"] ?? [];
@@ -51,7 +68,7 @@ class Table extends Model
         $joins = $tableConfig["joins"] ?? [];
         foreach ($joins as $key => $join) {
             if (Tools::get($key) !== null) {
-                $value = Tools::get($key); 
+                $value = Tools::get($key);
 
                 $results = $model->join(
                     $join["relatedTable"],
@@ -70,11 +87,8 @@ class Table extends Model
         JSONResponseHandler::sendResponse($results);
     }
 
-    public static function createData() {}
-
-    public static function updateData() {}
-
-    public static function deleteData() {
+    public static function createData()
+    {
         $table = Tools::get("tablename");
         $config = self::getTableConfig();
         $tableConfig = $config[$table] ?? null;
@@ -83,6 +97,53 @@ class Table extends Model
             JSONResponseHandler::returnNotFound([
                 "error" => "Invalid table namne",
             ]);
+        }
+
+        if (!self::checkPermissions($tableConfig, "create")) {
+            JSONResponseHandler::throwError(401, "Insufficient permissions");
+        }
+
+        $model = new Model($tableConfig["hooks"]);
+        $model->tableName = $table;
+        $model->fillable = [];
+
+        $conditions = Tools::get("conditions");
+        $results = $model->add($conditions);
+
+        JSONResponseHandler::sendResponse($results);
+    }
+
+    public static function updateData()
+    {
+        $table = Tools::get("tablename");
+        $config = self::getTableConfig();
+        $tableConfig = $config[$table] ?? null;
+
+        if (!$tableConfig) {
+            JSONResponseHandler::returnNotFound([
+                "error" => "Invalid table namne",
+            ]);
+        }
+
+        if (!self::checkPermissions($tableConfig, "update")) {
+            JSONResponseHandler::throwError(401, "Insufficient permissions");
+        }
+    }
+
+    public static function deleteData()
+    {
+        $table = Tools::get("tablename");
+        $config = self::getTableConfig();
+        $tableConfig = $config[$table] ?? null;
+
+        if (!$tableConfig) {
+            JSONResponseHandler::returnNotFound([
+                "error" => "Invalid table namne",
+            ]);
+        }
+
+        if (!self::checkPermissions($tableConfig, "delete")) {
+            JSONResponseHandler::throwError(401, "Insufficient permissions");
         }
 
         $model = new Model($tableConfig["hooks"]);

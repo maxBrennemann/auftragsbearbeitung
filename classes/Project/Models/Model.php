@@ -23,9 +23,7 @@ class Model
 
     public function read(array $conditions): array
     {
-        $this->triggerHook("beforeRead", [
-
-        ]);
+        $this->triggerHook("beforeRead", []);
         $query = "SELECT * FROM {$this->tableName}";
 
         if (!empty($this->hidden)) {
@@ -49,9 +47,7 @@ class Model
         }
 
         $data = DBAccess::selectQuery($query, $params ?? []);
-        $this->triggerHook("afterRead", [
-
-        ]);
+        $this->triggerHook("afterRead", []);
 
         return $data;
     }
@@ -94,7 +90,13 @@ class Model
         return $results;
     }
 
-    public function add(): void {}
+    public function add($conditions): int
+    {
+        $this->triggerHook("beforeAdd", $conditions);
+        $this->triggerHook("afterAdd", $conditions);
+
+        return 0;
+    }
 
     public function delete($conditions): bool
     {
