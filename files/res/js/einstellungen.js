@@ -1,8 +1,12 @@
 import { ajax } from "./classes/ajax.js";
+import { initBindings } from "./classes/bindings.js";
 import { createHeader, createTable, addRow } from "./classes/table_new.js";
 import { tableConfig } from "./js/tableconfig.js";
 
+const fnNames = {};
+
 function initEventListeners() {
+    initBindings(fnNames);
     timeTracking();
     
     const clearFiles = document.getElementById("clearFiles");
@@ -18,9 +22,14 @@ function initEventListeners() {
     const setDefaultWage = document.getElementById("defaultWage");
     setDefaultWage.addEventListener("change", e => {
         const wage = e.target.value;
-        ajax.post({
-            defaultWage: wage,
-            r: "updateDefaultWage",
+        ajax.put(`/api/v1/settings/default-wage`, {
+            "defaultWage": wage,
+        }).then(r => {
+            if (r.status == "success") {
+                infoSaveSuccessfull("success");
+            } else {
+                infoSaveSuccessfull("failure");
+            }
         });
     });
 
@@ -37,9 +46,6 @@ function initEventListeners() {
             r: "testsearch",
         });
     });
-
-    const deleteCacheBtn = document.getElementById("deleteCache");
-    deleteCacheBtn.addEventListener("click", deleteCache);
 
     const addCategoryBtn = document.getElementById("addCategory");
     addCategoryBtn.addEventListener("click", addCategory);
@@ -145,7 +151,6 @@ function createCategoryTree(anchor, categories) {
 
     categories.forEach(category => {
         const li = document.createElement("li");
-
         li.innerHTML =  `
             <span class="cursor-pointer" data-id="${category.id}">${category.name}</span>
             <button class="btn-primary">Bearbeiten</button>`;
@@ -158,20 +163,49 @@ function createCategoryTree(anchor, categories) {
     });
 }
 
-window.setCustomColor = setCustomColor;
-window.toggleCache = toggleCache;
-window.toggleMinify = toggleMinify;
-window.minifyFiles = minifyFiles;
+fnNames.write_toggleCache = (e) => {
+    const el = e.currentTarget;
+    const value = el.dataset.value;
 
-function deleteCache() {
-    ajax.post({
-        r: "deleteCache",
+    ajax.put(`/api/v1/settings/cache`, {
+        "status": value,
     }).then(r => {
         if (r.status == "success") {
             infoSaveSuccessfull("success");
         }
     });
 }
+
+fnNames.write_toggleMinify = (e) => {
+    const el = e.currentTarget;
+    const value = el.dataset.value;
+
+    ajax.put(`/api/v1/settings/minify`, {
+        "status": value,
+    }).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+        }
+    });
+}
+
+fnNames.click_deleteCache = () => {
+    ajax.delete(`/api/v1/settings/cache`).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+        }
+    });
+}
+
+fnNames.click_minifyFiles = () => {
+    ajax.post(`/api/v1/settings/minify`).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+        }
+    });
+}
+
+window.setCustomColor = setCustomColor;
 
 function setCustomColor(value) {
     let color = value == 0 ? "" : cp.color;
@@ -184,36 +218,6 @@ function setCustomColor(value) {
     }).then(r => {
         if (r.status == "success") {
             location.reload();
-        }
-    });
-}
-
-function toggleCache(status) {
-    ajax.put(`/api/v1/settings/cache`, {
-        "status": status,
-    }).then(r => {
-        if (r.status == "success") {
-            infoSaveSuccessfull("success");
-        }
-    });
-}
-
-function toggleMinify(status) {
-    ajax.put(`/api/v1/settings/cache`, {
-        "status": status,
-    }).then(r => {
-        if (r.status == "success") {
-            infoSaveSuccessfull("success");
-        }
-    });
-}
-
-function minifyFiles() {
-    ajax.post({
-        r: "minifyFiles",
-    }).then(r => {
-        if (r.status == "success") {
-            infoSaveSuccessfull("success");
         }
     });
 }

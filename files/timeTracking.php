@@ -8,16 +8,17 @@
                 <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300" id="statusTimeTracking">Zeiterfassung <span id="updateStartStopName">starten</span></span>
             </label>
         </div>
+        <button class="btn-cancel mt-2" data-fun="cancelCurrentTracking" data-binding="true">Abbrechen</button>
     </div>
     <div class="mt-2">
         <div>
             <h2 class="font-bold">Zeitenübersicht</h2>
         </div>
-        <div>
-            <button class="btn-primary-new">Alle</button>
-            <button class="btn-primary-new">Heute</button>
-            <button class="btn-primary-new">Diese Woche</button>
-            <button class="btn-primary-new">Dieser Monat</button>
+        <div class="mt-2">
+            <button class="btn-primary-new" data-fun="selectEntries" data-binding="true" data-value="all">Alle</button>
+            <button class="btn-primary-new" data-fun="selectEntries" data-binding="true" data-value="today">Heute</button>
+            <button class="btn-primary-new" data-fun="selectEntries" data-binding="true" data-value="week">Diese Woche</button>
+            <button class="btn-primary-new" data-fun="selectEntries" data-binding="true" data-value="month">Dieser Monat</button>
         </div>
         <div id="timeTrackingTable" class="mt-2"></div>
     </div>

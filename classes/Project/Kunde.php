@@ -48,7 +48,7 @@ class Kunde implements StatisticsInterface
 		$this->email = $data['Email'];
 		$this->telefonFestnetz = $data['TelefonFestnetz'];
 		$this->telefonMobil = $data['TelefonMobil'];
-		$this->website = $data['Website'];
+		$this->website = $data['Website'] ?? "";
 	}
 
 	public function getKundennummer(): int

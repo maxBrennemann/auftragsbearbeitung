@@ -27,25 +27,39 @@ class CacheManager
         return DBAccess::updateQuery("UPDATE settings SET content = 'on' WHERE title = 'cacheStatus'");
     }
 
-    public static function getCacheStatus()
+    public static function getCacheStatus(): string
     {
         $query = "SELECT content FROM settings WHERE `title` = 'cacheStatus'";
         $status = DBAccess::selectQuery($query);
+
+        if (count($status) == 0) {
+            return "off";
+        }
+
         $status = $status[0]['content'];
-        return $status;
+        return (string) $status;
     }
 
     public static function deleteCache()
     {
-        $path = 'cache/';
+        $path = "cache/";
         $files = scandir($path);
-        $files = array_diff(scandir($path), array('.', '..', 'index.php', 'modules'));
+        $files = array_diff(scandir($path), [
+            ".",
+            "..",
+            "index.php",
+            "modules",
+        ]);
 
         foreach ($files as $file) {
             if (is_file($path . $file)) {
                 unlink($path . $file);
             }
         }
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+        ]);
     }
 
     public static function toggleCache()

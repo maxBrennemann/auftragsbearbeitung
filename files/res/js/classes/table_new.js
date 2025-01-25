@@ -193,8 +193,12 @@ export const addRow = (data, table, options = {}) => {
     tbody.appendChild(row);
 }
 
-export const deleteRow = (data, table) => {
-
+export const clearRows = (table) => {
+    const tbody = table.querySelector("tbody");
+    const rows = tbody.querySelectorAll("tr");
+    Array.from(rows).forEach(row => {
+        row.remove();
+    });
 }
 
 const addEditableRow = (table) => {

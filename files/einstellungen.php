@@ -6,36 +6,10 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 use Classes\Project\CacheManager;
 use Classes\Project\Config;
 
-/* get default wage */
-$defaultWage = Config::get("defaultWage");
-
-$cacheOn = "";
-$cacheOff = "checked";
+$defaultWage = (int) Config::get("defaultWage");
 $cacheStatus = CacheManager::getCacheStatus();
+$minifyStatus = Config::get("minifyStatus");
 
-if ($cacheStatus == "on") {
-    $cacheOn = "checked";
-    $cacheOff = "";
-}
-
-$minifyOn = "";
-$minifyOff = "checked";
-
-$query = "SELECT content FROM settings WHERE title = 'minifyStatus' LIMIT 1";
-$result = DBAccess::selectQuery($query);
-$minifyStatus = $result[0]["content"];
-
-if ($minifyStatus == "on") {
-    $minifyOn = "checked";
-    $minifyOff = "";
-}
-
-$patternOrderType = [
-    "Auftragstyp" => [
-        "status" => "unset",
-        "value" => 1,
-    ],
-];
 ?>
 <script src="<?=Link::getResourcesShortLink("colorpicker.js", "js")?>"></script>
 <section class="defCont">
@@ -56,15 +30,15 @@ $patternOrderType = [
 </section>
 <section class="defCont">
     <h2 class="font-bold">Cache</h2>
-	<input onchange="toggleCache('on')" type="radio" name="cacheswitch" value="on" <?=$cacheOn?>> Cache aktivieren<br>
-	<input onchange="toggleCache('off')" type="radio" name="cacheswitch" value="off" <?=$cacheOff?>> Cache deaktivieren<br>
-    <button id="deleteCache" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Cache löschen</button>
+	<input data-write="true" data-fun="toggleCache" type="radio" data-value="on" name="cacheswitch" value="on" <?=$cacheStatus == "on" ? "checked" : "" ?>> Cache aktivieren<br>
+	<input data-write="true" data-fun="toggleCache" type="radio" data-value="off" name="cacheswitch" value="off" <?=$cacheStatus == "off" ? "checked" : "" ?>> Cache deaktivieren<br>
+    <button data-binding="true" data-fun="deleteCache" class="btn-primary-new mt-2">Cache löschen</button>
 </section>
 <section class="defCont">
     <h2 class="font-bold">CSS und JS komprimieren</h2>
-	<input onchange="toggleMinify('on')" type="radio" name="minifyswitch" value="on" <?=$minifyOn?>> Komprimierung aktivieren<br>
-	<input onchange="toggleMinify('off')" type="radio" name="minifyswitch" value="off" <?=$minifyOff?>> Komprimierung deaktivieren<br>
-    <button onclick="minifyFiles()" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Neu komprimieren</button>
+	<input data-write="true" data-fun="toggleMinify" type="radio" data-value="on" name="minifyswitch" value="on" <?=$minifyStatus == "on" ? "checked" : "" ?>> Komprimierung aktivieren<br>
+	<input data-write="true" data-fun="toggleMinify" type="radio" data-value="off" name="minifyswitch" value="off" <?=$minifyStatus == "off" ? "checked" : "" ?>> Komprimierung deaktivieren<br>
+    <button data-binding="true" data-fun="minifyFiles" class="btn-primary-new mt-2">Neu komprimieren</button>
 </section>
 <section class="defCont">
     <h2 class="font-bold">Suche</h2>

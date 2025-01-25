@@ -6,6 +6,7 @@ use MatthiasMullie\Minify\CSS;
 use MatthiasMullie\Minify\JS;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 /* https://stackoverflow.com/questions/15774669/list-all-files-in-one-directory-php */
 
@@ -97,6 +98,14 @@ class MinifyFiles
 
 		//self::generateGlobalJS();
 		// TODO: rewrite minifier to only minify css and use webpack for js
+	}
+
+	public static function minifyRequest()
+	{
+		self::minify();
+		JSONResponseHandler::sendResponse([
+            "status" => "success",
+        ]);
 	}
 
 	public static function isActivated()

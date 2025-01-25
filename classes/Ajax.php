@@ -603,11 +603,6 @@ class Ajax
 				$content = $_POST['content'];
 				DBAccess::insertQuery("INSERT INTO wiki_articles (title, content) VALUES ('$title', '$content')");
 				break;
-			case "updateDefaultWage":
-				$defaultWage = $_POST["defaultWage"];
-				Config::set("defaultWage", $defaultWage);
-				echo json_encode([]);
-				break;
 			case "getManual":
 				$pageName = $_POST['pageName'];
 				$intent = $_POST['intent'];
@@ -680,10 +675,6 @@ class Ajax
 				break;
 			case "logout":
 				Login::handleLogout();
-				break;
-			case "minifyFiles":
-				MinifyFiles::minify();
-				echo json_encode(["status" => "success"]);
 				break;
 			case "writeProductDescription":
 				Sticker::setDescription();
@@ -1071,13 +1062,6 @@ class Ajax
 					"description" => $description,
 					"id" => $id,
 				]);
-
-				echo json_encode([
-					"status" => "success",
-				]);
-				break;
-			case "deleteCache":
-				CacheManager::deleteCache();
 
 				echo json_encode([
 					"status" => "success",
