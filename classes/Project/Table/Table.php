@@ -110,7 +110,8 @@ class Table extends Model
             JSONResponseHandler::throwError(401, "Insufficient permissions");
         }
 
-        $model = new Model($tableConfig["hooks"]);
+        $hooks = $tableConfig["hooks"] ?? [];
+        $model = new Model($hooks);
         $model->tableName = $table;
         $model->hidden = $tableConfig["hidden"] ?? [];
         $model->columns = $tableConfig["columns"] ?? [];

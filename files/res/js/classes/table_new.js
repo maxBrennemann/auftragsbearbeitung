@@ -55,7 +55,6 @@ export const createHeader = (headers, table, options = {}) => {
         if (options?.hide?.includes(header.key)) {
             return;
         }
-
         count++;
 
         const th = document.createElement("th");
@@ -78,7 +77,7 @@ export const createHeader = (headers, table, options = {}) => {
 
     if (!options?.hideOptions?.includes("addRow") 
         && !options?.hideOptions?.includes("all")) {
-        createAddRow(count, table);
+        createAddRow(count, headers, table, options);
     }
 }
 
@@ -93,7 +92,7 @@ const createPlaceholderRow = (count, table) => {
     table.querySelector("tbody").appendChild(row);
 }
 
-const createAddRow = (count, table) => {
+const createAddRow = (count, headers, table, options = {}) => {
     const row = document.createElement("tr");
     const cell = document.createElement("td");
     cell.setAttribute("colspan", count);
@@ -105,16 +104,31 @@ const createAddRow = (count, table) => {
 
     const btn = document.createElement("button");
     btn.innerHTML = getAddBtn();
+    btn.dataset.status = "add";
     btn.className = "inline-flex border-0 bg-green-400 p-1 rounded-md";
-    btn.addEventListener("click", () => {
-        addEditableRow(table);
-    });
-    container.appendChild(btn);
 
     const text = document.createElement("p");
     text.textContent = "Neuer Eintrag";
     text.className = "ml-1";
 
+    btn.addEventListener("click", () => {
+        switch (btn.dataset.status) {
+            case "add":
+                btn.innerHTML = getSaveBtn();
+                text.textContent = "Speichern";
+                addEditableRow(headers, table, options);
+                btn.dataset.status = "save";
+                break;
+            case "save":
+                btn.innerHTML = getAddBtn();
+                text.textContent = "Neuer Eintrag";
+                dispatchActionEvent("rowAdd", [], table);
+                btn.dataset.status = "add";
+                break;
+        }
+    });
+
+    container.appendChild(btn);
     container.appendChild(text);
     cell.appendChild(container);
     row.appendChild(cell);
@@ -201,13 +215,29 @@ export const clearRows = (table) => {
     });
 }
 
-const addEditableRow = (table) => {
+const addEditableRow = (headers, table, options = {}) => {
     const tbody = table.querySelector("tbody");
     const lastRowAnchor = tbody.lastChild;
 
     if (lastRowAnchor == null) {
         return;
     }
+
+    const tr = document.createElement("tr");
+    headers.forEach(header => {
+        const key = header.key;
+        const td = document.createElement("td");
+        td.contentEditable = true;
+        td.dataset.key = key;
+        tr.appendChild(td);
+    });
+
+    if (!options?.hideOptions?.includes("all")) {
+        const td = document.createElement("td");
+        tr.appendChild(td);
+    }
+
+    tbody.appendChild(tr);
 }
 
 const dispatchActionEvent = (actionType, rowData, table, options = {}) => {
@@ -242,7 +272,14 @@ const getAddBtn = () => {
 
 const getCheckBtn = () => {
     return `
-    <svg class="inline" style="width:15px;height:15px" viewBox="0 0 24 24" title="Löschen">
+    <svg class="inline" style="width:15px;height:15px" viewBox="0 0 24 24" title="Check">
         <path class="fill-white" d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z" />
+    </svg>`;
+}
+
+const getSaveBtn = () => {
+    return `
+    <svg class="inline" style="width:15px;height:15px" viewBox="0 0 24 24" title="Speichern">
+        <path class="fill-white" d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z" />
     </svg>`;
 }
