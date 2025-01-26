@@ -143,10 +143,10 @@ if ($pageName == "") {
 	<header class="moveToSide sticky p-3 2xl:p-5">
 		<div class="mx-auto w-4/5 lg:mb-5 mb-3 flex">
 			<div class="flex-1">
-				<h1 class="font-semibold">b-schriftung Auftragsstellung</h1>
+				<h1 class="font-semibold md:text-sm">b-schriftung Auftragsstellung</h1>
 				<p class="font-normal text-sm"><?=$pageTitle?></p>
 			</div>
-			<div class="inline-flex">
+			<div class="inline-flex flex-wrap">
 				<?=insertTemplate("files/res/views/searchView.php")?>
 				<div class="inline-flex ml-1">
 					<div class="notificationContainer inline-flex items-center p-1 hover:bg-gray-200 hover:rounded-sm relative text-gray-700">
