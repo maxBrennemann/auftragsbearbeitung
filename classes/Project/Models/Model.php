@@ -3,6 +3,7 @@
 namespace Classes\Project\Models;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 class Model
 {
@@ -101,7 +102,7 @@ class Model
             "conditions" => &$conditions,
         ]);
 
-        $query = "INSERT INTO {$this->tableName} ";
+        $query = "INSERT INTO {$this->tableName}";
 
         if (empty($conditions)) {
             return false;
@@ -116,8 +117,15 @@ class Model
             $params[$key] = $value;
         }
 
-        $query .= " (" . implode(",", $columns) . ") VALUES (" . implode(",", $keys) . ")";
-        $result = DBAccess::insertQuery($query, $params);
+        $query .= " (" . implode(", ", $columns) . ") VALUES (" . implode(", ", $keys) . ")";
+        //$result = DBAccess::insertQuery($query, $params);
+
+        JSONResponseHandler::sendResponse([
+            "query" => $query,
+            "data" => $params,
+        ]);
+
+        return 0;
 
         $this->triggerHook("afterAdd", [
             "conditions" => $conditions,

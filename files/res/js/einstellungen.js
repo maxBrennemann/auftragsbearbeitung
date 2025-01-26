@@ -256,12 +256,13 @@ const createOrderTypeTable = async () => {
     createHeader(config.columns, table);
 
     const data = await ajax.get(`/api/v1/tables/auftragstyp`);
-
     data.forEach(row => {
         addRow(row, table, {
             "hideOptions": ["delete", "check"],
         });
     });
+
+    table.addEventListener("rowAdd", () => addOrderType(table));
 }
 
 const createWholesalerTable = async () => {
@@ -302,6 +303,22 @@ const createUserTable = async () => {
 
     data.forEach(row => {
         addRow(row, table, columnConfig);
+    });
+}
+
+const addOrderType = (table) => {
+    const lastRow = table.querySelector("tbody").lastChild.children;
+    const data = {};
+    Array.from(lastRow).forEach(el => {
+        const key = el.dataset.key;
+        if (key == undefined) {
+            return;
+        }
+        const value = el.innerHTML;
+        data[key] = value;
+    });
+    ajax.post(`/api/v1/tables/auftragstyp`, {
+        "conditions": JSON.stringify(data),
     });
 }
 
