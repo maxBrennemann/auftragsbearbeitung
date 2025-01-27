@@ -7,14 +7,12 @@ class Protocol
 
 	private static $file;
 
-	function __construct() {}
-
 	/** 
 	 * Writes a given string to the protocol.txt file
 	 * 
 	 * @param $text string
 	 */
-	public static function write(string $textContent, ?string $details = null)
+	public static function write(string $textContent, ?string $details = null): void
 	{
 		if (self::$file == null) {
 			self::$file = fopen("protocol.txt", "a");
@@ -32,14 +30,14 @@ class Protocol
 	/**
 	 * Closes the protocol.txt file
 	 */
-	public static function close()
+	public static function close(): void
 	{
 		if (self::$file == null)
 			return;
 		fclose(self::$file);
 	}
 
-	public static function delete()
+	public static function delete(): void
 	{
 		unlink("protocol.txt");
 	}
@@ -49,7 +47,7 @@ class Protocol
 	 * 
 	 * @param $data mixed
 	 */
-	public static function prettyPrint($data)
+	public static function prettyPrint($data): void
 	{
 		echo "<pre>";
 		var_dump($data);

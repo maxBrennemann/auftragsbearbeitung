@@ -6,7 +6,6 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 use Classes\Link;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
-use Classes\Login;
 
 /**
  * Klasse generiert im Zusammenhang mit der Template Datei auftrag.php die Übersicht für einen bestimmten Auftrag.
@@ -34,7 +33,7 @@ class Auftrag implements StatisticsInterface
 	private $isArchiviert = false;
 	private $isRechnung = false;
 
-	function __construct($auftragsnummer)
+	public function __construct($auftragsnummer)
 	{
 		$auftragsnummer = (int) $auftragsnummer;
 		if ($auftragsnummer > 0) {
@@ -375,7 +374,8 @@ class Auftrag implements StatisticsInterface
 		return $t->getTable();
 	}
 
-	public static function getOrderItems() {
+	public static function getOrderItems()
+	{
 		$id = Tools::get("id");
 		$order = new Auftrag($id);
 		$data = $order->getAuftragsPostenHelper();
@@ -667,7 +667,7 @@ class Auftrag implements StatisticsInterface
 			"orderId" => $orderId
 		);
 
-		NotificationManager::addNotification(Login::getUserId(), 4, "Auftrag <a href=" . $data["responseLink"] . ">$orderId</a> wurde angelegt", $orderId);
+		NotificationManager::addNotification(User::getCurrentUserId(), 4, "Auftrag <a href=" . $data["responseLink"] . ">$orderId</a> wurde angelegt", $orderId);
 		$auftragsverlauf = new Auftragsverlauf($orderId);
 		$auftragsverlauf->addToHistory($orderId, 5, "added", "Neuer Auftrag");
 		echo json_encode($data, JSON_FORCE_OBJECT);
@@ -983,5 +983,4 @@ class Auftrag implements StatisticsInterface
 			"contactPerson" => $data["Nummer"],
 		]);
 	}
-
 }

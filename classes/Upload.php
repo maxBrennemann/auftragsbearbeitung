@@ -16,7 +16,7 @@ class Upload
 
     private $uploadDir = "upload/";
 
-    function __construct($setUploadDir = "")
+    public function __construct($setUploadDir = "")
     {
         if ($setUploadDir != "") {
             $this->uploadDir = $setUploadDir;

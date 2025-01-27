@@ -25,25 +25,12 @@ class NotificationManager
 {
 
     /**
-     * returns the user id of the current user
-     * @return int|null
-     */
-    private static function getUserId(): ?int
-    {
-        if (isset($_SESSION['user_id'])) {
-            return $_SESSION['user_id'];
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * gets all unviewed notifications counted and returned
      */
     public static function getNotificationCount()
     {
-        $user = self::getUserId();
-        if ($user == null) {
+        $user = User::getCurrentUserId();
+        if ($user == -1) {
             return 0;
         }
 
@@ -58,8 +45,8 @@ class NotificationManager
 
     public static function getTaskCount()
     {
-        $user = self::getUserId();
-        if ($user == null) {
+        $user = User::getCurrentUserId();
+        if ($user == -1) {
             return 0;
         }
 
@@ -74,8 +61,8 @@ class NotificationManager
 
     public static function getNewsCount()
     {
-        $user = self::getUserId();
-        if ($user == null) {
+        $user = User::getCurrentUserId();
+        if ($user == -1) {
             return 0;
         }
 

@@ -24,8 +24,6 @@ class ResourceManager
     private static $cacheFile = null;
     private static $page = "";
 
-    function __construct() {}
-
     /**
      * Before: page was submitted via $_GET paramter, but now the REQUEST_URI is read;
      * $url is splitted into the REQUEST_URI and the parameter part
@@ -246,7 +244,7 @@ class ResourceManager
             $stop = microtime(true);
             $duration = $stop - $start;
         }
-        
+
         insertTemplate("./files/footer.php", [
             "duration" => $duration,
         ]);
