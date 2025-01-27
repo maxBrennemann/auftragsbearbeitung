@@ -88,7 +88,13 @@ function getTableConfig()
             "hooks" => [
                 "afterRead" => [\Classes\Project\Color::class, "convertHexToHTML"],
             ],
-            "joins" => [],
+            "joins" => [
+                "color_auftrag" => [
+                    "relatedTable" => "color_auftrag",
+                    "localKey" => "id",
+                    "foreignKey" => "id_color",
+                ],
+            ],
         ],
         "einkauf" => [
             "columns" => [

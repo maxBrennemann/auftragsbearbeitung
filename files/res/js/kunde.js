@@ -21,6 +21,7 @@ const init = () => {
     initCustomer();
     initialize();
     addressTable();
+    colorTable();
 }
 
 function initialize() {

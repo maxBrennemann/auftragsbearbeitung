@@ -154,7 +154,7 @@ export const addRow = (data, table, options = {}) => {
         }
 
         const cell = document.createElement("td");
-        cell.textContent = data[key];
+        cell.innerHTML = data[key];
 
         row.appendChild(cell);
     });

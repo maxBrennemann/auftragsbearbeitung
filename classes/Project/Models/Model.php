@@ -3,7 +3,6 @@
 namespace Classes\Project\Models;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
-use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 class Model
 {
@@ -15,7 +14,7 @@ class Model
     protected array $hidden = [];
     protected array $columns = [];
 
-    function __construct(array $hooks)
+    public function __construct(array $hooks)
     {
         $this->hooks = $hooks;
     }
@@ -118,14 +117,7 @@ class Model
         }
 
         $query .= " (" . implode(", ", $columns) . ") VALUES (" . implode(", ", $keys) . ")";
-        //$result = DBAccess::insertQuery($query, $params);
-
-        JSONResponseHandler::sendResponse([
-            "query" => $query,
-            "data" => $params,
-        ]);
-
-        return 0;
+        $result = DBAccess::insertQuery($query, $params);
 
         $this->triggerHook("afterAdd", [
             "conditions" => $conditions,

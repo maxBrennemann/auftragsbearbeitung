@@ -177,7 +177,7 @@ else:
 	</div>
 	<div id="auftraege" class="bg-gray-100 col-span-2 p-4 rounded-lg">
 		<h3 class="font-bold">Aufträge</h3>
-		<button class="btn-primary-new" data-fun="createNewOrder" data-binding="true">Neuen Auftrag erstellen</button>
+		<button class="btn-primary-new mt-2" data-fun="createNewOrder" data-binding="true">Neuen Auftrag erstellen</button>
 		<?=$customer->getOrderCards()?>
 	</div>
 </div>
