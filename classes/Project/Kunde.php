@@ -109,18 +109,24 @@ class Kunde implements StatisticsInterface
 		return $this->hausnummer;
 	}
 
-	public function getPostleitzahl($id = 0): int
+	public function getPostleitzahl($id = 0): string
 	{
+		$plz = $this->postleitzahl;
+
 		if ($id != 0) {
 			$this->loadAddresses();
 			if (array_key_exists($id, $this->addresses)) {
-				return $this->addresses[$id]->getPostleitzahl();
+				$plz = (string) $this->addresses[$id]->getPostleitzahl();
 			} else {
-				return 0;
+				$plz = "";
 			}
 		}
 
-		return $this->postleitzahl;
+		if ($plz == 0) {
+			return "";
+		}
+
+		return $plz;
 	}
 
 	public function getOrt($id = 0): string

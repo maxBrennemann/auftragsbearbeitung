@@ -4,7 +4,7 @@ use MaxBrennemann\PhpUtilities\Migrations\UpgradeManager;
 
 $_SERVER["DOCUMENT_ROOT"] = "../";
 
-require_once('settings.php');
+require_once "settings.php";
 
 Classes\MinifyFiles::minify();
 

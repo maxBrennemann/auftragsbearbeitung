@@ -69,13 +69,13 @@ function file_get_contents_utf8($fn)
  * https://www.php.net/manual/en/function.str-contains.php
  */
 if (!function_exists('str_contains')) {
-	function str_contains($haystack, $needle)
+	function str_contains($haystack, $needle): bool
 	{
 		return $needle !== '' && mb_strpos($haystack, $needle) !== false;
 	}
 }
 
-function isLoggedIn()
+function isLoggedIn(): bool
 {
 	if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true) {
 		return true;
@@ -83,12 +83,12 @@ function isLoggedIn()
 	return false;
 }
 
-function getCurrentVersion()
+function getCurrentVersion(): string
 {
 	return CURRENTVERSION;
 }
 
-function errorReporting()
+function errorReporting(): void
 {
 	if ($_ENV["ERRORREPORTING"]) {
 		error_reporting(E_ALL);
@@ -107,7 +107,7 @@ function insertTemplate($path, array $parameters = [])
 }
 
 /** https://stackoverflow.com/a/2792045/7113688 */
-function dashesToCamelCase($string, $capitalizeFirstCharacter = false)
+function dashesToCamelCase($string, $capitalizeFirstCharacter = false): string
 {
 	$str = str_replace('-', '', ucwords($string, '-'));
 

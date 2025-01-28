@@ -253,16 +253,18 @@ const createOrderTypeTable = async () => {
         },
     });
     const config = tableConfig["auftragstyp"];
-    createHeader(config.columns, table);
+    const options = {
+        "hideOptions": ["delete", "check"],
+        "primaryKey": config.primaryKey,
+    };
+    createHeader(config.columns, table, options);
 
     const data = await ajax.get(`/api/v1/tables/auftragstyp`);
     data.forEach(row => {
-        addRow(row, table, {
-            "hideOptions": ["delete", "check"],
-        });
+        addRow(row, table, options);
     });
 
-    table.addEventListener("rowAdd", () => addOrderType(table));
+    table.addEventListener("rowAdd", () => addOrderType(table, options));
 }
 
 const createWholesalerTable = async () => {
@@ -306,7 +308,7 @@ const createUserTable = async () => {
     });
 }
 
-const addOrderType = (table) => {
+const addOrderType = async (table, options) => {
     const lastRow = table.querySelector("tbody").lastChild.children;
     const data = {};
     Array.from(lastRow).forEach(el => {
@@ -317,9 +319,10 @@ const addOrderType = (table) => {
         const value = el.innerHTML;
         data[key] = value;
     });
-    ajax.post(`/api/v1/tables/auftragstyp`, {
+    const response = ajax.post(`/api/v1/tables/auftragstyp`, {
         "conditions": JSON.stringify(data),
     });
+    addRow(data, table, options);
 }
 
 if (document.readyState !== 'loading' ) {

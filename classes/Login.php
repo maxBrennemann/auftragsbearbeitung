@@ -4,6 +4,7 @@ namespace Classes;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 use Classes\Project\User;
 
@@ -13,7 +14,7 @@ class Login
 	/**
 	 * handles the login process
 	 */
-	public static function handleLogin()
+	public static function handleLogin(): bool
 	{
 		if (!isset($_POST['name']) || !isset($_POST['password'])) {
 			return false;
@@ -23,10 +24,10 @@ class Login
 		$password = $_POST['password'];
 
 		/* check if user exists */
-		$user = DBAccess::selectQuery("SELECT * FROM user WHERE `email` = :email OR `username` = :username LIMIT 1;", array(
-			':email' => $loginCredentials,
-			':username' => $loginCredentials
-		));
+		$user = DBAccess::selectQuery("SELECT * FROM user WHERE `email` = :email OR `username` = :username LIMIT 1;", [
+			"email" => $loginCredentials,
+			"username" => $loginCredentials
+		]);
 
 		if (empty($user)) {
 			return false;
@@ -35,50 +36,58 @@ class Login
 		$user = $user[0];
 
 		/* check password */
-		if ($user !== false && password_verify($password, $user['password'])) {
-			self::login($user['id']);
+		if (
+			$user !== false
+			&& password_verify($password, $user["password"])
+		) {
+			self::login($user["id"]);
 			$device = self::getDeviceKey();
 		} else {
 			return false;
 		}
 
-		DBAccess::insertQuery("INSERT INTO login_history (user_id, user_login_key_id, loginstamp) VALUES (:id, :uloginkey, :loginstamp)", array(
-			':id' => $user['id'],
-			':uloginkey' => 0,
-			'loginstamp' => (new \DateTime())->format('Y-m-d H:i:s'),
-		));
+		DBAccess::insertQuery("INSERT INTO login_history (`user_id`, `user_login_key_id`, `loginstamp`) VALUES (:id, :uloginkey, :loginstamp)", [
+			"id" => $user['id'],
+			"uloginkey" => 0,
+			"loginstamp" => (new \DateTime())->format('Y-m-d H:i:s'),
+		]);
 
 		if (!$device) {
-			echo json_encode(["status" => "error"]);
+			JSONResponseHandler::sendResponse(["status" => "error"]);
 		} else {
-			echo json_encode([
+			JSONResponseHandler::sendResponse([
 				"status" => "success",
 				"deviceKey" => $device["deviceKey"],
 				"loginKey" => Login::getLoginKey($device["deviceId"]),
 			]);
 		}
+
+		return true;
 	}
 
-	private static function login($userId)
+	private static function login($userId): void
 	{
-		$_SESSION['user_id'] = $userId;
-		$_SESSION['loggedIn'] = true;
+		$_SESSION["user_id"] = $userId;
+		$_SESSION["loggedIn"] = true;
 	}
 
 	/**
 	 * handles the logout process
 	 */
-	public static function handleLogout()
+	public static function handleLogout(): void
 	{
 		setcookie(session_name(), '', 100);
 		session_unset();
-		session_destroy();
-		$_SESSION = [];
+		if (!session_destroy()) {
+			/* reset session object */
+			$_SESSION = [];
+		}
 	}
 
 	public static function getLoginKey($deviceId)
 	{
-		if (!isset($_POST["setAutoLogin"]) || $_POST["setAutoLogin"] == "false") {
+		if (!Tools::get("setAutoLogin") == null
+			|| Tools::get("setAutoLogin") == "false") {
 			return;
 		}
 
@@ -91,12 +100,12 @@ class Login
 		$loginKey = bin2hex(random_bytes(6));
 
 		/* save login key */
-		DBAccess::insertQuery("INSERT INTO user_login_key (user_id, login_key, expiration_date, user_device_id) VALUES (:id, :loginkey, :expiration, :userDeviceId)", array(
-			':id' => User::getCurrentUserId(),
-			':loginkey' => $loginKey,
-			':expiration' => $dateInTwoWeeks,
-			':userDeviceId' => $deviceId
-		));
+		DBAccess::insertQuery("INSERT INTO user_login_key (`user_id`, `login_key`, `expiration_date`, `user_device_id`) VALUES (:id, :loginkey, :expiration, :userDeviceId)", [
+			"id" => User::getCurrentUserId(),
+			"loginkey" => $loginKey,
+			"expiration" => $dateInTwoWeeks,
+			"userDeviceId" => $deviceId
+		]);
 
 		return $loginKey;
 	}
@@ -111,19 +120,19 @@ class Login
 			$userAgent = "unknown";
 		}
 
-		if (isset($_POST["deviceKey"]) && strlen($_POST["deviceKey"]) == 32) {
+		if (Tools::get("deviceKey") !== null && strlen(Tools::get("deviceKey")) == 32) {
 			return [
-				"deviceKey" => $_POST["deviceKey"],
-				"deviceId" => self::getDeviceId($_POST["deviceKey"])
+				"deviceKey" => Tools::get("deviceKey"),
+				"deviceId" => self::getDeviceId(Tools::get("deviceKey"))
 			];
 		}
 
 		$userAgentHash = self::generateDeviceKey($userAgent);
 
-		$browser = $_POST["browser"];
-		$os = $_POST["os"];
-		$isMobile = $_POST["isMobile"];
-		$isTablet = $_POST["isTablet"];
+		$browser = Tools::get("browser");
+		$os = Tools::get("os");
+		$isMobile = Tools::get("isMobile");
+		$isTablet = Tools::get("isTablet");
 		$deviceType = self::castDevice($isMobile, $isTablet);
 
 		$query = "SELECT * FROM user_devices WHERE browser_agent = :userAgent AND os = :os AND browser = :browser AND device_type = :deviceType AND user_id = :userId;";
@@ -174,9 +183,9 @@ class Login
 	private static function getDeviceId($deviceKey): int
 	{
 		$query = "SELECT id FROM user_devices WHERE md_hash = :deviceKey;";
-		$data = DBAccess::selectQuery($query, array(
-			':deviceKey' => $deviceKey
-		));
+		$data = DBAccess::selectQuery($query, [
+			"deviceKey" => $deviceKey
+		]);
 
 		if (count($data) == 0) {
 			return false;
@@ -185,7 +194,7 @@ class Login
 		return (int) $data[0]['id'];
 	}
 
-	private static function checkDuplicateDevices($list)
+	private static function checkDuplicateDevices($list): string
 	{
 		if (count($list) == 0) {
 			return false;
@@ -240,7 +249,12 @@ class Login
 
 		$deviceId = $data[0]['id'];
 
-		if ($data[0]['browser_agent'] == $userAgent && $data[0]['browser'] == $browser && $data[0]['os'] == $os && $data[0]['device_type'] == $deviceType) {
+		if (
+			$data[0]['browser_agent'] == $userAgent
+			&& $data[0]['browser'] == $browser
+			&& $data[0]['os'] == $os
+			&& $data[0]['device_type'] == $deviceType
+		) {
 			return false;
 		} else {
 			$loginKey = $_POST["loginKey"];
@@ -269,14 +283,5 @@ class Login
 			return "tablet";
 		}
 		return "desktop";
-	}
-
-	public static function getUserId()
-	{
-		if (isset($_SESSION['user_id'])) {
-			$user = $_SESSION['user_id'];
-			return $user;
-		}
-		return -1;
 	}
 }

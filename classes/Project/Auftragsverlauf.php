@@ -3,7 +3,6 @@
 namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
-use Classes\Login;
 
 /*
  * Zu protokollierende Daten:
@@ -29,7 +28,7 @@ class Auftragsverlauf
 
     private $auftragsnummer = 0;
 
-    function __construct($auftragsnummer)
+    public function __construct($auftragsnummer)
     {
         $this->auftragsnummer = (int) $auftragsnummer;
         if ($this->auftragsnummer <= 0) {
@@ -45,7 +44,7 @@ class Auftragsverlauf
      */
     public function addToHistory($number, $type, $state, $alternative_text = "")
     {
-        $userId = Login::getUserId();
+        $userId = User::getCurrentUserId();
         $query = "INSERT INTO history (orderid, `number`, `type`, `state`, member_id, alternative_text) VALUES (:orderId, :number, :type, :state, :userId, :alternative_text)";
         $params = array(
             ":orderId" => $this->auftragsnummer,
