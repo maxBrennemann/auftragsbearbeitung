@@ -111,20 +111,24 @@ class Model
         $keys = [];
         $columns = [];
         foreach ($conditions as $key => $value) {
+            if ($key == $this->primary) {
+                continue;
+            }
+
             $keys[] = ":{$key}";
             $columns[] = $key;
             $params[$key] = $value;
         }
 
         $query .= " (" . implode(", ", $columns) . ") VALUES (" . implode(", ", $keys) . ")";
-        $result = DBAccess::insertQuery($query, $params);
+        $lastInsertId = DBAccess::insertQuery($query, $params);
 
         $this->triggerHook("afterAdd", [
             "conditions" => $conditions,
-            "results" => &$result,
+            "results" => &$lastInsertId,
         ]);
 
-        return $result;
+        return $lastInsertId;
     }
 
     public function delete($conditions): bool

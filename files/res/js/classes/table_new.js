@@ -22,6 +22,10 @@ export const fetchAndRenderTable = async (containerId, tableName, options = {}) 
         "conditions": JSON.stringify(conditions),
     });
 
+    if (!options?.primaryKey) {
+        options.primaryKey = config.primaryKey;
+    }
+
     return renderTable(containerId, config.columns, data, options);
 }
 
@@ -224,10 +228,15 @@ const addEditableRow = (headers, table, options = {}) => {
     }
 
     const tr = document.createElement("tr");
+    tr.dataset.editableRow = "1";
     headers.forEach(header => {
         const key = header.key;
         const td = document.createElement("td");
-        td.contentEditable = true;
+
+        if (key !== options?.primaryKey) {
+            td.contentEditable = true;
+        }
+
         td.dataset.key = key;
         tr.appendChild(td);
     });

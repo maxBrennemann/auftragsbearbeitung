@@ -61,7 +61,7 @@ function getTableConfig()
                 "id",
                 "Auftragstyp",
             ],
-            "primaryKey" => ["id"],
+            "primaryKey" => "id",
             "names" => [
                 "Nummer",
                 "Auftragstyp",

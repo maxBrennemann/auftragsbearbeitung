@@ -113,14 +113,17 @@ class Table extends Model
         $hooks = $tableConfig["hooks"] ?? [];
         $model = new Model($hooks);
         $model->tableName = $table;
+        $model->primary = $tableConfig["primaryKey"] ?? "id";
         $model->hidden = $tableConfig["hidden"] ?? [];
         $model->columns = $tableConfig["columns"] ?? [];
         $model->fillable = [];
 
         $conditions = self::getConditions();
-        $results = $model->add($conditions);
+        $lastInsertId = $model->add($conditions);
 
-        JSONResponseHandler::sendResponse($results);
+        JSONResponseHandler::sendResponse([
+            $model->primary => $lastInsertId,
+        ]);
     }
 
     public static function updateData()
