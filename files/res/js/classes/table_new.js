@@ -107,24 +107,28 @@ const createAddRow = (count, headers, table, options = {}) => {
     container.title = "Neuen Eintrag hinzufügen";
 
     const btn = document.createElement("button");
-    btn.innerHTML = getAddBtn();
     btn.dataset.status = "add";
-    btn.className = "inline-flex border-0 bg-green-400 p-1 rounded-md";
+    btn.className = "border-0 inline-flex items-center";
+    const btnSpan = document.createElement("span");
+    btnSpan.innerHTML = getAddBtn();
+    btnSpan.className = "inline-flex border-0 bg-green-400 p-1 rounded-md";
+    btn.appendChild(btnSpan);
 
-    const text = document.createElement("p");
+    const text = document.createElement("span");
     text.textContent = "Neuer Eintrag";
     text.className = "ml-1";
+    btn.appendChild(text);
 
     btn.addEventListener("click", () => {
         switch (btn.dataset.status) {
             case "add":
-                btn.innerHTML = getSaveBtn();
+                btnSpan.innerHTML = getSaveBtn();
                 text.textContent = "Speichern";
                 addEditableRow(headers, table, options);
                 btn.dataset.status = "save";
                 break;
             case "save":
-                btn.innerHTML = getAddBtn();
+                btnSpan.innerHTML = getAddBtn();
                 text.textContent = "Neuer Eintrag";
                 dispatchActionEvent("rowAdd", [], table);
                 btn.dataset.status = "add";
@@ -133,7 +137,6 @@ const createAddRow = (count, headers, table, options = {}) => {
     });
 
     container.appendChild(btn);
-    container.appendChild(text);
     cell.appendChild(container);
     row.appendChild(cell);
     table.querySelector("tbody").appendChild(row);
@@ -143,13 +146,10 @@ export const addRow = (data, table, options = {}) => {
     const tbody = table.querySelector("tbody");
     const row = document.createElement("tr");
 
+    clearTable(table);
+
     if (Object.keys(data).includes(options?.primaryKey)) {
         row.dataset.id = data[options?.primaryKey];
-    }
-
-    const placeholderRow = table.querySelector("tr.empty-placeholder");
-    if (placeholderRow) {
-        tbody.removeChild(placeholderRow);
     }
 
     Object.keys(data).forEach(key => {
@@ -228,7 +228,7 @@ const addEditableRow = (headers, table, options = {}) => {
     }
 
     const tr = document.createElement("tr");
-    tr.dataset.editableRow = "1";
+    tr.className = "editable-row";
     headers.forEach(header => {
         const key = header.key;
         const td = document.createElement("td");
@@ -256,6 +256,20 @@ const dispatchActionEvent = (actionType, rowData, table, options = {}) => {
     });
 
     table.dispatchEvent(event);
+}
+
+const clearTable = (table) => {
+    const tbody = table.querySelector("tbody");
+    
+    const placeholderRow = table.querySelector("tr.empty-placeholder");
+    if (placeholderRow) {
+        tbody.removeChild(placeholderRow);
+    }
+
+    const editableRow = table.querySelector("tr.editable-row");
+    if (editableRow) {
+        tbody.removeChild(editableRow);
+    }
 }
 
 const getEditBtn = () => {
