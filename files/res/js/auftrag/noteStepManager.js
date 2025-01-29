@@ -4,11 +4,11 @@ export function initNotes() {
     const nodeContainer = document.getElementById("noteContainer");
     if (nodeContainer != null) {
         getNotes().then(r => {
-            if (r.data.length == 0) {
+            if (r.length == 0) {
                 return;
             }
 
-            displayNotes(r.data);
+            displayNotes(r);
         });
     }
 }
@@ -160,7 +160,7 @@ export async function getNotes() {
  * @returns 
  */
 export function sendNote() {
-    var note = document.querySelector("#addNotes");
+    const note = document.querySelector("#addNotes");
     if (note == undefined) {
         return null;
     }
@@ -168,19 +168,23 @@ export function sendNote() {
     const title = note.querySelector(".noteTitle").value;
     const content = note.querySelector(".noteText").value;
 
+    const addNewNoteBtn = document.getElementById("addNewNote");
+    addNewNoteBtn.classList.remove("hidden");
+
     if (title == "") {
         return null;
     }
 
     ajax.post(`/api/v1/notes/${globalData.auftragsId}`, {
-        title: title,
-        note: content
+        "title": title,
+        "note": content
     }).then(r => {
         infoSaveSuccessfull("success");
         displayNotes([{
-                title: title,
-                note: content,
-                date: r.date
+                "title": title,
+                "note": content,
+                "date": r.date,
+                "id": r.id,
         }]);
 
         note.querySelector(".noteTitle").value = "";
@@ -188,6 +192,19 @@ export function sendNote() {
 
         note.classList.toggle("hidden");
     });
+}
+
+export const cancelNote = () => {
+    const note = document.querySelector("#addNotes");
+    const title = note.querySelector(".noteTitle");
+    const content = note.querySelector(".noteText");
+
+    title.value = "";
+    content.value = "";
+    note.classList.toggle("hidden");
+
+    const addNewNoteBtn = document.getElementById("addNewNote");
+    addNewNoteBtn.classList.remove("hidden");
 }
 
 /* function creates a popup window that asks the user whether he wants the note to be deleted or not */
@@ -210,9 +227,12 @@ window.notesClose = function(div) {
 export function addNewNote() {
     const addNotes = document.getElementById("addNotes");
     addNotes.classList.toggle("hidden");
+
+    const addNewNoteBtn = document.getElementById("addNewNote");
+    addNewNoteBtn.classList.add("hidden");
+
     const input = addNotes.querySelector(".noteTitle");
     input.focus();
-
     input.addEventListener("keyup", function(e) {
         if (e.key == "Enter") {
             const addNotes = document.getElementById("addNotes");

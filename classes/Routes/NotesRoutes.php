@@ -16,7 +16,7 @@ class NotesRoutes extends Routes {
     ];
 
     /**
-     * @ueses \Classes\Project\Auftrag::addNote()
+     * @uses \Classes\Project\Auftrag::addNote()
      */
     protected static $postRoutes = [
         "/notes/{orderId}" => [\Classes\Project\Auftrag::class, "addNote"],
