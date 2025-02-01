@@ -1,6 +1,6 @@
 ﻿import { initBindings } from "./classes/bindings.js";
 import { addColor, addSelectedColors, checkHexCode, removeColor, toggleCS } from "./auftrag/colorManager.js";
-import { addBearbeitungsschritt, addStep, sendNote, removeNote, addNewNote, initNotes } from "./auftrag/noteStepManager.js";
+import { addBearbeitungsschritt, addStep, sendNote, removeNote, addNewNote, initNotes, cancelNote } from "./auftrag/noteStepManager.js";
 import { setOrderFinished, updateDate, updateDeadline, setDeadlineState, initExtraOptions, editDescription, editOrderType, editTitle, archvieren } from "./auftrag/orderManager.js";
 import { addExistingVehicle, addNewVehicle, selectVehicle } from "./auftrag/vehicleManager.js";
 import { click_mehListener, addProductCompactOld, addLeistung, addTime, selectLeistung, initPostenFilter, addProductCompact, showPostenAdd, createTimeInputRow } from "./auftrag/postenManager.js";
@@ -310,6 +310,7 @@ fnNames.click_addStep = addStep;
 fnNames.click_sendNote = sendNote;
 fnNames.click_removeNote = removeNote;
 fnNames.click_addNewNote = addNewNote;
+fnNames.click_cancelNote = cancelNote;
 
 fnNames.click_setOrderFinished = setOrderFinished;
 fnNames.write_updateDate = updateDate;

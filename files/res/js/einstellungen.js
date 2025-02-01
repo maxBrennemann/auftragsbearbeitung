@@ -319,9 +319,12 @@ const addOrderType = async (table, options) => {
         const value = el.innerHTML;
         data[key] = value;
     });
-    const response = ajax.post(`/api/v1/tables/auftragstyp`, {
+    const response = await ajax.post(`/api/v1/tables/auftragstyp`, {
         "conditions": JSON.stringify(data),
     });
+    for (var i in response) {
+        data[i] = response[i];
+    }
     addRow(data, table, options);
 }
 

@@ -282,13 +282,11 @@ if ($auftrag->istRechnungGestellt() && $show == false): ?>
 		</div>
 	</div>
 	<div class="defCont schritteAdd">
-		<div class="flex">
+		<div>
 			<p class="font-bold">Notizen hinzufügen</p>
-			<button class="btn-primary flex justify-center items-center select-none text-xl font-bold p-2 m-2 rounded-full shadow h-8 w-8" data-binding="true" data-fun="addNewNote">
-				<?=Icon::getDefault("iconAdd")?>
-			</button>
+			<button class="btn-primary-new mt-2" data-binding="true" data-fun="addNewNote" id="addNewNote">Neu</button>
 		</div>
-		<div class="hidden" id="addNotes">
+		<div class="hidden mt-2" id="addNotes">
 			<div class="bg-white w-2/3 rounded-lg p-2">
 				<input type="text" class="noteTitle text-slate-700 font-bold outline-0" max="128">
 				<textarea class="noteText mt-2 text-slate-500 resize-none w-full outline-0" type="text" max="128"></textarea>
@@ -296,11 +294,14 @@ if ($auftrag->istRechnungGestellt() && $show == false): ?>
 					<span class="noteDate"><?=date("d.m.Y")?></span>
 				</div>
 			</div>
-			<button class="btn-primary" data-binding="true" data-fun="sendNote">Hinzufügen</button>
+			<div class="mt-2">
+				<button class="btn-primary-new" data-binding="true" data-fun="sendNote">Hinzufügen</button>
+				<button class="btn-cancel" data-binding="true" data-fun="cancelNote">Abbrechen</button>
+			</div>
 		</div>
 	</div>
 	<div class="defCont notes hidden" id="notesContainer">
-		<p>Alle Notizen</p>
+		<p class="font-bold">Alle Notizen</p>
 		<div class="grid grid-cols-4" id="noteContainer"></div>
 	</div>
 	<div class="defCont posten">

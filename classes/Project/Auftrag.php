@@ -577,9 +577,7 @@ class Auftrag implements StatisticsInterface
 			}
 		}
 
-		return JSONResponseHandler::sendResponse([
-			"data" => $notes,
-		]);
+		return JSONResponseHandler::sendResponse($notes);
 	}
 
 	public function recalculate() {}
@@ -777,6 +775,7 @@ class Auftrag implements StatisticsInterface
 		JSONResponseHandler::sendResponse([
 			"success" => true,
 			"date" => date("d.m.Y"),
+			"id" => $historyId,
 		]);
 	}
 
