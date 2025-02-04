@@ -4,11 +4,11 @@ import { initBindings } from "./classes/bindings.js";
 const fnNames = {};
 
 const init = () => {
-    initBindings();
+    initBindings(fnNames);
     autoLogin();
 }
 
-fnNames.click_autoLogin = () => {
+fnNames.click_login = () => {
     if (document.getElementById("autologin").checked) {
         setCookie("autologin", "on", 356);
     }
