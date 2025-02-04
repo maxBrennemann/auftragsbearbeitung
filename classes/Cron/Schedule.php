@@ -4,23 +4,29 @@ namespace Classes\Cron;
 
 class Schedule
 {
+    protected array $tasks = [
+        "hourly" => [],
+        "daily" => [],
+        "exact_hour" => []
+    ];
 
-    public function __construct() {}
-
-    public function runEveryHour($tasks)
+    public function runEveryHour(callable $task)
     {
-        $this->runTasks($tasks, 3600);
+        $this->tasks["hourly"][] = $task;
     }
 
-    public function runEveryDay($tasks)
+    public function runEveryDay(callable $task)
     {
-        $this->runTasks($tasks, 86400);
+        $this->tasks["daily"][] = $task;
     }
 
-    private function runTasks($tasks, $interval)
+    public function runAtHour(int $hour, callable $task)
     {
-        foreach ($tasks as $task) {
-            $task->run();
-        }
+        $this->tasks["exact_hour"][$hour][] = $task;
+    }
+
+    public function getTasks(): array
+    {
+        return $this->tasks;
     }
 }
