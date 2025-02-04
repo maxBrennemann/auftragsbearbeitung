@@ -11,17 +11,16 @@ use Classes\Project\User;
 class Login
 {
 
-	/**
-	 * handles the login process
-	 */
-	public static function handleLogin(): bool
+	public static function handleLogin(): void
 	{
-		if (!isset($_POST['name']) || !isset($_POST['password'])) {
-			return false;
+		if (Tools::get("name") == null || Tools::get("password") == null) {
+			JSONResponseHandler::sendResponse([
+				"status" => "error"
+			]);
 		}
 
-		$loginCredentials = $_POST['name'];
-		$password = $_POST['password'];
+		$loginCredentials = Tools::get("name");
+		$password = Tools::get("password");
 
 		/* check if user exists */
 		$user = DBAccess::selectQuery("SELECT * FROM user WHERE `email` = :email OR `username` = :username LIMIT 1;", [
@@ -30,39 +29,40 @@ class Login
 		]);
 
 		if (empty($user)) {
-			return false;
+			JSONResponseHandler::sendResponse([
+				"status" => "error"
+			]);
 		}
 
 		$user = $user[0];
 
 		/* check password */
-		if (
-			$user !== false
-			&& password_verify($password, $user["password"])
-		) {
+		if (password_verify($password, $user["password"])) {
 			self::login($user["id"]);
 			$device = self::getDeviceKey();
 		} else {
-			return false;
+			JSONResponseHandler::sendResponse([
+				"status" => "error"
+			]);
 		}
 
 		DBAccess::insertQuery("INSERT INTO login_history (`user_id`, `user_login_key_id`, `loginstamp`) VALUES (:id, :uloginkey, :loginstamp)", [
-			"id" => $user['id'],
+			"id" => $user["id"],
 			"uloginkey" => 0,
 			"loginstamp" => (new \DateTime())->format('Y-m-d H:i:s'),
 		]);
 
 		if (!$device) {
-			JSONResponseHandler::sendResponse(["status" => "error"]);
+			JSONResponseHandler::sendResponse([
+				"status" => "error"
+			]);
 		} else {
 			JSONResponseHandler::sendResponse([
 				"status" => "success",
 				"deviceKey" => $device["deviceKey"],
-				"loginKey" => Login::getLoginKey($device["deviceId"]),
+				"loginKey" => self::getLoginKey($device["deviceId"]),
 			]);
 		}
-
-		return true;
 	}
 
 	private static function login($userId): void
@@ -71,9 +71,6 @@ class Login
 		$_SESSION["loggedIn"] = true;
 	}
 
-	/**
-	 * handles the logout process
-	 */
 	public static function handleLogout(): void
 	{
 		setcookie(session_name(), '', 100);
@@ -84,11 +81,13 @@ class Login
 		}
 	}
 
-	public static function getLoginKey($deviceId)
+	private static function getLoginKey($deviceId): string
 	{
-		if (!Tools::get("setAutoLogin") == null
-			|| Tools::get("setAutoLogin") == "false") {
-			return;
+		if (
+			!Tools::get("setAutoLogin") == null
+			|| Tools::get("setAutoLogin") == "false"
+		) {
+			return "";
 		}
 
 		/* get expiration date */
@@ -110,9 +109,6 @@ class Login
 		return $loginKey;
 	}
 
-	/**
-	 * simple function to generate a unique device identifier
-	 */
 	private static function getDeviceKey()
 	{
 		$userAgent = Tools::get("userAgent");
@@ -120,7 +116,10 @@ class Login
 			$userAgent = "unknown";
 		}
 
-		if (Tools::get("deviceKey") !== null && strlen(Tools::get("deviceKey")) == 32) {
+		if (
+			Tools::get("deviceKey") !== null
+			&& strlen(Tools::get("deviceKey")) == 32
+		) {
 			return [
 				"deviceKey" => Tools::get("deviceKey"),
 				"deviceId" => self::getDeviceId(Tools::get("deviceKey"))
@@ -135,18 +134,24 @@ class Login
 		$isTablet = Tools::get("isTablet");
 		$deviceType = self::castDevice($isMobile, $isTablet);
 
-		$query = "SELECT * FROM user_devices WHERE browser_agent = :userAgent AND os = :os AND browser = :browser AND device_type = :deviceType AND user_id = :userId;";
-		$data = DBAccess::selectQuery($query, array(
-			':userAgent' => $userAgent,
-			':os' => $os,
-			':browser' => $browser,
-			':deviceType' => $deviceType,
-			':userId' => User::getCurrentUserId(),
-		));
+		$query = "SELECT * 
+			FROM user_devices 
+			WHERE `browser_agent` = :userAgent 
+				AND `os` = :os 
+				AND `browser` = :browser 
+				AND `device_type` = :deviceType 
+				AND `user_id` = :userId;";
+		$data = DBAccess::selectQuery($query, [
+			"userAgent" => $userAgent,
+			"os" => $os,
+			"browser" => $browser,
+			"deviceType" => $deviceType,
+			"userId" => User::getCurrentUserId(),
+		]);
 
 		$duplicateDevice = self::checkDuplicateDevices($data);
 		if ($duplicateDevice != false) {
-			$userAgentHash = $duplicateDevice['md_hash'];
+			$userAgentHash = $duplicateDevice["md_hash"];
 		} else {
 			$id = self::saveDeviceKey($userAgentHash, $userAgent, $browser, $os, $deviceType);
 		}
@@ -167,15 +172,15 @@ class Login
 	private static function saveDeviceKey($key, $userAgent, $browser, $os, $deviceType): int
 	{
 		$query = "INSERT INTO user_devices (md_hash, os, browser, device_type, user_id, browser_agent, ip_address) VALUES (:key, :os, :browser, :deviceType, :userId, :browserAgent, :ipAddress);";
-		$id = DBAccess::insertQuery($query, array(
-			':key' => $key,
-			':os' => $os,
-			':browser' => $browser,
-			':deviceType' => $deviceType,
-			':userId' => User::getCurrentUserId(),
-			':browserAgent' => $userAgent,
-			':ipAddress' => $_SERVER['REMOTE_ADDR'],
-		));
+		$id = DBAccess::insertQuery($query, [
+			"key" => $key,
+			"os" => $os,
+			"browser" => $browser,
+			"deviceType" => $deviceType,
+			"userId" => User::getCurrentUserId(),
+			"browserAgent" => $userAgent,
+			"ipAddress" => $_SERVER["REMOTE_ADDR"],
+		]);
 
 		return $id;
 	}
@@ -188,10 +193,10 @@ class Login
 		]);
 
 		if (count($data) == 0) {
-			return false;
+			return 0;
 		}
 
-		return (int) $data[0]['id'];
+		return (int) $data[0]["id"];
 	}
 
 	private static function checkDuplicateDevices($list): string
@@ -200,10 +205,10 @@ class Login
 			return false;
 		}
 
-		$ip = $_SERVER['REMOTE_ADDR'];
+		$ip = $_SERVER["REMOTE_ADDR"];
 
 		foreach ($list as $device) {
-			if ($device['ip_address'] == $ip) {
+			if ($device["ip_address"] == $ip) {
 				return $device;
 			}
 		}
@@ -215,7 +220,7 @@ class Login
 	{
 		$loginKey = self::handleAutoLogin();
 		$status = $loginKey === false ? "failed" : "success";
-		echo json_encode([
+		JSONResponseHandler::sendResponse([
 			"status" => $status,
 			"loginKey" => $loginKey,
 		]);
@@ -226,7 +231,7 @@ class Login
 	 * the cookie, the browser type and os are used to identify the user
 	 * the current ip adress is also stored in the database but is not crucial
 	 */
-	public static function handleAutoLogin()
+	private static function handleAutoLogin(): bool|string
 	{
 		$userAgent = Tools::get("userAgent");
 		if ($userAgent == null) {
@@ -240,7 +245,7 @@ class Login
 		$deviceType = self::castDevice($isMobile, $isTablet);
 
 		$data = DBAccess::selectQuery("SELECT id, browser_agent, browser, os, device_type FROM user_devices WHERE md_hash = :deviceKey", [
-			'deviceKey' => Tools::get("deviceKey")
+			"deviceKey" => Tools::get("deviceKey"),
 		]);
 
 		if (count($data) == 0) {
@@ -258,17 +263,20 @@ class Login
 			return false;
 		} else {
 			$loginKey = $_POST["loginKey"];
-			$query = "SELECT * FROM user_login_key WHERE login_key = :loginKey AND user_device_id = :deviceId ORDER BY id ASC LIMIT 1;";
+			$query = "SELECT * 
+				FROM user_login_key 
+				WHERE login_key = :loginKey 
+					AND user_device_id = :deviceId 
+				ORDER BY id ASC LIMIT 1;";
 			$data = DBAccess::selectQuery($query, array(
 				'loginKey' => $loginKey,
 				'deviceId' => $deviceId,
 			));
 
 			if (count($data) == 0) {
-				// login key is not valid
 				return false;
 			} else {
-				self::login($data[0]['user_id']);
+				self::login($data[0]["user_id"]);
 				return self::getLoginKey($deviceId);
 			}
 		}

@@ -1,21 +1,29 @@
 import { ajax } from "./classes/ajax.js";
+import { initBindings } from "./classes/bindings.js";
 
-function login() {
+const fnNames = {};
+
+const init = () => {
+    initBindings();
+    autoLogin();
+}
+
+fnNames.click_autoLogin = () => {
     if (document.getElementById("autologin").checked) {
         setCookie("autologin", "on", 356);
     }
 
     ajax.post(`/api/v1/login`, {
-        name: document.getElementById("name").value,
-        password: document.getElementById("password").value,
-        setAutoLogin: document.getElementById("autologin").checked,
-        deviceKey: getCookie("deviceKey"),
+        "name": document.getElementById("name").value,
+        "password": document.getElementById("password").value,
+        "setAutoLogin": document.getElementById("autologin").checked,
+        "deviceKey": getCookie("deviceKey"),
         /* data for device detection */
-        userAgent: window.navigator.userAgent,
-        browser: DeviceDetector.getBrowser(),
-        os: DeviceDetector.getOS(),
-        isMobile: DeviceDetector.isMobile(),
-        isTablet: DeviceDetector.isMobileTablet(),
+        "userAgent": window.navigator.userAgent,
+        "browser": DeviceDetector.getBrowser(),
+        "os": DeviceDetector.getOS(),
+        "isMobile": DeviceDetector.isMobile(),
+        "isTablet": DeviceDetector.isMobileTablet(),
     }).then(r => {
         if (r.status == "success") {
             const deviceKey = r.deviceKey;
@@ -29,51 +37,45 @@ function login() {
     });
 }
 
-function autoLogin() {
+const autoLogin = async () => {
     if (getCookie("autologin") != "on") {
         return;
     }
 
     document.getElementById("autologin").checked = true;
 
-    ajax.post(`/api/v1/login/auto`, {
-        loginKey: getCookie("loginKey"),
-        deviceKey: getCookie("deviceKey"),
-        setAutoLogin: document.getElementById("autologin").checked,
+    const autoLoginData = await ajax.post(`/api/v1/login/auto`, {
+        "loginKey": getCookie("loginKey"),
+        "deviceKey": getCookie("deviceKey"),
+        "setAutoLogin": document.getElementById("autologin").checked,
         /* data for device detection */
-        userAgent: window.navigator.userAgent,
-        browser: DeviceDetector.getBrowser(),
-        os: DeviceDetector.getOS(),
-        isMobile: DeviceDetector.isMobile(),
-        isTablet: DeviceDetector.isMobileTablet(),
-    }).then(r => {
-        if (r.status == "success") {
-            setTimeout(function() {
-                document.getElementById("autologinStatus").innerHTML = "Sie werden eingeloggt...";
-                document.getElementById("autologin").checked = true;
-                setCookie("loginKey", r.loginKey, 28);
-                setCookie("autologin", "on", 356);
-                location.reload();
-            }, 1000);
-        } else if (r.status == "failed") {
-            console.log("auto login failed");
-            document.getElementById("spinningStatus").classList.add("hidden");
-            setTimeout(function(){
-                document.getElementById("autologinStatus").innerHTML = "Bitte geben Sie Ihre Zugangsdaten ein.";
-                document.getElementById("spinningStatus").classList.add("hidden");
-                document.getElementById("spinningStatus").classList.remove("lds-ring");
-            }, 1000);
-        }
+        "userAgent": window.navigator.userAgent,
+        "browser": DeviceDetector.getBrowser(),
+        "os": DeviceDetector.getOS(),
+        "isMobile": DeviceDetector.isMobile(),
+        "isTablet": DeviceDetector.isMobileTablet(),
     });
+
+    if (autoLoginData.status == "success") {
+        setTimeout(function () {
+            document.getElementById("autologinStatus").innerHTML = "Sie werden eingeloggt...";
+            document.getElementById("autologin").checked = true;
+            setCookie("loginKey", autoLoginData.loginKey, 28);
+            setCookie("autologin", "on", 356);
+            location.reload();
+        }, 1000);
+    } else if (autoLoginData.status == "failed") {
+        console.log("auto login failed");
+        document.getElementById("spinningStatus").classList.add("hidden");
+        setTimeout(function () {
+            document.getElementById("autologinStatus").innerHTML = "Bitte geben Sie Ihre Zugangsdaten ein.";
+            document.getElementById("spinningStatus").classList.add("hidden");
+            document.getElementById("spinningStatus").classList.remove("lds-ring");
+        }, 1000);
+    }
 }
 
-function init() {
-    const loginBtn = document.getElementById("loginBtn");
-    loginBtn.addEventListener("click", login);
-    autoLogin();
-}
-
-if (document.readyState !== 'loading' ) {
+if (document.readyState !== 'loading') {
     init();
 } else {
     document.addEventListener('DOMContentLoaded', function () {

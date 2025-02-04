@@ -5,7 +5,7 @@ namespace Classes\Cron;
 class Schedule
 {
 
-    function __construct() {}
+    public function __construct() {}
 
     public function runEveryHour($tasks)
     {
