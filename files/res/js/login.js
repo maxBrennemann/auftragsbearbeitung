@@ -5,7 +5,7 @@ const fnNames = {};
 
 const init = () => {
     initBindings();
-    autoLogin();
+    autoLogin(fnNames);
 }
 
 fnNames.click_autoLogin = () => {
