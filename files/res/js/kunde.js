@@ -99,7 +99,7 @@ function kundendatenAbsenden() {
 
     data += "number=" + count;
 
-    insertKundendaten = new AjaxCall(data, "POST", window.location.href);
+    const insertKundendaten = new AjaxCall(data, "POST", window.location.href);
     insertKundendaten.makeAjaxCall(function (response) {
         console.log(response);
         if (response == "ok")
