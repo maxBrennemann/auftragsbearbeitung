@@ -91,7 +91,24 @@ class Aufkleber extends AufkleberWandtattoo
 
     public function getColors(): array
     {
-        return [70, 60, 67, 79, 91, 107, 111, 225, 226, 74, 68, 294];
+        return [
+            94,
+            68,
+            111,
+            70,
+            91,
+            67,
+            226,
+            74,
+            107,
+            225,
+            294,
+            79,
+            61,
+            60,
+            295,
+            296,
+        ];
     }
 
     /* hardcoded color names */
@@ -110,7 +127,12 @@ class Aufkleber extends AufkleberWandtattoo
             74 => "pink",
             68 => "hellrot",
             294 => "lichtblau",
+            94 => "gelbgrün",
+            61 => "schwefelgelb",
+            295 => "enzianblau",
+            296 => "pastellorange",
         ];
+        
         if (isset($colors[$colorId])) {
             return $colors[$colorId];
         }

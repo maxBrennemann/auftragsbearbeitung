@@ -195,7 +195,23 @@ class AufkleberWandtattoo extends Sticker {
 
     protected function generateDefaultData() {
         $id = $this->getId();
-        $query = "INSERT INTO module_sticker_sizes (width, id_sticker) VALUES (100, $id), (150, $id), (200, $id), (300, $id), (600, $id), (900, $id), (1200, $id)";
+        $query = "INSERT INTO module_sticker_sizes (width, id_sticker) VALUES
+            (20, $id),
+            (50, $id),
+            (100, $id), 
+            (150, $id), 
+            (200, $id),
+            (250, $id), 
+            (300, $id),
+            (400, $id),
+            (500, $id), 
+            (600, $id),
+            (700, $id),
+            (800, $id), 
+            (900, $id),
+            (1000, $id),
+            (1100, $id), 
+            (1200, $id)";
         DBAccess::insertQuery($query);
         
         $query = "SELECT id, width, height, price, 
