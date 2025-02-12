@@ -3,9 +3,13 @@
 namespace Classes\Cron\Tasks;
 
 use Classes\Cron\Queueable;
+use MaxBrennemann\PhpUtilities\DBAccess;
 
 class CleanLogins implements Queueable
 {
 
-    public static function handle() {}
+    public static function handle()
+    {
+        DBAccess::deleteQuery("DELETE FROM user_login_key WHERE expiration_date <= CURDATE();");
+    }
 }
