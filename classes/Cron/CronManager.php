@@ -16,9 +16,7 @@ class CronManager
 
     protected static function scheduleTasks(Schedule $schedule)
     {
-        //$schedule->runEveryHour([\Classes\Cron\Tasks\SomeHourlyTask::class, 'handle']);
         $schedule->runEveryDay([\Classes\Cron\Tasks\CleanLogins::class, 'handle']);
-        //$schedule->runAtHour(3, [\Classes\Cron\Tasks\SomeSpecificHourTask::class, 'handle']);
     }
 
     protected static function execute(Schedule $schedule)
