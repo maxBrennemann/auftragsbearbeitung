@@ -347,18 +347,18 @@ class Sticker extends PrestashopConnection
             20,
             50,
             100,
-            150, 
+            150,
             200,
-            250, 
+            250,
             300,
             400,
-            500, 
+            500,
             600,
             700,
-            800, 
+            800,
             900,
             1000,
-            1100, 
+            1100,
             1200
         ];
         foreach ($sizes as $size) {

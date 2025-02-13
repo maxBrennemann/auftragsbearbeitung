@@ -16,7 +16,7 @@ class StickerUpload extends PrestashopConnection
     private $descriptionShort;
     private $categories;
 
-    function __construct($idSticker, $title, $basePrice, $description, $descriptionShort)
+    public function __construct($idSticker, $title, $basePrice, $description, $descriptionShort)
     {
         parent::__construct();
 

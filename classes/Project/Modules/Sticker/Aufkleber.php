@@ -132,7 +132,7 @@ class Aufkleber extends AufkleberWandtattoo
             295 => "enzianblau",
             296 => "pastellorange",
         ];
-        
+
         if (isset($colors[$colorId])) {
             return $colors[$colorId];
         }
