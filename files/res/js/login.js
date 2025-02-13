@@ -30,7 +30,7 @@ fnNames.click_login = () => {
             const loginKey = r.loginKey;
             setCookie("deviceKey", deviceKey, 356);
             setCookie("loginKey", loginKey, 28);
-            //location.reload();
+            location.reload();
         } else if (r.status == "error") {
             document.getElementById("loginStatus").innerHTML = "Falscher Benutzername oder falsches Passwort.";
         }

@@ -30,7 +30,6 @@ class Login
 			JSONResponseHandler::sendResponse([
 				"status" => "success",
 				"deviceKey" => $device["deviceKey"],
-				"deviceId" => $device["deviceId"],
 				"loginKey" => self::getLoginKey($device["deviceId"]),
 			]);
 		}
