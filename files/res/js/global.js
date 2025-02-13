@@ -135,22 +135,20 @@ function initSearchIcons() {
 }
 
 function listener_logout() {
-	var logout = document.getElementById("logoutBtn");
+	const logout = document.getElementById("logoutBtn");
 	if (logout == null) {
-		return null;
+		return;
 	}
-	logout.addEventListener("click", function() {
-		var cookies = checkCookies();
-		var loginkey = "false";
+
+	logout.addEventListener("click", () => {
+		const cookies = checkCookies();
+		let loginkey = "false";
 		if ("loginkey" in cookies) {
 			loginkey = cookies["loginkey"];
 		}
-		ajax.post({
-			r: "logout",
-			loginkey: loginkey,
-		}).then(() => {
-			location.reload();
-		});
+		ajax.post(`/api/v1/auth/logout`, {
+			"loginkey": loginkey,
+		}).then(() => location.reload());
 	}, false);
 }
 

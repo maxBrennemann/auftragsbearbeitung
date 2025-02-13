@@ -13,7 +13,7 @@ fnNames.click_login = () => {
         setCookie("autologin", "on", 356);
     }
 
-    ajax.post(`/api/v1/login`, {
+    ajax.post(`/api/v1/auth/login`, {
         "name": document.getElementById("name").value,
         "password": document.getElementById("password").value,
         "setAutoLogin": document.getElementById("autologin").checked,
@@ -30,7 +30,7 @@ fnNames.click_login = () => {
             const loginKey = r.loginKey;
             setCookie("deviceKey", deviceKey, 356);
             setCookie("loginKey", loginKey, 28);
-            location.reload();
+            //location.reload();
         } else if (r.status == "error") {
             document.getElementById("loginStatus").innerHTML = "Falscher Benutzername oder falsches Passwort.";
         }
@@ -44,7 +44,7 @@ const autoLogin = async () => {
 
     document.getElementById("autologin").checked = true;
 
-    const autoLoginData = await ajax.post(`/api/v1/login/auto`, {
+    const autoLoginData = await ajax.post(`/api/v1/auth/login/auto`, {
         "loginKey": getCookie("loginKey"),
         "deviceKey": getCookie("deviceKey"),
         "setAutoLogin": document.getElementById("autologin").checked,
