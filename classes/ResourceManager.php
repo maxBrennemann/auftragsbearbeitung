@@ -30,7 +30,7 @@ class ResourceManager
      */
     public static function pass()
     {
-        $url = $_SERVER['REQUEST_URI'];
+        $url = $_SERVER["REQUEST_URI"];
         $url = explode('?', $url, 2);
         $page = str_replace($_ENV["REWRITE_BASE"] . $_ENV["SUB_URL"], "", $url[0]);
         $parts = explode('/', $page);
@@ -50,7 +50,7 @@ class ResourceManager
                 Ajax::handleRequests();
                 exit;
             case "favicon.ico":
-                require_once('favicon.php');
+                require_once "favicon.php";
                 exit;
         }
     }
@@ -69,7 +69,7 @@ class ResourceManager
     public static function handleCache()
     {
         $t = false;
-        self::$cacheFile = "cache/cache_" . md5($_SERVER['REQUEST_URI']) . ".txt";
+        self::$cacheFile = "cache/cache_" . md5($_SERVER["REQUEST_URI"]) . ".txt";
         self::$cacheStatus = CacheManager::getCacheStatus();
 
         if (file_exists(self::$cacheFile) && !(count($_GET) || count($_POST)) && $t && self::$cacheStatus == "on") {
@@ -258,7 +258,7 @@ class ResourceManager
 
     private static function handleResources()
     {
-        $requestUri = $_SERVER['REQUEST_URI'];
+        $requestUri = $_SERVER["REQUEST_URI"];
         $requestUri = explode('/', $requestUri);
 
         $type = $requestUri[1];

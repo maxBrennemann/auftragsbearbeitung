@@ -12,11 +12,11 @@ class LoginRoutes extends Routes
     /**
      * @uses \Classes\Login::handleLogin()
      * @uses \Classes\Login::autloginWrapper()
-     * @uses \Classes\Login::logout()
+     * @uses \Classes\Login::handleLogout()
      */
     protected static $postRoutes = [
-        "/login" => [\Classes\Login::class, "handleLogin"],
-        "/login/auto" => [\Classes\Login::class, "autloginWrapper"],
-        "/logout" => [\Classes\Login::class, "logout"],
+        "/auth/login" => [\Classes\Login::class, "handleLogin"],
+        "/auth/login/auto" => [\Classes\Login::class, "autloginWrapper"],
+        "/auth/logout" => [\Classes\Login::class, "handleLogout"],
     ];
 }
