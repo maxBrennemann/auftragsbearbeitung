@@ -14,6 +14,7 @@ const init = () => {
         started = true;
         document.getElementById("updateStartStopName").innerHTML = "stoppen";
         document.getElementById("startStopChecked").checked = true;
+        toggleIsPausable(true);
     }
 
     const getTask = document.getElementById("getTask");
@@ -26,6 +27,22 @@ const init = () => {
     getTimeTrackingEntries();
 }
 
+const toggleIsPausable = (status) => {
+    const isPausable = document.getElementById("pauseCurrentTracking");
+    switch (status) {
+        case true:
+            isPausable.classList.add("btn-edit");
+            isPausable.classList.remove("btn-cancel");
+            isPausable.disabled = false;
+            break;
+        case false:
+            isPausable.classList.remove("btn-edit");
+            isPausable.classList.add("btn-cancel");
+            isPausable.disabled = true;
+            break;
+    }
+}
+
 fnNames.click_startStopTime = () => {
     started = !started;
     switch (started) {
@@ -33,12 +50,14 @@ fnNames.click_startStopTime = () => {
             storeTimestamp("startTime");
             document.getElementById("updateStartStopName").innerHTML = "stoppen";
             timeGlobalListener();
+            toggleIsPausable(true);
             break;
         case false:
             const askTask = document.getElementById("askTask");
             askTask.classList.add("flex");
             askTask.classList.remove("hidden");
             document.getElementById("getTask").focus();
+            toggleIsPausable(false);
             break;
     }
 }
@@ -82,6 +101,10 @@ fnNames.click_cancelCurrentTracking = () => {
     localStorage.clear("startTime");
     const startStopChecked = document.getElementById("startStopChecked");
     startStopChecked.checked = false;
+}
+
+fnNames.click_pauseCurrentTracking = () => {
+
 }
 
 fnNames.click_selectEntries = async (e) => {
