@@ -13,38 +13,8 @@ class Login
 
 	public static function handleLogin(): void
 	{
-		if (Tools::get("name") == null || Tools::get("password") == null) {
-			JSONResponseHandler::sendResponse([
-				"status" => "error"
-			]);
-		}
-
-		$loginCredentials = Tools::get("name");
-		$password = Tools::get("password");
-
-		/* check if user exists */
-		$user = DBAccess::selectQuery("SELECT * FROM user WHERE `email` = :email OR `username` = :username LIMIT 1;", [
-			"email" => $loginCredentials,
-			"username" => $loginCredentials
-		]);
-
-		if (empty($user)) {
-			JSONResponseHandler::sendResponse([
-				"status" => "error"
-			]);
-		}
-
-		$user = $user[0];
-
-		/* check password */
-		if (password_verify($password, $user["password"])) {
-			self::login($user["id"]);
-			$device = self::getDeviceKey();
-		} else {
-			JSONResponseHandler::sendResponse([
-				"status" => "error"
-			]);
-		}
+		$user = self::getUser();
+		$device = self::validateUser($user);
 
 		DBAccess::insertQuery("INSERT INTO login_history (`user_id`, `user_login_key_id`, `loginstamp`) VALUES (:id, :uloginkey, :loginstamp)", [
 			"id" => $user["id"],
@@ -63,6 +33,48 @@ class Login
 				"loginKey" => self::getLoginKey($device["deviceId"]),
 			]);
 		}
+	}
+
+	private static function getUser(): array
+	{
+		if (Tools::get("name") == null || Tools::get("password") == null) {
+			JSONResponseHandler::throwError(401, [
+				"status" => "error"
+			]);
+		}
+
+		$loginCredentials = Tools::get("name");
+
+		/* check if user exists */
+		$user = DBAccess::selectQuery("SELECT * FROM user WHERE `email` = :email OR `username` = :username LIMIT 1;", [
+			"email" => $loginCredentials,
+			"username" => $loginCredentials
+		]);
+
+		if (empty($user)) {
+			JSONResponseHandler::throwError(401, [
+				"status" => "error"
+			]);
+		}
+
+		return $user[0];
+	}
+
+	private static function validateUser($user): array
+	{
+		$password = Tools::get("password");
+
+		/* check password */
+		if (password_verify($password, $user["password"])) {
+			self::login($user["id"]);
+			return self::getDeviceKey();
+		} else {
+			JSONResponseHandler::throwError(401, [
+				"status" => "error"
+			]);
+		}
+
+		return [];
 	}
 
 	private static function login($userId): void
@@ -84,7 +96,7 @@ class Login
 	private static function getLoginKey($deviceId): string
 	{
 		if (
-			!Tools::get("setAutoLogin") == null
+			Tools::get("setAutoLogin") == null
 			|| Tools::get("setAutoLogin") == "false"
 		) {
 			return "";
@@ -116,14 +128,15 @@ class Login
 			$userAgent = "unknown";
 		}
 
-		if (
-			Tools::get("deviceKey") !== null
-			&& strlen(Tools::get("deviceKey")) == 32
-		) {
-			return [
-				"deviceKey" => Tools::get("deviceKey"),
-				"deviceId" => self::getDeviceId(Tools::get("deviceKey"))
-			];
+		$deviceKey = Tools::get("deviceKey");
+		if ($deviceKey !== null && strlen($deviceKey) == 32) {
+			$deviceId = self::getDeviceId($deviceKey);
+			if ($deviceId !== 0) {
+				return [
+					"deviceKey" => $deviceKey,
+					"deviceId" => $deviceId,
+				];
+			}
 		}
 
 		$userAgentHash = self::generateDeviceKey($userAgent);
@@ -252,7 +265,7 @@ class Login
 			return false;
 		}
 
-		$deviceId = $data[0]['id'];
+		$deviceId = $data[0]["id"];
 
 		if (
 			$data[0]['browser_agent'] == $userAgent
@@ -260,14 +273,12 @@ class Login
 			&& $data[0]['os'] == $os
 			&& $data[0]['device_type'] == $deviceType
 		) {
-			return false;
-		} else {
 			$loginKey = $_POST["loginKey"];
 			$query = "SELECT * 
 				FROM user_login_key 
 				WHERE login_key = :loginKey 
 					AND user_device_id = :deviceId 
-				ORDER BY id ASC LIMIT 1;";
+				ORDER BY id DESC LIMIT 1;";
 			$data = DBAccess::selectQuery($query, array(
 				'loginKey' => $loginKey,
 				'deviceId' => $deviceId,
@@ -279,6 +290,8 @@ class Login
 				self::login($data[0]["user_id"]);
 				return self::getLoginKey($deviceId);
 			}
+		} else {
+			return false;
 		}
 	}
 

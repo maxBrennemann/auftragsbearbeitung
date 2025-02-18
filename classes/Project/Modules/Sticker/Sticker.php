@@ -343,7 +343,24 @@ class Sticker extends PrestashopConnection
         $query = "INSERT INTO module_sticker_sticker_data (`name`) VALUES (:title)";
         $id = DBAccess::insertQuery($query, ["title" => $title]);
         $aufkleberWandtattoo = new AufkleberWandtattoo($id);
-        $sizes = [100, 200, 300, 600, 900, 1200];
+        $sizes = [
+            20,
+            50,
+            100,
+            150,
+            200,
+            250,
+            300,
+            400,
+            500,
+            600,
+            700,
+            800,
+            900,
+            1000,
+            1100,
+            1200
+        ];
         foreach ($sizes as $size) {
             $price = $aufkleberWandtattoo->getPrice($size, 0, 1);
             $aufkleberWandtattoo->updatePrice($size, 0, $price);

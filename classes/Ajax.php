@@ -85,7 +85,7 @@ class Ajax
 			case "invoice":
 				InvoiceRoutes::handleRequest($path);
 				break;
-			case "login":
+			case "auth":
 				LoginRoutes::handleRequest($path);
 				break;
 			case "notes":
@@ -672,9 +672,6 @@ class Ajax
 					NotificationManager::setNotificationsRead(-1);
 				} else {
 				}
-				break;
-			case "logout":
-				Login::handleLogout();
 				break;
 			case "writeProductDescription":
 				Sticker::setDescription();
