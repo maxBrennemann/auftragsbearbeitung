@@ -34,6 +34,7 @@ $listmaker =		Link::getPageLink("listmaker");
 $changelog = 		Link::getPageLink("changelog");
 $zeiterfassung =	Link::getPageLink("zeiterfassung");
 $motiveOverview = 	Link::getPageLink("sticker-overview");
+$wiki = 			Link::getPageLink("wiki");
 
 $pageTitle = $pageName;
 if ($pageName == "") {
@@ -77,7 +78,8 @@ if ($pageName == "") {
 			|| $page == "kunde" 
 			|| $page == "customer-overview" 
 			|| $page == "offene-rechnungen"
-			|| $page == "zeiterfassung") {
+			|| $page == "zeiterfassung"
+			|| $page == "wiki") {
 			echo '<script type="module" src="' . $link . '"></script>';
 		} else {
 			echo '<script src="' . $link . '"></script>';
@@ -134,6 +136,9 @@ if ($pageName == "") {
 			</li>
 			<li class="hover:underline">
 				<a href="<?=$motiveOverview?>">Motivübersicht</a>
+			</li>
+			<li class="hover:underline">
+				<a href="<?=$wiki?>">Firmenwiki</a>
 			</li>
 			<li class="hover:underline">
 				<a href="<?=$changelog?>">Versionsverlauf</a>
