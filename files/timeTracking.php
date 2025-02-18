@@ -1,3 +1,8 @@
+<?php
+
+use Classes\Project\Icon;
+
+?>
 <div class="w-full">
     <div class="bg-gray-100 rounded-lg p-2">
         <h1>Zeiterfassung</h1>
@@ -8,7 +13,10 @@
                 <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300" id="statusTimeTracking">Zeiterfassung <span id="updateStartStopName">starten</span></span>
             </label>
         </div>
-        <button class="btn-cancel mt-2" data-fun="cancelCurrentTracking" data-binding="true">Abbrechen</button>
+        <div class="inline-flex items-center mt-2">
+            <button class="btn-cancel inline-flex items-center" id="pauseCurrentTracking" data-fun="pauseCurrentTracking" data-binding="true" disabled><?=Icon::getDefault("iconPause")?><span class="ml-1">Pausieren</span></button>
+            <button class="btn-cancel ml-2" data-fun="cancelCurrentTracking" data-binding="true">Abbrechen</button>
+        </div>
     </div>
     <div class="mt-2">
         <div>

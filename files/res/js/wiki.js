@@ -1,14 +1,26 @@
+import { ajax } from "./classes/ajax.js";
+import { initBindings } from "./classes/bindings.js";
 
-function addToDB() {
-    var title = document.getElementById("newTitle").value;
-    var content = document.getElementById("newContent").value;
+const fnNames = {};
 
-    var add = new AjaxCall(`getReason=sendToDB&title=${title}&content=${content}`, "POST", window.location.href);
-    add.makeAjaxCall(function (response) {
-        if (response == "ok") {
-            console.log("data sent to server");
-        } else {
-            console.log(response);
-        }
+const init = () => {
+    initBindings(fnNames);
+}
+
+fnNames.click_addEntry = () => {
+    const title = document.getElementById("newTitle").value;
+    const content = document.getElementById("newContent").value;
+
+    ajax.post(`/api/v1/`, {
+        "title": title,
+        "content": content,
+    });
+}
+
+if (document.readyState !== 'loading') {
+    init();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        init();
     });
 }

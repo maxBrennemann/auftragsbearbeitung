@@ -259,7 +259,9 @@ const addressTable = () => {
 
 const colorTable = () => {
     const options = {
-
+        "conditions": {
+            "auftrag": customerData.id,
+        }
     };
     fetchAndRenderTable("colorTable", "color", options);
 }

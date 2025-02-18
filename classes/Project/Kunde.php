@@ -167,34 +167,6 @@ class Kunde implements StatisticsInterface
 		return $this->telefonMobil;
 	}
 
-	public function getColors()
-	{
-		$query = "SELECT CONCAT(color_name, ' ', short_name, ' ', producer) AS color, Auftragsnummer, hex_value 
-			FROM color, color_auftrag, auftrag 
-			WHERE Kundennummer = :kdnr 
-				AND color.id = color_auftrag.id_color 
-				AND color_auftrag.id_auftrag = Auftragsnummer";
-
-		$data = DBAccess::selectQuery($query, [
-			"kdnr" => $this->kundennummer
-		]);
-
-		foreach ($data as $key => $value) {
-			$data[$key]["hex_value"] = "<div class=\"farbe\" style=\"background-color: #" . $value["hex_value"] . "\"></div>";
-		}
-
-		$column_names = array(
-			0 => array("COLUMN_NAME" => "color"),
-			1 => array("COLUMN_NAME" => "hex_value"),
-			2 => array("COLUMN_NAME" => "Auftragsnummer")
-		);
-
-		$table = new Table();
-		$table->createByData($data, $column_names);
-
-		return $table->getTable();
-	}
-
 	public function getOrderIds(): array
 	{
 		$query = "SELECT Auftragsnummer FROM auftrag WHERE Kundennummer = :kdnr ORDER BY Auftragsnummer DESC";
@@ -422,5 +394,14 @@ class Kunde implements StatisticsInterface
 		}
 
 		return $customers;
+	}
+
+	public static function manageColors()
+	{
+		$query = "SELECT CONCAT(color_name, ' ', short_name, ' ', producer) AS color, Auftragsnummer, hex_value 
+			FROM color, color_auftrag, auftrag 
+			WHERE Kundennummer = :kdnr 
+				AND color.id = color_auftrag.id_color 
+				AND color_auftrag.id_auftrag = Auftragsnummer";
 	}
 }

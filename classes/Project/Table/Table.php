@@ -30,7 +30,7 @@ class Table extends Model
         return true;
     }
 
-    private static function getConditions(): array
+    private static function getConditions($joins = []): array
     {
         $conditions = Tools::get("conditions");
         if ($conditions) {
@@ -42,6 +42,12 @@ class Table extends Model
             }
         } else {
             $conditions = [];
+        }
+
+        foreach ($joins as $key => $value) {
+            if (array_key_exists($key, $conditions)) {
+                unset($conditions[$key]);
+            }
         }
 
         return $conditions;
@@ -70,9 +76,9 @@ class Table extends Model
         $model->columns = $tableConfig["columns"] ?? [];
         $model->fillable = [];
 
-        $conditions = self::getConditions();
-
         $joins = $tableConfig["joins"] ?? [];
+        $conditions = self::getConditions($joins);
+
         foreach ($joins as $key => $join) {
             if (Tools::get($key) !== null) {
                 $value = Tools::get($key);

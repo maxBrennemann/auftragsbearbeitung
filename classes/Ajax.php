@@ -598,11 +598,6 @@ class Ajax
 					"data" => $data
 				]);
 				break;
-			case "sendToDB":
-				$title = $_POST['title'];
-				$content = $_POST['content'];
-				DBAccess::insertQuery("INSERT INTO wiki_articles (title, content) VALUES ('$title', '$content')");
-				break;
 			case "getManual":
 				$pageName = $_POST['pageName'];
 				$intent = $_POST['intent'];

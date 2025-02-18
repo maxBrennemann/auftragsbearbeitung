@@ -7,7 +7,12 @@ use MaxBrennemann\PhpUtilities\Routes;
 class SettingsRoutes extends Routes
 {
 
-    protected static $getRoutes = [];
+    /**
+     * @uses Classes\Project\Icon::ajaxIcon()
+     */
+    protected static $getRoutes = [
+        "/settings/icon/{name}" => [\Classes\Project\Icon::class, "ajaxIcon"],
+    ];
 
     /**
      * @uses Classes\Project\ClientSettings::createBackup()

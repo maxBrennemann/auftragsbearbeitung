@@ -86,6 +86,7 @@ function getTableConfig()
             ],
             "permissions" => ["read", "create", "update", "delete"],
             "hooks" => [
+                "beforeRead" => [],
                 "afterRead" => [\Classes\Project\Color::class, "convertHexToHTML"],
             ],
             "joins" => [
@@ -93,6 +94,11 @@ function getTableConfig()
                     "relatedTable" => "color_auftrag",
                     "localKey" => "id",
                     "foreignKey" => "id_color",
+                ],
+                "auftrag" => [
+                    "relatedTable" => "auftrag",
+                    "localKey" => "Auftragsnummer",
+                    "foreignKey" => "Kundennummer",
                 ],
             ],
         ],
