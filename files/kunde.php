@@ -173,7 +173,7 @@ else:
 	</div>
 	<div id="farben" class="bg-gray-100 col-span-2 p-4 rounded-lg">
 		<h3 class="font-bold">Farben</h3>
-		<div id="colorTable"><?=$customer->getColors()?></div>
+		<div id="colorTable"></div>
 	</div>
 	<div id="auftraege" class="bg-gray-100 col-span-2 p-4 rounded-lg">
 		<h3 class="font-bold">Aufträge</h3>
