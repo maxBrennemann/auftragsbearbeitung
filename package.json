@@ -3,7 +3,7 @@
     "compression-webpack-plugin": "^11.0.0",
     "tailwindcss": "^3.4.1",
     "terser-webpack-plugin": "^5.3.10",
-    "webpack": "^5.90.1",
+    "webpack": "^5.98.0",
     "webpack-cli": "^5.1.4"
   },
   "scripts": {
@@ -13,7 +13,14 @@
   },
   "dependencies": {
     "chart.js": "^4.4.1",
-    "colorpicker": "https://github.com/maxBrennemann/colorpicker.git",
-    "js-classes": "https://github.com/maxBrennemann/js-functions.git"
-  }
+    "colorpicker": "git+https://github.com/maxBrennemann/colorpicker.git",
+    "js-classes": "git+https://github.com/maxBrennemann/js-functions.git"
+  },
+  "name": "auftragsbearbeitung",
+  "description": "The Invoice and Order Management System is a web-based application built using PHP, JavaScript, and HTML. The system allows businesses to manage customer orders, products, pricing, invoices, and customer data.",
+  "version": "1.0.0",
+  "main": "tailwind.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC" 
 }
