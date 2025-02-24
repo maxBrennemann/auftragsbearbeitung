@@ -10,23 +10,21 @@ if (isset($_GET["id"])) {
 }
 
 ?>
-<div class="defCont overrideColorscheme">
+<div class="defCont">
     <span class="search_wrapper">
         <input class="search" type="text" placeholder="Suchen">
         <span id="lupeSpan"><span id="lupe">&#9906;</span></span>
     </span>
+    <?=insertTemplate("files/res/views/searchView.php")?>
 </div>
 <div class="defCont">
-    <span>Titel</span>
-    <br>
-    <input type="text" id="newTitle">
-    <br>
-    <span>Inhalt</span>
-    <br>
-    <textarea id="newContent">
-    </textarea>
-    <br>
-    <button data-fun="addEntry" data-binding="true">Hinzufügen</button>
+    <p>Titel</p>
+    <input type="text" id="newTitle" class="input-primary">
+    <p>Inhalt</p>
+    <textarea id="newContent" class="input-primary"></textarea>
+    <div class="mt-2">
+        <button data-fun="addEntry" data-binding="true" class="btn-primary-new">Hinzufügen</button>
+    </div>
 </div>
 <?php foreach ($eintraege as $eintrag): ?>
     <div class="defCont">
