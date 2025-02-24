@@ -104,7 +104,7 @@ fnNames.click_cancelCurrentTracking = () => {
 }
 
 fnNames.click_pauseCurrentTracking = () => {
-
+    
 }
 
 fnNames.click_selectEntries = async (e) => {
