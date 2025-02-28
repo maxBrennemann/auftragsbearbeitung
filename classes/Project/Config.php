@@ -17,7 +17,7 @@ class Config
      * @param bool $isNullable
      * @return int the id of the setting value
      */
-    public static function add(string $setting, string $defaultValue = null, bool $isBool = false, bool $isNullable = false)
+    public static function add(string $setting, string $defaultValue, bool $isBool = false, bool $isNullable = false)
     {
         $query = "REPLACE INTO `settings` (`title`, `content`, `defaultValue`, `isBool`, `isNullable`) VALUES (:title, :content, :defaultValue, :isBool, :isNullable)";
 
@@ -42,7 +42,7 @@ class Config
      * @param string $title
      * @param string $value
      */
-    public static function set(string $setting, string $value = null)
+    public static function set(string $setting, string $value)
     {
         $query = "UPDATE `settings` SET `content` = CASE
                 WHEN `isNullable` = 1 AND :value IS NULL THEN `defaultValue`
@@ -92,7 +92,7 @@ class Config
      * @param string $title
      * @return string the new value
      */
-    public static function toggle(String $title): String
+    public static function toggle(string $title): string
     {
         $value = self::get($title);
         $value = $value == "true" ? "false" : "true";
