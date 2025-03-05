@@ -23,7 +23,7 @@ class Aufkleber extends AufkleberWandtattoo
 
     private $priceClass;
 
-    function __construct($idSticker)
+    public function __construct($idSticker)
     {
         parent::__construct($idSticker);
         $this->instanceType = "aufkleber";
