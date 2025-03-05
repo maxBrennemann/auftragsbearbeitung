@@ -9,7 +9,7 @@ class Wandtattoo extends AufkleberWandtattoo
 
     private $isWalldecal = false;
 
-    function __construct($idWaldecal)
+    public function __construct($idWaldecal)
     {
         parent::__construct($idWaldecal);
         $this->instanceType = "wandtattoo";
@@ -67,7 +67,11 @@ class Wandtattoo extends AufkleberWandtattoo
 
         $stickerTagManager = new StickerTagManager($this->getId(), $this->getName());
         $stickerTagManager->setProductId($productId);
-        $stickerTagManager->saveTags();
+        try {
+            $stickerTagManager->saveTags();
+        } catch (\Exception $e) {
+            $errorStatus = "Fehler beim Speichern der Tags: " . $e->getMessage();
+        }
 
         $stickerCombination->createCombinations();
 
