@@ -79,7 +79,9 @@ if ($pageName == "") {
 			|| $page == "customer-overview" 
 			|| $page == "offene-rechnungen"
 			|| $page == "zeiterfassung"
-			|| $page == "wiki") {
+			|| $page == "wiki"
+			|| $page == "mitarbeiter"
+			) {
 			echo '<script type="module" src="' . $link . '"></script>';
 		} else {
 			echo '<script src="' . $link . '"></script>';

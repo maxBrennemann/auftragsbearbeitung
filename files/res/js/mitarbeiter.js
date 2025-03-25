@@ -1,17 +1,7 @@
-/* init */
-if (document.readyState !== 'loading' ) {
-   initMitarbeiter();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        initMitarbeiter();
-    });
-}
-
 var newUser;
 
-function initMitarbeiter() {
+function init() {
     const addNewUserBtn = document.getElementById('addNewUserBtn');
-
     if (addNewUserBtn === null) {
         return;
     }
@@ -60,4 +50,12 @@ class NewUser {
             //window.location.reload();
         });
     }
+}
+
+if (document.readyState !== 'loading') {
+    init();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        init();
+    });
 }

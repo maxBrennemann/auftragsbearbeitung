@@ -25,7 +25,7 @@ if ($showUserList) : ?>
                 <input type="password" style="display:none">
                 <label>
                     <p>Nutzername</p>
-                    <input type="text" placeholder="Neuer Benutzername" class="block rounded-sm m-1 ml-0 p-1 w-80" name="somename" autocomplete="off">
+                    <input type="text" placeholder="Neuer Benutzername" class="block rounded-sm m-1 ml-0 p-1 w-80" name="somename" autocomplete="off" aria-autocomplete="none">
                 </label>
                 <label>
                     <p>Vorname</p>
@@ -57,42 +57,48 @@ if ($showUserList) : ?>
         <p class="font-bold">Benutzerdaten</p>
         <label>
             <p>Nutzername</p>
-            <input type="text" value="<?=$user->getUsername()?>" class="block rounded-sm m-1 ml-0 p-1 w-80" id="username">
+            <input type="text" value="<?=$user->getUsername()?>" class="input-primary-new w-80" id="username" autocomplete="off" aria-autocomplete="none">
         </label>
         <label>
             <p>Vorname</p>
-            <input type="text" value="<?=$user->getPrename()?>" class="block rounded-sm m-1 ml-0 p-1 w-80" id="prename">
+            <input type="text" value="<?=$user->getPrename()?>" class="input-primary-new w-80" id="prename" autocomplete="off" aria-autocomplete="none">
         </label>
         <label>
             <p>Nachname</p>
-            <input type="text" value="<?=$user->getLastname()?>" class="block rounded-sm m-1 ml-0 p-1 w-80" id="lastname">
+            <input type="text" value="<?=$user->getLastname()?>" class="input-primary-new w-80" id="lastname" autocomplete="off" aria-autocomplete="none">
         </label>
         <label>
             <p>Email</p>
-            <input type="text" value="<?=$user->getEmail()?>" class="block rounded-sm m-1 ml-0 p-1 w-80" id="email">
+            <input type="text" value="<?=$user->getEmail()?>" class="input-primary-new w-80" id="email" autocomplete="off" aria-autocomplete="none">
         </label>
+        <div class="mt-2">
+            <button class="btn-cancel">Abbrechen</button>
+            <button class="btn-primary-new">Speichern</button>
+        </div>
     </div>
     <div class="defCont">
         <p class="font-bold">Arbeitszeiten</p>
         <div>
             <p>Maximale Arbeitszeit</p>
-            <input type="number" value="" class="block rounded-sm m-1 ml-0 p-1 w-80">
-            <button class="btn-primary">Speichern</button>
+            <input type="number" value="" class="input-primary-new">
+            <button class="btn-primary-new">Speichern</button>
         </div>
     </div>
     <div class="defCont">
         <p class="font-bold">Deine Geräte</p>
         <div>
             <?php foreach ($user->getUserDeviceList() as $device): ?>
-                <div class="bg-white rounded-lg p-4 mt-2 grid grid-cols-3">
-                    <div>
+                <div class="bg-white rounded-lg p-4 mt-2 grid grid-cols-3 hover:bg-gray-50">
+                    <div class="inline-flex items-center pl-5">
                         <?=$user->getDeviceIcon($device["device_type"], $device["os"])?>
                     </div>
-                    <div class="col-span-2">
-                        <p><?=$device["user_device_name"]?></p>
-                        <p><?=$device["browser"]?> auf <?=$device["os"]?></p>
-                        <p>IP-Adresse: <?=$device["ip_address"]?>, letze Verwendung: <?=$device["last_usage"]?></p>
-                        <button class="btn-primary" disabled>Entfernen</button>
+                    <div>
+                        <p class="font-semibold"><?=$device["user_device_name"]?></p>
+                        <p class="font-semibold"><?=$device["browser"]?> auf <?=$device["os"]?></p>
+                        <p>IP-Adresse: <?=$device["ip_address"]?>, letze Verwendung: <?=$device["lastUsage"]?></p>
+                    </div>
+                    <div class="inline-flex items-center justify-center">
+                        <button class="btn-delete">Entfernen</button>
                     </div>
                 </div>
             <?php endforeach; ?>

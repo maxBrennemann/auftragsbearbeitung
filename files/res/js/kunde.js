@@ -1,6 +1,7 @@
-import { addRow, createHeader, createTable, fetchAndRenderTable } from "./classes/table_new.js";
+import { addRow, createHeader, createTable, fetchAndRenderTable, renderTable } from "./classes/table_new.js";
 import { tableConfig } from "./js/tableconfig.js";
 import { initBindings } from "./classes/bindings.js";
+import { ajax } from "./classes/ajax.js";
 
 const globalProperties = {
     changedData: {},
@@ -175,6 +176,12 @@ fnNames.click_createNewOrder = () => {
     linkEl.click();
 }
 
+fnNames.click_deleteCustomer = () => {
+    ajax.delete(`/api/v1/customer/${customerData.id}/`).then(() => {
+        window.location.replace();
+    });
+}
+
 /**
  * changes the archive state to false
  * 
@@ -257,13 +264,18 @@ const addressTable = () => {
     fetchAndRenderTable("addressTable", "address", options);
 }
 
-const colorTable = () => {
+const colorTable = async () => {
+    const data = await ajax.get(`/api/v1/customer/${customerData.id}/colors`);
+    const config = tableConfig["color"];
+    config.columns.unshift({
+        "key": "id_order",
+        "label": "Auftrag",
+    });
     const options = {
-        "conditions": {
-            "auftrag": customerData.id,
-        }
+        "hide": ["id"],
+        "hideOptions": ["all"],
     };
-    fetchAndRenderTable("colorTable", "color", options);
+    renderTable("colorTable", config.columns, data, options);
 }
 
 if (document.readyState !== 'loading' ) {

@@ -242,7 +242,11 @@ export async function makeAsyncCall(type, params, location) {
                 ajaxCall.send(params);
                 break;
             case "GET":
-                ajaxCall.open("GET", `${location}?${params}`, true);
+                if (params == "") {
+					ajaxCall.open("GET", `${location}`, true);
+				} else {
+					ajaxCall.open("GET", `${location}?${params}`, true);
+				}
                 ajaxCall.send();
                 break;
             default:

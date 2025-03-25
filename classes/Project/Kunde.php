@@ -80,6 +80,16 @@ class Kunde implements StatisticsInterface
 		return $this->getName();
 	}
 
+	public function getFrontOfficeName(): string
+	{
+		$name = $this->getAlternativeName();
+		$name = trim($name);
+		if ($name == "") {
+			return "Zum Kunden";
+		}
+		return $name;
+	}
+
 	public function getStrasse(int $id = 0): string
 	{
 		if ($id != 0) {
@@ -396,12 +406,25 @@ class Kunde implements StatisticsInterface
 		return $customers;
 	}
 
-	public static function manageColors()
+	public static function getColors()
 	{
-		$query = "SELECT CONCAT(color_name, ' ', short_name, ' ', producer) AS color, Auftragsnummer, hex_value 
+		$query = "SELECT Auftragsnummer as id_order, color_name, hex_value, short_name, producer
 			FROM color, color_auftrag, auftrag 
 			WHERE Kundennummer = :kdnr 
 				AND color.id = color_auftrag.id_color 
 				AND color_auftrag.id_auftrag = Auftragsnummer";
+		$data = DBAccess::selectQuery($query, [
+			"kdnr" => Tools::get("id"),
+		]);
+
+		$data = Color::convertHex($data);
+		JSONResponseHandler::sendResponse($data);
+	}
+
+	public static function delete()
+	{
+		JSONResponseHandler::throwError(501, [
+			"status" => "not implemented"
+		]);
 	}
 }
