@@ -1244,12 +1244,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "548eeb3f1e313d943712b9fab0dc2e865a5a7bfc"
+                "reference": "ede3437579183972b04c70b3d8fe7f98b403afda"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/548eeb3f1e313d943712b9fab0dc2e865a5a7bfc",
-                "reference": "548eeb3f1e313d943712b9fab0dc2e865a5a7bfc",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/ede3437579183972b04c70b3d8fe7f98b403afda",
+                "reference": "ede3437579183972b04c70b3d8fe7f98b403afda",
                 "shasum": ""
             },
             "require": {
@@ -1340,7 +1340,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-02-03T10:34:40+00:00"
+            "time": "2025-03-24T12:10:21+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
@@ -1465,12 +1465,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "3bb297621f5c78a1e01bb34ce2308344457f45f1"
+                "reference": "914583d4a633b9508b7b115cbdbde90e5a28967b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/3bb297621f5c78a1e01bb34ce2308344457f45f1",
-                "reference": "3bb297621f5c78a1e01bb34ce2308344457f45f1",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/914583d4a633b9508b7b115cbdbde90e5a28967b",
+                "reference": "914583d4a633b9508b7b115cbdbde90e5a28967b",
                 "shasum": ""
             },
             "require": {
@@ -1567,7 +1567,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-01-25T04:27:41+00:00"
+            "time": "2025-03-09T03:15:23+00:00"
         },
         {
             "name": "prestashop/prestashop-webservice-lib",
@@ -2172,12 +2172,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/phinx.git",
-                "reference": "5bad10934336e8cf45d50d529cabfcbe7fe287c5"
+                "reference": "a6fe385da2214db3a3c1edfa96ffb5432467efd5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/phinx/zipball/5bad10934336e8cf45d50d529cabfcbe7fe287c5",
-                "reference": "5bad10934336e8cf45d50d529cabfcbe7fe287c5",
+                "url": "https://api.github.com/repos/cakephp/phinx/zipball/a6fe385da2214db3a3c1edfa96ffb5432467efd5",
+                "reference": "a6fe385da2214db3a3c1edfa96ffb5432467efd5",
                 "shasum": ""
             },
             "require": {
@@ -2250,9 +2250,9 @@
             ],
             "support": {
                 "issues": "https://github.com/cakephp/phinx/issues",
-                "source": "https://github.com/cakephp/phinx/tree/0.16.6"
+                "source": "https://github.com/cakephp/phinx/tree/0.x"
             },
-            "time": "2024-12-20T23:02:54+00:00"
+            "time": "2025-03-01T19:23:55+00:00"
         },
         {
             "name": "symfony/config",
@@ -2260,12 +2260,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "793a0b7331aa48f717c68c4c98e6ef18a1026248"
+                "reference": "ef853519a804c55f8c796d58bacf4a76e2b5dd6b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/793a0b7331aa48f717c68c4c98e6ef18a1026248",
-                "reference": "793a0b7331aa48f717c68c4c98e6ef18a1026248",
+                "url": "https://api.github.com/repos/symfony/config/zipball/ef853519a804c55f8c796d58bacf4a76e2b5dd6b",
+                "reference": "ef853519a804c55f8c796d58bacf4a76e2b5dd6b",
                 "shasum": ""
             },
             "require": {
@@ -2327,7 +2327,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-01-29T08:01:45+00:00"
+            "time": "2025-03-21T17:54:18+00:00"
         },
         {
             "name": "symfony/console",
@@ -2335,12 +2335,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "eec43776d7ed956cbcc4ce92f7331c72fbf02040"
+                "reference": "fcf020598209229f80cb3bbd264669b8b9515b98"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/eec43776d7ed956cbcc4ce92f7331c72fbf02040",
-                "reference": "eec43776d7ed956cbcc4ce92f7331c72fbf02040",
+                "url": "https://api.github.com/repos/symfony/console/zipball/fcf020598209229f80cb3bbd264669b8b9515b98",
+                "reference": "fcf020598209229f80cb3bbd264669b8b9515b98",
                 "shasum": ""
             },
             "require": {
@@ -2421,7 +2421,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-02-06T08:27:43+00:00"
+            "time": "2025-03-24T07:55:24+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -3044,12 +3044,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "a75110076ac661a4a52792b5a1d286d113653a70"
+                "reference": "3093e031b2fbdca117b919d8b5206b41a7009066"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/a75110076ac661a4a52792b5a1d286d113653a70",
-                "reference": "a75110076ac661a4a52792b5a1d286d113653a70",
+                "url": "https://api.github.com/repos/symfony/string/zipball/3093e031b2fbdca117b919d8b5206b41a7009066",
+                "reference": "3093e031b2fbdca117b919d8b5206b41a7009066",
                 "shasum": ""
             },
             "require": {
@@ -3123,7 +3123,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-02-24T14:05:52+00:00"
+            "time": "2025-03-17T19:44:19+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
@@ -3767,12 +3767,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "c93a25350f3e3a4f7c131e6ac2914ea939cdc9b7"
+                "reference": "dc189847bdaff029e45414cff15fb4ae09ce37e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c93a25350f3e3a4f7c131e6ac2914ea939cdc9b7",
-                "reference": "c93a25350f3e3a4f7c131e6ac2914ea939cdc9b7",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/dc189847bdaff029e45414cff15fb4ae09ce37e4",
+                "reference": "dc189847bdaff029e45414cff15fb4ae09ce37e4",
                 "shasum": ""
             },
             "require": {
@@ -3860,7 +3860,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-02-21T06:27:22+00:00"
+            "time": "2025-03-23T08:42:59+00:00"
         },
         {
             "name": "sebastian/cli-parser",

@@ -11,28 +11,38 @@ use Classes\Project\User;
 class Login
 {
 
+	private static int $loginKeyId = 0;
+
+	/**
+	 * manual login via button, writes login into login protocol,
+	 * responds with json
+	 * 
+	 * @return void
+	 */
 	public static function handleLogin(): void
 	{
 		$user = self::getUser();
 		$device = self::validateUser($user);
-
-		DBAccess::insertQuery("INSERT INTO login_history (`user_id`, `user_login_key_id`, `loginstamp`) VALUES (:id, :uloginkey, :loginstamp)", [
-			"id" => $user["id"],
-			"uloginkey" => 0,
-			"loginstamp" => (new \DateTime())->format('Y-m-d H:i:s'),
-		]);
+		$loginKey = "";
 
 		if (!$device) {
 			JSONResponseHandler::sendResponse([
 				"status" => "error"
 			]);
 		} else {
+			$loginKey = self::getLoginKey($device["deviceId"]);
 			JSONResponseHandler::sendResponse([
 				"status" => "success",
 				"deviceKey" => $device["deviceKey"],
-				"loginKey" => self::getLoginKey($device["deviceId"]),
+				"loginKey" => $loginKey,
 			]);
 		}
+
+		DBAccess::insertQuery("INSERT INTO login_history (`user_id`, `user_login_key_id`, `loginstamp`) VALUES (:id, :uloginkey, :loginstamp)", [
+			"id" => $user["id"],
+			"uloginkey" => self::$loginKeyId,
+			"loginstamp" => (new \DateTime())->format('Y-m-d H:i:s'),
+		]);
 	}
 
 	private static function getUser(): array
@@ -60,7 +70,7 @@ class Login
 		return $user[0];
 	}
 
-	private static function validateUser($user): array
+	private static function validateUser($user): ?array
 	{
 		$password = Tools::get("password");
 
@@ -74,7 +84,7 @@ class Login
 			]);
 		}
 
-		return [];
+		return null;
 	}
 
 	private static function login($userId): void
@@ -111,17 +121,18 @@ class Login
 		$loginKey = bin2hex(random_bytes(6));
 
 		/* save login key */
-		DBAccess::insertQuery("INSERT INTO user_login_key (`user_id`, `login_key`, `expiration_date`, `user_device_id`) VALUES (:id, :loginkey, :expiration, :userDeviceId)", [
+		$id = DBAccess::insertQuery("INSERT INTO user_login_key (`user_id`, `login_key`, `expiration_date`, `user_device_id`) VALUES (:id, :loginkey, :expiration, :userDeviceId)", [
 			"id" => User::getCurrentUserId(),
 			"loginkey" => $loginKey,
 			"expiration" => $dateInTwoWeeks,
 			"userDeviceId" => $deviceId
 		]);
+		self::$loginKeyId = $id;
 
 		return $loginKey;
 	}
 
-	private static function getDeviceKey()
+	private static function getDeviceKey(): array
 	{
 		$userAgent = Tools::get("userAgent");
 		if ($userAgent == null) {
@@ -131,6 +142,7 @@ class Login
 		$deviceKey = Tools::get("deviceKey");
 		if ($deviceKey !== null && strlen($deviceKey) == 32) {
 			$deviceId = self::getDeviceId($deviceKey);
+			/* if deviceId is not null, return it */
 			if ($deviceId !== 0) {
 				return [
 					"deviceKey" => $deviceKey,
@@ -165,9 +177,9 @@ class Login
 		$duplicateDevice = self::checkDuplicateDevices($data);
 		if ($duplicateDevice != false) {
 			$userAgentHash = $duplicateDevice["md_hash"];
-		} else {
-			$id = self::saveDeviceKey($userAgentHash, $userAgent, $browser, $os, $deviceType);
 		}
+			
+		$id = self::saveDeviceKey($userAgentHash, $userAgent, $browser, $os, $deviceType);
 
 		return [
 			"deviceKey" => $userAgentHash,
@@ -198,9 +210,15 @@ class Login
 		return $id;
 	}
 
+	/**
+	 * This function only gets used by manual login,
+	 * so if the user agent changes, this can be updated to the database
+	 * @param mixed $deviceKey
+	 * @return int
+	 */
 	private static function getDeviceId($deviceKey): int
 	{
-		$query = "SELECT id FROM user_devices WHERE md_hash = :deviceKey;";
+		$query = "SELECT id, browser_agent FROM user_devices WHERE md_hash = :deviceKey;";
 		$data = DBAccess::selectQuery($query, [
 			"deviceKey" => $deviceKey
 		]);
@@ -209,7 +227,19 @@ class Login
 			return 0;
 		}
 
-		return (int) $data[0]["id"];
+		$userAgent = Tools::get("userAgent");
+		$currentAgent = $data[0]["browser_agent"];
+
+		$id = (int) $data[0]["id"];
+
+		if ($userAgent != $currentAgent) {
+			DBAccess::updateQuery("UPDATE user_devices SET browser_agent = :userAgent WHERE id = :id;", [
+				"userAgent" => $userAgent,
+				"id" => $id,
+			]);
+		}
+
+		return $id;
 	}
 
 	private static function checkDuplicateDevices($list): string
@@ -273,16 +303,17 @@ class Login
 			&& $data[0]['os'] == $os
 			&& $data[0]['device_type'] == $deviceType
 		) {
-			$loginKey = $_POST["loginKey"];
+			$loginKey = Tools::get("loginKey");
 			$query = "SELECT * 
 				FROM user_login_key 
 				WHERE login_key = :loginKey 
 					AND user_device_id = :deviceId 
-				ORDER BY id DESC LIMIT 1;";
-			$data = DBAccess::selectQuery($query, array(
-				'loginKey' => $loginKey,
-				'deviceId' => $deviceId,
-			));
+				ORDER BY id DESC
+				LIMIT 1;";
+			$data = DBAccess::selectQuery($query, [
+				"loginKey" => $loginKey,
+				"deviceId" => $deviceId,
+			]);
 
 			if (count($data) == 0) {
 				return false;
