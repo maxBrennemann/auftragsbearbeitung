@@ -113,7 +113,10 @@ class User
      */
     public function getUserDeviceList()
     {
-        $query = "SELECT device_type, user_device_name, last_usage, ip_address, browser, os FROM user_devices WHERE user_id = :userId";
+        $query = "SELECT device_type, user_device_name, DATE_FORMAT(last_usage, '%d.%m.%Y %H:%i:%s') as lastUsage, ip_address, browser, os 
+            FROM user_devices 
+            WHERE user_id = :userId
+            ORDER BY last_usage DESC";
         $data = DBAccess::selectQuery($query, [
             "userId" => $this->id,
         ]);
@@ -128,38 +131,39 @@ class User
             case "mobile":
                 switch ($os) {
                     case "Android":
-                        $icon = Icon::getDefault("iconAndroid");
+                        $icon = "iconAndroid";
                         break;
                     case "iOS":
-                        $icon = Icon::getDefault("iconApplePhone");
+                        $icon = "iconApplePhone";
                         break;
                     default:
-                        $icon = Icon::getDefault("iconPhone");
+                        $icon = "iconPhone";
                         break;
                 }
                 break;
             case "tablet":
-                $icon = Icon::getDefault("iconTablet");
+                $icon = "iconTablet";
                 break;
             case "desktop":
                 switch ($os) {
                     case "Mac OS":
-                        $icon = Icon::getDefault("iconMac");
+                        $icon = "iconMac";
                         break;
                     case "Linux":
-                        $icon = Icon::getDefault("iconLinux");
+                        $icon = "iconLinux";
                         break;
                     case "Windows":
                     default:
-                        $icon = Icon::getDefault("iconWindows");
+                        $icon = "iconWindows";
                         break;
                 }
                 break;
             default:
-                $icon = Icon::getDefault("iconUnrecognized");
+                $icon = "iconUnrecognized";
                 break;
         }
 
+        $icon = Icon::get($icon, 35, 35, ["inline"]);
         return $icon;
     }
 

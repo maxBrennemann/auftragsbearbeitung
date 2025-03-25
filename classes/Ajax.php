@@ -18,6 +18,7 @@ use Classes\Routes\SearchRoutes;
 use Classes\Routes\SettingsRoutes;
 use Classes\Routes\StickerRoutes;
 use Classes\Routes\TimeTrackingRoutes;
+use Classes\Routes\UserRoutes;
 
 use Classes\Project\FormGenerator;
 use Classes\Project\Search;
@@ -35,9 +36,6 @@ use Classes\Project\Auftragsverlauf;
 use Classes\Project\Angebot;
 use Classes\Project\Leistung;
 use Classes\Project\Address;
-use Classes\Project\Config;
-use Classes\Project\CacheManager;
-use Classes\Project\TimeTracking;
 use Classes\Project\Statistics;
 use Classes\Project\Icon;
 use Classes\Project\User;
@@ -122,6 +120,9 @@ class Ajax
 				break;
 			case "time-tracking":
 				TimeTrackingRoutes::handleRequest($path);
+				break;
+			case "user":
+				UserRoutes::handleRequest($path);
 				break;
 			default:
 				JSONResponseHandler::throwError(404, "Path not found");
