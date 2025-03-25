@@ -24,7 +24,7 @@ else:
 	<div class="mt-2">
 		<button class="btn-primary-new" data-fun="createNewOrder" data-binding="true">Neuen Auftrag erstellen</button>
 		<button class="btn-primary-new" disabled>Kunde zusammenführen</button>
-		<button class="btn-delete" disabled>Kunde löschen</button>
+		<button class="btn-delete" data-fun="deleteCustomer" data-binding="true">Kunde löschen</button>
 	</div>
 </div>
 <div class="mt-4 grid grid-cols-2 gap-4">

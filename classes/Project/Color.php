@@ -61,4 +61,12 @@ class Color
 			$data["results"][$key]["hex_value"] = "<div class=\"farbe\" style=\"background-color: #" . $value["hex_value"] . "\"></div>";
 		}
     }
+
+    public static function convertHex($data)
+    {
+        foreach ($data as $key => $value) {
+			$data[$key]["hex_value"] = "<div class=\"farbe\" style=\"background-color: #" . $value["hex_value"] . "\"></div>";
+		}
+        return $data;
+    }
 }

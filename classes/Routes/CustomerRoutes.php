@@ -9,10 +9,13 @@ class CustomerRoutes extends Routes
 
     /**
      * @uses \Classes\Project\Kunde::getContacts()
+     * @uses \Classes\Project\Kunde::
+     * @uses \Classes\Project\Kunde::getColors()
      */
     protected static $getRoutes = [
         "/customer/{id}/contacts" => [\Classes\Project\Kunde::class, "getContacts"],
         "/customer/{id}/addresses" => [],
+        "/customer/{id}/colors" => [\Classes\Project\Kunde::class, "getColors"],
     ];
 
     /**
@@ -22,8 +25,10 @@ class CustomerRoutes extends Routes
         "/customer" => [\Classes\Project\Kunde::class, "addCustomerAjax"],
     ];
 
-    public static function handleRequest($route)
-    {
-        parent::handleRequest($route);
-    }
+    /**
+     * @uses \Classes\Project\Kunde::delete()
+     */
+    protected static $deleteRoutes = [
+        "/customer/{id}/" => [\Classes\Project\Kunde::class, "delete"],
+    ];
 }
