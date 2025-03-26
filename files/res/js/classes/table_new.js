@@ -64,17 +64,19 @@ export const createHeader = (headers, table, options = {}) => {
         const th = document.createElement("th");
         th.className = "cursor-pointer";
         th.dataset.key = header.key;
+        th.dataset.sort = "none";
 
         const innerSpan = document.createElement("span");
         innerSpan.textContent = header.label;
         innerSpan.className = "inline-flex items-center";
         th.appendChild(innerSpan);
 
-        th.addEventListener("click", () => sortTable(th, header.key, "desc"));
         const sorter = document.createElement("span");
         sorter.className = "inline-flex ml-1";
         sorter.innerHTML = getSortNone();
         innerSpan.appendChild(sorter);
+
+        th.addEventListener("click", () => sortTable(table, th, sorter, options));
 
         row.appendChild(th);
     });
@@ -90,7 +92,7 @@ export const createHeader = (headers, table, options = {}) => {
 
     createPlaceholderRow(count, table);
 
-    if (!options?.hideOptions?.includes("addRow") 
+    if (!options?.hideOptions?.includes("addRow")
         && !options?.hideOptions?.includes("all")) {
         createAddRow(count, headers, table, options);
     }
@@ -112,7 +114,7 @@ const createAddRow = (count, headers, table, options = {}) => {
     const cell = document.createElement("td");
     cell.setAttribute("colspan", count);
     cell.style.textAlign = "center";
-    
+
     const container = document.createElement("div");
     container.className = "inline-flex cursor-pointer";
     container.title = "Neuen Eintrag hinzufügen";
@@ -183,7 +185,7 @@ export const addRow = (data, table, options = {}) => {
         editBtn.title = "Bearbeiten";
         editBtn.className = "inline-flex border-0 bg-green-400 p-1 rounded-md";
         editBtn.addEventListener("click", () => {
-            dispatchActionEvent("rowEdit", data, table, {row});
+            dispatchActionEvent("rowEdit", data, table, { row });
         });
 
         actionsCell.appendChild(editBtn);
@@ -196,7 +198,7 @@ export const addRow = (data, table, options = {}) => {
         deleteBtn.title = "Löschen";
         deleteBtn.className = "inline-flex border-0 bg-red-400 p-1 rounded-md ml-1";
         deleteBtn.addEventListener("click", () => {
-            dispatchActionEvent("rowDelete", data, table, {row});
+            dispatchActionEvent("rowDelete", data, table, { row });
         });
 
         actionsCell.appendChild(deleteBtn);
@@ -209,7 +211,7 @@ export const addRow = (data, table, options = {}) => {
         checkBtn.title = "Erledigt";
         checkBtn.className = "inline-flex border-0 bg-blue-400 p-1 rounded-md ml-1";
         checkBtn.addEventListener("click", () => {
-            dispatchActionEvent("rowCheck", data, table, {row});
+            dispatchActionEvent("rowCheck", data, table, { row });
         });
 
         actionsCell.appendChild(checkBtn);
@@ -269,9 +271,46 @@ const dispatchActionEvent = (actionType, rowData, table, options = {}) => {
     table.dispatchEvent(event);
 }
 
-const clearTable = (table) => {
+const sortTable = (table, th, sorter, options) => {
+    let start = "";
+
+    if (!options?.hideOptions?.includes("addRow")
+        && !options?.hideOptions?.includes("all")) {
+        start = "n+";
+    }
+
+    const index = Array.from(th.parentNode.children).indexOf(th);
+    const rows = table.querySelectorAll(`tr:nth-child(${start}2)`);
     const tbody = table.querySelector("tbody");
     
+    let sort = th.dataset.direction;
+    if (sort == "asc") {
+        th.dataset.direction = "desc";
+        sorter.innerHTML = getSortAsc();
+        sort = false;
+    } else {
+        th.dataset.direction = "asc";
+        sorter.innerHTML = getSortDesc();
+        sort = true;
+    }
+
+    Array.from(rows)
+        .sort(comparer(index, sort))
+        .forEach(tr => {
+            tbody.appendChild(tr)
+        });
+}
+
+const getCellValue = (tr, idx) => {
+    return tr.children[idx].innerText || tr.children[idx].textContent;
+}
+
+const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+    v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2))(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+const clearTable = (table) => {
+    const tbody = table.querySelector("tbody");
+
     const placeholderRow = table.querySelector("tr.empty-placeholder");
     if (placeholderRow) {
         tbody.removeChild(placeholderRow);
@@ -320,15 +359,15 @@ const getSaveBtn = () => {
 
 const getSortAsc = () => {
     return `
-    <svg class="inline" style="width:12px;height:12px" viewBox="0 0 24 24" title="Absteigend sortieren">
-        <path d="M19 7H22L18 3L14 7H17V21H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z" fill="white" />
+    <svg class="inline" style="width:12px;height:12px" viewBox="0 0 24 24" title="Aufsteigend sortieren">
+        <path d="M19 17H22L18 21L14 17H17V3H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z" fill="white" />
     </svg>`;
 }
 
 const getSortDesc = () => {
     return `
-    <svg class="inline" style="width:12px;height:12px" viewBox="0 0 24 24" title="Aufsteigend sortieren">
-        <path d="M19 17H22L18 21L14 17H17V3H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z" fill="white" />
+    <svg class="inline" style="width:12px;height:12px" viewBox="0 0 24 24" title="Absteigend sortieren">
+        <path d="M19 7H22L18 3L14 7H17V21H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z" fill="white" />
     </svg>`;
 }
 
