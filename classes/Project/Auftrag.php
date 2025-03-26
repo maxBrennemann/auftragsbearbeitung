@@ -251,6 +251,9 @@ class Auftrag implements StatisticsInterface
 
 	public function getDeadline()
 	{
+		if ($this->termin == "0000-00-00" || $this->termin == null) {
+			return "";
+		}
 		return $this->termin;
 	}
 

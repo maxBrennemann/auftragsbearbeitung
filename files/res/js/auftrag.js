@@ -19,6 +19,10 @@ window.globalData = {
 const fnNames = {};
 
 function initCode() {
+    if (isNaN(globalData.auftragsId)) {
+        return;
+    }
+
     initBindings(fnNames);
 
     if (document.getElementById("orderFinished")) {

@@ -28,7 +28,7 @@ else:
 	</div>
 </div>
 <div class="mt-4 grid grid-cols-2 gap-4">
-	<div id="showKundendaten" class="bg-gray-100 p-4 rounded-lg">
+	<div id="showKundendaten" class="bg-gray-100 p-4 rounded-lg col-span-2 2xl:col-span-1">
 		<h3 class="font-bold">Kundendaten</h3>
 		<div>
 			<div class="w-full flex flex-col">
@@ -101,7 +101,8 @@ else:
 			</div>
 		</div>
 	</div>
-	<div id="addNewAddress" class="bg-gray-100 p-4 rounded-lg">
+
+	<div id="addNewAddress" class="bg-gray-100 p-4 rounded-lg col-span-2 2xl:col-span-1">
 		<h4 class="font-bold">Aktuelle Adressen</h4>
 		<div id="addressTable"></div>
 		<h4 class="font-bold">Neue Adresse hinzufügen</h4>
