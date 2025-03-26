@@ -1,5 +1,7 @@
 <?php
 
+use function PHPSTORM_META\map;
+
 function getTableConfig()
 {
     return [
@@ -131,6 +133,52 @@ function getTableConfig()
                 "Fahrzeug"
             ],
             "permissions" => ["read", "create", "update", "delete"],
+        ],
+        "module_sticker_sticker_data" => [
+            "columns" => [
+                "id",
+                "category",
+                "name",
+                "is_plotted",
+                "is_short_time",
+                "is_long_time",
+                "is_walldecal",
+                "is_multipart",
+                "is_shirtcollection",
+                "is_colorable",
+                "is_customizable",
+                "is_for_configurator",
+                "price_class",
+                "size_summary",
+                "creation_date",
+                "directory_name",
+                "is_revised",
+                "is_marked",
+                "additional_info",
+                "additional_data",
+            ],
+            "primaryKey" => "id",
+            "names" => [
+                "Nummer",
+                "Kategorie",
+                "geplottet",
+                "Werbeaufkleber",
+                "Hochleistungsfolie",
+                "Wandtattoo",
+                "Textil",
+                "Einfärbbar",
+                "Personalisierbar",
+                "Für Konfigurator",
+                "Preisklasse",
+                "Größen",
+                "Erstelldatum",
+                "Verzeichnis",
+                "Überarbeitet",
+                "Gemerkt",
+                "Zusatzinfo",
+                "Erweiterte Infos",
+            ],
+            "permissions" => [],
         ],
         "user" => [
             "columns" => [

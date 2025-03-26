@@ -62,9 +62,20 @@ export const createHeader = (headers, table, options = {}) => {
         count++;
 
         const th = document.createElement("th");
-        th.textContent = header.label;
+        th.className = "cursor-pointer";
         th.dataset.key = header.key;
-        th.addEventListener("click", () => sortTable(header.key));
+
+        const innerSpan = document.createElement("span");
+        innerSpan.textContent = header.label;
+        innerSpan.className = "inline-flex items-center";
+        th.appendChild(innerSpan);
+
+        th.addEventListener("click", () => sortTable(th, header.key, "desc"));
+        const sorter = document.createElement("span");
+        sorter.className = "inline-flex ml-1";
+        sorter.innerHTML = getSortNone();
+        innerSpan.appendChild(sorter);
+
         row.appendChild(th);
     });
 
@@ -304,5 +315,26 @@ const getSaveBtn = () => {
     return `
     <svg class="inline" style="width:15px;height:15px" viewBox="0 0 24 24" title="Speichern">
         <path class="fill-white" d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z" />
+    </svg>`;
+}
+
+const getSortAsc = () => {
+    return `
+    <svg class="inline" style="width:12px;height:12px" viewBox="0 0 24 24" title="Absteigend sortieren">
+        <path d="M19 7H22L18 3L14 7H17V21H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z" fill="white" />
+    </svg>`;
+}
+
+const getSortDesc = () => {
+    return `
+    <svg class="inline" style="width:12px;height:12px" viewBox="0 0 24 24" title="Aufsteigend sortieren">
+        <path d="M19 17H22L18 21L14 17H17V3H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z" fill="white" />
+    </svg>`;
+}
+
+const getSortNone = () => {
+    return `
+    <svg class="inline" style="width:12px;height:12px" viewBox="0 0 24 24" title="Unsortiert">
+        <path fill="currentColor" d="M18 21L14 17H17V7H14L18 3L22 7H19V17H22M2 19V17H12V19M2 13V11H9V13M2 7V5H6V7H2Z" fill="white" />
     </svg>`;
 }
