@@ -485,7 +485,7 @@ if ($orderId <= 0): ?>
 				</label>
 				<label>
 					<p class="text-sm">Hersteller</p>
-					<input class="colorInput input-primary-new" tyep="text" max="32" placeholder="Oracal">
+					<input class="colorInput input-primary-new" type="text" max="32" placeholder="Oracal">
 				</label>
 				<label class="ml-1">
 					<p class="text-sm">Farbe (Hex)</p>
@@ -544,5 +544,5 @@ if ($orderId <= 0): ?>
 				<button class="btn-attention noteDelete hidden absolute right-0 bottom-4">Löschen</button>
 			</div>
 		</template>
-	<?php endif;
-endif; ?>
+	<?php endif; ?>
+<?php endif; ?>
