@@ -1,6 +1,7 @@
 import { initBindings } from "./classes/bindings.js";
 import { ajax } from "./classes/ajax.js";
 import { getTable } from "./classes/table.js";
+import {} from "./classes/table_new.js";
 import { loadFromLocalStorage, saveToLocalStorage } from "./global.js";
 
 const fnNames = {
