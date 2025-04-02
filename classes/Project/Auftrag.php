@@ -39,7 +39,7 @@ class Auftrag implements StatisticsInterface
 		if ($auftragsnummer > 0) {
 			$this->Auftragsnummer = $auftragsnummer;
 			$data = DBAccess::selectAllByCondition("auftrag", "Auftragsnummer", $auftragsnummer);
-			$data = $data[0];
+			$data = $data[0] ?? [];
 
 			if (!empty($data)) {
 				$this->Auftragsbeschreibung = $data['Auftragsbeschreibung'];
