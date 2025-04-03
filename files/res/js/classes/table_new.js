@@ -72,7 +72,7 @@ export const createHeader = (headers, table, options = {}) => {
         th.appendChild(innerSpan);
 
         const sorter = document.createElement("span");
-        sorter.className = "inline-flex ml-1";
+        sorter.className = "inline-flex ml-1 sorter";
         sorter.innerHTML = getSortNone();
         innerSpan.appendChild(sorter);
 
@@ -297,8 +297,22 @@ const sortTable = (table, th, sorter, options) => {
     Array.from(rows)
         .sort(comparer(index, sort))
         .forEach(tr => {
-            tbody.appendChild(tr)
+            tbody.appendChild(tr);
         });
+
+    const thead = table.querySelector("thead");
+    const ths = thead.querySelectorAll("th");
+    ths.forEach(currentTh => {
+        if (currentTh === th) {
+            return;
+        }
+        currentTh.dataset.direction = "";
+        const sorter = currentTh.querySelector(".sorter") ?? null;
+        if (sorter == null) {
+            return;
+        }
+        sorter.innerHTML = getSortNone();
+    });
 }
 
 const getCellValue = (tr, idx) => {

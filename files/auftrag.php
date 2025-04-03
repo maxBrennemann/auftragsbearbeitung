@@ -34,7 +34,7 @@ try {
 
 if ($orderId <= 0): ?>
 	<p>Kein (gültiger) Auftrag ausgewählt.</p>
-<? else:
+<?php else:
 	$kunde = new Kunde($auftrag->getKundennummer());
 
 	$farbTable = $auftrag->getColors();
