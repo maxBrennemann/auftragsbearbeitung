@@ -256,6 +256,7 @@ const createOrderTypeTable = async () => {
     const options = {
         "hideOptions": ["delete", "check"],
         "primaryKey": config.primaryKey,
+        "autoSort": true,
     };
     createHeader(config.columns, table, options);
 

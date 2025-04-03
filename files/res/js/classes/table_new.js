@@ -1,5 +1,6 @@
 import { tableConfig } from "../tableconfig.js";
 import { ajax } from "./ajax.js";
+import { loadFromLocalStorage, saveToLocalStorage } from "../global.js";
 
 export const renderTable = (containerId, headers, data, options = {}) => {
     const table = createTable(containerId, options);
@@ -75,6 +76,14 @@ export const createHeader = (headers, table, options = {}) => {
         sorter.className = "inline-flex ml-1 sorter";
         sorter.innerHTML = getSortNone();
         innerSpan.appendChild(sorter);
+
+        if (options?.autoSort) {
+            const sort = loadFromLocalStorage(table.parentNode.id);
+            if (sort?.orderBy === th.dataset.key) {
+                th.dataset.direction = sort.order;
+                sorter.innerHTML = sort.order === "asc" ? getSortAsc() : getSortDesc();
+            }
+        }
 
         th.addEventListener("click", () => sortTable(table, th, sorter, options));
 
@@ -283,6 +292,24 @@ const sortTable = (table, th, sorter, options) => {
     const rows = table.querySelectorAll(`tr:nth-child(${start}2)`);
     const tbody = table.querySelector("tbody");
     
+    let sort = getSortDirection(th, sorter);
+
+    Array.from(rows)
+        .sort(comparer(index, sort))
+        .forEach(tr => {
+            tbody.appendChild(tr);
+        });
+
+    resetTableHeaders(table, th);
+    const containerId = table.parentNode.id;
+    const tableOrder = {
+        orderBy: th.dataset.key,
+        order: th.dataset.direction,
+    };
+    saveToLocalStorage(containerId, tableOrder);
+}
+
+const getSortDirection = (th, sorter) => {
     let sort = th.dataset.direction;
     if (sort == "asc") {
         th.dataset.direction = "desc";
@@ -294,12 +321,10 @@ const sortTable = (table, th, sorter, options) => {
         sort = true;
     }
 
-    Array.from(rows)
-        .sort(comparer(index, sort))
-        .forEach(tr => {
-            tbody.appendChild(tr);
-        });
+    return sort;
+}
 
+const resetTableHeaders = (table, th) => {
     const thead = table.querySelector("thead");
     const ths = thead.querySelectorAll("th");
     ths.forEach(currentTh => {
