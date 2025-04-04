@@ -1,8 +1,9 @@
 import { initBindings } from "./classes/bindings.js";
 import { ajax } from "./classes/ajax.js";
 import { getTable } from "./classes/table.js";
-import {} from "./classes/table_new.js";
+import { renderTable } from "./classes/table_new.js";
 import { loadFromLocalStorage, saveToLocalStorage } from "./global.js";
+import { tableConfig } from "./tableconfig.js";
 
 const fnNames = {
     click_createFbExport: click_createFbExport,
@@ -27,7 +28,8 @@ function init() {
         tableOrder.order = tblOrder.order;
     }
 
-    createStickerTable(tableOrder);
+    //createStickerTable(tableOrder);
+    createStickerTable2();
     checkIfOverview();
 
     const newTitle = document.getElementById("newTitle");
@@ -38,6 +40,15 @@ function init() {
 
         createNewSticker();
     });
+}
+
+const createStickerTable2 = async () => {
+    const data = await ajax.get(`/api/v1/sticker/overview`);
+    const config = tableConfig["module_sticker_sticker_data"];
+    const headers = config.columns;
+    const options = {};
+    renderTable("stickerTable", headers, data, options);
+    showStickerStatus();
 }
 
 const createStickerTable = async (tblOrder) => {

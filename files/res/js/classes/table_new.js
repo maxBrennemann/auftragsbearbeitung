@@ -9,6 +9,18 @@ export const renderTable = (containerId, headers, data, options = {}) => {
         addRow(row, table, options);
     });
 
+    if (options?.autoSort) {
+        const sort = loadFromLocalStorage(table.parentNode.id);
+        const th = table.querySelector(`th[data-key="${sort?.orderBy}"]`);
+        const sorter = th.querySelector(".sorter");
+        if (sort?.orderBy === th.dataset.key) {
+            th.dataset.direction = sort.order;
+            sorter.innerHTML = sort.order === "asc" ? getSortAsc() : getSortDesc();
+        }
+
+        sortTable(table, th, sorter, options);
+    }
+
     return table;
 }
 
@@ -76,14 +88,6 @@ export const createHeader = (headers, table, options = {}) => {
         sorter.className = "inline-flex ml-1 sorter";
         sorter.innerHTML = getSortNone();
         innerSpan.appendChild(sorter);
-
-        if (options?.autoSort) {
-            const sort = loadFromLocalStorage(table.parentNode.id);
-            if (sort?.orderBy === th.dataset.key) {
-                th.dataset.direction = sort.order;
-                sorter.innerHTML = sort.order === "asc" ? getSortAsc() : getSortDesc();
-            }
-        }
 
         th.addEventListener("click", () => sortTable(table, th, sorter, options));
 
@@ -180,6 +184,14 @@ export const addRow = (data, table, options = {}) => {
         }
 
         const cell = document.createElement("td");
+
+        if (options?.link) {
+            cell.className = "cursor-pointer";
+            cell.innerHTML = `<a href="${options.link}${data[options.primaryKey]}">${data[key]}</a>`;
+            row.appendChild(cell);
+            return;
+        }
+
         cell.innerHTML = data[key];
 
         row.appendChild(cell);

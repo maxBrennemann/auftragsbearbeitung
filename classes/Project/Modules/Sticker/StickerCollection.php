@@ -340,10 +340,7 @@ class StickerCollection implements \Iterator
                 IF(is_marked = 1, '★', '') AS is_marked
             FROM `module_sticker_sticker_data` ORDER BY $orderBy $order";
         $data = DBAccess::selectQuery($query);
-
-        JSONResponseHandler::sendResponse([
-            "sticker" => $data,
-        ]);
+        JSONResponseHandler::sendResponse($data);
     }
 
     public static function getStickerStates()
