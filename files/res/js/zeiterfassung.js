@@ -1,6 +1,6 @@
 import { ajax } from "./classes/ajax.js";
 import { initBindings } from "./classes/bindings.js";
-import { addRow, clearRows, renderTable } from "./classes/table_new.js";
+import { addRow, clearRows, renderTable } from "./classes/table.js";
 import { timeGlobalListener } from "./classes/timetracking.js";
 
 const fnNames = {};

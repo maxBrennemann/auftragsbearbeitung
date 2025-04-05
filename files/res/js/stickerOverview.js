@@ -1,6 +1,6 @@
 import { initBindings } from "./classes/bindings.js";
 import { ajax } from "./classes/ajax.js";
-import { renderTable } from "./classes/table_new.js";
+import { renderTable } from "./classes/table.js";
 import { tableConfig } from "./tableconfig.js";
 
 const fnNames = {
