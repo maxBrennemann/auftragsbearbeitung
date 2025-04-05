@@ -1,8 +1,6 @@
 import { initBindings } from "./classes/bindings.js";
 import { ajax } from "./classes/ajax.js";
-import { getTable } from "./classes/table.js";
 import { renderTable } from "./classes/table_new.js";
-import { loadFromLocalStorage, saveToLocalStorage } from "./global.js";
 import { tableConfig } from "./tableconfig.js";
 
 const fnNames = {
@@ -14,22 +12,9 @@ const fnNames = {
     click_createNewSticker: createNewSticker,
 };
 
-const tableOrder = {
-    orderBy: "id",
-    order: "asc",
-}
-
 function init() {
     initBindings(fnNames);
-
-    const tblOrder = loadFromLocalStorage("stickerOverviewTableOrder");
-    if (tblOrder) {
-        tableOrder.orderBy = tblOrder.orderBy;
-        tableOrder.order = tblOrder.order;
-    }
-
-    //createStickerTable(tableOrder);
-    createStickerTable2();
+    createStickerTable();
     checkIfOverview();
 
     const newTitle = document.getElementById("newTitle");
@@ -42,91 +27,38 @@ function init() {
     });
 }
 
-const createStickerTable2 = async () => {
+const createStickerTable = async () => {
     const data = await ajax.get(`/api/v1/sticker/overview`);
     const config = tableConfig["module_sticker_sticker_data"];
     const headers = config.columns;
-    const options = {};
+    const options = {
+        "hideOptions": ["all"],
+        "hide": [
+            "category",
+            "is_colorable",
+            "is_customizable",
+            "is_for_configurator",
+            "price_class",
+            "size_summary",
+            "creation_date",
+            "additional_info",
+            "additional_data",
+        ],
+        "styles": {
+            "table": {
+                "className": ["w-full", "table-auto"],
+            },
+            "key": {
+                "directory_name": ["w-96", "overflow-x-hidden", "text-ellipsis"],
+            },
+        },
+        "primaryKey": "id",
+        "autoSort": true,
+        "link": "/sticker?id=",
+    };
     renderTable("stickerTable", headers, data, options);
     showStickerStatus();
 }
-
-const createStickerTable = async (tblOrder) => {
-    const data = await ajax.get(`/api/v1/sticker/overview`, {
-        orderBy: tblOrder.orderBy,
-        order: tblOrder.order,
-    });
-    const tableConfig = {
-        config: [
-            {
-                "name": "id",
-                "title": "Nummer",
-            },
-            {
-                "name": "name",
-                "title": "Name",
-            },
-            {
-                "name": "directory_name",
-                "title": "Verzeichnis",
-                "css": ["w-96", "overflow-x-hidden", "text-ellipsis"],
-            },
-            {
-                "name": "is_plotted",
-                "title": "geplottet",
-            },
-            {
-                "name": "is_short_time",
-                "title": "Werbeaufkleber",
-            },
-            {
-                "name": "is_long_time",
-                "title": "Hochleistungsfolie",
-            },
-            {
-                "name": "is_multipart",
-                "title": "mehrteilig",
-            },
-            {
-                "name": "is_walldecal",
-                "title": "Wandtattoo",
-            },
-            {
-                "name": "is_shirtcollection",
-                "title": "Textil",
-            },
-            {
-                "name": "is_revised",
-                "title": "Überarbeitet",
-            },
-            {
-                "name": "is_marked",
-                "title": "Gemerkt",
-            },
-        ],
-        rows: data.sticker,
-        tableCss: ["w-full", "table-auto"],
-        callback: tblHeaderClicked,
-        link: "/sticker?id=",
-    }
-    const table = getTable(tableConfig);
-    const tableContainer = document.getElementById("stickerTable");
-    tableContainer.innerHTML = "";
-    tableContainer.appendChild(table);
-
-    showStickerStatus();
-}
-
-const tblHeaderClicked = (col) => {
-    if (tableOrder.orderBy === col) {
-        tableOrder.order = tableOrder.order === "asc" ? "desc" : "asc";
-    } else {
-        tableOrder.order = "asc";
-    }
-    tableOrder.orderBy = col;
-    createStickerTable(tableOrder);
-    saveToLocalStorage("stickerOverviewTableOrder", tableOrder);
-};
 
 function click_manageImports() {
     

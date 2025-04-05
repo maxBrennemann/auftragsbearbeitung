@@ -253,7 +253,7 @@ const createOrderTypeTable = async () => {
         "link": "/auftragstyp/",
         "styles": {
             "table": {
-                "className": "w-full",
+                "className": ["w-full"],
             },
         },
     };
@@ -266,7 +266,7 @@ const createWholesalerTable = async () => {
     const table = createTable("wholesalerTypes", {
         "styles": {
             "table": {
-                "className": "w-full",
+                "className": ["w-full"],
             },
         },
     });
@@ -286,7 +286,7 @@ const createUserTable = async () => {
     const table = createTable("userTable", {
         "styles": {
             "table": {
-                "className": "w-full",
+                "className": ["w-full"],
             },
         },
     });

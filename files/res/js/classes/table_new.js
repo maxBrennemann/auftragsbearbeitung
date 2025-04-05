@@ -57,7 +57,8 @@ export const createTable = (containerId, options = {}) => {
     container.appendChild(table);
 
     if (options?.styles?.table?.className) {
-        table.className = options.styles.table.className;
+        const className = options.styles.table.className.join(" ");
+        table.className = className;
     }
 
     return table;
@@ -171,7 +172,6 @@ const createAddRow = (count, headers, table, options = {}) => {
 export const addRow = (data, table, options = {}) => {
     const tbody = table.querySelector("tbody");
     const row = document.createElement("tr");
-
     clearTable(table);
 
     if (Object.keys(data).includes(options?.primaryKey)) {
@@ -183,17 +183,17 @@ export const addRow = (data, table, options = {}) => {
             return;
         }
 
+        const cssClasses = options?.styles?.key?.[key] ?? [];
         const cell = document.createElement("td");
-
         if (options?.link) {
-            cell.className = "cursor-pointer";
+            cssClasses.push("cursor-pointer");
             cell.innerHTML = `<a href="${options.link}${data[options.primaryKey]}">${data[key]}</a>`;
             row.appendChild(cell);
             return;
         }
 
+        cell.className = cssClasses.join(" ");
         cell.innerHTML = data[key];
-
         row.appendChild(cell);
     });
 
