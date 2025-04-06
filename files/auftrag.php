@@ -33,7 +33,10 @@ try {
 }
 
 if ($orderId <= 0): ?>
-	<p>Kein (gültiger) Auftrag ausgewählt.</p>
+	<div class="mt-4 bg-gray-50 p-3 rounded-lg">
+		<p>Kein (gültiger) Auftrag ausgewählt.</p>
+		<?=Auftrag::getOverview();?>
+	</div>
 <?php else:
 	$kunde = new Kunde($auftrag->getKundennummer());
 

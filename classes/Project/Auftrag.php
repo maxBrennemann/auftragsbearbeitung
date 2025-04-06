@@ -985,4 +985,23 @@ class Auftrag implements StatisticsInterface
 			"contactPerson" => $data["Nummer"],
 		]);
 	}
+
+	public static function getOverview()
+	{
+		$query = "SELECT Auftragsnummer FROM auftrag WHERE archiviert != 0 AND Rechnungsnummer = 0;";
+		$data = DBAccess::selectQuery($query);
+
+		foreach ($data as $row) {
+			$order = new Auftrag($row["Auftragsnummer"]);
+			$orders[] = $order->getOrderCardData();
+		}
+
+		ob_start();
+		insertTemplate('files/res/views/orderCardView.php', [
+			"orders" => $orders,
+		]);
+		$content = ob_get_clean();
+
+		return $content;
+	}
 }
