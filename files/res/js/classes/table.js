@@ -9,19 +9,29 @@ export const renderTable = (containerId, headers, data, options = {}) => {
         addRow(row, table, options);
     });
 
-    if (options?.autoSort) {
-        const sort = loadFromLocalStorage(table.parentNode.id);
-        const th = table.querySelector(`th[data-key="${sort?.orderBy}"]`);
-        const sorter = th.querySelector(".sorter");
-        if (sort?.orderBy === th.dataset.key) {
-            th.dataset.direction = sort.order;
-            sorter.innerHTML = sort.order === "asc" ? getSortAsc() : getSortDesc();
-        }
-
-        sortTable(table, th, sorter, options);
-    }
+    autoSortTable(table, options);
 
     return table;
+}
+
+const autoSortTable = (table, options) => {
+    if (!options?.autoSort) {
+        return;
+    }
+
+    const sort = loadFromLocalStorage(table.parentNode.id);
+    const th = table.querySelector(`th[data-key="${sort?.orderBy}"]`);
+    if (th == null) {
+        return;
+    }
+
+    const sorter = th.querySelector(".sorter");
+    if (sort?.orderBy === th.dataset.key) {
+        th.dataset.direction = sort.order;
+        sorter.innerHTML = sort.order === "asc" ? getSortAsc() : getSortDesc();
+    }
+
+    sortTable(table, th, sorter, options);
 }
 
 export const fetchAndRenderTable = async (containerId, tableName, options = {}) => {
