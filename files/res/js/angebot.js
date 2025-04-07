@@ -1,10 +1,17 @@
+import { initBindings } from "./classes/bindings.js";
+
+const functionNames = {};
+
+const init = () => {
+    initBindings(functionNames);
+}
 
 var globalData = {
     aufschlag: 0,
     vehicleId: 0
 }
 
-function neuesAngebot() {
+functionNames.click_newOffer = () => {
     var customerId = document.getElementById("kdnr").value;
     var loadHTMLTemplate = new AjaxCall(`getReason=loadTemplateOrder&customerId=${customerId}`);
     loadHTMLTemplate.makeAjaxCall(function (customerData) {
@@ -145,4 +152,12 @@ function storeOffer() {
     storeOffer.makeAjaxCall(function (response, args) {
         window.location.href = (document.getElementById("home_link").href) + "neuer-auftrag?kdnr=" + args[0];
     }, customerId);
+}
+
+if (document.readyState !== 'loading' ) {
+    init();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        init();
+    });
 }

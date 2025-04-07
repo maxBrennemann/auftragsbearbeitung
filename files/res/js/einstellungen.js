@@ -250,7 +250,6 @@ const createOrderTypeTable = async () => {
         "hideOptions": ["delete", "check"],
         "primaryKey": config.primaryKey,
         "autoSort": true,
-        "link": "/auftragstyp/",
         "styles": {
             "table": {
                 "className": ["w-full"],
@@ -283,23 +282,24 @@ const createWholesalerTable = async () => {
 }
 
 const createUserTable = async () => {
-    const table = createTable("userTable", {
+    const options = {
         "styles": {
             "table": {
                 "className": ["w-full"],
             },
         },
-    });
-    const config = tableConfig["user"];
-    const columnConfig = {
+        "primaryKey": "id",
         "hideOptions": ["all"],
+        "link": "/mitarbeiter?id=",
     };
-    createHeader(config.columns, table, columnConfig);
+
+    const table = createTable("userTable", options);
+    const config = tableConfig["user"];
+    createHeader(config.columns, table, options);
 
     const data = await ajax.get(`/api/v1/tables/user`);
-
     data.forEach(row => {
-        addRow(row, table, columnConfig);
+        addRow(row, table, options);
     });
 }
 

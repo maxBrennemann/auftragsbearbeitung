@@ -1,11 +1,15 @@
 <?php
 
+namespace Project\Modules\Pdf;
+
+use TCPDF;
+
 class PDFGenerator extends TCPDF
 {
 
-    private String $title;
+    protected string $title;
 
-    function __construct(String $title)
+    public function __construct(string $title)
     {
         $this->title = $title;
     }

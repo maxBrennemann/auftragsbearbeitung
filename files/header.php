@@ -67,6 +67,7 @@ if ($pageName == "") {
 		/* TODO: workaround mit module und if check muss noch geändert werden */
 		if ($page == "sticker" 
 			|| $page == "auftrag" 
+			|| $page == "angebot"
 			|| $page == "diagramme" 
 			|| $page == "login" 
 			|| $page == "neues-produkt" 
