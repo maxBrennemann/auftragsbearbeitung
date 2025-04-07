@@ -161,10 +161,12 @@ function getTableConfig()
             "names" => [
                 "Nummer",
                 "Kategorie",
+                "Name",
                 "geplottet",
                 "Werbeaufkleber",
                 "Hochleistungsfolie",
                 "Wandtattoo",
+                "Mehrteilig",
                 "Textil",
                 "Einfärbbar",
                 "Personalisierbar",

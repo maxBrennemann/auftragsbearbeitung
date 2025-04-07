@@ -2,11 +2,11 @@ import { tableConfig } from "../tableconfig.js";
 import { ajax } from "./ajax.js";
 import { loadFromLocalStorage, saveToLocalStorage } from "../global.js";
 
-export const renderTable = (containerId, headers, data, options = {}) => {
+export const renderTable = (containerId, header, data, options = {}) => {
     const table = createTable(containerId, options);
-    createHeader(headers, table, options);
+    createHeader(header, table, options);
     data.forEach(row => {
-        addRow(row, table, options);
+        addRow(row, table, options, header);
     });
 
     autoSortTable(table, options);
@@ -74,12 +74,12 @@ export const createTable = (containerId, options = {}) => {
     return table;
 }
 
-export const createHeader = (headers, table, options = {}) => {
+export const createHeader = (header, table, options = {}) => {
     const thead = table.querySelector("thead");
     const row = document.createElement("tr");
 
     let count = 0;
-    headers.forEach(header => {
+    header.forEach(header => {
         if (options?.hide?.includes(header.key)) {
             return;
         }
@@ -118,7 +118,7 @@ export const createHeader = (headers, table, options = {}) => {
 
     if (!options?.hideOptions?.includes("addRow")
         && !options?.hideOptions?.includes("all")) {
-        createAddRow(count, headers, table, options);
+        createAddRow(count, header, table, options);
     }
 }
 
@@ -133,7 +133,7 @@ const createPlaceholderRow = (count, table) => {
     table.querySelector("tbody").appendChild(row);
 }
 
-const createAddRow = (count, headers, table, options = {}) => {
+const createAddRow = (count, header, table, options = {}) => {
     const row = document.createElement("tr");
     const cell = document.createElement("td");
     cell.setAttribute("colspan", count);
@@ -161,7 +161,7 @@ const createAddRow = (count, headers, table, options = {}) => {
             case "add":
                 btnSpan.innerHTML = getSaveBtn();
                 text.textContent = "Speichern";
-                addEditableRow(headers, table, options);
+                addEditableRow(header, table, options);
                 btn.dataset.status = "save";
                 break;
             case "save":
@@ -179,7 +179,7 @@ const createAddRow = (count, headers, table, options = {}) => {
     table.querySelector("tbody").appendChild(row);
 }
 
-export const addRow = (data, table, options = {}) => {
+export const addRow = (data, table, options = {}, header = {}) => {
     const tbody = table.querySelector("tbody");
     const row = document.createElement("tr");
     clearTable(table);
@@ -188,7 +188,8 @@ export const addRow = (data, table, options = {}) => {
         row.dataset.id = data[options?.primaryKey];
     }
 
-    Object.keys(data).forEach(key => {
+    const orderedKeys = header.length > 0 ? header.map(h => h.key) : Object.keys(data);
+    orderedKeys.forEach(key => {
         if (options?.hide?.includes(key)) {
             return;
         }
@@ -303,21 +304,17 @@ const dispatchActionEvent = (actionType, rowData, table, options = {}) => {
 }
 
 const sortTable = (table, th, sorter, options) => {
-    let start = "";
-
-    if (!options?.hideOptions?.includes("addRow")
-        && !options?.hideOptions?.includes("all")) {
-        start = "n+";
-    }
+    const skipFirstRow = !options?.hideOptions?.includes("addRow")
+    && !options?.hideOptions?.includes("all");
 
     const index = Array.from(th.parentNode.children).indexOf(th);
-    const rows = table.querySelectorAll(`tr:nth-child(${start}2)`);
+    const rows = table.querySelectorAll(skipFirstRow ? "tbody tr:nth-child(n+2)" : "tbody tr");
     const tbody = table.querySelector("tbody");
     
     let sort = getSortDirection(th, sorter);
 
     Array.from(rows)
-        .sort(comparer(index, sort))
+        .sort(comparer(index, sort, options?.link? false : true))
         .forEach(tr => {
             tbody.appendChild(tr);
         });
@@ -343,6 +340,7 @@ const getSortDirection = (th, sorter) => {
         sort = true;
     }
 
+    th.classList.add("bg-sky-800");
     return sort;
 }
 
@@ -358,16 +356,23 @@ const resetTableHeaders = (table, th) => {
         if (sorter == null) {
             return;
         }
+        currentTh.classList.remove("bg-sky-800");
         sorter.innerHTML = getSortNone();
     });
 }
 
-const getCellValue = (tr, idx) => {
+const getCellValue = (tr, idx, isLink) => {
+    if (isLink) {
+        const a = tr.children[idx].querySelector("a");
+        if (a != null) {
+            return a.innerText || a.textContent;
+        }
+    }
     return tr.children[idx].innerText || tr.children[idx].textContent;
 }
 
-const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
-    v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2))(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+const comparer = (idx, asc, isLink) => (a, b) => ((v1, v2) =>
+    v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2))(getCellValue(asc ? a : b, idx, isLink), getCellValue(asc ? b : a, idx, isLink));
 
 const clearTable = (table) => {
     const tbody = table.querySelector("tbody");
