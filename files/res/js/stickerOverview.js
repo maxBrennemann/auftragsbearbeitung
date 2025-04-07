@@ -3,19 +3,11 @@ import { ajax } from "./classes/ajax.js";
 import { renderTable } from "./classes/table.js";
 import { tableConfig } from "./tableconfig.js";
 
-const fnNames = {
-    click_createFbExport: click_createFbExport,
-    click_openTagOverview: openTagOverview,
-    click_manageImports: click_manageImports,
-    click_crawlAll: crawlAll,
-    click_crawlTags: crawlTags,
-    click_createNewSticker: createNewSticker,
-};
+const fnNames = {};
 
-function init() {
+const init = () => {
     initBindings(fnNames);
     createStickerTable();
-    checkIfOverview();
 
     const newTitle = document.getElementById("newTitle");
     newTitle.addEventListener("keyup", function (event) {
@@ -23,7 +15,7 @@ function init() {
             return;
         }
 
-        createNewSticker();
+        fnNames.click_createNewSticker();
     });
 }
 
@@ -58,42 +50,34 @@ const createStickerTable = async () => {
     };
     renderTable("stickerTable", headers, data, options);
     showStickerStatus();
+    stickHeader();
 }
 
-function click_manageImports() {
-    
-}
+fnNames.click_manageImports = () => { }
 
-/**
- * makes the table for the sticker-overview page sticky
- */
-function checkIfOverview() {
-    let overviewTable = document.querySelector('[data-type="module_sticker_sticker_data"]');
-    if (overviewTable != null) {
-        let trElem = document.getElementsByClassName("tableHead");
-        for (let i = 0; i < trElem.length; i++) {
-            let tr = trElem[i];
-            tr.style.position = "sticky";
-            tr.style.top = 0;
-        }
+const stickHeader = () => {
+    const overviewTable = document.querySelector("#stickerTable table");
+    if (overviewTable == null) {
+        return;
     }
-}
-
-function crawlAll() {
-    ajax.post({
-        r: "crawlAll",
+    
+    const trElem = overviewTable.querySelectorAll("th");
+    Array.from(trElem).forEach(th => {
+        th.classList.add("sticky", "top-0");
     });
 }
 
-function crawlTags() {
-    ajax.post({
-        r: "crawlTags",
-    }).then(r => {
+fnNames.click_crawlAll = () => {
+    ajax.post(`/api/v1/sticker/crawl/all`);
+}
+
+fnNames.click_crawlTags = () => {
+    ajax.post(`/api/v1/sticker/tags/crawl`).then(r => {
         console.log("ready");
     });
 }
 
-function showStickerStatus() {
+const showStickerStatus = () => {
     const overviewTable = document.getElementById("stickerTable").querySelector("tbody");
 
     ajax.get("/api/v1/sticker/states").then(data => {
@@ -117,12 +101,12 @@ function showStickerStatus() {
     });
 }
 
-async function createNewSticker() {
-    var title = document.getElementById("newTitle").value;
+fnNames.click_createNewSticker = async () => {
+    const title = document.getElementById("newTitle").value;
     if (title.length == 0) {
         return;
     }
-    
+
     ajax.post("/api/v1/sticker", {
         "name": title,
     }).then(r => {
@@ -132,10 +116,8 @@ async function createNewSticker() {
     });
 }
 
-function click_createFbExport() {
-    ajax.post({
-        "r": "createFbExport",
-    }).then(fbExport => {
+fnNames.click_createFbExport = () => {
+    ajax.post(`/api/v1/sticker/export/facebook`).then(fbExport => {
         if (fbExport.status !== "successful") {
             return;
         }
@@ -153,11 +135,8 @@ function click_createFbExport() {
     });
 }
 
-function openTagOverview() {
-    ajax.post({
-        r: "getTagOverview",
-    }).then(r => {
-        const tags = r.tags;
+fnNames.click_openTagOverview = () => {
+    ajax.get(`/api/v1/sticker/tags/overview`).then(tags => {
         const div = document.createElement("div");
         div.classList.add("absolute", "bg-white", "border", "border-black", "p-2", "rounded-lg", "shadow-lg", "z-20");
         document.body.appendChild(div);
@@ -173,7 +152,7 @@ function openTagOverview() {
     });
 }
 
-if (document.readyState !== 'loading' ) {
+if (document.readyState !== 'loading') {
     init();
 } else {
     document.addEventListener('DOMContentLoaded', function () {

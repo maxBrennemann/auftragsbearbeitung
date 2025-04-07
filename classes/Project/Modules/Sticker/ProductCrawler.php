@@ -243,4 +243,10 @@ class ProductCrawler extends PrestashopConnection
             ]);
         }
     }
+
+    public static function crawl()
+    {
+        $pc = new ProductCrawler();
+        $pc->crawlAll();
+    }
 }

@@ -3,7 +3,9 @@
 namespace Classes\Project\Modules\Sticker\Exports;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
+use Classes\Link;
 use Classes\Project\Modules\Sticker\Aufkleber;
 use Classes\Project\Modules\Sticker\Wandtattoo;
 use Classes\Project\Modules\Sticker\Textil;
@@ -273,5 +275,19 @@ class ExportFacebook extends PrestashopConnection
         } catch (\PrestaShopWebserviceException $e) {
             echo 'Error:' . $e->getMessage();
         }
+    }
+
+    public static function createExport()
+    {
+        $export = new ExportFacebook();
+        $export->generateCSV();
+        $filename = $export->getFilename();
+        $fileLink = Link::getResourcesLink("files/generated/fb_export/" . $filename, "html");
+
+        JSONResponseHandler::sendResponse([
+            "status" => "successful",
+            "file" => $fileLink,
+            "errorList" => "", //$errorList,
+        ]);
     }
 }

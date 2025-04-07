@@ -1,12 +1,17 @@
 <div class="grid grid-cols-3">
     <div class="defCont">
-        <h1 class="font-bold">Import/ Export</h1>
+        <h1 class="font-semibold">Import/ Export</h1>
         <div class="defCont hidden">
-            <p class="font-bold">Motivexporte</p>
-            <button id="createFbExport" data-binding="true" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Facebook Export generieren</button>
+            <p class="font-semibold">Motivexporte</p>
+            <button id="createFbExport" data-binding="true" class="btn-primary-new">Facebook Export generieren</button>
         </div>
         <div class="productLoader" id="crawlAll">
-            <div class="lds-ring" id="loaderCrawlAll"><div></div><div></div><div></div><div></div></div>
+            <div class="lds-ring" id="loaderCrawlAll">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
             <div>
                 <progress max="1000" value="0" id="productProgress"></progress>
                 <p><span id="currentProgress"></span> von <span id="maxProgress"></span></p>
@@ -17,34 +22,36 @@
         <br>
         <a href="#" class="link-primary" data-binding="true" data-fun="crawlTags">Alle Tags vom Shop crawlen</a>
         <br>
-        <button class="btn-primary" data-binding="true" data-fun="manageImports">Importe verwalten</button>
+        <button class="btn-primary-new" data-binding="true" data-fun="manageImports">Importe verwalten</button>
     </div>
     <div class="defCont">
-        <h1 class="font-bold">Übersichten</h1>
-        <div>
-            <p><button class="showBox" id="yellow"></button> Diese Motivvariante ist im Shop, aber die Daten aus der Auftragsbearbeitung wurde nicht hochgeladen</p>
+        <h1 class="font-semibold">Übersichten</h1>
+        <div class="inline-flex gap-2 items-center bg-white rounded-md p-2">
+            <button class="align-middle w-24 border-0 flex-none h-10" id="yellow"></button>
+            <p>Diese Motivvariante ist im Shop, aber die Daten aus der Auftragsbearbeitung wurde nicht hochgeladen</p>
+        </div>
+        <div class="mt-3 inline-flex gap-2 items-center bg-white rounded-md p-2">
+            <button class="align-middle w-24 border-0 flex-none h-10" id="green"></button>
+            <p>Diese Motivvariante ist im Shop und aktuell</p>
         </div>
         <div>
-            <p><button class="showBox" id="green"></button> Diese Motivvariante ist im Shop und aktuell</p>
+            <a href="<?= Classes\Link::getPageLink("sticker-images") ?>" class="link-primary">Zur Bildübersicht</a>
         </div>
         <div>
-            <a href="<?=Classes\Link::getPageLink("sticker-images")?>" class="link-primary">Zur Bildübersicht</a>
-        </div>
-        <div>
-            <button class="btn-primary" data-binding="true" data-fun="openTagOverview">Zur Tagübersicht</button>
+            <button class="btn-primary-new" data-binding="true" data-fun="openTagOverview">Zur Tagübersicht</button>
         </div>
     </div>
     <div class="defCont">
-        <h1 class="font-bold">Neues Motiv hinzufügen</h1>
+        <h1 class="font-semibold">Neues Motiv hinzufügen</h1>
         <div class="flex flex-wrap">
-            <input type="text" id="newTitle" class="px-4 py-2 m-1 text-sm text-slate-600 rounded-lg">
-            <button type="submit" data-binding="true" data-fun="createNewSticker" class="btn-primary">Hinzufügen</button>
+            <input type="text" id="newTitle" class="input-primary-new">
+            <button type="submit" data-binding="true" data-fun="createNewSticker" class="btn-primary-new ml-2">Hinzufügen</button>
         </div>
-        <h1 class="font-bold">Altes Motiv aus Shop laden</h1>
+        <h1 class="font-semibold">Altes Motiv aus Shop laden</h1>
         <div class="flex flex-wrap">
-            <input type="text" id="oldLink" class="px-4 py-2 m-1 text-sm text-slate-600 rounded-lg">
-            <button type="submit" data-binding="true" data-fun="loadSticker" class="btn-primary">Laden</button>
+            <input type="text" id="oldLink" class="input-primary-new">
+            <button type="submit" data-binding="true" data-fun="loadSticker" class="btn-primary-new ml-2">Laden</button>
         </div>
     </div>
 </div>
-<div class="w-full overflow-x-scroll h-dvh overflow-y-scroll" id="stickerTable"></div>
+<div class="w-full overflow-x-scroll h-dvh overflow-y-scroll mt-2" id="stickerTable"></div>
