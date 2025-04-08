@@ -6,35 +6,19 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
-/*
-* Status bei Angeboten:
-* 0 -- offen
-* 1 -- übernommen
-* 2 -- gelöscht
-*/
-
-/*
- * session variable structure:
- * offer_id is the number of the current offer
- * offer_x_pc is the pattern for the posten counter for offer x
- * offer_x_y is the pattern for a specific posten for offer x 
- * offer_is_order is the boolean for whether an offer is created or not
- * offer_order is the order id
-*/
-
 class Angebot
 {
 
     private $customerId = 0;
     private $customer = null;
-    private $angebotsnr = 0;
+    private $offerId = 0;
 
     private $leistungen = null;
     private $fahrzeuge = null;
 
     private $posten = [];
 
-    public function __construct(int $customerId)
+    public function __construct(int $offerId, int $customerId)
     {
         try {
             $this->customer = new Kunde($customerId);
@@ -42,9 +26,20 @@ class Angebot
             throw new \Exception("Kunde nicht gefunden");
         }
         
+        $this->offerId = $offerId;
         $this->customerId = $customerId;
         $this->leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
         $this->fahrzeuge = Fahrzeug::getSelection($customerId);
+    }
+
+    public static function createNewOffer(int $customerId): Angebot
+    {
+        $query = "INSERT INTO angebot (id_customer, `status`, creation_date) VALUES (:idCustomer, 'open', NOW())";
+        $idOffer = DBAccess::insertQuery($query, [
+            "idCustomer" => $customerId,
+        ]);
+
+        return new Angebot($idOffer, $customerId);
     }
 
     public function PDFgenerieren($store = false)
@@ -91,7 +86,7 @@ class Angebot
 
         /* generates a pdf when offer is converted to an order */
         if ($store == true) {
-            $filename = "{$this->customer->getKundennummer()}_{$this->angebotsnr}.pdf";
+            $filename = "{$this->customer->getKundennummer()}_{$this->offerId}.pdf";
             $filelocation = "C:\\xampp\htdocs\\auftragsbearbeitung\\files\\generated\\offer";
             $fileNL = $filelocation . "\\" . $filename;
             $pdf->Output($fileNL, 'F');
@@ -128,7 +123,7 @@ class Angebot
 
     public function getId()
     {
-        return $this->angebotsnr;
+        return $this->offerId;
     }
 
     private function loadPosten()
@@ -181,7 +176,7 @@ class Angebot
     /* function is called from createOrder page only if offer session data is available */
     public function storeOffer($orderId)
     {
-        $this->angebotsnr = DBAccess::insertQuery("INSERT INTO angebot (kdnr, `status`) VALUES ({$this->customerId}, 0)");
+        $this->offerId = DBAccess::insertQuery("INSERT INTO angebot (kdnr, `status`) VALUES ({$this->customerId}, 0)");
         $this->loadPosten();
         if ($this->posten != null) {
             foreach ($this->posten as $p) {
@@ -191,27 +186,6 @@ class Angebot
 
         $this->deleteOldSessionData();
         $this->PDFgenerieren(true);
-    }
-
-    public function loadCachedPosten()
-    {
-        $this->loadPosten();
-        if ($this->posten != null) {
-            foreach ($this->posten as $p) {
-                if ($p instanceof Zeit) {
-                    echo "Zeit: {$p->getQuantity()} min, Stundenlohn: {$p->getWage()}€ für {$p->getDescription()}";
-                    if ($p->getOhneBerechnung()) {
-                        echo ", wird nicht berechnet";
-                    }
-                } else if ($p instanceof Leistung) {
-                    echo "Leistung: {$p->getQuantity()}, Preis {$p->bekommeEinzelPreis()}€ EK Preis {$p->bekommeEKPreis()} für {$p->getDescription()}";
-                    if ($p->getOhneBerechnung()) {
-                        echo ", wird nicht berechnet";
-                    }
-                }
-                echo "<br>";
-            }
-        }
     }
 
     public function loadAngebot() {}
@@ -226,12 +200,12 @@ class Angebot
             return;
         }
 
-        $offer = new Angebot($customerId);
-        $content = TemplateController::getTemplate("angebot", [
+        $offer = self::createNewOffer($customerId);
+        $content = TemplateController::getTemplate("offer", [
             "offer" => $offer,
             "customer" => $offer->customer,
             "vehicles" => $offer->fahrzeuge,
-            "offerId" => $customerId,
+            "customerId" => $customerId,
         ]);
 
         JSONResponseHandler::sendResponse([

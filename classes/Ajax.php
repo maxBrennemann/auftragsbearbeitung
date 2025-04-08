@@ -484,11 +484,6 @@ class Ajax
 				$auftrag = new Auftrag($auftrag);
 				$auftrag->rearchiveOrder();
 				break;
-			case 'loadCachedPosten':
-				$customerId = $_POST['customerId'];
-				$angebot = new Angebot($customerId);
-				echo $angebot->loadCachedPosten();
-				break;
 			case "getAddresses":
 				$kdnr = (int) $_POST['kdnr'];
 				echo json_encode(Address::loadAllAddresses($kdnr));

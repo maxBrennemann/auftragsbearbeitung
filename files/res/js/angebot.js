@@ -27,15 +27,8 @@ functionNames.click_newOffer = () => {
     });
 }
 
-const loadItems = (offerId) => {
-    ajax.get(`/api/v1/order-items/offer/${offerId}/all`).then(r => {});
-
-    var customerId = document.getElementById("kdnr").value;
-    var loadCache = new AjaxCall(`getReason=loadCachedPosten&customerId=${customerId}`);
-    loadCache.makeAjaxCall(function (data) {
-        console.log(data);
-        document.getElementById("allePosten").innerHTML += data;
-    });
+const loadItems = async (offerId) => {
+    const items = await ajax.get(`/api/v1/order-items/offer/${offerId}/all`).then(r => {});
 }
 
 function getSelections() {

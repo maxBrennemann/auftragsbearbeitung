@@ -21,12 +21,12 @@ $customer = new Kunde($customerId);
 </div>
 
 <div class="defCont postenadd" id="newPosten">
-    <select id="selectPosten">
+    <select id="selectPosten" class="input-primary-new">
         <option value="zeit">Zeit</option>
         <option value="leistung">Leistung</option>
         <option value="produkt">Produkt</option>
     </select>
-    <button onclick="getSelections()">Posten hinzufügen</button>
+    <button onclick="getSelections()" class="btn-primary-new">Posten hinzufügen</button>
     <div id="addPosten">
         <div id="addPostenZeit" style="display: none">
             <span><input id="time" type="number" min="0">Zeit in Minuten</span><br>
@@ -70,7 +70,7 @@ $customer = new Kunde($customerId);
     <p>Text hinzufügen</p>
     <textarea>Hier Fließtext eingeben</textarea>
 </div>
-<button onclick="showOffer();">Angebot anzeigen</button>
-<button onclick="storeOffer();">Angebot abschließen</button>
+<button onclick="showOffer();" class="btn-primary-new">Angebot anzeigen</button>
+<button onclick="storeOffer();" class="btn-primary-new">Angebot abschließen</button>
 <br>
 <iframe src="<?= Link::getPageLink('pdf') . "?type=angebot" ?>" id="showOffer"></iframe>
