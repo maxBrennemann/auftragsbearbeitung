@@ -3,7 +3,8 @@
 namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
-use Classes\Link;
+use MaxBrennemann\PhpUtilities\Tools;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 /*
 * Status bei Angeboten:
@@ -24,36 +25,26 @@ use Classes\Link;
 class Angebot
 {
 
-    private $kdnr = 0;
-    private $kunde = null;
+    private $customerId = 0;
+    private $customer = null;
     private $angebotsnr = 0;
 
     private $leistungen = null;
     private $fahrzeuge = null;
 
-    private $posten = array();
+    private $posten = [];
 
-    function __construct($cid = null)
+    public function __construct(int $customerId)
     {
-        if (isset($_SESSION['offer_id'])) {
-            $offerId = $_SESSION['offer_id'];
-        } else {
-            $offerId = -1;
+        try {
+            $this->customer = new Kunde($customerId);
+        } catch (\Exception $e) {
+            throw new \Exception("Kunde nicht gefunden");
         }
-
-        if ($cid == null && $offerId == -1) {
-            throw new \Exception("cannot fetch any data");
-        } else if ($cid == null) {
-            $cid = $offerId;
-        } else if ($cid != $offerId) {
-            $this->deleteOldSessionData();
-            $_SESSION['offer_id'] = $cid;
-        }
-
-        $this->kdnr = $cid;
-        $this->kunde = new Kunde($cid);
+        
+        $this->customerId = $customerId;
         $this->leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
-        $this->fahrzeuge = Fahrzeug::getSelection($cid);
+        $this->fahrzeuge = Fahrzeug::getSelection($customerId);
     }
 
     public function PDFgenerieren($store = false)
@@ -61,7 +52,7 @@ class Angebot
         $pdf = new \TCPDF('p', 'mm', 'A4');
         $pdf->setPrintHeader(false);
         $pdf->setPrintFooter(false);
-        $pdf->SetTitle('Angebot ' . $this->kunde->getKundennummer());
+        $pdf->SetTitle('Angebot ' . $this->customer->getKundennummer());
         $pdf->SetSubject('Angebot');
         $pdf->SetKeywords('pdf, angebot');
 
@@ -70,7 +61,7 @@ class Angebot
         $pdf->setCellPaddings(1, 1, 1, 1);
         $pdf->setCellMargins(0, 0, 0, 0);
 
-        $cAddress = "<p>{$this->kunde->getFirmenname()}<br>{$this->kunde->getName()}<br>{$this->kunde->getStrasse()} {$this->kunde->getHausnummer()}<br>{$this->kunde->getPostleitzahl()} {$this->kunde->getOrt()}</p>";
+        $cAddress = "<p>{$this->customer->getFirmenname()}<br>{$this->customer->getName()}<br>{$this->customer->getStrasse()} {$this->customer->getHausnummer()}<br>{$this->customer->getPostleitzahl()} {$this->customer->getOrt()}</p>";
         $address = "<p>" . $_ENV["COMPANY_NAME"] . "<br>" . $_ENV["COMPANY_STREET"] . "<br>" . $_ENV["COMPANY_CITY"] . "</p>";
 
         $pdf->writeHTMLCell(85, 40, 20, 45, $cAddress);
@@ -84,7 +75,7 @@ class Angebot
         $pdf->Cell(20, 10, 'G-Preis', 'B');
 
         /* iterates over all posten and adds lines */
-        $this->loadPostenFromSession();
+        $this->loadPosten();
         $offset = 10;
         if ($this->posten != null) {
             foreach ($this->posten as $p) {
@@ -100,7 +91,7 @@ class Angebot
 
         /* generates a pdf when offer is converted to an order */
         if ($store == true) {
-            $filename = "{$this->kunde->getKundennummer()}_{$this->angebotsnr}.pdf";
+            $filename = "{$this->customer->getKundennummer()}_{$this->angebotsnr}.pdf";
             $filelocation = "C:\\xampp\htdocs\\auftragsbearbeitung\\files\\generated\\offer";
             $fileNL = $filelocation . "\\" . $filename;
             $pdf->Output($fileNL, 'F');
@@ -111,10 +102,10 @@ class Angebot
 
     private function getPc()
     {
-        if (isset($_SESSION['offer_' . $this->kdnr . '_pc'])) {
-            return (int) $_SESSION['offer_' . $this->kdnr . '_pc'];
+        if (isset($_SESSION['offer_' . $this->customerId . '_pc'])) {
+            return (int) $_SESSION['offer_' . $this->customerId . '_pc'];
         } else {
-            $_SESSION['offer_' . $this->kdnr . '_pc'] = 0;
+            $_SESSION['offer_' . $this->customerId . '_pc'] = 0;
             return 0;
         }
     }
@@ -122,7 +113,7 @@ class Angebot
     private function incPc()
     {
         $newPc = $this->getPc() + 1;
-        $_SESSION['offer_' . $this->kdnr . '_pc'] = $newPc;
+        $_SESSION['offer_' . $this->customerId . '_pc'] = $newPc;
         return $newPc;
     }
 
@@ -130,18 +121,23 @@ class Angebot
     {
         $newPc = $this->getPc() - 1;
         if ($newPc >= 0) {
-            $_SESSION['offer_' . $this->kdnr . '_pc'] = $newPc;
+            $_SESSION['offer_' . $this->customerId . '_pc'] = $newPc;
         }
         return $newPc;
     }
 
-    private function loadPostenFromSession()
+    public function getId()
+    {
+        return $this->angebotsnr;
+    }
+
+    private function loadPosten()
     {
         $num = $this->getPc();
         if (is_numeric($num)) {
             for ($i = 1; $i <= $num; $i++) {
-                if (isset($_SESSION['offer_' . $this->kdnr . '_' . $i])) {
-                    $posten = unserialize($_SESSION['offer_' . $this->kdnr . '_' . $i]);
+                if (isset($_SESSION['offer_' . $this->customerId . '_' . $i])) {
+                    $posten = unserialize($_SESSION['offer_' . $this->customerId . '_' . $i]);
                     array_push($this->posten, $posten);
                 }
             }
@@ -152,11 +148,11 @@ class Angebot
     {
         $num = $this->getPc();
         for ($i = 1; $i <= $num; $i++) {
-            if (isset($_SESSION['offer_' . $this->kdnr . '_' . $i])) {
-                $_SESSION['offer_' . $this->kdnr . '_' . $i] = null;
+            if (isset($_SESSION['offer_' . $this->customerId . '_' . $i])) {
+                $_SESSION['offer_' . $this->customerId . '_' . $i] = null;
             }
         }
-        $_SESSION['offer_' . $this->kdnr . '_pc'] = null;
+        $_SESSION['offer_' . $this->customerId . '_pc'] = null;
     }
 
     private function postenSum()
@@ -171,7 +167,7 @@ class Angebot
     public function addPosten($posten)
     {
         $postenId = $this->incPc();
-        $_SESSION['offer_' . $this->kdnr . '_' . $postenId] = serialize($posten);
+        $_SESSION['offer_' . $this->customerId . '_' . $postenId] = serialize($posten);
 
         echo $postenId;
         array_push($this->posten, $posten);
@@ -185,8 +181,8 @@ class Angebot
     /* function is called from createOrder page only if offer session data is available */
     public function storeOffer($orderId)
     {
-        $this->angebotsnr = DBAccess::insertQuery("INSERT INTO angebot (kdnr, `status`) VALUES ({$this->kdnr}, 0)");
-        $this->loadPostenFromSession();
+        $this->angebotsnr = DBAccess::insertQuery("INSERT INTO angebot (kdnr, `status`) VALUES ({$this->customerId}, 0)");
+        $this->loadPosten();
         if ($this->posten != null) {
             foreach ($this->posten as $p) {
                 $p->storeToDB($orderId);
@@ -199,7 +195,7 @@ class Angebot
 
     public function loadCachedPosten()
     {
-        $this->loadPostenFromSession();
+        $this->loadPosten();
         if ($this->posten != null) {
             foreach ($this->posten as $p) {
                 if ($p instanceof Zeit) {
@@ -220,86 +216,33 @@ class Angebot
 
     public function loadAngebot() {}
 
-    public function getHTMLTemplate()
+    public static function getOfferTemplate()
     {
-        $kundenlink = Link::getPageLink("kunde") . "?id=" . $this->kunde->getKundennummer();
-        if (true) : ?>
-            <div class="defCont">
-                <div class="inlineC">
-                    <span><a href="<?= $kundenlink ?>"><b><?= $this->kunde->getFirmenname() ?></b></a></span><br>
-                    <span><?= $this->kunde->getVorname() ?> <?= $this->kunde->getNachname() ?></span><br>
-                    <span><?= $this->kunde->getStrasse() ?> <?= $this->kunde->getHausnummer() ?></span><br>
-                    <span><?= $this->kunde->getPostleitzahl() ?> <?= $this->kunde->getOrt() ?></span><br>
-                </div>
-                <div class="inlineC">
-                    <span>Datum: <input id="angebotsdatum" type="date" value="<?= date('Y-m-d') ?>"></span><br>
-                    <span>Angebotsnummer: <?= $this->angebotsnr ?></span>
-                </div>
-            </div>
+        $customerId = (int) Tools::get("customerId");
+        if ($customerId == 0) {
+            JSONResponseHandler::returnNotFound([
+                "error" => "No customer id given",
+            ]);
+            return;
+        }
 
-            <div class="defCont postenadd" id="newPosten">
-                <select id="selectPosten">
-                    <option value="zeit">Zeit</option>
-                    <option value="leistung">Leistung</option>
-                    <option value="produkt">Produkt</option>
-                </select>
-                <button onclick="getSelections()">Posten hinzufügen</button>
-                <div id="addPosten">
-                    <div id="addPostenZeit" style="display: none">
-                        <span><input id="time" type="number" min="0">Zeit in Minuten</span><br>
-                        <span><input id="wage" type="number" value="44">Stundenlohn in €</span>
-                        <span><input id="descr" type="text">Beschreibung</span>
-                        <button onclick="addTime()">Hinzufügen</button>
-                    </div>
-                    <div id="addPostenLeistung" style="display: none">
-                        <div class="columnLeistung">
-                            <select id="selectLeistung" onchange="selectLeistung(event);">
-                                <?php foreach ($this->leistungen as $leistung): ?>
-                                    <option value="<?= $leistung['Nummer'] ?>" data-aufschlag="<?= $leistung['Aufschlag'] ?>"><?= $leistung['Bezeichnung'] ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                            <br>
-                            <span>Menge:<br><input class="postenInput" id="anz" value="1"></span><br>
-                            <span>Mengeneinheit:<br><input class="postenInput" id="meh"></span><br>
-                            <span>Beschreibung:<br><input id="bes"></span><br>
-                            <span>Einkaufspreis:<br><input id="ekp" value="0"></span><br>
-                            <span>Speziefischer Preis:<br><input id="pre" value="0"></span><br>
-                            <button onclick="addLeistung()">Hinzufügen</button>
-                        </div>
-                        <div class="columnLeistung" id="addKfz" style="display: none;">
-                            <span>Kfz-Kennzeichen:<br><input id="kfz"></span><br>
-                            <span>Fahrzeug:<br><input id="fahrzeug"></span><br>
-                            <button onclick="addFahrzeug()">Neues Fahrzeug hinzufügen</button>
-                            <hr>
-                            <select id="selectVehicle" onchange="selectVehicle(event);">
-                                <option value="0" selected disabled>Bitte auswählen</option>
-                                <?php foreach ($this->fahrzeuge as $f): ?>
-                                    <option value="<?= $f['Nummer'] ?>"><?= $f['Kennzeichen'] ?> <?= $f['Fahrzeug'] ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                            <button onclick="addFahrzeug(true)">Für diesen Auftrag übernehmen</button>
-                        </div>
-                    </div>
-                    <div id="addPostenProdukt" style="display: none">
-                    </div>
-                    <span id="showOhneBerechnung" style="display: none;"><input id="ohneBerechnung" type="checkbox">Ohne Berechnung</span>
-                </div>
-            </div>
+        $offer = new Angebot($customerId);
+        $content = TemplateController::getTemplate("angebot", [
+            "offer" => $offer,
+            "customer" => $offer->customer,
+            "vehicles" => $offer->fahrzeuge,
+            "offerId" => $customerId,
+        ]);
 
-
-
-
-            <div class="defCont" id="allePosten">
-                <p>Alle Posten:</p>
-            </div>
-            <div class="defCont">
-                <p>Text hinzufügen</p>
-                <textarea>Hier Fließtext eingeben</textarea>
-            </div>
-            <button onclick="showOffer();">Angebot anzeigen</button>
-            <button onclick="storeOffer();">Angebot abschließen</button>
-            <br>
-            <iframe src="<?= Link::getPageLink('pdf') . "?type=angebot" ?>" id="showOffer"></iframe>
-<?php endif;
+        JSONResponseHandler::sendResponse([
+            "content" => $content,
+            "offerId" => $offer->getId(),
+        ]);
     }
+
+    public static function getOfferItems()
+    {
+        //
+    }
+
 }

@@ -1,0 +1,52 @@
+<?php
+
+namespace Classes\Project;
+
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
+
+class TemplateController
+{
+
+    public static function ajaxGetTemplate()
+    {
+        $template = Tools::get("template");
+        $params = Tools::get("params");
+
+        if (is_string($params)) {
+            $params = json_decode($params, true);
+        }
+        if (!is_array($params)) {
+            $params = [];
+        }
+        
+        $content = self::buildTemplate($template, $params);
+
+		JSONResponseHandler::sendResponse([
+            "content" => $content,
+        ]);
+    }
+
+    public static function getTemplate($template, $params = [])
+    {
+        $content = self::buildTemplate($template, $params);
+        return $content;
+    }
+
+    private static function buildTemplate($template, $params)
+    {
+        if (!file_exists("files/res/views/{$template}View.php")) {
+            throw new \Exception("Template not found");
+        }
+
+		ob_start();
+		insertTemplate("files/res/views/{$template}View.php", $params);
+		$content = ob_get_clean();
+
+        if ($content === false) {
+            throw new \Exception("Failed to get template content");
+        }
+
+        return $content;
+    }
+}

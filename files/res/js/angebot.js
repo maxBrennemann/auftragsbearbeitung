@@ -1,4 +1,5 @@
 import { initBindings } from "./classes/bindings.js";
+import { ajax } from "./classes/ajax.js";
 
 const functionNames = {};
 
@@ -12,15 +13,23 @@ var globalData = {
 }
 
 functionNames.click_newOffer = () => {
-    var customerId = document.getElementById("kdnr").value;
-    var loadHTMLTemplate = new AjaxCall(`getReason=loadTemplateOrder&customerId=${customerId}`);
-    loadHTMLTemplate.makeAjaxCall(function (customerData) {
-        document.getElementById("insTemp").innerHTML = customerData;
-        loadCachedPosten();
+    const customerId = document.getElementById("kdnr").value;
+    ajax.get(`/api/v1/order-items/offer/template/${customerId}`).then(r => {
+        const url = new URL(window.location.href);
+        url.searchParams.set("kdnr", customerId);
+        window.history.pushState({}, '', url);
+
+        document.getElementById("insTemp").innerHTML = r.content;
+        document.getElementById("listOpenOffers").classList.add("hidden");
+        document.getElementById("newOffer").classList.add("hidden");
+
+        loadItems(r.offerId);
     });
 }
 
-function loadCachedPosten() {
+const loadItems = (offerId) => {
+    ajax.get(`/api/v1/order-items/offer/${offerId}/all`).then(r => {});
+
     var customerId = document.getElementById("kdnr").value;
     var loadCache = new AjaxCall(`getReason=loadCachedPosten&customerId=${customerId}`);
     loadCache.makeAjaxCall(function (data) {

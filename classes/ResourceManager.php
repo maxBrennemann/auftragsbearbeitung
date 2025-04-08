@@ -163,7 +163,7 @@ class ResourceManager
                 $type = $_GET['type'];
                 switch ($type) {
                     case "angebot":
-                        $angebot = new Angebot();
+                        $angebot = new Angebot(0);
                         $angebot->PDFgenerieren();
                         break;
                     case "rechnung":

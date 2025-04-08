@@ -19,6 +19,7 @@ use Classes\Routes\SettingsRoutes;
 use Classes\Routes\StickerRoutes;
 use Classes\Routes\TimeTrackingRoutes;
 use Classes\Routes\UserRoutes;
+use Classes\Routes\VariousRoutes;
 
 use Classes\Project\FormGenerator;
 use Classes\Project\Search;
@@ -49,9 +50,7 @@ use Classes\Project\Modules\Sticker\Textil;
 use Classes\Project\Modules\Sticker\Aufkleber;
 use Classes\Project\Modules\Sticker\AufkleberWandtattoo;
 use Classes\Project\Modules\Sticker\StickerTagManager;
-use Classes\Project\Modules\Sticker\ProductCrawler;
 
-use Classes\Project\Modules\Sticker\Exports\ExportFacebook;
 use Classes\Routes\TableRoutes;
 use Classes\Routes\TestingRoutes;
 
@@ -123,6 +122,9 @@ class Ajax
 				break;
 			case "user":
 				UserRoutes::handleRequest($path);
+				break;
+			case "template":
+				VariousRoutes::handleRequest($path);
 				break;
 			default:
 				JSONResponseHandler::throwError(404, "Path not found");
@@ -482,11 +484,6 @@ class Ajax
 				$auftrag = new Auftrag($auftrag);
 				$auftrag->rearchiveOrder();
 				break;
-			case 'loadTemplateOrder':
-				$customerId = $_POST['customerId'];
-				$angebot = new Angebot($customerId);
-				echo $angebot->getHTMLTemplate();
-				break;
 			case 'loadCachedPosten':
 				$customerId = $_POST['customerId'];
 				$angebot = new Angebot($customerId);
@@ -533,7 +530,7 @@ class Ajax
 			case "loadPosten":
 				if (isset($_SESSION['offer_is_order']) && $_SESSION['offer_is_order'] == true) {
 					$orderId = $_POST['auftragsId'];
-					$angebot = new Angebot();
+					$angebot = new Angebot(0);
 					$angebot->storeOffer($orderId);
 				}
 				break;
