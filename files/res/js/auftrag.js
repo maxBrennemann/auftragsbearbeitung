@@ -7,6 +7,7 @@ import { click_mehListener, addProductCompactOld, addLeistung, addTime, selectLe
 import "./auftrag/postenOrder.js";
 import "./auftrag/calculateGas.js";
 import { ajax } from "./classes/ajax.js";
+import { getItemsTable } from "./classes/invoiceItems.js";
 
 /* global variables */
 window.globalData = {
@@ -44,6 +45,8 @@ function initCode() {
     initPostenFilter();
     initExtraOptions();
     initNotes();
+
+    getItemsTable("testtable", globalData.auftragsId, "order");
 }
 
 function addSearchEventListeners() {

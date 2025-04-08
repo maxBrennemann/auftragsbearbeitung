@@ -205,11 +205,6 @@ aside {
     flex: 50%;
 }
 
-#addPostenZeit .addToTable {
-    display: block;
-    margin: auto;
-}
-
 .timeInputWrapper {
     padding: 4px;
     border-radius: 6px;
@@ -220,27 +215,6 @@ aside {
 }
 
 /* css end for posten tab */
-
-/* class for round + button */
-.addToTable {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    line-height: 20px;
-    text-align: center;
-    font-size: 20px;
-    border: none;
-    box-shadow: 1px 0px 5px 0px grey;
-    font-weight: bold;
-    color: grey;
-    cursor: pointer;
-}
-
-.buttonDiv {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
 .postenInput {
     border: none;

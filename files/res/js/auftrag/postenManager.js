@@ -378,7 +378,7 @@ export function addProductCompact() {
 }
 
 const reloadPostenListe = async () => {
-    const response = await ajax.get(`/api/v1/order-items/${globalData.auftragsId}/all`);
+    const response = await ajax.get(`/api/v1/order-items/${globalData.auftragsId}/all-old`);
 
     document.getElementById("auftragsPostenTable").innerHTML = response.data[0];
     document.getElementById("invoicePostenTable").innerHTML = response.data[1];

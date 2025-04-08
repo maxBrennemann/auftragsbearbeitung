@@ -1,4 +1,4 @@
-<div class="buttonDiv">
+<div>
 			<button class="addToTable" onclick="showPostenAdd();">+</button>
 		</div>
 		<div id="showPostenAdd" style="display: none;">

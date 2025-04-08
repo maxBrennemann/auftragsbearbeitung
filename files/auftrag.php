@@ -298,12 +298,19 @@ if ($orderId <= 0): ?>
 			<div class="grid grid-cols-4" id="noteContainer"></div>
 		</div>
 		<div class="defCont posten">
-			<p><span class="font-bold inline-flex items-center">Zeiten, Produkte und Kosten (netto)</span> <input id="rechnungspostenAusblenden" type="checkbox" <?= ClientSettings::getFilterOrderPosten() == true ? "checked" : "" ?>> Rechnungsposten ausblenden</p>
-			<div id="auftragsPostenTable" class="overflow-x-auto lg:w-full">
+			<p class="inline-flex items-center">
+				<span class="font-bold">Zeiten, Produkte und Kosten (netto)</span>
+				<label class="inline-flex items-center">
+					<input id="rechnungspostenAusblenden" type="checkbox" class="ml-3" <?= ClientSettings::getFilterOrderPosten() == true ? "checked" : "" ?>>
+					<span class="ml-1">Rechnungsposten ausblenden</span>
+				</label>
+			</p>
+			<div id="auftragsPostenTable" class="overflow-x-auto lg:w-full mt-2">
 				<?= $auftrag->getAuftragspostenAsTable() ?>
 			</div>
-			<div class="buttonDiv">
-				<button class="addToTable" data-binding="true" data-fun="showPostenAdd">+</button>
+			<div id="testtable"></div>
+			<div class="mt-2">
+				<button class="btn-primary-new" data-binding="true" data-fun="showPostenAdd">Hinzufügen</button>
 			</div>
 			<div id="showPostenAdd" style="display: none;">
 				<div class="tabcontainer">
@@ -330,7 +337,7 @@ if ($orderId <= 0): ?>
 							<span>Arbeitszeit(en)</span>
 							<div id="extendedTimeInput">
 							</div>
-							<button class="addToTable" data-binding="true" data-fun="createTimeInputRow">+</button>
+							<button class="btn-primary-new" data-binding="true" data-fun="createTimeInputRow">Hinzufügen</button>
 							<p id="showTimeSummary"></p>
 						</div>
 					</div>

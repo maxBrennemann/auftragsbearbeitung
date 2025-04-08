@@ -300,7 +300,7 @@ class Auftrag implements StatisticsInterface
 	 */
 	private function getAuftragsPostenHelper($isInvoice = false): array|string
 	{
-		$subArr = array(
+		$subArr = [
 			"Postennummer" => "",
 			"Bezeichnung" => "",
 			"Beschreibung" => "",
@@ -311,9 +311,9 @@ class Auftrag implements StatisticsInterface
 			"Anzahl" => "",
 			"Einkaufspreis" => "",
 			"type" => ""
-		);
+		];
 
-		$data = array();
+		$data = [];
 		if (sizeof($this->Auftragsposten) == 0) {
 			return "";
 		}
@@ -377,13 +377,37 @@ class Auftrag implements StatisticsInterface
 		return $t->getTable();
 	}
 
-	public static function getOrderItems()
+	public static function getOrderItemsOld()
 	{
 		$id = Tools::get("id");
 		$order = new Auftrag($id);
 		$data = $order->getAuftragsPostenHelper();
 
 		JSONResponseHandler::sendResponse($data);
+	}
+
+	public static function getOrderItems()
+	{
+		$id = (int) Tools::get("id");
+		$order = new Auftrag($id);
+
+		$data = $order->getAuftragsPostenHelper();
+		$parsedData = [];
+		foreach ($data as $key => $value) {
+			$item = [];
+			$item["id"] = $value["Postennummer"];
+			$item["name"] = $value["Bezeichnung"];
+			$item["description"] = $value["Beschreibung"];
+			$item["quantity"] = $value["Anzahl"];
+			$item["price"] = $value["Preis"];
+			$item["unit"] = $value["MEH"];
+			$item["totalPrice"] = $value["Gesamtpreis"];
+			$item["purchasePrice"] = $value["Einkaufspreis"];
+
+			$parsedData[] = $item;
+		}
+
+		JSONResponseHandler::sendResponse($parsedData);
 	}
 
 	/*
