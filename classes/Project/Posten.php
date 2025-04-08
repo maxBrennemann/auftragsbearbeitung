@@ -26,6 +26,12 @@ abstract class Posten
 	protected $postenTyp;
 	protected $ohneBerechnung = false;
 	protected $postennummer;
+	protected $position = 0;
+
+	public function getPosition()
+	{
+		return $this->position;
+	}
 
 	/*
 	 * function gets all posten data for an order
@@ -33,7 +39,7 @@ abstract class Posten
 	 */
 	public static function bekommeAllePosten($auftragsnummer, $invoice = false)
 	{
-		$posten = array();
+		$posten = [];
 
 		if ($invoice) {
 			$data = DBAccess::selectQuery("SELECT Postennummer, Posten, ohneBerechnung, discount, isInvoice FROM posten WHERE Auftragsnummer = $auftragsnummer AND (rechnungsNr != 0 OR isInvoice = 1) ORDER BY position");
@@ -83,31 +89,107 @@ abstract class Posten
 		return $posten;
 	}
 
-	public static function getOrderItems(int $orderId, string $itemType = "")
+	public static function getOrderItems(int $orderId, string $itemType = ""): array
 	{
 		$items = [];
-		$query = "SELECT Postennummer, Posten, ohneBerechnung, discount, isInvoice FROM posten WHERE Auftragsnummer = :orderId ORDER BY position;";
-
-		if ($itemType == "invoice") {
-			$query = "SELECT Postennummer, Posten, ohneBerechnung, discount, isInvoice FROM posten WHERE Auftragsnummer = :orderId AND isInvoice = 1 ORDER BY position";
-		}
+		$invoiceQuery = $itemType == "invoice" ? "AND isInvoice = 1 " : "";
+		$query = "SELECT 
+				p.Postennummer as id, 
+				Posten as `type`, 
+				ohneBerechnung as free_of_charge, 
+				discount, 
+				isInvoice as is_invoice, 
+				position,
+				l.Beschreibung as l_description,
+				l.SpeziefischerPreis as l_price,
+				l.Einkaufspreis as l_purchase_price,
+				l.qty as l_qty,
+				l.meh as l_unit,
+				l.Leistungsnummer as l_number,
+				pc.marke as p_brand,
+				pc.price as p_price,
+				pc.purchasing_price as p_purchase_price,
+				pc.description as p_description,
+				pc.name as p_name,
+				pc.amount as p_amount,
+				z.ZeitInMinuten as z_time,
+				z.Stundenlohn as z_wage,
+				z.Beschreibung as z_description
+			FROM posten p
+			LEFT JOIN leistung_posten l
+				ON p.Postennummer = l.Postennummer
+			LEFT JOIN produkt_posten pp
+				ON p.Postennummer = pp.Postennummer
+			LEFT JOIN zeit z
+				ON p.Postennummer = z.Postennummer
+			LEFT JOIN product_compact pc 
+				ON p.Postennummer = pc.postennummer
+			WHERE Auftragsnummer = :orderId
+				$invoiceQuery
+			ORDER BY p.position;";
 
 		$data = DBAccess::selectQuery($query, [
 			"orderId" => $orderId,
 		]);
 
 		foreach ($data as $row) {
-			$type = $row["Posten"];
+			$type = $row["type"];
+			$item = null;
 			switch ($type) {
 				case "zeit":
+					$item = new Zeit(
+						$row["z_wage"],
+						$row["z_time"],
+						$row["z_description"],
+						$row["discount"],
+						(int) $row["is_invoice"],
+						(int) $row["position"],
+					);
 					break;
 				case "leistung":
+					$item = new Leistung(
+						$row["l_number"],
+						$row["l_description"],
+						$row["l_price"],
+						$row["l_purchase_price"],
+						$row["l_qty"],
+						$row["l_unit"],
+						$row["discount"],
+						(int) $row["is_invoice"],
+						(int) $row["position"],
+					);
 					break;
 				case "product":
+					$item = new ProduktPosten(
+						$row["p_price"],
+						$row["p_name"],
+						$row["p_description"],
+						$row["p_amount"],
+						$row["p_purchase_price"],
+						$row["p_brand"],
+						$row["discount"],
+						(int) $row["is_invoice"],
+						(int) $row["position"],
+					);
 					break;
 				case "compact":
+					$item = new ProduktPosten(
+						$row["p_price"],
+						$row["p_name"],
+						$row["p_description"],
+						$row["p_amount"],
+						$row["p_purchase_price"],
+						$row["p_brand"],
+						$row["discount"],
+						(int) $row["is_invoice"],
+						(int) $row["position"],
+					);
 					break;
+				default:
+					continue 2;
 			}
+			$item->postennummer = $row["id"];
+			$items[] = $item;
 		}
 
 		return $items;

@@ -59,6 +59,15 @@ class ResourceManager
     {
         session_start();
         errorReporting();
+
+        $query = "SELECT content FROM settings WHERE title = 'companyName';";
+        $companyName = DBAccess::selectQuery($query);
+
+        if ($companyName != null) {
+            $_SESSION["companyName"] = $companyName[0]["content"];
+        } else {
+            $_SESSION["companyName"] = "Auftragsbearbeitung";
+        }
     }
 
     /**

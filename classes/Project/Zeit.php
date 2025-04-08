@@ -22,7 +22,7 @@ class Zeit extends Posten
 	protected $ohneBerechnung = false;
 	protected $postennummer;
 
-	function __construct($Stundenlohn, $ZeitInMinuten, $beschreibung, $discount, $isInvoice)
+	public function __construct($Stundenlohn, $ZeitInMinuten, $beschreibung, $discount, $isInvoice, int $position = 0)
 	{
 		$this->Stundenlohn = (float) $Stundenlohn;
 		$this->ZeitInMinuten = (int) $ZeitInMinuten;
@@ -35,6 +35,8 @@ class Zeit extends Posten
 		if ($discount != 0 && $discount > 0 && $discount <= 100) {
 			$this->discount = $discount;
 		}
+
+		$this->position = $position;
 	}
 
 	public function getHTMLData()
@@ -258,7 +260,8 @@ class Zeit extends Posten
 		return $timeInInt;
 	}
 
-	public static function add() {
+	public static function add()
+	{
 		$data = [];
 		$data['ZeitInMinuten'] = Tools::get("time");
 		$data['Stundenlohn'] = Tools::get("wage");
@@ -290,5 +293,4 @@ class Zeit extends Posten
 			"price" => $price,
 		]);
 	}
-
 }

@@ -4,18 +4,6 @@ main {
     grid-template-areas: "auftrag auftrag kunde" "schritte schritte schritteAdd" "notes notes notes" "posten posten posten" "invoice invoice invoice" "fahrzeuge farben preis" "upload upload verlauf" "liste liste liste";
 }
 
-table {
-    overflow-x: scroll;
-    width: 100%;
-    table-layout: fixed;
-    overflow-wrap: break-word;
-    display: block;
-}
-
-th, td {
-    min-width: 80px;
-}
-
 aside {
     grid-area: kunde;
 }

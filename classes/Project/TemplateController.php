@@ -27,13 +27,13 @@ class TemplateController
         ]);
     }
 
-    public static function getTemplate($template, $params = [])
+    public static function getTemplate(string $template, array $params = [])
     {
         $content = self::buildTemplate($template, $params);
         return $content;
     }
 
-    private static function buildTemplate($template, $params)
+    private static function buildTemplate(string $template, array $params)
     {
         if (!file_exists("files/res/views/{$template}View.php")) {
             throw new \Exception("Template not found");

@@ -210,6 +210,20 @@ export const addRow = (data, table, options = {}, header = {}) => {
 
     const actionsCell = document.createElement("td");
 
+    addEditBtn(data, table, row, actionsCell, options);
+    addDeleteBtn(data, table, row, actionsCell, options);
+    addCheckBtn(data, table, row, actionsCell, options);
+    addMoveBtn(data, table, row, actionsCell, options);
+    addAddBtn(data, table, row, actionsCell, options);
+
+    if (!options?.hideOptions?.includes("all")) {
+        row.appendChild(actionsCell);
+    }
+
+    tbody.appendChild(row);
+}
+
+const addEditBtn = (data, table, row, actionsCell, options) => {
     if (!options?.hideOptions?.includes("edit")
         && !options?.hideOptions?.includes("all")) {
         const editBtn = document.createElement("button");
@@ -222,7 +236,9 @@ export const addRow = (data, table, options = {}, header = {}) => {
 
         actionsCell.appendChild(editBtn);
     }
+}
 
+const addDeleteBtn = (data, table, row, actionsCell, options) => {
     if (!options?.hideOptions?.includes("delete")
         && !options?.hideOptions?.includes("all")) {
         const deleteBtn = document.createElement("button");
@@ -235,7 +251,9 @@ export const addRow = (data, table, options = {}, header = {}) => {
 
         actionsCell.appendChild(deleteBtn);
     }
+}
 
+const addCheckBtn = (data, table, row, actionsCell, options) => {
     if (!options?.hideOptions?.includes("check")
         && !options?.hideOptions?.includes("all")) {
         const checkBtn = document.createElement("button");
@@ -248,12 +266,36 @@ export const addRow = (data, table, options = {}, header = {}) => {
 
         actionsCell.appendChild(checkBtn);
     }
+}
 
-    if (!options?.hideOptions?.includes("all")) {
-        row.appendChild(actionsCell);
+const addMoveBtn = (data, table, row, actionsCell, options) => {
+    if (!options?.hideOptions?.includes("move")
+        && !options?.hideOptions?.includes("all")) {
+        const checkBtn = document.createElement("button");
+        checkBtn.innerHTML = getMoveBtn();
+        checkBtn.title = "Bewegen";
+        checkBtn.className = "inline-flex border-0 bg-zinc-400 p-1 rounded-md ml-1";
+        checkBtn.addEventListener("click", () => {
+            dispatchActionEvent("rowMove", data, table, { row });
+        });
+
+        actionsCell.appendChild(checkBtn);
     }
+}
 
-    tbody.appendChild(row);
+const addAddBtn = (data, table, row, actionsCell, options) => {
+    if (!options?.hideOptions?.includes("add")
+        && !options?.hideOptions?.includes("all")) {
+        const checkBtn = document.createElement("button");
+        checkBtn.innerHTML = getAddBtn();
+        checkBtn.title = "Hinzufügen";
+        checkBtn.className = "inline-flex border-0 bg-yellow-400 p-1 rounded-md ml-1";
+        checkBtn.addEventListener("click", () => {
+            dispatchActionEvent("rowAdd", data, table, { row });
+        });
+
+        actionsCell.appendChild(checkBtn);
+    }
 }
 
 export const clearRows = (table) => {
@@ -420,6 +462,13 @@ const getSaveBtn = () => {
     return `
     <svg class="inline" style="width:15px;height:15px" viewBox="0 0 24 24" title="Speichern">
         <path class="fill-white" d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z" />
+    </svg>`;
+}
+
+const getMoveBtn = () => {
+    return `
+     <svg class="inline" style="width:15px;height:15px" viewBox="0 0 24 24" title="Bewegen">
+        <path class="fill-white" d="M13,6V11H18V7.75L22.25,12L18,16.25V13H13V18H16.25L12,22.25L7.75,18H11V13H6V16.25L1.75,12L6,7.75V11H11V6H7.75L12,1.75L16.25,6H13Z" />
     </svg>`;
 }
 

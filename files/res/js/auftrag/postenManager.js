@@ -56,7 +56,7 @@ export function addLeistung() {
         updatePrice(response);
         reloadPostenListe();
         infoSaveSuccessfull("success");
-        clearInputs({"ids":["bes", "ekp", "pre", "meh", "anz"]});
+        clearInputs({ "ids": ["bes", "ekp", "pre", "meh", "anz"] });
     });
 }
 
@@ -101,12 +101,12 @@ export const addTime = () => {
  */
 export function createTimeInputRow() {
     const template = document.getElementById("templateTimeInput");
-	const div = document.createElement("div");
-	div.appendChild(template.content.cloneNode(true));
-    
+    const div = document.createElement("div");
+    div.appendChild(template.content.cloneNode(true));
+
     const extendedTimeInput = document.getElementById("extendedTimeInput");
     extendedTimeInput.appendChild(div);
-    
+
     const dateInput = div.querySelector(".dateInput");
     dateInput.dataset.index = globalData.times.length;
     dateInput.addEventListener("change", () => {
@@ -117,7 +117,7 @@ export function createTimeInputRow() {
     const start = timeInputs[0];
     const end = timeInputs[1];
 
-	start.addEventListener("change", calcTime, false);
+    start.addEventListener("change", calcTime, false);
     end.addEventListener("change", calcTime, false);
 
     start.dataset.index = globalData.times.length;
@@ -125,7 +125,7 @@ export function createTimeInputRow() {
     end.dataset.index = globalData.times.length;
     end.dataset.type = "end";
 
-    globalData.times.push({start: "00:00", end: "00:00", date: ""});
+    globalData.times.push({ start: "00:00", end: "00:00", date: "" });
 
     start.focus();
 }
@@ -197,7 +197,7 @@ function cancleLeistung() {
     }
     timeBtn.removeEventListener("click", cancleLeistung, false);
 
-    clearInputs({"ids":["bes", "ekp", "pre", "meh", "anz"]});
+    clearInputs({ "ids": ["bes", "ekp", "pre", "meh", "anz"] });
 }
 
 /**
@@ -205,7 +205,7 @@ function cancleLeistung() {
  * @param {*} key 
  * @param {*} element 
  */
-window.editRow = function(key, element) {
+window.editRow = function (key, element) {
     var postentype = element.parentNode.parentNode.firstChild.firstChild.innerHTML;
 
     /* sends token to server to overwrite a posten */
@@ -288,7 +288,7 @@ function editTimeEntry(btns, parameters) {
         time_from = Math.floor(time_from / 60).toString().padStart(2, '0') + ":" + (time_from % 60).toString().padStart(2, '0');
 
         var time_to = parseInt(parameters.timetable[i].to_time);
-        time_to =  Math.floor(time_to / 60).toString().padStart(2, '0') + ":" + (time_to % 60).toString().padStart(2, '0');
+        time_to = Math.floor(time_to / 60).toString().padStart(2, '0') + ":" + (time_to % 60).toString().padStart(2, '0');
 
         timeInputs[i * 2].value = time_from;
         timeInputs[i * 2 + 1].value = time_to;
@@ -350,7 +350,7 @@ export function click_mehListener() {
 }
 
 /* https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_dropdown */
-window.addEventListener("click", function(event) {
+window.addEventListener("click", function (event) {
     if (!event.target.matches('.selectReplacer') && !event.target.matches('#meh_dropdown') && !event.target.matches('#meh')) {
         var dropdowns = document.getElementsByClassName("selectReplacer");
         var i;

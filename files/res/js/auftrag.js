@@ -46,7 +46,7 @@ function initCode() {
     initExtraOptions();
     initNotes();
 
-    getItemsTable("testtable", globalData.auftragsId, "order");
+    getItemsTable("auftragsPostenTable", globalData.auftragsId, "order");
 }
 
 function addSearchEventListeners() {

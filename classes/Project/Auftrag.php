@@ -347,36 +347,6 @@ class Auftrag implements StatisticsInterface
 		return $data;
 	}
 
-	public function getAuftragspostenAsTable()
-	{
-		$column_names = array(
-			0 => array("COLUMN_NAME" => "Bezeichnung"),
-			1 => array("COLUMN_NAME" => "Beschreibung"),
-			2 => array("COLUMN_NAME" => "Stundenlohn"),
-			3 => array("COLUMN_NAME" => "Anzahl"),
-			4 => array("COLUMN_NAME" => "MEH"),
-			5 => array("COLUMN_NAME" => "Preis"),
-			6 => array("COLUMN_NAME" => "Gesamtpreis"),
-			7 => array("COLUMN_NAME" => "Einkaufspreis")
-		);
-
-		$data = $this->getAuftragsPostenHelper();
-
-		/* addes edit and delete to table */
-		$t = new Table();
-		$t->createByData($data, $column_names);
-		$t->addActionButton("edit");
-		$t->setType("posten");
-		$t->addActionButton("delete", "Postennummer");
-		$t->addAction(null, Icon::getDefault("iconAdd"), "Rechnung/ Zahlung hinzufügen");
-		$t->addActionButton("move");
-		$t->addDataset("type", "type");
-		$_SESSION["posten_table"] = serialize($t);
-		$_SESSION[$t->getTableKey()] = serialize($t);
-
-		return $t->getTable();
-	}
-
 	public static function getOrderItemsOld()
 	{
 		$id = Tools::get("id");
@@ -389,12 +359,16 @@ class Auftrag implements StatisticsInterface
 	public static function getOrderItems()
 	{
 		$id = (int) Tools::get("id");
-		$order = new Auftrag($id);
+		$data = Posten::getOrderItems($id);
 
-		$data = $order->getAuftragsPostenHelper();
 		$parsedData = [];
 		foreach ($data as $key => $value) {
 			$item = [];
+			$item["position"] = $value->getPosition();
+			$item["price"] = $value->bekommeEinzelPreis();
+			$item["totalPrice"] = $value->bekommePreis();
+			
+			$value = $value->fillToArray([]);
 			$item["id"] = $value["Postennummer"];
 			$item["name"] = $value["Bezeichnung"];
 			$item["description"] = $value["Beschreibung"];
@@ -981,21 +955,6 @@ class Auftrag implements StatisticsInterface
 		$response = $order->getColors();
 		JSONResponseHandler::sendResponse([
 			"colors" => $response,
-		]);
-	}
-
-	public static function itemsOverview()
-	{
-		$auftragsId = Tools::get("id");
-		$auftrag = new Auftrag($auftragsId);
-
-		$data = [
-			0 => $auftrag->getAuftragspostenAsTable(),
-			1 => $auftrag->getInvoicePostenTable()
-		];
-
-		JSONResponseHandler::sendResponse([
-			"data" => $data,
 		]);
 	}
 

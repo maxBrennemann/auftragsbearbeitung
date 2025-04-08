@@ -28,6 +28,10 @@ export const getItemsTable = async (tableName, id, type = "order") => {
             "label": "Id",
         },
         {
+            "key": "position",
+            "label": "Position",
+        },
+        {
             "key": "name",
             "label": "Bezeichnung",
         },

@@ -23,7 +23,7 @@ class Leistung extends Posten
 	private $quantity;
 	private $meh;
 
-	function __construct($leistungsnummer, $beschreibung, $speziefischerPreis, $einkaufspreis, $quantity, $meh, $discount, $isInvoice)
+	public function __construct($leistungsnummer, $beschreibung, $speziefischerPreis, $einkaufspreis, $quantity, $meh, $discount, $isInvoice, int $position = 0)
 	{
 		$this->beschreibung = $beschreibung;
 		$this->preis = (float) $speziefischerPreis;
@@ -32,7 +32,7 @@ class Leistung extends Posten
 
 		$this->isInvoice = $isInvoice == 0 ? false : true;
 
-		$data =  DBAccess::selectQuery("SELECT Bezeichnung FROM leistung WHERE Nummer = $leistungsnummer");
+		$data = DBAccess::selectQuery("SELECT Bezeichnung FROM leistung WHERE Nummer = $leistungsnummer");
 		if ($data == null) {
 			$this->bezeichnung = "";
 		} else {
@@ -46,6 +46,7 @@ class Leistung extends Posten
 		/* quantity is now a float */
 		$this->quantity = (float) $quantity;
 		$this->meh = $meh;
+		$this->position = $position;
 	}
 
 	public function getHTMLData()
@@ -58,7 +59,7 @@ class Leistung extends Posten
 	{
 		$arr['Postennummer'] = $this->postennummer;
 		$arr['Preis'] = $this->bekommePreisTabelle();
-		$arr['Bezeichnung'] = "<button class=\"postenButton\">Leistung</button>" . $this->bezeichnung;
+		$arr['Bezeichnung'] = "<button class=\"postenButton\">Leistung</button><br><span>{$this->bezeichnung}</span>";
 		$arr['Beschreibung'] = $this->beschreibung;
 		$arr['Einkaufspreis'] = number_format($this->einkaufspreis * $this->quantity, 2, ',', '') . "€<br><span style=\"font-size: 0.7em\">Einzelpreis: " . number_format($this->einkaufspreis, 2, ',', '') . "€</span><br>" . $this->getFiles($this->postennummer);
 		$arr['Gesamtpreis'] = $this->bekommePreis_formatted();
@@ -209,7 +210,8 @@ class Leistung extends Posten
 		return $data;
 	}
 
-	public static function add() {
+	public static function add()
+	{
 		$data = [];
 		$data['Leistungsnummer'] = Tools::get("lei");
 		$data['Beschreibung'] = Tools::get("bes");
@@ -239,5 +241,4 @@ class Leistung extends Posten
 			"price" => $price,
 		]);
 	}
-
 }
