@@ -33,62 +33,6 @@ abstract class Posten
 		return $this->position;
 	}
 
-	/*
-	 * function gets all posten data for an order
-	 * second parameter is not necessary, it switches to the invoice mode
-	 */
-	public static function bekommeAllePosten($auftragsnummer, $invoice = false)
-	{
-		$posten = [];
-
-		if ($invoice) {
-			$data = DBAccess::selectQuery("SELECT Postennummer, Posten, ohneBerechnung, discount, isInvoice FROM posten WHERE Auftragsnummer = $auftragsnummer AND (rechnungsNr != 0 OR isInvoice = 1) ORDER BY position");
-		} else {
-			$data = DBAccess::selectQuery("SELECT Postennummer, Posten, ohneBerechnung, discount, isInvoice FROM posten WHERE Auftragsnummer = $auftragsnummer ORDER BY position");
-		}
-		foreach ($data as $step) {
-			switch ($step['Posten']) {
-				case 'zeit':
-					$speziefischerPosten = DBAccess::selectQuery("SELECT Nummer, ZeitInMinuten, Stundenlohn, Beschreibung FROM zeit WHERE zeit.Postennummer = {$step['Postennummer']}")[0];
-					$element = new Zeit($speziefischerPosten['Stundenlohn'], $speziefischerPosten['ZeitInMinuten'], $speziefischerPosten['Beschreibung'], $step['discount'], (int) $step['isInvoice']);
-					$element->setSpecificNumber($speziefischerPosten['Nummer']);
-					break;
-				case 'produkt':
-					$query = "SELECT Preis, Bezeichnung, Beschreibung, pp.Produktnummer, Anzahl, p.Einkaufspreis FROM produkt_posten AS pp, produkt AS p, posten AS po ";
-					$query .= "WHERE pp.Produktnummer = p.Nummer AND pp.Postennummer = po.Nummer AND pp.Postennummer = {$step['Postennummer']}";
-					$speziefischerPosten = DBAccess::selectQuery($query)[0];
-					$element = new ProduktPosten($speziefischerPosten['Preis'], $speziefischerPosten['Bezeichnung'], $speziefischerPosten['Beschreibung'], $speziefischerPosten['Anzahl'], $speziefischerPosten['Einkaufspreis'], "", $step['discount'], (int) $step['isInvoice']);
-					break;
-				case 'leistung':
-					$query = "SELECT Leistungsnummer, Beschreibung, SpeziefischerPreis, Einkaufspreis, qty, meh FROM leistung_posten WHERE leistung_posten.Postennummer = :postennummer";
-					$data = DBAccess::selectQuery($query, array("postennummer" => $step['Postennummer']));
-
-					if (count($data) != 0) {
-						$speziefischerPosten = $data[0];
-						$element = new Leistung($speziefischerPosten['Leistungsnummer'], $speziefischerPosten['Beschreibung'], $speziefischerPosten['SpeziefischerPreis'], $speziefischerPosten['Einkaufspreis'], $speziefischerPosten['qty'], $speziefischerPosten['meh'], $step['discount'], (int) $step['isInvoice']);
-					} else {
-						continue 2;
-					}
-					break;
-				case 'compact':
-					$speziefischerPosten = DBAccess::selectQuery("SELECT amount, marke, price, purchasing_price, `description`, `name` FROM product_compact WHERE product_compact.postennummer = {$step['Postennummer']}")[0];
-					$element = new ProduktPosten($speziefischerPosten['price'], $speziefischerPosten['name'], $speziefischerPosten['description'], $speziefischerPosten['amount'], $speziefischerPosten['purchasing_price'], $speziefischerPosten['marke'], $step['discount'], (int) $step['isInvoice']);
-					break;
-			}
-
-			$free = (int) $step['ohneBerechnung'];
-			if ($free == 1) {
-				$element->ohneBerechnung = true;
-			}
-
-			$element->postennummer = $step['Postennummer'];
-
-			array_push($posten, $element);
-		}
-
-		return $posten;
-	}
-
 	public static function getOrderItems(int $orderId, string $itemType = ""): array
 	{
 		$items = [];

@@ -12,7 +12,7 @@ export async function addProductCompactOld() {
         auftrag: globalData.auftragsId,
         ohneBerechnung: getOhneBerechnung() ? 1 : 0,
         addToInvoice: getAddToInvoice() ? 1 : 0,
-        discount: document.getElementById("showDiscount").children[0].value
+        discount: document.getElementById("getDiscount").value,
     });
 
     reloadPostenListe();
@@ -45,7 +45,7 @@ export function addLeistung() {
         auftrag: globalData.auftragsId,
         ohneBerechnung: getOhneBerechnung() ? 1 : 0,
         addToInvoice: getAddToInvoice() ? 1 : 0,
-        discount: document.getElementById("showDiscount").children[0].value
+        discount: document.getElementById("getDiscount").value,
     };
 
     if (globalData.isOverwrite) {
@@ -71,7 +71,7 @@ export const addTime = () => {
     const description = document.getElementById("descr").value;
     const noPayment = getOhneBerechnung() ? 1 : 0;
     const addToInvoice = getAddToInvoice() ? 1 : 0;
-    const discount = document.getElementById("showDiscount").children[0].value;
+    const discount = document.getElementById("getDiscount").value;
     const overwrite = globalData.isOverwrite ? 1 : 0;
     const times = JSON.stringify(globalData.times);
 
@@ -225,7 +225,7 @@ window.editRow = function (key, element) {
 }
 
 export function showPostenAdd() {
-    document.getElementById("showPostenAdd").style.display = "";
+    document.getElementById("showPostenAdd").classList.remove("hidden");
 }
 
 function setParameters(postentype, parameters) {
@@ -256,7 +256,7 @@ function editLeistungEntry(btns, parameters) {
     document.getElementById("pre").value = parameters.price;
     document.getElementById("ohneBerechnung").checked = parameters.notcharged == "0" ? false : true;
     document.getElementById("addToInvoice").checked = parameters.isinvoice == "0" ? false : true;
-    document.getElementById("discountInput").value = parameters.discount;
+    document.getElementById("getDiscount").value = parameters.discount;
 
     var leistungBtn = document.getElementById("addLeistungButton");
     leistungBtn.innerHTML = "Speichern";
@@ -273,7 +273,7 @@ function editTimeEntry(btns, parameters) {
     document.getElementById("descr").value = parameters.description;
     document.getElementById("ohneBerechnung").checked = parameters.notcharged == "0" ? false : true;
     document.getElementById("addToInvoice").checked = parameters.isinvoice == "0" ? false : true;
-    document.getElementById("discountInput").value = parameters.discount;
+    document.getElementById("getDiscount").value = parameters.discount;
 
     for (let i = 0; i < parameters.timetable.length; i++) {
         if (i > 0) {
@@ -344,24 +344,6 @@ export function initPostenFilter() {
         })
     });
 }
-
-export function click_mehListener() {
-    document.getElementById("selectReplacerMEH").classList.add("selectReplacerShow");
-}
-
-/* https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_dropdown */
-window.addEventListener("click", function (event) {
-    if (!event.target.matches('.selectReplacer') && !event.target.matches('#meh_dropdown') && !event.target.matches('#meh')) {
-        var dropdowns = document.getElementsByClassName("selectReplacer");
-        var i;
-        for (i = 0; i < dropdowns.length; i++) {
-            var openDropdown = dropdowns[i];
-            if (openDropdown.classList.contains('selectReplacerShow')) {
-                openDropdown.classList.remove('selectReplacerShow');
-            }
-        }
-    }
-}, false);
 
 document.addEventListener("keyup", (e) => {
     if (e.code === "Enter" || e.code === "NumpadEnter") {

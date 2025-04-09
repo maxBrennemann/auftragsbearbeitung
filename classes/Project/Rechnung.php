@@ -265,7 +265,7 @@ class Rechnung
 	public function loadPostenFromAuftrag()
 	{
 		$orderId = $this->auftrag->getAuftragsnummer();
-		$this->posten = Posten::bekommeAllePosten($orderId, true);
+		$this->posten = Posten::getOrderItems($orderId, true);
 		$this->posten = array_merge($this->posten, $this->texts);
 	}
 

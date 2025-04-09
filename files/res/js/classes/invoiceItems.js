@@ -64,7 +64,7 @@ export const getItemsTable = async (tableName, id, type = "order") => {
     const table = renderTable(tableName, header, data, {
         "primaryKey": "id",
         "hide": ["id"],
-        "hideOptions": ["addRow"],
+        "hideOptions": ["addRow", "check"],
         "styles": {
             "table": {
                 "className": ["w-full"],
@@ -73,4 +73,25 @@ export const getItemsTable = async (tableName, id, type = "order") => {
         "autoSort": true,
     });
     return table;
+}
+
+export const initItems = () => {
+    const tabButtons = document.querySelectorAll(".tab-button");
+    const tabContent = document.querySelectorAll(".tab-content");
+
+    Array.from(tabButtons).forEach((button) => {
+        button.addEventListener("click", e => {
+            const target = e.target.dataset.target;
+            tabButtons.forEach(btn => btn.classList.remove("tab-active"));
+            button.classList.add("tab-active");
+
+            tabContent.forEach(content => {
+                if (content.id === target) {
+                    content.classList.remove("hidden");
+                } else {
+                    content.classList.add("hidden");
+                }
+            });
+        });
+    });
 }

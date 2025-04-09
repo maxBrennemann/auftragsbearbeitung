@@ -125,74 +125,6 @@ aside {
     color: white;
 }
 
-/* css for posten tab */
-.tabcontainer {
-    border: none;
-    border-radius: 6px 6px 0 0;
-    background-color: white;
-    overflow: hidden;
-    padding: 0;
-    background-color: #e6cdcd;
-}
-
-.tablinks {
-    border: none;
-    border-radius: 0;
-    background-color: inherit;
-    float: left;
-    outline: none;
-    cursor: pointer;
-    padding: 9px;
-    margin: 0;
-}
-
-.activetab {
-    background-color: #9e7373;
-}
-
-.tablinks:hover {
-    background-color: #b49c9c;
-}
-
-.tabcontent {
-    display: none;
-    padding: 0;
-    border: none;
-    background-color: white;
-    border-top: 0;
-    margin: auto;
-}
-
-.tabcontentEnd {
-    padding: 0;
-    border: none;
-    background-color: white;
-    border-top: 0;
-    margin: auto;
-    border-radius: 0 0 6px 6px;
-}
-
-.tabcontent div {
-    padding: 10px;
-}
-
-.tabcontentEnd div {
-    padding: 10px;
-}
-
-#showPostenAdd {
-    width: 80%;
-    margin: auto;
-}
-
-#addPostenZeit {
-    display: flex;
-}
-
-#addPostenZeit .container {
-    flex: 50%;
-}
-
 .timeInputWrapper {
     padding: 4px;
     border-radius: 6px;
@@ -203,44 +135,6 @@ aside {
 }
 
 /* css end for posten tab */
-
-.postenInput {
-    border: none;
-    border-bottom: 1.5px solid #ababab;
-    font-style: italic;
-    outline: none;
-    color: #323232;
-    margin: 7px;
-}
-
-#meh_dropdown {
-    margin-left: -25px;
-    cursor: pointer;
-}
-
-.selectReplacer {
-    display: none;
-    border: 1px solid grey;
-    width: 162px;
-    padding: 0 !important;
-
-    position: absolute;
-    background: white;
-    box-shadow: 0 8px 16px 0 rgb(0 0 0 / 20%);
-}
-
-.selectReplacerShow {
-    display: block;
-}
-
-.optionReplacer {
-    padding: 21px 17px 21px 17px;
-    margin: 0;
-}
-
-.optionReplacer:hover {
-    background-color: #ababab;
-}
 
 @media (max-width: 850px) {
     main {

@@ -3,11 +3,11 @@ import { addColor, addSelectedColors, checkHexCode, removeColor, toggleCS } from
 import { addBearbeitungsschritt, addStep, sendNote, removeNote, addNewNote, initNotes, cancelNote } from "./auftrag/noteStepManager.js";
 import { setOrderFinished, updateDate, updateDeadline, setDeadlineState, initExtraOptions, editDescription, editOrderType, editTitle, archvieren } from "./auftrag/orderManager.js";
 import { addExistingVehicle, addNewVehicle, selectVehicle } from "./auftrag/vehicleManager.js";
-import { click_mehListener, addProductCompactOld, addLeistung, addTime, selectLeistung, initPostenFilter, addProductCompact, showPostenAdd, createTimeInputRow } from "./auftrag/postenManager.js";
+import { addProductCompactOld, addLeistung, addTime, selectLeistung, initPostenFilter, addProductCompact, showPostenAdd, createTimeInputRow } from "./auftrag/postenManager.js";
 import "./auftrag/postenOrder.js";
 import "./auftrag/calculateGas.js";
 import { ajax } from "./classes/ajax.js";
-import { getItemsTable } from "./classes/invoiceItems.js";
+import { getItemsTable, initItems } from "./classes/invoiceItems.js";
 
 /* global variables */
 window.globalData = {
@@ -47,6 +47,7 @@ function initCode() {
     initNotes();
 
     getItemsTable("auftragsPostenTable", globalData.auftragsId, "order");
+    initItems();
 }
 
 function addSearchEventListeners() {
@@ -235,30 +236,6 @@ window.chooseProduct = function(productId) {
     });
 }
 
-/* shows auftragsblatt, from: https://stackoverflow.com/questions/19851782/how-to-open-a-url-in-a-new-tab-using-javascript-or-jquery */
-window.showPreview = function() {
-    let link = document.getElementById("home_link").href + "pdf?type=auftrag&id=" + globalData.auftragsId;
-    var win = window.open(link, '_blank');
-    if (win) {
-       win.focus();
-    }
-}
-
-/* from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_tabs and modified */
-window.openTab = function(evt, id) {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" activetab", "");
-    }
-    document.getElementsByClassName("tabcontent")[id].style.display = "block";
-    evt.currentTarget.className += " activetab";
-}
-
 /* performAction section of the table */
 window.performAction = function(key, event) {
     /* centered upload div */
@@ -303,7 +280,6 @@ window.performAction = function(key, event) {
 
 fnNames.click_showAuftrag = showAuftrag;
 
-fnNames.click_mehListener = click_mehListener;
 fnNames.write_changeContact = changeContact;
 
 fnNames.click_addColor = addColor;

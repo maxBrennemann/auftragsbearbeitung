@@ -63,7 +63,7 @@ class Auftrag implements StatisticsInterface
 					array_push($this->Bearbeitungsschritte, $element);
 				}
 
-				$this->Auftragsposten = Posten::bekommeAllePosten($auftragsnummer);
+				$this->Auftragsposten = Posten::getOrderItems($auftragsnummer);
 			} else {
 				throw new \Exception("Auftragsnummer " . $auftragsnummer . " existiert nicht oder kann nicht gefunden werden<br>");
 			}

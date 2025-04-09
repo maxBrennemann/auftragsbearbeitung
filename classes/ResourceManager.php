@@ -10,7 +10,6 @@ use Classes\Project\Posten;
 use Classes\Project\Table;
 use Classes\Project\Angebot;
 use Classes\Project\Rechnung;
-use Classes\Project\PDF_Auftrag;
 
 use Classes\Project\Table\TableConfig;
 
@@ -193,12 +192,6 @@ class ResourceManager
                         } else {
                             $rechnung = new Rechnung();
                             $rechnung->PDFgenerieren();
-                        }
-                        break;
-                    case "auftrag":
-                        if (isset($_GET['id'])) {
-                            $id = (int) $_GET['id'];
-                            PDF_Auftrag::getPDF($id);
                         }
                         break;
                 }
