@@ -3,11 +3,11 @@ import { addColor, addSelectedColors, checkHexCode, removeColor, toggleCS } from
 import { addBearbeitungsschritt, addStep, sendNote, removeNote, addNewNote, initNotes, cancelNote } from "./auftrag/noteStepManager.js";
 import { setOrderFinished, updateDate, updateDeadline, setDeadlineState, initExtraOptions, editDescription, editOrderType, editTitle, archvieren } from "./auftrag/orderManager.js";
 import { addExistingVehicle, addNewVehicle, selectVehicle } from "./auftrag/vehicleManager.js";
-import { addProductCompactOld, addLeistung, addTime, selectLeistung, initPostenFilter, addProductCompact, showPostenAdd, createTimeInputRow } from "./auftrag/postenManager.js";
+import { addProductCompactOld, addLeistung, addTime, selectLeistung, initPostenFilter, addProductCompact, createTimeInputRow } from "./auftrag/postenManager.js";
 import "./auftrag/postenOrder.js";
 import "./auftrag/calculateGas.js";
 import { ajax } from "./classes/ajax.js";
-import { getItemsTable, initItems } from "./classes/invoiceItems.js";
+import { getItemsTable, initInvoiceItems } from "./classes/invoiceItems.js";
 
 /* global variables */
 window.globalData = {
@@ -47,7 +47,7 @@ function initCode() {
     initNotes();
 
     getItemsTable("auftragsPostenTable", globalData.auftragsId, "order");
-    initItems();
+    initInvoiceItems();
 }
 
 function addSearchEventListeners() {
@@ -309,7 +309,6 @@ fnNames.click_addExistingVehicle = addExistingVehicle;
 fnNames.click_addNewVehicle = addNewVehicle;
 fnNames.write_selectVehicle = selectVehicle;
 
-fnNames.click_showPostenAdd = showPostenAdd;
 fnNames.click_addProductCompactOld = addProductCompactOld;
 fnNames.click_addLeistung = addLeistung;
 fnNames.click_addTime = addTime;

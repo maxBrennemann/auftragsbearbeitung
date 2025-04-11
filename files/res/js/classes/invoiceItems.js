@@ -1,9 +1,18 @@
 import { ajax } from "./ajax.js";
+import { initBindings } from "./bindings.js";
 import { renderTable } from "./table.js";
 
 const config = {
     "type": "order",
+    "itemType": "time",
     "table": null,
+}
+
+const functionNames = {};
+
+export const initInvoiceItems = () => {
+    initBindings(functionNames);
+    initItems();
 }
 
 export const getItems = async (id, type = "order") => {
@@ -80,7 +89,7 @@ export const getItemsTable = async (tableName, id, type = "order") => {
     return table;
 }
 
-export const initItems = () => {
+const initItems = () => {
     const tabButtons = document.querySelectorAll(".tab-button");
     const tabContent = document.querySelectorAll(".tab-content");
 
@@ -97,8 +106,28 @@ export const initItems = () => {
                     content.classList.add("hidden");
                 }
             });
+            config.itemType = target;
         });
     });
+}
+
+export const addItem = async () => {
+    switch (config.type) {
+        case "time":
+            break;
+        case "service":
+            break;
+        case "product":
+            break;
+    }
+}
+
+functionNames.click_showItemsMenu = () => {
+    const itemsMenu = document.querySelector("#showPostenAdd");
+    const itemsMenuButton = document.querySelector("#showItemsMenu");
+
+    itemsMenu.classList.toggle("hidden");
+    itemsMenuButton.classList.toggle("hidden");
 }
 
 const getIsFree = () => {

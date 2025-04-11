@@ -1,6 +1,6 @@
 <div id="auftragsPostenTable" class="mt-2"></div>
 <div class="mt-2">
-    <button class="btn-primary-new" data-binding="true" data-fun="showPostenAdd">Hinzufügen</button>
+    <button class="btn-primary-new" data-binding="true" data-fun="showItemsMenu" id="showItemsMenu">Hinzufügen</button>
 </div>
 <div id="showPostenAdd" class="hidden mt-2 bg-white rounded-lg">
     <div class="flex rounded-t-lg">
@@ -102,9 +102,13 @@
                 <input type="number" min="0" max="100" value="0" class="input-primary-new w-16" id="getDiscount">
                 <span>Rabatt [%]</span>
             </div>
-            <button id="addTimeButton" data-binding="true" data-fun="addTime" class="btn-primary-new mt-2">Hinzufügen</button>
-            <button data-binding="true" data-fun="addProductCompact" class="btn-primary">Hinzufügen</button>
-            <button data-binding="true" data-fun="addLeistung" id="addLeistungButton" class="btn-primary">Hinzufügen</button>
+            <button class="btn-primary-new mt-2">Hinzufügen</button>
+            <button class="btn-cancel mt-2" data-binding="true" data-fun="showItemsMenu">Abbrechen</button>
+            <div class="hidden">
+                <button id="addTimeButton" data-binding="true" data-fun="addTime" class="btn-primary-new mt-2">Hinzufügen</button>
+                <button data-binding="true" data-fun="addProductCompact" class="btn-primary">Hinzufügen</button>
+                <button data-binding="true" data-fun="addLeistung" id="addLeistungButton" class="btn-primary">Hinzufügen</button>
+            </div>
         </div>
     </div>
 </div>
