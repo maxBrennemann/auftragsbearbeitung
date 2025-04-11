@@ -59,8 +59,6 @@ function getSelections() {
             document.getElementById("addPostenProdukt").style.display = "inline";
         });
     }
-
-    document.getElementById("showOhneBerechnung").style.display = "inline";
 }
 
 function showSelection(element) {

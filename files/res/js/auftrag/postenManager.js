@@ -157,11 +157,8 @@ function calcTime(e) {
         }
     }
 
-    document.getElementById("showTimeSummary").innerHTML = timeDiff + " Minuten";
     document.getElementById("time").value = timeDiff;
-
     globalData.times[index][type] = time;
-    console.log(globalData.times);
 }
 
 export function selectLeistung(e) {

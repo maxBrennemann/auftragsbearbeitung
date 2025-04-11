@@ -25,12 +25,9 @@
                 </div>
             </div>
             <div class="container">
-                <span>Erweiterte Zeiterfassung:</span>
-                <br>
-                <span>Arbeitszeit(en)</span>
+                <p>Erweiterte Zeiterfassung:</p>
                 <div id="extendedTimeInput"></div>
                 <button class="btn-primary-new" data-binding="true" data-fun="createTimeInputRow">Hinzufügen</button>
-                <p id="showTimeSummary"></p>
             </div>
         </div>
     </div>
@@ -89,13 +86,17 @@
     </div>
     <div class="tab-footer bg-gray-200 rounded-b-lg p-3">
         <div>
-            <div id="showOhneBerechnung" class="ml-2">
-                <input id="ohneBerechnung" type="checkbox">
-                <span class="ml-2">Ohne Berechnung</span>
+            <div class="ml-2">
+                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "id" => "ohneBerechnung",
+                    "name" => "Ohne Berechnung",
+                ]); ?>
             </div>
-            <div id="showAddToInvoice" class="ml-2">
-                <input id="addToInvoice" type="checkbox">
-                <span class="ml-2">Der Rechnung hinzufügen</span>
+            <div class="ml-2">
+                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "id" => "addToInvoice",
+                    "name" => "Der Rechnung hinzufügen",
+                ]); ?>
             </div>
             <div class="ml-2 mt-2">
                 <input type="number" min="0" max="100" value="0" class="input-primary-new w-16" id="getDiscount">
@@ -107,3 +108,13 @@
         </div>
     </div>
 </div>
+<template id="templateTimeInput">
+    <p class="timeInputWrapper my-2"><span>von</span>
+        <input class="timeInput input-primary-new w-24" type="time" min="05:00" max="23:00">
+        <span>bis</span>
+        <input class="timeInput input-primary-new w-24" type="time" min="05:00" max="23:00">
+        <span>am</span>
+        <input class="dateInput input-primary-new w-32" type="date">
+        <button class="btn-delete">X</button>
+    </p>
+</template>

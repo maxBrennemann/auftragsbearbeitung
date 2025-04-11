@@ -1,6 +1,11 @@
 import { ajax } from "./ajax.js";
 import { renderTable } from "./table.js";
 
+const config = {
+    "type": "order",
+    "table": null,
+}
+
 export const getItems = async (id, type = "order") => {
     let query = ``;
 
@@ -94,4 +99,16 @@ export const initItems = () => {
             });
         });
     });
+}
+
+const getIsFree = () => {
+    const isFree = document.querySelector("#isFree");
+    const isFreeValue = isFree.checked ? 1 : 0;
+    return isFreeValue;
+}
+
+const getAddToInvoice = () => {
+    const addToInvoice = document.querySelector("#addToInvoice");
+    const addToInvoiceValue = addToInvoice.checked ? 1 : 0;
+    return addToInvoiceValue;
 }

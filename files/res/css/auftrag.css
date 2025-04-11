@@ -125,15 +125,6 @@ aside {
     color: white;
 }
 
-.timeInputWrapper {
-    padding: 4px;
-    border-radius: 6px;
-}
-
-.timeInputWrapperRed {
-    background: red;
-}
-
 /* css end for posten tab */
 
 @media (max-width: 850px) {
