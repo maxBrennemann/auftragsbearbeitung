@@ -13,9 +13,9 @@ export function initBindings(fnNames) {
             if (typeof fun === "function") {
                 fun(e);
             } else {
-                console.warn("event listener may not be defined or wrong");
+                console.warn(`event listener may not be defined or wrong for ${fun_name}`);
             }
-        }.bind(fun_name), false);
+        }, false);
     });
 
     let variables = document.querySelectorAll('[data-variable]');
@@ -37,29 +37,34 @@ export function initBindings(fnNames) {
             if (typeof fun === "function") {
                 fun(e);
             } else {
-                console.warn("event listener may not be defined or wrong");
+                console.warn(`event listener may not be defined or wrong for ${fun_name}`);
             }
-        }.bind(fun_name), false);
+        }, false);
     });
 }
 
-export function addBindings(elements) {
+export function addBindings(elements, fnNames) {
     Array.from(elements).forEach(el => {
-        addBinding(el);
+        addBinding(el, fnNames);
     });
 }
 
-function addBinding(el) {
+function addBinding(el, fnNames) {
     let fun_name = "";
     if (el.dataset.fun) {
-        fun_name = "clikc_" + el.dataset.fun
+        fun_name = "click_" + el.dataset.fun;
     } else if (el.id) {
-        fun_name = "click_" + el.id
+        fun_name = "click_" + el.id;
     } else {
         return;
     }
 
-    el.addEventListener("click", () => {
-        fun_name();
+    el.addEventListener("click", (e) => {
+        const fun = fnNames[fun_name];
+        if (typeof fun === "function") {
+            fun(e);
+        } else {
+            console.warn(`event listener may not be defined or wrong for ${fun_name}`);
+        }
     }, false);
 }

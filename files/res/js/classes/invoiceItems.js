@@ -1,5 +1,5 @@
 import { ajax } from "./ajax.js";
-import { initBindings } from "./bindings.js";
+import { addBindings } from "./bindings.js";
 import { renderTable } from "./table.js";
 
 const config = {
@@ -9,11 +9,6 @@ const config = {
 }
 
 const functionNames = {};
-
-export const initInvoiceItems = () => {
-    initBindings(functionNames);
-    initItems();
-}
 
 export const getItems = async (id, type = "order") => {
     let query = ``;
@@ -130,6 +125,8 @@ functionNames.click_showItemsMenu = () => {
     itemsMenuButton.classList.toggle("hidden");
 }
 
+//functionNames.click_showItemsMenu2 = functionNames.click_showItemsMenu;
+
 const getIsFree = () => {
     const isFree = document.querySelector("#isFree");
     const isFreeValue = isFree.checked ? 1 : 0;
@@ -140,4 +137,9 @@ const getAddToInvoice = () => {
     const addToInvoice = document.querySelector("#addToInvoice");
     const addToInvoiceValue = addToInvoice.checked ? 1 : 0;
     return addToInvoiceValue;
+}
+
+export const initInvoiceItems = () => {
+    addBindings(functionNames);
+    initItems();
 }
