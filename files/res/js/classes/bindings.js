@@ -1,70 +1,102 @@
-export function initBindings(fnNames) {
-    let bindings = document.querySelectorAll('[data-binding]');
-    [].forEach.call(bindings, function(el) {
-        var fun_name = "";
-        if (el.dataset.fun) {
-            fun_name = "click_" + el.dataset.fun;
-        } else {
-            fun_name = "click_" + el.id;
+const BindingManager = (function () {
+    let instance;
+
+    class BindingManager {
+        constructor() {
+            if (instance) return instance;
+
+            this.fnNames = {};
+            this.boundElements = new WeakSet();
+            this.variables = {};
+
+            instance = this;
         }
-        
-        el.addEventListener("click", function(e) {
-            var fun = fnNames[fun_name];
-            if (typeof fun === "function") {
-                fun(e);
-            } else {
-                console.warn(`event listener may not be defined or wrong for ${fun_name}`);
-            }
-        }, false);
-    });
 
-    let variables = document.querySelectorAll('[data-variable]');
-    [].forEach.call(variables, function(v) {
-        mainVariables[v.id] = v;
-    });
-    
-    let autowriter = document.querySelectorAll('[data-write]');
-    [].forEach.call(autowriter, function(el) {
-        var fun_name = "";
-        if (el.dataset.fun) {
-            fun_name = "write_" + el.dataset.fun;
-        } else {
-            fun_name = "write_" + el.id;
+        initBindings(fnNames) {
+            this.fnNames = fnNames;
+
+            document.querySelectorAll('[data-binding]').forEach(el => {
+                if (this.boundElements.has(el)) return;
+
+                const funName = el.dataset.fun
+                    ? `click_${el.dataset.fun}`
+                    : `click_${el.id}`;
+
+                el.addEventListener("click", e => {
+                    const fn = this.fnNames[funName];
+                    if (typeof fn === "function") {
+                        fn(e);
+                    } else {
+                        console.warn(`Click handler not defined for "${funName}"`);
+                    }
+                });
+
+                this.boundElements.add(el);
+            });
+
+            document.querySelectorAll('[data-variable]').forEach(el => {
+                if (el.id) {
+                    this.variables[el.id] = el;
+                }
+            });
+
+            document.querySelectorAll('[data-write]').forEach(el => {
+                if (this.boundElements.has(el)) return;
+
+                const funName = el.dataset.fun
+                    ? `write_${el.dataset.fun}`
+                    : `write_${el.id}`;
+
+                el.addEventListener("change", e => {
+                    const fn = this.fnNames[funName];
+                    if (typeof fn === "function") {
+                        fn(e);
+                    } else {
+                        console.warn(`Write handler not defined for "${funName}"`);
+                    }
+                });
+
+                this.boundElements.add(el);
+            });
         }
-        
-        el.addEventListener("change", function(e) {
-            var fun = fnNames[fun_name];
-            if (typeof fun === "function") {
-                fun(e);
-            } else {
-                console.warn(`event listener may not be defined or wrong for ${fun_name}`);
-            }
-        }, false);
-    });
-}
 
-export function addBindings(elements, fnNames) {
-    Array.from(elements).forEach(el => {
-        addBinding(el, fnNames);
-    });
-}
+        addBindings(elements) {
+            elements.forEach(el => {
+                this._addBinding(el);
+            });
+        }
 
-function addBinding(el, fnNames) {
-    let fun_name = "";
-    if (el.dataset.fun) {
-        fun_name = "click_" + el.dataset.fun;
-    } else if (el.id) {
-        fun_name = "click_" + el.id;
-    } else {
-        return;
+        _addBinding(el) {
+            if (this.boundElements.has(el)) return;
+
+            const funName = el.dataset.fun
+                ? `click_${el.dataset.fun}`
+                : el.id
+                ? `click_${el.id}`
+                : null;
+
+            if (!funName) return;
+
+            el.addEventListener("click", e => {
+                const fn = this.fnNames[funName];
+                if (typeof fn === "function") {
+                    fn(e);
+                } else {
+                    console.warn(`Click handler not defined for "${funName}"`);
+                }
+            });
+
+            this.boundElements.add(el);
+        }
+
+        getVariable(id) {
+            return this.variables[id];
+        }
     }
 
-    el.addEventListener("click", (e) => {
-        const fun = fnNames[fun_name];
-        if (typeof fun === "function") {
-            fun(e);
-        } else {
-            console.warn(`event listener may not be defined or wrong for ${fun_name}`);
-        }
-    }, false);
-}
+    return new BindingManager();
+})();
+
+export const initBindings = fnNames => BindingManager.initBindings(fnNames);
+export const addBindings = elements => BindingManager.addBindings(elements);
+export const getVariable = id => BindingManager.getVariable(id);

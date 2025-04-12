@@ -1,5 +1,5 @@
 import { ajax } from "./ajax.js";
-import { addBindings } from "./bindings.js";
+import { addBindings, initBindings } from "./bindings.js";
 import { renderTable } from "./table.js";
 
 const config = {
@@ -125,8 +125,6 @@ functionNames.click_showItemsMenu = () => {
     itemsMenuButton.classList.toggle("hidden");
 }
 
-//functionNames.click_showItemsMenu2 = functionNames.click_showItemsMenu;
-
 const getIsFree = () => {
     const isFree = document.querySelector("#isFree");
     const isFreeValue = isFree.checked ? 1 : 0;
@@ -140,6 +138,6 @@ const getAddToInvoice = () => {
 }
 
 export const initInvoiceItems = () => {
-    addBindings(functionNames);
+    initBindings(functionNames);
     initItems();
 }

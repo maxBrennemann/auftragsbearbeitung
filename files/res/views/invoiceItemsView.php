@@ -103,7 +103,7 @@
                 <span>Rabatt [%]</span>
             </div>
             <button class="btn-primary-new mt-2">Hinzufügen</button>
-            <button class="btn-cancel mt-2" data-binding="true" data-fun="showItemsMenu2">Abbrechen</button>
+            <button class="btn-cancel mt-2" data-binding="true" data-fun="showItemsMenu">Abbrechen</button>
             <div class="hidden">
                 <button id="addTimeButton" data-binding="true" data-fun="addTime" class="btn-primary-new mt-2">Hinzufügen</button>
                 <button data-binding="true" data-fun="addProductCompact" class="btn-primary">Hinzufügen</button>
