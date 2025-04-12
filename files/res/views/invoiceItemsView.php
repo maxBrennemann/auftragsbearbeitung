@@ -9,7 +9,7 @@
         <button class="tab-button tablinks" data-target="tabProdukte" disabled>Produkte</button>
     </div>
     <div class="tab-content" id="tabZeit">
-        <div id="addPostenZeit" class="grid grid-cols-2 gap-4">
+        <div id="addPostenZeit" class="grid grid-cols-3 gap-4">
             <div class="container">
                 <div class="flex flex-col">
                     <span>Zeit in Minuten:</span>
@@ -24,7 +24,7 @@
                     <textarea id="descr" class="input-primary-new" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
                 </div>
             </div>
-            <div class="container">
+            <div class="container col-span-2">
                 <p>Erweiterte Zeiterfassung:</p>
                 <div id="extendedTimeInput"></div>
                 <button class="btn-primary-new" data-binding="true" data-fun="createTimeInputRow">Hinzufügen</button>

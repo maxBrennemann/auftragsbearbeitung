@@ -1,5 +1,5 @@
 import { ajax } from "./ajax.js";
-import { addBindings, initBindings } from "./bindings.js";
+import { addBindings } from "./bindings.js";
 import { renderTable } from "./table.js";
 
 const config = {
@@ -138,6 +138,6 @@ const getAddToInvoice = () => {
 }
 
 export const initInvoiceItems = () => {
-    initBindings(functionNames);
+    addBindings(functionNames);
     initItems();
 }
