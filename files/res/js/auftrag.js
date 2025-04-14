@@ -3,7 +3,6 @@ import { addColor, addSelectedColors, checkHexCode, removeColor, toggleCS } from
 import { addBearbeitungsschritt, addStep, sendNote, removeNote, addNewNote, initNotes, cancelNote } from "./auftrag/noteStepManager.js";
 import { setOrderFinished, updateDate, updateDeadline, setDeadlineState, initExtraOptions, editDescription, editOrderType, editTitle, archvieren } from "./auftrag/orderManager.js";
 import { addExistingVehicle, addNewVehicle, selectVehicle } from "./auftrag/vehicleManager.js";
-import { addLeistung, selectLeistung, initPostenFilter, addProductCompact } from "./auftrag/postenManager.js";
 import "./auftrag/calculateGas.js";
 import { ajax } from "./classes/ajax.js";
 import { getItemsTable, initInvoiceItems } from "./classes/invoiceItems.js";
@@ -12,8 +11,8 @@ import { getItemsTable, initInvoiceItems } from "./classes/invoiceItems.js";
 window.globalData = {
     aufschlag: 0,
     vehicleId: 0,
-    auftragsId : parseInt(new URL(window.location.href).searchParams.get("id")),
-    times : [],
+    auftragsId: parseInt(new URL(window.location.href).searchParams.get("id")),
+    times: [],
 }
 
 const fnNames = {};
@@ -34,14 +33,13 @@ function initCode() {
     if (document.getElementById("selectVehicle") == null) {
         return;
     }
-    
-    document.getElementById("selectVehicle").addEventListener("change", function(event) {
+
+    document.getElementById("selectVehicle").addEventListener("change", function (event) {
         if (event.target.value == "addNew") {
             document.getElementById("addVehicle").style.display = "inline-block";
         }
     });
 
-    initPostenFilter();
     initExtraOptions();
     initNotes();
 
@@ -59,12 +57,12 @@ function addSearchEventListeners() {
 
 function performProductSearch() {
     var query = document.getElementById("productSearch").value;
-    
+
     var params = {
         getReason: "searchProduct",
         query: query
     };
-    
+
     var search = new AjaxCall(params, "POST", window.location.href);
     search.makeAjaxCall(function (response) {
         var element = document.getElementById("resultContainer");
@@ -75,7 +73,7 @@ function performProductSearch() {
 /* changes the contact person connected with the order */
 const changeContact = (e) => {
     const value = e.currentTarget.value;
-    
+
     ajax.post(`/api/v1/order/${globalData.auftragsId}/contact-person`, {
         "idContact": value,
     }).then(r => {
@@ -87,7 +85,7 @@ const changeContact = (e) => {
     });
 }
 
-window.performSearch = function(e) {
+window.performSearch = function (e) {
     var query = e.target.previousSibling.value;
     console.log(query);
 
@@ -120,7 +118,7 @@ function showDeleteMessage(row, header, key, type) {
 
     /* creates inner text of deletion verification */
     let contentNode = document.createElement("p");
-    
+
     /* create the delete note */
     const note = document.createElement("p");
     note.innerHTML = "Willst Du diese Zeile wirklich löschen?";
@@ -163,12 +161,12 @@ function showDeleteMessage(row, header, key, type) {
     }
 
     /* event listeners */
-    btn_yes.addEventListener("click", function() {
+    btn_yes.addEventListener("click", function () {
         delNode(type, key, row);
         close(div);
     }, false);
 
-    btn_no.addEventListener("click", function() {
+    btn_no.addEventListener("click", function () {
         close(div);
     }, false);
 
@@ -198,14 +196,14 @@ const toggleOrderDescription = () => {
 }
 
 /* function starts deletion of the row */
-window.deleteRow = function(key, type = "schritte", node) {
+window.deleteRow = function (key, type = "schritte", node) {
     let row = node.parentNode.parentNode;
     let header = row.parentNode.children[0];
 
     showDeleteMessage(row, header, key, type);
 }
 
-window.updateIsDone = function(key, event) {
+window.updateIsDone = function (key, event) {
     var update = new AjaxCall(`getReason=update&key=${key}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
     update.makeAjaxCall(function (response, args) {
         console.log(response);
@@ -222,9 +220,9 @@ const showAuftrag = () => {
     window.location.href = url;
 }
 
-fnNames.click_showAuftragsverlauf = function() {}
+fnNames.click_showAuftragsverlauf = function () { }
 
-window.chooseProduct = function(productId) {
+window.chooseProduct = function (productId) {
     var amount = document.getElementById(productId + "_getAmount").value;
     var isFree = getOhneBerechnung() ? 1 : 0;
     var addToInvoice = getAddToInvoice() ? 1 : 0;
@@ -236,7 +234,7 @@ window.chooseProduct = function(productId) {
 }
 
 /* performAction section of the table */
-window.performAction = function(key, event) {
+window.performAction = function (key, event) {
     /* centered upload div */
     var div = document.createElement("div");
     var form = document.createElement("form");
@@ -267,7 +265,7 @@ window.performAction = function(key, event) {
     tableKey.hidden = true;
     tableKey.type = "text";
     tableKey.value = event.target.parentNode.parentNode.parentNode.parentNode.dataset.key;
-	form.appendChild(tableKey);
+    form.appendChild(tableKey);
 
     document.body.appendChild(div);
     addActionButtonForDiv(div, "remove");
@@ -308,11 +306,7 @@ fnNames.click_addExistingVehicle = addExistingVehicle;
 fnNames.click_addNewVehicle = addNewVehicle;
 fnNames.write_selectVehicle = selectVehicle;
 
-fnNames.click_addLeistung = addLeistung;
-fnNames.click_addProductCompact = addProductCompact;
-fnNames.write_selectLeistung = selectLeistung;
-
-if (document.readyState !== 'loading' ) {
+if (document.readyState !== 'loading') {
     initCode();
 } else {
     document.addEventListener('DOMContentLoaded', function () {

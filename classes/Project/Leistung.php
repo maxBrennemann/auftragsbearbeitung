@@ -225,13 +225,6 @@ class Leistung extends Posten
 		$data['SpeziefischerPreis'] = (float) Tools::get("pre");
 		$data['anzahl'] = (float) Tools::get("anz");
 
-		$isOverwrite = Tools::get("isOverwrite");
-		if (isset($isOverwrite) && (int) $isOverwrite == 1) {
-			$_SESSION['overwritePosten'] = false;
-		}
-
-		$_SESSION['overwritePosten'] = false;
-
 		Posten::insertPosten("leistung", $data);
 
 		$newOrder = new Auftrag(Tools::get("auftrag"));

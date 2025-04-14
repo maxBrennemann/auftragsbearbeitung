@@ -151,24 +151,7 @@ abstract class Posten
 		$dis = $data['discount'] == null ? 0 : $data['discount'];
 		$inv = $data['addToInvoice'] == null ? 0 : $data['addToInvoice'];
 
-		if (isset($_SESSION['overwritePosten']) && $_SESSION['overwritePosten'] == true) {
-			$postennummer = (int) $_SESSION['overwritePosten_postennummer'];
-			DBAccess::updateQuery("UPDATE posten SET ohneBerechnung = $fre, discount = $dis, isInvoice = $inv WHERE Postennummer = $postennummer");
-
-			/* deletes zeiterfassung if it exists */
-			$nummer = DBAccess::selectQuery("SELECT Nummer FROM zeit WHERE Postennummer = $postennummer");
-			if ($nummer != null) {
-				$deleteId = $nummer[0]["Nummer"];
-				DBAccess::deleteQuery("DELETE FROM zeiterfassung WHERE id_zeit = $deleteId");
-			}
-
-			/* quick fixed for overwrite */
-			DBAccess::deleteQuery("DELETE FROM zeit WHERE Postennummer = $postennummer");
-			DBAccess::deleteQuery("DELETE FROM leistung_posten WHERE Postennummer = $postennummer");
-			DBAccess::deleteQuery("DELETE FROM product_compact WHERE Postennummer = $postennummer");
-		} else {
-			$postennummer = DBAccess::insertQuery("INSERT INTO posten (Auftragsnummer, Posten, ohneBerechnung, discount, isInvoice, position) SELECT $auftragsnummer, '$type', $fre, $dis, $inv, count(*) + 1 FROM posten WHERE Auftragsnummer = $auftragsnummer");
-		}
+		$postennummer = DBAccess::insertQuery("INSERT INTO posten (Auftragsnummer, Posten, ohneBerechnung, discount, isInvoice, position) SELECT $auftragsnummer, '$type', $fre, $dis, $inv, count(*) + 1 FROM posten WHERE Auftragsnummer = $auftragsnummer");
 
 		switch ($type) {
 			case "zeit":

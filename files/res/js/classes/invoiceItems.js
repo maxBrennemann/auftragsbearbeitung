@@ -1,6 +1,7 @@
 import { getTemplate } from "../global.js";
 import { ajax } from "./ajax.js";
 import { addBindings } from "./bindings.js";
+import { infoSaveSuccessfull } from "./statusInfo.js";
 import { renderTable } from "./table.js";
 
 const config = {
@@ -114,6 +115,7 @@ functionNames.click_addItem = async () => {
             addTime();
             break;
         case "service":
+            addService();
             break;
         case "product":
             break;
@@ -135,7 +137,37 @@ const addTime = () => {
         "addToInvoice": getAddToInvoice(),
         "discount": document.querySelector("#getDiscount").value,
         "times": JSON.stringify(config.extendedTimes),
-    }).then(r => {});
+    }).then(r => {
+        if (r.status !== "success") {
+            infoSaveSuccessfull("failiure", r.message);
+        }
+
+        updatePrice(r.totalPrice);
+        infoSaveSuccessfull("success");
+        // reloadPostenListe();
+        clearInputs({
+            "ids": ["time", "wage", "timeDescription"],
+            "classes": ["timeInput", "dateInput"]
+        });
+    });
+}
+
+const addService = () => {
+    ajax.post(`/api/v1/order-items/${globalData.auftragsId}/services`, {
+        "lei": document.querySelector("#selectLeistung").value,
+        "bes": document.querySelector("#bes").value,
+        "ekp": document.querySelector("#ekp").value,
+        "pre": document.querySelector("#pre").value,
+        "meh": document.querySelector("#meh").value,
+        "anz": document.querySelector("#anz").value,
+        "ohneBerechnung": getIsFree(),
+        "addToInvoice": getAddToInvoice(),
+        "discount": document.querySelector("#getDiscount").value,
+    }).then(() => {
+        //reloadPostenListe();
+        infoSaveSuccessfull("success");
+        clearInputs({ "ids": ["bes", "ekp", "pre", "meh", "anz"] });
+    });
 }
 
 functionNames.click_showItemsMenu = () => {
@@ -252,6 +284,13 @@ const getAddToInvoice = () => {
     const addToInvoice = document.querySelector("#addToInvoice");
     const addToInvoiceValue = addToInvoice.checked ? 1 : 0;
     return addToInvoiceValue;
+}
+
+const updatePrice = (price) => {
+    const priceEl = document.getElementById("totalPrice");
+    priceEl.innerText = new Intl.NumberFormat("de-DE", { 
+        "style": "currency", 
+        "currency": "EUR" }).format(newPrice);
 }
 
 export const initInvoiceItems = () => {

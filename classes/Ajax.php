@@ -261,8 +261,6 @@ class Ajax
 				$data['discount'] = (int) $_POST['discount'];
 				$data['addToInvoice'] = (int) $_POST['addToInvoice'];
 
-				$_SESSION['overwritePosten'] = false;
-
 				Posten::insertPosten("compact", $data);
 				echo (new Auftrag($_POST['auftrag']))->preisBerechnen();
 				break;
@@ -569,27 +567,6 @@ class Ajax
 					return;
 				}
 				echo $infoText[0]['info'];
-				break;
-			case "overwritePosten":
-				$_SESSION['overwritePosten'] = true;
-				$postennummer = Table::getIdentifierValue($_POST['table'], $_POST['postenId']);
-				$_SESSION['overwritePosten_postennummer'] = $postennummer;
-
-				$postenType = DBAccess::selectQuery("SELECT Posten FROM posten WHERE Postennummer = $postennummer")[0]["Posten"];
-				$data = null;
-				switch ($postenType) {
-					case "zeit":
-						$data = Zeit::getPostenData($postennummer);
-						break;
-					case "leistung":
-						$data = Leistung::getPostenData($postennummer);
-						break;
-				}
-
-				echo json_encode([
-					"id" => $_SESSION['overwritePosten_postennummer'],
-					"data" => $data
-				]);
 				break;
 			case "getManual":
 				$pageName = $_POST['pageName'];

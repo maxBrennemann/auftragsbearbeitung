@@ -271,11 +271,6 @@ class Zeit extends Posten
 		$data['discount'] = (int) Tools::get("discount");
 		$data['addToInvoice'] = (int) Tools::get("addToInvoice");
 
-		$isOverwrite = Tools::get("overwrite");
-		if (isset($isOverwrite) && (int) $isOverwrite == 1) {
-			$_SESSION['overwritePosten'] = false;
-		}
-
 		$ids = Posten::insertPosten("zeit", $data);
 
 		/* erweiterte Zeiterfassung */
@@ -283,8 +278,6 @@ class Zeit extends Posten
 		if (count($zeiterfassung) != 0) {
 			Zeit::erweiterteZeiterfassung($zeiterfassung, $ids[1]);
 		}
-
-		$_SESSION['overwritePosten'] = false;
 
 		$newOrder = new Auftrag(Tools::get("id"));
 		$price = $newOrder->preisBerechnen();

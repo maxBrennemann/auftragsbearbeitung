@@ -316,7 +316,7 @@ if ($orderId <= 0): ?>
 		</div>
 		<div class="defCont preis">
 			<p class="font-bold">Gesamtpreis (netto):</p>
-			<span id="gesamtpreis">
+			<span id="totalPrice" class="font-bold text-2xl">
 				<?= number_format($auftrag->preisBerechnen(), 2, ',', '') . "€" ?>
 			</span>
 			<span>

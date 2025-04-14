@@ -71,10 +71,6 @@ aside {
     flex: 50%;
 }
 
-#gesamtpreis {
-    font-size: 3rem;
-}
-
 #prodcutSearchContainer {
     position: absolute;
     background: white;

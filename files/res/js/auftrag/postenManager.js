@@ -1,72 +1,5 @@
 import { ajax } from "../classes/ajax.js";
 
-export function addLeistung() {
-    var e = document.getElementById("selectLeistung");
-
-    let ekp = document.getElementById("ekp").value;
-    let pre = document.getElementById("pre").value;
-    let anz = document.getElementById("anz").value;
-
-    let params = {
-        lei: e.options[e.selectedIndex].value,
-        bes: document.getElementById("bes").value,
-        ekp: ekp,
-        pre: pre,
-        meh: document.getElementById("meh").value,
-        anz: anz,
-        auftrag: globalData.auftragsId,
-        ohneBerechnung: getOhneBerechnung() ? 1 : 0,
-        addToInvoice: getAddToInvoice() ? 1 : 0,
-        discount: document.getElementById("getDiscount").value,
-    };
-
-    if (globalData.isOverwrite) {
-        params.isOverwrite = true;
-    }
-
-    ajax.post(`/api/v1/order-items/${globalData.auftragsId}/services`, params).then(response => {
-        updatePrice(response);
-        reloadPostenListe();
-        infoSaveSuccessfull("success");
-        clearInputs({ "ids": ["bes", "ekp", "pre", "meh", "anz"] });
-    });
-}
-
-export const addTime = () => {
-    const wage = document.getElementById("wage").value;
-    if (wage == "" || wage == null) {
-        alert("Stundenlohn kann nicht leer sein.");
-        return;
-    }
-
-    const time = document.getElementById("time").value;
-    const description = document.getElementById("descr").value;
-    const noPayment = getOhneBerechnung() ? 1 : 0;
-    const addToInvoice = getAddToInvoice() ? 1 : 0;
-    const discount = document.getElementById("getDiscount").value;
-    const overwrite = globalData.isOverwrite ? 1 : 0;
-    const times = JSON.stringify(globalData.times);
-
-    ajax.post(`/api/v1/order-items/${globalData.auftragsId}/times`, {
-        "time": time,
-        "wage": wage,
-        "description": description,
-        "noPayment": noPayment,
-        "addToInvoice": addToInvoice,
-        "discount": discount,
-        "overwrite": overwrite,
-        "times": times,
-    }).then(r => {
-        updatePrice(r.price);
-        reloadPostenListe();
-        infoSaveSuccessfull("success");
-        clearInputs({
-            "ids": ["time", "wage", "descr"],
-            "classes": ["timeInput", "dateInput"]
-        });
-    });
-}
-
 export function selectLeistung(e) {
     globalData.aufschlag = parseInt(e.target.options[e.target.selectedIndex].dataset.aufschlag);
 }
@@ -103,50 +36,8 @@ function cancleLeistung() {
     clearInputs({ "ids": ["bes", "ekp", "pre", "meh", "anz"] });
 }
 
-/**
- * editRow onclick gets executed when the edit button is pressed
- * @param {*} key 
- * @param {*} element 
- */
-window.editRow = function (key, element) {
-    var postentype = element.parentNode.parentNode.firstChild.firstChild.innerHTML;
-
-    /* sends token to server to overwrite a posten */
-    var table = document.getElementById("auftragsPostenTable").children[0].dataset.key;
-    var postenId = key;
-
-    ajax.post({
-        "getReason": "overwritePosten",
-        "postenId": postenId,
-        "table": table,
-    }).then(response => {
-        var data = JSON.parse(response);
-        console.log(data);
-
-        setParameters(postentype, data.data);
-    });
-}
-
 export function showPostenAdd() {
     document.getElementById("showPostenAdd").classList.remove("hidden");
-}
-
-function setParameters(postentype, parameters) {
-    var btns = document.getElementsByClassName("tablinks");
-    showPostenAdd();
-    switch (postentype) {
-        case "Zeit":
-            editTimeEntry(btns, parameters);
-            break;
-        case "Leistung":
-            editLeistungEntry(btns, parameters);
-            break;
-        case "Produkt":
-            btns[2].click();
-            break;
-        case "productcompact":
-            break;
-    }
 }
 
 function editLeistungEntry(btns, parameters) {
@@ -248,26 +139,9 @@ export function initPostenFilter() {
     });
 }
 
-export function addProductCompact() {
-    var btns = document.getElementsByClassName("tablinks");
-    btns[1].click();
-}
-
 const reloadPostenListe = async () => {
     const response = await ajax.get(`/api/v1/order-items/${globalData.auftragsId}/all-old`);
 
     document.getElementById("auftragsPostenTable").innerHTML = response.data[0];
     document.getElementById("invoicePostenTable").innerHTML = response.data[1];
-}
-
-function updatePrice(newPrice) {
-    document.getElementById("gesamtpreis").innerText = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(newPrice);
-}
-
-function getOhneBerechnung() {
-    return document.getElementById("ohneBerechnung").checked;
-}
-
-function getAddToInvoice() {
-    return document.getElementById("addToInvoice").checked;
 }
