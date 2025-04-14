@@ -60,13 +60,6 @@
     border-top: 1px solid black;
 }
 
-.showBox {
-    border-radius: 0;
-    border: none;
-    width: 60px;
-    height: 20px;
-}
-
 .notUpdated, #yellow {
     background: rgb(255, 203, 119);
 }

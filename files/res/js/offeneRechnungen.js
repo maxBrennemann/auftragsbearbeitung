@@ -1,4 +1,4 @@
-import { addRow, createHeader, createTable } from "./classes/table_new.js";
+import { addRow, createHeader, createTable } from "./classes/table.js";
 
 const init = () => {
     createInvoiceTable();

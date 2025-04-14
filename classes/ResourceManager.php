@@ -10,7 +10,6 @@ use Classes\Project\Posten;
 use Classes\Project\Table;
 use Classes\Project\Angebot;
 use Classes\Project\Rechnung;
-use Classes\Project\PDF_Auftrag;
 
 use Classes\Project\Table\TableConfig;
 
@@ -59,6 +58,15 @@ class ResourceManager
     {
         session_start();
         errorReporting();
+
+        $query = "SELECT content FROM settings WHERE title = 'companyName';";
+        $companyName = DBAccess::selectQuery($query);
+
+        if ($companyName != null) {
+            $_SESSION["companyName"] = $companyName[0]["content"];
+        } else {
+            $_SESSION["companyName"] = "Auftragsbearbeitung";
+        }
     }
 
     /**
@@ -163,7 +171,7 @@ class ResourceManager
                 $type = $_GET['type'];
                 switch ($type) {
                     case "angebot":
-                        $angebot = new Angebot();
+                        $angebot = new Angebot(0);
                         $angebot->PDFgenerieren();
                         break;
                     case "rechnung":
@@ -184,12 +192,6 @@ class ResourceManager
                         } else {
                             $rechnung = new Rechnung();
                             $rechnung->PDFgenerieren();
-                        }
-                        break;
-                    case "auftrag":
-                        if (isset($_GET['id'])) {
-                            $id = (int) $_GET['id'];
-                            PDF_Auftrag::getPDF($id);
                         }
                         break;
                 }

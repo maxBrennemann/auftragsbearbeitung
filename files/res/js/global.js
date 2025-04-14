@@ -295,12 +295,10 @@ function createTable(rows, columns, data, emptyFields) {
 
 /* submit button onenter */
 function autosubmit() {
-	var elements = document.getElementsByClassName("autosubmit");
-	var id = "";
-	var btn;
+	const elements = document.getElementsByClassName("autosubmit");
 	for (let element of elements) {
-		id = element.dataset.btnid;
-		btn = document.getElementById("autosubmit_" + id);
+		const id = element.dataset.btnid;
+		const btn = document.getElementById("autosubmit_" + id);
 
 		element.addEventListener("keyup", function (event) {
 			if (event.key === "Enter") {
@@ -549,6 +547,16 @@ export const loadFromLocalStorage = (key) => {
 export const saveToLocalStorage = (key, value) => {
 	value = JSON.stringify(value);
 	localStorage.setItem(key, value);
+}
+
+export const getTemplate = (id) => {
+	const template = document.getElementById(id);
+	if (template == null) {
+		return null;
+	}
+
+	const clone = template.content.cloneNode(true);
+	return clone;
 }
 
 if (document.readyState !== 'loading' ) {

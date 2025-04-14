@@ -19,6 +19,7 @@ use Classes\Routes\SettingsRoutes;
 use Classes\Routes\StickerRoutes;
 use Classes\Routes\TimeTrackingRoutes;
 use Classes\Routes\UserRoutes;
+use Classes\Routes\VariousRoutes;
 
 use Classes\Project\FormGenerator;
 use Classes\Project\Search;
@@ -49,9 +50,7 @@ use Classes\Project\Modules\Sticker\Textil;
 use Classes\Project\Modules\Sticker\Aufkleber;
 use Classes\Project\Modules\Sticker\AufkleberWandtattoo;
 use Classes\Project\Modules\Sticker\StickerTagManager;
-use Classes\Project\Modules\Sticker\ProductCrawler;
 
-use Classes\Project\Modules\Sticker\Exports\ExportFacebook;
 use Classes\Routes\TableRoutes;
 use Classes\Routes\TestingRoutes;
 
@@ -123,6 +122,9 @@ class Ajax
 				break;
 			case "user":
 				UserRoutes::handleRequest($path);
+				break;
+			case "template":
+				VariousRoutes::handleRequest($path);
 				break;
 			default:
 				JSONResponseHandler::throwError(404, "Path not found");
@@ -258,8 +260,6 @@ class Ajax
 				$data['Auftragsnummer'] = (int) $_POST['auftrag'];
 				$data['discount'] = (int) $_POST['discount'];
 				$data['addToInvoice'] = (int) $_POST['addToInvoice'];
-
-				$_SESSION['overwritePosten'] = false;
 
 				Posten::insertPosten("compact", $data);
 				echo (new Auftrag($_POST['auftrag']))->preisBerechnen();
@@ -482,16 +482,6 @@ class Ajax
 				$auftrag = new Auftrag($auftrag);
 				$auftrag->rearchiveOrder();
 				break;
-			case 'loadTemplateOrder':
-				$customerId = $_POST['customerId'];
-				$angebot = new Angebot($customerId);
-				echo $angebot->getHTMLTemplate();
-				break;
-			case 'loadCachedPosten':
-				$customerId = $_POST['customerId'];
-				$angebot = new Angebot($customerId);
-				echo $angebot->loadCachedPosten();
-				break;
 			case "getAddresses":
 				$kdnr = (int) $_POST['kdnr'];
 				echo json_encode(Address::loadAllAddresses($kdnr));
@@ -533,7 +523,7 @@ class Ajax
 			case "loadPosten":
 				if (isset($_SESSION['offer_is_order']) && $_SESSION['offer_is_order'] == true) {
 					$orderId = $_POST['auftragsId'];
-					$angebot = new Angebot();
+					$angebot = new Angebot(0);
 					$angebot->storeOffer($orderId);
 				}
 				break;
@@ -577,27 +567,6 @@ class Ajax
 					return;
 				}
 				echo $infoText[0]['info'];
-				break;
-			case "overwritePosten":
-				$_SESSION['overwritePosten'] = true;
-				$postennummer = Table::getIdentifierValue($_POST['table'], $_POST['postenId']);
-				$_SESSION['overwritePosten_postennummer'] = $postennummer;
-
-				$postenType = DBAccess::selectQuery("SELECT Posten FROM posten WHERE Postennummer = $postennummer")[0]["Posten"];
-				$data = null;
-				switch ($postenType) {
-					case "zeit":
-						$data = Zeit::getPostenData($postennummer);
-						break;
-					case "leistung":
-						$data = Leistung::getPostenData($postennummer);
-						break;
-				}
-
-				echo json_encode([
-					"id" => $_SESSION['overwritePosten_postennummer'],
-					"data" => $data
-				]);
 				break;
 			case "getManual":
 				$pageName = $_POST['pageName'];
@@ -816,12 +785,6 @@ class Ajax
 				$stickerCollection = new StickerCollection($id);
 				$stickerCollection->toggleActiveStatus();
 				break;
-			case "getTagOverview":
-				echo json_encode([
-					"status" => "success",
-					"tags" => StickerTagManager::countTagOccurences(),
-				]);
-				break;
 			case "getTagGroups":
 				$query = "SELECT g.id AS groupId, g.title AS groupName, t.id AS tagId, t.content AS tagName FROM module_sticker_sticker_tag_group g LEFT JOIN module_sticker_sticker_tag_group_match m ON g.id = m.idGroup LEFT JOIN module_sticker_tags t ON t.id = m.idTag;";
 				$data = DBAccess::selectQuery($query);
@@ -850,13 +813,6 @@ class Ajax
 					"status" => "success",
 				]);
 				break;
-			case "crawlAll":
-				$pc = new ProductCrawler();
-				$pc->crawlAll();
-				break;
-			case "crawlTags":
-				StickerTagManager::crawlAllTags();
-				break;
 			case "setAltTitle":
 				$id = (int) $_POST["id"];
 				$newTitle = (string) $_POST["newTitle"];
@@ -875,18 +831,6 @@ class Ajax
 				} else {
 					echo json_encode(["status" => "no data found"]);
 				}
-				break;
-			case "createFbExport":
-				$export = new ExportFacebook();
-				$export->generateCSV();
-				$filename = $export->getFilename();
-				$fileLink = Link::getResourcesLink("files/generated/fb_export/" . $filename, "html");
-
-				echo json_encode([
-					"status" => "successful",
-					"file" => $fileLink,
-					"errorList" => "",//$errorList,
-				]);
 				break;
 			case "showSearch":
 				$id = (int) $_POST["id"];
