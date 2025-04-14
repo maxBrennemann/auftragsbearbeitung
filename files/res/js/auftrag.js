@@ -3,8 +3,7 @@ import { addColor, addSelectedColors, checkHexCode, removeColor, toggleCS } from
 import { addBearbeitungsschritt, addStep, sendNote, removeNote, addNewNote, initNotes, cancelNote } from "./auftrag/noteStepManager.js";
 import { setOrderFinished, updateDate, updateDeadline, setDeadlineState, initExtraOptions, editDescription, editOrderType, editTitle, archvieren } from "./auftrag/orderManager.js";
 import { addExistingVehicle, addNewVehicle, selectVehicle } from "./auftrag/vehicleManager.js";
-import { addProductCompactOld, addLeistung, addTime, selectLeistung, initPostenFilter, addProductCompact, createTimeInputRow } from "./auftrag/postenManager.js";
-import "./auftrag/postenOrder.js";
+import { addLeistung, selectLeistung, initPostenFilter, addProductCompact } from "./auftrag/postenManager.js";
 import "./auftrag/calculateGas.js";
 import { ajax } from "./classes/ajax.js";
 import { getItemsTable, initInvoiceItems } from "./classes/invoiceItems.js";
@@ -309,10 +308,7 @@ fnNames.click_addExistingVehicle = addExistingVehicle;
 fnNames.click_addNewVehicle = addNewVehicle;
 fnNames.write_selectVehicle = selectVehicle;
 
-fnNames.click_addProductCompactOld = addProductCompactOld;
 fnNames.click_addLeistung = addLeistung;
-fnNames.click_addTime = addTime;
-fnNames.click_createTimeInputRow = createTimeInputRow;
 fnNames.click_addProductCompact = addProductCompact;
 fnNames.write_selectLeistung = selectLeistung;
 

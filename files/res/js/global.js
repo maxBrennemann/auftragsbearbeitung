@@ -549,6 +549,16 @@ export const saveToLocalStorage = (key, value) => {
 	localStorage.setItem(key, value);
 }
 
+export const getTemplate = (id) => {
+	const template = document.getElementById(id);
+	if (template == null) {
+		return null;
+	}
+
+	const clone = template.content.cloneNode(true);
+	return clone;
+}
+
 if (document.readyState !== 'loading' ) {
 	exportToWindow();
     startFunc();

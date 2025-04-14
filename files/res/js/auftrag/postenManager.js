@@ -1,33 +1,5 @@
 import { ajax } from "../classes/ajax.js";
 
-export async function addProductCompactOld() {
-    await ajax.post({
-        r: "insertProductCompact",
-        menge: document.getElementById("posten_produkt_menge").value,
-        marke: document.getElementById("posten_produkt_marke").value,
-        ekpreis: document.getElementById("posten_produkt_ek").value,
-        vkpreis: document.getElementById("posten_produkt_vk").value,
-        name: document.getElementById("posten_produkt_name").value,
-        beschreibung: document.getElementById("posten_produkt_besch").value,
-        auftrag: globalData.auftragsId,
-        ohneBerechnung: getOhneBerechnung() ? 1 : 0,
-        addToInvoice: getAddToInvoice() ? 1 : 0,
-        discount: document.getElementById("getDiscount").value,
-    });
-
-    reloadPostenListe();
-    clearInputs({
-        "ids": [
-            "posten_produkt_menge",
-            "posten_produkt_marke",
-            "posten_produkt_ek",
-            "posten_produkt_vk",
-            "posten_produkt_name",
-            "posten_produkt_besch"
-        ]
-    });
-}
-
 export function addLeistung() {
     var e = document.getElementById("selectLeistung");
 
@@ -93,72 +65,6 @@ export const addTime = () => {
             "classes": ["timeInput", "dateInput"]
         });
     });
-}
-
-/**
- * this function gets executed when the "+" button is pressed to add a new timeframe or on init
- * @param {*} event this is the passed event
- */
-export function createTimeInputRow() {
-    const template = document.getElementById("templateTimeInput");
-    const div = document.createElement("div");
-    div.appendChild(template.content.cloneNode(true));
-
-    const extendedTimeInput = document.getElementById("extendedTimeInput");
-    extendedTimeInput.appendChild(div);
-
-    const dateInput = div.querySelector(".dateInput");
-    dateInput.dataset.index = globalData.times.length;
-    dateInput.addEventListener("change", () => {
-        globalData.times[dateInput.dataset.index].date = dateInput.value;
-    }, false);
-
-    const timeInputs = div.getElementsByClassName("timeInput");
-    const start = timeInputs[0];
-    const end = timeInputs[1];
-
-    start.addEventListener("change", calcTime, false);
-    end.addEventListener("change", calcTime, false);
-
-    start.dataset.index = globalData.times.length;
-    start.dataset.type = "start";
-    end.dataset.index = globalData.times.length;
-    end.dataset.type = "end";
-
-    globalData.times.push({ start: "00:00", end: "00:00", date: "" });
-
-    start.focus();
-}
-
-/**
- * this function gets executed when a time input is filled in
- * @param {*} e this is the passed event
- */
-function calcTime(e) {
-    var time = e.target.value;
-    var addPostenZeit = document.getElementById("addPostenZeit");
-    var elements = addPostenZeit.getElementsByClassName("timeInput");
-
-    const index = e.target.dataset.index;
-    const type = e.target.dataset.type;
-
-    var timeDiff = 0;
-    for (var i = 0; i < elements.length; i += 2) {
-        var start = elements[i].value.split(":");
-        var stop = elements[i + 1].value.split(":");
-
-        var temp = parseInt(stop[0]) * 60 + parseInt(stop[1]) - parseInt(start[0]) * 60 - parseInt(start[1]);
-
-        if (temp > 0) {
-            timeDiff += temp;
-            elements[i].parentNode.classList.remove("timeInputWrapperRed");
-        } else {
-            elements[i].parentNode.classList.add("timeInputWrapperRed");
-        }
-    }
-
-    document.getElementById("time").value = timeDiff;
-    globalData.times[index][type] = time;
 }
 
 export function selectLeistung(e) {
@@ -341,15 +247,6 @@ export function initPostenFilter() {
         })
     });
 }
-
-document.addEventListener("keyup", (e) => {
-    if (e.code === "Enter" || e.code === "NumpadEnter") {
-        var element = document.activeElement;
-        if (element.parentNode.classList.contains("timeInputWrapper")) {
-            element.parentNode.parentNode.querySelector("button").click();
-        }
-    }
-});
 
 export function addProductCompact() {
     var btns = document.getElementsByClassName("tablinks");

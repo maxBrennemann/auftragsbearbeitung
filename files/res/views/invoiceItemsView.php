@@ -21,7 +21,7 @@
                 </div>
                 <div class="mt-1 flex flex-col">
                     <span>Beschreibung:</span>
-                    <textarea id="descr" class="input-primary-new" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
+                    <textarea id="timeDescription" class="input-primary-new" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
                 </div>
             </div>
             <div class="container col-span-2">
@@ -102,13 +102,8 @@
                 <input type="number" min="0" max="100" value="0" class="input-primary-new w-16" id="getDiscount">
                 <span>Rabatt [%]</span>
             </div>
-            <button class="btn-primary-new mt-2">Hinzufügen</button>
+            <button class="btn-primary-new mt-2" data-binding="true" data-fun="addItem">Hinzufügen</button>
             <button class="btn-cancel mt-2" data-binding="true" data-fun="showItemsMenu">Abbrechen</button>
-            <div class="hidden">
-                <button id="addTimeButton" data-binding="true" data-fun="addTime" class="btn-primary-new mt-2">Hinzufügen</button>
-                <button data-binding="true" data-fun="addProductCompact" class="btn-primary">Hinzufügen</button>
-                <button data-binding="true" data-fun="addLeistung" id="addLeistungButton" class="btn-primary">Hinzufügen</button>
-            </div>
         </div>
     </div>
 </div>

@@ -1,3 +1,4 @@
+import { getTemplate } from "../global.js";
 import { ajax } from "./ajax.js";
 import { addBindings } from "./bindings.js";
 import { renderTable } from "./table.js";
@@ -6,6 +7,7 @@ const config = {
     "type": "order",
     "itemType": "time",
     "table": null,
+    "extendedTimes": [],
 }
 
 const functionNames = {};
@@ -106,9 +108,10 @@ const initItems = () => {
     });
 }
 
-export const addItem = async () => {
+functionNames.click_addItem = async () => {
     switch (config.type) {
         case "time":
+            addTime();
             break;
         case "service":
             break;
@@ -117,12 +120,126 @@ export const addItem = async () => {
     }
 }
 
+const addTime = () => {
+    const wage = document.querySelector("#wage").value;
+    if (wage === "" || wage === null) {
+        alert("Stundenlohn kann nicht leer sein.");
+        return;
+    }
+
+    ajax.post(`/api/v1/order-items/${globalData.auftragsId}/times`, {
+        "time": document.querySelector("#time").value,
+        "wage": wage,
+        "description": document.querySelector("#timeDescription").value,
+        "noPayment": getIsFree(),
+        "addToInvoice": getAddToInvoice(),
+        "discount": document.querySelector("#getDiscount").value,
+        "times": JSON.stringify(config.extendedTimes),
+    }).then(r => {});
+}
+
 functionNames.click_showItemsMenu = () => {
     const itemsMenu = document.querySelector("#showPostenAdd");
     const itemsMenuButton = document.querySelector("#showItemsMenu");
 
     itemsMenu.classList.toggle("hidden");
     itemsMenuButton.classList.toggle("hidden");
+}
+
+/**
+* this function gets executed when the "+" button is pressed to add a new timeframe or on init
+* @param {*} event this is the passed event
+*/
+functionNames.click_createTimeInputRow = () => {
+    const div = document.createElement("div");
+    div.appendChild(getTemplate("templateTimeInput"));
+
+    const extendedTimeInput = document.getElementById("extendedTimeInput");
+    extendedTimeInput.appendChild(div);
+
+    const dateInput = div.querySelector(".dateInput");
+    dateInput.dataset.index = config.extendedTimes.length;
+    dateInput.addEventListener("change", e => adjustTime(e, "date"), false);
+
+    const timeInputs = div.querySelectorAll(".timeInput");
+    const start = timeInputs[0];
+    const end = timeInputs[1];
+
+    start.addEventListener("change", e => adjustTime(e, "start"), false);
+    end.addEventListener("change", e => adjustTime(e, "end"), false);
+
+    start.dataset.index = config.extendedTimes.length;
+    start.dataset.type = "start";
+    end.dataset.index = config.extendedTimes.length;
+    end.dataset.type = "end";
+
+    /* lazy solution */
+    const removeBtn = div.querySelector(".btn-delete");
+    removeBtn.dataset.index = config.extendedTimes.length;
+    removeBtn.addEventListener("click", e => {
+        div.classList.add("hidden");
+        const index = e.target.dataset.index;
+        config.extendedTimes[index].start = "00:00";
+        config.extendedTimes[index].end = "00:00";
+        config.extendedTimes[index].date = "";
+        calculateTime();
+    }, false);
+
+    config.extendedTimes.push({ "start": "00:00", "end": "00:00", "date": "" });
+
+    start.focus();
+}
+
+const adjustTime = (e, type) => {
+    const value = e.target.value;
+    let index = e.target.dataset.index;
+    index = parseInt(index);
+    index = index || 0;
+
+    config.extendedTimes[index][type] = value;
+
+    if (type === "date") {
+        return;
+    }
+
+    const startEl = document.querySelector(`.timeInput[data-index="${index}"][data-type="start"]`);
+    const endEl = document.querySelector(`.timeInput[data-index="${index}"][data-type="end"]`);
+
+    const timeDiff = getTime(startEl.value, endEl.value);
+    if (timeDiff < 0) {
+        startEl.classList.add("bg-red-200");
+        endEl.classList.add("bg-red-200");
+    } else {
+        startEl.classList.remove("bg-red-200");
+        endEl.classList.remove("bg-red-200");
+    }
+
+    calculateTime();
+}
+
+const calculateTime = () => {
+    let minutes = 0;
+    for (let i = 0; i < config.extendedTimes.length; i++) {
+        const time = getTime(config.extendedTimes[i].start, config.extendedTimes[i].end);
+        minutes += Math.floor(time / 1000 / 60);
+    }
+    document.getElementById("time").value = minutes;
+}
+
+const getTime = (startValue, endValue) => {
+    const start = startValue.split(":");
+    const end = endValue.split(":");
+
+    const startTime = new Date();
+    startTime.setHours(start[0]);
+    startTime.setMinutes(start[1]);
+    startTime.setSeconds(0);
+    const endTime = new Date();
+    endTime.setHours(end[0]);
+    endTime.setMinutes(end[1]);
+    endTime.setSeconds(0);
+
+    return (endTime.getTime() - startTime.getTime());
 }
 
 const getIsFree = () => {

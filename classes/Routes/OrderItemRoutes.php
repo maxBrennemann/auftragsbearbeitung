@@ -35,4 +35,7 @@ class OrderItemRoutes extends Routes
         "/order-items/{id}/services" => [\Classes\Project\Leistung::class, "add"],
     ];
 
+    protected static $putRoutes = [];
+
+    protected static $deleteRoutes = [];
 }

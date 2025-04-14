@@ -1638,12 +1638,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/cache.git",
-                "reference": "673cbae8e2095af1236ecefffdd80b773d525b2a"
+                "reference": "588d5ff7035e78cd4f69eb798890749ac4641b30"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/cache/zipball/673cbae8e2095af1236ecefffdd80b773d525b2a",
-                "reference": "673cbae8e2095af1236ecefffdd80b773d525b2a",
+                "url": "https://api.github.com/repos/php-fig/cache/zipball/588d5ff7035e78cd4f69eb798890749ac4641b30",
+                "reference": "588d5ff7035e78cd4f69eb798890749ac4641b30",
                 "shasum": ""
             },
             "require": {
@@ -1681,9 +1681,9 @@
                 "psr-6"
             ],
             "support": {
-                "source": "https://github.com/php-fig/cache/tree/master"
+                "source": "https://github.com/php-fig/cache"
             },
-            "time": "2025-04-11T04:40:47+00:00"
+            "time": "2025-04-11T19:21:12+00:00"
         },
         {
             "name": "psr/clock",
@@ -2192,12 +2192,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/phinx.git",
-                "reference": "a6fe385da2214db3a3c1edfa96ffb5432467efd5"
+                "reference": "b81516313336ede726dacca41d3ad55403076469"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/phinx/zipball/a6fe385da2214db3a3c1edfa96ffb5432467efd5",
-                "reference": "a6fe385da2214db3a3c1edfa96ffb5432467efd5",
+                "url": "https://api.github.com/repos/cakephp/phinx/zipball/b81516313336ede726dacca41d3ad55403076469",
+                "reference": "b81516313336ede726dacca41d3ad55403076469",
                 "shasum": ""
             },
             "require": {
@@ -2272,7 +2272,7 @@
                 "issues": "https://github.com/cakephp/phinx/issues",
                 "source": "https://github.com/cakephp/phinx/tree/0.x"
             },
-            "time": "2025-03-01T19:23:55+00:00"
+            "time": "2025-04-11T16:46:45+00:00"
         },
         {
             "name": "symfony/config",
