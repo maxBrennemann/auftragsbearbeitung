@@ -88,7 +88,7 @@
         <div>
             <div class="ml-2">
                 <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
-                    "id" => "ohneBerechnung",
+                    "id" => "isFree",
                     "name" => "Ohne Berechnung",
                 ]); ?>
             </div>

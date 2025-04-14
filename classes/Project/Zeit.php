@@ -230,30 +230,31 @@ class Zeit extends Posten
 		return $data;
 	}
 
-	public static function erweiterteZeiterfassung($data, $id)
+	public static function erweiterteZeiterfassung($values, $id): void
 	{
-		$db_array = array();
+		$data = [];
 
-		foreach ($data as $timeEntry) {
+		foreach ($values as $timeEntry) {
 			$from = self::timeString_toInt($timeEntry["start"]);
 			$to = self::timeString_toInt($timeEntry["end"]);
 			$date = $timeEntry["date"];
 
 			if ($date == "") {
-				array_push($db_array, [$id, $from, $to, "null" => $date]);
+				$data[] = [$id, $from, $to, "null" => $date];
 			} else {
-				array_push($db_array, [$id, $from, $to, $date]);
+				$data[] = [$id, $from, $to, $date];
 			}
 		}
 
-		DBAccess::insertMultiple("INSERT INTO zeiterfassung (id_zeit, from_time, to_time, `date`) VALUES ", $db_array);
+		DBAccess::insertMultiple("INSERT INTO zeiterfassung (id_zeit, from_time, to_time, `date`) VALUES ", $data);
 	}
 
-	private static function timeString_toInt($timeString)
+	private static function timeString_toInt($timeString): int
 	{
 		$timeParts = explode(":", $timeString);
-		if (sizeof($timeParts) != 2)
+		if (sizeof($timeParts) != 2) {
 			return -1;
+		}
 
 		$timeInInt = (int) $timeParts[0] * 60 + (int) $timeParts[1];
 
@@ -279,11 +280,34 @@ class Zeit extends Posten
 			Zeit::erweiterteZeiterfassung($zeiterfassung, $ids[1]);
 		}
 
-		$newOrder = new Auftrag(Tools::get("id"));
+		$orderId = Tools::get("id");
+		$newOrder = new Auftrag($orderId);
 		$price = $newOrder->preisBerechnen();
 
+		/* TODO: simplify this by helper function */
+		$data = Posten::getOrderItems($orderId);
+		$data = array_filter($data, fn($item) => $item->postennummer == $ids[0]);
+		$data = reset($data);
+
+		$item = [];
+		$item["position"] = $data->getPosition();
+		$item["price"] = $data->bekommeEinzelPreis();
+		$item["totalPrice"] = $data->bekommePreis();
+
+		$data = $data->fillToArray([]);
+		$item["id"] = $data["Postennummer"];
+		$item["name"] = $data["Bezeichnung"];
+		$item["description"] = $data["Beschreibung"];
+		$item["quantity"] = $data["Anzahl"];
+		$item["price"] = $data["Preis"];
+		$item["unit"] = $data["MEH"];
+		$item["totalPrice"] = $data["Gesamtpreis"];
+		$item["purchasePrice"] = $data["Einkaufspreis"];
+
 		JSONResponseHandler::sendResponse([
+			"status" => "success",
 			"price" => $price,
+			"data" => $item,
 		]);
 	}
 }

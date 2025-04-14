@@ -2,39 +2,24 @@ import { getTemplate } from "../global.js";
 import { ajax } from "./ajax.js";
 import { addBindings } from "./bindings.js";
 import { infoSaveSuccessfull } from "./statusInfo.js";
-import { renderTable } from "./table.js";
+import { addRow, renderTable } from "./table.js";
 
 const config = {
     "type": "order",
     "itemType": "time",
     "table": null,
-    "extendedTimes": [],
-}
-
-const functionNames = {};
-
-export const getItems = async (id, type = "order") => {
-    let query = ``;
-
-    switch (type) {
-        case "order":
-            query = `/api/v1/order-items/${id}/all`;
-            break;
-        case "invoice":
-            query = `/api/v1/order-items/invoice/${id}/all`;
-            break;
-        case "offer":
-            query = `/api/v1/order-items/offer/${id}/all`;
-            break;
-    }
-
-    const data = await ajax.get(query);
-    return data;
-}
-
-export const getItemsTable = async (tableName, id, type = "order") => {
-    const data = await getItems(id, type);
-    const header = [
+    "tableOptions": {
+        "primaryKey": "id",
+        "hide": ["id"],
+        "hideOptions": ["addRow", "check"],
+        "styles": {
+            "table": {
+                "className": ["w-full"],
+            },
+        },
+        "autoSort": true,
+    },
+    "tableHeader": [
         {
             "key": "id",
             "label": "Id",
@@ -71,19 +56,36 @@ export const getItemsTable = async (tableName, id, type = "order") => {
             "key": "purchasePrice",
             "label": "EK [€]",
         },
-    ];
+    ],
+    "extendedTimes": [],
+}
 
-    const table = renderTable(tableName, header, data, {
-        "primaryKey": "id",
-        "hide": ["id"],
-        "hideOptions": ["addRow", "check"],
-        "styles": {
-            "table": {
-                "className": ["w-full"],
-            },
-        },
-        "autoSort": true,
-    });
+const functionNames = {};
+
+export const getItems = async (id, type = "order") => {
+    let query = ``;
+
+    switch (type) {
+        case "order":
+            query = `/api/v1/order-items/${id}/all`;
+            break;
+        case "invoice":
+            query = `/api/v1/order-items/invoice/${id}/all`;
+            break;
+        case "offer":
+            query = `/api/v1/order-items/offer/${id}/all`;
+            break;
+    }
+
+    const data = await ajax.get(query);
+    return data;
+}
+
+export const getItemsTable = async (tableName, id, type = "order") => {
+    const data = await getItems(id, type);
+    const table = renderTable(tableName, config.tableHeader, data, config.tableOptions);
+
+    config.table = table;
     return table;
 }
 
@@ -110,7 +112,7 @@ const initItems = () => {
 }
 
 functionNames.click_addItem = async () => {
-    switch (config.type) {
+    switch (config.itemType) {
         case "time":
             addTime();
             break;
@@ -140,11 +142,18 @@ const addTime = () => {
     }).then(r => {
         if (r.status !== "success") {
             infoSaveSuccessfull("failiure", r.message);
+            return;
         }
 
-        updatePrice(r.totalPrice);
         infoSaveSuccessfull("success");
-        // reloadPostenListe();
+
+        updatePrice(r.price);
+        updateTable(r.data);
+
+        config.extendedTimes = [];
+        const extendedTimeInput = document.getElementById("extendedTimeInput");
+        extendedTimeInput.innerHTML = "";
+
         clearInputs({
             "ids": ["time", "wage", "timeDescription"],
             "classes": ["timeInput", "dateInput"]
@@ -288,9 +297,14 @@ const getAddToInvoice = () => {
 
 const updatePrice = (price) => {
     const priceEl = document.getElementById("totalPrice");
-    priceEl.innerText = new Intl.NumberFormat("de-DE", { 
-        "style": "currency", 
-        "currency": "EUR" }).format(newPrice);
+    priceEl.innerText = new Intl.NumberFormat("de-DE", {
+        "style": "currency",
+        "currency": "EUR"
+    }).format(price);
+}
+
+const updateTable = (data) => {
+    addRow(data, config.table, config.tableOptions, config.tableHeader)
 }
 
 export const initInvoiceItems = () => {

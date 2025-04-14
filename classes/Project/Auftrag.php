@@ -384,6 +384,10 @@ class Auftrag implements StatisticsInterface
 		JSONResponseHandler::sendResponse($parsedData);
 	}
 
+	public static function getOrderItem(int $id) {
+		
+	}
+
 	/*
 	 * returns all invoice columns from invoice_posten table
 	 */
