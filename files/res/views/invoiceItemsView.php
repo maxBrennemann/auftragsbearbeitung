@@ -4,12 +4,11 @@
 </div>
 <div id="showPostenAdd" class="hidden mt-2 bg-white rounded-lg">
     <div class="flex rounded-t-lg">
-        <button class="tab-button tablinks tab-active" data-target="tabZeit">Zeiterfassung</button>
-        <button class="tab-button tablinks" data-target="tabLeistung">Kostenerfassung</button>
-        <button class="tab-button tablinks" data-target="tabProdukte" disabled>Produkte</button>
+        <button class="tab-button tablinks tab-active" data-target="time">Zeiterfassung</button>
+        <button class="tab-button tablinks" data-target="service">Kostenerfassung</button>
+        <button class="tab-button tablinks" data-target="product" disabled>Produkte</button>
     </div>
-    <div class="tab-content" id="tabZeit">
-        <div id="addPostenZeit" class="grid grid-cols-3 gap-4">
+    <div class="tab-content" id="time" class="grid grid-cols-3 gap-4">
             <div class="container">
                 <div class="flex flex-col">
                     <span>Zeit in Minuten:</span>
@@ -29,15 +28,13 @@
                 <div id="extendedTimeInput"></div>
                 <button class="btn-primary-new" data-binding="true" data-fun="createTimeInputRow">Hinzufügen</button>
             </div>
-        </div>
     </div>
-    <div class="tab-content hidden" id="tabLeistung">
-        <div id="addPostenLeistung">
+    <div class="tab-content hidden" id="service">
             <div class="flex flex-col">
                 <span>Leistung:</span>
-                <select class="input-primary-new w-48" id="selectLeistung" data-write="true" data-fun="selectLeistung">
+                <select class="input-primary-new w-48" id="selectLeistung" data-binding="true" data-fun="selectLeistung">
                     <?php foreach ($leistungen as $leistung): ?>
-                        <option value="<?= $leistung['Nummer'] ?>" data-aufschlag="<?= $leistung['Aufschlag'] ?>"><?= $leistung['Bezeichnung'] ?></option>
+                        <option value="<?= $leistung['Nummer'] ?>" data-surcharge="<?= $leistung['Aufschlag'] ?>"><?= $leistung['Bezeichnung'] ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -47,7 +44,7 @@
             </div>
             <div class="mt-1 flex flex-col">
                 <span>Mengeneinheit:</span>
-                <input list="units" name="units" id="meh" class="input-primary-new w-48" placeholder="Auwählen oder eingeben" data-binding="true" data-fun="mehListener">
+                <input list="units" name="units" id="meh" class="input-primary-new w-48" placeholder="Auwählen oder eingeben">
                 <datalist id="units">
                     <option value="Stück">
                     <option value="m²">
@@ -61,17 +58,22 @@
                 <textarea id="bes" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'" class="input-primary-new"></textarea>
             </div>
             <div class="mt-1 flex flex-col">
-                <span>Einkaufspreis:</span>
+                <span>Einkaufspreis [€]:</span>
                 <input class="input-primary-new" type="number" id="ekp" value="0">
             </div>
-            <div class="mt-1 flex flex-col">
-                <span>Verkaufspreis:</span>
-                <input class="input-primary-new" type="number" id="pre" value="0">
+            <div class="mt-1 grid grid-cols-2 gap-4">
+                <div class="flex flex-col">
+                    <span>Verkaufspreis [€]:</span>
+                    <input class="input-primary-new" type="number" id="pre" value="0">
+                </div>
+                <div>
+                    <span>Aufschlag [%]:</span>
+                    <input class="input-primary-new" type="number" id="surcharge" value="0" disabled>
+                    <button class="btn-primary-new mt-2" data-binding="true" data-fun="calculatePrice">Übernehmen</button>
+                </div>
             </div>
-        </div>
     </div>
-    <div class="tab-content hidden" id="tabProdukte">
-        <div id="addPostenProdukt">
+    <div class="tab-content hidden" id="product">
             <span>Produkt suchen:</span>
             <div>
                 <input type="search" id="productSearch">
@@ -82,7 +84,6 @@
             <span>Menge: <input class="postenInput" id="posten_produkt_menge" type="number"></span>
             <br>
             <a href="<?= \Classes\Link::getPageLink("neues-produkt"); ?>">Neues Produkt hinzufügen</a>
-        </div>
     </div>
     <div class="tab-footer bg-gray-200 rounded-b-lg p-3">
         <div>

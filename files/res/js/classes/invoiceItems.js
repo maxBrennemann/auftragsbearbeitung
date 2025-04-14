@@ -7,6 +7,7 @@ import { addRow, renderTable } from "./table.js";
 const config = {
     "type": "order",
     "itemType": "time",
+    "surcharge": 0,
     "table": null,
     "tableOptions": {
         "primaryKey": "id",
@@ -172,9 +173,16 @@ const addService = () => {
         "ohneBerechnung": getIsFree(),
         "addToInvoice": getAddToInvoice(),
         "discount": document.querySelector("#getDiscount").value,
-    }).then(() => {
-        //reloadPostenListe();
+    }).then(r => {
+        if (r.status !== "success") {
+            infoSaveSuccessfull("failiure", r.message);
+            return;
+        }
+
         infoSaveSuccessfull("success");
+
+        updatePrice(r.price);
+        updateTable(r.data);
         clearInputs({ "ids": ["bes", "ekp", "pre", "meh", "anz"] });
     });
 }
@@ -185,6 +193,23 @@ functionNames.click_showItemsMenu = () => {
 
     itemsMenu.classList.toggle("hidden");
     itemsMenuButton.classList.toggle("hidden");
+}
+
+functionNames.click_selectLeistung = e => {
+    const el = e.target;
+    config.surcharge = el.options[el.selectedIndex].dataset.surcharge;
+    const surchargeEl = document.querySelector("#surcharge");
+    surchargeEl.value = config.surcharge;
+}
+
+functionNames.click_calculatePrice = () => {
+    let price = document.querySelector("#ekp").value;
+    price = parseFloat(price);
+    if (isNaN(price)) {
+        return;
+    }
+    const newPrice = price * (1 + (config.surcharge / 100));
+    document.querySelector("#pre").value = newPrice;
 }
 
 /**

@@ -69,34 +69,34 @@ class Zeit extends Posten
 
 	private function bekommeErweiterteZeiterfassungTabelle()
 	{
-		$erwZeit = DBAccess::selectQuery("SELECT id FROM zeiterfassung WHERE id_zeit = $this->internalZeitNumber");
+		$erwZeit = DBAccess::selectQuery("SELECT id FROM zeiterfassung WHERE id_zeit = :idZeit", [
+			"idZeit" => $this->internalZeitNumber
+		]);
+
 		if ($erwZeit == null) {
 			return $this->ZeitInMinuten;
-		} else {
-			$zeiten = DBAccess::selectQuery("SELECT CONCAT(LPAD(FLOOR(`from_time` / 60), 2, '0'), ':', LPAD(`from_time` MOD 60, 2, '0')) AS von, CONCAT(LPAD(FLOOR(`to_time` / 60), 2, '0'), ':', LPAD(`to_time` MOD 60, 2, '0')) AS bis, IF(`date` IS NULL, 'kein Datum', `date`) AS datum FROM zeiterfassung WHERE id_zeit = $this->internalZeitNumber");
-			$entries = "";
-			foreach ($zeiten as $zeit) {
-				$entries .=
-					"<tr>
-						<td>{$zeit["von"]}</td>
-						<td>{$zeit["bis"]}</td>
-						<td>{$zeit["datum"]}</td>
-					</tr>";
-			}
-
-			$html = "
-			<span>{$this->ZeitInMinuten}</span>
-			<br>
-			<table class=\"innerTable\">
-				<tr>
-					<th>Von</th>
-					<th>Bis</th>
-					<th>Datum</th>
-				</tr>
-				{$entries}
-			</table>";
-			return $html;
 		}
+
+		$query = "SELECT CONCAT(
+					LPAD(FLOOR(`from_time` / 60), 2, '0'), ':', 
+					LPAD(`from_time` MOD 60, 2, '0')) AS `from`, 
+				CONCAT(
+					LPAD(FLOOR(`to_time` / 60), 2, '0'), ':', 
+					LPAD(`to_time` MOD 60, 2, '0')) AS `to`, 
+				IF(`date` IS NULL, 'kein Datum', `date`) AS `date` 
+			FROM zeiterfassung 
+			WHERE id_zeit = :idZeit";
+		$times = DBAccess::selectQuery(
+			$query,
+			[
+				"idZeit" => $this->internalZeitNumber
+			]
+		);
+
+		return TemplateController::getTemplate("extendedTimes", [
+			"times" => $times,
+			"timeInMinutes" => $this->ZeitInMinuten,
+		]);
 	}
 
 	/* returns the price if no discount is applied, else calculates the discount and returns the according table */
@@ -239,11 +239,11 @@ class Zeit extends Posten
 			$to = self::timeString_toInt($timeEntry["end"]);
 			$date = $timeEntry["date"];
 
-			if ($date == "") {
-				$data[] = [$id, $from, $to, "null" => $date];
-			} else {
-				$data[] = [$id, $from, $to, $date];
+			if ($from == -1 || $to == -1) {
+				continue;
 			}
+
+			$data[] = [$id, $from, $to, $date == "" ? null : $date];
 		}
 
 		DBAccess::insertMultiple("INSERT INTO zeiterfassung (id_zeit, from_time, to_time, `date`) VALUES ", $data);
@@ -286,19 +286,19 @@ class Zeit extends Posten
 
 		/* TODO: simplify this by helper function */
 		$data = Posten::getOrderItems($orderId);
-		$data = array_filter($data, fn($item) => $item->postennummer == $ids[0]);
+		$data = array_filter($data, fn($item) => $item->getPostennummer() == $ids[0]);
 		$data = reset($data);
 
 		$item = [];
 		$item["position"] = $data->getPosition();
 		$item["price"] = $data->bekommeEinzelPreis();
 		$item["totalPrice"] = $data->bekommePreis();
+		$item["quantity"] = $data->bekommeErweiterteZeiterfassungTabelle();
 
 		$data = $data->fillToArray([]);
 		$item["id"] = $data["Postennummer"];
 		$item["name"] = $data["Bezeichnung"];
 		$item["description"] = $data["Beschreibung"];
-		$item["quantity"] = $data["Anzahl"];
 		$item["price"] = $data["Preis"];
 		$item["unit"] = $data["MEH"];
 		$item["totalPrice"] = $data["Gesamtpreis"];

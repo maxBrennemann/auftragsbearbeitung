@@ -33,6 +33,11 @@ abstract class Posten
 		return $this->position;
 	}
 
+	public function getPostennummer()
+	{
+		return $this->postennummer;
+	}
+
 	public static function getOrderItems(int $orderId, string $itemType = ""): array
 	{
 		$items = [];

@@ -212,10 +212,12 @@ class Leistung extends Posten
 
 	public static function add()
 	{
+		$orderId = Tools::get("id");
+
 		$data = [];
 		$data['Leistungsnummer'] = Tools::get("lei");
 		$data['Beschreibung'] = Tools::get("bes");
-		$data['Auftragsnummer'] = Tools::get("auftrag");
+		$data['Auftragsnummer'] = $orderId;
 		$data['ohneBerechnung'] = Tools::get("ohneBerechnung");
 		$data['discount'] = (int) Tools::get("discount");
 		$data['MEH'] = Tools::get("bes");
@@ -225,13 +227,35 @@ class Leistung extends Posten
 		$data['SpeziefischerPreis'] = (float) Tools::get("pre");
 		$data['anzahl'] = (float) Tools::get("anz");
 
-		Posten::insertPosten("leistung", $data);
+		$ids = Posten::insertPosten("leistung", $data);
 
-		$newOrder = new Auftrag(Tools::get("auftrag"));
+		$newOrder = new Auftrag($orderId);
 		$price = $newOrder->preisBerechnen();
 
+		/* TODO: simplify this by helper function */
+		$data = Posten::getOrderItems($orderId);
+		$data = array_filter($data, fn($item) => $item->getPostennummer() == $ids[0]);
+		$data = reset($data);
+
+		$item = [];
+		$item["position"] = $data->getPosition();
+		$item["price"] = $data->bekommeEinzelPreis();
+		$item["totalPrice"] = $data->bekommePreis();
+
+		$data = $data->fillToArray([]);
+		$item["id"] = $data["Postennummer"];
+		$item["name"] = $data["Bezeichnung"];
+		$item["description"] = $data["Beschreibung"];
+		$item["price"] = $data["Preis"];
+		$item["quantity"] = $data["Anzahl"];
+		$item["unit"] = $data["MEH"];
+		$item["totalPrice"] = $data["Gesamtpreis"];
+		$item["purchasePrice"] = $data["Einkaufspreis"];
+
 		JSONResponseHandler::sendResponse([
+			"status" => "success",
 			"price" => $price,
+			"data" => $item,
 		]);
 	}
 }

@@ -1,9 +1,5 @@
 import { ajax } from "../classes/ajax.js";
 
-export function selectLeistung(e) {
-    globalData.aufschlag = parseInt(e.target.options[e.target.selectedIndex].dataset.aufschlag);
-}
-
 /**
  * cancles the edit time entry, resets the button, removes the cancle button and clears the inputs
  */
