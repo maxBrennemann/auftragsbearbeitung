@@ -13,6 +13,7 @@ use Classes\Project\Auftragsverlauf;
 use Classes\Project\Liste;
 use Classes\Project\ClientSettings;
 use Classes\Project\Color;
+use Classes\Project\TemplateController;
 
 ?>
 
@@ -33,8 +34,11 @@ try {
 }
 
 if ($orderId <= 0): ?>
-	<p>Kein (gültiger) Auftrag ausgewählt.</p>
-<? else:
+	<div class="mt-4 bg-gray-50 p-3 rounded-lg">
+		<p>Kein (gültiger) Auftrag ausgewählt.</p>
+		<?= Auftrag::getOverview(); ?>
+	</div>
+	<?php else:
 	$kunde = new Kunde($auftrag->getKundennummer());
 
 	$farbTable = $auftrag->getColors();
@@ -203,11 +207,10 @@ if ($orderId <= 0): ?>
 					<button class="btn-primary-new" data-binding="true" data-fun="addStep">Neu</button>
 				</div>
 				<div class="px-2 rounded ml-2">
-					<label class="flex items-center cursor-pointer">
-						<input type="checkbox" id="toggleSteps" value="" class="sr-only peer">
-						<div class="relative w-11 h-6 bg-gray-400 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-						<span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Alle Schritte anzeigen</span>
-					</label>
+					<?= TemplateController::getTemplate("inputSwitch", [
+						"id" => "toggleSteps",
+						"name" => "Alle Schritte anzeigen",
+					]); ?>
 				</div>
 			</div>
 			<div class="bg-white p-2 rounded-md hidden" id="bearbeitungsschritte">
@@ -295,108 +298,17 @@ if ($orderId <= 0): ?>
 			<div class="grid grid-cols-4" id="noteContainer"></div>
 		</div>
 		<div class="defCont posten">
-			<p><span class="font-bold inline-flex items-center">Zeiten, Produkte und Kosten (netto)</span> <input id="rechnungspostenAusblenden" type="checkbox" <?= ClientSettings::getFilterOrderPosten() == true ? "checked" : "" ?>> Rechnungsposten ausblenden</p>
-			<div id="auftragsPostenTable" class="overflow-x-auto lg:w-full">
-				<?= $auftrag->getAuftragspostenAsTable() ?>
-			</div>
-			<div class="buttonDiv">
-				<button class="addToTable" data-binding="true" data-fun="showPostenAdd">+</button>
-			</div>
-			<div id="showPostenAdd" style="display: none;">
-				<div class="tabcontainer">
-					<button class="tablinks activetab" onclick="openTab(event, 0)">Zeiterfassung</button>
-					<button class="tablinks" onclick="openTab(event, 1)">Kostenerfassung</button>
-					<button class="tablinks" onclick="openTab(event, 2)">Produkte</button>
-				</div>
-				<div class="tabcontent" id="tabZeit" style="display: block;">
-					<div id="addPostenZeit">
-						<div class="container">
-							<span>Zeit in Minuten<br><input class="postenInput" id="time" type="number" min="0"></span>
-							<br>
-							<span>Stundenlohn in €<br><input class="postenInput" id="wage" type="number" value="<?= $auftrag->getDefaultWage() ?>"></span>
-							<br>
-							<span>Beschreibung<br>
-								<textarea id="descr" class="border-2 rounded-md p-2" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
-							</span>
-							<br>
-							<button id="addTimeButton" data-binding="true" data-fun="addTime" class="btn-primary">Hinzufügen</button>
-						</div>
-						<div class="container">
-							<span>Erweiterte Zeiterfassung:</span>
-							<br>
-							<span>Arbeitszeit(en)</span>
-							<div id="extendedTimeInput">
-							</div>
-							<button class="addToTable" data-binding="true" data-fun="createTimeInputRow">+</button>
-							<p id="showTimeSummary"></p>
-						</div>
-					</div>
-				</div>
-				<div class="tabcontent" id="tabLeistung">
-					<div id="addPostenLeistung">
-						<select id="selectLeistung" data-write="true" data-fun="selectLeistung">
-							<?php foreach ($leistungen as $leistung): ?>
-								<option value="<?= $leistung['Nummer'] ?>" data-aufschlag="<?= $leistung['Aufschlag'] ?>"><?= $leistung['Bezeichnung'] ?></option>
-							<?php endforeach; ?>
-						</select>
-						<br>
-						<span>Menge:<br><input class="postenInput" id="anz" type="number" value="1"></span><br>
-						<span>Mengeneinheit:<br>
-							<input class="postenInput" id="meh" data-binding="true" data-fun="mehListener">
-							<span id="meh_dropdown" data-binding="true" data-fun="mehListener">▼</span>
-							<div class="selectReplacer" id="selectReplacerMEH">
-								<p class="optionReplacer" onclick="document.getElementById('meh').value = this.innerHTML;">Stück</p>
-								<p class="optionReplacer" onclick="document.getElementById('meh').value = this.innerHTML;">m²</p>
-								<p class="optionReplacer" onclick="document.getElementById('meh').value = this.innerHTML;">Meter</p>
-								<p class="optionReplacer" onclick="document.getElementById('meh').value = this.innerHTML;">Stunden</p>
-								<p class="optionReplacer" onclick="document.getElementById('meh').value = this.innerHTML;">lfm</p>
-							</div>
-						</span><br>
-						<span>Beschreibung:
-							<br>
-							<textarea id="bes" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'" class="border-2 rounded-md p-2"></textarea>
-						</span>
-						<br>
-						<span>Einkaufspreis:<br><input class="postenInput" type="number" id="ekp" value="0"></span><br>
-						<span>Verkaufspreis:<br><input class="postenInput" type="number" id="pre" value="0"></span><br>
-						<button data-binding="true" data-fun="addLeistung" id="addLeistungButton" class="btn-primary">Hinzufügen</button>
-					</div>
-				</div>
-				<div class="tabcontent" id="tabProdukte">
-					<div id="addPostenProdukt">
-						<span>Produkt suchen:</span>
-						<div>
-							<input type="search" id="productSearch">
-							<span class="lupeSpan searchProductEvent"><span class="lupe searchProductEvent">&#9906;</span></span>
-							<p><i>Zubehör, Montagematerial, Textilien...</i></p>
-						</div>
-						<div id="resultContainer"></div>
-						<span>Menge: <input class="postenInput" id="posten_produkt_menge" type="number"></span>
-						<button data-binding="true" data-fun="addProductCompact" class="btn-primary">Hinzufügen</button>
-						<br>
-						<a href="<?= Link::getPageLink("neues-produkt"); ?>">Neues Produkt hinzufügen</a>
-					</div>
-				</div>
-				<div class="tabcontentEnd">
-					<div>
-						<span id="showOhneBerechnung" class="ml-2">
-							<input id="ohneBerechnung" type="checkbox">
-							<span class="ml-2">Ohne Berechnung</span>
-						</span>
-						<br>
-						<span id="showAddToInvoice" class="ml-2">
-							<input id="addToInvoice" type="checkbox">
-							<span class="ml-2">Der Rechnung hinzufügen</span>
-						</span>
-						<br>
-						<span id="showDiscount" class="ml-2 mt-2">
-							<input type="range" min="0" max="100" value="0" name="discountInput" id="discountInput" oninput="showDiscountValue.value = discountInput.value + '%'">
-							<output id="showDiscountValue" name="showDiscountValue" for="discountInput">0%</output> Rabatt
-						</span>
-						<div id="generalPosten"></div>
-					</div>
-				</div>
-			</div>
+			<p class="inline-flex items-center">
+				<span class="font-bold">Zeiten, Produkte und Kosten (netto)</span>
+				<label class="inline-flex items-center">
+					<input id="rechnungspostenAusblenden" type="checkbox" class="ml-3" <?= ClientSettings::getFilterOrderPosten() == true ? "checked" : "" ?>>
+					<span class="ml-1">Rechnungsposten ausblenden</span>
+				</label>
+			</p>
+			<?= TemplateController::getTemplate("invoiceItems", [
+				"auftrag" => $auftrag,
+				"leistungen" => $leistungen
+			]); ?>
 		</div>
 		<div class="defCont invoice">
 			<p class="font-bold">Rechnungsposten (netto)</p>
@@ -404,7 +316,7 @@ if ($orderId <= 0): ?>
 		</div>
 		<div class="defCont preis">
 			<p class="font-bold">Gesamtpreis (netto):</p>
-			<span id="gesamtpreis">
+			<span id="totalPrice" class="font-bold text-2xl">
 				<?= number_format($auftrag->preisBerechnen(), 2, ',', '') . "€" ?>
 			</span>
 			<span>
@@ -528,9 +440,6 @@ if ($orderId <= 0): ?>
 				Preis pro Liter
 				<input>
 			</label>
-		</template>
-		<template id="templateTimeInput">
-			<p class="timeInputWrapper">von <input class="timeInput" type="time" min="05:00" max="23:00"> bis <input class="timeInput" type="time" min="05:00" max="23:00"> am <input class="dateInput" type="date"></p>
 		</template>
 		<template id="templateNote">
 			<div class="bg-white rounded-lg p-2 m-2 relative">

@@ -1,4 +1,4 @@
-import { addRow, createHeader, createTable, fetchAndRenderTable, renderTable } from "./classes/table_new.js";
+import { addRow, createHeader, createTable, fetchAndRenderTable, renderTable } from "./classes/table.js";
 import { tableConfig } from "./js/tableconfig.js";
 import { initBindings } from "./classes/bindings.js";
 import { ajax } from "./classes/ajax.js";

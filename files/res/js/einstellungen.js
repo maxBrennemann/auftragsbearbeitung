@@ -1,6 +1,6 @@
 import { ajax } from "./classes/ajax.js";
 import { initBindings } from "./classes/bindings.js";
-import { createHeader, createTable, addRow } from "./classes/table_new.js";
+import { createHeader, createTable, addRow, fetchAndRenderTable } from "./classes/table.js";
 import { tableConfig } from "./js/tableconfig.js";
 
 const fnNames = {};
@@ -245,25 +245,19 @@ function getFileName() {
 }
 
 const createOrderTypeTable = async () => {
-    const table = createTable("orderTypes", {
-        "styles": {
-            "table": {
-                "className": "w-full",
-            },
-        },
-    });
     const config = tableConfig["auftragstyp"];
     const options = {
         "hideOptions": ["delete", "check"],
         "primaryKey": config.primaryKey,
+        "autoSort": true,
+        "styles": {
+            "table": {
+                "className": ["w-full"],
+            },
+        },
     };
-    createHeader(config.columns, table, options);
 
-    const data = await ajax.get(`/api/v1/tables/auftragstyp`);
-    data.forEach(row => {
-        addRow(row, table, options);
-    });
-
+    const table = await fetchAndRenderTable("orderTypes", "auftragstyp", options);
     table.addEventListener("rowAdd", () => addOrderType(table, options));
 }
 
@@ -271,7 +265,7 @@ const createWholesalerTable = async () => {
     const table = createTable("wholesalerTypes", {
         "styles": {
             "table": {
-                "className": "w-full",
+                "className": ["w-full"],
             },
         },
     });
@@ -288,23 +282,24 @@ const createWholesalerTable = async () => {
 }
 
 const createUserTable = async () => {
-    const table = createTable("userTable", {
+    const options = {
         "styles": {
             "table": {
-                "className": "w-full",
+                "className": ["w-full"],
             },
         },
-    });
-    const config = tableConfig["user"];
-    const columnConfig = {
+        "primaryKey": "id",
         "hideOptions": ["all"],
+        "link": "/mitarbeiter?id=",
     };
-    createHeader(config.columns, table, columnConfig);
+
+    const table = createTable("userTable", options);
+    const config = tableConfig["user"];
+    createHeader(config.columns, table, options);
 
     const data = await ajax.get(`/api/v1/tables/user`);
-
     data.forEach(row => {
-        addRow(row, table, columnConfig);
+        addRow(row, table, options);
     });
 }
 

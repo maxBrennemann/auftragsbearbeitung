@@ -2,22 +2,24 @@
 
 namespace Classes\Project;
 
-class ProduktPosten extends Posten {
-    
-    private $Preis = 0.0;
+class ProduktPosten extends Posten
+{
+
+	private $Preis = 0.0;
 	private $Einkaufspreis = 0.0;
 	private $discount = -1;
-    private $Bezeichnung = null;
+	private $Bezeichnung = null;
 	private $Beschreibung = null;
 	private $Anzahl = 0;
 	private $Marke = "";
 	private $isInvoice = false;
-	
+
 	protected $postenTyp = "produkt";
 	protected $ohneBerechnung = false;
 	protected $postennummer;
 
-	function __construct($Preis, $Bezeichnung, $Beschreibung, $Anzahl, $Einkaufspreis, $Marke, $discount, $isInvoice) {
+	public function __construct($Preis, $Bezeichnung, $Beschreibung, $Anzahl, $Einkaufspreis, $Marke, $discount, $isInvoice, int $position = 0)
+	{
 		$this->Preis = (float) $Preis;
 		$this->Einkaufspreis = (float) $Einkaufspreis;
 		$this->Bezeichnung = $Bezeichnung;
@@ -30,15 +32,19 @@ class ProduktPosten extends Posten {
 		if ($discount != 0 && $discount > 0 && $discount <= 100) {
 			$this->discount = $discount;
 		}
+
+		$this->position = $position;
 	}
 
-	public function getHTMLData() {
+	public function getHTMLData()
+	{
 		$html = "<div><span>Typ: {$this->postenTyp} </span><span>Preis: {$this->bekommePreis()}� </span>";
 		$html .= "<span>Bezeichnung: {$this->Bezeichnung} </span><span>Beschreibung: {$this->Beschreibung} </span></div>";
 		return $html;
 	}
 
-	public function fillToArray($arr) {
+	public function fillToArray($arr)
+	{
 		$arr['Postennummer'] = $this->postennummer;
 		$arr['Preis'] = $this->bekommePreisTabelle();
 		$arr['Bezeichnung'] = "<button class=\"postenButton\">Produkt</button>" . $this->Bezeichnung;
@@ -53,7 +59,8 @@ class ProduktPosten extends Posten {
 	}
 
 	/* returns the price if no discount is applied, else calculates the discount and returns the according table */
-	private function bekommePreisTabelle() {
+	private function bekommePreisTabelle()
+	{
 		if ($this->discount != -1) {
 			$discountedPrice = number_format($this->bekommePreis(), 2, ',', '') . "€";
 			$regularPrice = number_format($this->bekommePreis() + $this->calculateDiscount(), 2, ',', '') . "€";
@@ -69,14 +76,15 @@ class ProduktPosten extends Posten {
 						<td colspan=\"2\">{$this->discount}%</td>
 					</tr>
 				</table>";
-			
+
 			return $discount_table;
 		} else {
 			return $this->bekommeEinzelPreis_formatted();
 		}
 	}
 
-	public function storeToDB($auftragsNr) {
+	public function storeToDB($auftragsNr)
+	{
 		$data = $this->fillToArray(array());
 		$data['ohneBerechnung'] = 1;
 		$data['Auftragsnummer'] = $auftragsNr;
@@ -84,57 +92,67 @@ class ProduktPosten extends Posten {
 	}
 
 	/* includes discount */
-    public function bekommePreis() {
+	public function bekommePreis()
+	{
 		if ($this->ohneBerechnung == true) {
 			return 0;
 		}
-        return (float) $this->Preis * $this->Anzahl - $this->calculateDiscount();
+		return (float) $this->Preis * $this->Anzahl - $this->calculateDiscount();
 	}
 
-	public function bekommeEinzelPreis() {
+	public function bekommeEinzelPreis()
+	{
 		return $this->Preis;
 	}
 
-	public function bekommePreis_formatted() {
+	public function bekommePreis_formatted()
+	{
 		return number_format($this->bekommePreis(), 2, ',', '') . ' €';
 	}
 
-	public function bekommeEinkaufspreis_formatted() {
+	public function bekommeEinkaufspreis_formatted()
+	{
 		return number_format($this->Einkaufspreis, 2, ',', '') . ' €';
 	}
 
-	public function bekommeEinzelPreis_formatted() {
+	public function bekommeEinzelPreis_formatted()
+	{
 		return number_format($this->bekommeEinzelPreis(), 2, ',', '') . ' €';
 	}
-	
-	public function bekommeDifferenz() {
+
+	public function bekommeDifferenz()
+	{
 		if ($this->ohneBerechnung == true) {
 			return 0;
 		}
-        return (float) $this->bekommePreis() - $this->Einkaufspreis * $this->Anzahl;
+		return (float) $this->bekommePreis() - $this->Einkaufspreis * $this->Anzahl;
 	}
 
-	public function calculateDiscount() {
+	public function calculateDiscount()
+	{
 		if ($this->discount != -1) {
 			return (float) $this->Preis * $this->Anzahl * $this->discount;
 		}
 		return 0;
 	}
 
-	public function getDescription() {
+	public function getDescription()
+	{
 		return $this->Beschreibung;
 	}
 
-	public function getEinheit() {
+	public function getEinheit()
+	{
 		return "Stück";
 	}
 
-	public function getQuantity() {
+	public function getQuantity()
+	{
 		return $this->Anzahl;
 	}
 
-	public function isInvoice() {
+	public function isInvoice()
+	{
 		return $this->isInvoice;
 	}
-
 }

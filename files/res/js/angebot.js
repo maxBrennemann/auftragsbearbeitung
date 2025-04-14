@@ -1,25 +1,34 @@
+import { initBindings } from "./classes/bindings.js";
+import { ajax } from "./classes/ajax.js";
+
+const functionNames = {};
+
+const init = () => {
+    initBindings(functionNames);
+}
 
 var globalData = {
     aufschlag: 0,
     vehicleId: 0
 }
 
-function neuesAngebot() {
-    var customerId = document.getElementById("kdnr").value;
-    var loadHTMLTemplate = new AjaxCall(`getReason=loadTemplateOrder&customerId=${customerId}`);
-    loadHTMLTemplate.makeAjaxCall(function (customerData) {
-        document.getElementById("insTemp").innerHTML = customerData;
-        loadCachedPosten();
+functionNames.click_newOffer = () => {
+    const customerId = document.getElementById("kdnr").value;
+    ajax.get(`/api/v1/order-items/offer/template/${customerId}`).then(r => {
+        const url = new URL(window.location.href);
+        url.searchParams.set("kdnr", customerId);
+        window.history.pushState({}, '', url);
+
+        document.getElementById("insTemp").innerHTML = r.content;
+        document.getElementById("listOpenOffers").classList.add("hidden");
+        document.getElementById("newOffer").classList.add("hidden");
+
+        loadItems(r.offerId);
     });
 }
 
-function loadCachedPosten() {
-    var customerId = document.getElementById("kdnr").value;
-    var loadCache = new AjaxCall(`getReason=loadCachedPosten&customerId=${customerId}`);
-    loadCache.makeAjaxCall(function (data) {
-        console.log(data);
-        document.getElementById("allePosten").innerHTML += data;
-    });
+const loadItems = async (offerId) => {
+    const items = await ajax.get(`/api/v1/order-items/offer/${offerId}/all`).then(r => {});
 }
 
 function getSelections() {
@@ -50,8 +59,6 @@ function getSelections() {
             document.getElementById("addPostenProdukt").style.display = "inline";
         });
     }
-
-    document.getElementById("showOhneBerechnung").style.display = "inline";
 }
 
 function showSelection(element) {
@@ -145,4 +152,12 @@ function storeOffer() {
     storeOffer.makeAjaxCall(function (response, args) {
         window.location.href = (document.getElementById("home_link").href) + "neuer-auftrag?kdnr=" + args[0];
     }, customerId);
+}
+
+if (document.readyState !== 'loading' ) {
+    init();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        init();
+    });
 }

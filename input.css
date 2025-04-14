@@ -42,6 +42,18 @@
     .btn-cancel {
         @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 bg-white rounded text-sm border-0 text-black hover:bg-slate-100 shadow-sm ring-offset-black gap-2 data-[focus]:outline-1 data-[focus]:outline-black ring-1 ring-gray-300 disabled:bg-slate-100;
     }
+
+    .tab-button {
+        @apply grow border-0 p-2 bg-sky-900 font-semibold text-white rounded-none first:rounded-tl-lg last:rounded-tr-lg hover:bg-sky-800 disabled:hover:cursor-not-allowed;
+    }
+
+    .tab-active {
+        @apply bg-sky-800 text-white;
+    }
+
+    .tab-content {
+        @apply p-4
+    }
 }
 
 @font-face {

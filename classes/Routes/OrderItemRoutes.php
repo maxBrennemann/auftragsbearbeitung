@@ -8,11 +8,20 @@ class OrderItemRoutes extends Routes
 {
 
     /**
-     * @uses Classes\Project\Auftrag::itemsOverview()
+     * 
+     * @uses Classes\Project\Auftrag::getOrderItems()
+     * @uses Classes\Project\Auftrag::getOrderItemsOld()
+     * 
+     * @uses Classes\Project\Angebot::getOfferTemplate()
+     * @uses Classes\Project\Angebot::getOfferItems()
      */
     protected static $getRoutes = [
         "/order-items/{id}/table" => [],
         "/order-items/{id}/all" => [\Classes\Project\Auftrag::class, "getOrderItems"],
+        "/order-items/{id}/all-old" => [\Classes\Project\Auftrag::class, "getOrderItemsOld"],
+
+        "/order-items/offer/template/{customerId}" => [\Classes\Project\Angebot::class, "getOfferTemplate"],
+        "/order-items/offer/{id}/all" => [\Classes\Project\Angebot::class, "getOfferItems"],
     ];
 
     /**
@@ -26,4 +35,7 @@ class OrderItemRoutes extends Routes
         "/order-items/{id}/services" => [\Classes\Project\Leistung::class, "add"],
     ];
 
+    protected static $putRoutes = [];
+
+    protected static $deleteRoutes = [];
 }

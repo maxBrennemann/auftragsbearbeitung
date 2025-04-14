@@ -1,7 +1,6 @@
 <?php
 
 use Classes\Link;
-use MaxBrennemann\PhpUtilities\DBAccess;
 
 use Classes\Project\CacheManager;
 use Classes\Project\Config;
@@ -11,7 +10,7 @@ $cacheStatus = CacheManager::getCacheStatus();
 $minifyStatus = Config::get("minifyStatus");
 
 ?>
-<script src="<?=Link::getResourcesShortLink("colorpicker.js", "js")?>"></script>
+<script src="<?= Link::getResourcesShortLink("colorpicker.js", "js") ?>"></script>
 <section class="defCont">
     <h2 class="font-bold">Auftragstypen festlegen</h2>
     <div id="orderTypes" class="mt-2"></div>
@@ -26,23 +25,23 @@ $minifyStatus = Config::get("minifyStatus");
 </section>
 <section class="defCont">
     <h2 class="font-bold">Stundenlohn festlegen</h2>
-    <input type="number" id="defaultWage" value="<?=$defaultWage?>" class="px-4 py-2 m-1 text-sm text-slate-600 rounded-lg">
+    <input type="number" id="defaultWage" value="<?= $defaultWage ?>" class="px-4 py-2 m-1 text-sm text-slate-600 rounded-lg">
 </section>
 <section class="defCont">
     <h2 class="font-bold">Cache</h2>
-	<input data-write="true" data-fun="toggleCache" type="radio" data-value="on" name="cacheswitch" value="on" <?=$cacheStatus == "on" ? "checked" : "" ?>> Cache aktivieren<br>
-	<input data-write="true" data-fun="toggleCache" type="radio" data-value="off" name="cacheswitch" value="off" <?=$cacheStatus == "off" ? "checked" : "" ?>> Cache deaktivieren<br>
+    <input data-write="true" data-fun="toggleCache" type="radio" data-value="on" name="cacheswitch" value="on" <?= $cacheStatus == "on" ? "checked" : "" ?>> Cache aktivieren<br>
+    <input data-write="true" data-fun="toggleCache" type="radio" data-value="off" name="cacheswitch" value="off" <?= $cacheStatus == "off" ? "checked" : "" ?>> Cache deaktivieren<br>
     <button data-binding="true" data-fun="deleteCache" class="btn-primary-new mt-2">Cache löschen</button>
 </section>
 <section class="defCont">
     <h2 class="font-bold">CSS und JS komprimieren</h2>
-	<input data-write="true" data-fun="toggleMinify" type="radio" data-value="on" name="minifyswitch" value="on" <?=$minifyStatus == "on" ? "checked" : "" ?>> Komprimierung aktivieren<br>
-	<input data-write="true" data-fun="toggleMinify" type="radio" data-value="off" name="minifyswitch" value="off" <?=$minifyStatus == "off" ? "checked" : "" ?>> Komprimierung deaktivieren<br>
+    <input data-write="true" data-fun="toggleMinify" type="radio" data-value="on" name="minifyswitch" value="on" <?= $minifyStatus == "on" ? "checked" : "" ?>> Komprimierung aktivieren<br>
+    <input data-write="true" data-fun="toggleMinify" type="radio" data-value="off" name="minifyswitch" value="off" <?= $minifyStatus == "off" ? "checked" : "" ?>> Komprimierung deaktivieren<br>
     <button data-binding="true" data-fun="minifyFiles" class="btn-primary-new mt-2">Neu komprimieren</button>
 </section>
 <section class="defCont">
     <h2 class="font-bold">Suche</h2>
-	<button class="btn-primary" id="addDocs">Neu indizieren</button>
+    <button class="btn-primary" id="addDocs">Neu indizieren</button>
     <button class="btn-primary" id="test">Neu test</button>
 </section>
 <section class="defCont">
@@ -54,7 +53,9 @@ $minifyStatus = Config::get("minifyStatus");
             <option value="2">Äußere Rahmen</option>
             <option value="3">Innere Rahmen</option>
         </select>
-        <script>var cp = new Colorpicker(document.getElementById("farbe"));</script>
+        <script>
+            var cp = new Colorpicker(document.getElementById("farbe"));
+        </script>
         <button onclick="setCustomColor();" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Diese Farbe übernehmen</button>
         <button onclick="setCustomColor(0);" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Auf Standard zurücksetzen</button>
     </div>
@@ -77,7 +78,7 @@ $minifyStatus = Config::get("minifyStatus");
     <h2 class="font-bold">Zeiterfassung</h2>
     <div class="switchCont">
         <label class="switch">
-            <input type="checkbox" id="showTimeTracking" <?=Config::get("showTimeGlobal") == "true" ? "checked" : "" ?>>
+            <input type="checkbox" id="showTimeTracking" <?= Config::get("showTimeGlobal") == "true" ? "checked" : "" ?>>
             <span class="sliderTime round" id="startStopTime" data-binding="true"></span>
         </label>
         Aktuelle Arbeitszeit global anzeigen
