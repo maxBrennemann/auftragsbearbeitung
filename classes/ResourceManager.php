@@ -179,24 +179,6 @@ class ResourceManager
                         $offerPDF->generate();
                         break;
                     case "rechnung":
-                        if (isset($_SESSION['tempInvoice'])) {
-                            $rechnung = unserialize($_SESSION['tempInvoice']);
-
-                            if (!isset($_SESSION['currentInvoice_orderId'])) {
-                                echo "Fehler beim Generieren der Rechnung!";
-                                return null;
-                            }
-
-                            if ($rechnung->getOrderId() == $_SESSION['currentInvoice_orderId']) {
-                                $rechnung->PDFgenerieren();
-                            } else {
-                                $rechnung = new Rechnung();
-                                $rechnung->PDFgenerieren();
-                            }
-                        } else {
-                            $rechnung = new Rechnung();
-                            $rechnung->PDFgenerieren();
-                        }
                         break;
                 }
             } else if (self::$page == "cron") {

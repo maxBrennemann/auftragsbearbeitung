@@ -485,12 +485,6 @@ class Ajax
 				$list = Liste::readList($lid);
 				echo $list->toHTML();
 				break;
-			case "generateInvoicePDF":
-				if (isset($_SESSION['tempInvoice'])) {
-					$rechnung = unserialize($_SESSION['tempInvoice']);
-					$rechnung->PDFgenerieren(true);
-				}
-				break;
 			case "saveDescription":
 				$text = $_POST['text'];
 				$auftrag = $_POST['auftrag'];
@@ -537,63 +531,6 @@ class Ajax
 				$intent = $_POST['intent'];
 				$data = DBAccess::selectQuery("SELECT info FROM `manual` WHERE `page` = '$pageName' AND intent = '$intent'");
 				echo json_encode($data, JSON_FORCE_OBJECT);
-				break;
-			case "setDateInvoice":
-				$date = $_POST['date'];
-				$date = date('d.m.Y', strtotime($date));
-
-				$rechnung = unserialize($_SESSION['tempInvoice']);
-				$rechnung->setDate($date);
-				$_SESSION['tempInvoice'] = serialize($rechnung);
-
-				echo json_encode([
-					0 => "ok",
-					1 => Rechnung::getAllInvoiceItems($_POST["id"], $rechnung)
-				], JSON_FORCE_OBJECT);
-				break;
-			case "setDatePerformance":
-				$date = $_POST['date'];
-				$date = date('d.m.Y', strtotime($date));
-
-				$rechnung = unserialize($_SESSION['tempInvoice']);
-				$rechnung->setDatePerformance($date);
-				$_SESSION['tempInvoice'] = serialize($rechnung);
-
-				echo json_encode([
-					0 => "ok",
-					1 => Rechnung::getAllInvoiceItems($_POST["id"], $rechnung)
-				], JSON_FORCE_OBJECT);
-				break;
-			case "invoiceAddText":
-				$id = (int) $_POST['id'];
-				$text = $_POST['text'];
-
-				$rechnung = unserialize($_SESSION['tempInvoice']);
-				$rechnung->addText($id, $text);
-				$_SESSION['tempInvoice'] = serialize($rechnung);
-				break;
-			case "invoiceRemoveText":
-				$id = (int) $_POST['id'];
-
-				$rechnung = unserialize($_SESSION['tempInvoice']);
-				$rechnung->removeText($id);
-				$_SESSION['tempInvoice'] = serialize($rechnung);
-				break;
-			case "setInvoiceParameters":
-
-				$orderId = (int) $_POST["auftrag"];
-				$address = (int) $_POST["address"];
-				$invoiceDate = $_POST["invoiceDate"];
-				$leistungsDate = $_POST["leistungDate"];
-
-				$rechnung = unserialize($_SESSION['tempInvoice']);
-
-				if ($address != 0) {
-					echo $rechnung->setAddress($address);
-				}
-
-				$_SESSION['tempInvoice'] = serialize($rechnung);
-				echo "ok";
 				break;
 			case "setNotificationsRead":
 				$notificationIds = $_POST["notificationIds"];

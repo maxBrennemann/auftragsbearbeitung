@@ -19,26 +19,14 @@ class Rechnung
 	private $tempId = 0;
 
 	private $posten;
-	private $texts = array();
+	private $texts = [];
 
 	private $date = "00.00.0000";
 	private $performanceDate = "00.00.0000";
 
-	function __construct($invoiceId = null)
+	public function __construct($invoiceId = null)
 	{
-		/* 
-		 * session object currentInvoice_orderId stores the currently used invoice id;
-		 * if no invoice id exists, a new invoice id is created
-		 */
-		$orderId = -1;
-		if (isset($_SESSION['currentInvoice_orderId'])) {
-			$orderId = $_SESSION['currentInvoice_orderId'];
-		} else if ($invoiceId != null) {
-			$order =  DBAccess::selectQuery("SELECT Auftragsnummer FROM auftrag WHERE Rechnungsnummer = " . (int) $invoiceId);
-			if (!empty($order)) {
-				$orderId = (int) $order[0]["Auftragsnummer"];
-			}
-		}
+		$orderId = 0;
 
 		$this->auftrag = new Auftrag($orderId);
 		$this->kunde = new Kunde($this->auftrag->getKundennummer());
@@ -46,9 +34,6 @@ class Rechnung
 		$this->invoiceId = (int) $invoiceId;
 	}
 
-	/*
-	 * creates and stores a pdf if parameter is set to true
-	*/
 	public function PDFgenerieren($store = false)
 	{
 		$pdf = new RechnungsPDF('p', 'mm', 'A4');
@@ -184,10 +169,9 @@ class Rechnung
 			$filelocation = 'files/generated/invoice/';
 			$fileNL = $filelocation . $filename;
 			echo $_ENV["WEB_URL"] . "/files/generated/invoice/" . $filename;
-			self::addAllPosten($_SESSION['currentInvoice_orderId']);
+			self::addAllPosten(0);
 			$pdf->Output($fileNL, 'F');
 		} else {
-			$_SESSION['tempInvoice'] = serialize($this);
 			$pdf->Output();
 		}
 	}
@@ -371,12 +355,13 @@ class Rechnung
 		return $addToOffset;
 	}
 
-	public static function getNextNumber()
+	public static function getNextNumber(): int
 	{
-		$number = DBAccess::selectQuery("SELECT MAX(Rechnungsnummer) FROM auftrag")[0]['MAX(Rechnungsnummer)'];
-		$number = (int) $number;
-		$number++;
-		return $number;
+		$data = DBAccess::selectQuery("SELECT MAX(Rechnungsnummer) + 1 as nextInvoiceId FROM auftrag;");
+		if (empty($data)) {
+			return 0;
+		}
+		return (int) $data[0]['nextInvoiceId'];
 	}
 
 	private function storeDates()
@@ -440,10 +425,7 @@ class Rechnung
 
 	public static function getAllInvoiceItems($orderId, $rechnung = null)
 	{
-		/* posten, leistungsdatum, texte, fahrzeuge */
-		if ($rechnung == null && isset($_SESSION['tempInvoice'])) {
-			$rechnung = unserialize($_SESSION['tempInvoice']);
-		}
+		
 
 		if ($rechnung instanceof Rechnung && $rechnung->auftrag->getAuftragsnummer() == $orderId) {
 			$fahrzeuge = $rechnung->auftrag->getLinkedVehicles();

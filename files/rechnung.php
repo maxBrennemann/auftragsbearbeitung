@@ -6,23 +6,24 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 use Classes\Project\Auftrag;
 use Classes\Project\Rechnung;
 use Classes\Project\Address;
+use Classes\Project\Icon;
 
 $rechnung = Link::getPageLink("rechnung");
-$home = Link::getPageLink("");
 $rechnungsnummer = 0;
 $rechnungslink;
 $rechnungsadressen;
 
 /* Daten für die Rechnung, falls vorhanden werden sie vom Server geladen */
-$rechnungsdatum = "0000-00-00";
-$leistungsdatum = "0000-00-00";
+$rechnungsdatum = "";
+$leistungsdatum = "";
 
 $target = isset($_GET["target"]) ? $_GET["target"] : -1;
 $id = isset($_GET["id"]) ? $_GET["id"] : -1;
 
-function formatAddresses($addresses) {
+function formatAddresses($addresses)
+{
 	$data = array();
-	foreach($addresses as $address) {
+	foreach ($addresses as $address) {
 		if (checkEmpty($address))
 			continue;
 		$element = $address["strasse"] . " " . $address["hausnr"] . " , " . $address["plz"] . " " . $address["ort"];
@@ -31,7 +32,8 @@ function formatAddresses($addresses) {
 	return $data;
 }
 
-function checkEmpty($address) {
+function checkEmpty($address)
+{
 	if ($address["strasse"] == "" || $address["hausnr"] == "" || $address["ort"] == "" || $address["plz"] == 0)
 		return true;
 	return false;
@@ -49,7 +51,7 @@ if ($target != -1) {
 			$rechnungsadressen = Address::loadAllAddresses($auftrag->getKundennummer());
 			$rechnungsadressen = formatAddresses($rechnungsadressen);
 			$_SESSION['currentInvoice_orderId'] = $id;
-			$naechsteRechnungsnummer = Rechnung::getNextNumber();
+			$nextInvoiceId = Rechnung::getNextNumber();
 
 			$query = "SELECT creation_date, performance_date FROM invoice WHERE order_id = $id";
 			$data = DBAccess::selectQuery($query);
@@ -58,11 +60,6 @@ if ($target != -1) {
 				$rechnungsdatum = $data["creation_date"];
 				$leistungsdatum = $data["performance_date"];
 			}
-
-			/*if (isset($_SESSION['tempInvoice'])) {
-				$rechnung = unserialize($_SESSION['tempInvoice']);
-				
-			}*/
 			break;
 		default:
 			break;
@@ -82,57 +79,73 @@ $rechnungsPDF = "<iframe src=\"" . $link . "\" id=\"showOffer\"></iframe>";
 
 if ($target == "create"): ?>
 	<div class="defCont">
-		<h3>Auftrag <span id="orderId"><?=$id?></span></h3>
-		<p>Nächste Rechnungsnummer: <b><?=$naechsteRechnungsnummer?></b><br><i>Diese Nummer ist vorläufig reserviert und kann sich noch ändern.</i></p>
+		<div>
+			<h3 class="font-bold">Auftrag <span id="orderId"><?= $id ?></span></h3>
+			<p title="Diese Nummer ist vorläufig reserviert und kann sich noch ändern.">Nächste Rechnungsnummer: <b><?= $nextInvoiceId ?></b></p>
+		</div>
+
 		<div class="innerDefCont">
-			<form></form>
 			<p>Adresse auswählen</p>
 			<?php if ($rechnungsadressen == null || empty($rechnungsadressen)): ?>
 				<i>Keine Rechnungsadressen vorhanden oder unvollständig. Bei Bedarf unter dem Kunden ergänzen.</i>
 			<?php else: ?>
-				<select id="addressId">
-				<?php foreach ($rechnungsadressen as $i => $r): ?>
-					<option value="<?=$i?>"><?=$r?></option>
-				<?php endforeach; ?>
+				<select id="addressId" class="input-primary-new">
+					<?php foreach ($rechnungsadressen as $i => $r): ?>
+						<option value="<?= $i ?>"><?= $r ?></option>
+					<?php endforeach; ?>
 				</select>
 			<?php endif; ?>
 
-			<p>Rechnungsdatum festlegen</p>
-			<input type="date" id="rechnungsdatum" value="<?=$rechnungsdatum?>">
-			<p>Leistungsdatum festlegen</p>
-			<input type="date" id="leistungsdatum" value="<?=$leistungsdatum?>">
+			<p class="mt-2">Rechnungsdatum festlegen</p>
+			<input type="date" data-write="true" data-fun="invoiceDate" class="input-primary-new" value="<?= $rechnungsdatum ?>">
+			<p class="mt-2">Leistungsdatum festlegen</p>
+			<input type="date" data-write="true" data-fun="serviceDate" class="input-primary-new" value="<?= $leistungsdatum ?>">
 		</div>
+
 		<hr>
-		<a href="<?=$home?>" style="display: none" id="goHome"></a>
-		<h4>Vordefinierte Texte</h4>
-		<p>Den Text zum (ab)wählen einmal anklicken. Die Rechnungsvorschau wird dann neu generiert.</p>
-		<div class="standardtexte">
-			<p>Zu den Bilddaten: Bei der Benutzung von Daten aus fremden Quellen richten sich die Nutzungsbedingungen über Verwendung und Weitergabe nach denen der jeweiligen Anbieter.</p>
-			<p>Bitte beachten Sie, dass wir keine Haftung für eventuell entstehende Schäden übernehmen, die auf Witterungseinflüsse zurückzufüren sind (zerrisene Banner, herausgerissen Ösen o. Ä.). Sie als Kunde müssen entscheiden, wie die Banner konfektioniert werden sollen. Für die Art der Konfektionierung übernehmen wir keine Haftung. Wir übernehmen außerdem keine Haftung für unfachgerechte Montage der Banner.</p>
-			<p>Pflegehinweise beachten: Keine Bleichmittel und Weichspüler verwenden. Nicht in den Trockner geben. Links gewendet waschen. Nicht über den Transfer bügeln. Nicht chemisch reinigen.</p>
-			<p>Wir weisen darauf hin, dass Logos eventuell Bildrechte anderer berühren und wir hierfür keine Haftung übernehmen. Der Kunde garantiert uns Straffreiheit gegenüber einer eventuell geschädigten Partei im Fall einer Verletzung des Rechts des geistigen Eigentums und/ oder des Bildrechts und/ oder den durch eine solche Verletzung verursachten Schadens. Für einen eventuellen Fall solch einer Verletzung willigt der Kunde ein, uns in Höhe aller entstandenen Kosten (inkl. Anwaltkosten) zu entschädigen.</p>
-			<span><input id="newText" class="visibility"><button onclick="addText()" id="addToTexts">+</button></span>
+
+		<div class="mt-3">
+			<h4 class="font-semibold inline-flex items-center" data-fun="togglePredefinedTexts" data-binding="true">
+				<span>Vordefinierte Texte</span>
+				<span class="cursor-pointer">
+					<span class="toggle-up hidden"><?= Icon::getDefault("iconChevronUp") ?></span>
+					<span class="toggle-down"><?= Icon::getDefault("iconChevronDown") ?></span>
+				</span>
+			</h4>
+			<div class="predefinedTexts hidden">
+				<p>Den Text zum (ab)wählen einmal anklicken. Die Rechnungsvorschau wird dann neu generiert.</p>
+				<div class="standardtexte grid grid-cols-3 gap-4 mt-2">
+					<p class="bg-white rounded-xl cursor-pointer p-3 select-none" title="Übernehmen" data-binding="true" data-fun="toggleText">Zu den Bilddaten: Bei der Benutzung von Daten aus fremden Quellen richten sich die Nutzungsbedingungen über Verwendung und Weitergabe nach denen der jeweiligen Anbieter.</p>
+					<p class="bg-white rounded-xl cursor-pointer p-3 select-none" title="Übernehmen" data-binding="true" data-fun="toggleText">Bitte beachten Sie, dass wir keine Haftung für eventuell entstehende Schäden übernehmen, die auf Witterungseinflüsse zurückzufüren sind (zerrisene Banner, herausgerissen Ösen o. Ä.). Sie als Kunde müssen entscheiden, wie die Banner konfektioniert werden sollen. Für die Art der Konfektionierung übernehmen wir keine Haftung. Wir übernehmen außerdem keine Haftung für unfachgerechte Montage der Banner.</p>
+					<p class="bg-white rounded-xl cursor-pointer p-3 select-none" title="Übernehmen" data-binding="true" data-fun="toggleText">Pflegehinweise beachten: Keine Bleichmittel und Weichspüler verwenden. Nicht in den Trockner geben. Links gewendet waschen. Nicht über den Transfer bügeln. Nicht chemisch reinigen.</p>
+					<p class="bg-white rounded-xl cursor-pointer p-3 select-none" title="Übernehmen" data-binding="true" data-fun="toggleText">Wir weisen darauf hin, dass Logos eventuell Bildrechte anderer berühren und wir hierfür keine Haftung übernehmen. Der Kunde garantiert uns Straffreiheit gegenüber einer eventuell geschädigten Partei im Fall einer Verletzung des Rechts des geistigen Eigentums und/ oder des Bildrechts und/ oder den durch eine solche Verletzung verursachten Schadens. Für einen eventuellen Fall solch einer Verletzung willigt der Kunde ein, uns in Höhe aller entstandenen Kosten (inkl. Anwaltkosten) zu entschädigen.</p>
+				</div>
+				<div class="my-2">
+					<input id="newText" class="input-primary-new">
+					<button onclick="addText()" id="addToTexts" class="btn-primary-new">Hinzufügen</button>
+				</div>
+			</div>
+			<div class="predefinedTexts"></div>
 		</div>
+
 		<hr>
-		<h4>Reihenfolge aller Rechnungsposten</h4>
-		<p>Fehler: Falls das Leistungsdatum doppelt angezeigt wird oder Inhalte fehlen, bitte die Seite neu laden</p>
-		<div id="allInvoiceItemsTable"><?=Rechnung::getAllInvoiceItems($id)?></div>
-		<hr>
-		<?php if ($auftrag != null && $auftrag->getAuftragspostenData() != null): ?>
-		<button onclick="generatePDF();">Rechnung abschließen</button>
-		<?php else: ?>
-		<button disabled>Rechnung abschließen</button>
-		<?php endif; ?>
-		<button action="action" onclick="window.history.go(-1); return false; "type="submit">Abbrechen</button>
+
+		<div class="mt-3">
+			<?php if ($auftrag != null && $auftrag->getAuftragspostenData() != null): ?>
+				<button onclick="generatePDF();" class="btn-primary-new">Rechnung abschließen</button>
+			<?php else: ?>
+				<button disabled class="btn-primary-new">Rechnung abschließen</button>
+			<?php endif; ?>
+			<button action="action" onclick="window.history.go(-1); return false; " type="submit" class="btn-primary-new">Abbrechen</button>
+		</div>
 	</div>
-	<br>
-	<span>
-		<?=$rechnungsPDF?>
-	</span>
+	<div class="mt-3">
+		<?= $rechnungsPDF ?>
+	</div>
 <?php elseif ($target == "view"): ?>
-	<div>Rechnung <span id="rechnungsnummer"><?=$rechnungsnummer;?></span></div>
-	<iframe src="<?=$rechnungslink?>"></iframe>
+	<div>Rechnung <span id="rechnungsnummer"><?= $rechnungsnummer; ?></span></div>
+	<iframe src="<?= $rechnungslink ?>"></iframe>
 <?php else: ?>
 	<p>Es ist ein unerwarteter Fehler aufgetreten.</p>
-	<button action="action" onclick="window.history.go(-1); return false; "type="submit">Zurück</button>
+	<button action="action" class="btn-primary-new" onclick="window.history.go(-1); return false; " type="submit">Zurück</button>
 <?php endif; ?>
