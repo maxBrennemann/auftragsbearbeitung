@@ -1,8 +1,6 @@
 <?php
 
-namespace Project\Modules\Pdf;
-
-use TCPDF;
+namespace Classes\Project\Modules\Pdf;
 
 class InvoicePDF extends PDFGenerator
 {

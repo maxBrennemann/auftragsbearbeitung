@@ -19,9 +19,9 @@ functionNames.click_newOffer = () => {
         document.getElementById("listOpenOffers").classList.add("hidden");
         document.getElementById("newOffer").classList.add("hidden");
 
-        getItemsTable("auftragsPostenTable", 0, "offer");
+        getItemsTable("auftragsPostenTable", r.offerId, "offer");
         initInvoiceItems();
-        getPDF(r.offerId, customerId);
+        getPDF();
     });
 }
 
@@ -34,14 +34,10 @@ functionNames.click_storeOffer = () => {
 }
 
 functionNames.click_deleteOffer = () => {
-    
-}
-
-const getPDF = async (offerId, customerId) => {
 
 }
 
-const reloadIFrame = () => {
+const getPDF = () => {
     var iframe = document.getElementById("offerPDFPreview");
     iframe.src = iframe.src;
 }

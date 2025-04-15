@@ -42,59 +42,6 @@ class Angebot
         return new Angebot($idOffer, $customerId);
     }
 
-    public function PDFgenerieren($store = false)
-    {
-        $pdf = new \TCPDF('p', 'mm', 'A4');
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-        $pdf->SetTitle('Angebot ' . $this->customer->getKundennummer());
-        $pdf->SetSubject('Angebot');
-        $pdf->SetKeywords('pdf, angebot');
-
-        $pdf->AddPage();
-
-        $pdf->setCellPaddings(1, 1, 1, 1);
-        $pdf->setCellMargins(0, 0, 0, 0);
-
-        $cAddress = "<p>{$this->customer->getFirmenname()}<br>{$this->customer->getName()}<br>{$this->customer->getStrasse()} {$this->customer->getHausnummer()}<br>{$this->customer->getPostleitzahl()} {$this->customer->getOrt()}</p>";
-        $address = "<p>" . $_ENV["COMPANY_NAME"] . "<br>" . $_ENV["COMPANY_STREET"] . "<br>" . $_ENV["COMPANY_CITY"] . "</p>";
-
-        $pdf->writeHTMLCell(85, 40, 20, 45, $cAddress);
-        $pdf->writeHTMLCell(85, 40, 120, 35, $address);
-
-        $pdf->setXY(20, 90);
-        $pdf->Cell(20, 10, 'Menge', 'B');
-        $pdf->Cell(20, 10, 'MEH', 'B');
-        $pdf->Cell(80, 10, 'Bezeichnung', 'B');
-        $pdf->Cell(20, 10, 'E-Preis', 'B');
-        $pdf->Cell(20, 10, 'G-Preis', 'B');
-
-        /* iterates over all posten and adds lines */
-        $this->loadPosten();
-        $offset = 10;
-        if ($this->posten != null) {
-            foreach ($this->posten as $p) {
-                $pdf->setXY(20, 90 + $offset);
-                $pdf->Cell(20, 10, $p->getQuantity());
-                $pdf->Cell(20, 10, $p->getEinheit());
-                $pdf->Cell(80, 10, $p->getDescription());
-                $pdf->Cell(20, 10, $p->bekommeEinzelPreis_formatted());
-                $pdf->Cell(20, 10, $p->bekommePreis_formatted());
-                $offset += 10;
-            }
-        }
-
-        /* generates a pdf when offer is converted to an order */
-        if ($store == true) {
-            $filename = "{$this->customer->getKundennummer()}_{$this->offerId}.pdf";
-            $filelocation = "C:\\xampp\htdocs\\auftragsbearbeitung\\files\\generated\\offer";
-            $fileNL = $filelocation . "\\" . $filename;
-            $pdf->Output($fileNL, 'F');
-        } else {
-            $pdf->Output();
-        }
-    }
-
     private function getPc()
     {
         if (isset($_SESSION['offer_' . $this->customerId . '_pc'])) {
@@ -180,7 +127,6 @@ class Angebot
         }
 
         $this->deleteOldSessionData();
-        $this->PDFgenerieren(true);
     }
 
     public function loadAngebot() {}
@@ -213,7 +159,7 @@ class Angebot
 
     public static function getOfferItems()
     {
-        //
+        JSONResponseHandler::sendResponse([]);
     }
 
 }

@@ -5,7 +5,6 @@ namespace Classes\Project;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 
-use Classes\Link;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 class Rechnung
