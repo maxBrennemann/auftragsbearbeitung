@@ -4,10 +4,8 @@ import { initBindings } from "./classes/bindings.js";
 const functionNames = {};
 
 const config = {
-    "invoiceDate": "",
-    "serviceDate": "",
+    "invoiceId": 0,
     "customerId": 0,
-    "customerAddress": 0,
 }
 
 function init() {
@@ -38,12 +36,29 @@ functionNames.click_toggleText = e => {
 
 functionNames.write_invoiceDate = e => {
     const date = e.target.value;
-    ajax.post();
+    ajax.post(`/api/v1/invoice/${config.invoiceId}/invoice-date`, {
+        "date": date,
+    }).then(r => {
+        if (r.status !== "success") {
+            infoSaveSuccessfull("failiure", r.message);
+            return;
+        }
+        infoSaveSuccessfull("success");
+    });
     getPDF();
 }
 
 functionNames.write_serviceDate = e => {
     const date = e.target.value;
+    ajax.post(`/api/v1/invoice/${config.invoiceId}/service-date`, {
+        "date": date,
+    }).then(r => {
+        if (r.status !== "success") {
+            infoSaveSuccessfull("failiure", r.message);
+            return;
+        }
+        infoSaveSuccessfull("success");
+    });
     getPDF();
 }
 

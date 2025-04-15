@@ -10,15 +10,14 @@ use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 class Rechnung
 {
 
-	private $kunde;
-	private $address = 0;
-	private $auftrag;
+	private Kunde $kunde;
+	private Auftrag $auftrag;
+	private int $address = 0;
 
-	private $invoiceId;
 
-	private $tempId = 0;
+	private int $invoiceId;
 
-	private $posten;
+	private Posten $posten;
 	private $texts = [];
 
 	private $date = "00.00.0000";
@@ -220,7 +219,6 @@ class Rechnung
 		$invoiceId = (int) DBAccess::selectQuery("SELECT Rechnungsnummer FROM auftrag WHERE Auftragsnummer = $orderId")[0]['Rechnungsnummer'];
 		if ($invoiceId == 0 || $invoiceId == null) {
 			$next =  self::getNextNumber();
-			$this->tempId = $next;
 			return $next;
 		}
 		return $invoiceId;
@@ -248,64 +246,40 @@ class Rechnung
 	public function loadPostenFromAuftrag()
 	{
 		$orderId = $this->auftrag->getAuftragsnummer();
-		$this->posten = Posten::getOrderItems($orderId, true);
-		$this->posten = array_merge($this->posten, $this->texts);
+		//$this->posten = Posten::getOrderItems($orderId, true);
+		//$this->posten = array_merge($this->posten, $this->texts);
 	}
 
-	public function addText($id, $text)
+	public static function addText()
 	{
-		$empty = new EmptyPosten($id, $text);
-		array_push($this->posten, $empty);
-		$this->texts[$id] = $empty;
+		$invoiceId = Tools::get("id");
+		$text = Tools::get("text");
+
+		$query = "INSERT INTO invoice_text (id_invoice, `text`) VALUES (:invoiceId, :text);";
+		$id = DBAccess::insertQuery($query, [
+			"text" => $text,
+			"invoiceId" => $invoiceId,
+		]);
+
+		JSONResponseHandler::sendResponse([
+			"id" => $id,
+		]);
 	}
 
-	/* Code ist hier nicht nachvollziehbar.
-	 * ich weiß nicht, wieso es nicht geht. Deswegen wird
-	 * das Leistungsdatum als "addText" hinzugefügt.
-	 * Es ist überschreibbar, wieso auch immer
-	 */
-	public function setDatePerformance($date)
+	public function deleteText()
 	{
-		$this->performanceDate = $date;
-		$this->addText(-20, "Leistungsdatum: " . $date);
-		return null;
+		$id = Tools::get("id");
+		$invoiceId = Tools::get("invoiceId");
 
-		/* performance Date Key is -20 hardcoded */
-		$dateLine = new EmptyPosten(-20, "Leistungsdatum: " . $date);
+		$query = "DELETE FROM invoice_text WHERE id_invoice = :invoiceId AND `id` = :id;";
+		DBAccess::deleteQuery($query, [
+			"id" => $id,
+			"invoiceId" => $invoiceId,
+		]);
 
-		$id = -20;
-		$result = 0;
-		foreach ($this->posten as $key => $p) {
-			if (isset($p->id) && $p->id == $id) {
-				$result = $key;
-				break;
-			}
-		}
-
-		if ($result == 0) {
-			array_push($this->posten, $dateLine);
-		} else {
-			$this->posten[$result] = $dateLine;
-		}
-	}
-
-	public function removeText($id)
-	{
-		$result = 0;
-		foreach ($this->posten as $key => $p) {
-			if (isset($p->id) && $p->id == $id) {
-				$result = $key;
-				break;
-			}
-		}
-
-		unset($this->posten[$result]);
-		unset($this->texts[$id]);
-	}
-
-	public function getTempInvoiceId()
-	{
-		return $this->tempId;
+		JSONResponseHandler::sendResponse([
+			"status" => "success",
+		]);
 	}
 
 	private function fillAddress(&$pdf)
@@ -339,9 +313,29 @@ class Rechnung
 			$this->address = $address;
 	}
 
-	public function setInvoiceDAte($date) {}
+	public static function setInvoiceDate()
+	{
+		$invoiceId = Tools::get("id");
+		$date = Tools::get("date");
 
-	public function setLeistungsDAte($date) {}
+		$query = "UPDATE invoice SET creation_date = :date WHERE invoice_id = :invoiceId";
+		DBAccess::updateQuery($query, [
+			"date" => $date,
+			"invoiceId" => $invoiceId,
+		]);
+	}
+
+	public static function setServiceDate()
+	{
+		$invoiceId = Tools::get("id");
+		$date = Tools::get("date");
+
+		$query = "UPDATE invoice SET performance_date = :date WHERE invoice_id = :invoiceId";
+		DBAccess::updateQuery($query, [
+			"date" => $date,
+			"invoiceId" => $invoiceId,
+		]);
+	}
 
 	private function ohneBerechnungBtn(&$pdf, &$height, &$lineheight, &$p)
 	{
@@ -421,60 +415,6 @@ class Rechnung
 
 		/* Fertigstellung wird eingetragen */
 		DBAccess::updateQuery("UPDATE auftrag SET Fertigstellung = current_date() WHERE Auftragsnummer = $orderId");
-	}
-
-	public static function getAllInvoiceItems($orderId, $rechnung = null)
-	{
-		
-
-		if ($rechnung instanceof Rechnung && $rechnung->auftrag->getAuftragsnummer() == $orderId) {
-			$fahrzeuge = $rechnung->auftrag->getLinkedVehicles();
-
-			$column_names = array(
-				0 => array("COLUMN_NAME" => "Pos"),
-				1 => array("COLUMN_NAME" => "Menge"),
-				2 => array("COLUMN_NAME" => "MEH"),
-				3 => array("COLUMN_NAME" => "Bezeichnung"),
-				4 => array("COLUMN_NAME" => "E-Preis"),
-				5 => array("COLUMN_NAME" => "G-Preis")
-			);
-
-			$data = array();
-			$count = 1;
-
-			foreach ($rechnung->posten as $p) {
-				$newLine = [
-					"Pos" => $count,
-					"Menge" => $p->getQuantity(),
-					"MEH" => $p->getEinheit(),
-					"Bezeichnung" => $p->getDescription(),
-					"E-Preis" => $p->bekommeEinzelPreis_formatted(),
-					"G-Preis" => $p->bekommePreis_formatted()
-				];
-
-				array_push($data, $newLine);
-				$count++;
-			}
-
-			foreach ($fahrzeuge as $f) {
-				$newLine = [
-					"Pos" => $count,
-					"Menge" => "",
-					"MEH" => "",
-					"Bezeichnung" => "Fahrzeug: " . $f["Fahrzeug"] . " mit Kennzeichen " . $f["Kennzeichen"],
-					"E-Preis" => "",
-					"G-Preis" => ""
-				];
-
-				array_push($data, $newLine);
-				$count++;
-			}
-
-			$t = new Table();
-			$t->createByData($data, $column_names);
-			$t->addActionButton("move");
-			return $t->getTable();
-		}
 	}
 
 	public static function getOpenInvoiceData()

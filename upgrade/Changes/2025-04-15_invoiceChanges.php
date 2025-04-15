@@ -6,7 +6,7 @@ return new class {
         "ALTER TABLE `invoice` CHANGE `payment_type` `payment_type` VARCHAR(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'unbezahlt';",
         "ALTER TABLE `invoice` CHANGE `payment_date` `payment_date` DATE NULL;",
         "DROP TABLE IF EXISTS `invoice_items`;",
-        "CREATE TABLE invoice_number_tracker (
+        "CREATE TABLE IF NOT EXISTS invoice_number_tracker (
             id INT PRIMARY KEY,
             last_used_number INT
         );",
