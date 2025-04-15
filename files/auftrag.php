@@ -43,7 +43,7 @@ if ($orderId <= 0): ?>
 
 	$farbTable = $auftrag->getColors();
 	$fahrzeuge = Fahrzeug::getSelection($auftrag->getKundennummer());
-	$leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
+	$services = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
 
 	$showFiles = Auftrag::getFiles($orderId);
 	$auftragsverlauf = (new Auftragsverlauf($orderId))->representHistoryAsHTML();
@@ -306,8 +306,7 @@ if ($orderId <= 0): ?>
 				</label>
 			</p>
 			<?= TemplateController::getTemplate("invoiceItems", [
-				"auftrag" => $auftrag,
-				"leistungen" => $leistungen
+				"services" => $services
 			]); ?>
 		</div>
 		<div class="defCont invoice">

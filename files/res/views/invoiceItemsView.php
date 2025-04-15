@@ -16,7 +16,7 @@
                 </div>
                 <div class="mt-1 flex flex-col">
                     <span>Stundenlohn [€]:</span>
-                    <input class="input-primary-new" id="wage" type="number" value="<?= $auftrag->getDefaultWage() ?>">
+                    <input class="input-primary-new" id="wage" type="number" value="<?= \Classes\Project\Config::get("defaultWage") ?>">
                 </div>
                 <div class="mt-1 flex flex-col">
                     <span>Beschreibung:</span>
@@ -33,8 +33,8 @@
             <div class="flex flex-col">
                 <span>Leistung:</span>
                 <select class="input-primary-new w-48" id="selectLeistung" data-binding="true" data-fun="selectLeistung">
-                    <?php foreach ($leistungen as $leistung): ?>
-                        <option value="<?= $leistung['Nummer'] ?>" data-surcharge="<?= $leistung['Aufschlag'] ?>"><?= $leistung['Bezeichnung'] ?></option>
+                    <?php foreach ($services as $service): ?>
+                        <option value="<?= $service['Nummer'] ?>" data-surcharge="<?= $service['Aufschlag'] ?>"><?= $service['Bezeichnung'] ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -93,7 +93,7 @@
                     "name" => "Ohne Berechnung",
                 ]); ?>
             </div>
-            <div class="ml-2">
+            <div class="ml-2 mt-2">
                 <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
                     "id" => "addToInvoice",
                     "name" => "Der Rechnung hinzufügen",

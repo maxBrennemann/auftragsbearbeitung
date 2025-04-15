@@ -3,9 +3,10 @@
 namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
-use Classes\Link;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
+
+use Classes\Link;
 
 /**
  * Klasse generiert im Zusammenhang mit der Template Datei auftrag.php die Übersicht für einen bestimmten Auftrag.
@@ -634,12 +635,6 @@ class Auftrag implements StatisticsInterface
 		return $html;
 	}
 
-	public function getDefaultWage()
-	{
-		$defaultWage = GlobalSettings::getSetting("defaultWage");
-		return $defaultWage;
-	}
-
 	/**
 	 * adds a new order to the database by using the data from the form,
 	 * which is sent by the client;
@@ -658,15 +653,9 @@ class Auftrag implements StatisticsInterface
 
 		$orderId = self::addToDB($kdnr, $bezeichnung, $beschreibung, $typ, $termin, $angenommenVon, $angenommenPer, $ansprechpartner);
 
-		$isLoadPosten = false;
-		if (isset($_SESSION['offer_is_order']) && $_SESSION['offer_is_order'] == true) {
-			$isLoadPosten = true;
-		}
-
 		$data = array(
 			"success" => true,
 			"responseLink" => Link::getPageLink("auftrag") . "?id=$orderId",
-			"loadFromOffer" => $isLoadPosten,
 			"orderId" => $orderId
 		);
 

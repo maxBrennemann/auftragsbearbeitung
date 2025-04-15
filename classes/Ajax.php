@@ -26,7 +26,6 @@ use Classes\Project\Search;
 use Classes\Project\Liste;
 use Classes\Project\NotificationManager;
 use Classes\Project\Auftrag;
-use Classes\Project\Zeit;
 use Classes\Project\Posten;
 use Classes\Project\Kunde;
 use Classes\Project\Fahrzeug;
@@ -34,8 +33,6 @@ use Classes\Project\Step;
 use Classes\Project\Table;
 use Classes\Project\Rechnung;
 use Classes\Project\Auftragsverlauf;
-use Classes\Project\Angebot;
-use Classes\Project\Leistung;
 use Classes\Project\Address;
 use Classes\Project\Statistics;
 use Classes\Project\Icon;
@@ -431,32 +428,6 @@ class Ajax
 					"status" => "success",
 				]);
 				break;
-			case "addTimeOffer":
-				$customerId = $_POST['customerId'];
-				$time = $_POST['time'];
-				$wage = $_POST['wage'];
-				$descr = $_POST['descr'];
-				$isFree = (int) $_POST['isFree'];
-				$angebot = new Angebot($customerId);
-				$zeitPosten = new Zeit($wage, $time, $descr, 0, 0);
-				$angebot->addPosten($zeitPosten);
-				break;
-			case "addLeistungOffer":
-				$customerId = $_POST['customerId'];
-				$lei = $_POST['lei'];
-				$bes = $_POST['bes'];
-				$ekp = $_POST['ekp'];
-				$pre = $_POST['pre'];
-				$qty = $_POST['qty'];
-				$meh = $_POST['meh'];
-				$isFree = (int) $_POST['isFree'];
-				$angebot = new Angebot($customerId);
-				$leistungsPosten = new Leistung($lei, $bes, $pre, $ekp, $qty, $meh, 0, 0);
-				$angebot->addPosten($leistungsPosten);
-				break;
-			case "storeOffer":
-				Angebot::setIsOrder();
-				break;
 			case "sendNewAddress":
 				$kdnr = (int) $_POST['customer'];
 				$plz = (int) $_POST['plz'];
@@ -518,13 +489,6 @@ class Ajax
 				if (isset($_SESSION['tempInvoice'])) {
 					$rechnung = unserialize($_SESSION['tempInvoice']);
 					$rechnung->PDFgenerieren(true);
-				}
-				break;
-			case "loadPosten":
-				if (isset($_SESSION['offer_is_order']) && $_SESSION['offer_is_order'] == true) {
-					$orderId = $_POST['auftragsId'];
-					$angebot = new Angebot(0);
-					$angebot->storeOffer($orderId);
 				}
 				break;
 			case "saveDescription":

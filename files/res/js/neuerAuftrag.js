@@ -112,14 +112,6 @@ async function sendOrder() {
     }
 
     const responseLink = response.responseLink;
-    const loadFromOffer = response.loadFromOffer;
-
-    if (loadFromOffer) {
-        const loadPosten = await ajax.post({
-            r: "loadPosten",
-            auftragsId: response.orderId,
-        });
-    }
 
     window.location.href = responseLink;
 }

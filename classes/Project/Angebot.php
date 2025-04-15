@@ -168,11 +168,6 @@ class Angebot
         array_push($this->posten, $posten);
     }
 
-    static function setIsOrder()
-    {
-        $_SESSION['offer_is_order'] = true;
-    }
-
     /* function is called from createOrder page only if offer session data is available */
     public function storeOffer($orderId)
     {
@@ -201,11 +196,13 @@ class Angebot
         }
 
         $offer = self::createNewOffer($customerId);
+        $services = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
         $content = TemplateController::getTemplate("offer", [
             "offer" => $offer,
             "customer" => $offer->customer,
             "vehicles" => $offer->fahrzeuge,
             "customerId" => $customerId,
+            "services" => $services,
         ]);
 
         JSONResponseHandler::sendResponse([
