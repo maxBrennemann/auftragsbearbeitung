@@ -12,6 +12,7 @@ $rechnung = Link::getPageLink("rechnung");
 $rechnungsnummer = 0;
 $rechnungslink;
 $rechnungsadressen;
+$texts = [];
 
 /* Daten für die Rechnung, falls vorhanden werden sie vom Server geladen */
 $rechnungsdatum = "";
@@ -50,8 +51,9 @@ if ($target != -1) {
 			$auftrag = new Auftrag($id);
 			$rechnungsadressen = Address::loadAllAddresses($auftrag->getKundennummer());
 			$rechnungsadressen = formatAddresses($rechnungsadressen);
-			$_SESSION['currentInvoice_orderId'] = $id;
 			$nextInvoiceId = Rechnung::getNextNumber();
+			$invoice = new Rechnung($nextInvoiceId);
+			$texts = $invoice->getTexts();
 
 			$query = "SELECT creation_date, performance_date FROM invoice WHERE order_id = $id";
 			$data = DBAccess::selectQuery($query);

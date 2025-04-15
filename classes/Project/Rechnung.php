@@ -14,7 +14,6 @@ class Rechnung
 	private Auftrag $auftrag;
 	private int $address = 0;
 
-
 	private int $invoiceId;
 
 	private Posten $posten;
@@ -266,7 +265,7 @@ class Rechnung
 		]);
 	}
 
-	public function deleteText()
+	public static function deleteText()
 	{
 		$id = Tools::get("id");
 		$invoiceId = Tools::get("invoiceId");
@@ -280,6 +279,16 @@ class Rechnung
 		JSONResponseHandler::sendResponse([
 			"status" => "success",
 		]);
+	}
+
+	public function getTexts()
+	{
+		$query = "SELECT * FROM invoice_text WHERE id_invoice = :invoiceId";
+		$data = DBAccess::selectQuery($query, [
+			"invoiceId" => $this->invoiceId,
+		]);
+		$this->texts = $data;
+		return $data;
 	}
 
 	private function fillAddress(&$pdf)
