@@ -26,7 +26,7 @@ $openOffers = Offer::getOpenOffers();
 		</thead>
 		<tbody id="angebotList">
 			<?php foreach ($openOffers as $offer): ?>
-				<tr onclick="loadOffer(<?=$offer['id']?>)">
+				<tr data-binding="true" data-fun="loadOffer" data-id="<?=$offer['id']?>">
 					<td><?=$offer['id']?></td>
 					<td><?=$offer['creation_date']?></td>
 					<td><?=$offer['customer_id']?></td>

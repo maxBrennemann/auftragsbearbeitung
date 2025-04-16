@@ -5,7 +5,6 @@ use Classes\Link;
 use Classes\Project\CacheManager;
 use Classes\Project\Config;
 
-$defaultWage = (int) Config::get("defaultWage");
 $cacheStatus = CacheManager::getCacheStatus();
 $minifyStatus = Config::get("minifyStatus");
 
@@ -24,8 +23,61 @@ $minifyStatus = Config::get("minifyStatus");
     <div id="userTable" class="mt-2"></div>
 </section>
 <section class="defCont">
-    <h2 class="font-bold">Stundenlohn festlegen</h2>
-    <input type="number" id="defaultWage" value="<?= $defaultWage ?>" class="px-4 py-2 m-1 text-sm text-slate-600 rounded-lg">
+    <h2 class="font-bold">Standardeinstellungen festlegen</h2>
+    <div>
+        <div class="flex items-center">
+            <span class="font-semibold w-64">Stundenlohn</span>
+            <input class="input-primary-new" value="<?= Config::get("defaultWage") ?>" data-write="true" data-fun="changeSetting" data-setting="defaultWage">
+        </div>
+        <div class="flex items-center mt-2">
+            <span class="font-semibold w-64">Firmenname</span>
+            <input class="input-primary-new" value="<?= Config::get("companyName") ?>" data-write="true" data-fun="changeSetting" data-setting="companyName">
+        </div>
+        <div class="flex items-center mt-2">
+            <span class="font-semibold w-64">Adresse</span>
+            <input class="input-primary-new" value="<?= Config::get("companyAddress") ?>" data-write="true" data-fun="changeSetting" data-setting="companyAddress">
+        </div>
+        <div class="flex items-center mt-2">
+            <span class="font-semibold w-64">PLZ</span>
+            <input class="input-primary-new" value="<?= Config::get("companyZip") ?>" data-write="true" data-fun="changeSetting" data-setting="companyZip">
+        </div>
+        <div class="flex items-center mt-2">
+            <span class="font-semibold w-64">Stadt</span>
+            <input class="input-primary-new" value="<?= Config::get("companyCity") ?>" data-write="true" data-fun="changeSetting" data-setting="companyCity">
+        </div>
+        <div class="flex items-center mt-2">
+            <span class="font-semibold w-64">Land</span>
+            <input class="input-primary-new" value="<?= Config::get("companyCountry") ?>" data-write="true" data-fun="changeSetting" data-setting="companyCountry">
+        </div>
+        <div class="flex items-center mt-2">
+            <span class="font-semibold w-64">Telefonnummer</span>
+            <input class="input-primary-new" value="<?= Config::get("companyPhone") ?>" data-write="true" data-fun="changeSetting" data-setting="companyPhone">
+        </div>
+        <div class="flex items-center mt-2">
+            <span class="font-semibold w-64">Email</span>
+            <input class="input-primary-new" value="<?= Config::get("companyEmail") ?>" data-write="true" data-fun="changeSetting" data-setting="companyEmail">
+        </div>
+        <div class="flex items-center mt-2">
+            <span class="font-semibold w-64">Website</span>
+            <input class="input-primary-new" value="<?= Config::get("companyWebsite") ?>" data-write="true" data-fun="changeSetting" data-setting="companyWebsite">
+        </div>
+        <div class="flex items-center mt-2">
+            <span class="font-semibold w-64">Impressum</span>
+            <input class="input-primary-new" value="<?= Config::get("companyImprint") ?>" data-write="true" data-fun="changeSetting" data-setting="companyImprint">
+        </div>
+        <div class="flex items-center mt-2">
+            <span class="font-semibold w-64">Bank</span>
+            <input class="input-primary-new" value="<?= Config::get("companyBank") ?>" data-write="true" data-fun="changeSetting" data-setting="companyBank">
+        </div>
+        <div class="flex items-center mt-2">
+            <span class="font-semibold w-64">IBAN</span>
+            <input class="input-primary-new" value="<?= Config::get("companyIban") ?>" data-write="true" data-fun="changeSetting" data-setting="companyIban">
+        </div>
+        <div class="flex items-center mt-2">
+            <span class="font-semibold w-64">UstIdNr</span>
+            <input class="input-primary-new" value="<?= Config::get("companyUstIdNr") ?>" data-write="true" data-fun="changeSetting" data-setting="companyUstIdNr">
+        </div>
+    </div>
 </section>
 <section class="defCont">
     <h2 class="font-bold">Cache</h2>

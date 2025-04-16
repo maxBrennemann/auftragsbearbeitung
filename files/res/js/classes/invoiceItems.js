@@ -12,7 +12,7 @@ const config = {
     "tableOptions": {
         "primaryKey": "id",
         "hide": ["id"],
-        "hideOptions": ["addRow", "check"],
+        "hideOptions": ["addRow", "check", "move", "add"],
         "styles": {
             "table": {
                 "className": ["w-full"],
@@ -86,6 +86,16 @@ export const getItemsTable = async (tableName, id, type = "order") => {
     const data = await getItems(id, type);
     const table = renderTable(tableName, config.tableHeader, data, config.tableOptions);
 
+    table.addEventListener("rowDelete", e => {
+        const data = e.detail;
+
+        ajax.delete(`/api/v1/order-items/${data.type}/${data.id}`).then(() => {
+            data.row.remove();
+        });
+    });
+
+    table.addEventListener("rowEdit", editItem);
+
     config.table = table;
     return table;
 }
@@ -112,6 +122,10 @@ const initItems = () => {
     });
 }
 
+const editItem = e => {
+    //const type = 
+}
+
 functionNames.click_addItem = async () => {
     switch (config.itemType) {
         case "time":
@@ -133,7 +147,7 @@ const addTime = () => {
     }
 
     ajax.post(`/api/v1/order-items/${globalData.auftragsId}/times`, {
-        "time": document.querySelector("#time").value,
+        "time": document.querySelector("#timeInput").value,
         "wage": wage,
         "description": document.querySelector("#timeDescription").value,
         "noPayment": getIsFree(),

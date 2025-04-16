@@ -18,6 +18,10 @@ const customerData = {
 const fnNames = {};
 
 const init = () => {
+    if (customerData.id == 0) {
+        return;
+    }
+    
     initBindings(fnNames);
     initCustomer();
     initialize();
@@ -26,10 +30,6 @@ const init = () => {
 }
 
 function initialize() {
-    if (customerData.id == 0) {
-        return;
-    }
-
     contactPersonTable();
     vehiclesTable();
 

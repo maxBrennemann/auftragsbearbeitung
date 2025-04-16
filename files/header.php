@@ -84,6 +84,7 @@ if ($pageName == "") {
 		|| $page == "zeiterfassung"
 		|| $page == "wiki"
 		|| $page == "mitarbeiter"
+		|| $page == "rechnung"
 	) {
 		echo '<script type="module" src="' . $link . '"></script>';
 	} else {

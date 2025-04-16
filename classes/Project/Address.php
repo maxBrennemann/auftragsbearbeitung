@@ -65,12 +65,24 @@ class Address
         return $addressInstance;
     }
 
-    public static function loadAllAddresses(int $kdnr): array
+    public static function loadAllAddresses(int $customerId): array
     {
         $data = DBAccess::selectQuery("SELECT * FROM `address` WHERE id_customer = :customerId ORDER BY art", [
-            "customerId" => $kdnr,
+            "customerId" => $customerId,
         ]);
         return $data;
+    }
+
+    public static function getAllAdressesFormatted(int $customerId): array
+    {
+        $addresses = self::loadAllAddresses($customerId);
+        $formattedAddresses = [];
+
+        foreach ($addresses as $address) {
+            $formattedAddresses[$address["id"]] = $address["strasse"] . " " . $address["hausnr"] . ", " . $address["plz"] . " " . $address["ort"];
+        }
+
+        return $formattedAddresses;
     }
 
     public static function hasAddress(int $kdnr, int $addressId): bool

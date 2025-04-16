@@ -26,16 +26,12 @@ use Classes\Project\Search;
 use Classes\Project\Liste;
 use Classes\Project\NotificationManager;
 use Classes\Project\Auftrag;
-use Classes\Project\Zeit;
 use Classes\Project\Posten;
 use Classes\Project\Kunde;
 use Classes\Project\Fahrzeug;
 use Classes\Project\Step;
 use Classes\Project\Table;
-use Classes\Project\Rechnung;
 use Classes\Project\Auftragsverlauf;
-use Classes\Project\Angebot;
-use Classes\Project\Leistung;
 use Classes\Project\Address;
 use Classes\Project\Statistics;
 use Classes\Project\Icon;
@@ -431,32 +427,6 @@ class Ajax
 					"status" => "success",
 				]);
 				break;
-			case "addTimeOffer":
-				$customerId = $_POST['customerId'];
-				$time = $_POST['time'];
-				$wage = $_POST['wage'];
-				$descr = $_POST['descr'];
-				$isFree = (int) $_POST['isFree'];
-				$angebot = new Angebot($customerId);
-				$zeitPosten = new Zeit($wage, $time, $descr, 0, 0);
-				$angebot->addPosten($zeitPosten);
-				break;
-			case "addLeistungOffer":
-				$customerId = $_POST['customerId'];
-				$lei = $_POST['lei'];
-				$bes = $_POST['bes'];
-				$ekp = $_POST['ekp'];
-				$pre = $_POST['pre'];
-				$qty = $_POST['qty'];
-				$meh = $_POST['meh'];
-				$isFree = (int) $_POST['isFree'];
-				$angebot = new Angebot($customerId);
-				$leistungsPosten = new Leistung($lei, $bes, $pre, $ekp, $qty, $meh, 0, 0);
-				$angebot->addPosten($leistungsPosten);
-				break;
-			case "storeOffer":
-				Angebot::setIsOrder();
-				break;
 			case "sendNewAddress":
 				$kdnr = (int) $_POST['customer'];
 				$plz = (int) $_POST['plz'];
@@ -514,19 +484,6 @@ class Ajax
 				$list = Liste::readList($lid);
 				echo $list->toHTML();
 				break;
-			case "generateInvoicePDF":
-				if (isset($_SESSION['tempInvoice'])) {
-					$rechnung = unserialize($_SESSION['tempInvoice']);
-					$rechnung->PDFgenerieren(true);
-				}
-				break;
-			case "loadPosten":
-				if (isset($_SESSION['offer_is_order']) && $_SESSION['offer_is_order'] == true) {
-					$orderId = $_POST['auftragsId'];
-					$angebot = new Angebot(0);
-					$angebot->storeOffer($orderId);
-				}
-				break;
 			case "saveDescription":
 				$text = $_POST['text'];
 				$auftrag = $_POST['auftrag'];
@@ -573,63 +530,6 @@ class Ajax
 				$intent = $_POST['intent'];
 				$data = DBAccess::selectQuery("SELECT info FROM `manual` WHERE `page` = '$pageName' AND intent = '$intent'");
 				echo json_encode($data, JSON_FORCE_OBJECT);
-				break;
-			case "setDateInvoice":
-				$date = $_POST['date'];
-				$date = date('d.m.Y', strtotime($date));
-
-				$rechnung = unserialize($_SESSION['tempInvoice']);
-				$rechnung->setDate($date);
-				$_SESSION['tempInvoice'] = serialize($rechnung);
-
-				echo json_encode([
-					0 => "ok",
-					1 => Rechnung::getAllInvoiceItems($_POST["id"], $rechnung)
-				], JSON_FORCE_OBJECT);
-				break;
-			case "setDatePerformance":
-				$date = $_POST['date'];
-				$date = date('d.m.Y', strtotime($date));
-
-				$rechnung = unserialize($_SESSION['tempInvoice']);
-				$rechnung->setDatePerformance($date);
-				$_SESSION['tempInvoice'] = serialize($rechnung);
-
-				echo json_encode([
-					0 => "ok",
-					1 => Rechnung::getAllInvoiceItems($_POST["id"], $rechnung)
-				], JSON_FORCE_OBJECT);
-				break;
-			case "invoiceAddText":
-				$id = (int) $_POST['id'];
-				$text = $_POST['text'];
-
-				$rechnung = unserialize($_SESSION['tempInvoice']);
-				$rechnung->addText($id, $text);
-				$_SESSION['tempInvoice'] = serialize($rechnung);
-				break;
-			case "invoiceRemoveText":
-				$id = (int) $_POST['id'];
-
-				$rechnung = unserialize($_SESSION['tempInvoice']);
-				$rechnung->removeText($id);
-				$_SESSION['tempInvoice'] = serialize($rechnung);
-				break;
-			case "setInvoiceParameters":
-
-				$orderId = (int) $_POST["auftrag"];
-				$address = (int) $_POST["address"];
-				$invoiceDate = $_POST["invoiceDate"];
-				$leistungsDate = $_POST["leistungDate"];
-
-				$rechnung = unserialize($_SESSION['tempInvoice']);
-
-				if ($address != 0) {
-					echo $rechnung->setAddress($address);
-				}
-
-				$_SESSION['tempInvoice'] = serialize($rechnung);
-				echo "ok";
 				break;
 			case "setNotificationsRead":
 				$notificationIds = $_POST["notificationIds"];

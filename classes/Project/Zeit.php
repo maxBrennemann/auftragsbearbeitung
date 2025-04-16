@@ -310,4 +310,31 @@ class Zeit extends Posten
 			"data" => $item,
 		]);
 	}
+
+	public static function delete()
+	{
+		$idItem = (int) Tools::get("itemId");
+
+		$query = "SELECT Nummer AS id FROM zeit WHERE Postennummer = :idItem;";
+		$data = DBAccess::selectQuery($query, [
+			"idItem" => $idItem,
+		]);
+
+		if (empty($data)) {
+			parent::delete();
+			return;
+		}
+
+		$idTime = (int) $data[0]["id"];
+		$query = "DELETE FROM zeiterfassung WHERE id_zeit = :idTime;";
+		DBAccess::deleteQuery($query, [
+			"idTime" => $idTime,
+		]);
+
+		$query = "DELETE FROM zeit WHERE Postennummer = :idItem;";
+		DBAccess::deleteQuery($query, [
+			"idItem" => $idItem,
+		]);
+		parent::delete();
+	}
 }
