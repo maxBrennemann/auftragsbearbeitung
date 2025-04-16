@@ -5,7 +5,7 @@ use Classes\Link;
 use MaxBrennemann\PhpUtilities\Tools;
 
 use Classes\Project\Auftrag;
-use Classes\Project\Rechnung;
+use Classes\Project\Invoice;
 use Classes\Project\Address;
 use Classes\Project\Icon;
 use Classes\Project\InvoiceNumberTracker;
@@ -20,12 +20,12 @@ if ($target == "create") {
 	$invoiceAddresses = Address::getAllAdressesFormatted($auftrag->getKundennummer());
 
 	$nextInvoiceNumber = InvoiceNumberTracker::peekNextInvoiceNumber();
-	$invoice = Rechnung::create($id);
+	$invoice = Invoice::create($id);
 	$invoiceId = $invoice->getId();
 }
 
 if ($target == "view") {
-	$invoice = Rechnung::create($id);
+	$invoice = Invoice::create($id);
 	$invoiceId = $invoice->getId();
 }
 

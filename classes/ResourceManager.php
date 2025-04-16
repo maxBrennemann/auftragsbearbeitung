@@ -8,7 +8,6 @@ use MaxBrennemann\PhpUtilities\Tools;
 use Classes\Project\CacheManager;
 use Classes\Project\Posten;
 use Classes\Project\Table;
-use Classes\Project\Rechnung;
 
 use Classes\Project\Table\TableConfig;
 
@@ -16,6 +15,7 @@ use Classes\Project\Modules\Sticker\Exports\ExportFacebook;
 use Classes\Project\Modules\Sticker\Imports\ImportGoogleSearchConsole;
 
 use Classes\Project\Modules\Pdf\OfferPDF;
+use Classes\Project\Modules\Pdf\InvoicePDF;
 
 class ResourceManager
 {
@@ -181,8 +181,8 @@ class ResourceManager
                     case "invoice":
                         $invoiceId = (int) Tools::get("invoiceId");
                         $orderId = (int) Tools::get("orderId");
-                        $invoice = new Rechnung($invoiceId, $orderId);
-                        $invoice->PDFgenerieren();
+                        $invoice = new InvoicePDF($invoiceId, $orderId);
+                        $invoice->generate();
                         break;
                 }
             } else if (self::$page == "cron") {

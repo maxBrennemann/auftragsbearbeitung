@@ -31,7 +31,6 @@ use Classes\Project\Kunde;
 use Classes\Project\Fahrzeug;
 use Classes\Project\Step;
 use Classes\Project\Table;
-use Classes\Project\Rechnung;
 use Classes\Project\Auftragsverlauf;
 use Classes\Project\Address;
 use Classes\Project\Statistics;

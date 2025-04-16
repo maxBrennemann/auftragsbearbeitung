@@ -6,6 +6,7 @@ use Classes\Project\Angebot;
 
 class OfferPDF extends PDFGenerator
 {
+    
     private Angebot $offer;
     private int $offerId;
     private int $customerId;

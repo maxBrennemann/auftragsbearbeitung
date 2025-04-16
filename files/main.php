@@ -4,13 +4,13 @@ use Classes\Link;
 
 use Classes\Project\Aufgabenliste;
 use Classes\Project\Auftrag;
-use Classes\Project\Rechnung;
+use Classes\Project\Invoice;
 use Classes\Project\Icon;
 
 $showAktuelleSchritte = Aufgabenliste::aktuelleSchritteAlsTabelleAusgeben();
 $showOffeneAuftraege = Auftrag::getAuftragsliste();
 $showReady = Auftrag::getReadyOrders();
-$offeneSumme = Rechnung::getOffeneRechnungssumme();
+$offeneSumme = Invoice::getOffeneRechnungssumme();
 
 if (isset($_GET['showDetails'])) {
 	$showDetails = $_GET['showDetails'];
