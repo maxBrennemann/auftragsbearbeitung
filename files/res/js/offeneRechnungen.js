@@ -4,17 +4,6 @@ const init = () => {
     createInvoiceTable();
 }
 
-function updateIsDone(id, event) {
-    const targetRow = event.currentTarget.parentNode.parentNode;
-    const invoiceId = parseInt(targetRow.children[1].innerHTML);
-
-    ajax.post(`/api/v1/invoice/${invoiceId}/paid`).then(r => {
-        if (r.status == "success") {
-            targetRow.parentNode.removeChild(targetRow);
-        }
-    });
-}
-
 const getOpenInvoiceData = async () => {
     const data = await ajax.get(`/api/v1/invoice/open`);
     return data.data;

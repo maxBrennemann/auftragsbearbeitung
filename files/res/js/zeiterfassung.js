@@ -189,7 +189,7 @@ const getTimeTrackingEntries = async () => {
     ];
     const options = {
         "hide": ["id"],
-        "hideOptions": ["addRow", "check"],
+        "hideOptions": ["addRow", "check", "move", "add"],
     };
     renderTable("timeTrackingTable", headers, data, options);
     document.getElementById("timeTrackingTable").addEventListener("rowDelete", async (event) => {

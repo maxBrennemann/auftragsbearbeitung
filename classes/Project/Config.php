@@ -100,12 +100,34 @@ class Config
         return $value;
     }
 
-    public static function setDefaultWage()
+    public static function updateConfig()
     {
-        $defaultWage = Tools::get("defaultWage");
-        self::set("defaultWage", $defaultWage);
+        $config = Tools::get("configName");
+        $value = Tools::get("value");
+
+        self::set($config, $value);
         JSONResponseHandler::sendResponse([
             "status" => "success",
         ]);
+    }
+
+    public static function getCompanyDetails()
+    {
+        $companyDetails = [
+            "companyName" => self::get("companyName"),
+            "companyAddress" => self::get("companyAddress"),
+            "companyZip" => self::get("companyZip"),
+            "companyCity" => self::get("companyCity"),
+            "companyCountry" => self::get("companyCountry"),
+            "companyPhone" => self::get("companyPhone"),
+            "companyEmail" => self::get("companyEmail"),
+            "companyWebsite" => self::get("companyWebsite"),
+            "companyImprint" => self::get("companyImprint"),
+            "companyBank" => self::get("companyBank"),
+            "companyIban" => self::get("companyIban"),
+            "companyUstIdNr" => self::get("companyUstIdNr"),
+        ];
+
+        return $companyDetails;
     }
 }

@@ -30,7 +30,7 @@ class SettingsRoutes extends Routes
      * @uses Classes\Project\CacheManager::toggleCache()
      * @uses Classes\Project\CacheManager::toggleMinify()
      * @uses Classes\Project\ClientSettings::createBackup()
-     * @uses Classes\Project\Config::setDefaultWage()
+     * @uses Classes\Project\Config::updateConfig()
      */
     protected static $putRoutes = [
         "/settings/global-timetracking" => [\Classes\Project\TimeTrackingController::class, "toggleDisplayTimeTracking"],
@@ -38,7 +38,7 @@ class SettingsRoutes extends Routes
         "/settings/color" => [\Classes\Project\ClientSettings::class, "setGrayScale"],
         "/settings/cache" => [\Classes\Project\CacheManager::class, "toggleCache"],
         "/settings/minify" => [\Classes\Project\CacheManager::class, "toggleMinify"],
-        "/settings/default-wage" => [\Classes\Project\Config::class, "setDefaultWage"],
+        "/settings/config/{configName}" => [\Classes\Project\Config::class, "updateConfig"],
     ];
 
     /**

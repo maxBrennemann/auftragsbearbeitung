@@ -13,11 +13,12 @@ window.globalData = {
     vehicleId: 0,
     auftragsId: parseInt(new URL(window.location.href).searchParams.get("id")),
     times: [],
+    table: null,
 }
 
 const fnNames = {};
 
-function initCode() {
+const initCode = async () => {
     if (isNaN(globalData.auftragsId)) {
         return;
     }
@@ -43,7 +44,8 @@ function initCode() {
     initExtraOptions();
     initNotes();
 
-    getItemsTable("auftragsPostenTable", globalData.auftragsId, "order");
+    globalData.table = await getItemsTable("auftragsPostenTable", globalData.auftragsId, "order");
+    globalData.table.addEventListener("rowAdd", reloadPostenListe);
     initInvoiceItems();
 }
 
@@ -222,17 +224,6 @@ const showAuftrag = () => {
 
 fnNames.click_showAuftragsverlauf = function () { }
 
-window.chooseProduct = function (productId) {
-    var amount = document.getElementById(productId + "_getAmount").value;
-    var isFree = getOhneBerechnung() ? 1 : 0;
-    var addToInvoice = getAddToInvoice() ? 1 : 0;
-    var add = new AjaxCall(`getReason=insertProduct&product=${productId}&amount=${amount}&auftrag=${globalData.auftragsId}&ohneBerechnung=${isFree}&addToInvoice=${addToInvoice}`, "POST", window.location.href);
-    add.makeAjaxCall(function (response) {
-        console.log(response);
-        reloadPostenListe();
-    });
-}
-
 /* performAction section of the table */
 window.performAction = function (key, event) {
     /* centered upload div */
@@ -273,6 +264,22 @@ window.performAction = function (key, event) {
     /* add new file uploader */
     fileUploaders.push(new FileUploader(form));
     centerAbsoluteElement(div);
+}
+
+fnNames.click_toggleInvoiceItems = e => {
+    const value = e.currentTarget.checked;
+    ajax.put(`/api/v1/settings/filter-order-posten`, {
+        "value": value,
+    }).then(async () => {
+        globalData.table.parentNode.removeChild(globalData.table);
+        globalData.table = await getItemsTable("auftragsPostenTable", globalData.auftragsId, "order");
+        globalData.table.addEventListener("rowAdd", reloadPostenListe);
+    });
+}
+
+const reloadPostenListe = async () => {
+    const response = await ajax.get(`/api/v1/order-items/${globalData.auftragsId}/invoice`);
+    document.getElementById("invoicePostenTable").innerHTML = response["invoicePostenTable"];
 }
 
 fnNames.click_showAuftrag = showAuftrag;

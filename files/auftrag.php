@@ -43,7 +43,7 @@ if ($orderId <= 0): ?>
 
 	$farbTable = $auftrag->getColors();
 	$fahrzeuge = Fahrzeug::getSelection($auftrag->getKundennummer());
-	$leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
+	$services = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
 
 	$showFiles = Auftrag::getFiles($orderId);
 	$auftragsverlauf = (new Auftragsverlauf($orderId))->representHistoryAsHTML();
@@ -301,13 +301,12 @@ if ($orderId <= 0): ?>
 			<p class="inline-flex items-center">
 				<span class="font-bold">Zeiten, Produkte und Kosten (netto)</span>
 				<label class="inline-flex items-center">
-					<input id="rechnungspostenAusblenden" type="checkbox" class="ml-3" <?= ClientSettings::getFilterOrderPosten() == true ? "checked" : "" ?>>
+					<input data-binding="true" data-fun="toggleInvoiceItems" type="checkbox" class="ml-3" <?= ClientSettings::getFilterOrderPosten() == true ? "checked" : "" ?>>
 					<span class="ml-1">Rechnungsposten ausblenden</span>
 				</label>
 			</p>
 			<?= TemplateController::getTemplate("invoiceItems", [
-				"auftrag" => $auftrag,
-				"leistungen" => $leistungen
+				"services" => $services
 			]); ?>
 		</div>
 		<div class="defCont invoice">

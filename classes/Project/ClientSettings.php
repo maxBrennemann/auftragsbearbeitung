@@ -64,7 +64,7 @@ class ClientSettings
     public static function getFilterOrderPosten(): bool
     {
         $userId = $_SESSION['user_id'];
-        $value = GlobalSettings::getSetting("filterOrderPosten_$userId");
+        $value = Config::get("filterOrderPosten_$userId");
 
         if ($value == "true") {
             return true;
@@ -76,14 +76,14 @@ class ClientSettings
     public static function setFilterOrderPosten()
     {
         $setTo = Tools::get("value");
-        $userId = $_SESSION['user_id'];
+        $userId = $_SESSION["user_id"];
 
-        $value = GlobalSettings::getSetting("filterOrderPosten_$userId");
+        $value = Config::get("filterOrderPosten_$userId");
 
         if ($value == null) {
-            GlobalSettings::addSetting("filterOrderPosten_$userId", $setTo);
+            Config::add("filterOrderPosten_$userId", $setTo);
         } else {
-            GlobalSettings::changeSetting("filterOrderPosten_$userId", $setTo);
+            Config::set("filterOrderPosten_$userId", $setTo);
         }
 
         JSONResponseHandler::returnOK();

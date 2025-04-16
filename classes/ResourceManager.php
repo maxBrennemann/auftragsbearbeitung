@@ -8,13 +8,14 @@ use MaxBrennemann\PhpUtilities\Tools;
 use Classes\Project\CacheManager;
 use Classes\Project\Posten;
 use Classes\Project\Table;
-use Classes\Project\Angebot;
-use Classes\Project\Rechnung;
 
 use Classes\Project\Table\TableConfig;
 
 use Classes\Project\Modules\Sticker\Exports\ExportFacebook;
 use Classes\Project\Modules\Sticker\Imports\ImportGoogleSearchConsole;
+
+use Classes\Project\Modules\Pdf\OfferPDF;
+use Classes\Project\Modules\Pdf\InvoicePDF;
 
 class ResourceManager
 {
@@ -121,42 +122,43 @@ class ResourceManager
             ob_start();
         }
 
-        /*
-        * filters AJAX requests and delegates them to the right files
-        */
-        if (isset($_POST['getReason'])) {
-            Ajax::manageRequests($_POST['getReason'], self::$page);
-        } else if (isset($_POST['upload'])) {
-            $uploadDestination = $_POST['upload'];
+        $getReason = Tools::get("getReason");
+        $isUpload = Tools::get("upload");
+
+        /* filters AJAX requests and delegates them to the right files */
+        if ($getReason != null) {
+            Ajax::manageRequests($getReason, self::$page);
+        } else if ($isUpload != null) {
+            $uploadDestination = Tools::get("upload");
 
             /* checks which upload mechanism should be called */
             switch ($uploadDestination) {
                 case "order":
-                    $auftragsId = (int) $_POST['auftrag'];
+                    $auftragsId = (int) Tools::get("auftrag");
                     $upload = new Upload();
                     $upload->uploadFilesAuftrag($auftragsId);
                     break;
                 case "product":
-                    $auftragsId = (int) $_POST['produkt'];
+                    $auftragsId = (int) Tools::get("produkt");
                     $upload = new Upload();
                     $upload->uploadFilesProduct($auftragsId);
                     break;
                 case "postenAttachment":
-                    $key = $_POST['key'];
-                    $table = $_POST['tableKey'];
+                    $key = Tools::get("key");
+                    $table = Tools::get("tableKey");
                     Posten::addFile($key, $table);
                     break;
                 case "vehicle":
-                    $key = $_POST['key'];
-                    $table = $_POST['tableKey'];
+                    $key = Tools::get("key");
+                    $table = Tools::get("tableKey");
                     $fahrzeugnummer = Table::getIdentifierValue($table, $key);
 
-                    $auftragsnummer = $_POST['orderid'];
+                    $auftragsnummer = Tools::get("orderid");
                     $upload = new Upload();
                     $upload->uploadFilesVehicle($fahrzeugnummer, $auftragsnummer);
                     break;
                 case "motiv":
-                    $motivname = $_POST['motivname'];
+                    $motivname = Tools::get("motivname");
                     $upload = new Upload();
 
                     if (isset($_POST["motivNumber"])) {
@@ -168,31 +170,19 @@ class ResourceManager
             }
         } else {
             if (self::$page == "pdf") {
-                $type = $_GET['type'];
+                $type = Tools::get("type");
                 switch ($type) {
-                    case "angebot":
-                        $angebot = new Angebot(0);
-                        $angebot->PDFgenerieren();
+                    case "offer":
+                        $offerId = (int) Tools::get("offerId");
+                        $customerId = (int) Tools::get("customerId");
+                        $offerPDF = new OfferPDF($offerId, $customerId);
+                        $offerPDF->generate();
                         break;
-                    case "rechnung":
-                        if (isset($_SESSION['tempInvoice'])) {
-                            $rechnung = unserialize($_SESSION['tempInvoice']);
-
-                            if (!isset($_SESSION['currentInvoice_orderId'])) {
-                                echo "Fehler beim Generieren der Rechnung!";
-                                return null;
-                            }
-
-                            if ($rechnung->getOrderId() == $_SESSION['currentInvoice_orderId']) {
-                                $rechnung->PDFgenerieren();
-                            } else {
-                                $rechnung = new Rechnung();
-                                $rechnung->PDFgenerieren();
-                            }
-                        } else {
-                            $rechnung = new Rechnung();
-                            $rechnung->PDFgenerieren();
-                        }
+                    case "invoice":
+                        $invoiceId = (int) Tools::get("invoiceId");
+                        $orderId = (int) Tools::get("orderId");
+                        $invoice = new InvoicePDF($invoiceId, $orderId);
+                        $invoice->generate();
                         break;
                 }
             } else if (self::$page == "cron") {

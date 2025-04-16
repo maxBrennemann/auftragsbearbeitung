@@ -220,6 +220,7 @@ export const addRow = (data, table, options = {}, header = {}) => {
         row.appendChild(actionsCell);
     }
 
+    dispatchActionEvent("rowAdd", data, table, { row });
     tbody.appendChild(row);
 }
 

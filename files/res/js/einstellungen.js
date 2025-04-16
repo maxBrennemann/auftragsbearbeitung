@@ -19,20 +19,6 @@ function initEventListeners() {
         ajax.post(`/api/v1/upload/adjust-files`);
     });
 
-    const setDefaultWage = document.getElementById("defaultWage");
-    setDefaultWage.addEventListener("change", e => {
-        const wage = e.target.value;
-        ajax.put(`/api/v1/settings/default-wage`, {
-            "defaultWage": wage,
-        }).then(r => {
-            if (r.status == "success") {
-                infoSaveSuccessfull("success");
-            } else {
-                infoSaveSuccessfull("failure");
-            }
-        });
-    });
-
     const addDocs = document.getElementById("addDocs");
     addDocs.addEventListener("click", () => {
         ajax.post({
@@ -205,6 +191,22 @@ fnNames.click_minifyFiles = () => {
     });
 }
 
+fnNames.write_changeSetting = e => {
+    const target = e.currentTarget;
+    const value = target.value;
+    const setting = target.dataset.setting;
+
+    ajax.put(`/api/v1/settings/config/${setting}`, {
+        "value": value,
+    }).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+        } else {
+            infoSaveSuccessfull("failure");
+        }
+    });
+}
+
 window.setCustomColor = setCustomColor;
 
 function setCustomColor(value) {
@@ -247,7 +249,7 @@ function getFileName() {
 const createOrderTypeTable = async () => {
     const config = tableConfig["auftragstyp"];
     const options = {
-        "hideOptions": ["delete", "check"],
+        "hideOptions": ["delete", "check", "move", "add"],
         "primaryKey": config.primaryKey,
         "autoSort": true,
         "styles": {
@@ -276,7 +278,7 @@ const createWholesalerTable = async () => {
 
     data.forEach(row => {
         addRow(row, table, {
-            "hideOptions": ["delete", "check"],
+            "hideOptions": ["delete", "check", "move", "add"],
         });
     });
 }

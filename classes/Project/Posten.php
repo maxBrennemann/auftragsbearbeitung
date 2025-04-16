@@ -3,6 +3,8 @@
 namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\Tools;
+
 use Classes\Upload;
 use Classes\Link;
 
@@ -41,7 +43,7 @@ abstract class Posten
 	public static function getOrderItems(int $orderId, string $itemType = ""): array
 	{
 		$items = [];
-		$invoiceQuery = $itemType == "invoice" ? "AND isInvoice = 1 " : "";
+		$invoiceQuery = $itemType == "invoice" ? "AND isInvoice = 0 " : "";
 		$query = "SELECT 
 				p.Postennummer as id, 
 				Posten as `type`, 
@@ -175,9 +177,6 @@ abstract class Posten
 				$meh = $data['MEH'];
 
 				$subPosten = DBAccess::insertQuery("INSERT INTO leistung_posten (Leistungsnummer, Postennummer, Beschreibung, Einkaufspreis, SpeziefischerPreis, meh, qty) VALUES($lei, $postennummer, '$bes', '$ekp', '$pre', '$meh', '$anz')");
-				//Leistung::bearbeitungsschritteHinzufuegen($lei, $auftragsnummer);
-				/* adds invoice data and prices for payment section */
-				//Payments::addPayment();
 				break;
 			case "produkt":
 				$amount = $data['amount'];
@@ -203,7 +202,14 @@ abstract class Posten
 		return [$postennummer, $subPosten];
 	}
 
-	public static function deletePosten($postenId) {}
+	public static function delete()
+	{
+		$idItem = (int) Tools::get("itemId");
+		$query = "DELETE FROM posten WHERE Postennummer = :id;";
+		DBAccess::deleteQuery($query, [
+			"id" => $idItem,
+		]);
+	}
 
 	/* 
 	 * https://stackoverflow.com/a/5207487/7113688
