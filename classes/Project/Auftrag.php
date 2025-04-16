@@ -34,40 +34,46 @@ class Auftrag implements StatisticsInterface
 	private $isArchiviert = false;
 	private $isRechnung = false;
 
-	public function __construct($auftragsnummer)
+	private int $customerId = 0;
+
+	public function __construct(int $orderId)
 	{
-		$auftragsnummer = (int) $auftragsnummer;
-		if ($auftragsnummer > 0) {
-			$this->Auftragsnummer = $auftragsnummer;
-			$data = DBAccess::selectAllByCondition("auftrag", "Auftragsnummer", $auftragsnummer);
-			$data = $data[0] ?? [];
+		if ($orderId <= 0) {
+			return;
+		}
 
-			if (!empty($data)) {
-				$this->Auftragsbeschreibung = $data['Auftragsbeschreibung'];
-				$this->Auftragsbezeichnung = $data['Auftragsbezeichnung'];
-				$this->auftragstyp = (int) $data['Auftragstyp'];
-				$this->rechnungsnummer = $data['Rechnungsnummer'];
+		$this->Auftragsnummer = $orderId;
+		$data = DBAccess::selectAllByCondition("auftrag", "Auftragsnummer", $orderId);
+		$data = $data[0] ?? [];
 
-				$this->datum = $data['Datum'];
-				$this->termin = $data['Termin'];
-				$this->fertigstellung = $data['Fertigstellung'];
+		if (!empty($data)) {
+			$this->Auftragsbeschreibung = $data['Auftragsbeschreibung'];
+			$this->Auftragsbezeichnung = $data['Auftragsbezeichnung'];
+			$this->auftragstyp = (int) $data['Auftragstyp'];
+			$this->rechnungsnummer = $data['Rechnungsnummer'];
 
-				$this->isPayed = $data['Bezahlt'] == 1 ? true : false;
+			$this->datum = $data['Datum'];
+			$this->termin = $data['Termin'];
+			$this->fertigstellung = $data['Fertigstellung'];
 
-				if ($data['archiviert'] == 0 || $data['archiviert'] == "0") {
-					$this->isArchiviert = true;
-				}
+			$this->isPayed = $data['Bezahlt'] == 1 ? true : false;
 
-				$data = DBAccess::selectQuery("SELECT * FROM schritte WHERE Auftragsnummer = {$auftragsnummer}");
-				foreach ($data as $step) {
-					$element = new Step($step['Auftragsnummer'], $step['Schrittnummer'], $step['Bezeichnung'], $step['Datum'], $step['Priority'], $step['istErledigt']);
-					array_push($this->Bearbeitungsschritte, $element);
-				}
-
-				$this->Auftragsposten = Posten::getOrderItems($auftragsnummer);
-			} else {
-				throw new \Exception("Auftragsnummer " . $auftragsnummer . " existiert nicht oder kann nicht gefunden werden<br>");
+			if ($data['archiviert'] == 0 || $data['archiviert'] == "0") {
+				$this->isArchiviert = true;
 			}
+
+			$data = DBAccess::selectQuery("SELECT * FROM schritte WHERE Auftragsnummer = {$orderId}");
+			foreach ($data as $step) {
+				$element = new Step($step['Auftragsnummer'], $step['Schrittnummer'], $step['Bezeichnung'], $step['Datum'], $step['Priority'], $step['istErledigt']);
+				array_push($this->Bearbeitungsschritte, $element);
+			}
+
+			$this->Auftragsposten = Posten::getOrderItems($orderId);
+			$this->customerId = (int) DBAccess::selectQuery("SELECT Kundennummer FROM auftrag WHERE auftragsnummer = :orderId", [
+				"orderId" => $orderId,
+			])[0]['Kundennummer'];
+		} else {
+			throw new \Exception("Auftragsnummer $orderId existiert nicht oder kann nicht gefunden werden.");
 		}
 	}
 
@@ -290,77 +296,16 @@ class Auftrag implements StatisticsInterface
 		return $price;
 	}
 
-	public function getKundennummer()
+	public function getKundennummer(): int
 	{
-		return DBAccess::selectQuery("SELECT Kundennummer FROM auftrag WHERE auftragsnummer = {$this->Auftragsnummer}")[0]['Kundennummer'];
-	}
-
-	/*
-	 * helper function for creating the AuftragsPosten table
-	 * function returns the data for the table
-	 */
-	private function getAuftragsPostenHelper($isInvoice = false): array|string
-	{
-		$subArr = [
-			"Postennummer" => "",
-			"Bezeichnung" => "",
-			"Beschreibung" => "",
-			"Stundenlohn" => "",
-			"MEH" => "",
-			"Preis" => "",
-			"Gesamtpreis" => "",
-			"Anzahl" => "",
-			"Einkaufspreis" => "",
-			"type" => ""
-		];
-
-		$data = [];
-		if (sizeof($this->Auftragsposten) == 0) {
-			return "";
-		}
-
-		/* only collect the items where isInvoice is true */
-		if ($isInvoice) {
-			for ($i = 0; $i < sizeof($this->Auftragsposten); $i++) {
-				if ($this->Auftragsposten[$i]->isInvoice() == true) {
-					array_push($data, $this->Auftragsposten[$i]->fillToArray($subArr));
-				}
-			}
-
-			return $data;
-		}
-
-		/* check if ClientSettings::getFilterOrderPosten is set */
-		if (ClientSettings::getFilterOrderPosten()) {
-			for ($i = 0; $i < sizeof($this->Auftragsposten); $i++) {
-				if ($this->Auftragsposten[$i]->isInvoice() == false) {
-					array_push($data, $this->Auftragsposten[$i]->fillToArray($subArr));
-				}
-			}
-
-			return $data;
-		}
-
-		for ($i = 0; $i < sizeof($this->Auftragsposten); $i++) {
-			array_push($data, $this->Auftragsposten[$i]->fillToArray($subArr));
-		}
-
-		return $data;
-	}
-
-	public static function getOrderItemsOld()
-	{
-		$id = Tools::get("id");
-		$order = new Auftrag($id);
-		$data = $order->getAuftragsPostenHelper();
-
-		JSONResponseHandler::sendResponse($data);
+		return $this->customerId;
 	}
 
 	public static function getOrderItems()
 	{
 		$id = (int) Tools::get("id");
-		$data = Posten::getOrderItems($id);
+		$type = ClientSettings::getFilterOrderPosten() == true ? "invoice" : "";
+		$data = Posten::getOrderItems($id, $type);
 
 		$parsedData = [];
 		foreach ($data as $key => $value) {
@@ -376,7 +321,7 @@ class Auftrag implements StatisticsInterface
 			$item["position"] = $value->getPosition();
 			$item["price"] = $value->bekommeEinzelPreis();
 			$item["totalPrice"] = $value->bekommePreis();
-			
+
 			$value = $value->fillToArray([]);
 			$item["id"] = $value["Postennummer"];
 			$item["name"] = $value["Bezeichnung"];
@@ -393,9 +338,7 @@ class Auftrag implements StatisticsInterface
 		JSONResponseHandler::sendResponse($parsedData);
 	}
 
-	public static function getOrderItem(int $id) {
-		
-	}
+	public static function getOrderItem(int $id) {}
 
 	/*
 	 * returns all invoice columns from invoice_posten table
@@ -432,6 +375,16 @@ class Auftrag implements StatisticsInterface
 		$t->createByData($data, $column_names);
 
 		return $t->getTable();
+	}
+
+	public static function getInvoicePostenTableAjax()
+	{
+		$orderId = Tools::get("id");
+		$order = new Auftrag($orderId);
+
+		JSONResponseHandler::sendResponse([
+			"invoicePostenTable" => $order->getInvoicePostenTable(),
+		]);
 	}
 
 	public function getIsArchiviert()

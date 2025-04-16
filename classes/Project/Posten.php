@@ -43,7 +43,7 @@ abstract class Posten
 	public static function getOrderItems(int $orderId, string $itemType = ""): array
 	{
 		$items = [];
-		$invoiceQuery = $itemType == "invoice" ? "AND isInvoice = 1 " : "";
+		$invoiceQuery = $itemType == "invoice" ? "AND isInvoice = 0 " : "";
 		$query = "SELECT 
 				p.Postennummer as id, 
 				Posten as `type`, 

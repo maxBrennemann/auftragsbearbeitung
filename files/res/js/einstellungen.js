@@ -249,7 +249,7 @@ function getFileName() {
 const createOrderTypeTable = async () => {
     const config = tableConfig["auftragstyp"];
     const options = {
-        "hideOptions": ["delete", "check"],
+        "hideOptions": ["delete", "check", "move", "add"],
         "primaryKey": config.primaryKey,
         "autoSort": true,
         "styles": {
@@ -278,7 +278,7 @@ const createWholesalerTable = async () => {
 
     data.forEach(row => {
         addRow(row, table, {
-            "hideOptions": ["delete", "check"],
+            "hideOptions": ["delete", "check", "move", "add"],
         });
     });
 }

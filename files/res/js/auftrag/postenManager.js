@@ -32,10 +32,6 @@ function cancleLeistung() {
     clearInputs({ "ids": ["bes", "ekp", "pre", "meh", "anz"] });
 }
 
-export function showPostenAdd() {
-    document.getElementById("showPostenAdd").classList.remove("hidden");
-}
-
 function editLeistungEntry(btns, parameters) {
     btns[1].click();
     document.getElementById("selectLeistung").value = parameters.type;
@@ -117,27 +113,4 @@ function manageCancleBtn(insertBefore, id, cancleFunction) {
     btn.classList.add("btn-primary");
     btn.addEventListener("click", cancleFunction, false);
     insertBefore.parentNode.insertBefore(btn, insertBefore);
-}
-
-export function initPostenFilter() {
-    const inputRechnungspostenAusblenden = document.getElementById("rechnungspostenAusblenden");
-    if (inputRechnungspostenAusblenden == null) {
-        return;
-    }
-
-    inputRechnungspostenAusblenden.addEventListener("change", function (e) {
-        const value = e.target.checked;
-        ajax.put(`/api/v1/settings/filter-order-posten`, {
-            "value": value,
-        }).then(() => {
-            reloadPostenListe();
-        })
-    });
-}
-
-const reloadPostenListe = async () => {
-    const response = await ajax.get(`/api/v1/order-items/${globalData.auftragsId}/all-old`);
-
-    document.getElementById("auftragsPostenTable").innerHTML = response.data[0];
-    document.getElementById("invoicePostenTable").innerHTML = response.data[1];
 }

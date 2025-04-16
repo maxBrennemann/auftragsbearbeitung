@@ -94,6 +94,8 @@ export const getItemsTable = async (tableName, id, type = "order") => {
         });
     });
 
+    table.addEventListener("rowEdit", editItem);
+
     config.table = table;
     return table;
 }
@@ -120,6 +122,10 @@ const initItems = () => {
     });
 }
 
+const editItem = e => {
+    //const type = 
+}
+
 functionNames.click_addItem = async () => {
     switch (config.itemType) {
         case "time":
@@ -141,7 +147,7 @@ const addTime = () => {
     }
 
     ajax.post(`/api/v1/order-items/${globalData.auftragsId}/times`, {
-        "time": document.querySelector("#time").value,
+        "time": document.querySelector("#timeInput").value,
         "wage": wage,
         "description": document.querySelector("#timeDescription").value,
         "noPayment": getIsFree(),

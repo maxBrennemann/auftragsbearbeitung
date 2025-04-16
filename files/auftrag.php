@@ -301,7 +301,7 @@ if ($orderId <= 0): ?>
 			<p class="inline-flex items-center">
 				<span class="font-bold">Zeiten, Produkte und Kosten (netto)</span>
 				<label class="inline-flex items-center">
-					<input id="rechnungspostenAusblenden" type="checkbox" class="ml-3" <?= ClientSettings::getFilterOrderPosten() == true ? "checked" : "" ?>>
+					<input data-binding="true" data-fun="toggleInvoiceItems" type="checkbox" class="ml-3" <?= ClientSettings::getFilterOrderPosten() == true ? "checked" : "" ?>>
 					<span class="ml-1">Rechnungsposten ausblenden</span>
 				</label>
 			</p>
