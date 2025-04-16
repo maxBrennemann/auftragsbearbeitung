@@ -31,6 +31,8 @@ functionNames.click_toggleText = e => {
     target.classList.toggle("bg-blue-200");
     target.classList.toggle("bg-white");
 
+    ajax.post(`/api/v1/invoice/${config.invoiceId}/toggle-text`, {});
+
     getPDF();
 }
 

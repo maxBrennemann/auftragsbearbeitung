@@ -15,21 +15,74 @@ class Rechnung
 	private int $address = 0;
 
 	private int $invoiceId;
+	private int $id = 0;
 
-	private Posten $posten;
+	private array $posten;
 	private $texts = [];
 
-	private $date = "00.00.0000";
-	private $performanceDate = "00.00.0000";
+	private ?\DateTime $creationDate = null;
+	private ?\DateTime $performanceDate = null;
 
-	public function __construct($invoiceId = null)
+	public function __construct(int $invoiceId, int $orderId)
 	{
-		$orderId = 0;
-
 		$this->auftrag = new Auftrag($orderId);
-		$this->kunde = new Kunde($this->auftrag->getKundennummer());
+		$customerId = $this->auftrag->getKundennummer();
+		$this->kunde = new Kunde($customerId);
 
-		$this->invoiceId = (int) $invoiceId;
+		$this->invoiceId = $invoiceId;
+	}
+
+	public static function create(int $orderId): Rechnung
+	{
+		$query = "SELECT id FROM invoice WHERE order_id = :orderId;";
+		$data = DBAccess::selectQuery($query, [
+			"orderId" => $orderId,
+		]);
+		if (empty($data)) {
+			throw new \Exception("Auftrag nicht gefunden.");
+		}
+
+		$invoiceId = $data[0]["id"];
+		if ($invoiceId != 0) {
+			return new Rechnung($invoiceId, $orderId);
+		}
+
+		$nextInvoiceId = self::getNextNumber();
+		$invoice = new Rechnung($nextInvoiceId, $orderId);
+
+		$query = "INSERT INTO invoice (invoice_id, order_id, creation_date, performance_date, amount) VALUES (:invoiceId, :orderId, :creationDate, :performanceDate, :amount)";
+		DBAccess::insertQuery($query, [
+			"invoiceId" => $nextInvoiceId,
+			"orderId" => $orderId,
+			"creationDate" => $invoice->getCreationDate(),
+			"performanceDate" => $invoice->getPerformanceDate(),
+			"amount" => 0,
+		]);
+
+		return $invoice;
+	}
+
+	public function getPerformanceDate(): string
+	{
+		if ($this->performanceDate == null) {
+			$this->performanceDate = new \DateTime();
+			$this->performanceDate->setTimezone(new \DateTimeZone("Europe/Berlin"));
+		}
+		return $this->performanceDate->format("Y-m-d");
+	}
+
+	public function getCreationDate(): string
+	{
+		if ($this->creationDate == null) {
+			$this->creationDate = new \DateTime();
+			$this->creationDate->setTimezone(new \DateTimeZone("Europe/Berlin"));
+		}
+		return $this->creationDate->format("Y-m-d");
+	}
+
+	public function getId()
+	{
+		return $this->invoiceId;
 	}
 
 	public function PDFgenerieren($store = false)
@@ -158,20 +211,7 @@ class Rechnung
 		$pdf->SetFont("helvetica", "", 10);
 		$pdf->Cell(160, 10, "Zahlbar sofort ohne weitere Abzüge");
 
-		/* store performance and creation dates */
-		$this->storeDates();
-
-		/* Speicherung (aktuell nur Windows) */
-		if ($store == true) {
-			$filename = "{$this->kunde->getKundennummer()}_{$this->getInvoiceId()}.pdf";
-			$filelocation = 'files/generated/invoice/';
-			$fileNL = $filelocation . $filename;
-			echo $_ENV["WEB_URL"] . "/files/generated/invoice/" . $filename;
-			self::addAllPosten(0);
-			$pdf->Output($fileNL, 'F');
-		} else {
-			$pdf->Output();
-		}
+		$pdf->Output();
 	}
 
 	/**
@@ -190,7 +230,7 @@ class Rechnung
 		$pdf->Cell(30, 10, $this->auftrag->getAuftragsnummer(), 0, 0, 'R');
 		$pdf->setXY(120, $y + 12);
 		$pdf->Cell(30, 10, "Datum:");
-		$pdf->Cell(30, 10, $this->getDate(), 0, 0, 'R');
+		$pdf->Cell(30, 10, $this->getCreationDate(), 0, 0, 'R');
 		$pdf->setXY(120, $y + 18);
 		$pdf->Cell(30, 10, "Kunden-Nr.:");
 		$pdf->Cell(30, 10, $this->kunde->getKundennummer(), 0, 0, 'R');
@@ -214,13 +254,7 @@ class Rechnung
 	*/
 	private function getInvoiceId()
 	{
-		$orderId = $this->auftrag->getAuftragsnummer();
-		$invoiceId = (int) DBAccess::selectQuery("SELECT Rechnungsnummer FROM auftrag WHERE Auftragsnummer = $orderId")[0]['Rechnungsnummer'];
-		if ($invoiceId == 0 || $invoiceId == null) {
-			$next =  self::getNextNumber();
-			return $next;
-		}
-		return $invoiceId;
+		return $this->invoiceId;
 	}
 
 	public function getOrderId()
@@ -228,24 +262,10 @@ class Rechnung
 		return $this->auftrag->getAuftragsnummer();
 	}
 
-	public function setDate($date)
-	{
-		if (\DateTime::createFromFormat('d.m.Y', $date) !== false) {
-			$this->date = $date;
-		}
-	}
-
-	private function getDate()
-	{
-		if ($this->date == null || $this->date == "00.00.0000")
-			return date("d.m.Y");
-		return $this->date;
-	}
-
 	public function loadPostenFromAuftrag()
 	{
 		$orderId = $this->auftrag->getAuftragsnummer();
-		//$this->posten = Posten::getOrderItems($orderId, true);
+		$this->posten = Posten::getOrderItems($orderId, true);
 		//$this->posten = array_merge($this->posten, $this->texts);
 	}
 
@@ -318,8 +338,9 @@ class Rechnung
 
 	public function setAddress($address)
 	{
-		if (Address::hasAddress($this->kunde->getKundennummer(), $address))
+		if (Address::hasAddress($this->kunde->getKundennummer(), $address)) {
 			$this->address = $address;
+		}
 	}
 
 	public static function setInvoiceDate()
@@ -367,32 +388,6 @@ class Rechnung
 		return (int) $data[0]['nextInvoiceId'];
 	}
 
-	private function storeDates()
-	{
-		$orderId = $this->auftrag->getAuftragsnummer();
-		$creationDate = \DateTime::createFromFormat("d.m.Y", $this->getDate());
-		$performanceDate = \DateTime::createFromFormat("d.m.Y", $this->performanceDate);
-		$payment_date = "0000-00-00";
-		$payment_type = -1;
-		$amount = (int) $this->auftrag->preisBerechnen() * 100;
-
-		if (!checkdate($performanceDate->format("m"), $performanceDate->format("d"), $performanceDate->format("Y"))) {
-			$performanceDate = new \DateTime("now");
-		}
-
-		DBAccess::deleteQuery("DELETE FROM invoice WHERE order_id = $orderId");
-
-		$query = "INSERT INTO invoice (order_id, creation_date, performance_date, payment_date, payment_type, amount) VALUES (:orderId, :creationDate, :performanceDate, :paymentDate, :paymentType, :amount)";
-		DBAccess::insertQuery($query, [
-			"orderId" => $orderId,
-			"creationDate" => $creationDate->format("Y-m-d"),
-			"performanceDate" => $performanceDate->format("Y-m-d"),
-			"paymentDate" => $payment_date,
-			"paymentType" => $payment_type,
-			"amount" => $amount,
-		]);
-	}
-
 	/**
 	 * berechnet die offene Rechnungssumme, Rechnung ist offen, wenn auftrag.Bezahlt = 0 gilt;
 	 * 
@@ -408,22 +403,6 @@ class Rechnung
 			  WHERE auftrag.Auftragsnummer = all_posten.id AND auftrag.Rechnungsnummer != 0 AND auftrag.Bezahlt = 0";
 		$summe = DBAccess::selectQuery($query)[0]['summe'];
 		return $summe;
-	}
-
-	/*
-	 * adds an invoice id to all posten for a specific order
-	 * sql query only works if no invoice id has ever been added to that
-	*/
-	public static function addAllPosten($orderId)
-	{
-		$auftrag = new Auftrag($orderId);
-
-		$nextNumber = Rechnung::getNextNumber();
-		DBAccess::updateQuery("UPDATE auftrag SET Rechnungsnummer = $nextNumber WHERE Auftragsnummer = $orderId AND Rechnungsnummer = 0");
-		DBAccess::updateQuery("UPDATE posten SET rechnungsNr = $nextNumber WHERE Auftragsnummer = $orderId AND isInvoice = 1");
-
-		/* Fertigstellung wird eingetragen */
-		DBAccess::updateQuery("UPDATE auftrag SET Fertigstellung = current_date() WHERE Auftragsnummer = $orderId");
 	}
 
 	public static function getOpenInvoiceData()

@@ -172,13 +172,17 @@ class ResourceManager
             if (self::$page == "pdf") {
                 $type = Tools::get("type");
                 switch ($type) {
-                    case "angebot":
+                    case "offer":
                         $offerId = (int) Tools::get("offerId");
                         $customerId = (int) Tools::get("customerId");
                         $offerPDF = new OfferPDF($offerId, $customerId);
                         $offerPDF->generate();
                         break;
-                    case "rechnung":
+                    case "invoice":
+                        $invoiceId = (int) Tools::get("invoiceId");
+                        $orderId = (int) Tools::get("orderId");
+                        $invoice = new Rechnung($invoiceId, $orderId);
+                        $invoice->PDFgenerieren();
                         break;
                 }
             } else if (self::$page == "cron") {

@@ -7,6 +7,7 @@ use Classes\Project\Auftrag;
 use Classes\Project\Rechnung;
 use Classes\Project\Address;
 use Classes\Project\Icon;
+use Classes\Project\InvoiceNumberTracker;
 
 $rechnung = Link::getPageLink("rechnung");
 $rechnungsnummer = 0;
@@ -51,25 +52,22 @@ if ($target != -1) {
 			$auftrag = new Auftrag($id);
 			$rechnungsadressen = Address::loadAllAddresses($auftrag->getKundennummer());
 			$rechnungsadressen = formatAddresses($rechnungsadressen);
-			$nextInvoiceId = Rechnung::getNextNumber();
-			$invoice = new Rechnung($nextInvoiceId);
+
+			$nextInvoiceId = InvoiceNumberTracker::peekNextInvoiceNumber();
+			$invoice = Rechnung::create($id);
+			$invoiceId = $invoice->getId();
 			$texts = $invoice->getTexts();
 
-			$query = "SELECT creation_date, performance_date FROM invoice WHERE order_id = $id";
-			$data = DBAccess::selectQuery($query);
-			if (!null == $data) {
-				$data = $data[0];
-				$rechnungsdatum = $data["creation_date"];
-				$leistungsdatum = $data["performance_date"];
-			}
+			$rechnungsdatum = $invoice->getCreationDate();
+			$leistungsdatum = $invoice->getPerformanceDate();
+
 			break;
 		default:
 			break;
 	}
 }
 
-$link = Link::getPageLink('pdf') . "?type=rechnung";
-$rechnungsPDF = "<iframe src=\"" . $link . "\" id=\"showOffer\"></iframe>";
+$link = Link::getPageLink('pdf') . "?type=invoice&invoiceId=$invoiceId&orderId=$id";
 
 /**
  * TODO:
@@ -138,16 +136,16 @@ if ($target == "create"): ?>
 			<?php else: ?>
 				<button disabled class="btn-primary-new">Rechnung abschließen</button>
 			<?php endif; ?>
-			<button action="action" onclick="window.history.go(-1); return false; " type="submit" class="btn-primary-new">Abbrechen</button>
+			<button onclick="window.history.go(-1); return false;" class="btn-cancel">Abbrechen</button>
 		</div>
 	</div>
 	<div class="mt-3">
-		<?= $rechnungsPDF ?>
+		<iframe src="<?= $link ?>" id="showOffer"></iframe>
 	</div>
 <?php elseif ($target == "view"): ?>
 	<div>Rechnung <span id="rechnungsnummer"><?= $rechnungsnummer; ?></span></div>
 	<iframe src="<?= $rechnungslink ?>"></iframe>
 <?php else: ?>
 	<p>Es ist ein unerwarteter Fehler aufgetreten.</p>
-	<button action="action" class="btn-primary-new" onclick="window.history.go(-1); return false; " type="submit">Zurück</button>
+	<button class="btn-primary-new" onclick="window.history.go(-1); return false;" type="submit">Zurück</button>
 <?php endif; ?>
