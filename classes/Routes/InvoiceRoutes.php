@@ -19,18 +19,20 @@ class InvoiceRoutes extends Routes
      * @uses \Classes\Project\Rechnung::setInvoiceDate()
      * @uses \Classes\Project\Rechnung::setServiceDate()
      * @uses \Classes\Project\Rechnung::addText()
+     * @uses \Classes\Project\Rechnung::completeInvoice()
      */
     protected static $postRoutes = [
         "/invoice/{invoiceId}/paid" => [\Classes\Project\Rechnung::class, "setInvoicePaid"],
         "/invoice/{invoiceId}/invoice-date" => [\Classes\Project\Rechnung::class, "setInvoiceDate"],
         "/invoice/{invoiceId}/service-date" => [\Classes\Project\Rechnung::class, "setServiceDate"],
         "/invoice/{invoiceId}/text" => [\Classes\Project\Rechnung::class, "addText"],
+        "/invoice/{invoiceId}/complete" => [\Classes\Project\Rechnung::class, "completeInvoice"],
     ];
 
     /**
-     * @uses \Classes\Project\Rechnung::deleteText()
+     * @uses \Classes\Project\Rechnung::toggleText()
      */
-    protected static $deleteRoutes = [
-        "/invoice/{invoiceId}/text" => [\Classes\Project\Rechnung::class, "deleteText"],
+    protected static $putRoutes = [
+        "/invoice/{invoiceId}/text" => [\Classes\Project\Rechnung::class, "toggleText"],
     ];
 }

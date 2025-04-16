@@ -14,10 +14,9 @@ class Rechnung
 	private Auftrag $auftrag;
 	private int $address = 0;
 
-	private int $invoiceId;
-	private int $id = 0;
-
-	private array $posten;
+	private int $invoiceId = 0;
+	private int $invoiceNumber = 0;
+	private array $posten = [];
 	private $texts = [];
 
 	private ?\DateTime $creationDate = null;
@@ -30,6 +29,20 @@ class Rechnung
 		$this->kunde = new Kunde($customerId);
 
 		$this->invoiceId = $invoiceId;
+
+		$query = "SELECT * FROM invoice WHERE id = :invoiceId";
+		$data = DBAccess::selectQuery($query, [
+			"invoiceId" => $invoiceId,
+		]);
+
+		if (empty($data)) {
+			throw new \Exception("Invoice not found.");
+		}
+
+		$this->invoiceNumber = $data[0]["invoice_number"];
+		$this->creationDate = new \DateTime($data[0]["creation_date"]);
+		$this->performanceDate = new \DateTime($data[0]["performance_date"]);
+		$this->getTexts();
 	}
 
 	public static function create(int $orderId): Rechnung
@@ -44,7 +57,7 @@ class Rechnung
 			return new Rechnung($invoiceId, $orderId);
 		}
 
-		$query = "INSERT INTO invoice (invoice_id, order_id, creation_date, performance_date, amount) VALUES (0, :orderId, :creationDate, :performanceDate, :amount)";
+		$query = "INSERT INTO invoice (invoice_number, order_id, creation_date, performance_date, amount) VALUES (0, :orderId, :creationDate, :performanceDate, :amount)";
 		$invoiceId = DBAccess::insertQuery($query, [
 			"orderId" => $orderId,
 			"creationDate" => date("Y-m-d"),
@@ -78,6 +91,11 @@ class Rechnung
 	public function getId()
 	{
 		return $this->invoiceId;
+	}
+
+	public function getNumber()
+	{
+		return $this->invoiceNumber;
 	}
 
 	public function PDFgenerieren($store = false)
@@ -125,41 +143,70 @@ class Rechnung
 		$offset = 100;
 		$pdf->setXY(25, $offset);
 		$count = 1;
-		if ($this->posten != null) {
-			foreach ($this->posten as $p) {
-				$pdf->Cell(10, $lineheight, $count);
-				$pdf->Cell(20, $lineheight, $p->getQuantity());
-				$pdf->Cell(20, $lineheight, $p->getEinheit());
 
-				$height = $pdf->getStringHeight(70, $p->getDescription());
-				$addToOffset = $lineheight;
+		foreach ($this->posten as $p) {
+			$pdf->Cell(10, $lineheight, $count);
+			$pdf->Cell(20, $lineheight, $p->getQuantity());
+			$pdf->Cell(20, $lineheight, $p->getEinheit());
 
-				if ($p->getOhneBerechnung() == true) {
-					$addToOffset = $this->ohneBerechnungBtn($pdf, $height, $lineheight, $p);
+			$height = $pdf->getStringHeight(70, $p->getDescription());
+			$addToOffset = $lineheight;
+
+			if ($p->getOhneBerechnung() == true) {
+				$addToOffset = $this->ohneBerechnungBtn($pdf, $height, $lineheight, $p);
+			} else {
+				if ($height >= $lineheight) {
+					$pdf->MultiCell(70, $lineheight, $p->getDescription(), '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
+					$addToOffset = ceil($height);
 				} else {
-					if ($height >= $lineheight) {
-						$pdf->MultiCell(70, $lineheight, $p->getDescription(), '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
-						$addToOffset = ceil($height);
-					} else {
-						$pdf->Cell(70, $lineheight, $p->getDescription());
-					}
+					$pdf->Cell(70, $lineheight, $p->getDescription());
 				}
-
-				$pdf->Cell(20, $lineheight, $p->bekommeEinzelPreis_formatted());
-				$pdf->Cell(20, $lineheight, $p->bekommePreis_formatted(), 0, 0, 'R');
-
-				$offset += $addToOffset;
-				$pdf->ln($addToOffset);
-
-				/* 297: Din A4 Seitenhöhe, 25: Abstand von unten für die Fußzeile */
-				if ($pdf->GetY() + $addToOffset >= 297 - 25) {
-					$pdf->AddPage();
-					$this->addTableHeader($pdf, 25);
-					$pdf->ln(10);
-				}
-
-				$count++;
 			}
+
+			$pdf->Cell(20, $lineheight, $p->bekommeEinzelPreis_formatted());
+			$pdf->Cell(20, $lineheight, $p->bekommePreis_formatted(), 0, 0, 'R');
+
+			$offset += $addToOffset;
+			$pdf->ln($addToOffset);
+
+			/* 297: Din A4 Seitenhöhe, 25: Abstand von unten für die Fußzeile */
+			if ($pdf->GetY() + $addToOffset >= 297 - 25) {
+				$pdf->AddPage();
+				$this->addTableHeader($pdf, 25);
+				$pdf->ln(10);
+			}
+
+			$count++;
+		}
+
+		foreach ($this->texts as $text) {
+			if ($text["active"] == "0") {
+				continue;
+			}
+
+			$pdf->Cell(50, $lineheight, "");
+
+			$heigth = $pdf->getStringHeight(70, $text["text"]);
+			$addToOffset = $lineheight;
+
+			if ($heigth >= $lineheight) {
+				$pdf->MultiCell(70, $lineheight, $text["text"], '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
+				$addToOffset = ceil($heigth);
+			} else {
+				$pdf->Cell(70, $lineheight, $text["text"]);
+			}
+			$pdf->Cell(40, $lineheight, "");
+			$offset += $addToOffset;
+			$pdf->ln($addToOffset);
+
+			/* 297: Din A4 Seitenhöhe, 25: Abstand von unten für die Fußzeile */
+			if ($pdf->GetY() + $addToOffset >= 297 - 25) {
+				$pdf->AddPage();
+				$this->addTableHeader($pdf, 25);
+				$pdf->ln(10);
+			}
+
+			$count++;
 		}
 
 		/* 297: Din A4 Seitenhöhe, 25: Abstand von unten für die Fußzeile, 55: bezieht sich auf die Zwischensumme und Rechnungssumme, damit diese immer auf einer Seite stehen */
@@ -219,13 +266,13 @@ class Rechnung
 		$pdf->SetFont("helvetica", "", 12);
 		$pdf->setXY(120, $y);
 		$pdf->Cell(30, 10, "Rechnungs-Nr:");
-		$pdf->Cell(30, 10, $this->getInvoiceId(), 0, 0, 'R');
+		$pdf->Cell(30, 10, $this->getNumber(), 0, 0, 'R');
 		$pdf->setXY(120, $y + 6);
 		$pdf->Cell(30, 10, "Auftrags-Nr:");
 		$pdf->Cell(30, 10, $this->auftrag->getAuftragsnummer(), 0, 0, 'R');
 		$pdf->setXY(120, $y + 12);
 		$pdf->Cell(30, 10, "Datum:");
-		$pdf->Cell(30, 10, $this->getCreationDate(), 0, 0, 'R');
+		$pdf->Cell(30, 10, $this->creationDate->format("d.m.Y"), 0, 0, 'R');
 		$pdf->setXY(120, $y + 18);
 		$pdf->Cell(30, 10, "Kunden-Nr.:");
 		$pdf->Cell(30, 10, $this->kunde->getKundennummer(), 0, 0, 'R');
@@ -244,55 +291,56 @@ class Rechnung
 		$pdf->SetFont("helvetica", "", 12);
 	}
 
-	/*
-	 * returns the invoice id by filtering for the order id
-	*/
-	private function getInvoiceId()
-	{
-		return $this->invoiceId;
-	}
-
-	public function getOrderId()
-	{
-		return $this->auftrag->getAuftragsnummer();
-	}
-
 	public function loadPostenFromAuftrag()
 	{
 		$orderId = $this->auftrag->getAuftragsnummer();
 		$this->posten = Posten::getOrderItems($orderId, true);
-		//$this->posten = array_merge($this->posten, $this->texts);
+	}
+
+	public static function toggleText()
+	{
+		$invoiceId = (int) Tools::get("invoiceId");
+		$textId = (int) Tools::get("textId");
+
+		/* Adds default text if not already present */
+		if ($textId == 0) {
+			$query = "INSERT INTO invoice_text (id_invoice, `text`, active) VALUES (:invoiceId, :text, 1);";
+			DBAccess::insertQuery($query, [
+				"text" => Tools::get("text"),
+				"invoiceId" => $invoiceId,
+			]);
+			JSONResponseHandler::sendResponse([
+				"status" => "success",
+				"id" => DBAccess::getLastInsertId(),
+			]);
+			return;
+		}
+
+		$query = "UPDATE invoice_text SET active = IF(active = 0, 1, 0) WHERE id = :textId AND id_invoice = :invoiceId";
+		DBAccess::updateQuery($query, [
+			"textId" => $textId,
+			"invoiceId" => $invoiceId,
+		]);
+
+		JSONResponseHandler::sendResponse([
+			"status" => "success",
+		]);
 	}
 
 	public static function addText()
 	{
-		$invoiceId = Tools::get("id");
+		$invoiceId = (int) Tools::get("invoiceId");
 		$text = Tools::get("text");
 
-		$query = "INSERT INTO invoice_text (id_invoice, `text`) VALUES (:invoiceId, :text);";
+		$query = "INSERT INTO invoice_text (id_invoice, `text`, active) VALUES (:invoiceId, :text, 1);";
 		$id = DBAccess::insertQuery($query, [
 			"text" => $text,
 			"invoiceId" => $invoiceId,
 		]);
 
 		JSONResponseHandler::sendResponse([
-			"id" => $id,
-		]);
-	}
-
-	public static function deleteText()
-	{
-		$id = Tools::get("id");
-		$invoiceId = Tools::get("invoiceId");
-
-		$query = "DELETE FROM invoice_text WHERE id_invoice = :invoiceId AND `id` = :id;";
-		DBAccess::deleteQuery($query, [
-			"id" => $id,
-			"invoiceId" => $invoiceId,
-		]);
-
-		JSONResponseHandler::sendResponse([
 			"status" => "success",
+			"id" => $id,
 		]);
 	}
 
@@ -302,6 +350,33 @@ class Rechnung
 		$data = DBAccess::selectQuery($query, [
 			"invoiceId" => $this->invoiceId,
 		]);
+
+		$defaultTexts = [
+			"Zu den Bilddaten: Bei der Benutzung von Daten aus fremden Quellen richten sich die Nutzungsbedingungen über Verwendung und Weitergabe nach denen der jeweiligen Anbieter.",
+			"Bitte beachten Sie, dass wir keine Haftung für eventuell entstehende Schäden übernehmen, die auf Witterungseinflüsse zurückzufüren sind (zerrisene Banner, herausgerissen Ösen o. Ä.). Sie als Kunde müssen entscheiden, wie die Banner konfektioniert werden sollen. Für die Art der Konfektionierung übernehmen wir keine Haftung. Wir übernehmen außerdem keine Haftung für unfachgerechte Montage der Banner.",
+			"Pflegehinweise beachten: Keine Bleichmittel und Weichspüler verwenden. Nicht in den Trockner geben. Links gewendet waschen. Nicht über den Transfer bügeln. Nicht chemisch reinigen.",
+			"Wir weisen darauf hin, dass Logos eventuell Bildrechte anderer berühren und wir hierfür keine Haftung übernehmen. Der Kunde garantiert uns Straffreiheit gegenüber einer eventuell geschädigten Partei im Fall einer Verletzung des Rechts des geistigen Eigentums und/ oder des Bildrechts und/ oder den durch eine solche Verletzung verursachten Schadens. Für einen eventuellen Fall solch einer Verletzung willigt der Kunde ein, uns in Höhe aller entstandenen Kosten (inkl. Anwaltkosten) zu entschädigen."
+		];
+
+		/* add default texts to texts if not already present */
+		foreach ($defaultTexts as $text) {
+			$found = false;
+			foreach ($data as $d) {
+				if ($d["text"] == $text) {
+					$found = true;
+					break;
+				}
+			}
+			if (!$found) {
+				$data[] = [
+					"id" => 0,
+					"id_invoice" => $this->invoiceId,
+					"text" => $text,
+					"active" => 0,
+				];
+			}
+		}
+
 		$this->texts = $data;
 		return $data;
 	}
@@ -338,30 +413,6 @@ class Rechnung
 		}
 	}
 
-	public static function setInvoiceDate()
-	{
-		$invoiceId = Tools::get("id");
-		$date = Tools::get("date");
-
-		$query = "UPDATE invoice SET creation_date = :date WHERE invoice_id = :invoiceId";
-		DBAccess::updateQuery($query, [
-			"date" => $date,
-			"invoiceId" => $invoiceId,
-		]);
-	}
-
-	public static function setServiceDate()
-	{
-		$invoiceId = Tools::get("id");
-		$date = Tools::get("date");
-
-		$query = "UPDATE invoice SET performance_date = :date WHERE invoice_id = :invoiceId";
-		DBAccess::updateQuery($query, [
-			"date" => $date,
-			"invoiceId" => $invoiceId,
-		]);
-	}
-
 	private function ohneBerechnungBtn(&$pdf, &$height, &$lineheight, &$p)
 	{
 		$pdf->MultiCell(50, $lineheight, $p->getDescription(), '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
@@ -372,6 +423,65 @@ class Rechnung
 		$pdf->SetFont("helvetica", "", 12);
 
 		return $addToOffset;
+	}
+
+	public static function setInvoiceDate()
+	{
+		$invoiceId = (int) Tools::get("invoiceId");
+		$date = Tools::get("date");
+
+		$query = "UPDATE invoice SET creation_date = :date WHERE id = :invoiceId";
+		DBAccess::updateQuery($query, [
+			"date" => $date,
+			"invoiceId" => $invoiceId,
+		]);
+
+		JSONResponseHandler::sendResponse([
+			"status" => "success",
+		]);
+	}
+
+	public static function setServiceDate()
+	{
+		$invoiceId = (int) Tools::get("invoiceId");
+		$date = Tools::get("date");
+
+		$query = "UPDATE invoice SET performance_date = :date WHERE id = :invoiceId";
+		DBAccess::updateQuery($query, [
+			"date" => $date,
+			"invoiceId" => $invoiceId,
+		]);
+
+		JSONResponseHandler::sendResponse([
+			"status" => "success",
+		]);
+	}
+
+	public static function completeInvoice()
+	{
+		$invoiceId = (int) Tools::get("invoiceId");
+		$orderId = (int) Tools::get("orderId");
+		$invoice = new Rechnung($invoiceId, $orderId);
+
+		$invoiceNumber = InvoiceNumberTracker::completeInvoice($invoice);
+
+		$query = "UPDATE invoice SET invoice_number = :invoiceNumber WHERE id = :id";
+		DBAccess::updateQuery($query, [
+			"invoiceNumber" => $invoiceNumber,
+			"id" => $invoice->getId(),
+		]);
+
+		$query = "UPDATE auftrag SET Rechnungsnummer = :invoiceId WHERE Auftragsnummer = :orderId";
+		DBAccess::updateQuery($query, [
+			"invoiceId" => $invoiceId,
+			"orderId" => $orderId,
+		]);
+
+		JSONResponseHandler::sendResponse([
+			"status" => "success",
+			"number" => $invoiceNumber,
+			"id" => $invoiceId,
+		]);
 	}
 
 	/**
@@ -414,7 +524,7 @@ class Rechnung
 
 	public static function setInvoicePaid()
 	{
-		$invoiceId =  Tools::get("invoiceId");
+		$invoiceId = Tools::get("invoiceId");
 		$query = "UPDATE auftrag SET Bezahlt = 1 
 			WHERE Rechnungsnummer = :invoice";
 

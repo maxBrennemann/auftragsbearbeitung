@@ -19,7 +19,7 @@ class InvoiceNumberTracker
         return (int) $result[0]["last_used_number"] + 1;
     }
 
-    public static function completeInvoice(Rechnung $invoice)
+    public static function completeInvoice(Rechnung $invoice): int
     {
         $query = "SELECT last_used_number FROM invoice_number_tracker WHERE id = 1 FOR UPDATE";
         $result = DBAccess::selectQuery($query);
@@ -37,5 +37,7 @@ class InvoiceNumberTracker
             "invoiceNumber" => $newInvoiceNumber,
             "invoiceId" => $invoice->getId()
         ]);
+
+        return $newInvoiceNumber;
     }
 }
