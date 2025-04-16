@@ -32,7 +32,11 @@ class InvoiceNumberTracker
             "lastUsedNumber" => $newInvoiceNumber
         ]);
 
-        $query = "UPDATE rechnung SET Rechnungsnummer = :invoiceNumber WHERE id = :invoiceId";
+        $query = "UPDATE invoice SET 
+                invoice_number = :invoiceNumber, 
+                `status` = 'finalized',
+                finalized_date = CURDATE()
+            WHERE id = :invoiceId";
         DBAccess::updateQuery($query, [
             "invoiceNumber" => $newInvoiceNumber,
             "invoiceId" => $invoice->getId()

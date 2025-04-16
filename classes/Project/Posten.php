@@ -3,6 +3,8 @@
 namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\Tools;
+
 use Classes\Upload;
 use Classes\Link;
 
@@ -200,7 +202,14 @@ abstract class Posten
 		return [$postennummer, $subPosten];
 	}
 
-	public static function deletePosten($postenId) {}
+	public static function delete()
+	{
+		$idItem = (int) Tools::get("itemId");
+		$query = "DELETE FROM posten WHERE Postennummer = :id;";
+		DBAccess::deleteQuery($query, [
+			"id" => $idItem,
+		]);
+	}
 
 	/* 
 	 * https://stackoverflow.com/a/5207487/7113688

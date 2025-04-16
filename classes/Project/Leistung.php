@@ -258,4 +258,15 @@ class Leistung extends Posten
 			"data" => $item,
 		]);
 	}
+
+	public static function delete()
+	{
+		$idItem = (int) Tools::get("itemId");
+
+		$query = "DELETE FROM leistung_posten WHERE Postennummer = :idItem;";
+		DBAccess::deleteQuery($query, [
+			"idItem" => $idItem,
+		]);
+		parent::delete();
+	}
 }

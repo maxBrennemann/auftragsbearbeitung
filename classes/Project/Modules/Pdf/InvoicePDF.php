@@ -49,7 +49,7 @@ class InvoicePDF extends PDFGenerator
         $this->setMargins(25, 45, 20, true);
 
         $this->SetFont("helvetica", "", 8);
-        $address = "<p>" . $_ENV["COMPANY_IMPRINT"] . "</p>";
+        $address = "<p>" . $this->companyDetails["companyImprint"] . "</p>";
         $this->writeHTMLCell(0, 10, 25, 20, $address);
 
         $this->SetFont("helvetica", "", 12);
@@ -179,7 +179,7 @@ class InvoicePDF extends PDFGenerator
         $this->ln();
         $this->setCellMargins(0, 0, 0, 0);
         $this->SetFont("helvetica", "", 10);
-        $this->Cell(160, 10, "Zahlbar sofort ohne weitere Abzüge");
+        $this->Cell(160, 10, "Zahlbar sofort ohne weitere Abzüge.");
 
         $this->Output();
     }
@@ -219,26 +219,6 @@ class InvoicePDF extends PDFGenerator
         $this->SetFont("helvetica", "", 12);
     }
 
-    public function Footer()
-    {
-        // Position at 15 mm from bottom
-        $this->SetY(-25);
-        // Set font
-        $this->SetFont('helvetica', 'I', 8);
-        // Page number
-        $this->Cell(0, 00, 'Seite ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, 1, 'C', 0, '', 0, false, 'T', 'M');
-
-        $this->Cell(0, 0, $this->getImprint(), 0, 1, 'C', 0, '', 0, false, 'T', 'M');
-
-        $this->Cell(0, 0, $this->getTel() . " " . $this->getUstIDNr(), 0, 1, 'C', 0, '', 0, false, 'T', 'M');
-
-        $this->Cell(0, 0, $this->getBankverbindung(), 0, 1, 'C', 0, '', 0, false, 'T', 'M');
-
-        $this->Cell(0, 0, $this->getIBAN(), 0, 1, 'C', 0, '', 0, false, 'T', 'M');
-
-        $this->Cell(0, 0, 'Es gelten unsere Allgemeinen Geschäftsbedingungen (siehe ' . $this->getWebsite() . ') | Die Ware bleibt bis zur vollständigen Bezahlung unser Eigentum.', 0, 1, 'C', 0, '', 0, false, 'T', 'M');
-    }
-
     private function fillAddress()
     {
         $lineheight = 10;
@@ -274,35 +254,5 @@ class InvoicePDF extends PDFGenerator
         $this->SetFont("helvetica", "", 12);
 
         return $addToOffset;
-    }
-
-    private function getBankverbindung()
-    {
-        return $_ENV["COMPANY_BANK"];
-    }
-
-    private function getIBAN()
-    {
-        return $_ENV["COMPANY_IBAN"];
-    }
-
-    private function getTel()
-    {
-        return $_ENV["COMPANY_TEL"];
-    }
-
-    private function getImprint()
-    {
-        return $_ENV["COMPANY_IMPRINT"];
-    }
-
-    private function getUstIDNr()
-    {
-        return $_ENV["COMPANY_USTIDNR"];
-    }
-
-    private function getWebsite()
-    {
-        return $_ENV["COMPANY_WEBSITE"];
     }
 }

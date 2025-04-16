@@ -17,7 +17,6 @@ class Invoice
 	private int $invoiceId = 0;
 	private int $invoiceNumber = 0;
 	private array $posten = [];
-	private $texts = [];
 
 	private ?\DateTime $creationDate = null;
 	private ?\DateTime $performanceDate = null;
@@ -39,13 +38,13 @@ class Invoice
 			throw new \Exception("Invoice not found.");
 		}
 
-		$this->invoiceNumber = $data[0]["invoice_number"];
+		$this->invoiceNumber = $data[0]["invoice_number"] ?? 0;
 		$this->creationDate = new \DateTime($data[0]["creation_date"]);
 		$this->performanceDate = new \DateTime($data[0]["performance_date"]);
 		$this->getTexts();
 	}
 
-	public static function create(int $orderId): Invoice
+	public static function getInvoice(int $orderId): Invoice
 	{
 		$query = "SELECT id FROM invoice WHERE order_id = :orderId;";
 		$data = DBAccess::selectQuery($query, [
@@ -120,7 +119,7 @@ class Invoice
 	public function loadPostenFromAuftrag(): array
 	{
 		$orderId = $this->auftrag->getAuftragsnummer();
-		$this->posten = Posten::getOrderItems($orderId, true);
+		$this->posten = Posten::getOrderItems($orderId, "invoice");
 		return $this->posten;
 	}
 
@@ -204,7 +203,6 @@ class Invoice
 			}
 		}
 
-		$this->texts = $data;
 		return $data;
 	}
 
@@ -254,12 +252,6 @@ class Invoice
 		$invoice = new Invoice($invoiceId, $orderId);
 
 		$invoiceNumber = InvoiceNumberTracker::completeInvoice($invoice);
-
-		$query = "UPDATE invoice SET invoice_number = :invoiceNumber WHERE id = :id";
-		DBAccess::updateQuery($query, [
-			"invoiceNumber" => $invoiceNumber,
-			"id" => $invoice->getId(),
-		]);
 
 		$query = "UPDATE auftrag SET Rechnungsnummer = :invoiceId WHERE Auftragsnummer = :orderId";
 		DBAccess::updateQuery($query, [

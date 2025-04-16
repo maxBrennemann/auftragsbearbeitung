@@ -365,6 +365,14 @@ class Auftrag implements StatisticsInterface
 		$parsedData = [];
 		foreach ($data as $key => $value) {
 			$item = [];
+			$item["type"] = "posten";
+
+			if ($value instanceof Zeit) {
+				$item["type"] = "time";
+			} else if ($value instanceof Leistung) {
+				$item["type"] = "service";
+			}
+
 			$item["position"] = $value->getPosition();
 			$item["price"] = $value->bekommeEinzelPreis();
 			$item["totalPrice"] = $value->bekommePreis();

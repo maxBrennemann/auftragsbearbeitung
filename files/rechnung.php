@@ -20,12 +20,12 @@ if ($target == "create") {
 	$invoiceAddresses = Address::getAllAdressesFormatted($auftrag->getKundennummer());
 
 	$nextInvoiceNumber = InvoiceNumberTracker::peekNextInvoiceNumber();
-	$invoice = Invoice::create($id);
+	$invoice = Invoice::getInvoice($id);
 	$invoiceId = $invoice->getId();
 }
 
 if ($target == "view") {
-	$invoice = Invoice::create($id);
+	$invoice = Invoice::getInvoice($id);
 	$invoiceId = $invoice->getId();
 }
 
@@ -96,7 +96,7 @@ if ($target == "create"): ?>
 		<iframe src="<?= Link::getPageLink('pdf') . "?type=invoice&invoiceId=$invoiceId&orderId=$id" ?>" id="invoicePDFPreview"></iframe>
 	</div>
 <?php elseif ($target == "view"): ?>
-	<div>Rechnung <span id="rechnungsnummer"><?= $id; ?></span></div>
+	<p class="my-2 font-semibold">Rechnung <span id="rechnungsnummer"><?= $invoice->getNumber(); ?></span></p>
 	<iframe src="<?= Link::getPageLink('pdf') . "?type=invoice&invoiceId=$invoiceId&orderId=$id" ?>"></iframe>
 <?php else: ?>
 	<p>Es ist ein unerwarteter Fehler aufgetreten.</p>

@@ -12,7 +12,7 @@ const config = {
     "tableOptions": {
         "primaryKey": "id",
         "hide": ["id"],
-        "hideOptions": ["addRow", "check"],
+        "hideOptions": ["addRow", "check", "move", "add"],
         "styles": {
             "table": {
                 "className": ["w-full"],
@@ -85,6 +85,14 @@ export const getItems = async (id, type = "order") => {
 export const getItemsTable = async (tableName, id, type = "order") => {
     const data = await getItems(id, type);
     const table = renderTable(tableName, config.tableHeader, data, config.tableOptions);
+
+    table.addEventListener("rowDelete", e => {
+        const data = e.detail;
+
+        ajax.delete(`/api/v1/order-items/${data.type}/${data.id}`).then(() => {
+            data.row.remove();
+        });
+    });
 
     config.table = table;
     return table;

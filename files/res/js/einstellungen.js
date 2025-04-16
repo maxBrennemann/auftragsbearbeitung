@@ -19,20 +19,6 @@ function initEventListeners() {
         ajax.post(`/api/v1/upload/adjust-files`);
     });
 
-    const setDefaultWage = document.getElementById("defaultWage");
-    setDefaultWage.addEventListener("change", e => {
-        const wage = e.target.value;
-        ajax.put(`/api/v1/settings/default-wage`, {
-            "defaultWage": wage,
-        }).then(r => {
-            if (r.status == "success") {
-                infoSaveSuccessfull("success");
-            } else {
-                infoSaveSuccessfull("failure");
-            }
-        });
-    });
-
     const addDocs = document.getElementById("addDocs");
     addDocs.addEventListener("click", () => {
         ajax.post({
@@ -201,6 +187,22 @@ fnNames.click_minifyFiles = () => {
     ajax.post(`/api/v1/settings/minify`).then(r => {
         if (r.status == "success") {
             infoSaveSuccessfull("success");
+        }
+    });
+}
+
+fnNames.write_changeSetting = e => {
+    const target = e.currentTarget;
+    const value = target.value;
+    const setting = target.dataset.setting;
+
+    ajax.put(`/api/v1/settings/config/${setting}`, {
+        "value": value,
+    }).then(r => {
+        if (r.status == "success") {
+            infoSaveSuccessfull("success");
+        } else {
+            infoSaveSuccessfull("failure");
         }
     });
 }

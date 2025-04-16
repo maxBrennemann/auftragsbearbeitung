@@ -16,7 +16,6 @@ return new class {
         "ALTER TABLE `invoice` ADD `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;",
         "ALTER TABLE `invoice` ADD `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;",
         "UPDATE invoice SET invoice_id = id WHERE invoice_id = 0;",
-        "ALTER TABLE `invoice` ADD UNIQUE (`invoice_id`);",
     ];
 
     public function getQueries()

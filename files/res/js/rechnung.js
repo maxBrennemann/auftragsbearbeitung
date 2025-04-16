@@ -9,11 +9,15 @@ const config = {
 }
 
 function init() {
-    const invoiceId = document.getElementById("invoiceId").value;
-    config.invoiceId = invoiceId;
+    const invoiceId = document.getElementById("invoiceId");
+    if (invoiceId == null) {
+        return;
+    }
 
-    const orderId = document.getElementById("orderId").value;
-    config.orderId = orderId;
+    config.invoiceId = invoiceId.value;
+
+    const orderId = document.getElementById("orderId");
+    config.orderId = orderId.value;
 
     const invoiceTexts = document.querySelectorAll(".invoiceTexts");
     invoiceTexts.forEach(text => {

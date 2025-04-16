@@ -37,5 +37,12 @@ class OrderItemRoutes extends Routes
 
     protected static $putRoutes = [];
 
-    protected static $deleteRoutes = [];
+     /**
+     * @uses Classes\Project\Zeit::delete()
+     * @uses Classes\Project\Leistung::delete()
+     */
+    protected static $deleteRoutes = [
+        "/order-items/time/{itemId}" => [\Classes\Project\Zeit::class, "delete"],
+        "/order-items/service/{itemId}" => [\Classes\Project\Leistung::class, "delete"],
+    ];
 }
