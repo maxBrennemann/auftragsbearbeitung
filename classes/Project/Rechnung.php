@@ -38,26 +38,21 @@ class Rechnung
 		$data = DBAccess::selectQuery($query, [
 			"orderId" => $orderId,
 		]);
-		if (empty($data)) {
-			throw new \Exception("Auftrag nicht gefunden.");
-		}
 
-		$invoiceId = $data[0]["id"];
-		if ($invoiceId != 0) {
+		if (!empty($data)) {
+			$invoiceId = $data[0]["id"];
 			return new Rechnung($invoiceId, $orderId);
 		}
 
-		$nextInvoiceId = self::getNextNumber();
-		$invoice = new Rechnung($nextInvoiceId, $orderId);
-
-		$query = "INSERT INTO invoice (invoice_id, order_id, creation_date, performance_date, amount) VALUES (:invoiceId, :orderId, :creationDate, :performanceDate, :amount)";
-		DBAccess::insertQuery($query, [
-			"invoiceId" => $nextInvoiceId,
+		$query = "INSERT INTO invoice (invoice_id, order_id, creation_date, performance_date, amount) VALUES (0, :orderId, :creationDate, :performanceDate, :amount)";
+		$invoiceId = DBAccess::insertQuery($query, [
 			"orderId" => $orderId,
-			"creationDate" => $invoice->getCreationDate(),
-			"performanceDate" => $invoice->getPerformanceDate(),
+			"creationDate" => date("Y-m-d"),
+			"performanceDate" => date("Y-m-d"),
 			"amount" => 0,
 		]);
+
+		$invoice = new Rechnung($invoiceId, $orderId);
 
 		return $invoice;
 	}
@@ -377,15 +372,6 @@ class Rechnung
 		$pdf->SetFont("helvetica", "", 12);
 
 		return $addToOffset;
-	}
-
-	public static function getNextNumber(): int
-	{
-		$data = DBAccess::selectQuery("SELECT MAX(Rechnungsnummer) + 1 as nextInvoiceId FROM auftrag;");
-		if (empty($data)) {
-			return 0;
-		}
-		return (int) $data[0]['nextInvoiceId'];
 	}
 
 	/**

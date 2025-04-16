@@ -9,7 +9,6 @@ use Classes\Project\Address;
 use Classes\Project\Icon;
 use Classes\Project\InvoiceNumberTracker;
 
-$rechnung = Link::getPageLink("rechnung");
 $rechnungsnummer = 0;
 $rechnungslink;
 $rechnungsadressen;
@@ -67,8 +66,6 @@ if ($target != -1) {
 	}
 }
 
-$link = Link::getPageLink('pdf') . "?type=invoice&invoiceId=$invoiceId&orderId=$id";
-
 /**
  * TODO:
  * - Logo hinzufügen
@@ -87,7 +84,7 @@ if ($target == "create"): ?>
 		<div class="innerDefCont">
 			<p>Adresse auswählen</p>
 			<?php if ($rechnungsadressen == null || empty($rechnungsadressen)): ?>
-				<i>Keine Rechnungsadressen vorhanden oder unvollständig. Bei Bedarf unter dem Kunden ergänzen.</i>
+				<i>Keine Rechnungsadressen vorhanden oder unvollständig. Bei Bedarf <a href="<?= Link::getPageLink("kunde") . "?id=" . $auftrag->getKundennummer()?>" class="link-primary">beim Kunden</a> ergänzen.</i>
 			<?php else: ?>
 				<select id="addressId" class="input-primary-new">
 					<?php foreach ($rechnungsadressen as $i => $r): ?>
@@ -144,7 +141,7 @@ if ($target == "create"): ?>
 	</div>
 <?php elseif ($target == "view"): ?>
 	<div>Rechnung <span id="rechnungsnummer"><?= $rechnungsnummer; ?></span></div>
-	<iframe src="<?= $rechnungslink ?>"></iframe>
+	<iframe src="<?= Link::getPageLink('pdf') . "?type=invoice&invoiceId=$invoiceId&orderId=$id" ?>"></iframe>
 <?php else: ?>
 	<p>Es ist ein unerwarteter Fehler aufgetreten.</p>
 	<button class="btn-primary-new" onclick="window.history.go(-1); return false;" type="submit">Zurück</button>
