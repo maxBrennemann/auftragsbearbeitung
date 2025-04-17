@@ -3,12 +3,11 @@
 use MaxBrennemann\PhpUtilities\Tools;
 
 use Classes\Link;
-
 use Classes\Project\Kunde;
 
 $customerId = (int) Tools::get("id");
 
-if ($customerId == 0): ?>
+if ($customerId <= 0): ?>
 	<p>Kundennummer nicht gefunden oder ungültig.</p>
 	<p><a href="<?= Link::getPageLink("neuer-kunde") ?>" class="link-primary">Hier</a> kannst Du einen neuen Kunden anlegen.</p>
 <?php
@@ -25,7 +24,7 @@ else:
 			<button class="btn-primary-new" data-fun="createNewOrder" data-binding="true">Neuen Auftrag erstellen</button>
 			<button class="btn-primary-new" data-toggle="true" data-target="#moreOptions">Mehr Optionen</button>
 			<span class="hidden" id="moreOptions">
-				<button class="btn-primary-new" disabled>Kunde zusammenführen</button>
+				<button class="btn-primary-new" data-fun="mergeCustomer" data-binding="true">Kunde zusammenführen</button>
 				<button class="btn-delete" data-fun="deleteCustomer" data-binding="true">Kunde löschen</button>
 			</span>
 		</div>
@@ -39,7 +38,7 @@ else:
 					<input disabled class="input-primary-new" id="kdnr" value="<?= $customer->getKundennummer() ?>">
 				</div>
 			</div>
-			<div class="w-full flex gap-2 mt-2">
+			<div class="w-full flex gap-8 mt-2">
 				<div class="flex flex-col">
 					<label for="vorname">Vorname:</label>
 					<input class="input-primary-new" id="vorname" value="<?= $customer->getVorname() ?>" autocomplete="none">
@@ -52,21 +51,20 @@ else:
 			<div class="w-full flex mt-2">
 				<div class="flex flex-col">
 					<label for="firmenname">Firmenname:</label>
-					<input class="input-primary-new w-full" id="firmenname" value="<?= $customer->getFirmenname() ?>" autocomplete="none">
+					<input class="input-primary-new w-80" id="firmenname" value="<?= $customer->getFirmenname() ?>" autocomplete="none">
 				</div>
 			</div>
-			<div class="w-full flex gap-2 mt-2">
+			<div class="w-full flex gap-8 mt-2">
 				<div class="flex flex-col">
 					<label for="strasse">Straße:</label>
 					<input class="input-primary-new" id="strasse" value="<?= $customer->getStrasse() ?>" autocomplete="none">
 				</div>
 				<div class="flex flex-initial flex-col">
 					<label for="hausnr">Hausnummer:</label>
-					<span id="addrCount" style="display: none">1/1</span>
 					<input class="input-primary-new" id="hausnr" value="<?= $customer->getHausnummer() ?>" autocomplete="none">
 				</div>
 			</div>
-			<div class="w-full flex gap-2 mt-2">
+			<div class="w-full flex gap-8 mt-2">
 				<div class="flex flex-col">
 					<label for="plz">Postleitzahl:</label>
 					<input class="input-primary-new" id="plz" value="<?= $customer->getPostleitzahl() ?>" autocomplete="none">
@@ -79,16 +77,16 @@ else:
 			<div class="w-full flex mt-2">
 				<div class="flex flex-col">
 					<label for="email">Email:</label>
-					<input class="input-primary-new w-full" id="email" value="<?= $customer->getEmail() ?>" autocomplete="none">
+					<input class="input-primary-new w-80" id="email" value="<?= $customer->getEmail() ?>" autocomplete="none">
 				</div>
 			</div>
 			<div class="w-full flex mt-2">
 				<div class="flex flex-col">
 					<label for="website">Website:</label>
-					<input class="input-primary-new w-full" id="website" value="<?= $customer->getWebsite() ?>" autocomplete="none">
+					<input class="input-primary-new w-80" id="website" value="<?= $customer->getWebsite() ?>" autocomplete="none">
 				</div>
 			</div>
-			<div class="w-full flex gap-2 mt-2">
+			<div class="w-full flex gap-8 mt-2">
 				<div class="flex flex-col">
 					<label for="festnetz">Telefon Festnetz:</label>
 					<input class="input-primary-new" id="festnetz" value="<?= $customer->getTelefonFestnetz() ?>" autocomplete="none">
@@ -112,21 +110,20 @@ else:
 
 		<div id="notizen" class="bg-gray-100 p-4 rounded-lg">
 			<h3 class="font-bold">Notizen</h3>
-			<textarea class="mt-1 p-1 rounded-lg w-64 block" id="notesTextarea"><?= $customer->getNotizen() ?></textarea>
-			<button class="btn-primary-new mt-2" id="btnSendNotes" disabled>Abschicken</button>
+			<textarea class="mt-2 w-full input-primary-new" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'" data-write="true" data-fun="setCustomerNote"><?= $customer->getNotizen() ?></textarea>
 		</div>
 		<div id="fahrzeuge" class="bg-gray-100 p-4 rounded-lg">
 			<h3 class="font-bold">Fahrzeuge</h3>
-			<div id="vehiclesTable"></div>
+			<div id="vehiclesTable" class="mt-2"></div>
 		</div>
 
 		<div id="ansprechpartner" class="bg-gray-100 col-span-2 p-4 rounded-lg">
 			<h3 class="font-bold">Ansprechpartner</h3>
-			<div id="contactPersonTable" class="w-full"></div>
+			<div id="contactPersonTable" class="w-full mt-2"></div>
 		</div>
 		<div id="farben" class="bg-gray-100 col-span-2 p-4 rounded-lg">
 			<h3 class="font-bold">Farben</h3>
-			<div id="colorTable"></div>
+			<div id="colorTable" class="mt-2"></div>
 		</div>
 		<div id="auftraege" class="bg-gray-100 col-span-2 p-4 rounded-lg">
 			<h3 class="font-bold">Aufträge</h3>

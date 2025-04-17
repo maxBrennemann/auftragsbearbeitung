@@ -4,14 +4,6 @@ import { initBindings } from "./classes/bindings.js";
 import { ajax } from "./classes/ajax.js";
 import { infoSaveSuccessfull } from "./classes/statusInfo.js";
 
-const globalProperties = {
-    changedData: {},
-    search: null,
-    addressSet: [],
-    addressCount: 0,
-    addrCount: null,
-};
-
 const customerData = {
     id: document.getElementById("kdnr")?.value ?? 0,
 };
@@ -24,57 +16,10 @@ const init = () => {
     }
 
     initBindings(fnNames);
-    initCustomer();
-    initialize();
     addressTable();
     colorTable();
-}
-
-function initialize() {
     contactPersonTable();
     vehiclesTable();
-
-    var showKundendaten = document.getElementById("showKundendaten");
-    if (showKundendaten == null) {
-        return;
-    }
-}
-
-function initCustomer() {
-    const notesTextarea = document.getElementById('notesTextarea');
-    if (notesTextarea == null) {
-        return;
-    }
-
-    notesTextarea.addEventListener('input', function () {
-        notesTextarea.style.height = 'auto';
-        notesTextarea.style.height = notesTextarea.scrollHeight + 'px';
-
-        const btn = document.getElementById('btnSendNotes');
-        btn.disabled = false;
-    });
-
-    const btn = document.getElementById('btnSendNotes');
-    btn.addEventListener('click', function () {
-        const kundennummer = document.getElementById("kdnr").value;
-        const notes = document.getElementById("notesTextarea").value;
-
-        ajax.post({
-            r: 'setNotes',
-            kdnr: kundennummer,
-            notes: notes
-        });
-    });
-
-    globalProperties.addrCount = document.getElementById("addrCount");
-    globalProperties.search = document.getElementById("performSearch");
-    if (globalProperties.search != null) {
-        globalProperties.search.addEventListener("keyup", function (event) {
-            if (event.key === "Enter") {
-                location.href = event.target.dataset.url + "?mode=search&query=" + event.target.value;
-            }
-        });
-    }
 }
 
 fnNames.click_createNewOrder = () => {
@@ -117,6 +62,20 @@ fnNames.click_rearchive = async e => {
 }
 
 fnNames.click_saveCustomerData = () => {
+
+}
+
+fnNames.write_setCustomerNote = async e => {
+    const value = e.currentTarget.value;
+    const r = await ajax.put(`/api/v1/customer/${customerData.id}/note`, {
+        "note": value,
+    });
+    if (r.message == "OK") {
+        infoSaveSuccessfull("success");
+    }
+}
+
+fnNames.click_mergeCustomer = () => {
     
 }
 

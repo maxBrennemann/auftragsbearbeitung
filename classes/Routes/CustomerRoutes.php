@@ -26,6 +26,13 @@ class CustomerRoutes extends Routes
     ];
 
     /**
+     * @uses \Classes\Project\Kunde::setNote()
+     */
+    protected static $putRoutes = [
+        "/customer/{id}/note" => [\Classes\Project\Kunde::class, "setNote"],
+    ];
+
+    /**
      * @uses \Classes\Project\Kunde::delete()
      */
     protected static $deleteRoutes = [

@@ -499,19 +499,20 @@ class Auftrag implements StatisticsInterface
 		return $content;
 	}
 
-	/*
-	 * creates a div card with the order details
-	*/
-	public function getOrderCardData()
+	public function getOrderCardData(): array
 	{
-		$data = DBAccess::selectQuery("SELECT Datum, Termin, Fertigstellung FROM auftrag WHERE Auftragsnummer = :orderId", [
+		$query = "SELECT DATE_FORMAT(Datum, '%d.%m.%Y') AS Datum,
+				DATE_FORMAT(Termin, '%d.%m.%Y') AS Termin, 
+				DATE_FORMAT(Fertigstellung , '%d.%m.%Y') AS Fertigstellung 
+			FROM auftrag 
+			WHERE Auftragsnummer = :orderId";
+		$data = DBAccess::selectQuery($query, [
 			"orderId" => $this->getAuftragsnummer(),
 		]);
-		$data = $data[0];
 
-		$date = $data['Datum'];
-		$deadline = $data['Termin'];
-		$finished = $data['Fertigstellung'];
+		$date = $data[0]["Datum"] == "00.00.0000" ? "-" : $data[0]["Datum"];
+		$deadline = $data[0]["Termin"] == "00.00.0000" ? "-" : $data[0]["Termin"];
+		$finished = $data[0]["Fertigstellung"] == "00.00.0000" ? "-" : $data[0]["Fertigstellung"];
 
 		return [
 			"id" => $this->Auftragsnummer,
@@ -544,7 +545,7 @@ class Auftrag implements StatisticsInterface
 			}
 		}
 
-		return JSONResponseHandler::sendResponse($notes);
+		JSONResponseHandler::sendResponse($notes);
 	}
 
 	public function recalculate() {}

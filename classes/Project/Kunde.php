@@ -198,7 +198,7 @@ class Kunde implements StatisticsInterface
 		}
 
 		ob_start();
-		insertTemplate('files/res/views/orderCardView.php', [
+		insertTemplate("files/res/views/orderCardView.php", [
 			"orders" => $orders,
 		]);
 		$content = ob_get_clean();
@@ -327,7 +327,7 @@ class Kunde implements StatisticsInterface
 
 		/* insert address data */
 		$query = "INSERT INTO address (id_customer, strasse, hausnr, plz, ort, zusatz, country) VALUES (:id_customer, :strasse, :hausnr, :plz, :ort, :zusatz, :country)";
-		
+
 		$addressId = DBAccess::insertQuery($query, [
 			"id_customer" => $customerId,
 			"strasse" => $data["street"],
@@ -418,8 +418,19 @@ class Kunde implements StatisticsInterface
 		]);
 	}
 
-	 /**
-	  * if ($_POST['type'] == "kunde") {
+	public static function setNote()
+	{
+		$id = Tools::get("id");
+		$note = Tools::get("note");
+		DBAccess::updateQuery("UPDATE kunde_extended SET notizen = :note WHERE kundennummer = :customerId", [
+			"note" => $note,
+			"customerId" => $id,
+		]);
+		JSONResponseHandler::returnOK();
+	}
+
+	/**
+	 * if ($_POST['type'] == "kunde") {
 					$number = (int) $_POST['number'];
 					$kdnr = $_POST['kdnr'];
 					for ($i = 0; $i < $number; $i++) {
@@ -440,5 +451,5 @@ class Kunde implements StatisticsInterface
 					}
 				}
 				echo "ok";
-	  */
+	 */
 }

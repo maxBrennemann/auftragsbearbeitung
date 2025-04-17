@@ -380,16 +380,6 @@ class Ajax
 				$table = $_POST["table"];
 				Table::updateValue($table, "delete", $_POST['key']);
 				break;
-			case "setNotes":
-				$kdnr = (int) $_POST['kdnr'];
-				$note = $_POST['notes'];
-				DBAccess::updateQuery("UPDATE kunde_extended SET notizen = :notes WHERE kundennummer = :customerId", [
-					"notes" => $note,
-					"customerId" => $kdnr,
-				]);
-
-				echo "ok";
-				break;
 			case "addLeistung":
 				$bezeichnung = $_POST['bezeichnung'];
 				$description = $_POST['description'];
