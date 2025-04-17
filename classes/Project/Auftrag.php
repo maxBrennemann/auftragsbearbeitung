@@ -549,17 +549,19 @@ class Auftrag implements StatisticsInterface
 
 	public function recalculate() {}
 
-	public function archiveOrder()
+	public static function archive()
 	{
-		$query = "UPDATE auftrag SET archiviert = 0 WHERE Auftragsnummer = {$this->Auftragsnummer}";
-		DBAccess::updateQuery($query);
-	}
+		$orderId = (int) Tools::get("id");
+		$archive = Tools::get("archive") == "true" ? 0 : 1;
 
-	public function rearchiveOrder()
-	{
-		$query = "UPDATE auftrag SET archiviert = 1 WHERE Auftragsnummer = :orderId";
+		$query = "UPDATE auftrag SET archiviert = :archiveStatus WHERE Auftragsnummer = :orderId";
 		DBAccess::updateQuery($query, [
-			"orderId" => $this->Auftragsnummer
+			"orderId" => $orderId,
+			"archiveStatus" => $archive,
+		]);
+
+		JSONResponseHandler::sendResponse([
+			"status" => "success",
 		]);
 	}
 
@@ -694,18 +696,6 @@ class Auftrag implements StatisticsInterface
 		if (DBAccess::getAffectedRows() == 0) {
 			JSONResponseHandler::throwError(404, "Auftrag existiert nicht");
 		}
-
-		JSONResponseHandler::sendResponse([
-			"success" => true,
-			"home" => Link::getPageLink(""),
-		]);
-	}
-
-	public static function setOrderArchived()
-	{
-		$id = (int) Tools::get("id");
-		$auftrag = new Auftrag($id);
-		$auftrag->archiveOrder();
 
 		JSONResponseHandler::sendResponse([
 			"success" => true,

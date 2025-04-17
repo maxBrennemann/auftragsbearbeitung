@@ -104,57 +104,7 @@ else:
 
 	<div id="addNewAddress" class="bg-gray-100 p-4 rounded-lg col-span-2 2xl:col-span-1">
 		<h4 class="font-bold">Aktuelle Adressen</h4>
-		<div id="addressTable"></div>
-		<h4 class="font-bold">Neue Adresse hinzufügen</h4>
-		<div class="row">
-			<div class="width6">
-				<div class="inputCont">
-					<label for="newStrasse">Straße:</label>
-					<input class="input-primary-new" id="newStrasse" value="" autocomplete="none">
-				</div>
-			</div>
-			<div class="width6">
-				<div class="inputCont">
-					<label for="newHausnr">Hausnummer:</label>
-					<input class="input-primary-new" id="newHausnr" value="" autocomplete="none">
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="width6">
-				<div class="inputCont">
-					<label for="newPlz">Postleitzahl:</label>
-					<input class="input-primary-new" id="newPlz" value="" autocomplete="none">
-				</div>
-			</div>
-			<div class="width6">
-				<div class="inputCont">
-					<label for="newOrt">Ort:</label>
-					<input class="input-primary-new" id="newOrt" value="" autocomplete="none">
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="width6">
-				<div class="inputCont">
-					<label for="newZusatz">Zusatz:</label>
-					<input class="input-primary-new" id="newZusatz" value="" autocomplete="none">
-				</div>
-			</div>
-			<div class="width6">
-				<div class="inputCont">
-					<label for="newCountry">Land:</label>
-					<input class="input-primary-new" id="newCountry" value="" autocomplete="none">
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="width6">
-				<div class="buttonCont">
-					<button class="btn-primary" id="sendAdress">Absenden</button>
-				</div>
-			</div>
-		</div>
+		<div id="addressTable" class="mt-2"></div>
 	</div>
 
 	<div id="notizen" class="bg-gray-100 p-4 rounded-lg">
@@ -164,7 +114,6 @@ else:
 	</div>
 	<div id="fahrzeuge" class="bg-gray-100 p-4 rounded-lg">
 		<h3 class="font-bold">Fahrzeuge</h3>
-		<?=$customer->getVehicles()?>
 		<div id="vehiclesTable"></div>
 	</div>
 

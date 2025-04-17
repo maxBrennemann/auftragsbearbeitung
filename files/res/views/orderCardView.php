@@ -1,11 +1,11 @@
-<div class="grid grid-cols-3 2xl:grid-cols-4 gap-3 mt-3">
+<div class="grid grid-cols-3 2xl:grid-cols-4 gap-3 mt-3 orderCard">
     <?php foreach ($orders as $order): ?>
         <div class="bg-white p-3 rounded-md">
 			<?php if ($order["archived"]): ?>
 			    <div class="relative">
-					<h3 class="font-bold"><?=$order["orderTitle"]?> <button onclick="((e) => {e.target.parentNode.nextElementSibling.classList.toggle('hidden')})(event)" class="float-right border-none" id="extraOptions">⋮</button></h3>
-					<div class="hidden absolute right-0 top-0 bg-white rounded-lg drop-shadow-lg p-3 mt-5" id="showExtraOptions">
-						<button class="btn-attention mt-5" onclick="rearchive(<?=$order['id']?>)">Auftrag aus dem Archiv holen</button>
+					<h3 class="font-bold"><?=$order["orderTitle"]?> <button onclick="((e) => {e.target.parentNode.nextElementSibling.classList.toggle('hidden')})(event)" class="float-right border-none orderOptions">⋮</button></h3>
+					<div class="hidden absolute right-0 top-0 bg-white rounded-lg drop-shadow-lg p-3 mt-5 orderOptions">
+						<button class="btn-attention mt-5" data-fun="rearchive" data-binding="true" data-order-id="<?=$order['id']?>">Auftrag aus dem Archiv holen</button>
 					</div>
 				</div>
             <?php else: ?>
@@ -28,7 +28,7 @@
 				</tr>
 			</table>
             <?php if ($order["archived"]): ?>
-			    <button class="btn-primary" disabled>archiviert</button>
+			    <button class="btn-primary orderDisabled" disabled>archiviert</button>
             <?php endif; ?>
 			<?php if ($order["invoice"] != 0): ?>
 			    <p>Rechnung <?=$order["invoice"]?></p>

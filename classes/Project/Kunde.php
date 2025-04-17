@@ -230,29 +230,6 @@ class Kunde implements StatisticsInterface
 		return "";
 	}
 
-	public function getVehicles()
-	{
-		$query = "SELECT Kennzeichen, Fahrzeug, Nummer FROM fahrzeuge WHERE Kundennummer = :kdnr";
-		$data = DBAccess::selectQuery($query, [
-			"kdnr" => $this->getKundennummer(),
-		]);
-
-		$column_names = array(
-			0 => array("COLUMN_NAME" => "Nummer"),
-			1 => array("COLUMN_NAME" => "Kennzeichen"),
-			2 => array("COLUMN_NAME" => "Fahrzeug")
-		);
-
-		$link = new Link();
-		$link->addBaseLink("fahrzeug");
-		$link->setIterator("id", $data, "Nummer");
-
-		$t = new Table();
-		$t->createByData($data, $column_names);
-		$t->addLink($link);
-		return $t->getTable();
-	}
-
 	public function recalculate() {}
 
 	private function loadAddresses()
@@ -427,4 +404,18 @@ class Kunde implements StatisticsInterface
 			"status" => "not implemented"
 		]);
 	}
+
+	/**
+	 * 			case "sendNewAddress":
+				$kdnr = (int) $_POST['customer'];
+				$plz = (int) $_POST['plz'];
+				$ort = $_POST['ort'];
+				$strasse = $_POST['strasse'];
+				$hnr = $_POST['hnr'];
+				$zusatz = $_POST['zusatz'];
+				$land = $_POST['land'];
+				Kunde::addAddress($kdnr, $strasse, $hnr, $plz, $ort, $zusatz, $land);
+				echo json_encode(Address::loadAllAddresses($kdnr));
+				break;
+	 */
 }

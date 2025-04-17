@@ -21,9 +21,9 @@ class OrderRoutes extends Routes
      * @uses \Classes\Project\Auftrag::addColor()
      * @uses \Classes\Project\Auftrag::addColors()
      * @uses \Classes\Project\Auftrag::updateOrderType()
-     * @uses \Classes\Project\Fahrzeug::updateOrderTitle()
+     * @uses \Classes\Project\Auftrag::updateOrderTitle()
      * @uses \Classes\Project\Auftrag::updateContactPerson()
-     * @uses \Classes\Project\Fahrzeug::updateDate()
+     * @uses \Classes\Project\Auftrag::updateDate()
      */
     protected static $postRoutes = [
         "/order/add" => [\Classes\Project\Auftrag::class, "addOrder"],
@@ -37,15 +37,21 @@ class OrderRoutes extends Routes
 
     /**
      * @uses \Classes\Project\Auftrag::updateOrder()
-     * @uses \Classes\Project\Auftrag::setOrderArchived()
+     * @uses \Classes\Project\Auftrag::archive()
      * @uses \Classes\Project\Auftrag::updateColor()
      * @uses \Classes\Project\Fahrzeug::attachVehicle()
+     * 
+     * @uses \Classes\Project\Fahrzeug::updateName()
+     * @uses \Classes\Project\Fahrzeug::updateLicensePlate()
      */
     protected static $putRoutes = [
         "/order/{id}" => [\Classes\Project\Auftrag::class, "updateOrder"],
-        "/order/{id}/to-archive" => [\Classes\Project\Auftrag::class, "setOrderArchived"],
+        "/order/{id}/archive" => [\Classes\Project\Auftrag::class, "archive"],
         "/order/{id}/colors/{colorId}" => [\Classes\Project\Auftrag::class, "updateColor"],
         "/order/{id}/vehicles/{vehicleId}" => [\Classes\Project\Fahrzeug::class, "attachVehicle"],
+
+        "/order/vehicles/{vehicleId}/name" => [\Classes\Project\Fahrzeug::class, "updateName"],
+        "/order/vehicles/{vehicleId}/license-plate" => [\Classes\Project\Fahrzeug::class, "updateLicensePlate"],
     ];
 
     /**

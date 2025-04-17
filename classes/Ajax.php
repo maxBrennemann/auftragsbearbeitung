@@ -427,30 +427,9 @@ class Ajax
 					"status" => "success",
 				]);
 				break;
-			case "sendNewAddress":
-				$kdnr = (int) $_POST['customer'];
-				$plz = (int) $_POST['plz'];
-				$ort = $_POST['ort'];
-				$strasse = $_POST['strasse'];
-				$hnr = $_POST['hnr'];
-				$zusatz = $_POST['zusatz'];
-				$land = $_POST['land'];
-				Kunde::addAddress($kdnr, $strasse, $hnr, $plz, $ort, $zusatz, $land);
-				echo json_encode(Address::loadAllAddresses($kdnr));
-				break;
 			case "setOrderFinished":
 				$auftrag = $_POST['auftrag'];
 				DBAccess::insertQuery("UPDATE auftrag SET archiviert = -1 WHERE Auftragsnummer = $auftrag");
-				break;
-			case "archivieren":
-				$auftrag = $_POST['auftrag'];
-				$auftrag = new Auftrag($auftrag);
-				$auftrag->archiveOrder();
-				break;
-			case "rearchive":
-				$auftrag = $_POST['auftrag'];
-				$auftrag = new Auftrag($auftrag);
-				$auftrag->rearchiveOrder();
 				break;
 			case "getAddresses":
 				$kdnr = (int) $_POST['kdnr'];
