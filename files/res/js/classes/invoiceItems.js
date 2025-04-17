@@ -1,4 +1,4 @@
-import { getTemplate } from "../global.js";
+import { getTemplate, setInpupts } from "../global.js";
 import { ajax } from "./ajax.js";
 import { addBindings } from "./bindings.js";
 import { infoSaveSuccessfull } from "./statusInfo.js";
@@ -123,7 +123,55 @@ const initItems = () => {
 }
 
 const editItem = e => {
-    //const type = 
+    const data = e.detail;
+    const type = data.type;
+
+    const itemsMenu = document.querySelector("#showPostenAdd");
+    const itemsMenuButton = document.querySelector("#showItemsMenu");
+
+    itemsMenu.classList.remove("hidden");
+    itemsMenuButton.classList.add("hidden");
+
+    const tab = document.querySelector(`.tab-button[data-target="${type}"]`);
+    tab.click();
+
+    switch (type) {
+        case "time":
+            editTime();
+            break;
+        case "service":
+            editService();
+            break;
+        case "product":
+            break; 
+    }
+}
+
+const editTime = data => {
+    setInpupts({
+        "ids": {
+            "timeInput": 11,
+            "wage": 0,
+            "timeDescription": 0,
+            "isFree": 0,
+            "addToInvoice": 0,
+        },
+    });
+}
+
+const editService = data => {
+    setInpupts({
+        "ids": {
+            "selectLeistung": 11,
+            "anz": 0,
+            "bes": 0,
+            "ekp": 0,
+            "pre": 0,
+            "meh": 0,
+            "isFree": 0,
+            "addToInvoice": 0,
+        },
+    });
 }
 
 functionNames.click_addItem = async () => {
@@ -170,9 +218,12 @@ const addTime = () => {
         extendedTimeInput.innerHTML = "";
 
         clearInputs({
-            "ids": ["time", "wage", "timeDescription"],
+            "ids": ["timeInput", "timeDescription"],
             "classes": ["timeInput", "dateInput"]
         });
+
+        document.querySelector("#isFree").checked = 0;
+        document.querySelector("#addToInvoice").checked = 0;
     });
 }
 
@@ -198,6 +249,7 @@ const addService = () => {
         updatePrice(r.price);
         updateTable(r.data);
         clearInputs({ "ids": ["bes", "ekp", "pre", "meh", "anz"] });
+        document.getElementById("selectLeistung").value = 0;
     });
 }
 
