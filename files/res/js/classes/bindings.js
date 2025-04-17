@@ -9,6 +9,8 @@ const BindingManager = (function () {
             this.boundElements = new WeakSet();
             this.variables = {};
 
+            this._bindToggle();
+
             instance = this;
         }
 
@@ -78,6 +80,20 @@ const BindingManager = (function () {
             });
 
             this.boundElements.add(el);
+        }
+
+        _bindToggle() {
+            document.querySelectorAll('[data-toggle]').forEach(el => {
+                if (this.boundElements.has(el)) return;
+
+                el.addEventListener("click", e => {
+                    const target = el.dataset.target;
+                    const elements = document.querySelectorAll(target);
+                    elements.forEach(element => {
+                        element.classList.toggle("hidden");
+                    })
+                });
+            });
         }
 
         getVariable(id) {

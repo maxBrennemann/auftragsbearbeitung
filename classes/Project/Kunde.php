@@ -250,6 +250,19 @@ class Kunde implements StatisticsInterface
 		return Address::createNewAddress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz, $land, $art);
 	}
 
+	public static function addAddressAjax()
+	{
+		$kdnr = (int) $_POST['customer'];
+		$plz = (int) $_POST['plz'];
+		$ort = $_POST['ort'];
+		$strasse = $_POST['strasse'];
+		$hnr = $_POST['hnr'];
+		$zusatz = $_POST['zusatz'];
+		$land = $_POST['land'];
+		Kunde::addAddress($kdnr, $strasse, $hnr, $plz, $ort, $zusatz, $land);
+		echo json_encode(Address::loadAllAddresses($kdnr));
+	}
+
 	public function getHTMLShortSummary()
 	{
 		$link = Link::getPageLink("kunde") . "?id=" . $this->kundennummer;
@@ -405,17 +418,27 @@ class Kunde implements StatisticsInterface
 		]);
 	}
 
-	/**
-	 * 			case "sendNewAddress":
-				$kdnr = (int) $_POST['customer'];
-				$plz = (int) $_POST['plz'];
-				$ort = $_POST['ort'];
-				$strasse = $_POST['strasse'];
-				$hnr = $_POST['hnr'];
-				$zusatz = $_POST['zusatz'];
-				$land = $_POST['land'];
-				Kunde::addAddress($kdnr, $strasse, $hnr, $plz, $ort, $zusatz, $land);
-				echo json_encode(Address::loadAllAddresses($kdnr));
-				break;
-	 */
+	 /**
+	  * if ($_POST['type'] == "kunde") {
+					$number = (int) $_POST['number'];
+					$kdnr = $_POST['kdnr'];
+					for ($i = 0; $i < $number; $i++) {
+						$dataKey = $_POST["dataKey$i"];
+						$data = $_POST[$dataKey];
+
+						/* maybe improve it later to be more flexible, currently it is just hardcoded for the exceptions 
+						if ($dataKey == "ort" || $dataKey == "plz" || $dataKey == "strasse" || $dataKey == "hausnr") {
+							/* gets from client the number of which address should be changed, must check the number with the array from Address class (same as client gets), then can update the correct row 
+							$addressCount = (int) $_POST['addressCount'];
+							$addressData = Address::loadAllAddresses($kdnr);
+							$addressId = $addressData[$addressCount]["id"];
+							DBAccess::updateQuery("UPDATE `address` SET $dataKey = '$data' WHERE id_customer = $kdnr AND id = $addressId");
+						} else {
+							//echo "UPDATE kunde SET $dataKey = '$data' WHERE Kundennummer = $kdnr";
+							DBAccess::updateQuery("UPDATE kunde SET $dataKey = '$data' WHERE Kundennummer = $kdnr");
+						}
+					}
+				}
+				echo "ok";
+	  */
 }

@@ -1,1 +1,1 @@
-<div id="openInvoiceTable"></div>
+<div id="openInvoiceTable" class="overflow-x-scroll xl:w-full h-dvh"></div>

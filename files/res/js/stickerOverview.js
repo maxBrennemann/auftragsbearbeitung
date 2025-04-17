@@ -43,6 +43,9 @@ const createStickerTable = async () => {
             "key": {
                 "directory_name": ["w-96", "overflow-x-hidden", "text-ellipsis"],
             },
+            "thead": {
+                "className": ["sticky", "top-0"],
+            }
         },
         "primaryKey": "id",
         "autoSort": true,
@@ -50,22 +53,9 @@ const createStickerTable = async () => {
     };
     renderTable("stickerTable", headers, data, options);
     showStickerStatus();
-    stickHeader();
 }
 
 fnNames.click_manageImports = () => { }
-
-const stickHeader = () => {
-    const overviewTable = document.querySelector("#stickerTable table");
-    if (overviewTable == null) {
-        return;
-    }
-    
-    const trElem = overviewTable.querySelectorAll("th");
-    Array.from(trElem).forEach(th => {
-        th.classList.add("sticky", "top-0");
-    });
-}
 
 fnNames.click_crawlAll = () => {
     ajax.post(`/api/v1/sticker/crawl/all`);

@@ -435,29 +435,6 @@ class Ajax
 				$kdnr = (int) $_POST['kdnr'];
 				echo json_encode(Address::loadAllAddresses($kdnr));
 				break;
-			case "setData":
-				if ($_POST['type'] == "kunde") {
-					$number = (int) $_POST['number'];
-					$kdnr = $_POST['kdnr'];
-					for ($i = 0; $i < $number; $i++) {
-						$dataKey = $_POST["dataKey$i"];
-						$data = $_POST[$dataKey];
-
-						/* maybe improve it later to be more flexible, currently it is just hardcoded for the exceptions */
-						if ($dataKey == "ort" || $dataKey == "plz" || $dataKey == "strasse" || $dataKey == "hausnr") {
-							/* gets from client the number of which address should be changed, must check the number with the array from Address class (same as client gets), then can update the correct row */
-							$addressCount = (int) $_POST['addressCount'];
-							$addressData = Address::loadAllAddresses($kdnr);
-							$addressId = $addressData[$addressCount]["id"];
-							DBAccess::updateQuery("UPDATE `address` SET $dataKey = '$data' WHERE id_customer = $kdnr AND id = $addressId");
-						} else {
-							//echo "UPDATE kunde SET $dataKey = '$data' WHERE Kundennummer = $kdnr";
-							DBAccess::updateQuery("UPDATE kunde SET $dataKey = '$data' WHERE Kundennummer = $kdnr");
-						}
-					}
-				}
-				echo "ok";
-				break;
 			case "getList":
 				$lid = $_POST['listId'];
 				$list = Liste::readList($lid);

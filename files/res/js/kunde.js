@@ -38,69 +38,6 @@ function initialize() {
     if (showKundendaten == null) {
         return;
     }
-
-    const sendKundendaten = document.getElementById("sendKundendaten");
-    sendKundendaten.addEventListener("click", kundendatenAbsenden);
-
-    var inputs = showKundendaten.getElementsByTagName("input");
-    for (var i = 0; i < inputs.length; i++) {
-        inputs[i].addEventListener("input", function (e) {
-            document.getElementById("sendKundendaten").disabled = false;
-            var column = e.target.id;
-            switch (column) {
-                case "vorname":
-                    column = "Vorname";
-                    break;
-                case "nachname":
-                    column = "Nachname";
-                    break;
-                case "firmenname":
-                    column = "Firmenname";
-                    break;
-                case "email":
-                    column = "Email";
-                    break;
-                case "festnetz":
-                    column = "TelefonFestnetz";
-                    break;
-                case "mobil":
-                    column = "TelefonMobil";
-                    break;
-                case "website":
-                    column = "Website";
-                    break;
-            }
-
-            globalProperties.changedData[column] = e.target.value;
-        }, false);
-    }
-}
-
-function kundendatenAbsenden() {
-    var kdnr = document.getElementById("kdnr").value;
-    var data = `getReason=setData&type=kunde&kdnr=${kdnr}&addressCount=${globalProperties.addressCount}&`;
-    var count = 0;
-
-    for (var key in globalProperties.changedData) {
-        if (globalProperties.changedData.hasOwnProperty(key)) {
-            data += key + "=" + globalProperties.changedData[key] + "&" + "dataKey" + count + "=" + key + "&";
-            count++;
-        }
-    }
-
-    data += "number=" + count;
-
-    const insertKundendaten = new AjaxCall(data, "POST", window.location.href);
-    insertKundendaten.makeAjaxCall(function (response) {
-        console.log(response);
-        if (response == "ok")
-            infoSaveSuccessfull("success");
-        else
-            infoSaveSuccessfull();
-
-        /* reset object, so that values are not sended twice */
-        globalProperties.changedData = {};
-    });
 }
 
 function initCustomer() {
@@ -177,6 +114,10 @@ fnNames.click_rearchive = async e => {
 
         orderDisabled.parentNode.removeChild(orderDisabled);
     }
+}
+
+fnNames.click_saveCustomerData = () => {
+    
 }
 
 const vehiclesTable = async () => {

@@ -50,6 +50,11 @@ const createInvoiceTable = async () => {
         "hide": [""],
         "primaryKey": "Nummer",
         "link": "/auftrag?id=",
+        "styles": {
+            "thead": {
+                "className": ["sticky", "top-0"],
+            }
+        },
     };
 
     createHeader(columns, table, columnConfig);
