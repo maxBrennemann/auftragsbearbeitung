@@ -3,9 +3,10 @@
 namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
-use Classes\Link;
 use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+
+use Classes\Link;
 
 class Kunde implements StatisticsInterface
 {
@@ -22,6 +23,8 @@ class Kunde implements StatisticsInterface
 	private string $telefonFestnetz = "";
 	private string $telefonMobil = "";
 	private string $website = "";
+	private string $fax = "";
+	private string $note = "";
 
 	private $addresses = [];
 
@@ -49,6 +52,8 @@ class Kunde implements StatisticsInterface
 		$this->telefonFestnetz = $data['TelefonFestnetz'];
 		$this->telefonMobil = $data['TelefonMobil'];
 		$this->website = $data['Website'] ?? "";
+		$this->fax = $data["fax"] ?? "";
+		$this->note = $data["note"] ?? "";
 	}
 
 	public function getKundennummer(): int
@@ -177,6 +182,11 @@ class Kunde implements StatisticsInterface
 		return $this->telefonMobil;
 	}
 
+	public function getFax(): string
+	{
+		return $this->fax;
+	}
+
 	public function getOrderIds(): array
 	{
 		$query = "SELECT Auftragsnummer FROM auftrag WHERE Kundennummer = :kdnr ORDER BY Auftragsnummer DESC";
@@ -220,14 +230,7 @@ class Kunde implements StatisticsInterface
 
 	public function getNotizen()
 	{
-		$data = DBAccess::selectQuery("SELECT notizen FROM kunde_extended WHERE kundennummer = :kdnr", [
-			"kdnr" => $this->getKundennummer(),
-		]);
-
-		if ($data != null) {
-			return $data[0]['notizen'];
-		}
-		return "";
+		return $this->note;
 	}
 
 	public function recalculate() {}
@@ -309,8 +312,11 @@ class Kunde implements StatisticsInterface
 		JSONResponseHandler::sendResponse($data);
 	}
 
-	public static function addCustomer($data): int
+	public static function addCustomer()
 	{
+		$data = Tools::get("data");
+		$data = json_decode($data, true);
+
 		/* insert customer data */
 		$query = "INSERT INTO kunde (Firmenname, Anrede, Vorname, Nachname, Email, TelefonFestnetz, TelefonMobil, Website) VALUES (:firmenname, :anrede, :vorname, :nachname, :email, :telfestnetz, :telmobil, :website)";
 
@@ -323,10 +329,11 @@ class Kunde implements StatisticsInterface
 			"telfestnetz" => $data["telfestnetz"],
 			"telmobil" => $data["telmobil"],
 			"website" => $data["website"] ?? "",
+			"note" => $data["notes"],
 		]);
 
 		/* insert address data */
-		$query = "INSERT INTO address (id_customer, strasse, hausnr, plz, ort, zusatz, country) VALUES (:id_customer, :strasse, :hausnr, :plz, :ort, :zusatz, :country)";
+		$query = "INSERT INTO `address` (id_customer, strasse, hausnr, plz, ort, zusatz, country) VALUES (:id_customer, :strasse, :hausnr, :plz, :ort, :zusatz, :country)";
 
 		$addressId = DBAccess::insertQuery($query, [
 			"id_customer" => $customerId,
@@ -357,23 +364,6 @@ class Kunde implements StatisticsInterface
 			]);
 		}
 
-		if ($data["notes"] != "") {
-			$query = "INSERT INTO kunde_extended (kundennummer, notizen) VALUES (:customerId, :notes);";
-			DBAccess::insertQuery($query, [
-				"customerId" => $customerId,
-				"notes" => $data["notes"],
-			]);
-		}
-
-		return $customerId;
-	}
-
-	public static function addCustomerAjax()
-	{
-		$data = Tools::get("data");
-		$data = json_decode($data, true);
-
-		$customerId = self::addCustomer($data);
 		$link = Link::getPageLink("kunde");
 		$link .= "?id=" . $customerId;
 
@@ -381,6 +371,32 @@ class Kunde implements StatisticsInterface
 			"status" => "success",
 			"link" => $link,
 		]);
+	}
+
+	public static function updateCustomer()
+	{
+		$query = "UPDATE kunde SET
+				Vorname = :prename,
+				Nachname = :lastname,
+				Firmenname = :companyname,
+				Email = :email,
+				Website = :website,
+				TelefonFestnetz = :phoneLandline,
+				TelefonMobil = :phoneMobile,
+				Fax = :fax
+			WHERE Kundennummer = :id;";
+		DBAccess::updateQuery($query, [
+			"prename" => Tools::get("prename") ?? "",
+			"lastname" => Tools::get("lastname") ?? "",
+			"companyname" => Tools::get("companyname") ?? "",
+			"email" => Tools::get("email") ?? "",
+			"website" => Tools::get("website"),
+			"phoneLandline" => Tools::get("phoneLandline") ?? "",
+			"phoneMobile" => Tools::get("phoneMobile") ?? "",
+			"fax" => Tools::get("fax"),
+			"id" => (int) Tools::get("id"),
+		]);
+		JSONResponseHandler::returnOK();
 	}
 
 	public static function getAllCustomerOverviews()
@@ -422,34 +438,10 @@ class Kunde implements StatisticsInterface
 	{
 		$id = Tools::get("id");
 		$note = Tools::get("note");
-		DBAccess::updateQuery("UPDATE kunde_extended SET notizen = :note WHERE kundennummer = :customerId", [
+		DBAccess::updateQuery("UPDATE kunde SET note = :note WHERE Kundennummer = :customerId", [
 			"note" => $note,
 			"customerId" => $id,
 		]);
 		JSONResponseHandler::returnOK();
 	}
-
-	/**
-	 * if ($_POST['type'] == "kunde") {
-					$number = (int) $_POST['number'];
-					$kdnr = $_POST['kdnr'];
-					for ($i = 0; $i < $number; $i++) {
-						$dataKey = $_POST["dataKey$i"];
-						$data = $_POST[$dataKey];
-
-						/* maybe improve it later to be more flexible, currently it is just hardcoded for the exceptions 
-						if ($dataKey == "ort" || $dataKey == "plz" || $dataKey == "strasse" || $dataKey == "hausnr") {
-							/* gets from client the number of which address should be changed, must check the number with the array from Address class (same as client gets), then can update the correct row 
-							$addressCount = (int) $_POST['addressCount'];
-							$addressData = Address::loadAllAddresses($kdnr);
-							$addressId = $addressData[$addressCount]["id"];
-							DBAccess::updateQuery("UPDATE `address` SET $dataKey = '$data' WHERE id_customer = $kdnr AND id = $addressId");
-						} else {
-							//echo "UPDATE kunde SET $dataKey = '$data' WHERE Kundennummer = $kdnr";
-							DBAccess::updateQuery("UPDATE kunde SET $dataKey = '$data' WHERE Kundennummer = $kdnr");
-						}
-					}
-				}
-				echo "ok";
-	 */
 }

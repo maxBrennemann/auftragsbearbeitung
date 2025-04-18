@@ -34,44 +34,24 @@ else:
 			<h3 class="font-bold">Kundendaten</h3>
 			<div class="mt-2">
 				<div class="w-full flex flex-col">
-					<label for="kdnr">Kundennummer:</label>
-					<input disabled class="input-primary-new" id="kdnr" value="<?= $customer->getKundennummer() ?>">
+					<label for="idCustomer">Kundennummer:</label>
+					<input disabled class="input-primary-new" id="idCustomer" value="<?= $customer->getKundennummer() ?>">
 				</div>
 			</div>
 			<div class="w-full flex gap-8 mt-2">
 				<div class="flex flex-col">
-					<label for="vorname">Vorname:</label>
-					<input class="input-primary-new" id="vorname" value="<?= $customer->getVorname() ?>" autocomplete="none">
+					<label for="prename">Vorname:</label>
+					<input class="input-primary-new" id="prename" value="<?= $customer->getVorname() ?>" autocomplete="none">
 				</div>
 				<div class="flex flex-initial flex-col">
-					<label for="nachname">Nachname:</label>
-					<input class="input-primary-new" id="nachname" value="<?= $customer->getNachname() ?>" autocomplete="none">
+					<label for="lastname">Nachname:</label>
+					<input class="input-primary-new" id="lastname" value="<?= $customer->getNachname() ?>" autocomplete="none">
 				</div>
 			</div>
 			<div class="w-full flex mt-2">
 				<div class="flex flex-col">
-					<label for="firmenname">Firmenname:</label>
-					<input class="input-primary-new w-80" id="firmenname" value="<?= $customer->getFirmenname() ?>" autocomplete="none">
-				</div>
-			</div>
-			<div class="w-full flex gap-8 mt-2">
-				<div class="flex flex-col">
-					<label for="strasse">Straße:</label>
-					<input class="input-primary-new" id="strasse" value="<?= $customer->getStrasse() ?>" autocomplete="none">
-				</div>
-				<div class="flex flex-initial flex-col">
-					<label for="hausnr">Hausnummer:</label>
-					<input class="input-primary-new" id="hausnr" value="<?= $customer->getHausnummer() ?>" autocomplete="none">
-				</div>
-			</div>
-			<div class="w-full flex gap-8 mt-2">
-				<div class="flex flex-col">
-					<label for="plz">Postleitzahl:</label>
-					<input class="input-primary-new" id="plz" value="<?= $customer->getPostleitzahl() ?>" autocomplete="none">
-				</div>
-				<div class="flex flex-initial flex-col">
-					<label for="ort">Ort:</label>
-					<input class="input-primary-new" id="ort" value="<?= $customer->getOrt() ?>" autocomplete="none">
+					<label for="companyname">Firmenname:</label>
+					<input class="input-primary-new w-80" id="companyname" value="<?= $customer->getFirmenname() ?>" autocomplete="none">
 				</div>
 			</div>
 			<div class="w-full flex mt-2">
@@ -88,17 +68,24 @@ else:
 			</div>
 			<div class="w-full flex gap-8 mt-2">
 				<div class="flex flex-col">
-					<label for="festnetz">Telefon Festnetz:</label>
-					<input class="input-primary-new" id="festnetz" value="<?= $customer->getTelefonFestnetz() ?>" autocomplete="none">
+					<label for="phoneLandline">Telefon Festnetz:</label>
+					<input class="input-primary-new" id="phoneLandline" value="<?= $customer->getTelefonFestnetz() ?>" autocomplete="none">
 				</div>
 				<div class="flex flex-initial flex-col">
-					<label for="mobil">Telefon Mobil:</label>
-					<input class="input-primary-new" id="mobil" value="<?= $customer->getTelefonMobil() ?>" autocomplete="none">
+					<label for="phoneMobile">Telefon Mobil:</label>
+					<input class="input-primary-new" id="phoneMobile" value="<?= $customer->getTelefonMobil() ?>" autocomplete="none">
 				</div>
 			</div>
 			<div class="w-full flex mt-2">
 				<div class="flex flex-col">
+					<label for="fax">Fax:</label>
+					<input class="input-primary-new w-80" id="fax" value="<?= $customer->getFax() ?>" autocomplete="none">
+				</div>
+			</div>
+			<div class="w-full flex mt-2">
+				<div class="flex">
 					<button class="btn-primary-new" data-binding="true" data-fun="saveCustomerData">Speichern</button>
+					<button class="btn-cancel ml-2" data-binding="true" data-fun="resetCustomerData">Abbrechen</button>
 				</div>
 			</div>
 		</div>

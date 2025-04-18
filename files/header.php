@@ -73,6 +73,7 @@ if ($pageName == "") {
 		|| $page == "diagramme"
 		|| $page == "login"
 		|| $page == "neues-produkt"
+		|| $page == "neuer-kunde"
 		|| $page == "produkt"
 		|| $page == "attributes"
 		|| $page == "zahlungen"

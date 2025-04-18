@@ -5,7 +5,7 @@ import { ajax } from "./classes/ajax.js";
 import { infoSaveSuccessfull } from "./classes/statusInfo.js";
 
 const customerData = {
-    id: document.getElementById("kdnr")?.value ?? 0,
+    id: document.getElementById("idCustomer")?.value ?? 0,
 };
 
 const fnNames = {};
@@ -62,7 +62,20 @@ fnNames.click_rearchive = async e => {
 }
 
 fnNames.click_saveCustomerData = () => {
-
+    ajax.put(`/api/v1/customer/${customerData.id}`, {
+        "prename": document.getElementById("prename").value,
+        "lastname": document.getElementById("lastname").value,
+        "companyname": document.getElementById("companyname").value,
+        "email": document.getElementById("email").value,
+        "website": document.getElementById("website").value,
+        "phoneLandline": document.getElementById("phoneLandline").value,
+        "phoneMobile": document.getElementById("phoneMobile").value,
+        "fax": document.getElementById("fax").value,
+    }).then(r => {
+        if (r.message == "OK") {
+            infoSaveSuccessfull("success");
+        }
+    });
 }
 
 fnNames.write_setCustomerNote = async e => {
