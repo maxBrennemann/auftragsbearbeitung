@@ -298,18 +298,14 @@ class ResourceManager
     {
         header('Content-Type: text/javascript');
 
-        $file = "";
-
         /* workaround for colorpicker and other packages */
         if ($script == "/colorpicker.js") {
-            $file = file_get_contents("node_modules/colorpicker/min/colorpicker.js");
-            echo $file;
+            echo file_get_contents("node_modules/colorpicker/min/colorpicker.js");
             return;
         }
 
         if ($script == "/notifications.js") {
-            $file = file_get_contents("node_modules/js-classes/notifications.js");
-            echo $file;
+            echo file_get_contents("node_modules/js-classes/notifications.js");
             return;
         }
 
@@ -321,20 +317,28 @@ class ResourceManager
 
         $fileName = explode(".", $script);
 
-        if (sizeof($fileName) == 2) {
-            $min = "min/" . $fileName[0] . ".min.js";
-            if (file_exists(Link::getResourcesLink($min, "js", false)) && MinifyFiles::isActivated()) {
-                $file = file_get_contents(Link::getResourcesLink($min, "js", false));
-            } else {
-                if (file_exists(Link::getResourcesLink($script, "js", false))) {
-                    $file = file_get_contents(Link::getResourcesLink($script, "js", false));
-                } else {
-                    $file = "";
-                }
-            }
+        /* check if filename has .js ending */
+        if (!(sizeof($fileName) == 2)) {
+            echo "";
+            return;
         }
 
-        echo $file;
+        $min = "min/" . $fileName[0] . ".min.js.gz";
+        if (
+            file_exists(Link::getResourcesLink($min, "js", false))
+            && MINIFY_STATUS
+        ) {
+            header('Content-Encoding: gzip');
+            echo file_get_contents(Link::getResourcesLink($min, "js", false));
+            return;
+        }
+
+        if (file_exists(Link::getResourcesLink($script, "js", false))) {
+            echo file_get_contents(Link::getResourcesLink($script, "js", false));
+            return;
+        }
+        
+        echo "";
     }
 
     private static function get_css($script)
@@ -351,7 +355,10 @@ class ResourceManager
 
         if (sizeof($fileName) == 2) {
             $min = "min/" . $fileName[0] . ".min.css";
-            if (file_exists(Link::getResourcesLink($min, "css", false)) && MinifyFiles::isActivated()) {
+            if (
+                file_exists(Link::getResourcesLink($min, "css", false))
+                && MINIFY_STATUS
+            ) {
                 $file = file_get_contents(Link::getResourcesLink($min, "css", false));
             } else {
                 if (file_exists(Link::getResourcesLink($script, "css", false))) {

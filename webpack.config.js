@@ -14,11 +14,15 @@ function getEntries(pattern, outputPrefix = '') {
 }
 
 const entries =  {
-    all: [
-        ...glob.sync('files/res/js/auftrag/*.js'),
+    ...getEntries('files/res/js/*.js'),
+    global: [
         ...glob.sync('files/res/js/classes/*.js'),
+    ],
+    auftrag: [
+        ...glob.sync('files/res/js/auftrag/*.js'),
+    ],
+    sticker: [
         ...glob.sync('files/res/js/sticker/*.js'),
-        ...glob.sync('files/res/js/*.js'),
     ],
 }
 
@@ -26,12 +30,12 @@ module.exports = {
     mode: 'production',
     entry: entries,
     output: {
-        filename: 'bundle.min.js',
+        filename: '[name].min.js',
         path: path.resolve(__dirname, 'files/res/js/min'),
         clean: true,
     },
     plugins: [
-        new CompressionPlugin()
+        new CompressionPlugin(),
     ],
     optimization: {
         minimize: true,
@@ -39,10 +43,11 @@ module.exports = {
         minimizer: [
             new TerserPlugin()
         ],
-        splitChunks: {
+        /*splitChunks: {
             chunks: 'all',
             minSize: 0,
-        },
+        },*/
+        splitChunks: false,
     },
     resolve: {
         extensions: ['.js'],

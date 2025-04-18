@@ -11,7 +11,11 @@ $globalCSS = Link::getGlobalCSS();
 $tailwindCSS = Link::getTW();
 $globalJS = Link::getGlobalJS();
 $notifications = Link::getResourcesShortLink("notifications.js", "js");
-$tableConfig = Link::getResourcesShortLink("tableconfig.js", "js");
+
+if (!MINIFY_STATUS) {
+	$tableConfig = Link::getResourcesShortLink("tableconfig.js", "js");
+}
+
 $curr_Link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
 $neuerKunde   =		Link::getPageLink("neuer-kunde");
@@ -60,7 +64,9 @@ if ($pageName == "") {
 	<link rel="stylesheet" href="<?= $globalCSS ?>">
 	<link rel="stylesheet" href="<?= $tailwindCSS ?>">
 	<script src="<?= $globalJS ?>" type="module"></script>
-	<script src="<?= $tableConfig ?>" type="module"></script>
+	<?php if (!MINIFY_STATUS) : ?>
+		<script src="<?= $tableConfig ?>" type="module"></script>
+	<?php endif; ?>
 	<script src="<?= $notifications ?>" type="module"></script>
 	<?php
 	$link = Link::getResourcesShortLink($page . ".js", "js");
