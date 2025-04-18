@@ -1,5 +1,5 @@
 import { addRow, createHeader, createTable, fetchAndRenderTable, renderTable } from "./classes/table.js";
-import { tableConfig } from "./js/tableconfig.js";
+import { tableConfig } from "./tableconfig.js";
 import { initBindings } from "./classes/bindings.js";
 import { ajax } from "./classes/ajax.js";
 import { infoSaveSuccessfull } from "./classes/statusInfo.js";
