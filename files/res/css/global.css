@@ -596,16 +596,6 @@ input#hamburg {
     transition: background-color 1000ms linear;
 }
 
-.noButton {
-    border: none;
-    background-color: white;
-    padding: 0;
-    margin: 0;
-    font-size: inherit;
-    font-weight: inherit;
-    cursor: pointer;
-}
-
 /* notificaton css */
 .floatRight {
     float: right;

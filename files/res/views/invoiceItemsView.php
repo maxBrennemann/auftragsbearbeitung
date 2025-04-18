@@ -103,7 +103,8 @@
                 <input type="number" min="0" max="100" value="0" class="input-primary-new w-16" id="getDiscount">
                 <span>Rabatt [%]</span>
             </div>
-            <button class="btn-primary-new mt-2" data-binding="true" data-fun="addItem">Hinzufügen</button>
+            <button class="btn-primary-new mt-2" data-binding="true" data-fun="addItem" id="addItem">Hinzufügen</button>
+            <button class="btn-primary-new mt-2 hidden" data-binding="true" data-fun="saveEdit" id="saveItem">Speichern</button>
             <button class="btn-cancel mt-2" data-binding="true" data-fun="showItemsMenu">Abbrechen</button>
         </div>
     </div>

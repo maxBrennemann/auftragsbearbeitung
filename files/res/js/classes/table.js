@@ -85,8 +85,13 @@ export const createHeader = (header, table, options = {}) => {
         }
         count++;
 
+        let className = "cursor-pointer";
+        if (options?.styles?.thead?.className) {
+            className += " " + options.styles.thead.className.join(" ");
+        }
+
         const th = document.createElement("th");
-        th.className = "cursor-pointer";
+        th.className = className;
         th.dataset.key = header.key;
         th.dataset.sort = "none";
 

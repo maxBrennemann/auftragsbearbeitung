@@ -153,7 +153,7 @@ if ($orderId <= 0): ?>
 		</div>
 		<div class="defCont auftragsinfo">
 			<div class="relative">
-				<span class="font-bold">Auftrag <span id="auftragsnummer"><?= $auftrag->getAuftragsnummer() ?></span><button class="float-right border-none w-4" id="extraOptions">⋮</button></span>
+				<span class="font-bold">Auftrag <span id="auftragsnummer"><?= $auftrag->getAuftragsnummer() ?></span><?php if ($auftrag->getIsArchiviert()) : ?> (archiviert)<?php endif; ?><button class="float-right border-none w-4" id="extraOptions">⋮</button></span>
 				<div class="hidden absolute right-0 top-0 bg-white rounded-lg drop-shadow-lg p-3 mt-5" id="showExtraOptions">
 					<button class="btn-attention mt-5" id="deleteOrder">Auftrag löschen</button>
 				</div>

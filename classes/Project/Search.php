@@ -245,7 +245,14 @@ class Search
 	 */
 	private static function searchInCustomers($searchQuery)
 	{
-		$query = "SELECT kunde.Kundennummer, Vorname, Nachname, Firmenname, kunde_extended.notizen AS Notiz FROM kunde, kunde_extended WHERE kunde_extended.kundennummer = kunde.Kundennummer AND (Vorname LIKE '%$searchQuery%' OR Nachname LIKE '%$searchQuery%' OR Firmenname LIKE '%$searchQuery%' OR kunde_extended.notizen LIKE '%$searchQuery%')";
+		$query = "SELECT kunde.Kundennummer, Vorname, Nachname, Firmenname, note AS Notiz 
+			FROM kunde
+			WHERE (
+				Vorname LIKE '%$searchQuery%' 
+				OR Nachname LIKE '%$searchQuery%' 
+				OR Firmenname LIKE '%$searchQuery%' 
+				OR Notiz LIKE '%$searchQuery%'
+			)";
 		$kunden = DBAccess::selectQuery($query);
 		$mostSimilar = array();
 

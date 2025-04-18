@@ -68,4 +68,30 @@ class Fahrzeug
             "table" => $table,
         ));
     }
+
+    public static function updateName()
+    {
+        $id = (int) Tools::get("vehicleId");
+        $value = Tools::get("name");
+        $query = "UPDATE fahrzeuge SET Fahrzeug = :name WHERE Nummer = :id;";
+        DBAccess::updateQuery($query, [
+            "id" => $id,
+            "name" => $value,
+        ]);
+
+        JSONResponseHandler::returnOK();
+    }
+
+    public static function updateLicensePlate()
+    {
+        $id = Tools::get("vehicleId");
+        $value = Tools::get("licensePlate");
+        $query = "UPDATE fahrzeuge SET Kennzeichen = :licensePlate WHERE Nummer = :id;";
+        DBAccess::updateQuery($query, [
+            "id" => $id,
+            "licensePlate" => $value,
+        ]);
+
+        JSONResponseHandler::returnOK();
+    }
 }

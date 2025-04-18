@@ -3,9 +3,10 @@
 namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
-use Classes\Link;
 use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+
+use Classes\Link;
 
 class Kunde implements StatisticsInterface
 {
@@ -22,6 +23,8 @@ class Kunde implements StatisticsInterface
 	private string $telefonFestnetz = "";
 	private string $telefonMobil = "";
 	private string $website = "";
+	private string $fax = "";
+	private string $note = "";
 
 	private $addresses = [];
 
@@ -49,6 +52,8 @@ class Kunde implements StatisticsInterface
 		$this->telefonFestnetz = $data['TelefonFestnetz'];
 		$this->telefonMobil = $data['TelefonMobil'];
 		$this->website = $data['Website'] ?? "";
+		$this->fax = $data["fax"] ?? "";
+		$this->note = $data["note"] ?? "";
 	}
 
 	public function getKundennummer(): int
@@ -177,6 +182,11 @@ class Kunde implements StatisticsInterface
 		return $this->telefonMobil;
 	}
 
+	public function getFax(): string
+	{
+		return $this->fax;
+	}
+
 	public function getOrderIds(): array
 	{
 		$query = "SELECT Auftragsnummer FROM auftrag WHERE Kundennummer = :kdnr ORDER BY Auftragsnummer DESC";
@@ -198,7 +208,7 @@ class Kunde implements StatisticsInterface
 		}
 
 		ob_start();
-		insertTemplate('files/res/views/orderCardView.php', [
+		insertTemplate("files/res/views/orderCardView.php", [
 			"orders" => $orders,
 		]);
 		$content = ob_get_clean();
@@ -220,37 +230,7 @@ class Kunde implements StatisticsInterface
 
 	public function getNotizen()
 	{
-		$data = DBAccess::selectQuery("SELECT notizen FROM kunde_extended WHERE kundennummer = :kdnr", [
-			"kdnr" => $this->getKundennummer(),
-		]);
-
-		if ($data != null) {
-			return $data[0]['notizen'];
-		}
-		return "";
-	}
-
-	public function getVehicles()
-	{
-		$query = "SELECT Kennzeichen, Fahrzeug, Nummer FROM fahrzeuge WHERE Kundennummer = :kdnr";
-		$data = DBAccess::selectQuery($query, [
-			"kdnr" => $this->getKundennummer(),
-		]);
-
-		$column_names = array(
-			0 => array("COLUMN_NAME" => "Nummer"),
-			1 => array("COLUMN_NAME" => "Kennzeichen"),
-			2 => array("COLUMN_NAME" => "Fahrzeug")
-		);
-
-		$link = new Link();
-		$link->addBaseLink("fahrzeug");
-		$link->setIterator("id", $data, "Nummer");
-
-		$t = new Table();
-		$t->createByData($data, $column_names);
-		$t->addLink($link);
-		return $t->getTable();
+		return $this->note;
 	}
 
 	public function recalculate() {}
@@ -271,6 +251,19 @@ class Kunde implements StatisticsInterface
 	public static function addAddress(int $id_customer, string $strasse, string $hausnummer, int $postleitzahl, string $ort, string $zusatz, string $land, int $art = 3)
 	{
 		return Address::createNewAddress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz, $land, $art);
+	}
+
+	public static function addAddressAjax()
+	{
+		$kdnr = (int) $_POST['customer'];
+		$plz = (int) $_POST['plz'];
+		$ort = $_POST['ort'];
+		$strasse = $_POST['strasse'];
+		$hnr = $_POST['hnr'];
+		$zusatz = $_POST['zusatz'];
+		$land = $_POST['land'];
+		Kunde::addAddress($kdnr, $strasse, $hnr, $plz, $ort, $zusatz, $land);
+		echo json_encode(Address::loadAllAddresses($kdnr));
 	}
 
 	public function getHTMLShortSummary()
@@ -319,8 +312,11 @@ class Kunde implements StatisticsInterface
 		JSONResponseHandler::sendResponse($data);
 	}
 
-	public static function addCustomer($data): int
+	public static function addCustomer()
 	{
+		$data = Tools::get("data");
+		$data = json_decode($data, true);
+
 		/* insert customer data */
 		$query = "INSERT INTO kunde (Firmenname, Anrede, Vorname, Nachname, Email, TelefonFestnetz, TelefonMobil, Website) VALUES (:firmenname, :anrede, :vorname, :nachname, :email, :telfestnetz, :telmobil, :website)";
 
@@ -333,11 +329,12 @@ class Kunde implements StatisticsInterface
 			"telfestnetz" => $data["telfestnetz"],
 			"telmobil" => $data["telmobil"],
 			"website" => $data["website"] ?? "",
+			"note" => $data["notes"],
 		]);
 
 		/* insert address data */
-		$query = "INSERT INTO address (id_customer, strasse, hausnr, plz, ort, zusatz, country) VALUES (:id_customer, :strasse, :hausnr, :plz, :ort, :zusatz, :country)";
-		
+		$query = "INSERT INTO `address` (id_customer, strasse, hausnr, plz, ort, zusatz, country) VALUES (:id_customer, :strasse, :hausnr, :plz, :ort, :zusatz, :country)";
+
 		$addressId = DBAccess::insertQuery($query, [
 			"id_customer" => $customerId,
 			"strasse" => $data["street"],
@@ -367,23 +364,6 @@ class Kunde implements StatisticsInterface
 			]);
 		}
 
-		if ($data["notes"] != "") {
-			$query = "INSERT INTO kunde_extended (kundennummer, notizen) VALUES (:customerId, :notes);";
-			DBAccess::insertQuery($query, [
-				"customerId" => $customerId,
-				"notes" => $data["notes"],
-			]);
-		}
-
-		return $customerId;
-	}
-
-	public static function addCustomerAjax()
-	{
-		$data = Tools::get("data");
-		$data = json_decode($data, true);
-
-		$customerId = self::addCustomer($data);
 		$link = Link::getPageLink("kunde");
 		$link .= "?id=" . $customerId;
 
@@ -391,6 +371,32 @@ class Kunde implements StatisticsInterface
 			"status" => "success",
 			"link" => $link,
 		]);
+	}
+
+	public static function updateCustomer()
+	{
+		$query = "UPDATE kunde SET
+				Vorname = :prename,
+				Nachname = :lastname,
+				Firmenname = :companyname,
+				Email = :email,
+				Website = :website,
+				TelefonFestnetz = :phoneLandline,
+				TelefonMobil = :phoneMobile,
+				Fax = :fax
+			WHERE Kundennummer = :id;";
+		DBAccess::updateQuery($query, [
+			"prename" => Tools::get("prename") ?? "",
+			"lastname" => Tools::get("lastname") ?? "",
+			"companyname" => Tools::get("companyname") ?? "",
+			"email" => Tools::get("email") ?? "",
+			"website" => Tools::get("website"),
+			"phoneLandline" => Tools::get("phoneLandline") ?? "",
+			"phoneMobile" => Tools::get("phoneMobile") ?? "",
+			"fax" => Tools::get("fax"),
+			"id" => (int) Tools::get("id"),
+		]);
+		JSONResponseHandler::returnOK();
 	}
 
 	public static function getAllCustomerOverviews()
@@ -426,5 +432,16 @@ class Kunde implements StatisticsInterface
 		JSONResponseHandler::throwError(501, [
 			"status" => "not implemented"
 		]);
+	}
+
+	public static function setNote()
+	{
+		$id = Tools::get("id");
+		$note = Tools::get("note");
+		DBAccess::updateQuery("UPDATE kunde SET note = :note WHERE Kundennummer = :customerId", [
+			"note" => $note,
+			"customerId" => $id,
+		]);
+		JSONResponseHandler::returnOK();
 	}
 }

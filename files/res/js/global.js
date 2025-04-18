@@ -440,6 +440,32 @@ function clearInputs(inputs) {
 	}
 }
 
+export const setInpupts = inputs => {
+	for (let key in inputs) {
+		switch (key) {
+			case "ids":
+				for (let item in inputs[key]) {
+					const el = document.getElementById(item);
+					el.value = inputs[key][item];
+				}
+				break;
+			case "classes":
+				for (let item in inputs[key]) {
+					const els = document.getElementsByClassName(item);
+					els.forEach(el => {
+						if (el.type == "checkbox") {
+							el.checked = inputs[key][item];
+							return;
+						}
+
+						el.value = inputs[key][item];
+					});
+				}
+				break;
+		}
+	}
+} 
+
 /* side nav */
 function toggleNav() {
 	let sidenav = document.getElementById("sidenav");

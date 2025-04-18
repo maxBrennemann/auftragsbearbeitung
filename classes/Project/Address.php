@@ -2,6 +2,7 @@
 
 namespace Classes\Project;
 
+use Classes\Project\Models\Model;
 use MaxBrennemann\PhpUtilities\DBAccess;
 
 /*
@@ -12,7 +13,7 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 * (4) Sonstige Adresse
 */
 
-class Address
+class Address extends Model
 {
 
     private string $strasse = "";
@@ -23,7 +24,7 @@ class Address
     private int $art = 0;
     private string $land = "";
 
-    function __construct() {}
+    public function __construct() {}
 
     public function getStrasse(): string
     {

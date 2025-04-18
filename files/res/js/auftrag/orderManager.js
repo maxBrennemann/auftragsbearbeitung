@@ -61,9 +61,9 @@ export function initExtraOptions() {
 
 function showDeleteConfirmation() {
     const template = document.getElementById("templateAlertBox");
-	const div = document.createElement("div");
+    const div = document.createElement("div");
     div.id = "alertBox";
-	div.appendChild(template.content.cloneNode(true));
+    div.appendChild(template.content.cloneNode(true));
 
     document.body.appendChild(div);
     div.classList.add("absolute", "w-96", "z-20");
@@ -141,17 +141,19 @@ export const editTitle = () => {
 }
 
 export function archvieren() {
-    ajax.post({
-        r: "archivieren",
-        auftrag: globalData.auftragsId,
-    }, true).then(() => {
-       var div = document.createElement("div");
-       var a = document.createElement("a");
-       a.href = document.getElementById("home_link").href;
-       a.innerText = "Zurück zur Startseite";
-       div.appendChild(a);
-       centerAbsoluteElement(div);
-       addActionButtonForDiv(div, 'remove');
-       document.body.appendChild(div);
-    });
+    const id = globalData.auftragsId;
+    ajax.put(`/api/v1/order/${id}/archive`, {
+        "archive": true,
+    }).then(r => {
+        if (r.status == "success") {
+            var div = document.createElement("div");
+            var a = document.createElement("a");
+            a.href = document.getElementById("home_link").href;
+            a.innerText = "Zurück zur Startseite";
+            div.appendChild(a);
+            centerAbsoluteElement(div);
+            addActionButtonForDiv(div, 'remove');
+            document.body.appendChild(div);
+        }
+    })
 }

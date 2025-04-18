@@ -499,19 +499,20 @@ class Auftrag implements StatisticsInterface
 		return $content;
 	}
 
-	/*
-	 * creates a div card with the order details
-	*/
-	public function getOrderCardData()
+	public function getOrderCardData(): array
 	{
-		$data = DBAccess::selectQuery("SELECT Datum, Termin, Fertigstellung FROM auftrag WHERE Auftragsnummer = :orderId", [
+		$query = "SELECT DATE_FORMAT(Datum, '%d.%m.%Y') AS Datum,
+				DATE_FORMAT(Termin, '%d.%m.%Y') AS Termin, 
+				DATE_FORMAT(Fertigstellung , '%d.%m.%Y') AS Fertigstellung 
+			FROM auftrag 
+			WHERE Auftragsnummer = :orderId";
+		$data = DBAccess::selectQuery($query, [
 			"orderId" => $this->getAuftragsnummer(),
 		]);
-		$data = $data[0];
 
-		$date = $data['Datum'];
-		$deadline = $data['Termin'];
-		$finished = $data['Fertigstellung'];
+		$date = $data[0]["Datum"] == "00.00.0000" ? "-" : $data[0]["Datum"];
+		$deadline = $data[0]["Termin"] == "00.00.0000" ? "-" : $data[0]["Termin"];
+		$finished = $data[0]["Fertigstellung"] == "00.00.0000" ? "-" : $data[0]["Fertigstellung"];
 
 		return [
 			"id" => $this->Auftragsnummer,
@@ -544,22 +545,24 @@ class Auftrag implements StatisticsInterface
 			}
 		}
 
-		return JSONResponseHandler::sendResponse($notes);
+		JSONResponseHandler::sendResponse($notes);
 	}
 
 	public function recalculate() {}
 
-	public function archiveOrder()
+	public static function archive()
 	{
-		$query = "UPDATE auftrag SET archiviert = 0 WHERE Auftragsnummer = {$this->Auftragsnummer}";
-		DBAccess::updateQuery($query);
-	}
+		$orderId = (int) Tools::get("id");
+		$archive = Tools::get("archive") == "true" ? 0 : 1;
 
-	public function rearchiveOrder()
-	{
-		$query = "UPDATE auftrag SET archiviert = 1 WHERE Auftragsnummer = :orderId";
+		$query = "UPDATE auftrag SET archiviert = :archiveStatus WHERE Auftragsnummer = :orderId";
 		DBAccess::updateQuery($query, [
-			"orderId" => $this->Auftragsnummer
+			"orderId" => $orderId,
+			"archiveStatus" => $archive,
+		]);
+
+		JSONResponseHandler::sendResponse([
+			"status" => "success",
 		]);
 	}
 
@@ -694,18 +697,6 @@ class Auftrag implements StatisticsInterface
 		if (DBAccess::getAffectedRows() == 0) {
 			JSONResponseHandler::throwError(404, "Auftrag existiert nicht");
 		}
-
-		JSONResponseHandler::sendResponse([
-			"success" => true,
-			"home" => Link::getPageLink(""),
-		]);
-	}
-
-	public static function setOrderArchived()
-	{
-		$id = (int) Tools::get("id");
-		$auftrag = new Auftrag($id);
-		$auftrag->archiveOrder();
 
 		JSONResponseHandler::sendResponse([
 			"success" => true,

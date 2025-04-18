@@ -73,6 +73,7 @@ if ($pageName == "") {
 		|| $page == "diagramme"
 		|| $page == "login"
 		|| $page == "neues-produkt"
+		|| $page == "neuer-kunde"
 		|| $page == "produkt"
 		|| $page == "attributes"
 		|| $page == "zahlungen"
@@ -85,6 +86,7 @@ if ($pageName == "") {
 		|| $page == "wiki"
 		|| $page == "mitarbeiter"
 		|| $page == "rechnung"
+		|| $page == "fahrzeug"
 	) {
 		echo '<script type="module" src="' . $link . '"></script>';
 	} else {

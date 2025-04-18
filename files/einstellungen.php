@@ -129,11 +129,12 @@ $minifyStatus = Config::get("minifyStatus");
 <section class="defCont">
     <h2 class="font-bold">Zeiterfassung</h2>
     <div class="switchCont">
-        <label class="switch">
-            <input type="checkbox" id="showTimeTracking" <?= Config::get("showTimeGlobal") == "true" ? "checked" : "" ?>>
-            <span class="sliderTime round" id="startStopTime" data-binding="true"></span>
-        </label>
-        Aktuelle Arbeitszeit global anzeigen
+        <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+            "id" => "showTimeTracking",
+            "name" => "Aktuelle Arbeitszeit global anzeigen",
+            "value" => Config::get("showTimeGlobal") == "true" ? "checked" : "",
+            "binding" => "startStopTime",
+        ]); ?>
     </div>
 </section>
 <section class="defCont">

@@ -290,7 +290,7 @@ class Invoice
 			auftrag.Auftragsbezeichnung AS Bezeichnung, 
 			auftrag.Auftragsbeschreibung AS Beschreibung, 
 			auftrag.Kundennummer,
-			auftrag.Datum,
+			DATE_FORMAT(auftrag.Datum, '%d.%m.%Y') as Datum,
 			kunde.Firmenname,
 			CONCAT(FORMAT(auftragssumme.orderPrice, 2, 'de_DE'), ' €') AS Summe 
 			FROM auftrag, auftragssumme, kunde 

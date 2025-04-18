@@ -2,17 +2,10 @@ import { addRow, createHeader, createTable, fetchAndRenderTable, renderTable } f
 import { tableConfig } from "./js/tableconfig.js";
 import { initBindings } from "./classes/bindings.js";
 import { ajax } from "./classes/ajax.js";
-
-const globalProperties = {
-    changedData: {},
-    search: null,
-    addressSet: [],
-    addressCount: 0,
-    addrCount: null,
-};
+import { infoSaveSuccessfull } from "./classes/statusInfo.js";
 
 const customerData = {
-    id: document.getElementById("kdnr")?.value ?? 0,
+    id: document.getElementById("idCustomer")?.value ?? 0,
 };
 
 const fnNames = {};
@@ -21,152 +14,12 @@ const init = () => {
     if (customerData.id == 0) {
         return;
     }
-    
+
     initBindings(fnNames);
-    initCustomer();
-    initialize();
     addressTable();
     colorTable();
-}
-
-function initialize() {
     contactPersonTable();
     vehiclesTable();
-
-    var showKundendaten = document.getElementById("showKundendaten");
-    if (showKundendaten == null) {
-        return;
-    }
-
-    const sendKundendaten = document.getElementById("sendKundendaten");
-    sendKundendaten.addEventListener("click", kundendatenAbsenden);
-
-    const sendAdress = document.getElementById("sendAdress");
-    sendAdress.addEventListener("click", sendAddressForm);
-
-    var inputs = showKundendaten.getElementsByTagName("input");
-    for (var i = 0; i < inputs.length; i++) {
-        inputs[i].addEventListener("input", function (e) {
-            document.getElementById("sendKundendaten").disabled = false;
-            var column = e.target.id;
-            switch(column) {
-                case "vorname":
-                    column = "Vorname";
-                    break;
-                case "nachname":
-                    column = "Nachname";
-                    break;
-                case "firmenname":
-                    column = "Firmenname";
-                    break;
-                case "email":
-                    column = "Email";
-                    break;
-                case "festnetz":
-                    column = "TelefonFestnetz";
-                    break;
-                case "mobil":
-                    column = "TelefonMobil";
-                    break;
-                case "website":
-                    column = "Website";
-                    break;
-            }
-
-            globalProperties.changedData[column] = e.target.value;
-        }, false);
-    }
-
-    var kdnr = document.getElementById("kdnr").value;
-    return;
-    getAddresses = new AjaxCall(`getReason=getAddresses&kdnr=${kdnr}`, "POST", window.location.href);
-    getAddresses.makeAjaxCall(function (response) {
-        globalProperties.addressSet = JSON.parse(response);
-        globalProperties.addrCount.innerHTML = (globalProperties.addressCount + 1) + "/" + globalProperties.addressSet.length;
-    });
-}
-
-function kundendatenAbsenden() {
-    var kdnr = document.getElementById("kdnr").value;
-    var data = `getReason=setData&type=kunde&kdnr=${kdnr}&addressCount=${globalProperties.addressCount}&`;
-    var count = 0;
-
-    for (var key in globalProperties.changedData) {
-        if (globalProperties.changedData.hasOwnProperty(key)) {
-            data += key + "=" + globalProperties.changedData[key] + "&" + "dataKey" + count + "=" + key + "&";
-            count++;
-        }
-    }
-
-    data += "number=" + count;
-
-    const insertKundendaten = new AjaxCall(data, "POST", window.location.href);
-    insertKundendaten.makeAjaxCall(function (response) {
-        console.log(response);
-        if (response == "ok")
-            infoSaveSuccessfull("success");
-        else
-            infoSaveSuccessfull();
-        
-        /* reset object, so that values are not sended twice */
-        globalProperties.changedData = {};
-    });
-}
-
-function sendAddressForm() {
-    /* ajax parameter */
-    let params = {
-        getReason: "sendNewAddress",
-        customer: document.getElementById("kdnr").value,
-        plz: document.getElementById("newPlz").value,
-        ort: document.getElementById("newOrt").value,
-        strasse: document.getElementById("newStrasse").value,
-        hnr: document.getElementById("newHausnr").value,
-        zusatz: document.getElementById("newZusatz").value,
-        land: document.getElementById("newCountry").value
-    };
-
-    var add = new AjaxCall(params, "POST", window.location.href);
-    add.makeAjaxCall(function (response) {
-        globalProperties.addressSet = JSON.parse(response);
-        infoSaveSuccessfull("success");
-    });
-}
-
-function initCustomer() {
-    const notesTextarea = document.getElementById('notesTextarea');
-
-    if (notesTextarea == null) return;
-
-    notesTextarea.addEventListener('input', function () {
-        notesTextarea.style.height = 'auto';
-        notesTextarea.style.height = notesTextarea.scrollHeight + 'px';
-
-        const btn = document.getElementById('btnSendNotes');
-        btn.disabled = false;
-    });
-
-    const btn = document.getElementById('btnSendNotes');
-    btn.addEventListener('click', function () {
-        const kundennummer = document.getElementById("kdnr").value;
-        const notes = document.getElementById("notesTextarea").value;
-
-        ajax.post({
-            r: 'setNotes',
-            kdnr: kundennummer,
-            notes: notes
-        });
-    });
-
-    globalProperties.addrCount = document.getElementById("addrCount");
-    globalProperties.search = document.getElementById("performSearch");
-    if (globalProperties.search != null) {
-        globalProperties.search.addEventListener("keyup", function (event) {
-            if (event.key === "Enter") {
-                location.href = event.target.dataset.url + "?mode=search&query=" + event.target.value;
-            }
-        });
-    }
 }
 
 fnNames.click_createNewOrder = () => {
@@ -177,23 +30,66 @@ fnNames.click_createNewOrder = () => {
 }
 
 fnNames.click_deleteCustomer = () => {
+    if (!confirm("Möchten Sie den Kunden wirklich löschen? Alle verbundenen Aufträge und Daten werden gelöscht.")) {
+        return;
+    }
+
     ajax.delete(`/api/v1/customer/${customerData.id}/`).then(() => {
         window.location.replace();
     });
 }
 
-/**
- * changes the archive state to false
- * 
- * @param {int} id 
- */
-function rearchive(id) {
-    ajax.post({
-        r: 'rearchive',
-        auftrag: id
-    }).then(() => {
-        location.reload();
+fnNames.click_rearchive = async e => {
+    const target = e.currentTarget;
+    const id = target.dataset.orderId;
+    const response = await ajax.put(`/api/v1/order/${id}/archive`, {
+        "archive": false,
     });
+
+    if (response.status == "success") {
+        infoSaveSuccessfull("success");
+
+        const orderCard = target.closest(".orderCard");
+        const options = orderCard.querySelectorAll(".orderOptions");
+        const orderDisabled = orderCard.querySelector(".orderDisabled");
+
+        options.forEach(option => {
+            option.parentNode.removeChild(option);
+        })
+
+        orderDisabled.parentNode.removeChild(orderDisabled);
+    }
+}
+
+fnNames.click_saveCustomerData = () => {
+    ajax.put(`/api/v1/customer/${customerData.id}`, {
+        "prename": document.getElementById("prename").value,
+        "lastname": document.getElementById("lastname").value,
+        "companyname": document.getElementById("companyname").value,
+        "email": document.getElementById("email").value,
+        "website": document.getElementById("website").value,
+        "phoneLandline": document.getElementById("phoneLandline").value,
+        "phoneMobile": document.getElementById("phoneMobile").value,
+        "fax": document.getElementById("fax").value,
+    }).then(r => {
+        if (r.message == "OK") {
+            infoSaveSuccessfull("success");
+        }
+    });
+}
+
+fnNames.write_setCustomerNote = async e => {
+    const value = e.currentTarget.value;
+    const r = await ajax.put(`/api/v1/customer/${customerData.id}/note`, {
+        "note": value,
+    });
+    if (r.message == "OK") {
+        infoSaveSuccessfull("success");
+    }
+}
+
+fnNames.click_mergeCustomer = () => {
+    
 }
 
 const vehiclesTable = async () => {
@@ -201,7 +97,9 @@ const vehiclesTable = async () => {
     const config = tableConfig["fahrzeuge"];
     const columnConfig = {
         "hide": ["Kundennummer"],
-        "hideOptions": ["addRow", "check"],
+        "hideOptions": ["all"],
+        "primaryKey": "Nummer",
+        "link": "/fahrzeug?id=",
     };
 
     createHeader(config.columns, table, columnConfig);
@@ -223,7 +121,7 @@ const contactPersonTable = async () => {
     const config = tableConfig["ansprechpartner"];
     const columnConfig = {
         "hide": ["Nummer", "Kundennummer"],
-        "hideOptions": ["check"],
+        "hideOptions": ["check", "add", "move"],
     };
 
     createHeader(config.columns, table, columnConfig);
@@ -259,7 +157,7 @@ const addressTable = () => {
             "id_customer": customerData.id,
         },
         "hide": ["id", "id_customer"],
-        "hideOptions": ["check", "addRow"],
+        "hideOptions": ["check", "add", "move"],
     };
     fetchAndRenderTable("addressTable", "address", options);
 }
@@ -278,7 +176,7 @@ const colorTable = async () => {
     renderTable("colorTable", config.columns, data, options);
 }
 
-if (document.readyState !== 'loading' ) {
+if (document.readyState !== 'loading') {
     init();
 } else {
     document.addEventListener('DOMContentLoaded', function () {

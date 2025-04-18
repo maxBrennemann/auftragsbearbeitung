@@ -1,3 +1,6 @@
+import { ajax } from "./classes/ajax.js";
+import { initBindings } from "./classes/bindings.js";
+
 const globalProperties = {
     company: null,
     person: null,
@@ -5,6 +8,8 @@ const globalProperties = {
     privateForm: null,
     current: null,
 };
+
+const fnNames = {};
 
 if (document.readyState !== 'loading' ) {
     initAddCustomer();
@@ -15,6 +20,8 @@ if (document.readyState !== 'loading' ) {
 }
 
 function initAddCustomer() {
+    initBindings(fnNames);
+
     globalProperties.company = document.getElementById("showCompanies");
     globalProperties.person = document.getElementById("showPersons");
     globalProperties.current = globalProperties.company;
@@ -51,9 +58,6 @@ function initAddCustomer() {
 
         globalProperties.current = globalProperties.person;
     });
-
-    const addNewCustomer = document.getElementById("addNewCustomer");
-    addNewCustomer.addEventListener("click", sendCustomerData);
 }
 
 function toggleStyles(element) {
@@ -67,7 +71,7 @@ function toggleStyles(element) {
     element.classList.toggle("dark:border-blue-500");
 }
 
-function sendCustomerData() {
+fnNames.click_sendCustomerData = () => {
     const addNewCustomer = document.getElementById("addNewCustomer");
     addNewCustomer.disabled = true;
 
@@ -89,7 +93,7 @@ function sendCustomerData() {
     object.type = globalProperties.current == globalProperties.company ? "company" : "private";
 
     ajax.post(`/api/v1/customer`, {
-        data: JSON.stringify(object),
+        "data": JSON.stringify(object),
     }).then(r => {
         if (r.status == "success") {
             location.href = r.link;
