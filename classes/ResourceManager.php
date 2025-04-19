@@ -20,8 +20,6 @@ use Classes\Project\Modules\Pdf\InvoicePDF;
 class ResourceManager
 {
 
-    private static $cacheStatus = null;
-    private static $cacheFile = null;
     private static $page = "";
 
     /**
@@ -45,10 +43,10 @@ class ResourceManager
             case "img":
             case "static":
                 self::handleResources();
-                exit;
+                self::close();
             case "api":
                 Ajax::handleRequests();
-                exit;
+                self::close();
             case "favicon.ico":
                 require_once "favicon.php";
                 exit;
@@ -68,25 +66,6 @@ class ResourceManager
         } else {
             $_SESSION["companyName"] = "Auftragsbearbeitung";
         }
-    }
-
-    /**
-     * simple caching from:
-     * https://www.a-coding-project.de/ratgeber/php/simples-caching 
-     * added a time stamp check and added triggers to recreate page
-     */
-    public static function handleCache()
-    {
-        $t = false;
-        self::$cacheFile = "cache/cache_" . md5($_SERVER["REQUEST_URI"]) . ".txt";
-        self::$cacheStatus = CacheManager::getCacheStatus();
-
-        if (file_exists(self::$cacheFile) && !(count($_GET) || count($_POST)) && $t && self::$cacheStatus == "on") {
-            echo file_get_contents_utf8(self::$cacheFile);
-            return true;
-        }
-
-        return false;
     }
 
     public static function getParameters()
@@ -118,10 +97,6 @@ class ResourceManager
 
     public static function initPage()
     {
-        if (self::$cacheStatus == "on") {
-            ob_start();
-        }
-
         $getReason = Tools::get("getReason");
         $isUpload = Tools::get("upload");
 
@@ -193,17 +168,10 @@ class ResourceManager
                 self::showPage("login");
             }
         }
-
-        if (self::$cacheStatus == "on") {
-            $cachedFileContent = ob_get_flush();
-            file_put_contents(self::$cacheFile, $cachedFileContent);
-        }
     }
 
     private static function showPage($page)
     {
-        global $start;
-
         if ($page == "test") {
             return null;
         }
@@ -231,14 +199,8 @@ class ResourceManager
         include "./files/header.php";
         include $baseUrl . $articleUrl;
 
-        $duration = false;
-        if ($_ENV["DEV_MODE"] == true) {
-            $stop = microtime(true);
-            $duration = $stop - $start;
-        }
-
         insertTemplate("./files/footer.php", [
-            "duration" => $duration,
+            "calcDuration" => $_ENV["DEV_MODE"],
         ]);
     }
 
@@ -246,17 +208,18 @@ class ResourceManager
     {
         Protocol::close();
         DBAccess::close();
+        exit;
     }
 
     private static function handleResources()
     {
         $requestUri = $_SERVER["REQUEST_URI"];
-        $requestUri = explode('/', $requestUri);
+        $requestUri = explode("/", $requestUri);
 
         $type = $requestUri[1];
-        $pathToResource = implode('/', array_slice($requestUri, 0, 2));
-        $resource = str_replace($pathToResource, "", $_SERVER['REQUEST_URI']);
-        $resource = explode('?', $resource)[0];
+        $pathToResource = implode("/", array_slice($requestUri, 0, 2));
+        $resource = str_replace($pathToResource, "", $_SERVER["REQUEST_URI"]);
+        $resource = explode("?", $resource)[0];
 
         if ($resource == "") {
             http_response_code(404);

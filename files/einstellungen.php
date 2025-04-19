@@ -1,12 +1,7 @@
 <?php
 
 use Classes\Link;
-
-use Classes\Project\CacheManager;
 use Classes\Project\Config;
-
-$cacheStatus = CacheManager::getCacheStatus();
-$minifyStatus = Config::get("minifyStatus");
 
 ?>
 <script src="<?= Link::getResourcesShortLink("colorpicker.js", "js") ?>"></script>
@@ -81,14 +76,14 @@ $minifyStatus = Config::get("minifyStatus");
 </section>
 <section class="defCont">
     <h2 class="font-bold">Cache</h2>
-    <input data-write="true" data-fun="toggleCache" type="radio" data-value="on" name="cacheswitch" value="on" <?= $cacheStatus == "on" ? "checked" : "" ?>> Cache aktivieren<br>
-    <input data-write="true" data-fun="toggleCache" type="radio" data-value="off" name="cacheswitch" value="off" <?= $cacheStatus == "off" ? "checked" : "" ?>> Cache deaktivieren<br>
+    <input data-write="true" data-fun="toggleCache" type="radio" data-value="on" name="cacheswitch" value="on" <?= CACHE_STATUS == "on" ? "checked" : "" ?>> Cache aktivieren<br>
+    <input data-write="true" data-fun="toggleCache" type="radio" data-value="off" name="cacheswitch" value="off" <?= CACHE_STATUS == "off" ? "checked" : "" ?>> Cache deaktivieren<br>
     <button data-binding="true" data-fun="deleteCache" class="btn-primary-new mt-2">Cache löschen</button>
 </section>
 <section class="defCont">
     <h2 class="font-bold">CSS und JS komprimieren</h2>
-    <input data-write="true" data-fun="toggleMinify" type="radio" data-value="on" name="minifyswitch" value="on" <?= $minifyStatus == "on" ? "checked" : "" ?>> Komprimierung aktivieren<br>
-    <input data-write="true" data-fun="toggleMinify" type="radio" data-value="off" name="minifyswitch" value="off" <?= $minifyStatus == "off" ? "checked" : "" ?>> Komprimierung deaktivieren<br>
+    <input data-write="true" data-fun="toggleMinify" type="radio" data-value="on" name="minifyswitch" value="on" <?= MINIFY_STATUS == "on" ? "checked" : "" ?>> Komprimierung aktivieren<br>
+    <input data-write="true" data-fun="toggleMinify" type="radio" data-value="off" name="minifyswitch" value="off" <?= MINIFY_STATUS == "off" ? "checked" : "" ?>> Komprimierung deaktivieren<br>
     <button data-binding="true" data-fun="minifyFiles" class="btn-primary-new mt-2">Neu komprimieren</button>
 </section>
 <section class="defCont">

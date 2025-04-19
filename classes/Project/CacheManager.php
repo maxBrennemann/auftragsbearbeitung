@@ -9,9 +9,12 @@ use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 class CacheManager
 {
 
+    private const CACHE_DIR = "cache/";
+    private const CACHE_PREFIX = "cache_";
+
     public function recache()
     {
-        $cacheFile = "cache/cache_" . md5($_SERVER['REQUEST_URI']) . ".txt";
+        $cacheFile = self::CACHE_DIR . self::CACHE_PREFIX . md5($_SERVER["REQUEST_URI"]) . ".txt";
         if (file_exists($cacheFile)) {
             unlink($cacheFile);
         }
@@ -40,6 +43,55 @@ class CacheManager
         return (string) $status;
     }
 
+    public static function writeCache()
+    {
+        $cacheFile = self::CACHE_DIR . self::CACHE_PREFIX . md5($_SERVER["REQUEST_URI"]) . ".txt";
+        file_put_contents($cacheFile, ob_get_contents());
+    }
+
+    /**
+     * simple caching from:
+     * https://www.a-coding-project.de/ratgeber/php/simples-caching 
+     * added a time stamp check and added triggers to recreate page
+     */
+    public static function loadCacheIfExists()
+    {
+        if (CACHE_STATUS == "off") {
+            return;
+        }
+
+        self::cacheHandler();
+
+        if (count($_GET) > 0 || count($_POST) > 0) {
+            return;
+        }
+
+        $cacheFile = self::CACHE_DIR . self::CACHE_PREFIX . md5($_SERVER["REQUEST_URI"]) . ".txt";
+        if (file_exists($cacheFile)) {
+            header("X-Cache: HIT");
+            $content = file_get_contents_utf8($cacheFile);
+
+            global $start;
+            $duration = microtime(true) - $start;
+
+            $content = str_replace('{{LOAD_TIME}}', "<script>console.log('Page loaded in {$duration} seconds');</script>", $content);
+
+            echo $content;
+            exit;
+        }
+    }
+
+    public static function cacheHandler()
+    {
+        ob_start();
+        register_shutdown_function(function () {
+            if (CACHE_STATUS == "on") {
+                CacheManager::writeCache();
+            }
+            ob_end_flush();
+        });
+    }
+
     public static function deleteCache()
     {
         $path = "cache/";
@@ -47,7 +99,7 @@ class CacheManager
         $files = array_diff(scandir($path), [
             ".",
             "..",
-            "index.php",
+            ".gitkeep",
             "modules",
         ]);
 
@@ -64,7 +116,11 @@ class CacheManager
 
     public static function toggleCache()
     {
-        $status = (string) Tools::get("status");
+        $status = strtolower(trim((string) Tools::get("status")));
+        if (!in_array($status, ["on", "off"])) {
+            JSONResponseHandler::throwError(400, "Unsupported status type");
+        }
+
         $response = "failure";
 
         switch ($status) {
