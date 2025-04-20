@@ -6,8 +6,10 @@
 // neu crawlen btn einführen
 // tags häufigkeit und produkte dazu speichern
 
+use MaxBrennemann\PhpUtilities\DBAccess;
+
 $query = "SELECT `content` FROM module_sticker_tags";
-$tags = Classes\DBAccess::selectQuery($query);
+$tags = DBAccess::selectQuery($query);
 
 ?>
 <script type="module" src="<?=Classes\Link::getResourcesShortLink("tags.js", "js")?>"></script>

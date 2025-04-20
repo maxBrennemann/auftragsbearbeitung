@@ -7,8 +7,6 @@ $_SERVER["DOCUMENT_ROOT"] = "../";
 
 require_once "settings.php";
 
-Classes\MinifyFiles::minify();
-
 ob_start();
 TableConfig::generate();
 $content = ob_get_clean();

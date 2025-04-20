@@ -8,7 +8,7 @@ const fnNames = {};
 function initEventListeners() {
     initBindings(fnNames);
     timeTracking();
-    
+
     const clearFiles = document.getElementById("clearFiles");
     clearFiles.addEventListener("click", () => {
         ajax.post(`/api/v1/upload/clear-files`);
@@ -49,7 +49,7 @@ const timeTracking = () => {
     if (switchTimeTracking == null) {
         return;
     }
-    
+
     switchTimeTracking.addEventListener("change", () => {
         ajax.put("/api/v1/settings/global-timetracking").then(r => {
             if (r.status == "success") {
@@ -95,13 +95,13 @@ function addCategory() {
         name: newCategory,
         parent: parentCategory,
     }).then(r => {
-        clearInputs({"id": "newCategory"});
-        
+        clearInputs({ "id": "newCategory" });
+
         if (r.status !== "success") {
             infoSaveSuccessfull("error");
             return;
         }
-        
+
         infoSaveSuccessfull("success");
     });
 }
@@ -137,7 +137,7 @@ function createCategoryTree(anchor, categories) {
 
     categories.forEach(category => {
         const li = document.createElement("li");
-        li.innerHTML =  `
+        li.innerHTML = `
             <span class="cursor-pointer" data-id="${category.id}">${category.name}</span>
             <button class="btn-primary">Bearbeiten</button>`;
 
@@ -183,14 +183,6 @@ fnNames.click_deleteCache = () => {
     });
 }
 
-fnNames.click_minifyFiles = () => {
-    ajax.post(`/api/v1/settings/minify`).then(r => {
-        if (r.status == "success") {
-            infoSaveSuccessfull("success");
-        }
-    });
-}
-
 fnNames.write_changeSetting = e => {
     const target = e.currentTarget;
     const value = target.value;
@@ -224,10 +216,10 @@ function setCustomColor(value) {
     });
 }
 
-if (document.readyState !== 'loading' ) {
+if (document.readyState !== 'loading') {
     document.getElementById("download_db").addEventListener("click", getFileName, false);
 } else {
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         document.getElementById("download_db").addEventListener("click", getFileName, false);
     }, false);
 }
@@ -325,7 +317,7 @@ const addOrderType = async (table, options) => {
     addRow(data, table, options);
 }
 
-if (document.readyState !== 'loading' ) {
+if (document.readyState !== 'loading') {
     initEventListeners();
 } else {
     document.addEventListener('DOMContentLoaded', function () {

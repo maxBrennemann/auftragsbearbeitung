@@ -16,11 +16,9 @@ class SettingsRoutes extends Routes
 
     /**
      * @uses Classes\Project\ClientSettings::createBackup()
-     * @uses Classes\MinifyFiles::minifyRequest()
      */
     protected static $postRoutes = [
         "/settings/backup" => [\Classes\Project\ClientSettings::class, "createBackup"],
-        "/settings/minify" => [\Classes\MinifyFiles::class, "minifyRequest"],
     ];
 
     /**

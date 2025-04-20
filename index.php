@@ -6,10 +6,10 @@ require_once "settings.php";
 require_once "globalFunctions.php";
 
 use Classes\ResourceManager;
-use Classes\MinifyFiles;
+use Classes\Project\Config;
 use Classes\Project\CacheManager;
 
-define("MINIFY_STATUS", MinifyFiles::isActivated());
+define("MINIFY_STATUS", Config::get("minifyStatus") == "on");
 define("CACHE_STATUS", CacheManager::getCacheStatus());
 
 ResourceManager::getParameters();

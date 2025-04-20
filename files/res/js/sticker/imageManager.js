@@ -113,7 +113,6 @@ function addTableRow(imageSrc, imageCategory, imageFileId) {
     });
 
     //addBindings(fileIds);
-    // TODO: add bindings to the new elements and fix addBindings function
 }
 
 function getIcon(type = "icon-file") {

@@ -30,7 +30,7 @@ module.exports = {
     mode: 'production',
     entry: entries,
     output: {
-        filename: '[name].min.js',
+        filename: '[name].[contenthash].js',
         path: path.resolve(__dirname, 'files/res/js/min'),
         clean: true,
     },
@@ -48,6 +48,7 @@ module.exports = {
             minSize: 0,
         },*/
         splitChunks: false,
+        runtimeChunk: 'single',
     },
     resolve: {
         extensions: ['.js'],
