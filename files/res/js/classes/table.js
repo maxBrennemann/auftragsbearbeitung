@@ -10,6 +10,9 @@ export const renderTable = (containerId, header, data, options = {}) => {
     });
 
     autoSortTable(table, options);
+    if ('sum' in options) {
+        createSumRow(data, table, options, header);
+    }
 
     return table;
 }
@@ -182,6 +185,40 @@ const createAddRow = (count, header, table, options = {}) => {
     cell.appendChild(container);
     row.appendChild(cell);
     table.querySelector("tbody").appendChild(row);
+}
+
+const createSumRow = (data, table, options = {}, header = {}) => {
+    const tfoot = document.createElement("tfoot");
+    const tr = document.createElement("tr");
+    const sumUp = options.sum ?? [];
+    const results = {};
+
+    data.forEach(row => {
+        sumUp.forEach(key => {
+            let value = row[key];
+            value = value.replace(",", ".");
+            value = value.trim();
+
+            if (results[key] == undefined) {
+                results[key] = 0;
+            }
+
+            results[key] += parseFloat(value);
+        });
+    });
+
+    header.forEach(el => {
+        const td = document.createElement("td");
+
+        if (sumUp.includes(el.key)) {
+            td.innerHTML = results[el.key];
+        }
+
+        tr.appendChild(td);
+    });
+
+    tfoot.appendChild(tr);
+    table.appendChild(tfoot);
 }
 
 export const addRow = (data, table, options = {}, header = {}) => {

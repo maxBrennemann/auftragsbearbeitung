@@ -11,6 +11,10 @@
         @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 bg-green-500 rounded text-sm border-0 text-white hover:bg-green-700 disabled:bg-green-200 disabled:hover:bg-green-300 disabled:hover:cursor-not-allowed;
     }
 
+    .btn-primary-small {
+        @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-1 px-2 bg-green-500 rounded border-0 text-white text-xs hover:bg-green-700 disabled:bg-green-200 disabled:hover:bg-green-300 disabled:hover:cursor-not-allowed;
+    }
+
     .btn-attention {
         @apply px-4 py-2 m-1 font-semibold text-sm bg-red-200 text-slate-600 rounded-lg shadow-sm border-none disabled:bg-gray-300 hover:bg-red-300;
     }

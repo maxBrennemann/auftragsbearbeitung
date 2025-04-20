@@ -19,6 +19,7 @@ const config = {
             },
         },
         "autoSort": true,
+        "sum": ["price"],
     },
     "tableHeader": [
         {
