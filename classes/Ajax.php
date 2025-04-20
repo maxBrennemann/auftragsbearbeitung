@@ -27,7 +27,6 @@ use Classes\Project\Liste;
 use Classes\Project\NotificationManager;
 use Classes\Project\Auftrag;
 use Classes\Project\Posten;
-use Classes\Project\Kunde;
 use Classes\Project\Fahrzeug;
 use Classes\Project\Step;
 use Classes\Project\Table;
