@@ -204,7 +204,10 @@ const createSumRow = (data, table, options = {}, header = {}) => {
                 results[el.key] = 0;
             }
 
-            results[el.key] += parseFloat(value);
+            const result = parseFloat(value);
+            if (!isNaN(result)) {
+                results[el.key] += result;
+            }
         });
     });
 
@@ -215,9 +218,9 @@ const createSumRow = (data, table, options = {}, header = {}) => {
         let sumBy = sumUp.find(val => val.key === el.key);
         if (sumBy) {
             if (sumBy.format) {
-                td.innerHTML = format(results[el.key], sumBy.format);
+                td.innerHTML = format(results[el.key] ?? 0, sumBy.format);
             } else {
-                td.innerHTML = results[el.key];
+                td.innerHTML = results[el.key] ?? "";
             }
         }
 

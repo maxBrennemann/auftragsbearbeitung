@@ -15,7 +15,8 @@ class InvoicePDF extends PDFGenerator
 
     private int $orderId;
     private int $invoiceId;
-    private int $address = 0;
+    private int $addressId = 0;
+    private int $contactId = 0;
 
     public function __construct(int $invoiceId, int $orderId)
     {
@@ -26,6 +27,9 @@ class InvoicePDF extends PDFGenerator
 
         $this->customer = $this->invoice->getCustomer();
         $this->order = $this->invoice->getOrder();
+
+        $this->addressId = $this->invoice->getAddressId();
+        $this->contactId = $this->invoice->getContactId();
     }
 
     public function generate($store = false)
@@ -226,10 +230,10 @@ class InvoicePDF extends PDFGenerator
 
         $firma = $this->customer->getFirmenname();
         $name = $this->customer->getName();
-        $hausnr = $this->customer->getHausnummer($this->address);
-        $strasse = $this->customer->getStrasse($this->address);
-        $plz = $this->customer->getPostleitzahl($this->address);
-        $ort = $this->customer->getOrt($this->address);
+        $hausnr = $this->customer->getHausnummer($this->addressId);
+        $strasse = $this->customer->getStrasse($this->addressId);
+        $plz = $this->customer->getPostleitzahl($this->addressId);
+        $ort = $this->customer->getOrt($this->addressId);
 
         if ($firma != null || $firma != "") {
             $this->Cell(85, $lineheight, $firma);

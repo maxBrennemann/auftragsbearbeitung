@@ -144,7 +144,24 @@ functionNames.click_selectAddress = e => {
     ajax.post(`/api/v1/invoice/${config.invoiceId}/address`, {
         "addressId": addressId,
     }).then(r => {
-        if (r.status !== "success") {
+        if (r.message !== "OK") {
+            infoSaveSuccessfull("failiure", r.message);
+            return;
+        }
+        infoSaveSuccessfull("success");
+
+        getPDF();
+    });
+}
+
+functionNames.click_selectContact = e => {
+    const target = e.currentTarget;
+    const contactId = target.dataset.id;
+
+    ajax.post(`/api/v1/invoice/${config.invoiceId}/contact`, {
+        "contactId": contactId,
+    }).then(r => {
+        if (r.message !== "OK") {
             infoSaveSuccessfull("failiure", r.message);
             return;
         }
