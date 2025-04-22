@@ -3,9 +3,6 @@
 use Classes\Link;
 
 ?>
-
-<script src="<?=Link::getResourcesShortLink("funktionen.js", "js")?>"></script>
-
 <?php
 
 $links = [

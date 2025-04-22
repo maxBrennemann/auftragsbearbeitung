@@ -68,41 +68,8 @@ if ($pageName == "") {
 		<script src="<?= $tableConfig ?>" type="module"></script>
 	<?php endif; ?>
 	<script src="<?= $notifications ?>" type="module"></script>
-	<?php
-	$link = Link::getResourcesShortLink($page . ".js", "js");
-
-	/* TODO: workaround mit module und if check muss noch geändert werden */
-	if (
-		$page == "sticker"
-		|| $page == "auftrag"
-		|| $page == "angebot"
-		|| $page == "diagramme"
-		|| $page == "login"
-		|| $page == "leistungen"
-		|| $page == "neues-produkt"
-		|| $page == "neuer-kunde"
-		|| $page == "produkt"
-		|| $page == "attributes"
-		|| $page == "zahlungen"
-		|| $page == "einstellungen"
-		|| $page == "sticker-overview"
-		|| $page == "kunde"
-		|| $page == "customer-overview"
-		|| $page == "offene-rechnungen"
-		|| $page == "zeiterfassung"
-		|| $page == "wiki"
-		|| $page == "mitarbeiter"
-		|| $page == "rechnung"
-		|| $page == "fahrzeug"
-	) {
-		echo '<script type="module" src="' . $link . '"></script>';
-	} else {
-		echo '<script src="' . $link . '"></script>';
-	}
-
-	$link = Link::getResourcesShortLink($page . ".css", "css");
-	echo '<link rel="stylesheet" href="' . $link . '">';
-	?>
+	<script type="module" src="<?= Link::getResourcesShortLink("$page.js", "js") ?>"></script>
+	<link rel="stylesheet" href="<?= Link::getResourcesShortLink("$page.css", "css") ?>">
 </head>
 
 <body>

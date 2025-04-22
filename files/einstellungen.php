@@ -4,7 +4,6 @@ use Classes\Link;
 use Classes\Project\Config;
 
 ?>
-<script src="<?= Link::getResourcesShortLink("colorpicker.js", "js") ?>"></script>
 <section class="defCont">
     <h2 class="font-bold">Auftragstypen festlegen</h2>
     <div id="orderTypes" class="mt-2"></div>

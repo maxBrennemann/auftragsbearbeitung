@@ -17,9 +17,6 @@ use Classes\Project\TemplateController;
 
 ?>
 
-<script src="<?= Link::getResourcesShortLink("colorpicker.js", "js") ?>"></script>
-<script src="<?= Link::getResourcesShortLink("list.js", "js") ?>"></script>
-
 <?php
 
 $show = false;

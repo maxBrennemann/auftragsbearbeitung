@@ -1,3 +1,5 @@
+import {} from "./listcreator.js";
+
 var l;
 
 /* creation function */
