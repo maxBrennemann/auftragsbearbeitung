@@ -19,9 +19,25 @@ class Model
         $this->hooks = $hooks;
     }
 
+    public static function init(string $tableName)
+    {
+        require_once "config/table-config.php";
+        $config = getTableConfig();
+        $tableConfig = $config[$tableName] ?? null;
+
+        $hooks = $tableConfig["hooks"] ?? [];
+        $model = new Model($hooks);
+        $model->tableName = $tableName;
+        $model->hidden = $tableConfig["hidden"] ?? [];
+        $model->columns = $tableConfig["columns"] ?? [];
+        $model->fillable = [];
+
+        return $model;
+    }
+
     protected string $conditions = "";
 
-    public function read(array $conditions): array
+    public function read(array $conditions = []): array
     {
         $this->triggerHook("beforeRead", [
             "conditions" => &$conditions,

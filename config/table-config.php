@@ -1,7 +1,5 @@
 <?php
 
-use function PHPSTORM_META\map;
-
 function getTableConfig()
 {
     return [
@@ -133,6 +131,24 @@ function getTableConfig()
                 "Fahrzeug"
             ],
             "permissions" => ["read", "create", "update", "delete"],
+        ],
+        "leistung" => [
+            "columns" => [
+                "Nummer",
+                "Bezeichnung",
+                "Beschreibung",
+                "Quelle",
+                "Aufschlag",
+            ],
+            "primaryKey" => "Nummer",
+            "names" => [
+                "Nummer",
+                "Bezeichnung",
+                "Beschreibung",
+                "Quelle",
+                "Aufschlag",
+            ],
+            "permissions" => [],
         ],
         "module_sticker_sticker_data" => [
             "columns" => [

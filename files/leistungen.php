@@ -1,49 +1,53 @@
 ﻿<?php
 
-use MaxBrennemann\PhpUtilities\DBAccess;
+use Classes\Project\Models\Model;
 
-$data = DBAccess::selectQuery("SELECT * FROM leistung");
+$data = Model::init("leistung");
+$data = $data->read();
 ?>
-<a href="#" class="font-bold">Folie konfigurieren</a>
-<a href="#" class="font-bold">T-Shirt konfigurieren</a>
-<div class="grid grid-cols-3 gap-4" id="leistungen">
+
+<h2 class="font-bold">Übersicht über die angebotenen Leistungen</h2>
+<div class="grid grid-cols-3 gap-3" id="leistungen">
 	<?php foreach ($data as $leistung): ?>
-		<div class="leistungen border-none defCont p-4 rounded-lg" data-remove-id="<?=$leistung['Nummer']?>">
-			<p class="font-bold mb-2">
-				<input class="bg-inherit w-fit" value="<?=$leistung['Bezeichnung']?>">
-			</p>
-			<p>Beschreibung
-				<input class="w-full block m-1 text-slate-600 rounded-lg p-2" value="<?=$leistung['Beschreibung']?>">
-			</p>
-			<p>Quelle
-				<input class="block m-1 text-slate-600 rounded-lg p-2" value="<?=$leistung['Quelle']?>">
-			</p>
-			<p>Aufschlag (%)
-				<input class="block m-1 text-slate-600 rounded-lg p-2" type="number" value="<?=$leistung['Aufschlag']?>">
-			</p>
-			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Löschen</button>
-			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Speichern</button>
+		<div class="defCont" data-service-id="<?= $leistung['Nummer'] ?>">
+			<p class="font-semibold mb-2"><?= $leistung['Bezeichnung'] ?></p>
+
+			<p>Bezeichnung</p>
+			<input class="input-primary-new" value="<?= $leistung['Bezeichnung'] ?>">
+
+			<p>Beschreibung</p>
+			<input class="input-primary-new" value="<?= $leistung['Beschreibung'] ?>">
+
+			<p>Quelle</p>
+			<input class="input-primary-new" value="<?= $leistung['Quelle'] ?>">
+
+			<p>Aufschlag (%)</p>
+			<input class="input-primary-new" type="number" value="<?= $leistung['Aufschlag'] ?>">
+
+			<div class="mt-2">
+				<button class="btn-primary-new" data-fun="save" data-binding="true">Speichern</button>
+				<button class="btn-delete" data-fun="delete" data-binding="true">Löschen</button>
+			</div>
 		</div>
 	<?php endforeach; ?>
-	<div class="border-none defCont p-4 rounded-lg">
-		<p class="font-bold">Neue Leistung hinzufügen</p>
-		<label>
-			Bezeichnung
-			<input class="w-full block m-1 text-slate-600 rounded-lg p-2" type="text" maxlength="32" id="bezeichnung">
-		</label>
-		<label>
-			Beschreibung
-			<textarea class="block m-1 text-slate-600 rounded-lg p-2" id="description"></textarea>
-		</label>
-		<label>
-			Quelle
-			<input class="block m-1 text-slate-600 rounded-lg p-2" type="text" id="source">
-		</label>
-		<label>
-			Aufschlag (%)
-			<input class="block m-1 text-slate-600 rounded-lg p-2" type="number" id="aufschlag">
-		</label>
-		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" id="addNew">Hinzufügen</button>
-		<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" id="cancleNew">Abbrechen</button>
+	<div class="defCont">
+		<p class="font-semibold mb-2">Neue Leistung hinzufügen</p>
+
+		<p>Bezeichnung</p>
+		<input class="input-primary-new" id="addName">
+
+		<p>Beschreibung</p>
+		<input class="input-primary-new" id="addDescription">
+
+		<p>Quelle</p>
+		<input class="input-primary-new" id="addSource">
+
+		<p>Aufschlag (%)</p>
+		<input class="input-primary-new" type="number" id="addSurcharge">
+
+		<div class="mt-2">
+			<button class="btn-primary-new" data-fun="add" data-binding="true">Hinzufügen</button>
+			<button class="btn-cancel" data-fun="cancel" data-binding="true">Abbrechen</button>
+		</div>
 	<div>
 </div>

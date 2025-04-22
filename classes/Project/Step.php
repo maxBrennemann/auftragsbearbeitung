@@ -18,7 +18,7 @@ class Step {
 	private $auftragsnummer = null;
 	private $schrittnummer = null;
 
-	function __construct($auftragsnummer, $schrittnummer, $bezeichnung, $datum, $priority, $istErledigt) {
+	public function __construct($auftragsnummer, $schrittnummer, $bezeichnung, $datum, $priority, $istErledigt) {
 		$this->auftragsnummer = $auftragsnummer;
 		$this->bezeichnung = $bezeichnung;
 		$this->schrittnummer = $schrittnummer;

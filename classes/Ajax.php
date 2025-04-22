@@ -21,7 +21,6 @@ use Classes\Routes\TimeTrackingRoutes;
 use Classes\Routes\UserRoutes;
 use Classes\Routes\VariousRoutes;
 
-use Classes\Project\FormGenerator;
 use Classes\Project\Search;
 use Classes\Project\Liste;
 use Classes\Project\NotificationManager;
@@ -130,48 +129,6 @@ class Ajax
 	public static function manageRequests($reason, $page)
 	{
 		switch ($reason) {
-			case "createTable":
-				$type = $_POST['type'];
-
-				if (strcmp($type, "custom") == 0) {
-					$query = "SELECT posten.Postennummer, leistung.Bezeichnung, leistung_posten.Beschreibung, leistung_posten.SpeziefischerPreis, zeit.ZeitInMinuten, zeit.Stundenlohn 
-						FROM posten 
-						INNER JOIN leistung_posten 
-							ON posten.Postennummer = leistung_posten.Postennummer 
-						INNER JOIN zeit 
-							ON posten.Postennummer = zeit.Postennummer 
-						INNER JOIN leistung 
-							ON leistung_posten.Leistungsnummer = leistung.Nummer 
-						WHERE istStandard = 1;";
-					$data = DBAccess::selectQuery($query);
-					$column_names = array(
-						0 => array("COLUMN_NAME" => "Postennummer"),
-						1 => array("COLUMN_NAME" => "Bezeichnung"),
-						2 => array("COLUMN_NAME" => "Beschreibung"),
-						3 => array("COLUMN_NAME" => "Preis"),
-						4 => array("COLUMN_NAME" => "ZeitInMinuten"),
-						5 => array("COLUMN_NAME" => "Stundenlohn")
-					);
-					$table = new FormGenerator($type, "", "");
-					echo $table->createTableByData($data, $column_names);
-				} else {
-					$column_names = DBAccess::selectColumnNames($type);
-
-					$showData = true;
-					if (isset($_POST['showData'])) {
-						$showData = false;
-					}
-
-					if (isset($_POST['sendTo'])) {
-						$sendTo = $_POST['sendTo'];
-					} else {
-						$sendTo = "";
-					}
-
-					$table = FormGenerator::createTable($type, true, $showData, $sendTo);
-					echo $table;
-				}
-				break;
 			case "search":
 				$stype = $_POST['stype'];
 				if (isset($_POST['urlid']) && $_POST['urlid'] == "1") {
@@ -378,43 +335,6 @@ class Ajax
 				$key = $_POST["key"];
 				$table = $_POST["table"];
 				Table::updateValue($table, "delete", $_POST['key']);
-				break;
-			case "addLeistung":
-				$bezeichnung = $_POST['bezeichnung'];
-				$description = $_POST['description'];
-				$source = $_POST['source'];
-				$aufschlag = $_POST['aufschlag'];
-
-				$newInserted = DBAccess::insertQuery("INSERT INTO leistung (Bezeichnung, Beschreibung, Quelle, Aufschlag) VALUES (:bez, :desc, :source, :aufschlag);", [
-					"bez" => $bezeichnung,
-					"desc" => $description,
-					"source" => $source,
-					"aufschlag" => $aufschlag,
-				]);
-
-				echo json_encode([
-					"status" => "success",
-					"leistungsId" => $newInserted,
-				]);
-				break;
-			case "editLeistung":
-				$id = (int) $_POST["id"];
-				$bezeichnung = $_POST['bezeichnung'];
-				$description = $_POST['description'];
-				$source = $_POST['source'];
-				$aufschlag = $_POST['aufschlag'];
-
-				DBAccess::updateQuery("UPDATE leistung SET Bezeichnung = :bez, Beschreibung = :desc, Quelle = :source, Aufschlag = :aufschlag WHERE Nummer = :id;", [
-					"bez" => $bezeichnung,
-					"desc" => $description,
-					"source" => $source,
-					"aufschlag" => $aufschlag,
-					"id" => $id,
-				]);
-
-				echo json_encode([
-					"status" => "success",
-				]);
 				break;
 			case "setOrderFinished":
 				$auftrag = $_POST['auftrag'];
