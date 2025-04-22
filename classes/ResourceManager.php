@@ -5,7 +5,6 @@ namespace Classes;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 
-use Classes\Project\CacheManager;
 use Classes\Project\Posten;
 use Classes\Project\Table;
 
@@ -286,7 +285,7 @@ class ResourceManager
             return;
         }
 
-        $min = "min/" . $fileName[0] . ".min.js.gz";
+        $min = "min/" . $fileName[0] . ".js.gz";
         if (
             file_exists(Link::getResourcesLink($min, "js", false))
             && MINIFY_STATUS

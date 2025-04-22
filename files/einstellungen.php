@@ -82,9 +82,8 @@ use Classes\Project\Config;
 </section>
 <section class="defCont">
     <h2 class="font-bold">CSS und JS komprimieren</h2>
-    <input data-write="true" data-fun="toggleMinify" type="radio" data-value="on" name="minifyswitch" value="on" <?= MINIFY_STATUS == "on" ? "checked" : "" ?>> Komprimierung aktivieren<br>
-    <input data-write="true" data-fun="toggleMinify" type="radio" data-value="off" name="minifyswitch" value="off" <?= MINIFY_STATUS == "off" ? "checked" : "" ?>> Komprimierung deaktivieren<br>
-    <button data-binding="true" data-fun="minifyFiles" class="btn-primary-new mt-2">Neu komprimieren</button>
+    <input data-write="true" data-fun="toggleMinify" type="radio" data-value="on" name="minifyswitch" value="on" <?= MINIFY_STATUS == true ? "checked" : "" ?>> Komprimierung aktivieren<br>
+    <input data-write="true" data-fun="toggleMinify" type="radio" data-value="off" name="minifyswitch" value="off" <?= MINIFY_STATUS == false ? "checked" : "" ?>> Komprimierung deaktivieren
 </section>
 <section class="defCont">
     <h2 class="font-bold">Suche</h2>

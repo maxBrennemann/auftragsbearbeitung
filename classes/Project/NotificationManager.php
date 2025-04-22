@@ -24,6 +24,13 @@ use Classes\Link;
 class NotificationManager
 {
 
+    public const UNDEFINED = 0;
+    public const STEP = 1;
+    public const POSITION = 2;
+    public const FILE = 3;
+    public const NEW_ORDER = 4;
+    public const NEW_CUSTOMER = 5;
+
     /**
      * gets all unviewed notifications counted and returned
      */

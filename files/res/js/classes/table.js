@@ -190,28 +190,35 @@ const createAddRow = (count, header, table, options = {}) => {
 const createSumRow = (data, table, options = {}, header = {}) => {
     const tfoot = document.createElement("tfoot");
     const tr = document.createElement("tr");
+    //tr.className = "bg-blue-700";
     const sumUp = options.sum ?? [];
     const results = {};
 
     data.forEach(row => {
-        sumUp.forEach(key => {
-            let value = row[key];
+        sumUp.forEach(el => {
+            let value = row[el.key];
             value = value.replace(",", ".");
             value = value.trim();
 
-            if (results[key] == undefined) {
-                results[key] = 0;
+            if (results[el.key] == undefined) {
+                results[el.key] = 0;
             }
 
-            results[key] += parseFloat(value);
+            results[el.key] += parseFloat(value);
         });
     });
 
     header.forEach(el => {
         const td = document.createElement("td");
+        //td.className = "bg-blue-700";
 
-        if (sumUp.includes(el.key)) {
-            td.innerHTML = results[el.key];
+        let sumBy = sumUp.find(val => val.key === el.key);
+        if (sumBy) {
+            if (sumBy.format) {
+                td.innerHTML = format(results[el.key], sumBy.format);
+            } else {
+                td.innerHTML = results[el.key];
+            }
         }
 
         tr.appendChild(td);
@@ -471,6 +478,17 @@ const clearTable = (table) => {
     if (editableRow) {
         tbody.removeChild(editableRow);
     }
+}
+
+const format = (value, format) => {
+    switch (format) {
+        case "EUR":
+            return new Intl.NumberFormat("de-DE", {
+                "style": "currency",
+                "currency": "EUR"
+            }).format(value);
+    }
+    return value;
 }
 
 const getEditBtn = () => {
