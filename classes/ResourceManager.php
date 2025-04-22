@@ -5,7 +5,6 @@ namespace Classes;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 
-use Classes\Project\CacheManager;
 use Classes\Project\Posten;
 use Classes\Project\Table;
 

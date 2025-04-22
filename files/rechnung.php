@@ -85,7 +85,7 @@ if ($target == "create"): ?>
 
 		<div class="mt-3">
 			<?php if ($auftrag != null && $auftrag->getAuftragspostenData() != null): ?>
-				<button data-binding="true" data-fun="completeInvoice" class="btn-primary-new">Rechnung abschließen</button>
+				<button data-binding="true" data-fun="completeInvoice" class="btn-primary-new" disabled>Rechnung abschließen</button>
 			<?php else: ?>
 				<button disabled class="btn-primary-new">Rechnung abschließen</button>
 			<?php endif; ?>

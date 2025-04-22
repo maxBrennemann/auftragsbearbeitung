@@ -9,7 +9,7 @@ use Classes\ResourceManager;
 use Classes\Project\Config;
 use Classes\Project\CacheManager;
 
-define("MINIFY_STATUS", Config::get("minifyStatus") == "on");
+define("MINIFY_STATUS", Config::get("minifyStatus") == "on" ? true : false);
 define("CACHE_STATUS", CacheManager::getCacheStatus());
 
 ResourceManager::getParameters();
