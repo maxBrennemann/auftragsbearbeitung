@@ -20,6 +20,8 @@ class InvoiceRoutes extends Routes
      * @uses \Classes\Project\Invoice::setServiceDate()
      * @uses \Classes\Project\Invoice::addText()
      * @uses \Classes\Project\Invoice::completeInvoice()
+     * @uses \Classes\Project\Invoice::setAddress()
+     * @uses \Classes\Project\Invoice::setContact()
      */
     protected static $postRoutes = [
         "/invoice/{invoiceId}/paid" => [\Classes\Project\Invoice::class, "setInvoicePaid"],
@@ -27,6 +29,8 @@ class InvoiceRoutes extends Routes
         "/invoice/{invoiceId}/service-date" => [\Classes\Project\Invoice::class, "setServiceDate"],
         "/invoice/{invoiceId}/text" => [\Classes\Project\Invoice::class, "addText"],
         "/invoice/{invoiceId}/complete" => [\Classes\Project\Invoice::class, "completeInvoice"],
+        "/invoice/{invoiceId}/address" => [\Classes\Project\Invoice::class, "setAddress"],
+        "/invoice/{invoiceId}/contact" => [\Classes\Project\Invoice::class, "setContact"],
     ];
 
     /**

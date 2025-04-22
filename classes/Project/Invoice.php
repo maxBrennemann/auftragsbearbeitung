@@ -12,7 +12,8 @@ class Invoice
 
 	private Kunde $kunde;
 	private Auftrag $auftrag;
-	private int $address = 0;
+	private int $addressId = 0;
+	private int $contactId = 0;
 
 	private int $invoiceId = 0;
 	private int $invoiceNumber = 0;
@@ -41,7 +42,19 @@ class Invoice
 		$this->invoiceNumber = $data[0]["invoice_number"] ?? 0;
 		$this->creationDate = new \DateTime($data[0]["creation_date"]);
 		$this->performanceDate = new \DateTime($data[0]["performance_date"]);
+		$this->addressId = (int) $data[0]["address_id"];
+		$this->contactId = (int) $data[0]["contact_id"];
 		$this->getTexts();
+	}
+
+	public function getAddressId(): int
+	{
+		return $this->addressId;
+	}
+
+	public function getContactId(): int
+	{
+		return $this->contactId;
 	}
 
 	public static function getInvoice(int $orderId): Invoice
@@ -206,11 +219,46 @@ class Invoice
 		return $data;
 	}
 
-	public function setAddress($address)
+	public static function getContacts(int $customerId)
 	{
-		if (Address::hasAddress($this->kunde->getKundennummer(), $address)) {
-			$this->address = $address;
+		$contacts = DBAccess::selectQuery("SELECT Nummer AS id, Vorname AS firstName, Nachname AS lastName, Email AS email 
+			FROM ansprechpartner 
+			WHERE Kundennummer = :kdnr", [
+			"kdnr" => $customerId,
+		]);
+		$formattedContacts = [];
+
+		foreach ($contacts as $contact) {
+			$formattedContacts[$contact["id"]] = $contact["firstName"] . " " . $contact["lastName"] . ", " . $contact["email"];
 		}
+
+		return $formattedContacts;
+	}
+
+	public static function setAddress()
+	{
+		$invoiceId = (int) Tools::get("invoiceId");
+		$addressId = (int) Tools::get("addressId");
+		$query = "UPDATE invoice SET address_id = :addressId WHERE id = :invoiceId;";
+		DBAccess::updateQuery($query, [
+			"addressId" => $addressId,
+			"invoiceId" => $invoiceId,
+		]);
+
+		JSONResponseHandler::returnOK();
+	}
+
+	public static function setContact()
+	{
+		$invoiceId = (int) Tools::get("invoiceId");
+		$contactId = (int) Tools::get("contactId");
+		$query = "UPDATE invoice SET contact_id = :contactId WHERE id = :invoiceId;";
+		DBAccess::updateQuery($query, [
+			"contactId" => $contactId,
+			"invoiceId" => $invoiceId,
+		]);
+
+		JSONResponseHandler::returnOK();
 	}
 
 	public static function setInvoiceDate()

@@ -18,6 +18,7 @@ $id = Tools::get("id");
 if ($target == "create") {
 	$auftrag = new Auftrag($id);
 	$invoiceAddresses = Address::getAllAdressesFormatted($auftrag->getKundennummer());
+	$invoiceContacts = Invoice::getContacts($auftrag->getKundennummer());
 
 	$nextInvoiceNumber = InvoiceNumberTracker::peekNextInvoiceNumber();
 	$invoice = Invoice::getInvoice($id);
@@ -38,25 +39,34 @@ if ($target == "create"): ?>
 			<input class="hidden" id="orderId" value="<?= $id ?>">
 		</div>
 
-		<div class="innerDefCont">
-			<p>Adresse auswählen</p>
-			<?php if ($invoiceAddresses == null || empty($invoiceAddresses)): ?>
-				<i>Keine Rechnungsadressen vorhanden oder unvollständig. Bei Bedarf <a href="<?= Link::getPageLink("kunde") . "?id=" . $auftrag->getKundennummer() ?>" class="link-primary">beim Kunden</a> ergänzen.</i>
-			<?php else: ?>
-				<select id="addressId" class="input-primary-new w-72" data-binding="true" data-fun="selectAddress">
-					<?php foreach ($invoiceAddresses as $i => $r): ?>
-						<option value="<?= $i ?>"><?= $r ?></option>
-					<?php endforeach; ?>
-				</select>
-			<?php endif; ?>
+		<p class="mt-2">Adresse auswählen</p>
+		<?php if ($invoiceAddresses == null || empty($invoiceAddresses)): ?>
+			<i>Keine Rechnungsadressen vorhanden oder unvollständig. Bei Bedarf <a href="<?= Link::getPageLink("kunde") . "?id=" . $auftrag->getKundennummer() ?>" class="link-primary">beim Kunden</a> ergänzen.</i>
+		<?php else: ?>
+			<select id="addressId" class="input-primary-new w-72" data-binding="true" data-fun="selectAddress">
+				<?php foreach ($invoiceAddresses as $i => $r): ?>
+					<option value="<?= $i ?>"><?= $r ?></option>
+				<?php endforeach; ?>
+			</select>
+		<?php endif; ?>
 
-			<p class="mt-2">Rechnungsdatum festlegen</p>
-			<input type="date" data-write="true" data-fun="invoiceDate" class="input-primary-new" value="<?= $invoice->getCreationDate() ?>">
-			<p class="mt-2">Leistungsdatum festlegen</p>
-			<input type="date" data-write="true" data-fun="serviceDate" class="input-primary-new" value="<?= $invoice->getPerformanceDate() ?>">
-		</div>
+		<p class="mt-2">Ansprechpartner auswählen</p>
+		<?php if ($invoiceContacts == null || empty($invoiceContacts)): ?>
+			<i>Keine Ansprechpartner vorhanden. Bei Bedarf <a href="<?= Link::getPageLink("kunde") . "?id=" . $auftrag->getKundennummer() ?>" class="link-primary">beim Kunden</a> ergänzen.</i>
+		<?php else: ?>
+			<select id="contactId" class="input-primary-new w-72" data-binding="true" data-fun="selectContact">
+				<?php foreach ($invoiceContacts as $i => $r): ?>
+					<option value="<?= $i ?>"><?= $r ?></option>
+				<?php endforeach; ?>
+			</select>
+		<?php endif; ?>
 
-		<hr>
+		<p class="mt-2">Rechnungsdatum festlegen</p>
+		<input type="date" data-write="true" data-fun="invoiceDate" class="input-primary-new" value="<?= $invoice->getCreationDate() ?>">
+		<p class="mt-2">Leistungsdatum festlegen</p>
+		<input type="date" data-write="true" data-fun="serviceDate" class="input-primary-new" value="<?= $invoice->getPerformanceDate() ?>">
+
+		<hr class="mt-2">
 
 		<div class="mt-3">
 			<h4 class="font-semibold inline-flex items-center" data-fun="togglePredefinedTexts" data-binding="true">

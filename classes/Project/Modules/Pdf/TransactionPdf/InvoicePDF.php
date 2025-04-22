@@ -1,43 +1,31 @@
 <?php
 
-namespace Classes\Project\Modules\Pdf;
+namespace Classes\Project\Modules\Pdf\TransactionPdf;
 
 use Classes\Project\Invoice;
-use Classes\Project\Auftrag;
-use Classes\Project\Kunde;
 
-class InvoicePDF extends PDFGenerator
+class InvoicePDF extends TransactionPDF
 {
 
     private Invoice $invoice;
-    private Auftrag $order;
-    private Kunde $customer;
-
-    private int $orderId;
-    private int $invoiceId;
-    private int $address = 0;
 
     public function __construct(int $invoiceId, int $orderId)
     {
-        parent::__construct("Rechnung " . $invoiceId);
+        parent::__construct("Rechnung " . $invoiceId, $orderId);
         $this->invoice = new Invoice($invoiceId, $orderId);
-        $this->orderId = $orderId;
+        
         $this->invoiceId = $invoiceId;
-
-        $this->customer = $this->invoice->getCustomer();
-        $this->order = $this->invoice->getOrder();
+        $this->addressId = $this->invoice->getAddressId();
+        $this->contactId = $this->invoice->getContactId();
     }
 
     public function generate($store = false)
     {
-        /* header and footer */
         $this->setPrintHeader(false);
-        //$pdf->setPrintFooter(false);
 
-        $this->SetTitle('Rechnung für ' . $this->customer->getFirmenname() . " " . $this->customer->getName());
-        $this->SetSubject('Angebot');
-        $this->SetKeywords('pdf, angebot');
-        //$pdf->SetAutoPageBreak(true, 35);
+        $this->SetTitle("Rechnung für " . $this->customer->getFirmenname() . " " . $this->customer->getName());
+        $this->SetSubject("Rechnung");
+        $this->SetKeywords("Rechnung");
 
         $this->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
         $this->SetFooterMargin(PDF_MARGIN_FOOTER);
@@ -184,11 +172,6 @@ class InvoicePDF extends PDFGenerator
         $this->Output();
     }
 
-    /**
-     * fügt einen Tabellenkopf und die allgemeinen Rechnungsdaten ein;
-     * @param \TCPDF &$pdf Refernz auf PDF Variable
-     * @param int $y Abstand zu oben, Standard ist 45, damit die erste Seite richtig generiert wird
-     */
     private function addTableHeader($y = 45)
     {
         $this->SetFont("helvetica", "", 12);
@@ -217,31 +200,6 @@ class InvoicePDF extends PDFGenerator
         $this->Cell(20, 10, 'E-Preis', 'B');
         $this->Cell(20, 10, 'G-Preis', 'B');
         $this->SetFont("helvetica", "", 12);
-    }
-
-    private function fillAddress()
-    {
-        $lineheight = 10;
-        $this->setXY(25, 25);
-
-        $firma = $this->customer->getFirmenname();
-        $name = $this->customer->getName();
-        $hausnr = $this->customer->getHausnummer($this->address);
-        $strasse = $this->customer->getStrasse($this->address);
-        $plz = $this->customer->getPostleitzahl($this->address);
-        $ort = $this->customer->getOrt($this->address);
-
-        if ($firma != null || $firma != "") {
-            $this->Cell(85, $lineheight, $firma);
-            $this->ln(5);
-        }
-        if ($this->customer->getNachname() != "" && $this->customer->getVorname() != "") {
-            $this->Cell(85, $lineheight, $name);
-            $this->ln(5);
-        }
-        $this->Cell(85, $lineheight, $strasse . " " . $hausnr);
-        $this->ln(5);
-        $this->Cell(85, $lineheight, $plz . " " . $ort);
     }
 
     private function ohneBerechnungBtn(&$height, &$lineheight, &$p)

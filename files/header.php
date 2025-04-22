@@ -78,6 +78,7 @@ if ($pageName == "") {
 		|| $page == "angebot"
 		|| $page == "diagramme"
 		|| $page == "login"
+		|| $page == "leistungen"
 		|| $page == "neues-produkt"
 		|| $page == "neuer-kunde"
 		|| $page == "produkt"
