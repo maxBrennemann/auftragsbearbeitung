@@ -1,4 +1,4 @@
-import { notification } from "../notifications.js";
+import { notification } from "../classes/notifications.js";
 
 export default class ProductConnector {
 

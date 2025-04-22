@@ -1231,12 +1231,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/maxBrennemann/php-utilities.git",
-                "reference": "669d9e53ed228fe9c9f324c312b47045ff746289"
+                "reference": "b9baaeb594004375574651054a6f99ae3684ed8b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/maxBrennemann/php-utilities/zipball/669d9e53ed228fe9c9f324c312b47045ff746289",
-                "reference": "669d9e53ed228fe9c9f324c312b47045ff746289",
+                "url": "https://api.github.com/repos/maxBrennemann/php-utilities/zipball/b9baaeb594004375574651054a6f99ae3684ed8b",
+                "reference": "b9baaeb594004375574651054a6f99ae3684ed8b",
                 "shasum": ""
             },
             "default-branch": true,
@@ -1256,7 +1256,7 @@
                 "source": "https://github.com/maxBrennemann/php-utilities/tree/main",
                 "issues": "https://github.com/maxBrennemann/php-utilities/issues"
             },
-            "time": "2024-11-07T07:36:34+00:00"
+            "time": "2025-04-22T16:37:25+00:00"
         },
         {
             "name": "monolog/monolog",

@@ -130,4 +130,43 @@ class Config
 
         return $companyDetails;
     }
+
+    private static function getFilesInfoByPath(string $path, array &$data)
+    {
+        $fi = new \FilesystemIterator($path , \FilesystemIterator::SKIP_DOTS);
+        $data["count"] += iterator_count($fi);
+        foreach ($fi as $file) {
+            if ($file->isDir()) {
+                continue;
+            }
+            if ($file->getFilename() === ".gitkeep") {
+                continue;
+            }
+            $data["size"] += $file->getSize();
+        }
+    }
+
+    public static function getFilesInfo()
+    {
+        $paths = [
+            "upload/",
+            "files/generated/fb_export",
+            "files/generated/invoice",
+            "files/generated/sql_backups",
+            "files/generated/",
+        ];
+        $data = [
+            "count" => 0,
+            "size" => 0,
+        ];
+
+        foreach ($paths as $path) {
+            self::getFilesInfoByPath($path, $data);
+        }
+
+        JSONResponseHandler::sendResponse([
+            "count" => $data["count"],
+            "size" => ceil($data["size"] / 1000000)
+        ]);
+    }
 }

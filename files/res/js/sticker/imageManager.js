@@ -1,4 +1,4 @@
-import { notification } from "../notifications.j";
+import { notification } from "../classes/notifications.j";
 
 const svgContainer = document.getElementById("svgContainer");
 const motivId = document.getElementById("motivId")?.innerHTML;

@@ -9,9 +9,11 @@ class SettingsRoutes extends Routes
 
     /**
      * @uses Classes\Project\Icon::ajaxIcon()
+     * @uses Classes\Project\Config::getFilesInfo()
      */
     protected static $getRoutes = [
         "/settings/icon/{name}" => [\Classes\Project\Icon::class, "ajaxIcon"],
+        "/settings/files/info" => [\Classes\Project\Config::class, "getFilesInfo"],
     ];
 
     /**

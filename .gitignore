@@ -36,9 +36,9 @@ files/generated/invoice/*
 files/generated/fb_export/*
 !files/generated/fb_export/.gitkeep
 
-files/res/js/tableconfig.js
-files/res/js/colorpicker.js
-files/res/js/notifications.js
+files/res/js/classes/tableconfig.js
+files/res/js/classes/colorpicker.js
+files/res/js/classes/notifications.js
 
 # minimized files
 files/res/js/min/*

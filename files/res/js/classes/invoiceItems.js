@@ -1,7 +1,7 @@
 import { getTemplate, setInpupts } from "../global.js";
 import { ajax } from "./ajax.js";
 import { addBindings } from "./bindings.js";
-import { notification } from "../notifications.js";
+import { notification } from "./notifications.js";
 import { addRow, renderTable } from "./table.js";
 
 const config = {

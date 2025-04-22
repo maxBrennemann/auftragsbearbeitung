@@ -57,19 +57,19 @@ if ($showUserList) : ?>
         <p class="font-bold">Benutzerdaten</p>
         <label>
             <p>Nutzername</p>
-            <input type="text" value="<?=$user->getUsername()?>" class="input-primary-new w-80" id="username" autocomplete="off" aria-autocomplete="none">
+            <input type="text" value="<?=$user->getUsername()?>" class="input-primary w-80" id="username" autocomplete="off" aria-autocomplete="none">
         </label>
         <label>
             <p>Vorname</p>
-            <input type="text" value="<?=$user->getPrename()?>" class="input-primary-new w-80" id="prename" autocomplete="off" aria-autocomplete="none">
+            <input type="text" value="<?=$user->getPrename()?>" class="input-primary w-80" id="prename" autocomplete="off" aria-autocomplete="none">
         </label>
         <label>
             <p>Nachname</p>
-            <input type="text" value="<?=$user->getLastname()?>" class="input-primary-new w-80" id="lastname" autocomplete="off" aria-autocomplete="none">
+            <input type="text" value="<?=$user->getLastname()?>" class="input-primary w-80" id="lastname" autocomplete="off" aria-autocomplete="none">
         </label>
         <label>
             <p>Email</p>
-            <input type="text" value="<?=$user->getEmail()?>" class="input-primary-new w-80" id="email" autocomplete="off" aria-autocomplete="none">
+            <input type="text" value="<?=$user->getEmail()?>" class="input-primary w-80" id="email" autocomplete="off" aria-autocomplete="none">
         </label>
         <div class="mt-2">
             <button class="btn-cancel">Abbrechen</button>
@@ -80,7 +80,7 @@ if ($showUserList) : ?>
         <p class="font-bold">Arbeitszeiten</p>
         <div>
             <p>Maximale Arbeitszeit</p>
-            <input type="number" value="" class="input-primary-new">
+            <input type="number" value="" class="input-primary">
             <button class="btn-primary-new">Speichern</button>
         </div>
     </div>

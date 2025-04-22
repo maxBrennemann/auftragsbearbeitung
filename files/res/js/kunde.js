@@ -1,8 +1,8 @@
 import { addRow, createHeader, createTable, fetchAndRenderTable, renderTable } from "./classes/table.js";
-import { tableConfig } from "./tableconfig.js";
+import { tableConfig } from "./classes/tableconfig.js";
 import { initBindings } from "./classes/bindings.js";
 import { ajax } from "./classes/ajax.js";
-import { notification } from "./notifications.js";
+import { notification } from "./classes/notifications.js";
 
 const customerData = {
     id: document.getElementById("idCustomer")?.value ?? 0,

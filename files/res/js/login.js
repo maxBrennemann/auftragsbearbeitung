@@ -70,7 +70,6 @@ const autoLogin = async () => {
         setTimeout(function () {
             document.getElementById("autologinStatus").innerHTML = "Bitte geben Sie Ihre Zugangsdaten ein.";
             document.getElementById("spinningStatus").classList.add("hidden");
-            document.getElementById("spinningStatus").classList.remove("lds-ring");
         }, 1000);
     }
 }

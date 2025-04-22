@@ -44,12 +44,12 @@
     <div class="defCont">
         <h1 class="font-semibold">Neues Motiv hinzufügen</h1>
         <div class="flex flex-wrap">
-            <input type="text" id="newTitle" class="input-primary-new">
+            <input type="text" id="newTitle" class="input-primary">
             <button type="submit" data-binding="true" data-fun="createNewSticker" class="btn-primary-new ml-2">Hinzufügen</button>
         </div>
         <h1 class="font-semibold">Altes Motiv aus Shop laden</h1>
         <div class="flex flex-wrap">
-            <input type="text" id="oldLink" class="input-primary-new">
+            <input type="text" id="oldLink" class="input-primary">
             <button type="submit" data-binding="true" data-fun="loadSticker" class="btn-primary-new ml-2">Laden</button>
         </div>
     </div>

@@ -6,7 +6,7 @@ import { addExistingVehicle, addNewVehicle, selectVehicle } from "./auftrag/vehi
 import "./auftrag/calculateGas.js";
 import { ajax } from "./classes/ajax.js";
 import { getItemsTable, initInvoiceItems } from "./classes/invoiceItems.js";
-import { notification } from "./notifications.js";
+import { notification } from "./classes/notifications.js";
 
 /* global variables */
 window.globalData = {

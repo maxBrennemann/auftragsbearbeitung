@@ -1,4 +1,4 @@
-import { notification } from "../notifications.js";
+import { notification } from "../classes/notifications.js";
 
 /* adds file upload class to every form with that class */
 var fileUploaders;

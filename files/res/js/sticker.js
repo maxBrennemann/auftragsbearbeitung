@@ -7,7 +7,7 @@ import { initBindings } from "./classes/bindings.js";
 import "./sticker/imageMove.js";
 import { ajax } from "./classes/ajax.js";
 import initTagManager from "./sticker/tagManager.js";
-import { notification } from "./notifications.js";
+import { notification } from "./classes/notifications.js";
 
 const fnNames = {
     click_makeColorable: click_makeColorable,

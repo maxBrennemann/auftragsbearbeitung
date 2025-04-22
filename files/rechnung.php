@@ -43,7 +43,7 @@ if ($target == "create"): ?>
 		<?php if ($invoiceAddresses == null || empty($invoiceAddresses)): ?>
 			<i>Keine Rechnungsadressen vorhanden oder unvollständig. Bei Bedarf <a href="<?= Link::getPageLink("kunde") . "?id=" . $auftrag->getKundennummer() ?>" class="link-primary">beim Kunden</a> ergänzen.</i>
 		<?php else: ?>
-			<select id="addressId" class="input-primary-new w-72" data-binding="true" data-fun="selectAddress">
+			<select id="addressId" class="input-primary w-72" data-binding="true" data-fun="selectAddress">
 				<?php foreach ($invoiceAddresses as $i => $r): ?>
 					<option value="<?= $i ?>"><?= $r ?></option>
 				<?php endforeach; ?>
@@ -54,7 +54,7 @@ if ($target == "create"): ?>
 		<?php if ($invoiceContacts == null || empty($invoiceContacts)): ?>
 			<i>Keine Ansprechpartner vorhanden. Bei Bedarf <a href="<?= Link::getPageLink("kunde") . "?id=" . $auftrag->getKundennummer() ?>" class="link-primary">beim Kunden</a> ergänzen.</i>
 		<?php else: ?>
-			<select id="contactId" class="input-primary-new w-72" data-binding="true" data-fun="selectContact">
+			<select id="contactId" class="input-primary w-72" data-binding="true" data-fun="selectContact">
 				<?php foreach ($invoiceContacts as $i => $r): ?>
 					<option value="<?= $i ?>"><?= $r ?></option>
 				<?php endforeach; ?>
@@ -62,9 +62,9 @@ if ($target == "create"): ?>
 		<?php endif; ?>
 
 		<p class="mt-2">Rechnungsdatum festlegen</p>
-		<input type="date" data-write="true" data-fun="invoiceDate" class="input-primary-new" value="<?= $invoice->getCreationDate() ?>">
+		<input type="date" data-write="true" data-fun="invoiceDate" class="input-primary" value="<?= $invoice->getCreationDate() ?>">
 		<p class="mt-2">Leistungsdatum festlegen</p>
-		<input type="date" data-write="true" data-fun="serviceDate" class="input-primary-new" value="<?= $invoice->getPerformanceDate() ?>">
+		<input type="date" data-write="true" data-fun="serviceDate" class="input-primary" value="<?= $invoice->getPerformanceDate() ?>">
 
 		<hr class="mt-2">
 
@@ -84,7 +84,7 @@ if ($target == "create"): ?>
 					<?php endforeach; ?>
 				</div>
 				<div class="my-2">
-					<input id="newText" class="input-primary-new">
+					<input id="newText" class="input-primary">
 					<button data-binding="true" data-fun="addText" class="btn-primary-new">Hinzufügen</button>
 				</div>
 			</div>

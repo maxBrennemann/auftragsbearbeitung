@@ -1,5 +1,5 @@
 import { ajax } from "../classes/ajax.js";
-import { notification } from "../notifications.js";
+import { notification } from "../classes/notifications.js";
 
 export async function setOrderFinished() {
     if (confirm('Möchtest Du den Auftrag als "Erledigt" markieren?')) {

@@ -392,7 +392,7 @@ if ($id == 0): ?>
         <?=$stickerTagManager->getTagsHTML()?>
     </div>
     <div class="my-2">
-        <input type="text" class="input-primary-new" maxlength="32" id="tagInput" placeholder="Tag eingeben">
+        <input type="text" class="input-primary" maxlength="32" id="tagInput" placeholder="Tag eingeben">
         <button type="button" class="btn-primary-new" id="addNewTag" title="Mit Hashtag oder Button hinzufügen">Hinzufügen</button>
         <p class="italic">Nicht erlaubt sind folgende Zeichen: !<;>;?=+#"°{}_$%.</p>
     </div>

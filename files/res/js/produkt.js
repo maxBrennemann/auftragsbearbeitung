@@ -1,6 +1,6 @@
 import { ajax } from "./classes/ajax.js";
 import { createFileUpload } from "./classes/upload.js";
-import { notification } from "./notifications.js";
+import { notification } from ".classes/notifications.js";
 
 /* global variables for attribute selection */
 var attributes = {};

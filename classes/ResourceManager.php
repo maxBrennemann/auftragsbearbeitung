@@ -261,14 +261,14 @@ class ResourceManager
         header('Content-Type: text/javascript');
 
         /* workaround for colorpicker and other packages */
-        if ($script == "/colorpicker.js") {
-            echo file_get_contents("node_modules/colorpicker/min/colorpicker.js");
+        if ($script == "/classes/colorpicker.js") {
+            echo file_get_contents("node_modules/colorpicker/colorpicker.js");
             return;
         }
 
-        if ($script == "/notifications.js") {
-            echo file_get_contents("node_modules/js-classes/notifications.js");
-            return;
+        if ($script == "/classes/notifications.js") {
+            //echo file_get_contents("node_modules/js-classes/notifications.js");
+            //return;
         }
 
         /* tableconfig.js */
