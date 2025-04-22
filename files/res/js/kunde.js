@@ -2,7 +2,7 @@ import { addRow, createHeader, createTable, fetchAndRenderTable, renderTable } f
 import { tableConfig } from "./tableconfig.js";
 import { initBindings } from "./classes/bindings.js";
 import { ajax } from "./classes/ajax.js";
-import { infoSaveSuccessfull } from "./classes/statusInfo.js";
+import { notification } from "./notifications.js";
 
 const customerData = {
     id: document.getElementById("idCustomer")?.value ?? 0,
@@ -47,7 +47,7 @@ fnNames.click_rearchive = async e => {
     });
 
     if (response.status == "success") {
-        infoSaveSuccessfull("success");
+        notification("", "success");
 
         const orderCard = target.closest(".orderCard");
         const options = orderCard.querySelectorAll(".orderOptions");
@@ -73,7 +73,7 @@ fnNames.click_saveCustomerData = () => {
         "fax": document.getElementById("fax").value,
     }).then(r => {
         if (r.message == "OK") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         }
     });
 }
@@ -84,7 +84,7 @@ fnNames.write_setCustomerNote = async e => {
         "note": value,
     });
     if (r.message == "OK") {
-        infoSaveSuccessfull("success");
+        notification("", "success");
     }
 }
 

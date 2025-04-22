@@ -1,37 +1,3 @@
-/* https://stackoverflow.com/questions/14226803/wait-5-seconds-before-executing-next-line */
-const delay = ms => new Promise(res => setTimeout(res, ms));
-
-/* function shows an info text about the update status of an ajax query */
-export function infoSaveSuccessfull(status = "failiure", errorMessage = "") {
-    var statusClass = "";
-    var text = "";
-
-    switch (status) {
-        case "success":
-            statusClass = "showSuccess";
-            text = "Speichern erfolgreich!";
-            break;
-        case "failiure":
-        default:
-            statusClass = "showFailure";
-            text = "Speichern hat nicht geklappt!";
-            break;
-    }
-
-    let div = document.createElement("div");
-    div.innerHTML = text;
-    div.classList.add(statusClass);
-    document.body.appendChild(div);
-
-    setTimeout(function () {
-        div.classList.add("hidden");
-    }, 1000);
-
-    setTimeout(function () {
-        div.parentNode.removeChild(div);
-    }, 2000);
-}
-
 class StatusInfoBox {
 
     constructor(type, message = "") {
@@ -218,17 +184,4 @@ export class StatusInfoHandler {
         return infoBox;
     }
 
-}
-
-function testInfo() {
-    const infoHandler = new StatusInfoHandler();
-    const infoBox = infoHandler.addInfoBox(StatusInfoHandler.TYPE_ERRORCOPY, "wird übertragen");
-
-    ajax.post({
-        r: "testString",
-    }).then(response => {
-        infoBox.statusUpdate(StatusInfoHandler.STATUS_FAILURE, "custom message", "doofer fehler");
-    }).catch(error => {
-        infoBox.statusUpdate(StatusInfoHandler.STATUS_FAILURE, "error");
-    });
 }

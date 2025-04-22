@@ -2,6 +2,7 @@ import { ajax } from "./classes/ajax.js";
 import { initBindings } from "./classes/bindings.js";
 import { createHeader, createTable, addRow, fetchAndRenderTable } from "./classes/table.js";
 import { tableConfig } from "./tableconfig.js";
+import { notification } from "./notifications.js";
 
 const fnNames = {};
 
@@ -53,7 +54,7 @@ const timeTracking = () => {
     switchTimeTracking.addEventListener("change", () => {
         ajax.put("/api/v1/settings/global-timetracking").then(r => {
             if (r.status == "success") {
-                infoSaveSuccessfull("success");
+                notification("", "success");
                 const el = document.getElementById("timeTrackingContainer");
                 if (r.display == "false") {
                     el.classList.add("hidden");
@@ -63,7 +64,7 @@ const timeTracking = () => {
                     el.classList.add("inline-flex");
                 }
             } else {
-                infoSaveSuccessfull("failiure")
+                notification("", "failure");
             }
         });
     });
@@ -87,7 +88,7 @@ function addCategory() {
     const parentCategory = document.getElementById("parentCategory").value;
 
     if (newCategory === "") {
-        infoSaveSuccessfull("error");
+        notification("", "failure");
         return;
     }
 
@@ -98,11 +99,11 @@ function addCategory() {
         clearInputs({ "id": "newCategory" });
 
         if (r.status !== "success") {
-            infoSaveSuccessfull("error");
+            notification("", "failure");
             return;
         }
 
-        infoSaveSuccessfull("success");
+        notification("", "success");
     });
 }
 
@@ -116,7 +117,7 @@ function editCategory() {
         parent: newParent,
     }).then(r => {
         if (r.message == "ok") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         }
     });
 }
@@ -157,7 +158,7 @@ fnNames.write_toggleCache = (e) => {
         "status": value,
     }).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         }
     });
 }
@@ -170,7 +171,7 @@ fnNames.write_toggleMinify = (e) => {
         "status": value,
     }).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         }
     });
 }
@@ -178,7 +179,7 @@ fnNames.write_toggleMinify = (e) => {
 fnNames.click_deleteCache = () => {
     ajax.delete(`/api/v1/settings/cache`).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         }
     });
 }
@@ -192,9 +193,9 @@ fnNames.write_changeSetting = e => {
         "value": value,
     }).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         } else {
-            infoSaveSuccessfull("failure");
+            notification("", "failure");
         }
     });
 }
@@ -233,7 +234,7 @@ function getFileName() {
         document.getElementById("download_db").click();
 
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         }
     });
 }

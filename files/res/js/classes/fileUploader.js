@@ -1,3 +1,5 @@
+import { notification } from "../notifications.js";
+
 /* adds file upload class to every form with that class */
 var fileUploaders;
 export function initializeFileUpload() {
@@ -51,7 +53,7 @@ FileUploader.prototype.initHTML = function() {
 		const upload = this.upload();
 		upload.then(result => {
 				this.resetUploader();
-				infoSaveSuccessfull("success");
+				notification("", "success");
 			}).catch((e) => {
 				console.log(e);
 			});

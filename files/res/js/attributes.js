@@ -1,4 +1,5 @@
 import { ajax } from "./classes/ajax.js";
+import { notification } from "./notifications.js";
 
 let currentDraggedGroup = null;
 let currentDraggedElement = null;
@@ -73,7 +74,7 @@ function updatePositions() {
     ajax.put(`/api/v1/attribute/${currentDraggedGroup.dataset.id}/positions`, {
         positions: JSON.stringify(positions),
     }).then(() => {
-        infoSaveSuccessfull("success");
+        notification("", "success");
     }).catch((error) => {
         console.error(error);
     });
@@ -87,7 +88,7 @@ function addNewAttribute() {
         name: name,
         descr: descr,
     }).then(() => {
-        infoSaveSuccessfull("success");
+        notification("", "success");
 
         /* adds new attribute container to top */
         var div = document.createElement("div");

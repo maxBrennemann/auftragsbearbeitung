@@ -1,9 +1,10 @@
 import { DeviceDetector } from "./classes/deviceDetector.js";
 import { TableSorter, currentTableSorter, setTableSorter, sortTableNew } from "./classes/tableSorter.js";
-import { StatusInfoHandler, infoSaveSuccessfull } from "./classes/statusInfo.js";
+import { StatusInfoHandler } from "./classes/statusInfo.js";
 import { FileUploader } from "./classes/fileUploader.js";
 import { AjaxCall, ajax, makeAsyncCall } from "./classes/ajax.js";
 import { timeGlobalListener } from "./classes/timetracking.js";
+import { notification } from "./notifications.js";
 
 /**
  * function is called when the page is loaded,
@@ -16,7 +17,6 @@ function exportToWindow() {
 	window.setTableSorter = setTableSorter;
 	window.sortTableNew = sortTableNew;
 	window.StatusInfoHandler = StatusInfoHandler;
-	window.infoSaveSuccessfull = infoSaveSuccessfull;
 	window.FileUploader = FileUploader;
 	window.AjaxCall = AjaxCall;
 	window.ajax = ajax;

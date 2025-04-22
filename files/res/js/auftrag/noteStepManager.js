@@ -1,4 +1,5 @@
 import { ajax } from "../classes/ajax.js";
+import { notification } from "../notifications.js";
 
 export function initNotes() {
     const nodeContainer = document.getElementById("noteContainer");
@@ -79,7 +80,7 @@ function updateNote(e) {
         data: data
     }).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         }
     });
 }
@@ -179,7 +180,7 @@ export function sendNote() {
         "title": title,
         "note": content
     }).then(r => {
-        infoSaveSuccessfull("success");
+        notification("", "success");
         displayNotes([{
                 "title": title,
                 "note": content,
@@ -212,7 +213,7 @@ export function removeNote(event) {
     const id = event.target.parentNode.querySelector(".noteTitle").dataset.id;
     ajax.delete(`/api/v1/notes/${id}`).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
             const noteContainer = event.target.parentNode;
             noteContainer.parentNode.removeChild(noteContainer);
         }

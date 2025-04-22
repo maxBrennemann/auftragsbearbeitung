@@ -1,5 +1,6 @@
 import { ajax } from "./classes/ajax.js";
 import { initBindings } from "./classes/bindings.js";
+import { notification } from "./notifications.js";
 
 const functionNames = {};
 
@@ -50,10 +51,10 @@ functionNames.click_addText = () => {
         "text": document.getElementById("newText").value,
     }).then(r => {
         if (r.status !== "success") {
-            infoSaveSuccessfull("failiure", r.message);
+            notification("", "failiure", r.message);
             return;
         }
-        infoSaveSuccessfull("success");
+        notification("", "success");
 
         const newText = document.createElement("p");
         newText.className = "invoiceTexts bg-blue-200 rounded-xl cursor-pointer p-3 select-none";
@@ -79,10 +80,10 @@ const toggleText = e => {
         "text": target.innerText,
     }).then(r => {
         if (r.status !== "success") {
-            infoSaveSuccessfull("failiure", r.message);
+            notification("", "failiure", r.message);
             return;
         }
-        infoSaveSuccessfull("success");
+        notification("", "success");
 
         target.dataset.active = target.dataset.active == "1" ? "0" : "1";
         if (r.id) {
@@ -101,10 +102,10 @@ functionNames.write_invoiceDate = e => {
         "date": date,
     }).then(r => {
         if (r.status !== "success") {
-            infoSaveSuccessfull("failiure", r.message);
+            notification("", "failiure", r.message);
             return;
         }
-        infoSaveSuccessfull("success");
+        notification("", "success");
 
         getPDF();
     });
@@ -116,10 +117,10 @@ functionNames.write_serviceDate = e => {
         "date": date,
     }).then(r => {
         if (r.status !== "success") {
-            infoSaveSuccessfull("failiure", r.message);
+            notification("", "failiure", r.message);
             return;
         }
-        infoSaveSuccessfull("success");
+        notification("", "success");
 
         getPDF();
     });
@@ -130,10 +131,10 @@ functionNames.click_completeInvoice = () => {
         "orderId": config.orderId,
     }).then(r => {
         if (r.status !== "success") {
-            infoSaveSuccessfull("failiure", r.message);
+            notification("", "failiure", r.message);
             return;
         }
-        infoSaveSuccessfull("success");
+        notification("", "success");
     });
 }
 
@@ -145,10 +146,10 @@ functionNames.click_selectAddress = e => {
         "addressId": addressId,
     }).then(r => {
         if (r.message !== "OK") {
-            infoSaveSuccessfull("failiure", r.message);
+            inotification("", "failiure", r.message);
             return;
         }
-        infoSaveSuccessfull("success");
+        notification("", "success");
 
         getPDF();
     });
@@ -162,10 +163,10 @@ functionNames.click_selectContact = e => {
         "contactId": contactId,
     }).then(r => {
         if (r.message !== "OK") {
-            infoSaveSuccessfull("failiure", r.message);
+            notification("", "failiure", r.message);
             return;
         }
-        infoSaveSuccessfull("success");
+        notification("", "success");
 
         getPDF();
     });

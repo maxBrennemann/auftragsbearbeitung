@@ -1,3 +1,5 @@
+import { notification } from "../notifications.j";
+
 const svgContainer = document.getElementById("svgContainer");
 const motivId = document.getElementById("motivId")?.innerHTML;
 var svg_elem;
@@ -318,7 +320,7 @@ export function deleteImage(e) {
         r: "deleteImage",
     }).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            notification("", result.status);
             const image = document.querySelector(`[data-file-id="${imageId}"]`);
             const imageRow = image.parentNode.parentNode;
             imageRow.parentNode.removeChild(imageRow);
@@ -335,7 +337,7 @@ export function updateImageDescription(e) {
         r: "updateImageDescription",
     }).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            notification("", result.status);
         }
     });
 }

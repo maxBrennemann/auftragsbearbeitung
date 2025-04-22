@@ -1,4 +1,5 @@
 import { StatusInfoHandler } from "../classes/statusInfo.js";
+import { notification } from "../notifications.js";
 
 /* https://www.therogerlab.com/sandbox/pages/how-to-reorder-table-rows-in-javascript?s=0ea4985d74a189e8b7b547976e7192ae.4122809346f6a15e41c9a43f6fcb5fd5 */
 var row;
@@ -85,7 +86,7 @@ function sendPostenOrder(event) {
         order: JSON.stringify(positions),
     }).then(r => {
         if (r.status) {
-            infoSaveSuccessfull(r.status);
+            notification("Bildreihenfolge erfolgreich geändert", r.status);
         } else {
             const infoHandler = new StatusInfoHandler();
             const infoBox = infoHandler.addInfoBox(StatusInfoHandler.TYPE_ERRORCOPY, "wird übertragen");

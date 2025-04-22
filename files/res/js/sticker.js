@@ -7,6 +7,7 @@ import { initBindings } from "./classes/bindings.js";
 import "./sticker/imageMove.js";
 import { ajax } from "./classes/ajax.js";
 import initTagManager from "./sticker/tagManager.js";
+import { notification } from "./notifications.js";
 
 const fnNames = {
     click_makeColorable: click_makeColorable,
@@ -74,10 +75,10 @@ fnNames.click_toggleCheckbox = async function(e) {
         r: "setAufkleberParameter",
     }, true).then(response => {
         if (response == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         } else {
             console.log(response);
-            infoSaveSuccessfull();
+            notification("", "failure");;
         }
     });
 }
@@ -93,7 +94,7 @@ function initTextiles() {
             ajax.post(`/api/v1/sticker/${idSticker}/textile/${id}/toggle`, {
                 status: target.checked,
             }).then(r => {
-                infoSaveSuccessfull(r.status);
+                notification("", r.status);
             });
         });
     }
@@ -114,7 +115,7 @@ function initTextiles() {
             ajax.post(`/api/v1/sticker/${idSticker}/textile/${id}/price`, {
                 price: price,
             }).then(r => {
-                infoSaveSuccessfull(r.status);
+                notification("", r.status);
             });
         });
     }
@@ -156,10 +157,10 @@ function changeDate(e) {
         r: "changeMotivDate",
     }, true).then(response => {
         if (response == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         } else {
             console.log(response);
-            infoSaveSuccessfull();
+            notification("", "failure");;
         }
     });
 }
@@ -172,10 +173,10 @@ function sendTitle(e) {
         r: "setAufkleberTitle",
     }, true).then(r => {
         if (r == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         } else {
             console.log(r);
-            infoSaveSuccessfull();
+            notification("", "failure");;
         }
     });
 }
@@ -249,10 +250,10 @@ fnNames.click_revisedClick = function() {
         r: "toggleRevised",
     }, true).then(response => {
         if (response == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         } else {
             console.log(response);
-            infoSaveSuccessfull();
+            notification("", "failure");;
         }
     });
 }
@@ -328,10 +329,10 @@ fnNames.write_productDescription = function(e) {
         r: "writeProductDescription",
     }, true).then(response => {
         if (response == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         } else {
             console.log(response);
-            infoSaveSuccessfull();
+            notification("", "failure");;
         }
     });
 }
@@ -343,10 +344,10 @@ fnNames.write_speicherort = function(e) {
         r: "writeSpeicherort",
     }, true).then(r => {
         if (r == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         } else {
             console.log(r);
-            infoSaveSuccessfull();
+            notification("", "failure");;
         }
     });
 }
@@ -359,10 +360,10 @@ fnNames.write_additionalInfo = function(e) {
         r: "writeAdditionalInfo",
     }, true).then(r => {
         if (r == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         } else {
             console.log(r);
-            infoSaveSuccessfull();
+            notification("", "failure");;
         }
     });
 }
@@ -406,10 +407,10 @@ function toggleBookmark() {
         r: "toggleBookmark",
     }, true).then(r => {
         if (r == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         } else {
             console.log(r);
-            infoSaveSuccessfull();
+            notification("", "failure");;
         }
     });
 }
@@ -444,9 +445,9 @@ fnNames.write_changeAltTitle = function(e) {
         r: "setAltTitle",
     }).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         } else {
-            infoSaveSuccessfull();
+            notification("", "failure");;
         }
     });
 }
@@ -465,7 +466,7 @@ fnNames.click_toggleProductVisibility = function(e) {
         r: "productVisibility",
     }).then(r => {
         const icon = r.icon;
-        infoSaveSuccessfull(r.status);
+        notification("", r.status);
 
         var template = "";
         if (icon == 0) {
@@ -596,7 +597,7 @@ function setCategories() {
         categories: JSON.stringify(selectedCategories),
         r: "setCategories",
     }).then(r => {
-        infoSaveSuccessfull(r.status);
+        notification("", r.status);
     });
 }
 
@@ -608,7 +609,7 @@ fnNames.click_exportToggle = function(e) {
         export: exportType,
         r: "setExportStatus",
     }).then(() => {
-        infoSaveSuccessfull(isSuccessfull);
+        notification("", isSuccessfull);
     });
 }
 
