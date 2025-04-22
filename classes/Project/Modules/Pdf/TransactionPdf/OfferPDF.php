@@ -1,10 +1,10 @@
 <?php
 
-namespace Classes\Project\Modules\Pdf;
+namespace Classes\Project\Modules\Pdf\TransactionPdf;
 
 use Classes\Project\Angebot;
 
-class OfferPDF extends PDFGenerator
+class OfferPDF extends TransactionPDF
 {
     
     private Angebot $offer;

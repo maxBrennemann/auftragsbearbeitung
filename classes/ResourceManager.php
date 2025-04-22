@@ -13,8 +13,8 @@ use Classes\Project\Table\TableConfig;
 use Classes\Project\Modules\Sticker\Exports\ExportFacebook;
 use Classes\Project\Modules\Sticker\Imports\ImportGoogleSearchConsole;
 
-use Classes\Project\Modules\Pdf\OfferPDF;
-use Classes\Project\Modules\Pdf\InvoicePDF;
+use Classes\Project\Modules\Pdf\TransactionPdf\OfferPDF;
+use Classes\Project\Modules\Pdf\TransactionPdf\InvoicePDF;
 
 class ResourceManager
 {
