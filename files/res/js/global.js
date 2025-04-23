@@ -1,23 +1,14 @@
 import { DeviceDetector } from "./classes/deviceDetector.js";
 import { TableSorter, currentTableSorter, setTableSorter, sortTableNew } from "./classes/tableSorter.js";
-import { FileUploader } from "./classes/fileUploader.js";
-import { AjaxCall, ajax, makeAsyncCall } from "./classes/ajax.js";
+import { ajax, makeAsyncCall } from "./classes/ajax.js";
 import { timeGlobalListener } from "./classes/timetracking.js";
-import { notification } from "./classes/notifications.js";
 
 /**
  * function is called when the page is loaded,
  * workaround for new modules in js
  */
 function exportToWindow() {
-	window.DeviceDetector = DeviceDetector;
-	window.TableSorter = TableSorter;
-	window.currentTableSorter = currentTableSorter;
-	window.setTableSorter = setTableSorter;
 	window.sortTableNew = sortTableNew;
-	window.FileUploader = FileUploader;
-	window.AjaxCall = AjaxCall;
-	window.ajax = ajax;
 	window.makeAsyncCall = makeAsyncCall;
 
 	window.centerAbsoluteElement = centerAbsoluteElement;

@@ -8,8 +8,9 @@ use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 use Classes\Project\Auftragsverlauf;
 
-class Step {
-    
+class Step
+{
+
 	private $istAllgemein = null;
 	private $bezeichnung = null;
 	private $datum = null;
@@ -18,7 +19,8 @@ class Step {
 	private $auftragsnummer = null;
 	private $schrittnummer = null;
 
-	public function __construct($auftragsnummer, $schrittnummer, $bezeichnung, $datum, $priority, $istErledigt) {
+	public function __construct($auftragsnummer, $schrittnummer, $bezeichnung, $datum, $priority, $istErledigt)
+	{
 		$this->auftragsnummer = $auftragsnummer;
 		$this->bezeichnung = $bezeichnung;
 		$this->schrittnummer = $schrittnummer;
@@ -27,20 +29,18 @@ class Step {
 		$this->istErledigt = $istErledigt;
 	}
 
-    public function bearbeiten() {
-        
-    }
- 
-    public function erledigen() {
-        
-    }
+	public function bearbeiten() {}
 
-	public function getHTMLCode() {
+	public function erledigen() {}
+
+	public function getHTMLCode()
+	{
 		$htmlCode = "<div><span>{$this->bezeichnung}</span><br><span>Datum: {$this->datum}</span><br><span>{$this->priority}</span><br><span>{$this->istErledigt}</span></div>";
 		return $htmlCode;
 	}
 
-	public static function insertStep($data) {
+	public static function insertStep($data)
+	{
 		$bez = $data['Bezeichnung'];
 		$dat = $data['Datum'];
 		$pri = $data['Priority'];
@@ -58,16 +58,35 @@ class Step {
 		return $postennummer;
 	}
 
-	public static function updateStep($data) {
+	public static function insertStepAjax()
+	{
+		$data = [];
+		$data["Bezeichnung"] = Tools::get("name");
+		$data["Datum"] = Tools::get("date");
+		$data["Priority"] = Tools::get("priority");
+		$data["Auftragsnummer"] = Tools::get("orderId");
+		$data["hide"] = Tools::get("hide");
+
+		$postenNummer = Step::insertStep($data);
+		$auftrag = new Auftrag($data["Auftragsnummer"]);
+		echo $auftrag->getOpenBearbeitungsschritteTable();
+
+		$assignedTo = strval(Tools::get("assignedTo"));
+		if (strcmp($assignedTo, "none") != 0) {
+			NotificationManager::addNotification( $assignedTo, 1, Tools::get("name"), $postenNummer);
+		}
+	}
+
+	public static function updateStep($data)
+	{
 		$auftragsverlauf = new Auftragsverlauf($data['orderId']);
 		$auftragsverlauf->addToHistory($data['postennummer'], 2, "finished");
 	}
 
-	public  static function deleteStep() {
-		
-	}
+	public  static function deleteStep() {}
 
-	public static function getSteps() {
+	public static function getSteps()
+	{
 		$id = Tools::get("id");
 		$type = Tools::get("type");
 
@@ -90,5 +109,4 @@ class Step {
 			"status" => "success",
 		]);
 	}
-
 }

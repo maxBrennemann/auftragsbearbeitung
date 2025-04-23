@@ -1,6 +1,6 @@
 import { ajax } from "./classes/ajax.js";
 import { initBindings } from "./classes/bindings.js";
-import { notification } from "./classes/classes/notifications.js";
+import { notification } from "./classes/notifications.js";
 
 const functionNames = {};
 

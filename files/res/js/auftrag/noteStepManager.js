@@ -117,20 +117,14 @@ export function addBearbeitungsschritt() {
         assignedTo = e.options[e.selectedIndex].value;
     }
 
-    /* ajax parameter */
-    let params = {
-        getReason: "insertStep",
-        bez: steps[0],
-        datum: steps[1],
-        auftrag: globalData.auftragsId,
-        hide: hide,
-        prio: steps[2],
-        assignedTo: assignedTo
-    };
-
-    var add = new AjaxCall(params, "POST", window.location.href);
-    add.makeAjaxCall(function (response) {
-        document.getElementById("stepTable").innerHTML = response;
+    ajax.post(`/api/v1/notes/step/${globalData.auftragsId}`, {
+        "name": steps[0],
+        "date": steps[1],
+        "hide": hide,
+        "priority": steps[2],
+        "assignedTo": assignedTo,
+    }).then(r => {
+        document.getElementById("stepTable").innerHTML = r.html;
 
         /* clear inputs */
         var tableData = document.getElementsByClassName("bearbeitungsschrittInput");
@@ -139,7 +133,7 @@ export function addBearbeitungsschritt() {
         }
 
         document.getElementById("bearbeitungsschritte").style.display = "none";
-    }.bind(this), false);
+    });
 }
 
 /* addes bearbeitungsschritte */

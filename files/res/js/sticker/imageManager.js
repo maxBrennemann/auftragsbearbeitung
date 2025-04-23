@@ -1,4 +1,5 @@
 import { notification } from "../classes/notifications.j";
+import { ajax } from "../classes/ajax.js";
 
 const svgContainer = document.getElementById("svgContainer");
 const motivId = document.getElementById("motivId")?.innerHTML;

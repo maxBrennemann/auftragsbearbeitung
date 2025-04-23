@@ -1,5 +1,6 @@
 import { ajax } from "./classes/ajax.js";
 import { initBindings } from "./classes/bindings.js";
+import { DeviceDetector } from "./classes/deviceDetector.js";
 
 const fnNames = {};
 
