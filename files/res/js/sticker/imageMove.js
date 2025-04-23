@@ -1,5 +1,4 @@
-import { StatusInfoHandler } from "../classes/statusInfo.js";
-import { notification } from "../classes/notifications.js";
+import { notificatinReplace, notificationLoader } from "../classes/notifications.js";
 
 /* https://www.therogerlab.com/sandbox/pages/how-to-reorder-table-rows-in-javascript?s=0ea4985d74a189e8b7b547976e7192ae.4122809346f6a15e41c9a43f6fcb5fd5 */
 var row;
@@ -81,17 +80,16 @@ function sendPostenOrder(event) {
         positions.push(btns[i].dataset.fileId);
     }
 
+    notificationLoader("image-order", "Wird gespeichert");
+
     ajax.post({
         r: "setImageOrder",
         order: JSON.stringify(positions),
     }).then(r => {
         if (r.status) {
-            notification("Bildreihenfolge erfolgreich geändert", r.status);
+            notificatinReplace("image-order", "Bildreihenfolge erfolgreich geändert", "success");
         } else {
-            const infoHandler = new StatusInfoHandler();
-            const infoBox = infoHandler.addInfoBox(StatusInfoHandler.TYPE_ERRORCOPY, "wird übertragen");
-
-            infoBox.statusUpdate(StatusInfoHandler.STATUS_FAILURE, "Fehler beim Speichern der Reihenfolge", r.messsage);
+            notificatinReplace("image-order", "Fehler beim Speichern der Reihenfolge", "failure");
         }
     });
 }

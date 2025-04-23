@@ -5,19 +5,6 @@
             <p class="font-semibold">Motivexporte</p>
             <button id="createFbExport" data-binding="true" class="btn-primary-new">Facebook Export generieren</button>
         </div>
-        <div class="productLoader" id="crawlAll">
-            <div class="lds-ring" id="loaderCrawlAll">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-            </div>
-            <div>
-                <progress max="1000" value="0" id="productProgress"></progress>
-                <p><span id="currentProgress"></span> von <span id="maxProgress"></span></p>
-                <p id="statusProgress"></p>
-            </div>
-        </div>
         <a href="#" class="link-primary" data-binding="true" data-fun="crawlAll">Alle Produtke vom Shop crawlen</a>
         <br>
         <a href="#" class="link-primary" data-binding="true" data-fun="crawlTags">Alle Tags vom Shop crawlen</a>

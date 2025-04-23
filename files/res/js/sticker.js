@@ -7,7 +7,7 @@ import { initBindings } from "./classes/bindings.js";
 import "./sticker/imageMove.js";
 import { ajax } from "./classes/ajax.js";
 import initTagManager from "./sticker/tagManager.js";
-import { notification } from "./classes/notifications.js";
+import { notificatinReplace, notification, notificationLoader } from "./classes/notifications.js";
 
 const fnNames = {
     click_makeColorable: click_makeColorable,
@@ -195,14 +195,14 @@ function manageTitle() {
 }
 
 fnNames.click_textilClick = function() {
-    const infoHandler = new StatusInfoHandler();
-    const infoBox = infoHandler.addInfoBox(StatusInfoHandler.TYPE_ERRORCOPY, "Wird gespeichert");
+    notificationLoader("textile-click", "Wird gespeichert");
+
     ajax.post({
         id: mainVariables.motivId.innerHTML,
         r: "toggleTextil"
     }).then(r => {
         if (r.status == "success") {
-            infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS);
+            notificatinReplace("textile-click", "", "success");
 
             /* not the best solution, but it works */
             const status = document.getElementById("textil").checked;
@@ -215,19 +215,18 @@ fnNames.click_textilClick = function() {
             }
         }
     }).catch(r => {
-        infoBox.statusUpdate(StatusInfoHandler.STATUS_FAILURE, "Fehler bei der Übertragung", r);
+        notificatinReplace("textile-click", "Fehler bei der Übertragung", "failure", r);
     });
 }
 
 fnNames.click_wandtattooClick = function() {
-    const infoHandler = new StatusInfoHandler();
-    const infoBox = infoHandler.addInfoBox(StatusInfoHandler.TYPE_ERRORCOPY, "Wird gespeichert");
+    notificationLoader("wandtatoo-click", "Wird gespeichert");
     ajax.post({
         id: mainVariables.motivId.innerHTML,
         r: "toggleWandtattoo"
     }).then(r => {
         if (r.status == "success") {
-            infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS);
+            notificatinReplace("wandtatoo-click", "", "success");
 
             /* not the best solution, but it works */
             const status = document.getElementById("wandtattoo").checked;
@@ -240,7 +239,7 @@ fnNames.click_wandtattooClick = function() {
             }
         }
     }).catch(r => {
-        infoBox.statusUpdate(StatusInfoHandler.STATUS_FAILURE, "Fehler bei der Übertragung", r);
+        notificatinReplace("wandtatoo-click", "Fehler bei der Übertragung", "failure", r);
     });
 }
 
@@ -286,8 +285,7 @@ function transfer(type, text) {
         return;
     }
 
-    const infoHandler = new StatusInfoHandler();
-    const infoBox = infoHandler.addInfoBox(StatusInfoHandler.TYPE_LOADER, "Wird gespeichert");
+    notificationLoader("various-click", "Wird gespeichert");
 
     mainVariables.pending = true;
     
@@ -305,14 +303,13 @@ function transfer(type, text) {
     }).then(r => {
         if (r.status == "success") {
             mainVariables.pending = false;
-            infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS, `Übertragung von ${text} erfolgreich`);
+            notificatinReplace("various-click", `Übertragung von ${text} erfolgreich`, "success");
         } else {
             mainVariables.pending = false;
-            infoBox.statusUpdate(StatusInfoHandler.STATUS_SUCCESS, `Übertragung von ${text} erfolgreich`, r.message);
+            notificatinReplace("various-click", `Übertragung von ${text} erfolgreich`, "success");
         }
     }).catch(error => {
-        infoBox.setType(StatusInfoHandler.TYPE_ERRORCOPY);
-        infoBox.statusUpdate(StatusInfoHandler.STATUS_FAILURE, `Übertragung von ${text} fehlgeschlagen`, error);
+        notificatinReplace("various-click", `Übertragung von ${text} fehlgeschlagen`, "failure", error);
     });
 }
 

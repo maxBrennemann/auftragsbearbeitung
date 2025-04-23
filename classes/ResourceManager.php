@@ -267,8 +267,8 @@ class ResourceManager
         }
 
         if ($script == "/classes/notifications.js") {
-            //echo file_get_contents("node_modules/js-classes/notifications.js");
-            //return;
+            echo file_get_contents("node_modules/js-classes/notifications.js");
+            return;
         }
 
         /* tableconfig.js */
