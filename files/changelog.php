@@ -2,6 +2,7 @@
     <nav id="nav" class="innerDefCont">
         <p class="font-bold text-md">Versionen</p>
         <ul id="navUl">
+            <li><a class="link-primary" href="#1.2.0">1.2.0</a></li>
             <li><a class="link-primary" href="#1.1.18">1.1.18</a></li>
             <li><a class="link-primary" href="#1.1.17">1.1.17</a></li>
             <li><a class="link-primary" href="#1.1.16">1.1.16</a></li>
@@ -16,6 +17,22 @@
             <li><a class="link-primary" href="#1.1.7">1.1.7</a></li>
         </ul>
     </nav>
+    <h3 id="1.2.0" class="font-bold my-5">1.2.0</h3>
+    <ul class="list-disc list-inside">
+        <li>Rechnungsstellung überarbeitet</li>
+        <li>Neuer Tabellengenerator</li>
+        <li>Neuer Listengenerator - alte Listen wurden komplett entfernt</li>
+        <li>JavaScript wird nun vollständig über Module eingebunden</li>
+        <li>Integration von TailwindCSS</li>
+        <li>Diverse Fehlerbehebungen</li>
+        <li>Auslagerung von Klassen in eigene Projekte</li>
+        <li>Neues API Design</li>
+        <li>Neue Benachrichtigungen</li>
+        <li>Tabellengenerator und Bulkactions für das Backend</li>
+        <li>CronManager eingeführt</li>
+        <li>Namespaces im Backend eingeführt</li>
+        <li>Neuer TemplateController</li>
+    </ul>
     <h3 id="1.1.18" class="font-bold my-5">1.1.18</h3>
     <ul class="list-disc list-inside">
         <li>Auftragstypen können ergänzt werden</li>

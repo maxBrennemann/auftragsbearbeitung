@@ -10,7 +10,6 @@ use Classes\Project\Icon;
 use Classes\Project\Kunde;
 use Classes\Project\Fahrzeug;
 use Classes\Project\Auftragsverlauf;
-use Classes\Project\Liste;
 use Classes\Project\ClientSettings;
 use Classes\Project\Color;
 use Classes\Project\TemplateController;
@@ -44,8 +43,6 @@ if ($orderId <= 0): ?>
 
 	$showFiles = Auftrag::getFiles($orderId);
 	$auftragsverlauf = (new Auftragsverlauf($orderId))->representHistoryAsHTML();
-	$showLists = Liste::chooseList();
-	$showAttachedLists = $auftrag->showAttachedLists();
 	$contactPersons = $auftrag->getContactPersons();
 
 	$auftragsTyp = $auftrag->getAuftragstyp();
@@ -372,14 +369,8 @@ if ($orderId <= 0): ?>
 		<div class="defCont verlauf">
 			<p class="font-bold" data-binding="true" data-fun="showAuftragsverlauf">Auftragsverlauf anzeigen</p>
 			<?= $auftragsverlauf ?>
-			<br>
-			<button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none" onclick="addList();">Liste hinzufügen</button><button class="infoButton" data-info="2">i</button>
-			<div class="defCont" id="listauswahl" style="display: none;">
-				<?= $showLists ?>
-			</div>
-		</div>
-		<div class="liste">
-			<?= $showAttachedLists ?>
+			<button class="btn-primary-new mt-2" data-binding="true" data-fun="addList">Liste hinzufügen</button>
+			<button class="infoButton ml-1" data-info="2">i</button>
 		</div>
 		<template id="templateFarbe">
 			<div class="defCont">

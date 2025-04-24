@@ -566,39 +566,6 @@ class Auftrag implements StatisticsInterface
 		]);
 	}
 
-	/*
-	 * adds a list to the order
-	 * lists can be edited
-	*/
-	public function addList($listId)
-	{
-		DBAccess::insertQuery("INSERT INTO auftrag_liste (auftrags_id, listen_id) VALUES ({$this->Auftragsnummer}, $listId)");
-	}
-
-	/*
-	 * removes a list, later the saved list data has to be removed as well
-	 * TODO: implement data deletion
-	*/
-	public function removeList($listId)
-	{
-		DBAccess::deleteQuery("DELETE FROM auftrag_liste WHERE auftrags_id = {$this->Auftragsnummer} AND listen_id = $listId");
-	}
-
-	public function getListIds()
-	{
-		return DBAccess::selectQuery("SELECT listen_id FROM auftrag_liste WHERE auftrags_id = {$this->Auftragsnummer}");
-	}
-
-	public function showAttachedLists()
-	{
-		$listenIds = self::getListIds();
-		$html = "";
-		foreach ($listenIds as $id) {
-			$html .= (Liste::readList($id['listen_id']))->toHTML($this->Auftragsnummer);
-		}
-		return $html;
-	}
-
 	/**
 	 * adds a new order to the database by using the data from the form,
 	 * which is sent by the client;
