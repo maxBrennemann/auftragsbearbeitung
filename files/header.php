@@ -137,7 +137,7 @@ if ($pageName == "") {
 			<div class="inline-flex flex-wrap">
 				<?= insertTemplate("files/res/views/searchView.php") ?>
 				<div class="inline-flex ml-1">
-					<div class="notificationContainer inline-flex items-center p-1 hover:bg-gray-200 hover:rounded-sm relative text-gray-700">
+					<div class="inline-flex items-center p-1 hover:bg-gray-200 hover:rounded-sm relative text-gray-700 cursor-pointer" data-binding="true" data-fun="showNotifications">
 						<?php if (NotificationManager::getNotificationCount() > 0): ?>
 							<div title="Benachrichtigungen" class="absolute top-[6px] right-0">
 								<div class="w-3 h-3">
@@ -155,7 +155,7 @@ if ($pageName == "") {
 						</a>
 					</div>
 					<div class="logoutContainer inline-flex items-center text-gray-700">
-						<span id="logoutBtn" title="Ausloggen" class="inline-block p-1 hover:bg-gray-200 hover:rounded-sm">
+						<span data-binding="true" data-fun="logout" title="Ausloggen" class="inline-block p-1 hover:bg-gray-200 hover:rounded-sm">
 							<?= Icon::getDefault("iconLogout") ?>
 						</span>
 					</div>
@@ -168,7 +168,7 @@ if ($pageName == "") {
 			</div>
 		</div>
 		<div class="hamburgerDiv cursor-pointer">
-			<input type="checkbox" id="hamburg" onclick="toggleNav()">
+			<input type="checkbox" id="hamburg" data-fun="toggleNav" data-binding="true">
 			<label for="hamburg" class="hamburg cursor-pointer" title="Menü anzeigen">
 				<span class="line"></span>
 				<span class="line"></span>

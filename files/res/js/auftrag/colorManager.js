@@ -1,5 +1,6 @@
 import { ajax } from "../classes/ajax.js";
 import { Colorpicker } from "../classes/colorpicker.js";
+import { createPopup } from "../global.js";
 
 var cp = null;
 const addToOrderColors = [];
@@ -10,8 +11,6 @@ export function addColor() {
     div.id = "selectColor";
 	div.appendChild(template.content.cloneNode(true));
     div.classList.add("w-2/3");
-    
-    document.body.appendChild(div);
 
     cp = new Colorpicker(div.querySelector("#cpContainer"));
     const c = div.querySelector("canvas");
@@ -25,8 +24,7 @@ export function addColor() {
     const sendColorBtn = div.querySelector('[data-fun="sendColor"]');
     sendColorBtn.addEventListener("click", sendColor, false);
 
-    addActionButtonForDiv(div, "remove");
-    centerAbsoluteElement(div);
+    createPopup(div);
 }
 
 const colorPanelMouseUp = () => {
@@ -65,10 +63,7 @@ export function toggleCS() {
 	div.appendChild(template.content.cloneNode(true));
     div.classList.add("w-2/3");
 
-    document.body.appendChild(div);
-    
-    addActionButtonForDiv(div, "remove");
-    centerAbsoluteElement(div);
+    createPopup(div);
 
     const sendColorsBtn = div.querySelector('[data-fun="addSelectedColors"]');
     sendColorsBtn.addEventListener("click", addSelectedColors, false);

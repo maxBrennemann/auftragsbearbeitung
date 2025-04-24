@@ -3,6 +3,7 @@ import { ajax } from "./classes/ajax.js";
 import { renderTable } from "./classes/table.js";
 import { tableConfig } from "./classes/tableconfig.js";
 import { notification } from "./classes/notifications.js";
+import { createPopup } from "./global.js";
 
 const fnNames = {};
 
@@ -130,7 +131,6 @@ fnNames.click_openTagOverview = () => {
     ajax.get(`/api/v1/sticker/tags/overview`).then(tags => {
         const div = document.createElement("div");
         div.classList.add("absolute", "bg-white", "border", "border-black", "p-2", "rounded-lg", "shadow-lg", "z-20");
-        document.body.appendChild(div);
 
         tags.forEach(tag => {
             const tagElement = document.createElement("div");
@@ -139,7 +139,7 @@ fnNames.click_openTagOverview = () => {
             div.appendChild(tagElement);
         });
 
-        centerAbsoluteElement(div);
+        createPopup(div);
     });
 }
 

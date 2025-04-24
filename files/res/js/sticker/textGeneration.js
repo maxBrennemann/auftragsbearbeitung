@@ -1,4 +1,5 @@
 import { ajax } from "../classes/ajax.js";
+import { createPopup } from "../global.js";
 
 const textGenerationData = {
     textStyleNode: null,
@@ -94,16 +95,13 @@ export function click_showTextSettings(e) {
         div.innerHTML = template;
         div.classList.add("overflow-y-auto", "overflow-x-hidden", "fixed", "top-0", "right-0", "left-0", "z-50", "justify-center", "items-center", "w-full", "md:inset-0", "h-[calc(100%-1rem)]", "max-h-full", "bg-white/75");
         div.id = "showTextSettings";
-        document.body.appendChild(div);
 
         const textOptions = div.querySelectorAll("dt");
         Array.from(textOptions).forEach(dt => {
             dt.addEventListener("click", selectTextOption);
         });
 
-        centerAbsoluteElement(div);
-        addActionButtonForDiv(div, "hide");
-        div.classList.remove("centeredContainer");
+        createPopup(div);
 
         const newTextBtn = div.querySelector("#generateNewText");
         newTextBtn.addEventListener("click", click_textGeneration);

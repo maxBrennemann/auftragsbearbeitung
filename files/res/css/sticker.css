@@ -334,17 +334,6 @@ form label {
 	-moz-box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5); 
 }
 
-.centeredDiv {
-    margin-left: auto;
-    margin-right: auto;
-    background: white;
-    padding: 15px;
-    border-radius: 12px;
-    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5); 
-	-webkit-box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5); 
-	-moz-box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.5); 
-}
-
 .paddingDefault ul, .paddingDefault li {
     list-style-type: disc;
     padding-left: revert;
