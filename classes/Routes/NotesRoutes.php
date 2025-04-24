@@ -17,9 +17,11 @@ class NotesRoutes extends Routes {
 
     /**
      * @uses \Classes\Project\Auftrag::addNote()
+     * @uses \Classes\Project\Step::insertStepAjax()
      */
     protected static $postRoutes = [
         "/notes/{orderId}" => [\Classes\Project\Auftrag::class, "addNote"],
+        "/notes/step/{orderId}" => [\Classes\Project\Step::class, "insertStepAjax"],
     ];
 
     /**

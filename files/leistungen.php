@@ -13,16 +13,16 @@ $data = $data->read();
 			<p class="font-semibold mb-2"><?= $leistung['Bezeichnung'] ?></p>
 
 			<p>Bezeichnung</p>
-			<input class="input-primary-new" value="<?= $leistung['Bezeichnung'] ?>">
+			<input class="input-primary" value="<?= $leistung['Bezeichnung'] ?>">
 
 			<p>Beschreibung</p>
-			<input class="input-primary-new" value="<?= $leistung['Beschreibung'] ?>">
+			<input class="input-primary" value="<?= $leistung['Beschreibung'] ?>">
 
 			<p>Quelle</p>
-			<input class="input-primary-new" value="<?= $leistung['Quelle'] ?>">
+			<input class="input-primary" value="<?= $leistung['Quelle'] ?>">
 
 			<p>Aufschlag (%)</p>
-			<input class="input-primary-new" type="number" value="<?= $leistung['Aufschlag'] ?>">
+			<input class="input-primary" type="number" value="<?= $leistung['Aufschlag'] ?>">
 
 			<div class="mt-2">
 				<button class="btn-primary-new" data-fun="save" data-binding="true">Speichern</button>
@@ -34,16 +34,16 @@ $data = $data->read();
 		<p class="font-semibold mb-2">Neue Leistung hinzufügen</p>
 
 		<p>Bezeichnung</p>
-		<input class="input-primary-new" id="addName">
+		<input class="input-primary" id="addName">
 
 		<p>Beschreibung</p>
-		<input class="input-primary-new" id="addDescription">
+		<input class="input-primary" id="addDescription">
 
 		<p>Quelle</p>
-		<input class="input-primary-new" id="addSource">
+		<input class="input-primary" id="addSource">
 
 		<p>Aufschlag (%)</p>
-		<input class="input-primary-new" type="number" id="addSurcharge">
+		<input class="input-primary" type="number" id="addSurcharge">
 
 		<div class="mt-2">
 			<button class="btn-primary-new" data-fun="add" data-binding="true">Hinzufügen</button>

@@ -1,7 +1,9 @@
 import { ajax } from "./classes/ajax.js";
 import { initBindings } from "./classes/bindings.js";
 import { createHeader, createTable, addRow, fetchAndRenderTable } from "./classes/table.js";
-import { tableConfig } from "./tableconfig.js";
+import { tableConfig } from "./classes/tableconfig.js";
+import { notification } from "./classes/notifications.js";
+import { Colorpicker } from "./classes/colorpicker.js";
 
 const fnNames = {};
 
@@ -36,12 +38,15 @@ function initEventListeners() {
     const addCategoryBtn = document.getElementById("addCategory");
     addCategoryBtn.addEventListener("click", addCategory);
 
+    new Colorpicker(document.querySelector("#farbe"));
+
     getCategories();
     showTree();
 
     createOrderTypeTable();
     createWholesalerTable();
     createUserTable();
+    showFilesInfo();
 }
 
 const timeTracking = () => {
@@ -53,7 +58,7 @@ const timeTracking = () => {
     switchTimeTracking.addEventListener("change", () => {
         ajax.put("/api/v1/settings/global-timetracking").then(r => {
             if (r.status == "success") {
-                infoSaveSuccessfull("success");
+                notification("", "success");
                 const el = document.getElementById("timeTrackingContainer");
                 if (r.display == "false") {
                     el.classList.add("hidden");
@@ -63,7 +68,7 @@ const timeTracking = () => {
                     el.classList.add("inline-flex");
                 }
             } else {
-                infoSaveSuccessfull("failiure")
+                notification("", "failure");
             }
         });
     });
@@ -87,7 +92,7 @@ function addCategory() {
     const parentCategory = document.getElementById("parentCategory").value;
 
     if (newCategory === "") {
-        infoSaveSuccessfull("error");
+        notification("", "failure");
         return;
     }
 
@@ -98,11 +103,11 @@ function addCategory() {
         clearInputs({ "id": "newCategory" });
 
         if (r.status !== "success") {
-            infoSaveSuccessfull("error");
+            notification("", "failure");
             return;
         }
 
-        infoSaveSuccessfull("success");
+        notification("", "success");
     });
 }
 
@@ -116,7 +121,7 @@ function editCategory() {
         parent: newParent,
     }).then(r => {
         if (r.message == "ok") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         }
     });
 }
@@ -157,7 +162,7 @@ fnNames.write_toggleCache = (e) => {
         "status": value,
     }).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         }
     });
 }
@@ -170,7 +175,7 @@ fnNames.write_toggleMinify = (e) => {
         "status": value,
     }).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         }
     });
 }
@@ -178,7 +183,7 @@ fnNames.write_toggleMinify = (e) => {
 fnNames.click_deleteCache = () => {
     ajax.delete(`/api/v1/settings/cache`).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         }
     });
 }
@@ -192,20 +197,25 @@ fnNames.write_changeSetting = e => {
         "value": value,
     }).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         } else {
-            infoSaveSuccessfull("failure");
+            notification("", "failure");
         }
     });
 }
 
-window.setCustomColor = setCustomColor;
+fnNames.click_resetColor = () => {
+    const type = document.querySelector("#selectTableColorType").value;
+    setColor(0, type);
+}
 
-function setCustomColor(value) {
-    let color = value == 0 ? "" : cp.color;
-    let type = document.querySelector("select")
-    type = type.options[type.selectedIndex].value;
+fnNames.click_setColor = () => {
+    const color = cp.color;
+    const type = document.querySelector("#selectTableColorType").value;
+    setColor(color, type);
+}
 
+const setColor = (color, type) => {
     ajax.put(`/api/v1/settings/color`, {
         "type": type,
         "color": color
@@ -216,24 +226,14 @@ function setCustomColor(value) {
     });
 }
 
-if (document.readyState !== 'loading') {
-    document.getElementById("download_db").addEventListener("click", getFileName, false);
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        document.getElementById("download_db").addEventListener("click", getFileName, false);
-    }, false);
-}
-
-function getFileName() {
-    document.getElementById("download_db").removeEventListener("click", getFileName);
-
-    ajax.post(`/api/v1/settings/bakckup`).then(r => {
+fnNames.click_downloadDatabase = () => {
+    ajax.post(`/api/v1/settings/backup`).then(r => {
         document.getElementById("download_db").download = r.fileName;
         document.getElementById("download_db").href = r.url;
         document.getElementById("download_db").click();
 
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         }
     });
 }
@@ -315,6 +315,13 @@ const addOrderType = async (table, options) => {
         data[i] = response[i];
     }
     addRow(data, table, options);
+}
+
+const showFilesInfo = () => {
+    ajax.get(`/api/v1/settings/files/info`).then(r => {
+        const el = document.getElementById("showFilesInfo");
+        el.innerHTML = `Es sind ${r.count} Dateien mit einer Gesamtgröße von ${r.size}MB hochgeladen/ generiert.`;
+    });
 }
 
 if (document.readyState !== 'loading') {

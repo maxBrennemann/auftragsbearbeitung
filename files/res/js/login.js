@@ -1,5 +1,6 @@
 import { ajax } from "./classes/ajax.js";
 import { initBindings } from "./classes/bindings.js";
+import { DeviceDetector } from "./classes/deviceDetector.js";
 
 const fnNames = {};
 
@@ -70,7 +71,6 @@ const autoLogin = async () => {
         setTimeout(function () {
             document.getElementById("autologinStatus").innerHTML = "Bitte geben Sie Ihre Zugangsdaten ein.";
             document.getElementById("spinningStatus").classList.add("hidden");
-            document.getElementById("spinningStatus").classList.remove("lds-ring");
         }, 1000);
     }
 }

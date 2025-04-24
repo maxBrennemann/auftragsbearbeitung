@@ -1,4 +1,5 @@
 import { ajax } from "../classes/ajax.js";
+import { notification } from "../classes/notifications.js";
 
 export function initNotes() {
     const nodeContainer = document.getElementById("noteContainer");
@@ -79,7 +80,7 @@ function updateNote(e) {
         data: data
     }).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         }
     });
 }
@@ -116,20 +117,14 @@ export function addBearbeitungsschritt() {
         assignedTo = e.options[e.selectedIndex].value;
     }
 
-    /* ajax parameter */
-    let params = {
-        getReason: "insertStep",
-        bez: steps[0],
-        datum: steps[1],
-        auftrag: globalData.auftragsId,
-        hide: hide,
-        prio: steps[2],
-        assignedTo: assignedTo
-    };
-
-    var add = new AjaxCall(params, "POST", window.location.href);
-    add.makeAjaxCall(function (response) {
-        document.getElementById("stepTable").innerHTML = response;
+    ajax.post(`/api/v1/notes/step/${globalData.auftragsId}`, {
+        "name": steps[0],
+        "date": steps[1],
+        "hide": hide,
+        "priority": steps[2],
+        "assignedTo": assignedTo,
+    }).then(r => {
+        document.getElementById("stepTable").innerHTML = r.html;
 
         /* clear inputs */
         var tableData = document.getElementsByClassName("bearbeitungsschrittInput");
@@ -138,7 +133,7 @@ export function addBearbeitungsschritt() {
         }
 
         document.getElementById("bearbeitungsschritte").style.display = "none";
-    }.bind(this), false);
+    });
 }
 
 /* addes bearbeitungsschritte */
@@ -179,7 +174,7 @@ export function sendNote() {
         "title": title,
         "note": content
     }).then(r => {
-        infoSaveSuccessfull("success");
+        notification("", "success");
         displayNotes([{
                 "title": title,
                 "note": content,
@@ -212,7 +207,7 @@ export function removeNote(event) {
     const id = event.target.parentNode.querySelector(".noteTitle").dataset.id;
     ajax.delete(`/api/v1/notes/${id}`).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
             const noteContainer = event.target.parentNode;
             noteContainer.parentNode.removeChild(noteContainer);
         }

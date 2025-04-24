@@ -229,23 +229,6 @@ class Ajax
 				Fahrzeug::attachVehicle();
 				echo (new Auftrag($auftragsId))->getFahrzeuge();
 				break;
-			case "insertStep":
-				$data = array();
-				$data['Bezeichnung'] = $_POST['bez'];
-				$data['Datum'] = $_POST['datum'];
-				$data['Priority'] = $_POST['prio'];
-				$data['Auftragsnummer'] = $_POST['auftrag'];
-				$data['hide'] = $_POST['hide'];
-
-				$postenNummer = Step::insertStep($data);
-				$auftrag = new Auftrag($data['Auftragsnummer']);
-				echo $auftrag->getOpenBearbeitungsschritteTable();
-
-				$assignedTo = strval($_POST['assignedTo']);
-				if (strcmp($assignedTo, "none") != 0) {
-					NotificationManager::addNotification($userId = $assignedTo, $type = 1, $content = $_POST['bez'], $specificId = $postenNummer);
-				}
-				break;
 			case "setInvoiceData":
 				$order = $_POST['id'];
 				$invoice = $_POST['invoice'];

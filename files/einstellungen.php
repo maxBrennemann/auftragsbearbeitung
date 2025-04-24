@@ -1,10 +1,8 @@
 <?php
 
-use Classes\Link;
 use Classes\Project\Config;
 
 ?>
-<script src="<?= Link::getResourcesShortLink("colorpicker.js", "js") ?>"></script>
 <section class="defCont">
     <h2 class="font-bold">Auftragstypen festlegen</h2>
     <div id="orderTypes" class="mt-2"></div>
@@ -22,55 +20,55 @@ use Classes\Project\Config;
     <div>
         <div class="flex items-center">
             <span class="font-semibold w-64">Stundenlohn</span>
-            <input class="input-primary-new" value="<?= Config::get("defaultWage") ?>" data-write="true" data-fun="changeSetting" data-setting="defaultWage">
+            <input class="input-primary" value="<?= Config::get("defaultWage") ?>" data-write="true" data-fun="changeSetting" data-setting="defaultWage">
         </div>
         <div class="flex items-center mt-2">
             <span class="font-semibold w-64">Firmenname</span>
-            <input class="input-primary-new" value="<?= Config::get("companyName") ?>" data-write="true" data-fun="changeSetting" data-setting="companyName">
+            <input class="input-primary" value="<?= Config::get("companyName") ?>" data-write="true" data-fun="changeSetting" data-setting="companyName">
         </div>
         <div class="flex items-center mt-2">
             <span class="font-semibold w-64">Adresse</span>
-            <input class="input-primary-new" value="<?= Config::get("companyAddress") ?>" data-write="true" data-fun="changeSetting" data-setting="companyAddress">
+            <input class="input-primary" value="<?= Config::get("companyAddress") ?>" data-write="true" data-fun="changeSetting" data-setting="companyAddress">
         </div>
         <div class="flex items-center mt-2">
             <span class="font-semibold w-64">PLZ</span>
-            <input class="input-primary-new" value="<?= Config::get("companyZip") ?>" data-write="true" data-fun="changeSetting" data-setting="companyZip">
+            <input class="input-primary" value="<?= Config::get("companyZip") ?>" data-write="true" data-fun="changeSetting" data-setting="companyZip">
         </div>
         <div class="flex items-center mt-2">
             <span class="font-semibold w-64">Stadt</span>
-            <input class="input-primary-new" value="<?= Config::get("companyCity") ?>" data-write="true" data-fun="changeSetting" data-setting="companyCity">
+            <input class="input-primary" value="<?= Config::get("companyCity") ?>" data-write="true" data-fun="changeSetting" data-setting="companyCity">
         </div>
         <div class="flex items-center mt-2">
             <span class="font-semibold w-64">Land</span>
-            <input class="input-primary-new" value="<?= Config::get("companyCountry") ?>" data-write="true" data-fun="changeSetting" data-setting="companyCountry">
+            <input class="input-primary" value="<?= Config::get("companyCountry") ?>" data-write="true" data-fun="changeSetting" data-setting="companyCountry">
         </div>
         <div class="flex items-center mt-2">
             <span class="font-semibold w-64">Telefonnummer</span>
-            <input class="input-primary-new" value="<?= Config::get("companyPhone") ?>" data-write="true" data-fun="changeSetting" data-setting="companyPhone">
+            <input class="input-primary" value="<?= Config::get("companyPhone") ?>" data-write="true" data-fun="changeSetting" data-setting="companyPhone">
         </div>
         <div class="flex items-center mt-2">
             <span class="font-semibold w-64">Email</span>
-            <input class="input-primary-new" value="<?= Config::get("companyEmail") ?>" data-write="true" data-fun="changeSetting" data-setting="companyEmail">
+            <input class="input-primary" value="<?= Config::get("companyEmail") ?>" data-write="true" data-fun="changeSetting" data-setting="companyEmail">
         </div>
         <div class="flex items-center mt-2">
             <span class="font-semibold w-64">Website</span>
-            <input class="input-primary-new" value="<?= Config::get("companyWebsite") ?>" data-write="true" data-fun="changeSetting" data-setting="companyWebsite">
+            <input class="input-primary" value="<?= Config::get("companyWebsite") ?>" data-write="true" data-fun="changeSetting" data-setting="companyWebsite">
         </div>
         <div class="flex items-center mt-2">
             <span class="font-semibold w-64">Impressum</span>
-            <input class="input-primary-new" value="<?= Config::get("companyImprint") ?>" data-write="true" data-fun="changeSetting" data-setting="companyImprint">
+            <input class="input-primary" value="<?= Config::get("companyImprint") ?>" data-write="true" data-fun="changeSetting" data-setting="companyImprint">
         </div>
         <div class="flex items-center mt-2">
             <span class="font-semibold w-64">Bank</span>
-            <input class="input-primary-new" value="<?= Config::get("companyBank") ?>" data-write="true" data-fun="changeSetting" data-setting="companyBank">
+            <input class="input-primary" value="<?= Config::get("companyBank") ?>" data-write="true" data-fun="changeSetting" data-setting="companyBank">
         </div>
         <div class="flex items-center mt-2">
             <span class="font-semibold w-64">IBAN</span>
-            <input class="input-primary-new" value="<?= Config::get("companyIban") ?>" data-write="true" data-fun="changeSetting" data-setting="companyIban">
+            <input class="input-primary" value="<?= Config::get("companyIban") ?>" data-write="true" data-fun="changeSetting" data-setting="companyIban">
         </div>
         <div class="flex items-center mt-2">
             <span class="font-semibold w-64">UstIdNr</span>
-            <input class="input-primary-new" value="<?= Config::get("companyUstIdNr") ?>" data-write="true" data-fun="changeSetting" data-setting="companyUstIdNr">
+            <input class="input-primary" value="<?= Config::get("companyUstIdNr") ?>" data-write="true" data-fun="changeSetting" data-setting="companyUstIdNr">
         </div>
     </div>
 </section>
@@ -92,18 +90,15 @@ use Classes\Project\Config;
 </section>
 <section class="defCont">
     <h2 class="font-bold">Persönliche Einstellungen</h2>
-    <div class="defCont" id="farbe">
+    <div id="farbe">
         <h4>Farbtöne festlegen</h4>
-        <select>
+        <select class="input-primary" id="selectTableColorType">
             <option value="1">Tabellenfarbe</option>
             <option value="2">Äußere Rahmen</option>
             <option value="3">Innere Rahmen</option>
         </select>
-        <script>
-            var cp = new Colorpicker(document.getElementById("farbe"));
-        </script>
-        <button onclick="setCustomColor();" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Diese Farbe übernehmen</button>
-        <button onclick="setCustomColor(0);" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Auf Standard zurücksetzen</button>
+        <button data-fun="setColor" data-binding="true" class="btn-primary-new">Diese Farbe übernehmen</button>
+        <button data-fun="resetColor" data-binding="true" class="btn-primary-new">Auf Standard zurücksetzen</button>
     </div>
 </section>
 <section class="defCont">
@@ -117,12 +112,15 @@ use Classes\Project\Config;
 </section>
 <section class="defCont">
     <h2 class="font-bold">Backups und Datensicherung</h2>
-    <a href="#" download="temp_file_name" id="download_db">Datenbank herunterladen</a>
-    <button class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Alle Dateien herunterladen</button>
+    <div class="mt-2">
+        <a href="#" download="temp_file_name" id="download_db" class="hidden">Datenbank herunterladen</a>
+        <button class="btn-primary-new" data-binding="true" data-fun="downloadDatabase">Datenbank herunterladen</button>
+        <button class="btn-primary-new" data-binding="true" data-fun="downloadAllFiles" disabled>Alle Dateien herunterladen</button>
+    </div>
 </section>
 <section class="defCont">
     <h2 class="font-bold">Zeiterfassung</h2>
-    <div class="switchCont">
+    <div class="switchCont mt-2">
         <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
             "id" => "showTimeTracking",
             "name" => "Aktuelle Arbeitszeit global anzeigen",
@@ -135,6 +133,7 @@ use Classes\Project\Config;
     <h2 class="font-bold">Dateien</h2>
     <button id="clearFiles" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Dateien aufräumen</button>
     <button id="adjustFiles" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Dateinamen anpassen</button>
+    <p id="showFilesInfo"></p>
 </section>
 <section class="defCont">
     <h2 class="font-bold">Routineaufgaben</h2>

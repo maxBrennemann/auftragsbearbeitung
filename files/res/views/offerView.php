@@ -15,7 +15,7 @@ $customer = new Kunde($customerId);
         <p><?= $customer->getPostleitzahl() ?> <?= $customer->getOrt() ?></p>
     </div>
     <div>
-        <span>Datum: <input id="angebotsdatum" type="date" class="input-primary-new" value="<?= date('Y-m-d') ?>"></span><br>
+        <span>Datum: <input id="angebotsdatum" type="date" class="input-primary" value="<?= date('Y-m-d') ?>"></span><br>
         <span>Angebotsnummer: </span>
     </div>
 </div>
@@ -28,7 +28,7 @@ $customer = new Kunde($customerId);
 
 <div class="defCont">
     <p>Text hinzufügen</p>
-    <textarea class="input-primary-new"></textarea>
+    <textarea class="input-primary"></textarea>
 </div>
 
 <div class="defCont">

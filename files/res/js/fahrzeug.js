@@ -1,6 +1,6 @@
 import { ajax } from "./classes/ajax.js";
 import { initBindings } from "./classes/bindings.js";
-import { infoSaveSuccessfull } from "./classes/statusInfo.js";
+import { notification } from "./classes/notifications.js";
 
 const fnNames = {};
 
@@ -14,7 +14,7 @@ fnNames.write_updateName = e => {
         "name": e.currentTarget.value,
     }).then(r => {
         if (r.message == "ok") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         }
     });
 }
@@ -25,7 +25,7 @@ fnNames.write_updateLicensePlate = e => {
         "licensePlate": e.currentTarget.value,
     }).then(r => {
         if (r.message == "ok") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         }
     });
 }

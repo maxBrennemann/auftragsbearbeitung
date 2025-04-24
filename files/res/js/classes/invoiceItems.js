@@ -1,7 +1,7 @@
 import { getTemplate, setInpupts } from "../global.js";
 import { ajax } from "./ajax.js";
 import { addBindings } from "./bindings.js";
-import { infoSaveSuccessfull } from "./statusInfo.js";
+import { notification } from "./notifications.js";
 import { addRow, renderTable } from "./table.js";
 
 const config = {
@@ -210,11 +210,11 @@ const addTime = () => {
         "times": JSON.stringify(config.extendedTimes),
     }).then(r => {
         if (r.status !== "success") {
-            infoSaveSuccessfull("failiure", r.message);
+            notification("", "failure", r.message);
             return;
         }
 
-        infoSaveSuccessfull("success");
+        notification("", "success");
 
         updatePrice(r.price);
         updateTable(r.data);
@@ -246,11 +246,11 @@ const addService = () => {
         "discount": document.querySelector("#getDiscount").value,
     }).then(r => {
         if (r.status !== "success") {
-            infoSaveSuccessfull("failiure", r.message);
+            notification("", "failure", r.message);
             return;
         }
 
-        infoSaveSuccessfull("success");
+        notification("", "success");
 
         updatePrice(r.price);
         updateTable(r.data);

@@ -99,6 +99,7 @@ function setupNavigator(iframeDocument) {
 }
 
 function getManualData() {
+    return;
     let request = {
         getReason: "getManual",
         pageName: params.currentName,

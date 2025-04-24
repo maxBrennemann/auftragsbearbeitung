@@ -3,9 +3,6 @@
 use Classes\Link;
 
 ?>
-
-<script src="<?=Link::getResourcesShortLink("funktionen.js", "js")?>"></script>
-
 <?php
 
 $links = [
@@ -59,11 +56,6 @@ $links = [
         <li>Warenkorb</li>
         <li>Bestellvorgang</li>
     </ul>
-    <h2 class="font-bold mt-5">Externe Ressourcen</h2>
-    <ul>
-        <li><a class="link-primary" href="https://organisierung.b-schriftung.de/textilkonfigurator/">Vorläufiger Textilkonfigurator</a></li>
-        <li><a class="link-primary" href="https://max-web.tech/apps/resources/">Ressourcenübersicht</a></li>
-    </ul>
 </div>
 
 <div class="manualNavigator">
@@ -71,37 +63,3 @@ $links = [
     <button>▶</button>
     <p></p>
 </div>
-
-<style>
-    ul {
-        padding-left: inherit;
-    }
-
-    li {
-        list-style: disc;
-    }
-
-    .defCont {
-        width: 80vw;
-    }
-
-    .clickable {
-        cursor: pointer;
-    }
-
-    .manualNavigator {
-        display: none;
-
-        border-radius: 6px;
-        border: 1px solid grey;
-        padding: 7px;
-        margin: 5px;
-    }
-
-    .manualNavigator button {
-        border: none;
-        margin: 5px;
-        background: lightgray;
-        padding: 5px;
-    }
-</style>

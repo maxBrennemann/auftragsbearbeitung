@@ -1,3 +1,5 @@
+import { notification } from "./classes/notifications.js";
+
 function addList() {
     var el = document.getElementById("listauswahl");
     el.style.display = "block";
@@ -24,7 +26,7 @@ function chooseList(listid) {
 function saveListData(listid, listname, listvalue, listtype) {
     var add = new AjaxCall(`getReason=saveListData&listId=${listid}&id=${listname}&value=${listvalue}&type=${listtype}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
     add.makeAjaxCall(function (response) {
-        infoSaveSuccessfull(response);
+        notification("", response);
         console.log(response);
     });
 }

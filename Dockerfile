@@ -1,4 +1,4 @@
-FROM composer:2.2.25 AS composer
+FROM composer:2.8.8 AS composer
 
 # Set working directory
 WORKDIR /var/www/html
@@ -9,14 +9,14 @@ COPY composer.json composer.lock ./
 # Install the dependencies
 RUN composer install --no-scripts
 
-FROM php:8.4-apache
+FROM php:8.4.6-apache
 
 # Get UID and GID of host user
 ARG UID
 ARG GID
 
 # Install PDO extension
-RUN docker-php-ext-install pdo_mysql
+RUN docker-php-ext-install pdo_mysql mysqli
 
 # Enable apache mod_rewrite
 RUN a2enmod rewrite

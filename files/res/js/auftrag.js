@@ -6,6 +6,8 @@ import { addExistingVehicle, addNewVehicle, selectVehicle } from "./auftrag/vehi
 import "./auftrag/calculateGas.js";
 import { ajax } from "./classes/ajax.js";
 import { getItemsTable, initInvoiceItems } from "./classes/invoiceItems.js";
+import { notification } from "./classes/notifications.js";
+import { FileUploader } from "./classes/fileUploader.js";
 
 /* global variables */
 window.globalData = {
@@ -80,9 +82,9 @@ const changeContact = (e) => {
         "idContact": value,
     }).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         } else {
-            infoSaveSuccessfull();
+            notification("", "");
         }
     });
 }

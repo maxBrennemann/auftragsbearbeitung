@@ -19,9 +19,9 @@ else : ?>
     <div class="defCont">
         <div class="imageCont">
             <h4>Bilder des Fahrzeuges
-                <input class="input-primary-new" value="<?= Fahrzeug::getName($id) ?>" data-write="true" data-fun="updateName">
+                <input class="input-primary" value="<?= Fahrzeug::getName($id) ?>" data-write="true" data-fun="updateName">
                 mit dem Kennzeichen
-                <input class="input-primary-new" value="<?= Fahrzeug::getKennzeichen($id) ?>" data-write="true" data-fun="updateLicensePlate">
+                <input class="input-primary" value="<?= Fahrzeug::getKennzeichen($id) ?>" data-write="true" data-fun="updateLicensePlate">
             </h4>
             <?= Fahrzeug::getImages($id) ?>
         </div>

@@ -1,3 +1,5 @@
+import { notification } from "../classes/notifications.js";
+
 export default class ProductConnector {
 
     constructor(type) {
@@ -119,6 +121,6 @@ export default class ProductConnector {
             r: "connectAccessoire",
         });
 
-        infoSaveSuccessfull(result.status);
+        notification("", result.status);
     }
 }

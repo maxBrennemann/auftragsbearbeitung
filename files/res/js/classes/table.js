@@ -1,4 +1,4 @@
-import { tableConfig } from "../tableconfig.js";
+import { tableConfig } from "./tableconfig.js";
 import { ajax } from "./ajax.js";
 import { loadFromLocalStorage, saveToLocalStorage } from "../global.js";
 

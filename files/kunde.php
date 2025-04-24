@@ -35,51 +35,51 @@ else:
 			<div class="mt-2">
 				<div class="w-full flex flex-col">
 					<label for="idCustomer">Kundennummer:</label>
-					<input disabled class="input-primary-new" id="idCustomer" value="<?= $customer->getKundennummer() ?>">
+					<input disabled class="input-primary" id="idCustomer" value="<?= $customer->getKundennummer() ?>">
 				</div>
 			</div>
 			<div class="w-full flex gap-8 mt-2">
 				<div class="flex flex-col">
 					<label for="prename">Vorname:</label>
-					<input class="input-primary-new" id="prename" value="<?= $customer->getVorname() ?>" autocomplete="none">
+					<input class="input-primary" id="prename" value="<?= $customer->getVorname() ?>" autocomplete="none">
 				</div>
 				<div class="flex flex-initial flex-col">
 					<label for="lastname">Nachname:</label>
-					<input class="input-primary-new" id="lastname" value="<?= $customer->getNachname() ?>" autocomplete="none">
+					<input class="input-primary" id="lastname" value="<?= $customer->getNachname() ?>" autocomplete="none">
 				</div>
 			</div>
 			<div class="w-full flex mt-2">
 				<div class="flex flex-col">
 					<label for="companyname">Firmenname:</label>
-					<input class="input-primary-new w-80" id="companyname" value="<?= $customer->getFirmenname() ?>" autocomplete="none">
+					<input class="input-primary w-80" id="companyname" value="<?= $customer->getFirmenname() ?>" autocomplete="none">
 				</div>
 			</div>
 			<div class="w-full flex mt-2">
 				<div class="flex flex-col">
 					<label for="email">Email:</label>
-					<input class="input-primary-new w-80" id="email" value="<?= $customer->getEmail() ?>" autocomplete="none">
+					<input class="input-primary w-80" id="email" value="<?= $customer->getEmail() ?>" autocomplete="none">
 				</div>
 			</div>
 			<div class="w-full flex mt-2">
 				<div class="flex flex-col">
 					<label for="website">Website:</label>
-					<input class="input-primary-new w-80" id="website" value="<?= $customer->getWebsite() ?>" autocomplete="none">
+					<input class="input-primary w-80" id="website" value="<?= $customer->getWebsite() ?>" autocomplete="none">
 				</div>
 			</div>
 			<div class="w-full flex gap-8 mt-2">
 				<div class="flex flex-col">
 					<label for="phoneLandline">Telefon Festnetz:</label>
-					<input class="input-primary-new" id="phoneLandline" value="<?= $customer->getTelefonFestnetz() ?>" autocomplete="none">
+					<input class="input-primary" id="phoneLandline" value="<?= $customer->getTelefonFestnetz() ?>" autocomplete="none">
 				</div>
 				<div class="flex flex-initial flex-col">
 					<label for="phoneMobile">Telefon Mobil:</label>
-					<input class="input-primary-new" id="phoneMobile" value="<?= $customer->getTelefonMobil() ?>" autocomplete="none">
+					<input class="input-primary" id="phoneMobile" value="<?= $customer->getTelefonMobil() ?>" autocomplete="none">
 				</div>
 			</div>
 			<div class="w-full flex mt-2">
 				<div class="flex flex-col">
 					<label for="fax">Fax:</label>
-					<input class="input-primary-new w-80" id="fax" value="<?= $customer->getFax() ?>" autocomplete="none">
+					<input class="input-primary w-80" id="fax" value="<?= $customer->getFax() ?>" autocomplete="none">
 				</div>
 			</div>
 			<div class="w-full flex mt-2">
@@ -97,7 +97,7 @@ else:
 
 		<div id="notizen" class="bg-gray-100 p-4 rounded-lg">
 			<h3 class="font-bold">Notizen</h3>
-			<textarea class="mt-2 w-full input-primary-new" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'" data-write="true" data-fun="setCustomerNote"><?= $customer->getNotizen() ?></textarea>
+			<textarea class="mt-2 w-full input-primary" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'" data-write="true" data-fun="setCustomerNote"><?= $customer->getNotizen() ?></textarea>
 		</div>
 		<div id="fahrzeuge" class="bg-gray-100 p-4 rounded-lg">
 			<h3 class="font-bold">Fahrzeuge</h3>

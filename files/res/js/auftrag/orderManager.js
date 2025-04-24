@@ -1,4 +1,5 @@
 import { ajax } from "../classes/ajax.js";
+import { notification } from "../classes/notifications.js";
 
 export async function setOrderFinished() {
     if (confirm('Möchtest Du den Auftrag als "Erledigt" markieren?')) {
@@ -34,9 +35,9 @@ function sendDate(type, value) {
         "type": type,
     }).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         } else {
-            infoSaveSuccessfull();
+            notification("", "failure");
         }
     });
 }
@@ -103,9 +104,9 @@ export function editDescription() {
         auftrag: globalData.auftragsId,
     }, true).then(response => {
         if (response == "saved") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         } else {
-            infoSaveSuccessfull();
+            notification("", "failure");
         }
     });
 }
@@ -118,9 +119,9 @@ export const editOrderType = () => {
         "type": value,
     }).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         } else {
-            infoSaveSuccessfull();
+            notification("", "failure");
         }
     });
 }
@@ -133,9 +134,9 @@ export const editTitle = () => {
         "title": value,
     }).then(r => {
         if (r.status == "success") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         } else {
-            infoSaveSuccessfull();
+            notification("", "failure");
         }
     });
 }

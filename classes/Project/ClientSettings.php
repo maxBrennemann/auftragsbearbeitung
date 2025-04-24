@@ -91,20 +91,20 @@ class ClientSettings
 
     public static function createBackup()
     {
-        $result = DBAccess::EXPORT_DATABASE($_ENV["HOST"], $_ENV["USERNAME"], $_ENV["PASSWORD"], $_ENV["DATABASE"]);
+        $host = $_ENV["DB_HOST"];
+        $database = $_ENV["DB_DATABASE"];
+        $username = $_ENV["DB_USERNAME"];
+        $password = $_ENV["DB_PASSWORD"];
+        $result = DBAccess::EXPORT_DATABASE($host, $username, $password, $database, false, false, false);
 
         $filePath = "files/generated/sql_backups/";
         $fileName = date("d-m-Y_h-i-s") . ".sql";
-        file_put_contents(($filePath . $fileName), $result);
+        file_put_contents($filePath . $fileName, $result);
 
-        $data =  [
+        JSONResponseHandler::sendResponse([
             "filename" => $fileName,
             "url" => Link::getResourcesShortLink($fileName, "backup"),
             "status" => "success",
-        ];
-
-        JSONResponseHandler::sendResponse([
-            "data" => $data,
         ]);
     }
 }

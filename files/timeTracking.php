@@ -35,7 +35,7 @@ use Classes\Project\Icon;
     <div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-white/75" id="askTask">
 		<div class="relative max-w-2xl max-h-full shadow-xl bg-white rounded-sm border border-solid border-gray-400 p-2">
             <p>Beschreibung der Tätigkeit:</p>
-            <input type="text" class="block mt-2 input-primary-new w-full" id="getTask">
+            <input type="text" class="block mt-2 input-primary w-full" id="getTask">
             <div class="mt-2">
                 <button class="btn-cancel" data-fun="cancelTimeTracking" data-binding="true">Abbrechen</button>
                 <button class="btn-primary-new" data-fun="sendTimeTracking" data-binding="true">Abschicken</button>

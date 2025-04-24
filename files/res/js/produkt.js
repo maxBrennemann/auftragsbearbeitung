@@ -1,5 +1,6 @@
 import { ajax } from "./classes/ajax.js";
 import { createFileUpload } from "./classes/upload.js";
+import { notification } from ".classes/notifications.js";
 
 /* global variables for attribute selection */
 var attributes = {};
@@ -69,7 +70,7 @@ function updateProduct(type, content) {
     ajax.put(`/api/v1/product/${id}/type/${type}`, {
         content: content,
     }).then((response) => {
-        infoSaveSuccessfull(response);
+        notification("", response);
     }).catch((error) => {
         console.error(error);
     });
@@ -207,7 +208,7 @@ function sendAttributeTable() {
     ajax.put(`/api/v1/product/${id}/combinations`, {
         combinations: JSON.stringify(attributes),
     }).then((response) => {
-        infoSaveSuccessfull(response);
+        notification("", response);
     }).catch((error) => {
         console.error(error);
     });

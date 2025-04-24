@@ -1,7 +1,8 @@
 import { initBindings } from "./classes/bindings.js";
 import { ajax } from "./classes/ajax.js";
 import { renderTable } from "./classes/table.js";
-import { tableConfig } from "./tableconfig.js";
+import { tableConfig } from "./classes/tableconfig.js";
+import { notification } from "./classes/notifications.js";
 
 const fnNames = {};
 
@@ -112,7 +113,7 @@ fnNames.click_createFbExport = () => {
             return;
         }
 
-        infoSaveSuccessfull("success");
+        notification("", "success");
 
         const a = document.createElement("a");
         a.href = fbExport.file;

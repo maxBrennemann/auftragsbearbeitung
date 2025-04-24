@@ -1,5 +1,4 @@
 import { initBindings } from "./classes/bindings.js";
-import { notification } from "./notifications.js";
 
 const fnNames = {};
 

@@ -1,4 +1,5 @@
 import { ajax } from "../classes/ajax.js";
+import { Colorpicker } from "../classes/colorpicker.js";
 
 var cp = null;
 const addToOrderColors = [];

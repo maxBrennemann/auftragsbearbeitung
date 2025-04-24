@@ -12,15 +12,15 @@
         <div class="container">
             <div class="flex flex-col">
                 <span>Zeit in Minuten:</span>
-                <input class="input-primary-new" id="timeInput" type="number" min="0">
+                <input class="input-primary" id="timeInput" type="number" min="0">
             </div>
             <div class="mt-1 flex flex-col">
                 <span>Stundenlohn [€]:</span>
-                <input class="input-primary-new" id="wage" type="number" value="<?= \Classes\Project\Config::get("defaultWage") ?>">
+                <input class="input-primary" id="wage" type="number" value="<?= \Classes\Project\Config::get("defaultWage") ?>">
             </div>
             <div class="mt-1 flex flex-col">
                 <span>Beschreibung:</span>
-                <textarea id="timeDescription" class="input-primary-new" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
+                <textarea id="timeDescription" class="input-primary" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
             </div>
         </div>
         <div class="container col-span-2">
@@ -32,7 +32,7 @@
     <div class="tab-content hidden" id="service">
         <div class="flex flex-col">
             <span>Leistung:</span>
-            <select class="input-primary-new w-48" id="selectLeistung" data-binding="true" data-fun="selectLeistung">
+            <select class="input-primary w-48" id="selectLeistung" data-binding="true" data-fun="selectLeistung">
                 <?php foreach ($services as $service): ?>
                     <option value="<?= $service['Nummer'] ?>" data-surcharge="<?= $service['Aufschlag'] ?>"><?= $service['Bezeichnung'] ?></option>
                 <?php endforeach; ?>
@@ -40,11 +40,11 @@
         </div>
         <div class="mt-1 flex flex-col">
             <span>Menge:</span>
-            <input class="input-primary-new" id="anz" type="number" value="1">
+            <input class="input-primary" id="anz" type="number" value="1">
         </div>
         <div class="mt-1 flex flex-col">
             <span>Mengeneinheit:</span>
-            <input list="units" name="units" id="meh" class="input-primary-new w-48" placeholder="Auwählen oder eingeben">
+            <input list="units" name="units" id="meh" class="input-primary w-48" placeholder="Auwählen oder eingeben">
             <datalist id="units">
                 <option value="Stück">
                 <option value="m²">
@@ -55,20 +55,20 @@
         </div>
         <div class="mt-1 flex flex-col">
             <span>Beschreibung:</span>
-            <textarea id="bes" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'" class="input-primary-new"></textarea>
+            <textarea id="bes" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'" class="input-primary"></textarea>
         </div>
         <div class="mt-1 flex flex-col">
             <span>Einkaufspreis [€]:</span>
-            <input class="input-primary-new" type="number" id="ekp" value="0">
+            <input class="input-primary" type="number" id="ekp" value="0">
         </div>
         <div class="mt-1 grid grid-cols-2 gap-4">
             <div class="flex flex-col">
                 <span>Verkaufspreis [€]:</span>
-                <input class="input-primary-new" type="number" id="pre" value="0">
+                <input class="input-primary" type="number" id="pre" value="0">
             </div>
             <div>
                 <span>Aufschlag [%]:</span>
-                <input class="input-primary-new" type="number" id="surcharge" value="0" disabled>
+                <input class="input-primary" type="number" id="surcharge" value="0" disabled>
                 <button class="btn-primary-new mt-2" data-binding="true" data-fun="calculatePrice">Übernehmen</button>
             </div>
         </div>
@@ -100,7 +100,7 @@
                 ]); ?>
             </div>
             <div class="ml-2 mt-2">
-                <input type="number" min="0" max="100" value="0" class="input-primary-new w-16" id="getDiscount">
+                <input type="number" min="0" max="100" value="0" class="input-primary w-16" id="getDiscount">
                 <span>Rabatt [%]</span>
             </div>
             <button class="btn-primary-new mt-2" data-binding="true" data-fun="addItem" id="addItem">Hinzufügen</button>
@@ -111,11 +111,11 @@
 </div>
 <template id="templateTimeInput">
     <p class="timeInputWrapper my-2"><span>von</span>
-        <input class="timeInput input-primary-new w-24" type="time" min="05:00" max="23:00">
+        <input class="timeInput input-primary w-24" type="time" min="05:00" max="23:00">
         <span>bis</span>
-        <input class="timeInput input-primary-new w-24" type="time" min="05:00" max="23:00">
+        <input class="timeInput input-primary w-24" type="time" min="05:00" max="23:00">
         <span>am</span>
-        <input class="dateInput input-primary-new w-32" type="date">
+        <input class="dateInput input-primary w-32" type="date">
         <button class="btn-delete">X</button>
     </p>
 </template>

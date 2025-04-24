@@ -17,9 +17,6 @@ use Classes\Project\TemplateController;
 
 ?>
 
-<script src="<?= Link::getResourcesShortLink("colorpicker.js", "js") ?>"></script>
-<script src="<?= Link::getResourcesShortLink("list.js", "js") ?>"></script>
-
 <?php
 
 $show = false;
@@ -136,7 +133,7 @@ if ($orderId <= 0): ?>
 				<p><?= $kunde->getTelefonFestnetz() ?></p>
 				<p><?= $kunde->getTelefonMobil() ?></p>
 				<p><a href="mailto:<?= $kunde->getEmail() ?>"><?= $kunde->getEmail() ?></a></p>
-				<select class="input-primary-new mt-2 w-60" data-write="true" data-fun="changeContact" id="showAnspr">
+				<select class="input-primary mt-2 w-60" data-write="true" data-fun="changeContact" id="showAnspr">
 					<?php foreach ($contactPersons as $contact): ?>
 						<?php
 						$selected = $contact['isSelected'] ? "selected" : "";
@@ -160,7 +157,7 @@ if ($orderId <= 0): ?>
 			</div>
 			<div class="inputCont">
 				<label for="orderTitle">Auftragsbezeichnung:</label>
-				<input class="input-primary-new w-full" id="orderTitle" value="<?= $auftrag->getAuftragsbezeichnung() ?>" autocomplete="none" data-write="true" data-fun="editTitle">
+				<input class="input-primary w-full" id="orderTitle" value="<?= $auftrag->getAuftragsbezeichnung() ?>" autocomplete="none" data-write="true" data-fun="editTitle">
 			</div>
 			<div class="inputCont">
 				<div>
@@ -171,13 +168,13 @@ if ($orderId <= 0): ?>
 					</span>
 				</div>
 				<div>
-					<textarea class="orderDescription input-primary-new w-full" autocomplete="none" data-write="true" data-fun="editDescription" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"><?= $auftrag->getAuftragsbeschreibung() ?></textarea>
-					<input class="orderDescription input-primary-new w-full hidden" autocomplete="none" data-write="true" data-fun="editDescription" value="<?= $auftrag->getAuftragsbeschreibung() ?>">
+					<textarea class="orderDescription input-primary w-full" autocomplete="none" data-write="true" data-fun="editDescription" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"><?= $auftrag->getAuftragsbeschreibung() ?></textarea>
+					<input class="orderDescription input-primary w-full hidden" autocomplete="none" data-write="true" data-fun="editDescription" value="<?= $auftrag->getAuftragsbeschreibung() ?>">
 				</div>
 			</div>
 			<div class="inputCont">
 				<label for="orderType">Auftragstyp:</label>
-				<select class="input-primary-new w-full" id="orderType" data-write="true" data-fun="editOrderType">
+				<select class="input-primary w-full" id="orderType" data-write="true" data-fun="editOrderType">
 					<?php foreach ($auftragsTypen as $type): ?>
 						<option value="<?= $type["id"] ?>" <?= $auftragsTyp == $type["id"] ? "selected" : "" ?>><?= $type["Auftragstyp"] ?></option>
 					<?php endforeach; ?>
@@ -185,10 +182,10 @@ if ($orderId <= 0): ?>
 			</div>
 			<div class="m-2">
 				<p>Auftragseingang:
-					<input class="input-primary-new m-1" type="date" value="<?= $auftrag->getDate() ?>" data-write="true" data-fun="updateDate">
+					<input class="input-primary m-1" type="date" value="<?= $auftrag->getDate() ?>" data-write="true" data-fun="updateDate">
 				</p>
 				<p>Termin:
-					<input class="input-primary-new m-1" type="date" value="<?= $auftrag->getDeadline() ?>" id="inputDeadline" data-write="true" data-fun="updateDeadline">
+					<input class="input-primary m-1" type="date" value="<?= $auftrag->getDeadline() ?>" id="inputDeadline" data-write="true" data-fun="updateDeadline">
 					<input type="checkbox" data-binding="true" data-fun="setDeadlineState" <?= $auftrag->getDeadline() == "" ? "checked" : "" ?>> Kein Termin
 				</p>
 			</div>
@@ -217,14 +214,14 @@ if ($orderId <= 0): ?>
 				<div>
 					<div class="flex flex-col">
 						<p>Bezeichnung:</p>
-						<input class="bearbeitungsschrittInput input-primary-new w-full" type="text" max="128">
+						<input class="bearbeitungsschrittInput input-primary w-full" type="text" max="128">
 					</div>
 				</div>
 				<div>
 					<div class="flex flex-col">
 						<p>Datum:</p>
 						<div>
-							<input class="bearbeitungsschrittInput input-primary-new" type="date" max="32">
+							<input class="bearbeitungsschrittInput input-primary" type="date" max="32">
 						</div>
 					</div>
 				</div>
@@ -326,7 +323,7 @@ if ($orderId <= 0): ?>
 			<p><span class="font-bold">Fahrzeuge</span><button class="ml-1 infoButton" data-info="1">i</button>
 			<p>
 			<div>
-				<select id="selectVehicle" data-write="true" data-fun="selectVehicle" class="input-primary-new">
+				<select id="selectVehicle" data-write="true" data-fun="selectVehicle" class="input-primary">
 					<option value="0" selected disabled>Bitte auswählen</option>
 					<?php foreach ($fahrzeuge as $f): ?>
 						<option value="<?= $f['Nummer'] ?>"><?= $f['Kennzeichen'] ?> <?= $f['Fahrzeug'] ?></option>
@@ -336,8 +333,8 @@ if ($orderId <= 0): ?>
 				<button class="m-1 btn-primary-new" data-binding="true" data-fun="addExistingVehicle">Übernehmen</button>
 			</div>
 			<div class="innerDefCont" id="addVehicle" style="display: none;">
-				<p>Kfz-Kennzeichen:<br><input id="kfz" class="input-primary-new"></p>
-				<p>Fahrzeug:<br><input id="fahrzeug" class="input-primary-new"></p>
+				<p>Kfz-Kennzeichen:<br><input id="kfz" class="input-primary"></p>
+				<p>Fahrzeug:<br><input id="fahrzeug" class="input-primary"></p>
 				<button class="btn-primary-new mt-2" data-binding="true" data-fun="addNewVehicle">Hinzufügen</button>
 			</div>
 			<div><?= $auftrag->getFahrzeuge(); ?></div>
@@ -388,19 +385,19 @@ if ($orderId <= 0): ?>
 			<div class="defCont">
 				<label>
 					<p class="text-sm">Farbbezeichnung</p>
-					<input class="colorInput input-primary-new" type="text" max="32" placeholder="619 verkehrsgrün">
+					<input class="colorInput input-primary" type="text" max="32" placeholder="619 verkehrsgrün">
 				</label>
 				<label>
 					<p class="text-sm">Farbtyp</p>
-					<input class="colorInput input-primary-new" type="text" max="32" placeholder="751C">
+					<input class="colorInput input-primary" type="text" max="32" placeholder="751C">
 				</label>
 				<label>
 					<p class="text-sm">Hersteller</p>
-					<input class="colorInput input-primary-new" type="text" max="32" placeholder="Oracal">
+					<input class="colorInput input-primary" type="text" max="32" placeholder="Oracal">
 				</label>
 				<label class="ml-1">
 					<p class="text-sm">Farbe (Hex)</p>
-					<input class="colorInput jscolor input-primary-new outline outline-offset-1" type="text" max="32" data-write="true" data-fun="checkHexCode">
+					<input class="colorInput jscolor input-primary outline outline-offset-1" type="text" max="32" data-write="true" data-fun="checkHexCode">
 				</label>
 				<br>
 				<button class="btn-primary-new" data-fun="sendColor">Hinzufügen</button>

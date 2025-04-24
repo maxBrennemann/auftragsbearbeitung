@@ -1,3 +1,5 @@
+import { notification } from "../classes/notifications.js";
+
 /* https://www.therogerlab.com/sandbox/pages/how-to-reorder-table-rows-in-javascript?s=0ea4985d74a189e8b7b547976e7192ae.4122809346f6a15e41c9a43f6fcb5fd5 */
 var row;
 var rows;
@@ -88,9 +90,9 @@ function sendPostenOrder(event) {
 
     ajax.post(params).then(response => {
         if (response == "ok") {
-            infoSaveSuccessfull("success");
+            notification("", "success");
         } else {
-            infoSaveSuccessfull();
+            notification("", "failure");
         }
     });
 }
