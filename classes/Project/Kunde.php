@@ -314,22 +314,19 @@ class Kunde implements StatisticsInterface
 
 	public static function addCustomer()
 	{
-		$data = Tools::get("data");
-		$data = json_decode($data, true);
-
 		/* insert customer data */
-		$query = "INSERT INTO kunde (Firmenname, Anrede, Vorname, Nachname, Email, TelefonFestnetz, TelefonMobil, Website) VALUES (:firmenname, :anrede, :vorname, :nachname, :email, :telfestnetz, :telmobil, :website)";
+		$query = "INSERT INTO kunde (Firmenname, Anrede, Vorname, Nachname, Email, TelefonFestnetz, TelefonMobil, Website, note) VALUES (:firmenname, :anrede, :vorname, :nachname, :email, :telfestnetz, :telmobil, :website, :note)";
 
 		$customerId = DBAccess::insertQuery($query, [
-			"firmenname" => $data["customerName"] ?? "",
-			"anrede" => (int) $data["anrede"],
-			"vorname" => $data["prename"] ?? "",
-			"nachname" => $data["surname"] ?? "",
-			"email" => $data["companyemail"],
-			"telfestnetz" => $data["telfestnetz"],
-			"telmobil" => $data["telmobil"],
-			"website" => $data["website"] ?? "",
-			"note" => $data["notes"],
+			"firmenname" => Tools::get("customerName") ?? "",
+			"anrede" => (int) Tools::get("anrede"),
+			"vorname" => Tools::get("prename") ?? "",
+			"nachname" => Tools::get("surname") ?? "",
+			"email" => Tools::get("companyemail"),
+			"telfestnetz" => Tools::get("telfestnetz"),
+			"telmobil" => Tools::get("telmobil"),
+			"website" => Tools::get("website") ?? "",
+			"note" => Tools::get("notes"),
 		]);
 
 		/* insert address data */
@@ -337,12 +334,12 @@ class Kunde implements StatisticsInterface
 
 		$addressId = DBAccess::insertQuery($query, [
 			"id_customer" => $customerId,
-			"strasse" => $data["street"],
-			"hausnr" => $data["houseNumber"],
-			"plz" => (int) $data["plz"],
-			"ort" => $data["city"],
-			"zusatz" => $data["addressAddition"],
-			"country" => $data["country"],
+			"strasse" => Tools::get("street"),
+			"hausnr" => Tools::get("houseNumber"),
+			"plz" => (int) Tools::get("plz"),
+			"ort" => Tools::get("city"),
+			"zusatz" => Tools::get("addressAddition"),
+			"country" => Tools::get("country"),
 		]);
 
 		/* update customer data */
@@ -352,15 +349,15 @@ class Kunde implements StatisticsInterface
 		]);
 
 		/* insert ansprechpartner data */
-		if ($data["type"] == "company") {
+		if (Tools::get("type") == "company") {
 			$query = "INSERT INTO ansprechpartner (Kundennummer, Vorname, Nachname, Email, Durchwahl, Mobiltelefonnummer) VALUES (:customerId, :vorname, :nachname, :email, :durchwahl, :mobiltelefonnummer)";
 			DBAccess::insertQuery($query, [
 				"customerId" => $customerId,
-				"vorname" => $data["contactPrename"],
-				"nachname" => $data["contactSurname"],
-				"email" => $data["emailaddress"],
-				"durchwahl" => $data["phoneExtension"],
-				"mobiltelefonnummer" => $data["mobileNumber"],
+				"vorname" => Tools::get("contactPrename"),
+				"nachname" => Tools::get("contactSurname"),
+				"email" => Tools::get("emailaddress"),
+				"durchwahl" => Tools::get("phoneExtension"),
+				"mobiltelefonnummer" => Tools::get("mobileNumber"),
 			]);
 		}
 

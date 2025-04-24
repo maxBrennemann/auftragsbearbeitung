@@ -72,9 +72,6 @@ function toggleStyles(element) {
 }
 
 fnNames.click_sendCustomerData = () => {
-    const addNewCustomer = document.getElementById("addNewCustomer");
-    addNewCustomer.disabled = true;
-
     let form = null;
     switch (globalProperties.current) {
         case globalProperties.company:
@@ -92,9 +89,7 @@ fnNames.click_sendCustomerData = () => {
     data.forEach((value, key) => object[key] = value);
     object.type = globalProperties.current == globalProperties.company ? "company" : "private";
 
-    ajax.post(`/api/v1/customer`, {
-        "data": JSON.stringify(object),
-    }).then(r => {
+    ajax.post(`/api/v1/customer`, object).then(r => {
         if (r.status == "success") {
             location.href = r.link;
         }
