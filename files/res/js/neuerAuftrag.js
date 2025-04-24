@@ -1,3 +1,5 @@
+import { ajax } from "./classes/ajax.js";
+
 function initNewOrder() {
     const input = document.getElementById("kundensuche");
     if (input != null) {
