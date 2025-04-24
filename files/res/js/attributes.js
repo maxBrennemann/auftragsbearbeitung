@@ -1,5 +1,5 @@
 import { ajax } from "./classes/ajax.js";
-import { notification } from "./classes/.js";
+import { notification } from "./classes/notifications.js";
 
 let currentDraggedGroup = null;
 let currentDraggedElement = null;
