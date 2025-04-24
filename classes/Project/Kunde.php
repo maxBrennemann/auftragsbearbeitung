@@ -323,8 +323,8 @@ class Kunde implements StatisticsInterface
 			"vorname" => Tools::get("prename") ?? "",
 			"nachname" => Tools::get("surname") ?? "",
 			"email" => Tools::get("companyemail") ?? "",
-			"telfestnetz" => Tools::get("telfestnetz"),
-			"telmobil" => Tools::get("telmobil"),
+			"telfestnetz" => Tools::get("telfestnetz") ?? "",
+			"telmobil" => Tools::get("telmobil") ?? "",
 			"website" => Tools::get("website") ?? "",
 			"note" => Tools::get("notes"),
 		]);
