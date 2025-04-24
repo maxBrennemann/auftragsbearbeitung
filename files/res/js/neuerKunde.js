@@ -72,9 +72,6 @@ function toggleStyles(element) {
 }
 
 fnNames.click_sendCustomerData = () => {
-    const addNewCustomer = document.getElementById("addNewCustomer");
-    addNewCustomer.disabled = true;
-
     let form = null;
     switch (globalProperties.current) {
         case globalProperties.company:
