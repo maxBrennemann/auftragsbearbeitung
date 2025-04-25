@@ -8,6 +8,7 @@ $openOrders = Auftrag::getAuftragsliste();
 $offeneSumme = Invoice::getOffeneRechnungssumme();
 
 /**
+ * TODO: in notifications umziehen
  * $showAktuelleSchritte = Aufgabenliste::aktuelleSchritteAlsTabelleAusgeben();
  * $showReady = Auftrag::getReadyOrders();
  */
