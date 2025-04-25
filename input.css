@@ -67,7 +67,7 @@
         @apply border-t border-solid border-gray-400 flex justify-end p-3 bg-slate-50;
     }
 
-    .table {
+    /*.table {
         @apply
     }
 
@@ -81,7 +81,7 @@
 
     .table__foot {
         @apply
-    }
+    }*/
 }
 
 @font-face {

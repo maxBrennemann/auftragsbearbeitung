@@ -1,4 +1,4 @@
-import { notification } from "../classes/notifications.j";
+import { notification } from "../classes/notifications.js";
 import { ajax } from "../classes/ajax.js";
 import { createPopup } from "../global.js";
 
