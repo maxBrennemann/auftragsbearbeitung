@@ -220,7 +220,7 @@ class Leistung extends Posten
 		$data['Auftragsnummer'] = $orderId;
 		$data['ohneBerechnung'] = Tools::get("ohneBerechnung");
 		$data['discount'] = (int) Tools::get("discount");
-		$data['MEH'] = Tools::get("bes");
+		$data['MEH'] = Tools::get("meh");
 		$data['addToInvoice'] = (int) Tools::get("addToInvoice");
 
 		$data['Einkaufspreis'] = (float) Tools::get("ekp");

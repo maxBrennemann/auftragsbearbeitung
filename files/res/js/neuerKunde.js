@@ -1,5 +1,5 @@
 import { ajax } from "./classes/ajax.js";
-import { initBindings } from "./classes/bindings.js";
+import { addBindings } from "./classes/bindings.js";
 
 const globalProperties = {
     company: null,
@@ -20,7 +20,7 @@ if (document.readyState !== 'loading' ) {
 }
 
 function initAddCustomer() {
-    initBindings(fnNames);
+    addBindings(fnNames);
 
     globalProperties.company = document.getElementById("showCompanies");
     globalProperties.person = document.getElementById("showPersons");

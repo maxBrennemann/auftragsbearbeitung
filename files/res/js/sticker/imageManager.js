@@ -1,5 +1,6 @@
 import { notification } from "../classes/notifications.j";
 import { ajax } from "../classes/ajax.js";
+import { createPopup } from "../global.js";
 
 const svgContainer = document.getElementById("svgContainer");
 const motivId = document.getElementById("motivId")?.innerHTML;
@@ -115,7 +116,7 @@ function addTableRow(imageSrc, imageCategory, imageFileId) {
         f.dataset.fileId = imageFileId;
     });
 
-    //addBindings(fileIds);
+    addBindings(fileIds);
 }
 
 function getIcon(type = "icon-file") {
@@ -157,9 +158,8 @@ function imagePreview(e) {
 
     copy.style.width = imageSize + "px";
     
-    document.body.appendChild(copy);
     copy.classList.add("imgAbsoluteCenter");
-    centerAbsoluteElement(copy);
+    createPopup(copy);
 }
 
 function itemDragOverHandler(e) {

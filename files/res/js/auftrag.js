@@ -1,4 +1,4 @@
-﻿import { initBindings } from "./classes/bindings.js";
+﻿import { addBindings } from "./classes/bindings.js";
 import { addColor, addSelectedColors, checkHexCode, removeColor, toggleCS } from "./auftrag/colorManager.js";
 import { addBearbeitungsschritt, addStep, sendNote, removeNote, addNewNote, initNotes, cancelNote } from "./auftrag/noteStepManager.js";
 import { setOrderFinished, updateDate, updateDeadline, setDeadlineState, initExtraOptions, editDescription, editOrderType, editTitle, archvieren } from "./auftrag/orderManager.js";
@@ -8,6 +8,7 @@ import { ajax } from "./classes/ajax.js";
 import { getItemsTable, initInvoiceItems } from "./classes/invoiceItems.js";
 import { notification } from "./classes/notifications.js";
 import { FileUploader } from "./classes/fileUploader.js";
+import { createPopup } from "./global.js";
 
 /* global variables */
 window.globalData = {
@@ -25,7 +26,7 @@ const initCode = async () => {
         return;
     }
 
-    initBindings(fnNames);
+    addBindings(fnNames);
 
     if (document.getElementById("orderFinished")) {
         return;
@@ -98,9 +99,7 @@ window.performSearch = function (e) {
         var div = document.createElement("div");
         div.innerHTML = responseTable;
         div.id = "prodcutSearchContainer";
-        document.body.appendChild(div);
-        centerAbsoluteElement(div);
-        addActionButtonForDiv(div, 'remove');
+        createPopup(div);
     });
 }
 
@@ -179,10 +178,8 @@ function showDeleteMessage(row, header, key, type) {
     div.appendChild(document.createElement("br"));
     div.appendChild(btn_yes);
     div.appendChild(btn_no);
-    document.body.appendChild(div);
 
-    addActionButtonForDiv(div, "remove");
-    centerAbsoluteElement(div);
+    createPopup(div);
 }
 
 const toggleOrderDescription = () => {
@@ -260,12 +257,9 @@ window.performAction = function (key, event) {
     tableKey.value = event.target.parentNode.parentNode.parentNode.parentNode.dataset.key;
     form.appendChild(tableKey);
 
-    document.body.appendChild(div);
-    addActionButtonForDiv(div, "remove");
-
     /* add new file uploader */
     fileUploaders.push(new FileUploader(form));
-    centerAbsoluteElement(div);
+    createPopup(div);
 }
 
 fnNames.click_toggleInvoiceItems = e => {

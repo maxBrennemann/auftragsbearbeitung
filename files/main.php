@@ -1,16 +1,16 @@
 <?php
 
-use Classes\Link;
-
-use Classes\Project\Aufgabenliste;
 use Classes\Project\Auftrag;
 use Classes\Project\Invoice;
 use Classes\Project\Icon;
 
-$showAktuelleSchritte = Aufgabenliste::aktuelleSchritteAlsTabelleAusgeben();
-$showOffeneAuftraege = Auftrag::getAuftragsliste();
-$showReady = Auftrag::getReadyOrders();
+$openOrders = Auftrag::getAuftragsliste();
 $offeneSumme = Invoice::getOffeneRechnungssumme();
+
+/**
+ * $showAktuelleSchritte = Aufgabenliste::aktuelleSchritteAlsTabelleAusgeben();
+ * $showReady = Auftrag::getReadyOrders();
+ */
 
 ?>
 <div>
@@ -60,16 +60,8 @@ $offeneSumme = Invoice::getOffeneRechnungssumme();
 	<br>
 	<div class="tableContainer">
 		<div>
-			<h3 class="font-bold my-3">Offene Bearbeitungsschritte</h3>
-			<?= $showAktuelleSchritte ?>
-		</div>
-		<div>
-			<h3 class="font-bold my-3">Fertig zum Abschließen</h3>
-			<?= $showReady ?>
-		</div>
-		<div>
 			<h3 class="font-bold my-3">Offene Aufträge</h3>
-			<?= $showOffeneAuftraege ?>
+			<?= $openOrders ?>
 		</div>
 	</div>
 </div>

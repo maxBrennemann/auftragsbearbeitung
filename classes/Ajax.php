@@ -22,8 +22,6 @@ use Classes\Routes\UserRoutes;
 use Classes\Routes\VariousRoutes;
 
 use Classes\Project\Search;
-use Classes\Project\Liste;
-use Classes\Project\NotificationManager;
 use Classes\Project\Auftrag;
 use Classes\Project\Posten;
 use Classes\Project\Fahrzeug;
@@ -157,37 +155,6 @@ class Ajax
 				$query = $_POST['query'];
 				echo Search::globalSearch($query);
 				break;
-			case "saveList":
-				$data = $_POST['data'];
-				Liste::saveData($data);
-				echo Link::getPageLink("listmaker");
-				break;
-			case "saveListData":
-				$listid = (int) $_POST['listId'];
-				$listname = (int) $_POST['id'];
-				$listvalue = $_POST['value'];
-				$listtype = $_POST['type'];
-				$orderId = $_POST['auftrag'];
-
-				$types = [
-					"radio" => 1,
-					"checkbox" => 2,
-					"text" => 3
-				];
-
-				$listtype = $types[$listtype];
-
-				Liste::storeListData($listid, $listname, $listtype, $listvalue, $orderId);
-
-				echo "success";
-				break;
-			case "notification":
-				echo NotificationManager::htmlNotification();
-				break;
-			case "updateNotification":
-				NotificationManager::checkActuality();
-				echo NotificationManager::htmlNotification();
-				break;
 			case "createAuftrag":
 				Auftrag::add();
 				break;
@@ -284,7 +251,7 @@ class Ajax
 				]);
 
 				$user = User::getCurrentUserId();
-				NotificationManager::addNotificationCheck($user, 0, "Bearbeitungsschritt erledigt", $postennummer);
+				//NotificationManager::addNotificationCheck($user, 0, "Bearbeitungsschritt erledigt", $postennummer);
 				break;
 			case "deleteOrder":
 				// TODO: implement db triggers for order deletion
@@ -327,11 +294,6 @@ class Ajax
 				$kdnr = (int) $_POST['kdnr'];
 				echo json_encode(Address::loadAllAddresses($kdnr));
 				break;
-			case "getList":
-				$lid = $_POST['listId'];
-				$list = Liste::readList($lid);
-				echo $list->toHTML();
-				break;
 			case "saveDescription":
 				$text = $_POST['text'];
 				$auftrag = $_POST['auftrag'];
@@ -349,12 +311,6 @@ class Ajax
 
 				$response = Table::updateValue($table, $action, $key);
 				echo $response;
-				break;
-			case "addListToOrder":
-				$listId = (int) $_POST['listId'];
-				$orderId = (int) $_POST['auftrag'];
-				$order = new Auftrag($orderId);
-				$order->addList($listId);
 				break;
 			case "addNewLine":
 				$key = $_POST['key'];
@@ -378,13 +334,6 @@ class Ajax
 				$intent = $_POST['intent'];
 				$data = DBAccess::selectQuery("SELECT info FROM `manual` WHERE `page` = '$pageName' AND intent = '$intent'");
 				echo json_encode($data, JSON_FORCE_OBJECT);
-				break;
-			case "setNotificationsRead":
-				$notificationIds = $_POST["notificationIds"];
-				if ($notificationIds == "all") {
-					NotificationManager::setNotificationsRead(-1);
-				} else {
-				}
 				break;
 			case "writeProductDescription":
 				Sticker::setDescription();

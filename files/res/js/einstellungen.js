@@ -1,5 +1,5 @@
 import { ajax } from "./classes/ajax.js";
-import { initBindings } from "./classes/bindings.js";
+import { addBindings } from "./classes/bindings.js";
 import { createHeader, createTable, addRow, fetchAndRenderTable } from "./classes/table.js";
 import { tableConfig } from "./classes/tableconfig.js";
 import { notification } from "./classes/notifications.js";
@@ -8,7 +8,7 @@ import { Colorpicker } from "./classes/colorpicker.js";
 const fnNames = {};
 
 function initEventListeners() {
-    initBindings(fnNames);
+    addBindings(fnNames);
     timeTracking();
 
     const clearFiles = document.getElementById("clearFiles");

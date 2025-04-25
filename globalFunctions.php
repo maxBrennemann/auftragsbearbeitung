@@ -1,6 +1,6 @@
 <?php
 
-define('CURRENTVERSION', '1.1.18');
+define('CURRENTVERSION', '1.2.0');
 ini_set('display_errors', true);
 
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;

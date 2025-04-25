@@ -1,7 +1,10 @@
 import { DeviceDetector } from "./classes/deviceDetector.js";
 import { TableSorter, currentTableSorter, setTableSorter, sortTableNew } from "./classes/tableSorter.js";
-import { ajax, makeAsyncCall } from "./classes/ajax.js";
+import { ajax } from "./classes/ajax.js";
 import { timeGlobalListener } from "./classes/timetracking.js";
+import { addBindings } from "./classes/bindings.js";
+
+const fnNames = {};
 
 /**
  * function is called when the page is loaded,
@@ -9,25 +12,12 @@ import { timeGlobalListener } from "./classes/timetracking.js";
  */
 function exportToWindow() {
 	window.sortTableNew = sortTableNew;
-	window.makeAsyncCall = makeAsyncCall;
 
-	window.centerAbsoluteElement = centerAbsoluteElement;
-	window.addActionButtonForDiv = addActionButtonForDiv;
-	window.removeElement = removeElement;
-	window.indexInClass = indexInClass;
-	window.createTable = createTable;
 	window.sortTable = sortTable;
 	window.clearInputs = clearInputs;
-	window.toggleNav = toggleNav;
-	window.setRead = setRead;
-	window.updateNotifications = updateNotifications;
-	window.performGlobalSearch = performGlobalSearch;
-	window.getCookie = getCookie;
-	window.checkCookies = checkCookies;
-	window.setCookie = setCookie;
 }
 
-document.addEventListener("click", function(event) {
+document.addEventListener("click", function (event) {
 	if (!event.target.matches('.showLog,.showLog *')) {
 		if (document.getElementById("login")) {
 			document.getElementById("login").style.display = "none";
@@ -53,36 +43,40 @@ function registerLastActivity() {
 }
 
 function startFunc() {
+	addBindings(fnNames);
 	timeGlobalListener();
 
-	var el = document.querySelector("input[type=email");
-	if (el != null) {
-		el.addEventListener("input", function() {
+	autoValidateEmails();
+	autoSizeTextareas();
+	autosubmit();
+
+	initializeInfoBtn();
+	setTableSorter(new TableSorter());
+	currentTableSorter.readTableSorted();
+	initSearch();
+}
+
+const autoSizeTextareas = () => {
+	const textareas = document.querySelectorAll("textarea");
+	textareas.forEach(t => {
+		if (t.scrollHeight != 0) {
+			t.style.height = '';
+			t.style.height = t.scrollHeight + 'px';
+		}
+	});
+}
+
+const autoValidateEmails = () => {
+	const emailInputs = document.querySelectorAll("input[type=email");
+	emailInputs.forEach(el => {
+		el.addEventListener("input", function () {
 			if (validateEmail(el.value)) {
 				el.style.color = "green";
 			} else {
 				el.style.color = "red";
 			}
 		}, false);
-	}
-
-	autosubmit();
-
-	/* auto sizes textareas on page load */
-	var textareas = document.querySelectorAll("textarea");
-	for (let t of textareas) {
-		if (t.scrollHeight != 0) {
-			t.style.height = '';
-			t.style.height = t.scrollHeight + 'px';
-		}
-	}
-
-	listener_logout();
-	listener_bellAndSearch();
-	initializeInfoBtn();
-	setTableSorter(new TableSorter());
-	currentTableSorter.readTableSorted();
-	initSearch();
+	});
 }
 
 const initSearch = () => {
@@ -123,163 +117,58 @@ function initSearchIcons() {
 	});
 }
 
-function listener_logout() {
-	const logout = document.getElementById("logoutBtn");
-	if (logout == null) {
-		return;
-	}
+export const createPopup = (content) => {
+	const container = document.createElement("div");
+	container.classList.add("overlay-container");
+	const contentContainer = document.createElement("div");
+	contentContainer.classList.add("overlay-container__content");
+	const optionsContainer = document.createElement("div");
+	optionsContainer.classList.add("overlay-container__content__options");
+	const button = document.createElement("button");
+	button.classList.add("btn-cancel");
+	button.innerHTML = "Abbrechen";
+	button.addEventListener("click", () => {
+		container.parentNode.removeChild(container);
+	});
+	optionsContainer.appendChild(button);
 
-	logout.addEventListener("click", () => {
-		const cookies = checkCookies();
-		let loginkey = "false";
-		if ("loginkey" in cookies) {
-			loginkey = cookies["loginkey"];
-		}
-		ajax.post(`/api/v1/auth/logout`, {
-			"loginkey": loginkey,
-		}).then(() => location.reload());
-	}, false);
+	content.classList.add("p-3");
+	contentContainer.appendChild(content);
+	contentContainer.appendChild(optionsContainer);
+	container.appendChild(contentContainer);
+	document.body.appendChild(container);
+
+	return optionsContainer;
 }
 
-/**
- * shows the notification container when the bell is clicked
- * @returns {null} if the bellAndSearch element is not found
- */
-function listener_bellAndSearch() {
-	var bellAndSearch = document.getElementsByClassName("notificationContainer")[0];
-	if (bellAndSearch == null) {
-		return null;
+fnNames.click_logout = () => {
+	const cookies = checkCookies();
+	let loginkey = "false";
+	if ("loginkey" in cookies) {
+		loginkey = cookies["loginkey"];
 	}
+	ajax.post(`/api/v1/auth/logout`, {
+		"loginkey": loginkey,
+	}).then(() => location.reload());
+}
 
-	bellAndSearch.addEventListener("click", async function() {
-		if (document.getElementById("showNotifications") == null) {
-			const div = document.createElement("div");
-			div.id = "showNotifications";
-			div.classList.add("w-7/12", "z-10", "h-96");
-			document.body.appendChild(div);
+fnNames.click_showNotifications = async () => {
+	const div = document.createElement("div");
+	div.classList.add("w-7/12", "z-10", "h-96");
 
-			const htmlContent = await ajax.post({
-				r: "notification",
-			}, true);
+	const response = await ajax.get(`/api/v1/notification/template`);
+	const innerDiv = document.createElement("div");
+	innerDiv.innerHTML = response.html;
 
-			const innerDiv = document.createElement("div");
-			innerDiv.innerHTML = htmlContent;
+	div.appendChild(innerDiv);
+	innerDiv.classList.add("notificationWrapper");
 
-			div.appendChild(innerDiv);
-			innerDiv.classList.add("notificationWrapper");
-			addActionButtonForDiv(div, "hide");
-			centerAbsoluteElement(div);
-		} else {
-			document.getElementById("showNotifications").style.display = "inline";
-		}
-	}, false);
+	createPopup(innerDiv);
 }
 
 function validateEmail(email) {
-	var re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+	const re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 	return re.test(String(email).toLowerCase());
-}
-
-/* 
-* can be used to center an absolute or fixed div
-*/
-function centerAbsoluteElement(div) {
-	var divWidth = div.offsetWidth;
-	var divHeight = div.offsetHeight;
-
-	var pageWidth = window.innerWidth;
-	var pageHeight = window.innerHeight;
-
-	var scrollTop = 0; //document.documentElement.scrollTop || document.body.scrollTop;
-
-	div.style.left = ((pageWidth - divWidth) / 2) + "px";
-	div.style.top = (((pageHeight - divHeight) / 2) + scrollTop) + "px";
-}
-
-function addActionButtonForDiv(div, action) {
-	div.classList.add("centeredContainer");
-
-	var firstNode = div.firstChild;
-	var btn = document.createElement("button");
-	btn.innerHTML = "×";
-	btn.classList.add("closeButton");
-	btn.dataset.close = "1";
-	btn.addEventListener("click", function(event) {
-		var child = event.target.parentNode;
-		var parent = event.target.parentNode.parentNode;
-		switch (action) {
-			case 'hide':
-				child.style.display = "none";
-				break;
-			case 'remove':
-				parent.removeChild(child);
-				break;
-			default:
-				break;
-		}
-	}.bind(action), false);
-
-	if (firstNode.dataset == null || firstNode.dataset.close == null) {
-		div.insertBefore(btn, firstNode);
-	}
-}
-
-function removeElement(element) {
-	if (typeof element === 'string' || element instanceof String) {
-		var child = document.getElementById(element);
-		var parent = child.parentNode;
-		parent.removeChild(child);
-	} else if (element instanceof HTMLElement) {
-		var parent = element.parentNode;
-		parent.removeChild(element);
-	}
-}
-
-/* https://stackoverflow.com/questions/34910042/get-index-of-class/34910134 */
-function indexInClass(node) {
-	var collection = document.getElementsByClassName(node.className);
-	for (var i = 0; i < collection.length; i++) {
-		if (collection[i] === node)
-			return i;
-	}
-	return -1;
-}
-
-/*
-* data should be an array containing arrays the size of a row, the data[0] array should contain the heading
-* of the table, so the size of data is rows + 1;
-*/
-function createTable(rows, columns, data, emptyFields) {
-	var table = document.createElement("table");
-	var tbody = document.createElement("tobdy");
-
-	if (emptyFields == null || emptyFields == undefined) {
-		emptyFields = false;
-	}
-
-	var tr, td, th;
-	for (var i = 0; i <= rows; i++) {
-		tr = document.createElement("tr");
-		for (var n = 0; n < columns; n++) {
-			if (i == 0) {
-				th = document.createElement("th");
-				th.innerText = data[i][n] == undefined ? "" : data[i][n];
-				tr.appendChild(th);
-			} else {
-				td = document.createElement("td");
-				if (emptyFields == true && data[i][n] == undefined) {
-					td.contentEditable = "true";
-				}
-				td.innerText = data[i][n] == undefined ? "" : data[i][n];
-				tr.appendChild(td);
-			}
-		}
-		tbody.appendChild(tr);
-	}
-
-	table.appendChild(tbody);
-
-	return table;
 }
 
 /* submit button onenter */
@@ -304,21 +193,21 @@ function sortTable(element, id, direction) {
 }
 
 class TableClass {
-    constructor(html_table) {
-        this.html_table = html_table;
-        this.rows = html_table.rows;
-    }
+	constructor(html_table) {
+		this.html_table = html_table;
+		this.rows = html_table.rows;
+	}
 
-    sortByRow(rowId, direction) {
-        var switching = true, x, y, shouldSwitch;
+	sortByRow(rowId, direction) {
+		var switching = true, x, y, shouldSwitch;
 		while (switching) {
 			switching = false;
-			
+
 			for (var i = 1; i < (this.rows.length - 1); i++) {
 				shouldSwitch = false;
 				x = this.rows[i].getElementsByTagName("TD")[rowId];
 				y = this.rows[i + 1].getElementsByTagName("TD")[rowId];
-				
+
 				if (direction) {
 					if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
 						shouldSwitch = true;
@@ -332,12 +221,12 @@ class TableClass {
 				}
 			}
 			if (shouldSwitch) {
-			
-			this.rows[i].parentNode.insertBefore(this.rows[i + 1], this.rows[i]);
-			switching = true;
+
+				this.rows[i].parentNode.insertBefore(this.rows[i + 1], this.rows[i]);
+				switching = true;
 			}
 		}
-    }
+	}
 }
 
 /* info button code 
@@ -348,11 +237,11 @@ class TableClass {
 function initializeInfoBtn() {
 	let btns = document.getElementsByClassName("infoButton");
 	Array.from(btns).forEach(btn => {
-		btn.addEventListener("click", async function() {
+		btn.addEventListener("click", async function () {
 			const id = btn.dataset.info;
 			const response = await ajax.post({
 				r: "getInfoText",
-				info : id,
+				info: id,
 			}, true);
 
 			let infoBox = document.getElementById("infoBox" + id);
@@ -370,7 +259,7 @@ function initializeInfoBtn() {
 					infoBox.classList.add('infoBoxShow');
 				}
 			}
-			
+
 			let left = parseInt(btn.offsetWidth + btn.offsetLeft);
 			let top = parseInt(- (0.75 * btn.offsetHeight) + btn.offsetTop);
 
@@ -384,7 +273,7 @@ function initializeInfoBtn() {
 	});
 }
 
-window.addEventListener("click", function(event) {
+window.addEventListener("click", function (event) {
 	if (!event.target.matches('infoButton')) {
 		var dropdowns = document.getElementsByClassName("infoBox");
 		for (let i = 0; i < dropdowns.length; i++) {
@@ -453,10 +342,10 @@ export const setInpupts = inputs => {
 				break;
 		}
 	}
-} 
+}
 
 /* side nav */
-function toggleNav() {
+fnNames.click_toggleNav = function() {
 	let sidenav = document.getElementById("sidenav");
 	if (sidenav.style.width == "250px") {
 		sidenav.style.width = "0";
@@ -471,25 +360,6 @@ function toggleNav() {
 			elements[i].style.marginLeft = "250px";
 		}
 	}
-}
-
-/* code for notifications */
-function setRead() {
-	ajax.post([
-		"r", "setNotificationsRead",
-		"notificationIds", "all",
-	]);
-}
-
-async function updateNotifications() {
-	const containerDiv = document.getElementById("showNotifications");
-	const replacementDiv = document.createElement("div");
-	replacementDiv.innerHTML = "test"; // TODO: replace with ajax call
-
-	replacementDiv.classList.add("notificationWrapper");
-
-	const toReplace = containerDiv.children[1];
-	containerDiv.replaceChild(replacementDiv, toReplace); 
 }
 
 async function performGlobalSearch(e) {
@@ -509,44 +379,40 @@ async function performGlobalSearch(e) {
 	}
 	div.style.overflowY = "scroll";
 
-	document.body.appendChild(div);
-	addActionButtonForDiv(div, "remove");
-	centerAbsoluteElement(div);
+	createPopup(div);
 }
 
-function getCookie(name) {
-    var allCookies = checkCookies();
-    if (name in allCookies) {
-        const val = allCookies[name];
-        return val;
-    }
+export function getCookie(name) {
+	var allCookies = checkCookies();
+	if (name in allCookies) {
+		const val = allCookies[name];
+		return val;
+	}
 
-    return null;
+	return null;
 }
 
-/* https://www.geekstrick.com/snippets/how-to-parse-cookies-in-javascript/ */
 function checkCookies() {
-    var cookies = document.cookie.split(";");
-    var cookieObj = {};
-    for (let i = 0; i < cookies.length; i++) {
-        var parts = cookies[i].split("=");
+	var cookies = document.cookie.split(";");
+	var cookieObj = {};
+	for (let i = 0; i < cookies.length; i++) {
+		var parts = cookies[i].split("=");
 
 		if (parts[0].charAt(0) == " ") {
 			parts[0] = parts[0].substring(1);
 		}
-        
-        cookieObj[parts[0]] = parts[1];
-    }
 
-    return cookieObj;
+		cookieObj[parts[0]] = parts[1];
+	}
+
+	return cookieObj;
 }
 
-/* https://www.w3schools.com/js/js_cookies.asp */
-function setCookie(cname, cvalue, exdays) {
-    const d = new Date();
-    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-    let expires = "expires=" + d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+export const setCookie = (cname, cvalue, exdays) => {
+	const d = new Date();
+	d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+	let expires = "expires=" + d.toUTCString();
+	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
 export const loadFromLocalStorage = (key) => {
@@ -574,12 +440,12 @@ export const getTemplate = (id) => {
 	return clone;
 }
 
-if (document.readyState !== 'loading' ) {
+if (document.readyState !== 'loading') {
 	exportToWindow();
-    startFunc();
+	startFunc();
 } else {
-    document.addEventListener('DOMContentLoaded', function () {
+	document.addEventListener('DOMContentLoaded', function () {
 		exportToWindow();
-        startFunc();
-    });
+		startFunc();
+	});
 }

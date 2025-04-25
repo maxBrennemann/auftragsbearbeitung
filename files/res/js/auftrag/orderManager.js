@@ -1,5 +1,6 @@
 import { ajax } from "../classes/ajax.js";
 import { notification } from "../classes/notifications.js";
+import { createPopup } from "../global.js";
 
 export async function setOrderFinished() {
     if (confirm('Möchtest Du den Auftrag als "Erledigt" markieren?')) {
@@ -66,7 +67,6 @@ function showDeleteConfirmation() {
     div.id = "alertBox";
     div.appendChild(template.content.cloneNode(true));
 
-    document.body.appendChild(div);
     div.classList.add("absolute", "w-96", "z-20");
 
     const deleteOrderBtn = div.querySelector('#deleteOrder');
@@ -75,9 +75,7 @@ function showDeleteConfirmation() {
     const closeAlertBtn = div.querySelector('#closeAlert');
     closeAlertBtn.addEventListener("click", closeAlert, false);
 
-
-    centerAbsoluteElement(div);
-    addActionButtonForDiv(div, "remove");
+    createPopup(div);
 }
 
 function deleteOrder() {
@@ -152,9 +150,7 @@ export function archvieren() {
             a.href = document.getElementById("home_link").href;
             a.innerText = "Zurück zur Startseite";
             div.appendChild(a);
-            centerAbsoluteElement(div);
-            addActionButtonForDiv(div, 'remove');
-            document.body.appendChild(div);
+            createPopup(div);
         }
     })
 }

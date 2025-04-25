@@ -14,8 +14,8 @@ const BindingManager = (function () {
             instance = this;
         }
 
-        initBindings(fnNames) {
-            this.fnNames = fnNames;
+        addBindings(fnNames) {
+            this.fnNames = { ...this.fnNames, ...fnNames };
 
             document.querySelectorAll('[data-binding]').forEach(el => {
                 this._addBinding(el);
@@ -29,14 +29,6 @@ const BindingManager = (function () {
 
             document.querySelectorAll('[data-write]').forEach(el => {
                 this._addWriteBinding(el);
-            });
-        }
-
-        addBindings(fnNames) {
-            this.fnNames = { ...this.fnNames, ...fnNames };
-
-            document.querySelectorAll('[data-binding]').forEach(el => {
-                this._addBinding(el);
             });
         }
 
@@ -104,6 +96,5 @@ const BindingManager = (function () {
     return new BindingManager();
 })();
 
-export const initBindings = fnNames => BindingManager.initBindings(fnNames);
 export const addBindings = fnNames => BindingManager.addBindings(fnNames);
 export const getVariable = id => BindingManager.getVariable(id);

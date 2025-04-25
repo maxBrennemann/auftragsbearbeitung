@@ -7,6 +7,7 @@ use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 use Classes\Project\Auftragsverlauf;
+use Classes\Project\Notification\NotificationManager;
 
 class Step
 {

@@ -1,6 +1,6 @@
 import { addRow, createHeader, createTable, fetchAndRenderTable, renderTable } from "./classes/table.js";
 import { tableConfig } from "./classes/tableconfig.js";
-import { initBindings } from "./classes/bindings.js";
+import { addBindings } from "./classes/bindings.js";
 import { ajax } from "./classes/ajax.js";
 import { notification } from "./classes/notifications.js";
 
@@ -15,7 +15,7 @@ const init = () => {
         return;
     }
 
-    initBindings(fnNames);
+    addBindings(fnNames);
     addressTable();
     colorTable();
     contactPersonTable();

@@ -1,11 +1,12 @@
 import { ajax } from "./classes/ajax.js";
-import { initBindings } from "./classes/bindings.js";
+import { addBindings } from "./classes/bindings.js";
 import { DeviceDetector } from "./classes/deviceDetector.js";
+import { setCookie, getCookie } from "./global.js";
 
 const fnNames = {};
 
 const init = () => {
-    initBindings(fnNames);
+    addBindings(fnNames);
     autoLogin();
 }
 

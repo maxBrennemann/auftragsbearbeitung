@@ -54,7 +54,7 @@ header {
     overflow-y: auto;
 }
 
-.settingsContainer, .notificationContainer {
+.settingsContainers {
     cursor: pointer;
 }
 
@@ -339,16 +339,6 @@ iframe {
     margin: 10px;
     padding: 10px;
     background-color: var(--main-inner-def-color);
-}
-
-.centeredContainer {
-    position: fixed;
-    padding: 25px;
-    margin: 0;
-    box-shadow: 3px 4px 8px 3px rgba(0,0,0,0.31);
-    background: white;
-    border-radius: 6px;
-    z-index: 4;
 }
 
 .caution {

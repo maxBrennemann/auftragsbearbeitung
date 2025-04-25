@@ -7,12 +7,8 @@ use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 
 use Classes\Link;
+use Classes\Project\Notification\NotificationManager;
 
-/**
- * Klasse generiert im Zusammenhang mit der Template Datei auftrag.php die Übersicht für einen bestimmten Auftrag.
- * Dabei werden alle Auftragsposten und alle Bearbeitungsschritte aus der Datenbank geladen und als Objekte erstellt.
- * Diese können bearbeitet, ergänzt und abgearbeitet werden.
- */
 class Auftrag implements StatisticsInterface
 {
 
@@ -35,6 +31,10 @@ class Auftrag implements StatisticsInterface
 	private $isRechnung = false;
 
 	private int $customerId = 0;
+
+	public const IS_ACTIVE = 0;
+	public const IS_ARCHIVED = 1;
+	public const IS_FINISHED = -1;
 
 	public function __construct(int $orderId)
 	{
@@ -566,39 +566,6 @@ class Auftrag implements StatisticsInterface
 		]);
 	}
 
-	/*
-	 * adds a list to the order
-	 * lists can be edited
-	*/
-	public function addList($listId)
-	{
-		DBAccess::insertQuery("INSERT INTO auftrag_liste (auftrags_id, listen_id) VALUES ({$this->Auftragsnummer}, $listId)");
-	}
-
-	/*
-	 * removes a list, later the saved list data has to be removed as well
-	 * TODO: implement data deletion
-	*/
-	public function removeList($listId)
-	{
-		DBAccess::deleteQuery("DELETE FROM auftrag_liste WHERE auftrags_id = {$this->Auftragsnummer} AND listen_id = $listId");
-	}
-
-	public function getListIds()
-	{
-		return DBAccess::selectQuery("SELECT listen_id FROM auftrag_liste WHERE auftrags_id = {$this->Auftragsnummer}");
-	}
-
-	public function showAttachedLists()
-	{
-		$listenIds = self::getListIds();
-		$html = "";
-		foreach ($listenIds as $id) {
-			$html .= (Liste::readList($id['listen_id']))->toHTML($this->Auftragsnummer);
-		}
-		return $html;
-	}
-
 	/**
 	 * adds a new order to the database by using the data from the form,
 	 * which is sent by the client;
@@ -606,27 +573,29 @@ class Auftrag implements StatisticsInterface
 	 */
 	public static function add()
 	{
-		$bezeichnung = $_POST['bezeichnung'];
-		$beschreibung = $_POST['beschreibung'];
-		$typ = $_POST['typ'];
+		$bezeichnung = Tools::get("bezeichnung");
+		$beschreibung = Tools::get("beschreibung");
+		$typ = Tools::get("typ");
 		$termin = Tools::get("termin");
-		$angenommenVon = $_POST['angenommenVon'];
-		$kdnr = $_POST['customerId'];
-		$angenommenPer = $_POST['angenommenPer'];
-		$ansprechpartner = (int) $_POST['ansprechpartner'];
+		$angenommenVon = Tools::get("angenommenVon");
+		$kdnr = Tools::get("customerId");
+		$angenommenPer = Tools::get("angenommenPer");
+		$ansprechpartner = (int) Tools::get("ansprechpartner");
 
 		$orderId = self::addToDB($kdnr, $bezeichnung, $beschreibung, $typ, $termin, $angenommenVon, $angenommenPer, $ansprechpartner);
 
-		$data = array(
+		$data = [
 			"success" => true,
 			"responseLink" => Link::getPageLink("auftrag") . "?id=$orderId",
 			"orderId" => $orderId
-		);
+		];
 
 		NotificationManager::addNotification(User::getCurrentUserId(), 4, "Auftrag <a href=" . $data["responseLink"] . ">$orderId</a> wurde angelegt", $orderId);
+		
 		$auftragsverlauf = new Auftragsverlauf($orderId);
 		$auftragsverlauf->addToHistory($orderId, 5, "added", "Neuer Auftrag");
-		echo json_encode($data, JSON_FORCE_OBJECT);
+		
+		JSONResponseHandler::sendResponse($data);
 	}
 
 	/**

@@ -1,4 +1,5 @@
 import { notification } from "../classes/notifications.js";
+import { createPopup } from "../global.js";
 
 export default class ProductConnector {
 
@@ -30,12 +31,10 @@ export default class ProductConnector {
 
         const searchContainer = document.createElement("div");
         searchContainer.append(template.content.cloneNode(true));
-        document.body.appendChild(searchContainer);
         searchContainer.style.padding = "25px";
         searchContainer.classList.add("centeredDiv");
 
-        addActionButtonForDiv(searchContainer, "hide");
-        centerAbsoluteElement(searchContainer);
+        createPopup(searchContainer);
 
         this.searchContainer = searchContainer;
         this.setEventListeners();
@@ -104,8 +103,6 @@ export default class ProductConnector {
 
             showSearchResultsDiv.appendChild(label);
         });
-
-        centerAbsoluteElement(this.searchContainer);
     }
 
     async connnectArticles(e) {

@@ -3,11 +3,12 @@ import ProductConnector from "./sticker/productConnector.js";
 import { click_makeColorable, deleteImage, updateImageDescription, updateImageOverwrite } from "./sticker/imageManager.js";
 import { } from "./sticker/statsManager.js";
 import { initSizeTable } from "./sticker/sizeTable.js";
-import { initBindings } from "./classes/bindings.js";
+import { addBindings } from "./classes/bindings.js";
 import "./sticker/imageMove.js";
 import { ajax } from "./classes/ajax.js";
 import initTagManager from "./sticker/tagManager.js";
 import { notificatinReplace, notification, notificationLoader } from "./classes/notifications.js";
+import { createPopup } from "./global.js";
 
 const fnNames = {
     click_makeColorable: click_makeColorable,
@@ -33,7 +34,7 @@ window.mainVariables = mainVariables;
 window.updateImageOverwrite = updateImageOverwrite
 
 function initSticker() {
-    initBindings(fnNames);
+    addBindings(fnNames);
     checkProductErrorStatus();
 
     if (mainVariables.motivId == null) {
@@ -493,15 +494,13 @@ var selectedCategories = [];
 fnNames.click_chooseCategory = async function() {
     const div = document.createElement("div");
     div.classList.add("z-20", "paddingDefault");
-    document.body.appendChild(div);
 
     const innerDiv = document.createElement("div");
     innerDiv.classList.add("my-6", "mr-4", "overflow-y-auto", "h-96");
     div.appendChild(innerDiv);
 
-    addActionButtonForDiv(div, "remove");
     div.classList.add("centeredDiv");
-    centerAbsoluteElement(div);
+    createPopup(div);
 
     const suggestionBtn = document.createElement("button");
     const applyBtn = document.createElement("button");
@@ -525,7 +524,7 @@ fnNames.click_chooseCategory = async function() {
         ul.appendChild(createUlCategoryList(categoryData)); 
         
         innerDiv.appendChild(ul);
-        centerAbsoluteElement(div);
+        createPopup(div);
     });
 
     ajax.post({

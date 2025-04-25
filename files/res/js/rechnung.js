@@ -1,5 +1,5 @@
 import { ajax } from "./classes/ajax.js";
-import { initBindings } from "./classes/bindings.js";
+import { addBindings } from "./classes/bindings.js";
 import { notification } from "./classes/notifications.js";
 
 const functionNames = {};
@@ -29,7 +29,7 @@ function init() {
         }
     });
 
-    initBindings(functionNames);
+    addBindings(functionNames);
 }
 
 functionNames.click_togglePredefinedTexts = () => {

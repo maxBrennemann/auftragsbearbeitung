@@ -1,10 +1,10 @@
 import { ajax } from "./classes/ajax.js";
-import { initBindings } from "./classes/bindings.js";
+import { addBindings } from "./classes/bindings.js";
 
 const fnNames = {};
 
 const init = () => {
-    initBindings(fnNames);
+    addBindings(fnNames);
 }
 
 fnNames.click_addEntry = () => {

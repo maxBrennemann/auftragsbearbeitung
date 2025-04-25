@@ -272,7 +272,7 @@ class ResourceManager
         }
 
         /* tableconfig.js */
-        if ($script == "/tableconfig.js" && $_ENV["DEV_MODE"]) {
+        if ($script == "/classes/tableconfig.js" && $_ENV["DEV_MODE"]) {
             TableConfig::generate();
             return;
         }
