@@ -1,4 +1,4 @@
-import { initBindings } from "./classes/bindings.js";
+import { addBindings } from "./classes/bindings.js";
 import { ajax } from "./classes/ajax.js";
 import { renderTable } from "./classes/table.js";
 import { tableConfig } from "./classes/tableconfig.js";
@@ -8,7 +8,7 @@ import { createPopup } from "./global.js";
 const fnNames = {};
 
 const init = () => {
-    initBindings(fnNames);
+    addBindings(fnNames);
     createStickerTable();
 
     const newTitle = document.getElementById("newTitle");

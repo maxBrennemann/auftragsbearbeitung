@@ -3,7 +3,7 @@ import ProductConnector from "./sticker/productConnector.js";
 import { click_makeColorable, deleteImage, updateImageDescription, updateImageOverwrite } from "./sticker/imageManager.js";
 import { } from "./sticker/statsManager.js";
 import { initSizeTable } from "./sticker/sizeTable.js";
-import { initBindings } from "./classes/bindings.js";
+import { addBindings } from "./classes/bindings.js";
 import "./sticker/imageMove.js";
 import { ajax } from "./classes/ajax.js";
 import initTagManager from "./sticker/tagManager.js";
@@ -34,7 +34,7 @@ window.mainVariables = mainVariables;
 window.updateImageOverwrite = updateImageOverwrite
 
 function initSticker() {
-    initBindings(fnNames);
+    addBindings(fnNames);
     checkProductErrorStatus();
 
     if (mainVariables.motivId == null) {

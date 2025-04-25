@@ -2,7 +2,7 @@ import { DeviceDetector } from "./classes/deviceDetector.js";
 import { TableSorter, currentTableSorter, setTableSorter, sortTableNew } from "./classes/tableSorter.js";
 import { ajax } from "./classes/ajax.js";
 import { timeGlobalListener } from "./classes/timetracking.js";
-import { initBindings } from "./classes/bindings.js";
+import { addBindings } from "./classes/bindings.js";
 
 const fnNames = {};
 
@@ -15,8 +15,6 @@ function exportToWindow() {
 
 	window.sortTable = sortTable;
 	window.clearInputs = clearInputs;
-	window.setRead = setRead;
-	window.updateNotifications = updateNotifications;
 }
 
 document.addEventListener("click", function (event) {
@@ -45,7 +43,7 @@ function registerLastActivity() {
 }
 
 function startFunc() {
-	initBindings(fnNames);
+	addBindings(fnNames);
 	timeGlobalListener();
 
 	autoValidateEmails();
@@ -155,25 +153,17 @@ fnNames.click_logout = () => {
 }
 
 fnNames.click_showNotifications = async () => {
-	if (document.getElementById("showNotifications") == null) {
-		const div = document.createElement("div");
-		div.id = "showNotifications";
-		div.classList.add("w-7/12", "z-10", "h-96");
+	const div = document.createElement("div");
+	div.classList.add("w-7/12", "z-10", "h-96");
 
-		const htmlContent = await ajax.post({
-			r: "notification",
-		}, true);
+	const response = await ajax.get(`/api/v1/notification/template`);
+	const innerDiv = document.createElement("div");
+	innerDiv.innerHTML = response.html;
 
-		const innerDiv = document.createElement("div");
-		innerDiv.innerHTML = htmlContent;
+	div.appendChild(innerDiv);
+	innerDiv.classList.add("notificationWrapper");
 
-		div.appendChild(innerDiv);
-		innerDiv.classList.add("notificationWrapper");
-
-		createPopup(innerDiv);
-	} else {
-		document.getElementById("showNotifications").style.display = "inline";
-	}
+	createPopup(innerDiv);
 }
 
 function validateEmail(email) {
@@ -370,25 +360,6 @@ fnNames.click_toggleNav = function() {
 			elements[i].style.marginLeft = "250px";
 		}
 	}
-}
-
-/* code for notifications */
-function setRead() {
-	ajax.post([
-		"r", "setNotificationsRead",
-		"notificationIds", "all",
-	]);
-}
-
-async function updateNotifications() {
-	const containerDiv = document.getElementById("showNotifications");
-	const replacementDiv = document.createElement("div");
-	replacementDiv.innerHTML = "test"; // TODO: replace with ajax call
-
-	replacementDiv.classList.add("notificationWrapper");
-
-	const toReplace = containerDiv.children[1];
-	containerDiv.replaceChild(replacementDiv, toReplace);
 }
 
 async function performGlobalSearch(e) {

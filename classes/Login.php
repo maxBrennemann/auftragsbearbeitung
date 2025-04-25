@@ -76,7 +76,7 @@ class Login
 
 		/* check password */
 		if (password_verify($password, $user["password"])) {
-			self::login($user["id"]);
+			self::login((int) $user["id"]);
 			return self::getDeviceKey();
 		} else {
 			JSONResponseHandler::throwError(401, [
@@ -87,7 +87,7 @@ class Login
 		return null;
 	}
 
-	private static function login($userId): void
+	private static function login(int $userId): void
 	{
 		$_SESSION["user_id"] = $userId;
 		$_SESSION["loggedIn"] = true;
@@ -318,7 +318,7 @@ class Login
 			if (count($data) == 0) {
 				return false;
 			} else {
-				self::login($data[0]["user_id"]);
+				self::login((int) $data[0]["user_id"]);
 				return self::getLoginKey($deviceId);
 			}
 		} else {

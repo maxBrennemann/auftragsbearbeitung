@@ -1,4 +1,4 @@
-﻿import { initBindings } from "./classes/bindings.js";
+﻿import { addBindings } from "./classes/bindings.js";
 import { addColor, addSelectedColors, checkHexCode, removeColor, toggleCS } from "./auftrag/colorManager.js";
 import { addBearbeitungsschritt, addStep, sendNote, removeNote, addNewNote, initNotes, cancelNote } from "./auftrag/noteStepManager.js";
 import { setOrderFinished, updateDate, updateDeadline, setDeadlineState, initExtraOptions, editDescription, editOrderType, editTitle, archvieren } from "./auftrag/orderManager.js";
@@ -26,7 +26,7 @@ const initCode = async () => {
         return;
     }
 
-    initBindings(fnNames);
+    addBindings(fnNames);
 
     if (document.getElementById("orderFinished")) {
         return;

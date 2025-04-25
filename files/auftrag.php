@@ -308,13 +308,16 @@ if ($orderId <= 0): ?>
 			<div id="invoicePostenTable"><?= $auftrag->getInvoicePostenTable() ?></div>
 		</div>
 		<div class="defCont preis">
-			<p class="font-bold">Gesamtpreis (netto):</p>
-			<span id="totalPrice" class="font-bold text-2xl">
-				<?= number_format($auftrag->preisBerechnen(), 2, ',', '') . "€" ?>
-			</span>
-			<span>
-				<?= number_format($auftrag->gewinnBerechnen(), 2, ',', '') . "€" ?> (Gewinn netto)
-			</span>
+			<p class="font-bold">Kalkulation:</p>
+			<p>Rechnungsbetrag: 
+				<p id="totalPrice" class="font-bold text-2xl">
+					<?= number_format($auftrag->preisBerechnen(), 2, ',', '') . "€" ?>
+				</p>
+			</p>
+			<p>
+				<span>Gewinn (netto): </span>
+				<?= number_format($auftrag->gewinnBerechnen(), 2, ',', '') . "€" ?>
+			</p>
 		</div>
 		<div class="defCont fahrzeuge">
 			<p><span class="font-bold">Fahrzeuge</span><button class="ml-1 infoButton" data-info="1">i</button>

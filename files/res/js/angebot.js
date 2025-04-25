@@ -1,11 +1,11 @@
-import { initBindings } from "./classes/bindings.js";
+import { addBindings } from "./classes/bindings.js";
 import { ajax } from "./classes/ajax.js";
 import { getItems, getItemsTable, initInvoiceItems } from "./classes/invoiceItems.js";
 
 const functionNames = {};
 
 const init = () => {
-    initBindings(functionNames);
+    addBindings(functionNames);
 }
 
 functionNames.click_newOffer = () => {

@@ -116,7 +116,7 @@ function addTableRow(imageSrc, imageCategory, imageFileId) {
         f.dataset.fileId = imageFileId;
     });
 
-    //addBindings(fileIds);
+    addBindings(fileIds);
 }
 
 function getIcon(type = "icon-file") {

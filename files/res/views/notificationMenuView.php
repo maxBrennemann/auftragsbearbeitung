@@ -3,8 +3,6 @@
     <div>
         <h4 class="font-semibold flex items-center">
             <span class="flex-auto">Meine Aufgaben (<?= $tasksCount ?>)</span>
-            <button onclick="updateNotifications()" class="floatRight btn-primary-small" title="Benachrichtigungen neu laden">Neu laden</button>
-            <button onclick="setRead()" class="floatRight btn-primary-small" title="Alles als gelesen markieren">Als gelesen markieren</button>
         </h4>
         <div class="mt-2">
             <?php
@@ -21,8 +19,6 @@
     <div>
         <h4 class="font-semibold flex items-center">
             <span class="flex-auto">Benachrichtigungen und Neuigkeiten (<?= $newsCount ?>)</span>
-            <button onclick="updateNotifications()" class="floatRight btn-primary-small" title="Benachrichtigungen neu laden">Neu laden</button>
-            <button onclick="setRead()" class="floatRight btn-primary-small" title="Alles als gelesen markieren">Als gelesen markieren</button>
         </h4>
         <div class="mt-2">
             <?php
@@ -36,5 +32,5 @@
             <?php endforeach; ?>
         </div>
     </div>
-    <p class="mt-3"><a href="#" class="link-primary">Ältere Benachrichtigungen anzeigen</a></p>
+    <p class="mt-3"><a href="<?= \Classes\Link::getPageLink("") ?>" class="link-primary">Ältere Benachrichtigungen anzeigen</a></p>
 </div>

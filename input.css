@@ -66,6 +66,22 @@
     .overlay-container__content__options {
         @apply border-t border-solid border-gray-400 flex justify-end p-3 bg-slate-50;
     }
+
+    .table {
+        @apply
+    }
+
+    .table__head {
+        @apply
+    }
+
+    .table__body {
+        @apply
+    }
+
+    .table__foot {
+        @apply
+    }
 }
 
 @font-face {

@@ -1,9 +1,9 @@
-import { initBindings } from "./classes/bindings.js";
+import { addBindings } from "./classes/bindings.js";
 
 const fnNames = {};
 
 function init() {
-    initBindings(fnNames);
+    addBindings(fnNames);
 }
 
 fnNames.click_cancel = () => {

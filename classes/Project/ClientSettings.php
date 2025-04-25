@@ -63,7 +63,7 @@ class ClientSettings
 
     public static function getFilterOrderPosten(): bool
     {
-        $userId = $_SESSION['user_id'];
+        $userId = User::getCurrentUserId();
         $value = Config::get("filterOrderPosten_$userId");
 
         if ($value == "true") {

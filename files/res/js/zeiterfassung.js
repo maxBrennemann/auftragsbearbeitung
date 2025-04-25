@@ -1,5 +1,5 @@
 import { ajax } from "./classes/ajax.js";
-import { initBindings } from "./classes/bindings.js";
+import { addBindings } from "./classes/bindings.js";
 import { addRow, clearRows, renderTable } from "./classes/table.js";
 import { timeGlobalListener } from "./classes/timetracking.js";
 
@@ -8,7 +8,7 @@ const fnNames = {};
 var started = false;
 
 const init = () => {
-    initBindings(fnNames);
+    addBindings(fnNames);
 
     if (localStorage.getItem("startTime")) {
         started = true;

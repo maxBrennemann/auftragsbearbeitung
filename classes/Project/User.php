@@ -21,8 +21,9 @@ class User
     public function __construct(int $userId)
     {
         $query = "SELECT * FROM user WHERE id = :userId LIMIT 1;";
-        $params = array(':userId' => $userId);
-        $user = DBAccess::selectQuery($query, $params);
+        $user = DBAccess::selectQuery($query, [
+            "userId" => $userId,
+        ]);
 
         if (empty($user)) {
             return;
@@ -79,8 +80,10 @@ class User
     {
         if (self::checkEmailAvailable($email)) {
             $query = "UPDATE user SET email = :email WHERE id = :userId";
-            $params = array(':email' => $email, ':userId' => $this->id);
-            DBAccess::updateQuery($query, $params);
+            DBAccess::updateQuery($query, [
+                "email" => $email,
+                "userId" => $this->id
+            ]);
             $this->email = $email;
         }
     }
@@ -88,8 +91,10 @@ class User
     public function setPrename($prename)
     {
         $query = "UPDATE user SET prename = :prename WHERE id = :userId";
-        $params = array(':prename' => $prename, ':userId' => $this->id);
-        DBAccess::updateQuery($query, $params);
+        DBAccess::updateQuery($query, [
+            "prename" => $prename,
+            "userId" => $this->id
+        ]);
     }
 
     public function setLastname($lastname)
@@ -383,7 +388,7 @@ class User
             return (int) $_SESSION["user_id"];
         }
 
-        return -1;
+        throw new \Exception("Unauthorized user");
     }
 
     public static function isAdmin(): bool

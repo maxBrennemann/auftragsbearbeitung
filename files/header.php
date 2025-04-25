@@ -3,7 +3,7 @@
 use Classes\Link;
 use Classes\Project\BreadcrumbController;
 use Classes\Project\Icon;
-use Classes\Project\NotificationManager;
+use Classes\Project\Notification\NotificationManager;
 use Classes\Project\Config;
 use Classes\Project\ClientSettings;
 
