@@ -1,9 +1,5 @@
 <?php
 
-namespace Classes\Project\Modules\Sticker\Views;
-
-require "vendor/autoload.php";
-
 use Classes\Link;
 use Classes\Project\Icon;
 

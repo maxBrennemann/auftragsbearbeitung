@@ -106,11 +106,9 @@ class AufkleberWandtattoo extends Sticker
             $d["height"] = str_replace(".", ",", ((int) $d["height"]) / 10) . "cm";
         }
 
-        ob_start();
-        insertTemplate('classes/Project/Modules/Sticker/Views/sizeTableView.php', [
+        return \Classes\Project\TemplateController::getTemplate("sticker/sizeTable", [
             "sizes" => $data,
         ]);
-        return ob_get_clean();
     }
 
     public function getBasePrice()

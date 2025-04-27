@@ -309,10 +309,10 @@ if ($orderId <= 0): ?>
 		</div>
 		<div class="defCont preis">
 			<p class="font-bold">Kalkulation:</p>
-			<p>Rechnungsbetrag: 
-				<p id="totalPrice" class="font-bold text-2xl">
-					<?= number_format($auftrag->preisBerechnen(), 2, ',', '') . "€" ?>
-				</p>
+			<p>Rechnungsbetrag:
+			<p id="totalPrice" class="font-bold text-2xl">
+				<?= number_format($auftrag->preisBerechnen(), 2, ',', '') . "€" ?>
+			</p>
 			</p>
 			<p>
 				<span>Gewinn (netto): </span>
@@ -402,7 +402,9 @@ if ($orderId <= 0): ?>
 			<div class="defCont" id="csContainer">
 				<p class="font-semibold mb-2">Vorhandene Farben:</p>
 				<div class="w-full h-60 overflow-y-scroll p-2 m-2 bg-white rounded-md">
-					<?php insertTemplate('files/res/views/colorView.php', ["colors" => $colors,]); ?>
+					<?= TemplateController::getTemplate("color", [
+						"colors" => $colors,
+					]); ?>
 				</div>
 				<button class="btn-primary-new" data-binding="true" data-fun="addSelectedColors">Farbe(n) übernehmen</button>
 			</div>

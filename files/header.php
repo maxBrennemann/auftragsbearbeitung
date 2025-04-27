@@ -135,7 +135,7 @@ if ($pageName == "") {
 				<p class="font-normal text-sm"><?= $pageTitle ?></p>
 			</div>
 			<div class="inline-flex flex-wrap">
-				<?= insertTemplate("files/res/views/searchView.php") ?>
+				<?= \Classes\Project\TemplateController::getTemplate("search"); ?>
 				<div class="inline-flex ml-1">
 					<div class="inline-flex items-center p-1 hover:bg-gray-200 hover:rounded-sm relative text-gray-700 cursor-pointer" data-binding="true" data-fun="showNotifications">
 						<?php if (NotificationManager::getNotificationCount() > 0): ?>

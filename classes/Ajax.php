@@ -513,7 +513,9 @@ class Ajax
 					"type" => $type,
 				]);
 
-				insertTemplate('classes/Project/Modules/Sticker/Views/showSearchView.php', ["products" => $products]);
+				echo \Classes\Project\TemplateController::getTemplate("sticker/showSearch", [
+					"products" => $products
+				]);
 				break;
 			case "connectAccessoire":
 				$idSticker = (int) $_POST["id"];
@@ -653,11 +655,9 @@ class Ajax
 					"stickerType" => $stickerType
 				]);
 
-				ob_start();
-				insertTemplate('classes/Project/Modules/Sticker/Views/chatGPTOptionsView.php', [
+				$content = \Classes\Project\TemplateController::getTemplate("sticker/chatGPTOptions", [
 					"texts" => $result,
 				]);
-				$content = ob_get_clean();
 				echo json_encode([
 					"template" => $content,
 				]);
