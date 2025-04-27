@@ -75,14 +75,6 @@ if (!function_exists('str_contains')) {
 	}
 }
 
-function isLoggedIn(): bool
-{
-	if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true) {
-		return true;
-	}
-	return false;
-}
-
 function getCurrentVersion(): string
 {
 	return CURRENTVERSION;
@@ -92,7 +84,7 @@ function errorReporting(): void
 {
 	if ($_ENV["ERRORREPORTING"]) {
 		error_reporting(E_ALL);
-		ini_set('display_errors', '1');
+		ini_set('display_errors', true);
 	}
 
 	ini_set('display_errors', false);

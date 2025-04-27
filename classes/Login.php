@@ -6,6 +6,8 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
+use Classes\Auth\SessionController;
+
 use Classes\Project\User;
 
 class Login
@@ -76,7 +78,7 @@ class Login
 
 		/* check password */
 		if (password_verify($password, $user["password"])) {
-			self::login((int) $user["id"]);
+			SessionController::login((int) $user["id"]);
 			return self::getDeviceKey();
 		} else {
 			JSONResponseHandler::throwError(401, [
@@ -87,20 +89,9 @@ class Login
 		return null;
 	}
 
-	private static function login(int $userId): void
-	{
-		$_SESSION["user_id"] = $userId;
-		$_SESSION["loggedIn"] = true;
-	}
-
 	public static function handleLogout(): void
 	{
-		setcookie(session_name(), '', 100);
-		session_unset();
-		if (!session_destroy()) {
-			/* reset session object */
-			$_SESSION = [];
-		}
+		SessionController::logout();
 	}
 
 	private static function getLoginKey($deviceId): string
@@ -318,7 +309,7 @@ class Login
 			if (count($data) == 0) {
 				return false;
 			} else {
-				self::login((int) $data[0]["user_id"]);
+				SessionController::login((int) $data[0]["user_id"]);
 				return self::getLoginKey($deviceId);
 			}
 		} else {

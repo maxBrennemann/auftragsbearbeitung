@@ -53,7 +53,7 @@ if ($pageName == "") {
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, height=device-height">
-	<title><?= $_SESSION["companyName"] ?> - <?= $pageTitle ?></title>
+	<title><?= COMPANY_NAME ?> - <?= $pageTitle ?></title>
 	<meta name="Description" content="Auftragsübersicht">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="shortcut icon" type="image/x-icon" href="<?= $_ENV["WEB_URL"] ?>favicon.ico">
@@ -131,7 +131,7 @@ if ($pageName == "") {
 	<header class="moveToSide sticky p-3 2xl:p-5">
 		<div class="mx-auto w-4/5 lg:mb-5 mb-3 flex">
 			<div class="flex-1">
-				<h1 class="font-semibold md:text-sm"><?= $_SESSION["companyName"] ?> Auftragsstellung</h1>
+				<h1 class="font-semibold md:text-sm"><?= COMPANY_NAME ?> Auftragsstellung</h1>
 				<p class="font-normal text-sm"><?= $pageTitle ?></p>
 			</div>
 			<div class="inline-flex flex-wrap">

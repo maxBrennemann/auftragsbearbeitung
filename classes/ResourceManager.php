@@ -5,6 +5,11 @@ namespace Classes;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 
+use Classes\Auth\SessionController;
+
+use Classes\Project\Config;
+use Classes\Project\CacheManager;
+
 use Classes\Project\Posten;
 use Classes\Project\Table;
 
@@ -20,6 +25,21 @@ class ResourceManager
 {
 
     private static $page = "";
+
+    public static function initialize()
+    {
+        define("MINIFY_STATUS", Config::get("minifyStatus") == "on" ? true : false);
+        define("CACHE_STATUS", CacheManager::getCacheStatus());
+
+        $companyName = DBAccess::selectQuery("SELECT content FROM settings WHERE title = 'companyName';");
+        if ($companyName != null) {
+            define("COMPANY_NAME", $companyName[0]["content"]);
+        } else {
+            define("COMPANY_NAME", "Auftragsbearbeitung");
+        }
+
+        errorReporting();
+    }
 
     /**
      * Before: page was submitted via $_GET paramter, but now the REQUEST_URI is read;
@@ -52,21 +72,6 @@ class ResourceManager
         }
     }
 
-    public static function session()
-    {
-        session_start();
-        errorReporting();
-
-        $query = "SELECT content FROM settings WHERE title = 'companyName';";
-        $companyName = DBAccess::selectQuery($query);
-
-        if ($companyName != null) {
-            $_SESSION["companyName"] = $companyName[0]["content"];
-        } else {
-            $_SESSION["companyName"] = "Auftragsbearbeitung";
-        }
-    }
-
     public static function getParameters()
     {
         if (file_get_contents("php://input") != "") {
@@ -96,6 +101,10 @@ class ResourceManager
 
     public static function initPage()
     {
+        if (!SessionController::isLoggedIn()) {
+            self::showPage("login");
+        }
+
         $getReason = Tools::get("getReason");
         $isUpload = Tools::get("upload");
 
@@ -161,10 +170,8 @@ class ResourceManager
                 }
             } else if (self::$page == "cron") {
                 Ajax::manageRequests("testDummy", self::$page);
-            } else if (isLoggedIn()) {
-                self::showPage(self::$page);
             } else {
-                self::showPage("login");
+                self::showPage(self::$page);
             }
         }
     }
@@ -425,8 +432,6 @@ class ResourceManager
 
     public static function outputHeaderJSON()
     {
-        session_start();
-
         header("Access-Control-Allow-Headers: *");
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
         header('Access-Control-Allow-Origin: http://localhost:5173');

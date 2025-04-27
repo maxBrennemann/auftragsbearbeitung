@@ -5,16 +5,17 @@ $start = microtime(true);
 require_once "settings.php";
 require_once "globalFunctions.php";
 
+use Classes\Auth\SessionController;
+
 use Classes\ResourceManager;
-use Classes\Project\Config;
 use Classes\Project\CacheManager;
 
-define("MINIFY_STATUS", Config::get("minifyStatus") == "on" ? true : false);
-define("CACHE_STATUS", CacheManager::getCacheStatus());
-
 ResourceManager::getParameters();
+
+SessionController::start();
+
+ResourceManager::initialize();
 ResourceManager::pass();
-ResourceManager::session();
 
 CacheManager::loadCacheIfExists();
 ResourceManager::initPage();

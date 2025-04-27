@@ -387,8 +387,8 @@ class User
         if (isset($_SESSION["user_id"])) {
             return (int) $_SESSION["user_id"];
         }
+
         return 0;
-        //throw new \Exception("Unauthorized user");
     }
 
     public static function isAdmin(): bool
