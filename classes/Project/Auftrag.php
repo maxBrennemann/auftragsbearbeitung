@@ -7,9 +7,10 @@ use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 
 use Classes\Link;
-use Classes\Project\Notification\NotificationManager;
+use Classes\Notification\NotifiableEntity;
+use Classes\Notification\NotificationManager;
 
-class Auftrag implements StatisticsInterface
+class Auftrag implements StatisticsInterface, NotifiableEntity
 {
 
 	protected $Auftragsnummer = null;
@@ -591,10 +592,10 @@ class Auftrag implements StatisticsInterface
 		];
 
 		NotificationManager::addNotification(User::getCurrentUserId(), 4, "Auftrag <a href=" . $data["responseLink"] . ">$orderId</a> wurde angelegt", $orderId);
-		
+
 		$auftragsverlauf = new Auftragsverlauf($orderId);
 		$auftragsverlauf->addToHistory($orderId, 5, "added", "Neuer Auftrag");
-		
+
 		JSONResponseHandler::sendResponse($data);
 	}
 
@@ -900,5 +901,25 @@ class Auftrag implements StatisticsInterface
 		$content = ob_get_clean();
 
 		return $content;
+	}
+
+	public function getNotificationContent(): string
+	{
+		return "";
+	}
+
+	public function getNotificationType(): int
+	{
+		return 0;
+	}
+
+	public function getNotificationLink(): string
+	{
+		return "";
+	}
+	
+	public function getNotificationSpecificId(): int
+	{
+		return 0;
 	}
 }

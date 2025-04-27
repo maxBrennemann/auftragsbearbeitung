@@ -32,5 +32,5 @@
             <?php endforeach; ?>
         </div>
     </div>
-    <p class="mt-3"><a href="<?= \Classes\Link::getPageLink("") ?>" class="link-primary">Ältere Benachrichtigungen anzeigen</a></p>
+    <p class="mt-3 hidden"><a href="<?= \Classes\Link::getPageLink("") ?>" class="link-primary">Ältere Benachrichtigungen anzeigen</a></p>
 </div>

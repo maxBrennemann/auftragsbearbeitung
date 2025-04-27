@@ -325,7 +325,7 @@ class Search
 		return array_slice($mostSimilar, 0, 10);
 	}
 
-	/*
+	/**
 	 * searches in wiki articles
 	 */
 	private static function searchInWiki($searchQuery)

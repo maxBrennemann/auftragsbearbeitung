@@ -8,18 +8,18 @@ class NotificationRoutes extends Routes
 {
 
     /**
-     * @uses \Classes\Project\Notification\NotificationManager::htmlNotification()
+     * @uses \Classes\Notification\NotificationManager::htmlNotification()
      */
     protected static $getRoutes = [
-        "/notification/template" => [\Classes\Project\Notification\NotificationManager::class, "htmlNotification"],
+        "/notification/template" => [\Classes\Notification\NotificationManager::class, "htmlNotification"],
     ];
 
     protected static $postRoutes = [];
 
     /**
-     * @uses \Classes\Project\Notification\NotificationManager::htmlNotification()
+     * @uses \Classes\Notification\NotificationManager::htmlNotification()
      */
     protected static $putRoutes = [
-        "/notification/{id}/set-read" => [\Classes\Project\Notification\NotificationManager::class, ""],
+        "/notification/{id}/set-read" => [\Classes\Notification\NotificationManager::class, ""],
     ];
 }

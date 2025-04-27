@@ -1,6 +1,6 @@
 <?php
 
-namespace Classes\Project\Notification;
+namespace Classes\Notification;
 
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\DBAccess;
