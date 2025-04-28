@@ -284,6 +284,12 @@ functionNames.click_calculatePrice = () => {
     document.querySelector("#pre").value = newPrice;
 }
 
+functionNames.write_changeMeh = () => {
+    const meh = document.getElementById("meh").value;
+    const showMeh = document.getElementById("showMeh");
+    showMeh.innerHTML = meh;
+}
+
 /**
 * this function gets executed when the "+" button is pressed to add a new timeframe or on init
 * @param {*} event this is the passed event

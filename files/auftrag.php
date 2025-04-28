@@ -152,11 +152,11 @@ if ($orderId <= 0): ?>
 					<button class="btn-attention mt-5" id="deleteOrder">Auftrag löschen</button>
 				</div>
 			</div>
-			<div class="inputCont">
+			<div class="mt-1">
 				<label for="orderTitle">Auftragsbezeichnung:</label>
 				<input class="input-primary w-full" id="orderTitle" value="<?= $auftrag->getAuftragsbezeichnung() ?>" autocomplete="none" data-write="true" data-fun="editTitle">
 			</div>
-			<div class="inputCont">
+			<div class="mt-1">
 				<div>
 					<span>Auftragsbeschreibung:</span>
 					<span class="cursor-pointer" data-fun="toggleOrderDescription" data-binding="true">
@@ -169,7 +169,7 @@ if ($orderId <= 0): ?>
 					<input class="orderDescription input-primary w-full hidden" autocomplete="none" data-write="true" data-fun="editDescription" value="<?= $auftrag->getAuftragsbeschreibung() ?>">
 				</div>
 			</div>
-			<div class="inputCont">
+			<div class="mt-1">
 				<label for="orderType">Auftragstyp:</label>
 				<select class="input-primary w-full" id="orderType" data-write="true" data-fun="editOrderType">
 					<?php foreach ($auftragsTypen as $type): ?>
@@ -305,7 +305,7 @@ if ($orderId <= 0): ?>
 		</div>
 		<div class="defCont invoice">
 			<p class="font-bold">Rechnungsposten (netto)</p>
-			<div id="invoicePostenTable"><?= $auftrag->getInvoicePostenTable() ?></div>
+			<div id="invoicePostenTable" class="mt-2"><?= $auftrag->getInvoicePostenTable() ?></div>
 		</div>
 		<div class="defCont preis">
 			<p class="font-bold">Kalkulation:</p>

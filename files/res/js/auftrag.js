@@ -89,19 +89,6 @@ const changeContact = (e) => {
     });
 }
 
-window.performSearch = function (e) {
-    var query = e.target.previousSibling.value;
-    console.log(query);
-
-    var search = new AjaxCall(`getReason=search&query=${query}&stype=produkt&shortSummary=true`, "POST", window.location.href);
-    search.makeAjaxCall(function (responseTable) {
-        var div = document.createElement("div");
-        div.innerHTML = responseTable;
-        div.id = "prodcutSearchContainer";
-        createPopup(div);
-    });
-}
-
 function showDeleteMessage(row, header, key, type) {
     var div = document.createElement("div");
 

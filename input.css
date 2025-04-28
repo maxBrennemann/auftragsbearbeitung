@@ -92,12 +92,19 @@
 
 @font-face {
     font-family: 'Open Sans';
-    src: url("./font/OpenSans-SemiBold.ttf") format('truetype');
+    src: url("./font/OpenSans-VariableFont.ttf") format('truetype');
     font-weight: 600;
 }
 
 @font-face {
     font-family: 'Open Sans';
-    src: url("./font/OpenSans-Bold.ttf") format('truetype');
+    src: url("./font/OpenSans-VariableFont.ttf") format('truetype');
     font-weight: bold;
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    src: url("./font/OpenSans-Italic-VariableFont.ttf") format('truetype');
+    font-weight: normal;
+    font-style: italic;
 }
