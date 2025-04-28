@@ -22,6 +22,11 @@ fnNames.write_fileUploader = async e => {
     });
 
     target.value = "";
+    const event = new CustomEvent("fileUploaded", {
+        detail: { type },
+        bubbles: true,
+    });
+    target.dispatchEvent(event);
 }
 
 export const initFileUploader = (data) => {

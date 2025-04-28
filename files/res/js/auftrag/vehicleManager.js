@@ -71,6 +71,13 @@ const createVehicleTable = async () => {
 
     const table = await fetchAndRenderTable("fahrzeugTable", "fahrzeuge", options);
     table.addEventListener("rowUpload", e => uploadVehicleFile(e));
+    table.addEventListener("rowDelete", e => {
+        const data = e.detail;
+
+        ajax.delete(`/api/v1/order/${globalData.auftragsId}/vehicles/${data.Nummer}`).then(() => {
+            data.row.remove();
+        });
+    })
 }
 
 const uploadVehicleFile = async (e) => {
@@ -89,6 +96,8 @@ const uploadVehicleFile = async (e) => {
             "location": `/api/v1/order/${globalData.auftragsId}/vehicle/${data.Nummer}/add-files`,
         },
     });
+
+    div.addEventListener("fileUploaded", () => btnCancel.click());
 }
 
 export const initVehicles = () => {

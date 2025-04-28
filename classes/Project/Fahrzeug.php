@@ -13,15 +13,12 @@ class Fahrzeug
     public static function getImages($fahrzeugId)
     {
         $html = "";
-        $query = "SELECT DISTINCT dateiname AS Datei, originalname, `date` AS Datum, typ as Typ FROM dateien LEFT JOIN dateien_fahrzeuge ON dateien_fahrzeuge.id_datei  = dateien.id WHERE dateien_fahrzeuge.id_fahrzeug = $fahrzeugId";
-        $data = DBAccess::selectQuery($query);
-
-        foreach ($data as $f) {
-            $link = Link::getResourcesShortLink($f['Datei'], "upload");
-            $html .= "<img src=\"$link\" width=\"150px\">";
-        }
-
-        return $html;
+        $query = "SELECT DISTINCT dateiname AS `file`, originalname, 
+                DATE_FORMAT(`date`, '%d.%m.%Y %h:%i:%s') AS `date`, typ 
+            FROM dateien 
+            LEFT JOIN dateien_fahrzeuge ON dateien_fahrzeuge.id_datei  = dateien.id 
+            WHERE dateien_fahrzeuge.id_fahrzeug = $fahrzeugId";
+        return DBAccess::selectQuery($query);
     }
 
     public static function getShowAllOrders($fahrzeugId) {}
@@ -60,11 +57,31 @@ class Fahrzeug
         $auftragsverlauf = new Auftragsverlauf($orderId);
         $auftragsverlauf->addToHistory($vehicleId, 3, "added");
 
-        JSONResponseHandler::sendResponse(array(
+        JSONResponseHandler::sendResponse([
             "message" => "Vehicle attached to order",
             "vehicleId" => $vehicleId,
             "orderId" => $orderId,
-        ));
+        ]);
+    }
+
+    public static function removeVehicle()
+    {
+        $orderId = (int) Tools::get("id");
+        $vehicleId = (int) Tools::get("vehicleId");
+
+        DBAccess::deleteQuery("DELETE FROM fahrzeuge_auftraege WHERE id_fahrzeug = :vehicleId AND id_auftrag = :orderId", [
+            "vehicleId" => $vehicleId,
+            "orderId" => $orderId
+        ]);
+
+        $auftragsverlauf = new Auftragsverlauf($orderId);
+        $auftragsverlauf->addToHistory($vehicleId, 3, "removed");
+
+        JSONResponseHandler::sendResponse([
+            "message" => "Vehicle removed from order",
+            "vehicleId" => $vehicleId,
+            "orderId" => $orderId,
+        ]);
     }
 
     public static function updateName()
@@ -98,7 +115,11 @@ class Fahrzeug
         $idVehicle = Tools::get("vehicleId");
         $orderId = Tools::get("id");
 
-		$uploadHandler = new UploadHandler();
+		$uploadHandler = new UploadHandler("upload", [
+            "image/png",
+            "image/jpg",
+            "image/jpeg",
+        ]);
 		$files = $uploadHandler->uploadMultiple();
 
 		$queryOrder = "INSERT INTO dateien_auftraege (id_datei, id_auftrag) VALUES ";
