@@ -252,7 +252,7 @@ const createOrderTypeTable = async () => {
     };
 
     const table = await fetchAndRenderTable("orderTypes", "auftragstyp", options);
-    table.addEventListener("rowAdd", () => addOrderType(table, options));
+    table.addEventListener("rowInsert", () => addOrderType(table, options));
 }
 
 const createWholesalerTable = async () => {

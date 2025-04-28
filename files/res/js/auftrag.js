@@ -47,7 +47,7 @@ const initCode = async () => {
     initNotes();
 
     globalData.table = await getItemsTable("auftragsPostenTable", globalData.auftragsId, "order");
-    globalData.table.addEventListener("rowAdd", reloadPostenListe);
+    globalData.table.addEventListener("rowInsert", reloadPostenListe);
     initInvoiceItems();
 }
 
@@ -229,7 +229,7 @@ fnNames.click_toggleInvoiceItems = e => {
     }).then(async () => {
         globalData.table.parentNode.removeChild(globalData.table);
         globalData.table = await getItemsTable("auftragsPostenTable", globalData.auftragsId, "order");
-        globalData.table.addEventListener("rowAdd", reloadPostenListe);
+        globalData.table.addEventListener("rowInsert", reloadPostenListe);
     });
 }
 

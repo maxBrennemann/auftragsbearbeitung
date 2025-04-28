@@ -20,6 +20,7 @@ use Classes\Project\Modules\Sticker\Imports\ImportGoogleSearchConsole;
 
 use Classes\Project\Modules\Pdf\TransactionPdf\OfferPDF;
 use Classes\Project\Modules\Pdf\TransactionPdf\InvoicePDF;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 class ResourceManager
 {
@@ -52,6 +53,14 @@ class ResourceManager
         $page = str_replace($_ENV["REWRITE_BASE"] . $_ENV["SUB_URL"], "", $url[0]);
         $parts = explode('/', $page);
         self::$page = $parts[count($parts) - 1];
+
+        /* TODO: implement better auth */
+        /*
+        if (!SessionController::isLoggedIn()) {
+            ResourceManager::outputHeaderJSON();
+            JSONResponseHandler::throwError(401, "Unauthorized API access");
+        }
+        */
 
         switch ($parts[1]) {
             case "js":
@@ -102,7 +111,9 @@ class ResourceManager
     public static function initPage()
     {
         if (!SessionController::isLoggedIn()) {
-            self::showPage("login");
+            self::$page = "login";
+            self::showPage();
+            return;
         }
 
         $getReason = Tools::get("getReason");
@@ -171,19 +182,19 @@ class ResourceManager
             } else if (self::$page == "cron") {
                 Ajax::manageRequests("testDummy", self::$page);
             } else {
-                self::showPage(self::$page);
+                self::showPage();
             }
         }
     }
 
-    private static function showPage($page)
+    private static function showPage(): void
     {
-        if ($page == "test") {
-            return null;
+        if (self::$page == "test") {
+            return; 
         }
 
-        $pageDetails = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM articles WHERE src = :page", [
-            "page" => $page
+        $pageDetails = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM articles WHERE src = :page LIMIT 1;", [
+            "page" => self::$page
         ]);
         $articleUrl = "";
 
@@ -191,19 +202,20 @@ class ResourceManager
         if ($pageDetails == null || !file_exists("./files/" . $pageDetails[0]["articleUrl"])) {
             http_response_code(404);
 
-            $baseUrl = 'files/';
-            $pageDetails['id'] = 0;
-            $pageDetails["articleUrl"] = $articleUrl = "404.php";
-            $pageDetails["pageName"] = $pageName = "Page not found";
+            $articleUrl = "404.php";
+            $pageName = "Page not found";
         } else {
-            $baseUrl = './files/';
             $pageDetails = $pageDetails[0];
             $articleUrl = $pageDetails["articleUrl"];
             $pageName = $pageDetails["pageName"];
         }
 
-        include "./files/header.php";
-        include $baseUrl . $articleUrl;
+        insertTemplate("./files/header.php", [
+            "pageName" => $pageName,
+            "page" => self::$page,
+        ]);
+
+        insertTemplate("./files/$articleUrl");
 
         insertTemplate("./files/footer.php", [
             "calcDuration" => $_ENV["DEV_MODE"],

@@ -6,6 +6,8 @@ use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 
+use Classes\Auth\SessionController;
+
 use Classes\Routes\CustomerRoutes;
 use Classes\Routes\InvoiceRoutes;
 use Classes\Routes\LoginRoutes;
@@ -54,7 +56,7 @@ class Ajax
 		$currentApiVersion = "v1";
 		ResourceManager::outputHeaderJSON();
 
-		$url = $_SERVER['REQUEST_URI'];
+		$url = $_SERVER["REQUEST_URI"];
 		$url = explode('?', $url, 2);
 		$apiPath = str_replace($_ENV["REWRITE_BASE"] . $_ENV["SUB_URL"] . "/", "", $url[0]);
 		$apiParts = explode("/", $apiPath);
@@ -66,6 +68,12 @@ class Ajax
 		}
 
 		$path = str_replace("api/" . $apiVersion . "/", "", $apiPath);
+
+		/* TODO: implement better auth */
+		if (!SessionController::isLoggedIn() && $routeType != "auth") {
+			ResourceManager::outputHeaderJSON();
+			JSONResponseHandler::throwError(401, "Unauthorized API access");
+		}
 
 		switch ($routeType) {
 			case "customer":

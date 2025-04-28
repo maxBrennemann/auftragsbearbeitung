@@ -3,7 +3,9 @@
 namespace Classes\Project;
 
 use Classes\Project\Models\Model;
+
 use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\Tools;
 
 /*
 * Adressarten:
@@ -16,11 +18,16 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 class Address extends Model
 {
 
+    public const DEFAULT_ADDRESS = 1;
+    public const DELIVERY_ADDRESS = 2;
+    public const BRANCH_ADDRESS = 3;
+    public const VARIOUS_ADDRESS = 4;
+
     private string $strasse = "";
     private string $hausnummer = "";
     private int $postleitzahl = 0;
     private string $ort = "";
-    private string$zusatz = "";
+    private string $zusatz = "";
     private int $art = 0;
     private string $land = "";
 
@@ -99,20 +106,25 @@ class Address extends Model
         return true;
     }
 
-    public static function createNewAddress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz = "", $land = "Deutschland", $art = 3)
+    public static function createNewAddress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz = "", $land = "Deutschland", $art = 3): Address
     {
-        $addressInstance = new Address();
-        $addressInstance->strasse = $strasse;
-        $addressInstance->hausnummer = $hausnummer;
-        $addressInstance->postleitzahl = $postleitzahl;
-        $addressInstance->ort = $ort;
-        $addressInstance->zusatz = $zusatz;
-        $addressInstance->art = $art;
-        $addressInstance->land = $land;
+        $query = "INSERT INTO address (id_customer, ort, plz, strasse, hausnr, zusatz, country, art) VALUES (:idCustomer, :ort, :plz, :strasse, :hausnummer, :zusatz, :land, :art)";
+        $id = DBAccess::insertQuery($query, [
+            "idCustomer" => $id_customer,
+            "ort" => $ort,
+            "plz" => $postleitzahl,
+            "strasse" => $strasse,
+            "hausnummer" => $hausnummer,
+            "zusatz" => $zusatz,
+            "land" => $land,
+            "art" => $art,
+        ]);
 
-        $query = "INSERT INTO address (id_customer, ort, plz, strasse, hausnr, zusatz, country, art) VALUES ($id_customer, '$ort', $postleitzahl, '$strasse', '$hausnummer', '$zusatz', '$land', $art)";
-        DBAccess::insertQuery($query);
+        return self::loadAddress($id);
+    }
 
-        return $addressInstance;
+    public static function addAddress()
+    {
+        $customerId = Tools::get("id");
     }
 }

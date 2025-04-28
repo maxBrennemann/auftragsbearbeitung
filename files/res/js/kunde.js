@@ -151,7 +151,7 @@ const contactPersonTable = async () => {
     });
 }
 
-const addressTable = () => {
+const addressTable = async () => {
     const options = {
         "conditions": {
             "id_customer": customerData.id,
@@ -159,7 +159,34 @@ const addressTable = () => {
         "hide": ["id", "id_customer"],
         "hideOptions": ["check", "add", "move"],
     };
-    fetchAndRenderTable("addressTable", "address", options);
+    const table = await fetchAndRenderTable("addressTable", "address", options);
+    table.addEventListener("rowInsert", () => addAddress(table, options));
+}
+
+const addAddress = async (table, options) => {
+    const lastRow = table.querySelector("tbody").lastChild.children;
+    const data = {};
+    Array.from(lastRow).forEach(el => {
+        const key = el.dataset.key;
+        if (key == undefined) {
+            return;
+        }
+        const value = el.innerHTML;
+        data[key] = value;
+    });
+    data["id_customer"] = customerData.id;
+
+    if (data["art"] == "") {
+        data["art"] = 3;
+    }
+
+    const response = await ajax.post(`/api/v1/tables/address`, {
+        "conditions": JSON.stringify(data),
+    });
+    for (var i in response) {
+        data[i] = response[i];
+    }
+    addRow(data, table, options);
 }
 
 const colorTable = async () => {
