@@ -1,4 +1,4 @@
-import { getTemplate, setInpupts } from "../global.js";
+import { getTemplate, setInpupts, clearInputs } from "../global.js";
 import { ajax } from "./ajax.js";
 import { addBindings } from "./bindings.js";
 import { notification } from "./notifications.js";

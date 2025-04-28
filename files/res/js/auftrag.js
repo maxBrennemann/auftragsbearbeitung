@@ -2,7 +2,7 @@
 import { addColor, addSelectedColors, checkHexCode, removeColor, toggleCS } from "./auftrag/colorManager.js";
 import { addBearbeitungsschritt, addStep, sendNote, removeNote, addNewNote, initNotes, cancelNote } from "./auftrag/noteStepManager.js";
 import { setOrderFinished, updateDate, updateDeadline, setDeadlineState, initExtraOptions, editDescription, editOrderType, editTitle, archvieren } from "./auftrag/orderManager.js";
-import { addExistingVehicle, addNewVehicle, selectVehicle } from "./auftrag/vehicleManager.js";
+import { initVehicles } from "./auftrag/vehicleManager.js";
 import "./auftrag/calculateGas.js";
 import { ajax } from "./classes/ajax.js";
 import { getItemsTable, initInvoiceItems } from "./classes/invoiceItems.js";
@@ -13,7 +13,6 @@ import { initFileUploader } from "./classes/upload.js";
 /* global variables */
 window.globalData = {
     aufschlag: 0,
-    vehicleId: 0,
     auftragsId: parseInt(new URL(window.location.href).searchParams.get("id")),
     times: [],
     table: null,
@@ -34,16 +33,6 @@ const initCode = async () => {
 
     addSearchEventListeners();
 
-    if (document.getElementById("selectVehicle") == null) {
-        return;
-    }
-
-    document.getElementById("selectVehicle").addEventListener("change", function (event) {
-        if (event.target.value == "addNew") {
-            document.getElementById("addVehicle").style.display = "inline-block";
-        }
-    });
-
     initFileUploader({
         "order": {
             "location": `/api/v1/order/${globalData.auftragsId}/add-files`,
@@ -51,6 +40,7 @@ const initCode = async () => {
     });
     initExtraOptions();
     initNotes();
+    initVehicles();
 
     globalData.table = await getItemsTable("auftragsPostenTable", globalData.auftragsId, "order");
     globalData.table.addEventListener("rowInsert", reloadPostenListe);
@@ -257,10 +247,6 @@ fnNames.write_editTitle = editTitle;
 fnNames.click_setDeadlineState = setDeadlineState;
 fnNames.click_archvieren = archvieren;
 fnNames.click_toggleOrderDescription = toggleOrderDescription;
-
-fnNames.click_addExistingVehicle = addExistingVehicle;
-fnNames.click_addNewVehicle = addNewVehicle;
-fnNames.write_selectVehicle = selectVehicle;
 
 if (document.readyState !== 'loading') {
     initCode();

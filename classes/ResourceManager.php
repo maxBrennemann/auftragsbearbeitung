@@ -126,11 +126,6 @@ class ResourceManager
 
             /* checks which upload mechanism should be called */
             switch ($uploadDestination) {
-                case "order":
-                    $auftragsId = (int) Tools::get("auftrag");
-                    $upload = new Upload();
-                    $upload->uploadFilesAuftrag($auftragsId);
-                    break;
                 case "product":
                     $auftragsId = (int) Tools::get("produkt");
                     $upload = new Upload();
@@ -377,23 +372,30 @@ class ResourceManager
 
     private static function get_upload($upload)
     {
-        $file_info = new \finfo(FILEINFO_MIME_TYPE);
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $upload = ltrim($upload, "/");
+        $fileName = Link::getResourcesLink($upload, "upload", false);
 
-        if (!file_exists(Link::getResourcesLink($upload, "upload", false))) {
-            $mime_type = $file_info->buffer("img/default_image.png");
+        if (!file_exists($fileName)) {
+            $mime_type = $finfo->file("img/default_image.png");
             header("Content-type:$mime_type");
-            $file = file_get_contents("img/default_image.png");
-
-            echo $file;
+            echo file_get_contents("img/default_image.png");
             return;
         }
 
-        $mime_type = $file_info->buffer(file_get_contents(Link::getResourcesLink($upload, "upload", false)));
+        $mime_type = $finfo->file($fileName);
+
+        $query = "SELECT originalname FROM dateien WHERE dateiname = :fileName LIMIT 1;";
+        $response = DBAccess::selectQuery($query, [
+            "fileName" => $upload,
+        ]);
+        if ($response != null) {
+            $name = $response[0]["originalname"];
+            header('Content-Disposition: filename="' . $name . '"');
+        }
 
         header("Content-type:$mime_type");
-        $file = file_get_contents(Link::getResourcesLink($upload, "upload", false));
-
-        echo $file;
+        readfile($fileName);
     }
 
     private static function get_backup($backup)

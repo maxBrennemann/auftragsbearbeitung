@@ -320,10 +320,12 @@ if ($orderId <= 0): ?>
 			</p>
 		</div>
 		<div class="defCont fahrzeuge">
-			<p><span class="font-bold">Fahrzeuge</span><button class="ml-1 infoButton" data-info="1">i</button>
 			<p>
-			<div>
-				<select id="selectVehicle" data-write="true" data-fun="selectVehicle" class="input-primary">
+				<span class="font-bold">Fahrzeuge</span>
+				<button class="ml-1 infoButton" data-info="1">i</button>
+			<p>
+			<div class="mt-2">
+				<select id="selectVehicle" class="input-primary" data-fun="selectVehicle" data-write="true">
 					<option value="0" selected disabled>Bitte auswählen</option>
 					<?php foreach ($fahrzeuge as $f): ?>
 						<option value="<?= $f['Nummer'] ?>"><?= $f['Kennzeichen'] ?> <?= $f['Fahrzeug'] ?></option>
@@ -332,12 +334,12 @@ if ($orderId <= 0): ?>
 				</select>
 				<button class="m-1 btn-primary-new" data-binding="true" data-fun="addExistingVehicle">Übernehmen</button>
 			</div>
-			<div class="innerDefCont" id="addVehicle" style="display: none;">
+			<div class="innerDefCont hidden" id="addVehicle">
 				<p>Kfz-Kennzeichen:<br><input id="kfz" class="input-primary"></p>
 				<p>Fahrzeug:<br><input id="fahrzeug" class="input-primary"></p>
 				<button class="btn-primary-new mt-2" data-binding="true" data-fun="addNewVehicle">Hinzufügen</button>
 			</div>
-			<div><?= $auftrag->getFahrzeuge(); ?></div>
+			<div id="fahrzeugTable" class="mt-2"><?= $auftrag->getFahrzeuge(); ?></div>
 			<br>
 			<form class="fileUploader" data-target="vehicle" name="vehicle" method="post" enctype="multipart/form-data" id="fileVehicle" style="display: none">
 				<input type="file" name="uploadedFile" multiple form="fileVehicle">

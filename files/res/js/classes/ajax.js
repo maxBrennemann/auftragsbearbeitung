@@ -77,13 +77,15 @@ export const ajax = {
 		return json;
 	},
 
-	async uploadFiles(files, uploadType, location, additionalInfo = null) {
-		if (files == null || files.length == 0 || uploadType == null) {
+	async uploadFiles(files, location, additionalInfo = null) {
+		if (files == null || files.length == 0) {
 			return null;
 		}
 
-		const response = await uploadFilesHelper(files, uploadType, location, additionalInfo).then(result => {
+		const response = await uploadFilesHelper(files, location, additionalInfo).then(result => {
 			return result;
+		}).catch(() => {
+			return {};
 		});
 
 		let json = {};
@@ -100,19 +102,15 @@ export const ajax = {
 /**
  * 
  * @param {*} files
- * @param {*} uploadType
  * @param {*} location
  * @param {*} additionalInfo
  */
-async function uploadFilesHelper(files, uploadType, location, additionalInfo = null) {
+async function uploadFilesHelper(files, location, additionalInfo = null) {
 	let formData = new FormData();
 	Array.from(files).forEach(file => {
 		/* https://stackoverflow.com/questions/65197158/what-does-formdata-appendfiles-file-mean-in-api-request */
 		formData.append("files[]", file);
 	});
-
-	/* set upload variable to be recognized by the backend */
-	formData.set("upload", uploadType);
 
 	for (let key in additionalInfo) {
 		formData.set(key, additionalInfo[key]);

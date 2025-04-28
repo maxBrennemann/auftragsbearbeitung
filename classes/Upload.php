@@ -5,8 +5,6 @@ namespace Classes;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 
-use Classes\Project\Auftragsverlauf;
-use Classes\Project\Auftrag;
 use Classes\Project\Produkt;
 
 use Classes\Project\Modules\Sticker\StickerImage;
@@ -23,28 +21,9 @@ class Upload
         }
     }
 
-    public function uploadFilesAuftrag($auftragsnummer)
-    {
-        $ids = $this->uploadFiles();
-        if (is_array($ids)) {
-            foreach ($ids as $id) {
-                /*echo "id: " . $id . " /id";*/
-                DBAccess::insertQuery("INSERT INTO dateien_auftraege (id_datei, id_auftrag) VALUES ($id, $auftragsnummer)");
-
-                $auftragsverlauf = new Auftragsverlauf($auftragsnummer);
-                $auftragsverlauf->addToHistory($id, 4, "added");
-
-                $link = Link::getPageLink("auftrag") . "?id=" . $auftragsnummer;
-            }
-        }
-
-        echo Auftrag::getFiles($auftragsnummer);
-        return $ids;
-    }
-
     public function uploadFilesVehicle($fahrzeugnummer, $auftragsnummer)
     {
-        $ids = $this->uploadFilesAuftrag($auftragsnummer);
+        $ids = 0; //$this->uploadFilesAuftrag($auftragsnummer);
         if (is_array($ids)) {
             foreach ($ids as $id) {
                 if ($id != -1) {

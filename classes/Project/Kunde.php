@@ -441,4 +441,31 @@ class Kunde implements StatisticsInterface
 		]);
 		JSONResponseHandler::returnOK();
 	}
+
+	public static function addVehicle()
+	{
+		$id = Tools::get("id");
+		$licensePlate = Tools::get("licensePlate");
+		$name = Tools::get("name");
+		$orderId = Tools::get("orderId");
+
+		$vehicleId = DBAccess::insertQuery("INSERT INTO fahrzeuge (Kennzeichen, Fahrzeug, Kundennummer) VALUES (:licensePlate, :name, :id)", [
+			"licensePlate" => $licensePlate,
+			"name" => $name,
+			"id" => $id,
+		]);
+
+		DBAccess::insertQuery("INSERT INTO fahrzeuge_auftraege (id_fahrzeug, id_auftrag) VALUES (:vehicleId, :orderId)", [
+            "vehicleId" => $vehicleId,
+            "orderId" => $orderId
+        ]);
+
+        $auftragsverlauf = new Auftragsverlauf($orderId);
+        $auftragsverlauf->addToHistory($vehicleId, 3, "added");
+        $table = (new Auftrag($orderId))->getFahrzeuge();
+
+		JSONResponseHandler::sendResponse([
+			"table" => $table,
+		]);
+	}
 }

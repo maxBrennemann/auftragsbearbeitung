@@ -98,7 +98,8 @@ class Link
 				$link = $rewriteBase . "files/generated/fb_export/" . $resource;
 				break;
 			case "upload":
-				$link = $rewriteBase . "upload/" . $resource;
+				$subDir = substr($resource, 0, 2). "/" . substr($resource, 2, 2);
+				$link = $rewriteBase . "upload/" . $subDir . "/" . $resource;
 				break;
 			case "backup":
 				$link = $rewriteBase . "files/generated/sql_backups/" . $resource;

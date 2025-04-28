@@ -1,5 +1,6 @@
 import { ajax } from "./ajax.js";
 import { addBindings } from "./bindings.js";
+import { notification } from "./notifications.js";
 
 const fnNames = {};
 let fileUploadInfo = {};
@@ -13,7 +14,13 @@ fnNames.write_fileUploader = async e => {
     const location = info.location ?? "";
     delete info.location;
 
-    const response = await ajax.uploadFiles(files, type, location, info);
+    await ajax.uploadFiles(files, location, info).then(() => {
+        notification("", "success");
+    }).catch((error) => {
+        notification("", "failure");
+        console.error(error);
+    });
+
     target.value = "";
 }
 
