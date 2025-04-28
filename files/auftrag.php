@@ -339,7 +339,7 @@ if ($orderId <= 0): ?>
 				<p>Fahrzeug:<br><input id="fahrzeug" class="input-primary"></p>
 				<button class="btn-primary-new mt-2" data-binding="true" data-fun="addNewVehicle">Hinzufügen</button>
 			</div>
-			<div id="fahrzeugTable" class="mt-2"><?= $auftrag->getFahrzeuge(); ?></div>
+			<div id="fahrzeugTable" class="mt-2"></div>
 			<br>
 			<form class="fileUploader" data-target="vehicle" name="vehicle" method="post" enctype="multipart/form-data" id="fileVehicle" style="display: none">
 				<input type="file" name="uploadedFile" multiple form="fileVehicle">
@@ -366,7 +366,9 @@ if ($orderId <= 0): ?>
 		</div>
 		<div class="defCont verlauf">
 			<p class="font-bold" data-binding="true" data-fun="showAuftragsverlauf">Auftragsverlauf anzeigen</p>
-			<?= $auftragsverlauf ?>
+			<div class="mt-2">
+				<?= $auftragsverlauf ?>
+			</div>
 			<button class="btn-primary-new mt-2" data-binding="true" data-fun="addList">Liste hinzufügen</button>
 			<button class="infoButton ml-1" data-info="2">i</button>
 		</div>

@@ -59,13 +59,11 @@ class Fahrzeug
 
         $auftragsverlauf = new Auftragsverlauf($orderId);
         $auftragsverlauf->addToHistory($vehicleId, 3, "added");
-        $table = (new Auftrag($orderId))->getFahrzeuge();
 
         JSONResponseHandler::sendResponse(array(
             "message" => "Vehicle attached to order",
             "vehicleId" => $vehicleId,
             "orderId" => $orderId,
-            "table" => $table,
         ));
     }
 
@@ -94,4 +92,30 @@ class Fahrzeug
 
         JSONResponseHandler::returnOK();
     }
+
+    public static function addFiles()
+	{
+        $idVehicle = Tools::get("vehicleId");
+        $orderId = Tools::get("id");
+
+		$uploadHandler = new UploadHandler();
+		$files = $uploadHandler->uploadMultiple();
+
+		$queryOrder = "INSERT INTO dateien_auftraege (id_datei, id_auftrag) VALUES ";
+        $queryVehicle = "INSERT INTO dateien_fahrzeuge (id_datei, id_fahrzeug) VALUES ";
+
+		$valuesOrder = [];
+        $valuesVehicle = [];
+
+		foreach ($files as $file) {
+			$valuesOrder[] = [(int) $file["id"], $orderId];
+            $valuesVehicle[] = [(int) $file["id"], $idVehicle];
+
+			$auftragsverlauf = new Auftragsverlauf($orderId);
+            $auftragsverlauf->addToHistory($file["id"], 4, "added");
+  		}
+
+		DBAccess::insertMultiple($queryOrder, $valuesOrder);
+        DBAccess::insertMultiple($queryVehicle, $valuesVehicle);
+	}
 }

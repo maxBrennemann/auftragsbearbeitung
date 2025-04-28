@@ -166,19 +166,6 @@ class Ajax
 			case "createAuftrag":
 				Auftrag::add();
 				break;
-			case "insertCar":
-				$kfzKenn = $_POST['kfz'];
-				$fahrzeug = $_POST['fahrzeug'];
-				$nummer =  $_POST['kdnr'];
-				$auftragsId =  $_POST['auftrag'];
-				$fahrzeugId = DBAccess::insertQuery("INSERT INTO fahrzeuge (Kundennummer, Kennzeichen, Fahrzeug) VALUES($nummer, '$kfzKenn', '$fahrzeug')");
-
-				Tools::add("id", $auftragsId);
-				Tools::add("vehicleId", $fahrzeugId);
-
-				Fahrzeug::attachVehicle();
-				echo (new Auftrag($auftragsId))->getFahrzeuge();
-				break;
 			case "setInvoiceData":
 				$order = $_POST['id'];
 				$invoice = $_POST['invoice'];

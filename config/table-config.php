@@ -131,6 +131,13 @@ function getTableConfig()
                 "Fahrzeug"
             ],
             "permissions" => ["read", "create", "update", "delete"],
+            "joins" => [
+                "connected_vehicles" => [
+                    "relatedTable" => "fahrzeuge_auftraege",
+                    "localKey" => "Nummer",
+                    "foreignKey" => "id_fahrzeug",
+                ],
+            ],
         ],
         "leistung" => [
             "columns" => [

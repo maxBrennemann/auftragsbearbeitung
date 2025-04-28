@@ -46,6 +46,7 @@ export const fetchAndRenderTable = async (containerId, tableName, options = {}) 
     const conditions = options?.conditions ?? {}
     const data = await ajax.get(`/api/v1/tables/${tableName}`, {
         "conditions": JSON.stringify(conditions),
+        ...options.joins
     });
 
     if (!options?.primaryKey) {

@@ -463,23 +463,6 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 		return DBAccess::selectQuery("SELECT Nummer, Kennzeichen, Fahrzeug FROM fahrzeuge LEFT JOIN fahrzeuge_auftraege ON fahrzeuge_auftraege.id_fahrzeug = Nummer WHERE fahrzeuge_auftraege.id_auftrag = {$this->getAuftragsnummer()}");
 	}
 
-	public function getFahrzeuge()
-	{
-		$fahrzeuge = $this->getLinkedVehicles();
-		$column_names = array(0 => array("COLUMN_NAME" => "Nummer"), 1 => array("COLUMN_NAME" => "Kennzeichen"), 2 => array("COLUMN_NAME" => "Fahrzeug"));
-
-		$link = new Link();
-		$link->addBaseLink("fahrzeug");
-		$link->setIterator("id", $fahrzeuge, "Nummer");
-
-		$t = new Table();
-		$t->createByData($fahrzeuge, $column_names);
-		$t->addLink($link);
-		$t->addAction("addFileVehicle", "+", "Datei hinzufügen");
-		$_SESSION[$t->getTableKey()] = serialize($t);
-		return $t->getTable();
-	}
-
 	public function getColors()
 	{
 		$query = "SELECT color_name, hex_value, id, producer, short_name 

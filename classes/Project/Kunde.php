@@ -462,10 +462,7 @@ class Kunde implements StatisticsInterface
 
         $auftragsverlauf = new Auftragsverlauf($orderId);
         $auftragsverlauf->addToHistory($vehicleId, 3, "added");
-        $table = (new Auftrag($orderId))->getFahrzeuge();
 
-		JSONResponseHandler::sendResponse([
-			"table" => $table,
-		]);
+		JSONResponseHandler::returnOK();
 	}
 }

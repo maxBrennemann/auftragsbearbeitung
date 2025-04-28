@@ -1,15 +1,18 @@
 import { ajax } from "../classes/ajax.js";
 import { addBindings } from "../classes/bindings.js";
-import { clearInputs } from "../global.js";
+import { clearInputs, createPopup, getTemplate } from "../global.js";
+import { tableConfig } from "../classes/tableconfig.js";
+import { fetchAndRenderTable } from "../classes/table.js";
+import { initFileUploader } from "../classes/upload.js";
 
 const fnNames = {};
+const customerId = document.getElementById("kundennummer").innerText;
 
 fnNames.click_addNewVehicle = () => {
     const kfz = document.getElementById("kfz").value;
     const fahrzeug = document.getElementById("fahrzeug").value;
-    const kundennummer = document.getElementById("kundennummer").innerText;
 
-    ajax.post(`/api/v1/customer/${kundennummer}/vehicle`, {
+    ajax.post(`/api/v1/customer/${customerId}/vehicle`, {
         "licensePlate": kfz,
         "name": fahrzeug,
         "orderId": globalData.auftragsId,
@@ -23,7 +26,7 @@ fnNames.click_addNewVehicle = () => {
     });
 }
 
-fnNames.click_addExistingVehicle = e => {
+fnNames.click_addExistingVehicle = () => {
     const vehicleId = document.getElementById("selectVehicle").value;
     if (vehicleId == "addNew") {
         return;
@@ -44,6 +47,51 @@ fnNames.write_selectVehicle = e => {
     }
 }
 
+const createVehicleTable = async () => {
+    const config = tableConfig["fahrzeuge"];
+    const options = {
+        "hideOptions": ["check", "move", "edit", "addRow"],
+        "primaryKey": config.primaryKey,
+        "hide": ["Kundennummer"],
+        "autoSort": true,
+        "styles": {
+            "table": {
+                "className": ["w-full"],
+            },
+        },
+        "conditions": {
+            "Kundennummer": customerId,
+            "id_auftrag": globalData.auftragsId,
+        },
+        "link": "/fahrzeug?id=",
+        "joins": {
+            "connected_vehicles": globalData.auftragsId
+        }
+    };
+
+    const table = await fetchAndRenderTable("fahrzeugTable", "fahrzeuge", options);
+    table.addEventListener("rowUpload", e => uploadVehicleFile(e));
+}
+
+const uploadVehicleFile = async (e) => {
+    const data = e.detail;
+    const uploadFile = await ajax.get(`/api/v1/template/uploadFile`, {
+        "params": JSON.stringify({
+            "target": "vehicle",
+        }),
+    });
+    const div = document.createElement("div");
+    div.innerHTML = uploadFile.content;
+    const optionsContainer = createPopup(div);
+    const btnCancel = optionsContainer.querySelector("button.btn-cancel");
+    initFileUploader({
+        "vehicle": {
+            "location": `/api/v1/order/${globalData.auftragsId}/vehicle/${data.Nummer}/add-files`,
+        },
+    });
+}
+
 export const initVehicles = () => {
     addBindings(fnNames);
+    createVehicleTable();
 }
