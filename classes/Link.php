@@ -12,7 +12,7 @@ class Link
 	public $data;
 	public $datakey;
 
-	function __construct() {}
+	public function __construct() {}
 
 	public static function getPageLink($resourceName)
 	{

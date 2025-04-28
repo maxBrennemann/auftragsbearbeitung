@@ -33,7 +33,6 @@ class Search
 					$data .= (new Kunde($id[0]))->getHTMLShortSummary();
 				}
 				return $data;
-				break;
 			case "produkt":
 				$ids = self::searchInProducts($searchQuery);
 				$query = "SELECT Nummer, Bezeichnung, Beschreibung, Marke, CONCAT(FORMAT(Preis / 100,2,'de_DE'), ' €') AS Preis,  CONCAT(FORMAT(Einkaufspreis / 100,2,'de_DE'), ' €') AS Einkaufspreis FROM produkt WHERE Nummer = ";
@@ -51,7 +50,7 @@ class Search
 				$data = "";
 				$ids = array_reverse($ids);
 				foreach ($ids as $id) {
-					$data .= Produkt::getHTMLShortSummary($id[0]);
+					//$data .= Produkt::getHTMLShortSummary($id[0]);
 				}
 
 				if (empty($data)) {
@@ -59,7 +58,6 @@ class Search
 				}
 
 				return $data;
-				break;
 			case "order":
 				$ids = self::searchInOrders($searchQuery);
 				$query = "SELECT * FROM auftrag WHERE Auftragsnummer = ";
@@ -70,7 +68,7 @@ class Search
 
 				$data = "";
 				$ids = array_reverse($ids);
-				$data = Auftrag::getAuftragsliste($ids, 0);
+				$data = Auftrag::getAuftragsliste();
 				// TODO: fixen, da getAuftragsliste überarbeitet wurde
 
 				if (empty($data)) {
@@ -78,8 +76,6 @@ class Search
 				}
 
 				return $data;
-
-				break;
 			case "posten":
 				$ids = self::searchInPosten($searchQuery);
 				$query = "SELECT * FROM postenData WHERE Auftragsnummer = ";
@@ -89,7 +85,6 @@ class Search
 					break;
 
 				return "";
-				break;
 			case "wiki":
 				$ids = self::searchInWiki($searchQuery);
 				$query = "SELECT * FROM wiki WHERE id = ";
@@ -99,10 +94,9 @@ class Search
 					break;
 
 				return "";
-				break;
 		}
 
-		$data = array();
+		$data = [];
 
 		foreach ($ids as $id) {
 			$column = DBAccess::selectQuery($query . $id[0]);
@@ -325,7 +319,7 @@ class Search
 		return array_slice($mostSimilar, 0, 10);
 	}
 
-	/*
+	/**
 	 * searches in wiki articles
 	 */
 	private static function searchInWiki($searchQuery)

@@ -1,5 +1,5 @@
 import { ajax } from "./classes/ajax.js";
-import { createFileUpload } from "./classes/upload.js";
+//import { createFileUpload } from "./classes/upload.js";
 import { notification } from ".classes/notifications.js";
 
 /* global variables for attribute selection */
@@ -47,12 +47,7 @@ function init() {
     });
 
     const uploadAnchor = document.getElementById("uploadAnchor");
-    createFileUpload(uploadAnchor);
-    /* <form class="fileUploader mt-2" method="post" enctype="multipart/form-data" data-target="product" name="productUpload">
-			Dateien hinzufügen:
-			<input type="file" name="uploadedFile" multiple class="hidden">
-			<input name="produkt" value="<?= $id ?>" hidden>
-		</form>*/
+    //createFileUpload(uploadAnchor);
 }
 
 /**

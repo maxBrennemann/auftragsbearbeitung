@@ -5,6 +5,11 @@ namespace Classes;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 
+use Classes\Auth\SessionController;
+
+use Classes\Project\Config;
+use Classes\Project\CacheManager;
+
 use Classes\Project\Posten;
 use Classes\Project\Table;
 
@@ -15,11 +20,27 @@ use Classes\Project\Modules\Sticker\Imports\ImportGoogleSearchConsole;
 
 use Classes\Project\Modules\Pdf\TransactionPdf\OfferPDF;
 use Classes\Project\Modules\Pdf\TransactionPdf\InvoicePDF;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 class ResourceManager
 {
 
     private static $page = "";
+
+    public static function initialize()
+    {
+        define("MINIFY_STATUS", Config::get("minifyStatus") == "on" ? true : false);
+        define("CACHE_STATUS", CacheManager::getCacheStatus());
+
+        $companyName = DBAccess::selectQuery("SELECT content FROM settings WHERE title = 'companyName';");
+        if ($companyName != null) {
+            define("COMPANY_NAME", $companyName[0]["content"]);
+        } else {
+            define("COMPANY_NAME", "Auftragsbearbeitung");
+        }
+
+        errorReporting();
+    }
 
     /**
      * Before: page was submitted via $_GET paramter, but now the REQUEST_URI is read;
@@ -32,6 +53,14 @@ class ResourceManager
         $page = str_replace($_ENV["REWRITE_BASE"] . $_ENV["SUB_URL"], "", $url[0]);
         $parts = explode('/', $page);
         self::$page = $parts[count($parts) - 1];
+
+        /* TODO: implement better auth */
+        /*
+        if (!SessionController::isLoggedIn()) {
+            ResourceManager::outputHeaderJSON();
+            JSONResponseHandler::throwError(401, "Unauthorized API access");
+        }
+        */
 
         switch ($parts[1]) {
             case "js":
@@ -49,21 +78,6 @@ class ResourceManager
             case "favicon.ico":
                 require_once "favicon.php";
                 exit;
-        }
-    }
-
-    public static function session()
-    {
-        session_start();
-        errorReporting();
-
-        $query = "SELECT content FROM settings WHERE title = 'companyName';";
-        $companyName = DBAccess::selectQuery($query);
-
-        if ($companyName != null) {
-            $_SESSION["companyName"] = $companyName[0]["content"];
-        } else {
-            $_SESSION["companyName"] = "Auftragsbearbeitung";
         }
     }
 
@@ -96,6 +110,12 @@ class ResourceManager
 
     public static function initPage()
     {
+        if (!SessionController::isLoggedIn()) {
+            self::$page = "login";
+            self::showPage();
+            return;
+        }
+
         $getReason = Tools::get("getReason");
         $isUpload = Tools::get("upload");
 
@@ -161,22 +181,20 @@ class ResourceManager
                 }
             } else if (self::$page == "cron") {
                 Ajax::manageRequests("testDummy", self::$page);
-            } else if (isLoggedIn()) {
-                self::showPage(self::$page);
             } else {
-                self::showPage("login");
+                self::showPage();
             }
         }
     }
 
-    private static function showPage($page)
+    private static function showPage(): void
     {
-        if ($page == "test") {
-            return null;
+        if (self::$page == "test") {
+            return; 
         }
 
-        $pageDetails = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM articles WHERE src = :page", [
-            "page" => $page
+        $pageDetails = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM articles WHERE src = :page LIMIT 1;", [
+            "page" => self::$page
         ]);
         $articleUrl = "";
 
@@ -184,19 +202,20 @@ class ResourceManager
         if ($pageDetails == null || !file_exists("./files/" . $pageDetails[0]["articleUrl"])) {
             http_response_code(404);
 
-            $baseUrl = 'files/';
-            $pageDetails['id'] = 0;
-            $pageDetails["articleUrl"] = $articleUrl = "404.php";
-            $pageDetails["pageName"] = $pageName = "Page not found";
+            $articleUrl = "404.php";
+            $pageName = "Page not found";
         } else {
-            $baseUrl = './files/';
             $pageDetails = $pageDetails[0];
             $articleUrl = $pageDetails["articleUrl"];
             $pageName = $pageDetails["pageName"];
         }
 
-        include "./files/header.php";
-        include $baseUrl . $articleUrl;
+        insertTemplate("./files/header.php", [
+            "pageName" => $pageName,
+            "page" => self::$page,
+        ]);
+
+        insertTemplate("./files/$articleUrl");
 
         insertTemplate("./files/footer.php", [
             "calcDuration" => $_ENV["DEV_MODE"],
@@ -425,8 +444,6 @@ class ResourceManager
 
     public static function outputHeaderJSON()
     {
-        session_start();
-
         header("Access-Control-Allow-Headers: *");
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
         header('Access-Control-Allow-Origin: http://localhost:5173');

@@ -15,7 +15,7 @@ if (isset($_GET["id"])) {
         <input class="search" type="text" placeholder="Suchen">
         <span id="lupeSpan"><span id="lupe">&#9906;</span></span>
     </span>
-    <?=insertTemplate("files/res/views/searchView.php")?>
+    <?= \Classes\Project\TemplateController::getTemplate("search"); ?>
 </div>
 <div class="defCont">
     <p>Titel</p>

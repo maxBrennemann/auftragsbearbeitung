@@ -3,7 +3,7 @@
 use Classes\Link;
 use Classes\Project\BreadcrumbController;
 use Classes\Project\Icon;
-use Classes\Project\Notification\NotificationManager;
+use Classes\Notification\NotificationManager;
 use Classes\Project\Config;
 use Classes\Project\ClientSettings;
 
@@ -53,7 +53,7 @@ if ($pageName == "") {
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, height=device-height">
-	<title><?= $_SESSION["companyName"] ?> - <?= $pageTitle ?></title>
+	<title><?= COMPANY_NAME ?> - <?= $pageTitle ?></title>
 	<meta name="Description" content="Auftragsübersicht">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="shortcut icon" type="image/x-icon" href="<?= $_ENV["WEB_URL"] ?>favicon.ico">
@@ -131,11 +131,11 @@ if ($pageName == "") {
 	<header class="moveToSide sticky p-3 2xl:p-5">
 		<div class="mx-auto w-4/5 lg:mb-5 mb-3 flex">
 			<div class="flex-1">
-				<h1 class="font-semibold md:text-sm"><?= $_SESSION["companyName"] ?> Auftragsstellung</h1>
+				<h1 class="font-semibold md:text-sm"><?= COMPANY_NAME ?> Auftragsstellung</h1>
 				<p class="font-normal text-sm"><?= $pageTitle ?></p>
 			</div>
 			<div class="inline-flex flex-wrap">
-				<?= insertTemplate("files/res/views/searchView.php") ?>
+				<?= \Classes\Project\TemplateController::getTemplate("search"); ?>
 				<div class="inline-flex ml-1">
 					<div class="inline-flex items-center p-1 hover:bg-gray-200 hover:rounded-sm relative text-gray-700 cursor-pointer" data-binding="true" data-fun="showNotifications">
 						<?php if (NotificationManager::getNotificationCount() > 0): ?>

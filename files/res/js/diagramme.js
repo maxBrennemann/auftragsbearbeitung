@@ -1,5 +1,4 @@
 import { ajax } from "./classes/ajax.js";
-import { addBindings } from "./classes/bindings.js";
 
 class Diagram {
 

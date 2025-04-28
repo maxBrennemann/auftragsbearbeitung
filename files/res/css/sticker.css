@@ -61,22 +61,6 @@ input:checked + .slider:before {
     border-radius: 50%;
 }
 
-.cont {
-    background-color: grey;
-    padding: 10px;
-    margin: 10px;
-}
-
-.cont2 {
-    display: grid;
-    gap: 10px;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-}
-
-.cont2 .right {
-    float: right;
-}
-
 .pointer-none {
     pointer-events: none;
 }
@@ -295,10 +279,6 @@ input:checked + .slider:before {
     padding-right: 15px;
     padding-top: 3px;
     border: none;
-}
-
-.titleInput {
-    min-width: 120px;
 }
 
 form label {

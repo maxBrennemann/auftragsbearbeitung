@@ -6,6 +6,8 @@ use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 
+use Classes\Auth\SessionController;
+
 use Classes\Routes\CustomerRoutes;
 use Classes\Routes\InvoiceRoutes;
 use Classes\Routes\LoginRoutes;
@@ -54,7 +56,7 @@ class Ajax
 		$currentApiVersion = "v1";
 		ResourceManager::outputHeaderJSON();
 
-		$url = $_SERVER['REQUEST_URI'];
+		$url = $_SERVER["REQUEST_URI"];
 		$url = explode('?', $url, 2);
 		$apiPath = str_replace($_ENV["REWRITE_BASE"] . $_ENV["SUB_URL"] . "/", "", $url[0]);
 		$apiParts = explode("/", $apiPath);
@@ -66,6 +68,12 @@ class Ajax
 		}
 
 		$path = str_replace("api/" . $apiVersion . "/", "", $apiPath);
+
+		/* TODO: implement better auth */
+		if (!SessionController::isLoggedIn() && $routeType != "auth") {
+			ResourceManager::outputHeaderJSON();
+			JSONResponseHandler::throwError(401, "Unauthorized API access");
+		}
 
 		switch ($routeType) {
 			case "customer":
@@ -157,31 +165,6 @@ class Ajax
 				break;
 			case "createAuftrag":
 				Auftrag::add();
-				break;
-			case "insertProduct":
-				$data = array();
-				$data['amount'] = $_POST['amount'];
-				$data['prodId'] = $_POST['product'];
-				$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
-				$data['Auftragsnummer'] = $_POST['auftrag'];
-				$data['addToInvoice'] = (int) $_POST['addToInvoice'];
-				Posten::insertPosten("produkt", $data);
-				break;
-			case "insertProductCompact":
-				$data = array();
-				$data['amount'] = (int) $_POST['menge'];
-				$data['marke'] = $_POST['marke'];
-				$data['ekpreis'] = str_replace(",", ".", $_POST['ekpreis']);
-				$data['vkpreis'] = str_replace(",", ".", $_POST['vkpreis']);
-				$data['name'] = $_POST['name'];
-				$data['beschreibung'] = $_POST['beschreibung'];
-				$data['ohneBerechnung'] = $_POST['ohneBerechnung'];
-				$data['Auftragsnummer'] = (int) $_POST['auftrag'];
-				$data['discount'] = (int) $_POST['discount'];
-				$data['addToInvoice'] = (int) $_POST['addToInvoice'];
-
-				Posten::insertPosten("compact", $data);
-				echo (new Auftrag($_POST['auftrag']))->preisBerechnen();
 				break;
 			case "insertCar":
 				$kfzKenn = $_POST['kfz'];
@@ -538,7 +521,9 @@ class Ajax
 					"type" => $type,
 				]);
 
-				insertTemplate('classes/Project/Modules/Sticker/Views/showSearchView.php', ["products" => $products]);
+				echo \Classes\Project\TemplateController::getTemplate("sticker/showSearch", [
+					"products" => $products
+				]);
 				break;
 			case "connectAccessoire":
 				$idSticker = (int) $_POST["id"];
@@ -678,11 +663,9 @@ class Ajax
 					"stickerType" => $stickerType
 				]);
 
-				ob_start();
-				insertTemplate('classes/Project/Modules/Sticker/Views/chatGPTOptionsView.php', [
+				$content = \Classes\Project\TemplateController::getTemplate("sticker/chatGPTOptions", [
 					"texts" => $result,
 				]);
-				$content = ob_get_clean();
 				echo json_encode([
 					"template" => $content,
 				]);
@@ -703,21 +686,6 @@ class Ajax
 				break;
 			case "diagramme":
 				Statistics::dispatcher();
-				break;
-			default:
-				$selectQuery = "SELECT id, articleUrl, pageName FROM articles WHERE src = :page;";
-				$result = DBAccess::selectQuery($selectQuery, ["page" => $page]);
-
-				if ($result == null) {
-					$baseUrl = 'files/generated/';
-					$result = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM generated_articles WHERE src = :page", ["page" => $page]);
-				} else {
-					$baseUrl = 'files/';
-				}
-
-				$result = $result[0];
-				$articleUrl = $result["articleUrl"];
-				include($baseUrl . $articleUrl);
 				break;
 		}
 	}

@@ -1,6 +1,6 @@
 <?php
 
-namespace Classes\Project\Notification;
+namespace Classes\Notification;
 
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\DBAccess;
@@ -109,14 +109,12 @@ class NotificationManager
         $tasksCount = self::getNotificationCountByType(NotificationType::TYPE_TASK);
         $newsCount = self::getNotificationCountByType(NotificationType::TYPE_STEP, NotificationType::TYPE_NEW_ORDER);
 
-        ob_start();
-        insertTemplate('files/res/views/notificationMenuView.php', [
+        $content = \Classes\Project\TemplateController::getTemplate("notificationMenu", [
             "tasks" => $tasks,
             "news" => $news,
             "tasksCount" => $tasksCount,
-            "newsCount" => $newsCount
+            "newsCount" => $newsCount,
         ]);
-        $content = ob_get_clean();
         JSONResponseHandler::sendResponse([
             "html" => $content,
         ]);
