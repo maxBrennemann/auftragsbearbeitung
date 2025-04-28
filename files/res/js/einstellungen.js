@@ -4,6 +4,7 @@ import { createHeader, createTable, addRow, fetchAndRenderTable } from "./classe
 import { tableConfig } from "./classes/tableconfig.js";
 import { notification } from "./classes/notifications.js";
 import { Colorpicker } from "./classes/colorpicker.js";
+import { clearInputs } from "./global.js";
 
 const fnNames = {};
 

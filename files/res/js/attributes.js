@@ -1,5 +1,6 @@
 import { ajax } from "./classes/ajax.js";
 import { notification } from "./classes/notifications.js";
+import { clearInputs } from "./global.js";
 
 let currentDraggedGroup = null;
 let currentDraggedElement = null;

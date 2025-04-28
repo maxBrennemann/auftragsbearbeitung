@@ -14,7 +14,6 @@ function exportToWindow() {
 	window.sortTableNew = sortTableNew;
 
 	window.sortTable = sortTable;
-	window.clearInputs = clearInputs;
 }
 
 document.addEventListener("click", function (event) {
@@ -289,7 +288,7 @@ window.addEventListener("click", function (event) {
  * clears all inputs, supported types: id, array of ids, classes
  * @param {Object} inputs JSON object with this pattern: {"id":"clearthisid", "class":"clearthisclass"}
  */
-function clearInputs(inputs) {
+export const clearInputs = (inputs) => {
 	for (let key in inputs) {
 		switch (key) {
 			case "id":

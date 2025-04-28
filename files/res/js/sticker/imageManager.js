@@ -177,7 +177,7 @@ async function uploadFileForSticker(files, imageCategory, callback = null) {
         imageCategory: imageCategory
     };
 
-    const response = await ajax.uploadFiles(files, "motiv", data);
+    const response = await ajax.uploadFiles(files, data);
 
     if (callback != null) {
         callback(response, imageCategory);

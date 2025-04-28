@@ -152,11 +152,11 @@ if ($orderId <= 0): ?>
 					<button class="btn-attention mt-5" id="deleteOrder">Auftrag löschen</button>
 				</div>
 			</div>
-			<div class="inputCont">
+			<div class="mt-1">
 				<label for="orderTitle">Auftragsbezeichnung:</label>
 				<input class="input-primary w-full" id="orderTitle" value="<?= $auftrag->getAuftragsbezeichnung() ?>" autocomplete="none" data-write="true" data-fun="editTitle">
 			</div>
-			<div class="inputCont">
+			<div class="mt-1">
 				<div>
 					<span>Auftragsbeschreibung:</span>
 					<span class="cursor-pointer" data-fun="toggleOrderDescription" data-binding="true">
@@ -169,7 +169,7 @@ if ($orderId <= 0): ?>
 					<input class="orderDescription input-primary w-full hidden" autocomplete="none" data-write="true" data-fun="editDescription" value="<?= $auftrag->getAuftragsbeschreibung() ?>">
 				</div>
 			</div>
-			<div class="inputCont">
+			<div class="mt-1">
 				<label for="orderType">Auftragstyp:</label>
 				<select class="input-primary w-full" id="orderType" data-write="true" data-fun="editOrderType">
 					<?php foreach ($auftragsTypen as $type): ?>
@@ -305,7 +305,7 @@ if ($orderId <= 0): ?>
 		</div>
 		<div class="defCont invoice">
 			<p class="font-bold">Rechnungsposten (netto)</p>
-			<div id="invoicePostenTable"><?= $auftrag->getInvoicePostenTable() ?></div>
+			<div id="invoicePostenTable" class="mt-2"><?= $auftrag->getInvoicePostenTable() ?></div>
 		</div>
 		<div class="defCont preis">
 			<p class="font-bold">Kalkulation:</p>
@@ -320,10 +320,12 @@ if ($orderId <= 0): ?>
 			</p>
 		</div>
 		<div class="defCont fahrzeuge">
-			<p><span class="font-bold">Fahrzeuge</span><button class="ml-1 infoButton" data-info="1">i</button>
 			<p>
-			<div>
-				<select id="selectVehicle" data-write="true" data-fun="selectVehicle" class="input-primary">
+				<span class="font-bold">Fahrzeuge</span>
+				<button class="ml-1 infoButton" data-info="1">i</button>
+			<p>
+			<div class="mt-2">
+				<select id="selectVehicle" class="input-primary" data-fun="selectVehicle" data-write="true">
 					<option value="0" selected disabled>Bitte auswählen</option>
 					<?php foreach ($fahrzeuge as $f): ?>
 						<option value="<?= $f['Nummer'] ?>"><?= $f['Kennzeichen'] ?> <?= $f['Fahrzeug'] ?></option>
@@ -332,12 +334,12 @@ if ($orderId <= 0): ?>
 				</select>
 				<button class="m-1 btn-primary-new" data-binding="true" data-fun="addExistingVehicle">Übernehmen</button>
 			</div>
-			<div class="innerDefCont" id="addVehicle" style="display: none;">
+			<div class="innerDefCont hidden" id="addVehicle">
 				<p>Kfz-Kennzeichen:<br><input id="kfz" class="input-primary"></p>
 				<p>Fahrzeug:<br><input id="fahrzeug" class="input-primary"></p>
 				<button class="btn-primary-new mt-2" data-binding="true" data-fun="addNewVehicle">Hinzufügen</button>
 			</div>
-			<div><?= $auftrag->getFahrzeuge(); ?></div>
+			<div id="fahrzeugTable" class="mt-2"></div>
 			<br>
 			<form class="fileUploader" data-target="vehicle" name="vehicle" method="post" enctype="multipart/form-data" id="fileVehicle" style="display: none">
 				<input type="file" name="uploadedFile" multiple form="fileVehicle">
@@ -355,23 +357,18 @@ if ($orderId <= 0): ?>
 		</div>
 		<div class="defCont upload">
 			<p class="font-bold">Dateien zum Auftrag hinzufügen</p>
-			<form class="fileUploader" method="post" enctype="multipart/form-data" data-target="order" name="auftragUpload" id="uploadFilesOrder">
-				<input name="auftrag" value="<?= $orderId ?>" hidden>
-			</form>
-			<p>Hier Dateien per Drag&Drop ablegen oder
-				<label class="uploadWrapper">
-					<input type="file" name="uploadedFile" multiple class="fileUploadBtn" form="uploadFilesOrder">
-					hier hochladen
-				</label>
-			</p>
-			<div class="filesList defCont"></div>
+			<?= TemplateController::getTemplate("uploadFile", [
+				"target" => "order",
+			]); ?>
 			<div id="showFilePrev">
 				<?= $showFiles ?>
 			</div>
 		</div>
 		<div class="defCont verlauf">
 			<p class="font-bold" data-binding="true" data-fun="showAuftragsverlauf">Auftragsverlauf anzeigen</p>
-			<?= $auftragsverlauf ?>
+			<div class="mt-2">
+				<?= $auftragsverlauf ?>
+			</div>
 			<button class="btn-primary-new mt-2" data-binding="true" data-fun="addList">Liste hinzufügen</button>
 			<button class="infoButton ml-1" data-info="2">i</button>
 		</div>
