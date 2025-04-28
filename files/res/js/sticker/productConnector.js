@@ -1,5 +1,6 @@
 import { notification } from "../classes/notifications.js";
 import { createPopup } from "../global.js";
+import { ajax } from "../classes/ajax.js";
 
 export default class ProductConnector {
 

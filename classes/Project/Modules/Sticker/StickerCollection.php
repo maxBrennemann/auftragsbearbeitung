@@ -5,7 +5,9 @@ namespace Classes\Project\Modules\Sticker;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+
 use Classes\Project\Icon;
+use Classes\Project\UploadHandler;
 
 use Classes\Project\Modules\Sticker\Imports\ImportGoogleSearchConsole;
 
@@ -398,5 +400,31 @@ class StickerCollection implements \Iterator
         JSONResponseHandler::sendResponse([
             "priceScheme" => $priceClass,
         ]);
+    }
+
+    public static function addFiles()
+    {
+        $idSticker = Tools::get("id");
+        $type = Tools::get("type");
+
+        $uploadHandler = new UploadHandler("upload", [
+            "image/png",
+            "image/jpg",
+            "image/jpeg",
+            "image/svg+xml",
+        ]);
+		$files = $uploadHandler->uploadMultiple();
+
+        $query = "INSERT INTO module_sticker_image (id_datei, id_motiv, image_sort) VALUES ";
+        $data = [];
+        foreach ($files as $file) {
+            $data[] = [
+                $file["id"],
+                $idSticker,
+                $type
+            ];
+        }
+
+        DBAccess::insertMultiple($query, $data);
     }
 }

@@ -221,7 +221,7 @@ class Textil extends Sticker
         foreach ($textiles as $textil) {
             $idTextile = $textil["id"];
             $idSticker = $this->idSticker;
-            $images = StickerImage::getCombinedImages($idSticker, $idTextile);
+            //$images = StickerImage::getCombinedImages($idSticker, $idTextile);
             // TODO: add product to prestashop
 
             $this->save();

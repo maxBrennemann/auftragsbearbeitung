@@ -10,6 +10,11 @@ class Schedule
         "exact_hour" => []
     ];
 
+    public function runEveryMinute(callable $task)
+    {
+        $this->tasks["every_minute"][] = $task;
+    }
+
     public function runEveryHour(callable $task)
     {
         $this->tasks["hourly"][] = $task;

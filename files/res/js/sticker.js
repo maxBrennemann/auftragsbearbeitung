@@ -1,9 +1,9 @@
 import { click_textGeneration, click_showTextSettings, click_iterateText } from "./sticker/textGeneration.js";
 import ProductConnector from "./sticker/productConnector.js";
-import { click_makeColorable, deleteImage, updateImageDescription, updateImageOverwrite } from "./sticker/imageManager.js";
+import { initImageManager } from "./sticker/imageManager.js";
 import { } from "./sticker/statsManager.js";
 import { initSizeTable } from "./sticker/sizeTable.js";
-import { addBindings } from "./classes/bindings.js";
+import { addBindings, getVariable } from "./classes/bindings.js";
 import "./sticker/imageMove.js";
 import { ajax } from "./classes/ajax.js";
 import initTagManager from "./sticker/tagManager.js";
@@ -11,12 +11,9 @@ import { notificatinReplace, notification, notificationLoader } from "./classes/
 import { createPopup } from "./global.js";
 
 const fnNames = {
-    click_makeColorable: click_makeColorable,
     click_textGeneration: click_textGeneration,
     click_showTextSettings: click_showTextSettings,
     click_iterateText: click_iterateText,
-    click_deleteImage: deleteImage,
-    write_updateImageDescription: updateImageDescription,
 };
 
 const mainVariables = {
@@ -31,15 +28,12 @@ const mainVariables = {
 
 /* TODO: besseres variable management */
 window.mainVariables = mainVariables;
-window.updateImageOverwrite = updateImageOverwrite
 
 function initSticker() {
     addBindings(fnNames);
     checkProductErrorStatus();
 
-    if (mainVariables.motivId == null) {
-        return;
-    }
+    mainVariables.motivId = getVariable("motivId");
 
     document.title = "b-schriftung - Motiv " + mainVariables.motivId.innerHTML + " " + document.getElementById("name").value;
 
@@ -53,6 +47,7 @@ function initSticker() {
     initTextiles();
     initSizeTable();
     initTagManager();
+    initImageManager();
 }
 
 fnNames.click_toggleCheckbox = async function(e) {
@@ -184,7 +179,6 @@ function sendTitle(e) {
 
 function manageTitle() {
     var title = this.value;
-    this.style.width = title.length + "ch";
 
     if (title.length > 50) {
         this.classList.remove("border-b-gray-600");

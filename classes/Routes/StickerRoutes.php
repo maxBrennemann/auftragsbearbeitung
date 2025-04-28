@@ -8,16 +8,16 @@ class StickerRoutes extends Routes
 {
 
     /**
-     * @uses Classes\Project\Modules\Sticker\StickerCollection::getStickerStatus()
-     * @uses Classes\Project\Modules\Sticker\ChatGPTConnection::iterateText()
-     * @uses Classes\Project\Modules\Sticker\StickerCollection::getStickerSizes()
-     * @uses Classes\Project\Modules\Sticker\StickerCollection::getPriceScheme()
+     * @uses \Classes\Project\Modules\Sticker\StickerCollection::getStickerStatus()
+     * @uses \Classes\Project\Modules\Sticker\ChatGPTConnection::iterateText()
+     * @uses \Classes\Project\Modules\Sticker\StickerCollection::getStickerSizes()
+     * @uses \Classes\Project\Modules\Sticker\StickerCollection::getPriceScheme()
      * 
-     * @uses Classes\Project\Modules\Sticker\StickerTagManager::getTagSuggestions()
-     * @uses Classes\Project\Modules\Sticker\StickerTagManager::countTagOccurences()
+     * @uses \Classes\Project\Modules\Sticker\StickerTagManager::getTagSuggestions()
+     * @uses \Classes\Project\Modules\Sticker\StickerTagManager::countTagOccurences()
      * 
-     * @uses Classes\Project\Modules\Sticker\StickerCollection::getStickerOverview()
-     * @uses Classes\Project\Modules\Sticker\StickerCollection::getStickerStates()
+     * @uses \Classes\Project\Modules\Sticker\StickerCollection::getStickerOverview()
+     * @uses \Classes\Project\Modules\Sticker\StickerCollection::getStickerStates()
      */
     protected static $getRoutes = [
         "/sticker/{id}/status" => [\Classes\Project\Modules\Sticker\StickerCollection::class, "getStickerStatus"],
@@ -36,27 +36,29 @@ class StickerRoutes extends Routes
     ];
 
     /**
-     * @uses Classes\Project\Modules\Sticker\StickerCollection::exportSticker()
-     * @uses Classes\Project\Modules\Sticker\Textil::toggleTextile()
-     * @uses Classes\Project\Modules\Sticker\Textil::setPrice()
-     * @uses Classes\Project\Modules\Sticker\StickerCollection::setPriceScheme()
+     * @uses \Classes\Project\Modules\Sticker\StickerCollection::exportSticker()
+     * @uses \Classes\Project\Modules\Sticker\Textil::toggleTextile()
+     * @uses \Classes\Project\Modules\Sticker\Textil::setPrice()
+     * @uses \Classes\Project\Modules\Sticker\StickerCollection::setPriceScheme()
+     * @uses \Classes\Project\Modules\Sticker\StickerCollection::addFiles()
      * 
-     * @uses Classes\Project\Modules\Sticker\StickerCollection::addSticker()
+     * @uses \Classes\Project\Modules\Sticker\StickerCollection::addSticker()
      * 
-     * @uses Classes\Project\Modules\Sticker\StickerTagManager::addTag()
-     * @uses Classes\Project\Modules\Sticker\StickerTagManager::crawlAllTags()
+     * @uses \Classes\Project\Modules\Sticker\StickerTagManager::addTag()
+     * @uses \Classes\Project\Modules\Sticker\StickerTagManager::crawlAllTags()
      * 
-     * @uses Classes\Project\Modules\Sticker\AufkleberWandtattoo::updateSizes()
+     * @uses \Classes\Project\Modules\Sticker\AufkleberWandtattoo::updateSizes()
      * 
-     * @uses Classes\Project\Modules\Sticker\ProductCrawler::crawlAll()
+     * @uses \Classes\Project\Modules\Sticker\ProductCrawler::crawlAll()
      * 
-     * @uses Classes\Project\Modules\Sticker\Exports\ExportFacebook::createExport()
+     * @uses \Classes\Project\Modules\Sticker\Exports\ExportFacebook::createExport()
      */
     protected static $postRoutes = [
         "/sticker/{id}/export" => [\Classes\Project\Modules\Sticker\StickerCollection::class, "exportSticker"],
         "/sticker/{id}/textile/{idTextile}/toggle" => [\Classes\Project\Modules\Sticker\Textil::class, "toggleTextile"],
         "/sticker/{id}/textile/{idTextile}/price" => [\Classes\Project\Modules\Sticker\Textil::class, "setPrice"],
         "/sticker/{id}/priceScheme" => [\Classes\Project\Modules\Sticker\StickerCollection::class, "setPriceScheme"],
+        "/sticker/{id}/{type}/add-files" => [\Classes\Project\Modules\Sticker\StickerCollection::class, "addFiles"],
 
         "/sticker/{id}/texts/{type}/{form}" => [\Classes\Project\Modules\Sticker\ChatGPTConnection::class, "newText"],
 
@@ -73,15 +75,15 @@ class StickerRoutes extends Routes
     ];
 
     /**
-     * @uses Classes\Project\Modules\Sticker\AufkleberWandtattoo::addSize()
+     * @uses \Classes\Project\Modules\Sticker\AufkleberWandtattoo::addSize()
      */
     protected static $putRoutes = [
         "/sticker/sizes" => [\Classes\Project\Modules\Sticker\AufkleberWandtattoo::class, "addSize"],
     ];
 
     /**
-     * @uses Classes\Project\Modules\Sticker\StickerTagManager::removeTag()
-     * @uses Classes\Project\Modules\Sticker\AufkleberWandtattoodtattoo::deleteSize()
+     * @uses \Classes\Project\Modules\Sticker\StickerTagManager::removeTag()
+     * @uses \Classes\Project\Modules\Sticker\AufkleberWandtattoodtattoo::deleteSize()
      */
     protected static $deleteRoutes = [
         "/sticker/tags" => [\Classes\Project\Modules\Sticker\StickerTagManager::class, "removeTag"],

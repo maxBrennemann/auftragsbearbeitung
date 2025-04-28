@@ -5,7 +5,6 @@ namespace Classes\Project;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 
-use Classes\Upload;
 use Classes\Link;
 
 abstract class Posten
@@ -218,15 +217,6 @@ abstract class Posten
 	{
 		$query = "SET @I = 0; UPDATE posten SET `position` = (@I := @I + 1) WHERE Auftragsnummer = $orderId;";
 		DBAccess::updateQuery($query);
-	}
-
-	/* add files to posten for order table */
-	public static function addFile($key, $table)
-	{
-		$postenId = Table::getIdentifierValue($table, $key);
-
-		$upload = new Upload();
-		$upload->uploadFilesPosten($postenId);
 	}
 
 	/* adds links to all attached files to the "Einkaufspreis" column */

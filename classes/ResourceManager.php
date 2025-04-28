@@ -116,46 +116,10 @@ class ResourceManager
         }
 
         $getReason = Tools::get("getReason");
-        $isUpload = Tools::get("upload");
 
         /* filters AJAX requests and delegates them to the right files */
         if ($getReason != null) {
             Ajax::manageRequests($getReason, self::$page);
-        } else if ($isUpload != null) {
-            $uploadDestination = Tools::get("upload");
-
-            /* checks which upload mechanism should be called */
-            switch ($uploadDestination) {
-                case "product":
-                    $auftragsId = (int) Tools::get("produkt");
-                    $upload = new Upload();
-                    $upload->uploadFilesProduct($auftragsId);
-                    break;
-                case "postenAttachment":
-                    $key = Tools::get("key");
-                    $table = Tools::get("tableKey");
-                    Posten::addFile($key, $table);
-                    break;
-                case "vehicle":
-                    $key = Tools::get("key");
-                    $table = Tools::get("tableKey");
-                    $fahrzeugnummer = Table::getIdentifierValue($table, $key);
-
-                    $auftragsnummer = Tools::get("orderid");
-                    $upload = new Upload();
-                    $upload->uploadFilesVehicle($fahrzeugnummer, $auftragsnummer);
-                    break;
-                case "motiv":
-                    $motivname = Tools::get("motivname");
-                    $upload = new Upload();
-
-                    if (isset($_POST["motivNumber"])) {
-                        $upload->uploadFilesMotive($motivname, $_POST["motivNumber"]);
-                    } else {
-                        $upload->uploadFilesMotive($motivname);
-                    }
-                    break;
-            }
         } else {
             if (self::$page == "pdf") {
                 $type = Tools::get("type");

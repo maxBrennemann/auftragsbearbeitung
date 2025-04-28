@@ -21,18 +21,6 @@ class Upload
         }
     }
 
-    public function uploadFilesVehicle($fahrzeugnummer, $auftragsnummer)
-    {
-        $ids = 0; //$this->uploadFilesAuftrag($auftragsnummer);
-        if (is_array($ids)) {
-            foreach ($ids as $id) {
-                if ($id != -1) {
-                    DBAccess::insertQuery("INSERT INTO dateien_fahrzeuge (id_datei, id_fahrzeug) VALUES ($id, $fahrzeugnummer)");
-                }
-            }
-        }
-    }
-
     public function uploadFilesProduct($produktnummer)
     {
         $ids = $this->uploadFiles();
