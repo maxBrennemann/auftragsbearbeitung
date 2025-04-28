@@ -130,7 +130,7 @@ class Produkt
 		$combinations = Tools::get("combinations");
 		$combinations = json_decode($combinations);
 
-		$data = array();
+		$data = [];
 		foreach ($combinations as $c) {
 			$id_product_attribute = DBAccess::insertQuery("INSERT INTO product_combination (id_produkt) VALUES ($productId)");
 			

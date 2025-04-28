@@ -1,5 +1,7 @@
-<div class="my-2 bg-zinc-300 rounded-lg imageUpload h-24 flex items-center cursor-pointer" data-type="<?= $fileType ?>">
-    <div class="m-auto w-full text-center">
-        <p class="font-bold text-gray-500"><?= $fileTypeName ?? "Datei" ?> hochladen</p>
-    </div>
+<div>
+    <label class="fileUploader">
+        <?= Classes\Project\Icon::get("iconUpload", 30, 30, [], "Hier ablegen") ?>
+        <p><strong>Datei auswählen</strong> oder hier ablegen.</p>
+        <input type="file" hidden data-fun="fileUploader" data-write="true" data-type="<?= $target ?? "" ?>">
+    </label>
 </div>

@@ -355,16 +355,9 @@ if ($orderId <= 0): ?>
 		</div>
 		<div class="defCont upload">
 			<p class="font-bold">Dateien zum Auftrag hinzufügen</p>
-			<form class="fileUploader" method="post" enctype="multipart/form-data" data-target="order" name="auftragUpload" id="uploadFilesOrder">
-				<input name="auftrag" value="<?= $orderId ?>" hidden>
-			</form>
-			<p>Hier Dateien per Drag&Drop ablegen oder
-				<label class="uploadWrapper">
-					<input type="file" name="uploadedFile" multiple class="fileUploadBtn" form="uploadFilesOrder">
-					hier hochladen
-				</label>
-			</p>
-			<div class="filesList defCont"></div>
+			<?= TemplateController::getTemplate("uploadFile", [
+				"target" => "order",
+			]); ?>
 			<div id="showFilePrev">
 				<?= $showFiles ?>
 			</div>

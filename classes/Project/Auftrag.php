@@ -903,6 +903,24 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 		return $content;
 	}
 
+	public static function addFiles()
+	{
+		$uploadHandler = new UploadHandler();
+		$files = $uploadHandler->uploadMultiple();
+		$orderId = (int) Tools::get("id");
+
+		$query = "INSERT INTO dateien_auftraege (id_datei, id_auftrag) VALUES ";
+		$values = [];
+		foreach ($files as $file) {
+			$values[] = [(int) $file["id"], $orderId];
+
+			$auftragsverlauf = new Auftragsverlauf($orderId);
+            $auftragsverlauf->addToHistory($file["id"], 4, "added");
+  		}
+
+		DBAccess::insertMultiple($query, $values);
+	}
+
 	public function getNotificationContent(): string
 	{
 		return "";

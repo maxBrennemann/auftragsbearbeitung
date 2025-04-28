@@ -188,53 +188,6 @@ class Upload
     }
 
     /**
-     * deletes files that are not linked to any database entry
-     */
-    public static function deleteUnusedFiles($folderPath = "upload")
-    {
-        $query = "SELECT `dateiname` FROM dateien";
-        $result = DBAccess::selectQuery($query);
-        $usedFiles = array();
-
-        foreach ($result as $row) {
-            $usedFiles[] = $row['dateiname'];
-        }
-
-        $files = scandir($folderPath);
-        foreach ($files as $file) {
-            if ($file != "." && $file != ".." && !in_array($file, $usedFiles)) {
-                unlink($folderPath . "/" . $file);
-            }
-        }
-    }
-
-    /**
-     * Adjusts all filenames in the database,
-     * removes spaces, @ and & and if a filename is longer than 70 characters, it is renamed with tempnam
-     * the date is also removed from the filename
-     */
-    public static function adjustFileNames()
-    {
-        $query = "SELECT id, `dateiname` FROM dateien";
-        $result = DBAccess::selectQuery($query);
-        $folderPath = "upload";
-
-        foreach ($result as $row) {
-            $filename = $row["dateiname"];
-            $dateiId = $row["id"];
-
-            $adjustedFilename = self::adjustFileName($filename);
-
-            if (rename($folderPath . "/" . $filename, $folderPath . "/" . $adjustedFilename)) {
-                DBAccess::updateQuery("UPDATE dateien SET dateiname = :adjustedFilename WHERE id = :id", [
-                    "adjustedFilename" => $adjustedFilename,
-                    "id" => $dateiId,
-                ]);
-            }
-        }
-    }
-
-    /**
      * Adjusts the filename to remove spaces, @ and &
      * and shortens the name if it is longer than 70 characters
      */

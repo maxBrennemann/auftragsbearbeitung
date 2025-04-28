@@ -12,7 +12,8 @@ if (isset($_POST['send'])) {
     $output = shell_exec($command . 'auftragsmanager.sql');
 }
 
-function unzip() {
+function unzip()
+{
     $zip = new ZipArchive();
     $x = $zip->open("auftragsbearbeitung.zip");
     if ($x === true) {
@@ -23,7 +24,8 @@ function unzip() {
     }
 }
 
-function createConfigFiles($db_user, $db_pass, $db_name) {
+function createConfigFiles($db_user, $db_pass, $db_name)
+{
     $settings = fopen("././settings.php", "w");
     $txt = "<?php\r\ndefine('REWRITE_BASE', '/auftragsbearbeitung/');\r\ndefine('WEB_URL', '/auftragsbearbeitung');\r\ndefine('SUB_URL', '/content/');\r\n\r\n/* database connection */\r\ndefine('HOST', 'localhost');\r\ndefine('USERNAME', '$db_user');\r\ndefine('PASSWORD', '$db_pass');\r\ndefine('DATABASE', '$db_name');\r\n?>";
     fwrite($settings, $txt);
@@ -31,22 +33,21 @@ function createConfigFiles($db_user, $db_pass, $db_name) {
 }
 
 if (isset($_POST['send'])) : ?>
-<p>Bitte das Verzeichnis /install löschen</p>
-<a href="/">Zur Auftragsbearbeitung</a>
+    <p>Bitte das Verzeichnis /install löschen</p>
+    <a href="/">Zur Auftragsbearbeitung</a>
 <?php else: ?>
-<div>
-    <form id="sendConf" action method="post" id="articleUpload"></form>
-    <label form="sendConf">Datenbankbenutzer</label>
-    <input type="text" placeholder="user" name="db_user" form="sendConf"><br>
-    <label form="sendConf">Passwort</label>
-    <input type="text" placeholder="" name="db_pass" form="sendConf"><br>
-    <label form="sendConf">Datenbankname</label>
-    <input type="text" placeholder="auftragsbearbeitung" name="db_name" form="sendConf"><br>
-    <input type="submit" value="Abschicken" form="sendConf" name="send">
-</div>
+    <div>
+        <form id="sendConf" action method="post" id="articleUpload"></form>
+        <label form="sendConf">Datenbankbenutzer</label>
+        <input type="text" placeholder="user" name="db_user" form="sendConf"><br>
+        <label form="sendConf">Passwort</label>
+        <input type="text" placeholder="" name="db_pass" form="sendConf"><br>
+        <label form="sendConf">Datenbankname</label>
+        <input type="text" placeholder="auftragsbearbeitung" name="db_name" form="sendConf"><br>
+        <input type="submit" value="Abschicken" form="sendConf" name="send">
+    </div>
 <?php endif; ?>
 <style>
-
     @import url('https://fonts.googleapis.com/css?family=Be+Vietnam|Raleway|Open+Sans&display=swap');
 
     body {
@@ -65,7 +66,7 @@ if (isset($_POST['send'])) : ?>
         padding: 20px;
     }
 
-    div > * {
+    div>* {
         margin: 2px;
     }
 
@@ -80,5 +81,4 @@ if (isset($_POST['send'])) : ?>
         padding: 7px;
         margin-top: 7px;
     }
-
 </style>

@@ -20,7 +20,6 @@ use Classes\Project\Modules\Sticker\Imports\ImportGoogleSearchConsole;
 
 use Classes\Project\Modules\Pdf\TransactionPdf\OfferPDF;
 use Classes\Project\Modules\Pdf\TransactionPdf\InvoicePDF;
-use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 class ResourceManager
 {
@@ -179,8 +178,6 @@ class ResourceManager
                         $invoice->generate();
                         break;
                 }
-            } else if (self::$page == "cron") {
-                Ajax::manageRequests("testDummy", self::$page);
             } else {
                 self::showPage();
             }
@@ -446,7 +443,6 @@ class ResourceManager
     {
         header("Access-Control-Allow-Headers: *");
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-        header('Access-Control-Allow-Origin: http://localhost:5173');
         header('Content-Type: application/json; charset=utf-8');
     }
 }

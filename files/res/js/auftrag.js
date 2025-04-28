@@ -8,6 +8,7 @@ import { ajax } from "./classes/ajax.js";
 import { getItemsTable, initInvoiceItems } from "./classes/invoiceItems.js";
 import { notification } from "./classes/notifications.js";
 import { createPopup } from "./global.js";
+import { initFileUploader } from "./classes/upload.js";
 
 /* global variables */
 window.globalData = {
@@ -43,6 +44,11 @@ const initCode = async () => {
         }
     });
 
+    initFileUploader({
+        "order": {
+            "location": `/api/v1/order/${globalData.auftragsId}/add-files`,
+        },
+    });
     initExtraOptions();
     initNotes();
 

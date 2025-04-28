@@ -24,6 +24,7 @@ class OrderRoutes extends Routes
      * @uses \Classes\Project\Auftrag::updateOrderTitle()
      * @uses \Classes\Project\Auftrag::updateContactPerson()
      * @uses \Classes\Project\Auftrag::updateDate()
+     * @uses \Classes\Project\Auftrag::addFiles()
      */
     protected static $postRoutes = [
         "/order/add" => [\Classes\Project\Auftrag::class, "addOrder"],
@@ -33,6 +34,7 @@ class OrderRoutes extends Routes
         "/order/{id}/title" => [\Classes\Project\Auftrag::class, "updateOrderTitle"],
         "/order/{id}/contact-person" => [\Classes\Project\Auftrag::class, "updateContactPerson"],
         "/order/{id}/update-date" => [\Classes\Project\Auftrag::class, "updateDate"],
+        "/order/{id}/add-files" => [\Classes\Project\Auftrag::class, "addFiles"],
     ];
 
     /**
