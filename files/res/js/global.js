@@ -128,6 +128,10 @@ export const createPopup = (content) => {
 	button.innerHTML = "Abbrechen";
 	button.addEventListener("click", () => {
 		container.parentNode.removeChild(container);
+		const event = new CustomEvent("closePopup", {
+			bubbles: true,
+		});
+		optionsContainer.dispatchEvent(event);
 	});
 	optionsContainer.appendChild(button);
 

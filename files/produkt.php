@@ -12,8 +12,9 @@ use Classes\Project\Produkt;
 	<a class="link-primary ml-2" href="<?= Link::getPageLink("neues-produkt") ?>">Zum Produktformular</a>
 
 	<?php if (Tools::get("id") !== NULL): ?>
+		<a class="link-primary ml-2" href="<?= Link::getPageLink("produkt") ?>">Zur Produktübersicht</a>
 		<?= \Classes\Project\TemplateController::getTemplate("product", [
-			"p" => new Produkt(Tools::get("id")),
+			"product" => new Produkt(Tools::get("id")),
 			"showFiles" => Produkt::getFiles(Tools::get("id")),
 			"id" => Tools::get("id"),
 		]); ?>

@@ -8,11 +8,11 @@ class ProductRoutes extends Routes
 {
 
     /**
-     * @uses AttributeGroup::getGroups()
-     * @uses AttributeGroup::getAttributes()
+     * @uses \Classes\Project\AttributeGroup::getGroups()
+     * @uses \Classes\Project\AttributeGroup::getAttributes()
      * 
-     * @uses Category::getJSONOneLayer()
-     * @uses Category::getJSONTree()
+     * @uses \Classes\Project\Category::getJSONOneLayer()
+     * @uses \Classes\Project\Category::getJSONTree()
      */
     protected static $getRoutes = [
         "/attribute/group/{id}" => [\Classes\Project\AttributeGroup::class, "getAttributes"],
@@ -23,14 +23,14 @@ class ProductRoutes extends Routes
     ];
 
     /**
-     * @uses Produkt::createProduct()
-     * @uses Produkt::addSource()
-     * @uses Produkt::addCombinations()
+     * @uses \Classes\Project\Produkt::createProduct()
+     * @uses \Classes\Project\Produkt::addSource()
+     * @uses \Classes\Project\Produkt::addCombinations()
      * 
-     * @uses AttributeGroup::addAttributeGroup()
-     * @uses AttributeGroup::addAttribute()
+     * @uses \Classes\Project\AttributeGroup::addAttributeGroup()
+     * @uses \Classes\Project\AttributeGroup::addAttribute()
      * 
-     * @uses Category::addNewCategory()
+     * @uses \Classes\Project\Category::addNewCategory()
      */
     protected static $postRoutes = [
         "/product" => [\Classes\Project\Produkt::class, "createProduct"],

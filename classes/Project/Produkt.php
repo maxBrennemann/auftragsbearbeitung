@@ -195,7 +195,7 @@ class Produkt
 		$name = Tools::get("name");
 		$desc = Tools::get("desc");
 
-		if ($name != null && $desc != null) {
+		if ($name != "" && $desc != "") {
 			$id = DBAccess::insertQuery("INSERT INTO einkauf (name, description) VALUES (:name, :desc)", [
 				"name" => $name,
 				"desc" => $desc
