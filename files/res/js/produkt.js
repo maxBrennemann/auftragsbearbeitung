@@ -1,99 +1,83 @@
 import { ajax } from "./classes/ajax.js";
-//import { createFileUpload } from "./classes/upload.js";
-import { notification } from ".classes/notifications.js";
+import { addBindings } from "./classes/bindings.js";
+import { notification } from "./classes/notifications.js";
+import { fetchAndRenderTable } from "./classes/table.js";
+import { tableConfig } from "./classes/tableconfig.js";
+import { createPopup } from "./global.js";
 
-/* global variables for attribute selection */
-var attributes = {};
+const attributes = {};
+const productData = {};
+const fnNames = {};
 
 function init() {
-    const urlString = window.location.href;
-    const url = new URL(urlString);
-    if (!url.searchParams.get("id")) {
+    if (!getProductId()) {
+        createProductOverviewTable();
         return;
     }
 
+    addBindings(fnNames);
+
     const productInfo = document.querySelectorAll(".productInfo");
     Array.from(productInfo).forEach((element) => {
-        element.addEventListener("change", function(event) {
+        element.addEventListener("change", function (event) {
             const type = event.target.dataset.type;
             const content = event.target.value;
             updateProduct(type, content);
         });
     });
+}
 
-    const btnAddAttribute = document.getElementById("btnAddAttribute");
-    btnAddAttribute.addEventListener("click", () => {
-        getHTMLForAttributes();
-        const el = document.getElementById("addAttributes");
-        el.classList.toggle("hidden");
-    });
+const getProductId = () => {
+    const urlString = window.location.href;
+    const url = new URL(urlString);
+    if (!url.searchParams.get("id")) {
+        return false;
+    }
 
-    const btnToggle = document.getElementById("btnToggle");
-    btnToggle.addEventListener("click", () => {
-        const el = document.getElementById("addAttributes");
-        el.classList.toggle("hidden");
-    });
+    productData.productId = url.searchParams.get("id");
+    return true;
+}
 
-    const btnAttributeGroupSelector = document.getElementById("btnAttributeGroupSelector");
-    btnAttributeGroupSelector.addEventListener("click", addToSelector);
+const createProductOverviewTable = () => {
+    const config = tableConfig["produkt"];
+    const options = {
+        "hideOptions": ["all"],
+        "primaryKey": config.primaryKey,
+        "autoSort": true,
+        "styles": {
+            "table": {
+                "className": ["w-full"],
+            },
+        },
+        "link": "/produkt?id=",
+    };
 
-    const btnAttributeSelector = document.getElementById("btnAttributeSelector");
-    btnAttributeSelector.addEventListener("click", matchAttributeGroups);
+    fetchAndRenderTable("tableContainer", "produkt", options);
+}
 
-    const btnSaveConfig = document.getElementById("btnSaveConfig");
+fnNames.click_addAttributes = () => {
+    const template = document.getElementById("addAttributes");
+	const div = document.createElement("div");
+	div.appendChild(template.content.cloneNode(true));
+    const settingsContainer = createPopup(div);
+    
+    const btnSaveConfig = document.createElement("button");
+    btnSaveConfig.classList.add("btn-primary-new");
+    btnSaveConfig.innerHTML = "Speichern";
     btnSaveConfig.addEventListener("click", () => {
         generateTable();
         sendAttributeTable();
     });
 
-    const uploadAnchor = document.getElementById("uploadAnchor");
-    //createFileUpload(uploadAnchor);
+    settingsContainer.appendChild(btnSaveConfig);
+    getHTMLForAttributes();
+    addBindings(fnNames);
 }
 
-/**
- * Updates the current product with the given type and content
- * 
- * @param {*} type The field to update
- * @param {*} content The new content
- */
-function updateProduct(type, content) {
-    if (content.length > 64) {
-        return;
-    }
-
-    const id = document.getElementById("productId").dataset.id;
-    ajax.put(`/api/v1/product/${id}/type/${type}`, {
-        content: content,
-    }).then((response) => {
-        notification("", response);
-    }).catch((error) => {
-        console.error(error);
-    });
-}
-
-/**
- * Loads the attribute groups into the select element
- */
-async function getHTMLForAttributes() {
-    const attributeGroups = await ajax.get(`/api/v1/attribute/groups`);
-    const attributeSelector = document.getElementById("attributeSelector");
-    
-    attributeGroups.forEach((group) => {
-        const option = document.createElement("option");
-        option.value = group.id;
-        option.innerText = group.attribute_group;
-        attributeSelector.appendChild(option);
-    });
-}
-
-/**
- * Adds the selected attribute(s) to the product
- * by adding new select elements to the DOM
- */
-function addToSelector() {
+fnNames.click_btnAttributeGroupSelector = () => {
     const attributeSelector = document.getElementById("attributeSelector");
     const selectedAttributeGroups = Array.from(attributeSelector.selectedOptions).map(option => option.value);
-    
+
     attributeSelector.selectedIndex = -1;
 
     selectedAttributeGroups.forEach(async (attributeGroupId) => {
@@ -115,18 +99,7 @@ function addToSelector() {
     });
 }
 
-/**
- * Loads the attributes for the given attribute group
- * 
- * @param {*} attributeGroupId 
- * @returns 
- */
-async function loadAttributes(attributeGroupId) {
-    return await ajax.get(`/api/v1/attribute/group/${attributeGroupId}`);
-}
-
-/* adds the attribute value to the product */
-function matchAttributeGroups() {
+fnNames.click_btnAttributeSelector = () => {
     const anchor = document.getElementById("showAttributeValues");
     const selects = anchor.querySelectorAll("select");
     const groups = {};
@@ -148,6 +121,51 @@ function matchAttributeGroups() {
     attributes = generateCombinations(groups);
     const addedValues = document.getElementById("addedValues");
     addedValues.innerHTML += "Tabelle wird erstellt...";
+}
+
+/**
+ * Updates the current product with the given type and content
+ * 
+ * @param {*} type The field to update
+ * @param {*} content The new content
+ */
+function updateProduct(type, content) {
+    if (content.length > 64) {
+        return;
+    }
+
+    ajax.put(`/api/v1/product/${productData.productId}/type/${type}`, {
+        content: content,
+    }).then((response) => {
+        notification("", response.message);
+    }).catch((error) => {
+        notification("", "failure", JSON.stringify(error));
+    });
+}
+
+/**
+ * Loads the attribute groups into the select element
+ */
+async function getHTMLForAttributes() {
+    const attributeGroups = await ajax.get(`/api/v1/attribute/groups`);
+    const attributeSelector = document.getElementById("attributeSelector");
+
+    attributeGroups.forEach((group) => {
+        const option = document.createElement("option");
+        option.value = group.id;
+        option.innerText = group.attribute_group;
+        attributeSelector.appendChild(option);
+    });
+}
+
+/**
+ * Loads the attributes for the given attribute group
+ * 
+ * @param {*} attributeGroupId 
+ * @returns 
+ */
+async function loadAttributes(attributeGroupId) {
+    return await ajax.get(`/api/v1/attribute/group/${attributeGroupId}`);
 }
 
 function generateTable() {
@@ -199,8 +217,7 @@ function combineArrays(arr1, arr2) {
 }
 
 function sendAttributeTable() {
-    const id = document.getElementById("productId").dataset.id;
-    ajax.put(`/api/v1/product/${id}/combinations`, {
+    ajax.put(`/api/v1/product/${productData.productId}/combinations`, {
         combinations: JSON.stringify(attributes),
     }).then((response) => {
         notification("", response);
@@ -209,7 +226,7 @@ function sendAttributeTable() {
     });
 }
 
-if (document.readyState !== 'loading' ) {
+if (document.readyState !== 'loading') {
     init();
 } else {
     document.addEventListener('DOMContentLoaded', function () {

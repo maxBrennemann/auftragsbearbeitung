@@ -1,6 +1,6 @@
 import { ajax } from "../classes/ajax.js";
 
-export default function initTagManager() {
+export function initTagManager() {
     addTagListeners();
 
     const tagInput = document.getElementById("tagInput");

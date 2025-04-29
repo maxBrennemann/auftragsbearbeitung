@@ -1,7 +1,8 @@
 import { notification } from "../classes/notifications.js";
 import { createPopup } from "../global.js";
+import { ajax } from "../classes/ajax.js";
 
-export default class ProductConnector {
+class ProductConnector {
 
     constructor(type) {
         this.type = type;
@@ -120,4 +121,8 @@ export default class ProductConnector {
 
         notification("", result.status);
     }
+}
+
+export const productConnector = (type) => {
+    return new ProductConnector(type);
 }

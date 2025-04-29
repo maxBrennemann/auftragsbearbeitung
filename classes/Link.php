@@ -30,28 +30,6 @@ class Link
 		return $link;
 	}
 
-	public static function getFrontOfficeLink($page)
-	{
-		if (DBAccess::selectQuery("SELECT * FROM frontpage WHERE src = '$page'") == null) {
-			$link = $_ENV["WEB_URL"] . $_ENV["FRONT"] . "";
-			return $link;
-		}
-
-		$link = $_ENV["WEB_URL"] . $_ENV["FRONT"] . $page;
-		return $link;
-	}
-
-	public static function getFrontOfficeName($page)
-	{
-		$data = DBAccess::selectQuery("SELECT pageName FROM frontpage WHERE src = '$page'");
-
-		if ($data != null) {
-			return $data[0]["pageName"];
-		}
-
-		return null;
-	}
-
 	/**
 	 * function returns the link to the image resource;
 	 * if the resource does not exist, the default image is returned
@@ -175,38 +153,6 @@ class Link
 	public static function getGlobalJS()
 	{
 		return self::getResourcesShortLink("global.js", "js");
-	}
-
-	/*
-	 * function returns an array of link objects by breaking down the server uri
-	 * variable.
-	 * the links are representing the depth of the link
-	 */
-	public static function parseUri()
-	{
-		$url = $_SERVER["REQUEST_URI"];
-
-		/* remove GET parameters */
-		$url = explode("?", $url)[0];
-
-		/* remove $_ENV["WEB_URL"] and $_ENV["FRONT"] */
-		$url = str_replace($_ENV["WEB_URL"] . substr($_ENV["FRONT"], 0, -1), "", $url);
-
-		$url_parts = explode("/", $url);
-
-		$links = array();
-		foreach ($url_parts as $u) {
-			if (strcmp($u, $_ENV["WEB_URL"]) != 0) {
-				$urlLink = new Link();
-				$link = [
-					"link" => Link::getFrontOfficeLink($u),
-					"text" => Link::getFrontOfficeName($u)
-				];
-				array_push($links, $link);
-			}
-		}
-
-		return $links;
 	}
 
 	/* new link functionalities */

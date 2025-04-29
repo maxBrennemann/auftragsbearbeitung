@@ -4,8 +4,9 @@ namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
-use Classes\Link;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+
+use Classes\Link;
 
 class Produkt
 {
@@ -15,7 +16,7 @@ class Produkt
 	private $bezeichnung = null;
 	private $beschreibung = null;
 
-	function __construct($produktnummer)
+	public function __construct($produktnummer)
 	{
 		$data = DBAccess::selectAllByCondition("produkt", "Nummer", $produktnummer);
 		if (!empty($data)) {
@@ -27,9 +28,7 @@ class Produkt
 		}
 	}
 
-	public function bekommePreis()
-	{
-	}
+	public function bekommePreis() {}
 
 	public function getBezeichnung()
 	{
@@ -58,7 +57,7 @@ class Produkt
 
 	public function getProduktLink()
 	{
-		return Link::getFrontOfficeLink("produkt") . "?id=" . $this->produktnummer;
+		return Link::getPageLink("produkt") . "?id=" . $this->produktnummer;
 	}
 
 	public function getHTMLData()
@@ -125,7 +124,8 @@ class Produkt
 		return $newProductId;
 	}
 
-	public static function addCombinations() {
+	public static function addCombinations()
+	{
 		$productId = (int) Tools::get("id");
 		$combinations = Tools::get("combinations");
 		$combinations = json_decode($combinations);
@@ -133,7 +133,7 @@ class Produkt
 		$data = [];
 		foreach ($combinations as $c) {
 			$id_product_attribute = DBAccess::insertQuery("INSERT INTO product_combination (id_produkt) VALUES ($productId)");
-			
+
 			foreach ($c as $value) {
 				array_push($data, [$id_product_attribute, $value]);
 			}
@@ -195,7 +195,7 @@ class Produkt
 		$name = Tools::get("name");
 		$desc = Tools::get("desc");
 
-		if ($name != null && $desc != null) {
+		if ($name != "" && $desc != "") {
 			$id = DBAccess::insertQuery("INSERT INTO einkauf (name, description) VALUES (:name, :desc)", [
 				"name" => $name,
 				"desc" => $desc
@@ -220,12 +220,14 @@ class Produkt
 		echo $html;
 	}
 
-	/*
-	 * returns all products
+	/**
+	 * Returns a list of Product objects
+	 * @return  Produkt[]
 	 */
-	public static function getAllProducts($categoryId = null)
+	public static function getAllProducts($categoryId = null): array
 	{
-		$products = array();
+		$products = [];
+
 		if ($categoryId == null) {
 			$sql = "SELECT Nummer FROM produkt";
 		} else {
@@ -233,9 +235,9 @@ class Produkt
 		}
 
 		$ids = DBAccess::selectQuery($sql);
+
 		foreach ($ids as $id) {
-			$id = $id["Nummer"];
-			array_push($products, new Produkt($id));
+			$products[] = new Produkt($id["Nummer"]);
 		}
 
 		return $products;

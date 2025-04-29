@@ -118,7 +118,7 @@ class Sticker extends PrestashopConnection
     {
         if ($this->additionalData != null) {
             if (isset($this->additionalData["products"]) && isset($this->additionalData["products"][$type])) {
-                return $this->additionalData["products"][$type]["link"];
+                return $this->additionalData["products"][$type]["link"] ?? "";
             }
         }
 
@@ -199,7 +199,9 @@ class Sticker extends PrestashopConnection
 
         StickerChangelog::log($this->getId(), 0, $this->getId(), "module_sticker_sticker_data", "name", $name);
 
-        return ["status" => "success"];
+        return [
+            "status" => "success"
+        ];
     }
 
     public static function setDescription()

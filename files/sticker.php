@@ -35,7 +35,7 @@ if ($id == 0): ?>
 <?php else: ?>
     <div class="w-full grid gap-3 grid-cols-3">
         <div class="defCont col-span-3">
-            <h2 class="font-semibold">Motiv <input id="name" class="input-primary" value="<?= $stickerCollection->getName(); ?>" title="Faceboook hat ein internes Limit für die Titellänge von 65 Zeichen">
+            <h2 class="font-semibold">Motiv <input id="stickerName" data-write="true" data-input="true" class="input-primary w-96" value="<?= $stickerCollection->getName(); ?>" title="Faceboook hat ein internes Limit für die Titellänge von 65 Zeichen">
                 <?php if ($stickerCollection->getIsMarked() == "0"): ?>
                     <span data-binding="true" data-fun="bookmark" data-status="unmarked" class="inline" title="Motiv markieren">
                         <?= Icon::get("iconBookmark", 18, 18, ["inline", "cursor-pointer"]) ?>
@@ -46,8 +46,8 @@ if ($id == 0): ?>
                     </span>
                 <?php endif; ?>
             </h2>
-            <p class="mt-2 ml-2">Artikelnummer: <span id="motivId" data-variable="true"><?= $id ?></span></p>
-            <p class="ml-2">Erstellt am <input type="date" class="input-primary" id="creationDate" value="<?= $stickerCollection->getCreationDate() ?>"></p>
+            <p class="ml-2 mt-2">Artikelnummer: <span id="motivId" data-variable="true"><?= $id ?></span></p>
+            <p class="ml-2 mt-2">Erstellt am <input type="date" class="input-primary" id="creationDate" data-write="true" value="<?= $stickerCollection->getCreationDate() ?>"></p>
             <button class="btn-primary-new mt-4" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
         </div>
         <div class="defCont hidden">
@@ -58,19 +58,15 @@ if ($id == 0): ?>
             ]); ?>
         </div>
         <div class="defCont col-span-2 lg:col-span-1">
-            <p class="pHeading">Aufkleber
-                <input class="input-primary hidden" value="<?= $stickerCollection->getAufkleber()->getAltTitle() ?>" data-write="true" data-type="aufkleber" data-fun="changeAltTitle" placeholder="Alternativtitel">
-                <button class="mr-1 btn-primary-small" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="aufkleber">
-                    <?= Icon::getDefault("iconEditText") ?>
-                </button>
+            <p class="font-bold">Aufkleber
                 <?php if ($stickerCollection->getAufkleber()->getActiveStatus()): ?>
-                    <button class="mr-1 btn-primary-small" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
+                    <button class="mx-1 btn-primary-small" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
                         <?= Icon::getDefault("iconVisible") ?>
                     </button>
                 <?php else: ?>
                     <button class="mr-1 btn-primary-small" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
                         <?= Icon::getDefault("iconInvisible") ?>
-                    <?php endif; ?>
+                <?php endif; ?>
                     <button class="mr-1 btn-primary-small" title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct" data-type="aufkleber">
                         <?= Icon::getDefault("iconConnectTo") ?>
                     </button>
@@ -79,7 +75,11 @@ if ($id == 0): ?>
                     </button>
                     <button class="infoButton ml-1" data-info="8">i</button>
             </p>
-            <div class="">
+            <div class="mt-2">
+                <p>Alternativtitel</p>
+                <input class="input-primary mt-1" value="<?= $stickerCollection->getAufkleber()->getAltTitle() ?>" data-write="true" data-type="aufkleber" data-fun="changeAltTitle" placeholder="Alternativtitel">
+            </div>
+            <div class="mt-2">
                 Status:
                 <?php if ($stickerCollection->getAufkleber()->isInShop()): ?>
                     <a title="Aufkleber ist im Shop" target="_blank" href="<?= $stickerCollection->getAufkleber()->getShopLink() ?>">
@@ -91,43 +91,39 @@ if ($id == 0): ?>
                     </a>
                 <?php endif; ?>
             </div>
-            <div class="hover:underline mt-1">
-                <span>Aufkleber Plott</span>
-                <span class="right">
-                    <label class="switch">
-                        <input type="checkbox" id="plotted" <?= $stickerCollection->getAufkleber()->getIsPlotted() == 1 ? "checked" : "" ?> data-variable="true">
-                        <span class="slider round" data-binding="true" data-fun="toggleCheckbox"></span>
-                    </label>
-                </span>
+            <div class="mt-2">
+                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "id" => "plotted",
+                    "name" => "Aufkleber Plott",
+                    "value" => $stickerCollection->getAufkleber()->getIsPlotted() == 1 ? "checked" : "",
+                    "binding" => "toggleCheckbox",
+                ]); ?>
             </div>
-            <div class="hover:underline mt-1">
-                <span>kurzfristiger Aufkleber</span>
-                <span class="right">
-                    <label class="switch">
-                        <input type="checkbox" id="short" <?= $stickerCollection->getAufkleber()->getIsShortTimeSticker() == 1 ? "checked" : "" ?> data-variable="true">
-                        <span class="slider round" data-binding="true" data-fun="toggleCheckbox"></span>
-                    </label>
-                </span>
+            <div class="mt-2">
+                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "id" => "short",
+                    "name" => "kurzfristiger Aufkleber",
+                    "value" => $stickerCollection->getAufkleber()->getIsShortTimeSticker() == 1 ? "checked" : "",
+                    "binding" => "toggleCheckbox",
+                ]); ?>
             </div>
-            <div class="hover:underline mt-1">
-                <span>langfristiger Aufkleber</span>
-                <span class="right">
-                    <label class="switch">
-                        <input type="checkbox" id="long" <?= $stickerCollection->getAufkleber()->getIsLongTimeSticker() == 1 ? "checked" : "" ?> data-variable="true">
-                        <span class="slider round" data-binding="true" data-fun="toggleCheckbox"></span>
-                    </label>
-                </span>
+            <div class="mt-2">
+                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "id" => "short",
+                    "name" => "langfristiger Aufkleber",
+                    "value" => $stickerCollection->getAufkleber()->getIsLongTimeSticker() == 1 ? "checked" : "",
+                    "binding" => "toggleCheckbox",
+                ]); ?>
             </div>
-            <div class="hover:underline mt-1">
-                <span>mehrteilig</span>
-                <span class="right">
-                    <label class="switch">
-                        <input type="checkbox" id="multi" <?= $stickerCollection->getAufkleber()->getIsMultipart() == 1 ? "checked" : "" ?> data-variable="true">
-                        <span class="slider round" data-binding="true" data-fun="toggleCheckbox"></span>
-                    </label>
-                </span>
+            <div class="mt-2">
+                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "id" => "short",
+                    "name" => "mehrteilig",
+                    "value" => $stickerCollection->getAufkleber()->getIsMultipart() == 1 ? "checked" : "",
+                    "binding" => "toggleCheckbox",
+                ]); ?>
             </div>
-            <div class="">
+            <div class="mt-2">
                 <details>
                     <summary>Farbauswahl</summary>
                     <div class="ml-2">
@@ -138,47 +134,50 @@ if ($id == 0): ?>
                     </div>
                 </details>
             </div>
-            <div class="my-2">
-                <div class="my-2 flex">
+            <div class="mt-2">
+                <div class="mt-2 flex">
                     <p>Kurzbeschreibung</p>
                     <?= insertTemplate("classes/Project/Modules/Sticker/Views/chatGPTstickerView.php", ["type" => "aufkleber", "text" => "short", "gpt" => $chatGPTConnection]) ?>
                 </div>
-                <textarea class="data-input" data-fun="productDescription" data-target="aufkleber" data-type="short" data-write="true"><?= $stickerCollection->getAufkleber()->getDescriptionShort() ?></textarea>
-                <div class="my-2 flex">
+                <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="aufkleber" data-type="short" data-write="true"><?= $stickerCollection->getAufkleber()->getDescriptionShort() ?></textarea>
+                <div class="mt-2 flex">
                     <p>Beschreibung</p>
                     <?= insertTemplate("classes/Project/Modules/Sticker/Views/chatGPTstickerView.php", ["type" => "aufkleber", "text" => "long", "gpt" => $chatGPTConnection]) ?>
                 </div>
-                <textarea class="data-input" data-fun="productDescription" data-target="aufkleber" data-type="long" data-write="true"><?= $stickerCollection->getAufkleber()->getDescription() ?></textarea>
+                <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="aufkleber" data-type="long" data-write="true"><?= $stickerCollection->getAufkleber()->getDescription() ?></textarea>
             </div>
-            <?= \Classes\Project\TemplateController::getTemplate("sticker/stickerImage", [
-                "images" => $stickerImage->getAufkleberImages(),
-                "imageCategory" => "aufkleber",
-            ]); ?>
-            <button class="transferBtn btn-primary-new w-full" id="transferAufkleber" data-binding="true" <?= $stickerCollection->getAufkleber()->getIsPlotted() == 1 ? "" : "disabled" ?>>Aufkleber übertragen</button>
+            <div class="mt-2">
+                <?= \Classes\Project\TemplateController::getTemplate("sticker/stickerImage", [
+                    "images" => $stickerImage->getAufkleberImages(),
+                    "imageCategory" => "aufkleber",
+                ]); ?>
+            </div>
+            <button class="transferBtn btn-primary-new w-full mt-2" id="transferAufkleber" data-binding="true" <?= $stickerCollection->getAufkleber()->getIsPlotted() == 1 ? "" : "disabled" ?>>Aufkleber übertragen</button>
         </div>
+
         <div class="defCont col-span-2 lg:col-span-1">
-            <p class="pHeading">Wandtattoo
-                <input class="input-primary hidden" value="<?= $stickerCollection->getWandtattoo()->getAltTitle() ?>" data-write="true" data-type="wandtattoo" data-fun="changeAltTitle" placeholder="Alternativtitel">
-                <button class="mr-1 p-1 border-none bg-slate-50" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="wandtattoo">
-                    <?= Icon::getDefault("iconEditText") ?>
-                </button>
+            <p class="font-bold">Wandtattoo
                 <?php if ($stickerCollection->getWandtattoo()->getActiveStatus()): ?>
-                    <button class="mr-1 p-1 border-none bg-slate-50" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
+                    <button class="mx-1 btn-primary-small" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
                         <?= Icon::getDefault("iconVisible") ?>
                     </button>
                 <?php else: ?>
-                    <button class="mr-1 p-1 border-none bg-slate-50" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
+                    <button class="mr-1 btn-primary-small" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
                         <?= Icon::getDefault("iconInvisible") ?>
                     <?php endif; ?>
-                    <button class="mr-1 p-1 border-none bg-slate-50" title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct" data-type="wandtattoo">
+                    <button class="mr-1 btn-primary-small" title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct" data-type="wandtattoo">
                         <?= Icon::getDefault("iconConnectTo") ?>
                     </button>
-                    <button class="mr-1 p-1 border-none bg-slate-50" title="Kategorien auswählen" data-binding="true" data-fun="chooseCategory">
+                    <button class="mr-1 btn-primary-small" title="Kategorien auswählen" data-binding="true" data-fun="chooseCategory">
                         <?= Icon::getDefault("iconCategory") ?>
                     </button>
                     <button class="infoButton ml-1" data-info="9">i</button>
             </p>
-            <div>
+            <div class="mt-2">
+                <p>Alternativtitel</p>
+                <input class="input-primary mt-1" value="<?= $stickerCollection->getWandtattoo()->getAltTitle() ?>" data-write="true" data-type="wandtattoo" data-fun="changeAltTitle" placeholder="Alternativtitel">
+            </div>
+            <div class="mt-2">
                 Status:
                 <?php if ($stickerCollection->getWandtattoo()->isInShop()): ?>
                     <a title="Wandtattoo ist im Shop" target="_blank" href="<?= $stickerCollection->getWandtattoo()->getShopLink() ?>">
@@ -190,56 +189,58 @@ if ($id == 0): ?>
                     </a>
                 <?php endif; ?>
             </div>
-            <div class="hover:underline">
-                <span>Wandtattoo</span>
-                <span class="right">
-                    <label class="switch">
-                        <input type="checkbox" id="wandtattoo" <?= $stickerCollection->getWandtattoo()->getIsWalldecal() == 1 ? "checked" : "" ?> data-variable="true">
-                        <span class="slider round" id="wandtattooClick" data-binding="true"></span>
-                    </label>
-                </span>
+            <div class="mt-2">
+                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "id" => "wandtattoo",
+                    "name" => "Wandtattoo",
+                    "value" => $stickerCollection->getWandtattoo()->getIsWalldecal() == 1 ? "checked" : "",
+                    "binding" => "wandtattooClick",
+                ]); ?>
             </div>
-            <div class="my-2">
-                <div class="my-2 flex">
+            <div class="mt-2">
+                <div class="mt-2 flex">
                     <p>Kurzbeschreibung</p>
                     <?= insertTemplate("classes/Project/Modules/Sticker/Views/chatGPTstickerView.php", ["type" => "wandtattoo", "text" => "short", "gpt" => $chatGPTConnection]) ?>
                 </div>
-                <textarea class="data-input" data-fun="productDescription" data-target="wandtattoo" data-type="short" data-write="true"><?= $stickerCollection->getWandtattoo()->getDescriptionShort() ?></textarea>
-                <div class="my-2 flex">
+                <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="wandtattoo" data-type="short" data-write="true"><?= $stickerCollection->getWandtattoo()->getDescriptionShort() ?></textarea>
+                <div class="mt-2 flex">
                     <p>Beschreibung</p>
                     <?= insertTemplate("classes/Project/Modules/Sticker/Views/chatGPTstickerView.php", ["type" => "wandtattoo", "text" => "long", "gpt" => $chatGPTConnection]) ?>
                 </div>
-                <textarea class="data-input" data-fun="productDescription" data-target="wandtattoo" data-type="long" data-write="true"><?= $stickerCollection->getWandtattoo()->getDescription() ?></textarea>
+                <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="wandtattoo" data-type="long" data-write="true"><?= $stickerCollection->getWandtattoo()->getDescription() ?></textarea>
             </div>
-            <?= \Classes\Project\TemplateController::getTemplate("sticker/stickerImage", [
-                "images" => $stickerImage->getWandtattooImages(),
-                "imageCategory" => "wandtattoo",
-            ]); ?>
-            <button class="transferBtn btn-primary w-full" id="transferWandtattoo" data-binding="true" <?= $stickerCollection->getWandtattoo()->getIsWalldecal() == 1 ? "" : "disabled" ?>>Wandtattoo übertragen</button>
+            <div class="mt-2">
+                <?= \Classes\Project\TemplateController::getTemplate("sticker/stickerImage", [
+                    "images" => $stickerImage->getWandtattooImages(),
+                    "imageCategory" => "wandtattoo",
+                ]); ?>
+            </div>
+            <button class="transferBtn btn-primary-new w-full mt-2" id="transferWandtattoo" data-binding="true" <?= $stickerCollection->getWandtattoo()->getIsWalldecal() == 1 ? "" : "disabled" ?>>Wandtattoo übertragen</button>
         </div>
+
         <div class="defCont col-span-2 lg:col-span-1">
-            <p class="pHeading">Textil
-                <input class="input-primary hidden" value="<?= $stickerCollection->getTextil()->getAltTitle() ?>" data-write="true" data-type="textil" data-fun="changeAltTitle" placeholder="Alternativtitel">
-                <button class="mr-1 p-1 border-none bg-slate-50" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="textil">
-                    <?= Icon::getDefault("iconEditText") ?>
-                </button>
+            <p class="font-bold">Textil
                 <?php if ($stickerCollection->getTextil()->getActiveStatus()): ?>
-                    <button class="mr-1 p-1 border-none bg-slate-50" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
+                    <button class="mx-1 btn-primary-small" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
                         <?= Icon::getDefault("iconVisible") ?>
                     </button>
                 <?php else: ?>
-                    <button class="mr-1 p-1 border-none bg-slate-50" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
+                    <button class="mr-1 btn-primary-small" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
                         <?= Icon::getDefault("iconInvisible") ?>
                     <?php endif; ?>
-                    <button class="mr-1 p-1 border-none bg-slate-50" title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct" data-type="textil">
+                    <button class="mr-1 btn-primary-small" title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct" data-type="textil">
                         <?= Icon::getDefault("iconConnectTo") ?>
                     </button>
-                    <button class="mr-1 p-1 border-none bg-slate-50" title="Kategorien auswählen" data-binding="true" data-fun="chooseCategory">
+                    <button class="mr-1 btn-primary-small" title="Kategorien auswählen" data-binding="true" data-fun="chooseCategory">
                         <?= Icon::getDefault("iconCategory") ?>
                     </button>
                     <button class="infoButton ml-1" data-info="10">i</button>
             </p>
-            <div class="">
+            <div class="mt-2">
+                <p>Alternativtitel</p>
+                <input class="input-primary mt-1" value="<?= $stickerCollection->getTextil()->getAltTitle() ?>" data-write="true" data-type="wandtattoo" data-fun="changeAltTitle" placeholder="Alternativtitel">
+            </div>
+            <div class="mt-2">
                 Status:
                 <?php if ($stickerCollection->getTextil()->isInShop()): ?>
                     <a title="Textil ist im Shop" target="_blank" href="<?= $stickerCollection->getTextil()->getShopLink() ?>">
@@ -251,73 +252,66 @@ if ($id == 0): ?>
                     </a>
                 <?php endif; ?>
             </div>
-            <div class="hover:underline mt-1">
-                <span>Textil</span>
-                <span class="right">
-                    <label class="switch">
-                        <input type="checkbox" id="textil" <?= $stickerCollection->getTextil()->getIsShirtcollection() == 1 ? "checked" : "" ?> data-variable="true">
-                        <span class="slider round" id="textilClick" data-binding="true"></span>
-                    </label>
-                </span>
+            <div class="mt-2">
+                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "id" => "textil",
+                    "name" => "Textil",
+                    "value" => $stickerCollection->getTextil()->getIsShirtcollection() == 1 ? "checked" : "",
+                    "binding" => "textilClick",
+                ]); ?>
             </div>
-            <div class="hover:underline mt-1">
-                <span>Einfärbbar</span>
-                <span class="right">
-                    <label class="switch">
-                        <input type="checkbox" <?= $stickerCollection->getTextil()->getIsColorable() == 1 ? "checked" : "" ?> data-variable="true">
-                        <span class="slider round" id="makeColorable" data-binding="true"></span>
-                    </label>
-                </span>
+            <div class="mt-2">
+                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "id" => "makeColorable",
+                    "name" => "Einfärbbar",
+                    "value" => $stickerCollection->getTextil()->getIsColorable() == 1 ? "checked" : "",
+                    "binding" => "makeColorable",
+                ]); ?>
             </div>
-            <div class="hover:underline mt-1">
-                <span>Personalisierbar</span>
-                <span class="right">
-                    <label class="switch">
-                        <input type="checkbox" <?= $stickerCollection->getTextil()->getIsCustomizable() == 1 ? "checked" : "" ?> data-variable="true">
-                        <span class="slider round" id="makeCustomizable" data-binding="true"></span>
-                    </label>
-                </span>
+            <div class="mt-2">
+                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "id" => "makeCustomizable",
+                    "name" => "Personalisierbar",
+                    "value" => $stickerCollection->getTextil()->getIsCustomizable() == 1 ? "checked" : "",
+                    "binding" => "makeCustomizable",
+                ]); ?>
             </div>
-            <div class="hover:underline mt-1">
-                <span>Im Konfigurator anzeigen</span>
-                <span class="right">
-                    <label class="switch">
-                        <input type="checkbox" <?= $stickerCollection->getTextil()->getIsForConfigurator() == 1 ? "checked" : "" ?> data-variable="true">
-                        <span class="slider round" id="makeForConfig" data-binding="true"></span>
-                    </label>
-                </span>
+            <div class="mt-2">
+                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "id" => "makeForConfig",
+                    "name" => "Im Konfigurator anzeigen",
+                    "value" => $stickerCollection->getTextil()->getIsForConfigurator() == 1 ? "checked" : "",
+                    "binding" => "makeForConfig",
+                ]); ?>
             </div>
-            <div class="grid grid-cols-2 mt-1">
-                <div class="relative bg-gray-200 rounded-lg w-full h-24 cursor-pointer" id="svgDropZone">
-                    <p class="absolute inset-0 flex items-center justify-center select-none font-bold text-gray-500">SVG hochladen</p>
-                </div>
-                <object id="svgContainer" class="w-full h-24" data="<?= $stickerImage->getSVGIfExists($stickerCollection->getTextil()->getIsColorable()) ?>"></object>
-            </div>
-            <div class="mt-1">
+            <div class="mt-2">
                 <?php if ($stickerCollection->getTextil()->getIsColorable() == 1): ?>
                     <?php foreach ($stickerCollection->getTextil()->textilColors as $color): ?>
                         <button class="colorBtn" style="background:<?= $color["hexCol"] ?>" title="<?= $color["name"] ?>" data-binding="true" data-fun="changeColor" data-color="<?= $color["hexCol"] ?>"></button>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
-            <div class="mb-2">
-                <div class="my-2 flex">
+            <div class="mt-2">
+                <div class="mt-2 flex">
                     <p>Kurzbeschreibung</p>
                     <?= insertTemplate("classes/Project/Modules/Sticker/Views/chatGPTstickerView.php", ["type" => "textil", "text" => "short", "gpt" => $chatGPTConnection]) ?>
                 </div>
-                <textarea class="data-input" data-fun="productDescription" data-target="textil" data-type="short" data-write="true"><?= $stickerCollection->getTextil()->getDescriptionShort() ?></textarea>
-                <div class="my-2 flex">
+                <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="textil" data-type="short" data-write="true"><?= $stickerCollection->getTextil()->getDescriptionShort() ?></textarea>
+                <div class="mt-2 flex">
                     <p>Beschreibung</p>
                     <?= insertTemplate("classes/Project/Modules/Sticker/Views/chatGPTstickerView.php", ["type" => "textil", "text" => "long", "gpt" => $chatGPTConnection]) ?>
                 </div>
-                <textarea class="data-input" data-fun="productDescription" data-target="textil" data-type="long" data-write="true"><?= $stickerCollection->getTextil()->getDescription() ?></textarea>
+                <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="textil" data-type="long" data-write="true"><?= $stickerCollection->getTextil()->getDescription() ?></textarea>
             </div>
-            <?= \Classes\Project\TemplateController::getTemplate("sticker/stickerImage", [
-                "images" => $stickerImage->getTextilImages(),
-                "imageCategory" => "textil",
-            ]); ?>
-            <button class="transferBtn btn-primary w-full hidden" id="transferTextil" data-binding="true" <?= $stickerCollection->getTextil()->getIsShirtcollection() == 1 ? "" : "disabled" ?>>Textil übertragen</button>
+            <div class="mt-2">
+                <?= \Classes\Project\TemplateController::getTemplate("sticker/stickerImage", [
+                    "images" => $stickerImage->getTextilImages(),
+                    "imageCategory" => "textil",
+                ]); ?>
+            </div>
+            <button class="transferBtn btn-primary-new w-full hidden mt-2" id="transferTextil" data-binding="true" <?= $stickerCollection->getTextil()->getIsShirtcollection() == 1 ? "" : "disabled" ?>>Textil übertragen</button>
         </div>
+
         <div class="defCont col-span-2">
             <h2 class="mb-2 font-bold">Größen</h2>
             <div id="sizeTableWrapper">
@@ -419,15 +413,11 @@ if ($id == 0): ?>
                 </span>
             </div>
             <p class="mt-2">Speicherort:<button class="infoButton ml-1" data-info="5">i</button></p>
-            <div class="directoryContainer mt-2">
-                <input id="dirInput" class="data-input directoryName" data-fun="speicherort" data-write="true" value="<?= $stickerCollection->getDirectory() ?>">
-                <button class="directoryIcon" data-binding="true" data-fun="copyToClipboard">
-                    <?= Icon::getDefault("iconDirectory") ?>
-                </button>
+            <div class="mt-2">
+                <input id="dirInput" class="input-primary w-full" data-fun="speicherort" data-write="true" value="<?= $stickerCollection->getDirectory() ?>">
             </div>
             <p class="mt-2">Zusätzliche Infos und Notizen:<button class="infoButton ml-1" data-info="6">i</button></p>
-            <textarea class="data-input mt-2" data-fun="additionalInfo" data-write="true"><?= $stickerCollection->getAdditionalInfo() ?></textarea>
-            <button class="btn-primary mt-2" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
+            <textarea class="input-primary mt-2 w-full" data-fun="additionalInfo" data-write="true"><?= $stickerCollection->getAdditionalInfo() ?></textarea>
         </div>
         <div class="defCont col-span-3">
             <h2 class="font-semibold mb-2">Produktexport</h2>
@@ -501,6 +491,7 @@ if ($id == 0): ?>
                     Von
                     <input type="date" id="statsStart" class="input-primary">
                 </label>
+                <br>
                 <label>
                     Bis
                     <input type="date" id="statsEnd" class="input-primary">
@@ -536,17 +527,6 @@ if ($id == 0): ?>
         </template>
         <template id="icon-invisible">
             <?= Icon::getDefault("iconInvisible") ?>
-        </template>
-        <template id="templateImageRow">
-            <tr>
-                <td><img class="imgPreview cursor-pointer" data-file-id="" src="" alt=""></td>
-                <td><input class="px-2 bg-inherit w-32 imageDescription" type="text" maxlength="125" placeholder="Beschreibung" data-write="true" data-fun="updateImageDescription" data-file-id=""></td>
-                <td></td>
-                <td>
-                    <button class="p-1 mr-1 actionButton deleteImage deleteImage" title="Löschen" data-file-id="" data-binding="true" data-fun="deleteImage"><?= Icon::getDefault("iconDelete") ?></button>
-                    <button class="p-1 mr-1 actionButton moveRow" title="Verschieben" onmousedown="moveInit(event)" onmouseup="moveRemove(event)" data-file-id=""><?= Icon::getDefault("iconMove") ?></button>
-                </td>
-            </tr>
         </template>
     <?php endif; ?>
     </div>

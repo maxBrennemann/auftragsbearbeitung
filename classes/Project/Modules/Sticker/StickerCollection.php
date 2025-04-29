@@ -5,7 +5,9 @@ namespace Classes\Project\Modules\Sticker;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+
 use Classes\Project\Icon;
+use Classes\Project\UploadHandler;
 
 use Classes\Project\Modules\Sticker\Imports\ImportGoogleSearchConsole;
 
@@ -357,16 +359,16 @@ class StickerCollection implements \Iterator
             }
             $additionalData = json_decode($row["additional_data"], true);
 
-            if (isset($additionalData["products"])) {
+            if (($additionalData["products"])) {
                 $products = $additionalData["products"];
 
-                if (isset($products["aufkleber"])) {
+                if (isset($products["aufkleber"]) && isset($products["aufkleber"]["id"])) {
                     $isInShopStatus[$id]["a"] = $products["aufkleber"]["id"];
                 }
-                if (isset($products["wandtattoo"])) {
+                if (isset($products["wandtattoo"]) && isset($products["wandtattoo"]["id"])) {
                     $isInShopStatus[$id]["w"] = $products["wandtattoo"]["id"];
                 }
-                if (isset($products["textil"])) {
+                if (isset($products["textil"]) && isset($products["textil"]["id"])) {
                     $isInShopStatus[$id]["t"] = $products["textil"]["id"];
                 }
             }
@@ -398,5 +400,85 @@ class StickerCollection implements \Iterator
         JSONResponseHandler::sendResponse([
             "priceScheme" => $priceClass,
         ]);
+    }
+
+    public static function addFiles()
+    {
+        $idSticker = Tools::get("id");
+        $type = Tools::get("type");
+
+        $uploadHandler = new UploadHandler("upload", [
+            "image/png",
+            "image/jpg",
+            "image/jpeg",
+            "image/svg+xml",
+        ]);
+        $files = $uploadHandler->uploadMultiple();
+
+        $query = "INSERT INTO module_sticker_image (id_datei, id_motiv, image_sort) VALUES ";
+        $data = [];
+        foreach ($files as $file) {
+            $data[] = [
+                $file["id"],
+                $idSticker,
+                $type
+            ];
+        }
+
+        DBAccess::insertMultiple($query, $data);
+    }
+
+    public static function setTitle()
+    {
+        $id = Tools::get("id");
+        $title = Tools::get("title");
+
+        $sticker = new Sticker($id);
+        $response = $sticker->setName($title);
+
+        if ($response["status"] == "success") {
+            JSONResponseHandler::returnOK();
+        } else {
+            JSONResponseHandler::throwError(400, "An unspecified error occured.");
+        }
+    }
+
+    public static function setAltTitle()
+    {
+        $id = Tools::get("id");
+        $type = Tools::get("type");
+        $newTitle = Tools::get("title");
+
+        $additionalData = DBAccess::selectQuery("SELECT additional_data FROM module_sticker_sticker_data WHERE id = :id LIMIT 1", ["id" => $id]);
+
+        if (!$additionalData[0] === NULL) {
+            $additionalData = json_decode($additionalData[0]["additional_data"], true);
+
+            $additionalData["products"][$type]["altTitle"] = $newTitle;
+        } else {
+            $additionalData = [];
+            $additionalData["products"][$type]["altTitle"] = $newTitle;
+        }
+
+        $data = json_encode($additionalData);
+        DBAccess::insertQuery("UPDATE module_sticker_sticker_data SET additional_data = :data WHERE id = :id", [
+            "data" => $data,
+            "id" => $id
+        ]);
+
+        JSONResponseHandler::returnOK();
+    }
+
+    public static function setCreationDate()
+    {
+        $id = Tools::get("id");
+        $creation_date = Tools::get("date");
+
+        DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET creation_date = :creation_date WHERE id = :id", [
+            "creation_date" => $creation_date,
+            "id" => $id
+        ]);
+
+        JSONResponseHandler::returnOK();
     }
 }

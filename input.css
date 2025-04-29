@@ -64,11 +64,11 @@
     }
 
     .overlay-container__content__options {
-        @apply border-t border-solid border-gray-400 flex justify-end p-3 bg-slate-50;
+        @apply border-t border-solid border-gray-400 flex flex-row-reverse p-3 bg-slate-50;
     }
 
     .fileUploader {
-        @apply flex justify-center items-center flex-col h-32 bg-white rounded-lg mt-2 cursor-pointer
+        @apply flex justify-center items-center flex-col h-32 bg-white rounded-lg mt-2 cursor-pointer;
     }
 
     /*.table {
