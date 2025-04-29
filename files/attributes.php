@@ -1,6 +1,7 @@
 <?php
+use MaxBrennemann\PhpUtilities\DBAccess;
 
-$data = Classes\DBAccess::selectQuery("SELECT ag.attribute_group, ag.descr, a.id, a.value, a.attribute_group_id, a.position 
+$data = DBAccess::selectQuery("SELECT ag.attribute_group, ag.descr, a.id, a.value, a.attribute_group_id, a.position 
     FROM attribute_group ag 
     LEFT JOIN attribute a 
         ON ag.id = a.attribute_group_id

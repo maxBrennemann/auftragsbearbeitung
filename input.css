@@ -64,7 +64,7 @@
     }
 
     .overlay-container__content__options {
-        @apply border-t border-solid border-gray-400 flex justify-end p-3 bg-slate-50;
+        @apply border-t border-solid border-gray-400 flex flex-row-reverse p-3 bg-slate-50;
     }
 
     .fileUploader {

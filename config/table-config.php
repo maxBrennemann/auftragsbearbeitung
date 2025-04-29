@@ -1,6 +1,6 @@
 <?php
 
-function getTableConfig()
+function getTableConfig(): array
 {
     return [
         "address" => [
@@ -204,6 +204,37 @@ function getTableConfig()
                 "Erweiterte Infos",
             ],
             "permissions" => [],
+        ],
+        "produkt" => [
+            "columns" => [
+                "Nummer",
+                "Marke",
+                "Preis",
+                "Einkaufspreis",
+                "Bezeichnung",
+                "Beschreibung",
+                "Bild",
+                "einkaufs_id",
+                "id_category",
+            ],
+            "primaryKey" => "Nummer",
+            "names" => [
+                "Nummer",
+                "Marke",
+                "Preis",
+                "Einkaufspreis",
+                "Bezeichnung",
+                "Beschreibung",
+                "Bild",
+                "Einkaufsreferenz",
+                "Kategorienummer",
+            ],
+            "hidden" => [
+                "Bild",
+                "einkaufs_id",
+                "id_category",
+            ],
+            "permissions" => ["read", "create"],
         ],
         "user" => [
             "columns" => [
