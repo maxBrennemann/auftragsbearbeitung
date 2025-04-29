@@ -76,9 +76,15 @@ class StickerRoutes extends Routes
 
     /**
      * @uses \Classes\Project\Modules\Sticker\AufkleberWandtattoo::addSize()
+     * @uses \Classes\Project\Modules\Sticker\StickerCollection::setCreationDate()
+     * @uses \Classes\Project\Modules\Sticker\StickerCollection::setTitle()
+     * @uses \Classes\Project\Modules\Sticker\StickerCollection::setAltTitle()
      */
     protected static $putRoutes = [
         "/sticker/sizes" => [\Classes\Project\Modules\Sticker\AufkleberWandtattoo::class, "addSize"],
+        "/sticker/{id}/creation-date" => [\Classes\Project\Modules\Sticker\StickerCollection::class, "setCreationDate"],
+        "/sticker/{id}/title" => [\Classes\Project\Modules\Sticker\StickerCollection::class, "setTitle"],
+        "/sticker/{id}/{type}/alt-title" => [\Classes\Project\Modules\Sticker\StickerCollection::class, "setAltTitle"],
     ];
 
     /**

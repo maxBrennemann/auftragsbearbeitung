@@ -348,13 +348,6 @@ class Ajax
 					]);
 				}
 				break;
-			case "changeMotivDate":
-				$id = (int) $_POST['id'];
-				$creation_date = $_POST['date'];
-
-				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET creation_date = :creation_date WHERE id = :id", ["creation_date" => $creation_date, "id" => $id]);
-				echo "success";
-				break;
 			case "toggleTextil":
 				$id = (int) $_POST["id"];
 				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_shirtcollection` = NOT `is_shirtcollection` WHERE id = :id", ["id" => $id]);
@@ -438,15 +431,6 @@ class Ajax
 				$aufkleber = new Aufkleber($id);
 				$aufkleber->saveSentData($data);
 				break;
-			case "setAufkleberTitle":
-				$id = (int) $_POST["id"];
-				$title = (string) $_POST["title"];
-
-				$sticker = new Sticker($id);
-				$response = $sticker->setName($title);
-
-				echo $response["status"];
-				break;
 			case "productVisibility":
 				$id = (int) $_POST["id"];
 				$stickerCollection = new StickerCollection($id);
@@ -479,25 +463,6 @@ class Ajax
 				echo json_encode([
 					"status" => "success",
 				]);
-				break;
-			case "setAltTitle":
-				$id = (int) $_POST["id"];
-				$newTitle = (string) $_POST["newTitle"];
-				$type = (string) $_POST["type"];
-
-				$additionalData = DBAccess::selectQuery("SELECT additional_data FROM module_sticker_sticker_data WHERE id = :id LIMIT 1", ["id" => $id]);
-
-				if ($additionalData[0] != null) {
-					$additionalData = json_decode($additionalData[0]["additional_data"], true);
-
-					$additionalData["products"][$type]["altTitle"] = $newTitle;
-					$data = json_encode($additionalData);
-
-					DBAccess::insertQuery("UPDATE module_sticker_sticker_data SET additional_data = :data WHERE id = :id", ["data" => $data, "id" => $id]);
-					echo json_encode(["status" => "success"]);
-				} else {
-					echo json_encode(["status" => "no data found"]);
-				}
 				break;
 			case "showSearch":
 				$id = (int) $_POST["id"];

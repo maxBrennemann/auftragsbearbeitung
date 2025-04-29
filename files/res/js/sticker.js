@@ -1,12 +1,12 @@
 import { click_textGeneration, click_showTextSettings, click_iterateText } from "./sticker/textGeneration.js";
-import ProductConnector from "./sticker/productConnector.js";
+import { productConnector } from "./sticker/productConnector.js";
 import { initImageManager } from "./sticker/imageManager.js";
 import { } from "./sticker/statsManager.js";
 import { initSizeTable } from "./sticker/sizeTable.js";
 import { addBindings, getVariable } from "./classes/bindings.js";
 import "./sticker/imageMove.js";
 import { ajax } from "./classes/ajax.js";
-import initTagManager from "./sticker/tagManager.js";
+import { initTagManager } from "./sticker/tagManager.js";
 import { notificatinReplace, notification, notificationLoader } from "./classes/notifications.js";
 import { createPopup } from "./global.js";
 
@@ -35,14 +35,7 @@ function initSticker() {
 
     mainVariables.motivId = getVariable("motivId");
 
-    document.title = "b-schriftung - Motiv " + mainVariables.motivId.innerHTML + " " + document.getElementById("name").value;
-
-    var input = document.getElementById('name');
-    input.addEventListener('input', manageTitle);
-    input.addEventListener('change', sendTitle);
-    manageTitle.call(input);
-
-    document.getElementById("creationDate").addEventListener("change", changeDate, false);
+    document.title = "b-schriftung - Motiv " + mainVariables.motivId + " " + document.getElementById("stickerName").value;
 
     initTextiles();
     initSizeTable();
@@ -50,7 +43,44 @@ function initSticker() {
     initImageManager();
 }
 
-fnNames.click_toggleCheckbox = async function(e) {
+fnNames.write_stickerName = e => {
+    const title = e.target.value;
+    ajax.put(`/api/v1/sticker/${mainVariables.motivId}/title`, {
+        "title": title,
+    }).then(r => {
+        if (r.message == "OK") {
+            notification("", "success");
+        } else {
+            notification("", "failure", JSON.stringify(r));
+        }
+    });
+}
+
+fnNames.input_stickerName = e => {
+    const title = e.target.value;
+
+    if (title.length > 50) {
+        e.target.classList.remove("border-b-gray-600");
+        e.target.classList.add("text-red-500", "border-b-red-500");
+    } else {
+        e.target.classList.remove("text-red-500", "border-b-red-500");
+        e.target.classList.add("border-b-gray-600");
+    }
+}
+
+fnNames.write_creationDate = e => {
+    ajax.put(`/api/v1/sticker/${mainVariables.motivId}/creation-date`, {
+        "date": e.target.value,
+    }).then(r => {
+        if (r.message == "OK") {
+            notification("", "success");
+        } else {
+            notification("", "failure", JSON.stringify(r));
+        }
+    });
+}
+
+fnNames.click_toggleCheckbox = async function (e) {
     e.preventDefault();
     var inputNode = e.target.parentNode.children[0];
     inputNode.checked = !inputNode.checked;
@@ -82,7 +112,7 @@ fnNames.click_toggleCheckbox = async function(e) {
 function initTextiles() {
     const textiles = document.getElementsByClassName("textiles-switches");
     for (let i = 0; i < textiles.length; i++) {
-        textiles[i].addEventListener("click", function(e) {
+        textiles[i].addEventListener("click", function (e) {
             const target = e.target;
             const id = target.dataset.id;
             const idSticker = mainVariables.motivId.innerHTML;
@@ -97,7 +127,7 @@ function initTextiles() {
 
     const prices = document.getElementsByClassName("textiles-prices");
     for (let i = 0; i < prices.length; i++) {
-        prices[i].addEventListener("change", function(e) {
+        prices[i].addEventListener("change", function (e) {
             const target = e.target;
             const id = target.dataset.id;
             const idSticker = mainVariables.motivId.innerHTML;
@@ -146,50 +176,7 @@ function aufkleberPlottClick(e) {
     }
 }
 
-function changeDate(e) {
-    ajax.post({
-        date: e.target.value,
-        id: mainVariables.motivId.innerHTML,
-        r: "changeMotivDate",
-    }, true).then(response => {
-        if (response == "success") {
-            notification("", "success");
-        } else {
-            console.log(response);
-            notification("", "failure");;
-        }
-    });
-}
-
-function sendTitle(e) {
-    const title = e.target.value;
-    ajax.post({
-        title: title,
-        id: mainVariables.motivId.innerHTML,
-        r: "setAufkleberTitle",
-    }, true).then(r => {
-        if (r == "success") {
-            notification("", "success");
-        } else {
-            console.log(r);
-            notification("", "failure");;
-        }
-    });
-}
-
-function manageTitle() {
-    var title = this.value;
-
-    if (title.length > 50) {
-        this.classList.remove("border-b-gray-600");
-        this.classList.add("text-red-500", "border-b-red-500");
-    } else {
-        this.classList.remove("text-red-500", "border-b-red-500");
-        this.classList.add("border-b-gray-600");
-    }
-}
-
-fnNames.click_textilClick = function() {
+fnNames.click_textilClick = function () {
     notificationLoader("textile-click", "Wird gespeichert");
 
     ajax.post({
@@ -214,7 +201,7 @@ fnNames.click_textilClick = function() {
     });
 }
 
-fnNames.click_wandtattooClick = function() {
+fnNames.click_wandtattooClick = function () {
     notificationLoader("wandtatoo-click", "Wird gespeichert");
     ajax.post({
         id: mainVariables.motivId.innerHTML,
@@ -238,7 +225,7 @@ fnNames.click_wandtattooClick = function() {
     });
 }
 
-fnNames.click_revisedClick = function() {
+fnNames.click_revisedClick = function () {
     ajax.post({
         id: mainVariables.motivId.innerHTML,
         r: "toggleRevised",
@@ -252,19 +239,19 @@ fnNames.click_revisedClick = function() {
     });
 }
 
-fnNames.click_transferAufkleber = function() {
+fnNames.click_transferAufkleber = function () {
     transfer(1, "Aufkleber");
 }
 
-fnNames.click_transferWandtattoo = function() {
+fnNames.click_transferWandtattoo = function () {
     transfer(2, "Wandtattoo");
 }
 
-fnNames.click_transferTextil = function() {
-   transfer(3, "Textil");
+fnNames.click_transferTextil = function () {
+    transfer(3, "Textil");
 }
 
-fnNames.click_transferAll = function(e) {
+fnNames.click_transferAll = function (e) {
     transfer(4, "Allen Produkten");
 }
 
@@ -283,7 +270,7 @@ function transfer(type, text) {
     notificationLoader("various-click", "Wird gespeichert");
 
     mainVariables.pending = true;
-    
+
     if (mainVariables.overwriteImages.aufkleber == true || mainVariables.overwriteImages.wandtattoo || mainVariables.overwriteImages.textil) {
         if (!confirm("Möchtest du die Bilder überschreiben?")) {
             mainVariables.overwriteImages.aufkleber = false;
@@ -308,7 +295,7 @@ function transfer(type, text) {
     });
 }
 
-fnNames.write_productDescription = function(e) {
+fnNames.write_productDescription = function (e) {
     var target = e.target.dataset.target;
     var content = e.target.value;
     var type = e.target.dataset.type;
@@ -329,7 +316,7 @@ fnNames.write_productDescription = function(e) {
     });
 }
 
-fnNames.write_speicherort = function(e) {
+fnNames.write_speicherort = function (e) {
     ajax.post({
         id: mainVariables.motivId.innerHTML,
         content: encodeURIComponent(e.target.value),
@@ -344,7 +331,7 @@ fnNames.write_speicherort = function(e) {
     });
 }
 
-fnNames.write_additionalInfo = function(e) {
+fnNames.write_additionalInfo = function (e) {
     var content = e.target.value;
     ajax.post({
         id: mainVariables.motivId.innerHTML,
@@ -360,7 +347,7 @@ fnNames.write_additionalInfo = function(e) {
     });
 }
 
-fnNames.click_bookmark = async function(e) {
+fnNames.click_bookmark = async function (e) {
     const target = e.currentTarget;
     const type = target.dataset.status;
 
@@ -407,7 +394,7 @@ function toggleBookmark() {
     });
 }
 
-fnNames.click_changeColor = function(e) {
+fnNames.click_changeColor = function (e) {
     var color = e.target.dataset.color;
 
     if (svg_elem != null) {
@@ -415,31 +402,22 @@ fnNames.click_changeColor = function(e) {
     }
 }
 
-fnNames.click_copyToClipboard = function() {
+fnNames.click_copyToClipboard = function () {
     var input = document.getElementById("dirInput");
     input.select();
     input.setSelectionRange(0, 99999);
-    navigator.clipboard.writeText(input.value); 
+    navigator.clipboard.writeText(input.value);
 }
 
-/* must be redone; TODO: nachlesen, wie man event listener richtig bindet */
-fnNames.click_addAltTitle = function(e) {
-    const node = e.currentTarget.parentNode;
-    var input = node.children[0];
-    input.classList.toggle("hidden");
-}
-
-fnNames.write_changeAltTitle = function(e) {
-    ajax.post({
-        newTitle: e.target.value,
-        type: e.target.dataset.type,
-        id: mainVariables.motivId.innerHTML,
-        r: "setAltTitle",
+fnNames.write_changeAltTitle = function (e) {
+    const target = e.target;
+    ajax.put(`/api/v1/sticker/${mainVariables.motivId}/${target.dataset.type}/alt-title`, {
+        "title": target.value,
     }).then(r => {
-        if (r.status == "success") {
+        if (r.message == "OK") {
             notification("", "success");
         } else {
-            notification("", "failure");;
+            notification("", "failure", JSON.stringify(r));
         }
     });
 }
@@ -448,7 +426,7 @@ fnNames.write_changeAltTitle = function(e) {
  * toggles the visibility of the product in the store
  * @param {} e 
  */
-fnNames.click_toggleProductVisibility = function(e) {
+fnNames.click_toggleProductVisibility = function (e) {
     let target = e.currentTarget;
     let type = target.dataset.type;
 
@@ -472,20 +450,20 @@ fnNames.click_toggleProductVisibility = function(e) {
     });
 }
 
-fnNames.click_shortcutProduct = async function(e) {
+fnNames.click_shortcutProduct = async function (e) {
     const target = e.currentTarget;
     const type = target.dataset.type;
 
     if (mainVariables.productConnect[type]) {
         mainVariables.productconnect[type].show();
     } else {
-        const productConnector = new ProductConnector(type);
-        mainVariables.productConnect[type] = await productConnector.showSearchContainer();
+        const pc = productConnector(type);
+        mainVariables.productConnect[type] = await pc.showSearchContainer();
     }
 }
 
 var selectedCategories = [];
-fnNames.click_chooseCategory = async function() {
+fnNames.click_chooseCategory = async function () {
     const div = document.createElement("div");
     div.classList.add("z-20", "paddingDefault");
 
@@ -515,8 +493,8 @@ fnNames.click_chooseCategory = async function() {
         r: "getCategoryTree",
     }).then(categoryData => {
         const ul = document.createElement("ul");
-        ul.appendChild(createUlCategoryList(categoryData)); 
-        
+        ul.appendChild(createUlCategoryList(categoryData));
+
         innerDiv.appendChild(ul);
         createPopup(div);
     });
@@ -553,7 +531,7 @@ function selectCategory(e) {
     target.classList.toggle("selectedCategory");
     let id = target.dataset.id;
     id = parseInt(id);
-    
+
     if (!selectedCategories.includes(id)) {
         selectedCategories.push(id);
     } else {
@@ -591,11 +569,11 @@ function setCategories() {
     });
 }
 
-fnNames.click_exportToggle = function(e) {
+fnNames.click_exportToggle = function (e) {
     let exportType = e.target.dataset.value;
 
     ajax.post({
-        id: mainVariables.motivId.innerHTML, 
+        id: mainVariables.motivId.innerHTML,
         export: exportType,
         r: "setExportStatus",
     }).then(() => {
@@ -603,7 +581,7 @@ fnNames.click_exportToggle = function(e) {
     });
 }
 
-fnNames.click_makeCustomizable = function(e) {
+fnNames.click_makeCustomizable = function (e) {
     ajax.post({
         id: mainVariables.motivId.innerHTML,
         r: "makeCustomizable"
@@ -613,7 +591,7 @@ fnNames.click_makeCustomizable = function(e) {
     });
 }
 
-fnNames.click_makeForConfig = function(e) {
+fnNames.click_makeForConfig = function (e) {
     ajax.post({
         id: mainVariables.motivId.innerHTML,
         r: "makeForConfig"
@@ -645,10 +623,10 @@ function checkProductErrorStatus() {
 }
 
 export const getStickerId = () => {
-    return mainVariables.motivId.innerHTML;
+    return mainVariables.motivId;
 }
 
-if (document.readyState !== 'loading' ) {
+if (document.readyState !== 'loading') {
     initSticker();
 } else {
     document.addEventListener('DOMContentLoaded', function () {

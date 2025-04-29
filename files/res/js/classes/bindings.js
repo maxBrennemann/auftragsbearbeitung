@@ -6,7 +6,7 @@ const BindingManager = (function () {
             if (instance) return instance;
 
             this.fnNames = {};
-            this.boundElements = new WeakSet();
+            this.boundElements = new WeakMap();
             this.variables = {};
 
             this._bindToggle();
@@ -23,17 +23,21 @@ const BindingManager = (function () {
 
             document.querySelectorAll('[data-variable]').forEach(el => {
                 if (el.id) {
-                    this.variables[el.id] = el;
+                    this.variables[el.id] = el.value || el.innerHTML;
                 }
             });
 
             document.querySelectorAll('[data-write]').forEach(el => {
                 this._addWriteBinding(el);
             });
+
+            document.querySelectorAll('[data-input]').forEach(el => {
+                this._addInputBinding(el);
+            });
         }
 
         _addBinding(el) {
-            if (this.boundElements.has(el)) return;
+            if (this._isAlreadyBound(el, "click")) return;
 
             const funName = el.dataset.fun
                 ? `click_${el.dataset.fun}`
@@ -52,11 +56,11 @@ const BindingManager = (function () {
                 }
             });
 
-            this.boundElements.add(el);
+            this._markAsBound(el, "click");
         }
 
         _addWriteBinding(el) {
-            if (this.boundElements.has(el)) return;
+            if (this._isAlreadyBound(el, "write")) return;
 
             const funName = el.dataset.fun
                 ? `write_${el.dataset.fun}`
@@ -71,7 +75,26 @@ const BindingManager = (function () {
                 }
             });
 
-            this.boundElements.add(el);
+            this._markAsBound(el, "write");
+        }
+
+        _addInputBinding(el) {
+            if (this._isAlreadyBound(el, "input")) return;
+
+            const funName = el.dataset.fun
+                ? `input_${el.dataset.fun}`
+                : `input_${el.id}`;
+
+            el.addEventListener("input", e => {
+                const fn = this.fnNames[funName];
+                if (typeof fn === "function") {
+                    fn(e);
+                } else {
+                    console.warn(`Write handler not defined for "${funName}"`);
+                }
+            });
+
+            this._markAsBound(el, "input");
         }
 
         _bindToggle() {
@@ -86,6 +109,18 @@ const BindingManager = (function () {
                     })
                 });
             });
+        }
+
+        _isAlreadyBound(el, event) {
+            const events = this.boundElements.get(el);
+            return events?.has(event);
+        }
+
+        _markAsBound(el, event) {
+            if (!this.boundElements.has(el)) {
+                this.boundElements.set(el, new Set());
+            }
+            this.boundElements.get(el).add(event);
         }
 
         getVariable(id) {

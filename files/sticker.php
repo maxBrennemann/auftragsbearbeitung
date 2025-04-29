@@ -35,7 +35,7 @@ if ($id == 0): ?>
 <?php else: ?>
     <div class="w-full grid gap-3 grid-cols-3">
         <div class="defCont col-span-3">
-            <h2 class="font-semibold">Motiv <input id="name" class="input-primary w-96" value="<?= $stickerCollection->getName(); ?>" title="Faceboook hat ein internes Limit für die Titellänge von 65 Zeichen">
+            <h2 class="font-semibold">Motiv <input id="stickerName" data-write="true" data-input="true" class="input-primary w-96" value="<?= $stickerCollection->getName(); ?>" title="Faceboook hat ein internes Limit für die Titellänge von 65 Zeichen">
                 <?php if ($stickerCollection->getIsMarked() == "0"): ?>
                     <span data-binding="true" data-fun="bookmark" data-status="unmarked" class="inline" title="Motiv markieren">
                         <?= Icon::get("iconBookmark", 18, 18, ["inline", "cursor-pointer"]) ?>
@@ -47,7 +47,7 @@ if ($id == 0): ?>
                 <?php endif; ?>
             </h2>
             <p class="ml-2 mt-2">Artikelnummer: <span id="motivId" data-variable="true"><?= $id ?></span></p>
-            <p class="ml-2 mt-2">Erstellt am <input type="date" class="input-primary" id="creationDate" value="<?= $stickerCollection->getCreationDate() ?>"></p>
+            <p class="ml-2 mt-2">Erstellt am <input type="date" class="input-primary" id="creationDate" data-write="true" value="<?= $stickerCollection->getCreationDate() ?>"></p>
             <button class="btn-primary-new mt-4" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
         </div>
         <div class="defCont hidden">
@@ -59,12 +59,8 @@ if ($id == 0): ?>
         </div>
         <div class="defCont col-span-2 lg:col-span-1">
             <p class="font-bold">Aufkleber
-                <input class="input-primary hidden" value="<?= $stickerCollection->getAufkleber()->getAltTitle() ?>" data-write="true" data-type="aufkleber" data-fun="changeAltTitle" placeholder="Alternativtitel">
-                <button class="mx-1 btn-primary-small" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="aufkleber">
-                    <?= Icon::getDefault("iconEditText") ?>
-                </button>
                 <?php if ($stickerCollection->getAufkleber()->getActiveStatus()): ?>
-                    <button class="mr-1 btn-primary-small" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
+                    <button class="mx-1 btn-primary-small" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
                         <?= Icon::getDefault("iconVisible") ?>
                     </button>
                 <?php else: ?>
@@ -79,6 +75,10 @@ if ($id == 0): ?>
                     </button>
                     <button class="infoButton ml-1" data-info="8">i</button>
             </p>
+            <div class="mt-2">
+                <p>Alternativtitel</p>
+                <input class="input-primary mt-1" value="<?= $stickerCollection->getAufkleber()->getAltTitle() ?>" data-write="true" data-type="aufkleber" data-fun="changeAltTitle" placeholder="Alternativtitel">
+            </div>
             <div class="mt-2">
                 Status:
                 <?php if ($stickerCollection->getAufkleber()->isInShop()): ?>
@@ -157,12 +157,8 @@ if ($id == 0): ?>
 
         <div class="defCont col-span-2 lg:col-span-1">
             <p class="font-bold">Wandtattoo
-                <input class="input-primary hidden" value="<?= $stickerCollection->getWandtattoo()->getAltTitle() ?>" data-write="true" data-type="wandtattoo" data-fun="changeAltTitle" placeholder="Alternativtitel">
-                <button class="mx-1 btn-primary-small" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="wandtattoo">
-                    <?= Icon::getDefault("iconEditText") ?>
-                </button>
                 <?php if ($stickerCollection->getWandtattoo()->getActiveStatus()): ?>
-                    <button class="mr-1 btn-primary-small" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
+                    <button class="mx-1 btn-primary-small" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
                         <?= Icon::getDefault("iconVisible") ?>
                     </button>
                 <?php else: ?>
@@ -177,6 +173,10 @@ if ($id == 0): ?>
                     </button>
                     <button class="infoButton ml-1" data-info="9">i</button>
             </p>
+            <div class="mt-2">
+                <p>Alternativtitel</p>
+                <input class="input-primary mt-1" value="<?= $stickerCollection->getWandtattoo()->getAltTitle() ?>" data-write="true" data-type="wandtattoo" data-fun="changeAltTitle" placeholder="Alternativtitel">
+            </div>
             <div class="mt-2">
                 Status:
                 <?php if ($stickerCollection->getWandtattoo()->isInShop()): ?>
@@ -220,12 +220,8 @@ if ($id == 0): ?>
 
         <div class="defCont col-span-2 lg:col-span-1">
             <p class="font-bold">Textil
-                <input class="input-primary hidden" value="<?= $stickerCollection->getTextil()->getAltTitle() ?>" data-write="true" data-type="textil" data-fun="changeAltTitle" placeholder="Alternativtitel">
-                <button class="mx-1 btn-primary-small" title="Alternativtitel hinzufügen" data-fun="addAltTitle" data-binding="true" data-type="textil">
-                    <?= Icon::getDefault("iconEditText") ?>
-                </button>
                 <?php if ($stickerCollection->getTextil()->getActiveStatus()): ?>
-                    <button class="mr-1 btn-primary-small" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
+                    <button class="mx-1 btn-primary-small" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
                         <?= Icon::getDefault("iconVisible") ?>
                     </button>
                 <?php else: ?>
@@ -240,6 +236,10 @@ if ($id == 0): ?>
                     </button>
                     <button class="infoButton ml-1" data-info="10">i</button>
             </p>
+            <div class="mt-2">
+                <p>Alternativtitel</p>
+                <input class="input-primary mt-1" value="<?= $stickerCollection->getTextil()->getAltTitle() ?>" data-write="true" data-type="wandtattoo" data-fun="changeAltTitle" placeholder="Alternativtitel">
+            </div>
             <div class="mt-2">
                 Status:
                 <?php if ($stickerCollection->getTextil()->isInShop()): ?>
@@ -413,11 +413,8 @@ if ($id == 0): ?>
                 </span>
             </div>
             <p class="mt-2">Speicherort:<button class="infoButton ml-1" data-info="5">i</button></p>
-            <div class="directoryContainer mt-2">
-                <input id="dirInput" class="input-primary directoryName" data-fun="speicherort" data-write="true" value="<?= $stickerCollection->getDirectory() ?>">
-                <button class="directoryIcon" data-binding="true" data-fun="copyToClipboard">
-                    <?= Icon::getDefault("iconDirectory") ?>
-                </button>
+            <div class="mt-2">
+                <input id="dirInput" class="input-primary w-full" data-fun="speicherort" data-write="true" value="<?= $stickerCollection->getDirectory() ?>">
             </div>
             <p class="mt-2">Zusätzliche Infos und Notizen:<button class="infoButton ml-1" data-info="6">i</button></p>
             <textarea class="input-primary mt-2 w-full" data-fun="additionalInfo" data-write="true"><?= $stickerCollection->getAdditionalInfo() ?></textarea>
