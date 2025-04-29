@@ -21,20 +21,8 @@ apiKeys/*
 !.res/sql/init/.gitkeep
 
 # generated files
-files/generated/*
-!files/generated/.gitkeep
-
-!files/generated/sql_backups/
-files/generated/sql_backups/*
-!files/generated/sql_backups/.gitkeep
-
-!files/generated/invoice/
-files/generated/invoice/*
-!files/generated/invoice/.gitkeep
-
-!files/generated/fb_export/
-files/generated/fb_export/*
-!files/generated/fb_export/.gitkeep
+generated/*
+!generated/.gitkeep
 
 files/res/js/classes/tableconfig.js
 files/res/js/classes/colorpicker.js

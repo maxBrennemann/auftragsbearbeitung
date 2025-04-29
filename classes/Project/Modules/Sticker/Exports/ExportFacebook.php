@@ -238,7 +238,7 @@ class ExportFacebook extends PrestashopConnection
      */
     private function generateFile(array $lines, string $filename): void
     {
-        $path = "files/generated/fb_export/";
+        $path = "generated/";
         $file = fopen($path . $filename, 'w');
 
         $firstLine = array_keys($this->line);
@@ -282,7 +282,7 @@ class ExportFacebook extends PrestashopConnection
         $export = new ExportFacebook();
         $export->generateCSV();
         $filename = $export->getFilename();
-        $fileLink = Link::getResourcesLink("files/generated/fb_export/" . $filename, "html");
+        $fileLink = Link::getResourcesLink("generated/" . $filename, "html");
 
         JSONResponseHandler::sendResponse([
             "status" => "successful",

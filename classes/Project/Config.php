@@ -133,15 +133,18 @@ class Config
 
     private static function getFilesInfoByPath(string $path, array &$data)
     {
-        $fi = new \FilesystemIterator($path , \FilesystemIterator::SKIP_DOTS);
-        $data["count"] += iterator_count($fi);
-        foreach ($fi as $file) {
+        $directory = new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS);
+        $iterator = new \RecursiveIteratorIterator($directory);
+
+        foreach ($iterator as $file) {
             if ($file->isDir()) {
                 continue;
             }
             if ($file->getFilename() === ".gitkeep") {
                 continue;
             }
+
+            $data["count"] += 1;
             $data["size"] += $file->getSize();
         }
     }
@@ -150,10 +153,7 @@ class Config
     {
         $paths = [
             "upload/",
-            "files/generated/fb_export",
-            "files/generated/invoice",
-            "files/generated/sql_backups",
-            "files/generated/",
+            "generated/",
         ];
         $data = [
             "count" => 0,

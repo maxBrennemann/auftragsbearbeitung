@@ -111,11 +111,19 @@ use Classes\Project\Config;
     </div>
 </section>
 <section class="defCont">
-    <h2 class="font-bold">Backups und Datensicherung</h2>
+    <h2 class="font-bold">Dateien, Datensicherung und Backups</h2>
     <div class="mt-2">
         <a href="#" download="temp_file_name" id="download_db" class="hidden">Datenbank herunterladen</a>
-        <button class="btn-primary-new" data-binding="true" data-fun="downloadDatabase">Datenbank herunterladen</button>
-        <button class="btn-primary-new" data-binding="true" data-fun="downloadAllFiles" disabled>Alle Dateien herunterladen</button>
+        <a href="#" download="temp_file_name" id="download_files" class="hidden">Dateien herunterladen</a>
+        <div>
+            <button class="btn-primary-new" data-binding="true" data-fun="downloadDatabase">Datenbank herunterladen</button>
+            <button class="btn-primary-new ml-1" data-binding="true" data-fun="downloadAllFiles">Alle Dateien herunterladen</button>
+        </div>
+        <div class="mt-3">
+            <button id="clearFiles" data-binding="true" class="btn-primary-new">Dateien aufräumen</button>
+            <button id="adjustFiles" data-binding="true" class="btn-primary-new ml-1">Dateinamen anpassen</button>
+        </div>
+        <p id="showFilesInfo" class="mt-2"></p>
     </div>
 </section>
 <section class="defCont">
@@ -128,12 +136,6 @@ use Classes\Project\Config;
             "binding" => "startStopTime",
         ]); ?>
     </div>
-</section>
-<section class="defCont">
-    <h2 class="font-bold">Dateien</h2>
-    <button id="clearFiles" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Dateien aufräumen</button>
-    <button id="adjustFiles" class="px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none">Dateinamen anpassen</button>
-    <p id="showFilesInfo"></p>
 </section>
 <section class="defCont">
     <h2 class="font-bold">Routineaufgaben</h2>

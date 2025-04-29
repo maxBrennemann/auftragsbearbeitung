@@ -4,7 +4,6 @@ namespace Classes;
 
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\DBAccess;
-use MaxBrennemann\PhpUtilities\Tools;
 
 use Classes\Auth\SessionController;
 
@@ -20,13 +19,12 @@ use Classes\Routes\SearchRoutes;
 use Classes\Routes\SettingsRoutes;
 use Classes\Routes\StickerRoutes;
 use Classes\Routes\TimeTrackingRoutes;
+use Classes\Routes\UploadRoutes;
 use Classes\Routes\UserRoutes;
 use Classes\Routes\VariousRoutes;
 
 use Classes\Project\Search;
 use Classes\Project\Auftrag;
-use Classes\Project\Posten;
-use Classes\Project\Fahrzeug;
 use Classes\Project\Step;
 use Classes\Project\Table;
 use Classes\Project\Auftragsverlauf;
@@ -119,6 +117,9 @@ class Ajax
 				break;
 			case "time-tracking":
 				TimeTrackingRoutes::handleRequest($path);
+				break;
+			case "upload":
+				UploadRoutes::handleRequest($path);
 				break;
 			case "user":
 				UserRoutes::handleRequest($path);

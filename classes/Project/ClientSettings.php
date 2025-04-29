@@ -7,6 +7,7 @@ use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 
 use Classes\Link;
+use ZipArchive;
 
 class ClientSettings
 {
@@ -97,9 +98,53 @@ class ClientSettings
         $password = $_ENV["DB_PASSWORD"];
         $result = DBAccess::EXPORT_DATABASE($host, $username, $password, $database, false, false, false);
 
-        $filePath = "files/generated/sql_backups/";
+        $filePath = "generated/";
         $fileName = date("d-m-Y_h-i-s") . ".sql";
         file_put_contents($filePath . $fileName, $result);
+
+        JSONResponseHandler::sendResponse([
+            "filename" => $fileName,
+            "url" => Link::getResourcesShortLink($fileName, "backup"),
+            "status" => "success",
+        ]);
+    }
+
+    public static function createFileBackup()
+    {
+        if (!extension_loaded("zip")) {
+            JSONResponseHandler::throwError(500, "Unable to zip files.");
+            return;
+        }
+
+        $filePath = "generated/";
+        $fileName = date("d-m-Y_h-i-s") . ".zip";
+        $zip = new ZipArchive();
+        if (!$zip->open($filePath . $fileName, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
+            JSONResponseHandler::throwError(500, "Unable to zip files.");
+            return;
+        }
+
+        $sourceDir = realpath("upload/");
+        $files = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($sourceDir, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::LEAVES_ONLY
+        );
+
+        foreach ($files as $file) {
+            $filePath = $file->getRealPath();
+            $relativePath = substr($filePath, strlen($sourceDir) + 1);
+
+            $filename = $file->getFilename();
+            if ($filename === '.gitkeep') {
+                continue;
+            }
+
+            if (!$file->isDir()) {
+                $zip->addFile($filePath, $relativePath);
+            }
+        }
+
+        $zip->close();
 
         JSONResponseHandler::sendResponse([
             "filename" => $fileName,

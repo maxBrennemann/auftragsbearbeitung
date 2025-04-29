@@ -10,9 +10,6 @@ use Classes\Auth\SessionController;
 use Classes\Project\Config;
 use Classes\Project\CacheManager;
 
-use Classes\Project\Posten;
-use Classes\Project\Table;
-
 use Classes\Project\Table\TableConfig;
 
 use Classes\Project\Modules\Sticker\Exports\ExportFacebook;
@@ -67,6 +64,7 @@ class ResourceManager
             case "font":
             case "pdf_invoice":
             case "upload":
+            case "backup":
             case "img":
             case "static":
                 self::handleResources();
