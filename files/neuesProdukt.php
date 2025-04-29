@@ -64,7 +64,7 @@ $attributeGroups = DBAccess::selectQuery("SELECT * FROM attribute_group");
 		</div>
 
 		<div class="mt-3">
-			<button class="inline-block btn-primary-new" data-binding="true" data-fun="save">Produkt speichern</button>
+			<button class="inline-block btn-primary" data-binding="true" data-fun="save">Produkt speichern</button>
 			<button class="inline-block btn-cancel" data-binding="true" data-fun="cancel">Abbrechen</button>
 		</div>
 

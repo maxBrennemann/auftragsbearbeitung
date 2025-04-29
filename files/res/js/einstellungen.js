@@ -12,20 +12,6 @@ function initEventListeners() {
     addBindings(fnNames);
     timeTracking();
 
-    const addDocs = document.getElementById("addDocs");
-    addDocs.addEventListener("click", () => {
-        ajax.post({
-            r: "indexAll",
-        });
-    });
-
-    const test = document.getElementById("test");
-    test.addEventListener("click", () => {
-        ajax.post({
-            r: "testsearch",
-        });
-    });
-
     const addCategoryBtn = document.getElementById("addCategory");
     addCategoryBtn.addEventListener("click", addCategory);
 

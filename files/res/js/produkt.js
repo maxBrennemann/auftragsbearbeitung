@@ -62,7 +62,7 @@ fnNames.click_addAttributes = () => {
     const settingsContainer = createPopup(div);
     
     const btnSaveConfig = document.createElement("button");
-    btnSaveConfig.classList.add("btn-primary-new");
+    btnSaveConfig.classList.add("btn-primary");
     btnSaveConfig.innerHTML = "Speichern";
     btnSaveConfig.addEventListener("click", () => {
         generateTable();

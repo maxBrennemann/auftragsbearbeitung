@@ -60,7 +60,7 @@ if ($orderId <= 0): ?>
 		<div>
 			<div class="defCont" id="orderFinished">
 				<p>Auftrag <?= $auftrag->getAuftragsnummer() ?> wurde abgeschlossen. Rechnungsnummer: <span id="rechnungsnummer"><?= $auftrag->getRechnungsnummer() ?></span></p>
-				<button class="btn-primary-new" data-fun="showAuftrag" data-binding="true">Auftrag anzeigen</button>
+				<button class="btn-primary" data-fun="showAuftrag" data-binding="true">Auftrag anzeigen</button>
 				<?php
 				$invoiceLink = $auftrag->getKundennummer() . "_" . $auftrag->getRechnungsnummer() . ".pdf";
 				$invoiceLink = Link::getResourcesShortLink($invoiceLink, "pdf");
@@ -145,11 +145,12 @@ if ($orderId <= 0): ?>
 			</div>
 			<a class="text-blue-500	font-semibold mt-3" href="<?= Link::getPageLink("kunde") ?>?id=<?= $auftrag->getKundennummer() ?>">Kunde <span id="kundennummer"><?= $auftrag->getKundennummer() ?></span> anzeigen</a>
 		</div>
+
 		<div class="defCont auftragsinfo">
 			<div class="relative">
 				<span class="font-bold">Auftrag <span id="auftragsnummer"><?= $auftrag->getAuftragsnummer() ?></span><?php if ($auftrag->getIsArchiviert()) : ?> (archiviert)<?php endif; ?><button class="float-right border-none w-4" id="extraOptions">⋮</button></span>
 				<div class="hidden absolute right-0 top-0 bg-white rounded-lg drop-shadow-lg p-3 mt-5" id="showExtraOptions">
-					<button class="btn-attention mt-5" id="deleteOrder">Auftrag löschen</button>
+					<button class="btn-delete mt-5" id="deleteOrder">Auftrag löschen</button>
 				</div>
 			</div>
 			<div class="mt-1">
@@ -187,18 +188,19 @@ if ($orderId <= 0): ?>
 				</p>
 			</div>
 			<div>
-				<button class="btn-primary-new" onclick="location.href= '<?= Link::getPageLink('rechnung') ?>?target=create&id=<?= $orderId ?>'">Rechnung generieren</button>
+				<button class="btn-primary" onclick="location.href= '<?= Link::getPageLink('rechnung') ?>?target=create&id=<?= $orderId ?>'">Rechnung generieren</button>
 				<?php if ($auftrag->getIsArchiviert() == false) : ?>
-					<button class="btn-primary-new" data-binding="true" data-fun="archvieren">Auftrag archivieren</button>
+					<button class="btn-primary" data-binding="true" data-fun="archvieren">Auftrag archivieren</button>
 				<?php endif; ?>
-				<button class="btn-primary-new" data-binding="true" data-fun="setOrderFinished">Auftrag ist fertig</button>
+				<button class="btn-primary" data-binding="true" data-fun="setOrderFinished">Auftrag ist fertig</button>
 			</div>
 		</div>
+
 		<div class="defCont schritte">
 			<p class="font-bold">Bearbeitungsschritte und Aufgaben</p>
 			<div class="flex mt-2 items-center">
 				<div>
-					<button class="btn-primary-new" data-binding="true" data-fun="addStep">Neu</button>
+					<button class="btn-primary" data-binding="true" data-fun="addStep">Neu</button>
 				</div>
 				<div class="px-2 rounded ml-2">
 					<?= TemplateController::getTemplate("inputSwitch", [
@@ -260,7 +262,7 @@ if ($orderId <= 0): ?>
 					</select>
 				</div>
 				<div class="mt-2">
-					<button class="btn-primary-new" data-binding="true" data-fun="addBearbeitungsschritt" class="btn-primary">Hinzufügen</button>
+					<button class="btn-primary" data-binding="true" data-fun="addBearbeitungsschritt" class="btn-primary">Hinzufügen</button>
 					<button class="btn-cancel" data-binding="true" data-fun="addBearbeitungsschritt" class="btn-primary">Abbrechen</button>
 				</div>
 			</div>
@@ -268,10 +270,11 @@ if ($orderId <= 0): ?>
 				<?= $auftrag->getOpenBearbeitungsschritteTable() ?>
 			</div>
 		</div>
+
 		<div class="defCont schritteAdd">
 			<div>
 				<p class="font-bold">Notizen hinzufügen</p>
-				<button class="btn-primary-new mt-2" data-binding="true" data-fun="addNewNote" id="addNewNote">Neu</button>
+				<button class="btn-primary mt-2" data-binding="true" data-fun="addNewNote" id="addNewNote">Neu</button>
 			</div>
 			<div class="hidden mt-2" id="addNotes">
 				<div class="bg-white w-2/3 rounded-lg p-2">
@@ -282,15 +285,17 @@ if ($orderId <= 0): ?>
 					</div>
 				</div>
 				<div class="mt-2">
-					<button class="btn-primary-new" data-binding="true" data-fun="sendNote">Hinzufügen</button>
+					<button class="btn-primary" data-binding="true" data-fun="sendNote">Hinzufügen</button>
 					<button class="btn-cancel" data-binding="true" data-fun="cancelNote">Abbrechen</button>
 				</div>
 			</div>
 		</div>
+
 		<div class="defCont notes hidden" id="notesContainer">
 			<p class="font-bold">Alle Notizen</p>
 			<div class="grid grid-cols-4" id="noteContainer"></div>
 		</div>
+
 		<div class="defCont posten">
 			<p class="inline-flex items-center">
 				<span class="font-bold">Zeiten, Produkte und Kosten (netto)</span>
@@ -303,10 +308,12 @@ if ($orderId <= 0): ?>
 				"services" => $services
 			]); ?>
 		</div>
+
 		<div class="defCont invoice">
 			<p class="font-bold">Rechnungsposten (netto)</p>
 			<div id="invoicePostenTable" class="mt-2"><?= $auftrag->getInvoicePostenTable() ?></div>
 		</div>
+
 		<div class="defCont preis">
 			<p class="font-bold">Kalkulation:</p>
 			<p>Rechnungsbetrag:
@@ -319,6 +326,7 @@ if ($orderId <= 0): ?>
 				<?= number_format($auftrag->gewinnBerechnen(), 2, ',', '') . "€" ?>
 			</p>
 		</div>
+
 		<div class="defCont fahrzeuge">
 			<p>
 				<span class="font-bold">Fahrzeuge</span>
@@ -332,12 +340,12 @@ if ($orderId <= 0): ?>
 					<?php endforeach; ?>
 					<option value="addNew">Neues Fahrzeug hinzufügen</option>
 				</select>
-				<button class="m-1 btn-primary-new" data-binding="true" data-fun="addExistingVehicle">Übernehmen</button>
+				<button class="m-1 btn-primary" data-binding="true" data-fun="addExistingVehicle">Übernehmen</button>
 			</div>
 			<div class="innerDefCont hidden" id="addVehicle">
 				<p>Kfz-Kennzeichen:<br><input id="kfz" class="input-primary"></p>
 				<p>Fahrzeug:<br><input id="fahrzeug" class="input-primary"></p>
-				<button class="btn-primary-new mt-2" data-binding="true" data-fun="addNewVehicle">Hinzufügen</button>
+				<button class="btn-primary mt-2" data-binding="true" data-fun="addNewVehicle">Hinzufügen</button>
 			</div>
 			<div id="fahrzeugTable" class="mt-2"></div>
 			<br>
@@ -346,15 +354,17 @@ if ($orderId <= 0): ?>
 				<input name="orderid" value="<?= $orderId ?>" hidden>
 			</form>
 		</div>
+
 		<div class="defCont farben">
 			<p class="font-bold">Farben</p>
 			<span id="showColors"><?= $farbTable ?></span>
 			<div class="mt-2">
-				<button class="btn-primary-new" data-binding="true" data-fun="addColor">Neue Farbe</button>
+				<button class="btn-primary" data-binding="true" data-fun="addColor">Neue Farbe</button>
 				<br>
-				<button class="btn-primary-new mt-2" data-fun="toggleCS" data-binding="true">Vorhandene Farbe</button>
+				<button class="btn-primary mt-2" data-fun="toggleCS" data-binding="true">Vorhandene Farbe</button>
 			</div>
 		</div>
+
 		<div class="defCont upload">
 			<p class="font-bold">Dateien zum Auftrag hinzufügen</p>
 			<?= TemplateController::getTemplate("uploadFile", [
@@ -364,14 +374,16 @@ if ($orderId <= 0): ?>
 				<?= $showFiles ?>
 			</div>
 		</div>
+
 		<div class="defCont verlauf">
 			<p class="font-bold" data-binding="true" data-fun="showAuftragsverlauf">Auftragsverlauf anzeigen</p>
 			<div class="mt-2">
 				<?= $auftragsverlauf ?>
 			</div>
-			<button class="btn-primary-new mt-2" data-binding="true" data-fun="addList">Liste hinzufügen</button>
+			<button class="btn-primary mt-2" data-binding="true" data-fun="addList">Liste hinzufügen</button>
 			<button class="infoButton ml-1" data-info="2">i</button>
 		</div>
+
 		<template id="templateFarbe">
 			<div class="defCont">
 				<label>
@@ -391,10 +403,11 @@ if ($orderId <= 0): ?>
 					<input class="colorInput jscolor input-primary outline outline-offset-1" type="text" max="32" data-write="true" data-fun="checkHexCode">
 				</label>
 				<br>
-				<button class="btn-primary-new" data-fun="sendColor">Hinzufügen</button>
+				<button class="btn-primary" data-fun="sendColor">Hinzufügen</button>
 			</div>
 			<div class="defCont" id="cpContainer"></div>
 		</template>
+
 		<template id="templateExistingColor">
 			<div class="defCont" id="csContainer">
 				<p class="font-semibold mb-2">Vorhandene Farben:</p>
@@ -403,14 +416,16 @@ if ($orderId <= 0): ?>
 						"colors" => $colors,
 					]); ?>
 				</div>
-				<button class="btn-primary-new" data-binding="true" data-fun="addSelectedColors">Farbe(n) übernehmen</button>
+				<button class="btn-primary" data-binding="true" data-fun="addSelectedColors">Farbe(n) übernehmen</button>
 			</div>
 		</template>
+
 		<template id="templateAlertBox">
 			<p>Möchtest Du den Auftrag sicher löschen?</p>
-			<button id="deleteOrder" class="btn-attention">Ja</button>
+			<button id="deleteOrder" class="btn-delete">Ja</button>
 			<button id="closeAlert" class="btn-primary">Nein</button>
 		</template>
+
 		<template id="templateCalculateGas">
 			<p>Spritpreisrechner</p>
 			<label>
@@ -430,6 +445,7 @@ if ($orderId <= 0): ?>
 				<input>
 			</label>
 		</template>
+
 		<template id="templateNote">
 			<div class="bg-white rounded-lg p-2 m-2 relative">
 				<input type="text" class="noteTitle text-slate-900 font-bold outline-0" max="128">
@@ -439,7 +455,7 @@ if ($orderId <= 0): ?>
 					<span class="noteDate"></span>
 					<button class="border-0 ml-auto showDelete">...</button>
 				</div>
-				<button class="btn-attention noteDelete hidden absolute right-0 bottom-4">Löschen</button>
+				<button class="btn-delete noteDelete hidden absolute right-0 bottom-4">Löschen</button>
 			</div>
 		</template>
 	<?php endif; ?>

@@ -60,7 +60,7 @@ class Auftragsverlauf
     /*
      * added member join to get the user id
     */
-    public function getHistory()
+    public function getHistory(): array
     {
         $query = "SELECT history.id, history.insertstamp, history_type.name , CONCAT(COALESCE(history.alternative_text, ''), COALESCE(ids.descr, '')) AS Beschreibung, history.state, user.username, user.prename
             FROM history

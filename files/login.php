@@ -15,7 +15,7 @@
                 <input type="checkbox" name="setAutoLogin" id="autologin">
                 <span>Eingeloggt bleiben</span>
             </label>
-            <button class="btn-primary-new block mt-2" data-binding="true" data-fun="login">Einloggen</button>
+            <button class="btn-primary block mt-2" data-binding="true" data-fun="login">Einloggen</button>
         </div>
         <div class="innerDefCont inline-flex m-0 mt-2 items-center" id="autoLogin">
             <svg id="spinningStatus" xmlns="http://www.w3.org/2000/svg" class="fill-black h-4 w-4 block" viewBox="0 0 24 24">

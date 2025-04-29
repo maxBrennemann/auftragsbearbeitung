@@ -12,7 +12,7 @@ class AttributeGroup
     private $attributeGroup = null;
     private $description = null;
 
-    function __construct(int $id)
+    public function __construct(int $id)
     {
         if (is_numeric($id)) {
             $data = DBAccess::selectQuery("SELECT attribute_group, descr FROM attribute_group WHERE id = $id");

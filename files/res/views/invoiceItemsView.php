@@ -1,6 +1,6 @@
 <div id="auftragsPostenTable" class="mt-2"></div>
 <div class="mt-2">
-    <button class="btn-primary-new" data-binding="true" data-fun="showItemsMenu" id="showItemsMenu">Hinzufügen</button>
+    <button class="btn-primary" data-binding="true" data-fun="showItemsMenu" id="showItemsMenu">Hinzufügen</button>
 </div>
 <div id="showPostenAdd" class="hidden mt-2 bg-white rounded-lg">
     <div class="flex rounded-t-lg">
@@ -26,7 +26,7 @@
         <div class="container col-span-2">
             <p>Erweiterte Zeiterfassung:</p>
             <div id="extendedTimeInput"></div>
-            <button class="btn-primary-new" data-binding="true" data-fun="createTimeInputRow">Hinzufügen</button>
+            <button class="btn-primary" data-binding="true" data-fun="createTimeInputRow">Hinzufügen</button>
         </div>
     </div>
     <div class="tab-content hidden" id="service">
@@ -69,7 +69,7 @@
             <div>
                 <span>Aufschlag [%]:</span>
                 <input class="input-primary" type="number" id="surcharge" value="0" disabled>
-                <button class="btn-primary-new mt-2" data-binding="true" data-fun="calculatePrice">Übernehmen</button>
+                <button class="btn-primary mt-2" data-binding="true" data-fun="calculatePrice">Übernehmen</button>
             </div>
         </div>
     </div>
@@ -103,8 +103,8 @@
                 <input type="number" min="0" max="100" value="0" class="input-primary w-16" id="getDiscount">
                 <span>Rabatt [%]</span>
             </div>
-            <button class="btn-primary-new mt-2" data-binding="true" data-fun="addItem" id="addItem">Hinzufügen</button>
-            <button class="btn-primary-new mt-2 hidden" data-binding="true" data-fun="saveEdit" id="saveItem">Speichern</button>
+            <button class="btn-primary mt-2" data-binding="true" data-fun="addItem" id="addItem">Hinzufügen</button>
+            <button class="btn-primary mt-2 hidden" data-binding="true" data-fun="saveEdit" id="saveItem">Speichern</button>
             <button class="btn-cancel mt-2" data-binding="true" data-fun="showItemsMenu">Abbrechen</button>
         </div>
     </div>

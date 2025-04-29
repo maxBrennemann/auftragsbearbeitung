@@ -21,10 +21,10 @@ else:
 		<h2 class="font-bold">Kundenübersicht für <?= $customer->getFirmenname() ?> (<?= $customer->getKundennummer() ?>)</h2>
 		<p>Anzahl der Aufträge: <?= $orderCount ?></p>
 		<div class="mt-2">
-			<button class="btn-primary-new" data-fun="createNewOrder" data-binding="true">Neuen Auftrag erstellen</button>
-			<button class="btn-primary-new" data-toggle="true" data-target="#moreOptions">Mehr Optionen</button>
+			<button class="btn-primary" data-fun="createNewOrder" data-binding="true">Neuen Auftrag erstellen</button>
+			<button class="btn-primary" data-toggle="true" data-target="#moreOptions">Mehr Optionen</button>
 			<span class="hidden" id="moreOptions">
-				<button class="btn-primary-new" data-fun="mergeCustomer" data-binding="true">Kunde zusammenführen</button>
+				<button class="btn-primary" data-fun="mergeCustomer" data-binding="true">Kunde zusammenführen</button>
 				<button class="btn-delete" data-fun="deleteCustomer" data-binding="true">Kunde löschen</button>
 			</span>
 		</div>
@@ -84,7 +84,7 @@ else:
 			</div>
 			<div class="w-full flex mt-2">
 				<div class="flex">
-					<button class="btn-primary-new" data-binding="true" data-fun="saveCustomerData">Speichern</button>
+					<button class="btn-primary" data-binding="true" data-fun="saveCustomerData">Speichern</button>
 					<button class="btn-cancel ml-2" data-binding="true" data-fun="resetCustomerData">Abbrechen</button>
 				</div>
 			</div>
@@ -114,7 +114,7 @@ else:
 		</div>
 		<div id="auftraege" class="bg-gray-100 col-span-2 p-4 rounded-lg">
 			<h3 class="font-bold">Aufträge</h3>
-			<button class="btn-primary-new mt-2" data-fun="createNewOrder" data-binding="true">Neuen Auftrag erstellen</button>
+			<button class="btn-primary mt-2" data-fun="createNewOrder" data-binding="true">Neuen Auftrag erstellen</button>
 			<?= $customer->getOrderCards() ?>
 		</div>
 	</div>

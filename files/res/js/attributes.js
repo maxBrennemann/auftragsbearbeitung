@@ -132,7 +132,7 @@ function addNewAttributeValue() {
 
     ajax.post(`/api/v1/attribute/${attribute}/value`, {
         value: value,
-    }).then((response) => {
+    }).then(() => {
         var li = document.createElement("li");
             li.innerText = value;
             li.classList.add("bg-white", "rounded-md", "p-1", "pl-2", "hover:bg-blue-300");
