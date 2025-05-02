@@ -17,77 +17,29 @@ function init() {
 }
 
 fnNames.click_btnAddValue = () => {
-    addNewAttributeValue();
-}
+    const value = document.getElementById("newVal").value;
+    const attribute = document.getElementById("selectAttribute").value;
 
-fnNames.click_btnAddAttribute = () => {
-    addNewAttribute();
-}
+    ajax.post(`/api/v1/attribute/${attribute}/value`, {
+        value: value,
+    }).then(r => {
+        const li = document.querySelector(".attributeValueGroups li");
+        const liClone = li.cloneNode(true);
+        liClone.querySelector("span").innerText = value;
+        liClone.dataset.id = r.id;
 
-fnNames.click_btnAbortAttribute = () => {
-    clearInputs({"ids": ["newName", "descr"]});
-}
+        const ul = document.getElementById("attributeValues_" + attribute);
+        ul.appendChild(liClone);
 
-function initSortAttributes() {
-
-}
-
-function initSortAttributeValues() {
-    const attributeValueGroups = document.getElementsByClassName("attributeValueGroups");
-    Array.from(attributeValueGroups).forEach((group) => {
-        const groupElements = group.getElementsByTagName("li");
-        Array.from(groupElements).forEach((element) => {
-            element.addEventListener("dragstart", function(event) {
-                currentDraggedGroup = group;
-                currentDraggedElement = event.target;
-                currentIndex = Array.from(group.children).indexOf(event.target);
-            });
-    
-            element.addEventListener("dragover", function(event) {
-                event.preventDefault();
-            });
-    
-            element.addEventListener("drop", function(event) {
-                event.preventDefault();
-                let indexDrop = Array.from(group.children).indexOf(event.target);
-                const targetElement = event.target;
-                const targetGroup = targetElement.parentElement;
-
-                if (currentDraggedGroup !== targetGroup) {
-                    return;
-                }
-    
-                if (currentIndex > indexDrop) {
-                    targetElement.before(currentDraggedElement);
-                } else {
-                    targetElement.after(currentDraggedElement);
-                }
-
-                updatePositions();
-            });
-        });
-    });
-}
-
-function updatePositions() {
-    const listItems = currentDraggedGroup.getElementsByTagName("li");
-    let positions = [];
-    Array.from(listItems).forEach((el, idx) => {
-        const id = el.dataset.id;
-        const newPosition = idx + 1;
-        positions.push({id: id, position: newPosition});
-    });
-
-    ajax.put(`/api/v1/attribute/${currentDraggedGroup.dataset.id}/positions`, {
-        positions: JSON.stringify(positions),
-    }).then(() => {
-        notification("", "success");
+        liClone.addEventListener("dragstart", handleDragStart);
+        liClone.addEventListener("dragover", handleDravOver);
+        liClone.addEventListener("drop", handleDragDrop);
     }).catch((error) => {
         console.error(error);
     });
 }
 
-function addNewAttribute() {
+fnNames.click_btnAddAttribute = () => {
     var name = document.getElementById("newName").value;
     var descr = document.getElementById("descr").value;
 
@@ -132,26 +84,79 @@ function addNewAttribute() {
     });
 }
 
-function addNewAttributeValue() {
-    var value = document.getElementById("newVal").value;
-    var attribute = document.getElementById("selectAttribute").value;
+fnNames.click_btnAbortAttribute = () => {
+    clearInputs({ "ids": ["newName", "descr"] });
+}
 
-    ajax.post(`/api/v1/attribute/${attribute}/value`, {
-        value: value,
+function initSortAttributes() {
+
+}
+
+function initSortAttributeValues() {
+    const attributeValueGroups = document.getElementsByClassName("attributeValueGroups");
+
+    Array.from(attributeValueGroups).forEach(group => {
+        const groupElements = group.getElementsByTagName("li");
+
+        Array.from(groupElements).forEach(element => {
+            element.addEventListener("dragstart", handleDragStart);
+            element.addEventListener("dragover", handleDravOver);
+            element.addEventListener("drop", handleDragDrop);
+        });
+    });
+}
+
+const handleDragStart = e => {
+    currentDraggedGroup = group;
+    currentDraggedElement = e.target;
+    currentIndex = Array.from(group.children).indexOf(e.target);
+}
+
+const handleDravOver = e => {
+    e.preventDefault();
+}
+
+const handleDragDrop = e => {
+    e.preventDefault();
+    let indexDrop = Array.from(group.children).indexOf(e.target);
+    const targetElement = e.target;
+    const targetGroup = targetElement.parentElement;
+
+    if (currentDraggedGroup !== targetGroup) {
+        return;
+    }
+
+    if (currentIndex > indexDrop) {
+        targetElement.before(currentDraggedElement);
+    } else {
+        targetElement.after(currentDraggedElement);
+    }
+
+    updatePositions();
+}
+
+function updatePositions() {
+    const listItems = currentDraggedGroup.getElementsByTagName("li");
+    let positions = [];
+    listItems.forEach((el, idx) => {
+        const id = el.dataset.id;
+        const newPosition = idx + 1;
+        positions.push({
+            id: id,
+            position: newPosition
+        });
+    });
+
+    ajax.put(`/api/v1/attribute/${currentDraggedGroup.dataset.id}/positions`, {
+        positions: JSON.stringify(positions),
     }).then(() => {
-        var li = document.createElement("li");
-            li.innerText = value;
-            li.classList.add("bg-white", "rounded-md", "p-1", "pl-2", "hover:bg-blue-300");
-            var ul = document.getElementById("attributeValues_" + attribute);
-            ul.appendChild(li);
-
-            document.getElementById("newVal").value = "";
+        notification("", "success");
     }).catch((error) => {
         console.error(error);
     });
 }
 
-if (document.readyState !== 'loading' ) {
+if (document.readyState !== 'loading') {
     init();
 } else {
     document.addEventListener('DOMContentLoaded', function () {
