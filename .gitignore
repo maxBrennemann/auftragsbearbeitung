@@ -39,6 +39,7 @@ files/generated/fb_export/*
 files/res/js/classes/tableconfig.js
 files/res/js/classes/colorpicker.js
 files/res/js/classes/notifications.js
+files/res/js/classes/ajax.js
 
 # minimized files
 files/res/js/min/*

@@ -278,6 +278,11 @@ class ResourceManager
             return;
         }
 
+        if ($script == "/classes/ajax.js") {
+            echo file_get_contents("node_modules/js-classes/ajax.js");
+            return;
+        }
+
         /* tableconfig.js */
         if ($script == "/classes/tableconfig.js" && $_ENV["DEV_MODE"]) {
             TableConfig::generate();
