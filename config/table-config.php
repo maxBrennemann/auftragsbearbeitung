@@ -1,16 +1,16 @@
 <?php
 
-function getTableConfig()
+function getTableConfig(): array
 {
     return [
         "address" => [
             "columns" => [
                 "id",
                 "id_customer",
-                "ort",
-                "plz",
                 "strasse",
                 "hausnr",
+                "plz",
+                "ort",
                 "zusatz",
                 "country",
                 "art",
@@ -19,10 +19,10 @@ function getTableConfig()
             "names" => [
                 "Id",
                 "Kundennummer",
-                "Ort",
-                "PLZ",
                 "Straße",
                 "Hausnummer",
+                "PLZ",
+                "Ort",
                 "Zusatz",
                 "Land",
                 "Art der Adresse",
@@ -102,6 +102,50 @@ function getTableConfig()
                 ],
             ],
         ],
+        "dateien" => [
+            "columns" => [
+                "id",
+                "dateiname",
+                "originalname",
+                "date",
+                "typ",
+            ],
+            "primaryKey" => "id",
+            "names" => [
+                "Nummer",
+                "Gespeicherter Name",
+                "Name",
+                "Datum",
+                "Dateityp",
+            ],
+            "hidden" => [
+                "id",
+                "dateiname",
+            ],
+            "permissions" => ["read", "update", "delete"],
+            "joins" => [
+                "connected_orders" => [
+                    "relatedTable" => "dateien_auftraege",
+                    "localKey" => "id",
+                    "foreignKey" => "id_datei",
+                ],
+                "connected_vehicles" => [
+                    "relatedTable" => "dateien_fahrzeuge",
+                    "localKey" => "id",
+                    "foreignKey" => "id_datei",
+                ],
+                "connected_items" => [
+                    "relatedTable" => "dateien_posten",
+                    "localKey" => "id",
+                    "foreignKey" => "id_file",
+                ],
+                "connected_products" => [
+                    "relatedTable" => "dateien_produkte",
+                    "localKey" => "id",
+                    "foreignKey" => "id_datei",
+                ],
+            ],
+        ],
         "einkauf" => [
             "columns" => [
                 "id",
@@ -131,6 +175,13 @@ function getTableConfig()
                 "Fahrzeug"
             ],
             "permissions" => ["read", "create", "update", "delete"],
+            "joins" => [
+                "connected_vehicles" => [
+                    "relatedTable" => "fahrzeuge_auftraege",
+                    "localKey" => "Nummer",
+                    "foreignKey" => "id_fahrzeug",
+                ],
+            ],
         ],
         "leistung" => [
             "columns" => [
@@ -198,6 +249,37 @@ function getTableConfig()
             ],
             "permissions" => [],
         ],
+        "produkt" => [
+            "columns" => [
+                "Nummer",
+                "Marke",
+                "Preis",
+                "Einkaufspreis",
+                "Bezeichnung",
+                "Beschreibung",
+                "Bild",
+                "einkaufs_id",
+                "id_category",
+            ],
+            "primaryKey" => "Nummer",
+            "names" => [
+                "Nummer",
+                "Marke",
+                "Preis",
+                "Einkaufspreis",
+                "Bezeichnung",
+                "Beschreibung",
+                "Bild",
+                "Einkaufsreferenz",
+                "Kategorienummer",
+            ],
+            "hidden" => [
+                "Bild",
+                "einkaufs_id",
+                "id_category",
+            ],
+            "permissions" => ["read", "create"],
+        ],
         "user" => [
             "columns" => [
                 "id",
@@ -242,7 +324,7 @@ function getTableConfigFrontOffice()
         ];
 
         $table["columns"] = array_filter(
-            $table["columns"], 
+            $table["columns"],
             fn($el) => !in_array($el, $table["hidden"] ?? [])
         );
 

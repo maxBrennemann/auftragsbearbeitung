@@ -25,7 +25,7 @@ $data = $data->read();
 			<input class="input-primary" type="number" value="<?= $leistung['Aufschlag'] ?>">
 
 			<div class="mt-2">
-				<button class="btn-primary-new" data-fun="save" data-binding="true">Speichern</button>
+				<button class="btn-primary" data-fun="save" data-binding="true">Speichern</button>
 				<button class="btn-delete" data-fun="delete" data-binding="true">Löschen</button>
 			</div>
 		</div>
@@ -46,7 +46,7 @@ $data = $data->read();
 		<input class="input-primary" type="number" id="addSurcharge">
 
 		<div class="mt-2">
-			<button class="btn-primary-new" data-fun="add" data-binding="true">Hinzufügen</button>
+			<button class="btn-primary" data-fun="add" data-binding="true">Hinzufügen</button>
 			<button class="btn-cancel" data-fun="cancel" data-binding="true">Abbrechen</button>
 		</div>
 	<div>

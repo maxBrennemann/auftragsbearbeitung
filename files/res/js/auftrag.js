@@ -2,17 +2,17 @@
 import { addColor, addSelectedColors, checkHexCode, removeColor, toggleCS } from "./auftrag/colorManager.js";
 import { addBearbeitungsschritt, addStep, sendNote, removeNote, addNewNote, initNotes, cancelNote } from "./auftrag/noteStepManager.js";
 import { setOrderFinished, updateDate, updateDeadline, setDeadlineState, initExtraOptions, editDescription, editOrderType, editTitle, archvieren } from "./auftrag/orderManager.js";
-import { addExistingVehicle, addNewVehicle, selectVehicle } from "./auftrag/vehicleManager.js";
+import { initVehicles } from "./auftrag/vehicleManager.js";
 import "./auftrag/calculateGas.js";
 import { ajax } from "./classes/ajax.js";
 import { getItemsTable, initInvoiceItems } from "./classes/invoiceItems.js";
 import { notification } from "./classes/notifications.js";
 import { createPopup } from "./global.js";
+import { initFileUploader } from "./classes/upload.js";
 
 /* global variables */
 window.globalData = {
     aufschlag: 0,
-    vehicleId: 0,
     auftragsId: parseInt(new URL(window.location.href).searchParams.get("id")),
     times: [],
     table: null,
@@ -33,21 +33,17 @@ const initCode = async () => {
 
     addSearchEventListeners();
 
-    if (document.getElementById("selectVehicle") == null) {
-        return;
-    }
-
-    document.getElementById("selectVehicle").addEventListener("change", function (event) {
-        if (event.target.value == "addNew") {
-            document.getElementById("addVehicle").style.display = "inline-block";
-        }
+    initFileUploader({
+        "order": {
+            "location": `/api/v1/order/${globalData.auftragsId}/add-files`,
+        },
     });
-
     initExtraOptions();
     initNotes();
+    initVehicles();
 
     globalData.table = await getItemsTable("auftragsPostenTable", globalData.auftragsId, "order");
-    globalData.table.addEventListener("rowAdd", reloadPostenListe);
+    globalData.table.addEventListener("rowInsert", reloadPostenListe);
     initInvoiceItems();
 }
 
@@ -86,19 +82,6 @@ const changeContact = (e) => {
         } else {
             notification("", "");
         }
-    });
-}
-
-window.performSearch = function (e) {
-    var query = e.target.previousSibling.value;
-    console.log(query);
-
-    var search = new AjaxCall(`getReason=search&query=${query}&stype=produkt&shortSummary=true`, "POST", window.location.href);
-    search.makeAjaxCall(function (responseTable) {
-        var div = document.createElement("div");
-        div.innerHTML = responseTable;
-        div.id = "prodcutSearchContainer";
-        createPopup(div);
     });
 }
 
@@ -229,8 +212,17 @@ fnNames.click_toggleInvoiceItems = e => {
     }).then(async () => {
         globalData.table.parentNode.removeChild(globalData.table);
         globalData.table = await getItemsTable("auftragsPostenTable", globalData.auftragsId, "order");
-        globalData.table.addEventListener("rowAdd", reloadPostenListe);
+        globalData.table.addEventListener("rowInsert", reloadPostenListe);
     });
+}
+
+fnNames.click_showMoreOrderHistory = e => {
+    const orderHistory = document.querySelector(".orderHistory");
+    const elements = orderHistory.querySelectorAll(".hidden");
+    elements.forEach(el => {
+        el.classList.remove("hidden");
+    });
+    e.target.classList.add("hidden");
 }
 
 const reloadPostenListe = async () => {
@@ -264,10 +256,6 @@ fnNames.write_editTitle = editTitle;
 fnNames.click_setDeadlineState = setDeadlineState;
 fnNames.click_archvieren = archvieren;
 fnNames.click_toggleOrderDescription = toggleOrderDescription;
-
-fnNames.click_addExistingVehicle = addExistingVehicle;
-fnNames.click_addNewVehicle = addNewVehicle;
-fnNames.write_selectVehicle = selectVehicle;
 
 if (document.readyState !== 'loading') {
     initCode();

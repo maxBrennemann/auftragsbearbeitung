@@ -10,9 +10,6 @@ use Classes\Auth\SessionController;
 use Classes\Project\Config;
 use Classes\Project\CacheManager;
 
-use Classes\Project\Posten;
-use Classes\Project\Table;
-
 use Classes\Project\Table\TableConfig;
 
 use Classes\Project\Modules\Sticker\Exports\ExportFacebook;
@@ -53,12 +50,21 @@ class ResourceManager
         $parts = explode('/', $page);
         self::$page = $parts[count($parts) - 1];
 
+        /* TODO: implement better auth */
+        /*
+        if (!SessionController::isLoggedIn()) {
+            ResourceManager::outputHeaderJSON();
+            JSONResponseHandler::throwError(401, "Unauthorized API access");
+        }
+        */
+
         switch ($parts[1]) {
             case "js":
             case "css":
             case "font":
             case "pdf_invoice":
             case "upload":
+            case "backup":
             case "img":
             case "static":
                 self::handleResources();
@@ -102,55 +108,16 @@ class ResourceManager
     public static function initPage()
     {
         if (!SessionController::isLoggedIn()) {
-            self::showPage("login");
+            self::$page = "login";
+            self::showPage();
+            return;
         }
 
         $getReason = Tools::get("getReason");
-        $isUpload = Tools::get("upload");
 
         /* filters AJAX requests and delegates them to the right files */
         if ($getReason != null) {
             Ajax::manageRequests($getReason, self::$page);
-        } else if ($isUpload != null) {
-            $uploadDestination = Tools::get("upload");
-
-            /* checks which upload mechanism should be called */
-            switch ($uploadDestination) {
-                case "order":
-                    $auftragsId = (int) Tools::get("auftrag");
-                    $upload = new Upload();
-                    $upload->uploadFilesAuftrag($auftragsId);
-                    break;
-                case "product":
-                    $auftragsId = (int) Tools::get("produkt");
-                    $upload = new Upload();
-                    $upload->uploadFilesProduct($auftragsId);
-                    break;
-                case "postenAttachment":
-                    $key = Tools::get("key");
-                    $table = Tools::get("tableKey");
-                    Posten::addFile($key, $table);
-                    break;
-                case "vehicle":
-                    $key = Tools::get("key");
-                    $table = Tools::get("tableKey");
-                    $fahrzeugnummer = Table::getIdentifierValue($table, $key);
-
-                    $auftragsnummer = Tools::get("orderid");
-                    $upload = new Upload();
-                    $upload->uploadFilesVehicle($fahrzeugnummer, $auftragsnummer);
-                    break;
-                case "motiv":
-                    $motivname = Tools::get("motivname");
-                    $upload = new Upload();
-
-                    if (isset($_POST["motivNumber"])) {
-                        $upload->uploadFilesMotive($motivname, $_POST["motivNumber"]);
-                    } else {
-                        $upload->uploadFilesMotive($motivname);
-                    }
-                    break;
-            }
         } else {
             if (self::$page == "pdf") {
                 $type = Tools::get("type");
@@ -168,22 +135,20 @@ class ResourceManager
                         $invoice->generate();
                         break;
                 }
-            } else if (self::$page == "cron") {
-                Ajax::manageRequests("testDummy", self::$page);
             } else {
-                self::showPage(self::$page);
+                self::showPage();
             }
         }
     }
 
-    private static function showPage($page)
+    private static function showPage(): void
     {
-        if ($page == "test") {
-            return null;
+        if (self::$page == "test") {
+            return; 
         }
 
-        $pageDetails = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM articles WHERE src = :page", [
-            "page" => $page
+        $pageDetails = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM articles WHERE src = :page LIMIT 1;", [
+            "page" => self::$page
         ]);
         $articleUrl = "";
 
@@ -191,19 +156,20 @@ class ResourceManager
         if ($pageDetails == null || !file_exists("./files/" . $pageDetails[0]["articleUrl"])) {
             http_response_code(404);
 
-            $baseUrl = 'files/';
-            $pageDetails['id'] = 0;
-            $pageDetails["articleUrl"] = $articleUrl = "404.php";
-            $pageDetails["pageName"] = $pageName = "Page not found";
+            $articleUrl = "404.php";
+            $pageName = "Page not found";
         } else {
-            $baseUrl = './files/';
             $pageDetails = $pageDetails[0];
             $articleUrl = $pageDetails["articleUrl"];
             $pageName = $pageDetails["pageName"];
         }
 
-        include "./files/header.php";
-        include $baseUrl . $articleUrl;
+        insertTemplate("./files/header.php", [
+            "pageName" => $pageName,
+            "page" => self::$page,
+        ]);
+
+        insertTemplate("./files/$articleUrl");
 
         insertTemplate("./files/footer.php", [
             "calcDuration" => $_ENV["DEV_MODE"],
@@ -373,23 +339,30 @@ class ResourceManager
 
     private static function get_upload($upload)
     {
-        $file_info = new \finfo(FILEINFO_MIME_TYPE);
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $upload = ltrim($upload, "/");
+        $fileName = Link::getResourcesLink($upload, "upload", false);
 
-        if (!file_exists(Link::getResourcesLink($upload, "upload", false))) {
-            $mime_type = $file_info->buffer("img/default_image.png");
+        if (!file_exists($fileName)) {
+            $mime_type = $finfo->file("img/default_image.png");
             header("Content-type:$mime_type");
-            $file = file_get_contents("img/default_image.png");
-
-            echo $file;
+            echo file_get_contents("img/default_image.png");
             return;
         }
 
-        $mime_type = $file_info->buffer(file_get_contents(Link::getResourcesLink($upload, "upload", false)));
+        $mime_type = $finfo->file($fileName);
+
+        $query = "SELECT originalname FROM dateien WHERE dateiname = :fileName LIMIT 1;";
+        $response = DBAccess::selectQuery($query, [
+            "fileName" => $upload,
+        ]);
+        if ($response != null) {
+            $name = $response[0]["originalname"];
+            header('Content-Disposition: filename="' . $name . '"');
+        }
 
         header("Content-type:$mime_type");
-        $file = file_get_contents(Link::getResourcesLink($upload, "upload", false));
-
-        echo $file;
+        readfile($fileName);
     }
 
     private static function get_backup($backup)
@@ -439,7 +412,6 @@ class ResourceManager
     {
         header("Access-Control-Allow-Headers: *");
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-        header('Access-Control-Allow-Origin: http://localhost:5173');
         header('Content-Type: application/json; charset=utf-8');
     }
 }

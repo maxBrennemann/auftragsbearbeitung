@@ -1,4 +1,4 @@
-import { getTemplate, setInpupts } from "../global.js";
+import { getTemplate, setInpupts, clearInputs } from "../global.js";
 import { ajax } from "./ajax.js";
 import { addBindings } from "./bindings.js";
 import { notification } from "./notifications.js";
@@ -282,6 +282,12 @@ functionNames.click_calculatePrice = () => {
     }
     const newPrice = price * (1 + (config.surcharge / 100));
     document.querySelector("#pre").value = newPrice;
+}
+
+functionNames.write_changeMeh = () => {
+    const meh = document.getElementById("meh").value;
+    const showMeh = document.getElementById("showMeh");
+    showMeh.innerHTML = meh;
 }
 
 /**

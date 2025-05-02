@@ -23,10 +23,10 @@ use Classes\Project\Icon;
             <h2 class="font-bold">Zeitenübersicht</h2>
         </div>
         <div class="mt-2">
-            <button class="btn-primary-new" data-fun="selectEntries" data-binding="true" data-value="all">Alle</button>
-            <button class="btn-primary-new" data-fun="selectEntries" data-binding="true" data-value="today">Heute</button>
-            <button class="btn-primary-new" data-fun="selectEntries" data-binding="true" data-value="week">Diese Woche</button>
-            <button class="btn-primary-new" data-fun="selectEntries" data-binding="true" data-value="month">Dieser Monat</button>
+            <button class="btn-primary" data-fun="selectEntries" data-binding="true" data-value="all">Alle</button>
+            <button class="btn-primary" data-fun="selectEntries" data-binding="true" data-value="today">Heute</button>
+            <button class="btn-primary" data-fun="selectEntries" data-binding="true" data-value="week">Diese Woche</button>
+            <button class="btn-primary" data-fun="selectEntries" data-binding="true" data-value="month">Dieser Monat</button>
         </div>
         <div class="relative">
             <div id="timeTrackingTable" class="mt-2 overflow-auto"></div>
@@ -38,7 +38,7 @@ use Classes\Project\Icon;
             <input type="text" class="block mt-2 input-primary w-full" id="getTask">
             <div class="mt-2">
                 <button class="btn-cancel" data-fun="cancelTimeTracking" data-binding="true">Abbrechen</button>
-                <button class="btn-primary-new" data-fun="sendTimeTracking" data-binding="true">Abschicken</button>
+                <button class="btn-primary" data-fun="sendTimeTracking" data-binding="true">Abschicken</button>
             </div>
 		</div>
 	</div>

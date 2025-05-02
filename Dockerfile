@@ -15,8 +15,12 @@ FROM php:8.4.6-apache
 ARG UID
 ARG GID
 
-# Install PDO extension
-RUN docker-php-ext-install pdo_mysql mysqli
+# Install some base extensions
+RUN apt-get update && apt-get install -y \
+    zlib1g-dev \
+    libzip-dev
+# Install extensions
+RUN docker-php-ext-install pdo_mysql mysqli zip
 
 # Enable apache mod_rewrite
 RUN a2enmod rewrite

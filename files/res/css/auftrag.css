@@ -67,17 +67,6 @@ aside {
     grid-area: liste;
 }
 
-.columnLeistung {
-    flex: 50%;
-}
-
-#prodcutSearchContainer {
-    position: absolute;
-    background: white;
-    padding: 35px;
-    border-radius: 6px;
-}
-
 .farbe {
     display: inline-block;
     padding: 0;
@@ -86,20 +75,6 @@ aside {
     width: 20px;
     margin: 7px;
     border-radius: 6px;
-}
-
-.showInMiddle {
-    text-align: center;
-    padding: 2px;
-    background: white;
-    border-radius: 10px;
-}
-
-.verticalLine {
-    border-left: 2px solid black;
-    width: 2px;
-    height: 25px;
-    margin: auto;
 }
 
 #farbe span {
@@ -170,39 +145,6 @@ aside {
     margin: 10px;
 }
 
-/* auftragsdaten inputs und label */
-.data-input {
-    max-width: 100%;
-    border: none;
-    -webkit-box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
-    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
-    border-radius: 4px;
-    background: #fff;
-    display: block;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 0.375rem 0.75rem;
-    outline: none;
-    color: #1a1a1a;
-}
-
-label {
-    display: inline-block;
-    margin-bottom: 0.5rem;
-    margin-top: 0.5rem;
-    box-sizing: border-box;
-    color: black;
-    font-size: 0.8em;
-}
-
-#addPostenProdukt input[type="search"] {
-    display: inline-block !important;
-}
-
 #showFilePrev {
     margin-top: 20px;
-}
-
-#uploadFilesOrder {
-    margin-top: 10px;
 }

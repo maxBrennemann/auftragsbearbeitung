@@ -1,11 +1,33 @@
 <?php
 
+use Classes\Link;
+
 use Classes\Project\Auftrag;
 use Classes\Project\Invoice;
 use Classes\Project\Icon;
 
 $openOrders = Auftrag::getAuftragsliste();
 $offeneSumme = Invoice::getOffeneRechnungssumme();
+
+$neuerKunde   =		Link::getPageLink("neuer-kunde");
+$neuerAuftrag =		Link::getPageLink("neuer-auftrag");
+$rechnung =			Link::getPageLink("rechnung");
+$neuesAngebot =		Link::getPageLink("angebot");
+$neuesProdukt =		Link::getPageLink("neues-produkt");
+$diagramme =		Link::getPageLink("diagramme");
+$auftragAnzeigen =	Link::getPageLink("auftrag");
+$customer = 		Link::getPageLink("kunde");
+$customerOverview =	Link::getPageLink("customer-overview");
+$orderOverview =	Link::getPageLink("order-overview");
+$leistungenLinks =	Link::getPageLink("leistungen");
+$offeneRechnungen = Link::getPageLink("offene-rechnungen");
+$funktionen = 		Link::getPageLink("functionalities");
+$payments =			Link::getPageLink("payments");
+$listmaker =		Link::getPageLink("listmaker");
+$changelog = 		Link::getPageLink("changelog");
+$zeiterfassung =	Link::getPageLink("zeiterfassung");
+$motiveOverview = 	Link::getPageLink("sticker-overview");
+$wiki = 			Link::getPageLink("wiki");
 
 /**
  * TODO: in notifications umziehen

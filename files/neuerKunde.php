@@ -163,5 +163,5 @@
 			</label>
 		</div>
 	</div>
-	<button data-binding="true" data-fun="sendCustomerData" class="btn-primary-new mt-2">Neuen Kunden erstellen</button>
+	<button data-binding="true" data-fun="sendCustomerData" class="btn-primary mt-2">Neuen Kunden erstellen</button>
 </div>

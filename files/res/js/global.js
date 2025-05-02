@@ -14,7 +14,6 @@ function exportToWindow() {
 	window.sortTableNew = sortTableNew;
 
 	window.sortTable = sortTable;
-	window.clearInputs = clearInputs;
 }
 
 document.addEventListener("click", function (event) {
@@ -125,10 +124,14 @@ export const createPopup = (content) => {
 	const optionsContainer = document.createElement("div");
 	optionsContainer.classList.add("overlay-container__content__options");
 	const button = document.createElement("button");
-	button.classList.add("btn-cancel");
+	button.classList.add("btn-cancel", "ml-2");
 	button.innerHTML = "Abbrechen";
 	button.addEventListener("click", () => {
 		container.parentNode.removeChild(container);
+		const event = new CustomEvent("closePopup", {
+			bubbles: true,
+		});
+		optionsContainer.dispatchEvent(event);
 	});
 	optionsContainer.appendChild(button);
 
@@ -289,7 +292,7 @@ window.addEventListener("click", function (event) {
  * clears all inputs, supported types: id, array of ids, classes
  * @param {Object} inputs JSON object with this pattern: {"id":"clearthisid", "class":"clearthisclass"}
  */
-function clearInputs(inputs) {
+export const clearInputs = (inputs) => {
 	for (let key in inputs) {
 		switch (key) {
 			case "id":

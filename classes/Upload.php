@@ -5,8 +5,6 @@ namespace Classes;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 
-use Classes\Project\Auftragsverlauf;
-use Classes\Project\Auftrag;
 use Classes\Project\Produkt;
 
 use Classes\Project\Modules\Sticker\StickerImage;
@@ -20,37 +18,6 @@ class Upload
     {
         if ($setUploadDir != "") {
             $this->uploadDir = $setUploadDir;
-        }
-    }
-
-    public function uploadFilesAuftrag($auftragsnummer)
-    {
-        $ids = $this->uploadFiles();
-        if (is_array($ids)) {
-            foreach ($ids as $id) {
-                /*echo "id: " . $id . " /id";*/
-                DBAccess::insertQuery("INSERT INTO dateien_auftraege (id_datei, id_auftrag) VALUES ($id, $auftragsnummer)");
-
-                $auftragsverlauf = new Auftragsverlauf($auftragsnummer);
-                $auftragsverlauf->addToHistory($id, 4, "added");
-
-                $link = Link::getPageLink("auftrag") . "?id=" . $auftragsnummer;
-            }
-        }
-
-        echo Auftrag::getFiles($auftragsnummer);
-        return $ids;
-    }
-
-    public function uploadFilesVehicle($fahrzeugnummer, $auftragsnummer)
-    {
-        $ids = $this->uploadFilesAuftrag($auftragsnummer);
-        if (is_array($ids)) {
-            foreach ($ids as $id) {
-                if ($id != -1) {
-                    DBAccess::insertQuery("INSERT INTO dateien_fahrzeuge (id_datei, id_fahrzeug) VALUES ($id, $fahrzeugnummer)");
-                }
-            }
         }
     }
 
@@ -185,53 +152,6 @@ class Upload
         }
 
         return $msg == "" ? $ids : $msg;
-    }
-
-    /**
-     * deletes files that are not linked to any database entry
-     */
-    public static function deleteUnusedFiles($folderPath = "upload")
-    {
-        $query = "SELECT `dateiname` FROM dateien";
-        $result = DBAccess::selectQuery($query);
-        $usedFiles = array();
-
-        foreach ($result as $row) {
-            $usedFiles[] = $row['dateiname'];
-        }
-
-        $files = scandir($folderPath);
-        foreach ($files as $file) {
-            if ($file != "." && $file != ".." && !in_array($file, $usedFiles)) {
-                unlink($folderPath . "/" . $file);
-            }
-        }
-    }
-
-    /**
-     * Adjusts all filenames in the database,
-     * removes spaces, @ and & and if a filename is longer than 70 characters, it is renamed with tempnam
-     * the date is also removed from the filename
-     */
-    public static function adjustFileNames()
-    {
-        $query = "SELECT id, `dateiname` FROM dateien";
-        $result = DBAccess::selectQuery($query);
-        $folderPath = "upload";
-
-        foreach ($result as $row) {
-            $filename = $row["dateiname"];
-            $dateiId = $row["id"];
-
-            $adjustedFilename = self::adjustFileName($filename);
-
-            if (rename($folderPath . "/" . $filename, $folderPath . "/" . $adjustedFilename)) {
-                DBAccess::updateQuery("UPDATE dateien SET dateiname = :adjustedFilename WHERE id = :id", [
-                    "adjustedFilename" => $adjustedFilename,
-                    "id" => $dateiId,
-                ]);
-            }
-        }
     }
 
     /**

@@ -10,26 +10,22 @@ use Classes\Project\ClientSettings;
 $globalCSS = Link::getGlobalCSS();
 $tailwindCSS = Link::getTW();
 $globalJS = Link::getGlobalJS();
-$notifications = Link::getResourcesShortLink("notifications.js", "js");
 
 if (!MINIFY_STATUS) {
-	$tableConfig = Link::getResourcesShortLink("tableconfig.js", "js");
+	$notifications = Link::getResourcesShortLink("classes/notifications.js", "js");
+	$tableConfig = Link::getResourcesShortLink("classes/tableconfig.js", "js");
 }
 
 $curr_Link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
 $neuerKunde   =		Link::getPageLink("neuer-kunde");
 $neuerAuftrag =		Link::getPageLink("neuer-auftrag");
-$rechnung =			Link::getPageLink("rechnung");
 $neuesAngebot =		Link::getPageLink("angebot");
 $neuesProdukt =		Link::getPageLink("neues-produkt");
 $diagramme =		Link::getPageLink("diagramme");
 $auftragAnzeigen =	Link::getPageLink("auftrag");
-$customer = 		Link::getPageLink("kunde");
 $customerOverview =	Link::getPageLink("customer-overview");
-$orderOverview =	Link::getPageLink("order-overview");
 $leistungenLinks =	Link::getPageLink("leistungen");
-$offeneRechnungen = Link::getPageLink("offene-rechnungen");
 $funktionen = 		Link::getPageLink("functionalities");
 $produkt = 			Link::getPageLink("produkt");
 $einstellungen =	Link::getPageLink("einstellungen");
@@ -53,23 +49,39 @@ if ($pageName == "") {
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, height=device-height">
-	<title><?= COMPANY_NAME ?> - <?= $pageTitle ?></title>
 	<meta name="Description" content="Auftragsübersicht">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="shortcut icon" type="image/x-icon" href="<?= $_ENV["WEB_URL"] ?>favicon.ico">
-	<link rel="shortcut icon" type="image/png" href="<?= $_ENV["WEB_URL"] ?>img/favicon.png">
+
+	<title><?= COMPANY_NAME ?> - <?= $pageTitle ?></title>
+
+	<link rel="shortcut icon" href="<?= $_ENV["WEB_URL"] ?>favicon.ico">
+	<link rel="apple-touch-icon" href="<?= $_ENV["WEB_URL"] ?>img/favicon.png">
+	<link rel="icon" type="image/png" href="<?= $_ENV["WEB_URL"] ?>img/favicon.png">
+
+	<link rel="preload" href="/css/font/OpenSans-VariableFont.ttf" as="font" type="font/ttf" crossorigin>
+	<link rel="preload" href="/css/font/OpenSans-Italic-VariableFont.ttf" as="font" type="font/ttf" crossorigin>
+	<link rel="preload" href="/css/font/Raleway-Regular.ttf" as="font" type="font/ttf" crossorigin>
+
 	<style>
 		<?= ClientSettings::getColorConfiguration() ?>
 	</style>
+
 	<link rel="stylesheet" href="<?= $globalCSS ?>">
 	<link rel="stylesheet" href="<?= $tailwindCSS ?>">
 	<script src="<?= $globalJS ?>" type="module"></script>
+
 	<?php if (!MINIFY_STATUS) : ?>
 		<script src="<?= $tableConfig ?>" type="module"></script>
+		<script src="<?= $notifications ?>" type="module"></script>
 	<?php endif; ?>
-	<script src="<?= $notifications ?>" type="module"></script>
-	<script type="module" src="<?= Link::getResourcesShortLink("$page.js", "js") ?>"></script>
-	<link rel="stylesheet" href="<?= Link::getResourcesShortLink("$page.css", "css") ?>">
+
+	<?php  if (file_exists(Link::getResourcesLink(dashesToCamelCase("$page.js"), "js", false))) : ?>
+		<script type="module" src="<?= Link::getResourcesShortLink("$page.js", "js") ?>"></script>
+	<?php endif; ?>
+
+	<?php  if (file_exists(Link::getResourcesLink("$page.css", "css", false))) : ?>
+		<link rel="stylesheet" href="<?= Link::getResourcesShortLink("$page.css", "css") ?>">
+	<?php endif; ?>
 </head>
 
 <body>

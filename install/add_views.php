@@ -9,5 +9,3 @@ $view_3 = "CREATE VIEW auftragssumme AS SELECT ROUND(SUM(auftragssumme_view.pric
 DBAccess::executeQuery($view_1);
 DBAccess::executeQuery($view_2);
 DBAccess::executeQuery($view_3);
-
-?>

@@ -20,9 +20,15 @@ class CustomerRoutes extends Routes
 
     /**
      * @uses \Classes\Project\Kunde::addCustomer()
+     * @uses \Classes\Project\Address::addAddress()
+     * @uses \Classes\Project\Kunde::addContact()
+     * @uses \Classes\Project\Kunde::addVehicle()
      */
     protected static $postRoutes = [
         "/customer" => [\Classes\Project\Kunde::class, "addCustomer"],
+        "/customer/{id}/address" => [\Classes\Project\Address::class, "addAddress"],
+        "/customer/{id}/contact" => [\Classes\Project\Kunde::class, "addContact"],
+        "/customer/{id}/vehicle" => [\Classes\Project\Kunde::class, "addVehicle"],
     ];
 
     /**

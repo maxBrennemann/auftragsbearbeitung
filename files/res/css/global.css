@@ -1,16 +1,4 @@
 ﻿@font-face {
-    font-family: 'Be Vietnam';
-    src: url("font/BeVietnamPro-Regular.ttf") format('truetype');
-    font-weight: normal;
-}
-
-@font-face {
-    font-family: 'Open Sans';
-    src: url("font/OpenSans-Regular.ttf") format('truetype');
-    font-weight: normal;
-}
-
-@font-face {
     font-family: 'Raleway';
     src:  url("font/Raleway-Regular.ttf") format('truetype');
     font-weight: normal;
@@ -87,11 +75,6 @@ footer {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-auto-columns: minmax(50px, 1fr);
-}
-
-/* h1 style*/
-h1 {
-    font-family: 'Be Vietnam', sans-serif;
 }
 
 ::placeholder {

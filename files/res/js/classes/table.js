@@ -46,6 +46,7 @@ export const fetchAndRenderTable = async (containerId, tableName, options = {}) 
     const conditions = options?.conditions ?? {}
     const data = await ajax.get(`/api/v1/tables/${tableName}`, {
         "conditions": JSON.stringify(conditions),
+        ...options.joins
     });
 
     if (!options?.primaryKey) {
@@ -175,7 +176,7 @@ const createAddRow = (count, header, table, options = {}) => {
             case "save":
                 btnSpan.innerHTML = getAddBtn();
                 text.textContent = "Neuer Eintrag";
-                dispatchActionEvent("rowAdd", [], table);
+                dispatchActionEvent("rowInsert", [], table);
                 btn.dataset.status = "add";
                 break;
         }
@@ -190,7 +191,6 @@ const createAddRow = (count, header, table, options = {}) => {
 const createSumRow = (data, table, options = {}, header = {}) => {
     const tfoot = document.createElement("tfoot");
     const tr = document.createElement("tr");
-    //tr.className = "bg-blue-700";
     const sumUp = options.sum ?? [];
     const results = {};
 
@@ -213,7 +213,6 @@ const createSumRow = (data, table, options = {}, header = {}) => {
 
     header.forEach(el => {
         const td = document.createElement("td");
-        //td.className = "bg-blue-700";
 
         let sumBy = sumUp.find(val => val.key === el.key);
         if (sumBy) {
@@ -266,7 +265,7 @@ export const addRow = (data, table, options = {}, header = {}) => {
     addDeleteBtn(data, table, row, actionsCell, options);
     addCheckBtn(data, table, row, actionsCell, options);
     addMoveBtn(data, table, row, actionsCell, options);
-    addAddBtn(data, table, row, actionsCell, options);
+    addUploadBtn(data, table, row, actionsCell, options);
 
     if (!options?.hideOptions?.includes("all")) {
         row.appendChild(actionsCell);
@@ -336,7 +335,7 @@ const addMoveBtn = (data, table, row, actionsCell, options) => {
     }
 }
 
-const addAddBtn = (data, table, row, actionsCell, options) => {
+const addUploadBtn = (data, table, row, actionsCell, options) => {
     if (!options?.hideOptions?.includes("add")
         && !options?.hideOptions?.includes("all")) {
         const checkBtn = document.createElement("button");
@@ -344,7 +343,7 @@ const addAddBtn = (data, table, row, actionsCell, options) => {
         checkBtn.title = "Hinzufügen";
         checkBtn.className = "inline-flex border-0 bg-yellow-400 p-1 rounded-md ml-1";
         checkBtn.addEventListener("click", () => {
-            dispatchActionEvent("rowAdd", data, table, { row });
+            dispatchActionEvent("rowUpload", data, table, { row });
         });
 
         actionsCell.appendChild(checkBtn);
@@ -371,6 +370,11 @@ const addEditableRow = (headers, table, options = {}) => {
     tr.className = "editable-row";
     headers.forEach(header => {
         const key = header.key;
+
+        if (options?.hide?.includes(key)) {
+            return;
+        }
+
         const td = document.createElement("td");
 
         if (key !== options?.primaryKey) {
@@ -510,7 +514,7 @@ const getDeleteBtn = () => {
 
 const getAddBtn = () => {
     return `
-    <svg class="inline" style="width:15px;height:15px" viewBox="0 0 24 24" title="Löschen">
+    <svg class="inline" style="width:15px;height:15px" viewBox="0 0 24 24" title="Hinzufügen">
         <path class="fill-white" d="M20 14H14V20H10V14H4V10H10V4H14V10H20V14Z" />
     </svg>`;
 }

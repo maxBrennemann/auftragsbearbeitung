@@ -18,9 +18,11 @@ class SettingsRoutes extends Routes
 
     /**
      * @uses Classes\Project\ClientSettings::createBackup()
+     * @uses Classes\Project\ClientSettings::createFileBackup()
      */
     protected static $postRoutes = [
         "/settings/backup" => [\Classes\Project\ClientSettings::class, "createBackup"],
+        "/settings/file-backup" => [\Classes\Project\ClientSettings::class, "createFileBackup"],
     ];
 
     /**
@@ -29,7 +31,6 @@ class SettingsRoutes extends Routes
      * @uses Classes\Project\ClientSettings::setGrayScale()
      * @uses Classes\Project\CacheManager::toggleCache()
      * @uses Classes\Project\CacheManager::toggleMinify()
-     * @uses Classes\Project\ClientSettings::createBackup()
      * @uses Classes\Project\Config::updateConfig()
      */
     protected static $putRoutes = [

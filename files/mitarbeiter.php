@@ -73,7 +73,7 @@ if ($showUserList) : ?>
         </label>
         <div class="mt-2">
             <button class="btn-cancel">Abbrechen</button>
-            <button class="btn-primary-new">Speichern</button>
+            <button class="btn-primary">Speichern</button>
         </div>
     </div>
     <div class="defCont">
@@ -81,7 +81,7 @@ if ($showUserList) : ?>
         <div>
             <p>Maximale Arbeitszeit</p>
             <input type="number" value="" class="input-primary">
-            <button class="btn-primary-new">Speichern</button>
+            <button class="btn-primary">Speichern</button>
         </div>
     </div>
     <div class="defCont">

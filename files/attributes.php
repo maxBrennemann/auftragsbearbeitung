@@ -1,6 +1,10 @@
 <?php
 
-$data = Classes\DBAccess::selectQuery("SELECT ag.attribute_group, ag.descr, a.id, a.value, a.attribute_group_id, a.position 
+use MaxBrennemann\PhpUtilities\DBAccess;
+
+use Classes\Link;
+
+$data = DBAccess::selectQuery("SELECT ag.attribute_group, ag.descr, a.id, a.value, a.attribute_group_id, a.position 
     FROM attribute_group ag 
     LEFT JOIN attribute a 
         ON ag.id = a.attribute_group_id
@@ -25,39 +29,62 @@ foreach ($data as $d) {
 
 ?>
 <div class="mt-4">
-    <a class="link-button" href="<?= Classes\Link::getPageLink("produkt") ?>">Zu den Produkten</a>
-    <a class="link-button" href="<?= Classes\Link::getPageLink("neues-produkt") ?>">Zum Produktformular</a>
+    <a class="link-primary" href="<?= Link::getPageLink("neues-produkt") ?>">Zum Produktformular</a>
+    <a class="link-primary ml-2" href="<?= Link::getPageLink("produkt") ?>">Zur Produktübersicht</a>
 </div>
-<div class="mt-2 flex flex-row flex-wrap gap-2.5 m-auto">
+
+<div class="mt-2 defCont flex flex-row flex-wrap gap-2.5">
     <?php foreach ($attributeGroups as $group) : ?>
-        <div class="defCont singleAttribute">
-            <h2 data-id="<?= $group['id'] ?>" class="underline"><?= $group["name"] ?></h2>
-            <p><i><?= $group["descr"] ?></i></p>
-            <ul class="attributeValueGroups mt-2" id="attributeValues_<?= $group["id"] ?>" data-id="<?= $group['id'] ?>">
+        <div class="singleAttribute bg-white rounded-lg p-3 flex-1">
+            <div>
+                <p>Name:</p>
+                <input type="text" class="input-primary mt-1 font-bold" value="<?= $group["name"] ?>" data-id="<?= $group["id"] ?>">
+            </div>
+            <div class="mt-2">
+                <p>Beschreibung:</p>
+                <input type="text" class="input-primary mt-1 font-semibold" value="<?= $group["descr"] ?>" data-id="<?= $group["id"] ?>">
+            </div>
+            <ul class="attributeValueGroups mt-5" id="attributeValues_<?= $group["id"] ?>" data-id="<?= $group["id"] ?>">
                 <?php foreach ($group["attributes"] as $a) : ?>
-                    <li class="bg-white rounded-md p-1 pl-2 hover:bg-blue-300 cursor-pointer flex" draggable="true" data-id="<?= $a["id"] ?>">
+                    <li class="bg-slate-100 rounded-md py-2 px-3 hover:bg-blue-300 cursor-pointer flex" draggable="true" data-id="<?= $a["id"] ?>">
                         <span class="flex-1"><?= $a["value"] ?></span>
-                        <div class="flex-none mr-1"><button></button></div>
+                        <div class="flex-none mr-1" title="Anordnen">
+                            <button class="border-none" title="Anordnen"><?= Classes\Project\Icon::getDefault("iconMove") ?></button>
+                        </div>
                     </li>
                 <?php endforeach; ?>
             </ul>
         </div>
     <?php endforeach; ?>
 </div>
+
 <div class="defCont addAttributeValue">
-    <h3 class="mb-2 underline">Eigenschaftswert hinzufügen</h3>
-    <input class="input-primary" id="newVal">
-    <select class="input-primary" id="selectAttribute">
-        <?php foreach ($attributeGroups as $group) : ?>
-            <option value="<?= $group['id'] ?>"><?= $group['name'] ?></option>
-        <?php endforeach; ?>
-    </select>
-    <button id="btnAddValue" class="btn-primary">Hinzufügen</button>
+    <h3 class="font-semibold">Eigenschaftswert hinzufügen</h3>
+    <div class="mt-2">
+        <input class="input-primary" id="newVal">
+        <select class="input-primary ml-1" id="selectAttribute">
+            <?php foreach ($attributeGroups as $group) : ?>
+                <option value="<?= $group["id"] ?>"><?= $group["name"] ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    <div class="mt-2">
+        <button id="btnAddValue" class="btn-primary" data-binding="true">Hinzufügen</button>
+    </div>
 </div>
+
 <div class="defCont addAttribute">
-    <h3 class="mb-2 underline">Neue Eigenschaft hinzufügen</h3>
-    <p class="p-2">Eigenschaftsname: <input class="input-primary" id="newName"></p>
-    <p class="p-2">Beschreibung: <input class="input-primary" id="descr"></p>
-    <button id="btnAddAttribute" class="btn-primary">Hinzufügen</button>
-    <button id="btnAbortAttribute" class="btn-attention">Leeren</button>
+    <h3 class="font-semibold">Neue Eigenschaft hinzufügen</h3>
+    <div clas="mt-2">
+        <p>Eigenschaftsname:</p>
+        <input class="input-primary mt-1" id="newName">
+    </div>
+    <div class="mt-2">
+        <p>Beschreibung:</p>
+        <input class="input-primary mt-1" id="descr">
+    </div>
+    <div class="mt-2">
+        <button id="btnAddAttribute" class="btn-primary" data-binding="true">Hinzufügen</button>
+        <button id="btnAbortAttribute" class="btn-cancel" data-binding="true">Leeren</button>
+    </div>
 </div>

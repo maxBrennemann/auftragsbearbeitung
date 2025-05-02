@@ -12,7 +12,7 @@ class AttributeGroup
     private $attributeGroup = null;
     private $description = null;
 
-    function __construct(int $id)
+    public function __construct(int $id)
     {
         if (is_numeric($id)) {
             $data = DBAccess::selectQuery("SELECT attribute_group, descr FROM attribute_group WHERE id = $id");
@@ -66,6 +66,8 @@ class AttributeGroup
         if ($attributeId == null || $value == null) {
             JSONResponseHandler::throwError(400, "ID und Wert müssen ausgefüllt sein");
         }
+
+        $currentHighestPosition = DBAccess::selectQuery("");
 
         $result = DBAccess::insertQuery("INSERT INTO attribute (attribute_group_id, `value`) VALUES (:id, :value)", [
             "id" => $attributeId,

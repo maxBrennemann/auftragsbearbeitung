@@ -88,10 +88,13 @@ class Table extends Model
                     $join["localKey"],
                     $join["foreignKey"],
                     $join["type"] ?? "INNER",
-                    array_merge($conditions, [$join["foreignKey"] => $value]),
+                    $conditions,
                 );
 
+                // array_merge($conditions, [$join["foreignKey"] => $value])
+
                 JSONResponseHandler::sendResponse($results);
+                return;
             }
         }
 

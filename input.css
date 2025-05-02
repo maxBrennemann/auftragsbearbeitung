@@ -4,19 +4,11 @@
 
 @layer components {
     .btn-primary {
-        @apply px-4 py-2 m-1 font-semibold text-sm bg-blue-200 text-slate-600 rounded-lg shadow-sm border-none disabled:bg-gray-300 hover:bg-blue-300;
-    }
-
-    .btn-primary-new {
         @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 bg-green-500 rounded text-sm border-0 text-white hover:bg-green-700 disabled:bg-green-200 disabled:hover:bg-green-300 disabled:hover:cursor-not-allowed;
     }
 
     .btn-primary-small {
         @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-1 px-2 bg-green-500 rounded border-0 text-white text-xs hover:bg-green-700 disabled:bg-green-200 disabled:hover:bg-green-300 disabled:hover:cursor-not-allowed;
-    }
-
-    .btn-attention {
-        @apply px-4 py-2 m-1 font-semibold text-sm bg-red-200 text-slate-600 rounded-lg shadow-sm border-none disabled:bg-gray-300 hover:bg-red-300;
     }
 
     .link-primary {
@@ -64,7 +56,11 @@
     }
 
     .overlay-container__content__options {
-        @apply border-t border-solid border-gray-400 flex justify-end p-3 bg-slate-50;
+        @apply border-t border-solid border-gray-400 flex flex-row-reverse p-3 bg-slate-50;
+    }
+
+    .fileUploader {
+        @apply flex justify-center items-center flex-col h-32 bg-white rounded-lg mt-2 cursor-pointer;
     }
 
     /*.table {
@@ -92,12 +88,19 @@
 
 @font-face {
     font-family: 'Open Sans';
-    src: url("./font/OpenSans-SemiBold.ttf") format('truetype');
+    src: url("./font/OpenSans-VariableFont.ttf") format('truetype');
     font-weight: 600;
 }
 
 @font-face {
     font-family: 'Open Sans';
-    src: url("./font/OpenSans-Bold.ttf") format('truetype');
+    src: url("./font/OpenSans-VariableFont.ttf") format('truetype');
     font-weight: bold;
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    src: url("./font/OpenSans-Italic-VariableFont.ttf") format('truetype');
+    font-weight: normal;
+    font-style: italic;
 }

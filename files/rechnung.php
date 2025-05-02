@@ -85,7 +85,7 @@ if ($target == "create"): ?>
 				</div>
 				<div class="my-2">
 					<input id="newText" class="input-primary">
-					<button data-binding="true" data-fun="addText" class="btn-primary-new">Hinzufügen</button>
+					<button data-binding="true" data-fun="addText" class="btn-primary">Hinzufügen</button>
 				</div>
 			</div>
 			<div class="predefinedTexts"></div>
@@ -95,9 +95,9 @@ if ($target == "create"): ?>
 
 		<div class="mt-3">
 			<?php if ($auftrag != null && $auftrag->getAuftragspostenData() != null): ?>
-				<button data-binding="true" data-fun="completeInvoice" class="btn-primary-new" disabled>Rechnung abschließen</button>
+				<button data-binding="true" data-fun="completeInvoice" class="btn-primary" disabled>Rechnung abschließen</button>
 			<?php else: ?>
-				<button disabled class="btn-primary-new">Rechnung abschließen</button>
+				<button disabled class="btn-primary">Rechnung abschließen</button>
 			<?php endif; ?>
 			<button onclick="window.history.go(-1); return false;" class="btn-cancel">Abbrechen</button>
 		</div>
@@ -110,5 +110,5 @@ if ($target == "create"): ?>
 	<iframe src="<?= Link::getPageLink('pdf') . "?type=invoice&invoiceId=$invoiceId&orderId=$id" ?>"></iframe>
 <?php else: ?>
 	<p>Es ist ein unerwarteter Fehler aufgetreten.</p>
-	<button class="btn-primary-new" onclick="window.history.go(-1); return false;" type="submit">Zurück</button>
+	<button class="btn-primary" onclick="window.history.go(-1); return false;" type="submit">Zurück</button>
 <?php endif; ?>

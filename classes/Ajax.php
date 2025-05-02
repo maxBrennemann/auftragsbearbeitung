@@ -4,7 +4,8 @@ namespace Classes;
 
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\DBAccess;
-use MaxBrennemann\PhpUtilities\Tools;
+
+use Classes\Auth\SessionController;
 
 use Classes\Routes\CustomerRoutes;
 use Classes\Routes\InvoiceRoutes;
@@ -18,13 +19,12 @@ use Classes\Routes\SearchRoutes;
 use Classes\Routes\SettingsRoutes;
 use Classes\Routes\StickerRoutes;
 use Classes\Routes\TimeTrackingRoutes;
+use Classes\Routes\UploadRoutes;
 use Classes\Routes\UserRoutes;
 use Classes\Routes\VariousRoutes;
 
 use Classes\Project\Search;
 use Classes\Project\Auftrag;
-use Classes\Project\Posten;
-use Classes\Project\Fahrzeug;
 use Classes\Project\Step;
 use Classes\Project\Table;
 use Classes\Project\Auftragsverlauf;
@@ -54,7 +54,7 @@ class Ajax
 		$currentApiVersion = "v1";
 		ResourceManager::outputHeaderJSON();
 
-		$url = $_SERVER['REQUEST_URI'];
+		$url = $_SERVER["REQUEST_URI"];
 		$url = explode('?', $url, 2);
 		$apiPath = str_replace($_ENV["REWRITE_BASE"] . $_ENV["SUB_URL"] . "/", "", $url[0]);
 		$apiParts = explode("/", $apiPath);
@@ -66,6 +66,12 @@ class Ajax
 		}
 
 		$path = str_replace("api/" . $apiVersion . "/", "", $apiPath);
+
+		/* TODO: implement better auth */
+		if (!SessionController::isLoggedIn() && $routeType != "auth") {
+			ResourceManager::outputHeaderJSON();
+			JSONResponseHandler::throwError(401, "Unauthorized API access");
+		}
 
 		switch ($routeType) {
 			case "customer":
@@ -112,6 +118,9 @@ class Ajax
 			case "time-tracking":
 				TimeTrackingRoutes::handleRequest($path);
 				break;
+			case "upload":
+				UploadRoutes::handleRequest($path);
+				break;
 			case "user":
 				UserRoutes::handleRequest($path);
 				break;
@@ -157,19 +166,6 @@ class Ajax
 				break;
 			case "createAuftrag":
 				Auftrag::add();
-				break;
-			case "insertCar":
-				$kfzKenn = $_POST['kfz'];
-				$fahrzeug = $_POST['fahrzeug'];
-				$nummer =  $_POST['kdnr'];
-				$auftragsId =  $_POST['auftrag'];
-				$fahrzeugId = DBAccess::insertQuery("INSERT INTO fahrzeuge (Kundennummer, Kennzeichen, Fahrzeug) VALUES($nummer, '$kfzKenn', '$fahrzeug')");
-
-				Tools::add("id", $auftragsId);
-				Tools::add("vehicleId", $fahrzeugId);
-
-				Fahrzeug::attachVehicle();
-				echo (new Auftrag($auftragsId))->getFahrzeuge();
 				break;
 			case "setInvoiceData":
 				$order = $_POST['id'];
@@ -353,13 +349,6 @@ class Ajax
 					]);
 				}
 				break;
-			case "changeMotivDate":
-				$id = (int) $_POST['id'];
-				$creation_date = $_POST['date'];
-
-				DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET creation_date = :creation_date WHERE id = :id", ["creation_date" => $creation_date, "id" => $id]);
-				echo "success";
-				break;
 			case "toggleTextil":
 				$id = (int) $_POST["id"];
 				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_shirtcollection` = NOT `is_shirtcollection` WHERE id = :id", ["id" => $id]);
@@ -443,15 +432,6 @@ class Ajax
 				$aufkleber = new Aufkleber($id);
 				$aufkleber->saveSentData($data);
 				break;
-			case "setAufkleberTitle":
-				$id = (int) $_POST["id"];
-				$title = (string) $_POST["title"];
-
-				$sticker = new Sticker($id);
-				$response = $sticker->setName($title);
-
-				echo $response["status"];
-				break;
 			case "productVisibility":
 				$id = (int) $_POST["id"];
 				$stickerCollection = new StickerCollection($id);
@@ -484,25 +464,6 @@ class Ajax
 				echo json_encode([
 					"status" => "success",
 				]);
-				break;
-			case "setAltTitle":
-				$id = (int) $_POST["id"];
-				$newTitle = (string) $_POST["newTitle"];
-				$type = (string) $_POST["type"];
-
-				$additionalData = DBAccess::selectQuery("SELECT additional_data FROM module_sticker_sticker_data WHERE id = :id LIMIT 1", ["id" => $id]);
-
-				if ($additionalData[0] != null) {
-					$additionalData = json_decode($additionalData[0]["additional_data"], true);
-
-					$additionalData["products"][$type]["altTitle"] = $newTitle;
-					$data = json_encode($additionalData);
-
-					DBAccess::insertQuery("UPDATE module_sticker_sticker_data SET additional_data = :data WHERE id = :id", ["data" => $data, "id" => $id]);
-					echo json_encode(["status" => "success"]);
-				} else {
-					echo json_encode(["status" => "no data found"]);
-				}
 				break;
 			case "showSearch":
 				$id = (int) $_POST["id"];
