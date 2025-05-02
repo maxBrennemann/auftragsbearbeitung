@@ -377,11 +377,13 @@ if ($orderId <= 0): ?>
 
 		<div class="defCont verlauf">
 			<p class="font-bold" data-binding="true" data-fun="showAuftragsverlauf">Auftragsverlauf anzeigen</p>
-			<div class="mt-2">
+			<div class="mt-2 orderHistory">
 				<?= $auftragsverlauf ?>
 			</div>
-			<button class="btn-primary mt-2" data-binding="true" data-fun="addList">Liste hinzufügen</button>
-			<button class="infoButton ml-1" data-info="2">i</button>
+			<div class="mt-2">
+				<button class="btn-primary mt-2" data-binding="true" data-fun="addList">Liste hinzufügen</button>
+				<button class="infoButton ml-1" data-info="2">i</button>
+			</div>
 		</div>
 
 		<template id="templateFarbe">

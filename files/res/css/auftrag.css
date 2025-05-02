@@ -77,20 +77,6 @@ aside {
     border-radius: 6px;
 }
 
-.showInMiddle {
-    text-align: center;
-    padding: 2px;
-    background: white;
-    border-radius: 10px;
-}
-
-.verticalLine {
-    border-left: 2px solid black;
-    width: 2px;
-    height: 25px;
-    margin: auto;
-}
-
 #farbe span {
     display: block;
     margin-top: 7px;

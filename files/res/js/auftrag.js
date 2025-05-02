@@ -216,6 +216,15 @@ fnNames.click_toggleInvoiceItems = e => {
     });
 }
 
+fnNames.click_showMoreOrderHistory = e => {
+    const orderHistory = document.querySelector(".orderHistory");
+    const elements = orderHistory.querySelectorAll(".hidden");
+    elements.forEach(el => {
+        el.classList.remove("hidden");
+    });
+    e.target.classList.add("hidden");
+}
+
 const reloadPostenListe = async () => {
     const response = await ajax.get(`/api/v1/order-items/${globalData.auftragsId}/invoice`);
     document.getElementById("invoicePostenTable").innerHTML = response["invoicePostenTable"];
