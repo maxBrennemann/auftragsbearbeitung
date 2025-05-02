@@ -46,7 +46,7 @@ fnNames.write_addSource = e => {
     const settingsContainer = createPopup(div);
 
     const btnSaveSource = document.createElement("button");
-    btnSaveSource.classList.add("btn-primary-new");
+    btnSaveSource.classList.add("btn-primary");
     btnSaveSource.innerHTML = "Speichern";
     btnSaveSource.addEventListener("click", () => {
         sendSource();

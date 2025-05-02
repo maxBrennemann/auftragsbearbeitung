@@ -48,7 +48,7 @@ if ($id == 0): ?>
             </h2>
             <p class="ml-2 mt-2">Artikelnummer: <span id="motivId" data-variable="true"><?= $id ?></span></p>
             <p class="ml-2 mt-2">Erstellt am <input type="date" class="input-primary" id="creationDate" data-write="true" value="<?= $stickerCollection->getCreationDate() ?>"></p>
-            <button class="btn-primary-new mt-4" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
+            <button class="btn-primary mt-4" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
         </div>
         <div class="defCont hidden">
             <p>Dateien und Bilder</p>
@@ -152,7 +152,7 @@ if ($id == 0): ?>
                     "imageCategory" => "aufkleber",
                 ]); ?>
             </div>
-            <button class="transferBtn btn-primary-new w-full mt-2" id="transferAufkleber" data-binding="true" <?= $stickerCollection->getAufkleber()->getIsPlotted() == 1 ? "" : "disabled" ?>>Aufkleber übertragen</button>
+            <button class="transferBtn btn-primary w-full mt-2" id="transferAufkleber" data-binding="true" <?= $stickerCollection->getAufkleber()->getIsPlotted() == 1 ? "" : "disabled" ?>>Aufkleber übertragen</button>
         </div>
 
         <div class="defCont col-span-2 lg:col-span-1">
@@ -215,7 +215,7 @@ if ($id == 0): ?>
                     "imageCategory" => "wandtattoo",
                 ]); ?>
             </div>
-            <button class="transferBtn btn-primary-new w-full mt-2" id="transferWandtattoo" data-binding="true" <?= $stickerCollection->getWandtattoo()->getIsWalldecal() == 1 ? "" : "disabled" ?>>Wandtattoo übertragen</button>
+            <button class="transferBtn btn-primary w-full mt-2" id="transferWandtattoo" data-binding="true" <?= $stickerCollection->getWandtattoo()->getIsWalldecal() == 1 ? "" : "disabled" ?>>Wandtattoo übertragen</button>
         </div>
 
         <div class="defCont col-span-2 lg:col-span-1">
@@ -309,7 +309,7 @@ if ($id == 0): ?>
                     "imageCategory" => "textil",
                 ]); ?>
             </div>
-            <button class="transferBtn btn-primary-new w-full hidden mt-2" id="transferTextil" data-binding="true" <?= $stickerCollection->getTextil()->getIsShirtcollection() == 1 ? "" : "disabled" ?>>Textil übertragen</button>
+            <button class="transferBtn btn-primary w-full hidden mt-2" id="transferTextil" data-binding="true" <?= $stickerCollection->getTextil()->getIsShirtcollection() == 1 ? "" : "disabled" ?>>Textil übertragen</button>
         </div>
 
         <div class="defCont col-span-2">
@@ -340,10 +340,10 @@ if ($id == 0): ?>
                         <input type="number" id="sizePriceAnchor" class="w-48 rounded-md p-2">
                     </label>
                     <div id="sizeBtnAddAnchor">
-                        <button class="btn-primary-new block mt-2" id="sizeBtnAdd">Hinzufügen</button>
+                        <button class="btn-primary block mt-2" id="sizeBtnAdd">Hinzufügen</button>
                     </div>
                     <div class="hidden" id="sizeBtnEditAnchor">
-                        <button class="btn-primary-new block mt-2" id="sizeBtnEdit">Speichern</button>
+                        <button class="btn-primary block mt-2" id="sizeBtnEdit">Speichern</button>
                         <button class="btn-cancel block ml-2 mt-2" id="sizeBtnCancel">Abbrechen</button>
                     </div>
                 </div>
@@ -395,11 +395,11 @@ if ($id == 0): ?>
             </div>
             <div class="my-2">
                 <input type="text" class="input-primary" maxlength="32" id="tagInput" placeholder="Tag eingeben">
-                <button type="button" class="btn-primary-new" id="addNewTag" title="Mit Hashtag oder Button hinzufügen">Hinzufügen</button>
+                <button type="button" class="btn-primary" id="addNewTag" title="Mit Hashtag oder Button hinzufügen">Hinzufügen</button>
                 <p class="italic">Nicht erlaubt sind folgende Zeichen: !<;>;?=+#"°{}_$%.</p>
             </div>
-            <button id="loadSynonyms" class="btn-primary-new">Mehr Synonnyme laden</button>
-            <button id="showTaggroupManager" class="btn-primary-new">Taggruppen</button>
+            <button id="loadSynonyms" class="btn-primary">Mehr Synonnyme laden</button>
+            <button id="showTaggroupManager" class="btn-primary">Taggruppen</button>
         </div>
         <div class="defCont">
             <h2 class="font-semibold">Weitere Infos</h2>

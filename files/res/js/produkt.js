@@ -4,6 +4,7 @@ import { notification } from "./classes/notifications.js";
 import { fetchAndRenderTable } from "./classes/table.js";
 import { tableConfig } from "./classes/tableconfig.js";
 import { createPopup } from "./global.js";
+import { initFileUploader } from "./classes/upload.js";
 
 const attributes = {};
 const productData = {};
@@ -24,6 +25,12 @@ function init() {
             const content = event.target.value;
             updateProduct(type, content);
         });
+    });
+
+    initFileUploader({
+        "product": {
+            "location": `/api/v1/product/${productData.productId}/add-files`,
+        },
     });
 }
 
@@ -62,7 +69,7 @@ fnNames.click_addAttributes = () => {
     const settingsContainer = createPopup(div);
     
     const btnSaveConfig = document.createElement("button");
-    btnSaveConfig.classList.add("btn-primary-new");
+    btnSaveConfig.classList.add("btn-primary");
     btnSaveConfig.innerHTML = "Speichern";
     btnSaveConfig.addEventListener("click", () => {
         generateTable();

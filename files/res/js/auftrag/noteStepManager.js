@@ -1,7 +1,13 @@
+import { getOrderId } from "../auftrag.js";
 import { ajax } from "../classes/ajax.js";
+import { addBindings } from "../classes/bindings.js";
 import { notification } from "../classes/notifications.js";
 
+const fnNames =  {};
+
 export function initNotes() {
+    addBindings(fnNames);
+
     const nodeContainer = document.getElementById("noteContainer");
     if (nodeContainer != null) {
         getNotes().then(r => {
@@ -12,6 +18,9 @@ export function initNotes() {
             displayNotes(r);
         });
     }
+
+    const toggleStepsInput = document.getElementById("toggleSteps");
+    toggleStepsInput?.addEventListener("change", toggleSteps);
 }
 
 /**
@@ -33,7 +42,7 @@ function displayNotes(notes) {
         /* clone templateNote */
         const templateNote = document.getElementById("templateNote");
         const clone = templateNote.content.cloneNode(true);
-        
+
         const noteTitle = clone.querySelector(".noteTitle");
         noteTitle.value = note.title;
         noteTitle.dataset.id = note.id;
@@ -46,7 +55,7 @@ function displayNotes(notes) {
         noteText.dataset.type = "note";
         noteText.addEventListener("change", updateNote);
 
-        noteTitle.addEventListener("keyup", function(e) {
+        noteTitle.addEventListener("keyup", function (e) {
             if (e.key == "Enter") {
                 noteText.focus();
             }
@@ -56,7 +65,7 @@ function displayNotes(notes) {
         noteDate.innerHTML = note.date;
 
         const noteShowDelete = clone.querySelector(".showDelete");
-        noteShowDelete.addEventListener("click", function(e) {
+        noteShowDelete.addEventListener("click", function (e) {
             const el = e.target.parentNode.parentNode;
             const noteDelete = el.querySelector(".noteDelete");
             noteDelete.classList.toggle("hidden");
@@ -85,59 +94,25 @@ function updateNote(e) {
     });
 }
 
-export function addBearbeitungsschritt() {
-    var tableData = document.getElementsByClassName("bearbeitungsschrittInput");
-    var steps = [];
-    for (var i = 0; i < tableData.length; i++) {
-        steps.push(tableData[i].value);
-    }
+function addBearbeitungsschritt() {
+    const name = document.getElementById("processingStepName").value;
+    const date = document.getElementById("processingStepDate").value;
+    const hideStatus = document.getElementById("processingStepStatus").value;
+    const priority = document.getElementById("processingStepPriority").value;
+    const assignedTo = document.getElementById("processingStepSelectBy").value;
 
-    if (steps[1] == "") {
-        steps[1] = 0;
-    }
-
-    var el = document.getElementsByName("isAlreadyDone")[0];
-    var radio = el.elements["isDone"];
-    var hide;
-    for (var i = 0; i < radio.length; i++) {
-        if (radio[i].checked) {
-            hide = radio[i].value;
-            break;
-        }
-    }
-    
-    /* 0 = hide, 1 = show */
-    hide = hide == "hide" ? 0 : 1;
-
-    /* check for assigned task */
-    let assigned = document.querySelector('input[name="assignTo"]');
-    let assignedTo = "none";
-    if (assigned.checked == true) {
-        let e = document.getElementById("selectMitarbeiter");
-        assignedTo = e.options[e.selectedIndex].value;
-    }
-
-    ajax.post(`/api/v1/notes/step/${globalData.auftragsId}`, {
-        "name": steps[0],
-        "date": steps[1],
-        "hide": hide,
-        "priority": steps[2],
+    ajax.post(`/api/v1/notes/step/${getOrderId()}`, {
+        "name": name,
+        "date": date,
+        "hide": hideStatus,
+        "priority": priority,
         "assignedTo": assignedTo,
     }).then(r => {
-        document.getElementById("stepTable").innerHTML = r.html;
-
-        /* clear inputs */
-        var tableData = document.getElementsByClassName("bearbeitungsschrittInput");
-        for (var i = 0; i < tableData.length; i++) {
-            tableData[i].value = "";
-        }
-
-        document.getElementById("bearbeitungsschritte").style.display = "none";
     });
 }
 
 /* addes bearbeitungsschritte */
-export function addStep() {
+function addStep() {
     const bearbeitungsschritte = document.getElementById("bearbeitungsschritte");
     if (!bearbeitungsschritte.classList.toggle("hidden")) {
         const textarea = document.querySelector("input.bearbeitungsschrittInput");
@@ -145,7 +120,7 @@ export function addStep() {
     }
 }
 
-export async function getNotes() {
+async function getNotes() {
     return ajax.get(`/api/v1/notes/${globalData.auftragsId}`);
 }
 
@@ -154,7 +129,7 @@ export async function getNotes() {
  * 
  * @returns 
  */
-export function sendNote() {
+function sendNote() {
     const note = document.querySelector("#addNotes");
     if (note == undefined) {
         return null;
@@ -176,10 +151,10 @@ export function sendNote() {
     }).then(r => {
         notification("", "success");
         displayNotes([{
-                "title": title,
-                "note": content,
-                "date": r.date,
-                "id": r.id,
+            "title": title,
+            "note": content,
+            "date": r.date,
+            "id": r.id,
         }]);
 
         note.querySelector(".noteTitle").value = "";
@@ -189,7 +164,7 @@ export function sendNote() {
     });
 }
 
-export const cancelNote = () => {
+const cancelNote = () => {
     const note = document.querySelector("#addNotes");
     const title = note.querySelector(".noteTitle");
     const content = note.querySelector(".noteText");
@@ -203,7 +178,7 @@ export const cancelNote = () => {
 }
 
 /* function creates a popup window that asks the user whether he wants the note to be deleted or not */
-export function removeNote(event) {
+function removeNote(event) {
     const id = event.target.parentNode.querySelector(".noteTitle").dataset.id;
     ajax.delete(`/api/v1/notes/${id}`).then(r => {
         if (r.status == "success") {
@@ -215,11 +190,11 @@ export function removeNote(event) {
 }
 
 /* function for node button to remove the div */
-window.notesClose = function(div) {
+window.notesClose = function (div) {
     div.parentNode.removeChild(div);
 }
 
-export function addNewNote() {
+function addNewNote() {
     const addNotes = document.getElementById("addNotes");
     addNotes.classList.toggle("hidden");
 
@@ -228,7 +203,7 @@ export function addNewNote() {
 
     const input = addNotes.querySelector(".noteTitle");
     input.focus();
-    input.addEventListener("keyup", function(e) {
+    input.addEventListener("keyup", function (e) {
         if (e.key == "Enter") {
             const addNotes = document.getElementById("addNotes");
             const noteText = addNotes.querySelector(".noteText");
@@ -251,15 +226,14 @@ const toggleSteps = (e) => {
     });
 }
 
-const init = () => {
-    const toggleStepsInput = document.getElementById("toggleSteps");
-    toggleStepsInput?.addEventListener("change", toggleSteps);
+fnNames.click_updateSelectBy = () => {
+    const el = document.getElementById("processingStepSelectBy");
+    el.disabled = !el.disabled;
 }
 
-if (document.readyState !== 'loading' ) {
-    init();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        init();
-    });
-}
+fnNames.click_addBearbeitungsschritt = addBearbeitungsschritt;
+fnNames.click_addStep = addStep;
+fnNames.click_sendNote = sendNote;
+fnNames.click_removeNote = removeNote;
+fnNames.click_addNewNote = addNewNote;
+fnNames.click_cancelNote = cancelNote;

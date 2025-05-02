@@ -37,7 +37,7 @@
     </div>
 
     <div id="addAttributeTable" class="mt-2"></div>
-    <button data-binding="true" data-fun="addAttributes" class="btn-primary-new mt-2">Attribute hinzufügen</button>
+    <button data-binding="true" data-fun="addAttributes" class="btn-primary mt-2">Attribute hinzufügen</button>
 </div>
 
 <template id="addAttributes">
@@ -49,14 +49,14 @@
                 <select class="overflow-y-scroll h-40 mt-2" id="attributeSelector" multiple>
                 </select>
                 <div class="mt-auto">
-                    <button class="btn-primary-new" data-fun="btnAttributeGroupSelector" data-binding="true">Übernehmen</button>
+                    <button class="btn-primary" data-fun="btnAttributeGroupSelector" data-binding="true">Übernehmen</button>
                 </div>
             </div>
             <div class="ml-2 border-r-2 w-48 flex flex-col">
                 <p class="font-semibold">Attribute</p>
                 <div id="showAttributeValues" class="mt-2 overflow-y-scroll h-40"></div>
                 <div class="mt-auto">
-                    <button class="btn-primary-new" data-fun="btnAttributeSelector" data-binding="true">Übernehmen</button>
+                    <button class="btn-primary" data-fun="btnAttributeSelector" data-binding="true">Übernehmen</button>
                 </div>
             </div>
             <div id="addedValues" class="ml-2 w-48 flex flex-col">

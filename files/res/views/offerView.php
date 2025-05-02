@@ -32,7 +32,7 @@ $customer = new Kunde($customerId);
 </div>
 
 <div class="defCont">
-    <button class="btn-primary-new" data-fun="storeOffer" data-binding="true">Angebot abschließen</button>
+    <button class="btn-primary" data-fun="storeOffer" data-binding="true">Angebot abschließen</button>
     <button class="btn-cancel" data-fun="deleteOffer" data-binding="true">Angebot abbrechen</button>
 </div>
 

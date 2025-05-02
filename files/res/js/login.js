@@ -7,7 +7,10 @@ const fnNames = {};
 
 const init = () => {
     addBindings(fnNames);
-    autoLogin();
+
+    if (document.getElementById("isLoggedIn").value != "1") {
+        autoLogin();
+    }
 }
 
 fnNames.click_login = () => {

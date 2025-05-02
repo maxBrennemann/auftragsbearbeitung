@@ -10,9 +10,6 @@ use Classes\Auth\SessionController;
 use Classes\Project\Config;
 use Classes\Project\CacheManager;
 
-use Classes\Project\Posten;
-use Classes\Project\Table;
-
 use Classes\Project\Table\TableConfig;
 
 use Classes\Project\Modules\Sticker\Exports\ExportFacebook;
@@ -67,6 +64,7 @@ class ResourceManager
             case "font":
             case "pdf_invoice":
             case "upload":
+            case "backup":
             case "img":
             case "static":
                 self::handleResources();
@@ -243,6 +241,11 @@ class ResourceManager
 
         if ($script == "/classes/notifications.js") {
             echo file_get_contents("node_modules/js-classes/notifications.js");
+            return;
+        }
+
+        if ($script == "/classes/ajax.js") {
+            echo file_get_contents("node_modules/js-classes/ajax.js");
             return;
         }
 

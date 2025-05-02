@@ -1,6 +1,6 @@
 ﻿import { addBindings } from "./classes/bindings.js";
 import { addColor, addSelectedColors, checkHexCode, removeColor, toggleCS } from "./auftrag/colorManager.js";
-import { addBearbeitungsschritt, addStep, sendNote, removeNote, addNewNote, initNotes, cancelNote } from "./auftrag/noteStepManager.js";
+import { initNotes } from "./auftrag/noteStepManager.js";
 import { setOrderFinished, updateDate, updateDeadline, setDeadlineState, initExtraOptions, editDescription, editOrderType, editTitle, archvieren } from "./auftrag/orderManager.js";
 import { initVehicles } from "./auftrag/vehicleManager.js";
 import "./auftrag/calculateGas.js";
@@ -216,6 +216,15 @@ fnNames.click_toggleInvoiceItems = e => {
     });
 }
 
+fnNames.click_showMoreOrderHistory = e => {
+    const orderHistory = document.querySelector(".orderHistory");
+    const elements = orderHistory.querySelectorAll(".hidden");
+    elements.forEach(el => {
+        el.classList.remove("hidden");
+    });
+    e.target.classList.add("hidden");
+}
+
 const reloadPostenListe = async () => {
     const response = await ajax.get(`/api/v1/order-items/${globalData.auftragsId}/invoice`);
     document.getElementById("invoicePostenTable").innerHTML = response["invoicePostenTable"];
@@ -231,13 +240,6 @@ fnNames.click_addSelectedColors = addSelectedColors;
 fnNames.write_checkHexCode = checkHexCode;
 fnNames.click_toggleCS = toggleCS;
 
-fnNames.click_addBearbeitungsschritt = addBearbeitungsschritt;
-fnNames.click_addStep = addStep;
-fnNames.click_sendNote = sendNote;
-fnNames.click_removeNote = removeNote;
-fnNames.click_addNewNote = addNewNote;
-fnNames.click_cancelNote = cancelNote;
-
 fnNames.click_setOrderFinished = setOrderFinished;
 fnNames.write_updateDate = updateDate;
 fnNames.write_updateDeadline = updateDeadline;
@@ -247,6 +249,10 @@ fnNames.write_editTitle = editTitle;
 fnNames.click_setDeadlineState = setDeadlineState;
 fnNames.click_archvieren = archvieren;
 fnNames.click_toggleOrderDescription = toggleOrderDescription;
+
+export const getOrderId = () => {
+    return parseInt(globalData.auftragsId);
+}
 
 if (document.readyState !== 'loading') {
     initCode();

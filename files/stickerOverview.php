@@ -3,13 +3,13 @@
         <h1 class="font-semibold">Import/ Export</h1>
         <div class="defCont hidden">
             <p class="font-semibold">Motivexporte</p>
-            <button id="createFbExport" data-binding="true" class="btn-primary-new">Facebook Export generieren</button>
+            <button id="createFbExport" data-binding="true" class="btn-primary">Facebook Export generieren</button>
         </div>
         <a href="#" class="link-primary" data-binding="true" data-fun="crawlAll">Alle Produtke vom Shop crawlen</a>
         <br>
         <a href="#" class="link-primary" data-binding="true" data-fun="crawlTags">Alle Tags vom Shop crawlen</a>
         <br>
-        <button class="btn-primary-new" data-binding="true" data-fun="manageImports">Importe verwalten</button>
+        <button class="btn-primary" data-binding="true" data-fun="manageImports">Importe verwalten</button>
     </div>
     <div class="defCont">
         <h1 class="font-semibold">Übersichten</h1>
@@ -25,19 +25,19 @@
             <a href="<?= Classes\Link::getPageLink("sticker-images") ?>" class="link-primary">Zur Bildübersicht</a>
         </div>
         <div>
-            <button class="btn-primary-new" data-binding="true" data-fun="openTagOverview">Zur Tagübersicht</button>
+            <button class="btn-primary" data-binding="true" data-fun="openTagOverview">Zur Tagübersicht</button>
         </div>
     </div>
     <div class="defCont">
         <h1 class="font-semibold">Neues Motiv hinzufügen</h1>
         <div class="flex flex-wrap">
             <input type="text" id="newTitle" class="input-primary">
-            <button type="submit" data-binding="true" data-fun="createNewSticker" class="btn-primary-new ml-2">Hinzufügen</button>
+            <button type="submit" data-binding="true" data-fun="createNewSticker" class="btn-primary ml-2">Hinzufügen</button>
         </div>
         <h1 class="font-semibold">Altes Motiv aus Shop laden</h1>
         <div class="flex flex-wrap">
             <input type="text" id="oldLink" class="input-primary">
-            <button type="submit" data-binding="true" data-fun="loadSticker" class="btn-primary-new ml-2">Laden</button>
+            <button type="submit" data-binding="true" data-fun="loadSticker" class="btn-primary ml-2">Laden</button>
         </div>
     </div>
 </div>

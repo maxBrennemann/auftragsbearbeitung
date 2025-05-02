@@ -3,6 +3,7 @@
 namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use RuntimeException;
 
 class UploadHandler
@@ -58,7 +59,7 @@ class UploadHandler
         }
 
         $hash = hash_file("sha256", $file["tmp_name"]);
-        $subDir = substr($hash, 0, 2). "/" . substr($hash, 2, 2);
+        $subDir = substr($hash, 0, 2) . "/" . substr($hash, 2, 2);
         $uploadDir = $this->uploadBaseDir . "/" . $subDir;
 
         if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true)) {
@@ -127,15 +128,36 @@ class UploadHandler
 
     public static function deleteUnusedFiles(): array
     {
-        $uploadBaseDir = "upload";
         $deletedFiles = [];
 
         $dbFiles = DBAccess::selectQuery("SELECT dateiname FROM dateien;");
         $dbFileNames = array_map(fn($row) => $row["dateiname"], $dbFiles);
         $dbFileNames[] = ".gitkeep";
 
+        self::deleteUnusedFilesInDirectory("upload", $dbFileNames, $deletedFiles);
+        self::deleteUnusedFilesInDirectory("generated", $dbFileNames, $deletedFiles);
+
+        JSONResponseHandler::sendResponse([
+            "deleted_count" => count($deletedFiles),
+            "deleted_files" => $deletedFiles,
+            "status" => "success",
+        ]);
+
+        return [
+            "deleted_count" => count($deletedFiles),
+            "deleted_files" => $deletedFiles,
+        ];
+    }
+
+    private static function deleteUnusedFilesInDirectory(string $directory, array $usedFiles, &$deletedFiles): void
+    {
+        $realBase = realpath($directory);
+        if (!$realBase || !is_dir($realBase)) {
+            throw new \InvalidArgumentException("Invalid directory: $directory");
+        }
+
         $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($uploadBaseDir, \RecursiveDirectoryIterator::SKIP_DOTS)
+            new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::SKIP_DOTS)
         );
 
         foreach ($iterator as $fileInfo) {
@@ -143,18 +165,14 @@ class UploadHandler
                 continue;
             }
 
-            $relativePath = str_replace('\\', '/', substr($fileInfo->getPathname(), strlen($uploadBaseDir) + 1));
+            $fullPath = $fileInfo->getPathname();
+            $relativePath = substr($fullPath, strlen($realBase) + 1);
 
-            if (!in_array($relativePath, $dbFileNames)) {
-                unlink($fileInfo->getPathname());
+            if (!in_array($relativePath, $usedFiles)) {
+                unlink($fullPath);
                 $deletedFiles[] = $relativePath;
             }
         }
-
-        return [
-            "deleted_count" => count($deletedFiles),
-            "deleted_files" => $deletedFiles,
-        ];
     }
 
     public static function migrateFiles()
@@ -167,17 +185,27 @@ class UploadHandler
             $fileId = $fileRef["id"];
 
             $adjustedName = self::adjustFileName($fileName);
+            if ($adjustedName == false) {
+                continue;
+            }
+
             DBAccess::updateQuery("UPDATE dateien SET dateiname = :adjustedName WHERE id = :fileId;", [
                 "adjustedName" => $adjustedName,
                 "fileId" => $fileId,
             ]);
         }
+
+        JSONResponseHandler::returnOK();
     }
 
-    private static function adjustFileName(string $fileName): string
+    private static function adjustFileName(string $fileName): string|bool
     {
+        if (!file_exists("upload/" . $fileName)) {
+            return false;
+        }
+
         $hash = hash_file("sha256", "upload/" . $fileName);
-        $subDir = substr($hash, 0, 2). "/" . substr($hash, 2, 2);
+        $subDir = substr($hash, 0, 2) . "/" . substr($hash, 2, 2);
         $uploadDir = "upload/" . $subDir;
 
         $extension = strtolower(pathinfo("upload/" . $fileName, PATHINFO_EXTENSION));

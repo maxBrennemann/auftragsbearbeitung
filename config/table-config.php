@@ -102,6 +102,50 @@ function getTableConfig(): array
                 ],
             ],
         ],
+        "dateien" => [
+            "columns" => [
+                "id",
+                "dateiname",
+                "originalname",
+                "date",
+                "typ",
+            ],
+            "primaryKey" => "id",
+            "names" => [
+                "Nummer",
+                "Gespeicherter Name",
+                "Name",
+                "Datum",
+                "Dateityp",
+            ],
+            "hidden" => [
+                "id",
+                "dateiname",
+            ],
+            "permissions" => ["read", "update", "delete"],
+            "joins" => [
+                "connected_orders" => [
+                    "relatedTable" => "dateien_auftraege",
+                    "localKey" => "id",
+                    "foreignKey" => "id_datei",
+                ],
+                "connected_vehicles" => [
+                    "relatedTable" => "dateien_fahrzeuge",
+                    "localKey" => "id",
+                    "foreignKey" => "id_datei",
+                ],
+                "connected_items" => [
+                    "relatedTable" => "dateien_posten",
+                    "localKey" => "id",
+                    "foreignKey" => "id_file",
+                ],
+                "connected_products" => [
+                    "relatedTable" => "dateien_produkte",
+                    "localKey" => "id",
+                    "foreignKey" => "id_datei",
+                ],
+            ],
+        ],
         "einkauf" => [
             "columns" => [
                 "id",
@@ -280,7 +324,7 @@ function getTableConfigFrontOffice()
         ];
 
         $table["columns"] = array_filter(
-            $table["columns"], 
+            $table["columns"],
             fn($el) => !in_array($el, $table["hidden"] ?? [])
         );
 

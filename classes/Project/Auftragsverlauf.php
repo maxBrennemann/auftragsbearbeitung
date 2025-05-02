@@ -36,7 +36,7 @@ class Auftragsverlauf
         }
     }
 
-    /*
+    /**
      * Zu jeder Änderung in einem Auftrag wird in die Auftragsverlaufstabelle ein Eintrag
      * geschrieben, der diese Änderung protokolliert, dabei wird die Art der Änderung, die
      * Id zur Identifikation der anderen Tabellenspalten und ein Zeitstempel miteingetragen.
@@ -57,55 +57,41 @@ class Auftragsverlauf
         DBAccess::insertQuery($query, $params);
     }
 
-    /*
+    /**
      * added member join to get the user id
-    */
-    public function getHistory()
+     */
+    public function getHistory(): array
     {
         $query = "SELECT history.id, history.insertstamp, history_type.name , CONCAT(COALESCE(history.alternative_text, ''), COALESCE(ids.descr, '')) AS Beschreibung, history.state, user.username, user.prename
             FROM history
             LEFT JOIN (
-                (SELECT CONCAT(fahrzeuge.Kennzeichen, ' ', fahrzeuge.Fahrzeug) AS `descr`, fahrzeuge_auftraege.id_fahrzeug AS id, 3 AS `type` FROM fahrzeuge, fahrzeuge_auftraege WHERE fahrzeuge.Nummer = fahrzeuge_auftraege.id_fahrzeug)
+                (
+                    SELECT CONCAT(fahrzeuge.Kennzeichen, ' ', fahrzeuge.Fahrzeug) AS `descr`, fahrzeuge_auftraege.id_fahrzeug AS id, 3 AS `type` 
+                    FROM fahrzeuge, fahrzeuge_auftraege 
+                    WHERE fahrzeuge.Nummer = fahrzeuge_auftraege.id_fahrzeug
+                )
                 UNION
-                (SELECT notes.note AS `descr`, notes.id AS id, 7 AS `type` FROM notes)
+                (
+                    SELECT notes.note AS `descr`, notes.id AS id, 7 AS `type` 
+                    FROM notes
+                )
             ) ids ON history.number = ids.id 
-            AND history.type = ids.type
+                AND history.type = ids.type
             LEFT JOIN history_type ON history_type.type_id = history.type
             LEFT JOIN user ON user.id = history.member_id
-            WHERE history.orderid = {$this->auftragsnummer}";
+            WHERE history.orderid = :auftragsnummer
+            ORDER BY history.insertstamp DESC";
 
-        return DBAccess::selectQuery($query);
+        return DBAccess::selectQuery($query, [
+            "auftragsnummer" => $this->auftragsnummer,
+        ]);
     }
 
     public function representHistoryAsHTML()
     {
         $history = $this->getHistory();
-        $html = "";
-        foreach ($history as $h) {
-            $datetime = $h['insertstamp'];
-            $datetime = date('d.m.Y H:i', strtotime($datetime));
-            $beschreibung = $h['Beschreibung'];
-            $person = $h['prename'];
-
-            switch ($h['state']) {
-                case "added":
-                    $html .= "<div class=\"showInMiddle\">{$h['name']}: <i>{$beschreibung}</i><br>hinzugefügt am {$datetime}<br>von {$person}</div><div class=\"verticalLine\"></div>";
-                    break;
-                case "edited":
-                    // muss noch ergänzt werden, irgenwas mit bearbeitet
-                    $html .= "";
-                    break;
-                case "finished":
-                    $html .= "<div class=\"showInMiddle\">{$h['name']}: <i>{$beschreibung}</i><br>abgeschlossen am {$datetime}<br>von {$person}</div><div class=\"verticalLine\"></div>";
-                    break;
-                case "deleted":
-                    $html .= "<div class=\"showInMiddle\">{$h['name']}: <i>{$beschreibung}</i><br>gelöscht am {$datetime}<br>von {$person}</div><div class=\"verticalLine\"></div>";
-                    break;
-            }
-        }
-
-        $html .= "<div class=\"showInMiddle\">Keine (weiteren) Einträge</div>";
-
-        return $html;
+        return TemplateController::getTemplate("orderHistory", [
+            "historyElement" => $history,
+        ]);
     }
 }

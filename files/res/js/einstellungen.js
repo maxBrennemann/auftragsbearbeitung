@@ -12,30 +12,6 @@ function initEventListeners() {
     addBindings(fnNames);
     timeTracking();
 
-    const clearFiles = document.getElementById("clearFiles");
-    clearFiles.addEventListener("click", () => {
-        ajax.post(`/api/v1/upload/clear-files`);
-    });
-
-    const adjustFiles = document.getElementById("adjustFiles");
-    adjustFiles.addEventListener("click", () => {
-        ajax.post(`/api/v1/upload/adjust-files`);
-    });
-
-    const addDocs = document.getElementById("addDocs");
-    addDocs.addEventListener("click", () => {
-        ajax.post({
-            r: "indexAll",
-        });
-    });
-
-    const test = document.getElementById("test");
-    test.addEventListener("click", () => {
-        ajax.post({
-            r: "testsearch",
-        });
-    });
-
     const addCategoryBtn = document.getElementById("addCategory");
     addCategoryBtn.addEventListener("click", addCategory);
 
@@ -229,12 +205,45 @@ const setColor = (color, type) => {
 
 fnNames.click_downloadDatabase = () => {
     ajax.post(`/api/v1/settings/backup`).then(r => {
-        document.getElementById("download_db").download = r.fileName;
+        document.getElementById("download_db").download = r.filename;
         document.getElementById("download_db").href = r.url;
         document.getElementById("download_db").click();
 
         if (r.status == "success") {
             notification("", "success");
+        }
+    });
+}
+
+fnNames.click_downloadAllFiles = () => {
+    ajax.post(`/api/v1/settings/file-backup`).then(r => {
+        document.getElementById("download_files").download = r.filename;
+        document.getElementById("download_files").href = r.url;
+        document.getElementById("download_files").click();
+
+        if (r.status == "success") {
+            notification("", "success");
+        }
+    });
+}
+
+fnNames.click_clearFiles = () => {
+    return;
+    ajax.post(`/api/v1/upload/clear-files`).then(r =>{
+        if (r.status == "success") {
+            notification(`${r.deleted_count} Dateien entfernt.`, "success",);
+        } else {
+            notification("", "failure", JSON.stringify(r));
+        }
+    });
+}
+
+fnNames.click_adjustFiles = () => {
+    ajax.post(`/api/v1/upload/adjust-files`).then(r =>{
+        if (r.message == "OK") {
+            notification("", "success");
+        } else {
+            notification("", "failure", JSON.stringify(r));
         }
     });
 }

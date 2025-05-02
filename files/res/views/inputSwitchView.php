@@ -1,9 +1,5 @@
 <label class="flex items-center cursor-pointer">
-    <input type="checkbox" id="<?= $id ?>" <?= isset($value) ? $value : "" ?> class="sr-only peer">
+    <input type="checkbox" id="<?= $id ?>" <?= isset($value) ? $value : "" ?> class="sr-only peer" <?= isset($binding) ? 'data-binding="true" data-fun="' . $binding . '"' : '' ?>>
     <div class="relative w-11 h-6 bg-gray-400 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-    <?php if (isset($binding)) : ?>
-        <span data-binding="true" data-fun="<?= $binding ?>" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"><?= $name ?></span>
-    <?php else : ?>
-        <span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"><?= $name ?></span>
-    <?php endif; ?>
+    <span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"><?= $name ?></span>
 </label>

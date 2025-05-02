@@ -23,7 +23,7 @@ if (isset($_GET["id"])) {
     <p>Inhalt</p>
     <textarea id="newContent" class="input-primary"></textarea>
     <div class="mt-2">
-        <button data-fun="addEntry" data-binding="true" class="btn-primary-new">Hinzufügen</button>
+        <button data-fun="addEntry" data-binding="true" class="btn-primary">Hinzufügen</button>
     </div>
 </div>
 <?php foreach ($eintraege as $eintrag): ?>
