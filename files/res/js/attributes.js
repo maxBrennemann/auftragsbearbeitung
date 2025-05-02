@@ -1,4 +1,5 @@
 import { ajax } from "./classes/ajax.js";
+import { addBindings } from "./classes/bindings.js";
 import { notification } from "./classes/notifications.js";
 import { clearInputs } from "./global.js";
 
@@ -6,20 +7,25 @@ let currentDraggedGroup = null;
 let currentDraggedElement = null;
 let currentIndex = null;
 
+const fnNames = {};
+
 function init() {
-    const btnAddAttribute = document.getElementById("btnAddAttribute");
-    btnAddAttribute.addEventListener("click", addNewAttribute);
-
-    const btnAbortAttribute = document.getElementById("btnAbortAttribute");
-    btnAbortAttribute.addEventListener("click", function() {
-        clearInputs({"ids": ["newName", "descr"]});
-    });
-
-    const btnAddAttributeValue = document.getElementById("btnAddValue");
-    btnAddAttributeValue.addEventListener("click", addNewAttributeValue);
+    addBindings(fnNames);
 
     initSortAttributes();
     initSortAttributeValues();
+}
+
+fnNames.click_btnAddValue = () => {
+    addNewAttributeValue();
+}
+
+fnNames.click_btnAddAttribute = () => {
+    addNewAttribute();
+}
+
+fnNames.click_btnAbortAttribute = () => {
+    clearInputs({"ids": ["newName", "descr"]});
 }
 
 function initSortAttributes() {

@@ -67,6 +67,8 @@ class AttributeGroup
             JSONResponseHandler::throwError(400, "ID und Wert müssen ausgefüllt sein");
         }
 
+        $currentHighestPosition = DBAccess::selectQuery("");
+
         $result = DBAccess::insertQuery("INSERT INTO attribute (attribute_group_id, `value`) VALUES (:id, :value)", [
             "id" => $attributeId,
             "value" => $value

@@ -69,7 +69,7 @@ foreach ($data as $d) {
         </select>
     </div>
     <div class="mt-2">
-        <button id="btnAddValue" class="btn-primary">Hinzufügen</button>
+        <button id="btnAddValue" class="btn-primary" data-binding="true">Hinzufügen</button>
     </div>
 </div>
 
@@ -84,7 +84,7 @@ foreach ($data as $d) {
         <input class="input-primary mt-1" id="descr">
     </div>
     <div class="mt-2">
-        <button id="btnAddAttribute" class="btn-primary">Hinzufügen</button>
-        <button id="btnAbortAttribute" class="btn-cancel">Leeren</button>
+        <button id="btnAddAttribute" class="btn-primary" data-binding="true">Hinzufügen</button>
+        <button id="btnAbortAttribute" class="btn-cancel" data-binding="true">Leeren</button>
     </div>
 </div>
