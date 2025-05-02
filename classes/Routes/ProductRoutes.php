@@ -26,6 +26,7 @@ class ProductRoutes extends Routes
      * @uses \Classes\Project\Produkt::createProduct()
      * @uses \Classes\Project\Produkt::addSource()
      * @uses \Classes\Project\Produkt::addCombinations()
+     * @uses \Classes\Project\Produkt::addFiles()
      * 
      * @uses \Classes\Project\AttributeGroup::addAttributeGroup()
      * @uses \Classes\Project\AttributeGroup::addAttribute()
@@ -36,6 +37,7 @@ class ProductRoutes extends Routes
         "/product" => [\Classes\Project\Produkt::class, "createProduct"],
         "/product/source" => [\Classes\Project\Produkt::class, "addSource"],
         "/product/{id}/combinations" => [\Classes\Project\Produkt::class, "addCombinations"],
+        "/product/{id}/add-files" => [\Classes\Project\Produkt::class, "addFiles"],
 
         "/attribute" => [\Classes\Project\AttributeGroup::class, "addAttributeGroup"],
         "/attribute/{id}/value" => [\Classes\Project\AttributeGroup::class, "addAttribute"],

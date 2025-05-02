@@ -44,9 +44,9 @@ foreach ($data as $d) {
                 <p>Beschreibung:</p>
                 <input type="text" class="input-primary mt-1 font-semibold" value="<?= $group["descr"] ?>" data-id="<?= $group["id"] ?>">
             </div>
-            <ul class="attributeValueGroups mt-5" id="attributeValues_<?= $group["id"] ?>" data-id="<?= $group["id"] ?>">
+            <ul class="attributeValueGroups mt-5 space-y-2" id="attributeValues_<?= $group["id"] ?>" data-id="<?= $group["id"] ?>">
                 <?php foreach ($group["attributes"] as $a) : ?>
-                    <li class="bg-slate-100 rounded-md py-2 px-3 hover:bg-blue-300 cursor-pointer flex" draggable="true" data-id="<?= $a["id"] ?>">
+                    <li class="transition-all duration-150 ease-in-out bg-slate-100 rounded-md py-2 px-3 hover:bg-blue-300 cursor-pointer flex select-none" draggable="true" data-id="<?= $a["id"] ?>">
                         <span class="flex-1"><?= $a["value"] ?></span>
                         <div class="flex-none mr-1" title="Anordnen">
                             <button class="border-none" title="Anordnen"><?= Classes\Project\Icon::getDefault("iconMove") ?></button>
@@ -61,8 +61,12 @@ foreach ($data as $d) {
 <div class="defCont addAttributeValue">
     <h3 class="font-semibold">Eigenschaftswert hinzufügen</h3>
     <div class="mt-2">
-        <input class="input-primary" id="newVal">
-        <select class="input-primary ml-1" id="selectAttribute">
+        <p>Attributname:</p>
+        <input class="input-primary mt-1" id="newVal">
+    </div>
+    <div class="mt-2">
+        <p>Eigenschaft:</p>
+        <select class="input-primary mt-1" id="selectAttribute">
             <?php foreach ($attributeGroups as $group) : ?>
                 <option value="<?= $group["id"] ?>"><?= $group["name"] ?></option>
             <?php endforeach; ?>

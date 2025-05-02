@@ -209,28 +209,20 @@ if ($orderId <= 0): ?>
 					]); ?>
 				</div>
 			</div>
-			<div class="bg-white p-2 rounded-md hidden" id="bearbeitungsschritte">
+			<div class="mt-2 bg-white p-2 rounded-md hidden" id="bearbeitungsschritte">
 				<div>
-					<div class="flex flex-col">
-						<p>Bezeichnung:</p>
-						<input class="bearbeitungsschrittInput input-primary w-full" type="text" max="128">
+					<p>Bezeichnung:</p>
+					<input class="bearbeitungsschrittInput input-primary w-full mt-1" type="text" max="128" id="processingStepName">
+				</div>
+				<div class="mt-2">
+					<p>Datum:</p>
+					<div>
+						<input class="bearbeitungsschrittInput input-primary mt-1" type="date" max="32" id="processingStepDate">
 					</div>
 				</div>
-				<div>
-					<div class="flex flex-col">
-						<p>Datum:</p>
-						<div>
-							<input class="bearbeitungsschrittInput input-primary" type="date" max="32">
-						</div>
-					</div>
-				</div>
-				<div>
-					<div class="flex flex-col">
-						<p>Priorität:</p>
-						<div>
-							<input class="bearbeitungsschrittInput" type="range" list="priority">
-						</div>
-					</div>
+				<div class="mt-2">
+					<p>Priorität:</p>
+					<input class="bearbeitungsschrittInput mt-1" type="range" list="priority" id="processingStepPriority">
 					<datalist id="priority">
 						<option value="0"></option>
 						<option value="25"></option>
@@ -239,34 +231,33 @@ if ($orderId <= 0): ?>
 						<option value="100"></option>
 					</datalist>
 				</div>
-				<div>
-					<div class="flex flex-col">
-						<p>Noch zu erledigen:</p>
-						<label>
-							<input type="checkbox" id="" value="checked" class="sr-only peer">
-							<div class="relative w-11 h-6 bg-gray-400 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-						</label>
-					</div>
+				<div class="mt-2">
+					<?= TemplateController::getTemplate("inputSwitch", [
+						"id" => "processingStepStatus",
+						"name" => "Noch zu erledigen",
+						"value" => "checked",
+					]); ?>
 				</div>
-				<form name="isAlreadyDone" class="hidden">
-					<input type="radio" name="isDone" value="show" checked>Noch zu erledigen<br>
-					<input type="radio" name="isDone" value="hide">Schon erledigt<br>
-				</form>
-				<div>
-					<input type="checkbox" name="assignTo" onclick="document.getElementById('selectMitarbeiter').disabled = false;">Zuweisen an:</input>
-					<br>
-					<select id="selectMitarbeiter" disabled>
+				<div class="mt-2">
+					<?= TemplateController::getTemplate("inputSwitch", [
+						"id" => "processingStepBy",
+						"name" => "Zuweisen an:",
+						"binding" => "updateSelectBy",
+					]); ?>
+				</div>
+				<div class="mt-2">
+					<select id="processingStepSelectBy" disabled>
 						<?php foreach ($mitarbeiter as $m): ?>
-							<option value="<?= $m['id'] ?>"><?= $m['prename'] ?> <?= $m['lastname'] ?></option>
+							<option value="<?= $m["id"] ?>"><?= $m["prename"] ?> <?= $m["lastname"] ?></option>
 						<?php endforeach; ?>
 					</select>
 				</div>
 				<div class="mt-2">
 					<button class="btn-primary" data-binding="true" data-fun="addBearbeitungsschritt" class="btn-primary">Hinzufügen</button>
-					<button class="btn-cancel" data-binding="true" data-fun="addBearbeitungsschritt" class="btn-primary">Abbrechen</button>
+					<button class="btn-cancel ml-1" data-binding="true" data-fun="addBearbeitungsschritt" class="btn-primary">Abbrechen</button>
 				</div>
 			</div>
-			<div id="stepTable">
+			<div id="stepTable" class="mt-2">
 				<?= $auftrag->getOpenBearbeitungsschritteTable() ?>
 			</div>
 		</div>
@@ -277,7 +268,7 @@ if ($orderId <= 0): ?>
 				<button class="btn-primary mt-2" data-binding="true" data-fun="addNewNote" id="addNewNote">Neu</button>
 			</div>
 			<div class="hidden mt-2" id="addNotes">
-				<div class="bg-white w-2/3 rounded-lg p-2">
+				<div class="bg-white w-full lg:w-2/3 rounded-lg p-2">
 					<input type="text" class="noteTitle text-slate-700 font-bold outline-0" max="128">
 					<textarea class="noteText mt-2 text-slate-500 resize-none w-full outline-0" type="text" max="128"></textarea>
 					<div class="relative flex text-slate-600">

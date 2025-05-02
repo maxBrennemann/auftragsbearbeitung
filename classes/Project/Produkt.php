@@ -245,16 +245,15 @@ class Produkt
 
 	public static function getFiles($idProduct)
 	{
-		$files = DBAccess::selectQuery("SELECT DISTINCT dateiname AS Datei, originalname, `date` AS Datum, typ as Typ FROM dateien LEFT JOIN dateien_produkte ON dateien_produkte.id_datei = dateien.id WHERE dateien_produkte.id_produkt = $idProduct");
+		$files = DBAccess::selectQuery("SELECT DISTINCT dateiname AS Datei, originalname, `date` AS Datum, typ as Typ 
+			FROM dateien 
+			LEFT JOIN dateien_produkte ON dateien_produkte.id_datei = dateien.id 
+			WHERE dateien_produkte.id_produkt = $idProduct");
 
 		for ($i = 0; $i < sizeof($files); $i++) {
 			$link = Link::getResourcesShortLink($files[$i]['Datei'], "upload");
 
-			if (getimagesize("upload/" . $files[$i]['Datei'])) {
-				$html = "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\"><img class=\"img_prev_i\" src=\"$link\" width=\"40px\"><p class=\"img_prev\">{$files[$i]['originalname']}</p></a>";
-			} else {
-				$html = "<span><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\">{$files[$i]['originalname']}</a></span>";
-			}
+			$html = "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\"><img class=\"img_prev_i\" src=\"$link\" width=\"40px\"><p class=\"img_prev\">{$files[$i]['originalname']}</p></a>";
 
 			$files[$i]['Datei'] = $html;
 		}
@@ -303,5 +302,20 @@ class Produkt
 		} else {
 			JSONResponseHandler::throwError(400, "Type not found");
 		}
+	}
+
+	public static function addFiles()
+	{
+		$uploadHandler = new UploadHandler();
+		$files = $uploadHandler->uploadMultiple();
+		$productId = (int) Tools::get("id");
+
+		$query = "INSERT INTO dateien_produkte (id_datei, id_produkt) VALUES ";
+		$values = [];
+		foreach ($files as $file) {
+			$values[] = [(int) $file["id"], $productId];
+  		}
+
+		DBAccess::insertMultiple($query, $values);
 	}
 }

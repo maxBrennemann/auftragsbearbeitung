@@ -11,8 +11,6 @@ const fnNames = {};
 
 function init() {
     addBindings(fnNames);
-
-    initSortAttributes();
     initSortAttributeValues();
 }
 
@@ -21,7 +19,7 @@ fnNames.click_btnAddValue = () => {
     const attribute = document.getElementById("selectAttribute").value;
 
     ajax.post(`/api/v1/attribute/${attribute}/value`, {
-        value: value,
+        "value": value,
     }).then(r => {
         const li = document.querySelector(".attributeValueGroups li");
         const liClone = li.cloneNode(true);
@@ -30,66 +28,47 @@ fnNames.click_btnAddValue = () => {
 
         const ul = document.getElementById("attributeValues_" + attribute);
         ul.appendChild(liClone);
-
-        liClone.addEventListener("dragstart", handleDragStart);
-        liClone.addEventListener("dragover", handleDravOver);
-        liClone.addEventListener("drop", handleDragDrop);
+        bindDragEvents(liClone);
     }).catch((error) => {
         console.error(error);
     });
 }
 
 fnNames.click_btnAddAttribute = () => {
-    var name = document.getElementById("newName").value;
-    var descr = document.getElementById("descr").value;
+    const name = document.getElementById("newName").value;
+    const descr = document.getElementById("descr").value;
 
     ajax.post(`/api/v1/attribute`, {
-        name: name,
-        descr: descr,
-    }).then(() => {
+        "name": name,
+        "descr": descr,
+    }).then(r => {
         notification("", "success");
 
-        /* adds new attribute container to top */
-        var div = document.createElement("div");
-        div.classList.add("defCont");
-        div.classList.add("singleAttribute");
+        const div = document.querySelector("singleAttribute");
+        const divClone = div.cloneNode(true);
 
-        var h2 = document.createElement("h2");
-        h2.dataset.id = response;
-        h2.innerHTML = name;
+        const dataElements = divClone.querySelectorAll(`[data-id]`)
+        dataElements[0].dataset.id = r.id;
+        dataElements[1].dataset.id = r.id;
+        dataElements[2].dataset.id = r.id;
 
-        var p = document.createElement("p");
+        dataElements[0].value = name;
+        dataElements[1].value = descr;
+        dataElements[2].id = "attributeValues_" + r.id;
 
-        var i = document.createElement("i");
-        i.innerHTML = descr;
-
-        var ul = document.createElement("ul");
-        ul.id = "attributeValues_" + response;
-
-        div.appendChild(h2);
-        div.appendChild(p);
-        p.appendChild(i);
-        div.appendChild(ul);
-
-        document.getElementsByClassName("attributesContainer")[0].appendChild(div);
-
-        /* adds new attribte to select */
-        var option = document.createElement("option");
-        option.value = response;
-        option.innerText = args[0];
-
-        document.getElementById("selectAttribute").appendChild(option);
+        dataElements[2].innerHTML = "";
     }).catch((error) => {
         console.error(error);
     });
 }
 
 fnNames.click_btnAbortAttribute = () => {
-    clearInputs({ "ids": ["newName", "descr"] });
-}
-
-function initSortAttributes() {
-
+    clearInputs({
+        "ids": [
+            "newName",
+            "descr",
+        ],
+    });
 }
 
 function initSortAttributeValues() {
@@ -98,52 +77,80 @@ function initSortAttributeValues() {
     Array.from(attributeValueGroups).forEach(group => {
         const groupElements = group.getElementsByTagName("li");
 
-        Array.from(groupElements).forEach(element => {
-            element.addEventListener("dragstart", handleDragStart);
-            element.addEventListener("dragover", handleDravOver);
-            element.addEventListener("drop", handleDragDrop);
-        });
+        Array.from(groupElements).forEach(element => bindDragEvents(element));
     });
 }
 
-const handleDragStart = e => {
-    currentDraggedGroup = group;
-    currentDraggedElement = e.target;
-    currentIndex = Array.from(group.children).indexOf(e.target);
+const bindDragEvents = element => {
+    element.addEventListener("dragstart", handleDragStart);
+    element.addEventListener("dragover", handleDragOver);
+    element.addEventListener("dragenter", handleDragEnter);
+    element.addEventListener("dragleave", handleDragLeave);
+    element.addEventListener("drop", handleDragDrop);
+    element.addEventListener("dragend", handleDragEnd);
 }
 
-const handleDravOver = e => {
-    e.preventDefault();
+const handleDragStart = e => {
+    currentDraggedGroup = e.currentTarget.closest(".attributeValueGroups");
+    currentDraggedElement = e.currentTarget;
+    currentIndex = Array.from(currentDraggedGroup.children).indexOf(e.currentTarget);
+
+    e.currentTarget.classList.add("opacity-50");
 }
+
+const handleDragOver = e => {
+    e.preventDefault();
+
+    const target = e.currentTarget;
+    const bounding = target.getBoundingClientRect();
+    const offset = e.clientY - bounding.top;
+
+    if (target.parentElement !== currentDraggedGroup || target === currentDraggedElement) return;
+
+    if (offset < bounding.height / 2 && target.previousSibling === currentDraggedElement) return;
+    if (offset >= bounding.height / 2 && target.nextSibling === currentDraggedElement) return;    
+
+    if (offset < bounding.height / 2) {
+        target.before(currentDraggedElement);
+    } else {
+        target.after(currentDraggedElement);
+    }
+}
+
+const handleDragEnter = e => {
+    e.preventDefault();
+    e.currentTarget.classList.add("ring-2", "ring-blue-400", "bg-blue-50");
+};
+
+const handleDragLeave = e => {
+    e.currentTarget.classList.remove("ring-2", "ring-blue-400", "bg-blue-50");
+};
 
 const handleDragDrop = e => {
     e.preventDefault();
-    let indexDrop = Array.from(group.children).indexOf(e.target);
-    const targetElement = e.target;
-    const targetGroup = targetElement.parentElement;
 
-    if (currentDraggedGroup !== targetGroup) {
-        return;
-    }
-
-    if (currentIndex > indexDrop) {
-        targetElement.before(currentDraggedElement);
-    } else {
-        targetElement.after(currentDraggedElement);
-    }
+    handleDragLeave(e);
+    currentDraggedElement.classList.remove("opacity-50");
 
     updatePositions();
 }
 
+const handleDragEnd = e => {
+    e.currentTarget.classList.remove("opacity-50");
+
+    const lis = document.querySelectorAll(".attributeValueGroups li");
+    lis.forEach(li => li.classList.remove("ring-2", "ring-blue-400", "bg-blue-50"));
+};
+
 function updatePositions() {
-    const listItems = currentDraggedGroup.getElementsByTagName("li");
+    const listItems = currentDraggedGroup.children;
     let positions = [];
-    listItems.forEach((el, idx) => {
+    Array.from(listItems).forEach((el, idx) => {
         const id = el.dataset.id;
         const newPosition = idx + 1;
         positions.push({
-            id: id,
-            position: newPosition
+            "id": id,
+            "position": newPosition
         });
     });
 
@@ -152,6 +159,7 @@ function updatePositions() {
     }).then(() => {
         notification("", "success");
     }).catch((error) => {
+        notification("", "failure", JSON.stringify(error));
         console.error(error);
     });
 }
