@@ -14,10 +14,6 @@ use Classes\Project\ClientSettings;
 use Classes\Project\Color;
 use Classes\Project\TemplateController;
 
-?>
-
-<?php
-
 $show = false;
 $optionsDefault = true;
 
@@ -29,7 +25,12 @@ try {
 	$orderId = 0;
 }
 
-if ($orderId <= 0): ?>
+?>
+<input type="hidden" data-variable="true" value="<?= $auftrag->getKundennummer() ?>" id="customerId">
+<input type="hidden" data-variable="true" value="<?= $orderId ?>" id="orderId">
+<input type="hidden" data-variable="true" value="<?= $auftrag->getRechnungsnummer() ?>" id="invoiceId">
+
+<?php if ($orderId <= 0): ?>
 	<div class="mt-4 bg-gray-50 p-3 rounded-lg">
 		<p>Kein (gültiger) Auftrag ausgewählt.</p>
 		<?= Auftrag::getOverview(); ?>
@@ -60,9 +61,9 @@ if ($orderId <= 0): ?>
 		<div>
 			<div class="defCont" id="orderFinished">
 				<p>Auftrag <?= $auftrag->getAuftragsnummer() ?> wurde abgeschlossen. Rechnungsnummer: <span id="rechnungsnummer"><?= $auftrag->getRechnungsnummer() ?></span></p>
-				<button class="btn-primary" data-fun="showAuftrag" data-binding="true">Auftrag anzeigen</button>
+				<button class="btn-primary mt-2" data-fun="showAuftrag" data-binding="true">Auftrag anzeigen</button>
 				<?php
-				$invoiceLink = $auftrag->getKundennummer() . "_" . $auftrag->getRechnungsnummer() . ".pdf";
+				$invoiceLink = "Rechnung_" . $auftrag->getRechnungsnummer() . ".pdf";
 				$invoiceLink = Link::getResourcesShortLink($invoiceLink, "pdf");
 				?>
 				<a class="link-primary" href="<?= $invoiceLink ?>">Zur Rechnung</a>
@@ -72,9 +73,9 @@ if ($orderId <= 0): ?>
 					<div id="orderPaymentState">
 						<p>Die Rechnung wurde noch nicht beglichen.</p>
 						<label>
-							<input type="date" id="inputPayDate">
+							<input type="date" id="inputPayDate" class="input-primary">
 						</label>
-						<select id="paymentType">
+						<select id="paymentType" class="input-primary">
 							<option value="unbezahlt">Unbezahlt</option>
 							<option value="ueberweisung">Überweisung</option>
 							<option value="bar">Bar</option>
@@ -83,26 +84,8 @@ if ($orderId <= 0): ?>
 							<option value="amazonpay">AmazonPay</option>
 							<option value="weiteres">Weiteres</option>
 						</select>
-						<button class="btn-primary" onclick="setPayed()">Rechnung wurde bezahlt</button>
+						<button class="btn-primary" data-binding="true" data-fun="setPayed">Rechnung wurde bezahlt</button>
 					</div>
-					<script>
-						function setPayed() {
-							const date = document.getElementById('inputPayDate').value;
-							const paymentType = document.getElementById('paymentType').value;
-
-							ajax.post({
-								r: "setInvoiceData",
-								id: <?= $orderId ?>,
-								invoice: <?= $auftrag->getRechnungsnummer() ?>,
-								date: date,
-								paymentType: paymentType,
-							}).then(r => {
-								if (r.status == "success") {
-									document.getElementById('orderPaymentState').innerHTML = `<p>Die Rechnung wurde am ${date} mit ${paymentType} bezahlt.</p>`;
-								}
-							});
-						}
-					</script>
 				</div>
 			<?php else: ?>
 				<div class="defCont">
@@ -110,7 +93,7 @@ if ($orderId <= 0): ?>
 				</div>
 			<?php endif; ?>
 			<div class="defCont">
-				<embed type="application/pdf" src="<?= $invoiceLink ?>" width="100%" height="400">
+				<embed type="application/pdf" src="<?= $invoiceLink ?>" width="100%" height="400" id="invoiceEmbed" onError="console.log('test')">
 			</div>
 			<style>
 				main {

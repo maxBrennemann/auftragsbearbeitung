@@ -1,4 +1,4 @@
-﻿import { addBindings } from "./classes/bindings.js";
+﻿import { addBindings, getVariable } from "./classes/bindings.js";
 import { addColor, addSelectedColors, checkHexCode, removeColor, toggleCS } from "./auftrag/colorManager.js";
 import { initNotes } from "./auftrag/noteStepManager.js";
 import { setOrderFinished, updateDate, updateDeadline, setDeadlineState, initExtraOptions, editDescription, editOrderType, editTitle, archvieren } from "./auftrag/orderManager.js";
@@ -20,6 +20,14 @@ window.globalData = {
 
 const fnNames = {};
 
+export const getOrderId = () => {
+    return parseInt(globalData.auftragsId);
+}
+
+export const getCustomerId = () => {
+    return parseInt(getVariable("customerId"));
+}
+
 const initCode = async () => {
     if (isNaN(globalData.auftragsId)) {
         return;
@@ -28,6 +36,7 @@ const initCode = async () => {
     addBindings(fnNames);
 
     if (document.getElementById("orderFinished")) {
+        initInvoice();
         return;
     }
 
@@ -250,8 +259,36 @@ fnNames.click_setDeadlineState = setDeadlineState;
 fnNames.click_archvieren = archvieren;
 fnNames.click_toggleOrderDescription = toggleOrderDescription;
 
-export const getOrderId = () => {
-    return parseInt(globalData.auftragsId);
+fnNames.click_setPayed = () => {
+    const date = document.getElementById('inputPayDate').value;
+    const paymentType = document.getElementById('paymentType').value;
+    const invoiceId = getVariable("invoiceId");
+
+    ajax.post(`"/invoice/${invoiceId}/paid"`, {
+        "date": date,
+        "paymentType": paymentType,
+    }).then(r => {
+        if (r.status == "success") {
+            document.getElementById("orderPaymentState").innerHTML = `<p>Die Rechnung wurde am ${date} mit ${paymentType} bezahlt.</p>`;
+        }
+    });
+}
+
+const initInvoice = () => {
+    const invoiceEmbed = document.getElementById("invoiceEmbed");
+
+    fetch(invoiceEmbed.src)
+        .then(response => {
+            console.log('Status:', response.status);
+            if (response.ok) {
+                document.getElementById('myEmbed').src = response.url;
+            } else {
+                console.error('Failed to load:', response.status);
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+        });
 }
 
 if (document.readyState !== 'loading') {

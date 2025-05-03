@@ -15,9 +15,6 @@ use Classes\Project\Table\TableConfig;
 use Classes\Project\Modules\Sticker\Exports\ExportFacebook;
 use Classes\Project\Modules\Sticker\Imports\ImportGoogleSearchConsole;
 
-use Classes\Project\Modules\Pdf\TransactionPdf\OfferPDF;
-use Classes\Project\Modules\Pdf\TransactionPdf\InvoicePDF;
-
 class ResourceManager
 {
 
@@ -62,7 +59,7 @@ class ResourceManager
             case "js":
             case "css":
             case "font":
-            case "pdf_invoice":
+            case "pdfs":
             case "upload":
             case "backup":
             case "img":
@@ -119,25 +116,7 @@ class ResourceManager
         if ($getReason != null) {
             Ajax::manageRequests($getReason, self::$page);
         } else {
-            if (self::$page == "pdf") {
-                $type = Tools::get("type");
-                switch ($type) {
-                    case "offer":
-                        $offerId = (int) Tools::get("offerId");
-                        $customerId = (int) Tools::get("customerId");
-                        $offerPDF = new OfferPDF($offerId, $customerId);
-                        $offerPDF->generate();
-                        break;
-                    case "invoice":
-                        $invoiceId = (int) Tools::get("invoiceId");
-                        $orderId = (int) Tools::get("orderId");
-                        $invoice = new InvoicePDF($invoiceId, $orderId);
-                        $invoice->generate();
-                        break;
-                }
-            } else {
-                self::showPage();
-            }
+            self::showPage();
         }
     }
 
@@ -208,8 +187,8 @@ class ResourceManager
             case "font":
                 self::get_font($resource);
                 break;
-            case "pdf_invoice":
-                self::get_pdf_invoice($resource);
+            case "pdfs":
+                self::get_pdf($resource);
                 break;
             case "upload":
                 self::get_upload($resource);
@@ -376,10 +355,17 @@ class ResourceManager
         echo $file;
     }
 
-    private static function get_pdf_invoice($pdf)
+    private static function get_pdf($pdf)
     {
         header("Content-type: application/pdf");
-        $file = file_get_contents(Link::getResourcesLink($pdf, "pdf", false));
+        $fileName = Link::getResourcesLink($pdf, "pdf", false);
+        if (!file_exists($fileName)) {
+            echo "";
+            \http_response_code(404);
+            return;
+        }
+
+        $file = file_get_contents($fileName);
 
         echo $file;
     }

@@ -6,6 +6,8 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
+use Classes\Project\Modules\Pdf\TransactionPdf\OfferPDF;
+
 class Angebot
 {
 
@@ -25,7 +27,7 @@ class Angebot
         } catch (\Exception $e) {
             throw new \Exception("Kunde nicht gefunden");
         }
-        
+
         $this->offerId = $offerId;
         $this->customerId = $customerId;
         $this->leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
@@ -162,4 +164,11 @@ class Angebot
         JSONResponseHandler::sendResponse([]);
     }
 
+    public static function getPDF()
+    {
+        $offerId = (int) Tools::get("offerId");
+        $customerId = (int) Tools::get("customerId");
+        $offerPDF = new OfferPDF($offerId, $customerId);
+        $offerPDF->generate();
+    }
 }

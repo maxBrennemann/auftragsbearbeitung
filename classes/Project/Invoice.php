@@ -4,8 +4,9 @@ namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
-
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+
+use Classes\Project\Modules\Pdf\TransactionPdf\InvoicePDF;
 
 class Invoice
 {
@@ -362,8 +363,24 @@ class Invoice
 			"invoice" => $invoiceId,
 		]);
 
+		if (Tools::get("date") && Tools::get("paymentType")) {
+			DBAccess::updateQuery("UPDATE invoice SET payment_date = :paymentDate, payment_type = :paymentType WHERE id = :invoice", [
+				"paymentDate" => Tools::get("date"),
+				"paymentType" => Tools::get("paymentType"),
+				"invoice" => $invoiceId,
+			]);
+		}
+
 		JSONResponseHandler::sendResponse([
 			"status" => "success",
 		]);
+	}
+
+	public static function getPDF()
+	{
+		$invoiceId = (int) Tools::get("invoiceId");
+		$orderId = (int) Tools::get("orderId");
+		$invoice = new InvoicePDF($invoiceId, $orderId);
+		$invoice->generate();
 	}
 }

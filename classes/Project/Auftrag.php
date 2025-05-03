@@ -117,8 +117,10 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 			return "";
 		}
 
-		$query = "SELECT payment_date FROM invoice WHERE order_id = :orderId";
-		$data = DBAccess::selectQuery($query, ["orderId" => $this->Auftragsnummer]);
+		$query = "SELECT DATE_FORMAT(payment_date, '%d.%m.%Y') AS payment_date FROM invoice WHERE order_id = :orderId";
+		$data = DBAccess::selectQuery($query, [
+			"orderId" => $this->Auftragsnummer
+		]);
 
 		if (empty($data)) {
 			return "";
@@ -127,7 +129,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 		return $data[0]["payment_date"];
 	}
 
-	public function getPaymentType()
+	public function getPaymentType(): string
 	{
 		if (!$this->getIsPayed()) {
 			return "";

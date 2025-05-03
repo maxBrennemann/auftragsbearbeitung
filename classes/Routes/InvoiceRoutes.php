@@ -9,9 +9,11 @@ class InvoiceRoutes extends Routes
 
     /**
      * @uses \Classes\Project\Invoice::getOpenInvoiceData()
+     * @uses \Classes\Project\Invoice::getPDF()
      */
     protected static $getRoutes = [
         "/invoice/open" => [\Classes\Project\Invoice::class, "getOpenInvoiceData"],
+        "/invoice/{invoiceId}/pdf" => [\Classes\Project\Invoice::class, "getPDF"],
     ];
 
     /**
