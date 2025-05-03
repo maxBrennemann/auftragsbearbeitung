@@ -20,7 +20,6 @@ class SessionController
         if (isset($_SESSION["LAST_ACTIVITY"]) 
             && (time() - $_SESSION["LAST_ACTIVITY"] > self::$lifetime)) {
             self::destroy();
-            header("Location: login");
             exit;
         }
 

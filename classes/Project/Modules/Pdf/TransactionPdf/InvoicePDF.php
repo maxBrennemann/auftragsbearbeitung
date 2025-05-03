@@ -11,7 +11,8 @@ class InvoicePDF extends TransactionPDF
 
     public function __construct(int $invoiceId, int $orderId)
     {
-        parent::__construct("Rechnung " . $invoiceId, $orderId);
+        parent::__construct("Rechnung_" . $invoiceId, $orderId);
+        $this->fileName = "Rechnung_" . $invoiceId;
         $this->invoice = new Invoice($invoiceId, $orderId);
         
         $this->invoiceId = $invoiceId;
@@ -19,7 +20,7 @@ class InvoicePDF extends TransactionPDF
         $this->contactId = $this->invoice->getContactId();
     }
 
-    public function generate($store = false)
+    public function generate()
     {
         $this->setPrintHeader(false);
 
@@ -168,8 +169,6 @@ class InvoicePDF extends TransactionPDF
         $this->setCellMargins(0, 0, 0, 0);
         $this->SetFont("helvetica", "", 10);
         $this->Cell(160, 10, "Zahlbar sofort ohne weitere Abzüge.");
-
-        $this->Output();
     }
 
     private function addTableHeader($y = 45)

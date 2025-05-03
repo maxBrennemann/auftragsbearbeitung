@@ -78,7 +78,7 @@ class Link
 				break;
 			case "csv":
 			case "backup":
-			case "pdfs":
+			case "pdf":
 				$link = $rewriteBase . "generated/" . $resource;
 				break;
 		}

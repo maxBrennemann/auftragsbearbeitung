@@ -28,7 +28,7 @@ try {
 ?>
 <input type="hidden" data-variable="true" value="<?= $auftrag->getKundennummer() ?>" id="customerId">
 <input type="hidden" data-variable="true" value="<?= $orderId ?>" id="orderId">
-<input type="hidden" data-variable="true" value="<?= $auftrag->getRechnungsnummer() ?>" id="invoiceId">
+<input type="hidden" data-variable="true" value="<?= $auftrag->getInvoiceId() ?>" id="invoiceId">
 
 <?php if ($orderId <= 0): ?>
 	<div class="mt-4 bg-gray-50 p-3 rounded-lg">
@@ -59,14 +59,21 @@ try {
 
 	if ($auftrag->istRechnungGestellt() && $show == false): ?>
 		<div>
+			<div class="hidden bg-red-300 m-2 p-2 rounded-md gap-2 items-center" id="showMissingFileWarning">
+				<?= Icon::get("iconWarning", 25, 25) ?>
+				<div class="ml-2">
+					<p>Die Rechnung konnte nicht gefunden werden!</p>
+					<button data-fun="recreateInvoice" data-binding="true" class="btn-primary mt-1">Neu erstellen</button>
+				</div>
+			</div>
 			<div class="defCont" id="orderFinished">
-				<p>Auftrag <?= $auftrag->getAuftragsnummer() ?> wurde abgeschlossen. Rechnungsnummer: <span id="rechnungsnummer"><?= $auftrag->getRechnungsnummer() ?></span></p>
+				<p>Auftrag <?= $auftrag->getAuftragsnummer() ?> wurde abgeschlossen. Rechnungsnummer: <span id="rechnungsnummer"><?= $auftrag->getInvoiceId() ?></span></p>
 				<button class="btn-primary mt-2" data-fun="showAuftrag" data-binding="true">Auftrag anzeigen</button>
 				<?php
-				$invoiceLink = "Rechnung_" . $auftrag->getRechnungsnummer() . ".pdf";
+				$invoiceLink = "Rechnung_" . $auftrag->getInvoiceId() . ".pdf";
 				$invoiceLink = Link::getResourcesShortLink($invoiceLink, "pdf");
 				?>
-				<a class="link-primary" href="<?= $invoiceLink ?>">Zur Rechnung</a>
+				<a class="link-primary" href="<?= $invoiceLink ?>" target="_blank">Zur Rechnungs-PDF</a>
 			</div>
 			<?php if (!$auftrag->getIsPayed()): ?>
 				<div class="defCont">
@@ -171,11 +178,15 @@ try {
 				</p>
 			</div>
 			<div>
-				<button class="btn-primary" onclick="location.href= '<?= Link::getPageLink('rechnung') ?>?target=create&id=<?= $orderId ?>'">Rechnung generieren</button>
-				<?php if ($auftrag->getIsArchiviert() == false) : ?>
-					<button class="btn-primary" data-binding="true" data-fun="archvieren">Auftrag archivieren</button>
+				<?php if (Tools::get("show") == "t" && $auftrag->getInvoiceId() != 0) : ?>
+					<button class="btn-primary" onclick="location.href= '<?= Link::getPageLink('rechnung') ?>?target=view&id=<?= $orderId ?>'">Rechnung anzeigen</button>
+				<?php else: ?>
+					<button class="btn-primary" onclick="location.href= '<?= Link::getPageLink('rechnung') ?>?target=create&id=<?= $orderId ?>'">Rechnung generieren</button>
+					<?php if ($auftrag->getIsArchiviert() == false) : ?>
+						<button class="btn-primary" data-binding="true" data-fun="archvieren">Auftrag archivieren</button>
+					<?php endif; ?>
+					<button class="btn-primary" data-binding="true" data-fun="setOrderFinished">Auftrag ist fertig</button>
 				<?php endif; ?>
-				<button class="btn-primary" data-binding="true" data-fun="setOrderFinished">Auftrag ist fertig</button>
 			</div>
 		</div>
 

@@ -361,7 +361,7 @@ class ResourceManager
         $fileName = Link::getResourcesLink($pdf, "pdf", false);
         if (!file_exists($fileName)) {
             echo "";
-            \http_response_code(404);
+            http_response_code(404);
             return;
         }
 

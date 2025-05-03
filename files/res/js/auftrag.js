@@ -206,9 +206,9 @@ window.updateIsDone = function (key, event) {
     }, event.target);
 }
 
-const showAuftrag = () => {
-    var url = window.location.href;
-    url += "&show=t";
+
+fnNames.click_showAuftrag = () => {
+    const url = window.location.href + "&show=t";
     window.location.href = url;
 }
 
@@ -238,8 +238,6 @@ const reloadPostenListe = async () => {
     const response = await ajax.get(`/api/v1/order-items/${globalData.auftragsId}/invoice`);
     document.getElementById("invoicePostenTable").innerHTML = response["invoicePostenTable"];
 }
-
-fnNames.click_showAuftrag = showAuftrag;
 
 fnNames.write_changeContact = changeContact;
 
@@ -276,19 +274,26 @@ fnNames.click_setPayed = () => {
 
 const initInvoice = () => {
     const invoiceEmbed = document.getElementById("invoiceEmbed");
+    fetch(invoiceEmbed.src).then(response => {
+        if (response.status == 404) {
+            const el = document.getElementById("showMissingFileWarning");
+            el.classList.remove("hidden");
+            el.classList.add("flex");
+        }
+    });
+}
 
-    fetch(invoiceEmbed.src)
-        .then(response => {
-            console.log('Status:', response.status);
-            if (response.ok) {
-                document.getElementById('myEmbed').src = response.url;
-            } else {
-                console.error('Failed to load:', response.status);
-            }
-        })
-        .catch(error => {
-            console.error('Fetch error:', error);
-        });
+fnNames.click_recreateInvoice = () => {
+    const invoiceId = getVariable("invoiceId");
+    ajax.post(`/api/v1/invoice/${invoiceId}/complete`, {
+        "orderId": getOrderId(),
+    }).then(r => {
+        if (r.status !== "success") {
+            notification("", "failiure", r.message);
+            return;
+        }
+        notification("", "success");
+    });
 }
 
 if (document.readyState !== 'loading') {

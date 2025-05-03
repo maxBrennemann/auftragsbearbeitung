@@ -11,7 +11,6 @@ use Classes\Project\Modules\Pdf\TransactionPdf\InvoicePDF;
 class Invoice
 {
 
-	private Kunde $kunde;
 	private Auftrag $auftrag;
 	private int $addressId = 0;
 	private int $contactId = 0;
@@ -26,9 +25,6 @@ class Invoice
 	public function __construct(int $invoiceId, int $orderId)
 	{
 		$this->auftrag = new Auftrag($orderId);
-		$customerId = $this->auftrag->getKundennummer();
-		$this->kunde = new Kunde($customerId);
-
 		$this->invoiceId = $invoiceId;
 
 		$query = "SELECT * FROM invoice WHERE id = :invoiceId";
@@ -86,11 +82,6 @@ class Invoice
 	public function getOrder(): Auftrag
 	{
 		return $this->auftrag;
-	}
-
-	public function getCustomer(): Kunde
-	{
-		return $this->kunde;
 	}
 
 	public function getPerformanceDate(): string
@@ -298,7 +289,25 @@ class Invoice
 	{
 		$invoiceId = (int) Tools::get("invoiceId");
 		$orderId = (int) Tools::get("orderId");
-		$invoice = new Invoice($invoiceId, $orderId);
+
+		try {
+			$invoice = new Invoice($invoiceId, $orderId);
+		} catch (\Exception $e) {
+			$invoice = self::getInvoice($orderId);
+		}
+
+		if ($invoice->getNumber() !== 0) {
+			$invoicePDF = new InvoicePDF($invoiceId, $orderId);
+			$invoicePDF->generate();
+			$invoicePDF->saveOutput();
+
+			JSONResponseHandler::sendResponse([
+				"status" => "success",
+				"number" => $invoice->getNumber(),
+				"id" => $invoiceId,
+			]);
+			return;
+		}
 
 		$invoiceNumber = InvoiceNumberTracker::completeInvoice($invoice);
 
@@ -382,5 +391,6 @@ class Invoice
 		$orderId = (int) Tools::get("orderId");
 		$invoice = new InvoicePDF($invoiceId, $orderId);
 		$invoice->generate();
+		$invoice->generateOutput();
 	}
 }

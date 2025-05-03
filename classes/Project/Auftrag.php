@@ -13,15 +13,15 @@ use Classes\Notification\NotificationManager;
 class Auftrag implements StatisticsInterface, NotifiableEntity
 {
 
-	protected $Auftragsnummer = null;
-	protected $Auftragsbezeichnung = null;
-	protected $Auftragsbeschreibung = null;
-	protected $Auftragsposten = [];
-	protected $Bearbeitungsschritte = [];
-	protected $auftragstyp = null;
-	protected $rechnungsnummer = 0;
+	private $Auftragsnummer = null;
+	private $Auftragsbezeichnung = null;
+	private $Auftragsbeschreibung = null;
+	private $Auftragsposten = [];
+	private $Bearbeitungsschritte = [];
+	private $auftragstyp = null;
+	private $rechnungsnummer = 0;
 
-	protected $isPayed = false;
+	private $isPayed = false;
 
 	/* dates */
 	public $datum;
@@ -388,9 +388,19 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 		return $this->rechnungsnummer == 0 ? false : true;
 	}
 
-	public function getRechnungsnummer()
+	public function getInvoiceId(): int
 	{
-		return $this->rechnungsnummer;
+		$invoice = Invoice::getInvoice($this->Auftragsnummer);
+
+		if ((int) $this->rechnungsnummer != $invoice->getId()) {
+			$query = "UPDATE auftrag SET Rechnungsnummer = :newInvoiceId WHERE Auftragsnummer = :idOrder";
+			DBAccess::updateQuery($query, [
+				"newInvoiceId" => $invoice->getId(),
+				"idOrder" => $this->Auftragsnummer,
+			]);
+		}
+
+		return $invoice->getId();
 	}
 
 	public function getLinkedVehicles()

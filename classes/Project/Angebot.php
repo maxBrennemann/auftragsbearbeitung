@@ -170,5 +170,6 @@ class Angebot
         $customerId = (int) Tools::get("customerId");
         $offerPDF = new OfferPDF($offerId, $customerId);
         $offerPDF->generate();
+        $offerPDF->generateOutput();
     }
 }
