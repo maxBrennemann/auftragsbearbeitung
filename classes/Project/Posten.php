@@ -39,10 +39,14 @@ abstract class Posten
 		return $this->postennummer;
 	}
 
-	public static function getOrderItems(int $orderId, string $itemType = ""): array
+	public static function getOrderItems(int $orderId, bool $isInvoice = false, int $status = 0): array
 	{
 		$items = [];
-		$invoiceQuery = $itemType == "invoice" ? "AND isInvoice = 0 " : "";
+
+		$invoiceQuery = "";
+		if ($isInvoice) {
+			$invoiceQuery = "AND isInvoice = $status";
+		}
 		$query = "SELECT 
 				p.Postennummer as id, 
 				Posten as `type`, 

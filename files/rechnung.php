@@ -103,7 +103,7 @@ if ($target == "create"): ?>
 		</div>
 	</div>
 	<div class="mt-3">
-		<iframe src="<?= Link::getPageLink('pdf') . "?type=invoice&invoiceId=$invoiceId&orderId=$id" ?>" id="invoicePDFPreview"></iframe>
+		<iframe src="<?= Link::getPageLink('pdf') . "?type=invoice&invoiceId=$invoiceId&orderId=$id" ?>" id="invoicePDFPreview" class="w-full h-lvh"></iframe>
 	</div>
 <?php elseif ($target == "view"): ?>
 	<p class="my-2 font-semibold">Rechnung <span id="rechnungsnummer"><?= $invoice->getNumber(); ?></span></p>

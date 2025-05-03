@@ -239,8 +239,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 	public static function getOrderItems()
 	{
 		$id = (int) Tools::get("id");
-		$type = ClientSettings::getFilterOrderPosten() == true ? "invoice" : "";
-		$data = Posten::getOrderItems($id, $type);
+		$data = Posten::getOrderItems($id, ClientSettings::getFilterOrderPosten(), 0);
 
 		$parsedData = [];
 		foreach ($data as $key => $value) {

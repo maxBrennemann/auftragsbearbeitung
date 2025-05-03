@@ -132,7 +132,7 @@ class Invoice
 	public function loadPostenFromAuftrag(): array
 	{
 		$orderId = $this->auftrag->getAuftragsnummer();
-		$this->posten = Posten::getOrderItems($orderId, "invoice");
+		$this->posten = Posten::getOrderItems($orderId, true, 1);
 		return $this->posten;
 	}
 

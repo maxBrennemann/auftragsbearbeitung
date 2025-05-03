@@ -45,4 +45,4 @@ $isLoggedIn = SessionController::isLoggedIn();
             <a href="/" class="link-primary">Zur Startseite.</a>
         </div>
     </div>
-<? endif; ?>
+<?php endif; ?>

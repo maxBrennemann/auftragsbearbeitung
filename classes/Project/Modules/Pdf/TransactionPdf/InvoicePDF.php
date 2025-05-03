@@ -193,7 +193,7 @@ class InvoicePDF extends TransactionPDF
 
         $this->setXY(25, $y + 45);
         $this->SetFont("helvetica", "B", 12);
-        $this->Cell(10, 10, 'Pos', 'B');
+        $this->Cell(10, 10, 'Pos.', 'B');
         $this->Cell(20, 10, 'Menge', 'B');
         $this->Cell(20, 10, 'MEH', 'B');
         $this->Cell(70, 10, 'Bezeichnung', 'B');
