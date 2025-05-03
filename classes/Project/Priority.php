@@ -2,9 +2,11 @@
 
 namespace Classes\Project;
 
-class Priority {
+class Priority
+{
 
-    public static function getPriorityLevel($prio) {
+    public static function getPriorityLevel($prio)
+    {
         $prio = (int) $prio;
         if ($prio > 95)
             return "Dringend";
@@ -20,5 +22,4 @@ class Priority {
             return "Sehr gering";
         return "Niedrig";
     }
-
 }

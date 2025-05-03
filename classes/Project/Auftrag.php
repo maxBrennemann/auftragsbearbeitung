@@ -13,15 +13,15 @@ use Classes\Notification\NotificationManager;
 class Auftrag implements StatisticsInterface, NotifiableEntity
 {
 
-	protected $Auftragsnummer = null;
-	protected $Auftragsbezeichnung = null;
-	protected $Auftragsbeschreibung = null;
-	protected $Auftragsposten = [];
-	protected $Bearbeitungsschritte = [];
-	protected $auftragstyp = null;
-	protected $rechnungsnummer = 0;
+	private $Auftragsnummer = null;
+	private $Auftragsbezeichnung = null;
+	private $Auftragsbeschreibung = null;
+	private $Auftragsposten = [];
+	private $Bearbeitungsschritte = [];
+	private $auftragstyp = null;
+	private $rechnungsnummer = 0;
 
-	protected $isPayed = false;
+	private $isPayed = false;
 
 	/* dates */
 	public $datum;
@@ -96,72 +96,6 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 		return $data;
 	}
 
-	public function getBearbeitungsschritte()
-	{
-		$htmlData = "";
-		foreach ($this->Bearbeitungsschritte as $schritt) {
-			$htmlData .= $schritt->getHTMLData();
-		}
-		return $htmlData;
-	}
-
-	public function getBearbeitungsschritteAsTable()
-	{
-		$query = "SELECT Schrittnummer, Bezeichnung, Datum, `Priority`, finishingDate FROM schritte WHERE Auftragsnummer = :id ORDER BY `Priority` DESC";
-		$data = DBAccess::selectQuery($query, ["id" => $this->Auftragsnummer]);
-
-		$column_names = array(
-			0 => array("COLUMN_NAME" => "Bezeichnung"),
-			1 => array("COLUMN_NAME" => "Datum"),
-			2 => array("COLUMN_NAME" => "Priority", "ALT" => "Priorotät"),
-			3 => array("COLUMN_NAME" => "finishingDate", "ALT" => "erledigt am"),
-		);
-
-		for ($i = 0; $i < sizeof($data); $i++) {
-			$data[$i]["Priority"] = Priority::getPriorityLevel($data[$i]["Priority"]);
-		}
-
-		/* addes three buttons to table */
-		$t = new Table();
-		$t->createByData($data, $column_names);
-		$t->addActionButton("edit");
-		$t->setType("schritte");
-		$t->addActionButton("delete", "Schrittnummer");
-
-		$_SESSION["schritte_table"] = serialize($t);
-
-		return $t->getTable();
-	}
-
-	/* getBearbeitungsschritte with new Table class */
-	public function getOpenBearbeitungsschritteTable(): string
-	{
-		$query = "SELECT Schrittnummer, Bezeichnung, Datum, `Priority` FROM schritte WHERE Auftragsnummer = :id AND istErledigt = 1 ORDER BY `Priority` DESC";
-		$data = DBAccess::selectQuery($query, ["id" => $this->Auftragsnummer]);
-
-		$column_names = array(
-			0 => array("COLUMN_NAME" => "Bezeichnung"),
-			1 => array("COLUMN_NAME" => "Datum"),
-			2 => array("COLUMN_NAME" => "Priority", "ALT" => "Priorotät")
-		);
-
-		for ($i = 0; $i < sizeof($data); $i++) {
-			$data[$i]["Priority"] = Priority::getPriorityLevel($data[$i]["Priority"]);
-		}
-
-		/* addes three buttons to table */
-		$t = new Table();
-		$t->createByData($data, $column_names);
-		$t->addActionButton("update", "Schrittnummer", $update = "istErledigt = 0");
-		$t->addActionButton("edit");
-		$t->setType("schritte");
-		$t->addActionButton("delete", "Schrittnummer");
-
-		$_SESSION["schritte_table"] = serialize($t);
-
-		return $t->getTable();
-	}
-
 	public function getAuftragsbeschreibung()
 	{
 		return $this->Auftragsbeschreibung;
@@ -183,8 +117,10 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 			return "";
 		}
 
-		$query = "SELECT payment_date FROM invoice WHERE order_id = :orderId";
-		$data = DBAccess::selectQuery($query, ["orderId" => $this->Auftragsnummer]);
+		$query = "SELECT DATE_FORMAT(payment_date, '%d.%m.%Y') AS payment_date FROM invoice WHERE order_id = :orderId";
+		$data = DBAccess::selectQuery($query, [
+			"orderId" => $this->Auftragsnummer
+		]);
 
 		if (empty($data)) {
 			return "";
@@ -193,7 +129,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 		return $data[0]["payment_date"];
 	}
 
-	public function getPaymentType()
+	public function getPaymentType(): string
 	{
 		if (!$this->getIsPayed()) {
 			return "";
@@ -305,8 +241,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 	public static function getOrderItems()
 	{
 		$id = (int) Tools::get("id");
-		$type = ClientSettings::getFilterOrderPosten() == true ? "invoice" : "";
-		$data = Posten::getOrderItems($id, $type);
+		$data = Posten::getOrderItems($id, ClientSettings::getFilterOrderPosten(), 0);
 
 		$parsedData = [];
 		foreach ($data as $key => $value) {
@@ -453,9 +388,19 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 		return $this->rechnungsnummer == 0 ? false : true;
 	}
 
-	public function getRechnungsnummer()
+	public function getInvoiceId(): int
 	{
-		return $this->rechnungsnummer;
+		$invoice = Invoice::getInvoice($this->Auftragsnummer);
+
+		if ((int) $this->rechnungsnummer != $invoice->getId()) {
+			$query = "UPDATE auftrag SET Rechnungsnummer = :newInvoiceId WHERE Auftragsnummer = :idOrder";
+			DBAccess::updateQuery($query, [
+				"newInvoiceId" => $invoice->getId(),
+				"idOrder" => $this->Auftragsnummer,
+			]);
+		}
+
+		return $invoice->getId();
 	}
 
 	public function getLinkedVehicles()

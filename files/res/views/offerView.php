@@ -36,4 +36,4 @@ $customer = new Kunde($customerId);
     <button class="btn-cancel" data-fun="deleteOffer" data-binding="true">Angebot abbrechen</button>
 </div>
 
-<iframe class="mt-2" id="offerPDFPreview" loading="lazy" src="/pdf?type=offer&offerId=<?=$offer->getId()?>&customerId=<?=$customerId?>"></iframe>
+<iframe class="mt-2" id="offerPDFPreview" loading="lazy" src="/api/v1/order/offer/<?=$offer->getId()?>/pdf?customerId=<?=$customerId?>"></iframe>

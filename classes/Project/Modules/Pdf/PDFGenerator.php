@@ -11,6 +11,7 @@ class PDFGenerator extends TCPDF
 
     /** @var string */
     protected $title;
+    protected $fileName;
 
     protected $companyDetails;
 
@@ -24,7 +25,15 @@ class PDFGenerator extends TCPDF
 
     public function generate() {}
 
-    public function save() {}
+    public function generateOutput()
+    {
+        $this->Output();
+    }
+
+    public function saveOutput() 
+    {
+        $this->Output($_SERVER["DOCUMENT_ROOT"] . "/generated/" . $this->fileName . ".pdf", "F");
+    }
 
     private function generateHeader() {}
 

@@ -4,18 +4,22 @@ import { clearInputs, createPopup, getTemplate } from "../global.js";
 import { tableConfig } from "../classes/tableconfig.js";
 import { fetchAndRenderTable } from "../classes/table.js";
 import { initFileUploader } from "../classes/upload.js";
+import { getCustomerId, getOrderId } from "../auftrag.js";
 
 const fnNames = {};
-const customerId = document.getElementById("kundennummer").innerText;
+const vehicleData =  {
+    "customerId": 0,
+    "orderId": 0,
+}
 
 fnNames.click_addNewVehicle = () => {
     const kfz = document.getElementById("kfz").value;
     const fahrzeug = document.getElementById("fahrzeug").value;
 
-    ajax.post(`/api/v1/customer/${customerId}/vehicle`, {
+    ajax.post(`/api/v1/customer/${vehicleData.customerId}/vehicle`, {
         "licensePlate": kfz,
         "name": fahrzeug,
-        "orderId": globalData.auftragsId,
+        "orderId": vehicleData.orderId,
     }).then(r => {
         document.getElementById("fahrzeugTable").innerHTML = r.table;
         document.getElementById("addVehicle").classList.add("hidden");
@@ -32,7 +36,7 @@ fnNames.click_addExistingVehicle = () => {
         return;
     }
 
-    ajax.put(`/api/v1/order/${globalData.auftragsId}/vehicles/${vehicleId}`)
+    ajax.put(`/api/v1/order/${vehicleData.orderId}/vehicles/${vehicleId}`)
     .then(r => {
         document.getElementById("fahrzeugTable").innerHTML = r.table;
     });
@@ -60,12 +64,12 @@ const createVehicleTable = async () => {
             },
         },
         "conditions": {
-            "Kundennummer": customerId,
-            "id_auftrag": globalData.auftragsId,
+            "Kundennummer": vehicleData.customerId,
+            "id_auftrag": vehicleData.orderId,
         },
         "link": "/fahrzeug?id=",
         "joins": {
-            "connected_vehicles": globalData.auftragsId
+            "connected_vehicles": vehicleData.orderId
         }
     };
 
@@ -74,7 +78,7 @@ const createVehicleTable = async () => {
     table.addEventListener("rowDelete", e => {
         const data = e.detail;
 
-        ajax.delete(`/api/v1/order/${globalData.auftragsId}/vehicles/${data.Nummer}`).then(() => {
+        ajax.delete(`/api/v1/order/${vehicleData.orderId}/vehicles/${data.Nummer}`).then(() => {
             data.row.remove();
         });
     })
@@ -93,7 +97,7 @@ const uploadVehicleFile = async (e) => {
     const btnCancel = optionsContainer.querySelector("button.btn-cancel");
     initFileUploader({
         "vehicle": {
-            "location": `/api/v1/order/${globalData.auftragsId}/vehicle/${data.Nummer}/add-files`,
+            "location": `/api/v1/order/${vehicleData.orderId}/vehicle/${data.Nummer}/add-files`,
         },
     });
 
@@ -102,5 +106,7 @@ const uploadVehicleFile = async (e) => {
 
 export const initVehicles = () => {
     addBindings(fnNames);
+    vehicleData.customerId = getCustomerId();
+    vehicleData.orderId = getOrderId();
     createVehicleTable();
 }

@@ -167,27 +167,6 @@ class Ajax
 			case "createAuftrag":
 				Auftrag::add();
 				break;
-			case "setInvoiceData":
-				$order = $_POST['id'];
-				$invoice = $_POST['invoice'];
-				$date = $_POST['date'];
-				$paymentType = $_POST['paymentType'];
-
-				DBAccess::updateQuery("UPDATE auftrag SET Bezahlt = 1 WHERE Auftragsnummer = :order AND Rechnungsnummer = :invoice", [
-					"order" => $order,
-					"invoice" => $invoice,
-				]);
-
-				DBAccess::updateQuery("UPDATE invoice SET payment_date = :paymentDate, payment_type = :paymentType WHERE order_id = :order", [
-					"paymentDate" => $date,
-					"paymentType" => $paymentType,
-					"order" => $order,
-				]);
-
-				echo json_encode([
-					"status" => "success",
-				]);
-				break;
 			case "delete":
 				/* using new table functionality */
 				$type = $_POST['type'];

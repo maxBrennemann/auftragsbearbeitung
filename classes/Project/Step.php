@@ -40,21 +40,22 @@ class Step
 		return $htmlCode;
 	}
 
-	public static function insertStep($data)
+	public static function insertStep($data): int
 	{
-		$bez = $data['Bezeichnung'];
-		$dat = $data['Datum'];
-		$pri = $data['Priority'];
-		$auf = $data['Auftragsnummer'];
-		$erl = $data['hide'];
-
-		if ($dat == "0" || $dat == 0) {
-			$dat = "0000-00-00";
+		if ($data['Datum'] == null) {
+			$data['Datum'] = "0000-00-00";
 		}
 
-		$auftragsverlauf = new Auftragsverlauf($auf);
-		$postennummer = DBAccess::insertQuery("INSERT INTO `schritte` (`Auftragsnummer`, `istAllgemein`, `Bezeichnung`, `Datum`, `Priority`, `istErledigt`) VALUES ($auf, 1, '$bez', '$dat', $pri, $erl)");
-		$auftragsverlauf->addToHistory($postennummer, 2, "added", $bez);
+		$auftragsverlauf = new Auftragsverlauf($data["Auftragsnummer"]);
+		$postennummer = (int) DBAccess::insertQuery("INSERT INTO `schritte` (`Auftragsnummer`, `istAllgemein`, `Bezeichnung`, `Datum`, `Priority`, `istErledigt`) VALUES (:auftragsnummer, 1, :bezeichnung, :datum, :priority, :status)", [
+			"auftragsnummer" => $data["Auftragsnummer"],
+			"bezeichnung" => $data["Bezeichnung"],
+			"datum" => $data["Datum"],
+			"priority" => $data["Priority"],
+			"status" => $data["hide"],
+		]);
+
+		$auftragsverlauf->addToHistory($postennummer, 2, "added", $data["Bezeichnung"]);
 
 		return $postennummer;
 	}
@@ -66,14 +67,12 @@ class Step
 		$data["Datum"] = Tools::get("date");
 		$data["Priority"] = Tools::get("priority");
 		$data["Auftragsnummer"] = Tools::get("orderId");
-		$data["hide"] = Tools::get("hide");
+		$data["hide"] = Tools::get("hide") == "true" ? 1 : 0;
 
 		$postenNummer = Step::insertStep($data);
-		$auftrag = new Auftrag($data["Auftragsnummer"]);
-		echo $auftrag->getOpenBearbeitungsschritteTable();
 
-		$assignedTo = strval(Tools::get("assignedTo"));
-		if (strcmp($assignedTo, "none") != 0) {
+		$assignedTo = (int) Tools::get("assignedTo");
+		if ($assignedTo != 0) {
 			NotificationManager::addNotification( $assignedTo, 1, Tools::get("name"), $postenNummer);
 		}
 	}
@@ -90,24 +89,41 @@ class Step
 	{
 		$id = Tools::get("id");
 		$type = Tools::get("type");
-
-		$order = new Auftrag($id);
-		$table = "";
+		$query = "";
 
 		switch ($type) {
 			case "getAllSteps":
-				$table = $order->getBearbeitungsschritteAsTable();
+				$query = "SELECT Schrittnummer, Bezeichnung, Datum, `Priority`, finishingDate FROM schritte WHERE Auftragsnummer = :id ORDER BY `Priority` DESC";
 				break;
 			case "getOpenSteps":
-				$table = $order->getOpenBearbeitungsschritteTable();
+				$query = "SELECT Schrittnummer, Bezeichnung, Datum, `Priority` FROM schritte WHERE Auftragsnummer = :id AND istErledigt = 1 ORDER BY `Priority` DESC";
 				break;
 			default:
 				JSONResponseHandler::returnNotFound("unsupported type");
+				return;
 		}
 
+		$data = DBAccess::selectQuery($query, [
+			"id" => $id
+		]);
+
 		JSONResponseHandler::sendResponse([
-			"table" => $table,
+			"table" => $data,
 			"status" => "success",
 		]);
 	}
+
+	public static function prepareData($data)
+    {
+        foreach ($data["results"] as $key => $value) {
+			$date = $data["results"][$key]["Datum"];
+			if ($date == "0000-00-00") {
+				$data["results"][$key]["Datum"] = "-";
+			} else {
+				$data["results"][$key]["Datum"] = date('d.m.Y', strtotime($date));
+			}
+
+			$data["results"][$key]["Priority"] = Priority::getPriorityLevel($data["results"][$key]["Priority"]);
+		}
+    }
 }

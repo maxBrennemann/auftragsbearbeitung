@@ -23,6 +23,7 @@ if ($target == "create") {
 	$nextInvoiceNumber = InvoiceNumberTracker::peekNextInvoiceNumber();
 	$invoice = Invoice::getInvoice($id);
 	$invoiceId = $invoice->getId();
+	$invoiceNumber = $invoice->getNumber();
 }
 
 if ($target == "view") {
@@ -95,7 +96,7 @@ if ($target == "create"): ?>
 
 		<div class="mt-3">
 			<?php if ($auftrag != null && $auftrag->getAuftragspostenData() != null): ?>
-				<button data-binding="true" data-fun="completeInvoice" class="btn-primary" disabled>Rechnung abschließen</button>
+				<button data-binding="true" data-fun="completeInvoice" class="btn-primary">Rechnung <?= $invoiceNumber != 0 ? "neu generieren" : "abschließen" ?></button>
 			<?php else: ?>
 				<button disabled class="btn-primary">Rechnung abschließen</button>
 			<?php endif; ?>
@@ -103,11 +104,12 @@ if ($target == "create"): ?>
 		</div>
 	</div>
 	<div class="mt-3">
-		<iframe src="<?= Link::getPageLink('pdf') . "?type=invoice&invoiceId=$invoiceId&orderId=$id" ?>" id="invoicePDFPreview"></iframe>
+		<iframe src="/api/v1/invoice/<?= $invoiceId ?>/pdf?orderId=<?= $id ?>" id="invoicePDFPreview" class="w-full h-lvh"></iframe>
 	</div>
 <?php elseif ($target == "view"): ?>
 	<p class="my-2 font-semibold">Rechnung <span id="rechnungsnummer"><?= $invoice->getNumber(); ?></span></p>
-	<iframe src="<?= Link::getPageLink('pdf') . "?type=invoice&invoiceId=$invoiceId&orderId=$id" ?>"></iframe>
+	<button onclick="window.history.go(-1); return false;" class="btn-cancel">Zurück</button>
+	<iframe src="/api/v1/invoice/<?= $invoiceId ?>/pdf?orderId=<?= $id ?>" class="w-full h-lvh mt-2"></iframe>
 <?php else: ?>
 	<p>Es ist ein unerwarteter Fehler aufgetreten.</p>
 	<button class="btn-primary" onclick="window.history.go(-1); return false;" type="submit">Zurück</button>

@@ -14,10 +14,6 @@ use Classes\Project\ClientSettings;
 use Classes\Project\Color;
 use Classes\Project\TemplateController;
 
-?>
-
-<?php
-
 $show = false;
 $optionsDefault = true;
 
@@ -29,7 +25,12 @@ try {
 	$orderId = 0;
 }
 
-if ($orderId <= 0): ?>
+?>
+<input type="hidden" data-variable="true" value="<?= $auftrag->getKundennummer() ?>" id="customerId">
+<input type="hidden" data-variable="true" value="<?= $orderId ?>" id="orderId">
+<input type="hidden" data-variable="true" value="<?= $auftrag->getInvoiceId() ?>" id="invoiceId">
+
+<?php if ($orderId <= 0): ?>
 	<div class="mt-4 bg-gray-50 p-3 rounded-lg">
 		<p>Kein (gültiger) Auftrag ausgewählt.</p>
 		<?= Auftrag::getOverview(); ?>
@@ -58,23 +59,30 @@ if ($orderId <= 0): ?>
 
 	if ($auftrag->istRechnungGestellt() && $show == false): ?>
 		<div>
+			<div class="hidden bg-red-300 m-2 p-2 rounded-md gap-2 items-center" id="showMissingFileWarning">
+				<?= Icon::get("iconWarning", 25, 25) ?>
+				<div class="ml-2">
+					<p>Die Rechnung konnte nicht gefunden werden!</p>
+					<button data-fun="recreateInvoice" data-binding="true" class="btn-primary mt-1">Neu erstellen</button>
+				</div>
+			</div>
 			<div class="defCont" id="orderFinished">
-				<p>Auftrag <?= $auftrag->getAuftragsnummer() ?> wurde abgeschlossen. Rechnungsnummer: <span id="rechnungsnummer"><?= $auftrag->getRechnungsnummer() ?></span></p>
-				<button class="btn-primary" data-fun="showAuftrag" data-binding="true">Auftrag anzeigen</button>
+				<p>Auftrag <?= $auftrag->getAuftragsnummer() ?> wurde abgeschlossen. Rechnungsnummer: <span id="rechnungsnummer"><?= $auftrag->getInvoiceId() ?></span></p>
+				<button class="btn-primary mt-2" data-fun="showAuftrag" data-binding="true">Auftrag anzeigen</button>
 				<?php
-				$invoiceLink = $auftrag->getKundennummer() . "_" . $auftrag->getRechnungsnummer() . ".pdf";
+				$invoiceLink = "Rechnung_" . $auftrag->getInvoiceId() . ".pdf";
 				$invoiceLink = Link::getResourcesShortLink($invoiceLink, "pdf");
 				?>
-				<a class="link-primary" href="<?= $invoiceLink ?>">Zur Rechnung</a>
+				<a class="link-primary" href="<?= $invoiceLink ?>" target="_blank">Zur Rechnungs-PDF</a>
 			</div>
 			<?php if (!$auftrag->getIsPayed()): ?>
 				<div class="defCont">
 					<div id="orderPaymentState">
 						<p>Die Rechnung wurde noch nicht beglichen.</p>
 						<label>
-							<input type="date" id="inputPayDate">
+							<input type="date" id="inputPayDate" class="input-primary">
 						</label>
-						<select id="paymentType">
+						<select id="paymentType" class="input-primary">
 							<option value="unbezahlt">Unbezahlt</option>
 							<option value="ueberweisung">Überweisung</option>
 							<option value="bar">Bar</option>
@@ -83,26 +91,8 @@ if ($orderId <= 0): ?>
 							<option value="amazonpay">AmazonPay</option>
 							<option value="weiteres">Weiteres</option>
 						</select>
-						<button class="btn-primary" onclick="setPayed()">Rechnung wurde bezahlt</button>
+						<button class="btn-primary" data-binding="true" data-fun="setPayed">Rechnung wurde bezahlt</button>
 					</div>
-					<script>
-						function setPayed() {
-							const date = document.getElementById('inputPayDate').value;
-							const paymentType = document.getElementById('paymentType').value;
-
-							ajax.post({
-								r: "setInvoiceData",
-								id: <?= $orderId ?>,
-								invoice: <?= $auftrag->getRechnungsnummer() ?>,
-								date: date,
-								paymentType: paymentType,
-							}).then(r => {
-								if (r.status == "success") {
-									document.getElementById('orderPaymentState').innerHTML = `<p>Die Rechnung wurde am ${date} mit ${paymentType} bezahlt.</p>`;
-								}
-							});
-						}
-					</script>
 				</div>
 			<?php else: ?>
 				<div class="defCont">
@@ -110,7 +100,7 @@ if ($orderId <= 0): ?>
 				</div>
 			<?php endif; ?>
 			<div class="defCont">
-				<embed type="application/pdf" src="<?= $invoiceLink ?>" width="100%" height="400">
+				<embed type="application/pdf" src="<?= $invoiceLink ?>" width="100%" height="400" id="invoiceEmbed" onError="console.log('test')">
 			</div>
 			<style>
 				main {
@@ -188,11 +178,15 @@ if ($orderId <= 0): ?>
 				</p>
 			</div>
 			<div>
-				<button class="btn-primary" onclick="location.href= '<?= Link::getPageLink('rechnung') ?>?target=create&id=<?= $orderId ?>'">Rechnung generieren</button>
-				<?php if ($auftrag->getIsArchiviert() == false) : ?>
-					<button class="btn-primary" data-binding="true" data-fun="archvieren">Auftrag archivieren</button>
+				<?php if (Tools::get("show") == "t" && $auftrag->getInvoiceId() != 0) : ?>
+					<button class="btn-primary" onclick="location.href= '<?= Link::getPageLink('rechnung') ?>?target=view&id=<?= $orderId ?>'">Rechnung anzeigen</button>
+				<?php else: ?>
+					<button class="btn-primary" onclick="location.href= '<?= Link::getPageLink('rechnung') ?>?target=create&id=<?= $orderId ?>'">Rechnung generieren</button>
+					<?php if ($auftrag->getIsArchiviert() == false) : ?>
+						<button class="btn-primary" data-binding="true" data-fun="archvieren">Auftrag archivieren</button>
+					<?php endif; ?>
+					<button class="btn-primary" data-binding="true" data-fun="setOrderFinished">Auftrag ist fertig</button>
 				<?php endif; ?>
-				<button class="btn-primary" data-binding="true" data-fun="setOrderFinished">Auftrag ist fertig</button>
 			</div>
 		</div>
 
@@ -200,12 +194,13 @@ if ($orderId <= 0): ?>
 			<p class="font-bold">Bearbeitungsschritte und Aufgaben</p>
 			<div class="flex mt-2 items-center">
 				<div>
-					<button class="btn-primary" data-binding="true" data-fun="addStep">Neu</button>
+					<button class="btn-primary" data-binding="true" data-fun="toggleAddStep">Neu</button>
 				</div>
 				<div class="px-2 rounded ml-2">
 					<?= TemplateController::getTemplate("inputSwitch", [
 						"id" => "toggleSteps",
 						"name" => "Alle Schritte anzeigen",
+						"write" => "toggleSteps",
 					]); ?>
 				</div>
 			</div>
@@ -254,12 +249,10 @@ if ($orderId <= 0): ?>
 				</div>
 				<div class="mt-2">
 					<button class="btn-primary" data-binding="true" data-fun="addBearbeitungsschritt" class="btn-primary">Hinzufügen</button>
-					<button class="btn-cancel ml-1" data-binding="true" data-fun="addBearbeitungsschritt" class="btn-primary">Abbrechen</button>
+					<button class="btn-cancel ml-1" data-binding="true" data-fun="toggleAddStep" class="btn-primary">Abbrechen</button>
 				</div>
 			</div>
-			<div id="stepTable" class="mt-2">
-				<?= $auftrag->getOpenBearbeitungsschritteTable() ?>
-			</div>
+			<div id="stepTable" class="mt-2"></div>
 		</div>
 
 		<div class="defCont schritteAdd">

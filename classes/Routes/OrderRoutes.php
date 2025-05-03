@@ -10,10 +10,12 @@ class OrderRoutes extends Routes
     /**
      * @uses \Classes\Project\Auftrag::getColors()
      * @uses \Classes\Project\Step::getSteps()
+     * @uses \Classes\Project\Angebot::getPDF()
      */
     protected static $getRoutes = [
         "/order/{id}/colors" => [\Classes\Project\Auftrag::class, "getColors"],
         "/order/{id}/steps" => [\Classes\Project\Step::class, "getSteps"],
+        "/order/offer/{offerId}/pdf" => [\Classes\Project\Angebot::class, "getPDF"],
     ];
 
     /**

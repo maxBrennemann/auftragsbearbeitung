@@ -26,7 +26,7 @@ class TransactionPDF extends PDFGenerator
 
     public function __construct(string $title, int $orderId)
     {
-        parent::__construct("p", "mm", "A4");
+        parent::__construct($title);
         $this->title = $title;
 
         $this->orderId = $orderId;

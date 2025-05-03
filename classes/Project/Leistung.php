@@ -171,7 +171,7 @@ class Leistung extends Posten
 		$schritte = DBAccess::selectQuery("SELECT * FROM schritte_vordefiniert WHERE Leistungsnummer = $leistungsnummer");
 
 		foreach ($schritte as $schritt) {
-			$data = array();
+			$data = [];
 			$data['Bezeichnung'] = $schritt['bez'];
 			$data['Datum'] = date("Y-m-d");
 			$data['Priority'] = 1;

@@ -72,16 +72,12 @@ class Link
 			case "html":
 				$link = $rewriteBase . "files/res/form/" . $resource;
 				break;
-			case "csv":
-				$link = $rewriteBase . "generated/" . $resource;
-				break;
 			case "upload":
 				$subDir = substr($resource, 0, 2). "/" . substr($resource, 2, 2);
 				$link = $rewriteBase . "upload/" . $subDir . "/" . $resource;
 				break;
+			case "csv":
 			case "backup":
-				$link = $rewriteBase . "generated/" . $resource;
-				break;
 			case "pdf":
 				$link = $rewriteBase . "generated/" . $resource;
 				break;
@@ -133,7 +129,7 @@ class Link
 				$link = $_ENV["REWRITE_BASE"] . "backup/" . $resource;
 				break;
 			case "pdf":
-				$link = $_ENV["REWRITE_BASE"] . "pdf_invoice/" . $resource;
+				$link = $_ENV["REWRITE_BASE"] . "pdfs/" . $resource;
 				break;
 		}
 

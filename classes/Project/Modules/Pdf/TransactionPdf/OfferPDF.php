@@ -13,7 +13,7 @@ class OfferPDF extends TransactionPDF
 
     public function __construct(int $offerId, int $customerId)
     {
-        parent::__construct("Angebot " . $offerId);
+        parent::__construct("Angebot " . $offerId, 0);
         $this->offer = new Angebot($offerId, $customerId);
         $this->offerId = $offerId;
         $this->customerId = $customerId;

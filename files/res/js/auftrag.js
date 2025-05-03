@@ -1,4 +1,4 @@
-﻿import { addBindings } from "./classes/bindings.js";
+﻿import { addBindings, getVariable } from "./classes/bindings.js";
 import { addColor, addSelectedColors, checkHexCode, removeColor, toggleCS } from "./auftrag/colorManager.js";
 import { initNotes } from "./auftrag/noteStepManager.js";
 import { setOrderFinished, updateDate, updateDeadline, setDeadlineState, initExtraOptions, editDescription, editOrderType, editTitle, archvieren } from "./auftrag/orderManager.js";
@@ -20,6 +20,14 @@ window.globalData = {
 
 const fnNames = {};
 
+export const getOrderId = () => {
+    return parseInt(globalData.auftragsId);
+}
+
+export const getCustomerId = () => {
+    return parseInt(getVariable("customerId"));
+}
+
 const initCode = async () => {
     if (isNaN(globalData.auftragsId)) {
         return;
@@ -28,6 +36,7 @@ const initCode = async () => {
     addBindings(fnNames);
 
     if (document.getElementById("orderFinished")) {
+        initInvoice();
         return;
     }
 
@@ -197,9 +206,9 @@ window.updateIsDone = function (key, event) {
     }, event.target);
 }
 
-const showAuftrag = () => {
-    var url = window.location.href;
-    url += "&show=t";
+
+fnNames.click_showAuftrag = () => {
+    const url = window.location.href + "&show=t";
     window.location.href = url;
 }
 
@@ -230,8 +239,6 @@ const reloadPostenListe = async () => {
     document.getElementById("invoicePostenTable").innerHTML = response["invoicePostenTable"];
 }
 
-fnNames.click_showAuftrag = showAuftrag;
-
 fnNames.write_changeContact = changeContact;
 
 fnNames.click_addColor = addColor;
@@ -250,8 +257,43 @@ fnNames.click_setDeadlineState = setDeadlineState;
 fnNames.click_archvieren = archvieren;
 fnNames.click_toggleOrderDescription = toggleOrderDescription;
 
-export const getOrderId = () => {
-    return parseInt(globalData.auftragsId);
+fnNames.click_setPayed = () => {
+    const date = document.getElementById('inputPayDate').value;
+    const paymentType = document.getElementById('paymentType').value;
+    const invoiceId = getVariable("invoiceId");
+
+    ajax.post(`"/invoice/${invoiceId}/paid"`, {
+        "date": date,
+        "paymentType": paymentType,
+    }).then(r => {
+        if (r.status == "success") {
+            document.getElementById("orderPaymentState").innerHTML = `<p>Die Rechnung wurde am ${date} mit ${paymentType} bezahlt.</p>`;
+        }
+    });
+}
+
+const initInvoice = () => {
+    const invoiceEmbed = document.getElementById("invoiceEmbed");
+    fetch(invoiceEmbed.src).then(response => {
+        if (response.status == 404) {
+            const el = document.getElementById("showMissingFileWarning");
+            el.classList.remove("hidden");
+            el.classList.add("flex");
+        }
+    });
+}
+
+fnNames.click_recreateInvoice = () => {
+    const invoiceId = getVariable("invoiceId");
+    ajax.post(`/api/v1/invoice/${invoiceId}/complete`, {
+        "orderId": getOrderId(),
+    }).then(r => {
+        if (r.status !== "success") {
+            notification("", "failiure", r.message);
+            return;
+        }
+        notification("", "success");
+    });
 }
 
 if (document.readyState !== 'loading') {
