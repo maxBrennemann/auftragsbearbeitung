@@ -280,6 +280,33 @@ function getTableConfig(): array
             ],
             "permissions" => ["read", "create"],
         ],
+        "schritte" => [
+            "columns" => [
+                "Schrittnummer",
+                "Auftragsnummer",
+                "istAllgemein",
+                "Bezeichnung",
+                "Datum",
+                "Priority",
+                "finishingDate",
+                "istErledigt",
+            ],
+            "primaryKey" => "Schrittnummer",
+            "names" => [
+                "Nummer",
+                "Auftrag",
+                "allgemein",
+                "Bezeichnung",
+                "Datum",
+                "Priorität",
+                "Erledigt am",
+                "Status",
+            ],
+            "hooks" => [
+                "afterRead" => [\Classes\Project\Step::class, "prepareData"],
+            ],
+            "permissions" => ["read"],
+        ],
         "user" => [
             "columns" => [
                 "id",

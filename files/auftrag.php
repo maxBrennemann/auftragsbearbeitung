@@ -200,12 +200,13 @@ if ($orderId <= 0): ?>
 			<p class="font-bold">Bearbeitungsschritte und Aufgaben</p>
 			<div class="flex mt-2 items-center">
 				<div>
-					<button class="btn-primary" data-binding="true" data-fun="addStep">Neu</button>
+					<button class="btn-primary" data-binding="true" data-fun="toggleAddStep">Neu</button>
 				</div>
 				<div class="px-2 rounded ml-2">
 					<?= TemplateController::getTemplate("inputSwitch", [
 						"id" => "toggleSteps",
 						"name" => "Alle Schritte anzeigen",
+						"write" => "toggleSteps",
 					]); ?>
 				</div>
 			</div>
@@ -254,12 +255,10 @@ if ($orderId <= 0): ?>
 				</div>
 				<div class="mt-2">
 					<button class="btn-primary" data-binding="true" data-fun="addBearbeitungsschritt" class="btn-primary">Hinzufügen</button>
-					<button class="btn-cancel ml-1" data-binding="true" data-fun="addBearbeitungsschritt" class="btn-primary">Abbrechen</button>
+					<button class="btn-cancel ml-1" data-binding="true" data-fun="toggleAddStep" class="btn-primary">Abbrechen</button>
 				</div>
 			</div>
-			<div id="stepTable" class="mt-2">
-				<?= $auftrag->getOpenBearbeitungsschritteTable() ?>
-			</div>
+			<div id="stepTable" class="mt-2"></div>
 		</div>
 
 		<div class="defCont schritteAdd">

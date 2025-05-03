@@ -2,6 +2,8 @@ import { getOrderId } from "../auftrag.js";
 import { ajax } from "../classes/ajax.js";
 import { addBindings } from "../classes/bindings.js";
 import { notification } from "../classes/notifications.js";
+import { tableConfig } from "../classes/tableconfig.js";
+import { fetchAndRenderTable } from "../classes/table.js";
 
 const fnNames =  {};
 
@@ -19,8 +21,39 @@ export function initNotes() {
         });
     }
 
-    const toggleStepsInput = document.getElementById("toggleSteps");
-    toggleStepsInput?.addEventListener("change", toggleSteps);
+    initStepsTable();
+}
+
+const initStepsTable = async () => {
+    const config = tableConfig["schritte"];
+    const options = {
+        "hideOptions": ["move", "add", "addRow"],
+        "hide": [
+            "Schrittnummer",
+            "Auftragsnummer",
+            "istErledigt",
+            "istAllgemein",
+            "finishingDate",
+        ],
+        "primaryKey": config.primaryKey,
+        "autoSort": true,
+        "styles": {
+            "table": {
+                "className": ["w-full"],
+            },
+        },
+        "conditions": {
+            "Auftragsnummer": getOrderId(),
+        },
+    };
+
+    const toggleSteps = document.getElementById("toggleSteps").checked;
+    if (!toggleSteps) {
+        options.conditions["istErledigt"] = "1";
+    }
+
+    const table = await fetchAndRenderTable("stepTable", "schritte", options);
+    //table.addEventListener("rowInsert", () => addOrderType(table, options));
 }
 
 /**
@@ -94,12 +127,20 @@ function updateNote(e) {
     });
 }
 
-function addBearbeitungsschritt() {
+fnNames.click_addBearbeitungsschritt = () => {
     const name = document.getElementById("processingStepName").value;
     const date = document.getElementById("processingStepDate").value;
-    const hideStatus = document.getElementById("processingStepStatus").value;
+    const hideStatus = document.getElementById("processingStepStatus").checked;
     const priority = document.getElementById("processingStepPriority").value;
-    const assignedTo = document.getElementById("processingStepSelectBy").value;
+    
+    let assignedTo = 0;
+    if (document.getElementById("processingStepBy").checked) {
+        assignedTo = document.getElementById("processingStepSelectBy").value;
+    }
+
+    if (name.length < 3) {
+        return;
+    }
 
     ajax.post(`/api/v1/notes/step/${getOrderId()}`, {
         "name": name,
@@ -111,8 +152,7 @@ function addBearbeitungsschritt() {
     });
 }
 
-/* addes bearbeitungsschritte */
-function addStep() {
+fnNames.click_toggleAddStep = () => {
     const bearbeitungsschritte = document.getElementById("bearbeitungsschritte");
     if (!bearbeitungsschritte.classList.toggle("hidden")) {
         const textarea = document.querySelector("input.bearbeitungsschrittInput");
@@ -212,18 +252,9 @@ function addNewNote() {
     });
 }
 
-const toggleSteps = (e) => {
-    const value = e.currentTarget.value;
-    ajax.get(`/api/v1/order/${globalData.auftragsId}/steps`, {
-        "type": value.checked ? "getAllSteps" : "getOpenSteps",
-    }).then(r => {
-        if (r.status != "success") {
-            return;
-        }
-
-        const stepTable = document.getElementById("stepTable");
-        stepTable.innerHTML = r.table;
-    });
+fnNames.write_toggleSteps = () => {
+    document.getElementById("stepTable").innerHTML = "";
+    initStepsTable();
 }
 
 fnNames.click_updateSelectBy = () => {
@@ -231,8 +262,6 @@ fnNames.click_updateSelectBy = () => {
     el.disabled = !el.disabled;
 }
 
-fnNames.click_addBearbeitungsschritt = addBearbeitungsschritt;
-fnNames.click_addStep = addStep;
 fnNames.click_sendNote = sendNote;
 fnNames.click_removeNote = removeNote;
 fnNames.click_addNewNote = addNewNote;
