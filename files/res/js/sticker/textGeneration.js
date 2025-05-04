@@ -1,5 +1,6 @@
 import { ajax } from "../classes/ajax.js";
 import { createPopup } from "../global.js";
+import { getStickerId } from "../sticker.js";
 
 const textGenerationData = {
     textStyleNode: null,
@@ -17,7 +18,7 @@ export function click_iterateText(e) {
     const direction = target.dataset.direction;
     const currentTextNode = target.parentNode.querySelector(".chatCount");
 
-    const id = mainVariables.motivId.innerHTML;
+    const id = getStickerId();
     const type = target.parentNode.dataset.type;
     const text = target.parentNode.dataset.text;
 
@@ -46,7 +47,7 @@ export function click_textGeneration(e) {
     const target = e.currentTarget.parentNode;
     const type = textGenerationData.product || target.dataset.type;
     const text = textGenerationData.textType || target.dataset.text;
-    const id = mainVariables.motivId.innerHTML;
+    const id = getStickerId();
     const additionalInfo = getAdditionalInfo();
 
     ajax.post(`/api/v1/sticker/${id}/texts/${type}/${text}`, {
@@ -85,7 +86,7 @@ export function click_showTextSettings(e) {
     textGenerationData.product = type;
 
     ajax.post({
-        id: mainVariables.motivId.innerHTML,
+        id: getStickerId(),
         text: text,
         type: type,
         r: "showGTPOptions",

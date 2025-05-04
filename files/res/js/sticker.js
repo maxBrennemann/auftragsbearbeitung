@@ -26,9 +26,6 @@ const mainVariables = {
     },
 };
 
-/* TODO: besseres variable management */
-window.mainVariables = mainVariables;
-
 function initSticker() {
     addBindings(fnNames);
     checkProductErrorStatus();

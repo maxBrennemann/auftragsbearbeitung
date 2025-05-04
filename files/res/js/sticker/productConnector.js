@@ -1,6 +1,7 @@
 import { notification } from "../classes/notifications.js";
 import { createPopup } from "../global.js";
 import { ajax } from "../classes/ajax.js";
+import { getStickerId } from "../sticker.js";
 
 class ProductConnector {
 
@@ -25,7 +26,7 @@ class ProductConnector {
     async showSearchContainer() {
         const template = document.createElement("template");
         template.innerHTML = await ajax.post({
-            id: mainVariables.motivId.innerHTML,
+            id: getStickerId(),
             type: this.type,
             r: "showSearch"
         }, true);
@@ -65,7 +66,7 @@ class ProductConnector {
         const idProductReference = e.target.dataset.article;
         ajax.post({
             idProductReference: idProductReference,
-            id: mainVariables.motivId.innerHTML,
+            id: getStickerId(),
             type: this.type,
             r: "removeAccessoire",
         }).then(r => {
@@ -112,7 +113,7 @@ class ProductConnector {
         const title = e.target.value;
         const result = await ajax.post({
             articleId: articleId,
-            id: mainVariables.motivId.innerHTML,
+            id: getStickerId(),
             status: status,
             type: this.type,
             title: title,

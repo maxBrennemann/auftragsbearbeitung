@@ -1,4 +1,5 @@
 import { ajax } from "../classes/ajax.js";
+import { getStickerId } from "../sticker.js";
 
 export function initTagManager() {
     addTagListeners();
@@ -55,7 +56,7 @@ const addTag = (e) => {
     e.preventDefault();
 
     ajax.post(`/api/v1/sticker/tags`, {
-        "id": mainVariables.motivId.innerHTML,
+        "id": getStickerId(),
         "tag": tagInput.value,
     });
 
@@ -89,7 +90,7 @@ const validateValue = (text) => {
 
 const loadMoreSuggestions = () => {
     ajax.get(`/api/v1/sticker/tags/suggestions`, {
-        id: mainVariables.motivId.innerHTML,
+        id: getStickerId(),
         name: document.getElementById("name").value,
     }).then((results) => {
         const synonyms = results["synonyms"];
