@@ -101,8 +101,10 @@ fnNames.click_btnAttributeGroupSelector = () => {
             attributeValueSelector.appendChild(option);
         });
 
-        const showAttributeValues = document.getElementById("showAttributeValues");
-        showAttributeValues.appendChild(attributeValueSelector);
+        if (attributeValues.length != 0) {
+            const showAttributeValues = document.getElementById("showAttributeValues");
+            showAttributeValues.appendChild(attributeValueSelector);
+        }
     });
 }
 

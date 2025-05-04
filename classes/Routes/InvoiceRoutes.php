@@ -24,6 +24,8 @@ class InvoiceRoutes extends Routes
      * @uses \Classes\Project\Invoice::completeInvoice()
      * @uses \Classes\Project\Invoice::setAddress()
      * @uses \Classes\Project\Invoice::setContact()
+     *
+     * @uses \Classes\Project\InvoiceNumberTracker::initInvoiceNumber()
      */
     protected static $postRoutes = [
         "/invoice/{invoiceId}/paid" => [\Classes\Project\Invoice::class, "setInvoicePaid"],
@@ -33,6 +35,8 @@ class InvoiceRoutes extends Routes
         "/invoice/{invoiceId}/complete" => [\Classes\Project\Invoice::class, "completeInvoice"],
         "/invoice/{invoiceId}/address" => [\Classes\Project\Invoice::class, "setAddress"],
         "/invoice/{invoiceId}/contact" => [\Classes\Project\Invoice::class, "setContact"],
+
+        "/invoice/init-invoice-number" => [\Classes\Project\InvoiceNumberTracker::class, "initInvoiceNumber"],
     ];
 
     /**

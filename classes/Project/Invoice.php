@@ -6,7 +6,7 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
-use Classes\Project\Modules\Pdf\TransactionPdf\InvoicePDF;
+use Classes\Pdf\TransactionPdf\InvoicePDF;
 
 class Invoice
 {

@@ -2,6 +2,8 @@
 
 namespace Classes\Auth;
 
+use Classes\ResourceManager;
+
 class SessionController
 {
 
@@ -20,6 +22,8 @@ class SessionController
         if (isset($_SESSION["LAST_ACTIVITY"]) 
             && (time() - $_SESSION["LAST_ACTIVITY"] > self::$lifetime)) {
             self::destroy();
+            ResourceManager::setPage("login");
+            ResourceManager::initPage();
             exit;
         }
 

@@ -131,9 +131,8 @@ function createCategoryTree(anchor, categories) {
     });
 }
 
-fnNames.write_toggleCache = (e) => {
-    const el = e.currentTarget;
-    const value = el.dataset.value;
+fnNames.click_toggleCache = () => {
+    const value = document.getElementById("cacheStatusSwitch").value;
 
     ajax.put(`/api/v1/settings/cache`, {
         "status": value,
@@ -144,9 +143,8 @@ fnNames.write_toggleCache = (e) => {
     });
 }
 
-fnNames.write_toggleMinify = (e) => {
-    const el = e.currentTarget;
-    const value = el.dataset.value;
+fnNames.click_toggleMinify = () => {
+    const value = document.getElementById("minifyStatusSwitch").value;
 
     ajax.put(`/api/v1/settings/minify`, {
         "status": value,
@@ -331,6 +329,21 @@ const showFilesInfo = () => {
     ajax.get(`/api/v1/settings/files/info`).then(r => {
         const el = document.getElementById("showFilesInfo");
         el.innerHTML = `Es sind ${r.count} Dateien mit einer Gesamtgröße von ${r.size}MB hochgeladen/ generiert.`;
+    });
+}
+
+fnNames.click_sendNewInvoiceNumber = () => {
+    if(!confirm("Setzt die aktuelle Rechnungsnummer fest. Bitte nicht unnötig überschreiben.")) {
+        return;
+    }
+
+    const invoiceNumber = document.getElementById("newInvoiceNumber").value;
+    ajax.post(`/api/v1/invoice/init-invoice-number`, {
+        "invoiceNumber": invoiceNumber
+    }).then(r => {
+        if (r.message == "OK") {
+            notification("", "success");
+        }
     });
 }
 

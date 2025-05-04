@@ -1,6 +1,6 @@
 <?php
 
-namespace Classes\Project\Modules\Pdf\TransactionPdf;
+namespace Classes\Pdf\TransactionPdf;
 
 use Classes\Project\Angebot;
 

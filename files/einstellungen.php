@@ -1,6 +1,7 @@
 <?php
 
 use Classes\Project\Config;
+use Classes\Project\InvoiceNumberTracker;
 
 ?>
 <section class="defCont">
@@ -74,19 +75,35 @@ use Classes\Project\Config;
             <input class="input-primary" value="<?= Config::get("companyUstIdNr") ?>" data-write="true" data-fun="changeSetting" data-setting="companyUstIdNr">
         </div>
     </div>
+    <div class="mt-4">
+        <p>Aktuelle Rechnungsnummer festlegen:</p>
+        <div class="mt-1">
+            <input type="number" id="newInvoiceNumber" class="input-primary" value="<?= InvoiceNumberTracker::getMaxInvoiceNumber() ?>">
+            <button class="btn-primary ml-1" data-fun="sendNewInvoiceNumber" data-binding="true">Abschicken</button>
+        </div>
+        <p class="text-sm">Achtung: überschreibt die aktuelle Rechnungsnummer.</p>
+    </div>
 </section>
 
 <section class="defCont">
-    <h2 class="font-bold">Cache</h2>
-    <input data-write="true" data-fun="toggleCache" type="radio" data-value="on" name="cacheswitch" value="on" <?= CACHE_STATUS == "on" ? "checked" : "" ?>> Cache aktivieren<br>
-    <input data-write="true" data-fun="toggleCache" type="radio" data-value="off" name="cacheswitch" value="off" <?= CACHE_STATUS == "off" ? "checked" : "" ?>> Cache deaktivieren<br>
+    <h2 class="font-bold">Cache und Komprimierung</h2>
+    <div class="mt-2">
+        <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+            "id" => "minifyStatusSwitch",
+            "name" => "CSS und JS komprimieren",
+            "value" => MINIFY_STATUS == true ? "checked" : "",
+            "binding" => "toggleMinify",
+        ]); ?>
+    </div>
+    <div class="mt-2">
+        <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+            "id" => "cacheStatusSwitch",
+            "name" => "Cache",
+            "value" => CACHE_STATUS == "on" ? "checked" : "",
+            "binding" => "toggleCache",
+        ]); ?>
+    </div>
     <button data-binding="true" data-fun="deleteCache" class="btn-primary mt-2">Cache löschen</button>
-</section>
-
-<section class="defCont">
-    <h2 class="font-bold">CSS und JS komprimieren</h2>
-    <input data-write="true" data-fun="toggleMinify" type="radio" data-value="on" name="minifyswitch" value="on" <?= MINIFY_STATUS == true ? "checked" : "" ?>> Komprimierung aktivieren<br>
-    <input data-write="true" data-fun="toggleMinify" type="radio" data-value="off" name="minifyswitch" value="off" <?= MINIFY_STATUS == false ? "checked" : "" ?>> Komprimierung deaktivieren
 </section>
 
 <section class="defCont">

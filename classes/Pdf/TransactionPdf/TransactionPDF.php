@@ -1,8 +1,8 @@
 <?php
 
-namespace Classes\Project\Modules\Pdf\TransactionPdf;
+namespace Classes\Pdf\TransactionPdf;
 
-use Classes\Project\Modules\Pdf\PDFGenerator;
+use Classes\Pdf\PDFGenerator;
 
 use Classes\Project\Config;
 use Classes\Project\Auftrag;
