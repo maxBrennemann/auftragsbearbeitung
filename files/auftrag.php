@@ -64,6 +64,7 @@ try {
 				<div class="ml-2">
 					<p>Die Rechnung konnte nicht gefunden werden!</p>
 					<button data-fun="recreateInvoice" data-binding="true" class="btn-primary mt-1">Neu erstellen</button>
+					<button data-fun="resetInvoice" data-binding="true" class="btn-primary mt-1">Rechnung zurücksetzen</button>
 				</div>
 			</div>
 			<div class="defCont" id="orderFinished">

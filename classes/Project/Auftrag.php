@@ -392,13 +392,13 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 	{
 		$invoice = Invoice::getInvoice($this->Auftragsnummer);
 
-		if ((int) $this->rechnungsnummer != $invoice->getId()) {
+		/*if ((int) $this->rechnungsnummer != $invoice->getId()) {
 			$query = "UPDATE auftrag SET Rechnungsnummer = :newInvoiceId WHERE Auftragsnummer = :idOrder";
 			DBAccess::updateQuery($query, [
 				"newInvoiceId" => $invoice->getId(),
 				"idOrder" => $this->Auftragsnummer,
 			]);
-		}
+		}*/
 
 		return $invoice->getId();
 	}
@@ -843,10 +843,21 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 			$values[] = [(int) $file["id"], $orderId];
 
 			$auftragsverlauf = new Auftragsverlauf($orderId);
-            $auftragsverlauf->addToHistory($file["id"], 4, "added");
-  		}
+			$auftragsverlauf->addToHistory($file["id"], 4, "added");
+		}
 
 		DBAccess::insertMultiple($query, $values);
+	}
+
+	public static function resetInvoice()
+	{
+		$orderId = Tools::get("id");
+		$query = "UPDATE auftrag SET Rechnungsnummer = 0 WHERE Auftragsnummer = :idOrder";
+		DBAccess::updateQuery($query, [
+			"idOrder" => $orderId,
+		]);
+
+		JSONResponseHandler::returnOK();
 	}
 
 	public function getNotificationContent(): string
@@ -863,7 +874,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 	{
 		return "";
 	}
-	
+
 	public function getNotificationSpecificId(): int
 	{
 		return 0;

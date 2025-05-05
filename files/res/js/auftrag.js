@@ -300,6 +300,16 @@ fnNames.click_recreateInvoice = () => {
     });
 }
 
+fnNames.click_resetInvoice = () => {
+    ajax.post(`/api/v1/order/${getOrderId()}/reset-invoice`).then(r => {
+        if (r.message == "OK") {
+            location.reload();
+        } else {
+            notification("", "failure", JSON.stringify(r));
+        }
+    })
+}
+
 if (document.readyState !== 'loading') {
     initCode();
 } else {
