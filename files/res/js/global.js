@@ -12,7 +12,6 @@ const fnNames = {};
  */
 function exportToWindow() {
 	window.sortTableNew = sortTableNew;
-
 	window.sortTable = sortTable;
 }
 
@@ -50,6 +49,7 @@ function startFunc() {
 	autosubmit();
 
 	initializeInfoBtn();
+	initImagePreviewListener();
 	setTableSorter(new TableSorter());
 	currentTableSorter.readTableSorted();
 	initSearch();
@@ -96,6 +96,20 @@ function initSearchListener() {
 			const searchInput = document.querySelector(".searchContainer input");
 			searchInput.focus();
 		}
+	});
+}
+
+const initImagePreviewListener = () => {
+	const images = document.querySelectorAll("img");
+	images.forEach(image => {
+		image.classList.add("cursor-pointer");
+		image.addEventListener("click", () => {
+			const imageCopy = document.createElement("img");
+			imageCopy.src = image.src;
+			imageCopy.title = image.title;
+			imageCopy.size = image.naturalWidth < 500 ? image.naturalWidth : 500;
+			createPopup(imageCopy);
+		});
 	});
 }
 

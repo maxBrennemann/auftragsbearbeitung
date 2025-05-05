@@ -12,6 +12,7 @@ class UploadHandler
     private string $uploadBaseDir = "upload";
     private array $allowedMimeTypes = [];
     private int $maxFileSize = 25000000;
+    private int $fileUploadLimit = 0;
 
     public function __construct(string $uploadBaseDir = "upload", array $allowedMimeTypes = [
         "application/pdf",
@@ -20,11 +21,12 @@ class UploadHandler
         "image/jpeg",
         "application/doc",
         "application/docx"
-    ], int $maxFileSize = 25000000)
+    ], int $maxFileSize = 25000000, int $fileUploadLimit = 0)
     {
         $this->uploadBaseDir = $uploadBaseDir;
         $this->allowedMimeTypes = $allowedMimeTypes;
         $this->maxFileSize = $maxFileSize;
+        $this->fileUploadLimit = $fileUploadLimit;
     }
 
     public function uploadMultiple(string $uploadName = "files"): array
@@ -34,10 +36,14 @@ class UploadHandler
             $normalizedFiles = $this->normalizeFilesArray($_FILES[$uploadName]);
 
             foreach ($normalizedFiles as $file) {
+                if ($this->fileUploadLimit > 0 
+                    && count($results) >= $this->fileUploadLimit) {
+                    continue;
+                }
                 $results[] = $this->handleUpload($file);
             }
         } catch (RuntimeException $e) {
-            echo $e->getMessage();
+            return [];
         }
 
         return $results;

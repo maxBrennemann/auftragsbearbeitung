@@ -16,11 +16,12 @@ ARG UID
 ARG GID
 
 # Install some base extensions
+RUN apt-get update -y && apt-get install -y libpng-dev
 RUN apt-get update && apt-get install -y \
     zlib1g-dev \
     libzip-dev
 # Install extensions
-RUN docker-php-ext-install pdo_mysql mysqli zip
+RUN docker-php-ext-install pdo_mysql mysqli zip gd
 
 # Enable apache mod_rewrite
 RUN a2enmod rewrite

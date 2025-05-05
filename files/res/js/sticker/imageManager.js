@@ -8,36 +8,7 @@ import { getStickerId } from "../sticker.js";
 
 const fnNames = {};
 
-const imageClickListener = (e) => {
-    if (e.target.matches(".imgAbsoluteCenter,.imgPreview")) {
-        return;
-    }
-
-    const elements = document.querySelectorAll(".imgAbsoluteCenter");
-    elements.forEach(element => {
-        element.remove();
-    })
-}
-
-/* displays a div with the image preview */
-function imagePreview(e) {
-    let target = e.target;
-    let copy = target.cloneNode();
-    let imageSize = 500;
-
-    if (target.naturalWidth < 500) {
-        imageSize = target.naturalWidth;
-    }
-
-    copy.style.width = imageSize + "px";
-
-    copy.classList.add("imgAbsoluteCenter");
-    createPopup(copy);
-}
-
 export const initImageManager = () => {
-    document.addEventListener("click", imageClickListener);
-
     addBindings(fnNames);
     initSVG();
     initFileUploader({

@@ -44,7 +44,7 @@ if ($target == "create"): ?>
 		<?php if ($invoiceAddresses == null || empty($invoiceAddresses)): ?>
 			<i>Keine Rechnungsadressen vorhanden oder unvollständig. Bei Bedarf <a href="<?= Link::getPageLink("kunde") . "?id=" . $auftrag->getKundennummer() ?>" class="link-primary">beim Kunden</a> ergänzen.</i>
 		<?php else: ?>
-			<select id="addressId" class="input-primary w-72" data-binding="true" data-fun="selectAddress">
+			<select id="addressId" class="input-primary w-72 mt-1" data-binding="true" data-fun="selectAddress">
 				<?php foreach ($invoiceAddresses as $i => $r): ?>
 					<option value="<?= $i ?>"><?= $r ?></option>
 				<?php endforeach; ?>
@@ -55,7 +55,7 @@ if ($target == "create"): ?>
 		<?php if ($invoiceContacts == null || empty($invoiceContacts)): ?>
 			<i>Keine Ansprechpartner vorhanden. Bei Bedarf <a href="<?= Link::getPageLink("kunde") . "?id=" . $auftrag->getKundennummer() ?>" class="link-primary">beim Kunden</a> ergänzen.</i>
 		<?php else: ?>
-			<select id="contactId" class="input-primary w-72" data-binding="true" data-fun="selectContact">
+			<select id="contactId" class="input-primary w-72 mt-1" data-binding="true" data-fun="selectContact">
 				<?php foreach ($invoiceContacts as $i => $r): ?>
 					<option value="<?= $i ?>"><?= $r ?></option>
 				<?php endforeach; ?>
@@ -63,15 +63,15 @@ if ($target == "create"): ?>
 		<?php endif; ?>
 
 		<p class="mt-2">Rechnungsdatum festlegen</p>
-		<input type="date" data-write="true" data-fun="invoiceDate" class="input-primary" value="<?= $invoice->getCreationDate() ?>">
+		<input type="date" data-write="true" data-fun="invoiceDate" class="input-primary mt-1" value="<?= $invoice->getCreationDate() ?>">
 		<p class="mt-2">Leistungsdatum festlegen</p>
-		<input type="date" data-write="true" data-fun="serviceDate" class="input-primary" value="<?= $invoice->getPerformanceDate() ?>">
+		<input type="date" data-write="true" data-fun="serviceDate" class="input-primary mt-1" value="<?= $invoice->getPerformanceDate() ?>">
 
 		<hr class="mt-2">
 
 		<div class="mt-3">
 			<h4 class="font-semibold inline-flex items-center" data-fun="togglePredefinedTexts" data-binding="true">
-				<span>Vordefinierte Texte</span>
+				<p class="py-2 cursor-pointer">Vordefinierte Texte</p>
 				<span class="cursor-pointer">
 					<span class="toggle-up hidden"><?= Icon::getDefault("iconChevronUp") ?></span>
 					<span class="toggle-down"><?= Icon::getDefault("iconChevronDown") ?></span>
@@ -101,6 +101,10 @@ if ($target == "create"): ?>
 				<button disabled class="btn-primary">Rechnung abschließen</button>
 			<?php endif; ?>
 			<button onclick="window.history.go(-1); return false;" class="btn-cancel">Abbrechen</button>
+			<div class="float-right">
+				<a href="/einstellungen#invoiceSettings" class="link-primary">Rechnungseinstellungen</a>
+				<a href="<?= Link::getPageLink("kunde") . "?id=" . $auftrag->getKundennummer() ?>" class="link-primary ml-2">Zum Kunden</a>
+			</div>
 		</div>
 	</div>
 	<div class="mt-3">

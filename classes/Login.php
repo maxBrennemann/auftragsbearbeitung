@@ -233,7 +233,7 @@ class Login
 		return $id;
 	}
 
-	private static function checkDuplicateDevices($list): string
+	private static function checkDuplicateDevices($list): bool|array
 	{
 		if (count($list) == 0) {
 			return false;
