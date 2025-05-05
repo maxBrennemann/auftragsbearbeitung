@@ -333,11 +333,6 @@ try {
 				<button class="btn-primary mt-2" data-binding="true" data-fun="addNewVehicle">Hinzufügen</button>
 			</div>
 			<div id="fahrzeugTable" class="mt-2"></div>
-			<br>
-			<form class="fileUploader" data-target="vehicle" name="vehicle" method="post" enctype="multipart/form-data" id="fileVehicle" style="display: none">
-				<input type="file" name="uploadedFile" multiple form="fileVehicle">
-				<input name="orderid" value="<?= $orderId ?>" hidden>
-			</form>
 		</div>
 
 		<div class="defCont farben">

@@ -14,19 +14,24 @@ fnNames.write_fileUploader = async e => {
     const location = info.location ?? "";
     delete info.location;
 
-    await ajax.uploadFiles(files, location, info).then(() => {
+    await ajax.uploadFiles(files, location, info).then(r => {
+        const event = new CustomEvent("fileUploaded", {
+            detail: { type, ...r },
+            bubbles: true,
+        });
+        target.dispatchEvent(event);
         notification("", "success");
     }).catch((error) => {
+        const event = new CustomEvent("fileUploaded", {
+            detail: { type, ...error },
+            bubbles: true,
+        });
+        target.dispatchEvent(event);
         notification("", "failure");
         console.error(error);
     });
 
     target.value = "";
-    const event = new CustomEvent("fileUploaded", {
-        detail: { type },
-        bubbles: true,
-    });
-    target.dispatchEvent(event);
 }
 
 export const initFileUploader = (data) => {

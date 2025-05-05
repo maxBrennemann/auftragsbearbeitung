@@ -17,7 +17,7 @@ class Config
      * @param bool $isNullable
      * @return int the id of the setting value
      */
-    public static function add(string $setting, string $defaultValue, bool $isBool = false, bool $isNullable = false)
+    private static function add(string $setting, string $defaultValue, bool $isBool = false, bool $isNullable = false)
     {
         $query = "REPLACE INTO `settings` (`title`, `content`, `defaultValue`, `isBool`, `isNullable`) VALUES (:title, :content, :defaultValue, :isBool, :isNullable)";
 

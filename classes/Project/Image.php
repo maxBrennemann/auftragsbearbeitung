@@ -11,7 +11,7 @@ class Image
     private $imageId = 0;
     private $url = "";
 
-    function __construct($id)
+    public function __construct($id)
     {
         if ((int) $id >= 0) {
             $fileName = DBAccess::selectQuery("SELECT dateiname FROM dateien WHERE id = $id")["0"]["dateiname"];
@@ -20,17 +20,17 @@ class Image
         }
     }
 
-    function getImageId()
+    public function getImageId()
     {
         return $this->imageId;
     }
 
-    function getImageURL()
+    public function getImageURL()
     {
         return $this->url;
     }
 
-    static function setDefault()
+    public static function setDefault()
     {
         $img = new self(-1);
         $img->url = Link::getImageLink("default_image.png");

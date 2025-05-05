@@ -5,12 +5,26 @@ import { tableConfig } from "./classes/tableconfig.js";
 import { notification } from "./classes/notifications.js";
 import { Colorpicker } from "./classes/colorpicker.js";
 import { clearInputs } from "./global.js";
+import { initFileUploader } from "./classes/upload.js";
 
 const fnNames = {};
 
 function initEventListeners() {
     addBindings(fnNames);
     timeTracking();
+
+    initFileUploader({
+        "companyLogo": {
+            "location": `/api/v1/settings/add-logo`,
+        },
+    });
+    const fileUpload = document.querySelector(`input[data-type="companyLogo"]`);
+    fileUpload.addEventListener("fileUploaded", r => {
+        const companyLogo = document.getElementById("companyLogo");
+        companyLogo.classList.remove("hidden");
+        const img = companyLogo.querySelector("img");
+        img.src = r.detail.file;
+    });
 
     const addCategoryBtn = document.getElementById("addCategory");
     addCategoryBtn.addEventListener("click", addCategory);

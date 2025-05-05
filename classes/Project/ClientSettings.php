@@ -2,12 +2,13 @@
 
 namespace Classes\Project;
 
+use ZipArchive;
+
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 
 use Classes\Link;
-use ZipArchive;
 
 class ClientSettings
 {
@@ -79,13 +80,7 @@ class ClientSettings
         $setTo = Tools::get("value");
         $userId = $_SESSION["user_id"];
 
-        $value = Config::get("filterOrderPosten_$userId");
-
-        if ($value == null) {
-            Config::add("filterOrderPosten_$userId", $setTo);
-        } else {
-            Config::set("filterOrderPosten_$userId", $setTo);
-        }
+        Config::set("filterOrderPosten_$userId", $setTo);
 
         JSONResponseHandler::returnOK();
     }
@@ -150,6 +145,38 @@ class ClientSettings
             "filename" => $fileName,
             "url" => Link::getResourcesShortLink($fileName, "backup"),
             "status" => "success",
+        ]);
+    }
+
+    public static function getLogo(): string
+    {
+        $query = "SELECT dateiname FROM dateien WHERE id = :id";
+        $data = DBAccess::selectQuery($query, [
+            "id" => Config::get("companyLogo"),
+        ]);
+
+        return $data[0]["dateiname"] ?? "";
+    }
+
+    public static function addLogo()
+    {
+        $uploadHandler = new UploadHandler("upload", [
+            "image/png",
+            "image/jpg",
+            "image/jpeg",
+        ], 25000000, 1);
+        $fileData = $uploadHandler->uploadMultiple();
+
+        if (count($fileData) == 0) {
+            JSONResponseHandler::throwError(422, "unsupported file type");
+            return;
+        }
+
+        Config::set("companyLogo", $fileData[0]["id"]);
+
+        JSONResponseHandler::sendResponse([
+            "logoId" => $fileData[0]["id"],
+            "file" => Link::getResourcesShortLink($fileData[0]["saved_name"], "upload"),
         ]);
     }
 }

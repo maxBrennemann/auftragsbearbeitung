@@ -1,7 +1,11 @@
 <?php
 
+use Classes\Link;
+
 use Classes\Project\Config;
 use Classes\Project\InvoiceNumberTracker;
+
+$companyLogo = \Classes\Project\ClientSettings::getLogo();
 
 ?>
 <section class="defCont">
@@ -19,60 +23,75 @@ use Classes\Project\InvoiceNumberTracker;
     <div id="userTable" class="mt-2"></div>
 </section>
 
-<section class="defCont">
+<section class="defCont" id="invoiceSettings">
     <h2 class="font-bold">Standardeinstellungen festlegen</h2>
     <div>
-        <div class="flex items-center">
-            <span class="font-semibold w-64">Stundenlohn</span>
+        <div class="flex items-center mt-2">
+            <span class="font-semibold w-60">Stundenlohn</span>
             <input class="input-primary" value="<?= Config::get("defaultWage") ?>" data-write="true" data-fun="changeSetting" data-setting="defaultWage">
         </div>
         <div class="flex items-center mt-2">
-            <span class="font-semibold w-64">Firmenname</span>
+            <span class="font-semibold w-60">Firmenname</span>
             <input class="input-primary" value="<?= Config::get("companyName") ?>" data-write="true" data-fun="changeSetting" data-setting="companyName">
         </div>
         <div class="flex items-center mt-2">
-            <span class="font-semibold w-64">Adresse</span>
+            <span class="font-semibold w-60">Adresse</span>
             <input class="input-primary" value="<?= Config::get("companyAddress") ?>" data-write="true" data-fun="changeSetting" data-setting="companyAddress">
         </div>
         <div class="flex items-center mt-2">
-            <span class="font-semibold w-64">PLZ</span>
+            <span class="font-semibold w-60">PLZ</span>
             <input class="input-primary" value="<?= Config::get("companyZip") ?>" data-write="true" data-fun="changeSetting" data-setting="companyZip">
         </div>
         <div class="flex items-center mt-2">
-            <span class="font-semibold w-64">Stadt</span>
+            <span class="font-semibold w-60">Ort</span>
             <input class="input-primary" value="<?= Config::get("companyCity") ?>" data-write="true" data-fun="changeSetting" data-setting="companyCity">
         </div>
         <div class="flex items-center mt-2">
-            <span class="font-semibold w-64">Land</span>
+            <span class="font-semibold w-60">Land</span>
             <input class="input-primary" value="<?= Config::get("companyCountry") ?>" data-write="true" data-fun="changeSetting" data-setting="companyCountry">
         </div>
         <div class="flex items-center mt-2">
-            <span class="font-semibold w-64">Telefonnummer</span>
+            <span class="font-semibold w-60">Telefonnummer</span>
             <input class="input-primary" value="<?= Config::get("companyPhone") ?>" data-write="true" data-fun="changeSetting" data-setting="companyPhone">
         </div>
         <div class="flex items-center mt-2">
-            <span class="font-semibold w-64">Email</span>
+            <span class="font-semibold w-60">Email</span>
             <input class="input-primary" value="<?= Config::get("companyEmail") ?>" data-write="true" data-fun="changeSetting" data-setting="companyEmail">
         </div>
         <div class="flex items-center mt-2">
-            <span class="font-semibold w-64">Website</span>
+            <span class="font-semibold w-60">Website</span>
             <input class="input-primary" value="<?= Config::get("companyWebsite") ?>" data-write="true" data-fun="changeSetting" data-setting="companyWebsite">
         </div>
         <div class="flex items-center mt-2">
-            <span class="font-semibold w-64">Impressum</span>
+            <span class="font-semibold w-60">Rechnungsadresse</span>
             <input class="input-primary" value="<?= Config::get("companyImprint") ?>" data-write="true" data-fun="changeSetting" data-setting="companyImprint">
         </div>
         <div class="flex items-center mt-2">
-            <span class="font-semibold w-64">Bank</span>
+            <span class="font-semibold w-60">Bank</span>
             <input class="input-primary" value="<?= Config::get("companyBank") ?>" data-write="true" data-fun="changeSetting" data-setting="companyBank">
         </div>
         <div class="flex items-center mt-2">
-            <span class="font-semibold w-64">IBAN</span>
+            <span class="font-semibold w-60">IBAN</span>
             <input class="input-primary" value="<?= Config::get("companyIban") ?>" data-write="true" data-fun="changeSetting" data-setting="companyIban">
         </div>
         <div class="flex items-center mt-2">
-            <span class="font-semibold w-64">UstIdNr</span>
+            <span class="font-semibold w-60">UstIdNr</span>
             <input class="input-primary" value="<?= Config::get("companyUstIdNr") ?>" data-write="true" data-fun="changeSetting" data-setting="companyUstIdNr">
+        </div>
+        <div class="w-96 mt-2">
+            <p class="font-semibold">Firmen-/ Rechnungslogo festlegen</p>
+            <?= \Classes\Project\TemplateController::getTemplate("uploadFile", [
+				"target" => "companyLogo",
+                "singleFile" => true,
+                "accept" => "image/*",
+			]); ?>
+            <div class="bg-white p-3 my-3 rounded-lg<?= $companyLogo ? "" : " hidden" ?>" id="companyLogo">
+                <div class="bg-gray-100 p-2 rounded-md">
+                    <div class="flex justify-center items-center">
+                        <img src="<?= Link::getResourcesShortLink($companyLogo, "upload") ?>" width="50px" title="Firmenlogo">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="mt-4">

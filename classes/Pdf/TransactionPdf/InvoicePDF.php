@@ -3,6 +3,10 @@
 namespace Classes\Pdf\TransactionPdf;
 
 use Classes\Project\Invoice;
+use Classes\Project\InvoiceNumberTracker;
+
+use Classes\Link;
+use Classes\Project\ClientSettings;
 
 class InvoicePDF extends TransactionPDF
 {
@@ -28,7 +32,7 @@ class InvoicePDF extends TransactionPDF
         $this->SetSubject("Rechnung");
         $this->SetKeywords("Rechnung");
 
-        $this->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $this->setFooterFont([PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA]);
         $this->SetFooterMargin(PDF_MARGIN_FOOTER);
 
         $this->AddPage();
@@ -44,7 +48,7 @@ class InvoicePDF extends TransactionPDF
         $this->SetFont("helvetica", "", 12);
         $this->fillAddress();
 
-        $this->Image("files/res/image/b-schriftung_logo.jpg", 120, 22, 60);
+        $this->Image($this->getCompanyLogo(), 120, 22, 60);
 
         $this->setXY(120, 30);
         $this->setFontStretching(200);
@@ -176,7 +180,7 @@ class InvoicePDF extends TransactionPDF
         $this->SetFont("helvetica", "", 12);
         $this->setXY(120, $y);
         $this->Cell(30, 10, "Rechnungs-Nr:");
-        $this->Cell(30, 10, $this->invoice->getNumber(), 0, 0, 'R');
+        $this->Cell(30, 10, InvoiceNumberTracker::peekNextInvoiceNumber(), 0, 0, 'R');
         $this->setXY(120, $y + 6);
         $this->Cell(30, 10, "Auftrags-Nr:");
         $this->Cell(30, 10, $this->order->getAuftragsnummer(), 0, 0, 'R');
@@ -211,5 +215,16 @@ class InvoicePDF extends TransactionPDF
         $this->SetFont("helvetica", "", 12);
 
         return $addToOffset;
+    }
+
+    private function getCompanyLogo(): string
+    {
+        $image = ClientSettings::getLogo();
+        if ($image == "") {
+            return "img/default_image.png";
+            //return Link::getImageLink("");
+        } else {
+            return Link::getResourcesLink($image, "upload", false);
+        }
     }
 }
