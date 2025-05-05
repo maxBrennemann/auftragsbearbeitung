@@ -102,6 +102,11 @@ class ResourceManager
         }
     }
 
+    public static function setPage(string $page): void
+    {
+        self::$page = $page;
+    }
+
     public static function initPage()
     {
         if (!SessionController::isLoggedIn()) {
@@ -120,7 +125,7 @@ class ResourceManager
         }
     }
 
-    private static function showPage(): void
+    public static function showPage(): void
     {
         if (self::$page == "test") {
             return; 

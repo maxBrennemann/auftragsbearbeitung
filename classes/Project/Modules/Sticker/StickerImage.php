@@ -6,10 +6,16 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
+
 use Classes\Link;
 
 class StickerImage extends PrestashopConnection
 {
+
+    public const IMAGE_AUFKLEBER = "aufkleber";
+    public const IMAGE_WANDTATTOO = "wandtattoo";
+    public const IMAGE_TEXTIL = "textil";
+    public const IMAGE_TEXTILSVG = "textilsvg";
 
     private $idMotiv;
 
@@ -21,7 +27,7 @@ class StickerImage extends PrestashopConnection
 
     private $svgs = [];
 
-    function __construct($idMotiv)
+    public function __construct($idMotiv)
     {
         parent::__construct();
 
@@ -30,19 +36,18 @@ class StickerImage extends PrestashopConnection
         $this->prepareImageData();
     }
 
-    /**
-     * returns all images from the database that are connected to a sticker via
-     * the module_sticker_image table and are of type "aufkleber", "wandtattoo" or "textil"
-     */
-    public static function getAllImageFiles()
+    public static function getAllImageFiles(): array
     {
         $query = "SELECT dateien.dateiname, dateien.originalname AS alt, 
                 dateien.typ, dateien.id, module_sticker_image.image_sort, module_sticker_image.id_product, module_sticker_image.description, module_sticker_image.id_image_shop, module_sticker_image.image_order
             FROM dateien, module_sticker_image 
             WHERE dateien.id = module_sticker_image.id_datei
-                AND module_sticker_image.image_sort IN ('aufkleber', 'wandtattoo', 'textil');";
-        $data = DBAccess::selectQuery($query);
-        return $data;
+                AND (
+                    module_sticker_image.image_sort = 'aufkleber' OR
+                    module_sticker_image.image_sort = 'wandtattoo' OR
+                    module_sticker_image.image_sort = 'textil'
+                );";
+        return DBAccess::selectQuery($query);
     }
 
     /* reads from database */
@@ -91,19 +96,19 @@ class StickerImage extends PrestashopConnection
         }
     }
 
-    public function getAufkleberImages()
+    public function getAufkleberImages(): array
     {
-        return $this->getImagesByType("aufkleber");
+        return $this->getImagesByType(self::IMAGE_AUFKLEBER);
     }
 
-    public function getWandtattooImages()
+    public function getWandtattooImages(): array
     {
-        return $this->getImagesByType("wandtattoo");
+        return $this->getImagesByType(self::IMAGE_WANDTATTOO);
     }
 
-    public function getTextilImages()
+    public function getTextilImages(): array
     {
-        return $this->getImagesByType("textil");
+        return $this->getImagesByType(self::IMAGE_TEXTIL);
     }
 
     private function getImagesByType($type)
@@ -133,14 +138,6 @@ class StickerImage extends PrestashopConnection
         }
 
         return null;
-    }
-
-    public function getGeneralImages()
-    {
-        return array_filter(
-            $this->images,
-            fn($element) => $element["image_sort"] == "general"
-        );
     }
 
     public function resizeImage($file)
@@ -591,7 +588,11 @@ class StickerImage extends PrestashopConnection
      */
     private function manageImageOrder()
     {
-        $query = "SELECT id_image_shop, image_order FROM module_sticker_image WHERE id_motiv = :idMotiv AND image_sort = :imageSort ORDER BY image_order DESC, id_datei ASC;";
+        $query = "SELECT id_image_shop, image_order 
+            FROM module_sticker_image 
+            WHERE id_motiv = :idMotiv 
+                AND image_sort = :imageSort
+            ORDER BY image_order DESC, id_datei ASC;";
         $images = DBAccess::selectQuery($query, [
             "idMotiv" => $this->idMotiv,
             "imageSort" => $this->currentType,
@@ -629,7 +630,10 @@ class StickerImage extends PrestashopConnection
         $count = 0;
         foreach ($order as $id) {
             $query = "UPDATE module_sticker_image SET image_order = :order WHERE id_datei = :id;";
-            DBAccess::updateQuery($query, ["order" => $count, "id" => $id]);
+            DBAccess::updateQuery($query, [
+                "order" => $count,
+                "id" => $id
+            ]);
             $count++;
         }
     }

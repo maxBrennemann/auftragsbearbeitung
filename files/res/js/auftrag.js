@@ -290,6 +290,10 @@ fnNames.click_recreateInvoice = () => {
     }).then(r => {
         if (r.status !== "success") {
             notification("", "failiure", r.message);
+            const invoiceEmbed = document.getElementById("invoiceEmbed");
+            invoiceEmbed.src = invoiceEmbed.src;
+            const el = document.getElementById("showMissingFileWarning");
+            el.classList.add("hidden");
             return;
         }
         notification("", "success");

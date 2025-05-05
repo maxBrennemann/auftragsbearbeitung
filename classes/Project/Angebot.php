@@ -6,7 +6,7 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
-use Classes\Project\Modules\Pdf\TransactionPdf\OfferPDF;
+use Classes\Pdf\TransactionPdf\OfferPDF;
 
 class Angebot
 {

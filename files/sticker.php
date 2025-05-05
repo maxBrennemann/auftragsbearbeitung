@@ -33,7 +33,7 @@ if ($id == 0): ?>
         window.location.href = "<?= Link::getPageLink("sticker-overview") ?>";
     </script>
 <?php else: ?>
-    <div class="w-full grid gap-3 grid-cols-3">
+    <div class="w-full grid gap-2 grid-cols-3">
         <div class="defCont col-span-3">
             <h2 class="font-semibold">Motiv <input id="stickerName" data-write="true" data-input="true" class="input-primary w-96" value="<?= $stickerCollection->getName(); ?>" title="Faceboook hat ein internes Limit für die Titellänge von 65 Zeichen">
                 <?php if ($stickerCollection->getIsMarked() == "0"): ?>
@@ -49,13 +49,6 @@ if ($id == 0): ?>
             <p class="ml-2 mt-2">Artikelnummer: <span id="motivId" data-variable="true"><?= $id ?></span></p>
             <p class="ml-2 mt-2">Erstellt am <input type="date" class="input-primary" id="creationDate" data-write="true" value="<?= $stickerCollection->getCreationDate() ?>"></p>
             <button class="btn-primary mt-4" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
-        </div>
-        <div class="defCont hidden">
-            <p>Dateien und Bilder</p>
-            <?= \Classes\Project\TemplateController::getTemplate("sticker/stickerFile", [
-                "images" => $stickerImage->getGeneralImages(),
-                "files" => $stickerImage->getFiles(),
-            ]); ?>
         </div>
         <div class="defCont col-span-2 lg:col-span-1">
             <p class="font-bold">Aufkleber
@@ -364,6 +357,7 @@ if ($id == 0): ?>
                 </div>
             </div>
         </div>
+
         <div class="defCont">
             <h2 class="font-semibold">Textilien</h2>
             <div class="mt-2">
@@ -388,7 +382,8 @@ if ($id == 0): ?>
                 </div>
             </div>
         </div>
-        <div class="defCont">
+
+        <div class="defCont col-span-2">
             <h2 class="font-semibold">Tags<button class="infoButton ml-1" data-info="3">i</button></h2>
             <div class="mt-2">
                 <?= $stickerTagManager->getTagsHTML() ?>
@@ -401,6 +396,7 @@ if ($id == 0): ?>
             <button id="loadSynonyms" class="btn-primary">Mehr Synonnyme laden</button>
             <button id="showTaggroupManager" class="btn-primary">Taggruppen</button>
         </div>
+
         <div class="defCont">
             <h2 class="font-semibold">Weitere Infos</h2>
             <div class="mt-2">
@@ -419,6 +415,7 @@ if ($id == 0): ?>
             <p class="mt-2">Zusätzliche Infos und Notizen:<button class="infoButton ml-1" data-info="6">i</button></p>
             <textarea class="input-primary mt-2 w-full" data-fun="additionalInfo" data-write="true"><?= $stickerCollection->getAdditionalInfo() ?></textarea>
         </div>
+
         <div class="defCont col-span-3">
             <h2 class="font-semibold mb-2">Produktexport</h2>
             <form>
@@ -483,7 +480,8 @@ if ($id == 0): ?>
                 </div>
             </form>
         </div>
-        <div class="defCont">
+
+        <div class="defCont col-span-2">
             <h2 class="font-semibold mb-2">Statistiken</h2>
             <!-- TODO: Statistiken von Google Analytics und Google Shopping, sowie von Google SearchConsole und shopintern einbinden -->
             <div>
@@ -504,15 +502,14 @@ if ($id == 0): ?>
                 </div>
             </div>
         </div>
+
         <div class="defCont">
             <h2 class="font-semibold mb-2">Changelog</h2>
             <details>
                 <?= $stickerChangelog->getTable() ?>
             </details>
         </div>
-        <div>
-            <span id="showUploadProgress"></span>
-        </div>
+
         <template id="icon-file">
             <?= Icon::getDefault("iconFile") ?>
         </template>
