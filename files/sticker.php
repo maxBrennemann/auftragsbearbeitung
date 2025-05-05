@@ -35,13 +35,14 @@ if ($id == 0): ?>
 <?php else: ?>
     <div class="w-full grid gap-2 grid-cols-3">
         <div class="defCont col-span-3">
-            <h2 class="font-semibold">Motiv <input id="stickerName" data-write="true" data-input="true" class="input-primary w-96" value="<?= $stickerCollection->getName(); ?>" title="Faceboook hat ein internes Limit für die Titellänge von 65 Zeichen">
+            <h2 class="font-semibold inline-flex items-center">Motiv
+                <input id="stickerName" data-write="true" data-input="true" class="input-primary w-96 ml-1" value="<?= $stickerCollection->getName(); ?>" title="Faceboook hat ein internes Limit für die Titellänge von 65 Zeichen">
                 <?php if ($stickerCollection->getIsMarked() == "0"): ?>
-                    <span data-binding="true" data-fun="bookmark" data-status="unmarked" class="inline" title="Motiv markieren">
+                    <span data-binding="true" data-fun="bookmark" data-status="unmarked" class="inline ml-1" title="Motiv markieren">
                         <?= Icon::get("iconBookmark", 18, 18, ["inline", "cursor-pointer"]) ?>
                     </span>
                 <?php else: ?>
-                    <span data-binding="true" data-fun="bookmark" data-status="marked" class="bookmarked inline cursor-pointer" title="Motiv markieren">
+                    <span data-binding="true" data-fun="bookmark" data-status="marked" class="bookmarked inline cursor-pointer ml-1" title="Motiv markieren">
                         <?= Icon::get("iconUnbookmark", 18, 18, ["inline", "cursor-pointer"]) ?>
                     </span>
                 <?php endif; ?>
@@ -59,7 +60,7 @@ if ($id == 0): ?>
                 <?php else: ?>
                     <button class="mr-1 btn-primary-small" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
                         <?= Icon::getDefault("iconInvisible") ?>
-                <?php endif; ?>
+                    <?php endif; ?>
                     <button class="mr-1 btn-primary-small" title="Produkte verknüpfen" data-binding="true" data-fun="shortcutProduct" data-type="aufkleber">
                         <?= Icon::getDefault("iconConnectTo") ?>
                     </button>
@@ -418,67 +419,48 @@ if ($id == 0): ?>
 
         <div class="defCont col-span-3">
             <h2 class="font-semibold mb-2">Produktexport</h2>
-            <form>
-                <div class="exportContainer inline-block bg-white rounded-3xl p-3 hover:underline">
-                    Nach Facebook exportieren
-                    <span class="right">
-                        <label class="switch">
-                            <input type="checkbox" <?= $stickerCollection->getExportStatus("facebook") ? "checked" : "" ?>>
-                            <span class="slider round" data-binding="true" data-value="facebook" data-fun="exportToggle"></span>
-                        </label>
-                    </span>
-                </div>
-                <br>
-                <div class="exportContainer inline-block bg-white rounded-3xl p-3 hover:underline">
-                    Nach Google exportieren
-                    <span class="right">
-                        <label class="switch">
-                            <input type="checkbox" <?= $stickerCollection->getExportStatus("google") ? "checked" : "" ?>>
-                            <span class="slider round" data-binding="true" data-value="google" data-fun="exportToggle"></span>
-                        </label>
-                    </span>
-                </div>
-                <br>
-                <div class="exportContainer inline-block bg-white rounded-3xl p-3 hover:underline">
-                    Nach Amazon exportieren
-                    <span class="right">
-                        <label class="switch">
-                            <input type="checkbox" <?= $stickerCollection->getExportStatus("amazon") ? "checked" : "" ?>>
-                            <span class="slider round" data-binding="true" data-value="amazon" data-fun="exportToggle"></span>
-                        </label>
-                    </span>
-                </div>
-                <br>
-                <div class="exportContainer inline-block bg-white rounded-3xl p-3 hover:underline">
-                    Nach Etsy exportieren
-                    <span class="right">
-                        <label class="switch">
-                            <input type="checkbox" <?= $stickerCollection->getExportStatus("etsy") ? "checked" : "" ?>>
-                            <span class="slider round" data-fun="exportToggle" data-binding="true" data-value="etsy"></span>
-                        </label>
-                    </span>
-                </div>
-                <br>
-                <div class="exportContainer inline-block bg-white rounded-3xl p-3 hover:underline">
-                    Nach eBay exportieren
-                    <span class="right">
-                        <label class="switch">
-                            <input type="checkbox" <?= $stickerCollection->getExportStatus("ebay") ? "checked" : "" ?>>
-                            <span class="slider round" data-fun="exportToggle" data-binding="true" data-value="ebay"></span>
-                        </label>
-                    </span>
-                </div>
-                <br>
-                <div class="exportContainer inline-block bg-white rounded-3xl p-3 hover:underline">
-                    Nach Pinterest exportieren
-                    <span class="right">
-                        <label class="switch">
-                            <input type="checkbox" <?= $stickerCollection->getExportStatus("pinterest") ? "checked" : "" ?>>
-                            <span class="slider round" data-fun="exportToggle" data-binding="true" data-value="pinterest"></span>
-                        </label>
-                    </span>
-                </div>
-            </form>
+            <div class="mt-2">
+                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "name" => "Nach Facebook exportieren",
+                    "value" => $stickerCollection->getExportStatus("facebook") ? "checked" : "",
+                    "binding" => "exportToggle",
+                ]); ?>
+            </div>
+            <div class="mt-2">
+                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "name" => "Nach Google exportieren",
+                    "value" => $stickerCollection->getExportStatus("google") ? "checked" : "",
+                    "binding" => "exportToggle",
+                ]); ?>
+            </div>
+            <div class="mt-2">
+                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "name" => "Nach Amazon exportieren",
+                    "value" => $stickerCollection->getExportStatus("amazon") ? "checked" : "",
+                    "binding" => "exportToggle",
+                ]); ?>
+            </div>
+            <div class="mt-2">
+                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "name" => "Nach Etsy exportieren",
+                    "value" => $stickerCollection->getExportStatus("etsy") ? "checked" : "",
+                    "binding" => "exportToggle",
+                ]); ?>
+            </div>
+            <div class="mt-2">
+                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "name" => "Nach eBay exportieren",
+                    "value" => $stickerCollection->getExportStatus("ebay") ? "checked" : "",
+                    "binding" => "exportToggle",
+                ]); ?>
+            </div>
+            <div class="mt-2">
+                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "name" => "Nach Pinterest exportieren",
+                    "value" => $stickerCollection->getExportStatus("pinterest") ? "checked" : "",
+                    "binding" => "exportToggle",
+                ]); ?>
+            </div>
         </div>
 
         <div class="defCont col-span-2">
@@ -489,7 +471,6 @@ if ($id == 0): ?>
                     Von
                     <input type="date" id="statsStart" class="input-primary">
                 </label>
-                <br>
                 <label>
                     Bis
                     <input type="date" id="statsEnd" class="input-primary">
@@ -525,5 +506,5 @@ if ($id == 0): ?>
         <template id="icon-invisible">
             <?= Icon::getDefault("iconInvisible") ?>
         </template>
-    <?php endif; ?>
     </div>
+<?php endif; ?>

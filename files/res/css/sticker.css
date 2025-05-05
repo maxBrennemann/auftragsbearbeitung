@@ -209,17 +209,6 @@ input:checked + .slider:before {
     vertical-align: middle;
 }
 
-.fastUpload {
-    left: 0;
-    right: 0;
-    bottom: 0;
-    overflow: hidden;
-    position: fixed;
-    height: 200px;
-    background: white;
-    border-top: 1px solid black;
-}
-
 .colorBtn {
     border: none;
     border-radius: 0;

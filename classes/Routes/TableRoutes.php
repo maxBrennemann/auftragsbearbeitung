@@ -8,31 +8,31 @@ class TableRoutes extends Routes
 {
 
     /**
-     * @uses \Classes\Project\Table\Table::readData()
+     * @uses \Classes\Table\Table::readData()
      */
     protected static $getRoutes = [
-        "/tables/{tablename}" => [\Classes\Project\Table\Table::class, "readData"],
+        "/tables/{tablename}" => [\Classes\Table\Table::class, "readData"],
     ];
 
     /**
-     * @uses \Classes\Project\Table\Table::createData()
+     * @uses \Classes\Table\Table::createData()
      */
     protected static $postRoutes = [
-        "/tables/{tablename}" => [\Classes\Project\Table\Table::class, "createData"],
+        "/tables/{tablename}" => [\Classes\Table\Table::class, "createData"],
     ];
 
     /**
-     * @uses \Classes\Project\Table\Table::updateData()
+     * @uses \Classes\Table\Table::updateData()
      */
     protected static $putRoutes = [
-        "/tables/{tablename}" => [\Classes\Project\Table\Table::class, "updateData"],
+        "/tables/{tablename}" => [\Classes\Table\Table::class, "updateData"],
     ];
 
     /**
-     * @uses \Classes\Project\Table\Table::deleteData()
+     * @uses \Classes\Table\Table::deleteData()
      */
     protected static $deleteRoutes = [
-        "/tables/{tablename}" => [\Classes\Project\Table\Table::class, "deleteData"],
+        "/tables/{tablename}" => [\Classes\Table\Table::class, "deleteData"],
     ];
 
 }

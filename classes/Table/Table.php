@@ -1,6 +1,6 @@
 <?php
 
-namespace Classes\Project\Table;
+namespace Classes\Table;
 
 use MaxBrennemann\PhpUtilities\Tools;
 

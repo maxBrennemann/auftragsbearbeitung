@@ -79,15 +79,15 @@ const showStickerStatus = () => {
             let dataElement = data[rowIndex];
 
             if (dataElement.a) {
-                row.children[3].classList.add("inShop");
+                row.children[3].classList.add("bg-lime-500");
             }
 
             if (dataElement.w) {
-                row.children[7].classList.add("inShop");
+                row.children[7].classList.add("bg-lime-500");
             }
 
             if (dataElement.t) {
-                row.children[8].classList.add("inShop");
+                row.children[8].classList.add("bg-lime-500");
             }
         });
     });

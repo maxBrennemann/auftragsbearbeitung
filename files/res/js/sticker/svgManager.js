@@ -1,5 +1,5 @@
-import { addBindings } from "../classes/bindings";
-import { getStickerId } from "../sticker";
+import { addBindings } from "../classes/bindings.js";
+import { getStickerId } from "../sticker.js";
 
 const fnNames = {};
 const config = {

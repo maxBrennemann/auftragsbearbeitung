@@ -1,6 +1,6 @@
 <?php
 
-namespace Project\Modules\AiConnector;
+namespace Project\AiConnector;
 
 interface AiInterface
 {

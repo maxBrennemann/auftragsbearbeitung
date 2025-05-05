@@ -14,11 +14,11 @@
     <div class="defCont">
         <h1 class="font-semibold">Übersichten</h1>
         <div class="inline-flex gap-2 items-center bg-white rounded-md p-2">
-            <button class="align-middle w-24 border-0 flex-none h-10" id="yellow"></button>
+            <button class="align-middle w-24 border-0 flex-none h-10 bg-lime-500"></button>
             <p>Diese Motivvariante ist im Shop, aber die Daten aus der Auftragsbearbeitung wurde nicht hochgeladen</p>
         </div>
         <div class="mt-3 inline-flex gap-2 items-center bg-white rounded-md p-2">
-            <button class="align-middle w-24 border-0 flex-none h-10" id="green"></button>
+            <button class="align-middle w-24 border-0 flex-none h-10 bg-amber-500"></button>
             <p>Diese Motivvariante ist im Shop und aktuell</p>
         </div>
         <div>

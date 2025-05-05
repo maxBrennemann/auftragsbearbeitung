@@ -1,6 +1,6 @@
 <?php
 
-use Classes\Project\Table\TableConfig;
+use Classes\Table\TableConfig;
 use MaxBrennemann\PhpUtilities\Migrations\UpgradeManager;
 
 $_SERVER["DOCUMENT_ROOT"] = "../";
