@@ -11,8 +11,8 @@ use Classes\Table\TableConfig;
 use Classes\Project\Config;
 use Classes\Project\CacheManager;
 
-use Classes\Project\Modules\Sticker\Exports\ExportFacebook;
-use Classes\Project\Modules\Sticker\Imports\ImportGoogleSearchConsole;
+use Classes\Sticker\Exports\ExportFacebook;
+use Classes\Sticker\Imports\ImportGoogleSearchConsole;
 
 class ResourceManager
 {

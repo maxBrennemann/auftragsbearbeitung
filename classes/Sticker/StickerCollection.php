@@ -1,6 +1,6 @@
 <?php
 
-namespace Classes\Project\Modules\Sticker;
+namespace Classes\Sticker;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
@@ -9,7 +9,7 @@ use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use Classes\Project\Icon;
 use Classes\Project\UploadHandler;
 
-use Classes\Project\Modules\Sticker\Imports\ImportGoogleSearchConsole;
+use Classes\Sticker\Imports\ImportGoogleSearchConsole;
 
 class StickerCollection implements \Iterator
 {

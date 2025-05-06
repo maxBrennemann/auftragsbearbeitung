@@ -1,16 +1,16 @@
 <?php
 
-namespace Classes\Project\Modules\Sticker\Exports;
+namespace Classes\Sticker\Exports;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 use Classes\Link;
-use Classes\Project\Modules\Sticker\Aufkleber;
-use Classes\Project\Modules\Sticker\Wandtattoo;
-use Classes\Project\Modules\Sticker\Textil;
-use Classes\Project\Modules\Sticker\PrestashopConnection;
-use Classes\Project\Modules\Sticker\StickerCollection;
+use Classes\Sticker\Aufkleber;
+use Classes\Sticker\Wandtattoo;
+use Classes\Sticker\Textil;
+use Classes\Sticker\PrestashopConnection;
+use Classes\Sticker\StickerCollection;
 
 /**
  * generates a csv file for facebook product export

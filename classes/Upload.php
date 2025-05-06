@@ -7,7 +7,7 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 use Classes\Project\Produkt;
 
-use Classes\Project\Modules\Sticker\StickerImage;
+use Classes\Sticker\StickerImage;
 
 class Upload
 {

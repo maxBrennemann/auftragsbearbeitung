@@ -1,6 +1,6 @@
 <?php
 
-namespace Classes\Project\Modules\Sticker;
+namespace Classes\Sticker;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;

@@ -3,10 +3,12 @@
 use Classes\Link;
 use Classes\Project\Icon;
 
-use Classes\Project\Modules\Sticker\StickerImage;
-use Classes\Project\Modules\Sticker\StickerCollection;
-use Classes\Project\Modules\Sticker\StickerChangelog;
-use Classes\Project\Modules\Sticker\ChatGPTConnection;
+use Classes\Sticker\StickerImage;
+use Classes\Sticker\StickerCollection;
+use Classes\Sticker\StickerChangelog;
+use Classes\Sticker\ChatGPTConnection;
+
+use Classes\Project\TemplateController;
 
 $id = 0;
 
@@ -83,7 +85,7 @@ if ($id == 0): ?>
                 <?php endif; ?>
             </div>
             <div class="mt-2">
-                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                <?= TemplateController::getTemplate("inputSwitch", [
                     "id" => "plotted",
                     "name" => "Aufkleber Plott",
                     "value" => $stickerCollection->getAufkleber()->getIsPlotted() == 1 ? "checked" : "",
@@ -91,7 +93,7 @@ if ($id == 0): ?>
                 ]); ?>
             </div>
             <div class="mt-2">
-                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                <?= TemplateController::getTemplate("inputSwitch", [
                     "id" => "short",
                     "name" => "kurzfristiger Aufkleber",
                     "value" => $stickerCollection->getAufkleber()->getIsShortTimeSticker() == 1 ? "checked" : "",
@@ -99,7 +101,7 @@ if ($id == 0): ?>
                 ]); ?>
             </div>
             <div class="mt-2">
-                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                <?= TemplateController::getTemplate("inputSwitch", [
                     "id" => "short",
                     "name" => "langfristiger Aufkleber",
                     "value" => $stickerCollection->getAufkleber()->getIsLongTimeSticker() == 1 ? "checked" : "",
@@ -107,7 +109,7 @@ if ($id == 0): ?>
                 ]); ?>
             </div>
             <div class="mt-2">
-                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                <?= TemplateController::getTemplate("inputSwitch", [
                     "id" => "short",
                     "name" => "mehrteilig",
                     "value" => $stickerCollection->getAufkleber()->getIsMultipart() == 1 ? "checked" : "",
@@ -128,17 +130,25 @@ if ($id == 0): ?>
             <div class="mt-2">
                 <div class="mt-2 flex">
                     <p>Kurzbeschreibung</p>
-                    <?= insertTemplate("classes/Project/Modules/Sticker/Views/chatGPTstickerView.php", ["type" => "aufkleber", "text" => "short", "gpt" => $chatGPTConnection]) ?>
+                    <?= TemplateController::getTemplate("sticker/chatGPTsticker", [
+                        "type" => "aufkleber",
+                        "text" => "short",
+                        "gpt" => $chatGPTConnection
+                    ]); ?>
                 </div>
                 <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="aufkleber" data-type="short" data-write="true"><?= $stickerCollection->getAufkleber()->getDescriptionShort() ?></textarea>
                 <div class="mt-2 flex">
                     <p>Beschreibung</p>
-                    <?= insertTemplate("classes/Project/Modules/Sticker/Views/chatGPTstickerView.php", ["type" => "aufkleber", "text" => "long", "gpt" => $chatGPTConnection]) ?>
+                    <?= TemplateController::getTemplate("sticker/chatGPTsticker", [
+                        "type" => "aufkleber",
+                        "text" => "long",
+                        "gpt" => $chatGPTConnection
+                    ]); ?>
                 </div>
                 <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="aufkleber" data-type="long" data-write="true"><?= $stickerCollection->getAufkleber()->getDescription() ?></textarea>
             </div>
             <div class="mt-2">
-                <?= \Classes\Project\TemplateController::getTemplate("sticker/stickerImage", [
+                <?= TemplateController::getTemplate("sticker/stickerImage", [
                     "images" => $stickerImage->getAufkleberImages(),
                     "imageCategory" => "aufkleber",
                 ]); ?>
@@ -181,7 +191,7 @@ if ($id == 0): ?>
                 <?php endif; ?>
             </div>
             <div class="mt-2">
-                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                <?= TemplateController::getTemplate("inputSwitch", [
                     "id" => "wandtattoo",
                     "name" => "Wandtattoo",
                     "value" => $stickerCollection->getWandtattoo()->getIsWalldecal() == 1 ? "checked" : "",
@@ -191,17 +201,25 @@ if ($id == 0): ?>
             <div class="mt-2">
                 <div class="mt-2 flex">
                     <p>Kurzbeschreibung</p>
-                    <?= insertTemplate("classes/Project/Modules/Sticker/Views/chatGPTstickerView.php", ["type" => "wandtattoo", "text" => "short", "gpt" => $chatGPTConnection]) ?>
+                    <?= TemplateController::getTemplate("sticker/chatGPTsticker", [
+                        "type" => "wandtattoo",
+                        "text" => "short",
+                        "gpt" => $chatGPTConnection
+                    ]); ?>
                 </div>
                 <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="wandtattoo" data-type="short" data-write="true"><?= $stickerCollection->getWandtattoo()->getDescriptionShort() ?></textarea>
                 <div class="mt-2 flex">
                     <p>Beschreibung</p>
-                    <?= insertTemplate("classes/Project/Modules/Sticker/Views/chatGPTstickerView.php", ["type" => "wandtattoo", "text" => "long", "gpt" => $chatGPTConnection]) ?>
+                    <?= TemplateController::getTemplate("sticker/chatGPTsticker", [
+                        "type" => "wandtattoo",
+                        "text" => "long",
+                        "gpt" => $chatGPTConnection
+                    ]); ?>
                 </div>
                 <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="wandtattoo" data-type="long" data-write="true"><?= $stickerCollection->getWandtattoo()->getDescription() ?></textarea>
             </div>
             <div class="mt-2">
-                <?= \Classes\Project\TemplateController::getTemplate("sticker/stickerImage", [
+                <?= TemplateController::getTemplate("sticker/stickerImage", [
                     "images" => $stickerImage->getWandtattooImages(),
                     "imageCategory" => "wandtattoo",
                 ]); ?>
@@ -244,7 +262,7 @@ if ($id == 0): ?>
                 <?php endif; ?>
             </div>
             <div class="mt-2">
-                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                <?= TemplateController::getTemplate("inputSwitch", [
                     "id" => "textil",
                     "name" => "Textil",
                     "value" => $stickerCollection->getTextil()->getIsShirtcollection() == 1 ? "checked" : "",
@@ -252,7 +270,7 @@ if ($id == 0): ?>
                 ]); ?>
             </div>
             <div class="mt-2">
-                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                <?= TemplateController::getTemplate("inputSwitch", [
                     "id" => "makeColorable",
                     "name" => "Einfärbbar",
                     "value" => $stickerCollection->getTextil()->getIsColorable() == 1 ? "checked" : "",
@@ -260,7 +278,7 @@ if ($id == 0): ?>
                 ]); ?>
             </div>
             <div class="mt-2">
-                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                <?= TemplateController::getTemplate("inputSwitch", [
                     "id" => "makeCustomizable",
                     "name" => "Personalisierbar",
                     "value" => $stickerCollection->getTextil()->getIsCustomizable() == 1 ? "checked" : "",
@@ -268,7 +286,7 @@ if ($id == 0): ?>
                 ]); ?>
             </div>
             <div class="mt-2">
-                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                <?= TemplateController::getTemplate("inputSwitch", [
                     "id" => "makeForConfig",
                     "name" => "Im Konfigurator anzeigen",
                     "value" => $stickerCollection->getTextil()->getIsForConfigurator() == 1 ? "checked" : "",
@@ -285,17 +303,25 @@ if ($id == 0): ?>
             <div class="mt-2">
                 <div class="mt-2 flex">
                     <p>Kurzbeschreibung</p>
-                    <?= insertTemplate("classes/Project/Modules/Sticker/Views/chatGPTstickerView.php", ["type" => "textil", "text" => "short", "gpt" => $chatGPTConnection]) ?>
+                    <?= TemplateController::getTemplate("sticker/chatGPTsticker", [
+                        "type" => "textil",
+                        "text" => "short",
+                        "gpt" => $chatGPTConnection
+                    ]); ?>
                 </div>
                 <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="textil" data-type="short" data-write="true"><?= $stickerCollection->getTextil()->getDescriptionShort() ?></textarea>
                 <div class="mt-2 flex">
                     <p>Beschreibung</p>
-                    <?= insertTemplate("classes/Project/Modules/Sticker/Views/chatGPTstickerView.php", ["type" => "textil", "text" => "long", "gpt" => $chatGPTConnection]) ?>
+                    <?= TemplateController::getTemplate("sticker/chatGPTsticker", [
+                        "type" => "textil",
+                        "text" => "long",
+                        "gpt" => $chatGPTConnection
+                    ]); ?>
                 </div>
                 <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="textil" data-type="long" data-write="true"><?= $stickerCollection->getTextil()->getDescription() ?></textarea>
             </div>
             <div class="mt-2">
-                <?= \Classes\Project\TemplateController::getTemplate("sticker/stickerImage", [
+                <?= TemplateController::getTemplate("sticker/stickerImage", [
                     "images" => $stickerImage->getTextilImages(),
                     "imageCategory" => "textil",
                 ]); ?>
@@ -398,7 +424,7 @@ if ($id == 0): ?>
         <div class="defCont">
             <h2 class="font-semibold">Weitere Infos</h2>
             <div class="mt-2 inline-flex items-center">
-                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                <?= TemplateController::getTemplate("inputSwitch", [
                     "name" => "Motiv neu überarbeitet?",
                     "value" => $stickerCollection->getIsRevised() == 1 ? "checked" : "",
                     "binding" => "revised",
@@ -416,7 +442,7 @@ if ($id == 0): ?>
         <div class="defCont col-span-3">
             <h2 class="font-semibold mb-2">Produktexport</h2>
             <div class="mt-2">
-                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                <?= TemplateController::getTemplate("inputSwitch", [
                     "id" => "facebook",
                     "name" => "Nach Facebook exportieren",
                     "value" => $stickerCollection->getExportStatus("facebook") ? "checked" : "",
@@ -424,7 +450,7 @@ if ($id == 0): ?>
                 ]); ?>
             </div>
             <div class="mt-2">
-                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                <?= TemplateController::getTemplate("inputSwitch", [
                     "id" => "google",
                     "name" => "Nach Google exportieren",
                     "value" => $stickerCollection->getExportStatus("google") ? "checked" : "",
@@ -432,7 +458,7 @@ if ($id == 0): ?>
                 ]); ?>
             </div>
             <div class="mt-2">
-                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                <?= TemplateController::getTemplate("inputSwitch", [
                     "id" => "amazon",
                     "name" => "Nach Amazon exportieren",
                     "value" => $stickerCollection->getExportStatus("amazon") ? "checked" : "",
@@ -440,7 +466,7 @@ if ($id == 0): ?>
                 ]); ?>
             </div>
             <div class="mt-2">
-                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                <?= TemplateController::getTemplate("inputSwitch", [
                     "id" => "etsy",
                     "name" => "Nach Etsy exportieren",
                     "value" => $stickerCollection->getExportStatus("etsy") ? "checked" : "",
@@ -448,7 +474,7 @@ if ($id == 0): ?>
                 ]); ?>
             </div>
             <div class="mt-2">
-                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                <?= TemplateController::getTemplate("inputSwitch", [
                     "id" => "eBay",
                     "name" => "Nach eBay exportieren",
                     "value" => $stickerCollection->getExportStatus("ebay") ? "checked" : "",
@@ -456,7 +482,7 @@ if ($id == 0): ?>
                 ]); ?>
             </div>
             <div class="mt-2">
-                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                <?= TemplateController::getTemplate("inputSwitch", [
                     "id" => "pinterest",
                     "name" => "Nach Pinterest exportieren",
                     "value" => $stickerCollection->getExportStatus("pinterest") ? "checked" : "",

@@ -1,6 +1,6 @@
 <?php
 
-namespace Classes\Project\Modules\Sticker;
+namespace Classes\Sticker;
 
 class StickerImageManager implements Queable
 {

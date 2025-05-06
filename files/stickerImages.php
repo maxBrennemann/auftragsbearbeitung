@@ -1,6 +1,6 @@
 <?php
 
-$images = Classes\Project\Modules\Sticker\StickerImage::getAllImageFiles();
+$images = Classes\Sticker\StickerImage::getAllImageFiles();
 
 ?>
 <div class="grid grid-cols-5 mt-3">

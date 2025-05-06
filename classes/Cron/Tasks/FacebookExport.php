@@ -4,7 +4,7 @@ namespace Classes\Cron\Tasks;
 
 use Classes\Cron\Queueable;
 
-use Classes\Project\Modules\Sticker\Exports\ExportFacebook;
+use Classes\Sticker\Exports\ExportFacebook;
 
 class FacebookExport implements Queueable
 {

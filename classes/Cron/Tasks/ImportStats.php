@@ -4,7 +4,7 @@ namespace Classes\Cron\Tasks;
 
 use Classes\Cron\Queueable;
 
-use Classes\Project\Modules\Sticker\Imports\ImportGoogleSearchConsole;
+use Classes\Sticker\Imports\ImportGoogleSearchConsole;
 
 class ImportStats implements Queueable
 {

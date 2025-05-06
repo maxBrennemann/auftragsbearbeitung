@@ -1,6 +1,6 @@
 <?php
 
-namespace Classes\Project\Modules\Sticker;
+namespace Classes\Sticker;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
 

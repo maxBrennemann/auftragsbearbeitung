@@ -33,15 +33,15 @@ use Classes\Project\Statistics;
 use Classes\Project\Icon;
 use Classes\Project\User;
 
-use Classes\Project\Modules\Sticker\Sticker;
-use Classes\Project\Modules\Sticker\StickerImage;
-use Classes\Project\Modules\Sticker\StickerCategory;
-use Classes\Project\Modules\Sticker\StickerCollection;
-use Classes\Project\Modules\Sticker\SearchProducts;
-use Classes\Project\Modules\Sticker\Textil;
-use Classes\Project\Modules\Sticker\Aufkleber;
-use Classes\Project\Modules\Sticker\AufkleberWandtattoo;
-use Classes\Project\Modules\Sticker\StickerTagManager;
+use Classes\Sticker\Sticker;
+use Classes\Sticker\StickerImage;
+use Classes\Sticker\StickerCategory;
+use Classes\Sticker\StickerCollection;
+use Classes\Sticker\SearchProducts;
+use Classes\Sticker\Textil;
+use Classes\Sticker\Aufkleber;
+use Classes\Sticker\AufkleberWandtattoo;
+use Classes\Sticker\StickerTagManager;
 
 use Classes\Routes\TableRoutes;
 use Classes\Routes\TestingRoutes;
