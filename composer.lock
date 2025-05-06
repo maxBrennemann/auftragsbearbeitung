@@ -2192,12 +2192,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/phinx.git",
-                "reference": "edd61785fe6b57a5992afafcc8cfdf5ea612d50d"
+                "reference": "06f83d73722a66ef974a7c46214011d24f7e6b66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/phinx/zipball/edd61785fe6b57a5992afafcc8cfdf5ea612d50d",
-                "reference": "edd61785fe6b57a5992afafcc8cfdf5ea612d50d",
+                "url": "https://api.github.com/repos/cakephp/phinx/zipball/06f83d73722a66ef974a7c46214011d24f7e6b66",
+                "reference": "06f83d73722a66ef974a7c46214011d24f7e6b66",
                 "shasum": ""
             },
             "require": {
@@ -2205,7 +2205,7 @@
                 "composer-runtime-api": "^2.0",
                 "php-64bit": ">=8.1",
                 "psr/container": "^1.1|^2.0",
-                "symfony/config": "^3.4|^4.0|^5.0|^6.0|^7.0",
+                "symfony/config": "^4.0|^5.0|^6.0|^7.0",
                 "symfony/console": "^6.0|^7.0"
             },
             "require-dev": {
@@ -2214,7 +2214,7 @@
                 "ext-json": "*",
                 "ext-pdo": "*",
                 "phpunit/phpunit": "^9.5.19",
-                "symfony/yaml": "^3.4|^4.0|^5.0|^6.0|^7.0"
+                "symfony/yaml": "^4.0|^5.0|^6.0|^7.0"
             },
             "suggest": {
                 "ext-json": "Install if using JSON configuration format",
@@ -2270,9 +2270,9 @@
             ],
             "support": {
                 "issues": "https://github.com/cakephp/phinx/issues",
-                "source": "https://github.com/cakephp/phinx/tree/0.16.7"
+                "source": "https://github.com/cakephp/phinx/tree/0.16.8"
             },
-            "time": "2025-04-17T17:32:39+00:00"
+            "time": "2025-05-04T16:16:30+00:00"
         },
         {
             "name": "symfony/config",
@@ -2355,12 +2355,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "9bd4d772b9678ebf398763403a8676b3010a18a7"
+                "reference": "d10b149020a8cec39fad6e34adf1295ffab768f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/9bd4d772b9678ebf398763403a8676b3010a18a7",
-                "reference": "9bd4d772b9678ebf398763403a8676b3010a18a7",
+                "url": "https://api.github.com/repos/symfony/console/zipball/d10b149020a8cec39fad6e34adf1295ffab768f8",
+                "reference": "d10b149020a8cec39fad6e34adf1295ffab768f8",
                 "shasum": ""
             },
             "require": {
@@ -2368,7 +2368,7 @@
                 "symfony/deprecation-contracts": "^2.5|^3",
                 "symfony/polyfill-mbstring": "~1.0",
                 "symfony/service-contracts": "^2.5|^3",
-                "symfony/string": "^6.4|^7.0"
+                "symfony/string": "^7.2"
             },
             "conflict": {
                 "symfony/dependency-injection": "<6.4",
@@ -2442,7 +2442,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-04-07T19:11:40+00:00"
+            "time": "2025-05-05T08:24:21+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -2494,7 +2494,7 @@
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/deprecation-contracts/tree/main"
+                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.6.0-BETA1"
             },
             "funding": [
                 {
@@ -2981,12 +2981,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/service-contracts.git",
-                "reference": "5ad38698559cf88b6296629e19b15ef3239c9d7a"
+                "reference": "f021b05a130d35510bd6b25fe9053c2a8a15d5d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/5ad38698559cf88b6296629e19b15ef3239c9d7a",
-                "reference": "5ad38698559cf88b6296629e19b15ef3239c9d7a",
+                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/f021b05a130d35510bd6b25fe9053c2a8a15d5d4",
+                "reference": "f021b05a130d35510bd6b25fe9053c2a8a15d5d4",
                 "shasum": ""
             },
             "require": {
@@ -3041,7 +3041,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/service-contracts/tree/main"
+                "source": "https://github.com/symfony/service-contracts/tree/v3.6.0-BETA1"
             },
             "funding": [
                 {
@@ -3057,7 +3057,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-09-25T14:21:43+00:00"
+            "time": "2025-04-25T09:37:31+00:00"
         },
         {
             "name": "symfony/string",

@@ -34,6 +34,22 @@ fnNames.write_fileUploader = async e => {
     target.value = "";
 }
 
+fnNames.drop_fileUploader = async e => {
+    e.preventDefault();
+
+    if (!e.dataTransfer.files) {
+        return;
+    }
+
+    const files = e.dataTransfer.files;
+    const fileInput = e.currentTarget.querySelector("input");
+    fileInput.files = files;
+}
+
+fnNames.dragover_fileUploader = async e => {
+    e.preventDefault();
+}
+
 export const initFileUploader = (data) => {
     fileUploadInfo = {
         ...fileUploadInfo,

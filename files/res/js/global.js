@@ -5,6 +5,7 @@ import { timeGlobalListener } from "./classes/timetracking.js";
 import { addBindings } from "./classes/bindings.js";
 
 const fnNames = {};
+const imagePreviewListeners = new WeakSet();
 
 /**
  * function is called when the page is loaded,
@@ -99,17 +100,22 @@ function initSearchListener() {
 	});
 }
 
-const initImagePreviewListener = () => {
+export const initImagePreviewListener = () => {
 	const images = document.querySelectorAll("img");
 	images.forEach(image => {
+		if (imagePreviewListeners.has(image)) {
+			return;
+		}
+
 		image.classList.add("cursor-pointer");
 		image.addEventListener("click", () => {
 			const imageCopy = document.createElement("img");
 			imageCopy.src = image.src;
 			imageCopy.title = image.title;
-			imageCopy.size = image.naturalWidth < 500 ? image.naturalWidth : 500;
+			imageCopy.width = image.naturalWidth < 500 ? image.naturalWidth : 500;
 			createPopup(imageCopy);
 		});
+		imagePreviewListeners.add(image);
 	});
 }
 

@@ -639,4 +639,16 @@ class StickerImage extends PrestashopConnection
     }
 
     public static function getCombinedImages(int $stickerId, int $textileId) {}
+
+    public static function prepareData($data)
+    {
+        foreach ($data["results"] as $key => $value) {
+            $dateiname = $data["results"][$key]["dateiname"];
+            $name = $data["results"][$key]["originalname"];
+            $image = Link::getResourcesShortLink($dateiname, "upload");
+
+            $html = '<img src="' . $image . '" title="' . $name . '" class="w-24">';
+            $data["results"][$key]["image"] = $html;
+        }
+    }
 }

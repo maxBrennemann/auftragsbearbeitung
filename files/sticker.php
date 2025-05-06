@@ -1,5 +1,7 @@
 <?php
 
+use MaxBrennemann\PhpUtilities\Tools;
+
 use Classes\Link;
 use Classes\Project\Icon;
 
@@ -10,16 +12,14 @@ use Classes\Sticker\TextModification;
 
 use Classes\Project\TemplateController;
 
-$id = 0;
+$id = Tools::get("id");
 
 $stickerCollection = null;
 $stickerChangelog = null;
 $stickerImage = null;
 $textModification = null;
 
-if (isset($_GET['id'])) {
-    $id = (int) $_GET['id'];
-
+if ($id != null) {
     $stickerImage = new StickerImage($id);
     $stickerCollection = new StickerCollection($id);
     $stickerChangelog = new StickerChangelog($id);
@@ -32,8 +32,8 @@ if ($id == 0): ?>
         window.location.href = "<?= Link::getPageLink("sticker-overview") ?>";
     </script>
 <?php else: ?>
-    <div class="w-full grid gap-2 grid-cols-3">
-        <div class="defCont col-span-3">
+    <div class="w-full grid gap-2 grid-cols-6">
+        <div class="defCont col-span-6">
             <h2 class="font-semibold inline-flex items-center">Motiv
                 <input id="stickerName" data-write="true" data-input="true" class="input-primary w-96 ml-1" value="<?= $stickerCollection->getName(); ?>" title="Faceboook hat ein internes Limit für die Titellänge von 65 Zeichen">
                 <?php if ($stickerCollection->getIsMarked() == "0"): ?>
@@ -50,7 +50,7 @@ if ($id == 0): ?>
             <p class="ml-2 mt-2">Erstellt am <input type="date" class="input-primary" id="creationDate" data-write="true" value="<?= $stickerCollection->getCreationDate() ?>"></p>
             <button class="btn-primary mt-4" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
         </div>
-        <div class="defCont col-span-2 lg:col-span-1">
+        <div class="defCont col-span-3 2xl:col-span-2">
             <p class="font-bold">Aufkleber
                 <?php if ($stickerCollection->getAufkleber()->getActiveStatus()): ?>
                     <button class="mx-1 btn-primary-small" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
@@ -156,7 +156,7 @@ if ($id == 0): ?>
             <button class="transferBtn btn-primary w-full mt-2" id="transferAufkleber" data-binding="true" <?= $stickerCollection->getAufkleber()->getIsPlotted() == 1 ? "" : "disabled" ?>>Aufkleber übertragen</button>
         </div>
 
-        <div class="defCont col-span-2 lg:col-span-1">
+        <div class="defCont col-span-3 2xl:col-span-2">
             <p class="font-bold">Wandtattoo
                 <?php if ($stickerCollection->getWandtattoo()->getActiveStatus()): ?>
                     <button class="mx-1 btn-primary-small" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
@@ -227,7 +227,7 @@ if ($id == 0): ?>
             <button class="transferBtn btn-primary w-full mt-2" id="transferWandtattoo" data-binding="true" <?= $stickerCollection->getWandtattoo()->getIsWalldecal() == 1 ? "" : "disabled" ?>>Wandtattoo übertragen</button>
         </div>
 
-        <div class="defCont col-span-2 lg:col-span-1">
+        <div class="defCont col-span-3 2xl:col-span-2">
             <p class="font-bold">Textil
                 <?php if ($stickerCollection->getTextil()->getActiveStatus()): ?>
                     <button class="mx-1 btn-primary-small" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
@@ -329,7 +329,7 @@ if ($id == 0): ?>
             <button class="transferBtn btn-primary w-full hidden mt-2" id="transferTextil" data-binding="true" <?= $stickerCollection->getTextil()->getIsShirtcollection() == 1 ? "" : "disabled" ?>>Textil übertragen</button>
         </div>
 
-        <div class="defCont col-span-2">
+        <div class="defCont col-span-4">
             <h2 class="mb-2 font-bold">Größen</h2>
             <div id="sizeTableWrapper">
                 <table>
@@ -382,7 +382,7 @@ if ($id == 0): ?>
             </div>
         </div>
 
-        <div class="defCont">
+        <div class="defCont col-span-2">
             <h2 class="font-semibold">Textilien</h2>
             <div class="mt-2">
                 <div>
@@ -407,7 +407,7 @@ if ($id == 0): ?>
             </div>
         </div>
 
-        <div class="defCont col-span-2">
+        <div class="defCont col-span-3">
             <h2 class="font-semibold">Tags<button class="infoButton ml-1" data-info="3">i</button></h2>
             <div class="mt-2" id="tagManager"></div>
             <div class="mt-2">
@@ -421,7 +421,7 @@ if ($id == 0): ?>
             </div>
         </div>
 
-        <div class="defCont">
+        <div class="defCont col-span-3">
             <h2 class="font-semibold">Weitere Infos</h2>
             <div class="mt-2 inline-flex items-center">
                 <?= TemplateController::getTemplate("inputSwitch", [
@@ -439,7 +439,7 @@ if ($id == 0): ?>
             <textarea class="input-primary mt-2 w-full" data-fun="additionalInfo" data-write="true"><?= $stickerCollection->getAdditionalInfo() ?></textarea>
         </div>
 
-        <div class="defCont col-span-3">
+        <div class="defCont col-span-6">
             <h2 class="font-semibold mb-2">Produktexport</h2>
             <div class="mt-2">
                 <?= TemplateController::getTemplate("inputSwitch", [
@@ -491,7 +491,7 @@ if ($id == 0): ?>
             </div>
         </div>
 
-        <div class="defCont col-span-2">
+        <div class="defCont col-span-3">
             <h2 class="font-semibold mb-2">Statistiken</h2>
             <!-- TODO: Statistiken von Google Analytics und Google Shopping, sowie von Google SearchConsole und shopintern einbinden -->
             <div>
@@ -512,7 +512,7 @@ if ($id == 0): ?>
             </div>
         </div>
 
-        <div class="defCont">
+        <div class="defCont col-span-3">
             <h2 class="font-semibold mb-2">Changelog</h2>
             <details>
                 <?= $stickerChangelog->getTable() ?>
