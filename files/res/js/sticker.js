@@ -1,4 +1,4 @@
-import { click_textGeneration, click_showTextSettings, click_iterateText } from "./sticker/textGeneration.js";
+import { initTextGeneration } from "./sticker/textGeneration.js";
 import { productConnector } from "./sticker/productConnector.js";
 import { initImageManager } from "./sticker/imageManager.js";
 import { } from "./sticker/statsManager.js";
@@ -10,11 +10,7 @@ import { initTagManager } from "./sticker/tagManager.js";
 import { notificatinReplace, notification, notificationLoader } from "./classes/notifications.js";
 import { createPopup } from "./global.js";
 
-const fnNames = {
-    click_textGeneration: click_textGeneration,
-    click_showTextSettings: click_showTextSettings,
-    click_iterateText: click_iterateText,
-};
+const fnNames = {};
 
 const mainVariables = {
     productConnect: [],
@@ -38,6 +34,7 @@ function initSticker() {
     initSizeTable();
     initTagManager();
     initImageManager();
+    initTextGeneration();
 }
 
 fnNames.write_stickerName = e => {

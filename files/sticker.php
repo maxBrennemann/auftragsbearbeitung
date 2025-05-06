@@ -6,7 +6,7 @@ use Classes\Project\Icon;
 use Classes\Sticker\StickerImage;
 use Classes\Sticker\StickerCollection;
 use Classes\Sticker\StickerChangelog;
-use Classes\Sticker\ChatGPTConnection;
+use Classes\Sticker\TextModification;
 
 use Classes\Project\TemplateController;
 
@@ -15,7 +15,7 @@ $id = 0;
 $stickerCollection = null;
 $stickerChangelog = null;
 $stickerImage = null;
-$chatGPTConnection = null;
+$textModification = null;
 
 if (isset($_GET['id'])) {
     $id = (int) $_GET['id'];
@@ -23,7 +23,7 @@ if (isset($_GET['id'])) {
     $stickerImage = new StickerImage($id);
     $stickerCollection = new StickerCollection($id);
     $stickerChangelog = new StickerChangelog($id);
-    $chatGPTConnection = new ChatGPTConnection($id);
+    $textModification = new TextModification($id);
 }
 
 if ($id == 0): ?>
@@ -130,19 +130,19 @@ if ($id == 0): ?>
             <div class="mt-2">
                 <div class="mt-2 flex">
                     <p>Kurzbeschreibung</p>
-                    <?= TemplateController::getTemplate("sticker/chatGPTsticker", [
+                    <?= TemplateController::getTemplate("sticker/textOptions", [
                         "type" => "aufkleber",
                         "text" => "short",
-                        "gpt" => $chatGPTConnection
+                        "textModification" => $textModification
                     ]); ?>
                 </div>
                 <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="aufkleber" data-type="short" data-write="true"><?= $stickerCollection->getAufkleber()->getDescriptionShort() ?></textarea>
                 <div class="mt-2 flex">
                     <p>Beschreibung</p>
-                    <?= TemplateController::getTemplate("sticker/chatGPTsticker", [
+                    <?= TemplateController::getTemplate("sticker/textOptions", [
                         "type" => "aufkleber",
                         "text" => "long",
-                        "gpt" => $chatGPTConnection
+                        "textModification" => $textModification
                     ]); ?>
                 </div>
                 <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="aufkleber" data-type="long" data-write="true"><?= $stickerCollection->getAufkleber()->getDescription() ?></textarea>
@@ -201,19 +201,19 @@ if ($id == 0): ?>
             <div class="mt-2">
                 <div class="mt-2 flex">
                     <p>Kurzbeschreibung</p>
-                    <?= TemplateController::getTemplate("sticker/chatGPTsticker", [
+                    <?= TemplateController::getTemplate("sticker/textOptions", [
                         "type" => "wandtattoo",
                         "text" => "short",
-                        "gpt" => $chatGPTConnection
+                        "textModification" => $textModification
                     ]); ?>
                 </div>
                 <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="wandtattoo" data-type="short" data-write="true"><?= $stickerCollection->getWandtattoo()->getDescriptionShort() ?></textarea>
                 <div class="mt-2 flex">
                     <p>Beschreibung</p>
-                    <?= TemplateController::getTemplate("sticker/chatGPTsticker", [
+                    <?= TemplateController::getTemplate("sticker/textOptions", [
                         "type" => "wandtattoo",
                         "text" => "long",
-                        "gpt" => $chatGPTConnection
+                        "textModification" => $textModification
                     ]); ?>
                 </div>
                 <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="wandtattoo" data-type="long" data-write="true"><?= $stickerCollection->getWandtattoo()->getDescription() ?></textarea>
@@ -303,19 +303,19 @@ if ($id == 0): ?>
             <div class="mt-2">
                 <div class="mt-2 flex">
                     <p>Kurzbeschreibung</p>
-                    <?= TemplateController::getTemplate("sticker/chatGPTsticker", [
+                    <?= TemplateController::getTemplate("sticker/textOptions", [
                         "type" => "textil",
                         "text" => "short",
-                        "gpt" => $chatGPTConnection
+                        "textModification" => $textModification
                     ]); ?>
                 </div>
                 <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="textil" data-type="short" data-write="true"><?= $stickerCollection->getTextil()->getDescriptionShort() ?></textarea>
                 <div class="mt-2 flex">
                     <p>Beschreibung</p>
-                    <?= TemplateController::getTemplate("sticker/chatGPTsticker", [
+                    <?= TemplateController::getTemplate("sticker/textOptions", [
                         "type" => "textil",
                         "text" => "long",
-                        "gpt" => $chatGPTConnection
+                        "textModification" => $textModification
                     ]); ?>
                 </div>
                 <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="textil" data-type="long" data-write="true"><?= $stickerCollection->getTextil()->getDescription() ?></textarea>

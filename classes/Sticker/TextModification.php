@@ -6,13 +6,13 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
-class ChatGPTConnection
+class TextModification
 {
 
     private $oldChats;
     private $idSticker;
 
-    function __construct($idSticker)
+    public function __construct($idSticker)
     {
         $this->idSticker = $idSticker;
         $query = "SELECT * FROM module_sticker_chatgpt WHERE idSticker = :idSticker";
@@ -202,7 +202,7 @@ class ChatGPTConnection
             $current = 0;
         }
 
-        $chatGPTConnection = new ChatGPTConnection($id);
+        $chatGPTConnection = new TextModification($id);
         $text = $chatGPTConnection->getText($type, $text, $current);
 
         $status = "success";
@@ -227,7 +227,31 @@ class ChatGPTConnection
         $additionalText = Tools::get("additionalText");
         $additionalStyle = Tools::get("additionalStyle");
 
-        $connector = new ChatGPTConnection($id);
+        $connector = new TextModification($id);
         $connector->getTextSuggestion($title, $type, $text, $additionalText, $additionalStyle);
+    }
+
+    public static function getTextGenerationTemplate()
+    {
+        $stickerId = Tools::get("id");
+        $stickerType =Tools::get("type");
+        $text = Tools::get("text");
+
+        $query = "SELECT id, chatgptResponse, DATE_FORMAT(creationDate, '%d. %M %Y') AS creationDate, textType, additionalQuery, textStyle 
+            FROM module_sticker_chatgpt 
+            WHERE idSticker = :stickerId 
+                AND stickerType = :stickerType;";
+        $result = DBAccess::selectQuery($query, [
+            "stickerId" => $stickerId,
+            "stickerType" => $stickerType
+        ]);
+
+        $content = \Classes\Project\TemplateController::getTemplate("sticker/textModification", [
+            "texts" => $result,
+        ]);
+        
+        JSONResponseHandler::sendResponse([
+            "template" => $content,
+        ]);
     }
 }

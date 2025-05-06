@@ -1,4 +1,5 @@
 import { ajax } from "../classes/ajax.js";
+import { addBindings } from "../classes/bindings.js";
 import { createPopup } from "../global.js";
 import { getStickerId } from "../sticker.js";
 
@@ -8,12 +9,14 @@ const textGenerationData = {
     product: null,
 };
 
+const fnNames = {};
+
 /**
  * Iterates through the texts of the sticker
  * depending on the product and text type
  * @param {*} e 
  */
-export function click_iterateText(e) {
+fnNames.click_iterateText = e => {
     const target = e.currentTarget;
     const direction = target.dataset.direction;
     const currentTextNode = target.parentNode.querySelector(".chatCount");
@@ -42,7 +45,7 @@ export function click_iterateText(e) {
     });
 }
 
-export function click_textGeneration(e) {
+fnNames.click_textGeneration = e => {
     const title = document.getElementById("name").value;
     const target = e.currentTarget.parentNode;
     const type = textGenerationData.product || target.dataset.type;
@@ -78,35 +81,32 @@ function getAdditionalInfo() {
     };
 }
 
-export function click_showTextSettings(e) {
+fnNames.click_showTextSettings = e => {
     const type = e.currentTarget.parentNode.dataset.type;
     const text = e.currentTarget.parentNode.dataset.text;
 
     textGenerationData.textType = text;
     textGenerationData.product = type;
 
-    ajax.post({
-        id: getStickerId(),
-        text: text,
-        type: type,
-        r: "showGTPOptions",
+    ajax.get(`/api/v1/sticker/${getStickerId()}/text-generation-template`, {
+        "text": text,
+        "type": type,
     }).then(r => {
         const template = r.template;
         const div = document.createElement("div");
         div.innerHTML = template;
-        div.classList.add("overflow-y-auto", "overflow-x-hidden", "fixed", "top-0", "right-0", "left-0", "z-50", "justify-center", "items-center", "w-full", "md:inset-0", "h-[calc(100%-1rem)]", "max-h-full", "bg-white/75");
         div.id = "showTextSettings";
 
-        const textOptions = div.querySelectorAll("dt");
-        Array.from(textOptions).forEach(dt => {
-            dt.addEventListener("click", selectTextOption);
+        const textOptions = div.querySelectorAll(".selectTextStyle button");
+        Array.from(textOptions).forEach(el => {
+            el.addEventListener("click", selectTextOption);
         });
 
         createPopup(div);
 
         const newTextBtn = div.querySelector("#generateNewText");
         newTextBtn.addEventListener("click", click_textGeneration);
-    });
+    })
 }
 
 function selectTextOption(e) {
@@ -122,4 +122,8 @@ function selectTextOption(e) {
         target.classList.remove("bg-blue-200");
         textGenerationData.textStyleNode = target;
     }
+}
+
+export const initTextGeneration = () => {
+    addBindings(fnNames);
 }

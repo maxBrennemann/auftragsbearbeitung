@@ -150,10 +150,6 @@ input:checked + .slider:before {
     height: 20px;
 }
 
-form label {
-    display: block;
-}
-
 .imageMovableContainer {
     overflow-x: scroll;
     height: 100px;
@@ -195,15 +191,4 @@ form label {
     border: none;
     vertical-align: middle;
     cursor: pointer;
-}
-
-.tagGroupGrid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-}
-
-/* chat gpt design */
-h4 {
-    display: inline-block;
-    margin-bottom: 10px;
 }

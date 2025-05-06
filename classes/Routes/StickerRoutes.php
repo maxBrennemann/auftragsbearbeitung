@@ -9,9 +9,10 @@ class StickerRoutes extends Routes
 
     /**
      * @uses \Classes\Sticker\StickerCollection::getStickerStatus()
-     * @uses \Classes\Sticker\ChatGPTConnection::iterateText()
+     * @uses \Classes\Sticker\TextModification::iterateText()
      * @uses \Classes\Sticker\StickerCollection::getStickerSizes()
      * @uses \Classes\Sticker\StickerCollection::getPriceScheme()
+     * @uses \Classes\Sticker\TextModification::getTextGenerationTemplate()
      * 
      * @uses
      * @uses
@@ -25,9 +26,10 @@ class StickerRoutes extends Routes
      */
     protected static $getRoutes = [
         "/sticker/{id}/status" => [\Classes\Sticker\StickerCollection::class, "getStickerStatus"],
-        "/sticker/{id}/texts/{type}/{form}" => [\Classes\Sticker\ChatGPTConnection::class, "iterateText"],
+        "/sticker/{id}/texts/{type}/{form}" => [\Classes\Sticker\TextModification::class, "iterateText"],
         "/sticker/{id}/sizes" => [\Classes\Sticker\StickerCollection::class, "getStickerSizes"],
         "/sticker/{id}/priceScheme" => [\Classes\Sticker\StickerCollection::class, "getPriceScheme"],
+        "/sticker/{id}/text-generation-template" => [\Classes\Sticker\TextModification::class, "getTextGenerationTemplate"],
 
         "/sticker/tags" => [],
         "/sticker/tags/crawl" => [],
@@ -65,7 +67,7 @@ class StickerRoutes extends Routes
         "/sticker/{id}/priceScheme" => [\Classes\Sticker\StickerCollection::class, "setPriceScheme"],
         "/sticker/{id}/{type}/add-files" => [\Classes\Sticker\StickerCollection::class, "addFiles"],
 
-        "/sticker/{id}/texts/{type}/{form}" => [\Classes\Sticker\ChatGPTConnection::class, "newText"],
+        "/sticker/{id}/texts/{type}/{form}" => [\Classes\Sticker\TextModification::class, "newText"],
 
         "/sticker" => [\Classes\Sticker\StickerCollection::class, "addSticker"],
         "/sticker/tags" => [\Classes\Sticker\StickerCollection::class, "addTag"],

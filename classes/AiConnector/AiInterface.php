@@ -5,7 +5,7 @@ namespace Project\AiConnector;
 interface AiInterface
 {
 
-    public function getTextSuggestions(mixed $data): array;
-    public function getImagesSuggestions(mixed $data): array;
-    public function getJSONSuggestions(mixed $data): array;
+    public function getText(array $data): array;
+    public function getImage(array $data): array;
+    public function getJSON(array $data): array;
 }

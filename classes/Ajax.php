@@ -262,11 +262,6 @@ class Ajax
 				$response = Table::updateValue($table, $action, $key);
 				echo $response;
 				break;
-			case "addNewLine":
-				$key = $_POST['key'];
-				$data = $_POST['data'];
-				echo Table::updateTable_AddNewLine($key, $data);
-				break;
 			case "getInfoText":
 				$infoId = (int) $_POST['info'];
 				$infoText = DBAccess::selectQuery("SELECT info FROM info_texte WHERE id = :infoId;", [
@@ -543,24 +538,6 @@ class Ajax
 						"status" => "not found",
 					]);
 				}
-				break;
-			case "showGTPOptions":
-				$stickerId = $_POST["id"];
-				$stickerType = $_POST["type"];
-				$text = $_POST["text"];
-
-				$query = "SELECT id, chatgptResponse, DATE_FORMAT(creationDate, '%d. %M %Y') as creationDate, textType, additionalQuery, textStyle FROM module_sticker_chatgpt WHERE idSticker = :stickerId AND stickerType = :stickerType;";
-				$result = DBAccess::selectQuery($query, [
-					"stickerId" => $stickerId,
-					"stickerType" => $stickerType
-				]);
-
-				$content = \Classes\Project\TemplateController::getTemplate("sticker/chatGPTOptions", [
-					"texts" => $result,
-				]);
-				echo json_encode([
-					"template" => $content,
-				]);
 				break;
 			case "updateImageDescription":
 				$id = (int) $_POST["imageId"];
