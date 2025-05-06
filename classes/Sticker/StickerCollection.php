@@ -412,7 +412,7 @@ class StickerCollection implements \Iterator
             "image/jpg",
             "image/jpeg",
             "image/svg+xml",
-        ]);
+        ], 250000000);
         $files = $uploadHandler->uploadMultiple();
 
         $query = "INSERT INTO module_sticker_image (id_datei, id_motiv, image_sort) VALUES ";

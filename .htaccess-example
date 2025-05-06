@@ -11,6 +11,9 @@ ErrorDocument 404 /index.php?page=404
 ErrorDocument 403 /forbidden.html
 ErrorDocument 500 /servererror.html
 
+php_value upload_max_filesize 20M
+php_value post_max_size 25M
+
 # https://www.keycdn.com/support/popular-htaccess-examples
 <IfModule mod_headers.c>
     <FilesMatch "\.(ttf|ttc|otf|eot|woff|font.css|css|js|gif|png|jpe?g|svg|svgz|ico|webp)$">

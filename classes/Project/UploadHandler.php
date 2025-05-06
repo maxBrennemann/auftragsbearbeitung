@@ -2,9 +2,12 @@
 
 namespace Classes\Project;
 
+use RuntimeException;
+
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
-use RuntimeException;
+
+use Classes\Protocol;
 
 class UploadHandler
 {
@@ -43,6 +46,7 @@ class UploadHandler
                 $results[] = $this->handleUpload($file);
             }
         } catch (RuntimeException $e) {
+            Protocol::write("upload file error", $e->getMessage(), "ERROR");
             return [];
         }
 
