@@ -86,34 +86,34 @@ if ($id == 0): ?>
             </div>
             <div class="mt-2">
                 <?= TemplateController::getTemplate("inputSwitch", [
-                    "id" => "plotted",
+                    "id" => "toggle_is_plotted",
                     "name" => "Aufkleber Plott",
                     "value" => $stickerCollection->getAufkleber()->getIsPlotted() == 1 ? "checked" : "",
-                    "binding" => "toggleCheckbox",
+                    "binding" => "toggleData",
                 ]); ?>
             </div>
             <div class="mt-2">
                 <?= TemplateController::getTemplate("inputSwitch", [
-                    "id" => "short",
+                    "id" => "toggle_is_short_time",
                     "name" => "kurzfristiger Aufkleber",
                     "value" => $stickerCollection->getAufkleber()->getIsShortTimeSticker() == 1 ? "checked" : "",
-                    "binding" => "toggleCheckbox",
+                    "binding" => "toggleData",
                 ]); ?>
             </div>
             <div class="mt-2">
                 <?= TemplateController::getTemplate("inputSwitch", [
-                    "id" => "short",
+                    "id" => "toggle_is_long_time",
                     "name" => "langfristiger Aufkleber",
                     "value" => $stickerCollection->getAufkleber()->getIsLongTimeSticker() == 1 ? "checked" : "",
-                    "binding" => "toggleCheckbox",
+                    "binding" => "toggleData",
                 ]); ?>
             </div>
             <div class="mt-2">
                 <?= TemplateController::getTemplate("inputSwitch", [
-                    "id" => "short",
+                    "id" => "toggle_is_multipart",
                     "name" => "mehrteilig",
                     "value" => $stickerCollection->getAufkleber()->getIsMultipart() == 1 ? "checked" : "",
-                    "binding" => "toggleCheckbox",
+                    "binding" => "toggleData",
                 ]); ?>
             </div>
             <div class="mt-2">
@@ -192,10 +192,10 @@ if ($id == 0): ?>
             </div>
             <div class="mt-2">
                 <?= TemplateController::getTemplate("inputSwitch", [
-                    "id" => "wandtattoo",
+                    "id" => "toggle_is_walldecal",
                     "name" => "Wandtattoo",
                     "value" => $stickerCollection->getWandtattoo()->getIsWalldecal() == 1 ? "checked" : "",
-                    "binding" => "wandtattooClick",
+                    "binding" => "toggleData",
                 ]); ?>
             </div>
             <div class="mt-2">
@@ -263,34 +263,34 @@ if ($id == 0): ?>
             </div>
             <div class="mt-2">
                 <?= TemplateController::getTemplate("inputSwitch", [
-                    "id" => "textil",
+                    "id" => "toggle_is_shirtcollection",
                     "name" => "Textil",
                     "value" => $stickerCollection->getTextil()->getIsShirtcollection() == 1 ? "checked" : "",
-                    "binding" => "textilClick",
+                    "binding" => "toggleData",
                 ]); ?>
             </div>
             <div class="mt-2">
                 <?= TemplateController::getTemplate("inputSwitch", [
-                    "id" => "makeColorable",
+                    "id" => "toggle_is_colorable",
                     "name" => "Einfärbbar",
                     "value" => $stickerCollection->getTextil()->getIsColorable() == 1 ? "checked" : "",
-                    "binding" => "makeColorable",
+                    "binding" => "toggleData",
                 ]); ?>
             </div>
             <div class="mt-2">
                 <?= TemplateController::getTemplate("inputSwitch", [
-                    "id" => "makeCustomizable",
+                    "id" => "toggle_is_customizable",
                     "name" => "Personalisierbar",
                     "value" => $stickerCollection->getTextil()->getIsCustomizable() == 1 ? "checked" : "",
-                    "binding" => "makeCustomizable",
+                    "binding" => "toggleData",
                 ]); ?>
             </div>
             <div class="mt-2">
                 <?= TemplateController::getTemplate("inputSwitch", [
-                    "id" => "makeForConfig",
+                    "id" => "toggle_is_for_configurator",
                     "name" => "Im Konfigurator anzeigen",
                     "value" => $stickerCollection->getTextil()->getIsForConfigurator() == 1 ? "checked" : "",
-                    "binding" => "makeForConfig",
+                    "binding" => "toggleData",
                 ]); ?>
             </div>
             <div class="mt-2">
@@ -425,9 +425,10 @@ if ($id == 0): ?>
             <h2 class="font-semibold">Weitere Infos</h2>
             <div class="mt-2 inline-flex items-center">
                 <?= TemplateController::getTemplate("inputSwitch", [
+                    "id" => "toggle_is_revised",
                     "name" => "Motiv neu überarbeitet?",
                     "value" => $stickerCollection->getIsRevised() == 1 ? "checked" : "",
-                    "binding" => "revised",
+                    "binding" => "toggleData",
                 ]); ?>
                 <button class="infoButton ml-1" data-info="4">i</button>
             </div>

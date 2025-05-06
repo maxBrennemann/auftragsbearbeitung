@@ -258,41 +258,4 @@ class Aufkleber extends AufkleberWandtattoo
 
         return $attributes;
     }
-
-    /* save sticker fields */
-    public function saveSentData($jsonData)
-    {
-        $data = json_decode($jsonData);
-        switch ($data->name) {
-            case "plotted":
-                $column = "is_plotted";
-                $newVal = $data->plotted;
-                if ($newVal == "0") {
-                    DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET `is_short_time` = 0 WHERE id = :id", ["id" => $this->getId()]);
-                    DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET `is_long_time` = 0 WHERE id = :id", ["id" => $this->getId()]);
-                    DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET `is_multipart` = 0 WHERE id = :id", ["id" => $this->getId()]);
-                }
-                break;
-            case "short":
-                $column = "is_short_time";
-                $newVal = $data->short;
-                break;
-            case "long":
-                $column = "is_long_time";
-                $newVal = $data->long;
-                break;
-            case "multi":
-                $column = "is_multipart";
-                $newVal = $data->multi;
-                break;
-            default:
-                echo "error";
-                return;
-        }
-
-        $newVal = (int) $newVal;
-        $query = "UPDATE module_sticker_sticker_data SET `$column` = $newVal WHERE id = :id";
-        DBAccess::updateQuery($query, ["id" => $this->getId()]);
-        echo "success";
-    }
 }

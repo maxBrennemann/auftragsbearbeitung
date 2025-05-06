@@ -283,14 +283,6 @@ class Ajax
 			case "writeProductDescription":
 				Sticker::setDescription();
 				break;
-			case "deleteImage":
-				$imageId = (int) $_POST["imageId"];
-				$query = "DELETE FROM dateien WHERE id = :idImage;";
-				DBAccess::deleteQuery($query, ["idImage" => $imageId]);
-				echo json_encode([
-					"status" => "success",
-				]);
-				break;
 			case "setImageOrder":
 				$order = $_POST["order"];
 
@@ -306,25 +298,6 @@ class Ajax
 					]);
 				}
 				break;
-			case "toggleTextil":
-				$id = (int) $_POST["id"];
-				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_shirtcollection` = NOT `is_shirtcollection` WHERE id = :id", ["id" => $id]);
-				echo json_encode([
-					"status" => "success",
-				]);
-				break;
-			case "toggleWandtattoo":
-				$id = (int) $_POST["id"];
-				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_walldecal` = NOT `is_walldecal` WHERE id = :id", ["id" => $id]);
-				echo json_encode([
-					"status" => "success",
-				]);
-				break;
-			case "toggleBookmark":
-				$id = (int) $_POST["id"];
-				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_marked` = NOT `is_marked` WHERE id = :id", ["id" => $id]);
-				echo "success";
-				break;
 			case "makeSVGColorable":
 				$id = (int) $_POST["id"];
 
@@ -338,18 +311,6 @@ class Ajax
 					$url = Link::getResourcesShortLink($file["dateiname"], "upload");
 					echo json_encode(["url" => $url]);
 				}
-				break;
-			case "makeCustomizable":
-				$id = (int) $_POST["id"];
-
-				$textil = new Textil($id);
-				$textil->toggleCustomizable();
-				break;
-			case "makeForConfig":
-				$id = (int) $_POST["id"];
-
-				$textil = new Textil($id);
-				$textil->toggleConfig();
 				break;
 			case "setPriceclass":
 				$priceclass = (int) $_POST["priceclass"];
@@ -377,12 +338,6 @@ class Ajax
 					"postennummer" => $postenNummer,
 				]);
 				echo $price;
-				break;
-			case "setAufkleberParameter":
-				$id = (int) $_POST["id"];
-				$data = $_POST["json"];
-				$aufkleber = new Aufkleber($id);
-				$aufkleber->saveSentData($data);
 				break;
 			case "productVisibility":
 				$id = (int) $_POST["id"];

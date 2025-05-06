@@ -37,6 +37,8 @@ const initImageTables = () => {
     createImageTable("aufkleber", "aufkleberTable", config);
     createImageTable("wandtattoo", "wandtattooTable", config);
     createImageTable("textil", "textilTable", config);
+
+    initImagePreviewListener();
 }
 
 const createImageTable = async (imageType, anchorId, config) => {
@@ -60,22 +62,7 @@ const createImageTable = async (imageType, anchorId, config) => {
     };
 
     const table = await fetchAndRenderTable(anchorId, "module_sticker_image", options);
-    initImagePreviewListener();
-}
-
-fnNames.click_deleteImage = (e) => {
-    const imageId = e.currentTarget.dataset.fileId;
-    ajax.post({
-        imageId: imageId,
-        r: "deleteImage",
-    }).then(r => {
-        if (r.status == "success") {
-            notification("", result.status);
-            const image = document.querySelector(`[data-file-id="${imageId}"]`);
-            const imageRow = image.parentNode.parentNode;
-            imageRow.parentNode.removeChild(imageRow);
-        }
-    });
+    table.addEventListener("deleteRow", e => {});
 }
 
 fnNames.click_showImageOptions = e => {

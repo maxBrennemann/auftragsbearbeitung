@@ -85,21 +85,21 @@ class StickerRoutes extends Routes
      * @uses \Classes\Sticker\AufkleberWandtattoo::addSize()
      * @uses \Classes\Sticker\StickerCollection::setCreationDate()
      * @uses \Classes\Sticker\StickerCollection::setTitle()
-     * @uses \Classes\Sticker\StickerCollection::setRevised()
      * @uses \Classes\Sticker\StickerCollection::writeDirectory()
      * @uses \Classes\Sticker\StickerCollection::writeAdditonalInfo()
      * @uses \Classes\Sticker\StickerCollection::setExportStatus()
      * @uses \Classes\Sticker\StickerCollection::setAltTitle()
+     * @uses \Classes\Sticker\StickerCollection::toggleStatus()
      */
     protected static $putRoutes = [
         "/sticker/sizes" => [\Classes\Sticker\AufkleberWandtattoo::class, "addSize"],
         "/sticker/{id}/creation-date" => [\Classes\Sticker\StickerCollection::class, "setCreationDate"],
         "/sticker/{id}/title" => [\Classes\Sticker\StickerCollection::class, "setTitle"],
-        "/sticker/{id}/revised" => [\Classes\Sticker\StickerCollection::class, "setRevised"],
         "/sticker/{id}/directory" => [\Classes\Sticker\StickerCollection::class, "writeDirectory"],
         "/sticker/{id}/additional-info" => [\Classes\Sticker\StickerCollection::class, "writeAdditonalInfo"],
         "/sticker/{id}/export-status" => [\Classes\Sticker\StickerCollection::class, "setExportStatus"],
         "/sticker/{id}/{type}/alt-title" => [\Classes\Sticker\StickerCollection::class, "setAltTitle"],
+        "/sticker/{id}/{type}/toggle" => [\Classes\Sticker\StickerCollection::class, "toggleStatus"],
     ];
 
     /**

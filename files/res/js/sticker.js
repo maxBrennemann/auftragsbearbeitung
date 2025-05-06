@@ -76,35 +76,6 @@ fnNames.write_creationDate = e => {
     });
 }
 
-fnNames.click_toggleCheckbox = async function (e) {
-    e.preventDefault();
-    var inputNode = e.target.parentNode.children[0];
-    inputNode.checked = !inputNode.checked;
-
-    var checked = inputNode.checked == true ? 1 : 0;
-    var name = inputNode.id;
-
-    if (name == "plotted") {
-        aufkleberPlottClick(e);
-    }
-
-    ajax.post({
-        json: JSON.stringify({
-            [name]: checked,
-            name: name,
-        }),
-        id: mainVariables.motivId.innerHTML,
-        r: "setAufkleberParameter",
-    }, true).then(response => {
-        if (response == "success") {
-            notification("", "success");
-        } else {
-            console.log(response);
-            notification("", "failure");;
-        }
-    });
-}
-
 function initTextiles() {
     const textiles = document.getElementsByClassName("textiles-switches");
     for (let i = 0; i < textiles.length; i++) {
@@ -141,94 +112,6 @@ function initTextiles() {
             });
         });
     }
-}
-
-function disableInputSlide(input) {
-    input.checked = false;
-    input.disabled = true;
-    input.parentNode.children[1].classList.add("pointer-none");
-}
-
-function enableInputSlide(input) {
-    input.disabled = false;
-    input.parentNode.children[1].classList.remove("pointer-none");
-}
-
-/**
- * called from the checkbox "Aufkleber Plott" to enable or disable the input fields for the sticker
- */
-function aufkleberPlottClick(e) {
-    if (mainVariables.plotted.checked == true) {
-        enableInputSlide(mainVariables.short);
-        enableInputSlide(mainVariables.long);
-        enableInputSlide(mainVariables.multi);
-        document.getElementById("transferAufkleber").disabled = false;
-    } else {
-        disableInputSlide(mainVariables.short);
-        disableInputSlide(mainVariables.long);
-        disableInputSlide(mainVariables.multi);
-
-        document.getElementById("transferAufkleber").disabled = true;
-    }
-}
-
-fnNames.click_textilClick = function () {
-    notificationLoader("textile-click", "Wird gespeichert");
-
-    ajax.post({
-        id: mainVariables.motivId.innerHTML,
-        r: "toggleTextil"
-    }).then(r => {
-        if (r.status == "success") {
-            notificatinReplace("textile-click", "", "success");
-
-            /* not the best solution, but it works */
-            const status = document.getElementById("textil").checked;
-            const btn = document.getElementById("transferTextil");
-
-            if (status == true) {
-                btn.disabled = false;
-            } else {
-                btn.disabled = true;
-            }
-        }
-    }).catch(r => {
-        notificatinReplace("textile-click", "Fehler bei der Übertragung", "failure", r);
-    });
-}
-
-fnNames.click_wandtattooClick = function () {
-    notificationLoader("wandtatoo-click", "Wird gespeichert");
-    ajax.post({
-        id: mainVariables.motivId.innerHTML,
-        r: "toggleWandtattoo"
-    }).then(r => {
-        if (r.status == "success") {
-            notificatinReplace("wandtatoo-click", "", "success");
-
-            /* not the best solution, but it works */
-            const status = document.getElementById("wandtattoo").checked;
-            const btn = document.getElementById("transferWandtattoo");
-
-            if (status == true) {
-                btn.disabled = false;
-            } else {
-                btn.disabled = true;
-            }
-        }
-    }).catch(r => {
-        notificatinReplace("wandtatoo-click", "Fehler bei der Übertragung", "failure", r);
-    });
-}
-
-fnNames.click_revised = function () {
-    ajax.put(`/api/v1/sticker/${getStickerId()}/revised`).then(r => {
-        if (r.message == "OK") {
-            notification("", "success");
-        } else {
-            notification("", "failure", JSON.stringify(r));
-        }
-    });
 }
 
 fnNames.click_transferAufkleber = function () {
@@ -547,6 +430,18 @@ function setCategories() {
     });
 }
 
+fnNames.click_toggleData = e => {
+    const id = e.target.id;
+    const type = id.replace("toggle_", "");
+    ajax.put(`/api/v1/sticker/${getStickerId()}/${type}/toggle`).then(r => {
+        if (r.message == "OK") {
+            notification("", "success");
+        } else {
+            notification("", "failure", JSON.stringify(r));
+        }
+    });
+}
+
 fnNames.click_exportToggle = e => {
     ajax.put(`/api/v1/sticker/${getStickerId()}/export-status`, {
         "type": e.target.id,
@@ -556,26 +451,6 @@ fnNames.click_exportToggle = e => {
         } else {
             notification("", "failure", JSON.stringify(r));
         }
-    });
-}
-
-fnNames.click_makeCustomizable = function (e) {
-    ajax.post({
-        id: mainVariables.motivId.innerHTML,
-        r: "makeCustomizable"
-    }).then(r => {
-        const svgContainer = document.getElementById("svgContainer");
-        svgContainer.data = r.url;
-    });
-}
-
-fnNames.click_makeForConfig = function (e) {
-    ajax.post({
-        id: mainVariables.motivId.innerHTML,
-        r: "makeForConfig"
-    }).then(r => {
-        const svgContainer = document.getElementById("svgContainer");
-        svgContainer.data = r.url;
     });
 }
 
