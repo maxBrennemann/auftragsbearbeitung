@@ -1,6 +1,8 @@
 <?php
 
-namespace Project\Modules\AiConnector;
+namespace Project\AiConnector\Connectors;
+
+use Project\AiConnector\AiInterface;
 
 class ChatGPTConnection implements AiInterface
 {

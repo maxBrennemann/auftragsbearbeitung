@@ -1,6 +1,6 @@
 <?php
 
-namespace Classes\Project\Modules\Sticker;
+namespace Classes\Sticker;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
@@ -9,7 +9,7 @@ use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use Classes\Project\Icon;
 use Classes\Project\UploadHandler;
 
-use Classes\Project\Modules\Sticker\Imports\ImportGoogleSearchConsole;
+use Classes\Sticker\Imports\ImportGoogleSearchConsole;
 
 class StickerCollection implements \Iterator
 {
@@ -478,6 +478,83 @@ class StickerCollection implements \Iterator
             "creation_date" => $creation_date,
             "id" => $id
         ]);
+
+        JSONResponseHandler::returnOK();
+    }
+
+    public static function setRevised()
+    {
+        $id = Tools::get("id");
+        DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_revised` = NOT `is_revised` WHERE id = :id", [
+            "id" => $id
+        ]);
+        
+        JSONResponseHandler::returnOK();
+    }
+
+    public static function writeDirectory()
+    {
+        $id = Tools::get("id");
+        $content = (string) Tools::get("directory");
+        $content = urldecode($content);
+
+        $query = "UPDATE module_sticker_sticker_data SET directory_name = :content WHERE id = :id;";
+        DBAccess::updateQuery($query, [
+            "id" => $id, 
+            "content" => $content
+        ]);
+
+        JSONResponseHandler::returnOK();
+    }
+
+    public static function writeAdditonalInfo()
+    {
+        $id = Tools::get("id");
+        $content = (string) Tools::get("content");
+
+        $query = "UPDATE module_sticker_sticker_data SET additional_info = :content WHERE id = :id;";
+        DBAccess::updateQuery($query, [
+            "id" => $id, 
+            "content" => $content
+        ]);
+
+        JSONResponseHandler::returnOK();
+    }
+
+    public static function setExportStatus()
+    {
+        $id = Tools::get("id");
+        $type = (string) Tools::get("type");
+        $types = [
+            "facebook",
+            "google",
+            "amazon",
+            "etsy",
+            "eBay",
+            "pinterest",
+        ];
+
+        if (!in_array($type, $types)) {
+            JSONResponseHandler::throwError(404, "Unsupported export type.");
+            return;
+        }
+
+        $export = DBAccess::selectQuery("SELECT `$type` FROM module_sticker_exports WHERE idSticker = :idSticker LIMIT 1", [
+            "idSticker" => $id,
+        ]);
+
+        if ($export[0][$type] == NULL) {
+            $query = "UPDATE module_sticker_exports SET `$type` = -1 WHERE idSticker = :idSticker";
+            DBAccess::updateQuery($query, 
+            [
+                "idSticker" => $id,
+            ]);
+        } else if ($export[0][$type] != NULL) {
+            $query = "UPDATE module_sticker_exports SET `$type` = NULL WHERE idSticker = :idSticker";
+            DBAccess::updateQuery($query, [
+                "idSticker" => $id,
+            ]);
+        }
 
         JSONResponseHandler::returnOK();
     }

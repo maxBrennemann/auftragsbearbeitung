@@ -137,6 +137,7 @@ const contactPersonTable = async () => {
         addRow(row, table, columnConfig);
     });
 
+    table.addEventListener("rowInsert", () => addContactPerson(table, columnConfig));
     table.addEventListener("rowDelete", (event) => {
         const data = event.detail;
         const id = data.Nummer;
@@ -149,6 +150,28 @@ const contactPersonTable = async () => {
             "customerId": customerData.id,
         });
     });
+}
+
+const addContactPerson = async (table, options) => {
+    const lastRow = table.querySelector("tbody").lastChild.children;
+    const data = {};
+    Array.from(lastRow).forEach(el => {
+        const key = el.dataset.key;
+        if (key == undefined) {
+            return;
+        }
+        const value = el.innerHTML;
+        data[key] = value;
+    });
+    data["Kundennummer"] = customerData.id;
+
+    const response = await ajax.post(`/api/v1/tables/ansprechpartner`, {
+        "conditions": JSON.stringify(data),
+    });
+    for (var i in response) {
+        data[i] = response[i];
+    }
+    addRow(data, table, options);
 }
 
 const addressTable = async () => {

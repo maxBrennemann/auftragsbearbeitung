@@ -1,6 +1,6 @@
 <?php
 
-namespace Classes\Project\Modules\Sticker\Imports;
+namespace Classes\Sticker\Imports;
 
 use Google\Service\SearchConsole;
 use Google\Service\SearchConsole\SearchAnalyticsQueryRequest;

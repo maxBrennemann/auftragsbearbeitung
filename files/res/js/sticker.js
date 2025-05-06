@@ -24,6 +24,7 @@ const mainVariables = {
         wandtattoo: false,
         textil: false,
     },
+    stickerName: "",
 };
 
 function initSticker() {
@@ -31,8 +32,7 @@ function initSticker() {
     checkProductErrorStatus();
 
     mainVariables.motivId = getVariable("motivId");
-
-    document.title = "b-schriftung - Motiv " + mainVariables.motivId + " " + document.getElementById("stickerName").value;
+    mainVariables.stickerName = document.getElementById("stickerName").value;
 
     initTextiles();
     initSizeTable();
@@ -42,6 +42,8 @@ function initSticker() {
 
 fnNames.write_stickerName = e => {
     const title = e.target.value;
+    document.title = "b-schriftung - Motiv " + mainVariables.motivId + " " + title;
+    mainVariables.stickerName = title;
     ajax.put(`/api/v1/sticker/${mainVariables.motivId}/title`, {
         "title": title,
     }).then(r => {
@@ -222,16 +224,12 @@ fnNames.click_wandtattooClick = function () {
     });
 }
 
-fnNames.click_revisedClick = function () {
-    ajax.post({
-        id: mainVariables.motivId.innerHTML,
-        r: "toggleRevised",
-    }, true).then(response => {
-        if (response == "success") {
+fnNames.click_revised = function () {
+    ajax.put(`/api/v1/sticker/${getStickerId()}/revised`).then(r => {
+        if (r.message == "OK") {
             notification("", "success");
         } else {
-            console.log(response);
-            notification("", "failure");;
+            notification("", "failure", JSON.stringify(r));
         }
     });
 }
@@ -313,33 +311,26 @@ fnNames.write_productDescription = function (e) {
     });
 }
 
-fnNames.write_speicherort = function (e) {
-    ajax.post({
-        id: mainVariables.motivId.innerHTML,
-        content: encodeURIComponent(e.target.value),
-        r: "writeSpeicherort",
-    }, true).then(r => {
-        if (r == "success") {
+fnNames.write_dirInput = e => {
+    ajax.put(`/api/v1/sticker/${getStickerId()}/directory`, {
+        "directory": encodeURIComponent(e.target.value),
+    }).then(r => {
+        if (r.message == "OK") {
             notification("", "success");
         } else {
-            console.log(r);
-            notification("", "failure");;
+            notification("", "failure", JSON.stringify(r));
         }
     });
 }
 
-fnNames.write_additionalInfo = function (e) {
-    var content = e.target.value;
-    ajax.post({
-        id: mainVariables.motivId.innerHTML,
-        content: content,
-        r: "writeAdditionalInfo",
-    }, true).then(r => {
-        if (r == "success") {
+fnNames.write_additionalInfo = e => {
+    ajax.put(`/api/v1/sticker/${getStickerId()}/additional-info`, {
+        "content": e.target.value,
+    }).then(r => {
+        if (r.message == "OK") {
             notification("", "success");
         } else {
-            console.log(r);
-            notification("", "failure");;
+            notification("", "failure", JSON.stringify(r));
         }
     });
 }
@@ -397,13 +388,6 @@ fnNames.click_changeColor = function (e) {
     if (svg_elem != null) {
         svg_elem.setAttribute("fill", color);
     }
-}
-
-fnNames.click_copyToClipboard = function () {
-    var input = document.getElementById("dirInput");
-    input.select();
-    input.setSelectionRange(0, 99999);
-    navigator.clipboard.writeText(input.value);
 }
 
 fnNames.write_changeAltTitle = function (e) {
@@ -566,15 +550,15 @@ function setCategories() {
     });
 }
 
-fnNames.click_exportToggle = function (e) {
-    let exportType = e.target.dataset.value;
-
-    ajax.post({
-        id: mainVariables.motivId.innerHTML,
-        export: exportType,
-        r: "setExportStatus",
-    }).then(() => {
-        notification("", isSuccessfull);
+fnNames.click_exportToggle = e => {
+    ajax.put(`/api/v1/sticker/${getStickerId()}/export-status`, {
+        "type": e.target.id,
+    }).then(r => {
+        if (r.message == "OK") {
+            notification("", "success");
+        } else {
+            notification("", "failure", JSON.stringify(r));
+        }
     });
 }
 
@@ -621,6 +605,10 @@ function checkProductErrorStatus() {
 
 export const getStickerId = () => {
     return mainVariables.motivId;
+}
+
+export const getStickerName = () => {
+    return mainVariables.stickerName;
 }
 
 if (document.readyState !== 'loading') {

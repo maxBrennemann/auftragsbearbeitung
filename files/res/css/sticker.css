@@ -73,35 +73,8 @@ input:checked + .slider:before {
     border: 1px dashed grey;
 }
 
-.imageBig {
-    width: 100%;
-    max-width: 250px;
-    height: auto;
-    border-radius: 12px 0 0 12px;
-}
-
-.imagePrev {
-    width: auto;
-    height: 75px;
-    border-radius: 6px;
-    margin-right: 5px;
-}
-
 #initHeight {
     width: 50px;
-}
-
-.inputHeight {
-    border: none;
-    margin: inherit;
-    background: inherit;
-    font-size: inherit;
-    font-family: inherit;
-}
-
-.imageBigContainer {
-    display: grid;
-    grid-template-columns: max-content 1fr;
 }
 
 .imageTypes {
@@ -131,45 +104,6 @@ input:checked + .slider:before {
 
 .breiten span {
     float: right;
-}
-
-.selectReplacer {
-    display: none;
-    border: 1px solid grey;
-    width: 162px;
-    padding: 0 !important;
-
-    position: absolute;
-    background: white;
-    box-shadow: 0 8px 16px 0 rgb(0 0 0 / 20%);
-}
-
-.selectReplacerShow {
-    display: block;
-}
-
-.optionReplacer {
-    padding: 21px 17px 21px 17px;
-    margin: 0;
-}
-
-.optionReplacer:hover {
-    background-color: #ababab;
-}
-
-.warning {
-    background: #fed7d7;
-    color: #e53e3e;
-}
-
-.warning a {
-    display: block;
-    margin-left: 34px;
-}
-
-.warningHead * {
-    vertical-align: middle;
-    margin-right: 10px;
 }
 
 #delete-menu {
@@ -207,17 +141,6 @@ input:checked + .slider:before {
     width: 24px;
     height: 24px;
     vertical-align: middle;
-}
-
-.fastUpload {
-    left: 0;
-    right: 0;
-    bottom: 0;
-    overflow: hidden;
-    position: fixed;
-    height: 200px;
-    background: white;
-    border-top: 1px solid black;
 }
 
 .colorBtn {

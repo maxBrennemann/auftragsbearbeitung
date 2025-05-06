@@ -1,5 +1,5 @@
 <label class="flex items-center cursor-pointer">
-    <input type="checkbox" id="<?= $id ?>" <?= isset($value) ? $value : "" ?> class="sr-only peer" 
+    <input type="checkbox" <?= isset($id) ? 'id="' . $id . '"' : '' ?> <?= isset($value) ? $value : "" ?> class="sr-only peer" 
         <?= isset($binding) ? 'data-binding="true" data-fun="' . $binding . '"' : '' ?>
         <?= isset($write) ? 'data-write="true" data-fun="' . $write . '"' : '' ?>
     >
