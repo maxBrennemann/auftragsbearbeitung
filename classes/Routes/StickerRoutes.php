@@ -13,8 +13,12 @@ class StickerRoutes extends Routes
      * @uses \Classes\Project\Modules\Sticker\StickerCollection::getStickerSizes()
      * @uses \Classes\Project\Modules\Sticker\StickerCollection::getPriceScheme()
      * 
+     * @uses
+     * @uses
      * @uses \Classes\Project\Modules\Sticker\StickerTagManager::getTagSuggestions()
+     * @uses
      * @uses \Classes\Project\Modules\Sticker\StickerTagManager::countTagOccurences()
+     * @uses \Classes\Project\Modules\Sticker\StickerTagManager::getTagsHTML()
      * 
      * @uses \Classes\Project\Modules\Sticker\StickerCollection::getStickerOverview()
      * @uses \Classes\Project\Modules\Sticker\StickerCollection::getStickerStates()
@@ -30,6 +34,7 @@ class StickerRoutes extends Routes
         "/sticker/tags/suggestions" => [\Classes\Project\Modules\Sticker\StickerCollection::class, "getTagSuggestions"],
         "/sticker/tags/groups" => [],
         "/sticker/tags/overview" => [\Classes\Project\Modules\Sticker\StickerTagManager::class, "getTagOverview"],
+        "/sticker/{id}/tags-template" => [\Classes\Project\Modules\Sticker\StickerTagManager::class, "getTagsHTML"],
 
         "/sticker/overview" => [\Classes\Project\Modules\Sticker\StickerCollection::class, "getStickerOverview"],
         "/sticker/states" => [\Classes\Project\Modules\Sticker\StickerCollection::class, "getStickerStates"],
@@ -78,12 +83,20 @@ class StickerRoutes extends Routes
      * @uses \Classes\Project\Modules\Sticker\AufkleberWandtattoo::addSize()
      * @uses \Classes\Project\Modules\Sticker\StickerCollection::setCreationDate()
      * @uses \Classes\Project\Modules\Sticker\StickerCollection::setTitle()
+     * @uses \Classes\Project\Modules\Sticker\StickerCollection::setRevised()
+     * @uses \Classes\Project\Modules\Sticker\StickerCollection::writeDirectory()
+     * @uses \Classes\Project\Modules\Sticker\StickerCollection::writeAdditonalInfo()
+     * @uses \Classes\Project\Modules\Sticker\StickerCollection::setExportStatus()
      * @uses \Classes\Project\Modules\Sticker\StickerCollection::setAltTitle()
      */
     protected static $putRoutes = [
         "/sticker/sizes" => [\Classes\Project\Modules\Sticker\AufkleberWandtattoo::class, "addSize"],
         "/sticker/{id}/creation-date" => [\Classes\Project\Modules\Sticker\StickerCollection::class, "setCreationDate"],
         "/sticker/{id}/title" => [\Classes\Project\Modules\Sticker\StickerCollection::class, "setTitle"],
+        "/sticker/{id}/revised" => [\Classes\Project\Modules\Sticker\StickerCollection::class, "setRevised"],
+        "/sticker/{id}/directory" => [\Classes\Project\Modules\Sticker\StickerCollection::class, "writeDirectory"],
+        "/sticker/{id}/additional-info" => [\Classes\Project\Modules\Sticker\StickerCollection::class, "writeAdditonalInfo"],
+        "/sticker/{id}/export-status" => [\Classes\Project\Modules\Sticker\StickerCollection::class, "setExportStatus"],
         "/sticker/{id}/{type}/alt-title" => [\Classes\Project\Modules\Sticker\StickerCollection::class, "setAltTitle"],
     ];
 

@@ -5,14 +5,12 @@ use Classes\Project\Icon;
 
 use Classes\Project\Modules\Sticker\StickerImage;
 use Classes\Project\Modules\Sticker\StickerCollection;
-use Classes\Project\Modules\Sticker\StickerTagManager;
 use Classes\Project\Modules\Sticker\StickerChangelog;
 use Classes\Project\Modules\Sticker\ChatGPTConnection;
 
 $id = 0;
 
 $stickerCollection = null;
-$stickerTagManager = null;
 $stickerChangelog = null;
 $stickerImage = null;
 $chatGPTConnection = null;
@@ -22,7 +20,6 @@ if (isset($_GET['id'])) {
 
     $stickerImage = new StickerImage($id);
     $stickerCollection = new StickerCollection($id);
-    $stickerTagManager = new StickerTagManager($id, $stickerCollection->getName());
     $stickerChangelog = new StickerChangelog($id);
     $chatGPTConnection = new ChatGPTConnection($id);
 }
@@ -386,32 +383,31 @@ if ($id == 0): ?>
 
         <div class="defCont col-span-2">
             <h2 class="font-semibold">Tags<button class="infoButton ml-1" data-info="3">i</button></h2>
+            <div class="mt-2" id="tagManager"></div>
             <div class="mt-2">
-                <?= $stickerTagManager->getTagsHTML() ?>
-            </div>
-            <div class="my-2">
                 <input type="text" class="input-primary" maxlength="32" id="tagInput" placeholder="Tag eingeben">
-                <button type="button" class="btn-primary" id="addNewTag" title="Mit Hashtag oder Button hinzufügen">Hinzufügen</button>
-                <p class="italic">Nicht erlaubt sind folgende Zeichen: !<;>;?=+#"°{}_$%.</p>
+                <button type="button" class="btn-primary" id="addNewTag" data-binding="true" title="Mit Hashtag oder Button hinzufügen">Hinzufügen</button>
+                <p class="mt-1.5">Nicht erlaubt sind folgende Zeichen: <span class="text-red-600 font-semibold">!<;>;?=+#"°{}_$%.</spa></p>
             </div>
-            <button id="loadSynonyms" class="btn-primary">Mehr Synonnyme laden</button>
-            <button id="showTaggroupManager" class="btn-primary">Taggruppen</button>
+            <div class="mt-2">
+                <button id="loadSynonyms" data-binding="true" class="btn-primary">Mehr Synonnyme laden</button>
+                <button id="showTaggroupManager" data-binding="true" class="btn-primary">Taggruppen</button>
+            </div>
         </div>
 
         <div class="defCont">
             <h2 class="font-semibold">Weitere Infos</h2>
-            <div class="mt-2">
-                <span>Wurde der Artikel neu überarbeitet?<button class="infoButton ml-1" data-info="4">i</button></span>
-                <span class="float-right">
-                    <label class="switch">
-                        <input type="checkbox" id="revised" <?= $stickerCollection->getIsRevised() == 1 ? "checked" : "" ?> data-variable="true">
-                        <span class="slider round" data-binding="true"></span>
-                    </label>
-                </span>
+            <div class="mt-2 inline-flex items-center">
+                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "name" => "Motiv neu überarbeitet?",
+                    "value" => $stickerCollection->getIsRevised() == 1 ? "checked" : "",
+                    "binding" => "revised",
+                ]); ?>
+                <button class="infoButton ml-1" data-info="4">i</button>
             </div>
             <p class="mt-2">Speicherort:<button class="infoButton ml-1" data-info="5">i</button></p>
             <div class="mt-2">
-                <input id="dirInput" class="input-primary w-full" data-fun="speicherort" data-write="true" value="<?= $stickerCollection->getDirectory() ?>">
+                <input id="dirInput" class="input-primary w-full" data-write="true" value="<?= $stickerCollection->getDirectory() ?>">
             </div>
             <p class="mt-2">Zusätzliche Infos und Notizen:<button class="infoButton ml-1" data-info="6">i</button></p>
             <textarea class="input-primary mt-2 w-full" data-fun="additionalInfo" data-write="true"><?= $stickerCollection->getAdditionalInfo() ?></textarea>
@@ -421,6 +417,7 @@ if ($id == 0): ?>
             <h2 class="font-semibold mb-2">Produktexport</h2>
             <div class="mt-2">
                 <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "id" => "facebook",
                     "name" => "Nach Facebook exportieren",
                     "value" => $stickerCollection->getExportStatus("facebook") ? "checked" : "",
                     "binding" => "exportToggle",
@@ -428,6 +425,7 @@ if ($id == 0): ?>
             </div>
             <div class="mt-2">
                 <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "id" => "google",
                     "name" => "Nach Google exportieren",
                     "value" => $stickerCollection->getExportStatus("google") ? "checked" : "",
                     "binding" => "exportToggle",
@@ -435,6 +433,7 @@ if ($id == 0): ?>
             </div>
             <div class="mt-2">
                 <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "id" => "amazon",
                     "name" => "Nach Amazon exportieren",
                     "value" => $stickerCollection->getExportStatus("amazon") ? "checked" : "",
                     "binding" => "exportToggle",
@@ -442,6 +441,7 @@ if ($id == 0): ?>
             </div>
             <div class="mt-2">
                 <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "id" => "etsy",
                     "name" => "Nach Etsy exportieren",
                     "value" => $stickerCollection->getExportStatus("etsy") ? "checked" : "",
                     "binding" => "exportToggle",
@@ -449,6 +449,7 @@ if ($id == 0): ?>
             </div>
             <div class="mt-2">
                 <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "id" => "eBay",
                     "name" => "Nach eBay exportieren",
                     "value" => $stickerCollection->getExportStatus("ebay") ? "checked" : "",
                     "binding" => "exportToggle",
@@ -456,6 +457,7 @@ if ($id == 0): ?>
             </div>
             <div class="mt-2">
                 <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                    "id" => "pinterest",
                     "name" => "Nach Pinterest exportieren",
                     "value" => $stickerCollection->getExportStatus("pinterest") ? "checked" : "",
                     "binding" => "exportToggle",

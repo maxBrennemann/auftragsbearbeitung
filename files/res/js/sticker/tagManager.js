@@ -1,37 +1,38 @@
 import { ajax } from "../classes/ajax.js";
-import { getStickerId } from "../sticker.js";
+import { addBindings } from "../classes/bindings.js";
+import { getStickerId, getStickerName } from "../sticker.js";
+
+const fnNames = {};
 
 export function initTagManager() {
-    addTagListeners();
+    addBindings(fnNames);
 
     const tagInput = document.getElementById("tagInput");
     tagInput.addEventListener("keydown", addTagWithKey);
 
-    const tagButton = document.getElementById("addNewTag");
-    tagButton.addEventListener("click", addTag);
-
-    const synonyms = document.getElementById("loadSynonyms");
-    synonyms.addEventListener("click", loadMoreSuggestions, false);
-
-    const showTagGroupManagerBtn = document.getElementById("showTaggroupManager");
-    showTagGroupManagerBtn.addEventListener("click", showTaggroupManager, false);
+    ajax.get(`/api/v1/sticker/${getStickerId()}/tags-template`, {
+        "title": getStickerName(),
+    }).then(r => {
+        document.getElementById("tagManager").innerHTML = r.template;
+        addBindings(fnNames);
+    });
 }
 
-function showTaggroupManager() {
+fnNames.click_showTaggroupManager = () => {
     
 }
 
 /**
- * Listens for a hashtag to add a new tag
- * @param {*} event 
+ * Listens for a hashtag or enter to add a new tag
+ * @param {*} e 
  */
-const addTagWithKey = (event) => {
-    if (event.key === '#') {
-        addTag(event);
+const addTagWithKey = e => {
+    if (e.key === "#" || e.key === "Enter") {
+        addTag(e);
     }
 }
 
-const addTag = (e) => {
+fnNames.click_addNewTag = () => {
     const dt = document.createElement("dt");
     dt.className  = "cursor-default inline-flex rounded-lg font-semibold overflow-hidden";
     const tagInput = document.getElementById("tagInput");
@@ -72,23 +73,24 @@ const addTag = (e) => {
 /**
  * Validates a text for the tag input
  * @param {string} text 
- * @returns 
+ * @returns {boolean}
  */
 const validateValue = (text) => {
-    var valid = true;
-    if (text.length <= 32) {
-        const excludedChars = `"!<;>;?=+#"°{}_$%.`.split('');
-        excludedChars.forEach(char => {
-            if (text.includes(char)) {
-                valid = false;
-            }
-        });
+    if (text.length > 32) {
+        return false;
     }
 
-    return valid;
+    const excludedChars = `"!<;>;?=+#"°{}_$%.`.split('');
+    excludedChars.forEach(char => {
+        if (text.includes(char)) {
+            return false;
+        }
+    });
+
+    return true;
 }
 
-const loadMoreSuggestions = () => {
+fnNames.click_loadSynonyms = () => {
     ajax.get(`/api/v1/sticker/tags/suggestions`, {
         id: getStickerId(),
         name: document.getElementById("name").value,
@@ -103,14 +105,7 @@ const loadMoreSuggestions = () => {
     });
 }
 
-const addTagListeners = () => {
-    const dts = document.querySelectorAll("dt");
-    Array.from(dts).forEach(dt => {
-        dt.addEventListener("click", manageTagClick);
-    });
-}
-
-const manageTagClick = (e) => {
+fnNames.click_manageTag = (e) => {
     const el = e.target;
     if (!el.classList.contains("remove")) {
         return;

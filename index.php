@@ -11,10 +11,10 @@ use Classes\ResourceManager;
 use Classes\Project\CacheManager;
 
 ResourceManager::getParameters();
+ResourceManager::initialize();
 
 SessionController::start();
 
-ResourceManager::initialize();
 ResourceManager::pass();
 
 CacheManager::loadCacheIfExists();

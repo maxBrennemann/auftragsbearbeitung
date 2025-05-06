@@ -1,1 +1,0 @@
-/* hier alle js functions zu stickerspeziefischen Funktionen */

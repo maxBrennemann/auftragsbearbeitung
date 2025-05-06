@@ -288,23 +288,6 @@ class Ajax
 			case "writeProductDescription":
 				Sticker::setDescription();
 				break;
-			case "writeSpeicherort":
-				$id = (int) $_POST["id"];
-				$content = (string) $_POST["content"];
-				$content = urldecode($content);
-
-				$query = "UPDATE module_sticker_sticker_data SET directory_name = :content WHERE id = :id;";
-				DBAccess::updateQuery($query, ["id" => $id, "content" => $content]);
-				echo "success";
-				break;
-			case "writeAdditionalInfo":
-				$id = (int) $_POST["id"];
-				$content = (string) $_POST["content"];
-
-				$query = "UPDATE module_sticker_sticker_data SET additional_info = '$content' WHERE id = $id;";
-				DBAccess::updateQuery($query);
-				echo "success";
-				break;
 			case "deleteImage":
 				$imageId = (int) $_POST["imageId"];
 				$query = "DELETE FROM dateien WHERE id = :idImage;";
@@ -341,11 +324,6 @@ class Ajax
 				echo json_encode([
 					"status" => "success",
 				]);
-				break;
-			case "toggleRevised":
-				$id = (int) $_POST["id"];
-				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_revised` = NOT `is_revised` WHERE id = :id", ["id" => $id]);
-				echo "success";
 				break;
 			case "toggleBookmark":
 				$id = (int) $_POST["id"];
@@ -525,24 +503,6 @@ class Ajax
 				echo json_encode([
 					"status" => "success",
 				]);
-				break;
-			case "setExportStatus":
-				$status = (string) $_POST["export"];
-				$id = (int) $_POST["id"];
-
-				$export = DBAccess::selectQuery("SELECT * FROM module_sticker_exports WHERE idSticker = :idSticker", ["idSticker" => $id]);
-				//Protocol::prettyPrint($export);
-				if ($export[0][$status] == NULL) {
-					$query = "UPDATE module_sticker_exports SET $status = -1 WHERE idSticker = :idSticker";
-					DBAccess::updateQuery($query, ["idSticker" => $id]);
-				} else if ($export[0][$status] != NULL) {
-					$query = "UPDATE module_sticker_exports SET $status = NULL WHERE idSticker = :idSticker";
-					DBAccess::updateQuery($query, ["idSticker" => $id]);
-				} else {
-					echo "error";
-				}
-
-				echo "success";
 				break;
 			case "getIcon":
 				$type = (string) $_POST["icon"];

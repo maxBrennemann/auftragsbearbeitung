@@ -2,6 +2,7 @@
     <nav id="nav" class="innerDefCont">
         <p class="font-bold text-md">Versionen</p>
         <ul id="navUl">
+            <li><a class="link-primary" href="#1.2.1">1.2.1</a></li>
             <li><a class="link-primary" href="#1.2.0">1.2.0</a></li>
             <li><a class="link-primary" href="#1.1.18">1.1.18</a></li>
             <li><a class="link-primary" href="#1.1.17">1.1.17</a></li>
@@ -17,6 +18,12 @@
             <li><a class="link-primary" href="#1.1.7">1.1.7</a></li>
         </ul>
     </nav>
+    <h3 id="1.2.1" class="font-bold my-5">1.2.1</h3>
+    <ul class="list-disc list-inside">
+        <li>Rechnungsstellung Fehlerbehebungen</li>
+        <li>Bilder können jetzt immer in einer Vorschau angeschaut werden</li>
+        <li>Neuer Upload Handler und neues Dateimanagementsystem</li>
+    </ul>
     <h3 id="1.2.0" class="font-bold my-5">1.2.0</h3>
     <ul class="list-disc list-inside">
         <li>Rechnungsstellung überarbeitet</li>

@@ -5,17 +5,18 @@ namespace Classes\Project\Modules\Sticker;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+
 use Classes\Protocol;
 
 class StickerTagManager extends PrestashopConnection
 {
 
-    private $idSticker;
-    private $idProductReference;
+    private int $idSticker;
+    private int $idProductReference;
     private $tags;
     private $title;
 
-    function __construct(int $idSticker, String $title = "")
+    public function __construct(int $idSticker, string $title = "")
     {
         $query = "SELECT * FROM module_sticker_tags t JOIN module_sticker_sticker_tag st ON st.id_tag = t.id WHERE st.id_sticker = $idSticker";
         $this->tags = DBAccess::selectQuery($query);
@@ -29,7 +30,7 @@ class StickerTagManager extends PrestashopConnection
         $this->title = $title;
     }
 
-    public function setProductId($idProductReference)
+    public function setProductId(int $idProductReference)
     {
         $this->idProductReference = $idProductReference;
     }
@@ -45,20 +46,27 @@ class StickerTagManager extends PrestashopConnection
         return $tagsContent;
     }
 
-    public function getTagsHTML()
+    public static function getTagsHTML()
     {
-        $queries = explode(" ", $this->title);
+        $id = (int) Tools::get("id");
+        $title = Tools::get("title");
+        $queries = explode(" ", $title);
         $suggestionTags = [];
 
         foreach ($queries as $query) {
-            $tags = $this->getSynonyms($query);
+            $tags = self::getSynonyms($query);
             $suggestions = array_slice($tags, 0, 3);
             array_push($suggestionTags, ...$suggestions);
         }
 
-        echo \Classes\Project\TemplateController::getTemplate("sticker/showTags", [
-            "tags" => $this->tags,
+        $stickerTagManager = new StickerTagManager($id, $title);
+        $tagTemplate = \Classes\Project\TemplateController::getTemplate("sticker/showTags", [
+            "tags" => $stickerTagManager->tags,
             "suggestionTags" => $suggestionTags,
+        ]);
+
+        JSONResponseHandler::sendResponse([
+            "template" => $tagTemplate,
         ]);
     }
 
@@ -251,7 +259,7 @@ class StickerTagManager extends PrestashopConnection
         }
     }
 
-    public function getSynonyms($query)
+    public static function getSynonyms($query)
     {
         if (!file_exists('cache/modules/sticker/tags')) {
             mkdir('cache/modules/sticker/tags', 0777, true);
@@ -434,8 +442,6 @@ class StickerTagManager extends PrestashopConnection
     {
         $id = (int) Tools::get("id");
         $name = Tools::get("name");
-
-        $stickerTagManager = new StickerTagManager($id, $name);
-        $stickerTagManager->getTagsHTML();
+        StickerTagManager::getTagsHTML();
     }
 }
