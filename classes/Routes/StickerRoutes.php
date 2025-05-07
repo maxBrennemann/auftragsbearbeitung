@@ -9,10 +9,8 @@ class StickerRoutes extends Routes
 
     /**
      * @uses \Classes\Sticker\StickerCollection::getStickerStatus()
-     * @uses \Classes\Sticker\TextModification::iterateText()
      * @uses \Classes\Sticker\StickerCollection::getStickerSizes()
      * @uses \Classes\Sticker\StickerCollection::getPriceScheme()
-     * @uses \Classes\Sticker\TextModification::getTextGenerationTemplate()
      * 
      * @uses
      * @uses
@@ -23,13 +21,14 @@ class StickerRoutes extends Routes
      * 
      * @uses \Classes\Sticker\StickerCollection::getStickerOverview()
      * @uses \Classes\Sticker\StickerCollection::getStickerStates()
+     * 
+     * @uses \Classes\Sticker\TextModification::iterateText()
+     * @uses \Classes\Sticker\TextModification::getTextGenerationTemplate()
      */
     protected static $getRoutes = [
         "/sticker/{id}/status" => [\Classes\Sticker\StickerCollection::class, "getStickerStatus"],
-        "/sticker/{id}/texts/{type}/{form}" => [\Classes\Sticker\TextModification::class, "iterateText"],
         "/sticker/{id}/sizes" => [\Classes\Sticker\StickerCollection::class, "getStickerSizes"],
         "/sticker/{id}/priceScheme" => [\Classes\Sticker\StickerCollection::class, "getPriceScheme"],
-        "/sticker/{id}/text-generation-template" => [\Classes\Sticker\TextModification::class, "getTextGenerationTemplate"],
 
         "/sticker/tags" => [],
         "/sticker/tags/crawl" => [],
@@ -40,6 +39,9 @@ class StickerRoutes extends Routes
 
         "/sticker/overview" => [\Classes\Sticker\StickerCollection::class, "getStickerOverview"],
         "/sticker/states" => [\Classes\Sticker\StickerCollection::class, "getStickerStates"],
+
+        "/sticker/texts/{id}/{type}/{form}" => [\Classes\Sticker\TextModification::class, "iterateText"],
+        "/sticker/texts/{id}/get-template" => [\Classes\Sticker\TextModification::class, "getTextGenerationTemplate"],
     ];
 
     /**
@@ -59,6 +61,8 @@ class StickerRoutes extends Routes
      * @uses \Classes\Sticker\ProductCrawler::crawlAll()
      * 
      * @uses \Classes\Sticker\Exports\ExportFacebook::createExport()
+     * 
+     * @uses \Classes\Sticker\TextModification::newText()
      */
     protected static $postRoutes = [
         "/sticker/{id}/export" => [\Classes\Sticker\StickerCollection::class, "exportSticker"],
@@ -66,8 +70,6 @@ class StickerRoutes extends Routes
         "/sticker/{id}/textile/{idTextile}/price" => [\Classes\Sticker\Textil::class, "setPrice"],
         "/sticker/{id}/priceScheme" => [\Classes\Sticker\StickerCollection::class, "setPriceScheme"],
         "/sticker/{id}/{type}/add-files" => [\Classes\Sticker\StickerCollection::class, "addFiles"],
-
-        "/sticker/{id}/texts/{type}/{form}" => [\Classes\Sticker\TextModification::class, "newText"],
 
         "/sticker" => [\Classes\Sticker\StickerCollection::class, "addSticker"],
         "/sticker/tags" => [\Classes\Sticker\StickerCollection::class, "addTag"],
@@ -79,6 +81,8 @@ class StickerRoutes extends Routes
         "/sticker/crawl/all" => [\Classes\Sticker\ProductCrawler::class, "crawlAll"],
 
         "/sticker/export/facebook" => [\Classes\Sticker\Exports\ExportFacebook::class, "createExport"],
+
+        "/sticker/texts/{id}/{type}/{form}" => [\Classes\Sticker\TextModification::class, "newText"],
     ];
 
     /**

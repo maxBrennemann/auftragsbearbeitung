@@ -1,10 +1,10 @@
 <?php
 
-namespace Project\AiConnector\Connectors;
+namespace Classes\AiConnector\Connectors;
 
 use GuzzleHttp\Client;
 
-use Project\AiConnector\AiInterface;
+use Classes\AiConnector\AiInterface;
 
 class ChatGPTConnection implements AiInterface
 {
@@ -36,7 +36,7 @@ class ChatGPTConnection implements AiInterface
         $this->topP = $topP;
     }
 
-    private function request(): array
+    private function request(): string
     {
         $client = new Client();
         $response = $client->post("https://api.openai.com/v1/responses", [
@@ -48,11 +48,7 @@ class ChatGPTConnection implements AiInterface
                 "model" => $this->model,
                 "input" => $this->input,
                 "text" => [
-                    "format" => [
-                        "type" => $this->format,
-                        "name" => $this->name,
-                        $this->text,
-                    ]
+                    "format" => $this->getForamt(),
                 ],
                 "tools" => [],
                 "temperature" => $this->temperature,
@@ -64,12 +60,34 @@ class ChatGPTConnection implements AiInterface
 
         $body = json_decode($response->getBody(), true);
         $text = $body["output"][0]["content"][0]["text"];
-        return json_decode($text, true);
+        return $text;
     }
 
-    public function getText(array $data): array
+    private function getForamt(): array
     {
+        if ($this->format == "text") {
+            return [
+                "type" => $this->format,
+            ];
+        } else if ($this->format == "json_schema") {
+            return [
+                "type" => $this->format,
+                "name" => $this->name,
+                $this->text,
+            ];
+        }
+
         return [];
+    }
+
+    public function getText(array $data): string
+    {
+        $this->input = $data["input"];
+        $this->format = "text";
+        $this->name = "text_output";
+        $this->text = [];
+
+        return $this->request();
     }
 
     public function getImage(array $data): array
@@ -98,6 +116,8 @@ class ChatGPTConnection implements AiInterface
             ],
         ];
 
-        return $this->request();
+        $data = $this->request();
+        $data = json_decode($data, true);
+        return $data;
     }
 }

@@ -6,6 +6,8 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
+use Classes\AiConnector\Connectors\ChatGPTConnection;
+
 class TextModification
 {
 
@@ -15,62 +17,19 @@ class TextModification
     public function __construct($idSticker)
     {
         $this->idSticker = $idSticker;
-        $query = "SELECT * FROM module_sticker_chatgpt WHERE idSticker = :idSticker";
-        $this->oldChats = DBAccess::selectQuery($query, ["idSticker" => $idSticker]);
+        $this->oldChats = DBAccess::selectQuery("SELECT * FROM module_sticker_chatgpt WHERE idSticker = :idSticker", [
+            "idSticker" => $idSticker
+        ]);
     }
 
     /**
-     * This function sends a request to the chatGPT API and returns the response
-     * 
-     * @param string $message The message which is passed to chat gpt
+     * This function takes two parameters, $motivType and $textType, 
+     * which are used to filter an array of old chat data. 
+     * The function then returns the count of elements in the filtered array 
+     * where the "stickerType" property matches the $motivType parameter 
+     * and the "textType" property matches the $textType parameter
      */
-    public static function request($message)
-    {
-        $apiKey = $_ENV["OPENAI_API_KEY"];
-        $organisationKey = $_ENV["OPENAI_ORGANISATION_ID"];
-        $url = 'https://api.openai.com/v1/chat/completions';
-
-        $headers = [
-            "Authorization: Bearer {$apiKey}",
-            "OpenAI-Organization: $organisationKey",
-            "Content-Type: application/json"
-        ];
-
-        $messages = [];
-        $messages[] = [
-            "role" => "user",
-            "content" => $message
-        ];
-
-        $data = [
-            "model" => "gpt-3.5-turbo",
-            "messages" => $messages,
-            "max_tokens" => 100
-        ];
-
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_POST, 1);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-
-        $result = curl_exec($curl);
-        $result = urldecode($result);
-
-        if (curl_errno($curl)) {
-            $result = 'Error:' . curl_error($curl);
-        }
-
-        curl_close($curl);
-        return $result;
-    }
-
-    /**
-     * This function takes two parameters, $motivType and $textType, which are used to filter an array of old chat data. 
-     * The function then returns the count of elements in the filtered array where the "stickerType" property matches 
-     * the $motivType parameter and the "textType" property matches the $textType parameter
-     */
-    public function getChatCount($motivType, $textType)
+    public function getChatCount($motivType, $textType): int
     {
         return count(array_filter(
             $this->oldChats,
@@ -91,52 +50,20 @@ class TextModification
     }
 
     /**
-     * https://stackoverflow.com/questions/75780617/using-php-to-access-chatgpt-api
-     * 
      * @param string $query The query which is passed to chat gpt
      * @param string $stickerType The type of the sticker: aufkleber, wandtattoo, textil
      * @param string $textType If the text is for a short description or a long description
      * @param string $info Additional info for chat gpt to generate the text
      * @param string $textStyle The kind of text (e.g ironic, funny, sad)
      */
-    public function getTextSuggestion($query, $stickerType, $textType, $info, $textStyle)
+    public function getTextSuggestion($query, $stickerType, $textType, $info, $textStyle): array
     {
-        $apiKey = $_ENV["OPENAI_API_KEY"];
-        $organisationKey = $_ENV["OPENAI_ORGANISATION_ID"];
-        $url = 'https://api.openai.com/v1/chat/completions';
-
-        $headers = array(
-            "Authorization: Bearer {$apiKey}",
-            "OpenAI-Organization: $organisationKey",
-            "Content-Type: application/json"
-        );
-
-        // Define messages
-        $messages = array();
-        $messages[] = array("role" => "user", "content" => $this->getMessage($query, $stickerType, $textType, $info, $textStyle));
-
-        // Define data
-        $data = array();
-        $data["model"] = "gpt-3.5-turbo";
-        $data["messages"] = $messages;
-        $data["max_tokens"] = 100;
-
-        // init curl
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_POST, 1);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-
-        $result = curl_exec($curl);
-        $result = urldecode($result);
-        if (curl_errno($curl)) {
-            echo 'Error:' . curl_error($curl);
-        } else {
-            $this->saveResponse($result, $stickerType, $textType, $info, $textStyle);
-        }
-
-        curl_close($curl);
+        $query = $this->getMessage($query, $stickerType, $textType, $info, $textStyle);
+        $chatGPTConnection = new ChatGPTConnection();
+        $result = $chatGPTConnection->getText([
+            "input" => $query,
+        ]);
+        return $this->saveResponse($result, $stickerType, $textType, $info, $textStyle);
     }
 
     private function getMessage($query, $stickerType, $textType, $info, $textStyle)
@@ -162,23 +89,25 @@ class TextModification
 
     private function saveResponse($result, $stickerType, $textType, $info, $textStyle)
     {
-        $data = json_decode($result, true);
-        $text = $data["choices"][0]["message"]["content"];
         $date = date("Y-m-d");
 
         $query = "INSERT INTO module_sticker_chatgpt (idSticker, creationDate, chatgptResponse, jsonResponse, stickerType, textType, additionalQuery, textStyle) VALUES (:idSticker, :date, :text, :json, :stickerType, :textType, :info, :textStyle);";
         $params = [
             "idSticker" => $this->idSticker,
             "date" => $date,
-            "text" => $text,
-            "json" => json_encode($result, JSON_UNESCAPED_UNICODE),
+            "text" => $result,
+            "json" => "",
             "stickerType" => $stickerType,
             "textType" => $textType,
             "info" => $info,
             "textStyle" => $textStyle,
         ];
 
-        DBAccess::insertQuery($query, $params);
+        $id = DBAccess::insertQuery($query, $params);
+        return [
+            "text" => $result,
+            "textId" => $id,
+        ];
     }
 
     public static function iterateText()
@@ -202,8 +131,8 @@ class TextModification
             $current = 0;
         }
 
-        $chatGPTConnection = new TextModification($id);
-        $text = $chatGPTConnection->getText($type, $text, $current);
+        $textModification = new TextModification($id);
+        $text = $textModification->getText($type, $text, $current);
 
         $status = "success";
         if ($text == false) {
@@ -228,22 +157,26 @@ class TextModification
         $additionalStyle = Tools::get("additionalStyle");
 
         $connector = new TextModification($id);
-        $connector->getTextSuggestion($title, $type, $text, $additionalText, $additionalStyle);
+        $response = $connector->getTextSuggestion($title, $type, $text, $additionalText, $additionalStyle);
+
+        JSONResponseHandler::sendResponse($response);
     }
 
     public static function getTextGenerationTemplate()
     {
         $stickerId = Tools::get("id");
         $stickerType =Tools::get("type");
-        $text = Tools::get("text");
+        $textType = Tools::get("text");
 
-        $query = "SELECT id, chatgptResponse, DATE_FORMAT(creationDate, '%d. %M %Y') AS creationDate, textType, additionalQuery, textStyle 
+        $query = "SELECT id, chatgptResponse, DATE_FORMAT(creationDate, '%d.%m.%Y') AS creationDate, textType, additionalQuery, textStyle 
             FROM module_sticker_chatgpt 
             WHERE idSticker = :stickerId 
-                AND stickerType = :stickerType;";
+                AND stickerType = :stickerType
+                AND textType = :textType;";
         $result = DBAccess::selectQuery($query, [
             "stickerId" => $stickerId,
-            "stickerType" => $stickerType
+            "stickerType" => $stickerType,
+            "textType" => $textType,
         ]);
 
         $content = \Classes\Project\TemplateController::getTemplate("sticker/textModification", [
