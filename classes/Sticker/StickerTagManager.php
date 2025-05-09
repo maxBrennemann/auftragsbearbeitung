@@ -2,6 +2,9 @@
 
 namespace Classes\Sticker;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
@@ -18,7 +21,10 @@ class StickerTagManager extends PrestashopConnection
 
     public function __construct(int $idSticker, string $title = "")
     {
-        $query = "SELECT * FROM module_sticker_tags t JOIN module_sticker_sticker_tag st ON st.id_tag = t.id WHERE st.id_sticker = $idSticker";
+        $query = "SELECT * FROM module_sticker_tags t 
+            JOIN module_sticker_sticker_tag st 
+                ON st.id_tag = t.id 
+            WHERE st.id_sticker = $idSticker";
         $this->tags = DBAccess::selectQuery($query);
 
         $this->idSticker = $idSticker;
@@ -80,7 +86,10 @@ class StickerTagManager extends PrestashopConnection
             if ($id_tag_shop == "" || $id_tag_shop == 0) {
                 $id_tag_shop = $this->getTagIdFromShop($t["content"]);
                 $query = "UPDATE module_sticker_tags SET id_tag_shop = :id_tag_shop WHERE id = :id";
-                DBAccess::updateQuery($query, ["id_tag_shop" => $id_tag_shop, "id" => $t["id"]]);
+                DBAccess::updateQuery($query, [
+                    "id_tag_shop" => $id_tag_shop,
+                    "id" => $t["id"]
+                ]);
             }
             $tagIds[] = $id_tag_shop;
         }
@@ -117,7 +126,10 @@ class StickerTagManager extends PrestashopConnection
         }
 
         $query = "INSERT INTO module_sticker_sticker_tag (id_tag, id_sticker) VALUES (:id_tag, :id_sticker)";
-        DBAccess::insertQuery($query, ["id_tag" => $id, "id_sticker" => $this->idSticker]);
+        DBAccess::insertQuery($query, [
+            "id_tag" => $id, 
+            "id_sticker" => $this->idSticker
+        ]);
 
         /* write to changelog */
         /* TODO: testen, ob es funktioniert, wenn sticker data nicht direkt mit der anderen tabelle zusammenhängt */
@@ -259,40 +271,62 @@ class StickerTagManager extends PrestashopConnection
         }
     }
 
-    public static function getSynonyms($query)
+    public static function getSynonyms(string $query): array
     {
-        if (!file_exists('cache/modules/sticker/tags')) {
-            mkdir('cache/modules/sticker/tags', 0777, true);
+        $cacheDir = "cache/modules/sticker/tags";
+        $sanitizedQuery = preg_replace('/[^a-zA-Z0-9_-]/', '_', $query);
+        $cacheFile = "$cacheDir/$sanitizedQuery.json";
+
+        if (!is_dir($cacheDir) && !mkdir($cacheDir, 0777, true)) {
+            Protocol::write("Failed to create cache directory: $cacheDir", "", "ERROR");
+            throw new \RuntimeException("Failed to create cache directory: $cacheDir");
         }
 
-        @$cachedSynonyms = file_get_contents('cache/modules/sticker/tags/' . $query . '.json');
-        if ($cachedSynonyms === false) {
-            $ch = curl_init("https://www.openthesaurus.de/synonyme/search?q=$query&format=application/json");
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $result = curl_exec($ch);
-            curl_close($ch);
+        if (file_exists($cacheFile)) {
+            $cached = file_get_contents($cacheFile);
+            if ($cached !== false) {
+                $decoded = json_decode($cached, true);
+                return is_array($decoded) ? $decoded : [];
+            }
+        }
 
-            $result = json_decode($result, true);
-            $synonyms = [];
+        $client = new Client([
+            "base_uri" => "https://www.openthesaurus.de/",
+            "timeout" => 5.0,
+        ]);
 
-            if ($result != null && $result["synsets"] != null) {
-                foreach ($result["synsets"] as $set) {
-                    foreach ($set["terms"] as $term) {
-                        /* chatgpt reported the typo */
-                        if (!in_array($term["term"], $synonyms) && strlen($term["term"]) <= 32) {
-                            array_push($synonyms, $term["term"]);
-                        }
+        try {
+            $response = $client->request("GET", "synonyme/search", [
+                "query" => [
+                    "q" => $query,
+                    "format" => "application/json",
+                ],
+                "headers" => [
+                    "Accept" => "application/json",
+                ]
+            ]);
+
+            $body = $response->getBody()->getContents();
+            $data = json_decode($body, true);
+        } catch (RequestException $e) {
+            Protocol::write("Guzzle error while fetching synonyms.", $e->getMessage(), "ERROR");
+            return [];
+        }
+
+        $synonyms = [];
+        if (!empty($data["synsets"])) {
+            foreach ($data["synsets"] as $set) {
+                foreach ($set["terms"] ?? [] as $term) {
+                    $termText = $term["term"] ?? "";
+                    if (strlen($termText) <= 32 && !in_array($termText, $synonyms, true)) {
+                        $synonyms[] = $termText;
                     }
                 }
             }
-
-            file_put_contents('cache/modules/sticker/tags/' . $query . '.json', json_encode($synonyms));
-            return $synonyms;
-        } else {
-            $cachedSynonyms = json_decode($cachedSynonyms);
-            return $cachedSynonyms;
         }
+
+        file_put_contents($cacheFile, json_encode($synonyms, JSON_UNESCAPED_UNICODE));
+        return $synonyms;
     }
 
     /**
