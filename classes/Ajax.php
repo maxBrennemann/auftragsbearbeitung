@@ -262,11 +262,6 @@ class Ajax
 				$response = Table::updateValue($table, $action, $key);
 				echo $response;
 				break;
-			case "addNewLine":
-				$key = $_POST['key'];
-				$data = $_POST['data'];
-				echo Table::updateTable_AddNewLine($key, $data);
-				break;
 			case "getInfoText":
 				$infoId = (int) $_POST['info'];
 				$infoText = DBAccess::selectQuery("SELECT info FROM info_texte WHERE id = :infoId;", [
@@ -288,14 +283,6 @@ class Ajax
 			case "writeProductDescription":
 				Sticker::setDescription();
 				break;
-			case "deleteImage":
-				$imageId = (int) $_POST["imageId"];
-				$query = "DELETE FROM dateien WHERE id = :idImage;";
-				DBAccess::deleteQuery($query, ["idImage" => $imageId]);
-				echo json_encode([
-					"status" => "success",
-				]);
-				break;
 			case "setImageOrder":
 				$order = $_POST["order"];
 
@@ -311,25 +298,6 @@ class Ajax
 					]);
 				}
 				break;
-			case "toggleTextil":
-				$id = (int) $_POST["id"];
-				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_shirtcollection` = NOT `is_shirtcollection` WHERE id = :id", ["id" => $id]);
-				echo json_encode([
-					"status" => "success",
-				]);
-				break;
-			case "toggleWandtattoo":
-				$id = (int) $_POST["id"];
-				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_walldecal` = NOT `is_walldecal` WHERE id = :id", ["id" => $id]);
-				echo json_encode([
-					"status" => "success",
-				]);
-				break;
-			case "toggleBookmark":
-				$id = (int) $_POST["id"];
-				DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_marked` = NOT `is_marked` WHERE id = :id", ["id" => $id]);
-				echo "success";
-				break;
 			case "makeSVGColorable":
 				$id = (int) $_POST["id"];
 
@@ -343,18 +311,6 @@ class Ajax
 					$url = Link::getResourcesShortLink($file["dateiname"], "upload");
 					echo json_encode(["url" => $url]);
 				}
-				break;
-			case "makeCustomizable":
-				$id = (int) $_POST["id"];
-
-				$textil = new Textil($id);
-				$textil->toggleCustomizable();
-				break;
-			case "makeForConfig":
-				$id = (int) $_POST["id"];
-
-				$textil = new Textil($id);
-				$textil->toggleConfig();
 				break;
 			case "setPriceclass":
 				$priceclass = (int) $_POST["priceclass"];
@@ -382,12 +338,6 @@ class Ajax
 					"postennummer" => $postenNummer,
 				]);
 				echo $price;
-				break;
-			case "setAufkleberParameter":
-				$id = (int) $_POST["id"];
-				$data = $_POST["json"];
-				$aufkleber = new Aufkleber($id);
-				$aufkleber->saveSentData($data);
 				break;
 			case "productVisibility":
 				$id = (int) $_POST["id"];
@@ -543,24 +493,6 @@ class Ajax
 						"status" => "not found",
 					]);
 				}
-				break;
-			case "showGTPOptions":
-				$stickerId = $_POST["id"];
-				$stickerType = $_POST["type"];
-				$text = $_POST["text"];
-
-				$query = "SELECT id, chatgptResponse, DATE_FORMAT(creationDate, '%d. %M %Y') as creationDate, textType, additionalQuery, textStyle FROM module_sticker_chatgpt WHERE idSticker = :stickerId AND stickerType = :stickerType;";
-				$result = DBAccess::selectQuery($query, [
-					"stickerId" => $stickerId,
-					"stickerType" => $stickerType
-				]);
-
-				$content = \Classes\Project\TemplateController::getTemplate("sticker/chatGPTOptions", [
-					"texts" => $result,
-				]);
-				echo json_encode([
-					"template" => $content,
-				]);
 				break;
 			case "updateImageDescription":
 				$id = (int) $_POST["imageId"];

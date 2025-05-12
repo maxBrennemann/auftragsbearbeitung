@@ -110,16 +110,6 @@ class Textil extends Sticker
         $this->isColorable = !$this->isColorable;
     }
 
-    public function toggleCustomizable()
-    {
-        DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_customizable` = NOT `is_customizable` WHERE id = :id", ["id" => $this->getId()]);
-    }
-
-    public function toggleConfig()
-    {
-        DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_for_configurator` = NOT `is_for_configurator` WHERE id = :id", ["id" => $this->getId()]);
-    }
-
     /* returns the image array for the current svg */
     public function getCurrentSVG()
     {

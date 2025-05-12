@@ -28,6 +28,7 @@ files/res/js/classes/tableconfig.js
 files/res/js/classes/colorpicker.js
 files/res/js/classes/notifications.js
 files/res/js/classes/ajax.js
+files/res/js/classes/bindings.js
 
 # minimized files
 files/res/js/min/*

@@ -6,10 +6,12 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
+use Classes\Sticker\Imports\ImportGoogleSearchConsole;
+
 use Classes\Project\Icon;
 use Classes\Project\UploadHandler;
 
-use Classes\Sticker\Imports\ImportGoogleSearchConsole;
+use Classes\Link;
 
 class StickerCollection implements \Iterator
 {
@@ -412,20 +414,28 @@ class StickerCollection implements \Iterator
             "image/jpg",
             "image/jpeg",
             "image/svg+xml",
-        ]);
+        ], 250000000);
         $files = $uploadHandler->uploadMultiple();
 
         $query = "INSERT INTO module_sticker_image (id_datei, id_motiv, image_sort) VALUES ";
         $data = [];
+        $fileData = [];
         foreach ($files as $file) {
+            /* data for db insertion */
             $data[] = [
                 $file["id"],
                 $idSticker,
                 $type
             ];
+            /* response to frontend */
+            $fileData[] = [
+                "id" => $file["id"],
+                "link" => Link::getResourcesShortLink($file["saved_name"], "upload"),
+            ];
         }
 
         DBAccess::insertMultiple($query, $data);
+        JSONResponseHandler::sendResponse($fileData);
     }
 
     public static function setTitle()
@@ -479,16 +489,6 @@ class StickerCollection implements \Iterator
             "id" => $id
         ]);
 
-        JSONResponseHandler::returnOK();
-    }
-
-    public static function setRevised()
-    {
-        $id = Tools::get("id");
-        DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_revised` = NOT `is_revised` WHERE id = :id", [
-            "id" => $id
-        ]);
-        
         JSONResponseHandler::returnOK();
     }
 
@@ -556,6 +556,36 @@ class StickerCollection implements \Iterator
             ]);
         }
 
+        JSONResponseHandler::returnOK();
+    }
+
+    public static function toggleStatus()
+    {
+        $id = Tools::get("id");
+        $type = (string) Tools::get("type");
+        $types = [
+            "is_plotted",
+            "is_short_time",
+            "is_long_time",
+            "is_walldecal",
+            "is_multipart",
+            "is_shirtcollection",
+            "is_colorable",
+            "is_customizable",
+            "is_for_configurator",
+            "is_revised",
+            "is_marked",
+        ];
+
+        if (!in_array($type, $types)) {
+            JSONResponseHandler::throwError(404, "Cannot change unsupported type.");
+            return;
+        }
+
+        DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `$type` = NOT `$type` WHERE id = :id", [
+            "id" => $id
+        ]);
+        
         JSONResponseHandler::returnOK();
     }
 }

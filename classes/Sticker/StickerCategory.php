@@ -58,7 +58,7 @@ class StickerCategory extends PrestashopConnection
         $categories = json_encode($categories, JSON_UNESCAPED_UNICODE);
         $query = "Hi, bitte antworte nur mit einem JSON String. Es muss nicht für einen menschen lesbar sein. Verwende keine Einführung.
         Wähle aus dieser JSON Liste 1-5 Kategorien aus, in die der Artikel: " . $articleName . " passt. Sende die Antwort als JSON String nur mit den Kategorienummern." . $categories;
-        $data = ChatGPTConnection::request($query);
+        $data = TextModification::request($query);
 
         try {
             $data = json_decode($data, true);

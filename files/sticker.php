@@ -1,29 +1,29 @@
 <?php
 
+use MaxBrennemann\PhpUtilities\Tools;
+
 use Classes\Link;
 use Classes\Project\Icon;
 
 use Classes\Sticker\StickerImage;
 use Classes\Sticker\StickerCollection;
 use Classes\Sticker\StickerChangelog;
-use Classes\Sticker\ChatGPTConnection;
+use Classes\Sticker\TextModification;
 
 use Classes\Project\TemplateController;
 
-$id = 0;
+$id = Tools::get("id");
 
 $stickerCollection = null;
 $stickerChangelog = null;
 $stickerImage = null;
-$chatGPTConnection = null;
+$textModification = null;
 
-if (isset($_GET['id'])) {
-    $id = (int) $_GET['id'];
-
+if ($id != null) {
     $stickerImage = new StickerImage($id);
     $stickerCollection = new StickerCollection($id);
     $stickerChangelog = new StickerChangelog($id);
-    $chatGPTConnection = new ChatGPTConnection($id);
+    $textModification = new TextModification($id);
 }
 
 if ($id == 0): ?>
@@ -32,8 +32,8 @@ if ($id == 0): ?>
         window.location.href = "<?= Link::getPageLink("sticker-overview") ?>";
     </script>
 <?php else: ?>
-    <div class="w-full grid gap-2 grid-cols-3">
-        <div class="defCont col-span-3">
+    <div class="w-full grid gap-2 grid-cols-6">
+        <div class="defCont col-span-6">
             <h2 class="font-semibold inline-flex items-center">Motiv
                 <input id="stickerName" data-write="true" data-input="true" class="input-primary w-96 ml-1" value="<?= $stickerCollection->getName(); ?>" title="Faceboook hat ein internes Limit für die Titellänge von 65 Zeichen">
                 <?php if ($stickerCollection->getIsMarked() == "0"): ?>
@@ -50,7 +50,7 @@ if ($id == 0): ?>
             <p class="ml-2 mt-2">Erstellt am <input type="date" class="input-primary" id="creationDate" data-write="true" value="<?= $stickerCollection->getCreationDate() ?>"></p>
             <button class="btn-primary mt-4" data-fun="transferAll" data-binding="true">Alles erstellen/ aktualisieren</button>
         </div>
-        <div class="defCont col-span-2 lg:col-span-1">
+        <div class="defCont col-span-3 2xl:col-span-2">
             <p class="font-bold">Aufkleber
                 <?php if ($stickerCollection->getAufkleber()->getActiveStatus()): ?>
                     <button class="mx-1 btn-primary-small" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="aufkleber">
@@ -86,34 +86,34 @@ if ($id == 0): ?>
             </div>
             <div class="mt-2">
                 <?= TemplateController::getTemplate("inputSwitch", [
-                    "id" => "plotted",
+                    "id" => "toggle_is_plotted",
                     "name" => "Aufkleber Plott",
                     "value" => $stickerCollection->getAufkleber()->getIsPlotted() == 1 ? "checked" : "",
-                    "binding" => "toggleCheckbox",
+                    "binding" => "toggleData",
                 ]); ?>
             </div>
             <div class="mt-2">
                 <?= TemplateController::getTemplate("inputSwitch", [
-                    "id" => "short",
+                    "id" => "toggle_is_short_time",
                     "name" => "kurzfristiger Aufkleber",
                     "value" => $stickerCollection->getAufkleber()->getIsShortTimeSticker() == 1 ? "checked" : "",
-                    "binding" => "toggleCheckbox",
+                    "binding" => "toggleData",
                 ]); ?>
             </div>
             <div class="mt-2">
                 <?= TemplateController::getTemplate("inputSwitch", [
-                    "id" => "short",
+                    "id" => "toggle_is_long_time",
                     "name" => "langfristiger Aufkleber",
                     "value" => $stickerCollection->getAufkleber()->getIsLongTimeSticker() == 1 ? "checked" : "",
-                    "binding" => "toggleCheckbox",
+                    "binding" => "toggleData",
                 ]); ?>
             </div>
             <div class="mt-2">
                 <?= TemplateController::getTemplate("inputSwitch", [
-                    "id" => "short",
+                    "id" => "toggle_is_multipart",
                     "name" => "mehrteilig",
                     "value" => $stickerCollection->getAufkleber()->getIsMultipart() == 1 ? "checked" : "",
-                    "binding" => "toggleCheckbox",
+                    "binding" => "toggleData",
                 ]); ?>
             </div>
             <div class="mt-2">
@@ -130,19 +130,19 @@ if ($id == 0): ?>
             <div class="mt-2">
                 <div class="mt-2 flex">
                     <p>Kurzbeschreibung</p>
-                    <?= TemplateController::getTemplate("sticker/chatGPTsticker", [
+                    <?= TemplateController::getTemplate("sticker/textOptions", [
                         "type" => "aufkleber",
                         "text" => "short",
-                        "gpt" => $chatGPTConnection
+                        "textModification" => $textModification
                     ]); ?>
                 </div>
                 <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="aufkleber" data-type="short" data-write="true"><?= $stickerCollection->getAufkleber()->getDescriptionShort() ?></textarea>
                 <div class="mt-2 flex">
                     <p>Beschreibung</p>
-                    <?= TemplateController::getTemplate("sticker/chatGPTsticker", [
+                    <?= TemplateController::getTemplate("sticker/textOptions", [
                         "type" => "aufkleber",
                         "text" => "long",
-                        "gpt" => $chatGPTConnection
+                        "textModification" => $textModification
                     ]); ?>
                 </div>
                 <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="aufkleber" data-type="long" data-write="true"><?= $stickerCollection->getAufkleber()->getDescription() ?></textarea>
@@ -156,7 +156,7 @@ if ($id == 0): ?>
             <button class="transferBtn btn-primary w-full mt-2" id="transferAufkleber" data-binding="true" <?= $stickerCollection->getAufkleber()->getIsPlotted() == 1 ? "" : "disabled" ?>>Aufkleber übertragen</button>
         </div>
 
-        <div class="defCont col-span-2 lg:col-span-1">
+        <div class="defCont col-span-3 2xl:col-span-2">
             <p class="font-bold">Wandtattoo
                 <?php if ($stickerCollection->getWandtattoo()->getActiveStatus()): ?>
                     <button class="mx-1 btn-primary-small" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="wandtattoo">
@@ -192,28 +192,28 @@ if ($id == 0): ?>
             </div>
             <div class="mt-2">
                 <?= TemplateController::getTemplate("inputSwitch", [
-                    "id" => "wandtattoo",
+                    "id" => "toggle_is_walldecal",
                     "name" => "Wandtattoo",
                     "value" => $stickerCollection->getWandtattoo()->getIsWalldecal() == 1 ? "checked" : "",
-                    "binding" => "wandtattooClick",
+                    "binding" => "toggleData",
                 ]); ?>
             </div>
             <div class="mt-2">
                 <div class="mt-2 flex">
                     <p>Kurzbeschreibung</p>
-                    <?= TemplateController::getTemplate("sticker/chatGPTsticker", [
+                    <?= TemplateController::getTemplate("sticker/textOptions", [
                         "type" => "wandtattoo",
                         "text" => "short",
-                        "gpt" => $chatGPTConnection
+                        "textModification" => $textModification
                     ]); ?>
                 </div>
                 <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="wandtattoo" data-type="short" data-write="true"><?= $stickerCollection->getWandtattoo()->getDescriptionShort() ?></textarea>
                 <div class="mt-2 flex">
                     <p>Beschreibung</p>
-                    <?= TemplateController::getTemplate("sticker/chatGPTsticker", [
+                    <?= TemplateController::getTemplate("sticker/textOptions", [
                         "type" => "wandtattoo",
                         "text" => "long",
-                        "gpt" => $chatGPTConnection
+                        "textModification" => $textModification
                     ]); ?>
                 </div>
                 <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="wandtattoo" data-type="long" data-write="true"><?= $stickerCollection->getWandtattoo()->getDescription() ?></textarea>
@@ -227,7 +227,7 @@ if ($id == 0): ?>
             <button class="transferBtn btn-primary w-full mt-2" id="transferWandtattoo" data-binding="true" <?= $stickerCollection->getWandtattoo()->getIsWalldecal() == 1 ? "" : "disabled" ?>>Wandtattoo übertragen</button>
         </div>
 
-        <div class="defCont col-span-2 lg:col-span-1">
+        <div class="defCont col-span-3 2xl:col-span-2">
             <p class="font-bold">Textil
                 <?php if ($stickerCollection->getTextil()->getActiveStatus()): ?>
                     <button class="mx-1 btn-primary-small" title="Artikel ausblenden/ einblenden" data-binding="true" data-fun="toggleProductVisibility" data-type="textil">
@@ -263,34 +263,34 @@ if ($id == 0): ?>
             </div>
             <div class="mt-2">
                 <?= TemplateController::getTemplate("inputSwitch", [
-                    "id" => "textil",
+                    "id" => "toggle_is_shirtcollection",
                     "name" => "Textil",
                     "value" => $stickerCollection->getTextil()->getIsShirtcollection() == 1 ? "checked" : "",
-                    "binding" => "textilClick",
+                    "binding" => "toggleData",
                 ]); ?>
             </div>
             <div class="mt-2">
                 <?= TemplateController::getTemplate("inputSwitch", [
-                    "id" => "makeColorable",
+                    "id" => "toggle_is_colorable",
                     "name" => "Einfärbbar",
                     "value" => $stickerCollection->getTextil()->getIsColorable() == 1 ? "checked" : "",
-                    "binding" => "makeColorable",
+                    "binding" => "toggleData",
                 ]); ?>
             </div>
             <div class="mt-2">
                 <?= TemplateController::getTemplate("inputSwitch", [
-                    "id" => "makeCustomizable",
+                    "id" => "toggle_is_customizable",
                     "name" => "Personalisierbar",
                     "value" => $stickerCollection->getTextil()->getIsCustomizable() == 1 ? "checked" : "",
-                    "binding" => "makeCustomizable",
+                    "binding" => "toggleData",
                 ]); ?>
             </div>
             <div class="mt-2">
                 <?= TemplateController::getTemplate("inputSwitch", [
-                    "id" => "makeForConfig",
+                    "id" => "toggle_is_for_configurator",
                     "name" => "Im Konfigurator anzeigen",
                     "value" => $stickerCollection->getTextil()->getIsForConfigurator() == 1 ? "checked" : "",
-                    "binding" => "makeForConfig",
+                    "binding" => "toggleData",
                 ]); ?>
             </div>
             <div class="mt-2">
@@ -303,19 +303,19 @@ if ($id == 0): ?>
             <div class="mt-2">
                 <div class="mt-2 flex">
                     <p>Kurzbeschreibung</p>
-                    <?= TemplateController::getTemplate("sticker/chatGPTsticker", [
+                    <?= TemplateController::getTemplate("sticker/textOptions", [
                         "type" => "textil",
                         "text" => "short",
-                        "gpt" => $chatGPTConnection
+                        "textModification" => $textModification
                     ]); ?>
                 </div>
                 <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="textil" data-type="short" data-write="true"><?= $stickerCollection->getTextil()->getDescriptionShort() ?></textarea>
                 <div class="mt-2 flex">
                     <p>Beschreibung</p>
-                    <?= TemplateController::getTemplate("sticker/chatGPTsticker", [
+                    <?= TemplateController::getTemplate("sticker/textOptions", [
                         "type" => "textil",
                         "text" => "long",
-                        "gpt" => $chatGPTConnection
+                        "textModification" => $textModification
                     ]); ?>
                 </div>
                 <textarea class="input-primary w-full mt-1" data-fun="productDescription" data-target="textil" data-type="long" data-write="true"><?= $stickerCollection->getTextil()->getDescription() ?></textarea>
@@ -329,7 +329,7 @@ if ($id == 0): ?>
             <button class="transferBtn btn-primary w-full hidden mt-2" id="transferTextil" data-binding="true" <?= $stickerCollection->getTextil()->getIsShirtcollection() == 1 ? "" : "disabled" ?>>Textil übertragen</button>
         </div>
 
-        <div class="defCont col-span-2">
+        <div class="defCont col-span-4">
             <h2 class="mb-2 font-bold">Größen</h2>
             <div id="sizeTableWrapper">
                 <table>
@@ -382,7 +382,7 @@ if ($id == 0): ?>
             </div>
         </div>
 
-        <div class="defCont">
+        <div class="defCont col-span-2">
             <h2 class="font-semibold">Textilien</h2>
             <div class="mt-2">
                 <div>
@@ -407,7 +407,7 @@ if ($id == 0): ?>
             </div>
         </div>
 
-        <div class="defCont col-span-2">
+        <div class="defCont col-span-3">
             <h2 class="font-semibold">Tags<button class="infoButton ml-1" data-info="3">i</button></h2>
             <div class="mt-2" id="tagManager"></div>
             <div class="mt-2">
@@ -421,13 +421,14 @@ if ($id == 0): ?>
             </div>
         </div>
 
-        <div class="defCont">
+        <div class="defCont col-span-3">
             <h2 class="font-semibold">Weitere Infos</h2>
             <div class="mt-2 inline-flex items-center">
                 <?= TemplateController::getTemplate("inputSwitch", [
+                    "id" => "toggle_is_revised",
                     "name" => "Motiv neu überarbeitet?",
                     "value" => $stickerCollection->getIsRevised() == 1 ? "checked" : "",
-                    "binding" => "revised",
+                    "binding" => "toggleData",
                 ]); ?>
                 <button class="infoButton ml-1" data-info="4">i</button>
             </div>
@@ -439,7 +440,7 @@ if ($id == 0): ?>
             <textarea class="input-primary mt-2 w-full" data-fun="additionalInfo" data-write="true"><?= $stickerCollection->getAdditionalInfo() ?></textarea>
         </div>
 
-        <div class="defCont col-span-3">
+        <div class="defCont col-span-6">
             <h2 class="font-semibold mb-2">Produktexport</h2>
             <div class="mt-2">
                 <?= TemplateController::getTemplate("inputSwitch", [
@@ -491,7 +492,7 @@ if ($id == 0): ?>
             </div>
         </div>
 
-        <div class="defCont col-span-2">
+        <div class="defCont col-span-3">
             <h2 class="font-semibold mb-2">Statistiken</h2>
             <!-- TODO: Statistiken von Google Analytics und Google Shopping, sowie von Google SearchConsole und shopintern einbinden -->
             <div>
@@ -512,7 +513,7 @@ if ($id == 0): ?>
             </div>
         </div>
 
-        <div class="defCont">
+        <div class="defCont col-span-3">
             <h2 class="font-semibold mb-2">Changelog</h2>
             <details>
                 <?= $stickerChangelog->getTable() ?>

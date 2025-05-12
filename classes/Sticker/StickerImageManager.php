@@ -2,7 +2,9 @@
 
 namespace Classes\Sticker;
 
-class StickerImageManager implements Queable
+use Classes\Cron\Queueable;
+
+class StickerImageManager implements Queueable
 {
 
     public static function handle() {}
