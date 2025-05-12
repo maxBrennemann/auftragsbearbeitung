@@ -201,6 +201,39 @@ function getTableConfig(): array
             ],
             "permissions" => [],
         ],
+        "module_sticker_image" => [
+            "columns" => [
+                "id_datei",
+                "id_motiv",
+                "image_sort",
+                "id_product",
+                "id_image_shop",
+                "description",
+                "image_order",
+            ],
+            "primaryKey" => "id_datei",
+            "names" => [
+                "Dateinummer",
+                "Motivnummer",
+                "Bildtyp",
+                "Produktnummer",
+                "Bildnummer im Shop",
+                "Beschreibung",
+                "Position",
+            ],
+            "permissions" => ["read", "create", "update", "delete"],
+            "joins" => [
+                "files" => [
+                    "relatedTable" => "dateien",
+                    "localKey" => "id_datei",
+                    "foreignKey" => "id",
+                ],
+            ],
+            "hooks" => [
+                "afterRead" => [\Classes\Sticker\StickerImage::class, "prepareData"],
+                "afterJoin" => [\Classes\Sticker\StickerImage::class, "prepareData"],
+            ],
+        ],
         "module_sticker_sticker_data" => [
             "columns" => [
                 "id",

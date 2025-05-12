@@ -6,25 +6,44 @@ class Protocol
 {
 
 	private static $file;
+	private static string $filePath = "protocol.txt";
+	private static bool $logToConsole = false;
+
+	public static function configure(string $filePath = "protocol.txt", bool $logToConsole = false)
+	{
+		self::$filePath = $filePath;
+		self::$logToConsole = $logToConsole;
+	}
+
+	private static function init(): void
+	{
+		if (self::$file == null) {
+			self::$file = fopen(self::$filePath, "a");
+			register_shutdown_function([self::class, "close"]);
+		}
+	}
 
 	/** 
 	 * Writes a given string to the protocol.txt file
 	 * 
 	 * @param $text string
 	 */
-	public static function write(string $textContent, ?string $details = null): void
+	public static function write(string $message, ?string $details = null, string $level = "INFO"): void
 	{
-		if (self::$file == null) {
-			self::$file = fopen("protocol.txt", "a");
-		}
+		self::init();
 
-		if ($details != null) {
-			$text = $textContent . " - " . $details . "\n";
-		} else {
-			$text = $textContent . "\n";
+		$timestamp = date("Y-m-d H:i:s");
+		$logLine = "[$timestamp] [$level] $message";
+		if ($details !== null) {
+			$logLine .= " - $details";
 		}
+		$logLine .= PHP_EOL;
 
-		fwrite(self::$file, $text);
+		fwrite(self::$file, $logLine);
+
+		if (self::$logToConsole) {
+			echo nl2br(htmlentities($logLine));
+		}
 	}
 
 	/**
@@ -32,25 +51,25 @@ class Protocol
 	 */
 	public static function close(): void
 	{
-		if (self::$file == null)
-			return;
-		fclose(self::$file);
+		if (self::$file !== null) {
+			fclose(self::$file);
+			self::$file = null;
+		}
 	}
 
 	public static function delete(): void
 	{
-		unlink("protocol.txt");
+		self::close();
+		if (file_exists(self::$filePath)) {
+			unlink(self::$filePath);
+		}
 	}
 
 	/**
 	 * Pretty prints a given data structure
-	 * 
-	 * @param $data mixed
 	 */
 	public static function prettyPrint($data): void
 	{
-		echo "<pre>";
-		var_dump($data);
-		echo "</pre>";
+		echo "<pre>" . htmlspecialchars(print_r($data, true)) . "</pre>";
 	}
 }

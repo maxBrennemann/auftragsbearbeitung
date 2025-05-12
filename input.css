@@ -27,11 +27,11 @@
         @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 bg-red-400 rounded text-sm border-0 text-white hover:bg-red-600 disabled:bg-red-200 disabled:hover:bg-red-300 disabled:hover:cursor-not-allowed;
     }
 
-    .btn-edit {
+    .btn-edit, .btn-active {
         @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 bg-blue-400 rounded text-sm border-0 text-white hover:bg-blue-600;
     }
 
-    .btn-cancel {
+    .btn-cancel, .btn-inactive {
         @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 bg-white rounded text-sm border-0 text-black hover:bg-slate-100 shadow-sm ring-offset-black gap-2 data-[focus]:outline-1 data-[focus]:outline-black ring-1 ring-gray-300 disabled:bg-slate-100;
     }
 

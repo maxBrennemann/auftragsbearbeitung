@@ -1,19 +1,22 @@
 import { ajax } from "../classes/ajax.js";
+import { addBindings } from "../classes/bindings.js";
 import { createPopup } from "../global.js";
-import { getStickerId } from "../sticker.js";
+import { getStickerId, getStickerName } from "../sticker.js";
 
 const textGenerationData = {
-    textStyleNode: null,
+    textStyle: "",
     textType: null,
     product: null,
 };
+
+const fnNames = {};
 
 /**
  * Iterates through the texts of the sticker
  * depending on the product and text type
  * @param {*} e 
  */
-export function click_iterateText(e) {
+fnNames.click_iterateText = e => {
     const target = e.currentTarget;
     const direction = target.dataset.direction;
     const currentTextNode = target.parentNode.querySelector(".chatCount");
@@ -22,7 +25,7 @@ export function click_iterateText(e) {
     const type = target.parentNode.dataset.type;
     const text = target.parentNode.dataset.text;
 
-    ajax.get(`/api/v1/sticker/${id}/texts/${type}/${text}`, {
+    ajax.get(`/api/v1/sticker/texts/${id}/${type}/${text}`, {
         direction: direction,
         current: currentTextNode.innerHTML,
     }).then(r => {
@@ -35,91 +38,97 @@ export function click_iterateText(e) {
         } else {
             currentTextNode.innerHTML = parseInt(currentTextNode.innerHTML) - 1;
         }
-        
+
         const text = r.text;
         const textarea = document.querySelector("textarea.data-input");
         textarea.value = text;
     });
 }
 
-export function click_textGeneration(e) {
-    const title = document.getElementById("name").value;
+fnNames.click_textGeneration = e => {
+    const title = getStickerName();
     const target = e.currentTarget.parentNode;
     const type = textGenerationData.product || target.dataset.type;
     const text = textGenerationData.textType || target.dataset.text;
     const id = getStickerId();
     const additionalInfo = getAdditionalInfo();
 
-    ajax.post(`/api/v1/sticker/${id}/texts/${type}/${text}`, {
+    ajax.post(`/api/v1/sticker/texts/${id}/${type}/${text}`, {
         title: title,
         additionalText: additionalInfo.text,
         additionalStyle: additionalInfo.style,
     }).then(r => {
-        console.log(r.choices[0].message.content);
+        console.log(r);
     });
 }
 
-function getAdditionalInfo() {
-    const window = document.getElementById("showTextSettings");
-    
-    if (window != null) {
-        const text = window.querySelector("#additionalTextGPT").value;
-        const style = textGenerationData.textStyleNode.innerHTML;
-        
+const getAdditionalInfo = () => {
+    const popup = document.getElementById("showTextSettings");
+    if (popup == null) {
         return {
-            text: text, 
-            style: style
+            text: "",
+            style: "",
         };
     }
-    
+
+    const text = popup.querySelector("#additionalTextGPT").value;
+    const style = textGenerationData.textStyle;
+
     return {
-        text: "",
-        style: "",
+        text: text,
+        style: style
     };
 }
 
-export function click_showTextSettings(e) {
+fnNames.click_showTextSettings = e => {
     const type = e.currentTarget.parentNode.dataset.type;
     const text = e.currentTarget.parentNode.dataset.text;
 
     textGenerationData.textType = text;
     textGenerationData.product = type;
 
-    ajax.post({
-        id: getStickerId(),
-        text: text,
-        type: type,
-        r: "showGTPOptions",
+    ajax.get(`/api/v1/sticker/texts/${getStickerId()}/get-template`, {
+        "text": text,
+        "type": type,
     }).then(r => {
         const template = r.template;
         const div = document.createElement("div");
         div.innerHTML = template;
-        div.classList.add("overflow-y-auto", "overflow-x-hidden", "fixed", "top-0", "right-0", "left-0", "z-50", "justify-center", "items-center", "w-full", "md:inset-0", "h-[calc(100%-1rem)]", "max-h-full", "bg-white/75");
         div.id = "showTextSettings";
 
-        const textOptions = div.querySelectorAll("dt");
-        Array.from(textOptions).forEach(dt => {
-            dt.addEventListener("click", selectTextOption);
+        const textOptions = div.querySelectorAll(".selectTextStyle button");
+        Array.from(textOptions).forEach(el => {
+            el.addEventListener("click", selectTextOption);
         });
 
-        createPopup(div);
+        const optionsContainer = createPopup(div);
+        const btn = document.createElement("button");
+        btn.innerHTML = "Neuen Text generieren";
+        btn.classList.add("btn-primary");
+        btn.addEventListener("click", fnNames.click_textGeneration);
+        optionsContainer.appendChild(btn);
 
-        const newTextBtn = div.querySelector("#generateNewText");
-        newTextBtn.addEventListener("click", click_textGeneration);
-    });
+        addBindings(fnNames);
+    })
 }
 
 function selectTextOption(e) {
     const target = e.currentTarget;
 
-    if (textGenerationData.textStyleNode != null) {
-        textGenerationData.textStyleNode.classList.remove("bg-indigo-500");
-        textGenerationData.textStyleNode.classList.add("bg-blue-200");
-    }
+    const popup = document.getElementById("showTextSettings");
+    const textOptions = popup.querySelectorAll(".selectTextStyle button");
+    Array.from(textOptions).forEach(el => {
+        if (el == target) {
+            el.classList.add("btn-active");
+            el.classList.remove("btn-inactive");
+            textGenerationData.textStyle = el.innerHTML;
+        } else {
+            el.classList.add("btn-inactive");
+            el.classList.remove("btn-active");
+        }
+    });
+}
 
-    if (target != textGenerationData.textStyleNode) {
-        target.classList.add("bg-indigo-500");
-        target.classList.remove("bg-blue-200");
-        textGenerationData.textStyleNode = target;
-    }
+export const initTextGeneration = () => {
+    addBindings(fnNames);
 }
