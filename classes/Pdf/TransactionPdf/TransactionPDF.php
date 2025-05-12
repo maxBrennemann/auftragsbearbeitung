@@ -45,7 +45,7 @@ class TransactionPDF extends PDFGenerator
     protected function fillAddress()
     {
         $lineheight = 10;
-        $this->setXY(25, 25);
+        $this->setXY(20, 49);
 
         $firma = $this->customer->getFirmenname();
         $name = $this->customer->getName();
@@ -67,6 +67,11 @@ class TransactionPDF extends PDFGenerator
         $this->Cell(85, $lineheight, $strasse . " " . $hausnr);
         $this->ln(8);
         $this->Cell(85, $lineheight, $plz . " " . $ort);
+
+        $this->Line(20, 105, 25, 105, [
+            "width" => 0.4,
+            "color" => [0, 0, 0],
+        ]);
     }
 
     public function Footer()

@@ -31,6 +31,10 @@ class InvoicePDF extends TransactionPDF
         $this->SetTitle("Rechnung für " . $this->customer->getFirmenname() . " " . $this->customer->getName());
         $this->SetSubject("Rechnung");
         $this->SetKeywords("Rechnung");
+        $this->SetLineStyle([
+            "width" => 0.25,
+            "color" => [0, 0, 0],
+        ]);
 
         $this->setFooterFont([PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA]);
         $this->SetFooterMargin(PDF_MARGIN_FOOTER);
@@ -39,18 +43,18 @@ class InvoicePDF extends TransactionPDF
 
         $this->setCellPaddings(1, 1, 1, 1);
         $this->setCellMargins(0, 0, 0, 0);
-        $this->setMargins(25, 45, 20, true);
+        $this->setMargins(20, 45, 20, true);
 
         $this->SetFont("helvetica", "", 8);
         $address = "<p>" . $this->companyDetails["companyImprint"] . "</p>";
-        $this->writeHTMLCell(0, 10, 25, 20, $address);
+        $this->writeHTMLCell(0, 10, 20, 44, $address);
 
         $this->SetFont("helvetica", "", 12);
         $this->fillAddress();
 
-        $this->Image($this->getCompanyLogo(), 120, 22, 60);
+        $this->Image($this->getCompanyLogo(), 125, 46, 60);
 
-        $this->setXY(120, 30);
+        $this->setXY(125, 54);
         $this->setFontStretching(200);
         $this->SetFont("helvetica", "B", 17);
         $this->Cell(60, 20, "RECHNUNG", 0, 0, 'L', 0, '', 2);
@@ -61,12 +65,12 @@ class InvoicePDF extends TransactionPDF
         /* iterates over all posten and adds lines */
         $lineheight = 10;
         $posten = $this->invoice->loadPostenFromAuftrag();
-        $offset = 100;
-        $this->setXY(25, $offset);
+        $offset = 124;
+        $this->setXY(20, $offset);
         $count = 1;
 
         foreach ($posten as $p) {
-            $this->Cell(10, $lineheight, $count);
+            $this->Cell(15, $lineheight, $count);
             $this->Cell(20, $lineheight, $p->getQuantity());
             $this->Cell(20, $lineheight, $p->getEinheit());
 
@@ -105,7 +109,7 @@ class InvoicePDF extends TransactionPDF
                 continue;
             }
 
-            $this->Cell(50, $lineheight, "");
+            $this->Cell(55, $lineheight, "");
 
             $heigth = $this->getStringHeight(70, $text["text"]);
             $addToOffset = $lineheight;
@@ -142,21 +146,21 @@ class InvoicePDF extends TransactionPDF
         $rechnungssumme = number_format($summe * 1.19, 2, ',', '') . ' €';
 
         $this->ln();
-        $this->Cell(80, 10, "");
+        $this->Cell(85, 10, "");
         $this->SetFont("helvetica", "B", 12);
         $this->Cell(60, 10, 'Zwischensumme:', 'T');
         $this->SetFont("helvetica", "", 12);
         $this->Cell(20, 10, $zwischensumme, 'T', 0, 'R');
 
         $this->ln();
-        $this->Cell(80, 10, "");
+        $this->Cell(85, 10, "");
         $this->SetFont("helvetica", "B", 12);
         $this->Cell(60, 10, '19% MwSt.:', 'B');
         $this->SetFont("helvetica", "", 12);
         $this->Cell(20, 10, $mwst, 'B', 0, 'R');
 
         $this->ln();
-        $this->Cell(80, 10, "");
+        $this->Cell(85, 10, "");
         $this->SetFont("helvetica", "B", 12);
         $this->Cell(60, 10, 'Rechnungssumme:', 'B');
         $this->SetFont("helvetica", "", 12);
@@ -164,7 +168,7 @@ class InvoicePDF extends TransactionPDF
 
         $this->ln();
         $this->setCellMargins(0, 1, 0, 0);
-        $this->Cell(80, 10, "");
+        $this->Cell(85, 10, "");
         $this->Cell(60, 10, '', 'T');
         $this->Cell(20, 10, '', 'T');
 
@@ -175,28 +179,28 @@ class InvoicePDF extends TransactionPDF
         $this->Cell(160, 10, "Zahlbar sofort ohne weitere Abzüge.");
     }
 
-    private function addTableHeader($y = 45)
+    private function addTableHeader($y = 69)
     {
         $this->SetFont("helvetica", "", 12);
-        $this->setXY(120, $y);
+        $this->setXY(125, $y);
         $this->Cell(30, 10, "Rechnungs-Nr:");
         $this->Cell(30, 10, InvoiceNumberTracker::peekNextInvoiceNumber(), 0, 0, 'R');
-        $this->setXY(120, $y + 6);
+        $this->setXY(125, $y + 6);
         $this->Cell(30, 10, "Auftrags-Nr:");
         $this->Cell(30, 10, $this->order->getAuftragsnummer(), 0, 0, 'R');
-        $this->setXY(120, $y + 12);
+        $this->setXY(125, $y + 12);
         $this->Cell(30, 10, "Datum:");
         $this->Cell(30, 10, $this->invoice->getCreationDateUnformatted()->format("d.m.Y"), 0, 0, 'R');
-        $this->setXY(120, $y + 18);
+        $this->setXY(125, $y + 18);
         $this->Cell(30, 10, "Kunden-Nr.:");
         $this->Cell(30, 10, $this->customer->getKundennummer(), 0, 0, 'R');
-        $this->setXY(120, $y + 24);
+        $this->setXY(125, $y + 24);
         $this->Cell(30, 10, "Seite:");
         $this->Cell(30, 10, $this->getAliasRightShift() . $this->PageNo() . ' von ' . $this->getAliasNbPages(), 0, 0, 'R');
 
-        $this->setXY(25, $y + 45);
+        $this->setXY(20, $y + 45);
         $this->SetFont("helvetica", "B", 12);
-        $this->Cell(10, 10, 'Pos.', 'B');
+        $this->Cell(15, 10, 'Pos.', 'B');
         $this->Cell(20, 10, 'Menge', 'B');
         $this->Cell(20, 10, 'MEH', 'B');
         $this->Cell(70, 10, 'Bezeichnung', 'B');
@@ -222,7 +226,6 @@ class InvoicePDF extends TransactionPDF
         $image = ClientSettings::getLogo();
         if ($image == "") {
             return "img/default_image.png";
-            //return Link::getImageLink("");
         } else {
             return Link::getResourcesLink($image, "upload", false);
         }
