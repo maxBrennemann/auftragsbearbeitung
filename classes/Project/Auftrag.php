@@ -391,15 +391,6 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 	public function getInvoiceId(): int
 	{
 		$invoice = Invoice::getInvoice($this->Auftragsnummer);
-
-		/*if ((int) $this->rechnungsnummer != $invoice->getId()) {
-			$query = "UPDATE auftrag SET Rechnungsnummer = :newInvoiceId WHERE Auftragsnummer = :idOrder";
-			DBAccess::updateQuery($query, [
-				"newInvoiceId" => $invoice->getId(),
-				"idOrder" => $this->Auftragsnummer,
-			]);
-		}*/
-
 		return $invoice->getId();
 	}
 
@@ -500,18 +491,35 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 	 * which is sent by the client;
 	 * the function echos a json object with the response link and the order id
 	 */
-	public static function add()
+	public static function addOrder()
 	{
-		$bezeichnung = Tools::get("bezeichnung");
-		$beschreibung = Tools::get("beschreibung");
-		$typ = Tools::get("typ");
-		$termin = Tools::get("termin");
-		$angenommenVon = Tools::get("angenommenVon");
+		$bezeichnung = Tools::get("name");
+		$beschreibung = Tools::get("description");
+		$typ = Tools::get("type");
+		$deadline = Tools::get("deadline");
+		$angenommenVon = Tools::get("acceptedBy");
 		$kdnr = Tools::get("customerId");
-		$angenommenPer = Tools::get("angenommenPer");
-		$ansprechpartner = (int) Tools::get("ansprechpartner");
+		$angenommenPer = Tools::get("acceptedVia");
+		$ansprechpartner = (int) Tools::get("contactperson");
 
-		$orderId = self::addToDB($kdnr, $bezeichnung, $beschreibung, $typ, $termin, $angenommenVon, $angenommenPer, $ansprechpartner);
+		$date = date("Y-m-d");
+		if ($deadline == "") {
+			$deadline = null;
+		}
+
+		$query = "INSERT INTO auftrag (Kundennummer, Auftragsbezeichnung, Auftragsbeschreibung, Auftragstyp, Datum, Termin, AngenommenDurch, AngenommenPer, Ansprechpartner) VALUES (:kdnr, :bezeichnung, :beschreibung, :typ, :datum, :termin, :angenommenVon, :angenommenPer, :ansprechpartner);";
+		$parameters = [
+			"kdnr" => $kdnr,
+			"bezeichnung" => $bezeichnung,
+			"beschreibung" => $beschreibung,
+			"typ" => $typ,
+			"datum" => $date,
+			"termin" => $deadline,
+			"angenommenVon" => $angenommenVon,
+			"angenommenPer" => $angenommenPer,
+			"ansprechpartner" => $ansprechpartner
+		];
+		$orderId = DBAccess::insertQuery($query, $parameters);
 
 		$data = [
 			"success" => true,
@@ -525,28 +533,6 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 		$auftragsverlauf->addToHistory($orderId, 5, "added", "Neuer Auftrag");
 
 		JSONResponseHandler::sendResponse($data);
-	}
-
-	/**
-	 * adds a new order to the database
-	 */
-	private static function addToDB($kdnr, $bezeichnung, $beschreibung, $typ, $termin, $angenommenVon, $angenommenPer, $ansprechpartner)
-	{
-		$date = date("Y-m-d");
-		$query = "INSERT INTO auftrag (Kundennummer, Auftragsbezeichnung, Auftragsbeschreibung, Auftragstyp, Datum, Termin, AngenommenDurch, AngenommenPer, Ansprechpartner) VALUES (:kdnr, :bezeichnung, :beschreibung, :typ, :datum, :termin, :angenommenVon, :angenommenPer, :ansprechpartner);";
-		$parameters = [
-			":kdnr" => $kdnr,
-			":bezeichnung" => $bezeichnung,
-			":beschreibung" => $beschreibung,
-			":typ" => $typ,
-			":datum" => $date,
-			":termin" => $termin,
-			":angenommenVon" => $angenommenVon,
-			":angenommenPer" => $angenommenPer,
-			":ansprechpartner" => $ansprechpartner
-		];
-		$orderId = DBAccess::insertQuery($query, $parameters);
-		return $orderId;
 	}
 
 	public static function getFiles($auftragsnummer)

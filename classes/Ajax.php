@@ -164,9 +164,6 @@ class Ajax
 				$query = $_POST['query'];
 				echo Search::globalSearch($query);
 				break;
-			case "createAuftrag":
-				Auftrag::add();
-				break;
 			case "delete":
 				/* using new table functionality */
 				$type = $_POST['type'];
