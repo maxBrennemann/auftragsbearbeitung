@@ -82,17 +82,17 @@ export const createHeader = (header, table, options = {}) => {
     const thead = table.querySelector("thead");
     const row = document.createElement("tr");
 
+    let className = "cursor-pointer";
+    if (options?.styles?.thead?.className) {
+        className += " " + options.styles.thead.className.join(" ");
+    }
+
     let count = 0;
     header.forEach(header => {
         if (options?.hide?.includes(header.key)) {
             return;
         }
         count++;
-
-        let className = "cursor-pointer";
-        if (options?.styles?.thead?.className) {
-            className += " " + options.styles.thead.className.join(" ");
-        }
 
         const th = document.createElement("th");
         th.className = className;
@@ -116,6 +116,7 @@ export const createHeader = (header, table, options = {}) => {
 
     if (!options?.hideOptions?.includes("all")) {
         const actionsTh = document.createElement("th");
+        actionsTh.className = className;
         actionsTh.textContent = "Aktionen";
         row.appendChild(actionsTh);
         count++;
@@ -248,8 +249,9 @@ export const addRow = (data, table, options = {}, header = {}) => {
         const cssClasses = options?.styles?.key?.[key] ?? [];
         const cell = document.createElement("td");
         if (options?.link) {
-            cssClasses.push("cursor-pointer");
             cell.innerHTML = `<a href="${options.link}${data[options.primaryKey]}">${data[key]}</a>`;
+            const a = cell.querySelector("a");
+            a.className = cssClasses.join(" ") + " cursor-pointer";
             row.appendChild(cell);
             return;
         }
@@ -404,16 +406,16 @@ const dispatchActionEvent = (actionType, rowData, table, options = {}) => {
 
 const sortTable = (table, th, sorter, options) => {
     const skipFirstRow = !options?.hideOptions?.includes("addRow")
-    && !options?.hideOptions?.includes("all");
+        && !options?.hideOptions?.includes("all");
 
     const index = Array.from(th.parentNode.children).indexOf(th);
     const rows = table.querySelectorAll(skipFirstRow ? "tbody tr:nth-child(n+2)" : "tbody tr");
     const tbody = table.querySelector("tbody");
-    
+
     let sort = getSortDirection(th, sorter);
 
     Array.from(rows)
-        .sort(comparer(index, sort, options?.link? false : true))
+        .sort(comparer(index, sort, options?.link ? false : true))
         .forEach(tr => {
             tbody.appendChild(tr);
         });

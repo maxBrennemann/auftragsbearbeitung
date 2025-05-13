@@ -54,7 +54,12 @@ const createInvoiceTable = async () => {
         "styles": {
             "thead": {
                 "className": ["sticky", "top-0"],
-            }
+            },
+            "key": {
+                "Bezeichnung": ["w-40", "truncate"],
+                "Beschreibung": ["w-96", "truncate"],
+                "Firmenname": ["w-40", "truncate"],
+            },
         },
     };
 
@@ -76,7 +81,7 @@ const createInvoiceTable = async () => {
     });
 }
 
-if (document.readyState !== 'loading' ) {
+if (document.readyState !== 'loading') {
     init();
 } else {
     document.addEventListener('DOMContentLoaded', function () {

@@ -20,7 +20,7 @@
             </div>
             <div class="mt-1 flex flex-col">
                 <span>Beschreibung:</span>
-                <textarea id="timeDescription mt-1" class="input-primary" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
+                <textarea id="timeDescription" class="input-primary mt-1" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
             </div>
         </div>
         <div class="container col-span-2">
