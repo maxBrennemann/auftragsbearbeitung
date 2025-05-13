@@ -18,7 +18,7 @@ class InvoicePDF extends TransactionPDF
         parent::__construct("Rechnung_" . $invoiceId, $orderId);
         $this->fileName = "Rechnung_" . $invoiceId;
         $this->invoice = new Invoice($invoiceId, $orderId);
-        
+
         $this->invoiceId = $invoiceId;
         $this->addressId = $this->invoice->getAddressId();
         $this->contactId = $this->invoice->getContactId();
@@ -95,7 +95,7 @@ class InvoicePDF extends TransactionPDF
             $this->ln($addToOffset);
 
             /* 297: Din A4 Seitenhöhe, 25: Abstand von unten für die Fußzeile */
-            if ($this->GetY() + $addToOffset >= 297 - 25) {
+            if ($this->GetY() + $addToOffset >= 297 - 35) {
                 $this->AddPage();
                 $this->addTableHeader(25);
                 $this->ln(10);
@@ -125,7 +125,7 @@ class InvoicePDF extends TransactionPDF
             $this->ln($addToOffset);
 
             /* 297: Din A4 Seitenhöhe, 25: Abstand von unten für die Fußzeile */
-            if ($this->GetY() + $addToOffset >= 297 - 25) {
+            if ($this->GetY() + $addToOffset >= 297 - 35) {
                 $this->AddPage();
                 $this->addTableHeader(25);
                 $this->ln(10);
@@ -135,8 +135,10 @@ class InvoicePDF extends TransactionPDF
         }
 
         /* 297: Din A4 Seitenhöhe, 25: Abstand von unten für die Fußzeile, 55: bezieht sich auf die Zwischensumme und Rechnungssumme, damit diese immer auf einer Seite stehen */
-        if ($this->GetY() + 55 >= 297 - 25) {
+        if ($this->GetY() + 55 >= 297 - 35) {
             $this->AddPage();
+            $this->addTableHeader(25);
+            $this->ln(10);
         }
 
         /* Code für Zwischensumme und Rechnungssumme */

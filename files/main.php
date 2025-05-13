@@ -7,7 +7,7 @@ use Classes\Project\Invoice;
 use Classes\Project\Icon;
 
 $openOrders = Auftrag::getAuftragsliste();
-$offeneSumme = Invoice::getOffeneRechnungssumme();
+$offeneSumme = Invoice::getOpenInvoiceSum();
 
 $neuerKunde   =		Link::getPageLink("neuer-kunde");
 $neuerAuftrag =		Link::getPageLink("neuer-auftrag");

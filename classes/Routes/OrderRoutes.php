@@ -31,7 +31,7 @@ class OrderRoutes extends Routes
      * @uses \Classes\Project\Fahrzeug::addFiles()
      */
     protected static $postRoutes = [
-        "/order/add" => [\Classes\Project\Auftrag::class, "addOrder"],
+        "/order" => [\Classes\Project\Auftrag::class, "addOrder"],
         "/order/{id}/colors/add" => [\Classes\Project\Auftrag::class, "addColor"],
         "/order/{id}/colors/multiple" => [\Classes\Project\Auftrag::class, "addColors"],
         "/order/{id}/type" => [\Classes\Project\Auftrag::class, "updateOrderType"],
