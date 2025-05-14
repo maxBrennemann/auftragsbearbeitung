@@ -24,6 +24,13 @@
         <li>Bilder können jetzt immer in einer Vorschau angeschaut werden</li>
         <li>Neuer Upload Handler und neues Dateimanagementsystem</li>
         <li>Prestashop Anbindung weiter überarbeitet</li>
+        <li>Lokale Entwicklungsumgebung angepasst
+            <ul class="ml-5 list-disc list-inside">
+                <li>NGINX hat Apache ersetzt</li>
+                <li>HTTPS Verschlüsselung mit Zertifikat für localhost</li>
+                <li>h2 Protokoll</li>
+            </ul>
+        </li>
     </ul>
     <h3 id="1.2.0" class="font-bold my-5">1.2.0</h3>
     <ul class="list-disc list-inside">

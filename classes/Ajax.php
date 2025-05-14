@@ -228,11 +228,6 @@ class Ajax
 
 				echo "ok";
 				break;
-			case "deleteSize":
-				$key = $_POST["key"];
-				$table = $_POST["table"];
-				Table::updateValue($table, "delete", $_POST['key']);
-				break;
 			case "setOrderFinished":
 				$auftrag = $_POST['auftrag'];
 				DBAccess::insertQuery("UPDATE auftrag SET archiviert = -1 WHERE Auftragsnummer = $auftrag");

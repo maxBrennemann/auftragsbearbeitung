@@ -209,25 +209,9 @@ class ResourceManager
         }
     }
 
-    private static function get_script($script)
+    private static function get_script($script): void
     {
-        header('Content-Type: text/javascript');
-
-        /* workaround for colorpicker and other packages */
-        if ($script == "/classes/colorpicker.js") {
-            echo file_get_contents("node_modules/colorpicker/colorpicker.js");
-            return;
-        }
-
-        if ($script == "/classes/notifications.js") {
-            echo file_get_contents("node_modules/js-classes/notifications.js");
-            return;
-        }
-
-        if ($script == "/classes/ajax.js") {
-            echo file_get_contents("node_modules/js-classes/ajax.js");
-            return;
-        }
+        header("Content-Type: text/javascript");
 
         /* tableconfig.js */
         if ($script == "/classes/tableconfig.js" && $_ENV["DEV_MODE"]) {
@@ -248,7 +232,7 @@ class ResourceManager
             file_exists(Link::getResourcesLink($min, "js", false))
             && MINIFY_STATUS
         ) {
-            header('Content-Encoding: gzip');
+            header("Content-Encoding: gzip");
             echo file_get_contents(Link::getResourcesLink($min, "js", false));
             return;
         }

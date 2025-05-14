@@ -455,12 +455,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client.git",
-                "reference": "4eee42d201eff054428a4836ec132944d271f051"
+                "reference": "e009e9c1345b40481d981167e0858bee391d627c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/4eee42d201eff054428a4836ec132944d271f051",
-                "reference": "4eee42d201eff054428a4836ec132944d271f051",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/e009e9c1345b40481d981167e0858bee391d627c",
+                "reference": "e009e9c1345b40481d981167e0858bee391d627c",
                 "shasum": ""
             },
             "require": {
@@ -515,9 +515,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client/issues",
-                "source": "https://github.com/googleapis/google-api-php-client/tree/v2.18.3"
+                "source": "https://github.com/googleapis/google-api-php-client/tree/main"
             },
-            "time": "2025-04-08T21:59:36+00:00"
+            "time": "2025-05-07T17:49:42+00:00"
         },
         {
             "name": "google/apiclient-services",
@@ -1485,12 +1485,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "0683baa30962f3d8586ef4765844b8e9459a920c"
+                "reference": "29e193d07d893ad4be8bf8eac2cbcd3ff94983bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/0683baa30962f3d8586ef4765844b8e9459a920c",
-                "reference": "0683baa30962f3d8586ef4765844b8e9459a920c",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/29e193d07d893ad4be8bf8eac2cbcd3ff94983bb",
+                "reference": "29e193d07d893ad4be8bf8eac2cbcd3ff94983bb",
                 "shasum": ""
             },
             "require": {
@@ -1587,7 +1587,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-04-26T14:58:20+00:00"
+            "time": "2025-05-06T13:51:13+00:00"
         },
         {
             "name": "prestashop/prestashop-webservice-lib",
@@ -2355,12 +2355,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "d10b149020a8cec39fad6e34adf1295ffab768f8"
+                "reference": "0c575e7bb1a44a06c4a04d037fe3ced4d9c34a76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/d10b149020a8cec39fad6e34adf1295ffab768f8",
-                "reference": "d10b149020a8cec39fad6e34adf1295ffab768f8",
+                "url": "https://api.github.com/repos/symfony/console/zipball/0c575e7bb1a44a06c4a04d037fe3ced4d9c34a76",
+                "reference": "0c575e7bb1a44a06c4a04d037fe3ced4d9c34a76",
                 "shasum": ""
             },
             "require": {
@@ -2375,8 +2375,7 @@
                 "symfony/dotenv": "<6.4",
                 "symfony/event-dispatcher": "<6.4",
                 "symfony/lock": "<6.4",
-                "symfony/process": "<6.4",
-                "symfony/runtime": "<7.3"
+                "symfony/process": "<6.4"
             },
             "provide": {
                 "psr/log-implementation": "1.0|2.0|3.0"
@@ -2442,7 +2441,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-05-05T08:24:21+00:00"
+            "time": "2025-05-13T13:52:14+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -3148,16 +3147,16 @@
         },
         {
             "name": "tecnickcom/tcpdf",
-            "version": "6.9.3",
+            "version": "6.9.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/TCPDF.git",
-                "reference": "d0e8dd17f8a1df3c97b94b9af8356e88e811ed59"
+                "reference": "c838d7f7babb0d35763acfb9ecf78c3f45966f83"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/d0e8dd17f8a1df3c97b94b9af8356e88e811ed59",
-                "reference": "d0e8dd17f8a1df3c97b94b9af8356e88e811ed59",
+                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/c838d7f7babb0d35763acfb9ecf78c3f45966f83",
+                "reference": "c838d7f7babb0d35763acfb9ecf78c3f45966f83",
                 "shasum": ""
             },
             "require": {
@@ -3207,15 +3206,15 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/TCPDF/issues",
-                "source": "https://github.com/tecnickcom/TCPDF/tree/6.9.3"
+                "source": "https://github.com/tecnickcom/TCPDF/tree/6.9.4"
             },
             "funding": [
                 {
-                    "url": "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&currency_code=GBP&business=paypal@tecnick.com&item_name=donation%20for%20tcpdf%20project",
+                    "url": "https://www.paypal.com/donate/?hosted_button_id=NZUEC5XS8MFBJ",
                     "type": "custom"
                 }
             ],
-            "time": "2025-04-20T15:52:50+00:00"
+            "time": "2025-05-13T11:34:35+00:00"
         }
     ],
     "packages-dev": [

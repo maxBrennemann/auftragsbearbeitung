@@ -11,7 +11,6 @@ use Classes\Project\Kunde;
 use Classes\Project\Fahrzeug;
 use Classes\Project\Auftragsverlauf;
 use Classes\Project\ClientSettings;
-use Classes\Project\Color;
 use Classes\Project\TemplateController;
 
 $show = false;
@@ -26,16 +25,18 @@ try {
 }
 
 ?>
+
 <input type="hidden" data-variable="true" value="<?= $auftrag->getKundennummer() ?>" id="customerId">
 <input type="hidden" data-variable="true" value="<?= $orderId ?>" id="orderId">
 <input type="hidden" data-variable="true" value="<?= $auftrag->getInvoiceId() ?>" id="invoiceId">
 
+<div class="grid grid-cols-6">
 <?php if ($orderId <= 0): ?>
 	<div class="mt-4 bg-gray-50 p-3 rounded-lg">
 		<p>Kein (gültiger) Auftrag ausgewählt.</p>
 		<?= Auftrag::getOverview(); ?>
 	</div>
-	<?php else:
+<?php else:
 	$kunde = new Kunde($auftrag->getKundennummer());
 
 	$farbTable = $auftrag->getColors();
@@ -50,7 +51,7 @@ try {
 	$auftragsTypen = Auftrag::getAllOrderTypes();
 
 	/* Paremter wird gebraucht, falls Rechnung gestellt wurde, aber der Auftrag trotzdem gezeigt werden soll */
-	if (isset($_GET['show'])) {
+	if (isset($_GET["show"])) {
 		$show = true;
 	}
 
@@ -102,41 +103,9 @@ try {
 			<div class="defCont">
 				<embed type="application/pdf" src="<?= $invoiceLink ?>" width="100%" height="400" id="invoiceEmbed" onError="console.log('test')">
 			</div>
-			<style>
-				main {
-					display: inline;
-					/* quick fix */
-				}
-			</style>
 		</div>
 	<?php else: ?>
-		<div class="defCont">
-			<p class="font-bold">Kundeninfo</p>
-			<div class="bg-white p-2 rounded-sm mt-1">
-				<p><?= $kunde->getVorname() ?> <?= $kunde->getNachname() ?></p>
-				<p><?= $kunde->getFirmenname() ?></p>
-				<p class="mt-2"><?= $kunde->getStrasse() ?> <?= $kunde->getHausnummer() ?></p>
-				<p><?= $kunde->getPostleitzahl() ?> <?= $kunde->getOrt() ?></p>
-				<p><?= $kunde->getTelefonFestnetz() ?></p>
-				<p><?= $kunde->getTelefonMobil() ?></p>
-				<p><a href="mailto:<?= $kunde->getEmail() ?>"><?= $kunde->getEmail() ?></a></p>
-				<select class="input-primary mt-2 w-60" data-write="true" data-fun="changeContact" id="showAnspr">
-					<?php foreach ($contactPersons as $contact): ?>
-						<?php
-						$selected = $contact['isSelected'] ? "selected" : "";
-						$optionsDefault = $contact['isSelected'] ? false : true;
-						?>
-						<option value="<?= $contact['id'] ?>" <?= $selected ?>><?= $contact['firstName'] ?> <?= $contact['lastName'] ?></option>
-					<?php endforeach; ?>
-					<?php if ($optionsDefault): ?>
-						<option disabled selected>Kein Ansprechpartner ausgewählt</option>
-					<?php endif; ?>
-				</select>
-			</div>
-			<a class="text-blue-500	font-semibold mt-3" href="<?= Link::getPageLink("kunde") ?>?id=<?= $auftrag->getKundennummer() ?>">Kunde <span id="kundennummer"><?= $auftrag->getKundennummer() ?></span> anzeigen</a>
-		</div>
-
-		<div class="defCont auftragsinfo">
+		<div class="defCont col-span-6 md:col-span-4 2xl:col-span-3">
 			<div class="relative">
 				<span class="font-bold">Auftrag <span id="auftragsnummer"><?= $auftrag->getAuftragsnummer() ?></span><?php if ($auftrag->getIsArchiviert()) : ?> (archiviert)<?php endif; ?><button class="float-right border-none w-4" id="extraOptions">⋮</button></span>
 				<div class="hidden absolute right-0 top-0 bg-white rounded-lg drop-shadow-lg p-3 mt-5" id="showExtraOptions">
@@ -190,7 +159,33 @@ try {
 			</div>
 		</div>
 
-		<div class="defCont schritte">
+		<div class="defCont col-span-6 md:col-span-2 2xl:col-span-3">
+			<p class="font-bold">Kundeninfo</p>
+			<div class="bg-white p-2 rounded-sm mt-1">
+				<p><?= $kunde->getVorname() ?> <?= $kunde->getNachname() ?></p>
+				<p><?= $kunde->getFirmenname() ?></p>
+				<p class="mt-2"><?= $kunde->getStrasse() ?> <?= $kunde->getHausnummer() ?></p>
+				<p><?= $kunde->getPostleitzahl() ?> <?= $kunde->getOrt() ?></p>
+				<p><?= $kunde->getTelefonFestnetz() ?></p>
+				<p><?= $kunde->getTelefonMobil() ?></p>
+				<p><a href="mailto:<?= $kunde->getEmail() ?>"><?= $kunde->getEmail() ?></a></p>
+				<select class="input-primary mt-2 w-60" data-write="true" data-fun="changeContact" id="showAnspr">
+					<?php foreach ($contactPersons as $contact): ?>
+						<?php
+						$selected = $contact['isSelected'] ? "selected" : "";
+						$optionsDefault = $contact['isSelected'] ? false : true;
+						?>
+						<option value="<?= $contact['id'] ?>" <?= $selected ?>><?= $contact['firstName'] ?> <?= $contact['lastName'] ?></option>
+					<?php endforeach; ?>
+					<?php if ($optionsDefault): ?>
+						<option disabled selected>Kein Ansprechpartner ausgewählt</option>
+					<?php endif; ?>
+				</select>
+			</div>
+			<a class="text-blue-500	font-semibold mt-3" href="<?= Link::getPageLink("kunde") ?>?id=<?= $auftrag->getKundennummer() ?>">Kunde <span id="kundennummer"><?= $auftrag->getKundennummer() ?></span> anzeigen</a>
+		</div>
+
+		<div class="defCont col-span-6 md:col-span-4 2xl:col-span-3 schritte">
 			<p class="font-bold">Bearbeitungsschritte und Aufgaben</p>
 			<div class="flex mt-2 items-center">
 				<div>
@@ -255,7 +250,7 @@ try {
 			<div id="stepTable" class="mt-2"></div>
 		</div>
 
-		<div class="defCont schritteAdd">
+		<div class="defCont col-span-6 md:col-span-2 2xl:col-span-3 schritteAdd">
 			<div>
 				<p class="font-bold">Notizen hinzufügen</p>
 				<button class="btn-primary mt-2" data-binding="true" data-fun="addNewNote" id="addNewNote">Neu</button>
@@ -275,12 +270,12 @@ try {
 			</div>
 		</div>
 
-		<div class="defCont notes hidden" id="notesContainer">
+		<div class="defCont col-span-6 md:col-span-6 notes hidden" id="notesContainer">
 			<p class="font-bold">Alle Notizen</p>
 			<div class="grid grid-cols-4" id="noteContainer"></div>
 		</div>
 
-		<div class="defCont posten">
+		<div class="defCont col-span-6 md:col-span-6 posten">
 			<p class="inline-flex items-center">
 				<span class="font-bold">Zeiten, Produkte und Kosten (netto)</span>
 				<label class="inline-flex items-center">
@@ -288,30 +283,19 @@ try {
 					<span class="ml-1">Rechnungsposten ausblenden</span>
 				</label>
 			</p>
-			<?= TemplateController::getTemplate("invoiceItems", [
-				"services" => $services
-			]); ?>
+			<div class="overflow-x-scroll md:w-full">
+				<?= TemplateController::getTemplate("invoiceItems", [
+					"services" => $services
+				]); ?>
+			</div>
 		</div>
 
-		<div class="defCont invoice">
+		<div class="defCont col-span-6 md:col-span-6 invoice">
 			<p class="font-bold">Rechnungsposten (netto)</p>
-			<div id="invoicePostenTable" class="mt-2"><?= $auftrag->getInvoicePostenTable() ?></div>
+			<div id="invoicePostenTable" class="mt-2 overflow-x-scroll md:w-full"><?= $auftrag->getInvoicePostenTable() ?></div>
 		</div>
 
-		<div class="defCont preis">
-			<p class="font-bold">Kalkulation:</p>
-			<p>Rechnungsbetrag:
-			<p id="totalPrice" class="font-bold text-2xl">
-				<?= number_format($auftrag->preisBerechnen(), 2, ',', '') . "€" ?>
-			</p>
-			</p>
-			<p>
-				<span>Gewinn (netto): </span>
-				<?= number_format($auftrag->gewinnBerechnen(), 2, ',', '') . "€" ?>
-			</p>
-		</div>
-
-		<div class="defCont fahrzeuge">
+		<div class="defCont col-span-6 md:col-span-3 fahrzeuge">
 			<p>
 				<span class="font-bold">Fahrzeuge</span>
 				<button class="ml-1 infoButton" data-info="1">i</button>
@@ -331,10 +315,10 @@ try {
 				<p>Fahrzeug:<br><input id="fahrzeug" class="input-primary"></p>
 				<button class="btn-primary mt-2" data-binding="true" data-fun="addNewVehicle">Hinzufügen</button>
 			</div>
-			<div id="fahrzeugTable" class="mt-2"></div>
+			<div id="fahrzeugTable" class="mt-2 overflow-x-scroll md:w-full"></div>
 		</div>
 
-		<div class="defCont farben">
+		<div class="defCont col-span-3 md:col-span-1 farben">
 			<p class="font-bold">Farben</p>
 			<span id="showColors"><?= $farbTable ?></span>
 			<div class="mt-2">
@@ -344,7 +328,20 @@ try {
 			</div>
 		</div>
 
-		<div class="defCont upload">
+		<div class="defCont col-span-3 md:col-span-2 preis">
+			<p class="font-bold">Kalkulation:</p>
+			<p>Rechnungsbetrag:
+			<p id="totalPrice" class="font-bold text-2xl">
+				<?= number_format($auftrag->preisBerechnen(), 2, ',', '') . "€" ?>
+			</p>
+			</p>
+			<p>
+				<span>Gewinn (netto): </span>
+				<?= number_format($auftrag->gewinnBerechnen(), 2, ',', '') . "€" ?>
+			</p>
+		</div>
+
+		<div class="defCont col-span-6 md:col-span-4 upload">
 			<p class="font-bold">Dateien zum Auftrag hinzufügen</p>
 			<?= TemplateController::getTemplate("uploadFile", [
 				"target" => "order",
@@ -354,7 +351,7 @@ try {
 			</div>
 		</div>
 
-		<div class="defCont verlauf">
+		<div class="defCont col-span-6 md:col-span-2 verlauf">
 			<p class="font-bold" data-binding="true" data-fun="showAuftragsverlauf">Auftragsverlauf anzeigen</p>
 			<div class="mt-2 orderHistory">
 				<?= $auftragsverlauf ?>
@@ -386,7 +383,7 @@ try {
 				<br>
 				<button class="btn-primary" data-fun="sendColor">Hinzufügen</button>
 			</div>
-			<div class="defCont" id="cpContainer"></div>
+			<div class="defCont font-mono" id="cpContainer"></div>
 		</template>
 
 		<template id="templateExistingColor">
@@ -434,3 +431,4 @@ try {
 		</template>
 	<?php endif; ?>
 <?php endif; ?>
+</div>
