@@ -16,16 +16,19 @@ ARG UID
 ARG GID
 
 # Install some base extensions
-RUN apt-get update \
-     && docker-php-ext-install mysqli pdo pdo_mysql \
-     && docker-php-ext-enable pdo_mysql
+RUN apt-get update -y && apt-get install -y libpng-dev
+RUN apt-get update && apt-get install -y \
+    zlib1g-dev \
+    libzip-dev
+# Install extensions
+RUN docker-php-ext-install pdo_mysql mysqli zip gd
 
 # Set the document root
 WORKDIR /var/www/html
 
 # https://stackoverflow.com/questions/73991553/permission-denied-for-laravel-and-docker
 # user muss danach gesetzt werden, da sonst die Rechte nicht stimmen
-#RUN usermod --non-unique --uid $UID www-data \
-#  && groupmod --non-unique --gid $UID www-data \
-#  && chown -R www-data:www-data /var/www
-#USER $UID
+RUN usermod --non-unique --uid $UID www-data \
+  && groupmod --non-unique --gid $UID www-data \
+  && chown -R www-data:www-data /var/www
+USER $UID
