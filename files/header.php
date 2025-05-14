@@ -5,7 +5,6 @@ use Classes\Project\BreadcrumbController;
 use Classes\Project\Icon;
 use Classes\Notification\NotificationManager;
 use Classes\Project\Config;
-use Classes\Project\ClientSettings;
 
 $globalCSS = Link::getGlobalCSS();
 $tailwindCSS = Link::getTW();
@@ -61,10 +60,6 @@ if ($pageName == "") {
 	<link rel="preload" href="/css/font/OpenSans-VariableFont.ttf" as="font" type="font/ttf" crossorigin>
 	<link rel="preload" href="/css/font/OpenSans-Italic-VariableFont.ttf" as="font" type="font/ttf" crossorigin>
 	<link rel="preload" href="/css/font/Raleway-Regular.ttf" as="font" type="font/ttf" crossorigin>
-
-	<style>
-		<?= ClientSettings::getColorConfiguration() ?>
-	</style>
 
 	<link rel="stylesheet" href="<?= $globalCSS ?>">
 	<link rel="stylesheet" href="<?= $tailwindCSS ?>">

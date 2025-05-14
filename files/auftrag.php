@@ -55,7 +55,6 @@ try {
 	}
 
 	$mitarbeiter = DBAccess::selectQuery("SELECT prename, lastname, id FROM user");
-	$colors = Color::get();
 
 	if ($auftrag->istRechnungGestellt() && $show == false): ?>
 		<div>
@@ -113,7 +112,7 @@ try {
 	<?php else: ?>
 		<div class="defCont">
 			<p class="font-bold">Kundeninfo</p>
-			<div class="bg-white p-2 rounded-sm">
+			<div class="bg-white p-2 rounded-sm mt-1">
 				<p><?= $kunde->getVorname() ?> <?= $kunde->getNachname() ?></p>
 				<p><?= $kunde->getFirmenname() ?></p>
 				<p class="mt-2"><?= $kunde->getStrasse() ?> <?= $kunde->getHausnummer() ?></p>
@@ -391,15 +390,8 @@ try {
 		</template>
 
 		<template id="templateExistingColor">
-			<div class="defCont" id="csContainer">
-				<p class="font-semibold mb-2">Vorhandene Farben:</p>
-				<div class="w-full h-60 overflow-y-scroll p-2 m-2 bg-white rounded-md">
-					<?= TemplateController::getTemplate("color", [
-						"colors" => $colors,
-					]); ?>
-				</div>
-				<button class="btn-primary" data-binding="true" data-fun="addSelectedColors">Farbe(n) übernehmen</button>
-			</div>
+			<p class="font-semibold">Vorhandene Farben:</p>
+			<div class="w-full h-60 overflow-y-scroll mt-1 bg-white rounded-md"></div>
 		</template>
 
 		<template id="templateAlertBox">

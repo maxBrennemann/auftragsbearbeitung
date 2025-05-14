@@ -1,5 +1,5 @@
 ﻿import { addBindings, getVariable } from "./classes/bindings.js";
-import { addColor, addSelectedColors, checkHexCode, removeColor, toggleCS } from "./auftrag/colorManager.js";
+import { initColors } from "./auftrag/colorManager.js";
 import { initNotes } from "./auftrag/noteStepManager.js";
 import { setOrderFinished, updateDate, updateDeadline, setDeadlineState, initExtraOptions, editDescription, editOrderType, editTitle, archvieren } from "./auftrag/orderManager.js";
 import { initVehicles } from "./auftrag/vehicleManager.js";
@@ -50,6 +50,7 @@ const initCode = async () => {
     initExtraOptions();
     initNotes();
     initVehicles();
+    initColors();
 
     globalData.table = await getItemsTable("auftragsPostenTable", globalData.auftragsId, "order");
     globalData.table.addEventListener("rowInsert", reloadPostenListe);
@@ -240,12 +241,6 @@ const reloadPostenListe = async () => {
 }
 
 fnNames.write_changeContact = changeContact;
-
-fnNames.click_addColor = addColor;
-fnNames.click_removeColor = removeColor;
-fnNames.click_addSelectedColors = addSelectedColors;
-fnNames.write_checkHexCode = checkHexCode;
-fnNames.click_toggleCS = toggleCS;
 
 fnNames.click_setOrderFinished = setOrderFinished;
 fnNames.write_updateDate = updateDate;

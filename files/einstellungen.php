@@ -126,20 +126,6 @@ $companyLogo = \Classes\Project\ClientSettings::getLogo();
 </section>
 
 <section class="defCont">
-    <h2 class="font-bold">Persönliche Einstellungen</h2>
-    <div id="farbe" class="mt-2">
-        <h4>Farbtöne festlegen</h4>
-        <select class="input-primary mt-1" id="selectTableColorType">
-            <option value="1">Tabellenfarbe</option>
-            <option value="2">Äußere Rahmen</option>
-            <option value="3">Innere Rahmen</option>
-        </select>
-        <button data-fun="setColor" data-binding="true" class="btn-primary">Diese Farbe übernehmen</button>
-        <button data-fun="resetColor" data-binding="true" class="btn-primary">Auf Standard zurücksetzen</button>
-    </div>
-</section>
-
-<section class="defCont">
     <h2 class="font-bold">Kategorien festlegen</h2>
     <div id="categoryTree" class="mt-2 ml-3"></div>
     <div class="mt-2 p-2 bg-slate-300 rounded-lg">
