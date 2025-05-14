@@ -6,7 +6,6 @@ auftragsbearbeitung.code-workspace
 .DS_Store
 
 # settings and config files
-companyInfo.php
 .htaccess
 .env
 node_modules
@@ -14,11 +13,14 @@ vendor
 cache/*
 !cache/.gitkeep
 
-apiKeys/*
-!apiKeys/.gitkeep
+.config/apiKeys/*
+!.config/apiKeys/.gitkeep
 
-.res/sql/init/*
-!.res/sql/init/.gitkeep
+.config/res/sql/init/*
+!.config/res/sql/init/.gitkeep
+
+.config/certs/*
+!.config/certs/openssl.cnf
 
 # generated files
 generated/*
@@ -39,12 +41,6 @@ files/res/css/tailwind.css
 files/res/css/min/*
 !files/res/css/min/.gitkeep
 
-# images
-!img/
-img/*
-!img/default_image.png
-!img/favicon.png
-
 # upload
 upload/*
 !upload/.gitkeep
@@ -52,6 +48,5 @@ upload/*
 # misc
 files/res/form/modules/sticker/catalog_products.csv
 .git.bfg-report
-words.txt
 favicon.ico
 protocol.txt

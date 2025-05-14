@@ -3,7 +3,6 @@ import { addBindings } from "./classes/bindings.js";
 import { createHeader, createTable, addRow, fetchAndRenderTable } from "./classes/table.js";
 import { tableConfig } from "./classes/tableconfig.js";
 import { notification } from "./classes/notifications.js";
-import { Colorpicker } from "./classes/colorpicker.js";
 import { clearInputs } from "./global.js";
 import { initFileUploader } from "./classes/upload.js";
 
@@ -28,8 +27,6 @@ function initEventListeners() {
 
     const addCategoryBtn = document.getElementById("addCategory");
     addCategoryBtn.addEventListener("click", addCategory);
-
-    new Colorpicker(document.querySelector("#farbe"));
 
     getCategories();
     showTree();
@@ -189,28 +186,6 @@ fnNames.write_changeSetting = e => {
             notification("", "success");
         } else {
             notification("", "failure");
-        }
-    });
-}
-
-fnNames.click_resetColor = () => {
-    const type = document.querySelector("#selectTableColorType").value;
-    setColor(0, type);
-}
-
-fnNames.click_setColor = () => {
-    const color = cp.color;
-    const type = document.querySelector("#selectTableColorType").value;
-    setColor(color, type);
-}
-
-const setColor = (color, type) => {
-    ajax.put(`/api/v1/settings/color`, {
-        "type": type,
-        "color": color
-    }).then(r => {
-        if (r.status == "success") {
-            location.reload();
         }
     });
 }

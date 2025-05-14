@@ -53,7 +53,7 @@ class Address extends Model
         return $this->ort;
     }
 
-    public static function loadAddress(int $addressId)
+    public static function loadAddress(int $addressId): Address
     {
         $addressInstance = new Address();
 
@@ -66,8 +66,6 @@ class Address extends Model
             $addressInstance->ort = $data['ort'];
             $addressInstance->zusatz = $data['zusatz'];
             $addressInstance->art = $data['art'];
-        } else {
-            return null;
         }
 
         return $addressInstance;
@@ -87,7 +85,8 @@ class Address extends Model
         $formattedAddresses = [];
 
         foreach ($addresses as $address) {
-            $formattedAddresses[$address["id"]] = $address["strasse"] . " " . $address["hausnr"] . ", " . $address["plz"] . " " . $address["ort"];
+            $id = (int) $address["id"];
+            $formattedAddresses[$id] = $address["strasse"] . " " . $address["hausnr"] . ", " . $address["plz"] . " " . $address["ort"];
         }
 
         return $formattedAddresses;

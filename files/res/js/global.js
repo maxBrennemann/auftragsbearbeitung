@@ -3,6 +3,7 @@ import { TableSorter, currentTableSorter, setTableSorter, sortTableNew } from ".
 import { ajax } from "./classes/ajax.js";
 import { timeGlobalListener } from "./classes/timetracking.js";
 import { addBindings } from "./classes/bindings.js";
+import { initEventSource } from "./classes/notoficationUpdater.js";
 
 const fnNames = {};
 const imagePreviewListeners = new WeakSet();
@@ -54,6 +55,7 @@ function startFunc() {
 	setTableSorter(new TableSorter());
 	currentTableSorter.readTableSorted();
 	initSearch();
+	//initEventSource();
 }
 
 const autoSizeTextareas = () => {

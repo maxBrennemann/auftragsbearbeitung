@@ -30,7 +30,6 @@ class SettingsRoutes extends Routes
     /**
      * @uses Classes\Project\TimeTrackingController::toggleDisplayTimeTracking()
      * @uses Classes\Project\ClientSettings::setFilterOrderPosten()
-     * @uses Classes\Project\ClientSettings::setGrayScale()
      * @uses Classes\Project\CacheManager::toggleCache()
      * @uses Classes\Project\CacheManager::toggleMinify()
      * @uses Classes\Project\Config::updateConfig()
@@ -38,7 +37,6 @@ class SettingsRoutes extends Routes
     protected static $putRoutes = [
         "/settings/global-timetracking" => [\Classes\Project\TimeTrackingController::class, "toggleDisplayTimeTracking"],
         "/settings/filter-order-posten" => [\Classes\Project\ClientSettings::class, "setFilterOrderPosten"],
-        "/settings/color" => [\Classes\Project\ClientSettings::class, "setGrayScale"],
         "/settings/cache" => [\Classes\Project\CacheManager::class, "toggleCache"],
         "/settings/minify" => [\Classes\Project\CacheManager::class, "toggleMinify"],
         "/settings/config/{configName}" => [\Classes\Project\Config::class, "updateConfig"],

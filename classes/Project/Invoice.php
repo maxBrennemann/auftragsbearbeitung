@@ -231,7 +231,12 @@ class Invoice
 		$formattedContacts = [];
 
 		foreach ($contacts as $contact) {
-			$formattedContacts[$contact["id"]] = $contact["firstName"] . " " . $contact["lastName"] . ", " . $contact["email"];
+			$id = (int) $contact["id"];
+			$formattedContacts[$id] = $contact["firstName"] . " " . $contact["lastName"];
+
+			if (!empty($contact["email"])) {
+				$formattedContacts[$id] .= ", " . $contact["email"];
+			}
 		}
 
 		return $formattedContacts;

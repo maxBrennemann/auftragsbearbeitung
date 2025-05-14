@@ -79,9 +79,10 @@ $wiki = 			Link::getPageLink("wiki");
 			<a class="block px-4 py-6" href="<?= $offeneRechnungen ?>">Offene Rechnungen: <b><?= $offeneSumme ?>€</b></a>
 		</li>
 	</ul>
-	<span style="float: right;" class="mr-2"><a href="#" class="link-primary" onclick="showCustomizeOptions()">Anpassen</a> | <a class="link-primary" href="<?= $funktionen ?>">Mehr</a></span>
-	<br>
-	<div class="tableContainer">
+	<span style="float: right;" class="mr-2">
+		<a class="link-primary" href="<?= $funktionen ?>">Mehr</a>
+	</span>
+	<div class="tableContainer mt-3">
 		<div>
 			<h3 class="font-bold my-3">Offene Aufträge</h3>
 			<?= $openOrders ?>

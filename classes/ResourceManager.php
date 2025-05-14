@@ -10,6 +10,7 @@ use Classes\Table\TableConfig;
 
 use Classes\Project\Config;
 use Classes\Project\CacheManager;
+use Classes\Project\Events;
 
 use Classes\Sticker\Exports\ExportFacebook;
 use Classes\Sticker\Imports\ImportGoogleSearchConsole;
@@ -46,14 +47,6 @@ class ResourceManager
         $parts = explode('/', $page);
         self::$page = $parts[count($parts) - 1];
 
-        /* TODO: implement better auth */
-        /*
-        if (!SessionController::isLoggedIn()) {
-            ResourceManager::outputHeaderJSON();
-            JSONResponseHandler::throwError(401, "Unauthorized API access");
-        }
-        */
-
         switch ($parts[1]) {
             case "js":
             case "css":
@@ -71,6 +64,10 @@ class ResourceManager
             case "favicon.ico":
                 require_once "favicon.php";
                 exit;
+            case "events":
+                Events::init();
+                self::close();
+                break;
         }
     }
 
@@ -212,25 +209,9 @@ class ResourceManager
         }
     }
 
-    private static function get_script($script)
+    private static function get_script($script): void
     {
-        header('Content-Type: text/javascript');
-
-        /* workaround for colorpicker and other packages */
-        if ($script == "/classes/colorpicker.js") {
-            echo file_get_contents("node_modules/colorpicker/colorpicker.js");
-            return;
-        }
-
-        if ($script == "/classes/notifications.js") {
-            echo file_get_contents("node_modules/js-classes/notifications.js");
-            return;
-        }
-
-        if ($script == "/classes/ajax.js") {
-            echo file_get_contents("node_modules/js-classes/ajax.js");
-            return;
-        }
+        header("Content-Type: text/javascript");
 
         /* tableconfig.js */
         if ($script == "/classes/tableconfig.js" && $_ENV["DEV_MODE"]) {
@@ -251,7 +232,7 @@ class ResourceManager
             file_exists(Link::getResourcesLink($min, "js", false))
             && MINIFY_STATUS
         ) {
-            header('Content-Encoding: gzip');
+            header("Content-Encoding: gzip");
             echo file_get_contents(Link::getResourcesLink($min, "js", false));
             return;
         }

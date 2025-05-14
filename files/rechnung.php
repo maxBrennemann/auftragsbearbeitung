@@ -17,13 +17,15 @@ $id = Tools::get("id");
 
 if ($target == "create") {
 	$auftrag = new Auftrag($id);
-	$invoiceAddresses = Address::getAllAdressesFormatted($auftrag->getKundennummer());
 	$invoiceContacts = Invoice::getContacts($auftrag->getKundennummer());
 
 	$nextInvoiceNumber = InvoiceNumberTracker::peekNextInvoiceNumber();
 	$invoice = Invoice::getInvoice($id);
 	$invoiceId = $invoice->getId();
 	$invoiceNumber = $invoice->getNumber();
+
+	$invoiceAddresses = Address::getAllAdressesFormatted($auftrag->getKundennummer());
+	$selectedAddress = $invoice->getAddressId();
 }
 
 if ($target == "view") {
@@ -44,9 +46,9 @@ if ($target == "create"): ?>
 		<?php if ($invoiceAddresses == null || empty($invoiceAddresses)): ?>
 			<i>Keine Rechnungsadressen vorhanden oder unvollständig. Bei Bedarf <a href="<?= Link::getPageLink("kunde") . "?id=" . $auftrag->getKundennummer() ?>" class="link-primary">beim Kunden</a> ergänzen.</i>
 		<?php else: ?>
-			<select id="addressId" class="input-primary w-72 mt-1" data-binding="true" data-fun="selectAddress">
+			<select id="addressId" class="input-primary w-72 mt-1" data-write="true" data-fun="selectAddress">
 				<?php foreach ($invoiceAddresses as $i => $r): ?>
-					<option value="<?= $i ?>"><?= $r ?></option>
+					<option value="<?= $i ?>" <?= $selectedAddress == $i ? "selected" : "" ?>><?= $r ?></option>
 				<?php endforeach; ?>
 			</select>
 		<?php endif; ?>
@@ -55,7 +57,8 @@ if ($target == "create"): ?>
 		<?php if ($invoiceContacts == null || empty($invoiceContacts)): ?>
 			<i>Keine Ansprechpartner vorhanden. Bei Bedarf <a href="<?= Link::getPageLink("kunde") . "?id=" . $auftrag->getKundennummer() ?>" class="link-primary">beim Kunden</a> ergänzen.</i>
 		<?php else: ?>
-			<select id="contactId" class="input-primary w-72 mt-1" data-binding="true" data-fun="selectContact">
+			<select id="contactId" class="input-primary w-72 mt-1" data-write="true" data-fun="selectContact">
+				<option value="0">Kein Ansprechpartner</option>
 				<?php foreach ($invoiceContacts as $i => $r): ?>
 					<option value="<?= $i ?>"><?= $r ?></option>
 				<?php endforeach; ?>

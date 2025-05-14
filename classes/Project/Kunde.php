@@ -110,7 +110,7 @@ class Kunde implements StatisticsInterface
 		return $this->strasse;
 	}
 
-	public function getHausnummer($id = 0): string
+	public function getHausnummer(int $id = 0): string
 	{
 		if ($id != 0) {
 			$this->loadAddresses();
@@ -124,7 +124,7 @@ class Kunde implements StatisticsInterface
 		return $this->hausnummer;
 	}
 
-	public function getPostleitzahl($id = 0): string
+	public function getPostleitzahl(int $id = 0): string
 	{
 		$plz = $this->postleitzahl;
 
@@ -144,7 +144,7 @@ class Kunde implements StatisticsInterface
 		return $plz;
 	}
 
-	public function getOrt($id = 0): string
+	public function getOrt(int $id = 0): string
 	{
 		if ($id != 0) {
 			$this->loadAddresses();

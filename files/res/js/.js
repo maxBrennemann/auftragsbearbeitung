@@ -13,11 +13,6 @@ function ajaxSearch(query) {
     link.click();
 }
 
-function showCustomizeOptions() {
-    const div = document.createElement("div");
-    // TODO: linkauswahl zusammenstellen, die dann angepinnt werden kann
-}
-
 function initInputs() {
     var kundeninput = document.getElementById("kundeninput");
     var rechnungsinput = document.getElementById("rechnungsinput");

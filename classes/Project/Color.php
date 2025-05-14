@@ -3,6 +3,7 @@
 namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 class Color
 {
@@ -13,7 +14,7 @@ class Color
     private string $producer = "";
 
 
-    function __construct(string $colorName, string $hexValue, string $shortName, string $producer)
+    public function __construct(string $colorName, string $hexValue, string $shortName, string $producer)
     {
         $this->colorName = $colorName;
         $this->hexValue = $hexValue;
@@ -58,15 +59,27 @@ class Color
     public static function convertHexToHTML($data)
     {
         foreach ($data["results"] as $key => $value) {
-			$data["results"][$key]["hex_value"] = "<div class=\"farbe\" style=\"background-color: #" . $value["hex_value"] . "\"></div>";
-		}
+            $data["results"][$key]["hex_value"] = "<div class=\"farbe\" style=\"background-color: #" . $value["hex_value"] . "\"></div>";
+        }
     }
 
     public static function convertHex($data)
     {
         foreach ($data as $key => $value) {
-			$data[$key]["hex_value"] = "<div class=\"farbe\" style=\"background-color: #" . $value["hex_value"] . "\"></div>";
-		}
+            $data[$key]["hex_value"] = "<div class=\"farbe\" style=\"background-color: #" . $value["hex_value"] . "\"></div>";
+        }
         return $data;
+    }
+
+    public static function renderColorTemplate()
+    {
+        $colors = Color::get();
+        $template = TemplateController::getTemplate("color", [
+            "colors" => $colors,
+        ]);
+
+        JSONResponseHandler::sendResponse([
+            "template" => $template,
+        ]);
     }
 }

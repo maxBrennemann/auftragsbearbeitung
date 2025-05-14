@@ -9,7 +9,7 @@ COPY composer.json composer.lock ./
 # Install the dependencies
 RUN composer install --no-scripts
 
-FROM php:8.4.6-apache
+FROM php:8.4.7-fpm
 
 # Get UID and GID of host user
 ARG UID
@@ -23,9 +23,6 @@ RUN apt-get update && apt-get install -y \
 # Install extensions
 RUN docker-php-ext-install pdo_mysql mysqli zip gd
 
-# Enable apache mod_rewrite
-RUN a2enmod rewrite
-
 # Set the document root
 WORKDIR /var/www/html
 
@@ -35,6 +32,3 @@ RUN usermod --non-unique --uid $UID www-data \
   && groupmod --non-unique --gid $UID www-data \
   && chown -R www-data:www-data /var/www
 USER $UID
-
-# Expose port 80
-EXPOSE 80
