@@ -266,7 +266,7 @@ try {
 					<input type="text" class="noteTitle text-slate-700 font-bold outline-0" max="128">
 					<textarea class="noteText mt-2 text-slate-500 resize-none w-full outline-0" type="text" max="128"></textarea>
 					<div class="relative flex text-slate-600">
-						<span class="noteDate"><?= date("d.m.Y") ?></span>
+						<input type="date" value="<?= date("Y-m-d") ?>" class="noteDate">
 					</div>
 				</div>
 				<div class="mt-2">

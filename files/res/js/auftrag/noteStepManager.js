@@ -177,6 +177,7 @@ function sendNote() {
 
     const title = note.querySelector(".noteTitle").value;
     const content = note.querySelector(".noteText").value;
+    const date = note.querySelector(".noteDate").value;
 
     const addNewNoteBtn = document.getElementById("addNewNote");
     addNewNoteBtn.classList.remove("hidden");
@@ -187,7 +188,8 @@ function sendNote() {
 
     ajax.post(`/api/v1/notes/${globalData.auftragsId}`, {
         "title": title,
-        "note": content
+        "note": content,
+        "date": date,
     }).then(r => {
         notification("", "success");
         displayNotes([{

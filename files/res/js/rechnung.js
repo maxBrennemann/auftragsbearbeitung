@@ -138,9 +138,9 @@ functionNames.click_completeInvoice = () => {
     });
 }
 
-functionNames.click_selectAddress = e => {
+functionNames.write_selectAddress = e => {
     const target = e.currentTarget;
-    const addressId = target.dataset.id;
+    const addressId = target.value;
 
     ajax.post(`/api/v1/invoice/${config.invoiceId}/address`, {
         "addressId": addressId,
@@ -155,9 +155,9 @@ functionNames.click_selectAddress = e => {
     });
 }
 
-functionNames.click_selectContact = e => {
+functionNames.write_selectContact = e => {
     const target = e.currentTarget;
-    const contactId = target.dataset.id;
+    const contactId = target.value;
 
     ajax.post(`/api/v1/invoice/${config.invoiceId}/contact`, {
         "contactId": contactId,

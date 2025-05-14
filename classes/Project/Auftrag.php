@@ -592,11 +592,13 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 	{
 		$title = (string) Tools::get("title");
 		$note = (string) Tools::get("note");
+		$date = Tools::get("date") ?? date("Y-m-d");
 
-		$historyId = DBAccess::insertQuery("INSERT INTO notes (orderId, title, note) VALUES (:orderId, :title, :note)", [
+		$historyId = DBAccess::insertQuery("INSERT INTO notes (orderId, title, note, creation_date) VALUES (:orderId, :title, :note, :creationDate)", [
 			"orderId" => $this->Auftragsnummer,
 			"title" => $title,
 			"note" => $note,
+			"creationDate" => $date,
 		]);
 
 		$auftragsverlauf = new Auftragsverlauf($this->Auftragsnummer);
@@ -604,7 +606,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 
 		JSONResponseHandler::sendResponse([
 			"success" => true,
-			"date" => date("d.m.Y"),
+			"date" => date("d.m.Y", strtotime($date)),
 			"id" => $historyId,
 		]);
 	}
