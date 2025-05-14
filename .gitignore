@@ -19,8 +19,8 @@ cache/*
 .config/res/sql/init/*
 !.config/res/sql/init/.gitkeep
 
-.config/certs/server.crt
-.config/certs/server.key
+.config/certs/*
+!.config/certs/openssl.cnf
 
 # generated files
 generated/*
