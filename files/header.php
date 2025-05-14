@@ -73,10 +73,6 @@ if ($pageName == "") {
 	<?php  if (file_exists(Link::getResourcesLink(dashesToCamelCase("$page.js"), "js", false))) : ?>
 		<script type="module" src="<?= Link::getResourcesShortLink("$page.js", "js") ?>"></script>
 	<?php endif; ?>
-
-	<?php  if (file_exists(Link::getResourcesLink("$page.css", "css", false))) : ?>
-		<link rel="stylesheet" href="<?= Link::getResourcesShortLink("$page.css", "css") ?>">
-	<?php endif; ?>
 </head>
 
 <body>
@@ -187,4 +183,4 @@ if ($pageName == "") {
 			<?= BreadcrumbController::createBreadcrumbMenu($page, $pageName) ?>
 		</div>
 	</header>
-	<main class="mt-4 w-full lg:w-4/5 mx-auto">
+	<main class="mt-4 w-full lg:w-11/12 xl:w-4/5 mx-auto">

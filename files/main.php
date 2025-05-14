@@ -37,7 +37,7 @@ $wiki = 			Link::getPageLink("wiki");
 
 ?>
 <div>
-	<ul class="mainUl auto-rows-min">
+	<ul class="grid grid-cols-2 sm:grid-cols-3 gap-2 auto-rows-min">
 		<li class="rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
 			<a class="inline-flex items-center gap-x-1 px-4 py-6" href="<?= $neuerKunde ?>"><?= Icon::getDefault("iconPersonAdd") ?> Neuen Kunden erstellen</a>
 		</li>

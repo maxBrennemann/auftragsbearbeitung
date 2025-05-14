@@ -20,11 +20,7 @@ use Classes\Project\Icon;
         ?>
         <div class="imageMovable">
             <a class="imageTag" data-deletable="true" data-file-id="<?=$file["id"]?>" download="<?=$file["alt"]?>" href="<?=$link?>" data-image-id="<?=$file["id"]?>" data-deletable="true" title="Zum Herunterladen von '<?=$originalname?>' klicken">
-                <?php if ($type == "cdr"): ?>
-                    <img src="<?=Link::getImageLink("CorelDraw_Logo2.svg")?>">
-                <?php elseif ($type == "ltp"): ?>
-                    <img src="<?=Link::getImageLink("plotter.svg")?>">
-                <?php elseif ($type == "svg"): ?>
+                <?php if ($type == "svg"): ?>
                     <svg class="w-8 h-8">
                         <image xlink:href="<?= $link ?>" />
                     </svg>

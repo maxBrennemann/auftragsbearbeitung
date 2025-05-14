@@ -73,7 +73,7 @@ fnNames.click_sendTimeTracking = () => {
         const table = document.querySelector("table");
         const options = {
             "hide": ["id"],
-            "hideOptions": ["addRow", "check"],
+            "hideOptions": ["addRow", "check", "move", "add"],
         };
         addRow(response, table, options);
 
@@ -135,7 +135,7 @@ fnNames.click_selectEntries = async (e) => {
     clearRows(table);
     const columnConfig = {
         "hide": ["id"],
-        "hideOptions": ["addRow", "check"],
+        "hideOptions": ["addRow", "check", "move", "add"],
     };
     data.forEach(row => {
         addRow(row, table, columnConfig);

@@ -154,14 +154,4 @@ class Icon
     public static $iconPlay = '<path fill="currentColor" d="M19 3H5C3.89 3 3 3.89 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.89 20.1 3 19 3M10 16V8L15 12" />';
 
     public static $iconUpload = '<path fill="currentColor" d="M2 12H4V17H20V12H22V17C22 18.11 21.11 19 20 19H4C2.9 19 2 18.11 2 17V12M12 2L6.46 7.46L7.88 8.88L11 5.75V15H13V5.75L16.13 8.88L17.55 7.45L12 2Z" />';
-
-    public static function iconCorel()
-    {
-        return file_get_contents("files/res/image/CorelDraw_Logo2.svg");
-    }
-
-    public static function iconLetterPlott()
-    {
-        return file_get_contents("files/res/image/plotter.svg");
-    }
 }
