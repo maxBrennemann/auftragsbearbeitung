@@ -10,6 +10,7 @@ use Classes\Table\TableConfig;
 
 use Classes\Project\Config;
 use Classes\Project\CacheManager;
+use Classes\Project\Events;
 
 use Classes\Sticker\Exports\ExportFacebook;
 use Classes\Sticker\Imports\ImportGoogleSearchConsole;
@@ -46,14 +47,6 @@ class ResourceManager
         $parts = explode('/', $page);
         self::$page = $parts[count($parts) - 1];
 
-        /* TODO: implement better auth */
-        /*
-        if (!SessionController::isLoggedIn()) {
-            ResourceManager::outputHeaderJSON();
-            JSONResponseHandler::throwError(401, "Unauthorized API access");
-        }
-        */
-
         switch ($parts[1]) {
             case "js":
             case "css":
@@ -71,6 +64,10 @@ class ResourceManager
             case "favicon.ico":
                 require_once "favicon.php";
                 exit;
+            case "events":
+                Events::init();
+                self::close();
+                break;
         }
     }
 

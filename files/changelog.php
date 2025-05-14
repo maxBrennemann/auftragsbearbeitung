@@ -23,6 +23,7 @@
         <li>Rechnungsstellung Fehlerbehebungen</li>
         <li>Bilder können jetzt immer in einer Vorschau angeschaut werden</li>
         <li>Neuer Upload Handler und neues Dateimanagementsystem</li>
+        <li>Prestashop Anbindung weiter überarbeitet</li>
     </ul>
     <h3 id="1.2.0" class="font-bold my-5">1.2.0</h3>
     <ul class="list-disc list-inside">

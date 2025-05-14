@@ -20,6 +20,9 @@ apiKeys/*
 .res/sql/init/*
 !.res/sql/init/.gitkeep
 
+certs/server.crt
+certs/server.key
+
 # generated files
 generated/*
 !generated/.gitkeep
