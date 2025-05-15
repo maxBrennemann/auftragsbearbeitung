@@ -26,31 +26,14 @@ class InvoicePDF extends TransactionPDF
 
     public function generate()
     {
-        $this->setPrintHeader(false);
+        parent::generate();
 
         $this->SetTitle("Rechnung für " . $this->customer->getFirmenname() . " " . $this->customer->getName());
         $this->SetSubject("Rechnung");
         $this->SetKeywords("Rechnung");
-        $this->SetLineStyle([
-            "width" => 0.25,
-            "color" => [0, 0, 0],
-        ]);
-
-        $this->setFooterFont([PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA]);
-        $this->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-        $this->AddPage();
-
-        $this->setCellPaddings(1, 1, 1, 1);
-        $this->setCellMargins(0, 0, 0, 0);
-        $this->setMargins(20, 45, 20, true);
-
-        $this->SetFont("helvetica", "", 8);
-        $address = "<p>" . $this->companyDetails["companyImprint"] . "</p>";
-        $this->writeHTMLCell(0, 10, 20, 44, $address);
 
         $this->SetFont("helvetica", "", 12);
-        $this->fillAddress();
+        $this->fillAddress($this->invoice->getAltNames());
 
         $this->Image($this->getCompanyLogo(), 125, 46, 60);
 

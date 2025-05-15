@@ -8,6 +8,8 @@ use Classes\Project\Config;
 use Classes\Project\Auftrag;
 use Classes\Project\Kunde;
 
+/* TODO: refactor altNames to be used in all TransactionPDFs, not only bound to invoice */
+
 class TransactionPDF extends PDFGenerator
 {
 
@@ -36,13 +38,34 @@ class TransactionPDF extends PDFGenerator
         $this->companyDetails = Config::getCompanyDetails();
     }
 
-    public function generate() {}
+    public function generate() 
+    {
+        $this->setPrintHeader(false);
+
+        $this->SetLineStyle([
+            "width" => 0.25,
+            "color" => [0, 0, 0],
+        ]);
+
+        $this->setFooterFont([PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA]);
+        $this->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+        $this->AddPage();
+
+        $this->setCellPaddings(1, 1, 1, 1);
+        $this->setCellMargins(0, 0, 0, 0);
+        $this->setMargins(20, 45, 20, true);
+
+        $this->SetFont("helvetica", "", 8);
+        $address = "<p>" . $this->companyDetails["companyImprint"] . "</p>";
+        $this->writeHTMLCell(0, 10, 20, 44, $address);
+    }
 
     public function save() {}
 
     private function generateHeader() {}
 
-    protected function fillAddress()
+    protected function fillAddress($altNames = [])
     {
         $lineheight = 10;
         $this->setXY(20, 49);
@@ -54,14 +77,21 @@ class TransactionPDF extends PDFGenerator
         $plz = $this->customer->getPostleitzahl($this->addressId);
         $ort = $this->customer->getOrt($this->addressId);
 
-        if ($firma != null || $firma != "") {
-            $this->Cell(85, $lineheight, $firma);
-            $this->ln(8);
-        }
-        
-        if ($this->customer->getNachname() != "" && $this->customer->getVorname() != "") {
-            $this->Cell(85, $lineheight, $name);
-            $this->ln(8);
+        if (!count($altNames) == 0) {
+            foreach ($altNames as $name) {
+                $this->Cell(85, $lineheight, $name["text"]);
+                $this->ln(8);
+            }
+        } else {
+            if ($firma != null || $firma != "") {
+                $this->Cell(85, $lineheight, $firma);
+                $this->ln(8);
+            }
+            
+            if ($this->customer->getNachname() != "" && $this->customer->getVorname() != "") {
+                $this->Cell(85, $lineheight, $name);
+                $this->ln(8);
+            }
         }
 
         $this->Cell(85, $lineheight, $strasse . " " . $hausnr);
