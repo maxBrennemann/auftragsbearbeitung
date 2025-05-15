@@ -36,7 +36,7 @@ if ($target == "view") {
 if ($target == "create"): ?>
 	<div class="defCont">
 		<div>
-			<h3 class="font-bold">Auftrag <span id="orderId"><?= $id ?></span></h3>
+			<h3 class="font-bold">Auftrag <span><?= $id ?></span></h3>
 			<p title="Diese Nummer ist vorläufig reserviert und kann sich noch ändern.">Nächste Rechnungsnummer: <b><?= $nextInvoiceNumber ?></b></p>
 			<input class="hidden" id="invoiceId" value="<?= $invoiceId ?>">
 			<input class="hidden" id="orderId" value="<?= $id ?>">

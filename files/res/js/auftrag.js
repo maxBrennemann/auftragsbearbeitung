@@ -29,7 +29,7 @@ export const getCustomerId = () => {
 }
 
 const initCode = async () => {
-    if (isNaN(globalData.auftragsId)) {
+    if (isNaN(globalData.auftragsId) || globalData.auftragsId <= 0) {
         return;
     }
 
@@ -209,7 +209,7 @@ window.updateIsDone = function (key, event) {
 
 
 fnNames.click_showAuftrag = () => {
-    const url = window.location.href + "&show=t";
+    const url = window.location.href + "&show=true";
     window.location.href = url;
 }
 
