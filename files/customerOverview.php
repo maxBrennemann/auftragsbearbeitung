@@ -9,7 +9,7 @@ use Classes\Project\SearchController;
 $query = Tools::get("query");
 $customers = [];
 
-if ($query !== null) {
+if ($query != null) {
     $results = SearchController::initSearch("customer", $query, 10);
     foreach ($results as $resultType) {
         foreach ($resultType as $result) {
