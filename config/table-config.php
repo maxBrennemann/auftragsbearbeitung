@@ -56,6 +56,25 @@ function getTableConfig(): array
             ],
             "joins" => [],
         ],
+        "auftrag" => [
+            "columns" => [
+                "Auftragsnummer",
+                "Kundennummer",
+                "Auftragsbezeichnung",
+                "Auftragsbeschreibung",
+                "Auftragstyp",
+                "Datum",
+                "Termin",
+                "Fertigstellung",
+                "AngenommenDurch",
+                "AngenommenPer",
+                "Ansprechpartner",
+                "Rechnungsnummer",
+                "Bezahlt",
+                "archiviert",
+            ],
+            "primaryKey" => "Auftragsnummer",
+        ],
         "auftragstyp" => [
             "columns" => [
                 "id",

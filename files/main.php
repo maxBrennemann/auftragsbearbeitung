@@ -6,7 +6,6 @@ use Classes\Project\Auftrag;
 use Classes\Project\Invoice;
 use Classes\Project\Icon;
 
-$openOrders = Auftrag::getAuftragsliste();
 $offeneSumme = Invoice::getOpenInvoiceSum();
 
 $neuerKunde   =		Link::getPageLink("neuer-kunde");
@@ -85,7 +84,7 @@ $wiki = 			Link::getPageLink("wiki");
 	<div class="tableContainer mt-3">
 		<div>
 			<h3 class="font-bold my-3">Offene Aufträge</h3>
-			<?= $openOrders ?>
+			<div id="openOrders"></div>
 		</div>
 	</div>
 </div>

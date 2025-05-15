@@ -384,6 +384,22 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 		return $t->getTable();
 	}
 
+	public static function getOpenOrders()
+	{
+		$query = "SELECT Auftragsnummer, DATE_FORMAT(Datum, '%d.%m.%Y') AS Datum, 
+				IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), 
+				kunde.Firmenname) AS Kunde, Auftragsbezeichnung, 
+				IF(auftrag.Termin IS NULL OR auftrag.Termin = '0000-00-00', 'kein Termin', 
+				DATE_FORMAT(auftrag.Termin, '%d.%m.%Y')) AS Termin 
+			FROM auftrag 
+			LEFT JOIN kunde 
+				ON auftrag.Kundennummer = kunde.Kundennummer 
+			WHERE Rechnungsnummer = 0 AND archiviert != 0";
+
+		$data = DBAccess::selectQuery($query);
+		JSONResponseHandler::sendResponse($data);
+	}
+
 	public function istRechnungGestellt(): bool
 	{
 		return $this->rechnungsnummer == 0 ? false : true;

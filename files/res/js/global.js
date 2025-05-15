@@ -69,7 +69,7 @@ const autoSizeTextareas = () => {
 }
 
 const autoValidateEmails = () => {
-	const emailInputs = document.querySelectorAll("input[type=email");
+	const emailInputs = document.querySelectorAll("input[type=email]");
 	emailInputs.forEach(el => {
 		el.addEventListener("input", function () {
 			if (validateEmail(el.value)) {
@@ -312,7 +312,11 @@ window.addEventListener("click", function (event) {
 
 /**
  * clears all inputs, supported types: id, array of ids, classes
- * @param {Object} inputs JSON object with this pattern: {"id":"clearthisid", "class":"clearthisclass"}
+ * @param {Object} inputs JSON object with this pattern: 
+ * {
+ * 		"id":"clearthisid", 
+ * 		"class":"clearthisclass"
+ * }
  */
 export const clearInputs = (inputs) => {
 	for (let key in inputs) {

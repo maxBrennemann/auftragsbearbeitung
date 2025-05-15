@@ -90,6 +90,11 @@ else:
 			</div>
 		</div>
 
+		<div id="ansprechpartner" class="bg-gray-100 col-span-2 p-4 rounded-lg">
+			<h3 class="font-bold">Ansprechpartner</h3>
+			<div id="contactPersonTable" class="w-full mt-2"></div>
+		</div>
+
 		<div id="addNewAddress" class="bg-gray-100 p-4 rounded-lg col-span-2 2xl:col-span-1">
 			<h4 class="font-bold">Aktuelle Adressen</h4>
 			<div id="addressTable" class="mt-2 2xl:overflow-x-scroll"></div>
@@ -99,19 +104,17 @@ else:
 			<h3 class="font-bold">Notizen</h3>
 			<textarea class="mt-2 w-full input-primary" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'" data-write="true" data-fun="setCustomerNote"><?= $customer->getNotizen() ?></textarea>
 		</div>
+
 		<div id="fahrzeuge" class="bg-gray-100 p-4 rounded-lg">
 			<h3 class="font-bold">Fahrzeuge</h3>
 			<div id="vehiclesTable" class="mt-2"></div>
 		</div>
 
-		<div id="ansprechpartner" class="bg-gray-100 col-span-2 p-4 rounded-lg">
-			<h3 class="font-bold">Ansprechpartner</h3>
-			<div id="contactPersonTable" class="w-full mt-2"></div>
-		</div>
 		<div id="farben" class="bg-gray-100 col-span-2 p-4 rounded-lg">
 			<h3 class="font-bold">Farben</h3>
 			<div id="colorTable" class="mt-2"></div>
 		</div>
+
 		<div id="auftraege" class="bg-gray-100 col-span-2 p-4 rounded-lg">
 			<h3 class="font-bold">Aufträge</h3>
 			<button class="btn-primary mt-2" data-fun="createNewOrder" data-binding="true">Neuen Auftrag erstellen</button>
