@@ -456,12 +456,12 @@ class Kunde implements StatisticsInterface
 		]);
 
 		DBAccess::insertQuery("INSERT INTO fahrzeuge_auftraege (id_fahrzeug, id_auftrag) VALUES (:vehicleId, :orderId)", [
-            "vehicleId" => $vehicleId,
-            "orderId" => $orderId
-        ]);
+			"vehicleId" => $vehicleId,
+			"orderId" => $orderId
+		]);
 
-        $auftragsverlauf = new Auftragsverlauf($orderId);
-        $auftragsverlauf->addToHistory($vehicleId, 3, "added");
+		$auftragsverlauf = new Auftragsverlauf($orderId);
+		$auftragsverlauf->addToHistory($vehicleId, 3, "added");
 
 		JSONResponseHandler::returnOK();
 	}

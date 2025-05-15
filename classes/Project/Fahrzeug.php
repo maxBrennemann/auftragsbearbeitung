@@ -11,7 +11,6 @@ class Fahrzeug
 
     public static function getImages($fahrzeugId)
     {
-        $html = "";
         $query = "SELECT DISTINCT dateiname AS `file`, originalname, 
                 DATE_FORMAT(`date`, '%d.%m.%Y %h:%i:%s') AS `date`, typ 
             FROM dateien 
@@ -110,32 +109,32 @@ class Fahrzeug
     }
 
     public static function addFiles()
-	{
+    {
         $idVehicle = Tools::get("vehicleId");
         $orderId = Tools::get("id");
 
-		$uploadHandler = new UploadHandler("upload", [
+        $uploadHandler = new UploadHandler("upload", [
             "image/png",
             "image/jpg",
             "image/jpeg",
         ]);
-		$files = $uploadHandler->uploadMultiple();
+        $files = $uploadHandler->uploadMultiple();
 
-		$queryOrder = "INSERT INTO dateien_auftraege (id_datei, id_auftrag) VALUES ";
+        $queryOrder = "INSERT INTO dateien_auftraege (id_datei, id_auftrag) VALUES ";
         $queryVehicle = "INSERT INTO dateien_fahrzeuge (id_datei, id_fahrzeug) VALUES ";
 
-		$valuesOrder = [];
+        $valuesOrder = [];
         $valuesVehicle = [];
 
-		foreach ($files as $file) {
-			$valuesOrder[] = [(int) $file["id"], $orderId];
+        foreach ($files as $file) {
+            $valuesOrder[] = [(int) $file["id"], $orderId];
             $valuesVehicle[] = [(int) $file["id"], $idVehicle];
 
-			$auftragsverlauf = new Auftragsverlauf($orderId);
+            $auftragsverlauf = new Auftragsverlauf($orderId);
             $auftragsverlauf->addToHistory($file["id"], 4, "added");
-  		}
+        }
 
-		DBAccess::insertMultiple($queryOrder, $valuesOrder);
+        DBAccess::insertMultiple($queryOrder, $valuesOrder);
         DBAccess::insertMultiple($queryVehicle, $valuesVehicle);
-	}
+    }
 }

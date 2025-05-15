@@ -47,7 +47,7 @@ class ProduktPosten extends Posten
 	{
 		$arr['Postennummer'] = $this->postennummer;
 		$arr['Preis'] = $this->bekommePreisTabelle();
-		$arr['Bezeichnung'] = "<button class=\"postenButton\">Produkt</button>" . $this->Bezeichnung;
+		$arr['Bezeichnung'] = "<button class=\"btn-primary-small\">Produkt</button>" . $this->Bezeichnung;
 		$arr['Beschreibung'] = $this->Beschreibung;
 		$arr['Anzahl'] = $this->Anzahl;
 		$arr['MEH'] = $this->getEinheit();

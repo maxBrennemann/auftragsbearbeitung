@@ -21,7 +21,8 @@ class TimeTrackingController
         return true;
     }
 
-    public static function showTimeTracking(?int $id = null) {
+    public static function showTimeTracking(?int $id = null)
+    {
         if (!self::validateUser()) {
             JSONResponseHandler::throwError(401, "Unvalidated user");
         }
@@ -45,7 +46,8 @@ class TimeTrackingController
 
     public static function showTimeTrackingOverview() {}
 
-    public static function addEntry() {
+    public static function addEntry()
+    {
         $start = (int) Tools::get("start");
         $stop = (int) Tools::get("stop");
         $task = (string) Tools::get("task");
@@ -68,8 +70,8 @@ class TimeTrackingController
             FROM user_timetracking 
             WHERE id = :id
             ORDER BY started_at DESC;", [
-                "id" => $id,
-            ]);
+            "id" => $id,
+        ]);
 
         JSONResponseHandler::sendResponse($data[0]);
     }

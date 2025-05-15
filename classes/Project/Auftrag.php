@@ -59,7 +59,8 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 
 			$this->isPayed = $data['Bezahlt'] == 1 ? true : false;
 
-			if ($data['archiviert'] == 0 || $data['archiviert'] == "0") {
+			$data["archiviert"] = (int) $data["archiviert"];
+			if ($data["archiviert"] == self::IS_ARCHIVED) {
 				$this->isArchiviert = true;
 			}
 
@@ -489,8 +490,9 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 	public static function finish()
 	{
 		$orderId = (int) Tools::get("id");
-		DBAccess::updateQuery("UPDATE auftrag SET archiviert = -1 WHERE Auftragsnummer :orderId", [
+		DBAccess::updateQuery("UPDATE auftrag SET archiviert = :status WHERE Auftragsnummer :orderId", [
 			"orderId" => $orderId,
+			"status" => self::IS_FINISHED,
 		]);
 
 		JSONResponseHandler::returnOK();
@@ -866,7 +868,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 			"text" => $text,
 			"orderId" => $orderId,
 		]);
-		
+
 		JSONResponseHandler::returnOK();
 	}
 

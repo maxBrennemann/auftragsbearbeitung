@@ -29,6 +29,7 @@
                 <li>NGINX hat Apache ersetzt</li>
                 <li>HTTPS Verschlüsselung mit Zertifikat für localhost</li>
                 <li>h2 Protokoll</li>
+                <li>Neue Konsolenfunktionen eingebaut</li>
             </ul>
         </li>
     </ul>

@@ -19,10 +19,10 @@ class TemplateController
         if (!is_array($params)) {
             $params = [];
         }
-        
+
         $content = self::buildTemplate($template, $params);
 
-		JSONResponseHandler::sendResponse([
+        JSONResponseHandler::sendResponse([
             "content" => $content,
         ]);
     }
@@ -39,9 +39,9 @@ class TemplateController
             throw new \Exception("Template not found");
         }
 
-		ob_start();
-		insertTemplate("files/res/views/{$template}View.php", $params);
-		$content = ob_get_clean();
+        ob_start();
+        insertTemplate("files/res/views/{$template}View.php", $params);
+        $content = ob_get_clean();
 
         if ($content === false) {
             throw new \Exception("Failed to get template content");
