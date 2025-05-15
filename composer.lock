@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d524774fddc20b10909fc71aec2dced3",
+    "content-hash": "17ca46bd42cc665a20ed48798d64c995",
     "packages": [
         {
             "name": "brick/math",
@@ -4869,7 +4869,8 @@
         "robmorgan/phinx": 20,
         "symfony/dotenv": 20,
         "max/php-utilities": 20,
-        "ramsey/uuid": 20
+        "ramsey/uuid": 20,
+        "symfony/console": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

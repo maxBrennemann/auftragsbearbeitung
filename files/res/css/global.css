@@ -66,13 +66,6 @@ header h1 {
     letter-spacing: 1px;
 }
 
-main {
-    max-width: 80vw;
-    margin: auto;
-    grid-area: main;
-    z-index: 1;
-}
-
 footer {
     background-color: #303333;
     padding: 25px 0 25px 0;
@@ -544,10 +537,6 @@ input#hamburg {
     input[type="search"] {
         padding: 6px;
     }
-
-    main {
-        max-width: 95vw;
-    }
 }
 
 @media (max-width: 850px) {
@@ -629,12 +618,6 @@ input#hamburg {
 }
 
 @media (max-width: 500px) {
-    main {
-        width: 95vw;
-        max-width: unset;
-        margin-top: 100px;
-    }
-
     header h1 {
         margin-right: unset;
         width: unset;

@@ -1,0 +1,15 @@
+#!/usr/bin/env php
+<?php
+
+require_once "settings.php";
+
+use Symfony\Component\Console\Application;
+use Classes\Project\Commands\CreateMigration;
+use Classes\Project\Commands\AutoUpgrade;
+
+$app = new Application("console", "1.0");
+
+$app->add(new CreateMigration());
+$app->add(new AutoUpgrade());
+
+$app->run();

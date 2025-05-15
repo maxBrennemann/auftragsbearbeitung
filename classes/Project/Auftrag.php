@@ -19,7 +19,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 	private $Auftragsposten = [];
 	private $Bearbeitungsschritte = [];
 	private $auftragstyp = null;
-	private $rechnungsnummer = 0;
+	private int $rechnungsnummer = 0;
 
 	private $isPayed = false;
 
@@ -51,7 +51,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 			$this->Auftragsbeschreibung = $data['Auftragsbeschreibung'];
 			$this->Auftragsbezeichnung = $data['Auftragsbezeichnung'];
 			$this->auftragstyp = (int) $data['Auftragstyp'];
-			$this->rechnungsnummer = $data['Rechnungsnummer'];
+			$this->rechnungsnummer = (int) $data['Rechnungsnummer'];
 
 			$this->datum = $data['Datum'];
 			$this->termin = $data['Termin'];
@@ -383,7 +383,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 		return $t->getTable();
 	}
 
-	public function istRechnungGestellt()
+	public function istRechnungGestellt(): bool
 	{
 		return $this->rechnungsnummer == 0 ? false : true;
 	}

@@ -6,6 +6,7 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 use Classes\Project\Auftrag;
 use Classes\Project\Invoice;
+use Classes\Project\Kunde;
 use Classes\Project\Address;
 use Classes\Project\Icon;
 use Classes\Project\InvoiceNumberTracker;
@@ -26,6 +27,8 @@ if ($target == "create") {
 
 	$invoiceAddresses = Address::getAllAdressesFormatted($auftrag->getKundennummer());
 	$selectedAddress = $invoice->getAddressId();
+
+	$kunde = new Kunde($auftrag->getKundennummer());
 }
 
 if ($target == "view") {
@@ -36,11 +39,17 @@ if ($target == "view") {
 if ($target == "create"): ?>
 	<div class="defCont">
 		<div>
-			<h3 class="font-bold">Auftrag <span id="orderId"><?= $id ?></span></h3>
+			<h3 class="font-bold">Auftrag <span><?= $id ?></span></h3>
 			<p title="Diese Nummer ist vorläufig reserviert und kann sich noch ändern.">Nächste Rechnungsnummer: <b><?= $nextInvoiceNumber ?></b></p>
 			<input class="hidden" id="invoiceId" value="<?= $invoiceId ?>">
 			<input class="hidden" id="orderId" value="<?= $id ?>">
 		</div>
+
+		<p class="mt-2">Firmenname</p>
+		<div>
+			<input type="text" class="input-primary mt-1 w-72" value="<?= $kunde->getFirmenname() ?>">
+		</div>
+		<button class="btn-primary" data-binding="true" data-fun="addAltName">Alternativtext eingeben</button>
 
 		<p class="mt-2">Adresse auswählen</p>
 		<?php if ($invoiceAddresses == null || empty($invoiceAddresses)): ?>

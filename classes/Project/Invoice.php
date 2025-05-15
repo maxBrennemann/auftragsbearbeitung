@@ -129,6 +129,16 @@ class Invoice
 		return $this->posten;
 	}
 
+	public function getAltNames(): array
+	{
+		$query = "SELECT id, `text` FROM invoice_alt_names WHERE id_invoice = :id ORDER BY id ASC";
+		$data = DBAccess::selectQuery($query, [
+			"id" => $this->invoiceId,
+		]);
+
+		return $data;
+	}
+
 	public static function toggleText()
 	{
 		$invoiceId = (int) Tools::get("invoiceId");
@@ -419,5 +429,73 @@ class Invoice
 		$invoice = new InvoicePDF($invoiceId, $orderId);
 		$invoice->generate();
 		$invoice->generateOutput();
+	}
+
+	public static function handleAltNames()
+	{
+		$invoiceId = (int) Tools::get("invoiceId");
+		$add = Tools::get("add");
+		$edit = Tools::get("edit");
+		$remove = Tools::get("remove");
+
+		$add = json_decode($add);
+		foreach ($add as $text) {
+			self::addAltName($invoiceId, $text);
+		}
+
+		$edit = json_decode($edit, true);
+		foreach ($edit as $editText) {
+			self::editAltName($editText["id"], $editText["text"]);
+		}
+
+		$remove = json_decode($remove);
+		foreach ($remove as $removeId) {
+			self::removeAltName($removeId);
+		}
+
+		JSONResponseHandler::returnOK();
+	}
+
+	public static function addAltName(int $invoiceId, string $text)
+	{
+		$query = "INSERT INTO invoice_alt_names (id_invoice, `text`) VALUES (:idInvoice, :text);";
+		DBAccess::insertQuery($query, [
+			"idInvoice" => $invoiceId,
+			"text" => $text,
+		]);
+	}
+
+	public static function editAltName(int $altNameId, string $text)
+	{
+		$query = "UPDATE invoice_alt_names SET `text` = :text WHERE id = :altNameId;";
+		DBAccess::updateQuery($query, [
+			"altNameId" => $altNameId,
+			"text" => $text,
+		]);
+	}
+
+	public static function removeAltName(int $altNameId)
+	{
+		$query = "DELETE FROM invoice_alt_names WHERE id = :altNameId;";
+		DBAccess::updateQuery($query, [
+			"altNameId" => $altNameId,
+		]);
+	}
+
+	public static function getAltNamesTemplate()
+	{
+		$invoiceId = (int) Tools::get("invoiceId");
+		$orderId = (int) Tools::get("orderId");
+
+		$invoice = new Invoice($invoiceId, $orderId);
+		$altNames = $invoice->getAltNames();
+
+		$template = TemplateController::getTemplate("invoiceAltNames", [
+			"altNames" => $altNames,
+		]);
+
+		JSONResponseHandler::sendResponse([
+			"template" => $template,
+		]);
 	}
 }

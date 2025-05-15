@@ -24,6 +24,7 @@ class InvoiceRoutes extends Routes
      * @uses \Classes\Project\Invoice::completeInvoice()
      * @uses \Classes\Project\Invoice::setAddress()
      * @uses \Classes\Project\Invoice::setContact()
+     * @uses \Classes\Project\Invoice::handleAltNames()
      *
      * @uses \Classes\Project\InvoiceNumberTracker::initInvoiceNumber()
      */
@@ -35,6 +36,7 @@ class InvoiceRoutes extends Routes
         "/invoice/{invoiceId}/complete" => [\Classes\Project\Invoice::class, "completeInvoice"],
         "/invoice/{invoiceId}/address" => [\Classes\Project\Invoice::class, "setAddress"],
         "/invoice/{invoiceId}/contact" => [\Classes\Project\Invoice::class, "setContact"],
+        "/invoice/{invoiceId}/alt-names" => [\Classes\Project\Invoice::class, "handleAltNames"],
 
         "/invoice/init-invoice-number" => [\Classes\Project\InvoiceNumberTracker::class, "initInvoiceNumber"],
     ];

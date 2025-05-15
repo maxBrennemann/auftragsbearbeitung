@@ -33,7 +33,7 @@ class Image
     public static function setDefault()
     {
         $img = new self(-1);
-        $img->url = Link::getImageLink("default_image.png");
+        $img->url = Link::getDefaultImage();
         return $img;
     }
 }

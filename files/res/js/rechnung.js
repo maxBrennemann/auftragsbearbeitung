@@ -1,6 +1,7 @@
 import { ajax } from "./classes/ajax.js";
 import { addBindings } from "./classes/bindings.js";
 import { notification } from "./classes/notifications.js";
+import { createPopup } from "./global.js";
 
 const functionNames = {};
 
@@ -8,6 +9,8 @@ const config = {
     "invoiceId": 0,
     "orderId": 0,
 }
+
+const removedAltNames = [];
 
 function init() {
     const invoiceId = document.getElementById("invoiceId");
@@ -170,6 +173,76 @@ functionNames.write_selectContact = e => {
 
         getPDF();
     });
+}
+
+functionNames.click_addAltName = async () => {
+    const template = await ajax.get(`/api/v1/template/invoice/alt-names`, {
+        "invoiceId": config.invoiceId,
+        "orderId": config.orderId,
+    });
+    const div = document.createElement("div");
+    div.innerHTML = template.template;
+    const btnContainer = createPopup(div);
+
+    const saveBtn = document.createElement("button");
+    saveBtn.classList.add("btn-primary");
+    saveBtn.innerHTML = "Übernehmen";
+
+    saveBtn.addEventListener("click", () => {
+        saveAltNames(div);
+        const btnCancel = btnContainer.querySelector("button.btn-cancel");
+        btnCancel.click()
+    });
+    btnContainer.appendChild(saveBtn);
+
+    addBindings(functionNames);
+}
+
+functionNames.click_addNewAltName = e => {
+    const template = document.getElementById("invoiceAltNameTemplate");
+    const target = e.target;
+    const content = template.content.cloneNode(true);
+    target.parentNode.insertBefore(content, target);
+    addBindings(functionNames);
+}
+
+functionNames.click_removeAltName = e => {
+    const target = e.target;
+    const input = target.previousElementSibling;
+
+    if (input.hasAttribute("data-id")) {
+        const id = parseInt(input.dataset.id);
+        removedAltNames.push(id);
+    }
+
+    const div = target.parentNode;
+    div.parentNode.removeChild(div);
+}
+
+const saveAltNames = container => {
+    const inputs = container.querySelectorAll("div input");
+    const add = [];
+    const edit = [];
+    inputs.forEach(input => {
+        if (input.hasAttribute("data-id")) {
+            const id = parseInt(input.dataset.id);
+            edit.push({
+                "id": id,
+                "text": input.value,
+            });
+        } else {
+            add.push(input.value);
+        }
+    })
+
+    ajax.post(`/api/v1/invoice/${config.invoiceId}/alt-names`, {
+        "add": JSON.stringify(add),
+        "edit": JSON.stringify(edit),
+        "remove": JSON.stringify(removedAltNames),
+    }).then(() => {
+        removedAltNames.length = 0;
+        getPDF();
+    })
 }
 
 const getPDF = () => {

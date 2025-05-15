@@ -37,17 +37,9 @@ class Link
 	 * @param $resourceName: the name of the image resource
 	 * @return $link: the link to the image resource
 	 */
-	public static function getImageLink($resourceName): string
+	public static function getDefaultImage(): string
 	{
-		if ($resourceName == null || $resourceName == "" || !file_exists("files/res/image/" . $resourceName)) {
-			$resourceName = "default_image.png";
-		}
-
-		if ($resourceName == "default_image.png") {
-			return $_ENV["REWRITE_BASE"] . "img/" . $resourceName;
-		}
-
-		return $_ENV["REWRITE_BASE"] . "files/res/image/" . $resourceName;
+		return $_ENV["REWRITE_BASE"] . "img/default_image.png";
 	}
 
 	public static function getResourcesLink($resource, $type, $rewriteBase = true)
