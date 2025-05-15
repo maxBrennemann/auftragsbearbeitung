@@ -1,28 +1,29 @@
 import { ajax } from "../classes/ajax.js";
+import { addBindings } from "../classes/bindings.js";
 import { notification } from "../classes/notifications.js";
 import { createPopup } from "../global.js";
 
-export async function setOrderFinished() {
+const fnNames = {};
+
+fnNames.click_setOrderFinished = async () => {
     if (confirm('Möchtest Du den Auftrag als "Erledigt" markieren?')) {
-        await ajax.post({
-            r: "setOrderFinished",
-            auftrag: globalData.auftragsId,
-        });
+        await ajax.put(`/api/v1/order/${globalData.auftragsId}/finish`);
+
         document.getElementById("home_link").click();
     }
 }
 
-export function updateDate(e) {
+fnNames.click_updateDate = e => {
     const date = e.target.value;
     sendDate(1, date);
 }
 
-export function updateDeadline(e) {
+fnNames.click_updateDeadline = e => {
     const date = e.target.value;
     sendDate(2, date);
 }
 
-export function setDeadlineState(e) {
+fnNames.click_setDeadlineState = e => {
     const checked = e.target.checked;
     if (checked) {
         document.getElementById("inputDeadline").value = "";
@@ -43,11 +44,9 @@ function sendDate(type, value) {
     });
 }
 
-/**
- * this function is called from auftrag.js init function
- * @returns 
- */
-export function initExtraOptions() {
+export const initOrderManager = () => {
+    addBindings(fnNames);
+
     const inputExtraOptions = document.getElementById("extraOptions");
     if (inputExtraOptions == null) {
         return;
@@ -93,15 +92,13 @@ function closeAlert() {
     document.getElementById("alertBox").remove();
 }
 
-export function editDescription() {
+fnNames.write_editDescription = () => {
     var text = document.querySelector(".orderDescription:not(.hidden)");
 
-    ajax.post({
-        r: "saveDescription",
-        text: text.value,
-        auftrag: globalData.auftragsId,
-    }, true).then(response => {
-        if (response == "saved") {
+    ajax.put(`/api/v1/order/${globalData.auftragsId}/description`, {
+        "text": text.value,
+    }).then(r => {
+        if (r.message == "OK") {
             notification("", "success");
         } else {
             notification("", "failure");
@@ -109,7 +106,7 @@ export function editDescription() {
     });
 }
 
-export const editOrderType = () => {
+fnNames.click_editOrderType = () => {
     const el = document.getElementById("orderType");
     const value = el.value;
 
@@ -124,7 +121,7 @@ export const editOrderType = () => {
     });
 }
 
-export const editTitle = () => {
+fnNames.click_editTitle = () => {
     const el = document.getElementById("orderTitle");
     const value = el.value;
 
@@ -139,7 +136,7 @@ export const editTitle = () => {
     });
 }
 
-export function archvieren() {
+fnNames.click_archivieren = () => {
     const id = globalData.auftragsId;
     ajax.put(`/api/v1/order/${id}/archive`, {
         "archive": true,

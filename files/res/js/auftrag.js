@@ -1,7 +1,7 @@
 ﻿import { addBindings, getVariable } from "./classes/bindings.js";
 import { initColors } from "./auftrag/colorManager.js";
 import { initNotes } from "./auftrag/noteStepManager.js";
-import { setOrderFinished, updateDate, updateDeadline, setDeadlineState, initExtraOptions, editDescription, editOrderType, editTitle, archvieren } from "./auftrag/orderManager.js";
+import { initOrderManager } from "./auftrag/orderManager.js";
 import { initVehicles } from "./auftrag/vehicleManager.js";
 import "./auftrag/calculateGas.js";
 import { ajax } from "./classes/ajax.js";
@@ -47,7 +47,7 @@ const initCode = async () => {
             "location": `/api/v1/order/${globalData.auftragsId}/add-files`,
         },
     });
-    initExtraOptions();
+    initOrderManager();
     initNotes();
     initVehicles();
     initColors();
@@ -174,7 +174,7 @@ function showDeleteMessage(row, header, key, type) {
     createPopup(div);
 }
 
-const toggleOrderDescription = () => {
+fnNames.click_toggleOrderDescription = () => {
     const toggleUp = document.querySelector(".toggle-up");
     const toggleDown = document.querySelector(".toggle-down");
 
@@ -206,7 +206,6 @@ window.updateIsDone = function (key, event) {
         row.parentNode.removeChild(row);
     }, event.target);
 }
-
 
 fnNames.click_showAuftrag = () => {
     const url = window.location.href + "&show=true";
@@ -242,22 +241,12 @@ const reloadPostenListe = async () => {
 
 fnNames.write_changeContact = changeContact;
 
-fnNames.click_setOrderFinished = setOrderFinished;
-fnNames.write_updateDate = updateDate;
-fnNames.write_updateDeadline = updateDeadline;
-fnNames.write_editDescription = editDescription;
-fnNames.write_editOrderType = editOrderType;
-fnNames.write_editTitle = editTitle;
-fnNames.click_setDeadlineState = setDeadlineState;
-fnNames.click_archvieren = archvieren;
-fnNames.click_toggleOrderDescription = toggleOrderDescription;
-
 fnNames.click_setPayed = () => {
     const date = document.getElementById('inputPayDate').value;
     const paymentType = document.getElementById('paymentType').value;
     const invoiceId = getVariable("invoiceId");
 
-    ajax.post(`"/invoice/${invoiceId}/paid"`, {
+    ajax.post(`/invoice/${invoiceId}/paid`, {
         "date": date,
         "paymentType": paymentType,
     }).then(r => {

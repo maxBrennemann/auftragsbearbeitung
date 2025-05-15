@@ -24,7 +24,6 @@ use Classes\Routes\UserRoutes;
 use Classes\Routes\VariousRoutes;
 
 use Classes\Project\Search;
-use Classes\Project\Auftrag;
 use Classes\Project\Step;
 use Classes\Project\Table;
 use Classes\Project\Auftragsverlauf;
@@ -39,7 +38,6 @@ use Classes\Sticker\StickerCategory;
 use Classes\Sticker\StickerCollection;
 use Classes\Sticker\SearchProducts;
 use Classes\Sticker\Textil;
-use Classes\Sticker\Aufkleber;
 use Classes\Sticker\AufkleberWandtattoo;
 use Classes\Sticker\StickerTagManager;
 
@@ -228,19 +226,9 @@ class Ajax
 
 				echo "ok";
 				break;
-			case "setOrderFinished":
-				$auftrag = $_POST['auftrag'];
-				DBAccess::insertQuery("UPDATE auftrag SET archiviert = -1 WHERE Auftragsnummer = $auftrag");
-				break;
 			case "getAddresses":
 				$kdnr = (int) $_POST['kdnr'];
 				echo json_encode(Address::loadAllAddresses($kdnr));
-				break;
-			case "saveDescription":
-				$text = $_POST['text'];
-				$auftrag = $_POST['auftrag'];
-				DBAccess::updateQuery("UPDATE auftrag SET Auftragsbeschreibung = '$text' WHERE Auftragsnummer = $auftrag");
-				echo "saved";
 				break;
 			case "table":
 				/*

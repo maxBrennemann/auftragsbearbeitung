@@ -45,7 +45,9 @@ class OrderRoutes extends Routes
 
     /**
      * @uses \Classes\Project\Auftrag::updateOrder()
+     * @uses \Classes\Project\Auftrag::editDescription()
      * @uses \Classes\Project\Auftrag::archive()
+     * @uses \Classes\Project\Auftrag::finish()
      * @uses \Classes\Project\Auftrag::updateColor()
      * @uses \Classes\Project\Fahrzeug::attachVehicle()
      * 
@@ -54,7 +56,9 @@ class OrderRoutes extends Routes
      */
     protected static $putRoutes = [
         "/order/{id}" => [\Classes\Project\Auftrag::class, "updateOrder"],
+        "/order/{id}/description" => [\Classes\Project\Auftrag::class, "editDescription"],
         "/order/{id}/archive" => [\Classes\Project\Auftrag::class, "archive"],
+        "/order/{id}/finish" => [\Classes\Project\Auftrag::class, "finish"],
         "/order/{id}/colors/{colorId}" => [\Classes\Project\Auftrag::class, "updateColor"],
         "/order/{id}/vehicles/{vehicleId}" => [\Classes\Project\Fahrzeug::class, "attachVehicle"],
 
