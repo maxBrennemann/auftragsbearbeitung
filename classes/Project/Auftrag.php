@@ -486,6 +486,16 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 		]);
 	}
 
+	public static function finish()
+	{
+		$orderId = (int) Tools::get("id");
+		DBAccess::updateQuery("UPDATE auftrag SET archiviert = -1 WHERE Auftragsnummer :orderId", [
+			"orderId" => $orderId,
+		]);
+
+		JSONResponseHandler::returnOK();
+	}
+
 	/**
 	 * adds a new order to the database by using the data from the form,
 	 * which is sent by the client;
@@ -845,6 +855,18 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 			"idOrder" => $orderId,
 		]);
 
+		JSONResponseHandler::returnOK();
+	}
+
+	public static function editDescription()
+	{
+		$text = (string) Tools::get("text");
+		$orderId = (int) Tools::get("id");
+		DBAccess::updateQuery("UPDATE auftrag SET Auftragsbeschreibung = :text WHERE Auftragsnummer = :orderId", [
+			"text" => $text,
+			"orderId" => $orderId,
+		]);
+		
 		JSONResponseHandler::returnOK();
 	}
 

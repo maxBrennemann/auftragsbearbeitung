@@ -321,6 +321,12 @@ class Invoice
 			$invoice = self::getInvoice($orderId);
 		}
 
+		$query = "UPDATE auftrag SET Rechnungsnummer = :invoiceId WHERE Auftragsnummer = :orderId";
+		DBAccess::updateQuery($query, [
+			"invoiceId" => $invoiceId,
+			"orderId" => $orderId,
+		]);
+
 		if ($invoice->getNumber() !== 0) {
 			$invoicePDF = new InvoicePDF($invoiceId, $orderId);
 			$invoicePDF->generate();
@@ -335,12 +341,6 @@ class Invoice
 		}
 
 		$invoiceNumber = InvoiceNumberTracker::completeInvoice($invoice);
-
-		$query = "UPDATE auftrag SET Rechnungsnummer = :invoiceId WHERE Auftragsnummer = :orderId";
-		DBAccess::updateQuery($query, [
-			"invoiceId" => $invoiceId,
-			"orderId" => $orderId,
-		]);
 
 		JSONResponseHandler::sendResponse([
 			"status" => "success",
