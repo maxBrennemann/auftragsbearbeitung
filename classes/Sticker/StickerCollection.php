@@ -243,6 +243,26 @@ class StickerCollection implements \Iterator
         ]);
     }
 
+    public static function addStickerCron()
+    {
+        $id = (int) Tools::get("id");
+        $type = (int) Tools::get("stickerType");
+        $overwrite = json_decode(Tools::get("overwrite"), true);
+
+        switch ($type) {
+            case 1:
+                $aufkleber = new Aufkleber($id);
+                $aufkleber->save($overwrite["aufkleber"]);
+                break;
+            default:
+                return;
+        }
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+        ]);
+    }
+
     public static function exportSticker()
     {
         $id = (int) Tools::get("id");
@@ -500,7 +520,7 @@ class StickerCollection implements \Iterator
 
         $query = "UPDATE module_sticker_sticker_data SET directory_name = :content WHERE id = :id;";
         DBAccess::updateQuery($query, [
-            "id" => $id, 
+            "id" => $id,
             "content" => $content
         ]);
 
@@ -514,7 +534,7 @@ class StickerCollection implements \Iterator
 
         $query = "UPDATE module_sticker_sticker_data SET additional_info = :content WHERE id = :id;";
         DBAccess::updateQuery($query, [
-            "id" => $id, 
+            "id" => $id,
             "content" => $content
         ]);
 
@@ -545,10 +565,12 @@ class StickerCollection implements \Iterator
 
         if ($export[0][$type] == NULL) {
             $query = "UPDATE module_sticker_exports SET `$type` = -1 WHERE idSticker = :idSticker";
-            DBAccess::updateQuery($query, 
-            [
-                "idSticker" => $id,
-            ]);
+            DBAccess::updateQuery(
+                $query,
+                [
+                    "idSticker" => $id,
+                ]
+            );
         } else if ($export[0][$type] != NULL) {
             $query = "UPDATE module_sticker_exports SET `$type` = NULL WHERE idSticker = :idSticker";
             DBAccess::updateQuery($query, [
@@ -585,7 +607,7 @@ class StickerCollection implements \Iterator
         DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `$type` = NOT `$type` WHERE id = :id", [
             "id" => $id
         ]);
-        
+
         JSONResponseHandler::returnOK();
     }
 }

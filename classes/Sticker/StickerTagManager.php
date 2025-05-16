@@ -478,4 +478,12 @@ class StickerTagManager extends PrestashopConnection
         $name = Tools::get("name");
         StickerTagManager::getTagsHTML();
     }
+
+    public static function getTagOverview()
+    {
+        $query = "SELECT COUNT(id) AS tagCount, content FROM module_sticker_tags GROUP BY content ORDER BY tagCount;";
+        $data = DBAccess::selectQuery($query);
+
+        JSONResponseHandler::sendResponse($data);
+    }
 }

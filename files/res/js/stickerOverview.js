@@ -130,12 +130,17 @@ fnNames.click_createFbExport = () => {
 fnNames.click_openTagOverview = () => {
     ajax.get(`/api/v1/sticker/tags/overview`).then(tags => {
         const div = document.createElement("div");
-        div.classList.add("absolute", "bg-white", "border", "border-black", "p-2", "rounded-lg", "shadow-lg", "z-20");
+        div.classList.add("h-[34rem]", "overflow-y-scroll");
+
+        const p = document.createElement("p");
+        p.innerHTML = "Tagübersicht";
+        p.classList.add("font-semibold");
+        div.appendChild(p);
 
         tags.forEach(tag => {
             const tagElement = document.createElement("div");
-            tagElement.classList.add("rounded-lg", "inline-block");
-            tagElement.textContent = tag.content;
+            tagElement.classList.add("btn-inactive");
+            tagElement.textContent = `${tag.content} (${tag.tagCount})`;
             div.appendChild(tagElement);
         });
 
