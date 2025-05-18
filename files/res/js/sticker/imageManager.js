@@ -9,6 +9,7 @@ import { fetchAndRenderTable } from "../classes/table.js";
 import { createPopup, initImagePreviewListener } from "../global.js";
 
 const fnNames = {};
+const imageTables = {};
 
 export const initImageManager = () => {
     addBindings(fnNames);
@@ -25,18 +26,19 @@ export const initImageManager = () => {
         },
     });
     initImageTables();
+    document.body.addEventListener("fileUploaded", e => console.log(e));
 }
 
-const initImageTables = () => {
+const initImageTables = async () => {
     const config = tableConfig["module_sticker_image"];
     config.columns.push({
         "key": "image",
         "label": "Bild",
     });
 
-    createImageTable("aufkleber", "aufkleberTable", config);
-    createImageTable("wandtattoo", "wandtattooTable", config);
-    createImageTable("textil", "textilTable", config);
+    await createImageTable("aufkleber", "aufkleberTable", config);
+    await createImageTable("wandtattoo", "wandtattooTable", config);
+    await createImageTable("textil", "textilTable", config);
 
     initImagePreviewListener();
 }
@@ -63,6 +65,7 @@ const createImageTable = async (imageType, anchorId, config) => {
 
     const table = await fetchAndRenderTable(anchorId, "module_sticker_image", options);
     table.addEventListener("deleteRow", e => {});
+    imageTables.imageType = table;
 }
 
 fnNames.click_showImageOptions = e => {

@@ -45,7 +45,6 @@ class StickerRoutes extends Routes
     ];
 
     /**
-     * @uses \Classes\Sticker\StickerCollection::exportSticker()
      * @uses \Classes\Sticker\StickerCollection::addStickerCron()
      * @uses \Classes\Sticker\Textil::toggleTextile()
      * @uses \Classes\Sticker\Textil::setPrice()
@@ -66,7 +65,6 @@ class StickerRoutes extends Routes
      * @uses \Classes\Sticker\TextModification::newText()
      */
     protected static $postRoutes = [
-        "/sticker/{id}/export" => [\Classes\Sticker\StickerCollection::class, "exportSticker"],
         "/sticker/{id}/export-scheduled" => [\Classes\Sticker\StickerCollection::class, "addStickerCron"],
         "/sticker/{id}/textile/{idTextile}/toggle" => [\Classes\Sticker\Textil::class, "toggleTextile"],
         "/sticker/{id}/textile/{idTextile}/price" => [\Classes\Sticker\Textil::class, "setPrice"],

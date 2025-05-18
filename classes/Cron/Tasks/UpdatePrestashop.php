@@ -4,6 +4,7 @@ namespace Classes\Cron\Tasks;
 
 use Classes\Cron\Queueable;
 use Classes\Models\TaskExecutions;
+use Classes\Sticker\StickerCollection;
 
 class UpdatePrestashop implements Queueable
 {
@@ -13,7 +14,17 @@ class UpdatePrestashop implements Queueable
         $taskExecutions = new TaskExecutions();
         $tasks = $taskExecutions->read([]);
 
-        // execute tasks
+        foreach ($tasks as $task) {
+            $type = $task["job_name"];
+            $metadata = $task["metadata"];
+            $metadata = json_decode($metadata, true);
+
+            $id = $metadata["id"];
+            $type = str_replace("export_", "", $type);
+            $overwrite = $metadata[$type];
+
+            StickerCollection::exportSticker($id, $type, $overwrite);
+        }
 
         // update responses
     }

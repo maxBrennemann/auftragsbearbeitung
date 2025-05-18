@@ -19,7 +19,7 @@ class Model
         $this->hooks = $hooks;
     }
 
-    public static function init(string $tableName)
+    public static function init(string $tableName): Model
     {
         require_once "config/table-config.php";
         $config = getTableConfig();
