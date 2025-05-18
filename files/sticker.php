@@ -153,7 +153,7 @@ if ($id == 0): ?>
                     "imageCategory" => "aufkleber",
                 ]); ?>
             </div>
-            <button class="transferBtn btn-primary w-full mt-2" id="transferAufkleber" data-binding="true" <?= $stickerCollection->getAufkleber()->getIsPlotted() == 1 ? "" : "disabled" ?>>Aufkleber übertragen</button>
+            <button class="transferBtn btn-primary w-full mt-2" id="transferAufkleber" data-binding="true">Aufkleber übertragen</button>
         </div>
 
         <div class="defCont col-span-3 2xl:col-span-2">
@@ -224,7 +224,7 @@ if ($id == 0): ?>
                     "imageCategory" => "wandtattoo",
                 ]); ?>
             </div>
-            <button class="transferBtn btn-primary w-full mt-2" id="transferWandtattoo" data-binding="true" <?= $stickerCollection->getWandtattoo()->getIsWalldecal() == 1 ? "" : "disabled" ?>>Wandtattoo übertragen</button>
+            <button class="transferBtn btn-primary w-full mt-2" id="transferWandtattoo" data-binding="true">Wandtattoo übertragen</button>
         </div>
 
         <div class="defCont col-span-3 2xl:col-span-2">

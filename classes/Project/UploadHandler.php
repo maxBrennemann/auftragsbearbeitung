@@ -39,8 +39,10 @@ class UploadHandler
             $normalizedFiles = $this->normalizeFilesArray($_FILES[$uploadName]);
 
             foreach ($normalizedFiles as $file) {
-                if ($this->fileUploadLimit > 0 
-                    && count($results) >= $this->fileUploadLimit) {
+                if (
+                    $this->fileUploadLimit > 0
+                    && count($results) >= $this->fileUploadLimit
+                ) {
                     continue;
                 }
                 $results[] = $this->handleUpload($file);

@@ -59,7 +59,8 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 
 			$this->isPayed = $data['Bezahlt'] == 1 ? true : false;
 
-			if ($data['archiviert'] == 0 || $data['archiviert'] == "0") {
+			$data["archiviert"] = (int) $data["archiviert"];
+			if ($data["archiviert"] == self::IS_ARCHIVED) {
 				$this->isArchiviert = true;
 			}
 
@@ -383,6 +384,22 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 		return $t->getTable();
 	}
 
+	public static function getOpenOrders()
+	{
+		$query = "SELECT Auftragsnummer, DATE_FORMAT(Datum, '%d.%m.%Y') AS Datum, 
+				IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), 
+				kunde.Firmenname) AS Kunde, Auftragsbezeichnung, 
+				IF(auftrag.Termin IS NULL OR auftrag.Termin = '0000-00-00', 'kein Termin', 
+				DATE_FORMAT(auftrag.Termin, '%d.%m.%Y')) AS Termin 
+			FROM auftrag 
+			LEFT JOIN kunde 
+				ON auftrag.Kundennummer = kunde.Kundennummer 
+			WHERE Rechnungsnummer = 0 AND archiviert != 0";
+
+		$data = DBAccess::selectQuery($query);
+		JSONResponseHandler::sendResponse($data);
+	}
+
 	public function istRechnungGestellt(): bool
 	{
 		return $this->rechnungsnummer == 0 ? false : true;
@@ -489,8 +506,9 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 	public static function finish()
 	{
 		$orderId = (int) Tools::get("id");
-		DBAccess::updateQuery("UPDATE auftrag SET archiviert = -1 WHERE Auftragsnummer :orderId", [
+		DBAccess::updateQuery("UPDATE auftrag SET archiviert = :status WHERE Auftragsnummer :orderId", [
 			"orderId" => $orderId,
+			"status" => self::IS_FINISHED,
 		]);
 
 		JSONResponseHandler::returnOK();
@@ -866,7 +884,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 			"text" => $text,
 			"orderId" => $orderId,
 		]);
-		
+
 		JSONResponseHandler::returnOK();
 	}
 

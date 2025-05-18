@@ -30,7 +30,10 @@ class Kunde implements StatisticsInterface
 
 	public function __construct(int $kundennummer)
 	{
-		$data = DBAccess::selectQuery("SELECT * FROM kunde, `address` WHERE Kundennummer = :customerId AND kunde.id_address_primary = address.id;", [
+		$data = DBAccess::selectQuery("SELECT * 
+			FROM kunde
+			LEFT JOIN address ON address.id = kunde.id_address_primary 
+			WHERE Kundennummer = :customerId;", [
 			"customerId" => $kundennummer,
 		]);
 
@@ -40,18 +43,18 @@ class Kunde implements StatisticsInterface
 
 		$data = $data[0];
 
-		$this->kundennummer = $data['Kundennummer'];
-		$this->vorname = $data['Vorname'];
-		$this->nachname = $data['Nachname'];
-		$this->firmenname = $data['Firmenname'];
-		$this->strasse = $data['strasse'];
-		$this->hausnummer = $data['hausnr'];
-		$this->postleitzahl = (int) $data['plz'];
-		$this->ort = $data['ort'];
-		$this->email = $data['Email'];
-		$this->telefonFestnetz = $data['TelefonFestnetz'];
-		$this->telefonMobil = $data['TelefonMobil'];
-		$this->website = $data['Website'] ?? "";
+		$this->kundennummer = $data["Kundennummer"];
+		$this->vorname = $data["Vorname"] ?? "";
+		$this->nachname = $data["Nachname"] ?? "";
+		$this->firmenname = $data["Firmenname"] ?? "";
+		$this->strasse = $data["strasse"] ?? "";
+		$this->hausnummer = $data["hausnr"] ?? "";
+		$this->postleitzahl = (int) $data["plz"] ?? "";
+		$this->ort = $data["ort"] ?? "";
+		$this->email = $data["Email"] ?? "";
+		$this->telefonFestnetz = $data["TelefonFestnetz"] ?? "";
+		$this->telefonMobil = $data["TelefonMobil"] ?? "";
+		$this->website = $data["Website"] ?? "";
 		$this->fax = $data["fax"] ?? "";
 		$this->note = $data["note"] ?? "";
 	}
@@ -255,13 +258,13 @@ class Kunde implements StatisticsInterface
 
 	public static function addAddressAjax()
 	{
-		$kdnr = (int) $_POST['customer'];
-		$plz = (int) $_POST['plz'];
-		$ort = $_POST['ort'];
-		$strasse = $_POST['strasse'];
-		$hnr = $_POST['hnr'];
-		$zusatz = $_POST['zusatz'];
-		$land = $_POST['land'];
+		$kdnr = (int) $_POST["customer"];
+		$plz = (int) $_POST["plz"];
+		$ort = $_POST["ort"];
+		$strasse = $_POST["strasse"];
+		$hnr = $_POST["hnr"];
+		$zusatz = $_POST["zusatz"];
+		$land = $_POST["land"];
 		Kunde::addAddress($kdnr, $strasse, $hnr, $plz, $ort, $zusatz, $land);
 		echo json_encode(Address::loadAllAddresses($kdnr));
 	}
@@ -403,7 +406,8 @@ class Kunde implements StatisticsInterface
 
 		$customers = [];
 		foreach ($data as $row) {
-			$customers[] = new Kunde($row["Kundennummer"]);
+			$id = (int) $row["Kundennummer"];
+			$customers[] = new Kunde($id);
 		}
 
 		return $customers;
@@ -456,12 +460,12 @@ class Kunde implements StatisticsInterface
 		]);
 
 		DBAccess::insertQuery("INSERT INTO fahrzeuge_auftraege (id_fahrzeug, id_auftrag) VALUES (:vehicleId, :orderId)", [
-            "vehicleId" => $vehicleId,
-            "orderId" => $orderId
-        ]);
+			"vehicleId" => $vehicleId,
+			"orderId" => $orderId
+		]);
 
-        $auftragsverlauf = new Auftragsverlauf($orderId);
-        $auftragsverlauf->addToHistory($vehicleId, 3, "added");
+		$auftragsverlauf = new Auftragsverlauf($orderId);
+		$auftragsverlauf->addToHistory($vehicleId, 3, "added");
 
 		JSONResponseHandler::returnOK();
 	}

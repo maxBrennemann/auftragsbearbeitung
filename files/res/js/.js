@@ -1,3 +1,6 @@
+import { ajax } from "./classes/ajax.js";
+import { renderTable } from "./classes/table.js";
+
 function ajaxSearch(query) {
     const customerOverview = document.getElementById("kundenLink").dataset.customerOverview;
     const customer = document.getElementById("kundenLink").dataset.customer;
@@ -13,11 +16,13 @@ function ajaxSearch(query) {
     link.click();
 }
 
-function initInputs() {
+function init() {
+    initOpenOrdersTable();
+
     var kundeninput = document.getElementById("kundeninput");
     var rechnungsinput = document.getElementById("rechnungsinput");
     var auftragsinput = document.getElementById("auftragsinput");
-    
+
     kundeninput.addEventListener("keyup", function (event) {
         if (event.key !== "Enter") {
             return;
@@ -32,13 +37,13 @@ function initInputs() {
 
         ajaxSearch(event.target.value);
     });
-    
+
     rechnungsinput.addEventListener("keyup", function (event) {
         if (event.key === "Enter") {
             document.getElementById("rechnungsLink").click();
         }
     });
-    
+
     auftragsinput.addEventListener("keyup", function (event) {
         if (event.key !== "Enter") {
             return;
@@ -61,10 +66,51 @@ function initInputs() {
     });
 }
 
-if (document.readyState !== 'loading' ) {
-	initInputs();
+const initOpenOrdersTable = async () => {
+    const data = await ajax.get(`/api/v1/order/open`);
+
+    const columns = [
+        {
+            "key": "Auftragsnummer",
+            "label": "Nr.",
+        },
+        {
+            "key": "Datum",
+            "label": "Datum",
+        },
+        {
+            "key": "Termin",
+            "label": "Termin",
+        },
+        {
+            "key": "Kunde",
+            "label": "Kunde",
+        },
+        {
+            "key": "Auftragsbezeichnung",
+            "label": "Auftragsbezeichnung",
+        },
+    ];
+
+    const options = {
+        "hideOptions": ["all"],
+        "styles": {
+            "key": {
+                "Termin": ["w-32"],
+            },
+        },
+        "primaryKey": "Auftragsnummer",
+        "autoSort": true,
+        "link": "/auftrag?id=",
+    };
+
+    renderTable("openOrders", columns, data, options);
+}
+
+if (document.readyState !== 'loading') {
+    init();
 } else {
     document.addEventListener('DOMContentLoaded', function () {
-		initInputs();
+        init();
     });
 }

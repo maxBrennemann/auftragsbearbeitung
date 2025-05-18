@@ -8,7 +8,7 @@
     }
 
     .btn-primary-small {
-        @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-1 px-2 my-0.5 bg-green-500 rounded border-0 text-white text-xs hover:bg-green-700 disabled:bg-green-200 disabled:hover:bg-green-300 disabled:hover:cursor-not-allowed;
+        @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-0.5 px-1.5 my-0.5 bg-green-500 rounded border-0 text-white text-xs hover:bg-green-700 disabled:bg-green-200 disabled:hover:bg-green-300 disabled:hover:cursor-not-allowed;
     }
 
     .link-primary {
@@ -32,7 +32,7 @@
     }
 
     .btn-cancel, .btn-inactive {
-        @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-white rounded text-sm border-0 text-black hover:bg-slate-100 shadow-sm ring-offset-black gap-2 data-[focus]:outline-1 data-[focus]:outline-black ring-1 ring-gray-300 disabled:bg-slate-100;
+        @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 mr-1 bg-white rounded text-sm border-0 text-black hover:bg-slate-100 shadow-sm ring-offset-black gap-2 data-[focus]:outline-1 data-[focus]:outline-black ring-1 ring-gray-300 disabled:bg-slate-100;
     }
 
     .tab-button {

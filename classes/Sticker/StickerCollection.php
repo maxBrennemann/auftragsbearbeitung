@@ -243,32 +243,50 @@ class StickerCollection implements \Iterator
         ]);
     }
 
-    public static function exportSticker()
+    public static function addStickerCron()
     {
         $id = (int) Tools::get("id");
-        $type = (int) Tools::get("stickerType");
+        $type = Tools::get("stickerType");
         $overwrite = json_decode(Tools::get("overwrite"), true);
 
+        $query = "INSERT INTO task_executions (job_name, `status`, started_at, metadata) VALUES (:jobName, :status, :startedAt, :metadata)";
+        DBAccess::insertQuery($query, [
+            "jobName" => "export_$type",
+            "status" => "scheduled",
+            "startedAt" => date("Y-m-d h:i:s"),
+            "metadata" => json_encode([
+                "stickerId" => $id,
+                "type" => $type,
+                "overwrite" => $overwrite["aufkleber"],
+            ]),
+        ]);
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+        ]);
+    }
+
+    public static function exportSticker($id, $type, $overwrite): array
+    {
         $message = "";
         $responseData = [];
 
         ob_start();
 
         switch ($type) {
-            case 1:
+            case "sticker":
                 $aufkleber = new Aufkleber($id);
-                $aufkleber->save($overwrite["aufkleber"]);
+                $aufkleber->save($overwrite["sticker"]);
                 break;
-            case 2:
+            case "walldecal":
                 $wandtattoo = new Wandtattoo($id);
-                $wandtattoo->save($overwrite["wandtattoo"]);
+                $wandtattoo->save($overwrite["walldecal"]);
                 break;
-            case 3:
+            case "textile":
                 $textil = new Textil($id);
-                $textil->save($overwrite["textil"]);
+                $textil->save($overwrite["textile"]);
                 break;
-            case 4:
-                /* TODO: iteration bei StickerCollection überarbeiten */
+            case "all":
                 $stickerCollection = new StickerCollection($id);
                 $stickerCollection->uploadAll($overwrite);
                 break;
@@ -290,15 +308,15 @@ class StickerCollection implements \Iterator
         }
 
         if ($message == "") {
-            JSONResponseHandler::sendResponse([
+            return [
                 "status" => "success",
                 "responseData" => $responseData,
-            ]);
+            ];
         } else {
-            JSONResponseHandler::throwError(500, json_encode([
+            return [
                 "status" => "error",
                 "responseData" => $responseData,
-            ]));
+            ];
         }
     }
 
@@ -500,7 +518,7 @@ class StickerCollection implements \Iterator
 
         $query = "UPDATE module_sticker_sticker_data SET directory_name = :content WHERE id = :id;";
         DBAccess::updateQuery($query, [
-            "id" => $id, 
+            "id" => $id,
             "content" => $content
         ]);
 
@@ -514,7 +532,7 @@ class StickerCollection implements \Iterator
 
         $query = "UPDATE module_sticker_sticker_data SET additional_info = :content WHERE id = :id;";
         DBAccess::updateQuery($query, [
-            "id" => $id, 
+            "id" => $id,
             "content" => $content
         ]);
 
@@ -545,10 +563,12 @@ class StickerCollection implements \Iterator
 
         if ($export[0][$type] == NULL) {
             $query = "UPDATE module_sticker_exports SET `$type` = -1 WHERE idSticker = :idSticker";
-            DBAccess::updateQuery($query, 
-            [
-                "idSticker" => $id,
-            ]);
+            DBAccess::updateQuery(
+                $query,
+                [
+                    "idSticker" => $id,
+                ]
+            );
         } else if ($export[0][$type] != NULL) {
             $query = "UPDATE module_sticker_exports SET `$type` = NULL WHERE idSticker = :idSticker";
             DBAccess::updateQuery($query, [
@@ -585,7 +605,7 @@ class StickerCollection implements \Iterator
         DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `$type` = NOT `$type` WHERE id = :id", [
             "id" => $id
         ]);
-        
+
         JSONResponseHandler::returnOK();
     }
 }

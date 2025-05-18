@@ -63,7 +63,7 @@ class Link
 				$link = $rewriteBase . "files/res/form/" . $resource;
 				break;
 			case "upload":
-				$subDir = substr($resource, 0, 2). "/" . substr($resource, 2, 2);
+				$subDir = substr($resource, 0, 2) . "/" . substr($resource, 2, 2);
 				$link = $rewriteBase . "upload/" . $subDir . "/" . $resource;
 				break;
 			case "csv":

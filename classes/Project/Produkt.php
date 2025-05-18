@@ -314,7 +314,7 @@ class Produkt
 		$values = [];
 		foreach ($files as $file) {
 			$values[] = [(int) $file["id"], $productId];
-  		}
+		}
 
 		DBAccess::insertMultiple($query, $values);
 	}

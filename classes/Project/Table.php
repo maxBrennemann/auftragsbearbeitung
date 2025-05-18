@@ -392,22 +392,6 @@ class Table
 		$this->updateSchedule = $updateSchedule;
 	}
 
-	public static function updateTable_AddNewLine($key, $data)
-	{
-		if (!is_string($key) || !is_string($data))
-			return "data cannot be processed";
-
-		if (isset($_SESSION[$key])) {
-			$actionObject = unserialize($_SESSION[$key]);
-			$data = json_decode($data, true);
-
-			/* updateSchedule must be set in order to make updates for the table */
-			$actionObject->updateSchedule->executeTableUpdate($data);
-		} else {
-			return "no data found";
-		}
-	}
-
 	/*
 	 * erstellt die Tabelle
 	 * wenn $this->data null ist, wird eine Nachricht zurückgegeben

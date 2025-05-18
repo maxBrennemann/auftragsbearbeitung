@@ -169,7 +169,7 @@ class Login
 		if ($duplicateDevice != false) {
 			$userAgentHash = $duplicateDevice["md_hash"];
 		}
-			
+
 		$id = self::saveDeviceKey($userAgentHash, $userAgent, $browser, $os, $deviceType);
 
 		return [

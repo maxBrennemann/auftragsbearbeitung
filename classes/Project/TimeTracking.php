@@ -26,9 +26,6 @@ class TimeTracking
         return self::month(0, $userId);
     }
 
-    /**
-     * 
-     */
     public static function month(int $month, int $userId = -1)
     {
         $query = "SELECT started_at, 

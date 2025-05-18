@@ -24,11 +24,13 @@
         <li>Bilder können jetzt immer in einer Vorschau angeschaut werden</li>
         <li>Neuer Upload Handler und neues Dateimanagementsystem</li>
         <li>Prestashop Anbindung weiter überarbeitet</li>
+        <li>Prestashop Upload wird von einem CronTask übernommen</li>
         <li>Lokale Entwicklungsumgebung angepasst
             <ul class="ml-5 list-disc list-inside">
                 <li>NGINX hat Apache ersetzt</li>
                 <li>HTTPS Verschlüsselung mit Zertifikat für localhost</li>
                 <li>h2 Protokoll</li>
+                <li>Neue Konsolenfunktionen eingebaut</li>
             </ul>
         </li>
     </ul>

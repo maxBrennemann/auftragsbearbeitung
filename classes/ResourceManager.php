@@ -124,7 +124,7 @@ class ResourceManager
     public static function showPage(): void
     {
         if (self::$page == "test") {
-            return; 
+            return;
         }
 
         $pageDetails = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM articles WHERE src = :page LIMIT 1;", [
@@ -241,7 +241,7 @@ class ResourceManager
             echo file_get_contents(Link::getResourcesLink($script, "js", false));
             return;
         }
-        
+
         echo "";
     }
 

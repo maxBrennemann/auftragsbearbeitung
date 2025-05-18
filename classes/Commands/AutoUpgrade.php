@@ -1,6 +1,6 @@
 <?php
 
-namespace Classes\Project\Commands;
+namespace Classes\Commands;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -9,10 +9,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 use Classes\Table\TableConfig;
+
 use MaxBrennemann\PhpUtilities\Migrations\UpgradeManager;
 
 #[AsCommand(
-    name: "autoUpgrade",
+    name: "autoupgrade",
 )]
 
 class AutoUpgrade extends Command

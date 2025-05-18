@@ -57,7 +57,7 @@ class Zeit extends Posten
 		$arr['Einkaufspreis'] = "-";
 		$arr['Gesamtpreis'] = $this->bekommePreis_formatted();
 		$arr['type'] = "addPostenZeit";
-		$arr['Bezeichnung'] = "<button class=\"postenButton\">Zeit</button>";
+		$arr['Bezeichnung'] = "<button class=\"btn-primary-small\">Zeit</button>";
 
 		return $arr;
 	}

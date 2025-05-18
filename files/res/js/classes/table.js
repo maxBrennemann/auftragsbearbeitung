@@ -30,8 +30,7 @@ const autoSortTable = (table, options) => {
 
     const sorter = th.querySelector(".sorter");
     if (sort?.orderBy === th.dataset.key) {
-        th.dataset.direction = sort.order;
-        sorter.innerHTML = sort.order === "asc" ? getSortAsc() : getSortDesc();
+        th.dataset.direction = sort.order == "asc" ? "desc" : "asc";
     }
 
     sortTable(table, th, sorter, options);
@@ -109,7 +108,10 @@ export const createHeader = (header, table, options = {}) => {
         sorter.innerHTML = getSortNone();
         innerSpan.appendChild(sorter);
 
-        th.addEventListener("click", () => sortTable(table, th, sorter, options));
+        th.addEventListener("click", () => {
+            const data = sortTable(table, th, sorter, options);
+            saveToLocalStorage(data.containerId, data.tableOrder);
+        });
 
         row.appendChild(th);
     });
@@ -284,8 +286,20 @@ const addEditBtn = (data, table, row, actionsCell, options) => {
         editBtn.innerHTML = getEditBtn();
         editBtn.title = "Bearbeiten";
         editBtn.className = "inline-flex border-0 bg-green-400 p-1 rounded-md";
+        editBtn.dataset.status = "edit";
         editBtn.addEventListener("click", () => {
             dispatchActionEvent("rowEdit", data, table, { row });
+
+            switch (editBtn.dataset.status) {
+                case "edit":
+                    editBtn.innerHTML = getSaveBtn();
+                    editBtn.dataset.status = "save";
+                    break;
+                case "save":
+                    editBtn.innerHTML = getEditBtn();
+                    editBtn.dataset.status = "edit";
+                    break;
+            }
         });
 
         actionsCell.appendChild(editBtn);
@@ -412,7 +426,7 @@ const sortTable = (table, th, sorter, options) => {
     const rows = table.querySelectorAll(skipFirstRow ? "tbody tr:nth-child(n+2)" : "tbody tr");
     const tbody = table.querySelector("tbody");
 
-    let sort = getSortDirection(th, sorter);
+    const sort = getSortDirection(th, sorter);
 
     Array.from(rows)
         .sort(comparer(index, sort, options?.link ? false : true))
@@ -426,7 +440,11 @@ const sortTable = (table, th, sorter, options) => {
         orderBy: th.dataset.key,
         order: th.dataset.direction,
     };
-    saveToLocalStorage(containerId, tableOrder);
+
+    return {
+        "containerId": containerId,
+        "tableOrder": tableOrder,
+    };
 }
 
 const getSortDirection = (th, sorter) => {

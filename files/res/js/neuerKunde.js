@@ -11,14 +11,6 @@ const globalProperties = {
 
 const fnNames = {};
 
-if (document.readyState !== 'loading' ) {
-    initAddCustomer();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        initAddCustomer();
-    });
-}
-
 function initAddCustomer() {
     addBindings(fnNames);
 
@@ -93,5 +85,13 @@ fnNames.click_sendCustomerData = () => {
         if (r.status == "success") {
             location.href = r.link;
         }
+    });
+}
+
+if (document.readyState !== 'loading' ) {
+    initAddCustomer();
+} else {
+    document.addEventListener('DOMContentLoaded', function () {
+        initAddCustomer();
     });
 }

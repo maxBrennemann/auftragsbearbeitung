@@ -15,7 +15,7 @@ class Category
 
     private array $children = [];
 
-    function __construct(int $id, string $name, int $parent = 0)
+    public function __construct(int $id, string $name, int $parent = 0)
     {
         $this->name = $name;
         $this->parent = $parent;

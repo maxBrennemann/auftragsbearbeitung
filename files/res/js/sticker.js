@@ -16,9 +16,9 @@ const mainVariables = {
     productConnect: [],
     pending: false,
     overwriteImages: {
-        aufkleber: false,
-        wandtattoo: false,
-        textil: false,
+        sticker: false,
+        walldecal: false,
+        textile: false,
     },
     stickerName: "",
 };
@@ -115,19 +115,19 @@ function initTextiles() {
 }
 
 fnNames.click_transferAufkleber = function () {
-    transfer(1, "Aufkleber");
+    transfer("sticker", "Aufkleber");
 }
 
 fnNames.click_transferWandtattoo = function () {
-    transfer(2, "Wandtattoo");
+    transfer("walldecal", "Wandtattoo");
 }
 
 fnNames.click_transferTextil = function () {
-    transfer(3, "Textil");
+    transfer("textile", "Textil");
 }
 
 fnNames.click_transferAll = function (e) {
-    transfer(4, "Allen Produkten");
+    transfer("all", "allen Produkten");
 }
 
 /**
@@ -146,13 +146,19 @@ function transfer(type, text) {
 
     mainVariables.pending = true;
 
-    if (mainVariables.overwriteImages.aufkleber == true || mainVariables.overwriteImages.wandtattoo || mainVariables.overwriteImages.textil) {
+    if (mainVariables.overwriteImages.sticker == true || mainVariables.overwriteImages.walldecal || mainVariables.overwriteImages.textile) {
         if (!confirm("Möchtest du die Bilder überschreiben?")) {
-            mainVariables.overwriteImages.aufkleber = false;
-            mainVariables.overwriteImages.wandtattoo = false;
-            mainVariables.overwriteImages.textil = false;
+            mainVariables.overwriteImages.sticker = false;
+            mainVariables.overwriteImages.walldecal = false;
+            mainVariables.overwriteImages.textile = false;
         }
     }
+
+    ajax.post(`/api/v1/sticker/${mainVariables.motivId}/export-scheduled`, {
+        "stickerType": type,
+        "overwrite": JSON.stringify(mainVariables.overwriteImages),
+    });
+    return;
 
     ajax.post(`/api/v1/sticker/${mainVariables.motivId.innerHTML}/export`, {
         stickerType: type,
