@@ -154,6 +154,12 @@ function transfer(type, text) {
         }
     }
 
+    ajax.post(`/api/v1/sticker/${mainVariables.motivId.innerHTML}/export-scheduled`, {
+        "stickerType": type,
+        "overwrite": JSON.stringify(mainVariables.overwriteImages),
+    });
+    return;
+
     ajax.post(`/api/v1/sticker/${mainVariables.motivId.innerHTML}/export`, {
         stickerType: type,
         overwrite: JSON.stringify(mainVariables.overwriteImages),

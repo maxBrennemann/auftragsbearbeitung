@@ -249,14 +249,17 @@ class StickerCollection implements \Iterator
         $type = (int) Tools::get("stickerType");
         $overwrite = json_decode(Tools::get("overwrite"), true);
 
-        switch ($type) {
-            case 1:
-                $aufkleber = new Aufkleber($id);
-                $aufkleber->save($overwrite["aufkleber"]);
-                break;
-            default:
-                return;
-        }
+        $query = "INSERT INTO task_executions (job_name, `status`, started_at, metadata) VALUES (:jobName, :status, :startedAt, :metadata)";
+        DBAccess::insertQuery($query, [
+            "jobName" => "export_$type",
+            "status" => "scheduled",
+            "startedAt" => date("Y-m-d h:i:s"),
+            "metadata" => json_encode([
+                "stickerId" => $id,
+                "type" => $type,
+                "overwrite" => $overwrite["aufkleber"],
+            ]),
+        ]);
 
         JSONResponseHandler::sendResponse([
             "status" => "success",
