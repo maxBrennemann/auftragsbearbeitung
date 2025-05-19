@@ -3,7 +3,6 @@
 namespace Classes\Commands;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -11,6 +10,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Classes\Table\TableConfig;
 
 use MaxBrennemann\PhpUtilities\Migrations\UpgradeManager;
+use Symfony\Component\Console\Input\InputOption;
 
 #[AsCommand(
     name: "autoupgrade",
@@ -23,8 +23,8 @@ class AutoUpgrade extends Command
     {
         $this
             ->setDescription("Migrates PHP commands and updates mySQL tables. Autogenerates files")
-            ->addArgument("force", InputArgument::OPTIONAL, "Forces migration and skips errors")
-            ->addArgument("skip-migration", InputArgument::OPTIONAL, "Skips migration and only autogenerates files");
+            ->addOption("force", null, InputOption::VALUE_NONE, "Forces migration and skips errors")
+            ->addOption("skip-migration", null, InputOption::VALUE_NONE, "Skips migration and only autogenerates files");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -33,8 +33,8 @@ class AutoUpgrade extends Command
         TableConfig::generate();
         $content = ob_get_clean();
 
-        $force = $input->getArgument("force");
-        $skipMigration = $input->getArgument("skip-migration");
+        $force = $input->getOption("force");
+        $skipMigration = $input->getOption("skip-migration");
 
         $target = "files/res/js/classes";
         $destination = "node_modules/js-classes";
