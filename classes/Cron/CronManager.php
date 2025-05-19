@@ -44,6 +44,12 @@ class CronManager
                     call_user_func($task);
                 }
             }
+
+            if ($type === "every_minute") {
+                foreach ($taskList as $task) {
+                    call_user_func($task);
+                }
+            }
         }
     }
 }
