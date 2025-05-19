@@ -257,7 +257,7 @@ class StickerCollection implements \Iterator
             "metadata" => json_encode([
                 "stickerId" => $id,
                 "type" => $type,
-                "overwrite" => $overwrite["aufkleber"],
+                "overwrite" => $overwrite[$type],
             ]),
         ]);
 
