@@ -119,6 +119,10 @@ class Invoice
 
 	public function getNumber()
 	{
+		if ($this->invoiceNumber == 0) {
+			return InvoiceNumberTracker::peekNextInvoiceNumber();
+		}
+
 		return $this->invoiceNumber;
 	}
 
@@ -336,6 +340,7 @@ class Invoice
 				"status" => "success",
 				"number" => $invoice->getNumber(),
 				"id" => $invoiceId,
+				"isOverwrite" => true,
 			]);
 			return;
 		}

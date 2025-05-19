@@ -3,7 +3,6 @@
 namespace Classes\Pdf\TransactionPdf;
 
 use Classes\Project\Invoice;
-use Classes\Project\InvoiceNumberTracker;
 
 use Classes\Link;
 use Classes\Project\ClientSettings;
@@ -169,7 +168,7 @@ class InvoicePDF extends TransactionPDF
         $this->SetFont("helvetica", "", 12);
         $this->setXY(125, $y);
         $this->Cell(30, 10, "Rechnungs-Nr:");
-        $this->Cell(30, 10, InvoiceNumberTracker::peekNextInvoiceNumber(), 0, 0, 'R');
+        $this->Cell(30, 10, $this->invoice->getNumber(), 0, 0, 'R');
         $this->setXY(125, $y + 6);
         $this->Cell(30, 10, "Auftrags-Nr:");
         $this->Cell(30, 10, $this->order->getAuftragsnummer(), 0, 0, 'R');

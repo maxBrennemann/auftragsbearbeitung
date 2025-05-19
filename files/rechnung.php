@@ -34,15 +34,16 @@ if ($target == "create") {
 if ($target == "view") {
 	$invoice = Invoice::getInvoice($id);
 	$invoiceId = $invoice->getId();
-}
+} ?>
 
-if ($target == "create"): ?>
+<input class="hidden" id="invoiceId" value="<?= $invoiceId ?>">
+<input class="hidden" id="orderId" value="<?= $id ?>">
+
+<? if ($target == "create"): ?>
 	<div class="defCont">
 		<div>
 			<h3 class="font-bold">Auftrag <span><?= $id ?></span></h3>
 			<p title="Diese Nummer ist vorläufig reserviert und kann sich noch ändern.">Nächste Rechnungsnummer: <b><?= $nextInvoiceNumber ?></b></p>
-			<input class="hidden" id="invoiceId" value="<?= $invoiceId ?>">
-			<input class="hidden" id="orderId" value="<?= $id ?>">
 		</div>
 
 		<p class="mt-2">Firmenname</p>
@@ -125,7 +126,8 @@ if ($target == "create"): ?>
 <?php elseif ($target == "view"): ?>
 	<p class="my-2 font-semibold">Rechnung <span id="rechnungsnummer"><?= $invoice->getNumber(); ?></span></p>
 	<button onclick="window.history.go(-1); return false;" class="btn-cancel">Zurück</button>
-	<iframe src="/api/v1/invoice/<?= $invoiceId ?>/pdf?orderId=<?= $id ?>" class="w-full h-lvh mt-2"></iframe>
+	<button class="btn-primary" data-fun="completeInvoice" data-binding="true">PDF neu erstellen</button>
+	<iframe src="/api/v1/invoice/<?= $invoiceId ?>/pdf?orderId=<?= $id ?>" class="w-full h-lvh mt-2" id="invoicePDFPreview"></iframe>
 <?php else: ?>
 	<p>Es ist ein unerwarteter Fehler aufgetreten.</p>
 	<button class="btn-primary" onclick="window.history.go(-1); return false;" type="submit">Zurück</button>
