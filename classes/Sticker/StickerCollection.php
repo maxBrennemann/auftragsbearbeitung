@@ -294,8 +294,13 @@ class StickerCollection implements \Iterator
 
         $responseData["output"] = ob_get_clean();
 
+        return [
+            "status" => "success",
+            "responseData" => $responseData,
+        ];
+
         /* search for new stickers */
-        $stickerSearch = SearchProducts::getProductsByStickerId($id);
+        /*$stickerSearch = SearchProducts::getProductsByStickerId($id);
         $responseData["search"] = $stickerSearch;
         if ($stickerSearch == null) {
             $message = "no new sticker found";
@@ -317,7 +322,7 @@ class StickerCollection implements \Iterator
                 "status" => "error",
                 "responseData" => $responseData,
             ];
-        }
+        }*/
     }
 
     public static function addSticker()

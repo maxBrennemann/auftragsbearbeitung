@@ -3,7 +3,6 @@
 $start = microtime(true);
 
 require_once "settings.php";
-require_once "globalFunctions.php";
 
 use Classes\Auth\SessionController;
 
