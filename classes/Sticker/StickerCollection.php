@@ -266,7 +266,7 @@ class StickerCollection implements \Iterator
         ]);
     }
 
-    public static function exportSticker($id, $type, $overwrite): array
+    public static function exportSticker(int $id, string $type, bool $overwrite): array
     {
         $message = "";
         $responseData = [];
@@ -276,15 +276,15 @@ class StickerCollection implements \Iterator
         switch ($type) {
             case "sticker":
                 $aufkleber = new Aufkleber($id);
-                $aufkleber->save($overwrite["sticker"]);
+                $aufkleber->save($overwrite);
                 break;
             case "walldecal":
                 $wandtattoo = new Wandtattoo($id);
-                $wandtattoo->save($overwrite["walldecal"]);
+                $wandtattoo->save($overwrite);
                 break;
             case "textile":
                 $textil = new Textil($id);
-                $textil->save($overwrite["textile"]);
+                $textil->save($overwrite);
                 break;
             case "all":
                 $stickerCollection = new StickerCollection($id);

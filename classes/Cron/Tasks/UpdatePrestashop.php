@@ -24,11 +24,13 @@ class UpdatePrestashop implements Queueable
 
             $id = $metadata["stickerId"];
             $type = str_replace("export_", "", $type);
-            $overwrite = $metadata[$type];
+            $overwrite = $metadata["overwrite"];
 
-            Protocol::write("transfer sticker", "id: $id", "INFO");
+            Protocol::write("transfer $type", "id: $id, isOverwrite: $overwrite", "INFO");
 
             $response = StickerCollection::exportSticker($id, $type, $overwrite);
+
+            Protocol::write("transfer sticker", json_encode($response), "INFO");
 
             DBAccess::updateQuery("UPDATE task_executions SET `status` = :status, finished_at = :finishedAt WHERE id = :id", [
                 "status" => $response["status"],
