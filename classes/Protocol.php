@@ -7,6 +7,7 @@ class Protocol
 
 	private static $file;
 	private static string $filePath = "protocol.txt";
+	private static int $maxSize = 10 * 1024 * 1024;
 	private static bool $logToConsole = false;
 
 	public static function configure(string $filePath = "protocol.txt", bool $logToConsole = false)
@@ -18,6 +19,12 @@ class Protocol
 	private static function init(): void
 	{
 		if (self::$file == null) {
+			$filesize = filesize(self::$filePath);
+
+			if ($filesize > self::$maxSize) {
+				file_put_contents(self::$filePath, "");
+			}
+
 			self::$file = fopen(self::$filePath, "a");
 			register_shutdown_function([self::class, "close"]);
 		}

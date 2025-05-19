@@ -60,6 +60,9 @@ class StickerTagManager extends PrestashopConnection
         $suggestionTags = [];
 
         foreach ($queries as $query) {
+            if ($query == "") {
+                continue;
+            }
             $tags = self::getSynonyms($query);
             $suggestions = array_slice($tags, 0, 3);
             array_push($suggestionTags, ...$suggestions);

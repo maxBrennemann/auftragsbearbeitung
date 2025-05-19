@@ -28,9 +28,10 @@ class UpdatePrestashop implements Queueable
 
             $response = StickerCollection::exportSticker($id, $type, $overwrite);
 
-            DBAccess::updateQuery("UPDATE task_executions SET `status` = :status WHERE id = :id", [
+            DBAccess::updateQuery("UPDATE task_executions SET `status` = :status, finished_at = :finishedAt WHERE id = :id", [
                 "status" => $response["status"],
                 "id" => $task["id"],
+                "finishedAt" => date("Y-m-d h:i:s"),
             ]);
         }
     }
