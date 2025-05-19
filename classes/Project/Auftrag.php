@@ -411,6 +411,12 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 		return $invoice->getId();
 	}
 
+	public function getInvoiceNumber(): int
+	{
+		$invoice = Invoice::getInvoice($this->Auftragsnummer);
+		return $invoice->getNumber();
+	}
+
 	public function getLinkedVehicles()
 	{
 		return DBAccess::selectQuery("SELECT Nummer, Kennzeichen, Fahrzeug FROM fahrzeuge LEFT JOIN fahrzeuge_auftraege ON fahrzeuge_auftraege.id_fahrzeug = Nummer WHERE fahrzeuge_auftraege.id_auftrag = {$this->getAuftragsnummer()}");

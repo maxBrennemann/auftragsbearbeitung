@@ -8,7 +8,7 @@
         </div>
     </div>
     <div class="defCont" id="orderFinished">
-        <p>Auftrag <?= $auftrag->getAuftragsnummer() ?> wurde abgeschlossen. Rechnungsnummer: <span id="rechnungsnummer"><?= $auftrag->getInvoiceId() ?></span></p>
+        <p>Auftrag <?= $auftrag->getAuftragsnummer() ?> wurde abgeschlossen. Rechnungsnummer: <span id="rechnungsnummer"><?= $auftrag->getInvoiceNumber() ?></span></p>
         <button class="btn-primary mt-2" data-fun="showAuftrag" data-binding="true">Auftrag anzeigen</button>
         <?php
         $invoiceLink = "Rechnung_" . $auftrag->getInvoiceId() . ".pdf";

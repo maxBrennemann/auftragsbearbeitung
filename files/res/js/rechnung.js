@@ -13,6 +13,8 @@ const config = {
 const removedAltNames = [];
 
 function init() {
+    addBindings(functionNames);
+
     const invoiceId = document.getElementById("invoiceId");
     if (invoiceId == null) {
         return;
@@ -31,8 +33,6 @@ function init() {
             text.classList.remove("bg-white");
         }
     });
-
-    addBindings(functionNames);
 }
 
 functionNames.click_togglePredefinedTexts = () => {
@@ -138,6 +138,7 @@ functionNames.click_completeInvoice = () => {
             return;
         }
         notification("", "success");
+        getPDF();
     });
 }
 
