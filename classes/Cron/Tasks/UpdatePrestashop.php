@@ -28,7 +28,14 @@ class UpdatePrestashop implements Queueable
 
             Protocol::write("transfer $type", "id: $id, isOverwrite: $overwrite", "INFO");
 
-            $response = StickerCollection::exportSticker($id, $type, $overwrite);
+            try {
+                $response = StickerCollection::exportSticker($id, $type, $overwrite);
+            } catch (\Exception $e) {
+                $response = [
+                    "status" => "error",
+                    "message" => $e->getMessage(),
+                ];
+            }
 
             Protocol::write("transfer sticker", json_encode($response), "INFO");
 
