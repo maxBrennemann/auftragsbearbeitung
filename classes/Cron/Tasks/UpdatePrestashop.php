@@ -22,7 +22,7 @@ class UpdatePrestashop implements Queueable
             $metadata = $task["metadata"];
             $metadata = json_decode($metadata, true);
 
-            $id = $metadata["id"];
+            $id = $metadata["stickerId"];
             $type = str_replace("export_", "", $type);
             $overwrite = $metadata[$type];
 
