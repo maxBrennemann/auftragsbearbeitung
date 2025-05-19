@@ -22,16 +22,21 @@ RUN echo "upload_max_filesize=100M" > /usr/local/etc/php/conf.d/uploads.ini \
 RUN apt-get update -y && apt-get install -y libpng-dev
 RUN apt-get update && apt-get install -y \
     zlib1g-dev \
-    libzip-dev
+    libzip-dev \
+    cron
 # Install extensions
 RUN docker-php-ext-install pdo_mysql mysqli zip gd
-
-# Set the document root
-WORKDIR /var/www/html
 
 # https://stackoverflow.com/questions/73991553/permission-denied-for-laravel-and-docker
 # user muss danach gesetzt werden, da sonst die Rechte nicht stimmen
 RUN usermod --non-unique --uid $UID www-data \
   && groupmod --non-unique --gid $UID www-data \
   && chown -R www-data:www-data /var/www
-USER $UID
+
+# Create cron log
+RUN touch /var/log/cron.log
+
+# Set the document root
+WORKDIR /var/www/html
+
+#USER $UID

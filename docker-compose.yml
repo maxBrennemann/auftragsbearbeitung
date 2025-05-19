@@ -20,6 +20,14 @@ services:
         GID: ${GID}
     volumes:
       - ./:/var/www/html/
+    image: auftragsbearbeitung/php-base
+
+  cron:
+    image: auftragsbearbeitung/php-base
+    command: sh -c "chmod 0644 /etc/cron.d/php-cron && crontab /etc/cron.d/php-cron && cron && tail -f /var/log/cron.log"
+    volumes:
+      - ./:/var/www/html/
+      - ./.config/crontab:/etc/cron.d/php-cron
 
   database:
     image: mariadb:11.7
