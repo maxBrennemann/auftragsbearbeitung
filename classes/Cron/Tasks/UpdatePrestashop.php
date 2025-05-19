@@ -5,6 +5,7 @@ namespace Classes\Cron\Tasks;
 use Classes\Cron\Queueable;
 use Classes\Models\TaskExecutions;
 use Classes\Sticker\StickerCollection;
+use MaxBrennemann\PhpUtilities\DBAccess;
 
 class UpdatePrestashop implements Queueable
 {
@@ -12,7 +13,9 @@ class UpdatePrestashop implements Queueable
     public static function handle() {
         // get current tasks
         $taskExecutions = new TaskExecutions();
-        $tasks = $taskExecutions->read([]);
+        $tasks = $taskExecutions->read([
+            "status" => "scheduled",
+        ]);
 
         foreach ($tasks as $task) {
             $type = $task["job_name"];
@@ -23,9 +26,12 @@ class UpdatePrestashop implements Queueable
             $type = str_replace("export_", "", $type);
             $overwrite = $metadata[$type];
 
-            StickerCollection::exportSticker($id, $type, $overwrite);
-        }
+            $response = StickerCollection::exportSticker($id, $type, $overwrite);
 
-        // update responses
+            DBAccess::updateQuery("UPDATE task_executions SET `status` = :status WHERE id = :id", [
+                "status" => $response["status"],
+                "id" => $task["id"],
+            ]);
+        }
     }
 }
