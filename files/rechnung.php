@@ -39,7 +39,7 @@ if ($target == "view") {
 <input class="hidden" id="invoiceId" value="<?= $invoiceId ?>">
 <input class="hidden" id="orderId" value="<?= $id ?>">
 
-<? if ($target == "create"): ?>
+<?php if ($target == "create"): ?>
 	<div class="defCont">
 		<div>
 			<h3 class="font-bold">Auftrag <span><?= $id ?></span></h3>
