@@ -44,22 +44,6 @@ function sendDate(type, value) {
     });
 }
 
-export const initOrderManager = () => {
-    addBindings(fnNames);
-
-    const inputExtraOptions = document.getElementById("extraOptions");
-    if (inputExtraOptions == null) {
-        return;
-    }
-    inputExtraOptions.addEventListener("click", function (e) {
-        const showExtraOptions = document.getElementById("showExtraOptions");
-        showExtraOptions.classList.toggle("hidden");
-    });
-
-    const deleteOrder = document.getElementById("deleteOrder");
-    deleteOrder.addEventListener("click", showDeleteConfirmation);
-}
-
 function showDeleteConfirmation() {
     const template = document.getElementById("templateAlertBox");
     const div = document.createElement("div");
@@ -106,7 +90,7 @@ fnNames.write_editDescription = () => {
     });
 }
 
-fnNames.click_editOrderType = () => {
+fnNames.write_editOrderType = () => {
     const el = document.getElementById("orderType");
     const value = el.value;
 
@@ -121,7 +105,7 @@ fnNames.click_editOrderType = () => {
     });
 }
 
-fnNames.click_editTitle = () => {
+fnNames.write_editTitle = () => {
     const el = document.getElementById("orderTitle");
     const value = el.value;
 
@@ -150,4 +134,20 @@ fnNames.click_archivieren = () => {
             createPopup(div);
         }
     })
+}
+
+export const initOrderManager = () => {
+    addBindings(fnNames);
+
+    const inputExtraOptions = document.getElementById("extraOptions");
+    if (inputExtraOptions == null) {
+        return;
+    }
+    inputExtraOptions.addEventListener("click", function (e) {
+        const showExtraOptions = document.getElementById("showExtraOptions");
+        showExtraOptions.classList.toggle("hidden");
+    });
+
+    const deleteOrder = document.getElementById("deleteOrder");
+    deleteOrder.addEventListener("click", showDeleteConfirmation);
 }
