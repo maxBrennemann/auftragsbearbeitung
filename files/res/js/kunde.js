@@ -23,7 +23,7 @@ const init = () => {
 }
 
 fnNames.click_createNewOrder = () => {
-    const link = `/neuer-auftrag?kdnr=${customerData.id}`;
+    const link = `/neuer-auftrag?id=${customerData.id}`;
     const linkEl = document.createElement("a");
     linkEl.href = link;
     linkEl.click();
