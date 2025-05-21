@@ -268,6 +268,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 			$item["unit"] = $value["MEH"];
 			$item["totalPrice"] = $value["Gesamtpreis"];
 			$item["purchasePrice"] = $value["Einkaufspreis"];
+			$item["extraData"] = $value["extraData"] ?? [];
 
 			$parsedData[] = $item;
 		}

@@ -221,21 +221,12 @@ tr:last-child td:last-child {
     border-radius: 0 6px 0 0;
 }
 
-/* info button css */
-.infoButton {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    line-height: 10px;
-    text-align: center;
-    font-size: 15px;
-    border: none;
-    box-shadow: 1px 0px 5px 0px grey;
-    font-weight: bold;
-    font-style: italic;
-    font-family: serf;
-    color: grey;
-    display: inline-block;
+.info-button::after {
+    content: 'i';
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: 'Open Sans', sans-serif;
+    line-height: 1;
 }
 
 .infoBox {

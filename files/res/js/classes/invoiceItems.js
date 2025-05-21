@@ -1,4 +1,4 @@
-import { getTemplate, setInpupts, clearInputs } from "../global.js";
+import { getTemplate, setInpupts, clearInputs, createPopup } from "../global.js";
 import { ajax } from "./ajax.js";
 import { addBindings } from "./bindings.js";
 import { notification } from "./notifications.js";
@@ -102,8 +102,23 @@ export const getItemsTable = async (tableName, id, type = "order") => {
 
     table.addEventListener("rowEdit", editItem);
 
+    addExtraData(data, table);
+
     config.table = table;
     return table;
+}
+
+const addExtraData = (data, table) => {
+    const extraDataEls = table.querySelectorAll(`button.info-button`);
+    extraDataEls.forEach(el => {
+        const id = el.dataset.id;
+        el.addEventListener("click", () => {
+            const div = document.createElement("div");
+            const extraData = data.find(entry => entry.id == id);
+            div.innerHTML = extraData.extraData;
+            createPopup(div);
+        });
+    })
 }
 
 const initItems = () => {
@@ -365,9 +380,13 @@ const calculateTime = () => {
     let minutes = 0;
     for (let i = 0; i < config.extendedTimes.length; i++) {
         const time = getTime(config.extendedTimes[i].start, config.extendedTimes[i].end);
-        minutes += Math.floor(time / 1000 / 60);
+        const timeInMinutes = Math.floor(time / 1000 / 60);
+
+        if (timeInMinutes >= 0) {
+             minutes += timeInMinutes;
+        }
     }
-    document.getElementById("time").value = minutes;
+    document.getElementById("timeInput").value = minutes;
 }
 
 const getTime = (startValue, endValue) => {

@@ -1,5 +1,3 @@
-<span><?= $timeInMinutes ?></span>
-<br>
 <table class="innerTable">
     <tr>
         <th>Von</th>

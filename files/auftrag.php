@@ -254,7 +254,7 @@ try {
 			<div class="defCont col-span-6 md:col-span-3 fahrzeuge">
 				<p>
 					<span class="font-bold">Fahrzeuge</span>
-					<button class="ml-1 infoButton" data-info="1">i</button>
+					<button class="ml-1 info-button" data-info="1"></button>
 				<p>
 				<div class="mt-2">
 					<select id="selectVehicle" class="input-primary" data-fun="selectVehicle" data-write="true">
@@ -314,7 +314,7 @@ try {
 				</div>
 				<div class="mt-2">
 					<button class="btn-primary mt-2" data-binding="true" data-fun="addList">Liste hinzufügen</button>
-					<button class="infoButton ml-1" data-info="2">i</button>
+					<button class="info-button ml-1" data-info="2"></button>
 				</div>
 			</div>
 
