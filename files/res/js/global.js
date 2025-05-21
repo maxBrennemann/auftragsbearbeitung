@@ -260,7 +260,7 @@ class TableClass {
  * in an extra div next to the "i"
  */
 function initializeInfoBtn() {
-	let btns = document.getElementsByClassName("infoButton");
+	let btns = document.getElementsByClassName("info-button");
 	Array.from(btns).forEach(btn => {
 		btn.addEventListener("click", async function () {
 			const id = btn.dataset.info;
@@ -299,7 +299,7 @@ function initializeInfoBtn() {
 }
 
 window.addEventListener("click", function (event) {
-	if (!event.target.matches('infoButton')) {
+	if (!event.target.matches('info-button')) {
 		var dropdowns = document.getElementsByClassName("infoBox");
 		for (let i = 0; i < dropdowns.length; i++) {
 			var openDropdown = dropdowns[i];

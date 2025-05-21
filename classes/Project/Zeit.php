@@ -51,7 +51,15 @@ class Zeit extends Posten
 		$arr['Postennummer'] = $this->postennummer;
 		$arr['Preis'] = $this->bekommePreisTabelle();
 		$arr['Stundenlohn'] = number_format($this->Stundenlohn, 2, ',', '') . "€";
-		$arr['Anzahl'] = $this->bekommeErweiterteZeiterfassungTabelle();
+
+		$getExtendedTimes = $this->bekommeErweiterteZeiterfassungTabelle();
+		if ($getExtendedTimes) {
+			$arr['extraData'] = $getExtendedTimes;
+		}
+
+		$arr['Anzahl'] = $getExtendedTimes ?
+			$this->ZeitInMinuten . '<button class="info-button ml-1" data-id="' . $this->postennummer . '"></button>'
+			: $this->ZeitInMinuten;
 		$arr['MEH'] =  "min";
 		$arr['Beschreibung'] = $this->beschreibung;
 		$arr['Einkaufspreis'] = "-";
@@ -69,14 +77,6 @@ class Zeit extends Posten
 
 	private function bekommeErweiterteZeiterfassungTabelle()
 	{
-		$erwZeit = DBAccess::selectQuery("SELECT id FROM zeiterfassung WHERE id_zeit = :idZeit", [
-			"idZeit" => $this->internalZeitNumber
-		]);
-
-		if ($erwZeit == null) {
-			return $this->ZeitInMinuten;
-		}
-
 		$query = "SELECT CONCAT(
 					LPAD(FLOOR(`from_time` / 60), 2, '0'), ':', 
 					LPAD(`from_time` MOD 60, 2, '0')) AS `from`, 
@@ -84,18 +84,22 @@ class Zeit extends Posten
 					LPAD(FLOOR(`to_time` / 60), 2, '0'), ':', 
 					LPAD(`to_time` MOD 60, 2, '0')) AS `to`, 
 				IF(`date` IS NULL, 'kein Datum', `date`) AS `date` 
-			FROM zeiterfassung 
-			WHERE id_zeit = :idZeit";
+			FROM zeiterfassung
+			JOIN zeit ON zeit.Nummer = id_zeit
+			WHERE zeit.Postennummer = :idPosten";
 		$times = DBAccess::selectQuery(
 			$query,
 			[
-				"idZeit" => $this->internalZeitNumber
+				"idPosten" => $this->postennummer,
 			]
 		);
 
+		if (count($times) == 0) {
+			return null;
+		}
+
 		return TemplateController::getTemplate("extendedTimes", [
 			"times" => $times,
-			"timeInMinutes" => $this->ZeitInMinuten,
 		]);
 	}
 
