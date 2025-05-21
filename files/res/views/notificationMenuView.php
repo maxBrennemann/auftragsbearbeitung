@@ -10,7 +10,7 @@
             foreach ($tasks as $n): ?>
                 <span class="p-4 border-b last:border-none border-gray-800 taskList cursor-pointer hover:bg-slate-100 flex items-center">
                     <span><?= ($count++) ?></span>
-                    <button class="redButton"><?= $n["typeName"] ?> </button>
+                    <button class="btn-primary-small"><?= $n["typeName"] ?> </button>
                     <a class="ml-2" href="<?= $n["link"] ?>"><?= $n["content"] ?></a>
                 </span>
             <?php endforeach; ?>
@@ -26,7 +26,7 @@
             foreach ($news as $n): ?>
                 <span class="p-4 border-b border-gray-800 taskList cursor-pointer hover:bg-slate-100 flex items-center">
                     <span><?= ($count++) ?></span>
-                    <button class="redButton"><?= $n["typeName"] ?> </button>
+                    <button class="btn-primary-small"><?= $n["typeName"] ?> </button>
                     <a class="ml-2" href="<?= $n["link"] ?>"><?= $n["content"] ?></a>
                 </span>
             <?php endforeach; ?>
