@@ -44,7 +44,7 @@
         </div>
         <div class="mt-1 flex flex-col">
             <span>Mengeneinheit:</span>
-            <input list="units" name="units" id="meh" class="input-primary w-48 mt-1" placeholder="Auwählen oder eingeben" data-fun="changeMeh" data-write="true">
+            <input list="units" name="units" id="meh" class="input-primary w-48 mt-1" placeholder="Auwählen oder eingeben" data-fun="changeMeh" data-write="true" type="text" maxlength="9">
             <datalist id="units">
                 <option value="Stück">
                 <option value="m²">

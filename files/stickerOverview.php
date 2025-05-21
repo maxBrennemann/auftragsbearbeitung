@@ -41,4 +41,4 @@
         </div>
     </div>
 </div>
-<div class="w-full overflow-x-scroll h-dvh overflow-y-scroll mt-2" id="stickerTable"></div>
+<div class="w-full overflow-x-auto h-dvh overflow-y-scroll mt-2" id="stickerTable"></div>

@@ -97,7 +97,7 @@ else:
 
 		<div id="addNewAddress" class="bg-gray-100 p-4 rounded-lg col-span-2 2xl:col-span-1">
 			<h4 class="font-bold">Aktuelle Adressen</h4>
-			<div id="addressTable" class="mt-2 2xl:overflow-x-scroll"></div>
+			<div id="addressTable" class="mt-2 2xl:overflow-x-auto"></div>
 		</div>
 
 		<div id="notizen" class="bg-gray-100 p-4 rounded-lg">
