@@ -9,90 +9,77 @@ class SearchController
 {
 
     private array $searches = [];
-    private string $searchQuery = "";
-    private array $response = [];
+    private array $results = [];
+    private int $limit = 15;
 
-    public function __construct(string $query, array $fields, string $searchQuery)
+    private function add(string $table, array $parsedQuery)
     {
-        $this->searchQuery = $searchQuery;
-        $this->searches[] = new Search2($query, $fields, $searchQuery);
+        $this->searches[$table] = $parsedQuery;
     }
 
-    public function add(string $query, array $fields)
+    private function searchData()
     {
-        $this->searches[] = new Search2($query, $fields, $this->searchQuery);
+        foreach ($this->searches as $searchName => $parsedQuery) {
+            $query = $parsedQuery[1];
+            $filters = $parsedQuery[0];
+            $config = SearchUtils::CONFIG[$searchName];
+
+            $search = new Search2($query, $filters, $config, $searchName);
+            $this->results[$searchName] = $search->search();
+        }
     }
 
-    public function search($results = 15): array
+    private function getResults()
     {
-        foreach ($this->searches as $search) {
-            $this->response[] = $search->search();
+        $scored = [];
+        foreach ($this->results as $result) {
+            $scored = array_merge($scored, $result);
         }
 
-        return $this->evaluate($results);
+        $scored = array_filter($scored, fn($v) => $v["score"] > 0);
+        usort($scored, fn($a, $b) => $b["score"] <=> $a["score"]);
+
+        $scored = array_slice($scored, 0, $this->limit);
+        return $scored;
     }
 
-    /**
-     * TODO: it must be decided when to cut the results
-     * 
-     * @return array
-     */
-    private function evaluate($results): array
+    public static function search($query, $limit = 15)
     {
-        $sortedResults = [];
+        $parsedQuery = SearchUtils::parseSearchInput($query);
+        $searchController = new SearchController();
+        $searchController->limit = $limit;
 
-        foreach ($this->response as &$r) {
-            usort($r, function ($a, $b) {
-                if ($a["match"] == $b["match"]) {
-                    return 0;
-                }
-                return ($a["match"] > $b["match"]) ? -1 : 1;
-            });
-            $r = array_filter($r, fn($el) => $el["match"] > 0);
-            $r = array_slice($r, 0, $results);
-            $sortedResults[] = $r;
+        $type = $parsedQuery[0]["type"] ?? "all";
+        $config = isset(SearchUtils::CONFIG[$type]) ? true : false;
+
+        if ($type == "all" || $config == false) {
+            foreach (array_keys(SearchUtils::CONFIG) as $key) {
+                $searchController->add($key, $parsedQuery);
+            }
+        } else {
+            $searchController->add($type, $parsedQuery);
         }
 
-        return $sortedResults;
+        $searchController->searchData();
+        $results = $searchController->getResults();
+
+        return $results;
     }
 
-    public static function initSearch($type, $query, $results = 10) {
-        $sql = "";
-        $fields = [];
-
-        switch ($type) {
-            case "customer":
-                $sql = "SELECT * FROM kunde";
-                $fields = ["Firmenname", "Vorname"];
-                break;
-            case "order":
-                $sql = "SELECT Auftragsnummer, Kundennummer, Auftragsbezeichnung, Auftragsbeschreibung FROM auftrag;";
-                $fields = ["Auftragsbezeichnung", "Auftragsbeschreibung"];
-                break;
-            default:
-                throw new \Exception("unsupported search type");
-        } 
-
-        $sc = new SearchController($sql, $fields, $query);
-        return $sc->search($results);
-    }
-
-    public static function init()
+    public static function ajaxSearch()
     {
-        $type = Tools::get("type");
         $query = Tools::get("query");
-        $results = Tools::get("results");
-
-        if ($query == null) {
-            JSONResponseHandler::throwError(400, "no query parameter found");
+        $limit = (int) Tools::get("limit");
+        if ($limit <= 0) {
+            $limit = 15;
         }
 
-        try {
-            $results = self::initSearch($type, $query, $results);
-        } catch (\Exception $e) {
-            JSONResponseHandler::throwError(400, $e->getMessage());
+        if ($query == "") {
+            JSONResponseHandler::throwError(400, "Query cannot be empty");
+            return;
         }
 
+        $results = self::search($query, $limit);
         JSONResponseHandler::sendResponse($results);
     }
 }

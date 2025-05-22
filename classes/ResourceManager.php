@@ -123,17 +123,13 @@ class ResourceManager
 
     public static function showPage(): void
     {
-        if (self::$page == "test") {
-            return;
-        }
-
         $pageDetails = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM articles WHERE src = :page LIMIT 1;", [
             "page" => self::$page
         ]);
         $articleUrl = "";
 
         /* checks if file exists */
-        if ($pageDetails == null || !file_exists("./files/" . $pageDetails[0]["articleUrl"])) {
+        if (empty($pageDetails) || !file_exists("./files/" . $pageDetails[0]["articleUrl"])) {
             http_response_code(404);
 
             $articleUrl = "404.php";

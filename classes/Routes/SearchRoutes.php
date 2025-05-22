@@ -8,9 +8,9 @@ class SearchRoutes extends Routes
 {
 
     /**
-     * @uses \Classes\Project\SearchController::init();
+     * @uses \Classes\Project\SearchController::ajaxSearch();
      */
     protected static $getRoutes = [
-        "/search" => [\Classes\Project\SearchController::class, "init"],
+        "/search" => [\Classes\Project\SearchController::class, "ajaxSearch"],
     ];
 }

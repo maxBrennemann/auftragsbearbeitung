@@ -8,79 +8,146 @@ class Search2
 {
 
     private string $query = "";
-    private string $searchQuery = "";
+    private array $filters = [];
+    private array $config = [];
+    private string $table = "";
 
-    private array $fields = [];
-    private array $data = [];
-    private array $response = [];
-
-    public function __construct(string $query, array $fields, string $searchQuery)
+    public function __construct(string $query, array $filters, array $config, string $table)
     {
         $this->query = $query;
-        $this->fields = $fields;
-        $this->searchQuery = $searchQuery;
+        $this->filters = $filters;
+        $this->config = $config;
+        $this->table = $table;
     }
 
     public function search(): array
     {
-        $this->data = DBAccess::selectQuery($this->query);
+        $sqlResults = $this->runSQLSearch();
+        $broadResults = $this->fetchBroadSet();
 
-        foreach ($this->data as $row) {
-            $this->response[] = [
-                "row" => $row,
-                "match" => 0,
-            ];
-        }
-
-        $this->evaluateMatches();
-
-        return $this->response;
+        $scored = $this->mergeAndScore($sqlResults, $broadResults, $this->query, $this->table);
+        return $scored;
     }
 
-    private function evaluateMatches(): array
+    private function fetchBroadSet(): array
     {
-        foreach ($this->response as &$calculatedResponse) {
-            $row = $calculatedResponse["row"];
+        $columns = array_filter($this->config["columns"], fn($value) =>
+        isset($value["fuzzy"])
+            && $value["fuzzy"] == true);
+        $columnNames = array_keys($columns);
 
-            foreach ($this->fields as $field) {
-                $searchIn = $row[$field];
+        $id = $this->config["id"];
+        $query = "SELECT $id, " . implode(",", $columnNames) . " FROM " . $this->table;
 
-                if (!isset($searchIn)) {
-                    continue;
-                }
+        return DBAccess::selectQuery($query);
+    }
 
-                if ($searchIn == $this->searchQuery) {
-                    $calculatedResponse["match"] += 300;
-                    continue;
-                }
+    private function runSQLSearch(): array
+    {
+        $SQLQuery = $this->buildSearchQuery($this->table, $this->query);
+        $data = $this->runSearchQuery($SQLQuery[0], $SQLQuery[1]);
+        return $data;
+    }
 
-                $substCount = substr_count($searchIn, $this->searchQuery);
-                $calculatedResponse["match"] += $substCount * 50;
+    private function runSearchQuery($query, $params)
+    {
+        $data = DBAccess::selectQuery($query, $params);
+        return $data;
+    }
 
-                if ($substCount >= 3) {
-                    continue;
-                }
+    private function buildSearchQuery($table, $searchTerm): array
+    {
+        $columns = SearchUtils::CONFIG[$table]["columns"] ?? [];
+        $conditions = [];
+        $params = [];
 
-                $parts = explode(" ", $searchIn);
-                foreach ($parts as $part) {
-                    $ld = levenshtein($this->searchQuery, $part);
-
-                    switch ($ld) {
-                        case 1:
-                            $calculatedResponse["match"] += 10;
-                            break;
-                        case 2:
-                            $calculatedResponse["match"] += 5;
-                            break;
-                        case 3:
-                            $calculatedResponse["match"] += 3;
-                            break;
+        foreach ($columns as $column => $info) {
+            switch ($info["type"]) {
+                case "text":
+                    if (!empty($info["fuzzy"]) && $info["fuzzy"]) {
+                        $conditions[] = "$column LIKE ?";
+                        $params[] = "%" . $searchTerm . "%";
+                    } else {
+                        $conditions[] = "$column = ?";
+                        $params[] = $searchTerm;
                     }
-                }
+                    break;
+                case "number":
+                    if (is_numeric($searchTerm)) {
+                        $conditions[] = "$column = ?";
+                        $params[] = $searchTerm;
+                    }
+                    break;
+                case "phone":
+                    $normalized = SearchUtils::normalizePhone($searchTerm);
+                    if ($normalized == 0) {
+                        break;
+                    }
+                    $conditions[] = "REPLACE(REPLACE(REPLACE($column, ' ', ''), '-', ''), '+', '') = ?";
+                    $params[] = $normalized;
+                    break;
+                case "date":
+                    if (strtotime($searchTerm)) {
+                        $conditions[] = "DATE($column) = ?";
+                        $params[] = date('Y-m-d', strtotime($searchTerm));
+                    }
+                    break;
             }
         }
 
+        if (empty($conditions)) {
+            return [
+                null,
+                [],
+            ];
+        }
 
-        return [];
+        $query = "SELECT * FROM $table WHERE " . implode(" OR ", $conditions);
+        return [$query, $params];
+    }
+
+    private function mergeAndScore(array $sqlResults, array $broadResults, string $query, string $table)
+    {
+        $scored = [];
+        $key = $this->config["id"];
+
+        foreach ($sqlResults as $row) {
+            $id = $row[$key];
+            $scored[$id] = [
+                "data" => $row,
+                "score" => 30,
+            ];
+        }
+
+        foreach ($broadResults as $row) {
+            $id = $row[$key];
+            $score = 0;
+            foreach ($row as $colName => $colVal) {
+                if ($key == $colName || $colVal == null) {
+                    continue;
+                }
+
+                $value = strtolower($colVal);
+                $distance = levenshtein(strtolower($query), $value);
+                $score += max(0, 7 - $distance);
+
+                if (str_contains($value, strtolower($query))) {
+                    $score += 5;
+                }
+            }
+
+            if (!isset($scored[$id])) {
+                $scored[$id] = [
+                    "data" => $row,
+                    "score" => -7,
+                ];
+            }
+
+            $scored[$id]["score"] += $score;
+        }
+
+        $scored = array_filter($scored, fn($v) => $v["score"] > 0);
+        usort($scored, fn($a, $b) => $b["score"] <=> $a["score"]);
+        return $scored;
     }
 }
