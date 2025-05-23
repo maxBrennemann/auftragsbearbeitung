@@ -393,13 +393,10 @@ fnNames.click_toggleNav = function() {
 
 async function performGlobalSearch(e) {
 	const query = e.target.value;
-	const search = await ajax.post({
-		r: "globalSearch",
-		query: query,
-	}, true);
+	const results = await ajax.get(`/api/v1/search?query=${query}`);
 
 	const div = document.createElement("div");
-	div.innerHTML = search;
+	div.innerHTML = ""; // results
 	div.classList.add("w-7/12", "z-10", "h-96");
 
 	div.style.height = "500px";

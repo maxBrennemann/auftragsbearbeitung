@@ -355,7 +355,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 		return $t->getTable();
 	}
 
-	public static function getAuftragsliste()
+	public static function getAuftragsliste(?array $ids = null): string
 	{
 		$column_names = array(
 			0 => array("COLUMN_NAME" => "Auftragsnummer", "ALT" => "Nr.", "NOWRAP"),
@@ -371,7 +371,13 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 			FROM auftrag 
 			LEFT JOIN kunde 
 				ON auftrag.Kundennummer = kunde.Kundennummer 
-			WHERE Rechnungsnummer = 0 AND archiviert != 0";
+			WHERE ";
+
+		if ($ids != null) {
+			$query .= "Auftragsnummer IN (" . implode(",", $ids) . ")";
+		} else {
+			$query .= "Rechnungsnummer = 0 AND archiviert != 0";
+		}
 
 		$data = DBAccess::selectQuery($query);
 

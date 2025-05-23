@@ -24,7 +24,7 @@ class SearchController
             $filters = $parsedQuery[0];
             $config = SearchUtils::CONFIG[$searchName];
 
-            $search = new Search2($query, $filters, $config, $searchName);
+            $search = new Search($query, $filters, $config, $searchName);
             $this->results[$searchName] = $search->search();
         }
     }

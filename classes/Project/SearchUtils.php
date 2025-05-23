@@ -5,7 +5,7 @@ namespace Classes\Project;
 class SearchUtils
 {
 
-    public const array CONFIG = [
+    public const CONFIG = [
         "kunde" => [
             "columns" => [
                 "Firmenname" => ["type" => "text", "alias" => "name", "fuzzy" => true],

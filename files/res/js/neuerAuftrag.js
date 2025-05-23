@@ -65,13 +65,7 @@ function performAjaxSearch(e) {
     if (value.length == 0) {
         return
     }
-    ajax.post({
-        r: "search",
-        query: value,
-        stype: "kunde",
-        urlid: 1,
-        shortSummary: false,
-    }, true).then(r => {
+    ajax.get(`/api/v1/search?query=type:kunde ${value}`).then(r => {
         const searchResults = document.getElementById("searchResults");
         searchResults.innerHTML = r;
         searchResults.classList.remove("hidden");
