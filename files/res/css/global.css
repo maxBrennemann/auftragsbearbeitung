@@ -562,15 +562,6 @@ input#hamburg {
     text-decoration: none;
 }
 
-.redButton {
-    font-size: 0.5em;
-    padding: 3px;
-    border-radius: 6px;
-    border: 0px;
-    background-color: #b38484;
-    color: white;
-}
-
 .filesList {
     background-color: white;
     border: none;

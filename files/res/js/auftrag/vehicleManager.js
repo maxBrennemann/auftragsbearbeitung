@@ -1,8 +1,8 @@
 import { ajax } from "../classes/ajax.js";
 import { addBindings } from "../classes/bindings.js";
-import { clearInputs, createPopup, getTemplate } from "../global.js";
+import { clearInputs, createPopup } from "../global.js";
 import { tableConfig } from "../classes/tableconfig.js";
-import { fetchAndRenderTable } from "../classes/table.js";
+import { addRow, fetchAndRenderTable } from "../classes/table.js";
 import { initFileUploader } from "../classes/upload.js";
 import { getCustomerId, getOrderId } from "../auftrag.js";
 
@@ -10,6 +10,26 @@ const fnNames = {};
 const vehicleData =  {
     "customerId": 0,
     "orderId": 0,
+    "tableRef": null,
+    "options": {
+        "hideOptions": ["check", "move", "edit", "addRow"],
+        "primaryKey": tableConfig["fahrzeuge"].primaryKey,
+        "hide": ["Kundennummer"],
+        "autoSort": true,
+        "styles": {
+            "table": {
+                "className": ["w-full"],
+            },
+        },
+        "conditions": {
+            "Kundennummer": 0,
+            "id_auftrag": 0,
+        },
+        "link": "/fahrzeug?id=",
+        "joins": {
+            "connected_vehicles": 0
+        }
+    }
 }
 
 fnNames.click_addNewVehicle = () => {
@@ -21,8 +41,14 @@ fnNames.click_addNewVehicle = () => {
         "name": fahrzeug,
         "orderId": vehicleData.orderId,
     }).then(r => {
-        document.getElementById("fahrzeugTable").innerHTML = r.table;
         document.getElementById("addVehicle").classList.add("hidden");
+
+        addRow({
+            "Nummer": r.id,
+            "Kundennummer": vehicleData.customerId,
+            "Kennzeichen": kfz,
+            "Fahrzeug": fahrzeug,
+        }, vehicleData.tableRef, vehicleData.options);
 
         clearInputs({
             "ids": ["kfz", "fahrzeug"],
@@ -46,34 +72,20 @@ fnNames.write_selectVehicle = e => {
     const target = e.currentTarget;
     if (target.value == "addNew") {
         document.getElementById("addVehicle").classList.remove("hidden");
+        clearInputs({
+            "ids": ["kfz", "fahrzeug"],
+        });
     } else {
         document.getElementById("addVehicle").classList.add("hidden");
     }
 }
 
 const createVehicleTable = async () => {
-    const config = tableConfig["fahrzeuge"];
-    const options = {
-        "hideOptions": ["check", "move", "edit", "addRow"],
-        "primaryKey": config.primaryKey,
-        "hide": ["Kundennummer"],
-        "autoSort": true,
-        "styles": {
-            "table": {
-                "className": ["w-full"],
-            },
-        },
-        "conditions": {
-            "Kundennummer": vehicleData.customerId,
-            "id_auftrag": vehicleData.orderId,
-        },
-        "link": "/fahrzeug?id=",
-        "joins": {
-            "connected_vehicles": vehicleData.orderId
-        }
-    };
+    vehicleData.options.conditions.Kundennummer = vehicleData.customerId;
+    vehicleData.options.conditions.id_auftrag = vehicleData.orderId;
+    vehicleData.options.joins.connected_vehicles = vehicleData.orderId;
 
-    const table = await fetchAndRenderTable("fahrzeugTable", "fahrzeuge", options);
+    const table = await fetchAndRenderTable("fahrzeugTable", "fahrzeuge", vehicleData.options);
     table.addEventListener("rowUpload", e => uploadVehicleFile(e));
     table.addEventListener("rowDelete", e => {
         const data = e.detail;
@@ -81,7 +93,9 @@ const createVehicleTable = async () => {
         ajax.delete(`/api/v1/order/${vehicleData.orderId}/vehicles/${data.Nummer}`).then(() => {
             data.row.remove();
         });
-    })
+    });
+
+    vehicleData.tableRef = table;
 }
 
 const uploadVehicleFile = async (e) => {

@@ -239,7 +239,7 @@ try {
 						<span class="ml-1">Rechnungsposten ausblenden</span>
 					</label>
 				</p>
-				<div class="overflow-x-scroll md:w-full">
+				<div class="overflow-x-auto md:w-full">
 					<?= TemplateController::getTemplate("invoiceItems", [
 						"services" => $services
 					]); ?>
@@ -248,7 +248,7 @@ try {
 
 			<div class="defCont col-span-6 md:col-span-6 invoice">
 				<p class="font-bold">Rechnungsposten (netto)</p>
-				<div id="invoicePostenTable" class="mt-2 overflow-x-scroll md:w-full"><?= $auftrag->getInvoicePostenTable() ?></div>
+				<div id="invoicePostenTable" class="mt-2 overflow-x-auto md:w-full"><?= $auftrag->getInvoicePostenTable() ?></div>
 			</div>
 
 			<div class="defCont col-span-6 md:col-span-3 fahrzeuge">
@@ -271,7 +271,7 @@ try {
 					<p>Fahrzeug:<br><input id="fahrzeug" class="input-primary"></p>
 					<button class="btn-primary mt-2" data-binding="true" data-fun="addNewVehicle">Hinzufügen</button>
 				</div>
-				<div id="fahrzeugTable" class="mt-2 overflow-x-scroll md:w-full"></div>
+				<div id="fahrzeugTable" class="mt-2 overflow-x-auto md:w-full"></div>
 			</div>
 
 			<div class="defCont col-span-3 md:col-span-1 farben">

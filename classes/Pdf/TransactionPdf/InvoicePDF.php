@@ -116,7 +116,12 @@ class InvoicePDF extends TransactionPDF
             $count++;
         }
 
-        /* 297: Din A4 Seitenhöhe, 25: Abstand von unten für die Fußzeile, 55: bezieht sich auf die Zwischensumme und Rechnungssumme, damit diese immer auf einer Seite stehen */
+        /**
+         * 297: Din A4 Seitenhöhe,
+         * 25: Abstand von unten für die Fußzeile,
+         * 55: bezieht sich auf die Zwischensumme und Rechnungssumme, 
+         * damit diese immer auf einer Seite stehen
+         */
         if ($this->GetY() + 55 >= 297 - 35) {
             $this->AddPage();
             $this->addTableHeader(25);
