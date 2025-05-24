@@ -23,7 +23,6 @@ use Classes\Routes\UploadRoutes;
 use Classes\Routes\UserRoutes;
 use Classes\Routes\VariousRoutes;
 
-use Classes\Project\Search;
 use Classes\Project\Step;
 use Classes\Project\Table;
 use Classes\Project\Auftragsverlauf;
@@ -134,34 +133,6 @@ class Ajax
 	public static function manageRequests($reason, $page)
 	{
 		switch ($reason) {
-			case "search":
-				$stype = $_POST['stype'];
-				if (isset($_POST['urlid']) && $_POST['urlid'] == "1") {
-					$shortSummary = false;
-					if (isset($_POST['shortSummary'])) {
-						if ($_POST['shortSummary'] == "true") {
-							$shortSummary = true;
-						}
-					}
-					echo Search::getSearchTable($_POST['query'], $stype, Link::getPageLink("neuer-auftrag"), $shortSummary);
-				} else {
-					$shortSummary = false;
-					if (isset($_POST['shortSummary'])) {
-						if ($_POST['shortSummary'] == "true") {
-							$shortSummary = true;
-						}
-					}
-					echo Search::getSearchTable($_POST['query'], $stype, null, $shortSummary);
-				}
-				break;
-			case "searchProduct":
-				$query = $_POST['query'];
-				echo Search::getSearchTable($query, "produkt");
-				break;
-			case "globalSearch":
-				$query = $_POST['query'];
-				echo Search::globalSearch($query);
-				break;
 			case "delete":
 				/* using new table functionality */
 				$type = $_POST['type'];

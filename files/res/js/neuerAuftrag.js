@@ -1,20 +1,22 @@
 import { ajax } from "./classes/ajax.js";
 import { addBindings, getVariable } from "./classes/bindings.js";
+import { renderTable } from "./classes/table.js";
 
 const fnNames = {};
 
 function initNewOrder() {
     addBindings(fnNames);
-    const input = document.getElementById("kundensuche");
+    const input = document.getElementById("customerSearch");
     if (input != null) {
-        input.addEventListener("keyup", function (e) {
+        input.addEventListener("keyup", e => {
             if (e.key === "Escape") {
                 const searchResults = document.getElementById("searchResults");
                 searchResults.innerHTML = "";
                 searchResults.classList.add("hidden");
             } else if (e.key === "Enter") {
                 const value = e.target.value;
-                if (!isNaN(value)) {
+                const number = parseInt(value);
+                if (!isNaN(number)) {
                     openCustomer(value);
                 }
             }
@@ -60,47 +62,47 @@ function openCustomer(id) {
     window.location.href = url.href;
 }
 
-function performAjaxSearch(e) {
+async function performAjaxSearch(e) {
     const value = e.target.value;
     if (value.length == 0) {
         return
     }
-    ajax.post({
-        r: "search",
-        query: value,
-        stype: "kunde",
-        urlid: 1,
-        shortSummary: false,
-    }, true).then(r => {
-        const searchResults = document.getElementById("searchResults");
-        searchResults.innerHTML = r;
-        searchResults.classList.remove("hidden");
+    const data = await ajax.get(`/api/v1/search?query=type:kunde ${value}`);
+    const parsedData = [];
+    data.forEach(el => {
+        parsedData.push(el.data);
+    })
 
-        searchResults.classList.add("overflow-x-auto");
-        const table = document.querySelector("table");
+    const searchResults = document.getElementById("searchResults");
+    searchResults.innerHTML = "";
+    searchResults.classList.remove("hidden");
 
-        if (!table) {
-            return;
-        }
+    const options = {
+        "hideOptions": ["all"],
+        "link": "/neuer-auftrag?id=",
+        "primaryKey": "Kundennummer",
+    }
 
-        table.classList.add("table-fixed", "w-full");
+    const header = [
+        {
+            "key": "Kundennummer",
+            "label": "Kundennummer",
+        },
+        {
+            "key": "Firmenname",
+            "label": "Firmenname",
+        },
+        {
+            "key": "Vorname",
+            "label": "Vorname",
+        },
+        {
+            "key": "Nachname",
+            "label": "Nachname",
+        },
+    ];
 
-        tableRowClickable(table);
-    });
-}
-
-function tableRowClickable(table) {
-    Array.from(table.querySelectorAll("tr")).forEach(tr => {
-        if (tr.children[0].classList.contains("tableHead")) {
-            return;
-        }
-
-        tr.classList.add("cursor-pointer");
-        tr.addEventListener("click", function (e) {
-            const kdnr = e.currentTarget.children[0].innerHTML;
-            openCustomer(kdnr);
-        })
-    });
+    renderTable("searchResults", header, parsedData, options);
 }
 
 /* init */
