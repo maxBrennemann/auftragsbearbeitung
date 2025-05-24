@@ -127,11 +127,11 @@ if (Tools::get("id")) : ?>
 <?php else: ?>
 	<div class="defCont">
 		<p>Kundennummer eingeben oder Kunde suchen:</p>
-		<input class="input-primary" data-input="true" data-fun="searchCustomer">
+		<input class="input-primary" data-input="true" data-fun="searchCustomer" id="customerSearch">
 	</div>
 	<div class="defCont">
 		<p>Ergebnisse:</p>
-		<div class="hidden w-full h-96" id="searchResults"></div>
+		<div class="hidden w-full h-96 overflow-y-auto" id="searchResults"></div>
 	</div>
 	<div class="defCont">
 		<span>Oder <a href="<?= Link::getPageLink("angebot") ?>?open" class="link-primary">Angebot übernehmen</a></span>

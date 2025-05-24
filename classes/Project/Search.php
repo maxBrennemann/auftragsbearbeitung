@@ -115,6 +115,7 @@ class Search
             $id = $row[$key];
             $scored[$id] = [
                 "data" => $row,
+                "type" => $table,
                 "score" => 30,
             ];
         }
@@ -139,6 +140,7 @@ class Search
             if (!isset($scored[$id])) {
                 $scored[$id] = [
                     "data" => $row,
+                    "type" => $table,
                     "score" => -7,
                 ];
             }

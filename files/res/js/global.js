@@ -92,7 +92,8 @@ const initSearch = () => {
 
 function initSearchListener() {
 	document.addEventListener("keydown", function (event) {
-		if (event.key === "k" && event.ctrlKey) {
+		if ((event.key === "k" && event.ctrlKey) ||
+			(event.key === "k" && event.metaKey)) {
 			event.stopPropagation();
 			event.preventDefault();
 
@@ -393,17 +394,11 @@ fnNames.click_toggleNav = function() {
 
 async function performGlobalSearch(e) {
 	const query = e.target.value;
-	const results = await ajax.get(`/api/v1/search?query=${query}`);
+	const results = await ajax.get(`/api/v1/search/all?query=${query}`);
 
 	const div = document.createElement("div");
-	div.innerHTML = ""; // results
-	div.classList.add("w-7/12", "z-10", "h-96");
-
-	div.style.height = "500px";
-	if (innerHeight < 550) {
-		div.style.height = "200px";
-	}
-	div.style.overflowY = "scroll";
+	div.innerHTML = results.html;
+	div.classList.add("h-96", "overflow-y-scroll");
 
 	createPopup(div);
 }

@@ -10,11 +10,10 @@ $query = Tools::get("query");
 $customers = [];
 
 if ($query != null) {
-    $results = SearchController::initSearch("customer", $query, 10);
-    foreach ($results as $resultType) {
-        foreach ($resultType as $result) {
-            $customers[] = new Kunde($result["row"]["Kundennummer"]);
-        }
+    $results = SearchController::search("type:kunde $query", 10);
+    foreach ($results as $result) {
+        $id = (int) $result["data"]["Kundennummer"];
+        $customers[] = new Kunde($id);
     }
 } else {
     $customers = Kunde::getAllCustomerOverviews();

@@ -43,7 +43,7 @@ class SearchController
         return $scored;
     }
 
-    public static function search($query, $limit = 15)
+    public static function search($query, $limit = 15): array
     {
         $parsedQuery = SearchUtils::parseSearchInput($query);
         $searchController = new SearchController();
@@ -81,5 +81,28 @@ class SearchController
 
         $results = self::search($query, $limit);
         JSONResponseHandler::sendResponse($results);
+    }
+
+    public static function searchAll() {
+        $query = Tools::get("query");
+        $results = self::search($query, 20);
+
+        $html = "";
+        foreach ($results as $result) {
+            switch ($result["type"]) {
+                case "kunde":
+                    break;
+                case "produkt":
+                    break;
+                case "auftrag":
+                    break;
+                case "wiki_articles":
+                    break;
+            }
+        }
+
+        JSONResponseHandler::sendResponse([
+            "html" => $html,
+        ]);
     }
 }
