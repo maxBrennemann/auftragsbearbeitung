@@ -12,7 +12,7 @@ const config = {
     "tableOptions": {
         "primaryKey": "id",
         "hide": ["id"],
-        "hideOptions": ["addRow", "check", "move", "add"],
+        "hideOptions": ["addRow", "check", "add"],
         "styles": {
             "table": {
                 "className": ["w-full"],
@@ -92,15 +92,9 @@ export const getItemsTable = async (tableName, id, type = "order") => {
     const data = await getItems(id, type);
     const table = renderTable(tableName, config.tableHeader, data, config.tableOptions);
 
-    table.addEventListener("rowDelete", e => {
-        const data = e.detail;
-
-        ajax.delete(`/api/v1/order-items/${data.type}/${data.id}`).then(() => {
-            data.row.remove();
-        });
-    });
-
+    table.addEventListener("rowDelete", deleteItem);
     table.addEventListener("rowEdit", editItem);
+    table.addEventListener("rowMove", moveItem)
 
     addExtraData(data, table);
 
@@ -143,6 +137,18 @@ const initItems = () => {
     });
 }
 
+const deleteItem = e => {
+    const data = e.detail;
+
+    ajax.delete(`/api/v1/order-items/${data.type}/${data.id}`).then(() => {
+        data.row.remove();
+    });
+}
+
+const moveItem = e => {
+    console.log(e.detail);
+}
+
 const editItem = e => {
     const data = e.detail;
     const type = data.type;
@@ -164,7 +170,7 @@ const editItem = e => {
             editService();
             break;
         case "product":
-            break; 
+            break;
     }
 }
 
@@ -383,7 +389,7 @@ const calculateTime = () => {
         const timeInMinutes = Math.floor(time / 1000 / 60);
 
         if (timeInMinutes >= 0) {
-             minutes += timeInMinutes;
+            minutes += timeInMinutes;
         }
     }
     document.getElementById("timeInput").value = minutes;

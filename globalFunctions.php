@@ -82,12 +82,13 @@ function getCurrentVersion(): string
 
 function errorReporting(): void
 {
-	if ($_ENV["ERRORREPORTING"]) {
+	if ($_ENV["ERRORREPORTING"] == "on") {
+		ini_set('display_errors', 1);
+		ini_set('display_startup_errors', 1);
 		error_reporting(E_ALL);
-		ini_set('display_errors', true);
+	} else {
+		ini_set('display_errors', 0);
 	}
-
-	ini_set('display_errors', false);
 }
 
 function insertTemplate($path, array $parameters = [])

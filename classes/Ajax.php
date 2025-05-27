@@ -197,10 +197,6 @@ class Ajax
 
 				echo "ok";
 				break;
-			case "getAddresses":
-				$kdnr = (int) $_POST['kdnr'];
-				echo json_encode(Address::loadAllAddresses($kdnr));
-				break;
 			case "table":
 				/*
 				 * gets table data with action and key
