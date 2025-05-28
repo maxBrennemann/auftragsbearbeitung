@@ -3,6 +3,8 @@
 define('CURRENTVERSION', '1.2.1');
 ini_set('display_errors', true);
 
+use Classes\Project\TemplateController;
+use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 function printError($message)
@@ -50,6 +52,53 @@ function fatal_handler()
 		"file" => $file,
 		"line" => $line,
 		"severity" => $severity
+	]);
+}
+
+function captureError()
+{
+	$error = error_get_last();
+	$e = $_ENV["LAST_EXCEPTION"] ?? null;
+
+	if (!$error && $e == null) {
+		return;
+	}
+
+	$errorTempalte = "";
+
+	if ($_ENV["DEV_MODE"]) {
+		$errorData = [];
+
+		if ($e instanceof Throwable) {
+			$errorData["type"] = "Uncaught Exception: " . get_class($e);
+			$errorData["message"] = $e->getMessage();
+			$errorData["specific"] =  "in " . $e->getFile() . ":" . $e->getLine();
+			$errorData["trace"] = $e->getTraceAsString();
+
+			$errorData["query"] = "";
+			if ($_ENV["SQL_ERROR"]) {
+				$errorData["query"] = DBAccess::getInterpolatedQuery();
+			}
+
+			error_log($e);
+		} else {
+			if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+				$errorData["type"] = "Fatal error: " . $error['message'];
+				$errorData["message"] = "";
+				$errorData["specific"] =  "in " . $error['file'] . ":" . $error['line'];
+				$errorData["trace"] = "";
+				$errorData["query"] = "";
+			}
+		}
+
+		$errorTempalte = TemplateController::getTemplate("error", [
+			"errorData" => $errorData,
+		]);
+	}
+
+	insertTemplate("./files/footer.php", [
+		"calcDuration" => $_ENV["DEV_MODE"],
+		"errorTemplate" => $errorTempalte,
 	]);
 }
 

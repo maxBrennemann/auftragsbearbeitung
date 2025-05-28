@@ -18,7 +18,7 @@ body {
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-areas: "head" "main" "foot";
+    grid-template-areas: "head" "main" "asideError" "foot";
 }
 
 header {
@@ -28,6 +28,10 @@ header {
     background: white;
     box-shadow: 0px 4px 5px 3px #7373736b;
     z-index: 10;
+}
+
+aside .errorBox {
+    grid-area: asideError;
 }
 
 .lupeSpan {
