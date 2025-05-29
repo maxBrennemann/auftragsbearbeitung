@@ -20,6 +20,8 @@ services:
         GID: ${GID}
     volumes:
       - ./:/var/www/html/
+      - ./.config/php-config.ini:/usr/local/etc/php/conf.d/custom-php-errors.ini
+      - ./.config/php.conf:/usr/local/etc/php-fpm.d/custom-php.conf
     image: auftragsbearbeitung/php-base
 
   cron:
@@ -28,6 +30,8 @@ services:
     volumes:
       - ./:/var/www/html/
       - ./.config/crontab:/etc/cron.d/php-cron
+    profiles:
+      - donotstart
 
   database:
     image: mariadb:11.7

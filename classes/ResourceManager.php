@@ -140,6 +140,8 @@ class ResourceManager
             $pageName = $pageDetails["pageName"];
         }
 
+        ob_start();
+
         insertTemplate("./files/header.php", [
             "pageName" => $pageName,
             "page" => self::$page,

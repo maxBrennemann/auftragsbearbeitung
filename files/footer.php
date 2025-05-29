@@ -1,4 +1,5 @@
 	</main>
+	<?= $errorTemplate ?? "" ?>
 	<?php
 
 	use Classes\Link;

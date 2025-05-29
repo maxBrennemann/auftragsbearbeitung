@@ -23,6 +23,7 @@
         <li>Rechnungsstellung Fehlerbehebungen</li>
         <li>Bilder können jetzt immer in einer Vorschau angeschaut werden</li>
         <li>Neuer Upload Handler und neues Dateimanagementsystem</li>
+        <li>Suche überarbeitet und neue Suche integriert</li>
         <li>Prestashop Anbindung weiter überarbeitet</li>
         <li>Prestashop Upload wird von einem CronTask übernommen</li>
         <li>Lokale Entwicklungsumgebung angepasst

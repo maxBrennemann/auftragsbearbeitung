@@ -318,6 +318,7 @@ class Zeit extends Posten
 	public static function delete()
 	{
 		$idItem = (int) Tools::get("itemId");
+		parent::delete();
 
 		$query = "SELECT Nummer AS id FROM zeit WHERE Postennummer = :idItem;";
 		$data = DBAccess::selectQuery($query, [
@@ -325,7 +326,6 @@ class Zeit extends Posten
 		]);
 
 		if (empty($data)) {
-			parent::delete();
 			return;
 		}
 
@@ -339,6 +339,5 @@ class Zeit extends Posten
 		DBAccess::deleteQuery($query, [
 			"idItem" => $idItem,
 		]);
-		parent::delete();
 	}
 }

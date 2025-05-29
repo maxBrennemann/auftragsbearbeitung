@@ -262,11 +262,11 @@ class Leistung extends Posten
 	public static function delete()
 	{
 		$idItem = (int) Tools::get("itemId");
+		parent::delete();
 
 		$query = "DELETE FROM leistung_posten WHERE Postennummer = :idItem;";
 		DBAccess::deleteQuery($query, [
 			"idItem" => $idItem,
 		]);
-		parent::delete();
 	}
 }
