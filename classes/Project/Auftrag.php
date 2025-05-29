@@ -34,7 +34,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 	private int $customerId = 0;
 
 	public const IS_ACTIVE = 0;
-	public const IS_ARCHIVED = 1;
+	public const IS_ARCHIVED = 0;
 	public const IS_FINISHED = -1;
 
 	public function __construct(int $orderId)
