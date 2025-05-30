@@ -2,7 +2,7 @@
 
 namespace Classes\Project;
 
-use Classes\Project\Models\Model;
+use Classes\Models\Model;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;

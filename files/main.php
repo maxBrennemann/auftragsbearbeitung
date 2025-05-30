@@ -2,7 +2,6 @@
 
 use Classes\Link;
 
-use Classes\Project\Auftrag;
 use Classes\Project\Invoice;
 use Classes\Project\Icon;
 

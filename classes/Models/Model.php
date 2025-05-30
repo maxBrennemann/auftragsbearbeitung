@@ -1,6 +1,6 @@
 <?php
 
-namespace Classes\Project\Models;
+namespace Classes\Models;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
 

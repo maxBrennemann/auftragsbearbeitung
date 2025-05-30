@@ -1,6 +1,6 @@
 ﻿<?php
 
-use Classes\Project\Models\Model;
+use Classes\Models\Model;
 
 $data = Model::init("leistung");
 $data = $data->read();
