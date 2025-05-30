@@ -39,7 +39,7 @@ class Link
 	 */
 	public static function getDefaultImage(): string
 	{
-		return $_ENV["REWRITE_BASE"] . "img/default_image.png";
+		return $_ENV["REWRITE_BASE"] . "files/assets/img/default_image.png";
 	}
 
 	public static function getResourcesLink($resource, $type, $rewriteBase = true)
@@ -60,7 +60,7 @@ class Link
 				$link = $rewriteBase . "files/assets/fonts/" . $resource;
 				break;
 			case "html":
-				$link = $rewriteBase . "files/res/form/" . $resource;
+				$link = $rewriteBase . "files/assets/forms/" . $resource;
 				break;
 			case "upload":
 				$subDir = substr($resource, 0, 2) . "/" . substr($resource, 2, 2);

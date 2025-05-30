@@ -306,9 +306,9 @@ class ResourceManager
         $fileName = Link::getResourcesLink($upload, "upload", false);
 
         if (!file_exists($fileName)) {
-            $mime_type = $finfo->file("img/default_image.png");
+            $mime_type = $finfo->file("files/assets/img/default_image.png");
             header("Content-type:$mime_type");
-            echo file_get_contents("img/default_image.png");
+            echo file_get_contents("files/assets/img/default_image.png");
             return;
         }
 
@@ -355,8 +355,9 @@ class ResourceManager
 
     private static function get_image($file)
     {
-        header("Content-type: " .  mime_content_type("img/" . $file));
-        $file = file_get_contents("img/" . $file);
+        $filePath = "files/assets/img" . $file;
+        header("Content-type: " .  mime_content_type($filePath));
+        $file = file_get_contents($filePath);
 
         echo $file;
     }
