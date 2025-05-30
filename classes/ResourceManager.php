@@ -129,7 +129,7 @@ class ResourceManager
         $articleUrl = "";
 
         /* checks if file exists */
-        if (empty($pageDetails) || !file_exists("./files/" . $pageDetails[0]["articleUrl"])) {
+        if (empty($pageDetails) || !file_exists("./files/pages/" . $pageDetails[0]["articleUrl"])) {
             http_response_code(404);
 
             $articleUrl = "404.php";
@@ -142,14 +142,14 @@ class ResourceManager
 
         ob_start();
 
-        insertTemplate("./files/header.php", [
+        insertTemplate("./files/layout/header.php", [
             "pageName" => $pageName,
             "page" => self::$page,
         ]);
 
-        insertTemplate("./files/$articleUrl");
+        insertTemplate("./files/pages/$articleUrl");
 
-        insertTemplate("./files/footer.php", [
+        insertTemplate("./files/layout/footer.php", [
             "calcDuration" => $_ENV["DEV_MODE"],
         ]);
     }

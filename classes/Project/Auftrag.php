@@ -441,7 +441,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 		]);
 
 		ob_start();
-		insertTemplate('files/res/views/colorView.php', [
+		insertTemplate('files/views/colorView.php', [
 			"colors" => $colors,
 		]);
 
@@ -852,7 +852,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 		}
 
 		ob_start();
-		insertTemplate('files/res/views/orderCardView.php', [
+		insertTemplate('files/views/orderCardView.php', [
 			"orders" => $orders,
 		]);
 		$content = ob_get_clean();

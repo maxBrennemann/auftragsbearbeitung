@@ -46,7 +46,7 @@ upload/*
 !upload/.gitkeep
 
 # misc
-files/res/form/modules/sticker/catalog_products.csv
+files/assets/forms/modules/sticker/catalog_products.csv
 .git.bfg-report
 favicon.ico
 protocol.txt

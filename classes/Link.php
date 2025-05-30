@@ -57,7 +57,7 @@ class Link
 				$link = $rewriteBase . "files/res/js/" . $resource;
 				break;
 			case "font":
-				$link = $rewriteBase . "files/res/font/" . $resource;
+				$link = $rewriteBase . "files/assets/fonts/" . $resource;
 				break;
 			case "html":
 				$link = $rewriteBase . "files/res/form/" . $resource;
