@@ -10,6 +10,7 @@ auftragsbearbeitung.code-workspace
 .env
 node_modules
 vendor
+.config/install/install.lock
 cache/*
 !cache/.gitkeep
 
