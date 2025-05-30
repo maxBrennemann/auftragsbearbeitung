@@ -123,33 +123,38 @@ class ResourceManager
 
     public static function showPage(): void
     {
-        $pageDetails = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM articles WHERE src = :page LIMIT 1;", [
-            "page" => self::$page
-        ]);
-        $articleUrl = "";
+        $routes = require "config/web-routes.php";
+        $page = self::$page;
 
-        /* checks if file exists */
-        if (empty($pageDetails) || !file_exists("./files/" . $pageDetails[0]["articleUrl"])) {
-            http_response_code(404);
+        $filePath = "";
+        $pageName = "";
 
-            $articleUrl = "404.php";
-            $pageName = "Page not found";
+        if (isset($routes[$page])) {
+            $filePath = $routes[$page]['file'];
+            $pageName = $routes[$page]['name'] ?? ucfirst($page);
         } else {
-            $pageDetails = $pageDetails[0];
-            $articleUrl = $pageDetails["articleUrl"];
-            $pageName = $pageDetails["pageName"];
+            $candidateFile = "./files/pages/$page.php";
+
+            if (file_exists($candidateFile)) {
+                $filePath = "$page.php";
+                $pageName = ucfirst(str_replace('-', ' ', $page));
+            }
         }
 
-        ob_start();
+        if (!$filePath || !file_exists("./files/pages/$filePath")) {
+            http_response_code(404);
+            $filePath = '404.php';
+            $pageName = 'Page not found';
+        }
 
-        insertTemplate("./files/header.php", [
+        insertTemplate("./files/layout/header.php", [
             "pageName" => $pageName,
-            "page" => self::$page,
+            "page" => $page,
         ]);
 
-        insertTemplate("./files/$articleUrl");
+        insertTemplate("./files/pages/$filePath");
 
-        insertTemplate("./files/footer.php", [
+        insertTemplate("./files/layout/footer.php", [
             "calcDuration" => $_ENV["DEV_MODE"],
         ]);
     }
@@ -306,9 +311,9 @@ class ResourceManager
         $fileName = Link::getResourcesLink($upload, "upload", false);
 
         if (!file_exists($fileName)) {
-            $mime_type = $finfo->file("img/default_image.png");
+            $mime_type = $finfo->file("files/assets/img/default_image.png");
             header("Content-type:$mime_type");
-            echo file_get_contents("img/default_image.png");
+            echo file_get_contents("files/assets/img/default_image.png");
             return;
         }
 
@@ -355,8 +360,9 @@ class ResourceManager
 
     private static function get_image($file)
     {
-        header("Content-type: " .  mime_content_type("img/" . $file));
-        $file = file_get_contents("img/" . $file);
+        $filePath = "files/assets/img" . $file;
+        header("Content-type: " .  mime_content_type($filePath));
+        $file = file_get_contents($filePath);
 
         echo $file;
     }

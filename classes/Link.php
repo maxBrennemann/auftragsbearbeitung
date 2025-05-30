@@ -14,19 +14,9 @@ class Link
 
 	public function __construct() {}
 
-	public static function getPageLink($resourceName)
+	public static function getPageLink($resourceName): string
 	{
-		if (DBAccess::selectQuery("SELECT * FROM articles WHERE src = '$resourceName'") == null) {
-			return self::get404();
-		}
-
 		$link = $_ENV["WEB_URL"] . $_ENV["SUB_URL"] . $resourceName;
-		return $link;
-	}
-
-	public static function get404()
-	{
-		$link = $_ENV["WEB_URL"] . $_ENV["SUB_URL"] . "404";
 		return $link;
 	}
 
@@ -39,7 +29,7 @@ class Link
 	 */
 	public static function getDefaultImage(): string
 	{
-		return $_ENV["REWRITE_BASE"] . "img/default_image.png";
+		return $_ENV["REWRITE_BASE"] . "files/assets/img/default_image.png";
 	}
 
 	public static function getResourcesLink($resource, $type, $rewriteBase = true)
@@ -57,10 +47,10 @@ class Link
 				$link = $rewriteBase . "files/res/js/" . $resource;
 				break;
 			case "font":
-				$link = $rewriteBase . "files/res/font/" . $resource;
+				$link = $rewriteBase . "files/assets/fonts/" . $resource;
 				break;
 			case "html":
-				$link = $rewriteBase . "files/res/form/" . $resource;
+				$link = $rewriteBase . "files/assets/forms/" . $resource;
 				break;
 			case "upload":
 				$subDir = substr($resource, 0, 2) . "/" . substr($resource, 2, 2);

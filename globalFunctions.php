@@ -96,7 +96,7 @@ function captureError()
 		]);
 	}
 
-	insertTemplate("./files/footer.php", [
+	insertTemplate("./files/layout/footer.php", [
 		"calcDuration" => $_ENV["DEV_MODE"],
 		"errorTemplate" => $errorTempalte,
 	]);

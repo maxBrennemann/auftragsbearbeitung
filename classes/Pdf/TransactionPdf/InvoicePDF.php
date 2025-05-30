@@ -214,7 +214,7 @@ class InvoicePDF extends TransactionPDF
     {
         $image = ClientSettings::getLogo();
         if ($image == "") {
-            return "img/default_image.png";
+            return "files/assets/img/default_image.png";
         } else {
             return Link::getResourcesLink($image, "upload", false);
         }

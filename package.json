@@ -10,7 +10,7 @@
   "scripts": {
     "tailwind": "npx tailwindcss -i input.css -o ./files/res/css/tailwind.css --watch",
     "build": "webpack",
-    "mysqldump": "mysqldump --host=host.docker.internal --user=root auftragsmanager --result-file=dumps/dump.sql"
+    "mysqldump": "mysqldump --no-data --routines --triggers -u auftragsmanager -p auftragsbearbeitung --host 127.0.0.1 > database/versions/1.2.1/schema.sql"
   },
   "dependencies": {
     "chart.js": "^4.4.1",
@@ -21,7 +21,7 @@
   },
   "name": "auftragsbearbeitung",
   "description": "The Invoice and Order Management System is a web-based application built using PHP, JavaScript, and HTML. The system allows businesses to manage customer orders, products, pricing, invoices, and customer data.",
-  "version": "1.0.0",
+  "version": "1.2.1",
   "main": "tailwind.config.js",
   "keywords": [],
   "author": "",
