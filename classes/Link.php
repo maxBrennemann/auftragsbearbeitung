@@ -14,19 +14,9 @@ class Link
 
 	public function __construct() {}
 
-	public static function getPageLink($resourceName)
+	public static function getPageLink($resourceName): string
 	{
-		if (DBAccess::selectQuery("SELECT * FROM articles WHERE src = '$resourceName'") == null) {
-			return self::get404();
-		}
-
 		$link = $_ENV["WEB_URL"] . $_ENV["SUB_URL"] . $resourceName;
-		return $link;
-	}
-
-	public static function get404()
-	{
-		$link = $_ENV["WEB_URL"] . $_ENV["SUB_URL"] . "404";
 		return $link;
 	}
 

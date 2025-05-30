@@ -1,0 +1,13 @@
+<?php
+
+return new class {
+
+    private $queries = [
+        "DROP TABLE IF EXISTS articles;",
+    ];
+
+    public function getQueries()
+    {
+        return $this->queries;
+    }
+};

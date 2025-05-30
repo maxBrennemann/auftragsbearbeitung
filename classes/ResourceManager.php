@@ -123,31 +123,36 @@ class ResourceManager
 
     public static function showPage(): void
     {
-        $pageDetails = DBAccess::selectQuery("SELECT id, articleUrl, pageName FROM articles WHERE src = :page LIMIT 1;", [
-            "page" => self::$page
-        ]);
-        $articleUrl = "";
+        $routes = require "config/web-routes.php";
+        $page = self::$page;
 
-        /* checks if file exists */
-        if (empty($pageDetails) || !file_exists("./files/pages/" . $pageDetails[0]["articleUrl"])) {
-            http_response_code(404);
+        $filePath = "";
+        $pageName = "";
 
-            $articleUrl = "404.php";
-            $pageName = "Page not found";
+        if (isset($routes[$page])) {
+            $filePath = $routes[$page]['file'];
+            $pageName = $routes[$page]['name'] ?? ucfirst($page);
         } else {
-            $pageDetails = $pageDetails[0];
-            $articleUrl = $pageDetails["articleUrl"];
-            $pageName = $pageDetails["pageName"];
+            $candidateFile = "./files/pages/$page.php";
+
+            if (file_exists($candidateFile)) {
+                $filePath = "$page.php";
+                $pageName = ucfirst(str_replace('-', ' ', $page));
+            }
         }
 
-        ob_start();
+        if (!$filePath || !file_exists("./files/pages/$filePath")) {
+            http_response_code(404);
+            $filePath = '404.php';
+            $pageName = 'Page not found';
+        }
 
         insertTemplate("./files/layout/header.php", [
             "pageName" => $pageName,
-            "page" => self::$page,
+            "page" => $page,
         ]);
 
-        insertTemplate("./files/pages/$articleUrl");
+        insertTemplate("./files/pages/$filePath");
 
         insertTemplate("./files/layout/footer.php", [
             "calcDuration" => $_ENV["DEV_MODE"],
