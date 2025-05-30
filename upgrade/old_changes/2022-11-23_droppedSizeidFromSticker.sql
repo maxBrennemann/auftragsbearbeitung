@@ -1,1 +1,0 @@
-ALTER TABLE `module_sticker_sticker_data` DROP `sizeid`;

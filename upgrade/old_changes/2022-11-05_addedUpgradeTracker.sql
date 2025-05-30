@@ -1,1 +1,0 @@
-CREATE TABLE `upgrade_tracker` (`id` INT NOT NULL AUTO_INCREMENT , `date` DATE NOT NULL , `title` VARCHAR(64) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;

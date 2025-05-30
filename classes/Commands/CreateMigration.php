@@ -32,7 +32,7 @@ class CreateMigration extends Command
         }
 
         $date = date("Y-m-d");
-        file_put_contents("upgrade/Changes/" . $date . "_" . $name . ".php", $this->text);
+        file_put_contents("database/Migrations/" . $date . "_" . $name . ".php", $this->text);
 
         return Command::SUCCESS;
     }
