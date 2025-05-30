@@ -10,6 +10,7 @@ auftragsbearbeitung.code-workspace
 .env
 node_modules
 vendor
+.config/install/install.lock
 cache/*
 !cache/.gitkeep
 
@@ -46,7 +47,7 @@ upload/*
 !upload/.gitkeep
 
 # misc
-files/res/form/modules/sticker/catalog_products.csv
+files/assets/forms/modules/sticker/catalog_products.csv
 .git.bfg-report
 favicon.ico
 protocol.txt

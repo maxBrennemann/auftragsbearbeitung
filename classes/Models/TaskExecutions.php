@@ -2,8 +2,6 @@
 
 namespace Classes\Models;
 
-use Classes\Project\Models\Model;
-
 class TaskExecutions extends Model {
 
     public array $fillable = [];

@@ -2,8 +2,6 @@
 
 namespace Classes\Models;
 
-use Classes\Project\Models\Model;
-
 class Service extends Model {
 
     public array $fillable = [];

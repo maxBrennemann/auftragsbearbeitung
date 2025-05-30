@@ -362,20 +362,11 @@ class Invoice
 	 */
 	public static function getOpenInvoiceSum(): int
 	{
-		$query = "SELECT ROUND(SUM(all_posten.price), 2) AS summe
-			FROM (
-					SELECT (zeit.ZeitInMinuten / 60) * zeit.Stundenlohn AS price, posten.Auftragsnummer as id 
-					FROM zeit, posten 
-					WHERE zeit.Postennummer = posten.Postennummer
-				UNION ALL
-					SELECT leistung_posten.SpeziefischerPreis AS price, posten.Auftragsnummer as id 
-					FROM leistung_posten, posten 
-					WHERE leistung_posten.Postennummer = posten.Postennummer
-			) all_posten
-			JOIN auftrag ON auftrag.Auftragsnummer = all_posten.id 
+		$query = "SELECT ROUND(SUM(auftragssumme.orderPrice), 2) AS summe
+			FROM auftrag, auftragssumme
 			WHERE auftrag.Rechnungsnummer != 0 
 				AND auftrag.Bezahlt = 0
-				AND auftrag.archiviert != 1";
+				AND auftrag.Auftragsnummer = auftragssumme.id";
 		$summe = DBAccess::selectQuery($query)[0]["summe"];
 		if ($summe == null) {
 			return 0;

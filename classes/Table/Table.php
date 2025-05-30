@@ -4,7 +4,7 @@ namespace Classes\Table;
 
 use MaxBrennemann\PhpUtilities\Tools;
 
-use Classes\Project\Models\Model;
+use Classes\Models\Model;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 class Table extends Model

@@ -3,7 +3,7 @@ import { TableSorter, currentTableSorter, setTableSorter, sortTableNew } from ".
 import { ajax } from "./classes/ajax.js";
 import { timeGlobalListener } from "./classes/timetracking.js";
 import { addBindings } from "./classes/bindings.js";
-import { initEventSource } from "./classes/notoficationUpdater.js";
+import { initEventSource } from "./classes/notificationUpdater.js";
 
 const fnNames = {};
 const imagePreviewListeners = new WeakSet();
@@ -189,7 +189,12 @@ fnNames.click_showNotifications = async () => {
 	div.appendChild(innerDiv);
 	innerDiv.classList.add("notificationWrapper");
 
-	createPopup(innerDiv);
+	const options = createPopup(innerDiv);
+	const goToNotifications = document.createElement("a");
+	goToNotifications.innerHTML = "Zum Benachrichtigungszentrum";
+	goToNotifications.href = "/notifications";
+	goToNotifications.classList.add("btn-primary");
+	options.appendChild(goToNotifications);
 }
 
 function validateEmail(email) {

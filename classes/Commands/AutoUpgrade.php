@@ -50,9 +50,9 @@ class AutoUpgrade extends Command
         }
 
         if ($force) {
-            UpgradeManager::upgrade(true, "upgrade/Changes/");
+            UpgradeManager::upgrade(true, "database/Migrations/");
         } else {
-            UpgradeManager::upgrade(false, "upgrade/Changes/");
+            UpgradeManager::upgrade(false, "database/Migrations/");
         }
 
         return Command::SUCCESS;
