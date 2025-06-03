@@ -26,7 +26,6 @@ use Classes\Routes\VariousRoutes;
 use Classes\Project\Step;
 use Classes\Project\Table;
 use Classes\Project\Auftragsverlauf;
-use Classes\Project\Address;
 use Classes\Project\Statistics;
 use Classes\Project\Icon;
 use Classes\Project\User;
@@ -178,24 +177,6 @@ class Ajax
 					"success" => true,
 					"home" => Link::getPageLink(""),
 				]);
-				break;
-			case "sendPostenPositions":
-				$tableKey = $_POST["tablekey"];
-				$order = $_POST["order"];
-				$auftrag = $_POST["auftrag"];
-
-				$order = json_decode($order);
-				$counter = 1;
-				foreach ($order as $row) {
-					$id = Table::getIdentifierValue($tableKey, $row);
-
-					/* must be rewritten later due to inefficiency */
-					$query = "UPDATE posten SET position = $counter WHERE Auftragsnummer = $auftrag AND Postennummer = $id";
-					DBAccess::updateQuery($query);
-					$counter++;
-				}
-
-				echo "ok";
 				break;
 			case "table":
 				/*

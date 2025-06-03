@@ -43,11 +43,6 @@ aside .errorBox {
     padding: inherit;
 }
 
-#showNotifications {
-    max-height: 80%;
-    max-width: 80%;
-}
-
 .notificationWrapper {
     overflow-y: auto;
 }
@@ -102,79 +97,6 @@ ul {
 
 li {
     margin: 5px;
-}
-
-/* table style */
-table {
-    border-radius: 6px;
-    border-spacing: 0;
-}
-
-tbody {
-    max-width: 78vw;
-}
-
-tr {
-    background-color: white;
-    padding: 7px;
-}
-
-tr:nth-child(odd) {
-    background-color: var(--main-table-color);
-}
-
-tr:only-child {
-    background-color: var(--main-table-color);
-}
-
-th {
-    padding: 7px;
-    margin: 1px;
-    background-color: #0a3350;
-    color: white;
-    text-align: left;
-}
-
-td {
-    padding: 7px;
-    margin: 1px;
-}
-
-td a {
-    height: 100%;
-    display: block;
-    padding: 7px;
-    color: inherit !important;
-    text-decoration: none !important;
-}
-
-tr:hover td {
-    background: #bbbbbb;
-}
-
-tr th:first-child {
-    padding-left: 15px;
-}
-
-tr td:first-child {
-    padding-left: 15px;
-}
-
-tr:first-child th:first-child {
-    padding-left: 15px;
-    border-radius: 6px 0 0 0;
-}
-
-tr:first-child th:last-child {
-    border-radius: 0 6px 0 0;
-}
-
-tr:last-child td:first-child {
-    border-radius: 0 0 0 6px;
-}
-
-tr:last-child td:last-child {
-    border-radius: 0 0 6px 0;
 }
 
 .showBreadcrumb {
