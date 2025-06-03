@@ -1,6 +1,6 @@
 services:
   nginx:
-    image: nginx:stable
+    image: nginx:1.27.5
     ports:
       - 80:80
       - 443:443

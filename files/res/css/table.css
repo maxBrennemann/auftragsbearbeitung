@@ -1,0 +1,111 @@
+/* table style */
+table {
+    border-radius: 6px;
+    border-spacing: 0;
+}
+
+tbody {
+    max-width: 78vw;
+}
+
+tr {
+    background-color: white;
+    padding: 7px;
+}
+
+tr:nth-child(odd) {
+    background-color: var(--main-table-color);
+}
+
+tr:only-child {
+    background-color: var(--main-table-color);
+}
+
+th {
+    padding: 7px;
+    margin: 1px;
+    background-color: #0a3350;
+    color: white;
+    text-align: left;
+}
+
+td {
+    padding: 7px;
+    margin: 1px;
+}
+
+td a {
+    height: 100%;
+    display: block;
+    padding: 7px;
+    color: inherit !important;
+    text-decoration: none !important;
+}
+
+tr:hover td {
+    background: #bbbbbb;
+}
+
+tr th:first-child {
+    padding-left: 15px;
+}
+
+tr td:first-child {
+    padding-left: 15px;
+}
+
+tr:first-child th:first-child {
+    padding-left: 15px;
+    border-radius: 6px 0 0 0;
+}
+
+tr:first-child th:last-child {
+    border-radius: 0 6px 0 0;
+}
+
+/* Default: last tbody row gets rounded corners */
+tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 6px;
+}
+
+tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 6px;
+}
+
+/* If there's a <tfoot>, disable rounding */
+tbody:has(+ tfoot) tr:last-child td:first-child {
+    border-radius: 0;
+}
+tbody:has(+ tfoot) tr:last-child td:last-child {
+    border-radius: 0;
+}
+
+/* Edge case: tbody with only one row, round all corners */
+tbody tr:only-child td:first-child {
+    border-bottom-left-radius: 6px;
+}
+tbody tr:only-child td:last-child {
+    border-bottom-right-radius: 6px;
+}
+
+/* BUT cancel bottom rounding if <tfoot> exists */
+tbody:has(+ tfoot) tr:only-child td:first-child {
+    border-radius: 0;
+}
+tbody:has(+ tfoot) tr:only-child td:last-child {
+    border-radius: 0;
+}
+
+/* Default: round bottom corners of tfoot */
+tfoot tr:last-child td:first-child {
+    border-bottom-left-radius: 6px;
+}
+
+tfoot tr:last-child td:last-child {
+    border-bottom-right-radius: 6px;
+}
+
+/* If tfoot is the only thing there (e.g., no tbody rows), maybe adjust background */
+tfoot:only-child tr {
+    background-color: var(--main-table-color);
+}
