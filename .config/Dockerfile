@@ -27,6 +27,9 @@ RUN apt-get update && apt-get install -y \
 # Install extensions
 RUN docker-php-ext-install pdo_mysql mysqli zip gd
 
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
+
 # Set the document root
 WORKDIR /var/www/html
 
