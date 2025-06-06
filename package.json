@@ -10,7 +10,7 @@
   "scripts": {
     "tailwind": "npx tailwindcss -i input.css -o ./files/res/css/tailwind.css --watch",
     "build": "webpack",
-    "mysqldump": "mysqldump --no-data --routines --triggers -u auftragsmanager -p auftragsbearbeitung --host 127.0.0.1 > database/versions/1.2.1/schema.sql"
+    "mysqldump": "mysqldump --no-data --routines --triggers -u auftragsmanager -p auftragsbearbeitung --host 127.0.0.1 > database/versions/1.2.2/schema.sql"
   },
   "dependencies": {
     "chart.js": "^4.4.1",

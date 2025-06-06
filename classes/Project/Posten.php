@@ -151,11 +151,7 @@ abstract class Posten
 
 	public static function insertPosten($type, $data)
 	{
-		$auftragsnummer = $data['Auftragsnummer'];
-
-		if ((int) $auftragsnummer != -1) {
-			$auftragsverlauf = new Auftragsverlauf((int) $auftragsnummer);
-		}
+		$auftragsnummer = (int) $data['Auftragsnummer'];
 
 		$fre = $data['ohneBerechnung'];
 		$dis = $data['discount'] == null ? 0 : $data['discount'];
@@ -198,8 +194,8 @@ abstract class Posten
 				break;
 		}
 
-		if ((int) $auftragsnummer != -1) {
-			$auftragsverlauf->addToHistory($postennummer, 1, "added", $data['Beschreibung']);
+		if ($auftragsnummer != -1) {
+			OrderHistory::add($auftragsnummer, $postennummer, OrderHistory::TYPE_ITEM, OrderHistory::STATE_ADDED, $data['Beschreibung']);
 		}
 
 		return [$postennummer, $subPosten];

@@ -6,7 +6,6 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
-use Classes\Project\Auftragsverlauf;
 use Classes\Notification\NotificationManager;
 
 class Step
@@ -46,7 +45,6 @@ class Step
 			$data['Datum'] = "0000-00-00";
 		}
 
-		$auftragsverlauf = new Auftragsverlauf($data["Auftragsnummer"]);
 		$postennummer = (int) DBAccess::insertQuery("INSERT INTO `schritte` (`Auftragsnummer`, `istAllgemein`, `Bezeichnung`, `Datum`, `Priority`, `istErledigt`) VALUES (:auftragsnummer, 1, :bezeichnung, :datum, :priority, :status)", [
 			"auftragsnummer" => $data["Auftragsnummer"],
 			"bezeichnung" => $data["Bezeichnung"],
@@ -55,7 +53,7 @@ class Step
 			"status" => $data["hide"],
 		]);
 
-		$auftragsverlauf->addToHistory($postennummer, 2, "added", $data["Bezeichnung"]);
+		OrderHistory::add($data["Auftragsnummer"], $postennummer, OrderHistory::TYPE_STEP, OrderHistory::STATE_ADDED, $data['Bezeichnung']);
 
 		return $postennummer;
 	}
@@ -79,8 +77,7 @@ class Step
 
 	public static function updateStep($data)
 	{
-		$auftragsverlauf = new Auftragsverlauf($data['orderId']);
-		$auftragsverlauf->addToHistory($data['postennummer'], 2, "finished");
+		OrderHistory::add($data["orderId"], $data['postennummer'], OrderHistory::TYPE_STEP, OrderHistory::STATE_FINISHED);
 	}
 
 	public  static function deleteStep() {}

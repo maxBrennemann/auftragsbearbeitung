@@ -1,6 +1,6 @@
 <?php
 
-define('CURRENTVERSION', '1.2.1');
+define('CURRENTVERSION', '1.2.2');
 ini_set('display_errors', true);
 
 use Classes\Controller\TemplateController;

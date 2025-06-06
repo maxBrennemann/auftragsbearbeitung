@@ -1,7 +1,8 @@
-<div class="changelog defCont pl-7">
-    <nav id="nav" class="innerDefCont">
+<div class="changelog defCont pl-5">
+    <nav id="nav" class="bg-gray-200 p-3 rounded-lg">
         <p class="font-bold text-md">Versionen</p>
-        <ul id="navUl">
+        <ul>
+            <li><a class="link-primary" href="#1.2.2">1.2.2</a></li>    
             <li><a class="link-primary" href="#1.2.1">1.2.1</a></li>
             <li><a class="link-primary" href="#1.2.0">1.2.0</a></li>
             <li><a class="link-primary" href="#1.1.18">1.1.18</a></li>
@@ -18,6 +19,15 @@
             <li><a class="link-primary" href="#1.1.7">1.1.7</a></li>
         </ul>
     </nav>
+    <h3 id="1.2.2" class="font-bold my-5">1.2.2</h3>
+    <ul class="list-disc list-inside">
+        <li>Interne Dateistruktur angepasst</li>
+        <li>Lokale Entwicklungsumgebung angepasst
+            <ul class="ml-5 list-disc list-inside">
+                <li>XDebug integriert</li>
+            </ul>
+        </li>
+    </ul>
     <h3 id="1.2.1" class="font-bold my-5">1.2.1</h3>
     <ul class="list-disc list-inside">
         <li>Rechnungsstellung Fehlerbehebungen</li>

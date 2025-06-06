@@ -25,7 +25,7 @@ use Classes\Routes\VariousRoutes;
 
 use Classes\Project\Step;
 use Classes\Project\Table;
-use Classes\Project\Auftragsverlauf;
+use Classes\Project\OrderHistory;
 use Classes\Project\Statistics;
 use Classes\Project\Icon;
 use Classes\Project\User;
@@ -142,8 +142,7 @@ class Ajax
 					$postennummer = Table::getIdentifierValue("schritte_table", $_POST['key']);
 					$bezeichnung = Table::getValueByIdentifierColumn("schritte_table", $_POST['key'], "Bezeichnung");
 
-					$auftragsverlauf = new Auftragsverlauf($_POST['auftrag']);
-					$auftragsverlauf->addToHistory($postennummer, 2, "deleted", $bezeichnung);
+					OrderHistory::add($_POST['auftrag'], $postennummer, OrderHistory::TYPE_STEP, OrderHistory::STATE_DELETED, $bezeichnung);
 
 					$query = "UPDATE user_notifications SET ischecked = 1 WHERE specific_id = $postennummer";
 					DBAccess::updateQuery($query);
@@ -151,8 +150,7 @@ class Ajax
 					$postennummer = Table::getIdentifierValue("posten_table", $_POST['key']);
 					$beschreibung = Table::getValueByIdentifierColumn("posten_table", $_POST['key'], "Beschreibung");
 
-					$auftragsverlauf = new Auftragsverlauf($_POST['auftrag']);
-					$auftragsverlauf->addToHistory($postennummer, 1, "deleted", $beschreibung);
+					OrderHistory::add($_POST['auftrag'], $postennummer, OrderHistory::TYPE_ITEM, OrderHistory::STATE_DELETED, $beschreibung);
 				}
 				break;
 			case "update":

@@ -570,9 +570,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 
 		NotificationManager::addNotification(User::getCurrentUserId(), 4, "Auftrag <a href=" . $data["responseLink"] . ">$orderId</a> wurde angelegt", $orderId);
 
-		$auftragsverlauf = new Auftragsverlauf($orderId);
-		$auftragsverlauf->addToHistory($orderId, 5, "added", "Neuer Auftrag");
-
+		OrderHistory::add($orderId, $orderId, OrderHistory::TYPE_ORDER, OrderHistory::STATE_ADDED, "Neuer Auftrag");
 		JSONResponseHandler::sendResponse($data);
 	}
 
@@ -635,20 +633,19 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 		$note = (string) Tools::get("note");
 		$date = Tools::get("date") ?? date("Y-m-d");
 
-		$historyId = DBAccess::insertQuery("INSERT INTO notes (orderId, title, note, creation_date) VALUES (:orderId, :title, :note, :creationDate)", [
+		$noteId = DBAccess::insertQuery("INSERT INTO notes (orderId, title, note, creation_date) VALUES (:orderId, :title, :note, :creationDate)", [
 			"orderId" => $this->Auftragsnummer,
 			"title" => $title,
 			"note" => $note,
 			"creationDate" => $date,
 		]);
 
-		$auftragsverlauf = new Auftragsverlauf($this->Auftragsnummer);
-		$auftragsverlauf->addToHistory($historyId, 7, "added", $note);
+		OrderHistory::add($this->Auftragsnummer, $noteId, OrderHistory::TYPE_NOTE, OrderHistory::STATE_ADDED, $note);
 
 		JSONResponseHandler::sendResponse([
 			"success" => true,
 			"date" => date("d.m.Y", strtotime($date)),
-			"id" => $historyId,
+			"id" => $noteId,
 		]);
 	}
 
@@ -871,8 +868,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 		foreach ($files as $file) {
 			$values[] = [(int) $file["id"], $orderId];
 
-			$auftragsverlauf = new Auftragsverlauf($orderId);
-			$auftragsverlauf->addToHistory($file["id"], 4, "added");
+			OrderHistory::add($orderId, $file["id"], OrderHistory::TYPE_FILE, OrderHistory::STATE_ADDED);
 		}
 
 		DBAccess::insertMultiple($query, $values);

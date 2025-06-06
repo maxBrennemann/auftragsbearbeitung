@@ -57,8 +57,7 @@ class Fahrzeug
             "orderId" => $orderId
         ]);
 
-        $auftragsverlauf = new Auftragsverlauf($orderId);
-        $auftragsverlauf->addToHistory($vehicleId, 3, "added");
+        OrderHistory::add($orderId, $vehicleId, OrderHistory::TYPE_VEHICLE, OrderHistory::STATE_ADDED);
 
         JSONResponseHandler::sendResponse([
             "message" => "Vehicle attached to order",
@@ -77,8 +76,7 @@ class Fahrzeug
             "orderId" => $orderId
         ]);
 
-        $auftragsverlauf = new Auftragsverlauf($orderId);
-        $auftragsverlauf->addToHistory($vehicleId, 3, "removed");
+        OrderHistory::add($orderId, $vehicleId, OrderHistory::TYPE_VEHICLE, OrderHistory::STATE_REMOVED);
 
         JSONResponseHandler::sendResponse([
             "message" => "Vehicle removed from order",
@@ -135,8 +133,7 @@ class Fahrzeug
             $valuesOrder[] = [(int) $file["id"], $orderId];
             $valuesVehicle[] = [(int) $file["id"], $idVehicle];
 
-            $auftragsverlauf = new Auftragsverlauf($orderId);
-            $auftragsverlauf->addToHistory($file["id"], 4, "added");
+            OrderHistory::add($orderId, $file["id"], OrderHistory::TYPE_FILE, OrderHistory::STATE_ADDED);
         }
 
         DBAccess::insertMultiple($queryOrder, $valuesOrder);

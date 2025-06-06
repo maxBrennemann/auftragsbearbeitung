@@ -414,6 +414,12 @@ class Invoice
 			]);
 		}
 
+		$orderId = DBAccess::selectQuery("SELECT Auftragsnummer FROM auftrag WHERE Rechnungsnummer = :invoice;", [
+			"invoice" => $invoiceId
+		]);
+		$orderId = $orderId[0]["Auftragsnummer"];
+		OrderHistory::add($orderId, $invoiceId, OrderHistory::TYPE_ORDER, OrderHistory::STATE_PAYED);
+
 		JSONResponseHandler::sendResponse([
 			"status" => "success",
 		]);

@@ -9,9 +9,9 @@ use Classes\Project\Auftrag;
 use Classes\Project\Icon;
 use Classes\Project\Kunde;
 use Classes\Project\Fahrzeug;
-use Classes\Project\Auftragsverlauf;
 use Classes\Project\ClientSettings;
 use Classes\Controller\TemplateController;
+use Classes\Project\OrderHistory;
 
 $orderId = (int) Tools::get("id");
 
@@ -44,7 +44,7 @@ try {
 		$services = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
 
 		$showFiles = Auftrag::getFiles($orderId);
-		$auftragsverlauf = (new Auftragsverlauf($orderId))->representHistoryAsHTML();
+		$auftragsverlauf = OrderHistory::representHistoryAsHTML($orderId);
 		$contactPersons = $auftrag->getContactPersons();
 
 		$auftragsTyp = $auftrag->getAuftragstyp();
