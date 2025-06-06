@@ -139,6 +139,7 @@ functionNames.click_completeInvoice = () => {
         }
         notification("", "success");
         getPDF();
+        window.history.go(-1);
     });
 }
 
