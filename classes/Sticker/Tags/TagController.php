@@ -106,7 +106,7 @@ class TagController {
         }
 
         $tags = new TagRepository($id, $title);
-        $tagTemplate = \Classes\Project\TemplateController::getTemplate("sticker/showTags", [
+        $tagTemplate = \Classes\Controller\TemplateController::getTemplate("sticker/showTags", [
             "tags" => $tags->get(),
             "suggestionTags" => $suggestionTags,
         ]);

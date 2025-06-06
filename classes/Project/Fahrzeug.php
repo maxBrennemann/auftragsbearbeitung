@@ -31,9 +31,14 @@ class Fahrzeug
         return DBAccess::selectQuery("SELECT Kennzeichen FROM fahrzeuge WHERE Nummer = $fahrzeugId")[0]["Kennzeichen"];
     }
 
-    public static function returnCustomer($fahrzeugId)
+    public static function returnCustomer($fahrzeugId): Kunde|null
     {
-        $kundenId = DBAccess::selectQuery("SELECT Kundennummer FROM fahrzeuge WHERE Nummer = $fahrzeugId")[0]["Kundennummer"];
+        $data = DBAccess::selectQuery("SELECT Kundennummer FROM fahrzeuge WHERE Nummer = $fahrzeugId");
+        if ($data == null) {
+            return null;
+        }
+
+        $kundenId = $data[0]["Kundennummer"];
         return new Kunde($kundenId);
     }
 

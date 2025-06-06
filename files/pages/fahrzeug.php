@@ -11,8 +11,9 @@ if ($id == null || $id <= 0) {
 }
 
 $kunde = Fahrzeug::returnCustomer($id);
+$vehicleImages = Fahrzeug::getImages($id);
 
-if ($id <= 0) :
+if ($id <= 0 || $kunde == null) :
     throw new Exception("Fahrzeug kann nicht angezeigt werden!");
 else : ?>
     <input type="hidden" value="<?= $id ?>" id="vehicleId">
@@ -23,8 +24,8 @@ else : ?>
                 mit dem Kennzeichen
                 <input class="input-primary" value="<?= Fahrzeug::getKennzeichen($id) ?>" data-write="true" data-fun="updateLicensePlate">
             </h4>
-            <div class="grid grid-cols-4 gap-2 bg-white p-3 my-3 rounded-lg">
-                <?php foreach (Fahrzeug::getImages($id) as $vehicle) : ?>
+            <div class="grid grid-cols-4 gap-2 bg-white p-3 my-3 rounded-lg <?= $vehicleImages == null ? "hidden" : "" ?>">
+                <?php foreach ($vehicleImages as $vehicle) : ?>
                     <div class="bg-gray-100 p-2 rounded-md">
                         <p>Bild vom <?= $vehicle["date"] ?></p>
                         <div class="flex justify-center items-center">

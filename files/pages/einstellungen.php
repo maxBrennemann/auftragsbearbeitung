@@ -80,7 +80,7 @@ $companyLogo = \Classes\Project\ClientSettings::getLogo();
         </div>
         <div class="w-96 mt-2">
             <p class="font-semibold">Firmen-/ Rechnungslogo festlegen</p>
-            <?= \Classes\Project\TemplateController::getTemplate("uploadFile", [
+            <?= \Classes\Controller\TemplateController::getTemplate("uploadFile", [
 				"target" => "companyLogo",
                 "singleFile" => true,
                 "accept" => "image/*",
@@ -107,7 +107,7 @@ $companyLogo = \Classes\Project\ClientSettings::getLogo();
 <section class="defCont">
     <h2 class="font-bold">Cache und Komprimierung</h2>
     <div class="mt-2">
-        <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+        <?= \Classes\Controller\TemplateController::getTemplate("inputSwitch", [
             "id" => "minifyStatusSwitch",
             "name" => "CSS und JS komprimieren",
             "value" => MINIFY_STATUS == true ? "checked" : "",
@@ -115,7 +115,7 @@ $companyLogo = \Classes\Project\ClientSettings::getLogo();
         ]); ?>
     </div>
     <div class="mt-2">
-        <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+        <?= \Classes\Controller\TemplateController::getTemplate("inputSwitch", [
             "id" => "cacheStatusSwitch",
             "name" => "Cache",
             "value" => CACHE_STATUS == "on" ? "checked" : "",
@@ -155,7 +155,7 @@ $companyLogo = \Classes\Project\ClientSettings::getLogo();
 <section class="defCont">
     <h2 class="font-bold">Zeiterfassung</h2>
     <div class="switchCont mt-2">
-        <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+        <?= \Classes\Controller\TemplateController::getTemplate("inputSwitch", [
             "id" => "showTimeTracking",
             "name" => "Aktuelle Arbeitszeit global anzeigen",
             "value" => Config::get("showTimeGlobal") == "true" ? "checked" : "",

@@ -5,6 +5,8 @@ namespace Classes\Project;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
+use Classes\Controller\TemplateController;
+
 class Color
 {
 

@@ -309,7 +309,7 @@ class Ajax
 					"type" => $type,
 				]);
 
-				echo \Classes\Project\TemplateController::getTemplate("sticker/showSearch", [
+				echo \Classes\Controller\TemplateController::getTemplate("sticker/showSearch", [
 					"products" => $products
 				]);
 				break;

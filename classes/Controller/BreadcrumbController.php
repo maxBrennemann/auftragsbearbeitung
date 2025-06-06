@@ -1,6 +1,6 @@
 <?php
 
-namespace Classes\Project;
+namespace Classes\Controller;
 
 use Classes\Link;
 use MaxBrennemann\PhpUtilities\Tools;

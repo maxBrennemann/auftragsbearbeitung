@@ -10,7 +10,7 @@ use Classes\Sticker\StickerCollection;
 use Classes\Sticker\StickerChangelog;
 use Classes\Sticker\TextModification;
 
-use Classes\Project\TemplateController;
+use Classes\Controller\TemplateController;
 
 $id = Tools::get("id");
 

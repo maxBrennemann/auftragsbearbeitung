@@ -7,6 +7,7 @@ use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 use Classes\Pdf\TransactionPdf\OfferPDF;
+use Classes\Controller\TemplateController;
 
 class Angebot
 {

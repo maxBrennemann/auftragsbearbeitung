@@ -69,7 +69,7 @@ class StickerTagManager extends PrestashopConnection
         }
 
         $stickerTagManager = new StickerTagManager($id, $title);
-        $tagTemplate = \Classes\Project\TemplateController::getTemplate("sticker/showTags", [
+        $tagTemplate = \Classes\Controller\TemplateController::getTemplate("sticker/showTags", [
             "tags" => $stickerTagManager->tags,
             "suggestionTags" => $suggestionTags,
         ]);

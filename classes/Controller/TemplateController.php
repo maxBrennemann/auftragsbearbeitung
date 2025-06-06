@@ -1,6 +1,6 @@
 <?php
 
-namespace Classes\Project;
+namespace Classes\Controller;
 
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
@@ -27,13 +27,13 @@ class TemplateController
         ]);
     }
 
-    public static function getTemplate(string $template, array $params = [])
+    public static function getTemplate(string $template, array $params = []): string
     {
         $content = self::buildTemplate($template, $params);
         return $content;
     }
 
-    private static function buildTemplate(string $template, array $params)
+    private static function buildTemplate(string $template, array $params): string
     {
         if (!file_exists("files/views/{$template}View.php")) {
             throw new \Exception("Template not found");

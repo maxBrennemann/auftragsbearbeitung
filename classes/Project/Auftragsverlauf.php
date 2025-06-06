@@ -4,6 +4,8 @@ namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
 
+use Classes\Controller\TemplateController;
+
 /*
  * Zu protokollierende Daten:
  * posten:   Beim Hinzufügen / Löschen / Bearbeiten speichern                       ✔
@@ -25,6 +27,11 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 
 class Auftragsverlauf
 {
+
+    public const STATE_ADDED = 0;
+    public const STATE_DELETED = 0;
+    public const STATE_EDITED = 0;
+    public const STATE_FINISHED = 0;
 
     private $auftragsnummer = 0;
 
@@ -87,7 +94,7 @@ class Auftragsverlauf
         ]);
     }
 
-    public function representHistoryAsHTML()
+    public function representHistoryAsHTML(): string
     {
         $history = $this->getHistory();
         return TemplateController::getTemplate("orderHistory", [

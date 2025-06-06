@@ -11,7 +11,7 @@ use Classes\Project\Kunde;
 use Classes\Project\Fahrzeug;
 use Classes\Project\Auftragsverlauf;
 use Classes\Project\ClientSettings;
-use Classes\Project\TemplateController;
+use Classes\Controller\TemplateController;
 
 $orderId = (int) Tools::get("id");
 

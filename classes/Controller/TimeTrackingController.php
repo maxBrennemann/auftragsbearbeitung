@@ -1,12 +1,14 @@
 <?php
 
-namespace Classes\Project;
+namespace Classes\Controller;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 
 use Classes\Project\User;
+use Classes\Project\TimeTracking;
+use Classes\Project\Config;
 
 class TimeTrackingController
 {
