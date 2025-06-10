@@ -7,8 +7,8 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 
 use Classes\Link;
-
 use Classes\Project\User;
+use Classes\Models\User as UserModel;
 
 class NotificationManager
 {
@@ -26,9 +26,9 @@ class NotificationManager
 
         $user = User::getCurrentUserId();
 
-        $query = "SELECT COUNT(id) AS c FROM user_notifications WHERE user_id = :user AND ischecked = 'false'";
+        $query = "SELECT COUNT(id) AS c FROM user_notifications WHERE user_id = :user AND ischecked = 0";
         $result = DBAccess::selectQuery($query, [
-            ":user" => $user
+            "user" => $user
         ]);
 
         if ($result == null) {
@@ -45,7 +45,7 @@ class NotificationManager
         $user = User::getCurrentUserId();
 
         $types = implode(",", $types);
-        $query = "SELECT COUNT(id) AS c FROM user_notifications WHERE user_id = :user AND ischecked = 'false' AND `type` IN (:types)";
+        $query = "SELECT COUNT(id) AS c FROM user_notifications WHERE user_id = :user AND ischecked = 0 AND `type` IN (:types)";
         $result = DBAccess::selectQuery($query, [
             ":user" => $user,
             ":types" => $types,
@@ -61,13 +61,13 @@ class NotificationManager
     private static function getTasks()
     {
         $user = User::getCurrentUserId();
-        return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = $user AND ischecked = 'false' AND (`type` = 1)");
+        return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = $user AND ischecked = 0 AND (`type` = 1)");
     }
 
     private static function getNews()
     {
         $user = User::getCurrentUserId();
-        return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = $user AND ischecked = 'false' AND (`type` = 4 OR `type`= 0)");
+        return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = $user AND ischecked = 0 AND (`type` = 4 OR `type`= 0)");
     }
 
     public static function getRecentNotifications(int $limit = 10): array
@@ -75,7 +75,7 @@ class NotificationManager
         $user = User::getCurrentUserId();
         return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = :user ORDER BY created_at DESC LIMIT :limit", [
             "user" => $user,
-            "limit"=> $limit,
+            "limit" => $limit,
         ]);
     }
 
@@ -146,16 +146,16 @@ class NotificationManager
     /**
      * addNotification adds a notification for a user or all users
      * 
-     * @param integer $user_id      the id of the user who gets notified, if all users get notified, it is -1
-     * @param integer $type         the type of notification
+     * @param int|null $user_id     the id of the user who gets notified, if all users get notified, it is -1
+     * @param int $type             the type of notification
      * @param string  $content      the text content of the notification
-     * @param integer $specificId   the id connected with the type of notification e.g order id
+     * @param int $specificId       the id connected with the type of notification e.g order id
      */
     public static function addNotification($user_id, $type, $content, $specificId)
     {
         $initiator = User::getCurrentUserId();
 
-        if ($user_id == -1) {
+        if ($user_id == null) {
             $query = "INSERT INTO user_notifications (`user_id`, `initiator`, `type`, content, specific_id) VALUES ";
             $allUsers = self::getAllUsers();
             foreach ($allUsers as $u) {
@@ -180,13 +180,15 @@ class NotificationManager
         $query = "SELECT id FROM user_notifications WHERE specific_id = $specificId";
         $result = DBAccess::selectQuery($query);
 
-        if (!empty($result))
+        if (!empty($result)) {
             self::addNotification($user_id, $type, $content, $specificId);
+        }
     }
 
     private static function getAllUsers(): array
     {
-        return DBAccess::selectQuery("SELECT id FROM members");
+        $users = new UserModel();
+        return $users->all();
     }
 
     public static function setNotificationsRead()

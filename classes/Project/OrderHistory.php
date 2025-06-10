@@ -24,7 +24,7 @@ class OrderHistory
     public const TYPE_OFFER = 6;
     public const TYPE_NOTE = 7;
 
-    public static function add(int $orderId, int $number, string $type, int $state, string $alternative_text = ""): void
+    public static function add(int $orderId, int $number, int $type, string $state, string $alternative_text = ""): void
     {
         $userId = User::getCurrentUserId();
         $query = "INSERT INTO history (orderid, `number`, `type`, `state`, member_id, alternative_text) VALUES (:orderId, :number, :type, :state, :userId, :alternative_text)";

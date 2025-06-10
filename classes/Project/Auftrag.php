@@ -2,6 +2,7 @@
 
 namespace Classes\Project;
 
+use Classes\Models\Auftragstyp;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
@@ -179,9 +180,8 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 
 	public static function getAllOrderTypes()
 	{
-		$query = "SELECT * FROM `auftragstyp`;";
-		$result = DBAccess::selectQuery($query);
-		return $result;
+		$auftragstyp = new Auftragstyp();
+		return $auftragstyp->all();
 	}
 
 	public function getAuftragsbezeichnung()
@@ -519,10 +519,12 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 	public static function finish()
 	{
 		$orderId = (int) Tools::get("id");
-		DBAccess::updateQuery("UPDATE auftrag SET archiviert = :status WHERE Auftragsnummer :orderId", [
+		DBAccess::updateQuery("UPDATE auftrag SET archiviert = :orderStatus WHERE Auftragsnummer :orderId", [
 			"orderId" => $orderId,
-			"status" => self::IS_FINISHED,
+			"orderStatus" => self::IS_FINISHED,
 		]);
+
+		NotificationManager::addNotification(null, 4, "Auftrag $orderId wurde abgeschlossen", $orderId);
 
 		JSONResponseHandler::returnOK();
 	}
@@ -568,7 +570,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 			"orderId" => $orderId
 		];
 
-		NotificationManager::addNotification(User::getCurrentUserId(), 4, "Auftrag <a href=" . $data["responseLink"] . ">$orderId</a> wurde angelegt", $orderId);
+		NotificationManager::addNotification(null, 4, "Auftrag <a href=" . $data["responseLink"] . ">$orderId</a> wurde angelegt", $orderId);
 
 		OrderHistory::add($orderId, $orderId, OrderHistory::TYPE_ORDER, OrderHistory::STATE_ADDED, "Neuer Auftrag");
 		JSONResponseHandler::sendResponse($data);

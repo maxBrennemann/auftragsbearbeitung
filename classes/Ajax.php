@@ -162,9 +162,6 @@ class Ajax
 					"orderId" => $_POST['auftrag'],
 					"postennummer" => $postennummer
 				]);
-
-				$user = User::getCurrentUserId();
-				//NotificationManager::addNotificationCheck($user, 0, "Bearbeitungsschritt erledigt", $postennummer);
 				break;
 			case "deleteOrder":
 				// TODO: implement db triggers for order deletion
