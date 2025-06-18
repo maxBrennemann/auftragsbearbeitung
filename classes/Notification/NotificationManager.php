@@ -42,32 +42,29 @@ class NotificationManager
 
     public static function getNotificationCountByType(int ...$types): int
     {
-        $user = User::getCurrentUserId();
-
-        $types = implode(",", $types);
-        $query = "SELECT COUNT(id) AS c FROM user_notifications WHERE user_id = :user AND ischecked = 0 AND `type` IN (:types)";
-        $result = DBAccess::selectQuery($query, [
-            ":user" => $user,
-            ":types" => $types,
-        ]);
-
-        if ($result == null) {
+        if (empty($types)) {
             return 0;
-        } else {
-            return (int) $result[0]["c"];
         }
+
+        $placeholders = implode(',', array_fill(0, count($types), '?'));
+        $query = "SELECT COUNT(id) AS c FROM user_notifications WHERE user_id = ? AND ischecked = 0 AND `type` IN ($placeholders)";
+        $params = array_merge([User::getCurrentUserId()], $types);
+        $result = DBAccess::selectQuery($query, $params);
+
+        return $result ? (int) $result[0]["c"] : 0;
     }
 
     private static function getTasks()
     {
         $user = User::getCurrentUserId();
-        return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = $user AND ischecked = 0 AND (`type` = 1)");
+        return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = $user AND ischecked = 0 AND `type` = 1");
     }
 
     private static function getNews()
     {
-        $user = User::getCurrentUserId();
-        return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = $user AND ischecked = 0 AND (`type` = 4 OR `type`= 0)");
+        return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = :user AND ischecked = 0 AND `type` != 1", [
+            "user" => User::getCurrentUserId(),
+        ]);
     }
 
     public static function getRecentNotifications(int $limit = 10): array

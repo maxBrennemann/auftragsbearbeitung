@@ -72,12 +72,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/chronos.git",
-                "reference": "8187733ac77bb0a2e20e1fb5ca57a8696d013fdd"
+                "reference": "6dfe119fedc1a5e3d6c0c94c22ca076e868929bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/chronos/zipball/8187733ac77bb0a2e20e1fb5ca57a8696d013fdd",
-                "reference": "8187733ac77bb0a2e20e1fb5ca57a8696d013fdd",
+                "url": "https://api.github.com/repos/cakephp/chronos/zipball/6dfe119fedc1a5e3d6c0c94c22ca076e868929bc",
+                "reference": "6dfe119fedc1a5e3d6c0c94c22ca076e868929bc",
                 "shasum": ""
             },
             "require": {
@@ -124,7 +124,7 @@
                 "issues": "https://github.com/cakephp/chronos/issues",
                 "source": "https://github.com/cakephp/chronos"
             },
-            "time": "2025-05-19T16:36:34+00:00"
+            "time": "2025-06-14T22:05:56+00:00"
         },
         {
             "name": "cakephp/core",
@@ -526,7 +526,7 @@
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.398.0",
+            "version": "v0.399.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
@@ -564,7 +564,7 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
-                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.398.0"
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.399.0"
             },
             "time": "2025-06-04T17:28:44+00:00"
         },
@@ -1107,16 +1107,16 @@
         },
         {
             "name": "matthiasmullie/minify",
-            "version": "1.3.73",
+            "version": "1.3.74",
             "source": {
                 "type": "git",
                 "url": "https://github.com/matthiasmullie/minify.git",
-                "reference": "cb7a9297b4ab070909cefade30ee95054d4ae87a"
+                "reference": "a2593286a4135d03c6a6a9e9aeded5d41e931ce4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/matthiasmullie/minify/zipball/cb7a9297b4ab070909cefade30ee95054d4ae87a",
-                "reference": "cb7a9297b4ab070909cefade30ee95054d4ae87a",
+                "url": "https://api.github.com/repos/matthiasmullie/minify/zipball/a2593286a4135d03c6a6a9e9aeded5d41e931ce4",
+                "reference": "a2593286a4135d03c6a6a9e9aeded5d41e931ce4",
                 "shasum": ""
             },
             "require": {
@@ -1127,8 +1127,7 @@
             "require-dev": {
                 "friendsofphp/php-cs-fixer": ">=2.0",
                 "matthiasmullie/scrapbook": ">=1.3",
-                "phpunit/phpunit": ">=4.8",
-                "squizlabs/php_codesniffer": ">=3.0"
+                "phpunit/phpunit": ">=4.8"
             },
             "suggest": {
                 "psr/cache-implementation": "Cache implementation to use with Minify::cache"
@@ -1166,7 +1165,7 @@
             ],
             "support": {
                 "issues": "https://github.com/matthiasmullie/minify/issues",
-                "source": "https://github.com/matthiasmullie/minify/tree/1.3.73"
+                "source": "https://github.com/matthiasmullie/minify/tree/1.3.74"
             },
             "funding": [
                 {
@@ -1174,7 +1173,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-03-15T10:27:10+00:00"
+            "time": "2025-06-12T08:06:04+00:00"
         },
         {
             "name": "matthiasmullie/path-converter",
@@ -1235,12 +1234,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/maxBrennemann/php-utilities.git",
-                "reference": "fa7ad32070bb423cc9370e922b78e638b8afaa56"
+                "reference": "68dbb8483fff852b9b52801f43ac3995f75c2442"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/maxBrennemann/php-utilities/zipball/fa7ad32070bb423cc9370e922b78e638b8afaa56",
-                "reference": "fa7ad32070bb423cc9370e922b78e638b8afaa56",
+                "url": "https://api.github.com/repos/maxBrennemann/php-utilities/zipball/68dbb8483fff852b9b52801f43ac3995f75c2442",
+                "reference": "68dbb8483fff852b9b52801f43ac3995f75c2442",
                 "shasum": ""
             },
             "default-branch": true,
@@ -1257,10 +1256,10 @@
                 }
             ],
             "support": {
-                "source": "https://github.com/maxBrennemann/php-utilities/tree/main",
+                "source": "https://github.com/maxBrennemann/php-utilities/tree/v1.1",
                 "issues": "https://github.com/maxBrennemann/php-utilities/issues"
             },
-            "time": "2025-05-28T09:05:04+00:00"
+            "time": "2025-06-10T09:00:47+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -1489,12 +1488,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "1ad2fee1e4bdec267ae51b51072eb34f21b57e8f"
+                "reference": "1d0b5e7e1434678411787c5a0535e68907cf82d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/1ad2fee1e4bdec267ae51b51072eb34f21b57e8f",
-                "reference": "1ad2fee1e4bdec267ae51b51072eb34f21b57e8f",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/1d0b5e7e1434678411787c5a0535e68907cf82d9",
+                "reference": "1d0b5e7e1434678411787c5a0535e68907cf82d9",
                 "shasum": ""
             },
             "require": {
@@ -1591,7 +1590,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-06-03T19:54:05+00:00"
+            "time": "2025-06-15T09:59:26+00:00"
         },
         {
             "name": "prestashop/prestashop-webservice-lib",

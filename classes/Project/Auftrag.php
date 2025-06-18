@@ -570,7 +570,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 			"orderId" => $orderId
 		];
 
-		NotificationManager::addNotification(null, 4, "Auftrag <a href=" . $data["responseLink"] . ">$orderId</a> wurde angelegt", $orderId);
+		NotificationManager::addNotification(null, 4, "Auftrag <a href=\"" . $data["responseLink"] . "\" class=\"mx-1\">$orderId</a> wurde angelegt", $orderId);
 
 		OrderHistory::add($orderId, $orderId, OrderHistory::TYPE_ORDER, OrderHistory::STATE_ADDED, "Neuer Auftrag");
 		JSONResponseHandler::sendResponse($data);
