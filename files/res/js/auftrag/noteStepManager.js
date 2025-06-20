@@ -32,7 +32,7 @@ const initStepsTable = async () => {
             "Schrittnummer",
             "Auftragsnummer",
             "istErledigt",
-            "istAllgemein",
+            "assignedTo",
             "finishingDate",
         ],
         "primaryKey": config.primaryKey,

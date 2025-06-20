@@ -519,7 +519,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 	public static function finish()
 	{
 		$orderId = (int) Tools::get("id");
-		DBAccess::updateQuery("UPDATE auftrag SET archiviert = :orderStatus WHERE Auftragsnummer :orderId", [
+		DBAccess::updateQuery("UPDATE auftrag SET archiviert = :orderStatus WHERE Auftragsnummer = :orderId", [
 			"orderId" => $orderId,
 			"orderStatus" => self::IS_FINISHED,
 		]);
@@ -570,7 +570,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 			"orderId" => $orderId
 		];
 
-		NotificationManager::addNotification(null, 4, "Auftrag <a href=\"" . $data["responseLink"] . "\" class=\"mx-1\">$orderId</a> wurde angelegt", $orderId);
+		NotificationManager::addNotification(null, 4, "Auftrag $orderId wurde angelegt", $orderId);
 
 		OrderHistory::add($orderId, $orderId, OrderHistory::TYPE_ORDER, OrderHistory::STATE_ADDED, "Neuer Auftrag");
 		JSONResponseHandler::sendResponse($data);

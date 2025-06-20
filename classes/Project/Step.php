@@ -11,7 +11,7 @@ use Classes\Notification\NotificationManager;
 class Step
 {
 
-	private $istAllgemein = null;
+	private $assignedTo = null;
 	private $bezeichnung = null;
 	private $datum = null;
 	private $priority = null;
@@ -33,20 +33,15 @@ class Step
 
 	public function erledigen() {}
 
-	public function getHTMLCode()
-	{
-		$htmlCode = "<div><span>{$this->bezeichnung}</span><br><span>Datum: {$this->datum}</span><br><span>{$this->priority}</span><br><span>{$this->istErledigt}</span></div>";
-		return $htmlCode;
-	}
-
 	public static function insertStep($data): int
 	{
 		if ($data['Datum'] == null) {
 			$data['Datum'] = "0000-00-00";
 		}
 
-		$postennummer = (int) DBAccess::insertQuery("INSERT INTO `schritte` (`Auftragsnummer`, `istAllgemein`, `Bezeichnung`, `Datum`, `Priority`, `istErledigt`) VALUES (:auftragsnummer, 1, :bezeichnung, :datum, :priority, :status)", [
+		$postennummer = (int) DBAccess::insertQuery("INSERT INTO `schritte` (`Auftragsnummer`, `assignedTo`, `Bezeichnung`, `Datum`, `Priority`, `istErledigt`) VALUES (:auftragsnummer, :assignedTo, :bezeichnung, :datum, :priority, :status)", [
 			"auftragsnummer" => $data["Auftragsnummer"],
+			"assignedTo" => $data["assignedTo"] ?? 0,
 			"bezeichnung" => $data["Bezeichnung"],
 			"datum" => $data["Datum"],
 			"priority" => $data["Priority"],
@@ -66,12 +61,12 @@ class Step
 		$data["Priority"] = Tools::get("priority");
 		$data["Auftragsnummer"] = Tools::get("orderId");
 		$data["hide"] = Tools::get("hide") == "true" ? 1 : 0;
+		$data["assignedTo"] = (int) Tools::get("assignedTo");
 
 		$postenNummer = Step::insertStep($data);
 
-		$assignedTo = (int) Tools::get("assignedTo");
-		if ($assignedTo != 0) {
-			NotificationManager::addNotification( $assignedTo, 1, Tools::get("name"), $postenNummer);
+		if ($data["assignedTo"] != 0) {
+			NotificationManager::addNotification( $data["assignedTo"], 1, Tools::get("name"), $postenNummer);
 		}
 	}
 

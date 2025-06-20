@@ -475,19 +475,6 @@ input#hamburg {
     margin-right: 5px;
 }
 
-.taskList span {
-    padding-right: 15px;
-    padding-left: 5px;
-    width: 20px;
-    display: inline-block;
-    text-align: center;
-}
-
-.taskList a, .tasList a:visited {
-    color: black;
-    text-decoration: none;
-}
-
 .filesList {
     background-color: white;
     border: none;

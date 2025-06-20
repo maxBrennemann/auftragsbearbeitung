@@ -336,7 +336,7 @@ function getTableConfig(): array
             "columns" => [
                 "Schrittnummer",
                 "Auftragsnummer",
-                "istAllgemein",
+                "assignedTo",
                 "Bezeichnung",
                 "Datum",
                 "Priority",

@@ -35,11 +35,7 @@ class ResourceManager
         errorReporting();
     }
 
-    /**
-     * Before: page was submitted via $_GET paramter, but now the REQUEST_URI is read;
-     * $url is splitted into the REQUEST_URI and the parameter part
-     */
-    public static function pass()
+    public static function pass(): void
     {
         $url = $_SERVER["REQUEST_URI"];
         $url = explode('?', $url, 2);
@@ -63,7 +59,7 @@ class ResourceManager
                 self::close();
             case "favicon.ico":
                 require_once "favicon.php";
-                exit;
+                self::close();
             case "events":
                 Events::init();
                 self::close();
@@ -159,7 +155,7 @@ class ResourceManager
         ]);
     }
 
-    public static function close()
+    public static function close(): never
     {
         Protocol::close();
         DBAccess::close();

@@ -1,4 +1,4 @@
-export const initEventSource = () => {
+const initEventSource = () => {
     const eventSource = new EventSource("/events");
     eventSource.onmessage = e => {
         const data = JSON.parse(e.data);
@@ -7,6 +7,10 @@ export const initEventSource = () => {
 }
 
 export const manageNotificationsGlobally = () => {
+
+}
+
+export const setNotificationAsRead = () => {
 
 }
 
@@ -37,4 +41,8 @@ const readNotifications = () => {
     }
 
     return notifications;
+}
+
+export const initNotificationService = () => {
+	//initEventSource();
 }

@@ -3,7 +3,7 @@ import { TableSorter, currentTableSorter, setTableSorter, sortTableNew } from ".
 import { ajax } from "./classes/ajax.js";
 import { timeGlobalListener } from "./classes/timetracking.js";
 import { addBindings } from "./classes/bindings.js";
-import { initEventSource } from "./classes/notificationUpdater.js";
+import { initNotificationService } from "./classes/notificationUpdater.js";
 
 const fnNames = {};
 const imagePreviewListeners = new WeakSet();
@@ -55,7 +55,7 @@ function startFunc() {
 	setTableSorter(new TableSorter());
 	currentTableSorter.readTableSorted();
 	initSearch();
-	//initEventSource();
+	initNotificationService();
 }
 
 const autoSizeTextareas = () => {
@@ -180,7 +180,7 @@ fnNames.click_logout = () => {
 
 fnNames.click_showNotifications = async () => {
 	const div = document.createElement("div");
-	div.classList.add("w-7/12", "z-10", "h-96");
+	div.classList.add("w-2/3", "z-10", "h-96");
 
 	const response = await ajax.get(`/api/v1/notification/template`);
 	const innerDiv = document.createElement("div");
@@ -260,10 +260,11 @@ class TableClass {
 	}
 }
 
-/* info button code 
- * adds an event listener to each btn of that class
- * which loads the info text from the server and displays its content
- * in an extra div next to the "i"
+/** 
+ * Info Buttons
+ * - adds an event listener to each btn of that class
+ * - a click loads the info text from the server
+ * -  displays its content in an extra div next to the "i"
  */
 function initializeInfoBtn() {
 	let btns = document.getElementsByClassName("info-button");
