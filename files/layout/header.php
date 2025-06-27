@@ -63,15 +63,29 @@ if ($pageName == "") {
 
 	<link rel="stylesheet" href="<?= $globalCSS ?>">
 	<link rel="stylesheet" href="<?= $tailwindCSS ?>">
-	<script src="<?= $globalJS ?>" type="module"></script>
 
-	<?php if (!MINIFY_STATUS) : ?>
-		<script src="<?= $tableConfig ?>" type="module"></script>
-		<script src="<?= $notifications ?>" type="module"></script>
-	<?php endif; ?>
+	<?php if ($_ENV["DEV_MODE"]): ?>
+		<script type="module" src="https://localhost:5173/global.js"></script>
+		<script type="module" src="https://localhost:5173/classes/tableConfig.js"></script>
+		<script type="module" src="https://localhost:5173/classes/notifications.js"></script>
 
-	<?php  if (file_exists(Link::getResourcesLink(dashesToCamelCase("$page.js"), "js", false))) : ?>
-		<script type="module" src="<?= Link::getResourcesShortLink("$page.js", "js") ?>"></script>
+		<?php if (file_exists(Link::getResourcesLink(dashesToCamelCase("$page.js"), "js", false))) : ?>
+			<?php 
+				$jsPage = dashesToCamelCase($page);
+			?>
+			<script type="module" src="https://localhost:5173/<?= $jsPage ?>.js"></script>
+		<?php endif; ?>
+	<?php else: ?>
+		<script type="module" src="<?= $globalJS ?>"></script>
+
+		<?php if (!MINIFY_STATUS) : ?>
+			<script src="<?= $tableConfig ?>" type="module"></script>
+			<script src="<?= $notifications ?>" type="module"></script>
+		<?php endif; ?>
+
+		<?php if (file_exists(Link::getResourcesLink(dashesToCamelCase("$page.js"), "js", false))) : ?>
+			<script type="module" src="<?= Link::getResourcesShortLink("$page.js", "js") ?>"></script>
+		<?php endif; ?>
 	<?php endif; ?>
 </head>
 

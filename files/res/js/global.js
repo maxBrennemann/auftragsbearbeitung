@@ -476,3 +476,10 @@ if (document.readyState !== 'loading') {
 		startFunc();
 	});
 }
+
+if (import.meta.hot) {
+  import.meta.hot.accept(() => {
+    exportToWindow();
+	startFunc();
+  })
+}

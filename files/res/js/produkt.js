@@ -6,7 +6,7 @@ import { tableConfig } from "./classes/tableconfig.js";
 import { createPopup } from "./global.js";
 import { initFileUploader } from "./classes/upload.js";
 
-const attributes = {};
+let attributes = {};
 const productData = {};
 const fnNames = {};
 
