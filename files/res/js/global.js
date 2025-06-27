@@ -1,3 +1,5 @@
+import "../css/tailwind.css";
+
 import { DeviceDetector } from "./classes/deviceDetector.js";
 import { TableSorter, currentTableSorter, setTableSorter, sortTableNew } from "./classes/tableSorter.js";
 import { ajax } from "./classes/ajax.js";
