@@ -1,5 +1,3 @@
-import "../css/tailwind.css";
-
 import { DeviceDetector } from "./classes/deviceDetector.js";
 import { TableSorter, currentTableSorter, setTableSorter, sortTableNew } from "./classes/tableSorter.js";
 import { ajax } from "./classes/ajax.js";
@@ -469,6 +467,11 @@ export const getTemplate = (id) => {
 	return clone;
 }
 
+export const init = () => {
+	exportToWindow();
+	startFunc();
+}
+
 if (document.readyState !== 'loading') {
 	exportToWindow();
 	startFunc();
@@ -477,11 +480,4 @@ if (document.readyState !== 'loading') {
 		exportToWindow();
 		startFunc();
 	});
-}
-
-if (import.meta.hot) {
-  import.meta.hot.accept(() => {
-    exportToWindow();
-	startFunc();
-  })
 }

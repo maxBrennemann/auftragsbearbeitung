@@ -64,8 +64,9 @@ if ($pageName == "") {
 	<link rel="stylesheet" href="<?= $globalCSS ?>">
 	<link rel="stylesheet" href="<?= $tailwindCSS ?>">
 
-	<?php if ($_ENV["DEV_MODE"]): ?>
+	<?php if ($_ENV["DEV_MODE"] == "true"): ?>
 		<script type="module" src="https://localhost:5173/global.js"></script>
+		<script type="module" src="https://localhost:5173/classes/hot-reload.js"></script>
 		<script type="module" src="https://localhost:5173/classes/tableConfig.js"></script>
 		<script type="module" src="https://localhost:5173/classes/notifications.js"></script>
 
