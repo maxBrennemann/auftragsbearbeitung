@@ -3,6 +3,7 @@
 namespace Classes\Auth;
 
 use Classes\ResourceManager;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 class SessionController
 {
@@ -22,8 +23,17 @@ class SessionController
         if (isset($_SESSION["LAST_ACTIVITY"]) 
             && (time() - $_SESSION["LAST_ACTIVITY"] > self::$lifetime)) {
             self::destroy();
-            ResourceManager::setPage("login");
-            ResourceManager::initPage();
+            
+            $type = ResourceManager::getRequestType();
+            if ($type == "page") {
+                ResourceManager::setPage("login");
+                ResourceManager::initPage();
+            } else if ($type == "resource") {
+                JSONResponseHandler::sendErrorResponse(401, "unauthorized, pleas log in");
+            } else {
+                JSONResponseHandler::sendErrorResponse(401, "unauthorized, pleas log in");
+            }
+
             exit;
         }
 

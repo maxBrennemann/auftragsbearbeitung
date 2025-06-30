@@ -18,7 +18,7 @@ fnNames.click_updateDate = e => {
     sendDate(1, date);
 }
 
-fnNames.click_updateDeadline = e => {
+fnNames.write_updateDeadline = e => {
     const date = e.target.value;
     sendDate(2, date);
 }

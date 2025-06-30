@@ -5,24 +5,7 @@ import { notification } from "../classes/notifications.js";
 import { tableConfig } from "../classes/tableconfig.js";
 import { fetchAndRenderTable } from "../classes/table.js";
 
-const fnNames =  {};
-
-export function initNotes() {
-    addBindings(fnNames);
-
-    const nodeContainer = document.getElementById("noteContainer");
-    if (nodeContainer != null) {
-        getNotes().then(r => {
-            if (r.length == 0) {
-                return;
-            }
-
-            displayNotes(r);
-        });
-    }
-
-    initStepsTable();
-}
+const fnNames = {};
 
 const initStepsTable = async () => {
     const config = tableConfig["schritte"];
@@ -132,7 +115,7 @@ fnNames.click_addBearbeitungsschritt = () => {
     const date = document.getElementById("processingStepDate").value;
     const hideStatus = document.getElementById("processingStepStatus").checked;
     const priority = document.getElementById("processingStepPriority").value;
-    
+
     let assignedTo = 0;
     if (document.getElementById("processingStepBy").checked) {
         assignedTo = document.getElementById("processingStepSelectBy").value;
@@ -268,3 +251,20 @@ fnNames.click_sendNote = sendNote;
 fnNames.click_removeNote = removeNote;
 fnNames.click_addNewNote = addNewNote;
 fnNames.click_cancelNote = cancelNote;
+
+export function initNotes() {
+    addBindings(fnNames);
+
+    const nodeContainer = document.getElementById("noteContainer");
+    if (nodeContainer != null) {
+        getNotes().then(r => {
+            if (r.length == 0) {
+                return;
+            }
+
+            displayNotes(r);
+        });
+    }
+
+    initStepsTable();
+}

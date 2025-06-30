@@ -6,6 +6,8 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 
+use Classes\Controller\TemplateController;
+
 class Zeit extends Posten
 {
 
@@ -22,13 +24,14 @@ class Zeit extends Posten
 	protected $ohneBerechnung = false;
 	protected $postennummer;
 
-	public function __construct($Stundenlohn, $ZeitInMinuten, $beschreibung, $discount, $isInvoice, int $position = 0)
+	public function __construct($Stundenlohn, $ZeitInMinuten, $beschreibung, $discount, $isInvoice, $freeOfCharge, int $position = 0)
 	{
 		$this->Stundenlohn = (float) $Stundenlohn;
 		$this->ZeitInMinuten = (int) $ZeitInMinuten;
 		$this->beschreibung = $beschreibung;
 
 		$this->isInvoice = $isInvoice == 0 ? false : true;
+		$this->ohneBerechnung = $freeOfCharge;
 
 		$this->Kosten = $this->kalkulierePreis();
 

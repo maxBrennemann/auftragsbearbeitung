@@ -23,12 +23,13 @@ class Leistung extends Posten
 	private $quantity;
 	private $meh;
 
-	public function __construct($leistungsnummer, $beschreibung, $speziefischerPreis, $einkaufspreis, $quantity, $meh, $discount, $isInvoice, int $position = 0)
+	public function __construct($leistungsnummer, $beschreibung, $speziefischerPreis, $einkaufspreis, $quantity, $meh, $discount, $isInvoice, $freeOfCharge, int $position = 0)
 	{
 		$this->beschreibung = $beschreibung;
 		$this->preis = (float) $speziefischerPreis;
 		$this->einkaufspreis = (float) $einkaufspreis;
 		$this->leistungsnummer = $leistungsnummer;
+		$this->ohneBerechnung = $freeOfCharge;
 
 		$this->isInvoice = $isInvoice == 0 ? false : true;
 

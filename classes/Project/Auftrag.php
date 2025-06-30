@@ -297,13 +297,13 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 		for ($i = 0; $i < sizeof($this->Auftragsposten); $i++) {
 			if ($this->Auftragsposten[$i]->isInvoice() == true) {
 				$p = $this->Auftragsposten[$i];
-				$subArr = array(
+				$subArr = [
 					"Menge" => $p->getQuantity(),
 					"MEH" => $p->getEinheit(),
 					"Bezeichnung" => $p->getDescription(),
 					"E-Preis" => $p->bekommeEinzelPreis_formatted(),
 					"G-Preis" => $p->bekommePreis_formatted()
-				);
+				];
 				array_push($data, $subArr);
 			}
 		}

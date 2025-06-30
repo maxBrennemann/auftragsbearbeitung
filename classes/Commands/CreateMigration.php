@@ -30,7 +30,7 @@ class CreateMigration extends Command
         }
 
         $date = date("Y-m-d");
-        $content = file_get_contents("./config/res/defaultMigration.txt");
+        $content = file_get_contents("./.config/res/defaultMigration.txt");
         file_put_contents("database/Migrations/" . $date . "_" . $name . ".php", $content);
 
         return Command::SUCCESS;

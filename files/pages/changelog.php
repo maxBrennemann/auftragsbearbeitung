@@ -25,6 +25,7 @@
         <li>Lokale Entwicklungsumgebung angepasst
             <ul class="ml-5 list-disc list-inside">
                 <li>XDebug integriert</li>
+                <li>Vite Hot Reloading</li>
             </ul>
         </li>
     </ul>

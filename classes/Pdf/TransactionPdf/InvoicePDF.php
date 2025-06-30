@@ -59,15 +59,26 @@ class InvoicePDF extends TransactionPDF
             $height = $this->getStringHeight(70, $p->getDescription());
             $addToOffset = $lineheight;
 
+            $descriptionWidth = 70;
             if ($p->getOhneBerechnung() == true) {
-                $addToOffset = $this->ohneBerechnungBtn($height, $lineheight, $p);
+                $descriptionWidth = 50;
+                //$addToOffset = $this->ohneBerechnungBtn($height, $lineheight, $p);
+            }
+
+            if ($height >= $lineheight) {
+                $x = $this->GetX();
+                $y = $this->getY();
+                //$this->SetXY($x, $y);
+                $this->MultiCell($descriptionWidth, $lineheight, $p->getDescription(), '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
+                $addToOffset = ceil($height);
             } else {
-                if ($height >= $lineheight) {
-                    $this->MultiCell(70, $lineheight, $p->getDescription(), '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
-                    $addToOffset = ceil($height);
-                } else {
-                    $this->Cell(70, $lineheight, $p->getDescription());
-                }
+                $this->Cell($descriptionWidth, $lineheight, $p->getDescription());
+            }
+
+            if ($p->getOhneBerechnung() == true) {
+                $this->SetFont("helvetica", "", 6);
+                $this->Cell(20, $lineheight, "Ohne Berechnung");
+                $this->SetFont("helvetica", "", 12);
             }
 
             $this->Cell(20, $lineheight, $p->bekommeEinzelPreis_formatted());
@@ -196,18 +207,6 @@ class InvoicePDF extends TransactionPDF
         $this->Cell(20, 10, 'E-Preis', 'B');
         $this->Cell(20, 10, 'G-Preis', 'B');
         $this->SetFont("helvetica", "", 12);
-    }
-
-    private function ohneBerechnungBtn(&$height, &$lineheight, &$p)
-    {
-        $this->MultiCell(50, $lineheight, $p->getDescription(), '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
-        $addToOffset = ceil($height);
-
-        $this->SetFont("helvetica", "", 7);
-        $this->MultiCell(20, $lineheight, "Ohne Berechnung", '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
-        $this->SetFont("helvetica", "", 12);
-
-        return $addToOffset;
     }
 
     private function getCompanyLogo(): string

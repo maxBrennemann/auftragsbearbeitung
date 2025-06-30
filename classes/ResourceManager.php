@@ -19,6 +19,7 @@ class ResourceManager
 {
 
     private static $page = "";
+    private static $type = "";
 
     public static function initialize()
     {
@@ -35,15 +36,45 @@ class ResourceManager
         errorReporting();
     }
 
-    public static function pass(): void
+    public static function identifyRequestType(): void
     {
         $url = $_SERVER["REQUEST_URI"];
         $url = explode('?', $url, 2);
         $page = str_replace($_ENV["REWRITE_BASE"] . $_ENV["SUB_URL"], "", $url[0]);
         $parts = explode('/', $page);
-        self::$page = $parts[count($parts) - 1];
 
-        switch ($parts[1]) {
+        self::$page = $parts[count($parts) - 1];
+        self::$type = $parts[1];
+    }
+
+    /**
+     * There are three possible request types needed for the SessionController response;
+     * @return string
+     */
+    public static function getRequestType(): string
+    {
+        switch(self::$type) {
+            case "js":
+            case "css":
+            case "font":
+            case "pdfs":
+            case "upload":
+            case "backup":
+            case "img":
+            case "static":
+            case "favicon.ico":
+            case "events":
+                return "resource";
+            case "api":
+                return "api";
+            default:
+                return "page";
+        }
+    }
+
+    public static function pass(): void
+    {
+        switch (self::$type) {
             case "js":
             case "css":
             case "font":

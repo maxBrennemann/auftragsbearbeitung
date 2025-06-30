@@ -11,6 +11,7 @@ use Classes\Project\CacheManager;
 
 ResourceManager::getParameters();
 ResourceManager::initialize();
+ResourceManager::identifyRequestType();
 
 SessionController::start();
 

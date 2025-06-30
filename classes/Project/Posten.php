@@ -97,6 +97,7 @@ abstract class Posten
 						$row["z_description"],
 						$row["discount"],
 						(int) $row["is_invoice"],
+						(int) $row["free_of_charge"],
 						(int) $row["position"],
 					);
 					break;
@@ -110,6 +111,7 @@ abstract class Posten
 						$row["l_unit"],
 						$row["discount"],
 						(int) $row["is_invoice"],
+						(int) $row["free_of_charge"],
 						(int) $row["position"],
 					);
 					break;
@@ -123,6 +125,7 @@ abstract class Posten
 						$row["p_brand"],
 						$row["discount"],
 						(int) $row["is_invoice"],
+						(int) $row["free_of_charge"],
 						(int) $row["position"],
 					);
 					break;
@@ -136,6 +139,7 @@ abstract class Posten
 						$row["p_brand"],
 						$row["discount"],
 						(int) $row["is_invoice"],
+						(int) $row["free_of_charge"],
 						(int) $row["position"],
 					);
 					break;
@@ -149,15 +153,25 @@ abstract class Posten
 		return $items;
 	}
 
-	public static function insertPosten($type, $data)
+	public static function insertPosten(string $type, array $data): array
 	{
 		$auftragsnummer = (int) $data['Auftragsnummer'];
 
-		$fre = $data['ohneBerechnung'];
-		$dis = $data['discount'] == null ? 0 : $data['discount'];
-		$inv = $data['addToInvoice'] == null ? 0 : $data['addToInvoice'];
+		$ohneBerechnung = $data['ohneBerechnung'];
+		$discount = $data['discount'] == null ? 0 : $data['discount'];
+		$addToInvoice = $data['addToInvoice'] == null ? 0 : $data['addToInvoice'];
 
-		$postennummer = DBAccess::insertQuery("INSERT INTO posten (Auftragsnummer, Posten, ohneBerechnung, discount, isInvoice, position) SELECT $auftragsnummer, '$type', $fre, $dis, $inv, count(*) + 1 FROM posten WHERE Auftragsnummer = $auftragsnummer");
+		$postennummer = DBAccess::insertQuery("INSERT INTO posten (Auftragsnummer, Posten, ohneBerechnung, discount, isInvoice, position) 
+			SELECT :auftragsnummer, :type, :ohneBerechnung, :discount, :addToInvoice, count(*) + 1 
+			FROM posten 
+			WHERE Auftragsnummer = :auftragsnummer_check", [
+			"auftragsnummer" => $auftragsnummer,
+			"type" => $type,
+			"ohneBerechnung" => $ohneBerechnung,
+			"discount" => $discount,
+			"addToInvoice" => $addToInvoice,
+			"auftragsnummer_check" => $auftragsnummer,
+		]);
 
 		switch ($type) {
 			case "zeit":

@@ -18,7 +18,7 @@ class ProduktPosten extends Posten
 	protected $ohneBerechnung = false;
 	protected $postennummer;
 
-	public function __construct($Preis, $Bezeichnung, $Beschreibung, $Anzahl, $Einkaufspreis, $Marke, $discount, $isInvoice, int $position = 0)
+	public function __construct($Preis, $Bezeichnung, $Beschreibung, $Anzahl, $Einkaufspreis, $Marke, $discount, $isInvoice, $freeOfCharge, int $position = 0)
 	{
 		$this->Preis = (float) $Preis;
 		$this->Einkaufspreis = (float) $Einkaufspreis;
@@ -26,6 +26,7 @@ class ProduktPosten extends Posten
 		$this->Beschreibung = $Beschreibung;
 		$this->Anzahl = (int) $Anzahl;
 		$this->Marke = $Marke;
+		$this->ohneBerechnung = $freeOfCharge;
 
 		$this->isInvoice = $isInvoice == 0 ? false : true;
 
