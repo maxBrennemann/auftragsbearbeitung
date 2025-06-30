@@ -430,9 +430,7 @@ class Kunde implements StatisticsInterface
 
 	public static function delete()
 	{
-		JSONResponseHandler::throwError(501, [
-			"status" => "not implemented"
-		]);
+		JSONResponseHandler::throwError(501, "not implemented");
 	}
 
 	public static function setNote()

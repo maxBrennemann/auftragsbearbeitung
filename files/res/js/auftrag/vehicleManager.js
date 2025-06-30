@@ -7,7 +7,7 @@ import { initFileUploader } from "../classes/upload.js";
 import { getCustomerId, getOrderId } from "../auftrag.js";
 
 const fnNames = {};
-const vehicleData =  {
+const vehicleData = {
     "customerId": 0,
     "orderId": 0,
     "tableRef": null,
@@ -63,9 +63,14 @@ fnNames.click_addExistingVehicle = () => {
     }
 
     ajax.put(`/api/v1/order/${vehicleData.orderId}/vehicles/${vehicleId}`)
-    .then(r => {
-        document.getElementById("fahrzeugTable").innerHTML = r.table;
-    });
+        .then(r => {
+            addRow({
+                "Nummer": vehicleId,
+                "Kundennummer": vehicleData.customerId,
+                "Kennzeichen": r.kfz,
+                "Fahrzeug": r.fahrzeug,
+            }, vehicleData.tableRef, vehicleData.options);
+        });
 }
 
 fnNames.write_selectVehicle = e => {

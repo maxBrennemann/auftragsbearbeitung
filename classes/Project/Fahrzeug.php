@@ -57,12 +57,18 @@ class Fahrzeug
             "orderId" => $orderId
         ]);
 
+        $vehicleData = DBAccess::selectQuery("SELECT Kennzeichen, Fahrzeug FROM fahrzeuge WHERE Nummer = :vehicleId", [
+            "vehicleId" => $vehicleId,
+        ]);
+
         OrderHistory::add($orderId, $vehicleId, OrderHistory::TYPE_VEHICLE, OrderHistory::STATE_ADDED);
 
         JSONResponseHandler::sendResponse([
             "message" => "Vehicle attached to order",
             "vehicleId" => $vehicleId,
             "orderId" => $orderId,
+            "kfz" => $vehicleData[0]["Kennzeichen"],
+            "fahrzeug" => $vehicleData[0]["Fahrzeug"],
         ]);
     }
 
