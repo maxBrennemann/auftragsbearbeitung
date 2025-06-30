@@ -17,6 +17,8 @@
     "dev": "vite"
   },
   "dependencies": {
+    "@tailwindcss/postcss": "^4.1.11",
+    "@vitejs/plugin-react": "^4.6.0",
     "chart.js": "^4.4.1",
     "colorpicker": "git+https://github.com/maxBrennemann/colorpicker.git",
     "css-loader": "^7.1.2",

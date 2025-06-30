@@ -42,7 +42,7 @@
     }
 
     .info-button {
-        @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-1 px-2 my-0.5 bg-blue-100 rounded-full border-0 text-blue-500 text-xs hover:bg-blue-600 hover:text-blue-100 disabled:bg-gray-200 disabled:hover:bg-gray-300 disabled:hover:cursor-not-allowed;
+        @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-1 px-2 my-0.5 bg-blue-100 rounded-full border border-blue-400 text-blue-500 text-xxs hover:bg-blue-600 hover:text-blue-100 disabled:bg-gray-200 disabled:hover:bg-gray-300 disabled:hover:cursor-not-allowed;
     }
 
     .tab-button {

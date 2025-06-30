@@ -1,4 +1,4 @@
-import "../../css/tailwind.css";
+import "../../../../input.css";
 
 import { init } from "../global.js";
 

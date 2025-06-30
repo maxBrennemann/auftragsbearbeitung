@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import fs from "fs";
 import path from "path";
+import tailwindcss from "tailwindcss";
 
 const projectRoot = __dirname;
 
@@ -15,7 +16,12 @@ export default defineConfig({
         },
     },
 
+    plugins: [tailwindcss()],
+
     css: {
-        postcss: path.resolve(projectRoot, "tailwind.config.js"),
+        postcss: {
+            plugins: [tailwindcss()],
+        },
     },
+
 });
