@@ -1,4 +1,3 @@
-import { getOrderId } from "../auftrag.js";
 import { ajax } from "../classes/ajax.js";
 import { addBindings } from "../classes/bindings.js";
 import { notification } from "../classes/notifications.js";
@@ -6,6 +5,9 @@ import { tableConfig } from "../classes/tableconfig.js";
 import { fetchAndRenderTable } from "../classes/table.js";
 
 const fnNames = {};
+const notesConfig = {
+    orderId: 0,
+};
 
 const initStepsTable = async () => {
     const config = tableConfig["schritte"];
@@ -26,7 +28,7 @@ const initStepsTable = async () => {
             },
         },
         "conditions": {
-            "Auftragsnummer": getOrderId(),
+            "Auftragsnummer": notesConfig.orderId,
         },
     };
 
@@ -125,7 +127,7 @@ fnNames.click_addBearbeitungsschritt = () => {
         return;
     }
 
-    ajax.post(`/api/v1/notes/step/${getOrderId()}`, {
+    ajax.post(`/api/v1/notes/step/${notesConfig.orderId}`, {
         "name": name,
         "date": date,
         "hide": hideStatus,
@@ -252,7 +254,8 @@ fnNames.click_removeNote = removeNote;
 fnNames.click_addNewNote = addNewNote;
 fnNames.click_cancelNote = cancelNote;
 
-export function initNotes() {
+export function initNotes(orderId) {
+    notesConfig.orderId = orderId;
     addBindings(fnNames);
 
     const nodeContainer = document.getElementById("noteContainer");

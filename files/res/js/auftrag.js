@@ -48,8 +48,8 @@ const initCode = async () => {
         },
     });
     initOrderManager();
-    initNotes();
-    initVehicles();
+    initNotes(globalData.auftragsId);
+    initVehicles(getCustomerId(), globalData.auftragsId);
     initColors();
 
     globalData.table = await getItemsTable("auftragsPostenTable", globalData.auftragsId, "order");

@@ -68,6 +68,10 @@ class Step
 		if ($data["assignedTo"] != 0) {
 			NotificationManager::addNotification( $data["assignedTo"], 1, Tools::get("name"), $postenNummer);
 		}
+
+		JSONResponseHandler::sendResponse([
+			
+		]);
 	}
 
 	public static function updateStep($data)

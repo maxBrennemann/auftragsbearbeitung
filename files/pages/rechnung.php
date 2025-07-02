@@ -83,7 +83,7 @@ if ($target == "view") {
 		<hr class="mt-2">
 
 		<div class="mt-3">
-			<h4 class="font-semibold inline-flex items-center" data-fun="togglePredefinedTexts" data-binding="true">
+			<h4 class="font-semibold inline-flex items-center" data-target=".predefinedTexts, #texts .toggle-up, #texts .toggle-down" data-toggle="true" id="texts">
 				<p class="py-2 cursor-pointer">Vordefinierte Texte</p>
 				<span class="cursor-pointer">
 					<span class="toggle-up hidden"><?= Icon::getDefault("iconChevronUp") ?></span>
@@ -102,7 +102,20 @@ if ($target == "view") {
 					<button data-binding="true" data-fun="addText" class="btn-primary">Hinzufügen</button>
 				</div>
 			</div>
-			<div class="predefinedTexts"></div>
+		</div>
+
+		<hr>
+
+		<div class="mt-3">
+			<h4 class="font-semibold inline-flex items-center" data-target=".toggleVehicles, #vehicles .toggle-up, #vehicles .toggle-down" data-toggle="true" id="vehicles">
+				<p class="py-2 cursor-pointer">Fahrzeuge</p>
+				<span class="cursor-pointer">
+					<span class="toggle-up hidden"><?= Icon::getDefault("iconChevronUp") ?></span>
+					<span class="toggle-down"><?= Icon::getDefault("iconChevronDown") ?></span>
+				</span>
+			</h4>
+			<div class="toggleVehicles hidden">test
+			</div>
 		</div>
 
 		<hr>

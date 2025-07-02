@@ -4,7 +4,6 @@ import { clearInputs, createPopup } from "../global.js";
 import { tableConfig } from "../classes/tableconfig.js";
 import { addRow, fetchAndRenderTable } from "../classes/table.js";
 import { initFileUploader } from "../classes/upload.js";
-import { getCustomerId, getOrderId } from "../auftrag.js";
 
 const fnNames = {};
 const vehicleData = {
@@ -123,9 +122,9 @@ const uploadVehicleFile = async (e) => {
     div.addEventListener("fileUploaded", () => btnCancel.click());
 }
 
-export const initVehicles = () => {
+export const initVehicles = (customerId, orderId) => {
     addBindings(fnNames);
-    vehicleData.customerId = getCustomerId();
-    vehicleData.orderId = getOrderId();
+    vehicleData.customerId = customerId;
+    vehicleData.orderId = orderId;
     createVehicleTable();
 }
