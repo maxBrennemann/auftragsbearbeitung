@@ -14,11 +14,12 @@ function getJsEntries(dir) {
     return entries;
 }
 
+const projectRoot = __dirname;
 const httpsConfig = {};
 
-if (fs.existsSync('.config/certs/localhost-key.pem') && fs.existsSync('.config/certs/localhost-cert.pem')) {
-    httpsConfig.key = fs.readFileSync('.config/certs/localhost-key.pem');
-    httpsConfig.cert = fs.readFileSync('.config/certs/localhost-cert.pem');
+if (fs.readFileSync(path.resolve(projectRoot, ".config/certs/localhost-key.pem")) && fs.readFileSync(path.resolve(projectRoot, ".config/certs/localhost.pem"))) {
+    httpsConfig.key = fs.readFileSync(path.resolve(projectRoot, ".config/certs/localhost-key.pem"));
+    httpsConfig.cert = fs.readFileSync(path.resolve(projectRoot, ".config/certs/localhost.pem"));
 }
 
 export default defineConfig({
@@ -32,12 +33,13 @@ export default defineConfig({
     build: {
         outDir: "../assets",
         emptyOutDir: true,
+        manifest: true,
         rollupOptions: {
             input: getJsEntries(path.resolve(__dirname, 'files/res/js')),
             output: {
-                entryFileNames: `[name].js`,
-                chunkFileNames: `common-[hash].js`,
-                assetFileNames: `[name].[ext]`,
+                entryFileNames: `[name].[hash].js`,
+                chunkFileNames: `common.[hash].js`,
+                assetFileNames: `[name].[hash].[ext]`,
             },
         },
     },

@@ -11,6 +11,10 @@ const notesConfig = {
 
 const initStepsTable = async () => {
     const config = tableConfig["schritte"];
+    config.columns.push({
+        "key": "name",
+        "label": "Zugewiesen",
+    });
     const options = {
         "hideOptions": ["move", "add", "addRow"],
         "hide": [
@@ -29,7 +33,6 @@ const initStepsTable = async () => {
         },
         "conditions": {
             "Auftragsnummer": notesConfig.orderId,
-            //""
         },
         "joins": {
             "assignedToUser": 0

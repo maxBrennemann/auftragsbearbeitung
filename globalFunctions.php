@@ -75,10 +75,7 @@ function captureError()
 			$errorData["specific"] =  "in " . $e->getFile() . ":" . $e->getLine();
 			$errorData["trace"] = $e->getTraceAsString();
 
-			$errorData["query"] = "";
-			if ($_ENV["SQL_ERROR"]) {
-				$errorData["query"] = DBAccess::getInterpolatedQuery();
-			}
+			$errorData["query"] = $errorData["query"] = DBAccess::getInterpolatedQuery();
 
 			error_log($e);
 		} else {

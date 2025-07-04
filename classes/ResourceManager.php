@@ -247,14 +247,6 @@ class ResourceManager
             return;
         }
 
-        $fileName = explode(".", $script);
-
-        /* check if filename has .js ending */
-        if (!(sizeof($fileName) == 2)) {
-            echo "";
-            return;
-        }
-
         if (file_exists(Link::getResourcesLink($script, "js", false))) {
             echo file_get_contents(Link::getResourcesLink($script, "js", false));
             return;
@@ -276,18 +268,27 @@ class ResourceManager
             return;
         }
 
-        /* check if filename has .css ending */
-        if (!(sizeof($fileName) == 2)) {
-            echo "";
-            return;
-        }
-
         if (file_exists(Link::getResourcesLink($script, "css", false))) {
             echo file_get_contents(Link::getResourcesLink($script, "css", false));
             return;
         }
 
         echo "";
+    }
+
+    public static function getFileNameWithHash(string $file, string $type = "file"): string
+    {
+        $manifest = json_decode(file_get_contents("./files/res/assets/.vite/manifest.json"), true);
+
+        if (!isset($manifest[$file])) {
+            return $file;
+        }
+
+        if ($type !== "file") {
+            return $manifest[$file][$type][0];
+        }
+
+        return $manifest[$file][$type];
     }
 
     private static function checkFont($fileName)

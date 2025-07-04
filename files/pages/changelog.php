@@ -21,7 +21,12 @@
     </nav>
     <h3 id="1.2.2" class="font-bold my-5">1.2.2</h3>
     <ul class="list-disc list-inside">
-        <li>Interne Dateistruktur angepasst</li>
+        <li>Interne Dateistruktur angepasst
+            <ul class="ml-5 list-disc list-inside">
+                <li>Vite Build wird nun statt Webpack verwendet</li>
+                <li>Minify Status entfernt, in Production wird immer alles gebundelt</li>
+            </ul>
+        </li>
         <li>Lokale Entwicklungsumgebung angepasst
             <ul class="ml-5 list-disc list-inside">
                 <li>XDebug integriert</li>

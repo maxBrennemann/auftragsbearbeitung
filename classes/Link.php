@@ -100,12 +100,14 @@ class Link
 
 	public static function getGlobalCSS()
 	{
-		return self::getResourcesShortLink("global.css", "css");
+		$file = ResourceManager::getFileNameWithHash("global.js", "css");
+		return self::getResourcesShortLink($file, "css");
 	}
 
 	public static function getGlobalJS()
 	{
-		return self::getResourcesShortLink("main.js", "js");
+		$file = ResourceManager::getFileNameWithHash("global.js");
+		return self::getResourcesShortLink($file, "js");
 	}
 
 	/* new link functionalities */

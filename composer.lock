@@ -1234,12 +1234,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/maxBrennemann/php-utilities.git",
-                "reference": "ba26fd6e5c45493eaa3d7a18c21074110ae555c5"
+                "reference": "3f5e24dfe9b345f4ddbb66023f196f3a74043926"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/maxBrennemann/php-utilities/zipball/ba26fd6e5c45493eaa3d7a18c21074110ae555c5",
-                "reference": "ba26fd6e5c45493eaa3d7a18c21074110ae555c5",
+                "url": "https://api.github.com/repos/maxBrennemann/php-utilities/zipball/3f5e24dfe9b345f4ddbb66023f196f3a74043926",
+                "reference": "3f5e24dfe9b345f4ddbb66023f196f3a74043926",
                 "shasum": ""
             },
             "default-branch": true,
@@ -1256,10 +1256,10 @@
                 }
             ],
             "support": {
-                "source": "https://github.com/maxBrennemann/php-utilities/tree/v1.2",
+                "source": "https://github.com/maxBrennemann/php-utilities/tree/main",
                 "issues": "https://github.com/maxBrennemann/php-utilities/issues"
             },
-            "time": "2025-06-28T16:25:03+00:00"
+            "time": "2025-07-04T16:00:52+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -3213,12 +3213,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "1720ddd719e16cf0db4eb1c6eca108031636d46c"
+                "reference": "d25e62e636b0a9b01e3bdebb7823b474876dd829"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/1720ddd719e16cf0db4eb1c6eca108031636d46c",
-                "reference": "1720ddd719e16cf0db4eb1c6eca108031636d46c",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/d25e62e636b0a9b01e3bdebb7823b474876dd829",
+                "reference": "d25e62e636b0a9b01e3bdebb7823b474876dd829",
                 "shasum": ""
             },
             "require": {
@@ -3258,7 +3258,7 @@
             ],
             "support": {
                 "issues": "https://github.com/myclabs/DeepCopy/issues",
-                "source": "https://github.com/myclabs/DeepCopy/tree/1.13.1"
+                "source": "https://github.com/myclabs/DeepCopy/tree/1.13.2"
             },
             "funding": [
                 {
@@ -3266,7 +3266,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-04-29T12:36:36+00:00"
+            "time": "2025-07-04T14:07:32+00:00"
         },
         {
             "name": "nikic/php-parser",
