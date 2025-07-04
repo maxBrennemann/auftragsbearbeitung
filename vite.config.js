@@ -17,9 +17,12 @@ function getJsEntries(dir) {
 const projectRoot = __dirname;
 const httpsConfig = {};
 
-if (fs.readFileSync(path.resolve(projectRoot, ".config/certs/localhost-key.pem")) && fs.readFileSync(path.resolve(projectRoot, ".config/certs/localhost.pem"))) {
-    httpsConfig.key = fs.readFileSync(path.resolve(projectRoot, ".config/certs/localhost-key.pem"));
-    httpsConfig.cert = fs.readFileSync(path.resolve(projectRoot, ".config/certs/localhost.pem"));
+const keyPath = path.resolve(projectRoot, ".config/certs/localhost-key.pem");
+const certPath = path.resolve(projectRoot, ".config/certs/localhost.pem");
+
+if (fs.existsSync(keyPath) && fs.existsSync(certPath)) {
+    httpsConfig.key = fs.readFileSync(keyPath);
+    httpsConfig.cert = fs.readFileSync(certPath);
 }
 
 export default defineConfig({
