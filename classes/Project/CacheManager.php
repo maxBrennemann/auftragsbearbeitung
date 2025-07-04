@@ -143,21 +143,4 @@ class CacheManager
             "status" => $response,
         ]);
     }
-
-    public static function toggleMinify()
-    {
-        $status = (string) Tools::get("status");
-
-        if ($status == "off" || $status == "on") {
-            DBAccess::updateQuery("UPDATE settings SET content = :status 
-            WHERE title = 'minifyStatus'", [
-                "status" => $status
-            ]);
-            JSONResponseHandler::sendResponse([
-                "status" => "success",
-            ]);
-        } else {
-            JSONResponseHandler::throwError(400, "Unsupported status type");
-        }
-    }
 }

@@ -1,5 +1,5 @@
-import { ajax } from "./classes/ajax.js";
-import { addBindings, getVariable } from "./classes/bindings.js";
+import { ajax } from "js-classes/ajax.js";
+import { addBindings, getVariable } from "js-classes/bindings.js";
 import { renderTable } from "./classes/table.js";
 
 const fnNames = {};

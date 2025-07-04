@@ -26,8 +26,17 @@
             <ul class="ml-5 list-disc list-inside">
                 <li>XDebug integriert</li>
                 <li>Vite Hot Reloading</li>
+                <li>Tailwind Hot Reloading</li>
+                <li>Makefile hinzugefügt</li>
             </ul>
         </li>
+        <li>Diverse Bugfixes
+            <ul class="ml-5 list-disc list-inside">
+                <li>Circle Dependencies teilweise entfernt, da es Probleme mit dem Hotreloading gab</li>
+                <li>Termin kann wieder nachträglich gesetzt werden</li>
+            </ul>
+        </li>
+        <li>Benachrichtigungen grundlegend überarbeitet und alte Alternativen ersetzt</li>
     </ul>
     <h3 id="1.2.1" class="font-bold my-5">1.2.1</h3>
     <ul class="list-disc list-inside">

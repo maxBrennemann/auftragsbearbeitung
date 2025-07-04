@@ -236,6 +236,11 @@ class Invoice
 		return $data;
 	}
 
+	public function getAttachedVehicles(): array
+	{
+		return $this->auftrag->getLinkedVehicles();
+	}
+
 	public static function getContacts(int $customerId)
 	{
 		$contacts = DBAccess::selectQuery("SELECT Nummer AS id, Vorname AS firstName, Nachname AS lastName, Email AS email 

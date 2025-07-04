@@ -8,7 +8,6 @@ use MaxBrennemann\PhpUtilities\Tools;
 use Classes\Auth\SessionController;
 use Classes\Table\TableConfig;
 
-use Classes\Project\Config;
 use Classes\Project\CacheManager;
 use Classes\Project\Events;
 
@@ -23,7 +22,6 @@ class ResourceManager
 
     public static function initialize()
     {
-        define("MINIFY_STATUS", Config::get("minifyStatus") == "on" ? true : false);
         define("CACHE_STATUS", CacheManager::getCacheStatus());
 
         $companyName = DBAccess::selectQuery("SELECT content FROM settings WHERE title = 'companyName';");
@@ -53,7 +51,7 @@ class ResourceManager
      */
     public static function getRequestType(): string
     {
-        switch(self::$type) {
+        switch (self::$type) {
             case "js":
             case "css":
             case "font":
@@ -257,16 +255,6 @@ class ResourceManager
             return;
         }
 
-        $min = "min/" . $fileName[0] . ".js.gz";
-        if (
-            file_exists(Link::getResourcesLink($min, "js", false))
-            && MINIFY_STATUS
-        ) {
-            header("Content-Encoding: gzip");
-            echo file_get_contents(Link::getResourcesLink($min, "js", false));
-            return;
-        }
-
         if (file_exists(Link::getResourcesLink($script, "js", false))) {
             echo file_get_contents(Link::getResourcesLink($script, "js", false));
             return;
@@ -277,7 +265,8 @@ class ResourceManager
 
     private static function get_css($script)
     {
-        header("Content-type: text/css");
+        header("Content-Type: text/css; charset=utf-8");
+
         $fileName = explode(".", $script);
 
         /* quick workaround for font files accessed via css/font/ */
@@ -287,25 +276,18 @@ class ResourceManager
             return;
         }
 
-        if (sizeof($fileName) == 2) {
-            $min = "min/" . $fileName[0] . ".min.css";
-            if (
-                file_exists(Link::getResourcesLink($min, "css", false))
-                && MINIFY_STATUS
-            ) {
-                $file = file_get_contents(Link::getResourcesLink($min, "css", false));
-            } else {
-                if (file_exists(Link::getResourcesLink($script, "css", false))) {
-                    $file = file_get_contents(Link::getResourcesLink($script, "css", false));
-                } else {
-                    $file = "";
-                }
-            }
-        } else {
-            $file = "";
+        /* check if filename has .css ending */
+        if (!(sizeof($fileName) == 2)) {
+            echo "";
+            return;
         }
 
-        echo $file;
+        if (file_exists(Link::getResourcesLink($script, "css", false))) {
+            echo file_get_contents(Link::getResourcesLink($script, "css", false));
+            return;
+        }
+
+        echo "";
     }
 
     private static function checkFont($fileName)

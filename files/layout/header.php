@@ -7,12 +7,11 @@ use Classes\Notification\NotificationManager;
 use Classes\Project\Config;
 
 $globalCSS = Link::getGlobalCSS();
-$tailwindCSS = Link::getTW();
 $globalJS = Link::getGlobalJS();
 
-if (!MINIFY_STATUS) {
-	$notifications = Link::getResourcesShortLink("classes/notifications.js", "js");
-	$tableConfig = Link::getResourcesShortLink("classes/tableconfig.js", "js");
+$jsPage = $page;
+if ($jsPage == "") {
+	$jsPage = "home";
 }
 
 $curr_Link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
@@ -57,35 +56,19 @@ if ($pageName == "") {
 	<link rel="apple-touch-icon" href="<?= $_ENV["WEB_URL"] ?>img/favicon.png">
 	<link rel="icon" type="image/png" href="<?= $_ENV["WEB_URL"] ?>img/favicon.png">
 
-	<link rel="preload" href="/css/font/OpenSans-VariableFont.ttf" as="font" type="font/ttf" crossorigin>
-	<link rel="preload" href="/css/font/OpenSans-Italic-VariableFont.ttf" as="font" type="font/ttf" crossorigin>
-	<link rel="preload" href="/css/font/Raleway-Regular.ttf" as="font" type="font/ttf" crossorigin>
-
-	<link rel="stylesheet" href="<?= $globalCSS ?>">
-	<link rel="stylesheet" href="<?= $tailwindCSS ?>">
-
 	<?php if ($_ENV["DEV_MODE"] == "true"): ?>
 		<script type="module" src="https://localhost:5173/global.js"></script>
-		<script type="module" src="https://localhost:5173/classes/hot-reload.js"></script>
-		<script type="module" src="https://localhost:5173/classes/tableConfig.js"></script>
-		<script type="module" src="https://localhost:5173/classes/notifications.js"></script>
 
-		<?php if (file_exists(Link::getResourcesLink(dashesToCamelCase("$page.js"), "js", false))) : ?>
-			<?php 
-				$jsPage = dashesToCamelCase($page);
-			?>
+		<?php if (file_exists(Link::getResourcesLink(dashesToCamelCase("$jsPage.js"), "js", false))) : ?>
+			<?php $jsPage = dashesToCamelCase($jsPage); ?>
 			<script type="module" src="https://localhost:5173/<?= $jsPage ?>.js"></script>
 		<?php endif; ?>
 	<?php else: ?>
+		<link rel="stylesheet" href="<?= $globalCSS ?>">
 		<script type="module" src="<?= $globalJS ?>"></script>
 
-		<?php if (!MINIFY_STATUS) : ?>
-			<script src="<?= $tableConfig ?>" type="module"></script>
-			<script src="<?= $notifications ?>" type="module"></script>
-		<?php endif; ?>
-
-		<?php if (file_exists(Link::getResourcesLink(dashesToCamelCase("$page.js"), "js", false))) : ?>
-			<script type="module" src="<?= Link::getResourcesShortLink("$page.js", "js") ?>"></script>
+		<?php if (file_exists(Link::getResourcesLink(dashesToCamelCase("$jsPage.js"), "js", false))) : ?>
+			<script type="module" src="<?= Link::getResourcesShortLink("$jsPage.js", "js") ?>"></script>
 		<?php endif; ?>
 	<?php endif; ?>
 </head>

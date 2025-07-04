@@ -1,9 +1,20 @@
 import { defineConfig } from "vite";
 import fs from "fs";
 import path from "path";
-import tailwindcss from "tailwindcss";
 
 const projectRoot = __dirname;
+
+function getJsEntries(dir) {
+    const entries = {};
+    const files = fs.readdirSync(dir);
+    files.forEach(file => {
+        if (file.endsWith('.js')) {
+            const name = path.parse(file).name;
+            entries[name] = path.resolve(dir, file);
+        }
+    });
+    return entries;
+}
 
 export default defineConfig({
     root: path.resolve(__dirname, "files/res/js"),
@@ -16,12 +27,16 @@ export default defineConfig({
         },
     },
 
-    plugins: [tailwindcss()],
-
-    css: {
-        postcss: {
-            plugins: [tailwindcss()],
+    build: {
+        outDir: "../assets",
+        emptyOutDir: true,
+        rollupOptions: {
+            input: getJsEntries(path.resolve(__dirname, 'files/res/js')),
+            output: {
+                entryFileNames: `[name].js`,
+                chunkFileNames: `common-[hash].js`,
+                assetFileNames: `[name].[ext]`,
+            },
         },
     },
-
 });

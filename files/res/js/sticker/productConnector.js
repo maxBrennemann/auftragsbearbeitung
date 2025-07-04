@@ -1,6 +1,6 @@
-import { notification } from "../classes/notifications.js";
+import { notification } from "js-classes/notifications.js";
 import { createPopup } from "../global.js";
-import { ajax } from "../classes/ajax.js";
+import { ajax } from "js-classes/ajax.js";
 import { getStickerId } from "../sticker.js";
 
 class ProductConnector {

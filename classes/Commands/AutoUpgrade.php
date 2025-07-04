@@ -37,13 +37,8 @@ class AutoUpgrade extends Command
         $skipMigration = $input->getOption("skip-migration");
 
         $target = "files/res/js/classes";
-        $destination = "node_modules/js-classes";
 
         file_put_contents("$target/tableconfig.js", $content);
-        file_put_contents("$target/colorpicker.js", file_get_contents("node_modules/colorpicker/colorpicker.js"));
-        file_put_contents("$target/notifications.js", file_get_contents("$destination/notifications.js"));
-        file_put_contents("$target/ajax.js", file_get_contents("$destination/ajax.js"));
-        file_put_contents("$target/bindings.js", file_get_contents("$destination/bindings.js"));
 
         if ($skipMigration) {
             return Command::SUCCESS;

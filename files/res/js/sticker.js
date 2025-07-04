@@ -3,11 +3,11 @@ import { productConnector } from "./sticker/productConnector.js";
 import { initImageManager } from "./sticker/imageManager.js";
 import { } from "./sticker/statsManager.js";
 import { initSizeTable } from "./sticker/sizeTable.js";
-import { addBindings, getVariable } from "./classes/bindings.js";
+import { addBindings, getVariable } from "js-classes/bindings.js";
 import "./sticker/imageMove.js";
-import { ajax } from "./classes/ajax.js";
+import { ajax } from "js-classes/ajax.js";
 import { initTagManager } from "./sticker/tagManager.js";
-import { notificatinReplace, notification, notificationLoader } from "./classes/notifications.js";
+import { notificatinReplace, notification, notificationLoader } from "js-classes/notifications.js";
 import { createPopup } from "./global.js";
 
 const fnNames = {};

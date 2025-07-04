@@ -1,4 +1,5 @@
-@import './files/res/css/table.css';
+@import './table.css';
+@import './global.css';
 
 @tailwind base;
 @tailwind components;
@@ -92,25 +93,25 @@
 
 @font-face {
     font-family: 'Open Sans';
-    src: url("./font/OpenSans-VariableFont.ttf") format('truetype');
+    src: url("../css/fonts/OpenSans-VariableFont.ttf") format('truetype');
     font-weight: normal;
 }
 
 @font-face {
     font-family: 'Open Sans';
-    src: url("./font/OpenSans-VariableFont.ttf") format('truetype');
+    src: url("../css/fonts/OpenSans-VariableFont.ttf") format('truetype');
     font-weight: 600;
 }
 
 @font-face {
     font-family: 'Open Sans';
-    src: url("./font/OpenSans-VariableFont.ttf") format('truetype');
+    src: url("../css/fonts/OpenSans-VariableFont.ttf") format('truetype');
     font-weight: bold;
 }
 
 @font-face {
     font-family: 'Open Sans';
-    src: url("./font/OpenSans-Italic-VariableFont.ttf") format('truetype');
+    src: url("../css/fonts/OpenSans-Italic-VariableFont.ttf") format('truetype');
     font-weight: normal;
     font-style: italic;
 }

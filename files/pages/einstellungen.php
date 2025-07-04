@@ -105,15 +105,7 @@ $companyLogo = \Classes\Project\ClientSettings::getLogo();
 </section>
 
 <section class="defCont">
-    <h2 class="font-bold">Cache und Komprimierung</h2>
-    <div class="mt-2">
-        <?= \Classes\Controller\TemplateController::getTemplate("inputSwitch", [
-            "id" => "minifyStatusSwitch",
-            "name" => "CSS und JS komprimieren",
-            "value" => MINIFY_STATUS == true ? "checked" : "",
-            "binding" => "toggleMinify",
-        ]); ?>
-    </div>
+    <h2 class="font-bold">Cache</h2>
     <div class="mt-2">
         <?= \Classes\Controller\TemplateController::getTemplate("inputSwitch", [
             "id" => "cacheStatusSwitch",

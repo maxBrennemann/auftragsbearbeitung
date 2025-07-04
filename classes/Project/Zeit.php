@@ -210,7 +210,7 @@ class Zeit extends Posten
 
 	public function storeToDB($auftragsNr)
 	{
-		$data = $this->fillToArray(array());
+		$data = $this->fillToArray([]);
 		$data['ohneBerechnung'] = 1;
 		$data['Auftragsnummer'] = $auftragsNr;
 		Posten::insertPosten("zeit", $data);

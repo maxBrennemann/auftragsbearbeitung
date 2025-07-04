@@ -1,5 +1,5 @@
 import { tableConfig } from "./tableconfig.js";
-import { ajax } from "./ajax.js";
+import { ajax } from "js-classes/ajax.js";
 import { loadFromLocalStorage, saveToLocalStorage } from "../global.js";
 
 export const renderTable = (containerId, header, data, options = {}) => {

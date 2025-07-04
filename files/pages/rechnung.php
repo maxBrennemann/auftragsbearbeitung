@@ -92,9 +92,17 @@ if ($target == "view") {
 			</h4>
 			<div class="predefinedTexts hidden">
 				<p>Den Text zum (ab)wählen einmal anklicken. Die Rechnungsvorschau wird dann neu generiert.</p>
-				<div class="defaultInvoiceTexts grid grid-cols-3 gap-4 mt-2">
+				<div class="defaultInvoiceTexts grid grid-flow-row gap-4 mt-2">
 					<?php foreach ($invoice->getTexts() as $text): ?>
-						<p class="invoiceTexts bg-white rounded-xl cursor-pointer p-3 select-none" title="Übernehmen" data-binding="true" data-fun="toggleText" data-active="<?= $text["active"] ?>" data-id="<?= $text["id"] ?>"><?= $text["text"] ?></p>
+						<div class="invoiceTexts bg-white rounded-xl cursor-pointer p-3 select-none flex" title="Übernehmen" data-binding="true" data-fun="toggleText" data-active="<?= $text["active"] ?>" data-id="<?= $text["id"] ?>">
+							<p class="max-h-20 overflow-auto flex-auto"><?= $text["text"] ?></p>
+							<div class="pl-3 flex items-center">
+								<?php if ($text["id"] != 0) : ?>
+									<button class="btn-edit"><?= Icon::getDefault("iconEdit") ?></button>
+									<button class="btn-delete ml-1"><?= Icon::getDefault("iconDelete") ?></button>
+								<?php endif; ?>
+							</div>
+						</div>
 					<?php endforeach; ?>
 				</div>
 				<div class="my-2">
@@ -114,7 +122,12 @@ if ($target == "view") {
 					<span class="toggle-down"><?= Icon::getDefault("iconChevronDown") ?></span>
 				</span>
 			</h4>
-			<div class="toggleVehicles hidden">test
+			<div class="toggleVehicles hidden">
+				<?php foreach ($invoice->getAttachedVehicles() as $vehicle): ?>
+					<p data-id="<?= $vehicle["Nummer"] ?>">
+						<?= $vehicle["Kennzeichen"] ?> <?= $vehicle["Fahrzeug"] ?>
+					</p>
+				<?php endforeach; ?>
 			</div>
 		</div>
 
@@ -123,6 +136,7 @@ if ($target == "view") {
 		<div class="mt-3">
 			<?php if ($auftrag != null && $auftrag->getAuftragspostenData() != null): ?>
 				<button data-binding="true" data-fun="completeInvoice" class="btn-primary">Rechnung <?= $invoiceNumber != 0 ? "neu generieren" : "abschließen" ?></button>
+				<button class="btn-primary">Reihenfolge</button>
 			<?php else: ?>
 				<button disabled class="btn-primary">Rechnung abschließen</button>
 			<?php endif; ?>

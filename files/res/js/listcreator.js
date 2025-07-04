@@ -1,4 +1,4 @@
-import { ajax } from "./classes/ajax.js";
+import { ajax } from "js-classes/ajax.js";
 
 if (document.readyState !== 'loading' ) {
     init();

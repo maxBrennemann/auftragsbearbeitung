@@ -119,6 +119,14 @@ class Step
 				$data["results"][$key]["Datum"] = date('d.m.Y', strtotime($date));
 			}
 
+			$prename = $data["results"][$key]["prename"];
+			$lastname = $data["results"][$key]["lastname"];
+
+			unset($data["results"][$key]["prename"]);
+			unset($data["results"][$key]["lastname"]);
+
+			$data["results"][$key]["name"] = trim("$prename $lastname");
+
 			$data["results"][$key]["Priority"] = Priority::getPriorityLevel($data["results"][$key]["Priority"]);
 		}
     }

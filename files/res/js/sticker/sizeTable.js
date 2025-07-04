@@ -1,4 +1,4 @@
-import { ajax } from "../classes/ajax.js";
+import { ajax } from "js-classes/ajax.js";
 import { getStickerId } from "../sticker.js";
 import { deleteButton, editButton, parseEuro, parseInput, resetInputs } from "./helper.js";
 

@@ -28,19 +28,9 @@ generated/*
 !generated/.gitkeep
 
 files/res/js/classes/tableconfig.js
-files/res/js/classes/colorpicker.js
-files/res/js/classes/notifications.js
-files/res/js/classes/ajax.js
-files/res/js/classes/bindings.js
 
 # minimized files
-files/res/js/min/*
-files/res/js/min/*
-!files/res/js/min/.gitkeep
-
-files/res/css/tailwind.css
-files/res/css/min/*
-!files/res/css/min/.gitkeep
+files/res/assets/*
 
 # upload
 upload/*

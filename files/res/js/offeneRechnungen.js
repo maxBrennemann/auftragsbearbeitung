@@ -1,4 +1,4 @@
-import { ajax } from "./classes/ajax.js";
+import { ajax } from "js-classes/ajax.js";
 import { addRow, createHeader, createTable } from "./classes/table.js";
 
 const init = () => {

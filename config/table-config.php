@@ -354,8 +354,21 @@ function getTableConfig(): array
                 "Erledigt am",
                 "Status",
             ],
+            "joins" => [
+                "assignedToUser" => [
+                    "relatedTable" => "user",
+                    "localKey" => "assignedTo",
+                    "foreignKey" => "id",
+                    "type" => "LEFT",
+                    "columns" => [
+                        "lastname",
+                        "prename",
+                    ],
+                ],
+            ],
             "hooks" => [
                 "afterRead" => [\Classes\Project\Step::class, "prepareData"],
+                "afterJoin" => [\Classes\Project\Step::class, "prepareData"],
             ],
             "permissions" => ["read"],
         ],

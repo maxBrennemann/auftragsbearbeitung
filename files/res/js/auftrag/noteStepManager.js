@@ -1,6 +1,6 @@
-import { ajax } from "../classes/ajax.js";
-import { addBindings } from "../classes/bindings.js";
-import { notification } from "../classes/notifications.js";
+import { ajax } from "js-classes/ajax.js";
+import { addBindings } from "js-classes/bindings.js";
+import { notification } from "js-classes/notifications.js";
 import { tableConfig } from "../classes/tableconfig.js";
 import { fetchAndRenderTable } from "../classes/table.js";
 
@@ -29,7 +29,11 @@ const initStepsTable = async () => {
         },
         "conditions": {
             "Auftragsnummer": notesConfig.orderId,
+            //""
         },
+        "joins": {
+            "assignedToUser": 0
+        }
     };
 
     const toggleSteps = document.getElementById("toggleSteps").checked;

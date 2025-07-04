@@ -1,7 +1,7 @@
-import { notification } from "../classes/notifications.js";
-import { ajax } from "../classes/ajax.js";
+import { notification } from "js-classes/notifications.js";
+import { ajax } from "js-classes/ajax.js";
+import { addBindings } from "js-classes/bindings.js";
 import { initFileUploader } from "../classes/upload.js";
-import { addBindings } from "../classes/bindings.js";
 import { initSVG } from "./svgManager.js";
 import { getStickerId } from "../sticker.js";
 import { tableConfig } from "../classes/tableconfig.js";

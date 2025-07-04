@@ -19,6 +19,13 @@ class Model
         $this->hooks = $hooks;
     }
 
+    protected static function getTableConfig()
+    {
+        require_once "config/table-config.php";
+        $data = getTableConfig();
+        return $data;
+    }
+
     public static function init(string $tableName): Model
     {
         require_once "config/table-config.php";
@@ -79,6 +86,7 @@ class Model
         string $foreignKey,
         string $joinType = "INNER",
         array $conditions = [],
+        string $joinName = "",
     ): array {
         $this->triggerHook("beforeJoin", [
             "relatedTable" => $relatedTable,
@@ -88,16 +96,45 @@ class Model
             "conditions" => &$conditions,
         ]);
 
-        $onClause = "{$this->tableName}.{$localKey} = {$relatedTable}.{$foreignKey}";
+        $config = self::getTableConfig();
+        $baseColumns = $config[$this->tableName]["columns"] ?? ["*"];
+        $relatedColumns = $config[$this->tableName]["joins"][$joinName]["columns"] 
+            ?? $config[$relatedTable]["columns"] 
+            ?? ["*"];
+        $hiddenRelated = $config[$relatedTable]["hidden"] ?? [];
 
-        foreach ($conditions as $key => $value) {
-            $onClause .= " AND {$key} = :{$key}";
-            $parameters[$key] = $value;
+        $relatedColumns = array_diff($relatedColumns, $hiddenRelated);
+
+        $selectColumns = [];
+        foreach ($baseColumns as $col) {
+            $selectColumns[] = "{$this->tableName}.{$col}";
+        }
+        foreach ($relatedColumns as $col) {
+            $selectColumns[] = "{$relatedTable}.{$col}";
         }
 
-        $query = "SELECT * FROM {$this->tableName}
+        $selectString = implode(", ", $selectColumns);
+        $onClause = "{$this->tableName}.{$localKey} = {$relatedTable}.{$foreignKey}";
+
+        $whereQuery = [];
+        $parameters = [];
+        if (!empty($conditions)) {
+            $whereClauses = [];
+            $parameters = [];
+
+            foreach ($conditions as $key => $value) {
+                $whereClauses[] = "{$key} = :{$key}";
+                $parameters[$key] = $value;
+            }
+
+            $whereQuery = implode(" AND ", $whereClauses);
+        }
+
+        $query = "SELECT {$selectString}
+            FROM {$this->tableName}
             {$joinType} JOIN {$relatedTable}
-            ON {$onClause};";
+            ON {$onClause}
+            WHERE {$whereQuery}";
 
         $this->triggerHook("modifyJoinQuery", ["query" => &$query]);
 

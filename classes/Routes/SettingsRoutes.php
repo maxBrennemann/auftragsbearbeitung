@@ -31,14 +31,12 @@ class SettingsRoutes extends Routes
      * @uses Classes\Controller\TimeTrackingController::toggleDisplayTimeTracking()
      * @uses Classes\Project\ClientSettings::setFilterOrderPosten()
      * @uses Classes\Project\CacheManager::toggleCache()
-     * @uses Classes\Project\CacheManager::toggleMinify()
      * @uses Classes\Project\Config::updateConfig()
      */
     protected static $putRoutes = [
         "/settings/global-timetracking" => [\Classes\Controller\TimeTrackingController::class, "toggleDisplayTimeTracking"],
         "/settings/filter-order-posten" => [\Classes\Project\ClientSettings::class, "setFilterOrderPosten"],
         "/settings/cache" => [\Classes\Project\CacheManager::class, "toggleCache"],
-        "/settings/minify" => [\Classes\Project\CacheManager::class, "toggleMinify"],
         "/settings/config/{configName}" => [\Classes\Project\Config::class, "updateConfig"],
     ];
 

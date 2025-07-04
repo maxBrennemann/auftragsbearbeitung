@@ -2,8 +2,6 @@
 
 namespace Classes;
 
-use MaxBrennemann\PhpUtilities\DBAccess;
-
 class Link
 {
 
@@ -41,13 +39,13 @@ class Link
 		}
 		switch ($type) {
 			case "css":
-				$link = $rewriteBase . "files/res/css/" . $resource;
+				$link = $rewriteBase . "files/res/assets/" . $resource;
 				break;
 			case "js":
-				$link = $rewriteBase . "files/res/js/" . $resource;
+				$link = $rewriteBase . "files/res/assets/" . $resource;
 				break;
 			case "font":
-				$link = $rewriteBase . "files/assets/fonts/" . $resource;
+				$link = $rewriteBase . "files/res/css/fonts/" . $resource;
 				break;
 			case "html":
 				$link = $rewriteBase . "files/assets/forms/" . $resource;
@@ -74,23 +72,7 @@ class Link
 				break;
 			case "js":
 				$resource = dashesToCamelCase($resource);
-
-				if (MINIFY_STATUS) {
-					$resourceMin = str_replace(".js", ".", $resource);
-					$files = scandir("files/res/js/min/");
-					foreach ($files as $file) {
-						if (str_starts_with($file, $resourceMin) !== false) {
-							$name = basename($file);
-							$name = explode(".", $name);
-							$link = $_ENV["REWRITE_BASE"] . "js/" . $resourceMin . $name[1] . ".js";
-						}
-					}
-					if (!isset($link)) {
-						$link = $_ENV["REWRITE_BASE"] . "js/" . $resource;
-					}
-				} else {
-					$link = $_ENV["REWRITE_BASE"] . "js/" . $resource;
-				}
+				$link = $_ENV["REWRITE_BASE"] . "js/" . $resource;
 				break;
 			case "extJs":
 				/* extJs is for external js files, therefoe the fileSrc table column is returned ($resource) */
@@ -121,14 +103,9 @@ class Link
 		return self::getResourcesShortLink("global.css", "css");
 	}
 
-	public static function getTW()
-	{
-		return self::getResourcesShortLink("tailwind.css", "css");
-	}
-
 	public static function getGlobalJS()
 	{
-		return self::getResourcesShortLink("global.js", "js");
+		return self::getResourcesShortLink("main.js", "js");
 	}
 
 	/* new link functionalities */

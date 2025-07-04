@@ -1,5 +1,5 @@
-import { addBindings } from "./classes/bindings.js";
-import { ajax } from "./classes/ajax.js";
+import { addBindings } from "js-classes/bindings.js"
+import { ajax } from "js-classes/ajax.js";
 import { getItems, getItemsTable, initInvoiceItems } from "./classes/invoiceItems.js";
 
 const functionNames = {};

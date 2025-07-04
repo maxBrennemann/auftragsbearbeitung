@@ -1,8 +1,10 @@
+import "../css/input.css";
+
 import { DeviceDetector } from "./classes/deviceDetector.js";
 import { TableSorter, currentTableSorter, setTableSorter, sortTableNew } from "./classes/tableSorter.js";
-import { ajax } from "./classes/ajax.js";
+import { ajax } from "js-classes/ajax.js";
 import { timeGlobalListener } from "./classes/timetracking.js";
-import { addBindings } from "./classes/bindings.js";
+import { addBindings } from "js-classes/bindings.js"
 import { initNotificationService } from "./classes/notificationUpdater.js";
 
 const fnNames = {};
@@ -467,17 +469,19 @@ export const getTemplate = (id) => {
 	return clone;
 }
 
-export const init = () => {
+const init = () => {
 	exportToWindow();
 	startFunc();
 }
 
 if (document.readyState !== 'loading') {
-	exportToWindow();
-	startFunc();
+	init();
 } else {
-	document.addEventListener('DOMContentLoaded', function () {
-		exportToWindow();
-		startFunc();
-	});
+	document.addEventListener('DOMContentLoaded', init);
+}
+
+if (import.meta.hot) {
+    import.meta.hot.accept(() => {
+        init();
+    })
 }
