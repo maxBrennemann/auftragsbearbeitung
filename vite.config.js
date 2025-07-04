@@ -2,8 +2,6 @@ import { defineConfig } from "vite";
 import fs from "fs";
 import path from "path";
 
-const projectRoot = __dirname;
-
 function getJsEntries(dir) {
     const entries = {};
     const files = fs.readdirSync(dir);
@@ -16,15 +14,19 @@ function getJsEntries(dir) {
     return entries;
 }
 
+const httpsConfig = {};
+
+if (fs.existsSync('.config/certs/localhost-key.pem') && fs.existsSync('.config/certs/localhost-cert.pem')) {
+    httpsConfig.key = fs.readFileSync('.config/certs/localhost-key.pem');
+    httpsConfig.cert = fs.readFileSync('.config/certs/localhost-cert.pem');
+}
+
 export default defineConfig({
     root: path.resolve(__dirname, "files/res/js"),
 
     server: {
         origin: "https://localhost:5173",
-        https: {
-            key: fs.readFileSync(path.resolve(projectRoot, ".config/certs/localhost-key.pem")),
-            cert: fs.readFileSync(path.resolve(projectRoot, ".config/certs/localhost.pem")),
-        },
+        https: httpsConfig,
     },
 
     build: {
