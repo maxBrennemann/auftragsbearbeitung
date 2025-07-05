@@ -30,40 +30,49 @@ class Link
 		return $_ENV["REWRITE_BASE"] . "files/assets/img/default_image.png";
 	}
 
-	public static function getResourcesLink($resource, $type, $rewriteBase = true)
+	/**
+	 * Returns the file name by resource name and type
+	 * @param mixed $resource
+	 * @param mixed $type
+	 * @return string
+	 */
+	public static function getFilePath($resource, $type): string
 	{
-		if ($rewriteBase) {
-			$rewriteBase = $_ENV["REWRITE_BASE"];
-		} else {
-			$rewriteBase = "";
-		}
 		switch ($type) {
 			case "css":
-				$link = $rewriteBase . "files/res/assets/" . $resource;
+				$link = "files/res/css/" . $resource;
 				break;
 			case "js":
-				$link = $rewriteBase . "files/res/assets/" . $resource;
+				$link = "files/res/js/" . $resource;
+				break;
+			case "min";
+				$link = "files/res/assets/" . $resource;
 				break;
 			case "font":
-				$link = $rewriteBase . "files/res/css/fonts/" . $resource;
+				$link = "files/res/css/fonts/" . $resource;
 				break;
 			case "html":
-				$link = $rewriteBase . "files/assets/forms/" . $resource;
+				$link = "files/assets/forms/" . $resource;
 				break;
 			case "upload":
 				$subDir = substr($resource, 0, 2) . "/" . substr($resource, 2, 2);
-				$link = $rewriteBase . "upload/" . $subDir . "/" . $resource;
+				$link = "upload/" . $subDir . "/" . $resource;
 				break;
 			case "csv":
 			case "backup":
 			case "pdf":
-				$link = $rewriteBase . "generated/" . $resource;
+				$link = "generated/" . $resource;
 				break;
 		}
 
 		return $link;
 	}
 
+	/**
+	 * Generates a short link for resources, so that the file path is not visible in the frontend
+	 * @param mixed $resource
+	 * @param mixed $type
+	 */
 	public static function getResourcesShortLink($resource, $type)
 	{
 		switch ($type) {
@@ -73,10 +82,6 @@ class Link
 			case "js":
 				$resource = dashesToCamelCase($resource);
 				$link = $_ENV["REWRITE_BASE"] . "js/" . $resource;
-				break;
-			case "extJs":
-				/* extJs is for external js files, therefoe the fileSrc table column is returned ($resource) */
-				$link = $resource;
 				break;
 			case "font":
 				$link = $_ENV["REWRITE_BASE"] . "font/" . $resource;

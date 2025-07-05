@@ -6,8 +6,7 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
-use Classes\Auth\SessionController;
-
+use Classes\Controller\SessionController;
 use Classes\Project\User;
 
 class Login
@@ -72,7 +71,7 @@ class Login
 		return $user[0];
 	}
 
-	private static function validateUser($user): ?array
+	private static function validateUser($user): array
 	{
 		$password = Tools::get("password");
 
@@ -80,13 +79,11 @@ class Login
 		if (password_verify($password, $user["password"])) {
 			SessionController::login((int) $user["id"]);
 			return self::getDeviceKey();
-		} else {
-			JSONResponseHandler::throwError(401, [
-				"status" => "error"
-			]);
 		}
 
-		return null;
+		JSONResponseHandler::throwError(401, [
+			"status" => "error"
+		]);
 	}
 
 	public static function handleLogout(): void

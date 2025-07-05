@@ -5,7 +5,7 @@ namespace Classes;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\DBAccess;
 
-use Classes\Auth\SessionController;
+use Classes\Controller\SessionController;
 
 use Classes\Routes\CustomerRoutes;
 use Classes\Routes\InvoiceRoutes;

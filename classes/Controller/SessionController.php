@@ -1,9 +1,10 @@
 <?php
 
-namespace Classes\Auth;
+namespace Classes\Controller;
+
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 use Classes\ResourceManager;
-use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 class SessionController
 {

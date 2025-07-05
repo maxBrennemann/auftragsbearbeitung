@@ -2,9 +2,8 @@
 
 namespace Classes\Pdf\TransactionPdf;
 
-use Classes\Project\Invoice;
-
 use Classes\Link;
+use Classes\Project\Invoice;
 use Classes\Project\ClientSettings;
 
 class InvoicePDF extends TransactionPDF
@@ -215,7 +214,7 @@ class InvoicePDF extends TransactionPDF
         if ($image == "") {
             return "files/assets/img/default_image.png";
         } else {
-            return Link::getResourcesLink($image, "upload", false);
+            return Link::getFilePath($image, "upload");
         }
     }
 }

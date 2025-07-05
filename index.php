@@ -4,9 +4,8 @@ $start = microtime(true);
 
 require_once "settings.php";
 
-use Classes\Auth\SessionController;
-
 use Classes\ResourceManager;
+use Classes\Controller\SessionController;
 use Classes\Project\CacheManager;
 
 ResourceManager::getParameters();

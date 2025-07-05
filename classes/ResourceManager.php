@@ -5,7 +5,7 @@ namespace Classes;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 
-use Classes\Auth\SessionController;
+use Classes\Controller\SessionController;
 use Classes\Table\TableConfig;
 
 use Classes\Project\CacheManager;
@@ -175,6 +175,7 @@ class ResourceManager
         insertTemplate("./files/layout/header.php", [
             "pageName" => $pageName,
             "page" => $page,
+            "jsPage" => $page == "" ? "home" : $page,
         ]);
 
         insertTemplate("./files/pages/$filePath");
@@ -247,8 +248,8 @@ class ResourceManager
             return;
         }
 
-        if (file_exists(Link::getResourcesLink($script, "js", false))) {
-            echo file_get_contents(Link::getResourcesLink($script, "js", false));
+        if (file_exists(Link::getFilePath($script, "min"))) {
+            echo file_get_contents(Link::getFilePath($script, "min"));
             return;
         }
 
@@ -268,8 +269,8 @@ class ResourceManager
             return;
         }
 
-        if (file_exists(Link::getResourcesLink($script, "css", false))) {
-            echo file_get_contents(Link::getResourcesLink($script, "css", false));
+        if (file_exists(Link::getFilePath($script, "min"))) {
+            echo file_get_contents(Link::getFilePath($script, "min"));
             return;
         }
 
@@ -309,7 +310,7 @@ class ResourceManager
     private static function get_font($font)
     {
         header("Content-type: font/ttf");
-        $file = file_get_contents(Link::getResourcesLink($font, "font", false));
+        $file = file_get_contents(Link::getFilePath($font, "font"));
 
         echo $file;
     }
@@ -318,7 +319,7 @@ class ResourceManager
     {
         $finfo = new \finfo(FILEINFO_MIME_TYPE);
         $upload = ltrim($upload, "/");
-        $fileName = Link::getResourcesLink($upload, "upload", false);
+        $fileName = Link::getFilePath($upload, "upload");
 
         if (!file_exists($fileName)) {
             $mime_type = $finfo->file("files/assets/img/default_image.png");
@@ -345,10 +346,10 @@ class ResourceManager
     private static function get_backup($backup)
     {
         $file_info = new \finfo(FILEINFO_MIME_TYPE);
-        $mime_type = $file_info->buffer(file_get_contents(Link::getResourcesLink($backup, "backup", false)));
+        $mime_type = $file_info->buffer(file_get_contents(Link::getFilePath($backup, "backup")));
 
         header("Content-type:$mime_type");
-        $file = file_get_contents(Link::getResourcesLink($backup, "backup", false));
+        $file = file_get_contents(Link::getFilePath($backup, "backup"));
 
         echo $file;
     }
@@ -356,7 +357,7 @@ class ResourceManager
     private static function get_pdf($pdf)
     {
         header("Content-type: application/pdf");
-        $fileName = Link::getResourcesLink($pdf, "pdf", false);
+        $fileName = Link::getFilePath($pdf, "pdf");
         if (!file_exists($fileName)) {
             echo "";
             http_response_code(404);
@@ -382,7 +383,7 @@ class ResourceManager
         if ($file == "facebook-product-export") {
             header("Content-type: text/csv");
             $filename = "exportFB_" . date("Y-m-d") . ".csv";
-            $file = file_get_contents(Link::getResourcesLink($filename, "csv", false));
+            $file = file_get_contents(Link::getFilePath($filename, "csv"));
             echo $file;
             // TODO: check if file exists and if not, return latest file
         } else if ($file == "/generate-facebook") {

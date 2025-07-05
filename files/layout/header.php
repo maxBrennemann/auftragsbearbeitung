@@ -1,18 +1,14 @@
 <?php
 
 use Classes\Link;
+use Classes\ResourceManager;
 use Classes\Controller\BreadcrumbController;
-use Classes\Project\Icon;
 use Classes\Notification\NotificationManager;
+use Classes\Project\Icon;
 use Classes\Project\Config;
 
 $globalCSS = Link::getGlobalCSS();
 $globalJS = Link::getGlobalJS();
-
-$jsPage = $page;
-if ($jsPage == "") {
-	$jsPage = "home";
-}
 
 $curr_Link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
@@ -44,31 +40,29 @@ if ($pageName == "") {
 <html lang="de">
 
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, height=device-height">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height">
 	<meta name="Description" content="Auftragsübersicht">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<title><?= COMPANY_NAME ?> - <?= $pageTitle ?></title>
 
 	<link rel="shortcut icon" href="<?= $_ENV["WEB_URL"] ?>favicon.ico">
-	<link rel="apple-touch-icon" href="<?= $_ENV["WEB_URL"] ?>img/favicon.png">
 	<link rel="icon" type="image/png" href="<?= $_ENV["WEB_URL"] ?>img/favicon.png">
+	<link rel="apple-touch-icon" href="<?= $_ENV["WEB_URL"] ?>img/favicon.png">
 
 	<?php if ($_ENV["DEV_MODE"] == "true"): ?>
 		<script type="module" src="https://localhost:5173/global.js"></script>
 
-		<?php if (file_exists(Link::getResourcesLink(dashesToCamelCase("$jsPage.js"), "js", false))) : ?>
+		<?php if (file_exists(Link::getFilePath(dashesToCamelCase("$jsPage.js"), "js"))) : ?>
 			<?php $jsPage = dashesToCamelCase($jsPage); ?>
 			<script type="module" src="https://localhost:5173/<?= $jsPage ?>.js"></script>
 		<?php endif; ?>
 	<?php else: ?>
 		<link rel="stylesheet" href="<?= $globalCSS ?>">
 		<script type="module" src="<?= $globalJS ?>"></script>
-
-		<?php if (file_exists(Link::getResourcesLink(dashesToCamelCase("$jsPage.js"), "js", false))) : ?>
-			<script type="module" src="<?= Link::getResourcesShortLink("$jsPage.js", "js") ?>"></script>
+		<?php if (file_exists(Link::getFilePath(dashesToCamelCase("$jsPage.js"), "js"))) : ?>
+			<?php $jsPage = ResourceManager::getFileNameWithHash("$jsPage.js"); ?>
+			<script type="module" src="<?= Link::getResourcesShortLink("$jsPage", "js") ?>"></script>
 		<?php endif; ?>
 	<?php endif; ?>
 </head>
