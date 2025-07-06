@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js"
 import { notification } from "js-classes/notifications.js";
@@ -205,6 +207,29 @@ functionNames.click_removeAltName = e => {
 
     const div = target.parentNode;
     div.parentNode.removeChild(div);
+}
+
+functionNames.click_changeItemsOrder = async e => {
+    const template = await ajax.get(`/api/v1/template/invoice/items-order`, {
+        "invoiceId": config.invoiceId,
+        "orderId": config.orderId,
+    });
+    const div = document.createElement("div");
+    div.innerHTML = template.template;
+    const btnContainer = createPopup(div);
+
+    const saveBtn = document.createElement("button");
+    saveBtn.classList.add("btn-primary");
+    saveBtn.innerHTML = "Übernehmen";
+
+    saveBtn.addEventListener("click", () => {
+        saveOrder(div);
+        const btnCancel = btnContainer.querySelector("button.btn-cancel");
+        btnCancel.click()
+    });
+    btnContainer.appendChild(saveBtn);
+
+    addBindings(functionNames);
 }
 
 const saveAltNames = container => {

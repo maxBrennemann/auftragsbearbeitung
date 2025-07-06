@@ -31,6 +31,9 @@ export default defineConfig({
     server: {
         origin: "https://localhost:5173",
         https: httpsConfig,
+        hmr: {
+            overlay: true,
+        },
     },
 
     build: {

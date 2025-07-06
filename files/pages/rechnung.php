@@ -136,7 +136,7 @@ if ($target == "view") {
 		<div class="mt-3">
 			<?php if ($auftrag != null && $auftrag->getAuftragspostenData() != null): ?>
 				<button data-binding="true" data-fun="completeInvoice" class="btn-primary">Rechnung <?= $invoiceNumber != 0 ? "neu generieren" : "abschließen" ?></button>
-				<button class="btn-primary">Reihenfolge</button>
+				<button class="btn-primary" data-binding="true" data-fun="changeItemsOrder">Reihenfolge</button>
 			<?php else: ?>
 				<button disabled class="btn-primary">Rechnung abschließen</button>
 			<?php endif; ?>

@@ -61,13 +61,11 @@ class InvoicePDF extends TransactionPDF
             $descriptionWidth = 70;
             if ($p->getOhneBerechnung() == true) {
                 $descriptionWidth = 50;
-                //$addToOffset = $this->ohneBerechnungBtn($height, $lineheight, $p);
             }
 
             if ($height >= $lineheight) {
                 $x = $this->GetX();
                 $y = $this->getY();
-                //$this->SetXY($x, $y);
                 $this->MultiCell($descriptionWidth, $lineheight, $p->getDescription(), '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
                 $addToOffset = ceil($height);
             } else {

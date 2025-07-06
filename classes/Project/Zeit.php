@@ -271,13 +271,13 @@ class Zeit extends Posten
 	public static function add()
 	{
 		$data = [];
-		$data['ZeitInMinuten'] = Tools::get("time");
-		$data['Stundenlohn'] = Tools::get("wage");
-		$data['Beschreibung'] = Tools::get("description");
-		$data['Auftragsnummer'] = Tools::get("id");
-		$data['ohneBerechnung'] = Tools::get("noPayment");
-		$data['discount'] = (int) Tools::get("discount");
-		$data['addToInvoice'] = (int) Tools::get("addToInvoice");
+		$data["ZeitInMinuten"] = (int) Tools::get("time");
+		$data["Stundenlohn"] = (int) Tools::get("wage");
+		$data["Beschreibung"] = (string) Tools::get("description");
+		$data["Auftragsnummer"] = Tools::get("id");
+		$data["ohneBerechnung"] = Tools::get("noPayment");
+		$data["discount"] = (int) Tools::get("discount");
+		$data["addToInvoice"] = (int) Tools::get("addToInvoice");
 
 		$ids = Posten::insertPosten("zeit", $data);
 

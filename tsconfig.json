@@ -12,7 +12,7 @@
     "paths": {}
   },
   "include": [
-    "src"
+    "files/res/js"
   ],
   "exclude": [
     "node_modules",

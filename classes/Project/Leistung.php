@@ -213,11 +213,11 @@ class Leistung extends Posten
 
 	public static function add()
 	{
-		$orderId = Tools::get("id");
+		$orderId = (int) Tools::get("id");
 
 		$data = [];
-		$data['Leistungsnummer'] = Tools::get("lei");
-		$data['Beschreibung'] = Tools::get("bes");
+		$data['Leistungsnummer'] = (int) Tools::get("lei");
+		$data['Beschreibung'] = (string) Tools::get("bes");
 		$data['Auftragsnummer'] = $orderId;
 		$data['ohneBerechnung'] = Tools::get("ohneBerechnung");
 		$data['discount'] = (int) Tools::get("discount");
