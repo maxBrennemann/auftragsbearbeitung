@@ -4,6 +4,7 @@ import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js"
 import { notification } from "js-classes/notifications.js";
 import { createPopup } from "./global.js";
+import { DragSortManager } from "./classes/DragSortManager.js";
 
 const functionNames = {};
 
@@ -228,6 +229,14 @@ functionNames.click_changeItemsOrder = async e => {
         btnCancel.click()
     });
     btnContainer.appendChild(saveBtn);
+
+    const group = div.querySelector(".invoiceItemsGroup");
+    const sorter = new DragSortManager(group, {
+        itemSelector: "div",
+        onOrderChange: (positions, groupEl) => {
+            console.log(positions);
+        }
+    });
 
     addBindings(functionNames);
 }

@@ -279,8 +279,13 @@ class ResourceManager
 
     public static function getFileNameWithHash(string $file, string $type = "file"): string
     {
-        $manifest = json_decode(file_get_contents("./files/res/assets/.vite/manifest.json"), true);
+        $json = @file_get_contents("./files/res/assets/.vite/manifest.json");
+       
+        if ($json == false) {
+            return "";
+        }
 
+        $manifest = json_decode($json, true);
         if (!isset($manifest[$file])) {
             return $file;
         }
