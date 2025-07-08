@@ -8,7 +8,7 @@
     "vite": "^7.0.0"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "./console autoUpgrade --skip-migration & vite",
     "build": "vite build",
     "mysqldump": "mysqldump --no-data --routines --triggers -u auftragsmanager -p auftragsbearbeitung --host 127.0.0.1 > database/versions/1.2.2/schema.sql"
   },

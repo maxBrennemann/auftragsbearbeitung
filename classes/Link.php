@@ -80,7 +80,6 @@ class Link
 				$link = $_ENV["REWRITE_BASE"] . "css/" . $resource;
 				break;
 			case "js":
-				$resource = dashesToCamelCase($resource);
 				$link = $_ENV["REWRITE_BASE"] . "js/" . $resource;
 				break;
 			case "font":

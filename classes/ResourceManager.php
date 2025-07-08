@@ -242,12 +242,6 @@ class ResourceManager
     {
         header("Content-Type: text/javascript");
 
-        /* tableconfig.js */
-        if ($script == "/classes/tableconfig.js" && $_ENV["DEV_MODE"]) {
-            TableConfig::generate();
-            return;
-        }
-
         if (file_exists(Link::getFilePath($script, "min"))) {
             echo file_get_contents(Link::getFilePath($script, "min"));
             return;
@@ -280,7 +274,7 @@ class ResourceManager
     public static function getFileNameWithHash(string $file, string $type = "file"): string
     {
         $json = @file_get_contents("./files/res/assets/.vite/manifest.json");
-       
+
         if ($json == false) {
             return "";
         }
