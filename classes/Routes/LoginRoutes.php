@@ -6,7 +6,6 @@ use MaxBrennemann\PhpUtilities\Routes;
 
 class LoginRoutes extends Routes
 {
-
     protected static $getRoutes = [];
 
     /**

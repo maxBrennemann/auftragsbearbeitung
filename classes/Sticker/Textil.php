@@ -2,19 +2,17 @@
 
 namespace Classes\Sticker;
 
-use MaxBrennemann\PhpUtilities\DBAccess;
-use MaxBrennemann\PhpUtilities\Tools;
-use MaxBrennemann\PhpUtilities\JSONResponseHandler;
-
 use Classes\Project\Produkt;
+use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
 
 class Textil extends Sticker
 {
-
-    const TYPE = "textil";
+    public const TYPE = "textil";
 
     /*
-     * SELECT color, prstshp_attribute_lang.name FROM `prstshp_attribute`, prstshp_attribute_lang WHERE prstshp_attribute.id_attribute = prstshp_attribute_lang.id_attribute AND id_attribute_group = 11 AND prstshp_attribute_lang.id_lang = 1; 
+     * SELECT color, prstshp_attribute_lang.name FROM `prstshp_attribute`, prstshp_attribute_lang WHERE prstshp_attribute.id_attribute = prstshp_attribute_lang.id_attribute AND id_attribute_group = 11 AND prstshp_attribute_lang.id_lang = 1;
      * TODO: read from shop and cache
      */
     public $textilColors = [
@@ -43,7 +41,7 @@ class Textil extends Sticker
     private $isShirtcollection = false;
     private $isColorable = false;
 
-    function __construct($idTextile)
+    public function __construct($idTextile)
     {
         parent::__construct($idTextile);
         $this->instanceType = "textil";

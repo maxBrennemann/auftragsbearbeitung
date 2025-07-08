@@ -2,16 +2,13 @@
 
 namespace Classes\Sticker;
 
+use Classes\Link;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-
 use MaxBrennemann\PhpUtilities\DBAccess;
-
-use Classes\Link;
 
 class StickerImage extends PrestashopConnection
 {
-
     public const IMAGE_AUFKLEBER = "aufkleber";
     public const IMAGE_WANDTATTOO = "wandtattoo";
     public const IMAGE_TEXTIL = "textil";
@@ -115,7 +112,7 @@ class StickerImage extends PrestashopConnection
     {
         $images = array_filter(
             $this->images,
-            fn($element) => $element["image_sort"] == $type
+            fn ($element) => $element["image_sort"] == $type
         );
 
         // Sort the array by the "image_order" attribute
@@ -166,9 +163,13 @@ class StickerImage extends PrestashopConnection
         }
     }
 
-    public function getFirstImageLink() {}
+    public function getFirstImageLink()
+    {
+    }
 
-    public function convertJPGtoAvif() {}
+    public function convertJPGtoAvif()
+    {
+    }
 
     private function saveImage($filename)
     {
@@ -256,7 +257,9 @@ class StickerImage extends PrestashopConnection
         }
     }
 
-    public function uploadSVG($number) {}
+    public function uploadSVG($number)
+    {
+    }
 
     public static function handleSVGStatus(int $idMotiv)
     {
@@ -266,10 +269,10 @@ class StickerImage extends PrestashopConnection
 
     /**
      * uploads all images to the shop using the json responder script on the server;
-     * 
+     *
      * @param $imageURLs array of image urls
      * @param $productId id of the product in the shop
-     * 
+     *
      * @return void
      */
     public function uploadImages($imageURLs, $productId)
@@ -291,7 +294,7 @@ class StickerImage extends PrestashopConnection
 
     /**
      * removes all images that are not supported by the shop
-     * 
+     *
      * @param $images array of images
      */
     private function stripUnsupportedFileTypes(&$images)
@@ -309,10 +312,10 @@ class StickerImage extends PrestashopConnection
 
     /**
      * generates the image urls and sends them to the shop using the json responder script on the server;
-     * 
+     *
      * @param $imageURLs array of image urls
      * @param $productId id of the product in the shop
-     * 
+     *
      * @return string
      */
     private function generateImageUrls($imageURLs, $productId)
@@ -346,10 +349,10 @@ class StickerImage extends PrestashopConnection
     /**
      * this is currently a workaround for them problem that prestashop wants urls for image upload;
      * I upload the images to the server that generates urls which are then passed to prestashop
-     * 
+     *
      * @param $imageURLs array of image urls
      * @param $productId id of the product in the shop
-     * 
+     *
      * @return string
      */
     private function directUpload($imageURLs, $productId): ?String
@@ -433,7 +436,7 @@ class StickerImage extends PrestashopConnection
 
     /**
      * deletes all images in the shop that are connected to the current product
-     * 
+     *
      * @param $idProduct id of the product in the shop
      */
     public function deleteAllImages($idProduct)
@@ -458,13 +461,13 @@ class StickerImage extends PrestashopConnection
     }
 
     /**
-     * syncs the images of a product with the images in the database and deletes 
+     * syncs the images of a product with the images in the database and deletes
      * all images that are not in the database,
      * also sets the image description
-     * 
+     *
      * @param $type type of the product, e.g. "aufkleber"
      * @param $productId id of the product in the shop
-     * 
+     *
      * @return void
      */
     public function handleImageProductSync(String $type, int $productId)
@@ -498,10 +501,10 @@ class StickerImage extends PrestashopConnection
     /**
      * checks if all images are on the server and if they are in the correct order,
      * returns an array with the missing images and the images that are not in the database
-     * 
+     *
      * @param $images array of images from the database
      * @param $productId id of the product in the shop
-     * 
+     *
      * @return array with missing images and images that are not in the database
      */
     private function checkImageStatus(array $images, int $productId): array
@@ -536,10 +539,10 @@ class StickerImage extends PrestashopConnection
 
     /**
      * compares the ids of the images in the database with the ids of the images in the shop
-     * 
+     *
      * @param $inShop array of image ids in the shop
      * @param $inDatabase array of image ids in the database
-     * 
+     *
      * @return array with missing images and images that are not in the database
      */
     private function compareIds($inShop, $inDatabase): array
@@ -567,10 +570,10 @@ class StickerImage extends PrestashopConnection
 
     /**
      * checks if an image is in the database
-     * 
+     *
      * @param $id id of the image
      * @param $inDB array of images from the database
-     * 
+     *
      * @return true if the image is in the database, false otherwise
      */
     private function inArrayDB($id, $inDB): bool
@@ -638,7 +641,9 @@ class StickerImage extends PrestashopConnection
         }
     }
 
-    public static function getCombinedImages(int $stickerId, int $textileId) {}
+    public static function getCombinedImages(int $stickerId, int $textileId)
+    {
+    }
 
     public static function prepareData($data)
     {

@@ -2,8 +2,8 @@
 
 namespace Classes\Models;
 
-class User extends Model {
-
+class User extends Model
+{
     public array $fillable = [];
     protected string $tableName = "user";
     protected string $primary = "id";
@@ -13,6 +13,6 @@ class User extends Model {
 
     public function __construct()
     {
-        
+
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
-use Classes\Link;
-use Classes\ResourceManager;
 use Classes\Controller\BreadcrumbController;
+use Classes\Link;
 use Classes\Notification\NotificationManager;
-use Classes\Project\Icon;
 use Classes\Project\Config;
+use Classes\Project\Icon;
+use Classes\ResourceManager;
 
 $globalCSS = Link::getGlobalCSS();
 $globalJS = Link::getGlobalJS();
@@ -32,7 +32,7 @@ $wiki = 			Link::getPageLink("wiki");
 
 $pageTitle = $pageName;
 if ($pageName == "") {
-	$pageTitle = "Übersicht";
+    $pageTitle = "Übersicht";
 }
 
 ?>

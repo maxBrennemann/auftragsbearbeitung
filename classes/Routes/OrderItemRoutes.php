@@ -6,12 +6,11 @@ use MaxBrennemann\PhpUtilities\Routes;
 
 class OrderItemRoutes extends Routes
 {
-
     /**
-     * 
+     *
      * @uses Classes\Project\Auftrag::getOrderItems()
      * @uses Classes\Project\Auftrag::getInvoicePostenTableAjax()
-     * 
+     *
      * @uses Classes\Project\Angebot::getOfferTemplate()
      * @uses Classes\Project\Angebot::getOfferItems()
      */
@@ -37,10 +36,10 @@ class OrderItemRoutes extends Routes
 
     protected static $putRoutes = [];
 
-     /**
-     * @uses Classes\Project\Zeit::delete()
-     * @uses Classes\Project\Leistung::delete()
-     */
+    /**
+    * @uses Classes\Project\Zeit::delete()
+    * @uses Classes\Project\Leistung::delete()
+    */
     protected static $deleteRoutes = [
         "/order-items/time/{itemId}" => [\Classes\Project\Zeit::class, "delete"],
         "/order-items/service/{itemId}" => [\Classes\Project\Leistung::class, "delete"],

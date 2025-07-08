@@ -7,7 +7,6 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class SearchController
 {
-
     private array $searches = [];
     private array $results = [];
     private int $limit = 15;
@@ -36,8 +35,8 @@ class SearchController
             $scored = array_merge($scored, $result);
         }
 
-        $scored = array_filter($scored, fn($v) => $v["score"] > 0);
-        usort($scored, fn($a, $b) => $b["score"] <=> $a["score"]);
+        $scored = array_filter($scored, fn ($v) => $v["score"] > 0);
+        usort($scored, fn ($a, $b) => $b["score"] <=> $a["score"]);
 
         $scored = array_slice($scored, 0, $this->limit);
         return $scored;
@@ -83,7 +82,8 @@ class SearchController
         JSONResponseHandler::sendResponse($results);
     }
 
-    public static function searchAll() {
+    public static function searchAll()
+    {
         $query = Tools::get("query");
         $results = self::search($query, 20);
 

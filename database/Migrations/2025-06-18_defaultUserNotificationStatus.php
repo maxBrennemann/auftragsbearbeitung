@@ -1,7 +1,6 @@
 <?php
 
-return new class {
-
+return new class () {
     private $queries = [
         "ALTER TABLE `user_notifications` CHANGE `ischecked` `ischecked` TINYINT(1) NOT NULL DEFAULT '0';",
     ];

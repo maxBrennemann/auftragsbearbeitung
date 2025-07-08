@@ -1,9 +1,10 @@
 import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js";
-import { clearInputs, createPopup } from "../global.js";
-import { tableConfig } from "../classes/tableconfig.js";
+
 import { addRow, fetchAndRenderTable } from "../classes/table.js";
+import { tableConfig } from "../classes/tableconfig.js";
 import { initFileUploader } from "../classes/upload.js";
+import { clearInputs, createPopup } from "../global.js";
 
 const fnNames = {};
 const vehicleData = {

@@ -2,21 +2,16 @@
 
 namespace Classes;
 
+use Classes\Controller\SessionController;
+use Classes\Project\CacheManager;
+use Classes\Project\Events;
+use Classes\Sticker\Exports\ExportFacebook;
+use Classes\Sticker\Imports\ImportGoogleSearchConsole;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 
-use Classes\Controller\SessionController;
-use Classes\Table\TableConfig;
-
-use Classes\Project\CacheManager;
-use Classes\Project\Events;
-
-use Classes\Sticker\Exports\ExportFacebook;
-use Classes\Sticker\Imports\ImportGoogleSearchConsole;
-
 class ResourceManager
 {
-
     private static $page = "";
     private static $type = "";
 
@@ -83,12 +78,15 @@ class ResourceManager
             case "static":
                 self::handleResources();
                 self::close();
+                // no break
             case "api":
                 Ajax::handleRequests();
                 self::close();
+                // no break
             case "favicon.ico":
                 require_once "favicon.php";
                 self::close();
+                // no break
             case "events":
                 Events::init();
                 self::close();
@@ -385,10 +383,10 @@ class ResourceManager
             $file = file_get_contents(Link::getFilePath($filename, "csv"));
             echo $file;
             // TODO: check if file exists and if not, return latest file
-        } else if ($file == "/generate-facebook") {
+        } elseif ($file == "/generate-facebook") {
             $exportFacebook = new ExportFacebook();
             $exportFacebook->generateCSV();
-        } else if ($file == "/import-search-console") {
+        } elseif ($file == "/import-search-console") {
             ImportGoogleSearchConsole::import();
         }
     }

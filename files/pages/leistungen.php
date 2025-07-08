@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 use Classes\Models\Model;
 

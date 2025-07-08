@@ -2,12 +2,11 @@
 
 namespace Classes\Sticker\Tags;
 
+use Classes\Sticker\Sticker;
 use MaxBrennemann\PhpUtilities\DBAccess;
 
-use Classes\Sticker\Sticker;
-
-class TagRepository {
-
+class TagRepository
+{
     private int $idSticker;
     private string $title;
     private array $tags;

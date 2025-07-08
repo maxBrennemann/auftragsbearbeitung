@@ -6,7 +6,6 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 
 class TimeTracking
 {
-
     private int $userId;
 
     public function __construct(int $userId)
@@ -41,9 +40,13 @@ class TimeTracking
         return $data;
     }
 
-    public function toTable() {}
+    public function toTable()
+    {
+    }
 
-    public function sum(int $month = 0) {}
+    public function sum(int $month = 0)
+    {
+    }
 
     public function getMonthsOverview()
     {
@@ -171,5 +174,7 @@ class TimeTracking
         return $queryId;
     }
 
-    public function isOwner($id) {}
+    public function isOwner($id)
+    {
+    }
 }

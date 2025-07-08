@@ -2,14 +2,12 @@
 
 namespace Classes\Table;
 
+use Classes\Models\Model;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 
-use Classes\Models\Model;
-
 class Table extends Model
 {
-
     private static function checkPermissions($tableConfig, $action): bool
     {
         if (!array_key_exists("permissions", $tableConfig)) {

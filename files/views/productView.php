@@ -1,7 +1,7 @@
 <?php
 
-/** 
- * @var Classes\Project\Produkt $product 
+/**
+ * @var Classes\Project\Produkt $product
  */
 
 ?>

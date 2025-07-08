@@ -1,25 +1,24 @@
 <?php
 
+use Classes\Link;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
-
-use Classes\Link;
 
 $idCustomer = Tools::get("id");
 
 if ($idCustomer != null) {
-	$mitarbeiter = DBAccess::selectQuery("SELECT prename, lastname, id FROM user");
-	$annahme = DBAccess::selectQuery("SELECT Bezeichnung, id FROM angenommen");
-	$auftragstyp = DBAccess::selectQuery("SELECT * FROM auftragstyp");
+    $mitarbeiter = DBAccess::selectQuery("SELECT prename, lastname, id FROM user");
+    $annahme = DBAccess::selectQuery("SELECT Bezeichnung, id FROM angenommen");
+    $auftragstyp = DBAccess::selectQuery("SELECT * FROM auftragstyp");
 
-	$kundendaten = DBAccess::selectQuery("SELECT Vorname, Nachname, Firmenname FROM kunde WHERE Kundennummer = :kdnr", [
-		"kdnr" => $idCustomer
-	]);
-	$kundendaten = $kundendaten[0];
+    $kundendaten = DBAccess::selectQuery("SELECT Vorname, Nachname, Firmenname FROM kunde WHERE Kundennummer = :kdnr", [
+        "kdnr" => $idCustomer
+    ]);
+    $kundendaten = $kundendaten[0];
 
-	$ansprechpartner = DBAccess::selectQuery("SELECT Vorname, Nachname, Nummer FROM ansprechpartner WHERE Kundennummer = :kdnr", [
-		"kdnr" => $idCustomer
-	]);
+    $ansprechpartner = DBAccess::selectQuery("SELECT Vorname, Nachname, Nummer FROM ansprechpartner WHERE Kundennummer = :kdnr", [
+        "kdnr" => $idCustomer
+    ]);
 }
 
 if (Tools::get("id")) : ?>

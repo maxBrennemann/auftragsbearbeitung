@@ -1,7 +1,6 @@
 <?php
 
-return new class {
-
+return new class () {
     private $queries = [
         "UPDATE module_sticker_image SET image_sort = 'aufkleber' WHERE image_sort = '';",
         "UPDATE module_sticker_image SET image_sort = 'aufkleber' WHERE image_sort = 'general';",

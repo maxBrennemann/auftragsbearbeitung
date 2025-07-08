@@ -3,12 +3,11 @@
 namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
-use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
 
 class Fahrzeug
 {
-
     public static function getImages($fahrzeugId)
     {
         $query = "SELECT DISTINCT dateiname AS `file`, originalname, 
@@ -19,7 +18,9 @@ class Fahrzeug
         return DBAccess::selectQuery($query);
     }
 
-    public static function getShowAllOrders($fahrzeugId) {}
+    public static function getShowAllOrders($fahrzeugId)
+    {
+    }
 
     public static function getName($fahrzeugId)
     {

@@ -1,4 +1,5 @@
 import { addBindings } from "js-classes/bindings.js"
+
 import { clearInputs } from "./global.js";
 
 const fnNames = {};

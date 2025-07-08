@@ -2,20 +2,16 @@
 
 namespace Classes\Sticker;
 
-use MaxBrennemann\PhpUtilities\DBAccess;
-use MaxBrennemann\PhpUtilities\Tools;
-use MaxBrennemann\PhpUtilities\JSONResponseHandler;
-
-use Classes\Sticker\Imports\ImportGoogleSearchConsole;
-
+use Classes\Link;
 use Classes\Project\Icon;
 use Classes\Project\UploadHandler;
-
-use Classes\Link;
+use Classes\Sticker\Imports\ImportGoogleSearchConsole;
+use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
 
 class StickerCollection implements \Iterator
 {
-
     private $products = [];
     private $current = 0;
     private $position = 0;
@@ -28,7 +24,7 @@ class StickerCollection implements \Iterator
     private $productMatches;
     private String $displayError = "";
 
-    function __construct(int $id)
+    public function __construct(int $id)
     {
         $this->id = $id;
         $this->sticker = new Sticker($id);
@@ -160,7 +156,7 @@ class StickerCollection implements \Iterator
     }
 
     /**
-     *  updates or uploads all products and writes connections 
+     *  updates or uploads all products and writes connections
      */
     public function uploadAll($overwriteImages)
     {
@@ -484,7 +480,7 @@ class StickerCollection implements \Iterator
 
         $additionalData = DBAccess::selectQuery("SELECT additional_data FROM module_sticker_sticker_data WHERE id = :id LIMIT 1", ["id" => $id]);
 
-        if (!$additionalData[0] === NULL) {
+        if (!$additionalData[0] === null) {
             $additionalData = json_decode($additionalData[0]["additional_data"], true);
 
             $additionalData["products"][$type]["altTitle"] = $newTitle;
@@ -566,7 +562,7 @@ class StickerCollection implements \Iterator
             "idSticker" => $id,
         ]);
 
-        if ($export[0][$type] == NULL) {
+        if ($export[0][$type] == null) {
             $query = "UPDATE module_sticker_exports SET `$type` = -1 WHERE idSticker = :idSticker";
             DBAccess::updateQuery(
                 $query,
@@ -574,7 +570,7 @@ class StickerCollection implements \Iterator
                     "idSticker" => $id,
                 ]
             );
-        } else if ($export[0][$type] != NULL) {
+        } elseif ($export[0][$type] != null) {
             $query = "UPDATE module_sticker_exports SET `$type` = NULL WHERE idSticker = :idSticker";
             DBAccess::updateQuery($query, [
                 "idSticker" => $id,

@@ -2,12 +2,11 @@
 
 namespace Classes\Project;
 
-use MaxBrennemann\PhpUtilities\DBAccess;
 use Classes\Link;
+use MaxBrennemann\PhpUtilities\DBAccess;
 
 class Image
 {
-
     private $imageId = 0;
     private $url = "";
 

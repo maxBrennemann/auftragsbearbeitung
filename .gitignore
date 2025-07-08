@@ -23,6 +23,8 @@ cache/*
 .config/certs/*
 !.config/certs/openssl.cnf
 
+.php-cs-fixer.cache
+
 # generated files
 generated/*
 !generated/.gitkeep

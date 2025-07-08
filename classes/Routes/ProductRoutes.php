@@ -6,11 +6,10 @@ use MaxBrennemann\PhpUtilities\Routes;
 
 class ProductRoutes extends Routes
 {
-
     /**
      * @uses \Classes\Project\AttributeGroup::getGroups()
      * @uses \Classes\Project\AttributeGroup::getAttributes()
-     * 
+     *
      * @uses \Classes\Project\Category::getJSONOneLayer()
      * @uses \Classes\Project\Category::getJSONTree()
      */
@@ -27,10 +26,10 @@ class ProductRoutes extends Routes
      * @uses \Classes\Project\Produkt::addSource()
      * @uses \Classes\Project\Produkt::addCombinations()
      * @uses \Classes\Project\Produkt::addFiles()
-     * 
+     *
      * @uses \Classes\Project\AttributeGroup::addAttributeGroup()
      * @uses \Classes\Project\AttributeGroup::addAttribute()
-     * 
+     *
      * @uses \Classes\Project\Category::addNewCategory()
      */
     protected static $postRoutes = [
@@ -48,10 +47,10 @@ class ProductRoutes extends Routes
     /**
      * @uses \Classes\Project\Produkt::update()
      * @uses \Classes\Project\Produkt::addCombinations()
-     * 
+     *
      * @uses \Classes\Project\AttributeGroup::updateAttribute()
      * @uses \Classes\Project\AttributeGroup::updatePositions()
-     * 
+     *
      * @uses \Classes\Project\Category::updateCategory()
      */
     protected static $putRoutes = [

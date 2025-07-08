@@ -3,12 +3,11 @@
 namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
-use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
 
 class Config
 {
-
     /**
      * adds a new setting value
      * @param string $title
@@ -80,12 +79,16 @@ class Config
     /**
      * checks if a setting value exists
      */
-    public static function exists() {}
+    public static function exists()
+    {
+    }
 
     /**
      * deletes a setting value
      */
-    public static function delete() {}
+    public static function delete()
+    {
+    }
 
     /**
      * toggles a setting value between true and false

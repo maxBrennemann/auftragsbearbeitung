@@ -1,7 +1,6 @@
 <?php
 
-return new class {
-
+return new class () {
     private $queries = [
         "ALTER TABLE `invoice` CHANGE `payment_type` `payment_type` VARCHAR(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'unbezahlt';",
         "ALTER TABLE `invoice` CHANGE `payment_date` `payment_date` DATE NULL;",

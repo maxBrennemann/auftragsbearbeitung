@@ -2,8 +2,6 @@
 
 namespace Classes\Cron;
 
-use Classes\Cron\Schedule;
-
 class CronManager
 {
     public static function run()

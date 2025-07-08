@@ -4,8 +4,8 @@ namespace Classes\Routes;
 
 use MaxBrennemann\PhpUtilities\Routes;
 
-class NotesRoutes extends Routes {
-
+class NotesRoutes extends Routes
+{
     /**
      * @uses \Classes\Project\Auftrag::getNotes()
      * @uses \Classes\Project\Auftrag::getNote()

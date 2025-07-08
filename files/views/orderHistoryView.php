@@ -18,10 +18,11 @@ foreach ($historyElement as $history) : ?>
             </div>
             <div class="w-0.5 h-7 m-auto border-l-2 border-l-black"></div>
         </div>
-        <? break; ?>
+        <?php break; ?>
 <?php
     case "edited": ?>
 <?php
+        // no break
     case "finished": ?>
         <div class="<?= $count > $limit ? "hidden" : "" ?>">
             <div class="bg-white rounded-lg p-1 text-center">
@@ -32,7 +33,7 @@ foreach ($historyElement as $history) : ?>
             </div>
             <div class="w-0.5 h-7 m-auto border-l-2 border-l-black"></div>
         </div>
-        <? break; ?>
+        <?php break; ?>
 <?php
     case "deleted": ?>
         <div class="<?= $count > $limit ? "hidden" : "" ?>">
@@ -44,11 +45,11 @@ foreach ($historyElement as $history) : ?>
             </div>
             <div class="w-0.5 h-7 m-auto border-l-2 border-l-black"></div>
         </div>
-        <? break; ?>
+        <?php break; ?>
 <?php endswitch; ?>
-<?php 
+<?php
 
-$count++;
+    $count++;
 endforeach; ?>
 
 <div class="text-center<?= $count > $limit ? " " : " hidden" ?>">

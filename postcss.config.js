@@ -1,6 +1,6 @@
-import tailwindcss from 'tailwindcss';
 import autoprefixer from 'autoprefixer';
 import postcssUrl from 'postcss-url';
+import tailwindcss from 'tailwindcss';
 
 export default {
     plugins: [

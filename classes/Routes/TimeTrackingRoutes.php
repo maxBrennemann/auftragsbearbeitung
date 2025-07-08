@@ -6,7 +6,6 @@ use MaxBrennemann\PhpUtilities\Routes;
 
 class TimeTrackingRoutes extends Routes
 {
-
     /**
      * @uses \Classes\Controller\TimeTrackingController::showTimeTracking()
      * @uses \Classes\Controller\TimeTrackingController::showTimeTracking()

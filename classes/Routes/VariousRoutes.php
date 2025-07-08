@@ -6,7 +6,6 @@ use MaxBrennemann\PhpUtilities\Routes;
 
 class VariousRoutes extends Routes
 {
-
     /**
      * @uses \Classes\Controller\TemplateController::ajaxGetTemplate()
      * @uses \Classes\Project\Color::renderColorTemplate()

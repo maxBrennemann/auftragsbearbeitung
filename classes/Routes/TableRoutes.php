@@ -6,7 +6,6 @@ use MaxBrennemann\PhpUtilities\Routes;
 
 class TableRoutes extends Routes
 {
-
     /**
      * @uses \Classes\Table\Table::readData()
      */

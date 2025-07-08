@@ -1,6 +1,7 @@
-import { defineConfig } from "vite";
 import fs from "fs";
 import path from "path";
+
+import { defineConfig } from "vite";
 
 function getJsEntries(dir) {
     const entries = {};

@@ -1,10 +1,9 @@
 <?php
 
 use Classes\Link;
-use MaxBrennemann\PhpUtilities\DBAccess;
-
-use Classes\Project\Produkt;
 use Classes\Project\Category;
+use Classes\Project\Produkt;
+use MaxBrennemann\PhpUtilities\DBAccess;
 
 $quelle = Produkt::getSources();
 $categories = Category::getOneLayerRepresentation();

@@ -8,7 +8,6 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class InvoiceNumberTracker
 {
-
     public static function peekNextInvoiceNumber(): int
     {
         return self::getCurrentInvoiceNumber() + 1;
@@ -64,13 +63,13 @@ class InvoiceNumberTracker
     }
 
     public static function initInvoiceNumber()
-	{
-		$newInvoiceNumber = (int) Tools::get("invoiceNumber");
+    {
+        $newInvoiceNumber = (int) Tools::get("invoiceNumber");
         $query = "REPLACE INTO invoice_number_tracker (id, last_used_number) VALUES (1, :lastUsedNumber);";
         DBAccess::insertQuery($query, [
             "lastUsedNumber" => $newInvoiceNumber
         ]);
 
         JSONResponseHandler::returnOK();
-	}
+    }
 }

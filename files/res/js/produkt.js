@@ -1,10 +1,11 @@
 import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js"
 import { notification } from "js-classes/notifications.js";
+
 import { fetchAndRenderTable } from "./classes/table.js";
 import { tableConfig } from "./classes/tableconfig.js";
-import { createPopup } from "./global.js";
 import { initFileUploader } from "./classes/upload.js";
+import { createPopup } from "./global.js";
 
 let attributes = {};
 const productData = {};

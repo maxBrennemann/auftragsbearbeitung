@@ -7,7 +7,6 @@ use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 class Test
 {
-
     public static function migrateFarbenToColor()
     {
         $query = "SELECT f.Farbe, f.Farbwert, f.Notiz, f.Hersteller, fa.id_auftrag FROM farben f LEFT JOIN farben_auftrag fa ON f.Auftragsnummer = fa.id_auftrag;";

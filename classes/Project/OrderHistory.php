@@ -3,12 +3,10 @@
 namespace Classes\Project;
 
 use Classes\Controller\TemplateController;
-
 use MaxBrennemann\PhpUtilities\DBAccess;
 
 class OrderHistory
 {
-
     public const STATE_ADDED = "added";
     public const STATE_DELETED = "deleted";
     public const STATE_REMOVED = "removed";

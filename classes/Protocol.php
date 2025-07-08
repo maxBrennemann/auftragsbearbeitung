@@ -4,79 +4,78 @@ namespace Classes;
 
 class Protocol
 {
+    private static $file;
+    private static string $filePath = "protocol.txt";
+    private static int $maxSize = 10 * 1024 * 1024;
+    private static bool $logToConsole = false;
 
-	private static $file;
-	private static string $filePath = "protocol.txt";
-	private static int $maxSize = 10 * 1024 * 1024;
-	private static bool $logToConsole = false;
+    public static function configure(string $filePath = "protocol.txt", bool $logToConsole = false)
+    {
+        self::$filePath = $filePath;
+        self::$logToConsole = $logToConsole;
+    }
 
-	public static function configure(string $filePath = "protocol.txt", bool $logToConsole = false)
-	{
-		self::$filePath = $filePath;
-		self::$logToConsole = $logToConsole;
-	}
+    private static function init(): void
+    {
+        if (self::$file == null) {
+            $filesize = filesize(self::$filePath);
 
-	private static function init(): void
-	{
-		if (self::$file == null) {
-			$filesize = filesize(self::$filePath);
+            if ($filesize > self::$maxSize) {
+                file_put_contents(self::$filePath, "");
+            }
 
-			if ($filesize > self::$maxSize) {
-				file_put_contents(self::$filePath, "");
-			}
+            self::$file = fopen(self::$filePath, "a");
+            register_shutdown_function([self::class, "close"]);
+        }
+    }
 
-			self::$file = fopen(self::$filePath, "a");
-			register_shutdown_function([self::class, "close"]);
-		}
-	}
+    /**
+     * Writes a given string to the protocol.txt file
+     *
+     * @param $text string
+     */
+    public static function write(string $message, ?string $details = null, string $level = "INFO"): void
+    {
+        self::init();
 
-	/** 
-	 * Writes a given string to the protocol.txt file
-	 * 
-	 * @param $text string
-	 */
-	public static function write(string $message, ?string $details = null, string $level = "INFO"): void
-	{
-		self::init();
+        $timestamp = date("Y-m-d H:i:s");
+        $logLine = "[$timestamp] [$level] $message";
+        if ($details !== null) {
+            $logLine .= " - $details";
+        }
+        $logLine .= PHP_EOL;
 
-		$timestamp = date("Y-m-d H:i:s");
-		$logLine = "[$timestamp] [$level] $message";
-		if ($details !== null) {
-			$logLine .= " - $details";
-		}
-		$logLine .= PHP_EOL;
+        fwrite(self::$file, $logLine);
 
-		fwrite(self::$file, $logLine);
+        if (self::$logToConsole) {
+            echo nl2br(htmlentities($logLine));
+        }
+    }
 
-		if (self::$logToConsole) {
-			echo nl2br(htmlentities($logLine));
-		}
-	}
+    /**
+     * Closes the protocol.txt file
+     */
+    public static function close(): void
+    {
+        if (self::$file !== null) {
+            fclose(self::$file);
+            self::$file = null;
+        }
+    }
 
-	/**
-	 * Closes the protocol.txt file
-	 */
-	public static function close(): void
-	{
-		if (self::$file !== null) {
-			fclose(self::$file);
-			self::$file = null;
-		}
-	}
+    public static function delete(): void
+    {
+        self::close();
+        if (file_exists(self::$filePath)) {
+            unlink(self::$filePath);
+        }
+    }
 
-	public static function delete(): void
-	{
-		self::close();
-		if (file_exists(self::$filePath)) {
-			unlink(self::$filePath);
-		}
-	}
-
-	/**
-	 * Pretty prints a given data structure
-	 */
-	public static function prettyPrint($data): void
-	{
-		echo "<pre>" . htmlspecialchars(print_r($data, true)) . "</pre>";
-	}
+    /**
+     * Pretty prints a given data structure
+     */
+    public static function prettyPrint($data): void
+    {
+        echo "<pre>" . htmlspecialchars(print_r($data, true)) . "</pre>";
+    }
 }

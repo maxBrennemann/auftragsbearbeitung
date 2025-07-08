@@ -1,6 +1,7 @@
+import { Colorpicker } from "colorpicker/colorpicker.js";
 import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js";
-import { Colorpicker } from "colorpicker/colorpicker.js";
+
 import { createPopup } from "../global.js";
 
 var cp = null;

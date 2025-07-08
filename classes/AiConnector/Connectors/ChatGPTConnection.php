@@ -2,13 +2,11 @@
 
 namespace Classes\AiConnector\Connectors;
 
-use GuzzleHttp\Client;
-
 use Classes\AiConnector\AiInterface;
+use GuzzleHttp\Client;
 
 class ChatGPTConnection implements AiInterface
 {
-
     /* chatgpt api options */
     private string $model = "gpt-4o-mini";
     private float $temperature = 1;
@@ -69,7 +67,7 @@ class ChatGPTConnection implements AiInterface
             return [
                 "type" => $this->format,
             ];
-        } else if ($this->format == "json_schema") {
+        } elseif ($this->format == "json_schema") {
             return [
                 "type" => $this->format,
                 "name" => $this->name,

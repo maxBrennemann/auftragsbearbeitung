@@ -3,16 +3,14 @@
 namespace Classes\Pdf\TransactionPdf;
 
 use Classes\Pdf\PDFGenerator;
-
-use Classes\Project\Config;
 use Classes\Project\Auftrag;
+use Classes\Project\Config;
 use Classes\Project\Kunde;
 
 /* TODO: refactor altNames to be used in all TransactionPDFs, not only bound to invoice */
 
 class TransactionPDF extends PDFGenerator
 {
-
     /** @var string */
     protected $title;
 
@@ -38,7 +36,7 @@ class TransactionPDF extends PDFGenerator
         $this->companyDetails = Config::getCompanyDetails();
     }
 
-    public function generate() 
+    public function generate()
     {
         $this->setPrintHeader(false);
 
@@ -61,9 +59,13 @@ class TransactionPDF extends PDFGenerator
         $this->writeHTMLCell(0, 10, 20, 44, $address);
     }
 
-    public function save() {}
+    public function save()
+    {
+    }
 
-    private function generateHeader() {}
+    private function generateHeader()
+    {
+    }
 
     protected function fillAddress($altNames = [])
     {
@@ -87,7 +89,7 @@ class TransactionPDF extends PDFGenerator
                 $this->Cell(85, $lineheight, $firma);
                 $this->ln(8);
             }
-            
+
             if ($this->customer->getNachname() != "" && $this->customer->getVorname() != "") {
                 $this->Cell(85, $lineheight, $name);
                 $this->ln(8);

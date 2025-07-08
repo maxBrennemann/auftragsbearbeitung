@@ -6,7 +6,6 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class Icon
 {
-
     public static function ajaxIcon()
     {
         $name = Tools::get("name");
@@ -19,7 +18,7 @@ class Icon
      * @param int $height
      * @param array $class
      * @param string $title
-     * 
+     *
      * @return string
      */
     public static function get($icon, $width, $height, $class = [], $title = ""): string
@@ -34,7 +33,7 @@ class Icon
     /**
      * returns an svg icon with some default parameters
      * @param string $icon
-     * 
+     *
      * @return string
      */
     public static function getDefault($icon): string
@@ -56,7 +55,7 @@ class Icon
      * @param string $color
      * @param array $class
      * @param string $title
-     * 
+     *
      * @return string
      */
     public static function getColorized($icon, $width, $height, $color, $class = [], $title = ""): string

@@ -2,13 +2,12 @@
 
 namespace Classes\Project;
 
-use MaxBrennemann\PhpUtilities\DBAccess;
 use Classes\Link;
 use Classes\Mailer;
+use MaxBrennemann\PhpUtilities\DBAccess;
 
 class User
 {
-
     private int $id;
     private $username;
     private $email;
@@ -111,7 +110,9 @@ class User
         DBAccess::updateQuery($query, $params);
     }
 
-    public function setRole($role) {}
+    public function setRole($role)
+    {
+    }
 
     /**
      * returns a list of devices the user has logged in with

@@ -6,7 +6,6 @@ use MaxBrennemann\PhpUtilities\Routes;
 
 class SearchRoutes extends Routes
 {
-
     /**
      * @uses \Classes\Project\SearchController::ajaxSearch()
      * @uses \Classes\Project\SearchController::searchAll()

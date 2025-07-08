@@ -3,12 +3,11 @@
 namespace Classes\Pdf\TransactionPdf;
 
 use Classes\Link;
-use Classes\Project\Invoice;
 use Classes\Project\ClientSettings;
+use Classes\Project\Invoice;
 
 class InvoicePDF extends TransactionPDF
 {
-
     private Invoice $invoice;
 
     public function __construct(int $invoiceId, int $orderId)
@@ -127,7 +126,7 @@ class InvoicePDF extends TransactionPDF
         /**
          * 297: Din A4 Seitenhöhe,
          * 25: Abstand von unten für die Fußzeile,
-         * 55: bezieht sich auf die Zwischensumme und Rechnungssumme, 
+         * 55: bezieht sich auf die Zwischensumme und Rechnungssumme,
          * damit diese immer auf einer Seite stehen
          */
         if ($this->GetY() + 55 >= 297 - 35) {

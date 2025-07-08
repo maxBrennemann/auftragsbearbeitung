@@ -6,7 +6,6 @@ use MaxBrennemann\PhpUtilities\Routes;
 
 class AccountingRoutes extends Routes
 {
-
     protected static $getRoutes = [];
 
     protected static $postRoutes = [];

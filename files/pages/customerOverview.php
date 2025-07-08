@@ -1,10 +1,9 @@
 <?php
 
-use MaxBrennemann\PhpUtilities\Tools;
-
 use Classes\Link;
 use Classes\Project\Kunde;
 use Classes\Project\SearchController;
+use MaxBrennemann\PhpUtilities\Tools;
 
 $query = Tools::get("query");
 $customers = [];

@@ -6,7 +6,6 @@ use MaxBrennemann\PhpUtilities\Routes;
 
 class SettingsRoutes extends Routes
 {
-
     /**
      * @uses Classes\Project\Icon::ajaxIcon()
      * @uses Classes\Project\Config::getFilesInfo()

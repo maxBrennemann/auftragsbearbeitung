@@ -417,7 +417,7 @@ function getTableConfigFrontOffice()
 
         $table["columns"] = array_filter(
             $table["columns"],
-            fn($el) => !in_array($el, $table["hidden"] ?? [])
+            fn ($el) => !in_array($el, $table["hidden"] ?? [])
         );
 
         foreach ($table["columns"] as $index => $column) {

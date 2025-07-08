@@ -1,14 +1,19 @@
 ﻿import { addBindings, getVariable } from "js-classes/bindings.js"
+
 import { initColors } from "./auftrag/colorManager.js";
 import { initNotes } from "./auftrag/noteStepManager.js";
 import { initOrderManager } from "./auftrag/orderManager.js";
 import { initVehicles } from "./auftrag/vehicleManager.js";
+
 import "./auftrag/calculateGas.js";
 import { ajax } from "js-classes/ajax.js";
+
 import { getItemsTable, initInvoiceItems } from "./classes/invoiceItems.js";
+
 import { notification } from "js-classes/notifications.js";
-import { createPopup } from "./global.js";
+
 import { initFileUploader } from "./classes/upload.js";
+import { createPopup } from "./global.js";
 
 /* global variables */
 window.globalData = {

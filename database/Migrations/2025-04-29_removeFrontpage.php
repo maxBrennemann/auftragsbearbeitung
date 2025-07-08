@@ -1,7 +1,6 @@
 <?php
 
-return new class {
-
+return new class () {
     private $queries = [
         "DROP TABLE IF EXISTS frontpage;",
     ];

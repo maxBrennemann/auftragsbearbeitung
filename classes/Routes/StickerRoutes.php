@@ -6,22 +6,21 @@ use MaxBrennemann\PhpUtilities\Routes;
 
 class StickerRoutes extends Routes
 {
-
     /**
      * @uses \Classes\Sticker\StickerCollection::getStickerStatus()
      * @uses \Classes\Sticker\StickerCollection::getStickerSizes()
      * @uses \Classes\Sticker\StickerCollection::getPriceScheme()
-     * 
+     *
      * @uses
      * @uses
      * @uses \Classes\Sticker\StickerTagManager::getTagSuggestions()
      * @uses
      * @uses \Classes\Sticker\StickerTagManager::countTagOccurences()
      * @uses \Classes\Sticker\StickerTagManager::getTagsHTML()
-     * 
+     *
      * @uses \Classes\Sticker\StickerCollection::getStickerOverview()
      * @uses \Classes\Sticker\StickerCollection::getStickerStates()
-     * 
+     *
      * @uses \Classes\Sticker\TextModification::iterateText()
      * @uses \Classes\Sticker\TextModification::getTextGenerationTemplate()
      */
@@ -50,18 +49,18 @@ class StickerRoutes extends Routes
      * @uses \Classes\Sticker\Textil::setPrice()
      * @uses \Classes\Sticker\StickerCollection::setPriceScheme()
      * @uses \Classes\Sticker\StickerCollection::addFiles()
-     * 
+     *
      * @uses \Classes\Sticker\StickerCollection::addSticker()
-     * 
+     *
      * @uses \Classes\Sticker\StickerTagManager::addTag()
      * @uses \Classes\Sticker\StickerTagManager::crawlAllTags()
-     * 
+     *
      * @uses \Classes\Sticker\AufkleberWandtattoo::updateSizes()
-     * 
+     *
      * @uses \Classes\Sticker\ProductCrawler::crawlAll()
-     * 
+     *
      * @uses \Classes\Sticker\Exports\ExportFacebook::createExport()
-     * 
+     *
      * @uses \Classes\Sticker\TextModification::newText()
      */
     protected static $postRoutes = [

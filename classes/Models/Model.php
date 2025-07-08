@@ -6,7 +6,6 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 
 class Model
 {
-
     public array $fillable = [];
     protected string $tableName = "";
     protected string $primary = "id";
@@ -54,7 +53,7 @@ class Model
         if (!empty($this->hidden)) {
             $columns = array_filter(
                 $this->columns,
-                fn($el) => !in_array($el, $this->hidden ?? [])
+                fn ($el) => !in_array($el, $this->hidden ?? [])
             );
             $query = "SELECT " . implode(", ", $columns) . " FROM {$this->tableName}";
         }
@@ -98,8 +97,8 @@ class Model
 
         $config = self::getTableConfig();
         $baseColumns = $config[$this->tableName]["columns"] ?? ["*"];
-        $relatedColumns = $config[$this->tableName]["joins"][$joinName]["columns"] 
-            ?? $config[$relatedTable]["columns"] 
+        $relatedColumns = $config[$this->tableName]["joins"][$joinName]["columns"]
+            ?? $config[$relatedTable]["columns"]
             ?? ["*"];
         $hiddenRelated = $config[$relatedTable]["hidden"] ?? [];
 
@@ -216,7 +215,7 @@ class Model
         $this->triggerHook("beforeUpdate", $data);
 
         $fields = array_intersect_key($data, array_flip($this->fillable));
-        $assignments = array_map(fn($field) => "$field = :$field", array_keys($fields));
+        $assignments = array_map(fn ($field) => "$field = :$field", array_keys($fields));
 
         $query = "UPDATE {$this->tableName} SET " . implode(", ", $assignments) . " WHERE {$this->primary} = :id;";
         $fields["id"] = $id;

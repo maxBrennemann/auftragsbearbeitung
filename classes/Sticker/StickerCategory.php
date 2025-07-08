@@ -6,10 +6,9 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 
 class StickerCategory extends PrestashopConnection
 {
-
     /**
      * sets the categories of a sticker by deleting all old categories and inserting the new ones
-     * 
+     *
      * @param int $stickerId
      * @param string $categories
      */
@@ -29,7 +28,7 @@ class StickerCategory extends PrestashopConnection
 
     /**
      * gets the categories of a sticker
-     * 
+     *
      * @param int $stickerId
      */
     public static function getCategoriesForSticker($stickerId)
@@ -48,7 +47,7 @@ class StickerCategory extends PrestashopConnection
     /**
      * sends a request to chatGPT and returns the response,
      * gets a suggestion for categories for a sticker
-     * 
+     *
      * @param string $articleName
      * @param int $category
      */
@@ -86,9 +85,9 @@ class StickerCategory extends PrestashopConnection
 
     /**
      * gets the category tree from the shop
-     * 
+     *
      * @param int $startCategory
-     * 
+     *
      * @return array
      */
     private static function getCategoryTreeFromShop($startCategory)
@@ -114,9 +113,9 @@ class StickerCategory extends PrestashopConnection
 
     /**
      * checks if the category tree is cached and if its last update is not older than 2 weeks
-     * 
+     *
      * @param int $startCategory
-     * 
+     *
      * @return array|false
      */
     private static function getCachedCategoryTree($startCategory)
@@ -145,7 +144,7 @@ class StickerCategory extends PrestashopConnection
 
     /**
      * caches the category tree in a json file
-     * 
+     *
      * @param array $categories
      * @param int $startCategory
      */

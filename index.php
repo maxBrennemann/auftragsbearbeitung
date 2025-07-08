@@ -4,9 +4,9 @@ $start = microtime(true);
 
 require_once "settings.php";
 
-use Classes\ResourceManager;
 use Classes\Controller\SessionController;
 use Classes\Project\CacheManager;
+use Classes\ResourceManager;
 
 ResourceManager::getParameters();
 ResourceManager::initialize();
@@ -23,7 +23,7 @@ register_shutdown_function("captureError");
 try {
     ResourceManager::initPage();
 } catch (Throwable $e) {
-	$_ENV["LAST_EXCEPTION"] = $e;
+    $_ENV["LAST_EXCEPTION"] = $e;
 }
 
 ResourceManager::close();

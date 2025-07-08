@@ -1,15 +1,13 @@
 <?php
 
 use Classes\Link;
-
-use MaxBrennemann\PhpUtilities\Tools;
-
-use Classes\Project\Auftrag;
-use Classes\Project\Invoice;
-use Classes\Project\Kunde;
 use Classes\Project\Address;
+use Classes\Project\Auftrag;
 use Classes\Project\Icon;
+use Classes\Project\Invoice;
 use Classes\Project\InvoiceNumberTracker;
+use Classes\Project\Kunde;
+use MaxBrennemann\PhpUtilities\Tools;
 
 $rechnungslink;
 
@@ -17,23 +15,23 @@ $target = Tools::get("target");
 $id = Tools::get("id");
 
 if ($target == "create") {
-	$auftrag = new Auftrag($id);
-	$invoiceContacts = Invoice::getContacts($auftrag->getKundennummer());
+    $auftrag = new Auftrag($id);
+    $invoiceContacts = Invoice::getContacts($auftrag->getKundennummer());
 
-	$nextInvoiceNumber = InvoiceNumberTracker::peekNextInvoiceNumber();
-	$invoice = Invoice::getInvoice($id);
-	$invoiceId = $invoice->getId();
-	$invoiceNumber = $invoice->getNumber();
+    $nextInvoiceNumber = InvoiceNumberTracker::peekNextInvoiceNumber();
+    $invoice = Invoice::getInvoice($id);
+    $invoiceId = $invoice->getId();
+    $invoiceNumber = $invoice->getNumber();
 
-	$invoiceAddresses = Address::getAllAdressesFormatted($auftrag->getKundennummer());
-	$selectedAddress = $invoice->getAddressId();
+    $invoiceAddresses = Address::getAllAdressesFormatted($auftrag->getKundennummer());
+    $selectedAddress = $invoice->getAddressId();
 
-	$kunde = new Kunde($auftrag->getKundennummer());
+    $kunde = new Kunde($auftrag->getKundennummer());
 }
 
 if ($target == "view") {
-	$invoice = Invoice::getInvoice($id);
-	$invoiceId = $invoice->getId();
+    $invoice = Invoice::getInvoice($id);
+    $invoiceId = $invoice->getId();
 } ?>
 
 <input class="hidden" id="invoiceId" value="<?= $invoiceId ?>">

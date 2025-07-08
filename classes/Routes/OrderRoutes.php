@@ -6,7 +6,6 @@ use MaxBrennemann\PhpUtilities\Routes;
 
 class OrderRoutes extends Routes
 {
-
     /**
      * @uses \Classes\Project\Auftrag::getOpenOrders()
      * @uses \Classes\Project\Auftrag::getColors()
@@ -52,7 +51,7 @@ class OrderRoutes extends Routes
      * @uses \Classes\Project\Auftrag::finish()
      * @uses \Classes\Project\Auftrag::updateColor()
      * @uses \Classes\Project\Fahrzeug::attachVehicle()
-     * 
+     *
      * @uses \Classes\Project\Fahrzeug::updateName()
      * @uses \Classes\Project\Fahrzeug::updateLicensePlate()
      */

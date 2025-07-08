@@ -2,16 +2,14 @@
 
 namespace Classes\Project;
 
-use MaxBrennemann\PhpUtilities\DBAccess;
-use MaxBrennemann\PhpUtilities\Tools;
-use MaxBrennemann\PhpUtilities\JSONResponseHandler;
-
-use Classes\Pdf\TransactionPdf\OfferPDF;
 use Classes\Controller\TemplateController;
+use Classes\Pdf\TransactionPdf\OfferPDF;
+use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
 
 class Angebot
 {
-
     private $customerId = 0;
     private $customer = null;
     private $offerId = 0;
@@ -132,7 +130,9 @@ class Angebot
         $this->deleteOldSessionData();
     }
 
-    public function loadAngebot() {}
+    public function loadAngebot()
+    {
+    }
 
     public static function getOfferTemplate()
     {

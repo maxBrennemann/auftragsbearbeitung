@@ -2,8 +2,8 @@
 
 namespace Classes\Models;
 
-class Auftragstyp extends Model {
-
+class Auftragstyp extends Model
+{
     public array $fillable = [];
     protected string $tableName = "auftragstyp";
     protected string $primary = "id";
@@ -13,6 +13,6 @@ class Auftragstyp extends Model {
 
     public function __construct()
     {
-        
+
     }
 }

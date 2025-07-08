@@ -7,7 +7,6 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class BreadcrumbController
 {
-
     public static function createBreadcrumbMenu($page, $pageName): string
     {
         $home = Link::getPageLink("");

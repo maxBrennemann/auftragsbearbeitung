@@ -1,7 +1,6 @@
 <?php
 
-return new class {
-
+return new class () {
     private $queries = [
         "CREATE TABLE invoice_layout (
             id INT AUTO_INCREMENT PRIMARY KEY,

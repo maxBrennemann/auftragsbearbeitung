@@ -7,7 +7,6 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class TemplateController
 {
-
     public static function ajaxGetTemplate()
     {
         $template = Tools::get("template");

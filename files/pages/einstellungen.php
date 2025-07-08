@@ -1,7 +1,6 @@
 <?php
 
 use Classes\Link;
-
 use Classes\Project\Config;
 use Classes\Project\InvoiceNumberTracker;
 
@@ -81,10 +80,10 @@ $companyLogo = \Classes\Project\ClientSettings::getLogo();
         <div class="w-96 mt-2">
             <p class="font-semibold">Firmen-/ Rechnungslogo festlegen</p>
             <?= \Classes\Controller\TemplateController::getTemplate("uploadFile", [
-				"target" => "companyLogo",
+                "target" => "companyLogo",
                 "singleFile" => true,
                 "accept" => "image/*",
-			]); ?>
+            ]); ?>
             <div class="bg-white p-3 my-3 rounded-lg<?= $companyLogo ? "" : " hidden" ?>" id="companyLogo">
                 <div class="bg-gray-100 p-2 rounded-md">
                     <div class="flex justify-center items-center">

@@ -2,13 +2,11 @@
 
 namespace Classes\Pdf;
 
-use TCPDF;
-
 use Classes\Project\Config;
+use TCPDF;
 
 class PDFGenerator extends TCPDF
 {
-
     /** @var string */
     protected $title;
     protected $fileName;
@@ -23,14 +21,16 @@ class PDFGenerator extends TCPDF
         $this->companyDetails = Config::getCompanyDetails();
     }
 
-    public function generate() {}
+    public function generate()
+    {
+    }
 
     public function generateOutput()
     {
         $this->Output();
     }
 
-    public function saveOutput() 
+    public function saveOutput()
     {
         $fileName = $_SERVER["DOCUMENT_ROOT"] . "/generated/" . $this->fileName . ".pdf";
 
@@ -41,7 +41,9 @@ class PDFGenerator extends TCPDF
         $this->Output($fileName, "F");
     }
 
-    private function generateHeader() {}
+    private function generateHeader()
+    {
+    }
 
     public function Footer()
     {

@@ -6,7 +6,6 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 
 class Offer
 {
-
     public static function getOpenOffers()
     {
         $query = "SELECT o.id, o.creation_date, o.customer_id, k.Firmenname, CONCAT(k.Vorname, ' ', k.Nachname) AS name
@@ -18,6 +17,8 @@ class Offer
         return $data;
     }
 
-    public static function getAllOffers() {}
-    
+    public static function getAllOffers()
+    {
+    }
+
 }

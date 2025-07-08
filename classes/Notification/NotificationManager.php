@@ -2,17 +2,15 @@
 
 namespace Classes\Notification;
 
-use MaxBrennemann\PhpUtilities\JSONResponseHandler;
-use MaxBrennemann\PhpUtilities\DBAccess;
-use MaxBrennemann\PhpUtilities\Tools;
-
 use Classes\Link;
-use Classes\Project\User;
 use Classes\Models\User as UserModel;
+use Classes\Project\User;
+use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
 
 class NotificationManager
 {
-
     private static int $notificationCount = -1;
 
     /**
@@ -142,7 +140,7 @@ class NotificationManager
 
     /**
      * addNotification adds a notification for a user or all users
-     * 
+     *
      * @param int|null $user_id     the id of the user who gets notified, if all users get notified, it is -1
      * @param int $type             the type of notification
      * @param string  $content      the text content of the notification

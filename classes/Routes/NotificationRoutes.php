@@ -6,7 +6,6 @@ use MaxBrennemann\PhpUtilities\Routes;
 
 class NotificationRoutes extends Routes
 {
-
     /**
      * @uses \Classes\Notification\NotificationManager::htmlNotification()
      */

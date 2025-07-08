@@ -1,7 +1,6 @@
 <?php
 
-return new class {
-
+return new class () {
     private $queries = [
         "DROP TRIGGER IF EXISTS create_sizes;",
         "CREATE TRIGGER create_sizes
