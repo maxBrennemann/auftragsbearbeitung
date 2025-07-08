@@ -3,8 +3,9 @@
 import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js"
 import { notification } from "js-classes/notifications.js";
-import { clearInputs } from "./global.js";
+
 import { DragSortManager } from "./classes/DragSortManager.js";
+import { clearInputs } from "./global.js";
 
 let currentDraggedGroup = null;
 let currentDraggedElement = null;

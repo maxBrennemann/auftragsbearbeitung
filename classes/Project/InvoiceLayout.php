@@ -2,15 +2,14 @@
 
 namespace Classes\Project;
 
-use MaxBrennemann\PhpUtilities\DBAccess;
-use MaxBrennemann\PhpUtilities\Tools;
-use MaxBrennemann\PhpUtilities\JSONResponseHandler;
-
 use Classes\Controller\TemplateController;
+use Exception;
+use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
 
 class InvoiceLayout
 {
-
     private Invoice $invoice;
     private array $layout;
 
@@ -38,7 +37,7 @@ class InvoiceLayout
     private function getFlattendInvoiceContent(): array
     {
         $items = $this->invoice->loadPostenFromAuftrag();
-        $texts = array_filter($this->invoice->getTexts(), fn($el) => $el["active"] != 0);
+        $texts = array_filter($this->invoice->getTexts(), fn ($el) => $el["active"] != 0);
         $vehicles = $this->invoice->getAttachedVehicles();
 
         $result = [];
@@ -75,26 +74,75 @@ class InvoiceLayout
         return $this->layout == null ? false : true;
     }
 
+    private function writeItemsOrder(array $positions): bool
+    {
+        $query = "INSERT INTO invoice_layout (invoice_id, position, content_type, content_id) VALUES (:invoiceId, :position, :type, :id) ON DUPLICATE KEY UPDATE position = VALUES(position)";
+
+        foreach ($positions as $entry) {
+            try {
+                DBAccess::insertQuery($query, [
+                    "invoiceId" => $this->invoice->getId(),
+                    "position" => $entry["position"],
+                    "type" => $entry["type"],
+                    "id" => $entry["id"],
+                ]);
+            } catch (Exception $e) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function deleteLayoutEntry(string $contentType, int $contentId)
+    {
+        $query = "";
+        DBAccess::deleteQuery($query, [
+            "contentType" => $contentType,
+            "contentId" => $contentId,
+        ]);
+    }
+
     /**
-	 * Default order is: invoiceItems, texts, vehicles
-	 * If some elements are present, they are shown first, the other items are shown like the order above after the elements
-	 * @return void
-	 */
-	public static function getItemsOrderTemplate()
-	{
-		$invoiceId = (int) Tools::get("invoiceId");
-		$orderId = (int) Tools::get("orderId");
+     * Default order is: invoiceItems, texts, vehicles
+     * If some elements are present, they are shown first, the other items are shown like the order above after the elements
+     * @return void
+     */
+    public static function getItemsOrderTemplate()
+    {
+        $invoiceId = (int) Tools::get("invoiceId");
+        $orderId = (int) Tools::get("orderId");
 
-		$invoice = new Invoice($invoiceId, $orderId);
-		$invoiceLayout = new InvoiceLayout($invoice);
+        $invoice = new Invoice($invoiceId, $orderId);
+        $invoiceLayout = new InvoiceLayout($invoice);
 
-		$items = $invoiceLayout->getFlattendInvoiceContent();
-		$template = TemplateController::getTemplate("invoiceItemsOrder", [
-			"items" => $items,
-		]);
+        $items = $invoiceLayout->getFlattendInvoiceContent();
+        $template = TemplateController::getTemplate("invoiceItemsOrder", [
+            "items" => $items,
+        ]);
 
-		JSONResponseHandler::sendResponse([
-			"template" => $template,
-		]);
-	}
+        JSONResponseHandler::sendResponse([
+            "template" => $template,
+        ]);
+    }
+
+    public static function updateItemsOrder()
+    {
+        $invoiceId = (int) Tools::get("invoiceId");
+        $orderId = (int) Tools::get("orderId");
+
+        $positions = Tools::get("positions");
+        $positions = json_decode($positions, true);
+
+        $invoice = new Invoice($invoiceId, $orderId);
+        $invoiceLayout = new InvoiceLayout($invoice);
+
+        $status = $invoiceLayout->writeItemsOrder($positions);
+
+        if ($status) {
+            JSONResponseHandler::returnOK();
+        } else {
+            JSONResponseHandler::sendErrorResponse(400, "Malformed data");
+        }
+    }
 }

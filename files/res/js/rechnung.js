@@ -3,17 +3,17 @@
 import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js"
 import { notification } from "js-classes/notifications.js";
-import { createPopup } from "./global.js";
+
 import { DragSortManager } from "./classes/DragSortManager.js";
+import { createPopup } from "./global.js";
 
 const functionNames = {};
-
+const removedAltNames = [];
 const config = {
     "invoiceId": 0,
     "orderId": 0,
+    "positions": {},
 }
-
-const removedAltNames = [];
 
 function init() {
     addBindings(functionNames);
@@ -224,21 +224,37 @@ functionNames.click_changeItemsOrder = async e => {
     saveBtn.innerHTML = "Übernehmen";
 
     saveBtn.addEventListener("click", () => {
-        saveOrder(div);
+        saveOrder();
         const btnCancel = btnContainer.querySelector("button.btn-cancel");
         btnCancel.click()
     });
     btnContainer.appendChild(saveBtn);
 
+    manageItemsOrder(div);
+    addBindings(functionNames);
+}
+
+const manageItemsOrder = div => {
     const group = div.querySelector(".invoiceItemsGroup");
     const sorter = new DragSortManager(group, {
         itemSelector: "div",
+        dataFields: ["type"],
         onOrderChange: (positions, groupEl) => {
-            console.log(positions);
+            config.positions = positions;
+            let count = 1;
+            const elements = div.querySelectorAll(".invoiceItemsGroup div input");
+            elements.forEach(el => {
+                el.value = count++;
+            });
         }
     });
+}
 
-    addBindings(functionNames);
+const saveOrder = () => {
+    ajax.put(`/api/v1/invoice/${config.invoiceId}/positions`, {
+        "positions": JSON.stringify(config.positions),
+        "orderId": config.orderId,
+    });
 }
 
 const saveAltNames = container => {

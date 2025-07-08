@@ -1,6 +1,10 @@
 interface DragSortOptions {
     itemSelector?: string;
-    onOrderChange?: (positions: { id: string; position: number }[], group: HTMLElement) => void;
+    dataFields?: string[];
+    onOrderChange?: (
+        positions: Array<Record<string, string | number>>,
+        group: HTMLElement,
+    ) => void;
 }
 
 export class DragSortManager {
@@ -85,10 +89,22 @@ export class DragSortManager {
 
     private updatePositions() {
         const items = Array.from(this.group.children) as HTMLElement[];
-        const positions = items.map((el, idx) => ({
-            id: el.dataset.id ?? "",
-            position: idx + 1
-        }));
+        const fields = this.options.dataFields;
+
+        const positions = items.map((el, idx) => {
+            const data: Record<string, string | number> = {
+                id: el.dataset.id ?? "",
+                position: idx + 1,
+            };
+
+            if (Array.isArray(fields)) {
+                fields.forEach(field => {
+                    data[field] = el.dataset[field] ?? "";
+                });
+            }
+
+            return data;
+        });
 
         if (typeof this.options.onOrderChange === "function") {
             this.options.onOrderChange(positions, this.group);
