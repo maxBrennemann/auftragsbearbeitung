@@ -2,6 +2,7 @@
 
 namespace Classes\Project;
 
-interface StatisticsInterface {
-	public function recalculate();
+interface StatisticsInterface
+{
+    public function recalculate();
 }

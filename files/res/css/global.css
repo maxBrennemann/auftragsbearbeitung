@@ -1,6 +1,6 @@
 ﻿@font-face {
     font-family: 'Raleway';
-    src:  url("font/Raleway-Regular.ttf") format('truetype');
+    src:  url("../css/fonts/Raleway-Regular.ttf") format('truetype');
     font-weight: normal;
 }
 /* TODO: https://web.dev/defer-non-critical-css/ */
@@ -473,19 +473,6 @@ input#hamburg {
 .floatRight {
     float: right;
     margin-right: 5px;
-}
-
-.taskList span {
-    padding-right: 15px;
-    padding-left: 5px;
-    width: 20px;
-    display: inline-block;
-    text-align: center;
-}
-
-.taskList a, .tasList a:visited {
-    color: black;
-    text-decoration: none;
 }
 
 .filesList {

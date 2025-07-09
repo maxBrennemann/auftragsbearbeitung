@@ -1,10 +1,11 @@
-import { ajax } from "./classes/ajax.js";
-import { addBindings } from "./classes/bindings.js";
+import { ajax } from "js-classes/ajax.js";
+import { addBindings } from "js-classes/bindings.js"
+import { notification } from "js-classes/notifications.js";
+
 import { createHeader, createTable, addRow, fetchAndRenderTable } from "./classes/table.js";
 import { tableConfig } from "./classes/tableconfig.js";
-import { notification } from "./classes/notifications.js";
-import { clearInputs } from "./global.js";
 import { initFileUploader } from "./classes/upload.js";
+import { clearInputs } from "./global.js";
 
 const fnNames = {};
 
@@ -146,18 +147,6 @@ fnNames.click_toggleCache = () => {
     const value = document.getElementById("cacheStatusSwitch").value;
 
     ajax.put(`/api/v1/settings/cache`, {
-        "status": value,
-    }).then(r => {
-        if (r.status == "success") {
-            notification("", "success");
-        }
-    });
-}
-
-fnNames.click_toggleMinify = () => {
-    const value = document.getElementById("minifyStatusSwitch").value;
-
-    ajax.put(`/api/v1/settings/minify`, {
         "status": value,
     }).then(r => {
         if (r.status == "success") {

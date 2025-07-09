@@ -3,12 +3,11 @@
 namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
-use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
 
 class Fahrzeug
 {
-
     public static function getImages($fahrzeugId)
     {
         $query = "SELECT DISTINCT dateiname AS `file`, originalname, 
@@ -19,7 +18,9 @@ class Fahrzeug
         return DBAccess::selectQuery($query);
     }
 
-    public static function getShowAllOrders($fahrzeugId) {}
+    public static function getShowAllOrders($fahrzeugId)
+    {
+    }
 
     public static function getName($fahrzeugId)
     {
@@ -31,9 +32,14 @@ class Fahrzeug
         return DBAccess::selectQuery("SELECT Kennzeichen FROM fahrzeuge WHERE Nummer = $fahrzeugId")[0]["Kennzeichen"];
     }
 
-    public static function returnCustomer($fahrzeugId)
+    public static function returnCustomer($fahrzeugId): Kunde|null
     {
-        $kundenId = DBAccess::selectQuery("SELECT Kundennummer FROM fahrzeuge WHERE Nummer = $fahrzeugId")[0]["Kundennummer"];
+        $data = DBAccess::selectQuery("SELECT Kundennummer FROM fahrzeuge WHERE Nummer = $fahrzeugId");
+        if ($data == null) {
+            return null;
+        }
+
+        $kundenId = $data[0]["Kundennummer"];
         return new Kunde($kundenId);
     }
 
@@ -52,13 +58,18 @@ class Fahrzeug
             "orderId" => $orderId
         ]);
 
-        $auftragsverlauf = new Auftragsverlauf($orderId);
-        $auftragsverlauf->addToHistory($vehicleId, 3, "added");
+        $vehicleData = DBAccess::selectQuery("SELECT Kennzeichen, Fahrzeug FROM fahrzeuge WHERE Nummer = :vehicleId", [
+            "vehicleId" => $vehicleId,
+        ]);
+
+        OrderHistory::add($orderId, $vehicleId, OrderHistory::TYPE_VEHICLE, OrderHistory::STATE_ADDED);
 
         JSONResponseHandler::sendResponse([
             "message" => "Vehicle attached to order",
             "vehicleId" => $vehicleId,
             "orderId" => $orderId,
+            "kfz" => $vehicleData[0]["Kennzeichen"],
+            "fahrzeug" => $vehicleData[0]["Fahrzeug"],
         ]);
     }
 
@@ -72,8 +83,7 @@ class Fahrzeug
             "orderId" => $orderId
         ]);
 
-        $auftragsverlauf = new Auftragsverlauf($orderId);
-        $auftragsverlauf->addToHistory($vehicleId, 3, "removed");
+        OrderHistory::add($orderId, $vehicleId, OrderHistory::TYPE_VEHICLE, OrderHistory::STATE_REMOVED);
 
         JSONResponseHandler::sendResponse([
             "message" => "Vehicle removed from order",
@@ -130,8 +140,7 @@ class Fahrzeug
             $valuesOrder[] = [(int) $file["id"], $orderId];
             $valuesVehicle[] = [(int) $file["id"], $idVehicle];
 
-            $auftragsverlauf = new Auftragsverlauf($orderId);
-            $auftragsverlauf->addToHistory($file["id"], 4, "added");
+            OrderHistory::add($orderId, $file["id"], OrderHistory::TYPE_FILE, OrderHistory::STATE_ADDED);
         }
 
         DBAccess::insertMultiple($queryOrder, $valuesOrder);

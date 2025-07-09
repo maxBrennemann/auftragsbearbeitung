@@ -2,17 +2,15 @@
 
 namespace Classes\Sticker;
 
-use MaxBrennemann\PhpUtilities\DBAccess;
-
 use Classes\Project\Table;
+use MaxBrennemann\PhpUtilities\DBAccess;
 
 class StickerChangelog
 {
-
     private $idSticker;
     private $changelogData;
 
-    function __construct(int $idSticker)
+    public function __construct(int $idSticker)
     {
         $this->idSticker = $idSticker;
         $query = "SELECT * FROM `module_sticker_changelog` WHERE id_sticker = :idSticker";
@@ -101,7 +99,7 @@ class StickerChangelog
             ]);
 
             return true;
-        } else if (sizeof($lastChanges) == 1) {
+        } elseif (sizeof($lastChanges) == 1) {
             $revert = $lastChanges[0];
 
             $table = $revert["table"];

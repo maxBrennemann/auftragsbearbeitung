@@ -3,7 +3,6 @@
 namespace Classes\Project;
 
 use Classes\Models\Model;
-
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 
@@ -17,7 +16,6 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class Address extends Model
 {
-
     public const DEFAULT_ADDRESS = 1;
     public const DELIVERY_ADDRESS = 2;
     public const BRANCH_ADDRESS = 3;
@@ -31,7 +29,9 @@ class Address extends Model
     private int $art = 0;
     private string $land = "";
 
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     public function getStrasse(): string
     {

@@ -1,19 +1,14 @@
 <?php
 
+use Classes\Controller\BreadcrumbController;
 use Classes\Link;
-use Classes\Project\BreadcrumbController;
-use Classes\Project\Icon;
 use Classes\Notification\NotificationManager;
 use Classes\Project\Config;
+use Classes\Project\Icon;
+use Classes\ResourceManager;
 
 $globalCSS = Link::getGlobalCSS();
-$tailwindCSS = Link::getTW();
 $globalJS = Link::getGlobalJS();
-
-if (!MINIFY_STATUS) {
-	$notifications = Link::getResourcesShortLink("classes/notifications.js", "js");
-	$tableConfig = Link::getResourcesShortLink("classes/tableconfig.js", "js");
-}
 
 $curr_Link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
@@ -37,7 +32,7 @@ $wiki = 			Link::getPageLink("wiki");
 
 $pageTitle = $pageName;
 if ($pageName == "") {
-	$pageTitle = "Übersicht";
+    $pageTitle = "Übersicht";
 }
 
 ?>
@@ -45,33 +40,30 @@ if ($pageName == "") {
 <html lang="de">
 
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, height=device-height">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height">
 	<meta name="Description" content="Auftragsübersicht">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<title><?= COMPANY_NAME ?> - <?= $pageTitle ?></title>
 
 	<link rel="shortcut icon" href="<?= $_ENV["WEB_URL"] ?>favicon.ico">
-	<link rel="apple-touch-icon" href="<?= $_ENV["WEB_URL"] ?>img/favicon.png">
 	<link rel="icon" type="image/png" href="<?= $_ENV["WEB_URL"] ?>img/favicon.png">
+	<link rel="apple-touch-icon" href="<?= $_ENV["WEB_URL"] ?>img/favicon.png">
 
-	<link rel="preload" href="/css/font/OpenSans-VariableFont.ttf" as="font" type="font/ttf" crossorigin>
-	<link rel="preload" href="/css/font/OpenSans-Italic-VariableFont.ttf" as="font" type="font/ttf" crossorigin>
-	<link rel="preload" href="/css/font/Raleway-Regular.ttf" as="font" type="font/ttf" crossorigin>
+	<?php if ($_ENV["DEV_MODE"] == "true"): ?>
+		<script type="module" src="https://localhost:5173/global.js"></script>
 
-	<link rel="stylesheet" href="<?= $globalCSS ?>">
-	<link rel="stylesheet" href="<?= $tailwindCSS ?>">
-	<script src="<?= $globalJS ?>" type="module"></script>
-
-	<?php if (!MINIFY_STATUS) : ?>
-		<script src="<?= $tableConfig ?>" type="module"></script>
-		<script src="<?= $notifications ?>" type="module"></script>
-	<?php endif; ?>
-
-	<?php  if (file_exists(Link::getResourcesLink(dashesToCamelCase("$page.js"), "js", false))) : ?>
-		<script type="module" src="<?= Link::getResourcesShortLink("$page.js", "js") ?>"></script>
+		<?php if (file_exists(Link::getFilePath(dashesToCamelCase("$jsPage.js"), "js"))) : ?>
+			<?php $jsPage = dashesToCamelCase($jsPage); ?>
+			<script type="module" src="https://localhost:5173/<?= $jsPage ?>.js"></script>
+		<?php endif; ?>
+	<?php else: ?>
+		<link rel="stylesheet" href="<?= $globalCSS ?>">
+		<script type="module" src="<?= $globalJS ?>"></script>
+		<?php if (file_exists(Link::getFilePath(dashesToCamelCase("$jsPage.js"), "js"))) : ?>
+			<?php $jsPage = ResourceManager::getFileNameWithHash("$jsPage.js"); ?>
+			<script type="module" src="<?= Link::getResourcesShortLink("$jsPage", "js") ?>"></script>
+		<?php endif; ?>
 	<?php endif; ?>
 </head>
 
@@ -138,7 +130,7 @@ if ($pageName == "") {
 				<p class="font-normal text-sm"><?= $pageTitle ?></p>
 			</div>
 			<div class="inline-flex flex-wrap">
-				<?= \Classes\Project\TemplateController::getTemplate("search"); ?>
+				<?= \Classes\Controller\TemplateController::getTemplate("search"); ?>
 				<div class="inline-flex ml-1">
 					<div class="inline-flex items-center p-1 hover:bg-gray-200 hover:rounded-sm relative text-gray-700 cursor-pointer" data-binding="true" data-fun="showNotifications">
 						<?php if (NotificationManager::getNotificationCount() > 0): ?>

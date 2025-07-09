@@ -2,15 +2,13 @@
 
 namespace Classes\Sticker;
 
-use MaxBrennemann\PhpUtilities\DBAccess;
-use MaxBrennemann\PhpUtilities\Tools;
-use MaxBrennemann\PhpUtilities\JSONResponseHandler;
-
 use Classes\AiConnector\Connectors\ChatGPTConnection;
+use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
 
 class TextModification
 {
-
     private $oldChats;
     private $idSticker;
 
@@ -23,17 +21,17 @@ class TextModification
     }
 
     /**
-     * This function takes two parameters, $motivType and $textType, 
-     * which are used to filter an array of old chat data. 
-     * The function then returns the count of elements in the filtered array 
-     * where the "stickerType" property matches the $motivType parameter 
+     * This function takes two parameters, $motivType and $textType,
+     * which are used to filter an array of old chat data.
+     * The function then returns the count of elements in the filtered array
+     * where the "stickerType" property matches the $motivType parameter
      * and the "textType" property matches the $textType parameter
      */
     public function getChatCount($motivType, $textType): int
     {
         return count(array_filter(
             $this->oldChats,
-            fn($element) => $element["stickerType"] == $motivType && $element["textType"] == $textType
+            fn ($element) => $element["stickerType"] == $motivType && $element["textType"] == $textType
         ));
     }
 
@@ -41,7 +39,7 @@ class TextModification
     {
         $filteredChats = array_filter(
             $this->oldChats,
-            fn($element) => $element["stickerType"] == $motivType && $element["textType"] == $textType
+            fn ($element) => $element["stickerType"] == $motivType && $element["textType"] == $textType
         );
         if (isset($filteredChats[$index])) {
             return $filteredChats[$index]["chatgptResponse"];
@@ -123,7 +121,7 @@ class TextModification
 
         if ($direction == "next") {
             $current++;
-        } else if ($direction == "back") {
+        } elseif ($direction == "back") {
             $current--;
         }
 
@@ -165,7 +163,7 @@ class TextModification
     public static function getTextGenerationTemplate()
     {
         $stickerId = Tools::get("id");
-        $stickerType =Tools::get("type");
+        $stickerType = Tools::get("type");
         $textType = Tools::get("text");
 
         $query = "SELECT id, chatgptResponse, DATE_FORMAT(creationDate, '%d.%m.%Y') AS creationDate, textType, additionalQuery, textStyle 
@@ -179,10 +177,10 @@ class TextModification
             "textType" => $textType,
         ]);
 
-        $content = \Classes\Project\TemplateController::getTemplate("sticker/textModification", [
+        $content = \Classes\Controller\TemplateController::getTemplate("sticker/textModification", [
             "texts" => $result,
         ]);
-        
+
         JSONResponseHandler::sendResponse([
             "template" => $content,
         ]);

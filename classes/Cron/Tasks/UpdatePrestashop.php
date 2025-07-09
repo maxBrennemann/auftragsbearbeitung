@@ -10,8 +10,8 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 
 class UpdatePrestashop implements Queueable
 {
-
-    public static function handle() {
+    public static function handle()
+    {
         $taskExecutions = new TaskExecutions();
         $tasks = $taskExecutions->read([
             "status" => "scheduled",

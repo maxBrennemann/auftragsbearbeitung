@@ -6,7 +6,6 @@ use MaxBrennemann\PhpUtilities\Routes;
 
 class CustomerRoutes extends Routes
 {
-
     /**
      * @uses \Classes\Project\Kunde::getContacts()
      * @uses \Classes\Project\Kunde::

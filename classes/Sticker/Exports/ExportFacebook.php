@@ -2,22 +2,20 @@
 
 namespace Classes\Sticker\Exports;
 
-use MaxBrennemann\PhpUtilities\DBAccess;
-use MaxBrennemann\PhpUtilities\JSONResponseHandler;
-
 use Classes\Link;
 use Classes\Sticker\Aufkleber;
-use Classes\Sticker\Wandtattoo;
-use Classes\Sticker\Textil;
 use Classes\Sticker\PrestashopConnection;
 use Classes\Sticker\StickerCollection;
+use Classes\Sticker\Textil;
+use Classes\Sticker\Wandtattoo;
+use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 /**
  * generates a csv file for facebook product export
  */
 class ExportFacebook extends PrestashopConnection
 {
-
     private static $file;
     private $currentFilename;
     private $idProducts;
@@ -48,7 +46,7 @@ class ExportFacebook extends PrestashopConnection
     /**
      * gets all sticker ids from database;
      */
-    function __construct()
+    public function __construct()
     {
         $query = "SELECT `id` FROM `module_sticker_sticker_data` ORDER BY `id` ASC";
         $this->idProducts = DBAccess::selectQuery($query);
@@ -117,9 +115,9 @@ class ExportFacebook extends PrestashopConnection
 
         if ($product instanceof Aufkleber) {
             $variantLines = $this->fillLineAufkleber($product, $line);
-        } else if ($product instanceof Wandtattoo) {
+        } elseif ($product instanceof Wandtattoo) {
             $variantLines =  $this->fillLineWandtattoo($product, $line);
-        } else if ($product instanceof Textil) {
+        } elseif ($product instanceof Textil) {
             $variantLines = $this->fillLineTextil($product, $line);
         }
 
@@ -232,7 +230,7 @@ class ExportFacebook extends PrestashopConnection
     }
 
     /**
-     * generates the csv file by using built in functions from php to avoid manual 
+     * generates the csv file by using built in functions from php to avoid manual
      * handling of escape characters
      * https://stackoverflow.com/questions/4617935/is-there-a-way-to-include-commas-in-csv-columns-without-breaking-the-formatting
      */
@@ -282,7 +280,7 @@ class ExportFacebook extends PrestashopConnection
         $export = new ExportFacebook();
         $export->generateCSV();
         $filename = $export->getFilename();
-        $fileLink = Link::getResourcesLink("generated/" . $filename, "html");
+        $fileLink = $_ENV["REWRITE_BASE"] . "files/assets/forms/generated/" . $filename;
 
         JSONResponseHandler::sendResponse([
             "status" => "successful",

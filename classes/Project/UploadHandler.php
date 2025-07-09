@@ -2,16 +2,13 @@
 
 namespace Classes\Project;
 
-use RuntimeException;
-
+use Classes\Protocol;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
-
-use Classes\Protocol;
+use RuntimeException;
 
 class UploadHandler
 {
-
     private string $uploadBaseDir = "upload";
     private array $allowedMimeTypes = [];
     private int $maxFileSize = 25000000;
@@ -143,7 +140,7 @@ class UploadHandler
         $deletedFiles = [];
 
         $dbFiles = DBAccess::selectQuery("SELECT dateiname FROM dateien;");
-        $dbFileNames = array_map(fn($row) => $row["dateiname"], $dbFiles);
+        $dbFileNames = array_map(fn ($row) => $row["dateiname"], $dbFiles);
         $dbFileNames[] = ".gitkeep";
 
         self::deleteUnusedFilesInDirectory("upload", $dbFileNames, $deletedFiles);

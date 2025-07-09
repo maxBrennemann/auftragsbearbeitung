@@ -1,6 +1,10 @@
-import { ajax } from "./classes/ajax.js";
-import { addBindings } from "./classes/bindings.js";
-import { notification } from "./classes/notifications.js";
+//@ts-nocheck
+
+import { ajax } from "js-classes/ajax.js";
+import { addBindings } from "js-classes/bindings.js"
+import { notification } from "js-classes/notifications.js";
+
+import { DragSortManager } from "./classes/DragSortManager.js";
 import { clearInputs } from "./global.js";
 
 let currentDraggedGroup = null;
@@ -28,7 +32,11 @@ fnNames.click_btnAddValue = () => {
 
         const ul = document.getElementById("attributeValues_" + attribute);
         ul.appendChild(liClone);
-        bindDragEvents(liClone);
+
+        const group = ul.closest(".attributeValueGroups");
+        if (group && group._dragSortInstance) {
+            group._dragSortInstance.bindNewItem(liClone);
+        }
     }).catch((error) => {
         console.error(error);
     });
@@ -72,95 +80,23 @@ fnNames.click_btnAbortAttribute = () => {
 }
 
 function initSortAttributeValues() {
-    const attributeValueGroups = document.getElementsByClassName("attributeValueGroups");
-
-    Array.from(attributeValueGroups).forEach(group => {
-        const groupElements = group.getElementsByTagName("li");
-
-        Array.from(groupElements).forEach(element => bindDragEvents(element));
-    });
-}
-
-const bindDragEvents = element => {
-    element.addEventListener("dragstart", handleDragStart);
-    element.addEventListener("dragover", handleDragOver);
-    element.addEventListener("dragenter", handleDragEnter);
-    element.addEventListener("dragleave", handleDragLeave);
-    element.addEventListener("drop", handleDragDrop);
-    element.addEventListener("dragend", handleDragEnd);
-}
-
-const handleDragStart = e => {
-    currentDraggedGroup = e.currentTarget.closest(".attributeValueGroups");
-    currentDraggedElement = e.currentTarget;
-    currentIndex = Array.from(currentDraggedGroup.children).indexOf(e.currentTarget);
-
-    e.currentTarget.classList.add("opacity-50");
-}
-
-const handleDragOver = e => {
-    e.preventDefault();
-
-    const target = e.currentTarget;
-    const bounding = target.getBoundingClientRect();
-    const offset = e.clientY - bounding.top;
-
-    if (target.parentElement !== currentDraggedGroup || target === currentDraggedElement) return;
-
-    if (offset < bounding.height / 2 && target.previousSibling === currentDraggedElement) return;
-    if (offset >= bounding.height / 2 && target.nextSibling === currentDraggedElement) return;    
-
-    if (offset < bounding.height / 2) {
-        target.before(currentDraggedElement);
-    } else {
-        target.after(currentDraggedElement);
-    }
-}
-
-const handleDragEnter = e => {
-    e.preventDefault();
-    e.currentTarget.classList.add("ring-2", "ring-blue-400", "bg-blue-50");
-};
-
-const handleDragLeave = e => {
-    e.currentTarget.classList.remove("ring-2", "ring-blue-400", "bg-blue-50");
-};
-
-const handleDragDrop = e => {
-    e.preventDefault();
-
-    handleDragLeave(e);
-    currentDraggedElement.classList.remove("opacity-50");
-
-    updatePositions();
-}
-
-const handleDragEnd = e => {
-    e.currentTarget.classList.remove("opacity-50");
-
-    const lis = document.querySelectorAll(".attributeValueGroups li");
-    lis.forEach(li => li.classList.remove("ring-2", "ring-blue-400", "bg-blue-50"));
-};
-
-function updatePositions() {
-    const listItems = currentDraggedGroup.children;
-    let positions = [];
-    Array.from(listItems).forEach((el, idx) => {
-        const id = el.dataset.id;
-        const newPosition = idx + 1;
-        positions.push({
-            "id": id,
-            "position": newPosition
+    document.querySelectorAll(".attributeValueGroups").forEach(group => {
+        const sorter = new DragSortManager(group, {
+            "itemSelector": "li",
+            "onOrderChange": (positions, groupEl) => {
+                ajax.put(`/api/v1/attribute/${groupEl.dataset.id}/positions`, {
+                    positions: JSON.stringify(positions),
+                }).then(() => {
+                    notification("", "success");
+                }).catch((error) => {
+                    notification("", "failure", JSON.stringify(error));
+                    console.error(error);
+                });
+            }
         });
-    });
 
-    ajax.put(`/api/v1/attribute/${currentDraggedGroup.dataset.id}/positions`, {
-        positions: JSON.stringify(positions),
-    }).then(() => {
-        notification("", "success");
-    }).catch((error) => {
-        notification("", "failure", JSON.stringify(error));
-        console.error(error);
+        /* quickfix -> rather store it globally or add it to typescript HTMLElement here */
+        group._dragSortInstance = sorter;
     });
 }
 

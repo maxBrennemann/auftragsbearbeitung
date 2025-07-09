@@ -1,6 +1,6 @@
-import { ajax } from "./ajax.js";
-import { addBindings } from "./bindings.js";
-import { notification } from "./notifications.js";
+import { ajax } from "js-classes/ajax.js";
+import { addBindings } from "js-classes/bindings.js";
+import { notification } from "js-classes/notifications.js";
 
 const fnNames = {};
 let fileUploadInfo = {};

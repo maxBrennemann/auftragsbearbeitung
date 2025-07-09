@@ -1,7 +1,6 @@
 <?php
 
-return new class {
-
+return new class () {
     private $queries = [
         "CREATE TABLE `offer` (`id` INT NOT NULL AUTO_INCREMENT , `customer_id` INT NOT NULL , `creation_date` DATETIME NULL , `state` VARCHAR(32) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;",
         "INSERT INTO offer (customer_id, state)
@@ -13,7 +12,8 @@ return new class {
         FROM angebot",
     ];
 
-    public function getQueries() {
+    public function getQueries()
+    {
         return $this->queries;
     }
 

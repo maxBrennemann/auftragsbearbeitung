@@ -88,13 +88,13 @@
     <div class="tab-footer bg-gray-200 rounded-b-lg p-3">
         <div>
             <div class="ml-2">
-                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                <?= \Classes\Controller\TemplateController::getTemplate("inputSwitch", [
                     "id" => "isFree",
                     "name" => "Ohne Berechnung",
                 ]); ?>
             </div>
             <div class="ml-2 mt-2">
-                <?= \Classes\Project\TemplateController::getTemplate("inputSwitch", [
+                <?= \Classes\Controller\TemplateController::getTemplate("inputSwitch", [
                     "id" => "addToInvoice",
                     "name" => "Der Rechnung hinzufügen",
                 ]); ?>

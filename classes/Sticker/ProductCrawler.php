@@ -13,13 +13,12 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 
 class ProductCrawler extends PrestashopConnection
 {
-
     /**
      * alle produkte durchgehen
      * alle ids checken und wenn nicht existert, dann wird ein neuer eintrag erstellt
      * daten werden eingetragen
      */
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
     }
@@ -104,9 +103,9 @@ class ProductCrawler extends PrestashopConnection
 
         if (in_array(25, $idCategories)) {
             return 25;
-        } else if (in_array(62, $idCategories)) {
+        } elseif (in_array(62, $idCategories)) {
             return 62;
-        } else if (in_array(13, $idCategories)) {
+        } elseif (in_array(13, $idCategories)) {
             return 13;
         }
 
@@ -132,8 +131,9 @@ class ProductCrawler extends PrestashopConnection
                 $query = "";
         }
 
-        if ($query == "")
+        if ($query == "") {
             return null;
+        }
         DBAccess::updateQuery($query, ["id" => $id]);
 
         /* sets the additional_data column */
@@ -159,7 +159,7 @@ class ProductCrawler extends PrestashopConnection
 
         $idImagesDownloaded = [];
 
-        /* 
+        /*
          * compares all already stored images to the shop images,
          * if the image is already downloaded,
          * then do nothing,
@@ -224,7 +224,7 @@ class ProductCrawler extends PrestashopConnection
             case 13:
                 $key = "aufkleber";
                 break;
-            case 62;
+            case 62:
                 $key = "wandtattoo";
                 break;
             default:

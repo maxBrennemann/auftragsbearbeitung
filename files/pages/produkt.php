@@ -1,9 +1,8 @@
 <?php
 
-use MaxBrennemann\PhpUtilities\Tools;
-
 use Classes\Link;
 use Classes\Project\Produkt;
+use MaxBrennemann\PhpUtilities\Tools;
 
 ?>
 
@@ -11,13 +10,13 @@ use Classes\Project\Produkt;
 	<a class="link-primary" href="<?= Link::getPageLink("attributes") ?>">Zu den Produktattributen</a>
 	<a class="link-primary ml-2" href="<?= Link::getPageLink("neues-produkt") ?>">Zum Produktformular</a>
 
-	<?php if (Tools::get("id") !== NULL): ?>
+	<?php if (Tools::get("id") !== null): ?>
 		<a class="link-primary ml-2" href="<?= Link::getPageLink("produkt") ?>">Zur Produktübersicht</a>
-		<?= \Classes\Project\TemplateController::getTemplate("product", [
-			"product" => new Produkt(Tools::get("id")),
-			"showFiles" => Produkt::getFiles(Tools::get("id")),
-			"id" => Tools::get("id"),
-		]); ?>
+		<?= \Classes\Controller\TemplateController::getTemplate("product", [
+            "product" => new Produkt(Tools::get("id")),
+            "showFiles" => Produkt::getFiles(Tools::get("id")),
+            "id" => Tools::get("id"),
+        ]); ?>
 	<?php else: ?>
 		<div class="defCont mt-4">
 			<div id="tableContainer"></div>

@@ -1,12 +1,13 @@
-import { ajax } from "./classes/ajax.js";
-import { addBindings } from "./classes/bindings.js";
-import { notification } from "./classes/notifications.js";
+import { ajax } from "js-classes/ajax.js";
+import { addBindings } from "js-classes/bindings.js"
+import { notification } from "js-classes/notifications.js";
+
 import { fetchAndRenderTable } from "./classes/table.js";
 import { tableConfig } from "./classes/tableconfig.js";
-import { createPopup } from "./global.js";
 import { initFileUploader } from "./classes/upload.js";
+import { createPopup } from "./global.js";
 
-const attributes = {};
+let attributes = {};
 const productData = {};
 const fnNames = {};
 

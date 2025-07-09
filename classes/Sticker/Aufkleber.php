@@ -2,12 +2,9 @@
 
 namespace Classes\Sticker;
 
-use MaxBrennemann\PhpUtilities\DBAccess;
-
 class Aufkleber extends AufkleberWandtattoo
 {
-
-    const TYPE = "aufkleber";
+    public const TYPE = "aufkleber";
 
     private $texts = [
         "kurzfristig" => "<p>Werbeaufkleber, der für den kurzfristigen Einsatz gedacht ist und sich daher auch wieder leicht ablösen lässt.</p>",
@@ -150,9 +147,9 @@ class Aufkleber extends AufkleberWandtattoo
         /* choose text by sticker type */
         if ($this->isShortTimeSticker && $this->isLongTimeSticker) {
             $description .= $this->texts["kurzundlang"];
-        } else if ($this->isShortTimeSticker) {
+        } elseif ($this->isShortTimeSticker) {
             $description .= $this->texts["kurzfristig"];
-        } else if ($this->isLongTimeSticker) {
+        } elseif ($this->isLongTimeSticker) {
             $description .= $this->texts["langfristig"];
         }
 
@@ -173,7 +170,7 @@ class Aufkleber extends AufkleberWandtattoo
     /**
      * updates or saves the current sticker and uploads all
      * tags, combinations and images
-     * 
+     *
      * @param bool $isOverwrite if true, all images will be overwritten
      */
     public function save($isOverwrite = false): String|null
@@ -240,8 +237,8 @@ class Aufkleber extends AufkleberWandtattoo
 
         $attributes[] = $this->getSizeIds();
 
-        /* 
-         * 163 and 162 are the attribute ids from the shop for these sticker types, 
+        /*
+         * 163 and 162 are the attribute ids from the shop for these sticker types,
          * TODO: remove hardcoded ids or use config files
          */
         if ($this->getIsShortTimeSticker() && $this->getIsLongTimeSticker()) {

@@ -2,11 +2,11 @@
 
 namespace Classes\Commands;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Attribute\AsCommand;
 
 #[AsCommand(
     name: "createMigration",
@@ -14,9 +14,6 @@ use Symfony\Component\Console\Attribute\AsCommand;
 
 class CreateMigration extends Command
 {
-
-    private string $text = '';
-
     protected function configure()
     {
         $this
@@ -32,7 +29,8 @@ class CreateMigration extends Command
         }
 
         $date = date("Y-m-d");
-        file_put_contents("database/Migrations/" . $date . "_" . $name . ".php", $this->text);
+        $content = file_get_contents("./.config/res/defaultMigration.txt");
+        file_put_contents("database/Migrations/" . $date . "_" . $name . ".php", $content);
 
         return Command::SUCCESS;
     }

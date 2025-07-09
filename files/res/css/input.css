@@ -1,4 +1,5 @@
-@import './files/res/css/table.css';
+@import './table.css';
+@import './global.css';
 
 @tailwind base;
 @tailwind components;
@@ -33,12 +34,16 @@
         @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-blue-400 rounded text-sm border-0 text-white hover:bg-blue-600;
     }
 
+    .btn-edit-small, .btn-active-small {
+        @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-0.5 px-1.5 my-0.5 bg-blue-400 rounded text-xs border-0 text-white hover:bg-blue-600;
+    }
+
     .btn-cancel, .btn-inactive {
         @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 mr-1 bg-white rounded text-sm border-0 text-black hover:bg-slate-100 shadow-sm ring-offset-black gap-2 data-[focus]:outline-1 data-[focus]:outline-black ring-1 ring-gray-300 disabled:bg-slate-100;
     }
 
     .info-button {
-        @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-1 px-2 my-0.5 bg-blue-100 rounded-full border-0 text-blue-500 text-xs hover:bg-blue-600 hover:text-blue-100 disabled:bg-gray-200 disabled:hover:bg-gray-300 disabled:hover:cursor-not-allowed;
+        @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-1 px-2 my-0.5 bg-blue-100 rounded-full border border-blue-400 text-blue-500 text-xxs hover:bg-blue-600 hover:text-blue-100 disabled:bg-gray-200 disabled:hover:bg-gray-300 disabled:hover:cursor-not-allowed;
     }
 
     .tab-button {
@@ -88,25 +93,25 @@
 
 @font-face {
     font-family: 'Open Sans';
-    src: url("./font/OpenSans-VariableFont.ttf") format('truetype');
+    src: url("../css/fonts/OpenSans-VariableFont.ttf") format('truetype');
     font-weight: normal;
 }
 
 @font-face {
     font-family: 'Open Sans';
-    src: url("./font/OpenSans-VariableFont.ttf") format('truetype');
+    src: url("../css/fonts/OpenSans-VariableFont.ttf") format('truetype');
     font-weight: 600;
 }
 
 @font-face {
     font-family: 'Open Sans';
-    src: url("./font/OpenSans-VariableFont.ttf") format('truetype');
+    src: url("../css/fonts/OpenSans-VariableFont.ttf") format('truetype');
     font-weight: bold;
 }
 
 @font-face {
     font-family: 'Open Sans';
-    src: url("./font/OpenSans-Italic-VariableFont.ttf") format('truetype');
+    src: url("../css/fonts/OpenSans-Italic-VariableFont.ttf") format('truetype');
     font-weight: normal;
     font-style: italic;
 }

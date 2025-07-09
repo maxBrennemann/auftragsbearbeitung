@@ -2,17 +2,14 @@
 
 namespace Classes\Project;
 
-use ZipArchive;
-
+use Classes\Link;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
-
-use Classes\Link;
+use ZipArchive;
 
 class ClientSettings
 {
-
     public static function getFilterOrderPosten(): bool
     {
         $userId = User::getCurrentUserId();

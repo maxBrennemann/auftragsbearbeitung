@@ -2,8 +2,8 @@
 
 namespace Classes\Models;
 
-class Service extends Model {
-
+class Service extends Model
+{
     public array $fillable = [];
     protected string $tableName = "leistungen";
     protected string $primary = "id";
@@ -13,6 +13,6 @@ class Service extends Model {
 
     public function __construct()
     {
-        
+
     }
 }

@@ -1,16 +1,16 @@
 <?php
 
-namespace Classes\Project;
+namespace Classes\Controller;
 
+use Classes\Project\Config;
+use Classes\Project\TimeTracking;
+use Classes\Project\User;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 
-use Classes\Project\User;
-
 class TimeTrackingController
 {
-
     private static function validateUser()
     {
         $userId = User::getCurrentUserId();
@@ -44,7 +44,9 @@ class TimeTrackingController
         JSONResponseHandler::sendResponse($data);
     }
 
-    public static function showTimeTrackingOverview() {}
+    public static function showTimeTrackingOverview()
+    {
+    }
 
     public static function addEntry()
     {

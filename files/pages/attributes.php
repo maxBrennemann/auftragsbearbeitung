@@ -1,8 +1,7 @@
 <?php
 
-use MaxBrennemann\PhpUtilities\DBAccess;
-
 use Classes\Link;
+use MaxBrennemann\PhpUtilities\DBAccess;
 
 $data = DBAccess::selectQuery("SELECT ag.attribute_group, ag.descr, a.id, a.value, a.attribute_group_id, a.position 
     FROM attribute_group ag 

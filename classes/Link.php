@@ -2,155 +2,139 @@
 
 namespace Classes;
 
-use MaxBrennemann\PhpUtilities\DBAccess;
-
 class Link
 {
+    public $baseLink;
+    public $key;
+    public $data;
+    public $datakey;
 
-	public $baseLink;
-	public $key;
-	public $data;
-	public $datakey;
+    public function __construct()
+    {
+    }
 
-	public function __construct() {}
+    public static function getPageLink($resourceName): string
+    {
+        $link = $_ENV["WEB_URL"] . $_ENV["SUB_URL"] . $resourceName;
+        return $link;
+    }
 
-	public static function getPageLink($resourceName): string
-	{
-		$link = $_ENV["WEB_URL"] . $_ENV["SUB_URL"] . $resourceName;
-		return $link;
-	}
+    /**
+     * function returns the link to the image resource;
+     * if the resource does not exist, the default image is returned
+     *
+     * @param $resourceName: the name of the image resource
+     * @return $link: the link to the image resource
+     */
+    public static function getDefaultImage(): string
+    {
+        return $_ENV["REWRITE_BASE"] . "files/assets/img/default_image.png";
+    }
 
-	/**
-	 * function returns the link to the image resource;
-	 * if the resource does not exist, the default image is returned
-	 * 
-	 * @param $resourceName: the name of the image resource
-	 * @return $link: the link to the image resource
-	 */
-	public static function getDefaultImage(): string
-	{
-		return $_ENV["REWRITE_BASE"] . "files/assets/img/default_image.png";
-	}
+    /**
+     * Returns the file name by resource name and type
+     * @param mixed $resource
+     * @param mixed $type
+     * @return string
+     */
+    public static function getFilePath($resource, $type): string
+    {
+        switch ($type) {
+            case "css":
+                $link = "files/res/css/" . $resource;
+                break;
+            case "js":
+                $link = "files/res/js/" . $resource;
+                break;
+            case "min":
+                $link = "files/res/assets/" . $resource;
+                break;
+            case "font":
+                $link = "files/res/css/fonts/" . $resource;
+                break;
+            case "html":
+                $link = "files/assets/forms/" . $resource;
+                break;
+            case "upload":
+                $subDir = substr($resource, 0, 2) . "/" . substr($resource, 2, 2);
+                $link = "upload/" . $subDir . "/" . $resource;
+                break;
+            case "csv":
+            case "backup":
+            case "pdf":
+                $link = "generated/" . $resource;
+                break;
+        }
 
-	public static function getResourcesLink($resource, $type, $rewriteBase = true)
-	{
-		if ($rewriteBase) {
-			$rewriteBase = $_ENV["REWRITE_BASE"];
-		} else {
-			$rewriteBase = "";
-		}
-		switch ($type) {
-			case "css":
-				$link = $rewriteBase . "files/res/css/" . $resource;
-				break;
-			case "js":
-				$link = $rewriteBase . "files/res/js/" . $resource;
-				break;
-			case "font":
-				$link = $rewriteBase . "files/assets/fonts/" . $resource;
-				break;
-			case "html":
-				$link = $rewriteBase . "files/assets/forms/" . $resource;
-				break;
-			case "upload":
-				$subDir = substr($resource, 0, 2) . "/" . substr($resource, 2, 2);
-				$link = $rewriteBase . "upload/" . $subDir . "/" . $resource;
-				break;
-			case "csv":
-			case "backup":
-			case "pdf":
-				$link = $rewriteBase . "generated/" . $resource;
-				break;
-		}
+        return $link;
+    }
 
-		return $link;
-	}
+    /**
+     * Generates a short link for resources, so that the file path is not visible in the frontend
+     * @param mixed $resource
+     * @param mixed $type
+     */
+    public static function getResourcesShortLink($resource, $type)
+    {
+        switch ($type) {
+            case "css":
+                $link = $_ENV["REWRITE_BASE"] . "css/" . $resource;
+                break;
+            case "js":
+                $link = $_ENV["REWRITE_BASE"] . "js/" . $resource;
+                break;
+            case "font":
+                $link = $_ENV["REWRITE_BASE"] . "font/" . $resource;
+                break;
+            case "upload":
+                $link = $_ENV["REWRITE_BASE"] . "upload/" . $resource;
+                break;
+            case "img":
+                $link = $_ENV["REWRITE_BASE"] . "img/" . $resource;
+                break;
+            case "backup":
+                $link = $_ENV["REWRITE_BASE"] . "backup/" . $resource;
+                break;
+            case "pdf":
+                $link = $_ENV["REWRITE_BASE"] . "pdfs/" . $resource;
+                break;
+        }
 
-	public static function getResourcesShortLink($resource, $type)
-	{
-		switch ($type) {
-			case "css":
-				$link = $_ENV["REWRITE_BASE"] . "css/" . $resource;
-				break;
-			case "js":
-				$resource = dashesToCamelCase($resource);
+        return $link;
+    }
 
-				if (MINIFY_STATUS) {
-					$resourceMin = str_replace(".js", ".", $resource);
-					$files = scandir("files/res/js/min/");
-					foreach ($files as $file) {
-						if (str_starts_with($file, $resourceMin) !== false) {
-							$name = basename($file);
-							$name = explode(".", $name);
-							$link = $_ENV["REWRITE_BASE"] . "js/" . $resourceMin . $name[1] . ".js";
-						}
-					}
-					if (!isset($link)) {
-						$link = $_ENV["REWRITE_BASE"] . "js/" . $resource;
-					}
-				} else {
-					$link = $_ENV["REWRITE_BASE"] . "js/" . $resource;
-				}
-				break;
-			case "extJs":
-				/* extJs is for external js files, therefoe the fileSrc table column is returned ($resource) */
-				$link = $resource;
-				break;
-			case "font":
-				$link = $_ENV["REWRITE_BASE"] . "font/" . $resource;
-				break;
-			case "upload":
-				$link = $_ENV["REWRITE_BASE"] . "upload/" . $resource;
-				break;
-			case "img":
-				$link = $_ENV["REWRITE_BASE"] . "img/" . $resource;
-				break;
-			case "backup":
-				$link = $_ENV["REWRITE_BASE"] . "backup/" . $resource;
-				break;
-			case "pdf":
-				$link = $_ENV["REWRITE_BASE"] . "pdfs/" . $resource;
-				break;
-		}
+    public static function getGlobalCSS()
+    {
+        $file = ResourceManager::getFileNameWithHash("global.js", "css");
+        return self::getResourcesShortLink($file, "css");
+    }
 
-		return $link;
-	}
+    public static function getGlobalJS()
+    {
+        $file = ResourceManager::getFileNameWithHash("global.js");
+        return self::getResourcesShortLink($file, "js");
+    }
 
-	public static function getGlobalCSS()
-	{
-		return self::getResourcesShortLink("global.css", "css");
-	}
+    /* new link functionalities */
+    public function addBaseLink($target)
+    {
+        $this->baseLink = self::getPageLink($target);
+    }
 
-	public static function getTW()
-	{
-		return self::getResourcesShortLink("tailwind.css", "css");
-	}
+    public function addParameter($key, $value)
+    {
+        return $this->baseLink . "?$key=$value";
+    }
 
-	public static function getGlobalJS()
-	{
-		return self::getResourcesShortLink("global.js", "js");
-	}
+    public function setIterator($key, $data, $datakey)
+    {
+        $this->key = $key;
+        $this->data = $data;
+        $this->datakey = $datakey;
+    }
 
-	/* new link functionalities */
-	public function addBaseLink($target)
-	{
-		$this->baseLink = self::getPageLink($target);
-	}
-
-	public function addParameter($key, $value)
-	{
-		return $this->baseLink . "?$key=$value";
-	}
-
-	public function setIterator($key, $data, $datakey)
-	{
-		$this->key = $key;
-		$this->data = $data;
-		$this->datakey = $datakey;
-	}
-
-	public function getLink($id)
-	{
-		return self::addParameter($this->key, $this->data[$id][$this->datakey]);
-	}
+    public function getLink($id)
+    {
+        return self::addParameter($this->key, $this->data[$id][$this->datakey]);
+    }
 }

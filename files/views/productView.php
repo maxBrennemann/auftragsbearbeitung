@@ -1,7 +1,7 @@
 <?php
 
-/** 
- * @var Classes\Project\Produkt $product 
+/**
+ * @var Classes\Project\Produkt $product
  */
 
 ?>
@@ -27,7 +27,7 @@
     </div>
 
     <div class="mt-2 w-64">
-        <?= Classes\Project\TemplateController::getTemplate("uploadFile", [
+        <?= Classes\Controller\TemplateController::getTemplate("uploadFile", [
             "target" => "product",
             "accept" => "image/*",
         ]); ?>

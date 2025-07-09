@@ -2,27 +2,21 @@
 
 namespace Classes;
 
+use Classes\Controller\SessionController;
+use Classes\Project\CacheManager;
+use Classes\Project\Events;
+use Classes\Sticker\Exports\ExportFacebook;
+use Classes\Sticker\Imports\ImportGoogleSearchConsole;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 
-use Classes\Auth\SessionController;
-use Classes\Table\TableConfig;
-
-use Classes\Project\Config;
-use Classes\Project\CacheManager;
-use Classes\Project\Events;
-
-use Classes\Sticker\Exports\ExportFacebook;
-use Classes\Sticker\Imports\ImportGoogleSearchConsole;
-
 class ResourceManager
 {
-
     private static $page = "";
+    private static $type = "";
 
     public static function initialize()
     {
-        define("MINIFY_STATUS", Config::get("minifyStatus") == "on" ? true : false);
         define("CACHE_STATUS", CacheManager::getCacheStatus());
 
         $companyName = DBAccess::selectQuery("SELECT content FROM settings WHERE title = 'companyName';");
@@ -35,19 +29,45 @@ class ResourceManager
         errorReporting();
     }
 
-    /**
-     * Before: page was submitted via $_GET paramter, but now the REQUEST_URI is read;
-     * $url is splitted into the REQUEST_URI and the parameter part
-     */
-    public static function pass()
+    public static function identifyRequestType(): void
     {
         $url = $_SERVER["REQUEST_URI"];
         $url = explode('?', $url, 2);
         $page = str_replace($_ENV["REWRITE_BASE"] . $_ENV["SUB_URL"], "", $url[0]);
         $parts = explode('/', $page);
-        self::$page = $parts[count($parts) - 1];
 
-        switch ($parts[1]) {
+        self::$page = $parts[count($parts) - 1];
+        self::$type = $parts[1];
+    }
+
+    /**
+     * There are three possible request types needed for the SessionController response;
+     * @return string
+     */
+    public static function getRequestType(): string
+    {
+        switch (self::$type) {
+            case "js":
+            case "css":
+            case "font":
+            case "pdfs":
+            case "upload":
+            case "backup":
+            case "img":
+            case "static":
+            case "favicon.ico":
+            case "events":
+                return "resource";
+            case "api":
+                return "api";
+            default:
+                return "page";
+        }
+    }
+
+    public static function pass(): void
+    {
+        switch (self::$type) {
             case "js":
             case "css":
             case "font":
@@ -58,12 +78,15 @@ class ResourceManager
             case "static":
                 self::handleResources();
                 self::close();
+                // no break
             case "api":
                 Ajax::handleRequests();
                 self::close();
+                // no break
             case "favicon.ico":
                 require_once "favicon.php";
-                exit;
+                self::close();
+                // no break
             case "events":
                 Events::init();
                 self::close();
@@ -150,6 +173,7 @@ class ResourceManager
         insertTemplate("./files/layout/header.php", [
             "pageName" => $pageName,
             "page" => $page,
+            "jsPage" => $page == "" ? "home" : $page,
         ]);
 
         insertTemplate("./files/pages/$filePath");
@@ -159,7 +183,7 @@ class ResourceManager
         ]);
     }
 
-    public static function close()
+    public static function close(): never
     {
         Protocol::close();
         DBAccess::close();
@@ -216,32 +240,8 @@ class ResourceManager
     {
         header("Content-Type: text/javascript");
 
-        /* tableconfig.js */
-        if ($script == "/classes/tableconfig.js" && $_ENV["DEV_MODE"]) {
-            TableConfig::generate();
-            return;
-        }
-
-        $fileName = explode(".", $script);
-
-        /* check if filename has .js ending */
-        if (!(sizeof($fileName) == 2)) {
-            echo "";
-            return;
-        }
-
-        $min = "min/" . $fileName[0] . ".js.gz";
-        if (
-            file_exists(Link::getResourcesLink($min, "js", false))
-            && MINIFY_STATUS
-        ) {
-            header("Content-Encoding: gzip");
-            echo file_get_contents(Link::getResourcesLink($min, "js", false));
-            return;
-        }
-
-        if (file_exists(Link::getResourcesLink($script, "js", false))) {
-            echo file_get_contents(Link::getResourcesLink($script, "js", false));
+        if (file_exists(Link::getFilePath($script, "min"))) {
+            echo file_get_contents(Link::getFilePath($script, "min"));
             return;
         }
 
@@ -250,7 +250,8 @@ class ResourceManager
 
     private static function get_css($script)
     {
-        header("Content-type: text/css");
+        header("Content-Type: text/css; charset=utf-8");
+
         $fileName = explode(".", $script);
 
         /* quick workaround for font files accessed via css/font/ */
@@ -260,25 +261,32 @@ class ResourceManager
             return;
         }
 
-        if (sizeof($fileName) == 2) {
-            $min = "min/" . $fileName[0] . ".min.css";
-            if (
-                file_exists(Link::getResourcesLink($min, "css", false))
-                && MINIFY_STATUS
-            ) {
-                $file = file_get_contents(Link::getResourcesLink($min, "css", false));
-            } else {
-                if (file_exists(Link::getResourcesLink($script, "css", false))) {
-                    $file = file_get_contents(Link::getResourcesLink($script, "css", false));
-                } else {
-                    $file = "";
-                }
-            }
-        } else {
-            $file = "";
+        if (file_exists(Link::getFilePath($script, "min"))) {
+            echo file_get_contents(Link::getFilePath($script, "min"));
+            return;
         }
 
-        echo $file;
+        echo "";
+    }
+
+    public static function getFileNameWithHash(string $file, string $type = "file"): string
+    {
+        $json = @file_get_contents("./files/res/assets/.vite/manifest.json");
+
+        if ($json == false) {
+            return "";
+        }
+
+        $manifest = json_decode($json, true);
+        if (!isset($manifest[$file])) {
+            return $file;
+        }
+
+        if ($type !== "file") {
+            return $manifest[$file][$type][0];
+        }
+
+        return $manifest[$file][$type];
     }
 
     private static function checkFont($fileName)
@@ -299,7 +307,7 @@ class ResourceManager
     private static function get_font($font)
     {
         header("Content-type: font/ttf");
-        $file = file_get_contents(Link::getResourcesLink($font, "font", false));
+        $file = file_get_contents(Link::getFilePath($font, "font"));
 
         echo $file;
     }
@@ -308,7 +316,7 @@ class ResourceManager
     {
         $finfo = new \finfo(FILEINFO_MIME_TYPE);
         $upload = ltrim($upload, "/");
-        $fileName = Link::getResourcesLink($upload, "upload", false);
+        $fileName = Link::getFilePath($upload, "upload");
 
         if (!file_exists($fileName)) {
             $mime_type = $finfo->file("files/assets/img/default_image.png");
@@ -335,10 +343,10 @@ class ResourceManager
     private static function get_backup($backup)
     {
         $file_info = new \finfo(FILEINFO_MIME_TYPE);
-        $mime_type = $file_info->buffer(file_get_contents(Link::getResourcesLink($backup, "backup", false)));
+        $mime_type = $file_info->buffer(file_get_contents(Link::getFilePath($backup, "backup")));
 
         header("Content-type:$mime_type");
-        $file = file_get_contents(Link::getResourcesLink($backup, "backup", false));
+        $file = file_get_contents(Link::getFilePath($backup, "backup"));
 
         echo $file;
     }
@@ -346,7 +354,7 @@ class ResourceManager
     private static function get_pdf($pdf)
     {
         header("Content-type: application/pdf");
-        $fileName = Link::getResourcesLink($pdf, "pdf", false);
+        $fileName = Link::getFilePath($pdf, "pdf");
         if (!file_exists($fileName)) {
             echo "";
             http_response_code(404);
@@ -372,13 +380,13 @@ class ResourceManager
         if ($file == "facebook-product-export") {
             header("Content-type: text/csv");
             $filename = "exportFB_" . date("Y-m-d") . ".csv";
-            $file = file_get_contents(Link::getResourcesLink($filename, "csv", false));
+            $file = file_get_contents(Link::getFilePath($filename, "csv"));
             echo $file;
             // TODO: check if file exists and if not, return latest file
-        } else if ($file == "/generate-facebook") {
+        } elseif ($file == "/generate-facebook") {
             $exportFacebook = new ExportFacebook();
             $exportFacebook->generateCSV();
-        } else if ($file == "/import-search-console") {
+        } elseif ($file == "/import-search-console") {
             ImportGoogleSearchConsole::import();
         }
     }

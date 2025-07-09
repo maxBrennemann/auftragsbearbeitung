@@ -2,8 +2,8 @@
 
 namespace Classes\Models;
 
-class TaskExecutions extends Model {
-
+class TaskExecutions extends Model
+{
     public array $fillable = [];
     protected string $tableName = "task_executions";
     protected string $primary = "id";
@@ -13,6 +13,6 @@ class TaskExecutions extends Model {
 
     public function __construct()
     {
-        
+
     }
 }

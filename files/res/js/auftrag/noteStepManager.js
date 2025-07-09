@@ -1,38 +1,28 @@
-import { getOrderId } from "../auftrag.js";
-import { ajax } from "../classes/ajax.js";
-import { addBindings } from "../classes/bindings.js";
-import { notification } from "../classes/notifications.js";
-import { tableConfig } from "../classes/tableconfig.js";
+import { ajax } from "js-classes/ajax.js";
+import { addBindings } from "js-classes/bindings.js";
+import { notification } from "js-classes/notifications.js";
+
 import { fetchAndRenderTable } from "../classes/table.js";
+import { tableConfig } from "../classes/tableconfig.js";
 
-const fnNames =  {};
-
-export function initNotes() {
-    addBindings(fnNames);
-
-    const nodeContainer = document.getElementById("noteContainer");
-    if (nodeContainer != null) {
-        getNotes().then(r => {
-            if (r.length == 0) {
-                return;
-            }
-
-            displayNotes(r);
-        });
-    }
-
-    initStepsTable();
-}
+const fnNames = {};
+const notesConfig = {
+    orderId: 0,
+};
 
 const initStepsTable = async () => {
     const config = tableConfig["schritte"];
+    config.columns.push({
+        "key": "name",
+        "label": "Zugewiesen",
+    });
     const options = {
         "hideOptions": ["move", "add", "addRow"],
         "hide": [
             "Schrittnummer",
             "Auftragsnummer",
             "istErledigt",
-            "istAllgemein",
+            "assignedTo",
             "finishingDate",
         ],
         "primaryKey": config.primaryKey,
@@ -43,8 +33,11 @@ const initStepsTable = async () => {
             },
         },
         "conditions": {
-            "Auftragsnummer": getOrderId(),
+            "Auftragsnummer": notesConfig.orderId,
         },
+        "joins": {
+            "assignedToUser": 0
+        }
     };
 
     const toggleSteps = document.getElementById("toggleSteps").checked;
@@ -132,7 +125,7 @@ fnNames.click_addBearbeitungsschritt = () => {
     const date = document.getElementById("processingStepDate").value;
     const hideStatus = document.getElementById("processingStepStatus").checked;
     const priority = document.getElementById("processingStepPriority").value;
-    
+
     let assignedTo = 0;
     if (document.getElementById("processingStepBy").checked) {
         assignedTo = document.getElementById("processingStepSelectBy").value;
@@ -142,7 +135,7 @@ fnNames.click_addBearbeitungsschritt = () => {
         return;
     }
 
-    ajax.post(`/api/v1/notes/step/${getOrderId()}`, {
+    ajax.post(`/api/v1/notes/step/${notesConfig.orderId}`, {
         "name": name,
         "date": date,
         "hide": hideStatus,
@@ -268,3 +261,21 @@ fnNames.click_sendNote = sendNote;
 fnNames.click_removeNote = removeNote;
 fnNames.click_addNewNote = addNewNote;
 fnNames.click_cancelNote = cancelNote;
+
+export function initNotes(orderId) {
+    notesConfig.orderId = orderId;
+    addBindings(fnNames);
+
+    const nodeContainer = document.getElementById("noteContainer");
+    if (nodeContainer != null) {
+        getNotes().then(r => {
+            if (r.length == 0) {
+                return;
+            }
+
+            displayNotes(r);
+        });
+    }
+
+    initStepsTable();
+}

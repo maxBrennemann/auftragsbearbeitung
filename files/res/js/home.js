@@ -1,4 +1,5 @@
-import { ajax } from "./classes/ajax.js";
+import { ajax } from "js-classes/ajax.js";
+
 import { renderTable } from "./classes/table.js";
 
 function ajaxSearch(query) {

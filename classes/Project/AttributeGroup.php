@@ -3,12 +3,11 @@
 namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
-use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
 
 class AttributeGroup
 {
-
     public static function getGroups()
     {
         $groups = DBAccess::selectQuery("SELECT id, attribute_group FROM attribute_group");

@@ -2,7 +2,7 @@
 	<?= $errorTemplate ?? "" ?>
 	<?php
 
-	use Classes\Link;
+    use Classes\Link;
 
 	$listmaker =		Link::getPageLink("listmaker");
 	$einstellungen =	Link::getPageLink("einstellungen");
@@ -35,15 +35,15 @@
 	global $start;
 
 	if ($calcDuration && CACHE_STATUS == 'off') {
-		$stop = microtime(true);
-		$duration = $stop - $start;
-		echo "<script>console.log('Page loaded in " . $duration . " seconds');</script>";
+	    $stop = microtime(true);
+	    $duration = $stop - $start;
+	    echo "<script>console.log('Page loaded in " . $duration . " seconds');</script>";
 	}
 
 	if ($calcDuration && CACHE_STATUS == 'on') {
-		$stop = microtime(true);
-		$duration = $stop - $start;
-		echo '{{LOAD_TIME}}';
+	    $stop = microtime(true);
+	    $duration = $stop - $start;
+	    echo '{{LOAD_TIME}}';
 	}
 
 	?>

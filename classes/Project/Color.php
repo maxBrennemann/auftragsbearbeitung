@@ -2,12 +2,12 @@
 
 namespace Classes\Project;
 
+use Classes\Controller\TemplateController;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 class Color
 {
-
     private string $colorName = "";
     private string $hexValue = "";
     private string $shortName = "";

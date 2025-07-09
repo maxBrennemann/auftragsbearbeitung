@@ -1,7 +1,6 @@
 <?php
 
-return new class {
-
+return new class () {
     private $queries = [
         "DROP TABLE IF EXISTS kundenlogin;",
         "ALTER TABLE `kunde` ADD `fax` VARCHAR(32) NULL DEFAULT NULL AFTER `Website`, ADD `note` TEXT NULL DEFAULT NULL AFTER `fax`;",

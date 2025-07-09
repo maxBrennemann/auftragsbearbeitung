@@ -4,7 +4,6 @@ namespace Classes\Project;
 
 class SearchUtils
 {
-
     public const CONFIG = [
         "kunde" => [
             "columns" => [

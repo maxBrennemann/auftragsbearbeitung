@@ -2,17 +2,14 @@
 
 namespace Classes\Sticker\Tags;
 
+use Classes\Protocol;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-
-use MaxBrennemann\PhpUtilities\DBAccess;
-use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
 
-use Classes\Protocol; 
-
-class TagController {
-
+class TagController
+{
     private static function getSynonyms(string $query): array
     {
         $cacheDir = "cache/modules/sticker/tags";
@@ -106,7 +103,7 @@ class TagController {
         }
 
         $tags = new TagRepository($id, $title);
-        $tagTemplate = \Classes\Project\TemplateController::getTemplate("sticker/showTags", [
+        $tagTemplate = \Classes\Controller\TemplateController::getTemplate("sticker/showTags", [
             "tags" => $tags->get(),
             "suggestionTags" => $suggestionTags,
         ]);

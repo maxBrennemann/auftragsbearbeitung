@@ -6,7 +6,6 @@ use Classes\Protocol;
 
 class StickerCombination extends PrestashopConnection
 {
-
     private $sticker;
     private $arguments;
     private $defaultOn = true;
@@ -14,7 +13,7 @@ class StickerCombination extends PrestashopConnection
     private $prices;
     private $purchasingPrices;
 
-    function __construct(Sticker $sticker)
+    public function __construct(Sticker $sticker)
     {
         parent::__construct();
 

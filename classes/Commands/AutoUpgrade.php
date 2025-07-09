@@ -2,15 +2,13 @@
 
 namespace Classes\Commands;
 
+use Classes\Table\TableConfig;
+use MaxBrennemann\PhpUtilities\Migrations\UpgradeManager;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Attribute\AsCommand;
-
-use Classes\Table\TableConfig;
-
-use MaxBrennemann\PhpUtilities\Migrations\UpgradeManager;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
     name: "autoupgrade",
@@ -18,7 +16,6 @@ use Symfony\Component\Console\Input\InputOption;
 
 class AutoUpgrade extends Command
 {
-
     protected function configure()
     {
         $this
@@ -37,13 +34,8 @@ class AutoUpgrade extends Command
         $skipMigration = $input->getOption("skip-migration");
 
         $target = "files/res/js/classes";
-        $destination = "node_modules/js-classes";
 
         file_put_contents("$target/tableconfig.js", $content);
-        file_put_contents("$target/colorpicker.js", file_get_contents("node_modules/colorpicker/colorpicker.js"));
-        file_put_contents("$target/notifications.js", file_get_contents("$destination/notifications.js"));
-        file_put_contents("$target/ajax.js", file_get_contents("$destination/ajax.js"));
-        file_put_contents("$target/bindings.js", file_get_contents("$destination/bindings.js"));
 
         if ($skipMigration) {
             return Command::SUCCESS;

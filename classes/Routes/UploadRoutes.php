@@ -6,7 +6,6 @@ use MaxBrennemann\PhpUtilities\Routes;
 
 class UploadRoutes extends Routes
 {
-
     protected static $getRoutes = [];
 
     /**

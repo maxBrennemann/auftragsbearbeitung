@@ -2,52 +2,32 @@
 
 namespace Classes\Project;
 
+use Classes\Controller\TemplateController;
 use MaxBrennemann\PhpUtilities\DBAccess;
 
-/*
- * Zu protokollierende Daten:
- * posten:   Beim Hinzufügen / Löschen / Bearbeiten speichern                       ✔
- * step:     Beim Hinzufügen / Löschen / Bearbeiten / Abarbeiten speichern          ✔
- * vehicle:  Beim Hinzufügen / Löschen / Bearbeiten / Bild hochladen abspeichern    ✔
- * file:     Beim Hinzufügen / Löschen abspeichern                                  ✔
- * notiz:    Beim Hinzufügen / Löschen abspeichern                                  ✔
- * rechnung: Beim Erstellen der Rechnung abspeichern
- * angebot:  Beim Erstellen / Übernehmen abspeichern
-*/
-
-/*
- * States:
- * added
- * deleted
- * edited
- * finished
-*/
-
-class Auftragsverlauf
+class OrderHistory
 {
+    public const STATE_ADDED = "added";
+    public const STATE_DELETED = "deleted";
+    public const STATE_REMOVED = "removed";
+    public const STATE_EDITED = "edited";
+    public const STATE_FINISHED = "finished";
+    public const STATE_PAYED = "payed";
 
-    private $auftragsnummer = 0;
+    public const TYPE_ITEM = 1;
+    public const TYPE_STEP = 2;
+    public const TYPE_VEHICLE = 3;
+    public const TYPE_FILE = 4;
+    public const TYPE_ORDER = 5;
+    public const TYPE_OFFER = 6;
+    public const TYPE_NOTE = 7;
 
-    public function __construct($auftragsnummer)
-    {
-        $this->auftragsnummer = (int) $auftragsnummer;
-        if ($this->auftragsnummer <= 0) {
-            throw new \Error("Auftrag existiert nicht");
-        }
-    }
-
-    /**
-     * Zu jeder Änderung in einem Auftrag wird in die Auftragsverlaufstabelle ein Eintrag
-     * geschrieben, der diese Änderung protokolliert, dabei wird die Art der Änderung, die
-     * Id zur Identifikation der anderen Tabellenspalten und ein Zeitstempel miteingetragen.
-     * Eventuell kann später noch ein Notizfeld hinzugefügt werden.
-     */
-    public function addToHistory($number, $type, $state, $alternative_text = "")
+    public static function add(int $orderId, int $number, int $type, string $state, string $alternative_text = ""): void
     {
         $userId = User::getCurrentUserId();
         $query = "INSERT INTO history (orderid, `number`, `type`, `state`, member_id, alternative_text) VALUES (:orderId, :number, :type, :state, :userId, :alternative_text)";
         $params = array(
-            ":orderId" => $this->auftragsnummer,
+            ":orderId" => $orderId,
             ":number" => $number,
             ":type" => $type,
             ":state" => $state,
@@ -57,10 +37,7 @@ class Auftragsverlauf
         DBAccess::insertQuery($query, $params);
     }
 
-    /**
-     * added member join to get the user id
-     */
-    public function getHistory(): array
+    public static function getHistory(int $orderId): array
     {
         $query = "SELECT history.id, history.insertstamp, history_type.name , CONCAT(COALESCE(history.alternative_text, ''), COALESCE(ids.descr, '')) AS Beschreibung, history.state, user.username, user.prename
             FROM history
@@ -83,13 +60,13 @@ class Auftragsverlauf
             ORDER BY history.insertstamp DESC";
 
         return DBAccess::selectQuery($query, [
-            "auftragsnummer" => $this->auftragsnummer,
+            "auftragsnummer" => $orderId,
         ]);
     }
 
-    public function representHistoryAsHTML()
+    public static function representHistoryAsHTML(int $orderId): string
     {
-        $history = $this->getHistory();
+        $history = self::getHistory($orderId);
         return TemplateController::getTemplate("orderHistory", [
             "historyElement" => $history,
         ]);

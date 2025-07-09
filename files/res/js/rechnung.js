@@ -1,16 +1,19 @@
-import { ajax } from "./classes/ajax.js";
-import { addBindings } from "./classes/bindings.js";
-import { notification } from "./classes/notifications.js";
+//@ts-nocheck
+
+import { ajax } from "js-classes/ajax.js";
+import { addBindings } from "js-classes/bindings.js"
+import { notification } from "js-classes/notifications.js";
+
+import { DragSortManager } from "./classes/DragSortManager.js";
 import { createPopup } from "./global.js";
 
 const functionNames = {};
-
+const removedAltNames = [];
 const config = {
     "invoiceId": 0,
     "orderId": 0,
+    "positions": {},
 }
-
-const removedAltNames = [];
 
 function init() {
     addBindings(functionNames);
@@ -33,20 +36,6 @@ function init() {
             text.classList.remove("bg-white");
         }
     });
-}
-
-functionNames.click_togglePredefinedTexts = () => {
-    const toggleUp = document.querySelector(".toggle-up");
-    const toggleDown = document.querySelector(".toggle-down");
-
-    const el = document.querySelector(".predefinedTexts.hidden");
-    const rep = document.querySelector(".predefinedTexts:not(.hidden)");
-
-    el.classList.toggle("hidden");
-    rep.classList.toggle("hidden");
-
-    toggleUp.classList.toggle("hidden");
-    toggleDown.classList.toggle("hidden");
 }
 
 functionNames.click_addText = () => {
@@ -139,6 +128,7 @@ functionNames.click_completeInvoice = () => {
         }
         notification("", "success");
         getPDF();
+        window.history.go(-1);
     });
 }
 
@@ -218,6 +208,55 @@ functionNames.click_removeAltName = e => {
 
     const div = target.parentNode;
     div.parentNode.removeChild(div);
+}
+
+functionNames.click_changeItemsOrder = async e => {
+    const template = await ajax.get(`/api/v1/template/invoice/items-order`, {
+        "invoiceId": config.invoiceId,
+        "orderId": config.orderId,
+    });
+    const div = document.createElement("div");
+    div.innerHTML = template.template;
+    const btnContainer = createPopup(div);
+
+    const saveBtn = document.createElement("button");
+    saveBtn.classList.add("btn-primary");
+    saveBtn.innerHTML = "Übernehmen";
+
+    saveBtn.addEventListener("click", () => {
+        saveOrder();
+        const btnCancel = btnContainer.querySelector("button.btn-cancel");
+        btnCancel.click()
+    });
+    btnContainer.appendChild(saveBtn);
+
+    manageItemsOrder(div);
+    addBindings(functionNames);
+}
+
+const manageItemsOrder = div => {
+    const group = div.querySelector(".invoiceItemsGroup");
+    const sorter = new DragSortManager(group, {
+        itemSelector: "div",
+        dataFields: ["type"],
+        onOrderChange: (positions, groupEl) => {
+            config.positions = positions;
+            let count = 1;
+            const elements = div.querySelectorAll(".invoiceItemsGroup div input");
+            elements.forEach(el => {
+                el.value = count++;
+            });
+        }
+    });
+}
+
+const saveOrder = () => {
+    ajax.put(`/api/v1/invoice/${config.invoiceId}/positions`, {
+        "positions": JSON.stringify(config.positions),
+        "orderId": config.orderId,
+    }).then(() => {
+        getPDF();
+    });
 }
 
 const saveAltNames = container => {

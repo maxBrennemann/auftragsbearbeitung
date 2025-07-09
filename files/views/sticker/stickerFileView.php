@@ -14,9 +14,9 @@ use Classes\Project\Icon;
     <?php foreach ($files as $file): ?>
         <?php
             $type = pathinfo("upload/" . $file["dateiname"])["extension"];
-            $icon = Icon::getDefault("iconFile");
-            $link = Link::getResourcesShortLink($file["dateiname"], "upload");
-            $originalname = $file["alt"] ?: "ohne Name";
+        $icon = Icon::getDefault("iconFile");
+        $link = Link::getResourcesShortLink($file["dateiname"], "upload");
+        $originalname = $file["alt"] ?: "ohne Name";
         ?>
         <div class="imageMovable">
             <a class="imageTag" data-deletable="true" data-file-id="<?=$file["id"]?>" download="<?=$file["alt"]?>" href="<?=$link?>" data-image-id="<?=$file["id"]?>" data-deletable="true" title="Zum Herunterladen von '<?=$originalname?>' klicken">

@@ -6,7 +6,6 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 
 class Search
 {
-
     private string $query = "";
     private array $filters = [];
     private array $config = [];
@@ -31,7 +30,7 @@ class Search
 
     private function fetchBroadSet(): array
     {
-        $columns = array_filter($this->config["columns"], fn($value) =>
+        $columns = array_filter($this->config["columns"], fn ($value) =>
         isset($value["fuzzy"])
             && $value["fuzzy"] == true);
         $columnNames = array_keys($columns);
@@ -148,8 +147,8 @@ class Search
             $scored[$id]["score"] += $score;
         }
 
-        $scored = array_filter($scored, fn($v) => $v["score"] > 0);
-        usort($scored, fn($a, $b) => $b["score"] <=> $a["score"]);
+        $scored = array_filter($scored, fn ($v) => $v["score"] > 0);
+        usort($scored, fn ($a, $b) => $b["score"] <=> $a["score"]);
         return $scored;
     }
 }

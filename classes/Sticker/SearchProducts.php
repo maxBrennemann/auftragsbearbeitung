@@ -6,8 +6,7 @@ use Classes\Protocol;
 
 class SearchProducts extends PrestashopConnection
 {
-
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
     }
@@ -81,7 +80,7 @@ class SearchProducts extends PrestashopConnection
 
                 /*
                  * TODO: hardcoded entfernen
-                 * Kategorie 25 ist die Textilkategorie, 
+                 * Kategorie 25 ist die Textilkategorie,
                  * Kategorie ist die Wandtattookategorie,
                  * Kategorie 13 ist die Aufkleberkategorie
                  */
@@ -97,9 +96,9 @@ class SearchProducts extends PrestashopConnection
 
                 if (in_array(25, $categories)) {
                     $productMatches["textil"] = $data;
-                } else if (in_array(62, $categories)) {
+                } elseif (in_array(62, $categories)) {
                     $productMatches["wandtattoo"] = $data;
-                } else if (in_array(13, $categories)) {
+                } elseif (in_array(13, $categories)) {
                     $productMatches["aufkleber"] = $data;
                 }
             }

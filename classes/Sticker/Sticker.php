@@ -2,8 +2,8 @@
 
 namespace Classes\Sticker;
 
-use MaxBrennemann\PhpUtilities\DBAccess;
 use Classes\Link;
+use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 /**
@@ -12,7 +12,6 @@ use MaxBrennemann\PhpUtilities\JSONResponseHandler;
  */
 class Sticker extends PrestashopConnection
 {
-
     protected $idSticker;
     protected $idProduct;
 
@@ -24,7 +23,7 @@ class Sticker extends PrestashopConnection
 
     protected $instanceType = "sticker";
 
-    function __construct(int $idSticker)
+    public function __construct(int $idSticker)
     {
         parent::__construct();
 
@@ -112,7 +111,9 @@ class Sticker extends PrestashopConnection
         return false;
     }
 
-    protected function getShopLink() {}
+    protected function getShopLink()
+    {
+    }
 
     protected function getShopLinkHelper($type)
     {
@@ -127,8 +128,9 @@ class Sticker extends PrestashopConnection
 
     public function getAltTitle($type = ""): String
     {
-        if ($type == "")
+        if ($type == "") {
             return "";
+        }
 
         if (isset($this->additionalData["products"])) {
             $prod = $this->additionalData["products"];
@@ -148,9 +150,13 @@ class Sticker extends PrestashopConnection
         return $this->stickerData["creation_date"];
     }
 
-    public function getIdCategory() {}
+    public function getIdCategory()
+    {
+    }
 
-    public function getBasePrice() {}
+    public function getBasePrice()
+    {
+    }
 
     public function getDescription(): String
     {
@@ -179,7 +185,9 @@ class Sticker extends PrestashopConnection
         return $description;
     }
 
-    public function getTags() {}
+    public function getTags()
+    {
+    }
 
     public function getActiveStatus()
     {
@@ -223,11 +231,17 @@ class Sticker extends PrestashopConnection
         echo "success";
     }
 
-    public function save() {}
+    public function save()
+    {
+    }
 
-    public function createCombinations() {}
+    public function createCombinations()
+    {
+    }
 
-    public function setCategory() {}
+    public function setCategory()
+    {
+    }
 
     public function delete()
     {
@@ -280,7 +294,7 @@ class Sticker extends PrestashopConnection
             "typeSticker" => $this->instanceType,
         ]);
 
-        return array_map(fn($data): int => $data["id_product_reference"], $result);
+        return array_map(fn ($data): int => $data["id_product_reference"], $result);
     }
 
     /**
@@ -325,15 +339,25 @@ class Sticker extends PrestashopConnection
         $this->editXML($opt);
     }
 
-    public function getAttributes() {}
+    public function getAttributes()
+    {
+    }
 
-    public function getPrices() {}
+    public function getPrices()
+    {
+    }
 
-    public function getPricesMatched() {}
+    public function getPricesMatched()
+    {
+    }
 
-    public function getPurchasingPrices() {}
+    public function getPurchasingPrices()
+    {
+    }
 
-    public function getPurchasingPricesMatched() {}
+    public function getPurchasingPricesMatched()
+    {
+    }
 
     /**
      * inserts a new sticker into the database and sets all its initial values

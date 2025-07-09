@@ -1,22 +1,19 @@
 <?php
 
-use MaxBrennemann\PhpUtilities\Tools;
-
 use Classes\Link;
 use Classes\Project\Kunde;
+use MaxBrennemann\PhpUtilities\Tools;
 
 $customerId = (int) Tools::get("id");
 
 if ($customerId <= 0): ?>
 	<p>Kundennummer nicht gefunden oder ungültig.</p>
 	<p><a href="<?= Link::getPageLink("neuer-kunde") ?>" class="link-primary">Hier</a> kannst Du einen neuen Kunden anlegen.</p>
-<?php
-
-else:
-	$customer = new Kunde($customerId);
-	$orderCount = $customer->getOrderIds();
-	$orderCount = count($orderCount);
-?>
+<?php else:
+    $customer = new Kunde($customerId);
+    $orderCount = $customer->getOrderIds();
+    $orderCount = count($orderCount);
+    ?>
 	<div class="mt-4 bg-gray-100 p-4 rounded-lg">
 		<h2 class="font-bold">Kundenübersicht für <?= $customer->getFirmenname() ?> (<?= $customer->getKundennummer() ?>)</h2>
 		<p>Anzahl der Aufträge: <?= $orderCount ?></p>

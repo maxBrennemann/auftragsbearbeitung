@@ -2,11 +2,8 @@
 
 namespace Classes\Sticker;
 
-use MaxBrennemann\PhpUtilities\DBAccess;
-
 class StickerUpload extends PrestashopConnection
 {
-
     private $idSticker;
     private $idProduct;
     private $idCategoryPrimary = 2;

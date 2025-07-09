@@ -1,13 +1,13 @@
-import { ajax } from "../classes/ajax.js";
-import { addBindings } from "../classes/bindings.js";
-import { clearInputs, createPopup } from "../global.js";
-import { tableConfig } from "../classes/tableconfig.js";
+import { ajax } from "js-classes/ajax.js";
+import { addBindings } from "js-classes/bindings.js";
+
 import { addRow, fetchAndRenderTable } from "../classes/table.js";
+import { tableConfig } from "../classes/tableconfig.js";
 import { initFileUploader } from "../classes/upload.js";
-import { getCustomerId, getOrderId } from "../auftrag.js";
+import { clearInputs, createPopup } from "../global.js";
 
 const fnNames = {};
-const vehicleData =  {
+const vehicleData = {
     "customerId": 0,
     "orderId": 0,
     "tableRef": null,
@@ -63,9 +63,14 @@ fnNames.click_addExistingVehicle = () => {
     }
 
     ajax.put(`/api/v1/order/${vehicleData.orderId}/vehicles/${vehicleId}`)
-    .then(r => {
-        document.getElementById("fahrzeugTable").innerHTML = r.table;
-    });
+        .then(r => {
+            addRow({
+                "Nummer": vehicleId,
+                "Kundennummer": vehicleData.customerId,
+                "Kennzeichen": r.kfz,
+                "Fahrzeug": r.fahrzeug,
+            }, vehicleData.tableRef, vehicleData.options);
+        });
 }
 
 fnNames.write_selectVehicle = e => {
@@ -118,9 +123,9 @@ const uploadVehicleFile = async (e) => {
     div.addEventListener("fileUploaded", () => btnCancel.click());
 }
 
-export const initVehicles = () => {
+export const initVehicles = (customerId, orderId) => {
     addBindings(fnNames);
-    vehicleData.customerId = getCustomerId();
-    vehicleData.orderId = getOrderId();
+    vehicleData.customerId = customerId;
+    vehicleData.orderId = orderId;
     createVehicleTable();
 }

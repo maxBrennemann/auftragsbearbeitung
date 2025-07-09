@@ -2,18 +2,15 @@
 
 namespace Classes\Sticker;
 
+use Classes\Protocol;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-
 use MaxBrennemann\PhpUtilities\DBAccess;
-use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
-
-use Classes\Protocol;
+use MaxBrennemann\PhpUtilities\Tools;
 
 class StickerTagManager extends PrestashopConnection
 {
-
     private int $idSticker;
     private int $idProductReference;
     private $tags;
@@ -69,7 +66,7 @@ class StickerTagManager extends PrestashopConnection
         }
 
         $stickerTagManager = new StickerTagManager($id, $title);
-        $tagTemplate = \Classes\Project\TemplateController::getTemplate("sticker/showTags", [
+        $tagTemplate = \Classes\Controller\TemplateController::getTemplate("sticker/showTags", [
             "tags" => $stickerTagManager->tags,
             "suggestionTags" => $suggestionTags,
         ]);
@@ -100,7 +97,9 @@ class StickerTagManager extends PrestashopConnection
         return $tagIds;
     }
 
-    public function remove(int $id) {}
+    public function remove(int $id)
+    {
+    }
 
     /**
      * adds a tag to a product,
@@ -130,7 +129,7 @@ class StickerTagManager extends PrestashopConnection
 
         $query = "INSERT INTO module_sticker_sticker_tag (id_tag, id_sticker) VALUES (:id_tag, :id_sticker)";
         DBAccess::insertQuery($query, [
-            "id_tag" => $id, 
+            "id_tag" => $id,
             "id_sticker" => $this->idSticker
         ]);
 
@@ -206,9 +205,9 @@ class StickerTagManager extends PrestashopConnection
         if ($associations->{'tags'} != null) {
             $tags = $associations->{'tags'};
             foreach ($tags as $tag) {
-                /* 
+                /*
                  * I have basically no idea why it is this nested for tags, couldn't figure it out,
-                 * thats why I left all this xml code in here 
+                 * thats why I left all this xml code in here
                  */
                 if ($tag->{'tag'}) {
                     $tagIds[] = (int) $tag->tag->{'id'};
@@ -242,9 +241,9 @@ class StickerTagManager extends PrestashopConnection
         if ($associations->{'tags'} != null) {
             $tags = $associations->{'tags'};
             foreach ($tags as $tag) {
-                /* 
+                /*
                  * I have basically no idea why it is this nested for tags, couldn't figure it out,
-                 * thats why I left all this xml code in here 
+                 * thats why I left all this xml code in here
                  */
                 if ($tag->{'tag'}) {
                     $tagIds[] = (int) $tag->tag->{'id'};
@@ -336,11 +335,13 @@ class StickerTagManager extends PrestashopConnection
      * gets called when an ajax request is fired,
      * loads more synonyms
      */
-    public static function loadMoreSynonyms() {}
+    public static function loadMoreSynonyms()
+    {
+    }
 
     /**
      * gets called when an ajax request is fired
-     * 
+     *
      * @return void
      */
     public static function addTag(): void
@@ -424,7 +425,7 @@ class StickerTagManager extends PrestashopConnection
     /**
      * Die Funktion geht alle Tags im Shop durch und speichert sie einzeln ab.
      * Wichtig: TagContent ist unique, wie im Shop.
-     * Deshalb müsste es später vielleicht ein REPLACE INTO werden? 
+     * Deshalb müsste es später vielleicht ein REPLACE INTO werden?
      * Oder alles löschen und dann neu crawlen?
      */
     public static function crawlAllTags()

@@ -1,9 +1,8 @@
 <?php
 
 use Classes\Link;
-
-use Classes\Project\Invoice;
 use Classes\Project\Icon;
+use Classes\Project\Invoice;
 
 $offeneSumme = Invoice::getOpenInvoiceSum();
 

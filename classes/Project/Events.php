@@ -6,7 +6,6 @@ set_time_limit(0);
 
 class Events
 {
-
     public static function init()
     {
         self::outputHeader();

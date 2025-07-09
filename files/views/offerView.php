@@ -21,7 +21,7 @@ $customer = new Kunde($customerId);
 </div>
 
 <div class="defCont">
-    <?= \Classes\Project\TemplateController::getTemplate("invoiceItems", [
+    <?= \Classes\Controller\TemplateController::getTemplate("invoiceItems", [
         "services" => $services
     ]); ?>
 </div>

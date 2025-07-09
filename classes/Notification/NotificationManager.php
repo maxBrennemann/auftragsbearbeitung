@@ -2,17 +2,15 @@
 
 namespace Classes\Notification;
 
-use MaxBrennemann\PhpUtilities\JSONResponseHandler;
-use MaxBrennemann\PhpUtilities\DBAccess;
-use MaxBrennemann\PhpUtilities\Tools;
-
 use Classes\Link;
-
+use Classes\Models\User as UserModel;
 use Classes\Project\User;
+use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
 
 class NotificationManager
 {
-
     private static int $notificationCount = -1;
 
     /**
@@ -26,9 +24,9 @@ class NotificationManager
 
         $user = User::getCurrentUserId();
 
-        $query = "SELECT COUNT(id) AS c FROM user_notifications WHERE user_id = :user AND ischecked = 'false'";
+        $query = "SELECT COUNT(id) AS c FROM user_notifications WHERE user_id = :user AND ischecked = 0";
         $result = DBAccess::selectQuery($query, [
-            ":user" => $user
+            "user" => $user
         ]);
 
         if ($result == null) {
@@ -42,32 +40,29 @@ class NotificationManager
 
     public static function getNotificationCountByType(int ...$types): int
     {
-        $user = User::getCurrentUserId();
-
-        $types = implode(",", $types);
-        $query = "SELECT COUNT(id) AS c FROM user_notifications WHERE user_id = :user AND ischecked = 'false' AND `type` IN (:types)";
-        $result = DBAccess::selectQuery($query, [
-            ":user" => $user,
-            ":types" => $types,
-        ]);
-
-        if ($result == null) {
+        if (empty($types)) {
             return 0;
-        } else {
-            return (int) $result[0]["c"];
         }
+
+        $placeholders = implode(',', array_fill(0, count($types), '?'));
+        $query = "SELECT COUNT(id) AS c FROM user_notifications WHERE user_id = ? AND ischecked = 0 AND `type` IN ($placeholders)";
+        $params = array_merge([User::getCurrentUserId()], $types);
+        $result = DBAccess::selectQuery($query, $params);
+
+        return $result ? (int) $result[0]["c"] : 0;
     }
 
     private static function getTasks()
     {
         $user = User::getCurrentUserId();
-        return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = $user AND ischecked = 'false' AND (`type` = 1)");
+        return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = $user AND ischecked = 0 AND `type` = 1");
     }
 
     private static function getNews()
     {
-        $user = User::getCurrentUserId();
-        return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = $user AND ischecked = 'false' AND (`type` = 4 OR `type`= 0)");
+        return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = :user AND ischecked = 0 AND `type` != 1", [
+            "user" => User::getCurrentUserId(),
+        ]);
     }
 
     public static function getRecentNotifications(int $limit = 10): array
@@ -75,7 +70,7 @@ class NotificationManager
         $user = User::getCurrentUserId();
         return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = :user ORDER BY created_at DESC LIMIT :limit", [
             "user" => $user,
-            "limit"=> $limit,
+            "limit" => $limit,
         ]);
     }
 
@@ -109,7 +104,7 @@ class NotificationManager
         $tasksCount = self::getNotificationCountByType(NotificationType::TYPE_TASK);
         $newsCount = self::getNotificationCountByType(NotificationType::TYPE_STEP, NotificationType::TYPE_NEW_ORDER);
 
-        $content = \Classes\Project\TemplateController::getTemplate("notificationMenu", [
+        $content = \Classes\Controller\TemplateController::getTemplate("notificationMenu", [
             "tasks" => $tasks,
             "news" => $news,
             "tasksCount" => $tasksCount,
@@ -145,17 +140,17 @@ class NotificationManager
 
     /**
      * addNotification adds a notification for a user or all users
-     * 
-     * @param integer $user_id      the id of the user who gets notified, if all users get notified, it is -1
-     * @param integer $type         the type of notification
+     *
+     * @param int|null $user_id     the id of the user who gets notified, if all users get notified, it is -1
+     * @param int $type             the type of notification
      * @param string  $content      the text content of the notification
-     * @param integer $specificId   the id connected with the type of notification e.g order id
+     * @param int $specificId       the id connected with the type of notification e.g order id
      */
     public static function addNotification($user_id, $type, $content, $specificId)
     {
         $initiator = User::getCurrentUserId();
 
-        if ($user_id == -1) {
+        if ($user_id == null) {
             $query = "INSERT INTO user_notifications (`user_id`, `initiator`, `type`, content, specific_id) VALUES ";
             $allUsers = self::getAllUsers();
             foreach ($allUsers as $u) {
@@ -180,13 +175,15 @@ class NotificationManager
         $query = "SELECT id FROM user_notifications WHERE specific_id = $specificId";
         $result = DBAccess::selectQuery($query);
 
-        if (!empty($result))
+        if (!empty($result)) {
             self::addNotification($user_id, $type, $content, $specificId);
+        }
     }
 
     private static function getAllUsers(): array
     {
-        return DBAccess::selectQuery("SELECT id FROM members");
+        $users = new UserModel();
+        return $users->all();
     }
 
     public static function setNotificationsRead()

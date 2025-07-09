@@ -6,36 +6,35 @@ use MaxBrennemann\PhpUtilities\Routes;
 
 class TimeTrackingRoutes extends Routes
 {
-
     /**
-     * @uses \Classes\Project\TimeTrackingController::showTimeTracking()
-     * @uses \Classes\Project\TimeTrackingController::showTimeTracking()
-     * @uses \Classes\Project\TimeTrackingController::showTimeTrackingOverview()
+     * @uses \Classes\Controller\TimeTrackingController::showTimeTracking()
+     * @uses \Classes\Controller\TimeTrackingController::showTimeTracking()
+     * @uses \Classes\Controller\TimeTrackingController::showTimeTrackingOverview()
      */
     protected static $getRoutes = [
-        "/time-tracking/current-user" => [\Classes\Project\TimeTrackingController::class, "showTimeTracking"],
-        "/time-tracking/{id}" => [\Classes\Project\TimeTrackingController::class, "showTimeTracking"],
-        "/time-tracking/overview" => [\Classes\Project\TimeTrackingController::class, "showTimeTrackingOverview"],
+        "/time-tracking/current-user" => [\Classes\Controller\TimeTrackingController::class, "showTimeTracking"],
+        "/time-tracking/{id}" => [\Classes\Controller\TimeTrackingController::class, "showTimeTracking"],
+        "/time-tracking/overview" => [\Classes\Controller\TimeTrackingController::class, "showTimeTrackingOverview"],
     ];
 
     /**
-     * @uses \Classes\Project\TimeTrackingController::addEntry()
+     * @uses \Classes\Controller\TimeTrackingController::addEntry()
      */
     protected static $postRoutes = [
-        "/time-tracking/add" => [\Classes\Project\TimeTrackingController::class, "addEntry"],
+        "/time-tracking/add" => [\Classes\Controller\TimeTrackingController::class, "addEntry"],
     ];
 
     /**
-     * @uses \Classes\Project\TimeTrackingController::editEntry()
+     * @uses \Classes\Controller\TimeTrackingController::editEntry()
      */
     protected static $putRoutes = [
-        "time-tracking/{id}" => [\Classes\Project\TimeTrackingController::class, "editEntry"],
+        "time-tracking/{id}" => [\Classes\Controller\TimeTrackingController::class, "editEntry"],
     ];
 
     /**
-     * @uses \Classes\Project\TimeTrackingController::deleteEntry()
+     * @uses \Classes\Controller\TimeTrackingController::deleteEntry()
      */
     protected static $deleteRoutes = [
-        "/time-tracking/{id}" => [\Classes\Project\TimeTrackingController::class, "deleteEntry"],
+        "/time-tracking/{id}" => [\Classes\Controller\TimeTrackingController::class, "deleteEntry"],
     ];
 }

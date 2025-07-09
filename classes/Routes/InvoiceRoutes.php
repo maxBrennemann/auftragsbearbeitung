@@ -6,7 +6,6 @@ use MaxBrennemann\PhpUtilities\Routes;
 
 class InvoiceRoutes extends Routes
 {
-
     /**
      * @uses \Classes\Project\Invoice::getOpenInvoiceData()
      * @uses \Classes\Project\Invoice::getPDF()
@@ -43,8 +42,10 @@ class InvoiceRoutes extends Routes
 
     /**
      * @uses \Classes\Project\Invoice::toggleText()
+     * @uses \Classes\Project\InvoiceLayout::updateItemsOrder()
      */
     protected static $putRoutes = [
         "/invoice/{invoiceId}/text" => [\Classes\Project\Invoice::class, "toggleText"],
+        "/invoice/{invoiceId}/positions" => [\Classes\Project\InvoiceLayout::class, "updateItemsOrder"],
     ];
 }

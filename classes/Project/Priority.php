@@ -4,7 +4,6 @@ namespace Classes\Project;
 
 class Priority
 {
-
     public static function getPriorityLevel(int $prio): string
     {
         if ($prio > 95) {

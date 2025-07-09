@@ -6,7 +6,6 @@ use Classes\Project\Angebot;
 
 class OfferPDF extends TransactionPDF
 {
-    
     private Angebot $offer;
     private int $offerId;
     private int $customerId;

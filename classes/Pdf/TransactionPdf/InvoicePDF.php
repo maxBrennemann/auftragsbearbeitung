@@ -2,14 +2,13 @@
 
 namespace Classes\Pdf\TransactionPdf;
 
-use Classes\Project\Invoice;
-
 use Classes\Link;
 use Classes\Project\ClientSettings;
+use Classes\Project\Invoice;
+use Classes\Project\InvoiceLayout;
 
 class InvoicePDF extends TransactionPDF
 {
-
     private Invoice $invoice;
 
     public function __construct(int $invoiceId, int $orderId)
@@ -43,83 +42,12 @@ class InvoicePDF extends TransactionPDF
         $this->setFontStretching();
 
         $this->addTableHeader();
-
-        /* iterates over all posten and adds lines */
-        $lineheight = 10;
-        $posten = $this->invoice->loadPostenFromAuftrag();
-        $offset = 124;
-        $this->setXY(20, $offset);
-        $count = 1;
-
-        foreach ($posten as $p) {
-            $this->Cell(15, $lineheight, $count);
-            $this->Cell(20, $lineheight, $p->getQuantity());
-            $this->Cell(20, $lineheight, $p->getEinheit());
-
-            $height = $this->getStringHeight(70, $p->getDescription());
-            $addToOffset = $lineheight;
-
-            if ($p->getOhneBerechnung() == true) {
-                $addToOffset = $this->ohneBerechnungBtn($height, $lineheight, $p);
-            } else {
-                if ($height >= $lineheight) {
-                    $this->MultiCell(70, $lineheight, $p->getDescription(), '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
-                    $addToOffset = ceil($height);
-                } else {
-                    $this->Cell(70, $lineheight, $p->getDescription());
-                }
-            }
-
-            $this->Cell(20, $lineheight, $p->bekommeEinzelPreis_formatted());
-            $this->Cell(20, $lineheight, $p->bekommePreis_formatted(), 0, 0, 'R');
-
-            $offset += $addToOffset;
-            $this->ln($addToOffset);
-
-            /* 297: Din A4 Seitenhöhe, 25: Abstand von unten für die Fußzeile */
-            if ($this->GetY() + $addToOffset >= 297 - 35) {
-                $this->AddPage();
-                $this->addTableHeader(25);
-                $this->ln(10);
-            }
-
-            $count++;
-        }
-
-        foreach ($this->invoice->getTexts() as $text) {
-            if ($text["active"] == "0") {
-                continue;
-            }
-
-            $this->Cell(55, $lineheight, "");
-
-            $heigth = $this->getStringHeight(70, $text["text"]);
-            $addToOffset = $lineheight;
-
-            if ($heigth >= $lineheight) {
-                $this->MultiCell(70, $lineheight, $text["text"], '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
-                $addToOffset = ceil($heigth);
-            } else {
-                $this->Cell(70, $lineheight, $text["text"]);
-            }
-            $this->Cell(40, $lineheight, "");
-            $offset += $addToOffset;
-            $this->ln($addToOffset);
-
-            /* 297: Din A4 Seitenhöhe, 25: Abstand von unten für die Fußzeile */
-            if ($this->GetY() + $addToOffset >= 297 - 35) {
-                $this->AddPage();
-                $this->addTableHeader(25);
-                $this->ln(10);
-            }
-
-            $count++;
-        }
+        $this->addInvoiceItems();
 
         /**
          * 297: Din A4 Seitenhöhe,
          * 25: Abstand von unten für die Fußzeile,
-         * 55: bezieht sich auf die Zwischensumme und Rechnungssumme, 
+         * 55: bezieht sich auf die Zwischensumme und Rechnungssumme,
          * damit diese immer auf einer Seite stehen
          */
         if ($this->GetY() + 55 >= 297 - 35) {
@@ -198,16 +126,96 @@ class InvoicePDF extends TransactionPDF
         $this->SetFont("helvetica", "", 12);
     }
 
-    private function ohneBerechnungBtn(&$height, &$lineheight, &$p)
+    private function addInvoiceItems()
     {
-        $this->MultiCell(50, $lineheight, $p->getDescription(), '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
-        $addToOffset = ceil($height);
+        /* iterates over all posten and adds lines */
+        $lineheight = 10;
+        $posten = $this->invoice->loadPostenFromAuftrag();
+        $offset = 124;
+        $this->setXY(20, $offset);
+        $count = 1;
 
-        $this->SetFont("helvetica", "", 7);
-        $this->MultiCell(20, $lineheight, "Ohne Berechnung", '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
-        $this->SetFont("helvetica", "", 12);
+        $invoiceLayout = new InvoiceLayout($this->invoice);
+        $mergedItems = $invoiceLayout->getOrderedInvoiceContent();
 
-        return $addToOffset;
+        foreach ($mergedItems as $entry) {
+            $type = $entry["type"];
+            $id = $entry["id"];
+            $content = $entry["content"];
+
+            if ($type == "item") {
+                $p = array_find($posten, fn($p) => $p->getPostennummer() == $id); 
+                $this->Cell(15, $lineheight, $count);
+                $this->Cell(20, $lineheight, $p->getQuantity());
+                $this->Cell(20, $lineheight, $p->getEinheit());
+
+                $height = $this->getStringHeight(70, $p->getDescription());
+                $addToOffset = $lineheight;
+
+                $descriptionWidth = 70;
+                if ($p->getOhneBerechnung() == true) {
+                    $descriptionWidth = 50;
+                }
+
+                if ($height >= $lineheight) {
+                    $this->MultiCell($descriptionWidth, $lineheight, $p->getDescription(), '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
+                    $addToOffset = ceil($height);
+                } else {
+                    $this->Cell($descriptionWidth, $lineheight, $p->getDescription());
+                }
+
+                if ($p->getOhneBerechnung() == true) {
+                    $this->SetFont("helvetica", "", 6);
+                    $this->Cell(20, $lineheight, "Ohne Berechnung");
+                    $this->SetFont("helvetica", "", 12);
+                }
+
+                $this->Cell(20, $lineheight, $p->bekommeEinzelPreis_formatted());
+                $this->Cell(20, $lineheight, $p->bekommePreis_formatted(), 0, 0, 'R');
+
+                $offset += $addToOffset;
+                $this->ln($addToOffset);
+
+                $count++;
+            } else if ($type == "text") {
+                $this->Cell(55, $lineheight, "");
+
+                $heigth = $this->getStringHeight(70, $content);
+                $addToOffset = $lineheight;
+
+                if ($heigth >= $lineheight) {
+                    $this->MultiCell(70, $lineheight, $content, '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
+                    $addToOffset = ceil($heigth);
+                } else {
+                    $this->Cell(70, $lineheight, $content);
+                }
+                $this->Cell(40, $lineheight, "");
+                $offset += $addToOffset;
+                $this->ln($addToOffset);
+            } else if ($type == "vehicle") {
+                $this->Cell(55, $lineheight, "");
+
+                $heigth = $this->getStringHeight(70, $content);
+                $addToOffset = $lineheight;
+
+                if ($heigth >= $lineheight) {
+                    $this->MultiCell(70, $lineheight, $content, '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
+                    $addToOffset = ceil($heigth);
+                } else {
+                    $this->Cell(70, $lineheight, $content);
+                }
+                $this->Cell(40, $lineheight, "");
+                $offset += $addToOffset;
+                $this->ln($addToOffset);
+            }
+
+            /* 297: Din A4 Seitenhöhe, 25: Abstand von unten für die Fußzeile */
+            if ($this->GetY() + $addToOffset >= 297 - 35) {
+                $this->AddPage();
+                $this->addTableHeader(25);
+                $this->ln(10);
+            }
+        }
     }
 
     private function getCompanyLogo(): string
@@ -216,7 +224,7 @@ class InvoicePDF extends TransactionPDF
         if ($image == "") {
             return "files/assets/img/default_image.png";
         } else {
-            return Link::getResourcesLink($image, "upload", false);
+            return Link::getFilePath($image, "upload");
         }
     }
 }

@@ -22,7 +22,12 @@ services:
       - ./:/var/www/html/
       - ./.config/php-config.ini:/usr/local/etc/php/conf.d/custom-php-errors.ini
       - ./.config/php.conf:/usr/local/etc/php-fpm.d/custom-php.conf
+      - ./.config/xdebug/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - ./.config/xdebug/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
     image: auftragsbearbeitung/php-base
+    expose:
+      - 9000  # FPM port
+      - 9003  # Xdebug port
 
   cron:
     image: auftragsbearbeitung/php-base

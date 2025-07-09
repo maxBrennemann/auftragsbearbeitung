@@ -1,20 +1,19 @@
 <?php
 
-use MaxBrennemann\PhpUtilities\Tools;
-
 use Classes\Project\Auftrag;
 use Classes\Project\SearchController;
+use MaxBrennemann\PhpUtilities\Tools;
 
 $query = Tools::get("query");
 $showOffeneAuftraege = [];
 
 if ($query !== null) {
     $results = SearchController::search("type:auftrag $query");
-	$ids = [];
+    $ids = [];
     foreach ($results as $result) {
         $ids[] = (int) $result["data"]["Auftragsnummer"];
     }
-	$showOffeneAuftraege = Auftrag::getAuftragsliste($ids);
+    $showOffeneAuftraege = Auftrag::getAuftragsliste($ids);
 } else {
     $showOffeneAuftraege = Auftrag::getAuftragsliste();
 }

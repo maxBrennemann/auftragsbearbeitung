@@ -336,7 +336,7 @@ function getTableConfig(): array
             "columns" => [
                 "Schrittnummer",
                 "Auftragsnummer",
-                "istAllgemein",
+                "assignedTo",
                 "Bezeichnung",
                 "Datum",
                 "Priority",
@@ -354,8 +354,21 @@ function getTableConfig(): array
                 "Erledigt am",
                 "Status",
             ],
+            "joins" => [
+                "assignedToUser" => [
+                    "relatedTable" => "user",
+                    "localKey" => "assignedTo",
+                    "foreignKey" => "id",
+                    "type" => "LEFT",
+                    "columns" => [
+                        "lastname",
+                        "prename",
+                    ],
+                ],
+            ],
             "hooks" => [
                 "afterRead" => [\Classes\Project\Step::class, "prepareData"],
+                "afterJoin" => [\Classes\Project\Step::class, "prepareData"],
             ],
             "permissions" => ["read"],
         ],
@@ -404,7 +417,7 @@ function getTableConfigFrontOffice()
 
         $table["columns"] = array_filter(
             $table["columns"],
-            fn($el) => !in_array($el, $table["hidden"] ?? [])
+            fn ($el) => !in_array($el, $table["hidden"] ?? [])
         );
 
         foreach ($table["columns"] as $index => $column) {

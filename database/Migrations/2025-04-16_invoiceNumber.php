@@ -1,7 +1,6 @@
 <?php
 
-return new class {
-
+return new class () {
     private $queries = [
         "ALTER TABLE invoice DROP INDEX invoice_id_2;",
         "UPDATE invoice SET `status` = 'finalized';",

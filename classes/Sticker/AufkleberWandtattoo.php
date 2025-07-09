@@ -8,7 +8,6 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class AufkleberWandtattoo extends Sticker
 {
-
     protected $basePrice;
 
     protected $idShopAttributes = [];
@@ -20,11 +19,11 @@ class AufkleberWandtattoo extends Sticker
     {
         if ($width >= 1200) {
             $base = 2100;
-        } else if ($width >= 900) {
+        } elseif ($width >= 900) {
             $base = 1950;
-        } else if ($width >= 600) {
+        } elseif ($width >= 600) {
             $base = 1700;
-        } else if ($width >= 300) {
+        } elseif ($width >= 300) {
             $base = 1500;
         } else {
             $base = 1200;
@@ -106,7 +105,7 @@ class AufkleberWandtattoo extends Sticker
             $d["height"] = str_replace(".", ",", ((int) $d["height"]) / 10) . "cm";
         }
 
-        return \Classes\Project\TemplateController::getTemplate("sticker/sizeTable", [
+        return \Classes\Controller\TemplateController::getTemplate("sticker/sizeTable", [
             "sizes" => $data,
         ]);
     }

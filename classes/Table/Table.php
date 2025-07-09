@@ -2,21 +2,12 @@
 
 namespace Classes\Table;
 
-use MaxBrennemann\PhpUtilities\Tools;
-
 use Classes\Models\Model;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
 
 class Table extends Model
 {
-
-    private static function getTableConfig()
-    {
-        require_once "config/table-config.php";
-        $data = getTableConfig();
-        return $data;
-    }
-
     private static function checkPermissions($tableConfig, $action): bool
     {
         if (!array_key_exists("permissions", $tableConfig)) {
@@ -36,9 +27,7 @@ class Table extends Model
         if ($conditions) {
             $conditions = json_decode(($conditions), true);
             if (!is_array($conditions)) {
-                JSONResponseHandler::throwError(400, [
-                    "error" => "Invalid conditions format",
-                ]);
+                JSONResponseHandler::throwError(400, "Invalid conditions format");
             }
         } else {
             $conditions = [];
@@ -81,14 +70,13 @@ class Table extends Model
 
         foreach ($joins as $key => $join) {
             if (Tools::get($key) !== null) {
-                $value = Tools::get($key);
-
                 $results = $model->join(
                     $join["relatedTable"],
                     $join["localKey"],
                     $join["foreignKey"],
                     $join["type"] ?? "INNER",
                     $conditions,
+                    $key,
                 );
 
                 // array_merge($conditions, [$join["foreignKey"] => $value])
@@ -176,9 +164,7 @@ class Table extends Model
         $results = $model->delete($conditions);
 
         if ($results == false) {
-            JSONResponseHandler::throwError(400, [
-                "error" => "Invalid deletion",
-            ]);
+            JSONResponseHandler::throwError(400, "Invalid deletion");
         }
 
         JSONResponseHandler::sendResponse([

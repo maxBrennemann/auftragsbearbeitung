@@ -1,24 +1,22 @@
 <?php
 
-use MaxBrennemann\PhpUtilities\DBAccess;
-use MaxBrennemann\PhpUtilities\Tools;
-
+use Classes\Controller\TemplateController;
 use Classes\Link;
-
 use Classes\Project\Auftrag;
+use Classes\Project\ClientSettings;
+use Classes\Project\Fahrzeug;
 use Classes\Project\Icon;
 use Classes\Project\Kunde;
-use Classes\Project\Fahrzeug;
-use Classes\Project\Auftragsverlauf;
-use Classes\Project\ClientSettings;
-use Classes\Project\TemplateController;
+use Classes\Project\OrderHistory;
+use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\Tools;
 
 $orderId = (int) Tools::get("id");
 
 try {
-	$auftrag = new Auftrag($orderId);
+    $auftrag = new Auftrag($orderId);
 } catch (Exception $e) {
-	$orderId = 0;
+    $orderId = 0;
 }
 
 ?>
@@ -37,27 +35,27 @@ try {
 
 		<?php
 
-		$kunde = new Kunde($auftrag->getKundennummer());
+        $kunde = new Kunde($auftrag->getKundennummer());
 
-		$farbTable = $auftrag->getColors();
-		$fahrzeuge = Fahrzeug::getSelection($auftrag->getKundennummer());
-		$services = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
+	    $farbTable = $auftrag->getColors();
+	    $fahrzeuge = Fahrzeug::getSelection($auftrag->getKundennummer());
+	    $services = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
 
-		$showFiles = Auftrag::getFiles($orderId);
-		$auftragsverlauf = (new Auftragsverlauf($orderId))->representHistoryAsHTML();
-		$contactPersons = $auftrag->getContactPersons();
+	    $showFiles = Auftrag::getFiles($orderId);
+	    $auftragsverlauf = OrderHistory::representHistoryAsHTML($orderId);
+	    $contactPersons = $auftrag->getContactPersons();
 
-		$auftragsTyp = $auftrag->getAuftragstyp();
-		$auftragsTypen = Auftrag::getAllOrderTypes();
+	    $auftragsTyp = $auftrag->getAuftragstyp();
+	    $auftragsTypen = Auftrag::getAllOrderTypes();
 
-		$mitarbeiter = DBAccess::selectQuery("SELECT prename, lastname, id FROM user");
+	    $mitarbeiter = DBAccess::selectQuery("SELECT prename, lastname, id FROM user");
 
-		?>
+	    ?>
 
 		<?php if ($auftrag->istRechnungGestellt() && Tools::get("show") == null): ?>
 			<?= TemplateController::getTemplate("orderFinished", [
-				"auftrag" => $auftrag,
-			]); ?>
+	            "auftrag" => $auftrag,
+	        ]); ?>
 		<?php else: ?>
 			<div class="defCont col-span-6 md:col-span-4 2xl:col-span-3">
 				<div class="relative">
@@ -125,12 +123,12 @@ try {
 					<p><a href="mailto:<?= $kunde->getEmail() ?>"><?= $kunde->getEmail() ?></a></p>
 					<select class="input-primary mt-2 w-60" data-write="true" data-fun="changeContact" id="showAnspr">
 						<?php
-						$optionsDefault = true;
-						foreach ($contactPersons as $contact): ?>
+	                    $optionsDefault = true;
+foreach ($contactPersons as $contact): ?>
 							<?php
-							$selected = $contact["isSelected"] ? "selected" : "";
-							$optionsDefault = $contact["isSelected"] ? false : true;
-							?>
+    $selected = $contact["isSelected"] ? "selected" : "";
+    $optionsDefault = $contact["isSelected"] ? false : true;
+    ?>
 							<option value="<?= $contact["id"] ?>" <?= $selected ?>><?= $contact["firstName"] ?> <?= $contact["lastName"] ?></option>
 						<?php endforeach; ?>
 						<?php if ($optionsDefault): ?>
@@ -149,10 +147,10 @@ try {
 					</div>
 					<div class="px-2 rounded ml-2">
 						<?= TemplateController::getTemplate("inputSwitch", [
-							"id" => "toggleSteps",
-							"name" => "Alle Schritte anzeigen",
-							"write" => "toggleSteps",
-						]); ?>
+    "id" => "toggleSteps",
+    "name" => "Alle Schritte anzeigen",
+    "write" => "toggleSteps",
+                        ]); ?>
 					</div>
 				</div>
 				<div class="mt-2 bg-white p-2 rounded-md hidden" id="bearbeitungsschritte">
@@ -179,17 +177,17 @@ try {
 					</div>
 					<div class="mt-2">
 						<?= TemplateController::getTemplate("inputSwitch", [
-							"id" => "processingStepStatus",
-							"name" => "Noch zu erledigen",
-							"value" => "checked",
-						]); ?>
+    "id" => "processingStepStatus",
+    "name" => "Noch zu erledigen",
+    "value" => "checked",
+                        ]); ?>
 					</div>
 					<div class="mt-2">
 						<?= TemplateController::getTemplate("inputSwitch", [
-							"id" => "processingStepBy",
-							"name" => "Zuweisen an:",
-							"binding" => "updateSelectBy",
-						]); ?>
+    "id" => "processingStepBy",
+    "name" => "Zuweisen an:",
+    "binding" => "updateSelectBy",
+                        ]); ?>
 					</div>
 					<div class="mt-2">
 						<select id="processingStepSelectBy" disabled>
@@ -241,8 +239,8 @@ try {
 				</p>
 				<div class="overflow-x-auto md:w-full">
 					<?= TemplateController::getTemplate("invoiceItems", [
-						"services" => $services
-					]); ?>
+                        "services" => $services
+                    ]); ?>
 				</div>
 			</div>
 
@@ -300,8 +298,8 @@ try {
 			<div class="defCont col-span-6 md:col-span-4 upload">
 				<p class="font-bold">Dateien zum Auftrag hinzufügen</p>
 				<?= TemplateController::getTemplate("uploadFile", [
-					"target" => "order",
-				]); ?>
+                    "target" => "order",
+                ]); ?>
 				<div id="showFilePrev">
 					<?= $showFiles ?>
 				</div>

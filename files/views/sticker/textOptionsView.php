@@ -16,6 +16,6 @@ use Classes\Project\Icon;
     <button class="m-0 mx-1 p-0 border-none text-sm" data-binding="true" data-fun="iterateText" data-direction="next" title="Nächster Text">⮕</button>
 
     <button class="m-0 p-0 border-none" data-binding="true" data-fun="showTextSettings" title="Texteinstellungen">
-        <?= Icon::get("iconSettings", 10,10, ["block"]) ?>
+        <?= Icon::get("iconSettings", 10, 10, ["block"]) ?>
     </button>
 </span>

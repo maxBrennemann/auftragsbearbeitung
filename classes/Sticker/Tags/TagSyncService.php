@@ -2,8 +2,6 @@
 
 namespace Classes\Sticker\Tags;
 
-use Classes\Sticker\PrestashopConnection;
-
-class TagSyncService {
-
+class TagSyncService
+{
 }

@@ -1,8 +1,9 @@
-import { addBindings } from "./classes/bindings.js";
-import { ajax } from "./classes/ajax.js";
+import { ajax } from "js-classes/ajax.js";
+import { addBindings } from "js-classes/bindings.js"
+import { notification } from "js-classes/notifications.js";
+
 import { renderTable } from "./classes/table.js";
 import { tableConfig } from "./classes/tableconfig.js";
-import { notification } from "./classes/notifications.js";
 import { createPopup } from "./global.js";
 
 const fnNames = {};

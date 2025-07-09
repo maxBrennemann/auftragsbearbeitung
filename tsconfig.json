@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "strict": true,
+    "jsx": "react-jsx", // nur wenn du React nutzt
+    "allowJs": true,
+    "checkJs": true,
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {}
+  },
+  "include": [
+    "files/res/js"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

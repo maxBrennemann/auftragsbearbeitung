@@ -3,12 +3,11 @@
 namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
-use MaxBrennemann\PhpUtilities\Tools;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
 
 class CacheManager
 {
-
     private const CACHE_DIR = "cache/";
     private const CACHE_PREFIX = "cache_";
 
@@ -51,7 +50,7 @@ class CacheManager
 
     /**
      * simple caching from:
-     * https://www.a-coding-project.de/ratgeber/php/simples-caching 
+     * https://www.a-coding-project.de/ratgeber/php/simples-caching
      * added a time stamp check and added triggers to recreate page
      */
     public static function loadCacheIfExists()
@@ -142,22 +141,5 @@ class CacheManager
         JSONResponseHandler::sendResponse([
             "status" => $response,
         ]);
-    }
-
-    public static function toggleMinify()
-    {
-        $status = (string) Tools::get("status");
-
-        if ($status == "off" || $status == "on") {
-            DBAccess::updateQuery("UPDATE settings SET content = :status 
-            WHERE title = 'minifyStatus'", [
-                "status" => $status
-            ]);
-            JSONResponseHandler::sendResponse([
-                "status" => "success",
-            ]);
-        } else {
-            JSONResponseHandler::throwError(400, "Unsupported status type");
-        }
     }
 }

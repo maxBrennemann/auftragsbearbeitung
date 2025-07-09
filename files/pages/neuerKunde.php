@@ -1,4 +1,4 @@
-﻿<form id="cForm" name="cForm"></form>
+<form id="cForm" name="cForm"></form>
 <form id="pForm" name="pForm"></form>
 <div class="defCont">
 	<h2 class="font-bold">Neuen Kunden anlegen</h2>

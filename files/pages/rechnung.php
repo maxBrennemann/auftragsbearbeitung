@@ -1,15 +1,13 @@
 <?php
 
 use Classes\Link;
-
-use MaxBrennemann\PhpUtilities\Tools;
-
-use Classes\Project\Auftrag;
-use Classes\Project\Invoice;
-use Classes\Project\Kunde;
 use Classes\Project\Address;
+use Classes\Project\Auftrag;
 use Classes\Project\Icon;
+use Classes\Project\Invoice;
 use Classes\Project\InvoiceNumberTracker;
+use Classes\Project\Kunde;
+use MaxBrennemann\PhpUtilities\Tools;
 
 $rechnungslink;
 
@@ -17,23 +15,23 @@ $target = Tools::get("target");
 $id = Tools::get("id");
 
 if ($target == "create") {
-	$auftrag = new Auftrag($id);
-	$invoiceContacts = Invoice::getContacts($auftrag->getKundennummer());
+    $auftrag = new Auftrag($id);
+    $invoiceContacts = Invoice::getContacts($auftrag->getKundennummer());
 
-	$nextInvoiceNumber = InvoiceNumberTracker::peekNextInvoiceNumber();
-	$invoice = Invoice::getInvoice($id);
-	$invoiceId = $invoice->getId();
-	$invoiceNumber = $invoice->getNumber();
+    $nextInvoiceNumber = InvoiceNumberTracker::peekNextInvoiceNumber();
+    $invoice = Invoice::getInvoice($id);
+    $invoiceId = $invoice->getId();
+    $invoiceNumber = $invoice->getNumber();
 
-	$invoiceAddresses = Address::getAllAdressesFormatted($auftrag->getKundennummer());
-	$selectedAddress = $invoice->getAddressId();
+    $invoiceAddresses = Address::getAllAdressesFormatted($auftrag->getKundennummer());
+    $selectedAddress = $invoice->getAddressId();
 
-	$kunde = new Kunde($auftrag->getKundennummer());
+    $kunde = new Kunde($auftrag->getKundennummer());
 }
 
 if ($target == "view") {
-	$invoice = Invoice::getInvoice($id);
-	$invoiceId = $invoice->getId();
+    $invoice = Invoice::getInvoice($id);
+    $invoiceId = $invoice->getId();
 } ?>
 
 <input class="hidden" id="invoiceId" value="<?= $invoiceId ?>">
@@ -83,7 +81,7 @@ if ($target == "view") {
 		<hr class="mt-2">
 
 		<div class="mt-3">
-			<h4 class="font-semibold inline-flex items-center" data-fun="togglePredefinedTexts" data-binding="true">
+			<h4 class="font-semibold inline-flex items-center" data-target=".predefinedTexts, #texts .toggle-up, #texts .toggle-down" data-toggle="true" id="texts">
 				<p class="py-2 cursor-pointer">Vordefinierte Texte</p>
 				<span class="cursor-pointer">
 					<span class="toggle-up hidden"><?= Icon::getDefault("iconChevronUp") ?></span>
@@ -92,9 +90,17 @@ if ($target == "view") {
 			</h4>
 			<div class="predefinedTexts hidden">
 				<p>Den Text zum (ab)wählen einmal anklicken. Die Rechnungsvorschau wird dann neu generiert.</p>
-				<div class="defaultInvoiceTexts grid grid-cols-3 gap-4 mt-2">
+				<div class="defaultInvoiceTexts grid grid-flow-row gap-4 mt-2">
 					<?php foreach ($invoice->getTexts() as $text): ?>
-						<p class="invoiceTexts bg-white rounded-xl cursor-pointer p-3 select-none" title="Übernehmen" data-binding="true" data-fun="toggleText" data-active="<?= $text["active"] ?>" data-id="<?= $text["id"] ?>"><?= $text["text"] ?></p>
+						<div class="invoiceTexts bg-white rounded-xl cursor-pointer p-3 select-none flex" title="Übernehmen" data-binding="true" data-fun="toggleText" data-active="<?= $text["active"] ?>" data-id="<?= $text["id"] ?>">
+							<p class="max-h-20 overflow-auto flex-auto"><?= $text["text"] ?></p>
+							<div class="pl-3 flex items-center">
+								<?php if ($text["id"] != 0) : ?>
+									<button class="btn-edit"><?= Icon::getDefault("iconEdit") ?></button>
+									<button class="btn-delete ml-1"><?= Icon::getDefault("iconDelete") ?></button>
+								<?php endif; ?>
+							</div>
+						</div>
 					<?php endforeach; ?>
 				</div>
 				<div class="my-2">
@@ -102,7 +108,25 @@ if ($target == "view") {
 					<button data-binding="true" data-fun="addText" class="btn-primary">Hinzufügen</button>
 				</div>
 			</div>
-			<div class="predefinedTexts"></div>
+		</div>
+
+		<hr>
+
+		<div class="mt-3">
+			<h4 class="font-semibold inline-flex items-center" data-target=".toggleVehicles, #vehicles .toggle-up, #vehicles .toggle-down" data-toggle="true" id="vehicles">
+				<p class="py-2 cursor-pointer">Fahrzeuge</p>
+				<span class="cursor-pointer">
+					<span class="toggle-up hidden"><?= Icon::getDefault("iconChevronUp") ?></span>
+					<span class="toggle-down"><?= Icon::getDefault("iconChevronDown") ?></span>
+				</span>
+			</h4>
+			<div class="toggleVehicles hidden">
+				<?php foreach ($invoice->getAttachedVehicles() as $vehicle): ?>
+					<p data-id="<?= $vehicle["Nummer"] ?>">
+						<?= $vehicle["Kennzeichen"] ?> <?= $vehicle["Fahrzeug"] ?>
+					</p>
+				<?php endforeach; ?>
+			</div>
 		</div>
 
 		<hr>
@@ -110,6 +134,7 @@ if ($target == "view") {
 		<div class="mt-3">
 			<?php if ($auftrag != null && $auftrag->getAuftragspostenData() != null): ?>
 				<button data-binding="true" data-fun="completeInvoice" class="btn-primary">Rechnung <?= $invoiceNumber != 0 ? "neu generieren" : "abschließen" ?></button>
+				<button class="btn-primary" data-binding="true" data-fun="changeItemsOrder">Reihenfolge</button>
 			<?php else: ?>
 				<button disabled class="btn-primary">Rechnung abschließen</button>
 			<?php endif; ?>

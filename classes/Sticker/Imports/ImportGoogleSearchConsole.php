@@ -2,18 +2,16 @@
 
 namespace Classes\Sticker\Imports;
 
+use Classes\Protocol;
 use Google\Service\SearchConsole;
 use Google\Service\SearchConsole\SearchAnalyticsQueryRequest;
-
 use MaxBrennemann\PhpUtilities\DBAccess;
-use Classes\Protocol;
 
 class ImportGoogleSearchConsole
 {
-
     private $searchConsole;
 
-    function __construct()
+    public function __construct()
     {
         $keyFileLocation = $_ENV["GOOGLE_SEARCHCONSOLE"];
         $client = new \Google\Client();
@@ -80,7 +78,7 @@ class ImportGoogleSearchConsole
         $import->getStats("https://klebefux.de/");
     }
 
-    /** 
+    /**
      * gets all search data for a given url,
      * if no start and end date are given, the last 7 days are used
      */

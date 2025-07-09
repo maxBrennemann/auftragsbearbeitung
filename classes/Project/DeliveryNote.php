@@ -4,6 +4,7 @@ namespace Classes\Project;
 
 class DeliveryNote
 {
-
-    public function PDFgenerieren() {}
+    public function PDFgenerieren()
+    {
+    }
 }

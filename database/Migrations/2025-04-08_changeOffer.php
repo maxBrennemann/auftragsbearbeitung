@@ -1,7 +1,6 @@
 <?php
 
-return new class {
-
+return new class () {
     private $queries = [
         "ALTER TABLE `angebot` CHANGE `status` `status` VARCHAR(32) NULL;",
         "ALTER TABLE `angebot` ADD `order_id` INT NULL AFTER `kdnr`;",
@@ -10,7 +9,8 @@ return new class {
         "ALTER TABLE `angebot` ADD `creation_date` DATETIME NOT NULL AFTER `status`, ADD `update_date` DATETIME NULL AFTER `creation_date`;",
     ];
 
-    public function getQueries() {
+    public function getQueries()
+    {
         return $this->queries;
     }
 
