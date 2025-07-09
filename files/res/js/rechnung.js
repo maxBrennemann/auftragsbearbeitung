@@ -254,6 +254,8 @@ const saveOrder = () => {
     ajax.put(`/api/v1/invoice/${config.invoiceId}/positions`, {
         "positions": JSON.stringify(config.positions),
         "orderId": config.orderId,
+    }).then(() => {
+        getPDF();
     });
 }
 
