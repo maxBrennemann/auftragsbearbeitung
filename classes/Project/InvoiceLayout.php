@@ -29,21 +29,16 @@ class InvoiceLayout
         $this->layout = $data;
     }
 
-    public function getLayout(): array
-    {
-        return $this->layout;
-    }
-
-    private function getFlattendInvoiceContent(): array
+    public function getOrderedInvoiceContent(): array
     {
         $items = $this->invoice->loadPostenFromAuftrag();
-        $texts = array_filter($this->invoice->getTexts(), fn ($el) => $el["active"] != 0);
+        $texts = array_filter($this->invoice->getTexts(), fn($el) => $el["active"] != 0);
         $vehicles = $this->invoice->getAttachedVehicles();
 
-        $result = [];
+        $all = [];
 
         foreach ($items as $item) {
-            $result[] = [
+            $all[] = [
                 "id" => $item->getPostennummer(),
                 "type" => "item",
                 "content" => $item->getDescription(),
@@ -51,7 +46,7 @@ class InvoiceLayout
         }
 
         foreach ($texts as $text) {
-            $result[] = [
+            $all[] = [
                 "id" => $text["id"],
                 "type" => "text",
                 "content" => $text["text"],
@@ -59,19 +54,40 @@ class InvoiceLayout
         }
 
         foreach ($vehicles as $vehicle) {
-            $result[] = [
+            $all[] = [
                 "id" => $vehicle["Nummer"],
                 "type" => "vehicle",
                 "content" => $vehicle["Kennzeichen"] . " " . $vehicle["Fahrzeug"],
             ];
         }
 
-        return $result;
-    }
+        $allMap = [];
+        foreach ($all as $entry) {
+            $key = "{$entry['type']}-{$entry['id']}";
+            $allMap[$key] = $entry;
+        }
 
-    public function isOrdered(): bool
-    {
-        return $this->layout == null ? false : true;
+        $result = [];
+        $usedKeys = [];
+
+        foreach ($this->layout as $layoutEntry) {
+            $key = "{$layoutEntry['content_type']}-{$layoutEntry['content_id']}";
+            if (isset($allMap[$key])) {
+                $result[] = $allMap[$key];
+                $usedKeys[$key] = true;
+            }
+        }
+
+        $defaultOrder = ['item', 'text', 'vehicle'];
+        foreach ($defaultOrder as $type) {
+            foreach ($allMap as $key => $entry) {
+                if ($entry['type'] === $type && !isset($usedKeys[$key])) {
+                    $result[] = $entry;
+                }
+            }
+        }
+
+        return $result;
     }
 
     private function writeItemsOrder(array $positions): bool
@@ -101,6 +117,17 @@ class InvoiceLayout
             "contentType" => $contentType,
             "contentId" => $contentId,
         ]);
+
+        /*$validKeys = array_map(fn($e) => "{$e['type']}-{$e['id']}", $layoutData);
+
+        $existing = $this->getLayoutFromDB($invoiceId); // Load all from DB
+        foreach ($existing as $entry) {
+            $key = "{$entry['type']}-{$entry['id']}";
+            if (!in_array($key, $validKeys)) {
+                // Delete this stale entry
+                $this->deleteLayoutEntry($invoiceId, $entry['type'], $entry['id']);
+            }
+        }*/
     }
 
     /**
@@ -116,7 +143,7 @@ class InvoiceLayout
         $invoice = new Invoice($invoiceId, $orderId);
         $invoiceLayout = new InvoiceLayout($invoice);
 
-        $items = $invoiceLayout->getFlattendInvoiceContent();
+        $items = $invoiceLayout->getOrderedInvoiceContent();
         $template = TemplateController::getTemplate("invoiceItemsOrder", [
             "items" => $items,
         ]);
