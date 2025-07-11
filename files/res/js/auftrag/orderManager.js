@@ -83,7 +83,16 @@ fnNames.click_changeCustomer = async () => {
     const optionsContainer = createPopup(div);
     const btnCancel = optionsContainer.querySelector("button.btn-cancel");
 
-    //div.addEventListener("fileUploaded", () => btnCancel.click());
+    const searchCustomers = div.querySelector("#searchCustomers");
+    searchCustomers.addEventListener("change", async e => {
+        const query = e.target.value;
+        const template = await ajax.get(`/api/v1/customer/search`, {
+            "query": query,
+        }).then(r => {
+            const customerResultBox = document.querySelector("#customerResultBox");
+            customerResultBox.innerHTML = r.template;
+        });
+    });
 }
 
 function closeAlert() {

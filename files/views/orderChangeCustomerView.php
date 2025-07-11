@@ -17,7 +17,7 @@ $customers = [];
                 "searchId" => "searchCustomers",
             ]); ?>
         </div>
-        <div class="grid grid-cols-3 xl:grid-cols-4 w-full">
+        <div class="grid grid-cols-3 xl:grid-cols-4 w-full" id="customerResultBox">
             <?php foreach ($customers as $customer) : ?>
                 <?= TemplateController::getTemplate("customerCardTemplate", [
                     "customer" => $customer,
