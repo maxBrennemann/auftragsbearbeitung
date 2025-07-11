@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import "../css/input.css";
 
 import { ajax } from "js-classes/ajax.js";
@@ -127,21 +129,16 @@ export const initImagePreviewListener = () => {
 	});
 }
 
-/**
- * sets the placeholder of the search input according to the device operating system
- */
 function initSearchIcons() {
-	const searchInputs = document.querySelectorAll(".searchContainer input");
-	Array.from(searchInputs).forEach(searchInput => {
-		if (searchInput != null) {
-			const device = DeviceDetector.getOS();
-			if (device == "Mac OS") {
-				searchInput.placeholder = "⌘ K";
-			} else if (device == "Windows" || device == "Linux") {
-				searchInput.placeholder = "Ctrl K";
-			}
+	const searchInput = document.querySelector(".searchContainer input");
+	if (searchInput != null) {
+		const device = DeviceDetector.getOS();
+		if (device == "Mac OS") {
+			searchInput.placeholder = "⌘ K";
+		} else if (device == "Windows" || device == "Linux") {
+			searchInput.placeholder = "Ctrl K";
 		}
-	});
+	}
 }
 
 export const createPopup = (content) => {
@@ -386,7 +383,7 @@ export const setInpupts = inputs => {
 }
 
 /* side nav */
-fnNames.click_toggleNav = function() {
+fnNames.click_toggleNav = function () {
 	let sidenav = document.getElementById("sidenav");
 	if (sidenav.style.width == "250px") {
 		sidenav.style.width = "0";
@@ -484,7 +481,7 @@ if (document.readyState !== 'loading') {
 }
 
 if (import.meta.hot) {
-    import.meta.hot.accept(() => {
-        init();
-    })
+	import.meta.hot.accept(() => {
+		init();
+	})
 }

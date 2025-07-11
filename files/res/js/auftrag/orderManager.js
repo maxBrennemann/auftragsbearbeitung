@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js";
 import { notification } from "js-classes/notifications.js";
@@ -45,7 +47,7 @@ function sendDate(type, value) {
     });
 }
 
-function showDeleteConfirmation() {
+fnNames.click_deleteOrder = () => {
     const template = document.getElementById("templateAlertBox");
     const div = document.createElement("div");
     div.id = "alertBox";
@@ -71,6 +73,17 @@ function deleteOrder() {
             window.location.href = r.home;
         }
     });
+}
+
+fnNames.click_changeCustomer = async () => {
+    const changeCustomer = await ajax.get(`/api/v1/template/orderChangeCustomer`);
+    const div = document.createElement("div");
+    div.innerHTML = changeCustomer.content;
+
+    const optionsContainer = createPopup(div);
+    const btnCancel = optionsContainer.querySelector("button.btn-cancel");
+
+    //div.addEventListener("fileUploaded", () => btnCancel.click());
 }
 
 function closeAlert() {
@@ -148,7 +161,4 @@ export const initOrderManager = () => {
         const showExtraOptions = document.getElementById("showExtraOptions");
         showExtraOptions.classList.toggle("hidden");
     });
-
-    const deleteOrder = document.getElementById("deleteOrder");
-    deleteOrder.addEventListener("click", showDeleteConfirmation);
 }

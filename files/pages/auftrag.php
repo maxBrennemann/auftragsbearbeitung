@@ -61,7 +61,8 @@ try {
 				<div class="relative">
 					<span class="font-bold">Auftrag <span id="auftragsnummer"><?= $auftrag->getAuftragsnummer() ?></span><?php if ($auftrag->getIsArchiviert()) : ?> (archiviert)<?php endif; ?><button class="float-right border-none w-4" id="extraOptions">⋮</button></span>
 					<div class="hidden absolute right-0 top-0 bg-white rounded-lg drop-shadow-lg p-3 mt-5" id="showExtraOptions">
-						<button class="btn-delete mt-5" id="deleteOrder">Auftrag löschen</button>
+						<button class="btn-primary mt-5" data-binding="true" data-fun="changeCustomer">Anderem Kuden zuweisen</button>
+						<button class="btn-delete" data-binding="true" data-fun="deleteOrder">Auftrag löschen</button>
 					</div>
 				</div>
 				<div class="mt-1">

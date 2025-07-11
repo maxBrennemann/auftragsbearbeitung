@@ -50,6 +50,7 @@ class OrderRoutes extends Routes
      * @uses \Classes\Project\Auftrag::archive()
      * @uses \Classes\Project\Auftrag::finish()
      * @uses \Classes\Project\Auftrag::updateColor()
+     * @uses \Classes\Project\Auftrag::changeCustomer()
      * @uses \Classes\Project\Fahrzeug::attachVehicle()
      *
      * @uses \Classes\Project\Fahrzeug::updateName()
@@ -61,6 +62,7 @@ class OrderRoutes extends Routes
         "/order/{id}/archive" => [\Classes\Project\Auftrag::class, "archive"],
         "/order/{id}/finish" => [\Classes\Project\Auftrag::class, "finish"],
         "/order/{id}/colors/{colorId}" => [\Classes\Project\Auftrag::class, "updateColor"],
+        "/order/{id}/change-customer" => [\Classes\Project\Auftrag::class, "changeCustomer"],
         "/order/{id}/vehicles/{vehicleId}" => [\Classes\Project\Fahrzeug::class, "attachVehicle"],
 
         "/order/vehicles/{vehicleId}/name" => [\Classes\Project\Fahrzeug::class, "updateName"],

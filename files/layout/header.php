@@ -53,10 +53,8 @@ if ($pageName == "") {
 	<?php if ($_ENV["DEV_MODE"] == "true"): ?>
 		<script type="module" src="https://localhost:5173/global.js"></script>
 
-		<?php if (file_exists(Link::getFilePath(dashesToCamelCase("$jsPage.js"), "js"))) : ?>
-			<?php $jsPage = dashesToCamelCase($jsPage); ?>
-			<script type="module" src="https://localhost:5173/<?= $jsPage ?>.js"></script>
-		<?php endif; ?>
+		<?php $jsPage = dashesToCamelCase($jsPage); ?>
+		<script type="module" src="https://localhost:5173/<?= $jsPage ?>.js"></script>
 	<?php else: ?>
 		<link rel="stylesheet" href="<?= $globalCSS ?>">
 		<script type="module" src="<?= $globalJS ?>"></script>
