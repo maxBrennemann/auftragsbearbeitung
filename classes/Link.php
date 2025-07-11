@@ -44,6 +44,7 @@ class Link
                 $link = "files/res/css/" . $resource;
                 break;
             case "js":
+            case "ts":
                 $link = "files/res/js/" . $resource;
                 break;
             case "min":

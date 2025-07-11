@@ -58,7 +58,11 @@ if ($pageName == "") {
 	<?php else: ?>
 		<link rel="stylesheet" href="<?= $globalCSS ?>">
 		<script type="module" src="<?= $globalJS ?>"></script>
-		<?php if (file_exists(Link::getFilePath(dashesToCamelCase("$jsPage.js"), "js"))) : ?>
+		<?php 
+		$jsPath = Link::getFilePath(dashesToCamelCase("$jsPage.js"), "js");
+		$tsPath = Link::getFilePath(dashesToCamelCase("$jsPage.ts"), "ts");
+
+		if (file_exists($jsPath) || file_exists($tsPath)) : ?>
 			<?php $jsPage = ResourceManager::getFileNameWithHash("$jsPage.js"); ?>
 			<script type="module" src="<?= Link::getResourcesShortLink("$jsPage", "js") ?>"></script>
 		<?php endif; ?>
