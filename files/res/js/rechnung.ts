@@ -1,14 +1,15 @@
-//@ts-nocheck
-
+// @ts-ignore
 import { ajax } from "js-classes/ajax.js";
+// @ts-ignore
 import { addBindings } from "js-classes/bindings.js"
+// @ts-ignore
 import { notification } from "js-classes/notifications.js";
 
 import { DragSortManager } from "./classes/DragSortManager.js";
 import { createPopup } from "./global.js";
 
-const functionNames = {};
-const removedAltNames = [];
+const functionNames: { [key: string]: (...args: any[]) => void } = {};
+const removedAltNames: number[] = [];
 const config = {
     "invoiceId": 0,
     "orderId": 0,
@@ -18,17 +19,17 @@ const config = {
 function init() {
     addBindings(functionNames);
 
-    const invoiceId = document.getElementById("invoiceId");
+    const invoiceId = document.getElementById("invoiceId") as HTMLInputElement;
     if (invoiceId == null) {
         return;
     }
 
-    config.invoiceId = invoiceId.value;
+    config.invoiceId = parseInt(invoiceId.value);
 
-    const orderId = document.getElementById("orderId");
-    config.orderId = orderId.value;
+    const orderId = document.getElementById("orderId") as HTMLInputElement;
+    config.orderId = parseInt(orderId.value);
 
-    const invoiceTexts = document.querySelectorAll(".invoiceTexts");
+    const invoiceTexts = document.querySelectorAll<HTMLElement>(".invoiceTexts");
     invoiceTexts.forEach(text => {
         const active = text.dataset.active;
         if (active == "1") {
@@ -40,8 +41,8 @@ function init() {
 
 functionNames.click_addText = () => {
     ajax.post(`/api/v1/invoice/${config.invoiceId}/text`, {
-        "text": document.getElementById("newText").value,
-    }).then(r => {
+        "text": (document.getElementById("newText") as HTMLInputElement).value,
+    }).then((r: any) => {
         if (r.status !== "success") {
             notification("", "failiure", r.message);
             return;
@@ -52,25 +53,25 @@ functionNames.click_addText = () => {
         newText.className = "invoiceTexts bg-blue-200 rounded-xl cursor-pointer p-3 select-none";
         newText.dataset.active = "1";
         newText.dataset.id = r.id;
-        newText.innerHTML = document.getElementById("newText").value;
+        newText.innerHTML = (document.getElementById("newText") as HTMLInputElement).value;
         newText.onclick = toggleText;
 
-        document.querySelector(".defaultInvoiceTexts").appendChild(newText);
-        document.getElementById("newText").value = "";
+        document.querySelector(".defaultInvoiceTexts")?.appendChild(newText);
+        (document.getElementById("newText") as HTMLInputElement).value = "";
 
         getPDF();
     });
 }
 
-const toggleText = e => {
-    const target = e.currentTarget;
+const toggleText = (e: Event) => {
+    const target = e.currentTarget as HTMLElement;
     target.classList.toggle("bg-blue-200");
     target.classList.toggle("bg-white");
 
     ajax.put(`/api/v1/invoice/${config.invoiceId}/text`, {
         "textId": target.dataset.id,
         "text": target.innerText,
-    }).then(r => {
+    }).then((r: any) => {
         if (r.status !== "success") {
             notification("", "failiure", r.message);
             return;
@@ -88,11 +89,12 @@ const toggleText = e => {
 
 functionNames.click_toggleText = toggleText;
 
-functionNames.write_invoiceDate = e => {
-    const date = e.target.value;
+functionNames.write_invoiceDate = (e: Event) => {
+    const element = e.target as HTMLInputElement;
+    const date = element.value;
     ajax.post(`/api/v1/invoice/${config.invoiceId}/invoice-date`, {
         "date": date,
-    }).then(r => {
+    }).then((r: any) => {
         if (r.status !== "success") {
             notification("", "failiure", r.message);
             return;
@@ -103,11 +105,12 @@ functionNames.write_invoiceDate = e => {
     });
 }
 
-functionNames.write_serviceDate = e => {
-    const date = e.target.value;
+functionNames.write_serviceDate = (e: Event) => {
+    const element = e.target as HTMLInputElement;
+    const date = element.value;
     ajax.post(`/api/v1/invoice/${config.invoiceId}/service-date`, {
         "date": date,
-    }).then(r => {
+    }).then((r: any) => {
         if (r.status !== "success") {
             notification("", "failiure", r.message);
             return;
@@ -121,7 +124,7 @@ functionNames.write_serviceDate = e => {
 functionNames.click_completeInvoice = () => {
     ajax.post(`/api/v1/invoice/${config.invoiceId}/complete`, {
         "orderId": config.orderId,
-    }).then(r => {
+    }).then((r: any) => {
         if (r.status !== "success") {
             notification("", "failiure", r.message);
             return;
@@ -132,15 +135,15 @@ functionNames.click_completeInvoice = () => {
     });
 }
 
-functionNames.write_selectAddress = e => {
-    const target = e.currentTarget;
+functionNames.write_selectAddress = (e: Event) => {
+    const target = e.currentTarget as HTMLInputElement;
     const addressId = target.value;
 
     ajax.post(`/api/v1/invoice/${config.invoiceId}/address`, {
         "addressId": addressId,
-    }).then(r => {
+    }).then((r: any) => {
         if (r.message !== "OK") {
-            inotification("", "failiure", r.message);
+            notification("", "failiure", r.message);
             return;
         }
         notification("", "success");
@@ -149,13 +152,13 @@ functionNames.write_selectAddress = e => {
     });
 }
 
-functionNames.write_selectContact = e => {
-    const target = e.currentTarget;
+functionNames.write_selectContact = (e: Event) => {
+    const target = e.currentTarget as HTMLInputElement;
     const contactId = target.value;
 
     ajax.post(`/api/v1/invoice/${config.invoiceId}/contact`, {
         "contactId": contactId,
-    }).then(r => {
+    }).then((r: any) => {
         if (r.message !== "OK") {
             notification("", "failiure", r.message);
             return;
@@ -181,7 +184,7 @@ functionNames.click_addAltName = async () => {
 
     saveBtn.addEventListener("click", () => {
         saveAltNames(div);
-        const btnCancel = btnContainer.querySelector("button.btn-cancel");
+        const btnCancel = btnContainer.querySelector("button.btn-cancel") as HTMLButtonElement;
         btnCancel.click()
     });
     btnContainer.appendChild(saveBtn);
@@ -189,28 +192,28 @@ functionNames.click_addAltName = async () => {
     addBindings(functionNames);
 }
 
-functionNames.click_addNewAltName = e => {
-    const template = document.getElementById("invoiceAltNameTemplate");
-    const target = e.target;
+functionNames.click_addNewAltName = (e: Event) => {
+    const template = document.getElementById("invoiceAltNameTemplate") as HTMLTemplateElement;
+    const target = e.target as HTMLElement;
     const content = template.content.cloneNode(true);
-    target.parentNode.insertBefore(content, target);
+    target.parentNode?.insertBefore(content, target);
     addBindings(functionNames);
 }
 
-functionNames.click_removeAltName = e => {
-    const target = e.target;
-    const input = target.previousElementSibling;
+functionNames.click_removeAltName = (e: Event) => {
+    const target = e.target as HTMLElement;
+    const input = target.previousElementSibling as HTMLInputElement;
 
     if (input.hasAttribute("data-id")) {
-        const id = parseInt(input.dataset.id);
+        const id = parseInt(input.dataset.id ?? "");
         removedAltNames.push(id);
     }
 
-    const div = target.parentNode;
-    div.parentNode.removeChild(div);
+    const div = target.parentNode as HTMLDivElement;
+    div.parentNode?.removeChild(div);
 }
 
-functionNames.click_changeItemsOrder = async e => {
+functionNames.click_changeItemsOrder = async () => {
     const template = await ajax.get(`/api/v1/template/invoice/items-order`, {
         "invoiceId": config.invoiceId,
         "orderId": config.orderId,
@@ -225,7 +228,7 @@ functionNames.click_changeItemsOrder = async e => {
 
     saveBtn.addEventListener("click", () => {
         saveOrder();
-        const btnCancel = btnContainer.querySelector("button.btn-cancel");
+        const btnCancel = btnContainer.querySelector("button.btn-cancel") as HTMLButtonElement;
         btnCancel.click()
     });
     btnContainer.appendChild(saveBtn);
@@ -234,17 +237,18 @@ functionNames.click_changeItemsOrder = async e => {
     addBindings(functionNames);
 }
 
-const manageItemsOrder = div => {
-    const group = div.querySelector(".invoiceItemsGroup");
+const manageItemsOrder = (div: HTMLDivElement) => {
+    const group = div.querySelector(".invoiceItemsGroup") as HTMLElement;
     const sorter = new DragSortManager(group, {
         itemSelector: "div",
         dataFields: ["type"],
         onOrderChange: (positions, groupEl) => {
             config.positions = positions;
             let count = 1;
-            const elements = div.querySelectorAll(".invoiceItemsGroup div input");
+            const elements = div.querySelectorAll<HTMLInputElement>(".invoiceItemsGroup div input");
             elements.forEach(el => {
-                el.value = count++;
+                el.value = count.toString();
+                count++;
             });
         }
     });
@@ -259,13 +263,13 @@ const saveOrder = () => {
     });
 }
 
-const saveAltNames = container => {
-    const inputs = container.querySelectorAll("div input");
-    const add = [];
-    const edit = [];
+const saveAltNames = (container: HTMLElement) => {
+    const inputs = container.querySelectorAll<HTMLInputElement>("div input");
+    const add: string[] = [];
+    const edit: {id: number, text: string}[] = [];
     inputs.forEach(input => {
         if (input.hasAttribute("data-id")) {
-            const id = parseInt(input.dataset.id);
+            const id = parseInt(input.dataset.id ?? "");
             edit.push({
                 "id": id,
                 "text": input.value,
@@ -286,7 +290,7 @@ const saveAltNames = container => {
 }
 
 const getPDF = () => {
-    var iframe = document.getElementById("invoicePDFPreview");
+    var iframe = document.getElementById("invoicePDFPreview") as HTMLIFrameElement;
     iframe.src = iframe.src;
 }
 

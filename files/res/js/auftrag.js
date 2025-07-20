@@ -1,4 +1,6 @@
-﻿import { addBindings, getVariable } from "js-classes/bindings.js"
+﻿//@ts-nocheck
+
+import { addBindings, getVariable } from "js-classes/bindings.js"
 
 import { initColors } from "./auftrag/colorManager.js";
 import { initNotes } from "./auftrag/noteStepManager.js";
