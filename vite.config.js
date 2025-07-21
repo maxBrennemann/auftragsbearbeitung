@@ -61,6 +61,11 @@ export default defineConfig({
         },
     },
 
+    esbuild: {
+        target: 'esnext',
+        jsx: 'automatic',
+    },
+
     build: {
         outDir: "../assets",
         emptyOutDir: true,

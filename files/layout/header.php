@@ -62,9 +62,15 @@ if ($pageName == "") {
 		$jsPath = Link::getFilePath(dashesToCamelCase("$jsPage.js"), "js");
 		$tsPath = Link::getFilePath(dashesToCamelCase("$jsPage.ts"), "ts");
 
-		if (file_exists($jsPath) || file_exists($tsPath)) : ?>
-			<?php $jsPage = ResourceManager::getFileNameWithHash("$jsPage.js"); ?>
-			<script type="module" src="<?= Link::getResourcesShortLink("$jsPage", "js") ?>"></script>
+		$jsFilePath = "";
+		if (file_exists($jsPath)) {
+			$jsFilePath = ResourceManager::getFileNameWithHash("$jsPage.js");
+		} else if (file_exists($tsPath)) {
+			$jsFilePath = ResourceManager::getFileNameWithHash("$jsPage.ts");
+		}
+
+		if ($jsFilePath != "") : ?>
+			<script type="module" src="<?= Link::getResourcesShortLink("$jsFilePath", "js") ?>"></script>
 		<?php endif; ?>
 	<?php endif; ?>
 </head>
