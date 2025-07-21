@@ -59,8 +59,10 @@ if ($pageName == "") {
 		<link rel="stylesheet" href="<?= $globalCSS ?>">
 		<script type="module" src="<?= $globalJS ?>"></script>
 		<?php 
-		$jsPath = Link::getFilePath(dashesToCamelCase("$jsPage.js"), "js");
-		$tsPath = Link::getFilePath(dashesToCamelCase("$jsPage.ts"), "ts");
+		$jsPage = dashesToCamelCase($jsPage);
+
+		$jsPath = Link::getFilePath("$jsPage.js", "js");
+		$tsPath = Link::getFilePath("$jsPage.ts", "ts");
 
 		$jsFilePath = "";
 		if (file_exists($jsPath)) {
