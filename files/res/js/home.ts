@@ -1,14 +1,15 @@
+// @ts-ignore
 import { ajax } from "js-classes/ajax.js";
 
 import { renderTable } from "./classes/table.js";
 
-function ajaxSearch(query) {
-    const customerOverview = document.getElementById("kundenLink").dataset.customerOverview;
-    const customer = document.getElementById("kundenLink").dataset.customer;
+function ajaxSearch(query: string) {
+    const customerOverview = (document.getElementById("kundenLink") as HTMLElement).dataset.customerOverview;
+    const customer = (document.getElementById("kundenLink") as HTMLElement).dataset.customer;
 
-    const link = document.getElementById("kundenLink");
+    const link = document.getElementById("kundenLink") as HTMLLinkElement;
 
-    if (isNaN(query)) {
+    if (!Number(query)) {
         link.href = customerOverview + '?query=' + query;
     } else {
         link.href = customer + '?id=' + query;
@@ -20,28 +21,30 @@ function ajaxSearch(query) {
 function init() {
     initOpenOrdersTable();
 
-    var kundeninput = document.getElementById("kundeninput");
-    var rechnungsinput = document.getElementById("rechnungsinput");
-    var auftragsinput = document.getElementById("auftragsinput");
+    var kundeninput = document.getElementById("kundeninput") as HTMLInputElement;
+    var rechnungsinput = document.getElementById("rechnungsinput") as HTMLInputElement;
+    var auftragsinput = document.getElementById("auftragsinput") as HTMLInputElement;
 
-    kundeninput.addEventListener("keyup", function (event) {
+    kundeninput.addEventListener("keyup", function (event: KeyboardEvent) {
         if (event.key !== "Enter") {
             return;
         }
 
-        if (event.target.value === "" || event.target.value.length == 0) {
-            var link = document.getElementById('kundenLink');
+        const target = event.target as HTMLInputElement;
+
+        if (target.value === "" || target.value.length == 0) {
+            var link = document.getElementById('kundenLink') as HTMLLinkElement;
             link.href = link.dataset.url + "?showDetails=list";
             link.click();
             return;
         }
 
-        ajaxSearch(event.target.value);
+        ajaxSearch(target.value);
     });
 
     rechnungsinput.addEventListener("keyup", function (event) {
         if (event.key === "Enter") {
-            document.getElementById("rechnungsLink").click();
+            (document.getElementById("rechnungsLink") as HTMLButtonElement).click();
         }
     });
 
@@ -50,14 +53,14 @@ function init() {
             return;
         }
 
-        const query = event.target.value;
+        const query = (event.target as HTMLInputElement).value;
 
-        const orderOverview = document.getElementById("auftragsLink").dataset.orderOverview;
-        const order = document.getElementById("auftragsLink").dataset.order;
+        const orderOverview = document.getElementById("auftragsLink")?.dataset.orderOverview;
+        const order = document.getElementById("auftragsLink")?.dataset.order;
 
-        const link = document.getElementById("auftragsLink");
+        const link = document.getElementById("auftragsLink") as HTMLLinkElement;
 
-        if (isNaN(query)) {
+        if (!Number(query)) {
             link.href = orderOverview + '?query=' + query;
         } else {
             link.href = order + '?id=' + query;

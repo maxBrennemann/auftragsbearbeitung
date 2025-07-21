@@ -1,5 +1,5 @@
 <div>
-    <p class="font-semibold">Rechnungsposten Reihenfolge</p>
+    <h3 class="font-semibold">Rechnungsposten Reihenfolge</h3>
     <p class="text-xs">Um die Reihenfolge festzulegen, einzelne Posten einfach verschieben.</p>
 
     <div class="invoiceItemsGroup">

@@ -53,16 +53,26 @@ if ($pageName == "") {
 	<?php if ($_ENV["DEV_MODE"] == "true"): ?>
 		<script type="module" src="https://localhost:5173/global.js"></script>
 
-		<?php if (file_exists(Link::getFilePath(dashesToCamelCase("$jsPage.js"), "js"))) : ?>
-			<?php $jsPage = dashesToCamelCase($jsPage); ?>
-			<script type="module" src="https://localhost:5173/<?= $jsPage ?>.js"></script>
-		<?php endif; ?>
+		<?php $jsPage = dashesToCamelCase($jsPage); ?>
+		<script type="module" src="https://localhost:5173/<?= $jsPage ?>.js"></script>
 	<?php else: ?>
 		<link rel="stylesheet" href="<?= $globalCSS ?>">
 		<script type="module" src="<?= $globalJS ?>"></script>
-		<?php if (file_exists(Link::getFilePath(dashesToCamelCase("$jsPage.js"), "js"))) : ?>
-			<?php $jsPage = ResourceManager::getFileNameWithHash("$jsPage.js"); ?>
-			<script type="module" src="<?= Link::getResourcesShortLink("$jsPage", "js") ?>"></script>
+		<?php 
+		$jsPage = dashesToCamelCase($jsPage);
+
+		$jsPath = Link::getFilePath("$jsPage.js", "js");
+		$tsPath = Link::getFilePath("$jsPage.ts", "ts");
+
+		$jsFilePath = "";
+		if (file_exists($jsPath)) {
+			$jsFilePath = ResourceManager::getFileNameWithHash("$jsPage.js");
+		} else if (file_exists($tsPath)) {
+			$jsFilePath = ResourceManager::getFileNameWithHash("$jsPage.ts");
+		}
+
+		if ($jsFilePath != "") : ?>
+			<script type="module" src="<?= Link::getResourcesShortLink("$jsFilePath", "js") ?>"></script>
 		<?php endif; ?>
 	<?php endif; ?>
 </head>

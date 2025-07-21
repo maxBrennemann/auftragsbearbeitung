@@ -1,9 +1,11 @@
-﻿import { addBindings, getVariable } from "js-classes/bindings.js"
+﻿//@ts-nocheck
+
+import { addBindings, getVariable } from "js-classes/bindings.js"
 
 import { initColors } from "./auftrag/colorManager.js";
 import { initNotes } from "./auftrag/noteStepManager.js";
 import { initOrderManager } from "./auftrag/orderManager.js";
-import { initVehicles } from "./auftrag/vehicleManager.js";
+import { initVehicles } from "./auftrag/vehicleManager.ts";
 
 import "./auftrag/calculateGas.js";
 import { ajax } from "js-classes/ajax.js";

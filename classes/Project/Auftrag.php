@@ -901,6 +901,45 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         JSONResponseHandler::returnOK();
     }
 
+    public static function changeCustomer()
+    {
+        $orderId = (int) Tools::get("orderId");
+        $newCustomerId = (int) Tools::get("newCustomerId");
+
+        $query = "SELECT * FROM kunde WHERE Kundennummer = :customerId;";
+        $data = DBAccess::selectQuery($query, [
+            "customerId" => $newCustomerId,
+        ]);
+
+        if (is_null($data)) {
+            JSONResponseHandler::throwError(400, "Invalid request");
+        }
+
+        $query = "UPDATE auftrag SET Kundennummer = :customerId, Ansprechpartner = -1 WHERE Auftragsnummer = :orderId;";
+        DBAccess::updateQuery($query, [
+            "orderId" => $orderId,
+            "customerId" => $newCustomerId,
+        ]);
+
+        $query = "UPDATE angebot SET id_customer = :customerId WHERE order_id = :orderId;";
+        DBAccess::updateQuery($query, [
+            "orderId" => $orderId,
+            "customerId" => $newCustomerId,
+        ]);
+
+        $query = "DELETE FROM fahrzeuge_auftraege WHERE id_auftrag = :orderId;";
+        DBAccess::deleteQuery($query, [
+            "orderId" => $orderId,
+        ]);
+
+        $query = "UPDATE invoice SET contact_id = NULL, address_id = NULL WHERE order_id = :orderId;";
+        DBAccess::updateQuery($query, [
+            "orderId" => $orderId,
+        ]);
+
+        JSONResponseHandler::returnOK();
+    }
+
     public function getNotificationContent(): string
     {
         return "";

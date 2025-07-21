@@ -130,7 +130,7 @@ if (Tools::get("id")) : ?>
 	</div>
 	<div class="defCont">
 		<p>Ergebnisse:</p>
-		<div class="hidden w-full h-96 overflow-y-auto" id="searchResults"></div>
+		<div class="hidden w-full h-96 overflow-y-auto mt-1" id="searchResults"></div>
 	</div>
 	<div class="defCont">
 		<span>Oder <a href="<?= Link::getPageLink("angebot") ?>?open" class="link-primary">Angebot übernehmen</a></span>

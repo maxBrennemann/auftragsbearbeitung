@@ -3,6 +3,7 @@
 namespace Classes\Project;
 
 use Classes\Link;
+use Classes\Controller\TemplateController;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
@@ -234,9 +235,7 @@ class Kunde implements StatisticsInterface
         return $this->note;
     }
 
-    public function recalculate()
-    {
-    }
+    public function recalculate() {}
 
     private function loadAddresses()
     {
@@ -466,6 +465,26 @@ class Kunde implements StatisticsInterface
 
         JSONResponseHandler::sendResponse([
             "id" => $vehicleId,
+        ]);
+    }
+
+    public static function searchCustomers()
+    {
+        $query = Tools::get("query");
+        $results = SearchController::search("type:kunde $query", 10);
+
+        $html = "";
+        foreach ($results as $result) {
+            $id = (int) $result["data"]["Kundennummer"];
+            $customer = new Kunde($id);
+            $html .= TemplateController::getTemplate("customerCardTemplate", [
+                "customer" => $customer,
+            ]);
+        }
+
+        JSONResponseHandler::sendResponse([
+            "status" => "OK",
+            "template" => $html,
         ]);
     }
 }
