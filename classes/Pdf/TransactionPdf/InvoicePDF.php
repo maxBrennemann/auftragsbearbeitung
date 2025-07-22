@@ -6,10 +6,12 @@ use Classes\Link;
 use Classes\Project\ClientSettings;
 use Classes\Project\Invoice;
 use Classes\Project\InvoiceLayout;
+use Classes\Project\InvoiceNumberTracker;
 
 class InvoicePDF extends TransactionPDF
 {
     private Invoice $invoice;
+    private int $invoiceId;
 
     public function __construct(int $invoiceId, int $orderId)
     {
@@ -98,10 +100,15 @@ class InvoicePDF extends TransactionPDF
 
     private function addTableHeader($y = 69)
     {
+        $invoiceNumber = $this->invoice->getNumber();
+        if ($invoiceNumber == 0) {
+            $invoiceNumber = InvoiceNumberTracker::peekNextInvoiceNumber();
+        }
+
         $this->SetFont("helvetica", "", 12);
         $this->setXY(125, $y);
         $this->Cell(30, 10, "Rechnungs-Nr:");
-        $this->Cell(30, 10, $this->invoice->getNumber(), 0, 0, 'R');
+        $this->Cell(30, 10, $invoiceNumber, 0, 0, 'R');
         $this->setXY(125, $y + 6);
         $this->Cell(30, 10, "Auftrags-Nr:");
         $this->Cell(30, 10, $this->order->getAuftragsnummer(), 0, 0, 'R');
@@ -226,5 +233,11 @@ class InvoicePDF extends TransactionPDF
         } else {
             return Link::getFilePath($image, "upload");
         }
+    }
+
+    public function saveOutput(int $invoiceNumber = 0): void
+    {
+        $this->fileName = "Rechnung_$invoiceNumber";
+        parent::saveOutput();
     }
 }

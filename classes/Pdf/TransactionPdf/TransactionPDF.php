@@ -7,8 +7,6 @@ use Classes\Project\Auftrag;
 use Classes\Project\Config;
 use Classes\Project\Kunde;
 
-/* TODO: refactor altNames to be used in all TransactionPDFs, not only bound to invoice */
-
 class TransactionPDF extends PDFGenerator
 {
     /** @var string */
@@ -20,7 +18,6 @@ class TransactionPDF extends PDFGenerator
     protected Kunde $customer;
 
     protected int $orderId;
-    protected int $invoiceId;
     protected int $addressId = 0;
     protected int $contactId = 0;
 

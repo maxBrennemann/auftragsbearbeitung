@@ -15,8 +15,12 @@ class Model
     protected array $hidden = [];
     protected array $columns = [];
 
-    public function __construct()
+    public function __construct(?string $table = null)
     {
+        if ($table !== null) {
+            $this->tableName = $table;
+        }
+
         $this->loadTableConfig();
     }
 

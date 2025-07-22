@@ -30,7 +30,7 @@ class PDFGenerator extends TCPDF
         $this->Output();
     }
 
-    public function saveOutput()
+    public function saveOutput(): void
     {
         $fileName = $_SERVER["DOCUMENT_ROOT"] . "/generated/" . $this->fileName . ".pdf";
 

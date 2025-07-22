@@ -121,10 +121,6 @@ class Invoice
 
     public function getNumber()
     {
-        if ($this->invoiceNumber == 0) {
-            return InvoiceNumberTracker::peekNextInvoiceNumber();
-        }
-
         return $this->invoiceNumber;
     }
 
@@ -338,21 +334,14 @@ class Invoice
             "orderId" => $orderId,
         ]);
 
-        if ($invoice->getNumber() !== 0) {
-            $invoicePDF = new InvoicePDF($invoiceId, $orderId);
-            $invoicePDF->generate();
-            $invoicePDF->saveOutput();
-
-            JSONResponseHandler::sendResponse([
-                "status" => "success",
-                "number" => $invoice->getNumber(),
-                "id" => $invoiceId,
-                "isOverwrite" => true,
-            ]);
-            return;
+        $invoiceNumber = $invoice->getNumber();
+        if ($invoice->getNumber() == 0) {
+            $invoiceNumber = InvoiceNumberTracker::completeInvoice($invoice);
         }
 
-        $invoiceNumber = InvoiceNumberTracker::completeInvoice($invoice);
+        $invoicePDF = new InvoicePDF($invoiceId, $orderId);
+        $invoicePDF->generate();
+        $invoicePDF->saveOutput($invoiceNumber);
 
         JSONResponseHandler::sendResponse([
             "status" => "success",

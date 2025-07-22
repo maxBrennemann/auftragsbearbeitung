@@ -41,7 +41,11 @@ if ($target == "view") {
 	<div class="defCont">
 		<div>
 			<h3 class="font-bold">Auftrag <span><?= $id ?></span></h3>
-			<p title="Diese Nummer ist vorläufig reserviert und kann sich noch ändern.">Nächste Rechnungsnummer: <b><?= $nextInvoiceNumber ?></b></p>
+			<?php if ($invoiceNumber == 0) : ?>
+				<p title="Diese Nummer ist vorläufig reserviert und kann sich noch ändern.">Nächste Rechnungsnummer: <b><?= $nextInvoiceNumber ?></b></p>
+			<?php else: ?>
+				<p>Rechnungsnummer: <b><?= $invoiceNumber ?></b></p>
+			<?php endif; ?>
 		</div>
 
 		<p class="mt-2">Firmenname</p>
@@ -133,7 +137,7 @@ if ($target == "view") {
 
 		<div class="mt-3">
 			<?php if ($auftrag != null && $auftrag->getAuftragspostenData() != null): ?>
-				<button data-binding="true" data-fun="completeInvoice" class="btn-primary">Rechnung <?= $invoiceNumber != 0 ? "neu generieren" : "abschließen" ?></button>
+				<button data-binding="true" data-fun="completeInvoice" class="btn-primary">Rechnung <?= $invoiceNumber == 0 ? "abschließen" : "neu generieren" ?></button>
 				<button class="btn-primary" data-binding="true" data-fun="changeItemsOrder">Reihenfolge</button>
 			<?php else: ?>
 				<button disabled class="btn-primary">Rechnung abschließen</button>

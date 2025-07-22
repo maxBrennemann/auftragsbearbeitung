@@ -11,7 +11,7 @@
         <p>Auftrag <?= $auftrag->getAuftragsnummer() ?> wurde abgeschlossen. Rechnungsnummer: <span id="rechnungsnummer"><?= $auftrag->getInvoiceNumber() ?></span></p>
         <button class="btn-primary mt-2" data-fun="showAuftrag" data-binding="true">Auftrag anzeigen</button>
         <?php
-        $invoiceLink = "Rechnung_" . $auftrag->getInvoiceId() . ".pdf";
+        $invoiceLink = "Rechnung_" . $auftrag->getInvoiceNumber() . ".pdf";
         $invoiceLink = \Classes\Link::getResourcesShortLink($invoiceLink, "pdf");
         ?>
         <a class="link-primary" href="<?= $invoiceLink ?>" target="_blank">Zur Rechnungs-PDF</a>

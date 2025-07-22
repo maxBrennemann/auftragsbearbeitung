@@ -277,37 +277,33 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
     {
     }
 
-    /*
-     * returns all invoice columns from invoice_posten table
-     */
     public function getInvoicePostenTable()
     {
-        $column_names = array(
+        $column_names = [
             0 => array("COLUMN_NAME" => "Menge"),
             1 => array("COLUMN_NAME" => "MEH"),
             2 => array("COLUMN_NAME" => "Bezeichnung"),
             3 => array("COLUMN_NAME" => "E-Preis"),
             4 => array("COLUMN_NAME" => "G-Preis"),
-        );
+        ];
 
-        $data = array();
+        $data = [];
 
-        /* only collect the items where isInvoice is true */
         for ($i = 0; $i < sizeof($this->Auftragsposten); $i++) {
-            if ($this->Auftragsposten[$i]->isInvoice() == true) {
-                $p = $this->Auftragsposten[$i];
-                $subArr = [
-                    "Menge" => $p->getQuantity(),
-                    "MEH" => $p->getEinheit(),
-                    "Bezeichnung" => $p->getDescription(),
-                    "E-Preis" => $p->bekommeEinzelPreis_formatted(),
-                    "G-Preis" => $p->bekommePreis_formatted()
-                ];
-                array_push($data, $subArr);
+            if (!$this->Auftragsposten[$i]->isInvoice()) {
+                continue;
             }
+
+            $p = $this->Auftragsposten[$i];
+            $data[] = [
+                "Menge" => $p->getQuantity(),
+                "MEH" => $p->getEinheit(),
+                "Bezeichnung" => $p->getDescription(),
+                "E-Preis" => $p->bekommeEinzelPreis_formatted(),
+                "G-Preis" => $p->bekommePreis_formatted()
+            ];
         }
 
-        /* addes edit and delete to table */
         $t = new Table();
         $t->createByData($data, $column_names);
 

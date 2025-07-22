@@ -58,13 +58,7 @@ class Table extends Model
             JSONResponseHandler::throwError(401, "Insufficient permissions");
         }
 
-        $hooks = $tableConfig["hooks"] ?? [];
-        $model = new Model();
-        $model->hooks = $hooks;
-        $model->tableName = $table;
-        $model->hidden = $tableConfig["hidden"] ?? [];
-        $model->columns = $tableConfig["columns"] ?? [];
-        $model->fillable = [];
+        $model = new Model($table);
 
         $joins = $tableConfig["joins"] ?? [];
         $conditions = self::getConditions($joins);
@@ -108,14 +102,7 @@ class Table extends Model
             JSONResponseHandler::throwError(401, "Insufficient permissions");
         }
 
-        $hooks = $tableConfig["hooks"] ?? [];
-        $model = new Model();
-        $model->tableName = $table;
-        $model->hooks = $hooks;
-        $model->primaryKey = $tableConfig["primaryKey"] ?? "id";
-        $model->hidden = $tableConfig["hidden"] ?? [];
-        $model->columns = $tableConfig["columns"] ?? [];
-        $model->fillable = [];
+        $model = new Model($table);
 
         $conditions = self::getConditions();
         $lastInsertId = $model->add($conditions);
@@ -158,10 +145,7 @@ class Table extends Model
             JSONResponseHandler::throwError(401, "Insufficient permissions");
         }
 
-        $model = new Model();
-        $model->hooks = $tableConfig["hooks"];
-        $model->tableName = $table;
-        $model->fillable = [];
+        $model = new Model($table);
 
         $conditions = self::getConditions();
         $results = $model->delete($conditions);

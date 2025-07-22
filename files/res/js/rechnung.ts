@@ -130,7 +130,6 @@ functionNames.click_completeInvoice = () => {
             return;
         }
         notification("", "success");
-        getPDF();
         window.history.go(-1);
     });
 }
