@@ -20,14 +20,14 @@ class Model
 
     protected static function getTableConfig()
     {
-        require_once "config/table-config.php";
+        require_once "helpers/table-config.php";
         $data = getTableConfig();
         return $data;
     }
 
     public static function init(string $tableName): Model
     {
-        require_once "config/table-config.php";
+        require_once "helpers/table-config.php";
         $config = getTableConfig();
         $tableConfig = $config[$tableName] ?? null;
 
