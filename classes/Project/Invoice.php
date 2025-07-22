@@ -3,6 +3,7 @@
 namespace Classes\Project;
 
 use Classes\Controller\TemplateController;
+use Classes\Models\Invoice as InvoiceModel;
 use Classes\Pdf\TransactionPdf\InvoicePDF;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
@@ -11,6 +12,7 @@ use MaxBrennemann\PhpUtilities\Tools;
 class Invoice
 {
     private Auftrag $auftrag;
+    private InvoiceModel $invoiceModel;
     private int $addressId = 0;
     private int $contactId = 0;
 
@@ -25,6 +27,7 @@ class Invoice
     {
         $this->auftrag = new Auftrag($orderId);
         $this->invoiceId = $invoiceId;
+        //$this->invoiceModel = InvoiceModel::find($invoiceId);
 
         $query = "SELECT * FROM invoice WHERE id = :invoiceId";
         $data = DBAccess::selectQuery($query, [

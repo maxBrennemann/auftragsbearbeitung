@@ -182,8 +182,7 @@ class NotificationManager
 
     private static function getAllUsers(): array
     {
-        $users = new UserModel();
-        return $users->all();
+        return UserModel::all();
     }
 
     public static function setNotificationsRead()

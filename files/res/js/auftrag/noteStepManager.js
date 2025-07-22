@@ -111,7 +111,7 @@ function updateNote(e) {
     const id = e.target.dataset.id;
     const type = e.target.dataset.type;
 
-    ajax.put(`/api/v1/notes/${globalData.auftragsId}`, {
+    ajax.put(`/api/v1/notes/${notesConfig.orderId}`, {
         id: id,
         type: type,
         data: data
@@ -156,7 +156,7 @@ fnNames.click_toggleAddStep = () => {
 }
 
 async function getNotes() {
-    return ajax.get(`/api/v1/notes/${globalData.auftragsId}`);
+    return ajax.get(`/api/v1/notes/${notesConfig.orderId}`);
 }
 
 /**
@@ -181,7 +181,7 @@ function sendNote() {
         return null;
     }
 
-    ajax.post(`/api/v1/notes/${globalData.auftragsId}`, {
+    ajax.post(`/api/v1/notes/${notesConfig.orderId}`, {
         "title": title,
         "note": content,
         "date": date,

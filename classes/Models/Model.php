@@ -2,75 +2,87 @@
 
 namespace Classes\Models;
 
+use Classes\Models\Traits\HasHooks;
 use MaxBrennemann\PhpUtilities\DBAccess;
 
 class Model
 {
+    use HasHooks;
+
+    protected string $tableName;
+    protected string $primaryKey = "id";
     public array $fillable = [];
-    protected string $tableName = "";
-    protected string $primary = "id";
-    protected array $hooks = [];
     protected array $hidden = [];
     protected array $columns = [];
 
-    public function __construct(array $hooks)
+    public function __construct()
     {
-        $this->hooks = $hooks;
+        $this->loadTableConfig();
     }
 
-    protected static function getTableConfig()
+    protected function loadTableConfig(): void
+    {
+        $config = self::getTableConfig()[$this->tableName] ?? [];
+
+        $this->primaryKey = $config["primaryKey"] ?? $this->primaryKey;
+        $this->hooks = $config["hooks"] ?? [];
+        $this->fillable = $config["fillable"] ?? $this->fillable;
+        $this->columns = $config["columns"] ?? $this->columns;
+        $this->hidden = $config["hidden"] ?? $this->hidden;
+    }
+
+    protected static function getTableConfig(): array
     {
         require_once "helpers/table-config.php";
-        $data = getTableConfig();
-        return $data;
+        return getTableConfig();
     }
 
-    public static function init(string $tableName): Model
+    public static function find(int|string $id): ?array
     {
-        require_once "helpers/table-config.php";
-        $config = getTableConfig();
-        $tableConfig = $config[$tableName] ?? null;
-
-        $hooks = $tableConfig["hooks"] ?? [];
-        $model = new Model($hooks);
-        $model->tableName = $tableName;
-        $model->hidden = $tableConfig["hidden"] ?? [];
-        $model->columns = $tableConfig["columns"] ?? [];
-        $model->fillable = [];
-
-        return $model;
+        $instance = new static();
+        $query = "SELECT * FROM {$instance->tableName} WHERE {$instance->primaryKey} = :id";
+        $results = DBAccess::selectQuery($query, ["id" => $id]);
+        return $results[0] ?? null;
     }
 
-    protected string $conditions = "";
+    public static function all(): array
+    {
+        $instance = new static();
+        return DBAccess::selectAll($instance->tableName);
+    }
 
     public function read(array $conditions = []): array
     {
         $this->triggerHook("beforeRead", [
             "conditions" => &$conditions,
         ]);
-        $query = "SELECT * FROM {$this->tableName}";
+
+        $params = [];
+        $query = "SELECT ";
 
         if (!empty($this->hidden)) {
             $columns = array_filter(
                 $this->columns,
                 fn ($el) => !in_array($el, $this->hidden ?? [])
             );
-            $query = "SELECT " . implode(", ", $columns) . " FROM {$this->tableName}";
+            $query .= implode(", ", $columns);
+        } else {
+            $query .= "*";
         }
 
-        if (!empty($conditions)) {
-            $whereClauses = [];
-            $params = [];
+        $query .= " FROM {$this->tableName}";
 
+        if (!empty($conditions)) {
+            $where = [];
             foreach ($conditions as $key => $value) {
-                $whereClauses[] = "{$key} = :{$key}";
+                $where[] = "{$key} = :{$key}";
                 $params[$key] = $value;
             }
 
-            $query .= " WHERE " . implode(" AND ", $whereClauses);
+            $query .= " WHERE " . implode(" AND ", $where);
         }
 
-        $data = DBAccess::selectQuery($query, $params ?? []);
+        $data = DBAccess::selectQuery($query, $params);
         $this->triggerHook("afterRead", [
             "conditions" => $conditions,
             "results" => &$data,
@@ -163,7 +175,7 @@ class Model
         $keys = [];
         $columns = [];
         foreach ($conditions as $key => $value) {
-            if ($key == $this->primary) {
+            if ($key == $this->primaryKey) {
                 continue;
             }
 
@@ -217,7 +229,7 @@ class Model
         $fields = array_intersect_key($data, array_flip($this->fillable));
         $assignments = array_map(fn ($field) => "$field = :$field", array_keys($fields));
 
-        $query = "UPDATE {$this->tableName} SET " . implode(", ", $assignments) . " WHERE {$this->primary} = :id;";
+        $query = "UPDATE {$this->tableName} SET " . implode(", ", $assignments) . " WHERE {$this->primaryKey} = :id;";
         $fields["id"] = $id;
 
         $result = DBAccess::updateQuery($query, $fields);
@@ -225,26 +237,5 @@ class Model
         $this->triggerHook("afterUpdate", $data);
 
         return $result;
-    }
-
-    public function find($id): ?array
-    {
-        $query = "SELECT * FROM {$this->tableName} WHERE {$this->primary} = :id";
-        return DBAccess::selectQuery($query, [
-            "id" => $id,
-        ]);
-    }
-
-    public function all()
-    {
-        return DBAccess::selectAll($this->tableName);
-    }
-
-    protected function triggerHook(string $hookName, array $data)
-    {
-        if (isset($this->hooks[$hookName]) && is_callable($this->hooks[$hookName])) {
-            $callback = $this->hooks[$hookName];
-            call_user_func($callback, $data);
-        }
     }
 }

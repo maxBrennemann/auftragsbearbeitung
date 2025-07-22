@@ -18,7 +18,7 @@ import { initFileUploader } from "./classes/upload.js";
 import { createPopup } from "./global.js";
 
 /* global variables */
-window.globalData = {
+const orderConfig = {
     aufschlag: 0,
     auftragsId: parseInt(new URL(window.location.href).searchParams.get("id")),
     times: [],
@@ -28,7 +28,7 @@ window.globalData = {
 const fnNames = {};
 
 export const getOrderId = () => {
-    return parseInt(globalData.auftragsId);
+    return parseInt(orderConfig.auftragsId);
 }
 
 export const getCustomerId = () => {
@@ -36,7 +36,7 @@ export const getCustomerId = () => {
 }
 
 const initCode = async () => {
-    if (isNaN(globalData.auftragsId) || globalData.auftragsId <= 0) {
+    if (isNaN(orderConfig.auftragsId) || orderConfig.auftragsId <= 0) {
         return;
     }
 
@@ -51,17 +51,17 @@ const initCode = async () => {
 
     initFileUploader({
         "order": {
-            "location": `/api/v1/order/${globalData.auftragsId}/add-files`,
+            "location": `/api/v1/order/${orderConfig.auftragsId}/add-files`,
         },
     });
     initOrderManager();
-    initNotes(globalData.auftragsId);
-    initVehicles(getCustomerId(), globalData.auftragsId);
-    initColors(globalData.auftragsId);
+    initNotes(orderConfig.auftragsId);
+    initVehicles(getCustomerId(), orderConfig.auftragsId);
+    initColors(orderConfig.auftragsId);
 
-    globalData.table = await getItemsTable("auftragsPostenTable", globalData.auftragsId, "order");
-    globalData.table.addEventListener("rowInsert", reloadPostenListe);
-    initInvoiceItems();
+    orderConfig.table = await getItemsTable("auftragsPostenTable", orderConfig.auftragsId, "order");
+    orderConfig.table.addEventListener("rowInsert", reloadPostenListe);
+    initInvoiceItems(orderConfig.auftragsId);
 }
 
 function addSearchEventListeners() {
@@ -91,7 +91,7 @@ function performProductSearch() {
 const changeContact = (e) => {
     const value = e.currentTarget.value;
 
-    ajax.post(`/api/v1/order/${globalData.auftragsId}/contact-person`, {
+    ajax.post(`/api/v1/order/${orderConfig.auftragsId}/contact-person`, {
         "idContact": value,
     }).then(r => {
         if (r.status == "success") {
@@ -145,7 +145,7 @@ function showDeleteMessage(row, header, key, type) {
      * row => row for the frontend to be deleted 
      */
     function delNode(type, key, row) {
-        var del = new AjaxCall(`getReason=delete&type=${type}&key=${key}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
+        var del = new AjaxCall(`getReason=delete&type=${type}&key=${key}&auftrag=${orderConfig.auftragsId}`, "POST", window.location.href);
         del.makeAjaxCall(function (response) {
             console.log(response);
         });
@@ -204,7 +204,7 @@ window.deleteRow = function (key, type = "schritte", node) {
 }
 
 window.updateIsDone = function (key, event) {
-    var update = new AjaxCall(`getReason=update&key=${key}&auftrag=${globalData.auftragsId}`, "POST", window.location.href);
+    var update = new AjaxCall(`getReason=update&key=${key}&auftrag=${orderConfig.auftragsId}`, "POST", window.location.href);
     update.makeAjaxCall(function (response, args) {
         console.log(response);
         /* removes the row */
@@ -226,9 +226,9 @@ fnNames.click_toggleInvoiceItems = e => {
     ajax.put(`/api/v1/settings/filter-order-posten`, {
         "value": value,
     }).then(async () => {
-        globalData.table.parentNode.removeChild(globalData.table);
-        globalData.table = await getItemsTable("auftragsPostenTable", globalData.auftragsId, "order");
-        globalData.table.addEventListener("rowInsert", reloadPostenListe);
+        orderConfig.table.parentNode.removeChild(orderConfig.table);
+        orderConfig.table = await getItemsTable("auftragsPostenTable", orderConfig.auftragsId, "order");
+        orderConfig.table.addEventListener("rowInsert", reloadPostenListe);
     });
 }
 
@@ -242,7 +242,7 @@ fnNames.click_showMoreOrderHistory = e => {
 }
 
 const reloadPostenListe = async () => {
-    const response = await ajax.get(`/api/v1/order-items/${globalData.auftragsId}/invoice`);
+    const response = await ajax.get(`/api/v1/order-items/${orderConfig.auftragsId}/invoice`);
     document.getElementById("invoicePostenTable").innerHTML = response["invoicePostenTable"];
 }
 

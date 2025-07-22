@@ -178,8 +178,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 
     public static function getAllOrderTypes()
     {
-        $auftragstyp = new Auftragstyp();
-        return $auftragstyp->all();
+        return Auftragstyp::all();
     }
 
     public function getAuftragsbezeichnung()
