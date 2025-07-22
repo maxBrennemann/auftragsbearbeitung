@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 export class DeviceDetector {
     static isMobile() {
         var check = false;

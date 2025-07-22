@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js";
 import { notification } from "js-classes/notifications.js";
@@ -222,11 +224,6 @@ function removeNote(event) {
             noteContainer.parentNode.removeChild(noteContainer);
         }
     });
-}
-
-/* function for node button to remove the div */
-window.notesClose = function (div) {
-    div.parentNode.removeChild(div);
 }
 
 function addNewNote() {

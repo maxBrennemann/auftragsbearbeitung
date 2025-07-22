@@ -28,9 +28,9 @@ class SessionController
                 ResourceManager::setPage("login");
                 ResourceManager::initPage();
             } elseif ($type == "resource") {
-                JSONResponseHandler::sendErrorResponse(401, "unauthorized, pleas log in");
+                JSONResponseHandler::sendErrorResponse(401, "unauthorized, please log in");
             } else {
-                JSONResponseHandler::sendErrorResponse(401, "unauthorized, pleas log in");
+                JSONResponseHandler::sendErrorResponse(401, "unauthorized, please log in");
             }
 
             exit;

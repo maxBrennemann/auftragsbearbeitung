@@ -57,7 +57,7 @@ const initCode = async () => {
     initOrderManager();
     initNotes(globalData.auftragsId);
     initVehicles(getCustomerId(), globalData.auftragsId);
-    initColors();
+    initColors(globalData.auftragsId);
 
     globalData.table = await getItemsTable("auftragsPostenTable", globalData.auftragsId, "order");
     globalData.table.addEventListener("rowInsert", reloadPostenListe);

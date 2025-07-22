@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 export var currentTableSorter;
 
 export function setTableSorter(sorter) {

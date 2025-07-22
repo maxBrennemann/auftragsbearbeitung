@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 var globalTimerInterval;
 export const timeGlobalListener = () => {
 	const displayTime = document.getElementById("timeGlobal");
