@@ -4,7 +4,6 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "strict": true,
-    "jsx": "react-jsx", // nur wenn du React nutzt
     "allowJs": true,
     "checkJs": true,
     "outDir": "dist",
@@ -16,6 +15,5 @@
   ],
   "exclude": [
     "node_modules",
-    "dist"
   ]
 }

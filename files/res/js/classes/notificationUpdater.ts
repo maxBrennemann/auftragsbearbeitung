@@ -19,7 +19,8 @@ const generateId = (length = 8) => {
     return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
 }
 
-const saveNotification = (message, type = "info") => {
+const saveNotification = (message: string, type = "info") => {
+    const timeout = 0;
     const id = generateId();
     const key = `_notification_${id}`;
     const notification = { message, type, timeout };
@@ -32,7 +33,7 @@ const readNotifications = () => {
 
     for (const key of keys) {
         try {
-            const data = JSON.parse(localStorage.getItem(key));
+            const data = JSON.parse(localStorage.getItem(key) || '""');
             notifications.push(data);
         } catch (e) {
             console.warn(`Failed to pare notification from key: ${key}`);

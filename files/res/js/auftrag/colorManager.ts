@@ -1,36 +1,40 @@
+// @ts-ignore
 import { Colorpicker } from "colorpicker/colorpicker.js";
+// @ts-ignore
 import { ajax } from "js-classes/ajax.js";
+// @ts-ignore
 import { addBindings } from "js-classes/bindings.js";
 
 import { createPopup } from "../global.js";
 
-var cp = null;
-const addToOrderColors = [];
-const fnNames = {};
+var id: number;
+var cp: Colorpicker;
+const addToOrderColors: string[] = [];
+const fnNames: { [key: string]: (...args: any[]) => void } = {};
 
 fnNames.click_addColor = () => {
-    const template = document.getElementById("templateFarbe");
+    const template = document.getElementById("templateFarbe") as HTMLTemplateElement;
 	const div = document.createElement("div");
     div.id = "selectColor";
 	div.appendChild(template.content.cloneNode(true));
 
     cp = new Colorpicker(div.querySelector("#cpContainer"));
-    const c = div.querySelector("canvas");
+    const c = div.querySelector("canvas") as HTMLElement;
     c.style.margin = "auto";
 
     c.addEventListener("mouseup", colorPanelMouseUp);
 
     createPopup(div);
 
-    const colorInputHex = document.querySelector("input.colorInput.jscolor");
+    const colorInputHex = document.querySelector("input.colorInput.jscolor") as HTMLInputElement;
     colorInputHex.addEventListener("change", checkHexCode);
 
-    const sendColorBtn = div.querySelector('[data-fun="sendColor"]');
+    const sendColorBtn = div.querySelector('[data-fun="sendColor"]') as HTMLButtonElement;
     sendColorBtn.addEventListener("click", sendColor, false);
 }
 
 const colorPanelMouseUp = () => {
-    const element = document.querySelector("input.colorInput.jscolor");
+    const element = document.querySelector("input.colorInput.jscolor") as HTMLInputElement;
 
     if (!element) {
         return;
@@ -49,8 +53,8 @@ const colorPanelMouseUp = () => {
 
 fnNames.click_removeColor = e => {
     var colorId = e.currentTarget.dataset.colorId;
-    ajax.delete(`/api/v1/order/${globalData.auftragsId}/colors/${colorId}`).then(r => {
-        const showColors = document.getElementById("showColors");
+    ajax.delete(`/api/v1/order/${id}/colors/${colorId}`).then((r: any) => {
+        const showColors = document.getElementById("showColors") as HTMLElement;
         showColors.innerHTML = r.colors;
     });
 }
@@ -60,13 +64,13 @@ fnNames.click_removeColor = e => {
  * beneath;
  */
 fnNames.click_toggleCS = async () => {
-    const template = document.getElementById("templateExistingColor");
+    const template = document.getElementById("templateExistingColor") as HTMLTemplateElement;
 	const div = document.createElement("div");
 	div.appendChild(template.content.cloneNode(true));
     const settingsContainer = createPopup(div);
 
     const existingColorsTemplate = await ajax.get(`/api/v1/template/colors/render`);
-    const container = div.querySelector("div");
+    const container = div.querySelector("div") as HTMLDivElement;
     container.innerHTML = existingColorsTemplate.template;
 
     const sendColorsBtn = document.createElement("button");
@@ -78,11 +82,15 @@ fnNames.click_toggleCS = async () => {
     const elements = div.getElementsByClassName("singleColorContainer");
     Array.from(elements).forEach(element => {
         element.addEventListener("click", (e) => {
-            e.currentTarget.classList.toggle("bg-white");
-            e.currentTarget.classList.toggle("italic");
-            e.currentTarget.classList.toggle("rounded-md");
+            (e.currentTarget as HTMLElement).classList.toggle("bg-white");
+            (e.currentTarget as HTMLElement).classList.toggle("italic");
+            (e.currentTarget as HTMLElement).classList.toggle("rounded-md");
 
-            let id = e.currentTarget.dataset.colorId;
+            let id = (e.currentTarget as HTMLElement).dataset.colorId;
+
+            if (id === undefined) {
+                return;
+            }
 
             if (addToOrderColors.includes(id)) {
                 let index = addToOrderColors.indexOf(id);
@@ -98,15 +106,15 @@ fnNames.click_toggleCS = async () => {
  * adds all selected colors to the order;
  */
 function addSelectedColors() {
-    ajax.post(`/api/v1/order/${globalData.auftragsId}/colors/multiple`, {
+    ajax.post(`/api/v1/order/${id}/colors/multiple`, {
         "colors": JSON.stringify(addToOrderColors),
-    }).then(r => {
-        const showColors = document.getElementById("showColors");
+    }).then((r: any) => {
+        const showColors = document.getElementById("showColors") as HTMLElement;
         showColors.innerHTML = r.colors;
 
         const elements = document.getElementsByClassName("colorInput");
         for (let i = 0; i < elements.length; i++) {
-            elements[i].value = "";
+            (elements[i] as HTMLInputElement).value = "";
         }
     });
 }
@@ -115,12 +123,12 @@ function addSelectedColors() {
  * sends the newly created color to the backend;
  * then resets the form and shows the newly added color
  */
-export function sendColor() {
-    var elements = document.getElementsByClassName("colorInput");
+function sendColor() {
+    const elements = document.getElementsByClassName("colorInput");
     var data = [], currVal;
 
     for (let i = 0; i < elements.length; i++) {
-        currVal = elements[i].value;
+        currVal = (elements[i] as HTMLInputElement).value;
         if (currVal == null || currVal == "") {
             alert("Felder dürfen nicht leer sein!");
             return null;
@@ -128,23 +136,23 @@ export function sendColor() {
         data.push(currVal);
     }
 
-    ajax.post(`/api/v1/order/${globalData.auftragsId}/colors/add`, {
+    ajax.post(`/api/v1/order/${id}/colors/add`, {
         "colorName": data[0],
         "hexValue": data[3],
         "shortName": data[1],
         "producer": data[2],
-    }).then(r => {
-        const showColors = document.getElementById("showColors");
+    }).then((r: any) => {
+        const showColors = document.getElementById("showColors") as HTMLElement;
         showColors.innerHTML = r.colors;
 
         const elements = document.getElementsByClassName("colorInput");
         for (let i = 0; i < elements.length; i++) {
-            elements[i].value = "";
+            (elements[i] as HTMLInputElement).value = "";
         }
     });
 }
 
-function checkHexCode(e) {
+function checkHexCode(e: any) {
     const el = e.currentTarget;
 
     if (isHexValid(el.value)) {
@@ -157,13 +165,14 @@ function checkHexCode(e) {
     el.classList.add("outline-red-500");
 }
 
-export const isHexValid = (hex) => {
+const isHexValid = (hex: string) => {
     return /^[0-9a-fA-F]{6}$/.test(hex);
 }
 
 fnNames.click_addSelectedColors = addSelectedColors;
 fnNames.write_checkHexCode = checkHexCode;
 
-export const initColors = () => {
+export const initColors = (orderId: number) => {
+    id = orderId;
     addBindings(fnNames);
 }

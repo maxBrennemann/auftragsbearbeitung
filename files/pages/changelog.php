@@ -1,6 +1,6 @@
 <div class="changelog defCont pl-5">
     <nav id="nav" class="bg-gray-200 p-3 rounded-lg">
-        <p class="font-bold text-md">Versionen</p>
+        <p class="font-bold text-md text-lg">Versionen</p>
         <ul>
             <li><a class="link-primary" href="#1.2.2">1.2.2</a></li>    
             <li><a class="link-primary" href="#1.2.1">1.2.1</a></li>
@@ -19,12 +19,13 @@
             <li><a class="link-primary" href="#1.1.7">1.1.7</a></li>
         </ul>
     </nav>
-    <h3 id="1.2.2" class="font-bold my-5">1.2.2</h3>
+    <h3 id="1.2.2" class="font-bold my-5 text-lg">1.2.2</h3>
     <ul class="list-disc list-inside">
         <li>Interne Dateistruktur angepasst
             <ul class="ml-5 list-disc list-inside">
                 <li>Vite Build wird nun statt Webpack verwendet</li>
                 <li>Minify Status entfernt, in Production wird immer alles gebundelt</li>
+                <li>Mehrere Konfigurationsdateien in <code class="bg-white rounded-sm px-0.5">.config</code> abgelegt</li>
             </ul>
         </li>
         <li>Lokale Entwicklungsumgebung angepasst
@@ -33,17 +34,18 @@
                 <li>Vite Hot Reloading</li>
                 <li>Tailwind Hot Reloading</li>
                 <li>Makefile hinzugefügt</li>
+                <li>TypeScript in Entwicklung eingebunden</li>
             </ul>
         </li>
         <li>Diverse Bugfixes
             <ul class="ml-5 list-disc list-inside">
-                <li>Circle Dependencies teilweise entfernt, da es Probleme mit dem Hotreloading gab</li>
+                <li>Circle Dependencies entfernt, da es Probleme mit dem Hotreloading gab</li>
                 <li>Termin kann wieder nachträglich gesetzt werden</li>
             </ul>
         </li>
         <li>Benachrichtigungen grundlegend überarbeitet und alte Alternativen ersetzt</li>
     </ul>
-    <h3 id="1.2.1" class="font-bold my-5">1.2.1</h3>
+    <h3 id="1.2.1" class="font-bold my-5 text-lg">1.2.1</h3>
     <ul class="list-disc list-inside">
         <li>Rechnungsstellung Fehlerbehebungen</li>
         <li>Bilder können jetzt immer in einer Vorschau angeschaut werden</li>
@@ -60,7 +62,7 @@
             </ul>
         </li>
     </ul>
-    <h3 id="1.2.0" class="font-bold my-5">1.2.0</h3>
+    <h3 id="1.2.0" class="font-bold my-5 text-lg">1.2.0</h3>
     <ul class="list-disc list-inside">
         <li>Rechnungsstellung überarbeitet</li>
         <li>Neuer Tabellengenerator</li>
@@ -76,7 +78,7 @@
         <li>Namespaces im Backend eingeführt</li>
         <li>Neuer TemplateController</li>
     </ul>
-    <h3 id="1.1.18" class="font-bold my-5">1.1.18</h3>
+    <h3 id="1.1.18" class="font-bold my-5 text-lg">1.1.18</h3>
     <ul class="list-disc list-inside">
         <li>Auftragstypen können ergänzt werden</li>
         <li>Neue Nutzerübersicht mit Verlauf</li>
@@ -92,7 +94,7 @@
         <li>Bezahldatum und Bezahlweise für Rechnungen können hinterlegt werden</li>
         <li>Diverse Fehlerbehebungen</li>
     </ul>
-    <h3 id="1.1.17" class="font-bold my-5">1.1.17</h3>
+    <h3 id="1.1.17" class="font-bold my-5 text-lg">1.1.17</h3>
     <ul class="list-disc list-inside">
         <li>Produktexport für Prestashop wurde integriert
             <ul class="ml-5 list-disc list-inside">
@@ -109,7 +111,7 @@
         <li>CSS und JS Minifier hinzugefügt</li>
         <li>Diverse Fehlerbehebungen</li>
     </ul>
-    <h3 id="1.1.16" class="font-bold my-5">1.1.16</h3>
+    <h3 id="1.1.16" class="font-bold my-5 text-lg">1.1.16</h3>
     <ul class="list-disc list-inside">
         <li>Fehlerbehebungen</li>
         <li>Einkaufspreis wird in Gesamtpreis und Einzelpreis angezeigt</li>
@@ -124,7 +126,7 @@
         <li>Drag and Drop für Dateiupload hinzugefügt</li>
         <li>Autologin eingeführt</li>
     </ul>
-    <h3 id="1.1.15" class="font-bold my-5">1.1.15</h3>
+    <h3 id="1.1.15" class="font-bold my-5 text-lg">1.1.15</h3>
     <ul class="list-disc list-inside">
         <li>Erweiterte Zeiterfassung nun um Datum ergänzt. Felder werden bereinigt, wenn die Zeiten an den Server geschickt werden.</li>
         <li>Wenn Posten oder Bearbeitungsschritte gelöscht werden, wird das im Auftragsverlauf vermerkt</li>
@@ -141,7 +143,7 @@
         <li>Attributeerstellung wurde vereinfacht</li>
         <li>Leistung und Produkte werden zusammengeführt - noch in Arbeit</li>
     </ul>
-    <h3 id="1.1.14" class="font-bold my-5">1.1.14</h3>
+    <h3 id="1.1.14" class="font-bold my-5 text-lg">1.1.14</h3>
     <ul class="list-disc list-inside">
         <li>Diagramm "Umsatz pro Monat" wird nun aufgrund des Fertigstellungsdatums generiert</li>
         <li>Externe Javascript Dateien können nun via PHP eingebunden werden</li>
@@ -156,7 +158,7 @@
         <li>Mengeneinheiten können direkt ausgewählt werden</li>
         <li>Diverse Fehlerbehebungen in Bezug auf Rechnungstellung und Posten</li>
     </ul>
-    <h3 id="1.1.13" class="font-bold my-5">1.1.13</h3>
+    <h3 id="1.1.13" class="font-bold my-5 text-lg">1.1.13</h3>
     <ul class="list-disc list-inside">
         <li>Posten können nun in einem neuen Menü hinzugefügt werden</li>
         <li>Es können Posten mit Dateien verknüpft werden</li>
@@ -169,7 +171,7 @@
         <li>Überarbeitete Kundenadressen</li>
         <li>Ansprechpartner können nun gelöscht und bearbeitet werden</li>
     </ul>
-    <h3 id="1.1.12" class="font-bold my-5">1.1.12</h3>
+    <h3 id="1.1.12" class="font-bold my-5 text-lg">1.1.12</h3>
     <ul class="list-disc list-inside">
         <li>Frontoffice wurde hinzugefügt</li>
         <li>Website nun mit Shopfunktion</li>
@@ -177,7 +179,7 @@
         <li>Verbesserungen für Produkte</li>
         <li>Cache wurde implementiert, aktuell deaktiviert</li>
     </ul>
-    <h3 id="1.1.11" class="font-bold my-5">1.1.11</h3>
+    <h3 id="1.1.11" class="font-bold my-5 text-lg">1.1.11</h3>
     <ul class="list-disc list-inside">
         <li>Verschiedene Fehlerbehebungen</li>
         <li>Leistungen wurde verbessert</li>
@@ -195,7 +197,7 @@
             </ul>
         </li>
     </ul>
-    <h3 id="1.1.10" class="font-bold my-5">1.1.10</h3>
+    <h3 id="1.1.10" class="font-bold my-5 text-lg">1.1.10</h3>
     <ul class="list-disc list-inside">
         <li>Aufträge können durchsucht werden</li>
         <li>Ansprechpartner wird nun beim Auftrag angezeigt und kann zukünftig geändert werden</li>
@@ -206,7 +208,7 @@
         <li>Auftragstyp muss nun festgelegt werden. Auftragstypen können in den Einstellungen angezeigt werden</li>
         <li>Infobuttons laden nun Text aus der Datenbank</li>
     </ul>
-    <h3 id="1.1.9" class="font-bold my-5">1.1.9</h3>
+    <h3 id="1.1.9" class="font-bold my-5 text-lg">1.1.9</h3>
     <ul class="list-disc list-inside">
         <li>Erste Überarbeitung des NotificationManagers - Benachrichtigungen werden nun auch wieder entfernt</li>
         <li>Auftragsbeschreibung kann nun ordentlich geändert werden</li>
@@ -215,14 +217,14 @@
         <li>Weiterleitung zu neuem Kunden nun richtig</li>
         <li>Fehlerbehebungen</li>
     </ul>
-    <h3 id="1.1.8" class="font-bold my-5">1.1.8</h3>
+    <h3 id="1.1.8" class="font-bold my-5 text-lg">1.1.8</h3>
     <ul class="list-disc list-inside">
         <li>Designfehler für Auftragskarten behoben</li>
         <li>Upload für mehrere Dateien funktioniert jetzt fehlerfrei - mit bebilderter Vorschau</li>
         <li>Farbeinstellungen wurden hinzugefügt</li>
         <li>Tabellenkopf wird bei Ansprechpartnern angezeigt - also Einfügen nun immer möglich</li>
     </ul>
-    <h3 id="1.1.7" class="font-bold my-5">1.1.7</h3>
+    <h3 id="1.1.7" class="font-bold my-5 text-lg">1.1.7</h3>
     <ul class="list-disc list-inside">
         <li>Fahrzeuge werden nun über ein eigenes Menü hinzugefügt</li>
         <li>Ansprechpartner können nun über den neuen Tabellengenerator hinzugefügt werden</li>

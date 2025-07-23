@@ -1,9 +1,12 @@
 import fs from "fs";
 import path from "path";
+import postcss from './.config/postcss.config.ts';
+import type { ServerOptions } from 'vite';
+import type { Plugin } from 'vite';
 
 import { defineConfig } from "vite";
 
-function jsToTsRedirectPlugin() {
+function jsToTsRedirectPlugin(): Plugin {
     return {
         name: 'js-to-ts-redirect',
         enforce: 'pre',
@@ -38,7 +41,7 @@ function getJsEntries(dir) {
 }
 
 const projectRoot = __dirname;
-const httpsConfig = {};
+const httpsConfig: ServerOptions['https'] = {};
 
 const keyPath = path.resolve(projectRoot, ".config/certs/localhost-key.pem");
 const certPath = path.resolve(projectRoot, ".config/certs/localhost.pem");
@@ -52,6 +55,10 @@ export default defineConfig({
     plugins: [jsToTsRedirectPlugin()],
 
     root: path.resolve(__dirname, "files/res/js"),
+
+    css: {
+        postcss
+    },
 
     server: {
         origin: "https://localhost:5173",

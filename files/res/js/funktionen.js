@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 if (document.readyState !== 'loading' ) {
     console.log( 'document is already ready, just execute code here' );
     startFunktionen();

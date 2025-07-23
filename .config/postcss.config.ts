@@ -1,10 +1,11 @@
 import autoprefixer from 'autoprefixer';
 import postcssUrl from 'postcss-url';
 import tailwindcss from 'tailwindcss';
+import tailwindConfig from './tailwind.config.ts';
 
 export default {
     plugins: [
-        tailwindcss(),
+        tailwindcss(tailwindConfig),
         autoprefixer(),
         postcssUrl({
             url: asset => {
@@ -12,7 +13,6 @@ export default {
                 const filename = asset.url.split('/').pop();
                 if (fontsToRewrite.includes(filename)) {
                     return `/css/fonts/${filename}`;
-                    //return asset.url.replace(filename, `${filename}`);
                 }
                 return asset.url;
             }

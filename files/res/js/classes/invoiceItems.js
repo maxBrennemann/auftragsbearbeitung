@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js";
 import { notification } from "js-classes/notifications.js";
@@ -5,6 +7,10 @@ import { notification } from "js-classes/notifications.js";
 import { getTemplate, setInpupts, clearInputs, createPopup } from "../global.js";
 
 import { addRow, renderTable } from "./table.js";
+
+const itemsConf = {
+    "orderId": 0,
+}
 
 const config = {
     "type": "order",
@@ -223,7 +229,7 @@ const addTime = () => {
         return;
     }
 
-    ajax.post(`/api/v1/order-items/${globalData.auftragsId}/times`, {
+    ajax.post(`/api/v1/order-items/${itemsConf.orderId}/times`, {
         "time": document.querySelector("#timeInput").value,
         "wage": wage,
         "description": document.querySelector("#timeDescription").value,
@@ -257,7 +263,7 @@ const addTime = () => {
 }
 
 const addService = () => {
-    ajax.post(`/api/v1/order-items/${globalData.auftragsId}/services`, {
+    ajax.post(`/api/v1/order-items/${itemsConf.orderId}/services`, {
         "lei": document.querySelector("#selectLeistung").value,
         "bes": document.querySelector("#bes").value,
         "ekp": document.querySelector("#ekp").value,
@@ -437,7 +443,8 @@ const updateTable = (data) => {
     addRow(data, config.table, config.tableOptions, config.tableHeader)
 }
 
-export const initInvoiceItems = () => {
+export const initInvoiceItems = (orderId = 0) => {
+    itemsConf.orderId = orderId;
     addBindings(functionNames);
     initItems();
 }

@@ -1,4 +1,4 @@
-function calculateGas(distance, pricePerLiter, consumption) {
+function calculateGas(distance: number, pricePerLiter: number, consumption: number) {
     return distance / 100 * consumption * pricePerLiter;
 }
 

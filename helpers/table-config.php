@@ -202,6 +202,25 @@ function getTableConfig(): array
                 ],
             ],
         ],
+        "invoice" => [
+            "columns" => [
+                "id",
+                "invoice_number",
+                "order_id",
+                "contact_id",
+                "address_id",
+                "status",
+                "creation_date",
+                "performance_date",
+                "payment_date",
+                "finalized_date",
+                "amount",
+                "payment_type",
+                "created_at",
+                "updated_at",
+            ],
+            "primaryKey" => "id",
+        ],
         "leistung" => [
             "columns" => [
                 "Nummer",

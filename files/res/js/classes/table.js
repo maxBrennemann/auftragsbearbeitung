@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import { ajax } from "js-classes/ajax.js";
 
 import { loadFromLocalStorage, saveToLocalStorage } from "../global.js";

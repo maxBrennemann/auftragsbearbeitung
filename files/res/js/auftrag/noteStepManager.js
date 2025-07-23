@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js";
 import { notification } from "js-classes/notifications.js";
@@ -109,7 +111,7 @@ function updateNote(e) {
     const id = e.target.dataset.id;
     const type = e.target.dataset.type;
 
-    ajax.put(`/api/v1/notes/${globalData.auftragsId}`, {
+    ajax.put(`/api/v1/notes/${notesConfig.orderId}`, {
         id: id,
         type: type,
         data: data
@@ -154,7 +156,7 @@ fnNames.click_toggleAddStep = () => {
 }
 
 async function getNotes() {
-    return ajax.get(`/api/v1/notes/${globalData.auftragsId}`);
+    return ajax.get(`/api/v1/notes/${notesConfig.orderId}`);
 }
 
 /**
@@ -179,7 +181,7 @@ function sendNote() {
         return null;
     }
 
-    ajax.post(`/api/v1/notes/${globalData.auftragsId}`, {
+    ajax.post(`/api/v1/notes/${notesConfig.orderId}`, {
         "title": title,
         "note": content,
         "date": date,
@@ -222,11 +224,6 @@ function removeNote(event) {
             noteContainer.parentNode.removeChild(noteContainer);
         }
     });
-}
-
-/* function for node button to remove the div */
-window.notesClose = function (div) {
-    div.parentNode.removeChild(div);
 }
 
 function addNewNote() {

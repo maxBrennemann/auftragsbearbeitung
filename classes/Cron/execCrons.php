@@ -1,5 +1,5 @@
 <?php
 
-require_once "settings.php";
+require_once "helpers/settings.php";
 
 \Classes\Cron\CronManager::run();

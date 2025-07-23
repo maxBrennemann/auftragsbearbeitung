@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import { addBindings } from "js-classes/bindings.js"
 
 import { clearInputs } from "./global.js";

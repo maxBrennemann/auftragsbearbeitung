@@ -1,9 +1,8 @@
 <?php
 
-use Classes\Models\Model;
+use Classes\Models\Leistung;
 
-$data = Model::init("leistung");
-$data = $data->read();
+$data = Leistung::all();
 ?>
 
 <h2 class="font-bold">Übersicht über die angebotenen Leistungen</h2>

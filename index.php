@@ -2,7 +2,7 @@
 
 $start = microtime(true);
 
-require_once "settings.php";
+require_once "helpers/settings.php";
 
 use Classes\Controller\SessionController;
 use Classes\Project\CacheManager;
