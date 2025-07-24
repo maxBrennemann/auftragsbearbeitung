@@ -136,7 +136,7 @@ class Zeit extends Posten
     /*
      * returns the price, discounts or other things are included
      */
-    public function bekommePreis()
+    public function bekommePreis(): float
     {
         if ($this->ohneBerechnung == true) {
             return 0;

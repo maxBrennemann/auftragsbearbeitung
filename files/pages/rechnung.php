@@ -14,12 +14,17 @@ $rechnungslink;
 $target = Tools::get("target");
 $id = Tools::get("id");
 
+$orderId = -1;
+$invoiceId = -1;
+$invoice = null;
+
 if ($target == "create") {
-    $auftrag = new Auftrag($id);
+	$orderId = $id;
+    $auftrag = new Auftrag($orderId);
     $invoiceContacts = Invoice::getContacts($auftrag->getKundennummer());
 
     $nextInvoiceNumber = InvoiceNumberTracker::peekNextInvoiceNumber();
-    $invoice = Invoice::getInvoice($id);
+    $invoice = Invoice::getInvoiceByOrderId($orderId);
     $invoiceId = $invoice->getId();
     $invoiceNumber = $invoice->getNumber();
 
@@ -27,20 +32,26 @@ if ($target == "create") {
     $selectedAddress = $invoice->getAddressId();
 
     $kunde = new Kunde($auftrag->getKundennummer());
+} else if ($target == "view") {
+    $invoice = Invoice::getInvoice($id);
+
+	if ($invoice == null) {
+		$target = "errorView";
+	} else {
+		$invoiceId = $invoice->getId();
+		$orderId = $invoice->getOrder()->getAuftragsnummer();
+	}
 }
 
-if ($target == "view") {
-    $invoice = Invoice::getInvoice($id);
-    $invoiceId = $invoice->getId();
-} ?>
+?>
 
 <input class="hidden" id="invoiceId" value="<?= $invoiceId ?>">
-<input class="hidden" id="orderId" value="<?= $id ?>">
+<input class="hidden" id="orderId" value="<?= $orderId ?>">
 
 <?php if ($target == "create"): ?>
 	<div class="defCont">
 		<div>
-			<h3 class="font-bold">Auftrag <span><?= $id ?></span></h3>
+			<h3 class="font-bold">Auftrag <span><?= $orderId ?></span></h3>
 			<?php if ($invoiceNumber == 0) : ?>
 				<p title="Diese Nummer ist vorläufig reserviert und kann sich noch ändern.">Nächste Rechnungsnummer: <b><?= $nextInvoiceNumber ?></b></p>
 			<?php else: ?>
@@ -150,14 +161,14 @@ if ($target == "view") {
 		</div>
 	</div>
 	<div class="mt-3">
-		<iframe src="/api/v1/invoice/<?= $invoiceId ?>/pdf?orderId=<?= $id ?>" id="invoicePDFPreview" class="w-full h-lvh"></iframe>
+		<iframe src="/api/v1/invoice/<?= $invoiceId ?>/pdf?orderId=<?= $orderId ?>" id="invoicePDFPreview" class="w-full h-lvh"></iframe>
 	</div>
 <?php elseif ($target == "view"): ?>
 	<p class="my-2 font-semibold">Rechnung <span id="rechnungsnummer"><?= $invoice->getNumber(); ?></span></p>
 	<button onclick="window.history.go(-1); return false;" class="btn-cancel">Zurück</button>
 	<button class="btn-primary" data-fun="completeInvoice" data-binding="true">PDF neu erstellen</button>
-	<iframe src="/api/v1/invoice/<?= $invoiceId ?>/pdf?orderId=<?= $id ?>" class="w-full h-lvh mt-2" id="invoicePDFPreview"></iframe>
+	<iframe src="/api/v1/invoice/<?= $invoiceId ?>/pdf?orderId=<?= $orderId ?>" class="w-full h-lvh mt-2" id="invoicePDFPreview"></iframe>
 <?php else: ?>
-	<p>Es ist ein unerwarteter Fehler aufgetreten.</p>
+	<p>Es ist ein unerwarteter Fehler aufgetreten oder die Rechnungsnummer existiert nicht.</p>
 	<button class="btn-primary" onclick="window.history.go(-1); return false;" type="submit">Zurück</button>
 <?php endif; ?>

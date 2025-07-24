@@ -26,8 +26,9 @@ class Produkt
         }
     }
 
-    public function bekommePreis()
+    public function bekommePreis(): float
     {
+        return 0;
     }
 
     public function getBezeichnung()

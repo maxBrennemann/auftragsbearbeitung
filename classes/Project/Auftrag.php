@@ -20,13 +20,12 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
     private $auftragstyp = null;
     private int $rechnungsnummer = 0;
 
-    private $isPayed = false;
-
     /* dates */
     public $datum;
     public $termin;
     public $fertigstellung;
 
+    private $isPaid = false;
     private $isArchiviert = false;
     private $isRechnung = false;
 
@@ -56,7 +55,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
             $this->termin = $data['Termin'];
             $this->fertigstellung = $data['Fertigstellung'];
 
-            $this->isPayed = $data['Bezahlt'] == 1 ? true : false;
+            $this->isPaid = $data['Bezahlt'] == 1 ? true : false;
 
             $data["archiviert"] = (int) $data["archiviert"];
             if ($data["archiviert"] == self::IS_ARCHIVED) {
@@ -106,15 +105,15 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         return $this->Auftragsnummer;
     }
 
-    public function getIsPayed()
+    public function isPaid(): bool
     {
-        return $this->isPayed;
+        return $this->isPaid();
     }
 
-    public function getPaymentDate()
+    public function getPaymentDate(): ?string
     {
-        if (!$this->getIsPayed()) {
-            return "";
+        if (!$this->isPaid()) {
+            return null;
         }
 
         $query = "SELECT DATE_FORMAT(payment_date, '%d.%m.%Y') AS payment_date FROM invoice WHERE order_id = :orderId";
@@ -123,23 +122,23 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         ]);
 
         if (empty($data)) {
-            return "";
+            return null;
         }
 
         return $data[0]["payment_date"];
     }
 
-    public function getPaymentType(): string
+    public function getPaymentType(): ?string
     {
-        if (!$this->getIsPayed()) {
-            return "";
+        if (!$this->isPaid()) {
+            return null;
         }
 
         $query = "SELECT payment_type FROM invoice WHERE order_id = :orderId";
         $data = DBAccess::selectQuery($query, ["orderId" => $this->Auftragsnummer]);
 
         if (empty($data)) {
-            return "";
+            return null;
         }
 
         return $data[0]["payment_type"];
@@ -202,7 +201,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
     /**
      * calculates the sum of all items in the order
      */
-    public function calcOrderSum()
+    public function calcOrderSum(): float
     {
         $price = 0;
         foreach ($this->Auftragsposten as $posten) {
@@ -213,7 +212,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         return $price;
     }
 
-    public function preisBerechnen()
+    public function preisBerechnen(): float
     {
         $price = 0;
         foreach ($this->Auftragsposten as $posten) {
@@ -409,13 +408,13 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 
     public function getInvoiceId(): int
     {
-        $invoice = Invoice::getInvoice($this->Auftragsnummer);
+        $invoice = Invoice::getInvoiceByOrderId($this->Auftragsnummer);
         return $invoice->getId();
     }
 
     public function getInvoiceNumber(): int
     {
-        $invoice = Invoice::getInvoice($this->Auftragsnummer);
+        $invoice = Invoice::getInvoiceByOrderId($this->Auftragsnummer);
         return $invoice->getNumber();
     }
 

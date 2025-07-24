@@ -249,8 +249,8 @@ const reloadPostenListe = async () => {
 fnNames.write_changeContact = changeContact;
 
 fnNames.click_setPayed = () => {
-    const date = document.getElementById('inputPayDate').value;
-    const paymentType = document.getElementById('paymentType').value;
+    const date = document.getElementById("inputPayDate").value;
+    const paymentType = document.getElementById("paymentType").value;
     const invoiceId = getVariable("invoiceId");
 
     ajax.post(`/invoice/${invoiceId}/paid`, {
