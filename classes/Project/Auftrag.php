@@ -20,21 +20,15 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
     private $auftragstyp = null;
     private int $rechnungsnummer = 0;
 
-    private $isPayed = false;
-
     /* dates */
     public $datum;
     public $termin;
     public $fertigstellung;
 
-    private $isArchiviert = false;
-    private $isRechnung = false;
+    private $isPaid = false;
+    private OrderState $status = OrderState::Default;
 
     private int $customerId = 0;
-
-    public const IS_ACTIVE = 0;
-    public const IS_ARCHIVED = 0;
-    public const IS_FINISHED = -1;
 
     public function __construct(int $orderId)
     {
@@ -56,12 +50,8 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
             $this->termin = $data['Termin'];
             $this->fertigstellung = $data['Fertigstellung'];
 
-            $this->isPayed = $data['Bezahlt'] == 1 ? true : false;
-
-            $data["archiviert"] = (int) $data["archiviert"];
-            if ($data["archiviert"] == self::IS_ARCHIVED) {
-                $this->isArchiviert = true;
-            }
+            $this->isPaid = $data['Bezahlt'] == 1 ? true : false;
+            $this->status = OrderState::tryFrom($data["status"]) ?? OrderState::Default;
 
             $data = DBAccess::selectQuery("SELECT * FROM schritte WHERE Auftragsnummer = {$orderId}");
             foreach ($data as $step) {
@@ -106,15 +96,15 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         return $this->Auftragsnummer;
     }
 
-    public function getIsPayed()
+    public function isPaid(): bool
     {
-        return $this->isPayed;
+        return $this->isPaid;
     }
 
-    public function getPaymentDate()
+    public function getPaymentDate(): ?string
     {
-        if (!$this->getIsPayed()) {
-            return "";
+        if (!$this->isPaid()) {
+            return null;
         }
 
         $query = "SELECT DATE_FORMAT(payment_date, '%d.%m.%Y') AS payment_date FROM invoice WHERE order_id = :orderId";
@@ -123,23 +113,23 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         ]);
 
         if (empty($data)) {
-            return "";
+            return null;
         }
 
         return $data[0]["payment_date"];
     }
 
-    public function getPaymentType(): string
+    public function getPaymentType(): ?string
     {
-        if (!$this->getIsPayed()) {
-            return "";
+        if (!$this->isPaid()) {
+            return null;
         }
 
         $query = "SELECT payment_type FROM invoice WHERE order_id = :orderId";
         $data = DBAccess::selectQuery($query, ["orderId" => $this->Auftragsnummer]);
 
         if (empty($data)) {
-            return "";
+            return null;
         }
 
         return $data[0]["payment_type"];
@@ -202,7 +192,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
     /**
      * calculates the sum of all items in the order
      */
-    public function calcOrderSum()
+    public function calcOrderSum(): float
     {
         $price = 0;
         foreach ($this->Auftragsposten as $posten) {
@@ -213,7 +203,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         return $price;
     }
 
-    public function preisBerechnen()
+    public function preisBerechnen(): float
     {
         $price = 0;
         foreach ($this->Auftragsposten as $posten) {
@@ -322,17 +312,13 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 
     public function getIsArchiviert()
     {
-        return $this->isArchiviert;
+        return $this->status == OrderState::Archived;
     }
 
-    /*
-     * this function returns all orders which are marked as ready to finish;
-     * an order is ready when its "archived" column is set to -1
-     */
     public static function getReadyOrders()
     {
-        $query = "SELECT Auftragsnummer, IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) as Kunde, Auftragsbezeichnung FROM auftrag, kunde WHERE archiviert = -1 AND kunde.Kundennummer = auftrag.Kundennummer AND Rechnungsnummer = 0";
-        $data = DBAccess::selectQuery($query);
+        $query = "SELECT Auftragsnummer, IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) as Kunde, Auftragsbezeichnung FROM auftrag, kunde WHERE status = :status AND kunde.Kundennummer = auftrag.Kundennummer AND Rechnungsnummer = 0";
+        $data = DBAccess::selectQuery($query, ["status" => OrderState::Finished->value]);
 
         $column_names = array(
             0 => array("COLUMN_NAME" => "Auftragsnummer"),
@@ -371,7 +357,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         if ($ids != null) {
             $query .= "Auftragsnummer IN (" . implode(",", $ids) . ")";
         } else {
-            $query .= "Rechnungsnummer = 0 AND archiviert != 0";
+            $query .= "Rechnungsnummer = 0 AND `status` != '" . OrderState::Default->value . "'";
         }
 
         $data = DBAccess::selectQuery($query);
@@ -396,7 +382,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 			FROM auftrag 
 			LEFT JOIN kunde 
 				ON auftrag.Kundennummer = kunde.Kundennummer 
-			WHERE Rechnungsnummer = 0 AND archiviert != 0";
+			WHERE Rechnungsnummer = 0 AND `status` = '" . OrderState::Default->value . "'";
 
         $data = DBAccess::selectQuery($query);
         JSONResponseHandler::sendResponse($data);
@@ -409,13 +395,13 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 
     public function getInvoiceId(): int
     {
-        $invoice = Invoice::getInvoice($this->Auftragsnummer);
+        $invoice = Invoice::getInvoiceByOrderId($this->Auftragsnummer);
         return $invoice->getId();
     }
 
     public function getInvoiceNumber(): int
     {
-        $invoice = Invoice::getInvoice($this->Auftragsnummer);
+        $invoice = Invoice::getInvoiceByOrderId($this->Auftragsnummer);
         return $invoice->getNumber();
     }
 
@@ -461,7 +447,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 
         return [
             "id" => $this->Auftragsnummer,
-            "archived" => $this->isArchiviert,
+            "archived" => $this->status->value,
             "orderTitle" => $this->Auftragsbezeichnung,
             "orderDescription" => $this->Auftragsbeschreibung,
             "date" => $date,
@@ -500,25 +486,26 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
     public static function archive()
     {
         $orderId = (int) Tools::get("id");
-        $archive = Tools::get("archive") == "true" ? 0 : 1;
+        $status = Tools::get("status") == "archive" ? OrderState::Archived : OrderState::Default;
 
-        $query = "UPDATE auftrag SET archiviert = :archiveStatus WHERE Auftragsnummer = :orderId";
+        $query = "UPDATE auftrag SET `status` = :archiveStatus WHERE Auftragsnummer = :orderId";
         DBAccess::updateQuery($query, [
             "orderId" => $orderId,
-            "archiveStatus" => $archive,
+            "archiveStatus" => $status->value,
         ]);
 
         JSONResponseHandler::sendResponse([
             "status" => "success",
+            "archiveStatus" => $status->value,
         ]);
     }
 
     public static function finish()
     {
         $orderId = (int) Tools::get("id");
-        DBAccess::updateQuery("UPDATE auftrag SET archiviert = :orderStatus WHERE Auftragsnummer = :orderId", [
+        DBAccess::updateQuery("UPDATE auftrag SET `status` = :orderStatus WHERE Auftragsnummer = :orderId", [
             "orderId" => $orderId,
-            "orderStatus" => self::IS_FINISHED,
+            "orderStatus" => OrderState::Finished,
         ]);
 
         NotificationManager::addNotification(null, 4, "Auftrag $orderId wurde abgeschlossen", $orderId);
@@ -839,7 +826,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 
     public static function getOverview()
     {
-        $query = "SELECT Auftragsnummer FROM auftrag WHERE archiviert != 0 AND Rechnungsnummer = 0;";
+        $query = "SELECT Auftragsnummer FROM auftrag WHERE `status` != '" . OrderState::Default->value . "'AND Rechnungsnummer = 0;";
         $data = DBAccess::selectQuery($query);
 
         foreach ($data as $row) {

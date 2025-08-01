@@ -41,6 +41,8 @@
             <ul class="ml-5 list-disc list-inside">
                 <li>Circle Dependencies entfernt, da es Probleme mit dem Hotreloading gab</li>
                 <li>Termin kann wieder nachträglich gesetzt werden</li>
+                <li>Fehler in Nummernvergabe für Rechnungen behoben</li>
+                <li>Rechnungssumme neu implementiert, da fehlerhaft</li>
             </ul>
         </li>
         <li>Benachrichtigungen grundlegend überarbeitet und alte Alternativen ersetzt</li>

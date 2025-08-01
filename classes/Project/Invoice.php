@@ -56,7 +56,23 @@ class Invoice
         return $this->contactId;
     }
 
-    public static function getInvoice(int $orderId): Invoice
+    public static function getInvoice(int $invoiceNumber): ?Invoice
+    {
+        $query = "SELECT order_id, id FROM invoice WHERE invoice_number = :invoiceNumber;";
+        $data = DBAccess::selectQuery($query, [
+            "invoiceNumber" => $invoiceNumber,
+        ]);
+
+        if (!empty($data)) {
+            $orderId = $data[0]["order_id"];
+            $invoiceId = $data[0]["id"];
+            return new Invoice($invoiceId, $orderId);
+        }
+
+        return null;
+    }
+
+    public static function getInvoiceByOrderId(int $orderId): Invoice
     {
         $query = "SELECT id FROM invoice WHERE order_id = :orderId;";
         $data = DBAccess::selectQuery($query, [
@@ -238,6 +254,15 @@ class Invoice
         return $this->auftrag->getLinkedVehicles();
     }
 
+    private function setInvoiceSum(): void
+    {
+        $sum = $this->auftrag->calcOrderSum();
+        DBAccess::updateQuery("UPDATE invoice SET amount = :amount WHERE id = :id", [
+            "amount" => $sum,
+            "id" => $this->invoiceId,
+        ]);
+    }
+
     public static function getContacts(int $customerId)
     {
         $contacts = DBAccess::selectQuery("SELECT Nummer AS id, Vorname AS firstName, Nachname AS lastName, Email AS email 
@@ -325,8 +350,10 @@ class Invoice
         try {
             $invoice = new Invoice($invoiceId, $orderId);
         } catch (\Exception $e) {
-            $invoice = self::getInvoice($orderId);
+            $invoice = self::getInvoiceByOrderId($orderId);
         }
+
+        $invoice->setInvoiceSum();
 
         $query = "UPDATE auftrag SET Rechnungsnummer = :invoiceId WHERE Auftragsnummer = :orderId";
         DBAccess::updateQuery($query, [
@@ -350,50 +377,28 @@ class Invoice
         ]);
     }
 
-    /**
-     * berechnet die offene Rechnungssumme, Rechnung ist offen, wenn auftrag.Bezahlt = 0 gilt;
-     *
-     * TODO: für später:
-     * eventuell eigene Tabelle für Rechnungssummen, um Unveränderbarkeit zu garantieren
-     */
-    public static function getOpenInvoiceSum(): int
-    {
-        $query = "SELECT ROUND(SUM(auftragssumme.orderPrice), 2) AS summe
-			FROM auftrag, auftragssumme
-			WHERE auftrag.Rechnungsnummer != 0 
-				AND auftrag.Bezahlt = 0
-				AND auftrag.Auftragsnummer = auftragssumme.id";
-        $summe = DBAccess::selectQuery($query)[0]["summe"];
-        if ($summe == null) {
-            return 0;
-        }
-        return (int) $summe;
-    }
-
-    public static function getOpenInvoiceData()
-    {
-        $data = DBAccess::selectQuery("SELECT auftrag.Auftragsnummer AS Nummer,
-				auftrag.Rechnungsnummer,
-				auftrag.Auftragsbezeichnung AS Bezeichnung, 
-				auftrag.Auftragsbeschreibung AS Beschreibung, 
-				auftrag.Kundennummer,
-				DATE_FORMAT(auftrag.Datum, '%d.%m.%Y') as Datum,
-				kunde.Firmenname,
-				CONCAT(FORMAT(auftragssumme.orderPrice, 2, 'de_DE'), ' €') AS Summe 
-			FROM auftrag, auftragssumme, kunde 
-			WHERE auftrag.Kundennummer = kunde.Kundennummer 
-				AND Rechnungsnummer != 0 
-				AND auftrag.Bezahlt = 0 
-				AND auftrag.Auftragsnummer = auftragssumme.id");
-
-        JSONResponseHandler::sendResponse([
-            "data" => $data,
-        ]);
-    }
-
     public static function setInvoicePaid()
     {
         $invoiceId = Tools::get("invoiceId");
+        $paymentDate = Tools::get("date");
+        $paymentType = Tools::get("paymentType");
+        $paymentTypes = [
+            "ueberweisung",
+            "bar",
+            "paypal",
+            "kreditkarte",
+            "amazonpay",
+            "weiteres"
+        ];
+
+        if (!in_array($paymentType, $paymentTypes)) {
+            $paymentType = "ueberweisung";
+        }
+
+        if (!validateDateString($paymentDate, "Y-m-d")) {
+            $paymentDate = date("Y-m-d");
+        }
+
         $query = "UPDATE auftrag SET Bezahlt = 1 
 			WHERE Rechnungsnummer = :invoice";
 
@@ -401,13 +406,11 @@ class Invoice
             "invoice" => $invoiceId,
         ]);
 
-        if (Tools::get("date") && Tools::get("paymentType")) {
-            DBAccess::updateQuery("UPDATE invoice SET payment_date = :paymentDate, payment_type = :paymentType WHERE id = :invoice", [
-                "paymentDate" => Tools::get("date"),
-                "paymentType" => Tools::get("paymentType"),
-                "invoice" => $invoiceId,
-            ]);
-        }
+        DBAccess::updateQuery("UPDATE invoice SET payment_date = :paymentDate, payment_type = :paymentType WHERE id = :invoice", [
+            "paymentDate" => Tools::get("date"),
+            "paymentType" => Tools::get("paymentType"),
+            "invoice" => $invoiceId,
+        ]);
 
         $orderId = DBAccess::selectQuery("SELECT Auftragsnummer FROM auftrag WHERE Rechnungsnummer = :invoice;", [
             "invoice" => $invoiceId

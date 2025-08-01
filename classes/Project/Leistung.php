@@ -105,7 +105,7 @@ class Leistung extends Posten
         Posten::insertPosten("leistung", $data);
     }
 
-    public function bekommePreis()
+    public function bekommePreis(): float
     {
         if ($this->ohneBerechnung == true) {
             return 0;

@@ -8,11 +8,13 @@ import { notification } from "js-classes/notifications.js";
 import { createPopup } from "../global.js";
 
 const fnNames: { [key: string]: (...args: any[]) => void } = {};
-let id: number = 0;
+const orderManagerConfig = {
+    orderId: 0,
+};
 
 fnNames.click_setOrderFinished = async () => {
     if (confirm('Möchtest Du den Auftrag als "Erledigt" markieren?')) {
-        await ajax.put(`/api/v1/order/${id}/finish`);
+        await ajax.put(`/api/v1/order/${orderManagerConfig.orderId}/finish`);
 
         (document.getElementById("home_link") as HTMLAnchorElement).click();
     }
@@ -37,7 +39,7 @@ fnNames.click_setDeadlineState = e => {
 }
 
 function sendDate(type: number, date: Date|string) {
-    ajax.post(`/api/v1/order/${id}/update-date`, {
+    ajax.post(`/api/v1/order/${orderManagerConfig.orderId}/update-date`, {
         "date": date,
         "type": type,
     }).then((r: any) => {
@@ -69,7 +71,7 @@ fnNames.click_deleteOrder = () => {
 function deleteOrder() {
     ajax.post({
         r: "deleteOrder",
-        id: id,
+        id: orderManagerConfig.orderId,
     }).then((r: any) => {
         if (r.success) {
             window.location.href = r.home;
@@ -104,7 +106,7 @@ function closeAlert() {
 fnNames.write_editDescription = () => {
     var text = document.querySelector(".orderDescription:not(.hidden)") as HTMLInputElement;
 
-    ajax.put(`/api/v1/order/${id}/description`, {
+    ajax.put(`/api/v1/order/${orderManagerConfig.orderId}/description`, {
         "text": text.value,
     }).then((r: any) => {
         if (r.message == "OK") {
@@ -119,7 +121,7 @@ fnNames.write_editOrderType = () => {
     const el = document.getElementById("orderType") as HTMLInputElement;
     const value = el.value;
 
-    ajax.post(`/api/v1/order/${id}/type`, {
+    ajax.post(`/api/v1/order/${orderManagerConfig.orderId}/type`, {
         "type": value,
     }).then((r: any) => {
         if (r.status == "success") {
@@ -134,7 +136,7 @@ fnNames.write_editTitle = () => {
     const el = document.getElementById("orderTitle") as HTMLInputElement;
     const value = el.value;
 
-    ajax.post(`/api/v1/order/${id}/title`, {
+    ajax.post(`/api/v1/order/${orderManagerConfig.orderId}/title`, {
         "title": value,
     }).then((r: any) => {
         if (r.status == "success") {
@@ -146,8 +148,8 @@ fnNames.write_editTitle = () => {
 }
 
 fnNames.click_archivieren = () => {
-    ajax.put(`/api/v1/order/${id}/archive`, {
-        "archive": true,
+    ajax.put(`/api/v1/order/${orderManagerConfig.orderId}/archive`, {
+        "status": "archive",
     }).then((r: any) => {
         if (r.status == "success") {
             var div = document.createElement("div");
@@ -161,7 +163,7 @@ fnNames.click_archivieren = () => {
 }
 
 export const initOrderManager = (orderId: number) => {
-    id = orderId;
+    orderManagerConfig.orderId = orderId;
     addBindings(fnNames);
 
     const inputExtraOptions = document.getElementById("extraOptions");

@@ -71,7 +71,7 @@ function getTableConfig(): array
                 "Ansprechpartner",
                 "Rechnungsnummer",
                 "Bezahlt",
-                "archiviert",
+                "status",
             ],
             "primaryKey" => "Auftragsnummer",
         ],

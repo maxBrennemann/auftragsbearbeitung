@@ -16,7 +16,7 @@
         ?>
         <a class="link-primary" href="<?= $invoiceLink ?>" target="_blank">Zur Rechnungs-PDF</a>
     </div>
-    <?php if (!$auftrag->getIsPayed()): ?>
+    <?php if (!$auftrag->isPaid()): ?>
         <div class="defCont">
             <div id="orderPaymentState">
                 <p>Die Rechnung wurde noch nicht beglichen.</p>
