@@ -27,7 +27,7 @@
 					<td class="bg-gray-100 text-gray-800"><?= $order["finished"] ?></td>
 				</tr>
 			</table>
-			<?php if ($order["archived"]): ?>
+			<?php if ($order["status"] == \Classes\Project\OrderState::Archived): ?>
 				<button class="btn-primary orderDisabled mt-1.5" disabled>archiviert</button>
 			<?php endif; ?>
 			<?php if ($order["invoice"] != 0): ?>

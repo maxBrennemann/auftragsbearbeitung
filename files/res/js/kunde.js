@@ -46,7 +46,7 @@ fnNames.click_rearchive = async e => {
     const target = e.currentTarget;
     const id = target.dataset.orderId;
     const response = await ajax.put(`/api/v1/order/${id}/archive`, {
-        "archive": false,
+        "status": "unarchive",
     });
 
     if (response.status == "success") {

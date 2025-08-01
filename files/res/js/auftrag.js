@@ -54,7 +54,7 @@ const initCode = async () => {
             "location": `/api/v1/order/${orderConfig.auftragsId}/add-files`,
         },
     });
-    initOrderManager();
+    initOrderManager(orderConfig.auftragsId);
     initNotes(orderConfig.auftragsId);
     initVehicles(getCustomerId(), orderConfig.auftragsId);
     initColors(orderConfig.auftragsId);
