@@ -434,8 +434,10 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
     {
         $query = "SELECT DATE_FORMAT(Datum, '%d.%m.%Y') AS Datum,
 				DATE_FORMAT(Termin, '%d.%m.%Y') AS Termin, 
-				DATE_FORMAT(Fertigstellung , '%d.%m.%Y') AS Fertigstellung 
-			FROM auftrag 
+				DATE_FORMAT(Fertigstellung , '%d.%m.%Y') AS Fertigstellung,
+                invoice.invoice_number
+			FROM auftrag
+            LEFT JOIN invoice ON invoice.order_id = auftrag.Auftragsnummer
 			WHERE Auftragsnummer = :orderId";
         $data = DBAccess::selectQuery($query, [
             "orderId" => $this->getAuftragsnummer(),
@@ -444,6 +446,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         $date = $data[0]["Datum"] == "00.00.0000" ? "-" : $data[0]["Datum"];
         $deadline = $data[0]["Termin"] == "00.00.0000" ? "-" : $data[0]["Termin"];
         $finished = $data[0]["Fertigstellung"] == "00.00.0000" ? "-" : $data[0]["Fertigstellung"];
+        $invoiceNumber = $data[0]["invoice_number"] == "NULL" ? 0 : $data[0]["invoice_number"];
 
         return [
             "id" => $this->Auftragsnummer,
@@ -453,8 +456,9 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
             "date" => $date,
             "deadline" => $deadline,
             "finished" => $finished,
-            "invoice" => $this->rechnungsnummer,
-            "summe" => $this->rechnungsnummer != 0 ? $this->preisBerechnen() : 0,
+            "invoice" => $invoiceNumber,
+            "summe" => $invoiceNumber != 0 ? $this->preisBerechnen() : 0,
+            "status" => $this->status,
         ];
     }
 
