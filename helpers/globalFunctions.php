@@ -161,6 +161,10 @@ function validateDateString(string $date, string $format): bool
 {
     $date = DateTime::createFromFormat($format, $date);
     $dateErrors = DateTime::getLastErrors();
+
+    if (!$dateErrors) {
+        return true;
+    }
     
     if ($dateErrors["warning_count"] + $dateErrors["error_count"] > 0) {
         return false;

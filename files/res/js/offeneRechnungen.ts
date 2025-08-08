@@ -1,5 +1,7 @@
+// @ts-ignore
 import { ajax } from "js-classes/ajax.js";
 
+import { format } from "date-fns";
 import { addRow, createHeader, createTable } from "./classes/table.js";
 
 const init = () => {
@@ -12,14 +14,14 @@ const getOpenInvoiceData = async () => {
 }
 
 const createInvoiceTable = async () => {
-    const table = createTable("openInvoiceTable");
+    const table = createTable("openInvoiceTable") as HTMLTableElement;
     const columns = [
         {
             "key": "Nummer",
             "label": "Nummer"
         },
         {
-            "key": "Rechnungsnummer",
+            "key": "invoice_number",
             "label": "Rechnungsnummer"
         },
         {
@@ -49,7 +51,7 @@ const createInvoiceTable = async () => {
     ];
     const columnConfig = {
         "hideOptions": ["edit", "delete", "addRow", "add", "move"],
-        "hide": [""],
+        "hide": ["Rechnungsnummer"],
         "primaryKey": "Nummer",
         "link": "/auftrag?id=",
         "styles": {
@@ -67,15 +69,17 @@ const createInvoiceTable = async () => {
     createHeader(columns, table, columnConfig);
 
     const data = await getOpenInvoiceData();
-    data.forEach(row => {
+    data.forEach((row: any) => {
         addRow(row, table, columnConfig);
     });
 
-    table.addEventListener("rowCheck", async (event) => {
+    table.addEventListener("rowCheck", async (event: any) => {
         const data = event.detail;
         const id = data.Rechnungsnummer;
 
-        const status = await ajax.post(`/api/v1/invoice/${id}/paid`);
+        const status = await ajax.post(`/api/v1/invoice/${id}/paid`, {
+            "date": format(new Date(), "yyy-MM-dd"),
+        });
         if (status.status == "success") {
             data.row.remove();
         }
