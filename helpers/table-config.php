@@ -320,6 +320,25 @@ function getTableConfig(): array
             ],
             "permissions" => [],
         ],
+        "pdf_texts" => [
+            "columns" => [
+                "id",
+                "type",
+                "status",
+                "text",
+            ],
+            "primaryKey" => "id",
+            "names" => [
+                "Nummer",
+                "Art",
+                "Status",
+                "Text",
+            ],
+            "hidden" => [
+                //"status",
+            ],
+            "permissions" => ["read", "create"], // TODO: add soft delete option
+        ],
         "produkt" => [
             "columns" => [
                 "Nummer",
