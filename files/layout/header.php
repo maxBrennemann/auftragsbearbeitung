@@ -37,7 +37,7 @@ if ($pageName == "") {
 
 ?>
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" class="overflow-x-hidden">
 
 <head>
 	<meta charset="UTF-8">
@@ -77,7 +77,7 @@ if ($pageName == "") {
 	<?php endif; ?>
 </head>
 
-<body>
+<body class="overflow-x-hidden">
 	<div class="sidenav" id="sidenav">
 		<ul>
 			<li class="hover:underline">
@@ -185,4 +185,4 @@ if ($pageName == "") {
 			<?= BreadcrumbController::createBreadcrumbMenu($page, $pageName) ?>
 		</div>
 	</header>
-	<main class="mt-4 w-full lg:px-4 lg:w-11/12 xl:w-4/5 lg:mx-auto">
+	<main class="mt-4 w-full lg:px-4 lg:w-11/12 xl:w-4/5 lg:mx-auto overflow-x-auto">

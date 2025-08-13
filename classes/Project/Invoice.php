@@ -407,8 +407,8 @@ class Invoice
         ]);
 
         DBAccess::updateQuery("UPDATE invoice SET payment_date = :paymentDate, payment_type = :paymentType WHERE id = :invoice", [
-            "paymentDate" => Tools::get("date"),
-            "paymentType" => Tools::get("paymentType"),
+            "paymentDate" => $paymentDate,
+            "paymentType" => $paymentType,
             "invoice" => $invoiceId,
         ]);
 

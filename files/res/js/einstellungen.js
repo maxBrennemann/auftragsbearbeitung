@@ -37,6 +37,7 @@ function initEventListeners() {
     createOrderTypeTable();
     createWholesalerTable();
     createUserTable();
+    createPDFTextTable();
     showFilesInfo();
 }
 
@@ -207,7 +208,7 @@ fnNames.click_downloadAllFiles = () => {
 
 fnNames.click_clearFiles = () => {
     return;
-    ajax.post(`/api/v1/upload/clear-files`).then(r =>{
+    ajax.post(`/api/v1/upload/clear-files`).then(r => {
         if (r.status == "success") {
             notification(`${r.deleted_count} Dateien entfernt.`, "success",);
         } else {
@@ -217,7 +218,7 @@ fnNames.click_clearFiles = () => {
 }
 
 fnNames.click_adjustFiles = () => {
-    ajax.post(`/api/v1/upload/adjust-files`).then(r =>{
+    ajax.post(`/api/v1/upload/adjust-files`).then(r => {
         if (r.message == "OK") {
             notification("", "success");
         } else {
@@ -285,6 +286,62 @@ const createUserTable = async () => {
     });
 }
 
+const createPDFTextTable = async () => {
+    const options = {
+        "styles": {
+            "table": {
+                "className": ["w-full"],
+            },
+        },
+        "primaryKey": "id",
+        "hideOptions": ["check", "move", "add"],
+    };
+
+    const table = createTable("pdfTextsCont", options);
+    const config = tableConfig["pdf_texts"];
+    createHeader(config.columns, table, options);
+
+    const data = await ajax.get(`/api/v1/tables/pdf_texts`);
+    data.forEach(row => {
+        addRow(row, table, options);
+    });
+
+    table.addEventListener("rowInsert", () => addPDFText(table, options));
+    table.addEventListener("rowDelete", (event) => {
+        const data = event.detail;
+        const id = data.id;
+
+        const conditions = JSON.stringify({
+            "id": id,
+        });
+        ajax.delete(`/api/v1/tables/pdf_texts`, {
+            "conditions": conditions,
+            "customerId": customerData.id,
+        });
+    });
+}
+
+const addPDFText = async (table, options) => {
+    const lastRow = table.querySelector("tbody").lastChild.children;
+    const data = {};
+    Array.from(lastRow).forEach(el => {
+        const key = el.dataset.key;
+        if (key == undefined) {
+            return;
+        }
+        const value = el.innerHTML;
+        data[key] = value;
+    });
+
+    const response = await ajax.post(`/api/v1/tables/pdf_texts`, {
+        "conditions": JSON.stringify(data),
+    });
+    for (var i in response) {
+        data[i] = response[i];
+    }
+    addRow(data, table, options);
+}
+
 const addOrderType = async (table, options) => {
     const lastRow = table.querySelector("tbody").lastChild.children;
     const data = {};
@@ -313,7 +370,7 @@ const showFilesInfo = () => {
 }
 
 fnNames.click_sendNewInvoiceNumber = () => {
-    if(!confirm("Setzt die aktuelle Rechnungsnummer fest. Bitte nicht unnötig überschreiben.")) {
+    if (!confirm("Setzt die aktuelle Rechnungsnummer fest. Bitte nicht unnötig überschreiben.")) {
         return;
     }
 

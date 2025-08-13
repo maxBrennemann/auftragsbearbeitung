@@ -104,6 +104,13 @@ $companyLogo = \Classes\Project\ClientSettings::getLogo();
 </section>
 
 <section class="defCont">
+    <h2 class="font-bold">PDF Texte</h2>
+    <div class="mt-2">
+        <div id="pdfTextsCont"></div>
+    </div>
+</section>
+
+<section class="defCont">
     <h2 class="font-bold">Cache</h2>
     <div class="mt-2">
         <?= \Classes\Controller\TemplateController::getTemplate("inputSwitch", [

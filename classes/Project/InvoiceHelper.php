@@ -26,17 +26,19 @@ class InvoiceHelper
     {
         $data = DBAccess::selectQuery("SELECT auftrag.Auftragsnummer AS Nummer,
 				auftrag.Rechnungsnummer,
+                invoice.invoice_number,
 				auftrag.Auftragsbezeichnung AS Bezeichnung, 
 				auftrag.Auftragsbeschreibung AS Beschreibung, 
 				auftrag.Kundennummer,
 				DATE_FORMAT(auftrag.Datum, '%d.%m.%Y') as Datum,
 				kunde.Firmenname,
 				CONCAT(FORMAT(auftragssumme.orderPrice, 2, 'de_DE'), ' €') AS Summe 
-			FROM auftrag, auftragssumme, kunde 
+			FROM auftrag, auftragssumme, kunde, invoice
 			WHERE auftrag.Kundennummer = kunde.Kundennummer 
 				AND Rechnungsnummer != 0 
 				AND auftrag.Bezahlt = 0 
-				AND auftrag.Auftragsnummer = auftragssumme.id");
+				AND auftrag.Auftragsnummer = auftragssumme.id
+                AND invoice.id = auftrag.Rechnungsnummer");
 
         JSONResponseHandler::sendResponse([
             "data" => $data,

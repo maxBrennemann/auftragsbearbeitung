@@ -1,6 +1,6 @@
 <?php
 
-namespace Classes\Models;
+namespace Classes\Models\Base;
 
 use Classes\Models\Traits\HasHooks;
 use MaxBrennemann\PhpUtilities\DBAccess;

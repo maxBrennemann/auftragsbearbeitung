@@ -3,6 +3,7 @@
 namespace Classes\Pdf\TransactionPdf;
 
 use Classes\Pdf\PDFGenerator;
+use Classes\Pdf\PDFTexts;
 use Classes\Project\Auftrag;
 use Classes\Project\Config;
 use Classes\Project\Kunde;
@@ -20,6 +21,9 @@ class TransactionPDF extends PDFGenerator
     protected int $orderId;
     protected int $addressId = 0;
     protected int $contactId = 0;
+
+    protected int $bottomMargin = 30;
+    protected string $type = "transaction";
 
     public function __construct(string $title, int $orderId)
     {
@@ -56,13 +60,9 @@ class TransactionPDF extends PDFGenerator
         $this->writeHTMLCell(0, 10, 20, 44, $address);
     }
 
-    public function save()
-    {
-    }
+    public function save() {}
 
-    private function generateHeader()
-    {
-    }
+    private function generateHeader() {}
 
     protected function fillAddress($altNames = [])
     {
@@ -103,9 +103,50 @@ class TransactionPDF extends PDFGenerator
         ]);
     }
 
+    protected function getEstimatedFooterHeight()
+    {
+        $texts = PDFTexts::get($this->type);
+        $addToOffset = 0;
+        $lineheight = 10;
+        $this->SetFont("helvetica", "", 10);
+
+        foreach ($texts as $text) {
+            $height = $this->getStringHeight(0, $text);
+
+            if ($height >= $lineheight) {
+                $addToOffset = +ceil($height);
+            } else {
+                $addToOffset += $lineheight;
+            }
+        }
+
+        return $this->bottomMargin + $addToOffset;
+    }
+
     public function Footer()
     {
-        $this->SetY(-30);
+        $texts = PDFTexts::get($this->type);
+        $addToOffset = 0;
+        $lineheight = 10;
+        $this->SetFont("helvetica", "", 10);
+
+        foreach ($texts as $text) {
+            $height = $this->getStringHeight(0, $text);
+
+            if ($height >= $lineheight) {
+                $this->SetY(-$this->bottomMargin - ceil($height));
+                $this->MultiCell(0, $lineheight, $text, '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
+                $addToOffset = +ceil($height);
+            } else {
+                $this->SetY(-$this->bottomMargin - $lineheight);
+                $this->Cell(0, $lineheight, $text);
+                $addToOffset += $lineheight;
+            }
+
+            $this->SetY(-$this->bottomMargin + $addToOffset);
+        }
+
+        $this->SetY(-$this->bottomMargin);
         $this->SetFont('helvetica', 'B', 8);
 
         $this->Cell(0, 00, "Seite " . $this->getAliasNumPage() . "/" . $this->getAliasNbPages(), 0, 1, 'C', 0, '', 0, false, 'T', 'M');

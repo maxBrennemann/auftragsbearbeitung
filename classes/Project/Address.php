@@ -2,7 +2,6 @@
 
 namespace Classes\Project;
 
-use Classes\Models\Model;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 
@@ -14,7 +13,7 @@ use MaxBrennemann\PhpUtilities\Tools;
 * (4) Sonstige Adresse
 */
 
-class Address extends Model
+class Address
 {
     public const DEFAULT_ADDRESS = 1;
     public const DELIVERY_ADDRESS = 2;

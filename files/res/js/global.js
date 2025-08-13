@@ -1,6 +1,9 @@
 //@ts-nocheck
-
 import "../css/input.css";
+
+if (import.meta.env.VITE_DEBUG_CSS === 'true') {
+  import('../css/debug.css');
+}
 
 import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js"
@@ -9,8 +12,6 @@ import { DeviceDetector } from "./classes/deviceDetector.js";
 import { initNotificationService } from "./classes/notificationUpdater.js";
 import { TableSorter, currentTableSorter, setTableSorter, sortTableNew } from "./classes/tableSorter.js";
 import { timeGlobalListener } from "./classes/timetracking.js";
-
-
 
 const fnNames = {};
 const imagePreviewListeners = new WeakSet();

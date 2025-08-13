@@ -2,7 +2,7 @@
 
 namespace Classes\Table;
 
-use Classes\Models\Model;
+use Classes\Models\Base\Model;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 
