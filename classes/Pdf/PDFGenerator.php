@@ -13,6 +13,11 @@ class PDFGenerator extends TCPDF
 
     protected $companyDetails;
 
+    protected int $pageHeight = 297;
+    protected int $footerHeight = 35;
+    protected int $topMargin = 25;
+    protected int $bottomMargin = 25;
+
     public function __construct(string $title)
     {
         parent::__construct("p", "mm", "A4");
@@ -47,14 +52,7 @@ class PDFGenerator extends TCPDF
 
     public function Footer()
     {
-        $this->SetY(-25);
+        $this->SetY(-$this->bottomMargin);
         $this->SetFont('helvetica', 'I', 8);
-
-        $this->Cell(0, 00, "Seite " . $this->getAliasNumPage() . "/" . $this->getAliasNbPages(), 0, 1, 'C', 0, '', 0, false, 'T', 'M');
-        $this->Cell(0, 0, $this->companyDetails["companyImprint"], 0, 1, 'C', 0, '', 0, false, 'T', 'M');
-        $this->Cell(0, 0, $this->companyDetails["companyPhone"] . " " . $this->companyDetails["companyUstIdNr"], 0, 1, 'C', 0, '', 0, false, 'T', 'M');
-        $this->Cell(0, 0, $this->companyDetails["companyBank"], 0, 1, 'C', 0, '', 0, false, 'T', 'M');
-        $this->Cell(0, 0, $this->companyDetails["companyIban"], 0, 1, 'C', 0, '', 0, false, 'T', 'M');
-        $this->Cell(0, 0, 'Es gelten unsere Allgemeinen Geschäftsbedingungen (siehe ' . $this->companyDetails["companyWebsite"] . ') | Die Ware bleibt bis zur vollständigen Bezahlung unser Eigentum.', 0, 1, 'C', 0, '', 0, false, 'T', 'M');
     }
 }

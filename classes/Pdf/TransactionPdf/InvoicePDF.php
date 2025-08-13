@@ -12,6 +12,7 @@ class InvoicePDF extends TransactionPDF
 {
     private Invoice $invoice;
     private int $invoiceId;
+    protected string $type = "invoice";
 
     public function __construct(int $invoiceId, int $orderId)
     {
@@ -46,15 +47,10 @@ class InvoicePDF extends TransactionPDF
         $this->addTableHeader();
         $this->addInvoiceItems();
 
-        /**
-         * 297: Din A4 Seitenhöhe,
-         * 25: Abstand von unten für die Fußzeile,
-         * 55: bezieht sich auf die Zwischensumme und Rechnungssumme,
-         * damit diese immer auf einer Seite stehen
-         */
-        if ($this->GetY() + 55 >= 297 - 35) {
+        /* 55:  bezieht sich auf die Zwischensumme und Rechnungssumme, damit diese immer auf einer Seite stehen */
+        if ($this->GetY() + 55 >= $this->pageHeight - $this->getEstimatedFooterHeight()) {
             $this->AddPage();
-            $this->addTableHeader(25);
+            $this->addTableHeader($this->topMargin);
             $this->ln(10);
         }
 
