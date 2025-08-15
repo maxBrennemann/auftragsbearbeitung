@@ -2,6 +2,7 @@
 
 namespace Classes\Project;
 
+use Exception;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
@@ -10,11 +11,11 @@ class InvoiceHelper
 
     public static function getOpenInvoiceSum(): int
     {
-        $query = "SELECT ROUND(SUM(auftragssumme.orderPrice), 2) AS summe
-			FROM auftrag, auftragssumme
+        $query = "SELECT ROUND(SUM(invoice.amount), 2) AS summe
+			FROM auftrag, invoice
 			WHERE auftrag.Rechnungsnummer != 0 
 				AND auftrag.Bezahlt = 0
-				AND auftrag.Auftragsnummer = auftragssumme.id";
+				AND auftrag.Auftragsnummer = invoice.order_id";
         $summe = DBAccess::selectQuery($query)[0]["summe"];
         if ($summe == null) {
             return 0;
@@ -32,16 +33,36 @@ class InvoiceHelper
 				auftrag.Kundennummer,
 				DATE_FORMAT(auftrag.Datum, '%d.%m.%Y') as Datum,
 				kunde.Firmenname,
-				CONCAT(FORMAT(auftragssumme.orderPrice, 2, 'de_DE'), ' €') AS Summe 
-			FROM auftrag, auftragssumme, kunde, invoice
+				CONCAT(FORMAT(invoice.amount, 2, 'de_DE'), ' €') AS Summe 
+			FROM auftrag, kunde, invoice
 			WHERE auftrag.Kundennummer = kunde.Kundennummer 
-				AND Rechnungsnummer != 0 
-				AND auftrag.Bezahlt = 0 
-				AND auftrag.Auftragsnummer = auftragssumme.id
+				AND Rechnungsnummer != 0
+				AND auftrag.Bezahlt = 0
                 AND invoice.id = auftrag.Rechnungsnummer");
 
         JSONResponseHandler::sendResponse([
             "data" => $data,
         ]);
+    }
+
+    public static function recalculateInvoices()
+    {
+        $error = [];
+        $invoices = DBAccess::selectQuery("SELECT id, order_id FROM invoice;");
+        foreach ($invoices as $invoice) {
+            $id = $invoice["id"];
+            $orderId = $invoice["order_id"];
+            try {
+                $i = new Invoice($id, $orderId);
+                $i->setInvoiceSum();
+            } catch (Exception $e) {
+                $error[] = [
+                    "id" => $id,
+                    "message" => $e->getMessage(),
+                ];
+            }
+        }
+
+        JSONResponseHandler::sendResponse($error);
     }
 }
