@@ -135,15 +135,6 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         return $data[0]["payment_type"];
     }
 
-    public function getAuftragsposten()
-    {
-        $htmlData = "";
-        foreach ($this->Auftragsposten as $posten) {
-            $htmlData .= $posten->getHTMLData();
-        }
-        return $htmlData;
-    }
-
     public function getAuftragspostenData()
     {
         return $this->Auftragsposten;

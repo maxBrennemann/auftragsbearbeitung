@@ -13,11 +13,11 @@ tr {
     padding: 7px;
 }
 
-tr:nth-child(odd) {
+tbody tr:nth-child(odd) {
     background-color: var(--main-table-color);
 }
 
-tr:only-child {
+tbody tr:only-child {
     background-color: var(--main-table-color);
 }
 
@@ -106,6 +106,6 @@ tfoot tr:last-child td:last-child {
 }
 
 /* If tfoot is the only thing there (e.g., no tbody rows), maybe adjust background */
-tfoot:only-child tr {
-    background-color: var(--main-table-color);
+table tfoot tr {
+    background-color: var(--main-table-foot-color);
 }

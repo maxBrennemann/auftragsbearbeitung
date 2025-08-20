@@ -36,13 +36,6 @@ class ProduktPosten extends Posten
         $this->position = $position;
     }
 
-    public function getHTMLData()
-    {
-        $html = "<div><span>Typ: {$this->postenTyp} </span><span>Preis: {$this->bekommePreis()}� </span>";
-        $html .= "<span>Bezeichnung: {$this->Bezeichnung} </span><span>Beschreibung: {$this->Beschreibung} </span></div>";
-        return $html;
-    }
-
     public function fillToArray($arr)
     {
         $arr['Postennummer'] = $this->postennummer;

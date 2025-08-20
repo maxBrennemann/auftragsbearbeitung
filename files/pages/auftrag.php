@@ -301,7 +301,7 @@ foreach ($contactPersons as $contact): ?>
 				<?= TemplateController::getTemplate("uploadFile", [
                     "target" => "order",
                 ]); ?>
-				<div id="showFilePrev">
+				<div id="showFilePrev" class="mt-2">
 					<?= $showFiles ?>
 				</div>
 			</div>
@@ -348,8 +348,9 @@ foreach ($contactPersons as $contact): ?>
 
 			<template id="templateAlertBox">
 				<p>Möchtest Du den Auftrag sicher löschen?</p>
-				<button id="deleteOrder" class="btn-delete">Ja</button>
-				<button id="closeAlert" class="btn-primary">Nein</button>
+				<div class="flex justify-center mt-2s">
+					<button id="deleteOrder" class="btn-delete">Ja</button>
+				</div>
 			</template>
 
 			<template id="templateCalculateGas">
