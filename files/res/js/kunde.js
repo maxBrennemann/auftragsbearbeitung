@@ -70,6 +70,7 @@ fnNames.click_saveCustomerData = () => {
         "lastname": document.getElementById("lastname").value,
         "companyname": document.getElementById("companyname").value,
         "email": document.getElementById("email").value,
+        "invoiceEmail": document.getElementById("invoiceEmail").value,
         "website": document.getElementById("website").value,
         "phoneLandline": document.getElementById("phoneLandline").value,
         "phoneMobile": document.getElementById("phoneMobile").value,

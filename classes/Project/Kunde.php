@@ -19,6 +19,8 @@ class Kunde implements StatisticsInterface
     private int $postleitzahl = 0;
     private string $ort = "";
     private string $email = "";
+    private string $invoiceEmail = "";
+    private bool $autoSendInvoice = false;
     private string $telefonFestnetz = "";
     private string $telefonMobil = "";
     private string $website = "";
@@ -31,7 +33,7 @@ class Kunde implements StatisticsInterface
     {
         $data = DBAccess::selectQuery("SELECT * 
 			FROM kunde
-			LEFT JOIN address ON address.id = kunde.id_address_primary 
+			LEFT JOIN `address` ON address.id = kunde.id_address_primary 
 			WHERE Kundennummer = :customerId;", [
             "customerId" => $kundennummer,
         ]);
@@ -51,6 +53,8 @@ class Kunde implements StatisticsInterface
         $this->postleitzahl = (int) $data["plz"] ?? "";
         $this->ort = $data["ort"] ?? "";
         $this->email = $data["Email"] ?? "";
+        $this->invoiceEmail = $data["invoice_email"] ?? "";
+        $this->autoSendInvoice = $data["auto_send_mail"] == "1";
         $this->telefonFestnetz = $data["TelefonFestnetz"] ?? "";
         $this->telefonMobil = $data["TelefonMobil"] ?? "";
         $this->website = $data["Website"] ?? "";
@@ -162,6 +166,16 @@ class Kunde implements StatisticsInterface
     public function getEmail(): string
     {
         return $this->email;
+    }
+
+    public function getInvoiceEmail(): string
+    {
+        return $this->invoiceEmail;
+    }
+
+    public function getAutoSendInvoice(): bool
+    {
+        return $this->autoSendInvoice;
     }
 
     public function getWebsite(): string
@@ -379,6 +393,7 @@ class Kunde implements StatisticsInterface
 				Nachname = :lastname,
 				Firmenname = :companyname,
 				Email = :email,
+                invoice_email = :invoiceEmail,
 				Website = :website,
 				TelefonFestnetz = :phoneLandline,
 				TelefonMobil = :phoneMobile,
@@ -389,6 +404,7 @@ class Kunde implements StatisticsInterface
             "lastname" => Tools::get("lastname") ?? "",
             "companyname" => Tools::get("companyname") ?? "",
             "email" => Tools::get("email") ?? "",
+            "invoiceEmail" => Tools::get("invoiceEmail") ?? "",
             "website" => Tools::get("website"),
             "phoneLandline" => Tools::get("phoneLandline") ?? "",
             "phoneMobile" => Tools::get("phoneMobile") ?? "",
