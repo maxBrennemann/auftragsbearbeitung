@@ -22,7 +22,8 @@
         }
     },
     "scripts": {
-        "pre-autoload-dump": "Google\\Task\\Composer::cleanup"
+        "pre-autoload-dump": "Google\\Task\\Composer::cleanup",
+        "phpstan": "php -d memory_limit=1G vendor/bin/phpstan analyse -c phpstan.neon"
     },
     "extra": {
         "google/apiclient-services": [
@@ -30,7 +31,8 @@
         ]
     },
     "require-dev": {
-        "phpunit/phpunit": "^10"
+        "phpunit/phpunit": "^10",
+        "phpstan/phpstan": "2.1.x-dev"
     },
     "repositories": [
         {

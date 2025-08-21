@@ -1,0 +1,23 @@
+# phpstan.neon
+parameters:
+  level: 2   # start easy, move up as you fix issues
+  paths:
+    - classes
+    - helpers
+    - index.php
+
+  # Don't analyze template/view files
+  excludePaths:
+    analyse:
+      - files/*
+
+  # Speed & stability
+  tmpDir: var/phpstan
+  parallel:
+    maximumNumberOfProcesses: 2
+
+  # Tells PHPStan your runtime version
+  phpVersion: 80400
+
+  # Some common sanity settings
+  reportUnmatchedIgnoredErrors: true
