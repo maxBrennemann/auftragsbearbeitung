@@ -1,0 +1,10 @@
+.git
+node_modules
+vendor
+docker-compose*.yml
+upload
+.github
+generated
+var
+database/legacy_sql
+database/versions
