@@ -1,4 +1,4 @@
-FROM node:42 AS frontend-builder
+FROM node:24 AS frontend-builder
 
 COPY . .
 RUN npm run build
