@@ -1,6 +1,13 @@
 FROM node:24 AS frontend-builder
 
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+
+RUN npm ci
+
 COPY . .
+
 RUN npm run build
 
 FROM composer:2.8.11 AS composer
@@ -47,7 +54,7 @@ RUN usermod --non-unique --uid $UID www-data \
 RUN touch /var/log/cron.log
 
 # Copy assets and dependencies into final image
-COPY --from=frontend-builder /files/res/assets ./files/res/assets
+COPY --from=frontend-builder /app/files/res/assets ./files/res/assets
 COPY --from=composer /var/www/html/vendor ./vendor
 
 # Fix ownership
