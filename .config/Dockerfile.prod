@@ -47,8 +47,8 @@ RUN usermod --non-unique --uid $UID www-data \
 RUN touch /var/log/cron.log
 
 # Copy assets and dependencies into final image
-COPY --from=frontend-builder /files/res//assets ./files/res/assets
-COPY --from=composer /vendor ./vendor
+COPY --from=frontend-builder /files/res/assets ./files/res/assets
+COPY --from=composer /var/www/html/vendor ./vendor
 
 # Fix ownership
 RUN chown -R www-data:www-data /var/www/html
