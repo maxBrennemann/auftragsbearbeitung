@@ -33,3 +33,8 @@ up:
 
 down:
 	docker compose down
+
+mac-certificates:
+	mkdir -p ./.config/certs
+	mkcert -install
+	cd ./.config/certs && mkcert -cert-file localhost.pem -key-file localhost-key.pem localhost 127.0.0.1
