@@ -62,8 +62,9 @@ RUN apk add --no-cache shadow \
 RUN touch /var/log/cron.log
 
 # Copy assets and dependencies into final image
-COPY --from=frontend-builder /app/files/res/assets ./files/res/assets
 COPY --from=composer /var/www/html/vendor ./vendor
+RUN ./console autoupgrade --skip-migration
+COPY --from=frontend-builder /app/files/res/assets ./files/res/assets
 
 RUN rm -rf files/res/js
 RUN rm -rf files/res/css
