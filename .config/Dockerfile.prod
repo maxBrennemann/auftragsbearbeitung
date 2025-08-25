@@ -1,3 +1,16 @@
+FROM composer:2.8.11 AS composer
+
+WORKDIR /var/www/html
+COPY . .
+COPY composer.json composer.lock ./
+RUN composer install \
+    --no-dev \
+    --prefer-dist \
+    --no-scripts \
+    --no-progress \
+    --optimize-autoloader
+RUN ./console autoupgrade --skip-migration 
+
 FROM node:24-alpine AS frontend-builder
 
 WORKDIR /app
@@ -7,19 +20,9 @@ COPY package.json package-lock.json ./
 RUN npm ci --include=dev && npm cache clean --force
 
 COPY . .
+COPY --from=composer /files/res/js/tableConfig.js ./files/res/js/tableConfig.js
 
 RUN npm run build
-
-FROM composer:2.8.11 AS composer
-
-WORKDIR /var/www/html
-COPY composer.json composer.lock ./
-RUN composer install \
-    --no-dev \
-    --prefer-dist \
-    --no-scripts \
-    --no-progress \
-    --optimize-autoloader
 
 FROM php:8.4.11-fpm-alpine
 
@@ -63,7 +66,6 @@ RUN touch /var/log/cron.log
 
 # Copy assets and dependencies into final image
 COPY --from=composer /var/www/html/vendor ./vendor
-RUN ./console autoupgrade --skip-migration
 COPY --from=frontend-builder /app/files/res/assets ./files/res/assets
 
 RUN rm -rf files/res/js
