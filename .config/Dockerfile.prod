@@ -21,7 +21,7 @@ COPY package.json package-lock.json ./
 RUN npm ci --include=dev && npm cache clean --force
 
 COPY . .
-COPY --from=composer /files/res/js/tableConfig.js ./files/res/js/tableConfig.js
+COPY --from=composer /files/res/js/classes/tableconfig.js ./files/res/js/classes/tableconfig.js
 
 RUN npm run build
 
