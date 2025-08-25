@@ -14,7 +14,6 @@ abstract class Posten
     abstract protected function bekommeEinzelPreis_formatted();
     abstract protected function bekommeDifferenz();
     abstract protected function calculateDiscount();
-    abstract protected function getHTMLData();
     abstract protected function fillToArray($arr);
     abstract protected function getDescription();
     abstract protected function getEinheit();

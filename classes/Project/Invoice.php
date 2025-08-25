@@ -254,10 +254,10 @@ class Invoice
         return $this->auftrag->getLinkedVehicles();
     }
 
-    private function setInvoiceSum(): void
+    public function setInvoiceSum(): void
     {
-        $sum = $this->auftrag->calcOrderSum();
-        DBAccess::updateQuery("UPDATE invoice SET amount = :amount WHERE id = :id", [
+        $sum = (float) $this->auftrag->calcOrderSum();
+        DBAccess::updateQuery("UPDATE invoice SET amount = :amount WHERE id = :id;", [
             "amount" => $sum,
             "id" => $this->invoiceId,
         ]);

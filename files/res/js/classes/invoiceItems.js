@@ -1,7 +1,10 @@
 //@ts-nocheck
 
+// @ts-ignore
 import { ajax } from "js-classes/ajax.js";
+// @ts-ignore
 import { addBindings } from "js-classes/bindings.js";
+// @ts-ignore
 import { notification } from "js-classes/notifications.js";
 
 import { getTemplate, setInpupts, clearInputs, createPopup } from "../global.js";
@@ -358,7 +361,11 @@ functionNames.click_createTimeInputRow = () => {
         calculateTime();
     }, false);
 
-    config.extendedTimes.push({ "start": "00:00", "end": "00:00", "date": "" });
+    config.extendedTimes.push({
+        "start": "00:00",
+        "end": "00:00",
+        "date": ""
+    });
 
     start.focus();
 }

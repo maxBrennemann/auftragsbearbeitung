@@ -1,5 +1,7 @@
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import postcss from './.config/postcss.config.ts';
 import type { ServerOptions } from 'vite';
 import type { Plugin } from 'vite';
@@ -40,6 +42,9 @@ function getJsEntries(dir) {
     return entries;
 }
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const projectRoot = __dirname;
 const httpsConfig: ServerOptions['https'] = {};
 
@@ -71,6 +76,7 @@ export default defineConfig({
     esbuild: {
         target: 'esnext',
         jsx: 'automatic',
+        pure: ['console.log'],
     },
 
     build: {

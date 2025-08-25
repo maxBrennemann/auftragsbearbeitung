@@ -8,10 +8,12 @@ class InvoiceRoutes extends Routes
 {
     /**
      * @uses \Classes\Project\InvoiceHelper::getOpenInvoiceData()
+     * @uses \Classes\Project\InvoiceHelper::recalculateInvoices()
      * @uses \Classes\Project\Invoice::getPDF()
      */
     protected static $getRoutes = [
         "/invoice/open" => [\Classes\Project\InvoiceHelper::class, "getOpenInvoiceData"],
+        "/invoice/recalculate-all" => [\Classes\Project\InvoiceHelper::class, "recalculateInvoices"],
         "/invoice/{invoiceId}/pdf" => [\Classes\Project\Invoice::class, "getPDF"],
     ];
 

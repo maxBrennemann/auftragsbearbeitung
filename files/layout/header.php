@@ -185,4 +185,4 @@ if ($pageName == "") {
 			<?= BreadcrumbController::createBreadcrumbMenu($page, $pageName) ?>
 		</div>
 	</header>
-	<main class="mt-4 w-full lg:px-4 lg:w-11/12 xl:w-4/5 lg:mx-auto overflow-x-auto">
+	<main class="mt-4 w-full px-1 lg:px-4 lg:w-11/12 xl:w-4/5 lg:mx-auto overflow-x-auto">

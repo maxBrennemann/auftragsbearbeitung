@@ -1,4 +1,4 @@
-FROM composer:2.8.8 AS composer
+FROM composer:2.8.11 AS composer
 
 # Set working directory
 WORKDIR /var/www/html
@@ -9,7 +9,7 @@ COPY composer.json composer.lock ./
 # Install the dependencies
 RUN composer install --no-scripts
 
-FROM php:8.4.7-fpm
+FROM php:8.4.11-fpm
 
 # Get UID and GID of host user
 ARG UID
@@ -41,5 +41,3 @@ RUN usermod --non-unique --uid $UID www-data \
 
 # Create cron log
 RUN touch /var/log/cron.log
-
-#USER $UID

@@ -7,8 +7,9 @@
 
 :root {
     --main-table-color: #d8d8d8;
+    --main-table-foot-color: #b6b6b6;
     --main-def-color: #eff0f1;
-    --main-inner-def-color: #b1b1b1;
+    --main-inner-def-color: #bbbbbb;
 }
 
 body {

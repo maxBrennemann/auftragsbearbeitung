@@ -57,13 +57,8 @@ fnNames.click_deleteOrder = () => {
     div.id = "alertBox";
     div.appendChild(template.content.cloneNode(true));
 
-    div.classList.add("absolute", "w-96", "z-20");
-
     const deleteOrderBtn = div.querySelector('#deleteOrder') as HTMLButtonElement;
     deleteOrderBtn.addEventListener("click", deleteOrder, false);
-
-    const closeAlertBtn = div.querySelector('#closeAlert') as HTMLButtonElement;
-    closeAlertBtn.addEventListener("click", closeAlert, false);
 
     createPopup(div);
 }
@@ -97,10 +92,6 @@ fnNames.click_changeCustomer = async () => {
             customerResultBox.innerHTML = r.template;
         });
     });
-}
-
-function closeAlert() {
-    (document.getElementById("alertBox") as HTMLElement).remove();
 }
 
 fnNames.write_editDescription = () => {

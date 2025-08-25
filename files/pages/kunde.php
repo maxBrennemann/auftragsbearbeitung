@@ -10,10 +10,10 @@ if ($customerId <= 0): ?>
 	<p>Kundennummer nicht gefunden oder ungültig.</p>
 	<p><a href="<?= Link::getPageLink("neuer-kunde") ?>" class="link-primary">Hier</a> kannst Du einen neuen Kunden anlegen.</p>
 <?php else:
-    $customer = new Kunde($customerId);
-    $orderCount = $customer->getOrderIds();
-    $orderCount = count($orderCount);
-    ?>
+	$customer = new Kunde($customerId);
+	$orderCount = $customer->getOrderIds();
+	$orderCount = count($orderCount);
+?>
 	<div class="mt-4 bg-gray-100 p-4 rounded-lg">
 		<h2 class="font-bold">Kundenübersicht für <?= $customer->getFirmenname() ?> (<?= $customer->getKundennummer() ?>)</h2>
 		<p>Anzahl der Aufträge: <?= $orderCount ?></p>
@@ -35,48 +35,60 @@ if ($customerId <= 0): ?>
 					<input disabled class="input-primary" id="idCustomer" value="<?= $customer->getKundennummer() ?>">
 				</div>
 			</div>
-			<div class="w-full flex gap-8 mt-2">
-				<div class="flex flex-col">
-					<label for="prename">Vorname:</label>
-					<input class="input-primary" id="prename" value="<?= $customer->getVorname() ?>" autocomplete="none">
+			<div class="grid grid-cols-2 2xl:grid-cols-1">
+				<div>
+					<div class="w-full flex gap-8 mt-2">
+						<div class="flex flex-col">
+							<label for="prename">Vorname:</label>
+							<input class="input-primary" id="prename" value="<?= $customer->getVorname() ?>" autocomplete="none">
+						</div>
+						<div class="flex flex-initial flex-col">
+							<label for="lastname">Nachname:</label>
+							<input class="input-primary" id="lastname" value="<?= $customer->getNachname() ?>" autocomplete="none">
+						</div>
+					</div>
+					<div class="w-full flex mt-2">
+						<div class="flex flex-col">
+							<label for="companyname">Firmenname:</label>
+							<input class="input-primary w-80" id="companyname" value="<?= $customer->getFirmenname() ?>" autocomplete="none">
+						</div>
+					</div>
+					<div class="w-full flex mt-2">
+						<div class="flex flex-col">
+							<label for="email">E-Mail:</label>
+							<input class="input-primary w-80" id="email" value="<?= $customer->getEmail() ?>" autocomplete="none">
+						</div>
+					</div>
+					<div class="w-full flex mt-2">
+						<div class="flex flex-col">
+							<label for="email">Rechnungs-E-Mail:</label>
+							<input class="input-primary w-80" id="invoiceEmail" value="<?= $customer->getInvoiceEmail() ?>" autocomplete="none">
+						</div>
+					</div>
 				</div>
-				<div class="flex flex-initial flex-col">
-					<label for="lastname">Nachname:</label>
-					<input class="input-primary" id="lastname" value="<?= $customer->getNachname() ?>" autocomplete="none">
-				</div>
-			</div>
-			<div class="w-full flex mt-2">
-				<div class="flex flex-col">
-					<label for="companyname">Firmenname:</label>
-					<input class="input-primary w-80" id="companyname" value="<?= $customer->getFirmenname() ?>" autocomplete="none">
-				</div>
-			</div>
-			<div class="w-full flex mt-2">
-				<div class="flex flex-col">
-					<label for="email">Email:</label>
-					<input class="input-primary w-80" id="email" value="<?= $customer->getEmail() ?>" autocomplete="none">
-				</div>
-			</div>
-			<div class="w-full flex mt-2">
-				<div class="flex flex-col">
-					<label for="website">Website:</label>
-					<input class="input-primary w-80" id="website" value="<?= $customer->getWebsite() ?>" autocomplete="none">
-				</div>
-			</div>
-			<div class="w-full flex gap-8 mt-2">
-				<div class="flex flex-col">
-					<label for="phoneLandline">Telefon Festnetz:</label>
-					<input class="input-primary" id="phoneLandline" value="<?= $customer->getTelefonFestnetz() ?>" autocomplete="none">
-				</div>
-				<div class="flex flex-initial flex-col">
-					<label for="phoneMobile">Telefon Mobil:</label>
-					<input class="input-primary" id="phoneMobile" value="<?= $customer->getTelefonMobil() ?>" autocomplete="none">
-				</div>
-			</div>
-			<div class="w-full flex mt-2">
-				<div class="flex flex-col">
-					<label for="fax">Fax:</label>
-					<input class="input-primary w-80" id="fax" value="<?= $customer->getFax() ?>" autocomplete="none">
+				<div>
+					<div class="w-full flex mt-2">
+						<div class="flex flex-col">
+							<label for="website">Website:</label>
+							<input class="input-primary w-80" id="website" value="<?= $customer->getWebsite() ?>" autocomplete="none">
+						</div>
+					</div>
+					<div class="w-full flex gap-8 mt-2">
+						<div class="flex flex-col">
+							<label for="phoneLandline">Telefon Festnetz:</label>
+							<input class="input-primary" id="phoneLandline" value="<?= $customer->getTelefonFestnetz() ?>" autocomplete="none">
+						</div>
+						<div class="flex flex-initial flex-col">
+							<label for="phoneMobile">Telefon Mobil:</label>
+							<input class="input-primary" id="phoneMobile" value="<?= $customer->getTelefonMobil() ?>" autocomplete="none">
+						</div>
+					</div>
+					<div class="w-full flex mt-2">
+						<div class="flex flex-col">
+							<label for="fax">Fax:</label>
+							<input class="input-primary w-80" id="fax" value="<?= $customer->getFax() ?>" autocomplete="none">
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="w-full flex mt-2">

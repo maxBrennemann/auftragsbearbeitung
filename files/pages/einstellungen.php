@@ -54,7 +54,7 @@ $companyLogo = \Classes\Project\ClientSettings::getLogo();
             <input class="input-primary" value="<?= Config::get("companyPhone") ?>" data-write="true" data-fun="changeSetting" data-setting="companyPhone">
         </div>
         <div class="flex items-center mt-2">
-            <span class="font-semibold w-60">Email</span>
+            <span class="font-semibold w-60">E-Mail</span>
             <input class="input-primary" value="<?= Config::get("companyEmail") ?>" data-write="true" data-fun="changeSetting" data-setting="companyEmail">
         </div>
         <div class="flex items-center mt-2">

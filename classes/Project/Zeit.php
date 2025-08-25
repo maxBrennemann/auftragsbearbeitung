@@ -40,13 +40,6 @@ class Zeit extends Posten
         $this->position = $position;
     }
 
-    public function getHTMLData()
-    {
-        $html = "<div><span>Typ: {$this->postenTyp} </span><span>Stundenlohn: {$this->Stundenlohn}€ </span>";
-        $html .= "<span>Zeit in Minuten: {$this->ZeitInMinuten} </span><span>Preis: {$this->bekommePreis()}€ </span></div>";
-        return $html;
-    }
-
     public function fillToArray($arr)
     {
         $arr['Postennummer'] = $this->postennummer;
@@ -316,6 +309,12 @@ class Zeit extends Posten
             "price" => $price,
             "data" => $item,
         ]);
+    }
+
+    public static function get()
+    {
+        $idItem = (int) Tools::get("itemId");
+        // TODO: implement
     }
 
     public static function delete()

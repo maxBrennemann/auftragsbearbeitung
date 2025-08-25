@@ -43,7 +43,7 @@
 				<input type="text" form="cForm" name="country" autocomplete="some-unrecognised-value" class="input-primary">
 			</label>
 			<label class="flex flex-col">
-				Email
+				E-Mail
 				<input type="email" form="cForm" name="companyemail" autocomplete="some-unrecognised-value" class="input-primary">
 			</label>
 			<label class="flex flex-col">
@@ -85,7 +85,7 @@
 				<input type="text" form="cForm" name="contactSurname" autocomplete="some-unrecognised-value" class="input-primary">
 			</label>
 			<label class="flex flex-col">
-				Email
+				E-Mail
 				<input type="email" form="cForm" name="emailaddress" autocomplete="some-unrecognised-value" class="input-primary">
 			</label>
 			<label class="flex flex-col">
@@ -120,7 +120,7 @@
 				<input type="text" form="pForm" name="surname" autocomplete="some-unrecognised-value" class="input-primary">
 			</label>
 			<label class="flex flex-col">
-				Email
+				E-Mail
 				<input type="email" form="pForm" name="companyemail" autocomplete="some-unrecognised-value" class="input-primary">
 			</label>
 			<label class="flex flex-col">

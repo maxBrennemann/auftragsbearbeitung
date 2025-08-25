@@ -66,10 +66,12 @@
                 <span>Verkaufspreis [€]:</span>
                 <input class="input-primary mt-1" type="number" id="pre" value="0">
             </div>
-            <div>
+            <div class="flex flex-col">
                 <span>Aufschlag [%]:</span>
-                <input class="input-primary mt-1" type="number" id="surcharge" value="0" disabled>
-                <button class="btn-primary mt-2" data-binding="true" data-fun="calculatePrice">Übernehmen</button>
+                <div>
+                    <input class="input-primary mt-1" type="number" id="surcharge" value="0" disabled>
+                    <button class="btn-primary mt-2" data-binding="true" data-fun="calculatePrice">Übernehmen</button>
+                </div>
             </div>
         </div>
     </div>

@@ -43,10 +43,10 @@ class Statistics
 
     public static function getVolumeByMonth($startDate, $endDate)
     {
-        $query = "SELECT CONCAT(MONTHNAME(Fertigstellung), ' ', YEAR(Fertigstellung)) AS `date`, SUM(orderPrice) AS `value`
-			FROM auftragssumme
-			WHERE Fertigstellung BETWEEN :startDate AND :endDate
-			GROUP BY YEAR(Fertigstellung), MONTH(Fertigstellung)";
+        $query = "SELECT CONCAT(MONTHNAME(finalized_date), ' ', YEAR(finalized_date)) AS `date`, SUM(amount) AS `value`
+			FROM invoice
+			WHERE finalized_date BETWEEN :startDate AND :endDate
+			GROUP BY YEAR(finalized_date), MONTH(finalized_date)";
 
         return DBAccess::selectQuery($query, [
             "startDate" => $startDate,
@@ -82,9 +82,9 @@ class Statistics
 
     public static function getVolumeByOrderType($startDate, $endDate)
     {
-        $query = "SELECT SUM(av.price) as `value`, `at`.Auftragstyp as `date` 
-			FROM auftragssumme_view av, auftrag a, auftragstyp `at`
-			WHERE av.id = a.Auftragsnummer
+        $query = "SELECT SUM(invoice.amount) as `value`, `at`.Auftragstyp as `date` 
+			FROM invoice, auftrag a, auftragstyp `at`
+			WHERE invoice.order_id = a.Auftragsnummer
 			AND at.id = a.Auftragstyp
 			AND a.Fertigstellung BETWEEN :startDate AND :endDate
 			GROUP BY `date`";

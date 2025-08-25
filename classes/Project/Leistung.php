@@ -49,11 +49,6 @@ class Leistung extends Posten
         $this->position = $position;
     }
 
-    public function getHTMLData()
-    {
-        return "<div><span>{$this->bezeichnung}</span><br><span>Beschreibung: {$this->beschreibung}</span><br><span>Preis: {$this->preis}</span></div>";
-    }
-
     /* fills array for Postentable */
     public function fillToArray($arr)
     {
@@ -154,9 +149,7 @@ class Leistung extends Posten
         return $this->einkaufspreis * $this->quantity;
     }
 
-    public function calculateDiscount()
-    {
-    }
+    public function calculateDiscount() {}
 
     public function getDescription()
     {
@@ -236,7 +229,7 @@ class Leistung extends Posten
 
         /* TODO: simplify this by helper function */
         $data = Posten::getOrderItems($orderId);
-        $data = array_filter($data, fn ($item) => $item->getPostennummer() == $ids[0]);
+        $data = array_filter($data, fn($item) => $item->getPostennummer() == $ids[0]);
         $data = reset($data);
 
         $item = [];
@@ -259,6 +252,12 @@ class Leistung extends Posten
             "price" => $price,
             "data" => $item,
         ]);
+    }
+
+    public static function get()
+    {
+        $idItem = (int) Tools::get("itemId");
+        // TODO: implement
     }
 
     public static function delete()

@@ -11,7 +11,7 @@ $isLoggedIn = SessionController::isLoggedIn();
         <div class="defCont">
             <div>
                 <label>
-                    <p>Nutzername oder Email-Adresse</p>
+                    <p>Nutzername oder E-Mailadresse</p>
                     <input type="text" class="input-primary w-60" id="name">
                 </label>
                 <label>

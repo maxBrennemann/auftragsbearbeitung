@@ -36,8 +36,8 @@ if ($showUserList) : ?>
                     <input type="text" placeholder="Nachname" class="block rounded-sm m-1 ml-0 p-1 w-80" name="lastname" autocomplete="off">
                 </label>
                 <label>
-                    <p>Email</p>
-                    <input type="email" placeholder="Email" class="block rounded-sm m-1 ml-0 p-1 w-80" name="email" autocomplete="off">
+                    <p>E-Mail</p>
+                    <input type="email" placeholder="E-Mail" class="block rounded-sm m-1 ml-0 p-1 w-80" name="email" autocomplete="off">
                 </label>
                 <label>
                     <p>Passwort</p>
@@ -68,7 +68,7 @@ if ($showUserList) : ?>
             <input type="text" value="<?=$user->getLastname()?>" class="input-primary w-80" id="lastname" autocomplete="off" aria-autocomplete="none">
         </label>
         <label>
-            <p>Email</p>
+            <p>E-Mail</p>
             <input type="text" value="<?=$user->getEmail()?>" class="input-primary w-80" id="email" autocomplete="off" aria-autocomplete="none">
         </label>
         <div class="mt-2">

@@ -1,0 +1,43 @@
+services:
+  nginx:
+    image: auftragsbearbeitung/nginx:latest
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+
+  certbot:
+    image: certbot/certbot
+    entrypoint: sh
+
+  php:
+    image: auftragsbearbeitung/php-app:latest
+    expose:
+      - "9000"
+    environment:
+      - VIRTUAL_HOST=${DOMAIN}
+      - LETSENCRYPT_HOST=${DOMAIN}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+
+  database:
+    image: mariadb:11.7
+    environment:
+      MARIADB_DATABASE: ${DB_DATABASE}
+      MARIADB_USER: ${DB_USERNAME}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - VIRTUAL_HOST=pma.${DOMAIN}
+      - LETSENCRYPT_HOST=pma.${DOMAIN}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+      - PMA_HOST=database
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - UPLOAD_LIMIT=300M
+
+volumes:
+  db_data:
