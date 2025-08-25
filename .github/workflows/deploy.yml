@@ -28,8 +28,8 @@ jobs:
           file: .config/Dockerfile.prod
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/php-base:latest
-            ghcr.io/${{ github.repository }}/php-base:${{ github.sha }}
+            ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:latest
+            ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:${{ github.sha }}
 
       - name: Build And Push Nginx Image
         uses: docker/build-push-action@v6
@@ -38,8 +38,8 @@ jobs:
           file: .config/nginx/Dockerfile.prod
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/nginx:latest
-            ghcr.io/${{ github.repository }}/nginx:${{ github.sha }}
+            ghcr.io/maxbrennemann/auftragsbearbeitung/nginx:latest
+            ghcr.io/maxbrennemann/auftragsbearbeitung/nginx:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
