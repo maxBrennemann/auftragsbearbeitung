@@ -9,6 +9,7 @@ RUN composer install \
     --no-scripts \
     --no-progress \
     --optimize-autoloader
+COPY .config/.env.example .env
 RUN ./console autoupgrade --skip-migration 
 
 FROM node:24-alpine AS frontend-builder
