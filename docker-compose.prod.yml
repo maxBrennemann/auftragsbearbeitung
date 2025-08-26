@@ -5,10 +5,23 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN}
+    volumes:
+      - ./etc/letsencrypt:/etc/letsencrypt:ro
 
   certbot:
-    image: certbot/certbot
-    entrypoint: sh
+    container_name: certbot
+    image: certbot/certbot:latest
+    depends_on:
+      - nginx
+    command: >-
+             certonly --reinstall --webroot --webroot-path=/var/www/certbot
+             --email ${EMAIL} --agree-tos --no-eff-email
+             -d ${DOMAIN}
+    volumes:
+      - ./etc/letsencrypt:/etc/letsencrypt
+      - ./certbot/data:/var/www/certbot
 
   php:
     image: ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:latest
@@ -18,6 +31,8 @@ services:
       - VIRTUAL_HOST=${DOMAIN}
       - LETSENCRYPT_HOST=${DOMAIN}
       - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+    volumes:
+      - upload/:/var/www/html
 
   database:
     image: mariadb:11.7
