@@ -1,6 +1,6 @@
 services:
   nginx:
-    image: auftragsbearbeitung/nginx:latest
+    image: ghcr.io/maxbrennemann/auftragsbearbeitung/nginx:latest
     restart: always
     ports:
       - "80:80"
@@ -11,7 +11,7 @@ services:
     entrypoint: sh
 
   php:
-    image: auftragsbearbeitung/php-app:latest
+    image: ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:latest
     expose:
       - "9000"
     environment:
