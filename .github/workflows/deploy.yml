@@ -42,7 +42,7 @@ jobs:
             ghcr.io/maxbrennemann/auftragsbearbeitung/nginx:${{ github.sha }}
 
   deploy:
-    environment: ${{ github.event.inputs.environment }}
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
     runs-on: ubuntu-latest
     needs: build
     steps:
