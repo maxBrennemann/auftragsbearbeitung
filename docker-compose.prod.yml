@@ -34,7 +34,7 @@ services:
       LETSENCRYPT_HOST: ${DOMAIN}
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
     volumes:
-      - upload/:/var/www/html
+      - ./upload/:/var/www/html
 
   database:
     image: mariadb:11.7
