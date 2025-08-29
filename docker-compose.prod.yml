@@ -9,7 +9,6 @@ services:
       DOMAIN: ${DOMAIN}
     volumes:
       - ./etc/letsencrypt:/etc/letsencrypt:ro
-      - ./nginx/conf/:/etc/nginx/conf.d/:ro
       - ./certbot/www/:/var/www/certbot/:ro
 
   certbot:

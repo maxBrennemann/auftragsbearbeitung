@@ -1,10 +1,51 @@
-.git
+# ide and editor files
+.vs
+.vscode
+.VSCodeCounter
+auftragsbearbeitung.code-workspace
+.DS_Store
+
+# settings and config files
+.htaccess
+.env
 node_modules
 vendor
+.config/install/install.lock
+var
+cache/*
+!cache/.gitkeep
+
+.config/res/sql/init/*
+!.config/res/sql/init/.gitkeep
+
+.config/certs/*
+!.config/certs/openssl.cnf
+
+.php-cs-fixer.cache
+
+# generated files
+generated/*
+!generated/.gitkeep
+
+files/res/js/classes/tableconfig.js
+
+# minimized files
+files/res/assets/*
+
+# upload
+upload/*
+!upload/.gitkeep
+
+# docker explicit
+.git
+.github
 docker-compose*.yml
 upload
-.github
-generated
-var
 database/legacy_sql
 database/versions
+
+#misc
+files/assets/forms/modules/sticker/catalog_products.csv
+.git.bfg-report
+protocol.txt
+README.md
