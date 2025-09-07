@@ -22,7 +22,7 @@ RUN npm ci --include=dev && npm cache clean --force
 
 COPY files/res/js files/res/js
 COPY .config .config
-COPY vite.config.js vite.config.js
+COPY vite.config.ts vite.config.ts
 COPY tsconfig.json tsconfig.json
 COPY --from=composer /var/www/html/files/res/js/classes/tableconfig.js ./files/res/js/classes/tableconfig.js
 
