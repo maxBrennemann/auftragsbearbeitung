@@ -10,8 +10,7 @@ RUN composer install \
     --no-progress \
     --optimize-autoloader
 COPY .config/.env.example .env
-COPY console ./console
-COPY files/res/js/classes ./files/res/js/classes
+COPY . .
 
 RUN ./console autoupgrade --skip-migration 
 
