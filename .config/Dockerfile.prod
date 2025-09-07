@@ -1,8 +1,8 @@
 FROM composer:2.8.11 AS composer
 
 WORKDIR /var/www/html
-COPY . .
 COPY composer.json composer.lock ./
+
 RUN composer install \
     --no-dev \
     --prefer-dist \
@@ -10,6 +10,9 @@ RUN composer install \
     --no-progress \
     --optimize-autoloader
 COPY .config/.env.example .env
+COPY console ./console
+COPY files/res/js/classes ./files/res/js/classes
+
 RUN ./console autoupgrade --skip-migration 
 
 FROM node:24-alpine AS frontend-builder
@@ -41,17 +44,15 @@ RUN apk add --no-cache --virtual .build-deps \
         zlib-dev \
     && apk add --no-cache \
         dcron \
-    # Build extensions
     && docker-php-ext-install pdo_mysql mysqli zip gd \
-    # Remove build deps afterwards → smaller image
     && apk del .build-deps
 
-# Set the document root
 WORKDIR /var/www/html
 
 # PHP config
 COPY .config/php-config.ini /usr/local/etc/php/conf.d/custom.ini
 COPY .config/php.conf /usr/local/etc/php-fpm.d/custom-php.conf
+
 COPY . .
 
 # https://stackoverflow.com/questions/73991553/permission-denied-for-laravel-and-docker
