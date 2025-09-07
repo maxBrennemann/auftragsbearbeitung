@@ -134,13 +134,13 @@ class Category
 
     public static function getJSONOneLayer()
     {
-        return JSONResponseHandler::sendResponse(self::getOneLayerRepresentation());
+        JSONResponseHandler::sendResponse(self::getOneLayerRepresentation());
     }
 
     public static function getJSONTree()
     {
         $data = self::parseCategories();
-        return JSONResponseHandler::sendResponse(self::getCategoryTree($data));
+        JSONResponseHandler::sendResponse(self::getCategoryTree($data));
     }
 
     public static function updateCategory()

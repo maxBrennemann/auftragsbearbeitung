@@ -54,7 +54,7 @@ class UploadHandler
 
     public function handleUpload(array $file): array
     {
-        if (!isset($file) || $file["error"] !== UPLOAD_ERR_OK) {
+        if ($file["error"] !== UPLOAD_ERR_OK) {
             throw new RuntimeException("No file uploaded or upload error.");
         }
 

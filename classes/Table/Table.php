@@ -108,7 +108,7 @@ class Table extends Model
         $lastInsertId = $model->add($conditions);
 
         JSONResponseHandler::sendResponse([
-            $model->primaryKey => $lastInsertId,
+            $model->getPrimaryKey() => $lastInsertId,
         ]);
     }
 

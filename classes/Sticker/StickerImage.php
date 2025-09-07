@@ -112,7 +112,7 @@ class StickerImage extends PrestashopConnection
     {
         $images = array_filter(
             $this->images,
-            fn ($element) => $element["image_sort"] == $type
+            fn($element) => $element["image_sort"] == $type
         );
 
         // Sort the array by the "image_order" attribute
@@ -163,13 +163,9 @@ class StickerImage extends PrestashopConnection
         }
     }
 
-    public function getFirstImageLink()
-    {
-    }
+    public function getFirstImageLink() {}
 
-    public function convertJPGtoAvif()
-    {
-    }
+    public function convertJPGtoAvif() {}
 
     private function saveImage($filename)
     {
@@ -257,9 +253,7 @@ class StickerImage extends PrestashopConnection
         }
     }
 
-    public function uploadSVG($number)
-    {
-    }
+    public function uploadSVG($number) {}
 
     public static function handleSVGStatus(int $idMotiv)
     {
@@ -388,11 +382,7 @@ class StickerImage extends PrestashopConnection
         } catch (RequestException $e) {
         }
 
-        if (isset($result)) {
-            return $result;
-        }
-
-        return null;
+        return $result;
     }
 
     /**
@@ -641,9 +631,7 @@ class StickerImage extends PrestashopConnection
         }
     }
 
-    public static function getCombinedImages(int $stickerId, int $textileId)
-    {
-    }
+    public static function getCombinedImages(int $stickerId, int $textileId) {}
 
     public static function prepareData($data)
     {

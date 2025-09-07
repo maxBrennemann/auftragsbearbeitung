@@ -823,6 +823,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
     {
         $query = "SELECT Auftragsnummer FROM auftrag WHERE `status` != '" . OrderState::Default->value . "'AND Rechnungsnummer = 0;";
         $data = DBAccess::selectQuery($query);
+        $orders = [];
 
         foreach ($data as $row) {
             $order = new Auftrag($row["Auftragsnummer"]);

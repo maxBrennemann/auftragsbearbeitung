@@ -55,7 +55,7 @@ class CacheManager
      */
     public static function loadCacheIfExists()
     {
-        if (CACHE_STATUS == "off") {
+        if (defined(CACHE_STATUS) && CACHE_STATUS == "off") {
             return;
         }
 
@@ -84,7 +84,7 @@ class CacheManager
     {
         ob_start();
         register_shutdown_function(function () {
-            if (CACHE_STATUS == "on") {
+            if (defined(CACHE_STATUS) && CACHE_STATUS == "on") {
                 CacheManager::writeCache();
             }
             ob_end_flush();

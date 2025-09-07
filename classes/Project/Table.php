@@ -166,6 +166,7 @@ class Table
             $this->createKeys();
         }
 
+        $array = [];
         for ($i = 0; $i < sizeof($this->data); $i++) {
             $key = $this->keys[$i];
 
@@ -220,6 +221,7 @@ class Table
             case "delete":
                 $this->buttonUpdate = !$this->buttonDelete;
 
+                $array = [];
                 for ($i = 0; $i < sizeof($this->data); $i++) {
                     $btn = $this->addDeleteButton($this->keys[$i]);
                     $array[$i] = $btn;
@@ -231,6 +233,7 @@ class Table
                 }
                 break;
             case "check":
+                $array = [];
                 for ($i = 0; $i < sizeof($this->data); $i++) {
                     $btn = $this->addCheck($this->keys[$i]);
                     $array[$i] = $btn;
@@ -239,6 +242,7 @@ class Table
                 $this->buttonCheck = true;
                 break;
             case "move":
+                $array = [];
                 for ($i = 0; $i < sizeof($this->data); $i++) {
                     $btn = $this->addMove($this->keys[$i]);
                     $array[$i] = $btn;

@@ -31,7 +31,7 @@ class PrestashopConnection
         $this->prestaUrl = $_ENV["SHOPURL"];
     }
 
-    protected function getXML($resource, $debug = false)
+    public function getXML($resource, $debug = false)
     {
         //$debug = true;
 

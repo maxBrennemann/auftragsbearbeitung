@@ -145,6 +145,7 @@ class InvoicePDF extends TransactionPDF
             $type = $entry["type"];
             $id = $entry["id"];
             $content = $entry["content"];
+            $addToOffset = 0;
 
             if ($type == "item") {
                 $p = array_find($posten, fn($p) => $p->getPostennummer() == $id); 

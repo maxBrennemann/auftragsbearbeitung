@@ -2,7 +2,6 @@
 
 namespace Classes\Sticker\Exports;
 
-use Classes\Link;
 use Classes\Sticker\Aufkleber;
 use Classes\Sticker\PrestashopConnection;
 use Classes\Sticker\StickerCollection;
