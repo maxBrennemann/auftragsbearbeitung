@@ -7,8 +7,7 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 
 class TagRepository
 {
-    private int $idSticker;
-    private string $title;
+    
     private array $tags;
 
     public function __construct(int $idSticker, string $title)
@@ -19,13 +18,10 @@ class TagRepository
             WHERE st.id_sticker = $idSticker";
         $this->tags = DBAccess::selectQuery($query);
 
-        $this->idSticker = $idSticker;
-
         if ($title == "") {
             $sticker = new Sticker($idSticker);
             $title = $sticker->getName();
         }
-        $this->title = $title;
     }
 
     public function get()

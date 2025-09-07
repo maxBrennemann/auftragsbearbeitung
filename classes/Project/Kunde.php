@@ -50,7 +50,7 @@ class Kunde implements StatisticsInterface
         $this->firmenname = $data["Firmenname"] ?? "";
         $this->strasse = $data["strasse"] ?? "";
         $this->hausnummer = $data["hausnr"] ?? "";
-        $this->postleitzahl = (int) $data["plz"] ?? "";
+        $this->postleitzahl = (int) $data["plz"];
         $this->ort = $data["ort"] ?? "";
         $this->email = $data["Email"] ?? "";
         $this->invoiceEmail = $data["invoice_email"] ?? "";

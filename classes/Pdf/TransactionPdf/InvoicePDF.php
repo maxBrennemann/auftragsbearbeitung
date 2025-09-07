@@ -11,7 +11,7 @@ use Classes\Project\InvoiceNumberTracker;
 class InvoicePDF extends TransactionPDF
 {
     private Invoice $invoice;
-    private int $invoiceId;
+    //private int $invoiceId;
     protected string $type = "invoice";
 
     public function __construct(int $invoiceId, int $orderId)
@@ -20,7 +20,7 @@ class InvoicePDF extends TransactionPDF
         $this->fileName = "Rechnung_" . $invoiceId;
         $this->invoice = new Invoice($invoiceId, $orderId);
 
-        $this->invoiceId = $invoiceId;
+        //$this->invoiceId = $invoiceId;
         $this->addressId = $this->invoice->getAddressId();
         $this->contactId = $this->invoice->getContactId();
     }
@@ -41,7 +41,7 @@ class InvoicePDF extends TransactionPDF
         $this->setXY(125, 54);
         $this->setFontStretching(200);
         $this->SetFont("helvetica", "B", 17);
-        $this->Cell(60, 20, "RECHNUNG", 0, 0, 'L', 0, '', 2);
+        $this->Cell(60, 20, "RECHNUNG", 0, 0, 'L', false, '', 2);
         $this->setFontStretching();
 
         $this->addTableHeader();
@@ -107,13 +107,13 @@ class InvoicePDF extends TransactionPDF
         $this->Cell(30, 10, $invoiceNumber, 0, 0, 'R');
         $this->setXY(125, $y + 6);
         $this->Cell(30, 10, "Auftrags-Nr:");
-        $this->Cell(30, 10, $this->order->getAuftragsnummer(), 0, 0, 'R');
+        $this->Cell(30, 10, (string) $this->order->getAuftragsnummer(), 0, 0, 'R');
         $this->setXY(125, $y + 12);
         $this->Cell(30, 10, "Datum:");
         $this->Cell(30, 10, $this->invoice->getCreationDateUnformatted()->format("d.m.Y"), 0, 0, 'R');
         $this->setXY(125, $y + 18);
         $this->Cell(30, 10, "Kunden-Nr.:");
-        $this->Cell(30, 10, $this->customer->getKundennummer(), 0, 0, 'R');
+        $this->Cell(30, 10, (string) $this->customer->getKundennummer(), 0, 0, 'R');
         $this->setXY(125, $y + 24);
         $this->Cell(30, 10, "Seite:");
         $this->Cell(30, 10, $this->getAliasRightShift() . $this->PageNo() . ' von ' . $this->getAliasNbPages(), 0, 0, 'R');
@@ -145,10 +145,11 @@ class InvoicePDF extends TransactionPDF
             $type = $entry["type"];
             $id = $entry["id"];
             $content = $entry["content"];
+            $addToOffset = 0;
 
             if ($type == "item") {
                 $p = array_find($posten, fn($p) => $p->getPostennummer() == $id); 
-                $this->Cell(15, $lineheight, $count);
+                $this->Cell(15, $lineheight, (string) $count);
                 $this->Cell(20, $lineheight, $p->getQuantity());
                 $this->Cell(20, $lineheight, $p->getEinheit());
 

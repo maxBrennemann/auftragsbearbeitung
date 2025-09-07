@@ -16,8 +16,6 @@ class Zeit extends Posten
     private $beschreibung = null;
     private $isInvoice = false;
 
-    private $internalZeitNumber = 0;
-
     protected $postenTyp = "zeit";
     protected $ohneBerechnung = false;
     protected $postennummer;
@@ -62,11 +60,6 @@ class Zeit extends Posten
         $arr['Bezeichnung'] = "<button class=\"btn-primary-small\">Zeit</button>";
 
         return $arr;
-    }
-
-    public function setSpecificNumber($number)
-    {
-        $this->internalZeitNumber = (int) $number;
     }
 
     private function bekommeErweiterteZeiterfassungTabelle()

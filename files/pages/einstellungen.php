@@ -3,6 +3,7 @@
 use Classes\Link;
 use Classes\Project\Config;
 use Classes\Project\InvoiceNumberTracker;
+use Classes\Project\CacheManager;
 
 $companyLogo = \Classes\Project\ClientSettings::getLogo();
 
@@ -116,7 +117,7 @@ $companyLogo = \Classes\Project\ClientSettings::getLogo();
         <?= \Classes\Controller\TemplateController::getTemplate("inputSwitch", [
             "id" => "cacheStatusSwitch",
             "name" => "Cache",
-            "value" => CACHE_STATUS == "on" ? "checked" : "",
+            "value" => CacheManager::getCacheStatus() == "on" ? "checked" : "",
             "binding" => "toggleCache",
         ]); ?>
     </div>

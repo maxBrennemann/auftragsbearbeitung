@@ -480,7 +480,7 @@ class StickerCollection implements \Iterator
 
         $additionalData = DBAccess::selectQuery("SELECT additional_data FROM module_sticker_sticker_data WHERE id = :id LIMIT 1", ["id" => $id]);
 
-        if (!$additionalData[0] === null) {
+        if (!$additionalData[0] == null) {
             $additionalData = json_decode($additionalData[0]["additional_data"], true);
 
             $additionalData["products"][$type]["altTitle"] = $newTitle;
@@ -555,7 +555,6 @@ class StickerCollection implements \Iterator
 
         if (!in_array($type, $types)) {
             JSONResponseHandler::throwError(404, "Unsupported export type.");
-            return;
         }
 
         $export = DBAccess::selectQuery("SELECT `$type` FROM module_sticker_exports WHERE idSticker = :idSticker LIMIT 1", [
@@ -600,7 +599,6 @@ class StickerCollection implements \Iterator
 
         if (!in_array($type, $types)) {
             JSONResponseHandler::throwError(404, "Cannot change unsupported type.");
-            return;
         }
 
         DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `$type` = NOT `$type` WHERE id = :id", [

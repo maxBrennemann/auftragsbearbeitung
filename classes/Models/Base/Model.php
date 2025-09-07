@@ -15,13 +15,18 @@ class Model
     protected array $hidden = [];
     protected array $columns = [];
 
-    public function __construct(?string $table = null)
+    final public function __construct(?string $table = null)
     {
         if ($table !== null) {
             $this->tableName = $table;
         }
 
         $this->loadTableConfig();
+    }
+
+    public function getPrimaryKey()
+    {
+        return $this->primaryKey;
     }
 
     protected function loadTableConfig(): void
@@ -67,7 +72,7 @@ class Model
         if (!empty($this->hidden)) {
             $columns = array_filter(
                 $this->columns,
-                fn ($el) => !in_array($el, $this->hidden ?? [])
+                fn ($el) => !in_array($el, $this->hidden)
             );
             $query .= implode(", ", $columns);
         } else {
@@ -163,7 +168,7 @@ class Model
         return $results;
     }
 
-    public function add($conditions): int
+    public function add($conditions): int|false
     {
         $this->triggerHook("beforeAdd", [
             "conditions" => &$conditions,
@@ -219,7 +224,7 @@ class Model
 
         $query .= " WHERE " . implode(" AND ", $whereClauses);
 
-        DBAccess::deleteQuery($query, $params ?? []);
+        DBAccess::deleteQuery($query, $params);
 
         $this->triggerHook("afterDelete", $conditions);
 

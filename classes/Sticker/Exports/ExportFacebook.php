@@ -2,7 +2,6 @@
 
 namespace Classes\Sticker\Exports;
 
-use Classes\Link;
 use Classes\Sticker\Aufkleber;
 use Classes\Sticker\PrestashopConnection;
 use Classes\Sticker\StickerCollection;
@@ -16,7 +15,6 @@ use MaxBrennemann\PhpUtilities\JSONResponseHandler;
  */
 class ExportFacebook extends PrestashopConnection
 {
-    private static $file;
     private $currentFilename;
     private $idProducts;
 
@@ -40,8 +38,6 @@ class ExportFacebook extends PrestashopConnection
         "shipping_weight" => "0.5kg",
         "google_product_category" => "", // aufkleber wandtattoo textil
     ];
-
-    private static $errorList = [];
 
     /**
      * gets all sticker ids from database;
@@ -135,9 +131,6 @@ class ExportFacebook extends PrestashopConnection
         foreach ($sizeIds as $size) {
             if (isset($prices[$size]) && $prices[$size] != 0.00) {
                 $line["price"] = $prices[$size] + $basePrice;
-            } else {
-                self::$errorList[] = $size;
-                continue;
             }
 
             $line["size"] = $product->getSize($size);
@@ -184,9 +177,6 @@ class ExportFacebook extends PrestashopConnection
         foreach ($sizeIds as $size) {
             if (isset($prices[$size]) && $prices[$size] != 0.00) {
                 $line["price"] = $prices[$size] + $basePrice;
-            } else {
-                self::$errorList[] = $size;
-                continue;
             }
 
             $line["size"] = $product->getSize($size);

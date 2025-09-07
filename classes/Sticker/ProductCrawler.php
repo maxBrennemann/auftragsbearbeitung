@@ -47,7 +47,7 @@ class ProductCrawler extends PrestashopConnection
             $productData = $productXml->product;
             $idMotiv = (int) $productData->reference;
 
-            if ($idMotiv != null || $idMotiv != 0) {
+            if ($idMotiv != 0) {
                 $checkIfExists = DBAccess::selectQuery("SELECT id FROM `module_sticker_sticker_data` WHERE id = :idMotiv LIMIT 1", ["idMotiv" => $idMotiv]);
 
                 /* if product exists, update product info, otherwise create it */
@@ -193,8 +193,8 @@ class ProductCrawler extends PrestashopConnection
     private function downloadImage($idProduct, $idImage, $idMotiv)
     {
         $ch = curl_init($_ENV["SHOPURL"] . "/api/images/products/$idProduct/$idImage");
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_USERPWD, $_ENV["SHOPKEY"] . ':');
         $image = curl_exec($ch);
         curl_close($ch);

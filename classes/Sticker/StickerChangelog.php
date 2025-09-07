@@ -45,12 +45,11 @@ class StickerChangelog
     /**
      * Logs new or changed entries into the sticker data module
      * @param int $stickerId the id of the current sticker
-     * @param String $stickerType aufkleber, wandtattoo or textil
+     * @param int $stickerType aufkleber, wandtattoo or textil
      * @param int $rowId specific id to identify the changed row
      * @param mixed $table the table in which the content changed
      * @param mixed $column the column in which the content changed
      * @param mixed $newValue if it is the first entry, it is the init value, else it is the new value
-     * @return null
      */
     public static function log(int $stickerId, int $stickerType, int $rowId, $table, $column, $newValue)
     {
@@ -69,7 +68,7 @@ class StickerChangelog
     /**
      * reverts the last change from the changelog table
      * @param int $stickerId the stickerId where a changelog must be reversed
-     * @param String $stickerType the type of the rollback
+     * @param string $stickerType the type of the rollback
      * @param int $rowId specific row identifier
      * @return boolean true if the revert was successfull
      */

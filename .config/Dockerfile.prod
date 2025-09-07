@@ -1,3 +1,19 @@
+FROM composer:2.8.11 AS composer
+
+WORKDIR /var/www/html
+COPY composer.json composer.lock ./
+
+RUN composer install \
+    --no-dev \
+    --prefer-dist \
+    --no-scripts \
+    --no-progress \
+    --optimize-autoloader
+COPY .config/.env.example .env
+COPY . .
+
+RUN ./console autoupgrade --skip-migration 
+
 FROM node:24-alpine AS frontend-builder
 
 WORKDIR /app
@@ -7,19 +23,9 @@ COPY package.json package-lock.json ./
 RUN npm ci --include=dev && npm cache clean --force
 
 COPY . .
+COPY --from=composer /var/www/html/files/res/js/classes/tableconfig.js ./files/res/js/classes/tableconfig.js
 
 RUN npm run build
-
-FROM composer:2.8.11 AS composer
-
-WORKDIR /var/www/html
-COPY composer.json composer.lock ./
-RUN composer install \
-    --no-dev \
-    --prefer-dist \
-    --no-scripts \
-    --no-progress \
-    --optimize-autoloader
 
 FROM php:8.4.11-fpm-alpine
 
@@ -37,17 +43,15 @@ RUN apk add --no-cache --virtual .build-deps \
         zlib-dev \
     && apk add --no-cache \
         dcron \
-    # Build extensions
     && docker-php-ext-install pdo_mysql mysqli zip gd \
-    # Remove build deps afterwards → smaller image
     && apk del .build-deps
 
-# Set the document root
 WORKDIR /var/www/html
 
 # PHP config
 COPY .config/php-config.ini /usr/local/etc/php/conf.d/custom.ini
 COPY .config/php.conf /usr/local/etc/php-fpm.d/custom-php.conf
+
 COPY . .
 
 # https://stackoverflow.com/questions/73991553/permission-denied-for-laravel-and-docker
@@ -62,8 +66,8 @@ RUN apk add --no-cache shadow \
 RUN touch /var/log/cron.log
 
 # Copy assets and dependencies into final image
-COPY --from=frontend-builder /app/files/res/assets ./files/res/assets
 COPY --from=composer /var/www/html/vendor ./vendor
+COPY --from=frontend-builder /app/files/res/assets ./files/res/assets
 
 RUN rm -rf files/res/js
 RUN rm -rf files/res/css

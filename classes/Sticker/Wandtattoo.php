@@ -17,12 +17,12 @@ class Wandtattoo extends AufkleberWandtattoo
         $this->isWalldecal = (int) $this->stickerData["is_walldecal"];
     }
 
-    public function isInShop()
+    public function isInShop(): bool
     {
         return parent::checkIsInShop(self::TYPE);
     }
 
-    public function getName(): String
+    public function getName(): string
     {
         return "Wandtattoo " . parent::getName();
     }
@@ -32,7 +32,7 @@ class Wandtattoo extends AufkleberWandtattoo
         return $this->isWalldecal;
     }
 
-    public function getAltTitle($default = ""): String
+    public function getAltTitle($default = ""): string
     {
         return parent::getAltTitle(self::TYPE);
     }
@@ -42,7 +42,7 @@ class Wandtattoo extends AufkleberWandtattoo
         return parent::getShopLinkHelper(self::TYPE);
     }
 
-    public function save($isOverwrite = false)
+    public function save($isOverwrite = false): void
     {
         if (!$this->getIsWalldecal()) {
             return;
@@ -83,7 +83,7 @@ class Wandtattoo extends AufkleberWandtattoo
         $this->imageData->handleImageProductSync("wandtattoo", $this->idProduct);
     }
 
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return [$this->getSizeIds()];
     }

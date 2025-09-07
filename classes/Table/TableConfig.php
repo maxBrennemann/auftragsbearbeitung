@@ -4,7 +4,7 @@ namespace Classes\Table;
 
 class TableConfig
 {
-    public static function generate()
+    public static function generate(): void
     {
         require_once "helpers/table-config.php";
         $data = getTableConfigFrontOffice();

@@ -10,7 +10,7 @@ class Config
 {
     /**
      * adds a new setting value
-     * @param string $title
+     * @param string $setting
      * @param string $defaultValue
      * @param bool $isBool
      * @param bool $isNullable
@@ -38,7 +38,7 @@ class Config
     /**
      * sets the content of a setting value,
      * if the setting value does not exist, it will be created
-     * @param string $title
+     * @param string $setting
      * @param string $value
      */
     public static function set(string $setting, string $value)

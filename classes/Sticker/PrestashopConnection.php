@@ -31,7 +31,7 @@ class PrestashopConnection
         $this->prestaUrl = $_ENV["SHOPURL"];
     }
 
-    protected function getXML($resource, $debug = false)
+    public function getXML($resource, $debug = false)
     {
         //$debug = true;
 
@@ -74,8 +74,6 @@ class PrestashopConnection
 
     protected function deleteXML($resource, $id, $debug = false)
     {
-        $debug = true;
-
         $debugText = $debug ? "true" : "false";
         Protocol::write("PrestashopConnection::getXML($resource, debug = $debugText)");
 

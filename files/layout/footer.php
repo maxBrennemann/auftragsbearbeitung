@@ -3,6 +3,7 @@
 	<?php
 
     use Classes\Link;
+    use Classes\Project\CacheManager;
 
 	$listmaker =		Link::getPageLink("listmaker");
 	$einstellungen =	Link::getPageLink("einstellungen");
@@ -34,13 +35,13 @@
 
 	global $start;
 
-	if ($calcDuration && CACHE_STATUS == 'off') {
+	if ($calcDuration && CacheManager::getCacheStatus() == 'off') {
 	    $stop = microtime(true);
 	    $duration = $stop - $start;
 	    echo "<script>console.log('Page loaded in " . $duration . " seconds');</script>";
 	}
 
-	if ($calcDuration && CACHE_STATUS == 'on') {
+	if ($calcDuration && CacheManager::getCacheStatus() == 'on') {
 	    $stop = microtime(true);
 	    $duration = $stop - $start;
 	    echo '{{LOAD_TIME}}';

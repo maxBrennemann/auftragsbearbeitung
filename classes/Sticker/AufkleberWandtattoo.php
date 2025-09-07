@@ -101,8 +101,10 @@ class AufkleberWandtattoo extends Sticker
         $data = DBAccess::selectQuery($query, ["idSticker" => $this->getId()]);
 
         foreach ($data as &$d) {
-            $d["width"] = str_replace(".", ",", ((int) $d["width"]) / 10) . "cm";
-            $d["height"] = str_replace(".", ",", ((int) $d["height"]) / 10) . "cm";
+            $repWidth = (string) (((int) $d["width"]) / 10);
+            $repHeight = (string) (((int) $d["height"]) / 10);
+            $d["width"] = str_replace(".", ",", $repWidth) . "cm";
+            $d["height"] = str_replace(".", ",", $repHeight) . "cm";
         }
 
         return \Classes\Controller\TemplateController::getTemplate("sticker/sizeTable", [
@@ -152,7 +154,8 @@ class AufkleberWandtattoo extends Sticker
         $buyingPrices = [];
 
         foreach ($data as &$d) {
-            $singleSizeInCm = str_replace(".", ",", ((int) $d["width"]) / 10) . "cm";
+            $rep = (string) (((int) $d["width"]) / 10);
+            $singleSizeInCm = str_replace(".", ",", $rep) . "cm";
             $sizeId = (int) $this->addAttribute($idAttributeGroup, $singleSizeInCm);
             $sizeIds[] = $sizeId;
             $widths[$sizeId] = $singleSizeInCm;

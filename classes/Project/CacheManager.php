@@ -10,6 +10,7 @@ class CacheManager
 {
     private const CACHE_DIR = "cache/";
     private const CACHE_PREFIX = "cache_";
+    private static string $status = "off";
 
     public function recache()
     {
@@ -35,11 +36,12 @@ class CacheManager
         $status = DBAccess::selectQuery($query);
 
         if (count($status) == 0) {
-            return "off";
+            self::$status = "off";
+            return self::$status;
         }
 
-        $status = $status[0]['content'];
-        return (string) $status;
+        self::$status = (string) $status[0]['content'];
+        return self::$status;
     }
 
     public static function writeCache()
@@ -55,7 +57,7 @@ class CacheManager
      */
     public static function loadCacheIfExists()
     {
-        if (CACHE_STATUS == "off") {
+        if (self::$status == "off") {
             return;
         }
 
@@ -84,7 +86,7 @@ class CacheManager
     {
         ob_start();
         register_shutdown_function(function () {
-            if (CACHE_STATUS == "on") {
+            if (self::$status == "on") {
                 CacheManager::writeCache();
             }
             ob_end_flush();
@@ -135,7 +137,6 @@ class CacheManager
                 break;
             default:
                 JSONResponseHandler::throwError(400, "Unsupported status type");
-                break;
         }
 
         JSONResponseHandler::sendResponse([

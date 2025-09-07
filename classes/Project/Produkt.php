@@ -156,12 +156,7 @@ class Produkt
 
     private static function sortByPercentage(&$mostSimilarProducts)
     {
-        function cmp($a, $b)
-        {
-            return ($a[1] < $b[1]) ? -1 : (($a[1] > $b[1]) ? 1 : 0);
-        }
-
-        usort($mostSimilarProducts, "cmp");
+        usort($mostSimilarProducts, fn($a, $b) => $b[1] <=> $a[1]);
     }
 
     private static function filterByPercentage($mostSimilarProducts)

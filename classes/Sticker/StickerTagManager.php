@@ -14,7 +14,6 @@ class StickerTagManager extends PrestashopConnection
     private int $idSticker;
     private int $idProductReference;
     private $tags;
-    private $title;
 
     public function __construct(int $idSticker, string $title = "")
     {
@@ -30,7 +29,6 @@ class StickerTagManager extends PrestashopConnection
             $sticker = new Sticker($idSticker);
             $title = $sticker->getName();
         }
-        $this->title = $title;
     }
 
     public function setProductId(int $idProductReference)
@@ -180,19 +178,6 @@ class StickerTagManager extends PrestashopConnection
         }
 
         return -1;
-    }
-
-    /**
-     * iterates over all three product categories and adds tags to the specific product if
-     * they don't exist
-     */
-    public function saveChanges(Sticker $products)
-    {
-        foreach ($products as $product) {
-            $productId = $product->getId();
-            $this->saveTags();
-            //$this->saveTags($productId);
-        }
     }
 
     public function saveTagsXml(&$xml)

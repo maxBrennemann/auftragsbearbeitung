@@ -7,7 +7,11 @@ use Classes\Controller\TemplateController;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
-function printError($message)
+/**
+ * @param array<string, mixed> $message
+ * @return never
+ */
+function printError(array $message): never
 {
     if ($_ENV["DEV_MODE"] == "true") {
         JSONResponseHandler::throwError(500, $message);
@@ -15,13 +19,14 @@ function printError($message)
         JSONResponseHandler::throwError(500, "Internal server error");
     }
 
+    // @phpstan-ignore-next-line
     die();
 }
 
-function exception_error_handler($severity, $message, $file, $line)
+function exception_error_handler(int $severity, string $message, string $file, int $line): bool
 {
     if (!(error_reporting() & $severity)) {
-        return;
+        return false;
     }
 
     printError([
@@ -30,11 +35,14 @@ function exception_error_handler($severity, $message, $file, $line)
         "line" => $line,
         "severity" => $severity
     ]);
+
+    // @phpstan-ignore-next-line
+    return true;
 }
 
 set_error_handler("exception_error_handler");
 
-function fatal_handler()
+function fatal_handler(): void
 {
     $error = error_get_last();
 
@@ -55,7 +63,7 @@ function fatal_handler()
     ]);
 }
 
-function captureError()
+function captureError(): void
 {
     $error = error_get_last();
     $e = $_ENV["LAST_EXCEPTION"] ?? null;
@@ -104,7 +112,7 @@ register_shutdown_function("fatal_handler");
 /**
  * https://stackoverflow.com/questions/2236668/file-get-contents-breaks-up-utf-8-characters
  */
-function file_get_contents_utf8($fn)
+function file_get_contents_utf8(string $fn): bool|string
 {
     $content = file_get_contents($fn);
     return mb_convert_encoding($content, 'UTF-8', mb_detect_encoding($content, 'UTF-8, ISO-8859-1', true));
@@ -115,7 +123,7 @@ function file_get_contents_utf8($fn)
  * https://www.php.net/manual/en/function.str-contains.php
  */
 if (!function_exists('str_contains')) {
-    function str_contains($haystack, $needle): bool
+    function str_contains(string $haystack, string $needle): bool
     {
         return $needle !== '' && mb_strpos($haystack, $needle) !== false;
     }
@@ -137,7 +145,12 @@ function errorReporting(): void
     }
 }
 
-function insertTemplate($path, array $parameters = [])
+/**
+ * @param string $path
+ * @param array<string, mixed> $parameters
+ * @return void
+ */
+function insertTemplate(string $path, array $parameters = []): void
 {
     if (file_exists($path)) {
         extract($parameters);
@@ -146,7 +159,7 @@ function insertTemplate($path, array $parameters = [])
 }
 
 /** https://stackoverflow.com/a/2792045/7113688 */
-function dashesToCamelCase($string, $capitalizeFirstCharacter = false): string
+function dashesToCamelCase(string $string, bool $capitalizeFirstCharacter = false): string
 {
     $str = str_replace('-', '', ucwords($string, '-'));
 

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @return array<string, array<string, mixed>>
+ */
 function getTableConfig(): array
 {
     return [
@@ -443,7 +446,10 @@ function getTableConfig(): array
     ];
 }
 
-function getTableConfigFrontOffice()
+/**
+ * @return array<string, array{columns: array<int, array{key: string, label: string}>, primaryKey: string}>
+ */
+function getTableConfigFrontOffice(): array
 {
     $tableConfig = getTableConfig();
     $data = [];

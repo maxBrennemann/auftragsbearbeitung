@@ -110,26 +110,6 @@ class InvoiceLayout
         return true;
     }
 
-    private function deleteLayoutEntry(string $contentType, int $contentId)
-    {
-        $query = "";
-        DBAccess::deleteQuery($query, [
-            "contentType" => $contentType,
-            "contentId" => $contentId,
-        ]);
-
-        /*$validKeys = array_map(fn($e) => "{$e['type']}-{$e['id']}", $layoutData);
-
-        $existing = $this->getLayoutFromDB($invoiceId); // Load all from DB
-        foreach ($existing as $entry) {
-            $key = "{$entry['type']}-{$entry['id']}";
-            if (!in_array($key, $validKeys)) {
-                // Delete this stale entry
-                $this->deleteLayoutEntry($invoiceId, $entry['type'], $entry['id']);
-            }
-        }*/
-    }
-
     /**
      * Default order is: invoiceItems, texts, vehicles
      * If some elements are present, they are shown first, the other items are shown like the order above after the elements

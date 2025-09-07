@@ -46,10 +46,6 @@ class PDFGenerator extends TCPDF
         $this->Output($fileName, "F");
     }
 
-    private function generateHeader()
-    {
-    }
-
     public function Footer()
     {
         $this->SetY(-$this->bottomMargin);

@@ -24,7 +24,7 @@ class Link
      * if the resource does not exist, the default image is returned
      *
      * @param $resourceName: the name of the image resource
-     * @return $link: the link to the image resource
+     * @return string
      */
     public static function getDefaultImage(): string
     {
@@ -65,6 +65,8 @@ class Link
             case "pdf":
                 $link = "generated/" . $resource;
                 break;
+            default:
+                $link = "";
         }
 
         return $link;
@@ -99,6 +101,8 @@ class Link
             case "pdf":
                 $link = $_ENV["REWRITE_BASE"] . "pdfs/" . $resource;
                 break;
+            default:
+                $link = "";
         }
 
         return $link;

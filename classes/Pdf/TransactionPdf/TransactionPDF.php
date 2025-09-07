@@ -62,8 +62,6 @@ class TransactionPDF extends PDFGenerator
 
     public function save() {}
 
-    private function generateHeader() {}
-
     protected function fillAddress($altNames = [])
     {
         $lineheight = 10;
@@ -82,7 +80,7 @@ class TransactionPDF extends PDFGenerator
                 $this->ln(8);
             }
         } else {
-            if ($firma != null || $firma != "") {
+            if ($firma != "") {
                 $this->Cell(85, $lineheight, $firma);
                 $this->ln(8);
             }
@@ -149,18 +147,18 @@ class TransactionPDF extends PDFGenerator
         $this->SetY(-$this->bottomMargin);
         $this->SetFont('helvetica', 'B', 8);
 
-        $this->Cell(0, 00, "Seite " . $this->getAliasNumPage() . "/" . $this->getAliasNbPages(), 0, 1, 'C', 0, '', 0, false, 'T', 'M');
+        $this->Cell(0, 00, "Seite " . $this->getAliasNumPage() . "/" . $this->getAliasNbPages(), 0, 1, 'C', false, '', 0, false, 'T', 'M');
 
-        $this->Cell(0, 0, $this->companyDetails["companyImprint"], 0, 1, 'C', 0, '', 0, false, 'T', 'M');
+        $this->Cell(0, 0, $this->companyDetails["companyImprint"], 0, 1, 'C', false, '', 0, false, 'T', 'M');
 
-        $this->Cell(0, 0, "Tel.: " . $this->companyDetails["companyPhone"] . " USt-ID-Nr. " . $this->companyDetails["companyUstIdNr"], 0, 1, 'C', 0, '', 0, false, 'T', 'M');
+        $this->Cell(0, 0, "Tel.: " . $this->companyDetails["companyPhone"] . " USt-ID-Nr. " . $this->companyDetails["companyUstIdNr"], 0, 1, 'C', false, '', 0, false, 'T', 'M');
 
-        $this->Cell(0, 0, "Bankverbindung: " . $this->companyDetails["companyBank"], 0, 1, 'C', 0, '', 0, false, 'T', 'M');
+        $this->Cell(0, 0, "Bankverbindung: " . $this->companyDetails["companyBank"], 0, 1, 'C', false, '', 0, false, 'T', 'M');
 
-        $this->Cell(0, 0, "IBAN: " . $this->companyDetails["companyIban"], 0, 1, 'C', 0, '', 0, false, 'T', 'M');
+        $this->Cell(0, 0, "IBAN: " . $this->companyDetails["companyIban"], 0, 1, 'C', false, '', 0, false, 'T', 'M');
 
-        $this->Cell(0, 0, 'Es gelten unsere Allgemeinen Geschäftsbedingungen (siehe ' . $this->companyDetails["companyWebsite"] . ')', 0, 1, 'C', 0, '', 0, false, 'T', 'M');
+        $this->Cell(0, 0, 'Es gelten unsere Allgemeinen Geschäftsbedingungen (siehe ' . $this->companyDetails["companyWebsite"] . ')', 0, 1, 'C', false, '', 0, false, 'T', 'M');
 
-        $this->Cell(0, 0, 'Die Ware bleibt bis zur vollständigen Bezahlung unser Eigentum.', 0, 1, 'C', 0, '', 0, false, 'T', 'M');
+        $this->Cell(0, 0, 'Die Ware bleibt bis zur vollständigen Bezahlung unser Eigentum.', 0, 1, 'C', false, '', 0, false, 'T', 'M');
     }
 }

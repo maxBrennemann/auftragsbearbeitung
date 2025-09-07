@@ -14,7 +14,7 @@ class Angebot
     private $customer = null;
     private $offerId = 0;
 
-    private $leistungen = null;
+    //private $leistungen = null;
     private $fahrzeuge = null;
 
     private $posten = [];
@@ -29,7 +29,7 @@ class Angebot
 
         $this->offerId = $offerId;
         $this->customerId = $customerId;
-        $this->leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
+        //$this->leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
         $this->fahrzeuge = Fahrzeug::getSelection($customerId);
     }
 
@@ -60,14 +60,14 @@ class Angebot
         return $newPc;
     }
 
-    private function decPc()
+    /*     private function decPc()
     {
         $newPc = $this->getPc() - 1;
         if ($newPc >= 0) {
             $_SESSION['offer_' . $this->customerId . '_pc'] = $newPc;
         }
         return $newPc;
-    }
+    } */
 
     public function getId()
     {
@@ -98,14 +98,14 @@ class Angebot
         $_SESSION['offer_' . $this->customerId . '_pc'] = null;
     }
 
-    private function postenSum()
+    /* private function postenSum()
     {
         $sum = 0;
         foreach ($this->posten as $p) {
             $sum += $p->bekommePreis();
         }
         return $sum;
-    }
+    } */
 
     public function addPosten($posten)
     {
@@ -130,9 +130,7 @@ class Angebot
         $this->deleteOldSessionData();
     }
 
-    public function loadAngebot()
-    {
-    }
+    public function loadAngebot() {}
 
     public static function getOfferTemplate()
     {
@@ -141,7 +139,6 @@ class Angebot
             JSONResponseHandler::returnNotFound([
                 "error" => "No customer id given",
             ]);
-            return;
         }
 
         $offer = self::createNewOffer($customerId);

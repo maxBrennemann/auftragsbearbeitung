@@ -1,23 +1,39 @@
 services:
   nginx:
-    image: auftragsbearbeitung/nginx:latest
+    image: ghcr.io/maxbrennemann/auftragsbearbeitung/nginx:latest
     restart: always
     ports:
       - "80:80"
       - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./etc/letsencrypt:/etc/letsencrypt:ro
+      - ./certbot/www/:/var/www/certbot/:ro
 
   certbot:
-    image: certbot/certbot
-    entrypoint: sh
+    container_name: certbot
+    image: certbot/certbot:latest
+    depends_on:
+      - nginx
+    command: >-
+             certonly --reinstall --webroot --webroot-path=/var/www/certbot
+             --email ${LETSENCRYPT_EMAIL} --agree-tos --no-eff-email
+             -d ${DOMAIN}
+    volumes:
+      - ./etc/letsencrypt:/etc/letsencrypt
+      - ./certbot/data:/var/www/certbot
 
   php:
-    image: auftragsbearbeitung/php-app:latest
+    image: ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:latest
     expose:
       - "9000"
     environment:
-      - VIRTUAL_HOST=${DOMAIN}
-      - LETSENCRYPT_HOST=${DOMAIN}
-      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+      VIRTUAL_HOST: ${DOMAIN}
+      LETSENCRYPT_HOST: ${DOMAIN}
+      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+    volumes:
+      - ./upload/:/var/www/html
 
   database:
     image: mariadb:11.7
@@ -32,12 +48,12 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     environment:
-      - VIRTUAL_HOST=pma.${DOMAIN}
-      - LETSENCRYPT_HOST=pma.${DOMAIN}
-      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
-      - PMA_HOST=database
-      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
-      - UPLOAD_LIMIT=300M
+      VIRTUAL_HOST: pma.${DOMAIN}
+      LETSENCRYPT_HOST: pma.${DOMAIN}
+      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+      PMA_HOST: database
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      UPLOAD_LIMIT: 300M
 
 volumes:
   db_data:

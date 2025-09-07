@@ -55,7 +55,6 @@ class ClientSettings
     {
         if (!extension_loaded("zip")) {
             JSONResponseHandler::throwError(500, "Unable to zip files.");
-            return;
         }
 
         $filePath = "generated/";
@@ -63,7 +62,6 @@ class ClientSettings
         $zip = new ZipArchive();
         if (!$zip->open($filePath . $fileName, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
             JSONResponseHandler::throwError(500, "Unable to zip files.");
-            return;
         }
 
         $sourceDir = realpath("upload/");
@@ -116,7 +114,6 @@ class ClientSettings
 
         if (count($fileData) == 0) {
             JSONResponseHandler::throwError(422, "unsupported file type");
-            return;
         }
 
         Config::set("companyLogo", $fileData[0]["id"]);

@@ -153,6 +153,7 @@ abstract class Posten
     public static function insertPosten(string $type, array $data): array
     {
         $auftragsnummer = (int) $data['Auftragsnummer'];
+        $subPosten = 0;
 
         $ohneBerechnung = $data['ohneBerechnung'];
         $discount = $data['discount'] == null ? 0 : $data['discount'];

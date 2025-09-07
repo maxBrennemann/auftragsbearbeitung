@@ -28,9 +28,7 @@ class Address
     private int $art = 0;
     private string $land = "";
 
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     public function getStrasse(): string
     {
@@ -51,6 +49,22 @@ class Address
     {
         return $this->ort;
     }
+
+    public function getZusatz(): string
+    {
+        return $this->zusatz;
+    }
+
+    public function getArt(): int
+    {
+        return $this->art;
+    }
+
+    public function getLand(): string
+    {
+        return $this->land;
+    }
+
 
     public static function loadAddress(int $addressId): Address
     {
