@@ -8,7 +8,12 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class Table extends Model
 {
-    private static function checkPermissions($tableConfig, $action): bool
+    /**
+     * @param array<string, mixed> $tableConfig
+     * @param string $action
+     * @return bool
+     */
+    private static function checkPermissions(array $tableConfig, string $action): bool
     {
         if (!array_key_exists("permissions", $tableConfig)) {
             return false;
@@ -21,7 +26,11 @@ class Table extends Model
         return true;
     }
 
-    private static function getConditions($joins = []): array
+    /**
+     * @param array<string, mixed> $joins
+     * @return array<string, mixed>
+     */
+    private static function getConditions(array $joins = []): array
     {
         $conditions = Tools::get("conditions");
         if ($conditions) {
@@ -42,7 +51,7 @@ class Table extends Model
         return $conditions;
     }
 
-    public static function readData()
+    public static function readData(): void
     {
         $table = Tools::get("tablename");
         $config = self::getTableConfig();
@@ -86,7 +95,7 @@ class Table extends Model
         JSONResponseHandler::sendResponse($results);
     }
 
-    public static function createData()
+    public static function createData(): void
     {
         $table = Tools::get("tablename");
         $config = self::getTableConfig();
@@ -112,7 +121,7 @@ class Table extends Model
         ]);
     }
 
-    public static function updateData()
+    public static function updateData(): void
     {
         $table = Tools::get("tablename");
         $config = self::getTableConfig();
@@ -129,7 +138,7 @@ class Table extends Model
         }
     }
 
-    public static function deleteData()
+    public static function deleteData(): void
     {
         $table = Tools::get("tablename");
         $config = self::getTableConfig();
