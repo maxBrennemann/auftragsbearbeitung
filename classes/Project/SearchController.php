@@ -20,10 +20,10 @@ class SearchController
     {
         foreach ($this->searches as $searchName => $parsedQuery) {
             $query = $parsedQuery[1];
-            $filters = $parsedQuery[0];
+            //$filters = $parsedQuery[0];
             $config = SearchUtils::CONFIG[$searchName];
 
-            $search = new Search($query, $filters, $config, $searchName);
+            $search = new Search($query, $config, $searchName);
             $this->results[$searchName] = $search->search();
         }
     }
@@ -75,7 +75,6 @@ class SearchController
 
         if ($query == "") {
             JSONResponseHandler::throwError(400, "Query cannot be empty");
-            return;
         }
 
         $results = self::search($query, $limit);

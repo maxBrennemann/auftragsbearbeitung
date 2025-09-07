@@ -168,7 +168,7 @@ class Model
         return $results;
     }
 
-    public function add($conditions): int
+    public function add($conditions): int|false
     {
         $this->triggerHook("beforeAdd", [
             "conditions" => &$conditions,

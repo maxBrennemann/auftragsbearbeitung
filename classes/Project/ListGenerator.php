@@ -4,10 +4,10 @@ namespace Classes\Project;
 
 class ListGenerator
 {
-    private int $id = 0;
+    //private int $id = 0;
 
-    public function __construct($id)
+    /* public function __construct($id)
     {
         $this->id = $id;
-    }
+    } */
 }

@@ -7,14 +7,14 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 class Search
 {
     private string $query = "";
-    private array $filters = [];
+    //private array $filters = [];
     private array $config = [];
     private string $table = "";
 
-    public function __construct(string $query, array $filters, array $config, string $table)
+    public function __construct(string $query, array $config, string $table)
     {
         $this->query = $query;
-        $this->filters = $filters;
+        //$this->filters = $filters;
         $this->config = $config;
         $this->table = $table;
     }
@@ -63,7 +63,7 @@ class Search
         foreach ($columns as $column => $info) {
             switch ($info["type"]) {
                 case "text":
-                    if (!empty($info["fuzzy"]) && $info["fuzzy"]) {
+                    if (!empty($info["fuzzy"])) {
                         $conditions[] = "$column LIKE ?";
                         $params[] = "%" . $searchTerm . "%";
                     } else {

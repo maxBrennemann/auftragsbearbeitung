@@ -349,7 +349,7 @@ class StickerImage extends PrestashopConnection
      *
      * @return string
      */
-    private function directUpload($imageURLs, $productId): ?String
+    private function directUpload($imageURLs, $productId): string
     {
         $client = new Client();
         $result = "";
@@ -564,7 +564,7 @@ class StickerImage extends PrestashopConnection
      * @param $id id of the image
      * @param $inDB array of images from the database
      *
-     * @return true if the image is in the database, false otherwise
+     * @return bool true if the image is in the database, false otherwise
      */
     private function inArrayDB($id, $inDB): bool
     {

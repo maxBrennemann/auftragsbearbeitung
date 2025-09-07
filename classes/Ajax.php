@@ -119,7 +119,6 @@ class Ajax
                 break;
             default:
                 JSONResponseHandler::throwError(404, "Path not found");
-                break;
         }
     }
 

@@ -9,22 +9,22 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class Step
 {
-    private $assignedTo = null;
+    /* private $assignedTo = null;
     private $bezeichnung = null;
     private $datum = null;
     private $priority = null;
     private $istErledigt = null;
     private $auftragsnummer = null;
-    private $schrittnummer = null;
+    private $schrittnummer = null; */
 
-    public function __construct($auftragsnummer, $schrittnummer, $bezeichnung, $datum, $priority, $istErledigt)
+    public function __construct(/*$auftragsnummer, $schrittnummer, $bezeichnung, $datum, $priority, $istErledigt*/)
     {
-        $this->auftragsnummer = $auftragsnummer;
+        /* $this->auftragsnummer = $auftragsnummer;
         $this->bezeichnung = $bezeichnung;
         $this->schrittnummer = $schrittnummer;
         $this->datum = $datum;
         $this->priority = $priority;
-        $this->istErledigt = $istErledigt;
+        $this->istErledigt = $istErledigt; */
     }
 
     public function bearbeiten()
@@ -100,7 +100,6 @@ class Step
                 break;
             default:
                 JSONResponseHandler::returnNotFound("unsupported type");
-                return;
         }
 
         $data = DBAccess::selectQuery($query, [

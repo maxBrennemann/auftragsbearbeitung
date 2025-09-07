@@ -12,7 +12,6 @@ use MaxBrennemann\PhpUtilities\Tools;
 class Invoice
 {
     private Auftrag $auftrag;
-    private InvoiceModel $invoiceModel;
     private int $addressId = 0;
     private int $contactId = 0;
 

@@ -17,8 +17,6 @@ class ResourceManager
 
     public static function initialize()
     {
-        define("CACHE_STATUS", CacheManager::getCacheStatus());
-
         $companyName = DBAccess::selectQuery("SELECT content FROM settings WHERE title = 'companyName';");
         if ($companyName != null) {
             define("COMPANY_NAME", $companyName[0]["content"]);
@@ -90,6 +88,7 @@ class ResourceManager
             case "events":
                 Events::init();
                 self::close();
+                // @phpstan-ignore-next-line
                 break;
         }
     }

@@ -23,7 +23,6 @@ class Table
 
     /* TODO: schauen, ob diese parameter public oder private sein sollen, weil ich die nur eingefügt habe, weil sie nicht definiert waren */
     private $update;
-    private $sendTo;
 
     private $dataset = [
         0 => false
@@ -42,9 +41,6 @@ class Table
     private $keys = null;
 
     private $dataKey;
-
-    /* defines an update table schedule */
-    private $updateSchedule;
 
     /**
      * limit -1 hebt das Limit auf
@@ -396,12 +392,6 @@ class Table
         }
     }
 
-
-    public function defineUpdateSchedule($updateSchedule)
-    {
-        $this->updateSchedule = $updateSchedule;
-    }
-
     /*
      * erstellt die Tabelle
      * wenn $this->data null ist, wird eine Nachricht zurückgegeben
@@ -415,7 +405,7 @@ class Table
         $html = "";
 
         if ($this->editable) {
-            $html = "<table class='table-auto overflow-x-scroll w-full allowAddingContent' data-type='{$this->type}' data-key='{$this->dataKey}' data-send-to='{$this->sendTo}'>";
+            $html = "<table class='table-auto overflow-x-scroll w-full allowAddingContent' data-type='{$this->type}' data-key='{$this->dataKey}'";
         } else {
             $html = "<table class='table-auto overflow-x-scroll w-full' data-type='{$this->type}' data-key='{$this->dataKey}'>";
         }

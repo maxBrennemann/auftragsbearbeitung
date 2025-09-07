@@ -1,6 +1,6 @@
 # phpstan.neon
 parameters:
-  level: 2
+  level: 5
   paths:
     - classes
     - helpers

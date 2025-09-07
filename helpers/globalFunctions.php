@@ -15,6 +15,7 @@ function printError($message)
         JSONResponseHandler::throwError(500, "Internal server error");
     }
 
+    // @phpstan-ignore-next-line
     die();
 }
 

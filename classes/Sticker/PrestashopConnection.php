@@ -74,8 +74,6 @@ class PrestashopConnection
 
     protected function deleteXML($resource, $id, $debug = false)
     {
-        $debug = true;
-
         $debugText = $debug ? "true" : "false";
         Protocol::write("PrestashopConnection::getXML($resource, debug = $debugText)");
 

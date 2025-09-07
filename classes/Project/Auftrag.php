@@ -55,7 +55,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 
             $data = DBAccess::selectQuery("SELECT * FROM schritte WHERE Auftragsnummer = {$orderId}");
             foreach ($data as $step) {
-                $element = new Step($step['Auftragsnummer'], $step['Schrittnummer'], $step['Bezeichnung'], $step['Datum'], $step['Priority'], $step['istErledigt']);
+                $element = new Step(/*$step['Auftragsnummer'], $step['Schrittnummer'], $step['Bezeichnung'], $step['Datum'], $step['Priority'], $step['istErledigt']*/);
                 array_push($this->Bearbeitungsschritte, $element);
             }
 
@@ -889,7 +889,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
             "customerId" => $newCustomerId,
         ]);
 
-        if (is_null($data)) {
+        if (count($data) == 0) {
             JSONResponseHandler::throwError(400, "Invalid request");
         }
 

@@ -66,12 +66,6 @@ class ImportGoogleSearchConsole
         }
     }
 
-    private function addUrl($url)
-    {
-        $data = $this->searchConsole->sites->add($url);
-        var_dump($data);
-    }
-
     public static function import()
     {
         $import = new ImportGoogleSearchConsole();
