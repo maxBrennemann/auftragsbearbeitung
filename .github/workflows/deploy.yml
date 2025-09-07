@@ -21,14 +21,6 @@ jobs:
           username: ${{github.actor}}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache-app
-          key: ${{ runner.os }}-buildx-app-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-app
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
@@ -45,8 +37,8 @@ jobs:
           file: .config/Dockerfile.prod
           push: true
           builder: ${{ steps.buildx.outputs.name }}
-          cache-from: type=local,src=/tmp/.buildx-cache-app
-          cache-to: type=local,dest=/tmp/.buildx-cache-app-new,mode=max
+          cache-from: type=registry,ref=ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:cache
+          cache-to: type=registry,ref=ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:cache,mode=max
           tags: |
             ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:latest
             ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:${{ github.sha }}
@@ -57,6 +49,9 @@ jobs:
           context: .
           file: .config/nginx/Dockerfile.prod
           push: true
+          builder: ${{ steps.buildx.outputs.name }}
+          cache-from: type=registry,ref=ghcr.io/maxbrennemann/auftragsbearbeitung/nginx:cache
+          cache-to: type=registry,ref=ghcr.io/maxbrennemann/auftragsbearbeitung/nginx:cache,mode=max
           tags: |
             ghcr.io/maxbrennemann/auftragsbearbeitung/nginx:latest
             ghcr.io/maxbrennemann/auftragsbearbeitung/nginx:${{ github.sha }}
