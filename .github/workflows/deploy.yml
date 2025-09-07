@@ -56,11 +56,6 @@ jobs:
             ghcr.io/maxbrennemann/auftragsbearbeitung/nginx:latest
             ghcr.io/maxbrennemann/auftragsbearbeitung/nginx:${{ github.sha }}
 
-      - name: APP::Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache-app
-          mv /tmp/.buildx-cache-app-new /tmp/.buildx-cache-app
-
   deploy:
     environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
     runs-on: ubuntu-latest
