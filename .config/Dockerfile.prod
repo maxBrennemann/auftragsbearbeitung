@@ -20,10 +20,7 @@ COPY package.json package-lock.json ./
 
 RUN npm ci --include=dev && npm cache clean --force
 
-COPY files/res/js files/res/js
-COPY .config .config
-COPY vite.config.ts vite.config.ts
-COPY tsconfig.json tsconfig.json
+COPY . .
 COPY --from=composer /var/www/html/files/res/js/classes/tableconfig.js ./files/res/js/classes/tableconfig.js
 
 RUN npm run build
