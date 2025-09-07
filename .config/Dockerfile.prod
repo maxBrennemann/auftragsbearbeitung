@@ -20,7 +20,8 @@ COPY package.json package-lock.json ./
 
 RUN npm ci --include=dev && npm cache clean --force
 
-COPY . .
+COPY files/res/js files/res/js
+COPY .config .config
 COPY --from=composer /var/www/html/files/res/js/classes/tableconfig.js ./files/res/js/classes/tableconfig.js
 
 RUN npm run build

@@ -21,12 +21,23 @@ jobs:
           username: ${{github.actor}}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache-app
+          key: ${{ runner.os }}-buildx-app-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-app
+
       - name: Build And Push PHP Base Image
         uses: docker/build-push-action@v6
         with:
           context: .
           file: .config/Dockerfile.prod
           push: true
+          builder: ${{ steps.buildx.outputs.name }}
+          cache-from: type=local,src=/tmp/.buildx-cache-app
+          cache-to: type=local,dest=/tmp/.buildx-cache-app-new,mode=max
           tags: |
             ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:latest
             ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:${{ github.sha }}
@@ -40,6 +51,11 @@ jobs:
           tags: |
             ghcr.io/maxbrennemann/auftragsbearbeitung/nginx:latest
             ghcr.io/maxbrennemann/auftragsbearbeitung/nginx:${{ github.sha }}
+
+      - name: APP::Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache-app
+          mv /tmp/.buildx-cache-app-new /tmp/.buildx-cache-app
 
   deploy:
     environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
