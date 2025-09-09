@@ -128,6 +128,7 @@ class Config
             "companyImprint" => self::get("companyImprint"),
             "companyBank" => self::get("companyBank"),
             "companyIban" => self::get("companyIban"),
+            "companyBic" => self::get("companyBic"),
             "companyUstIdNr" => self::get("companyUstIdNr"),
         ];
 

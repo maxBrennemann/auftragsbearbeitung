@@ -155,7 +155,7 @@ class TransactionPDF extends PDFGenerator
 
         $this->Cell(0, 0, "Bankverbindung: " . $this->companyDetails["companyBank"], 0, 1, 'C', false, '', 0, false, 'T', 'M');
 
-        $this->Cell(0, 0, "IBAN: " . $this->companyDetails["companyIban"], 0, 1, 'C', false, '', 0, false, 'T', 'M');
+        $this->Cell(0, 0, "IBAN: " . $this->companyDetails["companyIban"] . " BIC: " . $this->companyDetails["companyBic"], 0, 1, 'C', false, '', 0, false, 'T', 'M');
 
         $this->Cell(0, 0, 'Es gelten unsere Allgemeinen Geschäftsbedingungen (siehe ' . $this->companyDetails["companyWebsite"] . ')', 0, 1, 'C', false, '', 0, false, 'T', 'M');
 

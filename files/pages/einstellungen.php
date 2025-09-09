@@ -75,6 +75,10 @@ $companyLogo = \Classes\Project\ClientSettings::getLogo();
             <input class="input-primary" value="<?= Config::get("companyIban") ?>" data-write="true" data-fun="changeSetting" data-setting="companyIban">
         </div>
         <div class="flex items-center mt-2">
+            <span class="font-semibold w-60">BIC</span>
+            <input class="input-primary" value="<?= Config::get("companyBic") ?>" data-write="true" data-fun="changeSetting" data-setting="companyBic">
+        </div>
+        <div class="flex items-center mt-2">
             <span class="font-semibold w-60">UstIdNr</span>
             <input class="input-primary" value="<?= Config::get("companyUstIdNr") ?>" data-write="true" data-fun="changeSetting" data-setting="companyUstIdNr">
         </div>
