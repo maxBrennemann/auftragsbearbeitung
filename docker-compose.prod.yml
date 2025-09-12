@@ -1,6 +1,7 @@
 services:
   nginx:
-    image: ghcr.io/maxbrennemann/auftragsbearbeitung/nginx:latest
+    image: nginx:stable-alpine
+    container_name: nginx
     restart: always
     ports:
       - "80:80"
@@ -10,6 +11,10 @@ services:
     volumes:
       - ./etc/letsencrypt:/etc/letsencrypt:ro
       - ./certbot/www/:/var/www/certbot/:ro
+      - .config/nginx/default.prod.conf:/etc/nginx/templates/default.conf.template
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     entrypoint: >
       /bin/sh -c "
         if [ ! -f /etc/letsencrypt/live/${DOMAIN}/fullchain.pem ]; then
@@ -22,18 +27,24 @@ services:
         fi;
         exec /docker-entrypoint.sh nginx -g 'daemon off;'
       "
+    depends_on:
+      - certbot
+
   certbot:
-    container_name: certbot
     image: certbot/certbot:latest
     depends_on:
       - nginx
+    container_name: certbot
     command: >-
              certonly --reinstall --webroot --webroot-path=/var/www/certbot
              --email ${LETSENCRYPT_EMAIL} --agree-tos --no-eff-email
              -d ${DOMAIN}
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     volumes:
       - ./etc/letsencrypt:/etc/letsencrypt
       - ./certbot/data:/var/www/certbot
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
 
   php:
     image: ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:latest
