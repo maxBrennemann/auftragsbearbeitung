@@ -9,26 +9,21 @@ services:
     environment:
       DOMAIN: ${DOMAIN}
     volumes:
-      - ./etc/letsencrypt:/etc/letsencrypt:ro
-      - ./certbot/www/:/var/www/certbot/:ro
       - .config/nginx/default.prod.conf:/etc/nginx/templates/default.conf.template
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-    entrypoint: >
-      /bin/sh -c "
+      - ./data/certbot/conf:/etc/letsencrypt:ro
+      - ./data/certbot/www:/var/www/certbot:ro
+    command: >
+      /bin/sh -c '
         if [ ! -f /etc/letsencrypt/live/${DOMAIN}/fullchain.pem ]; then
-          echo 'No cert found, generating dummy cert...';
+          echo "No cert found, generating dummy cert...";
           mkdir -p /etc/letsencrypt/live/${DOMAIN};
           openssl req -x509 -nodes -newkey rsa:2048 -days 1 \
             -keyout /etc/letsencrypt/live/${DOMAIN}/privkey.pem \
             -out /etc/letsencrypt/live/${DOMAIN}/fullchain.pem \
-            -subj '/CN=localhost';
+            -subj "/CN=localhost";
         fi;
-        exec /docker-entrypoint.sh nginx -g 'daemon off;'
-      "
-    depends_on:
-      - certbot
+        exec nginx -g "daemon off;";
+      '
 
   certbot:
     image: certbot/certbot:latest
@@ -41,8 +36,6 @@ services:
              -d ${DOMAIN}
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     volumes:
-      - ./etc/letsencrypt:/etc/letsencrypt
-      - ./certbot/data:/var/www/certbot
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
 
