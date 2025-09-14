@@ -12,18 +12,7 @@ services:
       - .config/nginx/default.prod.conf:/etc/nginx/templates/default.conf.template
       - ./data/certbot/conf:/etc/letsencrypt:ro
       - ./data/certbot/www:/var/www/certbot:ro
-    command: >
-      /bin/sh -c '
-        if [ ! -f /etc/letsencrypt/live/${DOMAIN}/fullchain.pem ]; then
-          echo "No cert found, generating dummy cert...";
-          mkdir -p /etc/letsencrypt/live/${DOMAIN};
-          openssl req -x509 -nodes -newkey rsa:2048 -days 1 \
-            -keyout /etc/letsencrypt/live/${DOMAIN}/privkey.pem \
-            -out /etc/letsencrypt/live/${DOMAIN}/fullchain.pem \
-            -subj "/CN=localhost";
-        fi;
-        exec /docker-entrypoint.sh nginx -g "daemon off;";
-      '
+    command: /docker-entrypoint.sh nginx -g 'daemon off;'
 
   certbot:
     image: certbot/certbot:latest
