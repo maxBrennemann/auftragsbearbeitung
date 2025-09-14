@@ -10,7 +10,7 @@ services:
       DOMAIN: ${DOMAIN}
     volumes:
       - .config/nginx/default.prod.conf:/etc/nginx/templates/default.conf.template
-      - .config/nginx/autoreload.sh:/docker-entrypoint.d/autoreload-ngnix.sh
+      - .config/nginx/autoreload.sh:/docker-entrypoint.d/autoreload-nginx.sh
       - ./data/certbot/conf:/etc/letsencrypt:ro
       - ./data/certbot/www:/var/www/certbot:ro
     command: /docker-entrypoint.d/autoreload-nginx.sh
