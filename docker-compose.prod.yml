@@ -22,7 +22,7 @@ services:
             -out /etc/letsencrypt/live/${DOMAIN}/fullchain.pem \
             -subj "/CN=localhost";
         fi;
-        exec nginx -g "daemon off;";
+        exec /docker-entrypoint.sh nginx -g "daemon off;";
       '
 
   certbot:
