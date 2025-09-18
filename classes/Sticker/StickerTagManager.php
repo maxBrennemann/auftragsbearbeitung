@@ -13,7 +13,9 @@ class StickerTagManager extends PrestashopConnection
 {
     private int $idSticker;
     private int $idProductReference;
-    private $tags;
+
+    /** @var array<int, mixed> */
+    private array $tags;
 
     public function __construct(int $idSticker, string $title = "")
     {
@@ -31,12 +33,15 @@ class StickerTagManager extends PrestashopConnection
         }
     }
 
-    public function setProductId(int $idProductReference)
+    public function setProductId(int $idProductReference): void
     {
         $this->idProductReference = $idProductReference;
     }
 
-    public function get()
+    /**
+     * @return array<int, string>
+     */
+    public function get(): array
     {
         $tagsContent = [];
 
@@ -47,7 +52,7 @@ class StickerTagManager extends PrestashopConnection
         return $tagsContent;
     }
 
-    public static function getTagsHTML()
+    public static function getTagsHTML(): void
     {
         $id = (int) Tools::get("id");
         $title = Tools::get("title");
@@ -74,7 +79,10 @@ class StickerTagManager extends PrestashopConnection
         ]);
     }
 
-    public function getTagIds()
+    /**
+     * @return array<int, mixed>
+     */
+    public function getTagIds(): array
     {
         $tagIds = [];
 
@@ -95,7 +103,7 @@ class StickerTagManager extends PrestashopConnection
         return $tagIds;
     }
 
-    public function remove(int $id)
+    public function remove(int $id): void
     {
     }
 
@@ -103,10 +111,10 @@ class StickerTagManager extends PrestashopConnection
      * adds a tag to a product,
      * this function does not sync tags with the shop
      */
-    public function add(String $content)
+    public function add(string $content): ?int
     {
         if (strlen($content) > 32) {
-            return;
+            return null;
         }
 
         $result = self::getTagId($content);
@@ -139,7 +147,7 @@ class StickerTagManager extends PrestashopConnection
     }
 
     /* https://stackoverflow.com/questions/35975677/prestashop-webservice-add-products-tags-and-attachment-document */
-    private function getTagIdFromShop($tag): int
+    private function getTagIdFromShop(string $tag): int
     {
         /* check if tag exists */
         $tagEncoded = str_replace(" ", "+", $tag);
@@ -180,7 +188,7 @@ class StickerTagManager extends PrestashopConnection
         return -1;
     }
 
-    public function saveTagsXml(&$xml)
+    public function saveTagsXml(mixed &$xml): void
     {
         $product_reference = $xml->children()->children();
         $associations = $product_reference->{'associations'};
@@ -211,7 +219,7 @@ class StickerTagManager extends PrestashopConnection
         }
     }
 
-    public function saveTags()
+    public function saveTags(): void
     {
         $xml = $this->getXML("products/$this->idProductReference");
         $product_reference = $xml->children()->children();
@@ -258,6 +266,9 @@ class StickerTagManager extends PrestashopConnection
         }
     }
 
+    /**
+     * @return array<int, string>
+     */
     public static function getSynonyms(string $query): array
     {
         $cacheDir = "cache/modules/sticker/tags";
@@ -320,7 +331,7 @@ class StickerTagManager extends PrestashopConnection
      * gets called when an ajax request is fired,
      * loads more synonyms
      */
-    public static function loadMoreSynonyms()
+    public static function loadMoreSynonyms(): void
     {
     }
 
@@ -341,7 +352,9 @@ class StickerTagManager extends PrestashopConnection
 
         $stickerTagManager = new StickerTagManager($id);
 
-        JSONResponseHandler::sendResponse($stickerTagManager->add($tag));
+        JSONResponseHandler::sendResponse([
+            $stickerTagManager->add($tag)
+        ]);
     }
 
     /**
@@ -396,9 +409,8 @@ class StickerTagManager extends PrestashopConnection
         return $tagGroupId;
     }
 
-    public static function addTagToTagGroup(String $tagContent, int $tagGroup)
+    public static function addTagToTagGroup(string $tagContent, int $tagGroup): void
     {
-        // get tag Id
         $tagId = self::getTagId($tagContent);
         $query = "INSERT INTO (module_sticker_sticker_tag_group_match) (idGroup, idTag) VALUES (:tagGroup, :tag)";
         DBAccess::insertQuery($query, [
@@ -413,7 +425,7 @@ class StickerTagManager extends PrestashopConnection
      * Deshalb müsste es später vielleicht ein REPLACE INTO werden?
      * Oder alles löschen und dann neu crawlen?
      */
-    public static function crawlAllTags()
+    public static function crawlAllTags(): void
     {
         $crawler = new PrestashopConnection();
 
@@ -447,7 +459,10 @@ class StickerTagManager extends PrestashopConnection
         }
     }
 
-    public static function countTagOccurences()
+    /**
+     * @return array<int, mixed>
+     */
+    public static function countTagOccurences(): array
     {
         $query = "SELECT COUNT(t.id_tag_shop) AS occurences, t.content 
             FROM module_sticker_tags t 
@@ -461,14 +476,14 @@ class StickerTagManager extends PrestashopConnection
         return $result;
     }
 
-    public static function getTagSuggestions()
+    public static function getTagSuggestions(): void
     {
         $id = (int) Tools::get("id");
         $name = Tools::get("name");
         StickerTagManager::getTagsHTML();
     }
 
-    public static function getTagOverview()
+    public static function getTagOverview(): void
     {
         $query = "SELECT COUNT(id) AS tagCount, content FROM module_sticker_tags GROUP BY content ORDER BY tagCount;";
         $data = DBAccess::selectQuery($query);

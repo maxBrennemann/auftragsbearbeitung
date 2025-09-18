@@ -6,12 +6,19 @@ use Classes\Protocol;
 
 class SearchProducts extends PrestashopConnection
 {
+
     public function __construct()
     {
         parent::__construct();
     }
 
-    public static function search($query, $searchTypes)
+    /**
+     * Summary of search
+     * @param string $query
+     * @param array<int, string> $searchTypes
+     * @return list<array{id: int, name: string, link: string}>
+     */
+    public static function search(string $query, array $searchTypes): array
     {
         $searchProduct = new SearchProducts();
         $products = [];
@@ -46,8 +53,9 @@ class SearchProducts extends PrestashopConnection
 
     /**
      * TODO: funktion muss alte data mit berücksichtigen und alt title nicht überschreiben
+     * @return array{products:mixed, matches:int, allLinks:array<int, string>}
      */
-    public static function getProductsByStickerId($idSticker): array|null
+    public static function getProductsByStickerId(int $idSticker): array|null
     {
         $searchProduct = new SearchProducts();
         $productMatches = [];

@@ -9,7 +9,7 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 
 class ImportGoogleSearchConsole
 {
-    private $searchConsole;
+    private SearchConsole $searchConsole;
 
     public function __construct()
     {
@@ -28,7 +28,7 @@ class ImportGoogleSearchConsole
         $this->searchConsole = new SearchConsole($client);
     }
 
-    public function getStats($url)
+    public function getStats(string $url): void
     {
         $queryRequest = new SearchAnalyticsQueryRequest();
         $queryRequest->setStartDate(date('Y-m-d', strtotime('-7 days')));
@@ -66,7 +66,7 @@ class ImportGoogleSearchConsole
         }
     }
 
-    public static function import()
+    public static function import(): void
     {
         $import = new ImportGoogleSearchConsole();
         $import->getStats("https://klebefux.de/");
@@ -75,8 +75,9 @@ class ImportGoogleSearchConsole
     /**
      * gets all search data for a given url,
      * if no start and end date are given, the last 7 days are used
+     * @return array<int, mixed>
      */
-    public static function get($url, ?string $startDate = null, ?string $endDate = null)
+    public static function get(string $url, ?string $startDate = null, ?string $endDate = null): array
     {
         if ($startDate == null) {
             $startDate = date('Y-m-d', strtotime('-7 days'));

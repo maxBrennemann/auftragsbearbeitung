@@ -3,6 +3,7 @@
 namespace Classes\Sticker;
 
 use Classes\Protocol;
+use SimpleXMLElement;
 
 /**
  * musste https://www.prestashop.com/forums/topic/912956-webservice-count-parameter-must-be-an-array-or-an-object-that-implements-countable/#comment-3296957
@@ -17,12 +18,13 @@ use Classes\Protocol;
  */
 class PrestashopConnection
 {
-    protected $url = "";
-    private $prestaKey = "";
-    private $prestaUrl =  "";
 
-    protected $webService;
-    protected $xml;
+    protected string $url;
+    private string $prestaKey;
+    private string $prestaUrl;
+
+    protected \PrestaShopWebservice $webService;
+    protected SimpleXMLElement $xml;
 
     public function __construct()
     {
@@ -31,10 +33,8 @@ class PrestashopConnection
         $this->prestaUrl = $_ENV["SHOPURL"];
     }
 
-    public function getXML($resource, $debug = false)
+    public function getXML(string $resource, bool $debug = false): SimpleXMLElement
     {
-        //$debug = true;
-
         $debugText = $debug ? "true" : "false";
         Protocol::write("PrestashopConnection::getXML($resource, debug = $debugText)");
 
@@ -50,7 +50,12 @@ class PrestashopConnection
         return $this->xml;
     }
 
-    protected function addXML($options)
+    /**
+     * @param array<string, mixed> $options
+     * @throws \Exception
+     * @return void
+     */
+    protected function addXML(array $options): void
     {
         Protocol::write("PrestashopConnection::addXML()");
 
@@ -61,7 +66,12 @@ class PrestashopConnection
         $this->xml = $this->webService->add($options);
     }
 
-    protected function editXML($options)
+    /**
+     * @param array<string, mixed>  $options
+     * @throws \Exception
+     * @return void
+     */
+    protected function editXML(array $options): void
     {
         Protocol::write("PrestashopConnection::editXML()");
 
@@ -72,7 +82,15 @@ class PrestashopConnection
         $this->xml = $this->webService->edit($options);
     }
 
-    protected function deleteXML($resource, $id, $debug = false)
+    /**
+     * TODO: change from string return type to bool
+     * @param string $resource
+     * @param int $id
+     * @param bool $debug
+     * @throws \Exception
+     * @return string
+     */
+    protected function deleteXML(string $resource, int $id, bool $debug = false): string
     {
         $debugText = $debug ? "true" : "false";
         Protocol::write("PrestashopConnection::getXML($resource, debug = $debugText)");
@@ -85,11 +103,13 @@ class PrestashopConnection
             $this->webService = new \PrestaShopWebservice($this->prestaUrl, $this->prestaKey, $debug);
 
             $this->webService->delete([
-                'resource' => $resource,
-                'id' => $id,
+                "resource" => $resource,
+                "id" => $id,
             ]);
         } catch (\PrestaShopWebserviceException $e) {
-            return 'Error:' . $e->getMessage();
+            return "Error: " . $e->getMessage();
         }
+
+        return "";
     }
 }

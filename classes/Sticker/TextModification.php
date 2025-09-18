@@ -9,10 +9,11 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class TextModification
 {
-    private $oldChats;
-    private $idSticker;
+    /** @var array<int, mixed> */
+    private array $oldChats;
+    private int $idSticker;
 
-    public function __construct($idSticker)
+    public function __construct(int $idSticker)
     {
         $this->idSticker = $idSticker;
         $this->oldChats = DBAccess::selectQuery("SELECT * FROM module_sticker_chatgpt WHERE idSticker = :idSticker", [
@@ -27,7 +28,7 @@ class TextModification
      * where the "stickerType" property matches the $motivType parameter
      * and the "textType" property matches the $textType parameter
      */
-    public function getChatCount($motivType, $textType): int
+    public function getChatCount(string $motivType, string $textType): int
     {
         return count(array_filter(
             $this->oldChats,
@@ -35,7 +36,7 @@ class TextModification
         ));
     }
 
-    public function getText($motivType, $textType, $index)
+    public function getText(string $motivType, string$textType, int $index): ?string
     {
         $filteredChats = array_filter(
             $this->oldChats,
@@ -44,7 +45,7 @@ class TextModification
         if (isset($filteredChats[$index])) {
             return $filteredChats[$index]["chatgptResponse"];
         }
-        return false;
+        return null;
     }
 
     /**
@@ -53,8 +54,10 @@ class TextModification
      * @param string $textType If the text is for a short description or a long description
      * @param string $info Additional info for chat gpt to generate the text
      * @param string $textStyle The kind of text (e.g ironic, funny, sad)
+     * 
+     * @return array{text: string, textId: mixed}
      */
-    public function getTextSuggestion($query, $stickerType, $textType, $info, $textStyle): array
+    public function getTextSuggestion(string $query, string $stickerType, string $textType, string $info, string $textStyle): array
     {
         $query = $this->getMessage($query, $stickerType, $textType, $info, $textStyle);
         $chatGPTConnection = new ChatGPTConnection();
@@ -64,7 +67,7 @@ class TextModification
         return $this->saveResponse($result, $stickerType, $textType, $info, $textStyle);
     }
 
-    private function getMessage($query, $stickerType, $textType, $info, $textStyle)
+    private function getMessage(string $query, string $stickerType, string $textType, string $info, string $textStyle): string
     {
         $length = $textType == "long" ? "50" : "20";
 
@@ -85,7 +88,10 @@ class TextModification
         return $queryText;
     }
 
-    private function saveResponse($result, $stickerType, $textType, $info, $textStyle)
+    /**
+     * @return array{text: string, textId: mixed}
+     */
+    private function saveResponse(string $result, string $stickerType, string $textType, string $info, string $textStyle): array
     {
         $date = date("Y-m-d");
 
@@ -108,7 +114,7 @@ class TextModification
         ];
     }
 
-    public static function iterateText()
+    public static function iterateText(): void
     {
         $id = (int) Tools::get("id");
         $type = Tools::get("type");
@@ -133,7 +139,7 @@ class TextModification
         $text = $textModification->getText($type, $text, $current);
 
         $status = "success";
-        if ($text == false) {
+        if ($text == null) {
             $status = "error";
         }
 
@@ -144,7 +150,7 @@ class TextModification
         ]);
     }
 
-    public static function newText()
+    public static function newText(): void
     {
         $id = (int) Tools::get("id");
         $type = Tools::get("type");
@@ -160,7 +166,7 @@ class TextModification
         JSONResponseHandler::sendResponse($response);
     }
 
-    public static function getTextGenerationTemplate()
+    public static function getTextGenerationTemplate(): void
     {
         $stickerId = Tools::get("id");
         $stickerType = Tools::get("type");

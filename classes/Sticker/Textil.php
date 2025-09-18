@@ -11,11 +11,13 @@ class Textil extends Sticker
 {
     public const TYPE = "textil";
 
-    /*
+    /**
      * SELECT color, prstshp_attribute_lang.name FROM `prstshp_attribute`, prstshp_attribute_lang WHERE prstshp_attribute.id_attribute = prstshp_attribute_lang.id_attribute AND id_attribute_group = 11 AND prstshp_attribute_lang.id_lang = 1;
      * TODO: read from shop and cache
+     * 
+     * @var array<int, array{hexCol: string, name: string}>
      */
-    public $textilColors = [
+    public array $textilColors = [
         ["hexCol" => "#ffffff", "name" => "Weiss"],
         ["hexCol" => "#FCCC00", "name" => "Maisgelb"],
         ["hexCol" => "#F5E61A", "name" => "Gelb"],
@@ -38,83 +40,87 @@ class Textil extends Sticker
         ["hexCol" => "#ff019a", "name" => "Neonpink"],
     ];
 
-    private $isShirtcollection = false;
-    private $isColorable = false;
+    private bool $isShirtcollection = false;
+    private bool $isColorable = false;
 
-    public function __construct($idTextile)
+    public function __construct(int $idTextile)
     {
         parent::__construct($idTextile);
         $this->instanceType = "textil";
 
         /* is true, if sticker exists or is activated */
-        $this->isShirtcollection = (int) $this->stickerData["is_shirtcollection"];
-        $this->isColorable = (int) $this->stickerData["is_colorable"];
+        $this->isShirtcollection = $this->stickerData["is_shirtcollection"] == "1";
+        $this->isColorable = $this->stickerData["is_colorable"] == "1";
     }
 
-    public function isInShop()
+    public function isInShop(): bool
     {
         return parent::checkIsInShop(self::TYPE);
     }
 
-    public function getName(): String
+    public function getName(): string
     {
         return "Textil " . parent::getName();
     }
 
-    public function getIsShirtcollection()
+    public function getIsShirtcollection(): bool
     {
         return $this->isShirtcollection;
     }
 
-    public function getIsColorable()
+    public function getIsColorable(): bool
     {
         return $this->isColorable;
     }
 
-    public function getIsCustomizable()
+    public function getIsCustomizable(): bool
     {
-        return $this->stickerData["is_customizable"];
+        return $this->stickerData["is_customizable"] == "1";
     }
 
-    public function getIsForConfigurator()
+    public function getIsForConfigurator(): bool
     {
-        return $this->stickerData["is_for_configurator"];
+        return $this->stickerData["is_for_configurator"] == "1";
     }
 
-    public function getAltTitle($default = ""): String
+    public function getAltTitle(string $default = ""): string
     {
         return parent::getAltTitle(self::TYPE);
     }
 
-    public function getShopLink()
+    public function getShopLink(): string
     {
         return parent::getShopLinkHelper(self::TYPE);
     }
 
-    public function getPriceTextilFormatted()
+    public function getPriceTextilFormatted(): string
     {
         $price = number_format($this->getPrice(), 2, ',', '') . "€";
         return $price;
     }
 
-    public function getPrice()
+    public function getPrice(): int
     {
         return 0;
     }
 
-    public function toggleIsColorable()
+    public function toggleIsColorable(): void
     {
         DBAccess::updateQuery("UPDATE `module_sticker_sticker_data` SET `is_colorable` = NOT `is_colorable` WHERE id = :id", ["id" => $this->getId()]);
         $this->isColorable = !$this->isColorable;
     }
 
-    /* returns the image array for the current svg */
-    public function getCurrentSVG()
+    /**
+     *  returns the image array for the current svg
+     * 
+     * @return array<string, mixed>
+     */
+    public function getCurrentSVG(): ?array
     {
         return $this->imageData->getTextilSVG($this->isColorable);
     }
 
-    private function uploadSVG()
+    private function uploadSVG(): void
     {
         $url = $this->url . "?upload=svg&id=" . $this->idProduct;
         $currentSVG = $this->getCurrentSVG();
@@ -136,24 +142,25 @@ class Textil extends Sticker
      * aktuell ist der basePrice bei Textilien gleich dem Endpreis, muss später noch geändert werden
      * TODO: Textilpreise dynamisch gestalten
      */
-    public function getBasePrice()
+    public function getBasePrice(): string
     {
-        return $this->getPrice();
+        $price = (string) $this->getPrice();
+        return $price;
     }
 
     /**
      * idCategory für Textilien ist 25
      * TODO: überarbeiten, da hardcoded
      */
-    public function getIdCategory()
+    public function getIdCategory(): int
     {
         return 25;
     }
 
-    public function save($isOverwrite = false)
+    public function save(bool $isOverwrite = false): ?string
     {
         if (!$this->getIsShirtcollection()) {
-            return;
+            return null;
         }
 
         $productId = (int) $this->getIdProduct();
@@ -186,12 +193,15 @@ class Textil extends Sticker
         }
 
         $this->imageData->handleImageProductSync("textil", $this->idProduct);
+        return null;
     }
 
     /**
      * returns hardcoded color ids
+     * 
+     * @return array<int, array<int>>
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         if ($this->getIsColorable()) {
             return [
@@ -201,7 +211,7 @@ class Textil extends Sticker
         return [];
     }
 
-    public function generateAllTextiles()
+    public function generateAllTextiles(): void
     {
         $category = 0;
         $textiles = Produkt::getAllProducts($category);
@@ -218,8 +228,10 @@ class Textil extends Sticker
 
     /**
      * product category is hardcoded
+     * 
+     * @return array<string, array<string, mixed>>
      */
-    public function getProducts()
+    public function getProducts(): array
     {
         $products = Produkt::getAllProducts(2);
         $additionalData = "SELECT id, id_product, activated, price FROM module_sticker_textiles WHERE id_module_textile = :id";
@@ -249,7 +261,7 @@ class Textil extends Sticker
         return $adapter;
     }
 
-    public static function toggleTextile()
+    public static function toggleTextile(): void
     {
         $idSticker = Tools::get("id");
         $idProduct = Tools::get("idTextile");
@@ -277,7 +289,7 @@ class Textil extends Sticker
         ]);
     }
 
-    public static function setPrice()
+    public static function setPrice(): void
     {
         $idSticker = Tools::get("id");
         $idProduct = Tools::get("idTextile");
@@ -304,7 +316,7 @@ class Textil extends Sticker
         ]);
     }
 
-    private static function checkIfExists($idSticker, $idProduct)
+    private static function checkIfExists(int $idSticker, int $idProduct): bool
     {
         $query = "SELECT id FROM module_sticker_textiles WHERE id_module_textile = :idSticker AND id_product = :idProduct";
         $result = DBAccess::selectQuery($query, [

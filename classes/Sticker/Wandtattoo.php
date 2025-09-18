@@ -6,15 +6,15 @@ class Wandtattoo extends AufkleberWandtattoo
 {
     public const TYPE = "wandtattoo";
 
-    private $isWalldecal = false;
+    private bool $isWalldecal = false;
 
-    public function __construct($idWaldecal)
+    public function __construct(int $idWaldecal)
     {
         parent::__construct($idWaldecal);
         $this->instanceType = "wandtattoo";
 
         /* is true, if sticker exists or is activated */
-        $this->isWalldecal = (int) $this->stickerData["is_walldecal"];
+        $this->isWalldecal = $this->stickerData["is_walldecal"] == "1";
     }
 
     public function isInShop(): bool
@@ -27,25 +27,25 @@ class Wandtattoo extends AufkleberWandtattoo
         return "Wandtattoo " . parent::getName();
     }
 
-    public function getIsWalldecal()
+    public function getIsWalldecal(): bool
     {
         return $this->isWalldecal;
     }
 
-    public function getAltTitle($default = ""): string
+    public function getAltTitle(string $default = ""): string
     {
         return parent::getAltTitle(self::TYPE);
     }
 
-    public function getShopLink()
+    public function getShopLink(): string
     {
         return parent::getShopLinkHelper(self::TYPE);
     }
 
-    public function save($isOverwrite = false): void
+    public function save(bool $isOverwrite = false): ?string
     {
         if (!$this->getIsWalldecal()) {
-            return;
+            return null;
         }
 
         $description = "<p><span>Es wird jeweils nur der entsprechende Artikel oder das einzelne Motiv verkauft. Andere auf den Bildern befindliche Dinge sind nicht Bestandteil des Angebotes.</span></p>" . $this->getDescription();
@@ -69,7 +69,7 @@ class Wandtattoo extends AufkleberWandtattoo
         try {
             $stickerTagManager->saveTags();
         } catch (\Exception $e) {
-            $errorStatus = "Fehler beim Speichern der Tags: " . $e->getMessage();
+            return "Fehler beim Speichern der Tags: " . $e->getMessage();
         }
 
         $stickerCombination->createCombinations();
@@ -81,8 +81,12 @@ class Wandtattoo extends AufkleberWandtattoo
         }
 
         $this->imageData->handleImageProductSync("wandtattoo", $this->idProduct);
+        return null;
     }
 
+    /**
+     * @return array<int, array<int>>
+     */
     public function getAttributes(): array
     {
         return [$this->getSizeIds()];

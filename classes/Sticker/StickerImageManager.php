@@ -6,7 +6,7 @@ use Classes\Cron\Queueable;
 
 class StickerImageManager implements Queueable
 {
-    public static function handle()
+    public static function handle(): void
     {
     }
 }

@@ -6,6 +6,7 @@ class Aufkleber extends AufkleberWandtattoo
 {
     public const TYPE = "aufkleber";
 
+    /** @var array<string, string> */
     private $texts = [
         "kurzfristig" => "<p>Werbeaufkleber, der für den kurzfristigen Einsatz gedacht ist und sich daher auch wieder leicht ablösen lässt.</p>",
         "langfristig" => "<p>Diesen Aufkleber gibt es&nbsp;als Hochleistungsfolie, der für langfristige Beschriftungen oder Dekorationen gedacht&nbsp;ist.</p><p>Bringe Deinen Aufkleber als Deko für Privat oder für Dein Geschäft an.</p>",
@@ -13,14 +14,14 @@ class Aufkleber extends AufkleberWandtattoo
         "mehrteilig" => "<p>Mehrfarbige Aufkleber werden als separate Teile geliefert.<br>Die Folien werden per Plotter aus einfarbiger Folie geschnitten und müssen daher beim Kleben Farbe für Farbe angebracht werden.</p>",
     ];
 
-    private $isShortTimeSticker = false;
-    private $isLongTimeSticker = false;
-    private $isMultipartSticker = false;
-    private $isPlotted = false;
+    private bool $isShortTimeSticker = false;
+    private bool $isLongTimeSticker = false;
+    private bool $isMultipartSticker = false;
+    private bool $isPlotted = false;
 
-    private $priceClass;
+    private int $priceClass;
 
-    public function __construct($idSticker)
+    public function __construct(int $idSticker)
     {
         parent::__construct($idSticker);
         $this->instanceType = "aufkleber";
@@ -29,19 +30,19 @@ class Aufkleber extends AufkleberWandtattoo
         $this->isPlotted = $this->stickerData["is_plotted"];
 
         /* sticker settings */
-        $this->isShortTimeSticker = (int) $this->stickerData["is_short_time"];
-        $this->isLongTimeSticker = (int) $this->stickerData["is_long_time"];
-        $this->isMultipartSticker = (int) $this->stickerData["is_multipart"];
+        $this->isShortTimeSticker = $this->stickerData["is_short_time"] == "1";
+        $this->isLongTimeSticker = $this->stickerData["is_long_time"] == "1";
+        $this->isMultipartSticker = $this->stickerData["is_multipart"] == "1";
 
         $this->priceClass = (int) $this->stickerData["price_class"];
     }
 
-    public function isInShop()
+    public function isInShop(): bool
     {
         return parent::checkIsInShop(self::TYPE);
     }
 
-    public function getName(): String
+    public function getName(): string
     {
         if ($this->getAltTitle() != "") {
             return $this->getAltTitle();
@@ -51,41 +52,44 @@ class Aufkleber extends AufkleberWandtattoo
     }
 
     /* TODO: es muss angezeigt werden, wenn sich die Titel unterscheiden, sodass Alttitel auch wirklich absichtlich festgelegt werden können */
-    public function getAltTitle($default = ""): String
+    public function getAltTitle(string $default = ""): string
     {
         return parent::getAltTitle(self::TYPE);
     }
 
-    public function getIsShortTimeSticker()
+    public function getIsShortTimeSticker(): bool
     {
         return $this->isShortTimeSticker;
     }
 
-    public function getIsLongTimeSticker()
+    public function getIsLongTimeSticker(): bool
     {
         return $this->isLongTimeSticker;
     }
 
-    public function getIsMultipart()
+    public function getIsMultipart(): bool
     {
         return $this->isMultipartSticker;
     }
 
-    public function getPriceClass()
+    public function getPriceClass(): int
     {
         return $this->priceClass;
     }
 
-    public function getIsPlotted()
+    public function getIsPlotted(): bool
     {
         return $this->isPlotted;
     }
 
-    public function getShopLink()
+    public function getShopLink(): string
     {
         return parent::getShopLinkHelper(self::TYPE);
     }
 
+    /**
+     * @return int[]
+     */
     public function getColors(): array
     {
         return [
@@ -109,7 +113,7 @@ class Aufkleber extends AufkleberWandtattoo
     }
 
     /* hardcoded color names */
-    public function getColorName(int $colorId): String
+    public function getColorName(int $colorId): string
     {
         $colors = [
             70 => "schwarz",
@@ -139,7 +143,7 @@ class Aufkleber extends AufkleberWandtattoo
     /**
      * sets the descriptions for the sticker with default text
      */
-    private function getDescriptionWithDefaultText(): String
+    private function getDescriptionWithDefaultText(): string
     {
         $descriptionEnd = $this->getDescription();
         $description = "<p><span>Es wird jeweils nur der entsprechende Artikel oder das einzelne Motiv verkauft. Andere auf den Bildern befindliche Dinge sind nicht Bestandteil des Angebotes.</span></p>";
@@ -162,7 +166,10 @@ class Aufkleber extends AufkleberWandtattoo
         return $description;
     }
 
-    public function getPurchasingPricesMatched()
+    /**
+     * @return float[]
+     */
+    public function getPurchasingPricesMatched(): array
     {
         return $this->buyingPrices;
     }
@@ -173,7 +180,7 @@ class Aufkleber extends AufkleberWandtattoo
      *
      * @param bool $isOverwrite if true, all images will be overwritten
      */
-    public function save($isOverwrite = false): String|null
+    public function save(bool $isOverwrite = false): ?string
     {
         if (!$this->getIsPlotted()) {
             return null;
@@ -231,10 +238,12 @@ class Aufkleber extends AufkleberWandtattoo
         return null;
     }
 
-    public function getAttributes()
+    /**
+     * @return array<int, array<int>>
+     */
+    public function getAttributes(): array
     {
         $attributes = [];
-
         $attributes[] = $this->getSizeIds();
 
         /*

@@ -10,17 +10,23 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 
+/**
+ * @implements \Iterator<int, Sticker>
+ */
 class StickerCollection implements \Iterator
 {
-    private $products = [];
-    private $current = 0;
-    private $position = 0;
+    /** @var array{0:Aufkleber, 1:Wandtattoo, 2:Textil} */
+    private array $products;
+    private int $current = 0;
+    private int $position = 0;
 
+    /** @var array<string, string> */
     private $exports = [];
 
     private int $id;
     private Sticker $sticker;
 
+    /** @var array<string, mixed> */
     private $productMatches;
     private String $displayError = "";
 
@@ -34,37 +40,37 @@ class StickerCollection implements \Iterator
         $this->products[2] = new Textil($this->id);
     }
 
-    public function getName(): String
+    public function getName(): string
     {
         return $this->sticker->getName();
     }
 
-    public function getCreationDate()
+    public function getCreationDate(): string
     {
         return $this->sticker->getCreationDate();
     }
 
-    public function getDirectory()
+    public function getDirectory(): string
     {
         return $this->sticker->getDirectory();
     }
 
-    public function getIsMarked()
+    public function getIsMarked(): bool
     {
         return $this->sticker->getIsMarked();
     }
 
-    public function getIsRevised()
+    public function getIsRevised(): bool
     {
         return $this->sticker->getIsRevised();
     }
 
-    public function getAdditionalInfo()
+    public function getAdditionalInfo(): string
     {
         return $this->sticker->getAdditionalInfo();
     }
 
-    public function getExportStatus($export): bool
+    public function getExportStatus(string $export): bool
     {
         if ($this->exports == []) {
             $query = "SELECT * FROM module_sticker_exports WHERE `idSticker`= :idSticker";
@@ -76,13 +82,12 @@ class StickerCollection implements \Iterator
         return $this->exports[$export] != null;
     }
 
-    /* Iterator */
-    public function current(): mixed
+    public function current(): Sticker
     {
-        return $this->getTarget($this->current);
+        return $this->products[$this->current];
     }
 
-    public function key(): mixed
+    public function key(): int
     {
         return $this->position;
     }
@@ -102,47 +107,39 @@ class StickerCollection implements \Iterator
         return isset($this->products[$this->position]);
     }
 
-    public function createAll()
+    public function createAll(): void
     {
         $this->getAufkleber();
         $this->getWandtattoo();
         $this->getTextil();
     }
 
-    public function getAufkleber()
+    public function getAufkleber(): Aufkleber
     {
         return $this->products[0];
     }
 
-    public function getWandtattoo()
+    public function getWandtattoo(): Wandtattoo
     {
         return $this->products[1];
     }
 
-    public function getTextil()
+    public function getTextil(): Textil
     {
         return $this->products[2];
     }
 
-    public function getTarget($type)
+    public function getTarget(string $type): Sticker
     {
-        $target = null;
-        switch ($type) {
-            case "aufkleber":
-                $target = $this->getAufkleber();
-                break;
-            case "wandtattoo":
-                $target = $this->getWandtattoo();
-                break;
-            case "textil":
-                $target = $this->getTextil();
-                break;
-        }
-
-        return $target;
+        return match ($type) {
+            "aufkleber" => $this->getAufkleber(),
+            "wandtattoo" => $this->getWandtattoo(),
+            "textil"     => $this->getTextil(),
+            default      => throw new \InvalidArgumentException("Unknown type $type"),
+        };
     }
 
-    public function toggleActiveStatus()
+    public function toggleActiveStatus(): void
     {
         $type = (string) $_POST["type"];
 
@@ -156,9 +153,10 @@ class StickerCollection implements \Iterator
     }
 
     /**
-     *  updates or uploads all products and writes connections
+     * updates or uploads all products and writes connections
+     * @param array{aufkleber:bool, wandtattoo:bool, textil:bool} $overwriteImages
      */
-    public function uploadAll($overwriteImages)
+    public function uploadAll(array $overwriteImages): void
     {
         $this->getAufkleber()->save($overwriteImages["aufkleber"]);
         $this->getWandtattoo()->save($overwriteImages["wandtattoo"]);
@@ -168,7 +166,7 @@ class StickerCollection implements \Iterator
     /**
      * is called via AJAX to reduce page load
      */
-    public function checkProductErrorStatus()
+    public function checkProductErrorStatus(): string
     {
         $this->productMatches = SearchProducts::getProductsByStickerId($this->id);
 
@@ -193,7 +191,7 @@ class StickerCollection implements \Iterator
     /**
      * generates an error message in html
      */
-    public function getErrorMessage(): ?String
+    public function getErrorMessage(): ?string
     {
         $text = "";
 
@@ -218,14 +216,19 @@ class StickerCollection implements \Iterator
         return $text;
     }
 
-    public function getSearchConsoleStats($startDate, $endDate)
+    /**
+     * @param string $startDate
+     * @param string $endDate
+     * @return array<int, mixed>
+     */
+    public function getSearchConsoleStats(string $startDate, string $endDate): array
     {
         $url = "";
         $data = ImportGoogleSearchConsole::get($url, $startDate, $endDate);
         return $data;
     }
 
-    public static function getStickerStatus()
+    public static function getStickerStatus(): void
     {
         $id = (int) Tools::get("id");
 
@@ -239,7 +242,7 @@ class StickerCollection implements \Iterator
         ]);
     }
 
-    public static function addStickerCron()
+    public static function addStickerCron(): void
     {
         $id = (int) Tools::get("id");
         $type = Tools::get("stickerType");
@@ -262,6 +265,12 @@ class StickerCollection implements \Iterator
         ]);
     }
 
+    /**
+     * @param int $id
+     * @param string $type
+     * @param bool $overwrite
+     * @return array{responseData: array<bool|string>, status: string}
+     */
     public static function exportSticker(int $id, string $type, bool $overwrite): array
     {
         $message = "";
@@ -284,7 +293,11 @@ class StickerCollection implements \Iterator
                 break;
             case "all":
                 $stickerCollection = new StickerCollection($id);
-                $stickerCollection->uploadAll($overwrite);
+                $stickerCollection->uploadAll([
+                    "aufkleber" => $overwrite,
+                    "wandtattoo" => $overwrite,
+                    "textil" => $overwrite
+                ]);
                 break;
         }
 
@@ -321,13 +334,13 @@ class StickerCollection implements \Iterator
         }*/
     }
 
-    public static function addSticker()
+    public static function addSticker(): void
     {
         $name = (string) Tools::get("name");
         Sticker::createNewSticker($name);
     }
 
-    public static function getStickerOverview()
+    public static function getStickerOverview(): void
     {
         $orderBy = (string) Tools::get("orderBy");
         $order = (string) Tools::get("order");
@@ -366,7 +379,7 @@ class StickerCollection implements \Iterator
         JSONResponseHandler::sendResponse($data);
     }
 
-    public static function getStickerStates()
+    public static function getStickerStates(): void
     {
         $query = "SELECT id, additional_data FROM module_sticker_sticker_data ORDER BY id ASC";
         $data = DBAccess::selectQuery($query);
@@ -398,7 +411,7 @@ class StickerCollection implements \Iterator
         JSONResponseHandler::sendResponse($isInShopStatus);
     }
 
-    public static function getStickerSizes()
+    public static function getStickerSizes(): void
     {
         $id = (int) Tools::get("id");
         $stickerCollection = new StickerCollection($id);
@@ -410,7 +423,7 @@ class StickerCollection implements \Iterator
         ]);
     }
 
-    public static function getPriceScheme()
+    public static function getPriceScheme(): void
     {
         $id = (int) Tools::get("id");
         $stickerCollection = new StickerCollection($id);
@@ -423,7 +436,7 @@ class StickerCollection implements \Iterator
         ]);
     }
 
-    public static function addFiles()
+    public static function addFiles(): void
     {
         $idSticker = Tools::get("id");
         $type = Tools::get("type");
@@ -457,7 +470,7 @@ class StickerCollection implements \Iterator
         JSONResponseHandler::sendResponse($fileData);
     }
 
-    public static function setTitle()
+    public static function setTitle(): void
     {
         $id = Tools::get("id");
         $title = Tools::get("title");
@@ -472,7 +485,7 @@ class StickerCollection implements \Iterator
         }
     }
 
-    public static function setAltTitle()
+    public static function setAltTitle(): void
     {
         $id = Tools::get("id");
         $type = Tools::get("type");
@@ -498,7 +511,7 @@ class StickerCollection implements \Iterator
         JSONResponseHandler::returnOK();
     }
 
-    public static function setCreationDate()
+    public static function setCreationDate(): void
     {
         $id = Tools::get("id");
         $creation_date = Tools::get("date");
@@ -511,7 +524,7 @@ class StickerCollection implements \Iterator
         JSONResponseHandler::returnOK();
     }
 
-    public static function writeDirectory()
+    public static function writeDirectory(): void
     {
         $id = Tools::get("id");
         $content = (string) Tools::get("directory");
@@ -526,7 +539,7 @@ class StickerCollection implements \Iterator
         JSONResponseHandler::returnOK();
     }
 
-    public static function writeAdditonalInfo()
+    public static function writeAdditonalInfo(): void
     {
         $id = Tools::get("id");
         $content = (string) Tools::get("content");
@@ -540,7 +553,7 @@ class StickerCollection implements \Iterator
         JSONResponseHandler::returnOK();
     }
 
-    public static function setExportStatus()
+    public static function setExportStatus(): void
     {
         $id = Tools::get("id");
         $type = (string) Tools::get("type");
@@ -579,7 +592,7 @@ class StickerCollection implements \Iterator
         JSONResponseHandler::returnOK();
     }
 
-    public static function toggleStatus()
+    public static function toggleStatus(): void
     {
         $id = Tools::get("id");
         $type = (string) Tools::get("type");

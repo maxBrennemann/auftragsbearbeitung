@@ -3,15 +3,21 @@
 namespace Classes\Sticker;
 
 use Classes\Protocol;
+use SimpleXMLElement;
 
 class StickerCombination extends PrestashopConnection
 {
-    private $sticker;
-    private $arguments;
-    private $defaultOn = true;
-    private $attributes;
-    private $prices;
-    private $purchasingPrices;
+    private Sticker $sticker;
+    private bool $defaultOn = true;
+
+    /** @var array<int, mixed> */
+    private array $arguments;
+    /** @var array<int, mixed> */
+    private array $attributes = [];
+    /** @var array<int, mixed> */
+    private array $prices = [];
+    /** @var array<int, mixed> */
+    private array $purchasingPrices = [];
 
     public function __construct(Sticker $sticker)
     {
@@ -20,14 +26,17 @@ class StickerCombination extends PrestashopConnection
         $this->sticker = $sticker;
     }
 
-    public function getAttributeCombinations()
+    /**
+     * @return array<int, mixed>
+     */
+    public function getAttributeCombinations(): array
     {
         $this->attributes = $this->sticker->getAttributes();
         $this->arguments = $this->combine($this->attributes);
         return $this->arguments;
     }
 
-    public function createCombinations()
+    public function createCombinations(): void
     {
         // TODO: getAttributes, getPurchasingPrices and getPrices implementieren
         $this->attributes = $this->sticker->getAttributes();
@@ -49,7 +58,11 @@ class StickerCombination extends PrestashopConnection
         $this->setStockAvailables();
     }
 
-    private function getOldCombinations($productId)
+    /**
+     * @param int $productId
+     * @return SimpleXMLElement
+     */
+    private function getOldCombinations(int $productId): ?SimpleXMLElement
     {
         $productId = (int) $productId;
         if ($productId == 0) {
@@ -63,21 +76,21 @@ class StickerCombination extends PrestashopConnection
             return $product->associations->combinations;
         } catch (\PrestaShopWebserviceException $e) {
             Protocol::write($e->getMessage());
-            return [];
+            return null;
         }
     }
 
-    public function removeOldCombinations($productId)
+    public function removeOldCombinations(int $productId): void
     {
         $productId = (int) $productId;
         if ($productId == 0) {
-            return null;
+            return;
         }
 
         $productCombinations = $this->getOldCombinations($productId);
 
         if (count($productCombinations) == 0) {
-            return null;
+            return;
         }
 
         foreach ($productCombinations->combination as $combination) {
@@ -86,7 +99,11 @@ class StickerCombination extends PrestashopConnection
         }
     }
 
-    private function combine($elements)
+    /**
+     * @param array<int, mixed> $elements
+     * @return array<int, mixed>
+     */
+    private function combine(array $elements): array
     {
         $result = [];
         if (sizeof($elements) > 1) {
@@ -108,7 +125,12 @@ class StickerCombination extends PrestashopConnection
         }
     }
 
-    private function addCombination($xml, $args)
+    /**
+     * @param mixed $xml
+     * @param array<mixed, mixed> $args
+     * @return int
+     */
+    private function addCombination(mixed $xml, array $args): int
     {
         try {
             $combination = $xml->children()->children();
@@ -146,13 +168,19 @@ class StickerCombination extends PrestashopConnection
             );
             $this->addXML($opt);
 
-            return $this->xml->combination->id;
+            $id = (int) $this->xml->combination->id;
+            return $id;
         } catch (\PrestaShopWebserviceException $e) {
             echo $e;
         }
+
+        return 0;
     }
 
-    private function getStockAvailablesIds()
+    /**
+     * @return array<int, int>
+     */
+    private function getStockAvailablesIds(): array
     {
         $stockAvailablesIds = [];
 
@@ -167,7 +195,8 @@ class StickerCombination extends PrestashopConnection
             $stocks = $xml->children()->children()->associations->stock_availables;
 
             foreach ($stocks->stock_available as $stock) {
-                array_push($stockAvailablesIds, $stock->id);
+                $id = (int) $stock->id;
+                array_push($stockAvailablesIds, $id);
             }
         } catch (\PrestaShopWebserviceException $e) {
             Protocol::write($e->getMessage());
@@ -176,7 +205,7 @@ class StickerCombination extends PrestashopConnection
         return $stockAvailablesIds;
     }
 
-    private function setStockAvailables($quantity = 20)
+    private function setStockAvailables(int $quantity = 20): void
     {
         $ids = $this->getStockAvailablesIds();
 

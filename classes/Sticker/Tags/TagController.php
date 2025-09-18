@@ -10,6 +10,11 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class TagController
 {
+    /**
+     * @param string $query
+     * @throws \RuntimeException
+     * @return array<int, string>
+     */
     private static function getSynonyms(string $query): array
     {
         $cacheDir = "cache/modules/sticker/tags";
@@ -68,27 +73,27 @@ class TagController
         return $synonyms;
     }
 
-    public static function addTag()
+    public static function addTag(): void
     {
 
     }
 
-    public static function removeTag()
+    public static function removeTag(): void
     {
 
     }
 
-    public static function addTagGroup()
+    public static function addTagGroup(): void
     {
 
     }
 
-    public static function addTagToGroup()
+    public static function addTagToGroup(): void
     {
 
     }
 
-    public static function getTagSuggestions()
+    public static function getTagSuggestions(): void
     {
         $id = (int) Tools::get("id");
         $title = Tools::get("title");

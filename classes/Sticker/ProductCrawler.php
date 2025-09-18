@@ -3,6 +3,7 @@
 namespace Classes\Sticker;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
+use SimpleXMLElement;
 
 /*
  * TODO: nginx is still buffering, these headers do not affect it
@@ -27,7 +28,7 @@ class ProductCrawler extends PrestashopConnection
      * https://stackoverflow.com/questions/9152373/php-flushing-while-loop-data-with-ajax
      * Das Script soll auch laufen, falls der Nutzer die Seite neu lädt.
      */
-    public function crawlAll()
+    public function crawlAll(): void
     {
         ignore_user_abort(true);
         set_time_limit(0);
@@ -63,7 +64,7 @@ class ProductCrawler extends PrestashopConnection
         }
     }
 
-    private function analyseProduct($productData)
+    private function analyseProduct(SimpleXMLElement $productData): void
     {
         $idMotiv = (int) $productData->reference;
         $title = (string) $productData->name->language[0];
@@ -91,7 +92,7 @@ class ProductCrawler extends PrestashopConnection
      * 62: Wandtattoo
      * 13: Aufkleber
      */
-    private function getCategory($productData)
+    private function getCategory(SimpleXMLElement $productData): int
     {
         $categories = $productData->associations->categories;
         $idCategories = [];
@@ -115,7 +116,7 @@ class ProductCrawler extends PrestashopConnection
     /**
      * updates the category info of the product and sets additonal_data column
      */
-    private function updateCategory($id, $category)
+    private function updateCategory(int $id, int $category): void
     {
         switch ($category) {
             case 25:
@@ -132,7 +133,7 @@ class ProductCrawler extends PrestashopConnection
         }
 
         if ($query == "") {
-            return null;
+            return;
         }
         DBAccess::updateQuery($query, ["id" => $id]);
 
@@ -149,7 +150,7 @@ class ProductCrawler extends PrestashopConnection
      * img daten holen und mit den daten am server vergleichen
      * dann bilder, die fehlen, herunterladen
      */
-    private function getImages($productData, $category)
+    private function getImages(SimpleXMLElement $productData, int $category): void
     {
         $idMotiv = (int) $productData->reference;
         $idProduct = (int) $productData->id;
@@ -190,7 +191,7 @@ class ProductCrawler extends PrestashopConnection
         }
     }
 
-    private function downloadImage($idProduct, $idImage, $idMotiv)
+    private function downloadImage(int $idProduct, int $idImage, int $idMotiv): string
     {
         $ch = curl_init($_ENV["SHOPURL"] . "/api/images/products/$idProduct/$idImage");
         curl_setopt($ch, CURLOPT_HEADER, false);
@@ -207,7 +208,7 @@ class ProductCrawler extends PrestashopConnection
         return $filename;
     }
 
-    private function saveDownloadedImageToDB($filename, $idMotiv, $category, $idProduct, $idImageShop)
+    private function saveDownloadedImageToDB(string $filename, int $idMotiv, int $category, int $idProduct, int $idImageShop): void
     {
         /* write image info to db */
         $query = "INSERT INTO dateien (dateiname, originalname, `date`, `typ`) VALUES (:dateiname, :originalname, :dateToday, 'jpg')";
@@ -244,7 +245,7 @@ class ProductCrawler extends PrestashopConnection
         }
     }
 
-    public static function crawl()
+    public static function crawl(): void
     {
         $pc = new ProductCrawler();
         $pc->crawlAll();

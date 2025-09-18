@@ -8,14 +8,18 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class AufkleberWandtattoo extends Sticker
 {
-    protected $basePrice;
+    protected float $basePrice;
 
-    protected $idShopAttributes = [];
-    protected $prices = [];
-    protected $buyingPrices = [];
-    protected $widthsToSizeIds = [];
+    /** @var array<int, int> */
+    protected array $idShopAttributes = [];
+    /** @var array<int, string> */
+    protected array $prices = [];
+    /** @var array<int, float> */
+    protected array $buyingPrices = [];
+    /** @var array<int, string> */
+    protected array $widthsToSizeIds = [];
 
-    public function getPrice($width, $height, $difficulty)
+    public function getPrice(int $width, int $height, int $difficulty): int
     {
         if ($width >= 1200) {
             $base = 2100;
@@ -37,17 +41,20 @@ class AufkleberWandtattoo extends Sticker
         return $base;
     }
 
-    public function getSize($sizeId)
+    public function getSize(int $sizeId): string
     {
         return $this->widthsToSizeIds[$sizeId];
     }
 
-    public function getPricesMatched()
+    /** 
+     * @return array<int, string> 
+     */
+    public function getPricesMatched(): array
     {
         return $this->prices;
     }
 
-    public function updatePrice(int $width, int $height, int $price)
+    public function updatePrice(int $width, int $height, int $price): void
     {
         $currentPrice = $this->getPrice($width, $height, $this->getDifficulty());
         if ($currentPrice != $price) {
@@ -66,8 +73,9 @@ class AufkleberWandtattoo extends Sticker
      * sets new height for a sticker,
      * adjusts price if necessary,
      * writes to changelog
+     * @param array<string, mixed> $data
      */
-    public function updateSizeTable($data)
+    public function updateSizeTable(array $data): void
     {
         $width = (int) $data["width"];
         $height = (int) $data["height"];
@@ -82,17 +90,17 @@ class AufkleberWandtattoo extends Sticker
         ]);
     }
 
-    public function getDifficulty()
+    public function getDifficulty(): int
     {
         return $this->stickerData["price_class"];
     }
 
-    protected function getDescriptionShortWithDefaultText(): String
+    protected function getDescriptionShortWithDefaultText(): string
     {
         return $this->getSizeTableFormatted() . $this->getDescriptionShort();
     }
 
-    public function getSizeTableFormatted()
+    public function getSizeTableFormatted(): string
     {
         $query = "SELECT width, height
             FROM module_sticker_sizes 
@@ -112,14 +120,14 @@ class AufkleberWandtattoo extends Sticker
         ]);
     }
 
-    public function getBasePrice()
+    public function getBasePrice(): string
     {
         $basePrice = $this->getBasePriceUnformatted();
         //$this->basePrice = $basePrice;
         return number_format((float) $basePrice, 2, '.', '');
     }
 
-    public function getBasePriceUnformatted()
+    public function getBasePriceUnformatted(): float
     {
         if ($this->basePrice != null) {
             return $this->basePrice / 100;
@@ -140,8 +148,10 @@ class AufkleberWandtattoo extends Sticker
      * gibt die ids der id_attribute_group 5 (Breite) zurück,
      * dabei wird geprüft, ob zu dem Breitenwert schon eine id_attribute existiert und falls nicht,
      * wird diese erstellt
+     * 
+     * @return array<int, int>
      */
-    public function getSizeIds()
+    public function getSizeIds(): array
     {
         $query = "SELECT `price`, `width`, ((`width` / 1000) * (`height` / 1000) * 10) as `costs` FROM `module_sticker_sizes` WHERE `id_sticker` = :idSticker ORDER BY `width`";
         $data = DBAccess::selectQuery($query, ["idSticker" => $this->getId()]);
@@ -160,7 +170,7 @@ class AufkleberWandtattoo extends Sticker
             $sizeIds[] = $sizeId;
             $widths[$sizeId] = $singleSizeInCm;
 
-            $prices[$sizeId] = number_format(($d["price"] / 100 - $this->getBasePrice()) / 1.19, 2);
+            $prices[$sizeId] = number_format(($d["price"] / 100 - $this->getBasePriceUnformatted()) / 1.19, 2);
             $buyingPrices[$sizeId] = $d["costs"];
         }
 
@@ -171,7 +181,7 @@ class AufkleberWandtattoo extends Sticker
         return $sizeIds;
     }
 
-    protected function addAttribute($attributeGroupId, $attributeName)
+    protected function addAttribute(int $attributeGroupId, string $attributeName): int
     {
         try {
             $xml = $this->getXML('product_option_values?filter[id_attribute_group]=' . $attributeGroupId . '&filter[name]=' . $attributeName . '&limit=1');
@@ -179,7 +189,7 @@ class AufkleberWandtattoo extends Sticker
 
             if (!empty($resources)) {
                 $attributes = $resources->product_option_value->attributes();
-                return $attributes['id'];
+                return (int) $attributes['id'];
             }
         } catch (\PrestaShopWebserviceException $e) {
             echo $e->getMessage();
@@ -199,14 +209,19 @@ class AufkleberWandtattoo extends Sticker
             );
 
             $this->addXML($opt);
-            $id = $this->xml->product->id;
+            $id = (int) $this->xml->product->id;
             return $id;
         } catch (\PrestaShopWebserviceException $e) {
             echo $e->getMessage();
         }
+
+        return 0;
     }
 
-    protected function generateDefaultData()
+    /**
+     * @return array<int, mixed>
+     */
+    protected function generateDefaultData(): array
     {
         $id = $this->getId();
         $query = "INSERT INTO module_sticker_sizes (width, id_sticker) VALUES
@@ -238,7 +253,10 @@ class AufkleberWandtattoo extends Sticker
         return $data;
     }
 
-    public function getSizes()
+    /**
+     * @return array<int, mixed>
+     */
+    public function getSizes(): array
     {
         $query = "SELECT id, width, height, price, 
                 ((width / 1000) * (height / 1000) * 10) as costs, price_default
@@ -255,7 +273,7 @@ class AufkleberWandtattoo extends Sticker
         return $data;
     }
 
-    public static function addSize()
+    public static function addSize(): void
     {
         $width = (int) Tools::get("width");
         $height = (int) Tools::get("height");
@@ -278,7 +296,7 @@ class AufkleberWandtattoo extends Sticker
         ]);
     }
 
-    public static function deleteSize()
+    public static function deleteSize(): void
     {
         $id = (int) Tools::get("id");
         $query = "DELETE FROM module_sticker_sizes WHERE id = :id;";
@@ -289,7 +307,7 @@ class AufkleberWandtattoo extends Sticker
         ]);
     }
 
-    public static function updateSizes()
+    public static function updateSizes(): void
     {
         $sizes = json_decode(Tools::get("sizes"), true);
         $id = (int) Tools::get("id");

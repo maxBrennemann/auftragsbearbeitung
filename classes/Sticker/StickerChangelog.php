@@ -7,8 +7,9 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 
 class StickerChangelog
 {
-    private $idSticker;
-    private $changelogData;
+    private int $idSticker;
+    /** @var array<int, mixed> */
+    private array $changelogData;
 
     public function __construct(int $idSticker)
     {
@@ -17,17 +18,20 @@ class StickerChangelog
         $this->changelogData = DBAccess::selectQuery($query, ["idSticker" => $idSticker]);
     }
 
-    public function getStickerId()
+    public function getStickerId(): int
     {
         return $this->idSticker;
     }
 
-    public function getChangelogData()
+    /**
+     * @return array<int, mixed>
+     */
+    public function getChangelogData(): array
     {
         return $this->changelogData;
     }
 
-    public function getTable()
+    public function getTable(): string
     {
         $column_names = array(
             0 => array("COLUMN_NAME" => "id", "ALT" => "Nummer"),
@@ -51,7 +55,7 @@ class StickerChangelog
      * @param mixed $column the column in which the content changed
      * @param mixed $newValue if it is the first entry, it is the init value, else it is the new value
      */
-    public static function log(int $stickerId, int $stickerType, int $rowId, $table, $column, $newValue)
+    public static function log(int $stickerId, int $stickerType, int $rowId, $table, $column, $newValue): void
     {
         $query = "INSERT INTO `module_sticker_changelog` (`id_sticker`, `type`, `rowId`, `table`, `column`, `newValue`) VALUES (:id_sticker, :type, :rowId, :table, :column, :newValue)";
         $values =  [
@@ -67,12 +71,14 @@ class StickerChangelog
 
     /**
      * reverts the last change from the changelog table
+     * 
      * @param int $stickerId the stickerId where a changelog must be reversed
      * @param string $stickerType the type of the rollback
      * @param int $rowId specific row identifier
+     * 
      * @return boolean true if the revert was successfull
      */
-    public static function revert(int $stickerId, String $stickerType, int $rowId)
+    public static function revert(int $stickerId, string $stickerType, int $rowId): bool
     {
         $lastChanges = DBAccess::selectQuery("SELECT * FROM `module_sticker_changelog` WHERE `id_sticker` = :id_sticker AND `type` = :type ORDER BY id DESC LIMIT 2", ["id_sticker" => $stickerId, "type" => $stickerType]);
 

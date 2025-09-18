@@ -6,13 +6,14 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 
 class StickerCategory extends PrestashopConnection
 {
+
     /**
      * sets the categories of a sticker by deleting all old categories and inserting the new ones
      *
      * @param int $stickerId
      * @param string $categories
      */
-    public static function setCategories($stickerId, $categories)
+    public static function setCategories(int $stickerId, string $categories): void
     {
         $categories = json_decode($categories, true);
         $categories = array_unique($categories);
@@ -30,8 +31,9 @@ class StickerCategory extends PrestashopConnection
      * gets the categories of a sticker
      *
      * @param int $stickerId
+     * @return array<mixed, mixed>
      */
-    public static function getCategoriesForSticker($stickerId)
+    public static function getCategoriesForSticker(int $stickerId): array
     {
         $query = "SELECT categoryId FROM module_sticker_categories WHERE stickerId = :stickerId";
         $categories = DBAccess::selectQuery($query, ["stickerId" => $stickerId]);
@@ -51,16 +53,20 @@ class StickerCategory extends PrestashopConnection
      * @param string $articleName
      * @param int $category
      */
-    public static function getCategoriesSuggestion($articleName, $category = 13): string
+    public static function getCategoriesSuggestion(string $articleName, int $category = 13): string
     {
         return "";
     }
 
-    public static function getCategories($startCategory)
+    /**
+     * @param int $startCategory
+     * @return array<mixed, mixed>
+     */
+    public static function getCategories(int $startCategory): array
     {
         $cachedCategories = self::getCachedCategoryTree($startCategory);
 
-        if ($cachedCategories != false) {
+        if ($cachedCategories !== false) {
             return $cachedCategories;
         }
 
@@ -75,9 +81,9 @@ class StickerCategory extends PrestashopConnection
      *
      * @param int $startCategory
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    private static function getCategoryTreeFromShop($startCategory)
+    private static function getCategoryTreeFromShop(int $startCategory): array
     {
         $stickerCategory = new StickerCategory();
 
@@ -103,9 +109,9 @@ class StickerCategory extends PrestashopConnection
      *
      * @param int $startCategory
      *
-     * @return array|false
+     * @return array<mixed, mixed>|false
      */
-    private static function getCachedCategoryTree($startCategory)
+    private static function getCachedCategoryTree(int $startCategory): array|false
     {
         if (!file_exists('cache/modules/sticker/categories')) {
             mkdir('cache/modules/sticker/categories', 0777, true);
@@ -132,16 +138,17 @@ class StickerCategory extends PrestashopConnection
     /**
      * caches the category tree in a json file
      *
-     * @param array $categories
+     * @param array<string, mixed> $categories
      * @param int $startCategory
      */
-    private static function cacheCategoryTree($categories, $startCategory)
+    private static function cacheCategoryTree(array $categories, int $startCategory): void
     {
         $filename = 'cache/modules/sticker/categories/' . $startCategory . '.json';
 
         if (is_writable($filename) === false) {
             return;
         }
+
         file_put_contents($filename, json_encode($categories));
     }
 }

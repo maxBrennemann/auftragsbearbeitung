@@ -7,19 +7,20 @@ use Classes\Sticker\PrestashopConnection;
 use Classes\Sticker\StickerCollection;
 use Classes\Sticker\Textil;
 use Classes\Sticker\Wandtattoo;
+use Classes\Sticker\Sticker;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
-/**
- * generates a csv file for facebook product export
- */
 class ExportFacebook extends PrestashopConnection
 {
-    private $currentFilename;
-    private $idProducts;
+    private string $currentFilename;
+
+    /** @var array<int, mixed> */
+    private array $idProducts;
 
     /**
      * the line array for the csv
+     * @var array<string, string>
      */
     private $line = [
         "id" => "", // aufkleber wandtattoo textil
@@ -52,7 +53,7 @@ class ExportFacebook extends PrestashopConnection
      * iterates over all products and creates the three variants if these exist in the shop
      * then it takes the data and puts it into a file
      */
-    public function generateCSV()
+    public function generateCSV(): void
     {
         $lines = [];
         foreach ($this->idProducts as $id) {
@@ -69,8 +70,9 @@ class ExportFacebook extends PrestashopConnection
 
     /**
      * generates the product csv lines for a specific sticker id
+     * @return array<int, array<string, string|int>>
      */
-    public function getSpecificProductExport($idSticker)
+    public function getSpecificProductExport(int $idSticker): array
     {
         $stickerCollection = new StickerCollection($idSticker);
 
@@ -93,7 +95,11 @@ class ExportFacebook extends PrestashopConnection
         return $lines;
     }
 
-    private function fillLine($product): array
+    /**
+     * @param Sticker $product
+     * @return array<int, array<string, string|int>>
+     */
+    private function fillLine(Sticker $product): array
     {
         $variantLines = [];
 
@@ -120,7 +126,12 @@ class ExportFacebook extends PrestashopConnection
         return $variantLines;
     }
 
-    private function fillLineAufkleber($product, $line)
+    /**
+     * @param Aufkleber $product
+     * @param array<string, string> $line
+     * @return array<int, array<string, string>>
+     */
+    private function fillLineAufkleber(Aufkleber $product, array $line): array
     {
         $combinationId = 0;
         $combinationLines = [];
@@ -130,7 +141,7 @@ class ExportFacebook extends PrestashopConnection
 
         foreach ($sizeIds as $size) {
             if (isset($prices[$size]) && $prices[$size] != 0.00) {
-                $line["price"] = $prices[$size] + $basePrice;
+                $line["price"] = ((float) $prices[$size]) + $basePrice;
             }
 
             $line["size"] = $product->getSize($size);
@@ -166,7 +177,12 @@ class ExportFacebook extends PrestashopConnection
         return $combinationLines;
     }
 
-    private function fillLineWandtattoo($product, $line)
+    /**
+     * @param Wandtattoo $product
+     * @param array<string, string> $line
+     * @return array<int, array<string, string>>
+     */
+    private function fillLineWandtattoo(Wandtattoo $product, array $line): array
     {
         $combinationId = 0;
         $combinationLines = [];
@@ -176,7 +192,7 @@ class ExportFacebook extends PrestashopConnection
 
         foreach ($sizeIds as $size) {
             if (isset($prices[$size]) && $prices[$size] != 0.00) {
-                $line["price"] = $prices[$size] + $basePrice;
+                $line["price"] = ((float) $prices[$size]) + $basePrice;
             }
 
             $line["size"] = $product->getSize($size);
@@ -191,7 +207,12 @@ class ExportFacebook extends PrestashopConnection
         return $combinationLines;
     }
 
-    private function fillLineTextil($product, $line)
+    /**
+     * @param Textil $product
+     * @param array<string, string> $line
+     * @return array<int, array<string, string|int>>
+     */
+    private function fillLineTextil(Textil $product, array $line): array
     {
         $combinationId = 0;
         $combinationLines = [];
@@ -223,6 +244,7 @@ class ExportFacebook extends PrestashopConnection
      * generates the csv file by using built in functions from php to avoid manual
      * handling of escape characters
      * https://stackoverflow.com/questions/4617935/is-there-a-way-to-include-commas-in-csv-columns-without-breaking-the-formatting
+     * @param array<mixed, mixed> $lines
      */
     private function generateFile(array $lines, string $filename): void
     {
@@ -239,12 +261,12 @@ class ExportFacebook extends PrestashopConnection
         fclose($file);
     }
 
-    public function getFilename(): String
+    public function getFilename(): string
     {
         return $this->currentFilename;
     }
 
-    private static function getFirstImageLink($product)
+    private static function getFirstImageLink(Sticker $product): ?string
     {
         $prestashopConnection = new PrestashopConnection();
 
@@ -263,9 +285,11 @@ class ExportFacebook extends PrestashopConnection
         } catch (\PrestaShopWebserviceException $e) {
             echo 'Error:' . $e->getMessage();
         }
+
+        return null;
     }
 
-    public static function createExport()
+    public static function createExport(): void
     {
         $export = new ExportFacebook();
         $export->generateCSV();

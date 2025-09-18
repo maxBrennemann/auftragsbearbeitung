@@ -4,16 +4,18 @@ namespace Classes\Sticker;
 
 class StickerUpload extends PrestashopConnection
 {
-    private $idSticker;
-    private $idProduct;
-    private $idCategoryPrimary = 2;
-    private $title;
-    private $basePrice;
-    private $description;
-    private $descriptionShort;
-    private $categories;
+    private int $idSticker;
+    private int $idProduct;
+    private int $idCategoryPrimary = 2;
+    private string $title;
+    private string $basePrice;
+    private string $description;
+    private string $descriptionShort;
 
-    public function __construct($idSticker, $title, $basePrice, $description, $descriptionShort)
+    /** @var array<int, int> */
+    private array $categories;
+
+    public function __construct(int $idSticker, string $title, string $basePrice, string $description, string $descriptionShort)
     {
         parent::__construct();
 
@@ -24,35 +26,38 @@ class StickerUpload extends PrestashopConnection
         $this->descriptionShort = $descriptionShort;
     }
 
-    public function setIdProduct($idProduct)
+    public function setIdProduct(int $idProduct): void
     {
         $this->idProduct = $idProduct;
     }
 
-    public function setIdCategoryPrimary($idCategoryPrimary)
+    public function setIdCategoryPrimary(int $idCategoryPrimary): void
     {
         $this->idCategoryPrimary = $idCategoryPrimary;
     }
 
-    public function setCategoires($categories)
+    /**
+     * @param array<int, int> $categories
+     */
+    public function setCategoires(array $categories): void
     {
         $this->categories = $categories;
         $this->setCategory();
     }
 
-    public function createSticker()
+    public function createSticker(): int
     {
         $this->create();
         return $this->idProduct;
     }
 
-    public function updateSticker($idProduct)
+    public function updateSticker(int $idProduct): void
     {
         $this->setIdProduct($idProduct);
         $this->update();
     }
 
-    private function update()
+    private function update(): void
     {
         if ($this->idProduct == 0) {
             return;
@@ -80,7 +85,7 @@ class StickerUpload extends PrestashopConnection
         }
     }
 
-    private function create()
+    private function create(): void
     {
         try {
             $xml = $this->getXML('products?schema=blank');
@@ -90,10 +95,10 @@ class StickerUpload extends PrestashopConnection
             //$stickerTagManager->setProductId($this->idProduct);
             //$stickerTagManager->saveTagsXml($xml);
 
-            $opt = array(
+            $opt = [
                 'resource' => 'products',
                 'postXml' => $xml->asXML(),
-            );
+            ];
             $this->addXML($opt);
             $this->idProduct = (int) $this->xml->product->id;
         } catch (\PrestaShopWebserviceException $e) {
@@ -102,7 +107,7 @@ class StickerUpload extends PrestashopConnection
     }
 
     /* https://www.prestashop.com/forums/topic/640693-how-to-add-a-product-through-the-webservice-with-custom-feature-values/#comment-2663527 */
-    private function manipulateProductXML(&$xml)
+    private function manipulateProductXML(mixed &$xml): void
     {
         $resource_product = $xml->children()->children();
 
@@ -120,6 +125,8 @@ class StickerUpload extends PrestashopConnection
         unset($resource_product->quantity);
         unset($resource_product->position_in_category);
 
+        $price = (float) $this->basePrice;
+
         /* set necessary parameters */
         $resource_product->{'id_shop'} = 1;
         $resource_product->{'minimal_quantity'} = 1;
@@ -127,7 +134,7 @@ class StickerUpload extends PrestashopConnection
         $resource_product->{'show_price'} = 1;
         $resource_product->{'id_category_default'} = $this->idCategoryPrimary;
         $resource_product->{'id_tax_rules_group'} = 8; /* Steuergruppennummer für DE 19% */
-        $resource_product->{'price'} = number_format(($this->basePrice) / 1.19, 2);
+        $resource_product->{'price'} = number_format(($price) / 1.19, 2);
         $resource_product->{'active'} = 1;
         $resource_product->{'reference'} = $this->idSticker;
         $resource_product->{'visibility'} = 'both';
@@ -137,7 +144,7 @@ class StickerUpload extends PrestashopConnection
         $resource_product->{'state'} = 1;
     }
 
-    private function setCategory($unset = false)
+    private function setCategory(bool $unset = false): void
     {
         if ($this->idProduct == 0) {
             return;
@@ -162,7 +169,7 @@ class StickerUpload extends PrestashopConnection
 
             foreach ($this->categories as $id) {
                 $category = $categories->addChild("category");
-                $category->addChild("id", $id);
+                $category->addChild("id", (string) $id);
             }
 
             $opt = array(
