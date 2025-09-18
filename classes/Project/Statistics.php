@@ -6,7 +6,7 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 
 class Statistics
 {
-    public static function getOrderSum($orderId)
+    public static function getOrderSum($orderId): array
     {
         $query = "SELECT ROUND(SUM(all_posten.price), 2) AS orderPrice 
 			FROM (
@@ -24,7 +24,7 @@ class Statistics
         return DBAccess::selectQuery($query);
     }
 
-    public static function getAllOrdersSum()
+    public static function getAllOrdersSum(): array
     {
         $query = "SELECT ROUND(SUM(all_posten.price), 2) AS orderPrice, all_posten.id AS id 
 			FROM (
@@ -41,7 +41,7 @@ class Statistics
         return DBAccess::selectQuery($query);
     }
 
-    public static function getVolumeByMonth($startDate, $endDate)
+    public static function getVolumeByMonth($startDate, $endDate): array
     {
         $query = "SELECT CONCAT(MONTHNAME(finalized_date), ' ', YEAR(finalized_date)) AS `date`, SUM(amount) AS `value`
 			FROM invoice
@@ -54,7 +54,7 @@ class Statistics
         ]);
     }
 
-    public static function getOrders($startDate, $endDate)
+    public static function getOrders($startDate, $endDate): array
     {
         $query = "SELECT COUNT(Auftragsnummer) as `value`, DATE_FORMAT(Datum,'%Y-%m') as `date` 
 			FROM auftrag 
@@ -67,7 +67,7 @@ class Statistics
         ]);
     }
 
-    public static function getOrdersByCustomer($startDate, $endDate)
+    public static function getOrdersByCustomer($startDate, $endDate): array
     {
         $query = "SELECT COUNT(Auftragsnummer) as `value`, CONCAT(Firmenname, ' ', Vorname, ' ', Nachname) as `date` 
 			FROM auftrag, kunde
@@ -80,7 +80,7 @@ class Statistics
         ]);
     }
 
-    public static function getVolumeByOrderType($startDate, $endDate)
+    public static function getVolumeByOrderType($startDate, $endDate): array
     {
         $query = "SELECT SUM(invoice.amount) as `value`, `at`.Auftragstyp as `date` 
 			FROM invoice, auftrag a, auftragstyp `at`
@@ -95,7 +95,7 @@ class Statistics
         ]);
     }
 
-    public static function dispatcher()
+    public static function dispatcher(): void
     {
         $diagramType = $_POST["diagramType"];
         $startDate = $_POST["startDate"];

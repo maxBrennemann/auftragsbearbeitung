@@ -6,7 +6,7 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class Icon
 {
-    public static function ajaxIcon()
+    public static function ajaxIcon(): void
     {
         $name = Tools::get("name");
     }
@@ -16,12 +16,12 @@ class Icon
      * @param string $icon
      * @param int $width
      * @param int $height
-     * @param array $class
+     * @param string[] $class
      * @param string $title
      *
      * @return string
      */
-    public static function get($icon, $width, $height, $class = [], $title = ""): string
+    public static function get(string $icon, int $width, int $height, array $class = [], string $title = ""): string
     {
         $classes = implode(" ", $class);
         $size = "width:{$width}px;height:{$height}px";
@@ -36,12 +36,12 @@ class Icon
      *
      * @return string
      */
-    public static function getDefault($icon): string
+    public static function getDefault(string $icon): string
     {
         return Icon::get($icon, 15, 15, ["inline"]);
     }
 
-    public static function getDefaultColorized($icon, $color): string
+    public static function getDefaultColorized(string $icon, string $color): string
     {
         $icon = Icon::get($icon, 15, 15, ["inline"]);
         return str_replace("currentColor", $color, $icon);
@@ -53,12 +53,12 @@ class Icon
      * @param int $width
      * @param int $height
      * @param string $color
-     * @param array $class
+     * @param string[] $class
      * @param string $title
      *
      * @return string
      */
-    public static function getColorized($icon, $width, $height, $color, $class = [], $title = ""): string
+    public static function getColorized(string $icon, int $width, int $height, string $color, array $class = [], string $title = ""): string
     {
         $icon = Icon::get($icon, $width, $height, $class, $title);
         return str_replace("currentColor", $color, $icon);

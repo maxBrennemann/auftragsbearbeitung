@@ -74,7 +74,7 @@ class NotificationManager
         ]);
     }
 
-    public static function checkActuality()
+    public static function checkActuality(): void
     {
         $user = User::getCurrentUserId();
         $query = "UPDATE user_notifications 
@@ -86,7 +86,7 @@ class NotificationManager
         DBAccess::updateQuery($query);
     }
 
-    public static function htmlNotification()
+    public static function htmlNotification(): void
     {
         $tasks = self::getTasks();
         $news = self::getNews();
@@ -115,7 +115,7 @@ class NotificationManager
         ]);
     }
 
-    private static function getSpecificLink($type, $id)
+    private static function getSpecificLink(int $type, int $id): string
     {
         switch ($type) {
             case 1:
@@ -132,7 +132,7 @@ class NotificationManager
         return "#";
     }
 
-    private static function getTypeName($type)
+    private static function getTypeName($type): string
     {
         $types = ["erledigt", "Schritt", "", "", "Neuer Auftrag"];
         return $types[$type];
@@ -146,7 +146,7 @@ class NotificationManager
      * @param string  $content      the text content of the notification
      * @param int $specificId       the id connected with the type of notification e.g order id
      */
-    public static function addNotification($user_id, $type, $content, $specificId)
+    public static function addNotification($user_id, $type, $content, $specificId): void
     {
         $initiator = User::getCurrentUserId();
 
@@ -167,7 +167,7 @@ class NotificationManager
     /*
      * calls the addNotification function in order to set a notification if the specific trigger was bound to that notification
      */
-    public static function addNotificationCheck($user_id, $type, $content, $specificId)
+    public static function addNotificationCheck($user_id, $type, $content, $specificId): void
     {
         $query = "UPDATE user_notifications SET ischecked = 1 WHERE specific_id = $specificId";
         DBAccess::updateQuery($query);
@@ -185,7 +185,7 @@ class NotificationManager
         return UserModel::all();
     }
 
-    public static function setNotificationsRead()
+    public static function setNotificationsRead(): void
     {
         $uid = User::getCurrentUserId();
         $id = Tools::get("id");

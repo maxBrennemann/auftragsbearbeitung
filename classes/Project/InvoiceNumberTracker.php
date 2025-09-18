@@ -62,7 +62,7 @@ class InvoiceNumberTracker
         return $newInvoiceNumber;
     }
 
-    public static function initInvoiceNumber()
+    public static function initInvoiceNumber(): void
     {
         $newInvoiceNumber = (int) Tools::get("invoiceNumber");
         $query = "REPLACE INTO invoice_number_tracker (id, last_used_number) VALUES (1, :lastUsedNumber);";

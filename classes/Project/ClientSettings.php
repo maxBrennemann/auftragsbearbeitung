@@ -22,7 +22,7 @@ class ClientSettings
         }
     }
 
-    public static function setFilterOrderPosten()
+    public static function setFilterOrderPosten(): void
     {
         $setTo = Tools::get("value");
         $userId = $_SESSION["user_id"];
@@ -32,7 +32,7 @@ class ClientSettings
         JSONResponseHandler::returnOK();
     }
 
-    public static function createBackup()
+    public static function createBackup(): void
     {
         $host = $_ENV["DB_HOST"];
         $database = $_ENV["DB_DATABASE"];
@@ -51,7 +51,7 @@ class ClientSettings
         ]);
     }
 
-    public static function createFileBackup()
+    public static function createFileBackup(): void
     {
         if (!extension_loaded("zip")) {
             JSONResponseHandler::throwError(500, "Unable to zip files.");
@@ -103,7 +103,7 @@ class ClientSettings
         return $data[0]["dateiname"] ?? "";
     }
 
-    public static function addLogo()
+    public static function addLogo(): void
     {
         $uploadHandler = new UploadHandler("upload", [
             "image/png",

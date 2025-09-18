@@ -8,13 +8,13 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class AttributeGroup
 {
-    public static function getGroups()
+    public static function getGroups(): void
     {
         $groups = DBAccess::selectQuery("SELECT id, attribute_group FROM attribute_group");
         JSONResponseHandler::sendResponse($groups);
     }
 
-    public static function getAttributes()
+    public static function getAttributes(): void
     {
         $attributeGroupId = (int) Tools::get("id");
         $attributes = DBAccess::selectQuery("SELECT id, value FROM attribute WHERE attribute_group_id = :id", [
@@ -40,7 +40,7 @@ class AttributeGroup
         JSONResponseHandler::sendResponse(["id" => $id]);
     }
 
-    public static function addAttribute()
+    public static function addAttribute(): void
     {
         $attributeId = Tools::get("id");
         $value = Tools::get("value");
@@ -66,7 +66,7 @@ class AttributeGroup
         ]);
     }
 
-    public static function updatePositions()
+    public static function updatePositions(): void
     {
         $groupId = (int) Tools::get("id");
         $positions = Tools::get("positions");

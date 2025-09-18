@@ -2,6 +2,4 @@
 
 namespace Classes\Pdf\TransactionPdf;
 
-class OrderPDF extends TransactionPDF
-{
-}
+class OrderPDF extends TransactionPDF {}

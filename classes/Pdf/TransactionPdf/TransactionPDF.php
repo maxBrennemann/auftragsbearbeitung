@@ -13,7 +13,8 @@ class TransactionPDF extends PDFGenerator
     /** @var string */
     protected $title;
 
-    protected $companyDetails;
+    /** @var array<string, string> */
+    protected array $companyDetails;
 
     protected Auftrag $order;
     protected Kunde $customer;
@@ -37,7 +38,7 @@ class TransactionPDF extends PDFGenerator
         $this->companyDetails = Config::getCompanyDetails();
     }
 
-    public function generate()
+    public function generate(): void
     {
         $this->setPrintHeader(false);
 
@@ -60,9 +61,13 @@ class TransactionPDF extends PDFGenerator
         $this->writeHTMLCell(0, 10, 20, 44, $address);
     }
 
-    public function save() {}
+    public function save(): void {}
 
-    protected function fillAddress($altNames = [])
+    /**
+     * @param array<int, array<mixed>> $altNames
+     * @return void
+     */
+    protected function fillAddress(array $altNames = []): void
     {
         $lineheight = 10;
         $this->setXY(20, 49);
@@ -101,7 +106,7 @@ class TransactionPDF extends PDFGenerator
         ]);
     }
 
-    protected function getEstimatedFooterHeight()
+    protected function getEstimatedFooterHeight(): int
     {
         $texts = PDFTexts::get($this->type);
         $addToOffset = 0;
@@ -121,7 +126,7 @@ class TransactionPDF extends PDFGenerator
         return $this->bottomMargin + $addToOffset;
     }
 
-    public function Footer()
+    public function Footer(): void
     {
         $texts = PDFTexts::get($this->type);
         $addToOffset = 0;

@@ -2,6 +2,4 @@
 
 namespace Classes\Pdf;
 
-class ProductSheetPDF extends PDFGenerator
-{
-}
+class ProductSheetPDF extends PDFGenerator {}

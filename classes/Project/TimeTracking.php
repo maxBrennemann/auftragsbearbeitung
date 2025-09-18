@@ -19,13 +19,19 @@ class TimeTracking
 
     /**
      * returns time table of current user in this month
+     * @return array
      */
-    public function current(int $userId = -1)
+    public function current(int $userId = -1): array
     {
         return self::month(0, $userId);
     }
 
-    public static function month(int $month, int $userId = -1)
+    /**
+     * @param int $month
+     * @param int $userId
+     * @return array
+     */
+    public static function month(int $month, int $userId = -1): array
     {
         $query = "SELECT started_at, 
                 stopped_at, 
@@ -40,15 +46,14 @@ class TimeTracking
         return $data;
     }
 
-    public function toTable()
-    {
-    }
+    public function toTable(): void {}
 
-    public function sum(int $month = 0)
-    {
-    }
+    public function sum(int $month = 0): void {}
 
-    public function getMonthsOverview()
+    /**
+     * @return array[]
+     */
+    public function getMonthsOverview(): array
     {
         $matchMonths = [
             "January" => "Januar",
@@ -94,7 +99,7 @@ class TimeTracking
         return $months;
     }
 
-    public function getTimeTables($start, $stop, $all = false)
+    public function getTimeTables($start, $stop, $all = false): array
     {
         $params =  [
             "idUser" => $this->userId,
@@ -125,7 +130,11 @@ class TimeTracking
         return $data;
     }
 
-    public function matchMonths($data)
+    /**
+     * @param array $data
+     * @return array
+     */
+    public function matchMonths(array $data): array
     {
         $matchMonths = [
             "January" => "Januar",
@@ -174,7 +183,5 @@ class TimeTracking
         return $queryId;
     }
 
-    public function isOwner($id)
-    {
-    }
+    public function isOwner(int $id): void {}
 }

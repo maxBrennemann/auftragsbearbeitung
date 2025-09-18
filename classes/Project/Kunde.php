@@ -244,12 +244,12 @@ class Kunde implements StatisticsInterface
         return $data;
     }
 
-    public function getNotizen()
+    public function getNotizen(): string
     {
         return $this->note;
     }
 
-    public function recalculate() {}
+    public function recalculate(): void {}
 
     private function loadAddresses()
     {

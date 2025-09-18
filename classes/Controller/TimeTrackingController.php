@@ -11,7 +11,7 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class TimeTrackingController
 {
-    private static function validateUser()
+    private static function validateUser(): bool
     {
         $userId = User::getCurrentUserId();
         if ($userId == -1) {
@@ -21,7 +21,7 @@ class TimeTrackingController
         return true;
     }
 
-    public static function showTimeTracking(?int $id = null)
+    public static function showTimeTracking(?int $id = null): void
     {
         if (!self::validateUser()) {
             JSONResponseHandler::throwError(401, "Unvalidated user");
@@ -44,11 +44,11 @@ class TimeTrackingController
         JSONResponseHandler::sendResponse($data);
     }
 
-    public static function showTimeTrackingOverview()
+    public static function showTimeTrackingOverview(): void
     {
     }
 
-    public static function addEntry()
+    public static function addEntry(): void
     {
         $start = (int) Tools::get("start");
         $stop = (int) Tools::get("stop");
@@ -78,7 +78,7 @@ class TimeTrackingController
         JSONResponseHandler::sendResponse($data[0]);
     }
 
-    public static function editEntry(int $id)
+    public static function editEntry(int $id): void
     {
         $timeTracking = new TimeTracking(0);
         if (!User::isAdmin() && !$timeTracking->isOwner($id)) {
@@ -86,7 +86,7 @@ class TimeTrackingController
         }
     }
 
-    public static function deleteEntry()
+    public static function deleteEntry(): void
     {
         $userId = User::getCurrentUserId();
         $id = (int) Tools::get("id");
@@ -115,7 +115,7 @@ class TimeTrackingController
     /**
      * toggles global time tracking view
      */
-    public static function toggleDisplayTimeTracking()
+    public static function toggleDisplayTimeTracking(): void
     {
         $value = Config::toggle("showTimeGlobal");
         JSONResponseHandler::sendResponse([

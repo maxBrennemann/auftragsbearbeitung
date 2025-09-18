@@ -48,13 +48,13 @@ class Search
         return $data;
     }
 
-    private function runSearchQuery($query, $params)
+    private function runSearchQuery(string $query, $params): array
     {
         $data = DBAccess::selectQuery($query, $params);
         return $data;
     }
 
-    private function buildSearchQuery($table, $searchTerm): array
+    private function buildSearchQuery($table, string $searchTerm): array
     {
         $columns = SearchUtils::CONFIG[$table]["columns"] ?? [];
         $conditions = [];
@@ -105,7 +105,7 @@ class Search
         return [$query, $params];
     }
 
-    private function mergeAndScore(array $sqlResults, array $broadResults, string $query, string $table)
+    private function mergeAndScore(array $sqlResults, array $broadResults, string $query, string $table): array
     {
         $scored = [];
         $key = $this->config["id"];

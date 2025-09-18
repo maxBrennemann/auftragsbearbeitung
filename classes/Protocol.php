@@ -4,12 +4,13 @@ namespace Classes;
 
 class Protocol
 {
+    /** @var resource|null */
     private static $file;
     private static string $filePath = "protocol.txt";
     private static int $maxSize = 10 * 1024 * 1024;
     private static bool $logToConsole = false;
 
-    public static function configure(string $filePath = "protocol.txt", bool $logToConsole = false)
+    public static function configure(string $filePath = "protocol.txt", bool $logToConsole = false): void
     {
         self::$filePath = $filePath;
         self::$logToConsole = $logToConsole;
@@ -73,8 +74,9 @@ class Protocol
 
     /**
      * Pretty prints a given data structure
+     * @param array<mixed, mixed> $data
      */
-    public static function prettyPrint($data): void
+    public static function prettyPrint(array $data): void
     {
         echo "<pre>" . htmlspecialchars(print_r($data, true)) . "</pre>";
     }

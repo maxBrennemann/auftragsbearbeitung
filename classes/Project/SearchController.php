@@ -11,12 +11,12 @@ class SearchController
     private array $results = [];
     private int $limit = 15;
 
-    private function add(string $table, array $parsedQuery)
+    private function add(string $table, array $parsedQuery): void
     {
         $this->searches[$table] = $parsedQuery;
     }
 
-    private function searchData()
+    private function searchData(): void
     {
         foreach ($this->searches as $searchName => $parsedQuery) {
             $query = $parsedQuery[1];
@@ -28,7 +28,7 @@ class SearchController
         }
     }
 
-    private function getResults()
+    private function getResults(): array
     {
         $scored = [];
         foreach ($this->results as $result) {
@@ -42,7 +42,7 @@ class SearchController
         return $scored;
     }
 
-    public static function search($query, $limit = 15): array
+    public static function search(string $query, int $limit = 15): array
     {
         $parsedQuery = SearchUtils::parseSearchInput($query);
         $searchController = new SearchController();
@@ -65,7 +65,7 @@ class SearchController
         return $results;
     }
 
-    public static function ajaxSearch()
+    public static function ajaxSearch(): void
     {
         $query = Tools::get("query");
         $limit = (int) Tools::get("limit");
@@ -81,7 +81,7 @@ class SearchController
         JSONResponseHandler::sendResponse($results);
     }
 
-    public static function searchAll()
+    public static function searchAll(): void
     {
         $query = Tools::get("query");
         $results = self::search($query, 20);

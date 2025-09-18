@@ -10,14 +10,14 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class Angebot
 {
-    private $customerId = 0;
-    private $customer = null;
-    private $offerId = 0;
+    private int $customerId = 0;
+    private Kunde $customer;
+    private int $offerId = 0;
 
     //private $leistungen = null;
-    private $fahrzeuge = null;
+    private array $fahrzeuge;
 
-    private $posten = [];
+    private array $posten = [];
 
     public function __construct(int $offerId, int $customerId)
     {
@@ -43,7 +43,7 @@ class Angebot
         return new Angebot($idOffer, $customerId);
     }
 
-    private function getPc()
+    private function getPc(): int
     {
         if (isset($_SESSION['offer_' . $this->customerId . '_pc'])) {
             return (int) $_SESSION['offer_' . $this->customerId . '_pc'];
@@ -53,7 +53,7 @@ class Angebot
         }
     }
 
-    private function incPc()
+    private function incPc(): int
     {
         $newPc = $this->getPc() + 1;
         $_SESSION['offer_' . $this->customerId . '_pc'] = $newPc;
@@ -69,12 +69,12 @@ class Angebot
         return $newPc;
     } */
 
-    public function getId()
+    public function getId(): int
     {
         return $this->offerId;
     }
 
-    private function loadPosten()
+    private function loadPosten(): void
     {
         $num = $this->getPc();
         if (is_numeric($num)) {
@@ -87,7 +87,7 @@ class Angebot
         }
     }
 
-    private function deleteOldSessionData()
+    private function deleteOldSessionData(): void
     {
         $num = $this->getPc();
         for ($i = 1; $i <= $num; $i++) {
@@ -107,7 +107,7 @@ class Angebot
         return $sum;
     } */
 
-    public function addPosten($posten)
+    public function addPosten($posten): void
     {
         $postenId = $this->incPc();
         $_SESSION['offer_' . $this->customerId . '_' . $postenId] = serialize($posten);
@@ -116,8 +116,10 @@ class Angebot
         array_push($this->posten, $posten);
     }
 
-    /* function is called from createOrder page only if offer session data is available */
-    public function storeOffer($orderId)
+    /**
+     * function is called from createOrder page only if offer session data is available
+     */
+    public function storeOffer(int $orderId): void
     {
         $this->offerId = DBAccess::insertQuery("INSERT INTO angebot (kdnr, `status`) VALUES ({$this->customerId}, 0)");
         $this->loadPosten();
@@ -130,9 +132,9 @@ class Angebot
         $this->deleteOldSessionData();
     }
 
-    public function loadAngebot() {}
+    public function loadAngebot(): void {}
 
-    public static function getOfferTemplate()
+    public static function getOfferTemplate(): void
     {
         $customerId = (int) Tools::get("customerId");
         if ($customerId == 0) {
@@ -157,12 +159,12 @@ class Angebot
         ]);
     }
 
-    public static function getOfferItems()
+    public static function getOfferItems(): void
     {
         JSONResponseHandler::sendResponse([]);
     }
 
-    public static function getPDF()
+    public static function getPDF(): void
     {
         $offerId = (int) Tools::get("offerId");
         $customerId = (int) Tools::get("customerId");

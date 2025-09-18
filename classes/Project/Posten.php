@@ -14,19 +14,19 @@ abstract class Posten
     abstract protected function bekommeEinzelPreis_formatted();
     abstract protected function bekommeDifferenz();
     abstract protected function calculateDiscount();
-    abstract protected function fillToArray($arr);
+    abstract protected function fillToArray(array $arr): array;
     abstract protected function getDescription();
     abstract protected function getEinheit();
     abstract protected function getQuantity();
     abstract protected function isInvoice();
-    abstract protected function storeToDB($auftragsnummer);
+    abstract protected function storeToDB(int $auftragsnummer): void;
 
     protected $postenTyp;
     protected $ohneBerechnung = false;
     protected $postennummer;
-    protected $position = 0;
+    protected int $position = 0;
 
-    public function getPosition()
+    public function getPosition(): int
     {
         return $this->position;
     }
@@ -213,7 +213,7 @@ abstract class Posten
         return [$postennummer, $subPosten];
     }
 
-    public static function delete()
+    public static function delete(): void
     {
         $idItem = (int) Tools::get("itemId");
         $query = "DELETE FROM posten WHERE Postennummer = :id;";
@@ -225,14 +225,14 @@ abstract class Posten
     /*
      * https://stackoverflow.com/a/5207487/7113688
      */
-    public static function addPosition($orderId)
+    public static function addPosition($orderId): void
     {
         $query = "SET @I = 0; UPDATE posten SET `position` = (@I := @I + 1) WHERE Auftragsnummer = $orderId;";
         DBAccess::updateQuery($query);
     }
 
     /* adds links to all attached files to the "Einkaufspreis" column */
-    protected static function getFiles($postennummer)
+    protected static function getFiles($postennummer): string
     {
         $query = "SELECT dateiname FROM dateien, dateien_posten WHERE dateien.id = dateien_posten.id_file AND dateien_posten.id_posten = $postennummer";
         $data = DBAccess::selectQuery($query);

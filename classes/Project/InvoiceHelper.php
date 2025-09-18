@@ -23,7 +23,7 @@ class InvoiceHelper
         return (int) $summe;
     }
 
-    public static function getOpenInvoiceData()
+    public static function getOpenInvoiceData(): void
     {
         $data = DBAccess::selectQuery("SELECT auftrag.Auftragsnummer AS Nummer,
 				auftrag.Rechnungsnummer,
@@ -45,7 +45,7 @@ class InvoiceHelper
         ]);
     }
 
-    public static function recalculateInvoices()
+    public static function recalculateInvoices(): void
     {
         $error = [];
         $invoices = DBAccess::selectQuery("SELECT id, order_id FROM invoice;");

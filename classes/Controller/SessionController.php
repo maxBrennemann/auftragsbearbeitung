@@ -10,7 +10,7 @@ class SessionController
     private static bool $started = false;
     private static int $lifetime = 1200;
 
-    public static function start()
+    public static function start(): void
     {
         if (self::$started) {
             return;
@@ -45,19 +45,19 @@ class SessionController
         return isset($_SESSION["user_id"]);
     }
 
-    public static function login(int $userId)
+    public static function login(int $userId): void
     {
         self::start();
         $_SESSION["user_id"] = $userId;
     }
 
-    public static function logout()
+    public static function logout(): void
     {
         self::start();
         self::destroy();
     }
 
-    private static function destroy()
+    private static function destroy(): void
     {
         $_SESSION = [];
         if (ini_get("session.use_cookies")) {

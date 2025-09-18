@@ -9,9 +9,7 @@ class Link
     public $data;
     public $datakey;
 
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     public static function getPageLink($resourceName): string
     {
@@ -33,11 +31,11 @@ class Link
 
     /**
      * Returns the file name by resource name and type
-     * @param mixed $resource
-     * @param mixed $type
+     * @param string $resource
+     * @param string $type
      * @return string
      */
-    public static function getFilePath($resource, $type): string
+    public static function getFilePath(string $resource, string $type): string
     {
         switch ($type) {
             case "css":
@@ -74,10 +72,10 @@ class Link
 
     /**
      * Generates a short link for resources, so that the file path is not visible in the frontend
-     * @param mixed $resource
-     * @param mixed $type
+     * @param string $resource
+     * @param string $type
      */
-    public static function getResourcesShortLink($resource, $type)
+    public static function getResourcesShortLink(string $resource, string $type): string
     {
         switch ($type) {
             case "css":
@@ -108,37 +106,37 @@ class Link
         return $link;
     }
 
-    public static function getGlobalCSS()
+    public static function getGlobalCSS(): string
     {
         $file = ResourceManager::getFileNameWithHash("global.js", "css");
         return self::getResourcesShortLink($file, "css");
     }
 
-    public static function getGlobalJS()
+    public static function getGlobalJS(): string
     {
         $file = ResourceManager::getFileNameWithHash("global.js");
         return self::getResourcesShortLink($file, "js");
     }
 
     /* new link functionalities */
-    public function addBaseLink($target)
+    public function addBaseLink($target): void
     {
         $this->baseLink = self::getPageLink($target);
     }
 
-    public function addParameter($key, $value)
+    public function addParameter($key, $value): string
     {
         return $this->baseLink . "?$key=$value";
     }
 
-    public function setIterator($key, $data, $datakey)
+    public function setIterator($key, $data, $datakey): void
     {
         $this->key = $key;
         $this->data = $data;
         $this->datakey = $datakey;
     }
 
-    public function getLink($id)
+    public function getLink(int $id): string
     {
         return self::addParameter($this->key, $this->data[$id][$this->datakey]);
     }

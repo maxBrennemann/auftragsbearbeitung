@@ -9,9 +9,10 @@ class PDFGenerator extends TCPDF
 {
     /** @var string */
     protected $title;
-    protected $fileName;
+    protected string $fileName;
 
-    protected $companyDetails;
+    /** @var array<string, string> */
+    protected array $companyDetails;
 
     protected int $pageHeight = 297;
     protected int $footerHeight = 35;
@@ -26,11 +27,11 @@ class PDFGenerator extends TCPDF
         $this->companyDetails = Config::getCompanyDetails();
     }
 
-    public function generate()
+    public function generate(): void
     {
     }
 
-    public function generateOutput()
+    public function generateOutput(): void
     {
         $this->Output();
     }
@@ -46,7 +47,7 @@ class PDFGenerator extends TCPDF
         $this->Output($fileName, "F");
     }
 
-    public function Footer()
+    public function Footer(): void
     {
         $this->SetY(-$this->bottomMargin);
         $this->SetFont('helvetica', 'I', 8);

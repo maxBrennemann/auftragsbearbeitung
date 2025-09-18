@@ -7,6 +7,10 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 class PDFTexts
 {
 
+    /**
+     * @param string $type
+     * @return array<int, string>
+     */
     public static function get(string $type): array
     {
         $query = "SELECT `text` FROM pdf_texts WHERE `type` = :type AND `status` = 'active';";

@@ -184,7 +184,7 @@ class UploadHandler
         }
     }
 
-    public static function migrateFiles()
+    public static function migrateFiles(): void
     {
         $query = "SELECT id, dateiname FROM dateien";
         $data = DBAccess::selectQuery($query);

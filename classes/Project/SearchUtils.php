@@ -4,6 +4,7 @@ namespace Classes\Project;
 
 class SearchUtils
 {
+    /** @var array<string, mixed> */
     public const CONFIG = [
         "kunde" => [
             "columns" => [
@@ -48,6 +49,10 @@ class SearchUtils
         ],
     ];
 
+    /**
+     * @param string $input
+     * @return array{array<mixed, mixed>, string}
+     */
     public static function parseSearchInput(string $input): array
     {
         $matches = [];

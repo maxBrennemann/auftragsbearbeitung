@@ -68,35 +68,35 @@ class Table
         $this->dataKey = "key_" . bin2hex(random_bytes(6));
     }
 
-    public function getTableKey()
+    public function getTableKey(): string
     {
         return $this->dataKey;
     }
 
-    public function createByDB($type)
+    public function createByDB($type): void
     {
         $this->columnNames = self::getColumnNames($type);
         $this->data = DBAccess::selectQuery("SELECT * FROM `$type` LIMIT " . $this->limit);
     }
 
-    public function createByData($data, $columnSpecs)
+    public function createByData($data, $columnSpecs): void
     {
         $this->type = 0;
         $this->data = $data;
         $this->columnNames = $columnSpecs;
     }
 
-    public function setType($type)
+    public function setType($type): void
     {
         $this->type = $type;
     }
 
-    public function addLink($link)
+    public function addLink($link): void
     {
         $this->link = $link;
     }
 
-    public function addDataset($key, $value)
+    public function addDataset($key, $value): void
     {
         $this->dataset = [
             0 => true,
@@ -111,7 +111,7 @@ class Table
     }
 
     /* every index of the keys array is interpreted as a key for the data array */
-    public function createKeys()
+    public function createKeys(): void
     {
         $this->keys = [];
         for ($i = 0; $i < sizeof($this->data); $i++) {
@@ -127,7 +127,7 @@ class Table
      * function adds a new column for selections
      * can currently only be used to add an input checkbox
      */
-    public function addSelector($type)
+    public function addSelector($type): void
     {
         switch ($type) {
             case "check":
@@ -250,31 +250,31 @@ class Table
     }
 
     /* action buttons */
-    private function addUpdateButton($key)
+    private function addUpdateButton($key): string
     {
         $button = "<button class='p-1 mr-1 actionButton' onclick=\"updateIsDone('$key', event)\" title='Als erledigt markieren.'>" . Icon::getDefault("iconCheck") . "</button>";
         return $button;
     }
 
-    private function addEditButton($key)
+    private function addEditButton($key): string
     {
         $button = "<button class='p-1 mr-1 actionButton' onclick=\"editRow('$key', this)\" title='Bearbeiten'>" . Icon::getDefault("iconEdit") . "</button>";
         return $button;
     }
 
-    private function addDeleteButton($key)
+    private function addDeleteButton($key): string
     {
         $button = "<button class='p-1 mr-1 actionButton' onclick=\"deleteRow('$key', '$this->type', this)\" title='Löschen'>" . Icon::getDefault("iconDelete") . "</button>";
         return $button;
     }
 
-    private function addCheck($key)
+    private function addCheck($key): string
     {
         $check = "<input type=\"checkbox\" name=\"checkRow_$key\">";
         return $check;
     }
 
-    private function addMove($key)
+    private function addMove($key): string
     {
         $button = "<button class='actionButton moveRow' onmousedown=\"moveInit(event)\" onmouseup=\"moveRemove(event)\" title='Reihenfolge verändern' data-key=\"$key\">" . Icon::getDefault("iconMove") . "</button>";
         return $button;
@@ -283,7 +283,7 @@ class Table
     /*
      * checks if a rowname already exists and returns boolean accordingly
     */
-    private function rowNameExists($rowName)
+    private function rowNameExists($rowName): bool
     {
         foreach ($this->columnNames as $c) {
             if ($c['COLUMN_NAME'] == $rowName) {
@@ -293,7 +293,7 @@ class Table
         return false;
     }
 
-    public function addColumn($rowName, $data)
+    public function addColumn($rowName, $data): void
     {
         if (sizeof($data) == sizeof($this->data)) {
             if ($this->rowNameExists($rowName)) {
@@ -315,7 +315,7 @@ class Table
         }
     }
 
-    public function setIdentifier($val)
+    public function setIdentifier($val): void
     {
         if (is_string($val)) {
             $this->identifier = $val;
@@ -396,7 +396,7 @@ class Table
      * erstellt die Tabelle
      * wenn $this->data null ist, wird eine Nachricht zurückgegeben
      */
-    public function getTable($zeroTable = false)
+    public function getTable($zeroTable = false): string
     {
         if ($this->data == null && !$zeroTable) {
             return "<p>Keine Einträge vorhanden</p>";
@@ -449,15 +449,13 @@ class Table
     /*
      * function to generate a html button to add a new line to the table
      */
-    public function addNewLineButton($add = true)
+    public function addNewLineButton($add = true): void
     {
         $this->addNewLineButtonTrue = $add;
     }
 
     /* static functions */
-    public static function createTable($dbName, $rowCount)
-    {
-    }
+    public static function createTable($dbName, $rowCount): void {}
 
     /*
      * erstellt eine Zeile
@@ -470,7 +468,7 @@ class Table
      *
      * @return	Gibt eine Tabellenzeile in HTML zurück
      */
-    private static function html_createRow2($row, $rowNames, $link, $dataset, $lastColumnIsActionButton = null)
+    private static function html_createRow2($row, $rowNames, $link, $dataset, $lastColumnIsActionButton = null): string
     {
         $html = "<tr>";
 
@@ -514,7 +512,7 @@ class Table
     }
 
     /* html generator functions */
-    private static function html_createTableHeader($column_names)
+    private static function html_createTableHeader($column_names): string
     {
         $table_header = "<tr>";
 

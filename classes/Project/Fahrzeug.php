@@ -8,7 +8,7 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class Fahrzeug
 {
-    public static function getImages($fahrzeugId)
+    public static function getImages(int $fahrzeugId): array
     {
         $query = "SELECT DISTINCT dateiname AS `file`, originalname, 
                 DATE_FORMAT(`date`, '%d.%m.%Y %h:%i:%s') AS `date`, typ 
@@ -18,21 +18,19 @@ class Fahrzeug
         return DBAccess::selectQuery($query);
     }
 
-    public static function getShowAllOrders($fahrzeugId)
-    {
-    }
+    public static function getShowAllOrders(int $fahrzeugId): void {}
 
-    public static function getName($fahrzeugId)
+    public static function getName(int $fahrzeugId): string
     {
         return DBAccess::selectQuery("SELECT Fahrzeug FROM fahrzeuge WHERE Nummer = $fahrzeugId")[0]["Fahrzeug"];
     }
 
-    public static function getKennzeichen($fahrzeugId)
+    public static function getKennzeichen(int $fahrzeugId): string
     {
         return DBAccess::selectQuery("SELECT Kennzeichen FROM fahrzeuge WHERE Nummer = $fahrzeugId")[0]["Kennzeichen"];
     }
 
-    public static function returnCustomer($fahrzeugId): Kunde|null
+    public static function returnCustomer(int $fahrzeugId): ?Kunde
     {
         $data = DBAccess::selectQuery("SELECT Kundennummer FROM fahrzeuge WHERE Nummer = $fahrzeugId");
         if ($data == null) {
@@ -43,12 +41,16 @@ class Fahrzeug
         return new Kunde($kundenId);
     }
 
-    public static function getSelection($kundennummer)
+    /**
+     * @param int $kundennummer
+     * @return array<int, array<string>>
+     */
+    public static function getSelection(int $kundennummer): array
     {
         return DBAccess::selectQuery("SELECT Nummer, Kennzeichen, Fahrzeug FROM fahrzeuge WHERE Kundennummer = $kundennummer");
     }
 
-    public static function attachVehicle()
+    public static function attachVehicle(): void
     {
         $orderId = (int) Tools::get("id");
         $vehicleId = (int) Tools::get("vehicleId");
@@ -73,7 +75,7 @@ class Fahrzeug
         ]);
     }
 
-    public static function removeVehicle()
+    public static function removeVehicle(): void
     {
         $orderId = (int) Tools::get("id");
         $vehicleId = (int) Tools::get("vehicleId");
@@ -92,7 +94,7 @@ class Fahrzeug
         ]);
     }
 
-    public static function updateName()
+    public static function updateName(): void
     {
         $id = (int) Tools::get("vehicleId");
         $value = Tools::get("name");
@@ -105,7 +107,7 @@ class Fahrzeug
         JSONResponseHandler::returnOK();
     }
 
-    public static function updateLicensePlate()
+    public static function updateLicensePlate(): void
     {
         $id = Tools::get("vehicleId");
         $value = Tools::get("licensePlate");
@@ -118,7 +120,7 @@ class Fahrzeug
         JSONResponseHandler::returnOK();
     }
 
-    public static function addFiles()
+    public static function addFiles(): void
     {
         $idVehicle = Tools::get("vehicleId");
         $orderId = Tools::get("id");

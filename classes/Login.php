@@ -141,8 +141,8 @@ class Login
 
         $browser = Tools::get("browser");
         $os = Tools::get("os");
-        $isMobile = Tools::get("isMobile");
-        $isTablet = Tools::get("isTablet");
+        $isMobile = Tools::get("isMobile") == "true";
+        $isTablet = Tools::get("isTablet") == "true";
         $deviceType = self::castDevice($isMobile, $isTablet);
 
         $query = "SELECT * 
@@ -173,7 +173,7 @@ class Login
         ];
     }
 
-    private static function generateDeviceKey($userAgent)
+    private static function generateDeviceKey(string $userAgent): string
     {
         $random_part = bin2hex(random_bytes(6));
         $userAgentHash = md5($userAgent . $random_part);
@@ -199,10 +199,10 @@ class Login
     /**
      * This function only gets used by manual login,
      * so if the user agent changes, this can be updated to the database
-     * @param mixed $deviceKey
+     * @param string $deviceKey
      * @return int
      */
-    private static function getDeviceId($deviceKey): int
+    private static function getDeviceId(string $deviceKey): int
     {
         $query = "SELECT id, browser_agent FROM user_devices WHERE md_hash = :deviceKey;";
         $data = DBAccess::selectQuery($query, [
@@ -228,7 +228,11 @@ class Login
         return $id;
     }
 
-    private static function checkDuplicateDevices($list): bool|array
+    /**
+     * @param array<int, mixed> $list
+     * @return bool|array
+     */
+    private static function checkDuplicateDevices(array $list): bool|array
     {
         if (count($list) == 0) {
             return false;
@@ -245,7 +249,7 @@ class Login
         return false;
     }
 
-    public static function autloginWrapper()
+    public static function autloginWrapper(): void
     {
         $loginKey = self::handleAutoLogin();
         $status = $loginKey === false ? "failed" : "success";
@@ -269,8 +273,8 @@ class Login
 
         $browser = Tools::get("browser");
         $os = Tools::get("os");
-        $isMobile = Tools::get("isMobile");
-        $isTablet = Tools::get("isTablet");
+        $isMobile = Tools::get("isMobile") == "true";
+        $isTablet = Tools::get("isTablet") == "true";
         $deviceType = self::castDevice($isMobile, $isTablet);
 
         $data = DBAccess::selectQuery("SELECT id, browser_agent, browser, os, device_type FROM user_devices WHERE md_hash = :deviceKey", [
@@ -312,12 +316,12 @@ class Login
         }
     }
 
-    private static function castDevice($isMobile, $isTablet)
+    private static function castDevice(bool $isMobile, bool $isTablet): string
     {
-        if ($isMobile == "true") {
+        if ($isMobile) {
             return "mobile";
         }
-        if ($isTablet == "true") {
+        if ($isTablet) {
             return "tablet";
         }
         return "desktop";

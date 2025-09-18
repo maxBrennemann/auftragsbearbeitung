@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class AutoUpgrade extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription("Migrates PHP commands and updates mySQL tables. Autogenerates files")

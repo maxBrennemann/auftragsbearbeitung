@@ -17,7 +17,7 @@ class Leistung extends Posten
     private $isInvoice = false;
     protected $postenTyp = "leistung";
     protected $ohneBerechnung = false;
-    protected $postennummer;
+    protected int $postennummer;
 
     private $quantity;
     private $meh;
@@ -50,7 +50,7 @@ class Leistung extends Posten
     }
 
     /* fills array for Postentable */
-    public function fillToArray($arr)
+    public function fillToArray(array $arr): array
     {
         $arr['Postennummer'] = $this->postennummer;
         $arr['Preis'] = $this->bekommePreisTabelle();
@@ -67,7 +67,7 @@ class Leistung extends Posten
     }
 
     /* returns the price if no discount is applied, else calculates the discount and returns the according table */
-    private function bekommePreisTabelle()
+    private function bekommePreisTabelle(): string
     {
         $price_formatted = number_format($this->preis, 2, ',', '') . "€";
 
@@ -92,9 +92,9 @@ class Leistung extends Posten
         }
     }
 
-    public function storeToDB($auftragsNr)
+    public function storeToDB(int $auftragsNr): void
     {
-        $data = $this->fillToArray(array());
+        $data = $this->fillToArray([]);
         $data['ohneBerechnung'] = 1;
         $data['Auftragsnummer'] = $auftragsNr;
         Posten::insertPosten("leistung", $data);
@@ -121,12 +121,12 @@ class Leistung extends Posten
         return $this->preis;
     }
 
-    public function bekommePreis_formatted()
+    public function bekommePreis_formatted(): string
     {
         return number_format($this->bekommePreis(), 2, ',', '') . ' €';
     }
 
-    public function bekommeEinzelPreis_formatted()
+    public function bekommeEinzelPreis_formatted(): string
     {
         return number_format($this->bekommeEinzelPreis(), 2, ',', '') . ' €';
     }
@@ -149,7 +149,7 @@ class Leistung extends Posten
         return $this->einkaufspreis * $this->quantity;
     }
 
-    public function calculateDiscount() {}
+    public function calculateDiscount(): void {}
 
     public function getDescription()
     {
@@ -180,7 +180,7 @@ class Leistung extends Posten
         return $this->quantity;
     }
 
-    public function isInvoice()
+    public function isInvoice(): bool
     {
         return $this->isInvoice;
     }
@@ -205,7 +205,7 @@ class Leistung extends Posten
         return $data;
     }
 
-    public static function add()
+    public static function add(): void
     {
         $orderId = (int) Tools::get("id");
 
@@ -254,13 +254,13 @@ class Leistung extends Posten
         ]);
     }
 
-    public static function get()
+    public static function get(): void
     {
         $idItem = (int) Tools::get("itemId");
         // TODO: implement
     }
 
-    public static function delete()
+    public static function delete(): void
     {
         $idItem = (int) Tools::get("itemId");
         parent::delete();

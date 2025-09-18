@@ -11,10 +11,10 @@ class StickerRoutes extends Routes
      * @uses \Classes\Sticker\StickerCollection::getStickerSizes()
      * @uses \Classes\Sticker\StickerCollection::getPriceScheme()
      *
-     * @uses
-     * @uses
+     * @uses \Classes\Sticker\StickerCollection::empty()
+     * @uses \Classes\Sticker\StickerCollection::empty()
      * @uses \Classes\Sticker\StickerTagManager::getTagSuggestions()
-     * @uses
+     * @uses \Classes\Sticker\StickerCollection::empty()
      * @uses \Classes\Sticker\StickerTagManager::countTagOccurences()
      * @uses \Classes\Sticker\StickerTagManager::getTagsHTML()
      *
@@ -29,10 +29,10 @@ class StickerRoutes extends Routes
         "/sticker/{id}/sizes" => [\Classes\Sticker\StickerCollection::class, "getStickerSizes"],
         "/sticker/{id}/priceScheme" => [\Classes\Sticker\StickerCollection::class, "getPriceScheme"],
 
-        "/sticker/tags" => [],
-        "/sticker/tags/crawl" => [],
+        "/sticker/tags" => [\Classes\Sticker\StickerCollection::class, "empty"],
+        "/sticker/tags/crawl" => [\Classes\Sticker\StickerCollection::class, "empty"],
         "/sticker/tags/suggestions" => [\Classes\Sticker\StickerCollection::class, "getTagSuggestions"],
-        "/sticker/tags/groups" => [],
+        "/sticker/tags/groups" => [\Classes\Sticker\StickerCollection::class, "empty"],
         "/sticker/tags/overview" => [\Classes\Sticker\StickerTagManager::class, "getTagOverview"],
         "/sticker/{id}/tags-template" => [\Classes\Sticker\StickerTagManager::class, "getTagsHTML"],
 
@@ -51,7 +51,7 @@ class StickerRoutes extends Routes
      * @uses \Classes\Sticker\StickerCollection::addFiles()
      *
      * @uses \Classes\Sticker\StickerCollection::addSticker()
-     *
+     * @uses \Classes\Sticker\Tags\TagController::addTagGroup()
      * @uses \Classes\Sticker\StickerTagManager::addTag()
      * @uses \Classes\Sticker\StickerTagManager::crawlAllTags()
      *
@@ -72,7 +72,7 @@ class StickerRoutes extends Routes
 
         "/sticker" => [\Classes\Sticker\StickerCollection::class, "addSticker"],
         "/sticker/tags" => [\Classes\Sticker\StickerCollection::class, "addTag"],
-        "/sticker/tags/groups" => [],
+        "/sticker/tags/groups" => [\Classes\Sticker\Tags\TagController::class, "addTagGroup"],
         "/sticker/tags/crawl" => [\Classes\Sticker\StickerTagManager::class, "crawlAllTags"],
 
         "/sticker/{id}/sizes" => [\Classes\Sticker\AufkleberWandtattoo::class, "updateSizes"],

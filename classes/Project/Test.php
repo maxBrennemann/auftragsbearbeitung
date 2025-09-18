@@ -7,7 +7,7 @@ use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 class Test
 {
-    public static function migrateFarbenToColor()
+    public static function migrateFarbenToColor(): void
     {
         $query = "SELECT f.Farbe, f.Farbwert, f.Notiz, f.Hersteller, fa.id_auftrag FROM farben f LEFT JOIN farben_auftrag fa ON f.Auftragsnummer = fa.id_auftrag;";
         $data = DBAccess::selectQuery($query);

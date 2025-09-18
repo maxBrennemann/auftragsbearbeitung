@@ -35,17 +35,17 @@ class Address
         return $this->strasse;
     }
 
-    public function getHausnummer()
+    public function getHausnummer(): string
     {
         return $this->hausnummer;
     }
 
-    public function getPostleitzahl()
+    public function getPostleitzahl(): int
     {
         return $this->postleitzahl;
     }
 
-    public function getOrt()
+    public function getOrt(): string
     {
         return $this->ort;
     }
@@ -84,6 +84,10 @@ class Address
         return $addressInstance;
     }
 
+    /**
+     * @param int $customerId
+     * @return array<int, array<string, string>>
+     */
     public static function loadAllAddresses(int $customerId): array
     {
         $data = DBAccess::selectQuery("SELECT * FROM `address` WHERE id_customer = :customerId ORDER BY art", [
@@ -92,6 +96,10 @@ class Address
         return $data;
     }
 
+    /**
+     * @param int $customerId
+     * @return string[]
+     */
     public static function getAllAdressesFormatted(int $customerId): array
     {
         $addresses = self::loadAllAddresses($customerId);
@@ -118,11 +126,11 @@ class Address
         return true;
     }
 
-    public static function createNewAddress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz = "", $land = "Deutschland", $art = 3): Address
+    public static function createNewAddress(int $idCustomer, string $strasse, string $hausnummer, int $postleitzahl, string $ort, string $zusatz = "", string $land = "Deutschland", int $art = 3): Address
     {
         $query = "INSERT INTO address (id_customer, ort, plz, strasse, hausnr, zusatz, country, art) VALUES (:idCustomer, :ort, :plz, :strasse, :hausnummer, :zusatz, :land, :art)";
         $id = DBAccess::insertQuery($query, [
-            "idCustomer" => $id_customer,
+            "idCustomer" => $idCustomer,
             "ort" => $ort,
             "plz" => $postleitzahl,
             "strasse" => $strasse,
@@ -135,7 +143,7 @@ class Address
         return self::loadAddress($id);
     }
 
-    public static function addAddress()
+    public static function addAddress(): void
     {
         $customerId = Tools::get("id");
     }

@@ -24,7 +24,7 @@ class Model
         $this->loadTableConfig();
     }
 
-    public function getPrimaryKey()
+    public function getPrimaryKey(): string
     {
         return $this->primaryKey;
     }

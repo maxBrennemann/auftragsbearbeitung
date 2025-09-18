@@ -9,12 +9,12 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 class User
 {
     private int $id;
-    private $username;
-    private $email;
-    private $prename;
-    private $lastname;
+    private string $username;
+    private string $email;
+    private string $prename;
+    private string $lastname;
 
-    private $maxWorkingHours;
+    private int $maxWorkingHours;
     private $role;
 
     public function __construct(int $userId)
@@ -28,7 +28,7 @@ class User
             return;
         }
 
-        $this->id = $user[0]['id'];
+        $this->id = (int) $user[0]['id'];
         $this->username = $user[0]['username'];
         $this->email = $user[0]['email'];
         $this->prename = $user[0]['prename'];
@@ -37,32 +37,32 @@ class User
         $this->role = $user[0]['role'];
     }
 
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->username;
     }
 
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function getPrename()
+    public function getPrename(): string
     {
         return $this->prename;
     }
 
-    public function getLastname()
+    public function getLastname(): string
     {
         return $this->lastname;
     }
 
-    public function getMaxWorkingHours()
+    public function getMaxWorkingHours(): int
     {
         return $this->maxWorkingHours;
     }
@@ -75,7 +75,7 @@ class User
     /**
      * checks if email is available and sets it
      */
-    public function setEmail($email)
+    public function setEmail(string $email): void
     {
         if (self::checkEmailAvailable($email)) {
             $query = "UPDATE user SET email = :email WHERE id = :userId";
@@ -87,7 +87,7 @@ class User
         }
     }
 
-    public function setPrename($prename)
+    public function setPrename(string $prename): void
     {
         $query = "UPDATE user SET prename = :prename WHERE id = :userId";
         DBAccess::updateQuery($query, [
@@ -96,28 +96,27 @@ class User
         ]);
     }
 
-    public function setLastname($lastname)
+    public function setLastname(string $lastname): void
     {
         $query = "UPDATE user SET lastname = :lastname WHERE id = :userId";
         $params = array(':lastname' => $lastname, ':userId' => $this->id);
         DBAccess::updateQuery($query, $params);
     }
 
-    public function setMaxWorkingHours($maxWorkingHours)
+    public function setMaxWorkingHours(int $maxWorkingHours): void
     {
         $query = "UPDATE user SET max_working_hours = :maxWorkingHours WHERE id = :userId";
         $params = array(':maxWorkingHours' => $maxWorkingHours, ':userId' => $this->id);
         DBAccess::updateQuery($query, $params);
     }
 
-    public function setRole($role)
-    {
-    }
+    public function setRole(mixed $role): void {}
 
     /**
      * returns a list of devices the user has logged in with
+     * @param array<int, mixed>
      */
-    public function getUserDeviceList()
+    public function getUserDeviceList(): array
     {
         $query = "SELECT device_type, user_device_name, DATE_FORMAT(last_usage, '%d.%m.%Y %H:%i:%s') as lastUsage, ip_address, browser, os 
             FROM user_devices 
@@ -130,7 +129,7 @@ class User
         return $data;
     }
 
-    public function getDeviceIcon($type, $os): string
+    public function getDeviceIcon(string $type, string $os): string
     {
         $icon = "";
         switch ($type) {
@@ -173,7 +172,7 @@ class User
         return $icon;
     }
 
-    public function getHistory()
+    public function getHistory(): string
     {
         $query = "SELECT history.orderid, history.id, history.insertstamp, history_type.name , CONCAT(COALESCE(history.alternative_text, ''), COALESCE(ids.descr, '')) AS Beschreibung, history.state, user.username, user.prename
             FROM history
@@ -229,7 +228,7 @@ class User
         return $t->getTable();
     }
 
-    public static function getUserOverview()
+    public static function getUserOverview(): string
     {
         $column_names = [
             0 => [
@@ -272,7 +271,7 @@ class User
         return $t->getTable();
     }
 
-    public static function checkEmailAvailable($email): bool
+    public static function checkEmailAvailable(string $email): bool
     {
         $query = "SELECT id FROM user WHERE email = :email";
         $params = array(':email' => $email);
@@ -285,7 +284,7 @@ class User
         return false;
     }
 
-    public static function checkUsernameAvailable($username)
+    public static function checkUsernameAvailable(string $username): bool
     {
         $query = "SELECT id FROM user WHERE username = :username";
         $params = array(':username' => $username);
@@ -303,7 +302,7 @@ class User
      * if an error occurs, it returns -1,
      * if the user was added successfully, it returns the id of the user
      */
-    public static function add($username, $email, $prename, $lastname, $password)
+    public static function add(string $username, string $email, string $prename, string $lastname, string $password)
     {
         if (!self::checkUsernameAvailable($username) || !self::checkEmailAvailable($email)) {
             return -1;
@@ -332,7 +331,7 @@ class User
         return $result;
     }
 
-    private static function sendEmailVerification($userId, $email)
+    private static function sendEmailVerification(int $userId, string $email): void
     {
         $mailKey = md5(microtime() . rand());
 
@@ -354,7 +353,7 @@ class User
         }
     }
 
-    private static function mailKeyExists($mailKey): bool
+    private static function mailKeyExists(string $mailKey): bool
     {
         $query = "SELECT id FROM user_validate_mail WHERE mail_key = :mailKey";
         $params = array(':mailKey' => $mailKey);
@@ -370,7 +369,7 @@ class User
     /**
      * checks if the password is safe enough
      */
-    private static function isPasswordSafe($password)
+    private static function isPasswordSafe(string $password): bool
     {
         if (strlen($password) < 8) {
             return false;

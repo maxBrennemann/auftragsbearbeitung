@@ -17,6 +17,9 @@ class Wiki
         ]);
     }
 
+    /**
+     * @return array<void>
+     */
     public static function get(): array
     {
         $query = "";

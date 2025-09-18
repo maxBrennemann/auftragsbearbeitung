@@ -10,7 +10,7 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 
 class UpdatePrestashop implements Queueable
 {
-    public static function handle()
+    public static function handle(): void
     {
         $taskExecutions = new TaskExecutions();
         $tasks = $taskExecutions->read([

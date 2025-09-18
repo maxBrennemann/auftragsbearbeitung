@@ -7,7 +7,7 @@ use MaxBrennemann\PhpUtilities\Routes;
 class OrderItemRoutes extends Routes
 {
     /**
-     *
+     * @uses Classes\Project\Zeit::empty()
      * @uses Classes\Project\Auftrag::getOrderItems()
      * @uses Classes\Project\Auftrag::getInvoicePostenTableAjax()
      * @uses Classes\Project\Zeit::get()
@@ -17,7 +17,7 @@ class OrderItemRoutes extends Routes
      * @uses Classes\Project\Angebot::getOfferItems()
      */
     protected static $getRoutes = [
-        "/order-items/{id}/table" => [],
+        "/order-items/{id}/table" => [\Classes\Project\Zeit::class, "empty"],
         "/order-items/{id}/all" => [\Classes\Project\Auftrag::class, "getOrderItems"],
         "/order-items/{id}/time/{itemId}" => [\Classes\Project\Zeit::class, "get"],
         "/order-items/{id}/service/{itemId}" => [\Classes\Project\Leistung::class, "get"],
@@ -28,12 +28,12 @@ class OrderItemRoutes extends Routes
     ];
 
     /**
-     * @uses Classes\Project\Auftrag::getItemsOverview()
+     * @uses Classes\Project\Zeit::empty()
      * @uses Classes\Project\Zeit::add()
      * @uses Classes\Project\Leistung::add()
      */
     protected static $postRoutes = [
-        "/order-items/{id}/overview" => [],
+        "/order-items/{id}/overview" => [\Classes\Project\Zeit::class, "empty"],
         "/order-items/{id}/times" => [\Classes\Project\Zeit::class, "add"],
         "/order-items/{id}/services" => [\Classes\Project\Leistung::class, "add"],
     ];

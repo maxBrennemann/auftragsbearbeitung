@@ -21,11 +21,11 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
     private int $rechnungsnummer = 0;
 
     /* dates */
-    public $datum;
-    public $termin;
-    public $fertigstellung;
+    public string $datum;
+    public string $termin;
+    public string $fertigstellung;
 
-    private $isPaid = false;
+    private bool $isPaid = false;
     private OrderState $status = OrderState::Default;
 
     private int $customerId = 0;
@@ -135,7 +135,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         return $data[0]["payment_type"];
     }
 
-    public function getAuftragspostenData()
+    public function getAuftragspostenData(): array
     {
         return $this->Auftragsposten;
     }
@@ -157,7 +157,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         }
     }
 
-    public static function getAllOrderTypes()
+    public static function getAllOrderTypes(): array
     {
         return Auftragstyp::all();
     }
@@ -203,7 +203,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         return $price;
     }
 
-    public function gewinnBerechnen()
+    public function gewinnBerechnen(): int
     {
         $price = 0;
         foreach ($this->Auftragsposten as $posten) {
@@ -217,7 +217,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         return $this->customerId;
     }
 
-    public static function getOrderItems()
+    public static function getOrderItems(): void
     {
         $id = (int) Tools::get("id");
         $data = Posten::getOrderItems($id, ClientSettings::getFilterOrderPosten(), 0);
@@ -254,11 +254,9 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         JSONResponseHandler::sendResponse($parsedData);
     }
 
-    public static function getOrderItem(int $id)
-    {
-    }
+    public static function getOrderItem(int $id): void {}
 
-    public function getInvoicePostenTable()
+    public function getInvoicePostenTable(): string
     {
         $column_names = [
             0 => array("COLUMN_NAME" => "Menge"),
@@ -291,7 +289,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         return $t->getTable();
     }
 
-    public static function getInvoicePostenTableAjax()
+    public static function getInvoicePostenTableAjax(): void
     {
         $orderId = Tools::get("id");
         $order = new Auftrag($orderId);
@@ -301,12 +299,12 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         ]);
     }
 
-    public function getIsArchiviert()
+    public function getIsArchiviert(): bool
     {
         return $this->status == OrderState::Archived;
     }
 
-    public static function getReadyOrders()
+    public static function getReadyOrders(): string
     {
         $query = "SELECT Auftragsnummer, IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) as Kunde, Auftragsbezeichnung FROM auftrag, kunde WHERE status = :status AND kunde.Kundennummer = auftrag.Kundennummer AND Rechnungsnummer = 0";
         $data = DBAccess::selectQuery($query, ["status" => OrderState::Finished->value]);
@@ -327,7 +325,11 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         return $t->getTable();
     }
 
-    public static function getAuftragsliste(?array $ids = null): string
+    /**
+     * @param array<int> $ids
+     * @return string
+     */
+    public static function getAuftragsliste(array $ids): string
     {
         $column_names = array(
             0 => array("COLUMN_NAME" => "Auftragsnummer", "ALT" => "Nr.", "NOWRAP"),
@@ -345,7 +347,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 				ON auftrag.Kundennummer = kunde.Kundennummer 
 			WHERE ";
 
-        if ($ids != null) {
+        if (count($ids) == 0) {
             $query .= "Auftragsnummer IN (" . implode(",", $ids) . ")";
         } else {
             $query .= "Rechnungsnummer = 0 AND `status` != '" . OrderState::Default->value . "'";
@@ -363,7 +365,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         return $t->getTable();
     }
 
-    public static function getOpenOrders()
+    public static function getOpenOrders(): void
     {
         $query = "SELECT Auftragsnummer, DATE_FORMAT(Datum, '%d.%m.%Y') AS Datum, 
 				IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), 
@@ -396,12 +398,17 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         return $invoice->getNumber();
     }
 
-    public function getLinkedVehicles()
+    /**
+     * @return array<int, array<string, string>>
+     */
+    public function getLinkedVehicles(): array
     {
-        return DBAccess::selectQuery("SELECT Nummer, Kennzeichen, Fahrzeug FROM fahrzeuge LEFT JOIN fahrzeuge_auftraege ON fahrzeuge_auftraege.id_fahrzeug = Nummer WHERE fahrzeuge_auftraege.id_auftrag = {$this->getAuftragsnummer()}");
+        return DBAccess::selectQuery("SELECT Nummer, Kennzeichen, Fahrzeug FROM fahrzeuge LEFT JOIN fahrzeuge_auftraege ON fahrzeuge_auftraege.id_fahrzeug = Nummer WHERE fahrzeuge_auftraege.id_auftrag = :idOrder", [
+            "idOrder" => $this->getAuftragsnummer(),
+        ]);
     }
 
-    public function getColors()
+    public function getColors(): bool|string
     {
         $query = "SELECT color_name, hex_value, id, producer, short_name 
 			FROM color, color_auftrag 
@@ -421,6 +428,9 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         return $content;
     }
 
+    /**
+     * @return array{archived: string, date: mixed, deadline: mixed, finished: mixed, id: int, invoice: mixed, orderDescription: mixed, orderTitle: mixed, status: OrderState, summe: float|int}
+     */
     public function getOrderCardData(): array
     {
         $query = "SELECT DATE_FORMAT(Datum, '%d.%m.%Y') AS Datum,
@@ -453,7 +463,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         ];
     }
 
-    public static function getNotes()
+    public static function getNotes(): void
     {
         $orderId = (int) Tools::get("orderId");
 
@@ -474,11 +484,9 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         JSONResponseHandler::sendResponse($notes);
     }
 
-    public function recalculate()
-    {
-    }
+    public function recalculate(): void {}
 
-    public static function archive()
+    public static function archive(): void
     {
         $orderId = (int) Tools::get("id");
         $status = Tools::get("status") == "archive" ? OrderState::Archived : OrderState::Default;
@@ -495,7 +503,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         ]);
     }
 
-    public static function finish()
+    public static function finish(): void
     {
         $orderId = (int) Tools::get("id");
         DBAccess::updateQuery("UPDATE auftrag SET `status` = :orderStatus WHERE Auftragsnummer = :orderId", [
@@ -513,7 +521,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
      * which is sent by the client;
      * the function echos a json object with the response link and the order id
      */
-    public static function addOrder()
+    public static function addOrder(): void
     {
         $bezeichnung = Tools::get("name");
         $beschreibung = Tools::get("description");
@@ -555,7 +563,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         JSONResponseHandler::sendResponse($data);
     }
 
-    public static function getFiles($auftragsnummer)
+    public static function getFiles($auftragsnummer): string
     {
         $files = DBAccess::selectQuery("SELECT DISTINCT dateiname AS Datei, originalname, `date` AS Datum, typ as Typ FROM dateien LEFT JOIN dateien_auftraege ON dateien_auftraege.id_datei = dateien.id WHERE dateien_auftraege.id_auftrag = $auftragsnummer");
 
@@ -592,7 +600,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         return $t->getTable();
     }
 
-    public static function deleteOrder()
+    public static function deleteOrder(): void
     {
         $id = (int) Tools::get("id");
         $query = "DELETE FROM auftrag WHERE Auftragsnummer = :id;";
@@ -608,7 +616,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         ]);
     }
 
-    public function addNewNote()
+    public function addNewNote(): void
     {
         $title = (string) Tools::get("title");
         $note = (string) Tools::get("note");
@@ -630,14 +638,14 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         ]);
     }
 
-    public static function addNote()
+    public static function addNote(): void
     {
         $orderId = (int) Tools::get("orderId");
         $order = new Auftrag($orderId);
         $order->addNewNote();
     }
 
-    public static function updateNote()
+    public static function updateNote(): void
     {
         $id = (int) Tools::get("id");
         $type = (string) Tools::get("type");
@@ -653,7 +661,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         ]);
     }
 
-    public static function deleteNote()
+    public static function deleteNote(): void
     {
         $note = (int) Tools::get("id");
         DBAccess::deleteQuery("DELETE FROM notes WHERE id = :note", [
@@ -665,7 +673,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         ]);
     }
 
-    public static function updateOrderType()
+    public static function updateOrderType(): void
     {
         $idOrderType = (int) Tools::get("type");
         $idOrder = (int) Tools::get("id");
@@ -681,7 +689,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         ]);
     }
 
-    public static function updateOrderTitle()
+    public static function updateOrderTitle(): void
     {
         $orderTitle = (string) Tools::get("title");
         $idOrder = (int) Tools::get("id");
@@ -697,7 +705,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         ]);
     }
 
-    public static function updateContactPerson()
+    public static function updateContactPerson(): void
     {
         $idContact = (string) Tools::get("idContact");
         $idOrder = (int) Tools::get("id");
@@ -712,7 +720,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         ]);
     }
 
-    public static function updateDate()
+    public static function updateDate(): void
     {
         $order = (int) Tools::get("id");
         $date =  Tools::get("date");
@@ -746,7 +754,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         ]);
     }
 
-    public static function addColors()
+    public static function addColors(): void
     {
         $id = (int) Tools::get("id");
         $colors = Tools::get("colors");
@@ -768,7 +776,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         ]);
     }
 
-    public static function addColor()
+    public static function addColor(): void
     {
         $orderId = (int) Tools::get("id");
         $colorName = (string) Tools::get("colorName");
@@ -791,7 +799,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         ]);
     }
 
-    public static function deleteColor()
+    public static function deleteColor(): void
     {
         $orderId = (int) Tools::get("id");
         $colorId = (int) Tools::get("colorId");
@@ -808,7 +816,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         ]);
     }
 
-    public static function resetAnsprechpartner($data)
+    public static function resetAnsprechpartner($data): void
     {
         $customerId = Tools::get("customerId");
         $query = "UPDATE auftrag SET Ansprechpartner = 0 WHERE Kundennummer = :customerId AND Ansprechpartner = :contactPerson;";
@@ -819,7 +827,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         ]);
     }
 
-    public static function getOverview()
+    public static function getOverview(): bool|string
     {
         $query = "SELECT Auftragsnummer FROM auftrag WHERE `status` != '" . OrderState::Default->value . "'AND Rechnungsnummer = 0;";
         $data = DBAccess::selectQuery($query);
@@ -839,7 +847,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         return $content;
     }
 
-    public static function addFiles()
+    public static function addFiles(): void
     {
         $uploadHandler = new UploadHandler();
         $files = $uploadHandler->uploadMultiple();
@@ -856,7 +864,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         DBAccess::insertMultiple($query, $values);
     }
 
-    public static function resetInvoice()
+    public static function resetInvoice(): void
     {
         $orderId = Tools::get("id");
         $query = "UPDATE auftrag SET Rechnungsnummer = 0 WHERE Auftragsnummer = :idOrder";
@@ -867,7 +875,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         JSONResponseHandler::returnOK();
     }
 
-    public static function editDescription()
+    public static function editDescription(): void
     {
         $text = (string) Tools::get("text");
         $orderId = (int) Tools::get("id");
@@ -879,7 +887,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         JSONResponseHandler::returnOK();
     }
 
-    public static function changeCustomer()
+    public static function changeCustomer(): void
     {
         $orderId = (int) Tools::get("orderId");
         $newCustomerId = (int) Tools::get("newCustomerId");

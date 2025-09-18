@@ -129,12 +129,12 @@ class Invoice
         return $this->creationDate;
     }
 
-    public function getId()
+    public function getId(): int
     {
         return $this->invoiceId;
     }
 
-    public function getNumber()
+    public function getNumber(): int
     {
         return $this->invoiceNumber;
     }
@@ -156,7 +156,7 @@ class Invoice
         return $data;
     }
 
-    public static function toggleText()
+    public static function toggleText(): void
     {
         $invoiceId = (int) Tools::get("invoiceId");
         $textId = (int) Tools::get("textId");
@@ -186,7 +186,7 @@ class Invoice
         ]);
     }
 
-    public static function addText()
+    public static function addText(): void
     {
         $invoiceId = (int) Tools::get("invoiceId");
         $text = Tools::get("text");
@@ -203,7 +203,7 @@ class Invoice
         ]);
     }
 
-    public function getTexts()
+    public function getTexts(): array
     {
         $query = "SELECT * FROM invoice_text WHERE id_invoice = :invoiceId";
         $data = DBAccess::selectQuery($query, [
@@ -262,7 +262,7 @@ class Invoice
         ]);
     }
 
-    public static function getContacts(int $customerId)
+    public static function getContacts(int $customerId): array
     {
         $contacts = DBAccess::selectQuery("SELECT Nummer AS id, Vorname AS firstName, Nachname AS lastName, Email AS email 
 			FROM ansprechpartner 
@@ -283,7 +283,7 @@ class Invoice
         return $formattedContacts;
     }
 
-    public static function setAddress()
+    public static function setAddress(): void
     {
         $invoiceId = (int) Tools::get("invoiceId");
         $addressId = (int) Tools::get("addressId");
@@ -296,7 +296,7 @@ class Invoice
         JSONResponseHandler::returnOK();
     }
 
-    public static function setContact()
+    public static function setContact(): void
     {
         $invoiceId = (int) Tools::get("invoiceId");
         $contactId = (int) Tools::get("contactId");
@@ -309,7 +309,7 @@ class Invoice
         JSONResponseHandler::returnOK();
     }
 
-    public static function setInvoiceDate()
+    public static function setInvoiceDate(): void
     {
         $invoiceId = (int) Tools::get("invoiceId");
         $date = Tools::get("date");
@@ -325,7 +325,7 @@ class Invoice
         ]);
     }
 
-    public static function setServiceDate()
+    public static function setServiceDate(): void
     {
         $invoiceId = (int) Tools::get("invoiceId");
         $date = Tools::get("date");
@@ -341,7 +341,7 @@ class Invoice
         ]);
     }
 
-    public static function completeInvoice()
+    public static function completeInvoice(): void
     {
         $invoiceId = (int) Tools::get("invoiceId");
         $orderId = (int) Tools::get("orderId");
@@ -376,7 +376,7 @@ class Invoice
         ]);
     }
 
-    public static function setInvoicePaid()
+    public static function setInvoicePaid(): void
     {
         $invoiceId = Tools::get("invoiceId");
         $paymentDate = Tools::get("date");
@@ -422,7 +422,7 @@ class Invoice
         ]);
     }
 
-    public static function getPDF()
+    public static function getPDF(): void
     {
         $invoiceId = (int) Tools::get("invoiceId");
         $orderId = (int) Tools::get("orderId");
@@ -431,7 +431,7 @@ class Invoice
         $invoice->generateOutput();
     }
 
-    public static function handleAltNames()
+    public static function handleAltNames(): void
     {
         $invoiceId = (int) Tools::get("invoiceId");
         $add = Tools::get("add");
@@ -456,7 +456,7 @@ class Invoice
         JSONResponseHandler::returnOK();
     }
 
-    public static function addAltName(int $invoiceId, string $text)
+    public static function addAltName(int $invoiceId, string $text): void
     {
         $query = "INSERT INTO invoice_alt_names (id_invoice, `text`) VALUES (:idInvoice, :text);";
         DBAccess::insertQuery($query, [
@@ -474,7 +474,7 @@ class Invoice
         ]);
     }
 
-    public static function removeAltName(int $altNameId)
+    public static function removeAltName(int $altNameId): void
     {
         $query = "DELETE FROM invoice_alt_names WHERE id = :altNameId;";
         DBAccess::updateQuery($query, [
@@ -482,7 +482,7 @@ class Invoice
         ]);
     }
 
-    public static function getAltNamesTemplate()
+    public static function getAltNamesTemplate(): void
     {
         $invoiceId = (int) Tools::get("invoiceId");
         $orderId = (int) Tools::get("orderId");

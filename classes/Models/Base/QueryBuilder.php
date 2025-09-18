@@ -2,7 +2,4 @@
 
 namespace Classes\Models\Base;
 
-class QueryBuilder
-{
-    
-}
+class QueryBuilder {}

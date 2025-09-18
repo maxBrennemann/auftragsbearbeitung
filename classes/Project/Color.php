@@ -22,7 +22,7 @@ class Color
         $this->producer = $producer;
     }
 
-    public function save()
+    public function save(): int
     {
         if (!$this->checkHex()) {
             throw new \Exception("wrong hex code");
@@ -30,7 +30,7 @@ class Color
 
         $query = "INSERT INTO color (color_name, hex_value, short_name, producer) VALUES (:colorName, :hexValue, :shortName, :producer);";
 
-        $id = DBAccess::insertQuery($query, [
+        $id = (int) DBAccess::insertQuery($query, [
             "colorName" => $this->colorName,
             "hexValue" => $this->hexValue,
             "shortName" => $this->shortName,
@@ -40,7 +40,7 @@ class Color
         return $id;
     }
 
-    private function checkHex()
+    private function checkHex(): bool
     {
         $pregMatch = preg_match('/^[0-9a-fA-F]{6}$/', $this->hexValue);
 
@@ -51,19 +51,27 @@ class Color
         return false;
     }
 
-    public static function get()
+    public static function get(): array
     {
         return DBAccess::selectAll("color");
     }
 
-    public static function convertHexToHTML($data)
+    /**
+     * @param array<mixed> $data
+     * @return void
+     */
+    public static function convertHexToHTML(array $data): void
     {
         foreach ($data["results"] as $key => $value) {
             $data["results"][$key]["hex_value"] = "<div class=\"farbe\" style=\"background-color: #" . $value["hex_value"] . "\"></div>";
         }
     }
 
-    public static function convertHex($data)
+    /**
+     * @param array<mixed> $data
+     * @return array<mixed>
+     */
+    public static function convertHex(array $data): array
     {
         foreach ($data as $key => $value) {
             $data[$key]["hex_value"] = "<div class=\"farbe\" style=\"background-color: #" . $value["hex_value"] . "\"></div>";
@@ -71,7 +79,7 @@ class Color
         return $data;
     }
 
-    public static function renderColorTemplate()
+    public static function renderColorTemplate(): void
     {
         $colors = Color::get();
         $template = TemplateController::getTemplate("color", [

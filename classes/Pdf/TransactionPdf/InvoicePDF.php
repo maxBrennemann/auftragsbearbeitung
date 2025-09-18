@@ -25,7 +25,7 @@ class InvoicePDF extends TransactionPDF
         $this->contactId = $this->invoice->getContactId();
     }
 
-    public function generate()
+    public function generate(): void
     {
         parent::generate();
 
@@ -94,12 +94,13 @@ class InvoicePDF extends TransactionPDF
         $this->Cell(160, 10, "Zahlbar sofort ohne weitere Abzüge.");
     }
 
-    private function addTableHeader($y = 69)
+    private function addTableHeader(int $y = 69): void
     {
         $invoiceNumber = $this->invoice->getNumber();
         if ($invoiceNumber == 0) {
             $invoiceNumber = InvoiceNumberTracker::peekNextInvoiceNumber();
         }
+        $invoiceNumber = (string) $invoiceNumber;
 
         $this->SetFont("helvetica", "", 12);
         $this->setXY(125, $y);
@@ -129,7 +130,7 @@ class InvoicePDF extends TransactionPDF
         $this->SetFont("helvetica", "", 12);
     }
 
-    private function addInvoiceItems()
+    private function addInvoiceItems(): void
     {
         /* iterates over all posten and adds lines */
         $lineheight = 10;
@@ -148,7 +149,7 @@ class InvoicePDF extends TransactionPDF
             $addToOffset = 0;
 
             if ($type == "item") {
-                $p = array_find($posten, fn($p) => $p->getPostennummer() == $id); 
+                $p = array_find($posten, fn($p) => $p->getPostennummer() == $id);
                 $this->Cell(15, $lineheight, (string) $count);
                 $this->Cell(20, $lineheight, $p->getQuantity());
                 $this->Cell(20, $lineheight, $p->getEinheit());

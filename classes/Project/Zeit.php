@@ -9,16 +9,16 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class Zeit extends Posten
 {
-    private $Stundenlohn = null;
-    private $ZeitInMinuten = null;
+    private float $Stundenlohn;
+    private int $ZeitInMinuten;
     private $Kosten = null;
     private $discount = -1;
-    private $beschreibung = null;
-    private $isInvoice = false;
+    private string $beschreibung = null;
+    private bool $isInvoice = false;
 
-    protected $postenTyp = "zeit";
-    protected $ohneBerechnung = false;
-    protected $postennummer;
+    protected string $postenTyp = "zeit";
+    protected bool $ohneBerechnung = false;
+    protected int $postennummer;
 
     public function __construct($Stundenlohn, $ZeitInMinuten, $beschreibung, $discount, $isInvoice, $freeOfCharge, int $position = 0)
     {
@@ -38,7 +38,7 @@ class Zeit extends Posten
         $this->position = $position;
     }
 
-    public function fillToArray($arr)
+    public function fillToArray(array $arr): array
     {
         $arr['Postennummer'] = $this->postennummer;
         $arr['Preis'] = $this->bekommePreisTabelle();
@@ -62,7 +62,7 @@ class Zeit extends Posten
         return $arr;
     }
 
-    private function bekommeErweiterteZeiterfassungTabelle()
+    private function bekommeErweiterteZeiterfassungTabelle(): string|null
     {
         $query = "SELECT CONCAT(
 					LPAD(FLOOR(`from_time` / 60), 2, '0'), ':', 
@@ -91,7 +91,7 @@ class Zeit extends Posten
     }
 
     /* returns the price if no discount is applied, else calculates the discount and returns the according table */
-    private function bekommePreisTabelle()
+    private function bekommePreisTabelle(): string
     {
         if ($this->discount != -1) {
             $originalPrice = number_format($this->kalkulierePreis(), 2, ',', '') . "€";
@@ -114,7 +114,7 @@ class Zeit extends Posten
         }
     }
 
-    public function bekommeEinzelPreis()
+    public function bekommeEinzelPreis(): float
     {
         return $this->Stundenlohn;
     }
@@ -135,17 +135,17 @@ class Zeit extends Posten
         return round((float) $this->Kosten, 2);
     }
 
-    public function bekommePreis_formatted()
+    public function bekommePreis_formatted(): string
     {
         return number_format($this->bekommePreis(), 2, ',', '') . ' €';
     }
 
-    public function bekommeEinzelPreis_formatted()
+    public function bekommeEinzelPreis_formatted(): string
     {
         return number_format($this->Stundenlohn, 2, ',', '') . ' €';
     }
 
-    public function bekommeDifferenz()
+    public function bekommeDifferenz(): float
     {
         return $this->bekommePreis();
     }
@@ -153,7 +153,7 @@ class Zeit extends Posten
     /*
      * calculated price by hour wage and time, no discounts included
      */
-    private function kalkulierePreis()
+    private function kalkulierePreis(): float
     {
         $this->Kosten = $this->Stundenlohn * ($this->ZeitInMinuten / 60);
         return round((float) $this->Kosten, 2);
@@ -164,37 +164,35 @@ class Zeit extends Posten
         return $this->beschreibung;
     }
 
-    public function getEinheit()
+    public function getEinheit(): string
     {
         return "Stunden";
     }
 
-    public function getWage()
+    public function getWage(): float
     {
         return $this->Stundenlohn;
     }
 
-    public function getQuantity()
+    public function getQuantity(): string
     {
         $zeitInStunden = round($this->ZeitInMinuten / 60, 2);
         return number_format($zeitInStunden, 2, ',', '');
     }
 
-    public function getOhneBerechnung()
+    public function getOhneBerechnung(): bool
     {
         return $this->ohneBerechnung;
     }
 
-    public function isInvoice()
+    public function isInvoice(): bool
     {
         return $this->isInvoice;
     }
 
-    public function calculateDiscount()
-    {
-    }
+    public function calculateDiscount(): void {}
 
-    public function storeToDB($auftragsNr)
+    public function storeToDB(int $auftragsNr): void
     {
         $data = $this->fillToArray([]);
         $data['ohneBerechnung'] = 1;
@@ -202,7 +200,11 @@ class Zeit extends Posten
         Posten::insertPosten("zeit", $data);
     }
 
-    public static function getPostenData($postennummer)
+    /**
+     * @param int $postennummer
+     * @return array{description: mixed, discount: mixed, isinvoice: mixed, notcharged: mixed, time: mixed, timetable: array, wage: mixed}
+     */
+    public static function getPostenData(int $postennummer): array
     {
         $query = "SELECT Nummer, ZeitInMinuten, Stundenlohn, Beschreibung, ohneBerechnung, discount, isInvoice FROM zeit, posten WHERE zeit.Postennummer = posten.Postennummer AND posten.Postennummer = $postennummer";
         $result = DBAccess::selectQuery($query)[0];
@@ -223,7 +225,12 @@ class Zeit extends Posten
         return $data;
     }
 
-    public static function erweiterteZeiterfassung($values, $id): void
+    /**
+     * @param array<mixed, mixed> $values
+     * @param int $id
+     * @return void
+     */
+    public static function erweiterteZeiterfassung(array $values, int $id): void
     {
         $data = [];
 
@@ -242,7 +249,7 @@ class Zeit extends Posten
         DBAccess::insertMultiple("INSERT INTO zeiterfassung (id_zeit, from_time, to_time, `date`) VALUES ", $data);
     }
 
-    private static function timeString_toInt($timeString): int
+    private static function timeString_toInt(string $timeString): int
     {
         $timeParts = explode(":", $timeString);
         if (sizeof($timeParts) != 2) {
@@ -254,7 +261,7 @@ class Zeit extends Posten
         return $timeInInt;
     }
 
-    public static function add()
+    public static function add(): void
     {
         $data = [];
         $data["ZeitInMinuten"] = (int) Tools::get("time");
@@ -279,7 +286,7 @@ class Zeit extends Posten
 
         /* TODO: simplify this by helper function */
         $data = Posten::getOrderItems($orderId);
-        $data = array_filter($data, fn ($item) => $item->getPostennummer() == $ids[0]);
+        $data = array_filter($data, fn($item) => $item->getPostennummer() == $ids[0]);
         $data = reset($data);
 
         $item = [];
@@ -304,13 +311,13 @@ class Zeit extends Posten
         ]);
     }
 
-    public static function get()
+    public static function get(): void
     {
         $idItem = (int) Tools::get("itemId");
         // TODO: implement
     }
 
-    public static function delete()
+    public static function delete(): void
     {
         $idItem = (int) Tools::get("itemId");
         parent::delete();

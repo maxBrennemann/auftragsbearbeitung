@@ -4,7 +4,7 @@ namespace Classes\Cron;
 
 class CronManager
 {
-    public static function run()
+    public static function run(): void
     {
         $schedule = new Schedule();
 
@@ -12,13 +12,13 @@ class CronManager
         self::execute($schedule);
     }
 
-    protected static function scheduleTasks(Schedule $schedule)
+    protected static function scheduleTasks(Schedule $schedule): void
     {
         $schedule->runEveryDay([\Classes\Cron\Tasks\CleanLogins::class, "handle"]);
         $schedule->runEveryMinute([\Classes\Cron\Tasks\UpdatePrestashop::class, "handle"]);
     }
 
-    protected static function execute(Schedule $schedule)
+    protected static function execute(Schedule $schedule): void
     {
         $now = date('H:i');
         $currentHour = date('H');

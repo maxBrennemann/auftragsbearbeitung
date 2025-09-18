@@ -7,7 +7,7 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 
 class Aufgabenliste
 {
-    public static function aktuelleSchritteAlsTabelleAusgeben()
+    public static function aktuelleSchritteAlsTabelleAusgeben(): string
     {
         $query = "SELECT IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) as Name, auftrag.Auftragsbezeichnung, schritte.Bezeichnung, IF(schritte.Datum = '0000-00-00', 'kein Datum', schritte.Datum) AS Datum, auftrag.Auftragsnummer 
             FROM schritte 

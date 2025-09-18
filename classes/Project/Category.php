@@ -23,7 +23,7 @@ class Category
         $this->children = [];
     }
 
-    public function addChild($categoryNode)
+    public function addChild($categoryNode): void
     {
         array_push($this->children, $categoryNode);
     }
@@ -31,7 +31,7 @@ class Category
     /**
      * adds a new category to the database by the given name and parent
      */
-    public static function addNewCategory()
+    public static function addNewCategory(): void
     {
         $name = Tools::get("name");
         $parent = (int) Tools::get("parent");
@@ -48,7 +48,7 @@ class Category
         ]);
     }
 
-    public function getOneLayerArray()
+    public function getOneLayerArray(): array
     {
         $onelayerarray = [];
 
@@ -64,7 +64,10 @@ class Category
         return $onelayerarray;
     }
 
-    private static function parseCategories()
+    /**
+     * @return array<int, Category>
+     */
+    private static function parseCategories(): array
     {
         $categories = DBAccess::selectQuery("SELECT * FROM category");
 
@@ -96,7 +99,10 @@ class Category
         return $categoryTree;
     }
 
-    public static function getOneLayerRepresentation()
+    /**
+     * @return array<int, array<mixed>>
+     */
+    public static function getOneLayerRepresentation(): array
     {
         $data = self::parseCategories();
 
@@ -116,7 +122,11 @@ class Category
         return $onelayerarray;
     }
 
-    public static function getCategoryTree($data)
+    /**
+     * @param array<int, Category> $data
+     * @return array<int, array<string, mixed>>
+     */
+    public static function getCategoryTree(array $data): array
     {
         $categoryTree = [];
 
@@ -132,18 +142,18 @@ class Category
         return $categoryTree;
     }
 
-    public static function getJSONOneLayer()
+    public static function getJSONOneLayer(): void
     {
         JSONResponseHandler::sendResponse(self::getOneLayerRepresentation());
     }
 
-    public static function getJSONTree()
+    public static function getJSONTree(): void
     {
         $data = self::parseCategories();
         JSONResponseHandler::sendResponse(self::getCategoryTree($data));
     }
 
-    public static function updateCategory()
+    public static function updateCategory(): void
     {
         $id = Tools::get("id");
         $name = Tools::get("name");

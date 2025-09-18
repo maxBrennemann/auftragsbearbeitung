@@ -15,7 +15,7 @@ class ProduktPosten extends Posten
 
     protected $postenTyp = "produkt";
     protected $ohneBerechnung = false;
-    protected $postennummer;
+    protected int $postennummer;
 
     public function __construct($Preis, $Bezeichnung, $Beschreibung, $Anzahl, $Einkaufspreis, $Marke, $discount, $isInvoice, $freeOfCharge, int $position = 0)
     {
@@ -36,7 +36,7 @@ class ProduktPosten extends Posten
         $this->position = $position;
     }
 
-    public function fillToArray($arr)
+    public function fillToArray(array $arr): array
     {
         $arr['Postennummer'] = $this->postennummer;
         $arr['Preis'] = $this->bekommePreisTabelle();
@@ -52,7 +52,7 @@ class ProduktPosten extends Posten
     }
 
     /* returns the price if no discount is applied, else calculates the discount and returns the according table */
-    private function bekommePreisTabelle()
+    private function bekommePreisTabelle(): string
     {
         if ($this->discount != -1) {
             $discountedPrice = number_format($this->bekommePreis(), 2, ',', '') . "€";
@@ -76,7 +76,7 @@ class ProduktPosten extends Posten
         }
     }
 
-    public function storeToDB($auftragsNr)
+    public function storeToDB(int $auftragsNr): void
     {
         $data = $this->fillToArray(array());
         $data['ohneBerechnung'] = 1;
@@ -98,17 +98,17 @@ class ProduktPosten extends Posten
         return $this->Preis;
     }
 
-    public function bekommePreis_formatted()
+    public function bekommePreis_formatted(): string
     {
         return number_format($this->bekommePreis(), 2, ',', '') . ' €';
     }
 
-    public function bekommeEinkaufspreis_formatted()
+    public function bekommeEinkaufspreis_formatted(): string
     {
         return number_format($this->Einkaufspreis, 2, ',', '') . ' €';
     }
 
-    public function bekommeEinzelPreis_formatted()
+    public function bekommeEinzelPreis_formatted(): string
     {
         return number_format($this->bekommeEinzelPreis(), 2, ',', '') . ' €';
     }
@@ -139,7 +139,7 @@ class ProduktPosten extends Posten
         return $this->Beschreibung;
     }
 
-    public function getEinheit()
+    public function getEinheit(): string
     {
         return "Stück";
     }

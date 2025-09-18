@@ -391,7 +391,7 @@ class StickerTagManager extends PrestashopConnection
      * returns the id of a tag by its content,
      * retruns -1 if not found
      */
-    public static function getTagId(String $tagContent): int
+    public static function getTagId(string $tagContent): int
     {
         $query = "SELECT id FROM module_sticker_tags WHERE content = :content LIMIT 1;";
         $result = DBAccess::selectQuery($query, ["content" => $tagContent]);
@@ -402,7 +402,7 @@ class StickerTagManager extends PrestashopConnection
         return -1;
     }
 
-    public static function addTagGroup(String $title): int
+    public static function addTagGroup(string $title): int
     {
         $query = "INSERT INTO module_sticker_sticker_tag_group (title) VALUES (:title)";
         $tagGroupId = DBAccess::insertQuery($query, ["title" => $title]);

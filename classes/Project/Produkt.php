@@ -10,9 +10,9 @@ use MaxBrennemann\PhpUtilities\Tools;
 class Produkt
 {
     private $price = null;
-    private $produktnummer = null;
-    private $bezeichnung = null;
-    private $beschreibung = null;
+    private int $produktnummer;
+    private string $bezeichnung;
+    private string $beschreibung;
 
     public function __construct($produktnummer)
     {
@@ -20,9 +20,9 @@ class Produkt
         if (!empty($data)) {
             $data = $data[0];
             $this->price = $data['Preis'];
-            $this->produktnummer = $data['Nummer'];
-            $this->bezeichnung = $data['Bezeichnung'];
-            $this->beschreibung = $data['Beschreibung'];
+            $this->produktnummer = (int) $data['Nummer'];
+            $this->bezeichnung = (string) $data['Bezeichnung'];
+            $this->beschreibung = (string) $data['Beschreibung'];
         }
     }
 
@@ -46,7 +46,7 @@ class Produkt
         return $this->price;
     }
 
-    public function getPriceWithTax()
+    public function getPriceWithTax(): string
     {
         return number_format((float) $this->price / 100, 2, ",", ".");
     }
@@ -56,12 +56,12 @@ class Produkt
         return $this->produktnummer;
     }
 
-    public function getProduktLink()
+    public function getProduktLink(): string
     {
         return Link::getPageLink("produkt") . "?id=" . $this->produktnummer;
     }
 
-    public function getImages()
+    public function getImages(): array
     {
         $query = "SELECT DISTINCT id FROM dateien LEFT JOIN dateien_produkte ON dateien_produkte.id_datei = dateien.id WHERE dateien_produkte.id_produkt = $this->produktnummer";
         $data = DBAccess::selectQuery($query);
@@ -80,7 +80,7 @@ class Produkt
         return $images;
     }
 
-    public function fillToArray($arr)
+    public function fillToArray($arr): string
     {
         return "";
     }
@@ -120,7 +120,7 @@ class Produkt
         return $newProductId;
     }
 
-    public static function addCombinations()
+    public static function addCombinations(): void
     {
         $productId = (int) Tools::get("id");
         $combinations = Tools::get("combinations");
@@ -154,7 +154,7 @@ class Produkt
         return array_slice($mostSimilarProducts, 0, 10);
     }
 
-    private static function sortByPercentage(&$mostSimilarProducts)
+    private static function sortByPercentage(&$mostSimilarProducts): void
     {
         usort($mostSimilarProducts, fn($a, $b) => $b[1] <=> $a[1]);
     }
@@ -204,7 +204,7 @@ class Produkt
         return DBAccess::selectQuery("SELECT name, id FROM einkauf");
     }
 
-    public static function getHTMLShortSummary($productnumber)
+    public static function getHTMLShortSummary($productnumber): void
     {
         $product = new Produkt($productnumber);
         $html = "<div><h3>{$product->bezeichnung}</h3><span>Anzahl <input value=\"1\" id=\"{$productnumber}_getAmount\"></span><button onclick=\"chooseProduct($productnumber)\">Auswählen</button></div>";
@@ -234,7 +234,7 @@ class Produkt
         return $products;
     }
 
-    public static function getFiles($idProduct)
+    public static function getFiles(int $idProduct): string
     {
         $files = DBAccess::selectQuery("SELECT DISTINCT dateiname AS Datei, originalname, `date` AS Datum, typ as Typ 
 			FROM dateien 
@@ -263,7 +263,7 @@ class Produkt
         return $t->getTable();
     }
 
-    public static function update()
+    public static function update(): void
     {
         $productId = (int) Tools::get("id");
         $type = (string) Tools::get("type");
@@ -295,7 +295,7 @@ class Produkt
         }
     }
 
-    public static function addFiles()
+    public static function addFiles(): void
     {
         $uploadHandler = new UploadHandler();
         $files = $uploadHandler->uploadMultiple();

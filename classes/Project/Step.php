@@ -27,15 +27,11 @@ class Step
         $this->istErledigt = $istErledigt; */
     }
 
-    public function bearbeiten()
-    {
-    }
+    public function bearbeiten(): void {}
 
-    public function erledigen()
-    {
-    }
+    public function erledigen(): void {}
 
-    public static function insertStep($data): int
+    public static function insertStep(array $data): int
     {
         if ($data['Datum'] == null) {
             $data['Datum'] = "0000-00-00";
@@ -55,7 +51,7 @@ class Step
         return $postennummer;
     }
 
-    public static function insertStepAjax()
+    public static function insertStepAjax(): void
     {
         $data = [];
         $data["Bezeichnung"] = Tools::get("name");
@@ -71,21 +67,17 @@ class Step
             NotificationManager::addNotification($data["assignedTo"], 1, Tools::get("name"), $postenNummer);
         }
 
-        JSONResponseHandler::sendResponse([
-
-        ]);
+        JSONResponseHandler::sendResponse([]);
     }
 
-    public static function updateStep($data)
+    public static function updateStep(array $data): void
     {
         OrderHistory::add($data["orderId"], $data['postennummer'], OrderHistory::TYPE_STEP, OrderHistory::STATE_FINISHED);
     }
 
-    public static function deleteStep()
-    {
-    }
+    public static function deleteStep(): void {}
 
-    public static function getSteps()
+    public static function getSteps(): void
     {
         $id = Tools::get("id");
         $type = Tools::get("type");
@@ -112,7 +104,7 @@ class Step
         ]);
     }
 
-    public static function prepareData($data)
+    public static function prepareData(array $data): void
     {
         foreach ($data["results"] as $key => $value) {
             $date = $data["results"][$key]["Datum"];

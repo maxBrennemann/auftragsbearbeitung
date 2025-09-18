@@ -4,5 +4,5 @@ namespace Classes\Project;
 
 interface StatisticsInterface
 {
-    public function recalculate();
+    public function recalculate(): void;
 }

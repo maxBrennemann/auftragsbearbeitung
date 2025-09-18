@@ -19,7 +19,7 @@ class InvoiceLayout
         $this->getLayoutData();
     }
 
-    private function getLayoutData()
+    private function getLayoutData(): void
     {
         $query = "SELECT * FROM invoice_layout WHERE invoice_id = :invoiceId ORDER BY position;";
         $data = DBAccess::selectQuery($query, [
@@ -29,6 +29,9 @@ class InvoiceLayout
         $this->layout = $data;
     }
 
+    /**
+     * @return array<int, array<mixed>>
+     */
     public function getOrderedInvoiceContent(): array
     {
         $items = $this->invoice->loadPostenFromAuftrag();
@@ -90,6 +93,10 @@ class InvoiceLayout
         return $result;
     }
 
+    /**
+     * @param array<int, mixed> $positions
+     * @return bool
+     */
     private function writeItemsOrder(array $positions): bool
     {
         $query = "INSERT INTO invoice_layout (invoice_id, position, content_type, content_id) VALUES (:invoiceId, :position, :type, :id) ON DUPLICATE KEY UPDATE position = VALUES(position)";
@@ -113,9 +120,8 @@ class InvoiceLayout
     /**
      * Default order is: invoiceItems, texts, vehicles
      * If some elements are present, they are shown first, the other items are shown like the order above after the elements
-     * @return void
      */
-    public static function getItemsOrderTemplate()
+    public static function getItemsOrderTemplate(): void
     {
         $invoiceId = (int) Tools::get("invoiceId");
         $orderId = (int) Tools::get("orderId");
@@ -133,7 +139,7 @@ class InvoiceLayout
         ]);
     }
 
-    public static function updateItemsOrder()
+    public static function updateItemsOrder(): void
     {
         $invoiceId = (int) Tools::get("invoiceId");
         $orderId = (int) Tools::get("orderId");

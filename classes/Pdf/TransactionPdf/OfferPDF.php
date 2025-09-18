@@ -18,7 +18,7 @@ class OfferPDF extends TransactionPDF
         $this->customerId = $customerId;
     }
 
-    public function getCustomerId()
+    public function getCustomerId(): int
     {
         return $this->customerId;
     }

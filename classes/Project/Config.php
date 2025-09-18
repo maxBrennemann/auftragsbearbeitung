@@ -16,14 +16,14 @@ class Config
      * @param bool $isNullable
      * @return int the id of the setting value
      */
-    private static function add(string $setting, string $defaultValue, bool $isBool = false, bool $isNullable = false)
+    private static function add(string $setting, string $defaultValue, bool $isBool = false, bool $isNullable = false): int
     {
         $query = "REPLACE INTO `settings` (`title`, `content`, `defaultValue`, `isBool`, `isNullable`) VALUES (:title, :content, :defaultValue, :isBool, :isNullable)";
 
         $isBool = $isBool ? 1 : 0;
         $isNullable = $isNullable ? 1 : 0;
 
-        $settingId = DBAccess::insertQuery($query, [
+        $settingId = (int) DBAccess::insertQuery($query, [
             "title" => $setting,
             "content" => $defaultValue,
             "defaultValue" => $defaultValue,
@@ -41,7 +41,7 @@ class Config
      * @param string $setting
      * @param string $value
      */
-    public static function set(string $setting, string $value)
+    public static function set(string $setting, string $value): void
     {
         $query = "UPDATE `settings` SET `content` = CASE
                 WHEN `isNullable` = 1 AND :value IS NULL THEN `defaultValue`
@@ -79,16 +79,12 @@ class Config
     /**
      * checks if a setting value exists
      */
-    public static function exists()
-    {
-    }
+    public static function exists(): void {}
 
     /**
      * deletes a setting value
      */
-    public static function delete()
-    {
-    }
+    public static function delete(): void {}
 
     /**
      * toggles a setting value between true and false
@@ -103,7 +99,7 @@ class Config
         return $value;
     }
 
-    public static function updateConfig()
+    public static function updateConfig(): void
     {
         $config = Tools::get("configName");
         $value = Tools::get("value");
@@ -114,7 +110,11 @@ class Config
         ]);
     }
 
-    public static function getCompanyDetails()
+    /**
+     * Summary of getCompanyDetails
+     * @return array{companyAddress: string|null, companyBank: string|null, companyBic: string|null, companyCity: string|null, companyCountry: string|null, companyEmail: string|null, companyIban: string|null, companyImprint: string|null, companyName: string|null, companyPhone: string|null, companyUstIdNr: string|null, companyWebsite: string|null, companyZip: string|null}
+     */
+    public static function getCompanyDetails(): array
     {
         $companyDetails = [
             "companyName" => self::get("companyName"),
@@ -135,7 +135,12 @@ class Config
         return $companyDetails;
     }
 
-    private static function getFilesInfoByPath(string $path, array &$data)
+    /**
+     * @param string $path
+     * @param array{count:int, size:int} $data
+     * @return void
+     */
+    private static function getFilesInfoByPath(string $path, array &$data): void
     {
         $directory = new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS);
         $iterator = new \RecursiveIteratorIterator($directory);
@@ -153,7 +158,7 @@ class Config
         }
     }
 
-    public static function getFilesInfo()
+    public static function getFilesInfo(): void
     {
         $paths = [
             "upload/",

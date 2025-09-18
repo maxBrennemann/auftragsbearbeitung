@@ -6,7 +6,7 @@ set_time_limit(0);
 
 class Events
 {
-    public static function init()
+    public static function init(): void
     {
         self::outputHeader();
         $start = time();
@@ -23,14 +23,17 @@ class Events
         }
     }
 
-    private static function outputHeader()
+    private static function outputHeader(): void
     {
         header("Content-Type: text/event-stream");
         header("Cache-Control: no-cache");
         header("Connection: keep-alive");
     }
 
-    private static function getOutputData()
+    /**
+     * @return string[]
+     */
+    private static function getOutputData(): array
     {
         return [
             "test"

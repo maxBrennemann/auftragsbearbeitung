@@ -12,10 +12,10 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class ResourceManager
 {
-    private static $page = "";
-    private static $type = "";
+    private static string $page = "";
+    private static string $type = "";
 
-    public static function initialize()
+    public static function initialize(): void
     {
         $companyName = DBAccess::selectQuery("SELECT content FROM settings WHERE title = 'companyName';");
         if ($companyName != null) {
@@ -93,7 +93,7 @@ class ResourceManager
         }
     }
 
-    public static function getParameters()
+    public static function getParameters(): void
     {
         if (file_get_contents("php://input") != "") {
             $PHP_INPUT = json_decode(file_get_contents("php://input"), true);
@@ -125,7 +125,7 @@ class ResourceManager
         self::$page = $page;
     }
 
-    public static function initPage()
+    public static function initPage(): void
     {
         if (!SessionController::isLoggedIn()) {
             self::$page = "login";
@@ -189,7 +189,7 @@ class ResourceManager
         exit;
     }
 
-    private static function handleResources()
+    private static function handleResources(): void
     {
         $requestUri = $_SERVER["REQUEST_URI"];
         $requestUri = explode("/", $requestUri);
@@ -235,7 +235,7 @@ class ResourceManager
         }
     }
 
-    private static function get_script($script): void
+    private static function get_script(string $script): void
     {
         header("Content-Type: text/javascript");
 
@@ -247,7 +247,7 @@ class ResourceManager
         echo "";
     }
 
-    private static function get_css($script)
+    private static function get_css(string $script): void
     {
         header("Content-Type: text/css; charset=utf-8");
 
@@ -288,7 +288,11 @@ class ResourceManager
         return $manifest[$file][$type];
     }
 
-    private static function checkFont($fileName)
+    /**
+     * @param array<int, string> $fileName
+     * @return bool|string
+     */
+    private static function checkFont(array $fileName): bool|string
     {
         $len = count($fileName);
         $last = $fileName[$len - 1];
@@ -303,7 +307,7 @@ class ResourceManager
         return false;
     }
 
-    private static function get_font($font)
+    private static function get_font(string $font): void
     {
         header("Content-type: font/ttf");
         $file = file_get_contents(Link::getFilePath($font, "font"));
@@ -311,7 +315,7 @@ class ResourceManager
         echo $file;
     }
 
-    private static function get_upload($upload)
+    private static function get_upload(string $upload): void
     {
         $finfo = new \finfo(FILEINFO_MIME_TYPE);
         $upload = ltrim($upload, "/");
@@ -339,7 +343,7 @@ class ResourceManager
         readfile($fileName);
     }
 
-    private static function get_backup($backup)
+    private static function get_backup(string $backup): void
     {
         $file_info = new \finfo(FILEINFO_MIME_TYPE);
         $mime_type = $file_info->buffer(file_get_contents(Link::getFilePath($backup, "backup")));
@@ -350,7 +354,7 @@ class ResourceManager
         echo $file;
     }
 
-    private static function get_pdf($pdf)
+    private static function get_pdf(string $pdf): void
     {
         header("Content-type: application/pdf");
         $fileName = Link::getFilePath($pdf, "pdf");
@@ -365,7 +369,7 @@ class ResourceManager
         echo $file;
     }
 
-    private static function get_image($file)
+    private static function get_image(string $file): void
     {
         $filePath = "files/assets/img" . $file;
         header("Content-type: " .  mime_content_type($filePath));
@@ -374,7 +378,7 @@ class ResourceManager
         echo $file;
     }
 
-    private static function get_static($file)
+    private static function get_static(string $file): void
     {
         if ($file == "facebook-product-export") {
             header("Content-type: text/csv");
@@ -390,7 +394,7 @@ class ResourceManager
         }
     }
 
-    public static function outputHeaderJSON()
+    public static function outputHeaderJSON(): void
     {
         header("Access-Control-Allow-Headers: *");
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS");

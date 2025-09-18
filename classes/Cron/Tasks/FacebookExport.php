@@ -7,7 +7,7 @@ use Classes\Sticker\Exports\ExportFacebook;
 
 class FacebookExport implements Queueable
 {
-    public static function handle()
+    public static function handle(): void
     {
         $exportFacebook = new ExportFacebook();
         $exportFacebook->generateCSV();

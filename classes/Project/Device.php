@@ -1,5 +1,3 @@
 <?php
 
-class Device
-{
-}
+class Device {}

@@ -12,7 +12,7 @@ class CacheManager
     private const CACHE_PREFIX = "cache_";
     private static string $status = "off";
 
-    public function recache()
+    public function recache(): void
     {
         $cacheFile = self::CACHE_DIR . self::CACHE_PREFIX . md5($_SERVER["REQUEST_URI"]) . ".txt";
         if (file_exists($cacheFile)) {
@@ -20,12 +20,12 @@ class CacheManager
         }
     }
 
-    public static function cacheOff()
+    public static function cacheOff(): bool
     {
         return DBAccess::updateQuery("UPDATE settings SET content = 'off' WHERE title = 'cacheStatus'");
     }
 
-    public static function cacheOn()
+    public static function cacheOn(): bool
     {
         return DBAccess::updateQuery("UPDATE settings SET content = 'on' WHERE title = 'cacheStatus'");
     }
@@ -44,7 +44,7 @@ class CacheManager
         return self::$status;
     }
 
-    public static function writeCache()
+    public static function writeCache(): void
     {
         $cacheFile = self::CACHE_DIR . self::CACHE_PREFIX . md5($_SERVER["REQUEST_URI"]) . ".txt";
         file_put_contents($cacheFile, ob_get_contents());
@@ -55,7 +55,7 @@ class CacheManager
      * https://www.a-coding-project.de/ratgeber/php/simples-caching
      * added a time stamp check and added triggers to recreate page
      */
-    public static function loadCacheIfExists()
+    public static function loadCacheIfExists(): void
     {
         if (self::$status == "off") {
             return;
@@ -82,7 +82,7 @@ class CacheManager
         }
     }
 
-    public static function cacheHandler()
+    public static function cacheHandler(): void
     {
         ob_start();
         register_shutdown_function(function () {
@@ -93,7 +93,7 @@ class CacheManager
         });
     }
 
-    public static function deleteCache()
+    public static function deleteCache(): void
     {
         $path = "cache/";
         $files = scandir($path);
@@ -115,7 +115,7 @@ class CacheManager
         ]);
     }
 
-    public static function toggleCache()
+    public static function toggleCache(): void
     {
         $status = strtolower(trim((string) Tools::get("status")));
         if (!in_array($status, ["on", "off"])) {
