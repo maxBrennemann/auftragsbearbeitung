@@ -6,7 +6,11 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 
 class Statistics
 {
-    public static function getOrderSum($orderId): array
+
+    /**
+     * @return array<int, array<string, string>>
+     */
+    public static function getOrderSum(int $orderId): array
     {
         $query = "SELECT ROUND(SUM(all_posten.price), 2) AS orderPrice 
 			FROM (
@@ -24,6 +28,9 @@ class Statistics
         return DBAccess::selectQuery($query);
     }
 
+    /**
+     * @return array<int, array<string, string>>
+     */
     public static function getAllOrdersSum(): array
     {
         $query = "SELECT ROUND(SUM(all_posten.price), 2) AS orderPrice, all_posten.id AS id 
@@ -41,7 +48,12 @@ class Statistics
         return DBAccess::selectQuery($query);
     }
 
-    public static function getVolumeByMonth($startDate, $endDate): array
+    /**
+     * @param string $startDate
+     * @param string $endDate
+     * @return array<int, array<string, string>>
+     */
+    public static function getVolumeByMonth(string $startDate, string $endDate): array
     {
         $query = "SELECT CONCAT(MONTHNAME(finalized_date), ' ', YEAR(finalized_date)) AS `date`, SUM(amount) AS `value`
 			FROM invoice
@@ -54,7 +66,12 @@ class Statistics
         ]);
     }
 
-    public static function getOrders($startDate, $endDate): array
+    /**
+     * @param string $startDate
+     * @param string $endDate
+     * @return array<int, array<string, string>>
+     */
+    public static function getOrders(string $startDate, string $endDate): array
     {
         $query = "SELECT COUNT(Auftragsnummer) as `value`, DATE_FORMAT(Datum,'%Y-%m') as `date` 
 			FROM auftrag 
@@ -67,7 +84,12 @@ class Statistics
         ]);
     }
 
-    public static function getOrdersByCustomer($startDate, $endDate): array
+    /**
+     * @param string $startDate
+     * @param string $endDate
+     * @return array<int, array<string, string>>
+     */
+    public static function getOrdersByCustomer(string $startDate, string $endDate): array
     {
         $query = "SELECT COUNT(Auftragsnummer) as `value`, CONCAT(Firmenname, ' ', Vorname, ' ', Nachname) as `date` 
 			FROM auftrag, kunde
@@ -80,7 +102,12 @@ class Statistics
         ]);
     }
 
-    public static function getVolumeByOrderType($startDate, $endDate): array
+    /**
+     * @param string $startDate
+     * @param string $endDate
+     * @return array<int, array<string, string>>
+     */
+    public static function getVolumeByOrderType(string $startDate, string $endDate): array
     {
         $query = "SELECT SUM(invoice.amount) as `value`, `at`.Auftragstyp as `date` 
 			FROM invoice, auftrag a, auftragstyp `at`

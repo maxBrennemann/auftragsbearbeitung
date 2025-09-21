@@ -17,6 +17,7 @@ class Invoice
 
     private int $invoiceId = 0;
     private int $invoiceNumber = 0;
+    /** @var array<Leistung|ProduktPosten|Zeit> */
     private array $posten = [];
 
     private ?\DateTime $creationDate = null;

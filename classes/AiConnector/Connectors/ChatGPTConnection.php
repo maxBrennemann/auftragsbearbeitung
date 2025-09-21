@@ -61,6 +61,9 @@ class ChatGPTConnection implements AiInterface
         return $text;
     }
 
+    /**
+     * @return array|array{name: string, type: string|array{type: string}}
+     */
     private function getForamt(): array
     {
         if ($this->format == "text") {
@@ -78,6 +81,10 @@ class ChatGPTConnection implements AiInterface
         return [];
     }
 
+    /**
+     * @param array<string, string> $data
+     * @return string
+     */
     public function getText(array $data): string
     {
         $this->input = $data["input"];
@@ -88,11 +95,19 @@ class ChatGPTConnection implements AiInterface
         return $this->request();
     }
 
+    /**
+     * @param array<mixed> $data
+     * @return array<mixed>
+     */
     public function getImage(array $data): array
     {
         return [];
     }
 
+    /**
+     * @param array<string, string> $data
+     * @return array<string, mixed>
+     */
     public function getJSON(array $data): array
     {
         $this->input = $data["input"];

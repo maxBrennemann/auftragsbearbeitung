@@ -24,7 +24,7 @@ class Login
         $device = self::validateUser($user);
         $loginKey = "";
 
-        if (!$device) {
+        if (count($device) == 0) {
             JSONResponseHandler::sendResponse([
                 "status" => "error"
             ]);
@@ -44,6 +44,9 @@ class Login
         ]);
     }
 
+    /**
+     * @return array<string, string>
+     */
     private static function getUser(): array
     {
         if (Tools::get("name") == null || Tools::get("password") == null) {
@@ -69,7 +72,11 @@ class Login
         return $user[0];
     }
 
-    private static function validateUser($user): array
+    /**
+     * @param array<string, string> $user
+     * @return array{deviceId: int, deviceKey: mixed}
+     */
+    private static function validateUser(array $user): array
     {
         $password = Tools::get("password");
 
@@ -89,7 +96,7 @@ class Login
         SessionController::logout();
     }
 
-    private static function getLoginKey($deviceId): string
+    private static function getLoginKey(int $deviceId): string
     {
         if (
             Tools::get("setAutoLogin") == null
@@ -118,6 +125,9 @@ class Login
         return $loginKey;
     }
 
+    /**
+     * @return array{deviceId: int, deviceKey: mixed}
+     */
     private static function getDeviceKey(): array
     {
         $userAgent = Tools::get("userAgent");
@@ -180,7 +190,7 @@ class Login
         return $userAgentHash;
     }
 
-    private static function saveDeviceKey($key, $userAgent, $browser, $os, $deviceType): int
+    private static function saveDeviceKey(string $key, string $userAgent, string $browser, string $os, string $deviceType): int
     {
         $query = "INSERT INTO user_devices (md_hash, os, browser, device_type, user_id, browser_agent, ip_address) VALUES (:key, :os, :browser, :deviceType, :userId, :browserAgent, :ipAddress);";
         $id = DBAccess::insertQuery($query, [
@@ -230,7 +240,7 @@ class Login
 
     /**
      * @param array<int, mixed> $list
-     * @return bool|array
+     * @return bool|array<string, mixed>
      */
     private static function checkDuplicateDevices(array $list): bool|array
     {

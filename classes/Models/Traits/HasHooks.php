@@ -4,6 +4,8 @@ namespace Classes\Models\Traits;
 
 trait HasHooks
 {
+
+    /** @var array<string, array{class-string, string}> */
     protected array $hooks = [];
 
     protected function triggerHook(string $hookName, array $data): void

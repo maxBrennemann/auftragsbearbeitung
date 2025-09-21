@@ -4,7 +4,10 @@ namespace Classes\Cron;
 
 class Schedule
 {
+
+    /** @var array{every_minute:callable[], hourly:callable[], daily:callable[], exact_hour:array<int, callable[]>} */
     protected array $tasks = [
+        "every_minute" => [],
         "hourly" => [],
         "daily" => [],
         "exact_hour" => []
@@ -30,6 +33,9 @@ class Schedule
         $this->tasks["exact_hour"][$hour][] = $task;
     }
 
+    /**
+     * @return array{every_minute:callable[], hourly:callable[], daily:callable[], exact_hour:array<int, callable[]>}
+     */
     public function getTasks(): array
     {
         return $this->tasks;

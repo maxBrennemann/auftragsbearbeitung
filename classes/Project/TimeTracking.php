@@ -19,7 +19,7 @@ class TimeTracking
 
     /**
      * returns time table of current user in this month
-     * @return array
+     * @return array<int, array<string, string>>
      */
     public function current(int $userId = -1): array
     {
@@ -29,7 +29,7 @@ class TimeTracking
     /**
      * @param int $month
      * @param int $userId
-     * @return array
+     * @return array<int, array<string, string>>
      */
     public static function month(int $month, int $userId = -1): array
     {
@@ -51,7 +51,7 @@ class TimeTracking
     public function sum(int $month = 0): void {}
 
     /**
-     * @return array[]
+     * @return array<string, mixed>
      */
     public function getMonthsOverview(): array
     {
@@ -99,7 +99,13 @@ class TimeTracking
         return $months;
     }
 
-    public function getTimeTables($start, $stop, $all = false): array
+    /**
+     * @param string $start
+     * @param string $stop
+     * @param bool $all
+     * @return array<int, array<string, string>>
+     */
+    public function getTimeTables(string $start, string $stop, bool $all = false): array
     {
         $params =  [
             "idUser" => $this->userId,
@@ -131,8 +137,8 @@ class TimeTracking
     }
 
     /**
-     * @param array $data
-     * @return array
+     * @param array<mixed, array<string, string>> $data
+     * @return array<mixed, array<string, string>>
      */
     public function matchMonths(array $data): array
     {
@@ -153,7 +159,7 @@ class TimeTracking
 
         foreach ($data as &$row) {
             $month = $matchMonths[$row["month_started"]];
-            $row["month_started"] =  $month;
+            $row["month_started"] = $month;
         }
 
         return $data;

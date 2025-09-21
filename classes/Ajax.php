@@ -39,7 +39,7 @@ use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 class Ajax
 {
-    public static function handleRequests()
+    public static function handleRequests(): void
     {
         $currentApiVersion = "v1";
         ResourceManager::outputHeaderJSON();
@@ -122,7 +122,7 @@ class Ajax
         }
     }
 
-    public static function manageRequests($reason, $page)
+    public static function manageRequests(string $reason, string $page): void
     {
         switch ($reason) {
             case "delete":

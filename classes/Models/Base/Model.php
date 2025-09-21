@@ -168,7 +168,7 @@ class Model
         return $results;
     }
 
-    public function add($conditions): int|false
+    public function add(array $conditions): int|false
     {
         $this->triggerHook("beforeAdd", [
             "conditions" => &$conditions,
@@ -204,7 +204,7 @@ class Model
         return $lastInsertId;
     }
 
-    public function delete($conditions): bool
+    public function delete(array $conditions): bool
     {
         $this->triggerHook("beforeDelete", $conditions);
 
@@ -231,7 +231,7 @@ class Model
         return true;
     }
 
-    public function update($id, array $data): bool
+    public function update(int $id, array $data): bool
     {
         $this->triggerHook("beforeUpdate", $data);
 

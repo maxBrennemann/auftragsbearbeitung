@@ -52,19 +52,29 @@ class NotificationManager
         return $result ? (int) $result[0]["c"] : 0;
     }
 
-    private static function getTasks()
+    /**
+     * @return array<int, array<string, string>>
+     */
+    private static function getTasks(): array
     {
         $user = User::getCurrentUserId();
         return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = $user AND ischecked = 0 AND `type` = 1");
     }
 
-    private static function getNews()
+    /**
+     * @return array<int, array<string, string>>
+     */
+    private static function getNews(): array
     {
         return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = :user AND ischecked = 0 AND `type` != 1", [
             "user" => User::getCurrentUserId(),
         ]);
     }
 
+    /**
+     * @param int $limit
+     * @return array<int, array<string, string>>
+     */
     public static function getRecentNotifications(int $limit = 10): array
     {
         $user = User::getCurrentUserId();
@@ -132,7 +142,7 @@ class NotificationManager
         return "#";
     }
 
-    private static function getTypeName($type): string
+    private static function getTypeName(int $type): string
     {
         $types = ["erledigt", "Schritt", "", "", "Neuer Auftrag"];
         return $types[$type];
@@ -143,10 +153,10 @@ class NotificationManager
      *
      * @param int|null $user_id     the id of the user who gets notified, if all users get notified, it is -1
      * @param int $type             the type of notification
-     * @param string  $content      the text content of the notification
+     * @param string $content       the text content of the notification
      * @param int $specificId       the id connected with the type of notification e.g order id
      */
-    public static function addNotification($user_id, $type, $content, $specificId): void
+    public static function addNotification(?int $user_id, int $type, string $content, int $specificId): void
     {
         $initiator = User::getCurrentUserId();
 
@@ -167,7 +177,7 @@ class NotificationManager
     /*
      * calls the addNotification function in order to set a notification if the specific trigger was bound to that notification
      */
-    public static function addNotificationCheck($user_id, $type, $content, $specificId): void
+    public static function addNotificationCheck(int $user_id, int $type, string $content, int $specificId): void
     {
         $query = "UPDATE user_notifications SET ischecked = 1 WHERE specific_id = $specificId";
         DBAccess::updateQuery($query);
@@ -180,6 +190,9 @@ class NotificationManager
         }
     }
 
+    /**
+     * @return array<int, array<string, string>>
+     */
     private static function getAllUsers(): array
     {
         return UserModel::all();

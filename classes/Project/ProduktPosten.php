@@ -4,26 +4,26 @@ namespace Classes\Project;
 
 class ProduktPosten extends Posten
 {
-    private $Preis = 0.0;
-    private $Einkaufspreis = 0.0;
-    private $discount = -1;
-    private $Bezeichnung = null;
-    private $Beschreibung = null;
-    private $Anzahl = 0;
-    private $Marke = "";
-    private $isInvoice = false;
+    private float $Preis = 0.0;
+    private float $Einkaufspreis = 0.0;
+    private int $discount = -1;
+    private string $Bezeichnung;
+    private string $Beschreibung;
+    private int $Anzahl = 0;
+    private string $Marke = "";
+    private bool $isInvoice = false;
 
-    protected $postenTyp = "produkt";
-    protected $ohneBerechnung = false;
+    protected string $postenTyp = "produkt";
+    protected bool $ohneBerechnung = false;
     protected int $postennummer;
 
-    public function __construct($Preis, $Bezeichnung, $Beschreibung, $Anzahl, $Einkaufspreis, $Marke, $discount, $isInvoice, $freeOfCharge, int $position = 0)
+    public function __construct(float $Preis, string $Bezeichnung, string $Beschreibung, int $Anzahl, float $Einkaufspreis, string $Marke, int $discount, bool $isInvoice, bool $freeOfCharge, int $position = 0)
     {
-        $this->Preis = (float) $Preis;
-        $this->Einkaufspreis = (float) $Einkaufspreis;
+        $this->Preis = $Preis;
+        $this->Einkaufspreis = $Einkaufspreis;
         $this->Bezeichnung = $Bezeichnung;
         $this->Beschreibung = $Beschreibung;
-        $this->Anzahl = (int) $Anzahl;
+        $this->Anzahl = $Anzahl;
         $this->Marke = $Marke;
         $this->ohneBerechnung = $freeOfCharge;
 
@@ -36,6 +36,10 @@ class ProduktPosten extends Posten
         $this->position = $position;
     }
 
+    /**
+     * @param array<string, string> $arr
+     * @return array<string, string>
+     */
     public function fillToArray(array $arr): array
     {
         $arr['Postennummer'] = $this->postennummer;
@@ -85,7 +89,7 @@ class ProduktPosten extends Posten
     }
 
     /* includes discount */
-    public function bekommePreis()
+    public function bekommePreis(): float
     {
         if ($this->ohneBerechnung == true) {
             return 0;
@@ -93,7 +97,7 @@ class ProduktPosten extends Posten
         return (float) $this->Preis * $this->Anzahl - $this->calculateDiscount();
     }
 
-    public function bekommeEinzelPreis()
+    public function bekommeEinzelPreis(): float
     {
         return $this->Preis;
     }
@@ -113,7 +117,7 @@ class ProduktPosten extends Posten
         return number_format($this->bekommeEinzelPreis(), 2, ',', '') . ' €';
     }
 
-    public function bekommeDifferenz()
+    public function bekommeDifferenz(): float
     {
         if ($this->ohneBerechnung == true) {
             return 0;
@@ -121,12 +125,12 @@ class ProduktPosten extends Posten
         return (float) $this->bekommePreis() - $this->Einkaufspreis * $this->Anzahl;
     }
 
-    public function getBrand()
+    public function getBrand(): string
     {
         return $this->Marke;
     }
 
-    public function calculateDiscount()
+    public function calculateDiscount(): float
     {
         if ($this->discount != -1) {
             return (float) $this->Preis * $this->Anzahl * $this->discount;
@@ -134,7 +138,7 @@ class ProduktPosten extends Posten
         return 0;
     }
 
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->Beschreibung;
     }
@@ -144,12 +148,12 @@ class ProduktPosten extends Posten
         return "Stück";
     }
 
-    public function getQuantity()
+    public function getQuantity(): int
     {
         return $this->Anzahl;
     }
 
-    public function isInvoice()
+    public function isInvoice(): bool
     {
         return $this->isInvoice;
     }

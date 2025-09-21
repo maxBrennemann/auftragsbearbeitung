@@ -11,20 +11,20 @@ class Zeit extends Posten
 {
     private float $Stundenlohn;
     private int $ZeitInMinuten;
-    private $Kosten = null;
-    private $discount = -1;
-    private string $beschreibung = null;
+    private float $Kosten;
+    private int $discount = -1;
+    private string $beschreibung;
     private bool $isInvoice = false;
 
     protected string $postenTyp = "zeit";
     protected bool $ohneBerechnung = false;
     protected int $postennummer;
 
-    public function __construct($Stundenlohn, $ZeitInMinuten, $beschreibung, $discount, $isInvoice, $freeOfCharge, int $position = 0)
+    public function __construct(float $hourlyWage, int $timeInMinutes, string $description, int $discount, bool $isInvoice, bool $freeOfCharge, int $position = 0)
     {
-        $this->Stundenlohn = (float) $Stundenlohn;
-        $this->ZeitInMinuten = (int) $ZeitInMinuten;
-        $this->beschreibung = $beschreibung;
+        $this->Stundenlohn = $hourlyWage;
+        $this->ZeitInMinuten = $timeInMinutes;
+        $this->beschreibung = $description;
 
         $this->isInvoice = $isInvoice == 0 ? false : true;
         $this->ohneBerechnung = $freeOfCharge;
@@ -38,6 +38,10 @@ class Zeit extends Posten
         $this->position = $position;
     }
 
+    /**
+     * @param array<string, mixed> $arr
+     * @return array<string, mixed>
+     */
     public function fillToArray(array $arr): array
     {
         $arr['Postennummer'] = $this->postennummer;
@@ -159,7 +163,7 @@ class Zeit extends Posten
         return round((float) $this->Kosten, 2);
     }
 
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->beschreibung;
     }
@@ -202,7 +206,7 @@ class Zeit extends Posten
 
     /**
      * @param int $postennummer
-     * @return array{description: mixed, discount: mixed, isinvoice: mixed, notcharged: mixed, time: mixed, timetable: array, wage: mixed}
+     * @return array<string, mixed>
      */
     public static function getPostenData(int $postennummer): array
     {

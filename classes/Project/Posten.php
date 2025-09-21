@@ -21,9 +21,9 @@ abstract class Posten
     abstract protected function isInvoice();
     abstract protected function storeToDB(int $auftragsnummer): void;
 
-    protected $postenTyp;
-    protected $ohneBerechnung = false;
-    protected $postennummer;
+    protected string $postenTyp;
+    protected bool $ohneBerechnung = false;
+    protected int $postennummer;
     protected int $position = 0;
 
     public function getPosition(): int
@@ -31,11 +31,17 @@ abstract class Posten
         return $this->position;
     }
 
-    public function getPostennummer()
+    public function getPostennummer(): int
     {
         return $this->postennummer;
     }
 
+    /**
+     * @param int $orderId
+     * @param bool $isInvoice
+     * @param int $status
+     * @return array<Leistung|ProduktPosten|Zeit>
+     */
     public static function getOrderItems(int $orderId, bool $isInvoice = false, int $status = 0): array
     {
         $items = [];
@@ -150,6 +156,11 @@ abstract class Posten
         return $items;
     }
 
+    /**
+     * @param string $type
+     * @param array $data
+     * @return array
+     */
     public static function insertPosten(string $type, array $data): array
     {
         $auftragsnummer = (int) $data['Auftragsnummer'];
@@ -225,14 +236,14 @@ abstract class Posten
     /*
      * https://stackoverflow.com/a/5207487/7113688
      */
-    public static function addPosition($orderId): void
+    public static function addPosition(int $orderId): void
     {
         $query = "SET @I = 0; UPDATE posten SET `position` = (@I := @I + 1) WHERE Auftragsnummer = $orderId;";
         DBAccess::updateQuery($query);
     }
 
     /* adds links to all attached files to the "Einkaufspreis" column */
-    protected static function getFiles($postennummer): string
+    protected static function getFiles(int $postennummer): string
     {
         $query = "SELECT dateiname FROM dateien, dateien_posten WHERE dateien.id = dateien_posten.id_file AND dateien_posten.id_posten = $postennummer";
         $data = DBAccess::selectQuery($query);

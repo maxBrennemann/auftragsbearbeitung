@@ -4,5 +4,5 @@ namespace Classes\Cron;
 
 interface Queueable
 {
-    public static function handle();
+    public static function handle(): void;
 }

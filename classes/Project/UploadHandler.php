@@ -10,10 +10,17 @@ use RuntimeException;
 class UploadHandler
 {
     private string $uploadBaseDir = "upload";
+    /** @var string[] */
     private array $allowedMimeTypes = [];
     private int $maxFileSize = 25000000;
     private int $fileUploadLimit = 0;
 
+    /**
+     * @param string $uploadBaseDir
+     * @param string[] $allowedMimeTypes
+     * @param int $maxFileSize
+     * @param int $fileUploadLimit
+     */
     public function __construct(string $uploadBaseDir = "upload", array $allowedMimeTypes = [
         "application/pdf",
         "image/png",
@@ -29,6 +36,10 @@ class UploadHandler
         $this->fileUploadLimit = $fileUploadLimit;
     }
 
+    /**
+     * @param string $uploadName
+     * @return list<array<string, mixed>>
+     */
     public function uploadMultiple(string $uploadName = "files"): array
     {
         $results = [];
@@ -52,6 +63,11 @@ class UploadHandler
         return $results;
     }
 
+    /**
+     * @param array<string, mixed> $file
+     * @throws \RuntimeException
+     * @return array<string, mixed>
+     */
     public function handleUpload(array $file): array
     {
         if ($file["error"] !== UPLOAD_ERR_OK) {
@@ -120,6 +136,10 @@ class UploadHandler
         return $id;
     }
 
+    /**
+     * @param array<string, mixed> $filesArray
+     * @return list<array<string, mixed>>
+     */
     private function normalizeFilesArray(array $filesArray): array
     {
         $normalized = [];
@@ -135,6 +155,9 @@ class UploadHandler
         return $normalized;
     }
 
+    /**
+     * @return array{deleted_count: int, deleted_files: string[]}
+     */
     public static function deleteUnusedFiles(): array
     {
         $deletedFiles = [];
@@ -158,7 +181,14 @@ class UploadHandler
         ];
     }
 
-    private static function deleteUnusedFilesInDirectory(string $directory, array $usedFiles, &$deletedFiles): void
+    /**
+     * @param string $directory
+     * @param array<int, string> $usedFiles
+     * @param array<int, string> $deletedFiles
+     * @throws \InvalidArgumentException
+     * @return void
+     */
+    private static function deleteUnusedFilesInDirectory(string $directory, array $usedFiles, array &$deletedFiles): void
     {
         $realBase = realpath($directory);
         if (!$realBase || !is_dir($realBase)) {

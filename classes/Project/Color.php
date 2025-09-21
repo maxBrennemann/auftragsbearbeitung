@@ -51,6 +51,9 @@ class Color
         return false;
     }
 
+    /**
+     * @return array<int, array<string, string>>
+     */
     public static function get(): array
     {
         return DBAccess::selectAll("color");

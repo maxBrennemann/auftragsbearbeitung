@@ -27,7 +27,7 @@ class Kunde implements StatisticsInterface
     private string $fax = "";
     private string $note = "";
 
-    private $addresses = [];
+    private array $addresses = [];
 
     public function __construct(int $kundennummer)
     {
@@ -213,7 +213,7 @@ class Kunde implements StatisticsInterface
         return $data;
     }
 
-    public function getOrderCards()
+    public function getOrderCards(): string
     {
         $data = $this->getOrderIds();
         $orders = [];
@@ -251,10 +251,10 @@ class Kunde implements StatisticsInterface
 
     public function recalculate(): void {}
 
-    private function loadAddresses()
+    private function loadAddresses(): void
     {
         if ($this->addresses != null) {
-            return null;
+            return;
         }
 
         $addresses = Address::loadAllAddresses($this->kundennummer);
@@ -269,7 +269,7 @@ class Kunde implements StatisticsInterface
         return Address::createNewAddress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz, $land, $art);
     }
 
-    public static function addAddressAjax()
+    public static function addAddressAjax(): void
     {
         $kdnr = (int) $_POST["customer"];
         $plz = (int) $_POST["plz"];
@@ -282,7 +282,7 @@ class Kunde implements StatisticsInterface
         echo json_encode(Address::loadAllAddresses($kdnr));
     }
 
-    public function getHTMLShortSummary()
+    public function getHTMLShortSummary(): string
     {
         $link = Link::getPageLink("kunde") . "?id=" . $this->kundennummer;
         $text = "<div class=\"shortSummary\"><div class=\"shortSummaryHeader\">";
@@ -316,7 +316,7 @@ class Kunde implements StatisticsInterface
         return $text;
     }
 
-    public static function getContacts()
+    public static function getContacts(): void
     {
         $kdnr = (int) Tools::get("id");
         $data = DBAccess::selectQuery("SELECT Nummer AS id, Vorname AS firstName, Nachname AS lastName, Email AS email 
@@ -328,7 +328,7 @@ class Kunde implements StatisticsInterface
         JSONResponseHandler::sendResponse($data);
     }
 
-    public static function addCustomer()
+    public static function addCustomer(): void
     {
         /* insert customer data */
         $query = "INSERT INTO kunde (Firmenname, Anrede, Vorname, Nachname, Email, TelefonFestnetz, TelefonMobil, Website, note) VALUES (:firmenname, :anrede, :vorname, :nachname, :email, :telfestnetz, :telmobil, :website, :note)";
@@ -386,7 +386,7 @@ class Kunde implements StatisticsInterface
         ]);
     }
 
-    public static function updateCustomer()
+    public static function updateCustomer(): void
     {
         $query = "UPDATE kunde SET
 				Vorname = :prename,
@@ -414,7 +414,10 @@ class Kunde implements StatisticsInterface
         JSONResponseHandler::returnOK();
     }
 
-    public static function getAllCustomerOverviews()
+    /**
+     * @return Kunde[]
+     */
+    public static function getAllCustomerOverviews(): array
     {
         $query = "SELECT Kundennummer FROM kunde ORDER BY CONCAT(Firmenname, Nachname);";
         $data = DBAccess::selectQuery($query);
@@ -428,7 +431,7 @@ class Kunde implements StatisticsInterface
         return $customers;
     }
 
-    public static function getColors()
+    public static function getColors(): void
     {
         $query = "SELECT Auftragsnummer as id_order, color_name, hex_value, short_name, producer
 			FROM color, color_auftrag, auftrag 
@@ -443,12 +446,12 @@ class Kunde implements StatisticsInterface
         JSONResponseHandler::sendResponse($data);
     }
 
-    public static function delete()
+    public static function delete(): never
     {
         JSONResponseHandler::throwError(501, "not implemented");
     }
 
-    public static function setNote()
+    public static function setNote(): void
     {
         $id = Tools::get("id");
         $note = Tools::get("note");
@@ -459,7 +462,7 @@ class Kunde implements StatisticsInterface
         JSONResponseHandler::returnOK();
     }
 
-    public static function addVehicle()
+    public static function addVehicle(): void
     {
         $id = Tools::get("id");
         $licensePlate = Tools::get("licensePlate");
@@ -484,7 +487,7 @@ class Kunde implements StatisticsInterface
         ]);
     }
 
-    public static function searchCustomers()
+    public static function searchCustomers(): void
     {
         $query = Tools::get("query");
         $results = SearchController::search("type:kunde $query", 10);

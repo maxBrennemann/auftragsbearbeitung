@@ -81,9 +81,9 @@ class TimeTrackingController
     public static function editEntry(int $id): void
     {
         $timeTracking = new TimeTracking(0);
-        if (!User::isAdmin() && !$timeTracking->isOwner($id)) {
+        /*if (!User::isAdmin() && !$timeTracking->isOwner($id)) {
             return;
-        }
+        }*/
     }
 
     public static function deleteEntry(): void
@@ -106,7 +106,7 @@ class TimeTrackingController
         $affectedRows = DBAccess::getAffectedRows();
 
         if ($affectedRows === 0) {
-            return JSONResponseHandler::returnNotFound();
+            JSONResponseHandler::returnNotFound();
         }
 
         JSONResponseHandler::returnOK();

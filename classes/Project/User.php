@@ -15,7 +15,7 @@ class User
     private string $lastname;
 
     private int $maxWorkingHours;
-    private $role;
+    private int $role;
 
     public function __construct(int $userId)
     {
@@ -33,8 +33,8 @@ class User
         $this->email = $user[0]['email'];
         $this->prename = $user[0]['prename'];
         $this->lastname = $user[0]['lastname'];
-        $this->maxWorkingHours = $user[0]['max_working_hours'];
-        $this->role = $user[0]['role'];
+        $this->maxWorkingHours = (int) $user[0]['max_working_hours'];
+        $this->role = (int) $user[0]['role'];
     }
 
     public function getId(): int
@@ -67,7 +67,7 @@ class User
         return $this->maxWorkingHours;
     }
 
-    public function getRole()
+    public function getRole(): int
     {
         return $this->role;
     }
@@ -114,7 +114,7 @@ class User
 
     /**
      * returns a list of devices the user has logged in with
-     * @param array<int, mixed>
+     * @return array<int, mixed>
      */
     public function getUserDeviceList(): array
     {
@@ -302,7 +302,7 @@ class User
      * if an error occurs, it returns -1,
      * if the user was added successfully, it returns the id of the user
      */
-    public static function add(string $username, string $email, string $prename, string $lastname, string $password)
+    public static function add(string $username, string $email, string $prename, string $lastname, string $password): int
     {
         if (!self::checkUsernameAvailable($username) || !self::checkEmailAvailable($email)) {
             return -1;
@@ -325,7 +325,7 @@ class User
             'email' => $email,
             'password' => $password_hash
         );
-        $result = DBAccess::insertQuery($insert, $params);
+        $result = (int) DBAccess::insertQuery($insert, $params);
         self::sendEmailVerification($result, $email);
 
         return $result;

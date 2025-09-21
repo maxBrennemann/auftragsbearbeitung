@@ -31,6 +31,10 @@ class Step
 
     public function erledigen(): void {}
 
+    /**
+     * @param array<string, mixed> $data
+     * @return int
+     */
     public static function insertStep(array $data): int
     {
         if ($data['Datum'] == null) {
@@ -70,9 +74,13 @@ class Step
         JSONResponseHandler::sendResponse([]);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @return void
+     */
     public static function updateStep(array $data): void
     {
-        OrderHistory::add($data["orderId"], $data['postennummer'], OrderHistory::TYPE_STEP, OrderHistory::STATE_FINISHED);
+        OrderHistory::add($data["orderId"], $data["postennummer"], OrderHistory::TYPE_STEP, OrderHistory::STATE_FINISHED);
     }
 
     public static function deleteStep(): void {}
@@ -104,6 +112,10 @@ class Step
         ]);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @return void
+     */
     public static function prepareData(array $data): void
     {
         foreach ($data["results"] as $key => $value) {

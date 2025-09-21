@@ -360,7 +360,7 @@ class Table
         }
     }
 
-    public static function getIdentifierValue($table, $key)
+    public static function getIdentifierValue(string $table, string $key)
     {
         $actionObject = unserialize($_SESSION[$table]);
 
@@ -376,7 +376,7 @@ class Table
         }
     }
 
-    public static function getValueByIdentifierColumn($table, $key, $column)
+    public static function getValueByIdentifierColumn(string $table, string $key, string $column)
     {
         $actionObject = unserialize($_SESSION[$table]);
 
@@ -396,7 +396,7 @@ class Table
      * erstellt die Tabelle
      * wenn $this->data null ist, wird eine Nachricht zurückgegeben
      */
-    public function getTable($zeroTable = false): string
+    public function getTable(bool $zeroTable = false): string
     {
         if ($this->data == null && !$zeroTable) {
             return "<p>Keine Einträge vorhanden</p>";
@@ -437,7 +437,7 @@ class Table
         return $html;
     }
 
-    public function getLink($id)
+    public function getLink(int $id)
     {
         if (is_string($this->link)) {
             return $this->link;
@@ -449,26 +449,20 @@ class Table
     /*
      * function to generate a html button to add a new line to the table
      */
-    public function addNewLineButton($add = true): void
+    public function addNewLineButton(bool $add = true): void
     {
         $this->addNewLineButtonTrue = $add;
     }
 
-    /* static functions */
-    public static function createTable($dbName, $rowCount): void {}
-
-    /*
-     * erstellt eine Zeile
-     *
-     * @param Array		$row		Zeilendaten
-     * @param Array		$rowNames	Zeilennamen, es werden nur die Zeilendaten ausgewertet, für die ein Name existiert
-     * @param string	$link		Link, kann auch null sein, dann wird kein Link gesetzt
-     * @param Array		$dataset	Array mit Infos für HTML Dataset
-     * @param Boolean	$lastColumnIsActionButton	means, that there should be no link
-     *
-     * @return	Gibt eine Tabellenzeile in HTML zurück
+    /**
+     * @param array $row
+     * @param array $rowNames
+     * @param string $link
+     * @param array $dataset
+     * @param bool $lastColumnIsActionButton
+     * @return string
      */
-    private static function html_createRow2($row, $rowNames, $link, $dataset, $lastColumnIsActionButton = null): string
+    private static function html_createRow2(array $row, array $rowNames, string $link, array $dataset, bool $lastColumnIsActionButton = false): string
     {
         $html = "<tr>";
 
@@ -505,14 +499,20 @@ class Table
         return $html;
     }
 
-    /* returns the column names of a specific sql table */
-    private static function getColumnNames($type)
+    /**
+     * @param mixed $type
+     * @return array<int, array<string, string>>|null
+     */
+    private static function getColumnNames($type): array|null
     {
         return DBAccess::selectColumnNames($type);
     }
 
-    /* html generator functions */
-    private static function html_createTableHeader($column_names): string
+    /**
+     * @param array<int, mixed> $column_names
+     * @return string
+     */
+    private static function html_createTableHeader(array $column_names): string
     {
         $table_header = "<tr>";
 

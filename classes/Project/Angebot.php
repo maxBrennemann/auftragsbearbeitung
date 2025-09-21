@@ -15,8 +15,11 @@ class Angebot
     private int $offerId = 0;
 
     //private $leistungen = null;
+
+    /** @var array<string, string> */
     private array $fahrzeuge;
 
+    /** @var Zeit|Leistung|ProduktPosten[] */
     private array $posten = [];
 
     public function __construct(int $offerId, int $customerId)
@@ -77,12 +80,10 @@ class Angebot
     private function loadPosten(): void
     {
         $num = $this->getPc();
-        if (is_numeric($num)) {
-            for ($i = 1; $i <= $num; $i++) {
-                if (isset($_SESSION['offer_' . $this->customerId . '_' . $i])) {
-                    $posten = unserialize($_SESSION['offer_' . $this->customerId . '_' . $i]);
-                    array_push($this->posten, $posten);
-                }
+        for ($i = 1; $i <= $num; $i++) {
+            if (isset($_SESSION['offer_' . $this->customerId . '_' . $i])) {
+                $posten = unserialize($_SESSION['offer_' . $this->customerId . '_' . $i]);
+                array_push($this->posten, $posten);
             }
         }
     }
@@ -107,7 +108,11 @@ class Angebot
         return $sum;
     } */
 
-    public function addPosten($posten): void
+    /**
+     * @param array<string, string> $posten
+     * @return void
+     */
+    public function addPosten(array $posten): void
     {
         $postenId = $this->incPc();
         $_SESSION['offer_' . $this->customerId . '_' . $postenId] = serialize($posten);

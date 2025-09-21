@@ -4,14 +4,15 @@ namespace Classes;
 
 class Link
 {
-    public $baseLink;
-    public $key;
-    public $data;
-    public $datakey;
+    public string $baseLink;
+    public string $key;
+    /** @var array<mixed, mixed> */
+    public array $data;
+    public string $datakey;
 
     public function __construct() {}
 
-    public static function getPageLink($resourceName): string
+    public static function getPageLink(string $resourceName): string
     {
         $link = $_ENV["WEB_URL"] . $_ENV["SUB_URL"] . $resourceName;
         return $link;
@@ -118,18 +119,23 @@ class Link
         return self::getResourcesShortLink($file, "js");
     }
 
-    /* new link functionalities */
-    public function addBaseLink($target): void
+    public function addBaseLink(string $target): void
     {
         $this->baseLink = self::getPageLink($target);
     }
 
-    public function addParameter($key, $value): string
+    public function addParameter(string $key, string $value): string
     {
         return $this->baseLink . "?$key=$value";
     }
 
-    public function setIterator($key, $data, $datakey): void
+    /**
+     * @param string $key
+     * @param array<mixed, mixed> $data
+     * @param string $datakey
+     * @return void
+     */
+    public function setIterator(string $key, array $data, string $datakey): void
     {
         $this->key = $key;
         $this->data = $data;

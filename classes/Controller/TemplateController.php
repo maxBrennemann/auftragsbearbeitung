@@ -26,12 +26,23 @@ class TemplateController
         ]);
     }
 
+    /**
+     * @param string $template
+     * @param array<string, mixed> $params
+     * @return string
+     */
     public static function getTemplate(string $template, array $params = []): string
     {
         $content = self::buildTemplate($template, $params);
         return $content;
     }
 
+    /**
+     * @param string $template
+     * @param array<string, mixed> $params
+     * @throws \Exception
+     * @return string
+     */
     private static function buildTemplate(string $template, array $params): string
     {
         if (!file_exists("files/views/{$template}View.php")) {

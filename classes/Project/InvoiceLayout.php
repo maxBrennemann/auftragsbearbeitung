@@ -11,6 +11,7 @@ use MaxBrennemann\PhpUtilities\Tools;
 class InvoiceLayout
 {
     private Invoice $invoice;
+    /** @var array<int, array<string, string>> */
     private array $layout;
 
     public function __construct(Invoice $invoice)

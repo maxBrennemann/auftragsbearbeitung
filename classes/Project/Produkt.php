@@ -14,7 +14,7 @@ class Produkt
     private string $bezeichnung;
     private string $beschreibung;
 
-    public function __construct($produktnummer)
+    public function __construct(int $produktnummer)
     {
         $data = DBAccess::selectAllByCondition("produkt", "Nummer", $produktnummer);
         if (!empty($data)) {
@@ -31,12 +31,12 @@ class Produkt
         return 0;
     }
 
-    public function getBezeichnung()
+    public function getBezeichnung(): string
     {
         return $this->bezeichnung;
     }
 
-    public function getBeschreibung()
+    public function getBeschreibung(): string
     {
         return $this->beschreibung;
     }
@@ -51,7 +51,7 @@ class Produkt
         return number_format((float) $this->price / 100, 2, ",", ".");
     }
 
-    public function getProductId()
+    public function getProductId(): int
     {
         return $this->produktnummer;
     }
@@ -61,6 +61,9 @@ class Produkt
         return Link::getPageLink("produkt") . "?id=" . $this->produktnummer;
     }
 
+    /**
+     * @return array<int, Image>
+     */
     public function getImages(): array
     {
         $query = "SELECT DISTINCT id FROM dateien LEFT JOIN dateien_produkte ON dateien_produkte.id_datei = dateien.id WHERE dateien_produkte.id_produkt = $this->produktnummer";
@@ -80,15 +83,20 @@ class Produkt
         return $images;
     }
 
-    public function fillToArray($arr): string
+    /**
+     * @param array<string, string> $arr
+     * @return string
+     */
+    public function fillToArray(array $arr): string
     {
         return "";
     }
 
     /**
      * comment to this solution: https://stackoverflow.com/a/38467483, modified
+     * @return array<int, array<string, string>>
      */
-    public function getAttributeTable()
+    public function getAttributeTable(): array
     {
         $query = "SELECT product_combination.id, GROUP_CONCAT(attribute.value SEPARATOR ', ') AS `Werte` FROM attribute, product_combination JOIN product_attribute_combination ON product_attribute_combination.id_produkt_attribute = product_combination.id WHERE attribute.id = product_attribute_combination.attribute_id GROUP BY product_combination.id;";
         $data = DBAccess::selectQuery($query);
@@ -175,7 +183,7 @@ class Produkt
         return $filteredArray;
     }
 
-    private static function calculateSimilarity(&$mostSimilarProducts, $searchQuery, $text, $nummer)
+    private static function calculateSimilarity(&$mostSimilarProducts, $searchQuery, $text, $nummer): void
     {
         similar_text($searchQuery, $text, $percentage);
         array_push($mostSimilarProducts, array($nummer, $percentage));
@@ -199,12 +207,15 @@ class Produkt
         JSONResponseHandler::throwError(400, "Name und Beschreibung müssen ausgefüllt sein");
     }
 
+    /**
+     * @return array<int, array<string, string>>
+     */
     public static function getSources(): array
     {
         return DBAccess::selectQuery("SELECT name, id FROM einkauf");
     }
 
-    public static function getHTMLShortSummary($productnumber): void
+    public static function getHTMLShortSummary(int $productnumber): void
     {
         $product = new Produkt($productnumber);
         $html = "<div><h3>{$product->bezeichnung}</h3><span>Anzahl <input value=\"1\" id=\"{$productnumber}_getAmount\"></span><button onclick=\"chooseProduct($productnumber)\">Auswählen</button></div>";
@@ -213,9 +224,9 @@ class Produkt
 
     /**
      * Returns a list of Product objects
-     * @return  Produkt[]
+     * @return Produkt[]
      */
-    public static function getAllProducts($categoryId = null): array
+    public static function getAllProducts(?int $categoryId = null): array
     {
         $products = [];
 

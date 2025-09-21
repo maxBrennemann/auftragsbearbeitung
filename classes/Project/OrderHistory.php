@@ -37,6 +37,10 @@ class OrderHistory
         DBAccess::insertQuery($query, $params);
     }
 
+    /**
+     * @param int $orderId
+     * @return array<int, array<string, string>>
+     */
     public static function getHistory(int $orderId): array
     {
         $query = "SELECT history.id, history.insertstamp, history_type.name , CONCAT(COALESCE(history.alternative_text, ''), COALESCE(ids.descr, '')) AS Beschreibung, history.state, user.username, user.prename
