@@ -12,12 +12,17 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class Auftrag implements StatisticsInterface, NotifiableEntity
 {
-    private $Auftragsnummer = null;
-    private $Auftragsbezeichnung = null;
-    private $Auftragsbeschreibung = null;
+    private int $Auftragsnummer;
+    private string $Auftragsbezeichnung;
+    private string $Auftragsbeschreibung;
+
+    /** @var array<Leistung|ProduktPosten|Zeit> */
     private $Auftragsposten = [];
+
+    /** @var Step[] */
     private $Bearbeitungsschritte = [];
-    private $auftragstyp = null;
+
+    private int $auftragstyp = 0;
     private int $rechnungsnummer = 0;
 
     /* dates */
@@ -55,8 +60,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 
             $data = DBAccess::selectQuery("SELECT * FROM schritte WHERE Auftragsnummer = {$orderId}");
             foreach ($data as $step) {
-                $element = new Step(/*$step['Auftragsnummer'], $step['Schrittnummer'], $step['Bezeichnung'], $step['Datum'], $step['Priority'], $step['istErledigt']*/);
-                array_push($this->Bearbeitungsschritte, $element);
+                $this->Bearbeitungsschritte[] = new Step(/*$step['Auftragsnummer'], $step['Schrittnummer'], $step['Bezeichnung'], $step['Datum'], $step['Priority'], $step['istErledigt']*/);
             }
 
             $this->Auftragsposten = Posten::getOrderItems($orderId);
@@ -68,6 +72,9 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         }
     }
 
+    /**
+     * @return array<int, array<string, string>>
+     */
     public function getContactPersons(): array
     {
         $query = "SELECT ap.Nummer AS id, ap.Vorname AS firstName, ap.Nachname AS lastName, ap.Email AS email, 
@@ -86,7 +93,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         return $data;
     }
 
-    public function getAuftragsbeschreibung()
+    public function getAuftragsbeschreibung(): string
     {
         return $this->Auftragsbeschreibung;
     }
@@ -135,6 +142,9 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         return $data[0]["payment_type"];
     }
 
+    /**
+     * @return array<Leistung|ProduktPosten|Zeit>
+     */
     public function getAuftragspostenData(): array
     {
         return $this->Auftragsposten;
@@ -145,7 +155,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         return $this->auftragstyp;
     }
 
-    public function getAuftragstypBezeichnung()
+    public function getAuftragstypBezeichnung(): string
     {
         $query = "SELECT `Auftragstyp` FROM `auftragstyp` WHERE `id` = :idAuftragstyp LIMIT 1;";
         $bez = DBAccess::selectQuery($query, ["idAuftragstyp" => $this->auftragstyp]);
@@ -157,22 +167,25 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         }
     }
 
+    /**
+     * @return string[][]
+     */
     public static function getAllOrderTypes(): array
     {
         return Auftragstyp::all();
     }
 
-    public function getAuftragsbezeichnung()
+    public function getAuftragsbezeichnung(): string
     {
         return $this->Auftragsbezeichnung;
     }
 
-    public function getDate()
+    public function getDate(): string
     {
         return $this->datum;
     }
 
-    public function getDeadline()
+    public function getDeadline(): string
     {
         if ($this->termin == "0000-00-00" || $this->termin == null) {
             return "";
@@ -563,7 +576,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         JSONResponseHandler::sendResponse($data);
     }
 
-    public static function getFiles($auftragsnummer): string
+    public static function getFiles(int $auftragsnummer): string
     {
         $files = DBAccess::selectQuery("SELECT DISTINCT dateiname AS Datei, originalname, `date` AS Datum, typ as Typ FROM dateien LEFT JOIN dateien_auftraege ON dateien_auftraege.id_datei = dateien.id WHERE dateien_auftraege.id_auftrag = $auftragsnummer");
 
@@ -816,7 +829,11 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         ]);
     }
 
-    public static function resetAnsprechpartner($data): void
+    /**
+     * @param array<string, mixed> $data
+     * @return void
+     */
+    public static function resetAnsprechpartner(array $data): void
     {
         $customerId = Tools::get("customerId");
         $query = "UPDATE auftrag SET Ansprechpartner = 0 WHERE Kundennummer = :customerId AND Ansprechpartner = :contactPerson;";

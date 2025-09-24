@@ -247,10 +247,14 @@ class Produkt
 
     public static function getFiles(int $idProduct): string
     {
-        $files = DBAccess::selectQuery("SELECT DISTINCT dateiname AS Datei, originalname, `date` AS Datum, typ as Typ 
+        $query = "SELECT DISTINCT dateiname AS Datei, originalname, `date` AS Datum, typ as Typ 
 			FROM dateien 
-			LEFT JOIN dateien_produkte ON dateien_produkte.id_datei = dateien.id 
-			WHERE dateien_produkte.id_produkt = $idProduct");
+			LEFT JOIN dateien_produkte 
+                ON dateien_produkte.id_datei = dateien.id 
+			WHERE dateien_produkte.id_produkt = :idProduct";
+        $files = DBAccess::selectQuery($query, [
+            "idProduct" => $idProduct,
+        ]);
 
         for ($i = 0; $i < sizeof($files); $i++) {
             $link = Link::getResourcesShortLink($files[$i]['Datei'], "upload");

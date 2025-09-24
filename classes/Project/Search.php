@@ -19,6 +19,9 @@ class Search
         $this->table = $table;
     }
 
+    /**
+     * @return array
+     */
     public function search(): array
     {
         $sqlResults = $this->runSQLSearch();
@@ -28,6 +31,9 @@ class Search
         return $scored;
     }
 
+    /**
+     * @return array<int, array<string>>
+     */
     private function fetchBroadSet(): array
     {
         $columns = array_filter($this->config["columns"], fn ($value) =>
@@ -105,6 +111,13 @@ class Search
         return [$query, $params];
     }
 
+    /**
+     * @param array<int, array<string>> $sqlResults
+     * @param array<int, array<string>> $broadResults
+     * @param string $query
+     * @param string $table
+     * @return array<int, array{data: mixed, type:string, score:int}>
+     */
     private function mergeAndScore(array $sqlResults, array $broadResults, string $query, string $table): array
     {
         $scored = [];

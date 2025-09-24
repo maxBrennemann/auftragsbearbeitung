@@ -27,6 +27,7 @@ class Kunde implements StatisticsInterface
     private string $fax = "";
     private string $note = "";
 
+    /** @var Address[] */
     private array $addresses = [];
 
     public function __construct(int $kundennummer)
@@ -203,6 +204,9 @@ class Kunde implements StatisticsInterface
         return $this->fax;
     }
 
+    /**
+     * @return array<int, array<string, string>>
+     */
     public function getOrderIds(): array
     {
         $query = "SELECT Auftragsnummer FROM auftrag WHERE Kundennummer = :kdnr ORDER BY Auftragsnummer DESC";
@@ -219,7 +223,7 @@ class Kunde implements StatisticsInterface
         $orders = [];
 
         foreach ($data as $row) {
-            $order = new Auftrag($row["Auftragsnummer"]);
+            $order = new Auftrag((int) $row["Auftragsnummer"]);
             $orders[] = $order->getOrderCardData();
         }
 
@@ -232,6 +236,9 @@ class Kunde implements StatisticsInterface
         return $content;
     }
 
+    /**
+     * @return array<int, array<string, string>>
+     */
     public function getContactPersons(): array
     {
         $query = "SELECT a.Nummer AS id, a.Vorname AS firstName, a.Nachname AS lastName, a.Email AS email
@@ -259,12 +266,12 @@ class Kunde implements StatisticsInterface
 
         $addresses = Address::loadAllAddresses($this->kundennummer);
         foreach ($addresses as $address) {
-            $newAddress = Address::loadAddress($address["id"]);
+            $newAddress = Address::loadAddress((int) $address["id"]);
             $this->addresses[$address["id"]] = $newAddress;
         }
     }
 
-    public static function addAddress(int $id_customer, string $strasse, string $hausnummer, int $postleitzahl, string $ort, string $zusatz, string $land, int $art = 3)
+    public static function addAddress(int $id_customer, string $strasse, string $hausnummer, int $postleitzahl, string $ort, string $zusatz, string $land, int $art = 3): Address
     {
         return Address::createNewAddress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz, $land, $art);
     }

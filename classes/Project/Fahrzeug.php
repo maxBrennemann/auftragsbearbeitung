@@ -8,6 +8,11 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class Fahrzeug
 {
+
+    /**
+     * @param int $fahrzeugId
+     * @return array<int, array<string, string>>
+     */
     public static function getImages(int $fahrzeugId): array
     {
         $query = "SELECT DISTINCT dateiname AS `file`, originalname, 

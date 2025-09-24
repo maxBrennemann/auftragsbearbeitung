@@ -17,6 +17,8 @@ class ChatGPTConnection implements AiInterface
     /* processed data */
     private string $input = "";
     private string $format = "text";
+
+    /** @var array<string, mixed> */
     private array $text = [];
     private string $name = "json_structure";
 
@@ -62,7 +64,7 @@ class ChatGPTConnection implements AiInterface
     }
 
     /**
-     * @return array|array{name: string, type: string|array{type: string}}
+     * @return array<mixed, mixed>
      */
     private function getForamt(): array
     {

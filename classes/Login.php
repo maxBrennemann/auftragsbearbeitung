@@ -24,18 +24,12 @@ class Login
         $device = self::validateUser($user);
         $loginKey = "";
 
-        if (count($device) == 0) {
-            JSONResponseHandler::sendResponse([
-                "status" => "error"
-            ]);
-        } else {
-            $loginKey = self::getLoginKey($device["deviceId"]);
-            JSONResponseHandler::sendResponse([
-                "status" => "success",
-                "deviceKey" => $device["deviceKey"],
-                "loginKey" => $loginKey,
-            ]);
-        }
+        $loginKey = self::getLoginKey($device["deviceId"]);
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+            "deviceKey" => $device["deviceKey"],
+            "loginKey" => $loginKey,
+        ]);
 
         DBAccess::insertQuery("INSERT INTO login_history (`user_id`, `user_login_key_id`, `loginstamp`) VALUES (:id, :uloginkey, :loginstamp)", [
             "id" => $user["id"],

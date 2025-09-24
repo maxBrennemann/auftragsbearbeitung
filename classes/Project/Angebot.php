@@ -16,10 +16,10 @@ class Angebot
 
     //private $leistungen = null;
 
-    /** @var array<string, string> */
+    /** @var array<int, array<string>> */
     private array $fahrzeuge;
 
-    /** @var Zeit|Leistung|ProduktPosten[] */
+    /** @var Zeit[]|Leistung[]|ProduktPosten[] */
     private array $posten = [];
 
     public function __construct(int $offerId, int $customerId)

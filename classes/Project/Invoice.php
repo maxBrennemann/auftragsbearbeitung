@@ -140,6 +140,9 @@ class Invoice
         return $this->invoiceNumber;
     }
 
+    /**
+     * @return array<Leistung|ProduktPosten|Zeit>
+     */
     public function loadPostenFromAuftrag(): array
     {
         $orderId = $this->auftrag->getAuftragsnummer();
@@ -147,6 +150,9 @@ class Invoice
         return $this->posten;
     }
 
+    /**
+     * @return array<int, array<string, string>>
+     */
     public function getAltNames(): array
     {
         $query = "SELECT id, `text` FROM invoice_alt_names WHERE id_invoice = :id ORDER BY id ASC";
@@ -204,6 +210,9 @@ class Invoice
         ]);
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function getTexts(): array
     {
         $query = "SELECT * FROM invoice_text WHERE id_invoice = :invoiceId";
@@ -249,6 +258,9 @@ class Invoice
         return $data;
     }
 
+    /**
+     * @return string[][]
+     */
     public function getAttachedVehicles(): array
     {
         return $this->auftrag->getLinkedVehicles();
@@ -263,6 +275,10 @@ class Invoice
         ]);
     }
 
+    /**
+     * @param int $customerId
+     * @return string[]
+     */
     public static function getContacts(int $customerId): array
     {
         $contacts = DBAccess::selectQuery("SELECT Nummer AS id, Vorname AS firstName, Nachname AS lastName, Email AS email 
@@ -466,7 +482,7 @@ class Invoice
         ]);
     }
 
-    public static function editAltName(int $altNameId, string $text)
+    public static function editAltName(int $altNameId, string $text): void
     {
         $query = "UPDATE invoice_alt_names SET `text` = :text WHERE id = :altNameId;";
         DBAccess::updateQuery($query, [

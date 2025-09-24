@@ -12,6 +12,7 @@ class Category
     private int $parent = 0;
     private int $id;
 
+    /** @var Category[] */
     private array $children = [];
 
     public function __construct(int $id, string $name, int $parent = 0)
@@ -19,13 +20,11 @@ class Category
         $this->name = $name;
         $this->parent = $parent;
         $this->id = $id;
-
-        $this->children = [];
     }
 
-    public function addChild($categoryNode): void
+    public function addChild(Category $categoryNode): void
     {
-        array_push($this->children, $categoryNode);
+        $this->children[] = $categoryNode;
     }
 
     /**
@@ -48,16 +47,18 @@ class Category
         ]);
     }
 
+    /**
+     * @return Category[]
+     */
     public function getOneLayerArray(): array
     {
         $onelayerarray = [];
-
-        array_push($onelayerarray, $this);
+        $onelayerarray[] = $this;
 
         foreach ($this->children as $child) {
             $pushTo = $child->getOneLayerArray();
             foreach ($pushTo as $p) {
-                array_push($onelayerarray, $p);
+                $onelayerarray[] = $p;
             }
         }
 
@@ -65,7 +66,7 @@ class Category
     }
 
     /**
-     * @return array<int, Category>
+     * @return Category[]
      */
     private static function parseCategories(): array
     {

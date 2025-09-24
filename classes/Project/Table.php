@@ -455,10 +455,10 @@ class Table
     }
 
     /**
-     * @param array $row
-     * @param array $rowNames
+     * @param array<mixed> $row
+     * @param array<mixed> $rowNames
      * @param string $link
-     * @param array $dataset
+     * @param array<mixed> $dataset
      * @param bool $lastColumnIsActionButton
      * @return string
      */

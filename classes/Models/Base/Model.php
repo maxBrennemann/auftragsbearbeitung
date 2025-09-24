@@ -11,8 +11,14 @@ class Model
 
     protected string $tableName;
     protected string $primaryKey = "id";
+
+    /** @var array<string, mixed> */
     public array $fillable = [];
+
+    /** @var string[] */
     protected array $hidden = [];
+
+    /** @var string[] */
     protected array $columns = [];
 
     final public function __construct(?string $table = null)
@@ -40,12 +46,19 @@ class Model
         $this->hidden = $config["hidden"] ?? $this->hidden;
     }
 
+    /**
+     * @return array<string, array<string, mixed>>
+     */
     protected static function getTableConfig(): array
     {
         require_once "helpers/table-config.php";
         return getTableConfig();
     }
 
+    /**
+     * @param int|string $id
+     * @return array<string>
+     */
     public static function find(int|string $id): ?array
     {
         $instance = new static();
@@ -54,12 +67,19 @@ class Model
         return $results[0] ?? null;
     }
 
+    /**
+     * @return array<int, array<string>>
+     */
     public static function all(): array
     {
         $instance = new static();
         return DBAccess::selectAll($instance->tableName);
     }
 
+    /**
+     * @param array<string, string> $conditions
+     * @return array<int, array<string>>
+     */
     public function read(array $conditions = []): array
     {
         $this->triggerHook("beforeRead", [
@@ -100,6 +120,15 @@ class Model
         return $data;
     }
 
+    /**
+     * @param string $relatedTable
+     * @param string $localKey
+     * @param string $foreignKey
+     * @param string $joinType
+     * @param array<string, string> $conditions
+     * @param string $joinName
+     * @return array<int, array<string>>
+     */
     public function join(
         string $relatedTable,
         string $localKey,
@@ -168,6 +197,10 @@ class Model
         return $results;
     }
 
+    /**
+     * @param array<string, string> $conditions
+     * @return int|false
+     */
     public function add(array $conditions): int|false
     {
         $this->triggerHook("beforeAdd", [
@@ -204,6 +237,10 @@ class Model
         return $lastInsertId;
     }
 
+    /**
+     * @param array<string, string> $conditions
+     * @return bool
+     */
     public function delete(array $conditions): bool
     {
         $this->triggerHook("beforeDelete", $conditions);
@@ -231,6 +268,11 @@ class Model
         return true;
     }
 
+    /**
+     * @param int $id
+     * @param array<mixed, mixed> $data
+     * @return bool
+     */
     public function update(int $id, array $data): bool
     {
         $this->triggerHook("beforeUpdate", $data);
