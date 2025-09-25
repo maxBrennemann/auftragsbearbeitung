@@ -15,7 +15,7 @@ if ($query !== null) {
     }
     $showOffeneAuftraege = Auftrag::getAuftragsliste($ids);
 } else {
-    $showOffeneAuftraege = Auftrag::getAuftragsliste();
+    $showOffeneAuftraege = Auftrag::getAuftragsliste([]);
 }
 
 ?>

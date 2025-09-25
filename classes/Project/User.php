@@ -174,7 +174,7 @@ class User
 
     public function getHistory(): string
     {
-        $query = "SELECT history.orderid, history.id, history.insertstamp, history_type.name , CONCAT(COALESCE(history.alternative_text, ''), COALESCE(ids.descr, '')) AS Beschreibung, history.state, user.username, user.prename
+        $query = "SELECT history.orderid, history.id, history.insertstamp, history_type.name , CONCAT(COALESCE(history.alternative_text, ''), COALESCE(ids.descr, '')) AS `description`, history.state, user.username, user.prename
             FROM history
             LEFT JOIN (
                 (SELECT CONCAT(fahrzeuge.Kennzeichen, ' ', fahrzeuge.Fahrzeug) AS `descr`, fahrzeuge_auftraege.id_fahrzeug AS id, 3 AS `type` FROM fahrzeuge, fahrzeuge_auftraege WHERE fahrzeuge.Nummer = fahrzeuge_auftraege.id_fahrzeug)
@@ -189,86 +189,53 @@ class User
         $data = DBAccess::selectQuery($query, [
             "userId" => $this->id,
         ]);
-        $column_names = [
-            0 => [
-                "COLUMN_NAME" => "orderid",
-                "ALT" => "Auftragsnummer",
+        $header = [
+            "columns" => [
+                "orderid",
+                "id",
+                "insertstamp",
+                "name",
+                "description",
+                "state",
+                "username",
+                "prename",
             ],
-            1 => [
-                "COLUMN_NAME" => "id",
-                "ALT" => "Verlaufsnummer",
+            "names" => [
+                "Auftragsnummer",
+                "Verlaufsnummer",
+                "Datum",
+                "Art",
+                "Beschreibung",
+                "Stand",
+                "Username",
+                "Vorname",
             ],
-            2 => [
-                "COLUMN_NAME" => "insertstamp",
-                "ALT" => "Datum",
-            ],
-            3 => [
-                "COLUMN_NAME" => "name",
-                "ALT" => "Art",
-            ],
-            4 => [
-                "COLUMN_NAME" => "Beschreibung"
-            ],
-            5 => [
-                "COLUMN_NAME" => "state",
-                "ALT" => "Stand",
-            ],
-            6 => [
-                "COLUMN_NAME" => "username",
-                "ALT" => "Benutzername",
-            ],
-            7 => [
-                "COLUMN_NAME" => "prename",
-                "ALT" => "Vorname",
-            ],
+            "primaryKey" => "id",
         ];
 
-        $t = new Table();
-        $t->createByData($data, $column_names);
-        return $t->getTable();
+        $options = [];
+        $options["styles"]["table"]["className"] = [
+            "table-auto", "overflow-x-scroll", "w-full"
+        ];
+
+        return TableGenerator::create($data, $options, $header);
     }
 
     public static function getUserOverview(): string
     {
-        $column_names = [
-            0 => [
-                "COLUMN_NAME" => "id",
-                "ALT" => "Nummer",
-            ],
-            1 => [
-                "COLUMN_NAME" => "username",
-                "ALT" => "Benutzername",
-            ],
-            2 => [
-                "COLUMN_NAME" => "email",
-                "ALT" => "E-Mail",
-            ],
-            3 => [
-                "COLUMN_NAME" => "prename",
-                "ALT" => "Vorname",
-            ],
-            4 => [
-                "COLUMN_NAME" => "lastname",
-                "ALT" => "Nachname",
-            ],
-            5 => [
-                "COLUMN_NAME" => "max_working_hours",
-                "ALT" => "Max. Arbeitsstunden",
-            ],
-            6 => [
-                "COLUMN_NAME" => "role",
-                "ALT" => "Rolle",
-            ],
-        ];
         $data = DBAccess::selectQuery("SELECT * FROM user ORDER BY id ASC;");
 
-        $t = new Table();
-        $t->createByData($data, $column_names);
-        $link = new Link();
-        $link->addBaseLink("mitarbeiter");
-        $link->setIterator("id", $data, "id");
-        $t->addLink($link);
-        return $t->getTable();
+        require_once "helpers/table-config.php";
+        $header = getTableConfig()["user"];
+        $options = [
+            "link" => "/mitarbeiter?id=",
+            "primaryKey" => "id",
+        ];
+        $options["styles"]["table"]["className"] = [
+            "table-auto", "overflow-x-scroll", "w-full"
+        ];
+
+        return TableGenerator::create($data, $options, $header);
     }
 
     public static function checkEmailAvailable(string $email): bool

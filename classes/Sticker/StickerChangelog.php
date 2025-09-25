@@ -2,7 +2,6 @@
 
 namespace Classes\Sticker;
 
-use Classes\Project\Table;
 use MaxBrennemann\PhpUtilities\DBAccess;
 
 class StickerChangelog
@@ -31,6 +30,7 @@ class StickerChangelog
         return $this->changelogData;
     }
 
+    // TODO: reimplement changelog
     public function getTable(): string
     {
         $column_names = array(
@@ -41,9 +41,11 @@ class StickerChangelog
             4 => array("COLUMN_NAME" => "newValue", "ALT" => "Neuer Wert"),
         );
 
-        $t = new Table();
-        $t->createByData($this->changelogData, $column_names);
-        return $t->getTable();
+        //$t = new Table();
+        //$t->createByData($this->changelogData, $column_names);
+        //return $t->getTable();
+
+        return "";
     }
 
     /**

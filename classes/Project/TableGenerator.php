@@ -39,6 +39,7 @@ class TableGenerator
             "actionElement" => "",
             "tfoot" => "",
             "link" => $options["link"] ?? null,
+            "primaryKey" => $options["primaryKey"] ?? null,
         ]);
     }
 
@@ -89,10 +90,18 @@ class TableGenerator
                     continue;
                 }
 
-                $class = "";
+                $class = $options["styles"]["key"][$columnName] ?? [];
+                $class[] = "cursor-pointer";
+
+                $primary = $options["primaryKey"] ?? null;
+                if ($primary) {
+                    $primary = $row[$options["primaryKey"]] ?? null;
+                }
+
                 $parsedRow[] = [
                     "content" => $row[$columnName],
-                    "class" => $class,
+                    "class" => implode(" ", $class),
+                    "primary" => $primary,
                 ];
             }
             $elements[] = $parsedRow;

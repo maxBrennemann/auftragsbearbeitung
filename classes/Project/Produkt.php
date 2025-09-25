@@ -259,23 +259,26 @@ class Produkt
         for ($i = 0; $i < sizeof($files); $i++) {
             $link = Link::getResourcesShortLink($files[$i]['Datei'], "upload");
 
-            $html = "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\"><img class=\"img_prev_i\" src=\"$link\" width=\"40px\"><p class=\"img_prev\">{$files[$i]['originalname']}</p></a>";
+            $html = "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\"><img src=\"$link\" width=\"40px\"><p class=\"img_prev\">{$files[$i]['originalname']}</p></a>";
 
             $files[$i]['Datei'] = $html;
         }
 
-        $column_names = array(
-            0 => array("COLUMN_NAME" => "Datei"),
-            1 => array("COLUMN_NAME" => "Typ"),
-            2 => array("COLUMN_NAME" => "Datum")
-        );
+        $header = [
+            "columns" => [
+                "Datei",
+                "Typ",
+                "Datum",
+            ],
+            "names" => [
+                "Datei",
+                "Typ",
+                "Datum",
+            ],
+        ];
 
-        $t = new Table();
-        $t->createByData($files, $column_names);
-        $t->setType("dateien");
-        $t->addActionButton("delete", $identifier = "id");
-
-        return $t->getTable();
+        $options = [];
+        return TableGenerator::create($files, $options, $header); // TODO: add delete option
     }
 
     public static function update(): void

@@ -13,11 +13,11 @@
 
     <tbody>
         <?php foreach ($tbodyElements as $row): ?>
-            <tr>
-                <?php foreach ($row as $el): ?>
+            <tr <?= $primaryKey != null ? 'data-id="' . $primaryKey . '"' : '' ?>>
+                <?php foreach ($row as $i => $el): ?>
                     <?php if ($link != null) : ?>
                         <td>
-                            <a href="<?= $link ?>" class="<?= $el["class"] ?>">
+                            <a href="<?= $link . $el["primary"] ?>" class="<?= $el["class"] ?>">
                                 <?= $el["content"] ?>
                             </a>
                         </td>

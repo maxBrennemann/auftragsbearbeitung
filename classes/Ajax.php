@@ -4,10 +4,7 @@ namespace Classes;
 
 use Classes\Controller\SessionController;
 use Classes\Project\Icon;
-use Classes\Project\OrderHistory;
 use Classes\Project\Statistics;
-use Classes\Project\Step;
-use Classes\Project\Table;
 use Classes\Project\User;
 use Classes\Routes\CustomerRoutes;
 use Classes\Routes\InvoiceRoutes;
@@ -26,7 +23,6 @@ use Classes\Routes\TimeTrackingRoutes;
 use Classes\Routes\UploadRoutes;
 use Classes\Routes\UserRoutes;
 use Classes\Routes\VariousRoutes;
-use Classes\Sticker\AufkleberWandtattoo;
 use Classes\Sticker\SearchProducts;
 use Classes\Sticker\Sticker;
 use Classes\Sticker\StickerCategory;
@@ -125,37 +121,6 @@ class Ajax
     public static function manageRequests(string $reason, string $page): void
     {
         switch ($reason) {
-            case "delete":
-                /* using new table functionality */
-                $type = $_POST['type'];
-                Table::updateValue($type . "_table", "delete", $_POST['key']);
-
-                /* when a step is deleted, its connection to the notification manager must be deleted and it must be shown in the order histor */
-                if ($type == "schritte") {
-                    $postennummer = Table::getIdentifierValue("schritte_table", $_POST['key']);
-                    $bezeichnung = Table::getValueByIdentifierColumn("schritte_table", $_POST['key'], "Bezeichnung");
-
-                    OrderHistory::add($_POST['auftrag'], $postennummer, OrderHistory::TYPE_STEP, OrderHistory::STATE_DELETED, $bezeichnung);
-
-                    $query = "UPDATE user_notifications SET ischecked = 1 WHERE specific_id = $postennummer";
-                    DBAccess::updateQuery($query);
-                } elseif ($type == "posten") {
-                    $postennummer = Table::getIdentifierValue("posten_table", $_POST['key']);
-                    $beschreibung = Table::getValueByIdentifierColumn("posten_table", $_POST['key'], "Beschreibung");
-
-                    OrderHistory::add($_POST['auftrag'], $postennummer, OrderHistory::TYPE_ITEM, OrderHistory::STATE_DELETED, $beschreibung);
-                }
-                break;
-            case "update":
-                /* using new table functionality */
-                Table::updateValue("schritte_table", "update", $_POST['key']);
-                /* adds an update step to the history by using orderId and identifier */
-                $postennummer = Table::getIdentifierValue("schritte_table", $_POST['key']);
-                Step::updateStep([
-                    "orderId" => $_POST['auftrag'],
-                    "postennummer" => $postennummer
-                ]);
-                break;
             case "deleteOrder":
                 // TODO: implement db triggers for order deletion
                 $id = (int) $_POST["id"];
@@ -165,18 +130,6 @@ class Ajax
                     "success" => true,
                     "home" => Link::getPageLink(""),
                 ]);
-                break;
-            case "table":
-                /*
-                 * gets table data with action and key
-                 * @return gives a messsage or specific values
-                */
-                $table = $_POST['name'];
-                $action = $_POST['action'];
-                $key = $_POST['key'];
-
-                $response = Table::updateValue($table, $action, $key);
-                echo $response;
                 break;
             case "getInfoText":
                 $infoId = (int) $_POST['info'];
@@ -234,26 +187,6 @@ class Ajax
 
                 DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET price_class = :priceClass WHERE id = :id", ["priceClass" => $priceclass, "id" => $id]);
                 echo "ok";
-                break;
-            case "resetStickerPrice":
-                $tableRowKey = $_POST["row"];
-                $table = $_POST["table"];
-                $id = (int) $_POST["id"];
-
-                $postenNummer = Table::getIdentifierValue($table, $tableRowKey);
-                $size = DBAccess::selectQuery("SELECT width, height FROM module_sticker_sizes WHERE id = :postennummer LIMIT 1", ["postennummer" => $postenNummer]);
-                $width = $size[0]["width"];
-                $height = $size[0]["height"];
-
-                $aufkleberWandtatto = new AufkleberWandtattoo($id);
-                $difficulty = $aufkleberWandtatto->getDifficulty();
-                $price = $aufkleberWandtatto->getPrice($width, $height, $difficulty);
-
-                DBAccess::updateQuery("UPDATE module_sticker_sizes SET price = :price, price_default = 1 WHERE id = :postennummer", [
-                    "price" => $price,
-                    "postennummer" => $postenNummer,
-                ]);
-                echo $price;
                 break;
             case "productVisibility":
                 $id = (int) $_POST["id"];
