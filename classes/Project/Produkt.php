@@ -9,7 +9,7 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class Produkt
 {
-    private $price = null;
+    private float $price;
     private int $produktnummer;
     private string $bezeichnung;
     private string $beschreibung;
@@ -19,7 +19,7 @@ class Produkt
         $data = DBAccess::selectAllByCondition("produkt", "Nummer", $produktnummer);
         if (!empty($data)) {
             $data = $data[0];
-            $this->price = $data['Preis'];
+            $this->price = (float) $data['Preis'];
             $this->produktnummer = (int) $data['Nummer'];
             $this->bezeichnung = (string) $data['Bezeichnung'];
             $this->beschreibung = (string) $data['Beschreibung'];
@@ -41,7 +41,7 @@ class Produkt
         return $this->beschreibung;
     }
 
-    public function getPrice()
+    public function getPrice(): float
     {
         return $this->price;
     }
@@ -146,14 +146,18 @@ class Produkt
         DBAccess::insertMultiple("INSERT INTO product_attribute_combination (id_produkt_attribute, attribute_id) VALUES ", $data);
     }
 
-    public static function searchInProducts($searchQuery)
+    /**
+     * @param string $searchQuery
+     * @return array<array<int, float>>
+     */
+    public static function searchInProducts(string $searchQuery): array
     {
         $products = DBAccess::selectQuery("SELECT Nummer, Bezeichnung, Beschreibung FROM produkt");
-        $mostSimilarProducts = array();
+        $mostSimilarProducts = [];
 
         foreach ($products as $product) {
-            self::calculateSimilarity($mostSimilarProducts, $searchQuery, $product['Bezeichnung'], $product['Nummer']);
-            self::calculateSimilarity($mostSimilarProducts, $searchQuery, $product['Beschreibung'], $product['Nummer']);
+            self::calculateSimilarity($mostSimilarProducts, $searchQuery, $product['Bezeichnung'], (int) $product['Nummer']);
+            self::calculateSimilarity($mostSimilarProducts, $searchQuery, $product['Beschreibung'], (int) $product['Nummer']);
         }
 
         self::sortByPercentage($mostSimilarProducts);
@@ -162,14 +166,22 @@ class Produkt
         return array_slice($mostSimilarProducts, 0, 10);
     }
 
-    private static function sortByPercentage(&$mostSimilarProducts): void
+    /**
+     * @param array<array<int, float>> $mostSimilarProducts
+     * @return void
+     */
+    private static function sortByPercentage(array &$mostSimilarProducts): void
     {
         usort($mostSimilarProducts, fn($a, $b) => $b[1] <=> $a[1]);
     }
 
-    private static function filterByPercentage($mostSimilarProducts)
+    /**
+     * @param array<array<int, float>> $mostSimilarProducts
+     * @return array<array<int, float>>
+     */
+    private static function filterByPercentage(array $mostSimilarProducts): array
     {
-        $filteredArray = array();
+        $filteredArray = [];
         foreach ($mostSimilarProducts as $product) {
             if (end($filteredArray)[0] == $product[0]) {
                 if ($product[1] > end($filteredArray)[1]) {
@@ -183,7 +195,14 @@ class Produkt
         return $filteredArray;
     }
 
-    private static function calculateSimilarity(&$mostSimilarProducts, $searchQuery, $text, $nummer): void
+    /**
+     * @param array<array<int, float>> $mostSimilarProducts
+     * @param string $searchQuery
+     * @param string $text
+     * @param int $nummer
+     * @return void
+     */
+    private static function calculateSimilarity(array &$mostSimilarProducts, string $searchQuery, string $text, int $nummer): void
     {
         similar_text($searchQuery, $text, $percentage);
         array_push($mostSimilarProducts, array($nummer, $percentage));
@@ -259,23 +278,28 @@ class Produkt
         for ($i = 0; $i < sizeof($files); $i++) {
             $link = Link::getResourcesShortLink($files[$i]['Datei'], "upload");
 
-            $html = "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\"><img class=\"img_prev_i\" src=\"$link\" width=\"40px\"><p class=\"img_prev\">{$files[$i]['originalname']}</p></a>";
+            $html = "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\"><img src=\"$link\" width=\"40px\"><p class=\"img_prev\">{$files[$i]['originalname']}</p></a>";
 
             $files[$i]['Datei'] = $html;
         }
 
-        $column_names = array(
-            0 => array("COLUMN_NAME" => "Datei"),
-            1 => array("COLUMN_NAME" => "Typ"),
-            2 => array("COLUMN_NAME" => "Datum")
-        );
+        $header = [
+            "columns" => [
+                "Datei",
+                "Typ",
+                "Datum",
+            ],
+            "names" => [
+                "Datei",
+                "Typ",
+                "Datum",
+            ],
+        ];
 
-        $t = new Table();
-        $t->createByData($files, $column_names);
-        $t->setType("dateien");
-        $t->addActionButton("delete", $identifier = "id");
-
-        return $t->getTable();
+        $options = [
+            "hideOptions" => ["all"],
+        ];
+        return TableGenerator::create($files, $options, $header); // TODO: add delete option
     }
 
     public static function update(): void

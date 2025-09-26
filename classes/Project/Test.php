@@ -5,6 +5,8 @@ namespace Classes\Project;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
+require_once "helpers/table-config.php";
+
 class Test
 {
     public static function migrateFarbenToColor(): void
@@ -33,5 +35,17 @@ class Test
         JSONResponseHandler::sendResponse([
             "status" => "success",
         ]);
+    }
+
+    public static function table(): void
+    {
+        $data = DBAccess::selectQuery("SELECT * FROM address LIMIT 2;");
+        
+        $header = getTableConfig()["address"];
+        $options = [
+            "hideOptions" => ["all"],
+        ];
+        $table = TableGenerator::create($data, $options, $header);
+        echo $table;
     }
 }

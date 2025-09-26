@@ -5,7 +5,6 @@ namespace Classes\Sticker;
 use Classes\Link;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
-use SimpleXMLElement;
 
 /**
  * stellt allgemeine Stickerfunktionen zur Verfügung, ist die Elternklasse von
@@ -97,7 +96,7 @@ class Sticker extends PrestashopConnection
 
     public function getAdditionalInfo(): string
     {
-        return $this->stickerData["additional_info"];
+        return (string) $this->stickerData["additional_info"];
     }
 
     public function isInShop(): bool

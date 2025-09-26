@@ -137,7 +137,7 @@ class Config
 
     /**
      * @param string $path
-     * @param array{count:int, size:int} $data
+     * @param array{count:int, size:float} $data
      * @return void
      */
     private static function getFilesInfoByPath(string $path, array &$data): void

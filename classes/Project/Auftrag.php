@@ -19,8 +19,8 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
     /** @var array<Leistung|ProduktPosten|Zeit> */
     private $Auftragsposten = [];
 
-    /** @var Step[] */
-    private $Bearbeitungsschritte = [];
+    ///** @var Step[] */
+    //private $Bearbeitungsschritte = [];
 
     private int $auftragstyp = 0;
     private int $rechnungsnummer = 0;
@@ -51,16 +51,16 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
             $this->auftragstyp = (int) $data['Auftragstyp'];
             $this->rechnungsnummer = (int) $data['Rechnungsnummer'];
 
-            $this->datum = $data['Datum'];
-            $this->termin = $data['Termin'];
-            $this->fertigstellung = $data['Fertigstellung'];
+            $this->datum = (string) $data['Datum'];
+            $this->termin = (string) $data['Termin'];
+            $this->fertigstellung = (string) $data['Fertigstellung'];
 
             $this->isPaid = $data['Bezahlt'] == 1 ? true : false;
             $this->status = OrderState::tryFrom($data["status"]) ?? OrderState::Default;
 
             $data = DBAccess::selectQuery("SELECT * FROM schritte WHERE Auftragsnummer = {$orderId}");
             foreach ($data as $step) {
-                $this->Bearbeitungsschritte[] = new Step(/*$step['Auftragsnummer'], $step['Schrittnummer'], $step['Bezeichnung'], $step['Datum'], $step['Priority'], $step['istErledigt']*/);
+                //$this->Bearbeitungsschritte[] = new Step(/*$step['Auftragsnummer'], $step['Schrittnummer'], $step['Bezeichnung'], $step['Datum'], $step['Priority'], $step['istErledigt']*/);
             }
 
             $this->Auftragsposten = Posten::getOrderItems($orderId);
@@ -271,35 +271,45 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 
     public function getInvoicePostenTable(): string
     {
-        $column_names = [
-            0 => array("COLUMN_NAME" => "Menge"),
-            1 => array("COLUMN_NAME" => "MEH"),
-            2 => array("COLUMN_NAME" => "Bezeichnung"),
-            3 => array("COLUMN_NAME" => "E-Preis"),
-            4 => array("COLUMN_NAME" => "G-Preis"),
-        ];
-
         $data = [];
-
-        for ($i = 0; $i < sizeof($this->Auftragsposten); $i++) {
-            if (!$this->Auftragsposten[$i]->isInvoice()) {
+        foreach ($this->Auftragsposten as $p) {
+            if (!$p->isInvoice()) {
                 continue;
             }
 
-            $p = $this->Auftragsposten[$i];
             $data[] = [
-                "Menge" => $p->getQuantity(),
-                "MEH" => $p->getEinheit(),
-                "Bezeichnung" => $p->getDescription(),
-                "E-Preis" => $p->bekommeEinzelPreis_formatted(),
-                "G-Preis" => $p->bekommePreis_formatted()
+                "quantity" => (string) $p->getQuantity(),
+                "unit" => $p->getEinheit(),
+                "name" => $p->getDescription(),
+                "item_price" => $p->bekommeEinzelPreis_formatted(),
+                "total_price" => $p->bekommePreis_formatted(),
             ];
         }
 
-        $t = new Table();
-        $t->createByData($data, $column_names);
+        $header = [
+            "columns" => [
+                "quantity",
+                "unit",
+                "name",
+                "item_price",
+                "total_price"
+            ],
+            "primaryKey" => "",
+            "names" => [
+                "Menge",
+                "MEH",
+                "Bezeichnung",
+                "E-Preis",
+                "G-Preis",
+            ],
+        ];
+        
+        $options = [];
+        $options["styles"]["table"]["className"] = [
+            "table-auto", "overflow-x-scroll", "w-full"
+        ];
 
-        return $t->getTable();
+        return TableGenerator::create($data, $options, $header);
     }
 
     public static function getInvoicePostenTableAjax(): void
@@ -332,10 +342,12 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         $link->addBaseLink("auftrag");
         $link->setIterator("id", $data, "Auftragsnummer");
 
-        $t = new Table();
-        $t->createByData($data, $column_names);
-        $t->addLink($link);
-        return $t->getTable();
+        //$t = new Table();
+        //$t->createByData($data, $column_names);
+        //$t->addLink($link);
+        //return $t->getTable();
+
+        return "";
     }
 
     /**
@@ -344,13 +356,23 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
      */
     public static function getAuftragsliste(array $ids): string
     {
-        $column_names = array(
-            0 => array("COLUMN_NAME" => "Auftragsnummer", "ALT" => "Nr.", "NOWRAP"),
-            1 => array("COLUMN_NAME" => "Datum", "NOWRAP" => true),
-            2 => array("COLUMN_NAME" => "Termin", "NOWRAP" => true),
-            3 => array("COLUMN_NAME" => "Kunde"),
-            4 => array("COLUMN_NAME" => "Auftragsbezeichnung")
-        );
+        $header = [
+            "columns" => [
+                "Auftragsnummer",
+                "Datum",
+                "Termin",
+                "Kunde",
+                "Auftragsbezeichnung",
+            ],
+            "names" => [
+                "Nr.",
+                "Datum",
+                "Termin",
+                "Kunde",
+                "Auftragsbezeichnung",
+            ],
+            "primaryKey" => "Auftragsnummer",
+        ];
 
         $query = "SELECT Auftragsnummer, DATE_FORMAT(Datum, '%d.%m.%Y') as Datum, IF(kunde.Firmenname = '', 
 				CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) as Kunde, 
@@ -360,7 +382,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 				ON auftrag.Kundennummer = kunde.Kundennummer 
 			WHERE ";
 
-        if (count($ids) == 0) {
+        if (count($ids) != 0) {
             $query .= "Auftragsnummer IN (" . implode(",", $ids) . ")";
         } else {
             $query .= "Rechnungsnummer = 0 AND `status` != '" . OrderState::Default->value . "'";
@@ -368,14 +390,17 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 
         $data = DBAccess::selectQuery($query);
 
-        $link = new Link();
-        $link->addBaseLink("auftrag");
-        $link->setIterator("id", $data, "Auftragsnummer");
+        $options = [
+            "link" => "/auftrag?id=",
+            "primaryKey" => "id",
+        ];
+        $options["styles"]["table"]["className"] = [
+            "table-auto", "overflow-x-scroll", "w-full"
+        ];
+        $options["styles"]["key"]["Datum"] = ["nowrap"];
+        $options["styles"]["key"]["Termin"] = ["nowrap"];
 
-        $t = new Table();
-        $t->createByData($data, $column_names);
-        $t->addLink($link);
-        return $t->getTable();
+        return TableGenerator::create($data, $options, $header);
     }
 
     public static function getOpenOrders(): void
@@ -576,41 +601,49 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         JSONResponseHandler::sendResponse($data);
     }
 
-    public static function getFiles(int $auftragsnummer): string
+    public static function getFiles(int $orderId): string
     {
-        $files = DBAccess::selectQuery("SELECT DISTINCT dateiname AS Datei, originalname, `date` AS Datum, typ as Typ FROM dateien LEFT JOIN dateien_auftraege ON dateien_auftraege.id_datei = dateien.id WHERE dateien_auftraege.id_auftrag = $auftragsnummer");
+        $query = "SELECT DISTINCT dateiname AS Datei, originalname, `date` AS Datum, typ as Typ 
+            FROM dateien 
+            LEFT JOIN dateien_auftraege 
+                ON dateien_auftraege.id_datei = dateien.id
+            WHERE dateien_auftraege.id_auftrag = :orderId";
+        $files = DBAccess::selectQuery($query, [
+            "orderId" => $orderId,
+        ]);
 
         for ($i = 0; $i < sizeof($files); $i++) {
             $link = Link::getResourcesShortLink($files[$i]['Datei'], "upload");
 
             $filePath = "upload/" . $files[$i]['Datei'];
-            /*
-             * checks at first if the image exists
-             * then checks if it is an image with exif_imagetype function,
-             * suppresses with @ the notice and then checks if getimagesize
-             * returns a value
-             */
-            if (file_exists($filePath) && (@exif_imagetype($filePath) != false) && getimagesize($filePath) != false) {
-                $html = "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\"><img class=\"img_prev_i\" src=\"$link\" width=\"40px\"><p class=\"img_prev\">{$files[$i]['originalname']}</p></a>";
+
+            if (file_exists($filePath) 
+                && (@exif_imagetype($filePath) != false)
+                && getimagesize($filePath) != false
+            ) {
+                $html = '<a target="_blank" rel="noopener noreferrer" href="' . $link . '"><img src="" width="40px"><p class="img_prev">' . $files[$i]["originalname"] . '</p></a>';
             } else {
-                $html = "<span><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\">{$files[$i]['originalname']}</a></span>";
+                $html = '<span><a target="_blank" rel="noopener noreferrer" href="' . $link . '">' . $files[$i]["originalname"] . '</a></span>';
             }
 
-            $files[$i]['Datei'] = $html;
+            $files[$i]["Datei"] = $html;
         }
 
-        $column_names = array(
-            0 => array("COLUMN_NAME" => "Datei"),
-            1 => array("COLUMN_NAME" => "Typ"),
-            2 => array("COLUMN_NAME" => "Datum")
-        );
+        $header = [
+            "columns" => [
+                "Datei",
+                "Typ",
+                "Datum",
+            ],
+            "names" => [
+                "Datei",
+                "Typ",
+                "Datum",
+            ],
+        ];
 
-        $t = new Table();
-        $t->createByData($files, $column_names);
-        $t->setType("dateien");
-        $t->addActionButton("delete", $identifier = "id");
-
-        return $t->getTable();
+        $options = [];
+        return TableGenerator::create($files, $options, $header); // TODO: add delete option
     }
 
     public static function deleteOrder(): void

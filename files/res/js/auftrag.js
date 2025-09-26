@@ -138,6 +138,7 @@ function showDeleteMessage(row, header, key, type) {
     btn_no.classList.add("btn-primary");
     btn_no.innerHTML = "Nein";
 
+    // TODO: change delete to real api reqeust
     /**
      * inner function to delete the node
      * type => type of data to be deleted
@@ -203,6 +204,7 @@ window.deleteRow = function (key, type = "schritte", node) {
     showDeleteMessage(row, header, key, type);
 }
 
+// TODO: replace getReason=update
 window.updateIsDone = function (key, event) {
     var update = new AjaxCall(`getReason=update&key=${key}&auftrag=${orderConfig.auftragsId}`, "POST", window.location.href);
     update.makeAjaxCall(function (response, args) {

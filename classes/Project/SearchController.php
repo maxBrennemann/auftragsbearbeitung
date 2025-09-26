@@ -7,10 +7,19 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class SearchController
 {
+
+    /** @var array<string, mixed> */
     private array $searches = [];
+
+    /** @var array<int, array{data: mixed, type:string, score:int}> */
     private array $results = [];
     private int $limit = 15;
 
+    /**
+     * @param string $table
+     * @param array{array<mixed, mixed>, string} $parsedQuery
+     * @return void
+     */
     private function add(string $table, array $parsedQuery): void
     {
         $this->searches[$table] = $parsedQuery;
@@ -28,6 +37,9 @@ class SearchController
         }
     }
 
+    /**
+     * @return array<int, array{data: mixed, type:string, score:int}>
+     */
     private function getResults(): array
     {
         $scored = [];
@@ -42,6 +54,11 @@ class SearchController
         return $scored;
     }
 
+    /**
+     * @param string $query
+     * @param int $limit
+     * @return array<int, array{data: mixed, type:string, score:int}>
+     */
     public static function search(string $query, int $limit = 15): array
     {
         $parsedQuery = SearchUtils::parseSearchInput($query);

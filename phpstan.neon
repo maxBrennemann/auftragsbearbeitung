@@ -1,6 +1,6 @@
 # phpstan.neon
 parameters:
-  level: 6
+  level: 7
   paths:
     - classes
     - helpers
@@ -20,3 +20,4 @@ parameters:
 
   bootstrapFiles:
     - .config/stubs/constants.stub.php
+    - .config/stubs/types.stub.php

@@ -8,21 +8,21 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class Leistung extends Posten
 {
-    private $preis = 0;
-    private $einkaufspreis = 0;
-    private $discount = -1;
-    private $bezeichnung = null;
-    private $beschreibung = null;
-    private $leistungsnummer = 0;
-    private $isInvoice = false;
-    protected $postenTyp = "leistung";
-    protected $ohneBerechnung = false;
+    private float $preis;
+    private float $einkaufspreis;
+    private int $discount = -1;
+    private string $bezeichnung;
+    private string $beschreibung;
+    private int $leistungsnummer = 0;
+    private bool $isInvoice = false;
+    protected string $postenTyp = "leistung";
+    protected bool $ohneBerechnung = false;
     protected int $postennummer;
 
-    private $quantity;
-    private $meh;
+    private float $quantity;
+    private string $meh;
 
-    public function __construct($leistungsnummer, $beschreibung, $speziefischerPreis, $einkaufspreis, $quantity, $meh, $discount, $isInvoice, $freeOfCharge, int $position = 0)
+    public function __construct(int $leistungsnummer, string $beschreibung, float $speziefischerPreis, float $einkaufspreis, int $quantity, string $meh, int $discount, bool $isInvoice, bool $freeOfCharge, int $position = 0)
     {
         $this->beschreibung = $beschreibung;
         $this->preis = (float) $speziefischerPreis;
@@ -116,7 +116,7 @@ class Leistung extends Posten
         return (float) $this->preis * $this->quantity;
     }
 
-    public function bekommeEinzelPreis()
+    public function bekommeEinzelPreis(): float
     {
         return $this->preis;
     }
@@ -131,7 +131,7 @@ class Leistung extends Posten
         return number_format($this->bekommeEinzelPreis(), 2, ',', '') . ' €';
     }
 
-    public function bekommeDifferenz()
+    public function bekommeDifferenz(): float
     {
         if ($this->ohneBerechnung == true) {
             return 0;
@@ -139,29 +139,32 @@ class Leistung extends Posten
         return (float) ($this->bekommePreis() - $this->bekommeEKPreis());
     }
 
-    public function getOhneBerechnung()
+    public function getOhneBerechnung(): bool
     {
         return $this->ohneBerechnung;
     }
 
-    public function bekommeEKPreis()
+    public function bekommeEKPreis(): float
     {
         return $this->einkaufspreis * $this->quantity;
     }
 
-    public function calculateDiscount(): void {}
+    public function calculateDiscount(): float
+    {
+        return 0;
+    }
 
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->beschreibung;
     }
 
-    public function getEinheit()
+    public function getEinheit(): string
     {
         return $this->meh;
     }
 
-    public static function bearbeitungsschritteHinzufuegen($leistungsnummer, $auftragsnummer)
+    public static function bearbeitungsschritteHinzufuegen(int $leistungsnummer, int $auftragsnummer): void
     {
         $schritte = DBAccess::selectQuery("SELECT * FROM schritte_vordefiniert WHERE Leistungsnummer = $leistungsnummer");
 
@@ -175,9 +178,14 @@ class Leistung extends Posten
         }
     }
 
-    public function getQuantity()
+    public function getQuantity(): float
     {
         return $this->quantity;
+    }
+
+    public function getQuantityFormatted(): string
+    {
+        return (string) $this->quantity;
     }
 
     public function isInvoice(): bool
@@ -185,7 +193,11 @@ class Leistung extends Posten
         return $this->isInvoice;
     }
 
-    public static function getPostenData($postennummer)
+    /**
+     * @param int $postennummer
+     * @return array<string, string>
+     */
+    public static function getPostenData(int $postennummer): array
     {
         $query = "SELECT Nummer, Beschreibung, `Einkaufspreis`, SpeziefischerPreis, meh, qty, Leistungsnummer, ohneBerechnung, discount, isInvoice FROM leistung_posten, posten WHERE leistung_posten.Postennummer = posten.Postennummer AND posten.Postennummer = $postennummer";
         $result = DBAccess::selectQuery($query)[0];

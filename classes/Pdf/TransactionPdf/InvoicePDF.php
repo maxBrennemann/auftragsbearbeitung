@@ -151,7 +151,7 @@ class InvoicePDF extends TransactionPDF
             if ($type == "item") {
                 $p = array_find($posten, fn($p) => $p->getPostennummer() == $id);
                 $this->Cell(15, $lineheight, (string) $count);
-                $this->Cell(20, $lineheight, $p->getQuantity());
+                $this->Cell(20, $lineheight, $p->getQuantityFormatted());
                 $this->Cell(20, $lineheight, $p->getEinheit());
 
                 $height = $this->getStringHeight(70, $p->getDescription());

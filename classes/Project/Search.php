@@ -7,10 +7,18 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 class Search
 {
     private string $query = "";
+
     //private array $filters = [];
+
+    /** @var array<string, mixed> */
     private array $config = [];
     private string $table = "";
 
+    /**
+     * @param string $query
+     * @param array<string, mixed> $config
+     * @param string $table
+     */
     public function __construct(string $query, array $config, string $table)
     {
         $this->query = $query;
@@ -20,7 +28,7 @@ class Search
     }
 
     /**
-     * @return array
+     * @return array<int, array{data: mixed, type:string, score:int}>
      */
     public function search(): array
     {
@@ -47,6 +55,9 @@ class Search
         return DBAccess::selectQuery($query);
     }
 
+    /**
+     * @return string[][]
+     */
     private function runSQLSearch(): array
     {
         $SQLQuery = $this->buildSearchQuery($this->table, $this->query);
@@ -54,13 +65,24 @@ class Search
         return $data;
     }
 
+    /**
+     * @param string $query
+     * @param array<string, mixed> $params
+     * 
+     * @return array<int, array<string, string>>
+     */
     private function runSearchQuery(string $query, $params): array
     {
         $data = DBAccess::selectQuery($query, $params);
         return $data;
     }
 
-    private function buildSearchQuery($table, string $searchTerm): array
+    /**
+     * @param string $table
+     * @param string $searchTerm
+     * @return array<array<int|string>|string|null>
+     */
+    private function buildSearchQuery(string $table, string $searchTerm): array
     {
         $columns = SearchUtils::CONFIG[$table]["columns"] ?? [];
         $conditions = [];

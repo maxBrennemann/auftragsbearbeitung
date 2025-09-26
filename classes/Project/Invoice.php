@@ -104,7 +104,7 @@ class Invoice
 
     public function getPerformanceDate(): string
     {
-        return $this->getCreationDateUnformatted()->format("Y-m-d");
+        return $this->getPerformanceDateUnformatted()->format("Y-m-d");
     }
 
     public function getPerformanceDateUnformatted(): \DateTime
