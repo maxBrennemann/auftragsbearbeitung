@@ -1,5 +1,8 @@
+// @ts-ignore
 import { ajax } from "js-classes/ajax.js";
+// @ts-ignore
 import { addBindings } from "js-classes/bindings.js";
+// @ts-ignore
 import { notification } from "js-classes/notifications.js";
 
 import { fetchAndRenderTable } from "../classes/table.js";
@@ -10,8 +13,10 @@ import { getStickerId } from "../sticker.js";
 
 import { initSVG } from "./svgManager.js";
 
-const fnNames = {};
-const imageTables = {};
+const fnNames: { [key: string]: (...args: any[]) => void } = {};
+const imageTables: {
+    imageType?: HTMLTableElement,
+} = {};
 
 export const initImageManager = () => {
     addBindings(fnNames);
@@ -45,7 +50,7 @@ const initImageTables = async () => {
     initImagePreviewListener();
 }
 
-const createImageTable = async (imageType, anchorId, config) => {
+const createImageTable = async (imageType: string, anchorId: string, config: { primaryKey: string, }) => {
     const options = {
         "hideOptions": ["check", "addRow", "add"],
         "primaryKey": config.primaryKey,
@@ -65,13 +70,13 @@ const createImageTable = async (imageType, anchorId, config) => {
         }
     };
 
-    const table = await fetchAndRenderTable(anchorId, "module_sticker_image", options);
+    const table = await fetchAndRenderTable(anchorId, "module_sticker_image", options) as HTMLTableElement;
     table.addEventListener("deleteRow", e => {});
     imageTables.imageType = table;
 }
 
-fnNames.click_showImageOptions = e => {
-    const target = e.target.dataset.target;
+fnNames.click_showImageOptions = (e: Event) => {
+    //const target = e.target.dataset.target;
     const div = document.createElement("div");
     div.innerHTML = `
         <p class="font-semibold">Vorsicht: Diese Option überschreibt die aktuellen Bilder des Artikels!</p>
@@ -83,16 +88,17 @@ fnNames.click_showImageOptions = e => {
     createPopup(div);
 }
 
-fnNames.write_updateImageDescription = (e) => {
-    const imageId = e.currentTarget.dataset.fileId;
-    const description = e.currentTarget.value;
+fnNames.write_updateImageDescription = (e: Event) => {
+    const target = e.currentTarget as HTMLInputElement;
+    const imageId = target.dataset.fileId;
+    const description = target.value;
     ajax.post({
         imageId: imageId,
         description: description,
         r: "updateImageDescription",
-    }).then(r => {
+    }).then((r: any) => {
         if (r.status == "success") {
-            notification("", result.status);
+            notification("", r.status);
         }
     });
 }
@@ -102,7 +108,8 @@ fnNames.write_updateImageDescription = (e) => {
  * 
  * @param {*} type Image type that should be updated
  */
-fnNames.write_updateImageOverwrite = (e) => {
-    const type = e.target.dataset.type;
+fnNames.write_updateImageOverwrite = (e: Event) => {
+    const target = e.target as HTMLElement;
+    const type = target.dataset.type;
     //window.mainVariables.overwriteImages[type] = !window.mainVariables.overwriteImages[type];
 }

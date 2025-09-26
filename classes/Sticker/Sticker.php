@@ -81,7 +81,7 @@ class Sticker extends PrestashopConnection
 
     public function getDirectory(): string
     {
-        return $this->stickerData["directory_name"];
+        return $this->stickerData["directory_name"] ?? "";
     }
 
     public function getIsMarked(): bool
