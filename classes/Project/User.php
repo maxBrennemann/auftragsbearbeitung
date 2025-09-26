@@ -213,7 +213,9 @@ class User
             "primaryKey" => "id",
         ];
 
-        $options = [];
+        $options = [
+            "hideOptions" => ["all"],
+        ];
         $options["styles"]["table"]["className"] = [
             "table-auto", "overflow-x-scroll", "w-full"
         ];
@@ -230,6 +232,7 @@ class User
         $options = [
             "link" => "/mitarbeiter?id=",
             "primaryKey" => "id",
+            "hideOptions" => ["all"],
         ];
         $options["styles"]["table"]["className"] = [
             "table-auto", "overflow-x-scroll", "w-full"

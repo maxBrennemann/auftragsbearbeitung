@@ -8,19 +8,26 @@ class TableGenerator
 {
 
     /**
-     * @param array $data
+     * @param array<int, array<string, string>> $data
      * @param array{
-     *      styles?:array<string, string>, 
+     *      styles?:mixed, 
      *      hideOptions?:string[],
-     *      hide?: string[],
-     *      primaryKey: string,
-     *      link: string,
+     *      hide?:string[],
+     *      primaryKey?:string,
+     *      link?:string,
      * } $options
+     * @param array{
+     *      columns:string[],
+     *      names:string[],
+     *      primaryKey?:string,
+     *      hidden?:string[],
+     * } $header
+     * 
      * @return string
      */
     public static function create(array $data, array $options, array $header): string
     {
-        $theadElements = self::createHeader($header, $options);
+        $theadElements = self::createHeader($header);
         $tbodyElements = self::getRows($data, $header, $options);
 
         $tableClassName = $options["styles"]["table"]["className"] ?? [];
@@ -44,11 +51,16 @@ class TableGenerator
     }
 
     /**
-     * @param array $header
-     * @param array $options
-     * @return array
+     * @param array{
+     *      columns:string[],
+     *      names:string[],
+     *      primaryKey?:string,
+     *      hidden?:string[],
+     * } $header
+     * 
+     * @return list<array{key:string, label:string, sortIcon:string}>
      */
-    private static function createHeader(array $header, array $options): array
+    private static function createHeader(array $header): array
     {
         $columns = $header["columns"];
         $names = $header["names"];
@@ -71,10 +83,22 @@ class TableGenerator
     }
 
     /**
-     * @param array $data
-     * @param array $header
-     * @param array $options
-     * @return array
+     * @param array<int, array<string, string>> $data
+     * @param array{
+     *      columns:string[],
+     *      names:string[],
+     *      primaryKey?:string,
+     *      hidden?:string[],
+     * } $header
+     * @param array{
+     *      styles?:mixed, 
+     *      hideOptions?:string[],
+     *      hide?:string[],
+     *      primaryKey?:string,
+     *      link?:string,
+     * } $options
+     * 
+     * @return list<list<array{content:string, class:string, primary:string|null}>>
      */
     private static function getRows(array $data, array $header, array $options): array
     {
@@ -113,6 +137,8 @@ class TableGenerator
     /**
      * @param int $count
      * @return string
+     * 
+     * @phpstan-ignore-next-line
      */
     private static function createPlaceholderRow(int $count): string
     {
@@ -121,9 +147,22 @@ class TableGenerator
 
     /**
      * @param int $count
-     * @param array $header
-     * @param array $options
+     * @param array{
+     *      columns:string[],
+     *      names:string[],
+     *      primaryKey?:string,
+     *      hidden?:string[],
+     * } $header
+     * @param array{
+     *      styles?:mixed, 
+     *      hideOptions?:string[],
+     *      hide?:string[],
+     *      primaryKey?:string,
+     *      link?:string,
+     * } $options
      * @return string
+     * 
+     * @phpstan-ignore-next-line
      */
     private static function createAddRow(int $count, array $header, array $options): string
     {
@@ -131,10 +170,22 @@ class TableGenerator
     }
 
     /**
-     * @param array $data
-     * @param array $options
-     * @param array $header
+     * @param array<int, array<string, string>> $data
+     * @param array{
+     *      styles?:mixed, 
+     *      hideOptions?:string[],
+     *      hide?:string[],
+     *      primaryKey?:string,
+     *      link?:string,
+     * } $options
+     * @param array{
+     *      columns:string[],
+     *      names:string[],
+     *      primaryKey?:string,
+     * } $header
      * @return string
+     * 
+     * @phpstan-ignore-next-line
      */
     private static function createSumRow(array $data, array $options, array $header): string
     {

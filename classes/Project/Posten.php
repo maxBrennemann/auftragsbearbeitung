@@ -8,17 +8,23 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 abstract class Posten
 {
-    abstract protected function bekommePreis();
-    abstract protected function bekommeEinzelPreis();
-    abstract protected function bekommePreis_formatted();
-    abstract protected function bekommeEinzelPreis_formatted();
-    abstract protected function bekommeDifferenz();
-    abstract protected function calculateDiscount();
+    abstract protected function bekommePreis(): float;
+    abstract protected function bekommeEinzelPreis(): float;
+    abstract protected function bekommePreis_formatted(): string;
+    abstract protected function bekommeEinzelPreis_formatted(): string;
+    abstract protected function bekommeDifferenz(): float;
+    abstract protected function calculateDiscount(): float;
+
+    /**
+     * @param array<string, mixed> $arr
+     * @return array<string, string>
+     */
     abstract protected function fillToArray(array $arr): array;
-    abstract protected function getDescription();
-    abstract protected function getEinheit();
-    abstract protected function getQuantity();
-    abstract protected function isInvoice();
+    abstract protected function getDescription(): string;
+    abstract protected function getEinheit(): string;
+    abstract protected function getQuantity(): int|float;
+    abstract protected function getQuantityFormatted(): string;
+    abstract protected function isInvoice(): bool;
     abstract protected function storeToDB(int $auftragsnummer): void;
 
     protected string $postenTyp;
@@ -99,8 +105,8 @@ abstract class Posten
                         $row["z_time"],
                         $row["z_description"],
                         $row["discount"],
-                        (int) $row["is_invoice"],
-                        (int) $row["free_of_charge"],
+                        $row["is_invoice"] == "1",
+                        $row["free_of_charge"] == "1",
                         (int) $row["position"],
                     );
                     break;
@@ -113,8 +119,8 @@ abstract class Posten
                         $row["l_qty"],
                         $row["l_unit"],
                         $row["discount"],
-                        (int) $row["is_invoice"],
-                        (int) $row["free_of_charge"],
+                        $row["is_invoice"] == "1",
+                        $row["free_of_charge"] == "1",
                         (int) $row["position"],
                     );
                     break;
@@ -127,8 +133,8 @@ abstract class Posten
                         $row["p_purchase_price"],
                         $row["p_brand"],
                         $row["discount"],
-                        (int) $row["is_invoice"],
-                        (int) $row["free_of_charge"],
+                        $row["is_invoice"] == "1",
+                        $row["free_of_charge"] == "1",
                         (int) $row["position"],
                     );
                     break;
@@ -141,8 +147,8 @@ abstract class Posten
                         $row["p_purchase_price"],
                         $row["p_brand"],
                         $row["discount"],
-                        (int) $row["is_invoice"],
-                        (int) $row["free_of_charge"],
+                        $row["is_invoice"] == "1",
+                        $row["free_of_charge"] == "1",
                         (int) $row["position"],
                     );
                     break;
@@ -158,8 +164,8 @@ abstract class Posten
 
     /**
      * @param string $type
-     * @param array $data
-     * @return array
+     * @param array<string, mixed> $data
+     * @return int[]
      */
     public static function insertPosten(string $type, array $data): array
     {

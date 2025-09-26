@@ -43,7 +43,7 @@ class Test
         
         $header = getTableConfig()["address"];
         $options = [
-
+            "hideOptions" => ["all"],
         ];
         $table = TableGenerator::create($data, $options, $header);
         echo $table;

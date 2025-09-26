@@ -19,8 +19,8 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
     /** @var array<Leistung|ProduktPosten|Zeit> */
     private $Auftragsposten = [];
 
-    /** @var Step[] */
-    private $Bearbeitungsschritte = [];
+    ///** @var Step[] */
+    //private $Bearbeitungsschritte = [];
 
     private int $auftragstyp = 0;
     private int $rechnungsnummer = 0;
@@ -60,7 +60,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 
             $data = DBAccess::selectQuery("SELECT * FROM schritte WHERE Auftragsnummer = {$orderId}");
             foreach ($data as $step) {
-                $this->Bearbeitungsschritte[] = new Step(/*$step['Auftragsnummer'], $step['Schrittnummer'], $step['Bezeichnung'], $step['Datum'], $step['Priority'], $step['istErledigt']*/);
+                //$this->Bearbeitungsschritte[] = new Step(/*$step['Auftragsnummer'], $step['Schrittnummer'], $step['Bezeichnung'], $step['Datum'], $step['Priority'], $step['istErledigt']*/);
             }
 
             $this->Auftragsposten = Posten::getOrderItems($orderId);
@@ -278,7 +278,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
             }
 
             $data[] = [
-                "quantity" => $p->getQuantity(),
+                "quantity" => (string) $p->getQuantity(),
                 "unit" => $p->getEinheit(),
                 "name" => $p->getDescription(),
                 "item_price" => $p->bekommeEinzelPreis_formatted(),

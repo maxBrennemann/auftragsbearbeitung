@@ -42,11 +42,11 @@ class ProduktPosten extends Posten
      */
     public function fillToArray(array $arr): array
     {
-        $arr['Postennummer'] = $this->postennummer;
+        $arr['Postennummer'] = (string) $this->postennummer;
         $arr['Preis'] = $this->bekommePreisTabelle();
         $arr['Bezeichnung'] = "<button class=\"btn-primary-small\">Produkt</button>" . $this->Bezeichnung;
         $arr['Beschreibung'] = $this->Beschreibung;
-        $arr['Anzahl'] = $this->Anzahl;
+        $arr['Anzahl'] = (string) $this->Anzahl;
         $arr['MEH'] = $this->getEinheit();
         $arr['Einkaufspreis'] = $this->bekommeEinkaufspreis_formatted();
         $arr['Gesamtpreis'] = $this->bekommePreis_formatted();
@@ -151,6 +151,11 @@ class ProduktPosten extends Posten
     public function getQuantity(): int
     {
         return $this->Anzahl;
+    }
+
+    public function getQuantityFormatted(): string
+    {
+        return (string) $this->Anzahl;
     }
 
     public function isInvoice(): bool

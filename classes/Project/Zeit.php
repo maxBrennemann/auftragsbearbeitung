@@ -178,7 +178,12 @@ class Zeit extends Posten
         return $this->Stundenlohn;
     }
 
-    public function getQuantity(): string
+    public function getQuantity(): float
+    {
+        return round($this->ZeitInMinuten / 60, 2);
+    }
+
+    public function getQuantityFormatted(): string
     {
         $zeitInStunden = round($this->ZeitInMinuten / 60, 2);
         return number_format($zeitInStunden, 2, ',', '');
@@ -194,7 +199,10 @@ class Zeit extends Posten
         return $this->isInvoice;
     }
 
-    public function calculateDiscount(): void {}
+    public function calculateDiscount(): float 
+    {
+        return 0;
+    }
 
     public function storeToDB(int $auftragsNr): void
     {
