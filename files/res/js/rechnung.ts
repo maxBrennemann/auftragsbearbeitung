@@ -34,7 +34,7 @@ function init() {
         const active = text.dataset.active;
         if (active == "1") {
             text.classList.add("bg-blue-200");
-            text.classList.remove("bg-white");
+            text.classList.remove("bg-gray-100");
         }
     });
 }
@@ -63,10 +63,18 @@ functionNames.click_addText = () => {
     });
 }
 
+functionNames.click_editText = () => {
+
+}
+
+functionNames.click_deleteText = () => {
+
+}
+
 const toggleText = (e: Event) => {
     const target = e.currentTarget as HTMLElement;
     target.classList.toggle("bg-blue-200");
-    target.classList.toggle("bg-white");
+    target.classList.toggle("bg-gray-100");
 
     ajax.put(`/api/v1/invoice/${config.invoiceId}/text`, {
         "textId": target.dataset.id,

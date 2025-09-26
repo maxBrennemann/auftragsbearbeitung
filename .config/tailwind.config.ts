@@ -7,9 +7,9 @@ const config: Config = {
         path.resolve(__dirname, '../files/pages/*.php'),
         path.resolve(__dirname, '../files/views/*.php'),
         path.resolve(__dirname, '../files/layout/*.php'),
-        path.resolve(__dirname, '../files/res/js/**/*.js'),
+        path.resolve(__dirname, '../files/res/js/**/*.{js,ts}'),
         path.resolve(__dirname, '../classes/**/*.{html,js,php}'),
-        path.resolve(__dirname, '../node_modules/js-classes/**/*.{js,ts,jsx,tsx}'), // TODO: compile tailwind in package
+        path.resolve(__dirname, '../node_modules/js-classes/**/*.{js,ts}'), // TODO: compile tailwind in package
     ],
     theme: {
         fontFamily: {
