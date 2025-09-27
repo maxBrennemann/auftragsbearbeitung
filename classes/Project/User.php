@@ -2,9 +2,10 @@
 
 namespace Classes\Project;
 
-use Classes\Link;
 use Classes\Mailer;
 use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
 
 class User
 {
@@ -299,6 +300,26 @@ class User
         self::sendEmailVerification($result, $email);
 
         return $result;
+    }
+
+    public static function ajaxAdd(): void
+    {
+        $username = Tools::get("username");
+        $email = Tools::get("email");
+        $prename = Tools::get("prename");
+        $lastname = Tools::get("lastname");
+        $password = Tools::get("password");
+
+        if ($username == null || $email == null || $prename == null || $lastname == null || $password == null)
+        {
+            JSONResponseHandler::sendErrorResponse(400, "All fields are required");
+        }
+
+        $userId = self::add($username, $email, $prename, $lastname, $password);
+
+        JSONResponseHandler::sendResponse([
+            "userId" => $userId,
+        ]);
     }
 
     private static function sendEmailVerification(int $userId, string $email): void

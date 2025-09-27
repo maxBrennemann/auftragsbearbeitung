@@ -230,23 +230,22 @@ fnNames.click_bookmark = async function (e) {
     const type = target.dataset.status;
 
     let iconNew = "";
+    let iconName = "";
 
     switch (type) {
         case "unmarked":
-            iconNew = await ajax.post({
-                r: "getIcon",
+            iconName = "iconUnbookmark";
+            iconNew = await ajax.get(`/api/v1/template/icon/${icon}`, {
                 custom: true,
-                icon: "iconUnbookmark",
                 width: 18,
                 height: 18,
                 classes: "inline,bookmarked",
             });
             break;
         case "marked":
-            iconNew = await ajax.post({
-                r: "getIcon",
+            iconName = "iconBookmark";
+            iconNew = await ajax.get(`/api/v1/template/icon/${icon}`, {
                 custom: true,
-                icon: "iconBookmark",
                 width: 18,
                 height: 18,
                 classes: "inline",

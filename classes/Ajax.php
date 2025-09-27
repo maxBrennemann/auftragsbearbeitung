@@ -121,28 +121,6 @@ class Ajax
     public static function manageRequests(string $reason, string $page): void
     {
         switch ($reason) {
-            case "deleteOrder":
-                // TODO: implement db triggers for order deletion
-                $id = (int) $_POST["id"];
-                $query = "DELETE FROM auftrag WHERE Auftragsnummer = :id;";
-                DBAccess::deleteQuery($query, ["id" => $id]);
-                echo json_encode([
-                    "success" => true,
-                    "home" => Link::getPageLink(""),
-                ]);
-                break;
-            case "getInfoText":
-                $infoId = (int) $_POST['info'];
-                $infoText = DBAccess::selectQuery("SELECT info FROM info_texte WHERE id = :infoId;", [
-                    "infoId" => $infoId,
-                ]);
-
-                if ($infoText == null) {
-                    echo "Kein Text vorhanden";
-                    return;
-                }
-                echo $infoText[0]['info'];
-                break;
             case "getManual":
                 $pageName = $_POST['pageName'];
                 $intent = $_POST['intent'];
@@ -206,19 +184,6 @@ class Ajax
                 echo json_encode([
                     "status" => "success",
                     "idTagGroup" => $idTagGroup,
-                ]);
-                break;
-            case "addNewUser":
-                $username = (string) $_POST["username"];
-                $password = (string) $_POST["password"];
-                $email = (string) $_POST["email"];
-                $prename = (string) $_POST["prename"];
-                $lastname = (string) $_POST["lastname"];
-
-                User::add($username, $email, $prename, $lastname, $password);
-
-                echo json_encode([
-                    "status" => "success",
                 ]);
                 break;
             case "showSearch":
@@ -302,46 +267,6 @@ class Ajax
                 echo json_encode([
                     "status" => "success",
                 ]);
-                break;
-            case "getIcon":
-                $type = (string) $_POST["icon"];
-                $icon = "";
-
-                if (isset($_POST["custom"])) {
-                    $width = (int) $_POST["width"];
-                    $height = (int) $_POST["height"];
-
-                    /* classes from frontend come as commma separated string */
-                    $classes = (string) $_POST["classes"];
-                    $classes = explode(",", $classes);
-
-                    if (isset($_POST["title"])) {
-                        $title = (string) $_POST["title"];
-                    } else {
-                        $title = "";
-                    }
-
-                    if (isset($_POST["color"])) {
-                        $color = (string) $_POST["color"];
-                    } else {
-                        $color = "#000000";
-                    }
-
-                    $icon = Icon::getColorized($type, $width, $height, $color, $classes, $title);
-                } else {
-                    $icon = Icon::getDefault($type);
-                }
-
-                if ($icon != "") {
-                    echo json_encode([
-                        "status" => "success",
-                        "icon" => $icon,
-                    ]);
-                } else {
-                    echo json_encode([
-                        "status" => "not found",
-                    ]);
-                }
                 break;
             case "updateImageDescription":
                 $id = (int) $_POST["imageId"];

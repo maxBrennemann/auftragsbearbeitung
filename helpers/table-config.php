@@ -142,7 +142,6 @@ function getTableConfig(): array
             ],
             "hidden" => [
                 "id",
-                "dateiname",
             ],
             "permissions" => ["read", "update", "delete"],
             "joins" => [

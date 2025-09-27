@@ -4,6 +4,7 @@ namespace Classes\Sticker;
 
 class Wandtattoo extends AufkleberWandtattoo
 {
+
     public const TYPE = "wandtattoo";
 
     private bool $isWalldecal = false;

@@ -38,7 +38,7 @@ fnNames.click_setDeadlineState = e => {
     }
 }
 
-function sendDate(type: number, date: Date|string) {
+function sendDate(type: number, date: Date | string) {
     ajax.post(`/api/v1/order/${orderManagerConfig.orderId}/update-date`, {
         "date": date,
         "type": type,
@@ -64,10 +64,7 @@ fnNames.click_deleteOrder = () => {
 }
 
 function deleteOrder() {
-    ajax.post({
-        r: "deleteOrder",
-        id: orderManagerConfig.orderId,
-    }).then((r: any) => {
+    ajax.delete(`/api/v1/order/${orderManagerConfig.orderId}`).then((r: any) => {
         if (r.success) {
             window.location.href = r.home;
         }

@@ -6,6 +6,7 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 
 class Offer
 {
+    
     /**
      * @return array<int, array<string, string>>
      */
@@ -20,8 +21,5 @@ class Offer
         return $data;
     }
 
-    public static function getAllOffers(): void
-    {
-    }
-
+    public static function getAllOffers(): void {}
 }

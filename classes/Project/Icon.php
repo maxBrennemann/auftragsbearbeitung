@@ -2,6 +2,7 @@
 
 namespace Classes\Project;
 
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 
 class Icon
@@ -62,6 +63,36 @@ class Icon
     {
         $icon = Icon::get($icon, $width, $height, $class, $title);
         return str_replace("currentColor", $color, $icon);
+    }
+
+    public static function ajaxGet(): void
+    {
+        $type = Tools::get("icon");
+        $icon = "";
+
+        if (Tools::get("custom") != null) {
+            $width = (int) Tools::get("width");
+            $height = (int) Tools::get("height");
+
+            $classes = (string) Tools::get("classes");
+            $classes = explode(",", $classes);
+
+            $title = Tools::get("title") ?? "";
+            $color = Tools::get("color") ?? "#000000";
+
+            $icon = Icon::getColorized($type, $width, $height, $color, $classes, $title);
+        } else {
+            $icon = Icon::getDefault($type);
+        }
+
+        if ($icon == "") {
+            JSONResponseHandler::returnNotFound("Item not found");
+        } else {
+            JSONResponseHandler::sendResponse([
+                "status" => "success",
+                "icon" => $icon,
+            ]);
+        }
     }
 
     public static string $iconChevronUp = '<path fill="currentColor" d="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z" />';

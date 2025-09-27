@@ -8,7 +8,12 @@ class UserRoutes extends Routes
 {
     protected static $getRoutes = [];
 
-    protected static $postRoutes = [];
+    /**
+     * @uses \Classes\Project\User::add()
+     */
+    protected static $postRoutes = [
+        "/user" => [\Classes\Project\User::class, "add"],
+    ];
 
     protected static $putRoutes = [];
 

@@ -3,6 +3,7 @@
 namespace Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 
 class Wiki
@@ -24,5 +25,21 @@ class Wiki
     {
         $query = "";
         return [];
+    }
+
+    public static function ajaxGetText(): void
+    {
+        $infoId = (int) Tools::get("id");
+        $infoText = DBAccess::selectQuery("SELECT info FROM info_texte WHERE id = :infoId;", [
+            "infoId" => $infoId,
+        ]);
+
+        if ($infoText == null) {
+            JSONResponseHandler::returnNotFound();
+        }
+
+        JSONResponseHandler::sendResponse([
+            "info" => $infoText[0]["info"],
+        ]);
     }
 }

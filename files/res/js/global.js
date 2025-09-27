@@ -274,10 +274,7 @@ function initializeInfoBtn() {
 	Array.from(btns).forEach(btn => {
 		btn.addEventListener("click", async function () {
 			const id = btn.dataset.info;
-			const response = await ajax.post({
-				r: "getInfoText",
-				info: id,
-			}, true);
+			const response = await ajax.get(`/api/v1/templates/text/${id}`);
 
 			let infoBox = document.getElementById("infoBox" + id);
 			if (infoBox == undefined) {
@@ -286,7 +283,7 @@ function initializeInfoBtn() {
 				infoBox.classList.add("infoBoxShow");
 				infoBox.id = "infoBox" + id;
 
-				let text = document.createTextNode(response);
+				let text = document.createTextNode(response["info"]);
 				infoBox.appendChild(text);
 				document.body.appendChild(infoBox);
 			} else {
