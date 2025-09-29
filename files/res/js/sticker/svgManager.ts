@@ -1,25 +1,32 @@
+// @ts-ignore
 import { ajax } from "js-classes/ajax.js";
+// @ts-ignore
 import { addBindings } from "js-classes/bindings.js";
 
 import { getStickerId } from "../sticker.js";
 
-const fnNames = {};
-const config = {
-    "svgContainer": null,
-    "svgElement": null,
-};
+const fnNames: { [key: string]: (...args: any[]) => void } = {};
+const config: {
+    svgContainer?: HTMLObjectElement,
+    svgElement?: SVGSVGElement,
+} = {};
 
 fnNames.click_makeColorable = () => {
-    ajax.post({
-        id: getStickerId(),
-        r: "makeSVGColorable"
-    }).then(r => {
-        config.svgContainer.data = r.url;
+    ajax.post(`/api/v1/sticker/${getStickerId()}/svg-colorizable`)
+    .then((r: any) => {
+        if (config.svgContainer) {
+            config.svgContainer.data = r.url;
+        }
     });
 }
 
 const loadSVGEvent = () => {
-    config.svgElement = config.svgContainer.contentDocument.querySelector("svg");
+    if (config.svgContainer instanceof HTMLObjectElement) {
+        const svg = config.svgContainer.contentDocument?.querySelector("svg");
+        if (svg instanceof SVGSVGElement) {
+            config.svgElement = svg;
+        }
+    }
     adjustSVG();
 }
 
@@ -41,7 +48,7 @@ const adjustSVG = () => {
     for (let i = 0; i < children.length; i++) {
         let child = children[i];
 
-        if (child.getBBox() && child.nodeName != "defs") {
+        if (child instanceof SVGGraphicsElement && child.nodeName != "defs") {
             var coords = child.getBBox();
             if (positions.edited == false) {
                 positions.furthestX = coords.x + coords.width;
@@ -76,7 +83,7 @@ const adjustSVG = () => {
 export const initSVG = () => {
     addBindings(fnNames);
 
-    config.svgContainer = document.getElementById("svgContainer");
+    config.svgContainer = document.getElementById("svgContainer") as HTMLObjectElement;
     if (config.svgContainer == null || config.svgContainer == undefined) {
         return;
     }
@@ -86,7 +93,7 @@ export const initSVG = () => {
         return;
     }
 
-    config.svgElement = config.svgContainer.contentDocument.querySelector("svg");
+    config.svgElement = config.svgContainer.contentDocument.querySelector("svg") as SVGSVGElement;
 
     adjustSVG();
 }

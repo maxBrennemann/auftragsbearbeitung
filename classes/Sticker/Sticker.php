@@ -5,6 +5,7 @@ namespace Classes\Sticker;
 use Classes\Link;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
 
 /**
  * stellt allgemeine Stickerfunktionen zur Verfügung, ist die Elternklasse von
@@ -223,10 +224,10 @@ class Sticker extends PrestashopConnection
 
     public static function setDescription(): void
     {
-        $id = (int) $_POST["id"];
-        $type = (string) $_POST["type"];
-        $target = (string) $_POST["target"];
-        $content = (string) $_POST["content"];
+        $id = (int) Tools::get("id");
+        $type = (string) Tools::get("textType");
+        $target = (string) Tools::get("target");
+        $content = (string) Tools::get("content");
 
         $query = "REPLACE INTO module_sticker_texts (id_sticker, `type`, `target`, content) VALUES (:id, :type, :target, :content);";
         DBAccess::updateQuery($query, [
@@ -237,7 +238,10 @@ class Sticker extends PrestashopConnection
         ]);
 
         //StickerChangelog::log($id, $target, 0, "module_sticker_texts", "content", $content);
-        echo "success";
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+        ]);
     }
 
     public function save(): ?string

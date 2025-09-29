@@ -39,7 +39,7 @@ class StickerTagManager extends PrestashopConnection
     }
 
     /**
-     * @return array<int, string>
+     * @return string[]
      */
     public function get(): array
     {
@@ -474,13 +474,6 @@ class StickerTagManager extends PrestashopConnection
         $result = DBAccess::selectQuery($query);
 
         return $result;
-    }
-
-    public static function getTagSuggestions(): void
-    {
-        $id = (int) Tools::get("id");
-        $name = Tools::get("name");
-        StickerTagManager::getTagsHTML();
     }
 
     public static function getTagOverview(): void

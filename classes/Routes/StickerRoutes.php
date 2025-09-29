@@ -13,10 +13,9 @@ class StickerRoutes extends Routes
      *
      * @uses \Classes\Sticker\StickerCollection::empty()
      * @uses \Classes\Sticker\StickerCollection::empty()
-     * @uses \Classes\Sticker\StickerTagManager::getTagSuggestions()
      * @uses \Classes\Sticker\StickerCollection::empty()
      * @uses \Classes\Sticker\StickerTagManager::countTagOccurences()
-     * @uses \Classes\Sticker\StickerTagManager::getTagsHTML()
+     * @uses \Classes\Sticker\Tags\TagController::getTagSuggestions()
      *
      * @uses \Classes\Sticker\StickerCollection::getStickerOverview()
      * @uses \Classes\Sticker\StickerCollection::getStickerStates()
@@ -31,10 +30,9 @@ class StickerRoutes extends Routes
 
         "/sticker/tags" => [\Classes\Sticker\StickerCollection::class, "empty"],
         "/sticker/tags/crawl" => [\Classes\Sticker\StickerCollection::class, "empty"],
-        "/sticker/tags/suggestions" => [\Classes\Sticker\StickerCollection::class, "getTagSuggestions"],
         "/sticker/tags/groups" => [\Classes\Sticker\StickerCollection::class, "empty"],
         "/sticker/tags/overview" => [\Classes\Sticker\StickerTagManager::class, "getTagOverview"],
-        "/sticker/{id}/tags-template" => [\Classes\Sticker\StickerTagManager::class, "getTagsHTML"],
+        "/sticker/{id}/tags-template" => [\Classes\Sticker\Tags\TagController::class, "getTagSuggestions"],
 
         "/sticker/overview" => [\Classes\Sticker\StickerCollection::class, "getStickerOverview"],
         "/sticker/states" => [\Classes\Sticker\StickerCollection::class, "getStickerStates"],
@@ -56,6 +54,7 @@ class StickerRoutes extends Routes
      * @uses \Classes\Sticker\StickerTagManager::crawlAllTags()
      *
      * @uses \Classes\Sticker\AufkleberWandtattoo::updateSizes()
+     * @uses \Classes\Sticker\Textil::makeColorizable()
      *
      * @uses \Classes\Sticker\ProductCrawler::crawlAll()
      *
@@ -76,6 +75,7 @@ class StickerRoutes extends Routes
         "/sticker/tags/crawl" => [\Classes\Sticker\StickerTagManager::class, "crawlAllTags"],
 
         "/sticker/{id}/sizes" => [\Classes\Sticker\AufkleberWandtattoo::class, "updateSizes"],
+        "/sticker/{id}/svg-colorizable" => [\Classes\Sticker\Textil::class, "makeColorizable"],
 
         "/sticker/crawl/all" => [\Classes\Sticker\ProductCrawler::class, "crawlAll"],
 
@@ -93,6 +93,9 @@ class StickerRoutes extends Routes
      * @uses \Classes\Sticker\StickerCollection::setExportStatus()
      * @uses \Classes\Sticker\StickerCollection::setAltTitle()
      * @uses \Classes\Sticker\StickerCollection::toggleStatus()
+     * @uses \Classes\Sticker\Sticker::setDescription()
+     * 
+     * @uses \Classes\Sticker\StickerImageManager::updateDescription()
      */
     protected static $putRoutes = [
         "/sticker/sizes" => [\Classes\Sticker\AufkleberWandtattoo::class, "addSize"],
@@ -103,6 +106,9 @@ class StickerRoutes extends Routes
         "/sticker/{id}/export-status" => [\Classes\Sticker\StickerCollection::class, "setExportStatus"],
         "/sticker/{id}/{type}/alt-title" => [\Classes\Sticker\StickerCollection::class, "setAltTitle"],
         "/sticker/{id}/{type}/toggle" => [\Classes\Sticker\StickerCollection::class, "toggleStatus"],
+        "/sticker/{id}/{textType}/description" => [\Classes\Sticker\Sticker::class, "setDescription"],
+
+        "/sticker/image/{imageId}" => [\Classes\Sticker\StickerImageManager::class, "updateDescription"],
     ];
 
     /**

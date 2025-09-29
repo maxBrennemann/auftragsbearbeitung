@@ -26,7 +26,7 @@ class TagRepository
     }
 
     /**
-     * @return array<int, string>
+     * @return string[]
      */
     public function get(): array
     {

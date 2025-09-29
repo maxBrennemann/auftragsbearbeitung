@@ -12,7 +12,7 @@ import { notificatinReplace, notification, notificationLoader } from "js-classes
 import { createPopup } from "./global.js";
 import { initImageManager } from "./sticker/imageManager.ts";
 import { initSizeTable } from "./sticker/sizeTable.js";
-import { initTagManager } from "./sticker/tagManager.js";
+import { initTagManager } from "./sticker/tagManager.ts";
 
 const fnNames = {};
 
@@ -150,7 +150,10 @@ function transfer(type, text) {
 
     mainVariables.pending = true;
 
-    if (mainVariables.overwriteImages.sticker == true || mainVariables.overwriteImages.walldecal || mainVariables.overwriteImages.textile) {
+    if (mainVariables.overwriteImages.sticker == true 
+        || mainVariables.overwriteImages.walldecal 
+        || mainVariables.overwriteImages.textile
+    ) {
         if (!confirm("Möchtest du die Bilder überschreiben?")) {
             mainVariables.overwriteImages.sticker = false;
             mainVariables.overwriteImages.walldecal = false;
@@ -162,40 +165,21 @@ function transfer(type, text) {
         "stickerType": type,
         "overwrite": JSON.stringify(mainVariables.overwriteImages),
     });
-    return;
-
-    ajax.post(`/api/v1/sticker/${mainVariables.motivId.innerHTML}/export`, {
-        stickerType: type,
-        overwrite: JSON.stringify(mainVariables.overwriteImages),
-    }).then(r => {
-        if (r.status == "success") {
-            mainVariables.pending = false;
-            notificatinReplace("various-click", `Übertragung von ${text} erfolgreich`, "success");
-        } else {
-            mainVariables.pending = false;
-            notificatinReplace("various-click", `Übertragung von ${text} erfolgreich`, "success");
-        }
-    }).catch(error => {
-        notificatinReplace("various-click", `Übertragung von ${text} fehlgeschlagen`, "failure", error);
-    });
 }
 
 fnNames.write_productDescription = function (e) {
     var target = e.target.dataset.target;
     var content = e.target.value;
-    var type = e.target.dataset.type;
+    var textType = e.target.dataset.type;
 
-    ajax.post({
-        id: mainVariables.motivId.innerHTML,
-        target: target,
-        type: type,
-        content: content,
-        r: "writeProductDescription",
-    }, true).then(response => {
-        if (response == "success") {
+    ajax.put(`/api/v1/sticker/${mainVariables.motivId}/${textType}/description`, {
+        "target": target,
+        "content": content,
+    }).then(r => {
+        if (r.status == "success") {
             notification("", "success");
         } else {
-            console.log(response);
+            console.log(r);
             notification("", "failure");;
         }
     });

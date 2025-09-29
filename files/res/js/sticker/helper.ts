@@ -1,4 +1,4 @@
-export const deleteButton = (id) => {
+export const deleteButton = (id: string) => {
     const button = `
         <button class="btn-delete ml-1" title="Löschen" data-id="${id}">
             <svg xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 24 24">
@@ -13,7 +13,7 @@ export const deleteButton = (id) => {
     return template.content.firstElementChild;
 }
 
-export const editButton = (id) => {
+export const editButton = (id: string) => {
     const button = `
         <button class="btn-edit" title="Bearbeiten" data-id="${id}">
             <svg xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 24 24">
@@ -28,21 +28,21 @@ export const editButton = (id) => {
     return template.content.firstElementChild;
 }
 
-export const resetInputs = (inputs) => {
+export const resetInputs = (inputs: HTMLInputElement[]) => {
     Array.from(inputs).forEach(input => {
         const defaultValue = input.dataset.default;
         input.value = defaultValue ?? "";
     });
 }
 
-export const parseInput = (value) => {
-    value *= 10;
-    value = parseInt(value);
-    return value;
+export const parseInput = (value: string) => {
+    let val = parseInt(value);
+    val *= 10;
+    return val;
 }
 
-export const parseEuro = (value) => {
-    value *= 100;
-    value = parseInt(value);
-    return value;
+export const parseEuro = (value: string) => {
+    let val = parseInt(value);
+    val *= 100;
+    return val;
 }

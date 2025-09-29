@@ -3,6 +3,7 @@
 namespace Classes\Sticker;
 
 use Classes\Project\Produkt;
+use Classes\Link;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
@@ -217,7 +218,7 @@ class Textil extends Sticker
         $textiles = Produkt::getAllProducts($category);
 
         foreach ($textiles as $textil) {
-            $idTextile = $textil["id"];
+            $idTextile = $textil->getProductId();
             $idSticker = $this->idSticker;
             //$images = StickerImage::getCombinedImages($idSticker, $idTextile);
             // TODO: add product to prestashop
@@ -259,6 +260,22 @@ class Textil extends Sticker
         }
 
         return $adapter;
+    }
+
+    public static function makeColorizable(): void
+    {
+        $id = (int) Tools::get("id");
+
+        $textil = new Textil($id);
+        $textil->toggleIsColorable();
+        $file = $textil->getCurrentSVG();
+
+        if ($file == null) {
+            JSONResponseHandler::returnNotFound(["status" => "no file found"]);
+        }
+            
+        $url = Link::getResourcesShortLink($file["dateiname"], "upload");
+        JSONResponseHandler::sendResponse(["url" => $url]);
     }
 
     public static function toggleTextile(): void

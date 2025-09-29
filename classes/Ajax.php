@@ -3,9 +3,7 @@
 namespace Classes;
 
 use Classes\Controller\SessionController;
-use Classes\Project\Icon;
 use Classes\Project\Statistics;
-use Classes\Project\User;
 use Classes\Routes\CustomerRoutes;
 use Classes\Routes\InvoiceRoutes;
 use Classes\Routes\LoginRoutes;
@@ -24,12 +22,10 @@ use Classes\Routes\UploadRoutes;
 use Classes\Routes\UserRoutes;
 use Classes\Routes\VariousRoutes;
 use Classes\Sticker\SearchProducts;
-use Classes\Sticker\Sticker;
 use Classes\Sticker\StickerCategory;
 use Classes\Sticker\StickerCollection;
 use Classes\Sticker\StickerImage;
 use Classes\Sticker\StickerTagManager;
-use Classes\Sticker\Textil;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
@@ -127,9 +123,6 @@ class Ajax
                 $data = DBAccess::selectQuery("SELECT info FROM `manual` WHERE `page` = '$pageName' AND intent = '$intent'");
                 echo json_encode($data, JSON_FORCE_OBJECT);
                 break;
-            case "writeProductDescription":
-                Sticker::setDescription();
-                break;
             case "setImageOrder":
                 $order = $_POST["order"];
 
@@ -143,20 +136,6 @@ class Ajax
                         "status" => "error",
                         "message" => $e->getMessage(),
                     ]);
-                }
-                break;
-            case "makeSVGColorable":
-                $id = (int) $_POST["id"];
-
-                $textil = new Textil($id);
-                $textil->toggleIsColorable();
-                $file = $textil->getCurrentSVG();
-
-                if ($file == null) {
-                    echo json_encode(["status" => "no file found"]);
-                } else {
-                    $url = Link::getResourcesShortLink($file["dateiname"], "upload");
-                    echo json_encode(["url" => $url]);
                 }
                 break;
             case "setPriceclass":
@@ -264,20 +243,6 @@ class Ajax
                 $id = (int) $_POST["id"];
                 $categories = $_POST["categories"];
                 StickerCategory::setCategories($id, $categories);
-                echo json_encode([
-                    "status" => "success",
-                ]);
-                break;
-            case "updateImageDescription":
-                $id = (int) $_POST["imageId"];
-                $description = $_POST["description"];
-
-                $query = "UPDATE module_sticker_image SET `description` = :description WHERE id_datei = :id;";
-                DBAccess::updateQuery($query, [
-                    "description" => $description,
-                    "id" => $id,
-                ]);
-
                 echo json_encode([
                     "status" => "success",
                 ]);

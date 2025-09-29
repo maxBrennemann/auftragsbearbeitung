@@ -1,33 +1,33 @@
+// @ts-ignore
 import { ajax } from "js-classes/ajax.js";
+// @ts-ignore
 import { addBindings } from "js-classes/bindings.js";
 
 import { getStickerId, getStickerName } from "../sticker.js";
 
-const fnNames = {};
+const fnNames: { [key: string]: (...args: any[]) => void } = {};
 
 export function initTagManager() {
     addBindings(fnNames);
 
-    const tagInput = document.getElementById("tagInput");
+    const tagInput = document.getElementById("tagInput") as HTMLInputElement;
     tagInput.addEventListener("keydown", addTagWithKey);
 
     ajax.get(`/api/v1/sticker/${getStickerId()}/tags-template`, {
         "title": getStickerName(),
-    }).then(r => {
-        document.getElementById("tagManager").innerHTML = r.template;
+    }).then((r: any) => {
+        (document.getElementById("tagManager") as HTMLDivElement).innerHTML = r.template;
         addBindings(fnNames);
     });
 }
 
-fnNames.click_showTaggroupManager = () => {
-    
-}
+fnNames.click_showTaggroupManager = () => {}
 
 /**
  * Listens for a hashtag or enter to add a new tag
- * @param {*} e 
+ * @param {KeyboardEvent} e 
  */
-const addTagWithKey = e => {
+const addTagWithKey = (e: KeyboardEvent) => {
     if (e.key === "#" || e.key === "Enter") {
         addTag(e);
     }
@@ -35,8 +35,8 @@ const addTagWithKey = e => {
 
 fnNames.click_addNewTag = () => {
     const dt = document.createElement("dt");
-    dt.className  = "cursor-default inline-flex rounded-lg font-semibold overflow-hidden";
-    const tagInput = document.getElementById("tagInput");
+    dt.className = "cursor-default inline-flex rounded-lg font-semibold overflow-hidden";
+    const tagInput = document.getElementById("tagInput") as HTMLInputElement;
 
     if (!validateValue(tagInput.value)) {
         alert("Der Tag ist zu lang oder enthält ein ungültiges Zeichen!");
@@ -73,10 +73,10 @@ fnNames.click_addNewTag = () => {
 
 /**
  * Validates a text for the tag input
- * @param {string} text 
+ * @param {string} text
  * @returns {boolean}
  */
-const validateValue = (text) => {
+const validateValue = (text: string) => {
     if (text.length > 32) {
         return false;
     }
@@ -92,10 +92,10 @@ const validateValue = (text) => {
 }
 
 fnNames.click_loadSynonyms = () => {
-    ajax.get(`/api/v1/sticker/tags/suggestions`, {
+    /*ajax.get(`/api/v1/sticker/tags/suggestions`, {
         id: getStickerId(),
         name: document.getElementById("name").value,
-    }).then((results) => {
+    }).then((results: any) => {
         const synonyms = results["synonyms"];
 
         if (synonyms.length == 0) {
@@ -103,7 +103,7 @@ fnNames.click_loadSynonyms = () => {
         } else {
 
         }
-    });
+    });*/
 }
 
 fnNames.click_manageTag = (e) => {

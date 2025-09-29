@@ -11,7 +11,7 @@ import { initFileUploader } from "../classes/upload.js";
 import { createPopup, initImagePreviewListener } from "../global.js";
 import { getStickerId } from "../sticker.js";
 
-import { initSVG } from "./svgManager.js";
+import { initSVG } from "./svgManager";
 
 const fnNames: { [key: string]: (...args: any[]) => void } = {};
 const imageTables: {
@@ -92,10 +92,9 @@ fnNames.write_updateImageDescription = (e: Event) => {
     const target = e.currentTarget as HTMLInputElement;
     const imageId = target.dataset.fileId;
     const description = target.value;
-    ajax.post({
-        imageId: imageId,
-        description: description,
-        r: "updateImageDescription",
+
+    ajax.put(`/api/v1/sticker/image/${imageId}`, {
+        "description": description,
     }).then((r: any) => {
         if (r.status == "success") {
             notification("", r.status);
