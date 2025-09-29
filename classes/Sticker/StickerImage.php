@@ -272,6 +272,10 @@ class StickerImage extends PrestashopConnection
 
             $file = file_get_contents($filename);
 
+            if ($file == false) {
+                return null;
+            }
+
             /* remove all fills */
             $file = preg_replace('/fill:#([0-9a-f]{6}|[0-9a-f]{3})/i', "", $file);
 
@@ -373,12 +377,16 @@ class StickerImage extends PrestashopConnection
         /* json resonder script on server */
         $ch = curl_init($this->url);
 
-        $payload = json_encode(array("images" => $images, "id" => $productId));
+        $payload = ["images" => $images, "id" => $productId];
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $result = curl_exec($ch);
         curl_close($ch);
+
+        if ($result == false) {
+            return "";
+        }
 
         return $result;
     }

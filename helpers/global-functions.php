@@ -115,7 +115,16 @@ register_shutdown_function("fatal_handler");
 function file_get_contents_utf8(string $fn): bool|string
 {
     $content = file_get_contents($fn);
-    return mb_convert_encoding($content, 'UTF-8', mb_detect_encoding($content, 'UTF-8, ISO-8859-1', true));
+    if (gettype($content) == "boolean") {
+        return false;
+    }
+
+    $detectedEncoding = mb_detect_encoding($content, "UTF-8, ISO-8859-1", true);
+    if (gettype($detectedEncoding) == "boolean") {
+        return false;
+    }
+
+    return mb_convert_encoding($content, "UTF-8", $detectedEncoding);
 }
 
 /**
