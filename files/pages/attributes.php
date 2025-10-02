@@ -1,6 +1,6 @@
 <?php
 
-use Classes\Link;
+use Src\Classes\Link;
 use MaxBrennemann\PhpUtilities\DBAccess;
 
 $data = DBAccess::selectQuery("SELECT ag.attribute_group, ag.descr, a.id, a.value, a.attribute_group_id, a.position 
@@ -48,7 +48,7 @@ foreach ($data as $d) {
                     <li class="transition-all duration-150 ease-in-out bg-slate-100 rounded-md py-2 px-3 hover:bg-blue-300 cursor-pointer flex select-none" draggable="true" data-id="<?= $a["id"] ?>">
                         <span class="flex-1"><?= $a["value"] ?></span>
                         <div class="flex-none mr-1" title="Anordnen">
-                            <button class="border-none" title="Anordnen"><?= Classes\Project\Icon::getDefault("iconMove") ?></button>
+                            <button class="border-none" title="Anordnen"><?= \Src\Classes\Project\Icon::getDefault("iconMove") ?></button>
                         </div>
                     </li>
                 <?php endforeach; ?>

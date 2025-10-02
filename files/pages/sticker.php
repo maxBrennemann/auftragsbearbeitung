@@ -1,12 +1,12 @@
 <?php
 
-use Classes\Controller\TemplateController;
-use Classes\Link;
-use Classes\Project\Icon;
-use Classes\Sticker\StickerChangelog;
-use Classes\Sticker\StickerCollection;
-use Classes\Sticker\StickerImage;
-use Classes\Sticker\TextModification;
+use Src\Classes\Controller\TemplateController;
+use Src\Classes\Link;
+use Src\Classes\Project\Icon;
+use Src\Classes\Sticker\StickerChangelog;
+use Src\Classes\Sticker\StickerCollection;
+use Src\Classes\Sticker\StickerImage;
+use Src\Classes\Sticker\TextModification;
 use MaxBrennemann\PhpUtilities\Tools;
 
 $id = Tools::get("id");

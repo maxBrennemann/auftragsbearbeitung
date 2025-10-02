@@ -1,7 +1,7 @@
 <?php
 
-use Classes\Project\Auftrag;
-use Classes\Project\SearchController;
+use Src\Classes\Project\Auftrag;
+use Src\Classes\Project\SearchController;
 use MaxBrennemann\PhpUtilities\Tools;
 
 $query = Tools::get("query");

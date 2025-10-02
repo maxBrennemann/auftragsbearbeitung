@@ -1,12 +1,12 @@
 <?php
 
-use Classes\Link;
-use Classes\Project\Address;
-use Classes\Project\Auftrag;
-use Classes\Project\Icon;
-use Classes\Project\Invoice;
-use Classes\Project\InvoiceNumberTracker;
-use Classes\Project\Kunde;
+use Src\Classes\Link;
+use Src\Classes\Project\Address;
+use Src\Classes\Project\Auftrag;
+use Src\Classes\Project\Icon;
+use Src\Classes\Project\Invoice;
+use Src\Classes\Project\InvoiceNumberTracker;
+use Src\Classes\Project\Kunde;
 use MaxBrennemann\PhpUtilities\Tools;
 
 $rechnungslink;

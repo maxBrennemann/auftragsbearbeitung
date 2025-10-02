@@ -1,7 +1,7 @@
 <?php
 
-use Classes\Link;
-use Classes\Project\Kunde;
+use Src\Classes\Link;
+use Src\Classes\Project\Kunde;
 use MaxBrennemann\PhpUtilities\Tools;
 
 $customerId = (int) Tools::get("id");

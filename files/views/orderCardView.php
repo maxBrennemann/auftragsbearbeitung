@@ -11,7 +11,7 @@
 			<?php else: ?>
 				<h3 class="font-bold"><?= $order["orderTitle"] ?></h3>
 			<?php endif; ?>
-			<a class="text-blue-500 font-semibold ml-0.5" href="<?= Classes\Link::getPageLink("auftrag") ?>?id=<?= $order["id"] ?>">Zum Auftrag <?= $order["id"] ?></a>
+			<a class="text-blue-500 font-semibold ml-0.5" href="<?= \Src\Classes\Link::getPageLink("auftrag") ?>?id=<?= $order["id"] ?>">Zum Auftrag <?= $order["id"] ?></a>
 			<p class="m-1 p-1 rounded-lg w-full block text-ellipsis overflow-hidden whitespace-nowrap" title="<?= $order["orderDescription"] ?>"><?= $order["orderDescription"] ?></p>
 			<table class="rounded-md m-1 mt-2 w-full">
 				<tr class="border-b border-gray-800">
@@ -27,7 +27,7 @@
 					<td class="bg-gray-100 text-gray-800"><?= $order["finished"] ?></td>
 				</tr>
 			</table>
-			<?php if ($order["status"] == \Classes\Project\OrderState::Archived): ?>
+			<?php if ($order["status"] == \Src\Classes\Project\OrderState::Archived): ?>
 				<button class="btn-primary orderDisabled mt-1.5" disabled>archiviert</button>
 			<?php endif; ?>
 			<?php if ($order["invoice"] != 0): ?>

@@ -16,7 +16,7 @@
             </div>
             <div class="mt-1 flex flex-col">
                 <span>Stundenlohn [€]:</span>
-                <input class="input-primary mt-1" id="wage" type="number" value="<?= \Classes\Project\Config::get("defaultWage") ?>">
+                <input class="input-primary mt-1" id="wage" type="number" value="<?= \Src\Classes\Project\Config::get("defaultWage") ?>">
             </div>
             <div class="mt-1 flex flex-col">
                 <span>Beschreibung:</span>
@@ -85,18 +85,18 @@
         <div id="resultContainer"></div>
         <span>Menge: <input class="postenInput" id="posten_produkt_menge" type="number"></span>
         <br>
-        <a href="<?= \Classes\Link::getPageLink("neues-produkt"); ?>">Neues Produkt hinzufügen</a>
+        <a href="<?= \Src\Classes\Link::getPageLink("neues-produkt"); ?>">Neues Produkt hinzufügen</a>
     </div>
     <div class="tab-footer bg-gray-200 rounded-b-lg p-3">
         <div>
             <div class="ml-2">
-                <?= \Classes\Controller\TemplateController::getTemplate("inputSwitch", [
+                <?= \Src\Classes\Controller\TemplateController::getTemplate("inputSwitch", [
                     "id" => "isFree",
                     "name" => "Ohne Berechnung",
                 ]); ?>
             </div>
             <div class="ml-2 mt-2">
-                <?= \Classes\Controller\TemplateController::getTemplate("inputSwitch", [
+                <?= \Src\Classes\Controller\TemplateController::getTemplate("inputSwitch", [
                     "id" => "addToInvoice",
                     "name" => "Der Rechnung hinzufügen",
                 ]); ?>

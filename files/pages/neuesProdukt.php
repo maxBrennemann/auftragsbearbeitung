@@ -1,8 +1,8 @@
 <?php
 
-use Classes\Link;
-use Classes\Project\Category;
-use Classes\Project\Produkt;
+use Src\Classes\Link;
+use Src\Classes\Project\Category;
+use Src\Classes\Project\Produkt;
 use MaxBrennemann\PhpUtilities\DBAccess;
 
 $quelle = Produkt::getSources();

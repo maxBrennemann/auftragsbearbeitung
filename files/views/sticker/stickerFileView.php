@@ -1,7 +1,7 @@
 <?php
 
-use Classes\Link;
-use Classes\Project\Icon;
+use Src\Classes\Link;
+use Src\Classes\Project\Icon;
 
 ?>
 

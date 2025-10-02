@@ -1,6 +1,6 @@
 <?php
 
-use Classes\Controller\SessionController;
+use Src\Classes\Controller\SessionController;
 
 $isLoggedIn = SessionController::isLoggedIn();
 

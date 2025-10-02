@@ -1,7 +1,7 @@
 <?php
 
-use Classes\Link;
-use Classes\Project\Fahrzeug;
+use Src\Classes\Link;
+use Src\Classes\Project\Fahrzeug;
 use MaxBrennemann\PhpUtilities\Tools;
 
 $id = (int) Tools::get("id");

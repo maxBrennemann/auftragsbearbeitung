@@ -1,6 +1,6 @@
 <div class="col-span-6">
     <div class="hidden bg-red-300 m-2 p-2 rounded-md gap-2 items-center" id="showMissingFileWarning">
-        <?= \Classes\Project\Icon::get("iconWarning", 25, 25) ?>
+        <?= \Src\Classes\Project\Icon::get("iconWarning", 25, 25) ?>
         <div class="ml-2">
             <p>Die Rechnung konnte nicht gefunden werden!</p>
             <button data-fun="recreateInvoice" data-binding="true" class="btn-primary mt-1">Neu erstellen</button>
@@ -12,7 +12,7 @@
         <button class="btn-primary mt-2" data-fun="showAuftrag" data-binding="true">Auftrag anzeigen</button>
         <?php
         $invoiceLink = "Rechnung_" . $auftrag->getInvoiceNumber() . ".pdf";
-        $invoiceLink = \Classes\Link::getResourcesShortLink($invoiceLink, "pdf");
+        $invoiceLink = \Src\Classes\Link::getResourcesShortLink($invoiceLink, "pdf");
         ?>
         <a class="link-primary" href="<?= $invoiceLink ?>" target="_blank">Zur Rechnungs-PDF</a>
     </div>

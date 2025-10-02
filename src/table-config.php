@@ -55,7 +55,7 @@ function getTableConfig(): array
             "permissions" => ["read", "create", "update", "delete"],
             "hooks" => [
                 "beforeRead" => "",
-                "beforeDelete" => [\Classes\Project\Auftrag::class, "resetAnsprechpartner"],
+                "beforeDelete" => [\Src\Classes\Project\Auftrag::class, "resetAnsprechpartner"],
             ],
             "joins" => [],
         ],
@@ -109,7 +109,7 @@ function getTableConfig(): array
             "permissions" => ["read", "create", "update", "delete"],
             "hooks" => [
                 "beforeRead" => [],
-                "afterRead" => [\Classes\Project\Color::class, "convertHexToHTML"],
+                "afterRead" => [\Src\Classes\Project\Color::class, "convertHexToHTML"],
             ],
             "joins" => [
                 "color_auftrag" => [
@@ -270,8 +270,8 @@ function getTableConfig(): array
                 ],
             ],
             "hooks" => [
-                "afterRead" => [\Classes\Sticker\StickerImage::class, "prepareData"],
-                "afterJoin" => [\Classes\Sticker\StickerImage::class, "prepareData"],
+                "afterRead" => [\Src\Classes\Sticker\StickerImage::class, "prepareData"],
+                "afterJoin" => [\Src\Classes\Sticker\StickerImage::class, "prepareData"],
             ],
         ],
         "module_sticker_sticker_data" => [
@@ -407,8 +407,8 @@ function getTableConfig(): array
                 ],
             ],
             "hooks" => [
-                "afterRead" => [\Classes\Project\Step::class, "prepareData"],
-                "afterJoin" => [\Classes\Project\Step::class, "prepareData"],
+                "afterRead" => [\Src\Classes\Project\Step::class, "prepareData"],
+                "afterJoin" => [\Src\Classes\Project\Step::class, "prepareData"],
             ],
             "permissions" => ["read"],
         ],

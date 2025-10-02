@@ -1,13 +1,13 @@
 <?php
 
-use Classes\Controller\TemplateController;
-use Classes\Link;
-use Classes\Project\Auftrag;
-use Classes\Project\ClientSettings;
-use Classes\Project\Fahrzeug;
-use Classes\Project\Icon;
-use Classes\Project\Kunde;
-use Classes\Project\OrderHistory;
+use Src\Classes\Controller\TemplateController;
+use Src\Classes\Link;
+use Src\Classes\Project\Auftrag;
+use Src\Classes\Project\ClientSettings;
+use Src\Classes\Project\Fahrzeug;
+use Src\Classes\Project\Icon;
+use Src\Classes\Project\Kunde;
+use Src\Classes\Project\OrderHistory;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 

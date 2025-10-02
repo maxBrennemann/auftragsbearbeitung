@@ -1,11 +1,11 @@
 <?php
 
-use Classes\Controller\BreadcrumbController;
-use Classes\Link;
-use Classes\Notification\NotificationManager;
-use Classes\Project\Config;
-use Classes\Project\Icon;
-use Classes\ResourceManager;
+use Src\Classes\Controller\BreadcrumbController;
+use Src\Classes\Link;
+use Src\Classes\Notification\NotificationManager;
+use Src\Classes\Project\Config;
+use Src\Classes\Project\Icon;
+use Src\Classes\ResourceManager;
 
 $globalCSS = Link::getGlobalCSS();
 $globalJS = Link::getGlobalJS();
@@ -140,7 +140,7 @@ if ($pageName == "") {
 				<p class="font-normal text-sm"><?= $pageTitle ?></p>
 			</div>
 			<div class="inline-flex flex-wrap">
-				<?= \Classes\Controller\TemplateController::getTemplate("search"); ?>
+				<?= \Src\Classes\Controller\TemplateController::getTemplate("search"); ?>
 				<div class="inline-flex ml-1">
 					<div class="inline-flex items-center p-1 hover:bg-gray-200 hover:rounded-sm relative text-gray-700 cursor-pointer" data-binding="true" data-fun="showNotifications">
 						<?php if (NotificationManager::getNotificationCount() > 0): ?>

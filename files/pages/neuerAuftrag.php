@@ -1,6 +1,6 @@
 <?php
 
-use Classes\Link;
+use Src\Classes\Link;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 

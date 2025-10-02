@@ -1,9 +1,9 @@
 <?php
 
-use Classes\Project\Kunde;
-use Classes\Project\SearchController;
+use Src\Classes\Project\Kunde;
+use Src\Classes\Project\SearchController;
 use MaxBrennemann\PhpUtilities\Tools;
-use Classes\Controller\TemplateController;
+use Src\Classes\Controller\TemplateController;
 
 $query = Tools::get("query");
 $customers = [];

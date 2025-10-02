@@ -1,6 +1,6 @@
 <?php
 
-use Classes\Project\Icon;
+use Src\Classes\Project\Icon;
 
 ?>
 <div class="w-full">

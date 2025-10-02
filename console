@@ -4,8 +4,8 @@
 require_once "src/settings.php";
 
 use Symfony\Component\Console\Application;
-use Classes\Commands\CreateMigration;
-use Classes\Commands\AutoUpgrade;
+use Src\Classes\Commands\CreateMigration;
+use Src\Classes\Commands\AutoUpgrade;
 
 $app = new Application("console", "1.0");
 

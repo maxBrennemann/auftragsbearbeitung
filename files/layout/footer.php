@@ -2,8 +2,8 @@
 	<?= $errorTemplate ?? "" ?>
 	<?php
 
-    use Classes\Link;
-    use Classes\Project\CacheManager;
+    use Src\Classes\Link;
+    use Src\Classes\Project\CacheManager;
 
 	$listmaker =		Link::getPageLink("listmaker");
 	$einstellungen =	Link::getPageLink("einstellungen");

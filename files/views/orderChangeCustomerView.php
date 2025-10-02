@@ -1,6 +1,6 @@
 <?php
 
-use Classes\Controller\TemplateController;
+use Src\Classes\Controller\TemplateController;
 
 $customers = [];
 

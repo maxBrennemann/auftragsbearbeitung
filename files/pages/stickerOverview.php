@@ -22,7 +22,7 @@
             <p>Diese Motivvariante ist im Shop und aktuell</p>
         </div>
         <div>
-            <a href="<?= Classes\Link::getPageLink("sticker-images") ?>" class="link-primary">Zur Bildübersicht</a>
+            <a href="<?= \Src\Classes\Link::getPageLink("sticker-images") ?>" class="link-primary">Zur Bildübersicht</a>
         </div>
         <div>
             <button class="btn-primary" data-binding="true" data-fun="openTagOverview">Zur Tagübersicht</button>

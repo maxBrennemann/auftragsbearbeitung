@@ -1,7 +1,7 @@
 <?php
 // TODO: show time tracking and order history
 
-use Classes\Project\User;
+use Src\Classes\Project\User;
 
 $user = null;
 $showUserList = true;

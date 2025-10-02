@@ -1,6 +1,6 @@
 <?php
 
-use Classes\Link;
+use Src\Classes\Link;
 
 ?>
 <?php

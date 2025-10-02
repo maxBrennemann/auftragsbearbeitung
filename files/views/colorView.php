@@ -3,7 +3,7 @@
         <p class="singleColorName flex-1"><?= $color['color_name'] ?> <?= $color['short_name'] ?> <?= $color['producer'] ?></p>
         <div class="farbe" style="background-color: #<?= $color['hex_value'] ?>"></div>
         <div class="">
-            <button class="btn-cancel" data-color-id=<?= $color['id'] ?> data-fun="removeColor" data-binding="true" title="Farbe entfernen"><?= \Classes\Project\Icon::getDefault("iconRemoveConnection") ?></button>
+            <button class="btn-cancel" data-color-id=<?= $color['id'] ?> data-fun="removeColor" data-binding="true" title="Farbe entfernen"><?= \Src\Classes\Project\Icon::getDefault("iconRemoveConnection") ?></button>
         </div>
     </div>
 <?php endforeach; ?>

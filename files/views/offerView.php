@@ -1,7 +1,7 @@
 <?php
 
-use Classes\Link;
-use Classes\Project\Kunde;
+use Src\Classes\Link;
+use Src\Classes\Project\Kunde;
 
 $kundenlink = $kundenlink = Link::getPageLink("kunde") . "?id=" . $customerId;
 $customer = new Kunde($customerId);
@@ -21,7 +21,7 @@ $customer = new Kunde($customerId);
 </div>
 
 <div class="defCont">
-    <?= \Classes\Controller\TemplateController::getTemplate("invoiceItems", [
+    <?= \Src\Classes\Controller\TemplateController::getTemplate("invoiceItems", [
         "services" => $services
     ]); ?>
 </div>

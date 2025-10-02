@@ -1,7 +1,7 @@
 <?php
 
-use Classes\Link;
-use Classes\Project\Produkt;
+use Src\Classes\Link;
+use Src\Classes\Project\Produkt;
 use MaxBrennemann\PhpUtilities\Tools;
 
 ?>
@@ -12,7 +12,7 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 	<?php if (Tools::get("id") !== null): ?>
 		<a class="link-primary ml-2" href="<?= Link::getPageLink("produkt") ?>">Zur Produktübersicht</a>
-		<?= \Classes\Controller\TemplateController::getTemplate("product", [
+		<?= \Src\Classes\Controller\TemplateController::getTemplate("product", [
             "product" => new Produkt(Tools::get("id")),
             "showFiles" => Produkt::getFiles(Tools::get("id")),
             "id" => Tools::get("id"),

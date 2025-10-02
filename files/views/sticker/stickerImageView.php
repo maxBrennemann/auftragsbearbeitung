@@ -1,5 +1,5 @@
 <div class="my-2">
-    <?= Classes\Controller\TemplateController::getTemplate("uploadFile", [
+    <?= \Src\Classes\Controller\TemplateController::getTemplate("uploadFile", [
         "target" => $imageCategory,
     ]); ?>
 </div>

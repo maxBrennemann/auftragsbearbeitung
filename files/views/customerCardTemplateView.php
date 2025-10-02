@@ -1,6 +1,6 @@
 <?php
 
-use Classes\Link;
+use Src\Classes\Link;
 
 $link = Link::getPageLink("kunde") . "?id=" . $customer->getKundennummer();
 

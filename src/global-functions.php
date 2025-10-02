@@ -3,7 +3,7 @@
 define('CURRENTVERSION', '1.2.2');
 ini_set('display_errors', true);
 
-use Classes\Controller\TemplateController;
+use Src\Classes\Controller\TemplateController;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 

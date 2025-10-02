@@ -1,6 +1,6 @@
 <?php
 
-use Classes\Models\Leistung;
+use Src\Classes\Models\Leistung;
 
 $data = Leistung::all();
 ?>

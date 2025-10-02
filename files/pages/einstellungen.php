@@ -1,11 +1,11 @@
 <?php
 
-use Classes\Link;
-use Classes\Project\Config;
-use Classes\Project\InvoiceNumberTracker;
-use Classes\Project\CacheManager;
+use Src\Classes\Link;
+use Src\Classes\Project\Config;
+use Src\Classes\Project\InvoiceNumberTracker;
+use Src\Classes\Project\CacheManager;
 
-$companyLogo = \Classes\Project\ClientSettings::getLogo();
+$companyLogo = Src\Classes\Project\ClientSettings::getLogo();
 
 ?>
 <section class="defCont">
@@ -84,7 +84,7 @@ $companyLogo = \Classes\Project\ClientSettings::getLogo();
         </div>
         <div class="w-96 mt-2">
             <p class="font-semibold">Firmen-/ Rechnungslogo festlegen</p>
-            <?= \Classes\Controller\TemplateController::getTemplate("uploadFile", [
+            <?= \Src\Classes\Controller\TemplateController::getTemplate("uploadFile", [
                 "target" => "companyLogo",
                 "singleFile" => true,
                 "accept" => "image/*",
@@ -118,7 +118,7 @@ $companyLogo = \Classes\Project\ClientSettings::getLogo();
 <section class="defCont">
     <h2 class="font-bold">Cache</h2>
     <div class="mt-2">
-        <?= \Classes\Controller\TemplateController::getTemplate("inputSwitch", [
+        <?= \Src\Classes\Controller\TemplateController::getTemplate("inputSwitch", [
             "id" => "cacheStatusSwitch",
             "name" => "Cache",
             "value" => CacheManager::getCacheStatus() == "on" ? "checked" : "",
@@ -158,7 +158,7 @@ $companyLogo = \Classes\Project\ClientSettings::getLogo();
 <section class="defCont">
     <h2 class="font-bold">Zeiterfassung</h2>
     <div class="switchCont mt-2">
-        <?= \Classes\Controller\TemplateController::getTemplate("inputSwitch", [
+        <?= \Src\Classes\Controller\TemplateController::getTemplate("inputSwitch", [
             "id" => "showTimeTracking",
             "name" => "Aktuelle Arbeitszeit global anzeigen",
             "value" => Config::get("showTimeGlobal") == "true" ? "checked" : "",
