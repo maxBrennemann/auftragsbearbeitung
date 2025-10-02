@@ -8,7 +8,7 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class CacheManager
 {
-    private const CACHE_DIR = "cache/";
+    private const CACHE_DIR = "storage/cache/";
     private const CACHE_PREFIX = "cache_";
     private static string $status = "off";
 
@@ -95,9 +95,8 @@ class CacheManager
 
     public static function deleteCache(): void
     {
-        $path = "cache/";
-        $files = scandir($path);
-        $files = array_diff(scandir($path), [
+        $files = scandir(self::CACHE_DIR);
+        $files = array_diff(scandir(self::CACHE_DIR), [
             ".",
             "..",
             ".gitkeep",
@@ -105,8 +104,8 @@ class CacheManager
         ]);
 
         foreach ($files as $file) {
-            if (is_file($path . $file)) {
-                unlink($path . $file);
+            if (is_file(self::CACHE_DIR . $file)) {
+                unlink(self::CACHE_DIR . $file);
             }
         }
 

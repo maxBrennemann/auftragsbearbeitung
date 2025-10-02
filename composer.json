@@ -8,7 +8,7 @@
         "robmorgan/phinx": "0.x-dev",
         "google/apiclient": "^2.12.1",
         "symfony/dotenv": "7.0.x-dev",
-        "max/php-utilities": "dev-main",
+        "max/php-utilities": "1.2",
         "ramsey/uuid": "5.x-dev",
         "symfony/console": "7.3.x-dev"
     },
@@ -23,7 +23,8 @@
     },
     "scripts": {
         "pre-autoload-dump": "Google\\Task\\Composer::cleanup",
-        "phpstan": "php -d memory_limit=1G vendor/bin/phpstan analyse -c phpstan.neon"
+        "phpstan": "php -d memory_limit=1G vendor/bin/phpstan analyse -c .config/phpstan.neon",
+        "format": "php-cs-fixer fix --config=.config/formatter/.php-cs-fixer.dist.php"
     },
     "extra": {
         "google/apiclient-services": [

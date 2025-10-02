@@ -12,8 +12,8 @@ node_modules
 vendor
 .config/install/install.lock
 var
-cache/*
-!cache/.gitkeep
+storage/cache/*
+!storage/cache/.gitkeep
 
 .config/res/sql/init/*
 !.config/res/sql/init/.gitkeep
@@ -49,3 +49,4 @@ files/assets/forms/modules/sticker/catalog_products.csv
 .git.bfg-report
 protocol.txt
 README.md
+.config/formatter/*

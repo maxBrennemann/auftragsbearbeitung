@@ -17,7 +17,7 @@ class TagController
      */
     private static function getSynonyms(string $query): array
     {
-        $cacheDir = "cache/modules/sticker/tags";
+        $cacheDir = "storage/cache/modules/sticker/tags";
         $sanitizedQuery = preg_replace('/[^a-zA-Z0-9_-]/', '_', $query);
         $cacheFile = "$cacheDir/$sanitizedQuery.json";
 

@@ -113,11 +113,11 @@ class StickerCategory extends PrestashopConnection
      */
     private static function getCachedCategoryTree(int $startCategory): array|false
     {
-        if (!file_exists('cache/modules/sticker/categories')) {
-            mkdir('cache/modules/sticker/categories', 0777, true);
+        if (!file_exists('storage/cache/modules/sticker/categories')) {
+            mkdir('storage/cache/modules/sticker/categories', 0777, true);
         }
 
-        $filename = 'cache/modules/sticker/categories/' . $startCategory . '.json';
+        $filename = 'storage/cache/modules/sticker/categories/' . $startCategory . '.json';
 
         if (file_exists($filename) === false) {
             return false;
@@ -143,7 +143,7 @@ class StickerCategory extends PrestashopConnection
      */
     private static function cacheCategoryTree(array $categories, int $startCategory): void
     {
-        $filename = 'cache/modules/sticker/categories/' . $startCategory . '.json';
+        $filename = 'storage/cache/modules/sticker/categories/' . $startCategory . '.json';
 
         if (is_writable($filename) === false) {
             return;
