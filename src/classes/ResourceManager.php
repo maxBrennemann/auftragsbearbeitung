@@ -82,7 +82,7 @@ class ResourceManager
                 self::close();
                 // no break
             case "favicon.ico":
-                require_once "files/assets/favicon.php";
+                require_once "public/assets/favicon.php";
                 self::close();
                 // no break
             case "events":
@@ -155,7 +155,7 @@ class ResourceManager
             $filePath = $routes[$page]['file'];
             $pageName = $routes[$page]['name'] ?? ucfirst($page);
         } else {
-            $candidateFile = "./files/pages/$page.php";
+            $candidateFile = "./public/pages/$page.php";
 
             if (file_exists($candidateFile)) {
                 $filePath = "$page.php";
@@ -163,21 +163,21 @@ class ResourceManager
             }
         }
 
-        if (!$filePath || !file_exists("./files/pages/$filePath")) {
+        if (!$filePath || !file_exists("./public/pages/$filePath")) {
             http_response_code(404);
             $filePath = '404.php';
             $pageName = 'Page not found';
         }
 
-        insertTemplate("./files/layout/header.php", [
+        insertTemplate("./public/layout/header.php", [
             "pageName" => $pageName,
             "page" => $page,
             "jsPage" => $page == "" ? "home" : $page,
         ]);
 
-        insertTemplate("./files/pages/$filePath");
+        insertTemplate("./public/pages/$filePath");
 
-        insertTemplate("./files/layout/footer.php", [
+        insertTemplate("./public/layout/footer.php", [
             "calcDuration" => $_ENV["DEV_MODE"],
         ]);
     }
@@ -270,7 +270,7 @@ class ResourceManager
 
     public static function getFileNameWithHash(string $file, string $type = "file"): string
     {
-        $json = @file_get_contents("./files/res/assets/.vite/manifest.json");
+        $json = @file_get_contents("./public/res/assets/.vite/manifest.json");
 
         if ($json == false) {
             return "";
@@ -322,9 +322,9 @@ class ResourceManager
         $fileName = Link::getFilePath($upload, "upload");
 
         if (!file_exists($fileName)) {
-            $mime_type = $finfo->file("files/assets/img/default_image.png");
+            $mime_type = $finfo->file("public/assets/img/default_image.png");
             header("Content-type:$mime_type");
-            echo file_get_contents("files/assets/img/default_image.png");
+            echo file_get_contents("public/assets/img/default_image.png");
             return;
         }
 
@@ -371,7 +371,7 @@ class ResourceManager
 
     private static function get_image(string $file): void
     {
-        $filePath = "files/assets/img" . $file;
+        $filePath = "public/assets/img" . $file;
         header("Content-type: " .  mime_content_type($filePath));
         $file = file_get_contents($filePath);
 

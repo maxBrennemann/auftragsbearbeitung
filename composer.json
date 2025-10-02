@@ -1,11 +1,8 @@
 {
     "require": {
-        "masterminds/html5": "^2.0",
         "tecnickcom/tcpdf": "^6.2.13",
         "prestashop/prestashop-webservice-lib": "dev-master",
-        "matthiasmullie/minify": "^1.3",
         "guzzlehttp/guzzle": "7.9.3",
-        "robmorgan/phinx": "0.x-dev",
         "google/apiclient": "^2.12.1",
         "symfony/dotenv": "7.0.x-dev",
         "max/php-utilities": "1.2",

@@ -4,10 +4,10 @@ import path from 'path';
 const config: Config = {
     mode: 'jit',
     content: [
-        path.resolve(__dirname, '../files/pages/*.php'),
-        path.resolve(__dirname, '../files/views/*.php'),
-        path.resolve(__dirname, '../files/layout/*.php'),
-        path.resolve(__dirname, '../files/res/js/**/*.{js,ts}'),
+        path.resolve(__dirname, '../public/pages/*.php'),
+        path.resolve(__dirname, '../public/views/*.php'),
+        path.resolve(__dirname, '../public/layout/*.php'),
+        path.resolve(__dirname, '../public/res/js/**/*.{js,ts}'),
         path.resolve(__dirname, '../classes/**/*.{html,js,php}'),
         path.resolve(__dirname, '../node_modules/js-classes/**/*.{js,ts}'), // TODO: compile tailwind in package
     ],

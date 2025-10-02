@@ -30,17 +30,17 @@ storage/cache/*
 storage/generated/*
 !storage/generated/.gitkeep
 
-files/res/js/classes/tableconfig.js
+public/res/js/classes/tableconfig.js
 
 # minimized files
-files/res/assets/*
+public/res/assets/*
 
 # upload
 storage/upload/*
 !storage/upload/.gitkeep
 
 # misc
-files/assets/forms/modules/sticker/catalog_products.csv
+publics/assets/forms/modules/sticker/catalog_products.csv
 .git.bfg-report
 favicon.ico
 storage/logs/protocol.txt

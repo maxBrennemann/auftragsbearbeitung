@@ -101,7 +101,7 @@ function captureError(): void
         ]);
     }
 
-    insertTemplate("./files/layout/footer.php", [
+    insertTemplate("./public/layout/footer.php", [
         "calcDuration" => $_ENV["DEV_MODE"],
         "errorTemplate" => $errorTempalte,
     ]);

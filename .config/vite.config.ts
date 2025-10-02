@@ -59,7 +59,7 @@ if (fs.existsSync(keyPath) && fs.existsSync(certPath)) {
 export default defineConfig({
     plugins: [jsToTsRedirectPlugin()],
 
-    root: path.resolve(__dirname, "files/res/js"),
+    root: path.resolve(__dirname, "public/res/js"),
 
     css: {
         postcss
@@ -84,7 +84,7 @@ export default defineConfig({
         emptyOutDir: true,
         manifest: true,
         rollupOptions: {
-            input: getJsEntries(path.resolve(__dirname, 'files/res/js')),
+            input: getJsEntries(path.resolve(__dirname, 'public/res/js')),
             output: {
                 entryFileNames: `[name].[hash].js`,
                 chunkFileNames: `common.[hash].js`,

@@ -6,5 +6,5 @@ if (strpos($_SERVER["HTTP_USER_AGENT"], "MSIE") !== false
     readfile("./favicon.ico");
 } else {
     header("Content-Type: image/png");
-    readfile("./files/assets/img/favicon.png");
+    readfile("./public/assets/img/favicon.png");
 }

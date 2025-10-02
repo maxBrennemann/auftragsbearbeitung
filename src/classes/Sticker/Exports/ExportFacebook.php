@@ -294,7 +294,7 @@ class ExportFacebook extends PrestashopConnection
         $export = new ExportFacebook();
         $export->generateCSV();
         $filename = $export->getFilename();
-        $fileLink = $_ENV["REWRITE_BASE"] . "files/assets/forms/generated/" . $filename;
+        $fileLink = $_ENV["REWRITE_BASE"] . "public/assets/forms/generated/" . $filename;
 
         JSONResponseHandler::sendResponse([
             "status" => "successful",

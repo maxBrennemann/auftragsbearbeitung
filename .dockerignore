@@ -27,10 +27,10 @@ storage/cache/*
 storage/generated/*
 !storage/generated/.gitkeep
 
-files/res/js/classes/tableconfig.js
+public/res/js/classes/tableconfig.js
 
 # minimized files
-files/res/assets/*
+public/res/assets/*
 
 # upload
 storage/upload/*
@@ -45,7 +45,7 @@ database/legacy_sql
 database/versions
 
 #misc
-files/assets/forms/modules/sticker/catalog_products.csv
+public/assets/forms/modules/sticker/catalog_products.csv
 .git.bfg-report
 storage/logs/protocol.txt
 README.md
