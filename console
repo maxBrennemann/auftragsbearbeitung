@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-require_once "helpers/settings.php";
+require_once "src/settings.php";
 
 use Symfony\Component\Console\Application;
 use Classes\Commands\CreateMigration;

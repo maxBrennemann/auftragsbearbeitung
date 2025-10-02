@@ -45,7 +45,8 @@
     "autoload": {
         "psr-4": {
             "Classes\\": "classes/",
-            "Upgrade\\": "upgrade/"
+            "Migrations\\": "database/Migrations/",
+            "Src\\": "src/"
         }
     }
 }

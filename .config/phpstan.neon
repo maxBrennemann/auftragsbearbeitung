@@ -3,8 +3,8 @@ parameters:
   level: 7
   paths:
     - classes
-    - helpers
-    - index.php
+    - src
+    - public/index.php
 
   excludePaths:
     analyse:

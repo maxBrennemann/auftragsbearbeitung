@@ -145,7 +145,7 @@ class ResourceManager
 
     public static function showPage(): void
     {
-        $routes = require "helpers/web-routes.php";
+        $routes = require "src/web-routes.php";
         $page = self::$page;
 
         $filePath = "";

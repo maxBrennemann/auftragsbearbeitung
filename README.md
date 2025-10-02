@@ -22,9 +22,9 @@ To install the Invoice and Order Management System, follow these steps:
 
 Download the project files and extract them to your local machine.
 Upload the files to your web server.
-Configure the database settings in the helpers/settings.php file.
+Configure the database settings in the src/settings.php file.
 Import the auftragsmanager.sql file into your database.
-Start using the application by navigating to the index.php file in your web browser.
+Start using the application by navigating to your domain/ local dev in your web browser.
 
 An installer is currently under development!
 

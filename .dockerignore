@@ -7,7 +7,7 @@ auftragsbearbeitung.code-workspace
 
 # settings and config files
 .htaccess
-.env
+.config/.env
 node_modules
 vendor
 .config/install/install.lock

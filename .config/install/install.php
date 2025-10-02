@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $envTemplate
         );
 
-        if (file_put_contents('/.env', $envContent) === false) {
+        if (file_put_contents('/.config/.env', $envContent) === false) {
             $errors[] = "Failed to write .env file.";
         }
 
