@@ -9,7 +9,7 @@ use RuntimeException;
 
 class UploadHandler
 {
-    private string $uploadBaseDir = "upload";
+    private string $uploadBaseDir = "storage/upload";
     /** @var string[] */
     private array $allowedMimeTypes = [];
     private int $maxFileSize = 25000000;
@@ -21,7 +21,7 @@ class UploadHandler
      * @param int $maxFileSize
      * @param int $fileUploadLimit
      */
-    public function __construct(string $uploadBaseDir = "upload", array $allowedMimeTypes = [
+    public function __construct(string $uploadBaseDir = "storage/upload", array $allowedMimeTypes = [
         "application/pdf",
         "image/png",
         "image/jpg",
@@ -166,8 +166,8 @@ class UploadHandler
         $dbFileNames = array_map(fn ($row) => $row["dateiname"], $dbFiles);
         $dbFileNames[] = ".gitkeep";
 
-        self::deleteUnusedFilesInDirectory("upload", $dbFileNames, $deletedFiles);
-        self::deleteUnusedFilesInDirectory("generated", $dbFileNames, $deletedFiles);
+        self::deleteUnusedFilesInDirectory("storage/upload", $dbFileNames, $deletedFiles);
+        self::deleteUnusedFilesInDirectory("storage/generated", $dbFileNames, $deletedFiles);
 
         JSONResponseHandler::sendResponse([
             "deleted_count" => count($deletedFiles),
@@ -239,21 +239,21 @@ class UploadHandler
 
     private static function adjustFileName(string $fileName): string|bool
     {
-        if (!file_exists("upload/" . $fileName)) {
+        if (!file_exists("storage/upload/" . $fileName)) {
             return false;
         }
 
-        $hash = hash_file("sha256", "upload/" . $fileName);
+        $hash = hash_file("sha256", "storage/upload/" . $fileName);
         $subDir = substr($hash, 0, 2) . "/" . substr($hash, 2, 2);
-        $uploadDir = "upload/" . $subDir;
+        $uploadDir = "storage/upload/" . $subDir;
 
-        $extension = strtolower(pathinfo("upload/" . $fileName, PATHINFO_EXTENSION));
+        $extension = strtolower(pathinfo("storage/upload/" . $fileName, PATHINFO_EXTENSION));
         $safeFileName = $hash . ($extension ? "." . $extension : "");
 
         $destination = $uploadDir . "/" . $safeFileName;
 
         if (!file_exists($destination)) {
-            rename("upload/" . $fileName, $destination);
+            rename("storage/upload/" . $fileName, $destination);
         }
 
         return $safeFileName;

@@ -162,7 +162,7 @@ class Config
     {
         $paths = [
             "upload/",
-            "generated/",
+            "storage/generated/",
         ];
         $data = [
             "count" => 0,

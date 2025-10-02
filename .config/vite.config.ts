@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import postcss from './.config/postcss.config.ts';
+import postcss from './postcss.config.ts';
 import type { ServerOptions } from 'vite';
 import type { Plugin } from 'vite';
 
@@ -30,8 +30,8 @@ function jsToTsRedirectPlugin(): Plugin {
     }
 }
 
-function getJsEntries(dir) {
-    const entries = {};
+function getJsEntries(dir: string): Record<string, string> {
+    const entries: Record<string, string> = {};
     const files = fs.readdirSync(dir);
     files.forEach(file => {
         if (file.endsWith('.js') || file.endsWith('.ts')) {

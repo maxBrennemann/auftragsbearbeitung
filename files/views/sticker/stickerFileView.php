@@ -13,7 +13,7 @@ use Classes\Project\Icon;
     <?php endforeach; ?>
     <?php foreach ($files as $file): ?>
         <?php
-            $type = pathinfo("upload/" . $file["dateiname"])["extension"];
+            $type = pathinfo("storage/upload/" . $file["dateiname"])["extension"];
         $icon = Icon::getDefault("iconFile");
         $link = Link::getResourcesShortLink($file["dateiname"], "upload");
         $originalname = $file["alt"] ?: "ohne Name";

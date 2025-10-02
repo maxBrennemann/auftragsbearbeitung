@@ -615,7 +615,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         for ($i = 0; $i < sizeof($files); $i++) {
             $link = Link::getResourcesShortLink($files[$i]['Datei'], "upload");
 
-            $filePath = "upload/" . $files[$i]['Datei'];
+            $filePath = "storage/upload/" . $files[$i]['Datei'];
 
             if (file_exists($filePath) 
                 && (@exif_imagetype($filePath) != false)

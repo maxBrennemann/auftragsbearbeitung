@@ -6,11 +6,11 @@ class Protocol
 {
     /** @var resource|null */
     private static $file;
-    private static string $filePath = "protocol.txt";
+    private static string $filePath = "storage/logs/protocol.txt";
     private static int $maxSize = 10 * 1024 * 1024;
     private static bool $logToConsole = false;
 
-    public static function configure(string $filePath = "protocol.txt", bool $logToConsole = false): void
+    public static function configure(string $filePath = "storage/logs/protocol.txt", bool $logToConsole = false): void
     {
         self::$filePath = $filePath;
         self::$logToConsole = $logToConsole;
@@ -31,7 +31,7 @@ class Protocol
     }
 
     /**
-     * Writes a given string to the protocol.txt file
+     * Writes a given string to the protocol file
      *
      * @param $text string
      */
@@ -54,7 +54,7 @@ class Protocol
     }
 
     /**
-     * Closes the protocol.txt file
+     * Closes the protocol file
      */
     public static function close(): void
     {

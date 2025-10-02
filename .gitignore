@@ -27,8 +27,8 @@ storage/cache/*
 .php-cs-fixer.cache
 
 # generated files
-generated/*
-!generated/.gitkeep
+storage/generated/*
+!storage/generated/.gitkeep
 
 files/res/js/classes/tableconfig.js
 
@@ -36,11 +36,11 @@ files/res/js/classes/tableconfig.js
 files/res/assets/*
 
 # upload
-upload/*
-!upload/.gitkeep
+storage/upload/*
+!storage/upload/.gitkeep
 
 # misc
 files/assets/forms/modules/sticker/catalog_products.csv
 .git.bfg-report
 favicon.ico
-protocol.txt
+storage/logs/protocol.txt

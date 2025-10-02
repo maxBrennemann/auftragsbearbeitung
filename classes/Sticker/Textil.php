@@ -125,7 +125,7 @@ class Textil extends Sticker
     {
         $url = $this->url . "?upload=svg&id=" . $this->idProduct;
         $currentSVG = $this->getCurrentSVG();
-        $filename = "upload/" . $currentSVG["dateiname"];
+        $filename = "storage/upload/" . $currentSVG["dateiname"];
         $cImage = new \CurlFile($filename, 'image/svg+xml', "image");
 
         $ch = curl_init();

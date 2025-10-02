@@ -13,9 +13,9 @@
     "vite": "^7.0.0"
   },
   "scripts": {
-    "dev": "./console autoUpgrade --skip-migration & vite",
+    "dev": "./console autoUpgrade --skip-migration & vite --config .config/vite.config.js",
     "dev:debug-css": "./console autoUpgrade --skip-migration & VITE_DEBUG_CSS=true vite",
-    "build": "vite build",
+    "build": "vite build --config .config/vite.config.js",
     "mysqldump": "mysqldump --no-data --routines --triggers -u auftragsmanager -p auftragsbearbeitung --host 127.0.0.1 > database/versions/1.2.2/schema.sql",
     "lint": "eslint . --ext .js,.ts --config .config/formatter/eslint.config.js",
     "lint:fix": "eslint . --ext .js,.ts --fix --config .config/formatter/eslint.config.js",

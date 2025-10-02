@@ -40,7 +40,7 @@ class ClientSettings
         $password = $_ENV["DB_PASSWORD"];
         $result = DBAccess::EXPORT_DATABASE($host, $username, $password, $database, false, false, false);
 
-        $filePath = "generated/";
+        $filePath = "storage/generated/";
         $fileName = date("d-m-Y_h-i-s") . ".sql";
         file_put_contents($filePath . $fileName, $result);
 
@@ -57,14 +57,14 @@ class ClientSettings
             JSONResponseHandler::throwError(500, "Unable to zip files.");
         }
 
-        $filePath = "generated/";
+        $filePath = "storage/generated/";
         $fileName = date("d-m-Y_h-i-s") . ".zip";
         $zip = new ZipArchive();
         if (!$zip->open($filePath . $fileName, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
             JSONResponseHandler::throwError(500, "Unable to zip files.");
         }
 
-        $sourceDir = realpath("upload/");
+        $sourceDir = realpath("storage/upload/");
         $files = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($sourceDir, \RecursiveDirectoryIterator::SKIP_DOTS),
             \RecursiveIteratorIterator::LEAVES_ONLY

@@ -57,12 +57,12 @@ class Link
                 break;
             case "upload":
                 $subDir = substr($resource, 0, 2) . "/" . substr($resource, 2, 2);
-                $link = "upload/" . $subDir . "/" . $resource;
+                $link = "storage/upload/" . $subDir . "/" . $resource;
                 break;
             case "csv":
             case "backup":
             case "pdf":
-                $link = "generated/" . $resource;
+                $link = "storage/generated/" . $resource;
                 break;
             default:
                 $link = "";

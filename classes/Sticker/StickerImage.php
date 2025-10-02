@@ -68,7 +68,7 @@ class StickerImage extends PrestashopConnection
         $this->allFiles = $allFiles;
         foreach ($this->allFiles as $f) {
             /* https://stackoverflow.com/questions/15408125/php-check-if-file-is-an-image */
-            $fileName = "upload/" . $f["dateiname"];
+            $fileName = "storage/upload/" . $f["dateiname"];
             if (!file_exists($fileName)) {
                 continue;
             }
@@ -240,7 +240,7 @@ class StickerImage extends PrestashopConnection
 
         $this->svgs = $svgs;
         if (sizeof($svgs) > $number) {
-            return "upload/" . $svgs[$number]["dateiname"];
+            return "storage/upload/" . $svgs[$number]["dateiname"];
         }
 
         return "";
@@ -407,7 +407,7 @@ class StickerImage extends PrestashopConnection
         $files = [];
 
         foreach ($imageURLs as $i) {
-            $path = "upload/" . $i["dateiname"];
+            $path = "storage/upload/" . $i["dateiname"];
             $files[] = [
                 'name' => 'image[]',
                 'contents' => fopen($path, 'r'),

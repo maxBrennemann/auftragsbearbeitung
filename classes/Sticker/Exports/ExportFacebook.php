@@ -248,7 +248,7 @@ class ExportFacebook extends PrestashopConnection
      */
     private function generateFile(array $lines, string $filename): void
     {
-        $path = "generated/";
+        $path = "storage/generated/";
         $file = fopen($path . $filename, 'w');
 
         $firstLine = array_keys($this->line);

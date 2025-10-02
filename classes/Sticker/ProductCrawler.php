@@ -201,7 +201,7 @@ class ProductCrawler extends PrestashopConnection
         curl_close($ch);
 
         $filename = $idProduct . "_" . $idMotiv . "_" . $idImage . ".jpg";
-        $fp = fopen("upload/$filename", 'w');
+        $fp = fopen("storage/upload/$filename", 'w');
         fwrite($fp, $image);
         fclose($fp);
 
