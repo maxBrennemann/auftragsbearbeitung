@@ -1,6 +1,0 @@
-Certbot Installation ToDos:
-    - Certbot braucht nginx zum Laufen
-    - Nginx braucht Dummy Zertifikate zum Laufen
-    - Dummy Zertifikate erstellen, nginx starten und Certbot erster Run
-    - Certbot in Loop laufen lasssen
-    - nginx Dummy Zertifikate ersetzen
