@@ -8,7 +8,7 @@ const config: Config = {
         path.resolve(__dirname, '../public/views/*.php'),
         path.resolve(__dirname, '../public/layout/*.php'),
         path.resolve(__dirname, '../public/res/js/**/*.{js,ts}'),
-        path.resolve(__dirname, '../classes/**/*.{html,js,php}'),
+        path.resolve(__dirname, '../src/**/*.{html,js,php}'),
         path.resolve(__dirname, '../node_modules/js-classes/**/*.{js,ts}'), // TODO: compile tailwind in package
     ],
     theme: {

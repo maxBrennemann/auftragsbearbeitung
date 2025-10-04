@@ -2,7 +2,7 @@
 
 namespace Src\Classes\Controller;
 
-use Src\Classes\Project\Config;
+use Src\Classes\Project\Settings;
 use Src\Classes\Project\TimeTracking;
 use Src\Classes\Project\User;
 use MaxBrennemann\PhpUtilities\DBAccess;
@@ -117,7 +117,7 @@ class TimeTrackingController
      */
     public static function toggleDisplayTimeTracking(): void
     {
-        $value = Config::toggle("showTimeGlobal");
+        $value = Settings::toggle("showTimeGlobal");
         JSONResponseHandler::sendResponse([
             "status" => "success",
             "display" => $value,

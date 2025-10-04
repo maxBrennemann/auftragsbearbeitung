@@ -228,7 +228,7 @@ class User
     {
         $data = DBAccess::selectQuery("SELECT * FROM user ORDER BY id ASC;");
 
-        require_once "src/table-config.php";
+        require_once "../src/table-config.php";
         $header = getTableConfig()["user"];
         $options = [
             "link" => "/mitarbeiter?id=",

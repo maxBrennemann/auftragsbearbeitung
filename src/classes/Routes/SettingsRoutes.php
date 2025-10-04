@@ -8,11 +8,11 @@ class SettingsRoutes extends Routes
 {
     /**
      * @uses Classes\Project\Icon::ajaxIcon()
-     * @uses Classes\Project\Config::getFilesInfo()
+     * @uses Classes\Project\FileStats::getFilesInfo()
      */
     protected static $getRoutes = [
         "/settings/icon/{name}" => [\Src\Classes\Project\Icon::class, "ajaxIcon"],
-        "/settings/files/info" => [\Src\Classes\Project\Config::class, "getFilesInfo"],
+        "/settings/files/info" => [\Src\Classes\Project\FileStats::class, "getFilesInfo"],
     ];
 
     /**
@@ -30,13 +30,13 @@ class SettingsRoutes extends Routes
      * @uses Classes\Controller\TimeTrackingController::toggleDisplayTimeTracking()
      * @uses Classes\Project\ClientSettings::setFilterOrderPosten()
      * @uses Classes\Project\CacheManager::toggleCache()
-     * @uses Classes\Project\Config::updateConfig()
+     * @uses Classes\Project\Settings::updateConfig()
      */
     protected static $putRoutes = [
         "/settings/global-timetracking" => [\Src\Classes\Controller\TimeTrackingController::class, "toggleDisplayTimeTracking"],
         "/settings/filter-order-posten" => [\Src\Classes\Project\ClientSettings::class, "setFilterOrderPosten"],
         "/settings/cache" => [\Src\Classes\Project\CacheManager::class, "toggleCache"],
-        "/settings/config/{configName}" => [\Src\Classes\Project\Config::class, "updateConfig"],
+        "/settings/config/{configName}" => [\Src\Classes\Project\Settings::class, "updateConfig"],
     ];
 
     /**

@@ -228,7 +228,7 @@ class Kunde implements StatisticsInterface
         }
 
         ob_start();
-        insertTemplate("public/views/orderCardView.php", [
+        insertTemplate("../public/views/orderCardView.php", [
             "orders" => $orders,
         ]);
         $content = ob_get_clean();

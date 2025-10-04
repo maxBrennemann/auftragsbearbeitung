@@ -5,7 +5,7 @@ namespace Src\Classes\Project;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
-require_once "src/table-config.php";
+require_once "../src/table-config.php";
 
 class Test
 {

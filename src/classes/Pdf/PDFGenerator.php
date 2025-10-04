@@ -2,7 +2,7 @@
 
 namespace Src\Classes\Pdf;
 
-use Src\Classes\Project\Config;
+use Src\Classes\Project\CompanyProfile;
 use TCPDF;
 
 class PDFGenerator extends TCPDF
@@ -24,7 +24,7 @@ class PDFGenerator extends TCPDF
         parent::__construct("p", "mm", "A4");
         $this->title = $title;
 
-        $this->companyDetails = Config::getCompanyDetails();
+        $this->companyDetails = CompanyProfile::get();
     }
 
     public function generate(): void

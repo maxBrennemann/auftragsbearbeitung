@@ -6,7 +6,7 @@ RUN=docker compose run --rm
 
 # Core
 setup:
-	cp .config/.env.example .config/.env
+	cp .config/.env.example .env
 	cp .config/.htaccess.example .htaccess
 
 install-dependencies:

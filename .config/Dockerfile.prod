@@ -9,7 +9,7 @@ RUN composer install \
     --no-scripts \
     --no-progress \
     --optimize-autoloader
-COPY .config/.env.example .config/.env
+COPY .config/.env.example .env
 COPY . .
 
 RUN ./console autoupgrade --skip-migration 

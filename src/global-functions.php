@@ -1,7 +1,7 @@
 <?php
 
-define('CURRENTVERSION', '1.2.2');
-ini_set('display_errors', true);
+define("CURRENTVERSION", "1.2.2");
+ini_set("display_errors", true);
 
 use Src\Classes\Controller\TemplateController;
 use MaxBrennemann\PhpUtilities\DBAccess;
@@ -101,7 +101,7 @@ function captureError(): void
         ]);
     }
 
-    insertTemplate("./public/layout/footer.php", [
+    insertTemplate("../public/layout/footer.php", [
         "calcDuration" => $_ENV["DEV_MODE"],
         "errorTemplate" => $errorTempalte,
     ]);

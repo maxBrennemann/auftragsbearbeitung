@@ -45,12 +45,12 @@ class TemplateController
      */
     private static function buildTemplate(string $template, array $params): string
     {
-        if (!file_exists("public/views/{$template}View.php")) {
+        if (!file_exists("../public/views/{$template}View.php")) {
             throw new \Exception("Template not found");
         }
 
         ob_start();
-        insertTemplate("public/views/{$template}View.php", $params);
+        insertTemplate("../public/views/{$template}View.php", $params);
         $content = ob_get_clean();
 
         if ($content === false) {

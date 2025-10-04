@@ -5,7 +5,7 @@ namespace Src\Classes\Pdf\TransactionPdf;
 use Src\Classes\Pdf\PDFGenerator;
 use Src\Classes\Pdf\PDFTexts;
 use Src\Classes\Project\Auftrag;
-use Src\Classes\Project\Config;
+use Src\Classes\Project\CompanyProfile;
 use Src\Classes\Project\Kunde;
 
 class TransactionPDF extends PDFGenerator
@@ -35,7 +35,7 @@ class TransactionPDF extends PDFGenerator
         $this->order = new Auftrag($orderId);
         $this->customer = new Kunde($this->order->getKundennummer());
 
-        $this->companyDetails = Config::getCompanyDetails();
+        $this->companyDetails = CompanyProfile::get();
     }
 
     public function generate(): void

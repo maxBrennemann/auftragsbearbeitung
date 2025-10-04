@@ -16,7 +16,7 @@
             </div>
             <div class="mt-1 flex flex-col">
                 <span>Stundenlohn [€]:</span>
-                <input class="input-primary mt-1" id="wage" type="number" value="<?= \Src\Classes\Project\Config::get("defaultWage") ?>">
+                <input class="input-primary mt-1" id="wage" type="number" value="<?= \Src\Classes\Project\Settings::get("defaultWage") ?>">
             </div>
             <div class="mt-1 flex flex-col">
                 <span>Beschreibung:</span>

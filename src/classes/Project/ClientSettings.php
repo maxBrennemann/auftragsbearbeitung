@@ -13,7 +13,7 @@ class ClientSettings
     public static function getFilterOrderPosten(): bool
     {
         $userId = User::getCurrentUserId();
-        $value = Config::get("filterOrderPosten_$userId");
+        $value = Settings::get("filterOrderPosten_$userId");
 
         if ($value == "true") {
             return true;
@@ -27,7 +27,7 @@ class ClientSettings
         $setTo = Tools::get("value");
         $userId = $_SESSION["user_id"];
 
-        Config::set("filterOrderPosten_$userId", $setTo);
+        Settings::set("filterOrderPosten_$userId", $setTo);
 
         JSONResponseHandler::returnOK();
     }
@@ -97,7 +97,7 @@ class ClientSettings
     {
         $query = "SELECT dateiname FROM dateien WHERE id = :id";
         $data = DBAccess::selectQuery($query, [
-            "id" => Config::get("companyLogo"),
+            "id" => Settings::get("companyLogo"),
         ]);
 
         return $data[0]["dateiname"] ?? "";
@@ -116,7 +116,7 @@ class ClientSettings
             JSONResponseHandler::throwError(422, "unsupported file type");
         }
 
-        Config::set("companyLogo", $fileData[0]["id"]);
+        Settings::set("companyLogo", $fileData[0]["id"]);
 
         JSONResponseHandler::sendResponse([
             "logoId" => $fileData[0]["id"],

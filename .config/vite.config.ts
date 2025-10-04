@@ -48,8 +48,8 @@ const __dirname = dirname(__filename);
 const projectRoot = __dirname;
 const httpsConfig: ServerOptions['https'] = {};
 
-const keyPath = path.resolve(projectRoot, ".config/certs/localhost-key.pem");
-const certPath = path.resolve(projectRoot, ".config/certs/localhost.pem");
+const keyPath = path.resolve(projectRoot, "./certs/localhost-key.pem");
+const certPath = path.resolve(projectRoot, "./certs/localhost.pem");
 
 if (fs.existsSync(keyPath) && fs.existsSync(certPath)) {
     httpsConfig.key = fs.readFileSync(keyPath);
@@ -59,7 +59,7 @@ if (fs.existsSync(keyPath) && fs.existsSync(certPath)) {
 export default defineConfig({
     plugins: [jsToTsRedirectPlugin()],
 
-    root: path.resolve(__dirname, "public/res/js"),
+    root: path.resolve(__dirname, "../public/res/js"),
 
     css: {
         postcss
@@ -80,11 +80,11 @@ export default defineConfig({
     },
 
     build: {
-        outDir: "../assets",
+        outDir: "../../assets",
         emptyOutDir: true,
         manifest: true,
         rollupOptions: {
-            input: getJsEntries(path.resolve(__dirname, 'public/res/js')),
+            input: getJsEntries(path.resolve(__dirname, '../public/res/js')),
             output: {
                 entryFileNames: `[name].[hash].js`,
                 chunkFileNames: `common.[hash].js`,

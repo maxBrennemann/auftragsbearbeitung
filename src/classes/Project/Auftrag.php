@@ -458,7 +458,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         ]);
 
         ob_start();
-        insertTemplate('public/views/colorView.php', [
+        insertTemplate('../public/views/colorView.php', [
             "colors" => $colors,
         ]);
 

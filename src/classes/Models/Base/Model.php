@@ -51,7 +51,7 @@ class Model
      */
     protected static function getTableConfig(): array
     {
-        require_once "src/table-config.php";
+        require_once "../src/table-config.php";
         return getTableConfig();
     }
 

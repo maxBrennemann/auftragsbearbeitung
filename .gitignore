@@ -7,7 +7,7 @@ auftragsbearbeitung.code-workspace
 
 # settings and config files
 .htaccess
-.config/.env
+.env
 node_modules
 vendor
 .config/install/install.lock
@@ -42,5 +42,6 @@ storage/upload/*
 # misc
 publics/assets/forms/modules/sticker/catalog_products.csv
 .git.bfg-report
-favicon.ico
+public/assets/img/favicon.ico
+public/assets/img/favicon.png
 storage/logs/protocol.txt
