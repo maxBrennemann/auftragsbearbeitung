@@ -130,7 +130,7 @@ class Fahrzeug
         $idVehicle = Tools::get("vehicleId");
         $orderId = Tools::get("id");
 
-        $uploadHandler = new UploadHandler("storage/upload", [
+        $uploadHandler = new UploadHandler("default", [
             "image/png",
             "image/jpg",
             "image/jpeg",

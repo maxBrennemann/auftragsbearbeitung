@@ -441,7 +441,7 @@ class StickerCollection implements \Iterator
         $idSticker = Tools::get("id");
         $type = Tools::get("type");
 
-        $uploadHandler = new UploadHandler("upload", [
+        $uploadHandler = new UploadHandler("default", [
             "image/png",
             "image/jpg",
             "image/jpeg",

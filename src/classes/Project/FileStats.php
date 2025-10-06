@@ -33,8 +33,8 @@ class FileStats
     public static function getFilesInfo(): void
     {
         $paths = [
-            "upload/",
-            "storage/generated/",
+            Config::get('paths.uploadDir.default'),
+            Config::get('paths.generatedDir'),
         ];
         $data = [
             "count" => 0,

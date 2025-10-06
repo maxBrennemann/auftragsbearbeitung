@@ -2,6 +2,8 @@
 
 namespace Src\Classes;
 
+use Src\Classes\Project\Config;
+
 class Link
 {
     public string $baseLink;
@@ -57,12 +59,12 @@ class Link
                 break;
             case "upload":
                 $subDir = substr($resource, 0, 2) . "/" . substr($resource, 2, 2);
-                $link = "storage/upload/" . $subDir . "/" . $resource;
+                $link = Config::get('paths.uploadDir.default') . $subDir . "/" . $resource;
                 break;
             case "csv":
             case "backup":
             case "pdf":
-                $link = "storage/generated/" . $resource;
+                $link = Config::get('paths.generatedDir') . $resource;
                 break;
             default:
                 $link = "";

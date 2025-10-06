@@ -105,7 +105,7 @@ class ClientSettings
 
     public static function addLogo(): void
     {
-        $uploadHandler = new UploadHandler("upload", [
+        $uploadHandler = new UploadHandler("default", [
             "image/png",
             "image/jpg",
             "image/jpeg",

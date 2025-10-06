@@ -31,4 +31,19 @@ class Config
         return $value;
     }
 
+    public static function getGroup(string $key): array
+    {
+        $keys = explode('.', $key);
+        $value = self::$config;
+
+        foreach ($keys as $k) {
+            if (!is_array($value) || !array_key_exists($k, $value)) {
+                return [];
+            }
+            $value = $value[$k];
+        }
+
+        return $value; 
+    }
+
 }

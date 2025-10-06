@@ -2,7 +2,7 @@
 
 namespace Src\Classes\Routes;
 
-use MaxBrennemann\PhpUtilities\Routes;
+use MaxBrennemann\PhpUtilities\Router\Routes;
 
 class OrderItemRoutes extends Routes
 {
