@@ -163,6 +163,14 @@ abstract class Posten
         return $items;
     }
 
+    protected static function getOrderItem(int $orderId, int $postenId): Leistung|ProduktPosten|Zeit|false
+    {
+        $data = Posten::getOrderItems($orderId);
+        $data = array_filter($data, 
+            fn($item) => $item->getPostennummer() == $postenId);
+        return reset($data);
+    }
+
     /**
      * @param string $type
      * @param array<string, mixed> $data

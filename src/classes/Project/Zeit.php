@@ -199,7 +199,7 @@ class Zeit extends Posten
         return $this->isInvoice;
     }
 
-    public function calculateDiscount(): float 
+    public function calculateDiscount(): float
     {
         return 0;
     }
@@ -293,7 +293,6 @@ class Zeit extends Posten
         }
 
         $orderId = (int) Tools::get("id");
-
         if ($orderId == 0) {
             return;
         }
@@ -301,10 +300,7 @@ class Zeit extends Posten
         $newOrder = new Auftrag($orderId);
         $price = $newOrder->preisBerechnen();
 
-        /* TODO: simplify this by helper function */
-        $data = Posten::getOrderItems($orderId);
-        $data = array_filter($data, fn($item) => $item->getPostennummer() == $ids[0]);
-        $data = reset($data);
+        $data = self::getOrderItem($orderId, $ids[0]);
         if ($data === false || !$data instanceof Zeit) {
             return;
         }

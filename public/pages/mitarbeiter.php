@@ -2,14 +2,18 @@
 // TODO: show time tracking and order history
 
 use Src\Classes\Project\User;
+use MaxBrennemann\PhpUtilities\Tools;
 
-$user = null;
+$user;
 $showUserList = true;
-if (isset($_GET["id"])) {
-    $user = new User($_GET["id"]);
+$userId = Tools::get("id");
+
+if ($userId !== null) {
+    $user = new User($userId);
     $showUserList = false;
 } else {
-    $user = new User($_SESSION["user_id"]);
+    $userId = User::getCurrentUserId();
+    $user = new User($userId);
 }
 
 if ($showUserList) : ?>

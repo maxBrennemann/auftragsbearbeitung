@@ -239,10 +239,7 @@ class Leistung extends Posten
         $newOrder = new Auftrag($orderId);
         $price = $newOrder->preisBerechnen();
 
-        /* TODO: simplify this by helper function */
-        $data = Posten::getOrderItems($orderId);
-        $data = array_filter($data, fn($item) => $item->getPostennummer() == $ids[0]);
-        $data = reset($data);
+        $data = self::getOrderItem($orderId, $ids[0]);
         if ($data === false || !$data instanceof Leistung) {
             return;
         }

@@ -5,7 +5,7 @@ function addTagListeners() {
     });
 }
 
-function showUsges(e) {
+function showUsages(e: Event) {
     const tag = e.currentTarget;
     // TODO: implement tag usages
 }

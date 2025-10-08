@@ -3,7 +3,6 @@
     src:  url("../css/fonts/Raleway-Regular.ttf") format('truetype');
     font-weight: normal;
 }
-/* TODO: https://web.dev/defer-non-critical-css/ */
 
 :root {
     --main-table-color: #d8d8d8;
