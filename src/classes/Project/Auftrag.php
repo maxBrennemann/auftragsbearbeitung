@@ -42,7 +42,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         }
 
         $this->Auftragsnummer = $orderId;
-        $data = DBAccess::selectAllByCondition("auftrag", "Auftragsnummer", $orderId);
+        $data = DBAccess::selectAllByCondition("auftrag", "Auftragsnummer", (string) $orderId);
         $data = $data[0] ?? [];
 
         if (!empty($data)) {
@@ -216,7 +216,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         return $price;
     }
 
-    public function gewinnBerechnen(): int
+    public function gewinnBerechnen(): float
     {
         $price = 0;
         foreach ($this->Auftragsposten as $posten) {
@@ -314,7 +314,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 
     public static function getInvoicePostenTableAjax(): void
     {
-        $orderId = Tools::get("id");
+        $orderId = (int) Tools::get("id");
         $order = new Auftrag($orderId);
 
         JSONResponseHandler::sendResponse([
@@ -515,7 +515,11 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
             } elseif ($notes[$key]["date"] == date("Y-m-d", strtotime("-1 day"))) {
                 $notes[$key]["date"] = "Gestern";
             } else {
-                $notes[$key]["date"] = date("d.m.Y", strtotime($note["date"]));
+                $timestamp = strtotime($note["date"]);
+                if ($timestamp === false) {
+                    $timestamp = null;
+                }
+                $notes[$key]["date"] = date("d.m.Y", $timestamp);
             }
         }
 
@@ -677,9 +681,14 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 
         OrderHistory::add($this->Auftragsnummer, $noteId, OrderHistory::TYPE_NOTE, OrderHistory::STATE_ADDED, $note);
 
+        $timestamp = strtotime($date);
+        if ($timestamp === false) {
+            $timestamp = null;
+        }
+
         JSONResponseHandler::sendResponse([
             "success" => true,
-            "date" => date("d.m.Y", strtotime($date)),
+            "date" => date("d.m.Y", $timestamp),
             "id" => $noteId,
         ]);
     }
@@ -884,7 +893,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         $orders = [];
 
         foreach ($data as $row) {
-            $order = new Auftrag($row["Auftragsnummer"]);
+            $order = new Auftrag((int) $row["Auftragsnummer"]);
             $orders[] = $order->getOrderCardData();
         }
 

@@ -69,7 +69,7 @@ class StickerTagManager extends PrestashopConnection
         }
 
         $stickerTagManager = new StickerTagManager($id, $title);
-        $tagTemplate = \Classes\Controller\TemplateController::getTemplate("sticker/showTags", [
+        $tagTemplate = \Src\Classes\Controller\TemplateController::getTemplate("sticker/showTags", [
             "tags" => $stickerTagManager->tags,
             "suggestionTags" => $suggestionTags,
         ]);
@@ -345,7 +345,7 @@ class StickerTagManager extends PrestashopConnection
         $id = (int) Tools::get("id");
         $tag = Tools::get("tag");
 
-        if ($tag == null || $tag == "") {
+        if ($tag === null || $tag === "") {
             echo -1;
             return;
         }
@@ -397,7 +397,7 @@ class StickerTagManager extends PrestashopConnection
         $result = DBAccess::selectQuery($query, ["content" => $tagContent]);
 
         if ($result != null) {
-            return $result[0]["id"];
+            return (int) $result[0]["id"];
         }
         return -1;
     }

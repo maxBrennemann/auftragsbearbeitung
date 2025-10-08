@@ -117,7 +117,7 @@ class TransactionPDF extends PDFGenerator
             $height = $this->getStringHeight(0, $text);
 
             if ($height >= $lineheight) {
-                $addToOffset = +ceil($height);
+                $addToOffset += (int) ceil($height);
             } else {
                 $addToOffset += $lineheight;
             }

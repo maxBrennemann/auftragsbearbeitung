@@ -90,6 +90,9 @@ class UploadHandler
         }
 
         $hash = hash_file("sha256", $file["tmp_name"]);
+        if ($hash === false) {
+            throw new RuntimeException("File not found.");
+        }
         $subDir = substr($hash, 0, 2) . "/" . substr($hash, 2, 2);
         $uploadDir = $this->uploadBaseDir . "/" . $subDir;
 
@@ -126,7 +129,12 @@ class UploadHandler
     private static function detectMimeType(string $filePath): string
     {
         $finfo = new \finfo(FILEINFO_MIME_TYPE);
-        return $finfo->file($filePath);
+        $file = $finfo->file($filePath);
+
+        if ($file === false) {
+            return "";
+        }
+        return $file;
     }
 
     private function saveToDb(string $fileName, string $originalName, string $fileType): int
@@ -252,6 +260,10 @@ class UploadHandler
         }
 
         $hash = hash_file("sha256", $path . $fileName);
+        if ($hash === false) {
+            return false;
+        }
+
         $subDir = substr($hash, 0, 2) . "/" . substr($hash, 2, 2);
         $uploadDir = $path . $subDir;
 

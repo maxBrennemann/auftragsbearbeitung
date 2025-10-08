@@ -165,7 +165,7 @@ class Login
         ]);
 
         $duplicateDevice = self::checkDuplicateDevices($data);
-        if ($duplicateDevice != false) {
+        if ($duplicateDevice !== false) {
             $userAgentHash = $duplicateDevice["md_hash"];
         }
 
@@ -234,9 +234,9 @@ class Login
 
     /**
      * @param array<int, mixed> $list
-     * @return bool|array<string, mixed>
+     * @return false|array<string, mixed>
      */
-    private static function checkDuplicateDevices(array $list): bool|array
+    private static function checkDuplicateDevices(array $list): false|array
     {
         if (count($list) == 0) {
             return false;
@@ -313,7 +313,7 @@ class Login
                 return false;
             } else {
                 SessionController::login((int) $data[0]["user_id"]);
-                return self::getLoginKey($deviceId);
+                return self::getLoginKey((int) $deviceId);
             }
         } else {
             return false;

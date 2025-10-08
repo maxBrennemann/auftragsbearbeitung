@@ -1,5 +1,5 @@
 <?php
 
-require_once "src/settings.php";
+require_once ROOT . "../src/settings.php";
 
-\Classes\Cron\CronManager::run();
+\Src\Classes\Cron\CronManager::run();

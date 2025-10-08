@@ -82,7 +82,7 @@ class ResourceManager
                 self::close();
                 // no break
             case "favicon.ico":
-                require_once "../public/assets/favicon.php";
+                require_once ROOT . "../public/assets/favicon.php";
                 self::close();
                 // no break
             case "events":
@@ -95,12 +95,14 @@ class ResourceManager
 
     public static function getParameters(): void
     {
-        if (file_get_contents("php://input") != "") {
-            $PHP_INPUT = json_decode(file_get_contents("php://input"), true);
+        $PHPInput = file_get_contents("php://input");
 
-            if ($PHP_INPUT != null) {
-                Tools::$data = array_merge(Tools::$data, $PHP_INPUT);
-                $_POST = array_merge($_POST, $PHP_INPUT);
+        if ($PHPInput !== "" && $PHPInput !== false) {
+            $parsedPHPInput = json_decode($PHPInput, true);
+
+            if ($parsedPHPInput !== null) {
+                Tools::$data = array_merge(Tools::$data, $parsedPHPInput);
+                $_POST = array_merge($_POST, $parsedPHPInput);
             }
         }
 
@@ -114,7 +116,10 @@ class ResourceManager
             case "PUT":
             case "DELETE":
                 /* https://stackoverflow.com/questions/20320634/how-to-get-put-delete-arguments-in-php */
-                parse_str(file_get_contents("php://input"), $_PUT);
+                if ($PHPInput === false) {
+                    return;
+                }
+                parse_str($PHPInput, $_PUT);
                 Tools::$data = array_merge(Tools::$data, $_PUT);
                 break;
         }
@@ -145,7 +150,7 @@ class ResourceManager
 
     public static function showPage(): void
     {
-        $routes = require "../src/web-routes.php";
+        $routes = require ROOT . "../src/web-routes.php";
         $page = self::$page;
 
         $filePath = "";
@@ -255,7 +260,7 @@ class ResourceManager
 
         /* quick workaround for font files accessed via css/font/ */
         $font = self::checkFont($fileName);
-        if ($font != false) {
+        if ($font !== false) {
             self::get_font($font);
             return;
         }
@@ -290,9 +295,9 @@ class ResourceManager
 
     /**
      * @param array<int, string> $fileName
-     * @return bool|string
+     * @return string|false
      */
-    private static function checkFont(array $fileName): bool|string
+    private static function checkFont(array $fileName): string|false
     {
         $len = count($fileName);
         $last = $fileName[$len - 1];
@@ -346,7 +351,12 @@ class ResourceManager
     private static function get_backup(string $backup): void
     {
         $file_info = new \finfo(FILEINFO_MIME_TYPE);
-        $mime_type = $file_info->buffer(file_get_contents(Link::getFilePath($backup, "backup")));
+        $fileContents = file_get_contents(Link::getFilePath($backup, "backup"));
+        if ($fileContents == false) {
+            return;
+        }
+
+        $mime_type = $file_info->buffer($fileContents);
 
         header("Content-type:$mime_type");
         $file = file_get_contents(Link::getFilePath($backup, "backup"));

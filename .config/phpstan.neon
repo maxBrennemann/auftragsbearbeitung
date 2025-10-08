@@ -2,15 +2,14 @@
 parameters:
   level: 7
   paths:
-    - classes
-    - src
-    - public/index.php
+    - ../src
+    - ../public/index.php
 
   excludePaths:
     analyse:
       - public/*
 
-  tmpDir: var/phpstan
+  tmpDir: ../var/phpstan
   parallel:
     maximumNumberOfProcesses: 2
 
@@ -19,5 +18,5 @@ parameters:
   reportUnmatchedIgnoredErrors: true
 
   bootstrapFiles:
-    - .config/stubs/constants.stub.php
-    - .config/stubs/types.stub.php
+    - ../.config/stubs/constants.stub.php
+    - ../.config/stubs/types.stub.php

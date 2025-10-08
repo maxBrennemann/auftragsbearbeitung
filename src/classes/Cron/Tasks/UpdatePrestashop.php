@@ -37,7 +37,9 @@ class UpdatePrestashop implements Queueable
                 ];
             }
 
-            Protocol::write("transfer sticker", json_encode($response), "INFO");
+            $parsedResponse = json_encode($response);
+            $parsedResponse = $parsedResponse === false ? "" : $parsedResponse;
+            Protocol::write("transfer sticker", $parsedResponse, "INFO");
 
             DBAccess::updateQuery("UPDATE task_executions SET `status` = :status, finished_at = :finishedAt WHERE id = :id", [
                 "status" => $response["status"],

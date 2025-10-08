@@ -56,6 +56,7 @@ class Angebot
         }
     }
 
+    /* 
     private function incPc(): int
     {
         $newPc = $this->getPc() + 1;
@@ -63,7 +64,7 @@ class Angebot
         return $newPc;
     }
 
-    /*     private function decPc()
+    private function decPc()
     {
         $newPc = $this->getPc() - 1;
         if ($newPc >= 0) {
@@ -114,11 +115,11 @@ class Angebot
      */
     public function addPosten(array $posten): void
     {
-        $postenId = $this->incPc();
+        /*$postenId = $this->incPc();
         $_SESSION['offer_' . $this->customerId . '_' . $postenId] = serialize($posten);
 
         echo $postenId;
-        array_push($this->posten, $posten);
+        array_push($this->posten, $posten);*/
     }
 
     /**
@@ -143,9 +144,7 @@ class Angebot
     {
         $customerId = (int) Tools::get("customerId");
         if ($customerId == 0) {
-            JSONResponseHandler::returnNotFound([
-                "error" => "No customer id given",
-            ]);
+            JSONResponseHandler::returnNotFound("No customer id given");
         }
 
         $offer = self::createNewOffer($customerId);

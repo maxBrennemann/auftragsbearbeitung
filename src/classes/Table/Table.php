@@ -58,9 +58,7 @@ class Table extends Model
         $tableConfig = $config[$table] ?? null;
 
         if (!$tableConfig) {
-            JSONResponseHandler::returnNotFound([
-                "error" => "Invalid table namne",
-            ]);
+            JSONResponseHandler::returnNotFound("Invalid table namne");
         }
 
         if (!self::checkPermissions($tableConfig, "read")) {
@@ -102,9 +100,7 @@ class Table extends Model
         $tableConfig = $config[$table] ?? null;
 
         if (!$tableConfig) {
-            JSONResponseHandler::returnNotFound([
-                "error" => "Invalid table namne",
-            ]);
+            JSONResponseHandler::returnNotFound("Invalid table namne");
         }
 
         if (!self::checkPermissions($tableConfig, "create")) {
@@ -128,9 +124,7 @@ class Table extends Model
         $tableConfig = $config[$table] ?? null;
 
         if (!$tableConfig) {
-            JSONResponseHandler::returnNotFound([
-                "error" => "Invalid table namne",
-            ]);
+            JSONResponseHandler::returnNotFound("Invalid table namne");
         }
 
         if (!self::checkPermissions($tableConfig, "update")) {
@@ -145,9 +139,7 @@ class Table extends Model
         $tableConfig = $config[$table] ?? null;
 
         if (!$tableConfig) {
-            JSONResponseHandler::returnNotFound([
-                "error" => "Invalid table namne",
-            ]);
+            JSONResponseHandler::returnNotFound("Invalid table namne");
         }
 
         if (!self::checkPermissions($tableConfig, "delete")) {

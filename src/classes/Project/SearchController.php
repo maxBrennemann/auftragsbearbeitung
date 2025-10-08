@@ -11,7 +11,7 @@ class SearchController
     /** @var array<string, mixed> */
     private array $searches = [];
 
-    /** @var array<int, array{data: mixed, type:string, score:int}> */
+    /** @var array<string, array<int, array{data: mixed, type:string, score:int}>> */
     private array $results = [];
     private int $limit = 15;
 

@@ -5,14 +5,13 @@ namespace Src\Classes\Project;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 
-/*
-* Adressarten:
-* (1) Standardadresse/ Rechnungsadresse
-* (2) Lieferadresse
-* (3) Filiale
-* (4) Sonstige Adresse
-*/
-
+/**
+ * Adressarten:
+ * (1) Standardadresse/ Rechnungsadresse
+ * (2) Lieferadresse
+ * (3) Filiale
+ * (4) Sonstige Adresse
+ */
 class Address
 {
     public const DEFAULT_ADDRESS = 1;
@@ -70,15 +69,16 @@ class Address
     {
         $addressInstance = new Address();
 
-        $data = DBAccess::selectAllByCondition("address", "id", $addressId);
-        if (!empty($data)) {
+        $data = DBAccess::selectAllByCondition("address", "id", (string) $addressId);
+
+        if (count($data) != 0) {
             $data = $data[0];
             $addressInstance->strasse = $data['strasse'];
             $addressInstance->hausnummer = $data['hausnr'];
-            $addressInstance->postleitzahl = $data['plz'];
+            $addressInstance->postleitzahl = (int) $data['plz'];
             $addressInstance->ort = $data['ort'];
             $addressInstance->zusatz = $data['zusatz'];
-            $addressInstance->art = $data['art'];
+            $addressInstance->art = (int) $data['art'];
         }
 
         return $addressInstance;

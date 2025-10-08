@@ -51,7 +51,7 @@ class Model
      */
     protected static function getTableConfig(): array
     {
-        require_once "../src/table-config.php";
+        require_once ROOT . "../src/table-config.php";
         return getTableConfig();
     }
 
@@ -165,7 +165,7 @@ class Model
         $selectString = implode(", ", $selectColumns);
         $onClause = "{$this->tableName}.{$localKey} = {$relatedTable}.{$foreignKey}";
 
-        $whereQuery = [];
+        $whereQuery = "";
         $parameters = [];
         if (!empty($conditions)) {
             $whereClauses = [];

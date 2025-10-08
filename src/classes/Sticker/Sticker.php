@@ -33,12 +33,12 @@ class Sticker extends PrestashopConnection
         parent::__construct();
 
         $this->idSticker = $idSticker;
-        $this->stickerData = DBAccess::selectQuery("SELECT * FROM module_sticker_sticker_data WHERE id = :idSticker LIMIT 1;", ["idSticker" => $idSticker]);
+        $stickerData = DBAccess::selectQuery("SELECT * FROM module_sticker_sticker_data WHERE id = :idSticker LIMIT 1;", ["idSticker" => $idSticker]);
 
-        if ($this->stickerData == null) {
+        if (count($stickerData) == 0) {
             throw new \Exception("Sticker does not exist.");
         }
-        $this->stickerData = $this->stickerData[0];
+        $this->stickerData = $stickerData[0];
 
         if ($this->stickerData["additional_data"] == null) {
             $this->additionalData = [];
@@ -307,7 +307,7 @@ class Sticker extends PrestashopConnection
             "typeSticker" => $this->instanceType,
         ]);
 
-        return array_map(fn($data): int => $data["id_product_reference"], $result);
+        return array_map(fn($data): int => (int) $data["id_product_reference"], $result);
     }
 
     /**
@@ -427,7 +427,7 @@ class Sticker extends PrestashopConnection
         $query = "INSERT INTO module_sticker_exports (idSticker, facebook, google, amazon, etsy, ebay, pinterest) VALUES ($id, -1, -1, -1, -1, -1, -1);";
         DBAccess::insertQuery($query);
 
-        if ($id == 0 || !is_numeric($id)) {
+        if ($id == 0) {
             JSONResponseHandler::throwError(400, "Sticker could not be created.");
         } else {
             $link = Link::getPageLink("sticker") . "?id=" . $id;

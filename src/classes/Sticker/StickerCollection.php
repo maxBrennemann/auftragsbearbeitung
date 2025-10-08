@@ -475,6 +475,12 @@ class StickerCollection implements \Iterator
         $id = Tools::get("id");
         $title = Tools::get("title");
 
+        if ($id == null || (int) $id == 0) {
+            JSONResponseHandler::returnOK();
+        }
+
+        $id = (int) $id;
+
         $sticker = new Sticker($id);
         $response = $sticker->setName($title);
 

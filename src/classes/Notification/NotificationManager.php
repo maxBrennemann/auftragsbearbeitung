@@ -114,7 +114,7 @@ class NotificationManager
         $tasksCount = self::getNotificationCountByType(NotificationType::TYPE_TASK);
         $newsCount = self::getNotificationCountByType(NotificationType::TYPE_STEP, NotificationType::TYPE_NEW_ORDER);
 
-        $content = \Classes\Controller\TemplateController::getTemplate("notificationMenu", [
+        $content = \Src\Classes\Controller\TemplateController::getTemplate("notificationMenu", [
             "tasks" => $tasks,
             "news" => $news,
             "tasksCount" => $tasksCount,

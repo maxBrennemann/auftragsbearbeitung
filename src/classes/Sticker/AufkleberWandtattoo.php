@@ -115,7 +115,7 @@ class AufkleberWandtattoo extends Sticker
             $d["height"] = str_replace(".", ",", $repHeight) . "cm";
         }
 
-        return \Classes\Controller\TemplateController::getTemplate("sticker/sizeTable", [
+        return \Src\Classes\Controller\TemplateController::getTemplate("sticker/sizeTable", [
             "sizes" => $data,
         ]);
     }
@@ -170,8 +170,11 @@ class AufkleberWandtattoo extends Sticker
             $sizeIds[] = $sizeId;
             $widths[$sizeId] = $singleSizeInCm;
 
-            $prices[$sizeId] = number_format(($d["price"] / 100 - $this->getBasePriceUnformatted()) / 1.19, 2);
-            $buyingPrices[$sizeId] = $d["costs"];
+            $price = (float) $d["price"];
+            $price = $price / 100;
+
+            $prices[$sizeId] = number_format(($price - $this->getBasePriceUnformatted()) / 1.19, 2);
+            $buyingPrices[$sizeId] = (float) $d["costs"];
         }
 
         $this->idShopAttributes = $sizeIds;

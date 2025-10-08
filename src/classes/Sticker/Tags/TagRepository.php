@@ -8,7 +8,7 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 class TagRepository
 {
     
-    /** @var array<string, mixed> */
+    /** @var array<int, array<string, string>> */
     private array $tags;
 
     public function __construct(int $idSticker, string $title)

@@ -67,7 +67,7 @@ class Search
 
     /**
      * @param string $query
-     * @param array<string, mixed> $params
+     * @param list<string> $params
      * 
      * @return array<int, array<string, string>>
      */
@@ -80,7 +80,7 @@ class Search
     /**
      * @param string $table
      * @param string $searchTerm
-     * @return array<array<int|string>|string|null>
+     * @return array{0: string|null, 1:list<string>}
      */
     private function buildSearchQuery(string $table, string $searchTerm): array
     {
@@ -106,17 +106,18 @@ class Search
                     }
                     break;
                 case "phone":
-                    $normalized = SearchUtils::normalizePhone($searchTerm);
-                    if ($normalized == 0) {
+                    $normalized = (string) SearchUtils::normalizePhone($searchTerm);
+                    if ($normalized == "0") {
                         break;
                     }
                     $conditions[] = "REPLACE(REPLACE(REPLACE($column, ' ', ''), '-', ''), '+', '') = ?";
                     $params[] = $normalized;
                     break;
                 case "date":
-                    if (strtotime($searchTerm)) {
+                    $timeStamp = strtotime($searchTerm);
+                    if ($timeStamp !== false) {
                         $conditions[] = "DATE($column) = ?";
-                        $params[] = date('Y-m-d', strtotime($searchTerm));
+                        $params[] = date('Y-m-d', $timeStamp);
                     }
                     break;
             }

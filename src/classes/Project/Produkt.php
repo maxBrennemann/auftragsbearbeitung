@@ -16,7 +16,7 @@ class Produkt
 
     public function __construct(int $produktnummer)
     {
-        $data = DBAccess::selectAllByCondition("produkt", "Nummer", $produktnummer);
+        $data = DBAccess::selectAllByCondition("produkt", "Nummer", (string) $produktnummer);
         if (!empty($data)) {
             $data = $data[0];
             $this->price = (float) $data['Preis'];
@@ -72,7 +72,7 @@ class Produkt
         $images = array();
 
         foreach ($data as $d) {
-            array_push($images, new Image($d['id']));
+            array_push($images, new Image((int) $d['id']));
         }
 
         /* checks if array is empty, if so, add default image */
@@ -146,68 +146,6 @@ class Produkt
         DBAccess::insertMultiple("INSERT INTO product_attribute_combination (id_produkt_attribute, attribute_id) VALUES ", $data);
     }
 
-    /**
-     * @param string $searchQuery
-     * @return array<array<int, float>>
-     */
-    public static function searchInProducts(string $searchQuery): array
-    {
-        $products = DBAccess::selectQuery("SELECT Nummer, Bezeichnung, Beschreibung FROM produkt");
-        $mostSimilarProducts = [];
-
-        foreach ($products as $product) {
-            self::calculateSimilarity($mostSimilarProducts, $searchQuery, $product['Bezeichnung'], (int) $product['Nummer']);
-            self::calculateSimilarity($mostSimilarProducts, $searchQuery, $product['Beschreibung'], (int) $product['Nummer']);
-        }
-
-        self::sortByPercentage($mostSimilarProducts);
-        $mostSimilarProducts = self::filterByPercentage($mostSimilarProducts);
-
-        return array_slice($mostSimilarProducts, 0, 10);
-    }
-
-    /**
-     * @param array<array<int, float>> $mostSimilarProducts
-     * @return void
-     */
-    private static function sortByPercentage(array &$mostSimilarProducts): void
-    {
-        usort($mostSimilarProducts, fn($a, $b) => $b[1] <=> $a[1]);
-    }
-
-    /**
-     * @param array<array<int, float>> $mostSimilarProducts
-     * @return array<array<int, float>>
-     */
-    private static function filterByPercentage(array $mostSimilarProducts): array
-    {
-        $filteredArray = [];
-        foreach ($mostSimilarProducts as $product) {
-            if (end($filteredArray)[0] == $product[0]) {
-                if ($product[1] > end($filteredArray)[1]) {
-                    $filteredArray[sizeof($filteredArray) - 1] = $product;
-                }
-            } else {
-                array_push($filteredArray, $product);
-            }
-        }
-
-        return $filteredArray;
-    }
-
-    /**
-     * @param array<array<int, float>> $mostSimilarProducts
-     * @param string $searchQuery
-     * @param string $text
-     * @param int $nummer
-     * @return void
-     */
-    private static function calculateSimilarity(array &$mostSimilarProducts, string $searchQuery, string $text, int $nummer): void
-    {
-        similar_text($searchQuery, $text, $percentage);
-        array_push($mostSimilarProducts, array($nummer, $percentage));
-    }
-
     public static function addSource(): void
     {
         $name = Tools::get("name");
@@ -258,7 +196,7 @@ class Produkt
         $ids = DBAccess::selectQuery($sql);
 
         foreach ($ids as $id) {
-            $products[] = new Produkt($id["Nummer"]);
+            $products[] = new Produkt((int) $id["Nummer"]);
         }
 
         return $products;

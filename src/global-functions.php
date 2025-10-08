@@ -112,7 +112,7 @@ register_shutdown_function("fatal_handler");
 /**
  * https://stackoverflow.com/questions/2236668/file-get-contents-breaks-up-utf-8-characters
  */
-function file_get_contents_utf8(string $fn): bool|string
+function file_get_contents_utf8(string $fn): false|string
 {
     $content = file_get_contents($fn);
     if (gettype($content) == "boolean") {

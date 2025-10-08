@@ -176,22 +176,47 @@ class StickerImage extends PrestashopConnection
      */
     public function resizeImage(array $file): void
     {
-        list($width, $height) = getimagesize("upload/" . $file["dateiname"]);
+        $imageInfo = getimagesize("upload/" . $file["dateiname"]);
+        if ($imageInfo === false) {
+            return;
+        }
+
+        $width = $imageInfo[0];
+        $height = $imageInfo[1];
+
         /* width and height do not matter any longer, images are only resized if filesize exeeds 2MB */
         if (filesize("upload/" . $file["dateiname"]) >= 2000000) {
             switch ($file["typ"]) {
                 case "jpg":
                     if (function_exists("imagecreatefromjpeg")) {
                         $image = imagecreatefromjpeg("upload/" . $file["dateiname"]);
-                        $imgResized = imagescale($image, 700, 700 * ($height / $width));
-                        imagejpeg($imgResized, "upload/" . $file["dateiname"]);
+
+                        if ($image !== false) {
+                            $height = (int) (700 * ($height / $width));
+                            $imgResized = imagescale($image, 700, $height);
+                        } else {
+                            return;
+                        }
+
+                        if ($imgResized !== false) {
+                            imagejpeg($imgResized, "upload/" . $file["dateiname"]);
+                        }
                     }
                     break;
                 case "png":
                     if (function_exists("imagecreatefrompng")) {
                         $image = imagecreatefrompng("upload/" . $file["dateiname"]);
-                        $imgResized = imagescale($image, 700, 700 * ($height / $width));
-                        imagepng($imgResized, "upload/" . $file["dateiname"]);
+
+                        if ($image !== false) {
+                            $height = (int) (700 * ($height / $width));
+                            $imgResized = imagescale($image, 700, $height);
+                        } else {
+                            return;
+                        }
+
+                        if ($imgResized !== false) {
+                            imagepng($imgResized, "upload/" . $file["dateiname"]);
+                        }
                     }
                     break;
                 default:
@@ -384,7 +409,7 @@ class StickerImage extends PrestashopConnection
         $result = curl_exec($ch);
         curl_close($ch);
 
-        if ($result == false) {
+        if (gettype($result) == "boolean") {
             return "";
         }
 

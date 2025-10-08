@@ -125,6 +125,11 @@ class ProduktPosten extends Posten
         return (float) $this->bekommePreis() - $this->Einkaufspreis * $this->Anzahl;
     }
 
+    public function getOhneBerechnung(): bool
+    {
+        return $this->ohneBerechnung;
+    }
+
     public function getBrand(): string
     {
         return $this->Marke;

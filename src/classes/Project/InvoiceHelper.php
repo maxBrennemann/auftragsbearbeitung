@@ -50,8 +50,8 @@ class InvoiceHelper
         $error = [];
         $invoices = DBAccess::selectQuery("SELECT id, order_id FROM invoice;");
         foreach ($invoices as $invoice) {
-            $id = $invoice["id"];
-            $orderId = $invoice["order_id"];
+            $id = (int) $invoice["id"];
+            $orderId = (int) $invoice["order_id"];
             try {
                 $i = new Invoice($id, $orderId);
                 $i->setInvoiceSum();

@@ -70,7 +70,7 @@ class ExportFacebook extends PrestashopConnection
 
     /**
      * generates the product csv lines for a specific sticker id
-     * @return array<int, array<string, string|int>>
+     * @return array<int, array<string, string|int|float>>
      */
     public function getSpecificProductExport(int $idSticker): array
     {
@@ -97,7 +97,7 @@ class ExportFacebook extends PrestashopConnection
 
     /**
      * @param Sticker $product
-     * @return array<int, array<string, string|int>>
+     * @return array<int, array<string, string|int|float>>
      */
     private function fillLine(Sticker $product): array
     {
@@ -129,7 +129,7 @@ class ExportFacebook extends PrestashopConnection
     /**
      * @param Aufkleber $product
      * @param array<string, string> $line
-     * @return array<int, array<string, string>>
+     * @return array<int, array<string, string|float>>
      */
     private function fillLineAufkleber(Aufkleber $product, array $line): array
     {
@@ -180,7 +180,7 @@ class ExportFacebook extends PrestashopConnection
     /**
      * @param Wandtattoo $product
      * @param array<string, string> $line
-     * @return array<int, array<string, string>>
+     * @return array<int, array<string, string|float>>
      */
     private function fillLineWandtattoo(Wandtattoo $product, array $line): array
     {
@@ -250,6 +250,10 @@ class ExportFacebook extends PrestashopConnection
     {
         $path = "storage/generated/";
         $file = fopen($path . $filename, 'w');
+
+        if ($file === false) {
+            return;
+        }
 
         $firstLine = array_keys($this->line);
         $lines = [$firstLine, ...$lines];

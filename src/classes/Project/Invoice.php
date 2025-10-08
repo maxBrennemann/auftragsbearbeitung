@@ -38,7 +38,7 @@ class Invoice
             throw new \Exception("Invoice not found.");
         }
 
-        $this->invoiceNumber = $data[0]["invoice_number"] ?? 0;
+        $this->invoiceNumber = ((int) $data[0]["invoice_number"]);
         $this->creationDate = new \DateTime($data[0]["creation_date"]);
         $this->performanceDate = new \DateTime($data[0]["performance_date"]);
         $this->addressId = (int) $data[0]["address_id"];
@@ -64,8 +64,8 @@ class Invoice
         ]);
 
         if (!empty($data)) {
-            $orderId = $data[0]["order_id"];
-            $invoiceId = $data[0]["id"];
+            $orderId = (int) $data[0]["order_id"];
+            $invoiceId = (int) $data[0]["id"];
             return new Invoice($invoiceId, $orderId);
         }
 
@@ -80,7 +80,7 @@ class Invoice
         ]);
 
         if (!empty($data)) {
-            $invoiceId = $data[0]["id"];
+            $invoiceId = (int) $data[0]["id"];
             return new Invoice($invoiceId, $orderId);
         }
 
@@ -395,7 +395,7 @@ class Invoice
 
     public static function setInvoicePaid(): void
     {
-        $invoiceId = Tools::get("invoiceId");
+        $invoiceId = (int) Tools::get("invoiceId");
         $paymentDate = Tools::get("date");
         $paymentType = Tools::get("paymentType");
         $paymentTypes = [
@@ -431,7 +431,7 @@ class Invoice
         $orderId = DBAccess::selectQuery("SELECT Auftragsnummer FROM auftrag WHERE Rechnungsnummer = :invoice;", [
             "invoice" => $invoiceId
         ]);
-        $orderId = $orderId[0]["Auftragsnummer"];
+        $orderId = (int) $orderId[0]["Auftragsnummer"];
         OrderHistory::add($orderId, $invoiceId, OrderHistory::TYPE_ORDER, OrderHistory::STATE_PAYED);
 
         JSONResponseHandler::sendResponse([

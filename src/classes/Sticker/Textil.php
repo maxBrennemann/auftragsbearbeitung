@@ -271,7 +271,7 @@ class Textil extends Sticker
         $file = $textil->getCurrentSVG();
 
         if ($file == null) {
-            JSONResponseHandler::returnNotFound(["status" => "no file found"]);
+            JSONResponseHandler::returnNotFound("no file found");
         }
             
         $url = Link::getResourcesShortLink($file["dateiname"], "upload");
@@ -280,8 +280,8 @@ class Textil extends Sticker
 
     public static function toggleTextile(): void
     {
-        $idSticker = Tools::get("id");
-        $idProduct = Tools::get("idTextile");
+        $idSticker = (int) Tools::get("id");
+        $idProduct = (int) Tools::get("idTextile");
         $status = Tools::get("status");
         $status = $status == "true" ? 1 : 0;
 
@@ -308,8 +308,8 @@ class Textil extends Sticker
 
     public static function setPrice(): void
     {
-        $idSticker = Tools::get("id");
-        $idProduct = Tools::get("idTextile");
+        $idSticker = (int) Tools::get("id");
+        $idProduct = (int) Tools::get("idTextile");
         $price = Tools::get("price");
 
         if (!self::checkIfExists($idSticker, $idProduct)) {

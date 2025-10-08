@@ -14,8 +14,8 @@ class CronManager
 
     protected static function scheduleTasks(Schedule $schedule): void
     {
-        $schedule->runEveryDay([\Classes\Cron\Tasks\CleanLogins::class, "handle"]);
-        $schedule->runEveryMinute([\Classes\Cron\Tasks\UpdatePrestashop::class, "handle"]);
+        $schedule->runEveryDay([\Src\Classes\Cron\Tasks\CleanLogins::class, "handle"]);
+        $schedule->runEveryMinute([\Src\Classes\Cron\Tasks\UpdatePrestashop::class, "handle"]);
     }
 
     protected static function execute(Schedule $schedule): void

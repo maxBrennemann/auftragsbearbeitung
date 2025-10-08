@@ -292,7 +292,12 @@ class Zeit extends Posten
             Zeit::erweiterteZeiterfassung($zeiterfassung, $ids[1]);
         }
 
-        $orderId = Tools::get("id");
+        $orderId = (int) Tools::get("id");
+
+        if ($orderId == 0) {
+            return;
+        }
+
         $newOrder = new Auftrag($orderId);
         $price = $newOrder->preisBerechnen();
 
@@ -300,6 +305,9 @@ class Zeit extends Posten
         $data = Posten::getOrderItems($orderId);
         $data = array_filter($data, fn($item) => $item->getPostennummer() == $ids[0]);
         $data = reset($data);
+        if ($data === false || !$data instanceof Zeit) {
+            return;
+        }
 
         $item = [];
         $item["position"] = $data->getPosition();

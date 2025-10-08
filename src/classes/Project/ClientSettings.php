@@ -64,7 +64,12 @@ class ClientSettings
             JSONResponseHandler::throwError(500, "Unable to zip files.");
         }
 
+        // TODO: replace file path
         $sourceDir = realpath("storage/upload/");
+        if ($sourceDir === false) {
+            JSONResponseHandler::throwError(500, "Unable to process files.");
+        }
+
         $files = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($sourceDir, \RecursiveDirectoryIterator::SKIP_DOTS),
             \RecursiveIteratorIterator::LEAVES_ONLY
@@ -72,6 +77,10 @@ class ClientSettings
 
         foreach ($files as $file) {
             $filePath = $file->getRealPath();
+            if ($filePath === false) {
+                continue;
+            }
+
             $relativePath = substr($filePath, strlen($sourceDir) + 1);
 
             $filename = $file->getFilename();

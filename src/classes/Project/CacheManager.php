@@ -72,6 +72,10 @@ class CacheManager
             header("X-Cache: HIT");
             $content = file_get_contents_utf8($cacheFile);
 
+            if ($content === false) {
+                exit;
+            }
+
             global $start;
             $duration = microtime(true) - $start;
 

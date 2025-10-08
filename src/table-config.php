@@ -1,7 +1,15 @@
 <?php
 
 /**
- * @return array<string, array<string, mixed>>
+ * @return array<string, array{
+ *      primaryKey?: string,
+ *      columns: string[],
+ *      names?: string[],
+ *      hidden?: string[],
+ *      permissions?: string[],
+ *      hooks?: array<string, array{class-string, string}>,
+ *      joins?: array<string, mixed>
+ * }>
  */
 function getTableConfig(): array
 {
@@ -54,7 +62,6 @@ function getTableConfig(): array
             ],
             "permissions" => ["read", "create", "update", "delete"],
             "hooks" => [
-                "beforeRead" => "",
                 "beforeDelete" => [\Src\Classes\Project\Auftrag::class, "resetAnsprechpartner"],
             ],
             "joins" => [],
@@ -108,7 +115,6 @@ function getTableConfig(): array
             ],
             "permissions" => ["read", "create", "update", "delete"],
             "hooks" => [
-                "beforeRead" => [],
                 "afterRead" => [\Src\Classes\Project\Color::class, "convertHexToHTML"],
             ],
             "joins" => [
@@ -446,7 +452,10 @@ function getTableConfig(): array
 }
 
 /**
- * @return array<string, array{columns: array<int, array{key: string, label: string}>, primaryKey: string}>
+ * @return array<string, array{
+ *      columns: array<int, array{key: string, label: string}>, 
+ *      primaryKey: string
+ * }>
  */
 function getTableConfigFrontOffice(): array
 {
@@ -454,22 +463,32 @@ function getTableConfigFrontOffice(): array
     $data = [];
     foreach ($tableConfig as $key => $table) {
         $data[$key] = [
-            "primaryKey" => $table["primaryKey"] ?? "",
-            "columns" => [],
+            "primaryKey" => (string) ($table["primaryKey"] ?? ""),
+            "columns" => getTableColumns($table["columns"], $table["hidden"] ?? [], $table["names"] ?? []),
         ];
+    }
 
-        $table["columns"] = array_filter(
-            $table["columns"],
-            fn ($el) => !in_array($el, $table["hidden"] ?? [])
-        );
+    return $data;
+}
 
-        foreach ($table["columns"] as $index => $column) {
-            $label = $table["names"][$index] ?? $column;
-            $data[$key]["columns"][] = [
-                "key" => $column,
-                "label" => $label,
-            ];
-        }
+/**
+ * @param string[] $columns
+ * @param string[] $hidden
+ * @param string[] $names
+ * @return array<array{key: string, label: string}>
+ */
+function getTableColumns(array $columns, array $hidden, array $names): array
+{
+    /** @var string[] $tableColumns */
+    $tableColumns = array_filter($columns, fn($el) => !in_array($el, $hidden));
+
+    $data = [];
+    foreach ($tableColumns as $index => $column) {
+        $label = isset($names[$index]) ? (string) $names[$index] : (string) $column;
+        $data[] = [
+            "key" => (string) $column,
+            "label" => $label,
+        ];
     }
 
     return $data;

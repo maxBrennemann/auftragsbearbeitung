@@ -25,7 +25,10 @@ class Protocol
                 file_put_contents(self::$filePath, "");
             }
 
-            self::$file = fopen(self::$filePath, "a");
+            $file = fopen(self::$filePath, "a");
+            if ($file !== false) {
+                self::$file = $file;
+            }
             register_shutdown_function([self::class, "close"]);
         }
     }

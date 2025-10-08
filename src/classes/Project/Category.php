@@ -76,7 +76,7 @@ class Category
         $nodes = [];
 
         foreach ($categories as $c) {
-            $nodes[$c["id"]] = new Category($c["id"], $c["name"], $c["parent"]);
+            $nodes[$c["id"]] = new Category((int) $c["id"], $c["name"], (int) $c["parent"]);
         }
 
         while (count($nodes) > 0) {

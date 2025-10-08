@@ -5,7 +5,7 @@ namespace Src\Classes\Project;
 class Config
 {
 
-    /** @var array<string, string> */
+    /** @var array<string, mixed> */
     private static array $config = [];
 
     public static function load(string $path): void
@@ -13,10 +13,22 @@ class Config
         if (!file_exists($path)) {
             throw new \RuntimeException("Config file not found: $path");
         }
-        self::$config = require $path;
+
+        $config = require $path;
+
+        if (!is_array($config)) {
+            throw new \RuntimeException("Invalid config file: $path must return an array");
+        }
+
+        self::$config = $config;
     }
 
-    public static function get(string $key, $default = null): string
+    /**
+     * @param string $key e.g. "paths.uploadDir.default"
+     * @param string|null $default
+     * @return string|null
+     */
+    public static function get(string $key, ?string $default = null): ?string
     {
         $keys = explode('.', $key);
         $value = self::$config;
@@ -28,9 +40,13 @@ class Config
             $value = $value[$k];
         }
 
-        return $value;
+        return is_scalar($value) ? (string) $value : $default;
     }
 
+    /**
+     * @param string $key e.g. "paths.uploadDir"
+     * @return array<string, mixed>
+     */
     public static function getGroup(string $key): array
     {
         $keys = explode('.', $key);
@@ -43,7 +59,7 @@ class Config
             $value = $value[$k];
         }
 
-        return $value; 
+        return is_array($value) ? $value : [];
     }
 
 }

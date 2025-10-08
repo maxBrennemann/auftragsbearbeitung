@@ -45,7 +45,7 @@ class Kunde implements StatisticsInterface
 
         $data = $data[0];
 
-        $this->kundennummer = $data["Kundennummer"];
+        $this->kundennummer = (int) $data["Kundennummer"];
         $this->vorname = $data["Vorname"] ?? "";
         $this->nachname = $data["Nachname"] ?? "";
         $this->firmenname = $data["Firmenname"] ?? "";
@@ -148,7 +148,7 @@ class Kunde implements StatisticsInterface
             return "";
         }
 
-        return $plz;
+        return (string) $plz;
     }
 
     public function getOrt(int $id = 0): string
@@ -233,6 +233,9 @@ class Kunde implements StatisticsInterface
         ]);
         $content = ob_get_clean();
 
+        if ($content === false) {
+            return "";
+        }
         return $content;
     }
 
@@ -474,7 +477,7 @@ class Kunde implements StatisticsInterface
         $id = Tools::get("id");
         $licensePlate = Tools::get("licensePlate");
         $name = Tools::get("name");
-        $orderId = Tools::get("orderId");
+        $orderId = (int) Tools::get("orderId");
 
         $vehicleId = DBAccess::insertQuery("INSERT INTO fahrzeuge (Kennzeichen, Fahrzeug, Kundennummer) VALUES (:licensePlate, :name, :id)", [
             "licensePlate" => $licensePlate,

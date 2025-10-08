@@ -18,7 +18,7 @@ class TableGenerator
      * } $options
      * @param array{
      *      columns:string[],
-     *      names:string[],
+     *      names?:string[],
      *      primaryKey?:string,
      *      hidden?:string[],
      * } $header
@@ -36,7 +36,7 @@ class TableGenerator
         $theadClassName = $options["styles"]["thead"]["className"] ?? [];
         $theadClassName[] = "cursor-pointer";
         $theadClassName = implode(" ", $theadClassName);
-        
+
         return TemplateController::getTemplate("table", [
             "tableClassName" => $tableClassName,
             "theadElements" => $theadElements,
@@ -53,7 +53,7 @@ class TableGenerator
     /**
      * @param array{
      *      columns:string[],
-     *      names:string[],
+     *      names?:string[],
      *      primaryKey?:string,
      *      hidden?:string[],
      * } $header
@@ -63,7 +63,7 @@ class TableGenerator
     private static function createHeader(array $header): array
     {
         $columns = $header["columns"];
-        $names = $header["names"];
+        $names = $header["names"] ?? [];
         $hidden = $header["hidden"] ?? [];
 
         $elements = [];
@@ -75,7 +75,7 @@ class TableGenerator
 
             $elements[] = [
                 "key" => $col,
-                "label" => $names[$index],
+                "label" => $names[$index] ?? $col,
                 "sortIcon" => "",
             ];
         }
@@ -86,7 +86,7 @@ class TableGenerator
      * @param array<int, array<string, string>> $data
      * @param array{
      *      columns:string[],
-     *      names:string[],
+     *      names?:string[],
      *      primaryKey?:string,
      *      hidden?:string[],
      * } $header
@@ -119,7 +119,7 @@ class TableGenerator
 
                 $primary = $options["primaryKey"] ?? null;
                 if ($primary) {
-                    $primary = $row[$options["primaryKey"]] ?? null;
+                    $primary = $row[$primary] ?? null;
                 }
 
                 $parsedRow[] = [

@@ -7,6 +7,7 @@ use SimpleXMLElement;
 
 /*
  * TODO: nginx is still buffering, these headers do not affect it
+ * TODO: mit cronjob umsetzen
  * nginx buffering könnte man mit https://stackoverflow.com/questions/63293990/how-can-i-track-upload-progress-from-app-behind-nginx-reverse-proxy
  * sowas in der Art umgehen. Ich denke aber, dass ein Websocket oder eine Schleife mit mehreren Requests sinnvoller wäre.
  * So wichtig ist es aber auch nicht.
@@ -78,7 +79,12 @@ class ProductCrawler extends PrestashopConnection
         $this->getImages($productData, $category);
 
         $creationDate = $productData->date_add;
-        $creationDate = date("Y-m-d", strtotime($creationDate));
+        $time = strtotime($creationDate);
+        if ($time === false) {
+            $time = null;
+        }
+        
+        $creationDate = date("Y-m-d", $time);
 
         $query = "REPLACE INTO `module_sticker_sticker_data` (`id`, `name`, `creation_date`) VALUES (:idMotiv, :title, :creationDate);";
 
@@ -186,12 +192,17 @@ class ProductCrawler extends PrestashopConnection
 
             if (!in_array($idImage, $idImagesDownloaded)) {
                 $filename = $this->downloadImage($idProduct, $idImage, $idMotiv);
+
+                if ($filename === false) {
+                    continue;
+                }
+
                 $this->saveDownloadedImageToDB($filename, $idMotiv, $category, $idProduct, $idImage);
             }
         }
     }
 
-    private function downloadImage(int $idProduct, int $idImage, int $idMotiv): string
+    private function downloadImage(int $idProduct, int $idImage, int $idMotiv): string|false
     {
         $ch = curl_init($_ENV["SHOPURL"] . "/api/images/products/$idProduct/$idImage");
         curl_setopt($ch, CURLOPT_HEADER, false);
@@ -200,8 +211,18 @@ class ProductCrawler extends PrestashopConnection
         $image = curl_exec($ch);
         curl_close($ch);
 
+        if (gettype($image) === "boolean") {
+            return false;
+        }
+
+        // TODO: richtiges filehandling über UploadController einbauen
         $filename = $idProduct . "_" . $idMotiv . "_" . $idImage . ".jpg";
         $fp = fopen("storage/upload/$filename", 'w');
+
+        if ($fp === false) {
+            return false;
+        }
+
         fwrite($fp, $image);
         fclose($fp);
 

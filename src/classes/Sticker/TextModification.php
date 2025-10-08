@@ -183,7 +183,7 @@ class TextModification
             "textType" => $textType,
         ]);
 
-        $content = \Classes\Controller\TemplateController::getTemplate("sticker/textModification", [
+        $content = \Src\Classes\Controller\TemplateController::getTemplate("sticker/textModification", [
             "texts" => $result,
         ]);
 

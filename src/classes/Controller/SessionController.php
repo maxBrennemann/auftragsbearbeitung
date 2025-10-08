@@ -62,8 +62,9 @@ class SessionController
         $_SESSION = [];
         if (ini_get("session.use_cookies")) {
             $params = session_get_cookie_params();
+            $sessionName = session_name() === false ? "" : session_name();
             setcookie(
-                session_name(),
+                $sessionName,
                 '',
                 time() - 42000,
                 $params["path"],

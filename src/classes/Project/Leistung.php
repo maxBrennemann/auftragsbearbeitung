@@ -243,6 +243,9 @@ class Leistung extends Posten
         $data = Posten::getOrderItems($orderId);
         $data = array_filter($data, fn($item) => $item->getPostennummer() == $ids[0]);
         $data = reset($data);
+        if ($data === false || !$data instanceof Leistung) {
+            return;
+        }
 
         $item = [];
         $item["position"] = $data->getPosition();

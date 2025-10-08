@@ -42,7 +42,7 @@ class Fahrzeug
             return null;
         }
 
-        $kundenId = $data[0]["Kundennummer"];
+        $kundenId = (int) $data[0]["Kundennummer"];
         return new Kunde($kundenId);
     }
 
@@ -127,8 +127,12 @@ class Fahrzeug
 
     public static function addFiles(): void
     {
-        $idVehicle = Tools::get("vehicleId");
-        $orderId = Tools::get("id");
+        $idVehicle = (int) Tools::get("vehicleId");
+        $orderId = (int) Tools::get("id");
+
+        if ($idVehicle == 0 || $orderId == 0) {
+            return;
+        }
 
         $uploadHandler = new UploadHandler("default", [
             "image/png",

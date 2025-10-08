@@ -14,6 +14,7 @@ abstract class Posten
     abstract protected function bekommeEinzelPreis_formatted(): string;
     abstract protected function bekommeDifferenz(): float;
     abstract protected function calculateDiscount(): float;
+    abstract protected function getOhneBerechnung(): bool;
 
     /**
      * @param array<string, mixed> $arr
@@ -101,10 +102,10 @@ abstract class Posten
             switch ($type) {
                 case "zeit":
                     $item = new Zeit(
-                        $row["z_wage"],
-                        $row["z_time"],
+                        (float) $row["z_wage"],
+                        (int) $row["z_time"],
                         $row["z_description"],
-                        $row["discount"],
+                        (int) $row["discount"],
                         $row["is_invoice"] == "1",
                         $row["free_of_charge"] == "1",
                         (int) $row["position"],
@@ -112,13 +113,13 @@ abstract class Posten
                     break;
                 case "leistung":
                     $item = new Leistung(
-                        $row["l_number"],
+                        (int) $row["l_number"],
                         $row["l_description"],
-                        $row["l_price"],
-                        $row["l_purchase_price"],
-                        $row["l_qty"],
+                        (float) $row["l_price"],
+                        (float) $row["l_purchase_price"],
+                        (int) $row["l_qty"],
                         $row["l_unit"],
-                        $row["discount"],
+                        (int) $row["discount"],
                         $row["is_invoice"] == "1",
                         $row["free_of_charge"] == "1",
                         (int) $row["position"],
@@ -126,13 +127,13 @@ abstract class Posten
                     break;
                 case "product":
                     $item = new ProduktPosten(
-                        $row["p_price"],
+                        (float) $row["p_price"],
                         $row["p_name"],
                         $row["p_description"],
-                        $row["p_amount"],
-                        $row["p_purchase_price"],
+                        (int) $row["p_amount"],
+                        (float) $row["p_purchase_price"],
                         $row["p_brand"],
-                        $row["discount"],
+                        (int) $row["discount"],
                         $row["is_invoice"] == "1",
                         $row["free_of_charge"] == "1",
                         (int) $row["position"],
@@ -140,13 +141,13 @@ abstract class Posten
                     break;
                 case "compact":
                     $item = new ProduktPosten(
-                        $row["p_price"],
+                        (float) $row["p_price"],
                         $row["p_name"],
                         $row["p_description"],
-                        $row["p_amount"],
-                        $row["p_purchase_price"],
+                        (int) $row["p_amount"],
+                        (float) $row["p_purchase_price"],
                         $row["p_brand"],
-                        $row["discount"],
+                        (int) $row["discount"],
                         $row["is_invoice"] == "1",
                         $row["free_of_charge"] == "1",
                         (int) $row["position"],
@@ -155,7 +156,7 @@ abstract class Posten
                 default:
                     continue 2;
             }
-            $item->postennummer = $row["id"];
+            $item->postennummer = (int) $row["id"];
             $items[] = $item;
         }
 
