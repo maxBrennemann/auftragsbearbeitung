@@ -12,8 +12,8 @@ node_modules
 vendor
 .config/install/install.lock
 var
-cache/*
-!cache/.gitkeep
+storage/cache/*
+!storage/cache/.gitkeep
 
 .config/apiKeys/*
 !.config/apiKeys/.gitkeep
@@ -27,20 +27,22 @@ cache/*
 .php-cs-fixer.cache
 
 # generated files
-generated/*
-!generated/.gitkeep
+storage/generated/*
+!storage/generated/.gitkeep
 
-files/res/js/classes/tableconfig.js
+public/res/js/classes/tableconfig.js
 
 # minimized files
-files/res/assets/*
+public/res/assets/*
 
 # upload
-upload/*
-!upload/.gitkeep
+storage/upload/*
+!storage/upload/.gitkeep
 
 # misc
-files/assets/forms/modules/sticker/catalog_products.csv
+publics/assets/forms/modules/sticker/catalog_products.csv
 .git.bfg-report
-favicon.ico
-protocol.txt
+public/assets/img/favicon.ico
+public/assets/img/favicon.png
+storage/logs/protocol.txt
+.build/

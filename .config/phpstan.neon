@@ -1,0 +1,22 @@
+# phpstan.neon
+parameters:
+  level: 7
+  paths:
+    - ../src
+    - ../public/index.php
+
+  excludePaths:
+    analyse:
+      - public/*
+
+  tmpDir: ../var/phpstan
+  parallel:
+    maximumNumberOfProcesses: 2
+
+  phpVersion: 80400
+
+  reportUnmatchedIgnoredErrors: true
+
+  bootstrapFiles:
+    - ../.config/stubs/constants.stub.php
+    - ../.config/stubs/types.stub.php

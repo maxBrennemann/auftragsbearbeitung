@@ -5,9 +5,9 @@ RewriteBase /
 
 RewriteCond %{REQUEST_METHOD} !^(POST|GET|OPTIONS|PUT|DELETE)
 RewriteRule .* - [F]
-RewriteRule ^(.*)$ index.php [NC,L]
+RewriteRule ^(.*)$ public/index.php [NC,L]
 
-ErrorDocument 404 /index.php?page=404
+ErrorDocument 404 /public/index.php?page=404
 ErrorDocument 403 /forbidden.html
 ErrorDocument 500 /servererror.html
 
