@@ -338,9 +338,9 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
             2 => array("COLUMN_NAME" => "Auftragsbezeichnung")
         );
 
-        $link = new Link();
-        $link->addBaseLink("auftrag");
-        $link->setIterator("id", $data, "Auftragsnummer");
+        //$link = new Link();
+        //$link->addBaseLink("auftrag");
+        //$link->setIterator("id", $data, "Auftragsnummer");
 
         //$t = new Table();
         //$t->createByData($data, $column_names);

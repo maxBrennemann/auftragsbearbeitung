@@ -30,7 +30,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^10",
-        "phpstan/phpstan": "2.1.x-dev"
+        "phpstan/phpstan": "2.1.x-dev",
+        "ergebnis/php-cs-fixer-config": "dev-main"
     },
     "repositories": [
         {

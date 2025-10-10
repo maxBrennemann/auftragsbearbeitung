@@ -190,7 +190,12 @@ class Aufkleber extends AufkleberWandtattoo
 
         $productId = (int) $this->getIdProduct();
 
-        $stickerUpload = new StickerUpload($this->idSticker, $this->getName(), $this->getBasePrice(), $this->getDescriptionWithDefaultText(), $this->getDescriptionShortWithDefaultText());
+        $stickerUpload = new StickerUpload(
+            $this->idSticker,
+            $this->getName(),
+            $this->getBasePrice(),
+            $this->getDescriptionWithDefaultText(), $this->getDescriptionShortWithDefaultText()
+        );
         $stickerCombination = new StickerCombination($this);
 
         /**

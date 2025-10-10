@@ -339,9 +339,10 @@ class ResourceManager
         $response = DBAccess::selectQuery($query, [
             "fileName" => $upload,
         ]);
-        if ($response != null) {
+
+        if (count($response) == 1) {
             $name = $response[0]["originalname"];
-            header('Content-Disposition: filename="' . $name . '"');
+            header('Content-Disposition: inline; filename="' . basename($name) . '"');
         }
 
         header("Content-type:$mime_type");

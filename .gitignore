@@ -45,3 +45,4 @@ publics/assets/forms/modules/sticker/catalog_products.csv
 public/assets/img/favicon.ico
 public/assets/img/favicon.png
 storage/logs/protocol.txt
+.build/

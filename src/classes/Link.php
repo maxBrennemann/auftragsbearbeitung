@@ -6,13 +6,6 @@ use Src\Classes\Project\Config;
 
 class Link
 {
-    public string $baseLink;
-    public string $key;
-    /** @var array<mixed, mixed> */
-    public array $data;
-    public string $datakey;
-
-    public function __construct() {}
 
     public static function getPageLink(string $resourceName): string
     {
@@ -46,7 +39,7 @@ class Link
                 break;
             case "js":
             case "ts":
-                $link = "public/res/js/" . $resource;
+                $link = "public/res/js/pages/" . $resource;
                 break;
             case "min":
                 $link = "public/res/assets/" . $resource;
@@ -74,7 +67,7 @@ class Link
     }
 
     /**
-     * Generates a short link for resources, so that the file path is not visible in the frontend
+     * Links are generated for the html output, they will be parsed by ResourceManager.php
      * @param string $resource
      * @param string $type
      */
@@ -119,33 +112,5 @@ class Link
     {
         $file = ResourceManager::getFileNameWithHash("global.js");
         return self::getResourcesShortLink($file, "js");
-    }
-
-    public function addBaseLink(string $target): void
-    {
-        $this->baseLink = self::getPageLink($target);
-    }
-
-    public function addParameter(string $key, string $value): string
-    {
-        return $this->baseLink . "?$key=$value";
-    }
-
-    /**
-     * @param string $key
-     * @param array<mixed, mixed> $data
-     * @param string $datakey
-     * @return void
-     */
-    public function setIterator(string $key, array $data, string $datakey): void
-    {
-        $this->key = $key;
-        $this->data = $data;
-        $this->datakey = $datakey;
-    }
-
-    public function getLink(int $id): string
-    {
-        return self::addParameter($this->key, $this->data[$id][$this->datakey]);
     }
 }

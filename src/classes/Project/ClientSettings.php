@@ -57,15 +57,14 @@ class ClientSettings
             JSONResponseHandler::throwError(500, "Unable to zip files.");
         }
 
-        $filePath = "storage/generated/";
+        $filePath = Config::get("paths.uploadDir.default");
         $fileName = date("d-m-Y_h-i-s") . ".zip";
         $zip = new ZipArchive();
         if (!$zip->open($filePath . $fileName, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
             JSONResponseHandler::throwError(500, "Unable to zip files.");
         }
 
-        // TODO: replace file path
-        $sourceDir = realpath("storage/upload/");
+        $sourceDir = realpath($filePath);
         if ($sourceDir === false) {
             JSONResponseHandler::throwError(500, "Unable to process files.");
         }
@@ -84,7 +83,7 @@ class ClientSettings
             $relativePath = substr($filePath, strlen($sourceDir) + 1);
 
             $filename = $file->getFilename();
-            if ($filename === '.gitkeep') {
+            if ($filename === ".gitkeep") {
                 continue;
             }
 

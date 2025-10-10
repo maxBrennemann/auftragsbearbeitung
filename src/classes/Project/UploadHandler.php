@@ -31,9 +31,11 @@ class UploadHandler
         "application/docx"
     ], int $maxFileSize = 25000000, int $fileUploadLimit = 0)
     {
-        $uploadDirectories = Config::getGroup('paths.uploadDir');
-        if (!in_array($uploadBaseDir, $uploadDirectories)) {
-            $uploadBaseDir = 'default';
+        $uploadDirectories = Config::getGroup("paths.uploadDir");
+        if (!isset($uploadDirectories[$uploadBaseDir])) {
+            $uploadBaseDir = Config::get("paths.uploadDir.default");
+        } else {
+            $uploadBaseDir = $uploadDirectories[$uploadBaseDir];
         }
 
         $this->uploadBaseDir = $uploadBaseDir;
@@ -181,7 +183,7 @@ class UploadHandler
         $dbFileNames[] = ".gitkeep";
 
         self::deleteUnusedFilesInDirectory(Config::get('paths.uploadDir.default'), $dbFileNames, $deletedFiles);
-        self::deleteUnusedFilesInDirectory(Config::get('paths.generatedDir'), $dbFileNames, $deletedFiles);
+        //self::deleteUnusedFilesInDirectory(Config::get('paths.generatedDir'), $dbFileNames, $deletedFiles);
 
         JSONResponseHandler::sendResponse([
             "deleted_count" => count($deletedFiles),
@@ -219,11 +221,11 @@ class UploadHandler
             }
 
             $fullPath = $fileInfo->getPathname();
-            $relativePath = substr($fullPath, strlen($realBase) + 1);
+            $filename = $fileInfo->getBasename();
 
-            if (!in_array($relativePath, $usedFiles)) {
+            if (!in_array($filename, $usedFiles)) {
                 unlink($fullPath);
-                $deletedFiles[] = $relativePath;
+                $deletedFiles[] = $filename;
             }
         }
     }
@@ -266,6 +268,10 @@ class UploadHandler
 
         $subDir = substr($hash, 0, 2) . "/" . substr($hash, 2, 2);
         $uploadDir = $path . $subDir;
+
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0775, true);
+        }
 
         $extension = strtolower(pathinfo($path . $fileName, PATHINFO_EXTENSION));
         $safeFileName = $hash . ($extension ? "." . $extension : "");

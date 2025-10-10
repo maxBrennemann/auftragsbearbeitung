@@ -50,3 +50,4 @@ public/assets/forms/modules/sticker/catalog_products.csv
 storage/logs/protocol.txt
 README.md
 .config/formatter/*
+.build

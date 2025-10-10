@@ -207,7 +207,6 @@ fnNames.click_downloadAllFiles = () => {
 }
 
 fnNames.click_clearFiles = () => {
-    return;
     ajax.post(`/api/v1/upload/clear-files`).then(r => {
         if (r.status == "success") {
             notification(`${r.deleted_count} Dateien entfernt.`, "success",);

@@ -3,11 +3,11 @@
 return [
     'paths' => [
         'uploadDir'    => [
-            'default' => __DIR__ . '../storage/upload',
+            'default' => ROOT . '../storage/upload/',
         ],
-        'generatedDir' => __DIR__ . '../storage/generated',
-        'cacheDir'     => __DIR__ . '../storage/cache',
-        'logDir'       => __DIR__ . '../storage/logs',
+        'generatedDir' => ROOT . '../storage/generated/',
+        'cacheDir'     => ROOT . '../storage/cache/',
+        'logDir'       => ROOT . '../storage/logs/',
     ],
     'appName' => 'Auftragsbearbeitung',
     'lang' => 'DE-de',

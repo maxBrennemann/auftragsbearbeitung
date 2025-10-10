@@ -48,4 +48,12 @@ class Test
         $table = TableGenerator::create($data, $options, $header);
         echo $table;
     }
+
+    public static function configTest(): void
+    {
+        $config = Config::get("paths.uploadDir.default");
+        $configArr = Config::getGroup("paths.uploadDir");
+        echo $config;
+        var_dump($configArr);
+    }
 }
