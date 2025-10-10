@@ -3,7 +3,7 @@
 import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js"
 
-import { getItemsTable, initInvoiceItems } from "./classes/invoiceItems.js";
+import { getItemsTable, initInvoiceItems } from "../classes/invoiceItems.js";
 
 const functionNames = {};
 

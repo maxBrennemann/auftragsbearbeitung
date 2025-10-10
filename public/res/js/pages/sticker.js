@@ -1,18 +1,18 @@
 //@ts-nocheck
 
-import { initTextGeneration } from "./sticker/textGeneration.ts";
-import { productConnector } from "./sticker/productConnector.js";
+import { initTextGeneration } from "../sticker/textGeneration.ts";
+import { productConnector } from "../sticker/productConnector.js";
 
-import { } from "./sticker/statsManager.js";
+import { } from "../sticker/statsManager.js";
 import { addBindings, getVariable } from "js-classes/bindings.js";
-import "./sticker/imageMove.js";
+import "../sticker/imageMove.js";
 import { ajax } from "js-classes/ajax.js";
 import { notificatinReplace, notification, notificationLoader } from "js-classes/notifications.js";
 
-import { createPopup } from "./global.js";
-import { initImageManager } from "./sticker/imageManager.ts";
-import { initSizeTable } from "./sticker/sizeTable.js";
-import { initTagManager } from "./sticker/tagManager.ts";
+import { createPopup } from "../global.js";
+import { initImageManager } from "../sticker/imageManager.ts";
+import { initSizeTable } from "../sticker/sizeTable.js";
+import { initTagManager } from "../sticker/tagManager.ts";
 
 const fnNames = {};
 

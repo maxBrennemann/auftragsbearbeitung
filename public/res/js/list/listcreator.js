@@ -1,3 +1,4 @@
+//@ts-nocheck
 
 if (document.readyState !== 'loading' ) {
     init();

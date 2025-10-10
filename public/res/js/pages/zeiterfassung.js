@@ -1,8 +1,10 @@
+//@ts-nocheck
+
 import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js"
 
-import { addRow, clearRows, renderTable } from "./classes/table.js";
-import { timeGlobalListener } from "./classes/timetracking.js";
+import { addRow, clearRows, renderTable } from "../classes/table.js";
+import { timeGlobalListener } from "../classes/timetracking.js";
 
 const fnNames = {};
 

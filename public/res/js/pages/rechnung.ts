@@ -5,8 +5,8 @@ import { addBindings } from "js-classes/bindings.js"
 // @ts-ignore
 import { notification } from "js-classes/notifications.js";
 
-import { DragSortManager } from "./classes/DragSortManager.js";
-import { createPopup } from "./global.js";
+import { DragSortManager } from "../classes/DragSortManager.js";
+import { createPopup } from "../global.js";
 
 const functionNames: { [key: string]: (...args: any[]) => void } = {};
 const removedAltNames: number[] = [];

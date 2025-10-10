@@ -2,7 +2,30 @@
 import "../css/input.css";
 
 if (import.meta.env.VITE_DEBUG_CSS === 'true') {
-  import('../css/debug.css');
+	import('../css/debug.css');
+}
+
+if (import.meta.env.DEV) {
+
+}
+
+if (import.meta.env.DEV) {
+	const pageScript = document.body.dataset.page;
+	if (pageScript) {
+		if (window.__PAGE_SCRIPT_LOADED__ === pageScript) {
+			console.warn("[DEV] Page script already loaded, skipping");
+		} else {
+			window.__PAGE_SCRIPT_LOADED__ = pageScript;
+			import(`./pages/${pageScript}.js`)
+				.then((mod) => {
+					if (typeof mod.default === "function") mod.default();
+					console.log(`[DEV] Loaded page script: ${pageScript}`);
+				})
+				.catch(() => {
+					console.log(`[DEV] No page script found for: ${pageScript}`);
+				});
+		}
+	}
 }
 
 import { ajax } from "js-classes/ajax.js";

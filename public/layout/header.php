@@ -32,7 +32,7 @@ $wiki = 			Link::getPageLink("wiki");
 
 $pageTitle = $pageName;
 if ($pageName == "") {
-    $pageTitle = "Übersicht";
+	$pageTitle = "Übersicht";
 }
 
 ?>
@@ -54,11 +54,10 @@ if ($pageName == "") {
 		<script type="module" src="https://localhost:5173/global.js"></script>
 
 		<?php $jsPage = dashesToCamelCase($jsPage); ?>
-		<script type="module" src="https://localhost:5173/<?= $jsPage ?>.js"></script>
 	<?php else: ?>
 		<link rel="stylesheet" href="<?= $globalCSS ?>">
 		<script type="module" src="<?= $globalJS ?>"></script>
-		<?php 
+		<?php
 		$jsPage = dashesToCamelCase($jsPage);
 
 		$jsPath = Link::getFilePath("$jsPage.js", "js");
@@ -77,7 +76,11 @@ if ($pageName == "") {
 	<?php endif; ?>
 </head>
 
-<body class="overflow-x-hidden">
+<?php if ($_ENV["DEV_MODE"] == "true"): ?>
+	<body class="overflow-x-hidden" data-page="<?= dashesToCamelCase($jsPage) ?>">
+<?php else : ?>
+	<body class="overflow-x-hidden"></body>
+<?php endif; ?>
 	<div class="sidenav" id="sidenav">
 		<ul>
 			<li class="hover:underline">

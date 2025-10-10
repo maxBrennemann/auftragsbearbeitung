@@ -2,20 +2,22 @@
 
 import { addBindings, getVariable } from "js-classes/bindings.js"
 
-import { initColors } from "./auftrag/colorManager.js";
-import { initNotes } from "./auftrag/noteStepManager.js";
-import { initOrderManager } from "./auftrag/orderManager.js";
-import { initVehicles } from "./auftrag/vehicleManager.ts";
+import { initColors } from "../auftrag/colorManager.js";
+import { initNotes } from "../auftrag/noteStepManager.js";
+import { initOrderManager } from "../auftrag/orderManager.js";
+import { initVehicles } from "../auftrag/vehicleManager.ts";
 
-import "./auftrag/calculateGas.js";
+import "../auftrag/calculateGas.js";
 import { ajax } from "js-classes/ajax.js";
 
-import { getItemsTable, initInvoiceItems } from "./classes/invoiceItems.js";
+import { getItemsTable, initInvoiceItems } from "../classes/invoiceItems.js";
 
 import { notification } from "js-classes/notifications.js";
 
-import { initFileUploader } from "./classes/upload.js";
-import { createPopup } from "./global.js";
+import { initFileUploader } from "../classes/upload.js";
+import { createPopup } from "../global.js";
+
+console.log("test");
 
 /* global variables */
 const orderConfig = {

@@ -3,8 +3,8 @@
 import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js"
 
-import { DeviceDetector } from "./classes/deviceDetector.js";
-import { setCookie, getCookie } from "./global.js";
+import { DeviceDetector } from "../classes/deviceDetector.js";
+import { setCookie, getCookie } from "../global.js";
 
 const fnNames = {};
 

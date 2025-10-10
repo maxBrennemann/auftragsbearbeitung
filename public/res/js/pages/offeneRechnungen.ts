@@ -2,7 +2,7 @@
 import { ajax } from "js-classes/ajax.js";
 
 import { format } from "date-fns";
-import { addRow, createHeader, createTable } from "./classes/table.js";
+import { addRow, createHeader, createTable } from "../classes/table.js";
 
 const init = () => {
     createInvoiceTable();
