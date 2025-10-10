@@ -12,8 +12,8 @@ node_modules
 vendor
 .config/install/install.lock
 var
-cache/*
-!cache/.gitkeep
+storage/cache/*
+!storage/cache/.gitkeep
 
 .config/res/sql/init/*
 !.config/res/sql/init/.gitkeep
@@ -24,17 +24,17 @@ cache/*
 .php-cs-fixer.cache
 
 # generated files
-generated/*
-!generated/.gitkeep
+storage/generated/*
+!storage/generated/.gitkeep
 
-files/res/js/classes/tableconfig.js
+public/res/js/classes/tableconfig.js
 
 # minimized files
-files/res/assets/*
+public/res/assets/*
 
 # upload
-upload/*
-!upload/.gitkeep
+storage/upload/*
+!storage/upload/.gitkeep
 
 # docker explicit
 .git
@@ -45,7 +45,9 @@ database/legacy_sql
 database/versions
 
 #misc
-files/assets/forms/modules/sticker/catalog_products.csv
+public/assets/forms/modules/sticker/catalog_products.csv
 .git.bfg-report
-protocol.txt
+storage/logs/protocol.txt
 README.md
+.config/formatter/*
+.build

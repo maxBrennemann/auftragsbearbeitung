@@ -8,11 +8,13 @@ export default {
         tailwindcss(tailwindConfig),
         autoprefixer(),
         postcssUrl({
-            url: asset => {
+            url: (asset: { url: string }) => {
                 const fontsToRewrite = ['Raleway-Regular.ttf', 'OpenSans-VariableFont.ttf', 'OpenSans-Italic-VariableFont.ttf'];
                 const filename = asset.url.split('/').pop();
+                if (!filename) return asset.url;
+                
                 if (fontsToRewrite.includes(filename)) {
-                    return `/css/fonts/${filename}`;
+                    return `../css/fonts/${filename}`;
                 }
                 return asset.url;
             }

@@ -1,6 +1,7 @@
 services:
   nginx:
-    image: ghcr.io/maxbrennemann/auftragsbearbeitung/nginx:latest
+    image: nginx:stable-alpine
+    container_name: nginx
     restart: always
     ports:
       - "80:80"
@@ -8,24 +9,29 @@ services:
     environment:
       DOMAIN: ${DOMAIN}
     volumes:
-      - ./etc/letsencrypt:/etc/letsencrypt:ro
-      - ./certbot/www/:/var/www/certbot/:ro
+      - .config/nginx/default.prod.conf:/etc/nginx/templates/default.conf.template
+      - .config/nginx/autoreload.sh:/docker-entrypoint.d/autoreload-nginx.sh
+      - ./data/certbot/conf:/etc/letsencrypt:ro
+      - ./data/certbot/www:/var/www/certbot:ro
+    networks:
+      - internal_network
 
   certbot:
-    container_name: certbot
     image: certbot/certbot:latest
     depends_on:
       - nginx
-    command: >-
-             certonly --reinstall --webroot --webroot-path=/var/www/certbot
-             --email ${LETSENCRYPT_EMAIL} --agree-tos --no-eff-email
-             -d ${DOMAIN}
+    container_name: certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email {LETSENCRYPT_EMAIL} -d {DOMAIN} --agree-tos
     volumes:
-      - ./etc/letsencrypt:/etc/letsencrypt
-      - ./certbot/data:/var/www/certbot
+      - ./data/certbot/conf:/etc/letsencrypt:rw
+      - ./data/certbot/www:/var/www/certbot:rw
+    networks:
+      - internal_network
 
   php:
     image: ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:latest
+    container_name: auftragsbearbeitung-php
     expose:
       - "9000"
     environment:
@@ -33,10 +39,11 @@ services:
       LETSENCRYPT_HOST: ${DOMAIN}
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
     volumes:
-      - ./upload/:/var/www/html
+      - ./upload/:/var/www/html/storage
 
   database:
     image: mariadb:11.7
+    container_name: database
     environment:
       MARIADB_DATABASE: ${DB_DATABASE}
       MARIADB_USER: ${DB_USERNAME}
@@ -47,6 +54,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
     environment:
       VIRTUAL_HOST: pma.${DOMAIN}
       LETSENCRYPT_HOST: pma.${DOMAIN}
@@ -57,3 +65,7 @@ services:
 
 volumes:
   db_data:
+
+networks:
+  internal_network:
+    driver: bridge

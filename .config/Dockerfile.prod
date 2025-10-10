@@ -23,7 +23,7 @@ COPY package.json package-lock.json ./
 RUN npm ci --include=dev && npm cache clean --force
 
 COPY . .
-COPY --from=composer /var/www/html/files/res/js/classes/tableconfig.js ./files/res/js/classes/tableconfig.js
+COPY --from=composer /var/www/html/public/res/js/classes/tableconfig.js ./public/res/js/classes/tableconfig.js
 
 RUN npm run build
 
@@ -67,10 +67,10 @@ RUN touch /var/log/cron.log
 
 # Copy assets and dependencies into final image
 COPY --from=composer /var/www/html/vendor ./vendor
-COPY --from=frontend-builder /app/files/res/assets ./files/res/assets
+COPY --from=frontend-builder /app/public/res/assets ./public/res/assets
 
-RUN rm -rf files/res/js
-RUN rm -rf files/res/css
+RUN rm -rf public/res/js
+RUN rm -rf public/res/css
 
 # Fix ownership
 RUN chown -R www-data:www-data /var/www/html
