@@ -8,6 +8,7 @@ import { notification } from "js-classes/notifications.js";
 import { createPopup } from "../global.js";
 
 const fnNames: { [key: string]: (...args: any[]) => void } = {};
+
 const orderManagerConfig = {
     orderId: 0,
 };
@@ -35,6 +36,9 @@ fnNames.click_setDeadlineState = e => {
     if (checked) {
         (document.getElementById("inputDeadline") as HTMLInputElement).value = "";
         sendDate(2, "unset");
+    } else {
+        const focus = document.getElementById("inputDeadline") as HTMLInputElement;
+        if (focus) focus.focus();
     }
 }
 
@@ -52,15 +56,29 @@ function sendDate(type: number, date: Date | string) {
 }
 
 fnNames.click_deleteOrder = () => {
-    const template = document.getElementById("templateAlertBox") as HTMLTemplateElement;
     const div = document.createElement("div");
-    div.id = "alertBox";
-    div.appendChild(template.content.cloneNode(true));
+    const p = document.createElement("p");
+    p.innerHTML = "Möchtest Du den Auftrag sicher löschen?";
 
-    const deleteOrderBtn = div.querySelector('#deleteOrder') as HTMLButtonElement;
-    deleteOrderBtn.addEventListener("click", deleteOrder, false);
+    div.appendChild(p);
+    div.classList.add("orderDetailsOpen");
 
-    createPopup(div);
+    const btnDeleteOrder = document.createElement("button");
+    btnDeleteOrder.classList.add("btn-delete");
+    btnDeleteOrder.innerHTML = "Ja";
+    btnDeleteOrder.addEventListener("click", () => {
+        const showExtraOptions = document.getElementById("showExtraOptions") as HTMLElement;
+        showExtraOptions.classList.toggle("hidden");
+        deleteOrder();
+    });
+
+    const settingsContainer = createPopup(div);
+    settingsContainer.appendChild(btnDeleteOrder);
+
+    settingsContainer.addEventListener("closePopup", () => {
+        const showExtraOptions = document.getElementById("showExtraOptions") as HTMLElement;
+        showExtraOptions.classList.toggle("hidden");
+    })
 }
 
 function deleteOrder() {
@@ -74,10 +92,14 @@ function deleteOrder() {
 fnNames.click_changeCustomer = async () => {
     const changeCustomer = await ajax.get(`/api/v1/template/orderChangeCustomer`);
     const div = document.createElement("div");
+    div.classList.add("orderDetailsOpen");
     div.innerHTML = changeCustomer.content;
 
     const optionsContainer = createPopup(div);
-    const btnCancel = optionsContainer.querySelector("button.btn-cancel");
+    optionsContainer.addEventListener("closePopup", () => {
+        const showExtraOptions = document.getElementById("showExtraOptions") as HTMLElement;
+        showExtraOptions.classList.toggle("hidden");
+    })
 
     const searchCustomers = div.querySelector("#searchCustomers") as HTMLElement;
     searchCustomers.addEventListener("change", async e => {
@@ -158,8 +180,19 @@ export const initOrderManager = (orderId: number) => {
     if (inputExtraOptions == null) {
         return;
     }
-    inputExtraOptions.addEventListener("click", function (e) {
+
+    inputExtraOptions.addEventListener("click", function () {
         const showExtraOptions = document.getElementById("showExtraOptions") as HTMLElement;
         showExtraOptions.classList.toggle("hidden");
     });
 }
+
+window.addEventListener("click", function (event: MouseEvent) {
+    const target = event.target as HTMLElement | null;
+    if (!target) return;
+
+	if (!target.closest(".orderDetailsOpen")) {
+		const showExtraOptions = document.getElementById("showExtraOptions") as HTMLElement;
+        if (showExtraOptions) showExtraOptions.classList.add("hidden");
+	}
+}, false);

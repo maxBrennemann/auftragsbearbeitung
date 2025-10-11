@@ -51,8 +51,7 @@ class Link
                 $link = ROOT . "../public/assets/forms/" . $resource;
                 break;
             case "upload":
-                $subDir = substr($resource, 0, 2) . "/" . substr($resource, 2, 2);
-                $link = Config::get('paths.uploadDir.default') . $subDir . "/" . $resource;
+                $link = self::getUploadFileByURL($resource);
                 break;
             case "csv":
             case "backup":
@@ -64,6 +63,21 @@ class Link
         }
 
         return $link;
+    }
+
+    private static function getUploadFileByURL(string $resource): string
+    {
+        $resourceParts = explode("/", $resource);
+        if (count($resourceParts) >= 3) {
+            throw new \Exception("Unsupported resource path.");
+        }
+
+        if (count($resourceParts) == 2) {
+            $resource = $resourceParts[0];
+        }
+
+        $subDir = substr($resource, 0, 2) . "/" . substr($resource, 2, 2);
+        return Config::get('paths.uploadDir.default') . $subDir . "/" . $resource;
     }
 
     /**
@@ -100,6 +114,17 @@ class Link
         }
 
         return $link;
+    }
+
+    public static function getUploadResourceLink(string $resource, string $originalname): string
+    {
+        $nameparts = explode(".", $resource, 1);
+
+        if (count($nameparts) == 1) {
+            return $_ENV["REWRITE_BASE"] . "upload/" . $resource . "/" . $originalname;
+        }
+
+        return $_ENV["REWRITE_BASE"] . "upload/" . $resource . "/" . $originalname;
     }
 
     public static function getGlobalCSS(): string

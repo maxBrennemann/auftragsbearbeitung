@@ -59,8 +59,8 @@ try {
 		<?php else: ?>
 			<div class="defCont col-span-6 md:col-span-4 2xl:col-span-3">
 				<div class="relative">
-					<span class="font-bold">Auftrag <span id="auftragsnummer"><?= $auftrag->getAuftragsnummer() ?></span><?php if ($auftrag->getIsArchiviert()) : ?> (archiviert)<?php endif; ?><button class="float-right border-none w-4" id="extraOptions">⋮</button></span>
-					<div class="hidden absolute right-0 top-0 bg-white rounded-lg drop-shadow-lg p-3 mt-5" id="showExtraOptions">
+					<span class="font-bold">Auftrag <span id="auftragsnummer"><?= $auftrag->getAuftragsnummer() ?></span><?php if ($auftrag->getIsArchiviert()) : ?> (archiviert)<?php endif; ?><button class="orderDetailsOpen float-right border-none w-5" id="extraOptions">⋮</button></span>
+					<div class="orderDetailsOpen hidden absolute right-0 top-0 bg-white rounded-lg drop-shadow-lg p-3 mt-5" id="showExtraOptions">
 						<button class="btn-primary mt-5" data-binding="true" data-fun="changeCustomer">Anderem Kuden zuweisen</button>
 						<button class="btn-delete" data-binding="true" data-fun="deleteOrder">Auftrag löschen</button>
 					</div>
@@ -137,7 +137,9 @@ foreach ($contactPersons as $contact): ?>
 						<?php endif; ?>
 					</select>
 				</div>
-				<a class="text-blue-500	font-semibold mt-3" href="<?= Link::getPageLink("kunde") ?>?id=<?= $auftrag->getKundennummer() ?>">Kunde <span id="kundennummer"><?= $auftrag->getKundennummer() ?></span> anzeigen</a>
+				<div class="mt-2">
+					<a class="text-blue-500	font-semibold" href="<?= Link::getPageLink("kunde") ?>?id=<?= $auftrag->getKundennummer() ?>">Kunde <span id="kundennummer"><?= $auftrag->getKundennummer() ?></span> anzeigen</a>
+				</div>
 			</div>
 
 			<div class="defCont col-span-6 md:col-span-4 2xl:col-span-3 schritte">
@@ -344,13 +346,6 @@ foreach ($contactPersons as $contact): ?>
 			<template id="templateExistingColor">
 				<p class="font-semibold">Vorhandene Farben:</p>
 				<div class="w-full h-60 overflow-y-scroll mt-1 bg-white rounded-md"></div>
-			</template>
-
-			<template id="templateAlertBox">
-				<p>Möchtest Du den Auftrag sicher löschen?</p>
-				<div class="flex justify-center mt-2s">
-					<button id="deleteOrder" class="btn-delete">Ja</button>
-				</div>
 			</template>
 
 			<template id="templateCalculateGas">

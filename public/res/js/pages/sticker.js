@@ -154,7 +154,7 @@ function transfer(type, text) {
         || mainVariables.overwriteImages.walldecal 
         || mainVariables.overwriteImages.textile
     ) {
-        if (!confirm("Möchtest du die Bilder überschreiben?")) {
+        if (!confirm("Möchtest Du die Bilder überschreiben?")) {
             mainVariables.overwriteImages.sticker = false;
             mainVariables.overwriteImages.walldecal = false;
             mainVariables.overwriteImages.textile = false;

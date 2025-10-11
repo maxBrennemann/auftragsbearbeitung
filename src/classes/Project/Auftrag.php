@@ -607,7 +607,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 
     public static function getFiles(int $orderId): string
     {
-        $query = "SELECT DISTINCT dateiname AS Datei, originalname, `date` AS Datum, typ as Typ 
+        $query = "SELECT DISTINCT dateiname AS Datei, originalname, DATE_FORMAT(`date`, '%d.%m.%Y %H:%i:%s') AS Datum, typ as Typ 
             FROM dateien 
             LEFT JOIN dateien_auftraege 
                 ON dateien_auftraege.id_datei = dateien.id
@@ -616,21 +616,22 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
             "orderId" => $orderId,
         ]);
 
-        for ($i = 0; $i < sizeof($files); $i++) {
-            $link = Link::getResourcesShortLink($files[$i]['Datei'], "upload");
+        foreach ($files as &$file) {
+            $link = Link::getUploadResourceLink($file['Datei'], $file["originalname"]);
 
-            $filePath = "storage/upload/" . $files[$i]['Datei'];
+            $filePath = Config::get("paths.uploadDir.default") . $file['Datei'];
 
             if (file_exists($filePath) 
                 && (@exif_imagetype($filePath) != false)
                 && getimagesize($filePath) != false
             ) {
-                $html = '<a target="_blank" rel="noopener noreferrer" href="' . $link . '"><img src="" width="40px"><p class="img_prev">' . $files[$i]["originalname"] . '</p></a>';
+                $html = '<a target="_blank" rel="noopener noreferrer" href="' . $link . '"><img src="" width="40px"><p class="img_prev">' . $file["originalname"] . '</p></a>';
             } else {
-                $html = '<span><a target="_blank" rel="noopener noreferrer" href="' . $link . '">' . $files[$i]["originalname"] . '</a></span>';
+                $html = '<span><a target="_blank" rel="noopener noreferrer" href="' . $link . '">' . $file["originalname"] . '</a></span>';
             }
 
-            $files[$i]["Datei"] = $html;
+            $file["Datei"] = $html;
+            $file["Typ"] = FileStats::parseFileType($file["Typ"]);
         }
 
         $header = [
