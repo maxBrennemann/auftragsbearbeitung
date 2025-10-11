@@ -3,7 +3,7 @@ import { ajax } from "js-classes/ajax.js";
 // @ts-ignore
 import { addBindings } from "js-classes/bindings.js";
 
-import { getStickerId, getStickerName } from "../sticker.js";
+import { getStickerId, getStickerName } from "../pages/sticker.js";
 
 const fnNames: { [key: string]: (...args: any[]) => void } = {};
 

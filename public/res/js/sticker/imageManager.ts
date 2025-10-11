@@ -9,7 +9,7 @@ import { fetchAndRenderTable } from "../classes/table.js";
 import { tableConfig } from "../classes/tableconfig.js";
 import { initFileUploader } from "../classes/upload.js";
 import { createPopup, initImagePreviewListener } from "../global.js";
-import { getStickerId } from "../sticker.js";
+import { getStickerId } from "../pages/sticker.js";
 
 import { initSVG } from "./svgManager";
 

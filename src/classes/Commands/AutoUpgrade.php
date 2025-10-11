@@ -33,7 +33,7 @@ class AutoUpgrade extends Command
         $force = $input->getOption("force");
         $skipMigration = $input->getOption("skip-migration");
 
-        $target = "../public/res/js/classes";
+        $target = ROOT . "../public/res/js/classes";
 
         file_put_contents("$target/tableconfig.js", $content);
 

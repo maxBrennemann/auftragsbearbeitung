@@ -2,7 +2,7 @@
 
 import { ajax } from "js-classes/ajax.js";
 
-import { getStickerId } from "../sticker.js";
+import { getStickerId } from "../pages/sticker.js";
 
 import { deleteButton, editButton, parseEuro, parseInput, resetInputs } from "./helper.ts";
 

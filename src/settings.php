@@ -7,7 +7,7 @@ require_once ROOT . "../vendor/autoload.php";
 use Symfony\Component\Dotenv\Dotenv;
 
 $dotenv = new Dotenv();
-$dotenv->load("../.env");
+$dotenv->load(ROOT . "../.env");
 
 use Src\Classes\Project\Config;
 Config::load(ROOT . "../src/config.php");

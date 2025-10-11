@@ -35,20 +35,20 @@ class Link
     {
         switch ($type) {
             case "css":
-                $link = "public/res/css/" . $resource;
+                $link = ROOT . "../public/res/css/" . $resource;
                 break;
             case "js":
             case "ts":
-                $link = "public/res/js/pages/" . $resource;
+                $link = ROOT . "../public/res/js/pages/" . $resource;
                 break;
             case "min":
-                $link = "public/res/assets/" . $resource;
+                $link = ROOT . "../public/res/assets/" . $resource;
                 break;
             case "font":
-                $link = "public/res/css/fonts/" . $resource;
+                $link = ROOT . "../public/res/css/fonts/" . $resource;
                 break;
             case "html":
-                $link = "public/assets/forms/" . $resource;
+                $link = ROOT . "../public/assets/forms/" . $resource;
                 break;
             case "upload":
                 $subDir = substr($resource, 0, 2) . "/" . substr($resource, 2, 2);

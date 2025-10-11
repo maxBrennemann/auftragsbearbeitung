@@ -6,19 +6,17 @@ if (import.meta.env.VITE_DEBUG_CSS === 'true') {
 }
 
 if (import.meta.env.DEV) {
-
-}
-
-if (import.meta.env.DEV) {
 	const pageScript = document.body.dataset.page;
 	if (pageScript) {
 		if (window.__PAGE_SCRIPT_LOADED__ === pageScript) {
 			console.warn("[DEV] Page script already loaded, skipping");
 		} else {
 			window.__PAGE_SCRIPT_LOADED__ = pageScript;
-			import(`./pages/${pageScript}.js`)
+			import(/* @vite-ignore */ `./pages/${pageScript}`)
 				.then((mod) => {
-					if (typeof mod.default === "function") mod.default();
+					if (typeof mod.default === "function") {
+						mod.default();
+					}
 					console.log(`[DEV] Loaded page script: ${pageScript}`);
 				})
 				.catch(() => {

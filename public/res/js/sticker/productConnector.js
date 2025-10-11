@@ -1,8 +1,10 @@
+//@ts-nocheck
+
 import { ajax } from "js-classes/ajax.js";
 import { notification } from "js-classes/notifications.js";
 
 import { createPopup } from "../global.js";
-import { getStickerId } from "../sticker.js";
+import { getStickerId } from "../pages/sticker.js";
 
 class ProductConnector {
 
