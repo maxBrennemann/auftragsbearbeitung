@@ -13,7 +13,7 @@ if (isset($_GET["id"])) {
 <div class="defCont">
     <span class="search_wrapper">
         <input class="search" type="text" placeholder="Suchen">
-        <span id="lupeSpan"><span id="lupe">&#9906;</span></span>
+        <span id="lupeSpan"><span>&#9906;</span></span>
     </span>
     <?= \Src\Classes\Controller\TemplateController::getTemplate("search"); ?>
 </div>

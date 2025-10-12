@@ -2,8 +2,9 @@
 import { addBindings } from "js-classes/bindings.js";
 // @ts-ignore
 import { ajax } from "js-classes/ajax.js";
+import { FunctionMap } from "../types/types";
 
-const fnNames: { [key: string]: (...args: any[]) => void } = {};
+const fnNames: FunctionMap = {};
 
 function init() {
     addBindings(fnNames);

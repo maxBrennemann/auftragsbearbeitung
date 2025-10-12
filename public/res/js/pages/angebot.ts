@@ -1,26 +1,27 @@
-//@ts-nocheck
-
+// @ts-ignore
 import { ajax } from "js-classes/ajax.js";
+// @ts-ignore
 import { addBindings } from "js-classes/bindings.js"
 
 import { getItemsTable, initInvoiceItems } from "../classes/invoiceItems.js";
+import { FunctionMap } from "../types/types.js";
 
-const functionNames = {};
+const functionNames: FunctionMap = {};
 
 const init = () => {
     addBindings(functionNames);
 }
 
 functionNames.click_newOffer = () => {
-    const customerId = document.getElementById("kdnr").value;
-    ajax.get(`/api/v1/order-items/offer/template/${customerId}`).then(r => {
+    const customerId = (document.getElementById("kdnr") as HTMLInputElement).value;
+    ajax.get(`/api/v1/order-items/offer/template/${customerId}`).then((r: any) => {
         const url = new URL(window.location.href);
         url.searchParams.set("kdnr", customerId);
         window.history.pushState({}, '', url);
 
-        document.getElementById("insTemp").innerHTML = r.content;
-        document.getElementById("listOpenOffers").classList.add("hidden");
-        document.getElementById("newOffer").classList.add("hidden");
+        (document.getElementById("insTemp") as HTMLElement).innerHTML = r.content;
+        (document.getElementById("listOpenOffers") as HTMLElement).classList.add("hidden");
+        (document.getElementById("newOffer") as HTMLElement).classList.add("hidden");
 
         getItemsTable("auftragsPostenTable", r.offerId, "offer");
         initInvoiceItems();
@@ -28,8 +29,9 @@ functionNames.click_newOffer = () => {
     });
 }
 
-functionNames.click_loadOffer = e => {
-    const offerId = e.currentTarget.dataset.id;
+functionNames.click_loadOffer = (e: CustomEvent) => {
+    const target = (e.currentTarget as HTMLElement)!;
+    const offerId = target.dataset.id;
 }
 
 functionNames.click_storeOffer = () => {
@@ -41,7 +43,7 @@ functionNames.click_deleteOffer = () => {
 }
 
 const getPDF = () => {
-    var iframe = document.getElementById("offerPDFPreview");
+    var iframe = document.getElementById("offerPDFPreview") as HTMLIFrameElement;
     iframe.src = iframe.src;
 }
 

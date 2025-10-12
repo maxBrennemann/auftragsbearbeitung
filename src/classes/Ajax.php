@@ -107,6 +107,7 @@ class Ajax
                 UserRoutes::handleRequest($path);
                 break;
             case "template":
+            case "manual":
                 VariousRoutes::handleRequest($path);
                 break;
             default:
@@ -117,12 +118,6 @@ class Ajax
     public static function manageRequests(string $reason, string $page): void
     {
         switch ($reason) {
-            case "getManual":
-                $pageName = $_POST['pageName'];
-                $intent = $_POST['intent'];
-                $data = DBAccess::selectQuery("SELECT info FROM `manual` WHERE `page` = '$pageName' AND intent = '$intent'");
-                echo json_encode($data, JSON_FORCE_OBJECT);
-                break;
             case "setImageOrder":
                 $order = $_POST["order"];
 

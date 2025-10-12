@@ -10,14 +10,10 @@ import { initVehicles } from "../auftrag/vehicleManager.ts";
 import "../auftrag/calculateGas.js";
 import { ajax } from "js-classes/ajax.js";
 
-import { getItemsTable, initInvoiceItems } from "../classes/invoiceItems.js";
-
+import { getItemsTable, initInvoiceItems } from "../classes/invoiceItems.ts";
 import { notification } from "js-classes/notifications.js";
-
 import { initFileUploader } from "../classes/upload.js";
 import { createPopup } from "../global.js";
-
-console.log("test");
 
 /* global variables */
 const orderConfig = {
@@ -49,8 +45,6 @@ const initCode = async () => {
         return;
     }
 
-    addSearchEventListeners();
-
     initFileUploader({
         "order": {
             "location": `/api/v1/order/${orderConfig.auftragsId}/add-files`,
@@ -64,29 +58,6 @@ const initCode = async () => {
     orderConfig.table = await getItemsTable("auftragsPostenTable", orderConfig.auftragsId, "order");
     orderConfig.table.addEventListener("rowInsert", reloadPostenListe);
     initInvoiceItems(orderConfig.auftragsId);
-}
-
-function addSearchEventListeners() {
-    var data = document.getElementsByClassName("searchProductEvent");
-    for (let i = 0; i < data.length; i++) {
-        data[i].addEventListener("click", performProductSearch, false);
-    }
-    document.getElementById("productSearch").addEventListener("change", performProductSearch, false);
-}
-
-function performProductSearch() {
-    var query = document.getElementById("productSearch").value;
-
-    var params = {
-        getReason: "searchProduct",
-        query: query
-    };
-
-    var search = new AjaxCall(params, "POST", window.location.href);
-    search.makeAjaxCall(function (response) {
-        var element = document.getElementById("resultContainer");
-        element.innerHTML = response;
-    });
 }
 
 /* changes the contact person connected with the order */
@@ -116,18 +87,6 @@ fnNames.click_toggleOrderDescription = () => {
 
     toggleUp.classList.toggle("hidden");
     toggleDown.classList.toggle("hidden");
-}
-
-// TODO: replace getReason=update
-window.updateIsDone = function (key, event) {
-    var update = new AjaxCall(`getReason=update&key=${key}&auftrag=${orderConfig.auftragsId}`, "POST", window.location.href);
-    update.makeAjaxCall(function (response, args) {
-        console.log(response);
-        /* removes the row */
-        let button = args[0];
-        let row = button.parentNode.parentNode;
-        row.parentNode.removeChild(row);
-    }, event.target);
 }
 
 fnNames.click_showAuftrag = () => {

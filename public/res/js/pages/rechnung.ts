@@ -7,8 +7,10 @@ import { notification } from "js-classes/notifications.js";
 
 import { DragSortManager } from "../classes/DragSortManager.js";
 import { createPopup } from "../global.js";
+import { FunctionMap } from "../types/types.js";
 
-const functionNames: { [key: string]: (...args: any[]) => void } = {};
+const functionNames: FunctionMap = {};
+
 const removedAltNames: number[] = [];
 const config = {
     "invoiceId": 0,

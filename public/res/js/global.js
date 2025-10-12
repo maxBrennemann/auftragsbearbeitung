@@ -31,20 +31,10 @@ import { addBindings } from "js-classes/bindings.js"
 
 import { DeviceDetector } from "./classes/deviceDetector.js";
 import { initNotificationService } from "./classes/notificationUpdater.js";
-import { TableSorter, currentTableSorter, setTableSorter, sortTableNew } from "./classes/tableSorter.js";
 import { timeGlobalListener } from "./classes/timetracking.js";
 
 const fnNames = {};
 const imagePreviewListeners = new WeakSet();
-
-/**
- * function is called when the page is loaded,
- * workaround for new modules in js
- */
-function exportToWindow() {
-	window.sortTableNew = sortTableNew;
-	window.sortTable = sortTable;
-}
 
 document.addEventListener("click", function (event) {
 	if (!event.target.matches('.showLog,.showLog *')) {
@@ -71,7 +61,7 @@ function registerLastActivity() {
 	}
 }
 
-function startFunc() {
+function init() {
 	addBindings(fnNames);
 	timeGlobalListener();
 
@@ -81,8 +71,6 @@ function startFunc() {
 
 	initializeInfoBtn();
 	initImagePreviewListener();
-	setTableSorter(new TableSorter());
-	currentTableSorter.readTableSorted();
 	initSearch();
 	initNotificationService();
 }
@@ -241,49 +229,6 @@ function autosubmit() {
 	}
 }
 
-function sortTable(element, id, direction) {
-	var table = element.parentNode.parentNode.parentNode;
-	var t = new TableClass(table);
-	t.sortByRow(id, direction);
-}
-
-class TableClass {
-	constructor(html_table) {
-		this.html_table = html_table;
-		this.rows = html_table.rows;
-	}
-
-	sortByRow(rowId, direction) {
-		var switching = true, x, y, shouldSwitch;
-		while (switching) {
-			switching = false;
-
-			for (var i = 1; i < (this.rows.length - 1); i++) {
-				shouldSwitch = false;
-				x = this.rows[i].getElementsByTagName("TD")[rowId];
-				y = this.rows[i + 1].getElementsByTagName("TD")[rowId];
-
-				if (direction) {
-					if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-						shouldSwitch = true;
-						break;
-					}
-				} else {
-					if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-						shouldSwitch = true;
-						break;
-					}
-				}
-			}
-			if (shouldSwitch) {
-
-				this.rows[i].parentNode.insertBefore(this.rows[i + 1], this.rows[i]);
-				switching = true;
-			}
-		}
-	}
-}
-
 /** 
  * Info Buttons
  * - adds an event listener to each btn of that class
@@ -295,7 +240,7 @@ function initializeInfoBtn() {
 	Array.from(btns).forEach(btn => {
 		btn.addEventListener("click", async function () {
 			const id = btn.dataset.info;
-			const response = await ajax.get(`/api/v1/templates/text/${id}`);
+			const response = await ajax.get(`/api/v1/manual/text/${id}`);
 
 			let infoBox = document.getElementById("infoBox" + id);
 			if (infoBox == undefined) {
@@ -486,11 +431,6 @@ export const getTemplate = (id) => {
 
 	const clone = template.content.cloneNode(true);
 	return clone;
-}
-
-const init = () => {
-	exportToWindow();
-	startFunc();
 }
 
 if (document.readyState !== 'loading') {

@@ -79,7 +79,7 @@
         <span>Produkt suchen:</span>
         <div>
             <input type="search" id="productSearch">
-            <span class="lupeSpan searchProductEvent"><span class="lupe searchProductEvent">&#9906;</span></span>
+            <span class="lupeSpan searchProductEvent"><span class="searchProductEvent">&#9906;</span></span>
             <p><i>Zubehör, Montagematerial, Textilien...</i></p>
         </div>
         <div id="resultContainer"></div>
