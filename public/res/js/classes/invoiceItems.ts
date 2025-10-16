@@ -11,6 +11,7 @@ import type { FunctionMap, TableHeader, TableOptions } from "../types/types.ts";
 
 interface ItemConfig {
     orderId: number;
+    editItemId: number;
 }
 
 interface Config {
@@ -31,6 +32,7 @@ interface ExtendedTime {
 
 const itemsConf: ItemConfig = {
     "orderId": 0,
+    "editItemId": 0,
 }
 
 const config: Config = {
@@ -119,8 +121,8 @@ export const getItems = async (id: number, type: string = "order") => {
 }
 
 export const getItemsTable = async (
-    tableName: string, 
-    id: number, 
+    tableName: string,
+    id: number,
     type: string = "order"
 ) => {
     const data = await getItems(id, type);
@@ -205,43 +207,108 @@ const editItem = (e: CustomEvent): void => {
     const tab = document.querySelector(`.tab-button[data-target="${type}"]`) as HTMLButtonElement;
     tab.click();
 
+    const addItem = document.querySelector("#addItem") as HTMLElement;
+    const saveItem = document.querySelector("#saveItem") as HTMLElement;
+
+    addItem.classList.add("hidden");
+    saveItem.classList.remove("hidden");
+
+    itemsConf.editItemId = data.id;
+
     switch (type) {
         case "time":
-            editTime();
+            editTime(data.id);
             break;
         case "service":
-            editService();
+            editService(data.id);
             break;
         case "product":
             break;
     }
 }
 
-const editTime = (): void => {
+const editTime = async (id: number) => {
+    const data = await ajax.get(`/api/v1/order-items/times/${id}`);
     setInpupts({
         "ids": {
-            "timeInput": 11,
-            "wage": 0,
-            "timeDescription": 0,
-            "isFree": 0,
-            "addToInvoice": 0,
+            "timeInput": data.time,
+            "wage": data.wage,
+            "timeDescription": data.description,
+            "isFree": data.notcharged,
+            "addToInvoice": data.isinvoice,
+            "getDiscount": data.discount,
         },
     });
 }
 
-const editService = (): void => {
+const editService = async (id: number) => {
+    const data = await ajax.get(`/api/v1/order-items/services/${id}`);
     setInpupts({
         "ids": {
-            "selectLeistung": 11,
-            "anz": 0,
-            "bes": 0,
-            "ekp": 0,
-            "pre": 0,
-            "meh": 0,
-            "isFree": 0,
-            "addToInvoice": 0,
+            "selectLeistung": data.type,
+            "anz": data.quantity,
+            "bes": data.description,
+            "ekp": data.buyingprice,
+            "pre": data.price,
+            "meh": data.unit,
+            "isFree": data.notcharged,
+            "addToInvoice": data.isinvoice,
+            "getDiscount": data.discount,
         },
     });
+}
+
+const saveEditTime = (): void => {
+    const wage = getWage();
+    if (!wage) {
+        return;
+    }
+
+    const data = getTimeData(wage);
+    ajax.put(`/api/v1/order-items/${itemsConf.orderId}/times/${itemsConf.editItemId}`, data).then((r: any) => {
+        resetTimeInputs(r);
+    });
+}
+
+const saveEditService = (): void => {
+    ajax.put(`/api/v1/order-items/${itemsConf.orderId}/services/${itemsConf.editItemId}`, getServiceData()).then((r: any) => resetServiceInputs(r));
+}
+
+const getTimeData = (wage: number) => {
+    return {
+        "time": (document.querySelector("#timeInput") as HTMLInputElement).value,
+        "wage": wage,
+        "description": (document.querySelector("#timeDescription") as HTMLInputElement).value,
+        "noPayment": getIsFree(),
+        "addToInvoice": getAddToInvoice(),
+        "discount": (document.querySelector("#getDiscount") as HTMLInputElement).value,
+        "times": JSON.stringify(config.extendedTimes),
+    }
+}
+
+const getServiceData = () => {
+    return {
+        "lei": (document.querySelector("#selectLeistung") as HTMLInputElement).value,
+        "bes": (document.querySelector("#bes") as HTMLInputElement).value,
+        "ekp": (document.querySelector("#ekp") as HTMLInputElement).value,
+        "pre": (document.querySelector("#pre") as HTMLInputElement).value,
+        "meh": (document.querySelector("#meh") as HTMLInputElement).value,
+        "anz": (document.querySelector("#anz") as HTMLInputElement).value,
+        "ohneBerechnung": getIsFree(),
+        "addToInvoice": getAddToInvoice(),
+        "discount": (document.querySelector("#getDiscount") as HTMLInputElement).value,
+    };
+}
+
+const getWage = (): false | number => {
+    const wageEl = document.querySelector<HTMLInputElement>("#wage");
+    if (!wageEl || wageEl.value === "") {
+        alert("Stundenlohn kann nicht leer sein.");
+        return false;
+    }
+
+    const wage = Number(wageEl.value);
+    return wage;
 }
 
 functionNames.click_addItem = async () => {
@@ -257,67 +324,67 @@ functionNames.click_addItem = async () => {
     }
 }
 
-const addTime = (): void => {
-    const wageEl = document.querySelector<HTMLInputElement>("#wage");
-    if (!wageEl || wageEl.value === "") {
-        alert("Stundenlohn kann nicht leer sein.");
+functionNames.click_saveEdit = async () => {
+    switch (config.itemType) {
+        case "time":
+            saveEditTime();
+            break;
+        case "service":
+            saveEditService();
+            break;
+        case "product":
+            break;
+    }
+}
+
+const resetTimeInputs = (r: any) => {
+    if (r.status !== "success") {
+        notification("", "failure", r.message);
         return;
     }
 
-    ajax.post(`/api/v1/order-items/${itemsConf.orderId}/times`, {
-        "time": (document.querySelector("#timeInput") as HTMLInputElement).value,
-        "wage": wageEl.value,
-        "description": (document.querySelector("#timeInput") as HTMLInputElement).value,
-        "noPayment": getIsFree(),
-        "addToInvoice": getAddToInvoice(),
-        "discount": (document.querySelector("#getDiscount") as HTMLInputElement).value,
-        "times": JSON.stringify(config.extendedTimes),
-    }).then((r: any) => {
-        if (r.status !== "success") {
-            notification("", "failure", r.message);
-            return;
-        }
+    notification("", "success");
+    updatePrice(r.price);
+    updateTable(r.data);
 
-        notification("", "success");
-        updatePrice(r.price);
-        updateTable(r.data);
+    config.extendedTimes = [];
+    (document.getElementById("extendedTimeInput") as HTMLElement).innerHTML = "";
 
-        config.extendedTimes = [];
-        (document.getElementById("extendedTimeInput") as HTMLElement).innerHTML = "";
-
-        clearInputs({
-            "ids": ["timeInput", "timeDescription"],
-            "classes": ["timeInput", "dateInput"]
-        });
-
-        (document.querySelector("#isFree") as HTMLInputElement).checked = false;
-        (document.querySelector("#addToInvoice") as HTMLInputElement).checked = false;
+    clearInputs({
+        "ids": ["timeInput", "timeDescription"],
+        "classes": ["timeInput", "dateInput"]
     });
+
+    (document.querySelector("#isFree") as HTMLInputElement).checked = false;
+    (document.querySelector("#addToInvoice") as HTMLInputElement).checked = false;
+}
+
+const resetServiceInputs = (r: any) => {
+    if (r.status !== "success") {
+        notification("", "failure", r.message);
+        return;
+    }
+
+    notification("", "success");
+    updatePrice(r.price);
+    updateTable(r.data);
+    clearInputs({ "ids": ["bes", "ekp", "pre", "meh", "anz"] });
+    (document.getElementById("selectLeistung") as HTMLSelectElement).value = "0";
+}
+
+const addTime = (): void => {
+    const wage = getWage();
+    if (!wage) {
+        return;
+    }
+
+    const data = getTimeData(wage);
+
+    ajax.post(`/api/v1/order-items/${itemsConf.orderId}/times`, data).then((r: any) => resetTimeInputs(r));
 }
 
 const addService = () => {
-    ajax.post(`/api/v1/order-items/${itemsConf.orderId}/services`, {
-        "lei": (document.querySelector("#selectLeistung") as HTMLInputElement).value,
-        "bes": (document.querySelector("#bes") as HTMLInputElement).value,
-        "ekp": (document.querySelector("#ekp") as HTMLInputElement).value,
-        "pre": (document.querySelector("#pre") as HTMLInputElement).value,
-        "meh": (document.querySelector("#meh") as HTMLInputElement).value,
-        "anz": (document.querySelector("#anz") as HTMLInputElement).value,
-        "ohneBerechnung": getIsFree(),
-        "addToInvoice": getAddToInvoice(),
-        "discount": (document.querySelector("#getDiscount") as HTMLInputElement).value,
-    }).then((r: any) => {
-        if (r.status !== "success") {
-            notification("", "failure", r.message);
-            return;
-        }
-
-        notification("", "success");
-        updatePrice(r.price);
-        updateTable(r.data);
-        clearInputs({ "ids": ["bes", "ekp", "pre", "meh", "anz"] });
-        (document.getElementById("selectLeistung") as HTMLSelectElement).value = "0";
-    });
+    ajax.post(`/api/v1/order-items/${itemsConf.orderId}/services`, getServiceData()).then((r: any) => resetServiceInputs(r));
 }
 
 functionNames.click_showItemsMenu = () => {
@@ -326,6 +393,14 @@ functionNames.click_showItemsMenu = () => {
 
     itemsMenu.classList.toggle("hidden");
     itemsMenuButton.classList.toggle("hidden");
+
+    const addItem = document.querySelector("#addItem") as HTMLElement;
+    const saveItem = document.querySelector("#saveItem") as HTMLElement;
+
+    addItem.classList.remove("hidden");
+    saveItem.classList.add("hidden");
+
+    // toggle edit button
 }
 
 functionNames.click_selectLeistung = (e: Event): void => {

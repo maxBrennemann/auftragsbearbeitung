@@ -277,8 +277,11 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
                 continue;
             }
 
+            $quantity = $p->getQuantity();
+            $quantity = number_format($quantity, 2, ',', '.');
+
             $data[] = [
-                "quantity" => (string) $p->getQuantity(),
+                "quantity" => $quantity,
                 "unit" => $p->getEinheit(),
                 "name" => $p->getDescription(),
                 "item_price" => $p->bekommeEinzelPreis_formatted(),

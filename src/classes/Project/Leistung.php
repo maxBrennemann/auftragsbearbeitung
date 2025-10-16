@@ -269,7 +269,83 @@ class Leistung extends Posten
     public static function get(): void
     {
         $idItem = (int) Tools::get("itemId");
-        // TODO: implement
+        $data = self::getPostenData($idItem);
+        
+        JSONResponseHandler::sendResponse($data);
+    }
+
+    public static function update(): void
+    {
+        $orderId = (int) Tools::get("id");
+        $itemId = (int) Tools::get("itemId");
+        $lei = (int) Tools::get("lei");
+        $description = (string) Tools::get("bes");
+        $ohneBerechnung = Tools::get("ohneBerechnung");
+        $discount = (int) Tools::get("discount");
+        $meh = Tools::get("meh");
+        $isInvoice = (int) Tools::get("addToInvoice");
+        $ekp = (float) Tools::get("ekp");
+        $pre = (float) Tools::get("pre");
+        $qty = (float) Tools::get("anz");
+
+        $query = "UPDATE posten SET 
+                ohneBerechnung = :ohneBerechnung,
+                discount = :discount,
+                isInvoice = :addToInvoice
+            WHERE Postennummer = :itemId";
+        DBAccess::updateQuery($query, [
+            "ohneBerechnung" => $ohneBerechnung,
+            "discount" => $discount,
+            "addToInvoice" => $isInvoice,
+            "itemId" => $itemId,
+        ]);
+
+        $query = "UPDATE leistung_posten SET
+                Leistungsnummer = :lei,
+                Beschreibung = :description,
+                Einkaufspreis = :ekp,
+                SpeziefischerPreis = :pre,
+                meh = :meh,
+                qty = :anz
+            WHERE Postennummer = :itemId";
+        DBAccess::updateQuery($query, [
+            "lei" => $lei,
+            "description" => $description,
+            "ekp" => $ekp,
+            "pre" => $pre,
+            "meh" => $meh,
+            "anz" => $qty,
+            "itemId" => $itemId,
+        ]);
+
+        $newOrder = new Auftrag($orderId);
+        $price = $newOrder->preisBerechnen();
+
+        $data = self::getOrderItem($orderId, $itemId);
+        if ($data === false || !$data instanceof Leistung) {
+            return;
+        }
+
+        $item = [];
+        $item["position"] = $data->getPosition();
+        $item["price"] = $data->bekommeEinzelPreis();
+        $item["totalPrice"] = $data->bekommePreis();
+
+        $data = $data->fillToArray([]);
+        $item["id"] = $data["Postennummer"];
+        $item["name"] = $data["Bezeichnung"];
+        $item["description"] = $data["Beschreibung"];
+        $item["price"] = $data["Preis"];
+        $item["quantity"] = $data["Anzahl"];
+        $item["unit"] = $data["MEH"];
+        $item["totalPrice"] = $data["Gesamtpreis"];
+        $item["purchasePrice"] = $data["Einkaufspreis"];
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+            "price" => $price,
+            "data" => $item,
+        ]);
     }
 
     public static function delete(): void

@@ -221,7 +221,7 @@ class UploadHandler
             }
 
             $fullPath = $fileInfo->getPathname();
-            $filename = $fileInfo->getBasename();
+            $filename = (string) $fileInfo->getBasename();
 
             if (!in_array($filename, $usedFiles)) {
                 unlink($fullPath);

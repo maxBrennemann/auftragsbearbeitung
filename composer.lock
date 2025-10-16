@@ -1009,8 +1009,8 @@
             "version": "2.1.x-dev",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/844f5693807ed2f74753f7415af5dbc5afeb2a79",
-                "reference": "844f5693807ed2f74753f7415af5dbc5afeb2a79",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/54a5bd6c72f6f4582fa23c2b0d0d2064707a7615",
+                "reference": "54a5bd6c72f6f4582fa23c2b0d0d2064707a7615",
                 "shasum": ""
             },
             "require": {
@@ -1056,7 +1056,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-10-10T10:38:36+00:00"
+            "time": "2025-10-12T07:50:21+00:00"
         },
         {
             "name": "prestashop/prestashop-webservice-lib",
@@ -3693,12 +3693,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "0bb69591d011c539b82ebe3e72eb39ed24090db5"
+                "reference": "a85a75e7bf4e0d723ebe535413ff69f1402bde1a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/0bb69591d011c539b82ebe3e72eb39ed24090db5",
-                "reference": "0bb69591d011c539b82ebe3e72eb39ed24090db5",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a85a75e7bf4e0d723ebe535413ff69f1402bde1a",
+                "reference": "a85a75e7bf4e0d723ebe535413ff69f1402bde1a",
                 "shasum": ""
             },
             "require": {
@@ -3794,7 +3794,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-10-08T05:52:05+00:00"
+            "time": "2025-10-11T09:54:37+00:00"
         },
         {
             "name": "psr/event-dispatcher",

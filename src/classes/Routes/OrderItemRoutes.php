@@ -15,6 +15,9 @@ class OrderItemRoutes extends Routes
      *
      * @uses Classes\Project\Angebot::getOfferTemplate()
      * @uses Classes\Project\Angebot::getOfferItems()
+     * 
+     * @uses Classes\Project\Zeit::get()
+     * @uses Classes\Project\Leistung::get()
      */
     protected static $getRoutes = [
         "/order-items/{id}/table" => [\Src\Classes\Project\Zeit::class, "empty"],
@@ -25,20 +28,28 @@ class OrderItemRoutes extends Routes
 
         "/order-items/offer/template/{customerId}" => [\Src\Classes\Project\Angebot::class, "getOfferTemplate"],
         "/order-items/offer/{id}/all" => [\Src\Classes\Project\Angebot::class, "getOfferItems"],
+
+        "/order-items/times/{itemId}" => [\Src\Classes\Project\Zeit::class, "get"],
+        "/order-items/services/{itemId}" => [\Src\Classes\Project\Leistung::class, "get"],
     ];
 
     /**
-     * @uses Classes\Project\Zeit::empty()
      * @uses Classes\Project\Zeit::add()
      * @uses Classes\Project\Leistung::add()
      */
     protected static $postRoutes = [
-        "/order-items/{id}/overview" => [\Src\Classes\Project\Zeit::class, "empty"],
         "/order-items/{id}/times" => [\Src\Classes\Project\Zeit::class, "add"],
         "/order-items/{id}/services" => [\Src\Classes\Project\Leistung::class, "add"],
     ];
 
-    protected static $putRoutes = [];
+    /**
+     * @uses Classes\Project\Zeit::update()
+     * @uses Classes\Project\Leistung::update()
+     */
+    protected static $putRoutes = [
+        "/order-items/{id}/times/{itemId}" => [\Src\Classes\Project\Zeit::class, "update"],
+        "/order-items/{id}/services/{itemId}" => [\Src\Classes\Project\Leistung::class, "update"],
+    ];
 
     /**
     * @uses Classes\Project\Zeit::delete()
