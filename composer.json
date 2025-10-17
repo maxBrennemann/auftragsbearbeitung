@@ -1,13 +1,13 @@
 {
     "require": {
-        "tecnickcom/tcpdf": "^6.2.13",
+        "tecnickcom/tcpdf": "^6.10.0",
         "prestashop/prestashop-webservice-lib": "dev-master",
-        "guzzlehttp/guzzle": "7.9.3",
+        "guzzlehttp/guzzle": "^7.9.3",
         "google/apiclient": "^2.12.1",
-        "symfony/dotenv": "7.0.x-dev",
+        "symfony/dotenv": "7.3.2",
         "max/php-utilities": "1.3.1",
         "ramsey/uuid": "5.x-dev",
-        "symfony/console": "7.3.x-dev"
+        "symfony/console": "7.3.4"
     },
     "minimum-stability": "dev",
     "config": {

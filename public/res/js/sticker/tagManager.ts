@@ -31,7 +31,7 @@ const addTagWithKey = (e: KeyboardEvent) => {
     }
 }
 
-fnNames.click_addNewTag = () => {
+fnNames.click_addNewTag = (e: Event) => {
     const dt = document.createElement("dt");
     dt.className = "cursor-default inline-flex rounded-lg font-semibold overflow-hidden";
     const tagInput = document.getElementById("tagInput") as HTMLInputElement;
@@ -49,7 +49,7 @@ fnNames.click_addNewTag = () => {
     const remove = document.createElement("span");
     remove.innerHTML = "x";
     remove.className = "remove cursor-pointer px-2 py-1 bg-red-400 hover:bg-red-600";
-    remove.addEventListener("click", e => this.manageTag);
+    //remove.addEventListener("click", (e: Event) => this.manageTag);
     dt.appendChild(remove);
 
     tagInput.value = "";
@@ -60,12 +60,12 @@ fnNames.click_addNewTag = () => {
         "tag": tagInput.value,
     });
 
-    const noTags = document.getElementById("noTags");
+    const noTags = document.getElementById("noTags") as HTMLElement;
     if (noTags) {
-        noTags.parentNode.removeChild(noTags);
+        noTags.parentNode!.removeChild(noTags);
     }
 
-    const tagList = document.getElementById("tagList");
+    const tagList = document.getElementById("tagList") as HTMLElement;
     tagList.appendChild(dt);
 }
 
@@ -113,8 +113,12 @@ fnNames.click_manageTag = (e) => {
     const parent = el.parentNode.parentNode;
     const child = el.parentNode;
 
-    if (element.parentNode.classList.contains("suggestionTag")) {
+    /*if (element.parentNode.classList.contains("suggestionTag")) {
         parent.removeChild(child);
         return;
-    }
+    }*/
+}
+
+const addTag = (e: KeyboardEvent) => {
+
 }

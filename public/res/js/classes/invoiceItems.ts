@@ -3,12 +3,13 @@ import { addBindings } from "js-classes/bindings.js";
 import { notification } from "js-classes/notifications.js";
 
 import { getTemplate, setInpupts, clearInputs, createPopup } from "../global.js";
-import { addRow, renderTable } from "./table.js";
+import { addRow, updateRow, renderTable } from "./table.js";
 import type { FunctionMap, TableHeader, TableOptions } from "../types/types.ts";
 
 interface ItemConfig {
     orderId: number;
     editItemId: number;
+    editItemRow: HTMLTableRowElement | null;
 }
 
 interface Config {
@@ -30,6 +31,7 @@ interface ExtendedTime {
 const itemsConf: ItemConfig = {
     "orderId": 0,
     "editItemId": 0,
+    "editItemRow": null,
 }
 
 const config: Config = {
@@ -114,7 +116,7 @@ export const getItems = async (id: number, type: string = "order") => {
             throw new Error(`Unknown type: ${type}`);
     }
 
-    const data =  await ajax.get(query);
+    const data = await ajax.get(query);
     return data.data;
 }
 
@@ -183,9 +185,25 @@ const initItems = (): void => {
 const deleteItem = (e: CustomEvent): void => {
     const data = e.detail;
 
-    ajax.delete(`/api/v1/order-items/${data.type}/${data.id}`).then(() => {
-        data.row.remove();
+    const div = document.createElement("div");
+    const p = document.createElement("p");
+    p.innerHTML = "Möchtest Du den Posten sicher löschen?";
+    div.appendChild(p);
+
+    const settingsContainer = createPopup(div);
+    const btnDelete = document.createElement("button");
+    const btnCancel = settingsContainer.querySelector("button.btn-cancel");
+
+    btnDelete.addEventListener("click", () => {
+        (btnCancel as HTMLButtonElement).click();
+        ajax.delete(`/api/v1/order-items/${data.type}/${data.id}`).then(() => {
+            data.row.remove();
+        });
     });
+
+    btnDelete.innerHTML = "Ja";
+    btnDelete.classList.add("btn-delete");
+    settingsContainer.appendChild(btnDelete);
 }
 
 const moveItem = (e: CustomEvent): void => {
@@ -212,6 +230,7 @@ const editItem = (e: CustomEvent): void => {
     saveItem.classList.remove("hidden");
 
     itemsConf.editItemId = data.id;
+    itemsConf.editItemRow = data.row;
 
     switch (type) {
         case "time":
@@ -357,6 +376,8 @@ const resetTimeInputs = (r: any) => {
 
     (document.querySelector("#isFree") as HTMLInputElement).checked = false;
     (document.querySelector("#addToInvoice") as HTMLInputElement).checked = false;
+
+    resetItemsMenu();
 }
 
 const resetServiceInputs = (r: any) => {
@@ -370,6 +391,8 @@ const resetServiceInputs = (r: any) => {
     updateTable(r.data.data);
     clearInputs({ "ids": ["bes", "ekp", "pre", "meh", "anz"] });
     (document.getElementById("selectLeistung") as HTMLSelectElement).value = "0";
+
+    resetItemsMenu();
 }
 
 const addTime = (): void => {
@@ -388,6 +411,10 @@ const addService = () => {
 }
 
 functionNames.click_showItemsMenu = () => {
+   resetItemsMenu();
+}
+
+const resetItemsMenu = () => {
     const itemsMenu = document.querySelector("#showPostenAdd") as HTMLElement;
     const itemsMenuButton = document.querySelector("#showItemsMenu") as HTMLElement;
 
@@ -399,6 +426,9 @@ functionNames.click_showItemsMenu = () => {
 
     addItem.classList.remove("hidden");
     saveItem.classList.add("hidden");
+
+    itemsConf.editItemRow = null;
+    itemsConf.editItemId = 0;
 
     // toggle edit button
 }
@@ -534,7 +564,11 @@ const updatePrice = (price: number): void => {
 }
 
 const updateTable = (data: any): void => {
-    addRow(data, config.table, config.tableOptions, config.tableHeader)
+    if (itemsConf.editItemId == 0) {
+        addRow(data, config.table, config.tableOptions, config.tableHeader);
+    } else {
+        updateRow(data, config.table, itemsConf.editItemRow, config.tableOptions, config.tableHeader);
+    }
 }
 
 export const initInvoiceItems = (orderId = 0): void => {

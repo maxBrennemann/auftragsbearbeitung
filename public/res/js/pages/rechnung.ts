@@ -43,7 +43,7 @@ functionNames.click_addText = () => {
         "text": (document.getElementById("newText") as HTMLInputElement).value,
     }).then((r: any) => {
         if (r.data.status !== "success") {
-            notification("", "failiure", r.data.message);
+            notification("", "failure", r.data.message);
             return;
         }
         notification("", "success");
@@ -80,7 +80,7 @@ const toggleText = (e: Event) => {
         "text": target.innerText,
     }).then((r: any) => {
         if (r.data.status !== "success") {
-            notification("", "failiure", r.data.message);
+            notification("", "failure", r.data.message);
             return;
         }
         notification("", "success");
@@ -103,7 +103,7 @@ functionNames.write_invoiceDate = (e: Event) => {
         "date": date,
     }).then((r: any) => {
         if (r.data.status !== "success") {
-            notification("", "failiure", r.data.message);
+            notification("", "failure", r.data.message);
             return;
         }
         notification("", "success");
@@ -119,7 +119,7 @@ functionNames.write_serviceDate = (e: Event) => {
         "date": date,
     }).then((r: any) => {
         if (r.data.status !== "success") {
-            notification("", "failiure", r.data.message);
+            notification("", "failure", r.data.message);
             return;
         }
         notification("", "success");
@@ -133,7 +133,7 @@ functionNames.click_completeInvoice = () => {
         "orderId": config.orderId,
     }).then((r: any) => {
         if (r.data.data.status !== "success") {
-            notification("", "failiure", r.data.data.message);
+            notification("", "failure", r.data.data.message);
             return;
         }
         notification("", "success");
@@ -149,7 +149,7 @@ functionNames.write_selectAddress = (e: Event) => {
         "addressId": addressId,
     }).then((r: any) => {
         if (r.data.message !== "OK") {
-            notification("", "failiure", r.data.message);
+            notification("", "failure", r.data.message);
             return;
         }
         notification("", "success");
@@ -166,7 +166,7 @@ functionNames.write_selectContact = (e: Event) => {
         "contactId": contactId,
     }).then((r: any) => {
         if (r.data.message !== "OK") {
-            notification("", "failiure", r.data.message);
+            notification("", "failure", r.data.message);
             return;
         }
         notification("", "success");

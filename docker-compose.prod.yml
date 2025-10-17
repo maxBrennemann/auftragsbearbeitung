@@ -42,7 +42,7 @@ services:
       - ./upload/:/var/www/html/storage
 
   database:
-    image: mariadb:11.7
+    image: mariadb:12
     container_name: database
     environment:
       MARIADB_DATABASE: ${DB_DATABASE}

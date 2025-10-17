@@ -26,6 +26,7 @@
                 <li>Vite Build wird nun statt Webpack verwendet</li>
                 <li>Minify Status entfernt, in Production wird immer alles gebundelt</li>
                 <li>Mehrere Konfigurationsdateien in <code class="bg-white rounded-sm px-0.5">.config</code> abgelegt</li>
+                <li>Dateibaum verschlankt</li>
             </ul>
         </li>
         <li>Lokale Entwicklungsumgebung angepasst
@@ -43,6 +44,7 @@
                 <li>Termin kann wieder nachträglich gesetzt werden</li>
                 <li>Fehler in Nummernvergabe für Rechnungen behoben</li>
                 <li>Rechnungssumme neu implementiert, da fehlerhaft</li>
+                <li>Bearbeitung von Rechnungsposten neu implementiert</li>
             </ul>
         </li>
         <li>Benachrichtigungen grundlegend überarbeitet und alte Alternativen ersetzt</li>

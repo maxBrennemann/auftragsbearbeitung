@@ -1,0 +1,42 @@
+name: Security Check
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 3 * * 1" # optional: run every Monday at 03:00 UTC
+
+jobs:
+  security_check:
+    name: Run Composer & NPM Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # --- PHP / Composer ---
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer
+          coverage: none
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --no-progress
+
+      - name: Run Composer audit
+        run: composer audit --no-interaction
+
+      # --- Node / npm ---
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate

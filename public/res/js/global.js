@@ -158,6 +158,7 @@ export const createPopup = (content) => {
 	contentContainer.classList.add("overlay-container__content");
 	const optionsContainer = document.createElement("div");
 	optionsContainer.classList.add("overlay-container__content__options");
+
 	const button = document.createElement("button");
 	button.classList.add("btn-cancel", "ml-2");
 	button.innerHTML = "Abbrechen";
@@ -175,6 +176,17 @@ export const createPopup = (content) => {
 	contentContainer.appendChild(optionsContainer);
 	container.appendChild(contentContainer);
 	document.body.appendChild(container);
+
+	container.addEventListener("click", e => {
+		const target = e.target;
+		if (target === container) {
+			container.parentNode.removeChild(container);
+			const event = new CustomEvent("closePopup", {
+				bubbles: true,
+			});
+			optionsContainer.dispatchEvent(event);
+		}
+	});
 
 	return optionsContainer;
 }
