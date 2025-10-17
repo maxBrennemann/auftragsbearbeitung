@@ -67,7 +67,7 @@ const changeContact = (e) => {
     ajax.post(`/api/v1/order/${orderConfig.auftragsId}/contact-person`, {
         "idContact": value,
     }).then(r => {
-        if (r.status == "success") {
+        if (r.data.status == "success") {
             notification("", "success");
         } else {
             notification("", "");
@@ -118,7 +118,7 @@ fnNames.click_showMoreOrderHistory = e => {
 
 const reloadPostenListe = async () => {
     const response = await ajax.get(`/api/v1/order-items/${orderConfig.auftragsId}/invoice`);
-    document.getElementById("invoicePostenTable").innerHTML = response["invoicePostenTable"];
+    document.getElementById("invoicePostenTable").innerHTML = response.data["invoicePostenTable"];
 }
 
 fnNames.write_changeContact = changeContact;
@@ -132,7 +132,7 @@ fnNames.click_setPayed = () => {
         "date": date,
         "paymentType": paymentType,
     }).then(r => {
-        if (r.status == "success") {
+        if (r.data.status == "success") {
             document.getElementById("orderPaymentState").innerHTML = `<p>Die Rechnung wurde am ${date} mit ${paymentType} bezahlt.</p>`;
         }
     });
@@ -154,8 +154,8 @@ fnNames.click_recreateInvoice = () => {
     ajax.post(`/api/v1/invoice/${invoiceId}/complete`, {
         "orderId": getOrderId(),
     }).then(r => {
-        if (r.status !== "success") {
-            notification("", "failiure", r.message);
+        if (r.data.status !== "success") {
+            notification("", "failiure", r.data.message);
             const invoiceEmbed = document.getElementById("invoiceEmbed");
             invoiceEmbed.src = invoiceEmbed.src;
             const el = document.getElementById("showMissingFileWarning");
@@ -168,10 +168,10 @@ fnNames.click_recreateInvoice = () => {
 
 fnNames.click_resetInvoice = () => {
     ajax.post(`/api/v1/order/${getOrderId()}/reset-invoice`).then(r => {
-        if (r.message == "OK") {
+        if (r.data.message == "OK") {
             location.reload();
         } else {
-            notification("", "failure", JSON.stringify(r));
+            notification("", "failure", JSON.stringify(r.data));
         }
     })
 }

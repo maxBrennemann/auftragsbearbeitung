@@ -46,11 +46,11 @@ fnNames.click_sendData = () => {
         "acceptedVia": angenommenPer,
         "contactperson": ansprechpartner
     }).then(response => {
-        if (!response.success) {
+        if (!response.data.success) {
             return;
         }
 
-        const responseLink = response.responseLink;
+        const responseLink = response.data.responseLink;
         window.location.href = responseLink;
     });
 }
@@ -72,7 +72,7 @@ async function performAjaxSearch(e) {
     }
     const data = await ajax.get(`/api/v1/search?query=type:kunde ${value}`);
     const parsedData = [];
-    data.forEach(el => {
+    data.data.forEach(el => {
         parsedData.push(el.data);
     })
 

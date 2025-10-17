@@ -49,10 +49,10 @@ const timeTracking = () => {
 
     switchTimeTracking.addEventListener("change", () => {
         ajax.put("/api/v1/settings/global-timetracking").then(r => {
-            if (r.status == "success") {
+            if (r.data.status == "success") {
                 notification("", "success");
                 const el = document.getElementById("timeTrackingContainer");
-                if (r.display == "false") {
+                if (r.data.display == "false") {
                     el.classList.add("hidden");
                     el.classList.remove("inline-flex");
                 } else {
@@ -67,7 +67,8 @@ const timeTracking = () => {
 }
 
 function getCategories() {
-    ajax.get("/api/v1/category").then(categories => {
+    ajax.get("/api/v1/category").then(response => {
+        const categories = response.data;
         const select = document.getElementById("parentCategory");
         Object.keys(categories).forEach(key => {
             const category = categories[key];
@@ -94,7 +95,7 @@ function addCategory() {
     }).then(r => {
         clearInputs({ "id": "newCategory" });
 
-        if (r.status !== "success") {
+        if (r.data.status !== "success") {
             notification("", "failure");
             return;
         }
@@ -112,18 +113,18 @@ function editCategory() {
         name: newName,
         parent: newParent,
     }).then(r => {
-        if (r.message == "ok") {
+        if (r.data.message == "ok") {
             notification("", "success");
         }
     });
 }
 
 function showTree() {
-    ajax.get("/api/v1/category/tree").then(categories => {
+    ajax.get("/api/v1/category/tree").then(response => {
         const tree = document.getElementById("categoryTree");
         tree.innerHTML = "";
 
-        createCategoryTree(tree, categories);
+        createCategoryTree(tree, response.data);
     });
 }
 
@@ -152,7 +153,7 @@ fnNames.click_toggleCache = () => {
     ajax.put(`/api/v1/settings/cache`, {
         "status": value,
     }).then(r => {
-        if (r.status == "success") {
+        if (r.data.status == "success") {
             notification("", "success");
         }
     });
@@ -160,7 +161,7 @@ fnNames.click_toggleCache = () => {
 
 fnNames.click_deleteCache = () => {
     ajax.delete(`/api/v1/settings/cache`).then(r => {
-        if (r.status == "success") {
+        if (r.data.status == "success") {
             notification("", "success");
         }
     });
@@ -174,7 +175,7 @@ fnNames.write_changeSetting = e => {
     ajax.put(`/api/v1/settings/config/${setting}`, {
         "value": value,
     }).then(r => {
-        if (r.status == "success") {
+        if (r.data.status == "success") {
             notification("", "success");
         } else {
             notification("", "failure");
@@ -184,11 +185,11 @@ fnNames.write_changeSetting = e => {
 
 fnNames.click_downloadDatabase = () => {
     ajax.post(`/api/v1/settings/backup`).then(r => {
-        document.getElementById("download_db").download = r.filename;
-        document.getElementById("download_db").href = r.url;
+        document.getElementById("download_db").download = r.data.filename;
+        document.getElementById("download_db").href = r.data.url;
         document.getElementById("download_db").click();
 
-        if (r.status == "success") {
+        if (r.data.status == "success") {
             notification("", "success");
         }
     });
@@ -196,11 +197,11 @@ fnNames.click_downloadDatabase = () => {
 
 fnNames.click_downloadAllFiles = () => {
     ajax.post(`/api/v1/settings/file-backup`).then(r => {
-        document.getElementById("download_files").download = r.filename;
-        document.getElementById("download_files").href = r.url;
+        document.getElementById("download_files").download = r.data.filename;
+        document.getElementById("download_files").href = r.data.url;
         document.getElementById("download_files").click();
 
-        if (r.status == "success") {
+        if (r.data.status == "success") {
             notification("", "success");
         }
     });
@@ -208,20 +209,20 @@ fnNames.click_downloadAllFiles = () => {
 
 fnNames.click_clearFiles = () => {
     ajax.post(`/api/v1/upload/clear-files`).then(r => {
-        if (r.status == "success") {
-            notification(`${r.deleted_count} Dateien entfernt.`, "success",);
+        if (r.data.status == "success") {
+            notification(`${r.data.deleted_count} Dateien entfernt.`, "success",);
         } else {
-            notification("", "failure", JSON.stringify(r));
+            notification("", "failure", JSON.stringify(r.data));
         }
     });
 }
 
 fnNames.click_adjustFiles = () => {
     ajax.post(`/api/v1/upload/adjust-files`).then(r => {
-        if (r.message == "OK") {
+        if (r.data.message == "OK") {
             notification("", "success");
         } else {
-            notification("", "failure", JSON.stringify(r));
+            notification("", "failure", JSON.stringify(r.data));
         }
     });
 }
@@ -256,7 +257,7 @@ const createWholesalerTable = async () => {
 
     const data = await ajax.get(`/api/v1/tables/einkauf`);
 
-    data.forEach(row => {
+    data.data.forEach(row => {
         addRow(row, table, {
             "hideOptions": ["delete", "check", "move", "add"],
         });
@@ -280,7 +281,7 @@ const createUserTable = async () => {
     createHeader(config.columns, table, options);
 
     const data = await ajax.get(`/api/v1/tables/user`);
-    data.forEach(row => {
+    data.data.forEach(row => {
         addRow(row, table, options);
     });
 }
@@ -301,7 +302,7 @@ const createPDFTextTable = async () => {
     createHeader(config.columns, table, options);
 
     const data = await ajax.get(`/api/v1/tables/pdf_texts`);
-    data.forEach(row => {
+    data.data.forEach(row => {
         addRow(row, table, options);
     });
 
@@ -335,8 +336,8 @@ const addPDFText = async (table, options) => {
     const response = await ajax.post(`/api/v1/tables/pdf_texts`, {
         "conditions": JSON.stringify(data),
     });
-    for (var i in response) {
-        data[i] = response[i];
+    for (var i in response.data) {
+        data[i] = response.data[i];
     }
     addRow(data, table, options);
 }
@@ -355,8 +356,8 @@ const addOrderType = async (table, options) => {
     const response = await ajax.post(`/api/v1/tables/auftragstyp`, {
         "conditions": JSON.stringify(data),
     });
-    for (var i in response) {
-        data[i] = response[i];
+    for (var i in response.data) {
+        data[i] = response.data[i];
     }
     addRow(data, table, options);
 }
@@ -364,7 +365,7 @@ const addOrderType = async (table, options) => {
 const showFilesInfo = () => {
     ajax.get(`/api/v1/settings/files/info`).then(r => {
         const el = document.getElementById("showFilesInfo");
-        el.innerHTML = `Es sind ${r.count} Dateien mit einer Gesamtgröße von ${r.size}MB hochgeladen/ generiert.`;
+        el.innerHTML = `Es sind ${r.data.count} Dateien mit einer Gesamtgröße von ${r.data.size}MB hochgeladen/ generiert.`;
     });
 }
 
@@ -377,7 +378,7 @@ fnNames.click_sendNewInvoiceNumber = () => {
     ajax.post(`/api/v1/invoice/init-invoice-number`, {
         "invoiceNumber": invoiceNumber
     }).then(r => {
-        if (r.message == "OK") {
+        if (r.data.message == "OK") {
             notification("", "success");
         }
     });

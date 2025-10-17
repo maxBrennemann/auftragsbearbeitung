@@ -1,8 +1,5 @@
-// @ts-ignore
 import { ajax } from "js-classes/ajax.js";
-// @ts-ignore
 import { addBindings } from "js-classes/bindings.js";
-// @ts-ignore
 import { notification } from "js-classes/notifications.js";
 
 import { getTemplate, setInpupts, clearInputs, createPopup } from "../global.js";
@@ -117,7 +114,8 @@ export const getItems = async (id: number, type: string = "order") => {
             throw new Error(`Unknown type: ${type}`);
     }
 
-    return await ajax.get(query);
+    const data =  await ajax.get(query);
+    return data.data;
 }
 
 export const getItemsTable = async (
@@ -228,7 +226,8 @@ const editItem = (e: CustomEvent): void => {
 }
 
 const editTime = async (id: number) => {
-    const data = await ajax.get(`/api/v1/order-items/times/${id}`);
+    const response = await ajax.get(`/api/v1/order-items/times/${id}`);
+    const data = response.data;
     setInpupts({
         "ids": {
             "timeInput": data.time,
@@ -242,7 +241,8 @@ const editTime = async (id: number) => {
 }
 
 const editService = async (id: number) => {
-    const data = await ajax.get(`/api/v1/order-items/services/${id}`);
+    const response = await ajax.get(`/api/v1/order-items/services/${id}`);
+    const data = response.data;
     setInpupts({
         "ids": {
             "selectLeistung": data.type,
@@ -338,14 +338,14 @@ functionNames.click_saveEdit = async () => {
 }
 
 const resetTimeInputs = (r: any) => {
-    if (r.status !== "success") {
+    if (r.data.status !== "success") {
         notification("", "failure", r.message);
         return;
     }
 
     notification("", "success");
-    updatePrice(r.price);
-    updateTable(r.data);
+    updatePrice(r.data.price);
+    updateTable(r.data.data);
 
     config.extendedTimes = [];
     (document.getElementById("extendedTimeInput") as HTMLElement).innerHTML = "";
@@ -360,14 +360,14 @@ const resetTimeInputs = (r: any) => {
 }
 
 const resetServiceInputs = (r: any) => {
-    if (r.status !== "success") {
+    if (r.data.status !== "success") {
         notification("", "failure", r.message);
         return;
     }
 
     notification("", "success");
-    updatePrice(r.price);
-    updateTable(r.data);
+    updatePrice(r.data.price);
+    updateTable(r.data.data);
     clearInputs({ "ids": ["bes", "ekp", "pre", "meh", "anz"] });
     (document.getElementById("selectLeistung") as HTMLSelectElement).value = "0";
 }

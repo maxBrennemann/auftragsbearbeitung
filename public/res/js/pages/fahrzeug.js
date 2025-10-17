@@ -15,7 +15,7 @@ fnNames.write_updateName = e => {
     ajax.put(`/api/v1/order/vehicles/${vehicleId}/name`, {
         "name": e.currentTarget.value,
     }).then(r => {
-        if (r.message == "ok") {
+        if (r.data.message == "ok") {
             notification("", "success");
         }
     });
@@ -26,7 +26,7 @@ fnNames.write_updateLicensePlate = e => {
     ajax.put(`/api/v1/order/vehicles/${vehicleId}/license-plate`, {
         "licensePlate": e.currentTarget.value,
     }).then(r => {
-        if (r.message == "ok") {
+        if (r.data.message == "ok") {
             notification("", "success");
         }
     });

@@ -1,4 +1,3 @@
-// @ts-ignore
 import { ajax } from "js-classes/ajax.js";
 
 /**
@@ -121,9 +120,10 @@ function setupNavigator(iframeDocument: Document) {
 function getManualData() {
     ajax.get(`/api/v1/manual/${params.currentName}`, {
         "intent": params.currentIntent,
-    }).then((r: Record<string, { info: string }>) => {
-        for (let key in r) {
-            params.manual.texts.push(r[key].info);
+    }).then((r: any) => {
+        const manual: Record<string, { info: string }> = r.data;
+        for (let key in manual) {
+            params.manual.texts.push(manual[key].info);
 		}
     });
 }

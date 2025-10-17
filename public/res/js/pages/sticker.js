@@ -48,10 +48,10 @@ fnNames.write_stickerName = e => {
     ajax.put(`/api/v1/sticker/${mainVariables.motivId}/title`, {
         "title": title,
     }).then(r => {
-        if (r.message == "OK") {
+        if (r.data.message == "OK") {
             notification("", "success");
         } else {
-            notification("", "failure", JSON.stringify(r));
+            notification("", "failure", JSON.stringify(r.data));
         }
     });
 }
@@ -72,10 +72,10 @@ fnNames.write_creationDate = e => {
     ajax.put(`/api/v1/sticker/${mainVariables.motivId}/creation-date`, {
         "date": e.target.value,
     }).then(r => {
-        if (r.message == "OK") {
+        if (r.data.message == "OK") {
             notification("", "success");
         } else {
-            notification("", "failure", JSON.stringify(r));
+            notification("", "failure", JSON.stringify(r.data));
         }
     });
 }
@@ -91,7 +91,7 @@ function initTextiles() {
             ajax.post(`/api/v1/sticker/${idSticker}/textile/${id}/toggle`, {
                 status: target.checked,
             }).then(r => {
-                notification("", r.status);
+                notification("", r.data.status);
             });
         });
     }
@@ -112,7 +112,7 @@ function initTextiles() {
             ajax.post(`/api/v1/sticker/${idSticker}/textile/${id}/price`, {
                 price: price,
             }).then(r => {
-                notification("", r.status);
+                notification("", r.data.status);
             });
         });
     }
@@ -176,10 +176,10 @@ fnNames.write_productDescription = function (e) {
         "target": target,
         "content": content,
     }).then(r => {
-        if (r.status == "success") {
+        if (r.data.status == "success") {
             notification("", "success");
         } else {
-            console.log(r);
+            console.log(r.data);
             notification("", "failure");;
         }
     });
@@ -189,10 +189,10 @@ fnNames.write_dirInput = e => {
     ajax.put(`/api/v1/sticker/${getStickerId()}/directory`, {
         "directory": encodeURIComponent(e.target.value),
     }).then(r => {
-        if (r.message == "OK") {
+        if (r.data.message == "OK") {
             notification("", "success");
         } else {
-            notification("", "failure", JSON.stringify(r));
+            notification("", "failure", JSON.stringify(r.data));
         }
     });
 }
@@ -201,10 +201,10 @@ fnNames.write_additionalInfo = e => {
     ajax.put(`/api/v1/sticker/${getStickerId()}/additional-info`, {
         "content": e.target.value,
     }).then(r => {
-        if (r.message == "OK") {
+        if (r.data.message == "OK") {
             notification("", "success");
         } else {
-            notification("", "failure", JSON.stringify(r));
+            notification("", "failure", JSON.stringify(r.data));
         }
     });
 }
@@ -215,25 +215,28 @@ fnNames.click_bookmark = async function (e) {
 
     let iconNew = "";
     let iconName = "";
+    let response = "";
 
     switch (type) {
         case "unmarked":
             iconName = "iconUnbookmark";
-            iconNew = await ajax.get(`/api/v1/template/icon/${icon}`, {
+            response = await ajax.get(`/api/v1/template/icon/${icon}`, {
                 custom: true,
                 width: 18,
                 height: 18,
                 classes: "inline,bookmarked",
             });
+            iconNew = response.data;
             break;
         case "marked":
             iconName = "iconBookmark";
-            iconNew = await ajax.get(`/api/v1/template/icon/${icon}`, {
+            response = await ajax.get(`/api/v1/template/icon/${icon}`, {
                 custom: true,
                 width: 18,
                 height: 18,
                 classes: "inline",
             });
+            iconNew = response.data;
             break;
     }
 
@@ -246,10 +249,10 @@ function toggleBookmark() {
         id: mainVariables.motivId.innerHTML,
         r: "toggleBookmark",
     }, true).then(r => {
-        if (r == "success") {
+        if (r.data == "success") {
             notification("", "success");
         } else {
-            console.log(r);
+            console.log(r.data);
             notification("", "failure");;
         }
     });
@@ -268,10 +271,10 @@ fnNames.write_changeAltTitle = function (e) {
     ajax.put(`/api/v1/sticker/${mainVariables.motivId}/${target.dataset.type}/alt-title`, {
         "title": target.value,
     }).then(r => {
-        if (r.message == "OK") {
+        if (r.data.message == "OK") {
             notification("", "success");
         } else {
-            notification("", "failure", JSON.stringify(r));
+            notification("", "failure", JSON.stringify(r.data));
         }
     });
 }
@@ -289,8 +292,8 @@ fnNames.click_toggleProductVisibility = function (e) {
         type: type,
         r: "productVisibility",
     }).then(r => {
-        const icon = r.icon;
-        notification("", r.status);
+        const icon = r.data.icon;
+        notification("", r.data.status);
 
         var template = "";
         if (icon == 0) {
@@ -347,7 +350,7 @@ fnNames.click_chooseCategory = async function () {
         r: "getCategoryTree",
     }).then(categoryData => {
         const ul = document.createElement("ul");
-        ul.appendChild(createUlCategoryList(categoryData));
+        ul.appendChild(createUlCategoryList(categoryData.data));
 
         innerDiv.appendChild(ul);
         createPopup(div);
@@ -357,7 +360,7 @@ fnNames.click_chooseCategory = async function () {
         id: mainVariables.motivId.innerHTML,
         r: "getCategories",
     }).then(r => {
-        r.forEach(id => {
+        r.data.forEach(id => {
             let element = div.querySelector(`[data-id="${id}"]`);
             element.classList.add("selectedCategory");
             selectedCategories.push(id);
@@ -404,7 +407,7 @@ function getSuggestions(e) {
         r: "getCategoriesSuggestion",
         id: 13,
     }).then(r => {
-        r.categories.forEach(id => {
+        r.data.categories.forEach(id => {
             let element = div.querySelector(`[data-id="${id}"]`);
             element.classList.add("selectedCategory");
             id = parseInt(id);
@@ -427,10 +430,10 @@ fnNames.click_toggleData = e => {
     const id = e.target.id;
     const type = id.replace("toggle_", "");
     ajax.put(`/api/v1/sticker/${getStickerId()}/${type}/toggle`).then(r => {
-        if (r.message == "OK") {
+        if (r.data.message == "OK") {
             notification("", "success");
         } else {
-            notification("", "failure", JSON.stringify(r));
+            notification("", "failure", JSON.stringify(r.data));
         }
     });
 }
@@ -439,10 +442,10 @@ fnNames.click_exportToggle = e => {
     ajax.put(`/api/v1/sticker/${getStickerId()}/export-status`, {
         "type": e.target.id,
     }).then(r => {
-        if (r.message == "OK") {
+        if (r.data.message == "OK") {
             notification("", "success");
         } else {
-            notification("", "failure", JSON.stringify(r));
+            notification("", "failure", JSON.stringify(r.data));
         }
     });
 }
@@ -453,14 +456,14 @@ function checkProductErrorStatus() {
     }
 
     ajax.get(`/api/v1/sticker/${mainVariables.motivId.innerHTML}/status`).then(r => {
-        if (r.errorStatus == "") {
+        if (r.data.errorStatus == "") {
             return;
         }
 
         const div = document.createElement("div");
         const p = document.createElement("p");
         p.classList.add("text-red-700", "p-5", "bg-red-200", "rounded-lg", "mt-2");
-        p.innerText = r.errorData;
+        p.innerText = r.data.errorData;
 
         div.appendChild(p);
         const anchor = document.querySelector(".cont1");

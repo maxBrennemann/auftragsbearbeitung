@@ -1,6 +1,4 @@
-// @ts-ignore
 import { ajax } from "js-classes/ajax.js";
-// @ts-ignore
 import { addBindings } from "js-classes/bindings.js";
 
 import { getStickerId, getStickerName } from "../pages/sticker.js";
@@ -16,7 +14,7 @@ export function initTagManager() {
     ajax.get(`/api/v1/sticker/${getStickerId()}/tags-template`, {
         "title": getStickerName(),
     }).then((r: any) => {
-        (document.getElementById("tagManager") as HTMLDivElement).innerHTML = r.template;
+        (document.getElementById("tagManager") as HTMLDivElement).innerHTML = r.data.template;
         addBindings(fnNames);
     });
 }

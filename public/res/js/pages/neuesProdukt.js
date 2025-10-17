@@ -25,15 +25,15 @@ function sendSource() {
         name: name,
         desc: desc
     }).then(r => {
-        if (r.id) {
-            notification(`Quelle ${r.id} hinzugefügt`, "success");
+        if (r.data.id) {
+            notification(`Quelle ${r.data.id} hinzugefügt`, "success");
             const source = document.getElementById("source");
             const option = document.createElement("option");
-            option.value = r.id;
+            option.value = r.data.id;
             option.innerHTML = name;
             source.insertBefore(option, source.lastChild);
         } else {
-            notification(`Quelle nicht hinzugefügt`, "failure", JSON.stringify(r));
+            notification(`Quelle nicht hinzugefügt`, "failure", JSON.stringify(r.data));
         }
     });
 }
@@ -89,7 +89,7 @@ fnNames.click_save = () => {
         purchasePrice: purchasePrice.replace(",", "."),
         description: description,
     }).then(data => {
-        const id = data.id;
+        const id = data.data.id;
         window.location.href = `produkt?id=${id}`;
     });
 }

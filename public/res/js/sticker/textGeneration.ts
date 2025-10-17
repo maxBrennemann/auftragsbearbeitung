@@ -1,6 +1,4 @@
-// @ts-ignore
 import { ajax } from "js-classes/ajax.js";
-// @ts-ignore
 import { addBindings } from "js-classes/bindings.js";
 
 import { createPopup } from "../global.js";
@@ -33,7 +31,7 @@ fnNames.click_iterateText = e => {
         direction: direction,
         current: currentTextNode.innerHTML,
     }).then((r: any) => {
-        if (r.status !== "success") {
+        if (r.data.status !== "success") {
             return;
         }
 
@@ -43,7 +41,7 @@ fnNames.click_iterateText = e => {
             currentTextNode.innerHTML = parseInt(currentTextNode.innerHTML) - 1;
         }
 
-        const text = r.text;
+        const text = r.data.text;
         const textarea = document.querySelector("textarea.data-input") as HTMLTextAreaElement;
         textarea.value = text;
     });
@@ -62,7 +60,7 @@ fnNames.click_textGeneration = e => {
         additionalText: additionalInfo.text,
         additionalStyle: additionalInfo.style,
     }).then((r: any) => {
-        console.log(r);
+        console.log(r.data);
     });
 }
 
@@ -95,7 +93,7 @@ fnNames.click_showTextSettings = e => {
         "text": text,
         "type": type,
     }).then((r: any) => {
-        const template = r.template;
+        const template = r.data.template;
         const div = document.createElement("div");
         div.innerHTML = template;
         div.id = "showTextSettings";

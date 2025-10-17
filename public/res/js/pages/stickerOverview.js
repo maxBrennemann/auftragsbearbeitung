@@ -25,7 +25,8 @@ const init = () => {
 }
 
 const createStickerTable = async () => {
-    const data = await ajax.get(`/api/v1/sticker/overview`);
+    const response = await ajax.get(`/api/v1/sticker/overview`);
+    const data = response.data;
     const config = tableConfig["module_sticker_sticker_data"];
     const headers = config.columns;
     const options = {
@@ -79,7 +80,7 @@ const showStickerStatus = () => {
         let rows = Array.from(overviewTable.rows);
         rows.forEach(row => {
             let rowIndex = parseInt(row.children[0].textContent);
-            let dataElement = data[rowIndex];
+            let dataElement = data.data[rowIndex];
 
             if (dataElement.a) {
                 row.children[3].classList.add("bg-lime-500");
@@ -105,7 +106,7 @@ fnNames.click_createNewSticker = async () => {
     ajax.post("/api/v1/sticker", {
         "name": title,
     }).then(r => {
-        window.location.href = r.link;
+        window.location.href = r.data.link;
     }).catch(() => {
         alert("an error occured");
     });
@@ -113,20 +114,20 @@ fnNames.click_createNewSticker = async () => {
 
 fnNames.click_createFbExport = () => {
     ajax.post(`/api/v1/sticker/export/facebook`).then(fbExport => {
-        if (fbExport.status !== "successful") {
+        if (fbExport.data.status !== "successful") {
             return;
         }
 
         notification("", "success");
 
         const a = document.createElement("a");
-        a.href = fbExport.file;
-        a.download = fbExport.file;
+        a.href = fbExport.data.file;
+        a.download = fbExport.data.file;
 
         document.body.appendChild(a);
         a.click();
 
-        console.log(fbExport.errorList);
+        console.log(fbExport.data.errorList);
     });
 }
 
@@ -140,7 +141,7 @@ fnNames.click_openTagOverview = () => {
         p.classList.add("font-semibold");
         div.appendChild(p);
 
-        tags.forEach(tag => {
+        tags.data.forEach(tag => {
             const tagElement = document.createElement("div");
             tagElement.classList.add("btn-inactive");
             tagElement.textContent = `${tag.content} (${tag.tagCount})`;

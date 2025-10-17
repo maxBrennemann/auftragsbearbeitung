@@ -28,7 +28,7 @@ fnNames.click_btnAddValue = () => {
         const li = document.querySelector(".attributeValueGroups li");
         const liClone = li.cloneNode(true);
         liClone.querySelector("span").innerText = value;
-        liClone.dataset.id = r.id;
+        liClone.dataset.id = r.data.id;
 
         const ul = document.getElementById("attributeValues_" + attribute);
         ul.appendChild(liClone);
@@ -56,13 +56,13 @@ fnNames.click_btnAddAttribute = () => {
         const divClone = div.cloneNode(true);
 
         const dataElements = divClone.querySelectorAll(`[data-id]`)
-        dataElements[0].dataset.id = r.id;
-        dataElements[1].dataset.id = r.id;
-        dataElements[2].dataset.id = r.id;
+        dataElements[0].dataset.id = r.data.id;
+        dataElements[1].dataset.id = r.data.id;
+        dataElements[2].dataset.id = r.data.id;
 
         dataElements[0].value = name;
         dataElements[1].value = descr;
-        dataElements[2].id = "attributeValues_" + r.id;
+        dataElements[2].id = "attributeValues_" + r.data.id;
 
         dataElements[2].innerHTML = "";
     }).catch((error) => {

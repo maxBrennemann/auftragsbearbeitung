@@ -1,6 +1,4 @@
-// @ts-ignore
 import { addBindings } from "js-classes/bindings.js";
-// @ts-ignore
 import { ajax } from "js-classes/ajax.js";
 import { FunctionMap } from "../types/types";
 

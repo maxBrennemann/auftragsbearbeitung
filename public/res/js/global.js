@@ -28,8 +28,8 @@ if (import.meta.env.DEV) {
 
 import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js"
+import { DeviceDetector } from "js-classes/deviceDetector";
 
-import { DeviceDetector } from "./classes/deviceDetector.js";
 import { initNotificationService } from "./classes/notificationUpdater.js";
 import { timeGlobalListener } from "./classes/timetracking.js";
 
@@ -196,7 +196,7 @@ fnNames.click_showNotifications = async () => {
 
 	const response = await ajax.get(`/api/v1/notification/template`);
 	const innerDiv = document.createElement("div");
-	innerDiv.innerHTML = response.html;
+	innerDiv.innerHTML = response.data.html;
 
 	div.appendChild(innerDiv);
 	innerDiv.classList.add("notificationWrapper");
@@ -249,7 +249,7 @@ function initializeInfoBtn() {
 				infoBox.classList.add("infoBoxShow");
 				infoBox.id = "infoBox" + id;
 
-				let text = document.createTextNode(response["info"]);
+				let text = document.createTextNode(response.data["info"]);
 				infoBox.appendChild(text);
 				document.body.appendChild(infoBox);
 			} else {
@@ -369,7 +369,7 @@ async function performGlobalSearch(e) {
 	const results = await ajax.get(`/api/v1/search/all?query=${query}`);
 
 	const div = document.createElement("div");
-	div.innerHTML = results.html;
+	div.innerHTML = results.data.html;
 	div.classList.add("h-96", "overflow-y-scroll");
 
 	createPopup(div);

@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js"
 
@@ -82,8 +84,8 @@ fnNames.click_sendCustomerData = () => {
     object.type = globalProperties.current == globalProperties.company ? "company" : "private";
 
     ajax.post(`/api/v1/customer`, object).then(r => {
-        if (r.status == "success") {
-            location.href = r.link;
+        if (r.data.status == "success") {
+            location.href = r.data.link;
         }
     });
 }

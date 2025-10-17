@@ -21,18 +21,19 @@ class ProductConnector {
             query: query,
             r: "searchShop"
         }).then((results) => {
-            this.results = results;
+            this.results = results.data;
             this.appendSearchResults()
         });
     }
 
     async showSearchContainer() {
         const template = document.createElement("template");
-        template.innerHTML = await ajax.post({
+        const response = await ajax.post({
             id: getStickerId(),
             type: this.type,
             r: "showSearch"
         }, true);
+        template.innerHTML = response.data;
 
         const searchContainer = document.createElement("div");
         searchContainer.append(template.content.cloneNode(true));
@@ -73,7 +74,7 @@ class ProductConnector {
             type: this.type,
             r: "removeAccessoire",
         }).then(r => {
-            if (r.status == "success") {
+            if (r.data.status == "success") {
                 const parent = e.target.parentNode;
                 parent.parentNode.removeChild(parent);
             }
@@ -123,7 +124,7 @@ class ProductConnector {
             r: "connectAccessoire",
         });
 
-        notification("", result.status);
+        notification("", result.data.status);
     }
 }
 

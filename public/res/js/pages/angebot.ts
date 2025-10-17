@@ -1,6 +1,4 @@
-// @ts-ignore
 import { ajax } from "js-classes/ajax.js";
-// @ts-ignore
 import { addBindings } from "js-classes/bindings.js"
 
 import { getItemsTable, initInvoiceItems } from "../classes/invoiceItems.js";
@@ -19,11 +17,11 @@ functionNames.click_newOffer = () => {
         url.searchParams.set("kdnr", customerId);
         window.history.pushState({}, '', url);
 
-        (document.getElementById("insTemp") as HTMLElement).innerHTML = r.content;
+        (document.getElementById("insTemp") as HTMLElement).innerHTML = r.data.content;
         (document.getElementById("listOpenOffers") as HTMLElement).classList.add("hidden");
         (document.getElementById("newOffer") as HTMLElement).classList.add("hidden");
 
-        getItemsTable("auftragsPostenTable", r.offerId, "offer");
+        getItemsTable("auftragsPostenTable", r.data.offerId, "offer");
         initInvoiceItems();
         getPDF();
     });

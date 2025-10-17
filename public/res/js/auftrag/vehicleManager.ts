@@ -1,6 +1,4 @@
-// @ts-ignore
 import { ajax } from "js-classes/ajax.js";
-// @ts-ignore
 import { addBindings } from "js-classes/bindings.js";
 
 import { addRow, fetchAndRenderTable } from "../classes/table.js";
@@ -53,7 +51,7 @@ fnNames.click_addNewVehicle = () => {
         (document.getElementById("addVehicle") as HTMLElement).classList.add("hidden");
 
         addRow({
-            "Nummer": r.id,
+            "Nummer": r.data.id,
             "Kundennummer": vehicleData.customerId,
             "Kennzeichen": kfz,
             "Fahrzeug": fahrzeug,
@@ -76,8 +74,8 @@ fnNames.click_addExistingVehicle = () => {
             addRow({
                 "Nummer": vehicleId,
                 "Kundennummer": vehicleData.customerId,
-                "Kennzeichen": r.kfz,
-                "Fahrzeug": r.fahrzeug,
+                "Kennzeichen": r.data.kfz,
+                "Fahrzeug": r.data.fahrzeug,
             }, vehicleData.tableRef, vehicleData.options);
         });
 }
@@ -120,7 +118,7 @@ const uploadVehicleFile = async (e: CustomEvent) => {
         }),
     });
     const div = document.createElement("div");
-    div.innerHTML = uploadFile.content;
+    div.innerHTML = uploadFile.data.content;
     const optionsContainer = createPopup(div);
     const btnCancel = optionsContainer.querySelector("button.btn-cancel");
     initFileUploader({

@@ -88,7 +88,7 @@ function sendPostenOrder(event) {
         r: "setImageOrder",
         order: JSON.stringify(positions),
     }).then(r => {
-        if (r.status) {
+        if (r.data.status) {
             notificatinReplace("image-order", "Bildreihenfolge erfolgreich geändert", "success");
         } else {
             notificatinReplace("image-order", "Fehler beim Speichern der Reihenfolge", "failure");

@@ -49,7 +49,7 @@ fnNames.click_rearchive = async e => {
         "status": "unarchive",
     });
 
-    if (response.status == "success") {
+    if (response.data.status == "success") {
         notification("", "success");
 
         const orderCard = target.closest(".orderCard");
@@ -76,7 +76,7 @@ fnNames.click_saveCustomerData = () => {
         "phoneMobile": document.getElementById("phoneMobile").value,
         "fax": document.getElementById("fax").value,
     }).then(r => {
-        if (r.message == "OK") {
+        if (r.data.message == "OK") {
             notification("", "success");
         }
     });
@@ -87,7 +87,7 @@ fnNames.write_setCustomerNote = async e => {
     const r = await ajax.put(`/api/v1/customer/${customerData.id}/note`, {
         "note": value,
     });
-    if (r.message == "OK") {
+    if (r.data.message == "OK") {
         notification("", "success");
     }
 }
@@ -115,7 +115,7 @@ const vehiclesTable = async () => {
         "conditions": conditions,
     });
 
-    data.forEach(row => {
+    data.data.forEach(row => {
         addRow(row, table, columnConfig);
     });
 }
@@ -137,7 +137,7 @@ const contactPersonTable = async () => {
         "conditions": conditions,
     });
 
-    data.forEach(row => {
+    data.data.forEach(row => {
         addRow(row, table, columnConfig);
     });
 
@@ -172,8 +172,8 @@ const addContactPerson = async (table, options) => {
     const response = await ajax.post(`/api/v1/tables/ansprechpartner`, {
         "conditions": JSON.stringify(data),
     });
-    for (var i in response) {
-        data[i] = response[i];
+    for (var i in response.data) {
+        data[i] = response.data[i];
     }
     addRow(data, table, options);
 }
@@ -210,8 +210,8 @@ const addAddress = async (table, options) => {
     const response = await ajax.post(`/api/v1/tables/address`, {
         "conditions": JSON.stringify(data),
     });
-    for (var i in response) {
-        data[i] = response[i];
+    for (var i in response.data) {
+        data[i] = response.data[i];
     }
     addRow(data, table, options);
 }
@@ -227,7 +227,7 @@ const colorTable = async () => {
         "hide": ["id"],
         "hideOptions": ["all"],
     };
-    renderTable("colorTable", config.columns, data, options);
+    renderTable("colorTable", config.columns, data.data, options);
 }
 
 if (document.readyState !== 'loading') {
