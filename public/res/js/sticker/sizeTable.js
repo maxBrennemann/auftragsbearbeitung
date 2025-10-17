@@ -2,7 +2,7 @@
 
 import { ajax } from "js-classes/ajax.js";
 
-import { getStickerId } from "../sticker.js";
+import { getStickerId } from "../pages/sticker.js";
 
 import { deleteButton, editButton, parseEuro, parseInput, resetInputs } from "./helper.ts";
 
@@ -24,13 +24,13 @@ export const initSizeTable = async () => {
 const getSizeData = async () => {
     const idSticker = getStickerId();
     const data = await ajax.get(`/api/v1/sticker/${idSticker}/sizes`);
-    sizeData.sizes = data.sizes;
+    sizeData.sizes = data.data.sizes;
 }
 
 const getPriceScheme = async () => {
     const idSticker = getStickerId();
     const data = await ajax.get(`/api/v1/sticker/${idSticker}/priceScheme`);
-    sizeData.priceScheme = data.priceScheme;
+    sizeData.priceScheme = data.data.priceScheme;
 
     if (sizeData.priceScheme == "price1") {
         document.getElementById("sizesPrice1").checked = true;
@@ -117,7 +117,7 @@ const deleteWidth = (e) => {
 
     const id = e.currentTarget.dataset?.id;
     ajax.delete(`/api/v1/sticker/sizes/${id}`).then(async r => {
-        if (r.status != "success") {
+        if (r.data.status != "success") {
             return;
         }
 
@@ -221,7 +221,7 @@ const addWidth = () => {
         "idSticker": getStickerId(),
         "isDefaultPrice": isDefaultPrice,
     }).then(async r => {
-        if (r.status != "success") {
+        if (r.data.status != "success") {
             return;
         }
 

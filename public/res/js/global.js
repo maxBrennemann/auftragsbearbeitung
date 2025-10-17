@@ -6,19 +6,17 @@ if (import.meta.env.VITE_DEBUG_CSS === 'true') {
 }
 
 if (import.meta.env.DEV) {
-
-}
-
-if (import.meta.env.DEV) {
 	const pageScript = document.body.dataset.page;
 	if (pageScript) {
 		if (window.__PAGE_SCRIPT_LOADED__ === pageScript) {
 			console.warn("[DEV] Page script already loaded, skipping");
 		} else {
 			window.__PAGE_SCRIPT_LOADED__ = pageScript;
-			import(`./pages/${pageScript}.js`)
+			import(/* @vite-ignore */ `./pages/${pageScript}`)
 				.then((mod) => {
-					if (typeof mod.default === "function") mod.default();
+					if (typeof mod.default === "function") {
+						mod.default();
+					}
 					console.log(`[DEV] Loaded page script: ${pageScript}`);
 				})
 				.catch(() => {
@@ -30,23 +28,13 @@ if (import.meta.env.DEV) {
 
 import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js"
+import { DeviceDetector } from "js-classes/deviceDetector";
 
-import { DeviceDetector } from "./classes/deviceDetector.js";
 import { initNotificationService } from "./classes/notificationUpdater.js";
-import { TableSorter, currentTableSorter, setTableSorter, sortTableNew } from "./classes/tableSorter.js";
 import { timeGlobalListener } from "./classes/timetracking.js";
 
 const fnNames = {};
 const imagePreviewListeners = new WeakSet();
-
-/**
- * function is called when the page is loaded,
- * workaround for new modules in js
- */
-function exportToWindow() {
-	window.sortTableNew = sortTableNew;
-	window.sortTable = sortTable;
-}
 
 document.addEventListener("click", function (event) {
 	if (!event.target.matches('.showLog,.showLog *')) {
@@ -73,7 +61,7 @@ function registerLastActivity() {
 	}
 }
 
-function startFunc() {
+function init() {
 	addBindings(fnNames);
 	timeGlobalListener();
 
@@ -83,8 +71,6 @@ function startFunc() {
 
 	initializeInfoBtn();
 	initImagePreviewListener();
-	setTableSorter(new TableSorter());
-	currentTableSorter.readTableSorted();
 	initSearch();
 	initNotificationService();
 }
@@ -172,6 +158,7 @@ export const createPopup = (content) => {
 	contentContainer.classList.add("overlay-container__content");
 	const optionsContainer = document.createElement("div");
 	optionsContainer.classList.add("overlay-container__content__options");
+
 	const button = document.createElement("button");
 	button.classList.add("btn-cancel", "ml-2");
 	button.innerHTML = "Abbrechen";
@@ -189,6 +176,17 @@ export const createPopup = (content) => {
 	contentContainer.appendChild(optionsContainer);
 	container.appendChild(contentContainer);
 	document.body.appendChild(container);
+
+	container.addEventListener("click", e => {
+		const target = e.target;
+		if (target === container) {
+			container.parentNode.removeChild(container);
+			const event = new CustomEvent("closePopup", {
+				bubbles: true,
+			});
+			optionsContainer.dispatchEvent(event);
+		}
+	});
 
 	return optionsContainer;
 }
@@ -210,7 +208,7 @@ fnNames.click_showNotifications = async () => {
 
 	const response = await ajax.get(`/api/v1/notification/template`);
 	const innerDiv = document.createElement("div");
-	innerDiv.innerHTML = response.html;
+	innerDiv.innerHTML = response.data.html;
 
 	div.appendChild(innerDiv);
 	innerDiv.classList.add("notificationWrapper");
@@ -243,49 +241,6 @@ function autosubmit() {
 	}
 }
 
-function sortTable(element, id, direction) {
-	var table = element.parentNode.parentNode.parentNode;
-	var t = new TableClass(table);
-	t.sortByRow(id, direction);
-}
-
-class TableClass {
-	constructor(html_table) {
-		this.html_table = html_table;
-		this.rows = html_table.rows;
-	}
-
-	sortByRow(rowId, direction) {
-		var switching = true, x, y, shouldSwitch;
-		while (switching) {
-			switching = false;
-
-			for (var i = 1; i < (this.rows.length - 1); i++) {
-				shouldSwitch = false;
-				x = this.rows[i].getElementsByTagName("TD")[rowId];
-				y = this.rows[i + 1].getElementsByTagName("TD")[rowId];
-
-				if (direction) {
-					if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-						shouldSwitch = true;
-						break;
-					}
-				} else {
-					if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-						shouldSwitch = true;
-						break;
-					}
-				}
-			}
-			if (shouldSwitch) {
-
-				this.rows[i].parentNode.insertBefore(this.rows[i + 1], this.rows[i]);
-				switching = true;
-			}
-		}
-	}
-}
-
 /** 
  * Info Buttons
  * - adds an event listener to each btn of that class
@@ -297,7 +252,7 @@ function initializeInfoBtn() {
 	Array.from(btns).forEach(btn => {
 		btn.addEventListener("click", async function () {
 			const id = btn.dataset.info;
-			const response = await ajax.get(`/api/v1/templates/text/${id}`);
+			const response = await ajax.get(`/api/v1/manual/text/${id}`);
 
 			let infoBox = document.getElementById("infoBox" + id);
 			if (infoBox == undefined) {
@@ -306,7 +261,7 @@ function initializeInfoBtn() {
 				infoBox.classList.add("infoBoxShow");
 				infoBox.id = "infoBox" + id;
 
-				let text = document.createTextNode(response["info"]);
+				let text = document.createTextNode(response.data["info"]);
 				infoBox.appendChild(text);
 				document.body.appendChild(infoBox);
 			} else {
@@ -426,7 +381,7 @@ async function performGlobalSearch(e) {
 	const results = await ajax.get(`/api/v1/search/all?query=${query}`);
 
 	const div = document.createElement("div");
-	div.innerHTML = results.html;
+	div.innerHTML = results.data.html;
 	div.classList.add("h-96", "overflow-y-scroll");
 
 	createPopup(div);
@@ -488,11 +443,6 @@ export const getTemplate = (id) => {
 
 	const clone = template.content.cloneNode(true);
 	return clone;
-}
-
-const init = () => {
-	exportToWindow();
-	startFunc();
 }
 
 if (document.readyState !== 'loading') {

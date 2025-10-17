@@ -1,9 +1,7 @@
-// @ts-ignore
 import { ajax } from "js-classes/ajax.js";
-// @ts-ignore
 import { addBindings } from "js-classes/bindings.js";
 
-import { getStickerId } from "../sticker.js";
+import { getStickerId } from "../pages/sticker.js";
 
 const fnNames: { [key: string]: (...args: any[]) => void } = {};
 const config: {
@@ -15,7 +13,7 @@ fnNames.click_makeColorable = () => {
     ajax.post(`/api/v1/sticker/${getStickerId()}/svg-colorizable`)
     .then((r: any) => {
         if (config.svgContainer) {
-            config.svgContainer.data = r.url;
+            config.svgContainer.data = r.data.url;
         }
     });
 }

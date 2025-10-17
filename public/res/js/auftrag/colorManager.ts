@@ -1,8 +1,6 @@
 // @ts-ignore
 import { Colorpicker } from "colorpicker/colorpicker.js";
-// @ts-ignore
 import { ajax } from "js-classes/ajax.js";
-// @ts-ignore
 import { addBindings } from "js-classes/bindings.js";
 
 import { createPopup } from "../global.js";
@@ -55,7 +53,7 @@ fnNames.click_removeColor = e => {
     var colorId = e.currentTarget.dataset.colorId;
     ajax.delete(`/api/v1/order/${id}/colors/${colorId}`).then((r: any) => {
         const showColors = document.getElementById("showColors") as HTMLElement;
-        showColors.innerHTML = r.colors;
+        showColors.innerHTML = r.data.colors;
     });
 }
 
@@ -71,7 +69,7 @@ fnNames.click_toggleCS = async () => {
 
     const existingColorsTemplate = await ajax.get(`/api/v1/template/colors/render`);
     const container = div.querySelector("div") as HTMLDivElement;
-    container.innerHTML = existingColorsTemplate.template;
+    container.innerHTML = existingColorsTemplate.data.template;
 
     const sendColorsBtn = document.createElement("button");
     sendColorsBtn.classList.add("btn-primary");
@@ -110,7 +108,7 @@ function addSelectedColors() {
         "colors": JSON.stringify(addToOrderColors),
     }).then((r: any) => {
         const showColors = document.getElementById("showColors") as HTMLElement;
-        showColors.innerHTML = r.colors;
+        showColors.innerHTML = r.data.colors;
 
         const elements = document.getElementsByClassName("colorInput");
         for (let i = 0; i < elements.length; i++) {
@@ -143,7 +141,7 @@ function sendColor() {
         "producer": data[2],
     }).then((r: any) => {
         const showColors = document.getElementById("showColors") as HTMLElement;
-        showColors.innerHTML = r.colors;
+        showColors.innerHTML = r.data.colors;
 
         const elements = document.getElementsByClassName("colorInput");
         for (let i = 0; i < elements.length; i++) {

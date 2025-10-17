@@ -43,7 +43,7 @@ fnNames.dragover_fileUploader = async e => {
 const uploadFiles = async (files, location, info, type, target) => {
     await ajax.uploadFiles(files, location, info).then(r => {
         const event = new CustomEvent("fileUploaded", {
-            "detail": { type, ...r },
+            "detail": { type, ...r.data },
             "bubbles": true,
         });
         target.dispatchEvent(event);

@@ -2,8 +2,8 @@
 
 import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js"
+import { DeviceDetector } from "js-classes/deviceDetector";
 
-import { DeviceDetector } from "../classes/deviceDetector.js";
 import { setCookie, getCookie } from "../global.js";
 
 const fnNames = {};
@@ -33,13 +33,13 @@ fnNames.click_login = () => {
         "isMobile": DeviceDetector.isMobile(),
         "isTablet": DeviceDetector.isMobileTablet(),
     }).then(r => {
-        if (r.status == "success") {
-            const deviceKey = r.deviceKey;
-            const loginKey = r.loginKey;
+        if (r.data.status == "success") {
+            const deviceKey = r.data.deviceKey;
+            const loginKey = r.data.loginKey;
             setCookie("deviceKey", deviceKey, 356);
             setCookie("loginKey", loginKey, 28);
             location.reload();
-        } else if (r.status == "error") {
+        } else if (r.data.status == "error") {
             document.getElementById("loginStatus").innerHTML = "Falscher Benutzername oder falsches Passwort.";
         }
     });
@@ -64,15 +64,15 @@ const autoLogin = async () => {
         "isTablet": DeviceDetector.isMobileTablet(),
     });
 
-    if (autoLoginData.status == "success") {
+    if (autoLoginData.data.status == "success") {
         setTimeout(function () {
             document.getElementById("autologinStatus").innerHTML = "Sie werden eingeloggt...";
             document.getElementById("autologin").checked = true;
-            setCookie("loginKey", autoLoginData.loginKey, 28);
+            setCookie("loginKey", autoLoginData.data.loginKey, 28);
             setCookie("autologin", "on", 356);
             location.reload();
         }, 1000);
-    } else if (autoLoginData.status == "failed") {
+    } else if (autoLoginData.data.status == "failed") {
         console.log("auto login failed");
         document.getElementById("spinningStatus").classList.add("hidden");
         setTimeout(function () {

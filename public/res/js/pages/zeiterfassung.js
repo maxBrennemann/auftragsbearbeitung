@@ -78,7 +78,7 @@ fnNames.click_sendTimeTracking = () => {
             "hide": ["id"],
             "hideOptions": ["addRow", "check", "move", "add"],
         };
-        addRow(response, table, options);
+        addRow(response.data, table, options);
 
         localStorage.clear("startTime");
         document.getElementById("updateStartStopName").innerHTML = "starten";
@@ -140,7 +140,7 @@ fnNames.click_selectEntries = async (e) => {
         "hide": ["id"],
         "hideOptions": ["addRow", "check", "move", "add"],
     };
-    data.forEach(row => {
+    data.data.forEach(row => {
         addRow(row, table, columnConfig);
     });
 }
@@ -194,13 +194,13 @@ const getTimeTrackingEntries = async () => {
         "hide": ["id"],
         "hideOptions": ["addRow", "check", "move", "add"],
     };
-    renderTable("timeTrackingTable", headers, data, options);
+    renderTable("timeTrackingTable", headers, data.data, options);
     document.getElementById("timeTrackingTable").addEventListener("rowDelete", async (event) => {
         const data = event.detail;
         const id = data.id;
 
         const status = await ajax.delete(`/api/v1/time-tracking/${id}`);
-        if (status.message == "OK") {
+        if (status.data.message == "OK") {
             data.row.remove();
         }
     });

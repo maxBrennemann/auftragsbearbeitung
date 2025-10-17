@@ -47,10 +47,11 @@ export const fetchAndRenderTable = async (containerId, tableName, options = {}) 
     }
 
     const conditions = options?.conditions ?? {}
-    const data = await ajax.get(`/api/v1/tables/${tableName}`, {
+    const response = await ajax.get(`/api/v1/tables/${tableName}`, {
         "conditions": JSON.stringify(conditions),
         ...options.joins
     });
+    const data = response.data;
 
     if (!options?.primaryKey) {
         options.primaryKey = config.primaryKey;
@@ -281,6 +282,53 @@ export const addRow = (data, table, options = {}, header = {}) => {
 
     dispatchActionEvent("rowAdd", data, table, { row });
     tbody.appendChild(row);
+}
+
+export const updateRow = (data, table, row, options = {}, header = {}) => {
+    if (!row) return console.warn("updateRow: row not found");
+
+    while (row.firstChild) {
+        row.removeChild(row.firstChild);
+    }
+
+    if (Object.keys(data).includes(options?.primaryKey)) {
+        row.dataset.id = data[options?.primaryKey];
+    }
+
+    const orderedKeys = header.length > 0 ? header.map(h => h.key) : Object.keys(data);
+    orderedKeys.forEach(key => {
+        if (options?.hide?.includes(key)) {
+            return;
+        }
+
+        const cssClasses = options?.styles?.key?.[key] ?? [];
+        const cell = document.createElement("td");
+        if (options?.link) {
+            cell.innerHTML = `<a href="${options.link}${data[options.primaryKey]}">${data[key]}</a>`;
+            const a = cell.querySelector("a");
+            a.className = cssClasses.join(" ") + " cursor-pointer";
+            row.appendChild(cell);
+            return;
+        }
+
+        cell.className = cssClasses.join(" ");
+        cell.innerHTML = data[key];
+        row.appendChild(cell);
+    });
+
+    const actionsCell = document.createElement("td");
+
+    addEditBtn(data, table, row, actionsCell, options);
+    addDeleteBtn(data, table, row, actionsCell, options);
+    addCheckBtn(data, table, row, actionsCell, options);
+    addMoveBtn(data, table, row, actionsCell, options);
+    addUploadBtn(data, table, row, actionsCell, options);
+
+    if (!options?.hideOptions?.includes("all")) {
+        row.appendChild(actionsCell);
+    }
+
+    dispatchActionEvent("rowUpdate", data, table, { row });
 }
 
 const addEditBtn = (data, table, row, actionsCell, options) => {

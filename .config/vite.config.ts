@@ -3,10 +3,12 @@ import path from "path";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import postcss from './postcss.config.ts';
+import type { ProcessOptions } from 'postcss';
 import type { ServerOptions } from 'vite';
 import type { Plugin } from 'vite';
 
 import { defineConfig } from "vite";
+import postcssConfig from "./postcss.config.ts";
 
 function jsToTsRedirectPlugin(): Plugin {
     return {
@@ -62,7 +64,7 @@ export default defineConfig({
     root: path.resolve(__dirname, "../public/res/js"),
 
     css: {
-        postcss
+        postcss: postcssConfig as ProcessOptions,
     },
 
     server: {
@@ -80,11 +82,14 @@ export default defineConfig({
     },
 
     build: {
-        outDir: "../../assets",
+        outDir: "../assets",
         emptyOutDir: true,
         manifest: true,
         rollupOptions: {
-            input: getJsEntries(path.resolve(__dirname, '../public/res/js')),
+            input: {
+                ...getJsEntries(path.resolve(__dirname, '../public/res/js')),
+                ...getJsEntries(path.resolve(__dirname, '../public/res/js/pages')),
+            },
             output: {
                 entryFileNames: `[name].[hash].js`,
                 chunkFileNames: `common.[hash].js`,

@@ -1,15 +1,12 @@
-// @ts-ignore
 import { ajax } from "js-classes/ajax.js";
-// @ts-ignore
 import { addBindings } from "js-classes/bindings.js";
-// @ts-ignore
 import { notification } from "js-classes/notifications.js";
 
 import { fetchAndRenderTable } from "../classes/table.js";
 import { tableConfig } from "../classes/tableconfig.js";
 import { initFileUploader } from "../classes/upload.js";
 import { createPopup, initImagePreviewListener } from "../global.js";
-import { getStickerId } from "../sticker.js";
+import { getStickerId } from "../pages/sticker.js";
 
 import { initSVG } from "./svgManager";
 
@@ -96,8 +93,8 @@ fnNames.write_updateImageDescription = (e: Event) => {
     ajax.put(`/api/v1/sticker/image/${imageId}`, {
         "description": description,
     }).then((r: any) => {
-        if (r.status == "success") {
-            notification("", r.status);
+        if (r.data.status == "success") {
+            notification("", r.data.status);
         }
     });
 }

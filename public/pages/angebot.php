@@ -15,7 +15,7 @@ $openOffers = Offer::getOpenOffers();
 </div>
 <div class="defCont" id="listOpenOffers">
 	<p>Offene Angebote:</p>
-	<table class="table table-striped table-hover">
+	<table class="table table-striped table-hover mt-2">
 		<thead>
 			<tr>
 				<th>Nr.</th>

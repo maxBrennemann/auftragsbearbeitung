@@ -1,14 +1,13 @@
-// @ts-ignore
 import { ajax } from "js-classes/ajax.js";
-// @ts-ignore
 import { addBindings } from "js-classes/bindings.js"
-// @ts-ignore
 import { notification } from "js-classes/notifications.js";
 
 import { DragSortManager } from "../classes/DragSortManager.js";
 import { createPopup } from "../global.js";
+import { FunctionMap } from "../types/types.js";
 
-const functionNames: { [key: string]: (...args: any[]) => void } = {};
+const functionNames: FunctionMap = {};
+
 const removedAltNames: number[] = [];
 const config = {
     "invoiceId": 0,
@@ -43,8 +42,8 @@ functionNames.click_addText = () => {
     ajax.post(`/api/v1/invoice/${config.invoiceId}/text`, {
         "text": (document.getElementById("newText") as HTMLInputElement).value,
     }).then((r: any) => {
-        if (r.status !== "success") {
-            notification("", "failiure", r.message);
+        if (r.data.status !== "success") {
+            notification("", "failure", r.data.message);
             return;
         }
         notification("", "success");
@@ -52,7 +51,7 @@ functionNames.click_addText = () => {
         const newText = document.createElement("p");
         newText.className = "invoiceTexts bg-blue-200 rounded-xl cursor-pointer p-3 select-none";
         newText.dataset.active = "1";
-        newText.dataset.id = r.id;
+        newText.dataset.id = r.data.id;
         newText.innerHTML = (document.getElementById("newText") as HTMLInputElement).value;
         newText.onclick = toggleText;
 
@@ -80,15 +79,15 @@ const toggleText = (e: Event) => {
         "textId": target.dataset.id,
         "text": target.innerText,
     }).then((r: any) => {
-        if (r.status !== "success") {
-            notification("", "failiure", r.message);
+        if (r.data.status !== "success") {
+            notification("", "failure", r.data.message);
             return;
         }
         notification("", "success");
 
         target.dataset.active = target.dataset.active == "1" ? "0" : "1";
-        if (r.id) {
-            target.dataset.id = r.id;
+        if (r.data.id) {
+            target.dataset.id = r.data.id;
         }
 
         getPDF();
@@ -103,8 +102,8 @@ functionNames.write_invoiceDate = (e: Event) => {
     ajax.post(`/api/v1/invoice/${config.invoiceId}/invoice-date`, {
         "date": date,
     }).then((r: any) => {
-        if (r.status !== "success") {
-            notification("", "failiure", r.message);
+        if (r.data.status !== "success") {
+            notification("", "failure", r.data.message);
             return;
         }
         notification("", "success");
@@ -119,8 +118,8 @@ functionNames.write_serviceDate = (e: Event) => {
     ajax.post(`/api/v1/invoice/${config.invoiceId}/service-date`, {
         "date": date,
     }).then((r: any) => {
-        if (r.status !== "success") {
-            notification("", "failiure", r.message);
+        if (r.data.status !== "success") {
+            notification("", "failure", r.data.message);
             return;
         }
         notification("", "success");
@@ -133,8 +132,8 @@ functionNames.click_completeInvoice = () => {
     ajax.post(`/api/v1/invoice/${config.invoiceId}/complete`, {
         "orderId": config.orderId,
     }).then((r: any) => {
-        if (r.status !== "success") {
-            notification("", "failiure", r.message);
+        if (r.data.data.status !== "success") {
+            notification("", "failure", r.data.data.message);
             return;
         }
         notification("", "success");
@@ -149,8 +148,8 @@ functionNames.write_selectAddress = (e: Event) => {
     ajax.post(`/api/v1/invoice/${config.invoiceId}/address`, {
         "addressId": addressId,
     }).then((r: any) => {
-        if (r.message !== "OK") {
-            notification("", "failiure", r.message);
+        if (r.data.message !== "OK") {
+            notification("", "failure", r.data.message);
             return;
         }
         notification("", "success");
@@ -166,8 +165,8 @@ functionNames.write_selectContact = (e: Event) => {
     ajax.post(`/api/v1/invoice/${config.invoiceId}/contact`, {
         "contactId": contactId,
     }).then((r: any) => {
-        if (r.message !== "OK") {
-            notification("", "failiure", r.message);
+        if (r.data.message !== "OK") {
+            notification("", "failure", r.data.message);
             return;
         }
         notification("", "success");
@@ -182,7 +181,7 @@ functionNames.click_addAltName = async () => {
         "orderId": config.orderId,
     });
     const div = document.createElement("div");
-    div.innerHTML = template.template;
+    div.innerHTML = template.data.template;
     const btnContainer = createPopup(div);
 
     const saveBtn = document.createElement("button");
@@ -226,7 +225,7 @@ functionNames.click_changeItemsOrder = async () => {
         "orderId": config.orderId,
     });
     const div = document.createElement("div");
-    div.innerHTML = template.template;
+    div.innerHTML = template.data.template;
     const btnContainer = createPopup(div);
 
     const saveBtn = document.createElement("button");

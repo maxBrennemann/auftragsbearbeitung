@@ -1,4 +1,3 @@
-// @ts-ignore
 import { ajax } from "js-classes/ajax.js";
 
 import { renderTable } from "../classes/table.js";
@@ -71,7 +70,8 @@ function init() {
 }
 
 const initOpenOrdersTable = async () => {
-    const data = await ajax.get(`/api/v1/order/open`);
+    const response = await ajax.get(`/api/v1/order/open`);
+    const data = response.data;
 
     const columns = [
         {

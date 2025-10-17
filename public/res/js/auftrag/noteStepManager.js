@@ -116,7 +116,7 @@ function updateNote(e) {
         type: type,
         data: data
     }).then(r => {
-        if (r.status == "success") {
+        if (r.data.status == "success") {
             notification("", "success");
         }
     });
@@ -143,8 +143,7 @@ fnNames.click_addBearbeitungsschritt = () => {
         "hide": hideStatus,
         "priority": priority,
         "assignedTo": assignedTo,
-    }).then(r => {
-    });
+    }).then(r => {});
 }
 
 fnNames.click_toggleAddStep = () => {
@@ -190,8 +189,8 @@ function sendNote() {
         displayNotes([{
             "title": title,
             "note": content,
-            "date": r.date,
-            "id": r.id,
+            "date": r.data.date,
+            "id": r.data.id,
         }]);
 
         note.querySelector(".noteTitle").value = "";
@@ -218,7 +217,7 @@ const cancelNote = () => {
 function removeNote(event) {
     const id = event.target.parentNode.querySelector(".noteTitle").dataset.id;
     ajax.delete(`/api/v1/notes/${id}`).then(r => {
-        if (r.status == "success") {
+        if (r.data.status == "success") {
             notification("", "success");
             const noteContainer = event.target.parentNode;
             noteContainer.parentNode.removeChild(noteContainer);
@@ -266,7 +265,7 @@ export function initNotes(orderId) {
     const nodeContainer = document.getElementById("noteContainer");
     if (nodeContainer != null) {
         getNotes().then(r => {
-            if (r.length == 0) {
+            if (r.data.length == 0) {
                 return;
             }
 

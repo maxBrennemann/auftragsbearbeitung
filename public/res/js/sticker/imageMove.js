@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import { notificatinReplace, notificationLoader } from "js-classes/notifications.js";
 
 /* https://www.therogerlab.com/sandbox/pages/how-to-reorder-table-rows-in-javascript?s=0ea4985d74a189e8b7b547976e7192ae.4122809346f6a15e41c9a43f6fcb5fd5 */
@@ -86,7 +88,7 @@ function sendPostenOrder(event) {
         r: "setImageOrder",
         order: JSON.stringify(positions),
     }).then(r => {
-        if (r.status) {
+        if (r.data.status) {
             notificatinReplace("image-order", "Bildreihenfolge erfolgreich geändert", "success");
         } else {
             notificatinReplace("image-order", "Fehler beim Speichern der Reihenfolge", "failure");

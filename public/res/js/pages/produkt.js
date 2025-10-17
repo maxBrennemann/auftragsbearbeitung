@@ -149,7 +149,7 @@ function updateProduct(type, content) {
     ajax.put(`/api/v1/product/${productData.productId}/type/${type}`, {
         content: content,
     }).then((response) => {
-        notification("", response.message);
+        notification("", response.data.message);
     }).catch((error) => {
         notification("", "failure", JSON.stringify(error));
     });
@@ -162,7 +162,7 @@ async function getHTMLForAttributes() {
     const attributeGroups = await ajax.get(`/api/v1/attribute/groups`);
     const attributeSelector = document.getElementById("attributeSelector");
 
-    attributeGroups.forEach((group) => {
+    attributeGroups.data.forEach((group) => {
         const option = document.createElement("option");
         option.value = group.id;
         option.innerText = group.attribute_group;
@@ -177,7 +177,8 @@ async function getHTMLForAttributes() {
  * @returns 
  */
 async function loadAttributes(attributeGroupId) {
-    return await ajax.get(`/api/v1/attribute/group/${attributeGroupId}`);
+    const response = await ajax.get(`/api/v1/attribute/group/${attributeGroupId}`);
+    return response.data;
 }
 
 function generateTable() {
@@ -232,7 +233,7 @@ function sendAttributeTable() {
     ajax.put(`/api/v1/product/${productData.productId}/combinations`, {
         combinations: JSON.stringify(attributes),
     }).then((response) => {
-        notification("", response);
+        notification("", response.data);
     }).catch((error) => {
         console.error(error);
     });

@@ -1,4 +1,3 @@
-// @ts-ignore
 import { ajax } from "js-classes/ajax.js";
 
 import { format } from "date-fns";
@@ -10,7 +9,7 @@ const init = () => {
 
 const getOpenInvoiceData = async () => {
     const data = await ajax.get(`/api/v1/invoice/open`);
-    return data.data;
+    return data.data.data;
 }
 
 const createInvoiceTable = async () => {
@@ -80,7 +79,7 @@ const createInvoiceTable = async () => {
         const status = await ajax.post(`/api/v1/invoice/${id}/paid`, {
             "date": format(new Date(), "yyy-MM-dd"),
         });
-        if (status.status == "success") {
+        if (status.data.status == "success") {
             data.row.remove();
         }
     });
