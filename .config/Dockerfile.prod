@@ -3,6 +3,7 @@ FROM composer:2.8.12 AS composer
 WORKDIR /var/www/html
 
 COPY composer.json composer.lock ./
+
 COPY .config/.env.example .env
 COPY src ./src
 COPY console ./console
@@ -10,12 +11,15 @@ COPY console ./console
 RUN composer install \
     --no-dev \
     --prefer-dist \
-    --no-scripts \
+    #--no-scripts \
     --no-progress \
-    --optimize-autoloader
+    --no-suggest \
+    --optimize-autoloader \
+    --classmap-authoritative \
+    && rm -rf /root/.composer/cache \
+    && rm -rf vendor/*/{tests,Tests,doc,docs,example,examples}
 
 RUN ./console autoupgrade --skip-migration
-RUN rm -rf /root/.composer/cache
 
 FROM node:25-alpine3.22 AS frontend-builder
 
@@ -30,27 +34,18 @@ COPY src ./src
 COPY .config ./.config
 COPY --from=composer /var/www/html/public/res/js/classes/tableconfig.js ./public/res/js/classes/tableconfig.js
 
-RUN npm run build
+RUN npm run build && rm -rf /root/.npm /tmp/*
 
 FROM php:8.4.13-fpm-alpine
-
-ARG UID=1000
-ARG GID=1000
 
 RUN echo "upload_max_filesize=100M" > /usr/local/etc/php/conf.d/uploads.ini \
  && echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/uploads.ini
 
 # Install some base extensions
-RUN apk add --no-cache --virtual .build-deps \
-        $PHPIZE_DEPS \
-        libpng-dev \
-        libzip-dev \
-        zlib-dev \
-    && apk add --no-cache \
-        dcron \
-    && docker-php-ext-install pdo_mysql mysqli zip gd \
-    && apk del .build-deps
-
+RUN apk add --no-cache dcron libpng-dev libzip-dev zlib-dev \
+ && docker-php-ext-install pdo_mysql mysqli zip gd \
+ && rm -rf /var/cache/apk/* /tmp/*
+    
 WORKDIR /var/www/html
 
 # PHP config
@@ -59,27 +54,21 @@ COPY .config/php.conf /usr/local/etc/php-fpm.d/custom-php.conf
 
 # Copy assets and dependencies into final image
 COPY src ./src
+COPY public ./public
 COPY --from=composer /var/www/html/vendor ./vendor
 COPY --from=frontend-builder /app/public/res/assets ./public/res/assets
 COPY database/Migrations ./database/Migrations
 COPY console ./console
 
-#RUN ./console autoupgrade --force-migration 
-
-# https://stackoverflow.com/questions/73991553/permission-denied-for-laravel-and-docker
-# user muss danach gesetzt werden, da sonst die Rechte nicht stimmen
-RUN apk add --no-cache shadow \
-  && usermod --non-unique --uid $UID www-data \
-  && groupmod --non-unique --gid $UID www-data \
-  && chown -R www-data:www-data /var/www \
-  && apk del shadow
+#RUN ./console autoupgrade --force-migration
 
 # Create cron log
 RUN touch /var/log/cron.log
 
-RUN rm -rf /var/cache/apk/* /tmp/*
+RUN rm -rf /var/cache/apk/* /tmp/* \
+    && rm -rf /public/res/js/* \
+    && rm -rf /public/res/css/*
 
-# Fix ownership
-RUN chown -R www-data:www-data /var/www/html
+USER www-data
 
 CMD ["php-fpm"]

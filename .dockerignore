@@ -10,13 +10,7 @@ auftragsbearbeitung.code-workspace
 .env
 node_modules
 vendor
-.config/install/install.lock
-
-.config/res/sql/init/*
-!.config/res/sql/init/.gitkeep
-
-.config/certs/*
-!.config/certs/openssl.cnf
+var
 
 .php-cs-fixer.cache
 
@@ -33,10 +27,15 @@ storage
 database/legacy_sql
 database/versions
 
-.config/formatter
-.config/stubs
-.config/var
-.config/xdebug
+.config/*
+!.config/install
+!.config/crontab
+!.config/php-config.ini
+!.config/php.conf
+!.config/.env.example
+!.config/postcss.config.ts
+!.config/tailwind.config.ts
+!.config/vite.config.ts
 
 docker-compose.yml
 Makefile
