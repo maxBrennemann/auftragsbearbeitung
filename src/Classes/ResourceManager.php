@@ -82,7 +82,7 @@ class ResourceManager
                 self::close();
                 // no break
             case "favicon.ico":
-                require_once ROOT . "../public/assets/favicon.php";
+                require_once ROOT . "public/assets/favicon.php";
                 self::close();
                 // no break
             case "events":
@@ -150,7 +150,7 @@ class ResourceManager
 
     public static function showPage(): void
     {
-        $routes = require ROOT . "../src/web-routes.php";
+        $routes = require ROOT . "src/web-routes.php";
         $page = self::$page;
 
         $filePath = "";

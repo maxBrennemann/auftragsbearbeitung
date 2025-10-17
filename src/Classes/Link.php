@@ -35,20 +35,20 @@ class Link
     {
         switch ($type) {
             case "css":
-                $link = ROOT . "../public/res/css/" . $resource;
+                $link = ROOT . "public/res/css/" . $resource;
                 break;
             case "js":
             case "ts":
-                $link = ROOT . "../public/res/js/pages/" . $resource;
+                $link = ROOT . "public/res/js/pages/" . $resource;
                 break;
             case "min":
-                $link = ROOT . "../public/res/assets/" . $resource;
+                $link = ROOT . "public/res/assets/" . $resource;
                 break;
             case "font":
-                $link = ROOT . "../public/res/css/fonts/" . $resource;
+                $link = ROOT . "public/res/css/fonts/" . $resource;
                 break;
             case "html":
-                $link = ROOT . "../public/assets/forms/" . $resource;
+                $link = ROOT . "public/assets/forms/" . $resource;
                 break;
             case "upload":
                 $link = self::getUploadFileByURL($resource);

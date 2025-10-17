@@ -6,7 +6,7 @@ class TableConfig
 {
     public static function generate(): void
     {
-        require_once ROOT . "../src/table-config.php";
+        require_once ROOT . "src/table-config.php";
         $data = getTableConfigFrontOffice();
         $data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 

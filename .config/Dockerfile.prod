@@ -1,7 +1,11 @@
 FROM composer:2.8.12 AS composer
 
 WORKDIR /var/www/html
+
 COPY composer.json composer.lock ./
+COPY .config/.env.example .env
+COPY src ./src
+COPY console ./console
 
 RUN composer install \
     --no-dev \
@@ -9,10 +13,9 @@ RUN composer install \
     --no-scripts \
     --no-progress \
     --optimize-autoloader
-COPY .config/.env.example .env
-COPY . .
 
-RUN ./console autoupgrade --skip-migration 
+RUN ./console autoupgrade --skip-migration
+RUN rm -rf /root/.composer/cache
 
 FROM node:25-alpine3.22 AS frontend-builder
 
@@ -22,7 +25,9 @@ COPY package.json package-lock.json ./
 
 RUN npm ci --include=dev && npm cache clean --force
 
-COPY . .
+COPY public ./public
+COPY src ./src
+COPY .config ./.config
 COPY --from=composer /var/www/html/public/res/js/classes/tableconfig.js ./public/res/js/classes/tableconfig.js
 
 RUN npm run build
@@ -52,7 +57,14 @@ WORKDIR /var/www/html
 COPY .config/php-config.ini /usr/local/etc/php/conf.d/custom.ini
 COPY .config/php.conf /usr/local/etc/php-fpm.d/custom-php.conf
 
-COPY . .
+# Copy assets and dependencies into final image
+COPY src ./src
+COPY --from=composer /var/www/html/vendor ./vendor
+COPY --from=frontend-builder /app/public/res/assets ./public/res/assets
+COPY database/Migrations ./database/Migrations
+COPY console ./console
+
+#RUN ./console autoupgrade --force-migration 
 
 # https://stackoverflow.com/questions/73991553/permission-denied-for-laravel-and-docker
 # user muss danach gesetzt werden, da sonst die Rechte nicht stimmen
@@ -65,12 +77,7 @@ RUN apk add --no-cache shadow \
 # Create cron log
 RUN touch /var/log/cron.log
 
-# Copy assets and dependencies into final image
-COPY --from=composer /var/www/html/vendor ./vendor
-COPY --from=frontend-builder /app/public/res/assets ./public/res/assets
-
-RUN rm -rf public/res/js
-RUN rm -rf public/res/css
+RUN rm -rf /var/cache/apk/* /tmp/*
 
 # Fix ownership
 RUN chown -R www-data:www-data /var/www/html

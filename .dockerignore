@@ -11,9 +11,6 @@ auftragsbearbeitung.code-workspace
 node_modules
 vendor
 .config/install/install.lock
-var
-storage/cache/*
-!storage/cache/.gitkeep
 
 .config/res/sql/init/*
 !.config/res/sql/init/.gitkeep
@@ -23,31 +20,29 @@ storage/cache/*
 
 .php-cs-fixer.cache
 
-# generated files
-storage/generated/*
-!storage/generated/.gitkeep
-
 public/res/js/classes/tableconfig.js
 
 # minimized files
 public/res/assets/*
 
-# upload
-storage/upload/*
-!storage/upload/.gitkeep
-
 # docker explicit
 .git
 .github
 docker-compose*.yml
-upload
+storage
 database/legacy_sql
 database/versions
+
+.config/formatter
+.config/stubs
+.config/var
+.config/xdebug
+
+docker-compose.yml
+Makefile
 
 #misc
 public/assets/forms/modules/sticker/catalog_products.csv
 .git.bfg-report
-storage/logs/protocol.txt
 README.md
-.config/formatter/*
 .build
