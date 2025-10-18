@@ -10,6 +10,8 @@ services:
       DOMAIN: ${DOMAIN}
     volumes:
       - .config/nginx/default.prod.conf:/etc/nginx/templates/default.conf.template
+      - ./data/certbot/conf:/etc/letsencrypt:ro
+      - ./data/certbot/www:/var/www/certbot:ro
     networks:
       - internal_network
 
