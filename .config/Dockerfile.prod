@@ -69,6 +69,8 @@ RUN rm -rf /var/cache/apk/* /tmp/* \
     && rm -rf /public/res/js/* \
     && rm -rf /public/res/css/*
 
+RUN mkdir -p /var/www/html/storage/{cache,generated,logs,upload}
+
 USER www-data
 
 CMD ["php-fpm"]

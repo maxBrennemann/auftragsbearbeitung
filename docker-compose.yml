@@ -26,8 +26,8 @@ services:
       - ./.config/xdebug/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
     image: auftragsbearbeitung/php-base
     expose:
-      - 9000  # FPM port
-      - 9003  # Xdebug port
+      - 9000
+      - 9003
 
   cron:
     image: auftragsbearbeitung/php-base

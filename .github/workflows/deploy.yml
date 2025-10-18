@@ -3,7 +3,7 @@ name: Auftragsbearbeitung Deploy
 on:
   push:
     branches:
-      - master
+      - main
       - development
 
 jobs:

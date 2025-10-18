@@ -10,22 +10,6 @@ services:
       DOMAIN: ${DOMAIN}
     volumes:
       - .config/nginx/default.prod.conf:/etc/nginx/templates/default.conf.template
-      - .config/nginx/autoreload.sh:/docker-entrypoint.d/autoreload-nginx.sh
-      - ./data/certbot/conf:/etc/letsencrypt:ro
-      - ./data/certbot/www:/var/www/certbot:ro
-    networks:
-      - internal_network
-
-  certbot:
-    image: certbot/certbot:latest
-    depends_on:
-      - nginx
-    container_name: certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    command: certonly --webroot -w /var/www/certbot --force-renewal --email {LETSENCRYPT_EMAIL} -d {DOMAIN} --agree-tos
-    volumes:
-      - ./data/certbot/conf:/etc/letsencrypt:rw
-      - ./data/certbot/www:/var/www/certbot:rw
     networks:
       - internal_network
 
@@ -39,7 +23,7 @@ services:
       LETSENCRYPT_HOST: ${DOMAIN}
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
     volumes:
-      - ./upload/:/var/www/html/storage
+      - storage_data:/var/www/html/storage
 
   database:
     image: mariadb:12
@@ -65,6 +49,7 @@ services:
 
 volumes:
   db_data:
+  storage_data:
 
 networks:
   internal_network:
