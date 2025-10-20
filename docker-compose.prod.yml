@@ -10,8 +10,8 @@ services:
       DOMAIN: ${DOMAIN}
     volumes:
       - .config/nginx/default.prod.conf:/etc/nginx/templates/default.conf.template
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/www/certbot
+      - certs/etc/letsencrypt:/etc/letsencrypt:ro
+      - certs/data/certbot/www:/var/www/certbot:ro
     depends_on:
       - certbot
     networks:
@@ -21,8 +21,8 @@ services:
     image: certbot/certbot
     container_name: certbot
     volumes:
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/www/certbot
+      - certs/etc/letsencrypt:/etc/letsencrypt
+      - certs/data/certbot/www/:/var/www/certbot
     entrypoint: ""
     command: >
       sh -c "trap exit TERM; while :; do sleep 12h & wait $${!}; certbot renew --webroot -w /var/www/certbot; done"
@@ -70,8 +70,6 @@ services:
 volumes:
   db_data:
   storage_data:
-  certbot-etc:
-  certbot-var:
 
 networks:
   internal_network:
