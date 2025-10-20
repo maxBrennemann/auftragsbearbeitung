@@ -70,6 +70,7 @@ RUN rm -rf /var/cache/apk/* /tmp/* \
     && rm -rf /public/res/css/*
 
 RUN mkdir -p /var/www/html/storage/{cache,generated,logs,upload}
+RUN chown -R www-data:www-data /var/www/html
 
 USER www-data
 
