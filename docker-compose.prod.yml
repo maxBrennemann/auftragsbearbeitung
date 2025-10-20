@@ -38,6 +38,8 @@ services:
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
     volumes:
       - storage_data:/var/www/html/storage
+    networks:
+      - internal_network
 
   database:
     image: mariadb:12
@@ -49,6 +51,8 @@ services:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
+    networks:
+      - internal_network
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -60,6 +64,8 @@ services:
       PMA_HOST: database
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       UPLOAD_LIMIT: 300M
+    networks:
+      - internal_network
 
 volumes:
   db_data:
