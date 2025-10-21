@@ -46,5 +46,8 @@ COPY src ./src
 COPY public ./public
 COPY --from=frontend-builder /app/public/res/assets ./public/res/assets
 
+RUN mkdir -p /var/cache/nginx/asset_cache \
+    && chown -R nginx:nginx /var/cache/nginx
+
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
