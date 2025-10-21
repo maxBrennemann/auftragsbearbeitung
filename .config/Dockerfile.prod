@@ -11,7 +11,6 @@ COPY console ./console
 RUN composer install \
     --no-dev \
     --prefer-dist \
-    #--no-scripts \
     --no-progress \
     --no-suggest \
     --optimize-autoloader \
@@ -66,11 +65,11 @@ COPY console ./console
 RUN touch /var/log/cron.log
 
 RUN rm -rf /var/cache/apk/* /tmp/* \
-    && rm -rf /public/res/js/* \
-    && rm -rf /public/res/css/*
+    && rm -rf ./public/res/js/* \
+    && rm -rf ./public/res/css/*
 
 RUN mkdir -p /var/www/html/storage/{cache,generated,logs,upload}
-RUN chown -R www-data:www-data /var/www/html
+#RUN chown -R www-data:www-data /var/www/html
 
 USER www-data
 
