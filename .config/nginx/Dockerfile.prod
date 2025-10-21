@@ -41,10 +41,9 @@ FROM nginx:stable-alpine
 WORKDIR /var/www/html
 
 # Copy assets and dependencies into final image
-COPY .config/nginx/default.prod.conf /etc/nginx/templates/default.conf.template
+COPY ./.config/nginx/default.prod.conf /etc/nginx/templates/default.conf.template
 COPY src ./src
 COPY public ./public
-COPY --from=composer /var/www/html/vendor ./vendor
 COPY --from=frontend-builder /app/public/res/assets ./public/res/assets
 
 EXPOSE 80

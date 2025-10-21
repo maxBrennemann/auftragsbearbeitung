@@ -36,6 +36,7 @@ database/versions
 !.config/postcss.config.ts
 !.config/tailwind.config.ts
 !.config/vite.config.ts
+!.config/nginx/default.prod.conf
 
 docker-compose.yml
 Makefile
