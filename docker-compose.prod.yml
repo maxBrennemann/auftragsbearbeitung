@@ -38,7 +38,7 @@ services:
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
     volumes:
       - storage_data:/var/www/html/storage
-      - ./.env:/var/www/html
+      - ./.env:/var/www/html/.env
     networks:
       - internal_network
 
