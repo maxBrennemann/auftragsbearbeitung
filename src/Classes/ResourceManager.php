@@ -243,6 +243,7 @@ class ResourceManager
     private static function get_script(string $script): void
     {
         header("Content-Type: text/javascript");
+        header("Cache-Control: public, max-age=31536000, immutable");
 
         if (file_exists(Link::getFilePath($script, "min"))) {
             echo file_get_contents(Link::getFilePath($script, "min"));
@@ -255,6 +256,7 @@ class ResourceManager
     private static function get_css(string $script): void
     {
         header("Content-Type: text/css; charset=utf-8");
+        header("Cache-Control: public, max-age=31536000, immutable");
 
         $fileName = explode(".", $script);
 
@@ -315,9 +317,13 @@ class ResourceManager
     private static function get_font(string $font): void
     {
         header("Content-type: font/ttf");
-        $file = file_get_contents(Link::getFilePath($font, "font"));
+        $fontPath = Link::getFilePath($font, "font");
+        $font = file_get_contents($fontPath);
 
-        echo $file;
+        header("Cache-Control: public, max-age=31536000, immutable");
+        header("Content-Length: " . filesize($fontPath));
+
+        echo $font;
     }
 
     private static function get_upload(string $upload): void
