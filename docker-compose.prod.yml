@@ -1,7 +1,7 @@
 services:
-  nginx:
-    image: nginx:stable-alpine
-    container_name: nginx
+  web:
+    image: ghcr.io/maxbrennemann/auftragsbearbeitung/web-base:latest
+    container_name: auftragsbearbeitung-web
     restart: always
     ports:
       - "80:80"
@@ -9,7 +9,7 @@ services:
     environment:
       DOMAIN: ${DOMAIN}
     volumes:
-      - .config/nginx/default.prod.conf:/etc/nginx/templates/default.conf.template
+      #- .config/nginx/default.prod.conf:/etc/nginx/templates/default.conf.template
       - ./certs/etc/letsencrypt:/etc/letsencrypt:ro
       - ./certs/data/certbot/www:/var/www/certbot:ro
     depends_on:

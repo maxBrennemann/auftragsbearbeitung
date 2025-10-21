@@ -1,0 +1,51 @@
+FROM composer:2.8.12 AS composer
+
+WORKDIR /var/www/html
+
+COPY composer.json composer.lock ./
+
+COPY .config/.env.example .env
+COPY src ./src
+COPY console ./console
+
+RUN composer install \
+    --no-dev \
+    --prefer-dist \
+    #--no-scripts \
+    --no-progress \
+    --no-suggest \
+    --optimize-autoloader \
+    --classmap-authoritative \
+    && rm -rf /root/.composer/cache \
+    && rm -rf vendor/*/{tests,Tests,doc,docs,example,examples}
+
+RUN ./console autoupgrade --skip-migration
+
+FROM node:25-alpine3.22 AS frontend-builder
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+
+RUN npm ci --include=dev && npm cache clean --force
+
+COPY public ./public
+COPY src ./src
+COPY .config ./.config
+COPY --from=composer /var/www/html/public/res/js/classes/tableconfig.js ./public/res/js/classes/tableconfig.js
+
+RUN npm run build && rm -rf /root/.npm /tmp/*
+
+FROM nginx:stable-alpine
+
+WORKDIR /var/www/html
+
+# Copy assets and dependencies into final image
+COPY .config/nginx/default.prod.conf /etc/nginx/templates/default.conf.template
+COPY src ./src
+COPY public ./public
+COPY --from=composer /var/www/html/vendor ./vendor
+COPY --from=frontend-builder /app/public/res/assets ./public/res/assets
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
