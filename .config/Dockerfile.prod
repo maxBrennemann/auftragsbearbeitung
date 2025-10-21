@@ -68,7 +68,10 @@ RUN rm -rf /var/cache/apk/* /tmp/* \
     && rm -rf ./public/res/js/* \
     && rm -rf ./public/res/css/*
 
-RUN mkdir -p /var/www/html/storage/{cache,generated,logs,upload}
+RUN mkdir -p /var/www/html/storage/cache \
+    && mkdir -p /var/www/html/storage/generated \
+    && mkdir -p /var/www/html/storage/logs \
+    && mkdir -p /var/www/html/storage/upload
 
 RUN echo "memory_limit=512M" >> /usr/local/etc/php/conf.d/custom.ini \
  && echo "max_execution_time=60" >> /usr/local/etc/php/conf.d/custom.ini \
