@@ -1010,8 +1010,8 @@
             "version": "2.1.x-dev",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/cbae9b7f2a51505290e4e67871e6ec30b69c9678",
-                "reference": "cbae9b7f2a51505290e4e67871e6ec30b69c9678",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/124a1434d5d78043708ed118c915b3eb8c02c319",
+                "reference": "124a1434d5d78043708ed118c915b3eb8c02c319",
                 "shasum": ""
             },
             "require": {
@@ -1057,7 +1057,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-10-20T11:55:15+00:00"
+            "time": "2025-10-22T07:27:53+00:00"
         },
         {
             "name": "prestashop/prestashop-webservice-lib",
@@ -3136,12 +3136,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "0105ba17b5095f96b67b00010687cd65790b8658"
+                "reference": "3a454ca033b9e06b63282ce19562e892747449bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/0105ba17b5095f96b67b00010687cd65790b8658",
-                "reference": "0105ba17b5095f96b67b00010687cd65790b8658",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/3a454ca033b9e06b63282ce19562e892747449bb",
+                "reference": "3a454ca033b9e06b63282ce19562e892747449bb",
                 "shasum": ""
             },
             "require": {
@@ -3187,7 +3187,7 @@
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
                 "source": "https://github.com/nikic/PHP-Parser/tree/master"
             },
-            "time": "2025-10-19T13:43:25+00:00"
+            "time": "2025-10-21T19:32:17+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -3697,12 +3697,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "a85a75e7bf4e0d723ebe535413ff69f1402bde1a"
+                "reference": "c66b7d664c2b3b0b579972ffe8285809f5e79a8b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a85a75e7bf4e0d723ebe535413ff69f1402bde1a",
-                "reference": "a85a75e7bf4e0d723ebe535413ff69f1402bde1a",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c66b7d664c2b3b0b579972ffe8285809f5e79a8b",
+                "reference": "c66b7d664c2b3b0b579972ffe8285809f5e79a8b",
                 "shasum": ""
             },
             "require": {
@@ -3798,7 +3798,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-10-11T09:54:37+00:00"
+            "time": "2025-10-22T06:13:00+00:00"
         },
         {
             "name": "psr/event-dispatcher",
