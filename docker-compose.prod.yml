@@ -9,7 +9,6 @@ services:
     environment:
       DOMAIN: ${DOMAIN}
     volumes:
-      #- .config/nginx/default.prod.conf:/etc/nginx/templates/default.conf.template
       - ./certs/etc/letsencrypt:/etc/letsencrypt:ro
       - ./certs/data/certbot/www:/var/www/certbot:ro
     depends_on:

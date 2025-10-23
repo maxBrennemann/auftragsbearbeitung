@@ -16,7 +16,12 @@ RUN composer install \
     --optimize-autoloader \
     --classmap-authoritative \
     && rm -rf /root/.composer/cache \
-    && rm -rf vendor/*/{tests,Tests,doc,docs,example,examples}
+    && rm -rf vendor/*/tests \
+    && rm -rf vendor/*/Tests \
+    && rm -rf vendor/*/doc \
+    && rm -rf vendor/*/docs \
+    && rm -rf vendor/*/example \
+    && rm -rf vendor/*/examples
 
 RUN ./console autoupgrade --skip-migration
 
@@ -78,7 +83,5 @@ RUN echo "memory_limit=512M" >> /usr/local/etc/php/conf.d/custom.ini \
  && echo "display_errors=Off" >> /usr/local/etc/php/conf.d/custom.ini \
  && echo "log_errors=On" >> /usr/local/etc/php/conf.d/custom.ini \
  && echo "error_log=/var/www/html/storage/logs/php-error.log" >> /usr/local/etc/php/conf.d/custom.ini
-
-USER www-data
 
 CMD ["php-fpm"]
