@@ -69,9 +69,13 @@ COPY console ./console
 # Create cron log
 RUN touch /var/log/cron.log
 
-RUN rm -rf /var/cache/apk/* /tmp/* \
-    && rm -rf ./public/res/js/* \
-    && rm -rf ./public/res/css/*
+# remove unused css and js
+#RUN rm -rf /var/cache/apk/* /tmp/* \
+    #&& rm -rf ./public/res/js/* \
+    #&& rm -rf ./public/res/css/*
+
+# readd fonts
+#COPY public/res/css/fonts ./public/res/css/fonts
 
 RUN mkdir -p /var/www/html/storage/cache \
     && mkdir -p /var/www/html/storage/generated \
