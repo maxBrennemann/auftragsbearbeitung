@@ -2,10 +2,12 @@
 
 use Src\Classes\Link;
 
+// TODO: allow upload of custom favicon, for now, it will point to the new default icons
+
 if (strpos($_SERVER["HTTP_USER_AGENT"], "MSIE") !== false
     || strpos($_SERVER["HTTP_USER_AGENT"], "Trident") !== false) {
 
-    if (!file_exists("../public/assets/img/favicon.ico")) {
+    if (!file_exists(ROOT . "public/assets/img/default_favicon.ico")) {
         $file = Link::getDefaultImage();
         header("Content-Type: image/png");
         readfile($file);
@@ -13,15 +15,15 @@ if (strpos($_SERVER["HTTP_USER_AGENT"], "MSIE") !== false
     }
 
     header("Content-Type: image/vnd.microsoft.icon");
-    readfile("../public/assets/img/favicon.ico");
+    readfile(ROOT . "public/assets/img/default_favicon.ico");
 } else {
     header("Content-Type: image/png");
 
-    if (!file_exists("../public/assets/img/favicon.png")) {
+    if (!file_exists(ROOT . "public/assets/img/default_favicon.png")) {
         $file = Link::getDefaultImage();
         readfile($file);
         return;
     }
 
-    readfile("../public/assets/img/favicon.png");
+    readfile(ROOT . "public/assets/img/default_favicon.png");
 }
