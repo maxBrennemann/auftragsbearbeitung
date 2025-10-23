@@ -6,6 +6,9 @@ require_once "../src/settings.php";
 
 use Src\Classes\Controller\SessionController;
 use Src\Classes\Project\CacheManager;
+
+error_log('URI=' . $_SERVER['REQUEST_URI'] . ' SCRIPT_NAME=' . $_SERVER['SCRIPT_NAME'] . ' PATH_INFO=' . ($_SERVER['PATH_INFO'] ?? ''));
+
 use Src\Classes\ResourceManager;
 
 ResourceManager::getParameters();
