@@ -11,7 +11,7 @@ class CompanyProfile
      */
     public static function get(): array
     {
-        $companyDetails = [
+        return [
             "companyName" => Settings::get("companyName"),
             "companyAddress" => Settings::get("companyAddress"),
             "companyZip" => Settings::get("companyZip"),
@@ -26,7 +26,5 @@ class CompanyProfile
             "companyBic" => Settings::get("companyBic"),
             "companyUstIdNr" => Settings::get("companyUstIdNr"),
         ];
-
-        return $companyDetails;
     }
 }
