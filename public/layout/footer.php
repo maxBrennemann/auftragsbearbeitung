@@ -38,7 +38,7 @@
 	if ($calcDuration && CacheManager::getCacheStatus() == 'off') {
 	    $stop = microtime(true);
 	    $duration = $stop - $start;
-	    echo "<script>console.log('Page loaded in " . $duration . " seconds');</script>";
+		echo "<data value='$duration' id='loadtime'></data>";
 	}
 
 	if ($calcDuration && CacheManager::getCacheStatus() == 'on') {

@@ -7,6 +7,7 @@ services:
     volumes:
       - ./:/var/www/html/
       - ./.config/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./.config/nginx/security-headers.dev.conf:/etc/nginx/conf.d/security-headers.conf
       - ./.config/certs:/etc/nginx/certs
     depends_on:
       - php

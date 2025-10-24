@@ -98,6 +98,7 @@ class ProductConnector {
 
             const label = document.createElement("label");
             label.style.display = "block";
+            label.style.margin = "5px";
             
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
