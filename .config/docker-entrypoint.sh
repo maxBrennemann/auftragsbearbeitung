@@ -11,6 +11,6 @@ chown -R www-data:www-data /var/www/html/storage
 chmod -R 775 /var/www/html/storage
 
 echo "Run migrations"
-php /var/www/html/console migrate --force-migration || true
+php /var/www/html/console autoupgrade --force-migration || true
 
 exec php-fpm

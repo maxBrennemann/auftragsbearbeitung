@@ -44,8 +44,6 @@ services:
     ports:
       - "3306:3306"
     command: --lower_case_table_names=1
-    volumes:
-      - ./.config/res/sql/init/${INIT_DB}:/docker-entrypoint-initdb.d/init.sql.zip
     environment:
       MYSQL_KEY_BUFFER_SIZE: 16M
       MYSQL_READ_BUFFER_SIZE: 2M

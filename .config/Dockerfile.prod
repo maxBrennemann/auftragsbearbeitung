@@ -64,8 +64,6 @@ COPY --from=frontend-builder /app/public/res/assets ./public/res/assets
 COPY database/Migrations ./database/Migrations
 COPY console ./console
 
-#RUN ./console autoupgrade --force-migration
-
 # Create cron log
 RUN touch /var/log/cron.log
 

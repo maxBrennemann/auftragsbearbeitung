@@ -17,9 +17,6 @@ var
 .config/apiKeys/*
 !.config/apiKeys/.gitkeep
 
-.config/res/sql/init/*
-!.config/res/sql/init/.gitkeep
-
 .config/certs/*
 !.config/certs/openssl.cnf
 
