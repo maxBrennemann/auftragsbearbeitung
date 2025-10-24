@@ -37,6 +37,7 @@ database/versions
 !.config/tailwind.config.ts
 !.config/vite.config.ts
 !.config/nginx/*
+!.config/docker-entrypoint.sh
 
 docker-compose.yml
 Makefile
