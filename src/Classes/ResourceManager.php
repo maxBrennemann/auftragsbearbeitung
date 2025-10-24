@@ -320,6 +320,11 @@ class ResourceManager
         $fontPath = Link::getFilePath($font, "font");
         $font = file_get_contents($fontPath);
 
+        if ($font === false) {
+            http_response_code(404);
+            exit();
+        }
+
         header("Cache-Control: public, max-age=31536000, immutable");
         header("Content-Length: " . filesize($fontPath));
 
@@ -366,9 +371,7 @@ class ResourceManager
         $mime_type = $file_info->buffer($fileContents);
 
         header("Content-type:$mime_type");
-        $file = file_get_contents(Link::getFilePath($backup, "backup"));
-
-        echo $file;
+        echo file_get_contents(Link::getFilePath($backup, "backup"));
     }
 
     private static function get_pdf(string $pdf): void
@@ -381,9 +384,7 @@ class ResourceManager
             return;
         }
 
-        $file = file_get_contents($fileName);
-
-        echo $file;
+        echo file_get_contents($fileName);
     }
 
     /**
@@ -404,7 +405,13 @@ class ResourceManager
             header("Content-type: " .  mime_content_type($filePath));
         }
 
-        echo file_get_contents($filePath);
+        $file = file_get_contents($filePath);
+        if ($file === false) {
+            http_response_code(404);
+            exit();
+        }
+
+        echo $file;
     }
 
     private static function get_static(string $file): void

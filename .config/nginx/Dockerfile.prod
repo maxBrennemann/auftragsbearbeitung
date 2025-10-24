@@ -42,6 +42,7 @@ WORKDIR /var/www/html
 
 # Copy assets and dependencies into final image
 COPY ./.config/nginx/default.prod.conf /etc/nginx/templates/default.conf.template
+COPY ./.config/nginx/security-headers.conf /etc/nginx/snippets/security-headers.conf
 COPY src ./src
 COPY public ./public
 COPY --from=frontend-builder /app/public/res/assets ./public/res/assets
