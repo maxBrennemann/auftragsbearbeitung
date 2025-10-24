@@ -678,12 +678,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "2e97231b969e0ffdeff03329b808945b4ba55e38"
+                "reference": "78e6df032eb12f478cea2615b5339651a928dddd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/2e97231b969e0ffdeff03329b808945b4ba55e38",
-                "reference": "2e97231b969e0ffdeff03329b808945b4ba55e38",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/78e6df032eb12f478cea2615b5339651a928dddd",
+                "reference": "78e6df032eb12f478cea2615b5339651a928dddd",
                 "shasum": ""
             },
             "require": {
@@ -701,7 +701,7 @@
                 "graylog2/gelf-php": "^1.4.2 || ^2.0",
                 "guzzlehttp/guzzle": "^7.4.5",
                 "guzzlehttp/psr7": "^2.2",
-                "mongodb/mongodb": "^1.8",
+                "mongodb/mongodb": "^1.8 || ^2.0",
                 "php-amqplib/php-amqplib": "~2.4 || ^3",
                 "php-console/php-console": "^3.1.8",
                 "phpstan/phpstan": "^2",
@@ -774,7 +774,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-04-03T11:44:45+00:00"
+            "time": "2025-10-24T08:29:18+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
@@ -1010,8 +1010,8 @@
             "version": "2.1.x-dev",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/124a1434d5d78043708ed118c915b3eb8c02c319",
-                "reference": "124a1434d5d78043708ed118c915b3eb8c02c319",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/dd2717b4c3d7a34ec4afc244314d940f6f16d9ef",
+                "reference": "dd2717b4c3d7a34ec4afc244314d940f6f16d9ef",
                 "shasum": ""
             },
             "require": {
@@ -1057,7 +1057,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-10-22T07:27:53+00:00"
+            "time": "2025-10-23T17:34:39+00:00"
         },
         {
             "name": "prestashop/prestashop-webservice-lib",

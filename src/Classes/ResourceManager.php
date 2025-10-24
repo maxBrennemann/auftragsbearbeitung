@@ -333,9 +333,9 @@ class ResourceManager
         $fileName = Link::getFilePath($upload, "upload");
 
         if (!file_exists($fileName)) {
-            $mime_type = $finfo->file("../public/assets/img/default_image.png");
+            $mime_type = $finfo->file(ROOT . "public/assets/img/default_image.png");
             header("Content-type:$mime_type");
-            echo file_get_contents("../public/assets/img/default_image.png");
+            echo file_get_contents(ROOT . "public/assets/img/default_image.png");
             return;
         }
 
@@ -386,13 +386,25 @@ class ResourceManager
         echo $file;
     }
 
-    private static function get_image(string $file): void
+    /**
+     * checks if the file exists, defaults either to the default favicon or
+     * if the requested image is not a favicon, to the default fallback image
+     * @return void
+     */
+    private static function get_image(string $fileName): void
     {
-        $filePath = "../public/assets/img" . $file;
-        header("Content-type: " .  mime_content_type($filePath));
-        $file = file_get_contents($filePath);
+        $filePath = ROOT . "public/assets/img" . $fileName;
+        if (file_exists($filePath)) {
+            header("Content-type: " .  mime_content_type($filePath));
+        } else if ($fileName === "/favicon.png") {
+            $filePath = ROOT . "public/assets/img/default_favicon.png";
+            header("Content-type: " .  mime_content_type($filePath));
+        } else {
+            $filePath = ROOT . "public/assets/img/default_image.png";
+            header("Content-type: " .  mime_content_type($filePath));
+        }
 
-        echo $file;
+        echo file_get_contents($filePath);
     }
 
     private static function get_static(string $file): void
