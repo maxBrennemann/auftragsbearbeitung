@@ -30,12 +30,14 @@ database/versions
 .config/*
 !.config/install
 !.config/crontab
-!.config/php-config.ini
 !.config/php.conf
+!.config/php/*
 !.config/.env.example
 !.config/postcss.config.ts
 !.config/tailwind.config.ts
 !.config/vite.config.ts
+!.config/nginx/*
+!.config/docker-entrypoint.sh
 
 docker-compose.yml
 Makefile

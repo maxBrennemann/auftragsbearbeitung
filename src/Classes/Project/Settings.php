@@ -23,15 +23,13 @@ class Settings
         $isBool = $isBool ? 1 : 0;
         $isNullable = $isNullable ? 1 : 0;
 
-        $settingId = (int) DBAccess::insertQuery($query, [
+        return (int) DBAccess::insertQuery($query, [
             "title" => $setting,
             "content" => $defaultValue,
             "defaultValue" => $defaultValue,
             "isBool" => $isBool,
             "isNullable" => $isNullable,
         ]);
-
-        return $settingId;
     }
 
     /**

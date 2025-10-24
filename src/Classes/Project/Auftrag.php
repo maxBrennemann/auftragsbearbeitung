@@ -86,11 +86,9 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 				JOIN kunde k ON ap.Kundennummer = k.Kundennummer
 				JOIN auftrag a ON a.Kundennummer = k.Kundennummer
 			WHERE a.Auftragsnummer = :id;";
-        $data = DBAccess::selectQuery($query, [
+        return DBAccess::selectQuery($query, [
             "id" => $this->Auftragsnummer,
         ]);
-
-        return $data;
     }
 
     public function getAuftragsbeschreibung(): string
@@ -905,9 +903,8 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         insertTemplate('files/views/orderCardView.php', [
             "orders" => $orders,
         ]);
-        $content = ob_get_clean();
 
-        return $content;
+        return ob_get_clean();
     }
 
     public static function addFiles(): void

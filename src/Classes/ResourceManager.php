@@ -243,6 +243,7 @@ class ResourceManager
     private static function get_script(string $script): void
     {
         header("Content-Type: text/javascript");
+        header("Cache-Control: public, max-age=31536000, immutable");
 
         if (file_exists(Link::getFilePath($script, "min"))) {
             echo file_get_contents(Link::getFilePath($script, "min"));
@@ -255,6 +256,7 @@ class ResourceManager
     private static function get_css(string $script): void
     {
         header("Content-Type: text/css; charset=utf-8");
+        header("Cache-Control: public, max-age=31536000, immutable");
 
         $fileName = explode(".", $script);
 
@@ -315,9 +317,18 @@ class ResourceManager
     private static function get_font(string $font): void
     {
         header("Content-type: font/ttf");
-        $file = file_get_contents(Link::getFilePath($font, "font"));
+        $fontPath = Link::getFilePath($font, "font");
+        $font = file_get_contents($fontPath);
 
-        echo $file;
+        if ($font === false) {
+            http_response_code(404);
+            exit();
+        }
+
+        header("Cache-Control: public, max-age=31536000, immutable");
+        header("Content-Length: " . filesize($fontPath));
+
+        echo $font;
     }
 
     private static function get_upload(string $upload): void
@@ -327,9 +338,9 @@ class ResourceManager
         $fileName = Link::getFilePath($upload, "upload");
 
         if (!file_exists($fileName)) {
-            $mime_type = $finfo->file("../public/assets/img/default_image.png");
+            $mime_type = $finfo->file(ROOT . "public/assets/img/default_image.png");
             header("Content-type:$mime_type");
-            echo file_get_contents("../public/assets/img/default_image.png");
+            echo file_get_contents(ROOT . "public/assets/img/default_image.png");
             return;
         }
 
@@ -360,9 +371,7 @@ class ResourceManager
         $mime_type = $file_info->buffer($fileContents);
 
         header("Content-type:$mime_type");
-        $file = file_get_contents(Link::getFilePath($backup, "backup"));
-
-        echo $file;
+        echo file_get_contents(Link::getFilePath($backup, "backup"));
     }
 
     private static function get_pdf(string $pdf): void
@@ -375,16 +384,32 @@ class ResourceManager
             return;
         }
 
-        $file = file_get_contents($fileName);
-
-        echo $file;
+        echo file_get_contents($fileName);
     }
 
-    private static function get_image(string $file): void
+    /**
+     * checks if the file exists, defaults either to the default favicon or
+     * if the requested image is not a favicon, to the default fallback image
+     * @return void
+     */
+    private static function get_image(string $fileName): void
     {
-        $filePath = "../public/assets/img" . $file;
-        header("Content-type: " .  mime_content_type($filePath));
+        $filePath = ROOT . "public/assets/img" . $fileName;
+        if (file_exists($filePath)) {
+            header("Content-type: " .  mime_content_type($filePath));
+        } else if ($fileName === "/favicon.png") {
+            $filePath = ROOT . "public/assets/img/default_favicon.png";
+            header("Content-type: " .  mime_content_type($filePath));
+        } else {
+            $filePath = ROOT . "public/assets/img/default_image.png";
+            header("Content-type: " .  mime_content_type($filePath));
+        }
+
         $file = file_get_contents($filePath);
+        if ($file === false) {
+            http_response_code(404);
+            exit();
+        }
 
         echo $file;
     }

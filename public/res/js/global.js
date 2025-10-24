@@ -1,5 +1,6 @@
 //@ts-nocheck
 import "../css/input.css";
+import "./classes/loadtime.ts";
 
 if (import.meta.env.VITE_DEBUG_CSS === 'true') {
 	import('../css/debug.css');

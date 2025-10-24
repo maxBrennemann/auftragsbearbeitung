@@ -77,9 +77,7 @@ class SearchController
         }
 
         $searchController->searchData();
-        $results = $searchController->getResults();
-
-        return $results;
+        return $searchController->getResults();
     }
 
     public static function ajaxSearch(): void

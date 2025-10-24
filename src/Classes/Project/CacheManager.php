@@ -79,7 +79,7 @@ class CacheManager
             global $start;
             $duration = microtime(true) - $start;
 
-            $content = str_replace('{{LOAD_TIME}}', "<script>console.log('Page loaded in {$duration} seconds');</script>", $content);
+            $content = str_replace('{{LOAD_TIME}}', "<data value='$duration' id='loadtime'></data>", $content);
 
             echo $content;
             exit;

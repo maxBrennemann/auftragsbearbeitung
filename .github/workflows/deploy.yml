@@ -3,7 +3,7 @@ name: Auftragsbearbeitung Deploy
 on:
   push:
     branches:
-      - master
+      - main
       - development
 
 jobs:
@@ -42,6 +42,19 @@ jobs:
           tags: |
             ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:latest
             ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:${{ github.sha }}
+
+      - name: Build And Push Web Base Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: .config/nginx/Dockerfile.prod
+          push: true
+          builder: ${{ steps.buildx.outputs.name }}
+          cache-from: type=registry,ref=ghcr.io/maxbrennemann/auftragsbearbeitung/web-base:cache
+          cache-to: type=registry,ref=ghcr.io/maxbrennemann/auftragsbearbeitung/web-base:cache,mode=max
+          tags: |
+            ghcr.io/maxbrennemann/auftragsbearbeitung/web-base:latest
+            ghcr.io/maxbrennemann/auftragsbearbeitung/web-base:${{ github.sha }}
 
   deploy:
     environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}

@@ -16,7 +16,7 @@ $stickerChangelog = null;
 $stickerImage = null;
 $textModification = null;
 
-if ($id != null) {
+if ($id != null && $id != 0) {
     $stickerImage = new StickerImage($id);
     $stickerCollection = new StickerCollection($id);
     $stickerChangelog = new StickerChangelog($id);
@@ -24,10 +24,7 @@ if ($id != null) {
 }
 
 if ($id == 0): ?>
-    <a href="<?= Link::getPageLink("sticker-overview") ?>">Zur Motivübersicht</a>
-    <script>
-        window.location.href = "<?= Link::getPageLink("sticker-overview") ?>";
-    </script>
+    <a href="<?= Link::getPageLink("sticker-overview") ?>" class="link-primary">Zur Motivübersicht</a>
 <?php else: ?>
     <div class="w-full grid gap-2 grid-cols-6">
         <div class="defCont col-span-6">
@@ -529,14 +526,7 @@ if ($id == 0): ?>
     </div>
 <?php endif; ?>
 <style>
-    .breiten {
-    display: block;
-    width: 120px;
-}
 
-.breiten span {
-    float: right;
-}
 
 #delete-menu {
     position: fixed;

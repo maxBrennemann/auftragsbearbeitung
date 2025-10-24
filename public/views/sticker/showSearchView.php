@@ -6,42 +6,18 @@ use Src\Classes\Project\Icon;
 
 <div class="searchViewGrid">
     <div>
-        <div class="searchBarContainer">
+        <div class="relative">
             <input type="search" id="searchShopQuery" placeholder="Aufkleber suchen">
-            <span id="searchShopBtn" class="searchIcon"><?=Icon::getDefault("iconSearch")?></span>
+            <span id="searchShopBtn" class="absolute right-2"><?=Icon::getDefault("iconSearch")?></span>
         </div>
-        <div id="showSearchResults"></div>
+        <div id="showSearchResults" class="max-h-96 overflow-y-auto"></div>
     </div>
     <div>
         <?php foreach ($products as $product): ?>
-        <label class="dp-block">
+        <label class="block">
             <input type="checkbox" checked data-article="<?=$product["id_product_reference"]?>">
             <span>Artikel <?=$product["id_product_reference"]?>: <?=$product["name"]?></span>
         </label>
         <?php endforeach; ?>
     </div>
 </div>
-
-<style>
-    .searchBarContainer {
-        position: relative;
-    }
-
-    .searchIcon {
-        position: absolute;
-        right: 10px;
-    }
-
-    #showSearchResults {
-        max-height: 400px;
-        overflow-y: auto;
-    }
-
-    #showSearchResults label {
-        margin: 5px;
-    }
-
-    .dp-block {
-        display: block;
-    }
-</style>

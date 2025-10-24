@@ -11,13 +11,17 @@ COPY console ./console
 RUN composer install \
     --no-dev \
     --prefer-dist \
-    #--no-scripts \
     --no-progress \
     --no-suggest \
     --optimize-autoloader \
     --classmap-authoritative \
     && rm -rf /root/.composer/cache \
-    && rm -rf vendor/*/{tests,Tests,doc,docs,example,examples}
+    && rm -rf vendor/*/tests \
+    && rm -rf vendor/*/Tests \
+    && rm -rf vendor/*/doc \
+    && rm -rf vendor/*/docs \
+    && rm -rf vendor/*/example \
+    && rm -rf vendor/*/examples
 
 RUN ./console autoupgrade --skip-migration
 
@@ -48,9 +52,9 @@ RUN apk add --no-cache dcron libpng-dev libzip-dev zlib-dev \
     
 WORKDIR /var/www/html
 
-# PHP config
-COPY .config/php-config.ini /usr/local/etc/php/conf.d/custom.ini
-COPY .config/php.conf /usr/local/etc/php-fpm.d/custom-php.conf
+# PHP config - appendices are there for load order
+COPY .config/php/php.ini /usr/local/etc/php/conf.d/99-custom.ini
+COPY .config/php/fpm-pool.conf /usr/local/etc/php-fpm.d/zz-custom.conf
 
 # Copy assets and dependencies into final image
 COPY src ./src
@@ -60,15 +64,19 @@ COPY --from=frontend-builder /app/public/res/assets ./public/res/assets
 COPY database/Migrations ./database/Migrations
 COPY console ./console
 
-#RUN ./console autoupgrade --force-migration
-
 # Create cron log
 RUN touch /var/log/cron.log
 
-RUN rm -rf /var/cache/apk/* /tmp/* \
-    && rm -rf /public/res/js/* \
-    && rm -rf /public/res/css/*
+RUN mkdir -p /var/www/html/storage/cache \
+    && mkdir -p /var/www/html/storage/generated \
+    && mkdir -p /var/www/html/storage/logs \
+    && mkdir -p /var/www/html/storage/upload
 
-USER www-data
+RUN chown -R www-data:www-data /var/www/html/storage \
+    && chmod -R 775 /var/www/html/storage
 
+COPY .config/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["php-fpm"]

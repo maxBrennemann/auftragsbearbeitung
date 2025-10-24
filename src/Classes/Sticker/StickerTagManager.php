@@ -271,7 +271,7 @@ class StickerTagManager extends PrestashopConnection
      */
     public static function getSynonyms(string $query): array
     {
-        $cacheDir = "storage/cache/modules/sticker/tags";
+        $cacheDir = ROOT . "storage/cache/modules/sticker/tags";
         $sanitizedQuery = preg_replace('/[^a-zA-Z0-9_-]/', '_', $query);
         $cacheFile = "$cacheDir/$sanitizedQuery.json";
 

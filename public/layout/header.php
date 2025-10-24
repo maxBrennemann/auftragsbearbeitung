@@ -65,9 +65,9 @@ if ($pageName == "") {
 
 		$jsFilePath = "";
 		if (file_exists($jsPath)) {
-			$jsFilePath = ResourceManager::getFileNameWithHash("$jsPage.js");
+			$jsFilePath = ResourceManager::getFileNameWithHash("pages/$jsPage.js");
 		} else if (file_exists($tsPath)) {
-			$jsFilePath = ResourceManager::getFileNameWithHash("$jsPage.ts");
+			$jsFilePath = ResourceManager::getFileNameWithHash("pages/$jsPage.ts");
 		}
 
 		if ($jsFilePath != "") : ?>

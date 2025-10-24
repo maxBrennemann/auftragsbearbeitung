@@ -1,7 +1,7 @@
 services:
-  nginx:
-    image: nginx:stable-alpine
-    container_name: nginx
+  web:
+    image: ghcr.io/maxbrennemann/auftragsbearbeitung/web-base:latest
+    container_name: auftragsbearbeitung-web
     restart: always
     ports:
       - "80:80"
@@ -9,26 +9,23 @@ services:
     environment:
       DOMAIN: ${DOMAIN}
     volumes:
-      - .config/nginx/default.prod.conf:/etc/nginx/templates/default.conf.template
-      - .config/nginx/autoreload.sh:/docker-entrypoint.d/autoreload-nginx.sh
-      - ./data/certbot/conf:/etc/letsencrypt:ro
-      - ./data/certbot/www:/var/www/certbot:ro
+      - ./certs/etc/letsencrypt:/etc/letsencrypt:ro
+      - ./certs/data/certbot/www:/var/www/certbot:ro
+    depends_on:
+      - certbot
     networks:
       - internal_network
 
   certbot:
-    image: certbot/certbot:latest
-    depends_on:
-      - nginx
+    image: certbot/certbot
     container_name: certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    command: certonly --webroot -w /var/www/certbot --force-renewal --email {LETSENCRYPT_EMAIL} -d {DOMAIN} --agree-tos
     volumes:
-      - ./data/certbot/conf:/etc/letsencrypt:rw
-      - ./data/certbot/www:/var/www/certbot:rw
-    networks:
-      - internal_network
-
+      - ./certs/etc/letsencrypt:/etc/letsencrypt
+      - ./certs/data/certbot/www/:/var/www/certbot
+    entrypoint: ""
+    command: >
+      sh -c "trap exit TERM; while :; do sleep 12h & wait $${!}; certbot renew --webroot -w /var/www/certbot; done"
+  
   php:
     image: ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:latest
     container_name: auftragsbearbeitung-php
@@ -38,8 +35,15 @@ services:
       VIRTUAL_HOST: ${DOMAIN}
       LETSENCRYPT_HOST: ${DOMAIN}
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+      DB_HOST: database
+      REWRITE_BASE: https://${DOMAIN}/
+      WEB_URL: https://${DOMAIN}/
+      SUB_URL: ""
     volumes:
-      - ./upload/:/var/www/html/storage
+      - storage_data:/var/www/html/storage
+      - ./.env:/var/www/html/.env
+    networks:
+      - internal_network
 
   database:
     image: mariadb:12
@@ -51,6 +55,8 @@ services:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
+    networks:
+      - internal_network
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -62,9 +68,12 @@ services:
       PMA_HOST: database
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       UPLOAD_LIMIT: 300M
+    networks:
+      - internal_network
 
 volumes:
   db_data:
+  storage_data:
 
 networks:
   internal_network:
