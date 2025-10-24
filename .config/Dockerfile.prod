@@ -52,9 +52,9 @@ RUN apk add --no-cache dcron libpng-dev libzip-dev zlib-dev \
     
 WORKDIR /var/www/html
 
-# PHP config
-COPY .config/php-config.ini /usr/local/etc/php/conf.d/custom.ini
-COPY .config/php.conf /usr/local/etc/php-fpm.d/custom-php.conf
+# PHP config - appendices are there for load order
+COPY .config/php/php.ini /usr/local/etc/php/conf.d/99-custom.ini
+COPY .config/php/fpm-pool.conf /usr/local/etc/php-fpm.d/zz-custom.conf
 
 # Copy assets and dependencies into final image
 COPY src ./src
@@ -69,23 +69,9 @@ COPY console ./console
 # Create cron log
 RUN touch /var/log/cron.log
 
-# remove unused css and js
-#RUN rm -rf /var/cache/apk/* /tmp/* \
-    #&& rm -rf ./public/res/js/* \
-    #&& rm -rf ./public/res/css/*
-
-# readd fonts
-#COPY public/res/css/fonts ./public/res/css/fonts
-
 RUN mkdir -p /var/www/html/storage/cache \
     && mkdir -p /var/www/html/storage/generated \
     && mkdir -p /var/www/html/storage/logs \
     && mkdir -p /var/www/html/storage/upload
-
-RUN echo "memory_limit=512M" >> /usr/local/etc/php/conf.d/custom.ini \
- && echo "max_execution_time=60" >> /usr/local/etc/php/conf.d/custom.ini \
- && echo "display_errors=Off" >> /usr/local/etc/php/conf.d/custom.ini \
- && echo "log_errors=On" >> /usr/local/etc/php/conf.d/custom.ini \
- && echo "error_log=/var/www/html/storage/logs/php-error.log" >> /usr/local/etc/php/conf.d/custom.ini
 
 CMD ["php-fpm"]

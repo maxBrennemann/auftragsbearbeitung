@@ -15,9 +15,6 @@ FROM php:8.4.13-fpm
 ARG UID
 ARG GID
 
-RUN echo "upload_max_filesize=100M" > /usr/local/etc/php/conf.d/uploads.ini \
- && echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/uploads.ini
-
 # Install some base extensions
 RUN apt-get update -y && apt-get install -y libpng-dev
 RUN apt-get update && apt-get install -y \
