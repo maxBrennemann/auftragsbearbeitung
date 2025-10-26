@@ -2,12 +2,13 @@ services:
   web:
     image: ghcr.io/maxbrennemann/auftragsbearbeitung/web-base:latest
     restart: always
-    ports:
-      - "80:80"
-      - "443:443"
+    # TODO: look for better implementation of ports/ expose
+    expose:
+      - "80"
+      - "443"
     environment:
       DOMAIN: ${DOMAIN}
-    # TODO: look for better implementation
+    # TODO: look for better implementation instead of root directory
     volumes:
       - /srv/certs/etc/letsencrypt:/etc/letsencrypt:ro
       - /srv/certs/data/certbot/www:/var/www/certbot:ro
