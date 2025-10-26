@@ -1,7 +1,6 @@
 services:
   web:
     image: ghcr.io/maxbrennemann/auftragsbearbeitung/web-base:latest
-    container_name: auftragsbearbeitung-web
     restart: always
     ports:
       - "80:80"
@@ -20,7 +19,6 @@ services:
 
   certbot:
     image: certbot/certbot
-    container_name: certbot
     volumes:
       - /srv/certs/etc/letsencrypt:/etc/letsencrypt
       - /srv/certs/data/certbot/www/:/var/www/certbot
@@ -30,7 +28,6 @@ services:
   
   php:
     image: ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:latest
-    container_name: auftragsbearbeitung-php
     expose:
       - "9000"
     environment:
@@ -49,7 +46,6 @@ services:
 
   database:
     image: mariadb:12
-    container_name: database
     environment:
       MARIADB_DATABASE: ${DB_DATABASE}
       MARIADB_USER: ${DB_USERNAME}
@@ -62,7 +58,6 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin
     environment:
       VIRTUAL_HOST: pma.${DOMAIN}
       LETSENCRYPT_HOST: pma.${DOMAIN}
