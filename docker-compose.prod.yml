@@ -15,8 +15,10 @@ services:
     depends_on:
       - certbot
     networks:
-      - internal_network
-      - web
+      internal_network:
+      web:
+        aliases:
+          - ${DEPLOY_ENVIRONMENT}-web
 
   certbot:
     image: certbot/certbot
