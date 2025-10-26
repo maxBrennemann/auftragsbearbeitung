@@ -71,6 +71,7 @@ jobs:
         run: |
           cat > .env <<EOL
           DOMAIN=${{ secrets.DOMAIN }}
+          DEPLOY_ENVIRONMENT=${{ env.BRANCH_NAME }}
           LETSENCRYPT_EMAIL=${{ secrets.LETSENCRYPT_EMAIL }}
 
           DB_DATABASE=${{ secrets.DB_DATABASE }}
