@@ -62,7 +62,7 @@ class Test
     public static function sendTestMail(): void
     {
         $invoiceData = [
-            'email' => "maxgoogelt@gmail.com",
+            'email' => "",
             'invoiceNumber' => 'TEST-001',
         ];
 
