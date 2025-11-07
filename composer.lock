@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "de179bf9453479360fa1a933283ae51e",
+    "content-hash": "1af786cbb7b6191bc603422c15e8fbc8",
     "packages": [
         {
             "name": "brick/math",
@@ -201,16 +201,16 @@
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.418.0",
+            "version": "v0.419.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "87ad3c880a87f57eb200da0f021527d29128d7e5"
+                "reference": "14c42f3ebf1cf7fbd214a7a19f2318dd5b3d22b2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/87ad3c880a87f57eb200da0f021527d29128d7e5",
-                "reference": "87ad3c880a87f57eb200da0f021527d29128d7e5",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/14c42f3ebf1cf7fbd214a7a19f2318dd5b3d22b2",
+                "reference": "14c42f3ebf1cf7fbd214a7a19f2318dd5b3d22b2",
                 "shasum": ""
             },
             "require": {
@@ -239,9 +239,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
-                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.418.0"
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.419.0"
             },
-            "time": "2025-10-27T00:58:22+00:00"
+            "time": "2025-11-03T01:08:24+00:00"
         },
         {
             "name": "google/auth",
@@ -896,6 +896,88 @@
             "time": "2020-10-15T08:29:30+00:00"
         },
         {
+            "name": "phpmailer/phpmailer",
+            "version": "v7.0.0.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PHPMailer/PHPMailer.git",
+                "reference": "c7111310c6116ba508a6a170a89eaaed2129bd42"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/c7111310c6116ba508a6a170a89eaaed2129bd42",
+                "reference": "c7111310c6116ba508a6a170a89eaaed2129bd42",
+                "shasum": ""
+            },
+            "require": {
+                "ext-ctype": "*",
+                "ext-filter": "*",
+                "ext-hash": "*",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+                "doctrine/annotations": "^1.2.6 || ^1.13.3",
+                "php-parallel-lint/php-console-highlighter": "^1.0.0",
+                "php-parallel-lint/php-parallel-lint": "^1.3.2",
+                "phpcompatibility/php-compatibility": "^9.3.5",
+                "roave/security-advisories": "dev-latest",
+                "squizlabs/php_codesniffer": "^3.7.2",
+                "yoast/phpunit-polyfills": "^1.0.4"
+            },
+            "suggest": {
+                "decomplexity/SendOauth2": "Adapter for using XOAUTH2 authentication",
+                "ext-imap": "Needed to support advanced email address parsing according to RFC822",
+                "ext-mbstring": "Needed to send email in multibyte encoding charset or decode encoded addresses",
+                "ext-openssl": "Needed for secure SMTP sending and DKIM signing",
+                "greew/oauth2-azure-provider": "Needed for Microsoft Azure XOAUTH2 authentication",
+                "hayageek/oauth2-yahoo": "Needed for Yahoo XOAUTH2 authentication",
+                "league/oauth2-google": "Needed for Google XOAUTH2 authentication",
+                "psr/log": "For optional PSR-3 debug logging",
+                "symfony/polyfill-mbstring": "To support UTF-8 if the Mbstring PHP extension is not enabled (^1.2)",
+                "thenetworg/oauth2-azure": "Needed for Microsoft XOAUTH2 authentication"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PHPMailer\\PHPMailer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-2.1-only"
+            ],
+            "authors": [
+                {
+                    "name": "Marcus Bointon",
+                    "email": "phpmailer@synchromedia.co.uk"
+                },
+                {
+                    "name": "Jim Jagielski",
+                    "email": "jimjag@gmail.com"
+                },
+                {
+                    "name": "Andy Prevost",
+                    "email": "codeworxtech@users.sourceforge.net"
+                },
+                {
+                    "name": "Brent R. Matzelle"
+                }
+            ],
+            "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
+            "support": {
+                "issues": "https://github.com/PHPMailer/PHPMailer/issues",
+                "source": "https://github.com/PHPMailer/PHPMailer/tree/v7.0.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/Synchro",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-10-15T16:40:02+00:00"
+        },
+        {
             "name": "phpseclib/phpseclib",
             "version": "3.0.x-dev",
             "source": {
@@ -1010,8 +1092,8 @@
             "version": "2.1.x-dev",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/17fbbd2c44b15e9e653e7a3493bbcba4c0eb15c7",
-                "reference": "17fbbd2c44b15e9e653e7a3493bbcba4c0eb15c7",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/b4776828e42fbbeb24efca90541e039becf09427",
+                "reference": "b4776828e42fbbeb24efca90541e039becf09427",
                 "shasum": ""
             },
             "require": {
@@ -1057,7 +1139,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-11-02T12:12:43+00:00"
+            "time": "2025-11-06T16:32:28+00:00"
         },
         {
             "name": "prestashop/prestashop-webservice-lib",
@@ -5631,12 +5713,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "633c6fdfb2eac90041c2de30ad1ccff95a671f66"
+                "reference": "581d9d4dbd0159d3e960b4786edd0640820d0d09"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/633c6fdfb2eac90041c2de30ad1ccff95a671f66",
-                "reference": "633c6fdfb2eac90041c2de30ad1ccff95a671f66",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/581d9d4dbd0159d3e960b4786edd0640820d0d09",
+                "reference": "581d9d4dbd0159d3e960b4786edd0640820d0d09",
                 "shasum": ""
             },
             "require": {
@@ -5693,7 +5775,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-08-12T20:20:59+00:00"
+            "time": "2025-11-05T14:29:59+00:00"
         },
         {
             "name": "symfony/finder",
@@ -5701,12 +5783,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "38665c9607ce1fd17beaab3ea5d68e87ac5ed385"
+                "reference": "340b9ed7320570f319028a2cbec46d40535e94bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/38665c9607ce1fd17beaab3ea5d68e87ac5ed385",
-                "reference": "38665c9607ce1fd17beaab3ea5d68e87ac5ed385",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/340b9ed7320570f319028a2cbec46d40535e94bd",
+                "reference": "340b9ed7320570f319028a2cbec46d40535e94bd",
                 "shasum": ""
             },
             "require": {
@@ -5761,7 +5843,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-10-15T18:49:39+00:00"
+            "time": "2025-11-05T05:42:40+00:00"
         },
         {
             "name": "symfony/options-resolver",
