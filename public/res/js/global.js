@@ -6,6 +6,10 @@ if (import.meta.env.VITE_DEBUG_CSS === 'true') {
 	import('../css/debug.css');
 }
 
+//console.log("tst");
+
+const pageModules = import.meta.glob("./pages/*.{js,ts}");
+
 if (import.meta.env.DEV) {
 	const pageScript = document.body.dataset.page;
 	if (pageScript) {
@@ -14,10 +18,7 @@ if (import.meta.env.DEV) {
 		} else {
 			window.__PAGE_SCRIPT_LOADED__ = pageScript;
 			import(/* @vite-ignore */ `./pages/${pageScript}`)
-				.then((mod) => {
-					if (typeof mod.default === "function") {
-						mod.default();
-					}
+				.then(() => {
 					console.log(`[DEV] Loaded page script: ${pageScript}`);
 				})
 				.catch(() => {
@@ -122,20 +123,26 @@ function initSearchListener() {
 }
 
 export const initImagePreviewListener = () => {
-	const images = document.querySelectorAll("img");
+	const images = document.querySelectorAll("img, .img-prev");
+
 	images.forEach(image => {
 		if (imagePreviewListeners.has(image)) {
 			return;
 		}
 
 		image.classList.add("cursor-pointer");
-		image.addEventListener("click", () => {
+		image.addEventListener("click", (e) => {
+			if (image !== e.target) return;
+
 			const imageCopy = document.createElement("img");
-			imageCopy.src = image.src;
-			imageCopy.title = image.title;
-			imageCopy.width = image.naturalWidth < 500 ? image.naturalWidth : 500;
+			const innerImg = image.nodeName === "IMG" ? image : image.querySelector("img");
+
+			imageCopy.src = innerImg.src;
+			imageCopy.title = innerImg.title;
+			imageCopy.width = innerImg.naturalWidth < 500 ? innerImg.naturalWidth : 500;
 			createPopup(imageCopy);
 		});
+
 		imagePreviewListeners.add(image);
 	});
 }

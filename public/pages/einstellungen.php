@@ -90,8 +90,8 @@ $companyLogo = Src\Classes\Project\ClientSettings::getLogo();
                 "accept" => "image/*",
             ]); ?>
             <div class="bg-white p-3 my-3 rounded-lg<?= $companyLogo ? "" : " hidden" ?>" id="companyLogo">
-                <div class="bg-gray-100 p-2 rounded-md">
-                    <div class="flex justify-center items-center">
+                <div class="img-prev bg-gray-100 p-2 rounded-md">
+                    <div class="img-prev flex justify-center items-center">
                         <img src="<?= Link::getResourcesShortLink($companyLogo, "upload") ?>" width="50px" title="Firmenlogo">
                     </div>
                 </div>
