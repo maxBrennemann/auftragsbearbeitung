@@ -25,64 +25,70 @@ $companyLogo = Src\Classes\Project\ClientSettings::getLogo();
 
 <section class="defCont" id="invoiceSettings">
     <h2 class="font-bold">Standardeinstellungen festlegen</h2>
-    <div>
-        <div class="flex items-center mt-2">
-            <span class="font-semibold w-60">Stundenlohn</span>
-            <input class="input-primary" value="<?= Settings::get("defaultWage") ?>" data-write="true" data-fun="changeSetting" data-setting="defaultWage">
+    <div class="grid grid-cols-2">
+        <div class="mt-2">
+            <div class="flex items-center mt-2">
+                <span class="font-semibold w-60">Firmenname</span>
+                <input class="input-primary w-60" value="<?= Settings::get("companyName") ?>" data-write="true" data-fun="changeSetting" data-setting="companyName">
+            </div>
+            <div class="flex items-center mt-2">
+                <span class="font-semibold w-60">Adresse</span>
+                <input class="input-primary w-60" value="<?= Settings::get("companyAddress") ?>" data-write="true" data-fun="changeSetting" data-setting="companyAddress">
+            </div>
+            <div class="flex items-center mt-2">
+                <span class="font-semibold w-60">PLZ</span>
+                <input class="input-primary w-60" value="<?= Settings::get("companyZip") ?>" data-write="true" data-fun="changeSetting" data-setting="companyZip">
+            </div>
+            <div class="flex items-center mt-2">
+                <span class="font-semibold w-60">Ort</span>
+                <input class="input-primary w-60" value="<?= Settings::get("companyCity") ?>" data-write="true" data-fun="changeSetting" data-setting="companyCity">
+            </div>
+            <div class="flex items-center mt-2">
+                <span class="font-semibold w-60">Land</span>
+                <input class="input-primary w-60" value="<?= Settings::get("companyCountry") ?>" data-write="true" data-fun="changeSetting" data-setting="companyCountry">
+            </div>
+            <div class="flex items-center mt-2">
+                <span class="font-semibold w-60">Telefonnummer</span>
+                <input class="input-primary w-60" value="<?= Settings::get("companyPhone") ?>" data-write="true" data-fun="changeSetting" data-setting="companyPhone">
+            </div>
+            <div class="flex items-center mt-2">
+                <span class="font-semibold w-60">E-Mail</span>
+                <input class="input-primary w-60" value="<?= Settings::get("companyEmail") ?>" data-write="true" data-fun="changeSetting" data-setting="companyEmail">
+            </div>
+            <div class="flex items-center mt-2">
+                <span class="font-semibold w-60">Website</span>
+                <input class="input-primary w-60" value="<?= Settings::get("companyWebsite") ?>" data-write="true" data-fun="changeSetting" data-setting="companyWebsite">
+            </div>
+            <div class="flex items-center mt-2">
+                <span class="font-semibold w-60">Rechnungsadresse</span>
+                <input class="input-primary w-60" value="<?= Settings::get("companyImprint") ?>" data-write="true" data-fun="changeSetting" data-setting="companyImprint">
+            </div>
         </div>
-        <div class="flex items-center mt-2">
-            <span class="font-semibold w-60">Firmenname</span>
-            <input class="input-primary" value="<?= Settings::get("companyName") ?>" data-write="true" data-fun="changeSetting" data-setting="companyName">
+        <div class="mt-2">
+            <div class="flex items-center mt-2">
+                <span class="font-semibold w-60">Stundenlohn [€]</span>
+                <input class="input-primary w-60" value="<?= Settings::get("defaultWage") ?>" data-write="true" data-fun="changeSetting" data-setting="defaultWage">
+            </div>
+
+            <div class="flex items-center mt-2">
+                <span class="font-semibold w-60">Bank</span>
+                <input class="input-primary w-60" value="<?= Settings::get("companyBank") ?>" data-write="true" data-fun="changeSetting" data-setting="companyBank">
+            </div>
+            <div class="flex items-center mt-2">
+                <span class="font-semibold w-60">IBAN</span>
+                <input class="input-primary w-60" value="<?= Settings::get("companyIban") ?>" data-write="true" data-fun="changeSetting" data-setting="companyIban">
+            </div>
+            <div class="flex items-center mt-2">
+                <span class="font-semibold w-60">BIC</span>
+                <input class="input-primary w-60" value="<?= Settings::get("companyBic") ?>" data-write="true" data-fun="changeSetting" data-setting="companyBic">
+            </div>
+            <div class="flex items-center mt-2">
+                <span class="font-semibold w-60">UstIdNr</span>
+                <input class="input-primary w-60" value="<?= Settings::get("companyUstIdNr") ?>" data-write="true" data-fun="changeSetting" data-setting="companyUstIdNr">
+            </div>
         </div>
-        <div class="flex items-center mt-2">
-            <span class="font-semibold w-60">Adresse</span>
-            <input class="input-primary" value="<?= Settings::get("companyAddress") ?>" data-write="true" data-fun="changeSetting" data-setting="companyAddress">
-        </div>
-        <div class="flex items-center mt-2">
-            <span class="font-semibold w-60">PLZ</span>
-            <input class="input-primary" value="<?= Settings::get("companyZip") ?>" data-write="true" data-fun="changeSetting" data-setting="companyZip">
-        </div>
-        <div class="flex items-center mt-2">
-            <span class="font-semibold w-60">Ort</span>
-            <input class="input-primary" value="<?= Settings::get("companyCity") ?>" data-write="true" data-fun="changeSetting" data-setting="companyCity">
-        </div>
-        <div class="flex items-center mt-2">
-            <span class="font-semibold w-60">Land</span>
-            <input class="input-primary" value="<?= Settings::get("companyCountry") ?>" data-write="true" data-fun="changeSetting" data-setting="companyCountry">
-        </div>
-        <div class="flex items-center mt-2">
-            <span class="font-semibold w-60">Telefonnummer</span>
-            <input class="input-primary" value="<?= Settings::get("companyPhone") ?>" data-write="true" data-fun="changeSetting" data-setting="companyPhone">
-        </div>
-        <div class="flex items-center mt-2">
-            <span class="font-semibold w-60">E-Mail</span>
-            <input class="input-primary" value="<?= Settings::get("companyEmail") ?>" data-write="true" data-fun="changeSetting" data-setting="companyEmail">
-        </div>
-        <div class="flex items-center mt-2">
-            <span class="font-semibold w-60">Website</span>
-            <input class="input-primary" value="<?= Settings::get("companyWebsite") ?>" data-write="true" data-fun="changeSetting" data-setting="companyWebsite">
-        </div>
-        <div class="flex items-center mt-2">
-            <span class="font-semibold w-60">Rechnungsadresse</span>
-            <input class="input-primary" value="<?= Settings::get("companyImprint") ?>" data-write="true" data-fun="changeSetting" data-setting="companyImprint">
-        </div>
-        <div class="flex items-center mt-2">
-            <span class="font-semibold w-60">Bank</span>
-            <input class="input-primary" value="<?= Settings::get("companyBank") ?>" data-write="true" data-fun="changeSetting" data-setting="companyBank">
-        </div>
-        <div class="flex items-center mt-2">
-            <span class="font-semibold w-60">IBAN</span>
-            <input class="input-primary" value="<?= Settings::get("companyIban") ?>" data-write="true" data-fun="changeSetting" data-setting="companyIban">
-        </div>
-        <div class="flex items-center mt-2">
-            <span class="font-semibold w-60">BIC</span>
-            <input class="input-primary" value="<?= Settings::get("companyBic") ?>" data-write="true" data-fun="changeSetting" data-setting="companyBic">
-        </div>
-        <div class="flex items-center mt-2">
-            <span class="font-semibold w-60">UstIdNr</span>
-            <input class="input-primary" value="<?= Settings::get("companyUstIdNr") ?>" data-write="true" data-fun="changeSetting" data-setting="companyUstIdNr">
-        </div>
-        <div class="w-96 mt-2">
+
+        <div class="w-96 mt-4 col-span-2">
             <p class="font-semibold">Firmen-/ Rechnungslogo festlegen</p>
             <?= \Src\Classes\Controller\TemplateController::getTemplate("uploadFile", [
                 "target" => "companyLogo",
@@ -92,7 +98,7 @@ $companyLogo = Src\Classes\Project\ClientSettings::getLogo();
             <div class="bg-white p-3 my-3 rounded-lg<?= $companyLogo ? "" : " hidden" ?>" id="companyLogo">
                 <div class="img-prev bg-gray-100 p-2 rounded-md">
                     <div class="img-prev flex justify-center items-center">
-                        <img src="<?= Link::getResourcesShortLink($companyLogo, "upload") ?>" width="50px" title="Firmenlogo">
+                        <img src="<?= Link::getResourcesShortLink($companyLogo, "upload") ?>" width="50px" title="Firmenlogo" data-image-id="companyLogo">
                     </div>
                 </div>
             </div>

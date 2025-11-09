@@ -34,9 +34,9 @@ import { DeviceDetector } from "js-classes/deviceDetector";
 
 import { initNotificationService } from "./classes/notificationUpdater.js";
 import { timeGlobalListener } from "./classes/timetracking.js";
+import { checkAutoOpenPopup, initImagePreviewListener } from "./classes/imagePreview.ts";
 
 const fnNames = {};
-const imagePreviewListeners = new WeakSet();
 
 document.addEventListener("click", function (event) {
 	if (!event.target.matches('.showLog,.showLog *')) {
@@ -75,6 +75,8 @@ function init() {
 	initImagePreviewListener();
 	initSearch();
 	initNotificationService();
+
+	checkAutoOpenPopup();
 }
 
 const autoSizeTextareas = () => {
@@ -122,31 +124,6 @@ function initSearchListener() {
 	});
 }
 
-export const initImagePreviewListener = () => {
-	const images = document.querySelectorAll("img, .img-prev");
-
-	images.forEach(image => {
-		if (imagePreviewListeners.has(image)) {
-			return;
-		}
-
-		image.classList.add("cursor-pointer");
-		image.addEventListener("click", (e) => {
-			if (image !== e.target) return;
-
-			const imageCopy = document.createElement("img");
-			const innerImg = image.nodeName === "IMG" ? image : image.querySelector("img");
-
-			imageCopy.src = innerImg.src;
-			imageCopy.title = innerImg.title;
-			imageCopy.width = innerImg.naturalWidth < 500 ? innerImg.naturalWidth : 500;
-			createPopup(imageCopy);
-		});
-
-		imagePreviewListeners.add(image);
-	});
-}
-
 function initSearchIcons() {
 	const searchInput = document.querySelector(".searchContainer input");
 	if (searchInput != null) {
@@ -167,16 +144,21 @@ export const createPopup = (content) => {
 	const optionsContainer = document.createElement("div");
 	optionsContainer.classList.add("overlay-container__content__options");
 
+	const closePopup = () => {
+		container.classList.remove("overlay-container--visible");
+		container.addEventListener("transitionend", () => {
+			container.remove();
+			const event = new CustomEvent("closePopup", {
+				bubbles: true,
+			});
+			optionsContainer.dispatchEvent(event);
+		}, { once: true });
+	}
+
 	const button = document.createElement("button");
 	button.classList.add("btn-cancel", "ml-2");
 	button.innerHTML = "Abbrechen";
-	button.addEventListener("click", () => {
-		container.parentNode.removeChild(container);
-		const event = new CustomEvent("closePopup", {
-			bubbles: true,
-		});
-		optionsContainer.dispatchEvent(event);
-	});
+	button.addEventListener("click", closePopup);
 	optionsContainer.appendChild(button);
 
 	content.classList.add("p-3");
@@ -186,14 +168,11 @@ export const createPopup = (content) => {
 	document.body.appendChild(container);
 
 	container.addEventListener("click", e => {
-		const target = e.target;
-		if (target === container) {
-			container.parentNode.removeChild(container);
-			const event = new CustomEvent("closePopup", {
-				bubbles: true,
-			});
-			optionsContainer.dispatchEvent(event);
-		}
+		if (e.target === container) closePopup();
+	});
+
+	requestAnimationFrame(() => {
+		container.classList.add("overlay-container--visible");
 	});
 
 	return optionsContainer;
