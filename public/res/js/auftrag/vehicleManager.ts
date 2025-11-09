@@ -4,7 +4,8 @@ import { addBindings } from "js-classes/bindings.js";
 import { addRow, fetchAndRenderTable } from "../classes/table.js";
 import { tableConfig } from "../classes/tableconfig.js";
 import { initFileUploader } from "../classes/upload.js";
-import { clearInputs, createPopup } from "../global.js";
+import { clearInputs } from "../global.js";
+import { createPopup } from "../classes/helpers";
 
 interface VehicleData {
     customerId: number,

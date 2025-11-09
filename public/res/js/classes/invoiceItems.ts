@@ -2,7 +2,8 @@ import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js";
 import { notification } from "js-classes/notifications.js";
 
-import { getTemplate, setInpupts, clearInputs, createPopup } from "../global.js";
+import { getTemplate, setInpupts, clearInputs } from "../global.js";
+import { createPopup } from "../classes/helpers";
 import { addRow, updateRow, renderTable } from "./table.js";
 import type { FunctionMap, TableHeader, TableOptions } from "../types/types.ts";
 

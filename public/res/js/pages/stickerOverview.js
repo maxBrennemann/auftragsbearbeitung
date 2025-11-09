@@ -6,7 +6,7 @@ import { notification } from "js-classes/notifications.js";
 
 import { renderTable } from "../classes/table.js";
 import { tableConfig } from "../classes/tableconfig.js";
-import { createPopup } from "../global.js";
+import { createPopup } from "../classes/helpers";
 
 const fnNames = {};
 

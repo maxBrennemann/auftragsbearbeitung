@@ -3,7 +3,7 @@ import { Colorpicker } from "colorpicker/colorpicker.js";
 import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js";
 
-import { createPopup } from "../global.js";
+import { createPopup } from "../classes/helpers";
 
 var id: number;
 var cp: Colorpicker;

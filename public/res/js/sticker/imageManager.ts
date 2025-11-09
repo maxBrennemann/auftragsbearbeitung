@@ -5,7 +5,7 @@ import { notification } from "js-classes/notifications.js";
 import { fetchAndRenderTable } from "../classes/table.js";
 import { tableConfig } from "../classes/tableconfig.js";
 import { initFileUploader } from "../classes/upload.js";
-import { createPopup } from "../global.js";
+import { createPopup } from "../classes/helpers";
 import { getStickerId } from "../pages/sticker.js";
 import { initImagePreviewListener } from "../classes/imagePreview";
 

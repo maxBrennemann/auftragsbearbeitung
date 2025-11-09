@@ -1,4 +1,4 @@
-import { createPopup } from "../global.js";
+import { createPopup } from "../classes/helpers";
 
 const imagePreviewListeners = new WeakSet();
 

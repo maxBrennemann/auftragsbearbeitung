@@ -4,7 +4,7 @@ import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js"
 import { notification } from "js-classes/notifications.js";
 
-import { createPopup } from "../global.js";
+import { createPopup } from "../classes/helpers";
 
 const fnNames = {};
 

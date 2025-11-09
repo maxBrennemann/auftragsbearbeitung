@@ -3,7 +3,7 @@
 import { ajax } from "js-classes/ajax.js";
 import { notification } from "js-classes/notifications.js";
 
-import { createPopup } from "../global.js";
+import { createPopup } from "../classes/helpers";
 import { getStickerId } from "../pages/sticker.js";
 
 class ProductConnector {

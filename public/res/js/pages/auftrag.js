@@ -13,7 +13,7 @@ import { ajax } from "js-classes/ajax.js";
 import { getItemsTable, initInvoiceItems } from "../classes/invoiceItems.ts";
 import { notification } from "js-classes/notifications.js";
 import { initFileUploader } from "../classes/upload.js";
-import { createPopup } from "../global.js";
+import { createPopup } from "../classes/helpers";
 
 /* global variables */
 const orderConfig = {

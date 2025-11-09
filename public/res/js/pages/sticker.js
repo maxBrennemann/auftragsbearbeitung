@@ -9,7 +9,7 @@ import "../sticker/imageMove.js";
 import { ajax } from "js-classes/ajax.js";
 import { notificatinReplace, notification, notificationLoader } from "js-classes/notifications.js";
 
-import { createPopup } from "../global.js";
+import { createPopup } from "../classes/helpers";
 import { initImageManager } from "../sticker/imageManager.ts";
 import { initSizeTable } from "../sticker/sizeTable.js";
 import { initTagManager } from "../sticker/tagManager.ts";

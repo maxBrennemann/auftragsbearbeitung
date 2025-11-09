@@ -3,7 +3,7 @@ import { addBindings } from "js-classes/bindings.js"
 import { notification } from "js-classes/notifications.js";
 
 import { DragSortManager } from "../classes/DragSortManager.js";
-import { createPopup } from "../global.js";
+import { createPopup } from "../classes/helpers";
 import { FunctionMap } from "../types/types.js";
 
 const functionNames: FunctionMap = {};
