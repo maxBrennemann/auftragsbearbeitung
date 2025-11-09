@@ -6,8 +6,6 @@ if (import.meta.env.VITE_DEBUG_CSS === 'true') {
 	import('../css/debug.css');
 }
 
-//console.log("tst");
-
 const pageModules = import.meta.glob("./pages/*.{js,ts}");
 
 if (import.meta.env.DEV) {
