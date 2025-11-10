@@ -81,7 +81,7 @@ $wiki = 			Link::getPageLink("wiki");
 			<a class="link-primary ml-auto" href="<?= $funktionen ?>">Mehr</a>
 		</div>
 		<div>
-			<h3 class="font-bold mt-1 mb-2">Offene Aufträge</h3>
+			<h3 class="font-bold mt-1 mb-2">Offene Aufträge <span id="orderCount"></span></h3>
 			<div id="openOrders"></div>
 		</div>
 	</div>

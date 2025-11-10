@@ -328,7 +328,7 @@ async function performGlobalSearch(e) {
 
 	const div = document.createElement("div");
 	div.innerHTML = results.data.html;
-	div.classList.add("h-96", "overflow-y-scroll");
+	div.classList.add("h-96", "overflow-y-scroll", "min-w-96");
 
 	createPopup(div);
 }

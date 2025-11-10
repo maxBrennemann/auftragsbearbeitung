@@ -103,7 +103,7 @@ try {
 					<?php if (Tools::get("show") == "true" && $auftrag->getInvoiceId() != 0) : ?>
 						<button class="btn-primary" onclick="location.href= '<?= Link::getPageLink('rechnung') ?>?target=view&id=<?= $orderId ?>'">Rechnung anzeigen</button>
 					<?php else: ?>
-						<button class="btn-primary" onclick="location.href= '<?= Link::getPageLink('rechnung') ?>?target=create&id=<?= $orderId ?>'">Rechnung generieren</button>
+						<button class="btn-primary" onclick="location.href= '<?= Link::getPageLink('rechnung') ?>?target=create&id=<?= $orderId ?>'">Rechnungsvorschau</button>
 						<?php if ($auftrag->getIsArchiviert() == false) : ?>
 							<button class="btn-primary" data-binding="true" data-fun="archivieren">Auftrag archivieren</button>
 						<?php endif; ?>

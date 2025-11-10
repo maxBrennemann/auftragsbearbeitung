@@ -72,6 +72,8 @@ function init() {
 const initOpenOrdersTable = async () => {
     const response = await ajax.get(`/api/v1/order/open`);
     const data = response.data;
+    const orderCount = data.length;
+    (document.getElementById("orderCount") as HTMLSpanElement).innerHTML = `(${orderCount})`;
 
     const columns = [
         {
