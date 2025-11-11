@@ -142,7 +142,7 @@ foreach ($contactPersons as $contact): ?>
 				</div>
 			</div>
 
-			<div class="defCont col-span-6 md:col-span-4 2xl:col-span-3 schritte">
+			<div class="defCont col-span-6 md:col-span-4 2xl:col-span-3 schritte" id="stepCont">
 				<p class="font-bold">Bearbeitungsschritte und Aufgaben</p>
 				<div class="flex mt-2 items-center">
 					<div>

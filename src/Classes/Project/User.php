@@ -218,7 +218,9 @@ class User
             "hideOptions" => ["all"],
         ];
         $options["styles"]["table"]["className"] = [
-            "table-auto", "overflow-x-scroll", "w-full"
+            "table-auto",
+            "overflow-x-scroll",
+            "w-full"
         ];
 
         return TableGenerator::create($data, $options, $header);
@@ -236,7 +238,9 @@ class User
             "hideOptions" => ["all"],
         ];
         $options["styles"]["table"]["className"] = [
-            "table-auto", "overflow-x-scroll", "w-full"
+            "table-auto",
+            "overflow-x-scroll",
+            "w-full"
         ];
 
         return TableGenerator::create($data, $options, $header);
@@ -310,8 +314,7 @@ class User
         $lastname = Tools::get("lastname");
         $password = Tools::get("password");
 
-        if ($username == null || $email == null || $prename == null || $lastname == null || $password == null)
-        {
+        if ($username == null || $email == null || $prename == null || $lastname == null || $password == null) {
             JSONResponseHandler::sendErrorResponse(400, "All fields are required");
         }
 
@@ -400,6 +403,16 @@ class User
         ]);
 
         if (empty($data)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function validate(int $userId): bool 
+    {
+        $user = new self($userId);
+        if ($user->id === null) {
             return false;
         }
 

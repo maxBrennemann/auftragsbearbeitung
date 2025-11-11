@@ -8,6 +8,9 @@ export const createPopup = (content: HTMLElement) => {
 
     const closePopup = () => {
         container.classList.remove("overlay-container--visible");
+        document.body.classList.remove("overflow-hidden");
+        document.documentElement.classList.remove("overflow-hidden");
+
         container.addEventListener("transitionend", () => {
             container.remove();
             const event = new CustomEvent("closePopup", {
@@ -36,6 +39,9 @@ export const createPopup = (content: HTMLElement) => {
     requestAnimationFrame(() => {
         container.classList.add("overlay-container--visible");
     });
+
+    document.body.classList.add("overflow-hidden");
+    document.documentElement.classList.add("overflow-hidden");
 
     return optionsContainer;
 }

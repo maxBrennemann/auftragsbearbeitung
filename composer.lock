@@ -201,16 +201,16 @@
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.419.0",
+            "version": "v0.420.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "14c42f3ebf1cf7fbd214a7a19f2318dd5b3d22b2"
+                "reference": "2033bb7020cab17beb21697b5183473c4597ac2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/14c42f3ebf1cf7fbd214a7a19f2318dd5b3d22b2",
-                "reference": "14c42f3ebf1cf7fbd214a7a19f2318dd5b3d22b2",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/2033bb7020cab17beb21697b5183473c4597ac2d",
+                "reference": "2033bb7020cab17beb21697b5183473c4597ac2d",
                 "shasum": ""
             },
             "require": {
@@ -239,9 +239,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
-                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.419.0"
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.420.0"
             },
-            "time": "2025-11-03T01:08:24+00:00"
+            "time": "2025-11-10T01:02:19+00:00"
         },
         {
             "name": "google/auth",
@@ -1093,8 +1093,8 @@
             "version": "2.1.x-dev",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/81d40b557936fc4650b3260b394ad6e9a7b5d82c",
-                "reference": "81d40b557936fc4650b3260b394ad6e9a7b5d82c",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/879802370b022f757700ef340a4c77f532c23acb",
+                "reference": "879802370b022f757700ef340a4c77f532c23acb",
                 "shasum": ""
             },
             "require": {
@@ -1140,7 +1140,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-11-09T19:58:21+00:00"
+            "time": "2025-11-11T09:11:07+00:00"
         },
         {
             "name": "prestashop/prestashop-webservice-lib",
@@ -3779,12 +3779,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "833f1378e0f1abbddcc1480dcffa4d54b18a5ca8"
+                "reference": "dcd0eac24483bb3d5f29d53a18120812ab624a18"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/833f1378e0f1abbddcc1480dcffa4d54b18a5ca8",
-                "reference": "833f1378e0f1abbddcc1480dcffa4d54b18a5ca8",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/dcd0eac24483bb3d5f29d53a18120812ab624a18",
+                "reference": "dcd0eac24483bb3d5f29d53a18120812ab624a18",
                 "shasum": ""
             },
             "require": {
@@ -3880,7 +3880,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-11-08T12:31:42+00:00"
+            "time": "2025-11-11T05:54:49+00:00"
         },
         {
             "name": "psr/event-dispatcher",

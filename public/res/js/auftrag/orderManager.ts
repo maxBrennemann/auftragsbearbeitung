@@ -11,6 +11,10 @@ const orderManagerConfig = {
 };
 
 fnNames.click_setOrderFinished = async () => {
+    if (orderManagerConfig.orderId === 0) {
+        return;
+    }
+
     if (confirm('Möchtest Du den Auftrag als "Erledigt" markieren?')) {
         await ajax.put(`/api/v1/order/${orderManagerConfig.orderId}/finish`);
 
