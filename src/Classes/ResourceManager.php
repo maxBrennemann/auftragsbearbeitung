@@ -3,7 +3,6 @@
 namespace Src\Classes;
 
 use Src\Classes\Controller\SessionController;
-use Src\Classes\Project\CacheManager;
 use Src\Classes\Project\Events;
 use Src\Classes\Sticker\Exports\ExportFacebook;
 use Src\Classes\Sticker\Imports\ImportGoogleSearchConsole;
@@ -54,7 +53,6 @@ class ResourceManager
             case "img":
             case "static":
             case "favicon.ico":
-            case "events":
                 return "resource";
             case "api":
                 return "api";

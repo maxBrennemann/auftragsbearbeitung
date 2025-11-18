@@ -2,10 +2,10 @@
 
 namespace Src\Classes\Project;
 
-use Src\Classes\Mailer;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
+use Src\Classes\Mail\Mailer;
 
 class User
 {
@@ -341,10 +341,8 @@ class User
         $mailLink = $_ENV["REWRITE_BASE"] . "/verify?id?" . $mailKey;
         $mailText = '<a href="' . $mailLink . '">Hier</a> dem Link folgen!';
 
-        try {
-            Mailer::sendMail($email, "Bestätigen Sie Ihre E-Mail Adresse", $mailText, "no-reply@organisierung.b-schriftung.de");
-        } catch (\Exception $e) {
-        }
+        $mailer = new Mailer();
+        $mailer->send($email, "Bitte bestätigen Sie Ihre E-Mail Adresse", $mailText);
     }
 
     private static function mailKeyExists(string $mailKey): bool
@@ -360,20 +358,22 @@ class User
         return true;
     }
 
-    /**
-     * checks if the password is safe enough
-     */
     private static function isPasswordSafe(string $password): bool
     {
-        if (strlen($password) < 8) {
-            return false;
+        $length = strlen($password);
+
+        $hasLower = preg_match('/[a-z]/', $password);
+        $hasUpper = preg_match('/[A-Z]/', $password);
+        $hasDigit = preg_match('/\d/', $password);
+        $hasSpecial = preg_match('/[\W_]/', $password);
+
+        $diversity = $hasLower + $hasUpper + $hasDigit + $hasSpecial;
+
+        if ($length >= 12) {
+            return true;
         }
 
-        if (!preg_match('/[A-Za-z]/', $password) || !preg_match('/[0-9]/', $password)) {
-            return false;
-        }
-
-        return true;
+        return $length >= 8 && $diversity >= 3;
     }
 
     public static function getCurrentUserId(): int
@@ -409,7 +409,7 @@ class User
         return true;
     }
 
-    public static function validate(int $userId): bool 
+    public static function validate(int $userId): bool
     {
         $user = new self($userId);
         if ($user->id === null) {

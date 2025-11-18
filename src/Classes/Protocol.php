@@ -10,7 +10,10 @@ class Protocol
     private static int $maxSize = 10 * 1024 * 1024;
     private static bool $logToConsole = false;
 
-    public static function configure(string $filePath = ROOT . "storage/logs/protocol.txt", bool $logToConsole = false): void
+    public static function configure(
+        string $filePath = ROOT . "storage/logs/protocol.txt", 
+        bool $logToConsole = false
+    ): void
     {
         self::$filePath = $filePath;
         self::$logToConsole = $logToConsole;

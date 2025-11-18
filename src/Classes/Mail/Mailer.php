@@ -30,7 +30,7 @@ class Mailer
         $this->mail->setFrom($_ENV["MAIL_FROM"], $_ENV["MAIL_FROM_NAME"]);
     }
 
-    public function send(string $to, string $subject, string $htmlbody, ?string $plainBody): bool
+    public function send(string $to, string $subject, string $htmlbody, ?string $plainBody = null): bool
     {
         try {
             $this->mail->clearAddresses();
