@@ -31,9 +31,11 @@ class InvoiceHelper
 				auftrag.Auftragsbezeichnung AS Bezeichnung, 
 				auftrag.Auftragsbeschreibung AS Beschreibung, 
 				auftrag.Kundennummer,
-				DATE_FORMAT(auftrag.Datum, '%d.%m.%Y') as Datum,
-				kunde.Firmenname,
-				CONCAT(FORMAT(invoice.amount, 2, 'de_DE'), ' €') AS Summe 
+				DATE_FORMAT(auftrag.Datum, '%d.%m.%Y') AS Datum,
+                DATE_FORMAT(invoice.creation_date, '%d.%m.%Y') AS Rechnungsdatum,
+				IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) AS 'Name',
+				CONCAT(FORMAT(invoice.amount, 2, 'de_DE'), ' €') AS Summe,
+                CONCAT(FORMAT(invoice.amount * 1.19, 2, 'de_DE'), ' €') AS Summe_mwst
 			FROM auftrag, kunde, invoice
 			WHERE auftrag.Kundennummer = kunde.Kundennummer 
 				AND Rechnungsnummer != 0

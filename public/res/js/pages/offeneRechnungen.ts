@@ -37,15 +37,27 @@ const createInvoiceTable = async () => {
         },
         {
             "key": "Datum",
-            "label": "Datum"
+            "label": "Auftragsdatum"
         },
         {
-            "key": "Firmenname",
-            "label": "Firmenname"
+            "key": "Rechnungsdatum",
+            "label": "Rechnungsdatum"
+        },
+        /*{
+            "key": "Faelligkeitsdatum",
+            "label": "Fälligkeitsdatum"
+        },*/
+        {
+            "key": "Name",
+            "label": "Name"
         },
         {
             "key": "Summe",
-            "label": "Summe"
+            "label": "Summe (netto)"
+        },
+        {
+            "key": "Summe_mwst",
+            "label": "Summe (brutto)"
         },
     ];
     const columnConfig = {
