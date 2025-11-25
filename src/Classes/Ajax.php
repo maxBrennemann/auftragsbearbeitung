@@ -21,6 +21,7 @@ use Src\Classes\Routes\TimeTrackingRoutes;
 use Src\Classes\Routes\UploadRoutes;
 use Src\Classes\Routes\UserRoutes;
 use Src\Classes\Routes\VariousRoutes;
+use Src\Classes\Routes\HookRoutes;
 use Src\Classes\Sticker\SearchProducts;
 use Src\Classes\Sticker\StickerCategory;
 use Src\Classes\Sticker\StickerCollection;
@@ -50,7 +51,12 @@ class Ajax
         $path = str_replace("api/" . $apiVersion . "/", "", $apiPath);
 
         /* TODO: implement better auth */
-        if (!SessionController::isLoggedIn() && $routeType != "auth") {
+        $publicRoutes = [
+            "auth",
+            "hooks",
+        ];
+
+        if (!SessionController::isLoggedIn() && !in_array($routeType, $publicRoutes)) {
             ResourceManager::outputHeaderJSON();
             JSONResponseHandler::throwError(401, "Unauthorized API access");
         }
@@ -109,6 +115,9 @@ class Ajax
             case "template":
             case "manual":
                 VariousRoutes::handleRequest($path);
+                break;
+            case "hooks":
+                HookRoutes::handleRequest($path);
                 break;
             default:
                 JSONResponseHandler::throwError(404, "Path not found");
