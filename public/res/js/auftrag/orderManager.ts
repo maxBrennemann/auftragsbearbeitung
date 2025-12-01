@@ -173,6 +173,16 @@ fnNames.click_archivieren = () => {
     })
 }
 
+fnNames.click_rearchiveOrder = () => {
+    ajax.put(`/api/v1/order/${orderManagerConfig.orderId}/archive`, {
+        "status": "unarchive",
+    }).then((r: any) => {
+        if (r.data.status == "success") {
+            window.location.reload();
+        }
+    })
+}
+
 export const initOrderManager = (orderId: number) => {
     orderManagerConfig.orderId = orderId;
     addBindings(fnNames);
