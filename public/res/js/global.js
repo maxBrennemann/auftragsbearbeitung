@@ -26,6 +26,46 @@ if (import.meta.env.DEV) {
 	}
 }
 
+if (import.meta.env.DEV) {
+    const originalFetch = window.fetch;
+
+    window.fetch = async function (input, init) {
+        const response = await originalFetch(input, init);
+
+        const clone = response.clone();
+        let json = null;
+
+        try {
+            json = await clone.json();
+        } catch { /* Ignore */ }
+
+        if (json?.message?.xdebug) {
+            showDevError(json.message.xdebug, {
+                url: input,
+                method: init?.method || "GET"
+            });
+        }
+
+        return response;
+    };
+}
+
+function showDevError(xdebugHtml, meta) {
+	const container = document.createElement("div");
+	const headline = document.createElement("p");
+	headline.textContent = `Backend Error (${meta.method}: ${meta.url})`;
+	headline.className = "text-xl mb-4";
+
+	const content = document.createElement("div");
+	content.className = "block h-96 overflow-y-scroll";
+	content.innerHTML = xdebugHtml;
+
+	container.appendChild(headline);
+	container.appendChild(content);
+
+	createPopup(container);
+}
+
 import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js"
 import { DeviceDetector } from "js-classes/deviceDetector";
