@@ -101,7 +101,7 @@ return [
         "file" => "stickerOverview.php",
         "name" => "Motivübersicht",
     ],
-    "zeiterfassung" => [
+    "time-tracking" => [
         "file" => "timeTracking.php",
         "name" => "Zeiterfassung",
     ],

@@ -22,7 +22,7 @@ $funktionen = 		Link::getPageLink("functionalities");
 $payments =			Link::getPageLink("payments");
 $listmaker =		Link::getPageLink("listmaker");
 $changelog = 		Link::getPageLink("changelog");
-$zeiterfassung =	Link::getPageLink("zeiterfassung");
+$timeTracking =	Link::getPageLink("time-tracking");
 $motiveOverview = 	Link::getPageLink("sticker-overview");
 $wiki = 			Link::getPageLink("wiki");
 

@@ -49,13 +49,6 @@ $links = [
         <li><a class="link-primary" href="<?=$links[0]?>">Firmenwiki</a></li>
         <li><a class="link-primary" href="<?=$links[9]?>">Mitarbeiter</a></li>
     </ul>
-    <h2 class="font-bold mt-5">Funktionen der Besucherseite</h2>
-    <ul>
-        <li>Startseite</li>
-        <li>Produkte</li>
-        <li>Warenkorb</li>
-        <li>Bestellvorgang</li>
-    </ul>
 </div>
 
 <div class="manualNavigator">

@@ -3,7 +3,6 @@
 namespace Src\Classes;
 
 use Src\Classes\Controller\SessionController;
-use Src\Classes\Project\Statistics;
 use Src\Classes\Routes\CustomerRoutes;
 use Src\Classes\Routes\InvoiceRoutes;
 use Src\Classes\Routes\LoginRoutes;
@@ -250,9 +249,6 @@ class Ajax
                 echo json_encode([
                     "status" => "success",
                 ]);
-                break;
-            case "diagramme":
-                Statistics::dispatcher();
                 break;
         }
     }

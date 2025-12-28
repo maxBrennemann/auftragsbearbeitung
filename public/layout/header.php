@@ -26,7 +26,7 @@ $einstellungen =	Link::getPageLink("einstellungen");
 $payments =			Link::getPageLink("payments");
 $listmaker =		Link::getPageLink("listmaker");
 $changelog = 		Link::getPageLink("changelog");
-$zeiterfassung =	Link::getPageLink("zeiterfassung");
+$timeTracking =	Link::getPageLink("time-tracking");
 $motiveOverview = 	Link::getPageLink("sticker-overview");
 $wiki = 			Link::getPageLink("wiki");
 
@@ -82,7 +82,7 @@ if ($pageName == "") {
 	<body class="overflow-x-hidden"></body>
 <?php endif; ?>
 	<div class="sidenav" id="sidenav">
-		<ul>
+		<ul class="ml-2">
 			<li class="hover:underline">
 				<a href="<?= $neuerKunde ?>">Neuen Kunden erstellen</a>
 			</li>
@@ -123,7 +123,7 @@ if ($pageName == "") {
 				<a href="<?= $funktionen ?>">Funktionen</a>
 			</li>
 			<li class="hover:underline">
-				<a href="<?= $zeiterfassung ?>">Zeiterfassung</a>
+				<a href="<?= $timeTracking ?>">Zeiterfassung</a>
 			</li>
 			<li class="hover:underline">
 				<a href="<?= $motiveOverview ?>">Motivübersicht</a>
@@ -168,7 +168,7 @@ if ($pageName == "") {
 						</span>
 					</div>
 					<div class="<?= (Settings::get("showTimeGlobal") == "true") ? "inline-flex" : "hidden" ?> items-center text-gray-700" id="timeTrackingContainer">
-						<a href="<?= Link::getPageLink("zeiterfassung") ?>" class="showTimeGlobal inline-block p-1 hover:bg-gray-200 hover:rounded-sm" title="Zeiterfassung">
+						<a href="<?= Link::getPageLink("time-tracking") ?>" class="showTimeGlobal inline-block p-1 hover:bg-gray-200 hover:rounded-sm" title="Zeiterfassung">
 							<span>Zeit: <span id="timeGlobal" class="inline-block p-1 hover:bg-gray-200 hover:rounded-sm">00:00:00</span></span>
 						</a>
 					</div>

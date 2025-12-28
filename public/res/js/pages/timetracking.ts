@@ -1,12 +1,19 @@
-//@ts-nocheck
-
 import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js"
 
 import { addRow, clearRows, renderTable } from "../classes/table.js";
 import { timeGlobalListener } from "../classes/timetracking.js";
 
-const fnNames = {};
+import { FunctionMap } from "../types/types";
+
+const fnNames = {} as FunctionMap;
+const refs = {} as { [key: string]: HTMLElement };
+
+refs.askTask = document.getElementById("askTask") as HTMLElement;
+refs.getTask = document.getElementById("getTask") as HTMLInputElement;
+refs.startStopChecked = document.getElementById("startStopChecked") as HTMLInputElement;
+refs.updateStartStopName = document.getElementById("updateStartStopName") as HTMLSpanElement;
+refs.pauseCurrentTracking = document.getElementById("pauseCurrentTracking") as HTMLButtonElement;
 
 var started = false;
 
@@ -15,12 +22,12 @@ const init = () => {
 
     if (localStorage.getItem("startTime")) {
         started = true;
-        document.getElementById("updateStartStopName").innerHTML = "stoppen";
-        document.getElementById("startStopChecked").checked = true;
+        (document.getElementById("updateStartStopName") as HTMLSpanElement).innerHTML = "stoppen";
+        (document.getElementById("startStopChecked") as HTMLInputElement).checked = true;
         toggleIsPausable(true);
     }
 
-    const getTask = document.getElementById("getTask");
+    const getTask = document.getElementById("getTask") as HTMLInputElement;
     getTask.addEventListener("keydown", e => {
         if (e.key == "Enter") {
             fnNames.click_sendTimeTracking();
@@ -30,8 +37,8 @@ const init = () => {
     getTimeTrackingEntries();
 }
 
-const toggleIsPausable = (status) => {
-    const isPausable = document.getElementById("pauseCurrentTracking");
+const toggleIsPausable = (status: boolean) => {
+    const isPausable = document.getElementById("pauseCurrentTracking") as HTMLButtonElement;
     switch (status) {
         case true:
             isPausable.classList.add("btn-edit");
@@ -51,22 +58,22 @@ fnNames.click_startStopTime = () => {
     switch (started) {
         case true:
             storeTimestamp("startTime");
-            document.getElementById("updateStartStopName").innerHTML = "stoppen";
+            (document.getElementById("updateStartStopName") as HTMLSpanElement).innerHTML = "stoppen";
             timeGlobalListener();
             toggleIsPausable(true);
             break;
         case false:
-            const askTask = document.getElementById("askTask");
+            const askTask = document.getElementById("askTask") as HTMLElement;
             askTask.classList.add("flex");
             askTask.classList.remove("hidden");
-            document.getElementById("getTask").focus();
+            (document.getElementById("getTask") as HTMLInputElement).focus();
             toggleIsPausable(false);
             break;
     }
 }
 
 fnNames.click_sendTimeTracking = () => {
-    const task = document.getElementById("getTask");
+    const task = document.getElementById("getTask") as HTMLInputElement;
 
     ajax.post(`/api/v1/time-tracking/add`, {
         task: task.value,
@@ -76,23 +83,28 @@ fnNames.click_sendTimeTracking = () => {
         const table = document.querySelector("table");
         const options = {
             "hide": ["id"],
-            "hideOptions": ["addRow", "check", "move", "add"],
+            "hideOptions": [
+                "addRow",
+                "check",
+                "move",
+                "add"
+            ],
         };
         addRow(response.data, table, options);
 
-        localStorage.clear("startTime");
-        document.getElementById("updateStartStopName").innerHTML = "starten";
+        localStorage.removeItem("startTime");
+        (document.getElementById("updateStartStopName") as HTMLSpanElement).innerHTML = "starten";
 
         task.value = "";
 
-        const askTask = document.getElementById("askTask");
+        const askTask = document.getElementById("askTask") as HTMLElement;
         askTask.classList.remove("flex");
         askTask.classList.add("hidden");
     });
 }
 
 fnNames.click_cancelTimeTracking = () => {
-    const askTask = document.getElementById("askTask");
+    const askTask = document.getElementById("askTask") as HTMLElement;
     askTask.classList.remove("flex");
     askTask.classList.add("hidden");
 }
@@ -101,8 +113,8 @@ fnNames.click_cancelCurrentTracking = () => {
     if (!(confirm("Willst du die aktuelle Erfassung abbrechen?"))) {
         return;
     }
-    localStorage.clear("startTime");
-    const startStopChecked = document.getElementById("startStopChecked");
+    localStorage.removeItem("startTime");
+    const startStopChecked = document.getElementById("startStopChecked") as HTMLInputElement;
     startStopChecked.checked = false;
 }
 
@@ -113,7 +125,10 @@ fnNames.click_pauseCurrentTracking = () => {
 fnNames.click_selectEntries = async (e) => {
     const el = e.currentTarget;
     const value = el.dataset.value;
-    const options = {};
+    const options = {
+        "start": "",
+        "stop": "",
+    };
     const today = new Date().toISOString().slice(0, 10);
 
     switch (value) {
@@ -140,7 +155,7 @@ fnNames.click_selectEntries = async (e) => {
         "hide": ["id"],
         "hideOptions": ["addRow", "check", "move", "add"],
     };
-    data.data.forEach(row => {
+    data.data.forEach((row: any) => {
         addRow(row, table, columnConfig);
     });
 }
@@ -157,7 +172,7 @@ const getFirstDayOfMonth = (date = new Date()) => {
     return day.toISOString().split("T")[0];
 }
 
-const storeTimestamp = (stamp) => {
+const storeTimestamp = (stamp: string) => {
     let time = new Date().getTime().toString();
     localStorage.setItem(stamp, time);
 }
@@ -194,8 +209,13 @@ const getTimeTrackingEntries = async () => {
         "hide": ["id"],
         "hideOptions": ["addRow", "check", "move", "add"],
     };
-    renderTable("timeTrackingTable", headers, data.data, options);
-    document.getElementById("timeTrackingTable").addEventListener("rowDelete", async (event) => {
+    const timeTrackingTable = renderTable("timeTrackingTable", headers, data.data, options);
+
+    if (!timeTrackingTable) {
+        return;
+    }
+
+    timeTrackingTable.addEventListener("rowDelete", async (event: any) => {
         const data = event.detail;
         const id = data.id;
 

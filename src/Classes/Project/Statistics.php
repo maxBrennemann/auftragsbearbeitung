@@ -158,3 +158,11 @@ class Statistics
         echo json_encode($data);
     }
 }
+
+/**
+ * Dimensionen und Parameter:
+ * - Startdatum
+ * - Enddatum
+ * - Dimension: Alle, Auftragstyp, Monat, Dauer, Kunde, Umsatz, Gewinn
+ * 
+ */
