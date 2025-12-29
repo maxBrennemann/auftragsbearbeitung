@@ -34,7 +34,7 @@ class ImportGoogleSearchConsole
         $queryRequest->setStartDate(date('Y-m-d', strtotime('-7 days')));
         $queryRequest->setEndDate(date('Y-m-d', strtotime('-3 days')));
         $queryRequest->setDimensions(['page', 'date']);
-        $queryRequest->setAggregationType("byPage");
+        $queryRequest->setAggregationType("BY_PAGE");
 
         try {
             $response = $this->searchConsole->searchanalytics->query($url, $queryRequest);
