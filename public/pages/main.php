@@ -4,7 +4,7 @@ use Src\Classes\Link;
 use Src\Classes\Project\Icon;
 use Src\Classes\Project\InvoiceHelper;
 
-$offeneSumme = InvoiceHelper::getOpenInvoiceSum();
+$openInvoiceSum = InvoiceHelper::getOpenInvoiceSumFormatted();
 
 $neuerKunde   =		Link::getPageLink("neuer-kunde");
 $neuerAuftrag =		Link::getPageLink("neuer-auftrag");
@@ -73,7 +73,7 @@ $wiki = 			Link::getPageLink("wiki");
 			<a class="block" href="<?= $motiveOverview ?>">Motivübersicht</a>
 		</li>
 		<li class="px-3 py-5 rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
-			<a class="block" href="<?= $offeneRechnungen ?>">Offene Rechnungen: <b><?= $offeneSumme ?>€</b></a>
+			<a class="block" href="<?= $offeneRechnungen ?>">Offene Rechnungen: <b><?= $openInvoiceSum ?></b></a>
 		</li>
 	</ul>
 	<div class="mt-1">

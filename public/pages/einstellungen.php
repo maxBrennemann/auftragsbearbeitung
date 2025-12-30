@@ -25,7 +25,7 @@ $companyLogo = Src\Classes\Project\ClientSettings::getLogo();
 
 <section class="defCont" id="invoiceSettings">
     <h2 class="font-bold">Standardeinstellungen festlegen</h2>
-    <div class="grid grid-cols-2">
+    <div class="grid grid-cols-2 gap-4">
         <div class="mt-2">
             <div class="flex items-center mt-2">
                 <span class="font-semibold w-60">Firmenname</span>
@@ -85,6 +85,10 @@ $companyLogo = Src\Classes\Project\ClientSettings::getLogo();
             <div class="flex items-center mt-2">
                 <span class="font-semibold w-60">UstIdNr</span>
                 <input class="input-primary w-60" value="<?= Settings::get("companyUstIdNr") ?>" data-write="true" data-fun="changeSetting" data-setting="companyUstIdNr">
+            </div>
+            <div class="flex items-center mt-2">
+                <span class="font-semibold w-60">Fälligkeitsdauer [Tage]</span>
+                <input class="input-primary w-60" value="<?= Settings::get("companyDueDate") ?>" data-write="true" data-fun="changeSetting" data-setting="companyDueDate">
             </div>
         </div>
 
