@@ -37,7 +37,6 @@ class Link
             case "css":
                 $link = ROOT . "public/res/css/" . $resource;
                 break;
-            case "js":
             case "ts":
                 $link = ROOT . "public/res/js/pages/" . $resource;
                 break;
@@ -133,7 +132,7 @@ class Link
         return self::getResourcesShortLink($file, "css");
     }
 
-    public static function getGlobalJS(): string
+    public static function getGlobalScript(): string
     {
         $file = ResourceManager::getFileNameWithHash("global.js");
         return self::getResourcesShortLink($file, "js");

@@ -27,7 +27,12 @@ class VariousRoutes extends Routes
         "/manual/{pageName}" => [\Src\Classes\Controller\ManualController::class, "get"],
     ];
 
-    protected static $postRoutes = [];
+    /**
+     * @uses \Src\Classes\Project\Statistics::dispatcher()
+     */
+    protected static $postRoutes = [
+        "/stats" => [\Src\Classes\Project\Statistics::class, "dispatch"],
+    ];
 
     protected static $putRoutes = [];
 

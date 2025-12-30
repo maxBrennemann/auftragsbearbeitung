@@ -1,10 +1,11 @@
-import { ajax } from "js-classes/ajax.js";
-import { addBindings } from "js-classes/bindings.js";
+import { ajax } from "js-classes/ajax";
+import { addBindings } from "js-classes/bindings";
 
-import { addRow, fetchAndRenderTable } from "../classes/table.js";
-import { tableConfig } from "../classes/tableconfig.js";
-import { initFileUploader } from "../classes/upload.js";
-import { clearInputs, createPopup } from "../global.js";
+import { addRow, fetchAndRenderTable } from "../classes/table";
+import { tableConfig } from "../classes/tableconfig";
+import { initFileUploader } from "../classes/upload";
+import { clearInputs } from "../global";
+import { createPopup } from "../classes/helpers";
 
 interface VehicleData {
     customerId: number,

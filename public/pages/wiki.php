@@ -1,20 +1,11 @@
 <?php
 
-use MaxBrennemann\PhpUtilities\DBAccess;
+use Src\Classes\Project\Wiki;
 
-$eintraege = DBAccess::selectQuery("SELECT title, content FROM wiki_articles");
-
-$content_id = 0;
-if (isset($_GET["id"])) {
-    $content_id = $_GET["id"];
-}
+$eintraege = Wiki::getTexts();
 
 ?>
 <div class="defCont">
-    <span class="search_wrapper">
-        <input class="search" type="text" placeholder="Suchen">
-        <span id="lupeSpan"><span>&#9906;</span></span>
-    </span>
     <?= \Src\Classes\Controller\TemplateController::getTemplate("search"); ?>
 </div>
 <div class="defCont">

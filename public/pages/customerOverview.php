@@ -9,7 +9,7 @@ $query = Tools::get("query");
 $customers = [];
 
 if ($query != null) {
-    $results = SearchController::search("type:kunde $query", 10);
+    $results = SearchController::search("type:kunde $query", 50);
     foreach ($results as $result) {
         $id = (int) $result["data"]["Kundennummer"];
         $customers[] = new Kunde($id);

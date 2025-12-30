@@ -7,11 +7,11 @@
 
 @layer components {
     .btn-primary {
-        @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-green-500 rounded text-sm border-0 text-white hover:bg-green-700 disabled:bg-green-200 disabled:hover:bg-green-300 disabled:hover:cursor-not-allowed;
+        @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-green-500 rounded text-sm border-0 text-white hover:bg-green-700 disabled:bg-green-200 disabled:hover:bg-green-300 disabled:hover:cursor-not-allowed active:scale-95 transition-transform duration-75;
     }
 
     .btn-primary-small {
-        @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-0.5 px-1.5 my-0.5 bg-green-500 rounded border-0 text-white text-xs hover:bg-green-700 disabled:bg-green-200 disabled:hover:bg-green-300 disabled:hover:cursor-not-allowed;
+        @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-0.5 px-1.5 my-0.5 bg-green-500 rounded border-0 text-white text-xs hover:bg-green-700 disabled:bg-green-200 disabled:hover:bg-green-300 disabled:hover:cursor-not-allowed active:scale-95 transition-transform duration-75;
     }
 
     .link-primary {
@@ -19,7 +19,7 @@
     }
 
     .input-primary {
-        @apply w-36 h-8 px-2.5 py-1 my-1 rounded ring-1 ring-gray-300;
+        @apply w-36 h-8 px-2.5 py-1 my-1 rounded ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
     }
 
     .link-button {
@@ -59,11 +59,19 @@
     }
 
     .overlay-container {
-        @apply flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-white/75;
+        @apply inset-0 flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-white/75 transition-opacity duration-500 opacity-0;
+    }
+
+    .overlay-container--visible {
+        @apply opacity-100;
+    }
+
+    .overlay-container--visible .overlay-container__content {
+        @apply opacity-100 scale-100;
     }
 
     .overlay-container__content {
-        @apply relative max-w-2xl max-h-full shadow-xl bg-white rounded-sm border border-solid border-gray-400;
+        @apply relative max-w-2xl max-h-full shadow-xl bg-white rounded-sm border border-solid border-gray-400 transform opacity-0 transition-all duration-500;
     }
 
     .overlay-container__content__options {

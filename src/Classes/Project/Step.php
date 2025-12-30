@@ -6,6 +6,7 @@ use Src\Classes\Notification\NotificationManager;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
+use Src\Classes\Notification\NotificationType;
 
 class Step
 {
@@ -68,7 +69,7 @@ class Step
         $postenNummer = Step::insertStep($data);
 
         if ($data["assignedTo"] != 0) {
-            NotificationManager::addNotification($data["assignedTo"], 1, Tools::get("name"), $postenNummer);
+            NotificationManager::addNotification($data["assignedTo"], NotificationType::TYPE_STEP, Tools::get("name"), $postenNummer);
         }
 
         JSONResponseHandler::sendResponse([]);

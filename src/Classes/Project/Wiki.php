@@ -18,6 +18,12 @@ class Wiki
         ]);
     }
 
+    public static function getTexts(): array
+    {
+        $query = "SELECT id, title, content FROM wiki_articles ORDER BY title ASC;";
+        return DBAccess::selectQuery($query);
+    }
+
     /**
      * @return array<void>
      */

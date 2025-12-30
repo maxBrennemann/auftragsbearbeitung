@@ -70,22 +70,39 @@ jobs:
       - name: Generate .env file
         run: |
           cat > .env <<EOL
+          # url settings and environment
           DOMAIN=${{ secrets.DOMAIN }}
           DEPLOY_ENVIRONMENT=${{ env.BRANCH_NAME }}
           LETSENCRYPT_EMAIL=${{ secrets.LETSENCRYPT_EMAIL }}
 
+          # database connection
           DB_DATABASE=${{ secrets.DB_DATABASE }}
           DB_USERNAME=${{ secrets.DB_USERNAME }}
           DB_PASSWORD=${{ secrets.DB_PASSWORD }}
           DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}
 
-          # extra app settings
+          # development settings
           ERRORREPORTING=true
           DEV_MODE=false
-          OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+
+          # mail settings
+          MAIL_HOST=${{ secrets.MAIL_HOST }}
+          MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}
+          MAIL_PORT=${{ secrets.MAIL_PORT }}
+          MAIL_FROM=${{ secrets.MAIL_FROM }}
+          MAIL_FROM_NAME=${{ secrets.MAIL_FROM_NAME }}
+
+          # shop api keys
           SHOPURL=${{ secrets.SHOPURL }}
           SHOPKEY=${{ secrets.SHOPKEY }}
-          MAIL_ADDRESS_ALERTS=${{ secrets.MAIL_ADDRESS_ALERTS }}
+
+          # openai chatgpt
+          OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+
+          # google search console api keys
+          GOOGLE_SEARCHCONSOLE='.config/apiKeys/googleSearchConsoleAPIKey.json'
+
           EOL
 
       - name: Copy config to server

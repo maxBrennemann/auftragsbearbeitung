@@ -100,12 +100,12 @@ class TimeTracking
     }
 
     /**
-     * @param string $start
-     * @param string $stop
+     * @param ?string $start
+     * @param ?string $stop
      * @param bool $all
      * @return array<int, array<string, string>>
      */
-    public function getTimeTables(string $start, string $stop, bool $all = false): array
+    public function getTimeTables(?string $start, ?string $stop, bool $all = false): array
     {
         $params =  [
             "idUser" => $this->userId,

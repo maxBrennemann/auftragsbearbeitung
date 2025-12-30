@@ -8,7 +8,7 @@ use Src\Classes\Project\Icon;
 use Src\Classes\ResourceManager;
 
 $globalCSS = Link::getGlobalCSS();
-$globalJS = Link::getGlobalJS();
+$globalScript = Link::getGlobalScript();
 
 $curr_Link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
@@ -26,7 +26,7 @@ $einstellungen =	Link::getPageLink("einstellungen");
 $payments =			Link::getPageLink("payments");
 $listmaker =		Link::getPageLink("listmaker");
 $changelog = 		Link::getPageLink("changelog");
-$zeiterfassung =	Link::getPageLink("zeiterfassung");
+$timeTracking =	Link::getPageLink("time-tracking");
 $motiveOverview = 	Link::getPageLink("sticker-overview");
 $wiki = 			Link::getPageLink("wiki");
 
@@ -51,38 +51,34 @@ if ($pageName == "") {
 	<link rel="apple-touch-icon" href="<?= $_ENV["WEB_URL"] ?>img/favicon.png">
 
 	<?php if ($_ENV["DEV_MODE"] == "true"): ?>
-		<script type="module" src="https://localhost:5173/global.js"></script>
+		<script type="module" src="https://localhost:5173/global.ts"></script>
 
-		<?php $jsPage = dashesToCamelCase($jsPage); ?>
+		<?php $pageScript = dashesToCamelCase($pageScript); ?>
 	<?php else: ?>
 		<link rel="stylesheet" href="<?= $globalCSS ?>">
-		<script type="module" src="<?= $globalJS ?>"></script>
+		<script type="module" src="<?= $globalScript ?>"></script>
 		<?php
-		$jsPage = dashesToCamelCase($jsPage);
+		$pageScript = dashesToCamelCase($pageScript);
+		$scriptPath = Link::getFilePath("$pageScript.ts", "ts");
 
-		$jsPath = Link::getFilePath("$jsPage.js", "js");
-		$tsPath = Link::getFilePath("$jsPage.ts", "ts");
-
-		$jsFilePath = "";
-		if (file_exists($jsPath)) {
-			$jsFilePath = ResourceManager::getFileNameWithHash("pages/$jsPage.js");
-		} else if (file_exists($tsPath)) {
-			$jsFilePath = ResourceManager::getFileNameWithHash("pages/$jsPage.ts");
+		$hashFilePath = "";
+		if (file_exists($scriptPath)) {
+			$hashFilePath = ResourceManager::getFileNameWithHash("pages/$scriptPath.ts");
 		}
 
-		if ($jsFilePath != "") : ?>
-			<script type="module" src="<?= Link::getResourcesShortLink("$jsFilePath", "js") ?>"></script>
+		if ($hashFilePath != "") : ?>
+			<script type="module" src="<?= Link::getResourcesShortLink("$hashFilePath", "js") ?>"></script>
 		<?php endif; ?>
 	<?php endif; ?>
 </head>
 
 <?php if ($_ENV["DEV_MODE"] == "true"): ?>
-	<body class="overflow-x-hidden" data-page="<?= dashesToCamelCase($jsPage) ?>">
+	<body class="overflow-x-hidden" data-page="<?= dashesToCamelCase($pageScript) ?>">
 <?php else : ?>
 	<body class="overflow-x-hidden"></body>
 <?php endif; ?>
 	<div class="sidenav" id="sidenav">
-		<ul>
+		<ul class="ml-2">
 			<li class="hover:underline">
 				<a href="<?= $neuerKunde ?>">Neuen Kunden erstellen</a>
 			</li>
@@ -123,7 +119,7 @@ if ($pageName == "") {
 				<a href="<?= $funktionen ?>">Funktionen</a>
 			</li>
 			<li class="hover:underline">
-				<a href="<?= $zeiterfassung ?>">Zeiterfassung</a>
+				<a href="<?= $timeTracking ?>">Zeiterfassung</a>
 			</li>
 			<li class="hover:underline">
 				<a href="<?= $motiveOverview ?>">Motivübersicht</a>
@@ -168,7 +164,7 @@ if ($pageName == "") {
 						</span>
 					</div>
 					<div class="<?= (Settings::get("showTimeGlobal") == "true") ? "inline-flex" : "hidden" ?> items-center text-gray-700" id="timeTrackingContainer">
-						<a href="<?= Link::getPageLink("zeiterfassung") ?>" class="showTimeGlobal inline-block p-1 hover:bg-gray-200 hover:rounded-sm" title="Zeiterfassung">
+						<a href="<?= Link::getPageLink("time-tracking") ?>" class="showTimeGlobal inline-block p-1 hover:bg-gray-200 hover:rounded-sm" title="Zeiterfassung">
 							<span>Zeit: <span id="timeGlobal" class="inline-block p-1 hover:bg-gray-200 hover:rounded-sm">00:00:00</span></span>
 						</a>
 					</div>

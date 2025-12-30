@@ -5,6 +5,7 @@ namespace Src\Classes\Project;
 use Exception;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use MaxBrennemann\PhpUtilities\Tools;
 
 class InvoiceHelper
 {
@@ -16,29 +17,49 @@ class InvoiceHelper
 			WHERE auftrag.Rechnungsnummer != 0 
 				AND auftrag.Bezahlt = 0
 				AND auftrag.Auftragsnummer = invoice.order_id";
-        $summe = DBAccess::selectQuery($query)[0]["summe"];
-        if ($summe == null) {
+        $sum = DBAccess::selectQuery($query)[0]["summe"];
+        if ($sum == null) {
             return 0;
         }
-        return (int) $summe;
+        return (int) $sum;
+    }
+
+    public static function getOpenInvoiceSumFormatted(): string
+    {
+        $sum = self::getOpenInvoiceSum();
+        $sum = $sum * 1.19;
+        return number_format($sum, 2, ',', '.') . ' €';
     }
 
     public static function getOpenInvoiceData(): void
     {
+        $dueIn = (int) Settings::get("companyDueDate");
+        $show = Tools::get("show");
+
+        if ($show === "due") {
+            $dueCondition = "AND DATE_ADD(invoice.creation_date, INTERVAL $dueIn DAY) <= CURDATE()";
+        } else {
+            $dueCondition = "";
+        }
+
         $data = DBAccess::selectQuery("SELECT auftrag.Auftragsnummer AS Nummer,
 				auftrag.Rechnungsnummer,
                 invoice.invoice_number,
 				auftrag.Auftragsbezeichnung AS Bezeichnung, 
 				auftrag.Auftragsbeschreibung AS Beschreibung, 
 				auftrag.Kundennummer,
-				DATE_FORMAT(auftrag.Datum, '%d.%m.%Y') as Datum,
-				kunde.Firmenname,
-				CONCAT(FORMAT(invoice.amount, 2, 'de_DE'), ' €') AS Summe 
+				DATE_FORMAT(auftrag.Datum, '%d.%m.%Y') AS Datum,
+                DATE_FORMAT(invoice.creation_date, '%d.%m.%Y') AS Rechnungsdatum,
+                DATE_FORMAT(DATE_ADD(invoice.creation_date, INTERVAL $dueIn DAY), '%d.%m.%Y') AS Faelligkeitsdatum,
+				IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) AS 'Name',
+				CONCAT(FORMAT(invoice.amount, 2, 'de_DE'), ' €') AS Summe,
+                CONCAT(FORMAT(invoice.amount * 1.19, 2, 'de_DE'), ' €') AS Summe_mwst
 			FROM auftrag, kunde, invoice
 			WHERE auftrag.Kundennummer = kunde.Kundennummer 
 				AND Rechnungsnummer != 0
 				AND auftrag.Bezahlt = 0
-                AND invoice.id = auftrag.Rechnungsnummer");
+                AND invoice.id = auftrag.Rechnungsnummer
+                $dueCondition");
 
         JSONResponseHandler::sendResponse([
             "data" => $data,

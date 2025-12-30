@@ -157,4 +157,17 @@ class Statistics
 
         echo json_encode($data);
     }
+
+    public static function dispatch(): void
+    {
+        self::dispatcher();
+    }
 }
+
+/**
+ * Dimensionen und Parameter:
+ * - Startdatum
+ * - Enddatum
+ * - Dimension: Alle, Auftragstyp, Monat, Dauer, Kunde, Umsatz, Gewinn
+ * 
+ */

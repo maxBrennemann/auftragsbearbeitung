@@ -29,11 +29,14 @@ function exception_error_handler(int $severity, string $message, string $file, i
         return false;
     }
 
+    $xdebugOutput = ob_get_clean();
+
     printError([
         "message" => $message,
         "file" => $file,
         "line" => $line,
-        "severity" => $severity
+        "severity" => $severity,
+        "xdebug" => $xdebugOutput,
     ]);
 
     // @phpstan-ignore-next-line
@@ -46,9 +49,15 @@ function fatal_handler(): void
 {
     $error = error_get_last();
 
-    if ($error == null) {
+    if ($error === null) {
         return;
     }
+
+    $buffers = [];
+    while (ob_get_level() > 0) {
+        $buffers[] = ob_get_clean();
+    }
+    $xdebugOutput = implode("", $buffers);
 
     $message = $error["message"];
     $file = $error["file"];
@@ -59,7 +68,8 @@ function fatal_handler(): void
         "message" => $message,
         "file" => $file,
         "line" => $line,
-        "severity" => $severity
+        "severity" => $severity,
+        "xdebug" => $xdebugOutput,
     ]);
 }
 

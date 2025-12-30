@@ -9,8 +9,9 @@ use Src\Classes\Notification\NotificationManager;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
+use Src\Classes\Notification\NotificationType;
 
-class Auftrag implements StatisticsInterface, NotifiableEntity
+class Auftrag implements NotifiableEntity
 {
     private int $Auftragsnummer;
     private string $Auftragsbezeichnung;
@@ -527,8 +528,6 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
         JSONResponseHandler::sendResponse($notes);
     }
 
-    public function recalculate(): void {}
-
     public static function archive(): void
     {
         $orderId = (int) Tools::get("id");
@@ -554,7 +553,7 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
             "orderStatus" => OrderState::Finished,
         ]);
 
-        NotificationManager::addNotification(null, 4, "Auftrag $orderId wurde abgeschlossen", $orderId);
+        NotificationManager::addNotification(null, NotificationType::ORDER_FINISHED, "Auftrag $orderId wurde abgeschlossen", $orderId);
 
         JSONResponseHandler::returnOK();
     }
@@ -600,9 +599,15 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
             "orderId" => $orderId
         ];
 
-        NotificationManager::addNotification(null, 4, "Auftrag $orderId wurde angelegt", $orderId);
+        NotificationManager::addNotification(
+            null,
+            NotificationType::TYPE_NEW_ORDER,
+            "Auftrag $orderId wurde angelegt",
+            $orderId
+        );
 
         OrderHistory::add($orderId, $orderId, OrderHistory::TYPE_ORDER, OrderHistory::STATE_ADDED, "Neuer Auftrag");
+
         JSONResponseHandler::sendResponse($data);
     }
 

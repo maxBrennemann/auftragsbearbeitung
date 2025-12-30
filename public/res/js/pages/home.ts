@@ -1,6 +1,6 @@
-import { ajax } from "js-classes/ajax.js";
+import { ajax } from "js-classes/ajax";
 
-import { renderTable } from "../classes/table.js";
+import { renderTable } from "../classes/table";
 
 function ajaxSearch(query: string) {
     const customerOverview = (document.getElementById("kundenLink") as HTMLElement).dataset.customerOverview;
@@ -72,6 +72,8 @@ function init() {
 const initOpenOrdersTable = async () => {
     const response = await ajax.get(`/api/v1/order/open`);
     const data = response.data;
+    const orderCount = data.length;
+    (document.getElementById("orderCount") as HTMLSpanElement).innerHTML = `(${orderCount})`;
 
     const columns = [
         {

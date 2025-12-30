@@ -2,6 +2,8 @@
 
 namespace Src\Classes\Project;
 
+use Src\Classes\Link;
+
 class CompanyProfile
 {
 
@@ -26,5 +28,15 @@ class CompanyProfile
             "companyBic" => Settings::get("companyBic"),
             "companyUstIdNr" => Settings::get("companyUstIdNr"),
         ];
+    }
+
+    public static function getLogo(): string
+    {
+        $image = ClientSettings::getLogo();
+        if ($image == "") {
+            return ROOT . "public/assets/img/default_image.png";
+        } else {
+            return Link::getFilePath($image, "upload");
+        }
     }
 }

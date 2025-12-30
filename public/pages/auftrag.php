@@ -61,6 +61,9 @@ try {
 				<div class="relative">
 					<span class="font-bold">Auftrag <span id="auftragsnummer"><?= $auftrag->getAuftragsnummer() ?></span><?php if ($auftrag->getIsArchiviert()) : ?> (archiviert)<?php endif; ?><button class="orderDetailsOpen float-right border-none w-5" id="extraOptions">⋮</button></span>
 					<div class="orderDetailsOpen hidden absolute right-0 top-0 bg-white rounded-lg drop-shadow-lg p-3 mt-5" id="showExtraOptions">
+						<?php if ($auftrag->getIsArchiviert()) : ?>
+							<button class="btn-primary mt-5" data-binding="true" data-fun="rearchiveOrder">Auftrag aus dem Archiv holen</button>
+						<?php endif; ?>
 						<button class="btn-primary mt-5" data-binding="true" data-fun="changeCustomer">Anderem Kuden zuweisen</button>
 						<button class="btn-delete" data-binding="true" data-fun="deleteOrder">Auftrag löschen</button>
 					</div>
@@ -103,7 +106,7 @@ try {
 					<?php if (Tools::get("show") == "true" && $auftrag->getInvoiceId() != 0) : ?>
 						<button class="btn-primary" onclick="location.href= '<?= Link::getPageLink('rechnung') ?>?target=view&id=<?= $orderId ?>'">Rechnung anzeigen</button>
 					<?php else: ?>
-						<button class="btn-primary" onclick="location.href= '<?= Link::getPageLink('rechnung') ?>?target=create&id=<?= $orderId ?>'">Rechnung generieren</button>
+						<button class="btn-primary" onclick="location.href= '<?= Link::getPageLink('rechnung') ?>?target=create&id=<?= $orderId ?>'">Rechnungsvorschau</button>
 						<?php if ($auftrag->getIsArchiviert() == false) : ?>
 							<button class="btn-primary" data-binding="true" data-fun="archivieren">Auftrag archivieren</button>
 						<?php endif; ?>
@@ -142,7 +145,7 @@ foreach ($contactPersons as $contact): ?>
 				</div>
 			</div>
 
-			<div class="defCont col-span-6 md:col-span-4 2xl:col-span-3 schritte">
+			<div class="defCont col-span-6 md:col-span-4 2xl:col-span-3 schritte" id="stepCont">
 				<p class="font-bold">Bearbeitungsschritte und Aufgaben</p>
 				<div class="flex mt-2 items-center">
 					<div>

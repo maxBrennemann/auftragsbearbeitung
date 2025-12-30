@@ -2,6 +2,7 @@
   "devDependencies": {
     "@types/node": "^24.3.0",
     "autoprefixer": "^10.4.21",
+    "cypress": "^15.5.0",
     "eslint": "^9.30.1",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-sort-imports-es6-autofix": "^0.6.0",
@@ -15,17 +16,17 @@
   "scripts": {
     "dev": "./console autoUpgrade --skip-migration & vite --config .config/vite.config.js",
     "dev:debug-css": "./console autoUpgrade --skip-migration & VITE_DEBUG_CSS=true vite",
-    "build": "vite build --config .config/vite.config.js",
+    "build": "vite build --config .config/vite.config.ts",
     "mysqldump": "mysqldump --no-data --routines --triggers -u auftragsmanager -p auftragsbearbeitung --host 127.0.0.1 > database/versions/1.2.2/schema.sql",
     "lint": "eslint . --ext .js,.ts --config .config/formatter/eslint.config.js",
     "lint:fix": "eslint . --ext .js,.ts --fix --config .config/formatter/eslint.config.js",
     "format": "prettier --write ."
   },
   "dependencies": {
-    "chart.js": "^4.4.1",
+    "chart.js": "^4.5.1",
     "colorpicker": "git+https://github.com/maxBrennemann/colorpicker.git",
     "date-fns": "^4.1.0",
-    "js-classes": "git+https://github.com/maxBrennemann/js-functions.git#v0.3"
+    "js-classes": "git+https://github.com/maxBrennemann/js-functions.git#v0.4"
   },
   "name": "auftragsbearbeitung",
   "description": "The Invoice and Order Management System is a web-based application built using PHP, JavaScript, and HTML. The system allows businesses to manage customer orders, products, pricing, invoices, and customer data.",

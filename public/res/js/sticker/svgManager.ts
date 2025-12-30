@@ -1,7 +1,7 @@
-import { ajax } from "js-classes/ajax.js";
-import { addBindings } from "js-classes/bindings.js";
+import { ajax } from "js-classes/ajax";
+import { addBindings } from "js-classes/bindings";
 
-import { getStickerId } from "../pages/sticker.js";
+import { getStickerId } from "../pages/sticker";
 
 const fnNames: { [key: string]: (...args: any[]) => void } = {};
 const config: {

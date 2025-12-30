@@ -27,6 +27,13 @@ use Src\Classes\Project\Icon;
             <button class="btn-primary" data-fun="selectEntries" data-binding="true" data-value="today">Heute</button>
             <button class="btn-primary" data-fun="selectEntries" data-binding="true" data-value="week">Diese Woche</button>
             <button class="btn-primary" data-fun="selectEntries" data-binding="true" data-value="month">Dieser Monat</button>
+            
+            <label class="ml-2">
+                <input type="date" class="input-primary timeDates" data-fun="selectDates" data-write="true"> bis
+            </label>
+            <label>
+                <input type="date" class="input-primary timeDates" data-fun="selectDates" data-write="true">
+            </label>
         </div>
         <div class="relative">
             <div id="timeTrackingTable" class="mt-2 overflow-auto"></div>

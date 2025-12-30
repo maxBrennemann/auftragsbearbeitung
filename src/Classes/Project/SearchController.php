@@ -5,6 +5,8 @@ namespace Src\Classes\Project;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 
+use Src\Classes\Controller\TemplateController;
+
 class SearchController
 {
 
@@ -101,22 +103,13 @@ class SearchController
         $query = Tools::get("query");
         $results = self::search($query, 20);
 
-        $html = "";
-        foreach ($results as $result) {
-            switch ($result["type"]) {
-                case "kunde":
-                    break;
-                case "produkt":
-                    break;
-                case "auftrag":
-                    break;
-                case "wiki_articles":
-                    break;
-            }
-        }
+        $template = TemplateController::getTemplate("searchResult", [
+            "results" => $results,
+        ]);
 
         JSONResponseHandler::sendResponse([
-            "html" => $html,
+            "html" => $template,
+            "results" => $results,
         ]);
     }
 }

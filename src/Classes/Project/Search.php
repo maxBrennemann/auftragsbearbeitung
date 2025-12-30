@@ -164,11 +164,25 @@ class Search
                 }
 
                 $value = strtolower($colVal);
-                $distance = levenshtein(strtolower($query), $value);
-                $score += max(0, 7 - $distance);
+                $queryLower = strtolower($query);
 
-                if (str_contains($value, strtolower($query))) {
-                    $score += 5;
+                if (str_contains($value, $queryLower)) {
+                    $score += 20;
+                    continue;
+                }
+
+                $distance = levenshtein($queryLower, $value);
+                $maxLen = max(strlen($queryLower), strlen($value));
+                $similarity = 1 - ($distance / $maxLen);
+
+                if ($similarity > 0.6) {
+                    $score += (int) round($similarity * 15);
+                }
+
+                $textSimilarity = 0.0;
+                similar_text($queryLower, $value, $textSimilarity);
+                if ($textSimilarity > 60) {
+                    $score += (int) round($textSimilarity / 8);
                 }
             }
 
@@ -176,7 +190,7 @@ class Search
                 $scored[$id] = [
                     "data" => $row,
                     "type" => $table,
-                    "score" => -7,
+                    "score" => -5,
                 ];
             }
 

@@ -2,7 +2,6 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import postcss from './postcss.config.ts';
 import type { ProcessOptions } from 'postcss';
 import type { ServerOptions } from 'vite';
 import type { Plugin } from 'vite';
@@ -44,6 +43,17 @@ function getJsEntries(dir: string): Record<string, string> {
     return entries;
 }
 
+const fullReloadAlways: Plugin = {
+    name: 'full-reload-always',
+    apply: 'serve',
+    handleHotUpdate({ server }) {
+        server.ws.send({
+            type: 'full-reload',
+        });
+        return [];
+    }
+}
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -59,7 +69,7 @@ if (fs.existsSync(keyPath) && fs.existsSync(certPath)) {
 }
 
 export default defineConfig({
-    plugins: [jsToTsRedirectPlugin()],
+    plugins: [jsToTsRedirectPlugin(), fullReloadAlways],
 
     root: path.resolve(__dirname, "../public/res/js"),
 

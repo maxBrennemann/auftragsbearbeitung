@@ -1,18 +1,31 @@
-import { ajax } from "js-classes/ajax.js";
+import { ajax } from "js-classes/ajax";
 
 import { format } from "date-fns";
-import { addRow, createHeader, createTable } from "../classes/table.js";
+import { addRow, createHeader, createTable } from "../classes/table";
+import { loader } from "../classes/helpers";
+import { FunctionMap } from "../types/types";
+import { addBindings } from "js-classes/bindings";
 
-const init = () => {
+const fnNames: FunctionMap = {};
+const config = {
+    show: "all",
+};
+
+fnNames.click_showDueInvoices = () => {
+    config.show = config.show === "due" ? "all" : "due";
+    const button = document.querySelector('[data-fun="showDueInvoices"]') as HTMLButtonElement;
+    button.textContent = config.show === "due" ? "Alle offenen Rechnungen" : "Fällige Rechnungen";
+
     createInvoiceTable();
 }
 
 const getOpenInvoiceData = async () => {
-    const data = await ajax.get(`/api/v1/invoice/open`);
+    const data = await ajax.get(`/api/v1/invoice/open?show=${config.show}`);
     return data.data.data;
 }
 
 const createInvoiceTable = async () => {
+    document.getElementById("openInvoiceTable")!.innerHTML = "";
     const table = createTable("openInvoiceTable") as HTMLTableElement;
     const columns = [
         {
@@ -37,15 +50,27 @@ const createInvoiceTable = async () => {
         },
         {
             "key": "Datum",
-            "label": "Datum"
+            "label": "Auftragsdatum"
         },
         {
-            "key": "Firmenname",
-            "label": "Firmenname"
+            "key": "Rechnungsdatum",
+            "label": "Rechnungsdatum"
+        },
+        {
+            "key": "Faelligkeitsdatum",
+            "label": "Fälligkeitsdatum"
+        },
+        {
+            "key": "Name",
+            "label": "Name"
         },
         {
             "key": "Summe",
-            "label": "Summe"
+            "label": "Summe (netto)"
+        },
+        {
+            "key": "Summe_mwst",
+            "label": "Summe (brutto)"
         },
     ];
     const columnConfig = {
@@ -85,10 +110,7 @@ const createInvoiceTable = async () => {
     });
 }
 
-if (document.readyState !== 'loading') {
-    init();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        init();
-    });
-}
+loader(() => {
+    addBindings(fnNames);
+    createInvoiceTable();
+});

@@ -1,12 +1,13 @@
-import { ajax } from "js-classes/ajax.js";
-import { addBindings } from "js-classes/bindings.js";
-import { notification } from "js-classes/notifications.js";
+import { ajax } from "js-classes/ajax";
+import { addBindings } from "js-classes/bindings";
+import { notification } from "js-classes/notifications";
 
-import { fetchAndRenderTable } from "../classes/table.js";
-import { tableConfig } from "../classes/tableconfig.js";
-import { initFileUploader } from "../classes/upload.js";
-import { createPopup, initImagePreviewListener } from "../global.js";
-import { getStickerId } from "../pages/sticker.js";
+import { fetchAndRenderTable } from "../classes/table";
+import { tableConfig } from "../classes/tableconfig";
+import { initFileUploader } from "../classes/upload";
+import { createPopup } from "../classes/helpers";
+import { getStickerId } from "../pages/sticker";
+import { initImagePreviewListener } from "../classes/imagePreview";
 
 import { initSVG } from "./svgManager";
 

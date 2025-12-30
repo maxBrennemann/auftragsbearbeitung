@@ -2,8 +2,7 @@
 
 namespace Src\Classes\Pdf\TransactionPdf;
 
-use Src\Classes\Link;
-use Src\Classes\Project\ClientSettings;
+use Src\Classes\Project\CompanyProfile;
 use Src\Classes\Project\Invoice;
 use Src\Classes\Project\InvoiceLayout;
 use Src\Classes\Project\InvoiceNumberTracker;
@@ -36,7 +35,7 @@ class InvoicePDF extends TransactionPDF
         $this->SetFont("helvetica", "", 12);
         $this->fillAddress($this->invoice->getAltNames());
 
-        $this->Image($this->getCompanyLogo(), 125, 46, 60);
+        $this->Image(CompanyProfile::getLogo(), 125, 46, 60);
 
         $this->setXY(125, 54);
         $this->setFontStretching(200);
@@ -220,16 +219,6 @@ class InvoicePDF extends TransactionPDF
                 $this->addTableHeader(25);
                 $this->ln(10);
             }
-        }
-    }
-
-    private function getCompanyLogo(): string
-    {
-        $image = ClientSettings::getLogo();
-        if ($image == "") {
-            return "../public/assets/img/default_image.png";
-        } else {
-            return Link::getFilePath($image, "upload");
         }
     }
 

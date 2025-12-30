@@ -10,6 +10,7 @@ class TestingRoutes extends Routes
         "/test/colors" => [\Src\Classes\Project\Test::class, "migrateFarbenToColor"],
         "/test/table" => [\Src\Classes\Project\Test::class, "table"],
         "/test/config" => [\Src\Classes\Project\Test::class, "configTest"],
+        "/test/mail" => [\Src\Classes\Project\Test::class, "sendTestMail"],
     ];
 
 }

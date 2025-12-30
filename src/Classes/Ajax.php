@@ -3,7 +3,6 @@
 namespace Src\Classes;
 
 use Src\Classes\Controller\SessionController;
-use Src\Classes\Project\Statistics;
 use Src\Classes\Routes\CustomerRoutes;
 use Src\Classes\Routes\InvoiceRoutes;
 use Src\Classes\Routes\LoginRoutes;
@@ -21,6 +20,7 @@ use Src\Classes\Routes\TimeTrackingRoutes;
 use Src\Classes\Routes\UploadRoutes;
 use Src\Classes\Routes\UserRoutes;
 use Src\Classes\Routes\VariousRoutes;
+use Src\Classes\Routes\HookRoutes;
 use Src\Classes\Sticker\SearchProducts;
 use Src\Classes\Sticker\StickerCategory;
 use Src\Classes\Sticker\StickerCollection;
@@ -40,6 +40,11 @@ class Ajax
         $url = explode('?', $url, 2);
         $apiPath = str_replace($_ENV["REWRITE_BASE"] . $_ENV["SUB_URL"] . "/", "", $url[0]);
         $apiParts = explode("/", $apiPath);
+
+        if (count($apiParts) < 4) {
+            JSONResponseHandler::throwError(404, "Path not found");
+        }
+
         $apiVersion = $apiParts[2];
         $routeType = $apiParts[3];
 
@@ -50,7 +55,12 @@ class Ajax
         $path = str_replace("api/" . $apiVersion . "/", "", $apiPath);
 
         /* TODO: implement better auth */
-        if (!SessionController::isLoggedIn() && $routeType != "auth") {
+        $publicRoutes = [
+            "auth",
+            "hooks",
+        ];
+
+        if (!SessionController::isLoggedIn() && !in_array($routeType, $publicRoutes)) {
             ResourceManager::outputHeaderJSON();
             JSONResponseHandler::throwError(401, "Unauthorized API access");
         }
@@ -108,7 +118,11 @@ class Ajax
                 break;
             case "template":
             case "manual":
+            case "stats":
                 VariousRoutes::handleRequest($path);
+                break;
+            case "hooks":
+                HookRoutes::handleRequest($path);
                 break;
             default:
                 JSONResponseHandler::throwError(404, "Path not found");
@@ -241,9 +255,6 @@ class Ajax
                 echo json_encode([
                     "status" => "success",
                 ]);
-                break;
-            case "diagramme":
-                Statistics::dispatcher();
                 break;
         }
     }

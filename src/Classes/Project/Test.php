@@ -5,6 +5,8 @@ namespace Src\Classes\Project;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
+use Src\Classes\Controller\SendInvoiceController;
+
 require_once ROOT . "src/table-config.php";
 
 class Test
@@ -40,7 +42,7 @@ class Test
     public static function table(): void
     {
         $data = DBAccess::selectQuery("SELECT * FROM address LIMIT 2;");
-        
+
         $header = getTableConfig()["address"];
         $options = [
             "hideOptions" => ["all"],
@@ -55,5 +57,15 @@ class Test
         $configArr = Config::getGroup("paths.uploadDir");
         echo $config;
         var_dump($configArr);
+    }
+
+    public static function sendTestMail(): void
+    {
+        $invoiceData = [
+            'email' => "",
+            'invoiceNumber' => 'TEST-001',
+        ];
+
+        SendInvoiceController::handle($invoiceData);
     }
 }

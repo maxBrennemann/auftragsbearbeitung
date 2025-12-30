@@ -1,8 +1,8 @@
-import { ajax } from "js-classes/ajax.js";
-import { addBindings } from "js-classes/bindings.js";
-import { notification } from "js-classes/notifications.js";
+import { ajax } from "js-classes/ajax";
+import { addBindings } from "js-classes/bindings";
+import { notification } from "js-classes/notifications";
 
-import { createPopup } from "../global.js";
+import { createPopup } from "../classes/helpers";
 
 const fnNames: { [key: string]: (...args: any[]) => void } = {};
 
@@ -11,6 +11,10 @@ const orderManagerConfig = {
 };
 
 fnNames.click_setOrderFinished = async () => {
+    if (orderManagerConfig.orderId === 0) {
+        return;
+    }
+
     if (confirm('Möchtest Du den Auftrag als "Erledigt" markieren?')) {
         await ajax.put(`/api/v1/order/${orderManagerConfig.orderId}/finish`);
 
@@ -165,6 +169,16 @@ fnNames.click_archivieren = () => {
             a.innerText = "Zurück zur Startseite";
             div.appendChild(a);
             createPopup(div);
+        }
+    })
+}
+
+fnNames.click_rearchiveOrder = () => {
+    ajax.put(`/api/v1/order/${orderManagerConfig.orderId}/archive`, {
+        "status": "unarchive",
+    }).then((r: any) => {
+        if (r.data.status == "success") {
+            window.location.reload();
         }
     })
 }

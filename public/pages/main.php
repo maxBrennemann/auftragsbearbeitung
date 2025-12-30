@@ -4,7 +4,7 @@ use Src\Classes\Link;
 use Src\Classes\Project\Icon;
 use Src\Classes\Project\InvoiceHelper;
 
-$offeneSumme = InvoiceHelper::getOpenInvoiceSum();
+$openInvoiceSum = InvoiceHelper::getOpenInvoiceSumFormatted();
 
 $neuerKunde   =		Link::getPageLink("neuer-kunde");
 $neuerAuftrag =		Link::getPageLink("neuer-auftrag");
@@ -22,7 +22,7 @@ $funktionen = 		Link::getPageLink("functionalities");
 $payments =			Link::getPageLink("payments");
 $listmaker =		Link::getPageLink("listmaker");
 $changelog = 		Link::getPageLink("changelog");
-$zeiterfassung =	Link::getPageLink("zeiterfassung");
+$timeTracking =	Link::getPageLink("time-tracking");
 $motiveOverview = 	Link::getPageLink("sticker-overview");
 $wiki = 			Link::getPageLink("wiki");
 
@@ -73,7 +73,7 @@ $wiki = 			Link::getPageLink("wiki");
 			<a class="block" href="<?= $motiveOverview ?>">Motivübersicht</a>
 		</li>
 		<li class="px-3 py-5 rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
-			<a class="block" href="<?= $offeneRechnungen ?>">Offene Rechnungen: <b><?= $offeneSumme ?>€</b></a>
+			<a class="block" href="<?= $offeneRechnungen ?>">Offene Rechnungen: <b><?= $openInvoiceSum ?></b></a>
 		</li>
 	</ul>
 	<div class="mt-1">
@@ -81,7 +81,7 @@ $wiki = 			Link::getPageLink("wiki");
 			<a class="link-primary ml-auto" href="<?= $funktionen ?>">Mehr</a>
 		</div>
 		<div>
-			<h3 class="font-bold mt-1 mb-2">Offene Aufträge</h3>
+			<h3 class="font-bold mt-1 mb-2">Offene Aufträge <span id="orderCount"></span></h3>
 			<div id="openOrders"></div>
 		</div>
 	</div>

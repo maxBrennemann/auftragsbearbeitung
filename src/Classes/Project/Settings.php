@@ -41,12 +41,13 @@ class Settings
     public static function set(string $setting, string $value): void
     {
         $query = "UPDATE `settings` SET `content` = CASE
-                WHEN `isNullable` = 1 AND :value IS NULL THEN `defaultValue`
-                ELSE :value
+                WHEN `isNullable` = 1 AND :value1 IS NULL THEN `defaultValue`
+                ELSE :value2
                 END
             WHERE `title` = :setting;";
         DBAccess::updateQuery($query, [
-            "value" => $value,
+            "value1" => $value,
+            "value2" => $value,
             "setting" => $setting,
         ]);
 
