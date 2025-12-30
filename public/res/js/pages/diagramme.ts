@@ -7,6 +7,7 @@ import { Filter, FilterField, FilterOp, FilterValue } from "../types/filters";
 import { label } from "../types/labels";
 import { notification } from "js-classes/notifications.js";
 import { dateInput, numberInput } from "../diagram/validations.js";
+import { QueryBuilder } from "../diagram/querybuilder.js";
 
 const refs = {} as { [key: string]: HTMLElement };
 const fnNames = {} as FunctionMap;
@@ -40,6 +41,7 @@ const genId = () => `f_${Math.random().toString(36).slice(2, 10)}`;
 
 const init = () => {
 	refs.ctxDiagram = document.getElementById("ctxDiagram") as HTMLElement;
+	initFromUrl();
 	loadDiagram();
 	addBindings(fnNames);
 }
@@ -50,6 +52,8 @@ fnNames.click_addDimension = () => {
 	if (!state.dimensions.has(selectedDim)) {
 		state.dimensions.add(selectedDim);
 		renderDimensions();
+	} else {
+		notification("Die Dimension existiert bereits.", "warning", "This dimension already exists.", 3000);
 	}
 };
 
@@ -78,6 +82,17 @@ fnNames.click_addFilter = () => {
 		value: defaultOp === "between" ? [0, 0] : defaultValue,
 	});
 
+	renderFilters();
+};
+
+fnNames.click_generateDiagram = async () => {
+	const response = await loadStats();
+};
+
+fnNames.click_resetDiagram = () => {
+	state.dimensions.clear();
+	state.filters = [];
+	renderDimensions();
 	renderFilters();
 };
 
@@ -178,6 +193,8 @@ const renderDimensions = () => {
 
 		cont.appendChild(div);
 	});
+
+	syncUrlFromState();
 }
 
 const renderFilters = () => {
@@ -187,6 +204,8 @@ const renderFilters = () => {
 	state.filters.forEach(filter => {
 		cont.appendChild(renderFilterRow(filter));
 	});
+
+	syncUrlFromState();
 };
 
 const renderFilterRow = (filter: Filter) => {
@@ -314,5 +333,26 @@ const renderValueInputs = (wrap: HTMLElement, filter: Filter) => {
 
 	wrap.appendChild(input);
 };
+
+async function loadStats() {
+	const payload = QueryBuilder.toPayload(state);
+
+	return ajax.post("/api/v1/stats", payload, true);
+}
+
+function syncUrlFromState() {
+	const payload = QueryBuilder.toPayload(state);
+	const url = QueryBuilder.toUrl(payload);
+
+	window.history.replaceState({}, "", url);
+}
+
+function initFromUrl() {
+	const payload = QueryBuilder.fromUrl();
+	QueryBuilder.applyToState(payload, state);
+
+	renderDimensions();
+	renderFilters();
+}
 
 loader(init);

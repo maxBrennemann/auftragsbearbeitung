@@ -8,7 +8,7 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 
-class Kunde implements StatisticsInterface
+class Kunde
 {
     private int $kundennummer = 0;
     private string $vorname = "";
@@ -258,8 +258,6 @@ class Kunde implements StatisticsInterface
     {
         return $this->note;
     }
-
-    public function recalculate(): void {}
 
     private function loadAddresses(): void
     {

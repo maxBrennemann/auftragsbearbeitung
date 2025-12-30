@@ -157,6 +157,11 @@ class Statistics
 
         echo json_encode($data);
     }
+
+    public static function dispatch(): void
+    {
+        self::dispatcher();
+    }
 }
 
 /**

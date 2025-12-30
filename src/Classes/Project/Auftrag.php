@@ -11,7 +11,7 @@ use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 use Src\Classes\Notification\NotificationType;
 
-class Auftrag implements StatisticsInterface, NotifiableEntity
+class Auftrag implements NotifiableEntity
 {
     private int $Auftragsnummer;
     private string $Auftragsbezeichnung;
@@ -527,8 +527,6 @@ class Auftrag implements StatisticsInterface, NotifiableEntity
 
         JSONResponseHandler::sendResponse($notes);
     }
-
-    public function recalculate(): void {}
 
     public static function archive(): void
     {

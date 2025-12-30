@@ -40,6 +40,11 @@ class Ajax
         $url = explode('?', $url, 2);
         $apiPath = str_replace($_ENV["REWRITE_BASE"] . $_ENV["SUB_URL"] . "/", "", $url[0]);
         $apiParts = explode("/", $apiPath);
+
+        if (count($apiParts) < 4) {
+            JSONResponseHandler::throwError(404, "Path not found");
+        }
+
         $apiVersion = $apiParts[2];
         $routeType = $apiParts[3];
 
@@ -113,6 +118,7 @@ class Ajax
                 break;
             case "template":
             case "manual":
+            case "stats":
                 VariousRoutes::handleRequest($path);
                 break;
             case "hooks":

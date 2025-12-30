@@ -34,8 +34,8 @@
 			</div>
 		</div>
 		<div class="mt-2">
-			<button class="btn-primary">Diagramm generieren</button>
-			<button class="btn-cancel">Zurücksetzen</button>
+			<button class="btn-primary" data-fun="generateDiagram" data-binding="true">Diagramm generieren</button>
+			<button class="btn-cancel" data-fun="resetDiagram" data-binding="true">Zurücksetzen</button>
 		</div>
 	</div>
 </div>
