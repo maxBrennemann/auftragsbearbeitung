@@ -1,11 +1,11 @@
 //@ts-nocheck
 
-import { ajax } from "js-classes/ajax.js";
-import { addBindings } from "js-classes/bindings.js"
-import { notification } from "js-classes/notifications.js";
+import { ajax } from "js-classes/ajax";
+import { addBindings } from "js-classes/bindings"
+import { notification } from "js-classes/notifications";
 
-import { DragSortManager } from "../classes/DragSortManager.js";
-import { clearInputs } from "../global.js";
+import { DragSortManager } from "../classes/DragSortManager";
+import { clearInputs } from "../global";
 
 let currentDraggedGroup = null;
 let currentDraggedElement = null;

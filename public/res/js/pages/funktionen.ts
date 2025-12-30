@@ -1,4 +1,4 @@
-import { ajax } from "js-classes/ajax.js";
+import { ajax } from "js-classes/ajax";
 
 /**
  * Aufbau der Anleitung:

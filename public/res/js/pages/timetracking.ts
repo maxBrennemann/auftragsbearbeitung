@@ -1,8 +1,8 @@
-import { ajax } from "js-classes/ajax.js";
-import { addBindings } from "js-classes/bindings.js"
+import { ajax } from "js-classes/ajax";
+import { addBindings } from "js-classes/bindings"
 
-import { addRow, clearRows, renderTable } from "../classes/table.ts";
-import { timeGlobalListener } from "../classes/timetracking.js";
+import { addRow, clearRows, renderTable } from "../classes/table";
+import { timeGlobalListener } from "../classes/timetracking";
 
 import { FunctionMap } from "../types/types";
 

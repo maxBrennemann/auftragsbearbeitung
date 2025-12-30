@@ -1,6 +1,6 @@
 //@ts-nocheck
 import "../css/input.css";
-import "./classes/loadtime.ts";
+import "./classes/loadtime";
 
 if (import.meta.env.VITE_DEBUG_CSS === 'true') {
 	import('../css/debug.css');
@@ -66,15 +66,15 @@ function showDevError(xdebugHtml, meta) {
 	createPopup(container);
 }
 
-import { ajax } from "js-classes/ajax.js";
-import { addBindings } from "js-classes/bindings.js"
+import { ajax } from "js-classes/ajax";
+import { addBindings } from "js-classes/bindings"
 import { DeviceDetector } from "js-classes/deviceDetector";
 import { setNotificationPersistance } from "js-classes/notifications";
 
 import { createPopup } from "./classes/helpers";
-import { initNotificationService } from "./classes/notificationUpdater.js";
-import { timeGlobalListener } from "./classes/timetracking.ts";
-import { checkAutoOpenPopup, initImagePreviewListener } from "./classes/imagePreview.ts";
+import { initNotificationService } from "./classes/notificationUpdater";
+import { timeGlobalListener } from "./classes/timetracking";
+import { checkAutoOpenPopup, initImagePreviewListener } from "./classes/imagePreview";
 
 const fnNames = {};
 

@@ -1,13 +1,13 @@
-import { ajax } from "js-classes/ajax.js";
+import { ajax } from "js-classes/ajax";
 import Chart from "chart.js/auto";
 import { loader } from "../classes/helpers";
-import { addBindings } from "js-classes/bindings.js";
+import { addBindings } from "js-classes/bindings";
 import { FunctionMap } from "../types/types";
 import { Filter, FilterField, FilterOp, FilterValue } from "../types/filters";
 import { label } from "../types/labels";
-import { notification } from "js-classes/notifications.js";
-import { dateInput, numberInput } from "../diagram/validations.js";
-import { QueryBuilder } from "../diagram/querybuilder.js";
+import { notification } from "js-classes/notifications";
+import { dateInput, numberInput } from "../diagram/validations";
+import { QueryBuilder } from "../diagram/querybuilder";
 
 const refs = {} as { [key: string]: HTMLElement };
 const fnNames = {} as FunctionMap;

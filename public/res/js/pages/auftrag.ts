@@ -1,18 +1,18 @@
 ﻿//@ts-nocheck
 
-import { addBindings, getVariable } from "js-classes/bindings.js"
+import { addBindings, getVariable } from "js-classes/bindings"
 
-import { initColors } from "../auftrag/colorManager.js";
-import { initNotes } from "../auftrag/noteStepManager.js";
-import { initOrderManager } from "../auftrag/orderManager.js";
-import { initVehicles } from "../auftrag/vehicleManager.ts";
+import { initColors } from "../auftrag/colorManager";
+import { initNotes } from "../auftrag/noteStepManager";
+import { initOrderManager } from "../auftrag/orderManager";
+import { initVehicles } from "../auftrag/vehicleManager";
 
-import "../auftrag/calculateGas.js";
-import { ajax } from "js-classes/ajax.js";
+import "../auftrag/calculateGas";
+import { ajax } from "js-classes/ajax";
 
-import { getItemsTable, initInvoiceItems } from "../classes/invoiceItems.ts";
-import { notification } from "js-classes/notifications.js";
-import { initFileUploader } from "../classes/upload.js";
+import { getItemsTable, initInvoiceItems } from "../classes/invoiceItems";
+import { notification } from "js-classes/notifications";
+import { initFileUploader } from "../classes/upload";
 import { createPopup } from "../classes/helpers";
 
 /* global variables */

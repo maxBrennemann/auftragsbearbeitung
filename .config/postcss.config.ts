@@ -9,7 +9,11 @@ export default {
         autoprefixer(),
         postcssUrl({
             url: (asset: { url: string }) => {
-                const fontsToRewrite = ['Raleway-Regular.ttf', 'OpenSans-VariableFont.ttf', 'OpenSans-Italic-VariableFont.ttf'];
+                const fontsToRewrite = [
+                    'Raleway-Regular.ttf',
+                    'OpenSans-VariableFont.ttf',
+                    'OpenSans-Italic-VariableFont.ttf'
+                ];
                 const filename = asset.url.split('/').pop();
                 if (!filename) return asset.url;
                 

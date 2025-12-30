@@ -1,5 +1,5 @@
-import { ajax } from "js-classes/ajax.js";
-import { addBindings } from "js-classes/bindings.js";
+import { ajax } from "js-classes/ajax";
+import { addBindings } from "js-classes/bindings";
 
 import { createPopup } from "../classes/helpers";
 

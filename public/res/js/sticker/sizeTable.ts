@@ -1,10 +1,10 @@
 // @ts-nocheck
 
-import { ajax } from "js-classes/ajax.js";
+import { ajax } from "js-classes/ajax";
 
-import { getStickerId } from "../pages/sticker.js";
+import { getStickerId } from "../pages/sticker";
 
-import { deleteButton, editButton, parseEuro, parseInput, resetInputs } from "./helper.ts";
+import { deleteButton, editButton, parseEuro, parseInput, resetInputs } from "./helper";
 
 const sizeData = {
     sizes: [],

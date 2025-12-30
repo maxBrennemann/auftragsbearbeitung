@@ -1,11 +1,11 @@
-import { ajax } from "js-classes/ajax.js";
-import { addBindings } from "js-classes/bindings.js";
-import { notification } from "js-classes/notifications.js";
+import { ajax } from "js-classes/ajax";
+import { addBindings } from "js-classes/bindings";
+import { notification } from "js-classes/notifications";
 
-import { getTemplate, setInpupts, clearInputs } from "../global.js";
+import { getTemplate, setInpupts, clearInputs } from "../global";
 import { createPopup } from "../classes/helpers";
-import { addRow, updateRow, renderTable } from "./table.ts";
-import type { FunctionMap, TableHeader, TableOptions } from "../types/types.ts";
+import { addRow, updateRow, renderTable } from "./table";
+import type { FunctionMap, TableHeader, TableOptions } from "../types/types";
 
 interface ItemConfig {
     orderId: number;

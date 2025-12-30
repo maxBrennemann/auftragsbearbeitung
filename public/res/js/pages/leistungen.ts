@@ -1,8 +1,8 @@
 //@ts-nocheck
 
-import { addBindings } from "js-classes/bindings.js"
+import { addBindings } from "js-classes/bindings"
 
-import { clearInputs } from "../global.js";
+import { clearInputs } from "../global";
 
 const fnNames = {};
 

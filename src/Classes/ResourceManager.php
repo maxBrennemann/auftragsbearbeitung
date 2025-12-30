@@ -175,7 +175,7 @@ class ResourceManager
         insertTemplate("../public/layout/header.php", [
             "pageName" => $pageName,
             "page" => $page,
-            "jsPage" => $page == "" ? "home" : $page,
+            "pageScript" => $page == "" ? "home" : $page,
         ]);
 
         insertTemplate("../public/pages/$filePath");

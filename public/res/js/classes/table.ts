@@ -1,10 +1,10 @@
 //@ts-nocheck
 
-import { ajax } from "js-classes/ajax.js";
+import { ajax } from "js-classes/ajax";
 
-import { loadFromLocalStorage, saveToLocalStorage } from "../global.js";
+import { loadFromLocalStorage, saveToLocalStorage } from "../global";
 
-import { tableConfig } from "./tableconfig.js";
+import { tableConfig } from "./tableconfig";
 
 export const renderTable = (containerId, header, data, options = {}) => {
     const table = createTable(containerId, options);

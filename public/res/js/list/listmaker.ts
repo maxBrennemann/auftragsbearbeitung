@@ -1,6 +1,6 @@
 //@ts-nocheck
 
-import { } from "./listcreator.js";
+import { } from "./listcreator";
 
 /**
  * Listenersteller:

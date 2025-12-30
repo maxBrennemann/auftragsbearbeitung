@@ -1,10 +1,10 @@
-import { ajax } from "js-classes/ajax.js";
+import { ajax } from "js-classes/ajax";
 
 import { format } from "date-fns";
-import { addRow, createHeader, createTable } from "../classes/table.ts";
-import { loader } from "../classes/helpers.js";
-import { FunctionMap } from "../types/types.js";
-import { addBindings } from "js-classes/bindings.js";
+import { addRow, createHeader, createTable } from "../classes/table";
+import { loader } from "../classes/helpers";
+import { FunctionMap } from "../types/types";
+import { addBindings } from "js-classes/bindings";
 
 const fnNames: FunctionMap = {};
 const config = {
