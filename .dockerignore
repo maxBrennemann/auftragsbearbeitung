@@ -14,7 +14,7 @@ var
 
 .php-cs-fixer.cache
 
-public/res/js/classes/tableconfig.js
+public/res/js/classes/tableconfig.ts
 
 # minimized files
 public/res/assets/*

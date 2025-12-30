@@ -4,8 +4,8 @@ import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js"
 import { notification } from "js-classes/notifications.js";
 
-import { renderTable } from "../classes/table.js";
-import { tableConfig } from "../classes/tableconfig.js";
+import { renderTable } from "../classes/table.ts";
+import { tableConfig } from "../classes/tableconfig.ts";
 import { createPopup } from "../classes/helpers";
 
 const fnNames = {};

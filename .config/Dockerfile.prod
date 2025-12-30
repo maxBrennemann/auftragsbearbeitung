@@ -36,7 +36,7 @@ RUN npm ci --include=dev && npm cache clean --force
 COPY public ./public
 COPY src ./src
 COPY .config ./.config
-COPY --from=composer /var/www/html/public/res/js/classes/tableconfig.js ./public/res/js/classes/tableconfig.js
+COPY --from=composer /var/www/html/public/res/js/classes/tableconfig.ts ./public/res/js/classes/tableconfig.ts
 
 RUN npm run build && rm -rf /root/.npm /tmp/*
 

@@ -1,11 +1,10 @@
-//@ts-nocheck
-
 import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js";
 import { notification } from "js-classes/notifications.js";
+import { FunctionMap } from "../types/types";
 
-const fnNames = {};
-let fileUploadInfo = {};
+const fnNames = {} as FunctionMap;
+let fileUploadInfo = {} as Record<string, any>;
 
 fnNames.write_fileUploader = async e => {
     const target = e.currentTarget;
@@ -40,7 +39,7 @@ fnNames.dragover_fileUploader = async e => {
     e.preventDefault();
 }
 
-const uploadFiles = async (files, location, info, type, target) => {
+const uploadFiles = async (files: FileList, location: string, info: any, type: string, target: HTMLInputElement) => {
     await ajax.uploadFiles(files, location, info).then(r => {
         const event = new CustomEvent("fileUploaded", {
             "detail": { type, ...r.data },
@@ -61,7 +60,7 @@ const uploadFiles = async (files, location, info, type, target) => {
     target.value = "";
 }
 
-export const initFileUploader = (data) => {
+export const initFileUploader = (data: any) => {
     fileUploadInfo = {
         ...fileUploadInfo,
         ...data,

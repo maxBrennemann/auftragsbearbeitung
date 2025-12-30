@@ -4,7 +4,7 @@ import { notification } from "js-classes/notifications.js";
 
 import { getTemplate, setInpupts, clearInputs } from "../global.js";
 import { createPopup } from "../classes/helpers";
-import { addRow, updateRow, renderTable } from "./table.js";
+import { addRow, updateRow, renderTable } from "./table.ts";
 import type { FunctionMap, TableHeader, TableOptions } from "../types/types.ts";
 
 interface ItemConfig {

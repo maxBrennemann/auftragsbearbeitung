@@ -4,8 +4,8 @@ import { ajax } from "js-classes/ajax.js";
 import { addBindings } from "js-classes/bindings.js"
 import { notification } from "js-classes/notifications.js";
 
-import { createHeader, createTable, addRow, fetchAndRenderTable } from "../classes/table.js";
-import { tableConfig } from "../classes/tableconfig.js";
+import { createHeader, createTable, addRow, fetchAndRenderTable } from "../classes/table.ts";
+import { tableConfig } from "../classes/tableconfig.ts";
 import { initFileUploader } from "../classes/upload.js";
 import { clearInputs } from "../global.js";
 

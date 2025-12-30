@@ -1,7 +1,7 @@
 import { ajax } from "js-classes/ajax.js";
 
 import { format } from "date-fns";
-import { addRow, createHeader, createTable } from "../classes/table.js";
+import { addRow, createHeader, createTable } from "../classes/table.ts";
 import { loader } from "../classes/helpers.js";
 import { FunctionMap } from "../types/types.js";
 import { addBindings } from "js-classes/bindings.js";

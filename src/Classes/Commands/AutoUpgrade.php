@@ -38,7 +38,7 @@ class AutoUpgrade extends Command
             mkdir($target, 0775, true);
         }
 
-        file_put_contents("$target/tableconfig.js", $content);
+        file_put_contents("$target/tableconfig.ts", $content);
 
         if ($skipMigration) {
             return Command::SUCCESS;

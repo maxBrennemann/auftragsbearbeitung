@@ -1,6 +1,6 @@
 import { ajax } from "js-classes/ajax.js";
 
-import { renderTable } from "../classes/table.js";
+import { renderTable } from "../classes/table.ts";
 
 function ajaxSearch(query: string) {
     const customerOverview = (document.getElementById("kundenLink") as HTMLElement).dataset.customerOverview;

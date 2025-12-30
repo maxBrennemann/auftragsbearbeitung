@@ -73,7 +73,7 @@ import { setNotificationPersistance } from "js-classes/notifications";
 
 import { createPopup } from "./classes/helpers";
 import { initNotificationService } from "./classes/notificationUpdater.js";
-import { timeGlobalListener } from "./classes/timetracking.js";
+import { timeGlobalListener } from "./classes/timetracking.ts";
 import { checkAutoOpenPopup, initImagePreviewListener } from "./classes/imagePreview.ts";
 
 const fnNames = {};
