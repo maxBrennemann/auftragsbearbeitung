@@ -3,8 +3,11 @@ import { addBindings } from "js-classes/bindings"
 
 import { addRow, clearRows, renderTable } from "../classes/table";
 import { timeGlobalListener } from "../classes/timetracking";
-
 import { FunctionMap } from "../types/types";
+import { loader } from "../classes/helpers";
+
+import { Router } from "../utils/router";
+import { Url } from "../utils/url";
 
 const fnNames = {} as FunctionMap;
 const refs = {} as { [key: string]: HTMLElement };
@@ -122,6 +125,22 @@ fnNames.click_pauseCurrentTracking = () => {
     
 }
 
+fnNames.write_selectDates = () => {
+    const dateInputs = document.querySelectorAll(".timeDates") as NodeListOf<HTMLInputElement>;
+    const startDate = dateInputs[0].value;
+    const stopDate = dateInputs[1].value;
+
+    Url.updateQuery({
+        "start": startDate,
+        "stop": stopDate,
+    });
+
+    updateTable({
+        "start": startDate,
+        "stop": stopDate,
+    });
+}
+
 fnNames.click_selectEntries = async (e) => {
     const el = e.currentTarget;
     const value = el.dataset.value;
@@ -148,6 +167,15 @@ fnNames.click_selectEntries = async (e) => {
             break;
     }
 
+    Url.updateQuery({
+        "start": options.start,
+        "stop": options.stop,
+    });
+
+    updateTable(options);
+}
+
+const updateTable = async (options: any) => {
     const data = await ajax.get(`/api/v1/time-tracking/current-user`, options);
     const table = document.getElementById("timeTrackingTable");
     clearRows(table);
@@ -226,10 +254,4 @@ const getTimeTrackingEntries = async () => {
     });
 }
 
-if (document.readyState !== 'loading') {
-    init();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        init();
-    });
-}
+loader(init);

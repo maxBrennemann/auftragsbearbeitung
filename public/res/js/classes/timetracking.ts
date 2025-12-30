@@ -1,39 +1,40 @@
-//@ts-nocheck
+var globalTimerInterval: number | undefined;
 
-var globalTimerInterval;
 export const timeGlobalListener = () => {
-	const displayTime = document.getElementById("timeGlobal");
-	if (displayTime != null) {
-		const start = localStorage.getItem("startTime");
-		if (start != null) {
-			globalTimerInterval = setInterval(countTimeGlobal, 1000);
-		}
-	}
+    const displayTime = document.getElementById("timeGlobal") as HTMLElement;
+    if (!displayTime) return;
+
+    const start = localStorage.getItem("startTime");
+    if (start) {
+        if (globalTimerInterval !== undefined) clearInterval(globalTimerInterval);
+
+        globalTimerInterval = window.setInterval(() => countTimeGlobal(displayTime), 1000);
+        countTimeGlobal(displayTime);
+    }
 }
 
-const countTimeGlobal = () => {
-    let curr = new Date().getTime().toString();
-    let startTime = parseInt(localStorage.getItem("startTime"));
-
-    if (localStorage.getItem("startTime") == null) {
-        clearInterval(globalTimerInterval);
-        const displayTime = document.getElementById("timeGlobal");
-        displayTime.innerHTML = "00:00:00";
+const countTimeGlobal = (displayTime: HTMLElement) => {
+    const startRaw = localStorage.getItem("startTime");
+    if (!startRaw) {
+        if (globalTimerInterval !== undefined) clearInterval(globalTimerInterval);
+        globalTimerInterval = undefined;
+        displayTime.textContent = "00:00:00";
         return;
     }
 
-    let diff = curr - startTime;
+    const curr = Date.now();
+    const startTime = Number(startRaw);
 
-    let sec = Math.floor(diff / 1000);
-    let hou = Math.floor(sec / 60 / 60);
-    sec = sec - hou * 60 * 60;
-    let min = Math.floor(sec / 60);
-    sec = sec - min * 60;
+    const diffMs = curr - startTime;
 
-	const displayTime = document.getElementById("timeGlobal");
-    displayTime.innerHTML = `${pad(hou)}:${pad(min)}:${pad(sec)}`;
-}
+    const totalSec = Math.floor(diffMs / 1000);
+    const hou = Math.floor(totalSec / 3600);
+    const min = Math.floor((totalSec % 3600) / 60);
+    const sec = totalSec % 60;
 
-const pad = (num) => {
+    displayTime.textContent = `${pad(hou)}:${pad(min)}:${pad(sec)}`;
+};
+
+const pad = (num: number) => {
     return ('00' + num).slice(-2);
 }

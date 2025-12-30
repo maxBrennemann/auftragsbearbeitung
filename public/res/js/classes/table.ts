@@ -241,7 +241,10 @@ const createSumRow = (data, table, options = {}, header = {}) => {
 export const addRow = (data, table, options = {}, header = {}) => {
     const tbody = table.querySelector("tbody");
     const row = document.createElement("tr");
-    clearTable(table);
+
+    if (Object.keys(data).length !== 0) {
+        clearTable(table);
+    }
 
     if (Object.keys(data).includes(options?.primaryKey)) {
         row.dataset.id = data[options?.primaryKey];
@@ -424,6 +427,8 @@ export const clearRows = (table) => {
     Array.from(rows).forEach(row => {
         row.remove();
     });
+
+    createPlaceholderRow(Object.keys(table.querySelector("thead tr").children).length, table);
 }
 
 const addEditableRow = (headers, table, options = {}) => {
