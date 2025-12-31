@@ -240,6 +240,10 @@ function initializeInfoBtn() {
 			const id = btn.dataset.info;
 			const response = await ajax.get(`/api/v1/manual/text/${id}`);
 
+			if (response.success === false) {
+				return;
+			}
+
 			let infoBox = document.getElementById("infoBox" + id);
 			if (infoBox == undefined) {
 				infoBox = document.createElement("div");
@@ -319,11 +323,24 @@ export const clearInputs = (inputs) => {
 }
 
 export const setInpupts = inputs => {
+	const checkCheckbox = (el, value) => {
+		if (el.type == "checkbox") {
+			el.checked = value;
+			return true;
+		}
+		return false;
+	}
+
 	for (let key in inputs) {
 		switch (key) {
 			case "ids":
 				for (let item in inputs[key]) {
 					const el = document.getElementById(item);
+
+					if (checkCheckbox(el, inputs[key][item])) {
+						continue;
+					}
+
 					el.value = inputs[key][item];
 				}
 				break;
@@ -331,8 +348,7 @@ export const setInpupts = inputs => {
 				for (let item in inputs[key]) {
 					const els = document.getElementsByClassName(item);
 					els.forEach(el => {
-						if (el.type == "checkbox") {
-							el.checked = inputs[key][item];
+						if (checkCheckbox(el, inputs[key][item])) {
 							return;
 						}
 

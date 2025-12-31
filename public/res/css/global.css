@@ -116,29 +116,6 @@ li {
     white-space: nowrap;
 }
 
-/* vertical tables */
-
-.showVertical td {
-    border-radius: 0;
-    background-color: white;
-}
-
-.showVertical tr:first-child th {
-    border-radius: 6px 0 0 0;
-}
-
-.showVertical tr:last-child th {
-    border-radius: 0 0 0 6px;
-}
-
-.showVertical tr:first-child td {
-    border-radius: 0 6px 0 0;
-}
-
-.showVertical tr:last-child td {
-    border-radius: 0 0 6px 0;
-}
-
 .innerTable tr:first-of-type td:first-of-type {
     border-radius: 6px 0 0 0;
 }
@@ -179,20 +156,6 @@ li {
     height: 3px;
     border: none;
     border-radius: 6px;
-}
-
-.closeButton {
-    background: #c14949;
-    font-size: 1.4em;
-    margin: 0;
-    top: 0;
-    right: 0;
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    border: none;
-    padding: 0;
-    border-radius: 0 6px;
 }
 
 .farbe {
@@ -608,3 +571,7 @@ h4 {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+
+.draggable-row { cursor: grab; }
+.dragging { opacity: .6; }
+.drag-handle { cursor: grab; }

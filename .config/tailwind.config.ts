@@ -12,10 +12,11 @@ const config: Config = {
         path.resolve(__dirname, '../node_modules/js-classes/**/*.{js,ts}'), // TODO: compile tailwind in package
     ],
     theme: {
-        fontFamily: {
-            'sans': ['Open Sans'],
-        },
         extend: {
+            fontFamily: {
+                'sans': ['"Open Sans"', 'ui-sans-serif', 'system-ui'],
+                'mono': ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'monospace'],
+            },
             fontSize: {
                 'xxs': '0.5rem',
             },

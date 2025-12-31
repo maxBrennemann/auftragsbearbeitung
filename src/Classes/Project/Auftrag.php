@@ -235,6 +235,12 @@ class Auftrag implements NotifiableEntity
         $data = Posten::getOrderItems($id, ClientSettings::getFilterOrderPosten(), 0);
 
         $parsedData = [];
+
+        $mLenQuantity = 0;
+        $mLenPrice = 0;
+        $mLenTotalPrice = 0;
+        $mLenPurchasePrice = 0;
+
         foreach ($data as $key => $value) {
             $item = [];
             $item["type"] = "posten";
@@ -260,7 +266,19 @@ class Auftrag implements NotifiableEntity
             $item["purchasePrice"] = $value["Einkaufspreis"];
             $item["extraData"] = $value["extraData"] ?? [];
 
+            $mLenQuantity = max($mLenQuantity, strlen((string) $item["quantity"]));
+            $mLenPrice = max($mLenPrice, strlen((string) $item["price"]));
+            $mLenTotalPrice = max($mLenTotalPrice, strlen((string) $item["totalPrice"]));
+            $mLenPurchasePrice = max($mLenPurchasePrice, strlen((string) $item["purchasePrice"]));
+
             $parsedData[] = $item;
+        }
+
+        foreach ($parsedData as $key => $value) {
+            $parsedData[$key]["quantity"] = str_pad((string) $value["quantity"], $mLenQuantity, " ", STR_PAD_LEFT);
+            $parsedData[$key]["price"] = str_pad((string) $value["price"], $mLenPrice, " ", STR_PAD_LEFT);
+            $parsedData[$key]["totalPrice"] = str_pad((string) $value["totalPrice"], $mLenTotalPrice, " ", STR_PAD_LEFT);
+            $parsedData[$key]["purchasePrice"] = str_pad((string) $value["purchasePrice"], $mLenPurchasePrice, " ", STR_PAD_LEFT);
         }
 
         JSONResponseHandler::sendResponse($parsedData);

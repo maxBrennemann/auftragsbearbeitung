@@ -13,6 +13,9 @@ export interface TableOptions {
         table: {
             className: string[];
         };
+        key: {
+            [key: string]: string[];
+        };
     };
     autoSort: boolean;
     sum: { key: string; format: string }[];

@@ -152,6 +152,7 @@ const createPlaceholderRow = (count, table) => {
 
 const createAddRow = (count, header, table, options = {}) => {
     const row = document.createElement("tr");
+    row.className = "add-row";
     const cell = document.createElement("td");
     cell.setAttribute("colspan", count);
     cell.style.textAlign = "center";
@@ -397,7 +398,8 @@ const addMoveBtn = (data, table, row, actionsCell, options) => {
         const checkBtn = document.createElement("button");
         checkBtn.innerHTML = getMoveBtn();
         checkBtn.title = "Bewegen";
-        checkBtn.className = "inline-flex border-0 bg-zinc-400 p-1 rounded-md ml-1";
+        checkBtn.className = "inline-flex border-0 bg-zinc-400 p-1 rounded-md ml-1 drag-handle";
+        //checkBtn.draggable = false;
         checkBtn.addEventListener("click", () => {
             dispatchActionEvent("rowMove", data, table, { row });
         });

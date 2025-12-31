@@ -1,5 +1,7 @@
 interface DragSortOptions {
     itemSelector?: string;
+    handleSelector?: string;
+    ignoreSelector?: string;
     dataFields?: string[];
     onOrderChange?: (
         positions: Array<Record<string, string | number>>,
@@ -19,15 +21,37 @@ export class DragSortManager {
         this.init();
     }
 
-    private init() {
-        const items = this.group.querySelectorAll<HTMLElement>(this.options.itemSelector || "li");
-        items.forEach(item => this.bindDragEvents(item));
+    private items(): HTMLElement[] {
+        const selector = this.options.itemSelector || "li";
+        const ignore = this.options.ignoreSelector;
 
+        const nodes = Array.from(this.group.querySelectorAll<HTMLElement>(selector));
+        if (!ignore) return nodes;
+
+        return nodes.filter(node => !node.matches(ignore));
+    }
+
+    private init() {
+        const items = this.items().forEach(item => this.bindDragEvents(item));
     }
 
     private bindDragEvents(element: HTMLElement) {
         element.setAttribute("draggable", "true");
-        element.addEventListener("dragstart", (e) => this.handleDragStart(e));
+
+        const handleSelector = this.options.handleSelector;
+        if (handleSelector) {
+            element.addEventListener("dragstart", (e) => {
+                const target = e.target as HTMLElement | null;
+                if (!target || !target.closest(handleSelector)) {
+                    e.preventDefault();
+                    return;
+                }
+                this.handleDragStart(e);
+            });
+        } else {
+            element.addEventListener("dragstart", (e) => this.handleDragStart(e));
+        }
+
         element.addEventListener("dragover", (e) => this.handleDragOver(e));
         element.addEventListener("dragenter", (e) => this.handleDragEnter(e));
         element.addEventListener("dragleave", (e) => this.handleDragLeave(e));
@@ -88,7 +112,7 @@ export class DragSortManager {
     }
 
     private updatePositions() {
-        const items = Array.from(this.group.children) as HTMLElement[];
+        const items = this.items();
         const fields = this.options.dataFields;
 
         const positions = items.map((el, idx) => {

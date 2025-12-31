@@ -136,17 +136,6 @@ class TableGenerator
 
     /**
      * @param int $count
-     * @return string
-     * 
-     * @phpstan-ignore-next-line
-     */
-    private static function createPlaceholderRow(int $count): string
-    {
-        return '';
-    }
-
-    /**
-     * @param int $count
      * @param array{
      *      columns:string[],
      *      names:string[],
