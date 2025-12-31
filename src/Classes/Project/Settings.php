@@ -14,14 +14,22 @@ class Settings
      * @param string $defaultValue
      * @param bool $isBool
      * @param bool $isNullable
+     * @param bool $isJSON
      * @return int the id of the setting value
      */
-    private static function add(string $setting, string $defaultValue, bool $isBool = false, bool $isNullable = false): int
+    private static function add(
+        string $setting,
+        string $defaultValue,
+        bool $isBool = false,
+        bool $isNullable = false,
+        bool $isJSON = false
+    ): int
     {
-        $query = "REPLACE INTO `settings` (`title`, `content`, `defaultValue`, `isBool`, `isNullable`) VALUES (:title, :content, :defaultValue, :isBool, :isNullable)";
+        $query = "REPLACE INTO `settings` (`title`, `content`, `defaultValue`, `isBool`, `isNullable`) VALUES (:title, :content, :defaultValue, :isBool, :isNullable, :isJSON);";
 
         $isBool = $isBool ? 1 : 0;
         $isNullable = $isNullable ? 1 : 0;
+        $isJSON = $isJSON ? 1 : 0;
 
         return (int) DBAccess::insertQuery($query, [
             "title" => $setting,
@@ -29,6 +37,7 @@ class Settings
             "defaultValue" => $defaultValue,
             "isBool" => $isBool,
             "isNullable" => $isNullable,
+            "isJSON" => $isJSON,
         ]);
     }
 
@@ -40,14 +49,17 @@ class Settings
      */
     public static function set(string $setting, string $value): void
     {
-        $query = "UPDATE `settings` SET `content` = CASE
+        $query = "UPDATE `settings`
+            SET `content` = CASE
                 WHEN `isNullable` = 1 AND :value1 IS NULL THEN `defaultValue`
-                ELSE :value2
+                WHEN `isJSON` = 1 THEN CAST(:value2 AS JSON)
+                ELSE :value3
                 END
             WHERE `title` = :setting;";
         DBAccess::updateQuery($query, [
             "value1" => $value,
             "value2" => $value,
+            "value3" => $value,
             "setting" => $setting,
         ]);
 
@@ -64,11 +76,18 @@ class Settings
      */
     public static function get(string $title): ?string
     {
-        $query = "SELECT `content` FROM `settings` WHERE `title` = :title LIMIT 1;";
+        $query = "SELECT `content`, `json_content`, `isJSON` 
+            FROM `settings` 
+            WHERE `title` = :title 
+            LIMIT 1;";
         $value = DBAccess::selectQuery($query, ["title" => $title]);
 
         if (sizeof($value) == 0) {
             return null;
+        }
+
+        if ((bool) $value[0]["isJSON"] === true) {
+            return $value[0]["json_content"];
         }
 
         return $value[0]["content"];
@@ -106,5 +125,10 @@ class Settings
         JSONResponseHandler::sendResponse([
             "status" => "success",
         ]);
+    }
+
+    public static function getUserSetting(): void
+    {
+
     }
 }

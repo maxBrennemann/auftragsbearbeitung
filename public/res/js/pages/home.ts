@@ -1,6 +1,41 @@
 import { ajax } from "js-classes/ajax";
+import { addBindings } from "js-classes/bindings";
 
 import { renderTable } from "../classes/table";
+import { createPopup, loader } from "../classes/helpers";
+import { FunctionMap } from "../types/types";
+
+const fnNames: FunctionMap = {};
+
+fnNames.click_adjustLinks = async () => {
+    const div = document.createElement("div");
+    const linkSetting = await ajax.get(`/api/v1/settings/user/self/linkBehavior`);
+
+    const divAvailable = document.createElement("div");
+    const divSelected = document.createElement("div");
+
+    div.classList.add("grid", "grid-cols-2", "gap-4", "mb-4");
+    div.appendChild(divAvailable);
+    div.appendChild(divSelected);
+
+    const optionsContainer = createPopup(div);
+
+    const btnSave = document.createElement("button");
+    btnSave.classList.add("btn-primary", "ml-2");
+    btnSave.innerText = "Speichern";
+
+    const btnAdd = document.createElement("button");
+    btnAdd.classList.add("btn-primary", "ml-2");
+    btnAdd.innerText = "⮕";
+
+    const btnRemove = document.createElement("button");
+    btnRemove.classList.add("btn-primary");
+    btnRemove.innerText = "⬅";
+
+    optionsContainer.appendChild(btnSave);
+    optionsContainer.appendChild(btnAdd);
+    optionsContainer.appendChild(btnRemove);
+}
 
 function ajaxSearch(query: string) {
     const customerOverview = (document.getElementById("kundenLink") as HTMLElement).dataset.customerOverview;
@@ -17,7 +52,8 @@ function ajaxSearch(query: string) {
     link.click();
 }
 
-function init() {
+const init = () => {
+    addBindings(fnNames);
     initOpenOrdersTable();
 
     var kundeninput = document.getElementById("kundeninput") as HTMLInputElement;
@@ -77,46 +113,40 @@ const initOpenOrdersTable = async () => {
 
     const columns = [
         {
-            "key": "Auftragsnummer",
-            "label": "Nr.",
+            key: "Auftragsnummer",
+            label: "Nr.",
         },
         {
-            "key": "Datum",
-            "label": "Datum",
+            key: "Datum",
+            label: "Datum",
         },
         {
-            "key": "Termin",
-            "label": "Termin",
+            key: "Termin",
+            label: "Termin",
         },
         {
-            "key": "Kunde",
-            "label": "Kunde",
+            key: "Kunde",
+            label: "Kunde",
         },
         {
-            "key": "Auftragsbezeichnung",
-            "label": "Auftragsbezeichnung",
+            key: "Auftragsbezeichnung",
+            label: "Auftragsbezeichnung",
         },
     ];
 
     const options = {
-        "hideOptions": ["all"],
-        "styles": {
-            "key": {
-                "Termin": ["w-32"],
+        hideOptions: ["all"],
+        styles: {
+            key: {
+                Termin: ["w-32"],
             },
         },
-        "primaryKey": "Auftragsnummer",
-        "autoSort": true,
-        "link": "/auftrag?id=",
+        primaryKey: "Auftragsnummer",
+        autoSort: true,
+        link: "/auftrag?id=",
     };
 
     renderTable("openOrders", columns, data, options);
 }
 
-if (document.readyState !== 'loading') {
-    init();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        init();
-    });
-}
+loader(init);

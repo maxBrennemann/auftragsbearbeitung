@@ -36,11 +36,11 @@ class Wiki
         return [];
     }
 
-    public static function ajaxGetText(): void
+    public static function ajaxGetManualText(): void
     {
-        $infoId = (int) Tools::get("id");
-        $infoText = DBAccess::selectQuery("SELECT info FROM info_texte WHERE id = :infoId;", [
-            "infoId" => $infoId,
+        $infoKey = Tools::get("key");
+        $infoText = DBAccess::selectQuery("SELECT info FROM info_texte WHERE key = :infoKey;", [
+            "infoKey" => $infoKey,
         ]);
 
         if ($infoText == null) {

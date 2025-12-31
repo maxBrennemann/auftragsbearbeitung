@@ -183,7 +183,7 @@ class NotificationManager
             "",
             "Neuer Auftrag"
         ];
-        return $types[$type];
+        return $types[$type] ?? "Benachrichtigung";
     }
 
     /**
