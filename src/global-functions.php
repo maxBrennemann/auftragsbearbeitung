@@ -4,6 +4,7 @@ define("CURRENTVERSION", "1.2.2");
 ini_set("display_errors", true);
 
 use Src\Classes\Controller\TemplateController;
+use Src\Classes\I18n\I18n;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
@@ -203,4 +204,15 @@ function validateDateString(string $date, string $format): bool
     }
 
     return true;
+}
+
+function t(string $key, array $params = []): string
+{
+    $ref = $_ENV["i18n"] ?? null;
+
+    if ($ref !== null && $ref instanceof I18n) {
+        return $ref->t($key, $params);
+    }
+    
+    return $key;
 }

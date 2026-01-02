@@ -1,5 +1,6 @@
 <?php
 
+use Src\Classes\Controller\CustomLinksController;
 use Src\Classes\Link;
 use Src\Classes\Project\Icon;
 use Src\Classes\Project\InvoiceHelper;
@@ -22,7 +23,7 @@ $funktionen = 		Link::getPageLink("functionalities");
 $payments =			Link::getPageLink("payments");
 $listmaker =		Link::getPageLink("listmaker");
 $changelog = 		Link::getPageLink("changelog");
-$timeTracking =	Link::getPageLink("time-tracking");
+$timeTracking =		Link::getPageLink("time-tracking");
 $motiveOverview = 	Link::getPageLink("sticker-overview");
 $wiki = 			Link::getPageLink("wiki");
 
@@ -34,7 +35,8 @@ $wiki = 			Link::getPageLink("wiki");
 
 ?>
 <div>
-	<ul class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 auto-rows-min">
+	<?=  CustomLinksController::getUserLinksTemplate() ?>
+	<ul class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 auto-rows-min hidden">
 		<li class="px-3 py-5 rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
 			<a class="inline-flex items-center gap-x-1" href="<?= $neuerKunde ?>"><?= Icon::getDefault("iconPersonAdd") ?> Neuen Kunden erstellen</a>
 		</li>

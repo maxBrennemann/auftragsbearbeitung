@@ -129,6 +129,23 @@ class Settings
 
     public static function getUserSetting(): void
     {
+        $userId = Tools::get("userId");
+        $userSetting = Tools::get("userSetting");
+        
+        if ($userId === "self") {
+            $userId = User::getCurrentUserId();
+        } else {
+            $userId = (int) $userId;
+        }
 
+        $data = self::get("user_" . $userId . "_" . $userSetting);
+
+        if ($data === null) {
+            JSONResponseHandler::returnNotFound();
+        }
+
+        JSONResponseHandler::sendResponse([
+            "data" => $data,
+        ]);
     }
 }
