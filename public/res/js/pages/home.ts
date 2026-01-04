@@ -7,6 +7,22 @@ import { FunctionMap } from "../types/types";
 
 const fnNames: FunctionMap = {};
 
+type Link = {
+    name: string;
+    url: string;
+    icon: string;
+};
+
+type Links = Array<Link>;
+
+const customizeConfig = {
+    selectedLinks: [] as Links,
+    availableLinks: [] as Links,
+
+    highlightAdd: [] as Links,
+    highlightRemove: [] as Links, 
+}
+
 fnNames.click_adjustLinks = async () => {
     const div = document.createElement("div");
     const linkSetting = await ajax.get(`/api/v1/settings/user/self/linkBehavior`);
@@ -14,6 +30,8 @@ fnNames.click_adjustLinks = async () => {
 
     const divAvailable = document.createElement("div");
     const divSelected = document.createElement("div");
+
+    fillLinks(divAvailable, availabeLinks.data.links);
 
     div.classList.add("grid", "grid-cols-2", "gap-4", "mb-4");
     div.appendChild(divAvailable);
@@ -36,6 +54,23 @@ fnNames.click_adjustLinks = async () => {
     optionsContainer.appendChild(btnSave);
     optionsContainer.appendChild(btnAdd);
     optionsContainer.appendChild(btnRemove);
+}
+
+const fillLinks = (container: HTMLDivElement, links: Array<{ name: string; url: string; icon: string; }>) => {
+    container.innerHTML = "";
+    
+    links.forEach(link => {
+        const linkDiv = document.createElement("div");
+        linkDiv.classList.add("btn-cancel", "block", "mb-3");
+        linkDiv.innerHTML = link.name;
+
+        linkDiv.addEventListener("click", () => {
+            linkDiv.classList.toggle("bg-blue-200");
+
+        });
+
+        container.appendChild(linkDiv);
+    });
 }
 
 function ajaxSearch(query: string) {

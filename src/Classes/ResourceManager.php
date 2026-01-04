@@ -273,7 +273,7 @@ class ResourceManager
         echo "";
     }
 
-    public static function getFileNameWithHash(string $file, string $type = "file"): string
+    public static function getFileNameWithHash(string $file, bool $isJS = true): string
     {
         $json = @file_get_contents("../public/res/assets/.vite/manifest.json");
 
@@ -283,14 +283,14 @@ class ResourceManager
 
         $manifest = json_decode($json, true);
         if (!isset($manifest[$file])) {
-            return $file;
+            return "";
         }
 
-        if ($type !== "file") {
-            return $manifest[$file][$type][0];
+        if (!$isJS) {
+            return $manifest[$file]["css"][0];
         }
 
-        return $manifest[$file][$type];
+        return $manifest[$file]["file"];
     }
 
     /**

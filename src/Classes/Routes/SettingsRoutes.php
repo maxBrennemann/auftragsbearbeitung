@@ -10,11 +10,13 @@ class SettingsRoutes extends Routes
      * @uses Classes\Project\Icon::ajaxIcon()
      * @uses Classes\Project\FileStats::getFilesInfo()
      * @uses Classes\Project\Settings::getUserSetting()
+     * @uses Classes\Controller\CustomLinksController::getAvailableLinksAjax()
      */
     protected static $getRoutes = [
         "/settings/icon/{name}" => [\Src\Classes\Project\Icon::class, "ajaxIcon"],
         "/settings/files/info" => [\Src\Classes\Project\FileStats::class, "getFilesInfo"],
         "/settings/user/{userId}/{userSetting}" => [\Src\Classes\Project\Settings::class, "getUserSetting"],
+        "/settings/links/available" => [\Src\Classes\Controller\CustomLinksController::class, "getAvailableLinksAjax"],
     ];
 
     /**

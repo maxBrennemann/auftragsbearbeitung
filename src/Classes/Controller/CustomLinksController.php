@@ -2,14 +2,18 @@
 
 namespace Src\Classes\Controller;
 
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use Src\Classes\Project\Settings;
 use Src\Classes\Project\User;
+use Src\Classes\Project\InvoiceHelper;
 use Src\Classes\Link;
 
 class CustomLinksController
 {
     public static function getAvailableLinks(): array
     {
+        $openInvoiceSum = InvoiceHelper::getOpenInvoiceSumFormatted();
+
         return [
             [
                 "name" => "Neuen Kunden erstellen",
@@ -88,12 +92,20 @@ class CustomLinksController
                 "input" => false,
             ],
             [
-                "name" => "Offene Rechnungen",
+                "name" => "Offene Rechnungen: <b>$openInvoiceSum</b>",
                 "icon" => false,
                 "url" => Link::getPageLink("offene-rechnungen"),
                 "input" => false,
             ]
         ];
+    }
+
+    public static function getAvailableLinksAjax(): void
+    {
+        $links = self::getAvailableLinks();
+        JSONResponseHandler::sendResponse([
+            "links" => $links,
+        ]);
     }
 
     public static function getUserLinks(): array

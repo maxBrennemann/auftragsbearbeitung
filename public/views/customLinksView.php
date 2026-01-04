@@ -14,7 +14,7 @@ use Src\Classes\Project\Icon;
                 <?php if ($link["icon"]): ?>
                     <?= Icon::getDefault($link["icon"]) ?>
                 <?php endif; ?>
-                <?= $link["name"] ?>
+                <span class="<?= ($link["icon"] != false || $link["input"]) ? "ml-1" : "" ?>"><?= $link["name"] ?></span>
             </a>
         </li>
     <?php endforeach; ?>
