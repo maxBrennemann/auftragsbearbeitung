@@ -55,7 +55,10 @@ const config: Config = {
                 price: ["font-mono", "whitespace-pre"],
                 totalPrice: ["font-mono", "whitespace-pre"],
                 purchasePrice: ["font-mono", "whitespace-pre"],
-            }
+            },
+            sum: {
+                price: ["font-bold", "font-mono", "whitespace-pre"],
+            },
         },
         autoSort: true,
         sum: [

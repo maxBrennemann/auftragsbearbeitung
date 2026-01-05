@@ -223,6 +223,12 @@ const createSumRow = (data, table, options = {}, header = {}) => {
     header.forEach(el => {
         const td = document.createElement("td");
 
+        let className = "";
+        if (options?.styles?.sum?.[el.key]) {
+            className += " " + options.styles.sum[el.key].join(" ");
+        }
+        td.className = className.trim();
+
         let sumBy = sumUp.find(val => val.key === el.key);
         if (sumBy) {
             if (sumBy.format) {
