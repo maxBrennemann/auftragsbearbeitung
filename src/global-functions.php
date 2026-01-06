@@ -214,5 +214,5 @@ function t(string $key, array $params = []): string
         return $ref->t($key, $params);
     }
     
-    return $key;
+    return "";
 }

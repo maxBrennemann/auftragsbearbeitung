@@ -166,7 +166,7 @@ export const getItemsTable = async (
 }
 
 const addExtraData = (data: any[], table: HTMLTableElement): void => {
-    const extraDataEls = table.querySelectorAll<HTMLButtonElement>(`button.info-button`);
+    const extraDataEls = table.querySelectorAll<HTMLButtonElement>(`button.additional-data-btn`);
     extraDataEls.forEach(el => {
         const id = el.dataset.id;
         el.addEventListener("click", () => {

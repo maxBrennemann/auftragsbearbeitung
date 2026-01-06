@@ -32,7 +32,7 @@ final class I18n
             $value = $this->get($this->fallbackLocale, $key);
         }
 
-        $text = is_string($value) ? $value : $key;
+        $text = is_string($value) ? $value : "";
 
         foreach ($params as $pKey => $pVal) {
             $text = str_replace('{' . $pKey . '}', (string)$pVal, $text);

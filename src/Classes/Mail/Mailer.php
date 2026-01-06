@@ -30,7 +30,15 @@ class Mailer
         $this->mail->setFrom($_ENV["MAIL_FROM"], $_ENV["MAIL_FROM_NAME"]);
     }
 
-    public function send(string $to, string $subject, string $htmlbody, ?string $plainBody = null): bool
+    /**
+     * @param string $to
+     * @param string $subject
+     * @param string $htmlbody
+     * @param ?array<string, string> $attachments
+     * @param ?string $plainBody
+     * @return bool
+     */
+    public function send(string $to, string $subject, string $htmlbody, ?array $attachments = null, ?string $plainBody = null): bool
     {
         try {
             $this->mail->clearAddresses();
@@ -38,7 +46,9 @@ class Mailer
             $this->mail->isHTML(true);
 
             $this->mail->addEmbeddedImage(CompanyProfile::getLogo(), 'logo');
-            $this->mail->addAttachment(ROOT . "storage/generated/Rechnung_3212.pdf", 'Rechnung_3212.pdf');
+            foreach ($attachments ?? [] as $path => $name) {
+                $this->mail->addAttachment($path, $name);
+            }
             
             $this->mail->Subject = $subject;
             $this->mail->Body = $htmlbody;

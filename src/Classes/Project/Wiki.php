@@ -39,16 +39,10 @@ class Wiki
     public static function ajaxGetManualText(): void
     {
         $infoKey = Tools::get("key");
-        $infoText = DBAccess::selectQuery("SELECT info FROM info_texte WHERE key = :infoKey;", [
-            "infoKey" => $infoKey,
-        ]);
-
-        if ($infoText == null) {
-            JSONResponseHandler::returnNotFound();
-        }
+        $infoText = t("info." . $infoKey);
 
         JSONResponseHandler::sendResponse([
-            "info" => $infoText[0]["info"],
+            "info" => $infoText,
         ]);
     }
 }

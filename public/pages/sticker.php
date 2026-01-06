@@ -60,7 +60,7 @@ if ($id == 0): ?>
                     <button class="mr-1 btn-primary-small" title="Kategorien auswählen" data-binding="true" data-fun="chooseCategory">
                         <?= Icon::getDefault("iconCategory") ?>
                     </button>
-                    <button class="info-button ml-1" data-info="8"></button>
+                    <button class="info-button ml-1" data-info="sticker_update"></button>
             </p>
             <div class="mt-2">
                 <p>Alternativtitel</p>
@@ -166,7 +166,7 @@ if ($id == 0): ?>
                     <button class="mr-1 btn-primary-small" title="Kategorien auswählen" data-binding="true" data-fun="chooseCategory">
                         <?= Icon::getDefault("iconCategory") ?>
                     </button>
-                    <button class="info-button ml-1" data-info="9"></button>
+                    <button class="info-button ml-1" data-info="walldecal_update"></button>
             </p>
             <div class="mt-2">
                 <p>Alternativtitel</p>
@@ -237,7 +237,7 @@ if ($id == 0): ?>
                     <button class="mr-1 btn-primary-small" title="Kategorien auswählen" data-binding="true" data-fun="chooseCategory">
                         <?= Icon::getDefault("iconCategory") ?>
                     </button>
-                    <button class="info-button ml-1" data-info="10"></button>
+                    <button class="info-button ml-1" data-info="textile_update"></button>
             </p>
             <div class="mt-2">
                 <p>Alternativtitel</p>
@@ -402,7 +402,7 @@ if ($id == 0): ?>
         </div>
 
         <div class="defCont col-span-3">
-            <h2 class="font-semibold">Tags<button class="info-button ml-1" data-info="3"></button></h2>
+            <h2 class="font-semibold">Tags<button class="info-button ml-1" data-info="product_tags"></button></h2>
             <div class="mt-2" id="tagManager"></div>
             <div class="mt-2">
                 <input type="text" class="input-primary" maxlength="32" id="tagInput" placeholder="Tag eingeben">
@@ -424,13 +424,13 @@ if ($id == 0): ?>
                     "value" => $stickerCollection->getIsRevised() == 1 ? "checked" : "",
                     "binding" => "toggleData",
                 ]); ?>
-                <button class="info-button ml-1" data-info="4"></button>
+                <button class="info-button ml-1" data-info="rework_product"></button>
             </div>
-            <p class="mt-2">Speicherort:<button class="info-button ml-1" data-info="5"></button></p>
+            <p class="mt-2">Speicherort:<button class="info-button ml-1" data-info="directory"></button></p>
             <div class="mt-2">
                 <input id="dirInput" class="input-primary w-full" data-write="true" value="<?= $stickerCollection->getDirectory() ?>">
             </div>
-            <p class="mt-2">Zusätzliche Infos und Notizen:<button class="info-button ml-1" data-info="6"></button></p>
+            <p class="mt-2">Zusätzliche Infos und Notizen:<button class="info-button ml-1" data-info="sticker_notes"></button></p>
             <textarea class="input-primary mt-2 w-full" data-fun="additionalInfo" data-write="true"><?= $stickerCollection->getAdditionalInfo() ?></textarea>
         </div>
 

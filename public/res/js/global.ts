@@ -235,24 +235,35 @@ function autosubmit() {
  */
 function initializeInfoBtn() {
 	let btns = document.getElementsByClassName("info-button");
+
+	const loadTextDynamic = async (id: Number) => {
+		const response = await ajax.get(`/api/v1/manual/text/${id}`);
+		if (response.success === false) {
+			return null;
+		}
+		return response.data["info"] || "Keine Informationen vorhanden.";
+	}
+
 	Array.from(btns).forEach(btn => {
 		btn.addEventListener("click", async function () {
 			const id = btn.dataset.info;
-			const response = await ajax.get(`/api/v1/manual/text/${id}`);
 
-			if (response.success === false) {
-				return;
+			if (!btn.dataset.infoText) {
+				btn.dataset.infoText = await loadTextDynamic(id);
 			}
 
+			const infoText = btn.dataset.infoText;
 			let infoBox = document.getElementById("infoBox" + id);
+
 			if (infoBox == undefined) {
 				infoBox = document.createElement("div");
 				infoBox.classList.add("infoBox");
 				infoBox.classList.add("infoBoxShow");
 				infoBox.id = "infoBox" + id;
 
-				let text = document.createTextNode(response.data["info"]);
-				infoBox.appendChild(text);
+				const textNode = document.createTextNode(infoText);
+
+				infoBox.appendChild(textNode);
 				document.body.appendChild(infoBox);
 			} else {
 				if (!infoBox.classList.contains('infoBoxShow')) {

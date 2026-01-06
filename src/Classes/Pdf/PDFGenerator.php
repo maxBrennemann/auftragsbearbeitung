@@ -3,6 +3,7 @@
 namespace Src\Classes\Pdf;
 
 use Src\Classes\Project\CompanyProfile;
+use Src\Classes\Project\Config;
 use TCPDF;
 
 class PDFGenerator extends TCPDF
@@ -38,7 +39,7 @@ class PDFGenerator extends TCPDF
 
     public function saveOutput(): void
     {
-        $fileName = ROOT . "storage/generated/" . $this->fileName . ".pdf";
+        $fileName = Config::get("paths.generatedDir") . $this->fileName . ".pdf";
 
         if (file_exists($fileName)) {
             unlink($fileName);

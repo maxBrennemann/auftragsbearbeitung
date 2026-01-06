@@ -12,6 +12,7 @@ return new class {
             `last_used` TIMESTAMP NULL , 
             PRIMARY KEY (`id`)
         ) ENGINE = InnoDB;",
+        "ALTER TABLE `settings` CHANGE `json_content` `json_content` LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL;",
     ];
 
     public function getQueries()
