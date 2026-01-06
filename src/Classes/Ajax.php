@@ -32,9 +32,11 @@ use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 class Ajax
 {
     private static string $apiVersion = "v1";
+    /** @var array<string> */
     private static array $publicRoutes = [
         "auth",
     ];
+    /** @var array<string> */
     private static array $authTokenRoutes = [
         "hooks",
     ];

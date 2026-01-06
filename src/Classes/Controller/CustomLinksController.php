@@ -10,6 +10,10 @@ use Src\Classes\Link;
 
 class CustomLinksController
 {
+
+    /**
+     * @return array<mixed>
+     */
     public static function getAvailableLinks(): array
     {
         $openInvoiceSum = InvoiceHelper::getOpenInvoiceSumFormatted();
@@ -108,6 +112,9 @@ class CustomLinksController
         ]);
     }
 
+    /**
+     * @return array<mixed>
+     */
     public static function getUserLinks(): array
     {
         $userId = User::getCurrentUserId();

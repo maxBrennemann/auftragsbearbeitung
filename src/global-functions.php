@@ -206,6 +206,11 @@ function validateDateString(string $date, string $format): bool
     return true;
 }
 
+/**
+ * @param string $key
+ * @param array<string, mixed> $params
+ * @return string
+ */
 function t(string $key, array $params = []): string
 {
     $ref = $_ENV["i18n"] ?? null;

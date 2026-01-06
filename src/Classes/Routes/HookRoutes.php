@@ -21,10 +21,10 @@ class HookRoutes extends Routes
     }
 
     /**
-     * @uses
+     * @uses \Src\Classes\Project\InvoiceHelper::setInvoicePaidExternal()
      */
     protected static $getRoutes = [
-        "/hooks/invoice" => [],
+        "/hooks/invoice" => [\Src\Classes\Project\InvoiceHelper::class, "setInvoicePaidExternal"],
     ];
 
     protected static $postRoutes = [];

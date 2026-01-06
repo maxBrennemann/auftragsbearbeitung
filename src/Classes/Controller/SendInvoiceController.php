@@ -20,6 +20,7 @@ class SendInvoiceController
             $invoiceData["email"],
             $template["subject"],
             $template["html"],
+            [],
             $template["plain"]
         );
     }
