@@ -8,13 +8,22 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class CacheManager
 {
-    private const CACHE_DIR = "storage/cache/";
     private const CACHE_PREFIX = "cache_";
     private static string $status = "off";
+    private static string $cacheDir = "";
+
+    private static function cacheDir(): string
+    {
+        if (self::$cacheDir === "") {
+            self::$cacheDir = Config::get("paths.cacheDir");
+        }
+
+        return self::$cacheDir;
+    }
 
     public function recache(): void
     {
-        $cacheFile = self::CACHE_DIR . self::CACHE_PREFIX . md5($_SERVER["REQUEST_URI"]) . ".txt";
+        $cacheFile = self::cacheDir() . self::CACHE_PREFIX . md5($_SERVER["REQUEST_URI"]) . ".txt";
         if (file_exists($cacheFile)) {
             unlink($cacheFile);
         }
@@ -27,7 +36,9 @@ class CacheManager
 
     public static function cacheOn(): bool
     {
-        return DBAccess::updateQuery("UPDATE settings SET content = 'on' WHERE title = 'cacheStatus'");
+        return true;
+        // Cache is temporarily disabled
+        //return DBAccess::updateQuery("UPDATE settings SET content = 'on' WHERE title = 'cacheStatus'");
     }
 
     public static function getCacheStatus(): string
@@ -46,7 +57,7 @@ class CacheManager
 
     public static function writeCache(): void
     {
-        $cacheFile = self::CACHE_DIR . self::CACHE_PREFIX . md5($_SERVER["REQUEST_URI"]) . ".txt";
+        $cacheFile = self::cacheDir() . self::CACHE_PREFIX . md5($_SERVER["REQUEST_URI"]) . ".txt";
         file_put_contents($cacheFile, ob_get_contents());
     }
 
@@ -67,7 +78,7 @@ class CacheManager
             return;
         }
 
-        $cacheFile = self::CACHE_DIR . self::CACHE_PREFIX . md5($_SERVER["REQUEST_URI"]) . ".txt";
+        $cacheFile = self::cacheDir() . self::CACHE_PREFIX . md5($_SERVER["REQUEST_URI"]) . ".txt";
         if (file_exists($cacheFile)) {
             header("X-Cache: HIT");
             $content = file_get_contents_utf8($cacheFile);
@@ -99,8 +110,8 @@ class CacheManager
 
     public static function deleteCache(): void
     {
-        $files = scandir(self::CACHE_DIR);
-        $files = array_diff(scandir(self::CACHE_DIR), [
+        $files = scandir(self::cacheDir());
+        $files = array_diff(scandir(self::cacheDir()), [
             ".",
             "..",
             ".gitkeep",
@@ -108,8 +119,8 @@ class CacheManager
         ]);
 
         foreach ($files as $file) {
-            if (is_file(self::CACHE_DIR . $file)) {
-                unlink(self::CACHE_DIR . $file);
+            if (is_file(self::cacheDir() . $file)) {
+                unlink(self::cacheDir() . $file);
             }
         }
 

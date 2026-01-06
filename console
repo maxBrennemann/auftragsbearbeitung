@@ -9,7 +9,7 @@ use Src\Classes\Commands\AutoUpgrade;
 
 $app = new Application("console", "1.0");
 
-$app->add(new CreateMigration());
-$app->add(new AutoUpgrade());
+$app->addCommand(new CreateMigration());
+$app->addCommand(new AutoUpgrade());
 
 $app->run();

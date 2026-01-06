@@ -55,3 +55,14 @@ export const loader = (init: () => void) => {
         });
     }
 }
+
+export const clickOutside = (elementSelector: string, callback: () => void) => {
+    window.addEventListener("click", (e) => {
+        const target = e.target as HTMLElement | null;
+        if (!target) return;
+
+        if (!target.closest(elementSelector)) {
+            callback();
+        }
+    });
+}

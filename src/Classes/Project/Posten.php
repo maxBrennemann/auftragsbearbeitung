@@ -242,19 +242,38 @@ abstract class Posten
     public static function delete(): void
     {
         $idItem = (int) Tools::get("itemId");
+
+        $query = "SELECT Auftragsnummer FROM posten WHERE Postennummer = :id;";
+        $data = DBAccess::selectQuery($query, [
+            "id" => $idItem,
+        ]);
+        $orderId = (int) $data[0]["Auftragsnummer"];
+
         $query = "DELETE FROM posten WHERE Postennummer = :id;";
         DBAccess::deleteQuery($query, [
             "id" => $idItem,
         ]);
+
+        self::addPosition($orderId);
     }
 
-    /*
-     * https://stackoverflow.com/a/5207487/7113688
-     */
     public static function addPosition(int $orderId): void
     {
-        $query = "SET @I = 0; UPDATE posten SET `position` = (@I := @I + 1) WHERE Auftragsnummer = $orderId;";
-        DBAccess::updateQuery($query);
+        $query = "UPDATE posten p
+            JOIN (
+                SELECT Postennummer,
+                    ROW_NUMBER() OVER (ORDER BY position) AS new_position
+                FROM posten
+                WHERE Auftragsnummer = :orderId1
+            ) AS sub
+            ON p.Postennummer = sub.Postennummer
+            SET p.position = sub.new_position
+            WHERE p.Auftragsnummer = :orderId2;";
+        
+        DBAccess::updateQuery($query, [
+            "orderId1" => $orderId,
+            "orderId2" => $orderId,
+        ]);
     }
 
     /* adds links to all attached files to the "Einkaufspreis" column */

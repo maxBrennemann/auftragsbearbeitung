@@ -5,6 +5,8 @@ import { notification } from "js-classes/notifications";
 import { getTemplate, setInpupts, clearInputs } from "../global";
 import { createPopup } from "../classes/helpers";
 import { addRow, updateRow, renderTable } from "./table";
+import { initFileUploader } from "./upload";
+import { DragSortManager } from "./DragSortManager";
 import type { FunctionMap, TableHeader, TableOptions } from "../types/types";
 
 interface ItemConfig {
@@ -30,72 +32,81 @@ interface ExtendedTime {
 }
 
 const itemsConf: ItemConfig = {
-    "orderId": 0,
-    "editItemId": 0,
-    "editItemRow": null,
+    orderId: 0,
+    editItemId: 0,
+    editItemRow: null,
 }
 
 const config: Config = {
-    "type": "order",
-    "itemType": "time",
-    "surcharge": 0,
-    "table": null,
-    "tableOptions": {
-        "primaryKey": "id",
-        "hide": ["id"],
-        "hideOptions": ["addRow", "check", "add"],
-        "styles": {
-            "table": {
-                "className": ["w-full"],
+    type: "order",
+    itemType: "time",
+    surcharge: 0,
+    table: null,
+    tableOptions: {
+        primaryKey: "id",
+        hide: ["id"],
+        hideOptions: ["addRow", "check"],
+        styles: {
+            table: {
+                className: ["w-full"],
+            },
+            key: {
+                quantity: ["font-mono", "whitespace-pre"],
+                price: ["font-mono", "whitespace-pre"],
+                totalPrice: ["font-mono", "whitespace-pre"],
+                purchasePrice: ["font-mono", "whitespace-pre"],
+            },
+            sum: {
+                price: ["font-bold", "font-mono", "whitespace-pre"],
             },
         },
-        "autoSort": true,
-        "sum": [
+        autoSort: true,
+        sum: [
             {
-                "key": "price",
-                "format": "EUR",
+                key: "price",
+                format: "EUR",
             },
         ],
     },
-    "tableHeader": [
+    tableHeader: [
         {
-            "key": "id",
-            "label": "Id",
+            key: "id",
+            label: "Id",
         },
         {
-            "key": "position",
-            "label": "Position",
+            key: "position",
+            label: "Position",
         },
         {
-            "key": "name",
-            "label": "Bezeichnung",
+            key: "name",
+            label: "Bezeichnung",
         },
         {
-            "key": "description",
-            "label": "Beschreibung",
+            key: "description",
+            label: "Beschreibung",
         },
         {
-            "key": "quantity",
-            "label": "Menge",
+            key: "quantity",
+            label: "Menge",
         },
         {
-            "key": "unit",
-            "label": "MEH",
+            key: "unit",
+            label: "MEH",
         },
         {
-            "key": "price",
-            "label": "Preis [€]",
+            key: "price",
+            label: "Preis [€]",
         },
         {
-            "key": "totalPrice",
-            "label": "Gesamt [€]",
+            key: "totalPrice",
+            label: "Gesamt [€]",
         },
         {
-            "key": "purchasePrice",
-            "label": "EK [€]",
+            key: "purchasePrice",
+            label: "EK [€]",
         },
     ],
-    "extendedTimes": [],
+    extendedTimes: [],
 }
 
 const functionNames: FunctionMap = {};
@@ -137,6 +148,17 @@ export const getItemsTable = async (
     table.addEventListener("rowDelete", deleteItem as EventListener);
     table.addEventListener("rowEdit", editItem as EventListener);
     table.addEventListener("rowMove", moveItem as EventListener)
+    table.addEventListener("rowUpload", (e: Event) => uploadItem(e as CustomEvent));
+
+    const tbody = table.tBodies[0];
+    new DragSortManager(tbody, {
+        itemSelector: "tr",
+        handleSelector: ".drag-handle",
+        ignoreSelector: ".empty-placeholder, .editable-row, .add-row",
+        onOrderChange: (positions) => {
+            console.log(positions)
+        },
+    });
 
     addExtraData(data, table);
     config.table = table;
@@ -144,7 +166,7 @@ export const getItemsTable = async (
 }
 
 const addExtraData = (data: any[], table: HTMLTableElement): void => {
-    const extraDataEls = table.querySelectorAll<HTMLButtonElement>(`button.info-button`);
+    const extraDataEls = table.querySelectorAll<HTMLButtonElement>(`button.additional-data-btn`);
     extraDataEls.forEach(el => {
         const id = el.dataset.id;
         el.addEventListener("click", () => {
@@ -209,6 +231,27 @@ const deleteItem = (e: CustomEvent): void => {
 
 const moveItem = (e: CustomEvent): void => {
     console.log(e.detail);
+}
+
+const uploadItem = async (e: CustomEvent) => {
+    const data = e.detail;
+    const uploadFile = await ajax.get(`/api/v1/template/uploadFile`, {
+        "params": JSON.stringify({
+            "target": "item",
+        }),
+    });
+
+    const div = document.createElement("div");
+    div.innerHTML = uploadFile.data.content;
+    const optionsContainer = createPopup(div);
+    const btnCancel = optionsContainer.querySelector("button.btn-cancel");
+    initFileUploader({
+        "item": {
+            "location": `/api/v1/order-items/${data.type}/${data.id}/add-files`,
+        },
+    });
+
+    div.addEventListener("fileUploaded", () => (btnCancel as HTMLButtonElement).click());
 }
 
 const editItem = (e: CustomEvent): void => {
@@ -296,27 +339,27 @@ const saveEditService = (): void => {
 
 const getTimeData = (wage: number) => {
     return {
-        "time": (document.querySelector("#timeInput") as HTMLInputElement).value,
-        "wage": wage,
-        "description": (document.querySelector("#timeDescription") as HTMLInputElement).value,
-        "noPayment": getIsFree(),
-        "addToInvoice": getAddToInvoice(),
-        "discount": (document.querySelector("#getDiscount") as HTMLInputElement).value,
-        "times": JSON.stringify(config.extendedTimes),
+        time: (document.querySelector("#timeInput") as HTMLInputElement).value,
+        wage: wage,
+        description: (document.querySelector("#timeDescription") as HTMLInputElement).value,
+        noPayment: getIsFree(),
+        addToInvoice: getAddToInvoice(),
+        discount: (document.querySelector("#getDiscount") as HTMLInputElement).value,
+        times: JSON.stringify(config.extendedTimes),
     }
 }
 
 const getServiceData = () => {
     return {
-        "lei": (document.querySelector("#selectLeistung") as HTMLInputElement).value,
-        "bes": (document.querySelector("#bes") as HTMLInputElement).value,
-        "ekp": (document.querySelector("#ekp") as HTMLInputElement).value,
-        "pre": (document.querySelector("#pre") as HTMLInputElement).value,
-        "meh": (document.querySelector("#meh") as HTMLInputElement).value,
-        "anz": (document.querySelector("#anz") as HTMLInputElement).value,
-        "ohneBerechnung": getIsFree(),
-        "addToInvoice": getAddToInvoice(),
-        "discount": (document.querySelector("#getDiscount") as HTMLInputElement).value,
+        lei: (document.querySelector("#selectLeistung") as HTMLInputElement).value,
+        bes: (document.querySelector("#bes") as HTMLInputElement).value,
+        ekp: (document.querySelector("#ekp") as HTMLInputElement).value,
+        pre: (document.querySelector("#pre") as HTMLInputElement).value,
+        meh: (document.querySelector("#meh") as HTMLInputElement).value,
+        anz: (document.querySelector("#anz") as HTMLInputElement).value,
+        ohneBerechnung: getIsFree(),
+        addToInvoice: getAddToInvoice(),
+        discount: (document.querySelector("#getDiscount") as HTMLInputElement).value,
     };
 }
 

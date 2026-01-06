@@ -11,4 +11,5 @@ return [
     ],
     'appName' => 'Auftragsbearbeitung',
     'lang' => 'DE-de',
+    'locale' => 'de',
 ];

@@ -1,5 +1,6 @@
 import { ajax } from "js-classes/ajax";
 import { addBindings } from "js-classes/bindings";
+import { notification } from "js-classes/notifications";
 
 import { addRow, fetchAndRenderTable } from "../classes/table";
 import { tableConfig } from "../classes/tableconfig";
@@ -66,7 +67,7 @@ fnNames.click_addNewVehicle = () => {
 
 fnNames.click_addExistingVehicle = () => {
     const vehicleId = (document.getElementById("selectVehicle") as HTMLInputElement).value;
-    if (vehicleId == "addNew") {
+    if (vehicleId == "addNew" || vehicleId == "0") {
         return;
     }
 
@@ -78,6 +79,8 @@ fnNames.click_addExistingVehicle = () => {
                 "Kennzeichen": r.data.kfz,
                 "Fahrzeug": r.data.fahrzeug,
             }, vehicleData.tableRef, vehicleData.options);
+        }).catch((err: any) => {
+            notification("Fahrzeug konnte nicht hinzugefügt werden.", "warning", "Bad reqeust when adding vehicle");
         });
 }
 

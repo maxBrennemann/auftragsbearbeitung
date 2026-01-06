@@ -1,12 +1,13 @@
 <?php
 /* https://www.prestashop.com/forums/topic/266004-using-the-webservice-to-get-image-urls/ */
 
-$apiKey = 'GUG1XJLZ2F5WHMY3Q3FZLA1WTPI4SVHD'; // webservice key with permission get image only
-$url = 'https://klebefux.de/api/images/products/' . $_GET['product'] . '/' . $_GET['image'];
+$apiKey = ""; // webservice key with permission get image only
+$website = "https://klebefux.de"; // your prestashop website URL
+$url = $website . '/api/images/products/' . $_GET['product'] . '/' . $_GET['image'];
 
 header("Content-Type: image/jpeg");
-header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past 
+header("Cache-Control: no-cache, must-revalidate");
+header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $url);

@@ -2,6 +2,8 @@
 
 namespace Src\Classes\Project;
 
+use Src\Classes\I18n\I18n;
+
 class Config
 {
 
@@ -62,4 +64,12 @@ class Config
         return is_array($value) ? $value : [];
     }
 
+    public static function loadLanguages(): void
+    {
+        $_ENV["i18n"] = new I18n(ROOT . 'src/Classes/I18n/lang', "de", "de");
+
+        if (self::get("locale")) {
+            $_ENV["i18n"]->setLocale(self::get("locale"));
+        }
+    }
 }

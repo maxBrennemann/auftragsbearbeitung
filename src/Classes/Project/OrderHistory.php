@@ -43,7 +43,14 @@ class OrderHistory
      */
     public static function getHistory(int $orderId): array
     {
-        $query = "SELECT history.id, history.insertstamp, history_type.name , CONCAT(COALESCE(history.alternative_text, ''), COALESCE(ids.descr, '')) AS Beschreibung, history.state, user.username, user.prename
+        $query = "SELECT 
+            history.id,
+            history.insertstamp,
+            CONCAT(UPPER(LEFT(history_type.name, 1)), LOWER(RIGHT(history_type.name, LENGTH(history_type.name) - 1))) as `name`,
+            CONCAT(COALESCE(history.alternative_text, ''), COALESCE(ids.descr, '')) AS Beschreibung,
+            history.state,
+            user.username,
+            user.prename
             FROM history
             LEFT JOIN (
                 (

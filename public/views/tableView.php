@@ -29,6 +29,13 @@
                 <?php endforeach; ?>
             </tr>
         <?php endforeach; ?>
+        <?php if (count($tbodyElements) === 0) : ?>
+            <tr class="empty-placeholder">
+                <td colspan="<?= count($theadElements) + 1 ?>" class="center">
+                    Keine Daten verfügbar.
+                </td>
+            </tr>
+        <?php endif; ?>
         <?= $actionElement ?>
     </tbody>
 

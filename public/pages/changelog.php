@@ -2,21 +2,27 @@
     <nav id="nav" class="bg-gray-200 p-3 rounded-lg">
         <p class="font-bold text-md text-lg">Versionen</p>
         <ul>
-            <li><a class="link-primary" href="#1.2.2">1.2.2</a></li>    
-            <li><a class="link-primary" href="#1.2.1">1.2.1</a></li>
-            <li><a class="link-primary" href="#1.2.0">1.2.0</a></li>
-            <li><a class="link-primary" href="#1.1.18">1.1.18</a></li>
-            <li><a class="link-primary" href="#1.1.17">1.1.17</a></li>
-            <li><a class="link-primary" href="#1.1.16">1.1.16</a></li>
-            <li><a class="link-primary" href="#1.1.15">1.1.15</a></li>
-            <li><a class="link-primary" href="#1.1.14">1.1.14</a></li>
-            <li><a class="link-primary" href="#1.1.13">1.1.13</a></li>
-            <li><a class="link-primary" href="#1.1.12">1.1.12</a></li>
-            <li><a class="link-primary" href="#1.1.11">1.1.11</a></li>
-            <li><a class="link-primary" href="#1.1.10">1.1.10</a></li>
-            <li><a class="link-primary" href="#1.1.9">1.1.9</a></li>
-            <li><a class="link-primary" href="#1.1.8">1.1.8</a></li>
-            <li><a class="link-primary" href="#1.1.7">1.1.7</a></li>
+            <li>1.2</li>
+            <ul>
+                <li><a class="link-primary" href="#1.2.2">1.2.2</a></li>
+                <li><a class="link-primary" href="#1.2.1">1.2.1</a></li>
+                <li><a class="link-primary" href="#1.2.0">1.2.0</a></li>
+            </ul>
+            <li>1.1</li>
+            <ul>
+                <li><a class="link-primary" href="#1.1.18">1.1.18</a></li>
+                <li><a class="link-primary" href="#1.1.17">1.1.17</a></li>
+                <li><a class="link-primary" href="#1.1.16">1.1.16</a></li>
+                <li><a class="link-primary" href="#1.1.15">1.1.15</a></li>
+                <li><a class="link-primary" href="#1.1.14">1.1.14</a></li>
+                <li><a class="link-primary" href="#1.1.13">1.1.13</a></li>
+                <li><a class="link-primary" href="#1.1.12">1.1.12</a></li>
+                <li><a class="link-primary" href="#1.1.11">1.1.11</a></li>
+                <li><a class="link-primary" href="#1.1.10">1.1.10</a></li>
+                <li><a class="link-primary" href="#1.1.9">1.1.9</a></li>
+                <li><a class="link-primary" href="#1.1.8">1.1.8</a></li>
+                <li><a class="link-primary" href="#1.1.7">1.1.7</a></li>
+            </ul>
         </ul>
     </nav>
     <h3 id="1.2.2" class="font-bold my-5 text-lg">1.2.2</h3>
@@ -35,7 +41,7 @@
                 <li>Vite Hot Reloading</li>
                 <li>Tailwind Hot Reloading</li>
                 <li>Makefile hinzugefügt</li>
-                <li>TypeScript in Entwicklung eingebunden</li>
+                <li>TypeScript in Entwicklung eingebunden und JavaScript ersetzt</li>
             </ul>
         </li>
         <li>Diverse Bugfixes

@@ -40,7 +40,7 @@ class ClientSettings
         $password = $_ENV["DB_PASSWORD"];
         $result = DBAccess::EXPORT_DATABASE($host, $username, $password, $database, false, false, false);
 
-        $filePath = "storage/generated/";
+        $filePath = Config::get("paths.generatedDir");
         $fileName = date("d-m-Y_h-i-s") . ".sql";
         file_put_contents($filePath . $fileName, $result);
 

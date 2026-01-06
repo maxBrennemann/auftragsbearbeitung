@@ -18,6 +18,9 @@ class Wiki
         ]);
     }
 
+    /**
+     * @return array<int, array<string, string>>
+     */
     public static function getTexts(): array
     {
         $query = "SELECT id, title, content FROM wiki_articles ORDER BY title ASC;";
@@ -33,19 +36,13 @@ class Wiki
         return [];
     }
 
-    public static function ajaxGetText(): void
+    public static function ajaxGetManualText(): void
     {
-        $infoId = (int) Tools::get("id");
-        $infoText = DBAccess::selectQuery("SELECT info FROM info_texte WHERE id = :infoId;", [
-            "infoId" => $infoId,
-        ]);
-
-        if ($infoText == null) {
-            JSONResponseHandler::returnNotFound();
-        }
+        $infoKey = Tools::get("key");
+        $infoText = t("info." . $infoKey);
 
         JSONResponseHandler::sendResponse([
-            "info" => $infoText[0]["info"],
+            "info" => $infoText,
         ]);
     }
 }

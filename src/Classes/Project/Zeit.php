@@ -54,7 +54,7 @@ class Zeit extends Posten
         }
 
         $arr['Anzahl'] = $getExtendedTimes ?
-            $this->ZeitInMinuten . '<button class="info-button ml-1" data-id="' . $this->postennummer . '"></button>'
+            $this->ZeitInMinuten . '<button class="additional-data-btn ml-1" data-id="' . $this->postennummer . '"></button>'
             : $this->ZeitInMinuten;
         $arr['MEH'] =  "min";
         $arr['Beschreibung'] = $this->beschreibung;

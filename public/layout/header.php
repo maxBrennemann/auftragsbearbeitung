@@ -63,7 +63,7 @@ if ($pageName == "") {
 
 		$hashFilePath = "";
 		if (file_exists($scriptPath)) {
-			$hashFilePath = ResourceManager::getFileNameWithHash("pages/$scriptPath.ts");
+			$hashFilePath = ResourceManager::getFileNameWithHash("pages/$pageScript.ts");
 		}
 
 		if ($hashFilePath != "") : ?>

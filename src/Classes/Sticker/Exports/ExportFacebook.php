@@ -10,6 +10,7 @@ use Src\Classes\Sticker\Wandtattoo;
 use Src\Classes\Sticker\Sticker;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use Src\Classes\Project\Config;
 
 class ExportFacebook extends PrestashopConnection
 {
@@ -248,7 +249,7 @@ class ExportFacebook extends PrestashopConnection
      */
     private function generateFile(array $lines, string $filename): void
     {
-        $path = "storage/generated/";
+        $path = Config::get("paths.generatedDir");
         $file = fopen($path . $filename, 'w');
 
         if ($file === false) {

@@ -13,7 +13,7 @@ class VariousRoutes extends Routes
      * @uses \Src\Classes\Project\InvoiceLayout::getItemsOrderTemplate()
      * @uses \Src\Classes\Project\Icon::ajaxGet()
      * 
-     * @uses \Src\Classes\Project\Wiki::ajaxGetText()
+     * @uses \Src\Classes\Project\Wiki::ajaxGetManualText()
      * @uses \Src\Classes\Controller\ManualController::get()
      */
     protected static $getRoutes = [
@@ -23,7 +23,7 @@ class VariousRoutes extends Routes
         "/template/invoice/items-order" => [\Src\Classes\Project\InvoiceLayout::class, "getItemsOrderTemplate"],
         "/template/icon/{icon}" => [\Src\Classes\Project\Icon::class, "ajaxGet"],
 
-        "/manual/text/{id}" => [\Src\Classes\Project\Wiki::class, "ajaxGetText"],
+        "/manual/text/{key}" => [\Src\Classes\Project\Wiki::class, "ajaxGetManualText"],
         "/manual/{pageName}" => [\Src\Classes\Controller\ManualController::class, "get"],
     ];
 

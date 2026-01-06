@@ -60,6 +60,10 @@ class Fahrzeug
         $orderId = (int) Tools::get("id");
         $vehicleId = (int) Tools::get("vehicleId");
 
+        if ($orderId == 0 || $vehicleId == 0) {
+            JSONResponseHandler::sendErrorResponse(400, "Invalid order ID or vehicle ID");
+        }
+
         DBAccess::insertQuery("INSERT INTO fahrzeuge_auftraege (id_fahrzeug, id_auftrag) VALUES (:vehicleId, :orderId)", [
             "vehicleId" => $vehicleId,
             "orderId" => $orderId

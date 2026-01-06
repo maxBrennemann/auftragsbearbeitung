@@ -273,7 +273,7 @@ class ResourceManager
         echo "";
     }
 
-    public static function getFileNameWithHash(string $file, string $type = "file"): string
+    public static function getFileNameWithHash(string $file, bool $isJS = true): string
     {
         $json = @file_get_contents("../public/res/assets/.vite/manifest.json");
 
@@ -283,14 +283,14 @@ class ResourceManager
 
         $manifest = json_decode($json, true);
         if (!isset($manifest[$file])) {
-            return $file;
+            return "";
         }
 
-        if ($type !== "file") {
-            return $manifest[$file][$type][0];
+        if (!$isJS) {
+            return $manifest[$file]["css"][0];
         }
 
-        return $manifest[$file][$type];
+        return $manifest[$file]["file"];
     }
 
     /**
@@ -426,6 +426,23 @@ class ResourceManager
         } elseif ($file == "/import-search-console") {
             ImportGoogleSearchConsole::import();
         }
+    }
+
+    public static function getBearerToken(): ?string
+    {
+        if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            $header = $_SERVER['HTTP_AUTHORIZATION'];
+        } elseif (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+            $header = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+        } else {
+            return null;
+        }
+
+        if (preg_match('/Bearer\s+(.*)$/i', $header, $matches)) {
+            return trim($matches[1]);
+        }
+
+        return null;
     }
 
     public static function outputHeaderJSON(): void

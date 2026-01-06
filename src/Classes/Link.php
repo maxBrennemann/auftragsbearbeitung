@@ -38,6 +38,7 @@ class Link
                 $link = ROOT . "public/res/css/" . $resource;
                 break;
             case "ts":
+            case "js":
                 $link = ROOT . "public/res/js/pages/" . $resource;
                 break;
             case "min":
@@ -128,13 +129,13 @@ class Link
 
     public static function getGlobalCSS(): string
     {
-        $file = ResourceManager::getFileNameWithHash("global.js", "css");
+        $file = ResourceManager::getFileNameWithHash("global.ts", false);
         return self::getResourcesShortLink($file, "css");
     }
 
     public static function getGlobalScript(): string
     {
-        $file = ResourceManager::getFileNameWithHash("global.js");
+        $file = ResourceManager::getFileNameWithHash("global.ts");
         return self::getResourcesShortLink($file, "js");
     }
 }

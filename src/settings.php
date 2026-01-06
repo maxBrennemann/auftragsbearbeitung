@@ -11,5 +11,6 @@ $dotenv->load(ROOT . ".env");
 
 use Src\Classes\Project\Config;
 Config::load(ROOT . "src/config.php");
+Config::loadLanguages();
 
 require_once ROOT . "src/global-functions.php";
