@@ -31,36 +31,26 @@ use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
 class Ajax
 {
+    private static string $apiVersion = "v1";
+    private static array $publicRoutes = [
+        "auth",
+    ];
+    private static array $authTokenRoutes = [
+        "hooks",
+    ];
+
     public static function handleRequests(): void
     {
-        $currentApiVersion = "v1";
-        ResourceManager::outputHeaderJSON();
+        $response = self::getApiRequest();
 
-        $url = $_SERVER["REQUEST_URI"];
-        $url = explode('?', $url, 2);
-        $apiPath = str_replace($_ENV["REWRITE_BASE"] . $_ENV["SUB_URL"] . "/", "", $url[0]);
-        $apiParts = explode("/", $apiPath);
+        $path = $response["path"];
+        $routeType = $response["routeType"];
 
-        if (count($apiParts) < 4) {
-            JSONResponseHandler::throwError(404, "Path not found");
-        }
-
-        $apiVersion = $apiParts[2];
-        $routeType = $apiParts[3];
-
-        if ($currentApiVersion != $apiVersion) {
-            JSONResponseHandler::throwError(404, "api version not supported");
-        }
-
-        $path = str_replace("api/" . $apiVersion . "/", "", $apiPath);
-
-        /* TODO: implement better auth */
-        $publicRoutes = [
-            "auth",
-            "hooks",
-        ];
-
-        if (!SessionController::isLoggedIn() && !in_array($routeType, $publicRoutes)) {
+        if (
+            !SessionController::isLoggedIn()
+            && !in_array($routeType, self::$publicRoutes)
+            && !in_array($routeType, self::$authTokenRoutes)
+        ) {
             ResourceManager::outputHeaderJSON();
             JSONResponseHandler::throwError(401, "Unauthorized API access");
         }
@@ -127,6 +117,37 @@ class Ajax
             default:
                 JSONResponseHandler::throwError(404, "Path not found");
         }
+    }
+
+    /**
+     * @return array{path: string, routeType: string}
+     */
+    private static function getApiRequest(): array
+    {
+        ResourceManager::outputHeaderJSON();
+
+        $url = $_SERVER["REQUEST_URI"];
+        $url = explode('?', $url, 2);
+        $apiPath = str_replace($_ENV["REWRITE_BASE"] . $_ENV["SUB_URL"] . "/", "", $url[0]);
+        $apiParts = explode("/", $apiPath);
+
+        if (count($apiParts) < 4) {
+            JSONResponseHandler::throwError(404, "Path not found");
+        }
+
+        $apiVersion = $apiParts[2];
+        $routeType = $apiParts[3];
+
+        if (self::$apiVersion != $apiVersion) {
+            JSONResponseHandler::throwError(404, "api version not supported");
+        }
+
+        $path = str_replace("api/" . $apiVersion . "/", "", $apiPath);
+
+        return [
+            "path" => $path,
+            "routeType" => $routeType,
+        ];
     }
 
     public static function manageRequests(string $reason, string $page): void

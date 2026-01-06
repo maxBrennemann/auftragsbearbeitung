@@ -428,6 +428,23 @@ class ResourceManager
         }
     }
 
+    public static function getBearerToken(): ?string
+    {
+        if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            $header = $_SERVER['HTTP_AUTHORIZATION'];
+        } elseif (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+            $header = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+        } else {
+            return null;
+        }
+
+        if (preg_match('/Bearer\s+(.*)$/i', $header, $matches)) {
+            return trim($matches[1]);
+        }
+
+        return null;
+    }
+
     public static function outputHeaderJSON(): void
     {
         header("Access-Control-Allow-Headers: *");
