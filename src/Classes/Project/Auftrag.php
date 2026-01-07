@@ -657,6 +657,7 @@ class Auftrag implements NotifiableEntity
             $fileData = [
                 "type" => $type,
                 "link" => Link::getUploadResourceLink($file["Datei"], $file["originalname"]),
+                "alt"  => $file["originalname"],
                 "name" => $file["originalname"],
                 "file" => $file["Datei"],
             ];

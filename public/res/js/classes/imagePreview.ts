@@ -1,6 +1,9 @@
 import { createPopup } from "../classes/helpers";
 
 const imagePreviewListeners = new WeakSet();
+const popup = {
+
+};
 
 export const initImagePreviewListener = () => {
     const images = document.querySelectorAll<HTMLElement>("img, .img-prev");
@@ -27,24 +30,25 @@ const openImagePreview = (image: HTMLElement) => {
     if (!innerImg) return;
 
     imageCopy.src = innerImg.src;
-    imageCopy.title = innerImg.title;
+    imageCopy.alt = innerImg.alt;
     imageCopy.width = innerImg.naturalWidth < 500 ? innerImg.naturalWidth : 500;
 
     const div = document.createElement("div");
     div.appendChild(imageCopy);
 
     const info = document.createElement("p");
-    info.innerHTML = `Bild: ${innerImg.title ?? "kein Titel vorhanden"}, Maße: ${innerImg.naturalWidth}px x ${innerImg.naturalHeight}px`;
+    info.innerHTML = `Bild: ${innerImg.alt ?? "kein Titel vorhanden"}, Maße: ${innerImg.naturalWidth}px x ${innerImg.naturalHeight}px`;
     info.classList.add("mt-2");
     div.appendChild(info);
 
+    const imageId = innerImg.dataset.imageId;
     const eventEl = createPopup(div);
+
     eventEl.addEventListener("closePopup", () => {
         setPopupHash(undefined);
     });
-    addNavigation(eventEl);
+    //addNavigation(eventEl, imageId);
 
-    const imageId = innerImg.dataset.imageId;
     setPopupHash(imageId);
 }
 
@@ -54,25 +58,44 @@ const setPopupHash = (imageId: string | undefined) => {
     history.replaceState(null, "", url.toString());
 }
 
-const addNavigation = (container: HTMLElement) => {
+const addNavigation = (container: HTMLElement, currentImageId?: string) => {
     const galleryImages = getGalleryImages();
-    if (galleryImages.length < 2) return;
+    if (galleryImages.length < 2 || !currentImageId) return;
 
-    const btnAdd = document.createElement("button");
-    btnAdd.classList.add("btn-primary", "ml-2");
-    btnAdd.innerText = "⮕";
+    const imageIndex = galleryImages.findIndex(el => {
+        const img = el instanceof HTMLImageElement ? el : el.querySelector<HTMLImageElement>("img");
+        return img?.dataset.imageId === currentImageId;
+    });
 
-    const btnRemove = document.createElement("button");
-    btnRemove.classList.add("btn-primary");
-    btnRemove.innerText = "⬅";
+    if (imageIndex === -1) return;
 
-    container.appendChild(btnAdd);
-    container.appendChild(btnRemove);
+    const nextIndex = (imageIndex + 1) % galleryImages.length;
+    const prevIndex = (imageIndex - 1 + galleryImages.length) % galleryImages.length;
+
+    const btnNext = document.createElement("button");
+    btnNext.classList.add("btn-primary", "ml-2");
+    btnNext.innerText = "⮕";
+
+    btnNext.addEventListener("click", () => {
+        const nextImage = galleryImages[nextIndex];
+        openImagePreview(nextImage);
+    });
+
+    const btnPrev = document.createElement("button");
+    btnPrev.classList.add("btn-primary");
+    btnPrev.innerText = "⬅";
+
+    btnPrev.addEventListener("click", () => {
+        const prevImage = galleryImages[prevIndex];
+        openImagePreview(prevImage);
+    });
+
+    container.appendChild(btnNext);
+    container.appendChild(btnPrev);
 }
 
-const getGalleryImages = (): HTMLImageElement[] => {
-    return Array.from(document.querySelectorAll<HTMLImageElement>('img[data-image-id], [data-image-id] img'))
-        .filter(img => !!img.dataset.imageId);
+const getGalleryImages = (): HTMLElement[] => {
+    return Array.from(document.querySelectorAll<HTMLElement>("img, .img-prev"));
 }
 
 export const checkAutoOpenPopup = () => {
