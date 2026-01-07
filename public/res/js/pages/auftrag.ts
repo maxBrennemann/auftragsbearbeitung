@@ -11,9 +11,10 @@ import "../auftrag/calculateGas";
 import { ajax } from "js-classes/ajax";
 
 import { getItemsTable, initInvoiceItems } from "../classes/invoiceItems";
+
 import { notification } from "js-classes/notifications";
+
 import { initFileUploader } from "../classes/upload";
-import { createPopup } from "../classes/helpers";
 
 /* global variables */
 const orderConfig = {

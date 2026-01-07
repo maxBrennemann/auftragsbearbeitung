@@ -1,8 +1,8 @@
 import { ajax } from "js-classes/ajax";
 import { addBindings } from "js-classes/bindings";
 
-import { renderTable } from "../classes/table";
 import { createPopup, loader } from "../classes/helpers";
+import { renderTable } from "../classes/table";
 import { FunctionMap } from "../types/types";
 
 const fnNames: FunctionMap = {};

@@ -1,5 +1,6 @@
-import { addBindings } from "js-classes/bindings";
 import { ajax } from "js-classes/ajax";
+import { addBindings } from "js-classes/bindings";
+
 import { FunctionMap } from "../types/types";
 
 const fnNames: FunctionMap = {};

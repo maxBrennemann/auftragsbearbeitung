@@ -4,10 +4,10 @@ import { ajax } from "js-classes/ajax";
 import { addBindings } from "js-classes/bindings"
 import { notification } from "js-classes/notifications";
 
+import { createPopup } from "../classes/helpers";
 import { fetchAndRenderTable } from "../classes/table";
 import { tableConfig } from "../classes/tableconfig";
 import { initFileUploader } from "../classes/upload";
-import { createPopup } from "../classes/helpers";
 
 let attributes = {};
 const productData = {};

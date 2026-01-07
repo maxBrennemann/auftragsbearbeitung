@@ -2,12 +2,14 @@ import { ajax } from "js-classes/ajax";
 import { addBindings } from "js-classes/bindings";
 import { notification } from "js-classes/notifications";
 
-import { getTemplate, setInpupts, clearInputs } from "../global";
 import { createPopup } from "../classes/helpers";
+import { getTemplate, setInpupts, clearInputs } from "../global";
+import type { FunctionMap, TableHeader, TableOptions } from "../types/types";
+
+import { DragSortManager } from "./DragSortManager";
 import { addRow, updateRow, renderTable } from "./table";
 import { initFileUploader } from "./upload";
-import { DragSortManager } from "./DragSortManager";
-import type { FunctionMap, TableHeader, TableOptions } from "../types/types";
+
 
 interface ItemConfig {
     orderId: number;

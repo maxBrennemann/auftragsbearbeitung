@@ -72,9 +72,9 @@ import { DeviceDetector } from "js-classes/deviceDetector";
 import { setNotificationPersistance } from "js-classes/notifications";
 
 import { createPopup } from "./classes/helpers";
+import { checkAutoOpenPopup, initImagePreviewListener } from "./classes/imagePreview";
 import { initNotificationService } from "./classes/notificationUpdater";
 import { timeGlobalListener } from "./classes/timetracking";
-import { checkAutoOpenPopup, initImagePreviewListener } from "./classes/imagePreview";
 
 const fnNames = {};
 
