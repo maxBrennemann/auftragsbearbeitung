@@ -3,13 +3,16 @@
 namespace Src\Classes\Project;
 
 use Src\Classes\Link;
+use Src\Classes\Controller\FileController;
 use Src\Classes\Models\Auftragstyp;
 use Src\Classes\Notification\NotifiableEntity;
 use Src\Classes\Notification\NotificationManager;
+use Src\Classes\Notification\NotificationType;
+
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
-use Src\Classes\Notification\NotificationType;
+use Src\Classes\Controller\TemplateController;
 
 class Auftrag implements NotifiableEntity
 {
@@ -631,7 +634,10 @@ class Auftrag implements NotifiableEntity
 
     public static function getFiles(int $orderId): string
     {
-        $query = "SELECT DISTINCT dateiname AS Datei, originalname, DATE_FORMAT(`date`, '%d.%m.%Y %H:%i:%s') AS Datum, typ as Typ 
+        $query = "SELECT DISTINCT dateiname AS Datei,
+                originalname, 
+                DATE_FORMAT(`date`, '%d.%m.%Y %H:%i:%s') AS Uploaddatum,
+                typ as Typ 
             FROM dateien 
             LEFT JOIN dateien_auftraege 
                 ON dateien_auftraege.id_datei = dateien.id
@@ -641,20 +647,23 @@ class Auftrag implements NotifiableEntity
         ]);
 
         foreach ($files as &$file) {
-            $link = Link::getUploadResourceLink($file['Datei'], $file["originalname"]);
-
-            $filePath = Config::get("paths.uploadDir.default") . $file['Datei'];
-
-            if (file_exists($filePath) 
-                && (@exif_imagetype($filePath) != false)
+            $filePath = FileController::getPath($file["Datei"]);
+            $type = file_exists($filePath) 
+                && (exif_imagetype($filePath) != false)
                 && getimagesize($filePath) != false
-            ) {
-                $html = '<a target="_blank" rel="noopener noreferrer" href="' . $link . '"><img src="" width="40px"><p class="img_prev">' . $file["originalname"] . '</p></a>';
-            } else {
-                $html = '<span><a target="_blank" rel="noopener noreferrer" href="' . $link . '">' . $file["originalname"] . '</a></span>';
-            }
+                    ? "image"
+                    : "file";
+            
+            $fileData = [
+                "type" => $type,
+                "link" => Link::getUploadResourceLink($file["Datei"], $file["originalname"]),
+                "name" => $file["originalname"],
+                "file" => $file["Datei"],
+            ];
 
-            $file["Datei"] = $html;
+            $file["Datei"] = TemplateController::getTemplate("tableFile", [
+                "f" => $fileData,
+            ]);
             $file["Typ"] = FileStats::parseFileType($file["Typ"]);
         }
 
@@ -662,16 +671,17 @@ class Auftrag implements NotifiableEntity
             "columns" => [
                 "Datei",
                 "Typ",
-                "Datum",
+                "Uploaddatum",
             ],
             "names" => [
                 "Datei",
                 "Typ",
-                "Datum",
+                "Uploaddatum",
             ],
         ];
 
         $options = [];
+
         return TableGenerator::create($files, $options, $header); // TODO: add delete option
     }
 

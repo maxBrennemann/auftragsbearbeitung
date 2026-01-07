@@ -216,7 +216,7 @@ class Produkt
         for ($i = 0; $i < sizeof($files); $i++) {
             $link = Link::getResourcesShortLink($files[$i]['Datei'], "upload");
 
-            $html = "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\"><img src=\"$link\" width=\"40px\"><p class=\"img_prev\">{$files[$i]['originalname']}</p></a>";
+            $html = "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\"><img src=\"$link\" width=\"40px\"><p>{$files[$i]['originalname']}</p></a>";
 
             $files[$i]['Datei'] = $html;
         }

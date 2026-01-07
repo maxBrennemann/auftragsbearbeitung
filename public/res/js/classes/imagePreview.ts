@@ -40,27 +40,58 @@ const openImagePreview = (image: HTMLElement) => {
 
     const eventEl = createPopup(div);
     eventEl.addEventListener("closePopup", () => {
-        history.replaceState(null, "", window.location.pathname);
+        setPopupHash(undefined);
     });
+    addNavigation(eventEl);
 
     const imageId = innerImg.dataset.imageId;
-    history.replaceState(null, "", `#popup=${imageId}`);
+    setPopupHash(imageId);
+}
+
+const setPopupHash = (imageId: string | undefined) => {
+    const url = new URL(window.location.href);
+    url.hash = imageId ? `#popup=${encodeURIComponent(imageId)}` : "";
+    history.replaceState(null, "", url.toString());
+}
+
+const addNavigation = (container: HTMLElement) => {
+    const galleryImages = getGalleryImages();
+    if (galleryImages.length < 2) return;
+
+    const btnAdd = document.createElement("button");
+    btnAdd.classList.add("btn-primary", "ml-2");
+    btnAdd.innerText = "⮕";
+
+    const btnRemove = document.createElement("button");
+    btnRemove.classList.add("btn-primary");
+    btnRemove.innerText = "⬅";
+
+    container.appendChild(btnAdd);
+    container.appendChild(btnRemove);
+}
+
+const getGalleryImages = (): HTMLImageElement[] => {
+    return Array.from(document.querySelectorAll<HTMLImageElement>('img[data-image-id], [data-image-id] img'))
+        .filter(img => !!img.dataset.imageId);
 }
 
 export const checkAutoOpenPopup = () => {
-    const hash = window.location.hash;
-    if (hash.startsWith("#popup=")) {
-        const imageId = hash.replace("#popup=", "");
-        const image = document.querySelector<HTMLImageElement>(`[data-image-id="${imageId}"] img, img[data-image-id="${imageId}"]`);
+    const hash = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : "";
+    const params = new URLSearchParams(hash);
 
-        if (!image) return;
+    const imageId = params.get("popup");
+    if (!imageId) return;
 
-        if (!image.complete || image.naturalWidth === 0) {
-            image.addEventListener("load", () => {
-                openImagePreview(image);
-            }, { once: true });
-        } else {
-            openImagePreview(image);
-        }
+    const decodedId = decodeURIComponent(imageId);
+    const image = document.querySelector<HTMLImageElement>(
+        `[data-image-id="${CSS.escape(decodedId)}"] img, img[data-image-id="${CSS.escape(decodedId)}"]`
+    );
+
+    if (!image) return;
+
+    if (!image.complete || image.naturalWidth === 0) {
+        image.addEventListener("load", () => openImagePreview(image), { once: true });
+    } else {
+        openImagePreview(image);
     }
-}
+};
