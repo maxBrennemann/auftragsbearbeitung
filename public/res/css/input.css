@@ -42,6 +42,10 @@
         @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 mr-1 bg-white rounded text-sm border-0 text-black hover:bg-slate-100 shadow-sm ring-offset-black gap-2 data-[focus]:outline-1 data-[focus]:outline-black ring-1 ring-gray-300 disabled:bg-slate-100;
     }
 
+    .btn-options {
+        @apply border-none w-5 font-extrabold text-black text-lg hover:bg-gray-300;
+    }
+
     .info-button {
         @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-1 px-2 my-0.5 bg-blue-100 rounded-full border border-blue-400 text-blue-500 text-xxs hover:bg-blue-600 hover:text-blue-100 disabled:bg-gray-200 disabled:hover:bg-gray-300 disabled:hover:cursor-not-allowed;
     }

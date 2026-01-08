@@ -98,7 +98,14 @@ class Produkt
      */
     public function getAttributeTable(): array
     {
-        $query = "SELECT product_combination.id, GROUP_CONCAT(attribute.value SEPARATOR ', ') AS `Werte` FROM attribute, product_combination JOIN product_attribute_combination ON product_attribute_combination.id_produkt_attribute = product_combination.id WHERE attribute.id = product_attribute_combination.attribute_id GROUP BY product_combination.id;";
+        $query = "SELECT 
+                product_combination.id,
+                GROUP_CONCAT(attribute.value SEPARATOR ', ') AS `Werte`
+            FROM attribute, product_combination
+            JOIN product_attribute_combination 
+                ON product_attribute_combination.id_produkt_attribute = product_combination.id 
+            WHERE attribute.id = product_attribute_combination.attribute_id 
+            GROUP BY product_combination.id;";
         $data = DBAccess::selectQuery($query);
         return $data;
     }
@@ -170,13 +177,6 @@ class Produkt
     public static function getSources(): array
     {
         return DBAccess::selectQuery("SELECT name, id FROM einkauf");
-    }
-
-    public static function getHTMLShortSummary(int $productnumber): void
-    {
-        $product = new Produkt($productnumber);
-        $html = "<div><h3>{$product->bezeichnung}</h3><span>Anzahl <input value=\"1\" id=\"{$productnumber}_getAmount\"></span><button onclick=\"chooseProduct($productnumber)\">Auswählen</button></div>";
-        echo $html;
     }
 
     /**

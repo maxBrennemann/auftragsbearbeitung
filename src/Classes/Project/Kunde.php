@@ -227,16 +227,9 @@ class Kunde
             $orders[] = $order->getOrderCardData();
         }
 
-        ob_start();
-        insertTemplate("../public/views/orderCardView.php", [
+        return TemplateController::getTemplate("orderCard", [
             "orders" => $orders,
         ]);
-        $content = ob_get_clean();
-
-        if ($content === false) {
-            return "";
-        }
-        return $content;
     }
 
     /**
@@ -275,65 +268,6 @@ class Kunde
     public static function addAddress(int $id_customer, string $strasse, string $hausnummer, int $postleitzahl, string $ort, string $zusatz, string $land, int $art = 3): Address
     {
         return Address::createNewAddress($id_customer, $strasse, $hausnummer, $postleitzahl, $ort, $zusatz, $land, $art);
-    }
-
-    public static function addAddressAjax(): void
-    {
-        $kdnr = (int) $_POST["customer"];
-        $plz = (int) $_POST["plz"];
-        $ort = $_POST["ort"];
-        $strasse = $_POST["strasse"];
-        $hnr = $_POST["hnr"];
-        $zusatz = $_POST["zusatz"];
-        $land = $_POST["land"];
-        Kunde::addAddress($kdnr, $strasse, $hnr, $plz, $ort, $zusatz, $land);
-        echo json_encode(Address::loadAllAddresses($kdnr));
-    }
-
-    public function getHTMLShortSummary(): string
-    {
-        $link = Link::getPageLink("kunde") . "?id=" . $this->kundennummer;
-        $text = "<div class=\"shortSummary\"><div class=\"shortSummaryHeader\">";
-        if ($this->firmenname == "") {
-            $text .= "<a href=\"$link\">{$this->vorname} {$this->nachname}</a></div>";
-        } else {
-            $text .= "<a href=\"$link\">{$this->firmenname}</a></div>";
-        }
-        $text .= "<p>{$this->strasse} {$this->hausnummer}<br>{$this->postleitzahl} {$this->ort}<br>";
-
-        if ($this->telefonFestnetz != null) {
-            $text .= "☎ {$this->telefonFestnetz}<br>";
-        }
-
-        if ($this->telefonMobil != null) {
-            $text .= "✆ {$this->telefonMobil}<br>";
-        }
-
-        $text .= "<br>";
-
-        if ($this->email != null) {
-            $text .= "@ <a href=\"mailto:{$this->email}\">{$this->email}</a><br>";
-        }
-
-        if ($this->website != null) {
-            $text .= "🔗 <a href=\"{$this->website}\">Zur Website</a></div>";
-        } else {
-            $text .= "</p></div>";
-        }
-
-        return $text;
-    }
-
-    public static function getContacts(): void
-    {
-        $kdnr = (int) Tools::get("id");
-        $data = DBAccess::selectQuery("SELECT Nummer AS id, Vorname AS firstName, Nachname AS lastName, Email AS email 
-			FROM ansprechpartner 
-			WHERE Kundennummer = :kdnr", [
-            "kdnr" => $kdnr,
-        ]);
-
-        JSONResponseHandler::sendResponse($data);
     }
 
     public static function addCustomer(): void
@@ -492,26 +426,6 @@ class Kunde
 
         JSONResponseHandler::sendResponse([
             "id" => $vehicleId,
-        ]);
-    }
-
-    public static function searchCustomers(): void
-    {
-        $query = Tools::get("query");
-        $results = SearchController::search("type:kunde $query", 10);
-
-        $html = "";
-        foreach ($results as $result) {
-            $id = (int) $result["data"]["Kundennummer"];
-            $customer = new Kunde($id);
-            $html .= TemplateController::getTemplate("customerCardTemplate", [
-                "customer" => $customer,
-            ]);
-        }
-
-        JSONResponseHandler::sendResponse([
-            "status" => "OK",
-            "template" => $html,
         ]);
     }
 }

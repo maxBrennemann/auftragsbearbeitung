@@ -512,7 +512,6 @@ class Auftrag implements NotifiableEntity
 
         return [
             "id" => $this->Auftragsnummer,
-            "archived" => $this->status->value,
             "orderTitle" => $this->Auftragsbezeichnung,
             "orderDescription" => $this->Auftragsbeschreibung,
             "date" => $date,
@@ -933,12 +932,9 @@ class Auftrag implements NotifiableEntity
             $orders[] = $order->getOrderCardData();
         }
 
-        ob_start();
-        insertTemplate('files/views/orderCardView.php', [
+        return TemplateController::getTemplate("orderCard", [
             "orders" => $orders,
         ]);
-
-        return ob_get_clean();
     }
 
     public static function addFiles(): void
