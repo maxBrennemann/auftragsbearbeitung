@@ -1,13 +1,10 @@
-name: Auftragsbearbeitung Deploy
+name: Auftragsbearbeitung Build
 
 on:
   push:
     branches:
       - main
       - development
-
-env:
-  BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 
 jobs:
   build:
@@ -17,7 +14,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Login to Dockerhub
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -25,15 +22,15 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Docker Buildx
+        id: buildx
         uses: docker/setup-buildx-action@v3
         with:
-          install: true
           driver: docker-container
           driver-opts: network=host
           buildkitd-flags: --debug
           use: true
 
-      - name: Build And Push PHP Base Image
+      - name: Build and push PHP image
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -46,7 +43,7 @@ jobs:
             ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:latest
             ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:${{ github.sha }}
 
-      - name: Build And Push Web Base Image
+      - name: Build and push Web image (optional)
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -58,70 +55,3 @@ jobs:
           tags: |
             ghcr.io/maxbrennemann/auftragsbearbeitung/web-base:latest
             ghcr.io/maxbrennemann/auftragsbearbeitung/web-base:${{ github.sha }}
-
-  deploy:
-    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Generate .env file
-        run: |
-          cat > .env <<EOL
-          # url settings and environment
-          DOMAIN=${{ secrets.DOMAIN }}
-          DEPLOY_ENVIRONMENT=${{ env.BRANCH_NAME }}
-          LETSENCRYPT_EMAIL=${{ secrets.LETSENCRYPT_EMAIL }}
-
-          # database connection
-          DB_DATABASE=${{ secrets.DB_DATABASE }}
-          DB_USERNAME=${{ secrets.DB_USERNAME }}
-          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-          DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}
-
-          # development settings
-          ERRORREPORTING=true
-          DEV_MODE=false
-
-          # mail settings
-          MAIL_HOST=${{ secrets.MAIL_HOST }}
-          MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}
-          MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}
-          MAIL_PORT=${{ secrets.MAIL_PORT }}
-          MAIL_FROM=${{ secrets.MAIL_FROM }}
-          MAIL_FROM_NAME=${{ secrets.MAIL_FROM_NAME }}
-
-          # shop api keys
-          SHOPURL=${{ secrets.SHOPURL }}
-          SHOPKEY=${{ secrets.SHOPKEY }}
-
-          # openai chatgpt
-          OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
-
-          # google search console api keys
-          GOOGLE_SEARCHCONSOLE='.config/apiKeys/googleSearchConsoleAPIKey.json'
-
-          EOL
-
-      - name: Copy config to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          source: "docker-compose.prod.yml,.env"
-          target: ${{ secrets.DEPLOY_PATH }}
-
-      - name: Deploy containers
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          script: |
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            cd ${{ secrets.DEPLOY_PATH }}
-            docker compose -p ${{ env.BRANCH_NAME }} -f docker-compose.prod.yml pull
-            docker compose -p ${{ env.BRANCH_NAME }} -f docker-compose.prod.yml up -d --remove-orphans

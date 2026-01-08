@@ -2,32 +2,11 @@ services:
   web:
     image: ghcr.io/maxbrennemann/auftragsbearbeitung/web-base:latest
     restart: always
-    # TODO: look for better implementation of ports/ expose
-    expose:
-      - "80"
-      - "443"
-    environment:
-      DOMAIN: ${DOMAIN}
-    # TODO: look for better implementation instead of root directory
-    volumes:
-      - /srv/certs/etc/letsencrypt:/etc/letsencrypt:ro
-      - /srv/certs/data/certbot/www:/var/www/certbot:ro
     depends_on:
-      - certbot
+      - php
     networks:
-      internal_network:
-      web:
-        aliases:
-          - ${DEPLOY_ENVIRONMENT}-web
-
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - /srv/certs/etc/letsencrypt:/etc/letsencrypt
-      - /srv/certs/data/certbot/www/:/var/www/certbot
-    entrypoint: ""
-    command: >
-      sh -c "trap exit TERM; while :; do sleep 12h & wait $${!}; certbot renew --webroot -w /var/www/certbot; done"
+      - internal
+      - edge
   
   php:
     image: ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:latest
@@ -45,7 +24,7 @@ services:
       - storage_data:/var/www/html/storage
       - ./.env:/var/www/html/.env
     networks:
-      - internal_network
+      - internal
 
   database:
     image: mariadb:12
@@ -57,26 +36,14 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     networks:
-      - internal_network
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    environment:
-      VIRTUAL_HOST: pma.${DOMAIN}
-      LETSENCRYPT_HOST: pma.${DOMAIN}
-      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
-      PMA_HOST: database
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-      UPLOAD_LIMIT: 300M
-    networks:
-      - internal_network
+      - internal
 
 volumes:
   db_data:
   storage_data:
 
 networks:
-  internal_network:
+  internal:
     driver: bridge
-  web:
+  edge:
     external: true
