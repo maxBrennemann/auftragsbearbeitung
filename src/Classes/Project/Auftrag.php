@@ -490,7 +490,7 @@ class Auftrag implements NotifiableEntity
     }
 
     /**
-     * @return array{archived: string, date: mixed, deadline: mixed, finished: mixed, id: int, invoice: mixed, orderDescription: mixed, orderTitle: mixed, status: OrderState, summe: float|int}
+     * @return array{date: mixed, deadline: mixed, finished: mixed, id: int, invoice: mixed, orderDescription: mixed, orderTitle: mixed, status: OrderState, summe: float|int}
      */
     public function getOrderCardData(): array
     {
