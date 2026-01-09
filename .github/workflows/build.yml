@@ -70,3 +70,11 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/${{ env.APP_NAME }}/web-base:${{ steps.channel.outputs.tag_latest }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/${{ env.APP_NAME }}/web-base:${{ github.sha }}
+
+      - name: Trigger Deployment in Private Repo
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.DISPATCH_TOKEN }}
+          repository: maxBrennemann/internal-scripts
+          event-type: deploy-event
+          client-payload: '{"branch": "${{ github.ref_name }}"}'
