@@ -130,7 +130,7 @@ class Ajax
 
         $url = $_SERVER["REQUEST_URI"];
         $url = explode('?', $url, 2);
-        $apiPath = str_replace($_ENV["REWRITE_BASE"] . $_ENV["SUB_URL"] . "/", "", $url[0]);
+        $apiPath = str_replace($_ENV["REWRITE_BASE"] . "/", "", $url[0]);
         $apiParts = explode("/", $apiPath);
 
         if (count($apiParts) < 4) {

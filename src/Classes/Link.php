@@ -9,7 +9,7 @@ class Link
 
     public static function getPageLink(string $resourceName): string
     {
-        $link = $_ENV["WEB_URL"] . $_ENV["SUB_URL"] . $resourceName;
+        $link = $_ENV["WEB_URL"] . $resourceName;
         return $link;
     }
 

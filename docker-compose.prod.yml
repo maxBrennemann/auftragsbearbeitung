@@ -13,13 +13,9 @@ services:
     expose:
       - "9000"
     environment:
-      VIRTUAL_HOST: ${DOMAIN}
-      LETSENCRYPT_HOST: ${DOMAIN}
-      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
       DB_HOST: database
       REWRITE_BASE: https://${DOMAIN}/
       WEB_URL: https://${DOMAIN}/
-      SUB_URL: ""
     volumes:
       - storage_data:/var/www/html/storage
       - ./.env:/var/www/html/.env
