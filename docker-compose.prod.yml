@@ -1,6 +1,6 @@
 services:
   web:
-    image: ghcr.io/maxbrennemann/auftragsbearbeitung/web-base:latest
+    image: ghcr.io/maxbrennemann/auftragsbearbeitung/web-base:prod-latest
     restart: always
     depends_on:
       - php
@@ -9,13 +9,11 @@ services:
       - edge
   
   php:
-    image: ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:latest
+    image: ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:prod-latest
     expose:
       - "9000"
     environment:
       DB_HOST: database
-      REWRITE_BASE: https://${DOMAIN}/
-      WEB_URL: https://${DOMAIN}/
     volumes:
       - storage_data:/var/www/html/storage
       - ./.env:/var/www/html/.env
