@@ -2,6 +2,7 @@
 
 use Src\Classes\Link;
 use Src\Classes\Project\Kunde;
+use Src\Classes\Controller\TemplateController;
 use MaxBrennemann\PhpUtilities\Tools;
 
 $customerId = (int) Tools::get("id");
@@ -19,7 +20,24 @@ if ($customerId <= 0): ?>
 		<p>Anzahl der Aufträge: <?= $orderCount ?></p>
 		<div class="mt-2">
 			<button class="btn-primary" data-fun="createNewOrder" data-binding="true">Neuen Auftrag erstellen</button>
-			<button class="btn-primary" data-toggle="true" data-target="#moreOptions">Mehr Optionen</button>
+			<!--<?=  TemplateController::getTemplate("toggleOptions", [
+				"toggleClass" => "",
+				"toggleBtnId" => "customerOptionsBtn",
+				"toggleId" => "moreOptions",
+				"options" => [
+					[
+						"text" => "Kunde zusammenführen",
+						"class" => "btn-primary",
+						"function" => "mergeCustomer",
+					],
+					[
+						"text" => "Kunde löschen",
+						"class" => "btn-delete",
+						"function" => "deleteCustomer",
+					],
+				],
+			]) ?>-->
+			<button class="btn-options float-right" data-toggle="true" data-target="#moreOptions">⋮</button>
 			<span class="hidden" id="moreOptions">
 				<button class="btn-primary" data-fun="mergeCustomer" data-binding="true">Kunde zusammenführen</button>
 				<button class="btn-delete" data-fun="deleteCustomer" data-binding="true">Kunde löschen</button>

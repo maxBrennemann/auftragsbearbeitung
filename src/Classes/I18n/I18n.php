@@ -21,7 +21,7 @@ final class I18n
 
     /**
      * @param string $key
-     * @param array $params
+     * @param array<string, mixed> $params
      * @return string
      */
     public function t(string $key, array $params = []): string

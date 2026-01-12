@@ -1,13 +1,13 @@
 <?php
 
+use Src\Classes\Controller\SessionController;
+use Src\Classes\Project\CacheManager;
+use Src\Classes\ResourceManager;
+
 $start = microtime(true);
 ob_start();
 
 require_once "../src/settings.php";
-
-use Src\Classes\Controller\SessionController;
-use Src\Classes\Project\CacheManager;
-use Src\Classes\ResourceManager;
 
 ResourceManager::getParameters();
 ResourceManager::initialize();

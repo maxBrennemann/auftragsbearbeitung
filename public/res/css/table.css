@@ -39,7 +39,7 @@ td a {
     display: block;
     padding: 7px;
     color: inherit !important;
-    text-decoration: none !important;
+    text-decoration: none;
 }
 
 tr:hover td {

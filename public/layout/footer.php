@@ -38,7 +38,7 @@
 	if ($calcDuration && CacheManager::getCacheStatus() == 'off') {
 	    $stop = microtime(true);
 	    $duration = $stop - $start;
-		echo "<data value='$duration' id='loadtime'></data>";
+		echo "<data value=\"$duration\" id=\"loadtime\"></data>";
 	}
 
 	if ($calcDuration && CacheManager::getCacheStatus() == 'on') {

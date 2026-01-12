@@ -283,12 +283,6 @@ li {
     background: white;
 }
 
-/* style for image preview */
-.img_prev {
-    display: inline;
-    padding-left: 10px;
-}
-
 #imageHeader {
     width: 100px;
     height: auto;

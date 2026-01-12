@@ -1,12 +1,12 @@
 <?php
 
-define("CURRENTVERSION", "1.2.2");
-ini_set("display_errors", true);
-
 use Src\Classes\Controller\TemplateController;
 use Src\Classes\I18n\I18n;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+
+define("CURRENTVERSION", "1.2.2");
+ini_set("display_errors", true);
 
 /**
  * @param array<string, mixed> $message
@@ -206,6 +206,11 @@ function validateDateString(string $date, string $format): bool
     return true;
 }
 
+/**
+ * @param string $key
+ * @param array<string, mixed> $params
+ * @return string
+ */
 function t(string $key, array $params = []): string
 {
     $ref = $_ENV["i18n"] ?? null;

@@ -2,12 +2,12 @@ import { ajax } from "js-classes/ajax";
 import { addBindings } from "js-classes/bindings";
 import { notification } from "js-classes/notifications";
 
+import { createPopup } from "../classes/helpers";
+import { initImagePreviewListener } from "../classes/imagePreview";
 import { fetchAndRenderTable } from "../classes/table";
 import { tableConfig } from "../classes/tableconfig";
 import { initFileUploader } from "../classes/upload";
-import { createPopup } from "../classes/helpers";
 import { getStickerId } from "../pages/sticker";
-import { initImagePreviewListener } from "../classes/imagePreview";
 
 import { initSVG } from "./svgManager";
 

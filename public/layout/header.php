@@ -26,13 +26,13 @@ $einstellungen =	Link::getPageLink("einstellungen");
 $payments =			Link::getPageLink("payments");
 $listmaker =		Link::getPageLink("listmaker");
 $changelog = 		Link::getPageLink("changelog");
-$timeTracking =	Link::getPageLink("time-tracking");
+$timeTracking =		Link::getPageLink("time-tracking");
 $motiveOverview = 	Link::getPageLink("sticker-overview");
 $wiki = 			Link::getPageLink("wiki");
 
 $pageTitle = $pageName;
 if ($pageName == "") {
-	$pageTitle = "Übersicht";
+	$pageTitle = t("global.page_title");
 }
 
 ?>

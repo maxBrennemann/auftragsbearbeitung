@@ -1,12 +1,10 @@
 import { ajax } from "js-classes/ajax";
 import { addBindings } from "js-classes/bindings"
 
+import { loader } from "../classes/helpers";
 import { addRow, clearRows, renderTable } from "../classes/table";
 import { timeGlobalListener } from "../classes/timetracking";
 import { FunctionMap } from "../types/types";
-import { loader } from "../classes/helpers";
-
-import { Router } from "../utils/router";
 import { Url } from "../utils/url";
 
 const fnNames = {} as FunctionMap;

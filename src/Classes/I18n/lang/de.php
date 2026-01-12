@@ -2,6 +2,9 @@
 declare(strict_types=1);
 
 return [
+    "global" => [
+        "page_title" => 'Übersicht',
+    ],
     "info" => [
         "lists" => 
             'Wähle aus einer der erstellten Listen. Listen können im Auftrag als Stütze für die Herangehensweise verwendet werden. Um eine neue Liste zu erstellen, gehe auf "Listen" im Endbereich der Seite.',

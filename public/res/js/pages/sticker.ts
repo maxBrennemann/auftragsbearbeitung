@@ -7,7 +7,7 @@ import { } from "../sticker/statsManager";
 import { addBindings, getVariable } from "js-classes/bindings";
 import "../sticker/imageMove";
 import { ajax } from "js-classes/ajax";
-import { notificatinReplace, notification, notificationLoader } from "js-classes/notifications";
+import { notification, notificationLoader } from "js-classes/notifications";
 
 import { createPopup } from "../classes/helpers";
 import { initImageManager } from "../sticker/imageManager";

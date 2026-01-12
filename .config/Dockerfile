@@ -1,4 +1,4 @@
-FROM composer:2.8.12 AS composer
+FROM composer:2.9.3 AS composer
 
 # Set working directory
 WORKDIR /var/www/html
@@ -9,7 +9,7 @@ COPY composer.json composer.lock ./
 # Install the dependencies
 RUN composer install --no-scripts
 
-FROM php:8.4.13-fpm
+FROM php:8.5.1-fpm
 
 # Get UID and GID of host user
 ARG UID
@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     cron
 # Install extensions
-RUN docker-php-ext-install pdo_mysql mysqli zip gd
+RUN docker-php-ext-install pdo_mysql mysqli zip gd exif
 
 RUN pecl install xdebug \
     && docker-php-ext-enable xdebug

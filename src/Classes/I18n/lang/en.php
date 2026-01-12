@@ -2,6 +2,9 @@
 declare(strict_types=1);
 
 return [
+    "global" => [
+        "page_title" => 'Overview',
+    ],
     "info" => [
         "lists" => '',
         "product_tags" => '',

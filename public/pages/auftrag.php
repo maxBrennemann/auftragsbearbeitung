@@ -59,13 +59,31 @@ try {
 		<?php else: ?>
 			<div class="defCont col-span-6 md:col-span-4 2xl:col-span-3">
 				<div class="relative">
-					<span class="font-bold">Auftrag <span id="auftragsnummer"><?= $auftrag->getAuftragsnummer() ?></span><?php if ($auftrag->getIsArchiviert()) : ?> (archiviert)<?php endif; ?><button class="orderDetailsOpen float-right border-none w-5" id="extraOptions">⋮</button></span>
-					<div class="orderDetailsOpen hidden absolute right-0 top-0 bg-white rounded-lg drop-shadow-lg p-3 mt-5" id="showExtraOptions">
-						<?php if ($auftrag->getIsArchiviert()) : ?>
-							<button class="btn-primary mt-5" data-binding="true" data-fun="rearchiveOrder">Auftrag aus dem Archiv holen</button>
-						<?php endif; ?>
-						<button class="btn-primary mt-5" data-binding="true" data-fun="changeCustomer">Anderem Kuden zuweisen</button>
-						<button class="btn-delete" data-binding="true" data-fun="deleteOrder">Auftrag löschen</button>
+					<div class="font-bold flex items-center justify-between">
+						<h3>Auftrag <span id="auftragsnummer"><?= $auftrag->getAuftragsnummer() ?></span><?php if ($auftrag->getIsArchiviert()) : ?> (archiviert)<?php endif; ?></h3>
+						<?= TemplateController::getTemplate("toggleOptions", [
+							"toggleClass" => "orderDetailsOpen",
+							"toggleBtnId" => "extraOptions",
+							"toggleId" => "showExtraOptions",
+							"options" => [
+								[
+									"text" => "Auftrag aus dem Archiv holen",
+									"class" => "btn-primary mt-5",
+									"function" => "rearchiveOrder",
+									"show" => $auftrag->getIsArchiviert(),
+								],
+								[
+									"text" => "Anderem Kunden zuweisen",
+									"class" => "btn-primary mt-5",
+									"function" => "changeCustomer",
+								],
+								[
+									"text" => "Auftrag löschen",
+									"class" => "btn-delete",
+									"function" => "deleteOrder",
+								],
+							],
+						]); ?>
 					</div>
 				</div>
 				<div class="mt-1">

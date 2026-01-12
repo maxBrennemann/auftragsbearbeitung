@@ -1,4 +1,5 @@
 import { addBindings } from "js-classes/bindings";
+
 import { FunctionMap } from "../types/types";
 
 const functionNames: FunctionMap = {};

@@ -30,7 +30,7 @@ class ResourceManager
     {
         $url = $_SERVER["REQUEST_URI"];
         $url = explode('?', $url, 2);
-        $page = str_replace($_ENV["REWRITE_BASE"] . $_ENV["SUB_URL"], "", $url[0]);
+        $page = str_replace($_ENV["REWRITE_BASE"], "", $url[0]);
         $parts = explode('/', $page);
 
         self::$page = $parts[count($parts) - 1];

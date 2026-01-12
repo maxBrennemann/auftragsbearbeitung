@@ -98,7 +98,14 @@ class Produkt
      */
     public function getAttributeTable(): array
     {
-        $query = "SELECT product_combination.id, GROUP_CONCAT(attribute.value SEPARATOR ', ') AS `Werte` FROM attribute, product_combination JOIN product_attribute_combination ON product_attribute_combination.id_produkt_attribute = product_combination.id WHERE attribute.id = product_attribute_combination.attribute_id GROUP BY product_combination.id;";
+        $query = "SELECT 
+                product_combination.id,
+                GROUP_CONCAT(attribute.value SEPARATOR ', ') AS `Werte`
+            FROM attribute, product_combination
+            JOIN product_attribute_combination 
+                ON product_attribute_combination.id_produkt_attribute = product_combination.id 
+            WHERE attribute.id = product_attribute_combination.attribute_id 
+            GROUP BY product_combination.id;";
         $data = DBAccess::selectQuery($query);
         return $data;
     }
@@ -172,13 +179,6 @@ class Produkt
         return DBAccess::selectQuery("SELECT name, id FROM einkauf");
     }
 
-    public static function getHTMLShortSummary(int $productnumber): void
-    {
-        $product = new Produkt($productnumber);
-        $html = "<div><h3>{$product->bezeichnung}</h3><span>Anzahl <input value=\"1\" id=\"{$productnumber}_getAmount\"></span><button onclick=\"chooseProduct($productnumber)\">Auswählen</button></div>";
-        echo $html;
-    }
-
     /**
      * Returns a list of Product objects
      * @return Produkt[]
@@ -216,7 +216,7 @@ class Produkt
         for ($i = 0; $i < sizeof($files); $i++) {
             $link = Link::getResourcesShortLink($files[$i]['Datei'], "upload");
 
-            $html = "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\"><img src=\"$link\" width=\"40px\"><p class=\"img_prev\">{$files[$i]['originalname']}</p></a>";
+            $html = "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$link\"><img src=\"$link\" width=\"40px\"><p>{$files[$i]['originalname']}</p></a>";
 
             $files[$i]['Datei'] = $html;
         }

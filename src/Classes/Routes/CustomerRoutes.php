@@ -7,16 +7,14 @@ use MaxBrennemann\PhpUtilities\Router\Routes;
 class CustomerRoutes extends Routes
 {
     /**
-     * @uses \Src\Classes\Project\Kunde::searchCustomers()
+     * @uses \Src\Classes\Controller\CustomerController::searchCustomers()
+     * @uses \Src\Classes\Controller\CustomerController::getContacts()
      * @uses \Src\Classes\Project\Kunde::empty()
-     * @uses \Src\Classes\Project\Kunde::getContacts()
-     * @uses \Src\Classes\Project\Kunde::
      * @uses \Src\Classes\Project\Kunde::getColors()
      */
     protected static $getRoutes = [
-        "/customer/search" => [\Src\Classes\Project\Kunde::class, "searchCustomers"],
-
-        "/customer/{id}/contacts" => [\Src\Classes\Project\Kunde::class, "getContacts"],
+        "/customer/search" => [\Src\Classes\Controller\CustomerController::class, "searchCustomers"],
+        "/customer/{customerId}/contacts" => [\Src\Classes\Controller\CustomerController::class, "getContacts"],
         "/customer/{id}/addresses" => [\Src\Classes\Project\Kunde::class, "empty"],
         "/customer/{id}/colors" => [\Src\Classes\Project\Kunde::class, "getColors"],
     ];

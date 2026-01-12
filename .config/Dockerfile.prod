@@ -1,4 +1,4 @@
-FROM composer:2.8.12 AS composer
+FROM composer:2.9.3 AS composer
 
 WORKDIR /var/www/html
 
@@ -40,14 +40,14 @@ COPY --from=composer /var/www/html/public/res/js/classes/tableconfig.ts ./public
 
 RUN npm run build && rm -rf /root/.npm /tmp/*
 
-FROM php:8.4.13-fpm-alpine
+FROM php:8.5.1-fpm-alpine
 
 RUN echo "upload_max_filesize=100M" > /usr/local/etc/php/conf.d/uploads.ini \
  && echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/uploads.ini
 
 # Install some base extensions
 RUN apk add --no-cache dcron libpng-dev libzip-dev zlib-dev \
- && docker-php-ext-install pdo_mysql mysqli zip gd \
+ && docker-php-ext-install pdo_mysql mysqli zip gd exif \
  && rm -rf /var/cache/apk/* /tmp/*
     
 WORKDIR /var/www/html

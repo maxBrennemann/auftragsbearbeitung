@@ -1,12 +1,17 @@
 {
   "devDependencies": {
+    "@eslint/js": "^9.39.2",
     "@types/node": "^25.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.52.0",
+    "@typescript-eslint/parser": "^8.52.0",
     "autoprefixer": "^10.4.23",
     "cypress": "^15.8.1",
     "eslint": "^9.39.2",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-sort-imports-es6-autofix": "^0.6.0",
     "eslint-plugin-unused-imports": "^4.3.0",
+    "globals": "^17.0.0",
+    "jiti": "^2.6.1",
     "postcss": "^8.5.6",
     "postcss-url": "^10.1.3",
     "tailwindcss": "^3.4.17",
@@ -18,8 +23,8 @@
     "dev:debug-css": "./console autoUpgrade --skip-migration & VITE_DEBUG_CSS=true vite",
     "build": "vite build --config .config/vite.config.ts",
     "mysqldump": "mysqldump --no-data --routines --triggers -u auftragsmanager -p auftragsbearbeitung --host 127.0.0.1 > database/versions/1.2.2/schema.sql",
-    "lint": "eslint . --ext .js,.ts --config .config/formatter/eslint.config.js",
-    "lint:fix": "eslint . --ext .js,.ts --fix --config .config/formatter/eslint.config.js",
+    "lint": "eslint \"public/res/js/**/*.ts\" --config .config/formatter/eslint.config.ts",
+    "lint:fix": "eslint \"public/res/js/**/*.ts\" --fix --config .config/formatter/eslint.config.ts",
     "format": "prettier --write ."
   },
   "dependencies": {
