@@ -53,6 +53,7 @@ jobs:
           context: .
           file: .config/Dockerfile.prod
           push: true
+          target: php-base
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/${{ env.APP_NAME }}/php-base:cache
           cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/${{ env.APP_NAME }}/php-base:cache,mode=max
           tags: |
@@ -63,8 +64,9 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: .config/nginx/Dockerfile.prod
+          file: .config/Dockerfile.prod
           push: true
+          target: web-base
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/${{ env.APP_NAME }}/web-base:cache
           cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/${{ env.APP_NAME }}/web-base:cache,mode=max
           tags: |
