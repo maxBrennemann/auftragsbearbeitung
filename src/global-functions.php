@@ -1,12 +1,12 @@
 <?php
 
-define("CURRENTVERSION", "1.2.2");
-ini_set("display_errors", true);
-
 use Src\Classes\Controller\TemplateController;
 use Src\Classes\I18n\I18n;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+
+define("CURRENTVERSION", "1.2.2");
+ini_set("display_errors", true);
 
 /**
  * @param array<string, mixed> $message
