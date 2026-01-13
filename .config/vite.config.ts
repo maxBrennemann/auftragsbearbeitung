@@ -8,6 +8,7 @@ import type { Plugin } from 'vite';
 
 import { defineConfig } from "vite";
 import postcssConfig from "./postcss.config.ts";
+import tailwindcss from "@tailwindcss/vite";
 
 function jsToTsRedirectPlugin(): Plugin {
     return {
@@ -69,7 +70,7 @@ if (fs.existsSync(keyPath) && fs.existsSync(certPath)) {
 }
 
 export default defineConfig({
-    plugins: [jsToTsRedirectPlugin(), fullReloadAlways],
+    plugins: [jsToTsRedirectPlugin(), fullReloadAlways, tailwindcss()],
 
     root: path.resolve(__dirname, "../public/res/js"),
 

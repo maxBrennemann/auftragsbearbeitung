@@ -40,7 +40,20 @@ COPY --from=composer /var/www/html/public/res/js/classes/tableconfig.ts ./public
 
 RUN npm run build && rm -rf /root/.npm /tmp/*
 
-FROM php:8.5.1-fpm-alpine
+FROM nginx:stable-alpine AS web-base
+
+WORKDIR /var/www/html
+
+# Copy assets and dependencies into final image
+COPY ./.config/nginx/default.prod.conf /etc/nginx/templates/default.conf.template
+COPY ./.config/nginx/security-headers.conf /etc/nginx/conf.d/security-headers.conf
+COPY public ./public
+COPY --from=frontend-builder /app/public/res/assets ./public/res/assets
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+
+FROM php:8.5.1-fpm-alpine AS php-base
 
 RUN echo "upload_max_filesize=100M" > /usr/local/etc/php/conf.d/uploads.ini \
  && echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/uploads.ini
@@ -60,7 +73,7 @@ COPY .config/php/fpm-pool.conf /usr/local/etc/php-fpm.d/zz-custom.conf
 COPY src ./src
 COPY public ./public
 COPY --from=composer /var/www/html/vendor ./vendor
-COPY --from=frontend-builder /app/public/res/assets ./public/res/assets
+COPY --from=frontend-builder /app/public/res/assets/.vite/manifest.json ./public/res/assets/.vite/manifest.json
 COPY database/Migrations ./database/Migrations
 COPY console ./console
 

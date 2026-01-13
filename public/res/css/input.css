@@ -1,106 +1,128 @@
-@import './table.css';
-@import './global.css';
+@import './table.css' layer(base);
+@import './global.css' layer(base);
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-@layer components {
-    .btn-primary {
-        @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-green-500 rounded text-sm border-0 text-white hover:bg-green-700 disabled:bg-green-200 disabled:hover:bg-green-300 disabled:hover:cursor-not-allowed active:scale-95 transition-transform duration-75;
-    }
+@config '../../../.config/tailwind.config.ts';
 
-    .btn-primary-small {
-        @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-0.5 px-1.5 my-0.5 bg-green-500 rounded border-0 text-white text-xs hover:bg-green-700 disabled:bg-green-200 disabled:hover:bg-green-300 disabled:hover:cursor-not-allowed active:scale-95 transition-transform duration-75;
-    }
+@source "../pages/*.php";
+@source "../views/*.php";
+@source "../layout/*.php";
+@source "../res/js/**/*.{js,ts}";
+@source "../../src/**/*.{html,js,php}";
+@source "../../node_modules/js-classes/**/*.{js,ts}";
 
-    .link-primary {
-        @apply text-blue-500 hover:text-blue-600 font-semibold hover:underline visited:text-blue-800;
-    }
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
 
-    .input-primary {
-        @apply w-36 h-8 px-2.5 py-1 my-1 rounded ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
-    }
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
 
-    .link-button {
-        @apply px-3 py-1 m-1 font-semibold text-sm bg-slate-100 text-slate-700 rounded-lg shadow-sm disabled:bg-gray-300 border-2 border-blue-300 hover:bg-blue-200;
-    }
+@utility btn-primary {
+  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-green-500 rounded-sm text-sm border-0 text-white hover:bg-green-700 disabled:bg-green-200 disabled:hover:bg-green-300 disabled:hover:cursor-not-allowed active:scale-95 transition-transform duration-75;
+}
 
-    .btn-delete {
-        @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-red-400 rounded text-sm border-0 text-white hover:bg-red-600 disabled:bg-red-200 disabled:hover:bg-red-300 disabled:hover:cursor-not-allowed;
-    }
+@utility btn-primary-small {
+  @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-0.5 px-1.5 my-0.5 bg-green-500 rounded-sm border-0 text-white text-xs hover:bg-green-700 disabled:bg-green-200 disabled:hover:bg-green-300 disabled:hover:cursor-not-allowed active:scale-95 transition-transform duration-75;
+}
 
-    .btn-edit, .btn-active {
-        @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-blue-400 rounded text-sm border-0 text-white hover:bg-blue-600;
-    }
+@utility link-primary {
+  @apply text-blue-500 hover:text-blue-600 font-semibold hover:underline visited:text-blue-800;
+}
 
-    .btn-edit-small, .btn-active-small {
-        @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-0.5 px-1.5 my-0.5 bg-blue-400 rounded text-xs border-0 text-white hover:bg-blue-600;
-    }
+@utility input-primary {
+  @apply w-36 h-8 px-2.5 py-1 my-1 rounded-sm ring-1 ring-gray-300 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white;
+}
 
-    .btn-cancel, .btn-inactive {
-        @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 mr-1 bg-white rounded text-sm border-0 text-black hover:bg-slate-100 shadow-sm ring-offset-black gap-2 data-[focus]:outline-1 data-[focus]:outline-black ring-1 ring-gray-300 disabled:bg-slate-100;
-    }
+@utility link-button {
+  @apply px-3 py-1 m-1 font-semibold text-sm bg-slate-100 text-slate-700 rounded-lg shadow-xs disabled:bg-gray-300 border-2 border-blue-300 hover:bg-blue-200;
+}
 
-    .btn-options {
-        @apply border-none w-5 font-extrabold text-black text-lg hover:bg-gray-300;
-    }
+@utility btn-delete {
+  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-red-400 rounded-sm text-sm border-0 text-white hover:bg-red-600 disabled:bg-red-200 disabled:hover:bg-red-300 disabled:hover:cursor-not-allowed;
+}
 
-    .info-button {
-        @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-1 px-2 my-0.5 bg-blue-100 rounded-full border border-blue-400 text-blue-500 text-xxs hover:bg-blue-600 hover:text-blue-100 disabled:bg-gray-200 disabled:hover:bg-gray-300 disabled:hover:cursor-not-allowed;
-    }
+@utility btn-edit {
+  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-blue-400 rounded-sm text-sm border-0 text-white hover:bg-blue-600;
+}
 
-    .tab-button {
-        @apply grow border-0 p-2 bg-sky-900 font-semibold text-white rounded-none first:rounded-tl-lg last:rounded-tr-lg hover:bg-sky-800 disabled:hover:cursor-not-allowed;
-    }
+@utility btn-active {
+  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-blue-400 rounded-sm text-sm border-0 text-white hover:bg-blue-600;
+}
 
-    .tab-active {
-        @apply bg-sky-800 text-white;
-    }
+@utility btn-edit-small {
+  @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-0.5 px-1.5 my-0.5 bg-blue-400 rounded-sm text-xs border-0 text-white hover:bg-blue-600;
+}
 
-    .tab-content {
-        @apply p-4
-    }
+@utility btn-active-small {
+  @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-0.5 px-1.5 my-0.5 bg-blue-400 rounded-sm text-xs border-0 text-white hover:bg-blue-600;
+}
 
-    .overlay-container {
-        @apply inset-0 flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-white/75 transition-opacity duration-500 opacity-0;
-    }
+@utility btn-cancel {
+  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 mr-1 bg-white rounded-sm text-sm border-0 text-black hover:bg-slate-100 shadow-xs ring-offset-black gap-2 data-focus:outline-1 data-focus:outline-black ring-1 ring-gray-300 disabled:bg-slate-100;
+}
 
-    .overlay-container--visible {
-        @apply opacity-100;
-    }
+@utility btn-inactive {
+  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 mr-1 bg-white rounded-sm text-sm border-0 text-black hover:bg-slate-100 shadow-xs ring-offset-black gap-2 data-focus:outline-1 data-focus:outline-black ring-1 ring-gray-300 disabled:bg-slate-100;
+}
 
-    .overlay-container--visible .overlay-container__content {
-        @apply opacity-100 scale-100;
-    }
+@utility btn-options {
+  @apply border-none w-5 font-extrabold text-black text-lg hover:bg-gray-300;
+}
 
-    .overlay-container__content {
-        @apply relative max-w-2xl max-h-full shadow-xl bg-white rounded-sm border border-solid border-gray-400 transform opacity-0 transition-all duration-500;
-    }
+@utility info-button {
+  @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-1 px-2 my-0.5 bg-blue-100 rounded-full border border-blue-400 text-blue-500 text-xxs hover:bg-blue-600 hover:text-blue-100 disabled:bg-gray-200 disabled:hover:bg-gray-300 disabled:hover:cursor-not-allowed;
+}
 
-    .overlay-container__content__options {
-        @apply border-t border-solid border-gray-400 flex flex-row-reverse p-3 bg-slate-50;
-    }
+@utility tab-button {
+  @apply grow border-0 p-2 bg-sky-900 font-semibold text-white rounded-none first:rounded-tl-lg last:rounded-tr-lg hover:bg-sky-800 disabled:hover:cursor-not-allowed;
+}
 
-    .fileUploader {
-        @apply flex justify-center items-center flex-col h-32 bg-white rounded-lg mt-2 cursor-pointer;
-    }
+@utility tab-active {
+  @apply bg-sky-800 text-white;
+}
 
-    /*.table {
-        @apply
-    }
+@utility tab-content {
+  @apply p-4;
+}
 
-    .table__head {
-        @apply
-    }
+@utility overlay-container {
+  @apply inset-0 flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-white/75 transition-opacity duration-500 opacity-0;
+}
 
-    .table__body {
-        @apply
-    }
+@utility overlay-container--visible {
+  @apply opacity-100;
 
-    .table__foot {
-        @apply
-    }*/
+  & .overlay-container__content {
+    @apply opacity-100 scale-100;
+  }
+}
+
+@utility overlay-container__content {
+  .overlay-container--visible & {
+    @apply opacity-100 scale-100;
+  }
+  @apply relative max-w-2xl max-h-full shadow-xl bg-white rounded-xs border border-solid border-gray-400 transform opacity-0 transition-all duration-500;
+}
+
+@utility overlay-container__content__options {
+  @apply border-t border-solid border-gray-400 flex flex-row-reverse p-3 bg-slate-50;
+}
+
+@utility fileUploader {
+  @apply flex justify-center items-center flex-col h-32 bg-white rounded-lg mt-2 cursor-pointer;
 }
 
 @font-face {

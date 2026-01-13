@@ -141,9 +141,9 @@ if ($pageName == "") {
 			<div class="inline-flex flex-wrap">
 				<?= \Src\Classes\Controller\TemplateController::getTemplate("search"); ?>
 				<div class="inline-flex ml-1">
-					<div class="inline-flex items-center p-1 hover:bg-gray-200 hover:rounded-sm relative text-gray-700 cursor-pointer" data-binding="true" data-fun="showNotifications">
+					<div class="inline-flex items-center p-1 hover:bg-gray-200 hover:rounded-xs relative text-gray-700 cursor-pointer" data-binding="true" data-fun="showNotifications">
 						<?php if (NotificationManager::getNotificationCount() > 0): ?>
-							<div title="Benachrichtigungen" class="absolute top-[6px] right-0">
+							<div title="Benachrichtigungen" class="absolute top-1.5 right-0">
 								<div class="w-3 h-3">
 									<p class="text-xxs bg-red-400 text-white rounded-full text-center"><?= NotificationManager::getNotificationCount(); ?></p>
 								</div>
@@ -154,18 +154,18 @@ if ($pageName == "") {
 						</span>
 					</div>
 					<div class="settingsContainer inline-flex items-center text-gray-700">
-						<a href="<?= $einstellungen ?>" id="settings" title="Einstellungen" class="inline-block p-1 hover:bg-gray-200 hover:rounded-sm">
+						<a href="<?= $einstellungen ?>" id="settings" title="Einstellungen" class="inline-block p-1 hover:bg-gray-200 hover:rounded-xs">
 							<?= Icon::getDefault("iconSettings") ?>
 						</a>
 					</div>
 					<div class="logoutContainer inline-flex items-center text-gray-700">
-						<span data-binding="true" data-fun="logout" title="Ausloggen" class="inline-block p-1 hover:bg-gray-200 hover:rounded-sm">
+						<span data-binding="true" data-fun="logout" title="Ausloggen" class="inline-block p-1 hover:bg-gray-200 hover:rounded-xs">
 							<?= Icon::getDefault("iconLogout") ?>
 						</span>
 					</div>
 					<div class="<?= (Settings::get("showTimeGlobal") == "true") ? "inline-flex" : "hidden" ?> items-center text-gray-700" id="timeTrackingContainer">
-						<a href="<?= Link::getPageLink("time-tracking") ?>" class="showTimeGlobal inline-block p-1 hover:bg-gray-200 hover:rounded-sm" title="Zeiterfassung">
-							<span>Zeit: <span id="timeGlobal" class="inline-block p-1 hover:bg-gray-200 hover:rounded-sm">00:00:00</span></span>
+						<a href="<?= Link::getPageLink("time-tracking") ?>" class="showTimeGlobal inline-block p-1 hover:bg-gray-200 hover:rounded-xs" title="Zeiterfassung">
+							<span>Zeit: <span id="timeGlobal" class="inline-block p-1 hover:bg-gray-200 hover:rounded-xs">00:00:00</span></span>
 						</a>
 					</div>
 				</div>

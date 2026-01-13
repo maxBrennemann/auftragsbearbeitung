@@ -26,6 +26,10 @@ function printError(array $message): never
 
 function exception_error_handler(int $severity, string $message, string $file, int $line): bool
 {
+    if ($severity === E_DEPRECATED || $severity === E_USER_DEPRECATED) {
+        return true;
+    }
+
     if (!(error_reporting() & $severity)) {
         return false;
     }
@@ -43,8 +47,6 @@ function exception_error_handler(int $severity, string $message, string $file, i
     // @phpstan-ignore-next-line
     return true;
 }
-
-set_error_handler("exception_error_handler");
 
 function fatal_handler(): void
 {
@@ -118,6 +120,7 @@ function captureError(): void
     ]);
 }
 
+set_error_handler("exception_error_handler");
 register_shutdown_function("fatal_handler");
 
 /**

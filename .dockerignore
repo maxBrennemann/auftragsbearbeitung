@@ -16,8 +16,9 @@ var
 
 public/res/js/classes/tableconfig.ts
 
-# minimized files
+# minimized files and tests
 public/res/assets/*
+public/cypress/*
 
 # docker explicit
 .git
@@ -30,7 +31,9 @@ database/versions
 .config/*
 !.config/install
 !.config/crontab
+!.config/cypress.config.ts
 !.config/php.conf
+!.config/phpstan.neon
 !.config/php/*
 !.config/.env.example
 !.config/postcss.config.ts

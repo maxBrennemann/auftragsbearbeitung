@@ -197,7 +197,7 @@ class NotificationManager
     public static function addNotification(?int $user_id, int $type, string $content, int $specificId): void
     {
         $initiator = User::getCurrentUserId();
-        if (!User::validate($user_id)) {
+        if (!User::validate($user_id) && $user_id !== -1) {
             throw new Exception("User not found.");
         }
 

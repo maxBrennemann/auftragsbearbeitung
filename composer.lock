@@ -68,16 +68,16 @@
         },
         {
             "name": "firebase/php-jwt",
-            "version": "v6.11.1",
+            "version": "v7.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/firebase/php-jwt.git",
-                "reference": "d1e91ecf8c598d073d0995afa8cd5c75c6e19e66"
+                "reference": "5645b43af647b6947daac1d0f659dd1fbe8d3b65"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/d1e91ecf8c598d073d0995afa8cd5c75c6e19e66",
-                "reference": "d1e91ecf8c598d073d0995afa8cd5c75c6e19e66",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/5645b43af647b6947daac1d0f659dd1fbe8d3b65",
+                "reference": "5645b43af647b6947daac1d0f659dd1fbe8d3b65",
                 "shasum": ""
             },
             "require": {
@@ -125,9 +125,9 @@
             ],
             "support": {
                 "issues": "https://github.com/firebase/php-jwt/issues",
-                "source": "https://github.com/firebase/php-jwt/tree/v6.11.1"
+                "source": "https://github.com/firebase/php-jwt/tree/v7.0.2"
             },
-            "time": "2025-04-09T20:32:01+00:00"
+            "time": "2025-12-16T22:17:28+00:00"
         },
         {
             "name": "google/apiclient",
@@ -135,16 +135,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client.git",
-                "reference": "2ccc7cc6bda38a4db37c9e1fb7b1df796b2073b4"
+                "reference": "b18fa8aed7b2b2dd4bcce74e2c7d267e16007ea9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/2ccc7cc6bda38a4db37c9e1fb7b1df796b2073b4",
-                "reference": "2ccc7cc6bda38a4db37c9e1fb7b1df796b2073b4",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/b18fa8aed7b2b2dd4bcce74e2c7d267e16007ea9",
+                "reference": "b18fa8aed7b2b2dd4bcce74e2c7d267e16007ea9",
                 "shasum": ""
             },
             "require": {
-                "firebase/php-jwt": "^6.0",
+                "firebase/php-jwt": "^6.0||^7.0",
                 "google/apiclient-services": "~0.350",
                 "google/auth": "^1.37",
                 "guzzlehttp/guzzle": "^7.4.5",
@@ -197,20 +197,20 @@
                 "issues": "https://github.com/googleapis/google-api-php-client/issues",
                 "source": "https://github.com/googleapis/google-api-php-client/tree/main"
             },
-            "time": "2025-11-19T21:58:49+00:00"
+            "time": "2026-01-09T19:59:47+00:00"
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.427.0",
+            "version": "v0.428.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "cc74cd104a1ed1cf545480c52f13831e6eb0efe2"
+                "reference": "94a3c50a80a36cafb76e32fb76b8007e9f572deb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/cc74cd104a1ed1cf545480c52f13831e6eb0efe2",
-                "reference": "cc74cd104a1ed1cf545480c52f13831e6eb0efe2",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/94a3c50a80a36cafb76e32fb76b8007e9f572deb",
+                "reference": "94a3c50a80a36cafb76e32fb76b8007e9f572deb",
                 "shasum": ""
             },
             "require": {
@@ -239,9 +239,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
-                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.427.0"
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.428.0"
             },
-            "time": "2025-12-24T01:04:22+00:00"
+            "time": "2026-01-12T00:58:26+00:00"
         },
         {
             "name": "google/auth",
@@ -679,12 +679,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "b321dd6749f0bf7189444158a3ce785cc16d69b0"
+                "reference": "cb44e4a2eb355ded395275551d32d63a4ed393f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/b321dd6749f0bf7189444158a3ce785cc16d69b0",
-                "reference": "b321dd6749f0bf7189444158a3ce785cc16d69b0",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/cb44e4a2eb355ded395275551d32d63a4ed393f2",
+                "reference": "cb44e4a2eb355ded395275551d32d63a4ed393f2",
                 "shasum": ""
             },
             "require": {
@@ -763,7 +763,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Seldaek/monolog/issues",
-                "source": "https://github.com/Seldaek/monolog/tree/3.10.0"
+                "source": "https://github.com/Seldaek/monolog/tree/main"
             },
             "funding": [
                 {
@@ -775,7 +775,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-01-02T08:56:05+00:00"
+            "time": "2026-01-09T14:05:10+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
@@ -898,16 +898,16 @@
         },
         {
             "name": "phpmailer/phpmailer",
-            "version": "v7.0.1",
+            "version": "v7.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPMailer/PHPMailer.git",
-                "reference": "360ae911ce62e25e11249f6140fa58939f556ebe"
+                "reference": "ebf1655bd5b99b3f97e1a3ec0a69e5f4cd7ea088"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/360ae911ce62e25e11249f6140fa58939f556ebe",
-                "reference": "360ae911ce62e25e11249f6140fa58939f556ebe",
+                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/ebf1655bd5b99b3f97e1a3ec0a69e5f4cd7ea088",
+                "reference": "ebf1655bd5b99b3f97e1a3ec0a69e5f4cd7ea088",
                 "shasum": ""
             },
             "require": {
@@ -968,7 +968,7 @@
             "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
             "support": {
                 "issues": "https://github.com/PHPMailer/PHPMailer/issues",
-                "source": "https://github.com/PHPMailer/PHPMailer/tree/v7.0.1"
+                "source": "https://github.com/PHPMailer/PHPMailer/tree/v7.0.2"
             },
             "funding": [
                 {
@@ -976,7 +976,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-11-25T07:18:09+00:00"
+            "time": "2026-01-09T18:02:33+00:00"
         },
         {
             "name": "phpseclib/phpseclib",
@@ -984,12 +984,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "26f567d43b51391df1e3b75011717b63b79bcb27"
+                "reference": "94bf93ecfb0ed3abc0911149a40bf1d1ae0c272d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/26f567d43b51391df1e3b75011717b63b79bcb27",
-                "reference": "26f567d43b51391df1e3b75011717b63b79bcb27",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/94bf93ecfb0ed3abc0911149a40bf1d1ae0c272d",
+                "reference": "94bf93ecfb0ed3abc0911149a40bf1d1ae0c272d",
                 "shasum": ""
             },
             "require": {
@@ -1086,15 +1086,15 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-01-08T15:52:22+00:00"
+            "time": "2026-01-09T14:33:26+00:00"
         },
         {
             "name": "phpstan/phpstan",
             "version": "2.1.x-dev",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/a951ac0e2930e329b9a0d63885f16d44a655f907",
-                "reference": "a951ac0e2930e329b9a0d63885f16d44a655f907",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/60c311830def5a992dda64da416992eb93f3c8f0",
+                "reference": "60c311830def5a992dda64da416992eb93f3c8f0",
                 "shasum": ""
             },
             "require": {
@@ -1140,7 +1140,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-01-09T06:29:41+00:00"
+            "time": "2026-01-12T17:37:31+00:00"
         },
         {
             "name": "prestashop/prestashop-webservice-lib",
@@ -2297,12 +2297,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "8947e1ced7a8020011e91356e40778b1ff613faa"
+                "reference": "6954e1726dbee36c314045e5ee702daf53ae7186"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/8947e1ced7a8020011e91356e40778b1ff613faa",
-                "reference": "8947e1ced7a8020011e91356e40778b1ff613faa",
+                "url": "https://api.github.com/repos/symfony/string/zipball/6954e1726dbee36c314045e5ee702daf53ae7186",
+                "reference": "6954e1726dbee36c314045e5ee702daf53ae7186",
                 "shasum": ""
             },
             "require": {
@@ -2322,6 +2322,7 @@
                 "symfony/translation-contracts": "^2.5|^3.0",
                 "symfony/var-exporter": "^7.4|^8.0"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "files": [
@@ -2379,7 +2380,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-12-19T08:33:17+00:00"
+            "time": "2026-01-12T12:59:46+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
@@ -5775,12 +5776,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "f5ac546dfdae09892fb317365605f8fe77fd509f"
+                "reference": "601193c7c5e12c691bccb484f44948cd0f6519d6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/f5ac546dfdae09892fb317365605f8fe77fd509f",
-                "reference": "f5ac546dfdae09892fb317365605f8fe77fd509f",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/601193c7c5e12c691bccb484f44948cd0f6519d6",
+                "reference": "601193c7c5e12c691bccb484f44948cd0f6519d6",
                 "shasum": ""
             },
             "require": {
@@ -5789,6 +5790,7 @@
             "require-dev": {
                 "symfony/filesystem": "^7.4|^8.0"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -5835,7 +5837,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-12-23T14:52:15+00:00"
+            "time": "2026-01-12T12:59:46+00:00"
         },
         {
             "name": "symfony/options-resolver",
@@ -6161,12 +6163,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "74244a484499ab192f732ed2f71cd055f8ebe9bf"
+                "reference": "ea61d34ff58baeb22644c77bb8dff544d61d6b19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/74244a484499ab192f732ed2f71cd055f8ebe9bf",
-                "reference": "74244a484499ab192f732ed2f71cd055f8ebe9bf",
+                "url": "https://api.github.com/repos/symfony/process/zipball/ea61d34ff58baeb22644c77bb8dff544d61d6b19",
+                "reference": "ea61d34ff58baeb22644c77bb8dff544d61d6b19",
                 "shasum": ""
             },
             "require": {
@@ -6218,7 +6220,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-12-31T16:47:11+00:00"
+            "time": "2026-01-09T12:30:45+00:00"
         },
         {
             "name": "symfony/stopwatch",

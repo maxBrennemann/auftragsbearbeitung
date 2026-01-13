@@ -2,7 +2,6 @@ import type { Config } from 'tailwindcss';
 import path from 'path';
 
 const config: Config = {
-    mode: 'jit',
     content: [
         path.resolve(__dirname, '../public/pages/*.php'),
         path.resolve(__dirname, '../public/views/*.php'),
