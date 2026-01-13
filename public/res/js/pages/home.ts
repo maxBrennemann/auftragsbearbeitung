@@ -74,15 +74,12 @@ const fillLinks = (container: HTMLDivElement, links: Array<{ name: string; url: 
 }
 
 function ajaxSearch(query: string) {
-    const customerOverview = (document.getElementById("kundenLink") as HTMLElement).dataset.customerOverview;
-    const customer = (document.getElementById("kundenLink") as HTMLElement).dataset.customer;
-
-    const link = document.getElementById("kundenLink") as HTMLLinkElement;
+    const link = document.createElement("a") as HTMLAnchorElement;
 
     if (!Number(query)) {
-        link.href = customerOverview + '?query=' + query;
+        link.href = "/customer-overview?query=" + query;
     } else {
-        link.href = customer + '?id=' + query;
+        link.href = "/kunde?id=" + query;
     }
 
     link.click();
@@ -92,11 +89,11 @@ const init = () => {
     addBindings(fnNames);
     initOpenOrdersTable();
 
-    var kundeninput = document.getElementById("kundeninput") as HTMLInputElement;
-    var rechnungsinput = document.getElementById("rechnungsinput") as HTMLInputElement;
-    var auftragsinput = document.getElementById("auftragsinput") as HTMLInputElement;
+    const kundeninput = document.getElementById("kundeninput") as HTMLInputElement | null;
+    const rechnungsinput = document.getElementById("rechnungsinput") as HTMLInputElement | null;
+    const auftragsinput = document.getElementById("auftragsinput") as HTMLInputElement | null;
 
-    kundeninput.addEventListener("keyup", function (event: KeyboardEvent) {
+    kundeninput?.addEventListener("keyup", function (event: KeyboardEvent) {
         if (event.key !== "Enter") {
             return;
         }
@@ -113,28 +110,26 @@ const init = () => {
         ajaxSearch(target.value);
     });
 
-    rechnungsinput.addEventListener("keyup", function (event) {
+    rechnungsinput?.addEventListener("keyup", function (event) {
         if (event.key === "Enter") {
-            (document.getElementById("rechnungsLink") as HTMLButtonElement).click();
+            const link = document.createElement("a") as HTMLAnchorElement;
+            link.href = "/rechnung?target=view&id=" + rechnungsinput.value;
+            link.click();
         }
     });
 
-    auftragsinput.addEventListener("keyup", function (event) {
+    auftragsinput?.addEventListener("keyup", function (event) {
         if (event.key !== "Enter") {
             return;
         }
 
         const query = (event.target as HTMLInputElement).value;
-
-        const orderOverview = document.getElementById("auftragsLink")?.dataset.orderOverview;
-        const order = document.getElementById("auftragsLink")?.dataset.order;
-
-        const link = document.getElementById("auftragsLink") as HTMLLinkElement;
+        const link = document.createElement("a") as HTMLAnchorElement;
 
         if (!Number(query)) {
-            link.href = orderOverview + '?query=' + query;
+            link.href = "order-overview?query=" + query;
         } else {
-            link.href = order + '?id=' + query;
+            link.href = "/auftrag?id=" + query;
         }
 
         link.click();

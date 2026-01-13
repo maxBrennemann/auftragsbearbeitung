@@ -12,7 +12,7 @@ use MaxBrennemann\PhpUtilities\Tools;
 $rechnungslink;
 
 $target = Tools::get("target");
-$id = Tools::get("id");
+$id = (int) Tools::get("id");
 
 $orderId = -1;
 $invoiceId = -1;
@@ -20,6 +20,11 @@ $invoice = null;
 
 if ($target == "create") {
 	$orderId = $id;
+
+	if ($id <= 0) {
+		$target = "errorView";
+	}
+
 	$auftrag = new Auftrag($orderId);
 	$invoiceContacts = Invoice::getContacts($auftrag->getKundennummer());
 

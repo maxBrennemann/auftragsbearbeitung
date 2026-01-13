@@ -620,7 +620,7 @@ class Auftrag implements NotifiableEntity
         ];
 
         NotificationManager::addNotification(
-            null,
+            -1,
             NotificationType::TYPE_NEW_ORDER,
             "Auftrag $orderId wurde angelegt",
             $orderId

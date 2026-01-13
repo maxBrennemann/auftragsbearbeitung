@@ -58,6 +58,10 @@ class Invoice
 
     public static function getInvoice(int $invoiceNumber): ?Invoice
     {
+        if ($invoiceNumber >= 0) {
+            return null;
+        }
+
         $query = "SELECT order_id, id FROM invoice WHERE invoice_number = :invoiceNumber;";
         $data = DBAccess::selectQuery($query, [
             "invoiceNumber" => $invoiceNumber,
