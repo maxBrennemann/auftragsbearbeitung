@@ -134,7 +134,7 @@ fnNames.click_createFbExport = () => {
 fnNames.click_openTagOverview = () => {
     ajax.get(`/api/v1/sticker/tags/overview`).then(tags => {
         const div = document.createElement("div");
-        div.classList.add("h-[34rem]", "overflow-y-scroll");
+        div.classList.add("h-136", "overflow-y-scroll");
 
         const p = document.createElement("p");
         p.innerHTML = "Tagübersicht";

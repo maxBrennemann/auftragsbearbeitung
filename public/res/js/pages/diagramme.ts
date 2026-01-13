@@ -178,7 +178,7 @@ const renderDimensions = () => {
 
 	state.dimensions.forEach((dim: string) => {
 		const div = document.createElement("div");
-		div.className = "p-2 bg-gray-200 rounded mr-2 mb-2 inline-block text-gray-700";
+		div.className = "p-2 bg-gray-200 rounded-sm mr-2 mb-2 inline-block text-gray-700";
 		div.innerText = label(dim);
 
 		const removeBtn = document.createElement("button");
@@ -211,7 +211,7 @@ const renderFilters = () => {
 
 const renderFilterRow = (filter: Filter) => {
 	const row = document.createElement("div");
-	row.className = "p-2 bg-gray-200 rounded mb-2 flex items-center gap-2";
+	row.className = "p-2 bg-gray-200 rounded-sm mb-2 flex items-center gap-2";
 	row.dataset.filterId = filter.id;
 
 	const name = document.createElement("span");

@@ -135,7 +135,7 @@ try {
 
 			<div class="defCont col-span-6 md:col-span-2 2xl:col-span-3">
 				<p class="font-bold">Kundeninfo</p>
-				<div class="bg-white p-2 rounded-sm mt-1">
+				<div class="bg-white p-2 rounded-xs mt-1">
 					<p><?= $kunde->getVorname() ?> <?= $kunde->getNachname() ?></p>
 					<p><?= $kunde->getFirmenname() ?></p>
 					<p class="mt-2"><?= $kunde->getStrasse() ?> <?= $kunde->getHausnummer() ?></p>
@@ -169,7 +169,7 @@ foreach ($contactPersons as $contact): ?>
 					<div>
 						<button class="btn-primary" data-binding="true" data-fun="toggleAddStep">Neu</button>
 					</div>
-					<div class="px-2 rounded ml-2">
+					<div class="px-2 rounded-sm ml-2">
 						<?= TemplateController::getTemplate("inputSwitch", [
     "id" => "toggleSteps",
     "name" => "Alle Schritte anzeigen",
@@ -356,7 +356,7 @@ foreach ($contactPersons as $contact): ?>
 					</label>
 					<label class="ml-1">
 						<p class="text-sm">Farbe (Hex)</p>
-						<input class="colorInput jscolor input-primary outline outline-offset-1" type="text" max="32" data-write="true" data-fun="checkHexCode">
+						<input class="colorInput jscolor input-primary outline-solid outline-offset-1" type="text" max="32" data-write="true" data-fun="checkHexCode">
 					</label>
 					<br>
 					<button class="btn-primary" data-fun="sendColor">Hinzufügen</button>

@@ -31,7 +31,7 @@
             <ul class="ml-5 list-disc list-inside">
                 <li>Vite Build wird nun statt Webpack verwendet</li>
                 <li>Minify Status entfernt, in Production wird immer alles gebundelt</li>
-                <li>Mehrere Konfigurationsdateien in <code class="bg-white rounded-sm px-0.5">.config</code> abgelegt</li>
+                <li>Mehrere Konfigurationsdateien in <code class="bg-white rounded-xs px-0.5">.config</code> abgelegt</li>
                 <li>Dateibaum verschlankt</li>
             </ul>
         </li>

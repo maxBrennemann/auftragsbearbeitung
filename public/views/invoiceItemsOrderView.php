@@ -7,7 +7,7 @@
         $count = 1;
         $max = count($items);
         foreach ($items as $item) : ?>
-            <div data-id="<?= $item["id"] ?>" data-type="<?= $item["type"] ?>" class="flex my-2 px-2 bg-slate-50 rounded cursor-move">
+            <div data-id="<?= $item["id"] ?>" data-type="<?= $item["type"] ?>" class="flex my-2 px-2 bg-slate-50 rounded-sm cursor-move">
                 <div><input type="number" value="<?= $count++ ?>" class="input-primary w-16" min="1" max="<?= $max ?>" disabled></div>
                 <div class="flex-1 ml-2 flex items-center">
                     <p><?= $item["content"] ?></p>
