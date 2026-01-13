@@ -8,7 +8,7 @@ use Src\Classes\Project\Icon;
     <?php foreach ($customLinks as $link): ?>
         <li class="px-3 py-5 rounded-lg bg-gray-100 hover:underline hover:bg-gray-200">
             <?php if ($link["input"]): ?>
-                <input id="<?= $link["input"]["id"] ?>" type="<?= $link["input"]["type"] ?>" class="w-32 rounded-md p-1">
+                <input id="<?= $link["input"]["id"] ?>" type="<?= $link["input"]["type"] ?>" class="w-32 rounded-md p-1 bg-white">
             <?php endif; ?>
             <a href="<?= $link["url"] ?>" class="inline-flex items-center gap-x-1">
                 <?php if ($link["icon"]): ?>

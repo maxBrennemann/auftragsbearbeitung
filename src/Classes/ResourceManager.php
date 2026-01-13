@@ -4,6 +4,8 @@ namespace Src\Classes;
 
 use Src\Classes\Controller\SessionController;
 use Src\Classes\Project\Events;
+use Src\Classes\Project\Settings;
+use Src\Classes\Project\CacheManager;
 use Src\Classes\Sticker\Exports\ExportFacebook;
 use Src\Classes\Sticker\Imports\ImportGoogleSearchConsole;
 use MaxBrennemann\PhpUtilities\DBAccess;
@@ -14,19 +16,42 @@ class ResourceManager
     private static string $page = "";
     private static string $type = "";
 
-    public static function initialize(): void
+    public static function manage(): void
     {
-        $companyName = DBAccess::selectQuery("SELECT content FROM settings WHERE title = 'companyName';");
+        errorReporting();
+
+        self::getParameters();
+        self::initCompanyName();
+        self::identifyRequestType();
+        
+        SessionController::start();
+
+        self::pass();
+
+        CacheManager::loadCacheIfExists();
+
+        register_shutdown_function("captureError");
+
+        try {
+            self::initPage();
+        } catch (\Throwable $e) {
+            $_ENV["LAST_EXCEPTION"] = $e;
+        }
+
+        self::close();
+    }
+
+    private static function initCompanyName(): void
+    {
+        $companyName = Settings::get("companyName");
         if ($companyName != null) {
-            define("COMPANY_NAME", $companyName[0]["content"]);
+            define("COMPANY_NAME", $companyName);
         } else {
             define("COMPANY_NAME", "Auftragsbearbeitung");
         }
-
-        errorReporting();
     }
 
-    public static function identifyRequestType(): void
+    private static function identifyRequestType(): void
     {
         $url = $_SERVER["REQUEST_URI"];
         $url = explode('?', $url, 2);
@@ -61,12 +86,9 @@ class ResourceManager
         }
     }
 
-    public static function pass(): void
+    private static function pass(): void
     {
         switch (self::$type) {
-            case "js":
-            case "css":
-            case "font":
             case "pdfs":
             case "upload":
             case "backup":
@@ -91,7 +113,7 @@ class ResourceManager
         }
     }
 
-    public static function getParameters(): void
+    private static function getParameters(): void
     {
         $PHPInput = file_get_contents("php://input");
 
@@ -113,7 +135,6 @@ class ResourceManager
                 break;
             case "PUT":
             case "DELETE":
-                /* https://stackoverflow.com/questions/20320634/how-to-get-put-delete-arguments-in-php */
                 if ($PHPInput === false) {
                     return;
                 }
@@ -146,7 +167,7 @@ class ResourceManager
         }
     }
 
-    public static function showPage(): void
+    private static function showPage(): void
     {
         $routes = require ROOT . "src/web-routes.php";
         $page = self::$page;
@@ -155,10 +176,10 @@ class ResourceManager
         $pageName = "";
 
         if (isset($routes[$page])) {
-            $filePath = $routes[$page]['file'];
-            $pageName = $routes[$page]['name'] ?? ucfirst($page);
+            $filePath = $routes[$page]["file"];
+            $pageName = $routes[$page]["name"] ?? ucfirst($page);
         } else {
-            $candidateFile = "../public/pages/$page.php";
+            $candidateFile = ROOT . "public/pages/$page.php";
 
             if (file_exists($candidateFile)) {
                 $filePath = "$page.php";
@@ -166,21 +187,21 @@ class ResourceManager
             }
         }
 
-        if (!$filePath || !file_exists("../public/pages/$filePath")) {
+        if (!$filePath || !file_exists(ROOT . "public/pages/$filePath")) {
             http_response_code(404);
-            $filePath = '404.php';
-            $pageName = 'Page not found';
+            $filePath = "404.php";
+            $pageName = "Page not found";
         }
 
-        insertTemplate("../public/layout/header.php", [
+        insertTemplate(ROOT . "public/layout/header.php", [
             "pageName" => $pageName,
             "page" => $page,
             "pageScript" => $page == "" ? "home" : $page,
         ]);
 
-        insertTemplate("../public/pages/$filePath");
+        insertTemplate(ROOT . "public/pages/$filePath");
 
-        insertTemplate("../public/layout/footer.php", [
+        insertTemplate(ROOT . "public/layout/footer.php", [
             "calcDuration" => $_ENV["DEV_MODE"],
         ]);
     }
@@ -208,15 +229,6 @@ class ResourceManager
         }
 
         switch ($type) {
-            case "js":
-                self::get_script($resource);
-                break;
-            case "css":
-                self::get_css($resource);
-                break;
-            case "font":
-                self::get_font($resource);
-                break;
             case "pdfs":
                 self::get_pdf($resource);
                 break;
@@ -238,44 +250,9 @@ class ResourceManager
         }
     }
 
-    private static function get_script(string $script): void
-    {
-        header("Content-Type: text/javascript");
-        header("Cache-Control: public, max-age=31536000, immutable");
-
-        if (file_exists(Link::getFilePath($script, "min"))) {
-            echo file_get_contents(Link::getFilePath($script, "min"));
-            return;
-        }
-
-        echo "";
-    }
-
-    private static function get_css(string $script): void
-    {
-        header("Content-Type: text/css; charset=utf-8");
-        header("Cache-Control: public, max-age=31536000, immutable");
-
-        $fileName = explode(".", $script);
-
-        /* quick workaround for font files accessed via css/font/ */
-        $font = self::checkFont($fileName);
-        if ($font !== false) {
-            self::get_font($font);
-            return;
-        }
-
-        if (file_exists(Link::getFilePath($script, "min"))) {
-            echo file_get_contents(Link::getFilePath($script, "min"));
-            return;
-        }
-
-        echo "";
-    }
-
     public static function getFileNameWithHash(string $file, bool $isJS = true): string
     {
-        $json = @file_get_contents("../public/res/assets/.vite/manifest.json");
+        $json = @file_get_contents(ROOT . "public/res/assets/.vite/manifest.json");
 
         if ($json == false) {
             return "";
@@ -291,42 +268,6 @@ class ResourceManager
         }
 
         return $manifest[$file]["file"];
-    }
-
-    /**
-     * @param array<int, string> $fileName
-     * @return string|false
-     */
-    private static function checkFont(array $fileName): string|false
-    {
-        $len = count($fileName);
-        $last = $fileName[$len - 1];
-
-        if ($last == "ttf") {
-            $names = explode("/", $fileName[0]);
-            $len = count($names);
-            $last = $names[$len - 1];
-            return $last . ".ttf";
-        }
-
-        return false;
-    }
-
-    private static function get_font(string $font): void
-    {
-        header("Content-type: font/ttf");
-        $fontPath = Link::getFilePath($font, "font");
-        $font = file_get_contents($fontPath);
-
-        if ($font === false) {
-            http_response_code(404);
-            exit();
-        }
-
-        header("Cache-Control: public, max-age=31536000, immutable");
-        header("Content-Length: " . filesize($fontPath));
-
-        echo $font;
     }
 
     private static function get_upload(string $upload): void

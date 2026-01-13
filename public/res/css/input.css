@@ -43,7 +43,7 @@
 }
 
 @utility input-primary {
-  @apply w-36 h-8 px-2.5 py-1 my-1 rounded-sm ring-1 ring-gray-300 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+  @apply w-36 h-8 px-2.5 py-1 my-1 rounded-sm ring-1 ring-gray-300 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white;
 }
 
 @utility link-button {

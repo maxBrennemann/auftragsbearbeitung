@@ -13,7 +13,7 @@ export default {
                 if (!filename) return asset.url;
                 
                 if (fontsToRewrite.includes(filename)) {
-                    return `/css/fonts/${filename}`;
+                    return `/fonts/${filename}`;
                 }
                 return asset.url;
             }
