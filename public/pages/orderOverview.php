@@ -19,12 +19,12 @@ if ($query !== null) {
 }
 
 ?>
-<div class="w-full bg-gray-100 p-2 rounded-md">
-	<input type="number" min="1" oninput="document.getElementById('auftragsLink').href = '/auftrag?id=' + this.value;" class="input-primary">
-	<a href="#" id="auftragsLink">Auftrag anzeigen</a>
+<div class="w-full bg-gray-100 p-3 rounded-md">
+	<input type="number" min="1" class="input-primary" id="idInput">
+	<button class="btn-primary" data-binding="true" data-fun="showOrder">Auftrag anzeigen</button>
 	<br>
-	<input type="text" oninput="document.getElementById('auftragSuche').href = '/order-overview?query=' + this.value;" class="input-primary">
-	<a href="#" id="auftragSuche">Auftrag suchen</a>
+	<input type="text" class="input-primary" value="<?= $query ?>" id="queryInput">
+	<button class="btn-primary" data-binding="true" data-fun="searchOrder">Auftrag suchen</button>
 	<br><br>
 	<?=$showOffeneAuftraege?>
 </div>

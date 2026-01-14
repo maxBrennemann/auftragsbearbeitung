@@ -27,7 +27,6 @@ services:
     volumes:
       - storage_data:/var/www/html/storage
       - ./.env:/var/www/html/.env
-      - ./.config/crontab:/etc/crontabs/root
     networks:
       - internal
     command: ["crond", "-f", "-l", "2"]
