@@ -10,16 +10,18 @@ export interface TableOptions {
     hide: string[];
     hideOptions: string[];
     styles: {
-        table: {
+        table?: {
             className: string[];
         };
-        key: {
+        key?: {
             [key: string]: string[];
         };
-        sum: {
+        sum?: {
             [key: string]: string[];
         };
     };
+    conditions?: Record<string, string | number>;
+    joins?: Record<string, string | number>;
     autoSort: boolean;
-    sum: { key: string; format: string }[];
+    sum?: { key: string; format: string }[];
 }

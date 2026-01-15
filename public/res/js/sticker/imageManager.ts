@@ -8,10 +8,11 @@ import { fetchAndRenderTable } from "../classes/table";
 import { tableConfig } from "../classes/tableconfig";
 import { initFileUploader } from "../classes/upload";
 import { getStickerId } from "../pages/sticker";
+import { FunctionMap } from "../types/types";
 
 import { initSVG } from "./svgManager";
 
-const fnNames: { [key: string]: (...args: any[]) => void } = {};
+const fnNames = {} as FunctionMap;
 const imageTables: {
     imageType?: HTMLTableElement,
 } = {};
