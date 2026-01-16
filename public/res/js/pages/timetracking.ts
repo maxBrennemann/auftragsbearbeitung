@@ -40,16 +40,22 @@ const init = () => {
 
 const toggleIsPausable = (status: boolean) => {
     const isPausable = document.getElementById("pauseCurrentTracking") as HTMLButtonElement;
+    const cancelCurrentTracking = document.getElementById("cancelCurrentTracking") as HTMLButtonElement;
+
     switch (status) {
         case true:
             isPausable.classList.add("btn-edit");
             isPausable.classList.remove("btn-cancel");
             isPausable.disabled = false;
+
+            cancelCurrentTracking.disabled = false;
             break;
         case false:
             isPausable.classList.remove("btn-edit");
             isPausable.classList.add("btn-cancel");
             isPausable.disabled = true;
+
+            cancelCurrentTracking.disabled = true;
             break;
     }
 }
@@ -117,6 +123,8 @@ fnNames.click_cancelCurrentTracking = () => {
     localStorage.removeItem("startTime");
     const startStopChecked = document.getElementById("startStopChecked") as HTMLInputElement;
     startStopChecked.checked = false;
+
+    toggleIsPausable(false);
 }
 
 fnNames.click_pauseCurrentTracking = () => {
