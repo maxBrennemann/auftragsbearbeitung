@@ -76,6 +76,7 @@ COPY --from=composer /var/www/html/vendor ./vendor
 COPY --from=frontend-builder /app/public/res/assets/.vite/manifest.json ./public/res/assets/.vite/manifest.json
 COPY database/Migrations ./database/Migrations
 COPY console ./console
+COPY .config/crontab /etc/crontabs/root
 
 # Create cron log
 RUN touch /var/log/cron.log

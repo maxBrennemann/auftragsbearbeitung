@@ -6,6 +6,7 @@ use MaxBrennemann\PhpUtilities\Tools;
 use Src\Classes\Controller\TemplateController;
 
 $query = Tools::get("query");
+$query = urldecode($query);
 $customers = [];
 
 if ($query != null) {
@@ -24,7 +25,7 @@ if ($query != null) {
     <p class="mr-3">Suche:</p>
     <?= TemplateController::getTemplate("search", [
         "searchId" => "search",
-        "searchValue" => Tools::get("query"),
+        "searchValue" => $query,
     ]); ?>
 </div>
 <div class="grid grid-cols-3 xl:grid-cols-4 w-full">

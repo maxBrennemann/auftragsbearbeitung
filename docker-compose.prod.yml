@@ -20,6 +20,17 @@ services:
     networks:
       - internal
 
+  cron:
+    image: ghcr.io/maxbrennemann/auftragsbearbeitung/php-base:prod-latest
+    restart: always
+    user: root
+    volumes:
+      - storage_data:/var/www/html/storage
+      - ./.env:/var/www/html/.env
+    networks:
+      - internal
+    command: ["crond", "-f", "-l", "2"]
+
   database:
     image: mariadb:12
     environment:

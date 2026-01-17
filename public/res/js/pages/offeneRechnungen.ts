@@ -6,7 +6,6 @@ import { loader } from "../classes/helpers";
 import { addRow, createHeader, createTable } from "../classes/table";
 import { FunctionMap } from "../types/types";
 
-
 const fnNames: FunctionMap = {};
 const config = {
     show: "all",

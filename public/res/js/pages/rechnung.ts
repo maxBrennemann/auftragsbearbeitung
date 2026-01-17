@@ -10,9 +10,9 @@ const functionNames: FunctionMap = {};
 
 const removedAltNames: number[] = [];
 const config = {
-    "invoiceId": 0,
-    "orderId": 0,
-    "positions": {},
+    invoiceId: 0,
+    orderId: 0,
+    positions: {},
 }
 
 function init() {

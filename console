@@ -6,10 +6,12 @@ require_once "src/settings.php";
 use Symfony\Component\Console\Application;
 use Src\Classes\Commands\CreateMigration;
 use Src\Classes\Commands\AutoUpgrade;
+use Src\Classes\Commands\CronRunCommand;
 
 $app = new Application("console", "1.0");
 
 $app->addCommand(new CreateMigration());
 $app->addCommand(new AutoUpgrade());
+$app->addCommand(new CronRunCommand());
 
 $app->run();

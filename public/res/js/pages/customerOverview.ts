@@ -18,7 +18,7 @@ const init = (): void => {
         }
 
         const url = new URL(window.location.href);
-        url.searchParams.set("query", value);
+        url.searchParams.set("query", encodeURIComponent(value));
         history.replaceState(null, "", url);
 
         window.location.reload();

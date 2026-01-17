@@ -1093,8 +1093,8 @@
             "version": "2.1.x-dev",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/60c311830def5a992dda64da416992eb93f3c8f0",
-                "reference": "60c311830def5a992dda64da416992eb93f3c8f0",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/58c418b26ccbe8c94edde442a63402395b216afe",
+                "reference": "58c418b26ccbe8c94edde442a63402395b216afe",
                 "shasum": ""
             },
             "require": {
@@ -1140,7 +1140,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-01-12T17:37:31+00:00"
+            "time": "2026-01-15T19:38:18+00:00"
         },
         {
             "name": "prestashop/prestashop-webservice-lib",
@@ -3772,12 +3772,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "205b1c31b03654ea0a59671174470d8c4eadfa4a"
+                "reference": "dd59c48731c08abe0abe39ab2bfbc2857afdc35e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/205b1c31b03654ea0a59671174470d8c4eadfa4a",
-                "reference": "205b1c31b03654ea0a59671174470d8c4eadfa4a",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/dd59c48731c08abe0abe39ab2bfbc2857afdc35e",
+                "reference": "dd59c48731c08abe0abe39ab2bfbc2857afdc35e",
                 "shasum": ""
             },
             "require": {
@@ -3873,7 +3873,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-01-04T06:48:24+00:00"
+            "time": "2026-01-16T14:19:10+00:00"
         },
         {
             "name": "psr/event-dispatcher",
@@ -5540,12 +5540,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "d38403678674adc8d6eaab4dbb9d3f605bb5c3ec"
+                "reference": "bd57b0a5c68c9a59f3f7c71583f0829110feee5d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/d38403678674adc8d6eaab4dbb9d3f605bb5c3ec",
-                "reference": "d38403678674adc8d6eaab4dbb9d3f605bb5c3ec",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/bd57b0a5c68c9a59f3f7c71583f0829110feee5d",
+                "reference": "bd57b0a5c68c9a59f3f7c71583f0829110feee5d",
                 "shasum": ""
             },
             "require": {
@@ -5571,6 +5571,7 @@
                 "symfony/service-contracts": "^2.5|^3",
                 "symfony/stopwatch": "^7.4|^8.0"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -5617,7 +5618,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-01-05T11:50:03+00:00"
+            "time": "2026-01-14T14:51:52+00:00"
         },
         {
             "name": "symfony/event-dispatcher-contracts",

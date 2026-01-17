@@ -1,1 +1,1 @@
-* * * * * cd /var/www/html /usr/local/bin/php classes/Cron/execCrons.php >> /var/log/cron.log 2>&1
+* * * * * php /var/www/html/console runCron >> /var/log/cron.log 2>&1
