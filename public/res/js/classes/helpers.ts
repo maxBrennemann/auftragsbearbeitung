@@ -1,8 +1,8 @@
-export const createPopup = (content: HTMLElement) => {
+export const createPopup = (content: HTMLElement, containerClasses: string[] = []) => {
     const container = document.createElement("div");
     container.classList.add("overlay-container");
     const contentContainer = document.createElement("div");
-    contentContainer.classList.add("overlay-container__content");
+    contentContainer.classList.add("overlay-container__content", ...containerClasses);
     const optionsContainer = document.createElement("div");
     optionsContainer.classList.add("overlay-container__content__options");
 

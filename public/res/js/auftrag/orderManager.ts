@@ -96,7 +96,7 @@ fnNames.click_changeCustomer = async () => {
     div.classList.add("orderDetailsOpen");
     div.innerHTML = changeCustomer.data.content;
 
-    const optionsContainer = createPopup(div);
+    const optionsContainer = createPopup(div, ["w-2/3"]);
     optionsContainer.addEventListener("closePopup", () => {
         const showExtraOptions = document.getElementById("showExtraOptions") as HTMLElement;
         showExtraOptions.classList.toggle("hidden");
