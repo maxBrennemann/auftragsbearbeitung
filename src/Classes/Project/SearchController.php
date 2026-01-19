@@ -86,6 +86,7 @@ class SearchController
     {
         $query = Tools::get("query");
         $limit = (int) Tools::get("limit");
+
         if ($limit <= 0) {
             $limit = 15;
         }
@@ -95,6 +96,7 @@ class SearchController
         }
 
         $results = self::search($query, $limit);
+        $results["count"] = count($results["data"]);
         JSONResponseHandler::sendResponse($results);
     }
 

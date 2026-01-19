@@ -22,7 +22,7 @@ class Leistung extends Posten
     private float $quantity;
     private string $meh;
 
-    public function __construct(int $leistungsnummer, string $beschreibung, float $speziefischerPreis, float $einkaufspreis, int $quantity, string $meh, int $discount, bool $isInvoice, bool $freeOfCharge, int $position = 0)
+    public function __construct(int $leistungsnummer, string $beschreibung, float $speziefischerPreis, float $einkaufspreis, float $quantity, string $meh, int $discount, bool $isInvoice, bool $freeOfCharge, int $position = 0)
     {
         $this->beschreibung = $beschreibung;
         $this->preis = (float) $speziefischerPreis;
@@ -59,7 +59,7 @@ class Leistung extends Posten
         $arr['Einkaufspreis'] = number_format($this->einkaufspreis * $this->quantity, 2, ',', '') . "€<br><span style=\"font-size: 0.7em\">Einzelpreis: " . number_format($this->einkaufspreis, 2, ',', '') . "€</span><br>" . $this->getFiles($this->postennummer);
         $arr['Gesamtpreis'] = $this->bekommePreis_formatted();
         $arr['Leistungsnummer'] = $this->leistungsnummer;
-        $arr['Anzahl'] = $this->quantity;
+        $arr['Anzahl'] = addCommas((string) $this->quantity);
         $arr['MEH'] = $this->meh;
         $arr['type'] = "addPostenLeistung";
 

@@ -201,16 +201,16 @@
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.428.0",
+            "version": "v0.429.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "94a3c50a80a36cafb76e32fb76b8007e9f572deb"
+                "reference": "9dd334c8e6d3f25f91efcab86454c6bc0bc928c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/94a3c50a80a36cafb76e32fb76b8007e9f572deb",
-                "reference": "94a3c50a80a36cafb76e32fb76b8007e9f572deb",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/9dd334c8e6d3f25f91efcab86454c6bc0bc928c1",
+                "reference": "9dd334c8e6d3f25f91efcab86454c6bc0bc928c1",
                 "shasum": ""
             },
             "require": {
@@ -239,9 +239,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
-                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.428.0"
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.429.0"
             },
-            "time": "2026-01-12T00:58:26+00:00"
+            "time": "2026-01-19T01:08:26+00:00"
         },
         {
             "name": "google/auth",
@@ -1093,8 +1093,8 @@
             "version": "2.1.x-dev",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/58c418b26ccbe8c94edde442a63402395b216afe",
-                "reference": "58c418b26ccbe8c94edde442a63402395b216afe",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/474b59e76964473fdfea77696a93b20fac11adda",
+                "reference": "474b59e76964473fdfea77696a93b20fac11adda",
                 "shasum": ""
             },
             "require": {
@@ -1140,7 +1140,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-01-15T19:38:18+00:00"
+            "time": "2026-01-19T15:36:42+00:00"
         },
         {
             "name": "prestashop/prestashop-webservice-lib",
@@ -2747,12 +2747,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ergebnis/php-cs-fixer-config.git",
-                "reference": "b3f713a1bd63f059e0d08c112236436eefaa1896"
+                "reference": "36cf679bfb4ee7c52a8b935849b190477fcdfa56"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ergebnis/php-cs-fixer-config/zipball/b3f713a1bd63f059e0d08c112236436eefaa1896",
-                "reference": "b3f713a1bd63f059e0d08c112236436eefaa1896",
+                "url": "https://api.github.com/repos/ergebnis/php-cs-fixer-config/zipball/36cf679bfb4ee7c52a8b935849b190477fcdfa56",
+                "reference": "36cf679bfb4ee7c52a8b935849b190477fcdfa56",
                 "shasum": ""
             },
             "require": {
@@ -2776,7 +2776,7 @@
                 "phpstan/phpstan-phpunit": "^2.0.11",
                 "phpstan/phpstan-strict-rules": "^2.0.7",
                 "phpunit/phpunit": "^9.6.22",
-                "rector/rector": "^2.3.0",
+                "rector/rector": "^2.3.1",
                 "symfony/filesystem": "^5.0.0 || ^6.0.0",
                 "symfony/process": "^5.0.0 || ^6.0.0"
             },
@@ -2811,7 +2811,7 @@
                 "security": "https://github.com/ergebnis/php-cs-fixer-config/blob/main/.github/SECURITY.md",
                 "source": "https://github.com/ergebnis/php-cs-fixer-config"
             },
-            "time": "2026-01-01T00:16:45+00:00"
+            "time": "2026-01-19T15:28:09+00:00"
         },
         {
             "name": "erickskrauch/php-cs-fixer-custom-fixers",
@@ -5723,6 +5723,7 @@
             "require-dev": {
                 "symfony/process": "^7.4|^8.0"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -5858,6 +5859,7 @@
                 "php": ">=8.4",
                 "symfony/deprecation-contracts": "^2.5|^3"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -6164,17 +6166,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "ea61d34ff58baeb22644c77bb8dff544d61d6b19"
+                "reference": "7495aeb63c4b960c0b0a42aefc6c37ee8547eee3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/ea61d34ff58baeb22644c77bb8dff544d61d6b19",
-                "reference": "ea61d34ff58baeb22644c77bb8dff544d61d6b19",
+                "url": "https://api.github.com/repos/symfony/process/zipball/7495aeb63c4b960c0b0a42aefc6c37ee8547eee3",
+                "reference": "7495aeb63c4b960c0b0a42aefc6c37ee8547eee3",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.4"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -6221,7 +6224,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-01-09T12:30:45+00:00"
+            "time": "2026-01-19T07:18:05+00:00"
         },
         {
             "name": "symfony/stopwatch",

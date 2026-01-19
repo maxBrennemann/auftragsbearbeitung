@@ -110,6 +110,13 @@ fnNames.click_changeCustomer = async () => {
         }).then((r: any) => {
             const customerResultBox = document.querySelector("#customerResultBox") as HTMLElement;
             customerResultBox.innerHTML = r.data.template;
+
+            if (r.data.count === 0) {
+                const p = document.createElement("p");
+                p.classList.add("italic");
+                p.innerHTML = "Keine Ergebnisse gefunden.";
+                customerResultBox.appendChild(p);
+            }
         });
     });
 }
