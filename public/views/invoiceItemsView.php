@@ -20,7 +20,7 @@
             </div>
             <div class="mt-1 flex flex-col">
                 <span>Beschreibung:</span>
-                <textarea id="timeDescription" class="input-primary mt-1" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
+                <textarea id="timeDescription" class="input-primary mt-1"></textarea>
             </div>
         </div>
         <div class="container col-span-2">
@@ -55,7 +55,7 @@
         </div>
         <div class="mt-1 flex flex-col">
             <span>Beschreibung:</span>
-            <textarea id="bes" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'" class="input-primary mt-1"></textarea>
+            <textarea id="bes" class="input-primary mt-1"></textarea>
         </div>
         <div class="mt-1 flex flex-col">
             <span>Einkaufspreis [€]:</span>

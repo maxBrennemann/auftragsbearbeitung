@@ -16,14 +16,16 @@ final class CustomerPresenter
 
     /**
      * @param array<Customer> $customers
+     * @param bool $targetLink defines if the whole customer name is a link or not
      * @return string
      */
-    public static function renderCards(array $customers): string
+    public static function renderCards(array $customers, bool $targetLink = false): string
     {
         $html = "";
         foreach ($customers as $customer) {
             $html .= TemplateController::getTemplate("customerCardTemplate", [
                 "customer" => $customer,
+                "defaultLink" => $targetLink,
             ]);
         }
 

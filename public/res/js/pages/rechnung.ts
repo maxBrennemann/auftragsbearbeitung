@@ -300,6 +300,10 @@ const getPDF = () => {
     iframe.src = iframe.src;
 }
 
+functionNames.click_goBack = () => {
+    window.history.go(-1);
+}
+
 if (document.readyState !== 'loading') {
     init();
 } else {

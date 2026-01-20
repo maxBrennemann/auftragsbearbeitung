@@ -15,9 +15,10 @@ $customers = [];
             <p class="mr-3">Suche:</p>
             <?= TemplateController::getTemplate("search", [
                 "searchId" => "searchCustomers",
+                "placeHolder" => "Kundennummer oder Name eingeben",
             ]); ?>
         </div>
-        <div class="grid grid-cols-3 xl:grid-cols-4 w-full" id="customerResultBox">
+        <div class="grid gap-4 items-stretch grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] w-full py-4 flex-1 min-h-0 overflow-y-auto max-h-[60vh]" id="customerResultBox">
             <?php foreach ($customers as $customer) : ?>
                 <?= TemplateController::getTemplate("customerCardTemplate", [
                     "customer" => $customer,

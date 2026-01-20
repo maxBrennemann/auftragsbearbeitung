@@ -201,7 +201,7 @@ function validateDateString(string $date, string $format): bool
     if (!$dateErrors) {
         return true;
     }
-    
+
     if ($dateErrors["warning_count"] + $dateErrors["error_count"] > 0) {
         return false;
     }
@@ -221,6 +221,17 @@ function t(string $key, array $params = []): string
     if ($ref !== null && $ref instanceof I18n) {
         return $ref->t($key, $params);
     }
-    
+
     return "";
+}
+
+function addCommas(string $number): string
+{
+    $parts = explode(".", $number);
+
+    if (count($parts) == 2) {
+        return $parts[0] . "," . $parts[1];
+    }
+
+    return $number;
 }

@@ -99,7 +99,7 @@ try {
 						</span>
 					</div>
 					<div>
-						<textarea class="orderDescription input-primary w-full" autocomplete="none" data-write="true" data-fun="editDescription" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"><?= $auftrag->getAuftragsbeschreibung() ?></textarea>
+						<textarea class="orderDescription input-primary w-full" autocomplete="none" data-write="true" data-fun="editDescription"><?= $auftrag->getAuftragsbeschreibung() ?></textarea>
 						<input class="orderDescription input-primary w-full hidden" autocomplete="none" data-write="true" data-fun="editDescription" value="<?= $auftrag->getAuftragsbeschreibung() ?>">
 					</div>
 				</div>
@@ -122,9 +122,9 @@ try {
 				</div>
 				<div>
 					<?php if (Tools::get("show") == "true" && $auftrag->getInvoiceId() != 0) : ?>
-						<button class="btn-primary" onclick="location.href= '<?= Link::getPageLink('rechnung') ?>?target=view&id=<?= $orderId ?>'">Rechnung anzeigen</button>
+						<button class="btn-primary" data-link="<?= Link::getPageLink('rechnung') ?>?target=view&id=<?= $orderId ?>" data-binding="true" data-fun="showInvoice" id="showInvoice">Rechnung anzeigen</button>
 					<?php else: ?>
-						<button class="btn-primary" onclick="location.href= '<?= Link::getPageLink('rechnung') ?>?target=create&id=<?= $orderId ?>'">Rechnungsvorschau</button>
+						<button class="btn-primary" data-link="<?= Link::getPageLink('rechnung') ?>?target=create&id=<?= $orderId ?>" data-binding="true" data-fun="showInvoicePreview" id="showInvoicePreview">Rechnungsvorschau</button>
 						<?php if ($auftrag->getIsArchiviert() == false) : ?>
 							<button class="btn-primary" data-binding="true" data-fun="archivieren">Auftrag archivieren</button>
 						<?php endif; ?>

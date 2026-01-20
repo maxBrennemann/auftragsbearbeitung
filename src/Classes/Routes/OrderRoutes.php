@@ -30,6 +30,7 @@ class OrderRoutes extends Routes
      * @uses \Src\Classes\Project\Auftrag::addFiles()
      * @uses \Src\Classes\Project\Auftrag::resetInvoice()
      * @uses \Src\Classes\Project\Fahrzeug::addFiles()
+     * @uses \Src\Classes\Project\Auftrag::changeCustomer()
      */
     protected static $postRoutes = [
         "/order" => [\Src\Classes\Project\Auftrag::class, "addOrder"],
@@ -42,6 +43,7 @@ class OrderRoutes extends Routes
         "/order/{id}/add-files" => [\Src\Classes\Project\Auftrag::class, "addFiles"],
         "/order/{id}/reset-invoice" => [\Src\Classes\Project\Auftrag::class, "resetInvoice"],
         "/order/{id}/vehicle/{vehicleId}/add-files" => [\Src\Classes\Project\Fahrzeug::class, "addFiles"],
+        "/order/{id}/change-customer" => [\Src\Classes\Project\Auftrag::class, "changeCustomer"],
     ];
 
     /**

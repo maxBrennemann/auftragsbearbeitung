@@ -1,16 +1,20 @@
-@import './table.css' layer(base);
-@import './global.css' layer(base);
+@import "tailwindcss";
+@import "./table.css" layer(base);
+@import "./global.css" layer(base);
 
-@import 'tailwindcss';
+@theme {
+  --font-sans: "Open Sans", ui-sans-serif, system-ui;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
 
-@config '../../../.config/tailwind.config.ts';
+  --text-xxs: 0.5rem;
+}
 
-@source "../pages/*.php";
-@source "../views/*.php";
-@source "../layout/*.php";
-@source "../res/js/**/*.{js,ts}";
-@source "../../src/**/*.{html,js,php}";
-@source "../../node_modules/js-classes/**/*.{js,ts}";
+@source "../../pages/*.php";
+@source "../../views/*.php";
+@source "../../layout/*.php";
+@source "../js/**/*.ts";
+@source "../../../src/**/*.{html,js,php}";
+@source "../../../node_modules/js-classes/**/*.{js,ts}";
 
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
@@ -31,11 +35,11 @@
 }
 
 @utility btn-primary {
-  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-green-500 rounded-sm text-sm border-0 text-white hover:bg-green-700 disabled:bg-green-200 disabled:hover:bg-green-300 disabled:hover:cursor-not-allowed active:scale-95 transition-transform duration-75;
+  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-green-500 rounded-sm text-sm border-0 text-white hover:bg-green-700 disabled:bg-green-200 disabled:hover:bg-green-300 disabled:hover:cursor-not-allowed active:scale-95 transition-transform duration-75 cursor-pointer;
 }
 
 @utility btn-primary-small {
-  @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-0.5 px-1.5 my-0.5 bg-green-500 rounded-sm border-0 text-white text-xs hover:bg-green-700 disabled:bg-green-200 disabled:hover:bg-green-300 disabled:hover:cursor-not-allowed active:scale-95 transition-transform duration-75;
+  @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-0.5 px-1.5 my-0.5 bg-green-500 rounded-sm border-0 text-white text-xs hover:bg-green-700 disabled:bg-green-200 disabled:hover:bg-green-300 disabled:hover:cursor-not-allowed active:scale-95 transition-transform duration-75 cursor-pointer;
 }
 
 @utility link-primary {
@@ -51,27 +55,27 @@
 }
 
 @utility btn-delete {
-  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-red-400 rounded-sm text-sm border-0 text-white hover:bg-red-600 disabled:bg-red-200 disabled:hover:bg-red-300 disabled:hover:cursor-not-allowed;
+  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-red-400 rounded-sm text-sm border-0 text-white hover:bg-red-600 disabled:bg-red-200 disabled:hover:bg-red-300 disabled:hover:cursor-not-allowed cursor-pointer;
 }
 
 @utility btn-edit {
-  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-blue-400 rounded-sm text-sm border-0 text-white hover:bg-blue-600;
+  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-blue-400 rounded-sm text-sm border-0 text-white hover:bg-blue-600 cursor-pointer;
 }
 
 @utility btn-active {
-  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-blue-400 rounded-sm text-sm border-0 text-white hover:bg-blue-600;
+  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-blue-400 rounded-sm text-sm border-0 text-white hover:bg-blue-600 cursor-pointer;
 }
 
 @utility btn-edit-small {
-  @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-0.5 px-1.5 my-0.5 bg-blue-400 rounded-sm text-xs border-0 text-white hover:bg-blue-600;
+  @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-0.5 px-1.5 my-0.5 bg-blue-400 rounded-sm text-xs border-0 text-white hover:bg-blue-600 cursor-pointer;
 }
 
 @utility btn-active-small {
-  @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-0.5 px-1.5 my-0.5 bg-blue-400 rounded-sm text-xs border-0 text-white hover:bg-blue-600;
+  @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-0.5 px-1.5 my-0.5 bg-blue-400 rounded-sm text-xs border-0 text-white hover:bg-blue-600 cursor-pointer;
 }
 
 @utility btn-cancel {
-  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 mr-1 bg-white rounded-sm text-sm border-0 text-black hover:bg-slate-100 shadow-xs ring-offset-black gap-2 data-focus:outline-1 data-focus:outline-black ring-1 ring-gray-300 disabled:bg-slate-100;
+  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 mr-1 bg-white rounded-sm text-sm border-0 text-black hover:bg-slate-100 shadow-xs ring-offset-black gap-2 data-focus:outline-1 data-focus:outline-black ring-1 ring-gray-300 disabled:bg-slate-100 cursor-pointer;
 }
 
 @utility btn-inactive {

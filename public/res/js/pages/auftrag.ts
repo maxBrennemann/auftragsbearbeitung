@@ -1,43 +1,52 @@
-﻿//@ts-nocheck
+﻿import { addBindings, getVariable } from "js-classes/bindings"
+import { ajax } from "js-classes/ajax";
+import { notification } from "js-classes/notifications";
 
-import { addBindings, getVariable } from "js-classes/bindings"
+import { getItemsTable, initInvoiceItems } from "../classes/invoiceItems";
+import { initFileUploader } from "../classes/upload";
+import { loader } from "../classes/helpers";
 
 import { initColors } from "../auftrag/colorManager";
 import { initNotes } from "../auftrag/noteStepManager";
 import { initOrderManager } from "../auftrag/orderManager";
 import { initVehicles } from "../auftrag/vehicleManager";
 
+import { FunctionMap } from "../types/types";
+
 import "../auftrag/calculateGas";
-import { ajax } from "js-classes/ajax";
-
-import { getItemsTable, initInvoiceItems } from "../classes/invoiceItems";
-
-import { notification } from "js-classes/notifications";
-
-import { initFileUploader } from "../classes/upload";
 
 /* global variables */
 const orderConfig = {
     aufschlag: 0,
-    auftragsId: parseInt(new URL(window.location.href).searchParams.get("id")),
+    auftragsId: 0,
     times: [],
-    table: null,
+    table: null as HTMLTableElement | null,
 }
 
-const fnNames = {};
+const fnNames = {} as FunctionMap;
 
 export const getOrderId = () => {
-    return parseInt(orderConfig.auftragsId);
+    return orderConfig.auftragsId;
 }
 
 export const getCustomerId = () => {
-    return parseInt(getVariable("customerId"));
+    const customerId = getVariable("customerId");
+    if (customerId === undefined) {
+        return -1;
+    }
+    return parseInt(customerId);
 }
 
 const initCode = async () => {
-    if (isNaN(orderConfig.auftragsId) || orderConfig.auftragsId <= 0) {
+    const url = new URL(window.location.href);
+    const idParam = url.searchParams.get("id") ?? "";
+    const orderId = parseInt(idParam);
+
+    if (isNaN(orderId) || orderId <= 0) {
         return;
     }
+
+    orderConfig.auftragsId = orderId;
 
     addBindings(fnNames);
 
@@ -62,7 +71,7 @@ const initCode = async () => {
 }
 
 /* changes the contact person connected with the order */
-const changeContact = (e) => {
+const changeContact = (e: any) => {
     const value = e.currentTarget.value;
 
     ajax.post(`/api/v1/order/${orderConfig.auftragsId}/contact-person`, {
@@ -71,17 +80,17 @@ const changeContact = (e) => {
         if (r.data.status == "success") {
             notification("", "success");
         } else {
-            notification("", "");
+            notification("", "failure");
         }
     });
 }
 
 fnNames.click_toggleOrderDescription = () => {
-    const toggleUp = document.querySelector(".toggle-up");
-    const toggleDown = document.querySelector(".toggle-down");
+    const toggleUp = document.querySelector(".toggle-up") as HTMLElement;
+    const toggleDown = document.querySelector(".toggle-down") as HTMLElement;
 
-    const el = document.querySelector(".orderDescription.hidden");
-    const rep = document.querySelector(".orderDescription:not(.hidden)");
+    const el = document.querySelector(".orderDescription.hidden") as HTMLElement;
+    const rep = document.querySelector(".orderDescription:not(.hidden)") as HTMLElement;
 
     el.classList.toggle("hidden");
     rep.classList.toggle("hidden");
@@ -102,14 +111,14 @@ fnNames.click_toggleInvoiceItems = e => {
     ajax.put(`/api/v1/settings/filter-order-posten`, {
         "value": value,
     }).then(async () => {
-        orderConfig.table.parentNode.removeChild(orderConfig.table);
+        orderConfig.table?.parentNode?.removeChild(orderConfig.table);
         orderConfig.table = await getItemsTable("auftragsPostenTable", orderConfig.auftragsId, "order");
         orderConfig.table.addEventListener("rowInsert", reloadPostenListe);
     });
 }
 
 fnNames.click_showMoreOrderHistory = e => {
-    const orderHistory = document.querySelector(".orderHistory");
+    const orderHistory = document.querySelector(".orderHistory") as HTMLElement;
     const elements = orderHistory.querySelectorAll(".hidden");
     elements.forEach(el => {
         el.classList.remove("hidden");
@@ -119,14 +128,14 @@ fnNames.click_showMoreOrderHistory = e => {
 
 const reloadPostenListe = async () => {
     const response = await ajax.get(`/api/v1/order-items/${orderConfig.auftragsId}/invoice`);
-    document.getElementById("invoicePostenTable").innerHTML = response.data["invoicePostenTable"];
+    (document.getElementById("invoicePostenTable") as HTMLElement).innerHTML = response.data["invoicePostenTable"];
 }
 
 fnNames.write_changeContact = changeContact;
 
 fnNames.click_setPayed = () => {
-    const date = document.getElementById("inputPayDate").value;
-    const paymentType = document.getElementById("paymentType").value;
+    const date = (document.getElementById("inputPayDate") as HTMLInputElement).value;
+    const paymentType = (document.getElementById("paymentType") as HTMLInputElement).value;
     const invoiceId = getVariable("invoiceId");
 
     ajax.post(`/invoice/${invoiceId}/paid`, {
@@ -134,16 +143,16 @@ fnNames.click_setPayed = () => {
         "paymentType": paymentType,
     }).then(r => {
         if (r.data.status == "success") {
-            document.getElementById("orderPaymentState").innerHTML = `<p>Die Rechnung wurde am ${date} mit ${paymentType} bezahlt.</p>`;
+            (document.getElementById("orderPaymentState") as HTMLElement).innerHTML = `<p>Die Rechnung wurde am ${date} mit ${paymentType} bezahlt.</p>`;
         }
     });
 }
 
 const initInvoice = () => {
-    const invoiceEmbed = document.getElementById("invoiceEmbed");
+    const invoiceEmbed = document.getElementById("invoiceEmbed") as HTMLEmbedElement;
     fetch(invoiceEmbed.src).then(response => {
         if (response.status == 404) {
-            const el = document.getElementById("showMissingFileWarning");
+            const el = document.getElementById("showMissingFileWarning") as HTMLDivElement;
             el.classList.remove("hidden");
             el.classList.add("flex");
         }
@@ -156,10 +165,10 @@ fnNames.click_recreateInvoice = () => {
         "orderId": getOrderId(),
     }).then(r => {
         if (r.data.status !== "success") {
-            notification("", "failiure", r.data.message);
-            const invoiceEmbed = document.getElementById("invoiceEmbed");
+            notification("", "failure", r.data.message);
+            const invoiceEmbed = document.getElementById("invoiceEmbed") as HTMLEmbedElement;
             invoiceEmbed.src = invoiceEmbed.src;
-            const el = document.getElementById("showMissingFileWarning");
+            const el = document.getElementById("showMissingFileWarning") as HTMLDivElement;
             el.classList.add("hidden");
             return;
         }
@@ -177,10 +186,16 @@ fnNames.click_resetInvoice = () => {
     })
 }
 
-if (document.readyState !== 'loading') {
-    initCode();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        initCode();
-    });
+fnNames.click_showInvoice = () => {
+    const el = document.querySelector("#showInvoice") as HTMLElement;
+    const link = el.dataset.link ?? location.href;
+    location.href = link;
 }
+
+fnNames.click_showInvoicePreview = () => {
+    const el = document.querySelector("#showInvoicePreview") as HTMLElement;
+    const link = el.dataset.link ?? location.href;
+    location.href = link;
+}
+
+loader(initCode);

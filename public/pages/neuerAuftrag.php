@@ -71,7 +71,7 @@ if (Tools::get("id")) : ?>
 				<div class="mt-2">
 					<div class="w-full flex flex-col">
 						<label for="idCustomer">Beschreibung:</label>
-						<textarea class="input-primary" id="beschreibung" maxlength="65535" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
+						<textarea class="input-primary" id="beschreibung" maxlength="65535"></textarea>
 					</div>
 				</div>
 

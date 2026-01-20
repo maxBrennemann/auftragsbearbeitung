@@ -117,7 +117,7 @@ abstract class Posten
                         $row["l_description"],
                         (float) $row["l_price"],
                         (float) $row["l_purchase_price"],
-                        (int) $row["l_qty"],
+                        (float) $row["l_qty"],
                         $row["l_unit"],
                         (int) $row["discount"],
                         $row["is_invoice"] == "1",

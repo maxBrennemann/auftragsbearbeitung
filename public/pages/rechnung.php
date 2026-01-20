@@ -162,7 +162,7 @@ if ($target == "create") {
 			<?php else: ?>
 				<button disabled class="btn-primary">Rechnung abschließen</button>
 			<?php endif; ?>
-			<button onclick="window.history.go(-1); return false;" class="btn-cancel">Abbrechen</button>
+			<button data-binding="true" data-fun="goBack" class="btn-cancel">Abbrechen</button>
 			<div class="float-right">
 				<a href="/einstellungen#invoiceSettings" class="link-primary">Rechnungseinstellungen</a>
 				<a href="<?= Link::getPageLink("kunde") . "?id=" . $auftrag->getKundennummer() ?>" class="link-primary ml-2">Zum Kunden</a>
@@ -174,10 +174,10 @@ if ($target == "create") {
 	</div>
 <?php elseif ($target == "view"): ?>
 	<p class="my-2 font-semibold">Rechnung <span id="rechnungsnummer"><?= $invoice->getNumber(); ?></span></p>
-	<button onclick="window.history.go(-1); return false;" class="btn-cancel">Zurück</button>
+	<button data-binding="true" data-fun="goBack" class="btn-cancel">Zurück</button>
 	<button class="btn-primary" data-fun="completeInvoice" data-binding="true">PDF neu erstellen</button>
 	<iframe src="/api/v1/invoice/<?= $invoiceId ?>/pdf?orderId=<?= $orderId ?>" class="w-full h-lvh mt-2" id="invoicePDFPreview"></iframe>
 <?php else: ?>
 	<p>Es ist ein unerwarteter Fehler aufgetreten oder die Rechnungsnummer existiert nicht.</p>
-	<button class="btn-primary" onclick="window.history.go(-1); return false;" type="submit">Zurück</button>
+	<button class="btn-primary" data-binding="true" data-fun="goBack" type="submit">Zurück</button>
 <?php endif; ?>
