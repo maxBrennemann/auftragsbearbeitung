@@ -122,11 +122,16 @@ function init() {
 
 const autoSizeTextareas = () => {
 	const textareas = document.querySelectorAll("textarea");
-	textareas.forEach(t => {
-		if (t.scrollHeight != 0) {
-			t.style.height = '';
-			t.style.height = t.scrollHeight + 'px';
+	textareas.forEach(textarea => {
+		if (textarea.scrollHeight != 0) {
+			textarea.style.height = "";
+			textarea.style.height = textarea.scrollHeight + "px";
 		}
+
+		textarea.addEventListener("input", () => {
+			textarea.style.height = "";
+			textarea.style.height = textarea.scrollHeight + "px";
+		});
 	});
 }
 

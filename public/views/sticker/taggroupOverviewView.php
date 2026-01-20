@@ -7,7 +7,7 @@
         <dt class="inline"><?=$tag["value"]?>
         <?php endforeach; ?>
         <button>Alle übernehmen</button>
-        <input type="text" class="tagInput" maxlength="32" onkeydown="addTagToGroup(event)">
+        <input type="text" class="tagInput" maxlength="32">
     </div>
     <?php endforeach; ?>
 </div>

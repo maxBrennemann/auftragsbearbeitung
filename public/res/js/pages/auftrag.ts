@@ -186,4 +186,16 @@ fnNames.click_resetInvoice = () => {
     })
 }
 
+fnNames.click_showInvoice = () => {
+    const el = document.querySelector("#showInvoice") as HTMLElement;
+    const link = el.dataset.link ?? location.href;
+    location.href = link;
+}
+
+fnNames.click_showInvoicePreview = () => {
+    const el = document.querySelector("#showInvoicePreview") as HTMLElement;
+    const link = el.dataset.link ?? location.href;
+    location.href = link;
+}
+
 loader(initCode);

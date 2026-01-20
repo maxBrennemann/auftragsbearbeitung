@@ -1,10 +1,10 @@
 <div class="grid grid-cols-3 2xl:grid-cols-4 gap-5 mt-3 orderCard">
 	<?php foreach ($orders as $order): ?>
 		<div class="bg-white p-3 rounded-md">
-			<div class="flex items-center justify-between">
+			<div class="flex items-center justify-between relative">
 				<h3 class="font-bold"><?= $order["orderTitle"] ?></h3>
 				<?php if ($order["status"] === \Src\Classes\Project\OrderState::Archived): ?>
-					<button onclick="((e) => {e.target.parentNode.nextElementSibling.classList.toggle('hidden')})(event)" class="btn-options float-right orderOptions" title="Mehr Optionen">⋮</button>
+					<button data-binding="true" data-fun="toggleArchiveOptions" class="btn-options float-right orderOptions" title="Mehr Optionen">⋮</button>
 					<div class="hidden absolute right-0 top-0 bg-white rounded-lg drop-shadow-lg p-3 mt-5 orderOptions">
 						<button class="btn-primary mt-5" data-fun="rearchive" data-binding="true" data-order-id="<?= $order['id'] ?>">Auftrag aus dem Archiv holen</button>
 					</div>

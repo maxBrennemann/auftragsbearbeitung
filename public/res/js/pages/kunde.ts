@@ -230,6 +230,12 @@ const colorTable = async () => {
     renderTable("colorTable", config.columns, data.data, options);
 }
 
+fnNames.click_toggleArchiveOptions = (e) => {
+    const target = e.target as HTMLButtonElement;
+    const nextEl = target.nextElementSibling;
+    nextEl.classList.toggle("hidden");
+}
+
 if (document.readyState !== 'loading') {
     init();
 } else {

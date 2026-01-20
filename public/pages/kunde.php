@@ -129,7 +129,7 @@ if ($customerId <= 0): ?>
 
 		<div id="notizen" class="bg-gray-100 p-4 rounded-lg">
 			<h3 class="font-bold">Notizen</h3>
-			<textarea class="mt-2 w-full input-primary" oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'" data-write="true" data-fun="setCustomerNote"><?= $customer->getNotizen() ?></textarea>
+			<textarea class="mt-2 w-full input-primary" data-write="true" data-fun="setCustomerNote"><?= $customer->getNotizen() ?></textarea>
 		</div>
 
 		<div id="fahrzeuge" class="bg-gray-100 p-4 rounded-lg">

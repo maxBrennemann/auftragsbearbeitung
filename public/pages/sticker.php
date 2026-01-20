@@ -73,7 +73,7 @@ if ($id == 0): ?>
                         <?= Icon::getDefault("iconInShop") ?>
                     </a>
                 <?php else: ?>
-                    <a title="Aufkleber ist nicht im Shop" href="#" onclick="return false;">
+                    <a title="Aufkleber ist nicht im Shop" href="#">
                         <?= Icon::getDefault("iconNotInShop") ?>
                     </a>
                 <?php endif; ?>
@@ -179,7 +179,7 @@ if ($id == 0): ?>
                         <?= Icon::getDefault("iconInShop") ?>
                     </a>
                 <?php else: ?>
-                    <a title="Wandtattoo ist nicht im Shop" href="#" onclick="return false;">
+                    <a title="Wandtattoo ist nicht im Shop" href="#">
                         <?= Icon::getDefault("iconNotInShop") ?>
                     </a>
                 <?php endif; ?>
@@ -250,7 +250,7 @@ if ($id == 0): ?>
                         <?= Icon::getDefault("iconInShop") ?>
                     </a>
                 <?php else: ?>
-                    <a title="Textil ist nicht im Shop" href="#" onclick="return false;">
+                    <a title="Textil ist nicht im Shop" href="#">
                         <?= Icon::getDefault("iconNotInShop") ?>
                     </a>
                 <?php endif; ?>
