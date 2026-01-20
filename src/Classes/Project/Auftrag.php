@@ -979,7 +979,7 @@ class Auftrag implements NotifiableEntity
 
     public static function changeCustomer(): void
     {
-        $orderId = (int) Tools::get("orderId");
+        $orderId = (int) Tools::get("id");
         $newCustomerId = (int) Tools::get("newCustomerId");
 
         $query = "SELECT * FROM kunde WHERE Kundennummer = :customerId;";

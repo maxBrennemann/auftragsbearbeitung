@@ -18,7 +18,7 @@ $customers = [];
                 "placeHolder" => "Kundennummer oder Name eingeben",
             ]); ?>
         </div>
-        <div class="grid gap-4 items-stretch grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] w-full my-4" id="customerResultBox">
+        <div class="grid gap-4 items-stretch grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] w-full py-4 flex-1 min-h-0 overflow-y-auto max-h-[60vh]" id="customerResultBox">
             <?php foreach ($customers as $customer) : ?>
                 <?= TemplateController::getTemplate("customerCardTemplate", [
                     "customer" => $customer,
