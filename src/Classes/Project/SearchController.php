@@ -96,7 +96,7 @@ class SearchController
         }
 
         $results = self::search($query, $limit);
-        $results["count"] = count($results["data"]);
+        //$results["count"] = count($results["data"]);
         JSONResponseHandler::sendResponse($results);
     }
 
