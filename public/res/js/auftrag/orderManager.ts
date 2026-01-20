@@ -3,9 +3,9 @@ import { addBindings } from "js-classes/bindings";
 import { notification } from "js-classes/notifications";
 
 import { createPopup } from "../classes/helpers";
+import { FunctionMap } from "../types/types";
 
-const fnNames: { [key: string]: (...args: any[]) => void } = {};
-
+const fnNames: FunctionMap = {};
 const orderManagerConfig = {
     orderId: 0,
 };
@@ -59,7 +59,7 @@ function sendDate(type: number, date: Date | string) {
 fnNames.click_deleteOrder = () => {
     const div = document.createElement("div");
     const p = document.createElement("p");
-    p.innerHTML = "Möchtest Du den Auftrag sicher löschen?";
+    p.innerHTML = "Möchtest Du den Auftrag endgültig löschen?";
 
     div.appendChild(p);
     div.classList.add("orderDetailsOpen");
@@ -117,6 +117,17 @@ fnNames.click_changeCustomer = async () => {
                 p.innerHTML = "Keine Ergebnisse gefunden.";
                 customerResultBox.appendChild(p);
             }
+
+            const customerCards = customerResultBox.querySelectorAll<HTMLDivElement>("div[data-customer-id]");
+            customerCards.forEach(card => {
+                card.addEventListener("click", () => {
+                    const customerId = card.dataset.customerId;
+                    card.classList.toggle("outline-none");
+                    card.classList.toggle("ring-2");
+                    card.classList.toggle("ring-blue-200");
+                    card.classList.toggle("ring-gray-200");
+                });
+            });
         });
     });
 }
@@ -177,7 +188,7 @@ fnNames.click_archivieren = () => {
             div.appendChild(a);
             createPopup(div);
         }
-    })
+    });
 }
 
 fnNames.click_rearchiveOrder = () => {
@@ -187,7 +198,7 @@ fnNames.click_rearchiveOrder = () => {
         if (r.data.status == "success") {
             window.location.reload();
         }
-    })
+    });
 }
 
 export const initOrderManager = (orderId: number) => {

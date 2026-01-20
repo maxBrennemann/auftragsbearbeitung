@@ -84,6 +84,11 @@ export default defineConfig({
         hmr: {
             overlay: true,
         },
+        fs: {
+            allow: [
+                path.resolve(__dirname, "../"),
+            ],
+        },
     },
 
     esbuild: {

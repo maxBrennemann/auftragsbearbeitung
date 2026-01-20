@@ -1,16 +1,20 @@
-@import './table.css' layer(base);
-@import './global.css' layer(base);
+@import "tailwindcss";
+@import "./table.css" layer(base);
+@import "./global.css" layer(base);
 
-@import 'tailwindcss';
+@theme {
+  --font-sans: "Open Sans", ui-sans-serif, system-ui;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
 
-@config '../../../.config/tailwind.config.ts';
+  --text-xxs: 0.5rem;
+}
 
-@source "../pages/*.php";
-@source "../views/*.php";
-@source "../layout/*.php";
-@source "../res/js/**/*.{js,ts}";
-@source "../../src/**/*.{html,js,php}";
-@source "../../node_modules/js-classes/**/*.{js,ts}";
+@source "../../pages/*.php";
+@source "../../views/*.php";
+@source "../../layout/*.php";
+@source "../js/**/*.ts";
+@source "../../../src/**/*.{html,js,php}";
+@source "../../../node_modules/js-classes/**/*.{js,ts}";
 
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
