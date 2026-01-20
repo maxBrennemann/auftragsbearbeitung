@@ -156,6 +156,7 @@ abstract class Posten
                 default:
                     continue 2;
             }
+            
             $item->postennummer = (int) $row["id"];
             $items[] = $item;
         }
