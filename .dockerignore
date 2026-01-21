@@ -6,15 +6,12 @@ auftragsbearbeitung.code-workspace
 .DS_Store
 
 # settings and config files
-.htaccess
 .env
 node_modules
 vendor
 var
 
 .php-cs-fixer.cache
-
-public/res/js/classes/tableconfig.ts
 
 # minimized files and tests
 public/res/assets/*
@@ -23,26 +20,23 @@ public/cypress/*
 # docker explicit
 .git
 .github
+.gitignore
 docker-compose*.yml
 storage
 database/legacy_sql
 database/versions
 
 .config/*
-!.config/install
 !.config/crontab
 !.config/cypress.config.ts
 !.config/php.conf
-!.config/phpstan.neon
 !.config/php/*
 !.config/.env.example
 !.config/postcss.config.ts
-!.config/tailwind.config.ts
 !.config/vite.config.ts
 !.config/nginx/*
 !.config/docker-entrypoint.sh
 
-docker-compose.yml
 Makefile
 
 #misc

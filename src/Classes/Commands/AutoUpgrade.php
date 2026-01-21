@@ -34,11 +34,9 @@ class AutoUpgrade extends Command
         $skipMigration = $input->getOption("skip-migration");
 
         $target = ROOT . "public/res/js/classes";
-        if (!is_dir($target)) {
-            mkdir($target, 0775, true);
+        if (is_dir($target)) {
+            file_put_contents("$target/tableconfig.ts", $content);
         }
-
-        file_put_contents("$target/tableconfig.ts", $content);
 
         if ($skipMigration) {
             return Command::SUCCESS;

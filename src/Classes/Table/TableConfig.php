@@ -11,7 +11,10 @@ class TableConfig
         $data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
         echo <<<EOL
-            export const tableConfig = $data;
+        // AUTO-GENERATED FILE
+        // Do not edit manually.
+        // Generated via: php ./console autoUpgrade --skip-migration
+        export const tableConfig = $data;
         EOL;
     }
 

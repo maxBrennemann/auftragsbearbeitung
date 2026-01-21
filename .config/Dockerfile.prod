@@ -3,10 +3,7 @@ FROM composer:2.9.3 AS composer
 WORKDIR /var/www/html
 
 COPY composer.json composer.lock ./
-
-COPY .config/.env.example .env
 COPY src ./src
-COPY console ./console
 
 RUN composer install \
     --no-dev \
@@ -23,8 +20,6 @@ RUN composer install \
     && rm -rf vendor/*/example \
     && rm -rf vendor/*/examples
 
-RUN ./console autoupgrade --skip-migration
-
 FROM node:25-alpine3.22 AS frontend-builder
 
 WORKDIR /app
@@ -36,7 +31,6 @@ RUN npm ci --include=dev && npm cache clean --force
 COPY public ./public
 COPY src ./src
 COPY .config ./.config
-COPY --from=composer /var/www/html/public/res/js/classes/tableconfig.ts ./public/res/js/classes/tableconfig.ts
 
 RUN npm run build && rm -rf /root/.npm /tmp/*
 
@@ -47,7 +41,8 @@ WORKDIR /var/www/html
 # Copy assets and dependencies into final image
 COPY ./.config/nginx/default.prod.conf /etc/nginx/templates/default.conf.template
 COPY ./.config/nginx/security-headers.conf /etc/nginx/conf.d/security-headers.conf
-COPY public ./public
+COPY public/assets ./public/assets
+COPY public/index.php ./public/index.php
 COPY --from=frontend-builder /app/public/res/assets ./public/res/assets
 
 EXPOSE 80
@@ -59,8 +54,10 @@ RUN echo "upload_max_filesize=100M" > /usr/local/etc/php/conf.d/uploads.ini \
  && echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/uploads.ini
 
 # Install some base extensions
-RUN apk add --no-cache dcron libpng-dev libzip-dev zlib-dev \
+RUN apk add --no-cache --virtual .build-deps libpng-dev libzip-dev zlib-dev \
+ && apk add --no-cache dcron libpng libzip zlib \
  && docker-php-ext-install pdo_mysql mysqli zip gd exif \
+ && apk del .build-deps \
  && rm -rf /var/cache/apk/* /tmp/*
     
 WORKDIR /var/www/html
@@ -71,7 +68,11 @@ COPY .config/php/fpm-pool.conf /usr/local/etc/php-fpm.d/zz-custom.conf
 
 # Copy assets and dependencies into final image
 COPY src ./src
-COPY public ./public
+COPY public/index.php ./public/index.php
+COPY public/assets ./public/assets
+COPY public/layout ./public/layout
+COPY public/pages ./public/pages
+COPY public/views ./public/views
 COPY --from=composer /var/www/html/vendor ./vendor
 COPY --from=frontend-builder /app/public/res/assets/.vite/manifest.json ./public/res/assets/.vite/manifest.json
 COPY database/Migrations ./database/Migrations
