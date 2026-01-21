@@ -1,4 +1,7 @@
-    export const tableConfig = {
+// AUTO-GENERATED FILE
+// Do not edit manually.
+// Generated via: php ./console autoUpgrade --skip-migration
+export const tableConfig = {
     "address": {
         "primaryKey": "id",
         "columns": [

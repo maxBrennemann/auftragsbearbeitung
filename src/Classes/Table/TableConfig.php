@@ -15,6 +15,7 @@ class TableConfig
         // Do not edit manually.
         // Generated via: php ./console autoUpgrade --skip-migration
         export const tableConfig = $data;
+        
         EOL;
     }
 
