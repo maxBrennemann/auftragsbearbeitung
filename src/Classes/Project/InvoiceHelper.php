@@ -87,5 +87,11 @@ class InvoiceHelper
         JSONResponseHandler::sendResponse($error);
     }
 
-    public static function setInvoicePaidExternal(): void {}
+    public static function setInvoicePaidExternal(): void
+    {
+        $description = Tools::get("description");
+        $invoiceId = (int) Tools::get("invoiceId");
+        $amount = (float) Tools::get("amount");
+        $otherIds = Tools::get("otherIds");
+    }
 }

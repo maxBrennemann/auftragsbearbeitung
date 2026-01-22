@@ -54,6 +54,7 @@
             </ul>
         </li>
         <li>Benachrichtigungen grundlegend überarbeitet und alte Alternativen ersetzt</li>
+        <li>Aufträge können einem anderen Kunden zugewiesen werden</li>
     </ul>
     <h3 id="1.2.1" class="font-bold my-5 text-lg">1.2.1</h3>
     <ul class="list-disc list-inside">

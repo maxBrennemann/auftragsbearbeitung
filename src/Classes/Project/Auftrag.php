@@ -269,7 +269,12 @@ class Auftrag implements NotifiableEntity
             $item["purchasePrice"] = $value["Einkaufspreis"];
             $item["extraData"] = $value["extraData"] ?? [];
 
-            $mLenQuantity = max($mLenQuantity, strlen((string) $item["quantity"]));
+            if ($item["type"] == "time") {
+                $mLenQuantity = max($mLenQuantity, strlen((string) $value["quantityAbsolute"]));
+            } else {
+                $mLenQuantity = max($mLenQuantity, strlen((string) $item["quantity"]));
+            }
+            
             $mLenPrice = max($mLenPrice, strlen((string) $item["price"]));
             $mLenTotalPrice = max($mLenTotalPrice, strlen((string) $item["totalPrice"]));
             $mLenPurchasePrice = max($mLenPurchasePrice, strlen((string) $item["purchasePrice"]));

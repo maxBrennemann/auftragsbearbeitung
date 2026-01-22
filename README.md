@@ -26,8 +26,6 @@ Configure the database settings in the src/settings.php file.
 Import the auftragsmanager.sql file into your database.
 Start using the application by navigating to your domain/ local dev in your web browser.
 
-An installer is currently under development!
-
 ## Usage
 To use the Invoice and Order Management System, follow these steps:
 

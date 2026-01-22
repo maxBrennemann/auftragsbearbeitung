@@ -4,6 +4,7 @@ namespace Src\Classes\Routes;
 
 use MaxBrennemann\PhpUtilities\Router\Routes;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
+use Src\Classes\Controller\AccessTokenController;
 use Src\Classes\ResourceManager;
 
 class HookRoutes extends Routes
@@ -12,7 +13,7 @@ class HookRoutes extends Routes
     public static function handleRequest(string $route): void
     {
         $token = ResourceManager::getBearerToken();
-        if ($token === null || !hash_equals($_ENV["HOOK_TOKEN"], $token)) {
+        if (!AccessTokenController::isValid($token)) {
             ResourceManager::outputHeaderJSON();
             JSONResponseHandler::throwError(401, "Unauthorized API access");
         }
@@ -27,7 +28,12 @@ class HookRoutes extends Routes
         "/hooks/invoice" => [\Src\Classes\Project\InvoiceHelper::class, "setInvoicePaidExternal"],
     ];
 
-    protected static $postRoutes = [];
+    /**
+     * @uses \Src\Classes\Project\InvoiceHelper::setInvoicePaidExternal()
+     */
+    protected static $postRoutes = [
+        "/hooks/invoice" => [\Src\Classes\Project\InvoiceHelper::class, "setInvoicePaidExternal"],
+    ];
 
     protected static $putRoutes = [];
 

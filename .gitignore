@@ -6,11 +6,9 @@ auftragsbearbeitung.code-workspace
 .DS_Store
 
 # settings and config files
-.htaccess
 .env
 node_modules
 vendor
-.config/install/install.lock
 var
 
 # config
@@ -21,9 +19,6 @@ var
 !.config/certs/openssl.cnf
 
 .php-cs-fixer.cache
-
-# table config
-public/res/js/classes/tableconfig.ts
 
 # minimized files
 public/res/assets/*

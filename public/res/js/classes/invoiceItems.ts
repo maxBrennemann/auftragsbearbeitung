@@ -53,10 +53,10 @@ const config: Config = {
                 className: ["w-full"],
             },
             key: {
-                quantity: ["font-mono", "whitespace-pre"],
+                quantity: ["font-mono"],
                 price: ["font-mono", "whitespace-pre"],
                 totalPrice: ["font-mono", "whitespace-pre"],
-                purchasePrice: ["font-mono", "whitespace-pre"],
+                purchasePrice: ["font-mono"],
             },
             sum: {
                 price: ["font-bold", "font-mono", "whitespace-pre"],

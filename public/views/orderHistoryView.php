@@ -12,7 +12,7 @@ foreach ($historyElement as $history) : ?>
         <div class="<?= $count > $limit ? "hidden" : "" ?>">
             <div class="bg-white rounded-lg p-1 text-center">
                 <?= $history["name"] ?>: 
-                <i><?= $history["Beschreibung"] ?></i>
+                <i class="break-all"><?= $history["Beschreibung"] ?></i>
                 <br>hinzugefügt am <?= $history["insertstamp"] ?>
                 <br>von <?= $history["prename"] ?>
             </div>
@@ -27,7 +27,7 @@ foreach ($historyElement as $history) : ?>
         <div class="<?= $count > $limit ? "hidden" : "" ?>">
             <div class="bg-white rounded-lg p-1 text-center">
                 <?= $history["name"] ?>: 
-                <i><?= $history["Beschreibung"] ?></i>
+                <i class="break-all"><?= $history["Beschreibung"] ?></i>
                 <br>abgeschlossen am <?= $history["insertstamp"] ?>
                 <br>von <?= $history["prename"] ?>
             </div>
@@ -39,7 +39,7 @@ foreach ($historyElement as $history) : ?>
         <div class="<?= $count > $limit ? "hidden" : "" ?>">
             <div class="bg-white rounded-lg p-1 text-center">
                 <?= $history["name"] ?>: 
-                <i><?= $history["Beschreibung"] ?></i>
+                <i class="break-all"><?= $history["Beschreibung"] ?></i>
                 <br>gelöscht am <?= $history["insertstamp"] ?>
                 <br>von <?= $history["prename"] ?>
             </div>

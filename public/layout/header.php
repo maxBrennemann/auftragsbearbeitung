@@ -59,12 +59,7 @@ if ($pageName == "") {
 		<script type="module" src="<?= $globalScript ?>"></script>
 		<?php
 		$pageScript = dashesToCamelCase($pageScript);
-		$scriptPath = Link::getFilePath("$pageScript.ts", "ts");
-
-		$hashFilePath = "";
-		if (file_exists($scriptPath)) {
-			$hashFilePath = ResourceManager::getFileNameWithHash("pages/$pageScript.ts");
-		}
+		$hashFilePath = ResourceManager::getFileNameWithHash("pages/$pageScript.ts");
 
 		if ($hashFilePath != "") : ?>
 			<script type="module" src="<?= Link::getResourcesShortLink("$hashFilePath", "js") ?>"></script>

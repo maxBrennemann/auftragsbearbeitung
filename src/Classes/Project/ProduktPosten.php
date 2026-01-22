@@ -82,7 +82,7 @@ class ProduktPosten extends Posten
 
     public function storeToDB(int $auftragsNr): void
     {
-        $data = $this->fillToArray(array());
+        $data = $this->fillToArray([]);
         $data['ohneBerechnung'] = 1;
         $data['Auftragsnummer'] = $auftragsNr;
         Posten::insertPosten("produkt", $data);

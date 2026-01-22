@@ -39,31 +39,37 @@ class Zeit extends Posten
     }
 
     /**
-     * @param array<string, mixed> $arr
+     * @param array<string, mixed> $timeData
      * @return array<string, mixed>
      */
-    public function fillToArray(array $arr): array
+    public function fillToArray(array $timeData): array
     {
-        $arr['Postennummer'] = $this->postennummer;
-        $arr['Preis'] = $this->bekommePreisTabelle();
-        $arr['Stundenlohn'] = number_format($this->Stundenlohn, 2, ',', '') . "€";
+        $timeData["Postennummer"] = $this->postennummer;
+        $timeData["Preis"] = $this->bekommePreisTabelle();
+        $timeData["Stundenlohn"] = number_format($this->Stundenlohn, 2, ',', '') . "€";
 
         $getExtendedTimes = $this->bekommeErweiterteZeiterfassungTabelle();
-        if ($getExtendedTimes) {
-            $arr['extraData'] = $getExtendedTimes;
+        if ($getExtendedTimes !== null) {
+            $timeData["extraData"] = $getExtendedTimes;
         }
 
-        $arr['Anzahl'] = $getExtendedTimes ?
-            $this->ZeitInMinuten . '<button class="additional-data-btn ml-1" data-id="' . $this->postennummer . '"></button>'
+        $timeData["Anzahl"] = $getExtendedTimes ?
+            "<div class=\"flex items-center justify-between gap-4\">
+                <span class=\"flex-grow\">{$this->ZeitInMinuten}</span>
+                <div class=\"flex-shrink-0 min-w-[50px] text-right\">
+                    <button class=\"btn-primary-small additional-data-btn ml-1\" data-id=\"{$this->postennummer}\">Mehr</button>
+                </div>
+            </div>"
             : $this->ZeitInMinuten;
-        $arr['MEH'] =  "min";
-        $arr['Beschreibung'] = $this->beschreibung;
-        $arr['Einkaufspreis'] = "-";
-        $arr['Gesamtpreis'] = $this->bekommePreis_formatted();
-        $arr['type'] = "addPostenZeit";
-        $arr['Bezeichnung'] = "<button class=\"btn-primary-small\">Zeit</button>";
+        $timeData["quantityAbsolute"] = $this->ZeitInMinuten;
+        $timeData["MEH"] =  "min";
+        $timeData["Beschreibung"] = $this->beschreibung;
+        $timeData["Einkaufspreis"] = "-";
+        $timeData["Gesamtpreis"] = $this->bekommePreis_formatted();
+        $timeData["type"] = "addPostenZeit";
+        $timeData["Bezeichnung"] = "<button class=\"btn-primary-small\">Zeit</button>";
 
-        return $arr;
+        return $timeData;
     }
 
     private function bekommeErweiterteZeiterfassungTabelle(): string|null
@@ -218,8 +224,13 @@ class Zeit extends Posten
      */
     public static function getPostenData(int $postennummer): array
     {
-        $query = "SELECT Nummer, ZeitInMinuten, Stundenlohn, Beschreibung, ohneBerechnung, discount, isInvoice FROM zeit, posten WHERE zeit.Postennummer = posten.Postennummer AND posten.Postennummer = $postennummer";
-        $result = DBAccess::selectQuery($query)[0];
+        $query = "SELECT Nummer, ZeitInMinuten, Stundenlohn, Beschreibung, ohneBerechnung, discount, isInvoice 
+            FROM zeit, posten
+            WHERE zeit.Postennummer = posten.Postennummer 
+                AND posten.Postennummer = :postennummer";
+        $result = DBAccess::selectQuery($query, [
+            "postennummer" => $postennummer,
+        ])[0];
         $zeitid = $result["Nummer"];
         $queryTimeTable = "SELECT from_time, to_time, `date` FROM zeiterfassung WHERE id_zeit =  $zeitid";
         $resultTimeTable = DBAccess::selectQuery($queryTimeTable);
