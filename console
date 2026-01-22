@@ -7,11 +7,13 @@ use Symfony\Component\Console\Application;
 use Src\Classes\Commands\CreateMigration;
 use Src\Classes\Commands\AutoUpgrade;
 use Src\Classes\Commands\CronRunCommand;
+use Src\Classes\Commands\TokenManager;
 
 $app = new Application("console", "1.0");
 
 $app->addCommand(new CreateMigration());
 $app->addCommand(new AutoUpgrade());
 $app->addCommand(new CronRunCommand());
+$app->addCommand(new TokenManager());
 
 $app->run();
