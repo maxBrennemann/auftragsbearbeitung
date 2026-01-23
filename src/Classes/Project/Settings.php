@@ -50,16 +50,20 @@ class Settings
     public static function set(string $setting, string $value): void
     {
         $query = "UPDATE `settings`
-            SET `content` = CASE
-                WHEN `isNullable` = 1 AND :value1 IS NULL THEN `defaultValue`
-                WHEN `isJSON` = 1 THEN CAST(:value2 AS JSON)
-                ELSE :value3
+            SET
+                `content` = CASE
+                    WHEN `isJSON` = 0 THEN :value1
+                    ELSE NULL
+                END,
+                `json_content` = CASE
+                    WHEN `isJSON` = 1 THEN :value2
+                    ELSE NULL
                 END
-            WHERE `title` = :setting;";
+            WHERE `title` = :setting
+        ";
         DBAccess::updateQuery($query, [
             "value1" => $value,
             "value2" => $value,
-            "value3" => $value,
             "setting" => $setting,
         ]);
 

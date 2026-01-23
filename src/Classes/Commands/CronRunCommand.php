@@ -16,8 +16,7 @@ class CronRunCommand extends Command
 {
     protected function configure(): void
     {
-        $this
-            ->setDescription("Runs crontasks.");
+        $this->setDescription("Runs crontasks.");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
