@@ -43,7 +43,7 @@ class ResourceManager
 
     private static function initCompanyName(): void
     {
-        $companyName = Settings::get("companyName");
+        $companyName = Settings::get("company.name");
         if ($companyName != null) {
             define("COMPANY_NAME", $companyName);
         } else {

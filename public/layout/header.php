@@ -5,6 +5,7 @@ use Src\Classes\Link;
 use Src\Classes\Notification\NotificationManager;
 use Src\Classes\Project\Settings;
 use Src\Classes\Project\Icon;
+use Src\Classes\Project\User;
 use Src\Classes\ResourceManager;
 
 $globalCSS = Link::getGlobalCSS();
@@ -158,7 +159,7 @@ if ($pageName == "") {
 							<?= Icon::getDefault("iconLogout") ?>
 						</span>
 					</div>
-					<div class="<?= (Settings::get("showTimeGlobal") == "true") ? "inline-flex" : "hidden" ?> items-center text-gray-700" id="timeTrackingContainer">
+					<div class="<?= (Settings::get("showTimeTracking", User::getCurrentUserId()) == "true") ? "inline-flex" : "hidden" ?> items-center text-gray-700" id="timeTrackingContainer">
 						<a href="<?= Link::getPageLink("time-tracking") ?>" class="showTimeGlobal inline-block p-1 hover:bg-gray-200 hover:rounded-xs" title="Zeiterfassung">
 							<span>Zeit: <span id="timeGlobal" class="inline-block p-1 hover:bg-gray-200 hover:rounded-xs">00:00:00</span></span>
 						</a>

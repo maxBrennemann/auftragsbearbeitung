@@ -2,7 +2,6 @@
 
 namespace Src\Classes\Project;
 
-use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 
@@ -31,27 +30,22 @@ class CacheManager
 
     public static function cacheOff(): bool
     {
-        return DBAccess::updateQuery("UPDATE settings SET content = 'off' WHERE title = 'cacheStatus'");
+        Settings::set("cacheStatus", false);
+        return true;
     }
 
     public static function cacheOn(): bool
     {
         return true;
         // Cache is temporarily disabled
-        //return DBAccess::updateQuery("UPDATE settings SET content = 'on' WHERE title = 'cacheStatus'");
+        //Settings::set("cacheStatus", true);
     }
 
     public static function getCacheStatus(): string
     {
-        $query = "SELECT content FROM settings WHERE `title` = 'cacheStatus'";
-        $status = DBAccess::selectQuery($query);
+        $status = Settings::get("cacheStatus");
 
-        if (count($status) == 0) {
-            self::$status = "off";
-            return self::$status;
-        }
-
-        self::$status = (string) $status[0]['content'];
+        self::$status = $status ? "on" : "off";
         return self::$status;
     }
 

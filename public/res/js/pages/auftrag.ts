@@ -109,7 +109,7 @@ fnNames.click_showAuftragsverlauf = function () { }
 fnNames.click_toggleInvoiceItems = e => {
     const value = e.currentTarget.checked;
     ajax.put(`/api/v1/settings/filter-order-posten`, {
-        "value": value,
+        "status": value,
     }).then(async () => {
         orderConfig.table?.parentNode?.removeChild(orderConfig.table);
         orderConfig.table = await getItemsTable("auftragsPostenTable", orderConfig.auftragsId, "order");

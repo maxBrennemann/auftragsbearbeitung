@@ -117,7 +117,8 @@ class TimeTrackingController
      */
     public static function toggleDisplayTimeTracking(): void
     {
-        $value = Settings::toggle("showTimeGlobal");
+        $userId = User::getCurrentUserId();
+        $value = Settings::toggle("showTimeTracking", $userId);
         JSONResponseHandler::sendResponse([
             "status" => "success",
             "display" => $value,

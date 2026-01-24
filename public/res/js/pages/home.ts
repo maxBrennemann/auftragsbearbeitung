@@ -25,8 +25,8 @@ const customizeConfig = {
 
 fnNames.click_adjustLinks = async () => {
     const div = document.createElement("div");
-    const linkSetting = await ajax.get(`/api/v1/settings/user/self/linkBehavior`);
-    const availabeLinks = await ajax.get(`/api/v1/settings/links/available`);
+    const linkSetting = await ajax.get(`/api/v1/settings/user/self/user.linkBehavior`);
+    const availabeLinks = await ajax.get(`/api/v1/settings/links/user.available`);
 
     const divAvailable = document.createElement("div");
     const divSelected = document.createElement("div");

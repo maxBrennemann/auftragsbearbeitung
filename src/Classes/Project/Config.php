@@ -9,6 +9,8 @@ class Config
 
     /** @var array<string, mixed> */
     private static array $config = [];
+    /** @var array<string, array{scope: string, type: string, default: mixed}> */
+    private static array $settings = [];
 
     public static function load(string $path): void
     {
@@ -17,6 +19,12 @@ class Config
         }
 
         $config = require $path;
+
+        /* settings are used for defining user variables that are stored in the database */
+        if (isset($config["settings"])) {
+            self::$settings = $config["settings"];
+            unset($config["settings"]);
+        }
 
         if (!is_array($config)) {
             throw new \RuntimeException("Invalid config file: $path must return an array");
@@ -62,6 +70,14 @@ class Config
         }
 
         return is_array($value) ? $value : [];
+    }
+
+    /**
+     * @return array<string, array{scope: string, type: string, default: mixed}>
+     */
+    public static function getSettings(): array
+    {
+        return self::$settings;
     }
 
     public static function loadLanguages(): void

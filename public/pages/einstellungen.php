@@ -4,8 +4,9 @@ use Src\Classes\Link;
 use Src\Classes\Project\Settings;
 use Src\Classes\Project\InvoiceNumberTracker;
 use Src\Classes\Project\CacheManager;
+use Src\Classes\Project\User;
 
-$companyLogo = Src\Classes\Project\ClientSettings::getLogo();
+$companyLogo = Src\Classes\Project\Image::getLogo();
 
 ?>
 <section class="defCont">
@@ -29,66 +30,66 @@ $companyLogo = Src\Classes\Project\ClientSettings::getLogo();
         <div class="mt-2">
             <div class="flex items-center mt-2">
                 <span class="font-semibold w-60">Firmenname</span>
-                <input class="input-primary w-60" value="<?= Settings::get("companyName") ?>" data-write="true" data-fun="changeSetting" data-setting="companyName">
+                <input class="input-primary w-60" value="<?= Settings::get("company.name") ?>" data-write="true" data-fun="changeSetting" data-setting="companyName">
             </div>
             <div class="flex items-center mt-2">
                 <span class="font-semibold w-60">Adresse</span>
-                <input class="input-primary w-60" value="<?= Settings::get("companyAddress") ?>" data-write="true" data-fun="changeSetting" data-setting="companyAddress">
+                <input class="input-primary w-60" value="<?= Settings::get("company.address") ?>" data-write="true" data-fun="changeSetting" data-setting="companyAddress">
             </div>
             <div class="flex items-center mt-2">
                 <span class="font-semibold w-60">PLZ</span>
-                <input class="input-primary w-60" value="<?= Settings::get("companyZip") ?>" data-write="true" data-fun="changeSetting" data-setting="companyZip">
+                <input class="input-primary w-60" value="<?= Settings::get("company.zip") ?>" data-write="true" data-fun="changeSetting" data-setting="companyZip">
             </div>
             <div class="flex items-center mt-2">
                 <span class="font-semibold w-60">Ort</span>
-                <input class="input-primary w-60" value="<?= Settings::get("companyCity") ?>" data-write="true" data-fun="changeSetting" data-setting="companyCity">
+                <input class="input-primary w-60" value="<?= Settings::get("company.city") ?>" data-write="true" data-fun="changeSetting" data-setting="companyCity">
             </div>
             <div class="flex items-center mt-2">
                 <span class="font-semibold w-60">Land</span>
-                <input class="input-primary w-60" value="<?= Settings::get("companyCountry") ?>" data-write="true" data-fun="changeSetting" data-setting="companyCountry">
+                <input class="input-primary w-60" value="<?= Settings::get("company.country") ?>" data-write="true" data-fun="changeSetting" data-setting="companyCountry">
             </div>
             <div class="flex items-center mt-2">
                 <span class="font-semibold w-60">Telefonnummer</span>
-                <input class="input-primary w-60" value="<?= Settings::get("companyPhone") ?>" data-write="true" data-fun="changeSetting" data-setting="companyPhone">
+                <input class="input-primary w-60" value="<?= Settings::get("company.phone") ?>" data-write="true" data-fun="changeSetting" data-setting="companyPhone">
             </div>
             <div class="flex items-center mt-2">
                 <span class="font-semibold w-60">E-Mail</span>
-                <input class="input-primary w-60" value="<?= Settings::get("companyEmail") ?>" data-write="true" data-fun="changeSetting" data-setting="companyEmail">
+                <input class="input-primary w-60" value="<?= Settings::get("company.email") ?>" data-write="true" data-fun="changeSetting" data-setting="companyEmail">
             </div>
             <div class="flex items-center mt-2">
                 <span class="font-semibold w-60">Website</span>
-                <input class="input-primary w-60" value="<?= Settings::get("companyWebsite") ?>" data-write="true" data-fun="changeSetting" data-setting="companyWebsite">
+                <input class="input-primary w-60" value="<?= Settings::get("company.website") ?>" data-write="true" data-fun="changeSetting" data-setting="companyWebsite">
             </div>
             <div class="flex items-center mt-2">
                 <span class="font-semibold w-60">Rechnungsadresse</span>
-                <input class="input-primary w-60" value="<?= Settings::get("companyImprint") ?>" data-write="true" data-fun="changeSetting" data-setting="companyImprint">
+                <input class="input-primary w-60" value="<?= Settings::get("company.imprint") ?>" data-write="true" data-fun="changeSetting" data-setting="companyImprint">
             </div>
         </div>
         <div class="mt-2">
             <div class="flex items-center mt-2">
                 <span class="font-semibold w-60">Stundenlohn [€]</span>
-                <input class="input-primary w-60" value="<?= Settings::get("defaultWage") ?>" data-write="true" data-fun="changeSetting" data-setting="defaultWage">
+                <input class="input-primary w-60" value="<?= Settings::get("invoice.defaultWage") ?>" data-write="true" data-fun="changeSetting" data-setting="defaultWage">
             </div>
 
             <div class="flex items-center mt-2">
                 <span class="font-semibold w-60">Bank</span>
-                <input class="input-primary w-60" value="<?= Settings::get("companyBank") ?>" data-write="true" data-fun="changeSetting" data-setting="companyBank">
+                <input class="input-primary w-60" value="<?= Settings::get("company.bank") ?>" data-write="true" data-fun="changeSetting" data-setting="companyBank">
             </div>
             <div class="flex items-center mt-2">
                 <span class="font-semibold w-60">IBAN</span>
-                <input class="input-primary w-60" value="<?= Settings::get("companyIban") ?>" data-write="true" data-fun="changeSetting" data-setting="companyIban">
+                <input class="input-primary w-60" value="<?= Settings::get("company.IBAN") ?>" data-write="true" data-fun="changeSetting" data-setting="companyIban">
             </div>
             <div class="flex items-center mt-2">
                 <span class="font-semibold w-60">BIC</span>
-                <input class="input-primary w-60" value="<?= Settings::get("companyBic") ?>" data-write="true" data-fun="changeSetting" data-setting="companyBic">
+                <input class="input-primary w-60" value="<?= Settings::get("company.BIC") ?>" data-write="true" data-fun="changeSetting" data-setting="companyBic">
             </div>
             <div class="flex items-center mt-2">
                 <span class="font-semibold w-60">UstIdNr</span>
-                <input class="input-primary w-60" value="<?= Settings::get("companyUstIdNr") ?>" data-write="true" data-fun="changeSetting" data-setting="companyUstIdNr">
+                <input class="input-primary w-60" value="<?= Settings::get("company.UstIdNr") ?>" data-write="true" data-fun="changeSetting" data-setting="companyUstIdNr">
             </div>
             <div class="flex items-center mt-2">
                 <span class="font-semibold w-60">Fälligkeitsdauer [Tage]</span>
-                <input class="input-primary w-60" value="<?= Settings::get("companyDueDate") ?>" data-write="true" data-fun="changeSetting" data-setting="companyDueDate">
+                <input class="input-primary w-60" value="<?= Settings::get("invoice.dueDate") ?>" data-write="true" data-fun="changeSetting" data-setting="companyDueDate">
             </div>
         </div>
 
@@ -171,7 +172,7 @@ $companyLogo = Src\Classes\Project\ClientSettings::getLogo();
         <?= \Src\Classes\Controller\TemplateController::getTemplate("inputSwitch", [
             "id" => "showTimeTracking",
             "name" => "Aktuelle Arbeitszeit global anzeigen",
-            "value" => Settings::get("showTimeGlobal") == "true" ? "checked" : "",
+            "value" => Settings::get("showTimeTracking", User::getCurrentUserId()) ? "checked" : "",
             "binding" => "startStopTime",
         ]); ?>
     </div>

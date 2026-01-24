@@ -2,130 +2,170 @@
 
 namespace Src\Classes\Project;
 
+use InvalidArgumentException;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 
 class Settings
 {
+
     /**
-     * adds a new setting value
      * @param string $setting
-     * @param string $defaultValue
-     * @param bool $isBool
-     * @param bool $isNullable
-     * @param bool $isJSON
-     * @return int the id of the setting value
+     * @return false|array{default: mixed, scope: string, type: string}
      */
-    private static function add(
-        string $setting,
-        string $defaultValue,
-        bool $isBool = false,
-        bool $isNullable = false,
-        bool $isJSON = false
-    ): int
+    private static function validateSetting(string $setting): false|array
     {
-        $query = "REPLACE INTO `settings` (`title`, `content`, `defaultValue`, `isBool`, `isNullable`) VALUES (:title, :content, :defaultValue, :isBool, :isNullable, :isJSON);";
+        $settings = Config::getSettings();
+        if (array_key_exists($setting, $settings)) {
+            return $settings[$setting];
+        }
 
-        $isBool = $isBool ? 1 : 0;
-        $isNullable = $isNullable ? 1 : 0;
-        $isJSON = $isJSON ? 1 : 0;
-
-        return (int) DBAccess::insertQuery($query, [
-            "title" => $setting,
-            "content" => $defaultValue,
-            "defaultValue" => $defaultValue,
-            "isBool" => $isBool,
-            "isNullable" => $isNullable,
-            "isJSON" => $isJSON,
-        ]);
+        return false;
     }
 
     /**
      * sets the content of a setting value,
      * if the setting value does not exist, it will be created
      * @param string $setting
-     * @param string $value
+     * @param mixed $value
+     * @param int $userId
      */
-    public static function set(string $setting, string $value): void
+    public static function set(string $setting, mixed $value, int $userId = 0): void
     {
-        $query = "UPDATE `settings`
-            SET
-                `content` = CASE
-                    WHEN `isJSON` = 0 THEN :value1
-                    ELSE NULL
-                END,
-                `json_content` = CASE
-                    WHEN `isJSON` = 1 THEN :value2
-                    ELSE NULL
-                END
-            WHERE `title` = :setting
-        ";
-        DBAccess::updateQuery($query, [
-            "value1" => $value,
-            "value2" => $value,
-            "setting" => $setting,
-        ]);
+        $settings = self::validateSetting($setting);
 
-        if (DBAccess::getAffectedRows() == 0) {
-            self::add($setting, $value);
+        if ($settings == false) {
+            throw new InvalidArgumentException("Setting $setting is not valid");
         }
+
+        if ($settings["scope"] == "user" && $userId === 0){
+            throw new InvalidArgumentException("User setting requires userId");
+        }
+
+        $type = $settings["type"];
+        $column = "content";
+
+        switch ($type) {
+            case "string":
+                $value = (string) $value;
+                break;
+            case "bool":
+                $value = $value ? 1 : 0;
+                $column = "numberContent";
+                break;
+            case "number":
+                $value = (float) $value;
+                $column = "numberContent";
+                break;
+            case "json":
+                json_encode($value);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    throw new InvalidArgumentException("Invalid JSON value");
+                }
+                $column = "jsonContent";
+        }
+
+        $user = ($settings["scope"] === "user") ? $userId : 0;
+        $values = [
+            "content" => null,
+            "numbeRcontent" => null,
+            "jsonContent" => null,
+        ];
+
+        $values[$column] = $value;
+
+        DBAccess::updateQuery("INSERT INTO `config_settings` (`name`, `userId`, content, numberContent, jsonContent) 
+            VALUES (:name, :user, :content, :numberContent, :jsonContent)
+            ON DUPLICATE KEY UPDATE
+                content = VALUES(content),
+                numberContent = VALUES(numberContent),
+                jsonContent = VALUES(jsonContent);", [
+            "name" => $setting,
+            "user" => $user,
+            "content" => $values["content"],
+            "numberContent" => $values["numberContent"],
+            "jsonContent" => $values["jsonContent"],
+        ]);
     }
 
     /**
      * gets the content of a setting value,
      * if the setting value does not exist, null is returned
-     * @param string $title
-     * @return string|null
+     * @param string $setting
+     * @return mixed
      */
-    public static function get(string $title): ?string
+    public static function get(string $setting, int $userId = 0): mixed
     {
-        $query = "SELECT `content`, `json_content`, `isJSON` 
-            FROM `settings` 
-            WHERE `title` = :title 
-            LIMIT 1;";
-        $value = DBAccess::selectQuery($query, ["title" => $title]);
+        $settings = self::validateSetting($setting);
 
-        if (sizeof($value) == 0) {
-            return null;
+        if ($settings == false) {
+            throw new InvalidArgumentException("Setting is not available");
         }
 
-        if ((bool) $value[0]["isJSON"] === true) {
-            return $value[0]["json_content"];
+        if ($settings["scope"] == "global") {
+            $userId = 0;
         }
 
-        return $value[0]["content"];
+        $column = "content";
+
+        switch ($settings["type"]) {
+            case "bool":
+                $column = "numberContent";
+                break;
+            case "number":
+                $column = "numberContent";
+                break;
+            case "json":
+                $column = "jsonContent";
+        }
+
+        $query = "SELECT $column FROM config_settings WHERE `name` = :name AND userId = :user;";
+        $data = DBAccess::selectQuery($query, [
+            "name" => $setting,
+            "user" => $userId,
+        ]);
+
+        if (empty($data)) {
+            return $settings["default"];
+        }
+
+        $currentValue = $data[0][$column];
+        switch ($settings["type"]) {
+            case "bool":
+                return (bool) $currentValue;
+            case "number":
+                return (float) $currentValue;
+            case "json":
+                return json_decode($currentValue, true);
+        }
+
+        return $currentValue;
     }
-
-    /**
-     * checks if a setting value exists
-     */
-    public static function exists(): void {}
-
-    /**
-     * deletes a setting value
-     */
-    public static function delete(): void {}
 
     /**
      * toggles a setting value between true and false
      * @param string $title
-     * @return string the new value
+     * @return bool
      */
-    public static function toggle(string $title): string
+    public static function toggle(string $title, int $userId = 0): bool
     {
-        $value = self::get($title);
-        $value = $value == "true" ? "false" : "true";
-        self::set($title, $value);
+        $value = self::get($title, $userId);
+        $value = !$value;
+
+        self::set($title, $value, $userId);
+
         return $value;
     }
 
     public static function updateConfig(): void
     {
-        $config = Tools::get("configName");
+        $config = (string) Tools::get("configName");
         $value = Tools::get("value");
+        $userId = User::getCurrentUserId();
 
-        self::set($config, $value);
+        self::set($config, $value, $userId);
+
         JSONResponseHandler::sendResponse([
             "status" => "success",
         ]);
@@ -142,7 +182,7 @@ class Settings
             $userId = (int) $userId;
         }
 
-        $data = self::get("user_" . $userId . "_" . $userSetting);
+        $data = self::get($userSetting, $userId);
 
         if ($data === null) {
             JSONResponseHandler::returnNotFound();

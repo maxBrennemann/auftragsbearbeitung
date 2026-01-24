@@ -13,7 +13,7 @@ class ClientSettings
     public static function getFilterOrderPosten(): bool
     {
         $userId = User::getCurrentUserId();
-        $value = Settings::get("filterOrderPosten_$userId");
+        $value = Settings::get("invoice.filterOrderItems", $userId);
 
         if ($value == "true") {
             return true;
@@ -24,10 +24,10 @@ class ClientSettings
 
     public static function setFilterOrderPosten(): void
     {
-        $setTo = Tools::get("value");
-        $userId = $_SESSION["user_id"];
+        $status = (bool) Tools::get("status");
+        $userId = User::getCurrentUserId();
 
-        Settings::set("filterOrderPosten_$userId", $setTo);
+        Settings::set("invoice.filterOrderItems", $status, $userId);
 
         JSONResponseHandler::returnOK();
     }
@@ -98,37 +98,6 @@ class ClientSettings
             "filename" => $fileName,
             "url" => Link::getResourcesShortLink($fileName, "backup"),
             "status" => "success",
-        ]);
-    }
-
-    public static function getLogo(): string
-    {
-        $query = "SELECT dateiname FROM dateien WHERE id = :id";
-        $data = DBAccess::selectQuery($query, [
-            "id" => Settings::get("companyLogo"),
-        ]);
-
-        return $data[0]["dateiname"] ?? "";
-    }
-
-    public static function addLogo(): void
-    {
-        $uploadHandler = new UploadHandler("default", [
-            "image/png",
-            "image/jpg",
-            "image/jpeg",
-        ], 25000000, 1);
-        $fileData = $uploadHandler->uploadMultiple();
-
-        if (count($fileData) == 0) {
-            JSONResponseHandler::throwError(422, "unsupported file type");
-        }
-
-        Settings::set("companyLogo", $fileData[0]["id"]);
-
-        JSONResponseHandler::sendResponse([
-            "logoId" => $fileData[0]["id"],
-            "file" => Link::getResourcesShortLink($fileData[0]["saved_name"], "upload"),
         ]);
     }
 }
