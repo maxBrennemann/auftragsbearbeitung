@@ -51,12 +51,13 @@ class AccessTokenController
     {
         $plainToken = bin2hex(random_bytes(32));
         $tokenHash = hash("sha256", $plainToken);
+        $name = strtoupper($name);
 
-        $query = "INSERT INTO access_token (`name`, token_hash, is_active) VALUES (:name, :tokenHash, :isActive);";
+        $query = "INSERT INTO access_tokens (`name`, token_hash, is_active) VALUES (:name, :tokenHash, :isActive);";
         DBAccess::insertQuery($query, [
             "name" => $name,
-            "token_hash" => $tokenHash,
-            "is_active" => (int) $isActive,
+            "tokenHash" => $tokenHash,
+            "isActive" => (int) $isActive,
         ]);
 
         return $plainToken;

@@ -20,7 +20,7 @@ class ResourceManager
     {
         errorReporting();
 
-        self::getParameters();
+        Tools::getParameters();
         self::initCompanyName();
         self::identifyRequestType();
         
@@ -112,38 +112,7 @@ class ResourceManager
                 break;
         }
     }
-
-    private static function getParameters(): void
-    {
-        $PHPInput = file_get_contents("php://input");
-
-        if ($PHPInput !== "" && $PHPInput !== false) {
-            $parsedPHPInput = json_decode($PHPInput, true);
-
-            if ($parsedPHPInput !== null) {
-                Tools::$data = array_merge(Tools::$data, $parsedPHPInput);
-                $_POST = array_merge($_POST, $parsedPHPInput);
-            }
-        }
-
-        switch ($_SERVER["REQUEST_METHOD"]) {
-            case "POST":
-                Tools::$data = array_merge(Tools::$data, $_POST);
-                break;
-            case "GET":
-                Tools::$data = array_merge(Tools::$data, $_GET);
-                break;
-            case "PUT":
-            case "DELETE":
-                if ($PHPInput === false) {
-                    return;
-                }
-                parse_str($PHPInput, $_PUT);
-                Tools::$data = array_merge(Tools::$data, $_PUT);
-                break;
-        }
-    }
-
+    
     public static function setPage(string $page): void
     {
         self::$page = $page;

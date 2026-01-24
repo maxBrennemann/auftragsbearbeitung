@@ -93,5 +93,7 @@ class InvoiceHelper
         $invoiceId = (int) Tools::get("invoiceId");
         $amount = (float) Tools::get("amount");
         $otherIds = Tools::get("otherIds");
+
+        
     }
 }

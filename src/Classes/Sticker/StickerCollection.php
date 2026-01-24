@@ -141,7 +141,7 @@ class StickerCollection implements \Iterator
 
     public function toggleActiveStatus(): void
     {
-        $type = (string) $_POST["type"];
+        $type = (string) Tools::get("type");
 
         $target = $this->getTarget($type);
         $target->toggleActiveStatus();

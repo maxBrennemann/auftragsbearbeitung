@@ -41,6 +41,7 @@ class TokenManager extends Command
                 Tools::outputLog("Created token $name", $tag);
                 Tools::outputLog("Your token is: $token", $tag);
                 Tools::outputLog("Please note down this token as it will only be displayed once.", $tag, "warning");
+                Tools::outputLog("Token names will be stored in upper case letters.", "warning");
                 break;
             case "deactivate":
                 $name = (int) $name;
