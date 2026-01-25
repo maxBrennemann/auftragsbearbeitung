@@ -16,7 +16,6 @@ var
 # minimized files and tests
 public/res/assets/*
 public/cypress/*
-!public/res/assets/css/fonts/*
 
 # docker explicit
 .git

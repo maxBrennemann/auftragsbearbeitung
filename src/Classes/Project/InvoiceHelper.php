@@ -6,6 +6,8 @@ use Exception;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
+use Src\Classes\Notification\NotificationManager;
+use Src\Classes\Notification\NotificationType;
 
 class InvoiceHelper
 {
@@ -27,7 +29,7 @@ class InvoiceHelper
     public static function getOpenInvoiceSumFormatted(): string
     {
         $sum = self::getOpenInvoiceSum();
-        $sum = $sum * 1.19;
+        $sum *= 1.19;
         return number_format($sum, 2, ',', '.') . ' €';
     }
 
@@ -89,11 +91,83 @@ class InvoiceHelper
 
     public static function setInvoicePaidExternal(): void
     {
-        $description = Tools::get("description");
         $invoiceId = (int) Tools::get("invoiceId");
         $amount = (float) Tools::get("amount");
         $otherIds = Tools::get("otherIds");
+        //$description = Tools::get("description");
 
-        
+        $invoiceStatus = self::exactMatch($invoiceId, $amount);
+        $day = date("Y-m-d");
+        $dayGerman = date("d.m.Y");
+
+        /* if an exact match is found, we can skip trying to find alternative matches */
+        if ($invoiceStatus) {
+            Tools::log("Invoice", "Set invoice $invoiceId as payed on $day");
+            NotificationManager::addNotification(null, NotificationType::ORDER_PAYED, "Rechnung $invoiceId wurde am $dayGerman bezahlt.", $invoiceId);
+
+            Invoice::setInvoicePaid($invoiceId, $day, "ueberweisung");
+            return;
+        }
+
+        $foundId = 0;
+        foreach ($otherIds as $id) {
+            $invoiceStatus = self::matchId($id, $amount);
+            if ($invoiceStatus) {
+                $foundId = $id;
+                break;
+            }
+        }
+
+        if ($foundId !== 0) {
+            Tools::log("Invoice", "Set invoice $foundId as payed on $day. Please verify.");
+            NotificationManager::addNotification(null, NotificationType::ORDER_PAYED, "Rechnung $foundId wurde am $dayGerman bezahlt. Bitte überprüfen und ggf. korrigieren.", $foundId);
+
+            Invoice::setInvoicePaid($foundId, $day, "ueberweisung");
+        }
+    }
+
+    private static function exactMatch(int $id, float $amount): bool
+    {
+        $query = "SELECT id 
+            FROM invoice, auftrag
+            WHERE auftrag.Auftragsnummer = invoice.order_id
+                AND auftrag.Bezahlt = 0
+                AND invoice_number = :id
+                AND amount = :amount";
+        $data = DBAccess::selectQuery($query, [
+            "id" => $id,
+            "amount" => $amount
+        ]);
+
+        if (empty($data) || count($data) > 1) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static function matchId(int $id, float $amount): bool
+    {
+        $query = "SELECT id, amount, invoice_number, auftrag.Auftragsnummer as order_id
+            FROM invoice, auftrag
+            WHERE auftrag.Auftragsnummer = invoice.order_id
+                AND auftrag.Bezahlt = 0;";
+        $data = DBAccess::selectQuery($query);
+
+        if (empty($data)) {
+            return false;
+        }
+
+        foreach ($data as $invoice) {
+            $invoiceId = $invoice["invoice_number"];
+            //$invoiceAmouont = $invoice["amount"];
+            $invoiceOrderId = $invoice["order_id"];
+
+            if ($invoiceId == $id || $invoiceOrderId == $id) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

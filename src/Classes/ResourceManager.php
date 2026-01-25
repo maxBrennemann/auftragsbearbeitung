@@ -6,6 +6,7 @@ use Src\Classes\Controller\SessionController;
 use Src\Classes\Project\Events;
 use Src\Classes\Project\Settings;
 use Src\Classes\Project\CacheManager;
+use Src\Classes\Project\Config;
 use Src\Classes\Sticker\Exports\ExportFacebook;
 use Src\Classes\Sticker\Imports\ImportGoogleSearchConsole;
 use MaxBrennemann\PhpUtilities\DBAccess;
@@ -171,7 +172,7 @@ class ResourceManager
         insertTemplate(ROOT . "public/pages/$filePath");
 
         insertTemplate(ROOT . "public/layout/footer.php", [
-            "calcDuration" => $_ENV["DEV_MODE"],
+            "calcDuration" => Config::isDevMode(),
         ]);
     }
 

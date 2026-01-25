@@ -12,6 +12,8 @@ class Config
     /** @var array<string, array{scope: string, type: string, default: mixed}> */
     private static array $settings = [];
 
+    private static ?bool $devMode = null;
+
     public static function load(string $path): void
     {
         if (!file_exists($path)) {
@@ -87,5 +89,17 @@ class Config
         if (self::get("locale")) {
             $_ENV["i18n"]->setLocale(self::get("locale"));
         }
+    }
+
+    public static function isDevMode(): bool
+    {
+        if (self::$devMode !== null) {
+            return self::$devMode;
+        }
+
+        $devMode = filter_var($_ENV["DEV_MODE"] ?? false, FILTER_VALIDATE_BOOLEAN);
+        self::$devMode = $devMode;
+
+        return $devMode;
     }
 }

@@ -6,12 +6,11 @@ use Src\Classes\Notification\NotificationManager;
 use Src\Classes\Project\Settings;
 use Src\Classes\Project\Icon;
 use Src\Classes\Project\User;
+use Src\Classes\Project\Config;
 use Src\Classes\ResourceManager;
 
 $globalCSS = Link::getGlobalCSS();
 $globalScript = Link::getGlobalScript();
-
-$curr_Link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
 $neuerKunde   =		Link::getPageLink("neuer-kunde");
 $neuerAuftrag =		Link::getPageLink("neuer-auftrag");
@@ -51,7 +50,7 @@ if ($pageName == "") {
 	<link rel="icon" type="image/png" href="<?= $_ENV["WEB_URL"] ?>img/favicon.png">
 	<link rel="apple-touch-icon" href="<?= $_ENV["WEB_URL"] ?>img/favicon.png">
 
-	<?php if ($_ENV["DEV_MODE"] == "true"): ?>
+	<?php if (Config::isDevMode()): ?>
 		<script type="module" src="https://localhost:5173/global.ts"></script>
 
 		<?php $pageScript = dashesToCamelCase($pageScript); ?>
@@ -68,7 +67,7 @@ if ($pageName == "") {
 	<?php endif; ?>
 </head>
 
-<?php if ($_ENV["DEV_MODE"] == "true"): ?>
+<?php if (Config::isDevMode()): ?>
 	<body class="overflow-x-hidden" data-page="<?= dashesToCamelCase($pageScript) ?>">
 <?php else : ?>
 	<body class="overflow-x-hidden"></body>

@@ -397,11 +397,8 @@ class Invoice
         ]);
     }
 
-    public static function setInvoicePaid(): void
+    public static function setInvoicePaid(int $invoiceId, string $paymentDate, string $paymentType): void
     {
-        $invoiceId = (int) Tools::get("invoiceId");
-        $paymentDate = Tools::get("date");
-        $paymentType = Tools::get("paymentType");
         $paymentTypes = [
             "ueberweisung",
             "bar",
@@ -437,6 +434,17 @@ class Invoice
         ]);
         $orderId = (int) $orderId[0]["Auftragsnummer"];
         OrderHistory::add($orderId, $invoiceId, OrderHistory::TYPE_ORDER, OrderHistory::STATE_PAYED);
+
+        
+    }
+
+    public static function setInvoicePaidAjax(): void
+    {
+        $invoiceId = (int) Tools::get("invoiceId");
+        $paymentDate = Tools::get("date");
+        $paymentType = Tools::get("paymentType");
+
+        self::setInvoicePaid($invoiceId, $paymentDate, $paymentType);
 
         JSONResponseHandler::sendResponse([
             "status" => "success",
