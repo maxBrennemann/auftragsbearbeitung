@@ -75,7 +75,9 @@ export const createTable = (containerId, options = {}) => {
     container.appendChild(table);
 
     if (options?.styles?.table?.className) {
-        const className = options.styles.table.className.join(" ");
+        const cssClasses = options.styles.table.className;
+        cssClasses.push("shadow-xs");
+        const className = cssClasses.join(" ");
         table.className = className;
     }
 
@@ -221,6 +223,9 @@ const createSumRow = (data, table, options = {}, header = {}) => {
     });
 
     header.forEach(el => {
+        if (options?.hide?.includes(el.key)) {
+            return;
+        }
         const td = document.createElement("td");
 
         let className = "";
@@ -240,6 +245,11 @@ const createSumRow = (data, table, options = {}, header = {}) => {
 
         tr.appendChild(td);
     });
+
+    if (!options?.hideOptions?.includes("all")) {
+        const td = document.createElement("td");
+        tr.appendChild(td);
+    }
 
     tfoot.appendChild(tr);
     table.appendChild(tfoot);

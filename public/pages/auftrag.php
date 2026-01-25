@@ -390,7 +390,7 @@ foreach ($contactPersons as $contact): ?>
 			</template>
 
 			<template id="templateNote">
-				<div class="bg-white rounded-lg p-2 m-2 relative">
+				<div class="bg-white rounded-lg p-2 m-2 relative shadow-xs">
 					<input type="text" class="noteTitle text-slate-900 font-bold outline-0" max="128">
 					<textarea class="noteText mt-2 text-slate-600 resize-none w-full outline-0 h-32" type="text" max="128"></textarea>
 					<hr class="p-2 mt-1">

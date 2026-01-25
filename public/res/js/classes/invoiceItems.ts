@@ -59,13 +59,13 @@ const config: Config = {
                 purchasePrice: ["font-mono"],
             },
             sum: {
-                price: ["font-bold", "font-mono", "whitespace-pre"],
+                totalPrice: ["font-bold", "font-mono", "whitespace-pre"],
             },
         },
         autoSort: true,
         sum: [
             {
-                key: "price",
+                key: "totalPrice",
                 format: "EUR",
             },
         ],

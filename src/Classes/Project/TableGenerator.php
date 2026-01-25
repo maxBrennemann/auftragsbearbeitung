@@ -31,6 +31,7 @@ class TableGenerator
         $tbodyElements = self::getRows($data, $header, $options);
 
         $tableClassName = $options["styles"]["table"]["className"] ?? [];
+        array_push($tableClassName, "shadow-xs");
         $tableClassName = implode(" ", $tableClassName);
 
         $theadClassName = $options["styles"]["thead"]["className"] ?? [];

@@ -84,20 +84,32 @@ class Zeit extends Posten
 			FROM zeiterfassung
 			JOIN zeit ON zeit.Nummer = id_zeit
 			WHERE zeit.Postennummer = :idPosten";
-        $times = DBAccess::selectQuery(
-            $query,
-            [
+        $times = DBAccess::selectQuery($query, [
                 "idPosten" => $this->postennummer,
-            ]
-        );
+        ]);
 
-        if (count($times) == 0) {
+        if (empty($times)) {
             return null;
         }
 
-        return TemplateController::getTemplate("extendedTimes", [
-            "times" => $times,
-        ]);
+        $options = [
+            "hideOptions" => ["all"],
+        ];
+
+        $header = [
+            "columns" => [
+                "from",
+                "to",
+                "date",
+            ],
+            "names" => [
+                "Von",
+                "Bis",
+                "Datum",
+            ],
+        ];
+
+        return TableGenerator::create($times, $options, $header);
     }
 
     /* returns the price if no discount is applied, else calculates the discount and returns the according table */
