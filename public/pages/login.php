@@ -9,16 +9,16 @@ $isLoggedIn = SessionController::isLoggedIn();
 <?php if (!$isLoggedIn) : ?>
     <div class="flex justify-center">
         <div class="defCont">
-            <div>
+            <form>
                 <label>
                     <p>Nutzername oder E-Mailadresse</p>
-                    <input type="text" class="input-primary w-60" id="name">
+                    <input type="text" class="input-primary w-60" id="name" autocomplete="username">
                 </label>
                 <label>
                     <p>Passwort</p>
-                    <input type="password" class="input-primary w-60" name="password" placeholder="Passwort" id="password">
+                    <input type="password" class="input-primary w-60" name="password" placeholder="Passwort" id="password" autocomplete="current-password">
                 </label>
-            </div>
+            </form>
             <div class="mt-2">
                 <label>
                     <input type="checkbox" name="setAutoLogin" id="autologin">

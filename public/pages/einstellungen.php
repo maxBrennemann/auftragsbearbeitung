@@ -132,7 +132,7 @@ $companyLogo = Src\Classes\Project\Image::getLogo();
         <?= \Src\Classes\Controller\TemplateController::getTemplate("inputSwitch", [
             "id" => "cacheStatusSwitch",
             "name" => "Cache",
-            "value" => CacheManager::getCacheStatus() == "on" ? "checked" : "",
+            "value" => CacheManager::getCacheStatus() == CacheManager::CACHE_ON ? "checked" : "",
             "binding" => "toggleCache",
         ]); ?>
     </div>

@@ -7,6 +7,9 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class CacheManager
 {
+    public const CACHE_ON = "on";
+    public const CACHE_OFF = "off";
+
     private const CACHE_PREFIX = "cache_";
     private static string $status = "off";
     private static string $cacheDir = "";
@@ -126,7 +129,10 @@ class CacheManager
     public static function toggleCache(): void
     {
         $status = strtolower(trim((string) Tools::get("status")));
-        if (!in_array($status, ["on", "off"])) {
+        if (!in_array($status, [
+            self::CACHE_ON,
+            self::CACHE_OFF,
+        ])) {
             JSONResponseHandler::throwError(400, "Unsupported status type");
         }
 

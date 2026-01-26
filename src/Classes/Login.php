@@ -90,13 +90,11 @@ class Login
         SessionController::logout();
     }
 
-    private static function getLoginKey(int $deviceId): string
+    private static function getLoginKey(int $deviceId): false|string
     {
-        if (
-            Tools::get("setAutoLogin") == null
-            || Tools::get("setAutoLogin") == "false"
-        ) {
-            return "";
+        $autoLogin = Tools::get("setAutoLogin");
+        if ($autoLogin == null || !$autoLogin) {
+            return false;
         }
 
         /* get expiration date */
@@ -268,7 +266,7 @@ class Login
      * the cookie, the browser type and os are used to identify the user
      * the current ip adress is also stored in the database but is not crucial
      */
-    private static function handleAutoLogin(): bool|string
+    private static function handleAutoLogin(): false|string
     {
         $userAgent = Tools::get("userAgent");
         if ($userAgent == null) {
