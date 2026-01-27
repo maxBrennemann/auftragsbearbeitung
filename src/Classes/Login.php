@@ -36,6 +36,8 @@ class Login
             "uloginkey" => self::$loginKeyId,
             "loginstamp" => (new \DateTime())->format('Y-m-d H:i:s'),
         ]);
+
+        self::updateDeviceLastUsage((int) $device["deviceId"]);
     }
 
     /**
@@ -283,7 +285,7 @@ class Login
             "deviceKey" => Tools::get("deviceKey"),
         ]);
 
-        if (count($data) == 0) {
+        if (empty($data)) {
             return false;
         }
 
@@ -311,11 +313,12 @@ class Login
                 return false;
             } else {
                 SessionController::login((int) $data[0]["user_id"]);
+                self::updateDeviceLastUsage((int) $deviceId);
                 return self::getLoginKey((int) $deviceId);
             }
-        } else {
-            return false;
-        }
+        } 
+        
+        return false;
     }
 
     private static function castDevice(bool $isMobile, bool $isTablet): string
@@ -327,5 +330,13 @@ class Login
             return "tablet";
         }
         return "desktop";
+    }
+
+    private static function updateDeviceLastUsage(int $deviceId): void
+    {
+        DBAccess::updateQuery("UPDATE user_devices SET last_usage = :timestamp WHERE id = :deviceId;", [
+            "deviceId" => $deviceId,
+            "timestamp" => date("Y-m-d h:i:s"),
+        ]);
     }
 }

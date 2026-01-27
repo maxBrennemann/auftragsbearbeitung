@@ -448,6 +448,20 @@ function getTableConfig(): array
             ],
             "permissions" => ["read", "create", "update"],
         ],
+        "user_timetracking" => [
+            "columns" => [
+                "id",
+                "user_id",
+                "started_at",
+                "stopped_at",
+                "is_pending",
+                "duration_ms",
+                "task",
+                "edit_log",
+            ],
+            "primaryKey" => "id",
+            "permissions" => ["read", "create", "update"],
+        ],
     ];
 }
 

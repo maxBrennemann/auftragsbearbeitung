@@ -168,7 +168,7 @@ const createAddRow = (count, header, table, options = {}) => {
     btn.className = "border-0 inline-flex items-center";
     const btnSpan = document.createElement("span");
     btnSpan.innerHTML = getAddBtn();
-    btnSpan.className = "inline-flex border-0 bg-green-400 p-1 rounded-md";
+    btnSpan.className = "inline-flex border-0 bg-green-400 p-1 rounded-md cursor-pointer";
     btn.appendChild(btnSpan);
 
     const text = document.createElement("span");
@@ -357,7 +357,7 @@ const addEditBtn = (data, table, row, actionsCell, options) => {
         const editBtn = document.createElement("button");
         editBtn.innerHTML = getEditBtn();
         editBtn.title = "Bearbeiten";
-        editBtn.className = "inline-flex border-0 bg-green-400 p-1 rounded-md";
+        editBtn.className = "inline-flex border-0 bg-green-400 p-1 rounded-md cursor-pointer";
         editBtn.dataset.status = "edit";
         editBtn.addEventListener("click", () => {
             dispatchActionEvent("rowEdit", data, table, { row });
@@ -384,7 +384,7 @@ const addDeleteBtn = (data, table, row, actionsCell, options) => {
         const deleteBtn = document.createElement("button");
         deleteBtn.innerHTML = getDeleteBtn();
         deleteBtn.title = "Löschen";
-        deleteBtn.className = "inline-flex border-0 bg-red-400 p-1 rounded-md ml-1";
+        deleteBtn.className = "inline-flex border-0 bg-red-400 p-1 rounded-md ml-1 cursor-pointer";
         deleteBtn.addEventListener("click", () => {
             dispatchActionEvent("rowDelete", data, table, { row });
         });
@@ -399,7 +399,7 @@ const addCheckBtn = (data, table, row, actionsCell, options) => {
         const checkBtn = document.createElement("button");
         checkBtn.innerHTML = getCheckBtn();
         checkBtn.title = "Erledigt";
-        checkBtn.className = "inline-flex border-0 bg-blue-400 p-1 rounded-md ml-1";
+        checkBtn.className = "inline-flex border-0 bg-blue-400 p-1 rounded-md ml-1 cursor-pointer";
         checkBtn.addEventListener("click", () => {
             dispatchActionEvent("rowCheck", data, table, { row });
         });
@@ -414,7 +414,7 @@ const addMoveBtn = (data, table, row, actionsCell, options) => {
         const checkBtn = document.createElement("button");
         checkBtn.innerHTML = getMoveBtn();
         checkBtn.title = "Bewegen";
-        checkBtn.className = "inline-flex border-0 bg-zinc-400 p-1 rounded-md ml-1 drag-handle";
+        checkBtn.className = "inline-flex border-0 bg-zinc-400 p-1 rounded-md ml-1 drag-handle cursor-pointer";
         //checkBtn.draggable = false;
         checkBtn.addEventListener("click", () => {
             dispatchActionEvent("rowMove", data, table, { row });
@@ -430,7 +430,7 @@ const addUploadBtn = (data, table, row, actionsCell, options) => {
         const checkBtn = document.createElement("button");
         checkBtn.innerHTML = getAddBtn();
         checkBtn.title = "Hinzufügen";
-        checkBtn.className = "inline-flex border-0 bg-yellow-400 p-1 rounded-md ml-1";
+        checkBtn.className = "inline-flex border-0 bg-yellow-400 p-1 rounded-md ml-1 cursor-pointer";
         checkBtn.addEventListener("click", () => {
             dispatchActionEvent("rowUpload", data, table, { row });
         });

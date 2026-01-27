@@ -6,12 +6,18 @@ use Src\Classes\Controller\TemplateController;
 use MaxBrennemann\PhpUtilities\Tools;
 
 $customerId = (int) Tools::get("id");
+$customer = null;
 
-if ($customerId <= 0): ?>
+try {
+	$customer = new Kunde($customerId);
+} catch (Exception $e) {
+	$customerId = 0;
+}
+
+if ($customerId == 0): ?>
 	<p>Kundennummer nicht gefunden oder ungültig.</p>
 	<p><a href="<?= Link::getPageLink("neuer-kunde") ?>" class="link-primary">Hier</a> kannst Du einen neuen Kunden anlegen.</p>
 <?php else:
-	$customer = new Kunde($customerId);
 	$orderCount = $customer->getOrderIds();
 	$orderCount = count($orderCount);
 ?>

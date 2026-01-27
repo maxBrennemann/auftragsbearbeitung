@@ -6,6 +6,6 @@
         title="<?= isset($placeHolder) ? $placeHolder : "" ?>"
         name="searchInput">
     <span class="inline-flex items-center mr-2 cursor-pointer">
-        <?=\Src\Classes\Project\Icon::getDefaultColorized("iconSearch", "#374151")?>
+        <?=Src\Classes\Project\Icon::getDefaultColorized("iconSearch", "#374151")?>
     </span>
 </div>
