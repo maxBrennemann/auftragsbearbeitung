@@ -21,12 +21,12 @@ var started = false;
 const init = () => {
     addBindings(fnNames);
 
-    if (localStorage.getItem("startTime")) {
+    ajax.get(``).then((r: any) => {
         started = true;
         (document.getElementById("updateStartStopName") as HTMLSpanElement).innerHTML = "stoppen";
         (document.getElementById("startStopChecked") as HTMLInputElement).checked = true;
         toggleIsPausable(true);
-    }
+    });
 
     const getTask = document.getElementById("getTask") as HTMLInputElement;
     getTask.addEventListener("keydown", e => {
@@ -64,7 +64,6 @@ fnNames.click_startStopTime = () => {
     started = !started;
     switch (started) {
         case true:
-            storeTimestamp("startTime");
             (document.getElementById("updateStartStopName") as HTMLSpanElement).innerHTML = "stoppen";
             timeGlobalListener();
             toggleIsPausable(true);
@@ -84,7 +83,6 @@ fnNames.click_sendTimeTracking = () => {
 
     ajax.post(`/api/v1/time-tracking/add`, {
         task: task.value,
-        start: localStorage.getItem("startTime"),
         stop: new Date().getTime().toString(),
     }).then(response => {
         const table = document.querySelector("table");
@@ -99,7 +97,6 @@ fnNames.click_sendTimeTracking = () => {
         };
         addRow(response.data, table, options);
 
-        localStorage.removeItem("startTime");
         (document.getElementById("updateStartStopName") as HTMLSpanElement).innerHTML = "starten";
 
         task.value = "";
@@ -120,7 +117,7 @@ fnNames.click_cancelCurrentTracking = () => {
     if (!(confirm("Willst du die aktuelle Erfassung abbrechen?"))) {
         return;
     }
-    localStorage.removeItem("startTime");
+    // TODO: add api call to cancel timetracking
     const startStopChecked = document.getElementById("startStopChecked") as HTMLInputElement;
     startStopChecked.checked = false;
 
@@ -204,11 +201,6 @@ const getFirstDayOfWeek = (date = new Date()) => {
 const getFirstDayOfMonth = (date = new Date()) => {
     const day = new Date(date.getFullYear(), date.getMonth(), 1);
     return day.toISOString().split("T")[0];
-}
-
-const storeTimestamp = (stamp: string) => {
-    let time = new Date().getTime().toString();
-    localStorage.setItem(stamp, time);
 }
 
 const getTimeTrackingEntries = async () => {

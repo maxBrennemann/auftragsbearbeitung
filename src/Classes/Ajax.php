@@ -101,6 +101,7 @@ class Ajax
             case "tables":
                 TableRoutes::handleRequest($path);
                 break;
+            case "project":
             case "time-tracking":
                 TimeTrackingRoutes::handleRequest($path);
                 break;

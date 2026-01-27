@@ -11,19 +11,9 @@ use MaxBrennemann\PhpUtilities\Tools;
 
 class TimeTrackingController
 {
-    private static function validateUser(): bool
-    {
-        $userId = User::getCurrentUserId();
-        if ($userId == -1) {
-            return false;
-        }
-
-        return true;
-    }
-
     public static function showTimeTracking(?int $id = null): void
     {
-        if (!self::validateUser()) {
+        if (User::getCurrentUserId() == -1) {
             JSONResponseHandler::throwError(401, "Unvalidated user");
         }
 
@@ -54,7 +44,7 @@ class TimeTrackingController
         $stop = (int) Tools::get("stop");
         $task = (string) Tools::get("task");
 
-        if (!self::validateUser()) {
+        if (User::getCurrentUserId() == -1) {
             JSONResponseHandler::throwError(401, "Unvalidated user");
         }
 
@@ -123,5 +113,25 @@ class TimeTrackingController
             "status" => "success",
             "display" => $value,
         ]);
+    }
+
+    public static function startTimer(): void
+    {
+
+    }
+
+    public static function pauseTimer(): void
+    {
+        
+    }
+
+    public static function resumeTimer(): void
+    {
+        
+    }
+
+    public static function stopTimer(): void
+    {
+        
     }
 }

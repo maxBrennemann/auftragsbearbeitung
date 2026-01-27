@@ -10,11 +10,13 @@ class TimeTrackingRoutes extends Routes
      * @uses \Src\Classes\Controller\TimeTrackingController::showTimeTracking()
      * @uses \Src\Classes\Controller\TimeTrackingController::showTimeTracking()
      * @uses \Src\Classes\Controller\TimeTrackingController::showTimeTrackingOverview()
+     * @uses \Src\Classes\Controller\TimeTrackingController::getActiveEntry
      */
     protected static $getRoutes = [
         "/time-tracking/current-user" => [\Src\Classes\Controller\TimeTrackingController::class, "showTimeTracking"],
         "/time-tracking/{id}" => [\Src\Classes\Controller\TimeTrackingController::class, "showTimeTracking"],
         "/time-tracking/overview" => [\Src\Classes\Controller\TimeTrackingController::class, "showTimeTrackingOverview"],
+        "/time-tracking/active" => [\Src\Classes\Controller\TimeTrackingController::class, "getActiveEntry"],
     ];
 
     /**
@@ -22,6 +24,10 @@ class TimeTrackingRoutes extends Routes
      */
     protected static $postRoutes = [
         "/time-tracking/add" => [\Src\Classes\Controller\TimeTrackingController::class, "addEntry"],
+        "/time-tracking/start" => [\Src\Classes\Controller\TimeTrackingController::class, "startTimer"],
+        "/time-tracking/{id}/pause" => [\Src\Classes\Controller\TimeTrackingController::class, "pauseTimer"],
+        "/time-tracking/{id}/resume" => [\Src\Classes\Controller\TimeTrackingController::class, "resumeTimer"],
+        "/time-tracking/{id}/stop" => [\Src\Classes\Controller\TimeTrackingController::class, "stopTimer"],
     ];
 
     /**

@@ -6,12 +6,28 @@ use Src\Classes\Project\Icon;
 <div class="w-full">
     <div class="bg-gray-100 rounded-lg p-2">
         <h1>Zeiterfassung</h1>
-        <div class="mt-2">
-            <label class="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" value="" class="sr-only peer" data-fun="startStopTime" data-binding="true" id="startStopChecked">
-                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-hidden peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:rtl:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300" id="statusTimeTracking">Zeiterfassung <span id="updateStartStopName">starten</span></span>
-            </label>
+        <div class="mt-2 grid grid-cols-2 gap-2 mx-1">
+            <div class="bg-gray-50 rounded-sm shadow-xs p-2 flex items-center">
+                <label class="flex-1">
+                    Projekt/ Kunde
+                    <select class="input-primary">
+
+                    </select>
+                </label>
+                <label class="flex-1">
+                    Art/ Auftrag
+                    <select class="input-primary">
+
+                    </select>
+                </label>
+            </div>
+            <div class="bg-gray-50 rounded-sm shadow-xs p-2 flex items-center">
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" value="" class="sr-only peer" data-fun="startStopTime" data-binding="true" id="startStopChecked">
+                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-hidden peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:rtl:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                    <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300" id="statusTimeTracking">Zeiterfassung <span id="updateStartStopName">starten</span></span>
+                </label>
+            </div>
         </div>
         <div class="inline-flex items-center mt-2">
             <button class="btn-cancel inline-flex items-center" id="pauseCurrentTracking" data-fun="pauseCurrentTracking" data-binding="true" disabled><?= Icon::getDefault("iconPause") ?><span class="ml-1">Pausieren</span></button>
