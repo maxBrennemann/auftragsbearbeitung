@@ -9,6 +9,10 @@ class Config
 
     /** @var array<string, mixed> */
     private static array $config = [];
+    /** @var array<string, array{scope: string, type: string, default: mixed}> */
+    private static array $settings = [];
+
+    private static ?bool $devMode = null;
 
     public static function load(string $path): void
     {
@@ -17,6 +21,12 @@ class Config
         }
 
         $config = require $path;
+
+        /* settings are used for defining user variables that are stored in the database */
+        if (isset($config["settings"])) {
+            self::$settings = $config["settings"];
+            unset($config["settings"]);
+        }
 
         if (!is_array($config)) {
             throw new \RuntimeException("Invalid config file: $path must return an array");
@@ -64,6 +74,14 @@ class Config
         return is_array($value) ? $value : [];
     }
 
+    /**
+     * @return array<string, array{scope: string, type: string, default: mixed}>
+     */
+    public static function getSettings(): array
+    {
+        return self::$settings;
+    }
+
     public static function loadLanguages(): void
     {
         $_ENV["i18n"] = new I18n(ROOT . 'src/Classes/I18n/lang', "de", "de");
@@ -71,5 +89,17 @@ class Config
         if (self::get("locale")) {
             $_ENV["i18n"]->setLocale(self::get("locale"));
         }
+    }
+
+    public static function isDevMode(): bool
+    {
+        if (self::$devMode !== null) {
+            return self::$devMode;
+        }
+
+        $devMode = filter_var($_ENV["DEV_MODE"] ?? false, FILTER_VALIDATE_BOOLEAN);
+        self::$devMode = $devMode;
+
+        return $devMode;
     }
 }

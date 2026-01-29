@@ -35,13 +35,13 @@
 
 	global $start;
 
-	if ($calcDuration && CacheManager::getCacheStatus() == 'off') {
+	if ($calcDuration && CacheManager::getCacheStatus() == CacheManager::CACHE_OFF) {
 	    $stop = microtime(true);
 	    $duration = $stop - $start;
 		echo "<data value=\"$duration\" id=\"loadtime\"></data>";
 	}
 
-	if ($calcDuration && CacheManager::getCacheStatus() == 'on') {
+	if ($calcDuration && CacheManager::getCacheStatus() == CacheManager::CACHE_ON) {
 	    $stop = microtime(true);
 	    $duration = $stop - $start;
 	    echo '{{LOAD_TIME}}';

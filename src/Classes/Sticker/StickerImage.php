@@ -3,6 +3,7 @@
 namespace Src\Classes\Sticker;
 
 use Src\Classes\Link;
+use Src\Classes\Project\Config;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use MaxBrennemann\PhpUtilities\DBAccess;
@@ -346,7 +347,7 @@ class StickerImage extends PrestashopConnection
 
         $imageURLS = $this->stripUnsupportedFileTypes($imageURLs);
 
-        if ($_ENV["DEV_MODE"] == true) {
+        if (Config::isDevMode()) {
             $result = $this->directUpload($imageURLs, $productId);
             $this->processImageIds($result, $imageURLs);
         } else {

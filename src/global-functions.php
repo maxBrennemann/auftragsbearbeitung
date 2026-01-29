@@ -2,6 +2,7 @@
 
 use Src\Classes\Controller\TemplateController;
 use Src\Classes\I18n\I18n;
+use Src\Classes\Project\Config;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
@@ -14,7 +15,7 @@ ini_set("display_errors", true);
  */
 function printError(array $message): never
 {
-    if ($_ENV["DEV_MODE"] == "true") {
+    if (Config::isDevMode()) {
         JSONResponseHandler::throwError(500, $message);
     } else {
         JSONResponseHandler::throwError(500, "Internal server error");
@@ -87,7 +88,7 @@ function captureError(): void
 
     $errorTempalte = "";
 
-    if ($_ENV["DEV_MODE"]) {
+    if (Config::isDevMode()) {
         $errorData = [];
 
         if ($e instanceof Throwable) {
@@ -114,8 +115,8 @@ function captureError(): void
         ]);
     }
 
-    insertTemplate("../public/layout/footer.php", [
-        "calcDuration" => $_ENV["DEV_MODE"],
+    insertTemplate(ROOT . "public/layout/footer.php", [
+        "calcDuration" => Config::isDevMode(),
         "errorTemplate" => $errorTempalte,
     ]);
 }
@@ -159,7 +160,7 @@ function getCurrentVersion(): string
 
 function errorReporting(): void
 {
-    if ($_ENV["ERRORREPORTING"] == "on") {
+    if (Config::isDevMode()) {
         ini_set('display_errors', 1);
         ini_set('display_startup_errors', 1);
         error_reporting(E_ALL);

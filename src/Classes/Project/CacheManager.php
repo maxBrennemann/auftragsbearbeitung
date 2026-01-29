@@ -2,12 +2,14 @@
 
 namespace Src\Classes\Project;
 
-use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 
 class CacheManager
 {
+    public const CACHE_ON = "on";
+    public const CACHE_OFF = "off";
+
     private const CACHE_PREFIX = "cache_";
     private static string $status = "off";
     private static string $cacheDir = "";
@@ -31,27 +33,22 @@ class CacheManager
 
     public static function cacheOff(): bool
     {
-        return DBAccess::updateQuery("UPDATE settings SET content = 'off' WHERE title = 'cacheStatus'");
+        Settings::set("cacheStatus", false);
+        return true;
     }
 
     public static function cacheOn(): bool
     {
         return true;
         // Cache is temporarily disabled
-        //return DBAccess::updateQuery("UPDATE settings SET content = 'on' WHERE title = 'cacheStatus'");
+        //Settings::set("cacheStatus", true);
     }
 
     public static function getCacheStatus(): string
     {
-        $query = "SELECT content FROM settings WHERE `title` = 'cacheStatus'";
-        $status = DBAccess::selectQuery($query);
+        $status = Settings::get("cacheStatus");
 
-        if (count($status) == 0) {
-            self::$status = "off";
-            return self::$status;
-        }
-
-        self::$status = (string) $status[0]['content'];
+        self::$status = $status ? "on" : "off";
         return self::$status;
     }
 
@@ -132,7 +129,10 @@ class CacheManager
     public static function toggleCache(): void
     {
         $status = strtolower(trim((string) Tools::get("status")));
-        if (!in_array($status, ["on", "off"])) {
+        if (!in_array($status, [
+            self::CACHE_ON,
+            self::CACHE_OFF,
+        ])) {
             JSONResponseHandler::throwError(400, "Unsupported status type");
         }
 

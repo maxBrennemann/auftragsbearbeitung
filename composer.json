@@ -5,7 +5,7 @@
         "guzzlehttp/guzzle": "^7.10.0",
         "google/apiclient": "^2.12.1",
         "symfony/dotenv": "7.3.8",
-        "max/php-utilities": "1.3.1",
+        "max/php-utilities": "1.3.2",
         "symfony/console": "8.0.3",
         "phpmailer/phpmailer": "^7.0.1"
     },

@@ -6,6 +6,7 @@ use Src\Classes\Controller\SessionController;
 use Src\Classes\Project\Events;
 use Src\Classes\Project\Settings;
 use Src\Classes\Project\CacheManager;
+use Src\Classes\Project\Config;
 use Src\Classes\Sticker\Exports\ExportFacebook;
 use Src\Classes\Sticker\Imports\ImportGoogleSearchConsole;
 use MaxBrennemann\PhpUtilities\DBAccess;
@@ -20,7 +21,7 @@ class ResourceManager
     {
         errorReporting();
 
-        self::getParameters();
+        Tools::getParameters();
         self::initCompanyName();
         self::identifyRequestType();
         
@@ -43,7 +44,7 @@ class ResourceManager
 
     private static function initCompanyName(): void
     {
-        $companyName = Settings::get("companyName");
+        $companyName = Settings::get("company.name");
         if ($companyName != null) {
             define("COMPANY_NAME", $companyName);
         } else {
@@ -112,38 +113,7 @@ class ResourceManager
                 break;
         }
     }
-
-    private static function getParameters(): void
-    {
-        $PHPInput = file_get_contents("php://input");
-
-        if ($PHPInput !== "" && $PHPInput !== false) {
-            $parsedPHPInput = json_decode($PHPInput, true);
-
-            if ($parsedPHPInput !== null) {
-                Tools::$data = array_merge(Tools::$data, $parsedPHPInput);
-                $_POST = array_merge($_POST, $parsedPHPInput);
-            }
-        }
-
-        switch ($_SERVER["REQUEST_METHOD"]) {
-            case "POST":
-                Tools::$data = array_merge(Tools::$data, $_POST);
-                break;
-            case "GET":
-                Tools::$data = array_merge(Tools::$data, $_GET);
-                break;
-            case "PUT":
-            case "DELETE":
-                if ($PHPInput === false) {
-                    return;
-                }
-                parse_str($PHPInput, $_PUT);
-                Tools::$data = array_merge(Tools::$data, $_PUT);
-                break;
-        }
-    }
-
+    
     public static function setPage(string $page): void
     {
         self::$page = $page;
@@ -202,7 +172,7 @@ class ResourceManager
         insertTemplate(ROOT . "public/pages/$filePath");
 
         insertTemplate(ROOT . "public/layout/footer.php", [
-            "calcDuration" => $_ENV["DEV_MODE"],
+            "calcDuration" => Config::isDevMode(),
         ]);
     }
 

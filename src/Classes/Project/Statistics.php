@@ -3,6 +3,7 @@
 namespace Src\Classes\Project;
 
 use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\Tools;
 
 class Statistics
 {
@@ -124,11 +125,11 @@ class Statistics
 
     public static function dispatcher(): void
     {
-        $diagramType = $_POST["diagramType"];
-        $startDate = $_POST["startDate"];
-        $endDate = $_POST["endDate"];
-        $dimension = $_POST["dimension"];
-        $datatype = $_POST["datatype"];
+        $diagramType = Tools::get("diagramType");
+        $startDate = Tools::get("startDate");
+        $endDate = Tools::get("endDate");
+        $dimension = Tools::get("dimension");
+        $datatype = Tools::get("datatype");
 
         switch ($diagramType) {
             case "getOrderSum":

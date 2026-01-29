@@ -13,7 +13,7 @@ class InvoiceMailTemplate
     public static function build(array $invoiceData): array
     {
         $subject = "Ihre Rechnung Nr. {$invoiceData["invoiceNumber"]}";
-        $companyName = Settings::get("companyName");
+        $companyName = Settings::get("company.name");
         $htmlBody = "
             <p>Sehr geehrte Damen und Herren,</p>
             <p>anbei finden Sie Ihre Rechnung <strong>#{$invoiceData["invoiceNumber"]}</p>

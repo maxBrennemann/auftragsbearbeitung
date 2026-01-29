@@ -557,5 +557,42 @@ export const tableConfig = {
                 "label": "Arbeitsstunden"
             }
         ]
+    },
+    "user_timetracking": {
+        "primaryKey": "id",
+        "columns": [
+            {
+                "key": "id",
+                "label": "id"
+            },
+            {
+                "key": "user_id",
+                "label": "user_id"
+            },
+            {
+                "key": "started_at",
+                "label": "started_at"
+            },
+            {
+                "key": "stopped_at",
+                "label": "stopped_at"
+            },
+            {
+                "key": "is_pending",
+                "label": "is_pending"
+            },
+            {
+                "key": "duration_ms",
+                "label": "duration_ms"
+            },
+            {
+                "key": "task",
+                "label": "task"
+            },
+            {
+                "key": "edit_log",
+                "label": "edit_log"
+            }
+        ]
     }
 };

@@ -36,6 +36,8 @@ class Login
             "uloginkey" => self::$loginKeyId,
             "loginstamp" => (new \DateTime())->format('Y-m-d H:i:s'),
         ]);
+
+        self::updateDeviceLastUsage((int) $device["deviceId"]);
     }
 
     /**
@@ -90,13 +92,11 @@ class Login
         SessionController::logout();
     }
 
-    private static function getLoginKey(int $deviceId): string
+    private static function getLoginKey(int $deviceId): false|string
     {
-        if (
-            Tools::get("setAutoLogin") == null
-            || Tools::get("setAutoLogin") == "false"
-        ) {
-            return "";
+        $autoLogin = Tools::get("setAutoLogin");
+        if ($autoLogin == null || !$autoLogin) {
+            return false;
         }
 
         /* get expiration date */
@@ -268,7 +268,7 @@ class Login
      * the cookie, the browser type and os are used to identify the user
      * the current ip adress is also stored in the database but is not crucial
      */
-    private static function handleAutoLogin(): bool|string
+    private static function handleAutoLogin(): false|string
     {
         $userAgent = Tools::get("userAgent");
         if ($userAgent == null) {
@@ -285,7 +285,7 @@ class Login
             "deviceKey" => Tools::get("deviceKey"),
         ]);
 
-        if (count($data) == 0) {
+        if (empty($data)) {
             return false;
         }
 
@@ -313,11 +313,12 @@ class Login
                 return false;
             } else {
                 SessionController::login((int) $data[0]["user_id"]);
+                self::updateDeviceLastUsage((int) $deviceId);
                 return self::getLoginKey((int) $deviceId);
             }
-        } else {
-            return false;
-        }
+        } 
+        
+        return false;
     }
 
     private static function castDevice(bool $isMobile, bool $isTablet): string
@@ -329,5 +330,13 @@ class Login
             return "tablet";
         }
         return "desktop";
+    }
+
+    private static function updateDeviceLastUsage(int $deviceId): void
+    {
+        DBAccess::updateQuery("UPDATE user_devices SET last_usage = :timestamp WHERE id = :deviceId;", [
+            "deviceId" => $deviceId,
+            "timestamp" => date("Y-m-d h:i:s"),
+        ]);
     }
 }

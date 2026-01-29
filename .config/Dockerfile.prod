@@ -44,6 +44,7 @@ COPY ./.config/nginx/security-headers.conf /etc/nginx/conf.d/security-headers.co
 COPY public/assets ./public/assets
 COPY public/index.php ./public/index.php
 COPY --from=frontend-builder /app/public/res/assets ./public/res/assets
+COPY public/res/css/fonts ./public/res/css/fonts
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

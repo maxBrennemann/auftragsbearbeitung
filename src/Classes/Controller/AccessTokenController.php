@@ -2,7 +2,6 @@
 
 namespace Src\Classes\Controller;
 
-use DateTime;
 use MaxBrennemann\PhpUtilities\DBAccess;
 
 class AccessTokenController
@@ -34,7 +33,7 @@ class AccessTokenController
             return false;
         }
 
-        $tokenHash = hash('sha256', $token);
+        $tokenHash = hash("sha256", $token);
 
         $allToken = self::getValidTokens();
         foreach ($allToken as $t) {
@@ -51,13 +50,14 @@ class AccessTokenController
     public static function create(string $name, bool $isActive = true): string
     {
         $plainToken = bin2hex(random_bytes(32));
-        $tokenHash = hash('sha256', $plainToken);
+        $tokenHash = hash("sha256", $plainToken);
+        $name = strtoupper($name);
 
-        $query = "INSERT INTO access_token (`name`, token_hash, is_active) VALUES (:name, :tokenHash, :isActive);";
+        $query = "INSERT INTO access_tokens (`name`, token_hash, is_active) VALUES (:name, :tokenHash, :isActive);";
         DBAccess::insertQuery($query, [
             "name" => $name,
-            "token_hash" => $tokenHash,
-            "is_active" => (int) $isActive,
+            "tokenHash" => $tokenHash,
+            "isActive" => (int) $isActive,
         ]);
 
         return $plainToken;

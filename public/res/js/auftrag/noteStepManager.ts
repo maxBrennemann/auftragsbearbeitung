@@ -63,7 +63,7 @@ const displayNotes = (notes: Note[]) => {
     if (!refs.noteContainer) return;
 
     refs.notesContainer.classList.remove("hidden");
-    notes.forEach((note) => {
+    notes.forEach(note => {
         notes.push(note);
 
         /* clone templateNote */
