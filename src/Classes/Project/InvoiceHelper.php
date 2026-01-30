@@ -8,6 +8,7 @@ use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 use Src\Classes\Notification\NotificationManager;
 use Src\Classes\Notification\NotificationType;
+use Src\Classes\Protocol;
 
 class InvoiceHelper
 {
@@ -35,7 +36,7 @@ class InvoiceHelper
 
     public static function getOpenInvoiceData(): void
     {
-        $dueIn = (int) Settings::get("companyDueDate");
+        $dueIn = (int) Settings::get("invoice.dueDate");
         $show = Tools::get("show");
 
         if ($show === "due") {
@@ -102,7 +103,7 @@ class InvoiceHelper
 
         /* if an exact match is found, we can skip trying to find alternative matches */
         if ($invoiceStatus) {
-            Tools::log("Invoice", "Set invoice $invoiceId as payed on $day");
+            Protocol::write("Invoice", "Set invoice $invoiceId as payed on $day");
             NotificationManager::addNotification(null, NotificationType::ORDER_PAYED, "Rechnung $invoiceId wurde am $dayGerman bezahlt.", $invoiceId);
 
             Invoice::setInvoicePaid($invoiceId, $day, "ueberweisung");
@@ -119,7 +120,7 @@ class InvoiceHelper
         }
 
         if ($foundId !== 0) {
-            Tools::log("Invoice", "Set invoice $foundId as payed on $day. Please verify.");
+            Protocol::write("Invoice", "Set invoice $foundId as payed on $day. Please verify.");
             NotificationManager::addNotification(null, NotificationType::ORDER_PAYED, "Rechnung $foundId wurde am $dayGerman bezahlt. Bitte überprüfen und ggf. korrigieren.", $foundId);
 
             Invoice::setInvoicePaid($foundId, $day, "ueberweisung");
