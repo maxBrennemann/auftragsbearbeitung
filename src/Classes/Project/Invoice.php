@@ -434,8 +434,6 @@ class Invoice
         ]);
         $orderId = (int) $orderId[0]["Auftragsnummer"];
         OrderHistory::add($orderId, $invoiceId, OrderHistory::TYPE_ORDER, OrderHistory::STATE_PAYED);
-
-        
     }
 
     public static function setInvoicePaidAjax(): void

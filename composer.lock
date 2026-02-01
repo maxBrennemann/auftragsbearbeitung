@@ -1033,8 +1033,8 @@
             "version": "2.1.x-dev",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/861cd9a1257fc5deaebb655d9d1d7cfb7830fc89",
-                "reference": "861cd9a1257fc5deaebb655d9d1d7cfb7830fc89",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/451b54250f5a7c2db596da8b5251b1ab6dbb4f4a",
+                "reference": "451b54250f5a7c2db596da8b5251b1ab6dbb4f4a",
                 "shasum": ""
             },
             "require": {
@@ -1080,7 +1080,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-01-29T16:51:43+00:00"
+            "time": "2026-01-31T10:48:09+00:00"
         },
         {
             "name": "prestashop/prestashop-webservice-lib",
