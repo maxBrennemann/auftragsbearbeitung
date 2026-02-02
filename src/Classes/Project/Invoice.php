@@ -440,7 +440,7 @@ class Invoice
     {
         $invoiceId = (int) Tools::get("invoiceId");
         $paymentDate = Tools::get("date");
-        $paymentType = Tools::get("paymentType");
+        $paymentType = (string) Tools::get("paymentType");
 
         self::setInvoicePaid($invoiceId, $paymentDate, $paymentType);
 

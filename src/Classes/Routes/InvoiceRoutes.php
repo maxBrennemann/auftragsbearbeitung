@@ -18,7 +18,7 @@ class InvoiceRoutes extends Routes
     ];
 
     /**
-     * @uses \Src\Classes\Project\Invoice::setInvoicePaid()
+     * @uses \Src\Classes\Project\Invoice::setInvoicePaidAjax()
      * @uses \Src\Classes\Project\Invoice::setInvoiceDate()
      * @uses \Src\Classes\Project\Invoice::setServiceDate()
      * @uses \Src\Classes\Project\Invoice::addText()
@@ -30,7 +30,7 @@ class InvoiceRoutes extends Routes
      * @uses \Src\Classes\Project\InvoiceNumberTracker::initInvoiceNumber()
      */
     protected static $postRoutes = [
-        "/invoice/{invoiceId}/paid" => [\Src\Classes\Project\Invoice::class, "setInvoicePaid"],
+        "/invoice/{invoiceId}/paid" => [\Src\Classes\Project\Invoice::class, "setInvoicePaidAjax"],
         "/invoice/{invoiceId}/invoice-date" => [\Src\Classes\Project\Invoice::class, "setInvoiceDate"],
         "/invoice/{invoiceId}/service-date" => [\Src\Classes\Project\Invoice::class, "setServiceDate"],
         "/invoice/{invoiceId}/text" => [\Src\Classes\Project\Invoice::class, "addText"],
