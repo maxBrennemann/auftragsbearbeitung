@@ -38,7 +38,7 @@ fnNames.click_deleteCustomer = () => {
     }
 
     ajax.delete(`/api/v1/customer/${customerData.id}/`).then(() => {
-        window.location.replace();
+        window.location.href = "/kunde";
     });
 }
 

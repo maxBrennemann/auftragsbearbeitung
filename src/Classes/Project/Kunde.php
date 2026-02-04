@@ -388,9 +388,21 @@ class Kunde
         JSONResponseHandler::sendResponse($data);
     }
 
-    public static function delete(): never
+    public static function delete(): void
     {
-        JSONResponseHandler::throwError(501, "not implemented");
+        $query = "SELECT Auftragsnummer FROM auftrag WHERE Kundennummer = :kdnr";
+        $orders = DBAccess::selectQuery($query, [
+            "kdnr" => (int) Tools::get("id"),
+        ]);
+
+        if (empty($orders)) {
+            DBAccess::updateQuery("DELETE FROM kunde WHERE Kundennummer = :kdnr", [
+                "kdnr" => (int) Tools::get("id"),
+            ]);
+            JSONResponseHandler::returnOK();
+        } else {
+            JSONResponseHandler::throwError(400, "customer has orders");
+        }
     }
 
     public static function setNote(): void
