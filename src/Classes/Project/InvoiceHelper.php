@@ -45,8 +45,9 @@ class InvoiceHelper
             $dueCondition = "";
         }
 
-        $data = DBAccess::selectQuery("SELECT auftrag.Auftragsnummer AS Nummer,
-				auftrag.Rechnungsnummer,
+        $data = DBAccess::selectQuery("SELECT
+                auftrag.Rechnungsnummer,
+                auftrag.Auftragsnummer AS Nummer,
                 invoice.invoice_number,
 				auftrag.Auftragsbezeichnung AS Bezeichnung, 
 				auftrag.Auftragsbeschreibung AS Beschreibung, 

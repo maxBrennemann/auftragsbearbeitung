@@ -122,7 +122,7 @@ try {
 				</div>
 				<div>
 					<?php if (Tools::get("show") == "true" && $auftrag->getInvoiceId() != 0) : ?>
-						<button class="btn-primary" data-link="<?= Link::getPageLink('rechnung') ?>?target=view&id=<?= $orderId ?>" data-binding="true" data-fun="showInvoice" id="showInvoice">Rechnung anzeigen</button>
+						<button class="btn-primary" data-link="<?= Link::getPageLink('rechnung') ?>?target=view&id=<?= $auftrag->getInvoiceNumber() ?>" data-binding="true" data-fun="showInvoice" id="showInvoice" title="Rechnung <?= $auftrag->getInvoiceNumber() ?> anzeigen">Rechnung anzeigen</button>
 					<?php else: ?>
 						<button class="btn-primary" data-link="<?= Link::getPageLink('rechnung') ?>?target=create&id=<?= $orderId ?>" data-binding="true" data-fun="showInvoicePreview" id="showInvoicePreview">Rechnungsvorschau</button>
 						<?php if ($auftrag->getIsArchiviert() == false) : ?>

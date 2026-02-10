@@ -30,13 +30,21 @@ class PDFGenerator extends TCPDF
 
     public function generate(): void {}
 
-    public function generateOutput(): void
+    /**
+     * @param ?string $title Optional title for the PDF, no file extension needed.
+     * @return void
+     */
+    public function generateOutput(?string $title = null): void
     {
-        $this->withPdfSafeErrorHandling(function () {
+        if ($title == null) {
+            $title = $this->fileName . ".pdf";
+        }
+
+        $this->withPdfSafeErrorHandling(function () use ($title) {
             header('Content-Type: application/pdf');
             header('X-Content-Type-Options: nosniff');
 
-            $this->Output($this->fileName . ".pdf", "I");
+            $this->Output($title, "I");
         });
     }
 

@@ -28,7 +28,7 @@ class InvoicePDF extends TransactionPDF
     {
         parent::generate();
 
-        $this->SetTitle("Rechnung für " . $this->customer->getFirmenname() . " " . $this->customer->getName());
+        $this->SetTitle($this->getTitle());
         $this->SetSubject("Rechnung");
         $this->SetKeywords("Rechnung");
 
@@ -95,11 +95,7 @@ class InvoicePDF extends TransactionPDF
 
     private function addTableHeader(int $y = 69): void
     {
-        $invoiceNumber = $this->invoice->getNumber();
-        if ($invoiceNumber == 0) {
-            $invoiceNumber = InvoiceNumberTracker::peekNextInvoiceNumber();
-        }
-        $invoiceNumber = (string) $invoiceNumber;
+        $invoiceNumber = (string) $this->getInvoiceNumber();
 
         $this->SetFont("helvetica", "", 12);
         $this->setXY(125, $y);
@@ -226,5 +222,20 @@ class InvoicePDF extends TransactionPDF
     {
         $this->fileName = "Rechnung_$invoiceNumber";
         parent::saveOutput();
+    }
+
+    public function getTitle(): string
+    {
+        return "Rechnung " . $this->getInvoiceNumber() . " für " . $this->customer->getFirmenname() . " " . $this->customer->getName();
+    }
+
+    private function getInvoiceNumber(): int
+    {
+        $invoiceNumber = $this->invoice->getNumber();
+        if ($invoiceNumber == 0) {
+            $invoiceNumber = InvoiceNumberTracker::peekNextInvoiceNumber();
+        }
+
+        return $invoiceNumber;
     }
 }

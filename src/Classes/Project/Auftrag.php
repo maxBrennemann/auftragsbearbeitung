@@ -125,23 +125,31 @@ class Auftrag implements NotifiableEntity
             return null;
         }
 
-        return $data[0]["payment_date"];
+        $paymentDate = $data[0]["payment_date"];
+        if ($paymentDate == null || $paymentDate == "0000-00-00") {
+            return null;
+        }
+
+        return $paymentDate;
     }
 
-    public function getPaymentType(): ?string
+    public function getPaymentType(): string
     {
+        $undefinedPaymentType = "Unbekannte Zahlungsart";
+
         if (!$this->isPaid()) {
-            return null;
+            return $undefinedPaymentType;
         }
 
         $query = "SELECT payment_type FROM invoice WHERE order_id = :orderId";
         $data = DBAccess::selectQuery($query, ["orderId" => $this->Auftragsnummer]);
 
         if (empty($data)) {
-            return null;
+            return $undefinedPaymentType;
         }
 
-        return $data[0]["payment_type"];
+        $paymentType = t("payment_types." . $data[0]["payment_type"]);
+        return $paymentType == "" ? $undefinedPaymentType : $paymentType;
     }
 
     /**

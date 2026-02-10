@@ -58,7 +58,7 @@ class Invoice
 
     public static function getInvoice(int $invoiceNumber): ?Invoice
     {
-        if ($invoiceNumber >= 0) {
+        if ($invoiceNumber <= 0) {
             return null;
         }
 
@@ -454,8 +454,9 @@ class Invoice
         $invoiceId = (int) Tools::get("invoiceId");
         $orderId = (int) Tools::get("orderId");
         $invoice = new InvoicePDF($invoiceId, $orderId);
+
         $invoice->generate();
-        $invoice->generateOutput();
+        $invoice->generateOutput($invoice->getTitle());
     }
 
     public static function handleAltNames(): void

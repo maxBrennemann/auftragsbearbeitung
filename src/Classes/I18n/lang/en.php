@@ -5,6 +5,16 @@ return [
     "global" => [
         "page_title" => 'Overview',
     ],
+    "payment_types" => [
+        "unbezahlt" => "Unpaid",
+        "ueberweisung" => "Bank Transfer",
+        "bar" => "Cash",
+        "paypal" => "PayPal",
+        "kreditkarte" => "Credit Card",
+        "amazonpay" => "AmazonPay",
+        "weiteres" => "Other",
+        "unknown" => "Unknown Payment Type",
+    ],
     "info" => [
         "lists" => '',
         "product_tags" => '',

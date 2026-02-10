@@ -29,12 +29,28 @@ const createInvoiceTable = async () => {
     const table = createTable("openInvoiceTable") as HTMLTableElement;
     const columns = [
         {
+            "key": "invoice_number",
+            "label": "Re-Nr."
+        },
+        {
             "key": "Nummer",
             "label": "Nummer"
         },
         {
-            "key": "invoice_number",
-            "label": "Rechnungsnummer"
+            "key": "Summe",
+            "label": "Summe (netto)"
+        },
+        {
+            "key": "Summe_mwst",
+            "label": "Summe (brutto)"
+        },
+        {
+            "key": "Kundennummer",
+            "label": "Kdnr."
+        },
+        {
+            "key": "Name",
+            "label": "Kundenname"
         },
         {
             "key": "Bezeichnung",
@@ -43,10 +59,6 @@ const createInvoiceTable = async () => {
         {
             "key": "Beschreibung",
             "label": "Beschreibung"
-        },
-        {
-            "key": "Kundennummer",
-            "label": "Kundennummer"
         },
         {
             "key": "Datum",
@@ -59,18 +71,6 @@ const createInvoiceTable = async () => {
         {
             "key": "Faelligkeitsdatum",
             "label": "Fälligkeitsdatum"
-        },
-        {
-            "key": "Name",
-            "label": "Name"
-        },
-        {
-            "key": "Summe",
-            "label": "Summe (netto)"
-        },
-        {
-            "key": "Summe_mwst",
-            "label": "Summe (brutto)"
         },
     ];
     const columnConfig = {
@@ -94,7 +94,7 @@ const createInvoiceTable = async () => {
 
     const data = await getOpenInvoiceData();
     data.forEach((row: any) => {
-        addRow(row, table, columnConfig);
+        addRow(row, table, columnConfig, columns);
     });
 
     table.addEventListener("rowCheck", async (event: any) => {
