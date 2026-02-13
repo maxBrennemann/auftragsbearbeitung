@@ -33,46 +33,47 @@ class Step
     public function erledigen(): void {}
 
     /**
-     * @param array<string, mixed> $data
      * @return int
      */
-    public static function insertStep(array $data): int
+    public static function insertStep(string $name, string $date, int $priority, int $orderId, int $hidden, int $assignedTo): int
     {
-        if ($data['Datum'] == null) {
-            $data['Datum'] = "0000-00-00";
+        if ($date == null) {
+            $date = "0000-00-00";
         }
 
         $postennummer = (int) DBAccess::insertQuery("INSERT INTO `schritte` (`Auftragsnummer`, `assignedTo`, `Bezeichnung`, `Datum`, `Priority`, `istErledigt`) VALUES (:auftragsnummer, :assignedTo, :bezeichnung, :datum, :priority, :status)", [
-            "auftragsnummer" => $data["Auftragsnummer"],
-            "assignedTo" => $data["assignedTo"] ?? 0,
-            "bezeichnung" => $data["Bezeichnung"],
-            "datum" => $data["Datum"],
-            "priority" => $data["Priority"],
-            "status" => $data["hide"],
+            "auftragsnummer" => $orderId,
+            "assignedTo" => $assignedTo ?? 0,
+            "bezeichnung" => $name,
+            "datum" => $date,
+            "priority" => $priority,
+            "status" => $hidden,
         ]);
 
-        OrderHistory::add($data["Auftragsnummer"], $postennummer, OrderHistory::TYPE_STEP, OrderHistory::STATE_ADDED, $data['Bezeichnung']);
+        OrderHistory::add($orderId, $postennummer, OrderHistory::TYPE_STEP, OrderHistory::STATE_ADDED, $name);
 
         return $postennummer;
     }
 
     public static function insertStepAjax(): void
     {
-        $data = [];
-        $data["Bezeichnung"] = Tools::get("name");
-        $data["Datum"] = Tools::get("date");
-        $data["Priority"] = Tools::get("priority");
-        $data["Auftragsnummer"] = Tools::get("orderId");
-        $data["hide"] = Tools::get("hide") == "true" ? 1 : 0;
-        $data["assignedTo"] = (int) Tools::get("assignedTo");
+        $name = Tools::get("name");
+        $date = Tools::get("date");
+        $priority = Tools::get("priority");
+        $orderId = Tools::get("orderId");
+        $hidden = Tools::get("hide") == "true" ? 1 : 0;
+        $assigendTo = (int) Tools::get("assignedTo");
 
-        $postenNummer = Step::insertStep($data);
+        $postenNummer = Step::insertStep($name, $date, $priority, $orderId, $hidden, $assigendTo);
 
-        if ($data["assignedTo"] != 0) {
-            NotificationManager::addNotification($data["assignedTo"], NotificationType::TYPE_STEP, Tools::get("name"), $postenNummer);
+        if ($assigendTo != 0) {
+            NotificationManager::addNotification($assigendTo, NotificationType::TYPE_STEP, $name, $postenNummer);
         }
 
-        JSONResponseHandler::sendResponse([]);
+        JSONResponseHandler::sendResponse([
+            "stepId" => $postenNummer,
+            "priority" => Priority::getPriorityLevel($priority),
+        ]);
     }
 
     /**

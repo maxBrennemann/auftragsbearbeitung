@@ -2,7 +2,7 @@ import { ajax } from "js-classes/ajax";
 import { addBindings } from "js-classes/bindings";
 import { notification } from "js-classes/notifications";
 
-import { fetchAndRenderTable } from "../classes/table";
+import { fetchAndRenderTable, addRow } from "../classes/table";
 import { tableConfig } from "../classes/tableconfig";
 import { FunctionMap, TableOptions } from "../types/types";
 
@@ -10,6 +10,10 @@ const fnNames = {} as FunctionMap;
 const notesConfig = {
     orderId: 0,
 };
+const stepsConfig = {
+    tableConfig: {},
+    tableOptions: {} as TableOptions,
+}
 
 const refs = {} as { [key: string]: HTMLElement };
 
@@ -20,7 +24,7 @@ interface Note {
     id: Number
 }
 
-const initStepsTable = async () => {
+const initStepsTable = () => {
     const config = tableConfig["schritte"];
     config.columns.push({
         key: "name",
@@ -55,8 +59,9 @@ const initStepsTable = async () => {
         options.conditions["istErledigt"] = "1";
     }
 
-    const table = await fetchAndRenderTable("stepTable", "schritte", options);
-    //table.addEventListener("rowInsert", () => addOrderType(table, options));
+    stepsConfig.tableConfig = config;
+    stepsConfig.tableOptions = options;
+    fetchAndRenderTable("stepTable", "schritte", options);
 }
 
 const displayNotes = (notes: Note[]) => {
@@ -124,7 +129,9 @@ function updateNote(e: any) {
 }
 
 fnNames.click_addBearbeitungsschritt = () => {
-    const name = (document.getElementById("processingStepName") as HTMLInputElement).value;
+    const nameInput = document.getElementById("processingStepName") as HTMLInputElement;
+
+    const name = nameInput.value;
     const date = (document.getElementById("processingStepDate") as HTMLInputElement).value;
     const hideStatus = (document.getElementById("processingStepStatus") as HTMLInputElement).checked;
     const priority = (document.getElementById("processingStepPriority") as HTMLInputElement).value;
@@ -135,8 +142,11 @@ fnNames.click_addBearbeitungsschritt = () => {
     }
 
     if (name.length < 3) {
+        nameInput.classList.add("ring-red-500");
         return;
     }
+
+    nameInput.classList.remove("ring-red-500");
 
     ajax.post(`/api/v1/notes/step/${notesConfig.orderId}`, {
         "name": name,
@@ -144,7 +154,21 @@ fnNames.click_addBearbeitungsschritt = () => {
         "hide": hideStatus,
         "priority": priority,
         "assignedTo": assignedTo,
-    }).then(r => {});
+    }).then(r => {
+        const table = document.querySelector("#stepTable table") as HTMLTableElement;
+        const row = {
+            Schrittnummer: r.data.stepId,
+            Auftragsnummer: notesConfig.orderId,
+            assignedTo: assignedTo,
+            Bezeichnung: name,
+            Datum: date,
+            Priority: r.data.priority,
+            finishingDate: "0000-00-00",
+            istErledigt: hideStatus ? "1" : "0",
+            name: document.querySelector(`#processingStepSelectBy option[value='${assignedTo}']`)?.textContent || "",
+        };
+        addRow(row, table, stepsConfig.tableOptions);
+    });
 }
 
 fnNames.click_toggleAddStep = () => {
