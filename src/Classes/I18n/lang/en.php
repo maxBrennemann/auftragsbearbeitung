@@ -17,6 +17,7 @@ return [
     ],
     "info" => [
         "lists" => '',
+        "invoice_mail" => '',
         "product_tags" => '',
         "rework_product" => '',
         "directory" => '',

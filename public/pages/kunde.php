@@ -85,7 +85,7 @@ if ($customerId == 0): ?>
 					</div>
 					<div class="w-full flex mt-2">
 						<div class="flex flex-col">
-							<label for="email">Rechnungs-E-Mail:</label>
+							<label for="email">Rechnungs-E-Mail: <button class="info-button ml-1" data-info="invoice_mail"></button></label> 
 							<input class="input-primary w-80" id="invoiceEmail" value="<?= $customer->getInvoiceEmail() ?>" autocomplete="none">
 						</div>
 					</div>

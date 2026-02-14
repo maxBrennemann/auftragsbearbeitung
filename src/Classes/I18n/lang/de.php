@@ -18,6 +18,8 @@ return [
     "info" => [
         "lists" => 
             'Wähle aus einer der erstellten Listen. Listen können im Auftrag als Stütze für die Herangehensweise verwendet werden. Um eine neue Liste zu erstellen, gehe auf "Listen" im Endbereich der Seite.',
+        "invoice_mail" =>
+            'Es wird automatisch eine E-Mail an die hier hinterlegte Adresse gesendet, wenn eine Rechnung für diesen Kunden erstellt wird. Du musst die Funktion nicht gesondert aktivieren.',
         "product_tags" => 
             'Um einen Tag dem Produkt hinzuzufügen, musst Du einfach auf den gewünschten Tagvorschlag klicken oder in das Eingabefeld ein neues Wort schreiben und mit ";" bestätigen. Wenn Du einen Tag entfernen möchtest, klicke einfach auf das "x".',
         "rework_product" => 
