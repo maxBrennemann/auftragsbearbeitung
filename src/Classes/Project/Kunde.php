@@ -20,7 +20,6 @@ class Kunde
     private string $ort = "";
     private string $email = "";
     private string $invoiceEmail = "";
-    private bool $autoSendInvoice = false;
     private string $telefonFestnetz = "";
     private string $telefonMobil = "";
     private string $website = "";
@@ -55,7 +54,6 @@ class Kunde
         $this->ort = $data["ort"] ?? "";
         $this->email = $data["Email"] ?? "";
         $this->invoiceEmail = $data["invoice_email"] ?? "";
-        $this->autoSendInvoice = $data["auto_send_mail"] == "1";
         $this->telefonFestnetz = $data["TelefonFestnetz"] ?? "";
         $this->telefonMobil = $data["TelefonMobil"] ?? "";
         $this->website = $data["Website"] ?? "";
@@ -172,11 +170,6 @@ class Kunde
     public function getInvoiceEmail(): string
     {
         return $this->invoiceEmail;
-    }
-
-    public function getAutoSendInvoice(): bool
-    {
-        return $this->autoSendInvoice;
     }
 
     public function getWebsite(): string

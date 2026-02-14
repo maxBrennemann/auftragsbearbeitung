@@ -3,6 +3,7 @@
 namespace Src\Classes\Pdf\TransactionPdf;
 
 use Src\Classes\Project\CompanyProfile;
+use Src\Classes\Project\Config;
 use Src\Classes\Project\Invoice;
 use Src\Classes\Project\InvoiceLayout;
 use Src\Classes\Project\InvoiceNumberTracker;
@@ -10,7 +11,6 @@ use Src\Classes\Project\InvoiceNumberTracker;
 class InvoicePDF extends TransactionPDF
 {
     private Invoice $invoice;
-    //private int $invoiceId;
     protected string $type = "invoice";
 
     public function __construct(int $invoiceId, int $orderId)
@@ -19,7 +19,6 @@ class InvoicePDF extends TransactionPDF
         $this->fileName = "Rechnung_" . $invoiceId;
         $this->invoice = new Invoice($invoiceId, $orderId);
 
-        //$this->invoiceId = $invoiceId;
         $this->addressId = $this->invoice->getAddressId();
         $this->contactId = $this->invoice->getContactId();
     }
@@ -28,7 +27,7 @@ class InvoicePDF extends TransactionPDF
     {
         parent::generate();
 
-        $this->SetTitle("Rechnung für " . $this->customer->getFirmenname() . " " . $this->customer->getName());
+        $this->SetTitle($this->getTitle());
         $this->SetSubject("Rechnung");
         $this->SetKeywords("Rechnung");
 
@@ -95,11 +94,7 @@ class InvoicePDF extends TransactionPDF
 
     private function addTableHeader(int $y = 69): void
     {
-        $invoiceNumber = $this->invoice->getNumber();
-        if ($invoiceNumber == 0) {
-            $invoiceNumber = InvoiceNumberTracker::peekNextInvoiceNumber();
-        }
-        $invoiceNumber = (string) $invoiceNumber;
+        $invoiceNumber = (string) $this->getInvoiceNumber();
 
         $this->SetFont("helvetica", "", 12);
         $this->setXY(125, $y);
@@ -131,9 +126,9 @@ class InvoicePDF extends TransactionPDF
 
     private function addInvoiceItems(): void
     {
-        /* iterates over all posten and adds lines */
+        /* iterates over all positions and adds lines */
         $lineheight = 10;
-        $posten = $this->invoice->loadPostenFromAuftrag();
+        $positions = $this->invoice->loadPostenFromAuftrag();
         $offset = 124;
         $this->setXY(20, $offset);
         $count = 1;
@@ -148,7 +143,7 @@ class InvoicePDF extends TransactionPDF
             $addToOffset = 0;
 
             if ($type == "item") {
-                $p = array_find($posten, fn($p) => $p->getPostennummer() == $id);
+                $p = array_find($positions, fn($p) => $p->getPostennummer() == $id);
                 $this->Cell(15, $lineheight, (string) $count);
                 $this->Cell(20, $lineheight, $p->getQuantityFormatted());
                 $this->Cell(20, $lineheight, $p->getEinheit());
@@ -222,9 +217,32 @@ class InvoicePDF extends TransactionPDF
         }
     }
 
+    /* TODO: rethink this structure, should invoiceNumber not be fixed per invoice? */
     public function saveOutput(int $invoiceNumber = 0): void
     {
         $this->fileName = "Rechnung_$invoiceNumber";
         parent::saveOutput();
+    }
+
+    public function getTitle(): string
+    {
+        return "Rechnung " . $this->getInvoiceNumber() . " für " . $this->customer->getFirmenname() . " " . $this->customer->getName();
+    }
+
+    /* TODO: rethink this structure, should invoiceNumber not be fixed per invoice? */
+    public function getOutputPath(int $invoiceNumber = 0): string
+    {
+        $fileName = "Rechnung_$invoiceNumber";
+        return Config::get("paths.generatedDir") . $fileName . ".pdf";
+    }
+
+    private function getInvoiceNumber(): int
+    {
+        $invoiceNumber = $this->invoice->getNumber();
+        if ($invoiceNumber == 0) {
+            $invoiceNumber = InvoiceNumberTracker::peekNextInvoiceNumber();
+        }
+
+        return $invoiceNumber;
     }
 }

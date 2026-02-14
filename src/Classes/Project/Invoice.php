@@ -58,7 +58,7 @@ class Invoice
 
     public static function getInvoice(int $invoiceNumber): ?Invoice
     {
-        if ($invoiceNumber >= 0) {
+        if ($invoiceNumber <= 0) {
             return null;
         }
 
@@ -104,6 +104,19 @@ class Invoice
     public function getOrder(): Auftrag
     {
         return $this->auftrag;
+    }
+
+    public function getInvoiceEmail(): false|string
+    {
+        $customerId = $this->auftrag->getKundennummer();
+        $customer = new Kunde($customerId);
+        $invoiceEmail = $customer->getInvoiceEmail();
+
+        if ($invoiceEmail == "") {
+            return false;
+        }
+
+        return $invoiceEmail;
     }
 
     public function getPerformanceDate(): string
@@ -390,6 +403,8 @@ class Invoice
         $invoicePDF->generate();
         $invoicePDF->saveOutput($invoiceNumber);
 
+        InvoiceHelper::sendInvoiceMail($invoice, $invoicePDF, $invoiceNumber);
+
         JSONResponseHandler::sendResponse([
             "status" => "success",
             "number" => $invoiceNumber,
@@ -454,8 +469,9 @@ class Invoice
         $invoiceId = (int) Tools::get("invoiceId");
         $orderId = (int) Tools::get("orderId");
         $invoice = new InvoicePDF($invoiceId, $orderId);
+
         $invoice->generate();
-        $invoice->generateOutput();
+        $invoice->generateOutput($invoice->getTitle());
     }
 
     public static function handleAltNames(): void

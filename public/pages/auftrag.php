@@ -122,7 +122,7 @@ try {
 				</div>
 				<div>
 					<?php if (Tools::get("show") == "true" && $auftrag->getInvoiceId() != 0) : ?>
-						<button class="btn-primary" data-link="<?= Link::getPageLink('rechnung') ?>?target=view&id=<?= $orderId ?>" data-binding="true" data-fun="showInvoice" id="showInvoice">Rechnung anzeigen</button>
+						<button class="btn-primary" data-link="<?= Link::getPageLink('rechnung') ?>?target=view&id=<?= $auftrag->getInvoiceNumber() ?>" data-binding="true" data-fun="showInvoice" id="showInvoice" title="Rechnung <?= $auftrag->getInvoiceNumber() ?> anzeigen">Rechnung anzeigen</button>
 					<?php else: ?>
 						<button class="btn-primary" data-link="<?= Link::getPageLink('rechnung') ?>?target=create&id=<?= $orderId ?>" data-binding="true" data-fun="showInvoicePreview" id="showInvoicePreview">Rechnungsvorschau</button>
 						<?php if ($auftrag->getIsArchiviert() == false) : ?>
@@ -177,50 +177,48 @@ foreach ($contactPersons as $contact): ?>
                         ]); ?>
 					</div>
 				</div>
-				<div class="mt-2 bg-white p-2 rounded-md hidden" id="bearbeitungsschritte">
-					<div>
-						<p>Bezeichnung:</p>
-						<input class="bearbeitungsschrittInput input-primary w-full mt-1" type="text" max="128" id="processingStepName">
-					</div>
-					<div class="mt-2">
-						<p>Datum:</p>
+				<div class="mt-2 bg-white rounded-md shadow-xs hidden" id="bearbeitungsschritte">
+					<div class="p-2">
 						<div>
-							<input class="bearbeitungsschrittInput input-primary mt-1" type="date" max="32" id="processingStepDate">
+							<p>Bezeichnung:</p>
+							<input class="bearbeitungsschrittInput input-primary w-full mt-1" type="text" max="128" id="processingStepName">
+						</div>
+						<div class="mt-3 flex items-center">
+							<p>Datum</p>
+							<input class="bearbeitungsschrittInput input-primary ml-2" type="date" max="32" id="processingStepDate">
+						</div>
+						<div class="mt-3 flex">
+							<p>Priorität</p>
+							<input class="bearbeitungsschrittInput ml-2" type="range" list="priority" id="processingStepPriority">
+							<datalist id="priority">
+								<option value="0"></option>
+								<option value="25"></option>
+								<option value="50"></option>
+								<option value="75"></option>
+								<option value="100"></option>
+							</datalist>
+						</div>
+						<div class="mt-3">
+							<?= TemplateController::getTemplate("inputSwitch", [
+		"id" => "processingStepStatus",
+		"name" => "Noch zu erledigen",
+		"value" => "checked",
+							]); ?>
+						</div>
+						<div class="mt-3 flex">
+							<?= TemplateController::getTemplate("inputSwitch", [
+		"id" => "processingStepBy",
+		"name" => "Zuweisen an",
+		"binding" => "updateSelectBy",
+							]); ?>
+							<select id="processingStepSelectBy" class="input-primary w-48 ml-2" disabled>
+								<?php foreach ($mitarbeiter as $m): ?>
+									<option value="<?= $m["id"] ?>"><?= $m["prename"] ?> <?= $m["lastname"] ?></option>
+								<?php endforeach; ?>
+							</select>
 						</div>
 					</div>
-					<div class="mt-2">
-						<p>Priorität:</p>
-						<input class="bearbeitungsschrittInput mt-1" type="range" list="priority" id="processingStepPriority">
-						<datalist id="priority">
-							<option value="0"></option>
-							<option value="25"></option>
-							<option value="50"></option>
-							<option value="75"></option>
-							<option value="100"></option>
-						</datalist>
-					</div>
-					<div class="mt-2">
-						<?= TemplateController::getTemplate("inputSwitch", [
-    "id" => "processingStepStatus",
-    "name" => "Noch zu erledigen",
-    "value" => "checked",
-                        ]); ?>
-					</div>
-					<div class="mt-2">
-						<?= TemplateController::getTemplate("inputSwitch", [
-    "id" => "processingStepBy",
-    "name" => "Zuweisen an:",
-    "binding" => "updateSelectBy",
-                        ]); ?>
-					</div>
-					<div class="mt-2">
-						<select id="processingStepSelectBy" disabled>
-							<?php foreach ($mitarbeiter as $m): ?>
-								<option value="<?= $m["id"] ?>"><?= $m["prename"] ?> <?= $m["lastname"] ?></option>
-							<?php endforeach; ?>
-						</select>
-					</div>
-					<div class="mt-2">
+					<div class="p-2 bg-gray-200 rounded-b-md">
 						<button class="btn-primary" data-binding="true" data-fun="addBearbeitungsschritt" class="btn-primary">Hinzufügen</button>
 						<button class="btn-cancel ml-1" data-binding="true" data-fun="toggleAddStep" class="btn-primary">Abbrechen</button>
 					</div>

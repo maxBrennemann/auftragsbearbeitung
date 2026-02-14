@@ -8,19 +8,20 @@ use Src\Classes\Mail\Templates\InvoiceMailTemplate;
 class SendInvoiceController
 {
     /**
-     * @param array<string, string> $invoiceData
+     * @param array{email: string, invoiceNumber: int, attachment?: array<string, string>} $invoiceData
      * @return bool
      */
     public static function handle(array $invoiceData): bool
     {
         $mailer = new Mailer();
         $template = InvoiceMailTemplate::build($invoiceData);
+        $attachment = $invoiceData["attachment"] ?? null;
 
         return $mailer->send(
             $invoiceData["email"],
             $template["subject"],
             $template["html"],
-            [],
+            $attachment,
             $template["plain"]
         );
     }

@@ -47,7 +47,7 @@
 }
 
 @utility input-primary {
-  @apply w-36 h-8 px-2.5 py-1 my-1 rounded-sm ring-1 ring-gray-300 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white;
+  @apply w-36 h-8 px-2.5 py-1 my-1 rounded-sm ring-1 ring-gray-300 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white disabled:text-gray-400;
 }
 
 @utility link-button {
@@ -83,7 +83,11 @@
 }
 
 @utility btn-options {
-  @apply border-none w-5 font-extrabold text-black text-lg hover:bg-gray-300;
+  @apply border-none w-5 font-extrabold text-black text-lg hover:bg-gray-300 cursor-pointer;
+}
+
+@utility info-badge {
+  @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-1 px-2 my-0.5 bg-gray-100 rounded-lg border border-gray-400 text-gray-900;
 }
 
 @utility info-button {

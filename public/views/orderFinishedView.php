@@ -37,10 +37,10 @@
         </div>
     <?php else: ?>
         <div class="defCont">
-            <p>Die Rechnung wurde am <?= $auftrag->getPaymentDate() ?> mit <?= $auftrag->getPaymentType() ?> bezahlt.</p>
+            <p>Die Rechnung wurde am <span class="info-badge"><?= $auftrag->getPaymentDate() ?></span> per <span class="info-badge"><?= $auftrag->getPaymentType() ?></span> bezahlt.</p>
         </div>
     <?php endif; ?>
     <div class="defCont">
-        <embed type="application/pdf" src="<?= $invoiceLink ?>" width="100%" height="400" id="invoiceEmbed">
+        <embed type="application/pdf" src="<?= $invoiceLink ?>" width="100%" height="800" id="invoiceEmbed">
     </div>
 </div>

@@ -7,7 +7,7 @@ use Src\Classes\Project\Settings;
 class InvoiceMailTemplate
 {
     /**
-     * @param array<string, string> $invoiceData
+     * @param array{email: string, invoiceNumber: int, attachment?: array<string, string>} $invoiceData
      * @return array{html: string, plain: string, subject: string}
      */
     public static function build(array $invoiceData): array

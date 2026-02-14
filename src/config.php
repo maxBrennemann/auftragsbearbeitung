@@ -118,5 +118,10 @@ return [
             'type' => 'string',
             'default' => '',
         ],
+        'company.invoiceCopyTo' => [
+            'scope' => 'global',
+            'type' => 'string',
+            'default' => '',
+        ],
     ],
 ];
