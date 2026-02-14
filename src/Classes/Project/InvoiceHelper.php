@@ -6,8 +6,10 @@ use Exception;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
+use Src\Classes\Controller\SendInvoiceController;
 use Src\Classes\Notification\NotificationManager;
 use Src\Classes\Notification\NotificationType;
+use Src\Classes\Pdf\TransactionPdf\InvoicePDF;
 use Src\Classes\Protocol;
 
 class InvoiceHelper
@@ -171,5 +173,37 @@ class InvoiceHelper
         }
 
         return false;
+    }
+
+    public static function sendInvoiceMail(Invoice $invoice, InvoicePDF $invoicePDF, int $invoiceNumber): void
+    {
+        $pdfPath = $invoicePDF->getOutputPath($invoiceNumber);
+        $pdfName = $invoicePDF->getTitle();
+
+        $email = $invoice->getInvoiceEmail();
+        if ($email != false) {
+            $invoiceData = [
+                "email" => $email,
+                "invoiceNumber" => $invoiceNumber,
+                "attachment" => [
+                    $pdfPath => $pdfName,
+                ],
+            ];
+
+            SendInvoiceController::handle($invoiceData);
+        }
+
+        $email = Settings::get("company.invoiceCopyTo");
+        if (is_string($email) && $email != "") {
+            $invoiceData = [
+                "email" => $email,
+                "invoiceNumber" => $invoiceNumber,
+                "attachment" => [
+                    $pdfPath => $pdfName,
+                ],
+            ];
+
+            SendInvoiceController::handle($invoiceData);
+        }
     }
 }

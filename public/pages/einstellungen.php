@@ -91,6 +91,10 @@ $companyLogo = Src\Classes\Project\Image::getLogo();
                 <span class="font-semibold w-60">Fälligkeitsdauer [Tage]</span>
                 <input class="input-primary w-60" value="<?= Settings::get("invoice.dueDate") ?>" data-write="true" data-fun="changeSetting" data-setting="invoice.dueDate">
             </div>
+            <div class="flex items-center mt-2">
+                <span class="font-semibold w-60">Rechnungskopie senden an</span>
+                <input class="input-primary w-60" value="<?= Settings::get("company.invoiceCopyTo") ?>" data-write="true" data-fun="changeSetting" data-setting="company.invoiceCopyTo">
+            </div>
         </div>
 
         <div class="w-96 mt-4 col-span-2">

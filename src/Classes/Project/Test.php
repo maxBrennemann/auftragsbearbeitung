@@ -61,11 +61,11 @@ class Test
 
     public static function sendTestMail(): void
     {
-        $invoiceData = [
+        /*$invoiceData = [
             'email' => "",
             'invoiceNumber' => 'TEST-001',
         ];
 
-        SendInvoiceController::handle($invoiceData);
+        SendInvoiceController::handle($invoiceData);*/
     }
 }

@@ -11,7 +11,6 @@ const notesConfig = {
     orderId: 0,
 };
 const stepsConfig = {
-    tableConfig: {},
     tableOptions: {} as TableOptions,
 }
 
@@ -25,11 +24,6 @@ interface Note {
 }
 
 const initStepsTable = () => {
-    const config = tableConfig["schritte"];
-    config.columns.push({
-        key: "name",
-        label: "Zugewiesen",
-    });
     const options: TableOptions = {
         hideOptions: ["move", "add", "addRow"],
         hide: [
@@ -39,7 +33,7 @@ const initStepsTable = () => {
             "assignedTo",
             "finishingDate",
         ],
-        primaryKey: config.primaryKey,
+        primaryKey: tableConfig["schritte"].primaryKey,
         autoSort: true,
         styles: {
             table: {
@@ -59,7 +53,6 @@ const initStepsTable = () => {
         options.conditions["istErledigt"] = "1";
     }
 
-    stepsConfig.tableConfig = config;
     stepsConfig.tableOptions = options;
     fetchAndRenderTable("stepTable", "schritte", options);
 }
@@ -183,15 +176,10 @@ async function getNotes() {
     return await ajax.get(`/api/v1/notes/${notesConfig.orderId}`);
 }
 
-/**
- * adds a note to the database
- * 
- * @returns 
- */
-function sendNote() {
+fnNames.click_sendNote = () => {
     const note = document.querySelector("#addNotes") as HTMLDivElement;
     if (note == undefined) {
-        return null;
+        return;
     }
 
     const title = (note.querySelector(".noteTitle") as HTMLInputElement).value;
@@ -202,7 +190,7 @@ function sendNote() {
     addNewNoteBtn.classList.remove("hidden");
 
     if (title == "") {
-        return null;
+        return;
     }
 
     ajax.post(`/api/v1/notes/${notesConfig.orderId}`, {
@@ -225,7 +213,7 @@ function sendNote() {
     });
 }
 
-const cancelNote = () => {
+fnNames.click_cancelNote = () => {
     const note = document.querySelector("#addNotes") as HTMLElement;
     const title = note.querySelector(".noteTitle") as HTMLInputElement;
     const content = note.querySelector(".noteText") as HTMLTextAreaElement;
@@ -278,10 +266,8 @@ fnNames.click_updateSelectBy = () => {
     el.disabled = !el.disabled;
 }
 
-fnNames.click_sendNote = sendNote;
 fnNames.click_removeNote = removeNote;
 fnNames.click_addNewNote = addNewNote;
-fnNames.click_cancelNote = cancelNote;
 
 export function initNotes(orderId: any) {
     notesConfig.orderId = parseInt(orderId);

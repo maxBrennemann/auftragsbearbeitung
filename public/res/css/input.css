@@ -83,7 +83,7 @@
 }
 
 @utility btn-options {
-  @apply border-none w-5 font-extrabold text-black text-lg hover:bg-gray-300;
+  @apply border-none w-5 font-extrabold text-black text-lg hover:bg-gray-300 cursor-pointer;
 }
 
 @utility info-badge {

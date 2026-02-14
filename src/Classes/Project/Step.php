@@ -43,7 +43,7 @@ class Step
 
         $postennummer = (int) DBAccess::insertQuery("INSERT INTO `schritte` (`Auftragsnummer`, `assignedTo`, `Bezeichnung`, `Datum`, `Priority`, `istErledigt`) VALUES (:auftragsnummer, :assignedTo, :bezeichnung, :datum, :priority, :status)", [
             "auftragsnummer" => $orderId,
-            "assignedTo" => $assignedTo ?? 0,
+            "assignedTo" => $assignedTo,
             "bezeichnung" => $name,
             "datum" => $date,
             "priority" => $priority,

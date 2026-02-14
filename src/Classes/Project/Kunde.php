@@ -169,6 +169,7 @@ class Kunde
         return $this->email;
     }
 
+    /* TODO: check if send auto mail should not be a global setting */
     public function getInvoiceEmail(): string
     {
         return $this->invoiceEmail;

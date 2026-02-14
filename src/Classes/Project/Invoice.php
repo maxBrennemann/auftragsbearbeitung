@@ -106,6 +106,19 @@ class Invoice
         return $this->auftrag;
     }
 
+    public function getInvoiceEmail(): false|string
+    {
+        $customerId = $this->auftrag->getKundennummer();
+        $customer = new Kunde($customerId);
+        $invoiceEmail = $customer->getInvoiceEmail();
+
+        if ($invoiceEmail == "") {
+            return false;
+        }
+
+        return $invoiceEmail;
+    }
+
     public function getPerformanceDate(): string
     {
         return $this->getPerformanceDateUnformatted()->format("Y-m-d");
@@ -389,6 +402,8 @@ class Invoice
         $invoicePDF = new InvoicePDF($invoiceId, $orderId);
         $invoicePDF->generate();
         $invoicePDF->saveOutput($invoiceNumber);
+
+        InvoiceHelper::sendInvoiceMail($invoice, $invoicePDF, $invoiceNumber);
 
         JSONResponseHandler::sendResponse([
             "status" => "success",
