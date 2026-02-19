@@ -26,15 +26,19 @@ class NotesRoutes extends Routes
 
     /**
      * @uses \Src\Classes\Project\Auftrag::updateNote()
+     * @uses \Src\Classes\Project\Step::updateStep()
      */
     protected static $putRoutes = [
         "/notes/{id}" => [\Src\Classes\Project\Auftrag::class, "updateNote"],
+        "/notes/step/{id}" => [\Src\Classes\Project\Step::class, "updateStep"],
     ];
 
     /**
      * @uses \Src\Classes\Project\Auftrag::deleteNote()
+     * @uses \Src\Classes\Project\Step::deleteStep()
      */
     protected static $deleteRoutes = [
         "/notes/{id}" => [\Src\Classes\Project\Auftrag::class, "deleteNote"],
+        "/notes/step/{id}" => [\Src\Classes\Project\Step::class, "deleteStep"],
     ];
 }

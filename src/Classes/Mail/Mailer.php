@@ -57,7 +57,6 @@ class Mailer
 
             return true;
         } catch (Exception $e) {
-
             Protocol::write("Mail error: {$e->getMessage()}");
             return false;
         }

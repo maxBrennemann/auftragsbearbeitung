@@ -23,7 +23,7 @@ interface Note {
     id: Number
 }
 
-const initStepsTable = () => {
+const initStepsTable = async () => {
     const options: TableOptions = {
         hideOptions: ["move", "add", "addRow"],
         hide: [
@@ -54,7 +54,38 @@ const initStepsTable = () => {
     }
 
     stepsConfig.tableOptions = options;
-    fetchAndRenderTable("stepTable", "schritte", options);
+    const table = await fetchAndRenderTable("stepTable", "schritte", options);
+
+    if (table == null) {
+        notification("Fehler beim Laden der Bearbeitungsschritte", "failure");
+        return;
+    }
+
+    table.addEventListener("rowEdit", editStep as EventListener);
+    table.addEventListener("rowDelete", deleteStep as EventListener);
+    table.addEventListener("rowCheck", checkStep as EventListener);
+}
+
+const editStep = (e: CustomEvent) => {
+
+}
+
+const deleteStep = (e: CustomEvent) => {
+    const data = e.detail;
+    const stepNumber = data["Schrittnummer"];
+
+    ajax.delete(`/api/v1/notes/step/${stepNumber}`, {
+        "orderId": notesConfig.orderId,
+    }).then(r => {
+        if (r.data.status == "success") {
+            notification("", "success");
+            data.row.remove();
+        }
+    });
+}
+
+const checkStep = (e: CustomEvent) => {
+    
 }
 
 const displayNotes = (notes: Note[]) => {
