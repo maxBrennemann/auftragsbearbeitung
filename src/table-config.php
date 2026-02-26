@@ -9,8 +9,8 @@
  *      permissions?: string[],
  *      hooks?: array<string, array{class-string, string}>,
  *      joins?: array<string, mixed>,
- *      joinedColumns?: array<string, string>,
- *      joinedColumnNames?: array<string, string>
+ *      joinedColumns?: string[],
+ *      joinedColumnNames?: string[],
  * }>
  */
 function getTableConfig(): array
@@ -484,7 +484,7 @@ function getTableConfigFrontOffice(): array
     $tableConfig = getTableConfig();
     $data = [];
     foreach ($tableConfig as $key => $table) {
-        $tableColumns = $table["columns"] ?? [];
+        $tableColumns = $table["columns"];
         $tableHidden = $table["hidden"] ?? [];
         $tableNames = $table["names"] ?? [];
 

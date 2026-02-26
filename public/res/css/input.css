@@ -135,25 +135,25 @@
 
 @font-face {
     font-family: 'Open Sans';
-    src: url("../css/fonts/OpenSans-VariableFont.ttf") format('truetype');
+    src: url("/fonts/OpenSans-VariableFont.ttf") format('truetype');
     font-weight: normal;
 }
 
 @font-face {
     font-family: 'Open Sans';
-    src: url("../css/fonts/OpenSans-VariableFont.ttf") format('truetype');
+    src: url("/fonts/OpenSans-VariableFont.ttf") format('truetype');
     font-weight: 600;
 }
 
 @font-face {
     font-family: 'Open Sans';
-    src: url("../css/fonts/OpenSans-VariableFont.ttf") format('truetype');
+    src: url("/fonts/OpenSans-VariableFont.ttf") format('truetype');
     font-weight: bold;
 }
 
 @font-face {
     font-family: 'Open Sans';
-    src: url("../css/fonts/OpenSans-Italic-VariableFont.ttf") format('truetype');
+    src: url("/fonts/OpenSans-Italic-VariableFont.ttf") format('truetype');
     font-weight: normal;
     font-style: italic;
 }
