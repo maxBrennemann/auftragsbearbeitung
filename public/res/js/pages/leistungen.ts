@@ -1,49 +1,63 @@
-//@ts-nocheck
-
 import { addBindings } from "js-classes/bindings"
+import { ajax } from "js-classes/ajax";
+import { FunctionMap, TableOptions } from "../types/types";
+import { loader } from "../classes/helpers";
+import { addRow, fetchAndRenderTable } from "../classes/table";
 
-import { clearInputs } from "../global";
+const fnNames: FunctionMap = {};
 
-const fnNames = {};
-
-function init() {
+loader(async () => {
     addBindings(fnNames);
-}
+    const options: TableOptions = {
+        primaryKey: "Nummer",
+        hide: [],
+        hideOptions: ["delete", "move", "check", "add"],
+        styles: {
+            table: {
+                className: ["w-full"],
+            },
+        },
+        autoSort: false,
+    };
+    const table = await fetchAndRenderTable("serviceCont", "leistung", options);
 
-fnNames.click_cancel = () => {
-    clearInputs({
-        "ids": ["addName", "addDescription", "addSource", "addSurcharge"],
+    table?.addEventListener("rowInsert", () => addService(table, options));
+    table?.addEventListener("rowEdit", (e: Event) => editService(e as CustomEvent, table, options));
+});
+
+const addService = async (table: HTMLTableElement, options: TableOptions) => {
+    const lastRow = table.querySelector("tbody")?.lastElementChild;
+    const data = {} as Record<string, string>;
+
+    if (lastRow == null) return;
+
+    Array.from(lastRow.children).forEach(cell => {
+        const key = cell.getAttribute("data-key");
+        if (key == null) return;
+
+        data[key] = cell.innerHTML;
     });
-}
 
-fnNames.click_add = () => {
-    ajax.post(`/api/v1/tables/leistung`, {
+    const response = await ajax.post(`/api/v1/tables/leistung`, {
         "conditions": JSON.stringify(data),
-    }).then(r => {
-        clearInputs({
-            "ids": ["addName", "addDescription", "addSource", "addSurcharge"],
-        });
     });
+
+    data["Nummer"] = response.data["Nummer"];
+
+    addRow(data, table, options);
 }
 
-fnNames.click_save = e => {
-    const target = e.currentTarget;
-    const element = target.closest("div[data-service-id]");
-    const id = element.dataset.serviceId;
-}
+const editService = async (e: CustomEvent, table: HTMLTableElement, options: TableOptions) => {
+    return;
+    
+    const data = e.detail;
+    const row = data.row as HTMLTableRowElement;
 
-fnNames.click_delete = e => {
-    const target = e.currentTarget;
-    const element = target.closest("div[data-service-id]");
-    const id = element.dataset.serviceId;
+    Array.from(row.children).forEach(cell => {
+        const key = cell.getAttribute("data-key");
+        if (key == null) return;
+        if (key == options.primaryKey) return;
 
-    //ajax.delete(`/api/v1/`)
-}
-
-if (document.readyState !== 'loading') {
-    init();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        init();
+        cell.setAttribute("contenteditable", "true");
     });
 }

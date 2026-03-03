@@ -247,7 +247,7 @@ function getTableConfig(): array
                 "Quelle",
                 "Aufschlag",
             ],
-            "permissions" => [],
+            "permissions" => ["read", "create", "update"],
         ],
         "module_sticker_image" => [
             "columns" => [
