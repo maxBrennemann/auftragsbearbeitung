@@ -2,12 +2,10 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import type { ProcessOptions } from 'postcss';
 import type { ServerOptions } from 'vite';
 import type { Plugin } from 'vite';
 
 import { defineConfig } from "vite";
-import postcssConfig from "./postcss.config.ts";
 import tailwindcss from "@tailwindcss/vite";
 
 function jsToTsRedirectPlugin(): Plugin {
@@ -74,10 +72,6 @@ export default defineConfig({
 
     root: path.resolve(__dirname, "../public/res/js"),
 
-    css: {
-        postcss: postcssConfig as ProcessOptions,
-    },
-
     server: {
         origin: "https://localhost:5173",
         https: httpsConfig,
@@ -89,6 +83,13 @@ export default defineConfig({
                 path.resolve(__dirname, "../"),
             ],
         },
+        proxy: {
+            '/fonts': {
+                target: 'https://localhost:5173/res/css/fonts',
+                rewrite: (path) => path.replace(/^\/fonts/, ''),
+                secure: false
+            }
+        }
     },
 
     esbuild: {

@@ -300,7 +300,7 @@ class Zeit extends Posten
     {
         $data = [];
         $data["ZeitInMinuten"] = (int) Tools::get("time");
-        $data["Stundenlohn"] = (int) Tools::get("wage");
+        $data["Stundenlohn"] = (float) Tools::get("wage");
         $data["Beschreibung"] = (string) Tools::get("description");
         $data["Auftragsnummer"] = Tools::get("id");
         $data["ohneBerechnung"] = Tools::get("noPayment");

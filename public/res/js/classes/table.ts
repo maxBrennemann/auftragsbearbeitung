@@ -43,6 +43,7 @@ const autoSortTable = (table, options) => {
 export const fetchAndRenderTable = async (containerId, tableName, options = {}) => {
     const config = tableConfig[tableName];
     if (config == null) {
+        console.warn(`No table config found for ${tableName}`);
         return;
     }
 
@@ -76,7 +77,7 @@ export const createTable = (containerId, options = {}) => {
 
     if (options?.styles?.table?.className) {
         const cssClasses = options.styles.table.className;
-        cssClasses.push("shadow-xs");
+        cssClasses.push("shadow-sm");
         const className = cssClasses.join(" ");
         table.className = className;
     }

@@ -8,7 +8,9 @@
  *      hidden?: string[],
  *      permissions?: string[],
  *      hooks?: array<string, array{class-string, string}>,
- *      joins?: array<string, mixed>
+ *      joins?: array<string, mixed>,
+ *      joinedColumns?: string[],
+ *      joinedColumnNames?: string[],
  * }>
  */
 function getTableConfig(): array
@@ -245,7 +247,7 @@ function getTableConfig(): array
                 "Quelle",
                 "Aufschlag",
             ],
-            "permissions" => [],
+            "permissions" => ["read", "create", "update"],
         ],
         "module_sticker_image" => [
             "columns" => [
@@ -393,7 +395,7 @@ function getTableConfig(): array
             "names" => [
                 "Nummer",
                 "Auftrag",
-                "allgemein",
+                "Zugewiesen an",
                 "Bezeichnung",
                 "Datum",
                 "Priorität",
@@ -411,6 +413,12 @@ function getTableConfig(): array
                         "prename",
                     ],
                 ],
+            ],
+            "joinedColumns" => [
+                "name",
+            ],
+            "joinedColumnNames" => [
+                "Zugewiesen an",
             ],
             "hooks" => [
                 "afterRead" => [\Src\Classes\Project\Step::class, "prepareData"],
@@ -476,9 +484,17 @@ function getTableConfigFrontOffice(): array
     $tableConfig = getTableConfig();
     $data = [];
     foreach ($tableConfig as $key => $table) {
+        $tableColumns = $table["columns"];
+        $tableHidden = $table["hidden"] ?? [];
+        $tableNames = $table["names"] ?? [];
+
+        // TODO: handle joined columns in a more elegant way, currently we just push them to the end of the columns list, which can lead to problems if there are multiple joined tables with overlapping column names
+        array_push($tableColumns, ...($table["joinedColumns"] ?? []));
+        array_push($tableNames, ...($table["joinedColumnNames"] ?? []));
+
         $data[$key] = [
             "primaryKey" => (string) ($table["primaryKey"] ?? ""),
-            "columns" => getTableColumns($table["columns"], $table["hidden"] ?? [], $table["names"] ?? []),
+            "columns" => getTableColumns($tableColumns, $tableHidden, $tableNames),
         ];
     }
 

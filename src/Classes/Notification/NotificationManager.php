@@ -250,6 +250,15 @@ class NotificationManager
         }
     }
 
+    public static function deleteById(int $type, int $specificId): void
+    {
+        $query = "DELETE FROM user_notifications WHERE `type` = :type AND specific_id = :specificId";
+        DBAccess::deleteQuery($query, [
+            "type" => $type,
+            "specificId" => $specificId,
+        ]);
+    }
+
     /**
      * @return array<int, array<string, string>>
      */

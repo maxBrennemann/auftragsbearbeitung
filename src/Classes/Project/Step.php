@@ -10,31 +10,6 @@ use Src\Classes\Notification\NotificationType;
 
 class Step
 {
-    /* private $assignedTo = null;
-    private $bezeichnung = null;
-    private $datum = null;
-    private $priority = null;
-    private $istErledigt = null;
-    private $auftragsnummer = null;
-    private $schrittnummer = null; */
-
-    public function __construct(/*$auftragsnummer, $schrittnummer, $bezeichnung, $datum, $priority, $istErledigt*/)
-    {
-        /* $this->auftragsnummer = $auftragsnummer;
-        $this->bezeichnung = $bezeichnung;
-        $this->schrittnummer = $schrittnummer;
-        $this->datum = $datum;
-        $this->priority = $priority;
-        $this->istErledigt = $istErledigt; */
-    }
-
-    public function bearbeiten(): void {}
-
-    public function erledigen(): void {}
-
-    /**
-     * @return int
-     */
     public static function insertStep(string $name, string $date, int $priority, int $orderId, int $hidden, int $assignedTo): int
     {
         if ($date == null) {
@@ -85,7 +60,23 @@ class Step
         OrderHistory::add($data["orderId"], $data["postennummer"], OrderHistory::TYPE_STEP, OrderHistory::STATE_FINISHED);
     }
 
-    public static function deleteStep(): void {}
+    public static function deleteStep(): void
+    {
+        $id = Tools::get("id");
+        $orderId = Tools::get("orderId");
+
+        $query = "DELETE FROM schritte WHERE Schrittnummer = :id";
+        DBAccess::deleteQuery($query, [
+            "id" => $id,
+        ]);
+
+        OrderHistory::add($orderId, $id, OrderHistory::TYPE_STEP, OrderHistory::STATE_DELETED);
+        NotificationManager::deleteById(NotificationType::TYPE_STEP, $id);
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+        ]);
+    }
 
     public static function getSteps(): void
     {

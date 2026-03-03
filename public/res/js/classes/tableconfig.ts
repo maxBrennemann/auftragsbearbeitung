@@ -501,7 +501,7 @@ export const tableConfig = {
             },
             {
                 "key": "assignedTo",
-                "label": "allgemein"
+                "label": "Zugewiesen an"
             },
             {
                 "key": "Bezeichnung",
@@ -522,6 +522,10 @@ export const tableConfig = {
             {
                 "key": "istErledigt",
                 "label": "Status"
+            },
+            {
+                "key": "name",
+                "label": "Zugewiesen an"
             }
         ]
     },
