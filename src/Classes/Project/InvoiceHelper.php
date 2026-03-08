@@ -15,13 +15,19 @@ use Src\Classes\Protocol;
 class InvoiceHelper
 {
 
+    private static function getVatRate(): float
+    {
+        $rate = (float) Settings::get('invoice.vatRate');
+        return $rate / 100.0;
+    }
+
     public static function getOpenInvoiceSum(): int
     {
         $query = "SELECT ROUND(SUM(invoice.amount), 2) AS summe
-			FROM auftrag, invoice
-			WHERE auftrag.Rechnungsnummer != 0 
-				AND auftrag.Bezahlt = 0
-				AND auftrag.Auftragsnummer = invoice.order_id";
+				FROM auftrag, invoice
+				WHERE auftrag.Rechnungsnummer != 0 
+					AND auftrag.Bezahlt = 0
+					AND auftrag.Auftragsnummer = invoice.order_id";
         $sum = DBAccess::selectQuery($query)[0]["summe"];
         if ($sum == null) {
             return 0;
@@ -32,7 +38,8 @@ class InvoiceHelper
     public static function getOpenInvoiceSumFormatted(): string
     {
         $sum = self::getOpenInvoiceSum();
-        $sum *= 1.19;
+        $rate = self::getVatRate();
+        $sum *= 1 + $rate;
         return number_format($sum, 2, ',', '.') . ' €';
     }
 
@@ -47,6 +54,9 @@ class InvoiceHelper
             $dueCondition = "";
         }
 
+        $rate = self::getVatRate();
+        $mult = 1 + $rate;
+
         $data = DBAccess::selectQuery("SELECT
                 auftrag.Rechnungsnummer,
                 auftrag.Auftragsnummer AS Nummer,
@@ -59,7 +69,7 @@ class InvoiceHelper
                 DATE_FORMAT(DATE_ADD(invoice.creation_date, INTERVAL $dueIn DAY), '%d.%m.%Y') AS Faelligkeitsdatum,
 				IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) AS 'Name',
 				CONCAT(FORMAT(invoice.amount, 2, 'de_DE'), ' €') AS Summe,
-                CONCAT(FORMAT(invoice.amount * 1.19, 2, 'de_DE'), ' €') AS Summe_mwst
+                CONCAT(FORMAT(invoice.amount * $mult, 2, 'de_DE'), ' €') AS Summe_mwst
 			FROM auftrag, kunde, invoice
 			WHERE auftrag.Kundennummer = kunde.Kundennummer 
 				AND Rechnungsnummer != 0

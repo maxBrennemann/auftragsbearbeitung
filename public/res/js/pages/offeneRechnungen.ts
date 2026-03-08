@@ -27,6 +27,8 @@ const getOpenInvoiceData = async () => {
 const createInvoiceTable = async () => {
     document.getElementById("openInvoiceTable")!.innerHTML = "";
     const table = createTable("openInvoiceTable") as HTMLTableElement;
+    const rate = (window as any).invoiceVatRate ?? 0;
+    const grossLabel = rate > 0 ? `Summe (brutto, inkl. ${rate}% MwSt.)` : 'Summe (brutto)';
     const columns = [
         {
             "key": "invoice_number",
@@ -42,7 +44,7 @@ const createInvoiceTable = async () => {
         },
         {
             "key": "Summe_mwst",
-            "label": "Summe (brutto)"
+            "label": grossLabel
         },
         {
             "key": "Kundennummer",

@@ -92,6 +92,10 @@ $favicon = Src\Classes\Project\Image::getFavicon();
                 <input class="input-primary w-60" value="<?= Settings::get("invoice.dueDate") ?>" data-write="true" data-fun="changeSetting" data-setting="invoice.dueDate">
             </div>
             <div class="flex items-center mt-2">
+                <span class="font-semibold w-60">Umsatzsteuersatz [%] <button class="ml-1 info-button" data-info="vat_info"></button></span>
+                <input class="input-primary w-60" value="<?= Settings::get("invoice.vatRate") ?>" data-write="true" data-fun="changeSetting" data-setting="invoice.vatRate">
+            </div>
+            <div class="flex items-center mt-2">
                 <span class="font-semibold w-60">Rechnungskopie senden an</span>
                 <input class="input-primary w-60" value="<?= Settings::get("company.invoiceCopyTo") ?>" data-write="true" data-fun="changeSetting" data-setting="company.invoiceCopyTo">
             </div>
@@ -140,12 +144,6 @@ $favicon = Src\Classes\Project\Image::getFavicon();
             <button class="btn-primary ml-1" data-fun="sendNewInvoiceNumber" data-binding="true">Abschicken</button>
         </div>
         <p class="text-sm">Achtung: überschreibt die aktuelle Rechnungsnummer.</p>
-    </div>
-</section>
-
-<section class="defCont">
-    <h2 class="font-bold">Steuereinstellungen</h2>
-    <div class="mt-2">
     </div>
 </section>
 

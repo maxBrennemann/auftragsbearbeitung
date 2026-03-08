@@ -7,6 +7,7 @@ use Src\Classes\Project\Config;
 use Src\Classes\Project\Invoice;
 use Src\Classes\Project\InvoiceLayout;
 use Src\Classes\Project\InvoiceNumberTracker;
+use Src\Classes\Project\Settings;
 
 class InvoicePDF extends TransactionPDF
 {
@@ -55,12 +56,14 @@ class InvoicePDF extends TransactionPDF
         /* Code für Zwischensumme und Rechnungssumme */
         $summe = $this->order->calcOrderSum();
         $zwischensumme = number_format($summe, 2, ',', '') . ' €';
-        $mwst = number_format($summe * 0.19, 2, ',', '') . ' €';
-        $rechnungssumme = number_format($summe * 1.19, 2, ',', '') . ' €';
+        $vatRaw = Settings::get('invoice.vatRate');
+        $rate = is_numeric($vatRaw) ? (float) $vatRaw / 100.0 : 0.19; // default to 19% if setting is invalid
+        $mwst = number_format($summe * $rate, 2, ',', '') . ' €';
+        $rechnungssumme = number_format($summe * (1 + $rate), 2, ',', '') . ' €';
 
         $this->ln();
         $this->Cell(85, 10, "");
-        $this->SetFont("helvetica", "B", 12);
+        $this->SetFont("helvetica", "B", size: 12);
         $this->Cell(60, 10, 'Zwischensumme:', 'T');
         $this->SetFont("helvetica", "", 12);
         $this->Cell(20, 10, $zwischensumme, 'T', 0, 'R');
@@ -68,7 +71,8 @@ class InvoicePDF extends TransactionPDF
         $this->ln();
         $this->Cell(85, 10, "");
         $this->SetFont("helvetica", "B", 12);
-        $this->Cell(60, 10, '19% MwSt.:', 'B');
+        $label = ($rate === 0.0) ? 'MwSt. 0%:' : sprintf('%.0f%% MwSt.:', $rate * 100);
+        $this->Cell(60, 10, $label, 'B');
         $this->SetFont("helvetica", "", 12);
         $this->Cell(20, 10, $mwst, 'B', 0, 'R');
 
@@ -90,6 +94,13 @@ class InvoicePDF extends TransactionPDF
         $this->setCellMargins(0, 0, 0, 0);
         $this->SetFont("helvetica", "", 10);
         $this->Cell(160, 10, "Zahlbar sofort ohne weitere Abzüge.");
+
+        if ($rate === 0.0) {
+            $this->ln();
+            $this->setCellMargins(0, 0, 0, 0);
+            $this->SetFont("helvetica", "", 10);
+            $this->Cell(160, 10, "Kein Ausweis der Umsatzsteuer gem. §19 UStG.");
+        }
     }
 
     private function addTableHeader(int $y = 69): void

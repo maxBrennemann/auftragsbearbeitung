@@ -36,5 +36,6 @@ return [
             '',
         "textile_update" => 
             '',
+        "vat_info" => '',
     ],
 ];

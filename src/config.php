@@ -53,6 +53,11 @@ return [
             'type' => 'number',
             'default' => 0,
         ],
+        'invoice.vatRate' => [
+            'scope' => 'global',
+            'type' => 'number',
+            'default' => 19,
+        ],
         'company.name' => [
             'scope' => 'global',
             'type' => 'string',

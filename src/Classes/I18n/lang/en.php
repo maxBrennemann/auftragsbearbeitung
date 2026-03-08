@@ -26,5 +26,6 @@ return [
         "sticker_update" => '',
         "walldecal_update" => '',
         "textile_update" => '',
+        "vat_info" => '',
     ],
 ];
