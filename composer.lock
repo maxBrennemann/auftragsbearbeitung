@@ -251,12 +251,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "b51ac707cfa420b7bfd4e4d5e510ba8008e822b4"
+                "reference": "fb92d95f80a9da51bf8f2a5b26d8e8ea3b6d99ed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/b51ac707cfa420b7bfd4e4d5e510ba8008e822b4",
-                "reference": "b51ac707cfa420b7bfd4e4d5e510ba8008e822b4",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/fb92d95f80a9da51bf8f2a5b26d8e8ea3b6d99ed",
+                "reference": "fb92d95f80a9da51bf8f2a5b26d8e8ea3b6d99ed",
                 "shasum": ""
             },
             "require": {
@@ -354,7 +354,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/7.10.0"
+                "source": "https://github.com/guzzle/guzzle/tree/7.10"
             },
             "funding": [
                 {
@@ -370,7 +370,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-08-23T22:36:01+00:00"
+            "time": "2026-03-05T20:35:15+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -378,12 +378,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "481557b130ef3790cf82b713667b43030dc9c957"
+                "reference": "74c1b7186ecda8058c8958a1b2d3e8ef4419a84e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/481557b130ef3790cf82b713667b43030dc9c957",
-                "reference": "481557b130ef3790cf82b713667b43030dc9c957",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/74c1b7186ecda8058c8958a1b2d3e8ef4419a84e",
+                "reference": "74c1b7186ecda8058c8958a1b2d3e8ef4419a84e",
                 "shasum": ""
             },
             "require": {
@@ -438,7 +438,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/promises/issues",
-                "source": "https://github.com/guzzle/promises/tree/2.3.0"
+                "source": "https://github.com/guzzle/promises/tree/2.3"
             },
             "funding": [
                 {
@@ -454,7 +454,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-08-22T14:34:08+00:00"
+            "time": "2026-03-05T20:35:27+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -462,12 +462,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "21dc724a0583619cd1652f673303492272778051"
+                "reference": "27b6714cf2e71cfcc49718eb81ac711103f08218"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/21dc724a0583619cd1652f673303492272778051",
-                "reference": "21dc724a0583619cd1652f673303492272778051",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/27b6714cf2e71cfcc49718eb81ac711103f08218",
+                "reference": "27b6714cf2e71cfcc49718eb81ac711103f08218",
                 "shasum": ""
             },
             "require": {
@@ -555,7 +555,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/2.8.0"
+                "source": "https://github.com/guzzle/psr7/tree/2.8"
             },
             "funding": [
                 {
@@ -571,7 +571,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-08-23T21:21:41+00:00"
+            "time": "2026-03-05T21:03:18+00:00"
         },
         {
             "name": "max/php-utilities",
@@ -924,12 +924,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "6233a1e12584754e6b5daa69fe1289b47775c1b9"
+                "reference": "cd95402947fcde73796107e01d6d6e3d96b512f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/6233a1e12584754e6b5daa69fe1289b47775c1b9",
-                "reference": "6233a1e12584754e6b5daa69fe1289b47775c1b9",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/cd95402947fcde73796107e01d6d6e3d96b512f5",
+                "reference": "cd95402947fcde73796107e01d6d6e3d96b512f5",
                 "shasum": ""
             },
             "require": {
@@ -1026,15 +1026,15 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-01-27T09:17:28+00:00"
+            "time": "2026-03-05T03:00:32+00:00"
         },
         {
             "name": "phpstan/phpstan",
             "version": "2.1.x-dev",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/661babe0fdcef88ba5455384647603718611617e",
-                "reference": "661babe0fdcef88ba5455384647603718611617e",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/75596c3a4ad4579570874f772b26241ebdb5a816",
+                "reference": "75596c3a4ad4579570874f772b26241ebdb5a816",
                 "shasum": ""
             },
             "require": {
@@ -1079,7 +1079,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-03-02T09:00:57+00:00"
+            "time": "2026-03-08T10:09:08+00:00"
         },
         {
             "name": "prestashop/prestashop-webservice-lib",
@@ -2248,16 +2248,16 @@
         },
         {
             "name": "tecnickcom/tcpdf",
-            "version": "6.11.0",
+            "version": "6.11.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/TCPDF.git",
-                "reference": "81172e58edb1cfae4019ef150ccbdc0e9a8c85c9"
+                "reference": "e1e2ade18e574e963473f53271591edd8c0033ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/81172e58edb1cfae4019ef150ccbdc0e9a8c85c9",
-                "reference": "81172e58edb1cfae4019ef150ccbdc0e9a8c85c9",
+                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/e1e2ade18e574e963473f53271591edd8c0033ec",
+                "reference": "e1e2ade18e574e963473f53271591edd8c0033ec",
                 "shasum": ""
             },
             "require": {
@@ -2307,7 +2307,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/TCPDF/issues",
-                "source": "https://github.com/tecnickcom/TCPDF/tree/6.11.0"
+                "source": "https://github.com/tecnickcom/TCPDF/tree/6.11.2"
             },
             "funding": [
                 {
@@ -2315,7 +2315,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-03-01T09:35:25+00:00"
+            "time": "2026-03-03T08:58:10+00:00"
         }
     ],
     "packages-dev": [
@@ -2958,16 +2958,16 @@
         },
         {
             "name": "kubawerlos/php-cs-fixer-custom-fixers",
-            "version": "v3.36.0",
+            "version": "v3.36.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kubawerlos/php-cs-fixer-custom-fixers.git",
-                "reference": "e1f97f6463f0b2a22e0dd320948a04132ff9c501"
+                "reference": "ec9776e80f5ea9bf0d8ec16d662e431bfab19a24"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kubawerlos/php-cs-fixer-custom-fixers/zipball/e1f97f6463f0b2a22e0dd320948a04132ff9c501",
-                "reference": "e1f97f6463f0b2a22e0dd320948a04132ff9c501",
+                "url": "https://api.github.com/repos/kubawerlos/php-cs-fixer-custom-fixers/zipball/ec9776e80f5ea9bf0d8ec16d662e431bfab19a24",
+                "reference": "ec9776e80f5ea9bf0d8ec16d662e431bfab19a24",
                 "shasum": ""
             },
             "require": {
@@ -2998,7 +2998,7 @@
             "description": "A set of custom fixers for PHP CS Fixer",
             "support": {
                 "issues": "https://github.com/kubawerlos/php-cs-fixer-custom-fixers/issues",
-                "source": "https://github.com/kubawerlos/php-cs-fixer-custom-fixers/tree/v3.36.0"
+                "source": "https://github.com/kubawerlos/php-cs-fixer-custom-fixers/tree/v3.36.1"
             },
             "funding": [
                 {
@@ -3006,7 +3006,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-01-31T07:02:11+00:00"
+            "time": "2026-03-07T11:35:13+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -3636,12 +3636,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "5743a358ff98a3f19922bb37ad7b9cb1fd7a7aa0"
+                "reference": "51b1715e0d2781a6c7be69b011e4f1b42112ffc8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/5743a358ff98a3f19922bb37ad7b9cb1fd7a7aa0",
-                "reference": "5743a358ff98a3f19922bb37ad7b9cb1fd7a7aa0",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/51b1715e0d2781a6c7be69b011e4f1b42112ffc8",
+                "reference": "51b1715e0d2781a6c7be69b011e4f1b42112ffc8",
                 "shasum": ""
             },
             "require": {
@@ -3717,27 +3717,11 @@
             },
             "funding": [
                 {
-                    "url": "https://phpunit.de/sponsors.html",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/sebastianbergmann",
-                    "type": "github"
-                },
-                {
-                    "url": "https://liberapay.com/sebastianbergmann",
-                    "type": "liberapay"
-                },
-                {
-                    "url": "https://thanks.dev/u/gh/sebastianbergmann",
-                    "type": "thanks_dev"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/phpunit/phpunit",
-                    "type": "tidelift"
+                    "url": "https://phpunit.de/sponsoring.html",
+                    "type": "other"
                 }
             ],
-            "time": "2026-02-23T16:13:35+00:00"
+            "time": "2026-03-07T17:10:43+00:00"
         },
         {
             "name": "psr/event-dispatcher",

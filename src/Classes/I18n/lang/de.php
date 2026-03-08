@@ -36,5 +36,7 @@ return [
             'Wenn Du eine vorhandenes Wandtattoo aktualisierst, werden die gespeicherten Informationen von Deinen neuen Einstellungen überschrieben. Vorsicht hierbei ist geboten, wenn der Aufkleber nicht über dieses Tool erstellt wurde oder im Shop Backoffice nachträglich bearbeitet wurde, da es dann vorkommen kann, dass die hier angezeigten Daten veraltet sind. Bitte überprüfe somit manuell, ob Du etwas überschreiben könntest, wenn Du Dir nicht sicher bist.',
         "textile_update" => 
             'Wenn Du eine vorhandenes Textil aktualisierst, werden die gespeicherten Informationen von Deinen neuen Einstellungen überschrieben. Vorsicht hierbei ist geboten, wenn der Aufkleber nicht über dieses Tool erstellt wurde oder im Shop Backoffice nachträglich bearbeitet wurde, da es dann vorkommen kann, dass die hier angezeigten Daten veraltet sind. Bitte überprüfe somit manuell, ob Du etwas überschreiben könntest, wenn Du Dir nicht sicher bist.',
+        "vat_info" =>
+            '0 = Kleinunternehmer (ohne MwSt.)',
     ],
 ];

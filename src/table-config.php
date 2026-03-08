@@ -347,7 +347,7 @@ function getTableConfig(): array
             "hidden" => [
                 //"status",
             ],
-            "permissions" => ["read", "create"], // TODO: add soft delete option
+            "permissions" => ["read", "create", "delete"], // TODO: add soft delete option
         ],
         "produkt" => [
             "columns" => [

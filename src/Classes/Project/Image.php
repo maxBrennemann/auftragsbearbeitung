@@ -82,4 +82,20 @@ class Image
             "file" => Link::getResourcesShortLink($fileData[0]["saved_name"], "upload"),
         ]);
     }
+
+    public static function getFavicon(): string
+    {
+        $faviconId = Settings::get("faviconId");
+
+        if ($faviconId == null) {
+            return "";
+        }
+
+        $query = "SELECT dateiname FROM dateien WHERE id = :id";
+        $data = DBAccess::selectQuery($query, [
+            "id" => $faviconId,
+        ]);
+
+        return $data[0]["dateiname"] ?? "";
+    }
 }

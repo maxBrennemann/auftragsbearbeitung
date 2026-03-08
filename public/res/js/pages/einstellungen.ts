@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 import { ajax } from "js-classes/ajax";
 import { addBindings } from "js-classes/bindings"
 import { notification } from "js-classes/notifications";
@@ -8,8 +6,12 @@ import { createHeader, createTable, addRow, fetchAndRenderTable } from "../class
 import { tableConfig } from "../classes/tableconfig";
 import { initFileUploader } from "../classes/upload";
 import { clearInputs } from "../global";
+import { FunctionMap, TableOptions } from "../types/types";
+import { loader } from "../classes/helpers";
+import { createIcons, Download } from 'lucide';
 
-const fnNames = {};
+const fnNames = {} as FunctionMap;
+type RowData = Record<string, string>;
 
 function initEventListeners() {
     addBindings(fnNames);
@@ -20,15 +22,15 @@ function initEventListeners() {
             "location": `/api/v1/settings/add-logo`,
         },
     });
-    const fileUpload = document.querySelector(`input[data-type="companyLogo"]`);
-    fileUpload.addEventListener("fileUploaded", r => {
-        const companyLogo = document.getElementById("companyLogo");
+    const fileUpload = document.querySelector(`input[data-type="companyLogo"]`) as HTMLInputElement;
+    fileUpload.addEventListener("fileUploaded", (r: any) => {
+        const companyLogo = document.getElementById("companyLogo") as HTMLElement;
         companyLogo.classList.remove("hidden");
-        const img = companyLogo.querySelector("img");
+        const img = companyLogo.querySelector("img") as HTMLImageElement;
         img.src = r.detail.file;
     });
 
-    const addCategoryBtn = document.getElementById("addCategory");
+    const addCategoryBtn = document.getElementById("addCategory") as HTMLButtonElement;
     addCategoryBtn.addEventListener("click", addCategory);
 
     getCategories();
@@ -39,6 +41,12 @@ function initEventListeners() {
     createUserTable();
     createPDFTextTable();
     showFilesInfo();
+
+    createIcons({
+        icons: {
+            Download
+        }
+    });
 }
 
 const timeTracking = () => {
@@ -51,7 +59,7 @@ const timeTracking = () => {
         ajax.put("/api/v1/settings/global-timetracking").then(r => {
             if (r.data.status == "success") {
                 notification("", "success");
-                const el = document.getElementById("timeTrackingContainer");
+                const el = document.getElementById("timeTrackingContainer") as HTMLElement;
                 if (r.data.display == "false") {
                     el.classList.add("hidden");
                     el.classList.remove("inline-flex");
@@ -69,7 +77,7 @@ const timeTracking = () => {
 function getCategories() {
     ajax.get("/api/v1/category").then(response => {
         const categories = response.data;
-        const select = document.getElementById("parentCategory");
+        const select = document.getElementById("parentCategory") as HTMLElement;
         Object.keys(categories).forEach(key => {
             const category = categories[key];
             const option = document.createElement("option");
@@ -81,17 +89,17 @@ function getCategories() {
 }
 
 function addCategory() {
-    const newCategory = document.getElementById("newCategory").value;
-    const parentCategory = document.getElementById("parentCategory").value;
+    const newCategory = document.getElementById("newCategory") as HTMLInputElement;
+    const parentCategory = document.getElementById("parentCategory") as HTMLSelectElement;
 
-    if (newCategory === "") {
+    if (newCategory.value === "") {
         notification("", "failure");
         return;
     }
 
     ajax.post(`/api/v1/category`, {
-        name: newCategory,
-        parent: parentCategory,
+        name: newCategory.value,
+        parent: parentCategory.value || null,
     }).then(r => {
         clearInputs({ "id": "newCategory" });
 
@@ -104,31 +112,16 @@ function addCategory() {
     });
 }
 
-function editCategory() {
-    const category = document.getElementById("category").value;
-    const newName = document.getElementById("newName").value;
-    const newParent = document.getElementById("newParent").value;
-
-    ajax.put(`/api/v1/category/${category}`, {
-        name: newName,
-        parent: newParent,
-    }).then(r => {
-        if (r.data.message == "ok") {
-            notification("", "success");
-        }
-    });
-}
-
 function showTree() {
     ajax.get("/api/v1/category/tree").then(response => {
-        const tree = document.getElementById("categoryTree");
+        const tree = document.getElementById("categoryTree") as HTMLElement;
         tree.innerHTML = "";
 
         createCategoryTree(tree, response.data);
     });
 }
 
-function createCategoryTree(anchor, categories) {
+function createCategoryTree(anchor: HTMLElement, categories: any[]) {
     const ul = document.createElement("ul");
     ul.classList.add("pl-2", "list-disc");
     anchor.appendChild(ul);
@@ -148,10 +141,10 @@ function createCategoryTree(anchor, categories) {
 }
 
 fnNames.click_toggleCache = () => {
-    const value = document.getElementById("cacheStatusSwitch").value;
+    const cacheStatusSwitch = document.getElementById("cacheStatusSwitch") as HTMLInputElement;
 
     ajax.put(`/api/v1/settings/cache`, {
-        "status": value,
+        "status": cacheStatusSwitch.checked,
     }).then(r => {
         if (r.data.status == "success") {
             notification("", "success");
@@ -184,10 +177,12 @@ fnNames.write_changeSetting = e => {
 }
 
 fnNames.click_downloadDatabase = () => {
+    const downloadLink = document.getElementById("download_db") as HTMLAnchorElement;
+
     ajax.post(`/api/v1/settings/backup`).then(r => {
-        document.getElementById("download_db").download = r.data.filename;
-        document.getElementById("download_db").href = r.data.url;
-        document.getElementById("download_db").click();
+        downloadLink.download = r.data.filename;
+        downloadLink.href = r.data.url;
+        downloadLink.click();
 
         if (r.data.status == "success") {
             notification("", "success");
@@ -196,10 +191,12 @@ fnNames.click_downloadDatabase = () => {
 }
 
 fnNames.click_downloadAllFiles = () => {
+    const downloadLink = document.getElementById("download_files") as HTMLAnchorElement;
+
     ajax.post(`/api/v1/settings/file-backup`).then(r => {
-        document.getElementById("download_files").download = r.data.filename;
-        document.getElementById("download_files").href = r.data.url;
-        document.getElementById("download_files").click();
+        downloadLink.download = r.data.filename;
+        downloadLink.href = r.data.url;
+        downloadLink.click();
 
         if (r.data.status == "success") {
             notification("", "success");
@@ -238,9 +235,9 @@ const createOrderTypeTable = async () => {
                 "className": ["w-full"],
             },
         },
-    };
+    } as TableOptions;
 
-    const table = await fetchAndRenderTable("orderTypes", "auftragstyp", options);
+    const table = await fetchAndRenderTable("orderTypes", "auftragstyp", options) as HTMLTableElement;
     table.addEventListener("rowInsert", () => addOrderType(table, options));
 }
 
@@ -251,13 +248,14 @@ const createWholesalerTable = async () => {
                 "className": ["w-full"],
             },
         },
-    });
+    }) as HTMLTableElement;
+
     const config = tableConfig["einkauf"];
     createHeader(config.columns, table);
 
     const data = await ajax.get(`/api/v1/tables/einkauf`);
 
-    data.data.forEach(row => {
+    data.data.forEach((row: any) => {
         addRow(row, table, {
             "hideOptions": ["delete", "check", "move", "add"],
         });
@@ -281,7 +279,7 @@ const createUserTable = async () => {
     createHeader(config.columns, table, options);
 
     const data = await ajax.get(`/api/v1/tables/user`);
-    data.data.forEach(row => {
+    data.data.forEach((row: any) => {
         addRow(row, table, options);
     });
 }
@@ -295,19 +293,19 @@ const createPDFTextTable = async () => {
         },
         "primaryKey": "id",
         "hideOptions": ["check", "move", "add"],
-    };
+    } as TableOptions;
 
-    const table = createTable("pdfTextsCont", options);
+    const table = createTable("pdfTextsCont", options) as HTMLTableElement;
     const config = tableConfig["pdf_texts"];
     createHeader(config.columns, table, options);
 
     const data = await ajax.get(`/api/v1/tables/pdf_texts`);
-    data.data.forEach(row => {
+    data.data.forEach((row: any) => {
         addRow(row, table, options);
     });
 
     table.addEventListener("rowInsert", () => addPDFText(table, options));
-    table.addEventListener("rowDelete", (event) => {
+    table.addEventListener("rowDelete", (event: any) => {
         const data = event.detail;
         const id = data.id;
 
@@ -316,55 +314,65 @@ const createPDFTextTable = async () => {
         });
         ajax.delete(`/api/v1/tables/pdf_texts`, {
             "conditions": conditions,
-            "customerId": customerData.id,
+            //"customerId": customerData.id,
         });
     });
 }
 
-const addPDFText = async (table, options) => {
-    const lastRow = table.querySelector("tbody").lastChild.children;
-    const data = {};
+const addPDFText = async (table: HTMLTableElement, options: TableOptions) => {
+    const lastRow = table.querySelector("tbody")?.lastElementChild?.children;
+
+    if (!lastRow) return;
+
+    const data: RowData = {};
     Array.from(lastRow).forEach(el => {
-        const key = el.dataset.key;
-        if (key == undefined) {
-            return;
-        }
-        const value = el.innerHTML;
+        const cell = el as HTMLElement;
+        const key = cell.dataset.key;
+
+        if (!key) return;
+
+        const value = cell.innerHTML;
         data[key] = value;
     });
 
-    const response = await ajax.post(`/api/v1/tables/pdf_texts`, {
+    const response = await ajax.post<{ data: Record<string, string> }>(`/api/v1/tables/pdf_texts`, {
         "conditions": JSON.stringify(data),
     });
-    for (var i in response.data) {
-        data[i] = response.data[i];
-    }
+
+    Object.assign(data, response.data);
+
     addRow(data, table, options);
 }
 
-const addOrderType = async (table, options) => {
-    const lastRow = table.querySelector("tbody").lastChild.children;
-    const data = {};
+const addOrderType = async (table: HTMLTableElement, options: TableOptions) => {
+    const lastRow = table?.querySelector("tbody")?.lastElementChild?.children;
+
+    if (!lastRow) return;
+
+    const data: RowData = {};
+
     Array.from(lastRow).forEach(el => {
-        const key = el.dataset.key;
-        if (key == undefined) {
-            return;
-        }
-        const value = el.innerHTML;
+        const cell = el as HTMLElement;
+        const key = cell.dataset.key;
+
+        if (!key) return;
+
+        const value = cell.innerHTML;
         data[key] = value;
     });
-    const response = await ajax.post(`/api/v1/tables/auftragstyp`, {
+
+    const response = await ajax.post<{ data: Record<string, string> }>(`/api/v1/tables/auftragstyp`, {
         "conditions": JSON.stringify(data),
     });
-    for (var i in response.data) {
-        data[i] = response.data[i];
-    }
+
+    Object.assign(data, response.data);
+
     addRow(data, table, options);
 }
 
 const showFilesInfo = () => {
     ajax.get(`/api/v1/settings/files/info`).then(r => {
-        const el = document.getElementById("showFilesInfo");
+        const el = document.getElementById("showFilesInfo") as HTMLElement;
         el.innerHTML = `Es sind ${r.data.count} Dateien mit einer Gesamtgröße von ${r.data.size}MB hochgeladen/ generiert.`;
     });
 }
@@ -374,9 +382,9 @@ fnNames.click_sendNewInvoiceNumber = () => {
         return;
     }
 
-    const invoiceNumber = document.getElementById("newInvoiceNumber").value;
+    const invoiceNumber = document.getElementById("newInvoiceNumber") as HTMLInputElement;
     ajax.post(`/api/v1/invoice/init-invoice-number`, {
-        "invoiceNumber": invoiceNumber
+        "invoiceNumber": invoiceNumber.value,
     }).then(r => {
         if (r.data.message == "OK") {
             notification("", "success");
@@ -384,10 +392,4 @@ fnNames.click_sendNewInvoiceNumber = () => {
     });
 }
 
-if (document.readyState !== 'loading') {
-    initEventListeners();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        initEventListeners();
-    });
-}
+loader(initEventListeners);

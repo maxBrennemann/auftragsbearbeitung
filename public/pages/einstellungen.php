@@ -3,10 +3,10 @@
 use Src\Classes\Link;
 use Src\Classes\Project\Settings;
 use Src\Classes\Project\InvoiceNumberTracker;
-use Src\Classes\Project\CacheManager;
 use Src\Classes\Project\User;
 
 $companyLogo = Src\Classes\Project\Image::getLogo();
+$favicon = Src\Classes\Project\Image::getFavicon();
 
 ?>
 <section class="defCont">
@@ -92,25 +92,49 @@ $companyLogo = Src\Classes\Project\Image::getLogo();
                 <input class="input-primary w-60" value="<?= Settings::get("invoice.dueDate") ?>" data-write="true" data-fun="changeSetting" data-setting="invoice.dueDate">
             </div>
             <div class="flex items-center mt-2">
+                <span class="font-semibold w-60">Umsatzsteuersatz [%] <button class="ml-1 info-button" data-info="vat_info"></button></span>
+                <input class="input-primary w-60" value="<?= Settings::get("invoice.vatRate") ?>" data-write="true" data-fun="changeSetting" data-setting="invoice.vatRate">
+            </div>
+            <div class="flex items-center mt-2">
                 <span class="font-semibold w-60">Rechnungskopie senden an</span>
                 <input class="input-primary w-60" value="<?= Settings::get("company.invoiceCopyTo") ?>" data-write="true" data-fun="changeSetting" data-setting="company.invoiceCopyTo">
             </div>
         </div>
 
-        <div class="w-96 mt-4 col-span-2">
-            <p class="font-semibold">Firmen-/ Rechnungslogo festlegen</p>
-            <?= \Src\Classes\Controller\TemplateController::getTemplate("uploadFile", [
-                "target" => "companyLogo",
-                "singleFile" => true,
-                "accept" => "image/*",
-            ]); ?>
-            <div class="bg-white p-3 my-3 rounded-lg<?= $companyLogo ? "" : " hidden" ?>" id="companyLogo">
-                <div class="img-prev bg-gray-100 p-2 rounded-md">
-                    <div class="img-prev flex justify-center items-center">
-                        <img src="<?= Link::getResourcesShortLink($companyLogo, "upload") ?>" width="50px" title="Firmenlogo" data-image-id="companyLogo">
+        <div class="mt-4 col-span-2">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <p class="font-semibold">Firmen-/ Rechnungslogo festlegen</p>
+                    <?= \Src\Classes\Controller\TemplateController::getTemplate("uploadFile", [
+                        "target" => "companyLogo",
+                        "singleFile" => true,
+                        "accept" => "image/*",
+                    ]); ?>
+                    <div class="bg-white p-3 my-3 rounded-lg<?= $companyLogo ? "" : " hidden" ?>" id="companyLogo">
+                        <div class="img-prev bg-gray-100 p-2 rounded-md">
+                            <div class="img-prev flex justify-center items-center">
+                                <img src="<?= Link::getResourcesShortLink($companyLogo, "upload") ?>" width="50px" title="Firmenlogo" data-image-id="companyLogo">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <p class="font-semibold">Favicon/ Logo festlegen</p>
+                    <?= \Src\Classes\Controller\TemplateController::getTemplate("uploadFile", [
+                        "target" => "favicon",
+                        "singleFile" => true,
+                        "accept" => "image/*",
+                    ]); ?>
+                    <div class="bg-white p-3 my-3 rounded-lg<?= $favicon ? "" : " hidden" ?>" id="favicon">
+                        <div class="img-prev bg-gray-100 p-2 rounded-md">
+                            <div class="img-prev flex justify-center items-center">
+                                <img src="<?= Link::getResourcesShortLink($favicon, "upload") ?>" width="50px" title="Favicon" data-image-id="favicon">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
     <div class="mt-4">
@@ -131,22 +155,9 @@ $companyLogo = Src\Classes\Project\Image::getLogo();
 </section>
 
 <section class="defCont">
-    <h2 class="font-bold">Cache</h2>
-    <div class="mt-2">
-        <?= \Src\Classes\Controller\TemplateController::getTemplate("inputSwitch", [
-            "id" => "cacheStatusSwitch",
-            "name" => "Cache",
-            "value" => CacheManager::getCacheStatus() == CacheManager::CACHE_ON ? "checked" : "",
-            "binding" => "toggleCache",
-        ]); ?>
-    </div>
-    <button data-binding="true" data-fun="deleteCache" class="btn-primary mt-2">Cache löschen</button>
-</section>
-
-<section class="defCont">
     <h2 class="font-bold">Kategorien festlegen</h2>
     <div id="categoryTree" class="mt-2 ml-3"></div>
-    <div class="mt-2 p-2 bg-slate-300 rounded-lg">
+    <div class="mt-2 p-2 bg-gray-300 rounded-lg">
         <input type="text" class="input-primary" id="newCategory">
         <select id="parentCategory" class="input-primary"></select>
         <button id="addCategory" class="btn-primary">Kategorie hinzufügen</button>
@@ -154,20 +165,27 @@ $companyLogo = Src\Classes\Project\Image::getLogo();
 </section>
 
 <section class="defCont">
-    <h2 class="font-bold">Dateien, Datensicherung und Backups</h2>
-    <div class="mt-2">
-        <a href="#" download="temp_file_name" id="download_db" class="hidden">Datenbank herunterladen</a>
-        <a href="#" download="temp_file_name" id="download_files" class="hidden">Dateien herunterladen</a>
-        <div>
-            <button class="btn-primary" data-binding="true" data-fun="downloadDatabase">Datenbank herunterladen</button>
-            <button class="btn-primary ml-1" data-binding="true" data-fun="downloadAllFiles">Alle Dateien herunterladen</button>
+    <h2 class="font-bold">Dateienmanagement</h2>
+    <a href="#" download="temp_file_name" id="download_db" class="hidden">Datenbank herunterladen</a>
+    <a href="#" download="temp_file_name" id="download_files" class="hidden">Dateien herunterladen</a>
+    <div class="mt-2 flex flex-row gap-2">
+        <div class="bg-gray-50 rounded-lg p-3 flex-auto">
+            <button class="btn-primary" data-binding="true" data-fun="downloadDatabase">
+                <i data-lucide="download" class="w-5 h-5"></i>
+                <span class="ml-0.5">Datenbank herunterladen</span>
+            </button>
+            <button class="btn-primary ml-1" data-binding="true" data-fun="downloadAllFiles">
+                <i data-lucide="download" class="w-5 h-5"></i>
+                <span class="ml-0.5">Alle Dateien herunterladen</span>
+            </button>
         </div>
-        <div class="mt-3">
+        <div class="bg-gray-50 rounded-lg p-3 flex-auto">
             <button id="clearFiles" data-binding="true" class="btn-primary">Dateien aufräumen</button>
             <button id="adjustFiles" data-binding="true" class="btn-primary ml-1">Dateinamen anpassen</button>
+            <button data-binding="true" data-fun="deleteCache" class="btn-primary mt-2">Cache löschen</button>
         </div>
-        <p id="showFilesInfo" class="mt-2"></p>
     </div>
+    <p id="showFilesInfo" class="mt-2"></p>
 </section>
 
 <section class="defCont">

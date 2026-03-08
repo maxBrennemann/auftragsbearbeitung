@@ -33,6 +33,11 @@ return [
             'type' => 'bool',
             'default' => false,
         ],
+        'faviconId' => [
+            'scope' => 'global',
+            'type' => 'number',
+            'default' => 0,
+        ],
         'invoice.defaultWage' => [
             'scope' => 'global',
             'type' => 'number',
@@ -47,6 +52,11 @@ return [
             'scope' => 'global',
             'type' => 'number',
             'default' => 0,
+        ],
+        'invoice.vatRate' => [
+            'scope' => 'global',
+            'type' => 'number',
+            'default' => 19,
         ],
         'company.name' => [
             'scope' => 'global',
