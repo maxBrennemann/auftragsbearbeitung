@@ -28,7 +28,8 @@
     "chart.js": "^4.5.1",
     "colorpicker": "git+https://github.com/maxBrennemann/colorpicker.git#v1.0.2",
     "date-fns": "^4.1.0",
-    "js-classes": "git+https://github.com/maxBrennemann/js-functions.git#v0.5.1"
+    "js-classes": "git+https://github.com/maxBrennemann/js-functions.git#v0.5.1",
+    "lucide": "^0.577.0"
   },
   "name": "auftragsbearbeitung",
   "description": "The Invoice and Order Management System is a web-based application built using PHP, JavaScript, and HTML. The system allows businesses to manage customer orders, products, pricing, invoices, and customer data.",

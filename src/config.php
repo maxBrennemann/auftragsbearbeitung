@@ -33,6 +33,11 @@ return [
             'type' => 'bool',
             'default' => false,
         ],
+        'faviconId' => [
+            'scope' => 'global',
+            'type' => 'number',
+            'default' => 0,
+        ],
         'invoice.defaultWage' => [
             'scope' => 'global',
             'type' => 'number',
