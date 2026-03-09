@@ -8,6 +8,7 @@ use Src\Classes\Project\Icon;
 use Src\Classes\Project\User;
 use Src\Classes\Project\Config;
 use Src\Classes\ResourceManager;
+use Src\Classes\Project\Image;
 
 $globalCSS = Link::getGlobalCSS();
 $globalScript = Link::getGlobalScript();
@@ -46,9 +47,17 @@ if ($pageName == "") {
 
 	<title><?= COMPANY_NAME ?> - <?= $pageTitle ?></title>
 
-	<link rel="shortcut icon" href="<?= $_ENV["WEB_URL"] ?>favicon.ico">
-	<link rel="icon" type="image/png" href="<?= $_ENV["WEB_URL"] ?>img/favicon.png">
-	<link rel="apple-touch-icon" href="<?= $_ENV["WEB_URL"] ?>img/favicon.png">
+	<?php
+	$custom = Image::getFavicon();
+	if ($custom !== "") {
+		$customUrl = Link::getResourcesShortLink($custom, "upload");
+	} else {
+		$customUrl = null;
+	}
+	?>
+	<link rel="shortcut icon" href="<?= $customUrl ?? ($_ENV["WEB_URL"] . 'favicon.ico') ?>">
+	<link rel="icon" type="image/png" href="<?= $customUrl ?? ($_ENV["WEB_URL"] . 'img/favicon.png') ?>">
+	<link rel="apple-touch-icon" href="<?= $customUrl ?? ($_ENV["WEB_URL"] . 'img/favicon.png') ?>">
 
 	<?php if (Config::isDevMode()): ?>
 		<script type="module" src="https://localhost:5173/global.ts"></script>

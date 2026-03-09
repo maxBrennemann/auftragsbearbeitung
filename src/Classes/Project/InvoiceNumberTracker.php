@@ -19,7 +19,7 @@ class InvoiceNumberTracker
         $result = DBAccess::selectQuery($query);
 
         if (empty($result)) {
-            return 1;
+            return 0;
         }
 
         return (int) $result[0]["last_used_number"];

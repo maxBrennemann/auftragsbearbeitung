@@ -98,4 +98,26 @@ class Image
 
         return $data[0]["dateiname"] ?? "";
     }
+
+    public static function addFavicon(): void
+    {
+        $uploadHandler = new UploadHandler("default", [
+            "image/png",
+            "image/jpg",
+            "image/jpeg",
+        ], 25000000, 1);
+        $fileData = $uploadHandler->uploadMultiple();
+
+        if (count($fileData) == 0) {
+            JSONResponseHandler::throwError(422, "unsupported file type");
+        }
+
+        $logoId = (int) $fileData[0]["id"];
+        Settings::set("faviconId", $logoId);
+
+        JSONResponseHandler::sendResponse([
+            "logoId" => $fileData[0]["id"],
+            "file" => Link::getResourcesShortLink($fileData[0]["saved_name"], "upload"),
+        ]);
+    }
 }

@@ -7,6 +7,7 @@ use Src\Classes\Project\Events;
 use Src\Classes\Project\Settings;
 use Src\Classes\Project\CacheManager;
 use Src\Classes\Project\Config;
+use Src\Classes\Project\Image;
 use Src\Classes\Sticker\Exports\ExportFacebook;
 use Src\Classes\Sticker\Imports\ImportGoogleSearchConsole;
 use MaxBrennemann\PhpUtilities\DBAccess;
@@ -307,6 +308,16 @@ class ResourceManager
         if (file_exists($filePath)) {
             header("Content-type: " .  mime_content_type($filePath));
         } else if ($fileName === "/favicon.png") {
+            $favicon = Image::getFavicon();
+            if ($favicon !== "") {
+                $customPath = Link::getFilePath($favicon, "upload");
+                if (file_exists($customPath)) {
+                    header("Content-type: " . mime_content_type($customPath));
+                    echo file_get_contents($customPath);
+                    return;
+                }
+            }
+
             $filePath = ROOT . "public/assets/img/default_favicon.png";
             header("Content-type: " .  mime_content_type($filePath));
         } else {

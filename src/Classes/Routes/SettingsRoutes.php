@@ -23,11 +23,13 @@ class SettingsRoutes extends Routes
      * @uses Classes\Project\ClientSettings::createBackup()
      * @uses Classes\Project\ClientSettings::createFileBackup()
      * @uses Classes\Project\Image::addLogo()
+     * @uses Classes\Project\Image::addFavicon()
      */
     protected static $postRoutes = [
         "/settings/backup" => [\Src\Classes\Project\ClientSettings::class, "createBackup"],
         "/settings/file-backup" => [\Src\Classes\Project\ClientSettings::class, "createFileBackup"],
         "/settings/add-logo" => [\Src\Classes\Project\Image::class, "addLogo"],
+        "/settings/add-favicon" => [\Src\Classes\Project\Image::class, "addFavicon"],
     ];
 
     /**

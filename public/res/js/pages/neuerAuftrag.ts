@@ -1,19 +1,19 @@
-// @ts-nocheck
-
 import { ajax } from "js-classes/ajax";
 import { addBindings, getVariable } from "js-classes/bindings";
 
 import { renderTable } from "../classes/table";
+import { loader } from "../classes/helpers";
+import { FunctionMap } from "../types/types";
 
-const fnNames = {};
+const fnNames = {} as FunctionMap;
 
 function initNewOrder() {
     addBindings(fnNames);
     const input = document.getElementById("customerSearch");
     if (input != null) {
-        input.addEventListener("keyup", e => {
+        input.addEventListener("keyup", (e: any) => {
             if (e.key === "Escape") {
-                const searchResults = document.getElementById("searchResults");
+                const searchResults = document.getElementById("searchResults") as HTMLElement;
                 searchResults.innerHTML = "";
                 searchResults.classList.add("hidden");
             } else if (e.key === "Enter") {
@@ -28,23 +28,23 @@ function initNewOrder() {
 }
 
 fnNames.click_sendData = () => {
-    const bezeichnung = document.getElementById("bezeichnung").value;
-    const beschreibung = document.getElementById("beschreibung").value;
-    const termin = document.getElementById("termin").value;
-    const angenommenVon = document.getElementById("selectMitarbeiter").value;
-    const angenommenPer = document.getElementById("selectAngenommen").value;
-    const ansprechpartner = document.getElementById("selectAnsprechpartner").value
-    const typ = document.getElementById("selectTyp").value;
+    const bezeichnung = document.getElementById("bezeichnung") as HTMLInputElement;
+    const beschreibung = document.getElementById("beschreibung") as HTMLInputElement;
+    const termin = document.getElementById("termin") as HTMLInputElement;
+    const angenommenVon = document.getElementById("selectMitarbeiter") as HTMLInputElement;
+    const angenommenPer = document.getElementById("selectAngenommen") as HTMLInputElement;
+    const ansprechpartner = document.getElementById("selectAnsprechpartner") as HTMLInputElement;
+    const typ = document.getElementById("selectTyp") as HTMLInputElement;
 
     ajax.post(`/api/v1/order`, {
         "customerId": getVariable("customerId"),
-        "name": bezeichnung,
-        "description": beschreibung,
-        "type": typ,
-        "deadline": termin,
-        "acceptedBy": angenommenVon,
-        "acceptedVia": angenommenPer,
-        "contactperson": ansprechpartner
+        "name": bezeichnung.value,
+        "description": beschreibung.value,
+        "type": typ.value,
+        "deadline": termin.value,
+        "acceptedBy": angenommenVon.value,
+        "acceptedVia": angenommenPer.value,
+        "contactperson": ansprechpartner.value,
     }).then(response => {
         if (!response.data.success) {
             return;
@@ -59,24 +59,24 @@ fnNames.input_searchCustomer = e => {
     performAjaxSearch(e);
 }
 
-function openCustomer(id) {
+function openCustomer(id: string) {
     const url = new URL(window.location.href);
     url.searchParams.set("id", id);
     window.location.href = url.href;
 }
 
-async function performAjaxSearch(e) {
+async function performAjaxSearch(e: any) {
     const value = e.target.value;
-    if (value.length == 0) {
-        return
-    }
+    
+    if (value.length == 0) return;
+
     const data = await ajax.get(`/api/v1/search?query=type:kunde ${value}`);
-    const parsedData = [];
-    data.data.forEach(el => {
+    const parsedData: any = [];
+    data.data.forEach((el: any) => {
         parsedData.push(el.data);
     })
 
-    const searchResults = document.getElementById("searchResults");
+    const searchResults = document.getElementById("searchResults") as HTMLElement;
     searchResults.innerHTML = "";
     searchResults.classList.remove("hidden");
 
@@ -108,11 +108,4 @@ async function performAjaxSearch(e) {
     renderTable("searchResults", header, parsedData, options);
 }
 
-/* init */
-if (document.readyState !== 'loading') {
-    initNewOrder();
-} else {
-    document.addEventListener('DOMContentLoaded', function () {
-        initNewOrder();
-    });
-}
+loader(initNewOrder);

@@ -1,8 +1,19 @@
 <?php
 
 use Src\Classes\Link;
+use Src\Classes\Project\Image;
 
-// TODO: allow upload of custom favicon, for now, it will point to the new default icons
+$favicon = Image::getFavicon();
+if ($favicon !== "") {
+    $uploadPath = Link::getFilePath($favicon, "upload");
+    if (file_exists($uploadPath)) {
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $mime  = $finfo->file($uploadPath) ?: 'application/octet-stream';
+        header("Content-Type: $mime");
+        readfile($uploadPath);
+        return;
+    }
+}
 
 if (strpos($_SERVER["HTTP_USER_AGENT"], "MSIE") !== false
     || strpos($_SERVER["HTTP_USER_AGENT"], "Trident") !== false) {

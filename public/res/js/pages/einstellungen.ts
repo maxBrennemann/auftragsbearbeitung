@@ -17,18 +17,17 @@ function initEventListeners() {
     addBindings(fnNames);
     timeTracking();
 
-    initFileUploader({
+    createFileUploader({
         "companyLogo": {
             "location": `/api/v1/settings/add-logo`,
         },
-    });
-    const fileUpload = document.querySelector(`input[data-type="companyLogo"]`) as HTMLInputElement;
-    fileUpload.addEventListener("fileUploaded", (r: any) => {
-        const companyLogo = document.getElementById("companyLogo") as HTMLElement;
-        companyLogo.classList.remove("hidden");
-        const img = companyLogo.querySelector("img") as HTMLImageElement;
-        img.src = r.detail.file;
-    });
+    }, "companyLogo");
+
+    createFileUploader({
+        "favicon": {
+            "location": `/api/v1/settings/add-favicon`,
+        },
+    }, "favicon");
 
     const addCategoryBtn = document.getElementById("addCategory") as HTMLButtonElement;
     addCategoryBtn.addEventListener("click", addCategory);
@@ -46,6 +45,17 @@ function initEventListeners() {
         icons: {
             Download
         }
+    });
+}
+
+const createFileUploader = (config: any, element: string) => {
+    initFileUploader(config);
+    const fileUpload = document.querySelector(`input[data-type="${element}"]`) as HTMLInputElement;
+    fileUpload.addEventListener("fileUploaded", (r: any) => {
+        const companyLogo = document.getElementById(element) as HTMLElement;
+        companyLogo.classList.remove("hidden");
+        const img = companyLogo.querySelector("img") as HTMLImageElement;
+        img.src = r.detail.file;
     });
 }
 
@@ -373,7 +383,7 @@ const addOrderType = async (table: HTMLTableElement, options: TableOptions) => {
 const showFilesInfo = () => {
     ajax.get(`/api/v1/settings/files/info`).then(r => {
         const el = document.getElementById("showFilesInfo") as HTMLElement;
-        el.innerHTML = `Es sind ${r.data.count} Dateien mit einer Gesamtgröße von ${r.data.size}MB hochgeladen/ generiert.`;
+        el.innerHTML = `Es sind ${r.data.count} Dateien mit einer Gesamtgröße von ${r.data.size}MB gespeichert.`;
     });
 }
 
