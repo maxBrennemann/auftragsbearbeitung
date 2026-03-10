@@ -6,7 +6,6 @@ use Src\Classes\Project\InvoiceNumberTracker;
 use Src\Classes\Project\User;
 
 $companyLogo = Src\Classes\Project\Image::getLogo();
-$favicon = Src\Classes\Project\Image::getFavicon();
 
 ?>
 <section class="defCont">
@@ -125,10 +124,10 @@ $favicon = Src\Classes\Project\Image::getFavicon();
                         "singleFile" => true,
                         "accept" => "image/*",
                     ]); ?>
-                    <div class="bg-white p-3 my-3 rounded-lg<?= $favicon ? "" : " hidden" ?>" id="favicon">
+                    <div class="bg-white p-3 my-3 rounded-lg" id="favicon">
                         <div class="img-prev bg-gray-100 p-2 rounded-md">
                             <div class="img-prev flex justify-center items-center">
-                                <img src="<?= Link::getResourcesShortLink($favicon, "upload") ?>" width="50px" title="Favicon" data-image-id="favicon">
+                                <img src="<?= Link::getResourcesShortLink("favicon.png", "img") ?>" width="50px" title="Favicon" data-image-id="favicon">
                             </div>
                         </div>
                     </div>

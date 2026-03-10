@@ -15,6 +15,11 @@ return [
         "weiteres" => "Other",
         "unknown" => "Unknown Payment Type",
     ],
+    "upload" => [
+        "singleFile" => "Select File",
+        "multipleFiles" => "Select Files",
+        "orDragAndDrop" => "or drag and drop here.",
+    ],
     "info" => [
         "lists" => '',
         "invoice_mail" => '',
