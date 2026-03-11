@@ -50,5 +50,7 @@ class SettingsRoutes extends Routes
      */
     protected static $deleteRoutes = [
         "/settings/cache" => [\Src\Classes\Project\CacheManager::class, "deleteCache"],
+        "/settings/logo" => [\Src\Classes\Project\Image::class, "deleteLogo"],
+        "/settings/favicon" => [\Src\Classes\Project\Image::class, "deleteFavicon"],
     ];
 }

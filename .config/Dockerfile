@@ -1,15 +1,4 @@
-FROM composer:2.9.3 AS composer
-
-# Set working directory
-WORKDIR /var/www/html
-
-# Copy the composer.json and composer.lock
-COPY composer.json composer.lock ./
-
-# Install the dependencies
-RUN composer install --no-scripts
-
-FROM php:8.5.1-fpm
+FROM php:8.5.3-fpm
 
 # Get UID and GID of host user
 ARG UID

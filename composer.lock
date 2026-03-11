@@ -458,16 +458,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "2.8.x-dev",
+            "version": "2.9.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "27b6714cf2e71cfcc49718eb81ac711103f08218"
+                "reference": "df180439fc4ce9d6225a2ffa788c7d9667901ab2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/27b6714cf2e71cfcc49718eb81ac711103f08218",
-                "reference": "27b6714cf2e71cfcc49718eb81ac711103f08218",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/df180439fc4ce9d6225a2ffa788c7d9667901ab2",
+                "reference": "df180439fc4ce9d6225a2ffa788c7d9667901ab2",
                 "shasum": ""
             },
             "require": {
@@ -483,6 +483,7 @@
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.8.2",
                 "http-interop/http-factory-tests": "0.9.0",
+                "jshttp/mime-db": "1.54.0.1",
                 "phpunit/phpunit": "^8.5.44 || ^9.6.25"
             },
             "suggest": {
@@ -555,7 +556,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/2.8"
+                "source": "https://github.com/guzzle/psr7/tree/2.9"
             },
             "funding": [
                 {
@@ -571,7 +572,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-03-05T21:03:18+00:00"
+            "time": "2026-03-10T12:01:18+00:00"
         },
         {
             "name": "max/php-utilities",
@@ -1033,8 +1034,8 @@
             "version": "2.1.x-dev",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/75596c3a4ad4579570874f772b26241ebdb5a816",
-                "reference": "75596c3a4ad4579570874f772b26241ebdb5a816",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/54f3522cded9d69b7ef7b80ecdc2cb1aed8ae0ae",
+                "reference": "54f3522cded9d69b7ef7b80ecdc2cb1aed8ae0ae",
                 "shasum": ""
             },
             "require": {
@@ -1079,7 +1080,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-03-08T10:09:08+00:00"
+            "time": "2026-03-10T13:09:35+00:00"
         },
         {
             "name": "prestashop/prestashop-webservice-lib",
@@ -2611,19 +2612,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ergebnis/php-cs-fixer-config.git",
-                "reference": "7cc78777d3a74c2d4202f0b3a2087ce7f4c99dec"
+                "reference": "ca7a85e4b2123d11f3b7deabc18e64bd377fc75c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ergebnis/php-cs-fixer-config/zipball/7cc78777d3a74c2d4202f0b3a2087ce7f4c99dec",
-                "reference": "7cc78777d3a74c2d4202f0b3a2087ce7f4c99dec",
+                "url": "https://api.github.com/repos/ergebnis/php-cs-fixer-config/zipball/ca7a85e4b2123d11f3b7deabc18e64bd377fc75c",
+                "reference": "ca7a85e4b2123d11f3b7deabc18e64bd377fc75c",
                 "shasum": ""
             },
             "require": {
                 "erickskrauch/php-cs-fixer-custom-fixers": "~1.3.1",
                 "ext-filter": "*",
                 "friendsofphp/php-cs-fixer": "~3.94.2",
-                "kubawerlos/php-cs-fixer-custom-fixers": "~3.36.0",
+                "kubawerlos/php-cs-fixer-custom-fixers": "~3.36.1",
                 "php": "~7.4.0 || ~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0"
             },
             "require-dev": {
@@ -2675,7 +2676,7 @@
                 "security": "https://github.com/ergebnis/php-cs-fixer-config/blob/main/.github/SECURITY.md",
                 "source": "https://github.com/ergebnis/php-cs-fixer-config"
             },
-            "time": "2026-02-27T10:32:12+00:00"
+            "time": "2026-03-09T20:59:51+00:00"
         },
         {
             "name": "erickskrauch/php-cs-fixer-custom-fixers",
@@ -6083,12 +6084,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "7d571c714fc3950ad85685b9a6be6998769206d3"
+                "reference": "3fd49afe0b7d0faf5ad6cb69c18ff154c15c3222"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/7d571c714fc3950ad85685b9a6be6998769206d3",
-                "reference": "7d571c714fc3950ad85685b9a6be6998769206d3",
+                "url": "https://api.github.com/repos/symfony/process/zipball/3fd49afe0b7d0faf5ad6cb69c18ff154c15c3222",
+                "reference": "3fd49afe0b7d0faf5ad6cb69c18ff154c15c3222",
                 "shasum": ""
             },
             "require": {
@@ -6141,7 +6142,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-01-29T09:42:44+00:00"
+            "time": "2026-03-09T18:17:37+00:00"
         },
         {
             "name": "symfony/stopwatch",

@@ -8,7 +8,6 @@ import { initFileUploader } from "../classes/upload";
 import { clearInputs } from "../global";
 import { FunctionMap, TableOptions } from "../types/types";
 import { loader } from "../classes/helpers";
-import { createIcons, Download } from 'lucide';
 
 const fnNames = {} as FunctionMap;
 type RowData = Record<string, string>;
@@ -40,17 +39,14 @@ function initEventListeners() {
     createUserTable();
     createPDFTextTable();
     showFilesInfo();
-
-    createIcons({
-        icons: {
-            Download
-        }
-    });
 }
 
 const createFileUploader = (config: any, element: string) => {
     initFileUploader(config);
     const fileUpload = document.querySelector(`input[data-type="${element}"]`) as HTMLInputElement;
+    
+    if (!fileUpload) return;
+
     fileUpload.addEventListener("fileUploaded", (r: any) => {
         const companyLogo = document.getElementById(element) as HTMLElement;
         companyLogo.classList.remove("hidden");
@@ -182,6 +178,34 @@ fnNames.write_changeSetting = e => {
             notification("", "success");
         } else {
             notification("", "failure");
+        }
+    });
+}
+
+fnNames.click_deleteLogo = () => {
+    ajax.delete(`/api/v1/settings/logo`).then(r => {
+        if (r.data.status === "success") {
+            notification("Logo entfernt", "success");
+            const cont = document.getElementById("companyLogo") as HTMLElement;
+            if (cont) {
+                cont.classList.add("hidden");
+            }
+        } else {
+            notification("Löschen fehlgeschlagen", "failure");
+        }
+    });
+}
+
+fnNames.click_deleteFavicon = () => {
+    ajax.delete(`/api/v1/settings/favicon`).then(r => {
+        if (r.data.status === "success") {
+            notification("Favicon zurückgesetzt", "success");
+            const img = document.querySelector<HTMLImageElement>("#favicon img");
+            if (img) {
+                img.src = `/assets/img/favicon.png?` + Date.now();
+            }
+        } else {
+            notification("Löschen fehlgeschlagen", "failure");
         }
     });
 }

@@ -102,7 +102,7 @@ class Image
         $targetDir = ROOT . "public/assets/img/";
 
         $info = getimagesize($uploadedFile);
-        $mime = $info['mime'];
+        $mime = $info["mime"] ?? "";
 
         switch ($mime) {
             case 'image/jpeg':
@@ -137,6 +137,10 @@ class Image
             $process($src, 32,  $targetDir . "favicon.ico");
             $process($src, 180, $targetDir . "apple-touch-icon.png");
 
+            if ($src == false) {
+                JSONResponseHandler::throwError(500, "Failed to process image with GD");
+            }
+
             imagedestroy($src);
 
             JSONResponseHandler::sendResponse([
@@ -145,5 +149,38 @@ class Image
         } catch (\Exception $e) {
             JSONResponseHandler::throwError(500, "GD Processing failed");
         }
+    }
+
+    public static function deleteLogo(): void
+    {
+        $logoId = Settings::get("company.logoId");
+        if ($logoId) {
+            DBAccess::deleteQuery("DELETE FROM dateien WHERE id = :id", [
+                "id" => $logoId,
+            ]);
+            Settings::set("company.logoId", null);
+        }
+
+        JSONResponseHandler::sendResponse(["status" => "success"]);
+    }
+
+    public static function deleteFavicon(): void
+    {
+        $targetDir = ROOT . "public/assets/img/";
+        $defaults = [
+            "favicon.png" => "default_favicon.png",
+            "favicon.ico" => "default_favicon.ico",
+            "apple-touch-icon.png" => "default_apple_touch_icon.png",
+        ];
+
+        foreach ($defaults as $file => $default) {
+            $src = $targetDir . $default;
+            $dest = $targetDir . $file;
+            if (is_file($src)) {
+                copy($src, $dest);
+            }
+        }
+
+        JSONResponseHandler::sendResponse(["status" => "success"]);
     }
 }

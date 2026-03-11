@@ -1,4 +1,4 @@
-FROM composer:2.9.3 AS composer
+FROM composer:2.9.5 AS composer
 
 WORKDIR /var/www/html
 
@@ -20,7 +20,7 @@ RUN composer install \
     && rm -rf vendor/*/example \
     && rm -rf vendor/*/examples
 
-FROM node:25-alpine3.22 AS frontend-builder
+FROM node:25.8-alpine3.23 AS frontend-builder
 
 WORKDIR /app
 
@@ -49,7 +49,7 @@ COPY public/res/css/fonts ./public/res/css/fonts
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 
-FROM php:8.5.1-fpm-alpine AS php-base
+FROM php:8.5.3-fpm-alpine AS php-base
 
 RUN echo "upload_max_filesize=100M" > /usr/local/etc/php/conf.d/uploads.ini \
  && echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/uploads.ini

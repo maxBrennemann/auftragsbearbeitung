@@ -27,27 +27,27 @@ if (import.meta.env.DEV) {
 }
 
 if (import.meta.env.DEV) {
-    const originalFetch = window.fetch;
+	const originalFetch = window.fetch;
 
-    window.fetch = async function (input, init) {
-        const response = await originalFetch(input, init);
+	window.fetch = async function (input, init) {
+		const response = await originalFetch(input, init);
 
-        const clone = response.clone();
-        let json = null;
+		const clone = response.clone();
+		let json = null;
 
-        try {
-            json = await clone.json();
-        } catch { /* Ignore */ }
+		try {
+			json = await clone.json();
+		} catch { /* Ignore */ }
 
-        if (json?.message?.xdebug) {
-            showDevError(json.message.xdebug, {
-                url: input,
-                method: init?.method || "GET"
-            });
-        }
+		if (json?.message?.xdebug) {
+			showDevError(json.message.xdebug, {
+				url: input,
+				method: init?.method || "GET"
+			});
+		}
 
-        return response;
-    };
+		return response;
+	};
 }
 
 function showDevError(xdebugHtml, meta) {
@@ -75,6 +75,7 @@ import { createPopup } from "./classes/helpers";
 import { checkAutoOpenPopup, initImagePreviewListener } from "./classes/imagePreview";
 import { initNotificationService } from "./classes/notificationUpdater";
 import { timeGlobalListener } from "./classes/timetracking";
+import { createIcons, Info, Download, Image, Layout, TriangleAlert, Database, Files } from 'lucide';
 
 const fnNames = {};
 
@@ -118,6 +119,18 @@ function init() {
 	initNotificationService();
 
 	checkAutoOpenPopup();
+
+	createIcons({
+		icons: {
+			Info,
+			Download,
+            Image,
+            Layout,
+            TriangleAlert,
+			Database,
+			Files,
+		}
+	});
 }
 
 const autoSizeTextareas = () => {

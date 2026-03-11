@@ -274,7 +274,9 @@ foreach ($contactPersons as $contact): ?>
 			<div class="defCont col-span-6 md:col-span-3 fahrzeuge">
 				<p>
 					<span class="font-bold">Fahrzeuge</span>
-					<button class="ml-1 info-button" data-info=""></button>
+					<?= TemplateController::getTemplate("infoButton", [
+						"infoKey" => "",
+					]) ?>
 				<p>
 				<div class="mt-2">
 					<select id="selectVehicle" class="input-primary" data-fun="selectVehicle" data-write="true">
@@ -334,7 +336,9 @@ foreach ($contactPersons as $contact): ?>
 				</div>
 				<div class="mt-2">
 					<button class="btn-primary mt-2" data-binding="true" data-fun="addList">Liste hinzufügen</button>
-					<button class="info-button ml-1" data-info="lists"></button>
+					<?= TemplateController::getTemplate("infoButton", [
+						"infoKey" => "lists",
+					]) ?>
 				</div>
 			</div>
 
