@@ -13,7 +13,7 @@
     "globals": "^17.3.0",
     "jiti": "^2.6.1",
     "typescript": "^5.9.3",
-    "vite": "^7.3.1"
+    "vite": "^7.3.2"
   },
   "scripts": {
     "dev": "./console autoUpgrade --skip-migration & vite --config .config/vite.config.ts",
