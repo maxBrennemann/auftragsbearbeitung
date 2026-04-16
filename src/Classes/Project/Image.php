@@ -21,7 +21,7 @@ class Image
         $fileData = DBAccess::selectQuery("SELECT dateiname FROM dateien WHERE id = :id", [
             "id" => $id,
         ]);
-        
+
         $fileName = $fileData["0"]["dateiname"];
 
         $this->url = Link::getResourcesShortLink($fileName, "upload");
@@ -83,19 +83,104 @@ class Image
         ]);
     }
 
-    public static function getFavicon(): string
+    public static function addFavicon(): void
     {
-        $faviconId = Settings::get("faviconId");
+        $uploadHandler = new UploadHandler("default", [
+            "image/png",
+            "image/jpg",
+            "image/jpeg",
+            "image/x-icon",
+            "image/svg+xml",
+        ], 25000000, 1);
+        $fileData = $uploadHandler->uploadMultiple();
 
-        if ($faviconId == null) {
-            return "";
+        if (count($fileData) == 0) {
+            JSONResponseHandler::throwError(422, "unsupported file type");
         }
 
-        $query = "SELECT dateiname FROM dateien WHERE id = :id";
-        $data = DBAccess::selectQuery($query, [
-            "id" => $faviconId,
-        ]);
+        $uploadedFile = Config::get("paths.uploadDir.default") . $fileData[0]["storage_path"];
+        $targetDir = ROOT . "public/assets/img/";
 
-        return $data[0]["dateiname"] ?? "";
+        $info = getimagesize($uploadedFile);
+        $mime = $info["mime"] ?? "";
+
+        switch ($mime) {
+            case 'image/jpeg':
+                $src = imagecreatefromjpeg($uploadedFile);
+                break;
+            case 'image/png':
+                $src = imagecreatefrompng($uploadedFile);
+                break;
+            case 'image/webp':
+                $src = imagecreatefromwebp($uploadedFile);
+                break;
+            default:
+                JSONResponseHandler::throwError(422, "Unsupported image format for GD");
+        }
+
+        $process = function ($src, $size, $destPath) {
+            $new = imagecreatetruecolor($size, $size);
+
+            imagealphablending($new, false);
+            imagesavealpha($new, true);
+
+            $width = imagesx($src);
+            $height = imagesy($src);
+
+            imagecopyresampled($new, $src, 0, 0, 0, 0, $size, $size, $width, $height);
+            imagepng($new, $destPath, 9);
+            imagedestroy($new);
+        };
+
+        try {
+            $process($src, 32,  $targetDir . "favicon.png");
+            $process($src, 32,  $targetDir . "favicon.ico");
+            $process($src, 180, $targetDir . "apple-touch-icon.png");
+
+            if ($src == false) {
+                JSONResponseHandler::throwError(500, "Failed to process image with GD");
+            }
+
+            imagedestroy($src);
+
+            JSONResponseHandler::sendResponse([
+                "Favicons updated via GD",
+            ]);
+        } catch (\Exception $e) {
+            JSONResponseHandler::throwError(500, "GD Processing failed");
+        }
+    }
+
+    public static function deleteLogo(): void
+    {
+        $logoId = Settings::get("company.logoId");
+        if ($logoId) {
+            DBAccess::deleteQuery("DELETE FROM dateien WHERE id = :id", [
+                "id" => $logoId,
+            ]);
+            Settings::set("company.logoId", null);
+        }
+
+        JSONResponseHandler::sendResponse(["status" => "success"]);
+    }
+
+    public static function deleteFavicon(): void
+    {
+        $targetDir = ROOT . "public/assets/img/";
+        $defaults = [
+            "favicon.png" => "default_favicon.png",
+            "favicon.ico" => "default_favicon.ico",
+            "apple-touch-icon.png" => "default_apple_touch_icon.png",
+        ];
+
+        foreach ($defaults as $file => $default) {
+            $src = $targetDir . $default;
+            $dest = $targetDir . $file;
+            if (is_file($src)) {
+                copy($src, $dest);
+            }
+        }
+
+        JSONResponseHandler::sendResponse(["status" => "success"]);
     }
 }

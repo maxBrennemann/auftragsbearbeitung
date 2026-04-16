@@ -37,8 +37,10 @@ storage/cache/*
 !storage/cache/.gitkeep
 
 # misc
-publics/assets/forms/modules/sticker/catalog_products.csv
 .git.bfg-report
+.build/
+publics/assets/forms/modules/sticker/catalog_products.csv
 public/assets/img/favicon.ico
 public/assets/img/favicon.png
-.build/
+public/assets/img/apple-touch-icon.png
+favicon.ico

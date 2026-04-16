@@ -412,7 +412,7 @@ class Auftrag implements NotifiableEntity
 
         $query = "SELECT Auftragsnummer, DATE_FORMAT(Datum, '%d.%m.%Y') as Datum, IF(kunde.Firmenname = '', 
 				CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) as Kunde, 
-				Auftragsbezeichnung, IF(auftrag.Termin IS NULL OR auftrag.Termin = '0000-00-00', 'kein Termin', DATE_FORMAT(auftrag.Termin, '%d.%m.%Y')) AS Termin 
+				Auftragsbezeichnung, IF(auftrag.Termin IS NULL OR auftrag.Termin = '0000-00-00', '-', DATE_FORMAT(auftrag.Termin, '%d.%m.%Y')) AS Termin 
 			FROM auftrag 
 			LEFT JOIN kunde 
 				ON auftrag.Kundennummer = kunde.Kundennummer 
@@ -444,7 +444,7 @@ class Auftrag implements NotifiableEntity
         $query = "SELECT Auftragsnummer, DATE_FORMAT(Datum, '%d.%m.%Y') AS Datum, 
 				IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), 
 				kunde.Firmenname) AS Kunde, Auftragsbezeichnung, 
-				IF(auftrag.Termin IS NULL OR auftrag.Termin = '0000-00-00', 'kein Termin', 
+				IF(auftrag.Termin IS NULL OR auftrag.Termin = '0000-00-00', '-', 
 				DATE_FORMAT(auftrag.Termin, '%d.%m.%Y')) AS Termin 
 			FROM auftrag 
 			LEFT JOIN kunde 

@@ -87,6 +87,10 @@ class Link
      */
     public static function getResourcesShortLink(string $resource, string $type): string
     {
+        if ($resource === "") {
+            return "";
+        }
+
         switch ($type) {
             case "css":
                 $link = $_ENV["REWRITE_BASE"] . "css/" . $resource;

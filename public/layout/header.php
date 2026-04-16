@@ -46,9 +46,9 @@ if ($pageName == "") {
 
 	<title><?= COMPANY_NAME ?> - <?= $pageTitle ?></title>
 
-	<link rel="shortcut icon" href="<?= $_ENV["WEB_URL"] ?>favicon.ico">
-	<link rel="icon" type="image/png" href="<?= $_ENV["WEB_URL"] ?>img/favicon.png">
-	<link rel="apple-touch-icon" href="<?= $_ENV["WEB_URL"] ?>img/favicon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon.png">
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+	<link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
 
 	<?php if (Config::isDevMode()): ?>
 		<script type="module" src="https://localhost:5173/global.ts"></script>
@@ -68,10 +68,12 @@ if ($pageName == "") {
 </head>
 
 <?php if (Config::isDevMode()): ?>
+
 	<body class="overflow-x-hidden" data-page="<?= dashesToCamelCase($pageScript) ?>">
-<?php else : ?>
-	<body class="overflow-x-hidden"></body>
-<?php endif; ?>
+	<?php else : ?>
+
+		<body class="overflow-x-hidden"></body>
+	<?php endif; ?>
 	<div class="sidenav" id="sidenav">
 		<ul class="ml-2">
 			<li class="hover:underline">
@@ -136,13 +138,18 @@ if ($pageName == "") {
 			<div class="inline-flex flex-wrap">
 				<?= \Src\Classes\Controller\TemplateController::getTemplate("search"); ?>
 				<div class="inline-flex ml-1">
-					<div class="inline-flex items-center p-1 hover:bg-gray-200 hover:rounded-xs relative text-gray-700 cursor-pointer" data-binding="true" data-fun="showNotifications">
+					<div class="relative inline-flex items-center justify-center w-9 h-9 text-gray-700 cursor-pointer hover:bg-gray-200 hover:rounded-md"
+						data-binding="true"
+						data-fun="showNotifications">
 						<?php if (NotificationManager::getNotificationCount() > 0): ?>
-							<div title="Benachrichtigungen" class="absolute top-1.5 right-0">
-								<div class="w-3 h-3">
-									<p class="text-xxs bg-red-400 text-white rounded-full text-center"><?= NotificationManager::getNotificationCount(); ?></p>
-								</div>
-							</div>
+							<span
+								class="absolute top-1.5 right-1.5 z-10 flex items-center justify-center 
+										min-w-3.5 h-3.5 px-1
+										text-xxs font-semibold text-white 
+										bg-red-400 rounded-full box-border
+										transform translate-x-1/2 -translate-y-1/3 leading-none">
+								<?= NotificationManager::getNotificationCount(); ?>
+							</span>
 						<?php endif; ?>
 						<span title="Benachrichtigungen" class="inline-block">
 							<?= Icon::getDefault("iconBell") ?>

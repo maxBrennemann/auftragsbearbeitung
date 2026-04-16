@@ -93,17 +93,12 @@ class ResourceManager
             case "pdfs":
             case "upload":
             case "backup":
-            case "img":
             case "static":
                 self::handleResources();
                 self::close();
                 // no break
             case "api":
                 Ajax::handleRequests();
-                self::close();
-                // no break
-            case "favicon.ico":
-                require_once ROOT . "public/assets/favicon.php";
                 self::close();
                 // no break
             case "events":
@@ -211,9 +206,6 @@ class ResourceManager
             case "static":
                 self::get_static($resource);
                 break;
-            case "img":
-                self::get_image($resource);
-                break;
             default:
                 http_response_code(404);
                 exit();
@@ -294,33 +286,6 @@ class ResourceManager
         }
 
         echo file_get_contents($fileName);
-    }
-
-    /**
-     * checks if the file exists, defaults either to the default favicon or
-     * if the requested image is not a favicon, to the default fallback image
-     * @return void
-     */
-    private static function get_image(string $fileName): void
-    {
-        $filePath = ROOT . "public/assets/img" . $fileName;
-        if (file_exists($filePath)) {
-            header("Content-type: " .  mime_content_type($filePath));
-        } else if ($fileName === "/favicon.png") {
-            $filePath = ROOT . "public/assets/img/default_favicon.png";
-            header("Content-type: " .  mime_content_type($filePath));
-        } else {
-            $filePath = ROOT . "public/assets/img/default_image.png";
-            header("Content-type: " .  mime_content_type($filePath));
-        }
-
-        $file = file_get_contents($filePath);
-        if ($file === false) {
-            http_response_code(404);
-            exit();
-        }
-
-        echo $file;
     }
 
     private static function get_static(string $file): void

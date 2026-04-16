@@ -15,6 +15,11 @@ return [
         "weiteres" => "Weiteres",
         "unknown" => "Unbekannte Zahlungsart",
     ],
+    "upload" => [
+        "singleFile" => "Datei auswählen",
+        "multipleFiles" => "Dateien auswählen",
+        "orDragAndDrop" => "oder hier ablegen.",
+    ],
     "info" => [
         "lists" => 
             'Wähle aus einer der erstellten Listen. Listen können im Auftrag als Stütze für die Herangehensweise verwendet werden. Um eine neue Liste zu erstellen, gehe auf "Listen" im Endbereich der Seite.',

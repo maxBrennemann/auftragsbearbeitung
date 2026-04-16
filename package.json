@@ -28,7 +28,7 @@
     "chart.js": "^4.5.1",
     "colorpicker": "git+https://github.com/maxBrennemann/colorpicker.git#v1.0.2",
     "date-fns": "^4.1.0",
-    "js-classes": "git+https://github.com/maxBrennemann/js-functions.git#v0.5.1",
+    "js-classes": "git+https://github.com/maxBrennemann/js-functions.git#v0.5.2",
     "lucide": "^0.577.0"
   },
   "name": "auftragsbearbeitung",

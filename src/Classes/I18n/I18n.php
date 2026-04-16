@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Src\Classes\I18n;
 
+/* TODO: adapt new translate feature later - check arrays and singular/plural forms */
 final class I18n
 {
     /** @var array<string, array<string, mixed>> */

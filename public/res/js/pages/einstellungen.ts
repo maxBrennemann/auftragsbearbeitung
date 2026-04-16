@@ -8,7 +8,6 @@ import { initFileUploader } from "../classes/upload";
 import { clearInputs } from "../global";
 import { FunctionMap, TableOptions } from "../types/types";
 import { loader } from "../classes/helpers";
-import { createIcons, Download } from 'lucide';
 
 const fnNames = {} as FunctionMap;
 type RowData = Record<string, string>;
@@ -17,18 +16,17 @@ function initEventListeners() {
     addBindings(fnNames);
     timeTracking();
 
-    initFileUploader({
+    createFileUploader({
         "companyLogo": {
             "location": `/api/v1/settings/add-logo`,
         },
-    });
-    const fileUpload = document.querySelector(`input[data-type="companyLogo"]`) as HTMLInputElement;
-    fileUpload.addEventListener("fileUploaded", (r: any) => {
-        const companyLogo = document.getElementById("companyLogo") as HTMLElement;
-        companyLogo.classList.remove("hidden");
-        const img = companyLogo.querySelector("img") as HTMLImageElement;
-        img.src = r.detail.file;
-    });
+    }, "companyLogo");
+
+    createFileUploader({
+        "favicon": {
+            "location": `/api/v1/settings/add-favicon`,
+        },
+    }, "favicon");
 
     const addCategoryBtn = document.getElementById("addCategory") as HTMLButtonElement;
     addCategoryBtn.addEventListener("click", addCategory);
@@ -41,11 +39,19 @@ function initEventListeners() {
     createUserTable();
     createPDFTextTable();
     showFilesInfo();
+}
 
-    createIcons({
-        icons: {
-            Download
-        }
+const createFileUploader = (config: any, element: string) => {
+    initFileUploader(config);
+    const fileUpload = document.querySelector(`input[data-type="${element}"]`) as HTMLInputElement;
+    
+    if (!fileUpload) return;
+
+    fileUpload.addEventListener("fileUploaded", (r: any) => {
+        const companyLogo = document.getElementById(element) as HTMLElement;
+        companyLogo.classList.remove("hidden");
+        const img = companyLogo.querySelector("img") as HTMLImageElement;
+        img.src = r.detail.file;
     });
 }
 
@@ -172,6 +178,34 @@ fnNames.write_changeSetting = e => {
             notification("", "success");
         } else {
             notification("", "failure");
+        }
+    });
+}
+
+fnNames.click_deleteLogo = () => {
+    ajax.delete(`/api/v1/settings/logo`).then(r => {
+        if (r.data.status === "success") {
+            notification("Logo entfernt", "success");
+            const cont = document.getElementById("companyLogo") as HTMLElement;
+            if (cont) {
+                cont.classList.add("hidden");
+            }
+        } else {
+            notification("Löschen fehlgeschlagen", "failure");
+        }
+    });
+}
+
+fnNames.click_deleteFavicon = () => {
+    ajax.delete(`/api/v1/settings/favicon`).then(r => {
+        if (r.data.status === "success") {
+            notification("Favicon zurückgesetzt", "success");
+            const img = document.querySelector<HTMLImageElement>("#favicon img");
+            if (img) {
+                img.src = `/assets/img/favicon.png?` + Date.now();
+            }
+        } else {
+            notification("Löschen fehlgeschlagen", "failure");
         }
     });
 }
@@ -373,7 +407,7 @@ const addOrderType = async (table: HTMLTableElement, options: TableOptions) => {
 const showFilesInfo = () => {
     ajax.get(`/api/v1/settings/files/info`).then(r => {
         const el = document.getElementById("showFilesInfo") as HTMLElement;
-        el.innerHTML = `Es sind ${r.data.count} Dateien mit einer Gesamtgröße von ${r.data.size}MB hochgeladen/ generiert.`;
+        el.innerHTML = `Es sind ${r.data.count} Dateien mit einer Gesamtgröße von ${r.data.size}MB gespeichert.`;
     });
 }
 

@@ -124,14 +124,6 @@ li {
     border-radius: 0 6px 0 0;
 }
 
-.info-button::after {
-    content: 'i';
-    font-size: 0.75rem;
-    font-weight: 600;
-    font-family: 'Open Sans', sans-serif;
-    line-height: 1;
-}
-
 .infoBox {
     position: absolute;
     background-color: white;
