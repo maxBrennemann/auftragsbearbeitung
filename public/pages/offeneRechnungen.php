@@ -1,10 +1,19 @@
-<div class="w-full">
-    <button class="btn-primary" data-fun="showDueInvoices" data-binding="true">Fällige Rechnungen</button>
-    <div id="openInvoiceTable" class="overflow-x-scroll h-136"></div>
-</div>
 <?php
-$__vat = \Src\Classes\Project\Settings::get('invoice.vatRate');
+
+use Src\Classes\Controller\TemplateController;
+use Src\Classes\Project\Settings;
+
 ?>
-<script>
-    window.invoiceVatRate = <?= (float) $__vat ?>;
-</script>
+
+<div class="w-full">
+    <div class="px-2 rounded-sm ml-2 mt-1">
+        <?= TemplateController::getTemplate("inputSwitch", [
+            "id" => "toggleDueInvoices",
+            "name" => "Alle offenen Rechnungen",
+            "write" => "showDueInvoices",
+        ]); ?>
+    </div>
+    <div id="openInvoiceTable" class="overflow-x-scroll h-136 mt-2"></div>
+</div>
+
+<input type="number" value="<?= Settings::get('invoice.vatRate') ?>" hidden id="inputVatHidden">
