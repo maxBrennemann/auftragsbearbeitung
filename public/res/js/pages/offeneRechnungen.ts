@@ -11,10 +11,11 @@ const config = {
     show: "all",
 };
 
-fnNames.click_showDueInvoices = () => {
+fnNames.write_showDueInvoices = () => {
     config.show = config.show === "due" ? "all" : "due";
-    const button = document.querySelector('[data-fun="showDueInvoices"]') as HTMLButtonElement;
-    button.textContent = config.show === "due" ? "Alle offenen Rechnungen" : "Fällige Rechnungen";
+    const input = document.querySelector('[data-fun="showDueInvoices"]') as HTMLInputElement;
+    const text = input.nextElementSibling?.nextElementSibling as HTMLSpanElement;
+    text.innerHTML = config.show === "due" ? "Fällige Rechnungen" : "Alle offenen Rechnungen";
 
     createInvoiceTable();
 }
@@ -27,7 +28,7 @@ const getOpenInvoiceData = async () => {
 const createInvoiceTable = async () => {
     document.getElementById("openInvoiceTable")!.innerHTML = "";
     const table = createTable("openInvoiceTable") as HTMLTableElement;
-    const rate = (window as any).invoiceVatRate ?? 0;
+    const rate = parseInt((document.getElementById("inputVatHidden") as HTMLInputElement).value ?? "0");
     const grossLabel = rate > 0 ? `Summe (brutto, inkl. ${rate}% MwSt.)` : 'Summe (brutto)';
     const columns = [
         {
