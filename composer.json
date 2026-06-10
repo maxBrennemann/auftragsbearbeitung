@@ -1,6 +1,6 @@
 {
     "require": {
-        "tecnickcom/tcpdf": "^6.10.1",
+        "tecnickcom/tcpdf": "^6.11.3",
         "prestashop/prestashop-webservice-lib": "dev-master",
         "guzzlehttp/guzzle": "^7.10.0",
         "google/apiclient": "^2.12.1",
