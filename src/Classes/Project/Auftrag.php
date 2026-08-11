@@ -818,6 +818,10 @@ class Auftrag implements NotifiableEntity
         $type = (string) Tools::get("type");
         $data = (string) Tools::get("data");
 
+        if (!in_array($type, ["title", "note"], true)) {
+            JSONResponseHandler::throwError(400, "Invalid field");
+        }
+
         DBAccess::updateQuery("UPDATE notes SET $type = :data WHERE id = :id", [
             "id" => $id,
             "data" => $data,

@@ -19,8 +19,8 @@ const refs = {} as { [key: string]: HTMLElement };
 interface Note {
     title: string,
     note: string,
-    date: Date,
-    id: Number
+    date: string,
+    id: number
 }
 
 const initStepsTable = async () => {
@@ -77,9 +77,11 @@ const deleteStep = (e: CustomEvent) => {
     ajax.delete(`/api/v1/notes/step/${stepNumber}`, {
         "orderId": notesConfig.orderId,
     }).then(r => {
-        if (r.data.status == "success") {
+        if (r.success && r.data?.status == "success") {
             notification("", "success");
             data.row.remove();
+        } else {
+            notification("", "failure");
         }
     });
 }
@@ -92,11 +94,8 @@ const displayNotes = (notes: Note[]) => {
     if (!refs.noteContainer) return;
 
     refs.notesContainer.classList.remove("hidden");
+    const templateNote = document.getElementById("templateNote") as HTMLTemplateElement;
     notes.forEach(note => {
-        notes.push(note);
-
-        /* clone templateNote */
-        const templateNote = document.getElementById("templateNote") as HTMLTemplateElement;
         const clone = templateNote.content.cloneNode(true) as HTMLElement;
 
         const noteTitle = clone.querySelector(".noteTitle") as HTMLInputElement;
@@ -106,7 +105,7 @@ const displayNotes = (notes: Note[]) => {
         noteTitle.addEventListener("change", updateNote);
 
         const noteText = clone.querySelector(".noteText") as HTMLTextAreaElement;
-        noteText.innerHTML = note.note;
+        noteText.value = note.note;
         noteText.dataset.id = note.id.toString();
         noteText.dataset.type = "note";
         noteText.addEventListener("change", updateNote);
@@ -118,13 +117,13 @@ const displayNotes = (notes: Note[]) => {
         });
 
         const noteDate = clone.querySelector(".noteDate") as HTMLSpanElement;
-        noteDate.innerHTML = note.date.toString();
+        noteDate.textContent = note.date.toString();
 
         const noteShowDelete = clone.querySelector(".showDelete") as HTMLButtonElement;
         noteShowDelete.addEventListener("click", function (e: Event) {
             const target = e.target as HTMLElement;
             if (!target) return;
-            const el = target.parentNode?.parentNode;
+            const el = target.closest(".noteCard");
             const noteDelete = el?.querySelector(".noteDelete");
             noteDelete?.classList.toggle("hidden");
         });
@@ -141,13 +140,14 @@ function updateNote(e: any) {
     const id = e.target.dataset.id;
     const type = e.target.dataset.type;
 
-    ajax.put(`/api/v1/notes/${notesConfig.orderId}`, {
-        id: id,
+    ajax.put(`/api/v1/notes/${id}`, {
         type: type,
         data: data
     }).then(r => {
-        if (r.data.status == "success") {
+        if (r.success && r.data?.status == "success") {
             notification("", "success");
+        } else {
+            notification("", "failure");
         }
     });
 }
@@ -179,6 +179,11 @@ fnNames.click_addBearbeitungsschritt = () => {
         "priority": priority,
         "assignedTo": assignedTo,
     }).then(r => {
+        if (!r.success) {
+            notification("", "failure");
+            return;
+        }
+
         const table = document.querySelector("#stepTable table") as HTMLTableElement;
         const row = {
             Schrittnummer: r.data.stepId,
@@ -217,9 +222,6 @@ fnNames.click_sendNote = () => {
     const content = (note.querySelector(".noteText") as HTMLTextAreaElement).value;
     const date = (note.querySelector(".noteDate") as HTMLInputElement).value;
 
-    const addNewNoteBtn = document.getElementById("addNewNote") as HTMLButtonElement;
-    addNewNoteBtn.classList.remove("hidden");
-
     if (title == "") {
         return;
     }
@@ -229,6 +231,11 @@ fnNames.click_sendNote = () => {
         "note": content,
         "date": date,
     }).then(r => {
+        if (!r.success) {
+            notification("", "failure");
+            return;
+        }
+
         notification("", "success");
         displayNotes([{
             "title": title,
@@ -241,6 +248,9 @@ fnNames.click_sendNote = () => {
         (note.querySelector(".noteText") as HTMLTextAreaElement).value = "";
 
         note.classList.toggle("hidden");
+
+        const addNewNoteBtn = document.getElementById("addNewNote") as HTMLButtonElement;
+        addNewNoteBtn.classList.remove("hidden");
     });
 }
 
@@ -259,12 +269,16 @@ fnNames.click_cancelNote = () => {
 
 /* function creates a popup window that asks the user whether he wants the note to be deleted or not */
 function removeNote(event: any) {
-    const id = event.target.parentNode.querySelector(".noteTitle").dataset.id;
+    const noteCard = (event.target as HTMLElement).closest(".noteCard");
+    if (!noteCard) return;
+
+    const id = noteCard.querySelector<HTMLElement>(".noteTitle")?.dataset.id;
     ajax.delete(`/api/v1/notes/${id}`).then(r => {
-        if (r.data.status == "success") {
+        if (r.success && r.data?.status == "success") {
             notification("", "success");
-            const noteContainer = event.target.parentNode;
-            noteContainer.parentNode.removeChild(noteContainer);
+            noteCard.remove();
+        } else {
+            notification("", "failure");
         }
     });
 }
@@ -309,7 +323,7 @@ export function initNotes(orderId: any) {
 
     if (refs.noteContainer != null) {
         getNotes().then(r => {
-            if (r.data.length == 0) {
+            if (!r.success || !r.data || r.data.length == 0) {
                 return;
             }
 

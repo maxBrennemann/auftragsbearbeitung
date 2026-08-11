@@ -51,13 +51,16 @@ class Step
         ]);
     }
 
-    /**
-     * @param array<string, mixed> $data
-     * @return void
-     */
-    public static function updateStep(array $data): void
+    public static function updateStep(): void
     {
-        OrderHistory::add($data["orderId"], $data["postennummer"], OrderHistory::TYPE_STEP, OrderHistory::STATE_FINISHED);
+        $orderId = Tools::get("orderId");
+        $stepId = Tools::get("id");
+
+        OrderHistory::add($orderId, $stepId, OrderHistory::TYPE_STEP, OrderHistory::STATE_FINISHED);
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+        ]);
     }
 
     public static function deleteStep(): void
