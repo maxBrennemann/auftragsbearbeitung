@@ -123,6 +123,11 @@ return [
             'type' => 'string',
             'default' => '',
         ],
+        'company.Kontoinhaber' => [
+            'scope' => 'global',
+            'type' => 'string',
+            'default' => '',
+        ],
         'company.invoiceCopyTo' => [
             'scope' => 'global',
             'type' => 'string',

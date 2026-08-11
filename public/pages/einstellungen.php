@@ -70,6 +70,7 @@ $companyLogo = Src\Classes\Project\Image::getLogo();
                     "company.bank" => "Bank",
                     "company.IBAN" => "IBAN",
                     "company.BIC" => "BIC",
+                    "company.Kontoinhaber" => "Kontoinhaber",
                     "company.UstIdNr" => "UstIdNr",
                     "invoice.dueDate" => "Fälligkeitsdauer [Tage]",
                     "invoice.vatRate" => "Umsatzsteuersatz [%]",

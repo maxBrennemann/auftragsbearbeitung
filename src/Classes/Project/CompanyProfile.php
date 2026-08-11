@@ -18,6 +18,7 @@ class CompanyProfile
      * companyEmail: string|null,
      * companyIban: string|null,
      * companyImprint: string|null,
+     * companyKontoinhaber: string|null,
      * companyName: string|null,
      * companyPhone: string|null,
      * companyUstIdNr: string|null,
@@ -39,6 +40,7 @@ class CompanyProfile
             "companyBank" => Settings::get("company.bank"),
             "companyIban" => Settings::get("company.IBAN"),
             "companyBic" => Settings::get("company.BIC"),
+            "companyKontoinhaber" => Settings::get("company.Kontoinhaber"),
             "companyUstIdNr" => Settings::get("company.UstIdNr"),
         ];
     }
