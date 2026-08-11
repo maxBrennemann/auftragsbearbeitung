@@ -132,8 +132,8 @@ functionNames.click_completeInvoice = () => {
     ajax.post(`/api/v1/invoice/${config.invoiceId}/complete`, {
         "orderId": config.orderId,
     }).then((r: any) => {
-        if (r.data.data.status !== "success") {
-            notification("", "failure", r.data.data.message);
+        if (!r.success || r.data?.status !== "success") {
+            notification("", "failure", r.data?.message ?? "Rechnung konnte nicht abgeschlossen werden");
             return;
         }
         notification("", "success");

@@ -115,8 +115,9 @@ fnNames.click_toggleOrderDescription = () => {
 }
 
 fnNames.click_showAuftrag = () => {
-    const url = window.location.href + "&show=true";
-    window.location.href = url;
+    const url = new URL(window.location.href);
+    url.searchParams.set("show", "true");
+    window.location.href = url.toString();
 }
 
 fnNames.click_showAuftragsverlauf = function () { }
