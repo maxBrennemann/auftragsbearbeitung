@@ -74,11 +74,13 @@ class OrderRoutes extends Routes
     /**
      * @uses \Src\Classes\Project\Auftrag::deleteOrder()
      * @uses \Src\Classes\Project\Auftrag::deleteColor()
+     * @uses \Src\Classes\Project\Auftrag::deleteFile()
      * @uses \Src\Classes\Project\Fahrzeug::removeVehicle()
      */
     protected static $deleteRoutes = [
         "/order/{id}" => [\Src\Classes\Project\Auftrag::class, "deleteOrder"],
         "/order/{id}/colors/{colorId}" => [\Src\Classes\Project\Auftrag::class, "deleteColor"],
+        "/order/{id}/files/{fileId}" => [\Src\Classes\Project\Auftrag::class, "deleteFile"],
         "/order/{id}/vehicles/{vehicleId}" => [\Src\Classes\Project\Fahrzeug::class, "removeVehicle"],
     ];
 }

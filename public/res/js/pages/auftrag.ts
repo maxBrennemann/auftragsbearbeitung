@@ -4,6 +4,7 @@ import { notification } from "js-classes/notifications";
 
 import { getItemsTable, initInvoiceItems } from "../classes/invoiceItems";
 import { initFileUploader } from "../classes/upload";
+import { initImagePreviewListener } from "../classes/imagePreview";
 import { loader } from "../classes/helpers";
 
 import { initColors } from "../auftrag/colorManager";
@@ -68,6 +69,20 @@ const initCode = async () => {
     orderConfig.table = await getItemsTable("auftragsPostenTable", orderConfig.auftragsId, "order");
     orderConfig.table.addEventListener("rowInsert", reloadPostenListe);
     initInvoiceItems(orderConfig.auftragsId);
+}
+
+fnNames.click_deleteOrderFile = (e: any) => {
+    const fileId = e.currentTarget.dataset.fileId;
+
+    if (!confirm("Möchten Sie diese Datei wirklich löschen?")) {
+        return;
+    }
+
+    ajax.delete(`/api/v1/order/${orderConfig.auftragsId}/files/${fileId}`).then((r: any) => {
+        const showFilePrev = document.getElementById("showFilePrev") as HTMLElement;
+        showFilePrev.innerHTML = r.data.files;
+        initImagePreviewListener();
+    });
 }
 
 /* changes the contact person connected with the order */

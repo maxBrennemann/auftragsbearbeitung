@@ -646,12 +646,13 @@ class Auftrag implements NotifiableEntity
 
     public static function getFiles(int $orderId): string
     {
-        $query = "SELECT DISTINCT dateiname AS Datei,
-                originalname, 
+        $query = "SELECT DISTINCT dateien.id AS DateiId,
+                dateiname AS Datei,
+                originalname,
                 DATE_FORMAT(`date`, '%d.%m.%Y %H:%i:%s') AS Uploaddatum,
-                typ as Typ 
-            FROM dateien 
-            LEFT JOIN dateien_auftraege 
+                typ as Typ
+            FROM dateien
+            LEFT JOIN dateien_auftraege
                 ON dateien_auftraege.id_datei = dateien.id
             WHERE dateien_auftraege.id_auftrag = :orderId";
         $files = DBAccess::selectQuery($query, [
@@ -660,12 +661,12 @@ class Auftrag implements NotifiableEntity
 
         foreach ($files as &$file) {
             $filePath = FileController::getPath($file["Datei"]);
-            $type = file_exists($filePath) 
+            $type = file_exists($filePath)
                 && (exif_imagetype($filePath) != false)
                 && getimagesize($filePath) != false
                     ? "image"
                     : "file";
-            
+
             $fileData = [
                 "type" => $type,
                 "link" => Link::getUploadResourceLink($file["Datei"], $file["originalname"]),
@@ -674,6 +675,7 @@ class Auftrag implements NotifiableEntity
                 "file" => $file["Datei"],
             ];
 
+            $file["Aktionen"] = "<button class=\"btn-delete\" data-binding=\"true\" data-fun=\"deleteOrderFile\" data-file-id=\"{$file['DateiId']}\" title=\"Datei löschen\">" . Icon::getDefault("iconDelete") . "</button>";
             $file["Datei"] = TemplateController::getTemplate("tableFile", [
                 "f" => $fileData,
             ]);
@@ -685,17 +687,79 @@ class Auftrag implements NotifiableEntity
                 "Datei",
                 "Typ",
                 "Uploaddatum",
+                "Aktionen",
             ],
             "names" => [
                 "Datei",
                 "Typ",
                 "Uploaddatum",
+                "",
             ],
         ];
 
         $options = [];
 
-        return TableGenerator::create($files, $options, $header); // TODO: add delete option
+        return TableGenerator::create($files, $options, $header);
+    }
+
+    public static function deleteFile(): void
+    {
+        $orderId = (int) Tools::get("id");
+        $fileId = (int) Tools::get("fileId");
+
+        DBAccess::deleteQuery("DELETE FROM dateien_auftraege WHERE id_datei = :fileId AND id_auftrag = :orderId", [
+            "fileId" => $fileId,
+            "orderId" => $orderId,
+        ]);
+
+        if (DBAccess::getAffectedRows() === 0) {
+            JSONResponseHandler::throwError(404, "Datei ist diesem Auftrag nicht zugeordnet");
+        }
+
+        self::deleteFileIfUnused($fileId);
+
+        JSONResponseHandler::sendResponse([
+            "files" => self::getFiles($orderId),
+        ]);
+    }
+
+    /**
+     * removes the physical file and its `dateien` row once no
+     * junction table (order/product/vehicle/line-item) references it anymore
+     */
+    private static function deleteFileIfUnused(int $fileId): void
+    {
+        $junctionTables = [
+            "dateien_auftraege" => "id_datei",
+            "dateien_produkte" => "id_datei",
+            "dateien_fahrzeuge" => "id_datei",
+            "dateien_posten" => "id_file",
+        ];
+
+        foreach ($junctionTables as $table => $column) {
+            $result = DBAccess::selectQuery("SELECT COUNT(*) AS count FROM $table WHERE $column = :fileId", [
+                "fileId" => $fileId,
+            ]);
+
+            if ((int) $result[0]["count"] > 0) {
+                return;
+            }
+        }
+
+        $file = DBAccess::selectQuery("SELECT dateiname FROM dateien WHERE id = :fileId", [
+            "fileId" => $fileId,
+        ]);
+
+        if (count($file) > 0) {
+            $filePath = FileController::getPath($file[0]["dateiname"]);
+            if ($filePath !== null) {
+                unlink($filePath);
+            }
+        }
+
+        DBAccess::deleteQuery("DELETE FROM dateien WHERE id = :fileId", [
+            "fileId" => $fileId,
+        ]);
     }
 
     public static function deleteOrder(): void
