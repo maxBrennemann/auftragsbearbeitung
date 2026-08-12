@@ -11,12 +11,14 @@ class OrderRoutes extends Routes
      * @uses \Src\Classes\Project\Auftrag::getColors()
      * @uses \Src\Classes\Project\Step::getSteps()
      * @uses \Src\Classes\Project\Angebot::getPDF()
+     * @uses \Src\Classes\Project\DeliveryNote::getPDF()
      */
     protected static $getRoutes = [
         "/order/open" => [\Src\Classes\Project\Auftrag::class, "getOpenOrders"],
         "/order/{id}/colors" => [\Src\Classes\Project\Auftrag::class, "getColors"],
         "/order/{id}/steps" => [\Src\Classes\Project\Step::class, "getSteps"],
         "/order/offer/{offerId}/pdf" => [\Src\Classes\Project\Angebot::class, "getPDF"],
+        "/order/{id}/delivery-note/pdf" => [\Src\Classes\Project\DeliveryNote::class, "getPDF"],
     ];
 
     /**

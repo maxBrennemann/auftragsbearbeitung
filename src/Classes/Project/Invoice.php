@@ -17,6 +17,7 @@ class Invoice
 
     private int $invoiceId = 0;
     private int $invoiceNumber = 0;
+    private float $amount = 0;
     /** @var array<Leistung|ProduktPosten|Zeit> */
     private array $posten = [];
 
@@ -38,7 +39,12 @@ class Invoice
             throw new \Exception("Invoice not found.");
         }
 
+        if ((int) $data[0]["order_id"] !== $orderId) {
+            throw new \Exception("Invoice does not belong to the given order.");
+        }
+
         $this->invoiceNumber = ((int) $data[0]["invoice_number"]);
+        $this->amount = (float) $data[0]["amount"];
         $this->creationDate = new \DateTime($data[0]["creation_date"]);
         $this->performanceDate = new \DateTime($data[0]["performance_date"]);
         $this->addressId = (int) $data[0]["address_id"];
@@ -155,6 +161,11 @@ class Invoice
     public function getNumber(): int
     {
         return $this->invoiceNumber;
+    }
+
+    public function getAmount(): float
+    {
+        return $this->amount;
     }
 
     /**
@@ -385,6 +396,8 @@ class Invoice
         } catch (\Exception $e) {
             $invoice = self::getInvoiceByOrderId($orderId);
         }
+
+        $invoiceId = $invoice->getId();
 
         $invoice->setInvoiceSum();
 

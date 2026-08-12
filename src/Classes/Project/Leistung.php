@@ -52,13 +52,13 @@ class Leistung extends Posten
     /* fills array for Postentable */
     public function fillToArray(array $arr): array
     {
-        $arr['Postennummer'] = $this->postennummer;
+        $arr['Postennummer'] = (string) $this->postennummer;
         $arr['Preis'] = $this->bekommePreisTabelle();
         $arr['Bezeichnung'] = "<button class=\"btn-primary-small\">Leistung</button><br><span>{$this->bezeichnung}</span>";
         $arr['Beschreibung'] = $this->beschreibung;
         $arr['Einkaufspreis'] = number_format($this->einkaufspreis * $this->quantity, 2, ',', '') . "€<br><span style=\"font-size: 0.7em\">Einzelpreis: " . number_format($this->einkaufspreis, 2, ',', '') . "€</span><br>" . $this->getFiles($this->postennummer);
         $arr['Gesamtpreis'] = $this->bekommePreis_formatted();
-        $arr['Leistungsnummer'] = $this->leistungsnummer;
+        $arr['Leistungsnummer'] = (string) $this->leistungsnummer;
         $arr['Anzahl'] = addCommas((string) $this->quantity);
         $arr['MEH'] = $this->meh;
         $arr['type'] = "addPostenLeistung";

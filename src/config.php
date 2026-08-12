@@ -53,6 +53,11 @@ return [
             'type' => 'number',
             'default' => 19,
         ],
+        'invoice.reminderFee' => [
+            'scope' => 'global',
+            'type' => 'number',
+            'default' => 0,
+        ],
         'company.name' => [
             'scope' => 'global',
             'type' => 'string',

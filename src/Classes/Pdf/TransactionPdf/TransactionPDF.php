@@ -7,6 +7,9 @@ use Src\Classes\Pdf\PDFTexts;
 use Src\Classes\Project\Auftrag;
 use Src\Classes\Project\CompanyProfile;
 use Src\Classes\Project\Kunde;
+use Src\Classes\Project\Leistung;
+use Src\Classes\Project\ProduktPosten;
+use Src\Classes\Project\Zeit;
 
 class TransactionPDF extends PDFGenerator
 {
@@ -104,6 +107,63 @@ class TransactionPDF extends PDFGenerator
             "width" => 0.4,
             "color" => [0, 0, 0],
         ]);
+    }
+
+    protected function renderItemsTableHeader(int $y, bool $showPrices = true): void
+    {
+        $this->setXY(20, $y);
+        $this->SetFont("helvetica", "B", 12);
+        $this->Cell(15, 10, 'Pos.', 'B');
+        $this->Cell(20, 10, 'Menge', 'B');
+        $this->Cell(20, 10, 'MEH', 'B');
+        $this->Cell($showPrices ? 70 : 120, 10, 'Bezeichnung', 'B');
+
+        if ($showPrices) {
+            $this->Cell(20, 10, 'E-Preis', 'B');
+            $this->Cell(20, 10, 'G-Preis', 'B');
+        }
+
+        $this->SetFont("helvetica", "", 12);
+    }
+
+    /* returns the consumed line height so callers can track their own page-break offset */
+    protected function renderItemRow(Leistung|ProduktPosten|Zeit $p, int $count, bool $showPrices = true): float
+    {
+        $lineheight = 10;
+
+        $this->Cell(15, $lineheight, (string) $count);
+        $this->Cell(20, $lineheight, $p->getQuantityFormatted());
+        $this->Cell(20, $lineheight, $p->getEinheit());
+
+        $descriptionWidth = $showPrices ? 70 : 120;
+        if ($showPrices && $p->getOhneBerechnung() == true) {
+            $descriptionWidth = 50;
+        }
+
+        $height = $this->getStringHeight($descriptionWidth, $p->getDescription());
+        $addToOffset = $lineheight;
+
+        if ($height >= $lineheight) {
+            $this->MultiCell($descriptionWidth, $lineheight, $p->getDescription(), '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
+            $addToOffset = (float) ceil($height);
+        } else {
+            $this->Cell($descriptionWidth, $lineheight, $p->getDescription());
+        }
+
+        if ($showPrices) {
+            if ($p->getOhneBerechnung() == true) {
+                $this->SetFont("helvetica", "", 6);
+                $this->Cell(20, $lineheight, "Ohne Berechnung");
+                $this->SetFont("helvetica", "", 12);
+            }
+
+            $this->Cell(20, $lineheight, $p->bekommeEinzelPreis_formatted());
+            $this->Cell(20, $lineheight, $p->bekommePreis_formatted(), 0, 0, 'R');
+        }
+
+        $this->ln($addToOffset);
+
+        return $addToOffset;
     }
 
     protected function getEstimatedFooterHeight(): int

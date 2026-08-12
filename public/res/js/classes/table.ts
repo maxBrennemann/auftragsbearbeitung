@@ -200,7 +200,7 @@ const createAddRow = (count, header, table, options = {}) => {
     table.querySelector("tbody").appendChild(row);
 }
 
-const createSumRow = (data, table, options = {}, header = {}) => {
+export const createSumRow = (data, table, options = {}, header = {}) => {
     const tfoot = document.createElement("tfoot");
     const tr = document.createElement("tr");
     const sumUp = options.sum ?? [];
@@ -209,8 +209,12 @@ const createSumRow = (data, table, options = {}, header = {}) => {
     data.forEach(row => {
         sumUp.forEach(el => {
             let value = row[el.key];
-            value = value.replace(",", ".");
-            value = value.trim();
+            if (typeof value === "string") {
+                value = value.replace(/[^\d,.-]/g, "").trim();
+                value = value.includes(",")
+                    ? value.replace(/\./g, "").replace(",", ".")
+                    : value;
+            }
 
             if (results[el.key] == undefined) {
                 results[el.key] = 0;

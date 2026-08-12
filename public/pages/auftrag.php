@@ -130,6 +130,7 @@ try {
 						<?php endif; ?>
 						<button class="btn-primary" data-binding="true" data-fun="setOrderFinished">Auftrag ist fertig</button>
 					<?php endif; ?>
+					<a class="btn-primary" href="/api/v1/order/<?= $orderId ?>/delivery-note/pdf" target="_blank" title="Lieferschein anzeigen">Lieferschein anzeigen</a>
 				</div>
 			</div>
 

@@ -25,9 +25,9 @@ class InvoiceHelper
     {
         $query = "SELECT ROUND(SUM(invoice.amount), 2) AS summe
 				FROM auftrag, invoice
-				WHERE auftrag.Rechnungsnummer != 0 
+				WHERE auftrag.Rechnungsnummer != 0
 					AND auftrag.Bezahlt = 0
-					AND auftrag.Auftragsnummer = invoice.order_id";
+					AND invoice.id = auftrag.Rechnungsnummer";
         $sum = DBAccess::selectQuery($query)[0]["summe"];
         if ($sum == null) {
             return 0;
