@@ -13,6 +13,7 @@ class OrderHistory
     public const STATE_EDITED = "edited";
     public const STATE_FINISHED = "finished";
     public const STATE_PAYED = "payed";
+    public const STATE_UNPAID = "unpaid";
 
     public const TYPE_ITEM = 1;
     public const TYPE_STEP = 2;

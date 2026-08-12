@@ -154,12 +154,47 @@ fnNames.click_setPayed = () => {
     const paymentType = (document.getElementById("paymentType") as HTMLInputElement).value;
     const invoiceId = getVariable("invoiceId");
 
+    if (!date) {
+        notification("Bitte ein Zahlungsdatum angeben.", "failure");
+        return;
+    }
+
     ajax.post(`/invoice/${invoiceId}/paid`, {
         "date": date,
         "paymentType": paymentType,
     }).then(r => {
         if (r.data.status == "success") {
-            (document.getElementById("orderPaymentState") as HTMLElement).innerHTML = `<p>Die Rechnung wurde am ${date} mit ${paymentType} bezahlt.</p>`;
+            (document.getElementById("orderPaymentState") as HTMLElement).innerHTML = `<p>Die Rechnung wurde am ${date} mit ${paymentType} bezahlt.</p>
+                <button class="btn-primary mt-2" data-binding="true" data-fun="setUnpaid">Als unbezahlt markieren</button>`;
+            addBindings(fnNames);
+        }
+    });
+}
+
+fnNames.click_setUnpaid = () => {
+    if (!confirm("Soll die Rechnung wirklich als unbezahlt markiert werden?")) {
+        return;
+    }
+
+    const invoiceId = getVariable("invoiceId");
+
+    ajax.delete(`/invoice/${invoiceId}/paid`).then(r => {
+        if (r.data.status == "success") {
+            (document.getElementById("orderPaymentState") as HTMLElement).innerHTML = `<p>Die Rechnung wurde noch nicht beglichen.</p>
+                <label>
+                    <input type="date" id="inputPayDate" class="input-primary">
+                </label>
+                <select id="paymentType" class="input-primary">
+                    <option value="unbezahlt">Unbezahlt</option>
+                    <option value="ueberweisung">Überweisung</option>
+                    <option value="bar">Bar</option>
+                    <option value="paypal">PayPal</option>
+                    <option value="kreditkarte">Kreditkarte</option>
+                    <option value="amazonpay">AmazonPay</option>
+                    <option value="weiteres">Weiteres</option>
+                </select>
+                <button class="btn-primary" data-binding="true" data-fun="setPayed">Rechnung wurde bezahlt</button>`;
+            addBindings(fnNames);
         }
     });
 }

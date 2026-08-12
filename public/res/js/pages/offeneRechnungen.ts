@@ -108,6 +108,10 @@ const createInvoiceTable = async () => {
         const data = event.detail;
         const id = data.Rechnungsnummer;
 
+        if (!confirm(`Soll die Rechnung ${data.invoice_number ?? id} wirklich als bezahlt markiert werden?`)) {
+            return;
+        }
+
         const status = await ajax.post(`/api/v1/invoice/${id}/paid`, {
             "date": format(new Date(), "yyy-MM-dd"),
         });

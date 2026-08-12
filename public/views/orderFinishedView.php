@@ -16,9 +16,9 @@
         ?>
         <a class="link-primary" href="<?= $invoiceLink ?>" target="_blank">Zur Rechnungs-PDF</a>
     </div>
-    <?php if (!$auftrag->isPaid()): ?>
-        <div class="defCont">
-            <div id="orderPaymentState">
+    <div class="defCont">
+        <div id="orderPaymentState">
+            <?php if (!$auftrag->isPaid()): ?>
                 <p>Die Rechnung wurde noch nicht beglichen.</p>
                 <label>
                     <input type="date" id="inputPayDate" class="input-primary">
@@ -33,13 +33,12 @@
                     <option value="weiteres">Weiteres</option>
                 </select>
                 <button class="btn-primary" data-binding="true" data-fun="setPayed">Rechnung wurde bezahlt</button>
-            </div>
+            <?php else: ?>
+                <p>Die Rechnung wurde am <span class="info-badge"><?= $auftrag->getPaymentDate() ?></span> per <span class="info-badge"><?= $auftrag->getPaymentType() ?></span> bezahlt.</p>
+                <button class="btn-primary mt-2" data-binding="true" data-fun="setUnpaid">Als unbezahlt markieren</button>
+            <?php endif; ?>
         </div>
-    <?php else: ?>
-        <div class="defCont">
-            <p>Die Rechnung wurde am <span class="info-badge"><?= $auftrag->getPaymentDate() ?></span> per <span class="info-badge"><?= $auftrag->getPaymentType() ?></span> bezahlt.</p>
-        </div>
-    <?php endif; ?>
+    </div>
     <div class="defCont">
         <embed type="application/pdf" src="<?= $invoiceLink ?>" width="100%" height="800" id="invoiceEmbed">
     </div>

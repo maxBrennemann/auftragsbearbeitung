@@ -55,4 +55,11 @@ class InvoiceRoutes extends Routes
         "/invoice/{invoiceId}/text" => [\Src\Classes\Project\Invoice::class, "toggleText"],
         "/invoice/{invoiceId}/positions" => [\Src\Classes\Project\InvoiceLayout::class, "updateItemsOrder"],
     ];
+
+    /**
+     * @uses \Src\Classes\Project\Invoice::setInvoiceUnpaidAjax()
+     */
+    protected static $deleteRoutes = [
+        "/invoice/{invoiceId}/paid" => [\Src\Classes\Project\Invoice::class, "setInvoiceUnpaidAjax"],
+    ];
 }

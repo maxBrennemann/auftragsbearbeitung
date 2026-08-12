@@ -477,6 +477,37 @@ class Invoice
         ]);
     }
 
+    public static function setInvoiceUnpaid(int $invoiceId): void
+    {
+        $query = "UPDATE auftrag SET Bezahlt = 0
+			WHERE Rechnungsnummer = :invoice";
+
+        DBAccess::updateQuery($query, [
+            "invoice" => $invoiceId,
+        ]);
+
+        DBAccess::updateQuery("UPDATE invoice SET payment_date = NULL, payment_type = 'unbezahlt' WHERE id = :invoice", [
+            "invoice" => $invoiceId,
+        ]);
+
+        $orderId = DBAccess::selectQuery("SELECT Auftragsnummer FROM auftrag WHERE Rechnungsnummer = :invoice;", [
+            "invoice" => $invoiceId
+        ]);
+        $orderId = (int) $orderId[0]["Auftragsnummer"];
+        OrderHistory::add($orderId, $invoiceId, OrderHistory::TYPE_ORDER, OrderHistory::STATE_UNPAID);
+    }
+
+    public static function setInvoiceUnpaidAjax(): void
+    {
+        $invoiceId = (int) Tools::get("invoiceId");
+
+        self::setInvoiceUnpaid($invoiceId);
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+        ]);
+    }
+
     public static function getPDF(): void
     {
         $invoiceId = (int) Tools::get("invoiceId");
