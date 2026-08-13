@@ -58,6 +58,11 @@ return [
             'type' => 'number',
             'default' => 0,
         ],
+        'statistics.legacyDataCutoff' => [
+            'scope' => 'global',
+            'type' => 'string',
+            'default' => '',
+        ],
         'company.name' => [
             'scope' => 'global',
             'type' => 'string',

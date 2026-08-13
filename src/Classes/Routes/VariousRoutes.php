@@ -15,6 +15,7 @@ class VariousRoutes extends Routes
      * 
      * @uses \Src\Classes\Project\Wiki::ajaxGetManualText()
      * @uses \Src\Classes\Controller\ManualController::get()
+     * @uses \Src\Classes\Project\Statistics::getDashboardAjax()
      */
     protected static $getRoutes = [
         "/template/{template}" => [\Src\Classes\Controller\TemplateController::class, "ajaxGetTemplate"],
@@ -25,14 +26,11 @@ class VariousRoutes extends Routes
 
         "/manual/text/{key}" => [\Src\Classes\Project\Wiki::class, "ajaxGetManualText"],
         "/manual/{pageName}" => [\Src\Classes\Controller\ManualController::class, "get"],
+
+        "/stats/dashboard" => [\Src\Classes\Project\Statistics::class, "getDashboardAjax"],
     ];
 
-    /**
-     * @uses \Src\Classes\Project\Statistics::dispatcher()
-     */
-    protected static $postRoutes = [
-        "/stats" => [\Src\Classes\Project\Statistics::class, "dispatch"],
-    ];
+    protected static $postRoutes = [];
 
     protected static $putRoutes = [];
 

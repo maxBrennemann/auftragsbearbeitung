@@ -1,53 +1,87 @@
-<div class="defCont grid grid-cols-2">
-	<div class="w-96 border border-gray-200 rounded-lg p-2 bg-white">
-		<canvas id="ctxDiagram"></canvas>
-	</div>
-	<div>
+<div class="defCont">
+	<div class="flex flex-wrap items-end gap-2">
 		<div>
-			<h3>Dimensionen</h3>
-			<div id="dimCont"></div>
-			<div>
-				<select class="input-primary" id="dimSelect">
-					<option value="month">Monat</option>
-					<option value="year">Jahr</option>
-					<option value="ordertype">Auftragstyp</option>
-					<option value="customer">Kunde</option>
-					<option value="orderstate">Auftragsstatus</option>
-				</select>
-				<button class="btn-primary" data-fun="addDimension" data-binding="true">Hinzufügen</button>
-			</div>
+			<label class="block text-xs text-gray-500 mb-0.5" for="startDate">Startdatum</label>
+			<input type="date" id="startDate" class="input-primary">
 		</div>
 		<div>
-			<h3>Filter</h3>
-			<div id="filterCont"></div>
-			<div>
-				<select class="input-primary" id="filterSelect">
-					<option value="startdate">Startdatum</option>
-					<option value="enddate">Enddatum</option>
-					<option value="ordertype">Auftragstyp</option>
-					<option value="orderstate">Auftragsstatus</option>
-					<option value="customer">Kunde</option>
-					<option value="volume">Umsatz</option>
-					<option value="profit">Gewinn</option>
-				</select>
-				<button class="btn-primary" data-fun="addFilter" data-binding="true">Hinzufügen</button>
-			</div>
+			<label class="block text-xs text-gray-500 mb-0.5" for="endDate">Enddatum</label>
+			<input type="date" id="endDate" class="input-primary">
 		</div>
-		<div class="mt-2">
-			<button class="btn-primary" data-fun="generateDiagram" data-binding="true">Diagramm generieren</button>
-			<button class="btn-cancel" data-fun="resetDiagram" data-binding="true">Zurücksetzen</button>
+		<button class="btn-primary" data-fun="applyRange" data-binding="true">Anwenden</button>
+		<div class="ml-2 flex flex-wrap gap-1">
+			<button class="btn-cancel" data-fun="presetRange30" data-binding="true">30 Tage</button>
+			<button class="btn-cancel" data-fun="presetRange90" data-binding="true">90 Tage</button>
+			<button class="btn-cancel" data-fun="presetRange12Months" data-binding="true">12 Monate</button>
+			<button class="btn-cancel" data-fun="presetRangeYear" data-binding="true">Dieses Jahr</button>
 		</div>
 	</div>
 </div>
-<div class="hidden">
-	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 283.46 283.46" xml:space="preserve" id="iconDiagram">
-		<switch>
-			<g>
-				<g opacity=".98">
-					<path d="M88.594 200.477h19.493c6.778 0 12.286-5.518 12.286-12.305V50.482c0-6.787-5.508-12.295-12.286-12.295H88.594c-6.797 0-12.305 5.508-12.305 12.295v137.689c0 6.788 5.508 12.306 12.305 12.306zM151.193 200.477h19.492c6.777 0 12.285-5.518 12.285-12.305v-85.598c0-6.788-5.508-12.296-12.285-12.296h-19.492c-6.777 0-12.305 5.508-12.305 12.296v85.598c0 6.787 5.528 12.305 12.305 12.305zM213.793 200.477h19.492c6.797 0 12.285-5.518 12.285-12.305v-24.815c0-6.787-5.488-12.314-12.285-12.314h-19.492c-6.797 0-12.305 5.527-12.305 12.314v24.815c0 6.787 5.508 12.305 12.305 12.305z" />
-					<path d="M278.209 237.255H41.62V5.247a5.25 5.25 0 0 0-5.254-5.254c-2.891 0-5.234 2.354-5.234 5.254v232.008H5.252a5.24 5.24 0 0 0-5.254 5.244 5.243 5.243 0 0 0 5.254 5.254h25.879v30.46a5.24 5.24 0 0 0 5.234 5.254 5.243 5.243 0 0 0 5.254-5.254v-30.46h236.589a5.243 5.243 0 0 0 5.254-5.254 5.24 5.24 0 0 0-5.253-5.244z" />
-				</g>
-			</g>
-		</switch>
-	</svg>
+
+<div id="legacyCutoffNotice" class="hidden mx-2 mb-2 px-3 py-2 text-xs text-blue-800 bg-blue-50 border border-blue-200 rounded-lg"></div>
+
+<div class="defCont">
+	<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+		<div class="bg-white border border-gray-200 rounded-lg p-3">
+			<div class="text-xs text-gray-500">Aufträge im Zeitraum</div>
+			<div class="text-2xl font-semibold" id="kpiOrderCount">–</div>
+		</div>
+		<div class="bg-white border border-gray-200 rounded-lg p-3">
+			<div class="text-xs text-gray-500">Umsatz im Zeitraum</div>
+			<div class="text-2xl font-semibold" id="kpiRevenue">–</div>
+		</div>
+		<div class="bg-white border border-gray-200 rounded-lg p-3">
+			<div class="text-xs text-gray-500">Ø Zahlungsdauer</div>
+			<div class="text-2xl font-semibold" id="kpiPaymentDuration">–</div>
+		</div>
+		<div class="bg-white border border-gray-200 rounded-lg p-3">
+			<div class="text-xs text-gray-500">Offene Rechnungen</div>
+			<div class="text-2xl font-semibold" id="kpiOpenInvoices">–</div>
+		</div>
+		<div class="bg-white border border-gray-200 rounded-lg p-3">
+			<div class="text-xs text-gray-500">Davon überfällig (&gt;60 Tage)</div>
+			<div class="text-2xl font-semibold" id="kpiOverdueInvoices">–</div>
+		</div>
+	</div>
+</div>
+
+<div class="defCont">
+	<div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+		<div>
+			<h3>Auftragseingang</h3>
+			<div class="bg-white border border-gray-200 rounded-lg p-2 h-64">
+				<canvas id="chartOrders"></canvas>
+			</div>
+		</div>
+		<div>
+			<h3>Umsatz</h3>
+			<div class="bg-white border border-gray-200 rounded-lg p-2 h-64">
+				<canvas id="chartRevenue"></canvas>
+			</div>
+		</div>
+		<div>
+			<h3>Zahlungsdauer</h3>
+			<div class="bg-white border border-gray-200 rounded-lg p-2 h-64">
+				<canvas id="chartPaymentDuration"></canvas>
+			</div>
+		</div>
+		<div>
+			<h3>Offene Rechnungen nach Alter</h3>
+			<div class="bg-white border border-gray-200 rounded-lg p-2 h-64">
+				<canvas id="chartAging"></canvas>
+			</div>
+		</div>
+		<div>
+			<h3>Auftragsstatus</h3>
+			<div class="bg-white border border-gray-200 rounded-lg p-2 h-64">
+				<canvas id="chartPipeline"></canvas>
+			</div>
+		</div>
+		<div>
+			<h3>Top-Kunden <span class="text-xs text-gray-500 font-normal">(nach Umsatz im Zeitraum)</span></h3>
+			<div class="bg-white border border-gray-200 rounded-lg p-2 h-64">
+				<canvas id="chartTopCustomers"></canvas>
+			</div>
+		</div>
+	</div>
 </div>

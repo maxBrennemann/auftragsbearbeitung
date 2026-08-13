@@ -1,359 +1,481 @@
 import Chart from "chart.js/auto";
 import { ajax } from "js-classes/ajax";
 import { addBindings } from "js-classes/bindings";
-import { notification } from "js-classes/notifications";
 
 import { loader } from "../classes/helpers";
-import { QueryBuilder } from "../diagram/querybuilder";
-import { dateInput, numberInput } from "../diagram/validations";
-import { Filter, FilterField, FilterOp, FilterValue } from "../types/filters";
-import { label } from "../types/labels";
 import { FunctionMap } from "../types/types";
 
-const refs = {} as { [key: string]: HTMLElement };
 const fnNames = {} as FunctionMap;
 
-const state = {
-	dimensions: new Set<string>(),
-	filters: [] as Filter[],
-}
-
-const UNIQUE_FILTER_FIELDS = new Set<FilterField>([
-	"startdate",
-	"enddate",
-	"ordertype",
-	"orderstate",
-	"customer",
-]);
-
-const isUniqueField = (field: FilterField) => UNIQUE_FILTER_FIELDS.has(field);
-
-const OPS_BY_FIELD: Record<FilterField, FilterOp[]> = {
-	startdate: ["gte", "lte", "between"],
-	enddate: ["gte", "lte", "between"],
-	ordertype: ["in"],
-	orderstate: ["in"],
-	customer: ["in"],
-	volume: ["gt", "gte", "lt", "lte", "between"],
-	profit: ["gt", "gte", "lt", "lte", "between"],
+/**
+ * Matches the app's existing Tailwind accent colors (btn-primary green, btn-edit/active blue) rather than a
+ * generic chart palette, so the dashboard reads as part of the app instead of a bolted-on chart library.
+ */
+const COLORS = {
+	blue: "#2563eb",
+	green: "#16a34a",
+	amber: "#d97706",
+	gray: "#9ca3af",
 };
 
-const genId = () => `f_${Math.random().toString(36).slice(2, 10)}`;
+const STATUS_COLORS = {
+	good: "#0ca30c",
+	warning: "#fab219",
+	serious: "#ec835a",
+	critical: "#d03b3b",
+};
+
+const CHART_SURFACE = "#ffffff";
+const GRID_COLOR = "#e5e7eb";
+const MUTED_TEXT = "#6b7280";
+
+/** Order chosen so adjacent bars stay colorblind-distinguishable (blue-amber-gray-green passes; amber next to green does not). */
+const PIPELINE_COLORS: { [status: string]: string } = {
+	default: COLORS.blue,
+	finished: COLORS.amber,
+	archived: COLORS.gray,
+	invoiced: COLORS.green,
+};
+
+const AGING_COLORS: { [bucket: string]: string } = {
+	"0-30": STATUS_COLORS.good,
+	"31-60": STATUS_COLORS.warning,
+	"61-90": STATUS_COLORS.serious,
+	"90+": STATUS_COLORS.critical,
+};
+
+type DashboardPoint = { date: string; value: number | null };
+type PipelineEntry = { status: string; label: string; value: number };
+type AgingEntry = { bucket: string; label: string; count: number; amount: number };
+type TopCustomer = { name: string; value: number; orderCount: number };
+
+type Dashboard = {
+	range: { startDate: string; endDate: string };
+	legacyDataCutoff: string | null;
+	kpis: {
+		orderCount: number;
+		revenue: number;
+		avgPaymentDuration: number | null;
+		avgPaymentDurationSampleSize: number;
+		openInvoiceCount: number;
+		openInvoiceAmount: number;
+	};
+	ordersOverTime: DashboardPoint[];
+	revenueOverTime: DashboardPoint[];
+	paymentDurationOverTime: DashboardPoint[];
+	orderPipeline: PipelineEntry[];
+	openInvoiceAging: AgingEntry[];
+	topCustomers: TopCustomer[];
+};
+
+const charts: { [id: string]: Chart } = {};
+
+const currencyFormat = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
+const numberFormat = new Intl.NumberFormat("de-DE");
+const MONTHS = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
 
 const init = () => {
-	refs.ctxDiagram = document.getElementById("ctxDiagram") as HTMLElement;
 	initFromUrl();
-	loadDiagram();
+	loadDashboard();
 	addBindings(fnNames);
+};
+
+fnNames.click_applyRange = () => {
+	syncUrlFromInputs();
+	loadDashboard();
+};
+
+fnNames.click_presetRange30 = () => applyPreset(daysAgo(30), today());
+fnNames.click_presetRange90 = () => applyPreset(daysAgo(90), today());
+fnNames.click_presetRange12Months = () => applyPreset(monthsAgo(12), today());
+fnNames.click_presetRangeYear = () => applyPreset(`${new Date().getFullYear()}-01-01`, today());
+
+function applyPreset(startDate: string, endDate: string) {
+	(document.getElementById("startDate") as HTMLInputElement).value = startDate;
+	(document.getElementById("endDate") as HTMLInputElement).value = endDate;
+	syncUrlFromInputs();
+	loadDashboard();
 }
 
-fnNames.click_addDimension = () => {
-	const dimSelect = document.getElementById("dimSelect") as HTMLSelectElement;
-	const selectedDim = dimSelect.value;
-	if (!state.dimensions.has(selectedDim)) {
-		state.dimensions.add(selectedDim);
-		renderDimensions();
-	} else {
-		notification("Die Dimension existiert bereits.", "warning", "This dimension already exists.", 3000);
-	}
-};
-
-fnNames.click_addFilter = () => {
-	const filterSelect = document.getElementById("filterSelect") as HTMLSelectElement;
-	const field = filterSelect.value as FilterField;
-
-	if (isUniqueField(field) && state.filters.some(f => f.field === field)) {
-		notification("Der Filter existiert bereits.", "warning", "This filter already exists.", 3000);
-		return;
-	}
-
-	const defaultOp = OPS_BY_FIELD[field][0] ?? "eq";
-
-	const defaultValue: FilterValue =
-		field === "volume" || field === "profit"
-			? 0
-			: field === "startdate" || field === "enddate"
-				? ""
-				: [];
-
-	state.filters.push({
-		id: genId(),
-		field,
-		op: defaultOp,
-		value: defaultOp === "between" ? [0, 0] : defaultValue,
-	});
-
-	renderFilters();
-};
-
-fnNames.click_generateDiagram = async () => {
-	const response = await loadStats();
-};
-
-fnNames.click_resetDiagram = () => {
-	state.dimensions.clear();
-	state.filters = [];
-	renderDimensions();
-	renderFilters();
-};
-
-const loadDiagram = () => {
-	new Chart(refs.ctxDiagram as HTMLCanvasElement, {
-		type: "line",
-		data: {
-			labels: [],
-			datasets: [{
-				label: "Keine Daten geladen",
-				data: [],
-				borderColor: "#000",
-				backgroundColor: "#eee",
-			}],
-		},
-		options: {
-			plugins: {
-				legend: { display: false },
-				tooltip: { enabled: false },
-			},
-			scales: {
-				x: { display: false },
-				y: { display: false },
-			},
-		},
-		plugins: [
-			emptyStatePlugin("iconDiagram", "Keine Daten geladen"),
-		],
-	});
+function today(): string {
+	return new Date().toISOString().slice(0, 10);
 }
 
-const emptyStatePlugin = (svgElementId: string, text: string) => {
-	const svgEl = document.getElementById(svgElementId) as any;
-	const img = new Image();
-	let isReady = false;
-
-	if (svgEl) {
-		const svgString = new XMLSerializer().serializeToString(svgEl);
-		const svgBase64 = btoa(unescape(encodeURIComponent(svgString)));
-		img.src = `data:image/svg+xml;base64,${svgBase64}`;
-
-		img.onload = () => {
-			isReady = true;
-			const chart = Chart.getChart("ctxDiagram");
-			if (chart) chart.draw();
-		};
-	}
-
-	return {
-		id: "emptyState",
-		afterDraw(chart: any) {
-			const { datasets } = chart.data;
-			const hasData = datasets.length > 0 && datasets[0].data.length > 0;
-
-			if (!hasData && isReady) {
-				const { ctx, chartArea: { top, bottom, left, right, width, height } } = chart;
-				const centerX = (left + right) / 2;
-				const centerY = (top + bottom) / 2;
-				const iconSize = 60;
-
-				ctx.save();
-
-				ctx.globalAlpha = 0.2;
-				ctx.drawImage(img, centerX - iconSize / 2, centerY - iconSize, iconSize, iconSize);
-
-				ctx.globalAlpha = 1.0;
-				ctx.textAlign = 'center';
-				ctx.textBaseline = 'middle';
-				ctx.font = 'bold 14px sans-serif';
-				ctx.fillStyle = '#9ca3af';
-				ctx.fillText(text, centerX, centerY + 15);
-
-				ctx.restore();
-			}
-		}
-	}
-};
-
-const renderDimensions = () => {
-	const cont = document.getElementById("dimCont") as HTMLElement;
-	cont.innerHTML = "";
-
-	state.dimensions.forEach((dim: string) => {
-		const div = document.createElement("div");
-		div.className = "p-2 bg-gray-200 rounded-sm mr-2 mb-2 inline-block text-gray-700";
-		div.innerText = label(dim);
-
-		const removeBtn = document.createElement("button");
-		removeBtn.type = "button";
-		removeBtn.className = "btn-delete mr-0.5";
-		removeBtn.innerText = "✕";
-		div.appendChild(removeBtn);
-
-		removeBtn.addEventListener("click", () => {
-			state.dimensions.delete(dim);
-			renderDimensions();
-		});
-
-		cont.appendChild(div);
-	});
-
-	syncUrlFromState();
+function daysAgo(days: number): string {
+	const d = new Date();
+	d.setDate(d.getDate() - days);
+	return d.toISOString().slice(0, 10);
 }
 
-const renderFilters = () => {
-	const cont = document.getElementById("filterCont") as HTMLElement;
-	cont.innerHTML = "";
-
-	state.filters.forEach(filter => {
-		cont.appendChild(renderFilterRow(filter));
-	});
-
-	syncUrlFromState();
-};
-
-const renderFilterRow = (filter: Filter) => {
-	const row = document.createElement("div");
-	row.className = "p-2 bg-gray-200 rounded-sm mb-2 flex items-center gap-2";
-	row.dataset.filterId = filter.id;
-
-	const name = document.createElement("span");
-	name.className = "font-medium text-gray-700 min-w-[120px]";
-	name.innerText = label(filter.field);
-	row.appendChild(name);
-
-	const opSelect = document.createElement("select");
-	opSelect.className = "input-primary";
-	OPS_BY_FIELD[filter.field].forEach(op => {
-		const opt = document.createElement("option");
-		opt.value = op;
-		opt.text = opLabel(op);
-		if (op === filter.op) opt.selected = true;
-		opSelect.appendChild(opt);
-	});
-	row.appendChild(opSelect);
-
-	const valWrap = document.createElement("div");
-	valWrap.className = "flex items-center gap-2 flex-1";
-	row.appendChild(valWrap);
-
-	const removeBtn = document.createElement("button");
-	removeBtn.type = "button";
-	removeBtn.className = "btn-delete";
-	removeBtn.innerText = "✕";
-	row.appendChild(removeBtn);
-
-	renderValueInputs(valWrap, filter);
-
-	opSelect.addEventListener("change", () => {
-		filter.op = opSelect.value as FilterOp;
-
-		if (filter.op === "between") {
-			filter.value = [0, 0];
-		} else if (filter.field === "volume" || filter.field === "profit") {
-			filter.value = 0;
-		} else if (filter.field === "startdate" || filter.field === "enddate") {
-			filter.value = "";
-		} else {
-			filter.value = [];
-		}
-
-		renderFilters();
-	});
-
-	removeBtn.addEventListener("click", () => {
-		state.filters = state.filters.filter(f => f.id !== filter.id);
-		renderFilters();
-	});
-
-	return row;
-};
-
-const opLabel = (op: FilterOp) => {
-	switch (op) {
-		case "eq": return "=";
-		case "neq": return "≠";
-		case "in": return "ist in";
-		case "gt": return ">";
-		case "gte": return "≥";
-		case "lt": return "<";
-		case "lte": return "≤";
-		case "between": return "zwischen";
-		default: return op;
-	}
-};
-
-const renderValueInputs = (wrap: HTMLElement, filter: Filter) => {
-	wrap.innerHTML = "";
-
-	if (filter.field === "startdate" || filter.field === "enddate") {
-		if (filter.op === "between") {
-			const a = dateInput((filter.value as any)?.[0] ?? "", v => {
-				const cur = Array.isArray(filter.value) ? filter.value : ["", ""];
-				filter.value = [v, cur[1]] as any;
-			});
-			const b = dateInput((filter.value as any)?.[1] ?? "", v => {
-				const cur = Array.isArray(filter.value) ? filter.value : ["", ""];
-				filter.value = [cur[0], v] as any;
-			});
-			wrap.appendChild(a);
-			wrap.appendChild(b);
-		} else {
-			const i = dateInput((filter.value as string) ?? "", v => (filter.value = v));
-			wrap.appendChild(i);
-		}
-		return;
-	}
-
-	if (filter.field === "volume" || filter.field === "profit") {
-		if (filter.op === "between") {
-			const cur = Array.isArray(filter.value) ? (filter.value as any) : [0, 0];
-			const a = numberInput(cur[0] ?? 0, v => (filter.value = [v, cur[1] ?? 0]));
-			const b = numberInput(cur[1] ?? 0, v => (filter.value = [cur[0] ?? 0, v]));
-			wrap.appendChild(a);
-			wrap.appendChild(b);
-		} else {
-			const i = numberInput((filter.value as number) ?? 0, v => (filter.value = v));
-			wrap.appendChild(i);
-		}
-		return;
-	}
-
-	const input = document.createElement("input");
-	input.className = "input-primary flex-1";
-	input.type = "text";
-	input.placeholder = "Werte (kommagetrennt), z.B. A,B,C";
-
-	const current = Array.isArray(filter.value) ? filter.value : [];
-	input.value = current.join(",");
-
-	input.addEventListener("input", () => {
-		const parts = input.value
-			.split(",")
-			.map(s => s.trim())
-			.filter(Boolean);
-		filter.value = parts;
-	});
-
-	wrap.appendChild(input);
-};
-
-async function loadStats() {
-	const payload = QueryBuilder.toPayload(state);
-
-	return ajax.post("/api/v1/stats", payload, true);
-}
-
-function syncUrlFromState() {
-	const payload = QueryBuilder.toPayload(state);
-	const url = QueryBuilder.toUrl(payload);
-
-	window.history.replaceState({}, "", url);
+function monthsAgo(months: number): string {
+	const d = new Date();
+	d.setMonth(d.getMonth() - months);
+	return d.toISOString().slice(0, 10);
 }
 
 function initFromUrl() {
-	const payload = QueryBuilder.fromUrl();
-	QueryBuilder.applyToState(payload, state);
+	const params = new URLSearchParams(window.location.search);
+	const startDate = params.get("startDate") ?? monthsAgo(12);
+	const endDate = params.get("endDate") ?? today();
 
-	renderDimensions();
-	renderFilters();
+	(document.getElementById("startDate") as HTMLInputElement).value = startDate;
+	(document.getElementById("endDate") as HTMLInputElement).value = endDate;
+}
+
+function syncUrlFromInputs() {
+	const startDate = (document.getElementById("startDate") as HTMLInputElement).value;
+	const endDate = (document.getElementById("endDate") as HTMLInputElement).value;
+
+	const params = new URLSearchParams();
+	if (startDate) params.set("startDate", startDate);
+	if (endDate) params.set("endDate", endDate);
+
+	window.history.replaceState({}, "", `${window.location.pathname}?${params.toString()}`);
+}
+
+async function loadDashboard() {
+	const startDate = (document.getElementById("startDate") as HTMLInputElement).value;
+	const endDate = (document.getElementById("endDate") as HTMLInputElement).value;
+
+	const response = await ajax.get<Dashboard>("/api/v1/stats/dashboard", { startDate, endDate });
+
+	if (!response.success || !response.data) {
+		return;
+	}
+
+	renderLegacyCutoffNotice(response.data.legacyDataCutoff);
+	renderKpis(response.data);
+	renderOrdersChart(response.data.ordersOverTime);
+	renderRevenueChart(response.data.revenueOverTime);
+	renderPaymentDurationChart(response.data.paymentDurationOverTime);
+	renderAgingChart(response.data.openInvoiceAging);
+	renderPipelineChart(response.data.orderPipeline);
+	renderTopCustomersChart(response.data.topCustomers);
+}
+
+function renderLegacyCutoffNotice(cutoff: string | null) {
+	const el = document.getElementById("legacyCutoffNotice");
+	if (!el) return;
+
+	if (!cutoff) {
+		el.classList.add("hidden");
+		return;
+	}
+
+	const [year, month, day] = cutoff.split("-");
+	el.innerText = `Hinweis: Umsatz, Zahlungsdauer, offene Rechnungen und Top-Kunden berücksichtigen aufgrund der Einstellung "Altdaten ausblenden" nur Rechnungen ab ${day}.${month}.${year}.`;
+	el.classList.remove("hidden");
+}
+
+/** Below this, payment_date is too sparsely recorded historically for the average to mean anything - see Statistics::getPaymentDurationOverTime(). */
+const MIN_RELIABLE_PAYMENT_SAMPLE = 10;
+
+function renderKpis(dashboard: Dashboard) {
+	const { kpis, openInvoiceAging } = dashboard;
+
+	setText("kpiOrderCount", numberFormat.format(kpis.orderCount));
+	setText("kpiRevenue", currencyFormat.format(kpis.revenue));
+	setText("kpiPaymentDuration", paymentDurationLabel(kpis.avgPaymentDuration, kpis.avgPaymentDurationSampleSize));
+	setText("kpiOpenInvoices", `${currencyFormat.format(kpis.openInvoiceAmount)} (${numberFormat.format(kpis.openInvoiceCount)})`);
+
+	const overdue = openInvoiceAging.filter(b => b.bucket === "61-90" || b.bucket === "90+");
+	const overdueCount = overdue.reduce((sum, b) => sum + b.count, 0);
+	const overdueAmount = overdue.reduce((sum, b) => sum + b.amount, 0);
+	setText("kpiOverdueInvoices", `${currencyFormat.format(overdueAmount)} (${numberFormat.format(overdueCount)})`);
+}
+
+function paymentDurationLabel(avgDays: number | null, sampleSize: number): string {
+	if (avgDays == null || sampleSize === 0) return "–";
+	if (sampleSize < MIN_RELIABLE_PAYMENT_SAMPLE) return `${numberFormat.format(avgDays)} Tage (n=${sampleSize}, wenig Daten)`;
+	return `${numberFormat.format(avgDays)} Tage (n=${sampleSize})`;
+}
+
+function setText(id: string, text: string) {
+	const el = document.getElementById(id);
+	if (el) el.innerText = text;
+}
+
+function monthLabel(dateStr: string): string {
+	const [year, month] = dateStr.split("-");
+	const monthIndex = parseInt(month, 10) - 1;
+	return `${MONTHS[monthIndex] ?? month} ${year.slice(2)}`;
+}
+
+function destroyChart(canvasId: string) {
+	charts[canvasId]?.destroy();
+	delete charts[canvasId];
+}
+
+const EMPTY_STATE_ATTR = "data-empty-state";
+
+function showEmptyState(canvasId: string) {
+	const canvas = document.getElementById(canvasId) as HTMLCanvasElement | null;
+	if (!canvas) return;
+
+	canvas.style.display = "none";
+
+	const wrap = canvas.parentElement as HTMLElement;
+	let msg = wrap.querySelector<HTMLElement>(`[${EMPTY_STATE_ATTR}]`);
+	if (!msg) {
+		msg = document.createElement("div");
+		msg.setAttribute(EMPTY_STATE_ATTR, "true");
+		msg.className = "h-full flex items-center justify-center text-sm text-gray-400";
+		wrap.appendChild(msg);
+	}
+	msg.innerText = "Keine Daten im Zeitraum";
+}
+
+function hideEmptyState(canvasId: string) {
+	const canvas = document.getElementById(canvasId) as HTMLCanvasElement | null;
+	if (!canvas) return;
+
+	canvas.style.display = "";
+	canvas.parentElement?.querySelector(`[${EMPTY_STATE_ATTR}]`)?.remove();
+}
+
+function lineChart(canvasId: string, points: DashboardPoint[], color: string, valueFormatter: (v: number) => string) {
+	destroyChart(canvasId);
+	hideEmptyState(canvasId);
+
+	if (points.length === 0) {
+		showEmptyState(canvasId);
+		return;
+	}
+
+	const ctx = document.getElementById(canvasId) as HTMLCanvasElement;
+	charts[canvasId] = new Chart(ctx, {
+		type: "line",
+		data: {
+			labels: points.map(p => monthLabel(p.date)),
+			datasets: [{
+				data: points.map(p => p.value ?? 0),
+				borderColor: color,
+				backgroundColor: hexToRgba(color, 0.1),
+				fill: true,
+				tension: 0.3,
+				borderWidth: 2,
+				pointRadius: 4,
+				pointHoverRadius: 6,
+				pointBackgroundColor: color,
+				pointBorderColor: CHART_SURFACE,
+				pointBorderWidth: 2,
+			}],
+		},
+		options: {
+			responsive: true,
+			maintainAspectRatio: false,
+			plugins: {
+				legend: { display: false },
+				tooltip: { callbacks: { label: c => valueFormatter(c.parsed.y ?? 0) } },
+			},
+			scales: {
+				x: { grid: { display: false }, ticks: { color: MUTED_TEXT } },
+				y: {
+					beginAtZero: true,
+					grid: { color: GRID_COLOR },
+					border: { display: false },
+					ticks: { color: MUTED_TEXT, callback: v => valueFormatter(v as number) },
+				},
+			},
+		},
+	});
+}
+
+function renderOrdersChart(points: DashboardPoint[]) {
+	lineChart("chartOrders", points, COLORS.blue, v => numberFormat.format(v));
+}
+
+function renderRevenueChart(points: DashboardPoint[]) {
+	lineChart("chartRevenue", points, COLORS.green, v => currencyFormat.format(v));
+}
+
+function renderPaymentDurationChart(points: DashboardPoint[]) {
+	lineChart("chartPaymentDuration", points, COLORS.amber, v => `${numberFormat.format(v)} Tage`);
+}
+
+const valueLabelPlugin = (formatter: (v: number) => string, horizontal = false) => ({
+	id: "valueLabels",
+	afterDatasetsDraw(chart: Chart) {
+		const meta = chart.getDatasetMeta(0);
+		const data = chart.data.datasets[0].data as number[];
+
+		chart.ctx.save();
+		chart.ctx.fillStyle = "#374151";
+		chart.ctx.font = "600 11px sans-serif";
+		chart.ctx.textAlign = horizontal ? "left" : "center";
+		chart.ctx.textBaseline = "middle";
+
+		meta.data.forEach((element, index) => {
+			const value = data[index];
+			if (value == null) return;
+			const pos = element.tooltipPosition(true);
+			if (pos.x == null || pos.y == null) return;
+			const label = formatter(value);
+
+			if (horizontal) {
+				chart.ctx.fillText(label, pos.x + 6, pos.y);
+			} else {
+				chart.ctx.fillText(label, pos.x, pos.y - 10);
+			}
+		});
+
+		chart.ctx.restore();
+	},
+});
+
+function renderAgingChart(buckets: AgingEntry[]) {
+	destroyChart("chartAging");
+	hideEmptyState("chartAging");
+
+	const canvas = document.getElementById("chartAging") as HTMLCanvasElement;
+	const hasData = buckets.some(b => b.count > 0);
+	if (!hasData) {
+		showEmptyState("chartAging");
+		return;
+	}
+
+	charts.chartAging = new Chart(canvas, {
+		type: "bar",
+		data: {
+			labels: buckets.map(b => b.label),
+			datasets: [{
+				data: buckets.map(b => b.amount),
+				backgroundColor: buckets.map(b => AGING_COLORS[b.bucket] ?? COLORS.blue),
+				borderRadius: 4,
+				maxBarThickness: 48,
+			}],
+		},
+		options: {
+			responsive: true,
+			maintainAspectRatio: false,
+			layout: { padding: { top: 20 } },
+			plugins: {
+				legend: { display: false },
+				tooltip: {
+					callbacks: {
+						label: c => {
+							const bucket = buckets[c.dataIndex];
+							return `${currencyFormat.format(bucket.amount)} (${bucket.count} Rechnungen)`;
+						},
+					},
+				},
+			},
+			scales: {
+				x: { grid: { display: false }, ticks: { color: MUTED_TEXT } },
+				y: {
+					beginAtZero: true,
+					grid: { color: GRID_COLOR },
+					border: { display: false },
+					ticks: { color: MUTED_TEXT, callback: v => currencyFormat.format(v as number) },
+				},
+			},
+		},
+		plugins: [valueLabelPlugin(v => currencyFormat.format(v))],
+	});
+}
+
+function renderPipelineChart(pipeline: PipelineEntry[]) {
+	destroyChart("chartPipeline");
+	hideEmptyState("chartPipeline");
+
+	const canvas = document.getElementById("chartPipeline") as HTMLCanvasElement;
+	const hasData = pipeline.some(p => p.value > 0);
+	if (!hasData) {
+		showEmptyState("chartPipeline");
+		return;
+	}
+
+	charts.chartPipeline = new Chart(canvas, {
+		type: "bar",
+		data: {
+			labels: pipeline.map(p => p.label),
+			datasets: [{
+				data: pipeline.map(p => p.value),
+				backgroundColor: pipeline.map(p => PIPELINE_COLORS[p.status] ?? COLORS.blue),
+				borderRadius: 4,
+				maxBarThickness: 48,
+			}],
+		},
+		options: {
+			responsive: true,
+			maintainAspectRatio: false,
+			layout: { padding: { top: 20 } },
+			plugins: {
+				legend: { display: false },
+				tooltip: { callbacks: { label: c => `${numberFormat.format(c.parsed.y ?? 0)} Aufträge` } },
+			},
+			scales: {
+				x: { grid: { display: false }, ticks: { color: MUTED_TEXT } },
+				y: {
+					beginAtZero: true,
+					grid: { color: GRID_COLOR },
+					border: { display: false },
+					ticks: { color: MUTED_TEXT, stepSize: 1 },
+				},
+			},
+		},
+		plugins: [valueLabelPlugin(v => numberFormat.format(v))],
+	});
+}
+
+function renderTopCustomersChart(customers: TopCustomer[]) {
+	destroyChart("chartTopCustomers");
+	hideEmptyState("chartTopCustomers");
+
+	if (customers.length === 0) {
+		showEmptyState("chartTopCustomers");
+		return;
+	}
+
+	const sorted = [...customers].sort((a, b) => a.value - b.value);
+	const canvas = document.getElementById("chartTopCustomers") as HTMLCanvasElement;
+
+	charts.chartTopCustomers = new Chart(canvas, {
+		type: "bar",
+		data: {
+			labels: sorted.map(c => c.name),
+			datasets: [{
+				data: sorted.map(c => c.value),
+				backgroundColor: COLORS.blue,
+				borderRadius: 4,
+				maxBarThickness: 22,
+			}],
+		},
+		options: {
+			indexAxis: "y",
+			responsive: true,
+			maintainAspectRatio: false,
+			layout: { padding: { right: 70 } },
+			plugins: {
+				legend: { display: false },
+				tooltip: {
+					callbacks: {
+						label: c => {
+							const customer = sorted[c.dataIndex];
+							return `${currencyFormat.format(customer.value)} (${customer.orderCount} Rechnungen)`;
+						},
+					},
+				},
+			},
+			scales: {
+				x: {
+					beginAtZero: true,
+					grid: { color: GRID_COLOR },
+					border: { display: false },
+					ticks: { color: MUTED_TEXT, callback: v => currencyFormat.format(v as number) },
+				},
+				y: { grid: { display: false }, ticks: { color: MUTED_TEXT } },
+			},
+		},
+		plugins: [valueLabelPlugin(v => currencyFormat.format(v), true)],
+	});
+}
+
+function hexToRgba(hex: string, alpha: number): string {
+	const r = parseInt(hex.slice(1, 3), 16);
+	const g = parseInt(hex.slice(3, 5), 16);
+	const b = parseInt(hex.slice(5, 7), 16);
+	return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
 loader(init);

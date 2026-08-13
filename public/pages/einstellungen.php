@@ -104,6 +104,18 @@ $companyLogo = Src\Classes\Project\Image::getLogo();
                     <span>Überschreibt den aktuellen Zählerstand.</span>
                 </p>
             </div>
+
+            <div class="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <label class="block text-sm font-bold text-blue-800 mb-2">Auswertungen: Altdaten ausblenden</label>
+                <input type="date" class="input-primary w-full"
+                    value="<?= Settings::get('statistics.legacyDataCutoff') ?>"
+                    data-write="true" data-fun="changeSetting" data-setting="statistics.legacyDataCutoff">
+                <p class="text-xs text-blue-600 mt-2">
+                    Rechnungen vor diesem Datum fließen nicht in Umsatz-, Zahlungsdauer-, offene-Rechnungen- und
+                    Top-Kunden-Auswertungen unter /diagramme ein, z. B. bei unvollständigen Übernahmedaten aus einem
+                    alten Rechnungsprogramm. Leer lassen, um alle Daten einzubeziehen.
+                </p>
+            </div>
         </div>
     </div>
 
