@@ -245,59 +245,7 @@ class Auftrag implements NotifiableEntity
         $id = (int) Tools::get("id");
         $data = Posten::getOrderItems($id, ClientSettings::getFilterOrderPosten(), 0);
 
-        $parsedData = [];
-
-        $mLenQuantity = 0;
-        $mLenPrice = 0;
-        $mLenTotalPrice = 0;
-        $mLenPurchasePrice = 0;
-
-        foreach ($data as $key => $value) {
-            $item = [];
-            $item["type"] = "posten";
-
-            if ($value instanceof Zeit) {
-                $item["type"] = "time";
-            } elseif ($value instanceof Leistung) {
-                $item["type"] = "service";
-            }
-
-            $item["position"] = $value->getPosition();
-            $item["price"] = $value->bekommeEinzelPreis();
-            $item["totalPrice"] = $value->bekommePreis();
-
-            $value = $value->fillToArray([]);
-            $item["id"] = $value["Postennummer"];
-            $item["name"] = $value["Bezeichnung"];
-            $item["description"] = $value["Beschreibung"];
-            $item["quantity"] = $value["Anzahl"];
-            $item["price"] = $value["Preis"];
-            $item["unit"] = $value["MEH"];
-            $item["totalPrice"] = $value["Gesamtpreis"];
-            $item["purchasePrice"] = $value["Einkaufspreis"];
-            $item["extraData"] = $value["extraData"] ?? [];
-
-            if ($item["type"] == "time") {
-                $mLenQuantity = max($mLenQuantity, strlen((string) $value["quantityAbsolute"]));
-            } else {
-                $mLenQuantity = max($mLenQuantity, strlen((string) $item["quantity"]));
-            }
-            
-            $mLenPrice = max($mLenPrice, strlen((string) $item["price"]));
-            $mLenTotalPrice = max($mLenTotalPrice, strlen((string) $item["totalPrice"]));
-            $mLenPurchasePrice = max($mLenPurchasePrice, strlen((string) $item["purchasePrice"]));
-
-            $parsedData[] = $item;
-        }
-
-        foreach ($parsedData as $key => $value) {
-            $parsedData[$key]["quantity"] = str_pad((string) $value["quantity"], $mLenQuantity, " ", STR_PAD_LEFT);
-            $parsedData[$key]["price"] = str_pad((string) $value["price"], $mLenPrice, " ", STR_PAD_LEFT);
-            $parsedData[$key]["totalPrice"] = str_pad((string) $value["totalPrice"], $mLenTotalPrice, " ", STR_PAD_LEFT);
-            $parsedData[$key]["purchasePrice"] = str_pad((string) $value["purchasePrice"], $mLenPurchasePrice, " ", STR_PAD_LEFT);
-        }
-
-        JSONResponseHandler::sendResponse($parsedData);
+        JSONResponseHandler::sendResponse(Posten::formatItemsForTable($data));
     }
 
     public static function getOrderItem(int $id): void {}

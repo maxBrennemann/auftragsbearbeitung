@@ -51,18 +51,41 @@ abstract class Posten
      */
     public static function getOrderItems(int $orderId, bool $isInvoice = false, int $status = 0): array
     {
-        $items = [];
-
         $invoiceQuery = "";
         if ($isInvoice) {
             $invoiceQuery = "AND isInvoice = $status";
         }
-        $query = "SELECT 
-				p.Postennummer as id, 
-				Posten as `type`, 
-				ohneBerechnung as free_of_charge, 
-				discount, 
-				isInvoice as is_invoice, 
+
+        $query = self::itemSelectQuery("WHERE Auftragsnummer = :parentId $invoiceQuery");
+        $data = DBAccess::selectQuery($query, [
+            "parentId" => $orderId,
+        ]);
+
+        return self::mapRowsToPosten($data);
+    }
+
+    /**
+     * @param int $offerId
+     * @return array<Leistung|ProduktPosten|Zeit>
+     */
+    public static function getOfferItems(int $offerId): array
+    {
+        $query = self::itemSelectQuery("WHERE offer_id = :parentId");
+        $data = DBAccess::selectQuery($query, [
+            "parentId" => $offerId,
+        ]);
+
+        return self::mapRowsToPosten($data);
+    }
+
+    private static function itemSelectQuery(string $where): string
+    {
+        return "SELECT
+				p.Postennummer as id,
+				Posten as `type`,
+				ohneBerechnung as free_of_charge,
+				discount,
+				isInvoice as is_invoice,
 				position,
 				l.Beschreibung as l_description,
 				l.SpeziefischerPreis as l_price,
@@ -86,15 +109,19 @@ abstract class Posten
 				ON p.Postennummer = pp.Postennummer
 			LEFT JOIN zeit z
 				ON p.Postennummer = z.Postennummer
-			LEFT JOIN product_compact pc 
+			LEFT JOIN product_compact pc
 				ON p.Postennummer = pc.postennummer
-			WHERE Auftragsnummer = :orderId
-				$invoiceQuery
+			$where
 			ORDER BY p.position;";
+    }
 
-        $data = DBAccess::selectQuery($query, [
-            "orderId" => $orderId,
-        ]);
+    /**
+     * @param array<int, array<string, mixed>> $data
+     * @return array<Leistung|ProduktPosten|Zeit>
+     */
+    private static function mapRowsToPosten(array $data): array
+    {
+        $items = [];
 
         foreach ($data as $row) {
             $type = $row["type"];
@@ -156,7 +183,7 @@ abstract class Posten
                 default:
                     continue 2;
             }
-            
+
             $item->postennummer = (int) $row["id"];
             $items[] = $item;
         }
@@ -167,36 +194,120 @@ abstract class Posten
     protected static function getOrderItem(int $orderId, int $postenId): Leistung|ProduktPosten|Zeit|false
     {
         $data = Posten::getOrderItems($orderId);
-        $data = array_filter($data, 
+        $data = array_filter($data,
+            fn($item) => $item->getPostennummer() == $postenId);
+        return reset($data);
+    }
+
+    protected static function getOfferItem(int $offerId, int $postenId): Leistung|ProduktPosten|Zeit|false
+    {
+        $data = Posten::getOfferItems($offerId);
+        $data = array_filter($data,
             fn($item) => $item->getPostennummer() == $postenId);
         return reset($data);
     }
 
     /**
+     * formats loaded posten into the flat, padded structure the frontend items table expects
+     *
+     * @param array<Leistung|ProduktPosten|Zeit> $items
+     * @return array<int, array<string, mixed>>
+     */
+    public static function formatItemsForTable(array $items): array
+    {
+        $parsedData = [];
+
+        $mLenQuantity = 0;
+        $mLenPrice = 0;
+        $mLenTotalPrice = 0;
+        $mLenPurchasePrice = 0;
+
+        foreach ($items as $value) {
+            $item = [];
+            $item["type"] = "posten";
+
+            if ($value instanceof Zeit) {
+                $item["type"] = "time";
+            } elseif ($value instanceof Leistung) {
+                $item["type"] = "service";
+            }
+
+            $item["position"] = $value->getPosition();
+
+            $value = $value->fillToArray([]);
+            $item["id"] = $value["Postennummer"];
+            $item["name"] = $value["Bezeichnung"];
+            $item["description"] = $value["Beschreibung"];
+            $item["quantity"] = $value["Anzahl"];
+            $item["price"] = $value["Preis"];
+            $item["unit"] = $value["MEH"];
+            $item["totalPrice"] = $value["Gesamtpreis"];
+            $item["purchasePrice"] = $value["Einkaufspreis"];
+            $item["extraData"] = $value["extraData"] ?? [];
+
+            if ($item["type"] == "time") {
+                $mLenQuantity = max($mLenQuantity, strlen((string) $value["quantityAbsolute"]));
+            } else {
+                $mLenQuantity = max($mLenQuantity, strlen((string) $item["quantity"]));
+            }
+
+            $mLenPrice = max($mLenPrice, strlen((string) $item["price"]));
+            $mLenTotalPrice = max($mLenTotalPrice, strlen((string) $item["totalPrice"]));
+            $mLenPurchasePrice = max($mLenPurchasePrice, strlen((string) $item["purchasePrice"]));
+
+            $parsedData[] = $item;
+        }
+
+        foreach ($parsedData as $key => $value) {
+            $parsedData[$key]["quantity"] = str_pad((string) $value["quantity"], $mLenQuantity, " ", STR_PAD_LEFT);
+            $parsedData[$key]["price"] = str_pad((string) $value["price"], $mLenPrice, " ", STR_PAD_LEFT);
+            $parsedData[$key]["totalPrice"] = str_pad((string) $value["totalPrice"], $mLenTotalPrice, " ", STR_PAD_LEFT);
+            $parsedData[$key]["purchasePrice"] = str_pad((string) $value["purchasePrice"], $mLenPurchasePrice, " ", STR_PAD_LEFT);
+        }
+
+        return $parsedData;
+    }
+
+    /**
      * @param string $type
      * @param array<string, mixed> $data
+     * @param int|null $offerId when set, the posten is attached to an offer instead of an order
      * @return int[]
      */
-    public static function insertPosten(string $type, array $data): array
+    public static function insertPosten(string $type, array $data, ?int $offerId = null): array
     {
-        $auftragsnummer = (int) $data['Auftragsnummer'];
+        $auftragsnummer = $offerId === null ? (int) $data['Auftragsnummer'] : null;
         $subPosten = 0;
 
         $ohneBerechnung = $data['ohneBerechnung'];
         $discount = $data['discount'] == null ? 0 : $data['discount'];
         $addToInvoice = $data['addToInvoice'] == null ? 0 : $data['addToInvoice'];
 
-        $postennummer = DBAccess::insertQuery("INSERT INTO posten (Auftragsnummer, Posten, ohneBerechnung, discount, isInvoice, position) 
-			SELECT :auftragsnummer, :type, :ohneBerechnung, :discount, :addToInvoice, count(*) + 1 
-			FROM posten 
-			WHERE Auftragsnummer = :auftragsnummer_check", [
-            "auftragsnummer" => $auftragsnummer,
-            "type" => $type,
-            "ohneBerechnung" => $ohneBerechnung,
-            "discount" => $discount,
-            "addToInvoice" => $addToInvoice,
-            "auftragsnummer_check" => $auftragsnummer,
-        ]);
+        if ($offerId !== null) {
+            $postennummer = DBAccess::insertQuery("INSERT INTO posten (offer_id, Posten, ohneBerechnung, discount, isInvoice, position)
+					SELECT :offerId, :type, :ohneBerechnung, :discount, :addToInvoice, count(*) + 1
+					FROM posten
+					WHERE offer_id = :offerId_check", [
+                "offerId" => $offerId,
+                "type" => $type,
+                "ohneBerechnung" => $ohneBerechnung,
+                "discount" => $discount,
+                "addToInvoice" => $addToInvoice,
+                "offerId_check" => $offerId,
+            ]);
+        } else {
+            $postennummer = DBAccess::insertQuery("INSERT INTO posten (Auftragsnummer, Posten, ohneBerechnung, discount, isInvoice, position)
+					SELECT :auftragsnummer, :type, :ohneBerechnung, :discount, :addToInvoice, count(*) + 1
+					FROM posten
+					WHERE Auftragsnummer = :auftragsnummer_check", [
+                "auftragsnummer" => $auftragsnummer,
+                "type" => $type,
+                "ohneBerechnung" => $ohneBerechnung,
+                "discount" => $discount,
+                "addToInvoice" => $addToInvoice,
+                "auftragsnummer_check" => $auftragsnummer,
+            ]);
+        }
 
         switch ($type) {
             case "zeit":
@@ -233,7 +344,7 @@ abstract class Posten
                 break;
         }
 
-        if ($auftragsnummer != -1) {
+        if ($offerId === null && $auftragsnummer != -1) {
             OrderHistory::add($auftragsnummer, $postennummer, OrderHistory::TYPE_ITEM, OrderHistory::STATE_ADDED, $data['Beschreibung']);
         }
 
@@ -244,18 +355,23 @@ abstract class Posten
     {
         $idItem = (int) Tools::get("itemId");
 
-        $query = "SELECT Auftragsnummer FROM posten WHERE Postennummer = :id;";
+        $query = "SELECT Auftragsnummer, offer_id FROM posten WHERE Postennummer = :id;";
         $data = DBAccess::selectQuery($query, [
             "id" => $idItem,
         ]);
         $orderId = (int) $data[0]["Auftragsnummer"];
+        $offerId = (int) $data[0]["offer_id"];
 
         $query = "DELETE FROM posten WHERE Postennummer = :id;";
         DBAccess::deleteQuery($query, [
             "id" => $idItem,
         ]);
 
-        self::addPosition($orderId);
+        if ($orderId != 0) {
+            self::addPosition($orderId);
+        } elseif ($offerId != 0) {
+            self::addOfferPosition($offerId);
+        }
     }
 
     public static function addPosition(int $orderId): void
@@ -270,10 +386,29 @@ abstract class Posten
             ON p.Postennummer = sub.Postennummer
             SET p.position = sub.new_position
             WHERE p.Auftragsnummer = :orderId2;";
-        
+
         DBAccess::updateQuery($query, [
             "orderId1" => $orderId,
             "orderId2" => $orderId,
+        ]);
+    }
+
+    public static function addOfferPosition(int $offerId): void
+    {
+        $query = "UPDATE posten p
+            JOIN (
+                SELECT Postennummer,
+                    ROW_NUMBER() OVER (ORDER BY position) AS new_position
+                FROM posten
+                WHERE offer_id = :offerId1
+            ) AS sub
+            ON p.Postennummer = sub.Postennummer
+            SET p.position = sub.new_position
+            WHERE p.offer_id = :offerId2;";
+
+        DBAccess::updateQuery($query, [
+            "offerId1" => $offerId,
+            "offerId2" => $offerId,
         ]);
     }
 

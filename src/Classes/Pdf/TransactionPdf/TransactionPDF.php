@@ -36,7 +36,12 @@ class TransactionPDF extends PDFGenerator
 
         $this->orderId = $orderId;
         $this->order = new Auftrag($orderId);
-        $this->customer = new Kunde($this->order->getKundennummer());
+
+        /* orderId <= 0 means there is no underlying Auftrag yet (e.g. an Angebot) - subclasses are
+         * responsible for setting $this->customer themselves in that case */
+        if ($orderId > 0) {
+            $this->customer = new Kunde($this->order->getKundennummer());
+        }
 
         $this->companyDetails = CompanyProfile::get();
     }

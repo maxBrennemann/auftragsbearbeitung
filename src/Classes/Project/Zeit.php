@@ -354,8 +354,39 @@ class Zeit extends Posten
     {
         $idItem = (int) Tools::get("itemId");
         $data = self::getPostenData($idItem);
-        
+
         JSONResponseHandler::sendResponse($data);
+    }
+
+    public static function addToOffer(): void
+    {
+        $offerId = (int) Tools::get("id");
+
+        $data = [];
+        $data["ZeitInMinuten"] = (int) Tools::get("time");
+        $data["Stundenlohn"] = (float) Tools::get("wage");
+        $data["Beschreibung"] = (string) Tools::get("description");
+        $data["ohneBerechnung"] = Tools::get("noPayment");
+        $data["discount"] = (int) Tools::get("discount");
+        $data["addToInvoice"] = 0;
+
+        $ids = Posten::insertPosten("zeit", $data, $offerId);
+
+        /* erweiterte Zeiterfassung */
+        $zeiterfassung = json_decode(Tools::get("times"), true);
+        if (count($zeiterfassung) != 0) {
+            self::erweiterteZeiterfassung($zeiterfassung, $ids[1]);
+        }
+
+        $item = self::getOfferItem($offerId, $ids[0]);
+        if ($item === false || !$item instanceof Zeit) {
+            return;
+        }
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+            "data" => Posten::formatItemsForTable([$item])[0],
+        ]);
     }
 
     public static function update(): void

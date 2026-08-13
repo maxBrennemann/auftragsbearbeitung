@@ -448,12 +448,19 @@ const addTime = (): void => {
     }
 
     const data = getTimeData(wage);
+    const url = config.type === "offer"
+        ? `/api/v1/order-items/offer/${itemsConf.orderId}/times`
+        : `/api/v1/order-items/${itemsConf.orderId}/times`;
 
-    ajax.post(`/api/v1/order-items/${itemsConf.orderId}/times`, data).then((r: any) => resetTimeInputs(r));
+    ajax.post(url, data).then((r: any) => resetTimeInputs(r));
 }
 
 const addService = () => {
-    ajax.post(`/api/v1/order-items/${itemsConf.orderId}/services`, getServiceData()).then((r: any) => resetServiceInputs(r));
+    const url = config.type === "offer"
+        ? `/api/v1/order-items/offer/${itemsConf.orderId}/services`
+        : `/api/v1/order-items/${itemsConf.orderId}/services`;
+
+    ajax.post(url, getServiceData()).then((r: any) => resetServiceInputs(r));
 }
 
 functionNames.click_showItemsMenu = () => {
@@ -617,8 +624,9 @@ const updateTable = (data: any): void => {
     }
 }
 
-export const initInvoiceItems = (orderId = 0): void => {
+export const initInvoiceItems = (orderId = 0, type: string = "order"): void => {
     itemsConf.orderId = orderId;
+    config.type = type;
     addBindings(functionNames);
     initItems();
 }

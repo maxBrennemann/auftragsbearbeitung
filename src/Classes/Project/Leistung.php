@@ -256,8 +256,37 @@ class Leistung extends Posten
     {
         $idItem = (int) Tools::get("itemId");
         $data = self::getPostenData($idItem);
-        
+
         JSONResponseHandler::sendResponse($data);
+    }
+
+    public static function addToOffer(): void
+    {
+        $offerId = (int) Tools::get("id");
+
+        $data = [];
+        $data['Leistungsnummer'] = (int) Tools::get("lei");
+        $data['Beschreibung'] = (string) Tools::get("bes");
+        $data['ohneBerechnung'] = Tools::get("ohneBerechnung");
+        $data['discount'] = (int) Tools::get("discount");
+        $data['MEH'] = Tools::get("meh");
+        $data['addToInvoice'] = 0;
+
+        $data['Einkaufspreis'] = (float) Tools::get("ekp");
+        $data['SpeziefischerPreis'] = (float) Tools::get("pre");
+        $data['anzahl'] = (float) Tools::get("anz");
+
+        $ids = Posten::insertPosten("leistung", $data, $offerId);
+
+        $item = self::getOfferItem($offerId, $ids[0]);
+        if ($item === false || !$item instanceof Leistung) {
+            return;
+        }
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+            "data" => Posten::formatItemsForTable([$item])[0],
+        ]);
     }
 
     public static function update(): void

@@ -6,8 +6,22 @@ import { FunctionMap } from "../types/types";
 
 const functionNames: FunctionMap = {};
 
+let currentOfferId = 0;
+
 const init = () => {
     addBindings(functionNames);
+}
+
+const showOffer = (content: string, offerId: number) => {
+    currentOfferId = offerId;
+
+    (document.getElementById("insTemp") as HTMLElement).innerHTML = content;
+    (document.getElementById("listOpenOffers") as HTMLElement).classList.add("hidden");
+    (document.getElementById("newOffer") as HTMLElement).classList.add("hidden");
+
+    getItemsTable("auftragsPostenTable", offerId, "offer");
+    initInvoiceItems(offerId, "offer");
+    getPDF();
 }
 
 functionNames.click_newOffer = () => {
@@ -17,32 +31,38 @@ functionNames.click_newOffer = () => {
         url.searchParams.set("kdnr", customerId);
         window.history.pushState({}, '', url);
 
-        (document.getElementById("insTemp") as HTMLElement).innerHTML = r.data.content;
-        (document.getElementById("listOpenOffers") as HTMLElement).classList.add("hidden");
-        (document.getElementById("newOffer") as HTMLElement).classList.add("hidden");
-
-        getItemsTable("auftragsPostenTable", r.data.offerId, "offer");
-        initInvoiceItems();
-        getPDF();
+        showOffer(r.data.content, r.data.offerId);
     });
 }
 
 functionNames.click_loadOffer = (e: CustomEvent) => {
     const target = (e.currentTarget as HTMLElement)!;
-    const offerId = target.dataset.id;
+    const offerId = Number(target.dataset.id);
+
+    ajax.get(`/api/v1/order-items/offer/${offerId}/edit`).then((r: any) => {
+        showOffer(r.data.content, r.data.offerId);
+    });
 }
 
 functionNames.click_storeOffer = () => {
-
+    window.location.href = "/angebot";
 }
 
 functionNames.click_deleteOffer = () => {
+    if (!confirm("Möchtest Du das Angebot wirklich löschen?")) {
+        return;
+    }
 
+    ajax.delete(`/api/v1/order/offer/${currentOfferId}`).then(() => {
+        window.location.href = "/angebot";
+    });
 }
 
 const getPDF = () => {
-    var iframe = document.getElementById("offerPDFPreview") as HTMLIFrameElement;
-    iframe.src = iframe.src;
+    const iframe = document.getElementById("offerPDFPreview") as HTMLIFrameElement;
+    const src = iframe.src;
+    iframe.src = "";
+    iframe.src = src;
 }
 
 if (document.readyState !== 'loading' ) {

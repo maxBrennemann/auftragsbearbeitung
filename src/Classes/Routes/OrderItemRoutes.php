@@ -14,8 +14,9 @@ class OrderItemRoutes extends Routes
      * @uses Classes\Project\Leistung::get()
      *
      * @uses Classes\Project\Angebot::getOfferTemplate()
+     * @uses Classes\Project\Angebot::getExistingOfferTemplate()
      * @uses Classes\Project\Angebot::getOfferItems()
-     * 
+     *
      * @uses Classes\Project\Zeit::get()
      * @uses Classes\Project\Leistung::get()
      */
@@ -27,6 +28,7 @@ class OrderItemRoutes extends Routes
         "/order-items/{id}/invoice" => [\Src\Classes\Project\Auftrag::class, "getInvoicePostenTableAjax"],
 
         "/order-items/offer/template/{customerId}" => [\Src\Classes\Project\Angebot::class, "getOfferTemplate"],
+        "/order-items/offer/{offerId}/edit" => [\Src\Classes\Project\Angebot::class, "getExistingOfferTemplate"],
         "/order-items/offer/{id}/all" => [\Src\Classes\Project\Angebot::class, "getOfferItems"],
 
         "/order-items/times/{itemId}" => [\Src\Classes\Project\Zeit::class, "get"],
@@ -36,10 +38,15 @@ class OrderItemRoutes extends Routes
     /**
      * @uses Classes\Project\Zeit::add()
      * @uses Classes\Project\Leistung::add()
+     * @uses Classes\Project\Zeit::addToOffer()
+     * @uses Classes\Project\Leistung::addToOffer()
      */
     protected static $postRoutes = [
         "/order-items/{id}/times" => [\Src\Classes\Project\Zeit::class, "add"],
         "/order-items/{id}/services" => [\Src\Classes\Project\Leistung::class, "add"],
+
+        "/order-items/offer/{id}/times" => [\Src\Classes\Project\Zeit::class, "addToOffer"],
+        "/order-items/offer/{id}/services" => [\Src\Classes\Project\Leistung::class, "addToOffer"],
     ];
 
     /**

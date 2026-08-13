@@ -13,14 +13,10 @@ class Angebot
     private int $customerId = 0;
     private Kunde $customer;
     private int $offerId = 0;
-
-    //private $leistungen = null;
+    private OfferState $state = OfferState::Open;
 
     /** @var array<int, array<string>> */
     private array $fahrzeuge;
-
-    /** @var Zeit[]|Leistung[]|ProduktPosten[] */
-    private array $posten = [];
 
     public function __construct(int $offerId, int $customerId)
     {
@@ -30,115 +26,73 @@ class Angebot
             throw new \Exception("Kunde nicht gefunden");
         }
 
+        $data = DBAccess::selectQuery("SELECT `state` FROM offer WHERE id = :offerId AND customer_id = :customerId;", [
+            "offerId" => $offerId,
+            "customerId" => $customerId,
+        ]);
+
+        if (empty($data)) {
+            throw new \Exception("Angebot nicht gefunden");
+        }
+
+        $this->state = OfferState::tryFrom($data[0]["state"]) ?? OfferState::Open;
         $this->offerId = $offerId;
         $this->customerId = $customerId;
-        //$this->leistungen = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
         $this->fahrzeuge = Fahrzeug::getSelection($customerId);
     }
 
     public static function createNewOffer(int $customerId): Angebot
     {
-        $query = "INSERT INTO angebot (id_customer, `status`, creation_date) VALUES (:idCustomer, 'open', NOW())";
+        $query = "INSERT INTO offer (customer_id, creation_date, `state`) VALUES (:customerId, NOW(), :state)";
         $idOffer = DBAccess::insertQuery($query, [
-            "idCustomer" => $customerId,
+            "customerId" => $customerId,
+            "state" => OfferState::Open->value,
         ]);
 
         return new Angebot($idOffer, $customerId);
     }
-
-    private function getPc(): int
-    {
-        if (isset($_SESSION['offer_' . $this->customerId . '_pc'])) {
-            return (int) $_SESSION['offer_' . $this->customerId . '_pc'];
-        } else {
-            $_SESSION['offer_' . $this->customerId . '_pc'] = 0;
-            return 0;
-        }
-    }
-
-    /* 
-    private function incPc(): int
-    {
-        $newPc = $this->getPc() + 1;
-        $_SESSION['offer_' . $this->customerId . '_pc'] = $newPc;
-        return $newPc;
-    }
-
-    private function decPc()
-    {
-        $newPc = $this->getPc() - 1;
-        if ($newPc >= 0) {
-            $_SESSION['offer_' . $this->customerId . '_pc'] = $newPc;
-        }
-        return $newPc;
-    } */
 
     public function getId(): int
     {
         return $this->offerId;
     }
 
-    private function loadPosten(): void
+    public function getState(): OfferState
     {
-        $num = $this->getPc();
-        for ($i = 1; $i <= $num; $i++) {
-            if (isset($_SESSION['offer_' . $this->customerId . '_' . $i])) {
-                $posten = unserialize($_SESSION['offer_' . $this->customerId . '_' . $i]);
-                array_push($this->posten, $posten);
-            }
-        }
-    }
-
-    private function deleteOldSessionData(): void
-    {
-        $num = $this->getPc();
-        for ($i = 1; $i <= $num; $i++) {
-            if (isset($_SESSION['offer_' . $this->customerId . '_' . $i])) {
-                $_SESSION['offer_' . $this->customerId . '_' . $i] = null;
-            }
-        }
-        $_SESSION['offer_' . $this->customerId . '_pc'] = null;
-    }
-
-    /* private function postenSum()
-    {
-        $sum = 0;
-        foreach ($this->posten as $p) {
-            $sum += $p->bekommePreis();
-        }
-        return $sum;
-    } */
-
-    /**
-     * @param array<string, string> $posten
-     * @return void
-     */
-    public function addPosten(array $posten): void
-    {
-        /*$postenId = $this->incPc();
-        $_SESSION['offer_' . $this->customerId . '_' . $postenId] = serialize($posten);
-
-        echo $postenId;
-        array_push($this->posten, $posten);*/
+        return $this->state;
     }
 
     /**
-     * function is called from createOrder page only if offer session data is available
+     * @return array<int, array<string, string>>
      */
-    public function storeOffer(int $orderId): void
+    public static function getOpenOffers(): array
     {
-        $this->offerId = DBAccess::insertQuery("INSERT INTO angebot (kdnr, `status`) VALUES ({$this->customerId}, 0)");
-        $this->loadPosten();
-        if ($this->posten != null) {
-            foreach ($this->posten as $p) {
-                $p->storeToDB($orderId);
-            }
-        }
-
-        $this->deleteOldSessionData();
+        $query = "SELECT o.id, o.creation_date, o.customer_id, CONCAT(k.Vorname, ' ', k.Nachname) AS name
+            FROM offer o, kunde k
+            WHERE o.`state` = :state
+                AND k.Kundennummer = o.customer_id;";
+        return DBAccess::selectQuery($query, [
+            "state" => OfferState::Open->value,
+        ]);
     }
 
-    public function loadAngebot(): void {}
+    public static function deleteOffer(): void
+    {
+        $offerId = (int) Tools::get("offerId");
+
+        $query = "DELETE FROM offer WHERE id = :offerId;";
+        DBAccess::deleteQuery($query, [
+            "offerId" => $offerId,
+        ]);
+
+        if (DBAccess::getAffectedRows() == 0) {
+            JSONResponseHandler::throwError(404, "Angebot existiert nicht");
+        }
+
+        JSONResponseHandler::sendResponse([
+            "success" => true,
+        ]);
+    }
 
     public static function getOfferTemplate(): void
     {
@@ -148,12 +102,33 @@ class Angebot
         }
 
         $offer = self::createNewOffer($customerId);
+        self::sendOfferTemplate($offer);
+    }
+
+    public static function getExistingOfferTemplate(): void
+    {
+        $offerId = (int) Tools::get("offerId");
+
+        $data = DBAccess::selectQuery("SELECT customer_id FROM offer WHERE id = :offerId;", [
+            "offerId" => $offerId,
+        ]);
+
+        if (empty($data)) {
+            JSONResponseHandler::returnNotFound("Angebot nicht gefunden");
+        }
+
+        $offer = new Angebot($offerId, (int) $data[0]["customer_id"]);
+        self::sendOfferTemplate($offer);
+    }
+
+    private static function sendOfferTemplate(Angebot $offer): void
+    {
         $services = DBAccess::selectQuery("SELECT Bezeichnung, Nummer, Aufschlag FROM leistung");
         $content = TemplateController::getTemplate("offer", [
             "offer" => $offer,
             "customer" => $offer->customer,
             "vehicles" => $offer->fahrzeuge,
-            "customerId" => $customerId,
+            "customerId" => $offer->customerId,
             "services" => $services,
         ]);
 
@@ -165,7 +140,10 @@ class Angebot
 
     public static function getOfferItems(): void
     {
-        JSONResponseHandler::sendResponse([]);
+        $offerId = (int) Tools::get("id");
+        $items = Posten::getOfferItems($offerId);
+
+        JSONResponseHandler::sendResponse(Posten::formatItemsForTable($items));
     }
 
     public static function getPDF(): void
