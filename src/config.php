@@ -68,6 +68,36 @@ return [
             'type' => 'number',
             'default' => 30,
         ],
+        'mail.host' => [
+            'scope' => 'global',
+            'type' => 'string',
+            'default' => '',
+        ],
+        'mail.port' => [
+            'scope' => 'global',
+            'type' => 'number',
+            'default' => 465,
+        ],
+        'mail.username' => [
+            'scope' => 'global',
+            'type' => 'string',
+            'default' => '',
+        ],
+        'mail.password' => [
+            'scope' => 'global',
+            'type' => 'secret',
+            'default' => '',
+        ],
+        'mail.fromAddress' => [
+            'scope' => 'global',
+            'type' => 'string',
+            'default' => '',
+        ],
+        'mail.fromName' => [
+            'scope' => 'global',
+            'type' => 'string',
+            'default' => '',
+        ],
         'company.name' => [
             'scope' => 'global',
             'type' => 'string',

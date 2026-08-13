@@ -9,17 +9,17 @@ $companyLogo = Src\Classes\Project\Image::getLogo();
 
 ?>
 <section class="defCont">
-    <h2 class="font-bold">Auftragstypen festlegen</h2>
+    <h2 class="text-xl font-bold mb-6 border-b pb-2">Auftragstypen festlegen</h2>
     <div id="orderTypes" class="mt-2"></div>
 </section>
 
 <section class="defCont">
-    <h2 class="font-bold">Einkaufsmöglichkeiten festlegen</h2>
+    <h2 class="text-xl font-bold mb-6 border-b pb-2">Einkaufsmöglichkeiten festlegen</h2>
     <div id="wholesalerTypes" class="mt-2"></div>
 </section>
 
 <section class="defCont">
-    <h2 class="font-bold">Mitarbeiter festlegen</h2>
+    <h2 class="text-xl font-bold mb-6 border-b pb-2">Mitarbeiter festlegen</h2>
     <div id="userTable" class="mt-2"></div>
 </section>
 
@@ -163,6 +163,39 @@ $companyLogo = Src\Classes\Project\Image::getLogo();
                     <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
                 </button>
             </div>
+        </div>
+    </div>
+</section>
+
+<section class="defCont">
+    <h2 class="text-xl font-bold mb-6 border-b pb-2">E-Mail-Versand</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <?php
+        $mailFields = [
+            "mail.host" => "SMTP-Host",
+            "mail.port" => "SMTP-Port",
+            "mail.username" => "SMTP-Benutzername",
+            "mail.fromAddress" => "Absenderadresse",
+            "mail.fromName" => "Absendername",
+        ];
+        foreach ($mailFields as $key => $label): ?>
+            <div class="flex flex-col">
+                <label class="text-sm font-medium text-gray-600 mb-1"><?= $label ?></label>
+                <input class="input-primary w-full border-gray-300 rounded-md shadow-sm"
+                    value="<?= Settings::get($key) ?>"
+                    data-write="true" data-fun="changeSetting" data-setting="<?= $key ?>">
+            </div>
+        <?php endforeach; ?>
+
+        <div class="flex flex-col">
+            <label class="text-sm font-medium text-gray-600 mb-1">SMTP-Passwort</label>
+            <input type="password" class="input-primary w-full border-gray-300 rounded-md shadow-sm"
+                placeholder="Unverändert lassen, um das gespeicherte Passwort zu behalten"
+                data-write="true" data-fun="changeSetting" data-setting="mail.password">
+            <p class="text-xs text-gray-500 mt-1">
+                <?= Settings::get('mail.password') !== '' ? "Passwort ist hinterlegt." : "Kein Passwort hinterlegt." ?>
+            </p>
         </div>
     </div>
 </section>

@@ -5,6 +5,7 @@ namespace Src\Classes\Mail;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use Src\Classes\Project\CompanyProfile;
+use Src\Classes\Project\Settings;
 use Src\Classes\Protocol;
 
 class Mailer
@@ -20,14 +21,14 @@ class Mailer
     private function configure(): void
     {
         $this->mail->isSMTP();
-        $this->mail->Host = $_ENV["MAIL_HOST"] ?? "";
+        $this->mail->Host = (string) Settings::get("mail.host");
         $this->mail->SMTPAuth = true;
-        $this->mail->Username = $_ENV["MAIL_USERNAME"];
-        $this->mail->Password = $_ENV["MAIL_PASSWORD"];
+        $this->mail->Username = (string) Settings::get("mail.username");
+        $this->mail->Password = (string) Settings::get("mail.password");
         $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-        $this->mail->Port = $_ENV["MAIL_PORT"];
+        $this->mail->Port = (int) Settings::get("mail.port");
 
-        $this->mail->setFrom($_ENV["MAIL_FROM"], $_ENV["MAIL_FROM_NAME"]);
+        $this->mail->setFrom((string) Settings::get("mail.fromAddress"), (string) Settings::get("mail.fromName"));
     }
 
     /**
