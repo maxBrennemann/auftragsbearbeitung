@@ -1,5 +1,6 @@
 import { ajax } from "js-classes/ajax";
 import { addBindings } from "js-classes/bindings"
+import { notification } from "js-classes/notifications";
 
 import { getItemsTable, initInvoiceItems } from "../classes/invoiceItems";
 import { FunctionMap } from "../types/types";
@@ -7,13 +8,15 @@ import { FunctionMap } from "../types/types";
 const functionNames: FunctionMap = {};
 
 let currentOfferId = 0;
+let currentCustomerId = 0;
 
 const init = () => {
     addBindings(functionNames);
 }
 
-const showOffer = (content: string, offerId: number) => {
+const showOffer = (content: string, offerId: number, customerId: number) => {
     currentOfferId = offerId;
+    currentCustomerId = customerId;
 
     (document.getElementById("insTemp") as HTMLElement).innerHTML = content;
     (document.getElementById("listOpenOffers") as HTMLElement).classList.add("hidden");
@@ -31,7 +34,7 @@ functionNames.click_newOffer = () => {
         url.searchParams.set("kdnr", customerId);
         window.history.pushState({}, '', url);
 
-        showOffer(r.data.content, r.data.offerId);
+        showOffer(r.data.content, r.data.offerId, r.data.customerId);
     });
 }
 
@@ -40,12 +43,57 @@ functionNames.click_loadOffer = (e: CustomEvent) => {
     const offerId = Number(target.dataset.id);
 
     ajax.get(`/api/v1/order-items/offer/${offerId}/edit`).then((r: any) => {
-        showOffer(r.data.content, r.data.offerId);
+        showOffer(r.data.content, r.data.offerId, r.data.customerId);
     });
 }
 
 functionNames.click_storeOffer = () => {
-    window.location.href = "/angebot";
+    ajax.put(`/api/v1/order/offer/${currentOfferId}/complete`, {}).then((r: any) => {
+        if (!r.success) {
+            notification("", "failure", r.error);
+            return;
+        }
+        window.location.href = "/angebot";
+    });
+}
+
+functionNames.click_sendOffer = () => {
+    if (!confirm("Angebot per E-Mail an den Kunden senden?")) {
+        return;
+    }
+
+    ajax.post(`/api/v1/order/offer/${currentOfferId}/send`, {}).then((r: any) => {
+        if (!r.success || !r.data.success) {
+            notification("", "failure", r.error);
+            return;
+        }
+        notification("", "success");
+    });
+}
+
+functionNames.click_acceptOffer = () => {
+    if (!confirm("Angebot annehmen und daraus einen Auftrag anlegen?")) {
+        return;
+    }
+
+    const url = new URL(window.location.origin + "/neuer-auftrag");
+    url.searchParams.set("id", String(currentCustomerId));
+    url.searchParams.set("fromOffer", String(currentOfferId));
+    window.location.href = url.href;
+}
+
+functionNames.click_rejectOffer = () => {
+    if (!confirm("Möchtest Du das Angebot wirklich ablehnen?")) {
+        return;
+    }
+
+    ajax.put(`/api/v1/order/offer/${currentOfferId}/reject`, {}).then((r: any) => {
+        if (!r.success) {
+            notification("", "failure", r.error);
+            return;
+        }
+        window.location.href = "/angebot";
+    });
 }
 
 functionNames.click_deleteOffer = () => {

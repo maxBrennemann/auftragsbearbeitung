@@ -33,6 +33,7 @@ class OrderRoutes extends Routes
      * @uses \Src\Classes\Project\Auftrag::resetInvoice()
      * @uses \Src\Classes\Project\Fahrzeug::addFiles()
      * @uses \Src\Classes\Project\Auftrag::changeCustomer()
+     * @uses \Src\Classes\Project\Angebot::sendOffer()
      */
     protected static $postRoutes = [
         "/order" => [\Src\Classes\Project\Auftrag::class, "addOrder"],
@@ -46,6 +47,7 @@ class OrderRoutes extends Routes
         "/order/{id}/reset-invoice" => [\Src\Classes\Project\Auftrag::class, "resetInvoice"],
         "/order/{id}/vehicle/{vehicleId}/add-files" => [\Src\Classes\Project\Fahrzeug::class, "addFiles"],
         "/order/{id}/change-customer" => [\Src\Classes\Project\Auftrag::class, "changeCustomer"],
+        "/order/offer/{offerId}/send" => [\Src\Classes\Project\Angebot::class, "sendOffer"],
     ];
 
     /**
@@ -59,6 +61,8 @@ class OrderRoutes extends Routes
      *
      * @uses \Src\Classes\Project\Fahrzeug::updateName()
      * @uses \Src\Classes\Project\Fahrzeug::updateLicensePlate()
+     * @uses \Src\Classes\Project\Angebot::completeOffer()
+     * @uses \Src\Classes\Project\Angebot::rejectOffer()
      */
     protected static $putRoutes = [
         "/order/{id}" => [\Src\Classes\Project\Auftrag::class, "updateOrder"],
@@ -71,6 +75,9 @@ class OrderRoutes extends Routes
 
         "/order/vehicles/{vehicleId}/name" => [\Src\Classes\Project\Fahrzeug::class, "updateName"],
         "/order/vehicles/{vehicleId}/license-plate" => [\Src\Classes\Project\Fahrzeug::class, "updateLicensePlate"],
+
+        "/order/offer/{offerId}/complete" => [\Src\Classes\Project\Angebot::class, "completeOffer"],
+        "/order/offer/{offerId}/reject" => [\Src\Classes\Project\Angebot::class, "rejectOffer"],
     ];
 
     /**

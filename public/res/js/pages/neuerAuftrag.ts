@@ -45,6 +45,7 @@ fnNames.click_sendData = () => {
         "acceptedBy": angenommenVon.value,
         "acceptedVia": angenommenPer.value,
         "contactperson": ansprechpartner.value,
+        "fromOffer": getVariable("fromOffer") ?? "",
     }).then(response => {
         if (!response.data.success) {
             return;

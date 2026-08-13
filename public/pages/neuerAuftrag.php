@@ -5,6 +5,7 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 
 $idCustomer = Tools::get("id");
+$fromOffer = Tools::get("fromOffer");
 
 if ($idCustomer != null) {
     $mitarbeiter = DBAccess::selectQuery("SELECT prename, lastname, id FROM user");
@@ -32,6 +33,9 @@ if (Tools::get("id")) : ?>
 						<input disabled class="input-primary" id="customerId" value="<?= $idCustomer ?>" data-variable="true">
 					</div>
 				</div>
+				<?php if ($fromOffer): ?>
+					<input type="hidden" id="fromOffer" value="<?= $fromOffer ?>" data-variable="true">
+				<?php endif; ?>
 
 				<?php if ($kundendaten["Vorname"] != "" && $kundendaten["Nachname"] != ""): ?>
 					<div class="mt-2">

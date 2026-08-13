@@ -2,8 +2,10 @@
 
 namespace Src\Classes\Pdf\TransactionPdf;
 
+use Src\Classes\Project\Angebot;
 use Src\Classes\Project\CompanyProfile;
-use Src\Classes\Project\Kunde;
+use Src\Classes\Project\Config;
+use Src\Classes\Project\OfferNumberTracker;
 use Src\Classes\Project\Posten;
 use Src\Classes\Project\Settings;
 
@@ -11,6 +13,7 @@ class OfferPDF extends TransactionPDF
 {
     private int $offerId;
     private int $customerId;
+    private Angebot $offer;
     protected string $type = "offer";
 
     public function __construct(int $offerId, int $customerId)
@@ -19,7 +22,8 @@ class OfferPDF extends TransactionPDF
         $this->fileName = "Angebot_" . $offerId;
         $this->offerId = $offerId;
         $this->customerId = $customerId;
-        $this->customer = new Kunde($customerId);
+        $this->offer = new Angebot($offerId, $customerId);
+        $this->customer = $this->offer->getCustomer();
     }
 
     public function getCustomerId(): int
@@ -87,21 +91,43 @@ class OfferPDF extends TransactionPDF
 
     private function addTableHeader(int $y = 69): void
     {
+        $validUntil = $this->offer->getValidUntil();
+        $validUntilTimestamp = $validUntil ? strtotime($validUntil) : false;
+        $validUntilFormatted = $validUntilTimestamp !== false ? date("d.m.Y", $validUntilTimestamp) : "-";
+
         $this->SetFont("helvetica", "", 12);
         $this->setXY(125, $y);
         $this->Cell(30, 10, "Angebots-Nr:");
-        $this->Cell(30, 10, (string) $this->offerId, 0, 0, 'R');
+        $this->Cell(30, 10, (string) $this->getOfferNumber(), 0, 0, 'R');
         $this->setXY(125, $y + 6);
         $this->Cell(30, 10, "Datum:");
         $this->Cell(30, 10, date("d.m.Y"), 0, 0, 'R');
         $this->setXY(125, $y + 12);
+        $this->Cell(30, 10, "Gültig bis:");
+        $this->Cell(30, 10, $validUntilFormatted, 0, 0, 'R');
+        $this->setXY(125, $y + 18);
         $this->Cell(30, 10, "Kunden-Nr.:");
         $this->Cell(30, 10, (string) $this->customer->getKundennummer(), 0, 0, 'R');
-        $this->setXY(125, $y + 18);
+        $this->setXY(125, $y + 24);
         $this->Cell(30, 10, "Seite:");
         $this->Cell(30, 10, $this->getAliasRightShift() . $this->PageNo() . ' von ' . $this->getAliasNbPages(), 0, 0, 'R');
 
         $this->renderItemsTableHeader($y + 45);
+    }
+
+    private function getOfferNumber(): int
+    {
+        $offerNumber = $this->offer->getOfferNumber();
+        if ($offerNumber == 0) {
+            $offerNumber = OfferNumberTracker::peekNextOfferNumber();
+        }
+
+        return $offerNumber;
+    }
+
+    public function getOutputPath(): string
+    {
+        return Config::get("paths.generatedDir") . $this->fileName . ".pdf";
     }
 
     private function addOfferItems(): float

@@ -589,6 +589,11 @@ class Auftrag implements NotifiableEntity
 
         OrderHistory::add($orderId, $orderId, OrderHistory::TYPE_ORDER, OrderHistory::STATE_ADDED, "Neuer Auftrag");
 
+        $fromOfferId = (int) Tools::get("fromOffer");
+        if ($fromOfferId > 0) {
+            Angebot::attachToOrder($fromOfferId, $orderId);
+        }
+
         JSONResponseHandler::sendResponse($data);
     }
 

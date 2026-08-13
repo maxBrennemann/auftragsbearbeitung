@@ -63,6 +63,11 @@ return [
             'type' => 'string',
             'default' => '',
         ],
+        'offer.validityDays' => [
+            'scope' => 'global',
+            'type' => 'number',
+            'default' => 30,
+        ],
         'company.name' => [
             'scope' => 'global',
             'type' => 'string',

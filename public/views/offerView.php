@@ -6,6 +6,15 @@ use Src\Classes\Project\Kunde;
 $kundenlink = $kundenlink = Link::getPageLink("kunde") . "?id=" . $customerId;
 $customer = new Kunde($customerId);
 
+$isFinal = $offer->getState()->isFinal();
+$stateLabels = [
+    "open" => "Offen",
+    "accepted" => "Angenommen",
+    "rejected" => "Abgelehnt",
+    "expired" => "Abgelaufen",
+];
+$validUntil = $offer->getValidUntil();
+
 ?>
 <div class="defCont">
     <div>
@@ -16,7 +25,9 @@ $customer = new Kunde($customerId);
     </div>
     <div>
         <span>Datum: <input id="angebotsdatum" type="date" class="input-primary" value="<?= date('Y-m-d') ?>"></span><br>
-        <span>Angebotsnummer: </span>
+        <span>Angebotsnummer: <?= $offer->getOfferNumber() > 0 ? $offer->getOfferNumber() : "Entwurf" ?></span><br>
+        <span>Gültig bis: <?= $validUntil ? date('d.m.Y', strtotime($validUntil)) : "-" ?></span><br>
+        <span>Status: <span class="info-badge"><?= $stateLabels[$offer->getState()->value] ?? $offer->getState()->value ?></span></span>
     </div>
 </div>
 
@@ -32,8 +43,18 @@ $customer = new Kunde($customerId);
 </div>
 
 <div class="defCont">
-    <button class="btn-primary" data-fun="storeOffer" data-binding="true">Angebot abschließen</button>
-    <button class="btn-cancel" data-fun="deleteOffer" data-binding="true">Angebot abbrechen</button>
+    <?php if (!$isFinal): ?>
+        <button class="btn-primary" data-fun="storeOffer" data-binding="true">Angebot abschließen</button>
+        <button class="btn-primary" data-fun="sendOffer" data-binding="true">Angebot per E-Mail senden</button>
+        <button class="btn-primary" data-fun="acceptOffer" data-binding="true">Angebot annehmen</button>
+        <button class="btn-cancel" data-fun="rejectOffer" data-binding="true">Angebot ablehnen</button>
+    <?php endif; ?>
+    <button class="btn-cancel" data-fun="deleteOffer" data-binding="true">Angebot löschen</button>
+</div>
+
+<div class="defCont">
+    <p class="font-semibold">Angebotsverlauf</p>
+    <?= $history ?>
 </div>
 
 <iframe class="mt-2" id="offerPDFPreview" loading="lazy" src="/api/v1/order/offer/<?=$offer->getId()?>/pdf?customerId=<?=$customerId?>"></iframe>
