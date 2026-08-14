@@ -270,6 +270,14 @@ export const tableConfig = {
                 "label": "performance_date"
             },
             {
+                "key": "show_performance_date",
+                "label": "show_performance_date"
+            },
+            {
+                "key": "performance_date_type",
+                "label": "performance_date_type"
+            },
+            {
                 "key": "payment_date",
                 "label": "payment_date"
             },

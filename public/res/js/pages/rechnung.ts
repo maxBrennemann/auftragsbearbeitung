@@ -62,12 +62,72 @@ functionNames.click_addText = () => {
     });
 }
 
-functionNames.click_editText = () => {
+functionNames.click_editText = (e: Event) => {
+    const target = e.currentTarget as HTMLElement;
+    e.stopPropagation();
 
+    const id = target.dataset.id;
+    const card = target.closest(".invoiceTexts") as HTMLElement;
+    const textEl = card.querySelector("p") as HTMLElement;
+
+    const div = document.createElement("div");
+    div.classList.add("w-96");
+
+    const title = document.createElement("p");
+    title.classList.add("font-semibold");
+    title.innerHTML = "Text bearbeiten";
+
+    const textarea = document.createElement("textarea");
+    textarea.className = "input-primary w-full mt-2";
+    textarea.rows = 4;
+    textarea.value = textEl.innerText;
+
+    div.appendChild(title);
+    div.appendChild(textarea);
+
+    const btnContainer = createPopup(div);
+
+    const saveBtn = document.createElement("button");
+    saveBtn.classList.add("btn-primary");
+    saveBtn.innerHTML = "Übernehmen";
+
+    saveBtn.addEventListener("click", () => {
+        const newText = textarea.value;
+        ajax.put(`/api/v1/invoice/${config.invoiceId}/text/${id}`, {
+            "text": newText,
+        }).then((r: any) => {
+            if (r.data.status !== "success") {
+                notification("", "failure", r.data.message);
+                return;
+            }
+            notification("", "success");
+            textEl.innerText = newText;
+            getPDF();
+        });
+        const btnCancel = btnContainer.querySelector("button.btn-cancel") as HTMLButtonElement;
+        btnCancel.click();
+    });
+    btnContainer.appendChild(saveBtn);
 }
 
-functionNames.click_deleteText = () => {
+functionNames.click_deleteText = (e: Event) => {
+    const target = e.currentTarget as HTMLElement;
+    e.stopPropagation();
 
+    if (!confirm("Soll dieser Text wirklich gelöscht werden?")) {
+        return;
+    }
+
+    const id = target.dataset.id;
+    ajax.delete(`/api/v1/invoice/${config.invoiceId}/text/${id}`).then((r: any) => {
+        if (r.data.status !== "success") {
+            notification("", "failure", r.data.message);
+            return;
+        }
+        notification("", "success");
+        target.closest(".invoiceTexts")?.remove();
+        getPDF();
+    });
 }
 
 const toggleText = (e: Event) => {
@@ -114,9 +174,22 @@ functionNames.write_invoiceDate = (e: Event) => {
 
 functionNames.write_serviceDate = (e: Event) => {
     const element = e.target as HTMLInputElement;
-    const date = element.value;
+    writePerformanceDate(element.value, "date");
+}
+
+functionNames.write_serviceDateWeek = (e: Event) => {
+    const element = e.target as HTMLInputElement;
+    writePerformanceDate(element.value, "week");
+}
+
+const writePerformanceDate = (value: string, type: "date" | "week") => {
+    if (!value) {
+        return;
+    }
+
     ajax.post(`/api/v1/invoice/${config.invoiceId}/service-date`, {
-        "date": date,
+        "date": value,
+        "type": type,
     }).then((r: any) => {
         if (r.data.status !== "success") {
             notification("", "failure", r.data.message);
@@ -126,6 +199,34 @@ functionNames.write_serviceDate = (e: Event) => {
 
         getPDF();
     });
+}
+
+functionNames.write_togglePerformanceDateVisibility = (e: Event) => {
+    const element = e.target as HTMLInputElement;
+    ajax.post(`/api/v1/invoice/${config.invoiceId}/service-date/visibility`, {
+        "show": element.checked ? "1" : "0",
+    }).then((r: any) => {
+        if (r.data.status !== "success") {
+            notification("", "failure", r.data.message);
+            return;
+        }
+        notification("", "success");
+
+        getPDF();
+    });
+}
+
+functionNames.write_selectPerformanceDateType = (e: Event) => {
+    const element = e.target as HTMLSelectElement;
+    const type = element.value as "date" | "week";
+
+    const dateInput = document.getElementById("performanceDateInput") as HTMLInputElement;
+    const weekInput = document.getElementById("performanceWeekInput") as HTMLInputElement;
+
+    dateInput.classList.toggle("hidden", type === "week");
+    weekInput.classList.toggle("hidden", type === "date");
+
+    writePerformanceDate(type === "week" ? weekInput.value : dateInput.value, type);
 }
 
 functionNames.click_completeInvoice = () => {

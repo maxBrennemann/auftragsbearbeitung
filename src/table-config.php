@@ -222,6 +222,8 @@ function getTableConfig(): array
                 "status",
                 "creation_date",
                 "performance_date",
+                "show_performance_date",
+                "performance_date_type",
                 "payment_date",
                 "finalized_date",
                 "amount",

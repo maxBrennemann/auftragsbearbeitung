@@ -39,6 +39,21 @@ class InvoiceLayout
         $texts = array_filter($this->invoice->getTexts(), fn($el) => $el["active"] != 0);
         $vehicles = $this->invoice->getAttachedVehicles();
 
+        /*
+         * Leistungsdatum (id < 0, siehe Invoice::getTexts()) wird immer als letzter Eintrag
+         * der Liste gerendert und dafür aus der normalen Sortierung/dem Layout herausgehalten.
+         */
+        $performanceDateEntry = null;
+        $regularTexts = [];
+        foreach ($texts as $text) {
+            if ((int) $text["id"] < 0) {
+                $performanceDateEntry = $text;
+            } else {
+                $regularTexts[] = $text;
+            }
+        }
+        $texts = $regularTexts;
+
         $all = [];
 
         foreach ($items as $item) {
@@ -89,6 +104,14 @@ class InvoiceLayout
                     $result[] = $entry;
                 }
             }
+        }
+
+        if ($performanceDateEntry !== null) {
+            $result[] = [
+                "id" => $performanceDateEntry["id"],
+                "type" => "text",
+                "content" => $performanceDateEntry["text"],
+            ];
         }
 
         return $result;

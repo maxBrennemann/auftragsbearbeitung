@@ -96,8 +96,18 @@ if ($target == "create") {
 
 			<h4 class="mt-2 font-semibold">Rechnungsdatum festlegen</h4>
 			<input type="date" data-write="true" data-fun="invoiceDate" class="input-primary mt-1" value="<?= $invoice->getCreationDate() ?>">
+
 			<h4 class="mt-2 font-semibold">Leistungsdatum festlegen</h4>
-			<input type="date" data-write="true" data-fun="serviceDate" class="input-primary mt-1" value="<?= $invoice->getPerformanceDate() ?>">
+			<div class="flex items-center gap-2 mt-1">
+				<input type="checkbox" id="showPerformanceDate" data-write="true" data-fun="togglePerformanceDateVisibility" <?= $invoice->getShowPerformanceDate() ? "checked" : "" ?>>
+				<label for="showPerformanceDate">In Rechnung anzeigen (wird immer als letzter Punkt aufgeführt)</label>
+			</div>
+			<select id="performanceDateType" class="input-primary mt-1" data-write="true" data-fun="selectPerformanceDateType">
+				<option value="date" <?= $invoice->getPerformanceDateType() == "date" ? "selected" : "" ?>>Datum</option>
+				<option value="week" <?= $invoice->getPerformanceDateType() == "week" ? "selected" : "" ?>>Kalenderwoche</option>
+			</select>
+			<input type="date" id="performanceDateInput" data-write="true" data-fun="serviceDate" class="input-primary mt-1 <?= $invoice->getPerformanceDateType() == "week" ? "hidden" : "" ?>" value="<?= $invoice->getPerformanceDate() ?>">
+			<input type="week" id="performanceWeekInput" data-write="true" data-fun="serviceDateWeek" class="input-primary mt-1 <?= $invoice->getPerformanceDateType() == "date" ? "hidden" : "" ?>" value="<?= $invoice->getPerformanceDateWeekValue() ?>">
 		</div>
 
 		<div>
@@ -113,6 +123,7 @@ if ($target == "create") {
 					<p>Den Text zum (ab)wählen einmal anklicken. Die Rechnungsvorschau wird dann neu generiert.</p>
 					<div class="defaultInvoiceTexts grid grid-flow-row gap-4 mt-2 max-h-80 overflow-y-scroll">
 						<?php foreach ($invoice->getTexts() as $text): ?>
+							<?php if ($text["id"] < 0) continue; /* Leistungsdatum wird oben separat gesteuert */ ?>
 							<div class="invoiceTexts bg-gray-100 rounded-xl cursor-pointer p-3 mr-1 select-none flex" title="Übernehmen" data-binding="true" data-fun="toggleText" data-active="<?= $text["active"] ?>" data-id="<?= $text["id"] ?>">
 								<p class="max-h-20 overflow-auto flex-auto"><?= $text["text"] ?></p>
 								<div class="pl-3 flex items-center">

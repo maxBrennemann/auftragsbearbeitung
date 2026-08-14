@@ -23,6 +23,7 @@ class InvoiceRoutes extends Routes
      * @uses \Src\Classes\Project\Invoice::setInvoicePaidAjax()
      * @uses \Src\Classes\Project\Invoice::setInvoiceDate()
      * @uses \Src\Classes\Project\Invoice::setServiceDate()
+     * @uses \Src\Classes\Project\Invoice::setPerformanceDateVisibility()
      * @uses \Src\Classes\Project\Invoice::addText()
      * @uses \Src\Classes\Project\Invoice::completeInvoice()
      * @uses \Src\Classes\Project\Invoice::setAddress()
@@ -37,6 +38,7 @@ class InvoiceRoutes extends Routes
         "/invoice/{invoiceId}/paid" => [\Src\Classes\Project\Invoice::class, "setInvoicePaidAjax"],
         "/invoice/{invoiceId}/invoice-date" => [\Src\Classes\Project\Invoice::class, "setInvoiceDate"],
         "/invoice/{invoiceId}/service-date" => [\Src\Classes\Project\Invoice::class, "setServiceDate"],
+        "/invoice/{invoiceId}/service-date/visibility" => [\Src\Classes\Project\Invoice::class, "setPerformanceDateVisibility"],
         "/invoice/{invoiceId}/text" => [\Src\Classes\Project\Invoice::class, "addText"],
         "/invoice/{invoiceId}/complete" => [\Src\Classes\Project\Invoice::class, "completeInvoice"],
         "/invoice/{invoiceId}/address" => [\Src\Classes\Project\Invoice::class, "setAddress"],
@@ -49,17 +51,21 @@ class InvoiceRoutes extends Routes
 
     /**
      * @uses \Src\Classes\Project\Invoice::toggleText()
+     * @uses \Src\Classes\Project\Invoice::editText()
      * @uses \Src\Classes\Project\InvoiceLayout::updateItemsOrder()
      */
     protected static $putRoutes = [
         "/invoice/{invoiceId}/text" => [\Src\Classes\Project\Invoice::class, "toggleText"],
+        "/invoice/{invoiceId}/text/{textId}" => [\Src\Classes\Project\Invoice::class, "editText"],
         "/invoice/{invoiceId}/positions" => [\Src\Classes\Project\InvoiceLayout::class, "updateItemsOrder"],
     ];
 
     /**
      * @uses \Src\Classes\Project\Invoice::setInvoiceUnpaidAjax()
+     * @uses \Src\Classes\Project\Invoice::deleteText()
      */
     protected static $deleteRoutes = [
         "/invoice/{invoiceId}/paid" => [\Src\Classes\Project\Invoice::class, "setInvoiceUnpaidAjax"],
+        "/invoice/{invoiceId}/text/{textId}" => [\Src\Classes\Project\Invoice::class, "deleteText"],
     ];
 }

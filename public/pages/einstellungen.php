@@ -201,14 +201,14 @@ $companyLogo = Src\Classes\Project\Image::getLogo();
 </section>
 
 <section class="defCont">
-    <h2 class="font-bold">PDF Texte</h2>
+    <h2 class="text-xl font-bold mb-6 border-b pb-2">PDF Texte</h2>
     <div class="mt-2">
         <div id="pdfTextsCont"></div>
     </div>
 </section>
 
 <section class="defCont">
-    <h2 class="font-bold">Kategorien festlegen</h2>
+    <h2 class="text-xl font-bold mb-6 border-b pb-2">Kategorien festlegen</h2>
     <div id="categoryTree" class="mt-2 ml-3"></div>
     <div class="mt-2 p-2 bg-gray-300 rounded-lg">
         <input type="text" class="input-primary" id="newCategory">
@@ -218,7 +218,7 @@ $companyLogo = Src\Classes\Project\Image::getLogo();
 </section>
 
 <section class="defCont">
-    <h2 class="font-bold">Dateienmanagement</h2>
+    <h2 class="text-xl font-bold mb-6 border-b pb-2">Dateienmanagement</h2>
     <a href="#" download="temp_file_name" id="download_db" class="hidden">Datenbank herunterladen</a>
     <a href="#" download="temp_file_name" id="download_files" class="hidden">Dateien herunterladen</a>
     <div class="mt-2 flex flex-row gap-2">
@@ -261,7 +261,7 @@ $companyLogo = Src\Classes\Project\Image::getLogo();
 </section>
 
 <section class="defCont">
-    <h2 class="font-bold">Zeiterfassung</h2>
+    <h2 class="text-xl font-bold mb-6 border-b pb-2">Zeiterfassung</h2>
     <div class="switchCont mt-2">
         <?= TemplateController::getTemplate("inputSwitch", [
             "id" => "showTimeTracking",
@@ -273,5 +273,5 @@ $companyLogo = Src\Classes\Project\Image::getLogo();
 </section>
 
 <section class="defCont">
-    <h2 class="font-bold">Routineaufgaben</h2>
+    <h2 class="text-xl font-bold mb-6 border-b pb-2">Routineaufgaben</h2>
 </section>

@@ -23,6 +23,8 @@ class Invoice
 
     private ?\DateTime $creationDate = null;
     private ?\DateTime $performanceDate = null;
+    private bool $showPerformanceDate = true;
+    private string $performanceDateType = "date";
 
     public function __construct(int $invoiceId, int $orderId)
     {
@@ -47,6 +49,8 @@ class Invoice
         $this->amount = (float) $data[0]["amount"];
         $this->creationDate = new \DateTime($data[0]["creation_date"]);
         $this->performanceDate = new \DateTime($data[0]["performance_date"]);
+        $this->showPerformanceDate = (bool) $data[0]["show_performance_date"];
+        $this->performanceDateType = (string) $data[0]["performance_date_type"];
         $this->addressId = (int) $data[0]["address_id"];
         $this->contactId = (int) $data[0]["contact_id"];
         $this->getTexts();
@@ -139,6 +143,24 @@ class Invoice
         return $this->performanceDate;
     }
 
+    public function getShowPerformanceDate(): bool
+    {
+        return $this->showPerformanceDate;
+    }
+
+    public function getPerformanceDateType(): string
+    {
+        return $this->performanceDateType;
+    }
+
+    /**
+     * Formatted for use as the value of an <input type="week"> element (e.g. "2026-W33").
+     */
+    public function getPerformanceDateWeekValue(): string
+    {
+        return $this->getPerformanceDateUnformatted()->format('o-\WW');
+    }
+
     public function getCreationDate(): string
     {
         return $this->getCreationDateUnformatted()->format("Y-m-d");
@@ -179,13 +201,16 @@ class Invoice
     }
 
     /**
+     * Kopfzeilen-Override gilt pro Kunde (nicht pro Rechnung), damit einmal erfasste
+     * Zeilen automatisch für alle Rechnungen dieses Kunden wiederverwendet werden.
+     *
      * @return array<int, array<string, string>>
      */
     public function getAltNames(): array
     {
-        $query = "SELECT id, `text` FROM invoice_alt_names WHERE id_invoice = :id ORDER BY id ASC";
+        $query = "SELECT id, `text` FROM invoice_alt_names WHERE id_customer = :customerId ORDER BY id ASC";
         $data = DBAccess::selectQuery($query, [
-            "id" => $this->invoiceId,
+            "customerId" => $this->auftrag->getKundennummer(),
         ]);
 
         return $data;
@@ -238,6 +263,40 @@ class Invoice
         ]);
     }
 
+    public static function editText(): void
+    {
+        $invoiceId = (int) Tools::get("invoiceId");
+        $textId = (int) Tools::get("textId");
+        $text = Tools::get("text");
+
+        $query = "UPDATE invoice_text SET `text` = :text WHERE id = :textId AND id_invoice = :invoiceId";
+        DBAccess::updateQuery($query, [
+            "text" => $text,
+            "textId" => $textId,
+            "invoiceId" => $invoiceId,
+        ]);
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+        ]);
+    }
+
+    public static function deleteText(): void
+    {
+        $invoiceId = (int) Tools::get("invoiceId");
+        $textId = (int) Tools::get("textId");
+
+        $query = "DELETE FROM invoice_text WHERE id = :textId AND id_invoice = :invoiceId";
+        DBAccess::deleteQuery($query, [
+            "textId" => $textId,
+            "invoiceId" => $invoiceId,
+        ]);
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+        ]);
+    }
+
     /**
      * @return array<int, array<string, mixed>>
      */
@@ -275,13 +334,24 @@ class Invoice
             }
         }
 
-        /* add performance date */
-        $data[] = [
-            "id" => 0,
-            "id_invoice" => $this->invoiceId,
-            "text" => "Leistungsdatum " . $this->getPerformanceDateUnformatted()->format("d.m.Y"),
-            "active" => 1,
-        ];
+        /*
+         * Leistungsdatum wird bewusst nicht über den generischen Text-Toggle verwaltet
+         * (id < 0, da echte invoice_text-Zeilen immer eine positive AUTO_INCREMENT-id haben):
+         * Sichtbarkeit steuert Invoice::setPerformanceDateVisibility(), nicht toggleText(),
+         * damit der Eintrag nicht versehentlich als eigenständiger Text persistiert werden kann.
+         */
+        if ($this->showPerformanceDate) {
+            $text = $this->performanceDateType === "week"
+                ? "Leistungszeitraum KW " . $this->getPerformanceDateUnformatted()->format("W") . "/" . $this->getPerformanceDateUnformatted()->format("o")
+                : "Leistungsdatum " . $this->getPerformanceDateUnformatted()->format("d.m.Y");
+
+            $data[] = [
+                "id" => -1,
+                "id_invoice" => $this->invoiceId,
+                "text" => $text,
+                "active" => 1,
+            ];
+        }
 
         return $data;
     }
@@ -332,6 +402,15 @@ class Invoice
     {
         $invoiceId = (int) Tools::get("invoiceId");
         $addressId = (int) Tools::get("addressId");
+
+        if ($addressId !== 0) {
+            $customerId = self::getCustomerIdForInvoice($invoiceId);
+            if (!Address::hasAddress($customerId, $addressId)) {
+                JSONResponseHandler::sendErrorResponse(400, "Adresse gehört nicht zum Kunden dieser Rechnung.");
+                return;
+            }
+        }
+
         $query = "UPDATE invoice SET address_id = :addressId WHERE id = :invoiceId;";
         DBAccess::updateQuery($query, [
             "addressId" => $addressId,
@@ -339,6 +418,26 @@ class Invoice
         ]);
 
         JSONResponseHandler::returnOK();
+    }
+
+    /**
+     * Resolves the customer an invoice belongs to via its order, without needing the order id
+     * to be passed in separately (unlike constructing an Invoice instance).
+     */
+    private static function getCustomerIdForInvoice(int $invoiceId): int
+    {
+        $query = "SELECT a.Kundennummer AS customerId FROM invoice i
+            JOIN auftrag a ON a.Auftragsnummer = i.order_id
+            WHERE i.id = :invoiceId;";
+        $data = DBAccess::selectQuery($query, [
+            "invoiceId" => $invoiceId,
+        ]);
+
+        if (empty($data)) {
+            throw new \Exception("Invoice not found.");
+        }
+
+        return (int) $data[0]["customerId"];
     }
 
     public static function setContact(): void
@@ -373,11 +472,46 @@ class Invoice
     public static function setServiceDate(): void
     {
         $invoiceId = (int) Tools::get("invoiceId");
-        $date = Tools::get("date");
+        $type = Tools::get("type") === "week" ? "week" : "date";
+        $value = Tools::get("date");
 
-        $query = "UPDATE invoice SET performance_date = :date WHERE id = :invoiceId";
+        $date = $type === "week" ? self::mondayOfIsoWeek($value) : $value;
+
+        $query = "UPDATE invoice SET performance_date = :date, performance_date_type = :type WHERE id = :invoiceId";
         DBAccess::updateQuery($query, [
             "date" => $date,
+            "type" => $type,
+            "invoiceId" => $invoiceId,
+        ]);
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+        ]);
+    }
+
+    /**
+     * Converts an <input type="week"> value ("YYYY-Www") to the Monday of that ISO week.
+     */
+    private static function mondayOfIsoWeek(string $isoWeek): string
+    {
+        if (!preg_match('/^(\d{4})-W(\d{2})$/', $isoWeek, $matches)) {
+            return date("Y-m-d");
+        }
+
+        $date = new \DateTime();
+        $date->setISODate((int) $matches[1], (int) $matches[2]);
+
+        return $date->format("Y-m-d");
+    }
+
+    public static function setPerformanceDateVisibility(): void
+    {
+        $invoiceId = (int) Tools::get("invoiceId");
+        $show = (int) Tools::get("show") ? 1 : 0;
+
+        $query = "UPDATE invoice SET show_performance_date = :show WHERE id = :invoiceId";
+        DBAccess::updateQuery($query, [
+            "show" => $show,
             "invoiceId" => $invoiceId,
         ]);
 
@@ -525,9 +659,11 @@ class Invoice
         $edit = Tools::get("edit");
         $remove = Tools::get("remove");
 
+        $customerId = self::getCustomerIdForInvoice($invoiceId);
+
         $add = json_decode($add);
         foreach ($add as $text) {
-            self::addAltName($invoiceId, $text);
+            self::addAltName($customerId, $text);
         }
 
         $edit = json_decode($edit, true);
@@ -543,11 +679,11 @@ class Invoice
         JSONResponseHandler::returnOK();
     }
 
-    public static function addAltName(int $invoiceId, string $text): void
+    public static function addAltName(int $customerId, string $text): void
     {
-        $query = "INSERT INTO invoice_alt_names (id_invoice, `text`) VALUES (:idInvoice, :text);";
+        $query = "INSERT INTO invoice_alt_names (id_customer, `text`) VALUES (:customerId, :text);";
         DBAccess::insertQuery($query, [
-            "idInvoice" => $invoiceId,
+            "customerId" => $customerId,
             "text" => $text,
         ]);
     }
