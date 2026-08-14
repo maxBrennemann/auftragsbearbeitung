@@ -26,7 +26,7 @@ if ($target == "create") {
 	}
 
 	$auftrag = new Auftrag($orderId);
-	$invoiceContacts = Invoice::getContacts($auftrag->getKundennummer());
+	$invoiceContacts = Kunde::getContacts($auftrag->getKundennummer());
 
 	$nextInvoiceNumber = InvoiceNumberTracker::peekNextInvoiceNumber();
 	$invoice = Invoice::getInvoiceByOrderId($orderId);

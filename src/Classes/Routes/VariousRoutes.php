@@ -10,6 +10,7 @@ class VariousRoutes extends Routes
      * @uses \Src\Classes\Controller\TemplateController::ajaxGetTemplate()
      * @uses \Src\Classes\Project\Color::renderColorTemplate()
      * @uses \Src\Classes\Project\Invoice::getAltNamesTemplate()
+     * @uses \Src\Classes\Project\Angebot::getAltNamesTemplate()
      * @uses \Src\Classes\Project\InvoiceLayout::getItemsOrderTemplate()
      * @uses \Src\Classes\Project\Icon::ajaxGet()
      * 
@@ -21,6 +22,7 @@ class VariousRoutes extends Routes
         "/template/{template}" => [\Src\Classes\Controller\TemplateController::class, "ajaxGetTemplate"],
         "/template/colors/render" => [\Src\Classes\Project\Color::class, "renderColorTemplate"],
         "/template/invoice/alt-names" => [\Src\Classes\Project\Invoice::class, "getAltNamesTemplate"],
+        "/template/offer/alt-names" => [\Src\Classes\Project\Angebot::class, "getAltNamesTemplate"],
         "/template/invoice/items-order" => [\Src\Classes\Project\InvoiceLayout::class, "getItemsOrderTemplate"],
         "/template/icon/{icon}" => [\Src\Classes\Project\Icon::class, "ajaxGet"],
 

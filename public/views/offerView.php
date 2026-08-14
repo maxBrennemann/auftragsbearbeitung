@@ -1,6 +1,7 @@
 <?php
 
 use Src\Classes\Link;
+use Src\Classes\Project\Address;
 use Src\Classes\Project\Kunde;
 
 $kundenlink = $kundenlink = Link::getPageLink("kunde") . "?id=" . $customerId;
@@ -15,6 +16,9 @@ $stateLabels = [
 ];
 $validUntil = $offer->getValidUntil();
 
+$offerAddresses = Address::getAllAdressesFormatted($customerId);
+$offerContacts = Kunde::getContacts($customerId);
+
 ?>
 <div class="defCont">
     <div>
@@ -22,6 +26,30 @@ $validUntil = $offer->getValidUntil();
         <p><?= $customer->getVorname() ?> <?= $customer->getNachname() ?></p>
         <p><?= $customer->getStrasse() ?> <?= $customer->getHausnummer() ?></p>
         <p><?= $customer->getPostleitzahl() ?> <?= $customer->getOrt() ?></p>
+        <button class="btn-primary mt-2" data-binding="true" data-fun="addAltName">Alternativtext eingeben</button>
+
+        <h4 class="mt-2 font-semibold">Adresse auswählen</h4>
+        <?php if (empty($offerAddresses)): ?>
+            <i>Keine Rechnungsadressen vorhanden oder unvollständig. Bei Bedarf <a href="<?= Link::getPageLink("kunde") . "?id=" . $customerId ?>" class="link-primary">beim Kunden</a> ergänzen.</i>
+        <?php else: ?>
+            <select id="addressId" class="input-primary w-72 mt-1" data-write="true" data-fun="selectAddress">
+                <?php foreach ($offerAddresses as $i => $r): ?>
+                    <option value="<?= $i ?>" <?= $offer->getAddressId() == $i ? "selected" : "" ?>><?= $r ?></option>
+                <?php endforeach; ?>
+            </select>
+        <?php endif; ?>
+
+        <h4 class="mt-2 font-semibold">Ansprechpartner auswählen</h4>
+        <?php if (empty($offerContacts)): ?>
+            <i>Keine Ansprechpartner vorhanden. Bei Bedarf <a href="<?= Link::getPageLink("kunde") . "?id=" . $customerId ?>" class="link-primary">beim Kunden</a> ergänzen.</i>
+        <?php else: ?>
+            <select id="contactId" class="input-primary w-72 mt-1" data-write="true" data-fun="selectContact">
+                <option value="0">Kein Ansprechpartner</option>
+                <?php foreach ($offerContacts as $i => $r): ?>
+                    <option value="<?= $i ?>" <?= $offer->getContactId() == $i ? "selected" : "" ?>><?= $r ?></option>
+                <?php endforeach; ?>
+            </select>
+        <?php endif; ?>
     </div>
     <div>
         <span>Datum: <input id="angebotsdatum" type="date" class="input-primary" value="<?= date('Y-m-d') ?>"></span><br>

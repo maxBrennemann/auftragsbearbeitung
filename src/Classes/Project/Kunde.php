@@ -366,6 +366,30 @@ class Kunde
         return $customers;
     }
 
+    /**
+     * @return string[]
+     */
+    public static function getContacts(int $customerId): array
+    {
+        $contacts = DBAccess::selectQuery("SELECT Nummer AS id, Vorname AS firstName, Nachname AS lastName, Email AS email
+			FROM ansprechpartner
+			WHERE Kundennummer = :kdnr", [
+            "kdnr" => $customerId,
+        ]);
+        $formattedContacts = [];
+
+        foreach ($contacts as $contact) {
+            $id = (int) $contact["id"];
+            $formattedContacts[$id] = $contact["firstName"] . " " . $contact["lastName"];
+
+            if (!empty($contact["email"])) {
+                $formattedContacts[$id] .= ", " . $contact["email"];
+            }
+        }
+
+        return $formattedContacts;
+    }
+
     public static function getColors(): void
     {
         $query = "SELECT Auftragsnummer as id_order, color_name, hex_value, short_name, producer

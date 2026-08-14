@@ -24,6 +24,8 @@ class OfferPDF extends TransactionPDF
         $this->customerId = $customerId;
         $this->offer = new Angebot($offerId, $customerId);
         $this->customer = $this->offer->getCustomer();
+        $this->addressId = $this->offer->getAddressId();
+        $this->contactId = $this->offer->getContactId();
     }
 
     public function getCustomerId(): int
@@ -40,7 +42,7 @@ class OfferPDF extends TransactionPDF
         $this->SetKeywords("Angebot");
 
         $this->SetFont("helvetica", "", 12);
-        $this->fillAddress();
+        $this->fillAddress($this->offer->getAltNames());
 
         $this->Image(CompanyProfile::getLogo(), 125, 46, 60);
 

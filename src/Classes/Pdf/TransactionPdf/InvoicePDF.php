@@ -2,6 +2,7 @@
 
 namespace Src\Classes\Pdf\TransactionPdf;
 
+use Src\Classes\Pdf\PDFTexts;
 use Src\Classes\Project\CompanyProfile;
 use Src\Classes\Project\Config;
 use Src\Classes\Project\Invoice;
@@ -89,17 +90,21 @@ class InvoicePDF extends TransactionPDF
         $this->Cell(60, 10, '', 'T');
         $this->Cell(20, 10, '', 'T');
 
-        /* Code für "Zahlbar sofort ohne weitere Abzüge" */
-        $this->ln();
-        $this->setCellMargins(0, 0, 0, 0);
-        $this->SetFont("helvetica", "", 10);
-        $this->Cell(160, 10, "Zahlbar sofort ohne weitere Abzüge.");
-
-        if ($rate === 0.0) {
+        /* Zahlungsbedingungen und ggf. Kleinunternehmer-Hinweis, Wortlaut über pdf_texts editierbar */
+        foreach (PDFTexts::get("invoice_payment_terms") as $text) {
             $this->ln();
             $this->setCellMargins(0, 0, 0, 0);
             $this->SetFont("helvetica", "", 10);
-            $this->Cell(160, 10, "Kein Ausweis der Umsatzsteuer gem. §19 UStG.");
+            $this->Cell(160, 10, $text);
+        }
+
+        if ($rate === 0.0) {
+            foreach (PDFTexts::get("invoice_small_business_notice") as $text) {
+                $this->ln();
+                $this->setCellMargins(0, 0, 0, 0);
+                $this->SetFont("helvetica", "", 10);
+                $this->Cell(160, 10, $text);
+            }
         }
     }
 

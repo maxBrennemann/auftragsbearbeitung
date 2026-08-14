@@ -4,6 +4,7 @@ namespace Src\Classes\Project;
 
 use Src\Classes\Controller\TemplateController;
 use Src\Classes\Models\Invoice as InvoiceModel;
+use Src\Classes\Pdf\PDFTexts;
 use Src\Classes\Pdf\TransactionPdf\InvoicePDF;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
@@ -208,12 +209,7 @@ class Invoice
      */
     public function getAltNames(): array
     {
-        $query = "SELECT id, `text` FROM invoice_alt_names WHERE id_customer = :customerId ORDER BY id ASC";
-        $data = DBAccess::selectQuery($query, [
-            "customerId" => $this->auftrag->getKundennummer(),
-        ]);
-
-        return $data;
+        return CustomerAltNames::getForCustomer($this->auftrag->getKundennummer());
     }
 
     public static function toggleText(): void
@@ -307,13 +303,8 @@ class Invoice
             "invoiceId" => $this->invoiceId,
         ]);
 
-        $defaultTexts = [
-            "Zu den Bilddaten: Bei der Benutzung von Daten aus fremden Quellen richten sich die Nutzungsbedingungen über Verwendung und Weitergabe nach denen der jeweiligen Anbieter.",
-            "Bitte beachten Sie, dass wir keine Haftung für eventuell entstehende Schäden übernehmen, die auf Witterungseinflüsse zurückzuführen sind (zerrissene Banner, herausgerissen Ösen o. Ä.). Sie als Kunde müssen entscheiden, wie die Banner konfektioniert werden sollen. Für die Art der Konfektionierung übernehmen wir keine Haftung. Wir übernehmen außerdem keine Haftung für unfachgerechte Montage der Banner.",
-            "Pflegehinweise beachten: Keine Bleichmittel und Weichspüler verwenden. Nicht in den Trockner geben. Links gewendet waschen. Nicht über den Transfer bügeln. Nicht chemisch reinigen.",
-            "Wir weisen darauf hin, dass Logos eventuell Bildrechte anderer berühren und wir hierfür keine Haftung übernehmen. Der Kunde garantiert uns Straffreiheit gegenüber einer eventuell geschädigten Partei im Fall einer Verletzung des Rechts des geistigen Eigentums und/ oder des Bildrechts und/ oder den durch eine solche Verletzung verursachten Schadens. Für einen eventuellen Fall solch einer Verletzung willigt der Kunde ein, uns in Höhe aller entstandenen Kosten (inkl. Anwaltkosten) zu entschädigen.",
-            "Für angelieferte Textilien wird keine Garantie übernommen.",
-        ];
+        /* über die Einstellungen-Seite (pdf_texts, Typ invoice_default_text) editierbar statt im Code eingebrannt */
+        $defaultTexts = PDFTexts::get("invoice_default_text");
 
         /* add default texts to texts if not already present */
         foreach ($defaultTexts as $text) {
@@ -371,31 +362,6 @@ class Invoice
             "amount" => $sum,
             "id" => $this->invoiceId,
         ]);
-    }
-
-    /**
-     * @param int $customerId
-     * @return string[]
-     */
-    public static function getContacts(int $customerId): array
-    {
-        $contacts = DBAccess::selectQuery("SELECT Nummer AS id, Vorname AS firstName, Nachname AS lastName, Email AS email 
-			FROM ansprechpartner 
-			WHERE Kundennummer = :kdnr", [
-            "kdnr" => $customerId,
-        ]);
-        $formattedContacts = [];
-
-        foreach ($contacts as $contact) {
-            $id = (int) $contact["id"];
-            $formattedContacts[$id] = $contact["firstName"] . " " . $contact["lastName"];
-
-            if (!empty($contact["email"])) {
-                $formattedContacts[$id] .= ", " . $contact["email"];
-            }
-        }
-
-        return $formattedContacts;
     }
 
     public static function setAddress(): void
@@ -661,48 +627,19 @@ class Invoice
 
         $customerId = self::getCustomerIdForInvoice($invoiceId);
 
-        $add = json_decode($add);
-        foreach ($add as $text) {
-            self::addAltName($customerId, $text);
+        foreach (json_decode($add) as $text) {
+            CustomerAltNames::add($customerId, $text);
         }
 
-        $edit = json_decode($edit, true);
-        foreach ($edit as $editText) {
-            self::editAltName($editText["id"], $editText["text"]);
+        foreach (json_decode($edit, true) as $editText) {
+            CustomerAltNames::edit((int) $editText["id"], $editText["text"]);
         }
 
-        $remove = json_decode($remove);
-        foreach ($remove as $removeId) {
-            self::removeAltName($removeId);
+        foreach (json_decode($remove) as $removeId) {
+            CustomerAltNames::remove((int) $removeId);
         }
 
         JSONResponseHandler::returnOK();
-    }
-
-    public static function addAltName(int $customerId, string $text): void
-    {
-        $query = "INSERT INTO invoice_alt_names (id_customer, `text`) VALUES (:customerId, :text);";
-        DBAccess::insertQuery($query, [
-            "customerId" => $customerId,
-            "text" => $text,
-        ]);
-    }
-
-    public static function editAltName(int $altNameId, string $text): void
-    {
-        $query = "UPDATE invoice_alt_names SET `text` = :text WHERE id = :altNameId;";
-        DBAccess::updateQuery($query, [
-            "altNameId" => $altNameId,
-            "text" => $text,
-        ]);
-    }
-
-    public static function removeAltName(int $altNameId): void
-    {
-        $query = "DELETE FROM invoice_alt_names WHERE id = :altNameId;";
-        DBAccess::updateQuery($query, [
-            "altNameId" => $altNameId,
-        ]);
     }
 
     public static function getAltNamesTemplate(): void

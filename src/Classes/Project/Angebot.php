@@ -17,6 +17,8 @@ class Angebot
     private OfferState $state = OfferState::Open;
     private int $offerNumber = 0;
     private ?string $validUntil = null;
+    private int $addressId = 0;
+    private int $contactId = 0;
 
     /** @var array<int, array<string>> */
     private array $fahrzeuge;
@@ -29,7 +31,7 @@ class Angebot
             throw new \Exception("Kunde nicht gefunden");
         }
 
-        $data = DBAccess::selectQuery("SELECT `state`, offer_number, valid_until FROM offer WHERE id = :offerId AND customer_id = :customerId;", [
+        $data = DBAccess::selectQuery("SELECT `state`, offer_number, valid_until, contact_id, address_id FROM offer WHERE id = :offerId AND customer_id = :customerId;", [
             "offerId" => $offerId,
             "customerId" => $customerId,
         ]);
@@ -43,6 +45,8 @@ class Angebot
         $this->validUntil = $data[0]["valid_until"];
         $this->offerId = $offerId;
         $this->customerId = $customerId;
+        $this->addressId = (int) $data[0]["address_id"];
+        $this->contactId = (int) $data[0]["contact_id"];
         $this->fahrzeuge = Fahrzeug::getSelection($customerId);
     }
 
@@ -87,6 +91,24 @@ class Angebot
     public function getCustomer(): Kunde
     {
         return $this->customer;
+    }
+
+    public function getAddressId(): int
+    {
+        return $this->addressId;
+    }
+
+    public function getContactId(): int
+    {
+        return $this->contactId;
+    }
+
+    /**
+     * @return array<int, array<string, string>>
+     */
+    public function getAltNames(): array
+    {
+        return CustomerAltNames::getForCustomer($this->customerId);
     }
 
     public function getCustomerEmail(): false|string
@@ -329,5 +351,81 @@ class Angebot
         $offerPDF = new OfferPDF($offerId, $customerId);
         $offerPDF->generate();
         $offerPDF->generateOutput();
+    }
+
+    public static function setAddress(): void
+    {
+        $offerId = (int) Tools::get("offerId");
+        $customerId = (int) Tools::get("customerId");
+        $addressId = (int) Tools::get("addressId");
+
+        if ($addressId !== 0 && !Address::hasAddress($customerId, $addressId)) {
+            JSONResponseHandler::sendErrorResponse(400, "Adresse gehört nicht zum Kunden dieses Angebots.");
+            return;
+        }
+
+        $query = "UPDATE offer SET address_id = :addressId WHERE id = :offerId AND customer_id = :customerId;";
+        DBAccess::updateQuery($query, [
+            "addressId" => $addressId,
+            "offerId" => $offerId,
+            "customerId" => $customerId,
+        ]);
+
+        JSONResponseHandler::returnOK();
+    }
+
+    public static function setContact(): void
+    {
+        $offerId = (int) Tools::get("offerId");
+        $customerId = (int) Tools::get("customerId");
+        $contactId = (int) Tools::get("contactId");
+
+        $query = "UPDATE offer SET contact_id = :contactId WHERE id = :offerId AND customer_id = :customerId;";
+        DBAccess::updateQuery($query, [
+            "contactId" => $contactId,
+            "offerId" => $offerId,
+            "customerId" => $customerId,
+        ]);
+
+        JSONResponseHandler::returnOK();
+    }
+
+    public static function handleAltNames(): void
+    {
+        $customerId = (int) Tools::get("customerId");
+        $add = Tools::get("add");
+        $edit = Tools::get("edit");
+        $remove = Tools::get("remove");
+
+        foreach (json_decode($add) as $text) {
+            CustomerAltNames::add($customerId, $text);
+        }
+
+        foreach (json_decode($edit, true) as $editText) {
+            CustomerAltNames::edit((int) $editText["id"], $editText["text"]);
+        }
+
+        foreach (json_decode($remove) as $removeId) {
+            CustomerAltNames::remove((int) $removeId);
+        }
+
+        JSONResponseHandler::returnOK();
+    }
+
+    public static function getAltNamesTemplate(): void
+    {
+        $offerId = (int) Tools::get("offerId");
+        $customerId = (int) Tools::get("customerId");
+
+        $offer = new Angebot($offerId, $customerId);
+        $altNames = $offer->getAltNames();
+
+        $template = TemplateController::getTemplate("invoiceAltNames", [
+            "altNames" => $altNames,
+        ]);
+
+        JSONResponseHandler::sendResponse([
+            "template" => $template,
+        ]);
     }
 }

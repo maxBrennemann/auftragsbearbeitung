@@ -34,6 +34,9 @@ class OrderRoutes extends Routes
      * @uses \Src\Classes\Project\Fahrzeug::addFiles()
      * @uses \Src\Classes\Project\Auftrag::changeCustomer()
      * @uses \Src\Classes\Project\Angebot::sendOffer()
+     * @uses \Src\Classes\Project\Angebot::setAddress()
+     * @uses \Src\Classes\Project\Angebot::setContact()
+     * @uses \Src\Classes\Project\Angebot::handleAltNames()
      */
     protected static $postRoutes = [
         "/order" => [\Src\Classes\Project\Auftrag::class, "addOrder"],
@@ -48,6 +51,9 @@ class OrderRoutes extends Routes
         "/order/{id}/vehicle/{vehicleId}/add-files" => [\Src\Classes\Project\Fahrzeug::class, "addFiles"],
         "/order/{id}/change-customer" => [\Src\Classes\Project\Auftrag::class, "changeCustomer"],
         "/order/offer/{offerId}/send" => [\Src\Classes\Project\Angebot::class, "sendOffer"],
+        "/order/offer/{offerId}/address" => [\Src\Classes\Project\Angebot::class, "setAddress"],
+        "/order/offer/{offerId}/contact" => [\Src\Classes\Project\Angebot::class, "setContact"],
+        "/order/offer/{offerId}/alt-names" => [\Src\Classes\Project\Angebot::class, "handleAltNames"],
     ];
 
     /**
