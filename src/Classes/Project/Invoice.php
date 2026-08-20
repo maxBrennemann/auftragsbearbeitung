@@ -4,7 +4,6 @@ namespace Src\Classes\Project;
 
 use Src\Classes\Controller\TemplateController;
 use Src\Classes\Models\Invoice as InvoiceModel;
-use Src\Classes\Pdf\PDFTexts;
 use Src\Classes\Pdf\TransactionPdf\InvoicePDF;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
@@ -217,25 +216,16 @@ class Invoice
         $invoiceId = (int) Tools::get("invoiceId");
         $textId = (int) Tools::get("textId");
 
+        $id = DocumentText::toggleText("invoice", $invoiceId, $textId, (string) Tools::get("text"));
+
         /* Adds default text if not already present */
         if ($textId == 0) {
-            $query = "INSERT INTO invoice_text (id_invoice, `text`, active) VALUES (:invoiceId, :text, 1);";
-            DBAccess::insertQuery($query, [
-                "text" => Tools::get("text"),
-                "invoiceId" => $invoiceId,
-            ]);
             JSONResponseHandler::sendResponse([
                 "status" => "success",
-                "id" => DBAccess::getLastInsertId(),
+                "id" => $id,
             ]);
             return;
         }
-
-        $query = "UPDATE invoice_text SET active = IF(active = 0, 1, 0) WHERE id = :textId AND id_invoice = :invoiceId";
-        DBAccess::updateQuery($query, [
-            "textId" => $textId,
-            "invoiceId" => $invoiceId,
-        ]);
 
         JSONResponseHandler::sendResponse([
             "status" => "success",
@@ -245,13 +235,9 @@ class Invoice
     public static function addText(): void
     {
         $invoiceId = (int) Tools::get("invoiceId");
-        $text = Tools::get("text");
+        $text = (string) Tools::get("text");
 
-        $query = "INSERT INTO invoice_text (id_invoice, `text`, active) VALUES (:invoiceId, :text, 1);";
-        $id = DBAccess::insertQuery($query, [
-            "text" => $text,
-            "invoiceId" => $invoiceId,
-        ]);
+        $id = DocumentText::addText("invoice", $invoiceId, $text);
 
         JSONResponseHandler::sendResponse([
             "status" => "success",
@@ -263,14 +249,9 @@ class Invoice
     {
         $invoiceId = (int) Tools::get("invoiceId");
         $textId = (int) Tools::get("textId");
-        $text = Tools::get("text");
+        $text = (string) Tools::get("text");
 
-        $query = "UPDATE invoice_text SET `text` = :text WHERE id = :textId AND id_invoice = :invoiceId";
-        DBAccess::updateQuery($query, [
-            "text" => $text,
-            "textId" => $textId,
-            "invoiceId" => $invoiceId,
-        ]);
+        DocumentText::editText("invoice", $invoiceId, $textId, $text);
 
         JSONResponseHandler::sendResponse([
             "status" => "success",
@@ -282,11 +263,7 @@ class Invoice
         $invoiceId = (int) Tools::get("invoiceId");
         $textId = (int) Tools::get("textId");
 
-        $query = "DELETE FROM invoice_text WHERE id = :textId AND id_invoice = :invoiceId";
-        DBAccess::deleteQuery($query, [
-            "textId" => $textId,
-            "invoiceId" => $invoiceId,
-        ]);
+        DocumentText::deleteText("invoice", $invoiceId, $textId);
 
         JSONResponseHandler::sendResponse([
             "status" => "success",
@@ -298,36 +275,12 @@ class Invoice
      */
     public function getTexts(): array
     {
-        $query = "SELECT * FROM invoice_text WHERE id_invoice = :invoiceId";
-        $data = DBAccess::selectQuery($query, [
-            "invoiceId" => $this->invoiceId,
-        ]);
-
         /* über die Einstellungen-Seite (pdf_texts, Typ invoice_default_text) editierbar statt im Code eingebrannt */
-        $defaultTexts = PDFTexts::get("invoice_default_text");
-
-        /* add default texts to texts if not already present */
-        foreach ($defaultTexts as $text) {
-            $found = false;
-            foreach ($data as $d) {
-                if ($d["text"] == $text) {
-                    $found = true;
-                    break;
-                }
-            }
-            if (!$found) {
-                $data[] = [
-                    "id" => 0,
-                    "id_invoice" => $this->invoiceId,
-                    "text" => $text,
-                    "active" => 0,
-                ];
-            }
-        }
+        $data = DocumentText::getTexts("invoice", $this->invoiceId, "invoice_default_text");
 
         /*
          * Leistungsdatum wird bewusst nicht über den generischen Text-Toggle verwaltet
-         * (id < 0, da echte invoice_text-Zeilen immer eine positive AUTO_INCREMENT-id haben):
+         * (id < 0, da echte document_text-Zeilen immer eine positive AUTO_INCREMENT-id haben):
          * Sichtbarkeit steuert Invoice::setPerformanceDateVisibility(), nicht toggleText(),
          * damit der Eintrag nicht versehentlich als eigenständiger Text persistiert werden kann.
          */

@@ -37,6 +37,7 @@ class OrderRoutes extends Routes
      * @uses \Src\Classes\Project\Angebot::setAddress()
      * @uses \Src\Classes\Project\Angebot::setContact()
      * @uses \Src\Classes\Project\Angebot::handleAltNames()
+     * @uses \Src\Classes\Project\Angebot::addText()
      */
     protected static $postRoutes = [
         "/order" => [\Src\Classes\Project\Auftrag::class, "addOrder"],
@@ -54,6 +55,7 @@ class OrderRoutes extends Routes
         "/order/offer/{offerId}/address" => [\Src\Classes\Project\Angebot::class, "setAddress"],
         "/order/offer/{offerId}/contact" => [\Src\Classes\Project\Angebot::class, "setContact"],
         "/order/offer/{offerId}/alt-names" => [\Src\Classes\Project\Angebot::class, "handleAltNames"],
+        "/order/offer/{offerId}/text" => [\Src\Classes\Project\Angebot::class, "addText"],
     ];
 
     /**
@@ -69,6 +71,9 @@ class OrderRoutes extends Routes
      * @uses \Src\Classes\Project\Fahrzeug::updateLicensePlate()
      * @uses \Src\Classes\Project\Angebot::completeOffer()
      * @uses \Src\Classes\Project\Angebot::rejectOffer()
+     * @uses \Src\Classes\Project\Angebot::toggleText()
+     * @uses \Src\Classes\Project\Angebot::editText()
+     * @uses \Src\Classes\Project\OfferLayout::updateItemsOrder()
      */
     protected static $putRoutes = [
         "/order/{id}" => [\Src\Classes\Project\Auftrag::class, "updateOrder"],
@@ -84,6 +89,9 @@ class OrderRoutes extends Routes
 
         "/order/offer/{offerId}/complete" => [\Src\Classes\Project\Angebot::class, "completeOffer"],
         "/order/offer/{offerId}/reject" => [\Src\Classes\Project\Angebot::class, "rejectOffer"],
+        "/order/offer/{offerId}/text" => [\Src\Classes\Project\Angebot::class, "toggleText"],
+        "/order/offer/{offerId}/text/{textId}" => [\Src\Classes\Project\Angebot::class, "editText"],
+        "/order/offer/{offerId}/positions" => [\Src\Classes\Project\OfferLayout::class, "updateItemsOrder"],
     ];
 
     /**
@@ -92,6 +100,7 @@ class OrderRoutes extends Routes
      * @uses \Src\Classes\Project\Auftrag::deleteFile()
      * @uses \Src\Classes\Project\Fahrzeug::removeVehicle()
      * @uses \Src\Classes\Project\Angebot::deleteOffer()
+     * @uses \Src\Classes\Project\Angebot::deleteText()
      */
     protected static $deleteRoutes = [
         "/order/{id}" => [\Src\Classes\Project\Auftrag::class, "deleteOrder"],
@@ -99,5 +108,6 @@ class OrderRoutes extends Routes
         "/order/{id}/files/{fileId}" => [\Src\Classes\Project\Auftrag::class, "deleteFile"],
         "/order/{id}/vehicles/{vehicleId}" => [\Src\Classes\Project\Fahrzeug::class, "removeVehicle"],
         "/order/offer/{offerId}" => [\Src\Classes\Project\Angebot::class, "deleteOffer"],
+        "/order/offer/{offerId}/text/{textId}" => [\Src\Classes\Project\Angebot::class, "deleteText"],
     ];
 }

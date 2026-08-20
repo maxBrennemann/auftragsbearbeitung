@@ -111,6 +111,72 @@ class Angebot
         return CustomerAltNames::getForCustomer($this->customerId);
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function getTexts(): array
+    {
+        return DocumentText::getTexts("offer", $this->offerId, "offer_default_text");
+    }
+
+    public static function toggleText(): void
+    {
+        $offerId = (int) Tools::get("offerId");
+        $textId = (int) Tools::get("textId");
+
+        $id = DocumentText::toggleText("offer", $offerId, $textId, (string) Tools::get("text"));
+
+        if ($textId == 0) {
+            JSONResponseHandler::sendResponse([
+                "status" => "success",
+                "id" => $id,
+            ]);
+            return;
+        }
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+        ]);
+    }
+
+    public static function addText(): void
+    {
+        $offerId = (int) Tools::get("offerId");
+        $text = (string) Tools::get("text");
+
+        $id = DocumentText::addText("offer", $offerId, $text);
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+            "id" => $id,
+        ]);
+    }
+
+    public static function editText(): void
+    {
+        $offerId = (int) Tools::get("offerId");
+        $textId = (int) Tools::get("textId");
+        $text = (string) Tools::get("text");
+
+        DocumentText::editText("offer", $offerId, $textId, $text);
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+        ]);
+    }
+
+    public static function deleteText(): void
+    {
+        $offerId = (int) Tools::get("offerId");
+        $textId = (int) Tools::get("textId");
+
+        DocumentText::deleteText("offer", $offerId, $textId);
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+        ]);
+    }
+
     public function getCustomerEmail(): false|string
     {
         $email = $this->customer->getEmail();

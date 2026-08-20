@@ -2,6 +2,7 @@ import { ajax } from "js-classes/ajax";
 import { addBindings } from "js-classes/bindings"
 import { notification } from "js-classes/notifications";
 
+import { DragSortManager } from "../classes/DragSortManager";
 import { createPopup } from "../classes/helpers";
 import { getItemsTable, initInvoiceItems } from "../classes/invoiceItems";
 import { FunctionMap } from "../types/types";
@@ -11,6 +12,7 @@ const functionNames: FunctionMap = {};
 const removedAltNames: number[] = [];
 let currentOfferId = 0;
 let currentCustomerId = 0;
+let currentPositions: unknown = {};
 
 const init = () => {
     addBindings(functionNames);
@@ -27,6 +29,13 @@ const showOffer = (content: string, offerId: number, customerId: number) => {
     getItemsTable("auftragsPostenTable", offerId, "offer");
     initInvoiceItems(offerId, "offer");
     getPDF();
+
+    document.querySelectorAll<HTMLElement>(".offerTexts").forEach(text => {
+        if (text.dataset.active == "1") {
+            text.classList.add("bg-blue-200");
+            text.classList.remove("bg-gray-100");
+        }
+    });
 
     /* insTemp's content (incl. the new address/contact/alt-name controls) is inserted after
      * init() already ran addBindings() once, so newly inserted [data-binding]/[data-write]
@@ -129,6 +138,176 @@ functionNames.write_selectContact = (e: Event) => {
             return;
         }
         notification("", "success");
+        getPDF();
+    });
+}
+
+functionNames.click_addText = () => {
+    const input = document.getElementById("newOfferText") as HTMLInputElement;
+
+    ajax.post(`/api/v1/order/offer/${currentOfferId}/text`, {
+        "text": input.value,
+    }).then((r: any) => {
+        if (r.data.status !== "success") {
+            notification("", "failure", r.data.message);
+            return;
+        }
+        notification("", "success");
+
+        const newText = document.createElement("div");
+        newText.className = "offerTexts bg-blue-200 rounded-xl cursor-pointer p-3 mr-1 select-none flex";
+        newText.dataset.active = "1";
+        newText.dataset.id = r.data.id;
+        newText.innerHTML = `<p class="max-h-20 overflow-auto flex-auto">${input.value}</p>`;
+        newText.addEventListener("click", toggleText);
+
+        document.querySelector(".defaultOfferTexts")?.appendChild(newText);
+        input.value = "";
+
+        getPDF();
+    });
+}
+
+functionNames.click_editText = (e: Event) => {
+    const target = e.currentTarget as HTMLElement;
+    e.stopPropagation();
+
+    const id = target.dataset.id;
+    const card = target.closest(".offerTexts") as HTMLElement;
+    const textEl = card.querySelector("p") as HTMLElement;
+
+    const div = document.createElement("div");
+    div.classList.add("w-96");
+
+    const title = document.createElement("p");
+    title.classList.add("font-semibold");
+    title.innerHTML = "Text bearbeiten";
+
+    const textarea = document.createElement("textarea");
+    textarea.className = "input-primary w-full mt-2";
+    textarea.rows = 4;
+    textarea.value = textEl.innerText;
+
+    div.appendChild(title);
+    div.appendChild(textarea);
+
+    const btnContainer = createPopup(div);
+
+    const saveBtn = document.createElement("button");
+    saveBtn.classList.add("btn-primary");
+    saveBtn.innerHTML = "Übernehmen";
+
+    saveBtn.addEventListener("click", () => {
+        const newText = textarea.value;
+        ajax.put(`/api/v1/order/offer/${currentOfferId}/text/${id}`, {
+            "text": newText,
+        }).then((r: any) => {
+            if (r.data.status !== "success") {
+                notification("", "failure", r.data.message);
+                return;
+            }
+            notification("", "success");
+            textEl.innerText = newText;
+            getPDF();
+        });
+        const btnCancel = btnContainer.querySelector("button.btn-cancel") as HTMLButtonElement;
+        btnCancel.click();
+    });
+    btnContainer.appendChild(saveBtn);
+}
+
+functionNames.click_deleteText = (e: Event) => {
+    const target = e.currentTarget as HTMLElement;
+    e.stopPropagation();
+
+    if (!confirm("Soll dieser Text wirklich gelöscht werden?")) {
+        return;
+    }
+
+    const id = target.dataset.id;
+    ajax.delete(`/api/v1/order/offer/${currentOfferId}/text/${id}`).then((r: any) => {
+        if (r.data.status !== "success") {
+            notification("", "failure", r.data.message);
+            return;
+        }
+        notification("", "success");
+        target.closest(".offerTexts")?.remove();
+        getPDF();
+    });
+}
+
+const toggleText = (e: Event) => {
+    const target = e.currentTarget as HTMLElement;
+    target.classList.toggle("bg-blue-200");
+    target.classList.toggle("bg-gray-100");
+
+    ajax.put(`/api/v1/order/offer/${currentOfferId}/text`, {
+        "textId": target.dataset.id,
+        "text": target.innerText,
+    }).then((r: any) => {
+        if (r.data.status !== "success") {
+            notification("", "failure", r.data.message);
+            return;
+        }
+        notification("", "success");
+
+        target.dataset.active = target.dataset.active == "1" ? "0" : "1";
+        if (r.data.id) {
+            target.dataset.id = r.data.id;
+        }
+
+        getPDF();
+    });
+}
+
+functionNames.click_toggleText = toggleText;
+
+functionNames.click_changeItemsOrder = async () => {
+    const template = await ajax.get(`/api/v1/template/offer/items-order`, {
+        "offerId": currentOfferId,
+        "customerId": currentCustomerId,
+    });
+    const div = document.createElement("div");
+    div.innerHTML = template.data.template;
+    const btnContainer = createPopup(div);
+
+    const saveBtn = document.createElement("button");
+    saveBtn.classList.add("btn-primary");
+    saveBtn.innerHTML = "Übernehmen";
+
+    saveBtn.addEventListener("click", () => {
+        saveOrder();
+        const btnCancel = btnContainer.querySelector("button.btn-cancel") as HTMLButtonElement;
+        btnCancel.click()
+    });
+    btnContainer.appendChild(saveBtn);
+
+    manageItemsOrder(div);
+    addBindings(functionNames);
+}
+
+const manageItemsOrder = (div: HTMLDivElement) => {
+    const group = div.querySelector(".invoiceItemsGroup") as HTMLElement;
+    new DragSortManager(group, {
+        itemSelector: "div",
+        dataFields: ["type"],
+        onOrderChange: (positions) => {
+            currentPositions = positions;
+            let count = 1;
+            const elements = div.querySelectorAll<HTMLInputElement>(".invoiceItemsGroup div input");
+            elements.forEach(el => {
+                el.value = count.toString();
+                count++;
+            });
+        }
+    });
+}
+
+const saveOrder = () => {
+    ajax.put(`/api/v1/order/offer/${currentOfferId}/positions`, {
+        "positions": JSON.stringify(currentPositions),
+        "customerId": currentCustomerId,
+    }).then(() => {
         getPDF();
     });
 }

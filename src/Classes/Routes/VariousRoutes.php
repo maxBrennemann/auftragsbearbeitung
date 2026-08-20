@@ -12,8 +12,9 @@ class VariousRoutes extends Routes
      * @uses \Src\Classes\Project\Invoice::getAltNamesTemplate()
      * @uses \Src\Classes\Project\Angebot::getAltNamesTemplate()
      * @uses \Src\Classes\Project\InvoiceLayout::getItemsOrderTemplate()
+     * @uses \Src\Classes\Project\OfferLayout::getItemsOrderTemplate()
      * @uses \Src\Classes\Project\Icon::ajaxGet()
-     * 
+     *
      * @uses \Src\Classes\Project\Wiki::ajaxGetManualText()
      * @uses \Src\Classes\Controller\ManualController::get()
      * @uses \Src\Classes\Project\Statistics::getDashboardAjax()
@@ -24,6 +25,7 @@ class VariousRoutes extends Routes
         "/template/invoice/alt-names" => [\Src\Classes\Project\Invoice::class, "getAltNamesTemplate"],
         "/template/offer/alt-names" => [\Src\Classes\Project\Angebot::class, "getAltNamesTemplate"],
         "/template/invoice/items-order" => [\Src\Classes\Project\InvoiceLayout::class, "getItemsOrderTemplate"],
+        "/template/offer/items-order" => [\Src\Classes\Project\OfferLayout::class, "getItemsOrderTemplate"],
         "/template/icon/{icon}" => [\Src\Classes\Project\Icon::class, "ajaxGet"],
 
         "/manual/text/{key}" => [\Src\Classes\Project\Wiki::class, "ajaxGetManualText"],

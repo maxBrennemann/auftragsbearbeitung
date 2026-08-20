@@ -5,6 +5,7 @@ namespace Src\Classes\Pdf\TransactionPdf;
 use Src\Classes\Project\Angebot;
 use Src\Classes\Project\CompanyProfile;
 use Src\Classes\Project\Config;
+use Src\Classes\Project\OfferLayout;
 use Src\Classes\Project\OfferNumberTracker;
 use Src\Classes\Project\Posten;
 use Src\Classes\Project\Settings;
@@ -134,17 +135,44 @@ class OfferPDF extends TransactionPDF
 
     private function addOfferItems(): float
     {
+        $lineheight = 10;
         $positions = Posten::getOfferItems($this->offerId);
         $offset = 124;
         $this->setXY(20, $offset);
         $count = 1;
         $sum = 0.0;
 
-        foreach ($positions as $p) {
-            $sum += $p->bekommePreis();
-            $addToOffset = $this->renderItemRow($p, $count);
-            $offset += $addToOffset;
-            $count++;
+        $offerLayout = new OfferLayout($this->offer);
+        $mergedItems = $offerLayout->getOrderedOfferContent();
+
+        foreach ($mergedItems as $entry) {
+            $type = $entry["type"];
+            $id = $entry["id"];
+            $content = $entry["content"];
+            $addToOffset = 0;
+
+            if ($type == "item") {
+                $p = array_find($positions, fn($p) => $p->getPostennummer() == $id);
+                $sum += $p->bekommePreis();
+                $addToOffset = $this->renderItemRow($p, $count);
+                $offset += $addToOffset;
+                $count++;
+            } else if ($type == "text") {
+                $this->Cell(55, $lineheight, "");
+
+                $heigth = $this->getStringHeight(70, $content);
+                $addToOffset = $lineheight;
+
+                if ($heigth >= $lineheight) {
+                    $this->MultiCell(70, $lineheight, $content, '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
+                    $addToOffset = ceil($heigth);
+                } else {
+                    $this->Cell(70, $lineheight, $content);
+                }
+                $this->Cell(40, $lineheight, "");
+                $offset += $addToOffset;
+                $this->ln($addToOffset);
+            }
 
             /* 297: Din A4 Seitenhöhe, 35: Abstand von unten für die Fußzeile */
             if ($this->GetY() + $addToOffset >= 297 - 35) {
