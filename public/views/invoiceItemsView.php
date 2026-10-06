@@ -16,7 +16,7 @@
             </div>
             <div class="mt-1 flex flex-col">
                 <span>Stundenlohn [€]:</span>
-                <input class="input-primary mt-1" id="wage" type="number" value="<?= \Src\Classes\Project\Settings::get("invoice.defaultWage") ?>">
+                <input class="input-primary mt-1" id="wage" type="number" min="0" step="0.01" value="<?= \Src\Classes\Project\Settings::get("invoice.defaultWage") ?>">
             </div>
             <div class="mt-1 flex flex-col">
                 <span>Beschreibung:</span>
@@ -40,7 +40,7 @@
         </div>
         <div class="mt-1 flex flex-col">
             <span>Menge [<span id="showMeh"></span>]:</span>
-            <input class="input-primary mt-1" id="anz" type="number" value="1">
+            <input class="input-primary mt-1" id="anz" type="number" step="any" value="1">
         </div>
         <div class="mt-1 flex flex-col">
             <span>Mengeneinheit:</span>
@@ -59,12 +59,12 @@
         </div>
         <div class="mt-1 flex flex-col">
             <span>Einkaufspreis [€]:</span>
-            <input class="input-primary mt-1" type="number" id="ekp" value="0">
+            <input class="input-primary mt-1" type="number" step="0.01" id="ekp" value="0">
         </div>
         <div class="mt-1 grid grid-cols-2 gap-4">
             <div class="flex flex-col">
                 <span>Verkaufspreis [€]:</span>
-                <input class="input-primary mt-1" type="number" id="pre" value="0">
+                <input class="input-primary mt-1" type="number" step="0.01" id="pre" value="0">
             </div>
             <div class="flex flex-col">
                 <span>Aufschlag [%]:</span>

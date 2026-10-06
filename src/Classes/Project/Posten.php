@@ -4,6 +4,7 @@ namespace Src\Classes\Project;
 
 use Src\Classes\Link;
 use MaxBrennemann\PhpUtilities\DBAccess;
+use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 
 abstract class Posten
@@ -376,6 +377,10 @@ abstract class Posten
         return [$postennummer, $subPosten];
     }
 
+    /**
+     * Deletes a posten of any type together with its type specific rows, closes the gap in the
+     * positions and answers with the new order total, so the frontend can refresh its sum.
+     */
     public static function delete(): void
     {
         $idItem = (int) Tools::get("itemId");
@@ -384,19 +389,95 @@ abstract class Posten
         $data = DBAccess::selectQuery($query, [
             "id" => $idItem,
         ]);
+
+        if (empty($data)) {
+            JSONResponseHandler::throwError(404, "Posten existiert nicht");
+        }
+
         $orderId = (int) $data[0]["Auftragsnummer"];
         $offerId = (int) $data[0]["offer_id"];
 
-        $query = "DELETE FROM posten WHERE Postennummer = :id;";
-        DBAccess::deleteQuery($query, [
-            "id" => $idItem,
-        ]);
+        /* none of these tables has a foreign key on posten, so nothing is cleaned up implicitly */
+        $params = ["id" => $idItem];
+        $queries = [
+            "DELETE FROM zeiterfassung WHERE id_zeit IN (SELECT Nummer FROM zeit WHERE Postennummer = :id)",
+            "DELETE FROM zeit WHERE Postennummer = :id",
+            "DELETE FROM leistung_posten WHERE Postennummer = :id",
+            "DELETE FROM produkt_posten WHERE Postennummer = :id",
+            "DELETE FROM product_compact WHERE postennummer = :id",
+            "DELETE FROM dateien_posten WHERE id_posten = :id",
+            "DELETE FROM posten WHERE Postennummer = :id",
+        ];
+        foreach ($queries as $query) {
+            DBAccess::deleteQuery($query, $params);
+        }
 
-        if ($orderId != 0) {
+        $price = null;
+        if ($orderId > 0) {
             self::addPosition($orderId);
+            OrderHistory::add($orderId, $idItem, OrderHistory::TYPE_ITEM, OrderHistory::STATE_DELETED);
+
+            $order = new Auftrag($orderId);
+            $price = $order->preisBerechnen();
         } elseif ($offerId != 0) {
             self::addOfferPosition($offerId);
         }
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+            "price" => $price,
+        ]);
+    }
+
+    public static function updateOrderPositions(): void
+    {
+        self::updatePositions("Auftragsnummer", (int) Tools::get("id"));
+    }
+
+    public static function updateOfferPositions(): void
+    {
+        self::updatePositions("offer_id", (int) Tools::get("id"));
+    }
+
+    /**
+     * Stores a new order for the given posten ids (as dragged in the items table). The table may show
+     * only a part of the posten (filter "Rechnungsposten ausblenden"), so the listed posten are
+     * rearranged among the position slots they already occupy and all others keep their place.
+     */
+    private static function updatePositions(string $parentColumn, int $parentId): void
+    {
+        $ids = json_decode((string) Tools::get("positions"), true);
+        if (!is_array($ids) || $parentId <= 0) {
+            JSONResponseHandler::throwError(400, "Ungültige Reihenfolge");
+        }
+        $ids = array_values(array_unique(array_map("intval", $ids)));
+
+        $rows = DBAccess::selectQuery("SELECT Postennummer FROM posten WHERE $parentColumn = :parentId ORDER BY position, Postennummer", [
+            "parentId" => $parentId,
+        ]);
+        $current = array_map(fn($row) => (int) $row["Postennummer"], $rows);
+
+        if (count(array_diff($ids, $current)) > 0) {
+            JSONResponseHandler::throwError(400, "Die Reihenfolge enthält Posten, die nicht zu diesem Vorgang gehören");
+        }
+
+        /* walk the current order and fill every slot of a listed posten with the next id of the new order */
+        $next = 0;
+        $newOrder = [];
+        foreach ($current as $id) {
+            $newOrder[] = in_array($id, $ids, true) ? $ids[$next++] : $id;
+        }
+
+        foreach ($newOrder as $index => $id) {
+            DBAccess::updateQuery("UPDATE posten SET position = :position WHERE Postennummer = :id", [
+                "position" => $index + 1,
+                "id" => $id,
+            ]);
+        }
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+        ]);
     }
 
     public static function addPosition(int $orderId): void

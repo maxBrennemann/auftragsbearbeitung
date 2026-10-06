@@ -54,6 +54,8 @@ class OrderItemRoutes extends Routes
      * @uses Classes\Project\Leistung::update()
      * @uses Classes\Project\Zeit::updateInOffer()
      * @uses Classes\Project\Leistung::updateInOffer()
+     * @uses Classes\Project\Posten::updateOrderPositions()
+     * @uses Classes\Project\Posten::updateOfferPositions()
      */
     protected static $putRoutes = [
         "/order-items/{id}/times/{itemId}" => [\Src\Classes\Project\Zeit::class, "update"],
@@ -61,14 +63,17 @@ class OrderItemRoutes extends Routes
 
         "/order-items/offer/{id}/times/{itemId}" => [\Src\Classes\Project\Zeit::class, "updateInOffer"],
         "/order-items/offer/{id}/services/{itemId}" => [\Src\Classes\Project\Leistung::class, "updateInOffer"],
+
+        "/order-items/{id}/positions" => [\Src\Classes\Project\Posten::class, "updateOrderPositions"],
+        "/order-items/offer/{id}/positions" => [\Src\Classes\Project\Posten::class, "updateOfferPositions"],
     ];
 
     /**
-    * @uses Classes\Project\Zeit::delete()
-    * @uses Classes\Project\Leistung::delete()
-    */
+     * @uses Classes\Project\Posten::delete()
+     */
     protected static $deleteRoutes = [
-        "/order-items/time/{itemId}" => [\Src\Classes\Project\Zeit::class, "delete"],
-        "/order-items/service/{itemId}" => [\Src\Classes\Project\Leistung::class, "delete"],
+        "/order-items/time/{itemId}" => [\Src\Classes\Project\Posten::class, "delete"],
+        "/order-items/service/{itemId}" => [\Src\Classes\Project\Posten::class, "delete"],
+        "/order-items/posten/{itemId}" => [\Src\Classes\Project\Posten::class, "delete"],
     ];
 }

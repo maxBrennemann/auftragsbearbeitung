@@ -13,6 +13,7 @@ export class DragSortManager {
     private group: HTMLElement;
     private options: DragSortOptions;
     private currentDraggedElement: HTMLElement | null = null;
+    private pointerDownTarget: HTMLElement | null = null;
 
     constructor(group: HTMLElement, options: DragSortOptions = {}) {
         this.group = group;
@@ -40,8 +41,16 @@ export class DragSortManager {
 
         const handleSelector = this.options.handleSelector;
         if (handleSelector) {
+            /*
+             * dragstart always reports the draggable element itself as its target, never the child
+             * the pointer went down on, so the handle has to be recognized on pointerdown already
+             */
+            element.addEventListener("pointerdown", (e) => {
+                this.pointerDownTarget = e.target as HTMLElement | null;
+            });
+
             element.addEventListener("dragstart", (e) => {
-                const target = e.target as HTMLElement | null;
+                const target = this.pointerDownTarget;
                 if (!target || !target.closest(handleSelector)) {
                     e.preventDefault();
                     return;

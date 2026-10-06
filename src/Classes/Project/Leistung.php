@@ -230,25 +230,11 @@ class Leistung extends Posten
             return;
         }
 
-        $item = [];
-        $item["position"] = $data->getPosition();
-        $item["price"] = $data->bekommeEinzelPreis();
-        $item["totalPrice"] = $data->bekommePreis();
-
-        $data = $data->fillToArray([]);
-        $item["id"] = $data["Postennummer"];
-        $item["name"] = $data["Bezeichnung"];
-        $item["description"] = $data["Beschreibung"];
-        $item["price"] = $data["Preis"];
-        $item["quantity"] = $data["Anzahl"];
-        $item["unit"] = $data["MEH"];
-        $item["totalPrice"] = $data["Gesamtpreis"];
-        $item["purchasePrice"] = $data["Einkaufspreis"];
-
+        /* same shape as the items list (incl. type and extraData), so the row stays editable/deletable */
         JSONResponseHandler::sendResponse([
             "status" => "success",
             "price" => $price,
-            "data" => $item,
+            "data" => Posten::formatItemsForTable([$data])[0],
         ]);
     }
 
@@ -304,25 +290,11 @@ class Leistung extends Posten
             return;
         }
 
-        $item = [];
-        $item["position"] = $data->getPosition();
-        $item["price"] = $data->bekommeEinzelPreis();
-        $item["totalPrice"] = $data->bekommePreis();
-
-        $data = $data->fillToArray([]);
-        $item["id"] = $data["Postennummer"];
-        $item["name"] = $data["Bezeichnung"];
-        $item["description"] = $data["Beschreibung"];
-        $item["price"] = $data["Preis"];
-        $item["quantity"] = $data["Anzahl"];
-        $item["unit"] = $data["MEH"];
-        $item["totalPrice"] = $data["Gesamtpreis"];
-        $item["purchasePrice"] = $data["Einkaufspreis"];
-
+        /* same shape as the items list (incl. type and extraData), so the row stays editable/deletable */
         JSONResponseHandler::sendResponse([
             "status" => "success",
             "price" => $price,
-            "data" => $item,
+            "data" => Posten::formatItemsForTable([$data])[0],
         ]);
     }
 
@@ -388,17 +360,6 @@ class Leistung extends Posten
             "meh" => $meh,
             "anz" => $qty,
             "itemId" => $itemId,
-        ]);
-    }
-
-    public static function delete(): void
-    {
-        $idItem = (int) Tools::get("itemId");
-        parent::delete();
-
-        $query = "DELETE FROM leistung_posten WHERE Postennummer = :idItem;";
-        DBAccess::deleteQuery($query, [
-            "idItem" => $idItem,
         ]);
     }
 }
