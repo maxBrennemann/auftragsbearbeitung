@@ -10,6 +10,10 @@
  * keine Schemaänderung nötig) und bleibt samt PDF erhalten. Für den Auftrag kann danach eine
  * neue Rechnung erstellt werden, ein Auftrag kann also mehrere Rechnungen haben, von denen
  * höchstens eine nicht storniert ist.
+ *
+ * Der Dateiname ist bewusst so gewählt, dass diese Migration nach 2026-10-06_invoiceCreditNotes.php
+ * einsortiert wird: Migrationen desselben Datums laufen in alphabetischer Reihenfolge, und diese
+ * hier ändert die dort angelegte Tabelle.
  */
 return new class () {
 

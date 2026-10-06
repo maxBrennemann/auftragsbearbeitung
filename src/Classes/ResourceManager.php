@@ -89,6 +89,15 @@ class ResourceManager
 
     private static function pass(): void
     {
+        /*
+         * Generated documents (invoices, credit notes, offers, reminders) and backups contain customer
+         * and business data and have predictable file names, so they are only served to logged-in users.
+         */
+        if (in_array(self::$type, ["pdfs", "backup"], true) && !SessionController::isLoggedIn()) {
+            http_response_code(401);
+            self::close();
+        }
+
         switch (self::$type) {
             case "pdfs":
             case "upload":
