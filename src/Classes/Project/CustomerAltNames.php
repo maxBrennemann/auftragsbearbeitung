@@ -32,20 +32,22 @@ class CustomerAltNames
         ]);
     }
 
-    public static function edit(int $id, string $text): void
+    public static function edit(int $customerId, int $id, string $text): void
     {
-        $query = "UPDATE customer_alt_names SET `text` = :text WHERE id = :id;";
+        $query = "UPDATE customer_alt_names SET `text` = :text WHERE id = :id AND id_customer = :customerId;";
         DBAccess::updateQuery($query, [
             "id" => $id,
+            "customerId" => $customerId,
             "text" => $text,
         ]);
     }
 
-    public static function remove(int $id): void
+    public static function remove(int $customerId, int $id): void
     {
-        $query = "DELETE FROM customer_alt_names WHERE id = :id;";
+        $query = "DELETE FROM customer_alt_names WHERE id = :id AND id_customer = :customerId;";
         DBAccess::deleteQuery($query, [
             "id" => $id,
+            "customerId" => $customerId,
         ]);
     }
 }

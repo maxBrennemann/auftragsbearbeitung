@@ -389,10 +389,30 @@ class Zeit extends Posten
         ]);
     }
 
-    public static function update(): void
+    public static function updateInOffer(): void
     {
-        $orderId = (int) Tools::get("id");
+        $offerId = (int) Tools::get("id");
         $itemId = (int) Tools::get("itemId");
+
+        if (self::getOfferItem($offerId, $itemId) === false) {
+            JSONResponseHandler::throwError(404, "Posten gehört nicht zu diesem Angebot");
+        }
+
+        self::writeUpdate($itemId);
+
+        $item = self::getOfferItem($offerId, $itemId);
+        if ($item === false || !$item instanceof Zeit) {
+            return;
+        }
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+            "data" => Posten::formatItemsForTable([$item])[0],
+        ]);
+    }
+
+    private static function writeUpdate(int $itemId): void
+    {
         $zeitInMinuten = (int) Tools::get("time");
         $stundenlohn = (int) Tools::get("wage");
         $beschreibung = (string) Tools::get("description");
@@ -431,6 +451,14 @@ class Zeit extends Posten
             DBAccess::deleteQuery($query, ["itemId" => $itemId]);
             self::erweiterteZeiterfassung($zeiterfassung, $itemId);
         }
+    }
+
+    public static function update(): void
+    {
+        $orderId = (int) Tools::get("id");
+        $itemId = (int) Tools::get("itemId");
+
+        self::writeUpdate($itemId);
 
         if ($orderId == 0) {
             return;

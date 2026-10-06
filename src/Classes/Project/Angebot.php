@@ -203,15 +203,26 @@ class Angebot
     public static function deleteOffer(): void
     {
         $offerId = (int) Tools::get("offerId");
-
-        $query = "DELETE FROM offer WHERE id = :offerId;";
-        DBAccess::deleteQuery($query, [
+        $data = DBAccess::selectQuery("SELECT `state` FROM offer WHERE id = :offerId;", [
             "offerId" => $offerId,
         ]);
 
-        if (DBAccess::getAffectedRows() == 0) {
+        if (empty($data)) {
             JSONResponseHandler::throwError(404, "Angebot existiert nicht");
         }
+
+        /* an accepted offer is the basis of an existing order and has to stay reproducible */
+        $state = OfferState::tryFrom($data[0]["state"]) ?? OfferState::Open;
+        if ($state === OfferState::Accepted) {
+            JSONResponseHandler::throwError(400, "Ein angenommenes Angebot kann nicht gelöscht werden");
+        }
+
+        Posten::deleteOfferItems($offerId);
+
+        $params = ["offerId" => $offerId];
+        DBAccess::deleteQuery("DELETE FROM document_text WHERE document_type = 'offer' AND document_id = :offerId;", $params);
+        DBAccess::deleteQuery("DELETE FROM document_layout WHERE document_type = 'offer' AND document_id = :offerId;", $params);
+        DBAccess::deleteQuery("DELETE FROM offer WHERE id = :offerId;", $params);
 
         JSONResponseHandler::sendResponse([
             "success" => true,
@@ -337,10 +348,7 @@ class Angebot
             return;
         }
 
-        DBAccess::updateQuery("UPDATE posten SET Auftragsnummer = :orderId, offer_id = NULL WHERE offer_id = :offerId;", [
-            "orderId" => $orderId,
-            "offerId" => $offerId,
-        ]);
+        Posten::copyOfferItemsToOrder($offerId, $orderId);
 
         $offerNumber = (int) $data[0]["offer_number"];
         if ($offerNumber == 0) {
@@ -468,11 +476,11 @@ class Angebot
         }
 
         foreach (json_decode($edit, true) as $editText) {
-            CustomerAltNames::edit((int) $editText["id"], $editText["text"]);
+            CustomerAltNames::edit($customerId, (int) $editText["id"], $editText["text"]);
         }
 
         foreach (json_decode($remove) as $removeId) {
-            CustomerAltNames::remove((int) $removeId);
+            CustomerAltNames::remove($customerId, (int) $removeId);
         }
 
         JSONResponseHandler::returnOK();

@@ -158,7 +158,10 @@ functionNames.click_addText = () => {
         newText.className = "offerTexts bg-blue-200 rounded-xl cursor-pointer p-3 mr-1 select-none flex";
         newText.dataset.active = "1";
         newText.dataset.id = r.data.id;
-        newText.innerHTML = `<p class="max-h-20 overflow-auto flex-auto">${input.value}</p>`;
+        const newTextContent = document.createElement("p");
+        newTextContent.className = "max-h-20 overflow-auto flex-auto";
+        newTextContent.textContent = input.value;
+        newText.appendChild(newTextContent);
         newText.addEventListener("click", toggleText);
 
         document.querySelector(".defaultOfferTexts")?.appendChild(newText);
@@ -388,7 +391,11 @@ functionNames.click_deleteOffer = () => {
         return;
     }
 
-    ajax.delete(`/api/v1/order/offer/${currentOfferId}`).then(() => {
+    ajax.delete(`/api/v1/order/offer/${currentOfferId}`).then((r: any) => {
+        if (!r.success) {
+            notification("", "failure", r.error);
+            return;
+        }
         window.location.href = "/angebot";
     });
 }

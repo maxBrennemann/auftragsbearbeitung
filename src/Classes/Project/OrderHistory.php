@@ -73,10 +73,13 @@ class OrderHistory
             LEFT JOIN history_type ON history_type.type_id = history.type
             LEFT JOIN user ON user.id = history.member_id
             WHERE history.orderid = :auftragsnummer
+                AND history.type != :offerType
             ORDER BY history.insertstamp DESC";
 
+        /* offer events are stored with their offer id in history.orderid, which can collide with an order id */
         return DBAccess::selectQuery($query, [
             "auftragsnummer" => $orderId,
+            "offerType" => self::TYPE_OFFER,
         ]);
     }
 

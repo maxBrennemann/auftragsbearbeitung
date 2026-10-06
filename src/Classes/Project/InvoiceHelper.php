@@ -207,20 +207,24 @@ class InvoiceHelper
             return [];
         }
 
-        $placeholders = [];
+        /* native prepares don't allow reusing a named placeholder, so each IN list gets its own set */
+        $numberPlaceholders = [];
+        $orderPlaceholders = [];
         $params = [];
         foreach ($ids as $index => $id) {
-            $key = "id$index";
-            $placeholders[] = ":$key";
-            $params[$key] = $id;
+            $numberPlaceholders[] = ":number$index";
+            $orderPlaceholders[] = ":order$index";
+            $params["number$index"] = $id;
+            $params["order$index"] = $id;
         }
-        $in = implode(",", $placeholders);
+        $inNumbers = implode(",", $numberPlaceholders);
+        $inOrders = implode(",", $orderPlaceholders);
 
         $query = "SELECT invoice.id, invoice.invoice_number, invoice.amount
             FROM invoice, auftrag
             WHERE auftrag.Auftragsnummer = invoice.order_id
                 AND auftrag.Bezahlt = 0
-                AND (invoice.invoice_number IN ($in) OR auftrag.Auftragsnummer IN ($in))";
+                AND (invoice.invoice_number IN ($inNumbers) OR auftrag.Auftragsnummer IN ($inOrders))";
 
         return DBAccess::selectQuery($query, $params);
     }

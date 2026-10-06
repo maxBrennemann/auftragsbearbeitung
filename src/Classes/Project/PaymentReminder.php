@@ -45,9 +45,32 @@ class PaymentReminder
         $invoice = new Invoice($invoiceId, $orderId);
         $level = self::getNextLevel($invoiceId);
 
+        if ($invoice->getOrder()->isPaid()) {
+            JSONResponseHandler::throwError(400, "Die Rechnung ist bereits bezahlt");
+        }
+
+        $email = $invoice->getInvoiceEmail();
+        if ($email === false) {
+            JSONResponseHandler::throwError(400, "Kunde hat keine Rechnungs-E-Mail-Adresse hinterlegt");
+        }
+
         $pdf = new PaymentReminderPDF($invoice, $level);
         $pdf->generate();
         $pdf->saveOutput();
+
+        $sent = SendPaymentReminderController::handle([
+            "email" => $email,
+            "invoiceNumber" => $invoice->getNumber(),
+            "level" => $level,
+            "attachment" => [
+                $pdf->getOutputPath() => $pdf->getTitle(),
+            ],
+        ]);
+
+        /* the level is only recorded once the mail actually left, otherwise the next reminder would skip a level */
+        if (!$sent) {
+            JSONResponseHandler::throwError(500, "Die Mahnung konnte nicht versendet werden");
+        }
 
         $query = "INSERT INTO invoice_reminder (invoice_id, level, sent_date) VALUES (:invoiceId, :level, :sentDate)";
         DBAccess::insertQuery($query, [
@@ -55,18 +78,6 @@ class PaymentReminder
             "level" => $level,
             "sentDate" => date("Y-m-d"),
         ]);
-
-        $email = $invoice->getInvoiceEmail();
-        if ($email !== false) {
-            SendPaymentReminderController::handle([
-                "email" => $email,
-                "invoiceNumber" => $invoice->getNumber(),
-                "level" => $level,
-                "attachment" => [
-                    $pdf->getOutputPath() => $pdf->getTitle(),
-                ],
-            ]);
-        }
 
         JSONResponseHandler::sendResponse([
             "status" => "success",

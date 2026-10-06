@@ -104,7 +104,9 @@ $offerContacts = Kunde::getContacts($customerId);
         <button class="btn-cancel" data-fun="rejectOffer" data-binding="true">Angebot ablehnen</button>
     <?php endif; ?>
     <button class="btn-primary" data-fun="changeItemsOrder" data-binding="true">Reihenfolge</button>
-    <button class="btn-cancel" data-fun="deleteOffer" data-binding="true">Angebot löschen</button>
+    <?php if ($offer->getState()->value !== "accepted"): ?>
+        <button class="btn-cancel" data-fun="deleteOffer" data-binding="true">Angebot löschen</button>
+    <?php endif; ?>
 </div>
 
 <div class="defCont">

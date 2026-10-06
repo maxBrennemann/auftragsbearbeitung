@@ -585,11 +585,11 @@ class Invoice
         }
 
         foreach (json_decode($edit, true) as $editText) {
-            CustomerAltNames::edit((int) $editText["id"], $editText["text"]);
+            CustomerAltNames::edit($customerId, (int) $editText["id"], $editText["text"]);
         }
 
         foreach (json_decode($remove) as $removeId) {
-            CustomerAltNames::remove((int) $removeId);
+            CustomerAltNames::remove($customerId, (int) $removeId);
         }
 
         JSONResponseHandler::returnOK();

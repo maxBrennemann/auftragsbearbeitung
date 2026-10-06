@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { ajax } from "js-classes/ajax";
 import { addBindings } from "js-classes/bindings";
+import { notification } from "js-classes/notifications";
 
 import { loader } from "../classes/helpers";
 import { addRow, createHeader, createSumRow, createTable } from "../classes/table";
@@ -148,8 +149,11 @@ const addReminderActions = (row: any, table: HTMLTableElement) => {
         const response = await ajax.post(`/api/v1/invoice/${invoiceId}/reminder/send`, {
             "orderId": orderId,
         });
-        if (response.data.status == "success") {
+        if (response.success && response.data?.status == "success") {
+            notification("", "success");
             createInvoiceTable();
+        } else {
+            notification("", "failure", response.error ?? "Die Mahnung konnte nicht versendet werden");
         }
     });
     actionsCell.appendChild(sendBtn);

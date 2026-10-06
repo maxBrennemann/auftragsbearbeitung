@@ -5,7 +5,7 @@ use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 
 $idCustomer = Tools::get("id");
-$fromOffer = Tools::get("fromOffer");
+$fromOffer = (int) Tools::get("fromOffer");
 
 if ($idCustomer != null) {
     $mitarbeiter = DBAccess::selectQuery("SELECT prename, lastname, id FROM user");

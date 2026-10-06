@@ -315,7 +315,12 @@ abstract class Posten
                 $lohn = $data['Stundenlohn'];
                 $desc = $data['Beschreibung'];
 
-                $subPosten = DBAccess::insertQuery("INSERT INTO zeit (Postennummer, ZeitInMinuten, Stundenlohn, Beschreibung) VALUES ($postennummer, $zeit, $lohn, '$desc')");
+                $subPosten = DBAccess::insertQuery("INSERT INTO zeit (Postennummer, ZeitInMinuten, Stundenlohn, Beschreibung) VALUES (:postennummer, :zeit, :lohn, :desc)", [
+                    "postennummer" => $postennummer,
+                    "zeit" => $zeit,
+                    "lohn" => $lohn,
+                    "desc" => $desc,
+                ]);
                 break;
             case "leistung":
                 $lei = $data['Leistungsnummer'];
@@ -325,12 +330,24 @@ abstract class Posten
                 $anz = $data['anzahl'];
                 $meh = $data['MEH'];
 
-                $subPosten = DBAccess::insertQuery("INSERT INTO leistung_posten (Leistungsnummer, Postennummer, Beschreibung, Einkaufspreis, SpeziefischerPreis, meh, qty) VALUES($lei, $postennummer, '$bes', '$ekp', '$pre', '$meh', '$anz')");
+                $subPosten = DBAccess::insertQuery("INSERT INTO leistung_posten (Leistungsnummer, Postennummer, Beschreibung, Einkaufspreis, SpeziefischerPreis, meh, qty) VALUES (:lei, :postennummer, :bes, :ekp, :pre, :meh, :anz)", [
+                    "lei" => $lei,
+                    "postennummer" => $postennummer,
+                    "bes" => $bes,
+                    "ekp" => $ekp,
+                    "pre" => $pre,
+                    "meh" => $meh,
+                    "anz" => $anz,
+                ]);
                 break;
             case "produkt":
                 $amount = $data['amount'];
                 $prodId = $data['prodId'];
-                $subPosten = DBAccess::insertQuery("INSERT INTO produkt_posten (Produktnummer, Postennummer, Anzahl) VALUES ($prodId, $postennummer, $amount)");
+                $subPosten = DBAccess::insertQuery("INSERT INTO produkt_posten (Produktnummer, Postennummer, Anzahl) VALUES (:prodId, :postennummer, :amount)", [
+                    "prodId" => $prodId,
+                    "postennummer" => $postennummer,
+                    "amount" => $amount,
+                ]);
                 break;
             case "compact":
                 $amount = $data['amount'];
@@ -340,7 +357,15 @@ abstract class Posten
                 $beschreibung = $data['beschreibung'];
                 $name = $data['name'];
 
-                $subPosten = DBAccess::insertQuery("INSERT INTO product_compact (postennummer, amount, marke, price, purchasing_price, description, name) VALUES ($postennummer, $amount, '$marke', '$vkpreis', '$ekpreis', '$beschreibung', '$name')");
+                $subPosten = DBAccess::insertQuery("INSERT INTO product_compact (postennummer, amount, marke, price, purchasing_price, description, name) VALUES (:postennummer, :amount, :marke, :vkpreis, :ekpreis, :beschreibung, :name)", [
+                    "postennummer" => $postennummer,
+                    "amount" => $amount,
+                    "marke" => $marke,
+                    "vkpreis" => $vkpreis,
+                    "ekpreis" => $ekpreis,
+                    "beschreibung" => $beschreibung,
+                    "name" => $name,
+                ]);
                 break;
         }
 
@@ -410,6 +435,89 @@ abstract class Posten
             "offerId1" => $offerId,
             "offerId2" => $offerId,
         ]);
+    }
+
+    /**
+     * Copies all posten of an offer (incl. their type specific rows, time tracking and file links)
+     * to an order. The offer keeps its own rows, so an accepted offer can still be displayed and
+     * reprinted exactly as it was offered, independent of later changes to the order.
+     */
+    public static function copyOfferItemsToOrder(int $offerId, int $orderId): void
+    {
+        $items = DBAccess::selectQuery("SELECT Postennummer FROM posten WHERE offer_id = :offerId ORDER BY position;", [
+            "offerId" => $offerId,
+        ]);
+
+        foreach ($items as $item) {
+            $sourceId = (int) $item["Postennummer"];
+
+            $targetId = DBAccess::insertQuery("INSERT INTO posten (Auftragsnummer, position, angebotsNr, rechnungsNr, Posten, istStandard, ohneBerechnung, discount, isInvoice)
+                SELECT :orderId, position, angebotsNr, rechnungsNr, Posten, istStandard, ohneBerechnung, discount, isInvoice
+                FROM posten
+                WHERE Postennummer = :sourceId", [
+                "orderId" => $orderId,
+                "sourceId" => $sourceId,
+            ]);
+
+            $times = DBAccess::selectQuery("SELECT Nummer FROM zeit WHERE Postennummer = :sourceId;", [
+                "sourceId" => $sourceId,
+            ]);
+            foreach ($times as $time) {
+                $timeId = DBAccess::insertQuery("INSERT INTO zeit (Postennummer, ZeitInMinuten, Stundenlohn, Beschreibung)
+                    SELECT :targetId, ZeitInMinuten, Stundenlohn, Beschreibung FROM zeit WHERE Nummer = :timeId", [
+                    "targetId" => $targetId,
+                    "timeId" => (int) $time["Nummer"],
+                ]);
+
+                DBAccess::insertQuery("INSERT INTO zeiterfassung (id_zeit, from_time, to_time, `date`)
+                    SELECT :newTimeId, from_time, to_time, `date` FROM zeiterfassung WHERE id_zeit = :timeId", [
+                    "newTimeId" => $timeId,
+                    "timeId" => (int) $time["Nummer"],
+                ]);
+            }
+
+            $copies = [
+                "INSERT INTO leistung_posten (Leistungsnummer, Postennummer, Beschreibung, Einkaufspreis, SpeziefischerPreis, meh, qty)
+                    SELECT Leistungsnummer, :targetId, Beschreibung, Einkaufspreis, SpeziefischerPreis, meh, qty FROM leistung_posten WHERE Postennummer = :sourceId",
+                "INSERT INTO produkt_posten (Produktnummer, Postennummer, Anzahl)
+                    SELECT Produktnummer, :targetId, Anzahl FROM produkt_posten WHERE Postennummer = :sourceId",
+                "INSERT INTO product_compact (postennummer, amount, marke, price, purchasing_price, description, name)
+                    SELECT :targetId, amount, marke, price, purchasing_price, description, name FROM product_compact WHERE postennummer = :sourceId",
+                "INSERT INTO dateien_posten (id_file, id_posten)
+                    SELECT id_file, :targetId FROM dateien_posten WHERE id_posten = :sourceId",
+            ];
+
+            foreach ($copies as $query) {
+                DBAccess::insertQuery($query, [
+                    "targetId" => $targetId,
+                    "sourceId" => $sourceId,
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Removes all posten of an offer together with their type specific rows. None of these
+     * tables has a foreign key on posten, so nothing is cleaned up implicitly.
+     */
+    public static function deleteOfferItems(int $offerId): void
+    {
+        $params = ["offerId" => $offerId];
+        $offerItems = "SELECT Postennummer FROM posten WHERE offer_id = :offerId";
+
+        $queries = [
+            "DELETE FROM zeiterfassung WHERE id_zeit IN (SELECT Nummer FROM zeit WHERE Postennummer IN ($offerItems))",
+            "DELETE FROM zeit WHERE Postennummer IN ($offerItems)",
+            "DELETE FROM leistung_posten WHERE Postennummer IN ($offerItems)",
+            "DELETE FROM produkt_posten WHERE Postennummer IN ($offerItems)",
+            "DELETE FROM product_compact WHERE postennummer IN ($offerItems)",
+            "DELETE FROM dateien_posten WHERE id_posten IN ($offerItems)",
+            "DELETE FROM posten WHERE offer_id = :offerId",
+        ];
+
+        foreach ($queries as $query) {
+            DBAccess::deleteQuery($query, $params);
+        }
     }
 
     /* adds links to all attached files to the "Einkaufspreis" column */

@@ -330,13 +330,21 @@ const saveEditTime = (): void => {
     }
 
     const data = getTimeData(wage);
-    ajax.put(`/api/v1/order-items/${itemsConf.orderId}/times/${itemsConf.editItemId}`, data).then((r: any) => {
+    const url = config.type === "offer"
+        ? `/api/v1/order-items/offer/${itemsConf.orderId}/times/${itemsConf.editItemId}`
+        : `/api/v1/order-items/${itemsConf.orderId}/times/${itemsConf.editItemId}`;
+
+    ajax.put(url, data).then((r: any) => {
         resetTimeInputs(r);
     });
 }
 
 const saveEditService = (): void => {
-    ajax.put(`/api/v1/order-items/${itemsConf.orderId}/services/${itemsConf.editItemId}`, getServiceData()).then((r: any) => resetServiceInputs(r));
+    const url = config.type === "offer"
+        ? `/api/v1/order-items/offer/${itemsConf.orderId}/services/${itemsConf.editItemId}`
+        : `/api/v1/order-items/${itemsConf.orderId}/services/${itemsConf.editItemId}`;
+
+    ajax.put(url, getServiceData()).then((r: any) => resetServiceInputs(r));
 }
 
 const getTimeData = (wage: number) => {

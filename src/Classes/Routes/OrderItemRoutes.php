@@ -52,10 +52,15 @@ class OrderItemRoutes extends Routes
     /**
      * @uses Classes\Project\Zeit::update()
      * @uses Classes\Project\Leistung::update()
+     * @uses Classes\Project\Zeit::updateInOffer()
+     * @uses Classes\Project\Leistung::updateInOffer()
      */
     protected static $putRoutes = [
         "/order-items/{id}/times/{itemId}" => [\Src\Classes\Project\Zeit::class, "update"],
         "/order-items/{id}/services/{itemId}" => [\Src\Classes\Project\Leistung::class, "update"],
+
+        "/order-items/offer/{id}/times/{itemId}" => [\Src\Classes\Project\Zeit::class, "updateInOffer"],
+        "/order-items/offer/{id}/services/{itemId}" => [\Src\Classes\Project\Leistung::class, "updateInOffer"],
     ];
 
     /**
