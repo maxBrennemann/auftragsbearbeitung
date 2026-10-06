@@ -397,8 +397,10 @@ const saveAltNames = (container: HTMLElement) => {
 }
 
 const getPDF = () => {
-    var iframe = document.getElementById("invoicePDFPreview") as HTMLIFrameElement;
-    iframe.src = iframe.src;
+    const iframe = document.getElementById("invoicePDFPreview") as HTMLIFrameElement;
+    const src = iframe.src;
+    iframe.src = "";
+    iframe.src = src;
 }
 
 functionNames.click_goBack = () => {

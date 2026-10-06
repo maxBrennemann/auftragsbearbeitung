@@ -218,7 +218,9 @@ fnNames.click_recreateInvoice = () => {
         if (r.data.status !== "success") {
             notification("", "failure", r.data.message);
             const invoiceEmbed = document.getElementById("invoiceEmbed") as HTMLEmbedElement;
-            invoiceEmbed.src = invoiceEmbed.src;
+            const src = invoiceEmbed.src;
+            invoiceEmbed.src = "";
+            invoiceEmbed.src = src;
             const el = document.getElementById("showMissingFileWarning") as HTMLDivElement;
             el.classList.add("hidden");
             return;

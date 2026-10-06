@@ -194,7 +194,13 @@ $companyLogo = Src\Classes\Project\Image::getLogo();
                 placeholder="Unverändert lassen, um das gespeicherte Passwort zu behalten"
                 data-write="true" data-fun="changeSetting" data-setting="mail.password">
             <p class="text-xs text-gray-500 mt-1">
-                <?= Settings::get('mail.password') !== '' ? "Passwort ist hinterlegt." : "Kein Passwort hinterlegt." ?>
+                <?php
+                try {
+                    echo Settings::get('mail.password') !== '' ? "Passwort ist hinterlegt." : "Kein Passwort hinterlegt.";
+                } catch (\RuntimeException $e) {
+                    echo "Das gespeicherte Passwort kann nicht entschlüsselt werden (SETTINGS_ENCRYPTION_KEY fehlt oder wurde geändert). Bitte neu eingeben.";
+                }
+                ?>
             </p>
         </div>
     </div>

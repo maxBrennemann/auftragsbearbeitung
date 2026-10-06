@@ -447,9 +447,13 @@ class Zeit extends Posten
         /* erweiterte Zeiterfassung */
         $zeiterfassung = json_decode(Tools::get("times"), true);
         if (count($zeiterfassung) != 0) {
-            $query = "DELETE FROM zeiterfassung WHERE id_zeit = :itemId";
-            DBAccess::deleteQuery($query, ["itemId" => $itemId]);
-            self::erweiterteZeiterfassung($zeiterfassung, $itemId);
+            /* zeiterfassung.id_zeit refers to zeit.Nummer (see add()), not to the posten number */
+            $time = DBAccess::selectQuery("SELECT Nummer FROM zeit WHERE Postennummer = :itemId", ["itemId" => $itemId]);
+            if (!empty($time)) {
+                $timeId = (int) $time[0]["Nummer"];
+                DBAccess::deleteQuery("DELETE FROM zeiterfassung WHERE id_zeit = :timeId", ["timeId" => $timeId]);
+                self::erweiterteZeiterfassung($zeiterfassung, $timeId);
+            }
         }
     }
 
