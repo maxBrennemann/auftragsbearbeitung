@@ -183,6 +183,7 @@ class InvoiceHelper
         $query = "SELECT id
             FROM invoice, auftrag
             WHERE auftrag.Auftragsnummer = invoice.order_id
+                AND invoice.`status` = 'finalized'
                 AND auftrag.Bezahlt = 0
                 AND invoice_number = :id
                 AND ABS((invoice.amount - " . CreditNote::SQL_CREDITED_NET . ") - :amount) < " . self::AMOUNT_TOLERANCE . "";
@@ -225,6 +226,7 @@ class InvoiceHelper
         $query = "SELECT invoice.id, invoice.invoice_number, (invoice.amount - " . CreditNote::SQL_CREDITED_NET . ") AS amount
             FROM invoice, auftrag
             WHERE auftrag.Auftragsnummer = invoice.order_id
+                AND invoice.`status` = 'finalized'
                 AND auftrag.Bezahlt = 0
                 AND (invoice.invoice_number IN ($inNumbers) OR auftrag.Auftragsnummer IN ($inOrders))";
 
@@ -236,6 +238,7 @@ class InvoiceHelper
         $query = "SELECT id, amount, invoice_number, auftrag.Auftragsnummer as order_id
             FROM invoice, auftrag
             WHERE auftrag.Auftragsnummer = invoice.order_id
+                AND invoice.`status` = 'finalized'
                 AND auftrag.Bezahlt = 0;";
         $data = DBAccess::selectQuery($query);
 

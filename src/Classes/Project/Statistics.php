@@ -56,7 +56,7 @@ class Statistics
 			FROM (
 				SELECT DATE_FORMAT(COALESCE(finalized_date, creation_date), '%Y-%m') AS `date`, amount AS `value`
 				FROM invoice
-				WHERE `status` = 'finalized'
+				WHERE `status` IN ('finalized', 'cancelled')
 					AND COALESCE(finalized_date, creation_date) BETWEEN :startDate AND :endDate
 				UNION ALL
 				SELECT DATE_FORMAT(creation_date, '%Y-%m') AS `date`, -net_amount AS `value`

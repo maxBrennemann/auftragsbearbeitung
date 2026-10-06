@@ -34,6 +34,7 @@ class InvoiceRoutes extends Routes
      *
      * @uses \Src\Classes\Project\PaymentReminder::send()
      *
+     * @uses \Src\Classes\Project\Invoice::cancel()
      * @uses \Src\Classes\Project\CreditNote::create()
      * @uses \Src\Classes\Project\CreditNote::send()
      */
@@ -48,6 +49,7 @@ class InvoiceRoutes extends Routes
         "/invoice/{invoiceId}/contact" => [\Src\Classes\Project\Invoice::class, "setContact"],
         "/invoice/{invoiceId}/alt-names" => [\Src\Classes\Project\Invoice::class, "handleAltNames"],
         "/invoice/{invoiceId}/reminder/send" => [\Src\Classes\Project\PaymentReminder::class, "send"],
+        "/invoice/{invoiceId}/cancel" => [\Src\Classes\Project\Invoice::class, "cancel"],
         "/invoice/{invoiceId}/credit-notes" => [\Src\Classes\Project\CreditNote::class, "create"],
         "/invoice/{invoiceId}/credit-notes/{creditNoteId}/send" => [\Src\Classes\Project\CreditNote::class, "send"],
 

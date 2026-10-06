@@ -30,7 +30,6 @@ class OrderRoutes extends Routes
      * @uses \Src\Classes\Project\Auftrag::updateContactPerson()
      * @uses \Src\Classes\Project\Auftrag::updateDate()
      * @uses \Src\Classes\Project\Auftrag::addFiles()
-     * @uses \Src\Classes\Project\Auftrag::resetInvoice()
      * @uses \Src\Classes\Project\Fahrzeug::addFiles()
      * @uses \Src\Classes\Project\Auftrag::changeCustomer()
      * @uses \Src\Classes\Project\Angebot::sendOffer()
@@ -48,7 +47,6 @@ class OrderRoutes extends Routes
         "/order/{id}/contact-person" => [\Src\Classes\Project\Auftrag::class, "updateContactPerson"],
         "/order/{id}/update-date" => [\Src\Classes\Project\Auftrag::class, "updateDate"],
         "/order/{id}/add-files" => [\Src\Classes\Project\Auftrag::class, "addFiles"],
-        "/order/{id}/reset-invoice" => [\Src\Classes\Project\Auftrag::class, "resetInvoice"],
         "/order/{id}/vehicle/{vehicleId}/add-files" => [\Src\Classes\Project\Fahrzeug::class, "addFiles"],
         "/order/{id}/change-customer" => [\Src\Classes\Project\Auftrag::class, "changeCustomer"],
         "/order/offer/{offerId}/send" => [\Src\Classes\Project\Angebot::class, "sendOffer"],

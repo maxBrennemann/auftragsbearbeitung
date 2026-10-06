@@ -15,6 +15,7 @@ class CreditNotePDF extends TransactionPDF
     private float $netAmount;
     private float $vatRate;
     private string $reason;
+    private string $documentType;
     protected string $type = "creditNote";
 
     /**
@@ -23,9 +24,11 @@ class CreditNotePDF extends TransactionPDF
     public function __construct(Invoice $invoice, array $creditNote)
     {
         $this->creditNumber = (int) $creditNote["credit_number"];
+        $documentType = $creditNote["type"] ?? CreditNote::TYPE_CREDIT;
 
-        parent::__construct(CreditNote::getFileName($this->creditNumber), $invoice->getOrder()->getAuftragsnummer());
-        $this->fileName = CreditNote::getFileName($this->creditNumber);
+        parent::__construct(CreditNote::getFileName($this->creditNumber, $documentType), $invoice->getOrder()->getAuftragsnummer());
+        $this->fileName = CreditNote::getFileName($this->creditNumber, $documentType);
+        $this->documentType = $documentType;
 
         $this->invoice = $invoice;
         $this->creationDate = new \DateTime($creditNote["creation_date"]);
@@ -42,8 +45,8 @@ class CreditNotePDF extends TransactionPDF
         parent::generate();
 
         $this->SetTitle($this->getTitle());
-        $this->SetSubject("Gutschrift");
-        $this->SetKeywords("Gutschrift");
+        $this->SetSubject($this->getLabel());
+        $this->SetKeywords($this->getLabel());
 
         $this->SetFont("helvetica", "", 12);
         $this->fillAddress($this->invoice->getAltNames());
@@ -53,7 +56,7 @@ class CreditNotePDF extends TransactionPDF
         $this->setXY(125, 54);
         $this->setFontStretching(200);
         $this->SetFont("helvetica", "B", 17);
-        $this->Cell(60, 20, "GUTSCHRIFT", 0, 0, 'L', false, '', 2);
+        $this->Cell(60, 20, $this->isCancellation() ? "STORNORECHNUNG" : "GUTSCHRIFT", 0, 0, 'L', false, '', 2);
         $this->setFontStretching();
 
         $this->addInfoBlock();
@@ -64,7 +67,7 @@ class CreditNotePDF extends TransactionPDF
     {
         $this->SetFont("helvetica", "", 12);
         $this->setXY(125, $y);
-        $this->Cell(30, 10, "Gutschrift-Nr:");
+        $this->Cell(30, 10, $this->isCancellation() ? "Storno-Nr:" : "Gutschrift-Nr:");
         $this->Cell(30, 10, (string) $this->creditNumber, 0, 0, 'R');
         $this->setXY(125, $y + 6);
         $this->Cell(30, 10, "Datum:");
@@ -91,10 +94,15 @@ class CreditNotePDF extends TransactionPDF
 
         $this->setXY(20, 118);
         $this->SetFont("helvetica", "B", 12);
-        $this->Cell(170, 8, "Gutschrift zur Rechnung Nr. $invoiceNumber vom $invoiceDate", 0, 1);
+        $this->Cell(170, 8, $this->getLabel() . " zur Rechnung Nr. $invoiceNumber vom $invoiceDate", 0, 1);
+
+        $intro = $this->isCancellation()
+            ? "Sehr geehrte Damen und Herren,\n\nhiermit stornieren wir die oben genannte Rechnung vollständig. Grund: " . $this->reason
+            : "Sehr geehrte Damen und Herren,\n\nzu der oben genannten Rechnung schreiben wir Ihnen den folgenden Betrag gut. Das Entgelt der Rechnung mindert sich entsprechend.";
+        $position = $this->isCancellation() ? "Storno der Rechnung Nr. $invoiceNumber vom $invoiceDate" : $this->reason;
 
         $this->SetFont("helvetica", "", 11);
-        $this->MultiCell(170, 6, "Sehr geehrte Damen und Herren,\n\nzu der oben genannten Rechnung schreiben wir Ihnen den folgenden Betrag gut. Das Entgelt der Rechnung mindert sich entsprechend.", 0, 'L');
+        $this->MultiCell(170, 6, $intro, 0, 'L');
 
         $this->ln(6);
         $this->SetFont("helvetica", "B", 12);
@@ -103,9 +111,9 @@ class CreditNotePDF extends TransactionPDF
 
         $this->SetFont("helvetica", "", 12);
         $y = $this->GetY();
-        $this->MultiCell(130, 10, $this->reason, 0, 'L', false, 0);
+        $this->MultiCell(130, 10, $position, 0, 'L', false, 0);
         $this->Cell(40, 10, $this->formatAmount(-$net), 0, 1, 'R');
-        $this->SetY(max($this->GetY(), $y + $this->getStringHeight(130, $this->reason)));
+        $this->SetY(max($this->GetY(), $y + $this->getStringHeight(130, $position)));
 
         $this->ln(4);
         $this->Cell(85, 10, "");
@@ -123,7 +131,7 @@ class CreditNotePDF extends TransactionPDF
 
         $this->Cell(85, 10, "");
         $this->SetFont("helvetica", "B", 12);
-        $this->Cell(55, 10, 'Gutschriftsbetrag:', 'B');
+        $this->Cell(55, 10, $this->isCancellation() ? 'Stornobetrag:' : 'Gutschriftsbetrag:', 'B');
         $this->Cell(30, 10, $this->formatAmount(-$gross), 'B', 1, 'R');
 
         $this->ln(8);
@@ -138,6 +146,21 @@ class CreditNotePDF extends TransactionPDF
     private function getSettlementText(): string
     {
         $gross = $this->netAmount + round($this->netAmount * $this->vatRate, 2);
+
+        if ($this->isCancellation()) {
+            $text = "Die Rechnung Nr. " . $this->invoice->getNumber() . " ist damit aufgehoben und nicht mehr zu begleichen.";
+
+            $credited = CreditNote::getTotalNetForInvoice($this->invoice->getId()) - $this->netAmount;
+            if ($credited > 0.004) {
+                $text .= " Bereits erteilte Gutschriften zu dieser Rechnung über netto " . $this->formatAmount($credited) . " sind im Stornobetrag berücksichtigt.";
+            }
+
+            if ($this->order->isPaid()) {
+                $text .= " Bereits geleistete Zahlungen werden verrechnet oder erstattet.";
+            }
+
+            return $text;
+        }
 
         if ($this->order->isPaid()) {
             return "Die Rechnung wurde bereits beglichen. Den Gutschriftsbetrag in Höhe von " . $this->formatAmount($gross) . " erstatten wir Ihnen.";
@@ -166,9 +189,19 @@ class CreditNotePDF extends TransactionPDF
         return number_format($amount, 2, ',', '.') . ' €';
     }
 
+    private function isCancellation(): bool
+    {
+        return $this->documentType === CreditNote::TYPE_CANCELLATION;
+    }
+
+    private function getLabel(): string
+    {
+        return CreditNote::getLabel($this->documentType);
+    }
+
     public function getTitle(): string
     {
-        return "Gutschrift " . $this->creditNumber . " zur Rechnung " . $this->invoice->getNumber();
+        return $this->getLabel() . " " . $this->creditNumber . " zur Rechnung " . $this->invoice->getNumber();
     }
 
     public function getOutputPath(): string

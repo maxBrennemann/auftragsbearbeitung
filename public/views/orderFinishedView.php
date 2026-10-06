@@ -4,7 +4,6 @@
         <div class="ml-2">
             <p>Die Rechnung konnte nicht gefunden werden!</p>
             <button data-fun="recreateInvoice" data-binding="true" class="btn-primary mt-1">Neu erstellen</button>
-            <button data-fun="resetInvoice" data-binding="true" class="btn-primary mt-1">Rechnung zurücksetzen</button>
         </div>
     </div>
     <div class="defCont" id="orderFinished">
@@ -40,7 +39,10 @@
         </div>
     </div>
     <?php
-    $creditNotes = \Src\Classes\Project\CreditNote::getForInvoice($auftrag->getInvoiceId());
+    $creditNotes = array_filter(
+        \Src\Classes\Project\CreditNote::getForInvoice($auftrag->getInvoiceId()),
+        fn($creditNote) => $creditNote["type"] === \Src\Classes\Project\CreditNote::TYPE_CREDIT
+    );
     $creditedNet = array_sum(array_map(fn($creditNote) => (float) $creditNote["net_amount"], $creditNotes));
     ?>
     <div class="defCont">
@@ -93,6 +95,22 @@
         </div>
         <p class="text-xs text-gray-500 mt-1">Die Rechnung selbst bleibt unverändert. Die Gutschrift erhält eine eigene Nummer aus dem Rechnungsnummernkreis und kann danach nicht mehr geändert werden.</p>
     </div>
+    <div class="defCont">
+        <p class="font-semibold">Rechnung stornieren</p>
+        <p class="mt-1">Ist die Rechnung fehlerhaft, wird sie mit einer Stornorechnung aufgehoben. Die Rechnung selbst bleibt erhalten, der Auftrag wird wieder freigegeben und kann danach neu abgerechnet werden. Für einen reinen Preisnachlass genügt eine Gutschrift.</p>
+        <div class="mt-2 flex flex-wrap items-end gap-2">
+            <label class="flex flex-col flex-1 min-w-64">
+                <span class="text-sm">Grund (erscheint auf der Stornorechnung)</span>
+                <input type="text" maxlength="255" id="cancelInvoiceReason" class="input-primary" placeholder="z. B. Falsche Rechnungsadresse">
+            </label>
+            <label class="flex items-center gap-1">
+                <input type="checkbox" id="cancelInvoiceSendMail">
+                <span>per E-Mail an den Kunden senden</span>
+            </label>
+            <button class="btn-cancel" data-binding="true" data-fun="cancelInvoice">Rechnung stornieren</button>
+        </div>
+    </div>
+    <?= \Src\Classes\Controller\TemplateController::getTemplate("cancelledInvoices", ["orderId" => $auftrag->getAuftragsnummer()]) ?>
     <div class="defCont">
         <embed type="application/pdf" src="<?= $invoiceLink ?>" width="100%" height="800" id="invoiceEmbed">
     </div>

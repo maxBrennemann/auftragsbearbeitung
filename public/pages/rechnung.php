@@ -53,7 +53,21 @@ if ($target == "create") {
 <input class="hidden" id="invoiceId" value="<?= $invoiceId ?>">
 <input class="hidden" id="orderId" value="<?= $orderId ?>">
 
-<?php if ($target == "create"): ?>
+<?php if ($target == "create" && $invoice->isLocked()): ?>
+	<div class="defCont">
+		<h3 class="font-bold">Auftrag <span><?= $orderId ?></span> – Rechnung Nr. <?= $invoiceNumber ?></h3>
+		<p class="mt-2">Diese Rechnung ist abgeschlossen und kann nicht mehr geändert werden. Für einen Preisnachlass eine Gutschrift erstellen, bei einer fehlerhaften Rechnung diese stornieren und den Auftrag neu abrechnen. Beides ist in der Auftragsansicht möglich.</p>
+		<div class="mt-3">
+			<button data-binding="true" data-fun="completeInvoice" class="btn-primary">Rechnung dem Auftrag wieder zuordnen</button>
+			<button data-binding="true" data-fun="goBack" class="btn-cancel">Zurück</button>
+		</div>
+	</div>
+	<?= \Src\Classes\Controller\TemplateController::getTemplate("cancelledInvoices", ["orderId" => $orderId]) ?>
+	<div class="mt-3">
+		<iframe src="/api/v1/invoice/<?= $invoiceId ?>/pdf?orderId=<?= $orderId ?>" id="invoicePDFPreview" class="w-full h-lvh"></iframe>
+	</div>
+<?php elseif ($target == "create"): ?>
+	<?= \Src\Classes\Controller\TemplateController::getTemplate("cancelledInvoices", ["orderId" => $orderId]) ?>
 	<div class="defCont grid grid-cols-1 lg:grid-cols-2">
 		<div class="col-span-2">
 			<h3 class="font-bold">Auftrag <span><?= $orderId ?></span></h3>
@@ -168,7 +182,7 @@ if ($target == "create") {
 		<h3 class="font-bold">Rechnungsoptionen</h3>
 		<div class="mt-3">
 			<?php if ($auftrag != null && $auftrag->getAuftragspostenData() != null): ?>
-				<button data-binding="true" data-fun="completeInvoice" class="btn-primary">Rechnung <?= $invoiceNumber == 0 ? "abschließen" : "neu generieren" ?></button>
+				<button data-binding="true" data-fun="completeInvoice" class="btn-primary">Rechnung abschließen</button>
 				<button class="btn-primary" data-binding="true" data-fun="changeItemsOrder">Reihenfolge</button>
 			<?php else: ?>
 				<button disabled class="btn-primary">Rechnung abschließen</button>
@@ -186,7 +200,6 @@ if ($target == "create") {
 <?php elseif ($target == "view"): ?>
 	<p class="my-2 font-semibold">Rechnung <span id="rechnungsnummer"><?= $invoice->getNumber(); ?></span></p>
 	<button data-binding="true" data-fun="goBack" class="btn-cancel">Zurück</button>
-	<button class="btn-primary" data-fun="completeInvoice" data-binding="true">PDF neu erstellen</button>
 	<iframe src="/api/v1/invoice/<?= $invoiceId ?>/pdf?orderId=<?= $orderId ?>" class="w-full h-lvh mt-2" id="invoicePDFPreview"></iframe>
 <?php else: ?>
 	<p>Es ist ein unerwarteter Fehler aufgetreten oder die Rechnungsnummer existiert nicht.</p>

@@ -20,6 +20,9 @@ class CreditNote
      * SQL-Ausdruck für die Summe aller Gutschriften (netto) zur jeweiligen Zeile der Tabelle `invoice`,
      * zum Abziehen von invoice.amount in Auswertungen und Listen.
      */
+    public const TYPE_CREDIT = "credit";
+    public const TYPE_CANCELLATION = "cancellation";
+
     public const SQL_CREDITED_NET = "COALESCE((SELECT SUM(cn.net_amount) FROM invoice_credit_note cn WHERE cn.invoice_id = invoice.id), 0)";
 
     /**
@@ -27,7 +30,7 @@ class CreditNote
      */
     public static function getForInvoice(int $invoiceId): array
     {
-        $query = "SELECT id, invoice_id, credit_number, creation_date, net_amount, vat_rate, reason
+        $query = "SELECT id, invoice_id, `type`, credit_number, creation_date, net_amount, vat_rate, reason
             FROM invoice_credit_note
             WHERE invoice_id = :invoiceId
             ORDER BY credit_number";
@@ -42,7 +45,7 @@ class CreditNote
      */
     public static function get(int $invoiceId, int $creditNoteId): ?array
     {
-        $query = "SELECT id, invoice_id, credit_number, creation_date, net_amount, vat_rate, reason
+        $query = "SELECT id, invoice_id, `type`, credit_number, creation_date, net_amount, vat_rate, reason
             FROM invoice_credit_note
             WHERE id = :creditNoteId AND invoice_id = :invoiceId";
         $data = DBAccess::selectQuery($query, [
@@ -66,14 +69,70 @@ class CreditNote
         return (float) $data[0]["total"];
     }
 
-    public static function getFileName(int $creditNumber): string
+    public static function getFileName(int $creditNumber, string $type = self::TYPE_CREDIT): string
     {
-        return "Gutschrift_" . $creditNumber;
+        return ($type === self::TYPE_CANCELLATION ? "Stornorechnung_" : "Gutschrift_") . $creditNumber;
     }
 
-    public static function getPdfLink(int $creditNumber): string
+    public static function getPdfLink(int $creditNumber, string $type = self::TYPE_CREDIT): string
     {
-        return Link::getResourcesShortLink(self::getFileName($creditNumber) . ".pdf", "pdf");
+        return Link::getResourcesShortLink(self::getFileName($creditNumber, $type) . ".pdf", "pdf");
+    }
+
+    public static function getLabel(string $type): string
+    {
+        return $type === self::TYPE_CANCELLATION ? "Stornorechnung" : "Gutschrift";
+    }
+
+    /**
+     * Legt den Beleg an: Nummer aus dem Rechnungsnummernkreis, Steuersatz festgeschrieben, PDF einmalig
+     * erzeugt und gespeichert (wird danach nur noch als Datei ausgeliefert).
+     *
+     * @return array{id: int, number: int, pdf: CreditNotePDF}
+     */
+    private static function store(Invoice $invoice, string $type, float $amount, string $reason): array
+    {
+        $vatRaw = Settings::get("invoice.vatRate");
+        $vatRate = is_numeric($vatRaw) ? (float) $vatRaw : 19.0;
+
+        $creditNumber = InvoiceNumberTracker::reserveNextNumber();
+        $creditNoteId = DBAccess::insertQuery("INSERT INTO invoice_credit_note (invoice_id, `type`, credit_number, creation_date, net_amount, vat_rate, reason)
+            VALUES (:invoiceId, :type, :creditNumber, CURDATE(), :amount, :vatRate, :reason)", [
+            "invoiceId" => $invoice->getId(),
+            "type" => $type,
+            "creditNumber" => $creditNumber,
+            "amount" => $amount,
+            "vatRate" => $vatRate,
+            "reason" => mb_substr($reason, 0, 255),
+        ]);
+
+        $creditNote = self::get($invoice->getId(), $creditNoteId);
+        if ($creditNote === null) {
+            JSONResponseHandler::throwError(500, "Der Beleg konnte nicht gespeichert werden");
+        }
+
+        $pdf = new CreditNotePDF($invoice, $creditNote);
+        $pdf->generate();
+        $pdf->saveOutput();
+
+        return [
+            "id" => $creditNoteId,
+            "number" => $creditNumber,
+            "pdf" => $pdf,
+        ];
+    }
+
+    /**
+     * Stornorechnung über den gesamten noch nicht gutgeschriebenen Betrag der Rechnung.
+     * Statuswechsel der Rechnung und Freigabe des Auftrags übernimmt Invoice::cancel().
+     *
+     * @return array{id: int, number: int, pdf: CreditNotePDF}
+     */
+    public static function createCancellation(Invoice $invoice, string $reason): array
+    {
+        $remaining = max(0.0, round($invoice->getAmount() - self::getTotalNetForInvoice($invoice->getId()), 2));
+
+        return self::store($invoice, self::TYPE_CANCELLATION, $remaining, $reason);
     }
 
     public static function create(): void
@@ -90,7 +149,11 @@ class CreditNote
             JSONResponseHandler::throwError(404, "Rechnung nicht gefunden");
         }
 
-        if ($invoice->getNumber() === 0) {
+        if ($invoice->getStatus() === Invoice::STATUS_CANCELLED) {
+            JSONResponseHandler::throwError(400, "Die Rechnung wurde storniert");
+        }
+
+        if ($invoice->getStatus() !== Invoice::STATUS_FINALIZED) {
             JSONResponseHandler::throwError(400, "Eine Gutschrift ist erst nach Abschluss der Rechnung möglich");
         }
 
@@ -107,28 +170,10 @@ class CreditNote
             JSONResponseHandler::throwError(400, "Der Gutschriftsbetrag übersteigt den verbleibenden Rechnungsbetrag von " . number_format($remaining, 2, ',', '.') . " € netto");
         }
 
-        $vatRaw = Settings::get("invoice.vatRate");
-        $vatRate = is_numeric($vatRaw) ? (float) $vatRaw : 19.0;
-
-        $creditNumber = InvoiceNumberTracker::reserveNextNumber();
-        $creditNoteId = DBAccess::insertQuery("INSERT INTO invoice_credit_note (invoice_id, credit_number, creation_date, net_amount, vat_rate, reason)
-            VALUES (:invoiceId, :creditNumber, CURDATE(), :amount, :vatRate, :reason)", [
-            "invoiceId" => $invoiceId,
-            "creditNumber" => $creditNumber,
-            "amount" => $amount,
-            "vatRate" => $vatRate,
-            "reason" => mb_substr($reason, 0, 255),
-        ]);
-
-        /* der Beleg wird einmalig erzeugt und danach nur noch als gespeicherte Datei ausgeliefert */
-        $creditNote = self::get($invoiceId, $creditNoteId);
-        if ($creditNote === null) {
-            JSONResponseHandler::throwError(500, "Gutschrift konnte nicht gespeichert werden");
-        }
-
-        $pdf = new CreditNotePDF($invoice, $creditNote);
-        $pdf->generate();
-        $pdf->saveOutput();
+        $stored = self::store($invoice, self::TYPE_CREDIT, $amount, $reason);
+        $creditNoteId = $stored["id"];
+        $creditNumber = $stored["number"];
+        $pdf = $stored["pdf"];
 
         OrderHistory::add($orderId, $creditNoteId, OrderHistory::TYPE_ORDER, OrderHistory::STATE_ADDED, "Gutschrift Nr. $creditNumber zur Rechnung Nr. {$invoice->getNumber()} über " . number_format($amount, 2, ',', '.') . " € netto");
 
@@ -169,8 +214,8 @@ class CreditNote
             JSONResponseHandler::throwError(404, "Die Gutschrift-PDF wurde nicht gefunden");
         }
 
-        if (!self::sendMail($invoice, $pdf, (int) $creditNote["credit_number"])) {
-            JSONResponseHandler::throwError(500, "Die Gutschrift konnte nicht versendet werden. Ist eine Rechnungs-E-Mail-Adresse hinterlegt?");
+        if (!self::sendMail($invoice, $pdf, (int) $creditNote["credit_number"], $creditNote["type"])) {
+            JSONResponseHandler::throwError(500, "Der Beleg konnte nicht versendet werden. Ist eine Rechnungs-E-Mail-Adresse hinterlegt?");
         }
 
         JSONResponseHandler::sendResponse([
@@ -178,8 +223,10 @@ class CreditNote
         ]);
     }
 
-    private static function sendMail(Invoice $invoice, CreditNotePDF $pdf, int $creditNumber): bool
+    public static function sendMail(Invoice $invoice, CreditNotePDF $pdf, int $creditNumber, string $type = self::TYPE_CREDIT): bool
     {
+        $label = self::getLabel($type);
+
         $email = $invoice->getInvoiceEmail();
         if ($email === false) {
             return false;
@@ -187,6 +234,7 @@ class CreditNote
 
         $sent = SendCreditNoteController::handle([
             "email" => $email,
+            "label" => $label,
             "creditNumber" => $creditNumber,
             "invoiceNumber" => $invoice->getNumber(),
             "attachment" => [
@@ -196,7 +244,7 @@ class CreditNote
 
         if ($sent) {
             $orderId = $invoice->getOrder()->getAuftragsnummer();
-            OrderHistory::add($orderId, $creditNumber, OrderHistory::TYPE_ORDER, OrderHistory::STATE_SENT, "Gutschrift Nr. $creditNumber per E-Mail versendet");
+            OrderHistory::add($orderId, $creditNumber, OrderHistory::TYPE_ORDER, OrderHistory::STATE_SENT, "$label Nr. $creditNumber per E-Mail versendet");
         }
 
         return $sent;

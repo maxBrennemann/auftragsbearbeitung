@@ -291,14 +291,36 @@ fnNames.click_recreateInvoice = () => {
     });
 }
 
-fnNames.click_resetInvoice = () => {
-    ajax.post(`/api/v1/order/${getOrderId()}/reset-invoice`).then(r => {
-        if (r.data.message == "OK") {
-            location.reload();
-        } else {
-            notification("", "failure", JSON.stringify(r.data));
+fnNames.click_cancelInvoice = () => {
+    const reason = (document.getElementById("cancelInvoiceReason") as HTMLInputElement).value.trim();
+    const sendMail = (document.getElementById("cancelInvoiceSendMail") as HTMLInputElement).checked;
+
+    if (reason === "") {
+        notification("Bitte einen Grund für die Stornierung angeben.", "failure");
+        return;
+    }
+
+    if (!confirm("Rechnung wirklich stornieren? Es wird eine Stornorechnung mit eigener Nummer erstellt. Das kann nicht rückgängig gemacht werden.")) {
+        return;
+    }
+
+    const invoiceId = getVariable("invoiceId");
+    ajax.post(`/api/v1/invoice/${invoiceId}/cancel`, {
+        "orderId": getOrderId(),
+        "reason": reason,
+        "sendMail": sendMail ? 1 : 0,
+    }).then((r: any) => {
+        if (!r.success || r.data?.status !== "success") {
+            notification("", "failure", r.error ?? r.data?.message ?? "Die Rechnung konnte nicht storniert werden");
+            return;
         }
-    })
+
+        if (r.data.mailRequested && !r.data.mailSent) {
+            alert(`Stornorechnung Nr. ${r.data.number} wurde erstellt, konnte aber nicht per E-Mail versendet werden.`);
+        }
+
+        window.location.reload();
+    });
 }
 
 fnNames.click_showInvoice = () => {

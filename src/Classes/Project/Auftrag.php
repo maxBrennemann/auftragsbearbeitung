@@ -116,7 +116,7 @@ class Auftrag implements NotifiableEntity
             return null;
         }
 
-        $query = "SELECT DATE_FORMAT(payment_date, '%d.%m.%Y') AS payment_date FROM invoice WHERE order_id = :orderId";
+        $query = "SELECT DATE_FORMAT(payment_date, '%d.%m.%Y') AS payment_date FROM invoice WHERE order_id = :orderId AND `status` != 'cancelled' ORDER BY id DESC";
         $data = DBAccess::selectQuery($query, [
             "orderId" => $this->Auftragsnummer
         ]);
@@ -141,7 +141,7 @@ class Auftrag implements NotifiableEntity
             return $undefinedPaymentType;
         }
 
-        $query = "SELECT payment_type FROM invoice WHERE order_id = :orderId";
+        $query = "SELECT payment_type FROM invoice WHERE order_id = :orderId AND `status` != 'cancelled' ORDER BY id DESC";
         $data = DBAccess::selectQuery($query, ["orderId" => $this->Auftragsnummer]);
 
         if (empty($data)) {
@@ -460,8 +460,9 @@ class Auftrag implements NotifiableEntity
 				DATE_FORMAT(Fertigstellung , '%d.%m.%Y') AS Fertigstellung,
                 invoice.invoice_number
 			FROM auftrag
-            LEFT JOIN invoice ON invoice.order_id = auftrag.Auftragsnummer
-			WHERE Auftragsnummer = :orderId";
+            LEFT JOIN invoice ON invoice.order_id = auftrag.Auftragsnummer AND invoice.`status` != 'cancelled'
+			WHERE Auftragsnummer = :orderId
+            ORDER BY invoice.id DESC";
         $data = DBAccess::selectQuery($query, [
             "orderId" => $this->getAuftragsnummer(),
         ]);
@@ -988,17 +989,6 @@ class Auftrag implements NotifiableEntity
         DBAccess::insertMultiple($query, $values);
     }
 
-    public static function resetInvoice(): void
-    {
-        $orderId = Tools::get("id");
-        $query = "UPDATE auftrag SET Rechnungsnummer = 0 WHERE Auftragsnummer = :idOrder";
-        DBAccess::updateQuery($query, [
-            "idOrder" => $orderId,
-        ]);
-
-        JSONResponseHandler::returnOK();
-    }
-
     public static function editDescription(): void
     {
         $text = (string) Tools::get("text");
@@ -1042,7 +1032,7 @@ class Auftrag implements NotifiableEntity
             "orderId" => $orderId,
         ]);
 
-        $query = "UPDATE invoice SET contact_id = NULL, address_id = NULL WHERE order_id = :orderId;";
+        $query = "UPDATE invoice SET contact_id = NULL, address_id = NULL WHERE order_id = :orderId AND `status` = 'draft';";
         DBAccess::updateQuery($query, [
             "orderId" => $orderId,
         ]);

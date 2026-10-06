@@ -8,7 +8,7 @@ use Src\Classes\Mail\Templates\CreditNoteMailTemplate;
 class SendCreditNoteController
 {
     /**
-     * @param array{email: string, creditNumber: int, invoiceNumber: int, attachment?: array<string, string>} $creditNoteData
+     * @param array{email: string, label: string, creditNumber: int, invoiceNumber: int, attachment?: array<string, string>} $creditNoteData
      * @return bool
      */
     public static function handle(array $creditNoteData): bool

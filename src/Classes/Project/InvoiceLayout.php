@@ -112,6 +112,11 @@ class InvoiceLayout
         $positions = json_decode($positions, true);
 
         $invoice = new Invoice($invoiceId, $orderId);
+        if ($invoice->isLocked()) {
+            JSONResponseHandler::sendErrorResponse(400, "Die Rechnung ist abgeschlossen und kann nicht mehr geändert werden.");
+            return;
+        }
+
         $invoiceLayout = new InvoiceLayout($invoice);
 
         $status = $invoiceLayout->writeItemsOrder($positions);
