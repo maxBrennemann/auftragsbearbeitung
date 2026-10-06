@@ -328,25 +328,11 @@ class Zeit extends Posten
             return;
         }
 
-        $item = [];
-        $item["position"] = $data->getPosition();
-        $item["price"] = $data->bekommeEinzelPreis();
-        $item["totalPrice"] = $data->bekommePreis();
-        $item["quantity"] = $data->bekommeErweiterteZeiterfassungTabelle();
-
-        $data = $data->fillToArray([]);
-        $item["id"] = $data["Postennummer"];
-        $item["name"] = $data["Bezeichnung"];
-        $item["description"] = $data["Beschreibung"];
-        $item["price"] = $data["Preis"];
-        $item["unit"] = $data["MEH"];
-        $item["totalPrice"] = $data["Gesamtpreis"];
-        $item["purchasePrice"] = $data["Einkaufspreis"];
-
+        /* same shape as the items list (incl. type and extraData), so the row stays editable/deletable */
         JSONResponseHandler::sendResponse([
             "status" => "success",
             "price" => $price,
-            "data" => $item,
+            "data" => Posten::formatItemsForTable([$data])[0],
         ]);
     }
 
@@ -354,16 +340,67 @@ class Zeit extends Posten
     {
         $idItem = (int) Tools::get("itemId");
         $data = self::getPostenData($idItem);
-        
+
         JSONResponseHandler::sendResponse($data);
     }
 
-    public static function update(): void
+    public static function addToOffer(): void
     {
-        $orderId = (int) Tools::get("id");
+        $offerId = (int) Tools::get("id");
+
+        $data = [];
+        $data["ZeitInMinuten"] = (int) Tools::get("time");
+        $data["Stundenlohn"] = (float) Tools::get("wage");
+        $data["Beschreibung"] = (string) Tools::get("description");
+        $data["ohneBerechnung"] = Tools::get("noPayment");
+        $data["discount"] = (int) Tools::get("discount");
+        $data["addToInvoice"] = 0;
+
+        $ids = Posten::insertPosten("zeit", $data, $offerId);
+
+        /* erweiterte Zeiterfassung */
+        $zeiterfassung = json_decode(Tools::get("times"), true);
+        if (count($zeiterfassung) != 0) {
+            self::erweiterteZeiterfassung($zeiterfassung, $ids[1]);
+        }
+
+        $item = self::getOfferItem($offerId, $ids[0]);
+        if ($item === false || !$item instanceof Zeit) {
+            return;
+        }
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+            "data" => Posten::formatItemsForTable([$item])[0],
+        ]);
+    }
+
+    public static function updateInOffer(): void
+    {
+        $offerId = (int) Tools::get("id");
         $itemId = (int) Tools::get("itemId");
+
+        if (self::getOfferItem($offerId, $itemId) === false) {
+            JSONResponseHandler::throwError(404, "Posten gehört nicht zu diesem Angebot");
+        }
+
+        self::writeUpdate($itemId);
+
+        $item = self::getOfferItem($offerId, $itemId);
+        if ($item === false || !$item instanceof Zeit) {
+            return;
+        }
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+            "data" => Posten::formatItemsForTable([$item])[0],
+        ]);
+    }
+
+    private static function writeUpdate(int $itemId): void
+    {
         $zeitInMinuten = (int) Tools::get("time");
-        $stundenlohn = (int) Tools::get("wage");
+        $stundenlohn = (float) Tools::get("wage");
         $beschreibung = (string) Tools::get("description");
         $ohneBerechnung = Tools::get("noPayment");
         $discount = (int) Tools::get("discount");
@@ -393,13 +430,28 @@ class Zeit extends Posten
             "itemId" => $itemId,
         ]);
 
-        /* erweiterte Zeiterfassung */
-        $zeiterfassung = json_decode(Tools::get("times"), true);
-        if (count($zeiterfassung) != 0) {
-            $query = "DELETE FROM zeiterfassung WHERE id_zeit = :itemId";
-            DBAccess::deleteQuery($query, ["itemId" => $itemId]);
-            self::erweiterteZeiterfassung($zeiterfassung, $itemId);
+        /*
+         * erweiterte Zeiterfassung: the edit form loads the existing entries and sends the complete
+         * list back, so the stored entries are replaced by it (an empty list removes them all).
+         * zeiterfassung.id_zeit refers to zeit.Nummer (see add()), not to the posten number.
+         */
+        $zeiterfassung = json_decode((string) Tools::get("times"), true);
+        $time = DBAccess::selectQuery("SELECT Nummer FROM zeit WHERE Postennummer = :itemId", ["itemId" => $itemId]);
+        if (is_array($zeiterfassung) && !empty($time)) {
+            $timeId = (int) $time[0]["Nummer"];
+            DBAccess::deleteQuery("DELETE FROM zeiterfassung WHERE id_zeit = :timeId", ["timeId" => $timeId]);
+            if (count($zeiterfassung) != 0) {
+                self::erweiterteZeiterfassung($zeiterfassung, $timeId);
+            }
         }
+    }
+
+    public static function update(): void
+    {
+        $orderId = (int) Tools::get("id");
+        $itemId = (int) Tools::get("itemId");
+
+        self::writeUpdate($itemId);
 
         if ($orderId == 0) {
             return;
@@ -413,51 +465,11 @@ class Zeit extends Posten
             return;
         }
 
-        $item = [];
-        $item["position"] = $data->getPosition();
-        $item["price"] = $data->bekommeEinzelPreis();
-        $item["totalPrice"] = $data->bekommePreis();
-        $item["quantity"] = $data->bekommeErweiterteZeiterfassungTabelle();
-
-        $data = $data->fillToArray([]);
-        $item["id"] = $data["Postennummer"];
-        $item["name"] = $data["Bezeichnung"];
-        $item["description"] = $data["Beschreibung"];
-        $item["price"] = $data["Preis"];
-        $item["unit"] = $data["MEH"];
-        $item["totalPrice"] = $data["Gesamtpreis"];
-        $item["purchasePrice"] = $data["Einkaufspreis"];
-
+        /* same shape as the items list (incl. type and extraData), so the row stays editable/deletable */
         JSONResponseHandler::sendResponse([
             "status" => "success",
             "price" => $price,
-            "data" => $item,
-        ]);
-    }
-
-    public static function delete(): void
-    {
-        $idItem = (int) Tools::get("itemId");
-        parent::delete();
-
-        $query = "SELECT Nummer AS id FROM zeit WHERE Postennummer = :idItem;";
-        $data = DBAccess::selectQuery($query, [
-            "idItem" => $idItem,
-        ]);
-
-        if (empty($data)) {
-            return;
-        }
-
-        $idTime = (int) $data[0]["id"];
-        $query = "DELETE FROM zeiterfassung WHERE id_zeit = :idTime;";
-        DBAccess::deleteQuery($query, [
-            "idTime" => $idTime,
-        ]);
-
-        $query = "DELETE FROM zeit WHERE Postennummer = :idItem;";
-        DBAccess::deleteQuery($query, [
-            "idItem" => $idItem,
+            "data" => Posten::formatItemsForTable([$data])[0],
         ]);
     }
 }

@@ -7,7 +7,7 @@ import { getTemplate, setInpupts, clearInputs } from "../global";
 import type { FunctionMap, TableHeader, TableOptions } from "../types/types";
 
 import { DragSortManager } from "./DragSortManager";
-import { addRow, updateRow, renderTable } from "./table";
+import { renderTable } from "./table";
 import { initFileUploader } from "./upload";
 
 
@@ -18,6 +18,7 @@ interface ItemConfig {
 }
 
 interface Config {
+    tableName: string;
     type: string;
     itemType: string;
     surcharge: number;
@@ -40,6 +41,7 @@ const itemsConf: ItemConfig = {
 }
 
 const config: Config = {
+    tableName: "",
     type: "order",
     itemType: "time",
     surcharge: 0,
@@ -140,6 +142,10 @@ export const getItemsTable = async (
     type: string = "order"
 ) => {
     const data = await getItems(id, type);
+
+    /* the table is rendered again after every change, so an earlier one has to go first */
+    document.getElementById(tableName)?.querySelectorAll("table").forEach(el => el.remove());
+
     const table = renderTable(
         tableName,
         config.tableHeader,
@@ -149,7 +155,6 @@ export const getItemsTable = async (
 
     table.addEventListener("rowDelete", deleteItem as EventListener);
     table.addEventListener("rowEdit", editItem as EventListener);
-    table.addEventListener("rowMove", moveItem as EventListener)
     table.addEventListener("rowUpload", (e: Event) => uploadItem(e as CustomEvent));
 
     const tbody = table.tBodies[0];
@@ -157,14 +162,22 @@ export const getItemsTable = async (
         itemSelector: "tr",
         handleSelector: ".drag-handle",
         ignoreSelector: ".empty-placeholder, .editable-row, .add-row",
-        onOrderChange: (positions) => {
-            console.log(positions)
-        },
+        onOrderChange: (positions) => saveItemsOrder(positions.map(position => Number(position.id))),
     });
 
     addExtraData(data, table);
     config.table = table;
+    config.tableName = tableName;
     return table;
+}
+
+/* positions, sums and the padded number columns depend on all rows, so the table is reloaded as a whole */
+const reloadTable = async (): Promise<void> => {
+    if (config.tableName === "") {
+        return;
+    }
+
+    await getItemsTable(config.tableName, itemsConf.orderId, config.type);
 }
 
 const addExtraData = (data: any[], table: HTMLTableElement): void => {
@@ -221,8 +234,20 @@ const deleteItem = (e: CustomEvent): void => {
 
     btnDelete.addEventListener("click", () => {
         (btnCancel as HTMLButtonElement).click();
-        ajax.delete(`/api/v1/order-items/${data.type}/${data.id}`).then(() => {
-            data.row.remove();
+        ajax.delete(`/api/v1/order-items/${data.type}/${data.id}`).then((r: any) => {
+            if (!r.success || r.data?.status !== "success") {
+                notification("", "failure", r.error ?? r.data?.message ?? "Der Posten konnte nicht gelöscht werden");
+                return;
+            }
+
+            notification("", "success");
+            updatePrice(r.data.price);
+
+            if (itemsConf.editItemId == data.id) {
+                closeItemsMenu();
+            }
+
+            reloadTable();
         });
     });
 
@@ -231,8 +256,23 @@ const deleteItem = (e: CustomEvent): void => {
     settingsContainer.appendChild(btnDelete);
 }
 
-const moveItem = (e: CustomEvent): void => {
-    console.log(e.detail);
+/* stores the order the rows were dragged into; the table is reloaded to show the new position numbers */
+const saveItemsOrder = (ids: number[]): void => {
+    const url = config.type === "offer"
+        ? `/api/v1/order-items/offer/${itemsConf.orderId}/positions`
+        : `/api/v1/order-items/${itemsConf.orderId}/positions`;
+
+    ajax.put(url, {
+        "positions": JSON.stringify(ids),
+    }).then((r: any) => {
+        if (!r.success || r.data?.status !== "success") {
+            notification("", "failure", r.error ?? r.data?.message ?? "Die Reihenfolge konnte nicht gespeichert werden");
+        } else {
+            notification("", "success");
+        }
+
+        reloadTable();
+    });
 }
 
 const uploadItem = async (e: CustomEvent) => {
@@ -260,11 +300,20 @@ const editItem = (e: CustomEvent): void => {
     const data = e.detail;
     const type = data.type;
 
-    const itemsMenu = document.querySelector("#showPostenAdd") as HTMLElement;
-    const itemsMenuButton = document.querySelector("#showItemsMenu") as HTMLElement;
+    /* the row's edit button turns into a save button while the item is being edited */
+    if (itemsConf.editItemId != 0 && itemsConf.editItemId == data.id) {
+        saveEdit();
+        return;
+    }
 
-    itemsMenu.classList.remove("hidden");
-    itemsMenuButton.classList.add("hidden");
+    if (type !== "time" && type !== "service") {
+        notification("Produktposten können hier nicht bearbeitet werden.", "failure");
+        reloadTable();
+        return;
+    }
+
+    const wasEditing = itemsConf.editItemId != 0;
+    openItemsMenu();
 
     const tab = document.querySelector(`.tab-button[data-target="${type}"]`) as HTMLButtonElement;
     tab.click();
@@ -277,6 +326,11 @@ const editItem = (e: CustomEvent): void => {
 
     itemsConf.editItemId = data.id;
     itemsConf.editItemRow = data.row;
+
+    /* switching from another item: its row still shows the save button */
+    if (wasEditing) {
+        reloadTable();
+    }
 
     switch (type) {
         case "time":
@@ -293,16 +347,33 @@ const editItem = (e: CustomEvent): void => {
 const editTime = async (id: number) => {
     const response = await ajax.get(`/api/v1/order-items/times/${id}`);
     const data = response.data;
+
+    /* load the stored time tracking entries, saving sends the complete list back */
+    resetExtendedTimes();
+    (data.timetable ?? []).forEach((entry: { from_time: number, to_time: number, date: string | null }) => {
+        createTimeInputRow({
+            start: minutesToTimeString(Number(entry.from_time)),
+            end: minutesToTimeString(Number(entry.to_time)),
+            date: entry.date ?? "",
+        });
+    });
+
     setInpupts({
         "ids": {
             "timeInput": data.time,
             "wage": data.wage,
             "timeDescription": data.description,
-            "isFree": data.notcharged,
-            "addToInvoice": data.isinvoice,
+            "isFree": Number(data.notcharged) === 1,
+            "addToInvoice": Number(data.isinvoice) === 1,
             "getDiscount": data.discount,
         },
     });
+}
+
+const minutesToTimeString = (minutes: number): string => {
+    const hours = Math.floor(minutes / 60).toString().padStart(2, "0");
+    const rest = (minutes % 60).toString().padStart(2, "0");
+    return `${hours}:${rest}`;
 }
 
 const editService = async (id: number) => {
@@ -316,11 +387,16 @@ const editService = async (id: number) => {
             "ekp": data.buyingprice,
             "pre": data.price,
             "meh": data.unit,
-            "isFree": data.notcharged,
-            "addToInvoice": data.isinvoice,
+            "isFree": Number(data.notcharged) === 1,
+            "addToInvoice": Number(data.isinvoice) === 1,
             "getDiscount": data.discount,
         },
     });
+
+    const select = document.getElementById("selectLeistung") as HTMLSelectElement;
+    config.surcharge = Number(select.options[select.selectedIndex]?.dataset.surcharge || 0);
+    (document.querySelector("#surcharge") as HTMLInputElement).value = String(config.surcharge);
+    (document.getElementById("showMeh") as HTMLElement).innerHTML = data.unit ?? "";
 }
 
 const saveEditTime = (): void => {
@@ -330,13 +406,21 @@ const saveEditTime = (): void => {
     }
 
     const data = getTimeData(wage);
-    ajax.put(`/api/v1/order-items/${itemsConf.orderId}/times/${itemsConf.editItemId}`, data).then((r: any) => {
+    const url = config.type === "offer"
+        ? `/api/v1/order-items/offer/${itemsConf.orderId}/times/${itemsConf.editItemId}`
+        : `/api/v1/order-items/${itemsConf.orderId}/times/${itemsConf.editItemId}`;
+
+    ajax.put(url, data).then((r: any) => {
         resetTimeInputs(r);
     });
 }
 
 const saveEditService = (): void => {
-    ajax.put(`/api/v1/order-items/${itemsConf.orderId}/services/${itemsConf.editItemId}`, getServiceData()).then((r: any) => resetServiceInputs(r));
+    const url = config.type === "offer"
+        ? `/api/v1/order-items/offer/${itemsConf.orderId}/services/${itemsConf.editItemId}`
+        : `/api/v1/order-items/${itemsConf.orderId}/services/${itemsConf.editItemId}`;
+
+    ajax.put(url, getServiceData()).then((r: any) => resetServiceInputs(r));
 }
 
 const getTimeData = (wage: number) => {
@@ -347,7 +431,8 @@ const getTimeData = (wage: number) => {
         noPayment: getIsFree(),
         addToInvoice: getAddToInvoice(),
         discount: (document.querySelector("#getDiscount") as HTMLInputElement).value,
-        times: JSON.stringify(config.extendedTimes),
+        /* removed rows stay in the list as empty placeholders and must not be stored */
+        times: JSON.stringify(config.extendedTimes.filter(time => time.start !== time.end)),
     }
 }
 
@@ -389,7 +474,7 @@ functionNames.click_addItem = async () => {
     }
 }
 
-functionNames.click_saveEdit = async () => {
+const saveEdit = (): void => {
     switch (config.itemType) {
         case "time":
             saveEditTime();
@@ -402,43 +487,47 @@ functionNames.click_saveEdit = async () => {
     }
 }
 
-const resetTimeInputs = (r: any) => {
-    if (r.data.status !== "success") {
-        notification("", "failure", r.message);
+functionNames.click_saveEdit = saveEdit;
+
+/* shared by add and edit, for times and services */
+const handleSaveResponse = (r: any) => {
+    if (!r.success || r.data?.status !== "success") {
+        notification("", "failure", r.error ?? r.data?.message ?? "Der Posten konnte nicht gespeichert werden");
         return;
     }
 
     notification("", "success");
     updatePrice(r.data.price);
-    updateTable(r.data.data);
+    closeItemsMenu();
+    reloadTable();
+}
 
+const resetTimeInputs = handleSaveResponse;
+const resetServiceInputs = handleSaveResponse;
+
+const resetExtendedTimes = (): void => {
     config.extendedTimes = [];
     (document.getElementById("extendedTimeInput") as HTMLElement).innerHTML = "";
+}
 
-    clearInputs({
-        "ids": ["timeInput", "timeDescription"],
-        "classes": ["timeInput", "dateInput"]
-    });
+const clearItemInputs = (): void => {
+    resetExtendedTimes();
+
+    clearInputs({ "ids": ["timeInput", "timeDescription", "bes", "meh"] });
+    (document.getElementById("anz") as HTMLInputElement).value = "1";
+    (document.getElementById("ekp") as HTMLInputElement).value = "0";
+    (document.getElementById("pre") as HTMLInputElement).value = "0";
+    (document.getElementById("getDiscount") as HTMLInputElement).value = "0";
+    (document.getElementById("showMeh") as HTMLElement).innerHTML = "";
+
+    const wage = document.getElementById("wage") as HTMLInputElement;
+    wage.value = wage.defaultValue;
+
+    const select = document.getElementById("selectLeistung") as HTMLSelectElement;
+    select.selectedIndex = 0;
 
     (document.querySelector("#isFree") as HTMLInputElement).checked = false;
     (document.querySelector("#addToInvoice") as HTMLInputElement).checked = false;
-
-    resetItemsMenu();
-}
-
-const resetServiceInputs = (r: any) => {
-    if (r.data.status !== "success") {
-        notification("", "failure", r.message);
-        return;
-    }
-
-    notification("", "success");
-    updatePrice(r.data.price);
-    updateTable(r.data.data);
-    clearInputs({ "ids": ["bes", "ekp", "pre", "meh", "anz"] });
-    (document.getElementById("selectLeistung") as HTMLSelectElement).value = "0";
-
-    resetItemsMenu();
 }
 
 const addTime = (): void => {
@@ -448,35 +537,56 @@ const addTime = (): void => {
     }
 
     const data = getTimeData(wage);
+    const url = config.type === "offer"
+        ? `/api/v1/order-items/offer/${itemsConf.orderId}/times`
+        : `/api/v1/order-items/${itemsConf.orderId}/times`;
 
-    ajax.post(`/api/v1/order-items/${itemsConf.orderId}/times`, data).then((r: any) => resetTimeInputs(r));
+    ajax.post(url, data).then((r: any) => resetTimeInputs(r));
 }
 
 const addService = () => {
-    ajax.post(`/api/v1/order-items/${itemsConf.orderId}/services`, getServiceData()).then((r: any) => resetServiceInputs(r));
+    const url = config.type === "offer"
+        ? `/api/v1/order-items/offer/${itemsConf.orderId}/services`
+        : `/api/v1/order-items/${itemsConf.orderId}/services`;
+
+    ajax.post(url, getServiceData()).then((r: any) => resetServiceInputs(r));
 }
 
+/* bound to both "Hinzufügen" (menu closed) and "Abbrechen" (menu open) */
 functionNames.click_showItemsMenu = () => {
-   resetItemsMenu();
+    const itemsMenu = document.querySelector("#showPostenAdd") as HTMLElement;
+
+    if (itemsMenu.classList.contains("hidden")) {
+        openItemsMenu();
+        return;
+    }
+
+    const wasEditing = itemsConf.editItemId != 0;
+    closeItemsMenu();
+
+    /* the edited row still shows the save button */
+    if (wasEditing) {
+        reloadTable();
+    }
 }
 
-const resetItemsMenu = () => {
-    const itemsMenu = document.querySelector("#showPostenAdd") as HTMLElement;
-    const itemsMenuButton = document.querySelector("#showItemsMenu") as HTMLElement;
+const openItemsMenu = (): void => {
+    (document.querySelector("#showPostenAdd") as HTMLElement).classList.remove("hidden");
+    (document.querySelector("#showItemsMenu") as HTMLElement).classList.add("hidden");
+}
 
-    itemsMenu.classList.toggle("hidden");
-    itemsMenuButton.classList.toggle("hidden");
+/* hides the form, leaves edit mode and resets the inputs for the next posten */
+const closeItemsMenu = (): void => {
+    (document.querySelector("#showPostenAdd") as HTMLElement).classList.add("hidden");
+    (document.querySelector("#showItemsMenu") as HTMLElement).classList.remove("hidden");
 
-    const addItem = document.querySelector("#addItem") as HTMLElement;
-    const saveItem = document.querySelector("#saveItem") as HTMLElement;
-
-    addItem.classList.remove("hidden");
-    saveItem.classList.add("hidden");
+    (document.querySelector("#addItem") as HTMLElement).classList.remove("hidden");
+    (document.querySelector("#saveItem") as HTMLElement).classList.add("hidden");
 
     itemsConf.editItemRow = null;
     itemsConf.editItemId = 0;
 
-    // toggle edit button
+    clearItemInputs();
 }
 
 functionNames.click_selectLeistung = (e: Event): void => {
@@ -504,6 +614,10 @@ functionNames.write_changeMeh = (): void => {
 * @param {*} event this is the passed event
 */
 functionNames.click_createTimeInputRow = (): void => {
+    createTimeInputRow(undefined, true);
+}
+
+const createTimeInputRow = (initial: ExtendedTime = { start: "00:00", end: "00:00", date: "" }, focus: boolean = false): void => {
     const div = document.createElement("div");
     div.appendChild(getTemplate("templateTimeInput"));
 
@@ -534,8 +648,16 @@ functionNames.click_createTimeInputRow = (): void => {
         calculateTime();
     }, false);
 
-    config.extendedTimes.push({ start: "00:00", end: "00:00", date: "" });
-    start.focus();
+    if (initial.start !== initial.end) {
+        start.value = initial.start;
+        end.value = initial.end;
+        dateInput.value = initial.date;
+    }
+
+    config.extendedTimes.push({ ...initial });
+    if (focus) {
+        start.focus();
+    }
 }
 
 const adjustTime = (e: Event, type: keyof ExtendedTime): void => {
@@ -601,24 +723,22 @@ const getAddToInvoice = (): number => {
     return addToInvoiceValue;
 }
 
-const updatePrice = (price: number): void => {
-    const el = document.getElementById("totalPrice")!;
+const updatePrice = (price: number | null | undefined): void => {
+    /* offers have no order total */
+    const el = document.getElementById("totalPrice");
+    if (!el || price === null || price === undefined) {
+        return;
+    }
+
     el.innerText = new Intl.NumberFormat("de-DE", {
         "style": "currency",
         "currency": "EUR"
     }).format(price);
 }
 
-const updateTable = (data: any): void => {
-    if (itemsConf.editItemId == 0) {
-        addRow(data, config.table, config.tableOptions, config.tableHeader);
-    } else {
-        updateRow(data, config.table, itemsConf.editItemRow, config.tableOptions, config.tableHeader);
-    }
-}
-
-export const initInvoiceItems = (orderId = 0): void => {
+export const initInvoiceItems = (orderId = 0, type: string = "order"): void => {
     itemsConf.orderId = orderId;
+    config.type = type;
     addBindings(functionNames);
     initItems();
 }

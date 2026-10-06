@@ -74,6 +74,9 @@ export default defineConfig({
 
     server: {
         origin: "https://localhost:5173",
+        /* header.php and the dev CSP hardcode 5173, so fail loudly instead of silently moving to 5174 */
+        port: 5173,
+        strictPort: true,
         https: httpsConfig,
         hmr: {
             overlay: true,

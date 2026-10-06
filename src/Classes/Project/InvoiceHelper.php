@@ -23,11 +23,11 @@ class InvoiceHelper
 
     public static function getOpenInvoiceSum(): int
     {
-        $query = "SELECT ROUND(SUM(invoice.amount), 2) AS summe
+        $query = "SELECT ROUND(SUM(invoice.amount - " . CreditNote::SQL_CREDITED_NET . "), 2) AS summe
 				FROM auftrag, invoice
-				WHERE auftrag.Rechnungsnummer != 0 
+				WHERE auftrag.Rechnungsnummer != 0
 					AND auftrag.Bezahlt = 0
-					AND auftrag.Auftragsnummer = invoice.order_id";
+					AND invoice.id = auftrag.Rechnungsnummer";
         $sum = DBAccess::selectQuery($query)[0]["summe"];
         if ($sum == null) {
             return 0;
@@ -56,6 +56,8 @@ class InvoiceHelper
 
         $rate = self::getVatRate();
         $mult = 1 + $rate;
+        /* offener Betrag = Rechnungsbetrag abzüglich Gutschriften zur Rechnung */
+        $openAmount = "(invoice.amount - " . CreditNote::SQL_CREDITED_NET . ")";
 
         $data = DBAccess::selectQuery("SELECT
                 auftrag.Rechnungsnummer,
@@ -68,8 +70,8 @@ class InvoiceHelper
                 DATE_FORMAT(invoice.creation_date, '%d.%m.%Y') AS Rechnungsdatum,
                 DATE_FORMAT(DATE_ADD(invoice.creation_date, INTERVAL $dueIn DAY), '%d.%m.%Y') AS Faelligkeitsdatum,
 				IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) AS 'Name',
-				CONCAT(FORMAT(invoice.amount, 2, 'de_DE'), ' €') AS Summe,
-                CONCAT(FORMAT(invoice.amount * $mult, 2, 'de_DE'), ' €') AS Summe_mwst
+				CONCAT(FORMAT($openAmount, 2, 'de_DE'), ' €') AS Summe,
+                CONCAT(FORMAT($openAmount * $mult, 2, 'de_DE'), ' €') AS Summe_mwst
 			FROM auftrag, kunde, invoice
 			WHERE auftrag.Kundennummer = kunde.Kundennummer 
 				AND Rechnungsnummer != 0
@@ -103,51 +105,88 @@ class InvoiceHelper
         JSONResponseHandler::sendResponse($error);
     }
 
+    private const AMOUNT_TOLERANCE = 0.01;
+
     public static function setInvoicePaidExternal(): void
     {
         $invoiceId = (int) Tools::get("invoiceId");
         $amount = (float) Tools::get("amount");
         $otherIds = Tools::get("otherIds");
+        if (!is_array($otherIds)) {
+            $otherIds = [];
+        }
+        $otherIds = array_map("intval", $otherIds);
         //$description = Tools::get("description");
 
-        $invoiceStatus = self::exactMatch($invoiceId, $amount);
         $day = date("Y-m-d");
         $dayGerman = date("d.m.Y");
 
-        /* if an exact match is found, we can skip trying to find alternative matches */
-        if ($invoiceStatus) {
-            Protocol::write("Invoice", "Set invoice $invoiceId as payed on $day");
-            NotificationManager::addNotification(null, NotificationType::ORDER_PAYED, "Rechnung $invoiceId wurde am $dayGerman bezahlt.", $invoiceId);
-
-            Invoice::setInvoicePaid($invoiceId, $day, "ueberweisung");
+        /* 1. exact single-invoice match on the primary id */
+        if (self::exactMatch($invoiceId, $amount)) {
+            self::markInvoicesPaid([$invoiceId], $day, $dayGerman);
             return;
         }
 
-        $foundId = 0;
+        /* 2. exact single-invoice match on one of the alternative ids
+         * (the payment reference might list the "other" id first) */
         foreach ($otherIds as $id) {
-            $invoiceStatus = self::matchId($id, $amount);
-            if ($invoiceStatus) {
-                $foundId = $id;
-                break;
+            if (self::exactMatch($id, $amount)) {
+                self::markInvoicesPaid([$id], $day, $dayGerman);
+                return;
             }
         }
 
-        if ($foundId !== 0) {
-            Protocol::write("Invoice", "Set invoice $foundId as payed on $day. Please verify.");
-            NotificationManager::addNotification(null, NotificationType::ORDER_PAYED, "Rechnung $foundId wurde am $dayGerman bezahlt. Bitte überprüfen und ggf. korrigieren.", $foundId);
+        /* 3. combined match: a single payment covering multiple open invoices
+         * at once (e.g. a customer pays two invoices in one transfer) */
+        $candidateIds = array_unique(array_filter(array_merge([$invoiceId], $otherIds), fn ($id) => $id > 0));
+        $openInvoices = self::openInvoicesByIds($candidateIds);
 
-            Invoice::setInvoicePaid($foundId, $day, "ueberweisung");
+        if (count($openInvoices) > 1) {
+            $sum = array_sum(array_map(fn ($row) => (float) $row["amount"], $openInvoices));
+            if (abs($sum - $amount) < self::AMOUNT_TOLERANCE) {
+                $ids = array_map(fn ($row) => (int) $row["invoice_number"], $openInvoices);
+                self::markInvoicesPaid($ids, $day, $dayGerman);
+                return;
+            }
+        }
+
+        /* 4. last resort: match by id only (amount unverified), needs manual review */
+        foreach ($otherIds as $id) {
+            if (self::matchId($id, $amount)) {
+                self::markInvoicesPaid([$id], $day, $dayGerman, true);
+                return;
+            }
+        }
+    }
+
+    /**
+     * @param array<int, int> $invoiceIds
+     */
+    private static function markInvoicesPaid(array $invoiceIds, string $day, string $dayGerman, bool $needsVerification = false): void
+    {
+        $suffix = $needsVerification ? " Bitte überprüfen und ggf. korrigieren." : "";
+
+        foreach ($invoiceIds as $id) {
+            Protocol::write("Invoice", "Set invoice $id as payed on $day." . ($needsVerification ? " Please verify." : ""));
+            NotificationManager::addNotification(null, NotificationType::ORDER_PAYED, "Rechnung $id wurde am $dayGerman bezahlt.$suffix", $id);
+
+            Invoice::setInvoicePaid($id, $day, "ueberweisung");
         }
     }
 
     private static function exactMatch(int $id, float $amount): bool
     {
-        $query = "SELECT id 
+        if ($id <= 0) {
+            return false;
+        }
+
+        $query = "SELECT id
             FROM invoice, auftrag
             WHERE auftrag.Auftragsnummer = invoice.order_id
+                AND invoice.`status` = 'finalized'
                 AND auftrag.Bezahlt = 0
                 AND invoice_number = :id
-                AND amount = :amount";
+                AND ABS((invoice.amount - " . CreditNote::SQL_CREDITED_NET . ") - :amount) < " . self::AMOUNT_TOLERANCE . "";
         $data = DBAccess::selectQuery($query, [
             "id" => $id,
             "amount" => $amount
@@ -160,11 +199,46 @@ class InvoiceHelper
         return true;
     }
 
+    /**
+     * @param array<int, int> $ids
+     * @return array<int, array<string, string>>
+     */
+    private static function openInvoicesByIds(array $ids): array
+    {
+        $ids = array_values(array_unique(array_filter($ids, fn ($id) => $id > 0)));
+        if (empty($ids)) {
+            return [];
+        }
+
+        /* native prepares don't allow reusing a named placeholder, so each IN list gets its own set */
+        $numberPlaceholders = [];
+        $orderPlaceholders = [];
+        $params = [];
+        foreach ($ids as $index => $id) {
+            $numberPlaceholders[] = ":number$index";
+            $orderPlaceholders[] = ":order$index";
+            $params["number$index"] = $id;
+            $params["order$index"] = $id;
+        }
+        $inNumbers = implode(",", $numberPlaceholders);
+        $inOrders = implode(",", $orderPlaceholders);
+
+        $query = "SELECT invoice.id, invoice.invoice_number, (invoice.amount - " . CreditNote::SQL_CREDITED_NET . ") AS amount
+            FROM invoice, auftrag
+            WHERE auftrag.Auftragsnummer = invoice.order_id
+                AND invoice.`status` = 'finalized'
+                AND auftrag.Bezahlt = 0
+                AND (invoice.invoice_number IN ($inNumbers) OR auftrag.Auftragsnummer IN ($inOrders))";
+
+        return DBAccess::selectQuery($query, $params);
+    }
+
     private static function matchId(int $id, float $amount): bool
     {
         $query = "SELECT id, amount, invoice_number, auftrag.Auftragsnummer as order_id
             FROM invoice, auftrag
             WHERE auftrag.Auftragsnummer = invoice.order_id
+                AND invoice.`status` = 'finalized'
                 AND auftrag.Bezahlt = 0;";
         $data = DBAccess::selectQuery($query);
 

@@ -1,9 +1,9 @@
 <?php
 
 use Src\Classes\Link;
-use Src\Classes\Project\Offer;
+use Src\Classes\Project\Angebot;
 
-$openOffers = Offer::getOpenOffers();
+$openOffers = Angebot::getOpenOffers();
 
 ?>
 <div class="defCont" id="newOffer">

@@ -8,11 +8,9 @@ class NotesRoutes extends Routes
 {
     /**
      * @uses \Src\Classes\Project\Auftrag::getNotes()
-     * @uses \Src\Classes\Project\Auftrag::getNote()
      */
     protected static $getRoutes = [
         "/notes/{orderId}" => [\Src\Classes\Project\Auftrag::class, "getNotes"],
-        "/notes/{orderId}/{id}" => [\Src\Classes\Project\Auftrag::class, "getNote"],
     ];
 
     /**

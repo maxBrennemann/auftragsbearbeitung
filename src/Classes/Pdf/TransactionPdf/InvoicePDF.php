@@ -2,6 +2,7 @@
 
 namespace Src\Classes\Pdf\TransactionPdf;
 
+use Src\Classes\Pdf\PDFTexts;
 use Src\Classes\Project\CompanyProfile;
 use Src\Classes\Project\Config;
 use Src\Classes\Project\Invoice;
@@ -89,17 +90,21 @@ class InvoicePDF extends TransactionPDF
         $this->Cell(60, 10, '', 'T');
         $this->Cell(20, 10, '', 'T');
 
-        /* Code für "Zahlbar sofort ohne weitere Abzüge" */
-        $this->ln();
-        $this->setCellMargins(0, 0, 0, 0);
-        $this->SetFont("helvetica", "", 10);
-        $this->Cell(160, 10, "Zahlbar sofort ohne weitere Abzüge.");
-
-        if ($rate === 0.0) {
+        /* Zahlungsbedingungen und ggf. Kleinunternehmer-Hinweis, Wortlaut über pdf_texts editierbar */
+        foreach (PDFTexts::get("invoice_payment_terms") as $text) {
             $this->ln();
             $this->setCellMargins(0, 0, 0, 0);
             $this->SetFont("helvetica", "", 10);
-            $this->Cell(160, 10, "Kein Ausweis der Umsatzsteuer gem. §19 UStG.");
+            $this->Cell(160, 10, $text);
+        }
+
+        if ($rate === 0.0) {
+            foreach (PDFTexts::get("invoice_small_business_notice") as $text) {
+                $this->ln();
+                $this->setCellMargins(0, 0, 0, 0);
+                $this->SetFont("helvetica", "", 10);
+                $this->Cell(160, 10, $text);
+            }
         }
     }
 
@@ -124,15 +129,7 @@ class InvoicePDF extends TransactionPDF
         $this->Cell(30, 10, "Seite:");
         $this->Cell(30, 10, $this->getAliasRightShift() . $this->PageNo() . ' von ' . $this->getAliasNbPages(), 0, 0, 'R');
 
-        $this->setXY(20, $y + 45);
-        $this->SetFont("helvetica", "B", 12);
-        $this->Cell(15, 10, 'Pos.', 'B');
-        $this->Cell(20, 10, 'Menge', 'B');
-        $this->Cell(20, 10, 'MEH', 'B');
-        $this->Cell(70, 10, 'Bezeichnung', 'B');
-        $this->Cell(20, 10, 'E-Preis', 'B');
-        $this->Cell(20, 10, 'G-Preis', 'B');
-        $this->SetFont("helvetica", "", 12);
+        $this->renderItemsTableHeader($y + 45);
     }
 
     private function addInvoiceItems(): void
@@ -155,37 +152,8 @@ class InvoicePDF extends TransactionPDF
 
             if ($type == "item") {
                 $p = array_find($positions, fn($p) => $p->getPostennummer() == $id);
-                $this->Cell(15, $lineheight, (string) $count);
-                $this->Cell(20, $lineheight, $p->getQuantityFormatted());
-                $this->Cell(20, $lineheight, $p->getEinheit());
-
-                $height = $this->getStringHeight(70, $p->getDescription());
-                $addToOffset = $lineheight;
-
-                $descriptionWidth = 70;
-                if ($p->getOhneBerechnung() == true) {
-                    $descriptionWidth = 50;
-                }
-
-                if ($height >= $lineheight) {
-                    $this->MultiCell($descriptionWidth, $lineheight, $p->getDescription(), '', 'L', false, 0, null, null, true, 0, false, true, 0, 'B', false);
-                    $addToOffset = ceil($height);
-                } else {
-                    $this->Cell($descriptionWidth, $lineheight, $p->getDescription());
-                }
-
-                if ($p->getOhneBerechnung() == true) {
-                    $this->SetFont("helvetica", "", 6);
-                    $this->Cell(20, $lineheight, "Ohne Berechnung");
-                    $this->SetFont("helvetica", "", 12);
-                }
-
-                $this->Cell(20, $lineheight, $p->bekommeEinzelPreis_formatted());
-                $this->Cell(20, $lineheight, $p->bekommePreis_formatted(), 0, 0, 'R');
-
+                $addToOffset = $this->renderItemRow($p, $count);
                 $offset += $addToOffset;
-                $this->ln($addToOffset);
-
                 $count++;
             } else if ($type == "text") {
                 $this->Cell(55, $lineheight, "");

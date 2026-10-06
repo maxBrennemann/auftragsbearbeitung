@@ -3,31 +3,18 @@
 namespace Src\Classes\Project;
 
 use Src\Classes\Controller\TemplateController;
-use Exception;
-use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 
 class InvoiceLayout
 {
     private Invoice $invoice;
-    /** @var array<int, array<string, string>> */
-    private array $layout;
+    private DocumentLayout $documentLayout;
 
     public function __construct(Invoice $invoice)
     {
         $this->invoice = $invoice;
-        $this->getLayoutData();
-    }
-
-    private function getLayoutData(): void
-    {
-        $query = "SELECT * FROM invoice_layout WHERE invoice_id = :invoiceId ORDER BY position;";
-        $data = DBAccess::selectQuery($query, [
-            "invoiceId" => $this->invoice->getId(),
-        ]);
-
-        $this->layout = $data;
+        $this->documentLayout = new DocumentLayout("invoice", $invoice->getId());
     }
 
     /**
@@ -39,6 +26,24 @@ class InvoiceLayout
         $texts = array_filter($this->invoice->getTexts(), fn($el) => $el["active"] != 0);
         $vehicles = $this->invoice->getAttachedVehicles();
 
+        /*
+         * Leistungsdatum (id < 0, siehe Invoice::getTexts()) wird immer als letzter Eintrag
+         * der Liste gerendert und dafür aus der normalen Sortierung/dem Layout herausgehalten.
+         */
+        $performanceDateEntry = null;
+        $regularTexts = [];
+        foreach ($texts as $text) {
+            if ((int) $text["id"] < 0) {
+                $performanceDateEntry = [
+                    "id" => $text["id"],
+                    "type" => "text",
+                    "content" => $text["text"],
+                ];
+            } else {
+                $regularTexts[] = $text;
+            }
+        }
+
         $all = [];
 
         foreach ($items as $item) {
@@ -49,7 +54,7 @@ class InvoiceLayout
             ];
         }
 
-        foreach ($texts as $text) {
+        foreach ($regularTexts as $text) {
             $all[] = [
                 "id" => $text["id"],
                 "type" => "text",
@@ -65,57 +70,15 @@ class InvoiceLayout
             ];
         }
 
-        $allMap = [];
-        foreach ($all as $entry) {
-            $key = "{$entry['type']}-{$entry['id']}";
-            $allMap[$key] = $entry;
-        }
-
-        $result = [];
-        $usedKeys = [];
-
-        foreach ($this->layout as $layoutEntry) {
-            $key = "{$layoutEntry['content_type']}-{$layoutEntry['content_id']}";
-            if (isset($allMap[$key])) {
-                $result[] = $allMap[$key];
-                $usedKeys[$key] = true;
-            }
-        }
-
-        $defaultOrder = ['item', 'text', 'vehicle'];
-        foreach ($defaultOrder as $type) {
-            foreach ($allMap as $key => $entry) {
-                if ($entry['type'] === $type && !isset($usedKeys[$key])) {
-                    $result[] = $entry;
-                }
-            }
-        }
-
-        return $result;
+        return $this->documentLayout->getOrderedContent($all, $performanceDateEntry);
     }
 
     /**
      * @param array<int, mixed> $positions
-     * @return bool
      */
     private function writeItemsOrder(array $positions): bool
     {
-        $query = "INSERT INTO invoice_layout (invoice_id, position, content_type, content_id) VALUES (:invoiceId, :position, :type, :id) ON DUPLICATE KEY UPDATE position = VALUES(position)";
-
-        foreach ($positions as $entry) {
-            try {
-                DBAccess::insertQuery($query, [
-                    "invoiceId" => $this->invoice->getId(),
-                    "position" => $entry["position"],
-                    "type" => $entry["type"],
-                    "id" => $entry["id"],
-                ]);
-            } catch (Exception $e) {
-                return false;
-            }
-        }
-
-        return true;
+        return $this->documentLayout->writeItemsOrder($positions);
     }
 
     /**
@@ -149,6 +112,11 @@ class InvoiceLayout
         $positions = json_decode($positions, true);
 
         $invoice = new Invoice($invoiceId, $orderId);
+        if ($invoice->isLocked()) {
+            JSONResponseHandler::sendErrorResponse(400, "Die Rechnung ist abgeschlossen und kann nicht mehr geändert werden.");
+            return;
+        }
+
         $invoiceLayout = new InvoiceLayout($invoice);
 
         $status = $invoiceLayout->writeItemsOrder($positions);

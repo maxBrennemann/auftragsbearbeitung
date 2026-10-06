@@ -50,6 +50,9 @@ class Settings
             case "string":
                 $value = (string) $value;
                 break;
+            case "secret":
+                $value = Crypto::encrypt((string) $value);
+                break;
             case "bool":
                 $value = $value ? 1 : 0;
                 $column = "numberContent";
@@ -69,7 +72,7 @@ class Settings
         $user = ($settings["scope"] === "user") ? $userId : 0;
         $values = [
             "content" => null,
-            "numbeRcontent" => null,
+            "numberContent" => null,
             "jsonContent" => null,
         ];
 
@@ -138,6 +141,8 @@ class Settings
                 return (float) $currentValue;
             case "json":
                 return json_decode($currentValue, true);
+            case "secret":
+                return Crypto::decrypt($currentValue);
         }
 
         return $currentValue;
@@ -175,7 +180,12 @@ class Settings
     {
         $userId = Tools::get("userId");
         $userSetting = Tools::get("userSetting");
-        
+
+        $settings = self::validateSetting((string) $userSetting);
+        if ($settings !== false && $settings["type"] === "secret") {
+            JSONResponseHandler::throwError(403, "Setting cannot be read");
+        }
+
         if ($userId === "self") {
             $userId = User::getCurrentUserId();
         } else {

@@ -39,6 +39,22 @@ class InvoiceNumberTracker
         return max($maxInvoiceNumber, $currentInvoiceTracker);
     }
 
+    /**
+     * Reserves the next number of the shared invoice number range, e.g. for credit notes,
+     * which are numbered in the same range as invoices.
+     */
+    public static function reserveNextNumber(): int
+    {
+        $newNumber = self::getCurrentInvoiceNumber() + 1;
+
+        $query = "REPLACE INTO invoice_number_tracker (id, last_used_number) VALUES (1, :lastUsedNumber)";
+        DBAccess::insertQuery($query, [
+            "lastUsedNumber" => $newNumber,
+        ]);
+
+        return $newNumber;
+    }
+
     public static function completeInvoice(Invoice $invoice): int
     {
         $lastUsedNumber = self::getCurrentInvoiceNumber();

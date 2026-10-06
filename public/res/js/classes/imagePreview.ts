@@ -31,7 +31,7 @@ const openImagePreview = (image: HTMLElement) => {
 
     imageCopy.src = innerImg.src;
     imageCopy.alt = innerImg.alt;
-    imageCopy.width = innerImg.naturalWidth < 500 ? innerImg.naturalWidth : 500;
+    imageCopy.classList.add("block", "mx-auto", "max-w-full", "max-h-[70vh]", "w-auto", "h-auto", "object-contain");
 
     const div = document.createElement("div");
     div.appendChild(imageCopy);
@@ -42,7 +42,7 @@ const openImagePreview = (image: HTMLElement) => {
     div.appendChild(info);
 
     const imageId = innerImg.dataset.imageId;
-    const eventEl = createPopup(div);
+    const eventEl = createPopup(div, ["max-h-[90vh]", "overflow-y-auto"]);
 
     eventEl.addEventListener("closePopup", () => {
         setPopupHash(undefined);

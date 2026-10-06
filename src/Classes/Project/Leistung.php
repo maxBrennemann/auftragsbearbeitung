@@ -52,13 +52,13 @@ class Leistung extends Posten
     /* fills array for Postentable */
     public function fillToArray(array $arr): array
     {
-        $arr['Postennummer'] = $this->postennummer;
+        $arr['Postennummer'] = (string) $this->postennummer;
         $arr['Preis'] = $this->bekommePreisTabelle();
         $arr['Bezeichnung'] = "<button class=\"btn-primary-small\">Leistung</button><br><span>{$this->bezeichnung}</span>";
         $arr['Beschreibung'] = $this->beschreibung;
         $arr['Einkaufspreis'] = number_format($this->einkaufspreis * $this->quantity, 2, ',', '') . "€<br><span style=\"font-size: 0.7em\">Einzelpreis: " . number_format($this->einkaufspreis, 2, ',', '') . "€</span><br>" . $this->getFiles($this->postennummer);
         $arr['Gesamtpreis'] = $this->bekommePreis_formatted();
-        $arr['Leistungsnummer'] = $this->leistungsnummer;
+        $arr['Leistungsnummer'] = (string) $this->leistungsnummer;
         $arr['Anzahl'] = addCommas((string) $this->quantity);
         $arr['MEH'] = $this->meh;
         $arr['type'] = "addPostenLeistung";
@@ -230,25 +230,11 @@ class Leistung extends Posten
             return;
         }
 
-        $item = [];
-        $item["position"] = $data->getPosition();
-        $item["price"] = $data->bekommeEinzelPreis();
-        $item["totalPrice"] = $data->bekommePreis();
-
-        $data = $data->fillToArray([]);
-        $item["id"] = $data["Postennummer"];
-        $item["name"] = $data["Bezeichnung"];
-        $item["description"] = $data["Beschreibung"];
-        $item["price"] = $data["Preis"];
-        $item["quantity"] = $data["Anzahl"];
-        $item["unit"] = $data["MEH"];
-        $item["totalPrice"] = $data["Gesamtpreis"];
-        $item["purchasePrice"] = $data["Einkaufspreis"];
-
+        /* same shape as the items list (incl. type and extraData), so the row stays editable/deletable */
         JSONResponseHandler::sendResponse([
             "status" => "success",
             "price" => $price,
-            "data" => $item,
+            "data" => Posten::formatItemsForTable([$data])[0],
         ]);
     }
 
@@ -256,14 +242,86 @@ class Leistung extends Posten
     {
         $idItem = (int) Tools::get("itemId");
         $data = self::getPostenData($idItem);
-        
+
         JSONResponseHandler::sendResponse($data);
+    }
+
+    public static function addToOffer(): void
+    {
+        $offerId = (int) Tools::get("id");
+
+        $data = [];
+        $data['Leistungsnummer'] = (int) Tools::get("lei");
+        $data['Beschreibung'] = (string) Tools::get("bes");
+        $data['ohneBerechnung'] = Tools::get("ohneBerechnung");
+        $data['discount'] = (int) Tools::get("discount");
+        $data['MEH'] = Tools::get("meh");
+        $data['addToInvoice'] = 0;
+
+        $data['Einkaufspreis'] = (float) Tools::get("ekp");
+        $data['SpeziefischerPreis'] = (float) Tools::get("pre");
+        $data['anzahl'] = (float) Tools::get("anz");
+
+        $ids = Posten::insertPosten("leistung", $data, $offerId);
+
+        $item = self::getOfferItem($offerId, $ids[0]);
+        if ($item === false || !$item instanceof Leistung) {
+            return;
+        }
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+            "data" => Posten::formatItemsForTable([$item])[0],
+        ]);
     }
 
     public static function update(): void
     {
         $orderId = (int) Tools::get("id");
         $itemId = (int) Tools::get("itemId");
+
+        self::writeUpdate($itemId);
+
+        $newOrder = new Auftrag($orderId);
+        $price = $newOrder->preisBerechnen();
+
+        $data = self::getOrderItem($orderId, $itemId);
+        if ($data === false || !$data instanceof Leistung) {
+            return;
+        }
+
+        /* same shape as the items list (incl. type and extraData), so the row stays editable/deletable */
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+            "price" => $price,
+            "data" => Posten::formatItemsForTable([$data])[0],
+        ]);
+    }
+
+    public static function updateInOffer(): void
+    {
+        $offerId = (int) Tools::get("id");
+        $itemId = (int) Tools::get("itemId");
+
+        if (self::getOfferItem($offerId, $itemId) === false) {
+            JSONResponseHandler::throwError(404, "Posten gehört nicht zu diesem Angebot");
+        }
+
+        self::writeUpdate($itemId);
+
+        $item = self::getOfferItem($offerId, $itemId);
+        if ($item === false || !$item instanceof Leistung) {
+            return;
+        }
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+            "data" => Posten::formatItemsForTable([$item])[0],
+        ]);
+    }
+
+    private static function writeUpdate(int $itemId): void
+    {
         $lei = (int) Tools::get("lei");
         $description = (string) Tools::get("bes");
         $ohneBerechnung = Tools::get("ohneBerechnung");
@@ -302,46 +360,6 @@ class Leistung extends Posten
             "meh" => $meh,
             "anz" => $qty,
             "itemId" => $itemId,
-        ]);
-
-        $newOrder = new Auftrag($orderId);
-        $price = $newOrder->preisBerechnen();
-
-        $data = self::getOrderItem($orderId, $itemId);
-        if ($data === false || !$data instanceof Leistung) {
-            return;
-        }
-
-        $item = [];
-        $item["position"] = $data->getPosition();
-        $item["price"] = $data->bekommeEinzelPreis();
-        $item["totalPrice"] = $data->bekommePreis();
-
-        $data = $data->fillToArray([]);
-        $item["id"] = $data["Postennummer"];
-        $item["name"] = $data["Bezeichnung"];
-        $item["description"] = $data["Beschreibung"];
-        $item["price"] = $data["Preis"];
-        $item["quantity"] = $data["Anzahl"];
-        $item["unit"] = $data["MEH"];
-        $item["totalPrice"] = $data["Gesamtpreis"];
-        $item["purchasePrice"] = $data["Einkaufspreis"];
-
-        JSONResponseHandler::sendResponse([
-            "status" => "success",
-            "price" => $price,
-            "data" => $item,
-        ]);
-    }
-
-    public static function delete(): void
-    {
-        $idItem = (int) Tools::get("itemId");
-        parent::delete();
-
-        $query = "DELETE FROM leistung_posten WHERE Postennummer = :idItem;";
-        DBAccess::deleteQuery($query, [
-            "idItem" => $idItem,
         ]);
     }
 }

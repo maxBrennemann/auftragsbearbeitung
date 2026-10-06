@@ -1,9 +1,10 @@
 import { format } from "date-fns";
 import { ajax } from "js-classes/ajax";
 import { addBindings } from "js-classes/bindings";
+import { notification } from "js-classes/notifications";
 
 import { loader } from "../classes/helpers";
-import { addRow, createHeader, createTable } from "../classes/table";
+import { addRow, createHeader, createSumRow, createTable } from "../classes/table";
 import { FunctionMap } from "../types/types";
 
 const fnNames: FunctionMap = {};
@@ -21,8 +22,8 @@ fnNames.write_showDueInvoices = () => {
 }
 
 const getOpenInvoiceData = async () => {
-    const data = await ajax.get(`/api/v1/invoice/open?show=${config.show}`);
-    return data.data.data;
+    const response = await ajax.get(`/api/v1/invoice/open?show=${config.show}`);
+    return response.data.data;
 }
 
 const createInvoiceTable = async () => {
@@ -81,10 +82,11 @@ const createInvoiceTable = async () => {
         "hide": ["Rechnungsnummer"],
         "primaryKey": "Nummer",
         "link": "/auftrag?id=",
+        "sum": [
+            { "key": "Summe", "format": "EUR" },
+            { "key": "Summe_mwst", "format": "EUR" },
+        ],
         "styles": {
-            "thead": {
-                "className": ["sticky", "top-0"],
-            },
             "key": {
                 "Bezeichnung": ["w-40", "truncate"],
                 "Beschreibung": ["w-96", "truncate"],
@@ -98,19 +100,63 @@ const createInvoiceTable = async () => {
     const data = await getOpenInvoiceData();
     data.forEach((row: any) => {
         addRow(row, table, columnConfig, columns);
+        addReminderActions(row, table);
     });
+
+    createSumRow(data, table, columnConfig, columns);
 
     table.addEventListener("rowCheck", async (event: any) => {
         const data = event.detail;
         const id = data.Rechnungsnummer;
 
+        if (!confirm(`Soll die Rechnung ${data.invoice_number ?? id} wirklich als bezahlt markiert werden?`)) {
+            return;
+        }
+
         const status = await ajax.post(`/api/v1/invoice/${id}/paid`, {
             "date": format(new Date(), "yyy-MM-dd"),
         });
         if (status.data.status == "success") {
-            data.row.remove();
+            createInvoiceTable();
         }
     });
+}
+
+const addReminderActions = (row: any, table: HTMLTableElement) => {
+    const tbody = table.querySelector("tbody") as HTMLTableSectionElement;
+    const tr = tbody.lastElementChild as HTMLTableRowElement;
+    const actionsCell = tr.lastElementChild as HTMLTableCellElement;
+    const invoiceId = row.Rechnungsnummer;
+    const orderId = row.Nummer;
+
+    const previewLink = document.createElement("a");
+    previewLink.href = `/api/v1/invoice/${invoiceId}/reminder/pdf?orderId=${orderId}`;
+    previewLink.target = "_blank";
+    previewLink.title = "Mahnung-Vorschau anzeigen";
+    previewLink.textContent = "Vorschau";
+    previewLink.className = "inline-flex border-0 bg-zinc-400 text-white p-1 rounded-md ml-1 cursor-pointer";
+    actionsCell.appendChild(previewLink);
+
+    const sendBtn = document.createElement("button");
+    sendBtn.title = "Mahnung an den Kunden senden";
+    sendBtn.textContent = "Mahnung senden";
+    sendBtn.className = "inline-flex border-0 bg-orange-400 text-white p-1 rounded-md ml-1 cursor-pointer";
+    sendBtn.addEventListener("click", async () => {
+        if (!confirm(`Soll dem Kunden eine Mahnung zu Rechnung ${row.invoice_number ?? invoiceId} per E-Mail zugestellt werden?`)) {
+            return;
+        }
+
+        const response = await ajax.post(`/api/v1/invoice/${invoiceId}/reminder/send`, {
+            "orderId": orderId,
+        });
+        if (response.success && response.data?.status == "success") {
+            notification("", "success");
+            createInvoiceTable();
+        } else {
+            notification("", "failure", response.error ?? "Die Mahnung konnte nicht versendet werden");
+        }
+    });
+    actionsCell.appendChild(sendBtn);
 }
 
 loader(() => {

@@ -38,9 +38,57 @@ foreach ($historyElement as $history) : ?>
     case "deleted": ?>
         <div class="<?= $count > $limit ? "hidden" : "" ?>">
             <div class="bg-white rounded-lg p-1 text-center">
-                <?= $history["name"] ?>: 
+                <?= $history["name"] ?>:
                 <i class="break-all"><?= $history["Beschreibung"] ?></i>
                 <br>gelöscht am <?= $history["insertstamp"] ?>
+                <br>von <?= $history["prename"] ?>
+            </div>
+            <div class="w-0.5 h-7 m-auto border-l-2 border-l-black"></div>
+        </div>
+        <?php break; ?>
+<?php
+    case "sent": ?>
+        <div class="<?= $count > $limit ? "hidden" : "" ?>">
+            <div class="bg-white rounded-lg p-1 text-center">
+                <?= $history["name"] ?>:
+                <i class="break-all"><?= $history["Beschreibung"] ?></i>
+                <br>gesendet am <?= $history["insertstamp"] ?>
+                <br>von <?= $history["prename"] ?>
+            </div>
+            <div class="w-0.5 h-7 m-auto border-l-2 border-l-black"></div>
+        </div>
+        <?php break; ?>
+<?php
+    case "accepted": ?>
+        <div class="<?= $count > $limit ? "hidden" : "" ?>">
+            <div class="bg-white rounded-lg p-1 text-center">
+                <?= $history["name"] ?>:
+                <i class="break-all"><?= $history["Beschreibung"] ?></i>
+                <br>angenommen am <?= $history["insertstamp"] ?>
+                <br>von <?= $history["prename"] ?>
+            </div>
+            <div class="w-0.5 h-7 m-auto border-l-2 border-l-black"></div>
+        </div>
+        <?php break; ?>
+<?php
+    case "rejected": ?>
+        <div class="<?= $count > $limit ? "hidden" : "" ?>">
+            <div class="bg-white rounded-lg p-1 text-center">
+                <?= $history["name"] ?>:
+                <i class="break-all"><?= $history["Beschreibung"] ?></i>
+                <br>abgelehnt am <?= $history["insertstamp"] ?>
+                <br>von <?= $history["prename"] ?>
+            </div>
+            <div class="w-0.5 h-7 m-auto border-l-2 border-l-black"></div>
+        </div>
+        <?php break; ?>
+<?php
+    case "expired": ?>
+        <div class="<?= $count > $limit ? "hidden" : "" ?>">
+            <div class="bg-white rounded-lg p-1 text-center">
+                <?= $history["name"] ?>:
+                <i class="break-all"><?= $history["Beschreibung"] ?></i>
+                <br>abgelaufen am <?= $history["insertstamp"] ?>
                 <br>von <?= $history["prename"] ?>
             </div>
             <div class="w-0.5 h-7 m-auto border-l-2 border-l-black"></div>

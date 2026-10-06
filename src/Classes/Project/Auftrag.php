@@ -116,7 +116,7 @@ class Auftrag implements NotifiableEntity
             return null;
         }
 
-        $query = "SELECT DATE_FORMAT(payment_date, '%d.%m.%Y') AS payment_date FROM invoice WHERE order_id = :orderId";
+        $query = "SELECT DATE_FORMAT(payment_date, '%d.%m.%Y') AS payment_date FROM invoice WHERE order_id = :orderId AND `status` != 'cancelled' ORDER BY id DESC";
         $data = DBAccess::selectQuery($query, [
             "orderId" => $this->Auftragsnummer
         ]);
@@ -141,7 +141,7 @@ class Auftrag implements NotifiableEntity
             return $undefinedPaymentType;
         }
 
-        $query = "SELECT payment_type FROM invoice WHERE order_id = :orderId";
+        $query = "SELECT payment_type FROM invoice WHERE order_id = :orderId AND `status` != 'cancelled' ORDER BY id DESC";
         $data = DBAccess::selectQuery($query, ["orderId" => $this->Auftragsnummer]);
 
         if (empty($data)) {
@@ -245,59 +245,7 @@ class Auftrag implements NotifiableEntity
         $id = (int) Tools::get("id");
         $data = Posten::getOrderItems($id, ClientSettings::getFilterOrderPosten(), 0);
 
-        $parsedData = [];
-
-        $mLenQuantity = 0;
-        $mLenPrice = 0;
-        $mLenTotalPrice = 0;
-        $mLenPurchasePrice = 0;
-
-        foreach ($data as $key => $value) {
-            $item = [];
-            $item["type"] = "posten";
-
-            if ($value instanceof Zeit) {
-                $item["type"] = "time";
-            } elseif ($value instanceof Leistung) {
-                $item["type"] = "service";
-            }
-
-            $item["position"] = $value->getPosition();
-            $item["price"] = $value->bekommeEinzelPreis();
-            $item["totalPrice"] = $value->bekommePreis();
-
-            $value = $value->fillToArray([]);
-            $item["id"] = $value["Postennummer"];
-            $item["name"] = $value["Bezeichnung"];
-            $item["description"] = $value["Beschreibung"];
-            $item["quantity"] = $value["Anzahl"];
-            $item["price"] = $value["Preis"];
-            $item["unit"] = $value["MEH"];
-            $item["totalPrice"] = $value["Gesamtpreis"];
-            $item["purchasePrice"] = $value["Einkaufspreis"];
-            $item["extraData"] = $value["extraData"] ?? [];
-
-            if ($item["type"] == "time") {
-                $mLenQuantity = max($mLenQuantity, strlen((string) $value["quantityAbsolute"]));
-            } else {
-                $mLenQuantity = max($mLenQuantity, strlen((string) $item["quantity"]));
-            }
-            
-            $mLenPrice = max($mLenPrice, strlen((string) $item["price"]));
-            $mLenTotalPrice = max($mLenTotalPrice, strlen((string) $item["totalPrice"]));
-            $mLenPurchasePrice = max($mLenPurchasePrice, strlen((string) $item["purchasePrice"]));
-
-            $parsedData[] = $item;
-        }
-
-        foreach ($parsedData as $key => $value) {
-            $parsedData[$key]["quantity"] = str_pad((string) $value["quantity"], $mLenQuantity, " ", STR_PAD_LEFT);
-            $parsedData[$key]["price"] = str_pad((string) $value["price"], $mLenPrice, " ", STR_PAD_LEFT);
-            $parsedData[$key]["totalPrice"] = str_pad((string) $value["totalPrice"], $mLenTotalPrice, " ", STR_PAD_LEFT);
-            $parsedData[$key]["purchasePrice"] = str_pad((string) $value["purchasePrice"], $mLenPurchasePrice, " ", STR_PAD_LEFT);
-        }
-
-        JSONResponseHandler::sendResponse($parsedData);
+        JSONResponseHandler::sendResponse(Posten::formatItemsForTable($data));
     }
 
     public static function getOrderItem(int $id): void {}
@@ -512,8 +460,9 @@ class Auftrag implements NotifiableEntity
 				DATE_FORMAT(Fertigstellung , '%d.%m.%Y') AS Fertigstellung,
                 invoice.invoice_number
 			FROM auftrag
-            LEFT JOIN invoice ON invoice.order_id = auftrag.Auftragsnummer
-			WHERE Auftragsnummer = :orderId";
+            LEFT JOIN invoice ON invoice.order_id = auftrag.Auftragsnummer AND invoice.`status` != 'cancelled'
+			WHERE Auftragsnummer = :orderId
+            ORDER BY invoice.id DESC";
         $data = DBAccess::selectQuery($query, [
             "orderId" => $this->getAuftragsnummer(),
         ]);
@@ -641,17 +590,23 @@ class Auftrag implements NotifiableEntity
 
         OrderHistory::add($orderId, $orderId, OrderHistory::TYPE_ORDER, OrderHistory::STATE_ADDED, "Neuer Auftrag");
 
+        $fromOfferId = (int) Tools::get("fromOffer");
+        if ($fromOfferId > 0) {
+            Angebot::attachToOrder($fromOfferId, $orderId);
+        }
+
         JSONResponseHandler::sendResponse($data);
     }
 
     public static function getFiles(int $orderId): string
     {
-        $query = "SELECT DISTINCT dateiname AS Datei,
-                originalname, 
+        $query = "SELECT DISTINCT dateien.id AS DateiId,
+                dateiname AS Datei,
+                originalname,
                 DATE_FORMAT(`date`, '%d.%m.%Y %H:%i:%s') AS Uploaddatum,
-                typ as Typ 
-            FROM dateien 
-            LEFT JOIN dateien_auftraege 
+                typ as Typ
+            FROM dateien
+            LEFT JOIN dateien_auftraege
                 ON dateien_auftraege.id_datei = dateien.id
             WHERE dateien_auftraege.id_auftrag = :orderId";
         $files = DBAccess::selectQuery($query, [
@@ -660,12 +615,12 @@ class Auftrag implements NotifiableEntity
 
         foreach ($files as &$file) {
             $filePath = FileController::getPath($file["Datei"]);
-            $type = file_exists($filePath) 
+            $type = file_exists($filePath)
                 && (exif_imagetype($filePath) != false)
                 && getimagesize($filePath) != false
                     ? "image"
                     : "file";
-            
+
             $fileData = [
                 "type" => $type,
                 "link" => Link::getUploadResourceLink($file["Datei"], $file["originalname"]),
@@ -674,6 +629,7 @@ class Auftrag implements NotifiableEntity
                 "file" => $file["Datei"],
             ];
 
+            $file["Aktionen"] = "<button class=\"btn-delete\" data-binding=\"true\" data-fun=\"deleteOrderFile\" data-file-id=\"{$file['DateiId']}\" title=\"Datei löschen\">" . Icon::getDefault("iconDelete") . "</button>";
             $file["Datei"] = TemplateController::getTemplate("tableFile", [
                 "f" => $fileData,
             ]);
@@ -685,17 +641,79 @@ class Auftrag implements NotifiableEntity
                 "Datei",
                 "Typ",
                 "Uploaddatum",
+                "Aktionen",
             ],
             "names" => [
                 "Datei",
                 "Typ",
                 "Uploaddatum",
+                "",
             ],
         ];
 
         $options = [];
 
-        return TableGenerator::create($files, $options, $header); // TODO: add delete option
+        return TableGenerator::create($files, $options, $header);
+    }
+
+    public static function deleteFile(): void
+    {
+        $orderId = (int) Tools::get("id");
+        $fileId = (int) Tools::get("fileId");
+
+        DBAccess::deleteQuery("DELETE FROM dateien_auftraege WHERE id_datei = :fileId AND id_auftrag = :orderId", [
+            "fileId" => $fileId,
+            "orderId" => $orderId,
+        ]);
+
+        if (DBAccess::getAffectedRows() === 0) {
+            JSONResponseHandler::throwError(404, "Datei ist diesem Auftrag nicht zugeordnet");
+        }
+
+        self::deleteFileIfUnused($fileId);
+
+        JSONResponseHandler::sendResponse([
+            "files" => self::getFiles($orderId),
+        ]);
+    }
+
+    /**
+     * removes the physical file and its `dateien` row once no
+     * junction table (order/product/vehicle/line-item) references it anymore
+     */
+    private static function deleteFileIfUnused(int $fileId): void
+    {
+        $junctionTables = [
+            "dateien_auftraege" => "id_datei",
+            "dateien_produkte" => "id_datei",
+            "dateien_fahrzeuge" => "id_datei",
+            "dateien_posten" => "id_file",
+        ];
+
+        foreach ($junctionTables as $table => $column) {
+            $result = DBAccess::selectQuery("SELECT COUNT(*) AS count FROM $table WHERE $column = :fileId", [
+                "fileId" => $fileId,
+            ]);
+
+            if ((int) $result[0]["count"] > 0) {
+                return;
+            }
+        }
+
+        $file = DBAccess::selectQuery("SELECT dateiname FROM dateien WHERE id = :fileId", [
+            "fileId" => $fileId,
+        ]);
+
+        if (count($file) > 0) {
+            $filePath = FileController::getPath($file[0]["dateiname"]);
+            if ($filePath !== null) {
+                unlink($filePath);
+            }
+        }
+
+        DBAccess::deleteQuery("DELETE FROM dateien WHERE id = :fileId", [
+            "fileId" => $fileId,
+        ]);
     }
 
     public static function deleteOrder(): void
@@ -753,6 +771,10 @@ class Auftrag implements NotifiableEntity
         $id = (int) Tools::get("id");
         $type = (string) Tools::get("type");
         $data = (string) Tools::get("data");
+
+        if (!in_array($type, ["title", "note"], true)) {
+            JSONResponseHandler::throwError(400, "Invalid field");
+        }
 
         DBAccess::updateQuery("UPDATE notes SET $type = :data WHERE id = :id", [
             "id" => $id,
@@ -967,17 +989,6 @@ class Auftrag implements NotifiableEntity
         DBAccess::insertMultiple($query, $values);
     }
 
-    public static function resetInvoice(): void
-    {
-        $orderId = Tools::get("id");
-        $query = "UPDATE auftrag SET Rechnungsnummer = 0 WHERE Auftragsnummer = :idOrder";
-        DBAccess::updateQuery($query, [
-            "idOrder" => $orderId,
-        ]);
-
-        JSONResponseHandler::returnOK();
-    }
-
     public static function editDescription(): void
     {
         $text = (string) Tools::get("text");
@@ -1021,7 +1032,7 @@ class Auftrag implements NotifiableEntity
             "orderId" => $orderId,
         ]);
 
-        $query = "UPDATE invoice SET contact_id = NULL, address_id = NULL WHERE order_id = :orderId;";
+        $query = "UPDATE invoice SET contact_id = NULL, address_id = NULL WHERE order_id = :orderId AND `status` = 'draft';";
         DBAccess::updateQuery($query, [
             "orderId" => $orderId,
         ]);

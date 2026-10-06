@@ -13,6 +13,11 @@ class OrderHistory
     public const STATE_EDITED = "edited";
     public const STATE_FINISHED = "finished";
     public const STATE_PAYED = "payed";
+    public const STATE_UNPAID = "unpaid";
+    public const STATE_SENT = "sent";
+    public const STATE_ACCEPTED = "accepted";
+    public const STATE_REJECTED = "rejected";
+    public const STATE_EXPIRED = "expired";
 
     public const TYPE_ITEM = 1;
     public const TYPE_STEP = 2;
@@ -68,16 +73,57 @@ class OrderHistory
             LEFT JOIN history_type ON history_type.type_id = history.type
             LEFT JOIN user ON user.id = history.member_id
             WHERE history.orderid = :auftragsnummer
+                AND history.type != :offerType
             ORDER BY history.insertstamp DESC";
 
+        /* offer events are stored with their offer id in history.orderid, which can collide with an order id */
         return DBAccess::selectQuery($query, [
             "auftragsnummer" => $orderId,
+            "offerType" => self::TYPE_OFFER,
         ]);
     }
 
     public static function representHistoryAsHTML(int $orderId): string
     {
         $history = self::getHistory($orderId);
+        return TemplateController::getTemplate("orderHistory", [
+            "historyElement" => $history,
+        ]);
+    }
+
+    /**
+     * like getHistory(), but additionally filtered by type so offer events can't leak into
+     * an unrelated order's timeline if their ids happen to collide (history.orderid has no FK)
+     *
+     * @param int $offerId
+     * @return array<int, array<string, string>>
+     */
+    public static function getOfferHistory(int $offerId): array
+    {
+        $query = "SELECT
+            history.id,
+            history.insertstamp,
+            CONCAT(UPPER(LEFT(history_type.name, 1)), LOWER(RIGHT(history_type.name, LENGTH(history_type.name) - 1))) as `name`,
+            COALESCE(history.alternative_text, '') AS Beschreibung,
+            history.state,
+            user.username,
+            user.prename
+            FROM history
+            LEFT JOIN history_type ON history_type.type_id = history.type
+            LEFT JOIN user ON user.id = history.member_id
+            WHERE history.orderid = :offerId
+                AND history.type = :type
+            ORDER BY history.insertstamp DESC";
+
+        return DBAccess::selectQuery($query, [
+            "offerId" => $offerId,
+            "type" => self::TYPE_OFFER,
+        ]);
+    }
+
+    public static function representOfferHistoryAsHTML(int $offerId): string
+    {
+        $history = self::getOfferHistory($offerId);
         return TemplateController::getTemplate("orderHistory", [
             "historyElement" => $history,
         ]);

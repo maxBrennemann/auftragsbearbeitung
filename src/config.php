@@ -53,6 +53,51 @@ return [
             'type' => 'number',
             'default' => 19,
         ],
+        'invoice.reminderFee' => [
+            'scope' => 'global',
+            'type' => 'number',
+            'default' => 0,
+        ],
+        'statistics.legacyDataCutoff' => [
+            'scope' => 'global',
+            'type' => 'string',
+            'default' => '',
+        ],
+        'offer.validityDays' => [
+            'scope' => 'global',
+            'type' => 'number',
+            'default' => 30,
+        ],
+        'mail.host' => [
+            'scope' => 'global',
+            'type' => 'string',
+            'default' => '',
+        ],
+        'mail.port' => [
+            'scope' => 'global',
+            'type' => 'number',
+            'default' => 465,
+        ],
+        'mail.username' => [
+            'scope' => 'global',
+            'type' => 'string',
+            'default' => '',
+        ],
+        'mail.password' => [
+            'scope' => 'global',
+            'type' => 'secret',
+            'default' => '',
+        ],
+        'mail.fromAddress' => [
+            'scope' => 'global',
+            'type' => 'string',
+            'default' => '',
+        ],
+        'mail.fromName' => [
+            'scope' => 'global',
+            'type' => 'string',
+            'default' => '',
+        ],
         'company.name' => [
             'scope' => 'global',
             'type' => 'string',
@@ -119,6 +164,11 @@ return [
             'default' => 0,
         ],
         'company.BIC' => [
+            'scope' => 'global',
+            'type' => 'string',
+            'default' => '',
+        ],
+        'company.Kontoinhaber' => [
             'scope' => 'global',
             'type' => 'string',
             'default' => '',

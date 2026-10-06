@@ -9,17 +9,17 @@ $companyLogo = Src\Classes\Project\Image::getLogo();
 
 ?>
 <section class="defCont">
-    <h2 class="font-bold">Auftragstypen festlegen</h2>
+    <h2 class="text-xl font-bold mb-6 border-b pb-2">Auftragstypen festlegen</h2>
     <div id="orderTypes" class="mt-2"></div>
 </section>
 
 <section class="defCont">
-    <h2 class="font-bold">Einkaufsmöglichkeiten festlegen</h2>
+    <h2 class="text-xl font-bold mb-6 border-b pb-2">Einkaufsmöglichkeiten festlegen</h2>
     <div id="wholesalerTypes" class="mt-2"></div>
 </section>
 
 <section class="defCont">
-    <h2 class="font-bold">Mitarbeiter festlegen</h2>
+    <h2 class="text-xl font-bold mb-6 border-b pb-2">Mitarbeiter festlegen</h2>
     <div id="userTable" class="mt-2"></div>
 </section>
 
@@ -70,6 +70,7 @@ $companyLogo = Src\Classes\Project\Image::getLogo();
                     "company.bank" => "Bank",
                     "company.IBAN" => "IBAN",
                     "company.BIC" => "BIC",
+                    "company.Kontoinhaber" => "Kontoinhaber",
                     "company.UstIdNr" => "UstIdNr",
                     "invoice.dueDate" => "Fälligkeitsdauer [Tage]",
                     "invoice.vatRate" => "Umsatzsteuersatz [%]",
@@ -101,6 +102,18 @@ $companyLogo = Src\Classes\Project\Image::getLogo();
                 <p class="text-xs text-orange-600 mt-2 font-medium flex items-center gap-1">
                     <i data-lucide="triangle-alert" class="w-4 h-4"></i>
                     <span>Überschreibt den aktuellen Zählerstand.</span>
+                </p>
+            </div>
+
+            <div class="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <label class="block text-sm font-bold text-blue-800 mb-2">Auswertungen: Altdaten ausblenden</label>
+                <input type="date" class="input-primary w-full"
+                    value="<?= Settings::get('statistics.legacyDataCutoff') ?>"
+                    data-write="true" data-fun="changeSetting" data-setting="statistics.legacyDataCutoff">
+                <p class="text-xs text-blue-600 mt-2">
+                    Rechnungen vor diesem Datum fließen nicht in Umsatz-, Zahlungsdauer-, offene-Rechnungen- und
+                    Top-Kunden-Auswertungen unter /diagramme ein, z. B. bei unvollständigen Übernahmedaten aus einem
+                    alten Rechnungsprogramm. Leer lassen, um alle Daten einzubeziehen.
                 </p>
             </div>
         </div>
@@ -155,14 +168,53 @@ $companyLogo = Src\Classes\Project\Image::getLogo();
 </section>
 
 <section class="defCont">
-    <h2 class="font-bold">PDF Texte</h2>
+    <h2 class="text-xl font-bold mb-6 border-b pb-2">E-Mail-Versand</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <?php
+        $mailFields = [
+            "mail.host" => "SMTP-Host",
+            "mail.port" => "SMTP-Port",
+            "mail.username" => "SMTP-Benutzername",
+            "mail.fromAddress" => "Absenderadresse",
+            "mail.fromName" => "Absendername",
+        ];
+        foreach ($mailFields as $key => $label): ?>
+            <div class="flex flex-col">
+                <label class="text-sm font-medium text-gray-600 mb-1"><?= $label ?></label>
+                <input class="input-primary w-full border-gray-300 rounded-md shadow-sm"
+                    value="<?= Settings::get($key) ?>"
+                    data-write="true" data-fun="changeSetting" data-setting="<?= $key ?>">
+            </div>
+        <?php endforeach; ?>
+
+        <div class="flex flex-col">
+            <label class="text-sm font-medium text-gray-600 mb-1">SMTP-Passwort</label>
+            <input type="password" class="input-primary w-full border-gray-300 rounded-md shadow-sm"
+                placeholder="Unverändert lassen, um das gespeicherte Passwort zu behalten"
+                data-write="true" data-fun="changeSetting" data-setting="mail.password">
+            <p class="text-xs text-gray-500 mt-1">
+                <?php
+                try {
+                    echo Settings::get('mail.password') !== '' ? "Passwort ist hinterlegt." : "Kein Passwort hinterlegt.";
+                } catch (\RuntimeException $e) {
+                    echo "Das gespeicherte Passwort kann nicht entschlüsselt werden (SETTINGS_ENCRYPTION_KEY fehlt oder wurde geändert). Bitte neu eingeben.";
+                }
+                ?>
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="defCont">
+    <h2 class="text-xl font-bold mb-6 border-b pb-2">PDF Texte</h2>
     <div class="mt-2">
         <div id="pdfTextsCont"></div>
     </div>
 </section>
 
 <section class="defCont">
-    <h2 class="font-bold">Kategorien festlegen</h2>
+    <h2 class="text-xl font-bold mb-6 border-b pb-2">Kategorien festlegen</h2>
     <div id="categoryTree" class="mt-2 ml-3"></div>
     <div class="mt-2 p-2 bg-gray-300 rounded-lg">
         <input type="text" class="input-primary" id="newCategory">
@@ -172,7 +224,7 @@ $companyLogo = Src\Classes\Project\Image::getLogo();
 </section>
 
 <section class="defCont">
-    <h2 class="font-bold">Dateienmanagement</h2>
+    <h2 class="text-xl font-bold mb-6 border-b pb-2">Dateienmanagement</h2>
     <a href="#" download="temp_file_name" id="download_db" class="hidden">Datenbank herunterladen</a>
     <a href="#" download="temp_file_name" id="download_files" class="hidden">Dateien herunterladen</a>
     <div class="mt-2 flex flex-row gap-2">
@@ -215,7 +267,7 @@ $companyLogo = Src\Classes\Project\Image::getLogo();
 </section>
 
 <section class="defCont">
-    <h2 class="font-bold">Zeiterfassung</h2>
+    <h2 class="text-xl font-bold mb-6 border-b pb-2">Zeiterfassung</h2>
     <div class="switchCont mt-2">
         <?= TemplateController::getTemplate("inputSwitch", [
             "id" => "showTimeTracking",
@@ -227,5 +279,5 @@ $companyLogo = Src\Classes\Project\Image::getLogo();
 </section>
 
 <section class="defCont">
-    <h2 class="font-bold">Routineaufgaben</h2>
+    <h2 class="text-xl font-bold mb-6 border-b pb-2">Routineaufgaben</h2>
 </section>
