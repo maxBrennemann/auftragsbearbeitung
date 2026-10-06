@@ -58,9 +58,43 @@ class PDFGenerator extends TCPDF
 
         error_reporting(error_reporting() & ~E_DEPRECATED);
 
+        /*
+         * TCPDF::Output() closes the document and unsets every property of the object, including the
+         * ones declared by our subclasses. Callers still need getTitle()/getOutputPath() afterwards
+         * (e.g. to attach the saved file to a mail), so our own properties are restored after writing.
+         */
+        $ownProperties = $this->snapshotOwnProperties();
+
         $this->withPdfSafeErrorHandling(function () use ($filePath) {
             $this->Output($filePath, "F");
         });
+
+        foreach ($ownProperties as [$property, $value]) {
+            $property->setValue($this, $value);
+        }
+    }
+
+    /**
+     * @return array<int, array{0: \ReflectionProperty, 1: mixed}> all initialized, non-static properties
+     *  declared by PDFGenerator or one of its subclasses (not by TCPDF itself)
+     */
+    private function snapshotOwnProperties(): array
+    {
+        $snapshot = [];
+
+        for ($class = new \ReflectionObject($this); $class !== false && $class->getName() !== TCPDF::class; $class = $class->getParentClass()) {
+            foreach ($class->getProperties() as $property) {
+                if ($property->isStatic() || $property->getDeclaringClass()->getName() !== $class->getName()) {
+                    continue;
+                }
+
+                if ($property->isInitialized($this)) {
+                    $snapshot[] = [$property, $property->getValue($this)];
+                }
+            }
+        }
+
+        return $snapshot;
     }
 
     public function Footer(): void

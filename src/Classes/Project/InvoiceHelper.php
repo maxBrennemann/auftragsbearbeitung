@@ -23,7 +23,7 @@ class InvoiceHelper
 
     public static function getOpenInvoiceSum(): int
     {
-        $query = "SELECT ROUND(SUM(invoice.amount), 2) AS summe
+        $query = "SELECT ROUND(SUM(invoice.amount - " . CreditNote::SQL_CREDITED_NET . "), 2) AS summe
 				FROM auftrag, invoice
 				WHERE auftrag.Rechnungsnummer != 0
 					AND auftrag.Bezahlt = 0
@@ -56,6 +56,8 @@ class InvoiceHelper
 
         $rate = self::getVatRate();
         $mult = 1 + $rate;
+        /* offener Betrag = Rechnungsbetrag abzüglich Gutschriften zur Rechnung */
+        $openAmount = "(invoice.amount - " . CreditNote::SQL_CREDITED_NET . ")";
 
         $data = DBAccess::selectQuery("SELECT
                 auftrag.Rechnungsnummer,
@@ -68,8 +70,8 @@ class InvoiceHelper
                 DATE_FORMAT(invoice.creation_date, '%d.%m.%Y') AS Rechnungsdatum,
                 DATE_FORMAT(DATE_ADD(invoice.creation_date, INTERVAL $dueIn DAY), '%d.%m.%Y') AS Faelligkeitsdatum,
 				IF(kunde.Firmenname = '', CONCAT(kunde.Vorname, ' ', kunde.Nachname), kunde.Firmenname) AS 'Name',
-				CONCAT(FORMAT(invoice.amount, 2, 'de_DE'), ' €') AS Summe,
-                CONCAT(FORMAT(invoice.amount * $mult, 2, 'de_DE'), ' €') AS Summe_mwst
+				CONCAT(FORMAT($openAmount, 2, 'de_DE'), ' €') AS Summe,
+                CONCAT(FORMAT($openAmount * $mult, 2, 'de_DE'), ' €') AS Summe_mwst
 			FROM auftrag, kunde, invoice
 			WHERE auftrag.Kundennummer = kunde.Kundennummer 
 				AND Rechnungsnummer != 0
@@ -183,7 +185,7 @@ class InvoiceHelper
             WHERE auftrag.Auftragsnummer = invoice.order_id
                 AND auftrag.Bezahlt = 0
                 AND invoice_number = :id
-                AND ABS(amount - :amount) < " . self::AMOUNT_TOLERANCE . "";
+                AND ABS((invoice.amount - " . CreditNote::SQL_CREDITED_NET . ") - :amount) < " . self::AMOUNT_TOLERANCE . "";
         $data = DBAccess::selectQuery($query, [
             "id" => $id,
             "amount" => $amount
@@ -220,7 +222,7 @@ class InvoiceHelper
         $inNumbers = implode(",", $numberPlaceholders);
         $inOrders = implode(",", $orderPlaceholders);
 
-        $query = "SELECT invoice.id, invoice.invoice_number, invoice.amount
+        $query = "SELECT invoice.id, invoice.invoice_number, (invoice.amount - " . CreditNote::SQL_CREDITED_NET . ") AS amount
             FROM invoice, auftrag
             WHERE auftrag.Auftragsnummer = invoice.order_id
                 AND auftrag.Bezahlt = 0

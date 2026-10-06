@@ -39,6 +39,60 @@
             <?php endif; ?>
         </div>
     </div>
+    <?php
+    $creditNotes = \Src\Classes\Project\CreditNote::getForInvoice($auftrag->getInvoiceId());
+    $creditedNet = array_sum(array_map(fn($creditNote) => (float) $creditNote["net_amount"], $creditNotes));
+    ?>
+    <div class="defCont">
+        <p class="font-semibold">Gutschriften zur Rechnung</p>
+        <?php if (empty($creditNotes)): ?>
+            <p class="mt-1">Zu dieser Rechnung gibt es noch keine Gutschrift.</p>
+        <?php else: ?>
+            <table class="mt-1 w-full text-left">
+                <thead>
+                    <tr>
+                        <th class="pr-3">Nr.</th>
+                        <th class="pr-3">Datum</th>
+                        <th class="pr-3">Grund</th>
+                        <th class="pr-3 text-right">Betrag (netto)</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($creditNotes as $creditNote): ?>
+                        <tr>
+                            <td class="pr-3"><?= (int) $creditNote["credit_number"] ?></td>
+                            <td class="pr-3"><?= date("d.m.Y", strtotime($creditNote["creation_date"])) ?></td>
+                            <td class="pr-3"><?= htmlspecialchars($creditNote["reason"]) ?></td>
+                            <td class="pr-3 text-right">-<?= number_format((float) $creditNote["net_amount"], 2, ',', '.') ?> €</td>
+                            <td class="whitespace-nowrap">
+                                <a class="link-primary" href="<?= \Src\Classes\Project\CreditNote::getPdfLink((int) $creditNote["credit_number"]) ?>" target="_blank">PDF</a>
+                                <button class="btn-primary ml-2" data-binding="true" data-fun="sendCreditNote" data-id="<?= (int) $creditNote["id"] ?>">Per E-Mail senden</button>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+            <p class="mt-1">Summe der Gutschriften: <span class="info-badge"><?= number_format($creditedNet, 2, ',', '.') ?> € netto</span></p>
+        <?php endif; ?>
+
+        <div class="mt-3 flex flex-wrap items-end gap-2">
+            <label class="flex flex-col">
+                <span class="text-sm">Betrag (netto, in €)</span>
+                <input type="number" min="0.01" step="0.01" id="creditNoteAmount" class="input-primary w-40">
+            </label>
+            <label class="flex flex-col flex-1 min-w-64">
+                <span class="text-sm">Grund (erscheint auf der Gutschrift)</span>
+                <input type="text" maxlength="255" id="creditNoteReason" class="input-primary" placeholder="z. B. Preisnachlass wie vereinbart">
+            </label>
+            <label class="flex items-center gap-1">
+                <input type="checkbox" id="creditNoteSendMail">
+                <span>per E-Mail an den Kunden senden</span>
+            </label>
+            <button class="btn-primary" data-binding="true" data-fun="createCreditNote">Gutschrift erstellen</button>
+        </div>
+        <p class="text-xs text-gray-500 mt-1">Die Rechnung selbst bleibt unverändert. Die Gutschrift erhält eine eigene Nummer aus dem Rechnungsnummernkreis und kann danach nicht mehr geändert werden.</p>
+    </div>
     <div class="defCont">
         <embed type="application/pdf" src="<?= $invoiceLink ?>" width="100%" height="800" id="invoiceEmbed">
     </div>

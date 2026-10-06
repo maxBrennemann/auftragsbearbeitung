@@ -51,16 +51,26 @@ class Statistics
      */
     public static function getRevenueOverTime(string $startDate, string $endDate): array
     {
-        $query = "SELECT DATE_FORMAT(COALESCE(finalized_date, creation_date), '%Y-%m') AS `date`, ROUND(SUM(amount), 2) AS `value`
-			FROM invoice
-			WHERE `status` = 'finalized'
-				AND COALESCE(finalized_date, creation_date) BETWEEN :startDate AND :endDate
-			GROUP BY DATE_FORMAT(COALESCE(finalized_date, creation_date), '%Y-%m')
+        /* Gutschriften mindern den Umsatz im Monat ihrer Ausstellung, nicht rückwirkend im Monat der Rechnung */
+        $query = "SELECT `date`, ROUND(SUM(`value`), 2) AS `value`
+			FROM (
+				SELECT DATE_FORMAT(COALESCE(finalized_date, creation_date), '%Y-%m') AS `date`, amount AS `value`
+				FROM invoice
+				WHERE `status` = 'finalized'
+					AND COALESCE(finalized_date, creation_date) BETWEEN :startDate AND :endDate
+				UNION ALL
+				SELECT DATE_FORMAT(creation_date, '%Y-%m') AS `date`, -net_amount AS `value`
+				FROM invoice_credit_note
+				WHERE creation_date BETWEEN :creditStartDate AND :creditEndDate
+			) revenue
+			GROUP BY `date`
 			ORDER BY `date`";
 
         return DBAccess::selectQuery($query, [
             "startDate" => $startDate,
             "endDate" => $endDate,
+            "creditStartDate" => $startDate,
+            "creditEndDate" => $endDate,
         ]);
     }
 
@@ -134,7 +144,7 @@ class Statistics
      */
     public static function getOpenInvoiceAging(string $startDate, string $endDate): array
     {
-        $query = "SELECT DATEDIFF(CURDATE(), COALESCE(invoice.finalized_date, invoice.creation_date)) AS daysOpen, invoice.amount
+        $query = "SELECT DATEDIFF(CURDATE(), COALESCE(invoice.finalized_date, invoice.creation_date)) AS daysOpen, (invoice.amount - " . CreditNote::SQL_CREDITED_NET . ") AS amount
 			FROM invoice
 			INNER JOIN auftrag a ON a.Auftragsnummer = invoice.order_id
 			WHERE invoice.status = 'finalized'
@@ -216,7 +226,7 @@ class Statistics
     {
         $query = "SELECT
 				IF(kunde.Firmenname = '', TRIM(CONCAT(kunde.Vorname, ' ', kunde.Nachname)), kunde.Firmenname) AS name,
-				ROUND(SUM(invoice.amount), 2) AS `value`,
+				ROUND(SUM(invoice.amount - " . CreditNote::SQL_CREDITED_NET . "), 2) AS `value`,
 				COUNT(DISTINCT invoice.id) AS orderCount
 			FROM invoice
 			INNER JOIN auftrag a ON invoice.order_id = a.Auftragsnummer

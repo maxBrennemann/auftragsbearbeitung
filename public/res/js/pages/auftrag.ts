@@ -171,6 +171,68 @@ fnNames.click_setPayed = () => {
     });
 }
 
+fnNames.click_createCreditNote = () => {
+    const amountInput = document.getElementById("creditNoteAmount") as HTMLInputElement;
+    const reasonInput = document.getElementById("creditNoteReason") as HTMLInputElement;
+    const sendMail = (document.getElementById("creditNoteSendMail") as HTMLInputElement).checked;
+
+    const amount = parseFloat(amountInput.value.replace(",", "."));
+    const reason = reasonInput.value.trim();
+
+    if (isNaN(amount) || amount <= 0) {
+        notification("Bitte einen Betrag größer 0 angeben.", "failure");
+        return;
+    }
+
+    if (reason === "") {
+        notification("Bitte einen Grund für die Gutschrift angeben.", "failure");
+        return;
+    }
+
+    const formatted = amount.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    if (!confirm(`Gutschrift über ${formatted} € netto erstellen? Sie erhält eine eigene Nummer und kann danach nicht mehr geändert werden.`)) {
+        return;
+    }
+
+    const invoiceId = getVariable("invoiceId");
+    ajax.post(`/api/v1/invoice/${invoiceId}/credit-notes`, {
+        "orderId": getOrderId(),
+        "amount": amount,
+        "reason": reason,
+        "sendMail": sendMail ? 1 : 0,
+    }).then((r: any) => {
+        if (!r.success || r.data?.status !== "success") {
+            notification("", "failure", r.error ?? r.data?.message ?? "Die Gutschrift konnte nicht erstellt werden");
+            return;
+        }
+
+        if (r.data.mailRequested && !r.data.mailSent) {
+            alert(`Gutschrift Nr. ${r.data.number} wurde erstellt, konnte aber nicht per E-Mail versendet werden.`);
+        }
+
+        window.location.reload();
+    });
+}
+
+fnNames.click_sendCreditNote = (e: any) => {
+    const creditNoteId = e.currentTarget.dataset.id;
+
+    if (!confirm("Gutschrift per E-Mail an den Kunden senden?")) {
+        return;
+    }
+
+    const invoiceId = getVariable("invoiceId");
+    ajax.post(`/api/v1/invoice/${invoiceId}/credit-notes/${creditNoteId}/send`, {
+        "orderId": getOrderId(),
+    }).then((r: any) => {
+        if (!r.success || r.data?.status !== "success") {
+            notification("", "failure", r.error ?? r.data?.message ?? "Die Gutschrift konnte nicht versendet werden");
+            return;
+        }
+        notification("", "success");
+    });
+}
+
 fnNames.click_setUnpaid = () => {
     if (!confirm("Soll die Rechnung wirklich als unbezahlt markiert werden?")) {
         return;

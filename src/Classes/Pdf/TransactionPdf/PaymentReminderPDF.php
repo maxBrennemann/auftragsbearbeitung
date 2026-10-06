@@ -4,6 +4,7 @@ namespace Src\Classes\Pdf\TransactionPdf;
 
 use Src\Classes\Project\CompanyProfile;
 use Src\Classes\Project\Config;
+use Src\Classes\Project\CreditNote;
 use Src\Classes\Project\Invoice;
 use Src\Classes\Project\Settings;
 
@@ -69,8 +70,9 @@ class PaymentReminderPDF extends TransactionPDF
     {
         $rate = $this->getVatRate();
         $grossAmount = $this->invoice->getAmount() * (1 + $rate);
+        $creditedGross = CreditNote::getTotalNetForInvoice($this->invoice->getId()) * (1 + $rate);
         $fee = $this->getReminderFee();
-        $total = $grossAmount + $fee;
+        $total = $grossAmount - $creditedGross + $fee;
 
         $dueDate = (clone $this->invoice->getCreationDateUnformatted())
             ->modify("+" . $this->getDueDays() . " days");
@@ -83,6 +85,12 @@ class PaymentReminderPDF extends TransactionPDF
         $this->SetFont("helvetica", "B", 11);
         $this->Cell(120, 8, "Rechnungsbetrag:");
         $this->Cell(50, 8, number_format($grossAmount, 2, ',', '.') . ' €', 0, 1, 'R');
+
+        if ($creditedGross > 0) {
+            $this->SetFont("helvetica", "", 11);
+            $this->Cell(120, 8, "Abzüglich Gutschriften:");
+            $this->Cell(50, 8, number_format(-$creditedGross, 2, ',', '.') . ' €', 0, 1, 'R');
+        }
 
         if ($fee > 0) {
             $this->SetFont("helvetica", "", 11);
