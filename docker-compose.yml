@@ -1,6 +1,6 @@
 services:
   nginx:
-    image: nginx:1.29.2
+    image: nginx:1.31.8
     ports:
       - 80:80
       - 443:443
@@ -38,7 +38,7 @@ services:
       - donotstart
 
   database:
-    image: mariadb:12
+    image: mariadb:12.3
     ports:
       - "3306:3306"
     command: --lower_case_table_names=1

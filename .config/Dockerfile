@@ -1,4 +1,4 @@
-FROM php:8.5.3-fpm
+FROM php:8.5.12-fpm
 
 # Get UID and GID of host user
 ARG UID
