@@ -7,8 +7,6 @@ use Src\Classes\Project\Events;
 use Src\Classes\Project\Settings;
 use Src\Classes\Project\CacheManager;
 use Src\Classes\Project\Config;
-use Src\Classes\Sticker\Exports\ExportFacebook;
-use Src\Classes\Sticker\Imports\ImportGoogleSearchConsole;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\Tools;
 
@@ -77,7 +75,6 @@ class ResourceManager
             case "upload":
             case "backup":
             case "img":
-            case "static":
             case "favicon.ico":
                 return "resource";
             case "api":
@@ -102,7 +99,6 @@ class ResourceManager
             case "pdfs":
             case "upload":
             case "backup":
-            case "static":
                 self::handleResources();
                 self::close();
                 // no break
@@ -131,14 +127,7 @@ class ResourceManager
             return;
         }
 
-        $getReason = Tools::get("getReason");
-
-        /* filters AJAX requests and delegates them to the right files */
-        if ($getReason != null) {
-            Ajax::manageRequests($getReason, self::$page);
-        } else {
-            self::showPage();
-        }
+        self::showPage();
     }
 
     private static function showPage(): void
@@ -211,9 +200,6 @@ class ResourceManager
                 break;
             case "backup":
                 self::get_backup($resource);
-                break;
-            case "static":
-                self::get_static($resource);
                 break;
             default:
                 http_response_code(404);
@@ -295,22 +281,6 @@ class ResourceManager
         }
 
         echo file_get_contents($fileName);
-    }
-
-    private static function get_static(string $file): void
-    {
-        if ($file == "facebook-product-export") {
-            header("Content-type: text/csv");
-            $filename = "exportFB_" . date("Y-m-d") . ".csv";
-            $file = file_get_contents(Link::getFilePath($filename, "csv"));
-            echo $file;
-            // TODO: check if file exists and if not, return latest file
-        } elseif ($file == "/generate-facebook") {
-            $exportFacebook = new ExportFacebook();
-            $exportFacebook->generateCSV();
-        } elseif ($file == "/import-search-console") {
-            ImportGoogleSearchConsole::import();
-        }
     }
 
     public static function getBearerToken(): ?string

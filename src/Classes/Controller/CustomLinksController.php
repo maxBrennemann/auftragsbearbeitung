@@ -90,12 +90,6 @@ class CustomLinksController
                 "input" => false,
             ],
             [
-                "name" => "Motivübersicht",
-                "icon" => false,
-                "url" => Link::getPageLink("sticker-overview"),
-                "input" => false,
-            ],
-            [
                 "name" => "Offene Rechnungen: <b>$openInvoiceSum</b>",
                 "icon" => false,
                 "url" => Link::getPageLink("offene-rechnungen"),

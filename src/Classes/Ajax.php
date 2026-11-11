@@ -13,7 +13,6 @@ use Src\Classes\Routes\OrderRoutes;
 use Src\Classes\Routes\ProductRoutes;
 use Src\Classes\Routes\SearchRoutes;
 use Src\Classes\Routes\SettingsRoutes;
-use Src\Classes\Routes\StickerRoutes;
 use Src\Classes\Routes\TableRoutes;
 use Src\Classes\Routes\TestingRoutes;
 use Src\Classes\Routes\TimeTrackingRoutes;
@@ -21,15 +20,8 @@ use Src\Classes\Routes\UploadRoutes;
 use Src\Classes\Routes\UserRoutes;
 use Src\Classes\Routes\VariousRoutes;
 use Src\Classes\Routes\HookRoutes;
-use Src\Classes\Sticker\SearchProducts;
-use Src\Classes\Sticker\StickerCategory;
-use Src\Classes\Sticker\StickerCollection;
-use Src\Classes\Sticker\StickerImage;
-use Src\Classes\Sticker\StickerTagManager;
 
-use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
-use MaxBrennemann\PhpUtilities\Tools;
 
 class Ajax
 {
@@ -92,9 +84,6 @@ class Ajax
             case "settings":
                 SettingsRoutes::handleRequest($path);
                 break;
-            case "sticker":
-                StickerRoutes::handleRequest($path);
-                break;
             case "test":
                 TestingRoutes::handleRequest($path);
                 break;
@@ -152,135 +141,5 @@ class Ajax
             "path" => $path,
             "routeType" => $routeType,
         ];
-    }
-
-    public static function manageRequests(string $reason, string $page): void
-    {
-        switch ($reason) {
-            case "setImageOrder":
-                $order = Tools::get("order");
-
-                try {
-                    StickerImage::setImageOrder($order);
-                    echo json_encode([
-                        "status" => "success",
-                    ]);
-                } catch (\Exception $e) {
-                    echo json_encode([
-                        "status" => "error",
-                        "message" => $e->getMessage(),
-                    ]);
-                }
-                break;
-            case "setPriceclass":
-                $priceclass = (int) Tools::get("priceclass");
-                $id = (int) Tools::get("id");
-
-                DBAccess::updateQuery("UPDATE module_sticker_sticker_data SET price_class = :priceClass WHERE id = :id", ["priceClass" => $priceclass, "id" => $id]);
-                echo "ok";
-                break;
-            case "productVisibility":
-                $id = (int) Tools::get("id");
-                $stickerCollection = new StickerCollection($id);
-                $stickerCollection->toggleActiveStatus();
-                break;
-            case "getTagGroups":
-                $query = "SELECT g.id AS groupId, g.title AS groupName, t.id AS tagId, t.content AS tagName FROM module_sticker_sticker_tag_group g LEFT JOIN module_sticker_sticker_tag_group_match m ON g.id = m.idGroup LEFT JOIN module_sticker_tags t ON t.id = m.idTag;";
-                $data = DBAccess::selectQuery($query);
-                echo json_encode([
-                    "tagGroups" => $data,
-                ]);
-                break;
-            case "addNewTagGroup":
-                $title = (string) Tools::get("title");
-                $idTagGroup = StickerTagManager::addTagGroup($title);
-                echo json_encode([
-                    "status" => "success",
-                    "idTagGroup" => $idTagGroup,
-                ]);
-                break;
-            case "showSearch":
-                $id = (int) Tools::get("id");
-                $type = Tools::get("type");
-
-                $products = DBAccess::selectQuery("SELECT a.id_product_reference, a.`title` as `name` FROM module_sticker_accessoires a WHERE a.id_sticker = :idSticker AND a.`type` = :type;", [
-                    "idSticker" => $id,
-                    "type" => $type,
-                ]);
-
-                echo \Src\Classes\Controller\TemplateController::getTemplate("sticker/showSearch", [
-                    "products" => $products
-                ]);
-                break;
-            case "connectAccessoire":
-                $idSticker = (int)Tools::get("id");
-                $idProductReference = (int) Tools::get("articleId");
-                $type = (string) Tools::get("type");
-                $title = (string) Tools::get("title");
-                $status = Tools::get("status") == "true";
-
-                if ($status) {
-                    $query = "INSERT INTO `module_sticker_accessoires` (`id_sticker`, `type`, `id_product_reference`, `title`) VALUES (:idSticker, :type, :idProductReference, :title)";
-                    DBAccess::insertQuery($query, [
-                        "idSticker" => $idSticker,
-                        "type" => $type,
-                        "idProductReference" => $idProductReference,
-                        "title" => $title,
-                    ]);
-                } else {
-                    $query = "DELETE FROM `module_sticker_accessoires` WHERE `id_sticker` = :idSticker AND `id_product_reference` = :idProductReference AND `type` = :type";
-                    DBAccess::deleteQuery($query, [
-                        "idSticker" => $idSticker,
-                        "type" => $type,
-                        "idProductReference" => $idProductReference,
-                    ]);
-                }
-
-                echo json_encode([
-                    "status" => "success",
-                ]);
-                break;
-            case "removeAccessoire":
-                $idSticker = (int) Tools::get("id");
-                $idProductReference = (int) Tools::get("idProductReference");
-                $type = (string) Tools::get("type");
-
-                $query = "DELETE FROM `module_sticker_accessoires` WHERE `id_sticker` = :idSticker AND `id_product_reference` = :idProductReference AND `type` = :type";
-                DBAccess::deleteQuery($query, [
-                    "idSticker" => $idSticker,
-                    "type" => $type,
-                    "idProductReference" => $idProductReference,
-                ]);
-
-                echo json_encode([
-                    "status" => "success",
-                ]);
-                break;
-            case "searchShop":
-                $search = Tools::get("query");
-                echo json_encode(SearchProducts::search($search, ["name", "description", "description_short"]));
-                break;
-            case "getCategoryTree":
-                $startCategory = Tools::get("categoryId");
-                echo json_encode(StickerCategory::getCategories($startCategory));
-                break;
-            case "getCategories":
-                $id = (int) Tools::get("id");
-                echo json_encode(StickerCategory::getCategoriesForSticker($id));
-                break;
-            case "getCategoriesSuggestion":
-                $name = Tools::get("name");
-                $id = (int) Tools::get("id");
-                echo StickerCategory::getCategoriesSuggestion($name, $id);
-                break;
-            case "setCategories":
-                $id = (int) Tools::get("id");
-                $categories = Tools::get("categories");
-                StickerCategory::setCategories($id, $categories);
-                echo json_encode([
-                    "status" => "success",
-                ]);
-                break;
-        }
     }
 }

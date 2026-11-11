@@ -27,7 +27,6 @@ $payments =			Link::getPageLink("payments");
 $listmaker =		Link::getPageLink("listmaker");
 $changelog = 		Link::getPageLink("changelog");
 $timeTracking =		Link::getPageLink("time-tracking");
-$motiveOverview = 	Link::getPageLink("sticker-overview");
 $wiki = 			Link::getPageLink("wiki");
 
 $pageTitle = $pageName;
@@ -117,9 +116,6 @@ if ($pageName == "") {
 			</li>
 			<li class="hover:underline">
 				<a href="<?= $timeTracking ?>">Zeiterfassung</a>
-			</li>
-			<li class="hover:underline">
-				<a href="<?= $motiveOverview ?>">Motivübersicht</a>
 			</li>
 			<li class="hover:underline">
 				<a href="<?= $wiki ?>">Firmenwiki</a>

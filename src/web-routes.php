@@ -97,25 +97,9 @@ return [
         "file" => "wiki.php",
         "name" => "Firmenwiki",
     ],
-    "sticker-overview" => [
-        "file" => "stickerOverview.php",
-        "name" => "Motivübersicht",
-    ],
     "time-tracking" => [
         "file" => "timeTracking.php",
         "name" => "Zeiterfassung",
-    ],
-    "sticker" => [
-        "file" => "sticker.php",
-        "name" => "Sticker",
-    ],
-    "tags-overview" => [
-        "file" => "tagsOverview.php",
-        "name" => "Tag-Übersicht",
-    ],
-    "sticker-images" => [
-        "file" => "stickerImages.php",
-        "name" => "Bildübersicht der Motive",
     ],
     "testpage" => [
         "file" => "test.php",
