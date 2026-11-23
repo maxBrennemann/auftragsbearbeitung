@@ -33,6 +33,12 @@ return [
             'type' => 'bool',
             'default' => false,
         ],
+        /* Auswahl der Schnellzugriffe auf der Startseite (Liste von Link-Schlüsseln, siehe CustomLinksController); null = alle */
+        'homeLinks' => [
+            'scope' => 'user',
+            'type' => 'json',
+            'default' => null,
+        ],
         'invoice.defaultWage' => [
             'scope' => 'global',
             'type' => 'number',

@@ -1,76 +1,89 @@
 import { ajax } from "js-classes/ajax";
 import { addBindings } from "js-classes/bindings";
+import { notification } from "js-classes/notifications";
+import { Check } from "lucide";
 
 import { createPopup, loader } from "../classes/helpers";
+import { iconHtml } from "../classes/icon";
 import { renderTable } from "../classes/table";
 import { FunctionMap } from "../types/types";
 
 const fnNames: FunctionMap = {};
 
-type Link = {
+type HomeLink = {
+    key: string;
     name: string;
-    url: string;
-    icon: string;
+    icon: string | false;
 };
 
-type Links = Array<Link>;
+/**
+ * Dialog „Anpassen“: Schnellzugriffe der Startseite an- und abwählen.
+ * Gespeichert wird die Liste der Schlüssel als Benutzer-Einstellung „homeLinks“.
+ */
+fnNames.click_adjustLinks = async (e: Event) => {
+    e.preventDefault();
 
-const customizeConfig = {
-    selectedLinks: [] as Links,
-    availableLinks: [] as Links,
+    const response = await ajax.get(`/api/v1/settings/links/available`);
+    const links: HomeLink[] = response.data.links;
+    const selected: string[] = response.data.selected;
 
-    highlightAdd: [] as Links,
-    highlightRemove: [] as Links, 
-}
-
-fnNames.click_adjustLinks = async () => {
     const div = document.createElement("div");
-    const linkSetting = await ajax.get(`/api/v1/settings/user/self/linkBehavior`);
-    const availabeLinks = await ajax.get(`/api/v1/settings/links/available`);
+    div.className = "w-[32rem] max-w-full";
+    div.innerHTML = `
+        <p class="section-title">Schnellzugriff anpassen</p>
+        <p class="field-hint mt-1 mb-3">Gewählte Einträge erscheinen auf der Startseite. Die Reihenfolge ist fest.</p>`;
 
-    const divAvailable = document.createElement("div");
-    const divSelected = document.createElement("div");
+    const list = document.createElement("div");
+    list.className = "grid grid-cols-1 sm:grid-cols-2 gap-2";
+    links.forEach(link => {
+        const card = document.createElement("div");
+        card.className = "choice-card items-center";
+        card.setAttribute("role", "checkbox");
+        card.tabIndex = 0;
+        card.dataset.key = link.key;
+        card.setAttribute("aria-checked", String(selected.includes(link.key)));
+        card.setAttribute("aria-pressed", String(selected.includes(link.key)));
+        card.innerHTML = `<span class="choice-mark" aria-hidden="true">${iconHtml(Check, { size: 12 })}</span><span class="text-sm">${link.name}</span>`;
 
-    fillLinks(divAvailable, availabeLinks.data.links);
-
-    div.classList.add("grid", "grid-cols-2", "gap-4", "mb-4");
-    div.appendChild(divAvailable);
-    div.appendChild(divSelected);
+        const toggle = () => {
+            const isOn = card.getAttribute("aria-pressed") !== "true";
+            card.setAttribute("aria-pressed", String(isOn));
+            card.setAttribute("aria-checked", String(isOn));
+        };
+        card.addEventListener("click", toggle);
+        card.addEventListener("keydown", (event: KeyboardEvent) => {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                toggle();
+            }
+        });
+        list.appendChild(card);
+    });
+    div.appendChild(list);
 
     const optionsContainer = createPopup(div);
 
     const btnSave = document.createElement("button");
+    btnSave.type = "button";
     btnSave.classList.add("btn-primary", "ml-2");
     btnSave.innerText = "Speichern";
+    btnSave.addEventListener("click", async () => {
+        const keys = Array.from(list.querySelectorAll<HTMLElement>('[aria-pressed="true"]')).map(card => card.dataset.key);
+        if (keys.length === 0) {
+            notification("Bitte mindestens einen Eintrag wählen.", "warning");
+            return;
+        }
 
-    const btnAdd = document.createElement("button");
-    btnAdd.classList.add("btn-primary", "ml-2");
-    btnAdd.innerText = "⮕";
-
-    const btnRemove = document.createElement("button");
-    btnRemove.classList.add("btn-primary");
-    btnRemove.innerText = "⬅";
-
-    optionsContainer.appendChild(btnSave);
-    optionsContainer.appendChild(btnAdd);
-    optionsContainer.appendChild(btnRemove);
-}
-
-const fillLinks = (container: HTMLDivElement, links: Array<{ name: string; url: string; icon: string; }>) => {
-    container.innerHTML = "";
-    
-    links.forEach(link => {
-        const linkDiv = document.createElement("div");
-        linkDiv.classList.add("btn-cancel", "block", "mb-3");
-        linkDiv.innerHTML = link.name;
-
-        linkDiv.addEventListener("click", () => {
-            linkDiv.classList.toggle("bg-blue-200");
-
+        const result = await ajax.put(`/api/v1/settings/config/homeLinks`, {
+            "value": JSON.stringify(keys),
         });
-
-        container.appendChild(linkDiv);
+        if (result.data?.status === "success") {
+            window.location.reload();
+        } else {
+            notification("", "failure", "Die Auswahl konnte nicht gespeichert werden.");
+        }
     });
+    optionsContainer.appendChild(btnSave);
 }
 
 function ajaxSearch(query: string) {
@@ -140,7 +153,7 @@ const initOpenOrdersTable = async () => {
     const response = await ajax.get(`/api/v1/order/open`);
     const data = response.data;
     const orderCount = data.length;
-    (document.getElementById("orderCount") as HTMLSpanElement).innerHTML = `(${orderCount})`;
+    (document.getElementById("orderCount") as HTMLSpanElement).textContent = orderCount === 1 ? "1 Auftrag" : `${orderCount} Aufträge`;
 
     const columns = [
         {

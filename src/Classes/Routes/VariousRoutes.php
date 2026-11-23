@@ -34,7 +34,12 @@ class VariousRoutes extends Routes
         "/stats/dashboard" => [\Src\Classes\Project\Statistics::class, "getDashboardAjax"],
     ];
 
-    protected static $postRoutes = [];
+    /**
+     * @uses \Src\Classes\Project\Wiki::add()
+     */
+    protected static $postRoutes = [
+        "/wiki" => [\Src\Classes\Project\Wiki::class, "add"],
+    ];
 
     protected static $putRoutes = [];
 

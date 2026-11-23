@@ -10,11 +10,21 @@ class Wiki
 {
     public static function add(): void
     {
-        $title = Tools::get("title");
-        $content = Tools::get("content");
-        DBAccess::insertQuery("INSERT INTO wiki_articles (title, content) VALUES (:title, :content)", [
+        $title = trim((string) Tools::get("title"));
+        $content = (string) Tools::get("content");
+
+        if ($title === "") {
+            JSONResponseHandler::throwError(400, "Bitte einen Titel angeben.");
+        }
+
+        $id = DBAccess::insertQuery("INSERT INTO wiki_articles (title, content) VALUES (:title, :content)", [
             "title" => $title,
             "content" => $content,
+        ]);
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+            "id" => $id,
         ]);
     }
 

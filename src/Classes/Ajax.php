@@ -102,6 +102,7 @@ class Ajax
             case "template":
             case "manual":
             case "stats":
+            case "wiki":
                 VariousRoutes::handleRequest($path);
                 break;
             case "hooks":

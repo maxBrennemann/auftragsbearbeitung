@@ -262,6 +262,40 @@ class Statistics
     }
 
     /**
+     * Kennzahlen für denselben Zeitraum ein Jahr früher (Vorjahreszeitraum statt der direkt vorangehenden Wochen,
+     * weil das Geschäft saisonal ist). Liegt der Vergleichszeitraum ganz oder teilweise vor dem Altdaten-Stichtag,
+     * sind die Rechnungsdaten dort unvollständig: Umsatz und Zahlungsdauer kommen dann als null zurück.
+     *
+     * @return array{range: array{startDate: string, endDate: string}, orderCount: int, revenue: ?float, avgPaymentDuration: ?float, avgPaymentDurationSampleSize: int}
+     */
+    public static function getComparisonKpis(string $startDate, string $endDate): array
+    {
+        $previousStart = date("Y-m-d", (int) strtotime("$startDate -1 year"));
+        $previousEnd = date("Y-m-d", (int) strtotime("$endDate -1 year"));
+        $financeComparable = self::clampToLegacyCutoff($previousStart) === $previousStart;
+
+        $orderCount = array_sum(array_column(self::getOrdersOverTime($previousStart, $previousEnd), "value"));
+
+        $revenue = null;
+        $paymentDuration = ["avgDays" => null, "count" => 0];
+        if ($financeComparable) {
+            $revenue = round((float) array_sum(array_column(self::getRevenueOverTime($previousStart, $previousEnd), "value")), 2);
+            $paymentDuration = self::getAveragePaymentDuration($previousStart, $previousEnd);
+        }
+
+        return [
+            "range" => [
+                "startDate" => $previousStart,
+                "endDate" => $previousEnd,
+            ],
+            "orderCount" => (int) $orderCount,
+            "revenue" => $revenue,
+            "avgPaymentDuration" => $paymentDuration["avgDays"],
+            "avgPaymentDurationSampleSize" => $paymentDuration["count"],
+        ];
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public static function getDashboard(string $startDate, string $endDate): array
@@ -292,6 +326,7 @@ class Statistics
                 "openInvoiceCount" => (int) $openInvoiceCount,
                 "openInvoiceAmount" => round((float) $openInvoiceAmount, 2),
             ],
+            "comparison" => self::getComparisonKpis($startDate, $endDate),
             "ordersOverTime" => $ordersOverTime,
             "revenueOverTime" => $revenueOverTime,
             "paymentDurationOverTime" => self::getPaymentDurationOverTime($financeStartDate, $endDate),
