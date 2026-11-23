@@ -38,9 +38,13 @@ class Image
         return $this->url;
     }
 
+    /**
+     * Platzhalterbild für Einträge ohne eigenes Bild. Ohne Datenbankeintrag, deshalb am Konstruktor vorbei
+     * (der wirft bei IDs <= 0).
+     */
     public static function setDefault(): Image
     {
-        $img = new self(-1);
+        $img = (new \ReflectionClass(self::class))->newInstanceWithoutConstructor();
         $img->url = Link::getDefaultImage();
         return $img;
     }

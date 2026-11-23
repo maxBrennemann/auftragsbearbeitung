@@ -26,7 +26,7 @@ return [
         "name" => "Neues Produkt",
     ],
     "404" => [
-        "file" => "404.html",
+        "file" => "404.php",
         "name" => "404 - Not found",
     ],
     "auftrag" => [
