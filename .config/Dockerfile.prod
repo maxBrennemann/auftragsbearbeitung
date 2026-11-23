@@ -76,6 +76,8 @@ COPY public/pages ./public/pages
 COPY public/views ./public/views
 COPY --from=composer /var/www/html/vendor ./vendor
 COPY --from=frontend-builder /app/public/res/assets/.vite/manifest.json ./public/res/assets/.vite/manifest.json
+# Lucide-Icondaten für Icon::get(), beim Build frisch erzeugt (siehe .config/scripts/generate-icons.mjs)
+COPY --from=frontend-builder /app/src/Classes/Project/icons.json ./src/Classes/Project/icons.json
 COPY database/Migrations ./database/Migrations
 COPY console ./console
 COPY .config/crontab /etc/crontabs/root
