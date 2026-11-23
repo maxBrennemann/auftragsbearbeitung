@@ -54,14 +54,15 @@ const config: Config = {
             table: {
                 className: ["w-full"],
             },
+            // Zahlen rechtsbündig mit gleich breiten Ziffern (tabular-nums kommt aus table.css)
             key: {
-                quantity: ["font-mono"],
-                price: ["font-mono", "whitespace-pre"],
-                totalPrice: ["font-mono", "whitespace-pre"],
-                purchasePrice: ["font-mono"],
+                quantity: ["text-right"],
+                price: ["text-right", "whitespace-nowrap"],
+                totalPrice: ["text-right", "whitespace-nowrap"],
+                purchasePrice: ["text-right", "whitespace-nowrap"],
             },
             sum: {
-                totalPrice: ["font-bold", "font-mono", "whitespace-pre"],
+                totalPrice: ["text-right", "whitespace-nowrap"],
             },
         },
         autoSort: true,
@@ -92,6 +93,7 @@ const config: Config = {
         {
             key: "quantity",
             label: "Menge",
+            align: "right",
         },
         {
             key: "unit",
@@ -100,14 +102,17 @@ const config: Config = {
         {
             key: "price",
             label: "Preis [€]",
+            align: "right",
         },
         {
             key: "totalPrice",
             label: "Gesamt [€]",
+            align: "right",
         },
         {
             key: "purchasePrice",
             label: "EK [€]",
+            align: "right",
         },
     ],
     extendedTimes: [],
@@ -171,7 +176,7 @@ export const getItemsTable = async (
     return table;
 }
 
-/* positions, sums and the padded number columns depend on all rows, so the table is reloaded as a whole */
+/* positions and sums depend on all rows, so the table is reloaded as a whole */
 const reloadTable = async (): Promise<void> => {
     if (config.tableName === "") {
         return;

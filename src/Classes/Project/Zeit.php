@@ -65,7 +65,7 @@ class Zeit extends Posten
         $timeData["MEH"] =  "min";
         $timeData["Beschreibung"] = $this->beschreibung;
         $timeData["Einkaufspreis"] = "-";
-        $timeData["Gesamtpreis"] = $this->bekommePreis_formatted();
+        $timeData["Gesamtpreis"] = Posten::formatPrice($this->bekommePreis());
         $timeData["type"] = "addPostenZeit";
         $timeData["Bezeichnung"] = "<span class=\"type-label\">Zeit</span>";
 
@@ -116,13 +116,14 @@ class Zeit extends Posten
     private function bekommePreisTabelle(): string
     {
         if ($this->discount != -1) {
-            $originalPrice = number_format($this->kalkulierePreis(), 2, ',', '') . "€";
+            $originalPrice = Posten::formatPrice($this->kalkulierePreis());
+            $discountedPrice = Posten::formatPrice($this->bekommePreis());
             $discount_table = "
 				<table class=\"innerTable\">
 					<tr>
 						<td>Preis</td>
 						<td>{$originalPrice}</td>
-						<td>{$this->bekommePreis_formatted()}</td>
+						<td>{$discountedPrice}</td>
 					</tr>
 					<tr>
 						<td>Rabatt</td>
@@ -132,7 +133,7 @@ class Zeit extends Posten
 
             return $discount_table;
         } else {
-            return number_format($this->bekommePreis(), 2, ',', '') . "€";
+            return Posten::formatPrice($this->bekommePreis());
         }
     }
 

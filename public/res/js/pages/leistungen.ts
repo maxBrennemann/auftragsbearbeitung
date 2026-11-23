@@ -47,9 +47,14 @@ const addService = async (table: HTMLTableElement, options: TableOptions) => {
     addRow(data, table, options);
 }
 
+/* Bearbeiten direkt in der Tabelle ist noch nicht freigegeben; der Code bleibt für später vorbereitet. */
+const SERVICE_EDIT_ENABLED = false;
+
 const editService = async (e: CustomEvent, table: HTMLTableElement, options: TableOptions) => {
-    return;
-    
+    if (!SERVICE_EDIT_ENABLED) {
+        return;
+    }
+
     const data = e.detail;
     const row = data.row as HTMLTableRowElement;
 

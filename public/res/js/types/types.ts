@@ -3,6 +3,8 @@ export type FunctionMap = Record<string, (...args: any[]) => void>;
 export interface TableHeader {
     key: string;
     label: string;
+    /** Spaltenausrichtung; "right" für Beträge und Mengen (Kopf und Zellen rechtsbündig) */
+    align?: "left" | "right";
 }
 
 export interface TableOptions {

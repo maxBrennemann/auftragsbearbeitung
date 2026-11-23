@@ -34,6 +34,16 @@ abstract class Posten
     protected int $postennummer;
     protected int $position = 0;
 
+    /**
+     * Einheitliches Preisformat der Posten-Tabelle, wie Intl.NumberFormat("de-DE") im Frontend
+     * (Summenzeile): Tausenderpunkt, Komma, geschütztes Leerzeichen vor €, z. B. "1.234,50 €".
+     * PDFs und andere Ausgaben nutzen weiterhin die *_formatted()-Methoden.
+     */
+    public static function formatPrice(float $value): string
+    {
+        return number_format($value, 2, ',', '.') . "\u{00A0}€";
+    }
+
     public function getPosition(): int
     {
         return $this->position;
@@ -218,11 +228,6 @@ abstract class Posten
     {
         $parsedData = [];
 
-        $mLenQuantity = 0;
-        $mLenPrice = 0;
-        $mLenTotalPrice = 0;
-        $mLenPurchasePrice = 0;
-
         foreach ($items as $value) {
             $item = [];
             $item["type"] = "posten";
@@ -246,24 +251,7 @@ abstract class Posten
             $item["purchasePrice"] = $value["Einkaufspreis"];
             $item["extraData"] = $value["extraData"] ?? [];
 
-            if ($item["type"] == "time") {
-                $mLenQuantity = max($mLenQuantity, strlen((string) $value["quantityAbsolute"]));
-            } else {
-                $mLenQuantity = max($mLenQuantity, strlen((string) $item["quantity"]));
-            }
-
-            $mLenPrice = max($mLenPrice, strlen((string) $item["price"]));
-            $mLenTotalPrice = max($mLenTotalPrice, strlen((string) $item["totalPrice"]));
-            $mLenPurchasePrice = max($mLenPurchasePrice, strlen((string) $item["purchasePrice"]));
-
             $parsedData[] = $item;
-        }
-
-        foreach ($parsedData as $key => $value) {
-            $parsedData[$key]["quantity"] = str_pad((string) $value["quantity"], $mLenQuantity, " ", STR_PAD_LEFT);
-            $parsedData[$key]["price"] = str_pad((string) $value["price"], $mLenPrice, " ", STR_PAD_LEFT);
-            $parsedData[$key]["totalPrice"] = str_pad((string) $value["totalPrice"], $mLenTotalPrice, " ", STR_PAD_LEFT);
-            $parsedData[$key]["purchasePrice"] = str_pad((string) $value["purchasePrice"], $mLenPurchasePrice, " ", STR_PAD_LEFT);
         }
 
         return $parsedData;

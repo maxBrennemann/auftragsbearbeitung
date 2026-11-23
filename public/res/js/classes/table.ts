@@ -105,6 +105,9 @@ export const createHeader = (header, table, options = {}) => {
 
         const th = document.createElement("th");
         th.className = className;
+        if (header.align === "right") {
+            th.classList.add("text-right");
+        }
         th.dataset.key = header.key;
         th.dataset.sort = "none";
 

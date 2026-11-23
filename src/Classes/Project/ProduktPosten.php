@@ -48,8 +48,8 @@ class ProduktPosten extends Posten
         $arr['Beschreibung'] = $this->Beschreibung;
         $arr['Anzahl'] = (string) $this->Anzahl;
         $arr['MEH'] = $this->getEinheit();
-        $arr['Einkaufspreis'] = $this->bekommeEinkaufspreis_formatted();
-        $arr['Gesamtpreis'] = $this->bekommePreis_formatted();
+        $arr['Einkaufspreis'] = Posten::formatPrice($this->Einkaufspreis);
+        $arr['Gesamtpreis'] = Posten::formatPrice($this->bekommePreis());
         $arr['type'] = "addPostenProdukt";
 
         return $arr;
@@ -59,8 +59,8 @@ class ProduktPosten extends Posten
     private function bekommePreisTabelle(): string
     {
         if ($this->discount != -1) {
-            $discountedPrice = number_format($this->bekommePreis(), 2, ',', '') . "€";
-            $regularPrice = number_format($this->bekommePreis() + $this->calculateDiscount(), 2, ',', '') . "€";
+            $discountedPrice = Posten::formatPrice($this->bekommePreis());
+            $regularPrice = Posten::formatPrice($this->bekommePreis() + $this->calculateDiscount());
             $discount_table = "
 				<table class=\"innerTable\">
 					<tr>
@@ -76,7 +76,7 @@ class ProduktPosten extends Posten
 
             return $discount_table;
         } else {
-            return $this->bekommeEinzelPreis_formatted();
+            return Posten::formatPrice($this->bekommeEinzelPreis());
         }
     }
 

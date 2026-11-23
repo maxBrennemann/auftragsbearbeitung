@@ -245,7 +245,7 @@ fnNames.click_showNotifications = async () => {
 }
 
 function validateEmail(email) {
-	const re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+	const re = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
 	return re.test(String(email).toLowerCase());
 }
 
@@ -353,16 +353,17 @@ export const clearInputs = (inputs) => {
 					document.getElementById(inputs[key][i]).value = "";
 				}
 				break;
-			case "class":
-				var classes = document.getElementsByClassName(inputs[key]);
-				for (c of classes) {
+			case "class": {
+				const elements = document.getElementsByClassName(inputs[key]);
+				for (const c of elements) {
 					c.value = "";
 				}
 				break;
+			}
 			case "classes":
 				for (let i = 0; i < inputs[key].length; i++) {
-					var classes = document.getElementsByClassName(inputs[key][i]);
-					for (let c of classes) {
+					const elements = document.getElementsByClassName(inputs[key][i]);
+					for (const c of elements) {
 						c.value = "";
 					}
 				}

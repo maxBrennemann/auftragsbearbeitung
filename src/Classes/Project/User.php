@@ -95,6 +95,7 @@ class User
             "prename" => $prename,
             "userId" => $this->id
         ]);
+        $this->prename = $prename;
     }
 
     public function setLastname(string $lastname): void
@@ -102,6 +103,7 @@ class User
         $query = "UPDATE user SET lastname = :lastname WHERE id = :userId";
         $params = array(':lastname' => $lastname, ':userId' => $this->id);
         DBAccess::updateQuery($query, $params);
+        $this->lastname = $lastname;
     }
 
     public function setMaxWorkingHours(int $maxWorkingHours): void
@@ -109,6 +111,7 @@ class User
         $query = "UPDATE user SET max_working_hours = :maxWorkingHours WHERE id = :userId";
         $params = array(':maxWorkingHours' => $maxWorkingHours, ':userId' => $this->id);
         DBAccess::updateQuery($query, $params);
+        $this->maxWorkingHours = $maxWorkingHours;
     }
 
     public function setRole(mixed $role): void {}
@@ -119,7 +122,7 @@ class User
      */
     public function getUserDeviceList(): array
     {
-        $query = "SELECT device_type, user_device_name, DATE_FORMAT(last_usage, '%d.%m.%Y %H:%i:%s') as lastUsage, ip_address, browser, os 
+        $query = "SELECT id, device_type, user_device_name, DATE_FORMAT(last_usage, '%d.%m.%Y %H:%i:%s') as lastUsage, ip_address, browser, os 
             FROM user_devices 
             WHERE user_id = :userId
             ORDER BY last_usage DESC";
@@ -286,14 +289,112 @@ class User
         $password = Tools::get("password");
 
         if ($username == null || $email == null || $prename == null || $lastname == null || $password == null) {
-            JSONResponseHandler::sendErrorResponse(400, "All fields are required");
+            JSONResponseHandler::throwError(400, "Alle Felder sind Pflichtfelder.");
         }
 
         $userId = self::add($username, $email, $prename, $lastname, $password);
 
+        if ($userId === -1) {
+            JSONResponseHandler::throwError(422, "Benutzername oder E-Mail bereits vergeben, E-Mail ungültig oder Passwort zu schwach.");
+        }
+
         JSONResponseHandler::sendResponse([
             "userId" => $userId,
         ]);
+    }
+
+    /**
+     * Ändert Stammdaten und Arbeitszeit eines Benutzers (PUT /api/v1/user/{id}).
+     * Erlaubt für den Benutzer selbst und für Admins.
+     */
+    public static function ajaxUpdate(): void
+    {
+        $user = self::getEditableUser((int) Tools::get("id"));
+
+        $email = trim((string) Tools::get("email"));
+        $prename = trim((string) Tools::get("prename"));
+        $lastname = trim((string) Tools::get("lastname"));
+        $maxWorkingHours = Tools::get("maxWorkingHours");
+
+        if ($email === "" || $prename === "" || $lastname === "") {
+            JSONResponseHandler::throwError(400, "E-Mail, Vorname und Nachname sind Pflichtfelder.");
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            JSONResponseHandler::throwError(422, "Die E-Mail-Adresse ist ungültig.");
+        }
+
+        if ($email !== $user->email && !self::checkEmailAvailable($email)) {
+            JSONResponseHandler::throwError(422, "Die E-Mail-Adresse wird bereits verwendet.");
+        }
+
+        $hours = 0;
+        if ($maxWorkingHours !== null && $maxWorkingHours !== "") {
+            if (!is_numeric($maxWorkingHours) || (int) $maxWorkingHours < 0 || (int) $maxWorkingHours > 168) {
+                JSONResponseHandler::throwError(422, "Die maximale Arbeitszeit muss zwischen 0 und 168 Stunden liegen.");
+            }
+            $hours = (int) $maxWorkingHours;
+        }
+
+        if ($email !== $user->email) {
+            $user->setEmail($email);
+        }
+        $user->setPrename($prename);
+        $user->setLastname($lastname);
+        $user->setMaxWorkingHours($hours);
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+        ]);
+    }
+
+    /**
+     * Entfernt ein Gerät samt Anmeldeschlüsseln, die automatische Anmeldung
+     * auf diesem Gerät funktioniert danach nicht mehr (DELETE /api/v1/user/{id}/devices/{deviceId}).
+     */
+    public static function ajaxRemoveDevice(): void
+    {
+        $user = self::getEditableUser((int) Tools::get("id"));
+        $deviceId = (int) Tools::get("deviceId");
+
+        $device = DBAccess::selectQuery("SELECT id FROM user_devices WHERE id = :deviceId AND user_id = :userId", [
+            "deviceId" => $deviceId,
+            "userId" => $user->id,
+        ]);
+
+        if (empty($device)) {
+            JSONResponseHandler::throwError(404, "Gerät nicht gefunden.");
+        }
+
+        DBAccess::deleteQuery("DELETE FROM user_login_key WHERE user_device_id = :deviceId AND user_id = :userId", [
+            "deviceId" => $deviceId,
+            "userId" => $user->id,
+        ]);
+        DBAccess::deleteQuery("DELETE FROM user_devices WHERE id = :deviceId AND user_id = :userId", [
+            "deviceId" => $deviceId,
+            "userId" => $user->id,
+        ]);
+
+        JSONResponseHandler::sendResponse([
+            "status" => "success",
+        ]);
+    }
+
+    /**
+     * Lädt den Benutzer, wenn der angemeldete Benutzer ihn bearbeiten darf (er selbst oder Admin).
+     */
+    private static function getEditableUser(int $userId): self
+    {
+        $user = new self($userId);
+        if ($user->id === null) {
+            JSONResponseHandler::throwError(404, "Benutzer nicht gefunden.");
+        }
+
+        if ($user->id !== self::getCurrentUserId() && !self::isAdmin()) {
+            JSONResponseHandler::throwError(403, "Keine Berechtigung, diesen Benutzer zu bearbeiten.");
+        }
+
+        return $user;
     }
 
     private static function sendEmailVerification(int $userId, string $email): void

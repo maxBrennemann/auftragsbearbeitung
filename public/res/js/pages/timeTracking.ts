@@ -56,13 +56,14 @@ fnNames.click_startStopTime = () => {
             timeGlobalListener();
             toggleIsPausable(true);
             break;
-        case false:
+        case false: {
             const askTask = document.getElementById("askTask") as HTMLElement;
             askTask.classList.add("flex");
             askTask.classList.remove("hidden");
             (document.getElementById("getTask") as HTMLInputElement).focus();
             toggleIsPausable(false);
             break;
+        }
     }
 }
 

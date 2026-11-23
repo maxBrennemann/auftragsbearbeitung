@@ -56,8 +56,8 @@ class Leistung extends Posten
         $arr['Preis'] = $this->bekommePreisTabelle();
         $arr['Bezeichnung'] = "<span class=\"type-label\">Leistung</span><br><span>{$this->bezeichnung}</span>";
         $arr['Beschreibung'] = $this->beschreibung;
-        $arr['Einkaufspreis'] = number_format($this->einkaufspreis * $this->quantity, 2, ',', '') . "€<br><span style=\"font-size: 0.7em\">Einzelpreis: " . number_format($this->einkaufspreis, 2, ',', '') . "€</span><br>" . $this->getFiles($this->postennummer);
-        $arr['Gesamtpreis'] = $this->bekommePreis_formatted();
+        $arr['Einkaufspreis'] = Posten::formatPrice($this->einkaufspreis * $this->quantity) . "<br><span class=\"text-xs text-text-muted\">Einzelpreis: " . Posten::formatPrice($this->einkaufspreis) . "</span><br>" . $this->getFiles($this->postennummer);
+        $arr['Gesamtpreis'] = Posten::formatPrice($this->bekommePreis());
         $arr['Leistungsnummer'] = (string) $this->leistungsnummer;
         $arr['Anzahl'] = addCommas((string) $this->quantity);
         $arr['MEH'] = $this->meh;
@@ -69,10 +69,10 @@ class Leistung extends Posten
     /* returns the price if no discount is applied, else calculates the discount and returns the according table */
     private function bekommePreisTabelle(): string
     {
-        $price_formatted = number_format($this->preis, 2, ',', '') . "€";
+        $price_formatted = Posten::formatPrice($this->preis);
 
         if ($this->discount != -1) {
-            $discountedPrice = number_format($this->preis - $this->preis * ($this->discount / 100), 2, ',', '') . "€";
+            $discountedPrice = Posten::formatPrice($this->preis - $this->preis * ($this->discount / 100));
             $discount_table = "
 				<table class=\"innerTable\">
 					<tr>

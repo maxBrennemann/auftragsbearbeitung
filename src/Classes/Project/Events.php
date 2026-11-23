@@ -44,8 +44,15 @@ class Events
                 $lastCount = $count;
                 echo "event: notifications\n";
                 echo "data: " . json_encode(["count" => $count]) . "\n\n";
-                flush();
+            } else {
+                /*
+                 * Herzschlag (SSE-Kommentar, vom Browser ignoriert): PHP erkennt einen geschlossenen Tab
+                 * nur beim Schreiben. Ohne ihn bliebe der Worker bis LIFETIME belegt, und bei vielen
+                 * Seitenwechseln wären alle FPM-Worker durch verwaiste Streams blockiert.
+                 */
+                echo ": ping\n\n";
             }
+            flush();
 
             if (connection_aborted()) {
                 return;
