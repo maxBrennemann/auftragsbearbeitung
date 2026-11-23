@@ -42,22 +42,9 @@ const toggleIsPausable = (status: boolean) => {
     const isPausable = document.getElementById("pauseCurrentTracking") as HTMLButtonElement;
     const cancelCurrentTracking = document.getElementById("cancelCurrentTracking") as HTMLButtonElement;
 
-    switch (status) {
-        case true:
-            isPausable.classList.add("btn-edit");
-            isPausable.classList.remove("btn-cancel");
-            isPausable.disabled = false;
-
-            cancelCurrentTracking.disabled = false;
-            break;
-        case false:
-            isPausable.classList.remove("btn-edit");
-            isPausable.classList.add("btn-cancel");
-            isPausable.disabled = true;
-
-            cancelCurrentTracking.disabled = true;
-            break;
-    }
+    // Der Zustand steckt in disabled; das Aussehen kommt aus btn-secondary:disabled
+    isPausable.disabled = !status;
+    cancelCurrentTracking.disabled = !status;
 }
 
 fnNames.click_startStopTime = () => {
@@ -150,6 +137,13 @@ fnNames.write_selectDates = () => {
 fnNames.click_selectEntries = async (e) => {
     const el = e.currentTarget;
     const value = el.dataset.value;
+
+    // gewählten Zeitraum in der Button-Gruppe markieren
+    document.querySelectorAll<HTMLButtonElement>('[data-fun="selectEntries"]').forEach(btn => {
+        btn.classList.toggle("is-active", btn === el);
+        btn.setAttribute("aria-pressed", String(btn === el));
+    });
+
     const options = {
         "start": "",
         "stop": "",

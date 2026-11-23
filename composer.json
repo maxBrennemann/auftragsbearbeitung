@@ -4,7 +4,7 @@
         "guzzlehttp/guzzle": "^7.10.0",
         "symfony/dotenv": "7.3.8",
         "max/php-utilities": "1.3.2",
-        "symfony/console": "8.0.3",
+        "symfony/console": "8.1.11",
         "phpmailer/phpmailer": "^7.0.1"
     },
     "minimum-stability": "dev",

@@ -9,7 +9,7 @@ use Src\Classes\Project\Icon;
         <img src="<?= $f["link"] ?>" alt="<?= $f["name"] ?>" width="40px" data-image-id="<?= $f["file"] ?>" class="inline" title="Klicken für Vorschau" alt="<?= $f["alt"] ?>">
         <a target="_blank" rel="noopener noreferrer" href="<?= $f["link"] ?>" class="inline ml-2 hover:underline hover:underline-offset-1">
             <span><?= $f["name"] ?></span>
-            <?= Icon::getDefault("iconNewTab") ?>
+            <?= Icon::getDefault("external-link") ?>
         </a>
     </span>
 <?php else : ?>

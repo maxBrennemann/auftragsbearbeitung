@@ -164,8 +164,8 @@ fnNames.click_setPayed = () => {
         "paymentType": paymentType,
     }).then(r => {
         if (r.data.status == "success") {
-            (document.getElementById("orderPaymentState") as HTMLElement).innerHTML = `<p>Die Rechnung wurde am ${date} mit ${paymentType} bezahlt.</p>
-                <button class="btn-primary mt-2" data-binding="true" data-fun="setUnpaid">Als unbezahlt markieren</button>`;
+            (document.getElementById("orderPaymentState") as HTMLElement).innerHTML = `<p><span class="stamp stamp-ok">Bezahlt</span> Die Rechnung wurde am <span class="info-badge">${date}</span> per <span class="info-badge">${paymentType}</span> bezahlt.</p>
+                <button class="btn-secondary mt-2" data-binding="true" data-fun="setUnpaid">Als unbezahlt markieren</button>`;
             addBindings(fnNames);
         }
     });
@@ -242,7 +242,7 @@ fnNames.click_setUnpaid = () => {
 
     ajax.delete(`/invoice/${invoiceId}/paid`).then(r => {
         if (r.data.status == "success") {
-            (document.getElementById("orderPaymentState") as HTMLElement).innerHTML = `<p>Die Rechnung wurde noch nicht beglichen.</p>
+            (document.getElementById("orderPaymentState") as HTMLElement).innerHTML = `<p><span class="stamp stamp-warn">Unbezahlt</span> Die Rechnung wurde noch nicht beglichen.</p>
                 <label>
                     <input type="date" id="inputPayDate" class="input-primary">
                 </label>

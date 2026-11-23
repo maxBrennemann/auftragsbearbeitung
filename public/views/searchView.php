@@ -1,11 +1,19 @@
-<div class="searchContainer inline-flex border rounded-xl overflow-hidden shadow-md items-center bg-white">
-    <input class="border-none p-1 pl-3 rounded-none shadow-none box-content outline-hidden placeholder:text-[#374151] h-6 w-16 md:w-48"
+<?php
+/**
+ * Suchfeld. Aussehen: .searchContainer in input.css.
+ * Struktur beibehalten: global.ts nutzt das erste ".searchContainer input" im Dokument (Kopfzeile, ⌘K),
+ * customerOverview.ts erwartet die Lupe als nextElementSibling des Feldes.
+ */
+?>
+<div class="searchContainer">
+    <input
         id="<?= isset($searchId) ? $searchId : "" ?>"
         value="<?= isset($searchValue) ? $searchValue : "" ?>"
         placeholder="<?= isset($placeHolder) ? $placeHolder : "" ?>"
-        title="<?= isset($placeHolder) ? $placeHolder : "" ?>"
+        title="<?= isset($placeHolder) ? $placeHolder : "Suchen" ?>"
+        aria-label="<?= isset($placeHolder) ? $placeHolder : "Suchen" ?>"
         name="searchInput">
-    <span class="inline-flex items-center mr-2 cursor-pointer">
-        <?=Src\Classes\Project\Icon::getDefaultColorized("iconSearch", "#374151")?>
+    <span aria-hidden="true">
+        <?= Src\Classes\Project\Icon::get("search", 16) ?>
     </span>
 </div>

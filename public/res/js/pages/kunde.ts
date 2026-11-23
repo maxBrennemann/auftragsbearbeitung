@@ -78,7 +78,22 @@ fnNames.click_saveCustomerData = () => {
     }).then(r => {
         if (r.data.message == "OK") {
             notification("", "success");
+            // gespeicherter Stand ist der neue Ausgangspunkt für „Änderungen verwerfen“
+            document.querySelectorAll("#showKundendaten input[data-initial]").forEach(input => {
+                input.dataset.initial = input.value;
+            });
         }
+    });
+}
+
+fnNames.click_showAllOrders = () => {
+    document.getElementById("orderCards")?.classList.remove("cards-collapsed");
+    document.getElementById("showAllOrders")?.classList.add("hidden");
+}
+
+fnNames.click_resetCustomerData = () => {
+    document.querySelectorAll("#showKundendaten input[data-initial]").forEach(input => {
+        input.value = input.dataset.initial ?? "";
     });
 }
 

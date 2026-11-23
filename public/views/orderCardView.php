@@ -1,63 +1,70 @@
-<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 mt-6">
+<?php
+
+use Src\Classes\Link;
+use Src\Classes\Project\Icon;
+use Src\Classes\Project\OrderState;
+
+/**
+ * Auftragskarten (Kundenseite, Auftragsübersicht).
+ * JS-Haken für „Wiederherstellen“ (kunde.ts click_rearchive): .orderCard, .orderOptions, .orderDisabled
+ */
+?>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3">
     <?php foreach ($orders as $order): ?>
-        <div class="group relative bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-blue-300 transition-all duration-200 flex flex-col">
-            
-            <div class="p-5 flex-1">
-                <div class="flex justify-between items-start mb-2">
-                    <span class="text-xs font-bold uppercase tracking-wider text-gray-400">#<?= $order["id"] ?></span>
-                    <?php if ($order["status"] === \Src\Classes\Project\OrderState::Archived): ?>
-                        <span class="px-2 py-1 text-[10px] font-bold uppercase rounded bg-gray-100 text-gray-500 border border-gray-200">Archiviert</span>
+        <?php
+        $isArchived = $order["status"] === OrderState::Archived;
+        $deadline = in_array($order["deadline"], ["", "-", null], true) ? "" : $order["deadline"];
+        ?>
+        <article class="orderCard sheet flex flex-col p-0 transition-colors hover:border-ink">
+            <div class="flex-1 p-4">
+                <div class="flex items-center justify-between gap-2 mb-1.5">
+                    <span class="kpi-label">Auftrag <?= $order["id"] ?></span>
+                    <?php if ($isArchived): ?>
+                        <span class="orderDisabled stamp stamp-muted">Archiviert</span>
                     <?php endif; ?>
                 </div>
 
-                <h3 class="text-lg font-bold text-gray-800 leading-tight group-hover:text-blue-600 transition-colors">
-                    <?= $order["orderTitle"] ?>
-                </h3>
-                
-                <p class="text-sm text-gray-500 mt-2 line-clamp-2 h-10" title="<?= $order["orderDescription"] ?>">
+                <h3 class="font-heading font-bold text-ink leading-snug"><?= $order["orderTitle"] ?></h3>
+
+                <p class="text-sm text-text-muted mt-1 line-clamp-2 min-h-10" title="<?= $order["orderDescription"] ?>">
                     <?= $order["orderDescription"] ?>
                 </p>
 
-                <div class="grid grid-cols-2 gap-4 mt-5 pt-5 border-t border-gray-50">
+                <dl class="grid grid-cols-2 gap-x-4 gap-y-2 mt-3 pt-3 border-t border-line-soft text-sm">
                     <div>
-                        <p class="text-[10px] uppercase font-bold text-gray-400">Datum</p>
-                        <p class="text-sm font-medium text-gray-700"><?= $order["date"] ?></p>
+                        <dt class="kpi-label">Eingang</dt>
+                        <dd class="tabular-nums"><?= $order["date"] ?></dd>
                     </div>
                     <div>
-                        <p class="text-[10px] uppercase font-bold text-gray-400">Termin</p>
-                        <p class="text-sm font-medium text-gray-400">
-                            <?= $order["deadline"] ?: 'Keiner' ?>
-                        </p>
+                        <dt class="kpi-label">Termin</dt>
+                        <dd class="tabular-nums <?= $deadline ? "" : "text-text-muted" ?>"><?= $deadline ?: "keiner" ?></dd>
                     </div>
                     <?php if ($order["invoice"] != 0): ?>
-                    <div>
-                        <p class="text-[10px] uppercase font-bold text-gray-400">Rechnung</p>
-                        <p class="text-sm font-semibold text-gray-800">#<?= $order["invoice"] ?></p>
-                    </div>
+                        <div>
+                            <dt class="kpi-label">Rechnung</dt>
+                            <dd class="tabular-nums">Nr. <?= $order["invoice"] ?></dd>
+                        </div>
                     <?php endif; ?>
                     <?php if ($order["summe"] != 0): ?>
-                    <div>
-                        <p class="text-[10px] uppercase font-bold text-gray-400">Summe</p>
-                        <p class="text-sm font-bold text-blue-700"><?= $order["summe"] ?> €</p>
-                    </div>
+                        <div>
+                            <dt class="kpi-label">Summe</dt>
+                            <dd class="tabular-nums font-semibold"><?= is_numeric($order["summe"]) ? number_format((float) $order["summe"], 2, ',', '.') : $order["summe"] ?> €</dd>
+                        </div>
                     <?php endif; ?>
-                </div>
+                </dl>
             </div>
 
-            <div class="px-5 py-3 bg-gray-50 rounded-b-xl border-t border-gray-100 flex justify-between items-center">
-                <a href="<?= \Src\Classes\Link::getPageLink("auftrag") ?>?id=<?= $order["id"] ?>" 
-                   class="text-sm font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1">
-                    Details öffnen 
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            <div class="flex items-center justify-between gap-2 px-4 py-2 border-t border-line-soft bg-[#f6f7f8] rounded-b-[inherit]">
+                <a href="<?= Link::getPageLink("auftrag") ?>?id=<?= $order["id"] ?>" class="link-primary inline-flex items-center gap-1 text-sm">
+                    Auftrag öffnen <?= Icon::get("chevron-right", 14) ?>
                 </a>
-                
-                <?php if ($order["status"] === \Src\Classes\Project\OrderState::Archived): ?>
-                    <button data-binding="true" data-fun="rearchive" data-order-id="<?= $order['id'] ?>" 
-                            class="text-gray-400 hover:text-orange-500 transition-colors border-0 shadow-sm" title="Wiederherstellen">
-                        <?= \Src\Classes\Project\Icon::getDefault("iconArchive") ?>
+
+                <?php if ($isArchived): ?>
+                    <button type="button" class="orderOptions btn-ghost btn-icon btn-sm" data-binding="true" data-fun="rearchive" data-order-id="<?= $order['id'] ?>" title="Aus dem Archiv holen" aria-label="Aus dem Archiv holen">
+                        <?= Icon::get("archive-restore") ?>
                     </button>
                 <?php endif; ?>
             </div>
-        </div>
+        </article>
     <?php endforeach; ?>
 </div>

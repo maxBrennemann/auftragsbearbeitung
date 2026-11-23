@@ -19,12 +19,28 @@ if ($query !== null) {
 }
 
 ?>
-<div class="w-full bg-gray-100 p-3 rounded-md">
-	<input type="number" min="1" class="input-primary" id="idInput">
-	<button class="btn-primary" data-binding="true" data-fun="showOrder">Auftrag anzeigen</button>
-	<br>
-	<input type="text" class="input-primary" value="<?= $query ?>" id="queryInput">
-	<button class="btn-primary" data-binding="true" data-fun="searchOrder">Auftrag suchen</button>
-	<br><br>
-	<?=$showOffeneAuftraege?>
-</div>
+<section class="defCont">
+	<div class="section-head">
+		<h2 class="section-title">Aufträge</h2>
+		<?php if ($query !== null): ?>
+			<a class="link-primary text-sm" href="<?= \Src\Classes\Link::getPageLink("order-overview") ?>">Alle Aufträge anzeigen</a>
+		<?php endif; ?>
+	</div>
+	<div class="flex flex-wrap items-end gap-4 mb-4">
+		<div class="flex items-end gap-2">
+			<label class="field">
+				<span class="field-label">Auftragsnummer</span>
+				<input type="number" min="1" class="input-primary w-32" id="idInput">
+			</label>
+			<button class="btn-secondary" data-binding="true" data-fun="showOrder">Öffnen</button>
+		</div>
+		<div class="flex items-end gap-2">
+			<label class="field">
+				<span class="field-label">Stichwort</span>
+				<input type="text" class="input-primary w-64" value="<?= htmlspecialchars((string) $query) ?>" id="queryInput" placeholder="Kunde, Bezeichnung …">
+			</label>
+			<button class="btn-secondary" data-binding="true" data-fun="searchOrder"><?= \Src\Classes\Project\Icon::get("search", 14) ?>Suchen</button>
+		</div>
+	</div>
+	<div class="overflow-x-auto"><?= $showOffeneAuftraege ?></div>
+</section>

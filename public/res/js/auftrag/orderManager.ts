@@ -152,6 +152,8 @@ const manageSelectCustomer = (customerCards: NodeListOf<HTMLDivElement>, selectB
                 selectButton.disabled = false;
             } else {
                 toggleColors(card, false);
+                orderManagerConfig.change_selectedCustomer = null;
+                orderManagerConfig.change_selectedCustomerDiv = null;
                 selectButton.disabled = true;
             }
         });
@@ -171,22 +173,9 @@ const selectCard = (card: HTMLDivElement) => {
     });
 }
 
+/** Auswahlzustand der Kundenkarte; das Aussehen kommt aus .customer-card[aria-pressed] in input.css */
 const toggleColors = (customerCard: HTMLDivElement, isActive: boolean) => {
-    if (isActive) {
-        customerCard.classList.add("outline-none");
-        customerCard.classList.add("ring-2");
-        customerCard.classList.add("ring-blue-200");
-        customerCard.classList.remove("ring-gray-200");
-        customerCard.classList.add("hover:ring-blue-300");
-        customerCard.classList.remove("hover:ring-gray-300");
-    } else {
-        customerCard.classList.remove("outline-none");
-        customerCard.classList.remove("ring-2");
-        customerCard.classList.remove("ring-blue-200");
-        customerCard.classList.add("ring-gray-200");
-        customerCard.classList.remove("hover:ring-blue-300");
-        customerCard.classList.add("hover:ring-gray-300");
-    }
+    customerCard.setAttribute("aria-pressed", String(isActive));
 }
 
 const changeCustomerAjax = () => {

@@ -57,7 +57,7 @@ class Zeit extends Posten
             "<div class=\"flex items-center justify-between gap-4\">
                 <span class=\"flex-grow\">{$this->ZeitInMinuten}</span>
                 <div class=\"flex-shrink-0 min-w-[50px] text-right\">
-                    <button class=\"btn-primary-small additional-data-btn ml-1\" data-id=\"{$this->postennummer}\">Mehr</button>
+                    <button class=\"btn-secondary btn-sm additional-data-btn ml-1\" data-id=\"{$this->postennummer}\">Mehr</button>
                 </div>
             </div>"
             : $this->ZeitInMinuten;
@@ -67,7 +67,7 @@ class Zeit extends Posten
         $timeData["Einkaufspreis"] = "-";
         $timeData["Gesamtpreis"] = $this->bekommePreis_formatted();
         $timeData["type"] = "addPostenZeit";
-        $timeData["Bezeichnung"] = "<button class=\"btn-primary-small\">Zeit</button>";
+        $timeData["Bezeichnung"] = "<span class=\"type-label\">Zeit</span>";
 
         return $timeData;
     }

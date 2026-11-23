@@ -53,155 +53,203 @@ if ($target == "create") {
 <input class="hidden" id="invoiceId" value="<?= $invoiceId ?>">
 <input class="hidden" id="orderId" value="<?= $orderId ?>">
 
+<?php
+/** Vorschau der Rechnung als PDF, auf allen Ansichten gleich */
+$pdfPreview = function (string $meta = "") use ($invoiceId, $orderId): string {
+	return <<<HTML
+		<section class="defCont">
+			<div class="section-head">
+				<h2 class="section-title">Vorschau</h2>
+				<span class="section-meta">{$meta}</span>
+			</div>
+			<iframe src="/api/v1/invoice/{$invoiceId}/pdf?orderId={$orderId}" id="invoicePDFPreview" class="w-full h-lvh bg-sheet border border-line-soft rounded-control" title="Rechnung als PDF"></iframe>
+		</section>
+	HTML;
+};
+?>
+
 <?php if ($target == "create" && $invoice->isLocked()): ?>
-	<div class="defCont">
-		<h3 class="font-bold">Auftrag <span><?= $orderId ?></span> – Rechnung Nr. <?= $invoiceNumber ?></h3>
-		<p class="mt-2">Diese Rechnung ist abgeschlossen und kann nicht mehr geändert werden. Für einen Preisnachlass eine Gutschrift erstellen, bei einer fehlerhaften Rechnung diese stornieren und den Auftrag neu abrechnen. Beides ist in der Auftragsansicht möglich.</p>
-		<div class="mt-3">
-			<button data-binding="true" data-fun="completeInvoice" class="btn-primary">Rechnung dem Auftrag wieder zuordnen</button>
-			<button data-binding="true" data-fun="goBack" class="btn-cancel">Zurück</button>
+	<div class="mx-2.5 mt-2 mb-4 flex flex-wrap items-end justify-between gap-3">
+		<div>
+			<span class="group-label text-text-muted">Auftrag <?= $orderId ?></span>
+			<h2 class="page-title">Rechnung Nr. <?= $invoiceNumber ?></h2>
+		</div>
+		<div class="flex flex-wrap gap-2">
+			<button data-binding="true" data-fun="completeInvoice" class="btn-secondary">Rechnung dem Auftrag wieder zuordnen</button>
+			<button data-binding="true" data-fun="goBack" class="btn-ghost"><?= Icon::get("arrow-left") ?>Zurück</button>
 		</div>
 	</div>
-	<?= \Src\Classes\Controller\TemplateController::getTemplate("cancelledInvoices", ["orderId" => $orderId]) ?>
-	<div class="mt-3">
-		<iframe src="/api/v1/invoice/<?= $invoiceId ?>/pdf?orderId=<?= $orderId ?>" id="invoicePDFPreview" class="w-full h-lvh"></iframe>
+	<div class="note note-danger mx-2.5 mb-2.5">
+		<p class="note-head"><?= Icon::get("lock") ?>Gesperrt</p>
+		<p>Diese Rechnung ist abgeschlossen und kann nicht mehr geändert werden. Für einen Preisnachlass eine Gutschrift erstellen, bei einer fehlerhaften Rechnung diese stornieren und den Auftrag neu abrechnen. Beides ist in der Auftragsansicht möglich.</p>
 	</div>
+	<?= \Src\Classes\Controller\TemplateController::getTemplate("cancelledInvoices", ["orderId" => $orderId]) ?>
+	<?= $pdfPreview() ?>
+
 <?php elseif ($target == "create"): ?>
-	<?= \Src\Classes\Controller\TemplateController::getTemplate("cancelledInvoices", ["orderId" => $orderId]) ?>
-	<div class="defCont grid grid-cols-1 lg:grid-cols-2">
-		<div class="col-span-2">
-			<h3 class="font-bold">Auftrag <span><?= $orderId ?></span></h3>
+	<?php $hasItems = $auftrag != null && $auftrag->getAuftragspostenData() != null; ?>
+	<div class="mx-2.5 mt-2 mb-4 flex flex-wrap items-end justify-between gap-3">
+		<div>
+			<span class="group-label text-text-muted">Rechnung zu Auftrag <?= $orderId ?></span>
 			<?php if ($invoiceNumber == 0) : ?>
-				<p title="Diese Nummer ist vorläufig reserviert und kann sich noch ändern.">Nächste Rechnungsnummer: <b><?= $nextInvoiceNumber ?></b></p>
+				<h2 class="page-title">Neue Rechnung</h2>
+				<p class="text-xs text-text-muted">Voraussichtlich Nr. <?= $nextInvoiceNumber ?>. Die Nummer wird erst beim Abschließen vergeben und kann sich bis dahin ändern.</p>
 			<?php else: ?>
-				<p>Rechnungsnummer: <b><?= $invoiceNumber ?></b></p>
+				<h2 class="page-title">Rechnung Nr. <?= $invoiceNumber ?></h2>
 			<?php endif; ?>
-			<hr class="mt-2">
 		</div>
-		<div>
-			<h4 class="mt-2 font-semibold">Firmenname</h4>
-			<div>
-				<input type="text" class="input-primary mt-1 w-72" value="<?= $kunde->getFirmenname() ?>">
-			</div>
-			<button class="btn-primary" data-binding="true" data-fun="addAltName">Alternativtext eingeben</button>
-
-			<h4 class="mt-2 font-semibold">Adresse auswählen</h4>
-			<?php if ($invoiceAddresses == null || empty($invoiceAddresses)): ?>
-				<i>Keine Rechnungsadressen vorhanden oder unvollständig. Bei Bedarf <a href="<?= Link::getPageLink("kunde") . "?id=" . $auftrag->getKundennummer() ?>" class="link-primary">beim Kunden</a> ergänzen.</i>
+		<div class="flex flex-wrap items-center gap-2">
+			<button data-binding="true" data-fun="goBack" class="btn-ghost"><?= Icon::get("arrow-left") ?>Zum Auftrag</button>
+			<?php if ($hasItems): ?>
+				<button class="btn-secondary" data-binding="true" data-fun="changeItemsOrder"><?= Icon::get("arrow-down-up") ?>Reihenfolge der Posten</button>
+				<button data-binding="true" data-fun="completeInvoice" class="btn-primary"><?= Icon::get("check") ?>Rechnung abschließen</button>
 			<?php else: ?>
-				<select id="addressId" class="input-primary w-72 mt-1" data-write="true" data-fun="selectAddress">
-					<?php foreach ($invoiceAddresses as $i => $r): ?>
-						<option value="<?= $i ?>" <?= $selectedAddress == $i ? "selected" : "" ?>><?= $r ?></option>
-					<?php endforeach; ?>
-				</select>
+				<button disabled class="btn-primary" title="Der Auftrag hat noch keine Posten.">Rechnung abschließen</button>
 			<?php endif; ?>
-
-			<h4 class="mt-2 font-semibold">Ansprechpartner auswählen</h4>
-			<?php if ($invoiceContacts == null || empty($invoiceContacts)): ?>
-				<i>Keine Ansprechpartner vorhanden. Bei Bedarf <a href="<?= Link::getPageLink("kunde") . "?id=" . $auftrag->getKundennummer() ?>" class="link-primary">beim Kunden</a> ergänzen.</i>
-			<?php else: ?>
-				<select id="contactId" class="input-primary w-72 mt-1" data-write="true" data-fun="selectContact">
-					<option value="0">Kein Ansprechpartner</option>
-					<?php foreach ($invoiceContacts as $i => $r): ?>
-						<option value="<?= $i ?>"><?= $r ?></option>
-					<?php endforeach; ?>
-				</select>
-			<?php endif; ?>
-
-			<h4 class="mt-2 font-semibold">Rechnungsdatum festlegen</h4>
-			<input type="date" data-write="true" data-fun="invoiceDate" class="input-primary mt-1" value="<?= $invoice->getCreationDate() ?>">
-
-			<h4 class="mt-2 font-semibold">Leistungsdatum festlegen</h4>
-			<div class="flex items-center gap-2 mt-1">
-				<input type="checkbox" id="showPerformanceDate" data-write="true" data-fun="togglePerformanceDateVisibility" <?= $invoice->getShowPerformanceDate() ? "checked" : "" ?>>
-				<label for="showPerformanceDate">In Rechnung anzeigen (wird immer als letzter Punkt aufgeführt)</label>
-			</div>
-			<select id="performanceDateType" class="input-primary mt-1" data-write="true" data-fun="selectPerformanceDateType">
-				<option value="date" <?= $invoice->getPerformanceDateType() == "date" ? "selected" : "" ?>>Datum</option>
-				<option value="week" <?= $invoice->getPerformanceDateType() == "week" ? "selected" : "" ?>>Kalenderwoche</option>
-			</select>
-			<input type="date" id="performanceDateInput" data-write="true" data-fun="serviceDate" class="input-primary mt-1 <?= $invoice->getPerformanceDateType() == "week" ? "hidden" : "" ?>" value="<?= $invoice->getPerformanceDate() ?>">
-			<input type="week" id="performanceWeekInput" data-write="true" data-fun="serviceDateWeek" class="input-primary mt-1 <?= $invoice->getPerformanceDateType() == "date" ? "hidden" : "" ?>" value="<?= $invoice->getPerformanceDateWeekValue() ?>">
 		</div>
+	</div>
 
-		<div>
-			<div class="mt-3">
-				<h4 class="font-semibold inline-flex items-center" data-target=".predefinedTexts, #texts .toggle-up, #texts .toggle-down" data-toggle="true" id="texts">
-					<p class="py-2 cursor-pointer select-none">Vordefinierte Texte</p>
-					<span class="cursor-pointer">
-						<span class="toggle-up hidden"><?= Icon::getDefault("iconChevronUp") ?></span>
-						<span class="toggle-down"><?= Icon::getDefault("iconChevronDown") ?></span>
-					</span>
-				</h4>
-				<div class="predefinedTexts hidden bg-white p-2 rounded-md">
-					<p>Den Text zum (ab)wählen einmal anklicken. Die Rechnungsvorschau wird dann neu generiert.</p>
-					<div class="defaultInvoiceTexts grid grid-flow-row gap-4 mt-2 max-h-80 overflow-y-scroll">
-						<?php foreach ($invoice->getTexts() as $text): ?>
-							<?php if ($text["id"] < 0) continue; /* Leistungsdatum wird oben separat gesteuert */ ?>
-							<div class="invoiceTexts bg-gray-100 rounded-xl cursor-pointer p-3 mr-1 select-none flex" title="Übernehmen" data-binding="true" data-fun="toggleText" data-active="<?= $text["active"] ?>" data-id="<?= $text["id"] ?>">
-								<p class="max-h-20 overflow-auto flex-auto"><?= $text["text"] ?></p>
-								<div class="pl-3 flex items-center">
-									<?php if ($text["id"] != 0) : ?>
-										<button class="btn-edit" data-id="<?= $text["id"] ?>" data-binding="true" data-fun="editText"><?= Icon::getDefault("iconEdit") ?></button>
-										<button class="btn-delete ml-1" data-id="<?= $text["id"] ?>" data-binding="true" data-fun="deleteText"><?= Icon::getDefault("iconDelete") ?></button>
-									<?php endif; ?>
-								</div>
-							</div>
-						<?php endforeach; ?>
+	<?= \Src\Classes\Controller\TemplateController::getTemplate("cancelledInvoices", ["orderId" => $orderId]) ?>
+
+	<div class="grid grid-cols-1 lg:grid-cols-2">
+		<section class="defCont">
+			<div class="section-head">
+				<h2 class="section-title">Empfänger und Daten</h2>
+				<a href="<?= Link::getPageLink("kunde") . "?id=" . $auftrag->getKundennummer() ?>" class="link-primary text-sm">Zum Kunden</a>
+			</div>
+
+			<div class="field-grid">
+				<div class="field col-span-full">
+					<span class="field-label">Firmenname</span>
+					<div class="flex flex-wrap items-center gap-2">
+						<input type="text" class="input-primary flex-1 min-w-48" value="<?= $kunde->getFirmenname() ?>" readonly aria-label="Firmenname">
+						<button class="btn-secondary btn-sm" data-binding="true" data-fun="addAltName"><?= Icon::get("pencil", 14) ?>Kopfzeile anpassen</button>
 					</div>
-					<div class="mt-2">
-						<input id="newText" class="input-primary">
-						<button data-binding="true" data-fun="addText" class="btn-primary">Hinzufügen</button>
-					</div>
+					<span class="field-hint">Statt des Firmennamens kann eine eigene Kopfzeile mit bis zu vier Zeilen auf der Rechnung stehen.</span>
 				</div>
-			</div>
 
-			<div class="mt-3">
-				<h4 class="font-semibold inline-flex items-center" data-target=".toggleVehicles, #vehicles .toggle-up, #vehicles .toggle-down" data-toggle="true" id="vehicles">
-					<p class="py-2 cursor-pointer select-none">Fahrzeuge</p>
-					<span class="cursor-pointer">
-						<span class="toggle-up hidden"><?= Icon::getDefault("iconChevronUp") ?></span>
-						<span class="toggle-down"><?= Icon::getDefault("iconChevronDown") ?></span>
-					</span>
-				</h4>
-				<div class="toggleVehicles hidden">
-					<?php foreach ($invoice->getAttachedVehicles() as $vehicle): ?>
-						<p data-id="<?= $vehicle["Nummer"] ?>">
-							<?= $vehicle["Kennzeichen"] ?> <?= $vehicle["Fahrzeug"] ?>
-						</p>
-					<?php endforeach; ?>
-					<?php if (count($invoice->getAttachedVehicles()) == 0): ?>
-						<p>Keine Fahrzeuge verknüpft</p>
+				<div class="field col-span-full">
+					<label class="field-label" for="addressId">Rechnungsadresse</label>
+					<?php if ($invoiceAddresses == null || empty($invoiceAddresses)): ?>
+						<p class="field-hint">Keine Rechnungsadresse vorhanden oder unvollständig. Bei Bedarf <a href="<?= Link::getPageLink("kunde") . "?id=" . $auftrag->getKundennummer() ?>" class="link-primary">beim Kunden</a> ergänzen.</p>
+					<?php else: ?>
+						<select id="addressId" class="input-primary" data-write="true" data-fun="selectAddress">
+							<?php foreach ($invoiceAddresses as $i => $r): ?>
+								<option value="<?= $i ?>" <?= $selectedAddress == $i ? "selected" : "" ?>><?= $r ?></option>
+							<?php endforeach; ?>
+						</select>
 					<?php endif; ?>
 				</div>
+
+				<div class="field col-span-full">
+					<label class="field-label" for="contactId">Ansprechpartner</label>
+					<?php if ($invoiceContacts == null || empty($invoiceContacts)): ?>
+						<p class="field-hint">Keine Ansprechpartner vorhanden. Bei Bedarf <a href="<?= Link::getPageLink("kunde") . "?id=" . $auftrag->getKundennummer() ?>" class="link-primary">beim Kunden</a> ergänzen.</p>
+					<?php else: ?>
+						<select id="contactId" class="input-primary" data-write="true" data-fun="selectContact">
+							<option value="0">Kein Ansprechpartner</option>
+							<?php foreach ($invoiceContacts as $i => $r): ?>
+								<option value="<?= $i ?>"><?= $r ?></option>
+							<?php endforeach; ?>
+						</select>
+					<?php endif; ?>
+				</div>
+
+				<label class="field">
+					<span class="field-label">Rechnungsdatum</span>
+					<input type="date" data-write="true" data-fun="invoiceDate" class="input-primary" value="<?= $invoice->getCreationDate() ?>">
+				</label>
+
+				<div class="field col-span-full">
+					<label class="field-label" for="performanceDateType">Leistungsdatum</label>
+					<div class="grid grid-cols-[minmax(0,10rem)_minmax(0,14rem)] gap-2">
+						<select id="performanceDateType" class="input-primary w-full" data-write="true" data-fun="selectPerformanceDateType">
+							<option value="date" <?= $invoice->getPerformanceDateType() == "date" ? "selected" : "" ?>>Datum</option>
+							<option value="week" <?= $invoice->getPerformanceDateType() == "week" ? "selected" : "" ?>>Kalenderwoche</option>
+						</select>
+						<input type="date" id="performanceDateInput" data-write="true" data-fun="serviceDate" class="input-primary w-full min-w-0 <?= $invoice->getPerformanceDateType() == "week" ? "hidden" : "" ?>" value="<?= $invoice->getPerformanceDate() ?>" aria-label="Leistungsdatum">
+						<input type="week" id="performanceWeekInput" data-write="true" data-fun="serviceDateWeek" class="input-primary w-full min-w-0 <?= $invoice->getPerformanceDateType() == "date" ? "hidden" : "" ?>" value="<?= $invoice->getPerformanceDateWeekValue() ?>" aria-label="Leistungswoche">
+					</div>
+					<label class="field-hint inline-flex items-start gap-1.5">
+						<input type="checkbox" class="mt-0.5" id="showPerformanceDate" data-write="true" data-fun="togglePerformanceDateVisibility" <?= $invoice->getShowPerformanceDate() ? "checked" : "" ?>>
+						Auf der Rechnung anzeigen (immer als letzter Punkt)
+					</label>
+				</div>
 			</div>
-		</div>
+		</section>
+
+		<section class="defCont">
+			<div class="section-head">
+				<h2 class="section-title">Texte und Anhänge</h2>
+				<a href="/einstellungen#invoiceSettings" class="link-primary text-sm">Rechnungseinstellungen</a>
+			</div>
+
+			<button type="button" class="disclosure" data-target=".predefinedTexts, #texts .toggle-up, #texts .toggle-down" data-toggle="true" id="texts">
+				<span>Vordefinierte Texte</span>
+				<span>
+					<span class="toggle-up hidden"><?= Icon::get("chevron-up") ?></span>
+					<span class="toggle-down"><?= Icon::get("chevron-down") ?></span>
+				</span>
+			</button>
+			<div class="predefinedTexts hidden pt-3">
+				<p class="field-hint mb-2">Anklicken, um einen Text auf die Rechnung zu übernehmen oder wieder zu entfernen. Die Vorschau aktualisiert sich danach.</p>
+				<div class="defaultInvoiceTexts flex flex-col gap-2 max-h-96 overflow-y-auto pr-1">
+					<?php foreach ($invoice->getTexts() as $text): ?>
+						<?php if ($text["id"] < 0) continue; /* Leistungsdatum wird links separat gesteuert */ ?>
+						<div class="invoiceTexts choice-card" role="button" tabindex="0" aria-pressed="<?= $text["active"] == 1 ? "true" : "false" ?>" data-binding="true" data-fun="toggleText" data-active="<?= $text["active"] ?>" data-id="<?= $text["id"] ?>">
+							<span class="choice-mark" aria-hidden="true"><?= Icon::get("check", 12) ?></span>
+							<p class="max-h-20 overflow-auto flex-auto text-sm"><?= $text["text"] ?></p>
+							<?php if ($text["id"] != 0) : ?>
+								<div class="flex items-center gap-0.5">
+									<button type="button" class="btn-ghost btn-icon btn-sm" data-id="<?= $text["id"] ?>" data-binding="true" data-fun="editText" title="Text bearbeiten" aria-label="Text bearbeiten"><?= Icon::get("pencil") ?></button>
+									<button type="button" class="btn-ghost btn-icon btn-sm text-danger" data-id="<?= $text["id"] ?>" data-binding="true" data-fun="deleteText" title="Text löschen" aria-label="Text löschen"><?= Icon::get("trash-2") ?></button>
+								</div>
+							<?php endif; ?>
+						</div>
+					<?php endforeach; ?>
+				</div>
+				<div class="flex gap-2 mt-3">
+					<input id="newText" class="input-primary flex-1" placeholder="Eigener Text für diese Rechnung" aria-label="Neuer Text">
+					<button data-binding="true" data-fun="addText" class="btn-secondary"><?= Icon::get("plus", 14) ?>Hinzufügen</button>
+				</div>
+			</div>
+
+			<button type="button" class="disclosure mt-2" data-target=".toggleVehicles, #vehicles .toggle-up, #vehicles .toggle-down" data-toggle="true" id="vehicles">
+				<span>Fahrzeuge</span>
+				<span>
+					<span class="toggle-up hidden"><?= Icon::get("chevron-up") ?></span>
+					<span class="toggle-down"><?= Icon::get("chevron-down") ?></span>
+				</span>
+			</button>
+			<div class="toggleVehicles hidden pt-3 text-sm">
+				<?php foreach ($invoice->getAttachedVehicles() as $vehicle): ?>
+					<p data-id="<?= $vehicle["Nummer"] ?>" class="flex items-center gap-2">
+						<?= Icon::get("car", 14) ?><span class="font-semibold tabular-nums"><?= $vehicle["Kennzeichen"] ?></span> <?= $vehicle["Fahrzeug"] ?>
+					</p>
+				<?php endforeach; ?>
+				<?php if (count($invoice->getAttachedVehicles()) == 0): ?>
+					<p class="text-text-muted">Mit diesem Auftrag sind keine Fahrzeuge verknüpft.</p>
+				<?php endif; ?>
+			</div>
+		</section>
 	</div>
 
-	<div class="defCont">
-		<h3 class="font-bold">Rechnungsoptionen</h3>
-		<div class="mt-3">
-			<?php if ($auftrag != null && $auftrag->getAuftragspostenData() != null): ?>
-				<button data-binding="true" data-fun="completeInvoice" class="btn-primary">Rechnung abschließen</button>
-				<button class="btn-primary" data-binding="true" data-fun="changeItemsOrder">Reihenfolge</button>
-			<?php else: ?>
-				<button disabled class="btn-primary">Rechnung abschließen</button>
-			<?php endif; ?>
-			<button data-binding="true" data-fun="goBack" class="btn-cancel">Abbrechen</button>
-			<div class="float-right">
-				<a href="/einstellungen#invoiceSettings" class="link-primary">Rechnungseinstellungen</a>
-				<a href="<?= Link::getPageLink("kunde") . "?id=" . $auftrag->getKundennummer() ?>" class="link-primary ml-2">Zum Kunden</a>
-			</div>
-		</div>
-	</div>
-	<div class="mt-3">
-		<iframe src="/api/v1/invoice/<?= $invoiceId ?>/pdf?orderId=<?= $orderId ?>" id="invoicePDFPreview" class="w-full h-lvh"></iframe>
-	</div>
+	<?= $pdfPreview("wird nach jeder Änderung neu erzeugt") ?>
+
 <?php elseif ($target == "view"): ?>
-	<p class="my-2 font-semibold">Rechnung <span id="rechnungsnummer"><?= $invoice->getNumber(); ?></span></p>
-	<button data-binding="true" data-fun="goBack" class="btn-cancel">Zurück</button>
-	<iframe src="/api/v1/invoice/<?= $invoiceId ?>/pdf?orderId=<?= $orderId ?>" class="w-full h-lvh mt-2" id="invoicePDFPreview"></iframe>
+	<div class="mx-2.5 mt-2 mb-4 flex flex-wrap items-end justify-between gap-3">
+		<div>
+			<span class="group-label text-text-muted">Auftrag <?= $orderId ?></span>
+			<h2 class="page-title">Rechnung Nr. <span id="rechnungsnummer"><?= $invoice->getNumber(); ?></span></h2>
+		</div>
+		<button data-binding="true" data-fun="goBack" class="btn-ghost"><?= Icon::get("arrow-left") ?>Zurück</button>
+	</div>
+	<?= $pdfPreview() ?>
+
 <?php else: ?>
-	<p>Es ist ein unerwarteter Fehler aufgetreten oder die Rechnungsnummer existiert nicht.</p>
-	<button class="btn-primary" data-binding="true" data-fun="goBack" type="submit">Zurück</button>
+	<div class="note note-danger m-2.5">
+		<p class="note-head"><?= Icon::get("triangle-alert") ?>Rechnung nicht gefunden</p>
+		<p>Zu dieser Nummer gibt es keine Rechnung, oder sie konnte nicht geladen werden.</p>
+		<button class="btn-secondary mt-2" data-binding="true" data-fun="goBack"><?= Icon::get("arrow-left") ?>Zurück</button>
+	</div>
 <?php endif; ?>

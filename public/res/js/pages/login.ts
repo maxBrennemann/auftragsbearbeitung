@@ -11,6 +11,9 @@ const fnNames = {};
 const init = () => {
     addBindings(fnNames);
 
+    // Enter löst den Submit-Button aus (dessen Klick meldet an); das Formular selbst nicht absenden
+    document.getElementById("loginForm")?.addEventListener("submit", e => e.preventDefault());
+
     if (document.getElementById("isLoggedIn").value != "1") {
         autoLogin();
     }
@@ -33,13 +36,14 @@ fnNames.click_login = () => {
         "isMobile": DeviceDetector.isMobile(),
         "isTablet": DeviceDetector.isMobileTablet(),
     }).then(r => {
-        if (r.data.status == "success") {
+        // bei Fehlern (z. B. 401) ist r.data leer, deshalb ?. statt direktem Zugriff
+        if (r.data?.status == "success") {
             const deviceKey = r.data.deviceKey;
             const loginKey = r.data.loginKey;
             setCookie("deviceKey", deviceKey, 356);
             setCookie("loginKey", loginKey, 28);
             location.reload();
-        } else if (r.data.status == "error") {
+        } else {
             document.getElementById("loginStatus").innerHTML = "Falscher Benutzername oder falsches Passwort.";
         }
     });
@@ -47,6 +51,8 @@ fnNames.click_login = () => {
 
 const autoLogin = async () => {
     if (getCookie("autologin") != "on") {
+        // kein automatischer Login eingerichtet: Hinweis samt Spinner ausblenden
+        document.getElementById("autoLogin")?.classList.add("hidden");
         return;
     }
 
@@ -64,7 +70,7 @@ const autoLogin = async () => {
         "isTablet": DeviceDetector.isMobileTablet(),
     });
 
-    if (autoLoginData.data.status == "success") {
+    if (autoLoginData.data?.status == "success") {
         setTimeout(function () {
             document.getElementById("autologinStatus").innerHTML = "Sie werden eingeloggt...";
             document.getElementById("autologin").checked = true;
@@ -72,7 +78,7 @@ const autoLogin = async () => {
             setCookie("autologin", "on", 356);
             location.reload();
         }, 1000);
-    } else if (autoLoginData.data.status == "failed") {
+    } else {
         console.log("auto login failed");
         document.getElementById("spinningStatus").classList.add("hidden");
         setTimeout(function () {

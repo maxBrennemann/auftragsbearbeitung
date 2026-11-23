@@ -13,7 +13,7 @@ $text .= " " . t("upload.orDragAndDrop");
 
 <div data-fun="fileUploader" data-drop="true" data-dragover="true" title="<?= $text ?>">
     <label class="fileUploader">
-        <?= \Src\Classes\Project\Icon::get("iconUpload", 30, 30, []) ?>
+        <?= \Src\Classes\Project\Icon::get("upload", 28) ?>
         <p class="text-center"><?= $text ?></p>
         <input type="file" accept="<?= $accept ?? "" ?>" hidden data-fun="fileUploader" data-write="true" data-type="<?= $target ?? "" ?>" <?= isset($singleFile) ? "" : "multiple" ?>>
     </label>

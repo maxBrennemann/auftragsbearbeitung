@@ -130,47 +130,18 @@ class User
         return $data;
     }
 
+    /**
+     * Gerätetyp als Icon. Betriebssystem und Browser stehen in der Geräteliste als Text daneben,
+     * deshalb neutrale Lucide-Icons statt Markenlogos.
+     */
     public function getDeviceIcon(string $type, string $os): string
     {
-        $icon = "";
-        switch ($type) {
-            case "mobile":
-                switch ($os) {
-                    case "Android":
-                        $icon = "iconAndroid";
-                        break;
-                    case "iOS":
-                        $icon = "iconApplePhone";
-                        break;
-                    default:
-                        $icon = "iconPhone";
-                        break;
-                }
-                break;
-            case "tablet":
-                $icon = "iconTablet";
-                break;
-            case "desktop":
-                switch ($os) {
-                    case "Mac OS":
-                        $icon = "iconMac";
-                        break;
-                    case "Linux":
-                        $icon = "iconLinux";
-                        break;
-                    case "Windows":
-                    default:
-                        $icon = "iconWindows";
-                        break;
-                }
-                break;
-            default:
-                $icon = "iconUnrecognized";
-                break;
-        }
-
-        $icon = Icon::get($icon, 35, 35, ["inline"]);
-        return $icon;
+        return match ($type) {
+            "mobile" => Icon::get("smartphone", 32, ["inline"], $os),
+            "tablet" => Icon::get("tablet", 32, ["inline"], $os),
+            "desktop" => Icon::get("monitor", 32, ["inline"], $os),
+            default => Icon::get("circle-question-mark", 32, ["inline"], "Unbekanntes Gerät"),
+        };
     }
 
     public function getHistory(): string

@@ -1,7 +1,9 @@
 import { ajax } from "js-classes/ajax";
 import { addBindings } from "js-classes/bindings"
 import { notification } from "js-classes/notifications";
+import { Tag } from "lucide";
 
+import { iconHtml } from "../classes/icon";
 import { createHeader, createTable, addRow, fetchAndRenderTable } from "../classes/table";
 import { tableConfig } from "../classes/tableconfig";
 import { initFileUploader } from "../classes/upload";
@@ -129,16 +131,19 @@ function showTree() {
 
 function createCategoryTree(anchor: HTMLElement, categories: any[]) {
     const ul = document.createElement("ul");
-    ul.classList.add("pl-2", "list-disc");
+    // oberste Ebene ohne Linie, Unterebenen eingerückt mit Linie links
+    const isRoot = anchor.id === "categoryTree";
+    ul.classList.add("m-0", "space-y-1");
+    if (!isRoot) {
+        ul.classList.add("ml-2", "pl-4", "border-l", "border-line-soft", "mt-1");
+    }
     anchor.appendChild(ul);
 
     categories.forEach(category => {
         const li = document.createElement("li");
-        li.innerHTML = `
-            <span class="cursor-pointer" data-id="${category.id}">${category.name}</span>
-            <button class="btn-primary">Bearbeiten</button>`;
-
-        li.classList.add("cursor-pointer");
+        li.classList.add("m-0");
+        // Hinweis: Der frühere „Bearbeiten“-Button hatte keine Funktion und ist entfernt
+        li.innerHTML = `<span class="inline-flex items-center gap-1.5 text-sm" data-id="${category.id}">${iconHtml(Tag, { size: 14, className: "text-text-muted" })}${category.name}</span>`;
         li.dataset.id = category.id;
         ul.appendChild(li);
 

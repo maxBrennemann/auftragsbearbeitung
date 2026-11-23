@@ -1,11 +1,12 @@
 <?php
 
-use Src\Classes\Link;
+use Src\Classes\Controller\TemplateController;
+use Src\Classes\Project\Icon;
 use MaxBrennemann\PhpUtilities\DBAccess;
 
-$data = DBAccess::selectQuery("SELECT ag.attribute_group, ag.descr, a.id, a.value, a.attribute_group_id, a.position 
-    FROM attribute_group ag 
-    LEFT JOIN attribute a 
+$data = DBAccess::selectQuery("SELECT ag.attribute_group, ag.descr, a.id, a.value, a.attribute_group_id, a.position
+    FROM attribute_group ag
+    LEFT JOIN attribute a
         ON ag.id = a.attribute_group_id
     ORDER BY ag.position, a.position");
 
@@ -17,77 +18,91 @@ foreach ($data as $d) {
             "descr" => $d["descr"],
             "id" => $d["attribute_group_id"],
             "name" => $d["attribute_group"],
+            "attributes" => [],
         ];
     }
 
-    $attributeGroups[$d["attribute_group"]]["attributes"][] = [
-        "id" => $d["id"],
-        "value" => $d["value"],
-    ];
+    /* Eigenschaften ohne Werte liefern durch den LEFT JOIN eine Zeile ohne Wert */
+    if ($d["id"] !== null) {
+        $attributeGroups[$d["attribute_group"]]["attributes"][] = [
+            "id" => $d["id"],
+            "value" => $d["value"],
+        ];
+    }
 }
 
 ?>
-<div class="mt-4">
-    <a class="link-primary" href="<?= Link::getPageLink("neues-produkt") ?>">Zum Produktformular</a>
-    <a class="link-primary ml-2" href="<?= Link::getPageLink("produkt") ?>">Zur Produktübersicht</a>
-</div>
+<?= TemplateController::getTemplate("productNav", ["current" => "attributes"]) ?>
 
-<div class="mt-2 defCont flex flex-row flex-wrap gap-2.5">
-    <?php foreach ($attributeGroups as $group) : ?>
-        <div class="singleAttribute bg-white rounded-lg p-3 flex-1">
-            <div>
-                <p>Name:</p>
-                <input type="text" class="input-primary mt-1 font-bold" value="<?= $group["name"] ?>" data-id="<?= $group["id"] ?>">
+<section class="defCont">
+    <div class="section-head">
+        <h2 class="section-title">Eigenschaften und Werte</h2>
+        <span class="section-meta">Werte per Ziehen am Griff sortieren</span>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+        <?php foreach ($attributeGroups as $group) : ?>
+            <!-- Reihenfolge der [data-id]-Elemente (Name, Beschreibung, Liste) wird in attributes.ts verwendet -->
+            <div class="singleAttribute sheet flex flex-col gap-2">
+                <label class="field">
+                    <span class="field-label">Eigenschaft</span>
+                    <input type="text" class="input-primary font-semibold" value="<?= $group["name"] ?>" data-id="<?= $group["id"] ?>">
+                </label>
+                <label class="field">
+                    <span class="field-label">Beschreibung</span>
+                    <input type="text" class="input-primary" value="<?= $group["descr"] ?>" data-id="<?= $group["id"] ?>">
+                </label>
+                <ul class="attributeValueGroups m-0 mt-2 space-y-1.5" id="attributeValues_<?= $group["id"] ?>" data-id="<?= $group["id"] ?>">
+                    <?php foreach ($group["attributes"] as $a) : ?>
+                        <li class="m-0 flex items-center gap-2 py-1.5 px-2.5 bg-[#f6f7f8] border border-line-soft rounded-control text-sm select-none transition-colors hover:border-line" draggable="true" data-id="<?= $a["id"] ?>">
+                            <span class="flex-1"><?= $a["value"] ?></span>
+                            <button type="button" class="btn-ghost btn-icon btn-sm cursor-grab" title="Zum Sortieren ziehen" aria-label="Zum Sortieren ziehen"><?= Icon::get("grip-vertical", 14) ?></button>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
             </div>
-            <div class="mt-2">
-                <p>Beschreibung:</p>
-                <input type="text" class="input-primary mt-1 font-semibold" value="<?= $group["descr"] ?>" data-id="<?= $group["id"] ?>">
-            </div>
-            <ul class="attributeValueGroups mt-5 space-y-2" id="attributeValues_<?= $group["id"] ?>" data-id="<?= $group["id"] ?>">
-                <?php foreach ($group["attributes"] as $a) : ?>
-                    <li class="transition-all duration-150 ease-in-out bg-slate-100 rounded-md py-2 px-3 hover:bg-blue-300 cursor-pointer flex select-none" draggable="true" data-id="<?= $a["id"] ?>">
-                        <span class="flex-1"><?= $a["value"] ?></span>
-                        <div class="flex-none mr-1" title="Anordnen">
-                            <button class="border-none" title="Anordnen"><?= \Src\Classes\Project\Icon::getDefault("iconMove") ?></button>
-                        </div>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
+        <?php endforeach; ?>
+    </div>
+</section>
+
+<div class="grid grid-cols-1 lg:grid-cols-2">
+    <section class="defCont addAttributeValue">
+        <div class="section-head">
+            <h2 class="section-title">Wert hinzufügen</h2>
         </div>
-    <?php endforeach; ?>
-</div>
+        <div class="field-grid">
+            <label class="field">
+                <span class="field-label">Wert</span>
+                <input class="input-primary" id="newVal" placeholder="z. B. XL">
+            </label>
+            <label class="field">
+                <span class="field-label">Zu Eigenschaft</span>
+                <select class="input-primary" id="selectAttribute">
+                    <?php foreach ($attributeGroups as $group) : ?>
+                        <option value="<?= $group["id"] ?>"><?= $group["name"] ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </label>
+        </div>
+        <button id="btnAddValue" class="btn-primary mt-4" data-binding="true"><?= Icon::get("plus") ?>Wert hinzufügen</button>
+    </section>
 
-<div class="defCont addAttributeValue">
-    <h3 class="font-semibold">Eigenschaftswert hinzufügen</h3>
-    <div class="mt-2">
-        <p>Attributname:</p>
-        <input class="input-primary mt-1" id="newVal">
-    </div>
-    <div class="mt-2">
-        <p>Eigenschaft:</p>
-        <select class="input-primary mt-1" id="selectAttribute">
-            <?php foreach ($attributeGroups as $group) : ?>
-                <option value="<?= $group["id"] ?>"><?= $group["name"] ?></option>
-            <?php endforeach; ?>
-        </select>
-    </div>
-    <div class="mt-2">
-        <button id="btnAddValue" class="btn-primary" data-binding="true">Hinzufügen</button>
-    </div>
-</div>
-
-<div class="defCont addAttribute">
-    <h3 class="font-semibold">Neue Eigenschaft hinzufügen</h3>
-    <div clas="mt-2">
-        <p>Eigenschaftsname:</p>
-        <input class="input-primary mt-1" id="newName">
-    </div>
-    <div class="mt-2">
-        <p>Beschreibung:</p>
-        <input class="input-primary mt-1" id="descr">
-    </div>
-    <div class="mt-2">
-        <button id="btnAddAttribute" class="btn-primary" data-binding="true">Hinzufügen</button>
-        <button id="btnAbortAttribute" class="btn-cancel" data-binding="true">Leeren</button>
-    </div>
+    <section class="defCont addAttribute">
+        <div class="section-head">
+            <h2 class="section-title">Neue Eigenschaft</h2>
+        </div>
+        <div class="field-grid">
+            <label class="field">
+                <span class="field-label">Name der Eigenschaft</span>
+                <input class="input-primary" id="newName" placeholder="z. B. Größe">
+            </label>
+            <label class="field">
+                <span class="field-label">Beschreibung</span>
+                <input class="input-primary" id="descr">
+            </label>
+        </div>
+        <div class="flex gap-2 mt-4">
+            <button id="btnAddAttribute" class="btn-primary" data-binding="true"><?= Icon::get("plus") ?>Eigenschaft anlegen</button>
+            <button id="btnAbortAttribute" class="btn-secondary" data-binding="true">Felder leeren</button>
+        </div>
+    </section>
 </div>

@@ -2,11 +2,40 @@
 @import "./table.css" layer(base);
 @import "./global.css" layer(base);
 
+/*
+  Design-Tokens (Richtlinie „Kontor“, Stand 11/2026)
+  Tinte = Hauptfarbe (Hauptaktion, Titel, Fokus, Links). Grün nur noch für Status „erledigt“.
+  Nutzbar als Tailwind-Klassen, z. B. bg-ink, text-ink, border-line, bg-paper, rounded-control, font-heading.
+*/
 @theme {
   --font-sans: "Open Sans", ui-sans-serif, system-ui;
+  --font-heading: "Raleway", "Open Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
 
   --text-xxs: 0.5rem;
+
+  --color-ink: #0a3350;
+  --color-ink-hover: #164a73;
+  --color-ink-dark: #062238;
+  --color-ink-soft: #dce5ee;
+
+  --color-paper: #eff0f1;
+  --color-sheet: #ffffff;
+  --color-line: #c4ccd4;
+  --color-line-soft: #dde2e7;
+
+  --color-text: #1d2833;
+  --color-text-muted: #5d6976;
+
+  --color-ok: #2e7d4f;
+  --color-ok-soft: #e9f3ec;
+  --color-warn: #94570a;
+  --color-warn-soft: #fbf0dc;
+  --color-danger: #b3261e;
+  --color-danger-soft: #fbe9e7;
+
+  --radius-control: 6px;
+  --radius-box: 10px;
 }
 
 @source "../../pages/*.php";
@@ -34,77 +63,619 @@
   }
 }
 
-@utility btn-primary {
-  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-green-500 rounded-sm text-sm border-0 text-white hover:bg-green-700 disabled:bg-green-200 disabled:hover:bg-green-300 disabled:hover:cursor-not-allowed active:scale-95 transition-transform duration-75 cursor-pointer;
+/*
+  Bedienelemente
+  Liegen bewusst in @layer components: Tailwind-Utilities wie ml-2 oder w-full überschreiben sie zuverlässig.
+
+  Buttons: höchstens ein btn-primary pro Bereich.
+    btn-primary | btn-secondary | btn-ghost | btn-danger | btn-danger-solid (nur in Bestätigungsdialogen)
+    Zusätze: btn-sm, btn-icon (reine Icon-Buttons brauchen title und aria-label)
+
+  Alte Namen bleiben als Aliase, bis die Seiten umgestellt sind (Markup in PHP, node_modules/js-classes).
+  JS darf Style-Klassen nicht als Selektor oder Zustand benutzen, sondern nur data-/aria-Attribute
+  (z. B. [data-popup-close], [data-tab], [data-info], aria-pressed, disabled):
+    btn-cancel, btn-edit, btn-active      -> btn-secondary
+    btn-delete                            -> btn-danger
+    btn-primary-small                     -> btn-primary btn-sm
+    btn-edit-small, btn-active-small      -> btn-secondary btn-sm
+*/
+@layer components {
+  .btn-primary, .btn-secondary, .btn-ghost, .btn-danger, .btn-danger-solid,
+  .btn-cancel, .btn-edit, .btn-active, .btn-delete,
+  .btn-primary-small, .btn-edit-small, .btn-active-small {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    /* my-1 wie bisher, damit bestehende Layouts nicht springen */
+    margin-block: 0.25rem;
+    padding: 0.375rem 0.75rem calc(0.375rem + 1px);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.25rem;
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: var(--radius-control);
+    cursor: pointer;
+    transition: background-color 120ms, transform 50ms;
+  }
+
+  :is(.btn-primary, .btn-secondary, .btn-ghost, .btn-danger, .btn-danger-solid,
+      .btn-cancel, .btn-edit, .btn-active, .btn-delete,
+      .btn-primary-small, .btn-edit-small, .btn-active-small) {
+    &:active:not(:disabled) { transform: translateY(1px); }
+    &:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+    &:disabled { cursor: not-allowed; opacity: 0.55; transform: none; }
+  }
+
+  .btn-primary, .btn-primary-small {
+    background-color: var(--color-ink);
+    border-color: var(--color-ink-dark);
+    color: #fff;
+    box-shadow: inset 0 -2px 0 rgb(0 0 0 / 0.22), inset 0 1px 0 rgb(255 255 255 / 0.08);
+    &:visited { color: #fff; }
+    &:hover:not(:disabled) { background-color: var(--color-ink-hover); }
+  }
+
+  .btn-secondary, .btn-cancel, .btn-edit, .btn-active, .btn-edit-small, .btn-active-small {
+    background-color: #fff;
+    border-color: var(--color-line);
+    color: var(--color-ink);
+    box-shadow: inset 0 -2px 0 #e3e7eb;
+    &:hover:not(:disabled) { background-color: #f5f7f9; }
+  }
+
+  .btn-ghost {
+    background-color: transparent;
+    color: var(--color-ink);
+    &:hover:not(:disabled) { background-color: rgb(10 51 80 / 0.07); }
+  }
+
+  .btn-danger, .btn-delete {
+    background-color: #fff;
+    border-color: #e3b4b0;
+    color: var(--color-danger);
+    box-shadow: inset 0 -2px 0 #f3dcda;
+    &:hover:not(:disabled) { background-color: var(--color-danger-soft); }
+  }
+
+  .btn-danger-solid {
+    background-color: var(--color-danger);
+    border-color: #8c1d17;
+    color: #fff;
+    box-shadow: inset 0 -2px 0 rgb(0 0 0 / 0.22);
+    &:hover:not(:disabled) { background-color: #9a2019; }
+  }
+
+  .btn-sm, .btn-primary-small, .btn-edit-small, .btn-active-small {
+    gap: 0.25rem;
+    margin-block: 0.125rem;
+    padding: 0.125rem 0.5rem 0.1875rem;
+    font-size: 0.75rem;
+  }
+
+  /* Icons (Icon::get / icon.ts) stehen im Textfluss; Tailwinds Preflight setzt svg sonst auf display: block */
+  svg.lucide { display: inline-block; flex: none; }
+
+  .btn-icon { padding: 0.375rem; }
+  .btn-icon.btn-sm { padding: 0.1875rem; }
+
+  /* Button-Gruppe (z. B. Zeitraum): aktive Wahl ist gefüllt wie ein gedrückter Knopf.
+     <div class="btn-group"><button class="is-active">12 Monate</button>…</div> */
+  .btn-group {
+    display: inline-flex;
+    flex-wrap: wrap;
+    overflow: hidden;
+    background-color: #fff;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-control);
+    box-shadow: inset 0 -2px 0 #e3e7eb;
+    & > button {
+      margin: 0;
+      padding: 0.3125rem 0.6875rem 0.375rem;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      line-height: 1.25rem;
+      color: var(--color-ink);
+      background: transparent;
+      border: 0;
+      border-right: 1px solid var(--color-line);
+      border-radius: 0;
+      cursor: pointer;
+      &:last-child { border-right: 0; }
+      &:hover:not(.is-active) { background-color: #f5f7f9; }
+      &:focus-visible { outline: 2px solid var(--color-ink); outline-offset: -2px; }
+      &.is-active { background-color: var(--color-ink); color: #fff; box-shadow: inset 0 -2px 0 rgb(0 0 0 / 0.22); }
+    }
+  }
+
+  /* Menü-Auslöser „⋮“ (toggleOptionsView, kunde.php) */
+  .btn-options {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-radius: var(--radius-control);
+    background: transparent;
+    color: var(--color-ink);
+    font-size: 1.125rem;
+    font-weight: 800;
+    cursor: pointer;
+    &:hover { background-color: rgb(10 51 80 / 0.07); }
+    &:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+  }
+
+  /* Aufklappmenü (toggleOptionsView): seltene Aktionen hinter „⋮“ */
+  .menu-panel {
+    min-width: 14rem;
+    padding: 0.25rem;
+    background-color: #fff;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-control);
+    box-shadow: 0 8px 20px rgb(10 30 50 / 0.14);
+  }
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    margin: 0;
+    padding: 0.375rem 0.625rem;
+    font-size: 0.8125rem;
+    text-align: left;
+    white-space: nowrap;
+    color: var(--color-text);
+    background: transparent;
+    border: 0;
+    border-radius: 4px;
+    cursor: pointer;
+    &:hover { background-color: #f2f5f8; }
+    &:focus-visible { outline: 2px solid var(--color-ink); outline-offset: -2px; }
+  }
+  .menu-item-danger { color: var(--color-danger); &:hover { background-color: var(--color-danger-soft); } }
+  .menu-divider { height: 1px; margin: 0.25rem 0; background-color: var(--color-line-soft); }
+
+  /* Auswählbare Karte (z. B. Rechnungstexte). Zustand über aria-pressed, nicht über Farbklassen. */
+  .choice-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.625rem 0.75rem;
+    background-color: #fff;
+    border: 1px solid var(--color-line-soft);
+    border-radius: var(--radius-control);
+    cursor: pointer;
+    user-select: none;
+    transition: border-color 120ms, background-color 120ms;
+    &:hover { border-color: var(--color-line); }
+    &:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+    &[aria-pressed="true"] { background-color: #eef3f8; border-color: var(--color-ink); }
+    & .choice-mark { flex: none; display: grid; place-items: center; width: 1.125rem; height: 1.125rem; margin-top: 0.0625rem; border: 1.5px solid var(--color-line); border-radius: 3px; color: transparent; background: #fff; }
+    &[aria-pressed="true"] .choice-mark { border-color: var(--color-ink); background-color: var(--color-ink); color: #fff; }
+  }
+
+  /*
+    Kopfzeile (header.php): eine kompakte, beim Scrollen stehende Leiste.
+    Links Marke + Pfad, rechts Suche, Benachrichtigungen, Einstellungen, Zeit, Abmelden.
+    Breite wie der Seiteninhalt (main + Abschnittsabstand), unten die dunkelblaue Linie als Erkennungszeichen.
+  */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background-color: #fff;
+    border-bottom: 2px solid var(--color-ink);
+  }
+  .site-header__bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 3.5rem;
+  }
+  .site-brand {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--color-ink);
+    white-space: nowrap;
+    text-decoration: none;
+    & img { width: 1.75rem; height: 1.75rem; border-radius: var(--radius-control); }
+  }
+  .site-crumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 0;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    & a { color: var(--color-ink); font-weight: 600; text-decoration: none; &:hover { text-decoration: underline; } }
+    & [aria-current="page"] { color: var(--color-text); font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+    & svg { color: var(--color-line); }
+  }
+  .site-crumbs--bar { padding-left: 0.75rem; border-left: 1px solid var(--color-line-soft); }
+  .site-crumbs--row { display: none; padding-bottom: 0.5rem; }
+  .site-actions { margin-left: auto; display: flex; align-items: center; gap: 0.125rem; }
+  .site-search-toggle { display: none; }
+
+  .notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 1rem;
+    height: 1rem;
+    padding: 0 0.25rem;
+    font-size: 0.625rem;
+    font-weight: 700;
+    line-height: 1rem;
+    text-align: center;
+    color: #fff;
+    background-color: var(--color-danger);
+    border-radius: 9999px;
+    box-shadow: 0 0 0 2px #fff;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* laufende Arbeitszeit; nur sichtbar, solange die Zeiterfassung läuft (timetracking.ts setzt data-running) */
+  .time-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    height: 1.75rem;
+    padding: 0 0.5rem;
+    margin-inline: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-ink);
+    background-color: var(--color-ink-soft);
+    border-radius: var(--radius-control);
+    text-decoration: none;
+    &[data-running="false"] { display: none; }
+    &:hover { background-color: #cfdbe7; }
+  }
+
+  /* Suchfeld (searchView.php): gleicher Stil wie input-primary, Lupe rechts */
+  .searchContainer {
+    display: inline-flex;
+    align-items: center;
+    height: 2rem;
+    background-color: #fff;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-control);
+    box-shadow: inset 0 1px 2px rgb(16 32 48 / 0.07);
+    &:focus-within { border-color: var(--color-ink); box-shadow: inset 0 1px 2px rgb(16 32 48 / 0.07), 0 0 0 2px var(--color-ink-soft); }
+    & input { flex: 1; min-width: 0; height: 100%; padding: 0 0.25rem 0 0.625rem; background: transparent; border: 0; outline: none; font: inherit; color: var(--color-text); }
+    & input::placeholder { color: var(--color-text-muted); }
+    & > span { display: inline-flex; align-items: center; padding: 0 0.5rem; color: var(--color-text-muted); cursor: pointer; }
+  }
+  .site-header .searchContainer { width: 14rem; }
+
+  @media (min-width: 1024px) {
+    .site-header .searchContainer { width: 18rem; }
+  }
+
+  /* Handy: Pfad in eigener Zeile, Suche hinter Lupen-Button */
+  @media (max-width: 639px) {
+    .site-crumbs--bar { display: none; }
+    .site-crumbs--row { display: flex; }
+    .site-search-toggle { display: inline-flex; }
+    .site-header .searchContainer { display: none; }
+    .site-header.search-open .searchContainer {
+      display: flex;
+      position: absolute;
+      left: 0.875rem;
+      right: 0.875rem;
+      top: calc(100% + 0.375rem);
+      width: auto;
+      height: 2.5rem;
+      box-shadow: 0 8px 20px rgb(10 30 50 / 0.14);
+    }
+  }
+
+  /* Kundenkarte im Auswahl-Dialog (orderManager.ts setzt aria-pressed) */
+  .customer-card[aria-pressed="true"] { background-color: #eef3f8; border-color: var(--color-ink); }
+
+  /* Auf-/Zuklappen eines Bereichs: <button class="disclosure" data-toggle … > Titel <span class="toggle-…">⌄</span></button> */
+  .disclosure {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0;
+    padding: 0.5rem 0;
+    font-weight: 700;
+    color: var(--color-ink);
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--color-line-soft);
+    border-radius: 0;
+    cursor: pointer;
+    &:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+  }
+
+  /* Links */
+  .link-primary {
+    color: var(--color-ink);
+    font-weight: 600;
+    text-underline-offset: 2px;
+    &:hover { color: var(--color-ink-hover); text-decoration: underline; }
+  }
+
+  /* Eingabefelder: leicht eingelassen (Buttons sind leicht erhaben) */
+  .input-primary {
+    width: 9rem;
+    height: 2rem;
+    margin-block: 0.25rem;
+    padding: 0.25rem 0.625rem;
+    font: inherit;
+    color: var(--color-text);
+    background-color: #fff;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-control);
+    box-shadow: inset 0 1px 2px rgb(16 32 48 / 0.07);
+    &:focus {
+      outline: none;
+      border-color: var(--color-ink);
+      box-shadow: inset 0 1px 2px rgb(16 32 48 / 0.07), 0 0 0 2px var(--color-ink-soft);
+    }
+    &:disabled { background-color: #f4f5f6; color: var(--color-text-muted); box-shadow: none; }
+    &[aria-invalid="true"], &.is-invalid {
+      border-color: var(--color-danger);
+      box-shadow: inset 0 1px 2px rgb(16 32 48 / 0.07), 0 0 0 2px var(--color-danger-soft);
+    }
+  }
+  textarea.input-primary { height: auto; min-height: 4rem; padding-block: 0.375rem; }
+
+  /* Wert-Chip für einzelne Werte im Fließtext (Zahlungsdatum, Summen, Angebotsstatus) */
+  .info-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 0.375rem;
+    margin-block: 0.125rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text);
+    background-color: var(--color-paper);
+    border: 1px solid var(--color-line-soft);
+    border-radius: 4px;
+  }
+
+  /* Info-„i“ neben Labels */
+  .info-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-inline: 0.125rem;
+    padding: 0;
+    border: 0;
+    border-radius: 9999px;
+    background-color: var(--color-ink-soft);
+    color: var(--color-ink-hover);
+    font-size: var(--text-xxs);
+    cursor: pointer;
+    &:hover { background-color: var(--color-ink); color: #fff; }
+    &:disabled { background-color: #e5e7eb; color: #9ca3af; cursor: not-allowed; }
+  }
+
+  /* Reiter (Rechnungsposten: Zeit / Leistung / Produkt) */
+  .tab-button {
+    flex-grow: 1;
+    padding: 0.5rem;
+    border: 0;
+    border-radius: 0;
+    background-color: var(--color-ink);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    &:first-child { border-top-left-radius: var(--radius-box); }
+    &:last-child { border-top-right-radius: var(--radius-box); }
+    &:hover:not(:disabled) { background-color: var(--color-ink-hover); }
+    &:disabled { cursor: not-allowed; }
+  }
+  .tab-active, .tab-button[aria-selected="true"] { background-color: var(--color-ink-hover); box-shadow: inset 0 -3px 0 var(--color-ink-soft); }
+  .tab-content { padding: 1rem; }
 }
 
-@utility btn-primary-small {
-  @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-0.5 px-1.5 my-0.5 bg-green-500 rounded-sm border-0 text-white text-xs hover:bg-green-700 disabled:bg-green-200 disabled:hover:bg-green-300 disabled:hover:cursor-not-allowed active:scale-95 transition-transform duration-75 cursor-pointer;
+/*
+  Abschnitte und Felder
+  Aufbau: <section class="defCont">
+            <div class="section-head"><h2 class="section-title">…</h2> [Aktionen] </div>
+            <span class="group-label">…</span>
+            <div class="field-grid"><label class="field"><span class="field-label">…</span><input class="input-primary"> <span class="field-hint">…</span></label></div>
+          </section>
+  Innerhalb eines Abschnitts gibt es nur eine weitere Ebene: .sheet (weißes Blatt) bzw. .innerDefCont.
+*/
+@layer components {
+  /* Überschriften in Abschnitten bekommen überall die Titelschrift, auch ohne eigene Klasse */
+  .defCont :where(h2, h3) {
+    font-family: var(--font-heading);
+    font-feature-settings: "lnum" 1;
+    color: var(--color-ink);
+  }
+
+  .section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    padding-bottom: 0.625rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .section-title {
+    font-family: var(--font-heading);
+    font-feature-settings: "lnum" 1;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--color-ink);
+  }
+
+  .section-meta { font-size: 0.75rem; color: var(--color-text-muted); }
+
+  .page-title {
+    font-family: var(--font-heading);
+    font-feature-settings: "lnum" 1;
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+
+  .group-label {
+    display: block;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+  }
+
+  .sheet {
+    background-color: var(--color-sheet);
+    border: 1px solid var(--color-line-soft);
+    border-radius: var(--radius-control);
+    padding: 0.875rem;
+    min-width: 0;
+  }
+
+  .field-grid {
+    display: grid;
+    gap: 0.875rem 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11.25rem), 1fr));
+  }
+
+  .field { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+  .field > .input-primary { width: 100%; margin-block: 0; }
+  .field-label { display: inline-flex; align-items: center; gap: 0.3125rem; font-size: 0.8125rem; font-weight: 600; color: #34414d; }
+  .field-hint { font-size: 0.75rem; color: var(--color-text-muted); }
+  .field-hint.is-error { color: var(--color-danger); font-weight: 600; }
+
+  /* Kennzahlen-Leiste: Zellen in einem gemeinsamen Rahmen, getrennt durch Linien (wie ein Berichtskopf) */
+  .kpi {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+    padding: 0.75rem 1rem 0.8125rem;
+    border-right: 1px solid var(--color-line-soft);
+    border-bottom: 1px solid var(--color-line-soft);
+    margin: 0 -1px -1px 0;
+  }
+  .kpi-main { box-shadow: inset 0 3px 0 var(--color-ink); }
+  .kpi-label { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-muted); }
+  .kpi-value { font-size: 1.5625rem; font-weight: 700; line-height: 1.3; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; color: var(--color-text); }
+  .kpi-main .kpi-value { color: var(--color-ink); }
+  .kpi-delta { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.3125rem; min-height: 1.25rem; font-size: 0.75rem; color: var(--color-text-muted); }
+  .kpi-delta b { display: inline-flex; align-items: center; gap: 0.125rem; font-weight: 700; }
+  .kpi-delta .is-good { color: var(--color-ok); }
+  .kpi-delta .is-bad { color: var(--color-danger); }
 }
 
-@utility link-primary {
-  @apply text-blue-500 hover:text-blue-600 font-semibold hover:underline visited:text-blue-800;
+/*
+  Status, Typen und Hinweise
+  Stempel = Zustand eines Belegs/Auftrags (Versalien, Rahmen):
+    <span class="stamp stamp-ok">Bezahlt</span>
+    stamp-open (offen) | stamp-work (in Arbeit) | stamp-ok (fertig, bezahlt, angenommen)
+    stamp-warn (bald fällig) | stamp-danger (überfällig, storniert, abgelehnt) | stamp-muted (archiviert, abgelaufen)
+  Typ-Etikett = Art eines Eintrags, kein Zustand: <span class="type-label">Leistung</span>
+  Hinweis = Text mit Kennwort:
+    <div class="note note-warn"><p class="note-head"><i data-lucide="triangle-alert"></i>Achtung</p><p>…</p></div>
+    note-info (Hinweis) | note-warn (Achtung) | note-danger (Gesperrt, Fehler)
+*/
+@layer components {
+  .stamp {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.0625rem 0.375rem;
+    font-size: 0.65625rem;
+    font-weight: 700;
+    line-height: 1rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    vertical-align: middle;
+    border: 1px solid currentColor;
+    border-radius: 3px;
+    color: #4a5763;
+    background-color: #f3f4f6;
+  }
+  .stamp-open { color: #4a5763; background-color: #f3f4f6; }
+  .stamp-work { color: var(--color-ink); background-color: var(--color-ink-soft); }
+  .stamp-ok { color: var(--color-ok); background-color: var(--color-ok-soft); }
+  .stamp-warn { color: var(--color-warn); background-color: var(--color-warn-soft); }
+  .stamp-danger { color: var(--color-danger); background-color: var(--color-danger-soft); }
+  .stamp-muted { color: #7b8692; background-color: transparent; border-style: dashed; }
+
+  .type-label {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 0.375rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    line-height: 1.125rem;
+    white-space: nowrap;
+    vertical-align: middle;
+    color: var(--color-ink);
+    background-color: var(--color-ink-soft);
+    border-radius: 3px;
+  }
+
+  .note {
+    padding: 0.625rem 0.75rem 0.6875rem;
+    font-size: 0.8125rem;
+    background-color: #fff;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-control);
+  }
+  .note-head {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin-bottom: 0.1875rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    & svg { width: 0.875rem; height: 0.875rem; flex: none; }
+  }
+  .note-info { border-color: #b7c8d8; & .note-head { color: var(--color-ink); } }
+  .note-warn { border-color: #e2c48f; background-color: #fffcf6; & .note-head { color: var(--color-warn); } }
+  .note-danger { border-color: #e3b4b0; background-color: #fffafa; & .note-head { color: var(--color-danger); } }
 }
 
-@utility input-primary {
-  @apply w-36 h-8 px-2.5 py-1 my-1 rounded-sm ring-1 ring-gray-300 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white disabled:text-gray-400;
+/*
+  Rückmeldungen aus node_modules/js-classes (notification()).
+  Bewusst ohne @layer: nur so schlagen diese Regeln die Tailwind-Klassen des Pakets (bg-green-500 usw.).
+*/
+#notificationContainer [role="alert"] {
+  background-color: #fff;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-control);
+  box-shadow: 0 6px 18px rgb(10 30 50 / 0.14);
+  overflow: hidden;
+  color: var(--color-text);
 }
-
-@utility link-button {
-  @apply px-3 py-1 m-1 font-semibold text-sm bg-slate-100 text-slate-700 rounded-lg shadow-xs disabled:bg-gray-300 border-2 border-blue-300 hover:bg-blue-200;
-}
-
-@utility btn-delete {
-  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-red-400 rounded-sm text-sm border-0 text-white hover:bg-red-600 disabled:bg-red-200 disabled:hover:bg-red-300 disabled:hover:cursor-not-allowed cursor-pointer;
-}
-
-@utility btn-edit {
-  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-blue-400 rounded-sm text-sm border-0 text-white hover:bg-blue-600 cursor-pointer;
-}
-
-@utility btn-active {
-  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 bg-blue-400 rounded-sm text-sm border-0 text-white hover:bg-blue-600 cursor-pointer;
-}
-
-@utility btn-edit-small {
-  @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-0.5 px-1.5 my-0.5 bg-blue-400 rounded-sm text-xs border-0 text-white hover:bg-blue-600 cursor-pointer;
-}
-
-@utility btn-active-small {
-  @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-0.5 px-1.5 my-0.5 bg-blue-400 rounded-sm text-xs border-0 text-white hover:bg-blue-600 cursor-pointer;
-}
-
-@utility btn-cancel {
-  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 mr-1 bg-white rounded-sm text-sm border-0 text-black hover:bg-slate-100 shadow-xs ring-offset-black gap-2 data-focus:outline-1 data-focus:outline-black ring-1 ring-gray-300 disabled:bg-slate-100 cursor-pointer;
-}
-
-@utility btn-inactive {
-  @apply inline-flex items-center justify-center font-sans font-semibold leading-5 py-1.5 px-2.5 my-1 mr-1 bg-white rounded-sm text-sm border-0 text-black hover:bg-slate-100 shadow-xs ring-offset-black gap-2 data-focus:outline-1 data-focus:outline-black ring-1 ring-gray-300 disabled:bg-slate-100;
-}
-
-@utility btn-options {
-  @apply border-none w-5 font-extrabold text-black text-lg hover:bg-gray-300 cursor-pointer;
-}
-
-@utility info-badge {
-  @apply inline-flex items-center justify-center font-sans font-thin leading-5 py-1 px-2 my-0.5 bg-gray-100 rounded-lg border border-gray-400 text-gray-900;
-}
-
-@utility info-button {
-  @apply inline-flex items-center justify-center font-sans font-thin mx-0.5 bg-blue-100 rounded-full border-0 p-0 border-blue-400 text-blue-500 text-xxs hover:bg-blue-600 hover:text-blue-100 disabled:bg-gray-200 disabled:hover:bg-gray-300 disabled:hover:cursor-not-allowed;
-}
-
-@utility tab-button {
-  @apply grow border-0 p-2 bg-sky-900 font-semibold text-white rounded-none first:rounded-tl-lg last:rounded-tr-lg hover:bg-sky-800 disabled:hover:cursor-not-allowed;
-}
-
-@utility tab-active {
-  @apply bg-sky-800 text-white;
-}
-
-@utility tab-content {
-  @apply p-4;
-}
+#notificationContainer [role="alert"] > div:first-child { width: 0.375rem; border-radius: 0; }
+#notificationContainer .bg-green-500 { background-color: var(--color-ok); }
+#notificationContainer .fill-green-500 { fill: var(--color-ok); }
+#notificationContainer .bg-red-500 { background-color: var(--color-danger); }
+#notificationContainer .fill-red-500 { fill: var(--color-danger); }
+#notificationContainer .bg-orange-500 { background-color: var(--color-warn); }
+#notificationContainer .fill-orange-500 { fill: var(--color-warn); }
 
 @utility overlay-container {
   @apply inset-0 flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-white/75 transition-opacity duration-500 opacity-0;
@@ -157,3 +728,9 @@
     font-weight: normal;
     font-style: italic;
 }
+
+/*
+  Lange Kartenlisten (z. B. Aufträge eines Kunden): nur die ersten 8 zeigen, bis „Alle anzeigen“ geklickt wird.
+  Ohne @layer, weil die Karten selbst Utilities wie `flex` tragen, die sonst gewinnen würden.
+*/
+.cards-collapsed .orderCard:nth-child(n + 9) { display: none; }

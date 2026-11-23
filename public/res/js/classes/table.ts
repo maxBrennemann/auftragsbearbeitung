@@ -1,9 +1,11 @@
 //@ts-nocheck
 
 import { ajax } from "js-classes/ajax";
+import { ArrowDownWideNarrow, ArrowUpDown, ArrowUpNarrowWide, Check, GripVertical, Pencil, Plus, Save, Trash2 } from "lucide";
 
 import { loadFromLocalStorage, saveToLocalStorage } from "../global";
 
+import { iconHtml } from "./icon";
 import { tableConfig } from "./tableconfig";
 
 export const renderTable = (containerId, header, data, options = {}) => {
@@ -166,15 +168,14 @@ const createAddRow = (count, header, table, options = {}) => {
 
     const btn = document.createElement("button");
     btn.dataset.status = "add";
-    btn.className = "border-0 inline-flex items-center";
+    btn.className = "btn-secondary btn-sm";
     const btnSpan = document.createElement("span");
     btnSpan.innerHTML = getAddBtn();
-    btnSpan.className = "inline-flex border-0 bg-green-400 p-1 rounded-md cursor-pointer";
+    btnSpan.className = "inline-flex";
     btn.appendChild(btnSpan);
 
     const text = document.createElement("span");
     text.textContent = "Neuer Eintrag";
-    text.className = "ml-1";
     btn.appendChild(text);
 
     btn.addEventListener("click", () => {
@@ -362,7 +363,7 @@ const addEditBtn = (data, table, row, actionsCell, options) => {
         const editBtn = document.createElement("button");
         editBtn.innerHTML = getEditBtn();
         editBtn.title = "Bearbeiten";
-        editBtn.className = "inline-flex border-0 bg-green-400 p-1 rounded-md cursor-pointer";
+        editBtn.className = "btn-ghost btn-icon btn-sm";
         editBtn.dataset.status = "edit";
         editBtn.addEventListener("click", () => {
             dispatchActionEvent("rowEdit", data, table, { row });
@@ -389,7 +390,7 @@ const addDeleteBtn = (data, table, row, actionsCell, options) => {
         const deleteBtn = document.createElement("button");
         deleteBtn.innerHTML = getDeleteBtn();
         deleteBtn.title = "Löschen";
-        deleteBtn.className = "inline-flex border-0 bg-red-400 p-1 rounded-md ml-1 cursor-pointer";
+        deleteBtn.className = "btn-ghost btn-icon btn-sm ml-1 text-danger";
         deleteBtn.addEventListener("click", () => {
             dispatchActionEvent("rowDelete", data, table, { row });
         });
@@ -404,7 +405,7 @@ const addCheckBtn = (data, table, row, actionsCell, options) => {
         const checkBtn = document.createElement("button");
         checkBtn.innerHTML = getCheckBtn();
         checkBtn.title = "Erledigt";
-        checkBtn.className = "inline-flex border-0 bg-blue-400 p-1 rounded-md ml-1 cursor-pointer";
+        checkBtn.className = "btn-ghost btn-icon btn-sm ml-1 text-ok";
         checkBtn.addEventListener("click", () => {
             dispatchActionEvent("rowCheck", data, table, { row });
         });
@@ -419,7 +420,7 @@ const addMoveBtn = (data, table, row, actionsCell, options) => {
         const checkBtn = document.createElement("button");
         checkBtn.innerHTML = getMoveBtn();
         checkBtn.title = "Bewegen";
-        checkBtn.className = "inline-flex border-0 bg-zinc-400 p-1 rounded-md ml-1 drag-handle cursor-pointer";
+        checkBtn.className = "btn-ghost btn-icon btn-sm ml-1 drag-handle cursor-grab";
         //checkBtn.draggable = false;
         checkBtn.addEventListener("click", () => {
             dispatchActionEvent("rowMove", data, table, { row });
@@ -435,7 +436,7 @@ const addUploadBtn = (data, table, row, actionsCell, options) => {
         const checkBtn = document.createElement("button");
         checkBtn.innerHTML = getAddBtn();
         checkBtn.title = "Hinzufügen";
-        checkBtn.className = "inline-flex border-0 bg-yellow-400 p-1 rounded-md ml-1 cursor-pointer";
+        checkBtn.className = "btn-ghost btn-icon btn-sm ml-1";
         checkBtn.addEventListener("click", () => {
             dispatchActionEvent("rowUpload", data, table, { row });
         });
@@ -539,7 +540,7 @@ const getSortDirection = (th, sorter) => {
         sort = true;
     }
 
-    th.classList.add("bg-sky-800");
+    th.classList.add("is-sorted");
     return sort;
 }
 
@@ -555,7 +556,7 @@ const resetTableHeaders = (table, th) => {
         if (sorter == null) {
             return;
         }
-        currentTh.classList.remove("bg-sky-800");
+        currentTh.classList.remove("is-sorted");
         sorter.innerHTML = getSortNone();
     });
 }
@@ -598,65 +599,20 @@ const format = (value, format) => {
     return value;
 }
 
-const getEditBtn = () => {
-    return `
-    <svg class="inline" style="width:15px;height:15px" viewBox="0 0 24 24" title="Bearbeiten">
-        <path class="fill-white" d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"></path>
-    </svg>`;
-}
+const getEditBtn = () => iconHtml(Pencil, { title: "Bearbeiten" });
 
-const getDeleteBtn = () => {
-    return `
-    <svg class="inline" style="width:15px;height:15px" viewBox="0 0 24 24" title="Löschen">
-        <path class="fill-white" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"></path>
-    </svg>`;
-}
+const getDeleteBtn = () => iconHtml(Trash2, { title: "Löschen" });
 
-const getAddBtn = () => {
-    return `
-    <svg class="inline" style="width:15px;height:15px" viewBox="0 0 24 24" title="Hinzufügen">
-        <path class="fill-white" d="M20 14H14V20H10V14H4V10H10V4H14V10H20V14Z" />
-    </svg>`;
-}
+const getAddBtn = () => iconHtml(Plus, { title: "Hinzufügen" });
 
-const getCheckBtn = () => {
-    return `
-    <svg class="inline" style="width:15px;height:15px" viewBox="0 0 24 24" title="Check">
-        <path class="fill-white" d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z" />
-    </svg>`;
-}
+const getCheckBtn = () => iconHtml(Check, { title: "Erledigt" });
 
-const getSaveBtn = () => {
-    return `
-    <svg class="inline" style="width:15px;height:15px" viewBox="0 0 24 24" title="Speichern">
-        <path class="fill-white" d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z" />
-    </svg>`;
-}
+const getSaveBtn = () => iconHtml(Save, { title: "Speichern" });
 
-const getMoveBtn = () => {
-    return `
-     <svg class="inline" style="width:15px;height:15px" viewBox="0 0 24 24" title="Bewegen">
-        <path class="fill-white" d="M13,6V11H18V7.75L22.25,12L18,16.25V13H13V18H16.25L12,22.25L7.75,18H11V13H6V16.25L1.75,12L6,7.75V11H11V6H7.75L12,1.75L16.25,6H13Z" />
-    </svg>`;
-}
+const getMoveBtn = () => iconHtml(GripVertical, { title: "Verschieben" });
 
-const getSortAsc = () => {
-    return `
-    <svg class="inline" style="width:12px;height:12px" viewBox="0 0 24 24" title="Aufsteigend sortieren">
-        <path d="M19 17H22L18 21L14 17H17V3H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z" fill="white" />
-    </svg>`;
-}
+const getSortAsc = () => iconHtml(ArrowUpNarrowWide, { size: 12, title: "Aufsteigend sortiert" });
 
-const getSortDesc = () => {
-    return `
-    <svg class="inline" style="width:12px;height:12px" viewBox="0 0 24 24" title="Absteigend sortieren">
-        <path d="M19 7H22L18 3L14 7H17V21H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z" fill="white" />
-    </svg>`;
-}
+const getSortDesc = () => iconHtml(ArrowDownWideNarrow, { size: 12, title: "Absteigend sortiert" });
 
-const getSortNone = () => {
-    return `
-    <svg class="inline" style="width:12px;height:12px" viewBox="0 0 24 24" title="Unsortiert">
-        <path fill="currentColor" d="M18 21L14 17H17V7H14L18 3L22 7H19V17H22M2 19V17H12V19M2 13V11H9V13M2 7V5H6V7H2Z" fill="white" />
-    </svg>`;
-}
+const getSortNone = () => iconHtml(ArrowUpDown, { size: 12, className: "opacity-40", title: "Unsortiert" });

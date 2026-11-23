@@ -12,6 +12,7 @@ $cancelledInvoices = Invoice::getCancelledForOrder((int) $orderId);
         <p class="font-semibold">Stornierte Rechnungen zu diesem Auftrag</p>
         <?php foreach ($cancelledInvoices as $cancelled): ?>
             <p class="mt-1">
+                <span class="stamp stamp-danger">Storniert</span>
                 Rechnung Nr. <?= (int) $cancelled["invoice_number"] ?> vom <?= $cancelled["invoice_date"] ?>
                 (<a class="link-primary" href="<?= Link::getResourcesShortLink("Rechnung_" . (int) $cancelled["invoice_number"] . ".pdf", "pdf") ?>" target="_blank">PDF</a>)
                 <?php if ($cancelled["cancellation_number"] !== null): ?>

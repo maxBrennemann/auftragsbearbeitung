@@ -6,7 +6,7 @@ use Src\Classes\Project\Config;
 use MaxBrennemann\PhpUtilities\DBAccess;
 use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 
-define("CURRENTVERSION", "1.2.2");
+define("CURRENTVERSION", "1.3.0");
 ini_set("display_errors", true);
 
 /**

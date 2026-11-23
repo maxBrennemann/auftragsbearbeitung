@@ -3,50 +3,64 @@
 use Src\Classes\Project\Icon;
 
 ?>
-<div class="w-full">
-    <div class="bg-gray-100 rounded-lg p-2">
-        <h1>Zeiterfassung</h1>
-        <div class="mt-2">
-            <label class="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" value="" class="sr-only peer" data-fun="startStopTime" data-binding="true" id="startStopChecked">
-                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-hidden peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:rtl:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300" id="statusTimeTracking">Zeiterfassung <span id="updateStartStopName">starten</span></span>
-            </label>
-        </div>
-        <div class="inline-flex items-center mt-2">
-            <button class="btn-cancel inline-flex items-center" id="pauseCurrentTracking" data-fun="pauseCurrentTracking" data-binding="true" disabled><?= Icon::getDefault("iconPause") ?><span class="ml-1">Pausieren</span></button>
-            <button class="btn-cancel ml-2" disabled data-fun="cancelCurrentTracking" data-binding="true" id="cancelCurrentTracking">Abbrechen</button>
+<section class="defCont">
+    <div class="section-head">
+        <h2 class="section-title">Zeiterfassung</h2>
+        <span class="section-meta">die laufende Zeit erscheint auch oben in der Kopfzeile, wenn in den Einstellungen aktiviert</span>
+    </div>
+    <div class="flex flex-wrap items-center gap-4">
+        <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" value="" class="sr-only peer" data-fun="startStopTime" data-binding="true" id="startStopChecked">
+            <div class="w-11 h-6 bg-line rounded-full peer peer-focus-visible:ring-2 peer-focus-visible:ring-ink peer-focus-visible:ring-offset-2 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:border-line after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-ink"></div>
+            <span class="ms-3 font-semibold" id="statusTimeTracking">Zeiterfassung <span id="updateStartStopName">starten</span></span>
+        </label>
+        <div class="flex items-center gap-2">
+            <button class="btn-secondary" id="pauseCurrentTracking" data-fun="pauseCurrentTracking" data-binding="true" disabled><?= Icon::get("pause") ?>Pausieren</button>
+            <button class="btn-secondary" disabled data-fun="cancelCurrentTracking" data-binding="true" id="cancelCurrentTracking">Abbrechen</button>
         </div>
     </div>
-    <div class="mt-2">
-        <div>
-            <h2 class="font-bold">Zeitenübersicht</h2>
-        </div>
-        <div class="mt-2">
-            <button class="btn-primary" data-fun="selectEntries" data-binding="true" data-value="all">Alle</button>
-            <button class="btn-primary" data-fun="selectEntries" data-binding="true" data-value="today">Heute</button>
-            <button class="btn-primary" data-fun="selectEntries" data-binding="true" data-value="week">Diese Woche</button>
-            <button class="btn-primary" data-fun="selectEntries" data-binding="true" data-value="month">Dieser Monat</button>
+</section>
 
-            <label class="ml-2">
-                <input type="date" class="input-primary timeDates" data-fun="selectDates" data-write="true"> bis
+<section class="defCont">
+    <div class="section-head">
+        <h2 class="section-title">Erfasste Zeiten</h2>
+    </div>
+    <div class="flex flex-wrap items-end gap-4 mb-4">
+        <div class="btn-group" role="group" aria-label="Zeitraum">
+            <button type="button" class="is-active" aria-pressed="true" data-fun="selectEntries" data-binding="true" data-value="all">Alle</button>
+            <button type="button" aria-pressed="false" data-fun="selectEntries" data-binding="true" data-value="today">Heute</button>
+            <button type="button" aria-pressed="false" data-fun="selectEntries" data-binding="true" data-value="week">Diese Woche</button>
+            <button type="button" aria-pressed="false" data-fun="selectEntries" data-binding="true" data-value="month">Dieser Monat</button>
+        </div>
+        <div class="flex items-end gap-2">
+            <label class="field">
+                <span class="field-label">Von</span>
+                <input type="date" class="input-primary timeDates" data-fun="selectDates" data-write="true">
             </label>
-            <label>
+            <label class="field">
+                <span class="field-label">Bis</span>
                 <input type="date" class="input-primary timeDates" data-fun="selectDates" data-write="true">
             </label>
         </div>
-        <div class="relative">
-            <div id="timeTrackingTable" class="mt-2 overflow-auto"></div>
-        </div>
     </div>
-    <div class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-white/75" id="askTask">
-        <div class="relative max-w-2xl max-h-full shadow-xl bg-white rounded-xs border border-solid border-gray-400 p-2">
-            <p>Beschreibung der Tätigkeit:</p>
-            <input type="text" class="block mt-2 input-primary w-full" id="getTask">
-            <div class="mt-2">
-                <button class="btn-cancel" data-fun="cancelTimeTracking" data-binding="true">Abbrechen</button>
-                <button class="btn-primary" data-fun="sendTimeTracking" data-binding="true">Abschicken</button>
-            </div>
+    <div class="relative">
+        <div id="timeTrackingTable" class="overflow-auto"></div>
+    </div>
+</section>
+
+<!-- Dialog beim Stoppen; timeTracking.ts schaltet hidden/flex um -->
+<div class="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full max-h-full bg-white/75" id="askTask" role="dialog" aria-modal="true" aria-labelledby="askTaskTitle">
+    <div class="relative w-[28rem] max-w-[calc(100%-2rem)] bg-white border border-line rounded-box shadow-xl">
+        <div class="p-4">
+            <p class="section-title" id="askTaskTitle">Was hast du gemacht?</p>
+            <label class="field mt-3">
+                <span class="field-label">Beschreibung der Tätigkeit</span>
+                <input type="text" class="input-primary w-full" id="getTask">
+            </label>
+        </div>
+        <div class="flex flex-row-reverse gap-2 px-4 py-3 border-t border-line-soft bg-[#f6f7f8] rounded-b-box">
+            <button class="btn-primary" data-fun="sendTimeTracking" data-binding="true">Zeit speichern</button>
+            <button class="btn-secondary" data-fun="cancelTimeTracking" data-binding="true">Abbrechen</button>
         </div>
     </div>
 </div>

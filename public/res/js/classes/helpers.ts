@@ -21,7 +21,9 @@ export const createPopup = (content: HTMLElement, containerClasses: string[] = [
     }
 
     const button = document.createElement("button");
-    button.classList.add("btn-cancel", "ml-2");
+    button.type = "button";
+    button.classList.add("btn-secondary", "ml-2");
+    button.dataset.popupClose = "true";
     button.innerHTML = "Abbrechen";
     button.addEventListener("click", closePopup);
     optionsContainer.appendChild(button);
@@ -46,7 +48,32 @@ export const createPopup = (content: HTMLElement, containerClasses: string[] = [
     return optionsContainer;
 }
 
-export const loader = (init: () => void) => {
+/**
+ * Schließt ein mit createPopup() geöffnetes Popup. Erwartet den von createPopup() zurückgegebenen Container
+ * (oder ein Element darin) und löst denselben Ablauf aus wie ein Klick auf „Abbrechen“.
+ */
+export const closePopupFor = (popupElement: Element) => {
+    const container = popupElement.closest(".overlay-container") ?? popupElement;
+    container.querySelector<HTMLButtonElement>("[data-popup-close]")?.click();
+}
+
+/**
+ * Bindet [data-toggle]-Elemente in nachgeladenem HTML (z. B. per Ajax eingefügte Templates).
+ * js-classes bindet data-toggle nur einmal beim Start, spätere addBindings()-Aufrufe erfassen es nicht.
+ * Das Verhalten ist dasselbe: Klick schaltet `hidden` an allen Elementen aus data-target um.
+ */
+export const bindToggles = (root: ParentNode = document) => {
+    root.querySelectorAll<HTMLElement>("[data-toggle]:not([data-toggle-bound])").forEach(el => {
+        el.dataset.toggleBound = "true";
+        el.addEventListener("click", () => {
+            const target = el.dataset.target;
+            if (!target) return;
+            document.querySelectorAll(target).forEach(element => element.classList.toggle("hidden"));
+        });
+    });
+}
+
+export const loader =(init: () => void) => {
     if (document.readyState !== 'loading') {
         init();
     } else {

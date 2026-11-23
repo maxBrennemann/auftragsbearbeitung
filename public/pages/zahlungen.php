@@ -1,14 +1,20 @@
-<div class="mt-4">
-    <div class="defCont">
-        <h2>Datenimport</h2>
+<?php
+
+use Src\Classes\Link;
+use Src\Classes\Project\Icon;
+
+?>
+<section class="defCont">
+    <div class="section-head">
+        <h2 class="section-title">Zahlungen und Finanzen</h2>
     </div>
-    <div class="defCont">
-        <h2>Tabellenübersicht</h2>
+    <div class="note note-info">
+        <p class="note-head"><?= Icon::get("info") ?>Im Aufbau</p>
+        <p>Dieser Bereich ist noch nicht umgesetzt. Geplant sind Datenimport, Tabellenübersicht, Auswertung und Kategorien.</p>
     </div>
-    <div class="defCont">
-        <h2>Auswertung</h2>
+    <span class="group-label mt-5 mb-2">Schon verfügbar</span>
+    <div class="flex flex-wrap gap-2">
+        <a class="btn-secondary" href="<?= Link::getPageLink("offene-rechnungen") ?>"><?= Icon::get("receipt-euro") ?>Offene Rechnungen</a>
+        <a class="btn-secondary" href="<?= Link::getPageLink("diagramme") ?>"><?= Icon::get("chart-line") ?>Auswertungen</a>
     </div>
-    <div class="defCont">
-        <h2>Kategorien</h2>
-    </div>
-</div>
+</section>

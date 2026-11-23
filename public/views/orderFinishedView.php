@@ -1,10 +1,8 @@
 <div class="col-span-6">
-    <div class="hidden bg-red-300 m-2 p-2 rounded-md gap-2 items-center" id="showMissingFileWarning">
-        <?= \Src\Classes\Project\Icon::get("iconWarning", 25, 25) ?>
-        <div class="ml-2">
-            <p>Die Rechnung konnte nicht gefunden werden!</p>
-            <button data-fun="recreateInvoice" data-binding="true" class="btn-primary mt-1">Neu erstellen</button>
-        </div>
+    <div class="hidden note note-danger m-2.5 flex-col items-start" id="showMissingFileWarning">
+        <p class="note-head"><?= \Src\Classes\Project\Icon::get("triangle-alert", 14) ?>Datei fehlt</p>
+        <p>Die PDF-Datei dieser Rechnung wurde nicht gefunden. Sie kann aus den gespeicherten Daten neu erstellt werden.</p>
+        <button data-fun="recreateInvoice" data-binding="true" class="btn-secondary mt-2">Neu erstellen</button>
     </div>
     <div class="defCont" id="orderFinished">
         <p>Auftrag <?= $auftrag->getAuftragsnummer() ?> wurde abgeschlossen. Rechnungsnummer: <span id="rechnungsnummer"><?= $auftrag->getInvoiceNumber() ?></span></p>
@@ -18,7 +16,7 @@
     <div class="defCont">
         <div id="orderPaymentState">
             <?php if (!$auftrag->isPaid()): ?>
-                <p>Die Rechnung wurde noch nicht beglichen.</p>
+                <p><span class="stamp stamp-warn">Unbezahlt</span> Die Rechnung wurde noch nicht beglichen.</p>
                 <label>
                     <input type="date" id="inputPayDate" class="input-primary">
                 </label>
@@ -33,8 +31,8 @@
                 </select>
                 <button class="btn-primary" data-binding="true" data-fun="setPayed">Rechnung wurde bezahlt</button>
             <?php else: ?>
-                <p>Die Rechnung wurde am <span class="info-badge"><?= $auftrag->getPaymentDate() ?></span> per <span class="info-badge"><?= $auftrag->getPaymentType() ?></span> bezahlt.</p>
-                <button class="btn-primary mt-2" data-binding="true" data-fun="setUnpaid">Als unbezahlt markieren</button>
+                <p><span class="stamp stamp-ok">Bezahlt</span> Die Rechnung wurde am <span class="info-badge"><?= $auftrag->getPaymentDate() ?></span> per <span class="info-badge"><?= $auftrag->getPaymentType() ?></span> bezahlt.</p>
+                <button class="btn-secondary mt-2" data-binding="true" data-fun="setUnpaid">Als unbezahlt markieren</button>
             <?php endif; ?>
         </div>
     </div>

@@ -128,19 +128,20 @@ const addReminderActions = (row: any, table: HTMLTableElement) => {
     const actionsCell = tr.lastElementChild as HTMLTableCellElement;
     const invoiceId = row.Rechnungsnummer;
     const orderId = row.Nummer;
+    actionsCell.classList.add("whitespace-nowrap");
 
     const previewLink = document.createElement("a");
     previewLink.href = `/api/v1/invoice/${invoiceId}/reminder/pdf?orderId=${orderId}`;
     previewLink.target = "_blank";
     previewLink.title = "Mahnung-Vorschau anzeigen";
     previewLink.textContent = "Vorschau";
-    previewLink.className = "inline-flex border-0 bg-zinc-400 text-white p-1 rounded-md ml-1 cursor-pointer";
+    previewLink.className = "btn-secondary btn-sm ml-1";
     actionsCell.appendChild(previewLink);
 
     const sendBtn = document.createElement("button");
     sendBtn.title = "Mahnung an den Kunden senden";
     sendBtn.textContent = "Mahnung senden";
-    sendBtn.className = "inline-flex border-0 bg-orange-400 text-white p-1 rounded-md ml-1 cursor-pointer";
+    sendBtn.className = "btn-secondary btn-sm ml-1";
     sendBtn.addEventListener("click", async () => {
         if (!confirm(`Soll dem Kunden eine Mahnung zu Rechnung ${row.invoice_number ?? invoiceId} per E-Mail zugestellt werden?`)) {
             return;

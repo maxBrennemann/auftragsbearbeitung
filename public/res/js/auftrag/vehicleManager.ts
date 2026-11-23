@@ -2,7 +2,7 @@ import { ajax } from "js-classes/ajax";
 import { addBindings } from "js-classes/bindings";
 import { notification } from "js-classes/notifications";
 
-import { createPopup } from "../classes/helpers";
+import { createPopup, closePopupFor } from "../classes/helpers";
 import { addRow, fetchAndRenderTable } from "../classes/table";
 import { tableConfig } from "../classes/tableconfig";
 import { initFileUploader } from "../classes/upload";
@@ -124,14 +124,13 @@ const uploadVehicleFile = async (e: CustomEvent) => {
     const div = document.createElement("div");
     div.innerHTML = uploadFile.data.content;
     const optionsContainer = createPopup(div);
-    const btnCancel = optionsContainer.querySelector("button.btn-cancel");
     initFileUploader({
         "vehicle": {
             "location": `/api/v1/order/${vehicleData.orderId}/vehicle/${data.Nummer}/add-files`,
         },
     });
 
-    div.addEventListener("fileUploaded", () => (btnCancel as HTMLButtonElement).click());
+    div.addEventListener("fileUploaded", () => closePopupFor(optionsContainer));
 }
 
 export const initVehicles = (customerId: number, orderId: number) => {

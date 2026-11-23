@@ -1,9 +1,11 @@
 import { ajax } from "js-classes/ajax";
 import { addBindings } from "js-classes/bindings"
 import { notification } from "js-classes/notifications";
+import { Check } from "lucide";
 
 import { DragSortManager } from "../classes/DragSortManager";
-import { createPopup } from "../classes/helpers";
+import { createPopup, closePopupFor } from "../classes/helpers";
+import { iconHtml } from "../classes/icon";
 import { FunctionMap } from "../types/types";
 
 const functionNames: FunctionMap = {};
@@ -27,13 +29,15 @@ function init() {
 
     const orderId = document.getElementById("orderId") as HTMLInputElement;
     config.orderId = parseInt(orderId.value);
+    // Ausgewählte Texte bringt rechnung.php bereits als aria-pressed="true" mit
 
-    const invoiceTexts = document.querySelectorAll<HTMLElement>(".invoiceTexts");
-    invoiceTexts.forEach(text => {
-        const active = text.dataset.active;
-        if (active == "1") {
-            text.classList.add("bg-blue-200");
-            text.classList.remove("bg-gray-100");
+    // Textkarten sind role="button": auch per Tastatur (Enter/Leertaste) umschaltbar
+    document.querySelector(".defaultInvoiceTexts")?.addEventListener("keydown", (e: Event) => {
+        const event = e as KeyboardEvent;
+        const card = (event.target as HTMLElement).closest<HTMLElement>(".invoiceTexts");
+        if (card && event.target === card && (event.key === "Enter" || event.key === " ")) {
+            event.preventDefault();
+            card.click();
         }
     });
 }
@@ -48,11 +52,24 @@ functionNames.click_addText = () => {
         }
         notification("", "success");
 
-        const newText = document.createElement("p");
-        newText.className = "invoiceTexts bg-blue-200 rounded-xl cursor-pointer p-3 select-none";
+        const newText = document.createElement("div");
+        newText.className = "invoiceTexts choice-card";
+        newText.setAttribute("role", "button");
+        newText.tabIndex = 0;
+        newText.setAttribute("aria-pressed", "true");
         newText.dataset.active = "1";
         newText.dataset.id = r.data.id;
-        newText.innerHTML = (document.getElementById("newText") as HTMLInputElement).value;
+
+        const mark = document.createElement("span");
+        mark.className = "choice-mark";
+        mark.setAttribute("aria-hidden", "true");
+        mark.innerHTML = iconHtml(Check, { size: 12 });
+
+        const textEl = document.createElement("p");
+        textEl.className = "flex-auto text-sm";
+        textEl.textContent = (document.getElementById("newText") as HTMLInputElement).value;
+
+        newText.append(mark, textEl);
         newText.onclick = toggleText;
 
         document.querySelector(".defaultInvoiceTexts")?.appendChild(newText);
@@ -104,8 +121,7 @@ functionNames.click_editText = (e: Event) => {
             textEl.innerText = newText;
             getPDF();
         });
-        const btnCancel = btnContainer.querySelector("button.btn-cancel") as HTMLButtonElement;
-        btnCancel.click();
+        closePopupFor(btnContainer);
     });
     btnContainer.appendChild(saveBtn);
 }
@@ -132,14 +148,16 @@ functionNames.click_deleteText = (e: Event) => {
 
 const toggleText = (e: Event) => {
     const target = e.currentTarget as HTMLElement;
-    target.classList.toggle("bg-blue-200");
-    target.classList.toggle("bg-gray-100");
+    const wasPressed = target.getAttribute("aria-pressed") === "true";
+    // sofort sichtbar umschalten, bei Fehler zurücksetzen
+    target.setAttribute("aria-pressed", String(!wasPressed));
 
     ajax.put(`/api/v1/invoice/${config.invoiceId}/text`, {
         "textId": target.dataset.id,
         "text": target.innerText,
     }).then((r: any) => {
         if (r.data.status !== "success") {
+            target.setAttribute("aria-pressed", String(wasPressed));
             notification("", "failure", r.data.message);
             return;
         }
@@ -291,8 +309,7 @@ functionNames.click_addAltName = async () => {
 
     saveBtn.addEventListener("click", () => {
         saveAltNames(div);
-        const btnCancel = btnContainer.querySelector("button.btn-cancel") as HTMLButtonElement;
-        btnCancel.click()
+        closePopupFor(btnContainer);
     });
     btnContainer.appendChild(saveBtn);
 
@@ -335,8 +352,7 @@ functionNames.click_changeItemsOrder = async () => {
 
     saveBtn.addEventListener("click", () => {
         saveOrder();
-        const btnCancel = btnContainer.querySelector("button.btn-cancel") as HTMLButtonElement;
-        btnCancel.click()
+        closePopupFor(btnContainer);
     });
     btnContainer.appendChild(saveBtn);
 

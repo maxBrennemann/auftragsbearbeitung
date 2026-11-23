@@ -1,283 +1,262 @@
 <?php
 
 use Src\Classes\Controller\TemplateController;
-use Src\Classes\Project\Settings;
+use Src\Classes\Link;
+use Src\Classes\Project\Icon;
+use Src\Classes\Project\Image;
 use Src\Classes\Project\InvoiceNumberTracker;
+use Src\Classes\Project\Settings;
 use Src\Classes\Project\User;
 
-$companyLogo = Src\Classes\Project\Image::getLogo();
+$companyLogo = Image::getLogo();
+
+/** Ein Einstellungsfeld, das bei Änderung sofort gespeichert wird (changeSetting) */
+$settingField = function (string $key, string $label, string $type = "text", string $extraLabel = ""): string {
+	$value = htmlspecialchars((string) Settings::get($key), ENT_QUOTES);
+	$input = $type === "textarea"
+		? "<textarea class=\"input-primary\" data-write=\"true\" data-fun=\"changeSetting\" data-setting=\"{$key}\">{$value}</textarea>"
+		: "<input type=\"{$type}\" class=\"input-primary\" value=\"{$value}\" data-write=\"true\" data-fun=\"changeSetting\" data-setting=\"{$key}\">";
+	return <<<HTML
+		<label class="field">
+			<span class="field-label">{$label}{$extraLabel}</span>
+			{$input}
+		</label>
+	HTML;
+};
+
+$sections = [
+	"invoiceSettings" => "Unternehmen und Rechnung",
+	"mailSettings" => "E-Mail-Versand",
+	"pdfTexts" => "PDF-Texte",
+	"orderTypeSettings" => "Auftragstypen",
+	"wholesalerSettings" => "Einkauf",
+	"categorySettings" => "Kategorien",
+	"userSettings" => "Mitarbeiter",
+	"timeTrackingSettings" => "Zeiterfassung",
+	"fileSettings" => "Dateien und Sicherung",
+];
 
 ?>
-<section class="defCont">
-    <h2 class="text-xl font-bold mb-6 border-b pb-2">Auftragstypen festlegen</h2>
-    <div id="orderTypes" class="mt-2"></div>
+<nav class="mx-2.5 mt-2 mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm" aria-label="Abschnitte der Einstellungen">
+	<span class="group-label text-text-muted">Springen zu</span>
+	<?php foreach ($sections as $id => $title): ?>
+		<a class="link-primary font-semibold" href="#<?= $id ?>"><?= $title ?></a>
+	<?php endforeach; ?>
+</nav>
+
+<section class="defCont scroll-mt-28" id="invoiceSettings">
+	<div class="section-head">
+		<h2 class="section-title">Unternehmen und Rechnung</h2>
+		<span class="section-meta">Änderungen werden sofort gespeichert</span>
+	</div>
+
+	<div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+		<div>
+			<span class="group-label mb-2">Unternehmensdaten</span>
+			<div class="field-grid">
+				<div class="col-span-full"><?= $settingField("company.name", "Firmenname") ?></div>
+				<div class="col-span-full"><?= $settingField("company.address", "Adresse") ?></div>
+				<?= $settingField("company.zip", "PLZ") ?>
+				<?= $settingField("company.city", "Ort") ?>
+				<?= $settingField("company.country", "Land") ?>
+				<?= $settingField("company.phone", "Telefonnummer", "tel") ?>
+				<?= $settingField("company.email", "E-Mail", "email") ?>
+				<?= $settingField("company.website", "Website") ?>
+				<div class="col-span-full"><?= $settingField("company.imprint", "Absenderzeile auf der Rechnung", "textarea") ?></div>
+			</div>
+		</div>
+
+		<div>
+			<span class="group-label mb-2">Bank</span>
+			<div class="field-grid">
+				<div class="col-span-full"><?= $settingField("company.bank", "Bank") ?></div>
+				<div class="col-span-full"><?= $settingField("company.IBAN", "IBAN") ?></div>
+				<?= $settingField("company.BIC", "BIC") ?>
+				<?= $settingField("company.Kontoinhaber", "Kontoinhaber") ?>
+			</div>
+
+			<span class="group-label mt-5 mb-2">Rechnungen</span>
+			<div class="field-grid">
+				<?= $settingField("company.UstIdNr", "USt-IdNr.") ?>
+				<?= $settingField("invoice.vatRate", "Umsatzsteuersatz [%]", "text", TemplateController::getTemplate("infoButton", ["infoKey" => "vat_info"])) ?>
+				<?= $settingField("invoice.dueDate", "Zahlungsziel [Tage]", "number") ?>
+				<?= $settingField("invoice.defaultWage", "Stundenlohn [€]") ?>
+				<div class="col-span-full"><?= $settingField("company.invoiceCopyTo", "Rechnungskopie senden an") ?></div>
+			</div>
+
+			<div class="mt-5 note note-warn">
+				<p class="note-head"><?= Icon::get("triangle-alert") ?>Achtung</p>
+				<label class="field-label mt-1" for="newInvoiceNumber">Aktuelle Rechnungsnummer</label>
+				<div class="flex gap-2 mt-1">
+					<input type="number" id="newInvoiceNumber" class="input-primary flex-1" value="<?= InvoiceNumberTracker::getMaxInvoiceNumber() ?>">
+					<button class="btn-secondary whitespace-nowrap" data-fun="sendNewInvoiceNumber" data-binding="true">Zählerstand setzen</button>
+				</div>
+				<p class="field-hint mt-1">Überschreibt den aktuellen Zählerstand. Die nächste Rechnung erhält die nächsthöhere Nummer.</p>
+			</div>
+
+			<div class="mt-3 note note-info">
+				<p class="note-head"><?= Icon::get("info") ?>Hinweis</p>
+				<label class="field-label mt-1" for="legacyDataCutoff">Auswertungen: Altdaten ausblenden</label>
+				<input type="date" id="legacyDataCutoff" class="input-primary w-full mt-1"
+					value="<?= Settings::get('statistics.legacyDataCutoff') ?>"
+					data-write="true" data-fun="changeSetting" data-setting="statistics.legacyDataCutoff">
+				<p class="field-hint mt-1">
+					Rechnungen vor diesem Datum fließen nicht in Umsatz-, Zahlungsdauer-, offene-Rechnungen- und
+					Top-Kunden-Auswertungen unter /diagramme ein, z. B. bei unvollständigen Übernahmedaten aus einem
+					alten Rechnungsprogramm. Leer lassen, um alle Daten einzubeziehen.
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<span class="group-label mt-8 mb-2">Logo und Browser-Icon</span>
+	<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+		<div class="sheet">
+			<p class="field-label mb-2"><?= Icon::get("image") ?>Firmen- und Rechnungslogo</p>
+			<div class="relative mb-3 p-3 grid place-items-center bg-[#f6f7f8] border border-line-soft rounded-control <?= $companyLogo ? "" : "hidden" ?>" id="companyLogo">
+				<img src="<?= $companyLogo ? Link::getResourcesShortLink($companyLogo, "upload") : "" ?>" class="max-h-20 object-contain" alt="Aktuelles Firmenlogo">
+				<button type="button" class="btn-danger btn-icon btn-sm absolute top-1.5 right-1.5" data-fun="deleteLogo" data-binding="true" title="Logo löschen" aria-label="Logo löschen">
+					<?= Icon::get("trash-2") ?>
+				</button>
+			</div>
+			<?= TemplateController::getTemplate("uploadFile", [
+				"target" => "companyLogo",
+				"singleFile" => true,
+				"accept" => "image/*"
+			]); ?>
+		</div>
+
+		<div class="sheet">
+			<p class="field-label mb-2"><?= Icon::get("panels-top-left") ?>Favicon (Symbol im Browser-Tab)</p>
+			<div class="relative mb-3 p-3 grid place-items-center bg-[#f6f7f8] border border-line-soft rounded-control" id="favicon">
+				<img src="<?= Link::getResourcesShortLink("favicon.png", "img") ?>" class="w-10 h-10 object-contain" alt="Aktuelles Favicon">
+				<button type="button" class="btn-secondary btn-icon btn-sm absolute top-1.5 right-1.5" data-fun="deleteFavicon" data-binding="true" title="Auf Standard-Favicon zurücksetzen" aria-label="Auf Standard-Favicon zurücksetzen">
+					<?= Icon::get("rotate-ccw") ?>
+				</button>
+			</div>
+			<?= TemplateController::getTemplate("uploadFile", [
+				"target" => "favicon",
+				"singleFile" => true,
+				"accept" => "image/*"
+			]); ?>
+		</div>
+	</div>
 </section>
 
-<section class="defCont">
-    <h2 class="text-xl font-bold mb-6 border-b pb-2">Einkaufsmöglichkeiten festlegen</h2>
-    <div id="wholesalerTypes" class="mt-2"></div>
+<section class="defCont scroll-mt-28" id="mailSettings">
+	<div class="section-head">
+		<h2 class="section-title">E-Mail-Versand</h2>
+		<span class="section-meta">für Rechnungen, Angebote und Mahnungen</span>
+	</div>
+	<div class="field-grid md:grid-cols-2 xl:grid-cols-3">
+		<?= $settingField("mail.host", "SMTP-Host") ?>
+		<?= $settingField("mail.port", "SMTP-Port", "number") ?>
+		<?= $settingField("mail.username", "SMTP-Benutzername") ?>
+		<label class="field">
+			<span class="field-label">SMTP-Passwort</span>
+			<input type="password" class="input-primary" autocomplete="new-password"
+				placeholder="Unverändert lassen, um es zu behalten"
+				data-write="true" data-fun="changeSetting" data-setting="mail.password">
+			<span class="field-hint">
+				<?php
+				try {
+				    echo Settings::get('mail.password') !== '' ? "Ein Passwort ist hinterlegt." : "Kein Passwort hinterlegt.";
+				} catch (\RuntimeException $e) {
+				    echo "<span class=\"text-danger font-semibold\">Das gespeicherte Passwort kann nicht entschlüsselt werden (SETTINGS_ENCRYPTION_KEY fehlt oder wurde geändert). Bitte neu eingeben.</span>";
+				}
+				?>
+			</span>
+		</label>
+		<?= $settingField("mail.fromAddress", "Absenderadresse", "email") ?>
+		<?= $settingField("mail.fromName", "Absendername") ?>
+	</div>
 </section>
 
-<section class="defCont">
-    <h2 class="text-xl font-bold mb-6 border-b pb-2">Mitarbeiter festlegen</h2>
-    <div id="userTable" class="mt-2"></div>
+<section class="defCont scroll-mt-28" id="pdfTexts">
+	<div class="section-head">
+		<h2 class="section-title">PDF-Texte</h2>
+		<span class="section-meta">Textbausteine, die auf PDFs erscheinen können</span>
+	</div>
+	<div id="pdfTextsCont" class="overflow-x-auto"></div>
 </section>
 
-<section class="defCont" id="invoiceSettings">
-    <h2 class="text-xl font-bold mb-6 border-b pb-2">Standardeinstellungen</h2>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-        <div class="space-y-4">
-            <h3 class="font-semibold text-blue-600 mb-2 uppercase text-xs tracking-wider">Unternehmensdaten</h3>
-
-            <div class="grid grid-cols-1 gap-4">
-                <?php
-                $fieldsLeft = [
-                    "company.name" => "Firmenname",
-                    "company.address" => "Adresse",
-                    "company.zip" => "PLZ",
-                    "company.city" => "Ort",
-                    "company.country" => "Land",
-                    "company.phone" => "Telefonnummer",
-                    "company.email" => "E-Mail",
-                    "company.website" => "Website",
-                    "company.imprint" => "Rechnungsadresse"
-                ];
-                foreach ($fieldsLeft as $key => $label): ?>
-                    <div class="flex flex-col">
-                        <label class="text-sm font-medium text-gray-600 mb-1"><?= $label ?></label>
-                        <?php if ($key == "company.imprint"): ?>
-                            <textarea class="input-primary w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500"
-                                data-write="true" data-fun="changeSetting" data-setting="<?= $key ?>"><?= Settings::get($key) ?></textarea>
-                        <?php else: ?>
-                            <input class="input-primary w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500"
-                                value="<?= Settings::get($key) ?>"
-                                data-write="true" data-fun="changeSetting" data-setting="<?= $key ?>">
-                        <?php endif; ?>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-
-        <div class="space-y-4">
-            <h3 class="font-semibold text-blue-600 mb-2 uppercase text-xs tracking-wider">Finanzen & Rechnung</h3>
-
-            <div class="grid grid-cols-1 gap-4">
-                <?php
-                $fieldsRight = [
-                    "invoice.defaultWage" => "Stundenlohn [€]",
-                    "company.bank" => "Bank",
-                    "company.IBAN" => "IBAN",
-                    "company.BIC" => "BIC",
-                    "company.Kontoinhaber" => "Kontoinhaber",
-                    "company.UstIdNr" => "UstIdNr",
-                    "invoice.dueDate" => "Fälligkeitsdauer [Tage]",
-                    "invoice.vatRate" => "Umsatzsteuersatz [%]",
-                    "company.invoiceCopyTo" => "Rechnungskopie senden an"
-                ];
-                foreach ($fieldsRight as $key => $label): ?>
-                    <div class="flex flex-col">
-                        <label class="text-sm font-medium text-gray-600 mb-1">
-                            <?= $label ?>
-                            <?php if ($key == 'invoice.vatRate'): ?>
-                                <?= TemplateController::getTemplate("infoButton", [
-                                    "infoKey" => "vat_info",
-                                ]) ?>
-                            <?php endif; ?>
-                        </label>
-                        <input class="input-primary w-full border-gray-300 rounded-md shadow-sm"
-                            value="<?= Settings::get($key) ?>"
-                            data-write="true" data-fun="changeSetting" data-setting="<?= $key ?>">
-                    </div>
-                <?php endforeach; ?>
-            </div>
-
-            <div class="mt-8 p-4 bg-orange-50 border border-orange-200 rounded-lg">
-                <label class="block text-sm font-bold text-orange-800 mb-2">Aktuelle Rechnungsnummer</label>
-                <div class="flex gap-2">
-                    <input type="number" id="newInvoiceNumber" class="input-primary flex-1" value="<?= InvoiceNumberTracker::getMaxInvoiceNumber() ?>">
-                    <button class="btn-primary whitespace-nowrap" data-fun="sendNewInvoiceNumber" data-binding="true">Speichern</button>
-                </div>
-                <p class="text-xs text-orange-600 mt-2 font-medium flex items-center gap-1">
-                    <i data-lucide="triangle-alert" class="w-4 h-4"></i>
-                    <span>Überschreibt den aktuellen Zählerstand.</span>
-                </p>
-            </div>
-
-            <div class="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <label class="block text-sm font-bold text-blue-800 mb-2">Auswertungen: Altdaten ausblenden</label>
-                <input type="date" class="input-primary w-full"
-                    value="<?= Settings::get('statistics.legacyDataCutoff') ?>"
-                    data-write="true" data-fun="changeSetting" data-setting="statistics.legacyDataCutoff">
-                <p class="text-xs text-blue-600 mt-2">
-                    Rechnungen vor diesem Datum fließen nicht in Umsatz-, Zahlungsdauer-, offene-Rechnungen- und
-                    Top-Kunden-Auswertungen unter /diagramme ein, z. B. bei unvollständigen Übernahmedaten aus einem
-                    alten Rechnungsprogramm. Leer lassen, um alle Daten einzubeziehen.
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 border-t pt-8">
-
-        <div class="bg-gray-50 p-6 rounded-xl border border-dashed border-gray-300">
-            <p class="font-semibold mb-4 flex items-center gap-2">
-                <i data-lucide="image" class="w-4 h-4"></i> Firmen-/ Rechnungslogo
-            </p>
-            <?= TemplateController::getTemplate("uploadFile", [
-                "target" => "companyLogo",
-                "singleFile" => true,
-                "accept" => "image/*"
-            ]); ?>
-
-            <div class="relative bg-white p-3 my-3 rounded-lg border border-gray-200 <?= $companyLogo ? "" : " hidden" ?>" id="companyLogo">
-                <div class="bg-gray-100 p-2 rounded-md flex justify-center items-center">
-                    <img src="<?= $companyLogo ? Src\Classes\Link::getResourcesShortLink($companyLogo, "upload") : "" ?>"
-                        class="max-h-20 object-contain" title="Firmenlogo">
-                </div>
-                <button class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors"
-                    data-fun="deleteLogo" data-binding="true" title="Logo löschen">
-                    <i data-lucide="x" class="w-4 h-4"></i>
-                </button>
-            </div>
-        </div>
-
-        <div class="bg-gray-50 p-6 rounded-xl border border-dashed border-gray-300">
-            <p class="font-semibold mb-4 flex items-center gap-2">
-                <i data-lucide="layout" class="w-4 h-4"></i> Favicon / Browser-Icon
-            </p>
-            <?= TemplateController::getTemplate("uploadFile", [
-                "target" => "favicon",
-                "singleFile" => true,
-                "accept" => "image/*"
-            ]); ?>
-
-            <div class="relative bg-white p-3 my-3 rounded-lg border border-gray-200" id="favicon">
-                <div class="bg-gray-100 p-2 rounded-md flex justify-center items-center">
-                    <img src="<?= Src\Classes\Link::getResourcesShortLink("favicon.png", "img") ?>"
-                        class="w-10 h-10 object-contain" title="Favicon">
-                </div>
-                <button class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors"
-                    data-fun="deleteFavicon" data-binding="true" title="Favicon zurücksetzen">
-                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-                </button>
-            </div>
-        </div>
-    </div>
+<section class="defCont scroll-mt-28" id="orderTypeSettings">
+	<div class="section-head">
+		<h2 class="section-title">Auftragstypen</h2>
+	</div>
+	<div id="orderTypes" class="overflow-x-auto"></div>
 </section>
 
-<section class="defCont">
-    <h2 class="text-xl font-bold mb-6 border-b pb-2">E-Mail-Versand</h2>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <?php
-        $mailFields = [
-            "mail.host" => "SMTP-Host",
-            "mail.port" => "SMTP-Port",
-            "mail.username" => "SMTP-Benutzername",
-            "mail.fromAddress" => "Absenderadresse",
-            "mail.fromName" => "Absendername",
-        ];
-        foreach ($mailFields as $key => $label): ?>
-            <div class="flex flex-col">
-                <label class="text-sm font-medium text-gray-600 mb-1"><?= $label ?></label>
-                <input class="input-primary w-full border-gray-300 rounded-md shadow-sm"
-                    value="<?= Settings::get($key) ?>"
-                    data-write="true" data-fun="changeSetting" data-setting="<?= $key ?>">
-            </div>
-        <?php endforeach; ?>
-
-        <div class="flex flex-col">
-            <label class="text-sm font-medium text-gray-600 mb-1">SMTP-Passwort</label>
-            <input type="password" class="input-primary w-full border-gray-300 rounded-md shadow-sm"
-                placeholder="Unverändert lassen, um das gespeicherte Passwort zu behalten"
-                data-write="true" data-fun="changeSetting" data-setting="mail.password">
-            <p class="text-xs text-gray-500 mt-1">
-                <?php
-                try {
-                    echo Settings::get('mail.password') !== '' ? "Passwort ist hinterlegt." : "Kein Passwort hinterlegt.";
-                } catch (\RuntimeException $e) {
-                    echo "Das gespeicherte Passwort kann nicht entschlüsselt werden (SETTINGS_ENCRYPTION_KEY fehlt oder wurde geändert). Bitte neu eingeben.";
-                }
-                ?>
-            </p>
-        </div>
-    </div>
+<section class="defCont scroll-mt-28" id="wholesalerSettings">
+	<div class="section-head">
+		<h2 class="section-title">Einkauf</h2>
+		<span class="section-meta">Händler und Bezugsquellen</span>
+	</div>
+	<div id="wholesalerTypes" class="overflow-x-auto"></div>
 </section>
 
-<section class="defCont">
-    <h2 class="text-xl font-bold mb-6 border-b pb-2">PDF Texte</h2>
-    <div class="mt-2">
-        <div id="pdfTextsCont"></div>
-    </div>
+<section class="defCont scroll-mt-28" id="categorySettings">
+	<div class="section-head">
+		<h2 class="section-title">Kategorien</h2>
+	</div>
+	<div id="categoryTree" class="sheet mb-3"></div>
+	<div class="flex flex-wrap items-end gap-3">
+		<label class="field">
+			<span class="field-label">Neue Kategorie</span>
+			<input type="text" class="input-primary w-56" id="newCategory">
+		</label>
+		<label class="field">
+			<span class="field-label">Unterhalb von</span>
+			<select id="parentCategory" class="input-primary w-56"></select>
+		</label>
+		<button id="addCategory" class="btn-primary"><?= Icon::get("plus") ?>Kategorie hinzufügen</button>
+	</div>
 </section>
 
-<section class="defCont">
-    <h2 class="text-xl font-bold mb-6 border-b pb-2">Kategorien festlegen</h2>
-    <div id="categoryTree" class="mt-2 ml-3"></div>
-    <div class="mt-2 p-2 bg-gray-300 rounded-lg">
-        <input type="text" class="input-primary" id="newCategory">
-        <select id="parentCategory" class="input-primary"></select>
-        <button id="addCategory" class="btn-primary">Kategorie hinzufügen</button>
-    </div>
+<section class="defCont scroll-mt-28" id="userSettings">
+	<div class="section-head">
+		<h2 class="section-title">Mitarbeiter</h2>
+	</div>
+	<div id="userTable" class="overflow-x-auto"></div>
 </section>
 
-<section class="defCont">
-    <h2 class="text-xl font-bold mb-6 border-b pb-2">Dateienmanagement</h2>
-    <a href="#" download="temp_file_name" id="download_db" class="hidden">Datenbank herunterladen</a>
-    <a href="#" download="temp_file_name" id="download_files" class="hidden">Dateien herunterladen</a>
-    <div class="mt-2 flex flex-row gap-2">
-        <div class="bg-gray-50 rounded-lg p-3 flex-auto">
-            <button class="btn-primary" data-binding="true" data-fun="downloadDatabase">
-                <i data-lucide="download" class="w-5 h-5"></i>
-                <span class="ml-0.5">Datenbank herunterladen</span>
-            </button>
-            <button class="btn-primary ml-1" data-binding="true" data-fun="downloadAllFiles">
-                <i data-lucide="download" class="w-5 h-5"></i>
-                <span class="ml-0.5">Alle Dateien herunterladen</span>
-            </button>
-        </div>
-        <div class="bg-gray-50 rounded-lg p-3 flex-auto">
-            <button id="clearFiles" data-binding="true" class="btn-primary">Dateien aufräumen</button>
-            <button id="adjustFiles" data-binding="true" class="btn-primary ml-1">Dateinamen anpassen</button>
-            <button data-binding="true" data-fun="deleteCache" class="btn-primary mt-2">Cache löschen</button>
-        </div>
-    </div>
-    <p id="showFilesInfo" class="mt-2"></p>
-    <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-4 hidden">
-        <div class="bg-gray-50 rounded-xl p-4 border border-gray-200 flex flex-col gap-2">
-            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-tight">Backups</h4>
-            <button class="btn-primary flex items-center justify-center gap-2" data-binding="true" data-fun="downloadDatabase">
-                <i data-lucide="database" class="w-4 h-4"></i> Datenbank exportieren
-            </button>
-            <button class="btn-primary flex items-center justify-center gap-2" data-binding="true" data-fun="downloadAllFiles">
-                <i data-lucide="files" class="w-4 h-4"></i> Alle Dateien (ZIP)
-            </button>
-        </div>
-        <div class="bg-gray-50 rounded-xl p-4 border border-gray-200 flex flex-col gap-2">
-            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-tight">System-Pflege</h4>
-            <div class="flex gap-2">
-                <button id="clearFiles" data-binding="true" class="btn-secondary flex-1">Aufräumen</button>
-                <button id="adjustFiles" data-binding="true" class="btn-secondary flex-1">Namen korrigieren</button>
-            </div>
-            <button data-binding="true" data-fun="deleteCache" class="btn-danger w-full mt-auto">Cache leeren</button>
-        </div>
-    </div>
+<section class="defCont scroll-mt-28" id="timeTrackingSettings">
+	<div class="section-head">
+		<h2 class="section-title">Zeiterfassung</h2>
+		<span class="section-meta">gilt nur für dich</span>
+	</div>
+	<div class="switchCont">
+		<?= TemplateController::getTemplate("inputSwitch", [
+		    "id" => "showTimeTracking",
+		    "name" => "Laufende Arbeitszeit oben in der Kopfzeile anzeigen",
+		    "value" => Settings::get("showTimeTracking", User::getCurrentUserId()) ? "checked" : "",
+		    "binding" => "startStopTime",
+		]); ?>
+	</div>
 </section>
 
-<section class="defCont">
-    <h2 class="text-xl font-bold mb-6 border-b pb-2">Zeiterfassung</h2>
-    <div class="switchCont mt-2">
-        <?= TemplateController::getTemplate("inputSwitch", [
-            "id" => "showTimeTracking",
-            "name" => "Aktuelle Arbeitszeit global anzeigen",
-            "value" => Settings::get("showTimeTracking", User::getCurrentUserId()) ? "checked" : "",
-            "binding" => "startStopTime",
-        ]); ?>
-    </div>
-</section>
-
-<section class="defCont">
-    <h2 class="text-xl font-bold mb-6 border-b pb-2">Routineaufgaben</h2>
+<section class="defCont scroll-mt-28" id="fileSettings">
+	<div class="section-head">
+		<h2 class="section-title">Dateien und Sicherung</h2>
+		<span class="section-meta" id="showFilesInfo"></span>
+	</div>
+	<a href="#" download="temp_file_name" id="download_db" class="hidden">Datenbank herunterladen</a>
+	<a href="#" download="temp_file_name" id="download_files" class="hidden">Dateien herunterladen</a>
+	<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+		<div class="sheet">
+			<span class="group-label mb-2">Sicherung</span>
+			<div class="flex flex-wrap gap-2">
+				<button class="btn-secondary" data-binding="true" data-fun="downloadDatabase"><?= Icon::get("database") ?>Datenbank herunterladen</button>
+				<button class="btn-secondary" data-binding="true" data-fun="downloadAllFiles"><?= Icon::get("files") ?>Alle Dateien (ZIP)</button>
+			</div>
+		</div>
+		<div class="sheet">
+			<span class="group-label mb-2">Pflege</span>
+			<div class="flex flex-wrap gap-2">
+				<button id="clearFiles" data-binding="true" class="btn-secondary">Dateien aufräumen</button>
+				<button id="adjustFiles" data-binding="true" class="btn-secondary">Dateinamen anpassen</button>
+				<button data-binding="true" data-fun="deleteCache" class="btn-secondary">Cache löschen</button>
+			</div>
+		</div>
+	</div>
 </section>

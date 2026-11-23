@@ -1,6 +1,7 @@
 <?php
 
 use Src\Classes\Controller\BreadcrumbController;
+use Src\Classes\Controller\SessionController;
 use Src\Classes\Link;
 use Src\Classes\Notification\NotificationManager;
 use Src\Classes\Project\Settings;
@@ -12,22 +13,7 @@ use Src\Classes\ResourceManager;
 $globalCSS = Link::getGlobalCSS();
 $globalScript = Link::getGlobalScript();
 
-$neuerKunde   =		Link::getPageLink("neuer-kunde");
-$neuerAuftrag =		Link::getPageLink("neuer-auftrag");
-$neuesAngebot =		Link::getPageLink("angebot");
-$neuesProdukt =		Link::getPageLink("neues-produkt");
-$diagramme =		Link::getPageLink("diagramme");
-$auftragAnzeigen =	Link::getPageLink("auftrag");
-$customerOverview =	Link::getPageLink("customer-overview");
-$leistungenLinks =	Link::getPageLink("leistungen");
-$funktionen = 		Link::getPageLink("functionalities");
-$produkt = 			Link::getPageLink("produkt");
 $einstellungen =	Link::getPageLink("einstellungen");
-$payments =			Link::getPageLink("payments");
-$listmaker =		Link::getPageLink("listmaker");
-$changelog = 		Link::getPageLink("changelog");
-$timeTracking =		Link::getPageLink("time-tracking");
-$wiki = 			Link::getPageLink("wiki");
 
 $pageTitle = $pageName;
 if ($pageName == "") {
@@ -36,7 +22,7 @@ if ($pageName == "") {
 
 ?>
 <!DOCTYPE html>
-<html lang="de" class="overflow-x-hidden">
+<html lang="de" class="overflow-x-clip">
 
 <head>
 	<meta charset="UTF-8">
@@ -66,120 +52,55 @@ if ($pageName == "") {
 	<?php endif; ?>
 </head>
 
-<?php if (Config::isDevMode()): ?>
+<?php /* data-page: nur im Dev-Modus von global.ts genutzt; data-logged-in: z. B. für den Benachrichtigungsdienst */ ?>
+<body class="overflow-x-clip" data-page="<?= dashesToCamelCase($pageScript) ?>" data-logged-in="<?= SessionController::isLoggedIn() ? "1" : "0" ?>">
+	<?php
+	$isLoggedIn = SessionController::isLoggedIn();
+	$breadcrumbs = BreadcrumbController::createBreadcrumbMenu($page, $pageName);
+	if ($isLoggedIn) {
+		$notificationCount = NotificationManager::getNotificationCount();
+		$showTime = Settings::get("showTimeTracking", User::getCurrentUserId()) == "true";
+	}
+	?>
+	<header class="site-header" id="siteHeader">
+		<!-- gleiche Breite wie <main> plus Abstand der Abschnitte (defCont: 10px) -->
+		<div class="w-full px-[14px] lg:px-[26px] lg:w-11/12 xl:w-4/5 lg:mx-auto">
+			<div class="site-header__bar">
+				<a href="<?= Link::getPageLink("") ?>" class="site-brand" title="Zur Startseite">
+					<img src="/img/favicon.png" alt="">
+					<span><?= COMPANY_NAME ?></span>
+				</a>
+				<nav class="site-crumbs site-crumbs--bar" aria-label="Pfad"><?= $breadcrumbs ?></nav>
 
-	<body class="overflow-x-hidden" data-page="<?= dashesToCamelCase($pageScript) ?>">
-	<?php else : ?>
+				<?php if ($isLoggedIn): ?>
+				<div class="site-actions">
+					<?= \Src\Classes\Controller\TemplateController::getTemplate("search"); ?>
+					<button type="button" class="site-search-toggle btn-ghost btn-icon m-0" data-binding="true" data-fun="toggleHeaderSearch" title="Suchen" aria-label="Suchen">
+						<?= Icon::get("search", 18) ?>
+					</button>
 
-		<body class="overflow-x-hidden"></body>
-	<?php endif; ?>
-	<div class="sidenav" id="sidenav">
-		<ul class="ml-2">
-			<li class="hover:underline">
-				<a href="<?= $neuerKunde ?>">Neuen Kunden erstellen</a>
-			</li>
-			<li class="hover:underline">
-				<a href="<?= $customerOverview ?>">Kunden</a>
-			</li>
-			<li class="hover:underline">
-				<a href="<?= $neuerAuftrag ?>">Neuen Auftrag erstellen</a>
-			</li>
-			<li class="hover:underline">
-				<a href="<?= $neuesAngebot ?>">Neues Angebot erstellen</a>
-			</li>
-			<li class="hover:underline">
-				<a href="<?= $neuesProdukt ?>">Neues Produkt erstellen</a>
-			</li>
-			<li class="hover:underline">
-				<a href="<?= $produkt ?>">Produktübersicht</a>
-			</li>
-			<li class="hover:underline">
-				<a href="<?= $auftragAnzeigen ?>">Aufträge</a>
-			</li>
-			<li class="hover:underline">
-				<a href="<?= $diagramme ?>">Diagramme und Auswertungen</a>
-			</li>
-			<li class="hover:underline">
-				<a href="<?= $leistungenLinks ?>">Leistungen</a>
-			</li>
-			<li class="hover:underline">
-				<a href="<?= $listmaker ?>">Listen</a>
-			</li>
-			<li class="hover:underline">
-				<a href="<?= $payments ?>">Finanzen</a>
-			</li>
-			<li class="hover:underline">
-				<a href="<?= $einstellungen ?>">Einstellungen</a>
-			</li>
-			<li class="hover:underline">
-				<a href="<?= $funktionen ?>">Funktionen</a>
-			</li>
-			<li class="hover:underline">
-				<a href="<?= $timeTracking ?>">Zeiterfassung</a>
-			</li>
-			<li class="hover:underline">
-				<a href="<?= $wiki ?>">Firmenwiki</a>
-			</li>
-			<li class="hover:underline">
-				<a href="<?= $changelog ?>">Versionsverlauf</a>
-			</li>
-		</ul>
-	</div>
-	<header class="moveToSide sticky p-3 2xl:p-5">
-		<div class="mx-auto w-4/5 lg:mb-5 mb-3 flex">
-			<div class="flex-1">
-				<h1 class="font-semibold md:text-sm"><?= COMPANY_NAME ?> Auftragsstellung</h1>
-				<p class="font-normal text-sm"><?= $pageTitle ?></p>
-			</div>
-			<div class="inline-flex flex-wrap">
-				<?= \Src\Classes\Controller\TemplateController::getTemplate("search"); ?>
-				<div class="inline-flex ml-1">
-					<div class="relative inline-flex items-center justify-center w-9 h-9 text-gray-700 cursor-pointer hover:bg-gray-200 hover:rounded-md"
-						data-binding="true"
-						data-fun="showNotifications">
-						<?php if (NotificationManager::getNotificationCount() > 0): ?>
-							<span
-								class="absolute top-1.5 right-1.5 z-10 flex items-center justify-center 
-										min-w-3.5 h-3.5 px-1
-										text-xxs font-semibold text-white 
-										bg-red-400 rounded-full box-border
-										transform translate-x-1/2 -translate-y-1/3 leading-none">
-								<?= NotificationManager::getNotificationCount(); ?>
-							</span>
-						<?php endif; ?>
-						<span title="Benachrichtigungen" class="inline-block">
-							<?= Icon::getDefault("iconBell") ?>
-						</span>
-					</div>
-					<div class="settingsContainer inline-flex items-center text-gray-700">
-						<a href="<?= $einstellungen ?>" id="settings" title="Einstellungen" class="inline-block p-1 hover:bg-gray-200 hover:rounded-xs">
-							<?= Icon::getDefault("iconSettings") ?>
+					<button type="button" class="relative btn-ghost btn-icon m-0" data-binding="true" data-fun="showNotifications" title="Benachrichtigungen" aria-label="Benachrichtigungen">
+						<?= Icon::get("bell", 18) ?>
+						<span id="notificationBadge" class="notification-badge" style="<?= $notificationCount > 0 ? "" : "display:none" ?>"><?= $notificationCount ?></span>
+					</button>
+
+					<div class="<?= $showTime ? "inline-flex" : "hidden" ?> items-center" id="timeTrackingContainer">
+						<a href="<?= Link::getPageLink("time-tracking") ?>" class="time-chip" data-running="false" id="timeChip" title="Laufende Zeiterfassung">
+							<?= Icon::get("timer", 14) ?><span id="timeGlobal">00:00:00</span>
 						</a>
 					</div>
-					<div class="logoutContainer inline-flex items-center text-gray-700">
-						<span data-binding="true" data-fun="logout" title="Ausloggen" class="inline-block p-1 hover:bg-gray-200 hover:rounded-xs">
-							<?= Icon::getDefault("iconLogout") ?>
-						</span>
-					</div>
-					<div class="<?= (Settings::get("showTimeTracking", User::getCurrentUserId()) == "true") ? "inline-flex" : "hidden" ?> items-center text-gray-700" id="timeTrackingContainer">
-						<a href="<?= Link::getPageLink("time-tracking") ?>" class="showTimeGlobal inline-block p-1 hover:bg-gray-200 hover:rounded-xs" title="Zeiterfassung">
-							<span>Zeit: <span id="timeGlobal" class="inline-block p-1 hover:bg-gray-200 hover:rounded-xs">00:00:00</span></span>
-						</a>
-					</div>
+
+					<a href="<?= $einstellungen ?>" id="settings" class="btn-ghost btn-icon m-0" title="Einstellungen" aria-label="Einstellungen">
+						<?= Icon::get("settings", 18) ?>
+					</a>
+					<button type="button" class="btn-ghost btn-icon m-0" data-binding="true" data-fun="logout" title="Abmelden" aria-label="Abmelden">
+						<?= Icon::get("log-out", 18) ?>
+					</button>
 				</div>
+				<?php endif; ?>
 			</div>
-		</div>
-		<div class="hamburgerDiv cursor-pointer">
-			<input type="checkbox" id="hamburg" data-fun="toggleNav" data-binding="true">
-			<label for="hamburg" class="hamburg cursor-pointer" title="Menü anzeigen">
-				<span class="line"></span>
-				<span class="line"></span>
-				<span class="line"></span>
-			</label>
-		</div>
-		<hr class="bg-gray-700 headerline">
-		<div class="showBreadcrumb my-1 2xl:my-3">
-			<?= BreadcrumbController::createBreadcrumbMenu($page, $pageName) ?>
+			<?php /* zweite Ausgabe nur für schmale Bildschirme; ohne doppelte ID */ ?>
+			<nav class="site-crumbs site-crumbs--row" aria-label="Pfad"><?= str_replace(' id="home_link"', '', $breadcrumbs) ?></nav>
 		</div>
 	</header>
 	<main class="mt-4 w-full px-1 lg:px-4 lg:w-11/12 xl:w-4/5 lg:mx-auto overflow-x-auto">

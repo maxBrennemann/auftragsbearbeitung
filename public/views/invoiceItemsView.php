@@ -1,14 +1,14 @@
 <div id="auftragsPostenTable" class="mt-2"></div>
 <div class="mt-2">
-    <button class="btn-primary" data-binding="true" data-fun="showItemsMenu" id="showItemsMenu">Hinzufügen</button>
+    <button class="btn-secondary" data-binding="true" data-fun="showItemsMenu" id="showItemsMenu"><?= \Src\Classes\Project\Icon::get("plus", 14) ?>Posten hinzufügen</button>
 </div>
 <div id="showPostenAdd" class="hidden mt-2 bg-white rounded-lg">
-    <div class="flex rounded-t-lg">
-        <button class="tab-button tablinks tab-active" data-target="time">Zeiterfassung</button>
-        <button class="tab-button tablinks" data-target="service">Kostenerfassung</button>
-        <button class="tab-button tablinks" data-target="product" disabled>Produkte</button>
+    <div class="flex rounded-t-lg" role="tablist">
+        <button type="button" class="tab-button tab-active" role="tab" aria-selected="true" aria-controls="time" data-tab="time">Zeiterfassung</button>
+        <button type="button" class="tab-button" role="tab" aria-selected="false" aria-controls="service" data-tab="service">Kostenerfassung</button>
+        <button type="button" class="tab-button" role="tab" aria-selected="false" aria-controls="product" data-tab="product" disabled>Produkte</button>
     </div>
-    <div class="tab-content grid grid-cols-3 gap-4" id="time">
+    <div class="tab-content grid grid-cols-3 gap-4" id="time" role="tabpanel" data-tab-panel>
         <div class="container">
             <div class="flex flex-col">
                 <span>Zeit in Minuten:</span>
@@ -29,7 +29,7 @@
             <button class="btn-primary" data-binding="true" data-fun="createTimeInputRow">Hinzufügen</button>
         </div>
     </div>
-    <div class="tab-content hidden" id="service">
+    <div class="tab-content hidden" id="service" role="tabpanel" data-tab-panel>
         <div class="flex flex-col">
             <span>Leistung:</span>
             <select class="input-primary w-48 mt-1" id="selectLeistung" data-binding="true" data-fun="selectLeistung">
@@ -75,7 +75,7 @@
             </div>
         </div>
     </div>
-    <div class="tab-content hidden" id="product">
+    <div class="tab-content hidden" id="product" role="tabpanel" data-tab-panel>
         <span>Produkt suchen:</span>
         <div>
             <input type="search" id="productSearch">
@@ -118,6 +118,6 @@
         <input class="timeInput input-primary w-24" type="time" min="05:00" max="23:00">
         <span>am</span>
         <input class="dateInput input-primary w-32" type="date">
-        <button class="btn-delete">X</button>
+        <button type="button" class="btn-ghost btn-icon btn-sm text-danger" data-remove-time-row title="Zeitraum entfernen" aria-label="Zeitraum entfernen"><?= \Src\Classes\Project\Icon::get("x") ?></button>
     </p>
 </template>

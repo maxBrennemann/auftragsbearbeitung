@@ -52,7 +52,12 @@ fnNames.click_btnAddAttribute = () => {
     }).then(r => {
         notification("", "success");
 
-        const div = document.querySelector("singleAttribute");
+        const div = document.querySelector(".singleAttribute");
+        if (div == null) {
+            // erste Eigenschaft überhaupt: keine Vorlage zum Kopieren vorhanden
+            window.location.reload();
+            return;
+        }
         const divClone = div.cloneNode(true);
 
         const dataElements = divClone.querySelectorAll(`[data-id]`)
@@ -65,6 +70,13 @@ fnNames.click_btnAddAttribute = () => {
         dataElements[2].id = "attributeValues_" + r.data.id;
 
         dataElements[2].innerHTML = "";
+
+        // Kopie tatsächlich einfügen und in der Auswahl für neue Werte anbieten
+        div.parentElement.appendChild(divClone);
+        const option = document.createElement("option");
+        option.value = r.data.id;
+        option.textContent = name;
+        document.getElementById("selectAttribute")?.appendChild(option);
     }).catch((error) => {
         console.error(error);
     });

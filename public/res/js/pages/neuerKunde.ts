@@ -23,46 +23,27 @@ function initAddCustomer() {
     globalProperties.companyForm = document.getElementById("companyForm");
     globalProperties.privateForm = document.getElementById("privateForm");
 
-    globalProperties.company.addEventListener("click", function () {
-        if (globalProperties.current == globalProperties.company) {
-            return;
-        }
-
-        globalProperties.companyForm.classList.remove("hidden");
-        globalProperties.companyForm.classList.add("grid");
-        globalProperties.privateForm.classList.add("hidden");
-
-        toggleStyles(globalProperties.person);
-        toggleStyles(globalProperties.company);
-
-        globalProperties.current = globalProperties.company;
-    });
-
-    globalProperties.person.addEventListener("click", function () {
-        if (globalProperties.current == globalProperties.person) {
-            return;
-        }
-
-        globalProperties.privateForm.classList.remove("hidden");
-        globalProperties.privateForm.classList.add("grid");
-        globalProperties.companyForm.classList.add("hidden");
-
-        toggleStyles(globalProperties.person);
-        toggleStyles(globalProperties.company);
-
-        globalProperties.current = globalProperties.person;
-    });
+    globalProperties.company.addEventListener("click", () => selectTab(globalProperties.company));
+    globalProperties.person.addEventListener("click", () => selectTab(globalProperties.person));
 }
 
-function toggleStyles(element) {
-    element.classList.toggle("hover:text-gray-600");
-    element.classList.toggle("hover:border-gray-300");
-    element.classList.toggle("dark:hover:text-gray-300");
+/** Umschalten zwischen Firma und Privatkunde: Zustand über aria-selected/is-active, Formulare nur über `hidden` */
+function selectTab(tab) {
+    if (globalProperties.current == tab) {
+        return;
+    }
 
-    element.classList.toggle("text-blue-600");
-    element.classList.toggle("border-blue-600");
-    element.classList.toggle("dark:text-blue-500");
-    element.classList.toggle("dark:border-blue-500");
+    const isCompany = tab == globalProperties.company;
+    globalProperties.companyForm.classList.toggle("hidden", !isCompany);
+    globalProperties.privateForm.classList.toggle("hidden", isCompany);
+
+    [globalProperties.company, globalProperties.person].forEach(button => {
+        const selected = button == tab;
+        button.classList.toggle("is-active", selected);
+        button.setAttribute("aria-selected", String(selected));
+    });
+
+    globalProperties.current = tab;
 }
 
 fnNames.click_sendCustomerData = () => {

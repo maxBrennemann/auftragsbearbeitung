@@ -1,10 +1,16 @@
 var globalTimerInterval: number | undefined;
 
+/** Zeit-Chip in der Kopfzeile nur zeigen, solange die Zeiterfassung läuft (CSS: .time-chip[data-running]) */
+const setRunning = (running: boolean) => {
+    document.getElementById("timeChip")?.setAttribute("data-running", String(running));
+};
+
 export const timeGlobalListener = () => {
     const displayTime = document.getElementById("timeGlobal") as HTMLElement;
     if (!displayTime) return;
 
     const start = localStorage.getItem("startTime");
+    setRunning(start != null);
     if (start) {
         if (globalTimerInterval !== undefined) clearInterval(globalTimerInterval);
 
@@ -19,6 +25,7 @@ const countTimeGlobal = (displayTime: HTMLElement) => {
         if (globalTimerInterval !== undefined) clearInterval(globalTimerInterval);
         globalTimerInterval = undefined;
         displayTime.textContent = "00:00:00";
+        setRunning(false);
         return;
     }
 

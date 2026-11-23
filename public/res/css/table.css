@@ -1,112 +1,104 @@
-/* table style */
+/*
+  Tabellen (Richtlinie „Kontor“)
+  Heller Kopf mit kräftiger Tintenlinie darunter (wie der Kopf einer gedruckten Rechnung),
+  feine Zeilenlinien statt Zebrastreifen, Summenzeile (tfoot) mit Linie darüber.
+  Gilt für alle Tabellen: table.ts, tableView.php und die PHP-generierten Tabellen.
+*/
 table {
-    border-radius: 6px;
+    border-collapse: separate;
     border-spacing: 0;
-    border-collapse: collapse;
+    background-color: var(--color-sheet);
+    border: 1px solid var(--color-line-soft);
+    border-radius: var(--radius-control);
+    font-variant-numeric: tabular-nums;
 }
 
 tbody {
     max-width: 78vw;
 }
 
-tr {
-    background-color: white;
-    padding: 7px;
-}
-
-tbody tr:nth-child(odd) {
-    background-color: var(--main-table-color);
-}
-
-tbody tr:only-child {
-    background-color: var(--main-table-color);
-}
-
 th {
-    padding: 7px;
-    margin: 1px;
-    background-color: #0a3350;
-    color: white;
+    padding: 8px 10px;
+    background-color: #f6f7f8;
+    color: var(--color-ink);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
     text-align: left;
+    vertical-align: bottom;
+    border-bottom: 2px solid var(--color-ink);
+}
+
+/* aktive Sortierspalte (table.ts) */
+th.is-sorted {
+    background-color: var(--color-ink-soft);
 }
 
 td {
-    padding: 7px;
-    margin: 1px;
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--color-line-soft);
 }
 
-td a {
+tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+/* Ganze Zelle als Link: Abstand liegt am Link statt an der Zelle, damit der Text bündig zum Kopf steht */
+td a:not([class*="btn-"]) {
     height: 100%;
     display: block;
-    padding: 7px;
+    padding: 7px 10px;
     color: inherit !important;
     text-decoration: none;
 }
 
-tr:hover td {
-    background: #bbbbbb;
+td:has(> a:only-child) {
+    padding: 0;
 }
 
-tr th:first-child {
-    padding-left: 15px;
+tr td:first-child:has(> a:only-child) > a {
+    padding-left: 12px;
 }
 
+tbody tr:hover td {
+    background-color: #f2f5f8;
+}
+
+tr th:first-child,
 tr td:first-child {
-    padding-left: 15px;
+    padding-left: 12px;
 }
 
+/* Summenzeile */
+tfoot td {
+    background-color: #f6f7f8;
+    font-weight: 700;
+    border-top: 1px solid var(--color-ink);
+    border-bottom: 0;
+}
+
+/* Ecken: Zellen innerhalb des abgerundeten Rahmens mitrunden */
 tr:first-child th:first-child {
-    padding-left: 15px;
-    border-radius: 6px 0 0 0;
+    border-top-left-radius: calc(var(--radius-control) - 1px);
 }
 
 tr:first-child th:last-child {
-    border-radius: 0 6px 0 0;
+    border-top-right-radius: calc(var(--radius-control) - 1px);
 }
 
-/* Default: last tbody row gets rounded corners */
-tbody tr:last-child td:first-child {
-    border-bottom-left-radius: 6px;
+tbody tr:last-child td:first-child,
+tfoot tr:last-child td:first-child {
+    border-bottom-left-radius: calc(var(--radius-control) - 1px);
 }
 
-tbody tr:last-child td:last-child {
-    border-bottom-right-radius: 6px;
+tbody tr:last-child td:last-child,
+tfoot tr:last-child td:last-child {
+    border-bottom-right-radius: calc(var(--radius-control) - 1px);
 }
 
-/* If there's a <tfoot>, disable rounding */
-tbody:has(+ tfoot) tr:last-child td:first-child {
-    border-radius: 0;
-}
+/* Mit Summenzeile: letzte tbody-Zeile nicht runden */
+tbody:has(+ tfoot) tr:last-child td:first-child,
 tbody:has(+ tfoot) tr:last-child td:last-child {
     border-radius: 0;
-}
-
-/* Edge case: tbody with only one row, round all corners */
-tbody tr:only-child td:first-child {
-    border-bottom-left-radius: 6px;
-}
-tbody tr:only-child td:last-child {
-    border-bottom-right-radius: 6px;
-}
-
-/* BUT cancel bottom rounding if <tfoot> exists */
-tbody:has(+ tfoot) tr:only-child td:first-child {
-    border-radius: 0;
-}
-tbody:has(+ tfoot) tr:only-child td:last-child {
-    border-radius: 0;
-}
-
-/* Default: round bottom corners of tfoot */
-tfoot tr:last-child td:first-child {
-    border-bottom-left-radius: 6px;
-}
-
-tfoot tr:last-child td:last-child {
-    border-bottom-right-radius: 6px;
-}
-
-/* If tfoot is the only thing there (e.g., no tbody rows), maybe adjust background */
-table tfoot tr {
-    background-color: var(--main-table-foot-color);
 }

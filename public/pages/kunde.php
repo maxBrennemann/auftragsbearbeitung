@@ -1,6 +1,7 @@
 <?php
 
 use Src\Classes\Link;
+use Src\Classes\Project\Icon;
 use Src\Classes\Project\Kunde;
 use Src\Classes\Controller\TemplateController;
 use MaxBrennemann\PhpUtilities\Tools;
@@ -15,147 +16,136 @@ try {
 }
 
 if ($customerId == 0): ?>
-	<p>Kundennummer nicht gefunden oder ungültig.</p>
-	<p><a href="<?= Link::getPageLink("neuer-kunde") ?>" class="link-primary">Hier</a> kannst Du einen neuen Kunden anlegen.</p>
+	<div class="note note-warn m-2.5">
+		<p class="note-head"><?= Icon::get("triangle-alert") ?>Kunde nicht gefunden</p>
+		<p>Zu dieser Kundennummer gibt es keinen Eintrag. <a href="<?= Link::getPageLink("neuer-kunde") ?>" class="link-primary">Neuen Kunden anlegen</a></p>
+	</div>
 <?php else:
-	$orderCount = $customer->getOrderIds();
-	$orderCount = count($orderCount);
+	$orderCount = count($customer->getOrderIds());
+	$displayName = $customer->getFirmenname() ?: trim($customer->getVorname() . " " . $customer->getNachname());
+
+	/** Ein Eingabefeld der Kundendaten: [id, Label, Wert, volle Breite?, Typ] */
+	$field = function (string $id, string $label, ?string $value, bool $wide = false, string $type = "text", string $extra = ""): string {
+		$value = htmlspecialchars((string) $value, ENT_QUOTES);
+		$span = $wide ? " col-span-full" : "";
+		return <<<HTML
+			<label class="field{$span}">
+				<span class="field-label">{$label}{$extra}</span>
+				<input class="input-primary" type="{$type}" id="{$id}" value="{$value}" autocomplete="off" data-initial="{$value}">
+			</label>
+		HTML;
+	};
 ?>
-	<div class="mt-4 bg-gray-100 p-4 rounded-lg">
-		<h2 class="font-bold">Kundenübersicht für <?= $customer->getFirmenname() ?> (<?= $customer->getKundennummer() ?>)</h2>
-		<p>Anzahl der Aufträge: <?= $orderCount ?></p>
-		<div class="mt-2">
-			<button class="btn-primary" data-fun="createNewOrder" data-binding="true">Neuen Auftrag erstellen</button>
-			<!--<?=  TemplateController::getTemplate("toggleOptions", [
+	<input type="hidden" id="idCustomer" value="<?= $customer->getKundennummer() ?>">
+
+	<div class="mx-2.5 mt-2 mb-4 flex flex-wrap items-end justify-between gap-3">
+		<div>
+			<span class="group-label text-text-muted">Kunde <?= $customer->getKundennummer() ?></span>
+			<h2 class="page-title"><?= $displayName ?></h2>
+			<p class="text-xs text-text-muted"><?= $orderCount == 1 ? "1 Auftrag" : "$orderCount Aufträge" ?></p>
+		</div>
+		<div class="relative flex items-center gap-2">
+			<button class="btn-primary" data-fun="createNewOrder" data-binding="true"><?= Icon::get("plus") ?>Neuer Auftrag</button>
+			<?= TemplateController::getTemplate("toggleOptions", [
 				"toggleClass" => "",
 				"toggleBtnId" => "customerOptionsBtn",
 				"toggleId" => "moreOptions",
+				"bindToggle" => true,
 				"options" => [
 					[
-						"text" => "Kunde zusammenführen",
-						"class" => "btn-primary",
+						"text" => "Mit anderem Kunden zusammenführen",
+						"icon" => "merge",
 						"function" => "mergeCustomer",
 					],
 					[
 						"text" => "Kunde löschen",
-						"class" => "btn-delete",
+						"icon" => "trash-2",
 						"function" => "deleteCustomer",
+						"danger" => true,
+						"dividerBefore" => true,
 					],
 				],
-			]) ?>-->
-			<button class="btn-options float-right" data-toggle="true" data-target="#moreOptions">⋮</button>
-			<span class="hidden" id="moreOptions">
-				<button class="btn-primary" data-fun="mergeCustomer" data-binding="true">Kunde zusammenführen</button>
-				<button class="btn-delete" data-fun="deleteCustomer" data-binding="true">Kunde löschen</button>
-			</span>
+			]) ?>
 		</div>
 	</div>
-	<div class="mt-4 grid grid-cols-2 gap-4">
-		<div id="showKundendaten" class="bg-gray-100 p-4 rounded-lg col-span-2 2xl:col-span-1">
-			<h3 class="font-bold">Kundendaten</h3>
-			<div class="mt-2">
-				<div class="w-full flex flex-col">
-					<label for="idCustomer">Kundennummer:</label>
-					<input disabled class="input-primary" id="idCustomer" value="<?= $customer->getKundennummer() ?>">
-				</div>
+
+	<div class="grid grid-cols-1 xl:grid-cols-2">
+		<section class="defCont" id="showKundendaten">
+			<div class="section-head">
+				<h2 class="section-title">Kundendaten</h2>
+				<span class="section-meta">Kundennummer <?= $customer->getKundennummer() ?></span>
 			</div>
-			<div class="grid grid-cols-2 2xl:grid-cols-1">
-				<div>
-					<div class="w-full flex gap-8 mt-2">
-						<div class="flex flex-col">
-							<label for="prename">Vorname:</label>
-							<input class="input-primary" id="prename" value="<?= $customer->getVorname() ?>" autocomplete="none">
-						</div>
-						<div class="flex flex-initial flex-col">
-							<label for="lastname">Nachname:</label>
-							<input class="input-primary" id="lastname" value="<?= $customer->getNachname() ?>" autocomplete="none">
-						</div>
-					</div>
-					<div class="w-full flex mt-2">
-						<div class="flex flex-col">
-							<label for="companyname">Firmenname:</label>
-							<input class="input-primary w-80" id="companyname" value="<?= $customer->getFirmenname() ?>" autocomplete="none">
-						</div>
-					</div>
-					<div class="w-full flex mt-2">
-						<div class="flex flex-col">
-							<label for="email">E-Mail:</label>
-							<input class="input-primary w-80" id="email" value="<?= $customer->getEmail() ?>" autocomplete="none">
-						</div>
-					</div>
-					<div class="w-full flex mt-2">
-						<div class="flex flex-col">
-							<label for="email">Rechnungs-E-Mail:
-								<?= TemplateController::getTemplate("infoButton", [
-                                    "infoKey" => "invoice_mail",
-                                ]) ?>
-							</label> 
-							<input class="input-primary w-80" id="invoiceEmail" value="<?= $customer->getInvoiceEmail() ?>" autocomplete="none">
-						</div>
-					</div>
-				</div>
-				<div>
-					<div class="w-full flex mt-2">
-						<div class="flex flex-col">
-							<label for="website">Website:</label>
-							<input class="input-primary w-80" id="website" value="<?= $customer->getWebsite() ?>" autocomplete="none">
-						</div>
-					</div>
-					<div class="w-full flex gap-8 mt-2">
-						<div class="flex flex-col">
-							<label for="phoneLandline">Telefon Festnetz:</label>
-							<input class="input-primary" id="phoneLandline" value="<?= $customer->getTelefonFestnetz() ?>" autocomplete="none">
-						</div>
-						<div class="flex flex-initial flex-col">
-							<label for="phoneMobile">Telefon Mobil:</label>
-							<input class="input-primary" id="phoneMobile" value="<?= $customer->getTelefonMobil() ?>" autocomplete="none">
-						</div>
-					</div>
-					<div class="w-full flex mt-2">
-						<div class="flex flex-col">
-							<label for="fax">Fax:</label>
-							<input class="input-primary w-80" id="fax" value="<?= $customer->getFax() ?>" autocomplete="none">
-						</div>
-					</div>
-				</div>
+			<span class="group-label mb-2">Name</span>
+			<div class="field-grid">
+				<?= $field("prename", "Vorname", $customer->getVorname()) ?>
+				<?= $field("lastname", "Nachname", $customer->getNachname()) ?>
+				<?= $field("companyname", "Firmenname", $customer->getFirmenname(), true) ?>
 			</div>
-			<div class="w-full flex mt-2">
-				<div class="flex">
-					<button class="btn-primary" data-binding="true" data-fun="saveCustomerData">Speichern</button>
-					<button class="btn-cancel ml-2" data-binding="true" data-fun="resetCustomerData">Abbrechen</button>
-				</div>
+			<span class="group-label mt-5 mb-2">Kontakt</span>
+			<div class="field-grid">
+				<?= $field("email", "E-Mail", $customer->getEmail(), false, "email") ?>
+				<?= $field("invoiceEmail", "Rechnungs-E-Mail", $customer->getInvoiceEmail(), false, "email", TemplateController::getTemplate("infoButton", ["infoKey" => "invoice_mail"])) ?>
+				<?= $field("phoneLandline", "Telefon Festnetz", $customer->getTelefonFestnetz(), false, "tel") ?>
+				<?= $field("phoneMobile", "Telefon Mobil", $customer->getTelefonMobil(), false, "tel") ?>
+				<?= $field("website", "Website", $customer->getWebsite()) ?>
+				<?= $field("fax", "Fax", $customer->getFax(), false, "tel") ?>
 			</div>
-		</div>
+			<div class="flex gap-2 mt-5">
+				<button class="btn-primary" data-binding="true" data-fun="saveCustomerData">Speichern</button>
+				<button class="btn-secondary" data-binding="true" data-fun="resetCustomerData">Änderungen verwerfen</button>
+			</div>
+		</section>
 
-		<div id="ansprechpartner" class="bg-gray-100 col-span-2 p-4 rounded-lg">
-			<h3 class="font-bold">Ansprechpartner</h3>
-			<div id="contactPersonTable" class="w-full mt-2"></div>
-		</div>
+		<section class="defCont" id="addNewAddress">
+			<div class="section-head">
+				<h2 class="section-title">Adressen</h2>
+			</div>
+			<div id="addressTable" class="overflow-x-auto"></div>
+		</section>
 
-		<div id="addNewAddress" class="bg-gray-100 p-4 rounded-lg col-span-2 2xl:col-span-1">
-			<h4 class="font-bold">Aktuelle Adressen</h4>
-			<div id="addressTable" class="mt-2 2xl:overflow-x-auto"></div>
-		</div>
+		<section class="defCont xl:col-span-2" id="ansprechpartner">
+			<div class="section-head">
+				<h2 class="section-title">Ansprechpartner</h2>
+			</div>
+			<div id="contactPersonTable" class="w-full overflow-x-auto"></div>
+		</section>
 
-		<div id="notizen" class="bg-gray-100 p-4 rounded-lg">
-			<h3 class="font-bold">Notizen</h3>
-			<textarea class="mt-2 w-full input-primary" data-write="true" data-fun="setCustomerNote"><?= $customer->getNotizen() ?></textarea>
-		</div>
+		<section class="defCont xl:col-span-2" id="auftraege">
+			<div class="section-head">
+				<h2 class="section-title">Aufträge</h2>
+				<button class="btn-secondary btn-sm" data-fun="createNewOrder" data-binding="true"><?= Icon::get("plus", 14) ?>Neuer Auftrag</button>
+			</div>
+			<?php if ($orderCount == 0): ?>
+				<p class="text-sm text-text-muted">Für diesen Kunden gibt es noch keine Aufträge.</p>
+			<?php else: ?>
+				<div class="<?= $orderCount > 8 ? "cards-collapsed" : "" ?>" id="orderCards">
+					<?= $customer->getOrderCards() ?>
+				</div>
+				<?php if ($orderCount > 8): ?>
+					<button class="btn-secondary mt-3" data-fun="showAllOrders" data-binding="true" id="showAllOrders">Alle <?= $orderCount ?> Aufträge anzeigen</button>
+				<?php endif; ?>
+			<?php endif; ?>
+		</section>
 
-		<div id="fahrzeuge" class="bg-gray-100 p-4 rounded-lg">
-			<h3 class="font-bold">Fahrzeuge</h3>
-			<div id="vehiclesTable" class="mt-2"></div>
-		</div>
+		<section class="defCont" id="fahrzeuge">
+			<div class="section-head">
+				<h2 class="section-title">Fahrzeuge</h2>
+			</div>
+			<div id="vehiclesTable" class="overflow-x-auto"></div>
+		</section>
 
-		<div id="farben" class="bg-gray-100 col-span-2 p-4 rounded-lg">
-			<h3 class="font-bold">Farben</h3>
-			<div id="colorTable" class="mt-2"></div>
-		</div>
+		<section class="defCont" id="notizen">
+			<div class="section-head">
+				<h2 class="section-title">Notizen</h2>
+			</div>
+			<textarea class="input-primary w-full min-h-32" data-write="true" data-fun="setCustomerNote" aria-label="Notizen zum Kunden"><?= $customer->getNotizen() ?></textarea>
+		</section>
 
-		<div id="auftraege" class="bg-gray-100 col-span-2 p-4 rounded-lg">
-			<h3 class="font-bold">Aufträge</h3>
-			<button class="btn-primary mt-2" data-fun="createNewOrder" data-binding="true">Neuen Auftrag erstellen</button>
-			<?= $customer->getOrderCards() ?>
-		</div>
+		<section class="defCont xl:col-span-2" id="farben">
+			<div class="section-head">
+				<h2 class="section-title">Farben</h2>
+			</div>
+			<div id="colorTable" class="overflow-x-auto"></div>
+		</section>
 	</div>
 <?php endif; ?>

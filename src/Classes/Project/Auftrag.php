@@ -629,7 +629,7 @@ class Auftrag implements NotifiableEntity
                 "file" => $file["Datei"],
             ];
 
-            $file["Aktionen"] = "<button class=\"btn-delete\" data-binding=\"true\" data-fun=\"deleteOrderFile\" data-file-id=\"{$file['DateiId']}\" title=\"Datei löschen\">" . Icon::getDefault("iconDelete") . "</button>";
+            $file["Aktionen"] = "<button class=\"btn-delete\" data-binding=\"true\" data-fun=\"deleteOrderFile\" data-file-id=\"{$file['DateiId']}\" title=\"Datei löschen\">" . Icon::getDefault("trash-2") . "</button>";
             $file["Datei"] = TemplateController::getTemplate("tableFile", [
                 "f" => $fileData,
             ]);

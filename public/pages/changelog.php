@@ -2,8 +2,13 @@
     <nav id="nav" class="bg-gray-200 p-3 rounded-lg">
         <p class="font-bold text-md text-lg">Versionen</p>
         <ul>
+            <li>1.3</li>
+            <ul>
+                <li><a class="link-primary" href="#1.3.0">1.3.0</a></li>
+            </ul>
             <li>1.2</li>
             <ul>
+                <li><a class="link-primary" href="#1.2.3">1.2.3</a></li>
                 <li><a class="link-primary" href="#1.2.2">1.2.2</a></li>
                 <li><a class="link-primary" href="#1.2.1">1.2.1</a></li>
                 <li><a class="link-primary" href="#1.2.0">1.2.0</a></li>
@@ -25,6 +30,83 @@
             </ul>
         </ul>
     </nav>
+    <h3 id="1.3.0" class="font-bold my-5 text-lg">1.3.0</h3>
+    <ul class="list-disc list-inside">
+        <li>Angebote grundlegend überarbeitet
+            <ul class="ml-5 list-disc list-inside">
+                <li>Neue Angebotsverwaltung mit Angebotsnummer, Gültigkeit und Status</li>
+                <li>Angebote können per E-Mail versendet werden</li>
+                <li>Abgelaufene Angebote laufen automatisch ab</li>
+                <li>Adress- und Ansprechpartnerauswahl sowie kundenbezogene Kopfzeilen</li>
+            </ul>
+        </li>
+        <li>Rechnungswesen erweitert
+            <ul class="ml-5 list-disc list-inside">
+                <li>Gutschriften können erstellt, verwaltet, als PDF erzeugt und per E-Mail versendet werden</li>
+                <li>Rechnungen können storniert werden - mit Stornogrund, optionaler Benachrichtigung und zugehöriger Storno-Gutschrift</li>
+                <li>Stornierte Rechnungen werden gesondert angezeigt und aus Auswertungen ausgeschlossen</li>
+                <li>Leistungsdatum kann als Datum oder Kalenderwoche angegeben und ein- und ausgeblendet werden</li>
+                <li>Rechnungsposten mit verbessertem Drag-and-Drop und überarbeiteter Verwaltung</li>
+            </ul>
+        </li>
+        <li>Lieferscheine und Zahlungserinnerungen als PDF hinzugefügt, Zahlungserinnerungen können versendet werden</li>
+        <li>Dokumenttexte und Layouts vereinheitlicht
+            <ul class="ml-5 list-disc list-inside">
+                <li>Gemeinsamer Baustein-Mechanismus für Rechnungen und Angebote</li>
+                <li>Texte können hinzugefügt, bearbeitet und gelöscht werden</li>
+                <li>Reihenfolge der Bausteine per Drag-and-Drop anpassbar</li>
+            </ul>
+        </li>
+        <li>Statistik überarbeitet
+            <ul class="ml-5 list-disc list-inside">
+                <li>Neues Dashboard mit Umsatz- und Auftragsentwicklung, Zahlungsdauern, offenen Rechnungen, Auftrags-Pipeline und Top-Kunden</li>
+                <li>Stichtag für historische Rechnungsdaten konfigurierbar</li>
+            </ul>
+        </li>
+        <li>E-Mail-Versand über SMTP konfigurierbar (Host, Port, Benutzer, Passwort, Absender), Passwort verschlüsselt gespeichert</li>
+        <li>Kontoinhaber in den Firmeneinstellungen und auf den PDFs ergänzt</li>
+        <li>Dateien können gelöscht werden, Bildvorschau für Aufträge überarbeitet</li>
+        <li>Zugriff auf generierte Dokumente und Backups nur noch für angemeldete Nutzer</li>
+        <li>PrestaShop-Anbindung entfernt, da nicht mehr benötigt</li>
+        <li>Sicherheitsupdates der Docker-Images (CVE-2026-109618, CVE-2026-109619)</li>
+        <li>Diverse Fehlerbehebungen</li>
+    </ul>
+    <h3 id="1.2.3" class="font-bold my-5 text-lg">1.2.3</h3>
+    <ul class="list-disc list-inside">
+        <li>Einstellungen grundlegend überarbeitet
+            <ul class="ml-5 list-disc list-inside">
+                <li>Neue zentrale Einstellungsverwaltung, alte Einstellungen ersetzt</li>
+                <li>Parameterverwaltung in die Tools ausgelagert</li>
+            </ul>
+        </li>
+        <li>API-Zugriff über Bearer-Token
+            <ul class="ml-5 list-disc list-inside">
+                <li>Token-Verwaltung über die Konsole</li>
+                <li>Rechnungen können über die API als bezahlt markiert werden</li>
+            </ul>
+        </li>
+        <li>E-Mail-Versand für Rechnungen implementiert
+            <ul class="ml-5 list-disc list-inside">
+                <li>Rechnungen können direkt versendet werden</li>
+                <li>Standard-Absenderadresse für den Sammelversand hinterlegbar</li>
+            </ul>
+        </li>
+        <li>Bearbeitungsschritte können bearbeitet und gelöscht werden, Benachrichtigungen werden dabei bereinigt</li>
+        <li>Neue Log-Tabelle zur Nachverfolgung</li>
+        <li>Kunden können gelöscht werden</li>
+        <li>Mehrwertsteuersatz kann konfiguriert werden, Rechnungsberechnung angepasst</li>
+        <li>Favicon kann hochgeladen werden, Favicon-Prozess überarbeitet</li>
+        <li>Standard-Bilder und Icons können gelöscht werden</li>
+        <li>Diverse Fehlerbehebungen
+            <ul class="ml-5 list-disc list-inside">
+                <li>Benachrichtigungen und automatische Bezahlt-Einstellung korrigiert</li>
+                <li>Fehler in Tabellen, Autologin und Zeiterfassung behoben</li>
+                <li>SQL-Injection geschlossen</li>
+                <li>CSP-Fehler bei offenen Rechnungen behoben</li>
+            </ul>
+        </li>
+        <li>Abhängigkeiten und Docker-Images aktualisiert, PHPUnit auf Version 12 angehoben</li>
+    </ul>
     <h3 id="1.2.2" class="font-bold my-5 text-lg">1.2.2</h3>
     <ul class="list-disc list-inside">
         <li>Interne Dateistruktur angepasst

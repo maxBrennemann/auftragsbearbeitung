@@ -73,9 +73,8 @@ import { setNotificationPersistance } from "js-classes/notifications";
 
 import { createPopup } from "./classes/helpers";
 import { checkAutoOpenPopup, initImagePreviewListener } from "./classes/imagePreview";
-import { initNotificationService } from "./classes/notificationUpdater";
+import { initNotificationService, setNotificationAsRead } from "./classes/notificationUpdater";
 import { timeGlobalListener } from "./classes/timetracking";
-import { createIcons, Info, Download, Image, Layout, TriangleAlert, Database, Files } from 'lucide';
 
 const fnNames = {};
 
@@ -119,18 +118,6 @@ function init() {
 	initNotificationService();
 
 	checkAutoOpenPopup();
-
-	createIcons({
-		icons: {
-			Info,
-			Download,
-            Image,
-            Layout,
-            TriangleAlert,
-			Database,
-			Files,
-		}
-	});
 }
 
 const autoSizeTextareas = () => {
@@ -162,7 +149,11 @@ const autoValidateEmails = () => {
 }
 
 const initSearch = () => {
+	// ohne Anmeldung (Login-Seite) hat die Kopfzeile kein Suchfeld
 	const globalSearch = document.querySelector(".searchContainer input");
+	if (globalSearch == null) {
+		return;
+	}
 	globalSearch.addEventListener("change", performGlobalSearch);
 
 	/* initSearch */
@@ -178,7 +169,7 @@ function initSearchListener() {
 			event.preventDefault();
 
 			const searchInput = document.querySelector(".searchContainer input");
-			searchInput.focus();
+			searchInput?.focus();
 		}
 	});
 }
@@ -195,6 +186,17 @@ function initSearchIcons() {
 	}
 }
 
+/* Handy: Suchfeld in der Kopfzeile auf- und zuklappen (CSS: .site-header.search-open) */
+fnNames.click_toggleHeaderSearch = () => {
+	const header = document.getElementById("siteHeader");
+	if (!header) return;
+
+	const isOpen = header.classList.toggle("search-open");
+	if (isOpen) {
+		(header.querySelector(".searchContainer input") as HTMLInputElement | null)?.focus();
+	}
+}
+
 fnNames.click_logout = () => {
 	const cookies = checkCookies();
 	let loginkey = "false";
@@ -207,15 +209,32 @@ fnNames.click_logout = () => {
 }
 
 fnNames.click_showNotifications = async () => {
-	const div = document.createElement("div");
-	div.classList.add("w-2/3", "z-10", "h-96");
-
-	const response = await ajax.get(`/api/v1/notification/template`);
 	const innerDiv = document.createElement("div");
-	innerDiv.innerHTML = response.data.html;
-
-	div.appendChild(innerDiv);
 	innerDiv.classList.add("notificationWrapper");
+
+	const loadNotifications = async () => {
+		const response = await ajax.get(`/api/v1/notification/template`);
+		innerDiv.innerHTML = response.data?.html ?? "";
+	};
+
+	await loadNotifications();
+
+	/* Buttons werden per Ajax nachgeladen, daher Event-Delegation statt data-binding. */
+	innerDiv.addEventListener("click", async (event) => {
+		const target = (event.target as Element).closest<HTMLElement>("[data-notification-read]");
+		if (target === null) {
+			return;
+		}
+
+		event.preventDefault();
+		const id = target.dataset.notificationRead;
+		if (!id) {
+			return;
+		}
+
+		await setNotificationAsRead(id);
+		await loadNotifications();
+	});
 
 	const options = createPopup(innerDiv);
 	const goToNotifications = document.createElement("a");
@@ -252,7 +271,7 @@ function autosubmit() {
  * -  displays its content in an extra div next to the "i"
  */
 function initializeInfoBtn() {
-	let btns = document.getElementsByClassName("info-button");
+	let btns = document.querySelectorAll<HTMLElement>("[data-info]");
 
 	const loadTextDynamic = async (id: Number) => {
 		const response = await ajax.get(`/api/v1/manual/text/${id}`);
@@ -303,7 +322,8 @@ function initializeInfoBtn() {
 }
 
 window.addEventListener("click", function (event) {
-	if (!event.target.matches('info-button')) {
+	// Klicks auf einen Info-Button (auch auf das Icon darin) dürfen die gerade geöffnete Box nicht wieder schließen
+	if (!(event.target as Element).closest("[data-info]")) {
 		var dropdowns = document.getElementsByClassName("infoBox");
 		for (let i = 0; i < dropdowns.length; i++) {
 			var openDropdown = dropdowns[i];
@@ -385,24 +405,6 @@ export const setInpupts = inputs => {
 					});
 				}
 				break;
-		}
-	}
-}
-
-/* side nav */
-fnNames.click_toggleNav = function () {
-	let sidenav = document.getElementById("sidenav");
-	if (sidenav.style.width == "250px") {
-		sidenav.style.width = "0";
-		let elements = document.getElementsByClassName("moveToSide");
-		for (let i = 0; i < elements.length; i++) {
-			elements[i].style.marginLeft = "0";
-		}
-	} else {
-		sidenav.style.width = "250px";
-		let elements = document.getElementsByClassName("moveToSide");
-		for (let i = 0; i < elements.length; i++) {
-			elements[i].style.marginLeft = "250px";
 		}
 	}
 }

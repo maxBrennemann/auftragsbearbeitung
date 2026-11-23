@@ -2,7 +2,7 @@ import { ajax } from "js-classes/ajax";
 import { addBindings } from "js-classes/bindings";
 import { notification } from "js-classes/notifications";
 
-import { createPopup } from "../classes/helpers";
+import { createPopup, closePopupFor } from "../classes/helpers";
 import { getTemplate, setInpupts, clearInputs } from "../global";
 import type { FunctionMap, TableHeader, TableOptions } from "../types/types";
 
@@ -194,18 +194,21 @@ const addExtraData = (data: any[], table: HTMLTableElement): void => {
 }
 
 const initItems = (): void => {
-    const tabButtons = document.querySelectorAll<HTMLButtonElement>(".tab-button");
-    const tabContent = document.querySelectorAll<HTMLElement>(".tab-content");
+    const tabButtons = document.querySelectorAll<HTMLButtonElement>("[data-tab]");
+    const tabContent = document.querySelectorAll<HTMLElement>("[data-tab-panel]");
 
     Array.from(tabButtons).forEach((button) => {
-        button.addEventListener("click", (e: Event) => {
-            const eventTarget = e.target as HTMLElement;
-            const target = eventTarget.dataset.target;
+        button.addEventListener("click", () => {
+            const target = button.dataset.tab;
 
             if (!target) return;
 
-            tabButtons.forEach(btn => btn.classList.remove("tab-active"));
+            tabButtons.forEach(btn => {
+                btn.classList.remove("tab-active");
+                btn.setAttribute("aria-selected", "false");
+            });
             button.classList.add("tab-active");
+            button.setAttribute("aria-selected", "true");
 
             tabContent.forEach(content => {
                 if (content.id === target) {
@@ -230,10 +233,9 @@ const deleteItem = (e: CustomEvent): void => {
 
     const settingsContainer = createPopup(div);
     const btnDelete = document.createElement("button");
-    const btnCancel = settingsContainer.querySelector("button.btn-cancel");
 
     btnDelete.addEventListener("click", () => {
-        (btnCancel as HTMLButtonElement).click();
+        closePopupFor(settingsContainer);
         ajax.delete(`/api/v1/order-items/${data.type}/${data.id}`).then((r: any) => {
             if (!r.success || r.data?.status !== "success") {
                 notification("", "failure", r.error ?? r.data?.message ?? "Der Posten konnte nicht gelöscht werden");
@@ -286,14 +288,13 @@ const uploadItem = async (e: CustomEvent) => {
     const div = document.createElement("div");
     div.innerHTML = uploadFile.data.content;
     const optionsContainer = createPopup(div);
-    const btnCancel = optionsContainer.querySelector("button.btn-cancel");
     initFileUploader({
         "item": {
             "location": `/api/v1/order-items/${data.type}/${data.id}/add-files`,
         },
     });
 
-    div.addEventListener("fileUploaded", () => (btnCancel as HTMLButtonElement).click());
+    div.addEventListener("fileUploaded", () => closePopupFor(optionsContainer));
 }
 
 const editItem = (e: CustomEvent): void => {
@@ -315,7 +316,7 @@ const editItem = (e: CustomEvent): void => {
     const wasEditing = itemsConf.editItemId != 0;
     openItemsMenu();
 
-    const tab = document.querySelector(`.tab-button[data-target="${type}"]`) as HTMLButtonElement;
+    const tab = document.querySelector(`[data-tab="${type}"]`) as HTMLButtonElement;
     tab.click();
 
     const addItem = document.querySelector("#addItem") as HTMLElement;
@@ -638,12 +639,12 @@ const createTimeInputRow = (initial: ExtendedTime = { start: "00:00", end: "00:0
     end.dataset.index = config.extendedTimes.length.toString();
     end.dataset.type = "end";
 
-    /* lazy solution */
-    const removeBtn = div.querySelector<HTMLButtonElement>(".btn-delete")!;
+    const removeBtn = div.querySelector<HTMLButtonElement>("[data-remove-time-row]")!;
     removeBtn.dataset.index = config.extendedTimes.length.toString();
-    removeBtn.addEventListener("click", (e) => {
+    removeBtn.addEventListener("click", () => {
         div.classList.add("hidden");
-        const index = Number((e.target as HTMLElement).dataset.index);
+        // vom Button lesen, nicht von e.target: der Klick kann auf dem Icon im Button landen
+        const index = Number(removeBtn.dataset.index);
         config.extendedTimes[index] = { start: "00:00", end: "00:00", date: "" };
         calculateTime();
     }, false);

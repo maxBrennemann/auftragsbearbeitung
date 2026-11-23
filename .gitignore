@@ -43,4 +43,5 @@ publics/assets/forms/modules/sticker/catalog_products.csv
 public/assets/img/favicon.ico
 public/assets/img/favicon.png
 public/assets/img/apple-touch-icon.png
+src/Classes/Project/icons.json
 favicon.ico
