@@ -36,6 +36,7 @@ database/versions
 !.config/vite.config.ts
 !.config/nginx/*
 !.config/docker-entrypoint.sh
+!.config/scripts/*
 
 Makefile
 
