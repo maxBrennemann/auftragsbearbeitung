@@ -76,7 +76,7 @@ class NotificationManager
     private static function getTasks(): array
     {
         $user = User::getCurrentUserId();
-        $query = "SELECT * FROM user_notifications WHERE user_id = :user AND ischecked = 0 AND `type` = :stepType";
+        $query = "SELECT * FROM user_notifications WHERE user_id = :user AND ischecked = 0 AND `type` = :stepType ORDER BY created_at DESC, id DESC";
         return DBAccess::selectQuery($query, [
             "user" => $user,
             "stepType" => NotificationType::TYPE_STEP,
@@ -88,22 +88,9 @@ class NotificationManager
      */
     private static function getNews(): array
     {
-        return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = :user AND ischecked = 0 AND `type` != :stepType", [
+        return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = :user AND ischecked = 0 AND `type` != :stepType ORDER BY created_at DESC, id DESC", [
             "user" => User::getCurrentUserId(),
             "stepType" => NotificationType::TYPE_STEP,
-        ]);
-    }
-
-    /**
-     * @param int $limit
-     * @return array<int, array<string, string>>
-     */
-    public static function getRecentNotifications(int $limit = 10): array
-    {
-        $user = User::getCurrentUserId();
-        return DBAccess::selectQuery("SELECT * FROM user_notifications WHERE user_id = :user ORDER BY created_at DESC LIMIT :limit", [
-            "user" => $user,
-            "limit" => $limit,
         ]);
     }
 
@@ -132,10 +119,10 @@ class NotificationManager
             "limit" => $limit,
         ]);
 
+        $notifications = self::attachDisplayData($notifications);
+
         foreach ($notifications as $key => $notification) {
-            $notifications[$key]["typeName"] = NotificationType::getName((int) $notification["type"]);
             $notifications[$key]["category"] = NotificationType::getCategory((int) $notification["type"]);
-            $notifications[$key]["link"] = self::getSpecificLink((int) $notification["type"], (int) $notification["specific_id"]);
             $notifications[$key]["initiatorName"] = trim(($notification["prename"] ?? "") . " " . ($notification["lastname"] ?? ""));
         }
 
@@ -149,32 +136,10 @@ class NotificationManager
         ]);
     }
 
-    public static function checkActuality(): void
-    {
-        $user = User::getCurrentUserId();
-        $query = "UPDATE user_notifications 
-            JOIN schritte ON user_notifications.specific_id = schritte.Schrittnummer 
-            SET ischecked = 1 
-            WHERE user_notifications.`type` = 1 
-                AND schritte.istErledigt = 0 
-                AND user_id = $user;";
-        DBAccess::updateQuery($query);
-    }
-
     public static function htmlNotification(): void
     {
-        $tasks = self::getTasks();
-        $news = self::getNews();
-
-        foreach ($tasks as $key => $task) {
-            $tasks[$key]['typeName'] = self::getTypeName((int) $task['type']);
-            $tasks[$key]['link'] = self::getSpecificLink((int) $task['type'], (int) $task['specific_id']);
-        }
-
-        foreach ($news as $key => $n) {
-            $news[$key]['typeName'] = self::getTypeName((int) $n['type']);
-            $news[$key]['link'] = self::getSpecificLink((int) $n['type'], (int) $n['specific_id']);
-        }
+        $tasks = self::attachDisplayData(self::getTasks());
+        $news = self::attachDisplayData(self::getNews());
 
         $tasksCount = self::getNotificationCountByType([NotificationType::TYPE_STEP]);
         $newsCount = self::getNotificationCountByType([], [NotificationType::TYPE_STEP]);
@@ -190,46 +155,81 @@ class NotificationManager
         ]);
     }
 
-    private static function getSpecificLink(int $type, int $id): string
+    /**
+     * Ergänzt typeName und link. Die Auftragsnummern für Schritte und Rechnungen
+     * werden gesammelt in je einer Abfrage geladen statt einzeln pro Zeile.
+     *
+     * @param array<int, array<string, mixed>> $notifications
+     * @return array<int, array<string, mixed>>
+     */
+    private static function attachDisplayData(array $notifications): array
     {
-        switch ($type) {
-            case NotificationType::TYPE_STEP:
-                $orderData = DBAccess::selectQuery("SELECT Auftragsnummer FROM schritte WHERE Schrittnummer = :id", [
-                    "id" => $id,
-                ]);
+        $stepIds = [];
+        $invoiceIds = [];
 
-                if (empty($orderData)) {
-                    return "#";
-                }
+        foreach ($notifications as $notification) {
+            $type = (int) $notification["type"];
+            $id = (int) $notification["specific_id"];
 
-                $orderId = (int) $orderData[0]["Auftragsnummer"];
-                return Link::getPageLink("auftrag") . "?id=$orderId#stepCont";
-            case NotificationType::TYPE_NEW_ORDER:
-            case NotificationType::ORDER_FINISHED:
-                return Link::getPageLink("auftrag") . "?id=$id";
-            case NotificationType::ORDER_PAYED:
-                $invoiceData = DBAccess::selectQuery("SELECT order_id FROM invoice WHERE id = :id", [
-                    "id" => $id,
-                ]);
-
-                if (empty($invoiceData)) {
-                    return "#";
-                }
-
-                $orderId = (int) $invoiceData[0]["order_id"];
-                return Link::getPageLink("auftrag") . "?id=$orderId";
-            default:
-                return "#";
+            if ($type === NotificationType::TYPE_STEP || $type === NotificationType::TYPE_STEP_UPDATE) {
+                $stepIds[$id] = $id;
+            } elseif ($type === NotificationType::ORDER_PAYED) {
+                $invoiceIds[$id] = $id;
+            }
         }
+
+        $orderByStep = self::loadOrderIds("SELECT Schrittnummer AS id, Auftragsnummer AS orderId FROM schritte WHERE Schrittnummer IN", $stepIds);
+        $orderByInvoice = self::loadOrderIds("SELECT id, order_id AS orderId FROM invoice WHERE id IN", $invoiceIds);
+        $orderLink = Link::getPageLink("auftrag");
+
+        foreach ($notifications as $key => $notification) {
+            $type = (int) $notification["type"];
+            $id = (int) $notification["specific_id"];
+
+            $link = match ($type) {
+                NotificationType::TYPE_STEP, NotificationType::TYPE_STEP_UPDATE => isset($orderByStep[$id])
+                    ? "$orderLink?id={$orderByStep[$id]}#stepCont" : "",
+                NotificationType::TYPE_NEW_ORDER, NotificationType::ORDER_FINISHED => $id > 0
+                    ? "$orderLink?id=$id" : "",
+                NotificationType::ORDER_PAYED => isset($orderByInvoice[$id])
+                    ? "$orderLink?id={$orderByInvoice[$id]}" : "",
+                default => "",
+            };
+
+            $notifications[$key]["typeName"] = NotificationType::getName($type);
+            /* leerer Link: es gibt kein Ziel mehr (z. B. gelöschter Schritt), die View zeigt dann nur Text */
+            $notifications[$key]["link"] = $link;
+        }
+
+        return $notifications;
     }
 
-    private static function getTypeName(int $type): string
+    /**
+     * @param array<int, int> $ids
+     * @return array<int, int> id => Auftragsnummer
+     */
+    private static function loadOrderIds(string $queryPrefix, array $ids): array
     {
-        return NotificationType::getName($type);
+        if (empty($ids)) {
+            return [];
+        }
+
+        $placeholders = implode(",", array_fill(0, count($ids), "?"));
+        $rows = DBAccess::selectQuery("$queryPrefix ($placeholders)", array_values($ids));
+
+        $map = [];
+        foreach ($rows as $row) {
+            $map[(int) $row["id"]] = (int) $row["orderId"];
+        }
+
+        return $map;
     }
 
     /**
      * addNotification adds a notification for a user or all users
+     *
+     * Bei einer Benachrichtigung an alle wird die auslösende Person ausgenommen – sie weiß
+     * ja schon, was sie getan hat. Aufgaben (TYPE_STEP) gehen dagegen an alle, auch an sie selbst.
      *
      * @param int|null $user_id     the id of the user who gets notified, if all users get notified, it is -1
      * @param int $type             the type of notification
@@ -239,6 +239,7 @@ class NotificationManager
     public static function addNotification(?int $user_id, int $type, string $content, int $specificId): void
     {
         $initiator = User::getCurrentUserId();
+        $content = mb_substr($content, 0, 128);
 
         /* null or a non-positive id means: notify all users */
         if ($user_id === null || $user_id <= 0) {
@@ -252,10 +253,13 @@ class NotificationManager
 
         if ($user_id === -1) {
             $query = "INSERT INTO user_notifications (`user_id`, `initiator`, `type`, content, specific_id) VALUES ";
-            $allUsers = self::getAllUsers();
             $params = [];
 
-            foreach ($allUsers as $user) {
+            foreach (self::getAllUsers() as $user) {
+                if ($type !== NotificationType::TYPE_STEP && (int) $user["id"] === $initiator) {
+                    continue;
+                }
+
                 $params[] = [
                     $user["id"],
                     $initiator,
@@ -265,7 +269,9 @@ class NotificationManager
                 ];
             }
 
-            DBAccess::insertMultiple($query, $params);
+            if (!empty($params)) {
+                DBAccess::insertMultiple($query, $params);
+            }
         } else {
             DBAccess::insertQuery("INSERT INTO user_notifications (`user_id`, `initiator`, `type`, content, specific_id) VALUES (:userId, :initiator, :type, :content, :specificId)", [
                 "userId" => $user_id,
@@ -277,28 +283,24 @@ class NotificationManager
         }
     }
 
-    /*
-     * calls the addNotification function in order to set a notification if the specific trigger was bound to that notification
-     */
-    public static function addNotificationCheck(int $user_id, int $type, string $content, int $specificId): void
-    {
-        $query = "UPDATE user_notifications SET ischecked = 1 WHERE specific_id = :specificId";
-        DBAccess::updateQuery($query, ["specificId" => $specificId]);
-
-        $query = "SELECT id FROM user_notifications WHERE specific_id = :specificId";
-        $result = DBAccess::selectQuery($query, ["specificId" => $specificId]);
-
-        if (!empty($result)) {
-            self::addNotification($user_id, $type, $content, $specificId);
-        }
-    }
-
     public static function deleteById(int $type, int $specificId): void
     {
         $query = "DELETE FROM user_notifications WHERE `type` = :type AND specific_id = :specificId";
         DBAccess::deleteQuery($query, [
             "type" => $type,
             "specificId" => $specificId,
+        ]);
+    }
+
+    /**
+     * Ein erledigter Schritt ist für niemanden mehr eine offene Aufgabe:
+     * die Aufgaben-Benachrichtigungen aller Nutzer dazu werden als gelesen markiert.
+     */
+    public static function resolveStepNotifications(int $stepId): void
+    {
+        DBAccess::updateQuery("UPDATE user_notifications SET ischecked = 1 WHERE `type` = :type AND specific_id = :stepId", [
+            "type" => NotificationType::TYPE_STEP,
+            "stepId" => $stepId,
         ]);
     }
 
@@ -340,15 +342,5 @@ class NotificationManager
             "status" => "success",
             "count" => 0,
         ]);
-    }
-
-    public static function notifyFromEntity(int $userId, NotifiableEntity $entity): void
-    {
-        self::addNotification(
-            $userId,
-            $entity->getNotificationType(),
-            $entity->getNotificationContent(),
-            $entity->getNotificationSpecificId()
-        );
     }
 }

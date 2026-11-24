@@ -86,8 +86,30 @@ const deleteStep = (e: CustomEvent) => {
     });
 }
 
-const checkStep = (e: CustomEvent) => {
-    
+const checkStep = async (e: CustomEvent) => {
+    const data = e.detail;
+    const stepNumber = data["Schrittnummer"];
+
+    if (!confirm(`Schritt "${data["Bezeichnung"] ?? ""}" als erledigt markieren?`)) {
+        return;
+    }
+
+    const r = await ajax.put(`/api/v1/notes/step/${stepNumber}`);
+    if (!r.success || r.data?.status != "success") {
+        notification("", "failure");
+        return;
+    }
+
+    notification("", "success");
+
+    const showAll = (document.getElementById("toggleSteps") as HTMLInputElement | null)?.checked;
+    if (showAll) {
+        // alle Schritte werden angezeigt: Zeile bleibt, nur der Haken entfällt
+        data.row.classList.add("opacity-60");
+        data.row.querySelector('button[title="Erledigt"]')?.remove();
+    } else {
+        data.row.remove();
+    }
 }
 
 const displayNotes = (notes: Note[]) => {

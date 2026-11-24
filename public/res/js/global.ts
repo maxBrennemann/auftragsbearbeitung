@@ -208,7 +208,8 @@ fnNames.click_logout = () => {
 	}).then(() => location.reload());
 }
 
-fnNames.click_showNotifications = async () => {
+fnNames.click_showNotifications = async (event: Event) => {
+	const centerUrl = (event.currentTarget as HTMLElement | null)?.dataset.centerUrl ?? "/notifications";
 	const innerDiv = document.createElement("div");
 	innerDiv.classList.add("notificationWrapper");
 
@@ -219,27 +220,46 @@ fnNames.click_showNotifications = async () => {
 
 	await loadNotifications();
 
-	/* Buttons werden per Ajax nachgeladen, daher Event-Delegation statt data-binding. */
+	/*
+	 * Einträge werden per Ajax nachgeladen, daher Event-Delegation statt data-binding.
+	 * Neuigkeiten werden beim Anklicken als gelesen markiert, Aufgaben nicht (die verschwinden erst,
+	 * wenn der Schritt erledigt ist).
+	 */
 	innerDiv.addEventListener("click", async (event) => {
-		const target = (event.target as Element).closest<HTMLElement>("[data-notification-read]");
-		if (target === null) {
+		const link = (event.target as Element).closest<HTMLAnchorElement>("a[data-notification-read]");
+		if (link === null) {
 			return;
 		}
 
-		event.preventDefault();
-		const id = target.dataset.notificationRead;
+		const id = link.dataset.notificationRead;
 		if (!id) {
 			return;
 		}
 
+		const hasTarget = link.getAttribute("href") !== "";
+		const opensElsewhere = event.ctrlKey || event.metaKey || event.shiftKey;
+
+		if (hasTarget && opensElsewhere) {
+			// Browser öffnet den Link selbst in neuem Tab/Fenster, hier bleibt das Popup offen
+			await setNotificationAsRead(id);
+			await loadNotifications();
+			return;
+		}
+
+		event.preventDefault();
 		await setNotificationAsRead(id);
-		await loadNotifications();
+
+		if (hasTarget) {
+			window.location.href = link.href;
+		} else {
+			await loadNotifications();
+		}
 	});
 
 	const options = createPopup(innerDiv);
 	const goToNotifications = document.createElement("a");
 	goToNotifications.innerHTML = "Zum Benachrichtigungszentrum";
-	goToNotifications.href = "/notifications";
+	goToNotifications.href = centerUrl;
 	goToNotifications.classList.add("btn-primary");
 	options.appendChild(goToNotifications);
 }

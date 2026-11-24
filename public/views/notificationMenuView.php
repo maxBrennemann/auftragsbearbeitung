@@ -1,3 +1,9 @@
+<?php
+/*
+ * Aufgaben: Klick führt nur zum Auftrag, sie bleiben stehen, bis der Schritt erledigt ist.
+ * Neuigkeiten: Klick markiert als gelesen (data-notification-read) und führt zum Ziel.
+ */
+?>
 <div class="p-2">
     <h3 class="font-bold">Benachrichtigungen und Aufgaben</h3>
     <div>
@@ -9,15 +15,11 @@
                 <p class="p-3 text-gray-500">Keine offenen Aufgaben.</p>
             <?php endif; ?>
             <?php foreach ($tasks as $n): ?>
-                <div class="border-b last:border-none border-gray-600 taskList cursor-pointer hover:bg-slate-100 flex items-center first:rounded-t-lg last:rounded-b-lg">
-                    <div class="p-3">
-                        <span class="type-label"><?= htmlspecialchars($n["typeName"]) ?></span>
-                    </div>
-                    <a class="block flex-1 pl-2 pr-4 py-3" href="<?= htmlspecialchars($n["link"]) ?>"><?= htmlspecialchars($n["content"]) ?></a>
-                    <div class="p-3 ml-auto">
-                        <button class="btn-secondary btn-sm" data-notification-read="<?= (int) $n["id"] ?>">Erledigt</button>
-                    </div>
-                </div>
+                <a class="border-b last:border-none border-gray-600 taskList hover:bg-slate-100 flex items-center first:rounded-t-lg last:rounded-b-lg"
+                    href="<?= htmlspecialchars($n["link"] !== "" ? $n["link"] : "#") ?>">
+                    <span class="p-3"><span class="type-label"><?= htmlspecialchars($n["typeName"]) ?></span></span>
+                    <span class="flex-1 pl-2 pr-4 py-3"><?= htmlspecialchars($n["content"]) ?></span>
+                </a>
             <?php endforeach; ?>
         </div>
     </div>
@@ -30,15 +32,13 @@
                 <p class="p-3 text-gray-500">Keine Neuigkeiten.</p>
             <?php endif; ?>
             <?php foreach ($news as $n): ?>
-                <div class="border-b last:border-none border-gray-600 taskList cursor-pointer hover:bg-slate-100 flex items-center first:rounded-t-lg last:rounded-b-lg">
-                    <div class="p-3">
-                        <span class="type-label"><?= htmlspecialchars($n["typeName"]) ?></span>
-                    </div>
-                    <a class="block flex-1 pl-2 pr-4 py-3" href="<?= htmlspecialchars($n["link"]) ?>"><?= htmlspecialchars($n["content"]) ?></a>
-                    <div class="p-3">
-                        <button class="btn-secondary btn-sm ml-auto" data-notification-read="<?= (int) $n["id"] ?>">Als gelesen markieren</button>
-                    </div>
-                </div>
+                <a class="border-b last:border-none border-gray-600 taskList hover:bg-slate-100 flex items-center first:rounded-t-lg last:rounded-b-lg"
+                    href="<?= htmlspecialchars($n["link"]) ?>"
+                    data-notification-read="<?= (int) $n["id"] ?>"
+                    title="<?= $n["link"] !== "" ? "Öffnen und als gelesen markieren" : "Als gelesen markieren" ?>">
+                    <span class="p-3"><span class="type-label"><?= htmlspecialchars($n["typeName"]) ?></span></span>
+                    <span class="flex-1 pl-2 pr-4 py-3"><?= htmlspecialchars($n["content"]) ?></span>
+                </a>
             <?php endforeach; ?>
         </div>
     </div>

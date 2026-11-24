@@ -102,6 +102,40 @@ fnNames.click_markAllRead = async () => {
 	window.location.reload();
 };
 
+/**
+ * Wie im Popup: eine ungelesene Neuigkeit anklicken markiert sie als gelesen und öffnet das Ziel.
+ */
+const handleOpenNotification = async (event: MouseEvent) => {
+	const link = (event.target as Element).closest<HTMLAnchorElement>("a[data-open-notification]");
+	if (link === null) {
+		return;
+	}
+
+	const row = link.closest<HTMLElement>("[data-notification-row]");
+	if (row?.dataset.status !== "unread") {
+		return;
+	}
+
+	const opensElsewhere = event.ctrlKey || event.metaKey || event.shiftKey;
+	if (!opensElsewhere) {
+		event.preventDefault();
+	}
+
+	await setNotificationAsRead(link.dataset.openNotification ?? "");
+
+	if (opensElsewhere) {
+		row.querySelector<HTMLButtonElement>('[data-fun="markRead"]')?.remove();
+		row.dataset.status = "read";
+		row.classList.add("opacity-60");
+		row.querySelector("[data-unread-marker]")?.remove();
+		updateUnreadCount(-1);
+		applyFilters();
+	} else {
+		window.location.href = link.href;
+	}
+};
+
 loader(() => {
 	addBindings(fnNames);
+	document.getElementById("notificationList")?.addEventListener("click", handleOpenNotification);
 });

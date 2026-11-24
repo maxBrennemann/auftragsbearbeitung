@@ -51,7 +51,12 @@ foreach ($notifications as $notification) {
                     data-category="<?= htmlspecialchars($n["category"]) ?>">
                     <span class="type-label"><?= htmlspecialchars($n["typeName"]) ?></span>
                     <div class="flex-1 min-w-0">
-                        <a class="link-primary" href="<?= htmlspecialchars($n["link"]) ?>"><?= htmlspecialchars($n["content"]) ?></a>
+                        <?php if ($n["link"] !== ""): ?>
+                            <a class="link-primary" href="<?= htmlspecialchars($n["link"]) ?>"
+                                <?php if ($n["category"] !== "step"): ?>data-open-notification="<?= (int) $n["id"] ?>"<?php endif; ?>><?= htmlspecialchars($n["content"]) ?></a>
+                        <?php else: ?>
+                            <span><?= htmlspecialchars($n["content"]) ?></span>
+                        <?php endif; ?>
                         <div class="section-meta">
                             <?= date("d.m.Y H:i", strtotime($n["created_at"])) ?>
                             <?php if (!empty($n["initiatorName"])): ?>

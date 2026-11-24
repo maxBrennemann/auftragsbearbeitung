@@ -79,7 +79,7 @@ if ($pageName == "") {
 						<?= Icon::get("search", 18) ?>
 					</button>
 
-					<button type="button" class="relative btn-ghost btn-icon m-0" data-binding="true" data-fun="showNotifications" title="Benachrichtigungen" aria-label="Benachrichtigungen">
+					<button type="button" class="relative btn-ghost btn-icon m-0" data-binding="true" data-fun="showNotifications" data-center-url="<?= Link::getPageLink("notifications") ?>" title="Benachrichtigungen" aria-label="Benachrichtigungen">
 						<?= Icon::get("bell", 18) ?>
 						<span id="notificationBadge" class="notification-badge" style="<?= $notificationCount > 0 ? "" : "display:none" ?>"><?= $notificationCount ?></span>
 					</button>

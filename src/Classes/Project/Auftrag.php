@@ -5,7 +5,6 @@ namespace Src\Classes\Project;
 use Src\Classes\Link;
 use Src\Classes\Controller\FileController;
 use Src\Classes\Models\Auftragstyp;
-use Src\Classes\Notification\NotifiableEntity;
 use Src\Classes\Notification\NotificationManager;
 use Src\Classes\Notification\NotificationType;
 
@@ -14,7 +13,7 @@ use MaxBrennemann\PhpUtilities\JSONResponseHandler;
 use MaxBrennemann\PhpUtilities\Tools;
 use Src\Classes\Controller\TemplateController;
 
-class Auftrag implements NotifiableEntity
+class Auftrag
 {
     private int $Auftragsnummer;
     private string $Auftragsbezeichnung;
@@ -532,10 +531,16 @@ class Auftrag implements NotifiableEntity
         $orderId = (int) Tools::get("id");
         DBAccess::updateQuery("UPDATE auftrag SET `status` = :orderStatus WHERE Auftragsnummer = :orderId", [
             "orderId" => $orderId,
-            "orderStatus" => OrderState::Finished,
+            /* ->value: DBAccess bindet Enum-Objekte nicht, die Query schlug dadurch fehl */
+            "orderStatus" => OrderState::Finished->value,
         ]);
 
-        NotificationManager::addNotification(null, NotificationType::ORDER_FINISHED, "Auftrag $orderId wurde abgeschlossen", $orderId);
+        $title = DBAccess::selectQuery("SELECT Auftragsbezeichnung FROM auftrag WHERE Auftragsnummer = :orderId", [
+            "orderId" => $orderId,
+        ])[0]["Auftragsbezeichnung"] ?? "";
+        $content = trim("Auftrag $orderId wurde abgeschlossen" . ($title !== "" ? ": $title" : ""));
+
+        NotificationManager::addNotification(null, NotificationType::ORDER_FINISHED, $content, $orderId);
 
         JSONResponseHandler::returnOK();
     }
@@ -1038,25 +1043,5 @@ class Auftrag implements NotifiableEntity
         ]);
 
         JSONResponseHandler::returnOK();
-    }
-
-    public function getNotificationContent(): string
-    {
-        return "";
-    }
-
-    public function getNotificationType(): int
-    {
-        return 0;
-    }
-
-    public function getNotificationLink(): string
-    {
-        return "";
-    }
-
-    public function getNotificationSpecificId(): int
-    {
-        return 0;
     }
 }

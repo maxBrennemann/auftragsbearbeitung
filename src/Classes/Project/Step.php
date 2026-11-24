@@ -51,12 +51,32 @@ class Step
         ]);
     }
 
+    /**
+     * Markiert einen Schritt als erledigt.
+     * Achtung: istErledigt = 1 bedeutet "noch zu erledigen", 0 bedeutet "erledigt".
+     */
     public static function updateStep(): void
     {
-        $orderId = Tools::get("orderId");
-        $stepId = Tools::get("id");
+        $stepId = (int) Tools::get("id");
 
-        OrderHistory::add($orderId, $stepId, OrderHistory::TYPE_STEP, OrderHistory::STATE_FINISHED);
+        $step = DBAccess::selectQuery("SELECT Auftragsnummer, istErledigt FROM schritte WHERE Schrittnummer = :id", [
+            "id" => $stepId,
+        ]);
+
+        if (empty($step)) {
+            JSONResponseHandler::returnNotFound("step not found");
+        }
+
+        if ((int) $step[0]["istErledigt"] === 1) {
+            DBAccess::updateQuery("UPDATE schritte SET istErledigt = 0, finishingDate = :date WHERE Schrittnummer = :id", [
+                "id" => $stepId,
+                "date" => date("Y-m-d"),
+            ]);
+
+            OrderHistory::add((int) $step[0]["Auftragsnummer"], $stepId, OrderHistory::TYPE_STEP, OrderHistory::STATE_FINISHED);
+        }
+
+        NotificationManager::resolveStepNotifications($stepId);
 
         JSONResponseHandler::sendResponse([
             "status" => "success",
